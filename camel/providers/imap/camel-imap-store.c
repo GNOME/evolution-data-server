@@ -2269,7 +2269,7 @@ create_folder (CamelStore *store, const char *parent_name,
 	}
 	
 	/* FIXME: does not handle unexpected circumstances very well */
-	for (i = 0; i < response->untagged->len; i++) {
+	for (i = 0; i < response->untagged->len && !need_convert; i++) {
 		resp = response->untagged->pdata[i];
 		
 		if (!imap_parse_list_response (imap_store, resp, &flags, NULL, &thisone))
@@ -2278,8 +2278,9 @@ create_folder (CamelStore *store, const char *parent_name,
 		if (strcmp (thisone, parent_name) == 0) {
 			if (flags & CAMEL_FOLDER_NOINFERIORS)
 				need_convert = TRUE;
-			break;
 		}
+
+		g_free(thisone);
 	}
 	
 	camel_imap_response_free (imap_store, response);
@@ -2386,6 +2387,7 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 	/* FIXME: should use imap_build_folder_info, note the differences with param setting tho */
 
 	si = camel_imap_store_summary_add_from_full(imap_store->summary, dir, sep?sep:'/');
+	g_free(dir);
 	if (si == NULL)
 		return NULL;
 
