@@ -129,9 +129,10 @@ CORBA_sequence_ ## type ## _realloc (CORBA_sequence_ ## type *seq,	\
 				     CORBA_unsigned_long      new_max)	\
 {									\
 	type *new_buf;							\
-									\
+	int i;								\
 	new_buf = CORBA_sequence_ ## type ## _allocbuf (new_max);	\
-	memcpy (new_buf, seq->_buffer, seq->_maximum * sizeof (type));	\
+	for (i = 0; i < seq->_maximum; i ++)				\
+		new_buf[i] = CORBA_string_dup (seq->_buffer[i]);	\
 	CORBA_free (seq->_buffer);					\
 	seq->_buffer = new_buf;						\
 	seq->_maximum = new_max;					\

@@ -1,5 +1,15 @@
 2004-02-04  Chris Toshok  <toshok@ximian.com>
 
+	[ fixes bug #53130 ]
+	
+	* libedata-book/e-data-book-view.c (MAKE_REALLOC): this might end
+	up being a bad assumption, but since it's only used for string
+	sequences, assume it always will be.  We need to make a deep copy
+	of the sequence.  a memcpy isn't enough, as freeing the buffer
+	causes the child strings to be freed.
+
+2004-02-04  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.c (e_book_op_free): remove the misleading "XXX
 	more here" comment from here - there's nothing else to free here.
 
