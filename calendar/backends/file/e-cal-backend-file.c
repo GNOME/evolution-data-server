@@ -96,11 +96,12 @@ static ECalBackendSyncClass *parent_class;
 
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
-free_object (gpointer key, gpointer value, gpointer data)
+free_object_data (gpointer data)
 {
-	ECalBackendFileObject *obj_data = value;
+	ECalBackendFileObject *obj_data = data;
 
-	g_object_unref (obj_data->full_object);
+	if (obj_data->full_object)
+		g_object_unref (obj_data->full_object);
 	g_hash_table_destroy (obj_data->recurrences);
 	g_list_free (obj_data->recurrences_list);
 
@@ -217,14 +218,11 @@ save (ECalBackendFile *cbfile)
 static void
 free_calendar_components (GHashTable *comp_uid_hash, icalcomponent *top_icomp)
 {
-	if (comp_uid_hash) {
-		g_hash_table_foreach (comp_uid_hash, (GHFunc) free_object, NULL);
+	if (comp_uid_hash)
 		g_hash_table_destroy (comp_uid_hash);
-	}
 
-	if (top_icomp) {
+	if (top_icomp)
 		icalcomponent_free (top_icomp);
-	}
 }
 
 static void
@@ -455,7 +453,7 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 			obj_data = g_new0 (ECalBackendFileObject, 1);
 			obj_data->full_object = NULL;
 			obj_data->recurrences = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-			g_hash_table_insert (priv->comp_uid_hash, (gpointer) uid, obj_data);
+			g_hash_table_insert (priv->comp_uid_hash, g_strdup (uid), obj_data);
 		}
 
 		g_hash_table_insert (obj_data->recurrences, g_strdup (rid), comp);
@@ -478,7 +476,7 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 			obj_data->full_object = comp;
 			obj_data->recurrences = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
-			g_hash_table_insert (priv->comp_uid_hash, (gpointer) uid, obj_data);
+			g_hash_table_insert (priv->comp_uid_hash, g_strdup (uid), obj_data);
 		}
 	}
 
@@ -553,7 +551,6 @@ remove_component (ECalBackendFile *cbfile, const char *uid, ECalBackendFileObjec
 	g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_recurrence_cb, cbfile);
 
 	g_hash_table_remove (priv->comp_uid_hash, uid);
-	free_object ((gpointer) uid, (gpointer) obj_data, NULL);
 
 	save (cbfile);
 }
@@ -665,7 +662,7 @@ open_cal (ECalBackendFile *cbfile, const char *uristr)
 	priv->icalcomp = icalcomp;
 	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
 
-	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 	scan_vcalendar (cbfile);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -797,7 +794,7 @@ reload_cal (ECalBackendFile *cbfile, const char *uristr)
 
 	priv->icalcomp = icalcomp;
 
-	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 	scan_vcalendar (cbfile);
 
 	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
@@ -833,7 +830,7 @@ create_cal (ECalBackendFile *cbfile, const char *uristr)
 	priv->icalcomp = e_cal_util_new_top_level ();
 
 	/* Create our internal data */
-	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 
 	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
 

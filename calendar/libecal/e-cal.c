@@ -2953,9 +2953,9 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 	/* set the RECUR-ID for the instance */
 	if (e_cal_util_component_has_recurrences (icalcomp)) {
 		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
-			itt = icaltime_from_timet (start, itt_start.is_date);
- 			if (itt_start.zone)
- 				icaltimezone_convert_time (&itt, icaltimezone_get_utc_timezone (), itt_start.zone);
+			itt = icaltime_from_timet (start, FALSE);
+ 			/* if (itt_start.zone) */
+/*  				icaltimezone_convert_time (&itt, icaltimezone_get_utc_timezone (), itt_start.zone); */
 			icalcomponent_set_recurrenceid (icalcomp, itt);
 		}
 	}

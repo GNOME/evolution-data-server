@@ -1,3 +1,16 @@
+2005-02-08  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal.c (add_instance): recurrence-id needs to be a date
+	only.
+
+	* backends/file/e-cal-backend-file.c (add_component): g_strdup the
+	key for the hash table.
+	(free_object_data): free the hash table key when freeing objects.
+	(free_calendar_components, remove_component): no need to free the
+	object's data here, this is done now automatically by the hash table.
+	(open_cal, create_cal, reload_cal): create hash table with
+	g_hash_table_new_full.
+
 2005-02-08  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas):
@@ -46,6 +59,7 @@
 2005-02-04  Rodrigo Moya <rodrigo@novell.com>
 
 	* tests/ecal/test-recur.c: removed libgnome usage.
+	(main): use arguments correctly.
 
 2005-02-04  Rodrigo Moya <rodrigo@novell.com>
 
