@@ -1408,7 +1408,7 @@ e_gw_connection_get_date_from_string (const char *dtstring)
         int i, j, len = strlen (dtstring);
 	time_t t;
 	
-        str2 = g_malloc0 (len);
+        str2 = g_malloc0 (len+1);
         for (i = 0,j = 0; i < len; i++) {
                 if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
 			str2[j] = dtstring[i];

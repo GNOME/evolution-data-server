@@ -1,3 +1,9 @@
+2005-02-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-connection.c: (e_gw_connection_get_date_from_string):
+	allocating for the proper length for the datestring
+	* e-gw-item.c: (free_recipient): free the recipient last
+
 2005-02-03  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_position_cursor),

@@ -121,7 +121,6 @@ free_recipient (EGwItemRecipient *recipient, gpointer data)
 {
 	g_free (recipient->email);
 	g_free (recipient->display_name);
-	g_free (recipient);
 	g_free (recipient->delivered_date);
 	g_free (recipient->opened_date);
 	g_free (recipient->accepted_date);
@@ -129,6 +128,7 @@ free_recipient (EGwItemRecipient *recipient, gpointer data)
 	g_free (recipient->declined_date);
 	g_free (recipient->completed_date);
 	g_free (recipient->undelivered_date);
+	g_free (recipient);
 }
 
 static void 
