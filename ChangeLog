@@ -1,3 +1,8 @@
+2004-02-03  Chris Toshok  <toshok@ximian.com>
+
+	* libedataserver/libedataserver-1.0.pc.in (Requires): add
+	libxml-2.0 as the e-source* stuff needs it.
+
 2004-01-30  Rodrigo Moya <rodrigo@ximian.com>
 
 	* configure.in: require libsoup >= 2.1.6.
