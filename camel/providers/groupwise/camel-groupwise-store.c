@@ -303,7 +303,8 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	groupwise_store->summary = camel_groupwise_store_summary_new () ;
 	camel_store_summary_set_filename ((CamelStoreSummary *)groupwise_store->summary, path) ;
 	
-	g_free (path) ;
+	if (path)
+		g_free (path) ;
 	camel_store_summary_load ((CamelStoreSummary *) groupwise_store->summary);
 	
 	/*host and user*/
@@ -782,6 +783,8 @@ groupwise_get_folder_info_online (CamelStore *store,
 		}
 		
 		g_ptr_array_add (folders, fi);
+		fi->total = e_gw_container_get_total_count (E_GW_CONTAINER (folder_list->data)) ;
+		fi->unread = e_gw_container_get_unread_count (E_GW_CONTAINER (folder_list->data)) ;
 		
 	}
 	if ( (top != NULL) && (folders->len == 0)) {
@@ -796,7 +799,7 @@ groupwise_get_folder_info_online (CamelStore *store,
 
 	/*Now update the folder counts, the idea is taken from the imap provider implementation*/
 	if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST)) {
-		update_folder_counts (groupwise_store, info, ex) ;
+		//update_folder_counts (groupwise_store, info, ex) ;
 	}
 	camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary) ;
 	return info ;
@@ -944,12 +947,53 @@ groupwise_rename_folder(CamelStore *store,
 			const char *new_name,
 			CamelException *ex)
 {
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
+	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
+	char *oldpath, *newpath, *storepath, *newname ;
+	char *container_id ;
+	CamelSession *session = ((CamelService *)store)->session ;
+
+	EGwConnectionStatus status ;
+
+
 	
-	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex))
+	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex)) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folders in offline mode.")) ;
 		return;
+	}
 
+	container_id = container_id_lookup (priv,old_name) ;
+	if (!container_id) {
+		return ;
+	}
+ 
+	if (e_gw_connection_rename_folder (priv->cnc, container_id , new_name) != E_GW_CONNECTION_STATUS_OK) {
+		g_free (container_id) ;
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder")) ;
+		return ;
+	}
 
+	g_hash_table_replace (priv->id_hash, g_strdup(container_id), g_strdup(new_name)) ;
+
+        g_hash_table_insert (priv->name_hash, g_strdup(new_name), g_strdup(container_id)) ;
+	g_hash_table_remove (priv->name_hash, g_strdup(old_name)) ;
+	
+	/*FIXME:Update all the id in the parent_hash*/
+
+	storepath = g_strdup_printf ("%s/folders", priv->storage_path) ;
+	oldpath = e_path_to_physical (storepath, old_name) ;
+	newpath = e_path_to_physical (storepath, new_name) ;
+	g_free (storepath) ;
+
+	/*XXX: make sure the summary is also renamed*/
+	if (rename (oldpath, newpath) == -1) {
+		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
+				oldpath, newpath, strerror (errno));
+	}
+
+	g_free (oldpath) ;
+	g_free (newpath) ;
+ 
 }
 
 char * 
@@ -967,7 +1011,6 @@ groupwise_get_name(CamelService *service, gboolean brief)
 static void
 groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name, CamelException *ex)
 {
-	
 	CamelFolderSummary *summary;
 	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
 	char *summary_file, *state_file;
@@ -994,7 +1037,6 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name,
 		return ;
 	}
 
-	
 	camel_object_unref (summary) ;
 	unlink (summary_file) ;
 	g_free (summary_file) ;
@@ -1007,8 +1049,8 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name,
 	rmdir (folder_dir) ;
 	g_free (folder_dir) ;
 
-	/*	camel_store_summary_remove_path ( (CamelStoreSummary *)gw_store->summary, folder_name) ;
-		camel_store_summary_save ( (CamelStoreSummary *)gw_store->summary) ;*/
+	camel_store_summary_remove_path ( (CamelStoreSummary *)gw_store->summary, folder_name) ;
+	camel_store_summary_save ( (CamelStoreSummary *)gw_store->summary) ;
 
 	fi = groupwise_build_folder_info(gw_store, NULL, folder_name) ;
 	camel_object_trigger_event (CAMEL_OBJECT (gw_store), "folder_deleted", fi);
@@ -1026,6 +1068,12 @@ EGwConnection *
 cnc_lookup (CamelGroupwiseStorePrivate *priv)
 {
 	return priv->cnc ;
+}
+
+char *
+storage_path_lookup (CamelGroupwiseStorePrivate *priv)
+{
+	return priv->storage_path ;
 }
 
 const char *

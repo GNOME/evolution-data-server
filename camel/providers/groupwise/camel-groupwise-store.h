@@ -72,6 +72,7 @@ char * groupwise_get_name(CamelService *service, gboolean brief) ;
 char *container_id_lookup (CamelGroupwiseStorePrivate *priv, const char *folder_name) ;
 EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv) ;
 const char *gw_get_path (CamelGroupwiseStore *gw_store, const char *folder_name) ;
+char *storage_path_lookup (CamelGroupwiseStorePrivate *priv) ;
 
 
 #ifdef __cplusplus

@@ -1,7 +1,29 @@
+2005-01-06 Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* providers/groupwise/camel-groupwise-store.[ch]
+	  (groupwise_get_folder_info_online): update the total and
+	   unread mail count from soap response
+	  (groupwise_rename_folder): fixed problems in renaming 
+	   groupwise folders
+	  (storage_path_lookup): returns the storage path for the
+	   groupwise account
+	* providers/groupwise/camel-groupwise-folder.c
+	  (groupwise_folder_get_message): support for shared folder
+	   notification type. displaying the itip control for 
+	   appoinments.
+	  (groupwise_folder_rename): support function for renaming
+	   cache and summary when a groupwise folder is renamed
+	  (groupwise_transfer_online): function for copying/moving
+	   messages between folders
+	  (convert_to_calendar): function to populate data for
+	   displaying appointments by itip control
+	* providers/groupwise/camel-groupwise-transport.c
+	   (groupwise_send_to): support for sending attachments
+	   
 2005-01-04  Sivaiah Nallagatla     <snallagatla@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.c
-	(groupwise_creaete_folder) (groupwise_delete_folder) 
+	(groupwise_create_folder) (groupwise_delete_folder) 
 	(groupwise_rename_folder) : prevent these operations in 
 	offline mode 
 

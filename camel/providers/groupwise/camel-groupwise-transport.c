@@ -3,6 +3,7 @@
 
 /* 
  * Authors: Sivaiah Nallagatla <snallagatla@novell.com>
+ *	    Parthasarathi Susarla <sparthasarathi@novell.com>
  *
  * Copyright (C) 2004 Novell, Inc.
  *
@@ -39,6 +40,7 @@
 #include "camel-mime-utils.h"
 
 #include <string.h>
+#include <libsoup/soup-misc.h>
 
 
 static gboolean groupwise_send_to (CamelTransport *transport,
@@ -156,9 +158,8 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	CamelMimePart *mime_part = CAMEL_MIME_PART(message) ;
 	
 	guint part_count ;
-	GSList *list = NULL, *recipient_list = NULL ;
++	GSList *sent_item_list = NULL, *recipient_list = NULL, *attach_list = NULL ;
 	char *url = NULL ;
-	char *buffer = NULL ;
 	int i ;
 
 	item = e_gw_item_new_empty () ;
@@ -188,56 +189,7 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		return FALSE ;
 	}
 
-	/*
-	 * Get the mime parts from CamelMimemessge 
-	 */
-	dw = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
-	if(!dw) {
-		g_print ("ERROR: Could not get Datawrapper") ;
-		camel_operation_end (NULL) ;
-		return FALSE ;
-	}
-
-	content = (CamelStreamMem *)camel_stream_mem_new();
-	camel_data_wrapper_decode_to_stream(dw, (CamelStream *)content);
-
-	if (CAMEL_IS_MULTIPART (dw)) {
-		part_count = camel_multipart_get_number (CAMEL_MULTIPART(dw)) ;
-		g_print ("Multipart message : %d\n",part_count) ;
-		for (i=0 ; i<part_count ; i++) {
-			CamelContentType *type  ;
-			CamelMimePart *part ;
-			CamelStreamMem *part_content = (CamelStreamMem *)camel_stream_mem_new();
-			const char *disposition, *filename ; 
-		
-			part = camel_multipart_get_part (CAMEL_MULTIPART(dw), i) ;
-
-			camel_data_wrapper_decode_to_stream(CAMEL_DATA_WRAPPER(part), (CamelStream *)part_content);
-			type = camel_mime_part_get_content_type(part) ;
-			filename = camel_mime_part_get_filename (part) ;
-			disposition = camel_mime_part_get_disposition (part) ;
-	
-			g_free ((char *)filename) ;
-			g_free ((char *)disposition) ;
-			camel_content_type_unref (type) ;
-			camel_object_unref (part_content) ;
-		}
-
-	} else {
-		CamelContentType *type  ;
-		CamelStream *stream = camel_stream_mem_new () ;
-		int count ;
-		
-		type = camel_data_wrapper_get_mime_type_field(dw) ;
-		g_print ("Does not contain multiple parts : %s\n",type->type) ;
-
-		count = camel_data_wrapper_decode_to_stream (dw, stream) ;
-
-
-	}
-
-	/*Populate the item structure to send it to the GW server*/
-	g_print ("|| Subject : %s |||\n", camel_mime_message_get_subject (message)) ;
+	/*poulate recipient list*/
 	total_add = camel_address_length (recipients) ;
 	for (i=0 ; i<total_add ; i++) {
 		const char *name = NULL, *addr = NULL ;
@@ -253,22 +205,88 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		}
 	}
 
+	/*
+	 * Populate the EGwItem structure
+	 */
+
+	/** Get the mime parts from CamelMimemessge **/
+	dw = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
+	if(!dw) {
+		g_print ("ERROR: Could not get Datawrapper") ;
+		camel_operation_end (NULL) ;
+		return FALSE ;
+	}
+
+	/*Content*/
+	if (CAMEL_IS_MULTIPART (dw)) {
+		part_count = camel_multipart_get_number (CAMEL_MULTIPART(dw)) ;
+		g_print ("Multipart message : %d\n",part_count) ;
+		for (i=0 ; i<part_count ; i++) {
+			CamelContentType *type  ;
+			CamelMimePart *part ;
+			CamelStreamMem *part_content = (CamelStreamMem *)camel_stream_mem_new();
+			EGwItemAttachment *attachment = g_new0 (EGwItemAttachment, 1) ;
+			const char *disposition, *filename ; 
+			char *buffer = NULL ;
+		
+			part = camel_multipart_get_part (CAMEL_MULTIPART(dw), i) ;
+
+			type = camel_mime_part_get_content_type(part) ;
+			filename = camel_mime_part_get_filename (part) ;
+			disposition = camel_mime_part_get_disposition (part) ;
+			
+			camel_data_wrapper_decode_to_stream(CAMEL_DATA_WRAPPER(part), (CamelStream *)part_content);
+			buffer = g_malloc0 (part_content->buffer->len+1) ;
+			buffer = memcpy (buffer, part_content->buffer->data, part_content->buffer->len) ;
+			g_print ("buffer: %s\n", part_content->buffer->data) ;
+			attachment->data = soup_base64_encode (buffer, part_content->buffer->len) ;
+
+			attachment->name = g_strdup (filename) ;
+			attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype) ;
+			attachment->size = strlen (attachment->data) ;
+ 	
+			attach_list = g_slist_append (attach_list, attachment) ;	
+
+			g_free (buffer) ;
+			g_free ((char *)filename) ;
+			g_free ((char *)disposition) ;
+			camel_content_type_unref (type) ;
+			camel_object_unref (part_content) ;
+		}
+
+	} else {
+		CamelContentType *type  ;
+		CamelStreamMem *part_content = (CamelStreamMem *)camel_stream_mem_new();
+		int count ;
+		char *buffer = NULL ;
+		
+		type = camel_data_wrapper_get_mime_type_field(dw) ;
+		g_print ("Does not contain multiple parts : %s/%s\n",type->type,type->subtype) ;
+		
+		count = camel_data_wrapper_decode_to_stream(dw, (CamelStream *)content);
+		/*the actual message*/
+		buffer = g_malloc0 (content->buffer->len+1) ;
+		buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
+		e_gw_item_set_message (item, buffer);
+		
+		g_free (buffer) ;
+		camel_content_type_unref (type) ;
+		camel_object_unref (part_content) ;
+	}
+
+	/*recipient list*/
 	e_gw_item_set_recipient_list (item, recipient_list) ;
-
+	/*Item type is mail*/
 	e_gw_item_set_item_type (item, E_GW_ITEM_TYPE_MAIL) ;
+	/*subject*/
 	e_gw_item_set_subject (item, camel_mime_message_get_subject(message)) ;
-	
-	buffer = g_malloc0 (content->buffer->len+1) ;
-	buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
-	e_gw_item_set_message (item, buffer);
 
-	
+
 	/*Send item*/
-	status = e_gw_connection_send_item (cnc, item, &list) ;
+	status = e_gw_connection_send_item (cnc, item, &sent_item_list) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_print (" Error Sending mail") ;
 		camel_operation_end (NULL) ;
-		g_free (buffer) ;
 		return FALSE ;
 	}
 	
@@ -284,6 +302,5 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 
 	return TRUE;
 }
-	
 
 

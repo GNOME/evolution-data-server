@@ -37,6 +37,7 @@
 #include "camel-folder-search.h"
 #include "camel-groupwise-store.h"
 #include "camel-groupwise-summary.h"
+#include "camel-groupwise-utils.h"
 #include "camel-i18n.h" 
 #include "camel-private.h"
 #include "camel-groupwise-private.h"
@@ -46,7 +47,7 @@
 
 #include <string.h>
 
-static CamelFolderClass *parent_class = NULL;
+static CamelObjectClass *parent_class = NULL;
 static CamelDiscoFolderClass *disco_folder_class = NULL ;
 
 struct _CamelGroupwiseFolderPrivate {
@@ -145,9 +146,8 @@ groupwise_folder_get_message( CamelFolder *folder,
 		return NULL;
 	}
 		
-	/*FIXME: Currently supports only 2 levels of folder heirarchy*/
 	folder_name = g_strdup(folder->name) ;
-	temp_name = strchr (folder_name,'/') ;
+	temp_name = strrchr (folder_name,'/') ;
 	if(temp_name == NULL) {
 		container_id =  g_strdup (container_id_lookup (priv,g_strdup(folder_name))) ;
 	}
@@ -172,16 +172,13 @@ groupwise_folder_get_message( CamelFolder *folder,
 	}
 	
 	type = e_gw_item_get_item_type(item) ;
-	if (type == E_GW_ITEM_TYPE_MAIL) {
-
-	} else if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
-
-	} else if (type == E_GW_ITEM_TYPE_TASK) {
-
-	} else if (type == E_GW_ITEM_TYPE_UNKNOWN) {
+	if (type == E_GW_ITEM_TYPE_UNKNOWN) {
 		/*XXX: Free memory allocations*/
-		return NULL ;
-	}
+ 		return NULL ;
+	} else if (type == E_GW_ITEM_TYPE_NOTIFICATION) {
+		camel_medium_add_header ( CAMEL_MEDIUM (msg), "X-Notification", "shared-folder") ;
+	} else if (type == E_GW_ITEM_TYPE_MAIL) {
+ 	}
 	
 	org = e_gw_item_get_organizer (item) ;
 	recipient_list = e_gw_item_get_recipient_list (item) ;
@@ -226,9 +223,12 @@ groupwise_folder_get_message( CamelFolder *folder,
 
 		camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
 		camel_multipart_set_boundary (multipart, NULL);
-		if (type == E_GW_ITEM_TYPE_APPOINTMENT) 
-			camel_mime_part_set_content(part, body, strlen(body), "text/calendar") ;
-		else
+		if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
+			char *cal_buffer = NULL ;
+			int len ;
+			convert_to_calendar (item, &cal_buffer, &len) ;
+			camel_mime_part_set_content(part, cal_buffer, len, "text/calendar") ;
+		} else
 			camel_mime_part_set_content(part, body, strlen(body), e_gw_item_get_msg_content_type (item)) ;
 		camel_multipart_add_part (multipart, part) ;
 		camel_object_unref (part) ;
@@ -238,9 +238,9 @@ groupwise_folder_get_message( CamelFolder *folder,
 		part = camel_mime_part_new () ;
 		camel_multipart_set_boundary (multipart, NULL);
 		camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
-		if (type == E_GW_ITEM_TYPE_APPOINTMENT) 
+		if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
 			camel_mime_part_set_content(part, " ", strlen(" "),"text/calendar") ;
-		else
+		} else
 			camel_mime_part_set_content(part, " ", strlen(" "),"text/html") ;
 		camel_multipart_add_part (multipart, part) ;
 		camel_object_unref (part) ;
@@ -314,6 +314,34 @@ groupwise_folder_get_message( CamelFolder *folder,
 static void
 groupwise_folder_rename (CamelFolder *folder, const char *new)
 {
+	CamelGroupwiseFolder *gw_folder = (CamelGroupwiseFolder *)folder ;
+	CamelGroupwiseStore *gw_store = (CamelGroupwiseStore *) folder->parent_store ;
+	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
+
+	char *folder_dir, *summary_path, *state_file, *storage_path = storage_path_lookup (priv) ;
+	char *folders ;
+
+	folders = g_strconcat (storage_path, "/folders", NULL) ;
+	folder_dir = e_path_to_physical (folders, new) ;
+	g_free (folders) ;
+
+	summary_path = g_strdup_printf ("%s/summary", folder_dir) ;
+
+	CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock) ;
+	g_free (gw_folder->cache->path) ;
+	gw_folder->cache->path = g_strdup (folder_dir) ;
+	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock) ;
+
+	camel_folder_summary_set_filename (folder->summary, summary_path) ;
+
+	state_file = g_strdup_printf ("%s/cmeta", folder_dir) ;
+	camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state_file, NULL) ;
+	g_free (state_file) ;
+
+	g_free (summary_path) ;
+	g_free (folder_dir) ;
+
+	 ((CamelFolderClass *)disco_folder_class)->rename(folder, new);
 }
 
 static GPtrArray *
@@ -517,6 +545,8 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		} else if (type == E_GW_ITEM_TYPE_UNKNOWN) {
 			continue ;
 
+		} else if (type == E_GW_ITEM_TYPE_NOTIFICATION) {
+			g_print ("|| Its a shared folder notification ||\n") ;
 		}
 		status_flags = 0;
 		item_status = e_gw_item_get_item_status (item);
@@ -599,21 +629,52 @@ uid_compar (const void *va, const void *vb)
 }
 
 
-/*
+
 void 
 groupwise_transfer_online ( CamelFolder *source, GPtrArray *uids, 
-		                  CamelFolder *destination, GPtrArray **transferred_uids, 
-				  gboolean delete_originals, CamelException *ex)
+			  CamelFolder *destination, GPtrArray **transferred_uids, 
+			  gboolean delete_originals, CamelException *ex)
 {
-	int count ;
+	int count, index = 0 ;
+	GList *item_ids = NULL, *temp_list = NULL ;
+	char *source_container_id = NULL, *dest_container_id = NULL;
+	
+	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(source->parent_store) ;
+	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
+	
+	EGwConnectionStatus status ;
+	EGwConnection *cnc = cnc_lookup (priv) ;
+ 
+ 	count = camel_folder_summary_count (destination->summary) ;
+ 	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar) ;
 
+	while (index < uids->len) {
+		item_ids = g_list_append (item_ids, g_ptr_array_index (uids, index));
+		temp_list = g_list_append (temp_list, g_ptr_array_index (uids, index));
+		index ++;
+	}
+	
+	source_container_id = container_id_lookup (priv, g_strdup (source->name)) ;
+	dest_container_id = container_id_lookup (priv, g_strdup (destination->name)) ;
+	status = e_gw_connection_add_items (cnc, dest_container_id, item_ids) ;
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		g_print ("Warning!! Could not move items\n") ;
+		return ;
+	}
 
-	count = camel_folder_summary_count (destination->summary) ;
+	if (delete_originals) {
+		status = e_gw_connection_remove_items (cnc, source_container_id, temp_list) ;
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			g_print ("Warning!! Could not delete items\n") ;
+			return ;
+		}
+	}
+	
+	if (transferred_uids)
+		*transferred_uids = NULL ;
+}
 
-	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar) ;
-
-
-}*/
+}
 static void
 groupwise_expunge_uids_online (CamelFolder *folder, GPtrArray *uids, CamelException *ex)
 {
@@ -649,6 +710,7 @@ groupwise_expunge_uids_online (CamelFolder *folder, GPtrArray *uids, CamelExcept
 	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes) ;
 	CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
 	
+	g_free (container_id) ;
 	camel_folder_change_info_free (changes) ;
 }
 
@@ -682,9 +744,9 @@ camel_groupwise_folder_class_init (CamelGroupwiseFolderClass *camel_groupwise_fo
 	  camel_disco_folder_class->expunge_uids_resyncing = groupwise_expunge_uids_resyncing;
 	  camel_disco_folder_class->append_online = groupwise_append_online;
 	 camel_disco_folder_class->append_offline = groupwise_append_offline;
-	  camel_disco_folder_class->append_resyncing = groupwise_append_resyncing;
-	  camel_disco_folder_class->transfer_online = groupwise_transfer_online;
-	  camel_disco_folder_class->transfer_offline = groupwise_transfer_offline;
+	  camel_disco_folder_class->append_resyncing = groupwise_append_resyncing;*/
+	camel_disco_folder_class->transfer_online = groupwise_transfer_online;
+	 /* camel_disco_folder_class->transfer_offline = groupwise_transfer_offline;
 	  camel_disco_folder_class->transfer_resyncing = groupwise_transfer_resyncing;*/
 	camel_disco_folder_class->cache_message = groupwise_cache_message;
 
@@ -762,7 +824,7 @@ gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	CamelFolder *folder = (CamelFolder *)object ;
 	int i, count = 0 ;
 	guint32 tag ;
-	g_print ("gw_getv\n") ;
+	
 	for (i=0 ; i<args->argc ; i++) {
 		CamelArgGet *arg = &args->argv[i] ;
 
@@ -793,3 +855,28 @@ gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 		
 }
+
+void 
+convert_to_calendar (EGwItem *item, char **str, int *len)
+{
+	EGwItemOrganizer *org = e_gw_item_get_organizer(item) ;
+
+	*str = g_strconcat ("BEGIN:VCALENDAR","\n", NULL) ;
+	*str = g_strconcat (*str, "METHOD:REQUEST", "\n", NULL) ;
+	*str = g_strconcat (*str, "BEGIN:VEVENT", "\n", NULL) ;
+	*str = g_strconcat (*str, "X-GWITEM-TYPE:APPOINTMENT", "\n", NULL) ;
+	*str = g_strconcat (*str, "DTSTART:", e_gw_item_get_start_date (item), "\n", NULL) ;
+	*str = g_strconcat (*str, "SUMMARY:", e_gw_item_get_subject (item), "\n", NULL) ;
+	*str = g_strconcat (*str, "DTSTAMP:", e_gw_item_get_creation_date (item), "\n", NULL) ;
+	*str = g_strconcat (*str, "X-GWMESSAGEID:", e_gw_item_get_id(item), "\n", NULL) ;
+	*str = g_strconcat (*str, "X-GWRECORDID:", e_gw_item_get_id (item), "\n", NULL) ;
+	*str = g_strconcat (*str, "ORGANIZER;CN= ",org->display_name, ";ROLE= CHAIR", "\n", " MAILTO:", org->email, "\n",  NULL) ;
+	*str = g_strconcat (*str, "DESCRIPTION:", e_gw_item_get_message(item), "\n", NULL) ;
+	*str = g_strconcat (*str, "LOCATION:", e_gw_item_get_place (item), "\n", NULL) ;
+	*str = g_strconcat (*str, "UID:", e_gw_item_get_icalid (item), "\n", NULL) ;
+	*str = g_strconcat (*str, "END:VEVENT", "\n", NULL) ;
+	*str = g_strconcat (*str, "END:VCALENDAR","\n", NULL) ;
+
+	*len = strlen (*str) ;
+}
+
