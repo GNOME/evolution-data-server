@@ -1,3 +1,15 @@
+2004-05-27  Sushma Rai <rsushma@novell.com>
+
+	* libedataserver/e-source.[ch] (e_source_new_with_absolute_uri)
+	(e_source_set_absolute_uri)(e_source_peek_absolute_uri):
+	Added new.
+
+	* libedataserver/e-source.c: (e_source_set_group)(e_source_get_uri):
+	Build absolute URI only if source is not having it.
+
+	* libedataserver/e-source.c: (dump_common_to_xml_node): Writing
+	absolute URI to the file.
+
 2004-05-26  Rodney Dawes  <dobey@novell.com>
 
 	* configure.in: Make the ORBit >= 2.9.8 requirement more obvious to
