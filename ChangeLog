@@ -1,3 +1,24 @@
+2003-11-29  Chris Toshok  <toshok@ximian.com>
+
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in: add
+	DataServer_Logging oaf_server.
+
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: same.
+
+	* src/Evolution-DataServer.idl: add a Logging interface.  the
+	events emitted are of type LogEvent.
+
+	* src/Makefile.am (evolution_data_server_SOURCES): add
+	server-logging.[ch]
+
+	* src/server.c (termination_handler): use g_message, not a printf.
+	(setup_logging): new function, register the log domains that'll
+	generate bonobo events.
+	(main): initialize the DataServer::Logging interface.
+
+	* src/server-logging.[ch]: a glib log handler that emits log
+	events via a BonoboEventSource.
+	
 2003-11-27  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libedataserver/e-source.c (impl_finalize): Destroy properties table.

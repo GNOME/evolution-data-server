@@ -56,8 +56,10 @@
 #include <backends/http/e-cal-backend-http.h>
 
 #include "server-interface-check.h"
+#include "server-logging.h"
 
 #define E_DATA_SERVER_INTERFACE_CHECK_OAF_ID "OAFIID:GNOME_Evolution_DataServer_InterfaceCheck"
+#define E_DATA_SERVER_LOGGING_OAF_ID "OAFIID:GNOME_Evolution_DataServer_Logging"
 
 #define E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_CalFactory"
 #define E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_BookFactory"
@@ -88,7 +90,7 @@ termination_handler (gpointer data)
 {
 	if (e_data_cal_factory_get_n_backends (e_data_cal_factory) == 0 &&
 	    e_data_book_factory_get_n_backends (e_data_book_factory) == 0) {
-		fprintf (stderr, "termination_handler(): Terminating the Server.  Have a nice day.\n");
+		g_message ("termination_handler(): Terminating the Server.  Have a nice day.");
 		bonobo_main_quit ();
 	}
 
@@ -191,6 +193,33 @@ setup_cals (void)
 }
 
 
+/* Logging iface.  */
+static gboolean
+setup_logging (void)
+{
+	ServerLogging *logging_iface = server_logging_new ();
+	int result;
+
+	server_logging_register_domain (logging_iface, NULL);
+	server_logging_register_domain (logging_iface, "Gdk");
+	server_logging_register_domain (logging_iface, "Gtk");
+	server_logging_register_domain (logging_iface, "GdkPixbuf");
+	server_logging_register_domain (logging_iface, "GLib");
+	server_logging_register_domain (logging_iface, "GModule");
+	server_logging_register_domain (logging_iface, "GLib-GObject");
+	server_logging_register_domain (logging_iface, "GThread");
+
+	server_logging_register_domain (logging_iface, "evolution-data-server");
+	server_logging_register_domain (logging_iface, "libebookbackend");
+	server_logging_register_domain (logging_iface, "libecalbackendfile");
+
+	result = bonobo_activation_active_server_register (E_DATA_SERVER_LOGGING_OAF_ID,
+							   BONOBO_OBJREF (logging_iface));
+
+	return result == Bonobo_ACTIVATION_REG_SUCCESS;
+}
+
+
 /* Interface check iface.  */
 
 static gboolean
@@ -265,12 +294,17 @@ main (int argc, char **argv)
 		exit (EXIT_FAILURE);
 	}
 
+	if (! setup_logging ()) {
+		g_error (G_STRLOC "Cannot register DataServer::Logging object");
+		exit (EXIT_FAILURE);
+	}
+
 	if (! setup_interface_check ()) {
 		g_error (G_STRLOC "Cannot register DataServer::InterfaceCheck object");
 		exit (EXIT_FAILURE);
 	}
 
-	g_message ("Server up and running\n");
+	g_message ("Server up and running");
 
 	bonobo_main ();
 

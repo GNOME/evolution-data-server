@@ -41,6 +41,8 @@ evolution_data_server_SOURCES = \
 	$(IDL_GENERATED)		\
 	server-interface-check.c	\
 	server-interface-check.h	\
+	server-logging.c		\
+	server-logging.h		\
 	server.c
 
 if ENABLE_LDAP

@@ -16,6 +16,25 @@ module DataServer {
 	interface InterfaceCheck : Bonobo::Unknown {
 		readonly attribute string interfaceVersion;
 	};
+
+
+	interface Logging : Bonobo::EventSource {
+		enum Level {
+			Error,
+			Critical,
+			Warning,
+			Message,
+			Info,
+			Debug
+		};
+
+		struct LogEvent {
+			string domain;
+			Level level;	
+			string message;
+		};
+
+	};
 };
 };
 };

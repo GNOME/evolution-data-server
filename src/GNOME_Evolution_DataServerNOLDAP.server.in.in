@@ -47,4 +47,15 @@
 
 </oaf_server>
 
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_Logging"
+            type="exe"
+            location="@LIBEXECDIR@/evolution-data-server-@VERSION@">
+
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/Evolution/ServerLogging:1.0"/>
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+	</oaf_attribute>
+
+</oaf_server>
+
 </oaf_info>
