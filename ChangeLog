@@ -1,3 +1,7 @@
+2004-10-11  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool numbers and soup requirement
+
 2004-10-11  Hans Petter Jansson  <hpj@ximian.com>
 
 	Probably fixes bugs #67600 and #65996.
