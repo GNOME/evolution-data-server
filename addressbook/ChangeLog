@@ -1,3 +1,163 @@
+2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c 
+	(e_book_backend_ldap_create_contact)
+	(e_book_backend_ldap_modify_contact)
+	(e_book_backend_ldap_remove_contacts)
+	(e_book_backend_ldap_get_contact)
+	(e_book_backend_ldap_get_contact_list)
+	(e_book_backned_ldap_search)
+	(e_book_backend_ldap_autheniticate_user) :
+	Don not try to connect to server when called in offline mode instead
+	return Repository offline error 
+
+2004-12-22 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from e-d-s offline branch
+	
+	* idl/Evolution-DataServer-Addressbook.idl : added notifyAuthRequired
+	api for backends to request password from clients . Added 
+	OfflineUnavailable error code
+
+	* libedata-book/e-data-book.[ch] : added new method
+	e_data_book_report_auth_required
+	
+	* libedata-book/e-book-backend.[ch] : added new method 
+	e_book_backend_notify_auth_required
+
+	* libedata-book/e-book-backend-cache.[ch] : added nw methods
+	e_book_backend_cache_set_populated and 
+	e_book_backend_cache_is_populated to set and get
+	a flag on cache to see whehter it is completely popluated
+	or not. new mehod e_book_backend_cache_search returns
+	the ids matchingg contacts
+
+	* backends/groupwise/e-book-backend-groupwise.c :
+	(build_summary) (update_summary) : removed.
+	(build_cache) (update_cache) : use these instead 
+	
+	* libebook/e-boo-listener.[ch] : new method  
+	 impl_BookListener_report_auth_required;
+	(e_book_listener_convert_status) : added OfflineUnavailable error handling
+	
+	* libebook/e-book-types.h : added error code E_BOOK_ERROR_OFFLINE_UNAVAILABLE
+
+	* libebook/e-book.[ch] :
+	 added new signal AUTH_REQUIRED 
+	(e_book_handle_response) : added handling for AuthRequiredEvent
+	(e_book_idle_auth_required) : new function to emit AUTH_REQUIRED signal 
+	on EBook clients 
+ 
+2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from e-d-s offline branch 
+	* libebook/e-book.c (e_book_handle_response) : 
+	put a break statment in LinkStateEvent case 
+ 
+2004-12-22  Sivaiah Nallagatla <snalalgatla@novell.com>
+
+	Part of merge from e-d-s offline branch
+	
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_class_init) : assingn the corresponding
+        function for new _mode virtual method.
+        (e_book_backend_groupwise_set_mode) : new function to set mode
+	(e_book_backend_groupwise_create_contact) 
+	(e_book_backend_groupwise_remove_contacts) 
+	(e_book_backend_groupwise_modify_contact ) : Added online/offline 
+	handling. When offline return repository offline 
+	error and when online do the stuff as usual 
+	(e_book_backend_groupwise_get_contact) : 
+	(e_book_backend_groupwise_get_contact_list) : 
+	(book_view_thread) : Added online /offline handling
+	When offline read the items from cache and do  not try to contact server
+	When offline read from server as usual 
+	(e_book_backend_groupwise_authenticate_user) : Added online/offline
+	handling. When in offline just return success and when online 
+	reeally auth to server
+	(e_book_backend_groupwise_load_source) : Store the original uri 
+	as it is present in incoming ESource in priv struct. We need it for creating 
+	cache file. Create and cache and summary files here
+	(populate_cache) : function to download the items from server 
+	and to populate cache 
+
+2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from e-d-s offline branch
+	* backends/file/e-book-backend-file.c  
+	(e_book_backend_file_class_init) : assingn the corresponding
+	function for new _mode virtual method. 
+	(e_book_backend_file_set_mode) : new function to set mode
+	. After setting mode it notifies all the clients 
+	about any changes in the connection status and writable status
+	* backends/vcf/e-book-backend-vcf.c : ditto 
+	* backends/ldap/e-book-bakcend-ldap.c : ditto
+  
+2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from e-d-s offline branch
+	* libedata-book/e-book-backend.[ch] : new functions 
+	(e_book_backend_set_mode) : a virtual method 
+	to set online/offline mode on backends
+	(e_book_backend_notify_writable) : A function
+	using which a backend can notify all of its clients
+	about changge in its  writable status 
+	(e_book_backend_notify_connection_status) : A fcuntion using 
+	which a backend can notify all of its clients 
+	about change in the online/offline status 
+
+	* libedata-book/e-data-book.[ch] : new function
+	(e_data_book_report_connection_status) : notifes the corresponding 
+	EBook client about change in connection status via 
+	EbookListener
+
+	* libedata-book/e-data-book-factory.[ch] : new functions
+	(e_data_book_factory_set_backend_mode) : sets the online/offline
+	mode on all the backends created by it 
+	(set_backend_online_status) : sets the online/offline status on a backend
+	(impl_GNOME_Evolution_Addressbook_BookFactory_getBook) : changed this 
+	function  set online/offline mode on the backend after creating it
+	
+	* idl/Evolution-DataServer-Addressbook.idl : Define constants
+	MODEL_LOCAL, MODE_REMOTE etc for online/offline modes
+	Added notifyConnectionStatus method to BookListner interface  
+
+	* libebook/e-book-listner.c : new function
+	(impl_BookListener_report_link_status) : informs Ebook about 
+	change in the online status of the backend it is talking to
+	
+	* libebook/e-book.[ch] :
+	Added a new signal connection_status which gets emitted whenever 
+	there is change in the connection status of the book (because 
+	of the change in the online status of the corresponding backend)
+	(e_book_is_online) : new function to get online status 
+	(e_book_handle_response) : added the handling for LinkStatusEvent 
+	(e_book_idle_connection) : new idle functions which emits
+	connection_status signal on EBook 
+	
+
+2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from e-d-s offline branch
+	* libedata-book/e-book-backend-cache.[ch] : 
+	added new functions e_book_backend_check_contact 
+	and e_book_backend_cache_exists 
+
+
+2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	Part of merge from e-d-s offline branch
+	
+	* libedata-book/Makefile.am : added e-book-backend-cache.c to 
+	SOURCES and e-book-backend-cache.h to HEADERS sections
+	
+2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from e-d-s offline branch
+	* libedata-book/e-book-backend-cache.[ch] : A new class 
+	to cache contacts on local file system to use in offline
+	mode. Based on e-file-cache.
+	
 2004-12-20  Hans Petter Jansson  <hpj@novell.com>
 
 	* libebook/e-book.c (e_book_is_opened): Implement a simple

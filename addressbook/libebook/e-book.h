@@ -61,6 +61,8 @@ struct _EBookClass {
 	 * Signals.
 	 */
 	void (* writable_status) (EBook *book, gboolean writable);
+	void (* connection_status) (EBook *book, gboolean connected);
+	void (* auth_required) (EBook *book);
 	void (* backend_died)    (EBook *book);
 
 	/* Padding for future expansion */
@@ -233,6 +235,8 @@ gboolean    e_book_check_static_capability (EBook       *book,
 					    const char  *cap);
 gboolean    e_book_is_opened               (EBook       *book);
 gboolean    e_book_is_writable             (EBook       *book);
+
+gboolean    e_book_is_online               (EBook       *book);
 
 /* Cancel a pending operation. */
 gboolean    e_book_cancel                  (EBook   *book,

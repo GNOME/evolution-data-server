@@ -476,7 +476,17 @@ e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
 	backend->priv->removed = is_removed;
 }
 
-
+void 
+e_book_backend_set_mode (EBookBackend *backend,
+			 GNOME_Evolution_Addressbook_BookMode  mode)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->set_mode);
+
+        (* E_BOOK_BACKEND_GET_CLASS (backend)->set_mode) (backend,  mode);	
+
+}
 
 GNOME_Evolution_Addressbook_BookChangeItem*
 e_book_backend_change_add_new     (const char *vcard)
@@ -611,6 +621,62 @@ e_book_backend_notify_complete (EBookBackend *backend)
 }
 
 
+/** e_book_backend_notify_writable
+ * @backend: an addressbook backend
+ * @is_writable: flag indicating writable status
+ *
+ * Notifies all backends clients about the current writable state 
+ **/
+void 
+e_book_backend_notify_writable (EBookBackend *backend, gboolean is_writable)
+{
+	EBookBackendPrivate *priv;
+	GList *clients;
+	
+	priv = backend->priv;
+	g_mutex_lock (priv->clients_mutex);
+	
+	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
+		e_data_book_report_writable (E_DATA_BOOK (clients->data), is_writable);
+
+	g_mutex_unlock (priv->clients_mutex);
+
+}
+
+void 
+e_book_backend_notify_connection_status (EBookBackend *backend, gboolean is_online)
+{
+	EBookBackendPrivate *priv;
+	GList *clients;
+	
+	priv = backend->priv;
+	g_mutex_lock (priv->clients_mutex);
+	
+	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
+		e_data_book_report_connection_status (E_DATA_BOOK (clients->data), is_online);
+
+	g_mutex_unlock (priv->clients_mutex);
+
+
+
+
+}
+
+void
+e_book_backend_notify_auth_required (EBookBackend *backend)
+{
+	EBookBackendPrivate *priv;
+	GList *clients;
+	
+	priv = backend->priv;
+	g_mutex_lock (priv->clients_mutex);
+	
+	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
+		e_data_book_report_auth_required (E_DATA_BOOK (clients->data));
+	g_mutex_unlock (priv->clients_mutex);
+
+
+}
 
 static void
 e_book_backend_init (EBookBackend *backend)

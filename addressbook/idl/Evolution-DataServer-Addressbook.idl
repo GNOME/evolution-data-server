@@ -44,7 +44,8 @@ module Addressbook {
 		TLSNotAvailable,
 		NoSuchBook,
 		BookRemoved,
-
+		OfflineUnavailable,
+		
 		/* These can be returned for successful searches, but
 		   indicate the result set was truncated */
 		SearchSizeLimitExceeded,
@@ -57,6 +58,11 @@ module Addressbook {
 		
 		OtherError
 	};
+
+	typedef long BookMode;
+	const BookMode MODE_LOCAL   = 1 << 0;
+	const BookMode MODE_REMOTE  = 1 << 1;
+	const BookMode MODE_ANY     = 0x07;
 
 	/* 
 	 * A book view is a live view of a book.  It's either a view
@@ -156,14 +162,13 @@ module Addressbook {
 		string getStaticCapabilities ();
 
 		string getName ();
-
 		/* cancels the currently running operation, whatever
 		   it is. */
 		CallStatus cancelOperation ();
 	};
 
 	interface BookListener : Bonobo::Unknown {
-
+		
 		oneway void notifyContactCreated       (in long opid, in CallStatus status, in ContactId Id);
 		oneway void notifyContactsRemoved      (in long opid, in CallStatus status);
 		oneway void notifyContactModified      (in long opid, in CallStatus status);
@@ -180,6 +185,8 @@ module Addressbook {
 		oneway void notifySupportedAuthMethods (in long opid, in CallStatus status, in stringlist auth_methods);
 		
 		oneway void notifyWritable (in boolean writable);
+		oneway void notifyConnectionStatus (in boolean is_online);
+		oneway void notifyAuthRequired ();
 	};
 
 	interface BookFactory : Bonobo::Unknown {

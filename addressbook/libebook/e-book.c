@@ -59,6 +59,8 @@ static GObjectClass *parent_class;
 enum {
 	OPEN_PROGRESS,
 	WRITABLE_STATUS,
+	CONNECTION_STATUS,
+	AUTH_REQUIRED,
 	BACKEND_DIED,
 	LAST_SIGNAL
 };
@@ -109,6 +111,7 @@ struct _EBookPrivate {
 
 	/* cached writable status */
 	gboolean writable;
+	gboolean connected;
 
 	EBookListener         *listener;
 	EComponentListener    *comp_listener;
@@ -131,6 +134,8 @@ struct _EBookPrivate {
 	gulong died_signal;
 
 	gint writable_idle_id;
+	gint connection_idle_id;
+	gint auth_idle_id;
 };
 
 
@@ -206,7 +211,6 @@ e_book_clear_op (EBook *book,
 	e_book_op_free (op);
 }
 
-
 
 static gboolean
 do_add_contact (gboolean          sync,
@@ -1883,7 +1887,6 @@ e_book_response_get_book_view (EBook       *book,
 	g_mutex_unlock (book->priv->mutex);
 }
 
-
 static gboolean
 do_get_contacts (gboolean sync,
 		 EBook *book,
@@ -2809,7 +2812,43 @@ e_book_idle_writable (gpointer data)
 	return FALSE;
 }
 
-
+static gboolean 
+e_book_idle_connection (gpointer data)
+{
+	EBook *book = data;
+	gboolean connected;
+
+	g_mutex_lock (book->priv->mutex);
+	connected = book->priv->connected;
+	book->priv->connection_idle_id = 0;
+	g_mutex_unlock (book->priv->mutex);
+
+	g_signal_emit (G_OBJECT (book), e_book_signals [CONNECTION_STATUS], 0, connected);
+
+	g_object_unref (book);
+
+	return FALSE;
+}
+
+static gboolean 
+e_book_idle_auth_required (gpointer data)
+{
+	EBook *book = data;
+	gboolean connected;
+
+	g_mutex_lock (book->priv->mutex);
+	connected = book->priv->connected;
+	book->priv->auth_idle_id = 0;
+	g_mutex_unlock (book->priv->mutex);
+
+	g_signal_emit (G_OBJECT (book), e_book_signals [AUTH_REQUIRED], 0);
+
+	g_object_unref (book);
+
+	return FALSE;
+
+
+}
 
 static void
 e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EBook *book)
@@ -2864,6 +2903,24 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
 		g_mutex_unlock (book->priv->mutex);
 
 		break;
+	case LinkStatusEvent:
+		book->priv->connected = resp->connected;
+		g_mutex_lock (book->priv->mutex);
+		if (book->priv->connection_idle_id == 0) {
+			g_object_ref (book);
+			book->priv->connection_idle_id = g_idle_add (e_book_idle_connection, book);
+		}
+		g_mutex_unlock (book->priv->mutex);
+		break;
+	case AuthRequiredEvent:
+		g_mutex_lock (book->priv->mutex);
+		if (book->priv->auth_idle_id == 0) {
+			g_object_ref (book);
+			book->priv->auth_idle_id = g_idle_add (e_book_idle_auth_required, book);
+		}
+		g_mutex_unlock (book->priv->mutex);
+		break;
+		
 	default:
 		g_error ("EBook: Unknown response code %d!\n",
 			 resp->op);
@@ -3229,7 +3286,16 @@ e_book_is_writable (EBook *book)
 }
 
 
-
+gboolean 
+e_book_is_online (EBook *book)
+{
+	g_return_val_if_fail (book && E_IS_BOOK (book), FALSE);
+
+	return book->priv->connected;
+
+}
+
+
 
 #define SELF_UID_KEY "/apps/evolution/addressbook/self/self_uid"
 gboolean
@@ -3743,6 +3809,25 @@ e_book_class_init (EBookClass *klass)
 			      e_book_marshal_NONE__BOOL,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
+	
+	e_book_signals [CONNECTION_STATUS] =
+		g_signal_new ("connection_status",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EBookClass, connection_status),
+			      NULL, NULL,
+			      e_book_marshal_NONE__BOOL,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_BOOLEAN);
+
+	e_book_signals [AUTH_REQUIRED] =
+		g_signal_new ("auth_required",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EBookClass, auth_required),
+			      NULL, NULL,
+			      e_book_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	e_book_signals [BACKEND_DIED] =
 		g_signal_new ("backend_died",

@@ -43,6 +43,8 @@ struct _EDataBookFactoryPrivate {
 
 	/* Whether the factory has been registered with OAF yet */
 	guint       registered : 1;
+
+	int mode;
 };
 
 /* Signal IDs */
@@ -338,7 +340,7 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 		book = e_data_book_new (backend, source, listener);
 
 		e_book_backend_add_client (backend, book);
-
+		e_book_backend_set_mode (backend, factory->priv->mode);
 		corba_book = bonobo_object_corba_objref (BONOBO_OBJECT (book));
 	}
 	else {
@@ -425,7 +427,27 @@ e_data_book_factory_activate (EDataBookFactory *factory, const char *iid)
 	g_free (tmp_iid);
 	return FALSE;
 }
+static void
+set_backend_online_status (gpointer key, gpointer value, gpointer data)
+{
+	EBookBackend *backend;
+	
+	backend = E_BOOK_BACKEND (value);
+	e_book_backend_set_mode (backend, GPOINTER_TO_INT (data));
+}
 
+void
+e_data_book_factory_set_backend_mode (EDataBookFactory *factory, int mode)
+{
+	EDataBookFactoryPrivate *priv = factory->priv;
+	
+	
+	g_mutex_lock (priv->map_mutex);
+	priv->mode = mode;
+	g_hash_table_foreach (priv->active_server_map, set_backend_online_status, GINT_TO_POINTER (priv->mode));
+	g_mutex_unlock (priv->map_mutex);
+
+}
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
 {

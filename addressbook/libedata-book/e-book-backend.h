@@ -66,6 +66,7 @@ struct _EBookBackendClass {
 	void (*get_supported_fields) (EBookBackend *backend, EDataBook *book, guint32 opid);
 	void (*get_supported_auth_methods) (EBookBackend *backend, EDataBook *book, guint32 opid);
 	GNOME_Evolution_Addressbook_CallStatus (*cancel_operation) (EBookBackend *backend, EDataBook *book);
+	void (*set_mode) (EBookBackend *backend, GNOME_Evolution_Addressbook_BookMode  mode);
 
 	/* Notification signals */
 	void (* last_client_gone) (EBookBackend *backend);
@@ -148,6 +149,8 @@ void        e_book_backend_get_supported_auth_methods (EBookBackend           *b
 						       guint32                 opid);
 GNOME_Evolution_Addressbook_CallStatus e_book_backend_cancel_operation (EBookBackend             *backend,
 									EDataBook                *book);
+void        e_book_backend_set_mode (EBookBackend           *backend,
+				     GNOME_Evolution_Addressbook_BookMode                mode);
 
 void        e_book_backend_start_book_view            (EBookBackend           *backend,
 						       EDataBookView          *view);
@@ -167,8 +170,9 @@ void        e_book_backend_notify_update              (EBookBackend           *b
 void        e_book_backend_notify_remove              (EBookBackend           *backend,
 						       const char             *id);
 void        e_book_backend_notify_complete            (EBookBackend           *backend);
-
-
+void        e_book_backend_notify_writable            (EBookBackend *backend, gboolean is_writable);
+void        e_book_backend_notify_connection_status   (EBookBackend *backend, gboolean is_online);
+void        e_book_backend_notify_auth_required       (EBookBackend *backend);    
 GType       e_book_backend_get_type                 (void);
 
 

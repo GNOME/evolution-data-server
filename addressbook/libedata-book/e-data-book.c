@@ -242,6 +242,7 @@ impl_GNOME_Evolution_Addressbook_Book_cancelOperation (PortableServer_Servant se
 	return e_book_backend_cancel_operation (e_data_book_get_backend (book), book);
 }
 
+
 /**
  * e_data_book_get_backend:
  */
@@ -708,6 +709,46 @@ e_data_book_report_writable (EDataBook                           *book,
 	CORBA_exception_free (&ev);
 }
 
+void 
+e_data_book_report_connection_status (EDataBook   *book,
+				      gboolean    is_online)
+{
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+
+	GNOME_Evolution_Addressbook_BookListener_notifyConnectionStatus (
+		book->priv->listener, (CORBA_boolean) is_online, &ev);
+	
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_warning ("e_data_book_report_connection_status: Exception "
+			   "responding to BookListener!\n");
+	}
+
+	CORBA_exception_free (&ev);
+
+}
+
+void 
+e_data_book_report_auth_required (EDataBook *book)
+{
+
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+	
+	GNOME_Evolution_Addressbook_BookListener_notifyAuthRequired (
+			 book->priv->listener,  &ev);
+	
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_warning ("e_data_book_report_auth_required: Exception "
+			   "responding to BookListener!\n");
+	}
+
+	CORBA_exception_free (&ev);
+
+}
+				      
 static void
 e_data_book_construct (EDataBook                *book,
 		       EBookBackend             *backend,
@@ -813,6 +854,7 @@ e_data_book_class_init (EDataBookClass *klass)
 	epv->getBookView             = impl_GNOME_Evolution_Addressbook_Book_getBookView;
 	epv->getChanges              = impl_GNOME_Evolution_Addressbook_Book_getChanges;
 	epv->cancelOperation         = impl_GNOME_Evolution_Addressbook_Book_cancelOperation;
+	
 }
 
 static void

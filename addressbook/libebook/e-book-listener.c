@@ -56,6 +56,8 @@ e_book_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatus sta
 		return E_BOOK_ERROR_TLS_NOT_AVAILABLE;
 	case GNOME_Evolution_Addressbook_NoSuchBook:
 		return E_BOOK_ERROR_NO_SUCH_BOOK;
+	case GNOME_Evolution_Addressbook_OfflineUnavailable:
+		return E_BOOK_ERROR_OFFLINE_UNAVAILABLE;
 	case GNOME_Evolution_Addressbook_OtherError:
 	default:
 		return E_BOOK_ERROR_OTHER_ERROR;
@@ -355,6 +357,31 @@ impl_BookListener_report_writable (PortableServer_Servant servant,
 }
 
 static void
+impl_BookListener_report_link_status (PortableServer_Servant servant,
+				   const CORBA_boolean is_online,
+				   CORBA_Environment *ev)
+{
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
+	EBookListenerResponse response;
+
+	response.op       = LinkStatusEvent;
+	response.connected = is_online;
+	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
+}
+
+static void
+impl_BookListener_report_auth_required (PortableServer_Servant servant,
+				   const CORBA_boolean is_online,
+				   CORBA_Environment *ev)
+{
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
+	EBookListenerResponse response;
+
+	response.op       = AuthRequiredEvent;
+	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
+}
+
+static void
 impl_BookListener_respond_progress (PortableServer_Servant servant,
 				    const CORBA_char * message,
 				    const CORBA_short percent,
@@ -429,6 +456,8 @@ e_book_listener_class_init (EBookListenerClass *klass)
 	epv->notifyViewRequested        = impl_BookListener_respond_get_view;
 	epv->notifyChangesRequested     = impl_BookListener_respond_get_changes;
 	epv->notifyWritable             = impl_BookListener_report_writable;
+	epv->notifyConnectionStatus     = impl_BookListener_report_link_status;
+	epv->notifyAuthRequired         = impl_BookListener_report_auth_required;
 }
 
 BONOBO_TYPE_FUNC_FULL (

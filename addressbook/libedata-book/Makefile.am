@@ -37,6 +37,7 @@ libedata_book_1_2_la_SOURCES =				\
 	e-book-backend-factory.c			\
 	e-book-backend-sexp.c				\
 	e-book-backend-summary.c			\
+	e-book-backend-cache.c                          \
 	e-book-backend-sync.c				\
 	e-book-backend.c				\
 	e-data-book-factory.c				\
@@ -64,7 +65,8 @@ libedata_bookinclude_HEADERS =				\
 	e-data-book-factory.h				\
 	e-data-book-types.h				\
 	e-data-book-view.h				\
-	e-data-book.h
+	e-data-book.h                                   \
+	e-book-backend-cache.h 								
 
 %-$(BASE_VERSION).pc: %.pc
 	 cp $< $@

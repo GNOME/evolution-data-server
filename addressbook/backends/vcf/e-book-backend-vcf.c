@@ -642,6 +642,15 @@ e_book_backend_vcf_cancel_operation (EBookBackend *backend, EDataBook *book)
 	return GNOME_Evolution_Addressbook_CouldNotCancel;
 }
 
+static void 
+e_book_backend_vcf_set_mode (EBookBackend *backend, int mode)
+{
+	if (e_book_backend_is_loaded (backend)) {
+		e_book_backend_notify_writable (backend, TRUE);
+		e_book_backend_notify_connection_status (backend, TRUE);
+	}
+}
+
 static gboolean
 e_book_backend_vcf_construct (EBookBackendVCF *backend)
 {
@@ -728,7 +737,7 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	backend_class->start_book_view         = e_book_backend_vcf_start_book_view;
 	backend_class->stop_book_view          = e_book_backend_vcf_stop_book_view;
 	backend_class->cancel_operation        = e_book_backend_vcf_cancel_operation;
-
+	backend_class->set_mode                = e_book_backend_vcf_set_mode;
 	sync_class->create_contact_sync        = e_book_backend_vcf_create_contact;
 	sync_class->remove_contacts_sync       = e_book_backend_vcf_remove_contacts;
 	sync_class->modify_contact_sync        = e_book_backend_vcf_modify_contact;
