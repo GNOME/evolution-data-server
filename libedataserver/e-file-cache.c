@@ -189,6 +189,64 @@ e_file_cache_new (const char *filename)
 	return cache;
 }
 
+/**
+ * e_file_cache_remove:
+ * @cache: A #EFileCache object.
+ *
+ * Remove the cache from disk.
+ */
+gboolean
+e_file_cache_remove (EFileCache *cache)
+{
+	EFileCachePrivate *priv;
+
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
+
+	priv = cache->priv;
+
+	if (priv->filename) {
+		char *dirname, *full_path;
+		const char *fname;
+		GDir *dir;
+		gboolean success;
+
+		/* remove all files in the directory */
+		dirname = g_path_get_dirname (priv->filename);
+		dir = g_dir_open (dirname, 0, NULL);
+		if (dir) {
+			while ((fname = g_dir_read_name (dir))) {
+				full_path = g_build_filename (dirname, fname, NULL);
+				if (unlink (full_path) != 0) {
+					g_free (full_path);
+					g_free (dirname);
+					g_dir_close (dir);
+
+					return FALSE;
+				}
+
+				g_free (full_path);
+			}
+
+			g_dir_close (dir);
+		}
+
+		/* remove the directory itself */
+		success = rmdir (dirname) == 0;
+
+		/* free all memory */
+		g_free (dirname);
+		g_free (priv->filename);
+		priv->filename = NULL;
+
+		e_xmlhash_destroy (priv->xml_hash);
+		priv->xml_hash = NULL;
+
+		return success;
+	}
+
+	return TRUE;
+}
+
 typedef struct {
 	const char *key;
 	gboolean found;
