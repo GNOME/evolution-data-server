@@ -63,7 +63,7 @@ struct _ECalPrivate {
 	 */
 	ESource *source;
 	char *uri;
-	CalObjType type;
+	ECalSourceType type;
 	
 	ECalendarOp *current_op;
 
@@ -180,6 +180,23 @@ cal_mode_enum_get_type (void)
 	}
 
 	return cal_mode_enum_type;
+}
+
+static GNOME_Evolution_Calendar_CalObjType
+convert_type (ECalSourceType type) 
+{
+	switch (type){
+	case E_CAL_SOURCE_TYPE_EVENT:
+		return GNOME_Evolution_Calendar_TYPE_EVENT;
+	case E_CAL_SOURCE_TYPE_TODO:
+		return GNOME_Evolution_Calendar_TYPE_TODO;
+	case E_CAL_SOURCE_TYPE_JOURNAL:
+		return GNOME_Evolution_Calendar_TYPE_JOURNAL;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	return GNOME_Evolution_Calendar_TYPE_ANY;
 }
 
 /* EBookOp calls */
@@ -1188,7 +1205,7 @@ e_cal_get_type (void)
 
 
 static gboolean
-fetch_corba_cal (ECal *ecal, ESource *source, CalObjType type)
+fetch_corba_cal (ECal *ecal, ESource *source, ECalSourceType type)
 {
 	ECalPrivate *priv;
 	GList *f;
@@ -1224,7 +1241,7 @@ fetch_corba_cal (ECal *ecal, ESource *source, CalObjType type)
 
 		CORBA_exception_init (&ev);
 
-		cal = GNOME_Evolution_Calendar_CalFactory_getCal (f->data, source_xml, priv->type,
+		cal = GNOME_Evolution_Calendar_CalFactory_getCal (f->data, source_xml, convert_type (priv->type),
 								  BONOBO_OBJREF (priv->listener), &ev);
 		if (BONOBO_EX (&ev))
 			continue;
@@ -1252,7 +1269,7 @@ fetch_corba_cal (ECal *ecal, ESource *source, CalObjType type)
  * not be constructed because it could not contact the calendar server.
  **/
 ECal *
-e_cal_new (ESource *source, CalObjType type)
+e_cal_new (ESource *source, ECalSourceType type)
 {
 	ECal *ecal;
 
@@ -1279,7 +1296,7 @@ e_cal_new (ESource *source, CalObjType type)
  * not be constructed because it could not contact the calendar server.
  **/
 ECal *
-e_cal_new_from_uri (const gchar *uri, CalObjType type)
+e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 {
 	ESourceGroup *group;
 	ESource *source;
@@ -2581,8 +2598,7 @@ compare_comp_instance (gconstpointer a, gconstpointer b)
  * it gets passed if it intends to keep it around.
  **/
 void
-e_cal_generate_instances (ECal *ecal, CalObjType type,
-			  time_t start, time_t end,
+e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 			  ECalRecurInstanceFn cb, gpointer cb_data)
 {
 	ECalPrivate *priv;

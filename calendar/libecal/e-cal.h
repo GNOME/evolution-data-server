@@ -45,6 +45,13 @@ typedef struct _ECal ECal;
 typedef struct _ECalClass ECalClass;
 typedef struct _ECalPrivate ECalPrivate;
 
+typedef enum {
+	E_CAL_SOURCE_TYPE_EVENT,
+	E_CAL_SOURCE_TYPE_TODO,
+	E_CAL_SOURCE_TYPE_JOURNAL,
+	E_CAL_SOURCE_TYPE_LAST
+} ECalSourceType;
+
 /* Set mode status for the e_cal_set_mode function */
 typedef enum {
 	E_CAL_SET_MODE_SUCCESS,
@@ -93,8 +100,8 @@ GType e_cal_open_status_enum_get_type (void);
 GType e_cal_set_mode_status_enum_get_type (void);
 GType cal_mode_enum_get_type (void);
 
-ECal *e_cal_new (ESource *source, CalObjType type);
-ECal *e_cal_new_from_uri (const gchar *uri, CalObjType type);
+ECal *e_cal_new (ESource *source, ECalSourceType type);
+ECal *e_cal_new_from_uri (const gchar *uri, ECalSourceType type);
 
 void e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data);
 
@@ -140,8 +147,7 @@ void e_cal_free_object_list (GList *objects);
 gboolean e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end, 
 			      GList **freebusy, GError **error);
 
-void e_cal_generate_instances (ECal *ecal, CalObjType type,
-			       time_t start, time_t end,
+void e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 			       ECalRecurInstanceFn cb, gpointer cb_data);
 
 GSList *e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end);

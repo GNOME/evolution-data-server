@@ -1,5 +1,21 @@
 2003-12-21  JP Rosevear <jpr@ximian.com>
 
+	* libecal/e-cal.h: update protos
+
+	* libecal/e-cal.c: use ECalSourceType
+	(convert_type): convert and ECalSourceType to a corba equivalent
+	(fetch_corba_cal): use ECalSourceType
+	(e_cal_new): ditto
+	(e_cal_new_from_uri): ditto
+	(e_cal_generate_instances): does not need a type arg
+
+	* libecal/e-cal-util.h: remove CalObjType
+
+	* libecal/client-test.c (create_client): use ECalSourceType
+	(main): ditto
+
+2003-12-21  JP Rosevear <jpr@ximian.com>
+
 	* backends/file/e-cal-backend-file.c (open_cal): set the uri
 	before scanning the vcalendar because we may have to fix duplicate
 	UIDs (and hence save the calendar)

@@ -138,7 +138,7 @@ client_destroy_cb (gpointer data, GObject *object)
 
 /* Creates a calendar client and tries to load the specified URI into it */
 static void
-create_client (ECal **client, const gchar *uri, CalObjType type, gboolean only_if_exists)
+create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean only_if_exists)
 {
 	ECalView *query;
 	GError *error = NULL;
@@ -196,7 +196,7 @@ main (int argc, char **argv)
 #if 0
 	source = e_source_new ("test-source", "file:///home/gnome24-evolution-new-calendar/evolution/local/Calendar");
 #endif
-	create_client (&client1, "file:///home/hpj/.evolution/calendar/local/OnThisComputer/Pakk", CALOBJ_TYPE_EVENT, FALSE);
+	create_client (&client1, "file:///home/hpj/.evolution/calendar/local/OnThisComputer/Pakk", E_CAL_SOURCE_TYPE_EVENT, FALSE);
 //	create_client (&client2, "file:///tmp/tasks", TRUE);
 
 	bonobo_main ();
