@@ -387,6 +387,7 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         const char *item_type;
         const char *classification;
         const char *accept_level;
+        char *dtstring;
         ECalComponent *comp;
         ECalComponentDateTime dt;
         struct icaltimetype t;
@@ -424,7 +425,7 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
                 g_free (comp);
                 return NULL;
         }
-        char *dtstring;
+
         dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
         t = icaltime_from_string (dtstring);
         g_free (dtstring);
