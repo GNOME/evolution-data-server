@@ -1,3 +1,16 @@
+2004-07-13  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes #58639 ]
+	
+	* libebook/e-book-listener.c (impl_BookListener_respond_get_view):
+	no need to wrap the g_signal_emit with dup_ref/release_unref.  the
+	construct for EBookView does a dup_ref of its own.
+
+	* libedata-book/e-data-book-view.c
+	(e_data_book_view_notify_update): don't call
+	e_data_book_view_notify_remove when the pending_mutex is already
+	called.  call notify_remove directly.
+	
 2004-07-09  Chris Toshok  <toshok@ximian.com>
 
 	[ part of fix for #56520 ]

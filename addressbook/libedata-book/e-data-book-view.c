@@ -256,7 +256,7 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 		g_free (vcard);
 	} else {
 		if (currently_in_view)
-			e_data_book_view_notify_remove (book_view, id);
+			notify_remove (book_view, id);
 		/* else nothing; we're removing a card that wasn't there */
 	}
 

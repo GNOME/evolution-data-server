@@ -181,11 +181,9 @@ impl_BookListener_respond_get_view (PortableServer_Servant servant,
 	response.op        = GetBookViewResponse;
 	response.opid      = opid;
 	response.status    = e_book_listener_convert_status (status);
-	response.book_view = bonobo_object_dup_ref (book_view, ev);
+	response.book_view = book_view;
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
-
-	bonobo_object_release_unref (response.book_view, ev);
 }
 
 static void
