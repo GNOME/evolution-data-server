@@ -1,3 +1,9 @@
+2005-01-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-transport.c
+	  (groupwise_send_to): fixed the problem of the mail
+	   message (body) being treated as an attachment
+
 2005-01-07  JP Rosevear  <jpr@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.c

@@ -134,45 +134,46 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 
 static gboolean
-groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
-		  CamelAddress *from, CamelAddress *recipients,
-		  CamelException *ex)
+groupwise_send_to (CamelTransport *transport, 
+		   CamelMimeMessage *message,
+		   CamelAddress *from, 
+		   CamelAddress *recipients,
+		   CamelException *ex)
 {
 	CamelService *service = CAMEL_SERVICE(transport) ;
 
 	CamelStore *store =  NULL ;
-	
+
 	CamelGroupwiseStore *groupwise_store = NULL;
 	CamelGroupwiseStorePrivate *priv = NULL;
-	
-	CamelStreamMem *content ;
-	
+
+
 	EGwItem *item ;
 	EGwConnection *cnc = NULL;
 	EGwConnectionStatus status ;
 	EGwItemRecipient *recipient ;
-	
+	EGwItemOrganizer *org = g_new0 (EGwItemOrganizer, 1) ;
+
+	char *display_name = NULL, *email = NULL ;
+
 	int total_add ;
 
-	CamelDataWrapper *dw ;
-	CamelMimePart *mime_part = CAMEL_MIME_PART(message) ;
-	
-	guint part_count ;
+	CamelMultipart *mp ;
+
 	GSList *sent_item_list = NULL, *recipient_list = NULL, *attach_list = NULL ;
 	char *url = NULL ;
 	int i ;
-
+	/*Egroupwise item*/
 	item = e_gw_item_new_empty () ;
-	url = camel_url_to_string (service->url,
-			(CAMEL_URL_HIDE_PASSWORD|
-			 CAMEL_URL_HIDE_PARAMS|
-			 CAMEL_URL_HIDE_AUTH) );
-	
-	camel_operation_start (NULL, _("Sending message")) ;
 
-	/* Get a pointer to the store and the CNC. The idea is to get the session information,
-	 * so that we neednt make a connection again.
-	 */
+	url = camel_url_to_string (service->url,
+			           (CAMEL_URL_HIDE_PASSWORD |
+				    CAMEL_URL_HIDE_PARAMS   |
+				    CAMEL_URL_HIDE_AUTH) ) ;
+
+	camel_operation_start (NULL, _("Sending Message") ) ;
+
+	/*camel groupwise store and cnc*/
 	store = camel_session_get_store (service->session, url, ex ) ;
 	if (!store) {
 		g_print ("ERROR: Could not get a pointer to the store") ;
@@ -194,93 +195,113 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	for (i=0 ; i<total_add ; i++) {
 		const char *name = NULL, *addr = NULL ;
 		if(camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
-			
+
 			recipient = g_new0 (EGwItemRecipient, 1);
-		
+
 			recipient->email = g_strdup (addr) ;
 			recipient->display_name = g_strdup (name) ;
 			recipient->type = E_GW_ITEM_RECIPIENT_TO;
 			recipient->status = E_GW_ITEM_STAT_NONE ;
-			recipient_list= g_slist_append (recipient_list, recipient) ;	
+			recipient_list= g_slist_append (recipient_list, recipient) ;
 		}
 	}
 
-	/*
-	 * Populate the EGwItem structure
-	 */
-
 	/** Get the mime parts from CamelMimemessge **/
-	dw = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
-	if(!dw) {
-		g_print ("ERROR: Could not get Datawrapper") ;
+	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
+	if(!mp) {
+		g_print ("ERROR: Could not get content object") ;
 		camel_operation_end (NULL) ;
 		return FALSE ;
 	}
 
-	/*Content*/
-	if (CAMEL_IS_MULTIPART (dw)) {
-		part_count = camel_multipart_get_number (CAMEL_MULTIPART(dw)) ;
-		g_print ("Multipart message : %d\n",part_count) ;
-		for (i=0 ; i<part_count ; i++) {
-			CamelContentType *type  ;
-			CamelMimePart *part ;
-			CamelStreamMem *part_content = (CamelStreamMem *)camel_stream_mem_new();
-			EGwItemAttachment *attachment = g_new0 (EGwItemAttachment, 1) ;
-			const char *disposition, *filename ; 
-			char *buffer = NULL ;
+	if (CAMEL_IS_MULTIPART (mp)) {
+		/*contains multiple parts*/
+		guint part_count ;
 		
-			part = camel_multipart_get_part (CAMEL_MULTIPART(dw), i) ;
+		part_count = camel_multipart_get_number (mp) ;
+		for ( i=0 ; i<part_count ; i++) {
+			CamelContentType *type ;
+			CamelMimePart *part ;
+			CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new () ;
+			CamelDataWrapper *dw = camel_data_wrapper_new () ;
+			EGwItemAttachment *attachment = g_new0 (EGwItemAttachment, 1) ;
+			const char *disposition, *filename ;
+			char *buffer = NULL ;
+			char *mime_type = NULL ;
+			char *temp_buf = NULL ;
+			int len ;
 
-			type = camel_mime_part_get_content_type(part) ;
-			filename = camel_mime_part_get_filename (part) ;
-			disposition = camel_mime_part_get_disposition (part) ;
+			part = camel_multipart_get_part (mp, i) ;
+			dw = camel_medium_get_content_object (CAMEL_MEDIUM (part)) ;
 			
-			camel_data_wrapper_decode_to_stream(CAMEL_DATA_WRAPPER(part), (CamelStream *)part_content);
-			buffer = g_malloc0 (part_content->buffer->len+1) ;
-			buffer = memcpy (buffer, part_content->buffer->data, part_content->buffer->len) ;
-			g_print ("buffer: %s\n", part_content->buffer->data) ;
-			attachment->data = soup_base64_encode (buffer, part_content->buffer->len) ;
 
-			attachment->name = g_strdup (filename) ;
-			attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype) ;
-			attachment->size = strlen (attachment->data) ;
- 	
-			attach_list = g_slist_append (attach_list, attachment) ;	
+			camel_data_wrapper_write_to_stream(dw, (CamelStream *)content) ;
+			buffer = g_malloc0 (content->buffer->len+1) ;
+			g_print (">>>>>> length:%d |||\n", content->buffer->len) ;
+			buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
+			g_print (">>>>>> buffer: \n %s\n", buffer) ;
+			len = content->buffer->len ;
 
+			filename = camel_mime_part_get_filename (part) ;
+			if (!filename) {
+				/*the message*/
+				e_gw_item_set_message (item, buffer) ;
+			} else {
+				mime_type = camel_data_wrapper_get_mime_type (dw) ;
+				g_print (">>>>mime:%s |||\n", mime_type) ;
+				type = camel_mime_part_get_content_type(part) ;
+				disposition = camel_mime_part_get_disposition (part) ;
+				attachment->data = g_malloc0 (content->buffer->len+1) ;
+				attachment->data = memcpy (attachment->data, content->buffer->data, content->buffer->len) ;
+				attachment->name = g_strdup (filename) ;
+				attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype) ;
+				g_print (">>>>>> %s/%s <<<<<< \n", type->type, type->subtype) ;
+				attachment->size = content->buffer->len ;
+				
+				attach_list = g_slist_append (attach_list, attachment) ;
+				g_free ((char *)disposition) ;
+				g_free ((char *)mime_type) ;
+				camel_content_type_unref (type) ;
+			}
 			g_free (buffer) ;
 			g_free ((char *)filename) ;
-			g_free ((char *)disposition) ;
-			camel_content_type_unref (type) ;
-			camel_object_unref (part_content) ;
-		}
+			camel_object_unref (content) ;
 
+		} /*end of for*/
+		
 	} else {
-		CamelContentType *type  ;
-		CamelStreamMem *part_content = (CamelStreamMem *)camel_stream_mem_new();
-		int count ;
+		/*only message*/
+		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new () ;
+		CamelDataWrapper *dw = camel_data_wrapper_new () ;
 		char *buffer = NULL ;
-		
-		type = camel_data_wrapper_get_mime_type_field(dw) ;
-		g_print ("Does not contain multiple parts : %s/%s\n",type->type,type->subtype) ;
-		
-		count = camel_data_wrapper_decode_to_stream(dw, (CamelStream *)part_content);
-		/*the actual message*/
-		buffer = g_malloc0 (part_content->buffer->len+1) ;
-		buffer = memcpy (buffer, part_content->buffer->data, part_content->buffer->len) ;
-		e_gw_item_set_message (item, buffer);
+			
+		dw = camel_medium_get_content_object (CAMEL_MEDIUM (mp)) ;
+		camel_data_wrapper_write_to_stream(dw, (CamelStream *)content) ;
+		buffer = g_malloc0 (content->buffer->len+1) ;
+		g_print (">>>>>> length:%d |||\n", content->buffer->len) ;
+		buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
+				
+		e_gw_item_set_message (item, buffer) ;
 		
 		g_free (buffer) ;
-		camel_content_type_unref (type) ;
-		camel_object_unref (part_content) ;
+		camel_object_unref (content) ;
 	}
 
+	/*Populate EGwItem*/
+	/*From Address*/
+	camel_internet_address_get ((CamelInternetAddress *)from, 0 , &display_name, &email) ;
+	g_print ("from : %s : %s\n", display_name,email) ;
+	org->display_name = g_strdup (display_name) ;
+	org->email = g_strdup (email) ;
+	e_gw_item_set_organizer (item, org) ;
 	/*recipient list*/
 	e_gw_item_set_recipient_list (item, recipient_list) ;
 	/*Item type is mail*/
 	e_gw_item_set_item_type (item, E_GW_ITEM_TYPE_MAIL) ;
 	/*subject*/
 	e_gw_item_set_subject (item, camel_mime_message_get_subject(message)) ;
-
+	/*attachmets*/
+	e_gw_item_set_attach_id_list (item, attach_list) ;
 
 	/*Send item*/
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list) ;
@@ -289,17 +310,14 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		camel_operation_end (NULL) ;
 		return FALSE ;
 	}
-	
+
 	e_gw_item_set_recipient_list (item, NULL) ;
-	
+
 	g_object_unref (item) ;
 
-	camel_object_unref(content) ;
-	
 	camel_operation_end (NULL) ;
 
-
 	return TRUE;
-}
 
+}
 
