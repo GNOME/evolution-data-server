@@ -1,3 +1,9 @@
+2004-09-24  JP Rosevear  <jpr@novell.com>
+
+	Fixes #64955, Vincent Noel <vnoel@cox.net>
+	
+	* libecal/e-cal.c (e_cal_get_alarms_in_range): fix c99-ism
+	
 2004-09-23  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #59904
