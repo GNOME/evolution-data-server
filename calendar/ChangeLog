@@ -1,3 +1,13 @@
+2004-05-17  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #51412
+
+	* backends/file/e-cal-backend-file.c (remove_instance): re-add the
+	modified objects to the top-level icalcomponent after removing
+	instances.
+	(e_cal_backend_file_remove_object): manage the CALOBJ_MOD_THIS case
+	for an event with no RECURRENCE-ID.
+
 2004-05-14  Rodrigo Moya <rodrigo@ximian.com>
 
 	Fixes #56870

@@ -1856,6 +1856,8 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 	/* add the modified object to the beginning of the list, 
 	   so that it's always before any detached instance we
 	   might have */
+	icalcomponent_add_component (cbfile->priv->icalcomp,
+				     e_cal_component_get_icalcomponent (obj_data->full_object));
 	cbfile->priv->comp = g_list_prepend (cbfile->priv->comp, obj_data->full_object);
 }
 
@@ -1936,9 +1938,9 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		break;
 	case CALOBJ_MOD_THIS :
 		if (!rid || !*rid)
-			return GNOME_Evolution_Calendar_ObjectNotFound;
-
-		remove_instance (cbfile, obj_data, rid);
+			remove_component (cbfile, comp);
+		else
+			remove_instance (cbfile, obj_data, rid);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
