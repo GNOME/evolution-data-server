@@ -45,6 +45,7 @@ struct _EBookBackendGroupwisePrivate {
 	char *summary_file_name;
 	EBookBackendSummary *summary;
 	gboolean is_summary_ready;
+	char *use_ssl;
 };
 
 #define ELEMENT_TYPE_SIMPLE 0x01
@@ -1993,16 +1994,24 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	EBookBackendGroupwisePrivate *priv;
 	char *id;
 	int status;
+	char *http_uri;
 	gboolean is_writable;
+	
 
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
   
 	priv->cnc = e_gw_connection_new (priv->uri, user, passwd);
-	if (priv->cnc == NULL) {
+	if (!E_IS_GW_CONNECTION(priv->cnc) && priv->use_ssl && g_str_equal (priv->use_ssl, "when-possible")) {
+		http_uri = g_strconcat ("http://", priv->uri + 8, NULL);
+		priv->cnc = e_gw_connection_new (http_uri, user, passwd);
+		g_free (http_uri);
+	}
+	if (!E_IS_GW_CONNECTION(priv->cnc)) {
 		e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_AuthenticationFailed);
 		return;
 	}
+	
 	id = NULL;
 	is_writable = FALSE;
 	status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
@@ -2087,6 +2096,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
    	const char *port;
 	EUri *parsed_uri;
 	int i;
+	const char *use_ssl;
 
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
@@ -2106,8 +2116,12 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	port = e_source_get_property (source, "port");
 	if (port == NULL)
 		port = "7181";
-       
-	priv->uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
+	use_ssl = e_source_get_property (source, "use_ssl");
+	if (use_ssl) 
+		priv->uri = g_strconcat ("https://", parsed_uri->host,":", port, "/soap", NULL );
+	else 
+		priv->uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
+	priv->use_ssl = g_strdup (use_ssl);
 	priv->only_if_exists = only_if_exists;
 	
 	
@@ -2224,6 +2238,9 @@ e_book_backend_groupwise_dispose (GObject *object)
 			g_object_unref (bgw->priv->summary);
 			bgw->priv->summary = NULL;
 		}
+		if (bgw->priv->use_ssl) {
+			g_free (bgw->priv->use_ssl);
+		}
 		g_free (bgw->priv);
 		bgw->priv = NULL;
 	}
@@ -2274,7 +2291,8 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->is_writable = TRUE;
 	priv->is_summary_ready = FALSE;
-	backend->priv = priv;
+	priv->use_ssl = NULL;
+       	backend->priv = priv;
 	
 }
 
