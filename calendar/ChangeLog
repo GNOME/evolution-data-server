@@ -1,3 +1,9 @@
+2004-08-24  Chenthill Palanisamy <pchenthill@novell.com>
+         
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(receive_object): update the client view when a meeting
+	is accepted or declined.
+
 2004-08-16  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes bug #62857

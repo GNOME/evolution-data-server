@@ -1056,7 +1056,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			g_object_unref (comp);
 			return GNOME_Evolution_Calendar_OtherError;
 		}
-
+	
 		if (uid_list && (g_slist_length (uid_list) == 1)) {
 			server_uid = (char *) uid_list->data;
 			sanitize_component (backend, comp, server_uid);	
@@ -1295,9 +1295,32 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 			
 			e_cal_component_get_uid (comp, (const char **) &uid);
 			e_cal_backend_cache_remove_component (priv->cache, uid, NULL);
+			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), uid, e_cal_component_get_as_string (comp));
 		}
-		else
+		else {
+			char *cache_comp = NULL, *modif_comp, *temp;
+			ECalComponent *cache_component;
+			
+			e_cal_component_get_uid (comp, &temp);	
+			cache_component = e_cal_backend_cache_get_component (priv->cache, temp, NULL);
+			
+			if (cache_component)
+				cache_comp = e_cal_component_get_as_string (cache_component);
+
 			e_cal_backend_cache_put_component (priv->cache, comp);	
+			modif_comp = e_cal_component_get_as_string (comp);
+			
+			if (cache_comp)
+				e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp, modif_comp);
+			else
+				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), e_cal_component_get_as_string (comp));
+				
+			g_free (cache_comp);
+			g_free (modif_comp);
+			g_free (temp);
+			g_free (cache_component);
+		}
+		
 		return GNOME_Evolution_Calendar_Success;
 	}
 
