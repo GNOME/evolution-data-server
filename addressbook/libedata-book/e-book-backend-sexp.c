@@ -37,6 +37,65 @@ struct _SearchContext {
 };
 
 static gboolean
+compare_im (EContact *contact, const char *str,
+	    char *(*compare)(const char*, const char*),
+	    EContactField im_field)
+{
+	GList    *aims, *l;
+	gboolean  found_it = FALSE;
+
+	aims = e_contact_get (contact, im_field);
+
+	for (l = aims; l != NULL; l = l->next) {
+		char *im = (char *) l->data;
+
+		g_warning ("Comparing %s and %s", str, im);
+		
+		if (im && compare (im, str))
+			found_it = TRUE;
+
+		g_free (im);
+	}
+
+	return found_it;
+}
+
+static gboolean
+compare_im_aim (EContact *contact, const char *str,
+		char *(*compare)(const char*, const char*))
+{
+	return compare_im (contact, str, compare, E_CONTACT_IM_AIM);
+}
+
+static gboolean
+compare_im_msn (EContact *contact, const char *str,
+		char *(*compare)(const char*, const char*))
+{
+	return compare_im (contact, str, compare, E_CONTACT_IM_MSN);
+}
+
+static gboolean
+compare_im_icq (EContact *contact, const char *str,
+		char *(*compare)(const char*, const char*))
+{
+	return compare_im (contact, str, compare, E_CONTACT_IM_ICQ);
+}
+
+static gboolean
+compare_im_yahoo (EContact *contact, const char *str,
+		  char *(*compare)(const char*, const char*))
+{
+	return compare_im (contact, str, compare, E_CONTACT_IM_YAHOO);
+}
+
+static gboolean
+compare_im_jabber (EContact *contact, const char *str,
+		   char *(*compare)(const char*, const char*))
+{
+	return compare_im (contact, str, compare, E_CONTACT_IM_JABBER);
+}
+
+static gboolean
 compare_email (EContact *contact, const char *str,
 	       char *(*compare)(const char*, const char*))
 {
@@ -151,10 +210,15 @@ static struct prop_info {
 	NORMAL_PROP ( E_CONTACT_SPOUSE, "spouse" ),
 	NORMAL_PROP ( E_CONTACT_NOTE, "note"),
 	NORMAL_PROP ( E_CONTACT_UID, "id"),
-	LIST_PROP ( "email", compare_email ),
-	LIST_PROP ( "phone", compare_phone ),
-	LIST_PROP ( "address", compare_address ),
-	LIST_PROP ( "category", compare_category ),
+	LIST_PROP ( "im_aim",    compare_im_aim ),
+	LIST_PROP ( "im_msn",    compare_im_msn ),
+	LIST_PROP ( "im_icq",    compare_im_icq ),
+	LIST_PROP ( "im_jabber", compare_im_jabber ),
+	LIST_PROP ( "im_yahoo",  compare_im_yahoo ),
+	LIST_PROP ( "email",     compare_email ),
+	LIST_PROP ( "phone",     compare_phone ),
+	LIST_PROP ( "address",   compare_address ),
+	LIST_PROP ( "category",  compare_category ),
 };
 static int num_prop_infos = sizeof(prop_info_table) / sizeof(prop_info_table[0]);
 

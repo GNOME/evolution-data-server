@@ -1,3 +1,17 @@
+2004-01-21  Nat Friedman <nat@novell.com>
+
+	* libedata-book/e-book-backend-sexp.c (compare_im): New function
+	to allow searching of IM fields.
+	* libedata-book/e-book-backend-sexp.c (compare_im_aim): Likewise.
+	* libedata-book/e-book-backend-sexp.c (compare_im_msn): Likewise.
+	* libedata-book/e-book-backend-sexp.c (compare_im_icq): Likewise.
+	* libedata-book/e-book-backend-sexp.c (compare_im_yahoo):
+	Likewise.
+	* libedata-book/e-book-backend-sexp.c (compare_im_jabber):
+	Likewise.
+	* libedata-book/e-book-backend-sexp.c (prop_info_table): Added
+	entries for IM field searching.
+
 2004-01-20  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libedata-book/e-data-book-view.c (e_data_book_view_new): Pass a
