@@ -1,3 +1,8 @@
+2004-12-15  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am: Move camel-search-private.h to libcamelinclude_HEADERS
+	so we can install it so Evolution can build from a disted tarball
+
 2004-12-14  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-folder.c

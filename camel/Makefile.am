@@ -232,6 +232,7 @@ libcamelinclude_HEADERS =			\
 	camel-object.h				\
 	camel-operation.h			\
 	camel-partition-table.h			\
+	camel-search-private.h			\
 	camel-seekable-stream.h			\
 	camel-seekable-substream.h		\
 	camel-stream-buffer.h			\
@@ -308,7 +309,6 @@ noinst_HEADERS =				\
 	broken-date-parser.h			\
 	camel-charset-map-private.h		\
 	camel-private.h				\
-	camel-search-private.h			\
 	camel-html-parser.h
 
 EXTRA_DIST =					\
