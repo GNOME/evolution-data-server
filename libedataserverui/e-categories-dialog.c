@@ -293,6 +293,25 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 static void
 delete_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
+	ECategoriesDialog *dialog;
+	ECategoriesDialogPrivate *priv;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	char *category_name;
+
+	dialog = user_data;
+	priv = dialog->priv;
+
+	/* get the currently selected item */
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->categories_list));
+
+	if (!gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->categories_list)),
+					      NULL, &iter))
+		return;
+
+	gtk_tree_model_get (model, &iter, 1, &category_name, -1);
+	e_categories_remove (category_name);
+	gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 }
 
 static void

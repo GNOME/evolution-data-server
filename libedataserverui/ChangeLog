@@ -1,5 +1,10 @@
 2005-01-10  Rodrigo Moya <rodrigo@novell.com>
 
+	* e-categories-dialog.c (delete_button_clicked_cb): added missing
+	implementation.
+
+2005-01-10  Rodrigo Moya <rodrigo@novell.com>
+
 	* e-categories-dialog.glade: replaced the 'Edit master ...' button
 	with buttons for adding, editing and removing categories.
 	Added the category properties dialog.
