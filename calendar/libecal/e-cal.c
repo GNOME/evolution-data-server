@@ -2441,7 +2441,7 @@ e_cal_free_object_list (GList *objects)
  */
 gboolean
 e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
-			  GList **freebusy, GError **error)
+		     GList **freebusy, GError **error)
 {
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
@@ -2598,8 +2598,8 @@ compare_comp_instance (gconstpointer a, gconstpointer b)
  **/
 void
 e_cal_generate_instances (ECal *ecal, CalObjType type,
-			       time_t start, time_t end,
-			       ECalRecurInstanceFn cb, gpointer cb_data)
+			  time_t start, time_t end,
+			  ECalRecurInstanceFn cb, gpointer cb_data)
 {
 	ECalPrivate *priv;
 	GList *objects;
@@ -2793,8 +2793,8 @@ e_cal_free_alarms (GSList *comp_alarms)
  **/
 gboolean
 e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
-				  time_t start, time_t end,
-				  ECalComponentAlarms **alarms)
+			     time_t start, time_t end,
+			     ECalComponentAlarms **alarms)
 {
 	ECalPrivate *priv;
 	icalcomponent *icalcomp;
@@ -3002,8 +3002,8 @@ free_timezone_string (gpointer key, gpointer value, gpointer data)
    as before. */
 static char*
 e_cal_get_component_as_string_internal (ECal *ecal,
-					     icalcomponent *icalcomp,
-					     gboolean include_all_timezones)
+					icalcomponent *icalcomp,
+					gboolean include_all_timezones)
 {
 	GHashTable *timezone_hash;
 	GString *vcal_string;
@@ -3209,7 +3209,7 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 
 gboolean
 e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
-				   const char *rid, CalObjModType mod, GError **error)
+			      const char *rid, CalObjModType mod, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;

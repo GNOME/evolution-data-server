@@ -93,9 +93,9 @@ struct _ECalClass {
 };
 
 typedef gchar * (* ECalAuthFunc) (ECal *ecal,
-                                      const gchar *prompt,
-                                      const gchar *key,
-                                      gpointer user_data);
+				  const gchar *prompt,
+				  const gchar *key,
+				  gpointer user_data);
 
 GType e_cal_get_type (void);
 
@@ -130,13 +130,13 @@ gboolean e_cal_get_static_capability (ECal *ecal, const char *cap);
 gboolean e_cal_set_mode (ECal *ecal, CalMode mode);
 
 gboolean e_cal_get_default_object (ECal *ecal,
-					icalcomponent **icalcomp, GError **error);
+				   icalcomponent **icalcomp, GError **error);
 
 gboolean e_cal_get_object (ECal *ecal,
-				const char *uid,
-				const char *rid,
-				icalcomponent **icalcomp,
-				GError **error);
+			   const char *uid,
+			   const char *rid,
+			   icalcomponent **icalcomp,
+			   GError **error);
 
 gboolean e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **error);
 void e_cal_free_change_list (GList *list);
@@ -146,19 +146,19 @@ gboolean e_cal_get_object_list_as_comp (ECal *ecal, const char *query, GList **o
 void e_cal_free_object_list (GList *objects);
 
 gboolean e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end, 
-				   GList **freebusy, GError **error);
+			      GList **freebusy, GError **error);
 
 void e_cal_generate_instances (ECal *ecal, CalObjType type,
-				    time_t start, time_t end,
-				    ECalRecurInstanceFn cb, gpointer cb_data);
+			       time_t start, time_t end,
+			       ECalRecurInstanceFn cb, gpointer cb_data);
 
 GSList *e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end);
 
 void e_cal_free_alarms (GSList *comp_alarms);
 
 gboolean e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
-					   time_t start, time_t end,
-					   ECalComponentAlarms **alarms);
+				      time_t start, time_t end,
+				      ECalComponentAlarms **alarms);
 
 gboolean e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **error);
 gboolean e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GError **error);
