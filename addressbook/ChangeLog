@@ -1,3 +1,11 @@
+2004-12-24  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c 
+	(e_book_backend_ldap_set_mode) : unbind when going to offline mode
+	(e_book_backend_ldap_authenticate_user) : call e_book_backend_ldap_connect
+	after checking priv->connected state. We may not be connected here
+	when switching from offline to online 
+	
 2004-12-22  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c 

@@ -3318,6 +3318,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	int ldap_error;
+	int status;
 	char *dn = NULL;
 
 	if (bl->priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
@@ -3326,7 +3327,15 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 						       GNOME_Evolution_Addressbook_RepositoryOffline);
 		return;
 	}
-	
+	if (!bl->priv->connected) {
+		status = e_book_backend_ldap_connect (bl);
+		if (status != GNOME_Evolution_Addressbook_Success) {
+			e_data_book_respond_authenticate_user (book,
+							       opid, status);
+			return ;
+		}
+						       
+	}
 	if (!strncasecmp (auth_method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
        
 		if (!strcmp (auth_method, "ldap/simple-email")) {
@@ -3521,7 +3530,7 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	if (bl->priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL) {
 		return GNOME_Evolution_Addressbook_RepositoryOffline;
 	}
-
+	
 	offline = e_source_get_property (source, "offline_sync");
 	if (offline  &&   g_str_equal (offline, "1"))
 		bl->priv->marked_for_offline = TRUE;
@@ -3587,21 +3596,23 @@ e_book_backend_ldap_set_mode (EBookBackend *backend, int mode)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	bl->priv->mode = mode;
-	if (e_book_backend_is_loaded (backend)) {
-		if (mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
+	if (mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
 			e_book_backend_notify_writable (backend, FALSE);
 			e_book_backend_notify_connection_status (backend, FALSE);
-			if (bl->priv->ldap)
+			if (bl->priv->ldap) {
 				ldap_unbind_ext_s (bl->priv->ldap, NULL, NULL);
+				bl->priv->ldap = FALSE;
+			}
+			bl->priv->connected = FALSE;
 		}
-		else if (mode == GNOME_Evolution_Addressbook_MODE_REMOTE) {
-			e_book_backend_notify_writable (backend, TRUE);
-			e_book_backend_notify_connection_status (backend, TRUE);
-			e_book_backend_notify_auth_required (backend);
-		}
+	else if (mode == GNOME_Evolution_Addressbook_MODE_REMOTE) {
+		e_book_backend_notify_writable (backend, TRUE);
+		e_book_backend_notify_connection_status (backend, TRUE);
+		if (e_book_backend_is_loaded (backend))
+		    e_book_backend_notify_auth_required (backend);
 	}
-
 }
+
 
 static gboolean
 e_book_backend_ldap_construct (EBookBackendLDAP *backend)
