@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
-"POT-Creation-Date: 2004-08-02 12:00-0400\n"
-"PO-Revision-Date: 2004-07-10 00:35+0900\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-11 21:47+0900\n"
+"PO-Revision-Date: 2004-08-11 21:48+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
@@ -22,6 +22,7 @@ msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
 #: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
@@ -629,7 +630,7 @@ msgid "Could not create cache file"
 msgstr "캐시 파일을 만들 수 없습니다"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4312
 msgid "Authentication failed"
 msgstr "인증이 실패했습니다"
 
@@ -791,76 +792,76 @@ msgid "Undefined"
 msgstr "정의안됨"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1493
+#: calendar/libecal/e-cal.c:1513
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s(사용자 %s)의 열쇠글을 입력하십시오"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4286
 msgid "Invalid argument"
 msgstr "인자가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4288
 msgid "Backend is busy"
 msgstr "백엔드가 사용중입니다"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4290
 msgid "Repository is offline"
 msgstr "저장고가 오프라인 상태입니다"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4292
 msgid "No such calendar"
 msgstr "그런 달력이 없습니다"
 
-#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "오브젝트를 찾을 수 없습니다"
 
-#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4296 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "오브젝트가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4298
 msgid "URI not loaded"
 msgstr "URI를 읽어들이지 못했습니다"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4300
 msgid "URI already loaded"
 msgstr "URI를 이미 읽어들였습니다"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4302
 msgid "Permission denied"
 msgstr "권한이 거부되었습니다"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4304
 msgid "Object ID already exists"
 msgstr "오브젝트 ID가 이미 있습니다"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4306
 msgid "Protocol not supported"
 msgstr "프로토콜이 지원되지 않습니다"
 
-#: calendar/libecal/e-cal.c:4288
+#: calendar/libecal/e-cal.c:4308
 msgid "Operation has been cancelled"
 msgstr "작업이 취소되었습니다"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4310
 msgid "Could not cancel operation"
 msgstr "작업을 취소할 수 없습니다"
 
-#: calendar/libecal/e-cal.c:4294
+#: calendar/libecal/e-cal.c:4314
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4316
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 예외가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4318 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "알 수 없는 오류가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:4300
+#: calendar/libecal/e-cal.c:4320
 msgid "No error"
 msgstr "오류 없음"
 
@@ -972,3 +973,9 @@ msgstr "Evolution 주소록 파일 및 webcal 백엔드"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution 주소록 파일 백엔드"
+
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr "세그멘테이션 폴트가 여러 개 발생했습니다. 오류 대화 상자를 표시할 수 없습니다\n"
