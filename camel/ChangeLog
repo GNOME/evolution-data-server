@@ -1,3 +1,9 @@
+2005-01-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-offline-folder.c (camel_offline_folder_downsync): Use a
+	new macro to get the class from the offline folder object, don't
+	cast the object as a class.
+
 2005-01-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-folder.c

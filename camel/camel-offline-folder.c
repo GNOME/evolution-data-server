@@ -32,6 +32,7 @@
 
 #include "camel-offline-folder.h"
 
+#define CAMEL_OFFLINE_FOLDER_GET_CLASS(f) (CAMEL_OFFLINE_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (f)))
 
 static void camel_offline_folder_class_init (CamelOfflineFolderClass *klass);
 static void camel_offline_folder_init (CamelOfflineFolder *folder, CamelOfflineFolderClass *klass);
@@ -294,5 +295,5 @@ camel_offline_folder_downsync (CamelOfflineFolder *offline, const char *expressi
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline));
 	
-	CAMEL_OFFLINE_FOLDER_CLASS (offline)->downsync (offline, expression, ex);
+	CAMEL_OFFLINE_FOLDER_GET_CLASS (offline)->downsync (offline, expression, ex);
 }
