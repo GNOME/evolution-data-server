@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.15\n"
-"POT-Creation-Date: 2004-04-02 10:46-0500\n"
+"POT-Creation-Date: 2004-04-19 09:18-0400\n"
 "PO-Revision-Date: 2001-09-12 16:59+0800\n"
 "Last-Translator: Tiberiu Micu <tibimicu@gmx.net>\n"
 "Language-Team: Română <ro@li.org>\n"
@@ -15,52 +15,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/file/e-book-backend-file.c:442
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Încarc..."
 
-#: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/file/e-book-backend-file.c:444
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Caut..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:601
+#: addressbook/backends/ldap/e-book-backend-ldap.c:599
 #, fuzzy
 msgid "Using Distinguished Name (DN)"
 msgstr "_Nume listă:"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:604
+#: addressbook/backends/ldap/e-book-backend-ldap.c:602
 #, fuzzy
 msgid "Using Email Address"
 msgstr "_Aceasta este adresa de expediere"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:748
+#: addressbook/backends/ldap/e-book-backend-ldap.c:768
 #, fuzzy
 msgid "Reconnecting to LDAP server..."
 msgstr "Conectare la serverul LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "Adaugă card la serverul LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "Şterge card de la serverul LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificare card pentru serverul LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
 msgid "Receiving LDAP search results..."
 msgstr "Primesc rezultatele căutării LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
 #, fuzzy
 msgid "Error performing search"
 msgstr "Eroare ştergere card"
@@ -616,17 +616,17 @@ msgid "Unnamed List"
 msgstr "Contact schimbat:"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:439
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 #, fuzzy
 msgid "Birthday"
 msgstr "Ziua de naştere:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "Ziua de naştere:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:484
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "Ani_versare:"
@@ -650,12 +650,12 @@ msgid "Checklist"
 msgstr "Ceaţă densă"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4057
+#: calendar/libecal/e-cal.c:4062
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Eşec la autentificare."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
 #, fuzzy
 msgid "Could not create cache file"
 msgstr ""
@@ -829,80 +829,80 @@ msgstr "Nedefinit"
 msgid "Enter password for %s (user %s)"
 msgstr "Introduceţi parola pentru %s"
 
-#: calendar/libecal/e-cal.c:4031
+#: calendar/libecal/e-cal.c:4036
 #, fuzzy
 msgid "Invalid argument"
 msgstr "Conţinut invalid al mesajului"
 
-#: calendar/libecal/e-cal.c:4033
+#: calendar/libecal/e-cal.c:4038
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4035
+#: calendar/libecal/e-cal.c:4040
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Depozitare offline"
 
-#: calendar/libecal/e-cal.c:4037
+#: calendar/libecal/e-cal.c:4042
 #, fuzzy
 msgid "No such calendar"
 msgstr "Nu există dosarul %s"
 
-#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "Bug buddy nu poate fi rulat."
 
-#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "Conţinut invalid al mesajului"
 
-#: calendar/libecal/e-cal.c:4043
+#: calendar/libecal/e-cal.c:4048
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook neîncărcat\n"
 
-#: calendar/libecal/e-cal.c:4045
+#: calendar/libecal/e-cal.c:4050
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4047
+#: calendar/libecal/e-cal.c:4052
 msgid "Permission denied"
 msgstr "Acces interzis"
 
-#: calendar/libecal/e-cal.c:4049
+#: calendar/libecal/e-cal.c:4054
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "ID-ul card-ului există deja"
 
-#: calendar/libecal/e-cal.c:4051
+#: calendar/libecal/e-cal.c:4056
 msgid "Protocol not supported"
 msgstr "Protocol nesuportat"
 
-#: calendar/libecal/e-cal.c:4053
+#: calendar/libecal/e-cal.c:4058
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operaţia anulată"
 
-#: calendar/libecal/e-cal.c:4055
+#: calendar/libecal/e-cal.c:4060
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Anulare operaţie"
 
-#: calendar/libecal/e-cal.c:4059
+#: calendar/libecal/e-cal.c:4064
 msgid "Authentication required"
 msgstr "Necesită autentificare"
 
-#: calendar/libecal/e-cal.c:4061
+#: calendar/libecal/e-cal.c:4066
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
 
-#: calendar/libecal/e-cal.c:4065
+#: calendar/libecal/e-cal.c:4070
 msgid "No error"
 msgstr "Fără eroare"
 

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
-"POT-Creation-Date: 2004-04-02 10:46-0500\n"
+"POT-Creation-Date: 2004-04-19 09:18-0400\n"
 "PO-Revision-Date: 2004-03-26 17:16+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
@@ -19,46 +19,46 @@ msgstr ""
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/file/e-book-backend-file.c:442
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Учитавам..."
 
-#: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/file/e-book-backend-file.c:444
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Тражим..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:601
+#: addressbook/backends/ldap/e-book-backend-ldap.c:599
 msgid "Using Distinguished Name (DN)"
 msgstr "Користим истакнуто име (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:604
+#: addressbook/backends/ldap/e-book-backend-ldap.c:602
 msgid "Using Email Address"
 msgstr "Користим електронску адресу"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:748
+#: addressbook/backends/ldap/e-book-backend-ldap.c:768
 msgid "Reconnecting to LDAP server..."
 msgstr "Поново успостављам везу са LDAP сервером..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
 msgid "Adding contact to LDAP server..."
 msgstr "Додајем контакт на LDAP сервер..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
 msgid "Removing contact from LDAP server..."
 msgstr "Уклањам контакт са LDAP сервера..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
 msgid "Modifying contact from LDAP server..."
 msgstr "Мењам контакт на LDAP серверу..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
 msgid "Receiving LDAP search results..."
 msgstr "Примам резултате претраге са LDAP сервера"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
 msgid "Error performing search"
 msgstr "Грешка током претраге"
 
@@ -580,16 +580,16 @@ msgid "Unnamed List"
 msgstr "Листа без имена"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:439
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 msgid "Birthday"
 msgstr "Рођендан"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
 #, c-format
 msgid "Birthday: %s"
 msgstr "Рођендан: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:484
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Годишњица: %s"
@@ -611,11 +611,11 @@ msgid "Checklist"
 msgstr "Списак за оверу"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4057
+#: calendar/libecal/e-cal.c:4062
 msgid "Authentication failed"
 msgstr "Неуспешна идентификација"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
 msgid "Could not create cache file"
 msgstr "Не могу да направим датотеку за оставу"
 
@@ -782,71 +782,71 @@ msgstr "Недефинисано"
 msgid "Enter password for %s (user %s)"
 msgstr "Унесите лозинку за %s (корисник %s)"
 
-#: calendar/libecal/e-cal.c:4031
+#: calendar/libecal/e-cal.c:4036
 msgid "Invalid argument"
 msgstr "Неисправан аргумент"
 
-#: calendar/libecal/e-cal.c:4033
+#: calendar/libecal/e-cal.c:4038
 msgid "Backend is busy"
 msgstr "Подршка је заузета"
 
-#: calendar/libecal/e-cal.c:4035
+#: calendar/libecal/e-cal.c:4040
 msgid "Repository is offline"
 msgstr "Складиште није повезано"
 
-#: calendar/libecal/e-cal.c:4037
+#: calendar/libecal/e-cal.c:4042
 msgid "No such calendar"
 msgstr "Нема таквог календара"
 
-#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Објекат није нађен"
 
-#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Неисправан предмет"
 
-#: calendar/libecal/e-cal.c:4043
+#: calendar/libecal/e-cal.c:4048
 msgid "URI not loaded"
 msgstr "Адреса није учитана"
 
-#: calendar/libecal/e-cal.c:4045
+#: calendar/libecal/e-cal.c:4050
 msgid "URI already loaded"
 msgstr "Адреса је већ учитана"
 
-#: calendar/libecal/e-cal.c:4047
+#: calendar/libecal/e-cal.c:4052
 msgid "Permission denied"
 msgstr "Забрањен приступ"
 
-#: calendar/libecal/e-cal.c:4049
+#: calendar/libecal/e-cal.c:4054
 msgid "Object ID already exists"
 msgstr "ИД објекта већ постоји"
 
-#: calendar/libecal/e-cal.c:4051
+#: calendar/libecal/e-cal.c:4056
 msgid "Protocol not supported"
 msgstr "Протокол није подржан"
 
-#: calendar/libecal/e-cal.c:4053
+#: calendar/libecal/e-cal.c:4058
 msgid "Operation has been cancelled"
 msgstr "Операција је обустављена"
 
-#: calendar/libecal/e-cal.c:4055
+#: calendar/libecal/e-cal.c:4060
 msgid "Could not cancel operation"
 msgstr "Не могу да откажем операцију"
 
-#: calendar/libecal/e-cal.c:4059
+#: calendar/libecal/e-cal.c:4064
 msgid "Authentication required"
 msgstr "Неопходна идентификација"
 
-#: calendar/libecal/e-cal.c:4061
+#: calendar/libecal/e-cal.c:4066
 msgid "A CORBA exception has occurred"
 msgstr "Дошло је до CORBA изузетка"
 
-#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Непозната грешка"
 
-#: calendar/libecal/e-cal.c:4065
+#: calendar/libecal/e-cal.c:4070
 msgid "No error"
 msgstr "Нема грешке"
 

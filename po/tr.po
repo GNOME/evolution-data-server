@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"POT-Creation-Date: 2004-04-02 10:46-0500\n"
+"POT-Creation-Date: 2004-04-19 09:18-0400\n"
 "PO-Revision-Date: 2003-06-19 18:09+0000\n"
 "Last-Translator: Görkem Çetin <gorkem@kde.org>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -13,49 +13,49 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Report-Msgid-Bugs-To: \n"
 
-#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/file/e-book-backend-file.c:442
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/file/e-book-backend-file.c:444
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Aranıyor..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:601
+#: addressbook/backends/ldap/e-book-backend-ldap.c:599
 msgid "Using Distinguished Name (DN)"
 msgstr "DN kullanılıyor"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:604
+#: addressbook/backends/ldap/e-book-backend-ldap.c:602
 msgid "Using Email Address"
 msgstr "E-posta Adresi Kullanarak"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:748
+#: addressbook/backends/ldap/e-book-backend-ldap.c:768
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP sunucuya yeniden bağlantı kuruluyor..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP sunucuya kart ekleniyor..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP sunucudaki kart siliniyor..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP sunucudaki kart düzenleniyor..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
 msgid "Receiving LDAP search results..."
 msgstr "LDAP arama sonuçları alınıyor..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
 msgid "Error performing search"
 msgstr "Arama yaparken bir hata oluştu"
 
@@ -600,17 +600,17 @@ msgid "Unnamed List"
 msgstr "İsimsiz Liste"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:439
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 #, fuzzy
 msgid "Birthday"
 msgstr "_Doğum günü:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "_Doğum günü:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:484
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "_Yıldönümü:"
@@ -634,12 +634,12 @@ msgid "Checklist"
 msgstr "Kalın sisli"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4057
+#: calendar/libecal/e-cal.c:4062
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Kimlik denetimi başarısız."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
 #, fuzzy
 msgid "Could not create cache file"
 msgstr ""
@@ -812,79 +812,79 @@ msgstr "Tanımsız"
 msgid "Enter password for %s (user %s)"
 msgstr "%s%s için parolayı girin (kullanıcı: %s)"
 
-#: calendar/libecal/e-cal.c:4031
+#: calendar/libecal/e-cal.c:4036
 msgid "Invalid argument"
 msgstr "Geçersiz argüman"
 
-#: calendar/libecal/e-cal.c:4033
+#: calendar/libecal/e-cal.c:4038
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4035
+#: calendar/libecal/e-cal.c:4040
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Depo çevrimdışı"
 
-#: calendar/libecal/e-cal.c:4037
+#: calendar/libecal/e-cal.c:4042
 #, fuzzy
 msgid "No such calendar"
 msgstr "Bu isimde bir dizin yok: `%s'"
 
-#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "Öğe bulunamadı\n"
 
-#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "Geçersiz argüman"
 
-#: calendar/libecal/e-cal.c:4043
+#: calendar/libecal/e-cal.c:4048
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook yüklenmedi\n"
 
-#: calendar/libecal/e-cal.c:4045
+#: calendar/libecal/e-cal.c:4050
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4047
+#: calendar/libecal/e-cal.c:4052
 msgid "Permission denied"
 msgstr "İzin yok"
 
-#: calendar/libecal/e-cal.c:4049
+#: calendar/libecal/e-cal.c:4054
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "Bu kart numarası var"
 
-#: calendar/libecal/e-cal.c:4051
+#: calendar/libecal/e-cal.c:4056
 msgid "Protocol not supported"
 msgstr "Protokol desteklenmiyor"
 
-#: calendar/libecal/e-cal.c:4053
+#: calendar/libecal/e-cal.c:4058
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "İşlem iptal edildi"
 
-#: calendar/libecal/e-cal.c:4055
+#: calendar/libecal/e-cal.c:4060
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "İşlemi İ_ptal Et"
 
-#: calendar/libecal/e-cal.c:4059
+#: calendar/libecal/e-cal.c:4064
 msgid "Authentication required"
 msgstr "Kimlik denetimi isteniyor"
 
-#: calendar/libecal/e-cal.c:4061
+#: calendar/libecal/e-cal.c:4066
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Bilinmeyen hata"
 
-#: calendar/libecal/e-cal.c:4065
+#: calendar/libecal/e-cal.c:4070
 msgid "No error"
 msgstr "Hata yok"
 

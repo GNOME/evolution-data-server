@@ -28,7 +28,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"POT-Creation-Date: 2004-04-02 10:46-0500\n"
+"POT-Creation-Date: 2004-04-19 09:18-0400\n"
 "PO-Revision-Date: 2004-01-25 13:43+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -38,46 +38,46 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.2\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/file/e-book-backend-file.c:442
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Γίνεται φόρτωση..."
 
-#: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/file/e-book-backend-file.c:444
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Γίνεται αναζήτηση..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:601
+#: addressbook/backends/ldap/e-book-backend-ldap.c:599
 msgid "Using Distinguished Name (DN)"
 msgstr "Χρήση Διακεκριμένου ονόματος  (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:604
+#: addressbook/backends/ldap/e-book-backend-ldap.c:602
 msgid "Using Email Address"
 msgstr "Χρήση διεύθυνσης  Email "
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:748
+#: addressbook/backends/ldap/e-book-backend-ldap.c:768
 msgid "Reconnecting to LDAP server..."
 msgstr "Επανασύνδεση με τον διακομιστή LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
 msgid "Adding contact to LDAP server..."
 msgstr "Προσθήκη επαφής στον διακομιστή LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
 msgid "Removing contact from LDAP server..."
 msgstr "Αφαίρεση επαφής από τον διακομιστή LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
 msgid "Modifying contact from LDAP server..."
 msgstr "Τροποποίηση επαφής στον διακομιστή LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
 msgid "Receiving LDAP search results..."
 msgstr "Λήψη αποτελεσμάτων αναζήτησης από LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
 msgid "Error performing search"
 msgstr "Σφάλμα εκτέλεσης αναζήτησης"
 
@@ -606,16 +606,16 @@ msgid "Unnamed List"
 msgstr "Λίστα Χωρίς Τίτλο"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:439
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 msgid "Birthday"
 msgstr "Γενέθλια"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
 #, c-format
 msgid "Birthday: %s"
 msgstr "Γενέθλια: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:484
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Επέτειος: %s"
@@ -638,11 +638,11 @@ msgid "Checklist"
 msgstr ""
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4057
+#: calendar/libecal/e-cal.c:4062
 msgid "Authentication failed"
 msgstr "Η πιστοποίηση απέτυχε"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
 #, fuzzy
 msgid "Could not create cache file"
 msgstr "Αδυναμία ακύρωσης λειτουργίας"
@@ -810,72 +810,72 @@ msgstr "Αόριστο"
 msgid "Enter password for %s (user %s)"
 msgstr "Εισάγετε κωδικό πρόσβασης για %s (χρήστης %s)"
 
-#: calendar/libecal/e-cal.c:4031
+#: calendar/libecal/e-cal.c:4036
 msgid "Invalid argument"
 msgstr "Μη έγκυρη παράμετρος"
 
-#: calendar/libecal/e-cal.c:4033
+#: calendar/libecal/e-cal.c:4038
 msgid "Backend is busy"
 msgstr "Το Backend είναι απασχολημένο"
 
-#: calendar/libecal/e-cal.c:4035
+#: calendar/libecal/e-cal.c:4040
 msgid "Repository is offline"
 msgstr "Το αρχείο φύλαξης είναι εκτός δικτύου"
 
-#: calendar/libecal/e-cal.c:4037
+#: calendar/libecal/e-cal.c:4042
 msgid "No such calendar"
 msgstr "Δεν υπάρχει τέτοιο ημερολόγιο"
 
-#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Το αντικείμενο δεν βρέθηκε"
 
-#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Μή έγκυρο αντικείμενο"
 
-#: calendar/libecal/e-cal.c:4043
+#: calendar/libecal/e-cal.c:4048
 msgid "URI not loaded"
 msgstr "To URI δεν φορτώθηκε"
 
-#: calendar/libecal/e-cal.c:4045
+#: calendar/libecal/e-cal.c:4050
 msgid "URI already loaded"
 msgstr "Το URI έχει ήδη φορτωθεί"
 
-#: calendar/libecal/e-cal.c:4047
+#: calendar/libecal/e-cal.c:4052
 msgid "Permission denied"
 msgstr "Δεν επιτρέπεται η πρόσβαση"
 
-#: calendar/libecal/e-cal.c:4049
+#: calendar/libecal/e-cal.c:4054
 msgid "Object ID already exists"
 msgstr "Το αναγνωριστικό αντικειμένου  υπάρχει ήδη"
 
-#: calendar/libecal/e-cal.c:4051
+#: calendar/libecal/e-cal.c:4056
 msgid "Protocol not supported"
 msgstr "Δεν υποστηρίζεται το πρωτόκολλο"
 
-#: calendar/libecal/e-cal.c:4053
+#: calendar/libecal/e-cal.c:4058
 msgid "Operation has been cancelled"
 msgstr "Η λειτουργία ακυρώθηκε"
 
-#: calendar/libecal/e-cal.c:4055
+#: calendar/libecal/e-cal.c:4060
 msgid "Could not cancel operation"
 msgstr "Αδυναμία ακύρωσης λειτουργίας"
 
-#: calendar/libecal/e-cal.c:4059
+#: calendar/libecal/e-cal.c:4064
 msgid "Authentication required"
 msgstr "Απαιτείται πιστοποίηση"
 
-#: calendar/libecal/e-cal.c:4061
+#: calendar/libecal/e-cal.c:4066
 #, fuzzy
 msgid "A CORBA exception has occurred"
 msgstr "Δημιουργήθηκε εξαίρεση CORBΑ"
 
-#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Άγνωστο Σφάλμα"
 
-#: calendar/libecal/e-cal.c:4065
+#: calendar/libecal/e-cal.c:4070
 msgid "No error"
 msgstr "Χωρίς σφάλμα"
 

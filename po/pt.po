@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.6\n"
-"POT-Creation-Date: 2004-04-02 10:46-0500\n"
+"POT-Creation-Date: 2004-04-19 09:18-0400\n"
 "PO-Revision-Date: 2004-01-31 14:10+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
@@ -16,46 +16,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 "Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/file/e-book-backend-file.c:442
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "A Ler..."
 
-#: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/file/e-book-backend-file.c:444
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "A Procurar..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:601
+#: addressbook/backends/ldap/e-book-backend-ldap.c:599
 msgid "Using Distinguished Name (DN)"
 msgstr "A Utilizar Nome Distinto (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:604
+#: addressbook/backends/ldap/e-book-backend-ldap.c:602
 msgid "Using Email Address"
 msgstr "A Utilizar Endereço de Email"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:748
+#: addressbook/backends/ldap/e-book-backend-ldap.c:768
 msgid "Reconnecting to LDAP server..."
 msgstr "A ligar-se novamente ao servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
 msgid "Adding contact to LDAP server..."
 msgstr "A adicionar contacto ao servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
 msgid "Removing contact from LDAP server..."
 msgstr "A remover contacto do servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
 msgid "Modifying contact from LDAP server..."
 msgstr "A alterar contacto no servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
 msgid "Receiving LDAP search results..."
 msgstr "A receber resultados da procura no LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
 msgid "Error performing search"
 msgstr "Erro ao efectuar a procura"
 
@@ -586,16 +586,16 @@ msgid "Unnamed List"
 msgstr "Lista Sem Nome"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:439
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 msgid "Birthday"
 msgstr "Data de Nascimento"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
 #, c-format
 msgid "Birthday: %s"
 msgstr "Data de Nascimento: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:484
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversário: %s"
@@ -618,11 +618,11 @@ msgid "Checklist"
 msgstr ""
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4057
+#: calendar/libecal/e-cal.c:4062
 msgid "Authentication failed"
 msgstr "Autenticação falhou"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
 #, fuzzy
 msgid "Could not create cache file"
 msgstr "Incapaz de cancelar a operação"
@@ -790,71 +790,71 @@ msgstr "Indefinida"
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza a senha para %s (utilizador %s)"
 
-#: calendar/libecal/e-cal.c:4031
+#: calendar/libecal/e-cal.c:4036
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: calendar/libecal/e-cal.c:4033
+#: calendar/libecal/e-cal.c:4038
 msgid "Backend is busy"
 msgstr "Motor de processamento ocupado"
 
-#: calendar/libecal/e-cal.c:4035
+#: calendar/libecal/e-cal.c:4040
 msgid "Repository is offline"
 msgstr "Repositório está desligado"
 
-#: calendar/libecal/e-cal.c:4037
+#: calendar/libecal/e-cal.c:4042
 msgid "No such calendar"
 msgstr "Calendário inexistente"
 
-#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objecto não foi encontrado"
 
-#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objecto inválido"
 
-#: calendar/libecal/e-cal.c:4043
+#: calendar/libecal/e-cal.c:4048
 msgid "URI not loaded"
 msgstr "URI não foi lido"
 
-#: calendar/libecal/e-cal.c:4045
+#: calendar/libecal/e-cal.c:4050
 msgid "URI already loaded"
 msgstr "URI já foi lido"
 
-#: calendar/libecal/e-cal.c:4047
+#: calendar/libecal/e-cal.c:4052
 msgid "Permission denied"
 msgstr "Permissão negada"
 
-#: calendar/libecal/e-cal.c:4049
+#: calendar/libecal/e-cal.c:4054
 msgid "Object ID already exists"
 msgstr "ID de objecto já existe"
 
-#: calendar/libecal/e-cal.c:4051
+#: calendar/libecal/e-cal.c:4056
 msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
-#: calendar/libecal/e-cal.c:4053
+#: calendar/libecal/e-cal.c:4058
 msgid "Operation has been cancelled"
 msgstr "Operação foi cancelada"
 
-#: calendar/libecal/e-cal.c:4055
+#: calendar/libecal/e-cal.c:4060
 msgid "Could not cancel operation"
 msgstr "Incapaz de cancelar a operação"
 
-#: calendar/libecal/e-cal.c:4059
+#: calendar/libecal/e-cal.c:4064
 msgid "Authentication required"
 msgstr "Autenticação requerida"
 
-#: calendar/libecal/e-cal.c:4061
+#: calendar/libecal/e-cal.c:4066
 msgid "A CORBA exception has occurred"
 msgstr "Ocorreu uma excepção CORBA"
 
-#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: calendar/libecal/e-cal.c:4065
+#: calendar/libecal/e-cal.c:4070
 msgid "No error"
 msgstr "Nenhum erro"
 
