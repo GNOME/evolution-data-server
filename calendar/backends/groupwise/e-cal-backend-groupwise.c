@@ -271,8 +271,8 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
         priv->default_zone = icaltimezone_get_utc_timezone ();        
 		
 	g_mutex_unlock (priv->mutex);
-
-	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
+        
+        /* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 	e_cal_backend_set_mode (E_CAL_BACKEND (backend), CAL_MODE_REMOTE);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -644,10 +644,20 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 
 /* Get_free_busy handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
-				time_t start, time_t end, GList **freebusy)
+e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GSList *users,
+				time_t start, time_t end, GSList **freebusy)
 {
-	return GNOME_Evolution_Calendar_OtherError;
+       EGwConnectionStatus status;
+       ECalBackendGroupwise *cbgw;
+       EGwConnection *cnc;
+       
+       cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+       cnc = cbgw->priv->cnc;
+
+       status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy);
+       if (status != E_GW_CONNECTION_STATUS_OK)
+               return GNOME_Evolution_Calendar_OtherError;
+       return GNOME_Evolution_Calendar_Success; 
 }
 
 /* Get_changes handler for the file backend */
