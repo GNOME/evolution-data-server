@@ -146,6 +146,8 @@ camel_imap4_store_class_init (CamelIMAP4StoreClass *klass)
 	store_class->subscribe_folder = imap4_subscribe_folder;
 	store_class->unsubscribe_folder = imap4_unsubscribe_folder;
 	store_class->noop = imap4_noop;
+
+	/* FIXME: implement folder_subscribed */
 }
 
 static void
@@ -1247,7 +1249,7 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 			imap4_status (store, fi);
 		}
 		
-		if ((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_INFO) && !(fi->flags & CAMEL_FOLDER_SUBSCRIBED))
+		if (!(fi->flags & CAMEL_FOLDER_SUBSCRIBED))
 			imap4_subscription_info (store, fi);
 		
 		g_free (list->name);

@@ -1,3 +1,10 @@
+2005-02-04  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap4-store.c (imap4_build_folder_info): always get the
+	subscription info.
+	(camel_imap4_store_class_init): added a fixme about
+	folder_subscribed not being implemented.
+
 2005-02-02  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-store.c (imap4_build_folder_info): Set the
