@@ -1,7 +1,7 @@
 2004-03-26  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
-	(e_cal_backend_http_get_default_object): replace the inbox container ID
+	(e_cal_backend_groupwise_create_object): replace the inbox container ID
 	in the ID returned by sendItemResponse with our container ID.
 	(e_cal_backend_groupwise_remove_object): if the object does not have the
 	GW server ID, use the iCalID property to remove it.
