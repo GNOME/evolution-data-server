@@ -1,7 +1,7 @@
 # Evolution'i eesti keele tõlge.
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Ilmar Kerm <ikerm@hot.ee>, 2001.
-# Ivar Smolin <okul@linux.ee>, 2002.
+# Ivar Smolin <okul@linux.ee>, 2002, 2005.
 # Kaarel Jogi <kaarel@gg.ee>, 2002.
 #
 # Riigi- ja linnanimed: Marek Sepp <marek.sepp@ttu.ee>, 2001, 2002.
@@ -11,159 +11,145 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution 1.0.2\n"
+"Project-Id-Version: Evolution Data Server 1.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-05-22 11:10+0300\n"
-"Last-Translator: Priit Laes <amd@tt.ee>\n"
+"POT-Creation-Date: 2004-12-06 09:42-0500\n"
+"PO-Revision-Date: 2005-01-13 17:07+0200\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:443
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "Laen..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/file/e-book-backend-file.c:445
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1876
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3158
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "Otsin..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:618
-#, fuzzy
+#: addressbook/backends/ldap/e-book-backend-ldap.c:620
 msgid "Using Distinguished Name (DN)"
 msgstr "Eraldusnime (DN) kasutamine"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:621
-#, fuzzy
+#: addressbook/backends/ldap/e-book-backend-ldap.c:623
 msgid "Using Email Address"
 msgstr "E-posti aadressi kasutamine"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:787
+#: addressbook/backends/ldap/e-book-backend-ldap.c:789
 msgid "Reconnecting to LDAP server..."
 msgstr "Taasühendun LDAP serveriga..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1307
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1309
 msgid "Adding contact to LDAP server..."
 msgstr "Kontakti lisamine LDAP serverisse..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1407
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1409
 msgid "Removing contact from LDAP server..."
 msgstr "Eemaldan kontakti LDAP serverist..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1630
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1632
 msgid "Modifying contact from LDAP server..."
 msgstr "Muudan kontakti LDAP serveris..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3067
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3070
 msgid "Receiving LDAP search results..."
 msgstr "Võtan vastu LDAP otsingu tulemused..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3175
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3178
 msgid "Error performing search"
 msgstr "Viga otsingu teostamisel"
 
-#  translators: the placeholders will be filled by
-#  * function names, e.g.
-#  * "e_book_add_contact" on book before
-#  * "e_book_load_uri
-#  translators: the placeholders will be filled by
-#  * function names, e.g.
-#  * "e_book_add_contact" on book before
-#  * "e_book_open
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
 #: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
 #: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
-#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
-#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
-#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
-#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
-#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
-#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
-#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
+#: addressbook/libebook/e-book.c:577 addressbook/libebook/e-book.c:581
+#: addressbook/libebook/e-book.c:781 addressbook/libebook/e-book.c:786
+#: addressbook/libebook/e-book.c:961 addressbook/libebook/e-book.c:965
+#: addressbook/libebook/e-book.c:1106 addressbook/libebook/e-book.c:1110
+#: addressbook/libebook/e-book.c:1308 addressbook/libebook/e-book.c:1312
+#: addressbook/libebook/e-book.c:1513 addressbook/libebook/e-book.c:1517
+#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1744
+#: addressbook/libebook/e-book.c:1947 addressbook/libebook/e-book.c:1951
 #: addressbook/libebook/e-book.c:2984
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "Aadressid, mis olid avatud enne Galeoni maha kukkumist (%s)"
+msgstr ""
 
 #: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
-#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
-#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
-#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
-#, fuzzy
+#: addressbook/libebook/e-book.c:590 addressbook/libebook/e-book.c:796
+#: addressbook/libebook/e-book.c:975 addressbook/libebook/e-book.c:1120
+#: addressbook/libebook/e-book.c:1321 addressbook/libebook/e-book.c:1526
+#: addressbook/libebook/e-book.c:1754 addressbook/libebook/e-book.c:1960
+#: addressbook/libebook/e-book.c:2298 addressbook/libebook/e-book.c:2494
 msgid "book busy"
-msgstr "Kataloog on töös"
+msgstr ""
 
 #: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
 #: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
-#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
-#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
-#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
-#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
-#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
-#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
-#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
-#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
-#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2993
+#: addressbook/libebook/e-book.c:619 addressbook/libebook/e-book.c:623
+#: addressbook/libebook/e-book.c:825 addressbook/libebook/e-book.c:828
+#: addressbook/libebook/e-book.c:1007 addressbook/libebook/e-book.c:1010
+#: addressbook/libebook/e-book.c:1149 addressbook/libebook/e-book.c:1153
+#: addressbook/libebook/e-book.c:1357 addressbook/libebook/e-book.c:1361
+#: addressbook/libebook/e-book.c:1573 addressbook/libebook/e-book.c:1577
+#: addressbook/libebook/e-book.c:1786 addressbook/libebook/e-book.c:1790
+#: addressbook/libebook/e-book.c:1988 addressbook/libebook/e-book.c:1992
+#: addressbook/libebook/e-book.c:2239 addressbook/libebook/e-book.c:2326
+#: addressbook/libebook/e-book.c:2330 addressbook/libebook/e-book.c:2522
+#: addressbook/libebook/e-book.c:2526 addressbook/libebook/e-book.c:2993
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA erandolukord täites \"%s\" käsku"
 
-#: addressbook/libebook/e-book.c:2221
-#, fuzzy
+#: addressbook/libebook/e-book.c:2220
 msgid "e_book_cancel: there is no current operation"
-msgstr "Katkestab käimasoleva sõnumioperatsiooni"
+msgstr "e_book_cancel: hetkel ei ole käimasolevat toimingut"
 
-#: addressbook/libebook/e-book.c:2256
-#, fuzzy
+#: addressbook/libebook/e-book.c:2255
 msgid "e_book_cancel: couldn't cancel"
-msgstr "Ei suutnud initsialiseerida PAM'i: %s"
+msgstr "e_book_cancel: ei saa katkestada"
 
-#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:2284 addressbook/libebook/e-book.c:2288
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "`%s' järel puudub operand"
+msgstr ""
 
-#: addressbook/libebook/e-book.c:2355
-#, fuzzy
+#: addressbook/libebook/e-book.c:2354
 msgid "e_book_open: cancelled"
-msgstr "Ava aadressiraamat"
+msgstr "e_book_open: katkestatud"
 
-#: addressbook/libebook/e-book.c:2851
+#: addressbook/libebook/e-book.c:2850
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Vigane allikas"
 
-#: addressbook/libebook/e-book.c:2859
+#: addressbook/libebook/e-book.c:2858
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2871
+#: addressbook/libebook/e-book.c:2870
 msgid "e_book_load_uri: Could not create EBookListener"
-msgstr ""
+msgstr "e_book_load_uri: Ei saa luua EBookListener'i"
 
 #: addressbook/libebook/e-book.c:2922
 #, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:3080
+#: addressbook/libebook/e-book.c:3088
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:3191
+#: addressbook/libebook/e-book.c:3199
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -205,13 +191,10 @@ msgstr "Hüüdnimi"
 msgid "Name or Org"
 msgstr "Nimi või organisatsioon"
 
-#  Address fields
-#  Address fields
 #. Address fields
 #: addressbook/libebook/e-contact.c:115
-#, fuzzy
 msgid "Address List"
-msgstr "&Meililisti aadress:"
+msgstr "Aadresside loend"
 
 #: addressbook/libebook/e-contact.c:116
 msgid "Home Address"
@@ -226,19 +209,16 @@ msgid "Other Address"
 msgstr "Muu aadress"
 
 #: addressbook/libebook/e-contact.c:120
-#, fuzzy
 msgid "Home Address Label"
 msgstr "Koduse aadressi etikett"
 
 #: addressbook/libebook/e-contact.c:121
-#, fuzzy
 msgid "Work Address Label"
 msgstr "Tööaadressi etikett"
 
 #: addressbook/libebook/e-contact.c:122
-#, fuzzy
 msgid "Other Address Label"
-msgstr "Tööaadressi etikett"
+msgstr "Muu aadressi etikett"
 
 #: addressbook/libebook/e-contact.c:124
 msgid "Assistant Phone"
@@ -316,16 +296,14 @@ msgstr "Telex"
 msgid "TTY"
 msgstr "TTY"
 
-#  Email fields
 #. Email fields
 #: addressbook/libebook/e-contact.c:145
-#, fuzzy
 msgid "Email List"
-msgstr " loend:\n"
+msgstr "E-posti aadresside loend"
 
 #: addressbook/libebook/e-contact.c:146
 msgid "Email 1"
-msgstr "Email 1"
+msgstr "E-post 1"
 
 #: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
@@ -347,12 +325,10 @@ msgstr "Postiprogramm"
 msgid "Wants HTML Mail"
 msgstr "Soovib HTML sõnumeid"
 
-#  Instant messaging fields
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:154
-#, fuzzy
 msgid "AIM Screen Name List"
-msgstr "Sinu AIM konto näidatav nimi."
+msgstr "AIM ekraaninimede loend"
 
 #: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
@@ -363,78 +339,64 @@ msgid "Jabber Id List"
 msgstr "Jabberi Id loend"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "Yahoo! Screen Name List"
-msgstr "Name=Vaade detailse nimekirjana"
+msgstr "Yahoo! ekraaninimede loend"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "MSN Screen Name List"
-msgstr "Name=Vaade detailse nimekirjana"
+msgstr "MSN ekraaninimede loend"
 
 #: addressbook/libebook/e-contact.c:159
 msgid "ICQ Id List"
 msgstr "ICQ Id loend"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Sinu AIM konto näidatav nimi."
+msgstr "AIM kodunimi 1"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "Sinu AIM konto näidatav nimi."
+msgstr "AIM kodunimi 2"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "Sinu AIM konto näidatav nimi."
+msgstr "AIM kodunimi 3"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "Sinu AIM konto näidatav nimi."
+msgstr "AIM töönimi 1"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "Sinu AIM konto näidatav nimi."
+msgstr "AIM töönimi 2"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "Sinu AIM konto näidatav nimi."
+msgstr "AIM töönimi 3"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Groupwise Home Screen Name 1"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Groupwise kodunimi 1"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Groupwise Home Screen Name 2"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Groupwise kodunimi 2"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Groupwise Home Screen Name 3"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Groupwise kodunimi 3"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Groupwise Work Screen Name 1"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Groupwise töönimi 1"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Groupwise Work Screen Name 2"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Groupwise töönimi 2"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Groupwise Work Screen Name 3"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Groupwise töönimi 3"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
@@ -461,64 +423,52 @@ msgid "Jabber Work Id 3"
 msgstr "Jabber tööl Id 3"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Yahoo! kodunimi 1"
 
 #: addressbook/libebook/e-contact.c:180
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Yahoo! kodunimi 2"
 
 #: addressbook/libebook/e-contact.c:181
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Yahoo! kodunimi 3"
 
 #: addressbook/libebook/e-contact.c:182
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Yahoo! töönimi 1"
 
 #: addressbook/libebook/e-contact.c:183
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Yahoo! töönimi 2"
 
 #: addressbook/libebook/e-contact.c:184
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "Yahoo! töönimi 3"
 
 #: addressbook/libebook/e-contact.c:185
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "MSN kodunimi 1"
 
 #: addressbook/libebook/e-contact.c:186
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "MSN kodunimi 2"
 
 #: addressbook/libebook/e-contact.c:187
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "MSN kodunimi 3"
 
 #: addressbook/libebook/e-contact.c:188
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "MSN töönimi 1"
 
 #: addressbook/libebook/e-contact.c:189
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "MSN töönimi 2"
 
 #: addressbook/libebook/e-contact.c:190
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "(Näidatav nimi seadmata)"
+msgstr "MSN töönimi 3"
 
 #: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
@@ -550,7 +500,6 @@ msgid "Organization"
 msgstr "Organisatsioon"
 
 #: addressbook/libebook/e-contact.c:200
-#, fuzzy
 msgid "Organizational Unit"
 msgstr "Organisatsiooni allüksus"
 
@@ -574,7 +523,6 @@ msgstr "Juht"
 msgid "Assistant"
 msgstr "Assistent"
 
-#  Web fields
 #. Web fields
 #: addressbook/libebook/e-contact.c:209
 msgid "Homepage URL"
@@ -588,7 +536,6 @@ msgstr "Weblogi URL"
 msgid "Video Conferencing URL"
 msgstr "Videokonverentsi URL"
 
-#  Photo/Logo
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:214
 msgid "Photo"
@@ -598,13 +545,11 @@ msgstr "Foto"
 msgid "Logo"
 msgstr "Logo"
 
-#  Security fields
 #. Security fields
 #: addressbook/libebook/e-contact.c:218
 msgid "X.509 Certificate"
 msgstr "X.509 sertifikaat"
 
-#  Contact categories
 #. Contact categories
 #: addressbook/libebook/e-contact.c:221
 msgid "Category List"
@@ -627,7 +572,6 @@ msgstr "Vaba/Hõivatud URL"
 msgid "ICS Calendar"
 msgstr "ICS Kalender"
 
-#  Misc fields
 #. Misc fields
 #: addressbook/libebook/e-contact.c:230
 msgid "Spouse's Name"
@@ -650,67 +594,63 @@ msgid "List"
 msgstr "Loend"
 
 #: addressbook/libebook/e-contact.c:237
-#, fuzzy
 msgid "List Show Addresses"
-msgstr "Näita e-posti aadresse"
+msgstr "Ekraaninimede loend"
 
 #: addressbook/libebook/e-contact.c:1206
 msgid "Unnamed List"
-msgstr "Nimetu nimekiri"
+msgstr "Nimetute nimekiri"
 
-#  Set category and visibility
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "Sünnipäev"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "Sünnipäev: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aastapäev: %s"
 
 #: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
-msgstr ""
+msgstr "Kalendri andmeid ei saa salvestada: Vigane URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
 msgid "Invalid server URI"
 msgstr "Vigane serveri URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:323
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:326
 msgid "Calendar"
 msgstr "Kalender"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
-#, fuzzy
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:333
 msgid "Could not create cache file"
-msgstr "Ei saa faili varukoopiat luua."
+msgstr "Puhverfaili ei saa luua"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:364
+#: calendar/libecal/e-cal.c:4471
 msgid "Authentication failed"
-msgstr "Autentimine ebaõnnestus"
+msgstr "Tõrge autentimisel"
 
-#: calendar/backends/http/e-cal-backend-http.c:225
-#, fuzzy
+#: calendar/backends/http/e-cal-backend-http.c:239
 msgid "Redirected to Invalid URI"
-msgstr "URI '%s' hostinimi on vigane"
+msgstr "Ümber suunatud vigase URI peale"
 
-#: calendar/backends/http/e-cal-backend-http.c:249
+#: calendar/backends/http/e-cal-backend-http.c:263
 msgid "Bad file format."
 msgstr "Tundmatu failivorming."
 
-#: calendar/backends/http/e-cal-backend-http.c:255
+#: calendar/backends/http/e-cal-backend-http.c:269
 msgid "Not a calendar."
 msgstr "Ei ole kalender."
 
-#: calendar/libecal/e-cal-component.c:1237
+#: calendar/libecal/e-cal-component.c:1269
 msgid "Untitled appointment"
 msgstr "Nimetu sündmus"
 
@@ -855,89 +795,84 @@ msgstr "Madal"
 msgid "Undefined"
 msgstr "Määramata"
 
-#  actually ask the client for authentication
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1521
+#: calendar/libecal/e-cal.c:1525
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Sisesta %s parool (kasutaja %s)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4445
 msgid "Invalid argument"
 msgstr "Vigane parameeter"
 
-#: calendar/libecal/e-cal.c:4259
-#, fuzzy
+#: calendar/libecal/e-cal.c:4447
 msgid "Backend is busy"
-msgstr "Modem on kinni."
+msgstr ""
 
-#: calendar/libecal/e-cal.c:4261
-#, fuzzy
+#: calendar/libecal/e-cal.c:4449
 msgid "Repository is offline"
-msgstr "Ühendamata"
+msgstr "Hoidla ei ole võrku ühendatud"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4451
 msgid "No such calendar"
 msgstr "Kalendrit ei ole"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4453 servers/groupwise/e-gw-connection.c:87
 msgid "Object not found"
 msgstr "Objekti ei leitud"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4455 servers/groupwise/e-gw-connection.c:83
 msgid "Invalid object"
 msgstr "Vigane objekt"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4457
 msgid "URI not loaded"
 msgstr "URI ei ole laetud"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4459
 msgid "URI already loaded"
 msgstr "URI on juba laetud"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4461
 msgid "Permission denied"
 msgstr "Juurdepääs keelatud"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4463
 msgid "Object ID already exists"
 msgstr "Objekti ID on juba olemas"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4465
 msgid "Protocol not supported"
 msgstr "Mitte toetatud protokoll"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4467
 msgid "Operation has been cancelled"
 msgstr "Tegevus on tühistatud"
 
-#: calendar/libecal/e-cal.c:4281
-#, fuzzy
+#: calendar/libecal/e-cal.c:4469
 msgid "Could not cancel operation"
-msgstr "Ei saanud tööga hakkama"
+msgstr "Toimingut ei saa katkestada"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4473
 msgid "Authentication required"
 msgstr "Autentimine on vajalik"
 
-#: calendar/libecal/e-cal.c:4287
-#, fuzzy
+#: calendar/libecal/e-cal.c:4475
 msgid "A CORBA exception has occurred"
-msgstr "Tekkis ettearvamatu viga: %d"
+msgstr "Tekkis CORBA viga"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4477 servers/groupwise/e-gw-connection.c:93
 msgid "Unknown error"
 msgstr "Tundmatu viga"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4479
 msgid "No error"
 msgstr "Vigu ei tekkinud"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
-#: calendar/libedata-cal/e-cal-backend-sexp.c:661
-#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" ei eelda argumente"
@@ -946,7 +881,7 @@ msgstr "\"%s\" ei eelda argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" eeldab ühte argumenti"
@@ -968,6 +903,7 @@ msgstr ""
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" nõuab kahte argumenti"
@@ -976,7 +912,8 @@ msgstr "\"%s\" nõuab kahte argumenti"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
-#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" eeldab, et esimene argument oleks time_t"
@@ -987,6 +924,7 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" eeldab, et teine argument oleks täisarv"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" eeldab, et teine argument oleks time_t"
@@ -1005,46 +943,42 @@ msgstr ""
 "\"%s\" eeldab, et argument on kas: \"any\", \"summary\", \"description\" või "
 "\"location\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" vajab vähemalt ühte argumenti"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
 
-#: servers/groupwise/e-gw-connection.c:80
+#: servers/groupwise/e-gw-connection.c:81
 msgid "Invalid connection"
 msgstr "Vigane ühendus"
 
-#: servers/groupwise/e-gw-connection.c:84
+#: servers/groupwise/e-gw-connection.c:85
 msgid "Invalid response from server"
 msgstr "Vigane vastus serverilt"
 
-#: servers/groupwise/e-gw-connection.c:88
+#: servers/groupwise/e-gw-connection.c:89
 msgid "Bad parameter"
 msgstr "Vigane parameeter"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
-#, fuzzy
 msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Evolution Addressbook minicard viewer"
+msgstr ""
 
-# !PARANDA!
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
-#, fuzzy
 msgid "Evolution Calendar file and webcal backend"
-msgstr "Evolution'i kalendri iTip/iMip vaataja"
+msgstr ""
 
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
-#, fuzzy
 msgid "Evolution Addressbook file backend"
-msgstr "Evolutioni aadressiraamatu aadressikuva"
+msgstr ""
 
 #. dialog display isn't working out
 #: src/server.c:110
