@@ -255,6 +255,11 @@ gpointer                e_contact_get              (EContact *contact, EContactF
 const gpointer          e_contact_get_const        (EContact *contact, EContactField field_id);
 void                    e_contact_set              (EContact *contact, EContactField field_id, gpointer value);
 
+/* the following two calls return and take a GList of
+   EVCardAttribute*'s. */
+GList*                  e_contact_get_attributes   (EContact *contact, EContactField field_id);
+void                    e_contact_set_attributes   (EContact *contact, EContactField field_id, GList *attributes);
+
 /* misc functions for structured values */
 GType                   e_contact_date_get_type    (void);
 EContactDate           *e_contact_date_new         (void);
@@ -284,6 +289,7 @@ void                    e_contact_address_free     (EContactAddress *address);
 
 const char*             e_contact_field_name       (EContactField field_id);
 const char*             e_contact_pretty_name      (EContactField field_id);
+const char*             e_contact_vcard_attribute  (EContactField field_id);
 EContactField           e_contact_field_id         (const char *field_name);
 
 #endif /* __E_CONTACT_H__ */

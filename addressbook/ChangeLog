@@ -1,9 +1,38 @@
+2004-02-25  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.c (e_vcard_attribute_is_single_valued):
+	predicate returning TRUE if there's only one value for the
+	attribute.
+	(e_vcard_attribute_get_value): return the first value in the list,
+	if there is one.  also, warn if called on a multi-valued
+	attribute.
+	(e_vcard_attribute_get_value_decoded): same, but return a GString.
+	(e_vcard_attribute_has_type): predicate to check for TYPE=@typestr
+	in the parameter list for an attribute.
+
+	* libebook/e-vcard.h: add prototypes for
+	e_vcard_attribute_is_single_valued and
+	e_vcard_attribute_get_value{_decoded}.  Also, add
+	e_vcard_attribute_has_type.
+
+	* libebook/e-contact.h: add prototypes for
+	e_contact_{get,set}_attributes, and e_contact_vcard_attribute.
+
+	* libebook/e-contact.c (e_contact_vcard_attribute): new function,
+	return the vcard attribute for a given EContactField id.
+	(e_contact_get_attributes): get a GList* of EVCardAttributes for
+	the given EContactField.  This allows you to get at the parameters
+	to the attribute, which you can't get with e_contact_get.
+	(e_contact_set_attributes): an analogous setter for
+	e_contact_get_attributes.
+
 2004-02-25  Sivaiah Nallagatla  <snallagatla@novell.com>
+
 	* libebook/e-vcard.h : added EVC_X_GROUPWISE definition 
 	* libebook/e-contact.[ch] : added E_CONTACT_IM_GROUPWISE field to EContact 
 	to store groupwise im ids
 
-2dd E_004-02-24  Hans Petter Jansson  <hpj@ximian.com>
+2004-02-24  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-book-async.c (_default_book_response_dtor): Don't
 	unref the *new* book after returning it to user. This was causing

@@ -164,9 +164,17 @@ const char*      e_vcard_attribute_get_name   (EVCardAttribute *attr);
 GList*           e_vcard_attribute_get_values (EVCardAttribute *attr);  /* GList elements are of type char* */
 GList*           e_vcard_attribute_get_values_decoded (EVCardAttribute *attr); /* GList elements are of type GString* */
 
+/* special accessors for single valued attributes */
+gboolean              e_vcard_attribute_is_single_valued      (EVCardAttribute *attr);
+char*                 e_vcard_attribute_get_value             (EVCardAttribute *attr);
+GString*              e_vcard_attribute_get_value_decoded     (EVCardAttribute *attr);
+
 GList*           e_vcard_attribute_get_params       (EVCardAttribute *attr);
 const char*      e_vcard_attribute_param_get_name   (EVCardAttributeParam *param);
 GList*           e_vcard_attribute_param_get_values (EVCardAttributeParam *param);
+
+/* special TYPE= parameter predicate (checks for TYPE=@typestr */
+gboolean         e_vcard_attribute_has_type         (EVCardAttribute *attr, const char *typestr);
 
 /* Utility functions. */
 char*            e_vcard_escape_string (const char *str);

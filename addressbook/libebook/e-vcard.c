@@ -1189,6 +1189,65 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 	return attr->decoded_values;
 }
 
+gboolean
+e_vcard_attribute_is_single_valued (EVCardAttribute *attr)
+{
+	if (attr->values == NULL
+	    || attr->values->next != NULL)
+		return FALSE;
+
+	return TRUE;
+}
+
+char*
+e_vcard_attribute_get_value (EVCardAttribute *attr)
+{
+	GList *values = e_vcard_attribute_get_values (attr);
+
+	if (!e_vcard_attribute_is_single_valued (attr))
+		g_warning ("e_vcard_attribute_get_value called on multivalued attribute");
+
+	return values ? g_strdup ((char*)values->data) : NULL;
+}
+
+GString*
+e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
+{
+	GList *values = e_vcard_attribute_get_values_decoded (attr);
+	GString *str = NULL;
+
+	if (!e_vcard_attribute_is_single_valued (attr))
+		g_warning ("e_vcard_attribute_get_value_decoded called on multivalued attribute");
+
+	if (values)
+		str = values->data;
+
+	return str ? g_string_new_len (str->str, str->len) : NULL;
+}
+
+gboolean
+e_vcard_attribute_has_type (EVCardAttribute *attr, const char *typestr)
+{
+	GList *params = e_vcard_attribute_get_params (attr);
+	GList *p;
+
+	for (p = params; p; p = p->next) {
+		EVCardAttributeParam *param = p->data;
+
+		if (!strcasecmp (e_vcard_attribute_param_get_name (param), EVC_TYPE)) {
+			GList *values = e_vcard_attribute_param_get_values (param);
+			GList *v;
+
+			for (v = values; v; v = v->next) {
+				if (!strcasecmp ((char*)v->data, typestr))
+					return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
 GList*
 e_vcard_attribute_get_params (EVCardAttribute *attr)
 {

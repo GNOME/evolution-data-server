@@ -1325,6 +1325,22 @@ e_contact_pretty_name (EContactField field_id)
 	return "";
 }
 
+const char*
+e_contact_vcard_attribute  (EContactField field_id)
+{
+	int i;
+
+	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST, "");
+
+	for (i = 0; i < G_N_ELEMENTS (field_info); i ++) {
+		if (field_id == field_info[i].field_id)
+			return field_info[i].vcard_field_name;
+	}
+
+	g_warning ("unknown field id %d", field_id);
+	return NULL;
+}
+
 EContactField
 e_contact_field_id (const char *field_name)
 {
@@ -1386,6 +1402,75 @@ e_contact_set (EContact *contact, EContactField field_id, gpointer value)
 	g_object_set (contact,
 		      e_contact_field_name (field_id), value,
 		      NULL);
+}
+
+GList*
+e_contact_get_attributes (EContact *contact, EContactField field_id)
+{
+	GList *l = NULL;
+	GList *attrs, *a;
+	int i;
+	EContactFieldInfo *info = NULL;
+
+	g_return_val_if_fail (contact && E_IS_CONTACT (contact), NULL);
+	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST, NULL);
+
+	for (i = 0; i < G_N_ELEMENTS (field_info); i++) {
+		if (field_info[i].field_id == field_id) {
+			info = &field_info[i];
+			break;
+		}
+	}
+
+	if (!info) {
+		g_warning ("unknown field %d", field_id);
+		return NULL;
+	}
+
+	attrs = e_vcard_get_attributes (E_VCARD (contact));
+
+	for (a = attrs; a; a = a->next) {
+		EVCardAttribute *attr = a->data;
+		const char *name, *group;
+
+		group = e_vcard_attribute_get_group (attr);
+		name = e_vcard_attribute_get_name (attr);
+
+		if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
+			l = g_list_append (l, e_vcard_attribute_copy (attr));
+		}
+	}
+
+	return l;
+}
+
+void
+e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attributes)
+{
+	EContactFieldInfo *info = NULL;
+	GList *l;
+	int i;
+
+	g_return_if_fail (contact && E_IS_CONTACT (contact));
+	g_return_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST);
+
+	for (i = 0; i < G_N_ELEMENTS (field_info); i++) {
+		if (field_info[i].field_id == field_id) {
+			info = &field_info[i];
+			break;
+		}
+	}
+
+	if (!info) {
+		g_warning ("unknown field %d", field_id);
+		return;
+	}
+
+	e_vcard_remove_attributes (E_VCARD (contact), NULL, info->vcard_field_name);
+
+	for (l = attributes; l; l = l->next)
+		e_vcard_add_attribute (E_VCARD (contact),
+				       e_vcard_attribute_copy ((EVCardAttribute*)l->data));
 }
 
 EContactName*
