@@ -41,7 +41,7 @@ debug_handler (SoupMessage *msg, gpointer user_data)
                 msg, time (0));
 
 	/* print headers */
-	soup_message_foreach_header (msg->request_headers, print_header, NULL);
+	soup_message_foreach_header (msg->response_headers, print_header, NULL);
 
 	/* print response */
 	if (msg->response.length) {
