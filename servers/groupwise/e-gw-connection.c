@@ -411,7 +411,7 @@ e_gw_connection_get_items (EGwConnection *cnc, GSList **list)
         }
 	
 	/* FIXME: iterate through the response and populate the list  */
- 	*l = soup_soap_response_get_parameters (response);
+ 	*l = (GList *) soup_soap_response_get_parameters (response);
 
 	/* free memory */
         g_object_unref (response);
