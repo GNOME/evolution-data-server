@@ -1,5 +1,12 @@
 2004-02-02  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-contact.c (GETSET_FIELD): these are also of type
+	STRING.  if you want a GETSET field that's a struct, use
+	STRUCT_FIELD.  Fixes a problem with FULL_NAME reflection for
+	evolution-sharp.
+
+2004-02-02  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-vcard.c (e_vcard_attribute_remove_params): clear
 	attr->encoding_set and attr->encoding, since that is just cached
 	information from the attribute parameters.  Fixes a spurious
