@@ -1349,6 +1349,10 @@ set_local_attachment_store (ECal *ecal)
 			g_strconcat ("file://", g_get_home_dir (), "/", ".evolution/cache/calendar",
 				     "/", mangled_uri, NULL);
 	}
+	if (g_str_has_prefix (priv->uri, "exchange://")) {
+		priv->local_attachment_store = g_strdup_printf ("file://%s/.evolution/exchange/%s", 
+					g_get_home_dir (), mangled_uri);
+	}
 }
 
 /**

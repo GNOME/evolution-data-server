@@ -19,6 +19,10 @@
 	strftime should be passed an array of sufficient length, not a
 	char *. Fetch t_str from cache - so you are always sure of having 
 	the correct value.Add some extra safety code checking empty strings.
+
+2005-03-11  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* libecal/e-cal.c : Set the local_attachment_store for exchange
 	
 2005-03-08  Chenthill Palanisamy  <pchenthill@novell.com>
 

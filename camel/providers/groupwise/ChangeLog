@@ -18,6 +18,14 @@
 
 	* camel-groupwise-utils.c:(camel_groupwise_util_item_from_message)
 	Added code to fix the problem of Priority not set in outgoing mails
+
+2005-03-07  JP Rosevear  <jpr@novell.com>
+
+	From Dave Malcolm <dmalcolm@redhat.com>
+	
+	* camel-groupwise-store-summary.c
+	(camel_groupwise_store_summary_namespace_set): move forward
+	declaration out of block
 	
 2005-03-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	

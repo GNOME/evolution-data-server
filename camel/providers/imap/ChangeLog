@@ -5,6 +5,14 @@
 	since the RFC states that flags listed in PERMANENTFLAGS are
 	always settable.
 
+2005-03-07  JP Rosevear  <jpr@novell.com>
+
+	From Dave Malcolm <dmalcolm@redhat.com>
+	
+	* camel-imap-store-summary.c
+	(camel_imap_store_summary_namespace_set): move forward declaration
+	out of block to fix gcc4 compilation
+	
 2005-03-01  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #73112
