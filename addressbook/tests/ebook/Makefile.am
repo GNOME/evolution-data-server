@@ -6,8 +6,10 @@ TEST_LIBS=						\
 	$(top_builddir)/addressbook/libebook/libebook.la\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
-noinst_PROGRAMS= test-changes test-categories test-date test-ebook test-ebook-async test-ebook-view test-photo test-self test-string test-undefinedfield test-untyped-phones
+noinst_PROGRAMS= test-changes test-categories test-date test-ebook test-ebook-async test-ebook-view test-photo test-self test-string test-undefinedfield test-untyped-phones test-im test-search
 
+test_search_LDADD=$(TEST_LIBS)
+test_im_LDADD=$(TEST_LIBS)
 test_date_LDADD=$(TEST_LIBS)
 test_ebook_LDADD=$(TEST_LIBS)
 test_ebook_async_LDADD=$(TEST_LIBS)

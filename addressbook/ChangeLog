@@ -1,3 +1,11 @@
+2004-02-23  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/test-search.c: add a utility so we can perform
+	searches against addressbooks without having to bring up a gui.
+
+	* tests/ebook/Makefile.am (test_search_LDADD): add.
+	(noinst_PROGRAMS): add test-search
+
 2004-02-20  Chris Toshok  <toshok@ximian.com>
 
 	[ fixes bug #53994 ]
