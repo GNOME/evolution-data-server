@@ -886,8 +886,8 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	if (priv->mode == CAL_MODE_REMOTE) {
 		EGwConnectionStatus status;
 
-		/* FIXME: deal with recurrences, and pass the correct 'container' */
-		status = e_gw_connection_remove_item (priv->cnc, NULL, uid);
+		/* FIXME: deal with recurrences */
+		status = e_gw_connection_remove_item (priv->cnc, priv->container_id, uid);
 		if (status != E_GW_CONNECTION_STATUS_OK)
 			return GNOME_Evolution_Calendar_OtherError;
 	}

@@ -1,5 +1,11 @@
 2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_remove_object): pass the container_id to
+	e_gw_connection_remove_item.
+
+2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.c (connect_to_server):
 	set the ESource's name to the name of the folder.
 

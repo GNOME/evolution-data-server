@@ -82,7 +82,7 @@ EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item
 EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp);
 EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
 EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users,
-                                                                        time_t start, time_t end, GList **freebusy);
+						       time_t start, time_t end, GList **freebusy);
 
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
