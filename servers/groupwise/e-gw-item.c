@@ -26,7 +26,7 @@
 #endif
 #include <string.h>
 #include <glib.h>
-
+#include <libsoup/soup-misc.h>
 #include "e-gw-item.h"
 #include "e-gw-connection.h"
 #include "e-gw-message.h"
@@ -1585,11 +1585,20 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
 
 	soup_soap_message_start_element (msg, "message", NULL, NULL);
-	dtstring = g_strdup_printf ("%d", priv->message ? strlen (priv->message) : 0);
-	soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
-	g_free (dtstring);
-	soup_soap_message_write_base64 (msg, priv->message ? priv->message : "",
-					priv->message ? strlen (priv->message) : 0);
+	if (priv->message) {
+		char *str;
+
+		str = soup_base64_encode (priv->message, strlen (priv->message));
+		dtstring = g_strdup_printf ("%d", strlen (str));
+		soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
+		g_free (dtstring);
+		soup_soap_message_write_string (msg, str);
+		g_free (str);
+	} else {
+		soup_soap_message_add_attribute (msg, "length", "0", NULL, NULL);
+		soup_soap_message_write_string (msg, "");
+	}
+
 	soup_soap_message_end_element (msg);
 
 	if (priv->start_date != -1) {
