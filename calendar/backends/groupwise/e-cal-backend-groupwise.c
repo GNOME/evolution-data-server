@@ -127,11 +127,13 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	status = e_gw_connection_get_categories (priv->cnc, priv->categories_by_id, priv->categories_by_name);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+		g_mutex_unlock (mutex);
                 return status;
         }
 	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "recipients message recipientStatus", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+		g_mutex_unlock (mutex);
                 return status;
         }
 	
@@ -140,6 +142,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, 1, CURSOR_ITEM_LIMIT, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_cal_backend_groupwise_notify_error_code (cbgw, status);
+			g_mutex_unlock (mutex);
 			return status;
 		}
 		for (l = list; l != NULL; l = g_list_next(l)) {
