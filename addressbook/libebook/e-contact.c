@@ -347,13 +347,11 @@ e_contact_get_first_attr (EContact *contact, const char *attr_name)
 
 	for (l = attrs; l; l = l->next) {
 		EVCardAttribute *attr = l->data;
-		const char *name, *group;
+		const char *name;
 
-		group = e_vcard_attribute_get_group (attr);
 		name = e_vcard_attribute_get_name (attr);
 
-		/* all the attributes we care about should be in group "" */
-		if ((!group || !*group) && !strcasecmp (name, attr_name))
+		if (!strcasecmp (name, attr_name))
 			return attr;
 	}
 
@@ -698,14 +696,12 @@ e_contact_set_property (GObject *object,
 			GList *l;
 
 			for (l = attrs; l; l = l->next) {
-				const char *name, *group;
+				const char *name;
 
 				attr = l->data;
-				group = e_vcard_attribute_get_group (attr);
 				name = e_vcard_attribute_get_name (attr);
 
-				/* all the attributes we care about should be in group "" */
-				if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
+				if (!strcasecmp (name, info->vcard_field_name)) {
 					if (num_left-- == 0) {
 						found = TRUE;
 						break;
@@ -739,18 +735,16 @@ e_contact_set_property (GObject *object,
 			GList *l;
 
 			for (l = attrs; l && !found; l = l->next) {
-				const char *name, *group;
+				const char *name;
 				gboolean found_needed1, found_needed2;
 
 				found_needed1 = (info->attr_type1 == NULL);
 				found_needed2 = (info->attr_type2 == NULL);
 
 				attr = l->data;
-				group = e_vcard_attribute_get_group (attr);
 				name = e_vcard_attribute_get_name (attr);
 
-				/* all the attributes we care about should be in group "" */
-				if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
+				if (!strcasecmp (name, info->vcard_field_name)) {
 					GList *params;
 
 					for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
@@ -989,16 +983,14 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 
 	for (l = attrs; l; l = l->next) {
 		EVCardAttribute *attr = l->data;
-		const char *name, *group;
+		const char *name;
 
 		found_needed1 = (type_needed1 == NULL);
 		found_needed2 = (type_needed2 == NULL);
 
-		group = e_vcard_attribute_get_group (attr);
 		name = e_vcard_attribute_get_name (attr);
 
-		/* all the attributes we care about should be in group "" */
-		if ((!group || !*group) && !strcasecmp (name, attr_name)) {
+		if (!strcasecmp (name, attr_name)) {
 			GList *params;
 
 			for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
@@ -1102,13 +1094,11 @@ e_contact_get_property (GObject *object,
 
 			for (l = attrs; l; l = l->next) {
 				EVCardAttribute *attr = l->data;
-				const char *name, *group;
+				const char *name;
 
-				group = e_vcard_attribute_get_group (attr);
 				name = e_vcard_attribute_get_name (attr);
 
-				/* all the attributes we care about should be in group "" */
-				if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
+				if (!strcasecmp (name, info->vcard_field_name)) {
 					GList *v;
 					int count;
 
@@ -1131,13 +1121,11 @@ e_contact_get_property (GObject *object,
 
 			for (l = attrs; l; l = l->next) {
 				EVCardAttribute *attr = l->data;
-				const char *name, *group;
+				const char *name;
 
-				group = e_vcard_attribute_get_group (attr);
 				name = e_vcard_attribute_get_name (attr);
 
-				/* all the attributes we care about should be in group "" */
-				if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
+				if (!strcasecmp (name, info->vcard_field_name)) {
 					if (num_left-- == 0) {
 						GList *v = e_vcard_attribute_get_values (attr);
 
@@ -1248,13 +1236,11 @@ e_contact_get_property (GObject *object,
 
 		for (l = attrs; l; l = l->next) {
 			EVCardAttribute *attr = l->data;
-			const char *name, *group;
+			const char *name;
 
-			group = e_vcard_attribute_get_group (attr);
 			name = e_vcard_attribute_get_name (attr);
 
-			/* all the attributes we care about should be in group "" */
-			if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
+			if (!strcasecmp (name, info->vcard_field_name)) {
 				GList *v;
 				v = e_vcard_attribute_get_values (attr);
 
@@ -1445,12 +1431,11 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
 
 	for (a = attrs; a; a = a->next) {
 		EVCardAttribute *attr = a->data;
-		const char *name, *group;
+		const char *name;
 
-		group = e_vcard_attribute_get_group (attr);
 		name = e_vcard_attribute_get_name (attr);
 
-		if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
+		if (!strcasecmp (name, info->vcard_field_name)) {
 			l = g_list_append (l, e_vcard_attribute_copy (attr));
 		}
 	}

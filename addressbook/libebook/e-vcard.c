@@ -547,7 +547,7 @@ parse (EVCard *evc, const char *str)
 	}
 	if (attr && !g_ascii_strcasecmp (attr->name, "begin"))
 		e_vcard_attribute_free (attr);
-	else
+	else if (attr)
 		e_vcard_add_attribute (evc, attr);
 
 	while (*p) {
@@ -692,8 +692,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		GString *attr_str;
 		int l;
 
-		if (attr->group == NULL &&
-		    !g_ascii_strcasecmp (attr->name, "VERSION"))
+		if (!g_ascii_strcasecmp (attr->name, "VERSION"))
 			continue;
 
 		attr_str = g_string_new ("");
@@ -722,18 +721,18 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 				for (v = param->values; v; v = v->next) {
 					char *value = v->data;
 					char *p = value;
-					gboolean ws = FALSE;
+					gboolean quotes = FALSE;
 					while (*p) {
-						if (g_unichar_isspace (g_utf8_get_char (p))) {
-							ws = TRUE;
+						if (!g_unichar_isalnum (g_utf8_get_char (p))) {
+							quotes = TRUE;
 							break;
 						}
 						p = g_utf8_next_char (p);
 					}
-					if (ws)
+					if (quotes)
 						attr_str = g_string_append_c (attr_str, '"');
 					attr_str = g_string_append (attr_str, value);
-					if (ws)
+					if (quotes)
 						attr_str = g_string_append_c (attr_str, '"');
 					if (v->next)
 						attr_str = g_string_append_c (attr_str, ',');
