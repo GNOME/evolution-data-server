@@ -1,3 +1,10 @@
+2004-08-19  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #62065
+	* e-gw-tem.c
+	(e_gw_item_new_from_soap_parameter): Check whether message
+	element has content in it before trying to decode it.
+
 2004-08-19 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* doc/gw-soap-types.xsd 

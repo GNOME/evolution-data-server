@@ -1432,11 +1432,19 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			SoupSoapParameter *part;
 			int len;
 			char *msg;
+			char *length;
 			
 			part = soup_soap_parameter_get_first_child_by_name (child, "part");
 			msg = soup_soap_parameter_get_string_value (part);
-			len = atoi (soup_soap_parameter_get_property (part, "length"));
-			item->priv->message = soup_base64_decode  (msg, &len);
+			length = soup_soap_parameter_get_property (part, "length"); 
+
+			if (msg && length) {
+				len = atoi (length);
+				item->priv->message = soup_base64_decode  (msg, &len);
+			}
+
+			g_free (length);
+			g_free (msg);
 		}
 
 		else if (!g_ascii_strcasecmp (name, "place"))
