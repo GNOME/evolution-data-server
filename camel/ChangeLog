@@ -6,6 +6,9 @@
 	the old imap code: only use the cache if the network is
 	unavailable, otherwise always scan the server for the folder
 	listing.
+	(imap4_get_folder_info): Always get INBOX (fix for cases where
+	INBOX wasn't under the namespace and for cases where it's not
+	subscribed).
 
 2005-01-24  Parthasarathi Susarla <sparthasarathi@novell.com>
 

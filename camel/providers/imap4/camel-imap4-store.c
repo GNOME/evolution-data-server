@@ -1159,9 +1159,9 @@ static CamelFolderInfo *
 imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
-	CamelIMAP4Command *ic, *ic0 = NULL;
+	CamelIMAP4Command *ic, *ic0 = NULL, *ic1 = NULL;
+	CamelFolderInfo *inbox = NULL, *fi = NULL;
 	const char *base, *namespace;
-	CamelFolderInfo *fi = NULL;
 	camel_imap4_list_t *list;
 	GPtrArray *array;
 	const char *cmd;
@@ -1186,6 +1186,15 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL
 	    || engine->state == CAMEL_IMAP4_ENGINE_DISCONNECTED) {
 		fi = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, base, flags);
+		if (base == namespace && *namespace) {
+			inbox = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, "INBOX",
+									   flags & ~CAMEL_STORE_FOLDER_INFO_RECURSIVE);
+			if (inbox) {
+				inbox->next = fi;
+				fi = inbox;
+			}
+		}
+		
 		if (fi == NULL && ((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
 			/* folder info hasn't yet been cached and the store hasn't been
 			 * connected yet, but the network is available so we can connect
@@ -1201,6 +1210,14 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	 */
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		fi = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, base, flags);
+		if (base == namespace && *namespace) {
+			inbox = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, "INBOX",
+									   flags & ~CAMEL_STORE_FOLDER_INFO_RECURSIVE);
+			if (inbox) {
+				inbox->next = fi;
+				fi = inbox;
+			}
+		}
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		return fi;
 	}
@@ -1216,6 +1233,14 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	wildcard = (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) ? '*' : '%';
 	pattern = imap4_folder_utf7_name (store, base, wildcard);
 	array = g_ptr_array_new ();
+	
+	if (base == namespace && *namespace) {
+		/* Make sure to get INBOX: we always use LIST so the user sees his/her INBOX even
+		   if it isn't subscribed and the user has enabled "Only show subscribed folders" */
+		ic1 = camel_imap4_engine_queue (engine, NULL, "LIST \"\" INBOX\r\n");
+		camel_imap4_command_register_untagged (ic1, "LIST", camel_imap4_untagged_list);
+		ic1->user_data = array;
+	}
 	
 	if (*top != '\0') {
 		size_t len;
@@ -1240,13 +1265,19 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 		;
 	
 	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
-		if (ic0 && ic0->status != CAMEL_IMAP4_COMMAND_COMPLETE)
+		if (ic1 && ic1->status != CAMEL_IMAP4_COMMAND_COMPLETE)
+			camel_exception_xfer (ex, &ic0->ex);
+		else if (ic0 && ic0->status != CAMEL_IMAP4_COMMAND_COMPLETE)
 			camel_exception_xfer (ex, &ic0->ex);
 		else
 			camel_exception_xfer (ex, &ic->ex);
 		
+		if (ic1 != NULL)
+			camel_imap4_command_unref (ic1);
+		
 		if (ic0 != NULL)
 			camel_imap4_command_unref (ic0);
+		
 		camel_imap4_command_unref (ic);
 		
 		for (i = 0; i < array->len; i++) {
@@ -1260,6 +1291,9 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 		
 		goto done;
 	}
+	
+	if (ic1 != NULL)
+		camel_imap4_command_unref (ic1);
 	
 	if (ic0 != NULL)
 		camel_imap4_command_unref (ic0);
