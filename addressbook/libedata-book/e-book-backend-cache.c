@@ -345,7 +345,7 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
                 return NULL;
         for ( ; l != NULL; l = g_slist_next (l)) {
                 vcard_str = l->data;
-                if (vcard_str) {
+                if (vcard_str && !strncmp (vcard_str, "BEGIN:VCARD", 11)) {
                         contact = e_contact_new_from_vcard (vcard_str);
 			uid = e_contact_get_const (contact, E_CONTACT_UID);
                         if (contact && uid && *uid &&(query && e_book_backend_sexp_match_contact(sexp, contact)))

@@ -1,3 +1,49 @@
+2005-01-10  Hans Petter Jansson  <hpj@novell.com>
+
+	* backens/ldap/e-book-backend-ldap.c
+	(check_schema_support): Add robustness against not being connected.
+	(query_ldap_root_dse): Ditto.
+	(e_book_backend_ldap_reconnect): Ditto, and against not having a
+	book_view to signal.
+	(ldap_op_finished): Robustness.
+	(create_contact_handler): Ditto, and add the contact to cache too.
+	(e_book_backend_ldap_create_contact): Robustness.
+	(remove_contact_handler): Ditto, and remove the contact from cache.
+	(e_book_backend_remove_contacts): Ditto, and fix a memory leak.
+	(modify_contact_modify_handler): Robustness, and modify the cached
+	contact too.
+	(modify_contact_search_handler): Robustness.
+	(e_book_backend_ldap_modify_contact): Ditto.
+	(get_contact_handler): Ditto.
+	(e_book_backend_ldap_get_contact): Robustness, and implement offline
+	case.
+	(contact_list_handler): Robustness.
+	(e_book_backend_ldap_get_contact_list): Robustness, and implement
+	offline case.
+	(poll_ldap): Robustness, and set the poll_timeout to -1 when we return
+	FALSE. Otherwise we might never poll again.
+	(ldap_search_handler): Robustness.
+	(e_book_backend_ldap_search): Robustness, and implement offline case.
+	(generate_cache_handler): Implement.
+	(generate_cache_dtor): Implement.
+	(generate_cache): Implement.
+	(e_book_backend_ldap_authenticate_user): Robustness, implement offline
+	case.
+	(ldap_cancel_op): Robustness.
+	(e_book_backend_ldap_load_source): Implement offline case. Cache when
+	online.
+	(stop_views): Implement.
+	(start_views): Implement.
+	(e_book_backend_ldap_set_mode): Do nothing if mode didn't change. Kick
+	off a cache attempt when going online. Cancel running operations when
+	mode changes.
+	(call_dtor): Robustness.
+
+	* libedata-book/e-book-backend-cache.c
+	(e_book_backend_cache_get_contacts): Check that objects we retrieve
+	are likely to be vcards before trying to parse them. Fixes some
+	warnings.
+
 2004-12-24  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c 
