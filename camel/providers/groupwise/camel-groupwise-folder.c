@@ -1229,10 +1229,10 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	gstr = g_string_append (gstr, "END:VCALENDAR\n");
 	
 
-	*str = g_strdup (gstr->str);
+	*str = gstr->str;
 	*len = gstr->len;
 	
-	g_string_free (gstr, TRUE);
+	g_string_free (gstr, FALSE);
 	g_strfreev (tmp);
 }
 
