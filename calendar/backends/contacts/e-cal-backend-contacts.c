@@ -126,22 +126,27 @@ static ContactRecord *
 contact_record_new (ECalBackendContacts *cbc, EContact *contact)
 {
         ContactRecord *cr = g_new0 (ContactRecord, 1);
-        char *comp_str;
+	char *comp_str;
         
         cr->cbc = cbc;
         cr->contact = contact;
         cr->comp_birthday = create_birthday (cbc, contact);
         cr->comp_anniversary = create_anniversary (cbc, contact);
 
-        comp_str = e_cal_component_get_as_string (cr->comp_birthday);
-        e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc),
-                                             comp_str);
-        g_free (comp_str);
+	if (cr->comp_birthday) {
+		comp_str = e_cal_component_get_as_string (cr->comp_birthday);
+		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc),
+						     comp_str);
+		g_free (comp_str);
+	}
         
-        comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
-        e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc),
-                                             comp_str);
-        g_free (comp_str);
+	if (cr->comp_anniversary) {
+
+		comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
+		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc),
+						     comp_str);
+		g_free (comp_str);
+	}
 
         g_object_ref (G_OBJECT (contact));
         
@@ -157,19 +162,22 @@ contact_record_free (ContactRecord *cr)
         g_object_unref (G_OBJECT (cr->contact));
 
 	/* Remove the birthday event */
-        comp_str = e_cal_component_get_as_string (cr->comp_birthday);
-        e_cal_component_get_uid (cr->comp_birthday, &uid);
-        e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str);
-        g_free (comp_str);
+	if (cr->comp_birthday) {
+		comp_str = e_cal_component_get_as_string (cr->comp_birthday);
+		e_cal_component_get_uid (cr->comp_birthday, &uid);
+		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str);
+		g_free (comp_str);
+		g_object_unref (G_OBJECT (cr->comp_birthday));
+	}
 
 	/* Remove the anniversary event */
-        comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
-        e_cal_component_get_uid (cr->comp_anniversary, &uid);
-        e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str);
-        g_free (comp_str);
-        
-        g_object_unref (G_OBJECT (cr->comp_birthday));
-        g_object_unref (G_OBJECT (cr->comp_anniversary));
+	if (cr->comp_anniversary) {
+		comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
+		e_cal_component_get_uid (cr->comp_anniversary, &uid);
+		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str);
+		g_free (comp_str);
+		g_object_unref (G_OBJECT (cr->comp_anniversary));
+	}
         
         g_free (cr);
 }
@@ -208,12 +216,12 @@ contact_record_cb (gpointer key, gpointer value, gpointer user_data)
         ContactRecordCB *cb_data = user_data;
         ContactRecord   *record = value;
 
-        if (e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_birthday, E_CAL_BACKEND (cb_data->cbc))) {
+        if (record->comp_birthday && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_birthday, E_CAL_BACKEND (cb_data->cbc))) {
                 char * comp_str = e_cal_component_get_as_string (record->comp_birthday);
                 cb_data->result = g_list_append (cb_data->result, comp_str);
         }
 
-        if (e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_anniversary, E_CAL_BACKEND (cb_data->cbc))) {
+        if (record->comp_anniversary && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_anniversary, E_CAL_BACKEND (cb_data->cbc))) {
                 char * comp_str = e_cal_component_get_as_string (record->comp_anniversary);
                 cb_data->result = g_list_append (cb_data->result, comp_str);
         }
