@@ -254,6 +254,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 
 	/* if we have username, try it here */
 	if (service->url->user != NULL
+	    && service->url->user[0]
 	    && camel_nntp_try_authenticate(store, ex) != NNTP_AUTH_ACCEPTED)
 		goto fail;
   	
