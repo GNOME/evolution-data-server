@@ -446,9 +446,6 @@ e_source_set_group (ESource *source,
 	source->priv->group = group;
 	if (group != NULL) {
 		g_object_weak_ref (G_OBJECT (group), (GWeakNotify) group_weak_notify, source);
-
-		if (!source->priv->absolute_uri)
-			source->priv->absolute_uri = build_absolute_uri (source);
 	}
 
 	g_signal_emit (source, signals[CHANGED], 0);
@@ -495,11 +492,9 @@ e_source_set_absolute_uri (ESource *source,
 			   const char *absolute_uri)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (absolute_uri);
 
-	if (source->priv->readonly)
-		return;
-
-	if (source->priv->absolute_uri == absolute_uri)
+	if (!strcmp (source->priv->absolute_uri, absolute_uri))
 		return;
 
 	g_free (source->priv->absolute_uri);
@@ -835,7 +830,7 @@ e_source_copy (ESource *source)
 	if (e_source_get_color (source, &color))
 		e_source_set_color (new_source, color);
 
-	new_source->priv->absolute_uri = e_source_get_uri (source);
+	new_source->priv->absolute_uri = g_strdup (e_source_peek_absolute_uri (source));
 
 	e_source_foreach_property (source, (GHFunc) copy_property, new_source);
 

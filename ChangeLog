@@ -1,3 +1,18 @@
+2004-06-01  Chris Toshok  <toshok@ximian.com>
+
+	* libedataserver/e-source.c (e_source_set_group): back out the
+	change that causes this function to always add an absolute_uri to
+	the ESource, as this uri is always used instead of the
+	relative_uri in e_source_get_uri, which is NOT what we want in 99%
+	of the cases.  If you want an absolute uri, call
+	e_source_set_absolute_uri - it should never happen implicitly.
+	(e_source_copy): when copying an ESource don't create an absolute
+	uri when @source might have had one.
+	(e_source_set_absolute_uri): use strcmp, not ==.  also,
+	"source->priv->readonly" governs whether or not data can be stored
+	in the folder represented by the ESource, not that the ESource
+	itself is readonly.
+
 2004-05-27  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-file-cache.[ch] (e_file_cache_clean): new function.
