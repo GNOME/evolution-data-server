@@ -78,7 +78,7 @@
        (read_attribute_params) : If we reach
        end of line after skipping invalid parameter
        break out of loop
-       Fixes #70198
+       Fixes #70918
 
 2005-01-31 Sivaiah Nallagatla  <snallagatla@novell.com>
 
