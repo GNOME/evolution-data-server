@@ -2811,9 +2811,9 @@ header_append_param(struct _camel_header_param *last, char *name, char *value)
 	if (strncmp(value, "=?", 2) == 0
 	    && (node->value = header_decode_text(value, strlen(value), FALSE, NULL))) {
 		g_free(value);
-	} else if (!g_utf8_validate(value, -1, NULL)) {
-		const char * charset = e_iconv_locale_charset();
-
+	} else if (g_ascii_strcasecmp (name, "boundary") != 0 && !g_utf8_validate(value, -1, NULL)) {
+		const char *charset = e_iconv_locale_charset();
+		
 		if ((node->value = header_convert("UTF-8", charset?charset:"ISO-8859-1", value, strlen(value)))) {
 			g_free(value);
 		} else {
