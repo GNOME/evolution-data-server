@@ -40,6 +40,8 @@ static void digest_delete_folder (CamelStore *store, const char *folder_name, Ca
 static void digest_rename_folder (CamelStore *store, const char *old, const char *new, CamelException *ex);
 static void digest_init_trash (CamelStore *store);
 static CamelFolder *digest_get_trash  (CamelStore *store, CamelException *ex);
+static void digest_init_spam (CamelStore *store);
+static CamelFolder *digest_get_spam  (CamelStore *store, CamelException *ex);
 
 static CamelFolderInfo *digest_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex);
 
@@ -92,6 +94,8 @@ camel_digest_store_class_init (CamelDigestStoreClass *klass)
 	
 	store_class->init_trash = digest_init_trash;
 	store_class->get_trash = digest_get_trash;
+	store_class->init_spam = digest_init_spam;
+	store_class->get_spam = digest_get_spam;
 }
 
 static void
@@ -99,8 +103,8 @@ camel_digest_store_init (CamelDigestStore *obj)
 {
 	CamelStore *store = (CamelStore *) obj;
 	
-	/* we dont want a vtrash on this one */
-	store->flags &= ~(CAMEL_STORE_VTRASH);	
+	/* we dont want a vtrash and vspam on this one */
+	store->flags &= ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VSPAM);	
 }
 
 static void
@@ -163,6 +167,19 @@ digest_init_trash (CamelStore *store)
 
 static CamelFolder *
 digest_get_trash (CamelStore *store, CamelException *ex)
+{
+	return NULL;
+}
+
+static void
+digest_init_spam (CamelStore *store)
+{
+	/* no-op */
+	;
+}
+
+static CamelFolder *
+digest_get_spam (CamelStore *store, CamelException *ex)
 {
 	return NULL;
 }

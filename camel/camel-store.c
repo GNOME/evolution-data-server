@@ -53,6 +53,9 @@ static CamelFolder *get_inbox (CamelStore *store, CamelException *ex);
 static void        init_trash (CamelStore *store);
 static CamelFolder *get_trash (CamelStore *store, CamelException *ex);
 
+static void        init_spam (CamelStore *store);
+static CamelFolder *get_spam (CamelStore *store, CamelException *ex);
+
 static CamelFolderInfo *create_folder (CamelStore *store,
 				       const char *parent_name,
 				       const char *folder_name,
@@ -95,6 +98,8 @@ camel_store_class_init (CamelStoreClass *camel_store_class)
 	camel_store_class->get_inbox = get_inbox;
 	camel_store_class->init_trash = init_trash;
 	camel_store_class->get_trash = get_trash;
+	camel_store_class->init_spam = init_spam;
+	camel_store_class->get_spam = get_spam;
 	camel_store_class->create_folder = create_folder;
 	camel_store_class->delete_folder = delete_folder;
 	camel_store_class->rename_folder = rename_folder;
@@ -132,8 +137,8 @@ camel_store_init (void *o)
 	} else
 		store->folders = NULL;
 	
-	/* set vtrash on by default */
-	store->flags = CAMEL_STORE_VTRASH;
+	/* set vtrash and vspam on by default */
+	store->flags = CAMEL_STORE_VTRASH | CAMEL_STORE_VSPAM;
 
 	store->dir_sep = '/';
 	
@@ -239,9 +244,11 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 	if (!folder) {
 		folder = CS_CLASS (store)->get_folder (store, folder_name, flags, ex);
 		if (folder) {
-			/* Add the folder to the vTrash folder if this store implements it */
+			/* Add the folder to the vTrash/vSpam folder if this store implements it */
 			if (store->vtrash)
 				camel_vee_folder_add_folder (CAMEL_VEE_FOLDER (store->vtrash), folder);
+			if (store->vspam)
+				camel_vee_folder_add_folder (CAMEL_VEE_FOLDER (store->vspam), folder);
 			
 			if (store->folders)
 				camel_object_bag_add(store->folders, folder_name, folder);
@@ -319,12 +326,14 @@ camel_store_delete_folder (CamelStore *store, const char *folder_name, CamelExce
 
 	/* NB: Note similarity of this code to unsubscribe_folder */
 	
-	/* if we deleted a folder, force it out of the cache, and also out of the vtrash if setup */
+	/* if we deleted a folder, force it out of the cache, and also out of the vtrash/vspam if setup */
 	if (store->folders) {
 		folder = camel_object_bag_get(store->folders, folder_name);
 		if (folder) {
 			if (store->vtrash)
 				camel_vee_folder_remove_folder((CamelVeeFolder *)store->vtrash, folder);
+			if (store->vspam)
+				camel_vee_folder_remove_folder((CamelVeeFolder *)store->vspam, folder);
 			camel_folder_delete (folder);
 		}
 	}
@@ -480,26 +489,56 @@ trash_finalize (CamelObject *trash, gpointer event_data, gpointer user_data)
 }
 
 static void
-init_trash (CamelStore *store)
+spam_finalize (CamelObject *spam, gpointer event_data, gpointer user_data)
 {
-	if ((store->flags & CAMEL_STORE_VTRASH) == 0)
+	CamelStore *store = CAMEL_STORE (user_data);
+	
+	store->vspam = NULL;
+}
+
+/* FIXME: derive vspam folder object from vee_folder */
+#include "camel-vee-store.h"
+static CamelFolder *
+camel_vspam_folder_new (CamelStore *parent_store, const char *name)
+{
+	CamelFolder *vspam;
+	
+	vspam = (CamelFolder *)camel_object_new (camel_vee_folder_get_type ());
+	vspam->folder_flags |= CAMEL_FOLDER_IS_SPAM;
+	camel_vee_folder_construct (CAMEL_VEE_FOLDER (vspam), parent_store, name,
+				    CAMEL_STORE_FOLDER_PRIVATE | CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_VEE_FOLDER_AUTO);
+	camel_vee_folder_set_expression((CamelVeeFolder *)vspam, "(match-all (system-flag \"Spam\"))");
+
+	return vspam;
+}
+
+static void
+init_trash_or_spam (CamelStore *store, const gchar *name, int flag, void (*finalize) (CamelObject *o, gpointer event_data, gpointer user_data))
+{
+	CamelFolder *folder = NULL;
+
+	if ((store->flags & flag) == 0)
 		return;
 
-	store->vtrash = camel_vtrash_folder_new (store, CAMEL_VTRASH_NAME);
+	if (flag == CAMEL_STORE_VTRASH)
+		folder = store->vtrash = camel_vtrash_folder_new (store, name);
+	else if (flag == CAMEL_STORE_VSPAM)
+		folder = store->vspam = camel_vspam_folder_new (store, name);
+	else
+		return;
 	
-	if (store->vtrash) {
+	if (folder) {
 		/* FIXME: this should probably use the object bag or another one ? ... */
-		/* attach to the finalise event of the vtrash */
-		camel_object_hook_event (CAMEL_OBJECT (store->vtrash), "finalize",
-					 trash_finalize, store);
+		/* attach to the finalise event of the vtrash/vspam */
+		camel_object_hook_event (CAMEL_OBJECT (folder), "finalize", finalize, store);
 		
-		/* add all the pre-opened folders to the vtrash */
+		/* add all the pre-opened folders to the vtrash/vspam */
 		if (store->folders) {
 			GPtrArray *folders = camel_object_bag_list(store->folders);
 			int i;
 
 			for (i=0;i<folders->len;i++) {
-				camel_vee_folder_add_folder (CAMEL_VEE_FOLDER (store->vtrash), (CamelFolder *)folders->pdata[i]);
+				camel_vee_folder_add_folder (CAMEL_VEE_FOLDER (folder), (CamelFolder *)folders->pdata[i]);
 				camel_object_unref(folders->pdata[i]);
 			}
 			g_ptr_array_free(folders, TRUE);
@@ -507,6 +546,17 @@ init_trash (CamelStore *store)
 	}
 }
 
+static void
+init_trash (CamelStore *store)
+{
+	init_trash_or_spam (store, CAMEL_VTRASH_NAME, CAMEL_STORE_VTRASH, trash_finalize);
+}
+
+static void
+init_spam (CamelStore *store)
+{
+	init_trash_or_spam (store, CAMEL_VSPAM_NAME, CAMEL_STORE_VSPAM, spam_finalize);
+}
 
 static CamelFolder *
 get_trash (CamelStore *store, CamelException *ex)
@@ -523,6 +573,26 @@ get_trash (CamelStore *store, CamelException *ex)
 			return store->vtrash;
 		} else {
 			w(g_warning ("This store does not support vTrash."));
+			return NULL;
+		}
+	}
+}
+
+static CamelFolder *
+get_spam (CamelStore *store, CamelException *ex)
+{
+	if (store->vspam) {
+		camel_object_ref (CAMEL_OBJECT (store->vspam));
+		return store->vspam;
+	} else {
+		CS_CLASS (store)->init_spam (store);
+		if (store->vspam) {
+			/* We don't ref here because we don't want the
+                           store to own a ref on the spam folder */
+			/*camel_object_ref (CAMEL_OBJECT (store->vspam));*/
+			return store->vspam;
+		} else {
+			w(g_warning ("This store does not support vSpam."));
 			return NULL;
 		}
 	}
@@ -546,6 +616,29 @@ camel_store_get_trash (CamelStore *store, CamelException *ex)
 	
 	CAMEL_STORE_LOCK(store, folder_lock);
 	folder = CS_CLASS (store)->get_trash (store, ex);
+	CAMEL_STORE_UNLOCK(store, folder_lock);
+	
+	return folder;
+}
+
+/** 
+ * camel_store_get_spam:
+ * @store: a CamelStore
+ * @ex: a CamelException
+ *
+ * Return value: the folder in the store into which spam is
+ * delivered, or %NULL if no such folder exists.
+ **/
+CamelFolder *
+camel_store_get_spam (CamelStore *store, CamelException *ex)
+{
+	CamelFolder *folder;
+
+	if ((store->flags & CAMEL_STORE_VSPAM) == 0)
+		return NULL;
+	
+	CAMEL_STORE_LOCK(store, folder_lock);
+	folder = CS_CLASS (store)->get_spam (store, ex);
 	CAMEL_STORE_UNLOCK(store, folder_lock);
 	
 	return folder;
@@ -1004,12 +1097,14 @@ camel_store_unsubscribe_folder (CamelStore *store,
 
 	/* NB: Note similarity of this code to delete_folder */
 
-	/* if we deleted a folder, force it out of the cache, and also out of the vtrash if setup */
+	/* if we deleted a folder, force it out of the cache, and also out of the vtrash/vspam if setup */
 	if (store->folders) {
 		folder = camel_object_bag_get(store->folders, folder_name);
 		if (folder) {
 			if (store->vtrash)
 				camel_vee_folder_remove_folder((CamelVeeFolder *)store->vtrash, folder);
+			if (store->vspam)
+				camel_vee_folder_remove_folder((CamelVeeFolder *)store->vspam, folder);
 			camel_folder_delete (folder);
 		}
 	}

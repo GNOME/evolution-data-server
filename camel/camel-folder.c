@@ -549,7 +549,7 @@ get_unread_message_count(CamelFolder *folder)
 		CamelMessageInfo *info = camel_folder_summary_index(folder->summary, i);
 
 		if (info) {
-			if (!(info->flags & CAMEL_MESSAGE_SEEN))
+			if (!(info->flags & CAMEL_MESSAGE_SEEN) && (!(info->flags & CAMEL_MESSAGE_SPAM) || (folder->folder_flags & CAMEL_FOLDER_IS_SPAM)))
 				unread++;
 			camel_folder_summary_info_free(folder->summary, info);
 		}
