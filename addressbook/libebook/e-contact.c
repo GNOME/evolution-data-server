@@ -799,7 +799,7 @@ e_contact_set_property (GObject *object,
 			}
 
 			if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
-				void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : g_value_get_pointer (value);
+				void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : (char*)g_value_get_string (value);
 
 				info->struct_setter (contact, attr, data);
 			}
@@ -880,7 +880,7 @@ e_contact_set_property (GObject *object,
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
-		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : g_value_get_pointer (value);
+		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : (char*)g_value_get_string (value);
 
 		if (attr && data) {
 			printf ("overwriting existing %s\n", info->vcard_field_name);
@@ -1194,7 +1194,11 @@ e_contact_get_property (GObject *object,
 		if (attr)
 			rv = info->struct_getter (contact, attr);
 
-		g_value_set_pointer (value, rv);
+		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT)
+			g_value_set_boxed (value, rv);
+		else
+			g_value_set_string (value, (char*)rv);
+			
 	}
 
 	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {

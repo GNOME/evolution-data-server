@@ -1719,6 +1719,9 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	return factories;
 }
 
+/* XXX hm, should this function hold a lock on book->priv->mutex?  It
+   doesn't seem to require it, but there are unlocked writes to
+   book->priv->load_state, which other functions read.. */
 static gboolean
 fetch_corba_book (EBook       *book,
 		  ESource     *source,
@@ -1737,6 +1740,7 @@ fetch_corba_book (EBook       *book,
 	if (!uri) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_OTHER_ERROR,
 			     _("e_book_load_uri: Invalid source."));
+		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		return FALSE;
 	}
 
@@ -1745,11 +1749,10 @@ fetch_corba_book (EBook       *book,
 	if (!factories) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
 			     _("e_book_load_uri: no factories available for uri `%s'"), uri);
+		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		return FALSE;
 	}
 
-
-	book->priv->load_state = E_BOOK_URI_LOADING;
 
 	/*
 	 * Create our local BookListener interface.
@@ -1759,6 +1762,7 @@ fetch_corba_book (EBook       *book,
 		g_warning ("e_book_load_uri: Could not create EBookListener!\n");
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_OTHER_ERROR,
 			     _("e_book_load_uri: Could not create EBookListener"));
+		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		return FALSE;
 	}
 	book->priv->listener_signal = g_signal_connect (book->priv->listener, "response",
@@ -1779,6 +1783,11 @@ fetch_corba_book (EBook       *book,
 		EBookOp *our_op;
 		CORBA_Environment ev;
 
+		/* we don't bother locking the book's mutex here
+		   before creating the op since there should be no way
+		   another thread could get to a place where they
+		   could add an op (as the load_state !=
+		   E_BOOK_URI_LOADED) */
 		our_op = e_book_new_op (book);
 
 		g_mutex_lock (our_op->mutex);
@@ -1883,8 +1892,23 @@ e_book_load_source (EBook *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
 
-	/* XXX this needs to happen while holding the book's lock i would think... */
-	e_return_error_if_fail (book->priv->load_state == E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_ALREADY_LOADED);
+	g_mutex_lock (book->priv->mutex);
+
+	if (book->priv->load_state != E_BOOK_URI_NOT_LOADED) {
+		g_mutex_unlock (book->priv->mutex);
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_ALREADY_LOADED,
+			     _("\"%s\" on book after \"%s\""),
+			     "e_book_load_source", "e_book_load_source");
+		return FALSE;
+	}
+
+	/* we have to set this here so that future calls to
+	   e_book_load* will fail.  It will be cleared to
+	   E_BOOK_URI_NOT_LOADED in fetch_corba_book if there's an
+	   error. */
+	book->priv->load_state = E_BOOK_URI_LOADING;
+
+	g_mutex_unlock (book->priv->mutex);
 
 	return fetch_corba_book (book, source, only_if_exists, error);
 }
@@ -1912,9 +1936,6 @@ e_book_load_uri (EBook        *book,
 
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (uri,                      E_BOOK_ERROR_INVALID_ARG);
-
-	/* XXX this needs to happen while holding the book's lock i would think... */
-	e_return_error_if_fail (book->priv->load_state == E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_ALREADY_LOADED);
 
 	group = e_source_group_new ("", uri);
 	source = e_source_new ("", "");

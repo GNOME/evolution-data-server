@@ -1,3 +1,18 @@
+2004-02-04  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book.c (e_book_load_source): lock the book's mutex
+	before checking load_state.  Also, set the load_state to
+	E_BOOK_URI_LOADING before we relinquish the lock.  It will be
+	reset to URI_NOT_LOADED in fetch_corba_book if there's a problem.
+	(e_book_load_uri): remove the e_return_error_if_fail about
+	load_state.  It'll be handled by e_book_load_source.
+	(fetch_corba_book): reset load_state to E_BOOK_URI_NOT_LOADED in
+	all the cases where we return FALSE.
+
+	* libebook/e-contact.c (e_contact_set_property): for GETSET
+	properties that aren't STRUCT's, it's a string, not a pointer.
+	(e_contact_get_property): same.
+
 2004-02-04  Michael Meeks  <michael@ximian.com>
 
 	* libebook/e-book-async.c (_get_book_view_handler):
