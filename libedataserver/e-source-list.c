@@ -386,6 +386,28 @@ e_source_list_new_for_gconf (GConfClient *client,
 	return list;
 }
 
+ESourceList *
+e_source_list_new_for_gconf_default (const char  *path)
+{	
+	ESourceList *list;
+
+	g_return_val_if_fail (path != NULL, NULL);
+
+	list = g_object_new (e_source_list_get_type (), NULL);
+
+	list->priv->gconf_path = g_strdup (path);
+	list->priv->gconf_client = gconf_client_get_default ();
+
+	gconf_client_add_dir (list->priv->gconf_client, path, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+
+	list->priv->gconf_notify_id
+		= gconf_client_notify_add (list->priv->gconf_client, path,
+					   (GConfClientNotifyFunc) conf_changed_callback, list,
+					   NULL, NULL);
+	load_from_gconf (list);
+
+	return list;
+}
 
 GSList *
 e_source_list_peek_groups (ESourceList *list)

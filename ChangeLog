@@ -1,3 +1,11 @@
+2003-12-04  JP Rosevear <jpr@ximian.com>
+
+	* libedataserver/e-source-list.c
+	(e_source_list_new_for_gconf_default): uses the default gconf
+	client for getting the source list
+
+	* libedataserver/e-source-list.h: add proto
+	
 2003-12-01  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedataserver/e-cache.[ch]: new class for a cache implementation,

@@ -62,6 +62,7 @@ GType    e_source_list_get_type (void);
 ESourceList *e_source_list_new            (void);
 ESourceList *e_source_list_new_for_gconf  (GConfClient *client,
 					   const char  *path);
+ESourceList *e_source_list_new_for_gconf_default  (const char  *path);
 
 GSList       *e_source_list_peek_groups         (ESourceList *list);
 ESourceGroup *e_source_list_peek_group_by_uid   (ESourceList *list,
