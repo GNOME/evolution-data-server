@@ -1,3 +1,9 @@
+2005-02-04  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-connection.c: 
+	 (e_gw_connection_get_container_list): Fix for bug # 72172
+	 (e_gw_connection_reply_item): implements reply request
+
 2005-02-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-connection.c: (e_gw_connection_get_date_from_string):

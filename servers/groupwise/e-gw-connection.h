@@ -137,6 +137,7 @@ EGwConnectionStatus e_gw_connection_purge_deleted_items (EGwConnection *cnc);
 
 EGwConnectionStatus e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids) ;
 EGwConnectionStatus e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids) ;
+EGwConnectionStatus e_gw_connection_reply_item (EGwConnection *cnc, const char *id, const char *view, EGwItem **item) ;
 G_END_DECLS
 
 #endif

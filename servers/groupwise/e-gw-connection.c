@@ -573,10 +573,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const char *top, GList *
 
 	/* if status is OK - parse result. return the list */	
 	param = soup_soap_response_get_first_parameter_by_name (response, "folders");	
-        if (!param) {
-                g_object_unref (response);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        } else {
+        if (param) {
 		SoupSoapParameter *subparam;
 		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "folder");
 		     subparam != NULL;
@@ -2550,4 +2547,61 @@ e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids)
 	g_object_unref (msg);
 
 	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_reply_item (EGwConnection *cnc, const char *id, const char *view, EGwItem **item)
+{
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        SoupSoapParameter *param;
+        
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "replyRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+
+	if (view)
+		e_gw_message_write_string_parameter (msg, "view", NULL, view) ;
+	e_gw_message_write_footer (msg);
+        
+	/* send message to server */
+        response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+        }
+        
+	status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	}
+
+	/* if status is OK - parse result. return the list */	
+	param = soup_soap_response_get_first_parameter_by_name (response, "item");
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+       	
+	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "", param);
+	
+               
+	/* free memory */
+        g_object_unref (response);
+	g_object_unref (msg);
+
+        return E_GW_CONNECTION_STATUS_OK;
 }
