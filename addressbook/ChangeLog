@@ -1,3 +1,10 @@
+2005-03-09  Not Zed  <NotZed@Ximian.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_load_source): use a single global ref-counted
+	db-env for all opened db's.
+	(e_book_backend_file_dispose): clean up the env when finished.
+
 2005-03-07  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-bbok-backend-groupwise.c 
