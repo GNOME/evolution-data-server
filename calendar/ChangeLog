@@ -1,3 +1,11 @@
+2003-12-16  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-connection.c (parse_response_status): map
+	some error codes.
+	(e_gw_connection_new): retrieve all the info returned in the UserInfo
+	type (name, email and uuid).
+	(e_gw_connection_disposee): free new private fields.
+
 2003-12-16 Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* backends/groupwise/e-gw-connection.h
