@@ -1,3 +1,18 @@
+2004-08-17  Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* backends/groupwise/e-book-backend-groupwise.c (book_view_thread) :
+	don't update the view with contact when id is not present. Send the 
+	"name email" view to server when the query is for auto-completion
+	don't try to search on system address book with out filter
+	(e_book_backend_groupwise_build_gw_filter) : add an extra argument to know 
+	whether the query is auto-completion one or not 
+	(e_book_backend_groupwise_get_contact_list) : call the updated build_gw_filter 
+	method
+	(e_book_backend_groupwise_remove) : return error when 
+	there is an attempt to remove System adddress book
+	(e_book_backend_groupwise_get_supported_auth_methods ) : return plain/password 
+	
+	
 2004-08-16  Chris Toshok  <toshok@ximian.com>
 
 	* backends/vcf/e-book-backend-vcf.c: keep both a hash table and a
