@@ -434,11 +434,8 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 			stopped = closure->stopped;
 			g_mutex_unlock (closure->mutex);
 
-			if (stopped) {
-				g_mutex_free (closure->mutex);
-				g_free (closure);
+			if (stopped)
 				break;
-			}
 
 			/* don't include the version in the list of cards */
 			if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
@@ -460,9 +457,6 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 
 	}
 
-	g_mutex_lock (closure->mutex);
-	stopped = closure->stopped;
-	g_mutex_unlock (closure->mutex);
 	if (!stopped)
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 

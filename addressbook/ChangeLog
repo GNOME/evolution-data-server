@@ -1,3 +1,11 @@
+2004-02-08  Chris Toshok  <toshok@ximian.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_start_book_view): don't free the
+	closure/mutex inside the loop, then access it again right after
+	the loop.  Should fix crashes when doing repeated searches (while
+	stopping them often), like when autocompleting.
+
 2004-02-06  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-address-western.c (e_address_western_extract_region):
