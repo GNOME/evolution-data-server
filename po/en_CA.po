@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-24 14:48-0400\n"
-"PO-Revision-Date: 2004-09-24 13:04-0400\n"
+"POT-Creation-Date: 2004-10-13 20:39-0400\n"
+"PO-Revision-Date: 2004-10-13 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: addressbook/backends/file/e-book-backend-file.c:442
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1855
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1884
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3158
 #: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
@@ -74,7 +74,7 @@ msgstr "Error performing search"
 #: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
 #: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
 #: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
-#: addressbook/libebook/e-book.c:2985
+#: addressbook/libebook/e-book.c:2974
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" on book before \"%s\""
@@ -100,7 +100,7 @@ msgstr "book busy"
 #: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
 #: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
 #: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2994
+#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2983
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA exception making \"%s\" call"
@@ -122,29 +122,29 @@ msgstr "\"%s\" on book after \"%s\""
 msgid "e_book_open: cancelled"
 msgstr "e_book_open: canceled"
 
-#: addressbook/libebook/e-book.c:2851
+#: addressbook/libebook/e-book.c:2840
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Invalid source."
 
-#: addressbook/libebook/e-book.c:2859
+#: addressbook/libebook/e-book.c:2848
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: no factories available for uri `%s'"
 
-#: addressbook/libebook/e-book.c:2871
+#: addressbook/libebook/e-book.c:2860
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Could not create EBookListener"
 
-#: addressbook/libebook/e-book.c:2923
+#: addressbook/libebook/e-book.c:2912
 #, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr "e_book_new: no factories available for uri `%s'"
 
-#: addressbook/libebook/e-book.c:3081
+#: addressbook/libebook/e-book.c:3078
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: there was no self contact uid stored in gconf"
 
-#: addressbook/libebook/e-book.c:3192
+#: addressbook/libebook/e-book.c:3189
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -616,33 +616,37 @@ msgstr "Anniversary: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Can't save calendar data: Malformed URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:381
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:455
 msgid "Invalid server URI"
 msgstr "Invalid server URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:417
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:491
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:494
 msgid "Calendar"
 msgstr "Calendar"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:501
 msgid "Could not create cache file"
 msgstr "Could not create cache file"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:463
-#: calendar/libecal/e-cal.c:4311
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:511
+msgid "Could not create thread for populating cache"
+msgstr "Could not create thread for populating cache"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:517
+#: calendar/libecal/e-cal.c:4315
 msgid "Authentication failed"
 msgstr "Authentication failed"
 
-#: calendar/backends/http/e-cal-backend-http.c:225
+#: calendar/backends/http/e-cal-backend-http.c:239
 msgid "Redirected to Invalid URI"
 msgstr "Redirected to Invalid URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:249
+#: calendar/backends/http/e-cal-backend-http.c:263
 msgid "Bad file format."
 msgstr "Bad file format."
 
-#: calendar/backends/http/e-cal-backend-http.c:255
+#: calendar/backends/http/e-cal-backend-http.c:269
 msgid "Not a calendar."
 msgstr "Not a calendar."
 
@@ -792,76 +796,80 @@ msgid "Undefined"
 msgstr "Undefined"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1521
+#: calendar/libecal/e-cal.c:1523
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4287
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4289
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: calendar/libecal/e-cal.c:4289
+#: calendar/libecal/e-cal.c:4291
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4293
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: calendar/libecal/e-cal.c:4293 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:155
 msgid "Object not found"
 msgstr "Object not found"
 
-#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4297 servers/groupwise/e-gw-connection.c:151
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: calendar/libecal/e-cal.c:4297
+#: calendar/libecal/e-cal.c:4299
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: calendar/libecal/e-cal.c:4299
+#: calendar/libecal/e-cal.c:4301
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: calendar/libecal/e-cal.c:4301
+#: calendar/libecal/e-cal.c:4303
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: calendar/libecal/e-cal.c:4303
+#: calendar/libecal/e-cal.c:4305 servers/groupwise/e-gw-connection.c:157
+msgid "Unknown User"
+msgstr "Unknown User"
+
+#: calendar/libecal/e-cal.c:4307
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: calendar/libecal/e-cal.c:4305
+#: calendar/libecal/e-cal.c:4309
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: calendar/libecal/e-cal.c:4307
+#: calendar/libecal/e-cal.c:4311
 msgid "Operation has been cancelled"
 msgstr "Operation has been canceled"
 
-#: calendar/libecal/e-cal.c:4309
+#: calendar/libecal/e-cal.c:4313
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: calendar/libecal/e-cal.c:4313
+#: calendar/libecal/e-cal.c:4317
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: calendar/libecal/e-cal.c:4315
+#: calendar/libecal/e-cal.c:4319
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: calendar/libecal/e-cal.c:4317 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4321 servers/groupwise/e-gw-connection.c:163
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: calendar/libecal/e-cal.c:4319
+#: calendar/libecal/e-cal.c:4323
 msgid "No error"
 msgstr "No error"
 
@@ -952,33 +960,28 @@ msgstr ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 
-#: servers/groupwise/e-gw-connection.c:80
+#: servers/groupwise/e-gw-connection.c:149
 msgid "Invalid connection"
 msgstr "Invalid connection"
 
-#: servers/groupwise/e-gw-connection.c:84
+#: servers/groupwise/e-gw-connection.c:153
 msgid "Invalid response from server"
 msgstr "Invalid response from server"
 
-#: servers/groupwise/e-gw-connection.c:88
+#: servers/groupwise/e-gw-connection.c:159
 msgid "Bad parameter"
 msgstr "Bad parameter"
 
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
-msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Evolution Addressbook file and LDAP backend"
-
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
-msgid "Evolution Calendar file and webcal backend"
-msgstr "Evolution Calendar file and webcal backend"
-
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution Addressbook file backend"
 
+#: src/GNOME_Evolution_DataServer.server.in.in.h:2
+msgid "Evolution Calendar file and webcal backend"
+msgstr "Evolution Calendar file and webcal backend"
+
 #. dialog display isn't working out
-#: src/server.c:110
+#: src/server.c:99
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Multiple segmentation faults occurred; cannot display error dialogue\n"
