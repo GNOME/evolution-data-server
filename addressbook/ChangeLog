@@ -1,5 +1,11 @@
 2004-02-02  Hans Petter Jansson  <hpj@ximian.com>
 
+	* libebook/e-contact.c (photo_getter): Return NULL if image length is
+	zero.
+	(photo_setter): Warn and don't set photo if image length is zero.
+
+2004-02-02  Hans Petter Jansson  <hpj@ximian.com>
+
 	* libebook/e-contact.c (photo_setter): Handle NULL.
 	(fn_setter): Handle NULL.
 	(n_setter): Handle NULL.

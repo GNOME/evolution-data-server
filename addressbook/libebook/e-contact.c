@@ -361,8 +361,12 @@ photo_getter (EContact *contact, EVCardAttribute *attr)
 
 		if (values && values->data) {
 			GString *s = values->data;
-			EContactPhoto *photo = g_new (EContactPhoto, 1);
+			EContactPhoto *photo;
 
+			if (!s->len)
+				return NULL;
+
+			photo = g_new (EContactPhoto, 1);
 			photo->length = s->len;
 			photo->data = g_malloc (photo->length);
 			memcpy (photo->data, s->str, photo->length);
@@ -383,6 +387,8 @@ photo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 
 	if (!photo)
 		return;
+
+	g_return_if_fail (photo->length > 0);
 
 	e_vcard_attribute_add_param_with_value (attr,
 						e_vcard_attribute_param_new (EVC_ENCODING),
