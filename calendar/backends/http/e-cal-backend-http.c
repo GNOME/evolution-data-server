@@ -24,6 +24,7 @@
 #include <config.h>
 #include <string.h>
 #include <unistd.h>
+#include <gconf/gconf-client.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <libgnome/gnome-i18n.h>
@@ -364,7 +365,45 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	/* create the Soup session if not already created */
 	if (!priv->soup_session) {
+		GConfClient *conf_client;
+
 		priv->soup_session = soup_session_async_new ();
+
+		/* set the HTTP proxy, if configuration is set to do so */
+		conf_client = gconf_client_get_default ();
+		if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
+			char *server, *proxy_uri;
+			int port;
+
+			server = gconf_client_get_string (conf_client, "/system/http_proxy/host", NULL);
+			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
+
+			if (server && server[0]) {
+				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
+					char *user, *password;
+
+					user = gconf_client_get_string (conf_client,
+									"/system/http_proxy/authentication_user",
+									NULL);
+					password = gconf_client_get_string (conf_client,
+									    "/system/http_proxy/authentication_password",
+									    NULL);
+
+					proxy_uri = g_strdup_printf("http://%s:%s@%s:%d", user, password, server, port);
+
+					g_free (user);
+					g_free (password);
+				} else
+					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
+
+				g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, proxy_uri);
+
+				g_free (server);
+				g_free (proxy_uri);
+			}
+		}
+
+		g_object_unref (conf_client);
 	}
 
 	if (priv->uri == NULL)

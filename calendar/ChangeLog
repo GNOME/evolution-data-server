@@ -1,3 +1,10 @@
+2005-01-12  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #67974
+
+	* backends/http/e-cal-backend-http.c (begin_retrieval_cb): set the
+	HTTP proxy on the SoupSession if configuration is set to use it.
+
 2005-01-12  Not Zed  <NotZed@Ximian.com>
 
 	* backends/http/e-cal-backend-http.c (retrieval_done): warning fix
@@ -22,7 +29,6 @@
 	(e_cal_backend_file_receive_objects): Function to fetch
 	the attachments data into the file calendar store from the
 	camel cache.
-	
 
 2005-01-10 Chenthill Palanisamy <pchenthill@novell.com>
 
