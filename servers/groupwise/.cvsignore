@@ -1,4 +1,5 @@
 Makefile
 Makefile.in
 create-account
+libegroupwise-*.pc
 soap-test
