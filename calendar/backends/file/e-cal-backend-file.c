@@ -58,6 +58,8 @@ struct _ECalBackendFilePrivate {
 	/* Filename in the dir */
 	char *file_name;	
 	gboolean read_only;
+	gboolean is_dirty;
+	gint dirty_idle_id;
 
 	/* Toplevel VCALENDAR component */
 	icalcomponent *icalcomp;
@@ -104,8 +106,8 @@ free_object (gpointer key, gpointer value, gpointer data)
 }
 
 /* Saves the calendar data */
-static void
-save (ECalBackendFile *cbfile)
+static gboolean
+save_file_when_idle (gpointer user_data)
 {
 	ECalBackendFilePrivate *priv;
 	GnomeVFSURI *uri, *backup_uri;
@@ -114,6 +116,7 @@ save (ECalBackendFile *cbfile)
 	GnomeVFSFileSize out;
 	gchar *tmp, *backup_uristr;
 	char *buf;
+	ECalBackendFile *cbfile = user_data;
 	
 	priv = cbfile->priv;
 	g_assert (priv->uri != NULL);
@@ -167,16 +170,32 @@ save (ECalBackendFile *cbfile)
 	if (result != GNOME_VFS_OK)
 		goto error;
 
-	return;
+	priv->is_dirty = FALSE;
+
+	return TRUE;
 
  error_malformed_uri:
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile),
 				  _("Can't save calendar data: Malformed URI."));
-	return;
+	return TRUE;
 
  error:
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), gnome_vfs_result_to_string (result));
-	return;
+	return TRUE;
+}
+
+static void
+save (ECalBackendFile *cbfile)
+{
+	ECalBackendFilePrivate *priv;
+
+	priv = cbfile->priv;
+
+	if (!priv->dirty_idle_id) {
+		priv->dirty_idle_id = g_idle_add ((GSourceFunc) save_file_when_idle, cbfile);
+	}
+
+	priv->is_dirty = TRUE;
 }
 
 static void
@@ -218,6 +237,8 @@ e_cal_backend_file_dispose (GObject *object)
 	priv = cbfile->priv;
 
 	/* Save if necessary */
+	if (priv->is_dirty)
+		save_file_when_idle (cbfile);
 
 	free_calendar_data (cbfile);
 
@@ -239,6 +260,11 @@ e_cal_backend_file_finalize (GObject *object)
 	priv = cbfile->priv;
 
 	/* Clean up */
+
+	if (priv->dirty_idle_id) {
+		g_source_remove (priv->dirty_idle_id);
+		priv->dirty_idle_id = 0;
+	}
 
 	if (priv->uri) {
 	        g_free (priv->uri);
@@ -2400,6 +2426,8 @@ e_cal_backend_file_init (ECalBackendFile *cbfile, ECalBackendFileClass *class)
 	priv->uri = NULL;
 	priv->file_name = g_strdup ("calendar.ics");
 	priv->read_only = FALSE;
+	priv->is_dirty = FALSE;
+	priv->dirty_idle_id = 0;
 	priv->icalcomp = NULL;
 	priv->comp_uid_hash = NULL;
 	priv->comp = NULL;
