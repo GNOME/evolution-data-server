@@ -1,5 +1,10 @@
 2004-05-27  Rodrigo Moya <rodrigo@novell.com>
 
+	* backends/http/e-cal-backend-http.c (retrieval_done): make sure
+	we clean up the cache, or old events will always be kept.
+
+2004-05-27  Rodrigo Moya <rodrigo@novell.com>
+
 	Fixes #58197
 
 	* libedata-cal/e-cal-backend.c (e_cal_backend_create_object,

@@ -258,19 +258,33 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	}
 
 	/* Update cache */
+	e_file_cache_clean (E_FILE_CACHE (priv->cache));
+
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbhttp));
-	subcomp = icalcomponent_get_first_component (icalcomp, kind);
+	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
 	while (subcomp) {
 		ECalComponent *comp;
+		icalcomponent_kind subcomp_kind;
 
-		comp = e_cal_component_new ();
-		if (e_cal_component_set_icalcomponent (comp, subcomp)) {
-			e_cal_backend_cache_put_component (priv->cache, comp);
-			e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
-							     icalcomponent_as_ical_string (subcomp));
+		subcomp_kind = icalcomponent_isa (subcomp);
+		if (subcomp_kind == kind) {
+			comp = e_cal_component_new ();
+			if (e_cal_component_set_icalcomponent (comp, subcomp)) {
+				e_cal_backend_cache_put_component (priv->cache, comp);
+				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
+								     icalcomponent_as_ical_string (subcomp));
+			}
+
+			g_object_unref (comp);
+		} else if (subcomp_kind == ICAL_VTIMEZONE_COMPONENT) {
+			icaltimezone *zone;
+
+			zone = icaltimezone_new ();
+			icaltimezone_set_component (zone, subcomp);
+			e_cal_backend_cache_put_timezone (priv->cache, (const icaltimezone *) zone);
+
+			icaltimezone_free (zone, 1);
 		}
-
-		g_object_unref (comp);
 
 		subcomp = icalcomponent_get_next_component (icalcomp, kind);
 	}
