@@ -7,23 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-04 11:17+0200\n"
-"PO-Revision-Date: 2004-08-04 17:45+0530\n"
+"POT-Creation-Date: 2004-09-06 03:12+0200\n"
+"PO-Revision-Date: 2004-09-06 11:03+0530\n"
 "Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
 "Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:440
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "ஏற்றுகிறது..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1855
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "தேடிகிறது"
 
@@ -595,16 +597,16 @@ msgid "Unnamed List"
 msgstr "பெயரில்லாத பட்டியல்"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "பிறந்தநாள்"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "பிறந்த நாள்: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "ஆண்டுவிழா: %s"
@@ -613,21 +615,21 @@ msgstr "ஆண்டுவிழா: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "நாள்காட்டி தகவலை சேமிக்க முடியாது : தவறான URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:283
 msgid "Invalid server URI"
 msgstr "செல்லாத URI சேவகன்"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:322
 msgid "Calendar"
 msgstr "நாள்காட்டி"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:329
 msgid "Could not create cache file"
 msgstr "தற்காலிக கோப்பை உருவாக்க முடியவில்லை"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4292
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:354
+#: calendar/libecal/e-cal.c:4311
 msgid "Authentication failed"
 msgstr "அனுமதித்தல் தோல்வி"
 
@@ -789,83 +791,83 @@ msgid "Undefined"
 msgstr "குறிப்பில்லா"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1493
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s கடவுச்சொல்லை உள்ளிடவும் (பயனீட்டாளர் %s)"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4285
 msgid "Invalid argument"
 msgstr "செல்லாத அளவுரு"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4287
 msgid "Backend is busy"
 msgstr "பின்தரவு தளம் வேலையில் உள்ளது"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4289
 msgid "Repository is offline"
 msgstr "கிடங்கு இணையத்தொடர்பில் இல்லை"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4291
 msgid "No such calendar"
 msgstr "இப்படி ஒரு நாள்காட்டி இல்லை"
 
-#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4293 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "பொருள் காணவில்லை"
 
-#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "செல்லாத பொருள்"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4297
 msgid "URI not loaded"
 msgstr "URI ஏற்றப்படவில்லை"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4299
 msgid "URI already loaded"
 msgstr "URI ஏற்கெனவே ஏற்றப்பட்டது"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4301
 msgid "Permission denied"
 msgstr "அனுமதி மறுக்கப்பட்டது"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4303
 msgid "Object ID already exists"
 msgstr "பொருள் ID ஏற்கெனவே உள்ளது"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4305
 msgid "Protocol not supported"
 msgstr "விதிமுறைக்கு ஆதரவு இல்லை"
 
-#: calendar/libecal/e-cal.c:4288
+#: calendar/libecal/e-cal.c:4307
 msgid "Operation has been cancelled"
 msgstr "செயல்பாடு ரத்து செய்யப்பட்டது"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4309
 msgid "Could not cancel operation"
 msgstr "செயல்பாட்டை ரத்து செய்ய முடியவில்லை"
 
-#: calendar/libecal/e-cal.c:4294
+#: calendar/libecal/e-cal.c:4313
 msgid "Authentication required"
 msgstr "அனுமதி தேவை"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4315
 msgid "A CORBA exception has occurred"
 msgstr "CORBA பிழை நேர்ந்தது"
 
-#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4317 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "தெரியாத பிழை"
 
-#: calendar/libecal/e-cal.c:4300
+#: calendar/libecal/e-cal.c:4319
 msgid "No error"
 msgstr "பிழை இல்லை"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
-#: calendar/libedata-cal/e-cal-backend-sexp.c:661
-#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" அளபுருவை எதிர்பார்க்கவில்லை"
@@ -874,7 +876,7 @@ msgstr "\"%s\" அளபுருவை எதிர்பார்க்கவ�
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" ஒரு அளபுருவை எதிர்பார்க்கிறது"
@@ -895,6 +897,7 @@ msgstr "\"%s\" முதல் அளபுரு ISO 860 தேதி/நேர
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" இரண்டு அளபுருக்களை எதிர்பார்க்கிறது"
@@ -903,7 +906,8 @@ msgstr "\"%s\" இரண்டு அளபுருக்களை எதிர
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
-#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" முதல் அளபுரு time_t யாக இருக்க வேண்டும் என எதிர்பார்க்கிறது"
@@ -914,6 +918,7 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" இரண்டாவது அளபுரு  எண்ணாகாக இருக்க வேண்டும் என எதிர்பார்க்கிறது"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" இரண்டாவது அளபுரு time_t யாக இருக்க வேண்டும் என எதிர்பார்க்கிறது"
@@ -929,20 +934,22 @@ msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"\"%s\" முதல் அளபுரு \"any\", \"summary\", அல்லது"
-"\"description\", அல்லது \"location\" ஆக இருக்க வேண்டும் என எதிர்பார்க்கிறது"
+"\"%s\" முதல் அளபுரு \"any\", \"summary\", அல்லது\"description\", அல்லது "
+"\"location\" ஆக இருக்க வேண்டும் என எதிர்பார்க்கிறது"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" ஒரு அளபுருவாவது இருக்க வேண்டும் என எதிர்பார்கிறது"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr "\"%s\" எல்லா அளபுருக்களும் சரமாகவோ அல்லது ஒரே ஒரு அளபுரு மட்டும் பூலியன் மதிப்பு தவறாகவோ(#f) இருக்க வேண்டும் என எதிர்பார்க்கிறது"
+msgstr ""
+"\"%s\" எல்லா அளபுருக்களும் சரமாகவோ அல்லது ஒரே ஒரு அளபுரு மட்டும் பூலியன் மதிப்பு "
+"தவறாகவோ(#f) இருக்க வேண்டும் என எதிர்பார்க்கிறது"
 
 #: servers/groupwise/e-gw-connection.c:80
 msgid "Invalid connection"
@@ -968,4 +975,10 @@ msgstr "எவல்யூஷன் நாள்காட்டி கோப்�
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "எவல்யூஷன் முகவரிபுத்தக கோப்பு பின்புலம்"
+
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr "பல செக்மண்டேஷன் பிழைகள் நேர்துள்ளது; பிழையை காட்ட முடியவில்லை\n"
 
