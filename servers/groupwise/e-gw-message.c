@@ -36,7 +36,7 @@ print_header (gpointer name, gpointer value, gpointer data)
 static void
 debug_handler (SoupMessage *msg, gpointer user_data)
 {
-	g_print ("%d %s\nE2k-Debug: %p @ %lu\n",
+	g_print ("%d %s\nSOAP-Debug: %p @ %lu\n",
                 msg->status_code, msg->reason_phrase,
                 msg, time (0));
 
