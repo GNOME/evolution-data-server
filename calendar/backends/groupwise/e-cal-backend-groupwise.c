@@ -33,6 +33,9 @@
 
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
+	/* A mutex to control access to the private structure */
+	GMutex *mutex;
+
 	EGwConnection *cnc;
 	ECalBackendCache *cache;
 	gboolean read_only;
@@ -73,6 +76,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	priv = cbgw->priv;
 
 	/* Clean up */
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
 	if (priv->cnc) {
 		g_object_unref (priv->cnc);
 		priv->cnc = NULL;
@@ -180,11 +188,14 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
+	g_mutex_lock (priv->mutex);
+
 	/* create the local cache */
 	if (priv->cache)
 		g_object_unref (priv->cache);
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 	if (!priv->cache) {
+		g_mutex_unlock (priv->mutex);
 		g_warning (G_STRLOC ": Could not create cache file for %s",
 			   e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 		return GNOME_Evolution_Calendar_OtherError;
@@ -192,8 +203,10 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	/* convert the URI */
 	vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
-	if (!vuri)
+	if (!vuri) {
+		g_mutex_unlock (priv->mutex);
 		return GNOME_Evolution_Calendar_UnsupportedMethod;
+	}
 
 	/* FIXME: login to the server only if we're online */
 	/* create connection to server */
@@ -211,13 +224,17 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	/* we need to read actual rights from server when we implement proxy user access */
 	cbgw->priv->read_only = FALSE;
 	
-	if (E_IS_GW_CONNECTION (priv->cnc))
+	if (E_IS_GW_CONNECTION (priv->cnc)) {
+		g_mutex_unlock (priv->mutex);
 		return GNOME_Evolution_Calendar_Success;
+	}
 		
 	
 	/* free memory */
 	g_object_unref (priv->cnc);
 	priv->cnc = NULL;
+
+	g_mutex_unlock (priv->mutex);
 
 	return GNOME_Evolution_Calendar_AuthenticationFailed;
 }
@@ -373,6 +390,10 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 	ECalBackendGroupwisePrivate *priv;
 
 	priv = g_new0 (ECalBackendGroupwisePrivate, 1);
+
+	/* create the mutex for thread safety */
+	priv->mutex = g_mutex_new ();
+
 	cbgw->priv = priv;
 }
 
