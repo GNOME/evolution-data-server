@@ -59,7 +59,7 @@ struct _ECalBackendFilePrivate {
 	char *file_name;	
 	gboolean read_only;
 	gboolean is_dirty;
-	gint dirty_idle_id;
+	guint dirty_idle_id;
 
 	/* Toplevel VCALENDAR component */
 	icalcomponent *icalcomp;
