@@ -1,3 +1,10 @@
+2004-12-05  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_modify_contact) 
+	(e_book_backend_groupwise_get_contact) : use the 
+	changed prototype of e_gw_connection-get_item 
+
 2004-11-28  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libebook/e-book.[ch] :
