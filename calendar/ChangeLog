@@ -1,4 +1,11 @@
 2005-03-24  Chenthill Palanisamy  <pchenthill@novell.com>
+	
+	Fixes #73336	
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(connect_to_server): Check for the container id
+	before calling the cache init.
+
+2005-03-24  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #73508
 	* backends/groupwise/e-cal-backend-groupwise.c:
