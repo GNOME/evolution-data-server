@@ -1,3 +1,13 @@
+2004-07-15  JP Rosevear  <jpr@novell.com>
+
+	Fixes #58748
+	
+	* backends/contacts/e-cal-backend-contacts.c (cdate_to_icaltime):
+	explicitly set is_utc and set zone to NULL
+	(create_component): use NULL instead of 0
+	(e_cal_backend_contacts_set_default_timezone): fix logic typo so
+	that the default zone is set correctly
+
 2004-07-15  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #57142

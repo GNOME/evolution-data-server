@@ -376,7 +376,8 @@ cdate_to_icaltime (EContactDate *cdate)
 	ret.month = cdate->month;
 	ret.day = cdate->day;
 	ret.is_date = TRUE;
-	ret.zone = icaltimezone_get_utc_timezone ();
+	ret.is_utc = FALSE;
+	ret.zone = NULL;
 	
 	ret.hour = ret.minute = ret.second = 0;
 
@@ -413,13 +414,13 @@ create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate
         /* Set all-day event's date from contact data */
         itt = cdate_to_icaltime (cdate);
         dt.value = &itt;
-        dt.tzid = 0;
+        dt.tzid = NULL;
         e_cal_component_set_dtstart (cal_comp, &dt);
         
 	itt = cdate_to_icaltime (cdate);
 	icaltime_adjust (&itt, 1, 0, 0, 0);
 	dt.value = &itt;
-	dt.tzid = 0;
+	dt.tzid = NULL;
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
 	e_cal_component_set_dtend (cal_comp, &dt);
  
@@ -428,12 +429,12 @@ create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate
         r.freq = ICAL_YEARLY_RECURRENCE;
 	r.interval = 1;
         recur_list.data = &r;
-        recur_list.next = 0;        
+        recur_list.next = NULL;        
         e_cal_component_set_rrule_list (cal_comp, &recur_list);
 
         /* Create summary */
         comp_summary.value = summary;
-        comp_summary.altrep = 0;
+        comp_summary.altrep = NULL;
         e_cal_component_set_summary (cal_comp, &comp_summary);
 	
 	/* Set category and visibility */
@@ -803,7 +804,7 @@ e_cal_backend_contacts_set_default_timezone (ECalBackendSync *backend, EDataCal 
 	priv = cbcontacts->priv;
 
 	priv->default_zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (backend), tzid);
-	if (priv->default_zone) {
+	if (!priv->default_zone) {
 		priv->default_zone = icaltimezone_get_utc_timezone ();
 
 		return GNOME_Evolution_Calendar_ObjectNotFound;
