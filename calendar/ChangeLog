@@ -1,3 +1,9 @@
+2004-01-15  Radek Doulik  <rodo@ximian.com>
+
+	* libecal/e-cal.c (e_cal_is_read_only): fix the return value, it
+	was returning ECalendarStatus instead of bool, it compares status
+	to E_CALENDAR_STATUS_OK now
+
 2004-01-14  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
