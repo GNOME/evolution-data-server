@@ -11,14 +11,15 @@
 # Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
 # Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
 # Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
+# Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-21 21:29+0100\n"
-"PO-Revision-Date: 2005-03-22 06:17+0530\n"
+"POT-Creation-Date: 2005-03-26 04:17+0100\n"
+"PO-Revision-Date: 2005-03-26 10:43+0530\n"
 "Last-Translator: Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -569,7 +570,7 @@ msgid "Category List"
 msgstr "ਵਰਗ ਸੂਚੀ"
 
 #: addressbook/libebook/e-contact.c:224
-#: libedataserverui/e-categories-dialog.c:371
+#: libedataserverui/e-categories-dialog.c:372
 msgid "Categories"
 msgstr "ਵਰਗ"
 
@@ -654,27 +655,23 @@ msgstr "ਜਵਾਬ ਲਈ ਬੇਨਤੀ: ਜਦੋਂ ਠੀਕ ਲੱਗੇ
 msgid "Invalid server URI"
 msgstr "ਗਲਤ ਸਰਵਰ URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "ਡੀਲਟਾਸ ਪ੍ਰਾਪਤੀ ਲਈ ਥਰਿੱਡ ਨੂੰ ਵਿਕਸਤ ਨਹੀਂ ਜਾ ਸਕਿਆ"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "ਕੈਲੰਡਰ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "ਕੈਂਚੇ ਫਾਇਲ ਨੂੰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "ਕੈਂਚੇ ਥਰਿੱਡ ਨੂੰ ਵਿਕਸਤ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4528
 #: camel/providers/groupwise/camel-groupwise-folder.c:654
 #: camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -1036,7 +1033,7 @@ msgid "Undefined"
 msgstr "ਨਾ-ਪ੍ਰਭਾਸ਼ਿਤ"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1538
+#: calendar/libecal/e-cal.c:1538 libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s ਲਈ ਗੁਪਤ-ਕੋਡ ਦਿਓ (ਉਪਭੋਗਤਾ %s)"
@@ -4664,18 +4661,26 @@ msgstr "%H:%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "LDAP ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਅਗਿਆਤ ਤੌਰ ਕੀਤਾ ਜਾਦਾ ਹੈ"
+
+#: libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਲਈ ਅਸਫਲ।\n"
+
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "ਵਰਗ ਆਈਕਾਨ"
 
-#: libedataserverui/e-categories-dialog.c:238
+#: libedataserverui/e-categories-dialog.c:239
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "ਸੰਰਚਨਾ ਵਿੱਚ ਪਹਿਲਾਂ ਹੀ '%s' ਵਰਗ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਵੱਖਰਾ ਨਾਂ ਵਰਤੋਂ।"
 
-#: libedataserverui/e-categories-dialog.c:396
+#: libedataserverui/e-categories-dialog.c:397
 msgid "Category"
 msgstr "ਵਰਗ"
 
