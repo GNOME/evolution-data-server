@@ -932,6 +932,17 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
 	return a;
 }
 
+/**
+ * e_vcard_remove_attributes:
+ * @evc: vcard object
+ * @attr_group : group name of attributes to be removed
+ * @attr_name  : name of the arributes to be removed
+ *
+ * Removes all the attributes with group name and attribute name equal to 
+ * passed in values. If passed in group name is NULL or empty string, it removes all the attributes 
+ * with passed in name irrespective of their group names
+ **/
+
 void
 e_vcard_remove_attributes (EVCard *evc, const char *attr_group, const char *attr_name)
 {
@@ -947,7 +958,7 @@ e_vcard_remove_attributes (EVCard *evc, const char *attr_group, const char *attr
 
 		next_attr = attr->next;
 
-		if (((!attr_group && !a->group) ||
+		if (((!attr_group || *attr_group == '\0') ||
 		     (attr_group && !g_ascii_strcasecmp (attr_group, a->group))) &&
 		    ((!attr_name && !a->name) || !g_ascii_strcasecmp (attr_name, a->name))) {
 

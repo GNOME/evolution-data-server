@@ -1,3 +1,12 @@
+2005-02-19 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libebook/e-vcard.c (e_vcard_remove_attributes) :
+	When passed in group is NULL, remove all the attributes
+	with name as passed in attribute name even when a attribute
+	has group name.
+
+	Fixes #70908 
+
 2005-02-17  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c:
