@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-05-22 13:44+0900\n"
+"POT-Creation-Date: 2004-08-18 23:35+0900\n"
+"PO-Revision-Date: 2004-08-18 23:33+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -18,14 +18,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "読み込み中..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1854
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "検索中..."
 
@@ -598,16 +598,16 @@ msgid "Unnamed List"
 msgstr "名前なしの一覧"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "誕生日"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "誕生日: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "記念日: %s"
@@ -620,17 +620,17 @@ msgstr "カレンダのデータを保存できません: URI が間違ってい
 msgid "Invalid server URI"
 msgstr "サーバ URI が不正です"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:293
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:296
 msgid "Calendar"
 msgstr "カレンダ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:303
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:328
+#: calendar/libecal/e-cal.c:4298
 msgid "Authentication failed"
 msgstr "認証に失敗しました"
 
@@ -797,71 +797,71 @@ msgstr "未定義"
 msgid "Enter password for %s (user %s)"
 msgstr "%s (ユーザ %s) のパスワードを入力して下さい"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4272
 msgid "Invalid argument"
 msgstr "不正な引数"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4274
 msgid "Backend is busy"
 msgstr "バックエンドが処理中です"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4276
 msgid "Repository is offline"
 msgstr "リポジトリはオフラインです"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4278
 msgid "No such calendar"
 msgstr "そのようなカレンダはありません"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4282 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "オブジェクトが不正です"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4284
 msgid "URI not loaded"
 msgstr "URI を読み込んでいません"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4286
 msgid "URI already loaded"
 msgstr "URL は既に読み込み済みです"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4288
 msgid "Permission denied"
 msgstr "権限がありません"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4290
 msgid "Object ID already exists"
 msgstr "既にオブジェクト ID が存在しています"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4292
 msgid "Protocol not supported"
 msgstr "プロトコルはサポートされていません"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4294
 msgid "Operation has been cancelled"
 msgstr "操作をキャンセルしました"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4296
 msgid "Could not cancel operation"
 msgstr "操作をキャンセルできませんでした"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4300
 msgid "Authentication required"
 msgstr "認証を必要としています"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4302
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 例外が発生しました"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4304 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "不明なエラーです"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4306
 msgid "No error"
 msgstr "エラーはありません"
 
@@ -979,3 +979,5 @@ msgstr "Evolution アドレス帳ファイルのバックエンド"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
+"複数のセグメンテーション・フォルトが発生しました: エラー・ダイアログを表示で"
+"きません\n"
