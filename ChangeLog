@@ -1,5 +1,10 @@
 2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libedataserver/e-util.[ch] (e_util_mkdir_hier): added this
+	function from GAL, needed for the cache objects.
+
+2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
+
 	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in:
 	* src/GNOME_Evolution_DataServerLDAP.server.in.in: added "groupwise" to
 	the "calendar:supported_protocols" property.
