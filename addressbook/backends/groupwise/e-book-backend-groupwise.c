@@ -160,6 +160,8 @@ populate_ims (EContact *contact, gpointer data)
 			im_field_id = E_CONTACT_IM_GROUPWISE;
 			im_attr_list = &groupwise_list;
 		}
+		if (im_field_id == -1) 
+			continue;
 		attr = e_vcard_attribute_new ("", e_contact_vcard_attribute(im_field_id));
 		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), "WORK");
 		e_vcard_attribute_add_value (attr, address->address);
