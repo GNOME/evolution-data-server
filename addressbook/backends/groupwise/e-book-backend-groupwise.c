@@ -95,6 +95,18 @@ struct field_element_mapping {
 
 static int num_mappings = sizeof(mappings) / sizeof(mappings [0]);
 
+static void
+free_attr_list (GList *attr_list)
+{
+        GList *l;
+                                                                                                                             
+        for (l = attr_list; l; l = g_list_next (l)) {
+                EVCardAttribute *attr = l->data;
+                e_vcard_attribute_free (attr);
+        }
+                                                                                                                             
+        g_list_free (attr_list);
+}
 
 
 static void 
@@ -108,45 +120,65 @@ populate_ims (EContact *contact, gpointer data)
 	GList *jabber_list = NULL;
 	GList *groupwise_list = NULL;
 	IMAddress *address;
-
 	EGwItem *item;
   
 	item = E_GW_ITEM (data);
-  
 	im_list = e_gw_item_get_im_list (item);
+
 	for (; im_list != NULL; im_list = g_list_next (im_list)) {
+		EVCardAttribute *attr;
+		GList **im_attr_list = NULL;
+		int im_field_id = -1;
 
 		address = (IMAddress *) (im_list->data);
 		if (address->service == NULL) {
 			continue;
 		}
-		if (g_str_equal (address->service, "icq"))
-			icq_list = g_list_append (icq_list, address->address);
-		else if (g_str_equal (address->service, "aim"))
-			aim_list = g_list_append (aim_list, address->address);
-		else if ( g_str_equal (address->service, "msn"))
-			msn_list = g_list_append (msn_list, address->address);
-		else if (g_str_equal (address->service, "yahoo"))
-			yahoo_list = g_list_append (yahoo_list, address->address);
-		else if (g_str_equal (address->service, "jabber"))
-			jabber_list = g_list_append (jabber_list, address->address);
-		else if (g_str_equal (address->service, "nov"))
-			groupwise_list = g_list_append (groupwise_list, address->address);
+		
+		if (g_str_equal (address->service, "icq")) {
+			im_field_id = E_CONTACT_IM_ICQ;
+			im_attr_list = &icq_list;
+		}
+		else if (g_str_equal (address->service, "aim")) {
+			im_field_id = E_CONTACT_IM_AIM;
+			im_attr_list = &aim_list;
+		}
+		else if ( g_str_equal (address->service, "msn")) {
+			im_field_id = E_CONTACT_IM_MSN;
+			im_attr_list = &msn_list;
+		}
+		else if (g_str_equal (address->service, "yahoo")) {
+			im_field_id = E_CONTACT_IM_YAHOO;
+			im_attr_list = &yahoo_list;
+		}
+		else if (g_str_equal (address->service, "jabber")) {
+			im_field_id = E_CONTACT_IM_JABBER;
+			im_attr_list = &jabber_list;
+		}
+			
+		else if (g_str_equal (address->service, "nov")) {
+			im_field_id = E_CONTACT_IM_GROUPWISE;
+			im_attr_list = &groupwise_list;
+		}
+		attr = e_vcard_attribute_new ("", e_contact_vcard_attribute(im_field_id));
+		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), "WORK");
+		e_vcard_attribute_add_value (attr, address->address);
+		*im_attr_list = g_list_append (*im_attr_list, attr);
 	}
-     
-	e_contact_set (contact, E_CONTACT_IM_AIM, aim_list);
-	e_contact_set (contact, E_CONTACT_IM_JABBER, jabber_list);
-	e_contact_set (contact, E_CONTACT_IM_ICQ, icq_list);
-	e_contact_set (contact, E_CONTACT_IM_YAHOO, yahoo_list);
-	e_contact_set (contact, E_CONTACT_IM_MSN, msn_list);
-	e_contact_set (contact, E_CONTACT_IM_GROUPWISE, groupwise_list);
 	
-	g_list_free (aim_list);
-	g_list_free (jabber_list);
-	g_list_free (icq_list);
-	g_list_free (yahoo_list);
-	g_list_free (msn_list);
-	g_list_free (groupwise_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_AIM, aim_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_JABBER, jabber_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_ICQ, icq_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_YAHOO, yahoo_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_MSN, msn_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_GROUPWISE, groupwise_list);
+	
+	free_attr_list (aim_list);
+	free_attr_list (jabber_list);
+	free_attr_list (icq_list);
+	free_attr_list (yahoo_list);
+	free_attr_list (msn_list);
+	free_attr_list (groupwise_list);
 }
 
 
@@ -224,10 +256,10 @@ set_im_changes (EGwItem *new_item, EGwItem *old_item)
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "ims", added_ims);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "ims", old_ims_copy);
 
-	} else if (!new_item && old_item) {
-		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "ims", old_ims);
-	} else if (new_item && !old_item) {
-		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "ims", new_ims);
+	} else if (!new_ims && old_ims) {
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "ims", g_list_copy (old_ims));
+	} else if (new_ims && !old_ims) {
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "ims", g_list_copy (new_ims));
 	}
 	
 }
@@ -314,6 +346,21 @@ set_address_in_gw_item (EGwItem *item, gpointer data)
 
 }
 
+static PostalAddress *
+copy_postal_address (PostalAddress *address)
+{
+	PostalAddress *address_copy;
+
+	address_copy = g_new0(PostalAddress, 1);
+
+	address_copy->street_address = g_strdup (address_copy->street_address);
+	address_copy->location = g_strdup (address_copy->location);
+	address_copy->state = g_strdup (address_copy->state);
+	address_copy->postal_code = g_strdup (address_copy->postal_code);
+	address_copy->country = g_strdup (address_copy->country);
+	return address_copy;
+}
+
 static void 
 set_postal_address_change (EGwItem *new_item, EGwItem *old_item,  char *address_type)
 {
@@ -331,44 +378,44 @@ set_postal_address_change (EGwItem *new_item, EGwItem *old_item,  char *address_
 		s1 = new_postal_address->street_address;
 		s2 = old_postal_address->street_address;
 		if (!s1 && s2)
-			delete_postal_address->street_address = s2;
+			delete_postal_address->street_address = g_strdup(s2);
 		else if (s1 && s2)
-			update_postal_address->street_address = s1;
+			update_postal_address->street_address = g_strdup(s1);
 		
 		s1 =  new_postal_address->location;
 		s2 = old_postal_address->location;
 		if (!s1 && s2)
-			delete_postal_address->location = s2;
+			delete_postal_address->location = g_strdup(s2);
 		else if (s1 && s2)
-			update_postal_address->location = s1;
+			update_postal_address->location = g_strdup(s1);
 
 		s1 =  new_postal_address->state;
 		s2 = old_postal_address->state;
 		if (!s1 && s2)
-			delete_postal_address->state = s2;
+			delete_postal_address->state = g_strdup(s2);
 		else if (s1 && s2)
-			update_postal_address->state = s1;
+			update_postal_address->state = g_strdup(s1);
 		s1 =  new_postal_address->postal_code;
 		s2 = old_postal_address->postal_code;
 		if (!s1 && s2)
-			delete_postal_address->postal_code = s2;
+			delete_postal_address->postal_code = g_strdup(s2);
 		else if (s1 && s2)
-			update_postal_address->postal_code = s1;
+			update_postal_address->postal_code = g_strdup(s1);
 
 		s1 =  new_postal_address->country;
 		s2 =  old_postal_address->country;
 		if (!s1 && s2)
-			delete_postal_address->country = s2;
+			delete_postal_address->country = g_strdup(s2);
 		else if (s1 && s2)
-			update_postal_address->country = s1;
+			update_postal_address->country = g_strdup(s1);
 
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, address_type, update_postal_address);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, address_type, delete_postal_address);
 		
 	} else if (!new_postal_address && old_postal_address) {
-		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, address_type, old_postal_address);
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, address_type, copy_postal_address(old_postal_address));
 	} else if (new_postal_address && !old_postal_address) {
-		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, address_type, new_postal_address);
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, address_type, copy_postal_address(new_postal_address));
 	}
 }
 
@@ -584,6 +631,18 @@ set_full_name_in_gw_item (EGwItem *item, gpointer data)
 	}
 }
 
+static FullName *
+copy_full_name (FullName *full_name)
+{
+	FullName *full_name_copy = g_new0(FullName, 1);
+	full_name_copy->name_prefix = g_strdup (full_name->name_prefix);
+	full_name_copy->first_name =  g_strdup (full_name->first_name);
+	full_name_copy->middle_name = g_strdup (full_name->middle_name);
+	full_name_copy->last_name = g_strdup (full_name->last_name);
+	full_name_copy->name_suffix = g_strdup (full_name->name_suffix);
+	return full_name_copy;
+}
+
 static void 
 set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 {
@@ -601,41 +660,41 @@ set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 		s1 = new_full_name->name_prefix;
 		s2 = old_full_name->name_prefix;
 	        if(!s1 && s2)
-			delete_full_name->name_prefix = s2;
+			delete_full_name->name_prefix = g_strdup(s2);
 		else if (s1 && s2)
-			update_full_name->name_prefix = s1;
+			update_full_name->name_prefix = g_strdup(s1);
 		s1 = new_full_name->first_name;
 		s2  = old_full_name->first_name;
 		if(!s1 && s2)
-			delete_full_name->first_name = s2;
+			delete_full_name->first_name = g_strdup(s2);
 		else if (s1 && s2)
-			update_full_name->first_name = s1;
+			update_full_name->first_name = g_strdup(s1);
 		s1 = new_full_name->middle_name;
 		s2  = old_full_name->middle_name;
 		if(!s1 && s2)
-			delete_full_name->middle_name = s2;
+			delete_full_name->middle_name = g_strdup(s2);
 		else if (s1 && s2)
-			update_full_name->middle_name = s1;
+			update_full_name->middle_name = g_strdup(s1);
 		
 		s1 = new_full_name->last_name;
 		s2 = old_full_name->last_name;
 		if(!s1 && s2)
-			delete_full_name->last_name = s2;
+			delete_full_name->last_name = g_strdup(s2);
 		else if (s1 && s2)
-			update_full_name->last_name = s1;
+			update_full_name->last_name = g_strdup(s1);
 		s1 = new_full_name->name_suffix;
 		s2  = old_full_name->name_suffix;
 		if(!s1 && s2)
-			delete_full_name->name_suffix = s2;
+			delete_full_name->name_suffix = g_strdup(s2);
 		else if (s1 && s2)
-			update_full_name->name_suffix = s1;
-		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE,"full_name",  new_full_name);
+			update_full_name->name_suffix = g_strdup(s1);
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE,"full_name",  update_full_name);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE,"full_name",  delete_full_name);
 	
 	} else if (!new_full_name && old_full_name) {
-		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "full_name", old_full_name);
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "full_name", copy_full_name(old_full_name));
 	} else if (new_full_name && !old_full_name) {
-		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "full_name", new_full_name);
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "full_name", copy_full_name(new_full_name));
 	}
 		
 
@@ -1725,9 +1784,9 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	if(uri == NULL)
 		return  GNOME_Evolution_Addressbook_OtherError;
 	tokens = g_strsplit (uri, ";", 2);
-	if (tokens[0])
-		uri = g_strdup (tokens[0]);
-	
+	g_free (uri);
+	if (tokens[0]) 
+		uri = tokens[0];
 	priv->uri = g_strconcat ("http://", uri +12, NULL );
 	priv->only_if_exists = only_if_exists;
 	book_name = g_strdup (tokens[1]);

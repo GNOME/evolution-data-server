@@ -1,3 +1,12 @@
+2004-05-04  Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* backends/groupwise/e-book-backend-groupwise.c (populate_ims) :
+	set type paraemter with value as WORK on attributes while setting ims in 
+	contact so that they appear in preview pane
+	(free_attr_list) : new function to free list of attributes
+	fixes #56776 
+	
+	
 2004-05-03  William Jon McCann  <mccann@jhu.edu>
 
 	* addressbook/libebook/e-address-western.h:
