@@ -210,7 +210,12 @@ e_book_add_contact (EBook           *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_add_contact called on book before e_book_load_uri"));
+			     /* translators: the placeholders will be filled by
+			      * function names, e.g.
+			      * "e_book_add_contact" on book before 
+			      * "e_book_load_uri */
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_add_contact", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -244,7 +249,8 @@ e_book_add_contact (EBook           *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::addContact call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::addContact");
 		return FALSE;
 	}
 
@@ -320,7 +326,8 @@ e_book_commit_contact (EBook           *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_commit_contact called on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_commit_contact", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -354,7 +361,8 @@ e_book_commit_contact (EBook           *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::modifyContact call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::modifyContact");
 		return FALSE;
 	}
 
@@ -403,7 +411,8 @@ e_book_get_supported_fields  (EBook            *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_get_supported_fields on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_get_supported_fields", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -432,7 +441,8 @@ e_book_get_supported_fields  (EBook            *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::getSupportedFields call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::getSupportedFields");
 		return FALSE;
 	}
 
@@ -503,7 +513,9 @@ e_book_get_supported_auth_methods (EBook            *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_get_supported_auth_methods on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_get_supported_auth_methods",
+			     "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -533,7 +545,8 @@ e_book_get_supported_auth_methods (EBook            *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::getSupportedAuthMethods call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::getSupportedAuthMethods");
 		return FALSE;
 	}
 
@@ -613,7 +626,8 @@ e_book_authenticate_user (EBook         *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_authenticate_user on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_authenticate_user", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -646,7 +660,8 @@ e_book_authenticate_user (EBook         *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::authenticateUser call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::authenticateUser");
 		return FALSE;
 	}
 
@@ -695,7 +710,8 @@ e_book_get_contact (EBook       *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_get_contact on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_get_contact", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -725,7 +741,8 @@ e_book_get_contact (EBook       *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::getContact call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::getContact");
 		return FALSE;
 	}
 
@@ -796,7 +813,8 @@ e_book_remove_contact (EBook       *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_remove_contact on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_remove_contact", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -849,7 +867,8 @@ e_book_remove_contacts (EBook    *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_remove_contacts on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_remove_contacts", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -888,7 +907,8 @@ e_book_remove_contacts (EBook    *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::removeContacts call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::removeContacts");
 		return FALSE;
 	}
 	
@@ -946,7 +966,8 @@ e_book_get_book_view (EBook       *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_get_book_view on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_get_book_view", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -997,7 +1018,8 @@ e_book_get_book_view (EBook       *book,
 		g_warning ("corba exception._major = %d\n", ev._major);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::getBookView call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::authenticateUser");
 		return FALSE;
 	}
 	
@@ -1078,7 +1100,8 @@ e_book_get_contacts (EBook       *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_get_contacts on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_get_contacts", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -1113,7 +1136,8 @@ e_book_get_contacts (EBook       *book,
 		g_warning ("corba exception._major = %d\n", ev._major);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::getContactList call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::getContactList");
 		return FALSE;
 	}
 	
@@ -1176,7 +1200,8 @@ e_book_get_changes (EBook       *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_get_changes on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_get_changes", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -1207,7 +1232,8 @@ e_book_get_changes (EBook       *book,
 		g_warning ("corba exception._major = %d\n", ev._major);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::getChanges call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::getChanges");
 		return FALSE;
 	}
 	
@@ -1338,7 +1364,8 @@ e_book_cancel (EBook   *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::cancelOperation call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::cancelOperation");
 		return FALSE;
 	}
 
@@ -1411,7 +1438,8 @@ e_book_remove (EBook   *book,
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("e_book_remove on book before e_book_load_uri"));
+			     _("\"%s\" on book before \"%s\""),
+			     "e_book_remove", "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -1440,7 +1468,8 @@ e_book_remove (EBook   *book,
 		CORBA_exception_free (&ev);
 
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
-			     _("Corba exception making Book::remove call"));
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::remove");
 		return FALSE;
 	}
 
