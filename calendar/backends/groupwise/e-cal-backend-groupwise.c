@@ -26,6 +26,10 @@
 #endif
 
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <bonobo/bonobo-i18n.h>
@@ -1599,6 +1603,80 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	return GNOME_Evolution_Calendar_Success;
 }
 
+static void
+fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
+{
+	GSList *attach_list = NULL, *new_attach_list = NULL;
+	GSList *l;
+	char  *attach_store, *filename, *file_contents;
+	char *dest_url, *dest_file;
+	int fd, len;
+	int len_read = 0;
+	char buf[1024];
+	struct stat sb;
+	const char *uid;
+
+
+	e_cal_component_get_attachment_list (comp, &attach_list);
+	e_cal_component_get_uid (comp, &uid);
+	/*FIXME  get the uri rather than computing the path */
+	attach_store = g_strconcat
+			(e_cal_backend_groupwise_get_local_attachments_store (cbgw), NULL);
+	
+	for (l = attach_list; l ; l = l->next) {
+		char *sfname = (char *)l->data;
+
+		filename = g_strrstr (sfname, "/") + 1;	
+
+		// open the file using the data
+		fd = open (sfname, O_RDONLY); 
+		if (fd == -1) {
+			/* TODO handle error conditions */
+			g_message ("DEBUG: could not open the file descriptor\n");
+			continue;
+		}
+		if (fstat (fd, &sb) == -1) {
+			/* TODO handle error conditions */
+			g_message ("DEBUG: could not fstat the attachment file\n");
+			continue;
+		}
+		len = sb.st_size;
+
+		file_contents = g_malloc (len + 1);
+	
+		while (len_read < len) {
+			int c = read (fd, buf, sizeof (buf));
+
+			if (c == -1)
+				break;
+
+			memcpy (&file_contents[len_read], buf, c);
+			len_read += c;
+		}
+		file_contents [len_read] = 0;
+
+		/* write*/
+		dest_file = g_strconcat (attach_store, "/", uid, "-",
+				filename, NULL);
+		fd = open (dest_file, O_RDWR|O_CREAT|O_TRUNC, 0600);
+		if (fd == -1) {
+			/* TODO handle error conditions */
+			g_message ("DEBUG: could not serialize attachments\n");
+		}
+
+		if (write (fd, file_contents, len_read) == -1) {
+			/* TODO handle error condition */
+			g_message ("DEBUG: attachment write failed.\n");
+		}
+
+		dest_url = g_strconcat ("file:///", dest_file, NULL);
+		new_attach_list = g_slist_append (new_attach_list, dest_url);
+		g_free (dest_file);
+	}
+	g_free (attach_store);
+	e_cal_component_set_attachment_list (comp, new_attach_list);
+}
+
 static ECalBackendSyncStatus
 receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp)
 {
@@ -1614,6 +1692,9 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 	method = icalcomponent_get_method (icalcomp);
 	
+	/* handle attachments */
+	if (e_cal_component_has_attachments (comp))
+		fetch_attachments (cbgw, comp);
 	status = e_gw_connection_send_appointment (cbgw, priv->container_id, comp, method, &remove, &modif_comp);
 
 	if (status == E_GW_CONNECTION_STATUS_OK && !modif_comp) {
