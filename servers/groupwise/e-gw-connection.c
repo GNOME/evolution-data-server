@@ -268,7 +268,6 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	/* send message to server */
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
-		g_object_unref (response);
 		g_object_unref (cnc);
 		return NULL;
 	}

@@ -1,5 +1,10 @@
 2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_new): dont
+	unref the response when we havent got one.
+
+2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-connection.c (e_gw_connection_finalize):
 	only try to remove the connection from the hash table if the hash
 	table has been created.
