@@ -48,6 +48,10 @@ EDataBookView *e_data_book_view_new                  (EBookBackend              
 						      EBookBackendSExp             *card_sexp,
 						      int                           max_results);
 
+void              e_data_book_view_set_thresholds    (EDataBookView *book_view,
+						      int minimum_grouping_threshold,
+						      int maximum_grouping_threshold);
+
 const char*       e_data_book_view_get_card_query    (EDataBookView                *book_view);
 EBookBackendSExp* e_data_book_view_get_card_sexp     (EDataBookView                *book_view);
 int               e_data_book_view_get_max_results   (EDataBookView                *book_view);

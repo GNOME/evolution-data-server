@@ -658,7 +658,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 	/* close connection first if it's open first */
 	if (blpriv->ldap)
-		ldap_unbind_ext (blpriv->ldap, NULL, NULL);
+		ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
 
 	blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
 #if defined (DEBUG) && defined (LDAP_OPT_DEBUG_LEVEL)
@@ -684,7 +684,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 			if (!bl->priv->ldap_v3 && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 				g_message ("TLS not available (fatal version), v3 protocol could not be established (ldap_error 0x%02x)", ldap_error);
-				ldap_unbind (blpriv->ldap);
+				ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
 				blpriv->ldap = NULL;
 				return GNOME_Evolution_Addressbook_TLSNotAvailable;
 			}
@@ -698,7 +698,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 				if (LDAP_SUCCESS != ldap_error) {
 					if (bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 						g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
-						ldap_unbind (blpriv->ldap);
+						ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
 						blpriv->ldap = NULL;
 						return GNOME_Evolution_Addressbook_TLSNotAvailable;
 					}
@@ -3530,6 +3530,9 @@ e_book_backend_ldap_dispose (GObject *object)
 		g_hash_table_destroy (bl->priv->id_to_op);
 		g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
 		g_static_rec_mutex_free (&bl->priv->op_hash_mutex);
+
+		if (bl->priv->ldap)
+			ldap_unbind_ext_s (bl->priv->ldap, NULL, NULL);
 
 		if (bl->priv->poll_timeout != -1) {
 			printf ("removing timeout\n");

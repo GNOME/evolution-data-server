@@ -1,3 +1,14 @@
+2004-06-26  Chris Toshok  <toshok@ximian.com>
+
+	* backends/ldap/e-book-backend-ldap.c (get_ldap_library_info): use
+	ldap_unbind_ext_s.
+	(e_book_backend_ldap_connect): same.
+	(e_book_backend_ldap_dispose): unbind our LDAP* when we're shut
+	down.
+
+	* libedata-book/e-data-book-view.h: add prototype for
+	e_data_book_view_set_thresholds.
+
 2004-06-24  Hans Petter Jansson  <hpj@ximian.com>
 
 	See bug #51127.
