@@ -45,7 +45,6 @@ camel/camel-folder.c
 camel/camel-gpg-context.c
 camel/camel-html-parser.c
 camel/camel-http-stream.c
-camel/camel-iconv.c
 camel/camel-index-control.c
 camel/camel-index.c
 camel/camel-internet-address.c
