@@ -102,6 +102,8 @@ e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw) {
 	return cbgw->priv->default_zone;
 }
 
+static GMutex *mutex = NULL;
+
 /* Initialy populate the cache from the server */
 static EGwConnectionStatus
 populate_cache (ECalBackendGroupwise *cbgw)
@@ -114,6 +116,12 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	int cursor = 0;
 	
 	priv = cbgw->priv;
+	
+	if (!mutex) {
+		mutex = g_mutex_new ();
+	}
+
+	g_mutex_lock (mutex);
 
 	/* get the list of category ids and corresponding names from the server */
 	status = e_gw_connection_get_categories (priv->cnc, priv->categories_by_id, priv->categories_by_name);
@@ -153,6 +161,8 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		list = NULL;
         }
 	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
+
+	g_mutex_unlock (mutex);
 
 	return E_GW_CONNECTION_STATUS_OK;
 }
@@ -246,6 +256,8 @@ form_uri (ESource *source)
 	return formed_uri;
 
 }
+
+
 
 static ECalBackendSyncStatus
 connect_to_server (ECalBackendGroupwise *cbgw)

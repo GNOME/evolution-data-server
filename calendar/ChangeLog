@@ -1,3 +1,10 @@
+2004-08-25  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(populate_cache): Used a static mutex to avoid the 
+	the simulataneous calls from calendar and tasks to
+	ReadCursorRequest which crashes the server.
+	
 2004-08-24  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c 
