@@ -1,20 +1,17 @@
 # Evolution'i eesti keele tõlge.
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Ilmar Kerm <ikerm@hot.ee>, 2001.
-# Ivar Smolin <okul@linux.ee>, 2002.
+# Ivar Smolin <okul@linux.ee>, 2002, 2005.
 # Kaarel Jogi <kaarel@gg.ee>, 2002.
 #
 # Riigi- ja linnanimed: Marek Sepp <marek.sepp@ttu.ee>, 2001, 2002.
 #
-# Kommentaar eesti tõlkijatele: kohad, mis vajavad ülevaatamist on märgistatud
-# kommentaariga !PARANDA!
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution 1.0.2\n"
+"Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-14 15:54+0800\n"
-"PO-Revision-Date: 2005-01-15 10:19+0300\n"
+"PO-Revision-Date: 2005-01-18 15:13+0300\n"
 "Last-Translator: Priit Laes <amd@tt.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -69,16 +66,7 @@ msgstr "Võtan vastu LDAP otsingu tulemused..."
 msgid "Error performing search"
 msgstr "Viga otsingu teostamisel"
 
-#  translators: the placeholders will be filled by
-#  * function names, e.g.
-#  * "e_book_add_contact" on book before
-#  * "e_book_load_uri
-#  translators: the placeholders will be filled by
-#  * function names, e.g.
-#  * "e_book_add_contact" on book before
-#  * "e_book_open
 #. translators: the placeholders will be filled by
-#. * "e_book_add_contact" on book before
 #: addressbook/libebook/e-book.c:240
 #: addressbook/libebook/e-book.c:244
 #: addressbook/libebook/e-book.c:446
@@ -102,9 +90,9 @@ msgstr "Viga otsingu teostamisel"
 #: addressbook/libebook/e-book.c:2117
 #: addressbook/libebook/e-book.c:2121
 #: addressbook/libebook/e-book.c:3200
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "Aadressid, mis olid avatud enne Galeoni maha kukkumist (%s)"
+msgstr ""
 
 #: addressbook/libebook/e-book.c:253
 #: addressbook/libebook/e-book.c:459
@@ -167,9 +155,9 @@ msgstr "Ei suutnud initsialiseerida PAM'i: %s"
 
 #: addressbook/libebook/e-book.c:2454
 #: addressbook/libebook/e-book.c:2458
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "`%s' järel puudub operand"
+msgstr ""
 
 #: addressbook/libebook/e-book.c:2524
 #, fuzzy
@@ -212,7 +200,6 @@ msgid "File As"
 msgstr "Fail kui"
 
 #. Name fields
-#. so we can set the N property (since evo 1.4 works fine with
 #: addressbook/libebook/e-contact.c:109
 msgid "Full Name"
 msgstr "Täisnimi"
@@ -237,8 +224,6 @@ msgstr "Hüüdnimi"
 msgid "Name or Org"
 msgstr "Nimi või organisatsioon"
 
-#  Address fields
-#  Address fields
 #. Address fields
 #: addressbook/libebook/e-contact.c:117
 msgid "Address List"
@@ -344,12 +329,10 @@ msgstr "Telex"
 msgid "TTY"
 msgstr "TTY"
 
-#  Email fields
 #. Email fields
 #: addressbook/libebook/e-contact.c:147
-#, fuzzy
 msgid "Email List"
-msgstr " loend:\n"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:148
 msgid "Email 1"
@@ -375,7 +358,6 @@ msgstr "Postiprogramm"
 msgid "Wants HTML Mail"
 msgstr "Soovib HTML sõnumeid"
 
-#  Instant messaging fields
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:156
 #, fuzzy
@@ -602,7 +584,6 @@ msgstr "Juht"
 msgid "Assistant"
 msgstr "Assistent"
 
-#  Web fields
 #. Web fields
 #: addressbook/libebook/e-contact.c:211
 msgid "Homepage URL"
@@ -616,7 +597,6 @@ msgstr "Weblogi URL"
 msgid "Video Conferencing URL"
 msgstr "Videokonverentsi URL"
 
-#  Photo/Logo
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:216
 msgid "Photo"
@@ -626,13 +606,11 @@ msgstr "Foto"
 msgid "Logo"
 msgstr "Logo"
 
-#  Security fields
 #. Security fields
 #: addressbook/libebook/e-contact.c:220
 msgid "X.509 Certificate"
 msgstr "X.509 sertifikaat"
 
-#  Contact categories
 #. Contact categories
 #: addressbook/libebook/e-contact.c:223
 msgid "Category List"
@@ -656,7 +634,6 @@ msgstr "Vaba/Hõivatud URL"
 msgid "ICS Calendar"
 msgstr "ICS Kalender"
 
-#  Misc fields
 #. Misc fields
 #: addressbook/libebook/e-contact.c:232
 msgid "Spouse's Name"
@@ -687,7 +664,6 @@ msgstr "Näita e-posti aadresse"
 msgid "Unnamed List"
 msgstr "Nimetu nimekiri"
 
-#  Set category and visibility
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
@@ -905,7 +881,6 @@ msgstr "Madal"
 msgid "Undefined"
 msgstr "Määramata"
 
-#  actually ask the client for authentication
 #. actually ask the client for authentication
 #: calendar/libecal/e-cal.c:1590
 #, c-format
@@ -1628,9 +1603,9 @@ msgid "Host lookup failed"
 msgstr "Hostinime lahendamine ebaõnnestus: põhjus teadmata"
 
 #: camel/camel-net-utils.c:636
-#, fuzzy, c-format
+#, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr "Hostinime lahendamine ebaõnnestus: %s: ei leia hosti"
+msgstr "Tõrge hostinime lahendamisel: %s: %s"
 
 #: camel/camel-net-utils.c:743
 msgid "Resolving address"
@@ -2083,8 +2058,6 @@ msgstr "Ei leia tühja kohta"
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Allkirjastaja: %s <%s>: %s\n"
 
-#  we should have gotten instructions on how to use the DATA command:
-#  * 354 Enter mail, end with "." on a line by itself
 #: camel/camel-smime-context.c:723
 msgid "Decoder failed"
 msgstr "Dekooder ebaõnnestus"
@@ -2362,8 +2335,6 @@ msgstr ""
 "\n"
 "Kas soovid seda siiski vastu võtta?"
 
-#  construct our user prompt
-#  construct our user prompt
 #. construct our user prompt
 #: camel/camel-tcp-stream-ssl.c:837
 #, c-format
@@ -2508,7 +2479,6 @@ msgstr ""
 msgid "This message is not available in offline mode."
 msgstr "See sõnum ei ole hetkel kättesaadav"
 
-#  mail-composer:no-build-message primary
 #: camel/providers/groupwise/camel-groupwise-folder.c:171
 #: camel/providers/groupwise/camel-groupwise-folder.c:272
 #, fuzzy
@@ -2522,9 +2492,9 @@ msgid "Could not load summary for %s"
 msgstr "%s kokkuvõtet ei saa laadida"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:685
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create message: %s"
-msgstr "Ei suuda luua CMS sõnumit"
+msgstr "Sõnumit ei saa luua: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:697
 #, fuzzy, c-format
@@ -2532,9 +2502,9 @@ msgid "Cannot append message to folder `%s': %s"
 msgstr "Sõnumi lisamine mh vormingus kausta nurjus: %s: %s"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get folder container %s"
-msgstr "Kausta `%s' ei saadud: %s"
+msgstr "Kausta konteinerit %s ei saadud"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:328
 #: camel/providers/imap4/camel-imap4-journal.c:276
@@ -2544,9 +2514,9 @@ msgstr "Sõnumeid ei saa lisada `%s' kausta: Tundmatu viga"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:344
 #: camel/providers/imap4/camel-imap4-journal.c:292
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr "Sõnumi lisamine maildir kausta nurjus: %s: %s"
+msgstr "Sõnumit ei saa autonoomses režiimis lisada: %s"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:36
@@ -2637,12 +2607,8 @@ msgid "You didn't enter a password."
 msgstr "Sa ei sisestanud parooli."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:382
-#, fuzzy
 msgid "Unable to authenticate to GroupWise server."
-msgstr ""
-"Ei saa autentimida IMAP serverisse.\n"
-"%s\n"
-"\n"
+msgstr "GroupWise serverisse ei saa autentida."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:479
 #: camel/providers/imap/camel-imap-store.c:1852
@@ -2683,9 +2649,9 @@ msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Kausta `%s' ei saa ümber nimetada `%s'-ks: Puudulik käsk"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:911
-#, fuzzy, c-format
+#, c-format
 msgid "GroupWise server %s"
-msgstr "Groupwise"
+msgstr "GroupWise server %s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:913
 #, c-format
@@ -2693,9 +2659,9 @@ msgid "GroupWise service for %s on %s"
 msgstr ""
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise server %s"
-msgstr "Groupwise Id loend"
+msgstr "Groupwise server %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:123
 #, fuzzy, c-format
@@ -2737,8 +2703,6 @@ msgstr "Operatsioon katekstatud"
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Server katkestas ootamatult: %s"
 
-#  for imap ALERT codes, account user@host
-#  for imap ALERT codes, account user@host
 #. for imap ALERT codes, account user@host
 #: camel/providers/imap/camel-imap-command.c:321
 #, c-format
@@ -2940,9 +2904,9 @@ msgstr ""
 #: camel/providers/pop3/camel-pop3-store.c:184
 #: camel/providers/smtp/camel-smtp-transport.c:257
 #: camel/providers/smtp/camel-smtp-transport.c:272
-#, fuzzy, c-format
+#, c-format
 msgid "Could not connect to %s: %s"
-msgstr "Ei saa ühenduda %s (port: %d): %s"
+msgstr "Ei saa ühenduda hosti %s: %s"
 
 #: camel/providers/imap/camel-imap-store.c:536
 #: camel/providers/imap4/camel-imap4-store.c:241
@@ -3302,14 +3266,12 @@ msgstr "IMAP server %s katkestas ootamatult ühenduse: %s"
 msgid "Index message body data"
 msgstr "Sõnumite sisu indekseerimine"
 
-#  $HOME relative path + protocol string
 #. $HOME relative path + protocol string
 #: camel/providers/local/camel-local-folder.c:391
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
-#  /var/spool/mail relative path + protocol
 #. /var/spool/mail relative path + protocol
 #: camel/providers/local/camel-local-folder.c:395
 #: camel/providers/local/camel-local-folder.c:398
@@ -3317,7 +3279,6 @@ msgstr "~%s (%s)"
 msgid "mailbox:%s (%s)"
 msgstr "postkast:%s (%s)"
 
-#  a full path + protocol
 #. a full path + protocol
 #: camel/providers/local/camel-local-folder.c:402
 #, c-format
@@ -3336,7 +3297,6 @@ msgstr "MH-vormingus postikataloogid"
 msgid "For storing local mail in MH-like mail directories."
 msgstr ""
 
-# !PARANDA! - no kuidas siis tõlkida?
 #: camel/providers/local/camel-local-provider.c:68
 msgid "Local delivery"
 msgstr "Kohalik postijagaja"
@@ -3441,7 +3401,6 @@ msgstr "Ei saa salvestada kokkuvõtet: %s: %s"
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Sõnumite ei saa lisada kokkuvõttesse: tundmatu põhjus"
 
-#  Inbox is always first
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: camel/providers/local/camel-maildir-folder.c:75
 #: camel/providers/local/camel-maildir-store.c:221
@@ -4027,11 +3986,6 @@ msgstr "Hävitan kustutatud sõnumid"
 msgid "No message with uid %s"
 msgstr "[Elemendid ]omaniku UID-ga \"%s\""
 
-#  Sigh, most of the crap in this function is so that the cancel button
-#  returns the proper exception code.  Sigh.
-#  Sigh, most of the crap in this function is so that the cancel button
-#  returns the proper exception code.  Sigh.
-#. Sigh, most of the crap in this function is so that the cancel button
 #: camel/providers/pop3/camel-pop3-folder.c:412
 #, c-format
 msgid "Retrieving POP message %d"
@@ -4438,9 +4392,6 @@ msgstr "RCPT TO <%s> ebaõnnestus"
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA käsk ebaõnnestus: %s: meil jäi saatmata"
 
-#  we should have gotten instructions on how to use the DATA command:
-#  * 354 Enter mail, end with "." on a line by itself
-#. we should have gotten instructions on how to use the DATA command:
 #: camel/providers/smtp/camel-smtp-transport.c:1246
 #: camel/providers/smtp/camel-smtp-transport.c:1322
 msgid "DATA command failed"
@@ -4565,7 +4516,6 @@ msgstr "Vigane parameeter"
 msgid "Evolution Addressbook file backend"
 msgstr "Evolutioni aadressiraamatu aadressikuva"
 
-# !PARANDA!
 #: src/GNOME_Evolution_DataServer.server.in.in.h:2
 #, fuzzy
 msgid "Evolution Calendar file and webcal backend"
