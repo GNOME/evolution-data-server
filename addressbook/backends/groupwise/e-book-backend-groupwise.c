@@ -649,10 +649,16 @@ populate_contact_members (EContact *contact, gpointer data)
 	GList *member_list;
 	item = E_GW_ITEM(data);
 	member_list = e_gw_item_get_member_list (item);
-	e_contact_set (contact, E_CONTACT_EMAIL, member_list );
-
-	
-
+	for (; member_list != NULL; member_list = g_list_next (member_list)) {
+		EVCardAttribute *attr;
+                attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
+		e_vcard_attribute_add_param_with_value (attr,
+                                                        e_vcard_attribute_param_new (EVC_X_DEST_EMAIL),
+							member_list->data);
+		e_vcard_attribute_add_value (attr, member_list->data);
+		e_vcard_add_attribute (E_VCARD (contact), attr);
+	}
+		
 }
 
 
@@ -1677,7 +1683,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 {
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
-	const char *book_name;
+        char *book_name;
 	const char *uri;
 	char **tokens;
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
