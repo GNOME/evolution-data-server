@@ -122,6 +122,13 @@ free_recipient (EGwItemRecipient *recipient, gpointer data)
 	g_free (recipient->email);
 	g_free (recipient->display_name);
 	g_free (recipient);
+	g_free (recipient->delivered_date);
+	g_free (recipient->opened_date);
+	g_free (recipient->accepted_date);
+	g_free (recipient->deleted_date);
+	g_free (recipient->declined_date);
+	g_free (recipient->completed_date);
+	g_free (recipient->undelivered_date);
 }
 
 static void 
@@ -537,22 +544,64 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		 to none. */
 		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientStatus");
                 if (subparam) {
-                        if (soup_soap_parameter_get_first_child_by_name (subparam, "deleted"))
+       			char *formatted_date, *value; 
+			SoupSoapParameter *temp_param ;
+
+			recipient->status_enabled = TRUE;
+       			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "deleted")) ) {
 				recipient->status = E_GW_ITEM_STAT_DECLINED;
-			if (soup_soap_parameter_get_first_child_by_name (subparam, "declined"))
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				recipient->deleted_date = g_strdup (formatted_date);
+				g_free (value), value = NULL;
+				g_free (formatted_date), formatted_date = NULL;
+			} 
+			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "declined")) ) {
 				recipient->status = E_GW_ITEM_STAT_DECLINED;
-			else if (soup_soap_parameter_get_first_child_by_name (subparam, "accepted")) 
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				recipient->declined_date = g_strdup (formatted_date);
+				g_free (value), value = NULL;
+				g_free (formatted_date), formatted_date = NULL;
+
+			} if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "accepted"))) {
 				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
-			else 	
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				recipient->accepted_date = g_strdup (formatted_date);
+				g_free (value), value = NULL;
+				g_free (formatted_date), formatted_date = NULL;
+			} else 	
 				recipient->status = E_GW_ITEM_STAT_NONE;
-			subparam = soup_soap_parameter_get_first_child_by_name (subparam, "completed");
-			if (subparam) {
-				char *formatted_date, *value; 
-				value = soup_soap_parameter_get_string_value (subparam);
+			temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "completed");
+			if (temp_param) {
+				value = soup_soap_parameter_get_string_value (temp_param);
 				formatted_date = e_gw_connection_format_date_string (value);
 				e_gw_item_set_completed_date (item, formatted_date);
-				g_free (value);
-				g_free (formatted_date);
+				recipient->completed_date = g_strdup (formatted_date);
+				g_free (value), value = NULL;
+				g_free (formatted_date), formatted_date = NULL;
+			}
+			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "opened"))) {
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				recipient->opened_date = g_strdup (formatted_date);
+				g_free (value), value = NULL;
+				g_free (formatted_date), formatted_date = NULL;
+			}
+			if ( ( temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "delivered"))) {
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				recipient->delivered_date = g_strdup (formatted_date);
+				g_free (value), value = NULL;
+				g_free (formatted_date), formatted_date = NULL;
+			}
+			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "undeliverable_date"))) {
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				recipient->undelivered_date = g_strdup (formatted_date);
+				g_free (value), value = NULL;
+				g_free (formatted_date), formatted_date = NULL;
 			}
                 }
 		else {

@@ -1,3 +1,9 @@
+2005-01-12  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-item.[ch]
+	(set_recipient_list_from_soap_parameter): support for status
+	tracking of a sent mail
+
 2005-01-12  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* e-gw-connection.c: 

@@ -263,6 +263,14 @@ void e_gw_item_set_trigger (EGwItem *item, int trigger);
 typedef struct {
 	char *email;
 	char *display_name;
+	gboolean status_enabled;
+	char *delivered_date;
+	char *opened_date;
+	char *accepted_date;
+	char *deleted_date;
+	char *declined_date;
+	char *completed_date;
+	char *undelivered_date;
 	enum {
 		E_GW_ITEM_RECIPIENT_TO,
 		E_GW_ITEM_RECIPIENT_CC,
