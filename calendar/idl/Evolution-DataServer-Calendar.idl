@@ -254,9 +254,6 @@ module Calendar {
                 /* Called from a Calendar when the mode is changed */
 		oneway void notifyCalSetMode (in SetModeStatus status, in CalMode mode);		
 
-		/* Called from a Calendar when the list of categories changes */
-		oneway void notifyCategoriesChanged (in StringSeq categories);
-
 		/* Called from a Calendar when there is an error not notified otherwise */
 		oneway void notifyErrorOccurred (in string message);
 	  

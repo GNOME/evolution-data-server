@@ -119,9 +119,6 @@ void e_data_cal_notify_auth_required (EDataCal *cal);
 
 void e_data_cal_notify_error (EDataCal *cal, const char *message);
 
-void e_data_cal_notify_categories_changed (EDataCal *cal, GNOME_Evolution_Calendar_StringSeq *categories);
-
-
 
 G_END_DECLS
 

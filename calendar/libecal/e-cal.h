@@ -85,8 +85,6 @@ struct _ECalClass {
 	void (* cal_opened) (ECal *ecal, ECalendarStatus status);
 	void (* cal_set_mode) (ECal *ecal, ECalSetModeStatus status, CalMode mode);	
 
-	void (* categories_changed) (ECal *ecal, GPtrArray *categories);
-
 	void (* backend_error) (ECal *ecal, const char *message);
 	void (* backend_died) (ECal *ecal);
 };

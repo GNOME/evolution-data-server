@@ -1,3 +1,34 @@
+2005-01-28  Rodrigo Moya <rodrigo@novell.com>
+
+	* idl/Evolution-DataServer-Calendar.idl: removed
+	notifyCategoriesChanged method on CalListener.
+
+	* libedata-cal/e-cal-backend.[ch] (e_cal_backend_init,
+	e_cal_backend_finalize, e_cal_backend_add_client): no need
+	to deal with categories now.
+	(free_category_cb, prune_changed_categories, add_category_cb,
+	notify_categories_changed, idle_notify_categories_changed,
+	e_cal_backend_ref_categories, e_cal_backend_unref_categories):
+	removed.
+
+	* libedata-cal/e-data-cal.[ch]
+	(e_data_cal_notify_categories_changed): removed.
+
+	* backends/file/e-cal-backend-file.c (add_component,
+	remove_recurrence_cb, remove_component, remove_instance,
+	remove_object_instance_cb): no need to deal with categories now.
+
+	* libecal/e-cal-listener.[ch]: removed "categories_changed" signal.
+	(impl_notifyCategoriesChanged): removed.
+	(e_cal_listener_class_init): don't set removed method. Don't create
+	"categories_changed" signal.
+
+	* libecal/e-cal.[ch]: removed "categories_changed" signal.
+	(categories_changed_idle_cb, categories_changed): removed.
+	(e_cal_init): removed connection to listener's "categories_changed"
+	signal.
+	(e_cal_class_init): don't create "categories_changed" signal.
+
 2005-01-27  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	partially Fixes#68541

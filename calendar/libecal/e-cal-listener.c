@@ -61,7 +61,6 @@ enum {
 	GET_CHANGES,
 	GET_FREE_BUSY,
 	QUERY,
-	CATEGORIES_CHANGED,
 	AUTH_REQUIRED,
 	BACKEND_ERROR,
 	LAST_SIGNAL
@@ -662,24 +661,6 @@ impl_notifyErrorOccurred (PortableServer_Servant servant,
 	g_signal_emit (G_OBJECT (listener), signals[BACKEND_ERROR], 0, message);
 }
 
-/* ::notifyCategoriesChanged method */
-static void
-impl_notifyCategoriesChanged (PortableServer_Servant servant,
-			      const GNOME_Evolution_Calendar_StringSeq *categories,
-			      CORBA_Environment *ev)
-{
-	ECalListener *listener;
-	ECalListenerPrivate *priv;
-
-	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
-	priv = listener->priv;
-
-	if (!priv->notify)
-		return;
-
-	g_signal_emit (G_OBJECT (listener), signals[CATEGORIES_CHANGED], 0, categories);
-}
-
 
 
 /* Object initialization function for the calendar listener */
@@ -752,7 +733,6 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 	klass->epv.notifyQuery = impl_notifyQuery;
 	klass->epv.notifyCalSetMode = impl_notifyCalSetMode;
 	klass->epv.notifyErrorOccurred = impl_notifyErrorOccurred;
-	klass->epv.notifyCategoriesChanged = impl_notifyCategoriesChanged;
 	klass->epv.notifyAuthRequired      = impl_notifyAuthRequired;
 	object_class->finalize = e_cal_listener_finalize;
 
@@ -932,14 +912,6 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT_POINTER,
 			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
-	signals[CATEGORIES_CHANGED] =
-		g_signal_new ("categories_changed",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ECalListenerClass, categories_changed),
-			      NULL, NULL,
-			      e_cal_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals [AUTH_REQUIRED] =
 		g_signal_new ("auth_required",
 			      G_OBJECT_CLASS_TYPE (object_class),

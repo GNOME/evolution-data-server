@@ -437,7 +437,6 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
 	const char *uid;
-	GSList *categories;
 
 	priv = cbfile->priv;
 
@@ -497,11 +496,6 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 
 		save (cbfile);
 	}
-
-	/* Update the set of categories */
-	e_cal_component_get_categories_list (comp, &categories);
-	e_cal_backend_ref_categories (E_CAL_BACKEND (cbfile), categories);
-	e_cal_component_free_categories_list (categories);
 }
 
 /* g_hash_table_foreach_remove() callback to remove recurrences from the calendar */
@@ -509,7 +503,6 @@ static gboolean
 remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
 {
 	GList *l;
-	GSList *categories;
 	icalcomponent *icalcomp;
 	ECalBackendFilePrivate *priv;
 	ECalComponent *comp = value;
@@ -527,11 +520,6 @@ remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
 	l = g_list_find (priv->comp, comp);
 	priv->comp = g_list_delete_link (priv->comp, l);
 
-	/* Update the set of categories */
-	e_cal_component_get_categories_list (comp, &categories);
-	e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
-	e_cal_component_free_categories_list (categories);
-
 	return TRUE;
 }
 
@@ -545,7 +533,6 @@ remove_component (ECalBackendFile *cbfile, const char *uid, ECalBackendFileObjec
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
 	GList *l;
-	GSList *categories;
 
 	priv = cbfile->priv;
 
@@ -560,11 +547,6 @@ remove_component (ECalBackendFile *cbfile, const char *uid, ECalBackendFileObjec
 		l = g_list_find (priv->comp, obj_data->full_object);
 		g_assert (l != NULL);
 		priv->comp = g_list_delete_link (priv->comp, l);
-
-		/* Update the set of categories */
-		e_cal_component_get_categories_list (obj_data->full_object, &categories);
-		e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
-		e_cal_component_free_categories_list (categories);
 	}
 
 	/* remove the recurrences also */
@@ -1767,7 +1749,6 @@ static gboolean
 remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 {
 	time_t fromtt, instancett;
-	GSList *categories;
 	ECalComponent *instance = value;
 	RemoveRecurrenceData *rrdata = user_data;
 
@@ -1783,11 +1764,6 @@ remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 			rrdata->cbfile->priv->comp = g_list_remove (rrdata->cbfile->priv->comp, instance);
 
 			rrdata->obj_data->recurrences_list = g_list_remove (rrdata->obj_data->recurrences_list, instance);
-
-			/* update the set of categories */
-			e_cal_component_get_categories_list (instance, &categories);
-			e_cal_backend_unref_categories (E_CAL_BACKEND (rrdata->cbfile), categories);
-			e_cal_component_free_categories_list (categories);
 
 			return TRUE;
 		}
@@ -1998,17 +1974,11 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 {
 	char *hash_rid;
 	ECalComponent *comp;
-	GSList *categories;
 
 	if (!rid || !*rid)
 		return;
 
 	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &hash_rid, &comp)) {
-		/* update the set of categories */
-		e_cal_component_get_categories_list (comp, &categories);
-		e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
-		e_cal_component_free_categories_list (categories);
-
 		/* remove the component from our data */
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
 						e_cal_component_get_icalcomponent (comp));

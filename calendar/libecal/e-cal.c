@@ -117,7 +117,6 @@ enum {
 	CAL_OPENED,
 	CAL_SET_MODE,
 	BACKEND_ERROR,
-	CATEGORIES_CHANGED,
 	BACKEND_DIED,
 	LAST_SIGNAL
 };
@@ -979,49 +978,6 @@ backend_error_cb (ECalListener *listener, const char *message, gpointer data)
 	g_idle_add (backend_error_idle_cb, error_data);
 }
 
-typedef struct
-{
-	ECal *ecal;
-	GPtrArray *categories;
-}  ECalCategoryData;
-
-static gboolean
-categories_changed_idle_cb (gpointer data)
-{
-	ECalCategoryData *cat_data = data;
-	int i;
-	
-	g_signal_emit (G_OBJECT (cat_data->ecal), e_cal_signals[CATEGORIES_CHANGED], 0, cat_data->categories);
-
-	g_object_unref (cat_data->ecal);
-	for (i = 0; i < cat_data->categories->len; i++)
-		g_free (cat_data->categories->pdata[i]);
-	g_ptr_array_free (cat_data->categories, TRUE);
-	g_free (cat_data);
-	
-	return FALSE;
-}
-
-/* Handle the categories_changed signal from the listener */
-static void
-categories_changed_cb (ECalListener *listener, const GNOME_Evolution_Calendar_StringSeq *categories,
-		       gpointer data)
-{
-	ECalCategoryData *cat_data;
-	int i;
-
-	cat_data = g_new0 (ECalCategoryData, 1);
-
-	cat_data->ecal = g_object_ref (data);
-	cat_data->categories = g_ptr_array_new ();
-	g_ptr_array_set_size (cat_data->categories, categories->_length);
-
-	for (i = 0; i < categories->_length; i++)
-		cat_data->categories->pdata[i] = g_strdup (categories->_buffer[i]);
-	
-	g_idle_add (categories_changed_idle_cb, cat_data);
-}
-
 
 
 static gboolean 
@@ -1123,7 +1079,6 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 	g_signal_connect (G_OBJECT (priv->listener), "get_changes", G_CALLBACK (cal_get_changes_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "get_free_busy", G_CALLBACK (cal_get_free_busy_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "query", G_CALLBACK (cal_query_cb), ecal);
-	g_signal_connect (G_OBJECT (priv->listener), "categories_changed", G_CALLBACK (categories_changed_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "backend_error", G_CALLBACK (backend_error_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "auth_required", G_CALLBACK (auth_required_cb), ecal);
 }
@@ -1246,15 +1201,6 @@ e_cal_class_init (ECalClass *klass)
 			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_STRING);
-	e_cal_signals[CATEGORIES_CHANGED] =
-		g_signal_new ("categories_changed",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClass, categories_changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_POINTER);
 	e_cal_signals[BACKEND_DIED] =
 		g_signal_new ("backend_died",
 			      G_TYPE_FROM_CLASS (klass),
@@ -1265,7 +1211,6 @@ e_cal_class_init (ECalClass *klass)
 			      G_TYPE_NONE, 0);
 
 	klass->cal_opened = NULL;
-	klass->categories_changed = NULL;
 	klass->backend_died = NULL;
 
 	object_class->finalize = e_cal_finalize;

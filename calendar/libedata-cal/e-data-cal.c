@@ -1283,34 +1283,3 @@ e_data_cal_notify_error (EDataCal *cal, const char *message)
 
 	CORBA_exception_free (&ev);
 }
-
-/**
- * e_data_cal_notify_categories_changed:
- * @cal: A calendar client interface.
- * @categories: List of categories.
- * 
- * Notifies a listener attached to a calendar client interface object about the
- * current set of categories in a calendar backend.
- **/
-void
-e_data_cal_notify_categories_changed (EDataCal *cal, GNOME_Evolution_Calendar_StringSeq *categories)
-{
-	EDataCalPrivate *priv;
-	CORBA_Environment ev;
-
-	g_return_if_fail (cal != NULL);
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-	g_return_if_fail (categories != NULL);
-
-	priv = cal->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
-
-	CORBA_exception_init (&ev);
-	GNOME_Evolution_Calendar_CalListener_notifyCategoriesChanged (priv->listener, categories, &ev);
-
-	if (BONOBO_EX (&ev))
-		g_message ("e_data_cal_notify_categories_changed(): Could not notify the listener "
-			   "about the current set of categories");
-
-	CORBA_exception_free (&ev);
-}

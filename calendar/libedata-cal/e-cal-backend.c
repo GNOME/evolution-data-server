@@ -31,15 +31,6 @@
 
 
 
-/* A category that exists in some of the objects of the calendar */
-typedef struct {
-	/* Category name, also used as the key in the categories hash table */
-	char *name;
-
-	/* Number of objects that have this category */
-	int refcount;
-} ECalBackendCategory;
-
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
 	/* The source for this backend */
@@ -57,14 +48,6 @@ struct _ECalBackendPrivate {
 
 	GMutex *queries_mutex;
 	EList *queries;
-	
-	/* Hash table of live categories, temporary hash of
-	 * added/removed categories, and idle handler for sending
-	 * category_changed.
-	 */
-	GHashTable *categories;
-	GHashTable *changed_categories;
-	guint category_idle_id;
 
 	/* ECalBackend to pass notifications on to */
 	ECalBackend *notification_proxy;
@@ -90,8 +73,6 @@ static guint e_cal_backend_signals[LAST_SIGNAL];
 static void e_cal_backend_class_init (ECalBackendClass *class);
 static void e_cal_backend_init (ECalBackend *backend);
 static void e_cal_backend_finalize (GObject *object);
-
-static void notify_categories_changed (ECalBackend *backend);
 
 #define CLASS(backend) (E_CAL_BACKEND_CLASS (G_OBJECT_GET_CLASS (backend)))
 
@@ -301,29 +282,6 @@ e_cal_backend_init (ECalBackend *backend)
 	/* FIXME bonobo_object_ref/unref? */
 	priv->queries = e_list_new((EListCopyFunc) g_object_ref, (EListFreeFunc) g_object_unref, NULL);
 	priv->queries_mutex = g_mutex_new ();
-	
-	priv->categories = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->changed_categories = g_hash_table_new (g_str_hash, g_str_equal);
-}
-
-/* Used from g_hash_table_foreach(), frees a ECalBackendCategory structure */
-static void
-free_category_cb (gpointer key, gpointer value, gpointer data)
-{
-	ECalBackendCategory *c = value;
-
-	g_free (c->name);
-	g_free (c);
-}
-
-static gboolean
-prune_changed_categories (gpointer key, gpointer value, gpointer data)
-{
-	ECalBackendCategory *c = value;
-
-	if (!c->refcount)
-		free_category_cb (key, value, data);
-	return TRUE;
 }
 
 void
@@ -338,17 +296,8 @@ e_cal_backend_finalize (GObject *object)
 
 	g_object_unref (priv->queries);
 
-	g_hash_table_foreach_remove (priv->changed_categories, prune_changed_categories, NULL);
-	g_hash_table_destroy (priv->changed_categories);
-
-	g_hash_table_foreach (priv->categories, free_category_cb, NULL);
-	g_hash_table_destroy (priv->categories);
-
 	g_mutex_free (priv->clients_mutex);
 	g_mutex_free (priv->queries_mutex);
-
-	if (priv->category_idle_id)
-		g_source_remove (priv->category_idle_id);
 
 	g_free (priv);
 
@@ -448,12 +397,6 @@ e_cal_backend_add_client (ECalBackend *backend, EDataCal *cal)
 	g_mutex_lock (priv->clients_mutex);
 	priv->clients = g_list_append (priv->clients, cal);
 	g_mutex_unlock (priv->clients_mutex);
-
-	/* Tell the new client about the list of categories.
-	 * (Ends up telling all the other clients too, but *shrug*.)
-	 */
-	/* FIXME This doesn't seem right at all */
-	notify_categories_changed (backend);
 }
 
 void
@@ -1181,145 +1124,4 @@ e_cal_backend_notify_error (ECalBackend *backend, const char *message)
 
 	for (l = priv->clients; l; l = l->next)
 		e_data_cal_notify_error (l->data, message);
-}
-
-static void
-add_category_cb (gpointer name, gpointer category, gpointer data)
-{
-	GNOME_Evolution_Calendar_StringSeq *seq = data;
-
-	seq->_buffer[seq->_length++] = CORBA_string_dup (name);
-}
-
-static void
-notify_categories_changed (ECalBackend *backend)
-{
-	ECalBackendPrivate *priv = backend->priv;
-	GNOME_Evolution_Calendar_StringSeq *seq;
-	GList *l;
-
-	/* Build the sequence of category names */
-	seq = GNOME_Evolution_Calendar_StringSeq__alloc ();
-	seq->_length = 0;
-	seq->_maximum = g_hash_table_size (priv->categories);
-	seq->_buffer = CORBA_sequence_CORBA_string_allocbuf (seq->_maximum);
-	CORBA_sequence_set_release (seq, TRUE);
-
-	g_hash_table_foreach (priv->categories, add_category_cb, seq);
-
-	/* Notify the clients */
-	for (l = priv->clients; l; l = l->next)
-		e_data_cal_notify_categories_changed (l->data, seq);
-
-	CORBA_free (seq);
-}
-
-static gboolean
-idle_notify_categories_changed (gpointer data)
-{
-	ECalBackend *backend = E_CAL_BACKEND (data);
-	ECalBackendPrivate *priv = backend->priv;
-
-	if (g_hash_table_size (priv->changed_categories)) {
-		notify_categories_changed (backend);
-		g_hash_table_foreach_remove (priv->changed_categories, prune_changed_categories, NULL);
-	}
-
-	priv->category_idle_id = 0;
-	
-	return FALSE;
-}
-
-/**
- * e_cal_backend_ref_categories:
- * @backend: A calendar backend
- * @categories: a list of categories
- *
- * Adds 1 to the refcount of each of the named categories. If any of
- * the categories are new, clients will be notified of the updated
- * category list at idle time.
- **/
-void
-e_cal_backend_ref_categories (ECalBackend *backend, GSList *categories)
-{
-	ECalBackendPrivate *priv;
-	ECalBackendCategory *c;
-	const char *name;
-
-	priv = backend->priv;
-
-	while (categories) {
-		name = categories->data;
-		c = g_hash_table_lookup (priv->categories, name);
-
-		if (c)
-			c->refcount++;
-		else {
-			/* See if it was recently removed */
-
-			c = g_hash_table_lookup (priv->changed_categories, name);
-			if (c && c->refcount == 0) {
-				/* Move it back to the set of live categories */
-				g_hash_table_remove (priv->changed_categories, c->name);
-
-				c->refcount = 1;
-				g_hash_table_insert (priv->categories, c->name, c);
-			} else {
-				/* Create a new category */
-				c = g_new (ECalBackendCategory, 1);
-				c->name = g_strdup (name);
-				c->refcount = 1;
-				g_hash_table_insert (priv->categories, c->name, c);
-				g_hash_table_insert (priv->changed_categories, c->name, c);
-			}
-		}
-
-		categories = categories->next;
-	}
-
-	if (g_hash_table_size (priv->changed_categories) &&
-	    !priv->category_idle_id)
-		priv->category_idle_id = g_idle_add (idle_notify_categories_changed, backend);
-}
-
-/**
- * e_cal_backend_unref_categories:
- * @backend: A calendar backend
- * @categories: a list of categories
- *
- * Subtracts 1 from the refcount of each of the named categories. If
- * any of the refcounts go down to 0, clients will be notified of the
- * updated category list at idle time.
- **/
-void
-e_cal_backend_unref_categories (ECalBackend *backend, GSList *categories)
-{
-	ECalBackendPrivate *priv;
-	ECalBackendCategory *c;
-	const char *name;
-
-	priv = backend->priv;
-
-	while (categories) {
-		name = categories->data;
-		c = g_hash_table_lookup (priv->categories, name);
-
-		if (c) {
-			g_assert (c != NULL);
-			g_assert (c->refcount > 0);
-
-			c->refcount--;
-
-			if (c->refcount == 0) {
-				g_hash_table_remove (priv->categories, c->name);
-				g_hash_table_insert (priv->changed_categories, c->name, c);
-			}
-		}
-
-		categories = categories->next;
-	}
-
-	if (g_hash_table_size (priv->changed_categories) &&
-	    !priv->category_idle_id)
-		priv->category_idle_id = g_idle_add (idle_notify_categories_changed, backend);
 }
