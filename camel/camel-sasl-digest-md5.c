@@ -197,35 +197,40 @@ camel_sasl_digest_md5_finalize (CamelObject *object)
 	GList *p;
 	int i;
 	
-	for (i = 0; i < c->realms->len; i++)
-		g_free (c->realms->pdata[i]);
-	g_ptr_array_free (c->realms, TRUE);
-	g_free (c->nonce);
-	g_free (c->charset);
-	g_free (c->algorithm);
-	for (p = c->params; p; p = p->next) {
-		struct _param *param = p->data;
+	if (c != NULL) {
+		for (i = 0; i < c->realms->len; i++)
+			g_free (c->realms->pdata[i]);
+		g_ptr_array_free (c->realms, TRUE);
 		
-		g_free (param->name);
-		g_free (param->value);
-		g_free (param);
+		g_free (c->nonce);
+		g_free (c->charset);
+		g_free (c->algorithm);
+		for (p = c->params; p; p = p->next) {
+			struct _param *param = p->data;
+			
+			g_free (param->name);
+			g_free (param->value);
+			g_free (param);
+		}
+		g_list_free (c->params);
+		g_free (c);
 	}
-	g_list_free (c->params);
-	g_free (c);
 	
-	g_free (r->username);
-	g_free (r->realm);
-	g_free (r->nonce);
-	g_free (r->cnonce);
-	if (r->uri) {
-		g_free (r->uri->type);
-		g_free (r->uri->host);
+	if (r != NULL) {
+		g_free (r->username);
+		g_free (r->realm);
+		g_free (r->nonce);
+		g_free (r->cnonce);
+		if (r->uri) {
+			g_free (r->uri->type);
+			g_free (r->uri->host);
 		g_free (r->uri->name);
+		}
+		g_free (r->charset);
+		g_free (r->authzid);
+		g_free (r->param);
+		g_free (r);
 	}
-	g_free (r->charset);
-	g_free (r->authzid);
-	g_free (r->param);
-	g_free (r);
 	
 	g_free (sasl->priv);
 }
