@@ -282,7 +282,7 @@ e_memchunk_clean(MemChunk *m)
 	/* first, setup the tree/list so we can map free block addresses to block addresses */
 	tree = g_tree_new((GCompareFunc)tree_compare);
 	for (i=0;i<m->blocks->len;i++) {
-		ci = alloca(sizeof(*ci));
+		ci = g_alloca(sizeof(*ci));
 		ci->count = 0;
 		ci->base = m->blocks->pdata[i];
 		ci->size = m->blocksize * m->atomsize;

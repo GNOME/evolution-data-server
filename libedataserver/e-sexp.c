@@ -701,7 +701,7 @@ e_sexp_term_eval(struct _ESExp *f, struct _ESExpTerm *t)
 		break;
 	case ESEXP_TERM_FUNC:
 		/* first evaluate all arguments to result types */
-		argv = alloca(sizeof(argv[0]) * t->value.func.termcount);
+		argv = g_alloca(sizeof(argv[0]) * t->value.func.termcount);
 		for (i=0;i<t->value.func.termcount;i++) {
 			argv[i] = e_sexp_term_eval(f, t->value.func.terms[i]);
 		}

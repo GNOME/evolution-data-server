@@ -1,3 +1,15 @@
+2004-08-26  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #63051.
+
+	* libedataserver/e-util.c (e_util_utf8_strstrcase) 
+	(e_util_utf8_strstrcasedecomp): 
+
+	* libedataserver/e-sexp.c (e_sexp_term_eval):
+	* libedataserver/e-memory.c (e_memchunk_clean): use g_alloca for
+	stupid arcanely out of date and posixly-busted slowaris which
+	doesn't put alloca in stdlib.h like any sane system.
+
 2004-08-25  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* libedataserver/e-file-cache.c: (add_key_to_list),
