@@ -1,3 +1,8 @@
+2004-08-27  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* e-gw-item.h:
+	Defined a string for handling acceptLevel "Free" in appointments
+
 2004-08-24 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-connection.[ch]

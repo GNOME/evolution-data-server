@@ -160,6 +160,7 @@ void        e_gw_item_set_classification (EGwItem *item, const char *new_class);
 
 #define E_GW_ITEM_ACCEPT_LEVEL_BUSY          "Busy"
 #define E_GW_ITEM_ACCEPT_LEVEL_OUT_OF_OFFICE "OutOfOffice"
+#define E_GW_ITEM_ACCEPT_LEVEL_FREE	     "Free" 	
 
 const char *e_gw_item_get_accept_level (EGwItem *item);
 void        e_gw_item_set_accept_level (EGwItem *item, const char *new_level);
