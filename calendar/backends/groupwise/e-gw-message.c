@@ -86,6 +86,7 @@ e_gw_message_new_with_header (const char *uri, const char *method_name)
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "Content-Type", "text/xml");
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
 				 "Evolution/" VERSION);
+	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction", method_name);
 
 #ifdef G_ENABLE_DEBUG
 	setup_debug (msg);
