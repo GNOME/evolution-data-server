@@ -1,3 +1,7 @@
+2005-01-24  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool numbers
+
 2005-01-21  Jeffrey Stedfast  <fejj@novell.com>
 
 	* configure.in: Removed the enable checks for IMAP4, we just
