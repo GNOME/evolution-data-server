@@ -1,3 +1,10 @@
+2003-12-09  Chris Toshok  <toshok@ximian.com>
+
+	* backends/file/e-book-backend-file.c (select_changes): change to
+	return gboolean and take the filename, not the struct dirent *.
+	(e_book_backend_file_remove): switch from using scandir to
+	g_dir_*.
+
 2003-12-07  JP Rosevear  <jpr@ximian.com>
 
 	* libedata-book/e-data-book-factory.c: version the OAFIID

@@ -15,7 +15,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <dirent.h>
 #include <time.h>
 #include <errno.h>
 #include "db.h"
@@ -948,22 +947,22 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	return GNOME_Evolution_Addressbook_Success;
 }
 
-static int
-select_changes (const struct dirent *d)
+static gboolean
+select_changes (const char *name)
 {
 	char *p;
 
-	if (strlen (d->d_name) < strlen (CHANGES_DB_SUFFIX))
-		return 0;
+	if (strlen (name) < strlen (CHANGES_DB_SUFFIX))
+		return FALSE;
 
-	p = strstr (d->d_name, CHANGES_DB_SUFFIX);
+	p = strstr (name, CHANGES_DB_SUFFIX);
 	if (!p)
-		return 0;
+		return FALSE;
 
 	if (strlen (p) != strlen (CHANGES_DB_SUFFIX))
-		return 0;
+		return FALSE;
 
-	return 1;
+	return TRUE;
 }
 
 static EBookBackendSyncStatus
@@ -971,8 +970,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 			    EDataBook        *book)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	struct dirent **namelist;
-	int n;
+	GDir *dir;
 
 	if (-1 == unlink (bf->priv->filename)) {
 		if (errno == EACCES || errno == EPERM)
@@ -987,22 +985,21 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	if (-1 == unlink (bf->priv->filename))
 		g_warning ("failed to remove summary file `%s`: %s", bf->priv->summary_filename, strerror (errno));
 
-	/* scandir to select all the "*.changes.db" files, then remove them */
-	n = scandir (bf->priv->dirname,
-		     &namelist, select_changes, alphasort);
-	if (n < 0) {
-		g_warning ("scandir of directory `%s' failed: %s", bf->priv->dirname, strerror (errno));
-	}
-	else {
-		while (n -- ) {
-			char *full_path = g_build_filename (bf->priv->dirname, namelist[n]->d_name, NULL);
-			if (-1 == unlink (full_path)) {
-				g_warning ("failed to remove change db `%s': %s", full_path, strerror (errno));
+	dir = g_dir_open (bf->priv->dirname, 0, NULL);
+	if (dir) {
+		const char *name;
+
+		while ((name = g_dir_read_name (dir))) {
+			if (select_changes (name)) {
+				char *full_path = g_build_filename (bf->priv->dirname, name, NULL);
+				if (-1 == unlink (full_path)) {
+					g_warning ("failed to remove change db `%s': %s", full_path, strerror (errno));
+				}
+				g_free (full_path);
 			}
-			g_free (full_path);
-			free (namelist[n]);
 		}
-		free (namelist);
+
+		g_dir_close (dir);
 	}
 
 	if (-1 == rmdir (bf->priv->dirname))
