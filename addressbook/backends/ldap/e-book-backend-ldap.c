@@ -3865,7 +3865,7 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		e_book_backend_notify_connection_status (backend, FALSE);
 
 		if (!bl->priv->marked_for_offline)
-			return GNOME_Evolution_Addressbook_RepositoryOffline;
+			return GNOME_Evolution_Addressbook_OfflineUnavailable;
 
 #if 0
 		if (!e_book_backend_cache_is_populated (bl->priv->cache))
@@ -3874,6 +3874,8 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 
 		return GNOME_Evolution_Addressbook_Success;
 	}
+	else 
+		e_book_backend_notify_connection_status (backend, TRUE);
 
 	/* Online */
 

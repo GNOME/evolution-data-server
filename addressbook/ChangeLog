@@ -1,3 +1,11 @@
+2005-01-31 Sivaiah Nallagatla  <snallagatla@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c 
+	(e_book_backend_ldap_load_source) : return 
+	OfflineAvailable error code if book is not marked for
+	offline. Call _notify_connection_stautus in online case too 
+
+	
 2005-01-29  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 
