@@ -1,3 +1,11 @@
+2005-03-02  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #70590 (again)
+
+	* camel-filter-driver.c (camel_filter_driver_filter_message):
+	don't drop to default folder if we moved it.
+	(do_move): mark moved, not copied.
+
 2005-03-01  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #72876
