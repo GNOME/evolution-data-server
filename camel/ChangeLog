@@ -1,3 +1,9 @@
+2004-12-23  Not Zed  <NotZed@Ximian.com>
+
+	* camel-object.c (camel_object_is, camel_object_class_is)
+	(camel_interface_is): check for null values before dereferencing
+	them.
+
 2004-12-20  David Mosberger-Tang  <David.Mosberger@acm.org>
 
         * camel-mime-parser.c: Include "libedataserver/e-memory.h".

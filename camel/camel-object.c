@@ -1022,6 +1022,7 @@ camel_object_is(CamelObject *o, CamelType ctype)
 {
 	CamelObjectClass *k;
 
+	g_return_val_if_fail(o != NULL, FALSE);
 	g_return_val_if_fail(check_magic(o, ctype, CAMEL_OBJECT_MAGIC), FALSE);
 
 	k = o->klass;
@@ -1037,6 +1038,7 @@ camel_object_is(CamelObject *o, CamelType ctype)
 gboolean
 camel_object_class_is(CamelObjectClass *k, CamelType ctype)
 {
+	g_return_val_if_fail(k != NULL, FALSE);
 	g_return_val_if_fail(check_magic(k, ctype, CAMEL_OBJECT_CLASS_MAGIC), FALSE);
 
 	while (k) {
@@ -1051,6 +1053,7 @@ camel_object_class_is(CamelObjectClass *k, CamelType ctype)
 gboolean
 camel_interface_is(CamelObjectClass *k, CamelType ctype)
 {
+	g_return_val_if_fail(k != NULL, FALSE);
 	g_return_val_if_fail(check_magic(k, ctype, CAMEL_INTERFACE_MAGIC), FALSE);
 
 	while (k) {
