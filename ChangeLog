@@ -1,3 +1,7 @@
+2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
+
+	* configure.in: Generate the old imap makefile.
+
 2005-01-28  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.c (initialize_categories_config): pass
