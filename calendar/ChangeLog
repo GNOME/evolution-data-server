@@ -1,3 +1,13 @@
+2003-11-17  Dan Winship  <danw@ximian.com>
+
+	* libecal/e-cal-util.c (e_cal_util_new_component): New
+	icalcomponent-based replacement for
+	e_cal_component_new/e_cal_component_set_vtype.
+
+	* libedata-cal/e-data-cal.c: fix up some broken indentation
+	(e_data_cal_notify_default_object, e_data_cal_notify_object):
+	constify the object arg
+
 2003-11-14  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/Makefile.am: added groupwise backend directory to build.

@@ -70,6 +70,7 @@ typedef enum {
 void cal_obj_uid_list_free (GList *list);
 
 icalcomponent *e_cal_util_new_top_level (void);
+icalcomponent *e_cal_util_new_component (icalcomponent_kind kind);
 
 icalcomponent *e_cal_util_parse_ics_file (const char *filename);
 

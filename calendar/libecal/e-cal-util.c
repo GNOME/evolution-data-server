@@ -103,6 +103,20 @@ e_cal_util_new_top_level (void)
 	return icalcomp;
 }
 
+icalcomponent *
+e_cal_util_new_component (icalcomponent_kind kind)
+{
+	icalcomponent *comp;
+	struct icaltimetype dtstamp;
+
+	comp = icalcomponent_new (kind);
+	icalcomponent_set_uid (comp, e_cal_component_gen_uid ());
+	dtstamp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+	icalcomponent_set_dtstamp (comp, dtstamp);
+
+	return comp;
+}
+
 static char *
 get_line_fn (char *buf, size_t size, void *file)
 {

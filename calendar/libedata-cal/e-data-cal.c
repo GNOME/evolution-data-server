@@ -323,7 +323,9 @@ impl_Cal_removeObject (PortableServer_Servant servant,
 }
 
 static void
-impl_Cal_receiveObjects (PortableServer_Servant servant, const CORBA_char *calobj, CORBA_Environment *ev)
+impl_Cal_receiveObjects (PortableServer_Servant servant,
+			 const CORBA_char *calobj,
+			 CORBA_Environment *ev)
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
@@ -335,7 +337,9 @@ impl_Cal_receiveObjects (PortableServer_Servant servant, const CORBA_char *calob
 }
 
 static void
-impl_Cal_sendObjects (PortableServer_Servant servant, const CORBA_char *calobj, CORBA_Environment *ev)
+impl_Cal_sendObjects (PortableServer_Servant servant,
+		      const CORBA_char *calobj,
+		      CORBA_Environment *ev)
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
@@ -483,11 +487,12 @@ e_data_cal_construct (EDataCal *cal,
  * @backend: A calendar backend.
  * @listener: A calendar listener.
  *
- * Creates a new calendar client interface object and binds it to the specified
- * @backend and @listener objects.
+ * Creates a new calendar client interface object and binds it to the
+ * specified @backend and @listener objects.
  *
- * Return value: A newly-created #EDataCal calendar client interface object, or NULL
- * if its corresponding CORBA object could not be created.
+ * Return value: A newly-created #EDataCal calendar client interface
+ * object, or %NULL if its corresponding CORBA object could not be
+ * created.
  **/
 EDataCal *
 e_data_cal_new (ECalBackend *backend, const char *uri, GNOME_Evolution_Calendar_CalListener listener)
@@ -765,7 +770,7 @@ e_data_cal_notify_remove (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus sta
 
 void
 e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
-			   const char *uid, const char *object)
+				  const char *uid, const char *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -790,7 +795,7 @@ e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 
 void
 e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
-			    const char *old_object, const char *object)
+				   const char *old_object, const char *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -815,7 +820,7 @@ e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallS
 
 void
 e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
-			   const char *uid, const char *object)
+				  const char *uid, const char *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -902,7 +907,7 @@ e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStat
 }
 
 void
-e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, char *object)
+e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -916,7 +921,7 @@ e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Calendar_CalListener_notifyDefaultObjectRequested (priv->listener, status, 
-									object ? object : "", &ev);
+									   object ? object : "", &ev);
 
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of default object");
@@ -925,7 +930,7 @@ e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 }
 
 void
-e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, char *object)
+e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -939,7 +944,7 @@ e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus sta
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Calendar_CalListener_notifyObjectRequested (priv->listener, status,
-								 object ? object : "", &ev);
+								    object ? object : "", &ev);
 
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of object");
@@ -1066,7 +1071,7 @@ e_data_cal_notify_default_timezone_set (EDataCal *cal, GNOME_Evolution_Calendar_
 
 void
 e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
-		    GList *adds, GList *modifies, GList *deletes)
+			   GList *adds, GList *modifies, GList *deletes)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1160,8 +1165,8 @@ e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
  **/
 void
 e_data_cal_notify_mode (EDataCal *cal,
-		 GNOME_Evolution_Calendar_CalListener_SetModeStatus status,
-		 GNOME_Evolution_Calendar_CalMode mode)
+			GNOME_Evolution_Calendar_CalListener_SetModeStatus status,
+			GNOME_Evolution_Calendar_CalMode mode)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
