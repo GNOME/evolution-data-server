@@ -58,6 +58,7 @@ struct _ECalBackendGroupwisePrivate {
 
 	/* fields for storing info while offline */
 	char *user_email;
+	char *local_attachments_store;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -132,7 +133,9 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		g_mutex_unlock (mutex);
                 return status;
         }
-	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "recipients message recipientStatus default", NULL, &cursor);
+	status = e_gw_connection_create_cursor (priv->cnc,
+			priv->container_id, 
+			"recipients message recipientStatus attachments default", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		g_mutex_unlock (mutex);
@@ -628,6 +631,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		priv->user_email = NULL;
 	}
 
+	if (priv->local_attachments_store) {
+		g_free (priv->local_attachments_store);
+		priv->local_attachments_store = NULL;
+	}
+
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
 		priv->timeout_id = 0;
@@ -742,6 +750,8 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 	ECalBackendSyncStatus status;
+	char *mangled_uri;
+	int i;
 	
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -779,7 +789,23 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
-	
+
+	/* Set the local attachment store*/
+	mangled_uri = g_strdup (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
+	/* mangle the URI to not contain invalid characters */
+	for (i = 0; i < strlen (mangled_uri); i++) {
+		switch (mangled_uri[i]) {
+		case ':' :
+		case '/' :
+			mangled_uri[i] = '_';
+		}
+	}
+
+	priv->local_attachments_store = 
+		g_strconcat ("file://", g_get_home_dir (), "/", ".evolution/cache/calendar",
+			     "/", mangled_uri, NULL);
+	g_free (mangled_uri);
+
 	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 	status = connect_to_server (cbgw);
 
@@ -1812,7 +1838,7 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 	cbgw->priv = priv;
 }
 
-/* Class initialization function for the file backend */
+/* Class initialization function for the gw backend */
 static void
 e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 {
@@ -1902,4 +1928,11 @@ e_cal_backend_groupwise_notify_error_code (ECalBackendGroupwise *cbgw, EGwConnec
 	msg = e_gw_connection_get_error_message (status);
 	if (msg)
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), msg);
+}
+
+const char *
+e_cal_backend_groupwise_get_local_attachments_store (ECalBackendGroupwise *cbgw)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
+	return cbgw->priv->local_attachments_store;
 }

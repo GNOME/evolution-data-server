@@ -1,3 +1,22 @@
+2005-01-10  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_cal_backend_groupwise_set_attachments_from_comp),
+	(set_properties_from_cal_component), (get_attach_data_from_server),
+	(set_attachments_to_cal_component), (e_gw_item_to_cal_component):
+	Attachment support for Groupwise calendar and task items.
+	(e_cal_backend_groupwise_store_settings): Remove unused variable.
+	* backends/groupwise/e-cal-backend-groupwise.[ch]: (populate_cache),
+	(e_cal_backend_groupwise_finalize), (e_cal_backend_groupwise_open),
+	(e_cal_backend_groupwise_notify_error_code),
+	(e_cal_backend_groupwise_get_local_attachments_store): 
+	set the path to the attachment store in the filesystem.
+	* libecal/e-cal.[ch] (e_cal_init), (e_cal_finalize),
+	(set_local_attachment_store), (e_cal_new), 
+	(e_cal_get_local_attachment_store): Add a new member to ECal that
+	stores the local attachment store for various backends.
+	
+
 2005-01-08  JP Rosevear  <jpr@novell.com>
 
 	* backends/weather/e-cal-backend-weather.c (create_weather): make

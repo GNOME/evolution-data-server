@@ -204,6 +204,7 @@ gboolean    e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc f
 gboolean    e_cal_set_default (ECal  *ecal, GError **error);
 gboolean    e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error);
 gboolean    e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error);
+const char * e_cal_get_local_attachment_store (ECal *ecal);
 
 G_END_DECLS
 

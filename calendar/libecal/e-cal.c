@@ -106,6 +106,8 @@ struct _ECalPrivate {
 
 	/* The component listener to keep track of the lifetime of backends */
 	EComponentListener *comp_listener;
+
+	char *local_attachment_store;
 };
 
 
@@ -1086,6 +1088,7 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
 	priv->uri = NULL;
+	priv->local_attachment_store = NULL;
 	priv->mutex = g_mutex_new ();
 	priv->listener = e_cal_listener_new (cal_set_mode_cb, ecal);
 
@@ -1166,6 +1169,11 @@ e_cal_finalize (GObject *object)
 	if (priv->uri) {
 		g_free (priv->uri);
 		priv->uri = NULL;
+	}
+
+	if (priv->local_attachment_store) {
+		g_free (priv->local_attachment_store);
+		priv->local_attachment_store = NULL;
 	}
 
 	if (priv->mutex) {
@@ -1364,6 +1372,41 @@ e_cal_activate ()
 	g_static_mutex_unlock (&e_cal_lock);
 }
 
+
+/* TODO - For now, the policy of where each backend serializes its
+ * attachment data is hardcoded below. Should this end up as a
+ * gconf key set during the account creation  and fetched
+ * from eds???
+ */
+static void
+set_local_attachment_store (ECal *ecal)
+{
+	ECalPrivate *priv;
+	char *mangled_uri;
+	int i;
+
+	priv = ecal->priv;
+	mangled_uri = g_strdup (priv->uri);
+	/* mangle the URI to not contain invalid characters */
+	for (i = 0; i < strlen (mangled_uri); i++) {
+		switch (mangled_uri[i]) {
+		case ':' :
+		case '/' :
+			mangled_uri[i] = '_';
+		}
+	}
+
+	/* the file backend uses its uri as the attachment store*/
+	if (g_str_has_prefix (priv->uri, "file://"))
+		priv->local_attachment_store = g_strdup (priv->uri);
+	if (g_str_has_prefix (priv->uri, "groupwise://")) {
+		/* points to the location of the cache*/
+		priv->local_attachment_store = 
+			g_strconcat ("file://", g_get_home_dir (), "/", ".evolution/cache/calendar",
+				     "/", mangled_uri, NULL);
+	}
+}
+
 /**
  * e_cal_new:
  * @source: 
@@ -1389,6 +1432,9 @@ e_cal_new (ESource *source, ECalSourceType type)
 
 		return NULL;
 	}
+
+	/* Set the local attachment store path for the calendar */
+	set_local_attachment_store (ecal);
 
 	/* initialize component listener */
 	ecal->priv->comp_listener = e_component_listener_new ((Bonobo_Unknown) ecal->priv->cal);
@@ -1893,6 +1939,30 @@ e_cal_get_uri (ECal *ecal)
 
 	priv = ecal->priv;
 	return priv->uri;
+}
+
+/**
+ * e_cal_get_local_attachment_store
+ * @ecal: A calendar ecal.
+ * 
+ * Queries the URL where the calendar attachments are
+ * serialized in the local filesystem. This enable clients
+ * to operate with the reference to attachments rather than the data itself
+ * unless it specifically uses the attachments for open/sending
+ * operations.
+ * Return value: The URL where the attachments are serialized in the
+ * local filesystem.
+ **/
+const char *
+e_cal_get_local_attachment_store (ECal *ecal)
+{
+	ECalPrivate *priv;
+
+	g_return_val_if_fail (ecal != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL (ecal), NULL);
+
+	priv = ecal->priv;
+	return (const char *)priv->local_attachment_store;
 }
 
 /**
