@@ -1058,7 +1058,7 @@ EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUA
 AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
-E_DATA_SERVER_UI_DEPS="libxml-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gtk+-2.0 libgnomeui-2.0"
+E_DATA_SERVER_UI_DEPS="libxml-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gtk+-2.0 libgnomeui-2.0 libglade-2.0"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1130,6 +1130,9 @@ AC_SUBST(serverdir)
 
 extensiondir='${privlibdir}'/extensions
 AC_SUBST(extensiondir)
+
+gladedir="$privdatadir/glade"
+AC_SUBST(gladedir)
 
 dnl separate camel from e-d-s?  or should it be under the same spot?  same for now.
 camel_providerdir="${privlibdir}/camel-providers"

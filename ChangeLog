@@ -1,3 +1,7 @@
+2004-12-16  Hans Petter Jansson  <hpj@novell.com>
+
+	* configure.in: Pull in libglade-2.0.
+
 2004-12-09  Hans Petter Jansson  <hpj@novell.com>
 
 	* libedataserverui/e-contact-store.[ch]: Implement EContactStore,
