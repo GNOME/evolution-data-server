@@ -154,10 +154,11 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 		if (g_ascii_strcasecmp(name, "x-camel-mlist") == 0) {
 			const char *list = camel_message_info_mlist(fms->info);
 
-			for (i=1; i<argc && !matched; i++) {
-				if (argv[i]->type == ESEXP_RES_STRING)
-					matched = camel_search_header_match(list, argv[i]->value.string, how, CAMEL_SEARCH_TYPE_MLIST, NULL);
-			}
+			if (list)
+				for (i=1; i<argc && !matched; i++) {
+					if (argv[i]->type == ESEXP_RES_STRING)
+						matched = camel_search_header_match(list, argv[i]->value.string, how, CAMEL_SEARCH_TYPE_MLIST, NULL);
+				}
 		} else {
 			CamelMimeMessage *message = camel_filter_search_get_message (fms, f);
 			struct _camel_header_raw *header;

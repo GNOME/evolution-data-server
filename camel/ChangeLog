@@ -1,5 +1,8 @@
 2005-02-04  Not Zed  <NotZed@Ximian.com>
 
+	* camel-filter-search.c (check_header): don't try to match against
+	mlist if the mlist entry is NULL.
+
 	* camel-store-summary.h: make the store-info flags match the
 	store:folder_info flags.
 
