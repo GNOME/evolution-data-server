@@ -1,20 +1,20 @@
 # evolution-data-server's Portuguese translation.
-# Copyright (C) 2003 evolution
+# Copyright © 2003, 2004 evolution
 # Distributed under the same licence as the evolution-data-server package.
-# Duarte Loreto <happyguy_pt@hotmail.com>, 2002, 2003.
+# Duarte Loreto <happyguy_pt@hotmail.com>, 2002, 2004.
 # Tiago Antão <tiagoantao@bigfoot.com>, 2000.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 2.4\n"
-"POT-Creation-Date: 2004-01-29 16:26-0500\n"
-"PO-Revision-Date: 2003-12-24 01:35+0000\n"
+"Project-Id-Version: 2.6\n"
+"Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"POT-Creation-Date: 2004-01-31 13:42+0000\n"
+"PO-Revision-Date: 2004-01-31 14:10+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
-"Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -22,7 +22,7 @@ msgid "Loading..."
 msgstr "A Ler..."
 
 #: addressbook/backends/file/e-book-backend-file.c:394
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2860
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2861
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "A Procurar..."
@@ -33,7 +33,7 @@ msgstr "A Utilizar Nome Distinto (DN)"
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:616
 msgid "Using Email Address"
-msgstr "A Utilizar Endereço Email"
+msgstr "A Utilizar Endereço de Email"
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:760
 msgid "Reconnecting to LDAP server..."
@@ -52,13 +52,13 @@ msgstr "A remover contacto do servidor LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "A alterar contacto no servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2783
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2784
 msgid "Receiving LDAP search results..."
 msgstr "A receber resultados da procura no LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2880
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2881
 msgid "Error performing search"
-msgstr "Erro ao efectuar procura"
+msgstr "Erro ao efectuar a procura"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
@@ -73,7 +73,7 @@ msgstr "Erro ao efectuar procura"
 #: addressbook/libebook/e-book.c:2020
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr ""
+msgstr "\"%s\" em livro antes de \"%s\""
 
 #: addressbook/libebook/e-book.c:225 addressbook/libebook/e-book.c:337
 #: addressbook/libebook/e-book.c:422 addressbook/libebook/e-book.c:525
@@ -91,9 +91,9 @@ msgstr "livro ocupado"
 #: addressbook/libebook/e-book.c:1139 addressbook/libebook/e-book.c:1235
 #: addressbook/libebook/e-book.c:1369 addressbook/libebook/e-book.c:1473
 #: addressbook/libebook/e-book.c:2029
-#, fuzzy, c-format
+#, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr "Excepção Corba ao efectuar invocação Book::remove"
+msgstr "Excepção Corba ao efectuar invocação \"%s\""
 
 #: addressbook/libebook/e-book.c:1350
 msgid "e_book_cancel: there is no current operation"
@@ -117,19 +117,19 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Incapaz de criar EBookListener"
 
 #: addressbook/libebook/e-book.c:1854
-#, fuzzy
 msgid "e_book_load_uri: cancelled"
-msgstr "e_book_load_uri: Origem inválida."
+msgstr "e_book_load_uri: cancelado"
 
 #: addressbook/libebook/e-book.c:2115
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr "e_book_get_self: não existia contacto próprio uid armazenado no gconf"
+msgstr "e_book_get_self: não existia uid de contacto próprio armazenado no gconf"
 
 #: addressbook/libebook/e-book.c:2292
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_get_self: não existia contacto próprio uid armazenado no gconf"
+msgstr ""
+"e_book_set_default_source: não existia origem para uid `%s' armazenado no gconf."
 
 #: addressbook/libebook/e-contact.c:97
 msgid "Unique ID"
@@ -145,7 +145,7 @@ msgstr "Arquivar Como"
 #. vcards that don't even have a N attribute.  *sigh*)
 #: addressbook/libebook/e-contact.c:104
 msgid "Full Name"
-msgstr "Nome completo"
+msgstr "Nome Completo"
 
 #: addressbook/libebook/e-contact.c:105
 msgid "Name"
@@ -174,11 +174,11 @@ msgstr "Lista de Endereços"
 
 #: addressbook/libebook/e-contact.c:113
 msgid "Home Address"
-msgstr "Endereço Casa"
+msgstr "Endereço de Casa"
 
 #: addressbook/libebook/e-contact.c:114
 msgid "Work Address"
-msgstr "Endereço de Trabalho"
+msgstr "Endereço do Trabalho"
 
 #: addressbook/libebook/e-contact.c:115
 msgid "Other Address"
@@ -186,11 +186,11 @@ msgstr "Outro Endereço"
 
 #: addressbook/libebook/e-contact.c:117
 msgid "Home Address Label"
-msgstr "Etiqueta Endereço de Casa"
+msgstr "Etiqueta de Endereço de Casa"
 
 #: addressbook/libebook/e-contact.c:118
 msgid "Work Address Label"
-msgstr "Etiqueta Endereço do Trabalho"
+msgstr "Etiqueta de Endereço do Trabalho"
 
 #: addressbook/libebook/e-contact.c:119
 msgid "Other Address Label"
@@ -198,7 +198,7 @@ msgstr "Outra Etiqueta de Endereço"
 
 #: addressbook/libebook/e-contact.c:121
 msgid "Assistant Phone"
-msgstr "Telefone Assistente"
+msgstr "Telefone do Assistente"
 
 #: addressbook/libebook/e-contact.c:122
 msgid "Business Phone"
@@ -214,23 +214,23 @@ msgstr "Fax Profissional"
 
 #: addressbook/libebook/e-contact.c:125
 msgid "Callback Phone"
-msgstr "Telefone Retorno Chamada"
+msgstr "Telefone de Retorno de Chamada"
 
 #: addressbook/libebook/e-contact.c:126
 msgid "Car Phone"
-msgstr "Telefone Carro"
+msgstr "Telefone do Carro"
 
 #: addressbook/libebook/e-contact.c:127
 msgid "Company Phone"
-msgstr "Telefone Empresa"
+msgstr "Telefone da Empresa"
 
 #: addressbook/libebook/e-contact.c:128
 msgid "Home Phone"
-msgstr "Telefone Casa 2"
+msgstr "Telefone de Casa"
 
 #: addressbook/libebook/e-contact.c:129
 msgid "Home Phone 2"
-msgstr "Telefone Casa 2"
+msgstr "Telefone de Casa 2"
 
 #: addressbook/libebook/e-contact.c:130
 msgid "Home Fax"
@@ -275,7 +275,7 @@ msgstr "TTY"
 #. Email fields
 #: addressbook/libebook/e-contact.c:142
 msgid "Email List"
-msgstr "Lista Email"
+msgstr "Lista de Email"
 
 #: addressbook/libebook/e-contact.c:143
 msgid "Email 1"
@@ -291,11 +291,11 @@ msgstr "Email 3"
 
 #: addressbook/libebook/e-contact.c:146
 msgid "Mailer"
-msgstr "Aplicação E-mail"
+msgstr "Aplicação de E-mail"
 
 #: addressbook/libebook/e-contact.c:147
 msgid "Wants HTML Mail"
-msgstr "Deseja Correio HTML"
+msgstr "Deseja Correio em HTML"
 
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:150
@@ -304,163 +304,139 @@ msgstr "Lista de Alcunhas AIM"
 
 #: addressbook/libebook/e-contact.c:151
 msgid "Jabber Id List"
-msgstr "Lista ID Jabber"
+msgstr "Lista de ID Jabber"
 
 #: addressbook/libebook/e-contact.c:152
 msgid "Yahoo! Screen Name List"
-msgstr "Lista Alcunhas Yahoo!"
+msgstr "Lista de Alcunhas Yahoo!"
 
 #: addressbook/libebook/e-contact.c:153
 msgid "MSN Screen Name List"
-msgstr "Lista Alcunhas MSN"
+msgstr "Lista de Alcunhas MSN"
 
 #: addressbook/libebook/e-contact.c:154
 msgid "ICQ Id List"
-msgstr "Lista ID ICQ"
+msgstr "Lista de ID ICQ"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Lista de Alcunhas AIM"
+msgstr "Alcunha Pessoal AIM 1"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "Lista de Alcunhas AIM"
+msgstr "Alcunha Pessoal AIM 2"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "Lista de Alcunhas AIM"
+msgstr "Alcunha Pessoal AIM 3"
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "Lista de Alcunhas AIM"
+msgstr "Alcunha Profissional AIM 1"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "Lista de Alcunhas AIM"
+msgstr "Alcunha Profissional AIM 2"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "Lista de Alcunhas AIM"
+msgstr "Alcunha Profissional AIM 3"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Lista ID Jabber"
+msgstr "ID Jabber Pessoal 1"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Lista ID Jabber"
+msgstr "ID Jabber Pessoal 2"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Lista ID Jabber"
+msgstr "ID Jabber Pessoal 3"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Lista ID Jabber"
+msgstr "ID Jabber Profissional 1"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Lista ID Jabber"
+msgstr "ID Jabber Profissional 2"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Lista ID Jabber"
+msgstr "ID Jabber Profissional 3"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Lista Alcunhas Yahoo!"
+msgstr "Alcunha Pessoal Yahoo! 1"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Lista Alcunhas Yahoo!"
+msgstr "Alcunha Pessoal Yahoo! 2"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Lista Alcunhas Yahoo!"
+msgstr "Alcunha Pessoal Yahoo! 3"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Lista Alcunhas Yahoo!"
+msgstr "Alcunha Profissional Yahoo! 1"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Lista Alcunhas Yahoo!"
+msgstr "Alcunha Profissional Yahoo! 2"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Lista Alcunhas Yahoo!"
+msgstr "Alcunha Profissional Yahoo! 3"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "Lista Alcunhas MSN"
+msgstr "Alcunha Pessoal MSN 1"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "Lista Alcunhas MSN"
+msgstr "Alcunha Pessoal MSN 2"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "Lista Alcunhas MSN"
+msgstr "Alcunha Pessoal MSN 3"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "Lista Alcunhas MSN"
+msgstr "Alcunha Profissional MSN 1"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "Lista Alcunhas MSN"
+msgstr "Alcunha Profissional MSN 2"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "Lista Alcunhas MSN"
+msgstr "Alcunha Profissional MSN 3"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "ID ICQ Pessoal 1"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "ID ICQ Pessoal 2"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "ID ICQ Pessoal 3"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "ID ICQ Profissional 1"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "ID ICQ Profissional 2"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "ID ICQ Profissional 3"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:188
@@ -494,15 +470,15 @@ msgstr "Assistente"
 #. Web fields
 #: addressbook/libebook/e-contact.c:198
 msgid "Homepage URL"
-msgstr "URL página pessoal"
+msgstr "URL da Página Pessoal"
 
 #: addressbook/libebook/e-contact.c:199
 msgid "Weblog URL"
-msgstr "URL weblog"
+msgstr "URL do Weblog"
 
 #: addressbook/libebook/e-contact.c:200
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr "URL de Vídeo-Conferência"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:203
@@ -521,7 +497,7 @@ msgstr "Certificado X.509"
 #. Contact categories
 #: addressbook/libebook/e-contact.c:210
 msgid "Category List"
-msgstr "Lista Categorias"
+msgstr "Lista de Categorias"
 
 #: addressbook/libebook/e-contact.c:211
 msgid "Categories"
@@ -530,7 +506,7 @@ msgstr "Categorias"
 #. Collaboration fields
 #: addressbook/libebook/e-contact.c:214
 msgid "Calendar URI"
-msgstr "URI Calendário"
+msgstr "URI do Calendário"
 
 #: addressbook/libebook/e-contact.c:215
 msgid "Free/Busy URL"
@@ -543,7 +519,7 @@ msgstr "Calendário ICS"
 #. Misc fields
 #: addressbook/libebook/e-contact.c:219
 msgid "Spouse's Name"
-msgstr "Nome Esposa"
+msgstr "Nome da Esposa"
 
 #: addressbook/libebook/e-contact.c:220
 msgid "Note"
@@ -551,7 +527,7 @@ msgstr "Nota"
 
 #: addressbook/libebook/e-contact.c:222
 msgid "Birth Date"
-msgstr "Data Nascimento"
+msgstr "Data de Nascimento"
 
 #: addressbook/libebook/e-contact.c:223
 msgid "Anniversary"
@@ -563,37 +539,36 @@ msgstr "Lista"
 
 #: addressbook/libebook/e-contact.c:226
 msgid "List Show Addresses"
-msgstr "Lista Mostra Endereços"
+msgstr "Lista de Apresentação de Endereços"
 
 #: addressbook/libebook/e-contact.c:1174
 msgid "Unnamed List"
 msgstr "Lista Sem Nome"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:408
-#, fuzzy
+#: calendar/backends/contacts/e-cal-backend-contacts.c:416
 msgid "Birthday"
-msgstr "Data Nascimento"
+msgstr "Data de Nascimento"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:430
+#: calendar/backends/contacts/e-cal-backend-contacts.c:438
 #, c-format
 msgid "Birthday: %s"
-msgstr ""
+msgstr "Data de Nascimento: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:449
-#, fuzzy, c-format
+#: calendar/backends/contacts/e-cal-backend-contacts.c:457
+#, c-format
 msgid "Anniversary: %s"
-msgstr "Aniversário"
+msgstr "Aniversário: %s"
 
 #: calendar/backends/file/e-cal-backend-file.c:177
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Incapaz de gravar dados de calendário: URI malformado."
 
-#: calendar/backends/http/e-cal-backend-http.c:216
+#: calendar/backends/http/e-cal-backend-http.c:223
 msgid "Bad file format."
 msgstr "Formato de ficheiro inválido."
 
-#: calendar/backends/http/e-cal-backend-http.c:223
+#: calendar/backends/http/e-cal-backend-http.c:230
 msgid "Not a calendar."
 msgstr "Não é um calendário."
 
@@ -746,7 +721,7 @@ msgstr "Indefinida"
 #: calendar/libecal/e-cal.c:1475
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "Introduza senha para %s (utilizador %s)"
+msgstr "Introduza a senha para %s (utilizador %s)"
 
 #: calendar/libecal/e-cal.c:3894
 msgid "Invalid argument"
@@ -774,11 +749,11 @@ msgstr "Objecto inválido"
 
 #: calendar/libecal/e-cal.c:3906
 msgid "URI not loaded"
-msgstr "URI não carregado"
+msgstr "URI não foi lido"
 
 #: calendar/libecal/e-cal.c:3908
 msgid "URI already loaded"
-msgstr "URI já está carregado"
+msgstr "URI já foi lido"
 
 #: calendar/libecal/e-cal.c:3910
 msgid "Permission denied"
@@ -786,7 +761,7 @@ msgstr "Permissão negada"
 
 #: calendar/libecal/e-cal.c:3912
 msgid "Object ID already exists"
-msgstr "ID objecto já existe"
+msgstr "ID de objecto já existe"
 
 #: calendar/libecal/e-cal.c:3914
 msgid "Protocol not supported"
@@ -798,7 +773,7 @@ msgstr "Operação foi cancelada"
 
 #: calendar/libecal/e-cal.c:3918
 msgid "Could not cancel operation"
-msgstr "Incapaz de cancelar operação"
+msgstr "Incapaz de cancelar a operação"
 
 #: calendar/libecal/e-cal.c:3920
 msgid "Authentication failed"
@@ -809,7 +784,6 @@ msgid "Authentication required"
 msgstr "Autenticação requerida"
 
 #: calendar/libecal/e-cal.c:3924
-#, fuzzy
 msgid "A CORBA exception has occurred"
 msgstr "Ocorreu uma excepção CORBA"
 
@@ -825,84 +799,84 @@ msgstr "Nenhum erro"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:503
 #: calendar/libedata-cal/e-cal-backend-sexp.c:635
 #: calendar/libedata-cal/e-cal-backend-sexp.c:662
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "has-alarms? não espera nenhum argumento"
+msgstr "\"%s\" não espera nenhum argumento"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
 #: calendar/libedata-cal/e-cal-backend-sexp.c:700
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects one argument"
-msgstr "contains? espera 2 argumentos"
+msgstr "\"%s\" espera um argumento"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
 #: calendar/libedata-cal/e-cal-backend-sexp.c:449
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "contains? espera que argumento 1 seja uma expressão"
+msgstr "\"%s\" espera que o primeiro argumento seja uma expressão"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:89
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "make-time argumento 1 tem de ser uma expressão ISO 8601 data/hora"
+msgstr "\"%s\" espera que o primeiro argumento seja uma expressão de data/hora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:282
 #: calendar/libedata-cal/e-cal-backend-sexp.c:443
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects two arguments"
-msgstr "contains? espera 2 argumentos"
+msgstr "\"%s\" espera dois argumentos"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
 #: calendar/libedata-cal/e-cal-backend-sexp.c:288
 #: calendar/libedata-cal/e-cal-backend-sexp.c:706
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "time-day-end espera que argumento 1 seja um time_t"
+msgstr "\"%s\" espera que o primeiro argumento seja um time_t"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:134
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "time-add-day espera que argumento 2 seja um inteiro"
+msgstr "\"%s\" espera que o segundo argumento seja um inteiro"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:296
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "time-add-day espera que argumento 1 seja um time_t"
+msgstr "\"%s\" espera que o segundo argumento seja um time_t"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:457
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be a string"
-msgstr "contains? espera que argumento 2 seja uma expressão"
+msgstr "\"%s\" espera que o segundo argumento seja uma expressão"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:475
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\""
 msgstr ""
-"contains? espera que argumento 1 seja um de \"any\", \"summary\", "
-"\"description\""
+"\"%s\" espera que o primeiro argumento seja um de \"any\", \"summary\" "
+"ou \"description\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:537
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects at least one argument"
-msgstr "has-categories? espera pelo menos 1 argumento"
+msgstr "\"%s\" espera pelo menos um argumento"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:551
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"has-categories? espera que todos os argumentos sejam expressões ou que um e "
-"apenas um argumento seja um falso boleano (#f)"
+"\"%s\" espera que todos os argumentos sejam expressões ou que um e apenas "
+"um argumento seja um boleano falso (#f)"
 
 #. !/usr/bin/env python
 #. -*- Mode: python -*-
@@ -941,7 +915,7 @@ msgstr ""
 #. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Backend LDAP e Ficheiros de Livro de Endereços Evolution"
+msgstr "Backend LDAP e de ficheiros de Livro de Endereços Evolution"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
@@ -951,124 +925,3 @@ msgstr "Backend de ficheiro de Calendário e webcal Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend de ficheiro de Livro de Endereços Evolution"
-
-#, fuzzy
-#~ msgid "uid? expects 1 argument"
-#~ msgstr "make-time espera 1 argumento"
-
-#, fuzzy
-#~ msgid "uid? expects argument 1 to be a string"
-#~ msgstr "contains? espera que argumento 1 seja uma expressão"
-
-#~ msgid "e_book_add_contact called on book before e_book_load_uri"
-#~ msgstr "e_book_add_contact invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::addContact call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::addContact"
-
-#~ msgid "e_book_commit_contact called on book before e_book_load_uri"
-#~ msgstr "e_book_commit_contact invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::modifyContact call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::modifyContact"
-
-#~ msgid "e_book_get_supported_fields on book before e_book_load_uri"
-#~ msgstr ""
-#~ "e_book_get_supported_fields invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getSupportedFields call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::getSupportedFields"
-
-#~ msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
-#~ msgstr ""
-#~ "e_book_get_supported_auth_methods invocado sobre livro antes de "
-#~ "e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getSupportedAuthMethods call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::getSupportedAuthMethods"
-
-#~ msgid "e_book_authenticate_user on book before e_book_load_uri"
-#~ msgstr ""
-#~ "e_book_authenticate_user invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::authenticateUser call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::authenticateUser"
-
-#~ msgid "e_book_get_contact on book before e_book_load_uri"
-#~ msgstr "e_book_get_contact invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getContact call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::getContact"
-
-#~ msgid "e_book_remove_contact on book before e_book_load_uri"
-#~ msgstr "e_book_remove_contact invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "e_book_remove_contacts on book before e_book_load_uri"
-#~ msgstr ""
-#~ "e_book_remove_contacts invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::removeContacts call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::removeContacts"
-
-#~ msgid "e_book_get_book_view on book before e_book_load_uri"
-#~ msgstr "e_book_get_book_view invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getBookView call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::getBookView"
-
-#~ msgid "e_book_get_contacts on book before e_book_load_uri"
-#~ msgstr "e_book_get_contacts invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getContactList call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::getContactList"
-
-#~ msgid "e_book_get_changes on book before e_book_load_uri"
-#~ msgstr "e_book_get_changes invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getChanges call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::getChanges"
-
-#~ msgid "Corba exception making Book::cancelOperation call"
-#~ msgstr "Excepção Corba ao efectuar invocação Book::cancelOperation"
-
-#~ msgid "e_book_remove on book before e_book_load_uri"
-#~ msgstr "e_book_remove invocado sobre livro antes de e_book_load_uri"
-
-#~ msgid "time-now expects 0 arguments"
-#~ msgstr "time-now espera 0 argumentos"
-
-#~ msgid "make-time expects argument 1 to be a string"
-#~ msgstr "make-time espera 1 argumento e que seja uma expressão"
-
-#~ msgid "time-add-day expects 2 arguments"
-#~ msgstr "time-add-day espera 2 argumentos"
-
-#~ msgid "time-day-begin expects 1 argument"
-#~ msgstr "time-day-begin espera 1 argumento"
-
-#~ msgid "time-day-begin expects argument 1 to be a time_t"
-#~ msgstr "time-day-begin espera que argumento 1 seja um time_t"
-
-#~ msgid "time-day-end expects 1 argument"
-#~ msgstr "time-day-end espera 1 argumento"
-
-#~ msgid "occur-in-time-range? expects 2 arguments"
-#~ msgstr "occur-in-time-range? espera 2 argumentos"
-
-#~ msgid "occur-in-time-range? expects argument 1 to be a time_t"
-#~ msgstr "occur-in-time-range? espera que argumento 1 seja um time_t"
-
-#~ msgid "occur-in-time-range? expects argument 2 to be a time_t"
-#~ msgstr "occur-in-time-range? espera que argumento 2 seja um time_t"
-
-#~ msgid "has-recurrences? expects no arguments"
-#~ msgstr "has-recurrences? não espera nenhum argumento"
-
-#~ msgid "is-completed? expects 0 arguments"
-#~ msgstr "is-completed? espera 0 argumentos"
-
-#~ msgid "completed-before? expects 1 argument"
-#~ msgstr "completed-before? espera 1 argumento"
-
-#~ msgid "completed-before? expects argument 1 to be a time_t"
-#~ msgstr "completed-before? espera que argumento 1 seja um time_t"
