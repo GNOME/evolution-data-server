@@ -1,3 +1,28 @@
+2004-08-16  Chris Toshok  <toshok@ximian.com>
+
+	* backends/vcf/e-book-backend-vcf.c: keep both a hash table and a
+	GList around for the contacts.
+	(insert_contact): insert the contact into the GList and insert the
+	GList* into the hashtable.
+	(save_file): just use the GList directly instead of building it up
+	from the hash table.
+	(do_create): call insert_contact instead of directly inserting
+	into the hash table.
+	(e_book_backend_vcf_remove_contacts): remove the contact from both
+	the hashtable and the list.
+	(e_book_backend_vcf_modify_contact): just update the GList.
+	(e_book_backend_vcf_get_contact): the hashtable contains GList*'s.
+	(foreach_get_contact_compare): this is a GFunc now, not a GHFunc.
+	(e_book_backend_vcf_get_contact_list): iterate over the list, not
+	the hashtable.
+	(foreach_search_compare): nuke.
+	(book_view_thread): do the iteration here, and break out properly
+	when the search is stopped.
+	(e_book_backend_vcf_load_source): use g_hash_table_new instead of
+	_new_full here.
+	(e_book_backend_vcf_dispose): destroy the list and free the hash
+	keys.
+
 2004-08-13  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 
