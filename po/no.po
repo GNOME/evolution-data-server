@@ -5,8 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.0\n"
-"POT-Creation-Date: 2003-12-07 20:33-0500\n"
-"PO-Revision-Date: 2003-11-04 18:02+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-13 21:14+0100\n"
+"PO-Revision-Date: 2003-12-13 21:18+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +25,7 @@ msgstr ""
 #: addressbook/libebook/e-book.c:942 addressbook/libebook/e-book.c:1071
 #: addressbook/libebook/e-book.c:1169 addressbook/libebook/e-book.c:1393
 msgid "book busy"
-msgstr ""
+msgstr "opptatt bok"
 
 #: addressbook/libebook/e-book.c:244
 msgid "Corba exception making Book::addContact call"
@@ -166,7 +167,7 @@ msgstr "Navn"
 
 #: addressbook/libebook/e-contact.c:103
 msgid "Given Name"
-msgstr ""
+msgstr "Gitt navn"
 
 #: addressbook/libebook/e-contact.c:104
 msgid "Family Name"
@@ -178,7 +179,7 @@ msgstr "Kallenavn"
 
 #: addressbook/libebook/e-contact.c:106
 msgid "Name or Org"
-msgstr ""
+msgstr "Navn eller organisasjon"
 
 #. Address fields
 #: addressbook/libebook/e-contact.c:109
@@ -198,19 +199,16 @@ msgid "Other Address"
 msgstr "Annen adresse"
 
 #: addressbook/libebook/e-contact.c:114
-#, fuzzy
 msgid "Home Address Label"
-msgstr "Adresseetikett"
+msgstr "Etikett for hjemmeadresse"
 
 #: addressbook/libebook/e-contact.c:115
-#, fuzzy
 msgid "Work Address Label"
-msgstr "Adresseetikett"
+msgstr "Etikett for jobbadresse"
 
 #: addressbook/libebook/e-contact.c:116
-#, fuzzy
 msgid "Other Address Label"
-msgstr "Adresseetikett"
+msgstr "Etikett for annen adresse"
 
 #: addressbook/libebook/e-contact.c:118
 msgid "Assistant Phone"
@@ -318,7 +316,7 @@ msgstr "Vil ha meldinger som HTML"
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:147
 msgid "AIM Screen Name List"
-msgstr ""
+msgstr "Liste over skjermnavn for AIM"
 
 #: addressbook/libebook/e-contact.c:148
 msgid "Jabber Id List"
@@ -368,11 +366,11 @@ msgstr "Assistent"
 #. Web fields
 #: addressbook/libebook/e-contact.c:164
 msgid "Homepage URL"
-msgstr ""
+msgstr "URL til hjemmeside"
 
 #: addressbook/libebook/e-contact.c:165
 msgid "Weblog URL"
-msgstr ""
+msgstr "URL til weblog"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:168
@@ -434,12 +432,12 @@ msgstr "Annen adresse"
 msgid "Unnamed List"
 msgstr "Liste uten navn"
 
-#: addressbook/backends/file/e-book-backend-file.c:391
+#: addressbook/backends/file/e-book-backend-file.c:390
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
 msgid "Loading..."
 msgstr "Laster..."
 
-#: addressbook/backends/file/e-book-backend-file.c:393
+#: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2835
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
@@ -623,75 +621,75 @@ msgstr "Lav"
 msgid "Undefined"
 msgstr "Udefinert"
 
-#: calendar/libecal/e-cal.c:3833
+#: calendar/libecal/e-cal.c:3766
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: calendar/libecal/e-cal.c:3835
+#: calendar/libecal/e-cal.c:3768
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
 
-#: calendar/libecal/e-cal.c:3837
+#: calendar/libecal/e-cal.c:3770
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: calendar/libecal/e-cal.c:3839
+#: calendar/libecal/e-cal.c:3772
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: calendar/libecal/e-cal.c:3841 calendar/libecal/e-cal.c:3851
+#: calendar/libecal/e-cal.c:3774 calendar/libecal/e-cal.c:3784
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: calendar/libecal/e-cal.c:3843
+#: calendar/libecal/e-cal.c:3776
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: calendar/libecal/e-cal.c:3845
+#: calendar/libecal/e-cal.c:3778
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: calendar/libecal/e-cal.c:3847
+#: calendar/libecal/e-cal.c:3780
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: calendar/libecal/e-cal.c:3849
+#: calendar/libecal/e-cal.c:3782
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
-#: calendar/libecal/e-cal.c:3853
+#: calendar/libecal/e-cal.c:3786
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: calendar/libecal/e-cal.c:3855
+#: calendar/libecal/e-cal.c:3788
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: calendar/libecal/e-cal.c:3857
+#: calendar/libecal/e-cal.c:3790
 msgid "Operation has been cancelled"
 msgstr "Operasjonen ble avbrutt"
 
-#: calendar/libecal/e-cal.c:3859
+#: calendar/libecal/e-cal.c:3792
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: calendar/libecal/e-cal.c:3861
+#: calendar/libecal/e-cal.c:3794
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
-#: calendar/libecal/e-cal.c:3863
+#: calendar/libecal/e-cal.c:3796
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: calendar/libecal/e-cal.c:3865
+#: calendar/libecal/e-cal.c:3798
 msgid "A CORBA esception has occurred"
-msgstr ""
+msgstr "Et CORBA-unntak har oppstått"
 
-#: calendar/libecal/e-cal.c:3867
+#: calendar/libecal/e-cal.c:3800
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: calendar/libecal/e-cal.c:3869
+#: calendar/libecal/e-cal.c:3802
 msgid "No error"
 msgstr "Ingen feil"
 
@@ -771,9 +769,8 @@ msgstr ""
 "contains? forventer at argument 1 er en av «any», «summary», «description»"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:435
-#, fuzzy
 msgid "has-alarms? expects no arguments"
-msgstr "has-categories? forventer minst 1 argument"
+msgstr "has-alarms? forventer ingen argumenter"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:469
 msgid "has-categories? expects at least 1 argument"
@@ -788,9 +785,8 @@ msgstr ""
 "ett, argument er den bolske verdien falsk (#f)"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:560
-#, fuzzy
 msgid "has-recurrences? expects no arguments"
-msgstr "is-completed? forventer 0 argumenter"
+msgstr "has-recurrences? forventer ingen argumenter"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:586
 msgid "is-completed? expects 0 arguments"
@@ -804,24 +800,21 @@ msgstr "completed-before? forventer 1 argument"
 msgid "completed-before? expects argument 1 to be a time_t"
 msgstr "completed-before? forventer at argument 1 er en time_t"
 
-#: calendar/backends/file/e-cal-backend-file.c:175
+#: calendar/backends/file/e-cal-backend-file.c:176
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
 #: calendar/backends/http/e-cal-backend-http.c:273
-#, fuzzy
 msgid "Bad file format."
-msgstr "Tidformat:"
+msgstr "Ugyldig filformat."
 
 #: calendar/backends/http/e-cal-backend-http.c:278
-#, fuzzy
 msgid "Not a calendar."
-msgstr "Ingen slik kalender"
+msgstr "Ikke en kalender."
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
-#, fuzzy
 msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Evolution adressebok-komponent"
+msgstr "Evolution adressebok-komponent for fil og LDAP"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
@@ -833,16 +826,6 @@ msgstr "Evolution kalender-komponent"
 #, fuzzy
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution adressebok-komponent"
-
-#~ msgid "get-vtype expects 0 arguments"
-#~ msgstr "get-vtype forventer 0 argumenter"
-
-#, fuzzy
-#~ msgid "has-alarms? excepts argument to be a boolean"
-#~ msgstr "contains? forventer at argument 2 er en streng"
-
-#~ msgid "Evolution LDIF importer"
-#~ msgstr "LDIF-import for Evolution"
 
 #~ msgid "Evolution VCard Importer"
 #~ msgstr "VCard-import for Evolution"
