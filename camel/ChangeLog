@@ -1,4 +1,5 @@
 2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+
 	* providers/groupwise/camel-groupwise-store-summary.[ch]:
 	  implements the CamelStoreSummary Class providing support
 	  for store summary for the soap provider.
