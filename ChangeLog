@@ -1,3 +1,9 @@
+2004-11-16  Not Zed  <NotZed@Ximian.com>
+
+	* configure.in: Added more camel required config checks.  Build
+	the camel makefiles.  Not sure if this should be in its own
+	configure.in.
+
 2004-11-15  Not Zed  <NotZed@Ximian.com>
 
 	* libedataserver/e-util.c: include config.h.
