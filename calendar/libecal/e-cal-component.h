@@ -200,6 +200,8 @@ char *e_cal_component_gen_uid (void);
 
 ECalComponent *e_cal_component_new (void);
 
+ECalComponent *e_cal_component_new_from_string (const char *calobj);
+
 ECalComponent *e_cal_component_clone (ECalComponent *comp);
 
 void e_cal_component_set_new_vtype (ECalComponent *comp, ECalComponentVType type);

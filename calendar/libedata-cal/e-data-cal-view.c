@@ -22,6 +22,7 @@
 #include <config.h>
 #endif
 
+#include <string.h>
 #include <glib.h>
 #include <bonobo/bonobo-exception.h>
 #include <libedataserver/e-component-listener.h>
@@ -30,14 +31,27 @@
 
 
 
+typedef struct {
+	GNOME_Evolution_Calendar_CalViewListener listener;
+	EComponentListener *component_listener;
+
+	gboolean notified_start;
+	gboolean notified_done;
+} ListenerData;
+
 /* Private part of the Query structure */
 struct _EDataCalViewPrivate {
 	/* The backend we are monitoring */
 	ECalBackend *backend;
 
+	gboolean started;
+	gboolean done;
+	GNOME_Evolution_Calendar_CallStatus done_status;
+
+	GHashTable *matched_objects;
+
 	/* The listener we report to */
-	GNOME_Evolution_Calendar_CalViewListener listener;
-	EComponentListener *component_listener;
+	GList *listeners;
 
 	/* Sexp that defines the query */
 	ECalBackendSExp *sexp;
@@ -69,18 +83,132 @@ enum props {
 
 
 static void
-listener_died_cb (EComponentListener *cl, gpointer data)
+add_object_to_cache (EDataCalView *query, const char *calobj)
 {
-	EDataCalView *query = QUERY (data);
+	ECalComponent *comp;
+	char *real_uid;
+	const char *uid;
 	EDataCalViewPrivate *priv;
 
 	priv = query->priv;
 
-	g_object_unref (priv->component_listener);
-	priv->component_listener = NULL;
+	comp = e_cal_component_new_from_string (calobj);
+	if (!comp)
+		return;
+
+	e_cal_component_get_uid (comp, &uid);
+	if (!uid || !*uid) {
+		g_object_unref (comp);
+		return;
+	}
+
+	if (e_cal_component_is_instance (comp))
+		real_uid = g_strdup_printf ("%s@%s", uid, e_cal_component_get_recurid_as_string (comp));
+	else
+		real_uid = g_strdup (uid);
+
+	if (g_hash_table_lookup (priv->matched_objects, real_uid))
+		g_hash_table_replace (priv->matched_objects, real_uid, g_strdup (calobj));
+	else
+		g_hash_table_insert (priv->matched_objects, real_uid, g_strdup (calobj));
+
+	/* free memory */
+	g_object_unref (comp);
+}
+
+static gboolean
+uncache_with_uid_cb (gpointer key, gpointer value, gpointer user_data)
+{
+	ECalComponent *comp;
+	const char *this_uid;
+	char *uid, *object;
+
+	uid = user_data;
+	object = value;
+
+	comp = e_cal_component_new_from_string (object);
+	if (comp) {
+		e_cal_component_get_uid (comp, &this_uid);
+		if (this_uid && *this_uid && !strcmp (uid, this_uid)) {
+			g_object_unref (comp);
+			return TRUE;
+		}
+
+		g_object_unref (comp);
+	}
+
+	return FALSE;
+}
+
+static void
+remove_object_from_cache (EDataCalView *query, const char *uid)
+{
+	EDataCalViewPrivate *priv;
+
+	priv = query->priv;
+
+	g_hash_table_foreach_remove (priv->matched_objects, (GHRFunc) uncache_with_uid_cb, (gpointer) uid);
+}
+
+static void
+listener_died_cb (EComponentListener *cl, gpointer data)
+{
+	EDataCalView *query = QUERY (data);
+	EDataCalViewPrivate *priv;
+	GList *l;
+
+	priv = query->priv;
+
+	for (l = priv->listeners; l != NULL; l = l->next) {
+		ListenerData *ld = l->data;
+
+		if (ld->component_listener == cl) {
+			g_object_unref (ld->component_listener);
+			ld->component_listener = NULL;
 	
-	bonobo_object_release_unref (priv->listener, NULL);
-	priv->listener = NULL;
+			bonobo_object_release_unref (ld->listener, NULL);
+			ld->listener = NULL;
+
+			priv->listeners = g_list_remove_link (priv->listeners, l);
+			g_list_free (l);
+			g_free (ld);
+			break;
+		}
+	}
+}
+
+static void
+notify_matched_object_cb (gpointer key, gpointer value, gpointer user_data)
+{
+	char *uid, *object;
+	EDataCalView *query;
+	EDataCalViewPrivate *priv;
+	GList *l;
+
+	uid = key;
+	object = value;
+	query = user_data;
+	priv = query->priv;
+
+	for (l = priv->listeners; l != NULL; l = l->next) {
+		ListenerData *ld = l->data;
+
+		if (!ld->notified_start) {
+			GNOME_Evolution_Calendar_stringlist obj_list;
+			CORBA_Environment ev;
+
+			obj_list._buffer = GNOME_Evolution_Calendar_stringlist_allocbuf (1);
+			obj_list._maximum = 1;
+			obj_list._length = 1;
+			obj_list._buffer[0] = CORBA_string_dup (object);
+
+			CORBA_exception_init (&ev);
+			GNOME_Evolution_Calendar_CalViewListener_notifyObjectsAdded (ld->listener, &obj_list, &ev);
+			CORBA_exception_free (&ev);
+
+			CORBA_free (obj_list._buffer);
+		}
+	}
 }
 
 static void
@@ -88,11 +216,46 @@ impl_EDataCalView_start (PortableServer_Servant servant, CORBA_Environment *ev)
 {
 	EDataCalView *query;
 	EDataCalViewPrivate *priv;
+	GList *l;
 
 	query = QUERY (bonobo_object_from_servant (servant));
 	priv = query->priv;
 
-	e_cal_backend_start_query (priv->backend, query);
+	if (priv->started) {
+		g_warning (G_STRLOC ": Query already started, notifying matched objects");
+		g_hash_table_foreach (priv->matched_objects, (GHFunc) notify_matched_object_cb, query);
+
+		/* notify all listeners correctly if the query is already done */
+		for (l = priv->listeners; l != NULL; l = l->next) {
+			ListenerData *ld = l->data;
+
+			if (!ld->notified_start) {
+				ld->notified_start = TRUE;
+
+				if (priv->done && !ld->notified_done) {
+					CORBA_Environment ev;
+
+					ld->notified_done = TRUE;
+
+					g_warning (G_STRLOC ": Query already done before, notifying new listener");
+					CORBA_exception_init (&ev);
+					GNOME_Evolution_Calendar_CalViewListener_notifyQueryDone (
+						ld->listener, priv->done_status, &ev);
+					CORBA_exception_free (&ev);
+				}
+			}
+		}
+	} else {
+		g_warning (G_STRLOC ": Starting new query");
+		priv->started = TRUE;
+		e_cal_backend_start_query (priv->backend, query);
+
+		for (l = priv->listeners; l != NULL; l = l->next) {
+			ListenerData *ld = l->data;
+
+			ld->notified_start = TRUE;
+		}
+	}
 }
 
 static void
@@ -100,7 +263,6 @@ e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *
 {
 	EDataCalView *query;
 	EDataCalViewPrivate *priv;
-	CORBA_Environment ev;
 
 	query = QUERY (object);
 	priv = query->priv;
@@ -110,13 +272,7 @@ e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *
 		priv->backend = E_CAL_BACKEND (g_value_dup_object (value));
 		break;
 	case PROP_LISTENER:
-		CORBA_exception_init (&ev);
-		priv->listener = CORBA_Object_duplicate (g_value_get_pointer (value), &ev);
-		CORBA_exception_free (&ev);
-
-		priv->component_listener = e_component_listener_new (priv->listener);
-		g_signal_connect (G_OBJECT (priv->component_listener), "component_died",
-				  G_CALLBACK (listener_died_cb), query);
+		e_data_cal_view_add_listener (query, g_value_get_pointer (value));
 		break;
 	case PROP_SEXP:
 		priv->sexp = E_CAL_BACKEND_SEXP (g_value_dup_object (value));
@@ -140,7 +296,13 @@ e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value,
 	case PROP_BACKEND:
 		g_value_set_object (value, priv->backend);
 	case PROP_LISTENER:
-		g_value_set_pointer (value, priv->listener);
+
+		if (priv->listeners) {
+			ListenerData *ld;
+
+			ld = priv->listeners->data;
+			g_value_set_pointer (value, ld->listener);
+		}
 		break;
 	case PROP_SEXP:
 		g_value_set_object (value, priv->sexp);
@@ -190,8 +352,11 @@ e_data_cal_view_init (EDataCalView *query, EDataCalViewClass *class)
 	query->priv = priv;
 
 	priv->backend = NULL;
-	priv->listener = NULL;
-	priv->component_listener = NULL;
+	priv->started = FALSE;
+	priv->done = FALSE;
+	priv->done_status = GNOME_Evolution_Calendar_Success;
+	priv->matched_objects = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->listeners = NULL;
 	priv->sexp = NULL;
 }
 
@@ -211,11 +376,19 @@ e_data_cal_view_finalize (GObject *object)
 	if (priv->backend)
 		g_object_unref (priv->backend);
 
-	if (priv->listener != NULL)
-		bonobo_object_release_unref (priv->listener, NULL);
+	while (priv->listeners) {
+		ListenerData *ld = priv->listeners->data;
 
-	if (priv->component_listener != NULL)
-		g_object_unref (priv->component_listener);
+		if (ld->listener)
+			bonobo_object_release_unref (ld->listener, NULL);
+		if (ld->component_listener)
+			g_object_unref (ld->component_listener);
+		priv->listeners = g_list_remove (priv->listeners, ld);
+		g_free (ld);
+	}
+
+	if (priv->matched_objects)
+		g_hash_table_destroy (priv->matched_objects);
 
 	if (priv->sexp)
 		g_object_unref (priv->sexp);
@@ -238,8 +411,8 @@ e_data_cal_view_finalize (GObject *object)
  **/
 EDataCalView *
 e_data_cal_view_new (ECalBackend *backend,
-	   GNOME_Evolution_Calendar_CalViewListener ql,
-	   ECalBackendSExp *sexp)
+		     GNOME_Evolution_Calendar_CalViewListener ql,
+		     ECalBackendSExp *sexp)
 {
 	EDataCalView *query;
 
@@ -247,6 +420,40 @@ e_data_cal_view_new (ECalBackend *backend,
 			      "sexp", sexp, NULL);
 
 	return query;
+}
+
+/**
+ * e_data_cal_view_add_listener:
+ * @query: A #EDataCalView object.
+ * @ql: A CORBA query listener to add to the list of listeners.
+ *
+ * Adds the given CORBA listener to a #EDataCalView object. This makes the view
+ * object notify that listener when notifying the other listeners already attached
+ * to the view.
+ */
+void
+e_data_cal_view_add_listener (EDataCalView *query, GNOME_Evolution_Calendar_CalViewListener ql)
+{
+	ListenerData *ld;
+	EDataCalViewPrivate *priv;
+	CORBA_Environment ev;
+
+	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (ql != CORBA_OBJECT_NIL);
+
+	priv = query->priv;
+
+	ld = g_new0 (ListenerData, 1);
+
+	CORBA_exception_init (&ev);
+	ld->listener = CORBA_Object_duplicate (ql, &ev);
+	CORBA_exception_free (&ev);
+
+	ld->component_listener = e_component_listener_new (ld->listener);
+	g_signal_connect (G_OBJECT (ld->component_listener), "component_died",
+			  G_CALLBACK (listener_died_cb), query);
+
+	priv->listeners = g_list_prepend (priv->listeners, ld);
 }
 
 /**
@@ -287,6 +494,68 @@ e_data_cal_view_object_matches (EDataCalView *query, const char *object)
 	return e_cal_backend_sexp_match_object (priv->sexp, object, priv->backend);
 }
 
+static void
+add_object_to_list (gpointer key, gpointer value, gpointer user_data)
+{
+	GList **list = user_data;
+
+	*list = g_list_append (*list, value);
+}
+
+GList *
+e_data_cal_view_get_matched_objects (EDataCalView *query)
+{
+	EDataCalViewPrivate *priv;
+	GList *list = NULL;
+
+	g_return_val_if_fail (IS_QUERY (query), NULL);
+
+	priv = query->priv;
+
+	g_hash_table_foreach (priv->matched_objects, (GHFunc) add_object_to_list, &list);
+
+	return list;
+}
+
+gboolean
+e_data_cal_view_is_started (EDataCalView *query)
+{
+	EDataCalViewPrivate *priv;
+
+	g_return_val_if_fail (IS_QUERY (query), FALSE);
+
+	priv = query->priv;
+
+	return priv->started;
+}
+
+gboolean
+e_data_cal_view_is_done (EDataCalView *query)
+{
+	EDataCalViewPrivate *priv;
+
+	g_return_val_if_fail (IS_QUERY (query), FALSE);
+
+	priv = query->priv;
+
+	return priv->done;
+}
+
+GNOME_Evolution_Calendar_CallStatus
+e_data_cal_view_get_done_status (EDataCalView *query)
+{
+	EDataCalViewPrivate *priv;
+
+	g_return_val_if_fail (IS_QUERY (query), FALSE);
+
+	priv = query->priv;
+
+	if (priv->done)
+		return priv->done_status;
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
 void
 e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
 {
@@ -300,26 +569,36 @@ e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
 	g_return_if_fail (IS_QUERY (query));
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
-	
-	CORBA_exception_init (&ev);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
 	num_objs = g_list_length ((GList*)objects);
+	if (num_objs <= 0)
+		return;
+
 	obj_list._buffer = GNOME_Evolution_Calendar_stringlist_allocbuf (num_objs);
 	obj_list._maximum = num_objs;
 	obj_list._length = num_objs;
 
-	for (l = objects, i = 0; l; l = l->next, i++)
+	for (l = objects, i = 0; l; l = l->next, i++) {
 		obj_list._buffer[i] = CORBA_string_dup (l->data);
 
-	GNOME_Evolution_Calendar_CalViewListener_notifyObjectsAdded (priv->listener, &obj_list, &ev);
+		/* update our cache */
+		add_object_to_cache (query, l->data);
+	}
+
+	for (l = priv->listeners; l != NULL; l = l->next) {
+		ListenerData *ld = l->data;
+
+		CORBA_exception_init (&ev);
+
+		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsAdded (ld->listener, &obj_list, &ev);
+		if (BONOBO_EX (&ev))
+			g_warning (G_STRLOC ": could not notify the listener of object addition");
+
+		CORBA_exception_free (&ev);
+	}
 
 	CORBA_free (obj_list._buffer);
-
-	if (BONOBO_EX (&ev))
-		g_warning (G_STRLOC ": could not notify the listener of object addition");
-
-	CORBA_exception_free (&ev);
 }
 
 void
@@ -330,9 +609,10 @@ e_data_cal_view_notify_objects_added_1 (EDataCalView *query, const char *object)
 	
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (object != NULL);
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
 	objects.next = objects.prev = NULL;
 	objects.data = (gpointer)object;
@@ -353,26 +633,36 @@ e_data_cal_view_notify_objects_modified (EDataCalView *query, const GList *objec
 	g_return_if_fail (IS_QUERY (query));
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
-	
-	CORBA_exception_init (&ev);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
 	num_objs = g_list_length ((GList*)objects);
+	if (num_objs <= 0)
+		return;
+
 	obj_list._buffer = GNOME_Evolution_Calendar_stringlist_allocbuf (num_objs);
 	obj_list._maximum = num_objs;
 	obj_list._length = num_objs;
 
-	for (l = objects, i = 0; l; l = l->next, i++)
+	for (l = objects, i = 0; l; l = l->next, i++) {
 		obj_list._buffer[i] = CORBA_string_dup (l->data);
 
-	GNOME_Evolution_Calendar_CalViewListener_notifyObjectsModified (priv->listener, &obj_list, &ev);
+		/* update our cache */
+		add_object_to_cache (query, l->data);
+	}
+
+	for (l = priv->listeners; l != NULL; l = l->next) {
+		ListenerData *ld = l->data;
+
+		CORBA_exception_init (&ev);
+
+		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsModified (ld->listener, &obj_list, &ev);
+		if (BONOBO_EX (&ev))
+			g_warning (G_STRLOC ": could not notify the listener of object modification");
+
+		CORBA_exception_free (&ev);
+	}
 
 	CORBA_free (obj_list._buffer);
-
-	if (BONOBO_EX (&ev))
-		g_warning (G_STRLOC ": could not notify the listener of object modification");
-
-	CORBA_exception_free (&ev);
 }
 
 void
@@ -383,9 +673,10 @@ e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const char *obje
 	
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (object != NULL);
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
 	objects.next = objects.prev = NULL;
 	objects.data = (gpointer)object;
@@ -406,27 +697,36 @@ e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *uids)
 	g_return_if_fail (IS_QUERY (query));
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
-	
-	CORBA_exception_init (&ev);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
 	num_uids = g_list_length ((GList*)uids);
+	if (num_uids <= 0)
+		return;
+
 	uid_list._buffer = GNOME_Evolution_Calendar_CalObjUIDSeq_allocbuf (num_uids);
 	uid_list._maximum = num_uids;
 	uid_list._length = num_uids;
 
-	for (l = uids, i = 0; l; l = l->next, i ++)
+	for (l = uids, i = 0; l; l = l->next, i ++) {
 		uid_list._buffer[i] = CORBA_string_dup (l->data);
 
-	GNOME_Evolution_Calendar_CalViewListener_notifyObjectsRemoved (priv->listener, &uid_list, &ev);
+		/* update our cache */
+		remove_object_from_cache (query, l->data);
+	}
+
+	for (l = priv->listeners; l != NULL; l = l->next) {
+		ListenerData *ld = l->data;
+
+		CORBA_exception_init (&ev);
+
+		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsRemoved (ld->listener, &uid_list, &ev);
+		if (BONOBO_EX (&ev))
+			g_warning (G_STRLOC ": could not notify the listener of object removal");
+
+		CORBA_exception_free (&ev);
+	}
 
 	CORBA_free (uid_list._buffer);
-
-	if (BONOBO_EX (&ev))
-		g_warning (G_STRLOC ": could not notify the listener of object removal");
-
-
-	CORBA_exception_free (&ev);
 }
 
 void
@@ -437,9 +737,10 @@ e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const char *uid)
 	
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (uid != NULL);
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
 	uids.next = uids.prev = NULL;
 	uids.data = (gpointer)uid;
@@ -452,21 +753,25 @@ e_data_cal_view_notify_progress (EDataCalView *query, const char *message, int p
 {
 	EDataCalViewPrivate *priv;	
 	CORBA_Environment ev;
+	GList *l;
 
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
-	
-	CORBA_exception_init (&ev);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
-	GNOME_Evolution_Calendar_CalViewListener_notifyQueryProgress (priv->listener, message, percent, &ev);
+	for (l = priv->listeners; l != NULL; l = l->next) {
+		ListenerData *ld = l->data;
 
-	if (BONOBO_EX (&ev))
-		g_warning (G_STRLOC ": could not notify the listener of query progress");
+		CORBA_exception_init (&ev);
 
-	CORBA_exception_free (&ev);
+		GNOME_Evolution_Calendar_CalViewListener_notifyQueryProgress (ld->listener, message, percent, &ev);
+		if (BONOBO_EX (&ev))
+			g_warning (G_STRLOC ": could not notify the listener of query progress");
+
+		CORBA_exception_free (&ev);
+	}
 }
 
 void
@@ -474,19 +779,26 @@ e_data_cal_view_notify_done (EDataCalView *query, GNOME_Evolution_Calendar_CallS
 {
 	EDataCalViewPrivate *priv;	
 	CORBA_Environment ev;
+	GList *l;
 
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
 
 	priv = query->priv;
-	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
-	
-	CORBA_exception_init (&ev);
+	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
-	GNOME_Evolution_Calendar_CalViewListener_notifyQueryDone (priv->listener, status, &ev);
+	priv->done = TRUE;
+	priv->done_status = status;
 
-	if (BONOBO_EX (&ev))
-		g_warning (G_STRLOC ": could not notify the listener of query completion");
+	for (l = priv->listeners; l != NULL; l = l->next) {
+		ListenerData *ld = l->data;
 
-	CORBA_exception_free (&ev);
+		CORBA_exception_init (&ev);
+
+		GNOME_Evolution_Calendar_CalViewListener_notifyQueryDone (ld->listener, status, &ev);
+		if (BONOBO_EX (&ev))
+			g_warning (G_STRLOC ": could not notify the listener of query completion");
+
+		CORBA_exception_free (&ev);
+	}
 }

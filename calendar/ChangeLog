@@ -1,3 +1,39 @@
+2004-09-23  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #59904
+
+	* libecal/e-cal-component.[ch] (e_cal_component_new_from_string): new
+	function to avoid repeating the same code over and over.
+
+	* libedata-cal/e-data-cal-view.c: changed to keep a list of listeners,
+	not only one.
+	(listener_died_cb): remove the listener from the list of listeners.
+	(impl_EDataCalView_start): see if the query has already been started,
+	and if so, just notify correctly the listeners we need to notify.
+	(e_data_cal_view_init): create hash table for storing the objects we
+	have matching the live query.
+	(e_data_cal_view_set_property): add correctly the listeners to the list.
+	(e_data_cal_view_get_property): return always the first listener.
+	(e_data_cal_view_finalize): free all listeners and cached objects.
+	(add_object_to_cache, remove_object_from_cache):
+	new functions to manage the matched objects cache.
+	(e_data_cal_view_notify_objects_added,
+	e_data_cal_view_notify_objects_modified): add objects to our private
+	cache, and notify all listeners, now that we might have more than one.
+	(e_data_cal_view_notify_objects_removed,
+	e_data_cal_view_notify_progress, e_data_cal_view_notify_done): notify
+	all listeners.
+	(e_data_cal_view_add_listener, e_data_cal_view_get_matched_objects,
+	e_data_cal_view_is_started, e_data_cal_view_is_done,
+	e_data_cal_view_get_done_status): new functions.
+
+	* libedata-cal/e-data-cal.c: keep a cache of all queries.
+	(impl_Cal_getQuery): first look in the cache of queries. And when
+	creating a new query, add it to the cache.
+	(impl_Cal_getObjectList): use the query cache also.
+	(e_data_cal_finalize): destroy the live queries hash table.
+	(e_data_cal_init): create live queries hash table.
+
 2004-09-23  JP Rosevear  <jpr@novell.com>
 
 	* libecal/Makefile.am: build a versioned lib, don't hard

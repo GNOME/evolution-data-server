@@ -437,6 +437,38 @@ e_cal_component_new (void)
 }
 
 /**
+ * e_cal_component_new_from_string:
+ * @calobj: A string representation of an iCalendar component.
+ *
+ * Creates a new calendar component object from the given string.
+ *
+ * Return value: A calendar component representing the given iCalendar string on
+ * success, NULL if there was an error.
+ **/
+ECalComponent *
+e_cal_component_new_from_string (const char *calobj)
+{
+	ECalComponent *comp;
+	icalcomponent *icalcomp;
+
+	g_return_val_if_fail (calobj != NULL, NULL);
+
+	icalcomp = icalparser_parse_string (calobj);
+	if (!icalcomp)
+		return NULL;
+
+	comp = e_cal_component_new ();
+	if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
+		icalcomponent_free (icalcomp);
+		g_object_unref (comp);
+
+		return NULL;
+	}
+
+	return comp;
+}
+
+/**
  * e_cal_component_clone:
  * @comp: A calendar component object.
  *

@@ -1185,7 +1185,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
-
+	
 	/* check if the object exists */
 	switch (priv->mode) {
 	case CAL_MODE_ANY :
