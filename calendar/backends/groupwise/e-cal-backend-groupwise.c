@@ -505,6 +505,8 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","   \
 	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR "," \
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE "," \
+				  CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK "," \
+				  CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR "," \ 
 				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 
 	return GNOME_Evolution_Calendar_Success;

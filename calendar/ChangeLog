@@ -1,4 +1,15 @@
 2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* libecal/e-cal-utils.h:
+       	defined two macros for the handling the static capabilities for 
+	backends which does not support the conversion of a non-recurring
+	appointment to a recurrence appointment and conversion of posted
+	task to group task.
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_get_static_capabilities): Added the 
+	two macros in this function.
+
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #64688
 	* backends/groupwise/e-cal-backend-groupwise.c
