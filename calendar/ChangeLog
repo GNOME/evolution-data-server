@@ -1,8 +1,9 @@
 2003-12-15  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/e-cal-backend-sync.c (_e_cal_backend_sync_get_ldap_attribute,
-	_e_cal_backend_sync_get_static_capabilities): call the correct
-	cal_backend_sync_* functions, typo pointed out by Siva.
+	_e_cal_backend_sync_get_static_capabilities,
+	_e_cal_backend_sync_get_alarm_email_address): call the correct
+	e_cal_backend_sync_* functions, typo pointed out by Siva.
 
 2003-12-15  Rodrigo Moya <rodrigo@ximian.com>
 

@@ -285,7 +285,7 @@ _e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal)
 	ECalBackendSyncStatus status;
 	char *address = NULL;
 
-	status = e_cal_backend_sync_get_cal_address (E_CAL_BACKEND_SYNC (backend), cal, &address);
+	status = e_cal_backend_sync_get_alarm_email_address (E_CAL_BACKEND_SYNC (backend), cal, &address);
 
 	e_data_cal_notify_alarm_email_address (cal, status, address);
 
