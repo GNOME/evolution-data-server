@@ -16,6 +16,7 @@
 # 21Jan2003, <ta_panta_rei@flashmail.com> reviewed and corrected the translation
 # 21jun2003, fixed main window,File,Edit,View shortcuts update few messages
 # 06Jan2004, move to -data-server, kostas updated ranslation, 183 messages
+# 25Jan2004,195 messages , kostas updated translation
 # Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000.
 # Simos Xenitellis <simos@hellug.gr>, 2001, 2002.
 # Revised by Nikos Niktaris <niktarin@yahoo.com>, 2001, 2002.
@@ -27,14 +28,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"POT-Creation-Date: 2004-01-12 21:29-0500\n"
-"PO-Revision-Date: 2004-01-06 15:27+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-25 13:38+0200\n"
+"PO-Revision-Date: 2004-01-25 13:43+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.2\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
@@ -93,7 +94,7 @@ msgstr "Σφάλμα εκτέλεσης αναζήτησης"
 #: addressbook/libebook/e-book.c:1203 addressbook/libebook/e-book.c:1441
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr ""
+msgstr "\"%s\" στο βιβλίο πρίν \"%s\""
 
 #: addressbook/libebook/e-book.c:225 addressbook/libebook/e-book.c:337
 #: addressbook/libebook/e-book.c:422 addressbook/libebook/e-book.c:525
@@ -110,9 +111,9 @@ msgstr "βιβλίο απασχολημένο"
 #: addressbook/libebook/e-book.c:910 addressbook/libebook/e-book.c:1021
 #: addressbook/libebook/e-book.c:1139 addressbook/libebook/e-book.c:1235
 #: addressbook/libebook/e-book.c:1367 addressbook/libebook/e-book.c:1471
-#, fuzzy, c-format
+#, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr "Corba exception making Book::remove call"
+msgstr "CORBA exception making \"%s\" call"
 
 #: addressbook/libebook/e-book.c:1348
 msgid "e_book_cancel: there is no current operation"
@@ -122,20 +123,20 @@ msgstr "e_book_cancel: δεν υπάρχει τρέχουσα διεργασία
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: couldn't cancel"
 
-#: addressbook/libebook/e-book.c:1701
+#: addressbook/libebook/e-book.c:1731
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Invalid source."
 
-#: addressbook/libebook/e-book.c:1709 addressbook/libebook/e-book.c:1813
+#: addressbook/libebook/e-book.c:1739 addressbook/libebook/e-book.c:1843
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: no factories available for uri `%s'"
 
-#: addressbook/libebook/e-book.c:1723
+#: addressbook/libebook/e-book.c:1753
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Could not create EBookListener"
 
-#: addressbook/libebook/e-book.c:2052
+#: addressbook/libebook/e-book.c:2082
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: there was no self contact uid stored in gconf"
 
@@ -256,12 +257,10 @@ msgstr "Κινητό Τηλέφωνο"
 msgid "Other Phone"
 msgstr "Άλλο Τηλέφωνο"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
 msgstr "Άλλο Φαξ"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:135
 msgid "Pager"
 msgstr "Ειδοποιητής"
@@ -329,148 +328,124 @@ msgid "ICQ Id List"
 msgstr "Λίστα ICQ Id"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Λίστα AIM Screen Name"
+msgstr "AIM Home Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "Λίστα AIM Screen Name"
+msgstr "AIM Home Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "Λίστα AIM Screen Name"
+msgstr "AIM Home Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "Λίστα AIM Screen Name"
+msgstr "AIM Work Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "Λίστα AIM Screen Name"
+msgstr "AIM Work Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "Λίστα AIM Screen Name"
+msgstr "AIM Work Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Λίστα Jabber Id "
+msgstr "Jabber Home Id 1"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Λίστα Jabber Id "
+msgstr "Jabber Home Id 2"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Λίστα Jabber Id "
+msgstr "Jabber Home Id 3"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Λίστα Jabber Id "
+msgstr "Jabber Work Id 1"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Λίστα Jabber Id "
+msgstr "Jabber Work Id 2"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Λίστα Jabber Id "
+msgstr "Jabber Work Id 3"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Λίστα Yahoo! Screen Name"
+msgstr "Yahoo! Home Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Λίστα Yahoo! Screen Name"
+msgstr "Yahoo! Home Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Λίστα Yahoo! Screen Name"
+msgstr "Yahoo! Home Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Λίστα Yahoo! Screen Name"
+msgstr "Yahoo! Work Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Λίστα Yahoo! Screen Name"
+msgstr "Yahoo! Work Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Λίστα Yahoo! Screen Name"
+msgstr "Yahoo! Work Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "Λίστα MSN Screen Name"
+msgstr "MSN Home Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "Λίστα MSN Screen Name"
+msgstr "MSN Home Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "Λίστα MSN Screen Name"
+msgstr "MSN Home Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "Λίστα MSN Screen Name"
+msgstr "MSN Work Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "Λίστα MSN Screen Name"
+msgstr "MSN Work Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "Λίστα MSN Screen Name"
+msgstr "MSN Work Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "ICQ Home Id 1"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "ICQ Home Id 2"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "ICQ Home Id 3"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "ICQ Work Id 1"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "ICQ Work Id 2"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "ICQ Work Id 3"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:188
@@ -512,7 +487,7 @@ msgstr "Weblog URL"
 
 #: addressbook/libebook/e-contact.c:200
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr "URL τηλεδιάσκεψης"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:203
@@ -574,35 +549,34 @@ msgstr "Λίστα"
 msgid "List Show Addresses"
 msgstr "Εμφάνιση λίστας διευθύνσεων"
 
-#: addressbook/libebook/e-contact.c:1131
+#: addressbook/libebook/e-contact.c:1147
 msgid "Unnamed List"
 msgstr "Λίστα Χωρίς Τίτλο"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:408
-#, fuzzy
 msgid "Birthday"
-msgstr "Ημερομηνία Γέννησης"
+msgstr "Γενέθλια"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:430
 #, c-format
 msgid "Birthday: %s"
-msgstr ""
+msgstr "Γενέθλια: %s"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:449
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "Επέτειος"
+msgstr "Επέτειος: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:176
+#: calendar/backends/file/e-cal-backend-file.c:177
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Αποτυχία αποθήκευσης δεδομένων ημερολογίου. Κακοδιατυπωμένο URI."
 
-#: calendar/backends/http/e-cal-backend-http.c:276
+#: calendar/backends/http/e-cal-backend-http.c:216
 msgid "Bad file format."
 msgstr "Λανθασμένη μορφή αρχείου"
 
-#: calendar/backends/http/e-cal-backend-http.c:281
+#: calendar/backends/http/e-cal-backend-http.c:223
 msgid "Not a calendar."
 msgstr "Δεν είναι ημερολόγιο."
 
@@ -752,87 +726,87 @@ msgid "Undefined"
 msgstr "Αόριστο"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1400
+#: calendar/libecal/e-cal.c:1449
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Εισάγετε κωδικό πρόσβασης για %s (χρήστης %s)"
 
-#: calendar/libecal/e-cal.c:3813
+#: calendar/libecal/e-cal.c:3868
 msgid "Invalid argument"
 msgstr "Μη έγκυρη παράμετρος"
 
-#: calendar/libecal/e-cal.c:3815
+#: calendar/libecal/e-cal.c:3870
 msgid "Backend is busy"
 msgstr "Το Backend είναι απασχολημένο"
 
-#: calendar/libecal/e-cal.c:3817
+#: calendar/libecal/e-cal.c:3872
 msgid "Repository is offline"
 msgstr "Το αρχείο φύλαξης είναι εκτός δικτύου"
 
-#: calendar/libecal/e-cal.c:3819
+#: calendar/libecal/e-cal.c:3874
 msgid "No such calendar"
 msgstr "Δεν υπάρχει τέτοιο ημερολόγιο"
 
-#: calendar/libecal/e-cal.c:3821 calendar/libecal/e-cal.c:3831
+#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
 msgid "Object not found"
 msgstr "Το αντικείμενο δεν βρέθηκε"
 
-#: calendar/libecal/e-cal.c:3823
+#: calendar/libecal/e-cal.c:3878
 msgid "Invalid object"
 msgstr "Μή έγκυρο αντικείμενο"
 
-#: calendar/libecal/e-cal.c:3825
+#: calendar/libecal/e-cal.c:3880
 msgid "URI not loaded"
 msgstr "To URI δεν φορτώθηκε"
 
-#: calendar/libecal/e-cal.c:3827
+#: calendar/libecal/e-cal.c:3882
 msgid "URI already loaded"
 msgstr "Το URI έχει ήδη φορτωθεί"
 
-#: calendar/libecal/e-cal.c:3829
+#: calendar/libecal/e-cal.c:3884
 msgid "Permission denied"
 msgstr "Δεν επιτρέπεται η πρόσβαση"
 
-#: calendar/libecal/e-cal.c:3833
+#: calendar/libecal/e-cal.c:3888
 msgid "Object ID already exists"
 msgstr "Το αναγνωριστικό αντικειμένου  υπάρχει ήδη"
 
-#: calendar/libecal/e-cal.c:3835
+#: calendar/libecal/e-cal.c:3890
 msgid "Protocol not supported"
 msgstr "Δεν υποστηρίζεται το πρωτόκολλο"
 
-#: calendar/libecal/e-cal.c:3837
+#: calendar/libecal/e-cal.c:3892
 msgid "Operation has been cancelled"
 msgstr "Η λειτουργία ακυρώθηκε"
 
-#: calendar/libecal/e-cal.c:3839
+#: calendar/libecal/e-cal.c:3894
 msgid "Could not cancel operation"
 msgstr "Αδυναμία ακύρωσης λειτουργίας"
 
-#: calendar/libecal/e-cal.c:3841
+#: calendar/libecal/e-cal.c:3896
 msgid "Authentication failed"
 msgstr "Η πιστοποίηση απέτυχε"
 
-#: calendar/libecal/e-cal.c:3843
+#: calendar/libecal/e-cal.c:3898
 msgid "Authentication required"
 msgstr "Απαιτείται πιστοποίηση"
 
-#: calendar/libecal/e-cal.c:3845
+#: calendar/libecal/e-cal.c:3900
 msgid "A CORBA esception has occurred"
 msgstr "Δημιουργήθηκε εξαίρεση CORBΑ"
 
-#: calendar/libecal/e-cal.c:3847
+#: calendar/libecal/e-cal.c:3902
 msgid "Unknown error"
 msgstr "Άγνωστο Σφάλμα"
 
-#: calendar/libecal/e-cal.c:3849
+#: calendar/libecal/e-cal.c:3904
 msgid "No error"
 msgstr "Χωρίς σφάλμα"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:498
-#: calendar/libedata-cal/e-cal-backend-sexp.c:630
-#: calendar/libedata-cal/e-cal-backend-sexp.c:657
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
+#: calendar/libedata-cal/e-cal-backend-sexp.c:633
+#: calendar/libedata-cal/e-cal-backend-sexp.c:660
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "το \"%s\" δεν αναμένει παράμετρους"
@@ -840,13 +814,15 @@ msgstr "το \"%s\" δεν αναμένει παράμετρους"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:695
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#: calendar/libedata-cal/e-cal-backend-sexp.c:698
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "το \"%s\"  αναμένει 1 παράμετρο"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:444
+#: calendar/libedata-cal/e-cal-backend-sexp.c:238
+#: calendar/libedata-cal/e-cal-backend-sexp.c:447
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "το \"%s\" αναμένει ότι η παράμετρος 1 είναι αλφαριθμητικό"
@@ -859,8 +835,8 @@ msgstr ""
 "ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:277
-#: calendar/libedata-cal/e-cal-backend-sexp.c:438
+#: calendar/libedata-cal/e-cal-backend-sexp.c:280
+#: calendar/libedata-cal/e-cal-backend-sexp.c:441
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "το \"%s\" αναμένει 2 παραμέτρους"
@@ -868,8 +844,8 @@ msgstr "το \"%s\" αναμένει 2 παραμέτρους"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:283
-#: calendar/libedata-cal/e-cal-backend-sexp.c:701
+#: calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: calendar/libedata-cal/e-cal-backend-sexp.c:704
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "το \"%s\"  αναμένει argument 1 to be a time_t"
@@ -879,27 +855,17 @@ msgstr "το \"%s\"  αναμένει argument 1 to be a time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "το \"%s\" αναμένει να έχει ως παράμετρο 2 έναν ακέραιο"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#, fuzzy
-msgid "uid? expects 1 argument"
-msgstr "αναγκαστική αναμονή του χρόνου για μία παράμετρο"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:237
-#, fuzzy
-msgid "uid? expects argument 1 to be a string"
-msgstr "αναγκαστική αναμονή του χρόνου να είναι η παράμετρος 1 στοιχείο"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:291
+#: calendar/libedata-cal/e-cal-backend-sexp.c:294
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "το \"%s\" αναμένει η δεύτερη παράμετρος to be a time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:452
+#: calendar/libedata-cal/e-cal-backend-sexp.c:455
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "το \"%s\" αναμένει ότι η παράμετρος 2 είναι αλφαριθμητικό"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -908,12 +874,12 @@ msgstr ""
 "το \"%s\"  αναμένει ότι η παράμετρος 1 είναι ένα από \"any\", \"summary\", "
 "\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:532
+#: calendar/libedata-cal/e-cal-backend-sexp.c:535
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "το \"%s\"  αναμένει τουλάχιστον 1 παράμετρο"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:546
+#: calendar/libedata-cal/e-cal-backend-sexp.c:549
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -969,6 +935,14 @@ msgstr "Αρχείο Βιβλίου Διευθύνσεων του Evolution κα
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend αρχείου του Βιβλίου Διευθύνσεων του Evolution"
+
+#, fuzzy
+#~ msgid "uid? expects 1 argument"
+#~ msgstr "αναγκαστική αναμονή του χρόνου για μία παράμετρο"
+
+#, fuzzy
+#~ msgid "uid? expects argument 1 to be a string"
+#~ msgstr "αναγκαστική αναμονή του χρόνου να είναι η παράμετρος 1 στοιχείο"
 
 #~ msgid "e_book_add_contact called on book before e_book_load_uri"
 #~ msgstr "e_book_add_contact called on book before e_book_load_uri"
@@ -1074,3 +1048,4 @@ msgstr "Backend αρχείου του Βιβλίου Διευθύνσεων το
 
 #~ msgid "completed-before? expects argument 1 to be a time_t"
 #~ msgstr "ολοκληρώθηκε-πρίν? αναμένει 1 παραμέτρο να είναι a time_t"
+
