@@ -634,6 +634,7 @@ e_book_backend_notify_writable (EBookBackend *backend, gboolean is_writable)
 	GList *clients;
 	
 	priv = backend->priv;
+	priv->writable = is_writable;
 	g_mutex_lock (priv->clients_mutex);
 	
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))

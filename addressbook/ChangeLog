@@ -1,3 +1,11 @@
+2005-02-25  Sivaiah Nallagatla  <snallagatla@novell.com>
+
+       * libedata-book/e-book-backend.c (e_book_backend_notify_writable)
+       : save the writable status in priv->writable also so that
+       when new clients are created for an existing backend we report
+       correct writable status .
+       Fixes editors being editable in some cases in offline mode
+
 2005-02-24  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c: (build_cache):
