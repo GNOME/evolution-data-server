@@ -1,5 +1,12 @@
 2005-02-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+ 	(get_deltas): Check if the component type is the same
+	as the backend kind before sending notification to the 
+	view.	
+
+2005-02-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #72958
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	(e_cal_backend_groupwise_create_object): If the server

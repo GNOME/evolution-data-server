@@ -191,6 +191,7 @@ get_deltas (gpointer handle)
 	EGwConnection *cnc; 
  	ECalBackendCache *cache; 
         EGwConnectionStatus status; 
+	icalcomponent_kind kind;
 	GSList *item_list, *cache_keys, *l;
 	char *comp_str;
 	char *time_string = NULL;
@@ -201,6 +202,7 @@ get_deltas (gpointer handle)
 		return FALSE;
 	cbgw = (ECalBackendGroupwise *) handle;
 	priv= cbgw->priv;
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
  	cnc = priv->cnc; 
  	cache = priv->cache; 
 	item_list = NULL;
@@ -253,9 +255,11 @@ get_deltas (gpointer handle)
 			if (!e_cal_backend_cache_put_component (cache, comp)) 
 				g_message ("Could not add the component");
 			else  {
-				comp_str = e_cal_component_get_as_string (comp);	
-				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), comp_str);
-				g_free (comp_str);
+				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
+					comp_str = e_cal_component_get_as_string (comp);	
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), comp_str);
+					g_free (comp_str);
+				}
 			}
 		}
 		else 
@@ -305,10 +309,12 @@ get_deltas (gpointer handle)
 		e_cal_component_commit_sequence (modified_comp);
 		e_cal_component_commit_sequence (cache_comp);
 
-		cache_comp_str = e_cal_component_get_as_string (cache_comp);
-		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, e_cal_component_get_as_string (modified_comp));
+		if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (modified_comp))) {
+			cache_comp_str = e_cal_component_get_as_string (cache_comp);
+			e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, e_cal_component_get_as_string (modified_comp));
+			g_free (cache_comp_str);
+		}
 		e_cal_backend_cache_put_component (cache, modified_comp);
-		g_free (cache_comp_str);
 		g_object_unref (item);
 		g_object_unref (modified_comp);
 	}
@@ -567,8 +573,9 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			/* get the ID for the container */
 			if (priv->container_id)
 				g_free (priv->container_id);
-
+			
 			kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+
 			if (kind == ICAL_VEVENT_COMPONENT) {
 				priv->container_id = g_strdup (e_gw_connection_get_container_id (priv->cnc, "Calendar"));
 				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
