@@ -225,6 +225,8 @@ get_deltas (gpointer handle)
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
 	}
+
+	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	for (; item_list != NULL; item_list = g_slist_next(item_list)) {
 		EGwItem *item = E_GW_ITEM(item_list->data);
 		ECalComponent *comp = e_gw_item_to_cal_component (item, cbgw);
@@ -250,13 +252,16 @@ get_deltas (gpointer handle)
 		g_slist_free (item_list);
 		item_list = NULL;
 	}
+	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
+
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
 	}
-	
+
+	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	for (; item_list != NULL; item_list = g_slist_next(item_list)) {
 		EGwItem *item = E_GW_ITEM(item_list->data);
 		ECalComponent *modified_comp, *cache_comp;
@@ -279,6 +284,8 @@ get_deltas (gpointer handle)
 		g_object_unref (item);
 		g_object_unref (modified_comp);
 	}
+	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
+
 	if (item_list) {
 		g_slist_free (item_list);
 		item_list = NULL;
@@ -301,7 +308,8 @@ get_deltas (gpointer handle)
 				g_slist_find_custom (cache_keys, l->data, (GCompareFunc) strcmp));
 		g_free (l->data);
 	}
-	
+
+	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	for (l = cache_keys; l ; l = g_slist_next (l)) {
 		/* assumes rid is null - which works for now */
 		ECalComponent *comp = NULL;
@@ -319,6 +327,8 @@ get_deltas (gpointer handle)
 		}
 		g_object_unref (comp);
 	}
+	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
+
 	if (item_list) {
 		g_slist_free (item_list);
 		item_list = NULL;

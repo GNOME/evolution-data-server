@@ -288,6 +288,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbhttp));
 	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
+	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	while (subcomp) {
 		ECalComponent *comp;
 		icalcomponent_kind subcomp_kind;
@@ -325,6 +326,8 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 		subcomp = icalcomponent_get_next_component (icalcomp, kind);
 	}
+
+	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 
 	/* notify the removals */
 	g_hash_table_foreach_remove (old_cache, (GHRFunc) notify_and_remove_from_cache, cbhttp);

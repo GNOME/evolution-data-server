@@ -1,3 +1,11 @@
+2004-12-09  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #70267
+
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas):
+	* backends/http/e-cal-backend-groupwise.c (retrieval_done): freeze
+	the cache when doing mass updates to do only one write to disk.
+
 2004-12-09  Harish Krishnamwamy <kharish@novell.com>
 	Fixes for various leaks causing memory build-ups in eds.
 	
