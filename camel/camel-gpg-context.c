@@ -62,7 +62,7 @@
 
 #define d(x) 
 
-#define GPG_LOG
+/*#define GPG_LOG*/
 
 #ifdef GPG_LOG
 #include "camel-debug.h"
