@@ -6,12 +6,13 @@
 # Traducció per Softcatalà <linux@softcatala.org>
 # Traductor original: Víctor Nieto <vnie2025@alu-etsetb.upc.es>
 # Xavier A. Conde Rueda <xaviconde@eresmas.com>, 2004, 2005.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-01 11:56+0100\n"
-"PO-Revision-Date: 2005-02-22 00:40+0100\n"
+"POT-Creation-Date: 2005-03-29 13:37+0200\n"
+"PO-Revision-Date: 2005-03-29 13:26+0200\n"
 "Last-Translator: Xavier A. Conde Rueda <xaviconde@eresmas.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,13 +20,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:513
+#: ../addressbook/backends/file/e-book-backend-file.c:519
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:515
+#: ../addressbook/backends/file/e-book-backend-file.c:521
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
@@ -564,7 +565,7 @@ msgid "Category List"
 msgstr "Llista de categories"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:370
+#: ../libedataserverui/e-categories-dialog.c:408
 msgid "Categories"
 msgstr "Categories"
 
@@ -612,7 +613,7 @@ msgid "Last Revision"
 msgstr "Última revisió"
 
 #: ../addressbook/libebook/e-contact.c:1210
-#: ../addressbook/libebook/e-destination.c:616
+#: ../addressbook/libebook/e-destination.c:617
 msgid "Unnamed List"
 msgstr "Llista sense nom"
 
@@ -646,34 +647,39 @@ msgstr "Resposta demanada: per"
 msgid "Reply Requested: When convenient"
 msgstr "Resposta demanada: quan convingui"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:532
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:529
 msgid "Invalid server URI"
 msgstr "L'URI del servidor no és vàlid"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:581
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:584
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:560
+#, fuzzy
+msgid "Could not create thread for getting deltas"
+msgstr "No s'ha pogut crear el fluxe per omplir la memòria cau"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:585
 msgid "Calendar"
 msgstr "Calendari"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:591
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
-#: ../calendar/backends/http/e-cal-backend-http.c:492
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:829
+#: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "No s'ha pogut crear el fitxer de memòria cau"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:601
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:602
 msgid "Could not create thread for populating cache"
 msgstr "No s'ha pogut crear el fluxe per omplir la memòria cau"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:607
-#: ../calendar/libecal/e-cal.c:4516
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:662
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:680
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: ../calendar/libecal/e-cal.c:4537
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:667
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:691
 #: ../camel/providers/groupwise/camel-groupwise-store.c:528
-#: ../camel/providers/groupwise/camel-groupwise-store.c:629
-#: ../camel/providers/groupwise/camel-groupwise-store.c:791
-#: ../camel/providers/groupwise/camel-groupwise-store.c:989
+#: ../camel/providers/groupwise/camel-groupwise-store.c:628
+#: ../camel/providers/groupwise/camel-groupwise-store.c:790
+#: ../camel/providers/groupwise/camel-groupwise-store.c:988
 msgid "Authentication failed"
 msgstr "No s'ha pogut autenticar"
 
@@ -1028,77 +1034,77 @@ msgid "Undefined"
 msgstr "Sense definir"
 
 #. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1534
+#: ../calendar/libecal/e-cal.c:1538 ../libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduïu la contrasenya per a %s (usuari %s)"
 
-#: ../calendar/libecal/e-cal.c:4488
+#: ../calendar/libecal/e-cal.c:4509
 msgid "Invalid argument"
 msgstr "Argument invàlid"
 
-#: ../calendar/libecal/e-cal.c:4490
+#: ../calendar/libecal/e-cal.c:4511
 msgid "Backend is busy"
 msgstr "El suport està ocupat"
 
-#: ../calendar/libecal/e-cal.c:4492
+#: ../calendar/libecal/e-cal.c:4513
 msgid "Repository is offline"
 msgstr "El magatzem no està connectat"
 
-#: ../calendar/libecal/e-cal.c:4494
+#: ../calendar/libecal/e-cal.c:4515
 msgid "No such calendar"
 msgstr "No existeix aquest calendari"
 
-#: ../calendar/libecal/e-cal.c:4496 ../servers/groupwise/e-gw-connection.c:165
+#: ../calendar/libecal/e-cal.c:4517 ../servers/groupwise/e-gw-connection.c:165
 msgid "Object not found"
 msgstr "No s'ha trobat l'objecte"
 
-#: ../calendar/libecal/e-cal.c:4498 ../servers/groupwise/e-gw-connection.c:159
+#: ../calendar/libecal/e-cal.c:4519 ../servers/groupwise/e-gw-connection.c:159
 msgid "Invalid object"
 msgstr "Objecte invàlid"
 
-#: ../calendar/libecal/e-cal.c:4500
+#: ../calendar/libecal/e-cal.c:4521
 msgid "URI not loaded"
 msgstr "No s'ha carregat l'URI"
 
-#: ../calendar/libecal/e-cal.c:4502
+#: ../calendar/libecal/e-cal.c:4523
 msgid "URI already loaded"
 msgstr "Ja s'ha carregat l'URI"
 
-#: ../calendar/libecal/e-cal.c:4504
+#: ../calendar/libecal/e-cal.c:4525
 msgid "Permission denied"
 msgstr "Permís denegat"
 
-#: ../calendar/libecal/e-cal.c:4506 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:4527 ../servers/groupwise/e-gw-connection.c:167
 msgid "Unknown User"
 msgstr "Usuari desconegut"
 
-#: ../calendar/libecal/e-cal.c:4508
+#: ../calendar/libecal/e-cal.c:4529
 msgid "Object ID already exists"
 msgstr "L'id. d'objecte ja existeix"
 
-#: ../calendar/libecal/e-cal.c:4510
+#: ../calendar/libecal/e-cal.c:4531
 msgid "Protocol not supported"
 msgstr "No se suporta el protocol"
 
-#: ../calendar/libecal/e-cal.c:4512
+#: ../calendar/libecal/e-cal.c:4533
 msgid "Operation has been cancelled"
 msgstr "S'ha cancel·lat l'operació"
 
-#: ../calendar/libecal/e-cal.c:4514
+#: ../calendar/libecal/e-cal.c:4535
 msgid "Could not cancel operation"
 msgstr "No s'ha pogut cancel·lar l'operació"
 
-#: ../calendar/libecal/e-cal.c:4518
+#: ../calendar/libecal/e-cal.c:4539
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Cal autenticació"
 
-#: ../calendar/libecal/e-cal.c:4520
+#: ../calendar/libecal/e-cal.c:4541
 msgid "A CORBA exception has occurred"
 msgstr "S'ha produït una excepció CORBA"
 
-#: ../calendar/libecal/e-cal.c:4522
+#: ../calendar/libecal/e-cal.c:4543
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1109,7 +1115,7 @@ msgstr "S'ha produït una excepció CORBA"
 msgid "Unknown error"
 msgstr "Error desconegut"
 
-#: ../calendar/libecal/e-cal.c:4524
+#: ../calendar/libecal/e-cal.c:4545
 msgid "No error"
 msgstr "Cap error"
 
@@ -1336,13 +1342,13 @@ msgid "Syncing folders"
 msgstr "S'està sincronitzant les carpetes"
 
 # fitxer: camel.ca.po.4
-#: ../camel/camel-filter-driver.c:1075 ../camel/camel-filter-driver.c:1452
+#: ../camel/camel-filter-driver.c:1075 ../camel/camel-filter-driver.c:1453
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "S'ha produït un error en analitzar el filtre: %s. %s"
 
 # fitxer: camel.ca.po.4
-#: ../camel/camel-filter-driver.c:1084 ../camel/camel-filter-driver.c:1461
+#: ../camel/camel-filter-driver.c:1084 ../camel/camel-filter-driver.c:1462
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "S'ha produït un error en executar el filtre: %s. %s"
@@ -1550,7 +1556,7 @@ msgstr ""
 
 # fitxer: camel.ca.po.4
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1274
+#: ../camel/providers/nntp/camel-nntp-store.c:1275
 msgid "Cancelled."
 msgstr "S'ha cancel·lat."
 
@@ -2061,7 +2067,7 @@ msgstr "Les credencials referenciades han caducat."
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:226
-#: ../camel/providers/imap/camel-imap-store.c:1243
+#: ../camel/providers/imap/camel-imap-store.c:1245
 msgid "Bad authentication response from server."
 msgstr "La resposta d'autenticació del servidor és incorrecta."
 
@@ -2835,20 +2841,20 @@ msgid "Could not get message"
 msgstr "No s'ha pogut obtenir el missatge."
 
 # fitxer: camel.ca.po.3
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:589
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:594
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "No s'ha pogut carregar el resum per a %s"
 
 # fitxer: camel.ca.po.4
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:850
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:881
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No es pot crear el missatge: %s"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:862
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:893
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "No es pot afegir el missatge a la carpeta '%s': %s"
@@ -2967,7 +2973,7 @@ msgstr "%sIntroduïu la contrasenya Groupwise per a %s@%s"
 
 # fitxer: camel.ca.po.2
 #: ../camel/providers/groupwise/camel-groupwise-store.c:375
-#: ../camel/providers/imap/camel-imap-store.c:1322
+#: ../camel/providers/imap/camel-imap-store.c:1324
 msgid "You didn't enter a password."
 msgstr "No heu introduït la contrasenya."
 
@@ -2984,53 +2990,53 @@ msgstr ""
 
 # fitxer: camel.ca.po.2
 #: ../camel/providers/groupwise/camel-groupwise-store.c:503
-#: ../camel/providers/imap/camel-imap-store.c:1873
-#: ../camel/providers/imap/camel-imap-store.c:2063
+#: ../camel/providers/imap/camel-imap-store.c:1875
+#: ../camel/providers/imap/camel-imap-store.c:2065
 #, c-format
 msgid "No such folder %s"
 msgstr "La carpeta '%s' no existeix"
 
 # fitxer: camel.ca.po.3
-#: ../camel/providers/groupwise/camel-groupwise-store.c:619
+#: ../camel/providers/groupwise/camel-groupwise-store.c:618
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "S'està recollint la informació del resum per als nous missatges"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/groupwise/camel-groupwise-store.c:757
+#: ../camel/providers/groupwise/camel-groupwise-store.c:756
 msgid "Cannot get folder info in offline mode."
 msgstr "No s'ha pogut obtenir la informació de la carpeta en mode desconegut."
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/groupwise/camel-groupwise-store.c:970
+#: ../camel/providers/groupwise/camel-groupwise-store.c:969
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "No s'ha pogut crear carpetes GroupWise en mode desconegut."
 
 # fitxer: camel.ca.po.3
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1021
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1020
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "No es pot suprimir les carpetes GroupWise en mode desconnectat."
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1067
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1066
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "No es pot reanomenar les carpetes GroupWise en mode desconnectat."
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1085
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1084
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "No s'ha pogut reanomenar la carpeta Groupwise '%s' a '%s'"
 
 # fitxer: camel.ca.po.3
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1121
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1120
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor Groupwise %s"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1123
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1122
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Servei Groupwise per a %s a %s"
@@ -3054,14 +3060,14 @@ msgstr "Enviar el missatge"
 # fitxer: camel.ca.po.3
 #: ../camel/providers/imap/camel-imap-command.c:219
 #: ../camel/providers/imap/camel-imap-command.c:258
-#: ../camel/providers/imap/camel-imap-command.c:463
-#: ../camel/providers/imap/camel-imap-store.c:3238
+#: ../camel/providers/imap/camel-imap-command.c:465
+#: ../camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "S'ha cancel·lat l'operació"
 
 # fitxer: camel.ca.po.3
 #: ../camel/providers/imap/camel-imap-command.c:303
-#: ../camel/providers/imap/camel-imap-store.c:3241
+#: ../camel/providers/imap/camel-imap-store.c:3243
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "El servidor s'ha desconnectat inesperadament: %s"
@@ -3091,18 +3097,18 @@ msgid "IMAP command failed: %s"
 msgstr "L'ordre IMAP ha fallat: %s"
 
 # fitxer: camel.ca.po.3
-#: ../camel/providers/imap/camel-imap-command.c:473
+#: ../camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "La resposta del servidor ha finalitzat massa aviat."
 
 # fitxer: camel.ca.po.3
-#: ../camel/providers/imap/camel-imap-command.c:680
+#: ../camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "La resposta del servidor IMAP no contenia la informació %s"
 
 # fitxer: camel.ca.po.3
-#: ../camel/providers/imap/camel-imap-command.c:716
+#: ../camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Resposta OK inesperada del servidor IMAP: %s"
@@ -3375,8 +3381,8 @@ msgstr "No s'ha pogut connectar amb l'ordre '%s': %s"
 
 # fitxer: mail.ca.po.3
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1019
-#: ../camel/providers/imap/camel-imap-store.c:2427
+#: ../camel/providers/imap/camel-imap-store.c:1021
+#: ../camel/providers/imap/camel-imap-store.c:2429
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1267
 #: ../camel/providers/local/camel-maildir-folder.c:75
@@ -3389,28 +3395,28 @@ msgid "Inbox"
 msgstr "Bústia d'entrada"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:1275
+#: ../camel/providers/imap/camel-imap-store.c:1277
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr ""
 "El servidor IMAP %s no suporta el tipus d'autenticació sol·licitat (%s)"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:1285
+#: ../camel/providers/imap/camel-imap-store.c:1287
 #: ../camel/providers/smtp/camel-smtp-transport.c:501
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "No se suporta el tipus d'autenticació %s"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:1308
+#: ../camel/providers/imap/camel-imap-store.c:1310
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sIntroduïu la contrasenya IMAP per a %s@%s"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:1351
+#: ../camel/providers/imap/camel-imap-store.c:1353
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3422,8 +3428,8 @@ msgstr ""
 "\n"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:1891
-#: ../camel/providers/imap/camel-imap-store.c:2269
+#: ../camel/providers/imap/camel-imap-store.c:1893
+#: ../camel/providers/imap/camel-imap-store.c:2271
 #: ../camel/providers/imap4/camel-imap4-store.c:856
 #, c-format
 msgid ""
@@ -3431,13 +3437,13 @@ msgid ""
 msgstr "El nom de carpeta '%s' no és vàlid perquè conté el caràcter '%c'"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:1949
-#: ../camel/providers/imap/camel-imap-store.c:2331
+#: ../camel/providers/imap/camel-imap-store.c:1951
+#: ../camel/providers/imap/camel-imap-store.c:2333
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "La carpeta pare no pot contenir subcarpetes"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:2004
+#: ../camel/providers/imap/camel-imap-store.c:2006
 #: ../camel/providers/local/camel-maildir-store.c:190
 #: ../camel/providers/local/camel-mbox-store.c:199
 #: ../camel/providers/local/camel-mh-store.c:237
@@ -3446,7 +3452,7 @@ msgid "Cannot create folder `%s': folder exists."
 msgstr "No s'ha pogut crear la carpeta '%s': la carpeta existeix."
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/imap/camel-imap-store.c:2280
+#: ../camel/providers/imap/camel-imap-store.c:2282
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "La carpeta pare és desconeguda: %s"
@@ -4234,7 +4240,7 @@ msgstr "No es pot obrir la bústia de correu temporal: %s"
 
 # fitxer: camel.ca.po.2
 #: ../camel/providers/local/camel-mbox-summary.c:619
-#: ../camel/providers/local/camel-mbox-summary.c:783
+#: ../camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "No s'ha pogut tancar la carpeta font %s: %s"
@@ -4252,35 +4258,36 @@ msgid "Could not rename folder: %s"
 msgstr "No s'ha pogut canviar el nom de la carpeta: %s"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/local/camel-mbox-summary.c:723
-#: ../camel/providers/local/camel-mbox-summary.c:731
-#: ../camel/providers/local/camel-mbox-summary.c:925
-#: ../camel/providers/local/camel-mbox-summary.c:933
+#: ../camel/providers/local/camel-mbox-summary.c:696
+#: ../camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "No s'ha pogut desar la carpeta: %s"
+
+# fitxer: camel.ca.po.2
+#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:935
+#: ../camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "El resum i la carpeta no coincideixen, tot i la sincronització"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/local/camel-mbox-summary.c:859
+#: ../camel/providers/local/camel-mbox-summary.c:869
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Error desconegut: %s"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "No s'ha pogut desar la carpeta: %s"
-
-# fitxer: camel.ca.po.2
-#: ../camel/providers/local/camel-mbox-summary.c:988
-#: ../camel/providers/local/camel-mbox-summary.c:1014
+#: ../camel/providers/local/camel-mbox-summary.c:998
+#: ../camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "S'ha produït un error en escriure a la bústia temporal: %s"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/local/camel-mbox-summary.c:1005
+#: ../camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "S'ha produït un error en escriure a la bústia temporal: %s. %s"
@@ -4490,13 +4497,13 @@ msgid "NNTP server %s returned error code %d: %s"
 msgstr "El servidor NNTP %s ha retornat el codi d'error %d: %s"
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:422
+#: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
 msgid "USENET News via %s"
 msgstr "Notícies USENET mitjançant %s"
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:811
+#: ../camel/providers/nntp/camel-nntp-store.c:812
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4508,7 +4515,7 @@ msgstr ""
 "%s"
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:905
+#: ../camel/providers/nntp/camel-nntp-store.c:906
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4519,7 +4526,7 @@ msgstr ""
 "no existeix el grup de notícies. Probablement, l'element és una carpeta pare."
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:937
+#: ../camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4529,55 +4536,55 @@ msgstr ""
 "notícies perquè aquest grup no existeix."
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:962
+#: ../camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "No es pot crear una carpeta en un magatzem de notícies. Heu de subscriureu-"
 "us-hi."
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:970
+#: ../camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot rename a folder in a News store."
 msgstr "No es pot canviar el nom d'una carpeta en un magatzem de notícies."
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:978
+#: ../camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "No es pot suprimir una carpeta en un magatzem de notícies. Heu de suprimir "
 "la subscripció."
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:1148
+#: ../camel/providers/nntp/camel-nntp-store.c:1149
 msgid "Authentication requested but no username provided"
 msgstr ""
 "S'ha sol·licitat autenticació però no s'ha proporcionat cap nom d'usuari"
 
 # fitxer: camel.ca.po.2
-#: ../camel/providers/nntp/camel-nntp-store.c:1156
+#: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Introduïu la contrasenya NNTP per a %s@%s"
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:1160
+#: ../camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "S'ha produït un error en autenticar-se al servidor: %s"
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:1276
+#: ../camel/providers/nntp/camel-nntp-store.c:1277
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "L'ordre NNTP ha fallat: %s"
 
 # fitxer: addressbook.gui.widgets.ca.po
-#: ../camel/providers/nntp/camel-nntp-store.c:1332
+#: ../camel/providers/nntp/camel-nntp-store.c:1333
 msgid "Not connected."
 msgstr "No connectat."
 
 # fitxer: camel.ca.po.1
-#: ../camel/providers/nntp/camel-nntp-store.c:1385
+#: ../camel/providers/nntp/camel-nntp-store.c:1386
 #, c-format
 msgid "No such folder: %s"
 msgstr "No existeix la carpeta: %s"
@@ -5389,12 +5396,21 @@ msgstr "%H:%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: ../libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "S'està accedint al servidor LDAP anònimament"
+
+# fitxer: addressbook.gui.component.ca.po
+#: ../libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "No s'ha pogut autenticar.\n"
+
 # fitxer: addressbook.gui.widgets.ca.po
 #: ../libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "Icona de categoria"
 
-#: ../libedataserverui/e-categories-dialog.c:237
+#: ../libedataserverui/e-categories-dialog.c:266
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -5402,7 +5418,7 @@ msgid ""
 msgstr "Ja hi ha una categoria '%s' en la configuració. Useu un altre nom"
 
 # fitxer: addressbook.gui.component.ca.po
-#: ../libedataserverui/e-categories-dialog.c:395
+#: ../libedataserverui/e-categories-dialog.c:433
 msgid "Category"
 msgstr "Categoria"
 
@@ -5493,6 +5509,14 @@ msgstr "Cerca"
 #: ../libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "_Search:"
 msgstr "_Cerca:"
+
+#: ../libedataserverui/e-passwords.c:471
+msgid "_Remember this password"
+msgstr "_Recorda aquesta contrasenya"
+
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password for the remainder of this session"
+msgstr "_Recorda aquesta contrasenya fins que acabi aquesta sessió"
 
 # fitxer: calendar.ca.po.4
 #. prepare the dialog
