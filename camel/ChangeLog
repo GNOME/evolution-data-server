@@ -1,3 +1,9 @@
+2005-01-24  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-folder.c 
+	  (groupwise_transfer_messages_to): using moveItemRequest for 
+	  moving messages between folders.
+
 2005-01-23  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* providers/imap4/camel-imap4-store.c (imap4_construct): Check if
