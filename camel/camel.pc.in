@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+privlibdir=@privlibdir@
+privincludedir=@privincludedir@
+
+Name: camel
+Description: the Evolution MIME message handling library
+Version: @VERSION@
+Libs: -L${libdir} -lcamel-1.2 -ledataserver-1.2
+Cflags: -I${privincludedir}
