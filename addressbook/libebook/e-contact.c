@@ -76,6 +76,8 @@ static void* adr_getter (EContact *contact, EVCardAttribute *attr);
 static void adr_setter (EContact *contact, EVCardAttribute *attr, void *data);
 static void* date_getter (EContact *contact, EVCardAttribute *attr);
 static void date_setter (EContact *contact, EVCardAttribute *attr, void *data);
+static void* cert_getter (EContact *contact, EVCardAttribute *attr);
+static void cert_setter (EContact *contact, EVCardAttribute *attr, void *data);
 
 #define STRING_FIELD(id,vc,n,pn,ro)  { E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro) }
 #define BOOLEAN_FIELD(id,vc,n,pn,ro)  { E_CONTACT_FIELD_TYPE_BOOLEAN, (id), (vc), (n), (pn), (ro) }
@@ -87,6 +89,7 @@ static void date_setter (EContact *contact, EVCardAttribute *attr, void *data);
 #define LIST_ELEM_STR_FIELD(id,vc,n,pn,ro,nm) { E_CONTACT_FIELD_TYPE_LIST_ELEM | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nm) }
 #define MULTI_ELEM_STR_FIELD(id,vc,n,pn,ro,nm) { E_CONTACT_FIELD_TYPE_MULTI_ELEM | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nm) }
 #define ATTR_TYPE_STR_FIELD(id,vc,n,pn,ro,at1,nth) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nth), (at1), NULL }
+#define ATTR_TYPE_GETSET_FIELD(id,vc,n,pn,ro,at1,nth,get,set) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_GETSET, (id), (vc), (n), (pn), (ro), (nth), (at1), NULL, (get), (set) }
 #define ATTR2_TYPE_STR_FIELD(id,vc,n,pn,ro,at1,at2,nth) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nth), (at1), (at2) }
 #define ATTR_TYPE_STRUCT_FIELD(id,vc,n,pn,ro,at,get,set,ty) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_GETSET | E_CONTACT_FIELD_TYPE_STRUCT, (id), (vc), (n), (pn), (ro), 0, (at), NULL, (get), (set), (ty) }
 
@@ -115,11 +118,11 @@ static EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_WORK,  EVC_LABEL, "address_label_work",  N_("Work Address Label"),  FALSE, "WORK", 0),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_OTHER, EVC_LABEL, "address_label_other", N_("Other Address Label"), FALSE, "OTHER", 0),
 
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_ASSISTANT,    EVC_TEL, "assistant_phone",   N_("Assistant Phone"),  FALSE, "X-EVOLUTION-ASSISTANT", 0),
+	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_ASSISTANT,    EVC_TEL, "assistant_phone",   N_("Assistant Phone"),  FALSE, EVC_X_ASSISTANT, 0),
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_BUSINESS,     EVC_TEL, "business_phone",    N_("Business Phone"),   FALSE, "WORK", "VOICE",         0),
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_BUSINESS_2,   EVC_TEL, "business_phone_2",  N_("Business Phone 2"), FALSE, "WORK", "VOICE",         1),
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_BUSINESS_FAX, EVC_TEL, "business_fax",      N_("Business Fax"),     FALSE, "WORK", "FAX",           0),
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_CALLBACK,     EVC_TEL, "callback_phone",    N_("Callback Phone"),   FALSE, "X-EVOLUTION-CALLBACK",  0),
+	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_CALLBACK,     EVC_TEL, "callback_phone",    N_("Callback Phone"),   FALSE, EVC_X_CALLBACK,  0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_CAR,          EVC_TEL, "car_phone",         N_("Car Phone"),        FALSE, "CAR",                   0),
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_COMPANY,      EVC_TEL, "company_phone",     N_("Company Phone"),    FALSE, "WORK", "VOICE",         2),
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_HOME,         EVC_TEL, "home_phone",        N_("Home Phone"),       FALSE, "HOME", "VOICE",         0),
@@ -131,9 +134,9 @@ static EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_OTHER_FAX,    EVC_TEL, "other_fax",         N_("Other Fax"),        FALSE, "FAX",                   0), /* XXX */
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PAGER,        EVC_TEL, "pager",             N_("Pager"),            FALSE, "PAGER",                 0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PRIMARY,      EVC_TEL, "primary_phone",     N_("Primary Phone"),    FALSE, "PREF",                  0),
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_RADIO,        EVC_TEL, "radio",             N_("Radio"),            FALSE, "X-EVOLUTION-RADIO",     0),
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_TELEX,        EVC_TEL, "telex",             N_("Telex"),            FALSE, "X-EVOLUTION-TELEX",     0),
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_TTYTDD,       EVC_TEL, "tty",               N_("TTY"),              FALSE, "X-EVOLUTION-TTYTDD",    0),
+	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_RADIO,        EVC_TEL, "radio",             N_("Radio"),            FALSE, EVC_X_RADIO,     0),
+	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_TELEX,        EVC_TEL, "telex",             N_("Telex"),            FALSE, EVC_X_TELEX,     0),
+	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_TTYTDD,       EVC_TEL, "tty",               N_("TTY"),              FALSE, EVC_X_TTYTDD,    0),
 	
 	/* Email fields */
 	MULTI_LIST_FIELD     (E_CONTACT_EMAIL,      EVC_EMAIL,        "email",      N_("Email List"),      FALSE),
@@ -167,6 +170,9 @@ static EContactFieldInfo field_info[] = {
 	/* Photo/Logo */
 	STRUCT_FIELD    (E_CONTACT_PHOTO, EVC_PHOTO, "photo", N_("Photo"), FALSE, photo_getter, photo_setter, e_contact_photo_get_type),
 	STRUCT_FIELD    (E_CONTACT_LOGO,  EVC_LOGO,  "logo",  N_("Logo"),  FALSE, photo_getter, photo_setter, e_contact_photo_get_type),
+
+	/* Security fields */
+	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_X509_CERT,  EVC_KEY, "x509Cert",  N_("X.509 Certificate"), FALSE, "X509", cert_getter, cert_setter, e_contact_cert_get_type),
 
 	/* Contact categories */
 #if notyet
@@ -370,7 +376,6 @@ photo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 						e_vcard_attribute_param_new (EVC_TYPE),
 						image_type);
 
-	printf ("adding photo of type `%s' of length %d\n", image_type, photo->length);
 	e_vcard_attribute_add_value_decoded (attr, photo->data, photo->length);
 }
 
@@ -519,6 +524,46 @@ date_setter (EContact *contact, EVCardAttribute *attr, void *data)
 
 	e_vcard_attribute_add_value (attr, str);
 	g_free (str);
+}
+
+
+
+static void*
+cert_getter (EContact *contact, EVCardAttribute *attr)
+{
+	if (attr) {
+		/* the certificate is stored in this vcard.  just
+		   return the data */
+		GList *values = e_vcard_attribute_get_values_decoded (attr);
+
+		if (values && values->data) {
+			GString *s = values->data;
+			EContactCert *cert = g_new (EContactCert, 1);
+
+			cert->length = s->len;
+			cert->data = g_malloc (cert->length);
+			memcpy (cert->data, s->str, cert->length);
+
+			return cert;
+		}
+	}
+
+	/* XXX if we stored a fingerprint in the cert we could look it
+	   up via NSS, but that would require the additional NSS dep
+	   here, and we'd have more than one process opening the
+	   certdb, which is bad.  *sigh* */
+}
+
+static void
+cert_setter (EContact *contact, EVCardAttribute *attr, void *data)
+{
+	EContactCert *cert = data;
+
+	e_vcard_attribute_add_param_with_value (attr,
+						e_vcard_attribute_param_new (EVC_ENCODING),
+						"b");
+
+	e_vcard_attribute_add_value_decoded (attr, cert->data, cert->length);
 }
 
 
@@ -1436,5 +1481,38 @@ e_contact_address_get_type (void)
 		type_id = g_boxed_type_register_static ("EContactAddress",
 							(GBoxedCopyFunc) e_contact_address_copy,
 							(GBoxedFreeFunc) e_contact_address_free);
+	return type_id;
+}
+
+void
+e_contact_cert_free (EContactCert *cert)
+{
+	if (!cert)
+		return;
+
+	g_free (cert->data);
+	g_free (cert);
+}
+
+static EContactCert *
+e_contact_cert_copy (EContactCert *cert)
+{
+	EContactCert *cert2 = g_new (EContactCert, 1);
+	cert2->length = cert->length;
+	cert2->data = g_malloc (cert2->length);
+	memcpy (cert2->data, cert->data, cert->length);
+
+	return cert2;
+}
+
+GType
+e_contact_cert_get_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("EContactCert",
+							(GBoxedCopyFunc) e_contact_cert_copy,
+							(GBoxedFreeFunc) e_contact_cert_free);
 	return type_id;
 }

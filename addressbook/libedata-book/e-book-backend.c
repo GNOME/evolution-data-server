@@ -366,23 +366,20 @@ void
 e_book_backend_remove_client (EBookBackend *backend,
 			      EDataBook    *book)
 {
-	/* XXX this needs a bit more thinking wrt the mutex - we
-	   should be holding it when we check to see if clients is
-	   NULL */
-
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	/* Disconnect */
 	g_mutex_lock (backend->priv->clients_mutex);
 	backend->priv->clients = g_list_remove (backend->priv->clients, book);
-	g_mutex_unlock (backend->priv->clients_mutex);
 
 	/* When all clients go away, notify the parent factory about it so that
 	 * it may decide whether to kill the backend or not.
 	 */
 	if (!backend->priv->clients)
 		last_client_gone (backend);
+
+	g_mutex_unlock (backend->priv->clients_mutex);
 }
 
 char *

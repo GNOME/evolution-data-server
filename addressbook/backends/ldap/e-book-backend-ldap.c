@@ -181,6 +181,8 @@ static gboolean category_compare (EContact *contact1, EContact *contact2);
 
 static void photo_populate (EContact *contact, struct berval **ber_values);
 
+static void cert_populate (EContact *contact, struct berval **ber_values);
+
 struct prop_info {
 	EContactField field_id;
 	char *ldap_attr;
@@ -255,6 +257,15 @@ struct prop_info {
 
 	/* photos */
 	BINARY_PROP  (E_CONTACT_PHOTO,       "jpegPhoto", photo_populate, NULL/*XXX*/, NULL/*XXX*/),
+
+	/* certificate foo. */
+	BINARY_PROP  (E_CONTACT_X509_CERT,   "userCertificate", cert_populate, NULL/*XXX*/, NULL/*XXX*/),
+#if 0
+	/* hm, which do we use?  the inetOrgPerson schema says that
+	   userSMIMECertificate should be used in favor of
+	   userCertificate for S/MIME applications. */
+	BINARY_PROP  (E_CONTACT_X509_CERT,   "userSMIMECertificate", cert_populate, NULL/*XXX*/, NULL/*XXX*/),
+#endif
 
 	/* misc fields */
 	STRING_PROP    (E_CONTACT_HOMEPAGE_URL,  "labeledURI"),
@@ -2166,6 +2177,18 @@ photo_populate (EContact *contact, struct berval **ber_values)
                 photo.length = ber_values[0]->bv_len;
 
                 e_contact_set (contact, E_CONTACT_PHOTO, &photo);
+        }
+}
+
+static void
+cert_populate (EContact *contact, struct berval **ber_values)
+{
+        if (ber_values && ber_values[0]) {
+                EContactCert cert;
+                cert.data = ber_values[0]->bv_val;
+                cert.length = ber_values[0]->bv_len;
+
+                e_contact_set (contact, E_CONTACT_X509_CERT, &cert);
         }
 }
 

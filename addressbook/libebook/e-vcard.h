@@ -35,6 +35,7 @@
 #define EVC_FBURL           "FBURL"
 #define EVC_FN              "FN"
 #define EVC_ICSCALENDAR     "ICSCALENDAR" /* XXX should this be X-EVOLUTION-ICSCALENDAR? */
+#define EVC_KEY             "KEY"
 #define EVC_LABEL           "LABEL"
 #define EVC_LOGO            "LOGO"
 #define EVC_MAILER          "MAILER"
@@ -60,6 +61,7 @@
 #define EVC_X_ASSISTANT     "X-EVOLUTION-ASSISTANT"
 #define EVC_X_BIRTHDAY      "X-EVOLUTION-BIRTHDAY"
 #define EVC_X_BLOG_URL      "X-EVOLUTION-BLOG-URL"
+#define EVC_X_CALLBACK      "X-EVOLUTION-CALLBACK"
 #define EVC_X_FILE_AS       "X-EVOLUTION-FILE-AS"
 #define EVC_X_ICQ           "X-ICQ"
 #define EVC_X_JABBER        "X-JABBER"
@@ -67,9 +69,11 @@
 #define EVC_X_LIST          "X-EVOLUTION-LIST"
 #define EVC_X_MANAGER       "X-EVOLUTION-MANAGER"
 #define EVC_X_MSN           "X-MSN"
+#define EVC_X_RADIO         "X-EVOLUTION-RADIO"
 #define EVC_X_SPOUSE        "X-EVOLUTION-SPOUSE"
-#define EVC_X_WANTS_HTML          "X-MOZILLA-HTML"
-#define EVC_X_WANTS_HTML          "X-MOZILLA-HTML"
+#define EVC_X_TELEX         "X-EVOLUTION-TELEX"
+#define EVC_X_TTYTDD        "X-EVOLUTION-TTYTDD"
+#define EVC_X_WANTS_HTML    "X-MOZILLA-HTML"
 #define EVC_X_YAHOO         "X-YAHOO"
 
 typedef enum {

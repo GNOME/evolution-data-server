@@ -1,3 +1,30 @@
+2003-12-19  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.h: add lots more #defines, some EVC_X ones for
+	attribute TYPE's, as well as the vcard specified "KEY" attribute.
+
+	* libedata-book/e-book-backend.c (e_book_backend_remove_client):
+	reorder some code so we hold the lock up until we're done with
+	backend->priv->clients.
+
+	* backends/ldap/e-book-backend-ldap.c (prop_info): add an entry
+	for E_CONTACT_X509_CERT, and map it to the userCertificate ldap
+	attribute.  not sure if this is strictly correct... the
+	inetOrgPerson schema mentions using userSMIMECertificate (which
+	contains the full certificate chain in pkcs#7 form) in favor of
+	userCertificate for S/MIME applications.
+
+	* libebook/e-contact.h: add the CERT field types, the EContactCert
+	struct type, and prototypes for e_contact_cert_get_type and
+	e_contact_cert_free.
+
+	* libebook/e-contact.c (field_info): add E_CONTACT_X509_CERT
+	(cert_getter, cert_setter): new functions, implement
+	getting/setting of certs.
+	(e_contact_cert_free): new function.
+	(e_contact_cert_copy): same.
+	(e_contact_cert_get_type): same.
+
 2003-12-17  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book-async.c (_get_book_view_response_dtor): if

@@ -128,8 +128,7 @@ typedef enum {
 	E_CONTACT_ANNIVERSARY,   /* structured field (EContactDate) */
 
 	/* Security Fields */
-	E_CONTACT_X509_CERT,                  /* string field */
-	E_CONTACT_X509_CERT_SHA1_FINGERPRINT, /* string field */
+	E_CONTACT_X509_CERT,                  /* structured field (EContactCert) */
 
 	/* Convenience field for getting a name from the contact.
 	   Returns the first one of [File-As, Full Name, Org, Email1]
@@ -183,6 +182,11 @@ typedef struct {
 	int day;
 } EContactDate;
 
+typedef struct {
+	int length;
+	char *data;
+} EContactCert;
+
 struct _EContact {
 	EVCard parent;
 
@@ -230,6 +234,9 @@ void                    e_contact_name_free        (EContactName *name);
 
 GType                   e_contact_photo_get_type   (void);
 void                    e_contact_photo_free       (EContactPhoto *photo);
+
+GType                   e_contact_cert_get_type    (void);
+void                    e_contact_cert_free        (EContactCert *cert);
 
 GType                   e_contact_address_get_type (void);
 void                    e_contact_address_free     (EContactAddress *address);
