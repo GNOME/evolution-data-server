@@ -1,3 +1,9 @@
+2005-03-16  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-container.c: (e_gw_container_set_from_soap_parameter):
+	The type of the folder comes in the tag "folderType" and not
+	just "type" anymore.
+
 2005-02-28  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_get_quick_messages):

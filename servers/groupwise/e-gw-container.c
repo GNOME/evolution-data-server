@@ -210,7 +210,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	}
 
 	/*retrieve the folder type*/
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "type") ;
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "folderType") ;
 	if (!subparam) 
 		container->priv->type = E_GW_CONTAINER_TYPE_FOLDER ;
 	else {
