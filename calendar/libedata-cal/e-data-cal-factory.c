@@ -24,6 +24,7 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-main.h>
 #include <libedataserver/e-url.h>
+#include <libedataserver/e-source.h>
 #include "e-cal-backend.h"
 #include "e-data-cal.h"
 #include "e-data-cal-factory.h"
@@ -148,7 +149,7 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 
 static GNOME_Evolution_Calendar_Cal
 impl_CalFactory_getCal (PortableServer_Servant servant,
-			const CORBA_char *str_uri,
+			const CORBA_char *source_xml,
 			const GNOME_Evolution_Calendar_CalObjType type,
 			const GNOME_Evolution_Calendar_CalListener listener,
 			CORBA_Environment *ev)
@@ -160,14 +161,34 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	CORBA_Environment ev2;
 	GNOME_Evolution_Calendar_CalListener listener_copy;
 	GType backend_type;
+	ESource *source;
+	char *str_uri;
 	EUri *uri;
 	char *uri_string;
 	
 	factory = E_DATA_CAL_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
 
+	source = e_source_new_from_standalone_xml (source_xml);
+	if (!source) {
+		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_InvalidURI);
+
+		return CORBA_OBJECT_NIL;
+	}
+
+	/* Get the URI so we can extract the protocol */
+	str_uri = e_source_get_uri (source);
+	if (!str_uri) {
+		g_object_unref (source);
+		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_InvalidURI);
+
+		return CORBA_OBJECT_NIL;
+	}
+
 	/* Parse the uri */
 	uri = e_uri_new (str_uri);
+	g_free (str_uri);
+
 	if (!uri) {
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_InvalidURI);
 
@@ -199,7 +220,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	backend = lookup_backend (factory, uri_string);
 	if (!backend) {
 		/* There was no existing backend, create a new one */
-		backend = g_object_new (backend_type, "uri", uri_string, "kind", calobjtype_to_icalkind (type), NULL);
+		backend = g_object_new (backend_type, "source", source, "kind", calobjtype_to_icalkind (type), NULL);
 		if (!backend) {
 			g_warning (G_STRLOC ": could not instantiate backend");
 			bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
@@ -228,6 +249,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
  cleanup:
 	e_uri_free (uri);
 	g_free (uri_string);
+	g_object_unref (source);
 
 	return CORBA_Object_duplicate (BONOBO_OBJREF (cal), ev);
 }
@@ -373,7 +395,7 @@ e_data_cal_factory_register_storage (EDataCalFactory *factory, const char *iid)
 		return TRUE;
 
 	case Bonobo_ACTIVATION_REG_NOT_LISTED:
-		g_warning (G_STRLOC ": cannot register the calendar factory (not listed)");
+		g_warning (G_STRLOC ": cannot register the calendar factory %s (not listed)", tmp_iid);
 		break;
 
 	case Bonobo_ACTIVATION_REG_ALREADY_ACTIVE:

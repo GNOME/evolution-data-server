@@ -14,6 +14,7 @@
 
 #include <bonobo/bonobo-object.h>
 #include <libedataserver/e-list.h>
+#include <libedataserver/e-source.h>
 #include <libedata-book/Evolution-DataServer-Addressbook.h>
 #include <libedata-book/e-data-book-types.h>
 
@@ -46,11 +47,11 @@ struct _EDataBookClass {
 
 
 EDataBook                *e_data_book_new                    (EBookBackend                               *backend,
-							 const char                               *uri,
+							      ESource                                  *source,
 							 GNOME_Evolution_Addressbook_BookListener  listener);
 GNOME_Evolution_Addressbook_BookListener e_data_book_get_listener (EDataBook                         *book);
 EBookBackend             *e_data_book_get_backend            (EDataBook                                *book);
-const char             *e_data_book_get_uri                (EDataBook                                *book);
+ESource                *e_data_book_get_source             (EDataBook                                *book);
 
 void                    e_data_book_respond_open           (EDataBook                                *book,
 							 GNOME_Evolution_Addressbook_CallStatus  status);

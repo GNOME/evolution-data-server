@@ -265,7 +265,7 @@ module Calendar {
 		exception InvalidURI {};
 		exception UnsupportedMethod {};
 
-		Cal getCal (in string uri, in CalObjType type, in CalListener listener)
+		Cal getCal (in string source, in CalObjType type, in CalListener listener)
 			raises (NilListener, InvalidURI, UnsupportedMethod);
 	};
 };

@@ -18,7 +18,7 @@ struct _EBookBackendPrivate {
 	GMutex *clients_mutex;
 	GList *clients;
 
-	char *uri;
+	ESource *source;
 	gboolean loaded, writable, removed;
 
 	GMutex *views_mutex;
@@ -42,40 +42,42 @@ e_book_backend_construct (EBookBackend *backend)
 }
 
 GNOME_Evolution_Addressbook_CallStatus
-e_book_backend_load_uri (EBookBackend           *backend,
-			 const char             *uri,
-			 gboolean                only_if_exists)
+e_book_backend_load_source (EBookBackend           *backend,
+			    ESource                *source,
+			    gboolean                only_if_exists)
 {
 	GNOME_Evolution_Addressbook_CallStatus status;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-	g_return_val_if_fail (uri, FALSE);
+	g_return_val_if_fail (source, FALSE);
 	g_return_val_if_fail (backend->priv->loaded == FALSE, FALSE);
 
-	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->load_uri);
+	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->load_source);
 
-	status = (* E_BOOK_BACKEND_GET_CLASS (backend)->load_uri) (backend, uri, only_if_exists);
+	status = (* E_BOOK_BACKEND_GET_CLASS (backend)->load_source) (backend, source, only_if_exists);
 
-	if (status == GNOME_Evolution_Addressbook_Success)
-		backend->priv->uri = g_strdup (uri);
+	if (status == GNOME_Evolution_Addressbook_Success) {
+		g_object_ref (source);
+		backend->priv->source = source;
+	}
 
 	return status;
 }
 
 /**
- * e_book_backend_get_uri:
+ * e_book_backend_get_source:
  * @backend: An addressbook backend.
  * 
- * Queries the URI that an addressbook backend is serving.
+ * Queries the source that an addressbook backend is serving.
  * 
- * Return value: URI for the backend.
+ * Return value: ESource for the backend.
  **/
-const char *
-e_book_backend_get_uri (EBookBackend *backend)
+ESource *
+e_book_backend_get_source (EBookBackend *backend)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
-	return backend->priv->uri;
+	return backend->priv->source;
 }
 
 void
@@ -95,7 +97,7 @@ e_book_backend_open (EBookBackend *backend,
 		e_data_book_report_writable (book, backend->priv->writable);
 	} else {
 		GNOME_Evolution_Addressbook_CallStatus status =
-			e_book_backend_load_uri (backend, e_data_book_get_uri (book), only_if_exists);
+			e_book_backend_load_source (backend, e_data_book_get_source (book), only_if_exists);
 
 		e_data_book_respond_open (book, status);
 
@@ -583,7 +585,6 @@ e_book_backend_init (EBookBackend *backend)
 	EBookBackendPrivate *priv;
 
 	priv          = g_new0 (EBookBackendPrivate, 1);
-	priv->uri     = NULL;
 	priv->clients = NULL;
 	priv->views   = e_list_new((EListCopyFunc) g_object_ref, (EListFreeFunc) g_object_unref, NULL);
 	priv->open_mutex = g_mutex_new ();
@@ -602,9 +603,6 @@ e_book_backend_dispose (GObject *object)
 
 	if (backend->priv) {
 		g_list_free (backend->priv->clients);
-
-		if (backend->priv->uri)
-			g_free (backend->priv->uri);
 
 		if (backend->priv->views) {
 			g_object_unref (backend->priv->views);

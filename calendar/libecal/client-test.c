@@ -138,12 +138,12 @@ client_destroy_cb (gpointer data, GObject *object)
 
 /* Creates a calendar client and tries to load the specified URI into it */
 static void
-create_client (ECal **client, const char *uri, CalObjType type, gboolean only_if_exists)
+create_client (ECal **client, const gchar *uri, CalObjType type, gboolean only_if_exists)
 {
 	ECalView *query;
 	GError *error = NULL;
 	
-	*client = e_cal_new (uri, type);
+	*client = e_cal_new_from_uri (uri, type);
 	if (!*client) {
 		g_message (G_STRLOC ": could not create the client");
 		exit (1);
@@ -152,6 +152,7 @@ create_client (ECal **client, const char *uri, CalObjType type, gboolean only_if
 	g_object_weak_ref (G_OBJECT (*client), client_destroy_cb, NULL);
 
 	cl_printf (*client, "Calendar loading `%s'...\n", uri);
+
 	if (!e_cal_open (*client, only_if_exists, &error)) {
 		cl_printf (*client, "Load/create %s\n", error->message);
 		exit (1);
@@ -175,6 +176,7 @@ create_client (ECal **client, const char *uri, CalObjType type, gboolean only_if
 	e_cal_view_start (query);
 	
 	g_idle_add (list_uids, *client);
+
 }
 
 int
@@ -191,8 +193,10 @@ main (int argc, char **argv)
 		exit (1);
 	}
 
-	create_client (&client1, "file:///home/gnome24-evolution-new-calendar/evolution/local/Calendar", 
-		       CALOBJ_TYPE_EVENT, FALSE);
+#if 0
+	source = e_source_new ("test-source", "file:///home/gnome24-evolution-new-calendar/evolution/local/Calendar");
+#endif
+	create_client (&client1, "file:///home/hpj/.evolution/calendar/local/OnThisComputer/Pakk", CALOBJ_TYPE_EVENT, FALSE);
 //	create_client (&client2, "file:///tmp/tasks", TRUE);
 
 	bonobo_main ();

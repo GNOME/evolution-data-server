@@ -43,7 +43,6 @@
 static EBookBackendSyncClass *e_book_backend_file_parent_class;
 
 struct _EBookBackendFilePrivate {
-	char     *uri;
 	char     *dirname;
 	char     *filename;
 	char     *summary_filename;
@@ -838,9 +837,9 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 #include <libedata-book/ximian-vcard.h>
 
 static GNOME_Evolution_Addressbook_CallStatus
-e_book_backend_file_load_uri (EBookBackend           *backend,
-			      const char             *uri,
-			      gboolean                only_if_exists)
+e_book_backend_file_load_source (EBookBackend           *backend,
+				 ESource                *source,
+				 gboolean                only_if_exists)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	char           *dirname, *filename;
@@ -849,12 +848,13 @@ e_book_backend_file_load_uri (EBookBackend           *backend,
 	DB *db;
 	time_t db_mtime;
 	struct stat sb;
+	gchar *uri;
 
-	g_free(bf->priv->uri);
-	bf->priv->uri = g_strdup (uri);
+	uri = e_source_get_uri (source);
 
 	dirname = e_book_backend_file_extract_path_from_uri (uri);
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
+	g_free (uri);
 
 	db_error = e_db3_utils_maybe_recover (filename);
 	if (db_error != 0)
@@ -1069,7 +1069,6 @@ e_book_backend_file_dispose (GObject *object)
 	if (bf->priv) {
 		if (bf->priv->summary)
 			g_object_unref(bf->priv->summary);
-		g_free (bf->priv->uri);
 		g_free (bf->priv->filename);
 		g_free (bf->priv->dirname);
 		g_free (bf->priv->summary_filename);
@@ -1094,7 +1093,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
-	backend_class->load_uri                = e_book_backend_file_load_uri;
+	backend_class->load_source             = e_book_backend_file_load_source;
 	backend_class->get_static_capabilities = e_book_backend_file_get_static_capabilities;
 	backend_class->start_book_view         = e_book_backend_file_start_book_view;
 	backend_class->stop_book_view          = e_book_backend_file_stop_book_view;
@@ -1119,7 +1118,6 @@ e_book_backend_file_init (EBookBackendFile *backend)
 	EBookBackendFilePrivate *priv;
 
 	priv             = g_new0 (EBookBackendFilePrivate, 1);
-	priv->uri        = NULL;
 
 	backend->priv = priv;
 }

@@ -46,6 +46,7 @@ struct _ESourcePrivate {
 	char *uid;
 	char *name;
 	char *relative_uri;
+	char *absolute_uri;
 
 	gboolean has_color;
 	guint32 color;
@@ -83,6 +84,7 @@ impl_finalize (GObject *object)
 	g_free (priv->uid);
 	g_free (priv->name);
 	g_free (priv->relative_uri);
+	g_free (priv->absolute_uri);
 	g_free (priv);
 
 	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -213,15 +215,17 @@ e_source_update_from_xml_node (ESource *source,
 {
 	xmlChar *name;
 	xmlChar *relative_uri;
+	xmlChar *absolute_uri;
 	xmlChar *color_string;
 	gboolean retval;
 	gboolean changed = FALSE;
 
 	name = xmlGetProp (node, "name");
 	relative_uri = xmlGetProp (node, "relative_uri");
+	absolute_uri = xmlGetProp (node, "uri");
 	color_string = xmlGetProp (node, "color");
 
-	if (name == NULL || relative_uri == NULL) {
+	if (name == NULL || (relative_uri == NULL && absolute_uri == NULL)) {
 		retval = FALSE;
 		goto done;
 	}
@@ -236,6 +240,12 @@ e_source_update_from_xml_node (ESource *source,
 		g_free (source->priv->relative_uri);
 		source->priv->relative_uri = g_strdup (relative_uri);
 
+		changed = TRUE;
+	}
+
+	if (absolute_uri != NULL) {
+		g_free (source->priv->absolute_uri);
+		source->priv->absolute_uri = g_strdup (absolute_uri);
 		changed = TRUE;
 	}
 
@@ -268,6 +278,8 @@ e_source_update_from_xml_node (ESource *source,
 		xmlFree (name);
 	if (relative_uri != NULL)
 		xmlFree (relative_uri);
+	if (absolute_uri != NULL)
+		xmlFree (absolute_uri);
 	if (color_string != NULL)
 		xmlFree (color_string);
 
@@ -443,8 +455,12 @@ e_source_get_uri (ESource *source)
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	if (source->priv->group == NULL)
+	if (source->priv->group == NULL) {
+		if (source->priv->absolute_uri != NULL)
+			return g_strdup (source->priv->absolute_uri);
+
 		return NULL;
+	}
 
 	base_uri_str = e_source_group_peek_base_uri (source->priv->group);
 
@@ -461,16 +477,18 @@ e_source_get_uri (ESource *source)
 }
 
 
-void
-e_source_dump_to_xml_node (ESource *source,
-			   xmlNodePtr parent_node)
+static xmlNodePtr
+dump_common_to_xml_node (ESource *source,
+			 xmlNodePtr parent_node)
 {
 	gboolean has_color;
 	guint32 color;
-	xmlNodePtr node = xmlNewChild (parent_node, NULL, "source", NULL);
+	xmlNodePtr node;
 
-	g_return_if_fail (E_IS_SOURCE (source));
-
+	if (parent_node)
+		node = xmlNewChild (parent_node, NULL, "source", NULL);
+	else
+		node = xmlNewNode (NULL, "source");
 
 	xmlSetProp (node, "uid", e_source_peek_uid (source));
 	xmlSetProp (node, "name", e_source_peek_name (source));
@@ -482,4 +500,72 @@ e_source_dump_to_xml_node (ESource *source,
 		xmlSetProp (node, "color", color_string);
 		g_free (color_string);
 	}
+
+	return node;
+}
+
+
+void
+e_source_dump_to_xml_node (ESource *source,
+			   xmlNodePtr parent_node)
+{
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	dump_common_to_xml_node (source, parent_node);
+}
+
+
+char *
+e_source_to_standalone_xml (ESource *source)
+{
+	xmlDocPtr doc;
+	xmlNodePtr node;
+	xmlChar *xml_buffer;
+	char *returned_buffer;
+	int xml_buffer_size;
+	gchar *uri;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+	g_return_val_if_fail (source->priv->group != NULL, NULL);
+
+	doc = xmlNewDoc ("1.0");
+	node = dump_common_to_xml_node (source, NULL);
+
+	xmlDocSetRootElement (doc, node);
+
+	uri = e_source_get_uri (source);
+	xmlSetProp (node, "uri", uri);
+	g_free (uri);
+
+	xmlDocDumpMemory (doc, &xml_buffer, &xml_buffer_size);
+	xmlFreeDoc (doc);
+
+	returned_buffer = g_malloc (xml_buffer_size + 1);
+	memcpy (returned_buffer, xml_buffer, xml_buffer_size);
+	returned_buffer [xml_buffer_size] = '\0';
+	xmlFree (xml_buffer);
+
+	return returned_buffer;
+}
+
+
+ESource *
+e_source_new_from_standalone_xml (const char *xml)
+{
+	xmlDocPtr doc;
+	xmlNodePtr root;
+	ESource *source;
+
+	doc = xmlParseDoc ((char *) xml);
+	if (doc == NULL)
+		return NULL;
+
+	root = doc->children;
+	if (strcmp (root->name, "source") != 0)
+		return NULL;
+
+	source = e_source_new_from_xml_node (root);
+	xmlFreeDoc (doc);
+
+	return source;
 }

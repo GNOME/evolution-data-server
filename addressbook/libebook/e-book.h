@@ -14,6 +14,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <libedataserver/e-source.h>
 #include <libebook/Evolution-DataServer-Addressbook.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-book-query.h>
@@ -60,6 +61,11 @@ struct _EBookClass {
 EBook    *e_book_new                       (void);
 
 /* loading arbitrary addressbooks */
+gboolean e_book_load_source                (EBook       *book,
+					    ESource     *source,
+					    gboolean     only_if_exists,
+					    GError     **error);
+
 gboolean e_book_load_uri                   (EBook       *book,
 					    const char  *uri,
 					    gboolean     only_if_exists,

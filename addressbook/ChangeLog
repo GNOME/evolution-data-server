@@ -1,3 +1,53 @@
+2003-11-26  Hans Petter Jansson  <hpj@ximian.com>
+
+	* backends/file/e-book-backend-file.c (e_book_backend_file_load_uri):
+	Rename to e_book_backend_file_load_source () and take an ESource
+	instead of an URI.
+	(e_book_backend_file_dispose): Don't free URI anymore.
+	(e_book_backend_file_class_init): load_uri -> load_source.
+	(e_book_backend_file_init): Don't init URI anymore.
+
+	* backends/ldap/e-book-backend-ldap.c (e_book_backend_ldap_load_uri):
+	Rename to e_book_backend_ldap_load_uri () and take an ESource instead
+	of an URI.
+	(e_book_backend_ldap_dispose): Don't free URI anymore.
+	(e_book_backend_ldap_class_init): load_uri -> load_source.
+
+	* backends/vcf/e-book-backend-vcf.c (e_book_backend_vcf_load_uri):
+	Rename to e_book_backend_vcf_load_source () and take an ESource
+	instead of an URI.
+	(e_book_backend_vcf_dispose): Don't free URI anymore.
+	(e_book_backend_vcf_class_init): load_uri -> load_source.
+	(e_book_backend_vcf_init): Don't init URI anymore.
+
+	* idl/Evolution-DataServer-Addressbook.idl (getBook): In parameter
+	"uri" renamed to "source". Takes standalone source XML.
+
+	* libebook/e-book.c (fetch_corba_book): Implement, taking ESource.
+	(e_book_load_source): Implement.
+	(e_book_load_uri): Create a source based on the URI and use
+	e_book_load_source () to load that.
+
+	* libedata-book/e-book-backend.c (e_book_backend_load_uri): Renamed
+	to e_book_backend_load_source () and takes ESource instead of URI.
+	(e_book_backend_get_uri): Renamed to e_book_backend_get_source ()
+	and returns ESource instead of URI.
+	(e_book_backend_open): Use e_book_backend_load_source ().
+	(e_book_backend_init): Don't init URI anymore.
+	(e_book_backend_dispose): Don't free URI anymore.
+
+	* libedata-book/e-data-book-factory.c (backend_last_client_gone_cb):
+	Get URI from backend's ESource.
+	(impl_GNOME_Evolution_Addressbook_BookFactory_getBook): Take
+	standalone source XML, construct an ESource, and fetch a backend
+	with that.
+
+	* libedata-book/e-data-book.c (e_data_book_get_uri): Renamed to
+	e_data_book_get_source () and return ESource.
+	(e_data_book_construct): Take ESource instead of URI.
+	(e_data_book_new): Take ESource instead of URI.
+	(e_data_book_dispose): Don't free URI. Instead, unref ESource.
+
 2003-11-25  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/test-self.c: new file/test, print out the current

@@ -22,6 +22,7 @@
 #define E_CAL_H
 
 #include <glib-object.h>
+#include <libedataserver/e-source.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-view.h>
@@ -93,7 +94,8 @@ GType e_cal_open_status_enum_get_type (void);
 GType e_cal_set_mode_status_enum_get_type (void);
 GType cal_mode_enum_get_type (void);
 
-ECal *e_cal_new (const char *uri, CalObjType type);
+ECal *e_cal_new (ESource *source, CalObjType type);
+ECal *e_cal_new_from_uri (const gchar *uri, CalObjType type);
 
 void e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data);
 

@@ -1615,25 +1615,29 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	return factories;
 }
 
-gboolean
-e_book_load_uri (EBook        *book,
-		 const char   *uri,
-		 gboolean      only_if_exists,
-		 GError      **error)
+static gboolean
+fetch_corba_book (EBook       *book,
+		  ESource     *source,
+		  gboolean     only_if_exists,
+		  GError     **error)
 {
+	GNOME_Evolution_Addressbook_Book corba_book = CORBA_OBJECT_NIL;
+	gchar *uri;
+	gchar *source_xml;
 	GList *factories;
 	GList *l;
 	gboolean rv = FALSE;
-	GNOME_Evolution_Addressbook_Book corba_book = CORBA_OBJECT_NIL;
 
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (uri,                      E_BOOK_ERROR_INVALID_ARG);
-
-	/* XXX this needs to happen while holding the book's lock i would think... */
-	e_return_error_if_fail (book->priv->load_state == E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_ALREADY_LOADED);
+	uri = e_source_get_uri (source);
+	if (!uri) {
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_OTHER_ERROR,
+			     _("e_book_load_uri: Invalid source."));
+		return FALSE;
+	}
 
 	/* try to find a list of factories that can handle the protocol */
-	if (! (factories = activate_factories_for_uri (book, uri))) {
+	factories = activate_factories_for_uri (book, uri);
+	if (!factories) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
 			     _("e_book_load_uri: no factories available for uri `%s'"), uri);
 		return FALSE;
@@ -1656,7 +1660,9 @@ e_book_load_uri (EBook        *book,
 							G_CALLBACK (e_book_handle_response), book);
 
 	g_free (book->priv->uri);
-	book->priv->uri = g_strdup (uri);
+	book->priv->uri = uri;
+
+	source_xml = e_source_to_standalone_xml (source);
 
 	for (l = factories; l; l = l->next) {
 		GNOME_Evolution_Addressbook_BookFactory factory = l->data;
@@ -1670,7 +1676,7 @@ e_book_load_uri (EBook        *book,
 
 		CORBA_exception_init (&ev);
 
-		corba_book = GNOME_Evolution_Addressbook_BookFactory_getBook (factory, book->priv->uri,
+		corba_book = GNOME_Evolution_Addressbook_BookFactory_getBook (factory, source_xml,
 								      bonobo_object_corba_objref (BONOBO_OBJECT (book->priv->listener)),
 								      &ev);
 
@@ -1715,6 +1721,8 @@ e_book_load_uri (EBook        *book,
 		}
 	}
 
+	g_free (source_xml);
+
 	/* free up the factories */
 	for (l = factories; l; l = l->next)
 		CORBA_Object_release ((CORBA_Object)l->data, NULL);
@@ -1733,6 +1741,49 @@ e_book_load_uri (EBook        *book,
 		return FALSE;
 	}
 		
+	return rv;
+}
+
+gboolean
+e_book_load_source (EBook *book,
+		    ESource *source,
+		    gboolean only_if_exists,
+		    GError **error)
+{
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
+
+	/* XXX this needs to happen while holding the book's lock i would think... */
+	e_return_error_if_fail (book->priv->load_state == E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_ALREADY_LOADED);
+
+	return fetch_corba_book (book, source, only_if_exists, error);
+}
+
+gboolean
+e_book_load_uri (EBook        *book,
+		 const char   *uri,
+		 gboolean      only_if_exists,
+		 GError      **error)
+{
+	ESourceGroup *group;
+	ESource *source;
+	gboolean rv;
+
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (uri,                      E_BOOK_ERROR_INVALID_ARG);
+
+	/* XXX this needs to happen while holding the book's lock i would think... */
+	e_return_error_if_fail (book->priv->load_state == E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_ALREADY_LOADED);
+
+	group = e_source_group_new ("", uri);
+	source = e_source_new ("", "");
+	e_source_set_group (source, group);
+
+	rv = e_book_load_source (book, source, only_if_exists, error);
+
+	g_object_unref (source);
+	g_object_unref (group);
+
 	return rv;
 }
 

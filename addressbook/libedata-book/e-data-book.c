@@ -25,7 +25,7 @@ POA_GNOME_Evolution_Addressbook_Book__vepv e_data_book_vepv;
 struct _EDataBookPrivate {
 	EBookBackend                               *backend;
 	GNOME_Evolution_Addressbook_BookListener  listener;
-	char                                     *uri;
+	ESource                                    *source;
 };
 
 static void
@@ -247,10 +247,10 @@ e_data_book_get_listener (EDataBook *book)
 	return book->priv->listener;
 }
 
-const char*
-e_data_book_get_uri (EDataBook *book)
+ESource *
+e_data_book_get_source (EDataBook *book)
 {
-	return book->priv->uri;
+	return book->priv->source;
 }
 
 /**
@@ -660,13 +660,14 @@ e_data_book_report_writable (EDataBook                           *book,
 static void
 e_data_book_construct (EDataBook                *book,
 		    EBookBackend             *backend,
-		    const char             *uri,
+		    ESource *source,
 		    GNOME_Evolution_Addressbook_BookListener listener)
 {
 	EDataBookPrivate *priv;
 	CORBA_Environment ev;
 
 	g_return_if_fail (book != NULL);
+	g_return_if_fail (source != NULL);
 
 	priv = book->priv;
 
@@ -681,9 +682,10 @@ e_data_book_construct (EDataBook                *book,
 
 	CORBA_exception_free (&ev);
 
-	priv->backend   = backend;
-	priv->uri       = g_strdup (uri);
+	g_object_ref (source);
 
+	priv->backend   = backend;
+	priv->source    = source;
 }
 
 /**
@@ -691,7 +693,7 @@ e_data_book_construct (EDataBook                *book,
  */
 EDataBook *
 e_data_book_new (EBookBackend                               *backend,
-	      const char                               *uri,
+		 ESource *source,
 	      GNOME_Evolution_Addressbook_BookListener  listener)
 {
 	EDataBook *book;
@@ -701,7 +703,7 @@ e_data_book_new (EBookBackend                               *backend,
 			     "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 			     NULL);
 
-	e_data_book_construct (book, backend, uri, listener);
+	e_data_book_construct (book, backend, source, listener);
 
 	g_free (caps);
 
@@ -724,7 +726,7 @@ e_data_book_dispose (GObject *object)
 
 		CORBA_exception_free (&ev);
 
-		g_free (book->priv->uri);
+		g_object_unref (book->priv->source);
 		g_free (book->priv);
 		book->priv = NULL;
 	}

@@ -587,7 +587,7 @@ get_uri_string_for_gnome_vfs (ECalBackend *backend)
 	priv = cbfile->priv;
 	
 	master_uri = e_cal_backend_get_uri (backend);
-	
+
 	/* FIXME Check the error conditions a little more elegantly here */
 	if (g_strrstr ("tasks.ics", master_uri) || g_strrstr ("calendar.ics", master_uri)) {
 		g_warning (G_STRLOC ": Existing file name %s", master_uri);

@@ -42,7 +42,10 @@ typedef struct {
 
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
-	/* The uri for this backend */
+	/* The source for this backend */
+	ESource *source;
+
+	/* URI, from source. This is cached, since we return const. */
 	char *uri;
 
 	/* The kind of components for this backend */
@@ -70,6 +73,7 @@ struct _ECalBackendPrivate {
 /* Property IDs */
 enum props {
 	PROP_0,
+	PROP_SOURCE,
 	PROP_URI,
 	PROP_KIND
 };
@@ -136,9 +140,31 @@ e_cal_backend_set_property (GObject *object, guint property_id, const GValue *va
 	priv = backend->priv;
 	
 	switch (property_id) {
+	case PROP_SOURCE:
+		{
+			ESource *new_source;
+
+			new_source = g_value_get_object (value);
+			if (new_source)
+				g_object_ref (new_source);
+
+			if (priv->source)
+				g_object_unref (priv->source);
+
+			priv->source = new_source;
+
+			/* Cache the URI */
+			if (new_source) {
+				g_free (priv->uri);
+				priv->uri = e_source_get_uri (priv->source);
+			}
+		}
+		break;
 	case PROP_URI:
-		g_free (priv->uri);
-		priv->uri = g_value_dup_string (value);
+		if (!priv->source) {
+			g_free (priv->uri);
+			priv->uri = g_value_dup_string (value);
+		}
 		break;
 	case PROP_KIND:
 		priv->kind = g_value_get_ulong (value);
@@ -159,6 +185,9 @@ e_cal_backend_get_property (GObject *object, guint property_id, GValue *value, G
 	priv = backend->priv;
 
 	switch (property_id) {
+	case PROP_SOURCE:
+		g_value_set_object (value, e_cal_backend_get_source (backend));
+		break;
 	case PROP_URI:
 		g_value_set_string (value, e_cal_backend_get_uri (backend));
 		break;
@@ -184,6 +213,11 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	object_class->set_property = e_cal_backend_set_property;
 	object_class->get_property = e_cal_backend_get_property;
 	object_class->finalize = e_cal_backend_finalize;
+
+	g_object_class_install_property (object_class, PROP_SOURCE, 
+					 g_param_spec_object ("source", NULL, NULL, E_TYPE_SOURCE,
+							      G_PARAM_READABLE | G_PARAM_WRITABLE
+							      | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (object_class, PROP_URI, 
 					 g_param_spec_string ("uri", NULL, NULL, "",
@@ -322,6 +356,19 @@ e_cal_backend_finalize (GObject *object)
 }
 
 
+
+ESource *
+e_cal_backend_get_source (ECalBackend *backend)
+{
+	ECalBackendPrivate *priv;
+	
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	priv = backend->priv;
+	
+	return priv->source;
+}
 
 /**
  * e_cal_backend_get_uri:

@@ -34,7 +34,6 @@ typedef struct _EBookBackendVCFBookView EBookBackendVCFBookView;
 typedef struct _EBookBackendVCFSearchContext EBookBackendVCFSearchContext;
 
 struct _EBookBackendVCFPrivate {
-	char       *uri;
 	char       *filename;
 	GMutex     *mutex;
 	GHashTable *contacts;
@@ -471,17 +470,17 @@ e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
 #include <libedata-book/ximian-vcard.h>
 
 static GNOME_Evolution_Addressbook_CallStatus
-e_book_backend_vcf_load_uri (EBookBackend             *backend,
-			  const char             *uri,
-			  gboolean                only_if_exists)
+e_book_backend_vcf_load_source (EBookBackend             *backend,
+				ESource                  *source,
+				gboolean                  only_if_exists)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	char           *dirname;
 	gboolean        writable = FALSE;
+	gchar          *uri;
 	int fd;
 
-	g_free(bvcf->priv->uri);
-	bvcf->priv->uri = g_strdup (uri);
+	uri = e_source_get_uri (source);
 
 	dirname = e_book_backend_vcf_extract_path_from_uri (uri);
 	bvcf->priv->filename = g_build_filename (dirname, "addressbook.vcf", NULL);
@@ -516,6 +515,7 @@ e_book_backend_vcf_load_uri (EBookBackend             *backend,
 	if (fd == -1) {
 		g_warning ("Failed to open addressbook at uri `%s'", uri);
 		g_warning ("error == %s", strerror(errno));
+		g_free (uri);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -524,6 +524,7 @@ e_book_backend_vcf_load_uri (EBookBackend             *backend,
 	e_book_backend_set_is_loaded (backend, TRUE);
 	e_book_backend_set_is_writable (backend, writable);
 
+	g_free (uri);
 	return GNOME_Evolution_Addressbook_Success;
 }
 
@@ -591,7 +592,6 @@ e_book_backend_vcf_dispose (GObject *object)
 
 		g_hash_table_destroy (bvcf->priv->contacts);
 
-		g_free (bvcf->priv->uri);
 		g_free (bvcf->priv->filename);
 
 		g_mutex_unlock (bvcf->priv->mutex);
@@ -618,7 +618,7 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
-	backend_class->load_uri                = e_book_backend_vcf_load_uri;
+	backend_class->load_source             = e_book_backend_vcf_load_source;
 	backend_class->get_static_capabilities = e_book_backend_vcf_get_static_capabilities;
 	backend_class->start_book_view         = e_book_backend_vcf_start_book_view;
 	backend_class->stop_book_view          = e_book_backend_vcf_stop_book_view;
@@ -641,7 +641,6 @@ e_book_backend_vcf_init (EBookBackendVCF *backend)
 	EBookBackendVCFPrivate *priv;
 
 	priv                 = g_new0 (EBookBackendVCFPrivate, 1);
-	priv->uri            = NULL;
 	priv->mutex = g_mutex_new();
 
 	backend->priv = priv;

@@ -81,7 +81,6 @@ typedef struct LDAPOp LDAPOp;
 
 
 struct _EBookBackendLDAPPrivate {
-	char     *uri;
 	gboolean connected;
 
 	gchar    *ldap_host;   /* the hostname of the server */
@@ -3037,9 +3036,9 @@ e_book_backend_ldap_get_supported_auth_methods (EBookBackend *backend,
 }
 
 static GNOME_Evolution_Addressbook_CallStatus
-e_book_backend_ldap_load_uri (EBookBackend             *backend,
-			   const char             *uri,
-			   gboolean                only_if_exists)
+e_book_backend_ldap_load_source (EBookBackend             *backend,
+				 ESource                  *source,
+				 gboolean                  only_if_exists)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	LDAPURLDesc    *lud;
@@ -3048,13 +3047,18 @@ e_book_backend_ldap_load_uri (EBookBackend             *backend,
 	int i;
 	int limit = 100;
 	int timeout = 60; /* 1 minute */
+	gchar *uri;
 
 	g_assert (bl->priv->connected == FALSE);
 
+	uri = e_source_get_uri (source);
+
 	attributes = g_strsplit (uri, ";", 0);
 
-	if (attributes[0] == NULL)
+	if (attributes[0] == NULL) {
+		g_free (uri);
 		return FALSE;
+	}
 
 	for (i = 1; attributes[i]; i++) {
 		char *equals;
@@ -3098,9 +3102,9 @@ e_book_backend_ldap_load_uri (EBookBackend             *backend,
 	ldap_error = ldap_url_parse ((char*)attributes[0], &lud);
 	g_strfreev (attributes);
 
+	g_free (uri);
+
 	if (ldap_error == LDAP_SUCCESS) {
-		g_free(bl->priv->uri);
-		bl->priv->uri = g_strdup (uri);
 		bl->priv->ldap_host = g_strdup(lud->lud_host);
 		bl->priv->ldap_port = lud->lud_port;
 		/* if a port wasn't specified, default to LDAP_PORT */
@@ -3191,8 +3195,6 @@ e_book_backend_ldap_dispose (GObject *object)
 			g_list_free (bl->priv->supported_auth_methods);
 		}
 
-		g_free (bl->priv->uri);
-
 		g_free (bl->priv);
 		bl->priv = NULL;
 	}
@@ -3215,7 +3217,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
-	parent_class->load_uri                = e_book_backend_ldap_load_uri;
+	parent_class->load_source             = e_book_backend_ldap_load_source;
 	parent_class->get_static_capabilities = e_book_backend_ldap_get_static_capabilities;
 
 	parent_class->create_contact          = e_book_backend_ldap_create_contact;

@@ -1,3 +1,24 @@
+2003-11-26  Hans Petter Jansson  <hpj@ximian.com>
+
+	* idl/Evolution-DataServer-Calendar.idl (getCal): Take source XML
+	instead of URI.
+
+	* libecal/client-test.c (create_client): Adapt to API changes.
+	(main): Ditto.
+
+	* libecal/e-cal.c (fetch_corba_cal): Move to ESource.
+	(e_cal_new): Take ESource.
+	(e_cal_new_from_uri): Implement convenience call that takes URI.
+
+	* libedata-cal/e-cal-backend.c (e_cal_backend_set_property):
+	Implement PROP_SOURCE.
+	(e_cal_backend_get_property): Same.
+	(e_cal_backend_class_init): Same.
+	(e_cal_backend_get_source): Same.
+
+	* libedata-cal/e-data-cal-factory.c (impl_CalFactory_getCal): Take
+	source XML and construct an ESource. Init backend with that.
+
 2003-11-25  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-message.[ch]: new files to contain utility

@@ -47,7 +47,7 @@ struct _EBookBackendClass {
 	GObjectClass parent_class;
 
 	/* Virtual methods */
-	GNOME_Evolution_Addressbook_CallStatus (*load_uri) (EBookBackend *backend, const char *uri, gboolean only_if_exists);
+	GNOME_Evolution_Addressbook_CallStatus (*load_source) (EBookBackend *backend, ESource *source, gboolean only_if_exists);
 	void (*remove) (EBookBackend *backend, EDataBook *book);
         char *(*get_static_capabilities) (EBookBackend *backend);
 
@@ -80,10 +80,10 @@ typedef EBookBackend * (*EBookBackendFactoryFn) (void);
 gboolean    e_book_backend_construct                (EBookBackend             *backend);
 
 GNOME_Evolution_Addressbook_CallStatus
-            e_book_backend_load_uri                 (EBookBackend             *backend,
-						  const char             *uri,
-						  gboolean                only_if_exists);
-const char *e_book_backend_get_uri                  (EBookBackend             *backend);
+            e_book_backend_load_source              (EBookBackend             *backend,
+						     ESource                  *source,
+						     gboolean                  only_if_exists);
+ESource    *e_book_backend_get_source               (EBookBackend             *backend);
 
 gboolean    e_book_backend_add_client               (EBookBackend             *backend,
 						  EDataBook                *book);

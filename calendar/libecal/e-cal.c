@@ -1196,44 +1196,84 @@ e_cal_get_type (void)
 
 
 static gboolean
-fetch_corba_cal (ECal *ecal, const char *str_uri, CalObjType type)
+fetch_corba_cal (ECal *ecal, ESource *source, CalObjType type)
 {
 	ECalPrivate *priv;
 	GList *f;
 	CORBA_Environment ev;
+	gchar *source_xml;
+	gchar *str_uri;
+	gboolean result = FALSE;
 	
 	priv = ecal->priv;
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_NOT_LOADED, FALSE);
 	g_assert (priv->uri == NULL);
+	g_return_val_if_fail (source != NULL, FALSE);
 
-	g_return_val_if_fail (str_uri != NULL, FALSE);
-
-	if (!get_factories (str_uri, &priv->factories))
+	str_uri = e_source_get_uri (source);
+	if (!str_uri)
 		return FALSE;
+
+	if (!get_factories (str_uri, &priv->factories)) {
+		g_free (str_uri);
+		return FALSE;
+	}
 
 	priv->uri = g_strdup (str_uri);
 	priv->type = type;
+
+	source_xml = e_source_to_standalone_xml (source);
 
 	for (f = priv->factories; f; f = f->next) {
 		GNOME_Evolution_Calendar_Cal cal;
 
 		CORBA_exception_init (&ev);
 
-		cal = GNOME_Evolution_Calendar_CalFactory_getCal (f->data, priv->uri, priv->type,
+		cal = GNOME_Evolution_Calendar_CalFactory_getCal (f->data, source_xml, priv->type,
 								  BONOBO_OBJREF (priv->listener), &ev);
 		if (BONOBO_EX (&ev))
 			continue;
 		
 		priv->cal = cal;
 
-		return TRUE;
+		result = TRUE;
+		break;
 	}
 
-	return FALSE;
+	g_free (str_uri);
+	g_free (source_xml);
+	return result;
 }
 
 /**
  * e_cal_new:
+ * @source: 
+ * @type: 
+ *
+ * Creates a new calendar ecal.  It should be initialized by calling
+ * e_cal_open().
+ *
+ * Return value: A newly-created calendar ecal, or NULL if the ecal could
+ * not be constructed because it could not contact the calendar server.
+ **/
+ECal *
+e_cal_new (ESource *source, CalObjType type)
+{
+	ECal *ecal;
+
+	ecal = g_object_new (E_TYPE_CAL, NULL);
+
+	if (!fetch_corba_cal (ecal, source, type)) {
+		g_object_unref (ecal);
+
+		return NULL;
+	}
+	
+	return ecal;
+}
+
+/**
+ * e_cal_new_from_uri:
  * @uri: 
  * @type: 
  *
@@ -1244,19 +1284,22 @@ fetch_corba_cal (ECal *ecal, const char *str_uri, CalObjType type)
  * not be constructed because it could not contact the calendar server.
  **/
 ECal *
-e_cal_new (const char *uri, CalObjType type)
+e_cal_new_from_uri (const gchar *uri, CalObjType type)
 {
-	ECal *ecal;
+	ESourceGroup *group;
+	ESource *source;
+	ECal *cal;
 
-	ecal = g_object_new (E_TYPE_CAL, NULL);
+	group = e_source_group_new ("", uri);
+	source = e_source_new ("", "");
+	e_source_set_group (source, group);
 
-	if (!fetch_corba_cal (ecal, uri, type)) {
-		g_object_unref (ecal);
+	cal = e_cal_new (source, type);
 
-		return NULL;
-	}
-	
-	return ecal;
+	g_object_unref (source);
+	g_object_unref (group);
+
+	return cal;
 }
 
 /**

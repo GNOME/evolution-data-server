@@ -1,3 +1,14 @@
+2003-11-26  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libedataserver/e-source.c (impl_finalize): Support absolute URI.
+	(e_source_update_from_xml_node): Ditto.
+	(e_source_get_uri): Ditto.
+	(dump_common_to_xml_node): Implement for parameters common to
+	dependent and standalone ESources.
+	(e_source_dump_to_xml_node): Use dump_common_to_xml_node ().
+	(e_source_to_standalone_xml): Implement.
+	(e_source_new_from_standalone_xml): Implement.
+
 2003-11-26  Rodney Dawes  <dobey@ximian.com>
 
 	* Makefile.am: remove \ on last line of LIBDB_FILES

@@ -58,6 +58,7 @@ GType    e_source_get_type (void);
 ESource *e_source_new                (const char   *name,
 				      const char   *relative_uri);
 ESource *e_source_new_from_xml_node  (xmlNodePtr    node);
+ESource *e_source_new_from_standalone_xml (const char *xml);
 
 gboolean  e_source_update_from_xml_node  (ESource    *source,
 					  xmlNodePtr  node,
@@ -86,6 +87,7 @@ char *e_source_get_uri  (ESource *source);
 
 void  e_source_dump_to_xml_node  (ESource    *source,
 				  xmlNodePtr  parent_node);
+char *e_source_to_standalone_xml (ESource *source);
 
 
 #endif /* _E_SOURCE_H_ */

@@ -179,7 +179,7 @@ module Addressbook {
 	interface BookFactory : Bonobo::Unknown {
 		exception ProtocolNotSupported {};
 
-		Book getBook (in string uri, in BookListener listener)
+		Book getBook (in string source, in BookListener listener)
 			raises (ProtocolNotSupported);
 	};
 };

@@ -153,13 +153,19 @@ static void
 backend_last_client_gone_cb (EBookBackend *backend, gpointer data)
 {
 	EDataBookFactory *factory;
-	const char *uri;
+	ESource *source;
+	gchar *uri;
 
 	factory = E_DATA_BOOK_FACTORY (data);
 
 	/* Remove the backend from the active server map */
 
-	uri = e_book_backend_get_uri (backend);
+	source = e_book_backend_get_source (backend);
+	if (source)
+		uri = e_source_get_uri (source);
+	else
+		uri = NULL;
+
 	if (uri) {
 		gpointer orig_key;
 		gboolean result;
@@ -185,6 +191,8 @@ backend_last_client_gone_cb (EBookBackend *backend, gpointer data)
 		/* Notify upstream if there are no more backends */
 		g_signal_emit (G_OBJECT (factory), factory_signals[LAST_BOOK_GONE], 0);
 	}
+
+	g_free (uri);
 }
 
 
@@ -244,15 +252,35 @@ e_data_book_factory_launch_backend (EDataBookFactory      *factory,
 
 static GNOME_Evolution_Addressbook_Book
 impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant        servant,
-						      const CORBA_char             *uri,
+						      const CORBA_char             *source_xml,
 						      const GNOME_Evolution_Addressbook_BookListener listener,
 						      CORBA_Environment            *ev)
 {
 	EDataBookFactory      *factory = E_DATA_BOOK_FACTORY (bonobo_object (servant));
+	GNOME_Evolution_Addressbook_Book corba_book;
 	EBookBackend *backend;
 	EDataBook *book;
+	ESource *source;
+	gchar *uri;
 
 	printf ("impl_GNOME_Evolution_Addressbook_BookFactory_getBook\n");
+
+	source = e_source_new_from_standalone_xml (source_xml);
+	if (!source) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_GNOME_Evolution_Addressbook_BookFactory_ProtocolNotSupported,
+				     NULL);
+		return CORBA_OBJECT_NIL;
+	}
+
+	uri = e_source_get_uri (source);
+	if (!uri) {
+		g_object_unref (source);
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_GNOME_Evolution_Addressbook_BookFactory_ProtocolNotSupported,
+				     NULL);
+		return CORBA_OBJECT_NIL;
+	}
 
 	/* Look up the backend and create one if needed */
 	g_mutex_lock (factory->priv->map_mutex);
@@ -271,11 +299,14 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 
 			g_mutex_unlock (factory->priv->map_mutex);
 
+			g_free (uri);
 			return CORBA_OBJECT_NIL;
 		}
 
 		backend = e_data_book_factory_launch_backend (factory, backend_factory, listener, uri);
 	}
+
+	g_free (uri);
 
 	if (backend) {
 		GNOME_Evolution_Addressbook_BookListener listener_copy;
@@ -284,11 +315,11 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 
 		g_mutex_unlock (factory->priv->map_mutex);
 
-		book = e_data_book_new (backend, uri, listener);
+		book = e_data_book_new (backend, source, listener);
 
 		e_book_backend_add_client (backend, book);
 
-		return bonobo_object_corba_objref (BONOBO_OBJECT (book));
+		corba_book = bonobo_object_corba_objref (BONOBO_OBJECT (book));
 	}
 	else {
 		/* probably need a more descriptive exception here */
@@ -297,8 +328,11 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 				     NULL);
 		g_mutex_unlock (factory->priv->map_mutex);
 
-		return CORBA_OBJECT_NIL;
+		corba_book = CORBA_OBJECT_NIL;
 	}
+
+	g_object_unref (source);
+	return corba_book;
 }
 
 static void
