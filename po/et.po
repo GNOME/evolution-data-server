@@ -1195,9 +1195,8 @@ msgid "Invalid arguments to (system-flag)"
 msgstr ""
 
 #: camel/camel-filter-search.c:400
-#, fuzzy
 msgid "Invalid arguments to (user-tag)"
-msgstr "<p>Elemendi <b>Tekstivahemik</b> vigane alamelement. Silt oli <b>%1</b></p>"
+msgstr ""
 
 #: camel/camel-filter-search.c:548
 #, c-format
