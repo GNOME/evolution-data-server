@@ -32,7 +32,7 @@
 
 #include "camel-imap4-stream.h"
 
-#define d(x) x
+#define d(x) (camel_debug ("imap4:stream") ? (x) : 0)
 
 #define IMAP4_TOKEN_LEN  128
 
@@ -417,12 +417,14 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 			} else if (strchr ("+*()[]\n", *inptr)) {
 				/* special character token */
 				token->token = *inptr++;
-#if d(!)0
-				if (token->token != '\n')
-					fprintf (stderr, "token: %c\n", token->token);
-				else
-					fprintf (stderr, "token: \\n\n");
-#endif
+				
+				if (camel_debug ("imap4:stream")) {
+					if (token->token != '\n')
+						fprintf (stderr, "token: %c\n", token->token);
+					else
+						fprintf (stderr, "token: \\n\n");
+				}
+				
 				break;
 			} else if (*inptr == '{') {
 				/* literal identifier token */

@@ -1,3 +1,8 @@
+2005-01-10  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-stream.c: Disable token debug spew
+	unless imap4:stream debug is enabled.
+
 2005-01-10  Sushma Rai <rsushma@novell.com>
 
 	* camel-provider.[ch] (camel_provider_validate_user):
