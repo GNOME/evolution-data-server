@@ -1,3 +1,11 @@
+2005-02-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	Fix Reviewed by Chenthill Palanisamy <pchenthill@novell.com>
+
+	* e-gw-container.c (e_gw_container_set_from_soap_parameter):
+	  Changed the Mailbox's container type from Inbox to Mailbox
+	  to coincide with servers changes
+
 2005-02-02  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-connection.c (e_gw_connection_position_cursor),

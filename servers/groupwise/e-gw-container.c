@@ -216,7 +216,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (!strcmp (value, "Root")) 
 			container->priv->type = E_GW_CONTAINER_TYPE_ROOT ;
-		else if (!strcmp (value, "Inbox")) 
+		else if (!strcmp (value, "Mailbox")) 
 			container->priv->type = E_GW_CONTAINER_TYPE_INBOX ;
 		else if (!strcmp (value, "Outbox")) 
 			container->priv->type = E_GW_CONTAINER_TYPE_OUTBOX ;
@@ -230,6 +230,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			container->priv->type = E_GW_CONTAINER_TYPE_TRASH ;
 		g_free (value) ;
 	}
+
 	/* retrive the unread and total count */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "hasUnread") ;
 	if (!subparam) {
