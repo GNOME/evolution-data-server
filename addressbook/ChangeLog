@@ -1,5 +1,12 @@
 2004-02-05  Chris Toshok  <toshok@ximian.com>
 
+	[ along with previous fixes, this fixes #53129 ]
+	
+	* backends/ldap/e-book-backend-ldap.c (find_book_view): we no
+	longer use EBookBackendLDAPBookView.
+
+2004-02-05  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.c (startup_mainloop): switch from using
 	bonobo_main to using a separate GMainLoop attached to the default
 	context.

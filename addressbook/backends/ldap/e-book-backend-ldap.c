@@ -76,7 +76,6 @@ static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char 
 
 static EBookBackendClass *e_book_backend_ldap_parent_class;
 typedef struct _EBookBackendLDAPCursorPrivate EBookBackendLDAPCursorPrivate;
-typedef struct _EBookBackendLDAPBookView EBookBackendLDAPBookView;
 typedef struct LDAPOp LDAPOp;
 
 
@@ -124,15 +123,6 @@ struct _EBookBackendLDAPCursorPrivate {
 
 	GList      *elements;
 	long       num_elements;
-};
-
-struct _EBookBackendLDAPBookView {
-	EDataBookView           *book_view;
-	EBookBackendLDAPPrivate *blpriv;
-	gchar                 *search;
-	int                    limit;
-
-	LDAPOp                *search_op;
 };
 
 typedef void (*LDAPOpHandler)(LDAPOp *op, LDAPMessage *res);
@@ -370,23 +360,21 @@ book_view_notify_status (EDataBookView *view, const char *status)
 static EDataBookView*
 find_book_view (EBookBackendLDAP *bl)
 {
-#if 0
-	EIterator *iter = e_list_get_iterator (bl->priv->book_views);
+	EList *views = e_book_backend_get_book_views (E_BOOK_BACKEND (bl));
+	EIterator *iter = e_list_get_iterator (views);
 	EDataBookView *rv = NULL;
 
 	if (e_iterator_is_valid (iter)) {
 		/* just always use the first book view */
-		EBookBackendLDAPBookView *v = (EBookBackendLDAPBookView*)e_iterator_get(iter);
+		EDataBookView *v = (EDataBookView*)e_iterator_get(iter);
 		if (v)
-			rv = v->book_view;
+			rv = v;
 	}
 
 	g_object_unref (iter);
+	g_object_unref (views);
 
 	return rv;
-#else
-	return NULL;
-#endif
 }
 
 static void
@@ -1546,8 +1534,6 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 	modify_op->id = e_contact_get_const (modify_op->contact, E_CONTACT_UID);
 
 	ldap = bl->priv->ldap;
-
-	book_view_notify_status (book_view, _("Modifying contact from LDAP server..."));
 
 	do {
 		book_view_notify_status (book_view, _("Modifying contact from LDAP server..."));
