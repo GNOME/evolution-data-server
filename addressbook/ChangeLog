@@ -1,3 +1,8 @@
+2004-04-21  Sivaiah Nallagatla <snallagatla@novell.com>
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_load_source) : change the separtor used between uri
+        and book name to ';' from '?'
+ 
 2004-04-20  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/Makefile.am: add test-nonexistent-id and test-query.
