@@ -1060,7 +1060,7 @@ msgstr "Evolutions adressboksbakände för lokal fil"
 #~ msgstr "VCard (.vcf, .gcrd)"
 
 #~ msgid "Default Sync Address:"
-#~ msgstr "Sstandardsynkroniseringsadress:"
+#~ msgstr "Standardsynkroniseringsadress:"
 
 #, fuzzy
 #~ msgid "Could not load addressbook"
