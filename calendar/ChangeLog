@@ -1,5 +1,7 @@
 2003-12-16  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.c (logout): fixed copy-paste typo.
+
 	* backends/groupwise/soap-test.c (idle_cb): unref the EGwConnection
 	object, so that the logout message is sent to the server.
 

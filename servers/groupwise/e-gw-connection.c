@@ -76,12 +76,8 @@ logout (EGwConnection *cnc)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
-	msg = e_gw_message_new_with_header (cnc->priv->uri, "loginRequest");
-	soup_soap_message_start_element (msg, "auth", "types", "http://schemas.novell.com/2003/10/NCSP/types.xsd");
-	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
-					 "http://www.w3.org/2001/XMLSchema-instance");
+	msg = e_gw_message_new_with_header (cnc->priv->uri, "logoutRequest");
 	e_gw_message_write_string_parameter (msg, "session", cnc->priv->session_id);
-	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 
 	/* send message to server */
