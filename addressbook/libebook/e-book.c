@@ -811,28 +811,11 @@ e_book_remove_contact (EBook       *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG);
 
-	g_mutex_lock (book->priv->mutex);
-
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("\"%s\" on book before \"%s\""),
-			     "e_book_remove_contact", "e_book_load_uri");
-		return FALSE;
-	}
-
-	if (book->priv->current_op != NULL) {
-		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
-			     _("book busy"));
-		return FALSE;
-	}
-
-	g_mutex_lock (book->priv->mutex);
-
 	list = g_list_append (NULL, (char*)id);
 
 	rv = e_book_remove_contacts (book, list, error);
+
+	g_list_free (list);
 
 	return rv;
 }

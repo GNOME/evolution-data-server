@@ -1,5 +1,13 @@
 2004-04-14  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book.c (e_book_remove_contact): fix deadlock when
+	calling this function - there's no reason to lock the book's mutex
+	here, as all we do is build a list and call
+	e_book_remove_contacts, which does the locking.  Fixes
+	gnomemeeting's e-d-s problem.
+
+2004-04-14  Chris Toshok  <toshok@ximian.com>
+
 	* backends/file/e-book-backend-file.c
 	(e_book_backend_file_remove): fix c&p error, unlink filename and
 	summary_filename, not filename twice.
