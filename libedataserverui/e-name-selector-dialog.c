@@ -238,6 +238,21 @@ e_name_selector_dialog_new (void)
  * Utilities *
  * --------- */
 
+static gchar *
+escape_sexp_string (const gchar *string)
+{
+	GString *gstring;
+	gchar   *encoded_string;
+
+	gstring = g_string_new ("");
+	e_sexp_encode_string (gstring, string);
+
+	encoded_string = gstring->str;
+	g_string_free (gstring, FALSE);
+
+	return encoded_string;
+}
+
 static void
 sort_iter_to_contact_store_iter (ENameSelectorDialog *name_selector_dialog, GtkTreeIter *iter)
 {
@@ -495,6 +510,9 @@ source_selected (ENameSelectorDialog *name_selector_dialog, ESource *source)
 
 	/* Start loading selected book */
 	name_selector_dialog->pending_book = e_book_new (source, NULL);
+	if (!name_selector_dialog->pending_book)
+		return;
+
 	e_book_async_open (name_selector_dialog->pending_book, TRUE,
 			   book_opened, name_selector_dialog);
 }
@@ -509,12 +527,15 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	EContactStore *contact_store;
 	EBookQuery    *book_query;
 	const gchar   *text;
+	gchar         *text_escaped;
 	gchar         *query_string;
 
 	text = gtk_entry_get_text (name_selector_dialog->search_entry);
-	query_string = g_strdup_printf ("(contains \"file_as\" \"%s\")", text);
+	text_escaped = escape_sexp_string (text);
+	query_string = g_strdup_printf ("(contains \"file_as\" %s)", text_escaped);
 	book_query = e_book_query_from_string (query_string);
 	g_free (query_string);
+	g_free (text_escaped);
 
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
 	e_contact_store_set_query (contact_store, book_query);

@@ -777,6 +777,7 @@ e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 	EBookView     *view;
 
 	g_return_if_fail (E_IS_CONTACT_STORE (contact_store));
+	g_return_if_fail (E_IS_BOOK (book));
 
 	if (find_contact_source_by_book (contact_store, book) >= 0) {
 		g_warning ("Same book added more than once to EContactStore!");
@@ -803,6 +804,7 @@ e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
 	gint           i;
 
 	g_return_if_fail (E_IS_CONTACT_STORE (contact_store));
+	g_return_if_fail (E_IS_BOOK (book));
 
 	source_index = find_contact_source_by_book (contact_store, book);
 	if (source_index < 0) {

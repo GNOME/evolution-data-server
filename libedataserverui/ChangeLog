@@ -1,3 +1,17 @@
+2005-01-04  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-contact-store.c (e_contact_store_add_book): Add precondition.
+	(e_contact_store_remove_book): Add precondition.
+
+	* e-name-selector-dialog.c (escape_sexp_string): Implement.
+	(source_selected): If the book cannot be created, don't try to
+	load it.
+	(search_changed): Escape the query string.
+
+	* e-name-selector-entry.c (setup_default_contact_store): Only load
+	true completion sources. Don't try to load books that can't be
+	created.
+
 2004-12-30  JP Rosevear  <jpr@novell.com>
 
 	* Makefile.am (INCLUDES): include the addressbook builddir as well

@@ -1175,12 +1175,19 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 		GSList       *m;
 
 		for (m = sources; m; m = g_slist_next (m)) {
-			ESource *source = m->data;
-			EBook   *book;
+			ESource     *source = m->data;
+			EBook       *book;
+			const gchar *completion;
 
-			/* TODO: Exclude non-completion sources */
+			/* Skip non-completion sources */
+			completion = e_source_get_property (source, "completion");
+			if (!completion || g_ascii_strcasecmp (completion, "true"))
+				continue;
 
 			book = e_book_new (source, NULL);
+			if (!book)
+				continue;
+
 			e_book_async_open (book, TRUE, NULL, NULL);
 			e_contact_store_add_book (name_selector_entry->contact_store, book);
 			g_object_unref (book);
