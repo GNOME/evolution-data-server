@@ -1,5 +1,28 @@
 2005-01-10  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/groupwise/camel-groupwise-folder.c
+	(groupwise_folder_get_message): Updated the offline check to use
+	CamelOffline methods.
+	(groupwise_refresh_info): Same.
+	(groupwise_cache_message): Removed.
+	(groupwise_folder_get_message): Use CAMEL_RECIPIENT_TYPE_* rather
+	than strings.
+	(groupwise_expunge): Updated to fit the normal CamelStore expunge
+	API and fixed a deadlock condition.
+
+	* providers/groupwise/camel-groupwise-store.c
+	(groupwise_get_folder_offline): Removed.
+	(groupwise_get_folder_online): Renamed to groupwise_get_folder()
+	and made to handle offline case.
+	(groupwise_connect_offline): Removed.
+	(groupwise_disconnect_offline): Removed.
+	(groupwise_get_fodler_info_online): Renamed
+	groupwise_get_folder_info() - if in offline mode, do the offline
+	thing.
+	(groupwise_create_folder): Updated for CamelOfflineStore stuff.
+	(groupwise_delete_folder): Same.
+	(groupwise_rename_folder): Same.
+
 	* providers/imap4/camel-imap4-stream.c: Disable token debug spew
 	unless imap4:stream debug is enabled.
 

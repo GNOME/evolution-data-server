@@ -32,7 +32,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <camel/camel-store.h>
-#include <camel/camel-disco-store.h>
+#include <camel/camel-offline-store.h>
 #include "camel-groupwise-store-summary.h"
 
 #include <e-gw-connection.h>
@@ -48,7 +48,7 @@ typedef struct _CamelGroupwiseStoreClass CamelGroupwiseStoreClass;
 typedef struct _CamelGroupwiseStorePrivate CamelGroupwiseStorePrivate;
 
 struct _CamelGroupwiseStore {
-	CamelDiscoStore parent_object;
+	CamelOfflineStore parent_object;
 
 	struct _CamelGroupwiseStoreSummary *summary;
 
@@ -60,7 +60,7 @@ struct _CamelGroupwiseStore {
 
 
 struct _CamelGroupwiseStoreClass {
-	CamelDiscoStoreClass parent_class;
+	CamelOfflineStoreClass parent_class;
 };
 
 
