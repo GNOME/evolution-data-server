@@ -1,3 +1,9 @@
+2003-09-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* providers/local/camel-local-provider.c: Set the IS_STORAGE bit
+	in the mbox provider, since it can now contain a hierarchy of
+	folders.
+
 2003-09-22  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #41610
