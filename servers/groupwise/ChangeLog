@@ -1,3 +1,10 @@
+2004-11-18  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-connection.c (e_gw_connection_new) : change 
+	the "UserInfo" element to "userinfo"
+	part of the fix for #69624
+
+	
 2004-10-26  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-message.c (e_gw_message_new_with_header) :

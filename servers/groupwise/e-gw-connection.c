@@ -410,7 +410,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	cnc->priv->session_id = soup_soap_parameter_get_string_value (param);
 
 	/* retrieve user information */
-	param = soup_soap_response_get_first_parameter_by_name (response, "UserInfo");
+	param = soup_soap_response_get_first_parameter_by_name (response, "userinfo");
 	if (param) {
 		SoupSoapParameter *subparam;
 		const char *param_value;
