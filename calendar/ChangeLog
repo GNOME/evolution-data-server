@@ -1,3 +1,10 @@
+2004-08-04  Chenthill Palanisamy <pchenthill@novell.com>
+
+       Fixes #60265
+       * backends/groupwise/e-cal-backend-groupwise.c
+       (e_cal_backend_groupwise_open): Whenever open_method is called
+       get the data from the server and populate the cache.
+
 2004-08-03  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:

@@ -490,24 +490,12 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	g_mutex_lock (priv->mutex);
 
-	/* create the local cache */
-        /* FIXME: if the cache already exists - read it and get deltas. */
-	if (priv->cache) {
-		g_mutex_unlock (priv->mutex);
-		g_object_ref (priv->cnc);
-		g_object_ref (priv->cache);
-		g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
-		priv->mode = CAL_MODE_REMOTE;
-
-                return GNOME_Evolution_Calendar_Success;
-	}
-
 	cbgw->priv->read_only = FALSE;
 	priv->mode = CAL_MODE_LOCAL;
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
 	
-	        /* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
+	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 	status = connect_to_server (cbgw);
 
 	g_mutex_unlock (priv->mutex);
