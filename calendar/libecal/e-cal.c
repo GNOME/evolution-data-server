@@ -2953,9 +2953,8 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 	/* set the RECUR-ID for the instance */
 	if (e_cal_util_component_has_recurrences (icalcomp)) {
 		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
-			itt = icaltime_from_timet (start, FALSE);
- 			/* if (itt_start.zone) */
-/*  				icaltimezone_convert_time (&itt, icaltimezone_get_utc_timezone (), itt_start.zone); */
+			itt = icaltime_from_timet (start, TRUE);
+			itt.hour = itt.minute = itt.second = 0;
 			icalcomponent_set_recurrenceid (icalcomp, itt);
 		}
 	}
@@ -3125,20 +3124,9 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 			start_time = icalcomponent_get_dtstart (e_cal_component_get_icalcomponent (comp));
 			end_time = icalcomponent_get_dtend (e_cal_component_get_icalcomponent (comp));
 
-			if (priv->default_zone) {
-				ci->start = icaltime_as_timet_with_zone (recur_time,
-									 start_time.zone ? start_time.zone : priv->default_zone);
-				ci->end = ci->start +
-					(icaltime_as_timet_with_zone (end_time,
-								      end_time.zone ? end_time.zone : priv->default_zone) -
-					 icaltime_as_timet_with_zone (start_time,
-								      start_time.zone ? start_time.zone : priv->default_zone));
-			} else {
-				ci->start = icaltime_as_timet_with_zone (recur_time, priv->default_zone);
-				ci->end = ci->start +
-					(icaltime_as_timet (end_time) - icaltime_as_timet (start_time));
-			}
-
+			ci->start = icaltime_as_timet (icaltime_convert_to_zone (recur_time, icaltimezone_get_utc_timezone ()));
+			ci->end = ci->start + (icaltime_as_timet (end_time) - icaltime_as_timet (start_time));
+			
 			detached_instances = g_list_prepend (detached_instances, ci);
 		} else {
 			e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,

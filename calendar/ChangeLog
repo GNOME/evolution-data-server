@@ -1,5 +1,11 @@
 2005-02-08  Rodrigo Moya <rodrigo@novell.com>
 
+	* libecal/e-cal.c (add_instance): set correctly (again) the recurid.
+	(generate_instances): set correctly instance times for detached
+	occurrences.
+
+2005-02-08  Rodrigo Moya <rodrigo@novell.com>
+
 	* libecal/e-cal.c (add_instance): recurrence-id needs to be a date
 	only.
 
