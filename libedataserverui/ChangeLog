@@ -1,3 +1,14 @@
+2005-01-27  Hao Sheng <hao.sheng@sun.com>
+
+	* e-name-selector-dialog.c:
+	(e_name_selector_dialog_init): set label mnemonic widget.
+	(add_section): set a11y name for button and section.
+
+	* e-name-selector.c:    
+	(e_name_selector_peek_section_entry): set a11y name to the mail entry
+
+	* e-name-selector-dialog.glade: add access name and access key.
+
 2005-01-26  Rodrigo Moya <rodrigo@novell.com>
 
 	* e-categories-dialog.c (e_categories_dialog_init): only show categories

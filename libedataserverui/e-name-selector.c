@@ -183,7 +183,13 @@ e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *n
 	section = &g_array_index (name_selector->sections, Section, n);
 
 	if (!section->entry) {
+		gchar *text;
 		section->entry = e_name_selector_entry_new ();
+		if (pango_parse_markup (name, -1, '_', NULL,
+				&text, NULL, NULL))  {
+			atk_object_set_name (gtk_widget_get_accessible (GTK_WIDGET (section->entry)), text);
+			g_free (text);
+		}
 		e_name_selector_entry_set_destination_store (section->entry, destination_store);
 	}
 

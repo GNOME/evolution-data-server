@@ -87,6 +87,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkCellRenderer   *cell_renderer;
 	GtkWidget         *widget;
 	GtkWidget         *container;
+	GtkWidget	  *label;
 	ESourceList       *source_list;
 
 	/* Get Glade GUI */
@@ -161,6 +162,10 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	widget = e_source_option_menu_new (name_selector_dialog->source_list);
 	g_signal_connect_swapped (widget, "source_selected", G_CALLBACK (source_selected), name_selector_dialog);
+
+	label = glade_xml_get_widget (name_selector_dialog->gui, "AddressBookLabel");
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), widget);
+
 	gtk_widget_show (widget);
 
 	container = glade_xml_get_widget (name_selector_dialog->gui, "source-menu-box");
@@ -395,6 +400,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	GtkTreeViewColumn *column;
 	GtkCellRenderer   *cell_renderer;
 	GtkWidget         *widget;
+	gchar		  *text;
 
 	g_assert (name != NULL);
 	g_assert (pretty_name != NULL);
@@ -404,8 +410,14 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 
 	section.name = g_strdup (name);
 	section.section_box      = GTK_BOX (gtk_hbox_new (FALSE, 12));
-	section.transfer_button  = GTK_BUTTON (gtk_button_new_with_label (pretty_name));
+	section.transfer_button  = GTK_BUTTON (gtk_button_new_with_mnemonic (pretty_name));
 	section.destination_view = GTK_TREE_VIEW (gtk_tree_view_new ());
+
+	if (pango_parse_markup (pretty_name, -1, '_', NULL,
+				&text, NULL, NULL))  {
+		atk_object_set_name (gtk_widget_get_accessible (section.destination_view), text);
+		g_free (text);
+	}
 
 	/* Set up transfer button */
 	g_signal_connect_swapped (section.transfer_button, "clicked",
