@@ -88,7 +88,7 @@ AC_SUBST(HAVE_JW)
 dnl I18N stuff
 AC_PROG_INTLTOOL
 
-ALL_LINGUAS="am az be bg bn ca cs da de el en_AU en_CA en_GB es et eu fi fr ga gl gu hr hu it ja ko lt lv mn ms nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am az be bg bn ca cs da de el en_AU en_CA en_GB es et eu fi fr ga gl gu hr hu it ja ko lt lv mn ms nb nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv tr uk vi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 GETTEXT_PACKAGE=evolution-data-server-1.5
