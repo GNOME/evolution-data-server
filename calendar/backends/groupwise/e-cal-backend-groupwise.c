@@ -60,6 +60,129 @@ static ECalBackendClass *parent_class = NULL;
 /* Time interval in milliseconds for obtaining changes from server and refresh the cache. */
 #define CACHE_REFRESH_INTERVAL 600000
 
+/* Initialy populate the cache from the server */
+static EGwConnectionStatus
+populate_cache (ECalBackendGroupwisePrivate *priv)
+{
+	EGwConnectionStatus status;
+        ECalComponent *comp;
+	const char *uid;
+	char *rid;
+        GSList *list = NULL, *l;
+
+        /* get all the objects from the server */
+        status = e_gw_connection_get_items (priv->cnc, priv->container_id, NULL, &list);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+                g_slist_free (list);
+                return status;
+        }
+        
+        for (l = list; l != NULL; l = g_slist_next(l)) {
+                comp = E_CAL_COMPONENT (l->data);
+		e_cal_component_get_uid (comp, &uid);
+                rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
+                e_cal_component_commit_sequence (comp);
+		e_cal_backend_cache_put_component (priv->cache, comp);
+                g_free (rid);
+                g_free (comp);
+        }
+        
+        g_slist_free (list);
+        return E_GW_CONNECTION_STATUS_OK;        
+                                                                                                                    
+}
+
+static EGwConnectionStatus 
+update_cache (gpointer *data)
+{
+        /* FIXME: to implemented using the getDeltas call */
+	return E_GW_CONNECTION_STATUS_OK;
+}
+
+static GnomeVFSURI *
+convert_uri (const char *gw_uri)
+{
+	char *real_uri;
+	GnomeVFSURI *vuri;
+
+	if (strncmp ("groupwise://", gw_uri, sizeof ("groupwise://") - 1))
+		return NULL;
+
+	real_uri = g_strconcat ("http://", gw_uri + sizeof ("groupwise://") - 1, NULL);
+	vuri = gnome_vfs_uri_new ((const char *) real_uri);
+
+	g_free (real_uri);
+
+	return vuri;
+}
+
+static ECalBackendSyncStatus
+connect_to_server (ECalBackendGroupwise *cbgw)
+{
+	GnomeVFSURI *vuri;
+	char *real_uri;
+	ECalBackendGroupwisePrivate *priv;
+	ECalBackendSyncStatus status;
+
+	priv = cbgw->priv;
+
+	/* convert the URI */
+	vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
+	if (!vuri) {
+		return GNOME_Evolution_Calendar_NoSuchCal;
+	} else {
+		/* create connection to server */
+		real_uri = gnome_vfs_uri_to_string ((const GnomeVFSURI *) vuri,
+						    GNOME_VFS_URI_HIDE_USER_NAME |
+						    GNOME_VFS_URI_HIDE_PASSWORD);
+		priv->cnc = e_gw_connection_new (
+			real_uri,
+			priv->username ? priv->username : gnome_vfs_uri_get_user_name (vuri),
+			priv->password ? priv->password : gnome_vfs_uri_get_password (vuri));
+
+		gnome_vfs_uri_unref (vuri);
+		g_free (real_uri);
+			
+		/* As of now we are assuming that logged in user has write rights to calender */
+		/* we need to read actual rights from server when we implement proxy user access */
+		cbgw->priv->read_only = FALSE;
+	
+		if (E_IS_GW_CONNECTION (priv->cnc)) {
+			icalcomponent_kind kind;
+
+			/* get the ID for the container */
+			if (priv->container_id)
+				g_free (priv->container_id);
+
+			kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+			if (kind == ICAL_VEVENT_COMPONENT)
+				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Calendar");
+			/* FIXME: else if (kind == ICAL_VTODO_COMPONENT) */
+			else
+				priv->container_id = NULL;
+
+			/* Populate the cache for the first time.*/
+			/* start a timed polling thread set to 10 minutes*/
+			status = populate_cache (priv);
+			if (status != E_GW_CONNECTION_STATUS_OK) {
+				g_object_unref (priv->cnc);
+				priv->cnc = NULL;
+				g_warning (G_STRLOC ": Could not populate the cache");
+				return GNOME_Evolution_Calendar_PermissionDenied;
+			} else {
+				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) update_cache, (gpointer) cbgw);
+
+				priv->mode = CAL_MODE_REMOTE;
+			}
+
+			return status;
+		} else
+			return GNOME_Evolution_Calendar_AuthenticationFailed;
+	}
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
 /* Dispose handler for the file backend */
 static void
 e_cal_backend_groupwise_dispose (GObject *object)
@@ -183,62 +306,6 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 	return GNOME_Evolution_Calendar_Success;
 }
 
-static GnomeVFSURI *
-convert_uri (const char *gw_uri)
-{
-	char *real_uri;
-	GnomeVFSURI *vuri;
-
-	if (strncmp ("groupwise://", gw_uri, sizeof ("groupwise://") - 1))
-		return NULL;
-
-	real_uri = g_strconcat ("http://", gw_uri + sizeof ("groupwise://") - 1, NULL);
-	vuri = gnome_vfs_uri_new ((const char *) real_uri);
-
-	g_free (real_uri);
-
-	return vuri;
-}
-
-/* Initialy populate the cache from the server */
-static EGwConnectionStatus
-populate_cache (ECalBackendGroupwisePrivate *priv)
-{
-	EGwConnectionStatus status;
-        ECalComponent *comp;
-	const char *uid;
-	char *rid;
-        GSList *list = NULL, *l;
-
-        /* get all the objects from the server */
-        status = e_gw_connection_get_items (priv->cnc, priv->container_id, NULL, &list);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
-                g_slist_free (list);
-                return status;
-        }
-        
-        for (l = list; l != NULL; l = g_slist_next(l)) {
-                comp = E_CAL_COMPONENT (l->data);
-		e_cal_component_get_uid (comp, &uid);
-                rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
-                e_cal_component_commit_sequence (comp);
-		e_cal_backend_cache_put_component (priv->cache, comp);
-                g_free (rid);
-                g_free (comp);
-        }
-        
-        g_slist_free (list);
-        return E_GW_CONNECTION_STATUS_OK;        
-                                                                                                                    
-}
-
-static EGwConnectionStatus 
-update_cache (gpointer *data)
-{
-        /* FIXME: to implemented using the getDeltas call */
-	return E_GW_CONNECTION_STATUS_OK;
-}
-
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
@@ -246,6 +313,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
+	ECalBackendSyncStatus status;
 	
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -268,14 +336,14 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	priv->mode = CAL_MODE_LOCAL;
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
-        priv->default_zone = icaltimezone_get_utc_timezone ();        
-		
-	g_mutex_unlock (priv->mutex);
-        
-        /* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
-	e_cal_backend_set_mode (E_CAL_BACKEND (backend), CAL_MODE_REMOTE);
+        priv->default_zone = icaltimezone_get_utc_timezone ();
 
-	return GNOME_Evolution_Calendar_Success;
+        /* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
+	status = connect_to_server (cbgw);
+
+	g_mutex_unlock (priv->mutex);
+
+	return status;
 }
 
 static ECalBackendSyncStatus
@@ -320,8 +388,6 @@ e_cal_backend_groupwise_get_mode (ECalBackend *backend)
 static void
 e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 {
-	GnomeVFSURI *vuri;
-	char *real_uri;
 	EGwConnectionStatus status;
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
@@ -339,67 +405,18 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 
 	switch (mode) {
 	case CAL_MODE_REMOTE :/* go online */
-		/* convert the URI */
-		vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
-		if (!vuri) {
-			e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
+		status = connect_to_server (cbgw);
+		if (status == GNOME_Evolution_Calendar_Success)
+			e_cal_backend_notify_mode (backend,
+						   GNOME_Evolution_Calendar_CalListener_MODE_SET,
 						   GNOME_Evolution_Calendar_MODE_REMOTE);
-		} else {
-			/* create connection to server */
-			real_uri = gnome_vfs_uri_to_string ((const GnomeVFSURI *) vuri,
-							    GNOME_VFS_URI_HIDE_USER_NAME |
-							    GNOME_VFS_URI_HIDE_PASSWORD);
-			priv->cnc = e_gw_connection_new (
-				real_uri,
-				priv->username ? priv->username : gnome_vfs_uri_get_user_name (vuri),
-				priv->password ? priv->password : gnome_vfs_uri_get_password (vuri));
-
-			gnome_vfs_uri_unref (vuri);
-			g_free (real_uri);
-			
-			/* As of now we are assuming that logged in user has write rights to calender */
-			/* we need to read actual rights from server when we implement proxy user access */
-			cbgw->priv->read_only = FALSE;
-	
-			if (E_IS_GW_CONNECTION (priv->cnc)) {
-				icalcomponent_kind kind;
-
-				/* get the ID for the container */
-				if (priv->container_id)
-					g_free (priv->container_id);
-
-				kind = e_cal_backend_get_kind (backend);
-				if (kind == ICAL_VEVENT_COMPONENT)
-					priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Calendar");
-				/* FIXME: else if (kind == ICAL_VTODO_COMPONENT) */
-				else
-					priv->container_id = NULL;
-
-				/* Populate the cache for the first time.*/
-				/* start a timed polling thread set to 10 minutes*/
-				status = populate_cache (priv);
-				if (status != E_GW_CONNECTION_STATUS_OK) {
-					g_object_unref (priv->cnc);
-					priv->cnc = NULL;
-					g_warning (G_STRLOC ": Could not populate the cache");
-
-					e_cal_backend_notify_mode (backend,
-								   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
-								   GNOME_Evolution_Calendar_MODE_REMOTE);
-				} else {
-                                        g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) update_cache, (gpointer) cbgw);
-
-					priv->mode = CAL_MODE_REMOTE;
-					e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
-								   GNOME_Evolution_Calendar_MODE_REMOTE);
-				}
-			} else {
-				e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
-							   GNOME_Evolution_Calendar_MODE_REMOTE);
-			}
-		}
+		else
+			e_cal_backend_notify_mode (backend,
+						   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
+						   GNOME_Evolution_Calendar_MODE_REMOTE);
 		break;
 	case CAL_MODE_LOCAL : /* go offline */
+		/* FIXME: make sure we update the cache before closing the connection */
 		g_object_unref (priv->cnc);
 		priv->cnc = NULL;
 		priv->mode = CAL_MODE_LOCAL;

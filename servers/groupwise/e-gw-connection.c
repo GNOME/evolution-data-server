@@ -735,14 +735,14 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
 	
         /* parse these parameters into ecalcomponents*/
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
-                subparam != NULL;
-                subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) { 
-                        ECalComponent *comp = NULL;
-                        comp = get_e_cal_component_from_soap_parameter (subparam);
-                        if (comp)
-                                *list = g_slist_append (*list, comp);
-                        else
-                                continue; /*FIXME: skips element if error. need to generate proper error*/
+	     subparam != NULL;
+	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) { 
+		ECalComponent *comp = NULL;
+		comp = get_e_cal_component_from_soap_parameter (subparam);
+		if (comp)
+			*list = g_slist_append (*list, comp);
+		else
+			continue; /*FIXME: skips element if error. need to generate proper error*/
         }
                
 	/* free memory */
