@@ -21,7 +21,6 @@
 #include <string.h>
 #include <libgnome/gnome-i18n.h>
 #include <libedataserver/e-sexp.h>
-#include <gal/widgets/e-unicode.h>
 #include <libecal/e-cal-time-util.h>
 
 #include "e-cal-backend-sexp.h"
@@ -346,7 +345,7 @@ matches_text_list (GSList *text_list, const char *str)
 		text = l->data;
 		g_assert (text->value != NULL);
 
-		if (e_utf8_strstrcasedecomp (text->value, str) != NULL) {
+		if (e_util_utf8_strstrcasedecomp (text->value, str) != NULL) {
 			matches = TRUE;
 			break;
 		}
@@ -394,7 +393,7 @@ matches_summary (ECalComponent *comp, const char *str)
 	if (!text.value)
 		return FALSE;
 
-	return e_utf8_strstrcasedecomp (text.value, str) != NULL;
+	return e_util_utf8_strstrcasedecomp (text.value, str) != NULL;
 }
 
 /* Returns whether any text field in a component matches the specified string */
