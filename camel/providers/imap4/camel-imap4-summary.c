@@ -1454,8 +1454,9 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	if (imap4_folder->enable_mlist && !imap4_summary->have_mlist) {
 		/* need to refetch all summary info to get info->mlist */
 		imap4_summary_clear (summary, FALSE);
-	} else
-		imap4_summary->have_mlist = imap4_folder->enable_mlist;
+	}
+	
+	imap4_summary->have_mlist = imap4_folder->enable_mlist;
 	
 	engine = ((CamelIMAP4Store *) summary->folder->parent_store)->engine;
 	scount = camel_folder_summary_count (summary);

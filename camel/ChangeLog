@@ -3,6 +3,8 @@
 	* providers/imap4/camel-imap4-summary.c
 	(camel_imap4_summary_init): Default the have_mlist bit to TRUE so
 	that upgraders from 2.0 won't have their summaries rescanned.
+	(camel_imap4_summary_flush_updates): Always update have_mlist to
+	reflect reality.
 
 2005-01-27  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
