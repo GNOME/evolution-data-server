@@ -1,3 +1,13 @@
+2003-12-10  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.c (e_cal_get_default_object): don't preload the
+	timezones into the cache, its problematic because we don't want to
+	have multiple operations at the same time and we don't do this for
+	views for instance
+	(e_cal_get_object): ditto
+
+	Fixes #51225
+	
 2003-12-09  JP Rosevear  <jpr@ximian.com>
 
 	* libecal/e-cal-listener.c (impl_notifyStaticCapabilities):

@@ -114,9 +114,6 @@ enum {
 	LAST_SIGNAL
 };
 
-static void e_cal_get_object_timezones_cb (icalparameter *param,
-						void *data);
-
 static guint e_cal_signals[LAST_SIGNAL];
 
 static GObjectClass *parent_class;
@@ -2090,27 +2087,6 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	*icalcomp = icalparser_parse_string (our_op->string);
 	g_free (our_op->string);
 
-	if (!*icalcomp) {
-		status = E_CALENDAR_STATUS_INVALID_OBJECT;
-	} else {
-		ECalGetTimezonesData cb_data;
-		
-		/* Now make sure we have all timezones needed for this object.
-		   We do this to try to avoid any problems caused by getting a timezone
-		   in the middle of other code. Any calls to ORBit result in a 
-		   recursive call of the GTK+ main loop, which can cause problems for
-		   code that doesn't expect it. Currently GnomeCanvas has problems if
-		   we try to get a timezone in the middle of a redraw, and there is a
-		   resize pending, which leads to an assert failure and an abort. */
-		cb_data.ecal = ecal;
-		cb_data.status = E_CALENDAR_STATUS_OK;
-		icalcomponent_foreach_tzid (*icalcomp,
-					    e_cal_get_object_timezones_cb,
-					    &cb_data);
-		
-		status = cb_data.status;
-	}
-
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
@@ -2188,54 +2164,11 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 	*icalcomp = icalparser_parse_string (our_op->string);
 	g_free (our_op->string);
 
-	if (status == E_CALENDAR_STATUS_OK && !*icalcomp) {
-		status = E_CALENDAR_STATUS_INVALID_OBJECT;
-	} else if (status == E_CALENDAR_STATUS_OK){
-		ECalGetTimezonesData cb_data;
-		
-		/* Now make sure we have all timezones needed for this object.
-		   We do this to try to avoid any problems caused by getting a timezone
-		   in the middle of other code. Any calls to ORBit result in a 
-		   recursive call of the GTK+ main loop, which can cause problems for
-		   code that doesn't expect it. Currently GnomeCanvas has problems if
-		   we try to get a timezone in the middle of a redraw, and there is a
-		   resize pending, which leads to an assert failure and an abort. */
-		cb_data.ecal = ecal;
-		cb_data.status = E_CALENDAR_STATUS_OK;
-		icalcomponent_foreach_tzid (*icalcomp,
-					    e_cal_get_object_timezones_cb,
-					    &cb_data);
-		
-		status = cb_data.status;
-	}
-
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
-}
-
-
-static void
-e_cal_get_object_timezones_cb (icalparameter *param,
-				    void *data)
-{
-	ECalGetTimezonesData *cb_data = data;
-	const char *tzid;
-	icaltimezone *zone;
-	GError *error = NULL;
-
-	tzid = icalparameter_get_tzid (param);
-	if (!tzid) {
-		cb_data->status = E_CALENDAR_STATUS_INVALID_OBJECT;
-		return;
-	}
-
-	if (!e_cal_get_timezone (cb_data->ecal, tzid, &zone, &error))
-		cb_data->status = error->code;
-	    
-	g_clear_error (&error);
 }
 
 /* Resolves TZIDs for the recurrence generator. */
