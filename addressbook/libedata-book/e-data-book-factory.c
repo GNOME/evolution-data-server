@@ -17,7 +17,6 @@
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-arg.h>
-#include "addressbook.h"
 #include "e-data-book-marshal.h"
 #include "e-data-book-factory.h"
 

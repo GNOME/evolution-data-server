@@ -24,8 +24,8 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include "addressbook.h"
 #include <libebook/e-contact.h>
+#include <libedatabook/Evolution-DataServer-Addressbook.h>
 #include <libedatabook/e-data-book-types.h>
 #include <libedatabook/e-data-book.h>
 

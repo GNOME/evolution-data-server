@@ -13,6 +13,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <libebook/Evolution-DataServer-Addressbook.h>
 #include <libebook/e-book-view-listener.h>
 
 #define E_TYPE_BOOK_VIEW           (e_book_view_get_type ())

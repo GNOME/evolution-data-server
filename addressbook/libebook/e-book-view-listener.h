@@ -13,8 +13,8 @@
 #define __E_BOOK_VIEW_LISTENER_H__
 
 #include <bonobo/bonobo-object.h>
+#include <libebook/Evolution-DataServer-Addressbook.h>
 #include <libebook/e-book-types.h>
-#include <libebook/addressbook.h>
 
 #define E_TYPE_BOOK_VIEW_LISTENER           (e_book_view_listener_get_type ())
 #define E_BOOK_VIEW_LISTENER(o)             (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_VIEW_LISTENER, EBookViewListener))

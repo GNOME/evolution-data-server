@@ -1,0 +1,9 @@
+Makefile
+Makefile.in
+Evolution-DataServer-Addressbook-common.c
+Evolution-DataServer-Addressbook-skels.c
+Evolution-DataServer-Addressbook-stubs.c
+Evolution-DataServer-Addressbook.h
+e-book-marshal.c
+e-book-marshal.h
+libebook-1.0.pc

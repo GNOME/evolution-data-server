@@ -1,32 +1,33 @@
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"libedatabook\"			\
-	$(DB3_CFLAGS)					\
-	$(LDAP_CFLAGS)					\
-	-I$(top_srcdir) 				\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
+	$(DB3_CFLAGS)					\
+	$(LDAP_CFLAGS)					\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 AM_CFLAGS = 								\
 	-DG_DISABLE_DEPRECATED=1					\
 	-DGNOME_DISABLE_DEPRECATED=1
 
-CORBA_SOURCE_H = addressbook.h
+# The corba stubs and skels
+CORBA_GENERATED_C =				\
+	Evolution-DataServer-Addressbook-common.c		\
+	Evolution-DataServer-Addressbook-skels.c		\
+	Evolution-DataServer-Addressbook-stubs.c
+CORBA_GENERATED_H =			\
+	Evolution-DataServer-Addressbook.h
 
-CORBA_SOURCE_C =					\
-	addressbook-common.c				\
-	addressbook-stubs.c				\
-	addressbook-skels.c
+CORBA_GENERATED = $(CORBA_GENERATED_C) $(CORBA_GENERATED_H)
 
-CORBA_SOURCE = $(CORBA_SOURCE_H) $(CORBA_SOURCE_C)
+idls =						\
+	$(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
 
-idls =							\
-	$(srcdir)/../idl/addressbook.idl
+idl_flags = $(IDL_INCLUDES)
 
-$(CORBA_SOURCE_H): $(idls)
-	$(ORBIT_IDL)  $(IDL_INCLUDES) -I $(srcdir) $(srcdir)/../idl/addressbook.idl
-
-$(CORBA_SOURCE_C): $(CORBA_SOURCE_H)
+$(CORBA_GENERATED_H): $(idls)
+	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
+$(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 
 MARSHAL_GENERATED = e-data-book-marshal.c e-data-book-marshal.h
 @EVO_MARSHAL_RULE@
@@ -52,7 +53,7 @@ lib_LTLIBRARIES = libedatabook.la
 
 libedatabook_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
-	$(CORBA_SOURCE_C)				\
+	$(CORBA_GENERATED_C)				\
 	e-book-backend-file.c				\
 	$(LDAP_SOURCE_C)				\
 	e-book-backend-vcf.c				\
@@ -77,7 +78,7 @@ libedatabook_la_LDFLAGS = 									\
 libedatabookincludedir = $(includedir)/evolution-data-server-1.0/libedatabook
 
 libedatabookinclude_HEADERS =				\
-	$(CORBA_SOURCE_H)				\
+	$(CORBA_GENERATED_H)				\
 	e-book-backend-file.h				\
 	$(LDAP_SOURCE_H)				\
 	e-book-backend-vcf.h				\
@@ -93,7 +94,7 @@ libedatabookinclude_HEADERS =				\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedatabook-1.0.pc
 
-BUILT_SOURCES = $(CORBA_SOURCE) $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = 				\

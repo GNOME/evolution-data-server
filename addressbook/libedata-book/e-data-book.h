@@ -13,8 +13,8 @@
 #define __E_DATA_BOOK_H__
 
 #include <bonobo/bonobo-object.h>
-#include "addressbook.h"
 #include <libedataserver/e-list.h>
+#include <libedatabook/Evolution-DataServer-Addressbook.h>
 #include <libedatabook/e-data-book-types.h>
 
 #define E_TYPE_DATA_BOOK        (e_data_book_get_type ())

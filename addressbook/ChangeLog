@@ -1,0 +1,33 @@
+2003-11-04  JP Rosevear <jpr@ximian.com>
+
+	* libedatabook/e-data-book-factory.c: remove corbe header include
+
+	* libedatabook/e-data-book.h: include corba header correctly
+
+	* libedatabook/e-data-book-view.h: ditto
+
+	* libedatabook/e-data-book-factory.h: ditto
+
+	* libedatabook/e-book-backend.h: ditto
+
+	* libedatabook/e-book-backend-sync.h: ditto
+
+	* libedatabook/Makefile.am: reflect idl name change
+
+	* libebook/e-book-view.c: remove corba header include
+
+	* libebook/e-book.c: ditto
+	
+	* libebook/e-book.h: include corba header correctly
+
+	* libebook/e-book-view.h: ditto
+
+	* libebook/e-book-view-listener.h: ditto
+
+	* libebook/e-book-listener.h: ditto
+
+	* idl/Makefile.am (idl_DATA): rename idl to
+	Evolution-DataServer-Addressbook.idl
+
+	* libebook/Makefile.am: reflect idl name change
+

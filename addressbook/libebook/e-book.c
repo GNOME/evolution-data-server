@@ -20,7 +20,6 @@
 
 #include "e-book-marshal.h"
 #include "e-book-listener.h"
-#include "addressbook.h"
 
 static GObjectClass *parent_class;
 

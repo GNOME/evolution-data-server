@@ -3,6 +3,7 @@
  */
 
 #include <bonobo/bonobo-object.h>
+#include <libedatabook/Evolution-DataServer-Addressbook.h>
 #include <libedatabook/e-book-backend.h>
 
 #ifndef __E_DATA_BOOK_FACTORY_H__

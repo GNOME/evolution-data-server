@@ -1,34 +1,32 @@
 INCLUDES =						\
-	-DPREFIX=\"$(prefix)\"				\
-	-DSYSCONFDIR=\"$(sysconfdir)\"			\
-	-DDATADIR=\"$(datadir)\"			\
-	-DLIBDIR=\"$(libdir)\"				\
-	-DG_LOG_DOMAIN=\"EBook\"			\
-	-I$(top_srcdir) 				\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DG_LOG_DOMAIN=\"libebook\"			\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
-	-I$(top_srcdir)					\
-	-DG_DISABLE_DEPRECATED				\
-	-DLIBGNOME_DISABLE_DEPRECATED			\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
+AM_CFLAGS = 								\
+	-DG_DISABLE_DEPRECATED=1					\
+	-DGNOME_DISABLE_DEPRECATED=1
+
 # The corba stubs and skels
-CORBA_ADDRESSBOOK_SOURCE_H =			\
-	addressbook.h
-CORBA_ADDRESSBOOK_SOURCE_C =			\
-	addressbook-common.c			\
-	addressbook-stubs.c			\
-	addressbook-skels.c
-CORBA_ADDRESSBOOK_IDL = $(srcdir)/../idl/addressbook.idl
+CORBA_GENERATED_C =				\
+	Evolution-DataServer-Addressbook-common.c		\
+	Evolution-DataServer-Addressbook-skels.c		\
+	Evolution-DataServer-Addressbook-stubs.c
+CORBA_GENERATED_H =			\
+	Evolution-DataServer-Addressbook.h
 
-$(CORBA_ADDRESSBOOK_SOURCE_H): $(CORBA_ADDRESSBOOK_IDL)
-	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(CORBA_ADDRESSBOOK_IDL)
+CORBA_GENERATED = $(CORBA_GENERATED_C) $(CORBA_GENERATED_H)
 
-$(CORBA_ADDRESSBOOK_SOURCE_C): $(CORBA_ADDRESSBOOK_SOURCE_H)
+idls =						\
+	$(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
 
-CORBA_SOURCE_H = $(CORBA_ADDRESSBOOK_SOURCE_H)
-CORBA_SOURCE_C = $(CORBA_ADDRESSBOOK_SOURCE_C)
-CORBA_SOURCE = $(CORBA_SOURCE_H) $(CORBA_SOURCE_C)
+idl_flags = $(IDL_INCLUDES)
+
+$(CORBA_GENERATED_H): $(idls)
+	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
+$(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 
 # The marshallers
 MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
@@ -38,7 +36,7 @@ MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
 lib_LTLIBRARIES = libebook.la
 
 libebook_la_SOURCES =					\
-	$(CORBA_SOURCE_C)				\
+	$(CORBA_GENERATED_C)				\
 	$(MARSHAL_GENERATED)				\
 	e-book-async.c					\
 	e-book-listener.c				\
@@ -60,7 +58,7 @@ libebook_la_LDFLAGS = 							\
 libebookincludedir = $(includedir)/evolution-data-server-1.0/libebook
 
 libebookinclude_HEADERS =				\
-	$(CORBA_SOURCE_H)				\
+	$(CORBA_GENERATED_H)				\
 	e-book-async.h					\
 	e-book-listener.h				\
 	e-book-query.h					\
@@ -74,7 +72,7 @@ libebookinclude_HEADERS =				\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-1.0.pc
 
-BUILT_SOURCES = $(CORBA_SOURCE) $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
 
 EXTRA_DIST = 				\
