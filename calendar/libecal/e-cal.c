@@ -632,6 +632,7 @@ cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *user
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
+	GList *l;
 
 	op = e_calendar_get_op (ecal);
 
@@ -645,6 +646,9 @@ cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *user
 	op->status = status;
 	op->list = g_list_copy (users);
 	op->string = g_strdup (object);
+
+	for (l = op->list; l; l = l->next)
+		l->data = g_strdup (l->data);
 
 	g_cond_signal (op->cond);
 

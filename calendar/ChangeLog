@@ -1,3 +1,10 @@
+2004-10-06  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #67513
+ 	
+ 	* libecal/e-cal.c (cal_objects_sent_cb): deep copy the user list
+ 	data
+	
 2004-10-04  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #66484
