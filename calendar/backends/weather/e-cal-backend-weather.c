@@ -333,9 +333,9 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	if (report->pop != 0)
 		pop = g_strdup_printf (_("%d%% chance of precipitation\n"), report->pop);
 	else
-		pop = "";
+		pop = g_strdup ("");
 	if (report->snowhigh == 0)
-		snow = "";
+		snow = g_strdup ("");
 	else if (report->snowhigh == report->snowlow) {
 		if (inches)
 			snow = g_strdup_printf (_("%.1fin snow\n"), cmtoin(report->snowhigh));
