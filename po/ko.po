@@ -5,15 +5,16 @@
 # Changwoo Ryu <cwryu@debian.org>, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server 0.0.5\n"
-"POT-Creation-Date: 2004-01-29 16:26-0500\n"
-"PO-Revision-Date: 2004-01-21 02:29+0900\n"
+"Project-Id-Version: evolution-data-server 0.0.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-01 00:23+0900\n"
+"PO-Revision-Date: 2004-02-01 00:23+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
-"Language-Team: GTP Korean <gnome-kr-translation@lists.sourceforge.net>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -21,7 +22,7 @@ msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
 #: addressbook/backends/file/e-book-backend-file.c:394
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2860
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2861
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "찾는 중입니다..."
@@ -51,11 +52,11 @@ msgstr "연락처를 LDAP 서버에서 지우는 중입니다..."
 msgid "Modifying contact from LDAP server..."
 msgstr "연락처를 LDAP 서버에서 고치는 중입니다..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2783
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2784
 msgid "Receiving LDAP search results..."
 msgstr "LDAP 찾기 결과를 받는 중입니다..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2880
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2881
 msgid "Error performing search"
 msgstr "찾기를 수행하는 중 오류가 발생했습니다"
 
@@ -116,19 +117,19 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListener를 만들 수 없습니다"
 
 #: addressbook/libebook/e-book.c:1854
-#, fuzzy
 msgid "e_book_load_uri: cancelled"
-msgstr "e_book_load_uri: 원본이 잘못되었습니다."
+msgstr "e_book_load_uri: 취소되었습니다"
 
 #: addressbook/libebook/e-book.c:2115
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: gconf에 자기 연락처 UID가 없습니다"
 
 #: addressbook/libebook/e-book.c:2292
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_get_self: gconf에 자기 연락처 UID가 없습니다"
+msgstr ""
+"e_book_set_default_source: gconf에 저장된 UID `%s'에 대한 소스가 없습니다."
 
 #: addressbook/libebook/e-contact.c:97
 msgid "Unique ID"
@@ -201,7 +202,7 @@ msgstr "비서 전화"
 
 #: addressbook/libebook/e-contact.c:122
 msgid "Business Phone"
-msgstr "근무처 전화 2"
+msgstr "근무처 전화"
 
 #: addressbook/libebook/e-contact.c:123
 msgid "Business Phone 2"
@@ -217,7 +218,7 @@ msgstr "다시 걸 전화"
 
 #: addressbook/libebook/e-contact.c:126
 msgid "Car Phone"
-msgstr "카 폰"
+msgstr "카폰"
 
 #: addressbook/libebook/e-contact.c:127
 msgid "Company Phone"
@@ -245,7 +246,7 @@ msgstr "휴대 전화"
 
 #: addressbook/libebook/e-contact.c:133
 msgid "Other Phone"
-msgstr "다른 전화"
+msgstr "기타 전화"
 
 #: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
@@ -545,16 +546,16 @@ msgid "Unnamed List"
 msgstr "이름 없는 목록"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:408
+#: calendar/backends/contacts/e-cal-backend-contacts.c:416
 msgid "Birthday"
 msgstr "생일"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:430
+#: calendar/backends/contacts/e-cal-backend-contacts.c:438
 #, c-format
 msgid "Birthday: %s"
 msgstr "생일: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:449
+#: calendar/backends/contacts/e-cal-backend-contacts.c:457
 #, c-format
 msgid "Anniversary: %s"
 msgstr "기념일: %s"
@@ -563,11 +564,11 @@ msgstr "기념일: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "달력 데이터를 저장할 수 없습니다; URI 형식이 틀렸습니다."
 
-#: calendar/backends/http/e-cal-backend-http.c:216
+#: calendar/backends/http/e-cal-backend-http.c:223
 msgid "Bad file format."
 msgstr "파일 형식이 틀렸습니다."
 
-#: calendar/backends/http/e-cal-backend-http.c:223
+#: calendar/backends/http/e-cal-backend-http.c:230
 msgid "Not a calendar."
 msgstr "달력이 아닙니다."
 
@@ -756,7 +757,7 @@ msgstr "URI를 이미 읽어들였습니다"
 
 #: calendar/libecal/e-cal.c:3910
 msgid "Permission denied"
-msgstr "허가권 거부"
+msgstr "권한이 거부되었습니다"
 
 #: calendar/libecal/e-cal.c:3912
 msgid "Object ID already exists"
@@ -764,7 +765,7 @@ msgstr "오브젝트 ID가 이미 있습니다"
 
 #: calendar/libecal/e-cal.c:3914
 msgid "Protocol not supported"
-msgstr "프로토콜 지원되지 않음"
+msgstr "프로토콜이 지원되지 않습니다"
 
 #: calendar/libecal/e-cal.c:3916
 msgid "Operation has been cancelled"
@@ -783,7 +784,6 @@ msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
 #: calendar/libecal/e-cal.c:3924
-#, fuzzy
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 예외가 발생했습니다"
 
@@ -878,41 +878,6 @@ msgstr ""
 "\"%s\"의 모든 인자가 문자열이거나, 아니면 인자가 한 개이고 불리언 거짓 (#f) "
 "값이어야 합니다"
 
-#. !/usr/bin/env python
-#. -*- Mode: python -*-
-#. ======================================================================
-#. FILE: Property.py
-#. CREATOR: eric
-#.
-#. DESCRIPTION:
-#.
-#.
-#. $Id$
-#. $Locker$
-#.
-#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
-#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
-#.
-#. This program is free software; you can redistribute it and/or modify
-#. it under the terms of either:
-#.
-#. The LGPL as published by the Free Software Foundation, version
-#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
-#.
-#. Or:
-#.
-#. The Mozilla Public License Version 1.0. You may obtain a copy of
-#. the License at http://www.mozilla.org/MPL/
-#. ======================================================================
-#. def icalerror_supress(arg):
-#. pass
-#. def icalerror_restore(a,b):
-#. pass
-#. Initialize all of the required keys
-#. Get the default kind of value for this property
-#. Use the kind of the existing value
-#. e1=icalerror_supress("MALFORMEDDATA")
-#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Evolution 주소록 파일 및 LDAP 백엔드"
@@ -925,9 +890,3 @@ msgstr "Evolution 주소록 파일 및 webcal 백엔드"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution 주소록 파일 백엔드"
-
-#~ msgid "uid? expects 1 argument"
-#~ msgstr "\"%s\"에는 한 개의 인자가 필요합니다"
-
-#~ msgid "uid? expects argument 1 to be a string"
-#~ msgstr "\"%s\"의 첫번째 인자가 문자열이어야 합니다"
