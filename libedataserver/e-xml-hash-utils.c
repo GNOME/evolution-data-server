@@ -250,7 +250,7 @@ e_xmlhash_write (EXmlHash *hash)
 	
 	filesave = g_alloca (strlen (hash->filename) + 5);
 	if ((slash = strrchr (hash->filename, '/')))
-		sprintf (filesave, "%.*s.#%s", slash - hash->filename + 1, hash->filename, slash + 1);
+		sprintf (filesave, "%.*s.#%s", (int)(slash - hash->filename + 1), hash->filename, slash + 1);
 	else
 		sprintf (filesave, ".#%s", hash->filename);
 	
