@@ -543,7 +543,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		tm = gmtime (&mod_time);
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	}
-
 	summary_count = camel_folder_summary_count (folder->summary) ;
 	if(summary_count) {
 		char  *t_str = NULL;
@@ -551,7 +550,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		t_str = g_strdup (time_string);
 		/* FIXME send the time stamp which the server sends */
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
-				"recipient distribution attachments subject created",
+				"peek recipient distribution attachments subject created status",
 				&t_str, "New", NULL, NULL, -1, &slist) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -579,7 +578,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		t_str = g_strdup (time_string);
 		/* FIXME send the time stamp which the server sends */
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
-					"recipient distribution attachments subject created",
+					"peek recipient distribution attachments subject created status",
 					&t_str, "Modified", NULL, NULL, -1, &slist) ; 
 		g_free (t_str), t_str = NULL;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -607,7 +606,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		g_mutex_lock (mutex) ;
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"attachments distribution created subject",
+				"peek attachments distribution created subject status",
 				NULL,
 				&cursor) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -1181,7 +1180,7 @@ camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_store, const 
 {
 	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
 
-	return g_hash_table_lookup (priv->name_hash,folder_name) ;
+	return g_hash_table_lookup (priv->name_hash, folder_name) ;
 }
 
 const char *

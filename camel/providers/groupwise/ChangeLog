@@ -1,3 +1,13 @@
+2005-03-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c:
+	  (groupwise_get_folder): add peek and status views to 
+	  the creatCursorRequest
+	* camel-groupwise-folder.c:
+	  (gw_update_summary): initialise the status flag
+	  variable.
+	  *** Fixes bug #73308
+
 2005-03-09  Sankar P <psankar@novell.com>
 
 	* camel-groupwise-utils.c:(camel_groupwise_util_item_from_message)

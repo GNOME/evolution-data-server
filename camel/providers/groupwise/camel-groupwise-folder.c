@@ -654,7 +654,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-					"recipient distribution created attachments subject",
+					"peek recipient distribution created attachments subject status",
 					&t_str, "New", NULL, NULL, -1, &slist) ;
 	
 	g_free (t_str), t_str = NULL;
@@ -673,7 +673,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	t_str = g_strdup (time_string);
 	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-				"recipient distribution created attachments subject",
+				"peek recipient distribution created attachments subject status",
 				&t_str, "Modified", NULL, NULL, -1, &slist) ;
 	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -728,6 +728,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		char *date = NULL, *temp_date = NULL ;
 		const char *id ;
 		GSList *recp_list = NULL ;
+		status_flags = 0;
 
 		id = e_gw_item_get_id (item) ;
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id) ;
