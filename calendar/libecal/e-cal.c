@@ -1534,6 +1534,14 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
 					  e_source_peek_name (priv->source), username);
 		key = e_source_get_uri (priv->source);
+		if (!key) {
+			e_calendar_remove_op (ecal, our_op);
+			g_mutex_unlock (our_op->mutex);
+			e_calendar_free_op (our_op);
+			*status = E_CALENDAR_STATUS_URI_NOT_LOADED;
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
+		}
+			
 		password = priv->auth_func (ecal, prompt, key, priv->auth_user_data);
 
 		if (!password) {

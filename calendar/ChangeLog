@@ -1,3 +1,10 @@
+2005-03-08  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #73141
+	* libecal/e-cal.c: (open_calendar): Check if the uri
+	is not NULL before getting the password from
+	e_passwords.
+
 2005-03-06  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #72454
