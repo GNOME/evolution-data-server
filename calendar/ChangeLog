@@ -1,3 +1,8 @@
+2004-08-17  JP Rosevear  <jpr@novell.com>
+
+	* libecal/e-cal.c (e_cal_set_default_timezone): don't set the same
+	time to the server again, avoids a needless server hit
+
 2004-08-17  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	* backends/groupwise/e-cal-backend-groupwise.c
