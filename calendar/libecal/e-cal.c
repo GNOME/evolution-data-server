@@ -898,14 +898,63 @@ cal_set_mode_cb (ECalListener *listener,
 	g_object_unref (G_OBJECT (ecal));
 }
 
+typedef struct
+{
+	ECal *ecal;
+	char *message;
+}  ECalBackendErrorData;
+
+static gboolean
+backend_error_idle_cb (gpointer data)
+{
+	ECalBackendErrorData *error_data = data;
+	
+	g_signal_emit (G_OBJECT (error_data->ecal), e_cal_signals[BACKEND_ERROR], 0, error_data->message);
+
+	g_object_unref (error_data->ecal);
+	g_free (error_data->message);
+	g_free (error_data);
+	
+	return FALSE;
+}
+
 /* Handle the error_occurred signal from the listener */
 static void
 backend_error_cb (ECalListener *listener, const char *message, gpointer data)
 {
-	ECal *ecal;
+	ECalBackendErrorData *error_data;
+	
+	error_data = g_new0 (ECalBackendErrorData, 1);
 
-	ecal = E_CAL (data);
-	g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_ERROR], 0, message);
+	error_data->ecal = g_object_ref (data);
+	error_data->message = g_strdup (message);
+
+	g_idle_add (backend_error_idle_cb, error_data);
+}
+
+typedef struct
+{
+	ECal *ecal;
+	GPtrArray *categories;
+}  ECalBackendCategoryData;
+
+static gboolean
+categories_changed_idle_cb (gpointer data)
+{
+	ECalBackendCategoryData *cat_data = data;
+	int i;
+	
+	g_message (G_STRLOC ": categories_changed_idle");
+
+	g_signal_emit (G_OBJECT (cat_data->ecal), e_cal_signals[CATEGORIES_CHANGED], 0, cat_data->categories);
+
+	g_object_unref (cat_data->ecal);
+	for (i = 0; i < cat_data->categories->len; i++)
+		g_free (cat_data->categories->pdata[i]);
+	g_ptr_array_free (cat_data->categories, TRUE);
+	g_free (cat_data);
+	
+	return FALSE;
 }
 
 /* Handle the categories_changed signal from the listener */
@@ -913,21 +962,18 @@ static void
 categories_changed_cb (ECalListener *listener, const GNOME_Evolution_Calendar_StringSeq *categories,
 		       gpointer data)
 {
-	ECal *ecal;
-	GPtrArray *cats;
+	ECalBackendCategoryData *cat_data;
 	int i;
 
-	ecal = E_CAL (data);
+	cat_data = g_new0 (ECalBackendCategoryData, 1);
 
-	cats = g_ptr_array_new ();
-	g_ptr_array_set_size (cats, categories->_length);
+	cat_data->ecal = g_object_ref (data);
+	cat_data->categories = g_ptr_array_sized_new (categories->_length);
 
 	for (i = 0; i < categories->_length; i++)
-		cats->pdata[i] = categories->_buffer[i];
+		cat_data->categories->pdata[i] = g_strdup (categories->_buffer[i]);
 
-	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CATEGORIES_CHANGED], 0, cats);
-
-	g_ptr_array_free (cats, TRUE);
+	g_idle_add (categories_changed_idle_cb, cat_data);
 }
 
 
@@ -998,9 +1044,9 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 	priv->uri = NULL;
 	priv->mutex = g_mutex_new ();
 	priv->listener = e_cal_listener_new (cal_set_mode_cb,
-					   backend_error_cb,
-					   categories_changed_cb,
-					   ecal);
+					     backend_error_cb,
+					     categories_changed_cb,
+					     ecal);
 
 	priv->cal_address = NULL;
 	priv->alarm_email_address = NULL;

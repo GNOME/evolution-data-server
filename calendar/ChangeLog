@@ -1,3 +1,13 @@
+2004-01-16  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.c (backend_error_idle_cb): idle handler to
+	actually proxy the signal emission to the main thread
+	(backend_error_cb): use above
+	(categories_changed_idle_cb): idle handler for proxying
+	(categories_changed_cb): use above
+
+	Fixes #52743
+	
 2004-01-16  Christian Neumair  <chris@gnome-de.org>
 
 	* libedata-cal/e-cal-backend-sexp.c (func_uid):
