@@ -91,6 +91,7 @@ load_properties_dialog (ECategoriesDialog *parent)
 	prop_dialog->category_icon = gnome_file_entry_new ("category-icon-history-id", _("Category Icon"));
 	gtk_table_attach (GTK_TABLE (table), prop_dialog->category_icon, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 3, 3);
 	gtk_widget_show (prop_dialog->category_icon);
+	gnome_file_entry_set_modal ((GnomeFileEntry *)prop_dialog->category_icon, TRUE);
 
 	return prop_dialog;
 }
