@@ -946,13 +946,13 @@ free_mods (GPtrArray *mods)
 		int j;
 		g_free (mod->mod_type);
 
-		if (mod->mod_op & LDAP_MOD_BVALUES) {
+		if (mod->mod_op & LDAP_MOD_BVALUES && mod->mod_bvalues) {
 			for (j = 0; mod->mod_bvalues[j]; j++) {
 				g_free (mod->mod_bvalues[j]->bv_val);
 				g_free (mod->mod_bvalues[j]);
 			}
 		}
-		else {
+		else if (mod->mod_values) {
 			for (j = 0; mod->mod_values[j]; j++)
 				g_free (mod->mod_values[j]);
 		}
@@ -2200,6 +2200,11 @@ category_ber (EContact *contact)
 {
 	struct berval** result = NULL;
 	GList *categories;
+	const char *category_string;
+
+	category_string = e_contact_get (contact, E_CONTACT_CATEGORIES);
+	if (!category_string || !*category_string)
+		return NULL;
 
 	categories = e_contact_get (contact, E_CONTACT_CATEGORY_LIST);
 

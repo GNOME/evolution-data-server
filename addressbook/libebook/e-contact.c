@@ -860,7 +860,7 @@ e_contact_set_property (GObject *object,
 				}
 
 				str = g_value_get_string (value);
-				if (str) {
+				if (str && *str) {
 					split = g_strsplit (str, ",", 0);
 					if (split) {
 						for (s = split; *s; s++) {
@@ -869,6 +869,11 @@ e_contact_set_property (GObject *object,
 						g_strfreev (split);
 					} else
 						e_vcard_attribute_add_value (attr, str);
+				}
+				else {
+					d(printf ("removing %s\n", info->vcard_field_name));
+
+					e_vcard_remove_attribute (E_VCARD (contact), attr);
 				}
 				break;
 			}
@@ -935,8 +940,15 @@ e_contact_set_property (GObject *object,
 		if (attr) {
 			d(printf ("setting %s to `%s'\n", info->vcard_field_name, sval));
 			e_vcard_attribute_remove_values (attr);
-			if (sval)
+			if (sval) {
 				e_vcard_attribute_add_value (attr, sval);
+			}
+			else {
+				d(printf ("removing %s\n", info->vcard_field_name));
+
+				e_vcard_remove_attribute (E_VCARD (contact), attr);
+			}
+
 		}
 		else if (sval) {
 			/* and if we don't find one we create a new attribute */

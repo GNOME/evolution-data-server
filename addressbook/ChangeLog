@@ -1,3 +1,21 @@
+2004-05-18  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes #58522, and some other misc update problems ]
+	
+	* libedata-book/evolutionperson.schema: make both evolutionPerson
+	and evolutionPersonList AUXILIARY classes, so they can be added to
+	inetOrgPerson objects in openldap 2.1.x+ servers.
+
+	* backends/ldap/e-book-backend-ldap.c (free_mods): guard against
+	mod->mod_bvalues/mod->mod_values being NULL... this shouldn't ever
+	happen, but it seem to, and is causing a crash.
+	(category_ber): simpler check to see if there are categories - get
+	the CATEGORIES property and check if it's NULL/0-length.
+
+	* libebook/e-contact.c (e_contact_set_property): remove the
+	CATEGORIES attribute if the string is empty or NULL, and do the
+	same for non-synthetic string attributes.
+
 2004-05-18 Sivaiah Nallagatla <snallagatla@novell.com>
 
         * backends/groupwise/e-book-backend-groupwise.c (set_members_in_gw_item) :
