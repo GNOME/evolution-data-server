@@ -1,3 +1,13 @@
+2003-11-11  Chris Toshok  <toshok@ximian.com>
+
+	* src/server.c (queue_termination): guard against multiple threads
+	here by using a mutex.  also, always remove the
+	terminal_handler_id if one exists and reinstate it afterward.
+	This gives us the behavior of always lasting EXIT_TIMEOUT
+	milliseconds after the most recent book/calendar shutdown.  Before
+	there was a potential for shutting down EXIT_TIMEOUT milliseconds
+	after the *first* book/calendar shutdown.
+
 2003-11-10  JP Rosevear <jpr@ximian.com>
 
 	* Makefile.am: build docs
