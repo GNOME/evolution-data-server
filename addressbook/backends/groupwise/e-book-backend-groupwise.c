@@ -2431,7 +2431,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	parsed_uri = e_uri_new (uri);
 	port = e_source_get_property (source, "port");
 	if (port == NULL)
-		port = "7181";
+		port = "7191";
 	use_ssl = e_source_get_property (source, "use_ssl");
 	if (use_ssl && !g_str_equal (use_ssl, "never")) 
 		priv->uri = g_strconcat ("https://", parsed_uri->host,":", port, "/soap", NULL );
