@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.4.1\n"
-"POT-Creation-Date: 2003-12-07 14:02-0500\n"
+"POT-Creation-Date: 2003-12-07 19:15-0500\n"
 "PO-Revision-Date: 2003-06-19 09:53-0300\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"

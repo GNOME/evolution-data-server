@@ -16,12 +16,6 @@ addressbook itself.
 #e-book-view-listener, #e-book
 </para>
 
-<!-- ##### STRUCT EBookViewPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### FUNCTION e_book_view_new ##### -->
 <para>
 
@@ -56,44 +50,4 @@ addressbook itself.
 
 @book_view: 
 
-
-<!-- ##### SIGNAL EBookView::contacts-added ##### -->
-<para>
-
-</para>
-
-@ebookview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EBookView::contacts-changed ##### -->
-<para>
-
-</para>
-
-@ebookview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EBookView::contacts-removed ##### -->
-<para>
-
-</para>
-
-@ebookview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EBookView::sequence-complete ##### -->
-<para>
-
-</para>
-
-@ebookview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EBookView::status-message ##### -->
-<para>
-
-</para>
-
-@ebookview: the object which received the signal.
-@arg1: 
 

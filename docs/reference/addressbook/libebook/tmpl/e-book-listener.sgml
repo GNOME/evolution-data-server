@@ -2,7 +2,7 @@
 EBookListener
 
 <!-- ##### SECTION Short_Description ##### -->
-Listens for call responses and event notifications from EBook objects. 
+Listens for call responses and event notifications from EBook objects.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -14,12 +14,6 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 <para>
 
 </para>
-
-<!-- ##### STRUCT EBookListenerPrivate ##### -->
-<para>
-
-</para>
-
 
 <!-- ##### STRUCT EBookListenerResponse ##### -->
 <para>
@@ -73,12 +67,4 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 
 @listener: 
 
-
-<!-- ##### SIGNAL EBookListener::response ##### -->
-<para>
-
-</para>
-
-@ebooklistener: the object which received the signal.
-@arg1: 
 

@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution.evolution-1-4-branch.es\n"
-"POT-Creation-Date: 2003-12-07 14:02-0500\n"
+"POT-Creation-Date: 2003-12-07 19:15-0500\n"
 "PO-Revision-Date: 2003-08-01 03:05+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"

@@ -1,11 +1,11 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_BookFactory"
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_BookFactory:@VERSION@"
             type="exe"
             location="@LIBEXECDIR@/evolution-data-server-@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/BookFactory:@VERSION@"/>
+		<item value="IDL:GNOME/Evolution/DataServer/BookFactory:@VERSION@"/>
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 
@@ -18,12 +18,12 @@
         </oaf_attribute>
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_CalFactory"
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_CalFactory:@VERSION@"
             type="exe"
             location="@LIBEXECDIR@/evolution-data-server-@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/Calendar/CalFactory:@VERSION@"/>
+		<item value="IDL:GNOME/Evolution/DataServer/CalFactory:@VERSION@"/>
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 

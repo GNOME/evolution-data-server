@@ -2,7 +2,7 @@
 ECalView
 
 <!-- ##### SECTION Short_Description ##### -->
-Represents a search against a calendar. 
+Represents a search against a calendar.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -21,12 +21,53 @@ ECalView is a view of the ECal.
 </para>
 
 
-<!-- ##### MACRO E_CAL_VIEW_TYPE ##### -->
+<!-- ##### SIGNAL ECal::backend-died ##### -->
 <para>
 
 </para>
 
+@: 
 
+<!-- ##### SIGNAL ECal::backend-error ##### -->
+<para>
+
+</para>
+
+@: 
+@: 
+
+<!-- ##### SIGNAL ECal::cal-opened ##### -->
+<para>
+
+</para>
+
+@: 
+@: 
+
+<!-- ##### SIGNAL ECal::cal-set-mode ##### -->
+<para>
+
+</para>
+
+@: 
+@: 
+@: 
+
+<!-- ##### SIGNAL ECal::categories-changed ##### -->
+<para>
+
+</para>
+
+@: 
+@: 
+
+<!-- ##### SIGNAL ECal::forget-password ##### -->
+<para>
+
+</para>
+
+@: 
+@: 
 
 <!-- ##### MACRO E_CAL_VIEW ##### -->
 <para>
@@ -42,28 +83,6 @@ ECalView is a view of the ECal.
 </para>
 
 @klass: 
-
-
-<!-- ##### MACRO IS_E_CAL_VIEW ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO IS_E_CAL_VIEW_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### STRUCT ECalViewPrivate ##### -->
-<para>
-
-</para>
 
 
 <!-- ##### FUNCTION e_cal_view_get_type ##### -->
@@ -84,77 +103,4 @@ ECalView is a view of the ECal.
 @client: 
 @Returns: 
 
-
-<!-- ##### FUNCTION e_cal_view_get_client ##### -->
-<para>
-
-</para>
-
-@view: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_view_start ##### -->
-<para>
-
-</para>
-
-@view: 
-
-
-<!-- ##### SIGNAL ECalView::objects-added ##### -->
-<para>
-
-</para>
-
-@ecalview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECalView::objects-modified ##### -->
-<para>
-
-</para>
-
-@ecalview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECalView::objects-removed ##### -->
-<para>
-
-</para>
-
-@ecalview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECalView::view-done ##### -->
-<para>
-
-</para>
-
-@ecalview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECalView::view-progress ##### -->
-<para>
-
-</para>
-
-@ecalview: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### ARG ECalView:client ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG ECalView:listener ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG ECalView:view ##### -->
-<para>
-
-</para>
 

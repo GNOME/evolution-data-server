@@ -4,7 +4,7 @@ e-book-types
 <!-- ##### SECTION Short_Description ##### -->
 
 Client-side GOBject which exposes the
-Evolution:BookListener interface. 
+Evolution:BookListener interface.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -41,6 +41,7 @@ Evolution:BookListener interface.
 @E_BOOK_ERROR_BUSY: 
 @E_BOOK_ERROR_REPOSITORY_OFFLINE: 
 @E_BOOK_ERROR_NO_SUCH_BOOK: 
+@E_BOOK_ERROR_NO_SELF_CONTACT: 
 @E_BOOK_ERROR_URI_NOT_LOADED: 
 @E_BOOK_ERROR_URI_ALREADY_LOADED: 
 @E_BOOK_ERROR_PERMISSION_DENIED: 
@@ -76,9 +77,11 @@ Evolution:BookListener interface.
 @E_BOOK_CHANGE_CARD_DELETED: 
 @E_BOOK_CHANGE_CARD_MODIFIED: 
 
-<!-- ##### TYPEDEF EBookChange ##### -->
+<!-- ##### STRUCT EBookChange ##### -->
 <para>
 
 </para>
 
+@change_type: 
+@contact: 
 

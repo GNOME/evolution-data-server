@@ -2,7 +2,7 @@
 EBook
 
 <!-- ##### SECTION Short_Description ##### -->
-The primary Evolution addressbook client object. 
+The primary Evolution addressbook client object.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -14,12 +14,6 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 <para>
 #e-book-listener, #e-book-view
 </para>
-
-<!-- ##### STRUCT EBookPrivate ##### -->
-<para>
-
-</para>
-
 
 <!-- ##### FUNCTION e_book_new ##### -->
 <para>
@@ -273,9 +267,11 @@ Gets the address information for the current Evolution user.
 </para>
 
 @book: 
-@id: 
+@contact: 
 @error: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@id: 
 
 
 <!-- ##### FUNCTION e_book_get_default_addressbook ##### -->
@@ -297,19 +293,4 @@ Gets the address information for the current Evolution user.
 @error: 
 @Returns: 
 
-
-<!-- ##### SIGNAL EBook::backend-died ##### -->
-<para>
-
-</para>
-
-@ebook: the object which received the signal.
-
-<!-- ##### SIGNAL EBook::writable-status ##### -->
-<para>
-
-</para>
-
-@ebook: the object which received the signal.
-@arg1: 
 

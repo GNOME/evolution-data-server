@@ -1,0 +1,390 @@
+<!-- ##### STRUCT ECalComponentPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM ECalGetStatus ##### -->
+<para>
+
+</para>
+
+@E_CAL_GET_SUCCESS: 
+@E_CAL_GET_NOT_FOUND: 
+@E_CAL_GET_SYNTAX_ERROR: 
+
+<!-- ##### SIGNAL ECalListener::add-timezone ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::alarm-address ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::cal-address ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::create-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::default-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::discard-alarm ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::get-changes ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::get-free-busy ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::get-timezone ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::ldap-attribute ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::modify-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::object-list ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::open ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::query ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::read-only ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::receive-objects ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::remove ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::remove-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::send-objects ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::set-default-timezone ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::static-capabilities ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ENUM ECalOpenStatus ##### -->
+<para>
+
+</para>
+
+@E_CAL_OPEN_SUCCESS: 
+@E_CAL_OPEN_ERROR: 
+@E_CAL_OPEN_NOT_FOUND: 
+@E_CAL_OPEN_PERMISSION_DENIED: 
+@E_CAL_OPEN_METHOD_NOT_SUPPORTED: 
+
+<!-- ##### STRUCT ECalPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM ECalResult ##### -->
+<para>
+
+</para>
+
+@E_CAL_RESULT_SUCCESS: 
+@E_CAL_RESULT_CORBA_ERROR: 
+@E_CAL_RESULT_INVALID_OBJECT: 
+@E_CAL_RESULT_NOT_FOUND: 
+@E_CAL_RESULT_PERMISSION_DENIED: 
+
+<!-- ##### SIGNAL ECalView::objects-added ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::objects-modified ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::objects-removed ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::view-done ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::view-progress ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ARG ECalView:client ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG ECalView:listener ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG ECalView:view ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ECalViewListener::objects-added ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::objects-modified ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::objects-removed ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::view-done ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::view-progress ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### STRUCT ECalViewListenerPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalViewPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_CAL_OPEN_STATUS_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_CAL_REMOVE_STATUS_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_CAL_VIEW_TYPE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO IS_E_CAL_VIEW ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+<!-- ##### MACRO IS_E_CAL_VIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+<!-- ##### FUNCTION e_cal_view_get_client ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_view_start ##### -->
+<para>
+
+</para>
+
+@view: 
+

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.1\n"
-"POT-Creation-Date: 2003-12-07 14:02-0500\n"
+"POT-Creation-Date: 2003-12-07 19:15-0500\n"
 "PO-Revision-Date: 2003-11-19 15:26+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
 "Language-Team:  <tp@lists.linux.it>,<it@li.org>\n"

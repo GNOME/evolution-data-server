@@ -20,19 +20,53 @@ Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 
-<!-- ##### MACRO E_CAL_OPEN_STATUS_ENUM_TYPE ##### -->
+<!-- ##### SIGNAL ECal::backend-died ##### -->
 <para>
 
 </para>
 
+@ecal: the object which received the signal.
 
-
-<!-- ##### MACRO E_CAL_REMOVE_STATUS_ENUM_TYPE ##### -->
+<!-- ##### SIGNAL ECal::backend-error ##### -->
 <para>
 
 </para>
 
+@ecal: the object which received the signal.
+@arg1: 
 
+<!-- ##### SIGNAL ECal::cal-opened ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECal::cal-set-mode ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECal::categories-changed ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECal::forget-password ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
 
 <!-- ##### MACRO E_CAL_SET_MODE_STATUS_ENUM_TYPE ##### -->
 <para>
@@ -48,23 +82,6 @@ Represents an entire calendar or task list, not individual items within them.2
 
 
 
-<!-- ##### STRUCT ECalPrivate ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### ENUM ECalOpenStatus ##### -->
-<para>
-
-</para>
-
-@E_CAL_OPEN_SUCCESS: 
-@E_CAL_OPEN_ERROR: 
-@E_CAL_OPEN_NOT_FOUND: 
-@E_CAL_OPEN_PERMISSION_DENIED: 
-@E_CAL_OPEN_METHOD_NOT_SUPPORTED: 
-
 <!-- ##### ENUM ECalSetModeStatus ##### -->
 <para>
 
@@ -73,26 +90,6 @@ Represents an entire calendar or task list, not individual items within them.2
 @E_CAL_SET_MODE_SUCCESS: 
 @E_CAL_SET_MODE_ERROR: 
 @E_CAL_SET_MODE_NOT_SUPPORTED: 
-
-<!-- ##### ENUM ECalGetStatus ##### -->
-<para>
-
-</para>
-
-@E_CAL_GET_SUCCESS: 
-@E_CAL_GET_NOT_FOUND: 
-@E_CAL_GET_SYNTAX_ERROR: 
-
-<!-- ##### ENUM ECalResult ##### -->
-<para>
-
-</para>
-
-@E_CAL_RESULT_SUCCESS: 
-@E_CAL_RESULT_CORBA_ERROR: 
-@E_CAL_RESULT_INVALID_OBJECT: 
-@E_CAL_RESULT_NOT_FOUND: 
-@E_CAL_RESULT_PERMISSION_DENIED: 
 
 <!-- ##### ENUM ECalLoadState ##### -->
 <para>
@@ -144,9 +141,11 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
-@uri: 
+@source: 
 @type: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@uri: 
 
 
 <!-- ##### FUNCTION e_cal_set_auth_func ##### -->
@@ -599,52 +598,4 @@ Represents an entire calendar or task list, not individual items within them.2
 @status: 
 @Returns: 
 
-
-<!-- ##### SIGNAL ECal::backend-died ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-
-<!-- ##### SIGNAL ECal::backend-error ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECal::cal-opened ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECal::cal-set-mode ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### SIGNAL ECal::categories-changed ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECal::forget-password ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-@arg1: 
 

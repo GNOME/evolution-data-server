@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"POT-Creation-Date: 2003-12-07 14:02-0500\n"
+"POT-Creation-Date: 2003-12-07 19:15-0500\n"
 "PO-Revision-Date: 2003-05-30 09:33+0400\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team:  <ru@li.org>\n"

@@ -15,12 +15,6 @@ EBookListener
 EBookTypes
 </para>
 
-<!-- ##### STRUCT EBookViewListenerPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT EBookViewListenerResponse ##### -->
 <para>
 Data sent back to the e-book object.
@@ -58,12 +52,4 @@ Stops the listener.
 
 @listener: 
 
-
-<!-- ##### SIGNAL EBookViewListener::response ##### -->
-<para>
-
-</para>
-
-@ebookviewlistener: the object which received the signal.
-@arg1: 
 

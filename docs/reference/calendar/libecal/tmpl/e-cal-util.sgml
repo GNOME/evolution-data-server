@@ -14,11 +14,14 @@ e-cal-util
 
 </para>
 
-<!-- ##### TYPEDEF CalObjInstance ##### -->
+<!-- ##### STRUCT CalObjInstance ##### -->
 <para>
 
 </para>
 
+@uid: 
+@start: 
+@end: 
 
 <!-- ##### FUNCTION cal_obj_instance_list_free ##### -->
 <para>

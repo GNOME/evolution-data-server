@@ -71,11 +71,13 @@ These values determine the privacy classification of the event.
 @E_CAL_COMPONENT_CLASS_CONFIDENTIAL: 
 @E_CAL_COMPONENT_CLASS_UNKNOWN: 
 
-<!-- ##### TYPEDEF ECalComponentDateTime ##### -->
+<!-- ##### STRUCT ECalComponentDateTime ##### -->
 <para>
 
 </para>
 
+@value: 
+@tzid: 
 
 <!-- ##### ENUM ECalComponentPeriodType ##### -->
 <para>
@@ -85,11 +87,13 @@ These values determine the privacy classification of the event.
 @E_CAL_COMPONENT_PERIOD_DATETIME: 
 @E_CAL_COMPONENT_PERIOD_DURATION: 
 
-<!-- ##### TYPEDEF ECalComponentPeriod ##### -->
+<!-- ##### STRUCT ECalComponentPeriod ##### -->
 <para>
 
 </para>
 
+@type: 
+@start: 
 
 <!-- ##### ENUM ECalComponentRangeType ##### -->
 <para>
@@ -100,17 +104,21 @@ These values determine the privacy classification of the event.
 @E_CAL_COMPONENT_RANGE_THISPRIOR: 
 @E_CAL_COMPONENT_RANGE_THISFUTURE: 
 
-<!-- ##### TYPEDEF ECalComponentRange ##### -->
+<!-- ##### STRUCT ECalComponentRange ##### -->
 <para>
 
 </para>
 
+@type: 
+@datetime: 
 
-<!-- ##### TYPEDEF ECalComponentText ##### -->
+<!-- ##### STRUCT ECalComponentText ##### -->
 <para>
 
 </para>
 
+@value: 
+@altrep: 
 
 <!-- ##### ENUM ECalComponentTransparency ##### -->
 <para>
@@ -122,23 +130,32 @@ These values determine the privacy classification of the event.
 @E_CAL_COMPONENT_TRANSP_OPAQUE: 
 @E_CAL_COMPONENT_TRANSP_UNKNOWN: 
 
-<!-- ##### TYPEDEF ECalComponentAttendee ##### -->
+<!-- ##### STRUCT ECalComponentAttendee ##### -->
 <para>
 
 </para>
 
+@value: 
+@member: 
+@cutype: 
+@role: 
+@status: 
+@rsvp: 
+@delto: 
+@delfrom: 
+@sentby: 
+@cn: 
+@language: 
 
-<!-- ##### TYPEDEF ECalComponentOrganizer ##### -->
+<!-- ##### STRUCT ECalComponentOrganizer ##### -->
 <para>
 
 </para>
 
-
-<!-- ##### STRUCT ECalComponentPrivate ##### -->
-<para>
-
-</para>
-
+@value: 
+@sentby: 
+@cn: 
+@language: 
 
 <!-- ##### FUNCTION e_cal_component_gen_uid ##### -->
 <para>
@@ -1011,17 +1028,23 @@ These values determine the privacy classification of the event.
 </para>
 
 
-<!-- ##### TYPEDEF ECalComponentAlarmInstance ##### -->
+<!-- ##### STRUCT ECalComponentAlarmInstance ##### -->
 <para>
 
 </para>
 
+@auid: 
+@trigger: 
+@occur_start: 
+@occur_end: 
 
-<!-- ##### TYPEDEF ECalComponentAlarms ##### -->
+<!-- ##### STRUCT ECalComponentAlarms ##### -->
 <para>
 
 </para>
 
+@comp: 
+@alarms: 
 
 <!-- ##### ENUM ECalComponentAlarmAction ##### -->
 <para>
@@ -1045,17 +1068,20 @@ These values determine the privacy classification of the event.
 @E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END: 
 @E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE: 
 
-<!-- ##### TYPEDEF ECalComponentAlarmTrigger ##### -->
+<!-- ##### STRUCT ECalComponentAlarmTrigger ##### -->
 <para>
 
 </para>
 
+@type: 
 
-<!-- ##### TYPEDEF ECalComponentAlarmRepeat ##### -->
+<!-- ##### STRUCT ECalComponentAlarmRepeat ##### -->
 <para>
 
 </para>
 
+@repetitions: 
+@duration: 
 
 <!-- ##### FUNCTION e_cal_component_has_alarms ##### -->
 <para>

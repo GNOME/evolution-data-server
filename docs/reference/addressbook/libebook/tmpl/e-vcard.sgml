@@ -323,12 +323,6 @@ Does the low-level parsing work for contact information. This data is more conve
 @EVC_FORMAT_VCARD_21: 
 @EVC_FORMAT_VCARD_30: 
 
-<!-- ##### STRUCT EVCardPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT EVCardAttribute ##### -->
 <para>
 

@@ -1,5 +1,14 @@
 2003-12-07  JP Rosevear  <jpr@ximian.com>
 
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in: update the repo
+	and oaf iids
+
+	* src/server.c: set correct default oaf id's
+
+	* configure.in: Bump version	
+
+2003-12-07  JP Rosevear  <jpr@ximian.com>
+	
 	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: version our
 	repo_ids
 
