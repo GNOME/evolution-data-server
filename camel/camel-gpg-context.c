@@ -58,7 +58,7 @@
 #include "camel-mime-filter-canon.h"
 #include "camel-multipart-signed.h"
 #include "camel-multipart-encrypted.h"
-#include "camel-debug"
+#include "camel-debug.h"
 #include "camel-i18n.h"
 
 #define d(x) 
