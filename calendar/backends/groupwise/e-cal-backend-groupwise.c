@@ -359,7 +359,11 @@ e_cal_backend_groupwise_remove (ECalBackendSync *backend, EDataCal *cal)
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	return GNOME_Evolution_Calendar_PermissionDenied;
+	/* remove the cache */
+	if (priv->cache)
+		e_file_cache_remove (E_FILE_CACHE (priv->cache));
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* is_loaded handler for the file backend */

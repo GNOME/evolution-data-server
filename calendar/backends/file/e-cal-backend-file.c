@@ -899,6 +899,7 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 			g_free (full_path);
 			g_free (str_uri);
 			g_free (dirname);
+			g_dir_close (dir);
 
 			return GNOME_Evolution_Calendar_OtherError;
 		}
