@@ -1583,7 +1583,6 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
-	icalcomponent_kind kind;
 	ECalComponent *comp;
 	const char *comp_uid;
 	struct icaltimetype current;
@@ -1594,13 +1593,13 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
 	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
+	/* Parse the icalendar text */
 	icalcomp = icalparser_parse_string ((char *) calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	/* FIXME Check kind with the parent */
-	kind = icalcomponent_isa (icalcomp);
-	if (kind != ICAL_VEVENT_COMPONENT && kind != ICAL_VTODO_COMPONENT) {
+	/* Check kind with the parent */
+	if (icalcomponent_isa (icalcomp) != e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 		icalcomponent_free (icalcomp);
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
@@ -1646,7 +1645,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
-	icalcomponent_kind kind;
 	const char *comp_uid, *rid;
 	char *real_rid;
 	ECalComponent *comp, *recurrence;
@@ -1659,13 +1657,13 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
 	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
+	/* Parse the icalendar text */
 	icalcomp = icalparser_parse_string ((char *) calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	/* check kind with the parent */
-	kind = icalcomponent_isa (icalcomp);
-	if (kind != ICAL_VEVENT_COMPONENT && kind != ICAL_VTODO_COMPONENT) {
+	/* Check kind with the parent */
+	if (icalcomponent_isa (icalcomp) != e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 		icalcomponent_free (icalcomp);
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}

@@ -1,3 +1,9 @@
+2003-12-22  JP Rosevear <jpr@ximian.com>
+
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_modify_object): check the kind with the parent
+	(e_cal_backend_file_create_object): ditto
+
 2003-12-21  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.h: update protos
