@@ -1,8 +1,7 @@
 INCLUDES =								\
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
-	-DG_DISABLE_DEPRECATED						\
-	-I$(top_srcdir)/libdb/dist			\
+	-I$(top_srcdir)/libdb/dist					\
 	$(E_DATA_SERVER_CFLAGS)
 
 # The marshallers
