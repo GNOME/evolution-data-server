@@ -2725,7 +2725,7 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 	g_return_val_if_fail (start <= end, NULL);
 
 	/* build the query string */
-	sexp = g_strdup ("(and (has-alarms? #t))");
+	sexp = g_strdup ("(has-alarms?)");
 
 	/* execute the query on the server */
 	if (!e_cal_get_object_list (ecal, sexp, &object_list, NULL)) {

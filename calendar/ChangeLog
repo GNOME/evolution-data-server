@@ -1,3 +1,7 @@
+2003-12-19 JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.c (e_cal_get_alarms_in_range): create a valid sexp
+
 2003-12-19  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libecal/e-cal.[ch] (e_cal_class_init):  removed 'forget_password'
