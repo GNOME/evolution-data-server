@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-14 09:09+0200\n"
-"PO-Revision-Date: 2005-02-14 09:16+0200\n"
+"POT-Creation-Date: 2005-02-16 10:40+0200\n"
+"PO-Revision-Date: 2005-02-16 10:39+0200\n"
 "Last-Translator: Vladimir \"Kaladan\" Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -1094,7 +1094,7 @@ msgstr "Случи се изключение на CORBA"
 
 #: calendar/libecal/e-cal.c:4522 camel/providers/imap/camel-imap-command.c:304
 #: camel/providers/imap/camel-imap-command.c:404
-#: camel/providers/imap4/camel-imap4-store.c:373
+#: camel/providers/imap4/camel-imap4-store.c:376
 #: camel/providers/pop3/camel-pop3-store.c:535
 #: camel/providers/pop3/camel-pop3-store.c:542
 #: camel/providers/pop3/camel-pop3-store.c:548
@@ -1283,7 +1283,7 @@ msgstr "Подготвяне на папката \"%s\" за режим \"Изк
 msgid "You must be working online to complete this operation"
 msgstr "Трябва да сте в режим \"online\", за да завършите тази операция"
 
-#: camel/camel-filter-driver.c:689 camel/camel-filter-search.c:522
+#: camel/camel-filter-driver.c:689 camel/camel-filter-search.c:523
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
 msgstr "Неуспех при създаването на тръба \"%s\": %s"
@@ -1352,25 +1352,25 @@ msgstr "Получаване на съобщение номер %d от %d"
 msgid "Failed at message %d of %d"
 msgstr "Грешка на съобщение - %d от %d"
 
-#: camel/camel-filter-search.c:135
+#: camel/camel-filter-search.c:136
 msgid "Failed to retrieve message"
 msgstr "Получаването на съобщението е неуспешно"
 
-#: camel/camel-filter-search.c:395
+#: camel/camel-filter-search.c:396
 msgid "Invalid arguments to (system-flag)"
 msgstr ""
 
-#: camel/camel-filter-search.c:410
+#: camel/camel-filter-search.c:411
 msgid "Invalid arguments to (user-tag)"
 msgstr ""
 
-#: camel/camel-filter-search.c:558
+#: camel/camel-filter-search.c:559
 #, c-format
 msgid "Failed to create create child process '%s': %s"
 msgstr "Неуспех при създаването на под-процес \"%s\": %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: camel/camel-filter-search.c:680 camel/camel-filter-search.c:688
+#: camel/camel-filter-search.c:682 camel/camel-filter-search.c:690
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Грешка при търсене на филтър: %s: %s"
@@ -1561,7 +1561,7 @@ msgstr "Неуспех при прегледа на съдържанието н�
 #: camel/providers/imap4/camel-imap4-engine.c:1524
 #: camel/providers/imap4/camel-imap4-engine.c:1569
 #: camel/providers/imap4/camel-imap4-engine.c:1625
-#: camel/providers/imap4/camel-imap4-store.c:1423
+#: camel/providers/imap4/camel-imap4-store.c:1434
 #: camel/providers/imap4/camel-imap4-utils.c:575
 #: camel/providers/smtp/camel-smtp-transport.c:163
 #: camel/providers/smtp/camel-smtp-transport.c:218
@@ -2907,21 +2907,21 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "Тази опция ще ви свърже с IMAP сървър използващ нешифрована парола"
 
 #: camel/providers/imap/camel-imap-store.c:421
-#: camel/providers/imap4/camel-imap4-store.c:212
+#: camel/providers/imap4/camel-imap4-store.c:215
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP сървър %s"
 
 #: camel/providers/imap/camel-imap-store.c:423
-#: camel/providers/imap4/camel-imap4-store.c:214
+#: camel/providers/imap4/camel-imap4-store.c:217
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP услуга за %s на %s"
 
 #: camel/providers/imap/camel-imap-store.c:553
 #: camel/providers/imap/camel-imap-store.c:568
-#: camel/providers/imap4/camel-imap4-store.c:319
-#: camel/providers/imap4/camel-imap4-store.c:334
+#: camel/providers/imap4/camel-imap4-store.c:322
+#: camel/providers/imap4/camel-imap4-store.c:337
 #: camel/providers/nntp/camel-nntp-store.c:200
 #: camel/providers/nntp/camel-nntp-store.c:215
 #: camel/providers/pop3/camel-pop3-store.c:169
@@ -2933,7 +2933,7 @@ msgid "Could not connect to %s: %s"
 msgstr "Не може да се осъществи връзка с %s: %s"
 
 #: camel/providers/imap/camel-imap-store.c:554
-#: camel/providers/imap4/camel-imap4-store.c:320
+#: camel/providers/imap4/camel-imap4-store.c:323
 #: camel/providers/nntp/camel-nntp-store.c:201
 #: camel/providers/pop3/camel-pop3-store.c:170
 #: camel/providers/smtp/camel-smtp-transport.c:258
@@ -2942,8 +2942,8 @@ msgstr "SSL не е наличен"
 
 #: camel/providers/imap/camel-imap-store.c:565
 #: camel/providers/imap/camel-imap-store.c:835
-#: camel/providers/imap4/camel-imap4-store.c:267
-#: camel/providers/imap4/camel-imap4-store.c:331
+#: camel/providers/imap4/camel-imap4-store.c:270
+#: camel/providers/imap4/camel-imap4-store.c:334
 #: camel/providers/imapp/camel-imapp-store.c:248
 #: camel/providers/nntp/camel-nntp-store.c:212
 #: camel/providers/nntp/camel-nntp-store.c:231
@@ -2955,9 +2955,9 @@ msgstr "Връзката е прекратена"
 #: camel/providers/imap/camel-imap-store.c:673
 #: camel/providers/imap/camel-imap-store.c:695
 #: camel/providers/imap/camel-imap-store.c:701
-#: camel/providers/imap4/camel-imap4-store.c:359
-#: camel/providers/imap4/camel-imap4-store.c:372
-#: camel/providers/imap4/camel-imap4-store.c:388
+#: camel/providers/imap4/camel-imap4-store.c:362
+#: camel/providers/imap4/camel-imap4-store.c:375
+#: camel/providers/imap4/camel-imap4-store.c:391
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Неуспех при свързването с IMAP сървъра %s в сигурен режим: %s"
@@ -2968,20 +2968,20 @@ msgid "STARTTLS not supported"
 msgstr "STARTTLS не се поддържа"
 
 #: camel/providers/imap/camel-imap-store.c:696
-#: camel/providers/imap4/camel-imap4-store.c:360
+#: camel/providers/imap4/camel-imap4-store.c:363
 #: camel/providers/pop3/camel-pop3-store.c:246
 msgid "SSL negotiations failed"
 msgstr "Неуспешни SSL преговори"
 
 #: camel/providers/imap/camel-imap-store.c:702
-#: camel/providers/imap4/camel-imap4-store.c:389
+#: camel/providers/imap4/camel-imap4-store.c:392
 #: camel/providers/pop3/camel-pop3-store.c:252
 #: camel/providers/smtp/camel-smtp-transport.c:365
 msgid "SSL is not available in this build"
 msgstr "В този билд SSL не е наличен"
 
 #: camel/providers/imap/camel-imap-store.c:838
-#: camel/providers/imap4/camel-imap4-store.c:270
+#: camel/providers/imap4/camel-imap4-store.c:273
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Не може да се свърже с команда \"%s\": %s"
@@ -3016,7 +3016,7 @@ msgstr ""
 
 #: camel/providers/imap/camel-imap-store.c:1888
 #: camel/providers/imap/camel-imap-store.c:2266
-#: camel/providers/imap4/camel-imap4-store.c:853
+#: camel/providers/imap4/camel-imap4-store.c:856
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
@@ -3167,117 +3167,129 @@ msgid ""
 "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:474
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
+#: camel/providers/imap4/camel-imap4-store-summary.c:368
+#: camel/providers/imap4/camel-imap4-store.c:1267
+#: camel/providers/local/camel-maildir-folder.c:75
+#: camel/providers/local/camel-maildir-store.c:217
+#: camel/providers/local/camel-maildir-store.c:289
+#: camel/providers/local/camel-maildir-store.c:511
+#: camel/providers/local/camel-maildir-store.c:524
+#: camel/providers/local/camel-spool-store.c:452
+msgid "Inbox"
+msgstr "Пощенска кутия"
+
+#: camel/providers/imap4/camel-imap4-store.c:477
 #, c-format
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:519
+#: camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:589
+#: camel/providers/imap4/camel-imap4-store.c:592
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:751
-#: camel/providers/imap4/camel-imap4-store.c:863
+#: camel/providers/imap4/camel-imap4-store.c:754
+#: camel/providers/imap4/camel-imap4-store.c:866
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "Не можете да създавате IMAP папки когато сте в режим \"Изключен\"."
 
-#: camel/providers/imap4/camel-imap4-store.c:790
+#: camel/providers/imap4/camel-imap4-store.c:793
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr ""
 "Неуспех при получаването на папка \"%s\" от IMAP сървър %s: Не е ясно защо"
 
-#: camel/providers/imap4/camel-imap4-store.c:911
+#: camel/providers/imap4/camel-imap4-store.c:914
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "Неуспех при създаването на папка \"%s\": Невалидно mailbox име"
 
-#: camel/providers/imap4/camel-imap4-store.c:917
+#: camel/providers/imap4/camel-imap4-store.c:920
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "Папката \"%s\" не може да бъде създадена: лоша команда"
 
-#: camel/providers/imap4/camel-imap4-store.c:948
+#: camel/providers/imap4/camel-imap4-store.c:951
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "Папката \"%s\" не може да бъде изтрита: специална папка"
 
-#: camel/providers/imap4/camel-imap4-store.c:955
+#: camel/providers/imap4/camel-imap4-store.c:958
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "Не може да изтривате IMAP папки когато сте в режим \"Изключен\"."
 
-#: camel/providers/imap4/camel-imap4-store.c:1014
+#: camel/providers/imap4/camel-imap4-store.c:1017
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:1019
+#: camel/providers/imap4/camel-imap4-store.c:1022
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "Папката \"%s\" не може да бъде изтрита: лоша команда"
 
-#: camel/providers/imap4/camel-imap4-store.c:1039
+#: camel/providers/imap4/camel-imap4-store.c:1042
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "Неуспех при преименуването на папка \"%s\" на \"%s\": Специална папка"
 
-#: camel/providers/imap4/camel-imap4-store.c:1046
+#: camel/providers/imap4/camel-imap4-store.c:1049
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "Не може да преименувате IMAP папки докато сте в режим \"Изключен\"."
 
-#: camel/providers/imap4/camel-imap4-store.c:1077
+#: camel/providers/imap4/camel-imap4-store.c:1080
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr ""
 "Неуспех при преименуването на папка \"%s\" в \"%s\": невалидно име на mailbox"
 
-#: camel/providers/imap4/camel-imap4-store.c:1082
+#: camel/providers/imap4/camel-imap4-store.c:1085
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "Неуспех при преименуването на папка \"%s\" на \"%s\": Лоша команда"
 
-#: camel/providers/imap4/camel-imap4-store.c:1421
+#: camel/providers/imap4/camel-imap4-store.c:1432
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:1423
+#: camel/providers/imap4/camel-imap4-store.c:1434
 msgid "Bad command"
 msgstr "Невалидна команда"
 
-#: camel/providers/imap4/camel-imap4-store.c:1461
+#: camel/providers/imap4/camel-imap4-store.c:1472
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr ""
 "Не можете да се записвате към IMAP папки когато сте в режим \"Изключен\"."
 
-#: camel/providers/imap4/camel-imap4-store.c:1506
+#: camel/providers/imap4/camel-imap4-store.c:1517
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:1511
+#: camel/providers/imap4/camel-imap4-store.c:1522
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr ""
 
-#: camel/providers/imap4/camel-imap4-store.c:1533
+#: camel/providers/imap4/camel-imap4-store.c:1544
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "Не може да се отпишете от IMAP папки докато сте в режим \"Изключен\"."
 
-#: camel/providers/imap4/camel-imap4-store.c:1578
+#: camel/providers/imap4/camel-imap4-store.c:1589
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr ""
 "Не можете да се отпишете от папката \"%s\": грешно име на пощенската кутия"
 
-#: camel/providers/imap4/camel-imap4-store.c:1583
+#: camel/providers/imap4/camel-imap4-store.c:1594
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr ""
@@ -3464,16 +3476,6 @@ msgstr "Не може да се запази обобщение %s: %s"
 #: camel/providers/local/camel-local-summary.c:464
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Не може да се добави съобщение към обобщение: неизвестна причина"
-
-#. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: camel/providers/local/camel-maildir-folder.c:75
-#: camel/providers/local/camel-maildir-store.c:217
-#: camel/providers/local/camel-maildir-store.c:289
-#: camel/providers/local/camel-maildir-store.c:511
-#: camel/providers/local/camel-maildir-store.c:524
-#: camel/providers/local/camel-spool-store.c:452
-msgid "Inbox"
-msgstr "Пощенска кутия"
 
 #: camel/providers/local/camel-maildir-folder.c:215
 msgid "Maildir append message cancelled"
@@ -4136,7 +4138,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username: %s"
 msgstr ""
-"Неуспех при свързването към POP сървъра s.\n"
+"Неуспех при свързването към POP сървъра %s.\n"
 "Грешка при изпращането на потребителско име: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:645
