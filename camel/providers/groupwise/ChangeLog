@@ -1,3 +1,16 @@
+2005-03-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c:
+	  (groupwise_get_folder): added recipient view
+	  for get quick messages
+	* camel-groupwise-folder.c:
+	  (groupwise_refresh_info): added recipient view
+	  for get quick messages
+	  (gw_update_summary): parse the recipient list
+	  for mail ids to be set in the "To" field of the 
+	  summary.
+	  ** Fixes # 72145
+
 2005-03-03  Vivek Jain <jvivek@novell.com>
 
 	***Fixes # 72455

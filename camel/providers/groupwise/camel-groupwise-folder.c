@@ -654,7 +654,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-					"distribution created attachments subject",
+					"recipient distribution created attachments subject",
 					&t_str, "New", NULL, NULL, -1, &slist) ;
 	
 	g_free (t_str), t_str = NULL;
@@ -673,7 +673,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	t_str = g_strdup (time_string);
 	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-				"distribution created attachments subject",
+				"recipient distribution created attachments subject",
 				&t_str, "Modified", NULL, NULL, -1, &slist) ;
 	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -727,6 +727,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		EGwItemOrganizer *org ;
 		char *date = NULL, *temp_date = NULL ;
 		const char *id ;
+		GSList *recp_list = NULL ;
 
 		id = e_gw_item_get_id (item) ;
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id) ;
@@ -772,11 +773,27 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 				mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
 
 			org = e_gw_item_get_organizer (item) ; 
-			if (org) {
+			if (org) 
 				mi->info.from = g_strconcat(org->display_name,"<",org->email,">",NULL) ;
-				mi->info.to = g_strdup(e_gw_item_get_to (item)) ;
+			recp_list = e_gw_item_get_recipient_list (item);
+			if (recp_list) {
+				GSList *rl;
+				char *str = "";
+				int i = 0;
+				for (rl = recp_list; rl != NULL; rl = rl->next) {
+					EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
+					if (recp->type == E_GW_ITEM_RECIPIENT_TO) {
+						if (i)
+							str = g_strconcat (str, ", ", NULL);
+						str = g_strconcat (str, recp->display_name,"<",
+								   recp->email,">", NULL);
+					}
+					i++;
+				}
+				mi->info.to = g_strdup(str);
+				g_free (str);
 			}
-
+			
 			temp_date = e_gw_item_get_creation_date(item) ;
 			if (temp_date) {
 				time_t time = e_gw_connection_get_date_from_string (temp_date) ;
