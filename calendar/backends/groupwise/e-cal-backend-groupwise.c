@@ -30,6 +30,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <bonobo/bonobo-i18n.h>
 #include <libedataserver/e-xml-hash-utils.h>
+#include <libedataserver/e-url.h>
 #include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libecal/e-cal-component.h>
@@ -179,32 +180,60 @@ get_deltas (gpointer handle)
         return E_GW_CONNECTION_STATUS_OK;        
 }
 
+
+static char* 
+form_uri (ESource *source)
+{
+	char *uri;
+	const char *port;
+	char *formed_uri;
+       	EUri *parsed_uri;
+
+	uri = e_source_get_uri (source);
+	if (uri == NULL)
+		return NULL;
+
+	parsed_uri = e_uri_new (uri);
+	if (parsed_uri == NULL)
+		return NULL;
+
+       	port = e_source_get_property (source, "port");
+	if (port == NULL)
+		port = "7181";
+
+       	formed_uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
+
+	g_free (uri);
+	e_uri_free (parsed_uri);
+	return formed_uri;
+
+}
+
 static ECalBackendSyncStatus
 connect_to_server (ECalBackendGroupwise *cbgw)
 {
-	GnomeVFSURI *vuri;
 	char *real_uri;
 	ECalBackendGroupwisePrivate *priv;
 	EGwConnectionStatus cnc_status;
+	ESource *source;
 
 	priv = cbgw->priv;
 
-	/* convert the URI */
-	vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
-	if (!vuri) {
+	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
+	real_uri = NULL;
+	if (source)
+		real_uri = form_uri (source);
+	
+	if (!real_uri) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Invalid server URI"));
 		return GNOME_Evolution_Calendar_NoSuchCal;
 	} else {
 		/* create connection to server */
-		real_uri = gnome_vfs_uri_to_string ((const GnomeVFSURI *) vuri,
-						    GNOME_VFS_URI_HIDE_USER_NAME |
-						    GNOME_VFS_URI_HIDE_PASSWORD);
 		priv->cnc = e_gw_connection_new (
 			real_uri,
-			priv->username ? priv->username : gnome_vfs_uri_get_user_name (vuri),
-			priv->password ? priv->password : gnome_vfs_uri_get_password (vuri));
+			priv->username,
+			priv->password);
 
-		gnome_vfs_uri_unref (vuri);
 		g_free (real_uri);
 			
 		/* As of now we are assuming that logged in user has write rights to calender */
