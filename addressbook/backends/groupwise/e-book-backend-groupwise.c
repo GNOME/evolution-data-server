@@ -1262,7 +1262,7 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 	
 	id = e_contact_get (contact, E_CONTACT_UID);
 	old_item = NULL;
-	status = e_gw_connection_get_item (egwb->priv->cnc, egwb->priv->container_id, id, "folders", &old_item);
+	status = e_gw_connection_get_item (egwb->priv->cnc, egwb->priv->container_id, id, NULL, &old_item);
 
 	if (old_item == NULL) {
 		e_data_book_respond_modify (book, opid, GNOME_Evolution_Addressbook_ContactNotFound, NULL);
@@ -1320,7 +1320,7 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 		e_data_book_respond_get_contact (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 		return;
 	}
-  	status = e_gw_connection_get_item (gwb->priv->cnc, gwb->priv->container_id, id, "folders", &item);
+  	status = e_gw_connection_get_item (gwb->priv->cnc, gwb->priv->container_id, id, NULL, &item);
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		if (item) {
 			contact = e_contact_new ();
