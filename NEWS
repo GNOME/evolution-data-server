@@ -1,3 +1,48 @@
+Evolution Data Server 1.1.2, 2004-12-20
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Calendar
+
+    #70127 - Evolution Calendar does not use a User-Agent (JP)
+    #70267 - O(n^2) activity writing cache files when opening an ics webcal
+    #file (Rodrigo)
+
+  * Addressbook
+
+    #68454 - Ldap organizationalUnit show up in contact list (Siva)
+
+  * Camel
+
+    #69776 -Signed Mail with attachments displays everything with
+     multipart/boundaries stuff (NotZed)
+    #69533 - GW imap mail becomes invisble/unavailable (NotZed)
+  
+Other bugs
+
+  * Addressbook
+    - implement is_open accessor on ebook (Hans)
+    - move e-destination (Hans)
+
+  * Calendar
+    - Merge recurrence work, support for detached instances (Rodrigo)
+    - Add support for passing a modified object from sync backends (Anders Carlsson)
+    - Add static capabilities for send options (Chen)
+    - Leak fixes (Harish)
+
+  * Camel
+    - Move camel here (NotZed)
+    - Fix non-SSL build (Jeff)
+    - Add offline journalling for IMAP4 (Jeff)
+
+  * All
+    - implement a gtktreemodel contact store (Hans)
+
+Updated Translations:
+	- lt (Zygimantas Berucka)
+	- it (Marco Ciampa)
+
 Evolution Data Server 1.1.1, 2004-11-28
 ----------------------------------------
 

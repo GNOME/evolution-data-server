@@ -1,5 +1,9 @@
 2004-12-20  JP Rosevear  <jpr@novell.com>
 
+	* configure.in: bump version, libtool numbers
+
+2004-12-20  JP Rosevear  <jpr@novell.com>
+
 	* libedataserverui/test-name-selector.c (main): no need to init
 	mime utils explicitly any more
 
