@@ -107,7 +107,7 @@ mbox_info_set_user_flag(CamelMessageInfo *mi, const char *name, gboolean value)
 
 	res = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->info_set_user_flag(mi, name, value);
 	if (res)
-		((CamelLocalMessageInfo *)mi)->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED|CAMEL_MESSAGE_FOLDER_XEVCHANGE;
+		((CamelLocalMessageInfo *)mi)->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 
 	return res;
 }
@@ -119,7 +119,7 @@ mbox_info_set_user_tag(CamelMessageInfo *mi, const char *name, const char *value
 
 	res = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->info_set_user_tag(mi, name, value);
 	if (res)
-		((CamelLocalMessageInfo *)mi)->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED|CAMEL_MESSAGE_FOLDER_XEVCHANGE;
+		((CamelLocalMessageInfo *)mi)->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 
 	return res;
 }

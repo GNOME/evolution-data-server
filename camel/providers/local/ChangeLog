@@ -1,3 +1,11 @@
+2005-03-16  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #73401?
+
+	* camel-mbox-summary.c (mbox_info_set_user_tag)
+	(mbox_info_set_user_flag): do not flag xevchange here, these
+	values are not stored in x-evolution-header anymore.
+
 2005-02-24  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #57185
