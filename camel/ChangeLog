@@ -1,3 +1,7 @@
+2004-11-29  Mengjie Yu  <meng-jie.yu@sun.com>
+
+	* providers/imap/camel-imap-provider.c:add mnemonic for checkboxes.
+
 2004-12-03  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-store.c (connect_to_server): Same.
