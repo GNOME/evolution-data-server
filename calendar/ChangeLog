@@ -1,3 +1,10 @@
+2004-12-18  JP Rosevear  <jpr@novell.com>
+
+	Fixes #70127
+	
+	* backends/http/e-cal-backend-http.c (begin_retrieval_cb): add
+	user agent header
+
 2004-12-15  Rodrigo Moya <rodrigo@novell.com>
 
 	Merge from recurrences-work-branch

@@ -372,6 +372,8 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	/* create message to be sent to server */
 	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
+	soup_message_add_header (soup_message->request_headers, "User-Agent",
+				 "Evolution/" VERSION);
 	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
 
 	soup_session_queue_message (priv->soup_session, soup_message,
