@@ -1,5 +1,7 @@
 2004-11-02  JP Rosevear  <jpr@novell.com>
 
+	Fixes #68737
+	
 	* configure.in: require libbonobo >= 2.4.2
 
 2004-11-01  Hans Petter Jansson  <hpj@novell.com>
