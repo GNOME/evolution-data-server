@@ -1,3 +1,9 @@
+2005-01-04  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	 * providers/groupwise/camel-groupwise-transport.c
+	  (groupwise_send_to): freeing the recipient list and assigning
+	   to NULL, which was causing a crash while sending mails.
+
 2004-12-31  JP Rosevear  <jpr@novell.com>
 
 	* providers/groupwise/Makefile.am: dist the private header, fix

@@ -260,7 +260,6 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	
 	buffer = g_malloc0 (content->buffer->len+1) ;
 	buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
-	g_print ("|| Buffer: \n%s\n", buffer) ;
 	e_gw_item_set_message (item, buffer);
 
 	
@@ -273,9 +272,9 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		return FALSE ;
 	}
 	
+	e_gw_item_set_recipient_list (item, NULL) ;
+	
 	g_object_unref (item) ;
-	g_slist_free (list) ;
-	g_slist_free (recipient_list) ;
 
 	camel_object_unref(content) ;
 	
