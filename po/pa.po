@@ -1,3 +1,4 @@
+# translation of evolution-data-server.HEAD.pa.po to Punjabi
 # translation of pa.po to Punjabi
 # English (Commonwealth) translation
 # Copyright (C) 2000, 2004 Free Software Foundation, Inc.
@@ -7,28 +8,28 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: pa\n"
+"Project-Id-Version: evolution-data-server.HEAD.pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-08-04 16:13+0530\n"
+"POT-Creation-Date: 2004-08-21 11:12+0200\n"
+"PO-Revision-Date: 2004-08-21 15:14+0530\n"
 "Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
-"Language-Team: Punjabi <pa@li.org>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3.1\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n\n"
 "\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:440
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
+#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1853
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "ਖੋਜ ਜਾਰੀ ਹੈ..."
 
@@ -150,8 +151,7 @@ msgstr "e_book_get_self: ਜੀਕਾਨਫ ਵਿੱਚ ਕੋਈ ਸਵੈ-ਸ
 
 #: addressbook/libebook/e-book.c:3191
 #, c-format
-msgid ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr "e_book_set_default_source: ਜੀ-ਕਾਨਫ ਵਿੱਚ uid `%s' ਲਈ ਕੋਈ ਸਰੋਤ ਨਹੀਂ ਹੈ|"
 
 #: addressbook/libebook/e-contact.c:100
@@ -601,16 +601,16 @@ msgid "Unnamed List"
 msgstr "ਬਿਨਾਂ ਨਾਂ ਸੂਚੀ"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "ਜਨਮਦਿਨ"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "ਜਨਮਦਿਨ: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "ਵਰੇਗੰਢ: %s"
@@ -623,17 +623,17 @@ msgstr "ਕੈਲੰਡਰ ਡਾਟੇ ਨੂੰ ਸੰਭਾਲਿਆ ਨਹ�
 msgid "Invalid server URI"
 msgstr "ਗਲਤ ਸਰਵਰ URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:293
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:296
 msgid "Calendar"
 msgstr "ਕੈਲੰਡਰ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:303
 msgid "Could not create cache file"
 msgstr "ਕੈਂਚੇ ਫਾਇਲ ਨੂੰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:328
+#: calendar/libecal/e-cal.c:4298
 msgid "Authentication failed"
 msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਅਸਫਲ"
 
@@ -800,71 +800,71 @@ msgstr "ਨਾ-ਪ੍ਰਭਾਸ਼ਿਤ"
 msgid "Enter password for %s (user %s)"
 msgstr "%s ਲਈ ਗੁਪਤ-ਕੋਡ ਦਿਓ (ਉਪਭੋਗਤਾ %s)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4272
 msgid "Invalid argument"
 msgstr "ਗਲਤ ਆਰਗੂਮਿੰਟ"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4274
 msgid "Backend is busy"
 msgstr "ਪਿੱਛਲਾ ਤਾਂ ਰੁਝਿਆ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4276
 msgid "Repository is offline"
 msgstr "Repository ਆਫਲਾਇਨ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4278
 msgid "No such calendar"
 msgstr "ਇੱਦਾਂ ਦਾ ਕੋਈ ਕੈਲੰਡਰ ਨਹੀਂ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "ਇਕਾਈ ਨਹੀਂ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4282 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "ਗਲਤ ਇਕਾਈ"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4284
 msgid "URI not loaded"
 msgstr "URI ਲੋਡ ਨਹੀਂ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4286
 msgid "URI already loaded"
 msgstr "URI ਪਹਿਲਾਂ ਹੀ ਲੋਡ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4288
 msgid "Permission denied"
 msgstr "ਅਧਿਕਾਰ ਪਾਬੰਦੀ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4290
 msgid "Object ID already exists"
 msgstr "ਇਕਾਈ ID ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4292
 msgid "Protocol not supported"
 msgstr "ਪਰੋਟੋਕੋਲ ਸਹਾਇਕ ਨਹੀਂ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4294
 msgid "Operation has been cancelled"
 msgstr "ਕਾਰਵਾਈ ਰੱਦ ਨਹੀਂ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4296
 msgid "Could not cancel operation"
 msgstr "ਕਾਰਵਾਈ ਨੂੰ ਰੱਦ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4300
 msgid "Authentication required"
 msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਲੋੜੀਦੀ ਹੈ"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4302
 msgid "A CORBA exception has occurred"
 msgstr "ਇੱਕ CORBA ਅਪਵਾਦ ਆਇਆ ਹੈ|"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4304 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "ਅਣਪਛਾਤੀ ਗਲਤੀ"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4306
 msgid "No error"
 msgstr "ਕੋਈ ਗਲਤੀ ਨਹੀਂ"
 
@@ -979,4 +979,5 @@ msgstr "ਈਵੇਲੂਸ਼ਨ ਸਿਰਨਾਵਾਂ ਕਿਤਾਬ ਫਾਇ
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "ਬਹੁ ਭਾਗ ਗਲਤੀ ਆਈ ਹੈ, ਗਲਤੀ ਬਕਸਾ ਵੇਖਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ\n"
+
