@@ -163,6 +163,8 @@ gboolean    e_book_is_self                 (EContact *contact);
 
 /* Addressbook Discovery */
 gboolean    e_book_get_default_addressbook (EBook **book, GError **error);
+gboolean    e_book_set_default_addressbook (EBook  *book, GError **error);
+gboolean    e_book_set_default_source      (ESource *source, GError **error);
 gboolean    e_book_get_addressbooks        (ESourceList** addressbook_sources, GError **error);
 
 GType        e_book_get_type                  (void);

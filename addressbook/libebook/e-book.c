@@ -2137,30 +2137,135 @@ e_book_is_self (EContact *contact)
 gboolean
 e_book_get_default_addressbook (EBook **book, GError **error)
 {
-	/* XXX for now just load the local ~/evolution/local/Contacts,
-	   this should really use properties on the ESource's that
-	   represent the addressbooks we have available. */
-	char *path, *uri;
-	gboolean rv;
+	ESourceList *sources;
+	GSList *g;
+	GError *err = NULL;
+	ESource *default_source = NULL;
+	gboolean rv = TRUE;
+
+	if (!e_book_get_addressbooks (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (g->data);
+		GSList *s;
+		for (s = e_source_group_peek_sources (group); s; s = s->next) {
+			ESource *source = E_SOURCE (s->data);
+
+			if (e_source_get_property (source, "default")) {
+				default_source = source;
+				break;
+			}
+		}
+
+		if (default_source)
+			break;
+	}
 
 	*book = e_book_new ();
 
-	path = g_build_filename (g_get_home_dir (),
-				 ".evolution/addressbook/local/OnThisComputer/Personal",
-				 NULL);
-	uri = g_strdup_printf ("file://%s", path);
-	g_free (path);
+	if (default_source) {
+		if (!e_book_load_source (*book, default_source, TRUE, &err)) {
+			g_propagate_error (error, err);
+			rv = FALSE;
+			goto done;
+		}
+	}
+	else {
+		if (!e_book_load_local_addressbook (*book, &err)) {
+			g_propagate_error (error, err);
+			rv = FALSE;
+			goto done;
+		}
+	}
 
-	rv = e_book_load_uri (*book, uri, FALSE, error);
-
-	g_free (uri);
-
+ done:
 	if (!rv) {
 		g_object_unref (*book);
 		*book = NULL;
 	}
-
+	g_object_unref (sources);
 	return rv;
+}
+
+/**
+ * e_book_set_default_addressbook:
+ * @book: An #EBook pointer
+ * @error: A #GError pointer
+ * 
+ * sets the #ESource of the #EBook as the "default" addressbook.  This is the source
+ * that will be loaded in the e_book_get_default_addressbook call.
+ * 
+ * Return value: #TRUE if the setting was stored in libebook's ESourceList, otherwise #FALSE.
+ */
+gboolean
+e_book_set_default_addressbook (EBook  *book, GError **error)
+{
+	ESource *source = e_book_get_source (book);
+	if (!source) {
+		/* XXX gerror */
+		return FALSE;
+	}
+
+	return e_book_set_default_source (source, error);
+}
+
+
+/**
+ * e_book_set_default_addressbook:
+ * @source: An #ESource pointer
+ * @error: A #GError pointer
+ * 
+ * sets @source as the "default" addressbook.  This is the source that
+ * will be loaded in the e_book_get_default_addressbook call.
+ * 
+ * Return value: #TRUE if the setting was stored in libebook's ESourceList, otherwise #FALSE.
+ */
+gboolean
+e_book_set_default_source (ESource *source, GError **error)
+{
+	ESourceList *sources;
+	const char *uid;
+	GError *err = NULL;
+	GSList *g;
+
+	uid = e_source_peek_uid (source);
+
+	if (!e_book_get_addressbooks (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	/* make sure the source is actually in the ESourceList.  if
+	   it's not we don't bother adding it, just return an error */
+	source = e_source_list_peek_source_by_uid (sources, uid);
+	if (!source) {
+		/* XXX gerror */
+		g_object_unref (sources);
+		return FALSE;
+	}
+
+	/* loop over all the sources clearing out any "default"
+	   properties we find */
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		GSList *s;
+		for (s = e_source_group_peek_sources (E_SOURCE_GROUP (g->data));
+		     s; s = s->next) {
+			e_source_set_property (E_SOURCE (s->data), "default", NULL);
+		}
+	}
+
+	/* set the "default" property on the source */
+	e_source_set_property (source, "default", "true");
+
+	if (!e_source_list_sync (sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /**

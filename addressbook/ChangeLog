@@ -1,3 +1,15 @@
+2004-01-26  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book.c (e_book_get_default_addressbook): implement
+	this the right way by searching for the "default" property over
+	all sources, and returning that source, or the local addressbook
+	if there isn't a default source.
+	(e_book_set_default_addressbook): new function.
+	(e_book_set_default_source): new function.
+
+	* libebook/e-book.h: add prototypes for
+	e_book_set_default_addressbook/e_book_set_default_source.
+
 2004-01-23  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-vcard.c (e_vcard_unescape_string): make public.
