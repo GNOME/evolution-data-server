@@ -193,6 +193,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp, *subcomp;
+	icalcomponent_kind kind;
 	const char *newuri;
 	char *str;
 
@@ -246,7 +247,8 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	}
 
 	/* Update cache */
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbhttp));
+	subcomp = icalcomponent_get_first_component (icalcomp, kind);
 	while (subcomp) {
 		ECalComponent *comp;
 
@@ -259,7 +261,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 		g_object_unref (comp);
 
-		subcomp = icalcomponent_get_next_component (icalcomp, ICAL_VEVENT_COMPONENT);
+		subcomp = icalcomponent_get_next_component (icalcomp, kind);
 	}
 
 	/* free memory */
@@ -462,11 +464,13 @@ e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp;
+	icalcomponent_kind kind;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	icalcomp = e_cal_util_new_component (ICAL_VEVENT_COMPONENT);
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
+	icalcomp = e_cal_util_new_component (kind);
 	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
 	icalcomponent_free (icalcomp);
 
