@@ -1,3 +1,16 @@
+2004-07-12  Chris Toshok  <toshok@ximian.com>
+
+	[ most likely fixes #57999 ]
+	
+	* libdb/dist/aclocal/options.ac: set the default unique name to
+	"_eds".  this will append _eds to all externally visible libdb
+	symbols, so we can be sure it won't conflict with another libdb
+	(linked dynamically).
+
+	* libdb/dist/configure: regen after options.ac change.
+
+	* libdb/dist/.cvsignore: ignore db_int_def.h
+
 2004-07-07  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-source.[ch] (e_source_build_absolute_uri): made

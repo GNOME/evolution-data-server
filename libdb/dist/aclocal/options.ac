@@ -170,7 +170,7 @@ AC_MSG_CHECKING([if --with-uniquename=NAME option specified])
 AC_ARG_WITH(uniquename,
 	[AC_HELP_STRING([--with-uniquename=NAME],
 			[Build a uniquely named library.])],
-	[with_uniquename="$withval"], [with_uniquename="no"])
+	[with_uniquename="$withval"], [with_uniquename="_eds"])
 if test "$with_uniquename" = "no"; then
 	db_cv_uniquename="no"
 	AC_MSG_RESULT($with_uniquename)

@@ -1686,7 +1686,7 @@ DB_VERSION_PATCH=25
 
 DB_VERSION_UNIQUE_NAME=_4001
 
-DB_VERSION_STRING="\"Sleepycat Software: Berkeley DB 4.1.25: (February 13, 2004)\""
+DB_VERSION_STRING="\"Sleepycat Software: Berkeley DB 4.1.25: (July 12, 2004)\""
 
 
 # Set the default installation location.
@@ -1967,7 +1967,7 @@ if test "${with_uniquename+set}" = set; then
   withval="$with_uniquename"
   with_uniquename="$withval"
 else
-  with_uniquename="no"
+  with_uniquename="_eds"
 fi;
 if test "$with_uniquename" = "no"; then
 	db_cv_uniquename="no"
