@@ -1,3 +1,7 @@
+2004-01-30  Rodrigo Moya <rodrigo@ximian.com>
+
+	* configure.in: require libsoup >= 2.1.6.
+
 2004-01-26  JP Rosevear  <jpr@ximian.com>
 
 	* configure.in: Bump libtool versions, version, soup requirement
