@@ -1,3 +1,9 @@
+2005-03-25  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-utils.c (header_append_param): Don't try to convert
+	boundary param values into UTF-8 even if they contain binary
+	text. Based on a patch from Pavel Fedin.
+
 2005-03-15  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-stream.c (camel_stream_read): Fix for systems where read
