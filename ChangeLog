@@ -1,3 +1,7 @@
+2004-11-01  Hans Petter Jansson  <hpj@novell.com>
+
+	* libdb/dbinc/mutex.h: Remove duplicated x86-64 mutex definition.
+
 2004-10-27  JP Rosevear  <jpr@novell.com>
 
 	* src/server.c: include just include signal.h for portability
