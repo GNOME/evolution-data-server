@@ -400,6 +400,7 @@ get_attendee_list_from_soap_parameter (SoupSoapParameter *param)
 
                 SoupSoapParameter *subparam;
                 attendee = g_new0 (ECalComponentAttendee, 1);
+		
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "email");
                 if (subparam) {
                         email = soup_soap_parameter_get_string_value (subparam);
@@ -499,7 +500,7 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
 	/* Message Body set to description */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "message");
 	if (subparam) {
-		const char description; 
+		const char *description; 
 		GSList *l = NULL;
 
 		description = g_strdup (soup_soap_parameter_get_string_value (subparam));
@@ -552,7 +553,6 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients");
         if (subparam) 
                 attendee_list = get_attendee_list_from_soap_parameter (subparam);
-               
         if (attendee_list) {
                 GSList *l;
                 e_cal_component_set_attendee_list (comp, attendee_list);
@@ -565,6 +565,7 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
                 g_slist_foreach (attendee_list, (GFunc) g_free, NULL);
         }
         
+
         /* FIXME  Property - status*/
         /* FIXME  Property priority */  
         subparam = soup_soap_parameter_get_first_child_by_name (param, "options");
@@ -701,9 +702,9 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
                 return NULL;
         } else {
 		SoupSoapParameter *subparam, *name_param, *id;
-		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "Folder");
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "folder");
 		     subparam != NULL;
-		     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "Folder")) {
+		     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "folder")) {
 			name_param = soup_soap_parameter_get_first_child_by_name (subparam, "name");
 			if (name_param && (!strcmp (soup_soap_parameter_get_string_value (name_param), name))) {
 				id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
@@ -1297,7 +1298,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
                 subparam != NULL;
                 subparam = soup_soap_parameter_get_next_child_by_name (subparam, "user")) {
                         SoupSoapParameter *param_blocks, *subparam_block, *tmp;
-                        const char *uuid, *email, *name;
+                        const char *uuid = NULL, *email = NULL, *name = NULL;
 
                         tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
                         if (tmp)

@@ -89,7 +89,6 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
         
         g_list_free (list);
         return E_GW_CONNECTION_STATUS_OK;        
-                                                                                                                    
 }
 
 static GnomeVFSURI *
@@ -599,7 +598,8 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 
         for( l = e_cal_backend_cache_get_components (priv->cache); l != NULL; l = g_list_next (l)) {
                 const char *uid;
-                ECalComponent *comp = E_CAL_COMPONENT (l);
+		ECalComponent *comp = E_CAL_COMPONENT (l->data);
+
                 e_cal_component_get_uid (comp, &uid);
                 match_object_sexp (uid, comp, &match_data);
         }
@@ -651,8 +651,8 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 		e_data_cal_view_notify_objects_added (query, (const GList *) match_data.obj_list);
 
 		/* free memory */
-		g_list_foreach (match_data.obj_list, (GFunc) g_free, NULL);
-		g_list_free (match_data.obj_list);
+		g_list_foreach ((GList *) match_data.obj_list, (GFunc) g_free, NULL);
+		g_list_free ((GList *) match_data.obj_list);
 	}
 
 	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
@@ -792,6 +792,19 @@ static ECalBackendSyncStatus
 e_cal_backend_groupwise_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
 {
 	return GNOME_Evolution_Calendar_OtherError;
+}
+
+static icaltimezone *
+e_cal_backend_groupwise_internal_get_default_timezone (ECalBackend *backend)
+{
+	/* Groupwise server maintains data in UTC  */
+	return icaltimezone_get_utc_timezone ();
+}
+
+static icaltimezone *
+e_cal_backend_groupwise_internal_get_timezone (ECalBackend *backend, const char *tzid)
+{
+	return icaltimezone_get_utc_timezone ();
 }
 
 static ECalBackendSyncStatus
@@ -1048,6 +1061,8 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 	backend_class->start_query = e_cal_backend_groupwise_start_query;
 	backend_class->get_mode = e_cal_backend_groupwise_get_mode;
 	backend_class->set_mode = e_cal_backend_groupwise_set_mode;
+	backend_class->internal_get_default_timezone = e_cal_backend_groupwise_internal_get_default_timezone;
+	backend_class->internal_get_timezone = e_cal_backend_groupwise_internal_get_timezone;
 }
 
 

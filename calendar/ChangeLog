@@ -1,3 +1,17 @@
+2004-01-26  Harish K <kharish@novell.com>
+	* calendar/backends/groupwise/e-cal-backend-groupwise.c :
+	(e_cal_backend_groupwise_internal_get_default_timezone,
+	e_cal_backend_groupwise_internal_get_timezone) : added and 
+	implemented.
+	(e_cal_backend_groupwise_get_object_list) : fixed incorrect
+	access to the list.
+	(e_cal_backend_groupwise_start_query) : fixed compiler warnings.
+	 
+	* calendar/backends/groupwise/e-gw-connection.c :
+	(e_gw_connection_get_container_id) : Modified elements 'Folders' to 
+	the 'folders' due to change in the server implementation.
+	Fixed compiler warnings.
+
 2004-01-24  Rodrigo Moya <rodrigo@ximian.com>
 
 	* calendar/backends/http/e-cal-backend-http.c: make it use
