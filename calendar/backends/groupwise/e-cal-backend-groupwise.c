@@ -56,6 +56,7 @@ struct _ECalBackendGroupwisePrivate {
 	char *container_id;
 	int timeout_id;
 	CalMode mode;
+	gboolean mode_changed;
 	icaltimezone *default_zone;
 	GHashTable *categories_by_id;
 	GHashTable *categories_by_name;
@@ -303,7 +304,6 @@ get_deltas (gpointer handle)
 
 		cache_comp_str = e_cal_component_get_as_string (cache_comp);
 		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, e_cal_component_get_as_string (modified_comp));
-		e_cal_backend_cache_remove_component (cache, e_gw_item_get_icalid (item), NULL);
 		e_cal_backend_cache_put_component (cache, modified_comp);
 		g_free (cache_comp_str);
 		g_object_unref (item);
@@ -347,6 +347,10 @@ get_deltas (gpointer handle)
 		ECalComponentVType vtype;
 
 		comp = e_cal_backend_cache_get_component (cache, (const char *) l->data, NULL);	
+		
+		if (!comp)
+			continue;
+
 		vtype = e_cal_component_get_vtype (comp);
 		if ((vtype == E_CAL_COMPONENT_EVENT) ||
 				(vtype == E_CAL_COMPONENT_TODO)) {
@@ -475,7 +479,8 @@ cache_init (ECalBackendGroupwise *cbgw)
 		
 		/* get the deltas from the cache */
 		if (get_deltas (cbgw)) {
-			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
+			if (kind == ICAL_VEVENT_COMPONENT)
+				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
 			return GNOME_Evolution_Calendar_Success;
 		} else {
@@ -529,7 +534,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		if (priv->cnc && priv->cache) {
 			priv->mode = CAL_MODE_REMOTE;
 			
-			if (!priv->timeout_id) {
+			if (priv->mode_changed && !priv->timeout_id) {
+				priv->mode_changed = FALSE;
 				if (get_deltas (cbgw)) {
 					if (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) == ICAL_VEVENT_COMPONENT)
 						priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
@@ -541,8 +547,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 			return GNOME_Evolution_Calendar_Success;
 		}
+		priv->mode_changed = FALSE;
 
-	
 		if (E_IS_GW_CONNECTION (priv->cnc)) {
 			icalcomponent_kind kind;
 
@@ -907,7 +913,8 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 	}
 
 	g_mutex_lock (priv->mutex);
-
+	
+	priv->mode_changed = TRUE;
 	switch (mode) {
 	case CAL_MODE_REMOTE :/* go online */
 		priv->mode = CAL_MODE_REMOTE;

@@ -1,3 +1,17 @@
+2005-02-07  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(ECalBackendGroupwisePrivate): Added a boolean variable
+	to check if the mode has been changed.
+	(get_deltas): put component replaces there is an existing 
+	component, so removed the remove_component call. Before
+	getting the vtype of the component, check if comp is NULL.
+	(cache_init): Insert the timeout call for getQuickMessages
+	only for events.
+	(connect_to_server): Add the timeout call for getquickmessages
+	only if the mode has been changed.
+	(e_cal_backend_groupwise_set_mode): Set the mode_changed variable.
+
 2005-02-04  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
