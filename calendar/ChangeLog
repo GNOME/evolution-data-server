@@ -1,3 +1,11 @@
+2004-01-31  JP Rosevear  <jpr@ximian.com>
+
+	* libecal/e-cal.c (e_cal_is_read_only): return a proper GError and
+	boolean
+
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_get_type): remove debug statements
+	
 2004-01-30  Radek Doulik  <rodo@ximian.com>
 
 	* backends/contacts/e-cal-backend-contacts.c (contact_record_new):

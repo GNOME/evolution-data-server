@@ -1828,7 +1828,7 @@ e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
-	return status == E_CALENDAR_STATUS_OK;
+	E_CALENDAR_CHECK_STATUS (status, error);
 }
 
 /**

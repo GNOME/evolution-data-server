@@ -820,8 +820,6 @@ e_cal_backend_contacts_get_type (void)
 {
 	static GType e_cal_backend_contacts_type = 0;
 
-        fprintf (stderr, "e_cal_backend_contacts_get_type ()\n");
-        
 	if (!e_cal_backend_contacts_type) {
 		static GTypeInfo info = {
                         sizeof (ECalBackendContactsClass),
