@@ -1,3 +1,7 @@
+2004-08-09  Ankit Patel <ankit@redhat.com>
+
+	* configure.in: Added Gujarati & Panjabi
+
 2004-08-06  Sayamindu Dasgupta <sayamindu@gnome.org>
 
 	* configure.in: Added bn (Bengali) to ALL_LINGUAS.
