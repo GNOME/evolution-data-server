@@ -1,3 +1,17 @@
+2005-01-10  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-connection.h : Add new status code
+	E_GW_CONNECTION_STATUS_REDIRECT
+	* e-gw-connection.c 
+	(form_login_request) :  moved the loginrequest 
+	forming code to here so it can be called whenever 
+	it is needed
+	(e_gw_connection_new) : call form_login_request here.
+	if the status code is E_GW_CONNECTION_STATUS_REDIRECT
+	send the login request to new server
+	(e_gw_connection_move_item) : new api to move/copy mails
+	between folders 
+
 2005-01-09  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* doc/gw-soap-methods.xsd 

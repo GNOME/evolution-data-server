@@ -135,6 +135,7 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	case 53505 : return E_GW_CONNECTION_STATUS_UNKNOWN_USER;
 	case 59914: return E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED;
 	case 59910: return E_GW_CONNECTION_STATUS_INVALID_CONNECTION;
+	case 59923: return E_GW_CONNECTION_STATUS_REDIRECT;
 		/* FIXME: map all error codes */
 	}
 
@@ -347,6 +348,23 @@ e_gw_connection_get_type (void)
 	return type;
 }
 
+static SoupSoapMessage*
+form_login_request (const char*uri, const char* username, const char* password)
+{
+	SoupSoapMessage *msg;
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (uri, NULL, "loginRequest");
+	soup_soap_message_start_element (msg, "auth", "types", NULL);
+	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
+					 "http://www.w3.org/2001/XMLSchema-instance");
+	e_gw_message_write_string_parameter (msg, "username", "types", username);
+	if (password && *password)
+		e_gw_message_write_string_parameter (msg, "password", "types", password);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+	return msg;
+}
+
 EGwConnection *
 e_gw_connection_new (const char *uri, const char *username, const char *password)
 {
@@ -356,6 +374,8 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	SoupSoapParameter *param;
 	EGwConnectionStatus status;
 	char *hash_key;
+	char *redirected_uri = NULL;
+	
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;	
 	
 	g_static_mutex_lock (&connecting);
@@ -380,30 +400,48 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	/* not found, so create a new connection */
 	cnc = g_object_new (E_TYPE_GW_CONNECTION, NULL);
 
-	/* build the SOAP message */
-	msg = e_gw_message_new_with_header (uri, NULL, "loginRequest");
-	soup_soap_message_start_element (msg, "auth", "types", NULL);
-	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
-					 "http://www.w3.org/2001/XMLSchema-instance");
-	e_gw_message_write_string_parameter (msg, "username", "types", username);
-	if (password && *password)
-		e_gw_message_write_string_parameter (msg, "password", "types", password);
-	soup_soap_message_end_element (msg);
-	e_gw_message_write_footer (msg);
-
+	msg = form_login_request (uri, username, password);
+	
 	/* send message to server */
 	response = e_gw_connection_send_message (cnc, msg);
+
 	if (!response) {
 		g_object_unref (cnc);
 		g_static_mutex_unlock (&connecting);
+		g_object_unref (msg);
 		return NULL;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_REDIRECT) {
+		char *host, *port;
+		char **tokens;
+		SoupSoapParameter *subparam;
 
+		param = soup_soap_response_get_first_parameter_by_name (response, "redirectToHost");
+		subparam = soup_soap_parameter_get_first_child_by_name (param, "ipAddress");
+		host = soup_soap_parameter_get_string_value (subparam);
+		subparam = soup_soap_parameter_get_first_child_by_name (param, "port");
+		port = soup_soap_parameter_get_string_value (subparam);
+		if (host && port) {
+			tokens = g_strsplit (uri, "://", 2);
+			redirected_uri = g_strconcat (tokens[0], "://", host, ":", port, "/soap");
+			g_object_unref (msg);
+			g_object_unref (response);
+			msg = form_login_request (redirected_uri, username, password);
+			uri = redirected_uri;
+			response = e_gw_connection_send_message (cnc, msg);
+			status = e_gw_connection_parse_response_status (response);
+			g_strfreev (tokens);
+			g_free (host);
+			g_free (port);
+		}
+		       
+	}
 	param = soup_soap_response_get_first_parameter_by_name (response, "session");
 	if (!param) {
 		g_object_unref (response);
+		g_object_unref (msg);
 		g_object_unref (cnc);
 		g_static_mutex_unlock (&connecting);
 		return NULL;
@@ -450,8 +488,9 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 
 	/* free memory */
 	g_object_unref (response);
+	g_object_unref (msg);
 	g_static_mutex_unlock (&connecting);
-
+	g_free (redirected_uri);
 	return cnc;
 }
 
@@ -2263,4 +2302,43 @@ e_gw_connection_share_folder(EGwConnection *cnc, gchar *id, GList *new_list, con
 	g_object_unref (msg);
 
 	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_move_item (EGwConnection *cnc, const char *id, const char *dest_container_id, const char *from_container_id)
+
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (id != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (dest_container_id != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "moveItemsRequest");
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+	e_gw_message_write_string_parameter (msg, "container", NULL,dest_container_id);
+	if (from_container_id)
+		e_gw_message_write_string_parameter (msg, "from", NULL,from_container_id);	
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+	return status;
+
+
 }

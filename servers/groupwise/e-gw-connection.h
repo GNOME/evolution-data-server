@@ -64,6 +64,7 @@ typedef enum {
 	E_GW_CONNECTION_STATUS_UNKNOWN_USER,
 	E_GW_CONNECTION_STATUS_BAD_PARAMETER,
 	E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED,
+	E_GW_CONNECTION_STATUS_REDIRECT,
 	E_GW_CONNECTION_STATUS_OTHER,
 	E_GW_CONNECTION_STATUS_UNKNOWN
 } EGwConnectionStatus;
@@ -121,6 +122,7 @@ EGwConnectionStatus e_gw_connection_create_folder(EGwConnection *cnc, const char
 EGwConnectionStatus e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, int length, const char **attachment, int *attach_lenght) ;
 EGwConnectionStatus e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char *id) ;
 EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *item_ids) ;
+EGwConnectionStatus e_gw_connection_move_item (EGwConnection *cnc, const char *id, const char *dest_container_id, const char *from_container_id);
 EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const char *id ,const char *new_name) ;
 EGwConnectionStatus e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts);
 EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *item_ids) ;
