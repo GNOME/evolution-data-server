@@ -18,7 +18,7 @@ libename_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)	\
 	-no-undefined
 
-libenameincludedir = $(includedir)/libedataserver-1.0/libename
+libenameincludedir = $(privincludedir)/libename
 
 libenameinclude_HEADERS =				\
 	e-address-western.h				\

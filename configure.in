@@ -607,50 +607,20 @@ BASE_VERSION=`echo $VERSION | awk -F. '{print $1 "." $2;}'`
 AC_SUBST(BASE_VERSION)
 AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 
-privlibdir='${libdir}'/evolution/$BASE_VERSION
-AC_SUBST(privlibdir)
-
 privlibexecdir='${libexecdir}'/evolution/$BASE_VERSION
 AC_SUBST(privlibexecdir)
 
-privdatadir='${datadir}'/evolution/$BASE_VERSION
+privdatadir='${datadir}'/evolution-data-server-1.0
 AC_SUBST(privdatadir)
 
-privincludedir='${includedir}'/evolution-$BASE_VERSION
+privincludedir='${includedir}'/evolution-data-server-1.0
 AC_SUBST(privincludedir)
 
-camel_providerdir="$privlibdir/camel-providers"
-AC_SUBST(camel_providerdir)
-
-componentdir="$privlibdir/components"
-AC_SUBST(componentdir)
-
-idldir="$datadir/idl/evolution-$BASE_VERSION"
+idldir="$datadir/idl/evolution-data-server-1.0"
 AC_SUBST(idldir)
 
 serverdir="$libdir/bonobo/servers"
 AC_SUBST(serverdir)
-
-evolutionuidir="$privdatadir/ui"
-AC_SUBST(evolutionuidir)
-
-imagesdir="$privdatadir/images"
-AC_SUBST(imagesdir)
-
-buttonsdir="$privdatadir/images/buttons"
-AC_SUBST(buttonsdir)
-
-soundsdir="$privdatadir/sounds"
-AC_SUBST(soundsdir)
-
-gladedir="$privdatadir/glade"
-AC_SUBST(gladedir)
-
-etspecdir="$privdatadir/etspec"
-AC_SUBST(etspecdir)
-
-viewsdir="$privdatadir/views"
-AC_SUBST(viewsdir)
 
 dnl ************************
 dnl IDL/Component Versioning

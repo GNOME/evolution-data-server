@@ -1,3 +1,14 @@
+2003-11-05  JP Rosevear  <jpr@ximian.com>
+
+	* libebook/Makefile.am: use privincludedir
+
+	* libedatabook/Makefile.am: ditto
+
+	* libedatabook/libedatabook-1.0.pc.in: use privincludedir; remove
+	gal
+
+	* libebook/libebook-1.0.pc.in: ditto
+
 2003-11-05  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedatabook/e-book-backend-sexp.c:

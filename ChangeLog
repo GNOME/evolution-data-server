@@ -1,3 +1,14 @@
+2003-11-05 JP Rosevear <jpr@ximian.com>
+
+	* configure.in: make the priv*dir's sane
+
+	* libedataserver/libedataserver-1.0.pc.in: use privincludedir;
+	remove gal
+
+	* libedataserver/ename/Makefile.am: ditto
+
+	* libedataserver/Makefile.am: install to privincludedir
+	
 2003-11-05  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedataserver/e-util.[ch]: new files to contain a few functions

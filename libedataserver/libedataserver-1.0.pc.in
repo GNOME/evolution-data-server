@@ -6,9 +6,11 @@ includedir=@includedir@
 idldir=@idldir@
 IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
 
+privincludedir=@privincludedir@
+
 Name: libedataserver
 Description: Utily library for evolution data servers
 Version: @VERSION@
-Requires: libbonobo-2.0 libgnome-2.0 gal-2.2 >= @GAL_REQUIRED@
+Requires: libbonobo-2.0 libgnome-2.0
 Libs: -L${libdir} -ledataserver
-Cflags: -I${includedir}/evolution-data-server-1.0
+Cflags: -I${privincludedir}

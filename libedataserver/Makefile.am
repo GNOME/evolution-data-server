@@ -40,7 +40,7 @@ libedataserver_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)	\
 	-no-undefined
 
-libedataserverincludedir = $(includedir)/evolution-data-server-1.0/libedataserver
+libedataserverincludedir = $(privincludedir)/libedataserver
 
 libedataserverinclude_HEADERS =		\
 	e-account-list.h		\

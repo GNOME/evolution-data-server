@@ -55,7 +55,7 @@ libebook_la_LDFLAGS = 							\
 	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE)	\
 	-no-undefined
 
-libebookincludedir = $(includedir)/evolution-data-server-1.0/libebook
+libebookincludedir = $(privincludedir)/libebook
 
 libebookinclude_HEADERS =				\
 	$(CORBA_GENERATED_H)				\

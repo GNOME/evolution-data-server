@@ -6,9 +6,11 @@ includedir=@includedir@
 idldir=@idldir@
 IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
 
+privincludedir=@privincludedir@
+
 Name: libedatacal
 Description: Backend library for evolution calendars
 Version: @VERSION@
 Requires: libgnome-2.0 libbonobo-2.0 libedataserver-1.0
 Libs: -L${libdir} -lecal
-Cflags: -I${includedir}/evolution-data-server-1.0
+Cflags: -I${privincludedir}

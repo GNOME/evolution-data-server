@@ -56,7 +56,7 @@ libedatacal_la_LDFLAGS = 								\
 	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE)	\
 	-no-undefined
 
-libedatacalincludedir = $(includedir)/evolution-data-server-1.0/libedatacal
+libedatacalincludedir = $(privincludedir)/libedatacal
 
 libedatacalinclude_HEADERS = 		\
 	$(CORBA_GENERATED_H)		\

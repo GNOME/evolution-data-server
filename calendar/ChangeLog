@@ -1,3 +1,14 @@
+2003-11-05  JP Rosvear <jpr@ximian.com>
+
+	* libecal/Makefile.am: use privincludedir
+
+	* libedatacal/Makefile.am: ditto
+
+	* libecal/libecal-1.0.pc.in: ditto
+
+	* libedatacal/libedatacal-1.0.pc.in: use privincludedir; remove
+	gal
+
 2003-11-05  JP Rosevear <jpr@ximian.com>
 
 	* libecal/Makefile.am: LIBADD all the relevant libical libs

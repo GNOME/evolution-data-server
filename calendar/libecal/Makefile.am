@@ -62,7 +62,7 @@ libecal_la_LDFLAGS = 								\
 	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE)	\
 	-no-undefined
 
-libecalincludedir = $(includedir)/evolution-data-server-1.0/libecal
+libecalincludedir = $(privincludedir)/libecal
 
 libecalinclude_HEADERS =	\
 	$(CORBA_GENERATED_H)	\
