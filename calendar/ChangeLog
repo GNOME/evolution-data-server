@@ -1,3 +1,12 @@
+2004-01-19  Harish K <kharish@novell.com> 
+        * backends/groupwise/e-gw-connection.c :
+        (get_e_cal_component_from_soap_parameter):
+        'due' property set for TODOs instead of dtend.
+        added code for mapping all values of GW data to
+        percent, priority, classification, transparency
+        properties in ECalComponent.
+        Fixed compiler warnings.
+
 2004-01-18  Harish K <kharish@novell.com>
         * backends/groupwise/e-cal-backend-groupwise.c :
         (e_cal_backend_groupwise_get_free_busy): Implemented.
