@@ -1,3 +1,10 @@
+2005-02-28  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #70590
+
+	* camel-filter-driver.c (do_move): Make this copy+delete, and
+	terminate processing implicitly.
+
 2005-02-24  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #68459

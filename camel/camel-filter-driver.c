@@ -516,6 +516,7 @@ do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 			/* open folders we intent to move to */
 			char *folder = argv[i]->value.string;
 			CamelFolder *outbox;
+			int last;
 			
 			outbox = open_folder (driver, folder);
 			if (!outbox)
@@ -523,13 +524,16 @@ do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 			
 			if (outbox == p->source)
 				break;
-			
+
+			/* only delete on last folder (only 1 can ever be supplied by ui currently) */
+			last = (i == argc-1);
+
 			if (!p->modified && p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
 				GPtrArray *uids;
-				
+
 				uids = g_ptr_array_new ();
 				g_ptr_array_add (uids, (char *) p->uid);
-				camel_folder_transfer_messages_to (p->source, uids, outbox, NULL, FALSE, p->ex);
+				camel_folder_transfer_messages_to (p->source, uids, outbox, NULL, last, p->ex);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
@@ -539,19 +543,27 @@ do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 					continue;
 				
 				camel_folder_append_message (outbox, p->message, p->info, NULL, p->ex);
+
+				if (!camel_exception_is_set(p->ex) && last) {
+					if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
+						camel_folder_set_message_flags(p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
+					else
+						camel_message_info_set_flags(p->info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+				}
 			}
 			
 			if (!camel_exception_is_set (p->ex)) {
 				/* a 'move' is a copy & delete */
 				p->copied = TRUE;
-				p->deleted = TRUE;
+				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Move to folder %s", folder);
 			}
-			
-			camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Move to folder %s",
-						 folder);
 		}
 	}
-	
+
+	/* implicit 'stop' with 'move' */
+	camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Stopped processing");
+	p->terminated = TRUE;
+
 	return NULL;
 }
 
