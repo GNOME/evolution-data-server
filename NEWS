@@ -1,3 +1,47 @@
+Evolution Data Server 1.2.1, 2005-03-15
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+    #73021 - The Add New Contact option is getting enabled if you try to delete gw book (Siva)
+    #72878 - Changes sender email address makes unwanted changes in To/CC fields (Michael)
+
+  * Calendar
+    #73141 - Crash if you try changing the group of a task to an offline backend (Chen)
+
+  * Camel
+    #73015 - groupwise message threading workaround (Michael)
+    #70195 - Incorrect parsing of locale encoded From: header causes mess on statusbar (Michael)
+    #70590 - Don't fall through to the default folder if we move (Michael)
+    #72876 - Message with blank reply-to cannot be replied to (Michael)
+    #73112 - imap fails errors after checking authentication type (Michael)
+    #72145 - All gw sent mail has a blank "To" field (Partha)
+    #73308 - gw mail getting marked as read when it shouldn't (Partha)
+    #72373 - new meeting invitations not showing up in Mailbox (Vivek)
+    #72455 - Messages are disappearing in the inbox of GW accounts (Vivek)
+
+Other bugs
+
+  * Addressbook
+    - use a single global ref-counted db-env for all local books (Michael)
+    - exit properly when only internal books are left (JP)
+
+  * Calendar
+    - When coming back online get gw item changes in a thread for responsiveness (Chen)
+    - "Peek" at gw calendar items so they don't get marked as read (Harish)
+    - Fix memory corruption in gw backend when fetching changes (Harish)
+    - Set exchange attachment store (Surf)
+
+  * Camel
+    - Allow flag syncing in read-only mode for imap based on PERMANENTFLAGS (Jeff)
+    - Set priority in outgoing gw mail (Sankar)
+	
+Updated Translations:
+	- tr (Baris Cicek)
+	- pl (GNOME PL Team)
+	- pt (Duarte Loreto)
+	
 Evolution Data Server 1.2.0, 2005-03-07
 ---------------------------------------
 
@@ -6,7 +50,7 @@ Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
   * Addressbook
     #73226 - Missing symbol in e-destination (JP)
 
-  * Addressbook
+  * Calendar
     #72454 - Crash for webcals with gnome proxy setting (Rodrigo)
 
   * All
