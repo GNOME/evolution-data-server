@@ -2,16 +2,16 @@
 EContact
 
 <!-- ##### SECTION Short_Description ##### -->
-
+An individual contact in an addressbook.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+A convenient way of accessing the contact information in EVCard objects.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#e-vcard
 </para>
 
 <!-- ##### STRUCT EContactPrivate ##### -->

@@ -2,16 +2,16 @@
 ECalListener
 
 <!-- ##### SECTION Short_Description ##### -->
-Listens for calendar events.
+Listens for responses and event notifications sent by an #e-cal.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-e-cal-types, e-book-listener
+#e-cal, #e-cal-view-listener
 </para>
 
 <!-- ##### USER_FUNCTION ECalListenerCalSetModeFn ##### -->

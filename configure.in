@@ -372,7 +372,7 @@ AM_GCONF_SOURCE_2
 dnl *************
 dnl Gtk Doc stuff
 dnl *************
-GTK_DOC_CHECK
+GTK_DOC_CHECK(1.0)
 
 dnl ******************************
 dnl Makefiles

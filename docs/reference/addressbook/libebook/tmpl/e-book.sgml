@@ -6,12 +6,13 @@ The primary Evolution addressbook client object.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+Represents a complete addressbook. Event notifications and callbacks go to the
+#e-book-listener. Contrast with #e-book-view, which represents a search of the addressbook.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#e-book-listener, #e-book-view
 </para>
 
 <!-- ##### STRUCT EBookPrivate ##### -->

@@ -2,7 +2,7 @@
 ECalComponent
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Typically an appointment or task, part of the ECal object.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>

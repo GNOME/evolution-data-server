@@ -2,16 +2,17 @@
 ECalView
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Represents a search against a calendar. 
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+In the same way that an EBookView represents a view of an addressbook, the
+ECalView is a view of the ECal.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#e-cal, #e-cal-view-listener
 </para>
 
 <!-- ##### STRUCT ECal ##### -->

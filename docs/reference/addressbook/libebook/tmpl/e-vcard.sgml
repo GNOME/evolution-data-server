@@ -2,16 +2,16 @@
 EVCard
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Contact data in the VCard format.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+Does the low-level parsing work for contact information. This data is more conveniently accessed through the EContact object.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#e-contact
 </para>
 
 <!-- ##### MACRO EVC_ADR ##### -->

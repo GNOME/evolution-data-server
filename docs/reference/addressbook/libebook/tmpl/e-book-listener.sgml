@@ -2,10 +2,11 @@
 EBookListener
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Listens for call responses and event notifications from EBook objects. 
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 
 </para>
 

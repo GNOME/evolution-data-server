@@ -2,15 +2,16 @@
 EBookViewListener
 
 <!-- ##### SECTION Short_Description ##### -->
-Listens for responses from the e-book backend. Exposes the Evolution:BookViewListener interface.
+Listens for call responses and event notifications from EBookView objects.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-When an e-book-query is performed, the e-book backend will send the response to the listener.
+Exposes the Evolution:BookViewListener interface. Contrast with the EBookListener.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
+EBookListener
 EBookTypes
 </para>
 

@@ -2,7 +2,7 @@
 ECalViewListener
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Listens for responses and event notifications sent by #e-cal-view.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -11,7 +11,7 @@ ECalViewListener
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#e-cal-view
 </para>
 
 <!-- ##### STRUCT ECalViewListenerPrivate ##### -->

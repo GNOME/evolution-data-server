@@ -1,3 +1,27 @@
+2003-11-25 Aaron Weber <aaron@ximian.com>
+	* configure.in: Add 1.0 to GTK_DOC_CHECK: Rodney says "It won't
+	hurt to add it, and might helpsince GTK_DOC_CHECK is in
+	acinclude.m4 so you can build the stuffwithout gtk-doc
+	installed/working."
+
+	* docs/reference/addressbook/libebook/libebook-docs.sgml: added title
+	* docs/reference/calendar/libecal/libecal-docs.sgml: added title
+	* Plus added short/long descriptions and "See Also" where appropriate to:
+	* docs/reference/addressbook/libebook/tmpl/e-address-western.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-book-async.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-book-listener.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-book-view-listener.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-book-view.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-book.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-contact.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-vcard.sgml
+	* docs/reference/calendar/libecal/tmpl/e-cal-component.sgml
+	* docs/reference/calendar/libecal/tmpl/e-cal-listener.sgml
+	* docs/reference/calendar/libecal/tmpl/e-cal-view-listener.sgml
+	* docs/reference/calendar/libecal/tmpl/e-cal-view.sgml
+	* docs/reference/calendar/libecal/tmpl/e-cal.sgml
+
+	
 2003-11-22  Chris Toshok  <toshok@ximian.com>
 
 	* dist/NO-AUTO-GEN: don't autogen in here.
@@ -6,6 +30,7 @@
 
 	* libdb/Makefile.am: new file so we can integrate libdb into our
 	build.
+
 
 2003-11-20 Aaron Weber <aaron@ximian.com>
 	* docs/reference/calendar/libecal/libecal-sections.txt: moved private structs to private subsections

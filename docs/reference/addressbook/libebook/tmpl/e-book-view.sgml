@@ -2,16 +2,18 @@
 EBookView
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Represents a search against an EBook.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+Event notifications and callbacks from EBookView go to the
+#e-book-view-listener. Contrast EBookView with #e-book, which represents the
+addressbook itself.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#e-book-view-listener, #e-book
 </para>
 
 <!-- ##### STRUCT EBookViewPrivate ##### -->

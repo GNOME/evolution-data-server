@@ -2,11 +2,11 @@
 ECal
 
 <!-- ##### SECTION Short_Description ##### -->
-Primary Evolution calendar object.
+Permits access to a calendar or list of tasks.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
