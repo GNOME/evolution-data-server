@@ -898,7 +898,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		int tzone;
 		
 #ifdef HAVE_LOCALTIME_R
-		localtime_r (&info->date_received, &tm);
+		localtime_r (&iinfo->info.date_received, &tm);
 #else
 		memcpy (&tm, localtime (&iinfo->info.date_received), sizeof (tm));
 #endif

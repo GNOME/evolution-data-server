@@ -447,13 +447,13 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 	/* subject */
 	if (envelope_decode_nstring (engine, &nstring, TRUE, ex) == -1)
 		goto exception;
-	iinfo->info.subject = camel_pstring_strdup(nstring);
+	iinfo->info.subject = camel_pstring_strdup (nstring);
 	g_free(nstring);
 	
 	/* from */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
-	iinfo->info.from = camel_pstring_strdup(nstring);
+	iinfo->info.from = camel_pstring_strdup (nstring);
 	g_free(nstring);
 	
 	/* sender */
@@ -469,13 +469,13 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 	/* to */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
-	iinfo->info.to = camel_pstring_strdup(nstring);
+	iinfo->info.to = camel_pstring_strdup (nstring);
 	g_free(nstring);
 	
 	/* cc */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
-	iinfo->info.cc = camel_pstring_strdup(nstring);
+	iinfo->info.cc = camel_pstring_strdup (nstring);
 	g_free(nstring);
 	
 	/* bcc */
