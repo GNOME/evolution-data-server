@@ -49,13 +49,20 @@ e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
 		else
 			key = node->name;
 
+		if (!key) {
+			g_warning ("Key not found!!");
+			continue;
+		}
+
 		value = xmlNodeListGetString (doc, node->xmlChildrenNode, 1);
-		if (!key || !value) {
-			g_warning ("Found an entry with missing properties!!");
+		if (!value) {
+			xmlFree (key);
+			g_warning ("Found a key with no value!!");
 			continue;
 		}
 
 		g_hash_table_insert (hash, g_strdup (key), g_strdup (value));
+		xmlFree (key);
 		xmlFree (value);
 	}
 

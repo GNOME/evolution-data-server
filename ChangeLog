@@ -1,3 +1,8 @@
+2004-01-22  Thomas Cataldo  <tcataldo@users.sourceforge.net>
+
+	* libedataserver/e-xml-hash-utils.c: (e_xml_to_hash):
+	Fix leak.
+
 2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedataserver/e-file-cache.[ch] (e_file_cache_remove): new function
