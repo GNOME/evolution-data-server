@@ -168,6 +168,10 @@ void        e_gw_item_set_priority (EGwItem *item, const char *new_priority);
 GSList *e_gw_item_get_recipient_list (EGwItem *item);
 void e_gw_item_set_recipient_list (EGwItem *item, GSList *new_recipient_list);
 
+GSList *e_gw_item_get_recurrence_dates (EGwItem *item);
+void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates);
+
+
 int e_gw_item_get_trigger (EGwItem *item);
 void e_gw_item_set_trigger (EGwItem *item, int trigger);
 
@@ -179,6 +183,12 @@ typedef struct {
 		E_GW_ITEM_RECIPIENT_CC,
 		E_GW_ITEM_RECIPIENT_NONE
 	} type;
+
+	enum {
+		E_GW_ITEM_STAT_ACCEPTED,
+		E_GW_ITEM_STAT_DECLINED,
+		E_GW_ITEM_STAT_NONE
+	} status;
 } EGwItemRecipient;
 
 gboolean    e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg);

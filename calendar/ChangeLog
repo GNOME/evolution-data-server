@@ -1,3 +1,16 @@
+2004-06-14  Harish Krishnaswamy  <kharish@novell.com>
+
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(get_recur_instance), (resolve_tzid_cb) : add support for recurrences 
+	in events.
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_item_set_changes): Recipient_list handling code is now common to
+	both events and todos.
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache): Add
+	recipientStatus to the view element.
+	(receive_object): Send found_comp as argument to modify_object.
+
 2004-06-11  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-cal-backend-sync.c (_e_cal_backend_remove_object): if

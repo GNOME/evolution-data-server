@@ -24,7 +24,29 @@
 #include <string.h>
 #include <e-gw-connection.h>
 #include <e-gw-message.h>
+#include <libecal/e-cal-recur.h>
+#include <libecal/e-cal-time-util.h>
 #include "e-cal-backend-groupwise-utils.h"
+
+static gboolean 
+get_recur_instance (ECalComponent *comp, time_t instance_start, time_t instance_end, gpointer data)
+{
+	GSList **recur_dates = (GSList **) data;
+	char *rdate;
+
+	rdate = isodate_from_time_t (instance_start);
+	/* convert this into a date */
+	rdate[8] ='\0';
+	*recur_dates = g_slist_append (*recur_dates, rdate);
+	return TRUE;
+}
+
+static icaltimezone *
+resolve_tzid_cb (const char *tzid, gpointer data)
+{
+	/* do nothing.. since we are interested only in the event date */
+	return NULL;
+}
 
 static EGwItem *
 set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const icaltimezone *default_zone)
@@ -68,30 +90,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 			e_gw_item_set_trigger (item, duration);
 		}
 		
-		/* get_attendee_list from cal comp and convert into
-		 * egwitemrecipient and set it on recipient_list*/
-		if (e_cal_component_has_attendees (comp)) {
-			GSList *attendee_list, *recipient_list = NULL, *al;
-
-		 	e_cal_component_get_attendee_list (comp, &attendee_list);	
-			for (al = attendee_list; al != NULL; al = al->next) {
-				ECalComponentAttendee *attendee = (ECalComponentAttendee *) al->data;
-				EGwItemRecipient *recipient = g_new0 (EGwItemRecipient, 1);
-				
-				/* len (MAILTO:) + 1 = 7 */
-				recipient->email = g_strdup (attendee->value + 7);
-				if (attendee->cn != NULL)
-					recipient->display_name = g_strdup (attendee->cn);
-				if (attendee->role == ICAL_ROLE_REQPARTICIPANT) 
-					recipient->type = E_GW_ITEM_RECIPIENT_TO;
-				else if (attendee->role == ICAL_ROLE_OPTPARTICIPANT)
-					recipient->type = E_GW_ITEM_RECIPIENT_CC;
-				else recipient->type = E_GW_ITEM_RECIPIENT_NONE;
-
-				recipient_list = g_slist_append (recipient_list, recipient);
-			}
-			e_gw_item_set_recipient_list (item, recipient_list);
-		}
+		
 
 		/* end date */
 		e_cal_component_get_dtend (comp, &dt);
@@ -233,6 +232,52 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 		e_gw_item_set_classification (item, NULL);
 	}
 
+	/* get_attendee_list from cal comp and convert into
+	 * egwitemrecipient and set it on recipient_list*/
+	if (e_cal_component_has_attendees (comp)) {
+		GSList *attendee_list, *recipient_list = NULL, *al;
+
+		e_cal_component_get_attendee_list (comp, &attendee_list);	
+		for (al = attendee_list; al != NULL; al = al->next) {
+			ECalComponentAttendee *attendee = (ECalComponentAttendee *) al->data;
+			EGwItemRecipient *recipient = g_new0 (EGwItemRecipient, 1);
+			
+			/* len (MAILTO:) + 1 = 7 */
+			recipient->email = g_strdup (attendee->value + 7);
+			if (attendee->cn != NULL)
+				recipient->display_name = g_strdup (attendee->cn);
+			if (attendee->role == ICAL_ROLE_REQPARTICIPANT) 
+				recipient->type = E_GW_ITEM_RECIPIENT_TO;
+			else if (attendee->role == ICAL_ROLE_OPTPARTICIPANT)
+				recipient->type = E_GW_ITEM_RECIPIENT_CC;
+			else recipient->type = E_GW_ITEM_RECIPIENT_NONE;
+
+			if (attendee->status == ICAL_PARTSTAT_ACCEPTED)
+				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
+			else if (attendee->status == ICAL_PARTSTAT_DECLINED)
+				recipient->status = E_GW_ITEM_STAT_DECLINED;
+			else 
+				recipient->status = E_GW_ITEM_STAT_NONE;
+
+			recipient_list = g_slist_append (recipient_list, recipient);
+		}
+				
+		e_gw_item_set_recipient_list (item, recipient_list);
+	}
+	/* check if recurrences exist and update the item */
+	if (e_cal_component_has_recurrences (comp)) {
+
+		GSList *recur_dates = NULL, *tmp;
+		
+
+		e_cal_recur_generate_instances (comp, -1, -1,
+				get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, 
+				default_zone);		
+		recur_dates = g_slist_delete_link (recur_dates, recur_dates);
+		
+		e_gw_item_set_recurrence_dates (item, recur_dates);
+	    }
+
 	return item;
 }
 
@@ -259,6 +304,7 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	char *t;
 	struct icaltimetype itt, itt_utc;
 	int priority;
+	int percent;
 	int alarm_duration;
 	GSList *recipient_list, *rl, *attendee_list = NULL;
 	EGwItemType item_type;
@@ -366,6 +412,38 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	} else
 		e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_NONE);
 
+	recipient_list = e_gw_item_get_recipient_list (item);
+	if (recipient_list != NULL) {
+		for (rl = recipient_list; rl != NULL; rl = rl->next) {
+			EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
+			ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
+
+			attendee->cn = g_strdup (recipient->display_name);
+			attendee->value = g_strconcat("MAILTO:", recipient->email, NULL);
+			if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
+				attendee->role = ICAL_ROLE_REQPARTICIPANT;
+			else if (recipient->type == E_GW_ITEM_RECIPIENT_CC)
+				attendee->role = ICAL_ROLE_OPTPARTICIPANT;
+			else 
+				attendee->role = ICAL_ROLE_NONE;
+			/* FIXME  needs a server fix on the interface 
+			 * for getting cutype and the status */
+			attendee->cutype = ICAL_CUTYPE_INDIVIDUAL;
+			 
+			if (recipient->status == E_GW_ITEM_STAT_ACCEPTED)
+				attendee->status = ICAL_PARTSTAT_ACCEPTED;
+			else if (recipient->status == E_GW_ITEM_STAT_DECLINED)
+				attendee->status = ICAL_PARTSTAT_DECLINED;
+			else
+				attendee->status = ICAL_PARTSTAT_NEEDSACTION;	
+				
+			
+			attendee_list = g_slist_append (attendee_list, attendee);				
+		}
+
+		e_cal_component_set_attendee_list (comp, attendee_list);
+	}
+
 	/* set specific properties */
 	switch (item_type) {
 	case E_GW_ITEM_TYPE_APPOINTMENT :
@@ -416,29 +494,7 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 			e_cal_component_add_alarm (comp, alarm);
 		}
 
-		recipient_list = e_gw_item_get_recipient_list (item);
-		if (recipient_list != NULL) {
-			for (rl = recipient_list; rl != NULL; rl = rl->next) {
-				EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
-				ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
-
-				attendee->cn = g_strdup (recipient->display_name);
-				attendee->value = g_strconcat("MAILTO:", recipient->email, NULL);
-				if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
-					attendee->role = ICAL_ROLE_REQPARTICIPANT;
-				else if (recipient->type == E_GW_ITEM_RECIPIENT_CC)
-					attendee->role = ICAL_ROLE_OPTPARTICIPANT;
-				else 
-					attendee->role = ICAL_ROLE_NONE;
-				/* FIXME  needs a server fix on the interface 
-				 * for getting cutype and the status */
-				attendee->cutype = ICAL_CUTYPE_INDIVIDUAL;
-				attendee->status = ICAL_PARTSTAT_NEEDSACTION; 
-				attendee_list = g_slist_append (attendee_list, attendee);				
-			}
-
-			e_cal_component_set_attendee_list (comp, attendee_list);
-		}
+		
 
 		break;
 	case E_GW_ITEM_TYPE_TASK :
@@ -475,7 +531,13 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 
 		e_cal_component_set_priority (comp, &priority);
 
-		/* FIXME: EGwItem's completed is a boolean */
+		/* EGwItem's completed is a boolean */
+		if (e_gw_item_get_completed (item)) 
+			percent = 100;
+		else 
+			percent =0;
+		e_cal_component_set_percent (comp, &percent);
+
 		break;
 	default :
 		return NULL;
@@ -793,7 +855,9 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	if (strcmp (e_gw_item_get_start_date (item), e_gw_item_get_start_date (cache_item)))
 		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "startDate", e_gw_item_get_start_date (item));
 	
-	if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
+	/*FIXME  recipient_list modifications need go here after server starts
+	 * supporting retraction */
+	if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 
 		if (strcmp (e_gw_item_get_end_date (item), e_gw_item_get_end_date (cache_item)))
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "endDate", e_gw_item_get_end_date (item));

@@ -50,6 +50,7 @@ struct _EGwItemPrivate {
 	char *priority;
 	char *place;
 	GSList *recipient_list;
+	GSList *recurrence_dates;
 	int trigger; /* alarm */
 
 	/* properties for tasks/calendars */
@@ -222,8 +223,14 @@ e_gw_item_dispose (GObject *object)
 
 		if (priv->recipient_list) {
 			g_slist_foreach (priv->recipient_list, (GFunc) free_recipient, NULL);
+			g_slist_free (priv->recipient_list);
 			priv->recipient_list = NULL;
 		}	
+		if (priv->recurrence_dates) {
+			g_slist_foreach (priv->recurrence_dates, free_string, NULL);
+			g_slist_free (priv->recurrence_dates);
+			priv->recurrence_dates = NULL;
+		}
 		if (priv->full_name) {
 			free_full_name (priv->full_name);
 			priv->full_name = NULL;
@@ -310,6 +317,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->due_date = NULL; 
 	priv->trigger = 0;
 	priv->recipient_list = NULL;
+	priv->recurrence_dates = NULL;
 	priv->completed = FALSE;
 	priv->im_list = NULL;
 	priv->email_list = NULL;
@@ -393,6 +401,22 @@ set_recipient_list_from_soap_parameter (GSList **list, SoupSoapParameter *param)
                 }
 		/*FIXME  gw recipientTypes need to be added after the server is fixed. */
 
+		
+		/* update Recipient Status
+		 look for accepted/declined and update the item else set it
+		 to none.*/
+		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientType");
+                if (subparam) {
+                        const char *recip_type;
+                        recip_type = soup_soap_parameter_get_string_value (subparam);
+                        if (!strcmp (recip_type, "accepted")) 
+				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
+                        else if (!strcmp (recip_type, "deleted"))
+                                recipient->status = E_GW_ITEM_STAT_DECLINED;
+                        else
+				recipient->status = E_GW_ITEM_RECIPIENT_NONE;
+                }
+		
                 *list = g_slist_append (*list, recipient);
         }        
 }
@@ -1651,7 +1675,25 @@ e_gw_item_set_recipient_list (EGwItem  *item, GSList *new_recipient_list)
 {
 	/* free old list and set a new one*/
 	g_slist_foreach (item->priv->recipient_list, (GFunc) free_recipient, NULL);
+	g_slist_free (item->priv->recipient_list);
 	item->priv->recipient_list = new_recipient_list;
+}
+
+GSList *
+e_gw_item_get_recurrence_dates (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	return item->priv->recurrence_dates;
+}
+
+void
+e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates)
+{
+	/* free old list and set a new one*/
+	g_slist_foreach (item->priv->recurrence_dates, free_string, NULL);
+	/*free the list */
+	g_slist_free (item->priv->recurrence_dates);
+	item->priv->recurrence_dates = new_recurrence_dates;
 }
 
 int
@@ -1675,13 +1717,16 @@ add_distribution_to_soap_message (GSList *recipient_list, SoupSoapMessage *msg)
 {
 	GSList *rl;
 	
-	// start distribution element
+	/* start distribution element */
 	soup_soap_message_start_element (msg, "distribution", NULL, NULL);
-	// start recipients
+	/*FIXME  Add the from element to identify the organizer */
+	/* start recipients */
 	soup_soap_message_start_element (msg, "recipients", NULL, NULL);
-	// add each recipient
+	/* add each recipient */
 	for (rl = recipient_list; rl != NULL; rl = rl->next) {
 		char *dist_type;
+		char *status;
+
 		EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
 		
 		soup_soap_message_start_element (msg, "recipient", NULL, NULL);
@@ -1694,6 +1739,15 @@ add_distribution_to_soap_message (GSList *recipient_list, SoupSoapMessage *msg)
 		else 
 			dist_type ="";
 		e_gw_message_write_string_parameter (msg, "distType", NULL, dist_type);
+		/* add recip_status */
+		if (recipient->status == E_GW_ITEM_STAT_ACCEPTED)
+			status = "accepted";
+		else if (recipient->status == E_GW_ITEM_STAT_DECLINED)
+			status = "declined";
+		else
+			status = "";
+		e_gw_message_write_string_parameter (msg, "recipientStatus", NULL, status);
+		
 		soup_soap_message_end_element (msg);		
 	}
 	
@@ -1815,6 +1869,15 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	else
 		e_gw_message_write_string_parameter (msg, "class", NULL, "");
 
+	/* handle recurrences */
+	if (item->priv->recurrence_dates) {
+		GSList *date;
+		soup_soap_message_start_element (msg, "rdate", NULL, NULL);
+		for (date = item->priv->recurrence_dates; date != NULL; date = g_slist_next (date)) {
+			e_gw_message_write_string_parameter (msg, "date", NULL, (char *) date->data);
+		}
+		soup_soap_message_end_element (msg);
+	}
 	/* finalize the SOAP element */
 	soup_soap_message_end_element (msg);
 

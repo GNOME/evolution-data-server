@@ -80,7 +80,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	priv = cbgw->priv;
 
         /* get all the objects from the server */
-        status = e_gw_connection_get_items (priv->cnc, priv->container_id, "recipients message", NULL, &list);
+        status = e_gw_connection_get_items (priv->cnc, priv->container_id, "recipients message recipientStatus", NULL, &list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
                 g_list_free (list);
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
@@ -1184,7 +1184,7 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	found_comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
 	if (found_comp) {
 		status = e_cal_backend_groupwise_modify_object (E_CAL_BACKEND_SYNC (cbgw), cal, comp_str,
-								CALOBJ_MOD_THIS, NULL);
+								CALOBJ_MOD_THIS, found_comp);
 	} else
 		status = e_cal_backend_groupwise_create_object (E_CAL_BACKEND_SYNC (cbgw), cal, &comp_str, NULL);
 

@@ -1,3 +1,15 @@
+2004-06-14  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-item.c: (e_gw_item_dispose), (e_gw_item_init),
+	(set_recipient_list_from_soap_parameter),
+	(e_gw_item_get_recurrence_dates), (e_gw_item_set_recurrence_dates),
+	(e_gw_item_append_to_soap_message):
+	Add support for recurrence in events.
+	(add_distribution_to_soap_message): Make recipient list handling code
+	common to both calendar and task items to support assignment in tasks.
+	* e-gw-item.h: add get/set methods for recurrences, status field to 
+	EGwRecipient.
+
 2004-06-11  Rodrigo Moya <rodrigo@novell.com>
 
 	* doc/gw-soap-methods.xsd:
