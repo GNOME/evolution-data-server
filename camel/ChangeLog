@@ -1,3 +1,15 @@
+2005-01-31  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #38671.
+
+	* camel-filter-search.c (check_header): check all instances of
+	headers for match string.
+
+2005-01-28  Not Zed  <NotZed@Ximian.com>
+
+	* camel-provider.h: Added CAMEL_URL_PART_HIDE* options, required
+	for more flexible extensibility.
+
 2005-01-29   Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.c 

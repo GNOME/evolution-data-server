@@ -71,11 +71,12 @@ extern char *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_PROVIDER_HAS_LICENSE      (1 << 6)
 
 
-/* Flags for url_flags. "ALLOW" means the config dialog will let
- * the user configure it. "NEED" implies "ALLOW" but means the user
- * must configure it. Service code can assume that any url part
- * for which it has set the NEED flag will be set when the service
- * is created.
+/* Flags for url_flags. "ALLOW" means the config dialog will let the
+ * user configure it. "NEED" implies "ALLOW" but means the user must
+ * configure it. Service code can assume that any url part for which
+ * it has set the NEED flag will be set when the service is
+ * created. "HIDE" also implies "ALLOW", but the setting will be
+ * hidden/no widgets created for it.
  */
 #define CAMEL_URL_PART_USER	 (1 << 0)
 #define CAMEL_URL_PART_AUTH	 (1 << 1)
@@ -85,10 +86,12 @@ extern char *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_URL_PART_PATH	 (1 << 5)
 
 #define CAMEL_URL_PART_NEED	       8
+#define CAMEL_URL_PART_HIDDEN	(CAMEL_URL_PART_NEED + 8)
 
 /* Use these macros to test a provider's url_flags */
-#define CAMEL_PROVIDER_ALLOWS(prov, flags) (prov->url_flags & (flags | (flags << CAMEL_URL_PART_NEED)))
+#define CAMEL_PROVIDER_ALLOWS(prov, flags) (prov->url_flags & (flags | (flags << CAMEL_URL_PART_NEED) | (flags << CAMEL_URL_PART_HIDDEN)))
 #define CAMEL_PROVIDER_NEEDS(prov, flags) (prov->url_flags & (flags << CAMEL_URL_PART_NEED))
+#define CAMEL_PROVIDER_HIDDEN(prov, flags) (prov->url_flags & (flags << CAMEL_URL_PART_HIDDEN))
 
 /* Providers use these macros to actually define their url_flags */
 #define CAMEL_URL_ALLOW_USER	 (CAMEL_URL_PART_USER)
@@ -104,6 +107,13 @@ extern char *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_URL_NEED_HOST	 (CAMEL_URL_PART_HOST << CAMEL_URL_PART_NEED)
 #define CAMEL_URL_NEED_PORT	 (CAMEL_URL_PART_PORT << CAMEL_URL_PART_NEED)
 #define CAMEL_URL_NEED_PATH	 (CAMEL_URL_PART_PATH << CAMEL_URL_PART_NEED)
+
+#define CAMEL_URL_HIDDEN_USER	 (CAMEL_URL_PART_USER << CAMEL_URL_PART_HIDDEN)
+#define CAMEL_URL_HIDDEN_AUTH	 (CAMEL_URL_PART_AUTH << CAMEL_URL_PART_HIDDEN)
+#define CAMEL_URL_HIDDEN_PASSWORD	 (CAMEL_URL_PART_PASSWORD << CAMEL_URL_PART_HIDDEN)
+#define CAMEL_URL_HIDDEN_HOST	 (CAMEL_URL_PART_HOST << CAMEL_URL_PART_HIDDEN)
+#define CAMEL_URL_HIDDEN_PORT	 (CAMEL_URL_PART_PORT << CAMEL_URL_PART_HIDDEN)
+#define CAMEL_URL_HIDDEN_PATH	 (CAMEL_URL_PART_PATH << CAMEL_URL_PART_HIDDEN)
 
 #define CAMEL_URL_FRAGMENT_IS_PATH  (1 << 30) /* url uses fragment for folder name path, not path */
 #define CAMEL_URL_PATH_IS_ABSOLUTE (1 << 31)

@@ -146,18 +146,25 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 	
 	if (argc > 1 && argv[0]->type == ESEXP_RES_STRING) {
 		char *name = argv[0]->value.string;
-		const char *header;
-		camel_search_t type = CAMEL_SEARCH_TYPE_ENCODED;
-		CamelContentType *ct;
-		const char *charset = NULL;
-		
+
+		/* shortcut: a match for "" against any header always matches */
+		for (i=1; i<argc && !matched; i++)
+			matched = argv[i]->type == ESEXP_RES_STRING && argv[i]->value.string[0] == 0;
+
 		if (g_ascii_strcasecmp(name, "x-camel-mlist") == 0) {
-			header = camel_message_info_mlist(fms->info);
-			type = CAMEL_SEARCH_TYPE_MLIST;
+			const char *list = camel_message_info_mlist(fms->info);
+
+			for (i=1; i<argc && !matched; i++) {
+				if (argv[i]->type == ESEXP_RES_STRING)
+					matched = camel_search_header_match(list, argv[i]->value.string, how, CAMEL_SEARCH_TYPE_MLIST, NULL);
+			}
 		} else {
 			CamelMimeMessage *message = camel_filter_search_get_message (fms, f);
-			
-			header = camel_medium_get_header (CAMEL_MEDIUM (message), argv[0]->value.string);
+			struct _camel_header_raw *header;
+			const char *charset = NULL;
+			camel_search_t type = CAMEL_SEARCH_TYPE_ENCODED;
+			CamelContentType *ct;
+
 			/* FIXME: what about Resent-To, Resent-Cc and Resent-From? */
 			if (g_ascii_strcasecmp("to", name) == 0 || g_ascii_strcasecmp("cc", name) == 0 || g_ascii_strcasecmp("from", name) == 0)
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
@@ -168,12 +175,14 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 					charset = e_iconv_charset_name (charset);
 				}
 			}
-		}
-		
-		if (header) {
-			for (i=1; i<argc && !matched; i++) {
-				if (argv[i]->type == ESEXP_RES_STRING)
-					matched = camel_search_header_match(header, argv[i]->value.string, how, type, charset);
+
+			for (header = ((CamelMimePart *)message)->headers; header && !matched; header = header->next) {
+				if (!g_ascii_strcasecmp(header->name, name)) {
+					for (i=1; i<argc && !matched; i++) {
+						if (argv[i]->type == ESEXP_RES_STRING)
+							matched = camel_search_header_match(header->value, argv[i]->value.string, how, type, charset);
+					}
+				}
 			}
 		}
 	}
