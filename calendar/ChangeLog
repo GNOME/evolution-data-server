@@ -1,3 +1,13 @@
+2005-02-17  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(populate_cache),(cache_init): Moved the get categories
+	call from populate_cache to cache_init since it has to be
+	called everytime.
+	(e_cal_backend_groupwise_finalize),
+	(e_cal_backend_groupwise_init): Hash table for categories
+	need not be created/destroyed, connection will handle it.
+
 2005-02-11  Rodrigo Moya <rodrigo@gnome-db.org>
 
 	Fixes #71545

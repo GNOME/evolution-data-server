@@ -131,13 +131,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 
 	g_mutex_lock (mutex);
 
-	/* get the list of category ids and corresponding names from the server */
-	status = e_gw_connection_get_categories (priv->cnc, priv->categories_by_id, priv->categories_by_name);
-	if (status != E_GW_CONNECTION_STATUS_OK) {
-		e_cal_backend_groupwise_notify_error_code (cbgw, status);
-		g_mutex_unlock (mutex);
-                return status;
-        }
+	
 	status = e_gw_connection_create_cursor (priv->cnc,
 			priv->container_id, 
 			"recipients message recipientStatus attachments default", NULL, &cursor);
@@ -435,8 +429,15 @@ cache_init (ECalBackendGroupwise *cbgw)
 	if (cnc_status == E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_store_settings (opts, cbgw);
 		g_object_unref (opts);
-	}
+	} else 
+		g_warning (G_STRLOC ": Could not get the settings from the server");
 	
+	/* get the list of category ids and corresponding names from the server */
+	cnc_status = e_gw_connection_get_categories (priv->cnc, &priv->categories_by_id, &priv->categories_by_name);
+	if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
+		g_warning (G_STRLOC ": Could not get the categories from the server");
+        }
+
 	/* We poke the cache for a default timezone. Its
 	 * absence indicates that the cache file has not been
 	 * populated before. */
@@ -646,16 +647,6 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->password) {
 		g_free (priv->password);
 		priv->password = NULL;
-	}
-
-	if (priv->categories_by_id) {
-	        g_hash_table_destroy (priv->categories_by_id);
-		priv->categories_by_id = NULL;
-	}
-
-	if (priv->categories_by_name) {
-	        g_hash_table_destroy (priv->categories_by_name);
-	        priv->categories_by_name = NULL;
 	}
 
 	if (priv->container_id) {
@@ -1968,8 +1959,6 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 
 	priv = g_new0 (ECalBackendGroupwisePrivate, 1);
 
-	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->timeout_id = 0;
 	priv->cnc = NULL;
 
