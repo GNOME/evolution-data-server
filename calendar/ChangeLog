@@ -1,3 +1,18 @@
+2004-02-03  Harish K <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c : 
+	added get_deltas function as the callback to update cache.
+	* backends/groupwise/e-gw-connection.[ch] (parse_response_status):
+	Removed UpdateCacheHandle structure as
+	the callback is now local to e-cal-backend-groupwise.c
+	(e_gw_connection_get_deltas) : modified  the function to return 
+	list of EGwItems.
+	(set_attendee_list_from_soap_parameter) : moved to EGwItem.
+	* backends/groupwise/e-gw-item.c : Added attendee_list to priv
+	structure and updated e_gw_item_dispose to free it.
+	(e_gw_item_new_from_soap_parameter) : added code to parse 'changes'
+	element in item.
+	
 2004-02-03  Chris Toshok  <toshok@ximian.com>
 
 	* backends/groupwise/e-gw-connection.c (parse_response_status):

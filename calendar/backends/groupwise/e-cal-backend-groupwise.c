@@ -119,6 +119,60 @@ convert_uri (const char *gw_uri)
 	return vuri;
 }
 
+static EGwConnectionStatus
+get_deltas (gpointer handle)
+{
+ 	ECalBackendGroupwise *cbgw;
+	EGwConnection *cnc; 
+ 	ECalBackendCache *cache; 
+        EGwConnectionStatus status; 
+	GSList *deletes = NULL, *updates = NULL, *adds = NULL, *l;
+        
+	cbgw = (ECalBackendGroupwise *)handle;
+ 	cnc = cbgw->priv->cnc; 
+ 	cache = cbgw->priv->cache; 
+
+	/* Call e-gw-connection_get_deltas*/
+	status = e_gw_connection_get_deltas (cnc, &adds, &deletes, &updates);
+
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		g_warning (G_STRLOC ": Could not refresh the cache");
+		return status;
+	}
+	
+	if (deletes) {
+		for (l = deletes; l != NULL; l = g_slist_next(l)) {
+			if (!e_cal_backend_cache_remove_component (cache, (char *)l->data, NULL)) 
+                                         g_message ("Could not remove %s", (char *)l->data);
+		}
+	}
+
+	if (adds) {
+		for (l = adds; l != NULL; l = g_slist_next (l)) {
+			EGwItem *item = (EGwItem *) l->data;
+			ECalComponent *comp = e_gw_item_to_cal_component (item);
+			if (!comp)
+				g_message ("Invalid component returned");
+			else if (!e_cal_backend_cache_put_component (cache, comp)) 
+				g_message ("Could not add the component");
+		}
+	}	
+	if (updates) {
+		for (l = updates; l != NULL; l = g_slist_next (l)) {
+			EGwItem *item = (EGwItem *) l->data;
+			ECalComponent *comp = e_cal_backend_cache_get_component (cache, e_gw_item_get_id (item), NULL);
+			if (!comp) /* FIXME  Error in updates. Skipping the element*/
+				continue;
+			/* FIXME  currently, just overwrite the fields with the
+			 * update.*/
+			e_cal_backend_cache_remove_component (cache, e_gw_item_get_id (item), NULL);
+			e_cal_backend_cache_put_component (cache, e_gw_item_to_cal_component (item));
+				
+		}
+	}
+        return E_GW_CONNECTION_STATUS_OK;        
+}
+
 static ECalBackendSyncStatus
 connect_to_server (ECalBackendGroupwise *cbgw)
 {
@@ -176,12 +230,9 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				g_warning (G_STRLOC ": Could not populate the cache");
 				return GNOME_Evolution_Calendar_PermissionDenied;
 			} else {
-				CacheUpdateHandle *update_handle = g_new0 (CacheUpdateHandle, 1);
-				update_handle->cnc = priv->cnc;
 				g_object_ref (priv->cnc);
-				update_handle->cache = priv->cache;
 				g_object_ref (priv->cache);
-				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) e_gw_connection_get_deltas, (gpointer) update_handle);
+				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
 				priv->mode = CAL_MODE_REMOTE;
 			}
 

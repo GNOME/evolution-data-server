@@ -46,6 +46,7 @@ struct _EGwItemPrivate {
 	char *accept_level;
 	char *priority;
 	char *place;
+	GSList *attendee_list;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -94,6 +95,10 @@ e_gw_item_dispose (GObject *object)
 			g_free (priv->place);
 			priv->place = NULL;
 		}
+
+		if (priv->attendee_list) {
+			g_slist_foreach (priv->attendee_list, (GFunc) g_free, NULL);
+		}	
 	}
 
 	if (parent_class->dispose)
@@ -163,12 +168,54 @@ e_gw_item_get_type (void)
 	return type;
 }
 
+static void 
+set_attendee_list_from_soap_parameter (GSList *attendee_list, SoupSoapParameter *param)
+{
+        SoupSoapParameter *param_recipient;
+        char *email, *cn;
+	ECalComponentAttendee *attendee;
+
+        for (param_recipient = soup_soap_parameter_get_first_child_by_name (param, "recipient");
+                param_recipient != NULL;
+                param_recipient = soup_soap_parameter_get_next_child_by_name (param, "recipient")) {
+
+                SoupSoapParameter *subparam;
+		attendee = g_new0 (ECalComponentAttendee, 1);	
+                subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "email");
+                if (subparam) {
+                        email = soup_soap_parameter_get_string_value (subparam);
+                        if (email)
+                                attendee->value = email;
+                }        
+                subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "displayName");
+                if (subparam) {
+                        cn = soup_soap_parameter_get_string_value (subparam);
+                        if (cn)
+                                attendee->cn = cn;
+                }
+                
+                subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "distType");
+                if (subparam) {
+                        const char *dist_type;
+                        dist_type = soup_soap_parameter_get_string_value (subparam);
+                        if (!strcmp (dist_type, "TO")) 
+                                attendee->role = ICAL_ROLE_REQPARTICIPANT;
+                        else if (!strcmp (dist_type, "CC"))
+                                attendee->role = ICAL_ROLE_OPTPARTICIPANT;
+                        else
+                                attendee->role = ICAL_ROLE_NONPARTICIPANT;
+                }
+
+                attendee_list = g_slist_append (attendee_list, attendee);
+        }        
+}
+
 EGwItem *
 e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param)
 {
 	EGwItem *item;
 	const char *item_type;
-	SoupSoapParameter *child;
+	SoupSoapParameter *subparam, *child;
 	
 	g_return_val_if_fail (param != NULL, NULL);
 
@@ -190,8 +237,20 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 
 	item->priv->container = g_strdup (container);
 
+	/* If the parameter consists of changes - populate deltas */
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "changes");
+	if (subparam) {
+		SoupSoapParameter *changes = subparam;
+		subparam = soup_soap_parameter_get_first_child_by_name (changes, "add");
+		if (!subparam)
+			subparam = soup_soap_parameter_get_first_child_by_name (changes, "delete");
+		if (!subparam)
+			subparam = soup_soap_parameter_get_first_child_by_name (changes, "update");
+	}
+	else subparam = param; /* The item is a complete one, not a delta  */
+	
 	/* now add all properties to the private structure */
-	for (child = soup_soap_parameter_get_first_child (param);
+	for (child = soup_soap_parameter_get_first_child (subparam);
 	     child != NULL;
 	     child = soup_soap_parameter_get_next_child (child)) {
 		const char *name;
@@ -235,6 +294,8 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			tp = soup_soap_parameter_get_first_child_by_name (child, "recipients");
 			if (tp) {
 				/* FIXME: see set_attendee_list_from... in e-gw-connection.c */
+				item->priv->attendee_list = NULL;
+				set_attendee_list_from_soap_parameter (item->priv->attendee_list, tp);
 			}
 
 		} else if (!g_ascii_strcasecmp (name, "dueDate")) {
@@ -802,3 +863,5 @@ e_gw_item_to_cal_component (EGwItem *item)
 
 	return comp;
 }
+
+
