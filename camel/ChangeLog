@@ -1,3 +1,10 @@
+205-01-29   Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* providers/groupwise/camel-groupwise-provider.c 
+	(camel_provider_init) : Make the soap mailer 
+	default for groupwise accounts. exporting USE_IMAP 
+	will cause imap to be used 
+
 2005-01-27  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-summary.c

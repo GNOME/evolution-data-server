@@ -125,21 +125,23 @@ camel_provider_module_init(void)
 {
 	CamelProvider *imap_provider = NULL;
 	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
-	gboolean use_soap_mailer = g_getenv ("SOAP_MAILER") != NULL;
+	gboolean use_imap = g_getenv ("USE_IMAP") != NULL;
 
-	if (!use_soap_mailer)
+	if (use_imap)
 	    imap_provider =  camel_provider_get("imap://", &ex);
 
 	groupwise_provider.url_hash = groupwise_url_hash;
 	groupwise_provider.url_equal = groupwise_url_equal;
 	groupwise_provider.auto_detect = groupwise_auto_detect_cb;
 	groupwise_provider.authtypes = g_list_prepend (groupwise_provider.authtypes, &camel_groupwise_password_authtype);
-	if (use_soap_mailer) {
+	
+	if (use_imap)
+		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];
+	else 	{
 		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] =  camel_groupwise_store_get_type() ;
 		groupwise_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_groupwise_transport_get_type();
-	} else {
-		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];
-	}
+	} 
+	
 	camel_provider_register (&groupwise_provider);
 }
 
