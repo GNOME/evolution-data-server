@@ -41,6 +41,7 @@ libedataserver_1_2_la_SOURCES =		\
 
 libedataserver_1_2_la_LIBADD = 				\
 	$(E_DATA_SERVER_LIBS)				\
+	$(ICONV_LIBS)					\
 	$(top_builddir)/libdb/dist/libdb-4.1.la
 
 libedataserver_1_2_la_LDFLAGS = 										\

@@ -1,3 +1,8 @@
+2004-12-03  Not Zed  <NotZed@Ximian.com>
+
+	* libedataserver/Makefile.am (libedataserver_1_2_la_LIBADD): add
+	iconv_libs to the library list.
+
 2004-12-01  Hans Petter Jansson  <hpj@novell.com>
 
 	* Makefile.am: Build libedataserverui after non-UI libraries that it
