@@ -171,6 +171,7 @@ libcamel_1_2_la_SOURCES = 				\
 	camel-multipart-signed.c		\
 	camel-multipart.c			\
 	camel-net-utils.c			\
+	camel-nntp-address.c			\
 	camel-object.c				\
 	camel-operation.c			\
 	camel-partition-table.c			\
@@ -236,6 +237,7 @@ libcamelinclude_HEADERS =			\
 	camel-multipart-signed.h		\
 	camel-multipart.h			\
 	camel-net-utils.h			\
+	camel-nntp-address.h			\
 	camel-object.h				\
 	camel-operation.h			\
 	camel-partition-table.h			\
