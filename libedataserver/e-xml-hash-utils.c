@@ -103,6 +103,7 @@ e_xml_from_hash (GHashTable *hash, EXmlHashType type, const char *root_name)
 	struct save_data sd;
 
 	doc = xmlNewDoc ("1.0");
+	doc->encoding = g_strdup ("UTF-8");
 	sd.type = type;
 	sd.doc = doc;
 	sd.root = xmlNewDocNode (doc, NULL, root_name, NULL);

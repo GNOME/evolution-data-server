@@ -1,3 +1,11 @@
+2004-03-18  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedataserver/e-xml-hash-utils.c (e_xml_from_hash): set encoding
+	on XML document.
+
+	* libedataserver/e-file-cache.c (e_file_cache_set_property): if we fail
+	opening the cache file, just create it empty, don't fail.
+
 2004-03-17  Rodrigo Moya <rodrigo@ximian.com>
 
 	* configure.in: yank --enable-debug option, not needed anymore.

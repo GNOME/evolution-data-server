@@ -60,7 +60,17 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 
 		if (priv->xml_hash)
 			e_xmlhash_destroy (priv->xml_hash);
-		priv->xml_hash = e_xmlhash_new ((const char *) g_value_get_string (value));
+		priv->xml_hash = e_xmlhash_new (g_value_get_string (value));
+
+		/* if opening the cache file fails, remove it and try again */
+		if (!priv->xml_hash) {
+			unlink (g_value_get_string (value));
+			priv->xml_hash = e_xmlhash_new (g_value_get_string (value));
+			if (priv->xml_hash) {
+				g_message (G_STRLOC ": could not open not re-create cache file %s",
+					   g_value_get_string (value));
+			}
+		}
 		break;
 	default :
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
