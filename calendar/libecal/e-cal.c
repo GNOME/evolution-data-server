@@ -1417,27 +1417,11 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 	ecal->priv->auth_user_data = data;
 }
 
-/**
- * e_cal_open
- * @ecal: A calendar ecal.
- * @only_if_exists: FALSE if the calendar should be opened even if there
- * was no storage for it, i.e. to create a new calendar or load an existing
- * one if it already exists.  TRUE if it should only try to load calendars
- * that already exist.
- * @error: 
- *
- * Makes a calendar ecal initiate a request to open a calendar.  The calendar
- * ecal will emit the "cal_opened" signal when the response from the server is
- * received.
- *
- * Return value: TRUE on success, FALSE on failure to issue the open request.
- **/
-gboolean
-e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
+static gboolean
+open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarStatus *status)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
-	ECalendarStatus status;
 	ECalendarOp *our_op;
 	const char *username = NULL;
 	char *password = NULL;
@@ -1513,8 +1497,7 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 
 		g_warning (G_STRLOC ": Unable to contact backend");
 
-		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0,
-			       E_CALENDAR_STATUS_CORBA_EXCEPTION);
+		*status = E_CALENDAR_STATUS_CORBA_EXCEPTION;
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
@@ -1524,47 +1507,83 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 	   successful response will notity us via our cv */
 	g_cond_wait (our_op->cond, our_op->mutex);
 
-	status = our_op->status;
+	*status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
-	if (status == E_CALENDAR_STATUS_OK)
+	if (*status == E_CALENDAR_STATUS_OK)
 		priv->load_state = E_CAL_LOAD_LOADED;
 	else
 		priv->load_state = E_CAL_LOAD_NOT_LOADED;
 
+	E_CALENDAR_CHECK_STATUS (*status, error);
+}
+
+/**
+ * e_cal_open
+ * @ecal: A calendar ecal.
+ * @only_if_exists: FALSE if the calendar should be opened even if there
+ * was no storage for it, i.e. to create a new calendar or load an existing
+ * one if it already exists.  TRUE if it should only try to load calendars
+ * that already exist.
+ * @error: 
+ *
+ * Makes a calendar ecal initiate a request to open a calendar.  The calendar
+ * ecal will emit the "cal_opened" signal when the response from the server is
+ * received.
+ *
+ * Return value: TRUE on success, FALSE on failure to issue the open request.
+ **/
+gboolean
+e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
+{
+	ECalendarStatus status;
+	gboolean result;
+
+	result = open_calendar (ecal, only_if_exists, error, &status);
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, status);
-	E_CALENDAR_CHECK_STATUS (status, error);
+
+	return result;
 }
 
 typedef struct {
 	ECal *ecal;
-	
 	gboolean exists;
+	gboolean result;
+	ECalendarStatus status;
 } ECalAsyncData;
 
 static gboolean
+async_idle_cb (gpointer data)
+{
+	ECalAsyncData *ccad = data;
+
+	g_signal_emit (G_OBJECT (ccad->ecal), e_cal_signals[CAL_OPENED], 0, ccad->status);
+
+	/* free memory */
+	g_object_unref (ccad->ecal);
+	g_free (ccad);
+}
+
+static gpointer
 open_async (gpointer data) 
 {
 	ECalAsyncData *ccad = data;
-	GError *error = NULL;
 
-	e_cal_open (ccad->ecal, ccad->exists, &error);
+	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status);
+	g_idle_add ((GSourceFunc) async_idle_cb, ccad);
 
-	g_clear_error (&error);
-
-	g_object_unref (ccad->ecal);
-	g_free (ccad);
-	
-	return FALSE;	
+	return GINT_TO_POINTER (ccad->result);
 }
 
 void
 e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 {
 	ECalAsyncData *ccad;
+	GThread *thread;
+	GError *error = NULL;
 	
 	g_return_if_fail (ecal != NULL);
 	g_return_if_fail (E_IS_CAL (ecal));
@@ -1573,8 +1592,15 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 	ccad->ecal = g_object_ref (ecal);
 	ccad->exists = only_if_exists;
 
-	/* FIXME This should really spawn a new thread */
-	g_idle_add (open_async, ccad);
+	/* spawn a new thread for opening the calendar */
+	thread = g_thread_create ((GThreadFunc) open_async, ccad, TRUE, &error);
+	if (!thread) {
+		g_warning (G_STRLOC ": %s", error->message);
+		g_error_free (error);
+
+		/* notify listeners of the error */
+		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, E_CALENDAR_STATUS_OTHER_ERROR);
+	}
 }
 
 gboolean 
