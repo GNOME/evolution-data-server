@@ -1481,7 +1481,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	case E_GW_ITEM_TYPE_CONTACT :
 		soup_soap_message_add_attribute (msg, "type", "Contact", "xsi", NULL);
 		append_contact_fields_to_soap_message (item, msg);
-		soup_soap_message_end_element(msg); 
+		soup_soap_message_end_element(msg);
 		return TRUE;
         case E_GW_ITEM_TYPE_GROUP :
 		soup_soap_message_add_attribute (msg, "type", "Group", "xsi", NULL);
@@ -1499,7 +1499,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
 
 	soup_soap_message_start_element (msg, "message", NULL, NULL);
-	dtstring = g_strdup_printf ("%d", priv->message ? strlen (priv->message) : "");
+	dtstring = g_strdup_printf ("%d", priv->message ? strlen (priv->message) : 0);
 	soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
 	g_free (dtstring);
 	soup_soap_message_write_base64 (msg, priv->message ? priv->message : "",
