@@ -52,6 +52,7 @@ struct _CamelGroupwiseMessageContentInfo {
 struct _CamelGroupwiseSummary {
 	CamelFolderSummary parent ;
 
+	char *time_string;
 	guint32 version ;
 	guint32 validity ;
 } ;

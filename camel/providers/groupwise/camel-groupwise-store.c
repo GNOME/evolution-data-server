@@ -479,6 +479,8 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (store) ;
 	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
 	CamelFolder *folder ;
+	CamelGroupwiseSummary *summary;
+	char *time_string = NULL;
 	char *storage_path, *folder_dir, *temp_str,*container_id ;
 	const char *temp_name;
 	EGwConnectionStatus status ;
@@ -531,31 +533,30 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 	if (!mutex)
 		mutex = g_mutex_new () ;
+	summary = (CamelGroupwiseSummary *) folder->summary;
+	if (summary->time_string && *(summary->time_string))
+		time_string = summary->time_string;	
+	else {
+		time_t mod_time = time (0) ;
+		const struct tm *tm;
+		/*TODO get current time here */
+		tm = gmtime (&mod_time);
+		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+	}
 
 	summary_count = camel_folder_summary_count (folder->summary) ;
 	if(summary_count) {
 		char *cache_file_name ;
 		time_t mod_time = time (0) ;
-		char time_string[100] = {0}, *t_str;
+		char  *t_str = NULL;
 		const struct tm *tm ;
 		struct stat buf;
 		
-		
-		
-		cache_file_name = g_strdup (folder->summary->summary_path) ;
-		stat (cache_file_name, &buf) ;
-		g_free (cache_file_name) ;
-		mod_time = buf.st_mtime;
-		tm = gmtime (&mod_time);
-		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
-		camel_operation_start (NULL, _("Fetching summary information for new messages"));
 		t_str = g_strdup (time_string);
-
 		/* FIXME send the time stamp which the server sends */
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
 				"distribution attachments subject created",
 				&t_str, "New", "Mail", NULL, -1, &slist) ;
-		g_free (t_str), t_str = NULL;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
@@ -568,7 +569,11 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			//return NULL ;
 		}
 
-	
+		/* store t_str into the summary */	
+		if (summary->time_string)
+			g_free (summary->time_string);
+		summary->time_string = g_strdup (t_str);
+		g_free (t_str), t_str = NULL;
 		for ( sl = slist ; sl != NULL; sl = sl->next) {
 			list = g_list_append (list, sl->data) ;
 		}
@@ -635,7 +640,10 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 			temp = g_list_length (list) ;
 			count += temp ;
-
+			
+			if (summary->time_string)
+				g_free (summary->time_string);
+			summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
 			gw_update_summary (folder, list,  ex) ;
 			if (temp == count)
 				camel_operation_progress (NULL, 0) ;

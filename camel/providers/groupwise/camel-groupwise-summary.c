@@ -161,6 +161,8 @@ gw_summary_header_load (CamelFolderSummary *s, FILE *in)
 			|| camel_file_util_decode_fixed_int32(in, &ims->validity) == -1)
 		return -1;
 	
+	if (camel_file_util_decode_string (in, &ims->time_string) == -1)
+		return -1;
 	return 0 ;
 }
 
@@ -174,6 +176,7 @@ gw_summary_header_save (CamelFolderSummary *s, FILE *out)
 		return -1;
 
 	camel_file_util_encode_fixed_int32(out, CAMEL_GW_SUMMARY_VERSION);
+	camel_file_util_encode_string (out, ims->time_string);
 
 	return camel_file_util_encode_fixed_int32(out, ims->validity);
 

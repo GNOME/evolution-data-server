@@ -633,7 +633,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	char *container_id = NULL ;
 	char *cache_file_name ;
 	time_t mod_time = time (0) ;
-	char time_string[100] = {0}, *t_str ;
+	char *time_string = NULL, *t_str = NULL ;
 	const struct tm *tm ;
 	struct stat buf ;
 
@@ -652,13 +652,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 		gw_folder->need_refresh = TRUE ;
 	}
 
-	cache_file_name = g_strdup (folder->summary->summary_path) ;
-	stat (cache_file_name, &buf) ;
-	mod_time = buf.st_mtime ;
-	g_free (cache_file_name) ;
-
-	tm = gmtime (&mod_time) ;
-	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm) ;
+	time_string =  ((CamelGroupwiseSummary *) folder->summary)->time_string;
 	t_str = g_strdup (time_string);
 	
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
