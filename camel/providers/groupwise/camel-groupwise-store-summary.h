@@ -52,7 +52,7 @@ struct _CamelGroupwiseStoreInfo {
 
 typedef struct _CamelGroupwiseStoreNamespace CamelGroupwiseStoreNamespace;
 
-struct _CamelImapStoreNamespace {
+struct _CamelGroupwiseStoreNamespace {
 	char *path;             /* display path */
 	char *full_name;        /* real name */
 	char sep;               /* directory separator */
@@ -75,7 +75,18 @@ struct _CamelGroupwiseStoreSummaryClass {
 
 CamelType                        camel_groupwise_store_summary_get_type      (void);
 CamelGroupwiseStoreSummary      *camel_groupwise_store_summary_new        (void);
+CamelGroupwiseStoreInfo *camel_groupwise_store_summary_full_name(CamelGroupwiseStoreSummary *s, const char *full_name) ;
+CamelGroupwiseStoreInfo *camel_groupwise_store_summary_add_from_full(CamelGroupwiseStoreSummary *s, const char *full, char dir_sep) ;
 
+char *camel_groupwise_store_summary_full_to_path(CamelGroupwiseStoreSummary *s, const char *full_name, char dir_sep) ;
+char *camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const char *path, char dir_sep) ;
+char *camel_groupwise_store_summary_full_from_path(CamelGroupwiseStoreSummary *s, const char *path) ;
+
+CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_new(CamelGroupwiseStoreSummary *s, const char *full_name, char dir_sep) ;
+CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_path(CamelGroupwiseStoreSummary *s, const char *path) ;
+void camel_groupwise_store_summary_namespace_set(CamelGroupwiseStoreSummary *s, CamelGroupwiseStoreNamespace *ns) ;
+
+#define camel_groupwise_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_LAST))
 
 #ifdef __cplusplus
 }

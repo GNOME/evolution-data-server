@@ -1,3 +1,11 @@
+2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* providers/groupwise/camel-groupwise-store-summary.[ch]:
+	  implements the CamelStoreSummary Class providing support
+	  for store summary for the soap provider.
+	* providers/groupwise/camel-groupwise-store.c
+	  (groupwise_get_folder_info_online): saves the store summary
+	  after building folder info.
+	  
 2005-01-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-store.c (imap4_connect): Same as

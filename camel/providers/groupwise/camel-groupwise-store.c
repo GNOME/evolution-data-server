@@ -302,7 +302,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	sprintf (path, "%s/.summary", priv->storage_path) ;
 	groupwise_store->summary = camel_groupwise_store_summary_new () ;
 	camel_store_summary_set_filename ((CamelStoreSummary *)groupwise_store->summary, path) ;
-	
+	camel_store_summary_touch ((CamelStoreSummary *)groupwise_store->summary) ;
 	camel_store_summary_load ((CamelStoreSummary *) groupwise_store->summary);
 	
 	/*host and user*/
@@ -433,6 +433,7 @@ groupwise_connect_online (CamelService *service, CamelException *ex)
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (service);
 	char *path;
+	CamelGroupwiseStoreNamespace *ns ;
 	d("in groupwise store connect\n");
 	CAMEL_SERVICE_LOCK (service, connect_lock);
 	if (priv->cnc) {
@@ -450,11 +451,16 @@ groupwise_connect_online (CamelService *service, CamelException *ex)
 	path = g_strdup_printf ("%s/journal", priv->storage_path);
 	disco_store->diary = camel_disco_diary_new (disco_store, path, ex);
 	g_free (path);
+	camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary) ;
+
+	ns = camel_groupwise_store_summary_namespace_new(groupwise_store->summary, priv->storage_path, '/');
+	camel_groupwise_store_summary_namespace_set(groupwise_store->summary, ns);
+	
 	CAMEL_SERVICE_UNLOCK (service, connect_lock);
 	if (E_IS_GW_CONNECTION (priv->cnc)) {
 		return TRUE;
 	}
-
+	
 	return FALSE;
 
 }
@@ -547,7 +553,7 @@ groupwise_get_folder_online( CamelStore *store,
 
 	camel_operation_start (NULL, _("Fetching summary information for new messages"));
 
-	status = e_gw_connection_get_items (priv->cnc, container_id, "default attachments", NULL, &list) ;
+	status = e_gw_connection_get_items (priv->cnc, container_id, "default attachments distribution created subject", NULL, &list) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		g_free (container_id) ;
@@ -562,21 +568,15 @@ groupwise_get_folder_online( CamelStore *store,
 	folder = camel_gw_folder_new(store,folder_name, folder_dir,ex) ;
 	if(folder) {
 		CamelException local_ex ;
-		int count ;
 
 		gw_store->current_folder = folder ;
 		camel_object_ref (folder) ;
 		camel_exception_init (&local_ex) ;
 		
-		/*gw_folder_selected() ;*/
-		
 		gw_update_summary (folder, list,  ex) ;
 
-		count = camel_folder_summary_count (folder->summary) ;
-		/*gw_rescan() ;*/
 		camel_folder_summary_save(folder->summary) ;
 	}
-	//g_free_list (list) ;
 	camel_operation_end (NULL);
 	return folder ;
 }
@@ -669,7 +669,7 @@ groupwise_get_folder_info_online (CamelStore *store,
 	GPtrArray *folders;
 	GList *folder_list = NULL, *temp_list = NULL ;
 	const char *url, *top_folder;
-	char *temp_str = NULL;
+	char *temp_str = NULL, *folder_real = NULL ;
 	CamelFolderInfo *info = NULL ;
 
 	g_print ("||GW:Get folder info online\n") ;
@@ -679,9 +679,10 @@ groupwise_get_folder_info_online (CamelStore *store,
 			return NULL;
 		}
 	}
-	if (top == NULL)
+	if (top == NULL) {
 		top_folder = "folders" ;
-	else {
+		top = "" ;
+	} else {
 		temp_str = strrchr (top, '/') ;
 		if (temp_str) {
 			temp_str++ ;
@@ -795,10 +796,8 @@ groupwise_get_folder_info_online (CamelStore *store,
 	info = camel_folder_info_build (folders, top, '/', TRUE) ;
 	g_ptr_array_free (folders, TRUE) ;
 
-	/*Now update the folder counts, the idea is taken from the imap provider implementation*/
-	if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST)) {
-		//update_folder_counts (groupwise_store, info, ex) ;
-	}
+	folder_real = camel_groupwise_store_summary_path_to_full(groupwise_store->summary, top, '/') ;
+	camel_groupwise_store_summary_add_from_full(groupwise_store->summary, folder_real, '/') ;
 	camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary) ;
 	return info ;
 }
@@ -887,7 +886,8 @@ groupwise_create_folder(CamelStore *store,
 	}
 	status = e_gw_connection_create_folder(priv->cnc,parent_id,folder_name, &child_container_id) ;
 	if (status == E_GW_CONNECTION_STATUS_OK) {
-		root = groupwise_build_folder_info(groupwise_store, parent_name,folder_name) ;
+
+		camel_store_summary_save((CamelStoreSummary *)groupwise_store->summary);
 
 		g_hash_table_insert (priv->id_hash, g_strdup(child_container_id), g_strdup(folder_name)) ; 
 		g_hash_table_insert (priv->name_hash, g_strdup(folder_name), g_strdup(child_container_id)) ;
@@ -950,9 +950,6 @@ groupwise_rename_folder(CamelStore *store,
 	char *oldpath, *newpath, *storepath, *newname ;
 	char *container_id ;
 	CamelSession *session = ((CamelService *)store)->session ;
-
-	EGwConnectionStatus status ;
-
 
 	
 	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex)) {

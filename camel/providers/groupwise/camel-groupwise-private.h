@@ -1,5 +1,4 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
- *  camel-imap-private.h: Private info for imap.
  *
  * Authors: Siviah Nallagatla <snallagatla@novell.com>
  *
