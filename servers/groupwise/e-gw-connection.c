@@ -1955,7 +1955,6 @@ e_gw_connection_position_cursor (EGwConnection *cnc, const char *container, int 
 	g_return_val_if_fail ((container != NULL), E_GW_CONNECTION_STATUS_UNKNOWN);
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "positionCursorRequest");
-	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	e_gw_message_write_int_parameter (msg, "cursor", NULL, cursor);
 	e_gw_message_write_string_parameter (msg, "seek", NULL, seek);
 	e_gw_message_write_int_parameter (msg, "offset", NULL, offset);
@@ -1986,7 +1985,6 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
 	g_return_val_if_fail ((container != NULL), E_GW_CONNECTION_STATUS_UNKNOWN);
 	
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "readCursorRequest");
-	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	e_gw_message_write_int_parameter (msg, "cursor", NULL, cursor);
 	/* there is problem in read curosr if you set this, uncomment after the problem 
 	   is fixed in server */

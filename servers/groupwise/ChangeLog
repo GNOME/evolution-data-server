@@ -1,3 +1,9 @@
+2005-02-02  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-connection.c (e_gw_connection_position_cursor),
+	(e_gw_connection_read_cursor): Do not send container id to
+	the request as this is redundant now.
+
 2005-01-31 Vivek Jain <jvivek@novell.com>
 	* e-gw-connection.[ch] : added a function 
 	(e_gw_connection_get_version)
