@@ -1,4 +1,9 @@
 2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* e-gw-item.[ch]
+	  (e_gw_item_set_source): sets the source element for
+	  mails.
+
+2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* e-gw-connection.[ch]
 	  (e_gw_connection_mark_read): mark messages read

@@ -254,6 +254,7 @@ void e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list) ;
 GSList *e_gw_item_get_recurrence_dates (EGwItem *item);
 void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates);
 
+void e_gw_item_set_source (EGwItem *item, char *source) ;
 
 int e_gw_item_get_trigger (EGwItem *item);
 void e_gw_item_set_trigger (EGwItem *item, int trigger);
