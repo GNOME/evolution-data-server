@@ -265,7 +265,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 
 	/* build the SOAP message */
 	msg = e_gw_message_new_with_header (uri, "loginRequest");
-	soup_soap_message_start_element (msg, "auth", "types", "http://schemas.novell.com/2003/10/NCSP/types.xsd");
+	soup_soap_message_start_element (msg, "auth", "types", NULL);
 	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
 					 "http://www.w3.org/2001/XMLSchema-instance");
 	e_gw_message_write_string_parameter (msg, "username", username);
