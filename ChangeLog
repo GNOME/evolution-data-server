@@ -1,3 +1,7 @@
+2003-11-17  Rodrigo Moya <rodrigo@ximian.com>
+
+	* configure.in: added libsoup-2.2 as a dependency for Groupwise.
+
 2003-11-14  JP Rosevear <jpr@ximian.com>
 
 	* libedataserver/test-source-list.c: use only libgnome stuff (no

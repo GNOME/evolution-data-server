@@ -319,6 +319,12 @@ EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, libxml-2.0 libgnome-2.0 libbonobo-2.0 
 AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
 AC_SUBST(EVOLUTION_CALENDAR_LIBS)
 
+dnl --- Groupwise flags
+
+EVO_SET_COMPILE_FLAGS(GROUPWISE, libsoup-2.2)
+AC_SUBST(GROUPWISE_CFLAGS)
+AC_SUBST(GROUPWISE_LIBS)
+
 dnl *******************
 dnl Special directories
 dnl *******************
