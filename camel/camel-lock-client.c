@@ -124,7 +124,7 @@ static int camel_lock_helper_init(CamelException *ex)
 		close(lock_stdout_pipe[1]);
 		for (i=3;i<255;i++)
 			     close(i);
-		execl(CAMEL_LIBEXECDIR "/camel-lock-helper", "camel-lock-helper", NULL);
+		execl(CAMEL_LIBEXECDIR "/camel-lock-helper-" BASE_VERSION, "camel-lock-helper", NULL);
 		d(fprintf(stderr, "shit, couldn't exec lock helper!\n"));
 		/* it'll pick this up when it tries to use us */
 		exit(255);

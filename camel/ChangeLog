@@ -1,3 +1,8 @@
+2004-12-06  Rodney Dawes  <dobey@novell.com>
+
+	* camel-lock-client.c (camel_lock_helper_init):
+	Exec camel-lock-helper-$BASE_VERSION instead of just camel-lock-helper
+
 2004-12-06  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-sasl-gssapi.c: #include "camel-net-utils.h"
