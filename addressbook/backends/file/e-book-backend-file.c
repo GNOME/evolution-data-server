@@ -240,6 +240,9 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	*contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get(*contact, E_CONTACT_UID);
 
+	if (id == NULL)
+		return GNOME_Evolution_Addressbook_OtherError;
+
 	/* This is disgusting, but for a time cards were added with
            ID's that are no longer used (they contained both the uri
            and the id.) If we recognize it as a uri (file:///...) trim

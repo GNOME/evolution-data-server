@@ -1,3 +1,20 @@
+ 2004-10-29  Diego Gonzalez <diego@pemas.net>
+
+  * backends/file/e-book-backend-file.c (e_book_backend_file_modify_contact):
+  don't crash if the UID of the contact being commited is NULL.
+
+ 2004-10-29  Diego Gonzalez <diego@pemas.net>
+
+  * libebook/e-book.c (do_commit_contact): when doing a e_book_commit_contact,
+  several times, the first time that this funcion was called with the
+  sync flag it cleared the UID of the contact, in the next operation the
+  server would crash due to the UID being null. This fixes the client side
+  and seems to work without a glitch.
+
+  I just removed the e_contact_set as it seems (from visual inspection of
+  e_contact_set) that this operation doesn't cause any call in the backend,
+  and thus it will not force the previous operation to be completed.
+
 2004-10-26  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libedata-book/e-book-backend-sexp.c : Remove E_CONTACT_UID 
