@@ -17,6 +17,7 @@ INCLUDES = -I.. \
 libcamelgroupwise_la_SOURCES = 			\
 	camel-groupwise-provider.c		\
 	camel-groupwise-folder.c                \
+	camel-groupwise-journal.c               \
         camel-groupwise-store.c                 \
         camel-groupwise-summary.c               \
 	camel-groupwise-store-summary.c         \
@@ -25,6 +26,7 @@ libcamelgroupwise_la_SOURCES = 			\
 
 noinst_HEADERS =         			\
 	camel-groupwise-folder.h		\
+	camel-groupwise-journal.h		\
 	camel-groupwise-private.h		\
 	camel-groupwise-store.h			\
 	camel-groupwise-summary.h		\

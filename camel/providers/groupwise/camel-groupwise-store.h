@@ -69,7 +69,8 @@ CamelType camel_groupwise_store_get_type (void);
 char * groupwise_get_name(CamelService *service, gboolean brief) ;
 
 /*IMplemented*/
-char *container_id_lookup (CamelGroupwiseStorePrivate *priv, const char *folder_name) ;
+const char *camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_store, const char *folder_name) ;
+const char *camel_groupwise_store_folder_lookup (CamelGroupwiseStore *gw_store, const char *container_id) ;
 EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv) ;
 const char *gw_get_path (CamelGroupwiseStore *gw_store, const char *folder_name) ;
 char *storage_path_lookup (CamelGroupwiseStorePrivate *priv) ;

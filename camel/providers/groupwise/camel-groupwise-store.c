@@ -867,16 +867,15 @@ groupwise_rename_folder(CamelStore *store,
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
 	char *oldpath, *newpath, *storepath ;
-	char *container_id ;
+	const char *container_id ;
 	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename GroupWise folders in offline mode."));
 		return;
 	}
 	
-	container_id = container_id_lookup (priv,old_name) ;
+	container_id = camel_groupwise_store_container_id_lookup (groupwise_store, old_name) ;
 	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , new_name) != E_GW_CONNECTION_STATUS_OK) {
-		g_free (container_id) ;
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
 				      old_name, new_name);
 		return ;
@@ -967,11 +966,22 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name,
 }
 
 
-char *
-container_id_lookup (CamelGroupwiseStorePrivate *priv, const char *folder_name)
+const char *
+camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_store, const char *folder_name)
 {
+	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
+
 	return g_hash_table_lookup (priv->name_hash,folder_name) ;
 }
+
+const char *
+camel_groupwise_store_folder_lookup (CamelGroupwiseStore *gw_store, const char *container_id)
+{
+	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
+
+	return g_hash_table_lookup (priv->id_hash, container_id) ;
+}
+
 
 EGwConnection *
 cnc_lookup (CamelGroupwiseStorePrivate *priv)

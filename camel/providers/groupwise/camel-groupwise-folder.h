@@ -40,6 +40,7 @@ extern "C" {
 #include <camel/camel-internet-address.h>
 #include <camel/camel-data-cache.h>
 #include <camel/camel-multipart.h>
+#include <camel/camel-offline-journal.h>
 
 #include "camel-groupwise-summary.h"
 
@@ -56,6 +57,8 @@ struct _CamelGroupwiseFolder {
 	struct _CamelGroupwiseFolderPrivate *priv;
 
 	CamelFolderSearch *search;
+
+	CamelOfflineJournal *journal;
 	CamelDataCache *cache;
 
 	unsigned int need_rescan:1;

@@ -150,11 +150,11 @@ groupwise_folder_get_message( CamelFolder *folder,
 	folder_name = g_strdup(folder->name) ;
 	temp_name = strrchr (folder_name,'/') ;
 	if(temp_name == NULL) {
-		container_id =  g_strdup (container_id_lookup (priv,g_strdup(folder_name))) ;
+		container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder_name)) ;
 	}
 	else {
 		temp_name++ ;
-		container_id =  g_strdup (container_id_lookup (priv,g_strdup(temp_name))) ;
+		container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, temp_name)) ;
 	}
 
 	
@@ -473,7 +473,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	GList *list = NULL;
 	char *container_id = NULL ;
 
-	container_id = g_strdup (container_id_lookup(priv, g_strdup (folder->name))) ;
+	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name)) ;
 	if (!container_id) {
 		g_print ("\nERROR - Container id not present. Cannot refresh info\n") ;
 		return ;
@@ -605,7 +605,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		const CamelMessageInfo *info, char **appended_uid,
 		CamelException *ex)
 {
-	char *container_id = NULL;
+	const char *container_id = NULL;
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(folder->parent_store) ;
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
@@ -620,7 +620,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		return;
 	}
 	/*Get the container id*/
-	container_id = container_id_lookup (priv, folder->name) ;
+	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->name) ;
 	/* FIXME Separate To/CC/BCC? */
 	recipients = CAMEL_ADDRESS (camel_internet_address_new ());
 	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO)));
@@ -682,8 +682,9 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 {
 	int count, index = 0 ;
 	GList *item_ids = NULL, *temp_list = NULL ;
-	char *source_container_id = NULL, *dest_container_id = NULL;
+	const char *source_container_id = NULL, *dest_container_id = NULL;
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(source->parent_store) ;
+	CamelOfflineStore *offline = (CamelOfflineStore *) destination->parent_store;
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnectionStatus status ;
 	EGwConnection *cnc = cnc_lookup (priv) ;
@@ -696,9 +697,44 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		temp_list = g_list_append (temp_list, g_ptr_array_index (uids, index));
 		index ++;
 	}
+
+	source_container_id = camel_groupwise_store_container_id_lookup (gw_store, source->name) ;
+	dest_container_id = camel_groupwise_store_container_id_lookup (gw_store, destination->name) ;
+
+	/* check for offline operation */
+	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		CamelGroupwiseJournal *journal = (CamelGroupwiseJournal *) ((CamelGroupwiseFolder *) destination)->journal;
+		CamelMimeMessage *message;
+		GList *l;
+		int i;
+		
+		for (l = item_ids, i = 0; l; l = l->next, i++) {
+			CamelMessageInfo *info;
+
+			if (!(info = camel_folder_summary_uid (source->summary, uids->pdata[i])))
+				continue;
+			
+			if (!(message = groupwise_folder_get_message (source, camel_message_info_uid (info), ex)))
+				break;
+			
+			camel_groupwise_journal_transfer (journal, (CamelGroupwiseFolder *)source, message, info, uids->pdata[i], NULL, ex);
+			camel_object_unref (message);
+			
+			if (camel_exception_is_set (ex))
+				break;
+			
+			if (delete_originals)
+				camel_folder_set_message_flags (source, camel_message_info_uid (info),
+								CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
+		}
+
+		/* FIXME Return the list of transfers */
+		if (transferred_uids)
+			*transferred_uids = NULL ;
+
+		return;
+	}
 	
-	source_container_id = container_id_lookup (priv, g_strdup (source->name)) ;
-	dest_container_id = container_id_lookup (priv, g_strdup (destination->name)) ;
 	status = e_gw_connection_add_items (cnc, dest_container_id, item_ids) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_print ("Warning!! Could not move items\n") ;
@@ -713,6 +749,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		}
 	}
 	
+	/* FIXME Return the list of transfers */
 	if (transferred_uids)
 		*transferred_uids = NULL ;
 }
@@ -746,7 +783,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 		camel_message_info_free (info);
 	}
 	
-	container_id =  g_strdup (container_id_lookup (priv,g_strdup(folder->name))) ;
+	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->name)) ;
 	status = e_gw_connection_remove_items (cnc, container_id, item_ids);
 	if (status == E_GW_CONNECTION_STATUS_OK)
 		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);

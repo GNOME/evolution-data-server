@@ -258,7 +258,6 @@ e_path_rmdir (const char *prefix, const char *vpath)
 	return 0;
 }
 
-
 EGwItem *
 camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients)
 {
