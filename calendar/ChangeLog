@@ -1,3 +1,11 @@
+2004-09-28  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #66230
+
+	* backends/http/e-cal-backend-http.c (retrieval_done): do a more clever
+	update of the cache, so that we correctly notify listeners of updates,
+	additions and removals.
+
 2004-09-24  JP Rosevear  <jpr@novell.com>
 
 	Fixes #66383, From David Malcolm <dmalcolm@redhat.com>

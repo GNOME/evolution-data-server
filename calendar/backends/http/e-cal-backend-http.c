@@ -193,6 +193,18 @@ webcal_to_http_method (const gchar *webcal_str)
 	return g_strconcat ("http://", webcal_str + sizeof ("webcal://") - 1, NULL);
 }
 
+static gboolean
+notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
+{
+	const char *uid = key;
+	const char *calobj = value;
+	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (user_data);
+
+	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), uid, calobj);
+
+	return TRUE;
+}
+
 static void
 retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 {
@@ -201,6 +213,8 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	icalcomponent_kind kind;
 	const char *newuri;
 	char *str;
+	GHashTable *old_cache;
+	GList *comps_in_cache;
 
 	priv = cbhttp->priv;
 
@@ -258,7 +272,19 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	}
 
 	/* Update cache */
-	e_file_cache_clean (E_FILE_CACHE (priv->cache));
+	old_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+	comps_in_cache = e_cal_backend_cache_get_components (priv->cache);
+	while (comps_in_cache != NULL) {
+		const char *uid;
+		ECalComponent *comp = comps_in_cache->data;
+
+		e_cal_component_get_uid (comp, &uid);
+		g_hash_table_insert (old_cache, g_strdup (uid), e_cal_component_get_as_string (comp));
+
+		comps_in_cache = g_list_remove (comps_in_cache, comps_in_cache->data);
+		g_object_unref (comp);
+	}
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbhttp));
 	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
@@ -270,9 +296,20 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 		if (subcomp_kind == kind) {
 			comp = e_cal_component_new ();
 			if (e_cal_component_set_icalcomponent (comp, subcomp)) {
+				const char *uid, *orig_key, *orig_value;
+
 				e_cal_backend_cache_put_component (priv->cache, comp);
-				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
-								     icalcomponent_as_ical_string (subcomp));
+
+				e_cal_component_get_uid (comp, &uid);
+				if (g_hash_table_lookup_extended (old_cache, uid, &orig_key, &orig_value)) {
+					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp),
+									      orig_value,
+									      icalcomponent_as_ical_string (subcomp));
+					g_hash_table_remove (old_cache, uid);
+				} else {
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
+									     icalcomponent_as_ical_string (subcomp));
+				}
 			}
 
 			g_object_unref (comp);
@@ -288,6 +325,10 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 		subcomp = icalcomponent_get_next_component (icalcomp, kind);
 	}
+
+	/* notify the removals */
+	g_hash_table_foreach_remove (old_cache, (GHRFunc) notify_and_remove_from_cache, cbhttp);
+	g_hash_table_destroy (old_cache);
 
 	/* free memory */
 	icalcomponent_free (icalcomp);
