@@ -2342,3 +2342,39 @@ e_gw_connection_move_item (EGwConnection *cnc, const char *id, const char *dest_
 
 
 }
+
+EGwConnectionStatus
+e_gw_connection_accept_shared_folder (EGwConnection *cnc, gchar *name, gchar *container_id, gchar *item_id, gchar *desc)
+{
+
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_UNKNOWN;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (container_id != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (item_id != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (name != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "acceptShareRequest");
+	e_gw_message_write_string_parameter (msg, "id", NULL, item_id);
+	e_gw_message_write_string_parameter (msg, "name", NULL, name);
+	e_gw_message_write_string_parameter (msg, "container", NULL, container_id);
+	e_gw_message_write_string_parameter (msg, "description", NULL, desc);
+	e_gw_message_write_footer (msg);
+	response =  e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+
+}
+
