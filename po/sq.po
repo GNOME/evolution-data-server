@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.sq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-01 01:33+0100\n"
-"PO-Revision-Date: 2004-02-01 02:01+0100\n"
+"POT-Creation-Date: 2004-02-05 11:31+0100\n"
+"PO-Revision-Date: 2004-02-05 11:35+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -15,12 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:392
+#: addressbook/backends/file/e-book-backend-file.c:385
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
 msgid "Loading..."
 msgstr "Duke ngarkuar..."
 
-#: addressbook/backends/file/e-book-backend-file.c:394
+#: addressbook/backends/file/e-book-backend-file.c:387
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2861
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
@@ -63,67 +63,72 @@ msgstr "Gabim gjatë plotësimit të kërkimit"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:217 addressbook/libebook/e-book.c:329
-#: addressbook/libebook/e-book.c:414 addressbook/libebook/e-book.c:516
-#: addressbook/libebook/e-book.c:629 addressbook/libebook/e-book.c:713
-#: addressbook/libebook/e-book.c:816 addressbook/libebook/e-book.c:870
-#: addressbook/libebook/e-book.c:969 addressbook/libebook/e-book.c:1103
-#: addressbook/libebook/e-book.c:1203 addressbook/libebook/e-book.c:1443
-#: addressbook/libebook/e-book.c:2020
+#: addressbook/libebook/e-book.c:216 addressbook/libebook/e-book.c:328
+#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:515
+#: addressbook/libebook/e-book.c:628 addressbook/libebook/e-book.c:712
+#: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
+#: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
+#: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
+#: addressbook/libebook/e-book.c:2040
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" në rubrikë para \"%s\""
 
-#: addressbook/libebook/e-book.c:225 addressbook/libebook/e-book.c:337
-#: addressbook/libebook/e-book.c:422 addressbook/libebook/e-book.c:525
-#: addressbook/libebook/e-book.c:637 addressbook/libebook/e-book.c:721
-#: addressbook/libebook/e-book.c:824 addressbook/libebook/e-book.c:878
-#: addressbook/libebook/e-book.c:977 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1211 addressbook/libebook/e-book.c:1451
+#: addressbook/libebook/e-book.c:224 addressbook/libebook/e-book.c:336
+#: addressbook/libebook/e-book.c:421 addressbook/libebook/e-book.c:524
+#: addressbook/libebook/e-book.c:636 addressbook/libebook/e-book.c:720
+#: addressbook/libebook/e-book.c:823 addressbook/libebook/e-book.c:877
+#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1110
+#: addressbook/libebook/e-book.c:1210 addressbook/libebook/e-book.c:1450
 msgid "book busy"
 msgstr "rubrika jo në dispozicion për momentin"
 
-#: addressbook/libebook/e-book.c:252 addressbook/libebook/e-book.c:364
-#: addressbook/libebook/e-book.c:444 addressbook/libebook/e-book.c:548
-#: addressbook/libebook/e-book.c:663 addressbook/libebook/e-book.c:744
-#: addressbook/libebook/e-book.c:910 addressbook/libebook/e-book.c:1021
-#: addressbook/libebook/e-book.c:1139 addressbook/libebook/e-book.c:1235
-#: addressbook/libebook/e-book.c:1369 addressbook/libebook/e-book.c:1473
-#: addressbook/libebook/e-book.c:2029
+#: addressbook/libebook/e-book.c:251 addressbook/libebook/e-book.c:363
+#: addressbook/libebook/e-book.c:443 addressbook/libebook/e-book.c:547
+#: addressbook/libebook/e-book.c:662 addressbook/libebook/e-book.c:743
+#: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
+#: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
+#: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
+#: addressbook/libebook/e-book.c:2049
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Përjashtim Corba gjatë thirrjes \"%s\""
 
-#: addressbook/libebook/e-book.c:1350
+#: addressbook/libebook/e-book.c:1349
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: aktualisht nuk ka asnjë operacion"
 
-#: addressbook/libebook/e-book.c:1385
+#: addressbook/libebook/e-book.c:1384
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: i pamundur anullimi"
 
-#: addressbook/libebook/e-book.c:1739
+#: addressbook/libebook/e-book.c:1741
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Burim i pavlefshëm."
 
-#: addressbook/libebook/e-book.c:1747 addressbook/libebook/e-book.c:1860
+#: addressbook/libebook/e-book.c:1750 addressbook/libebook/e-book.c:1868
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: asnjë factori në dispozicion për `%s'"
 
-#: addressbook/libebook/e-book.c:1761
+#: addressbook/libebook/e-book.c:1763
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: I pamundur krijimi i EBookListener"
 
-#: addressbook/libebook/e-book.c:1854
+#: addressbook/libebook/e-book.c:1862
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: u anullua"
 
-#: addressbook/libebook/e-book.c:2115
+#: addressbook/libebook/e-book.c:1899
+#, c-format
+msgid "\"%s\" on book after \"%s\""
+msgstr "\"%s\" në rubrikë mbas \"%s\""
+
+#: addressbook/libebook/e-book.c:2135
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
 
-#: addressbook/libebook/e-book.c:2292
+#: addressbook/libebook/e-book.c:2312
 #, c-format
 msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr "e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
@@ -538,7 +543,7 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Lista shfaq adresat"
 
-#: addressbook/libebook/e-contact.c:1174
+#: addressbook/libebook/e-contact.c:1218
 msgid "Unnamed List"
 msgstr "Listë pa emër"
 
@@ -557,15 +562,19 @@ msgstr "Datlindja: %s"
 msgid "Anniversary: %s"
 msgstr "Përvjetori: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:177
+#: calendar/backends/file/e-cal-backend-file.c:181
 msgid "Can't save calendar data: Malformed URI."
 msgstr "E pamundur ruajtja e të dhënës për kalendarin: URl e pasaktë."
 
-#: calendar/backends/http/e-cal-backend-http.c:223
+#: calendar/backends/http/e-cal-backend-http.c:218
+msgid "Redirected to Invalid URI"
+msgstr "Ridrejtuar tek URI e pavlefshme"
+
+#: calendar/backends/http/e-cal-backend-http.c:238
 msgid "Bad file format."
 msgstr "Format i pavlefshëm file."
 
-#: calendar/backends/http/e-cal-backend-http.c:230
+#: calendar/backends/http/e-cal-backend-http.c:243
 msgid "Not a calendar."
 msgstr "Nuk është një kalendar."
 
@@ -715,80 +724,80 @@ msgid "Undefined"
 msgstr "I/e papërcaktuar"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1475
+#: calendar/libecal/e-cal.c:1459
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Shkruaj fjalëkalimin për %s (përdoruesi %s)"
 
-#: calendar/libecal/e-cal.c:3894
+#: calendar/libecal/e-cal.c:3922
 msgid "Invalid argument"
 msgstr "Argument i pavlefshëm"
 
-#: calendar/libecal/e-cal.c:3896
+#: calendar/libecal/e-cal.c:3924
 msgid "Backend is busy"
 msgstr "Backend është i zënë"
 
-#: calendar/libecal/e-cal.c:3898
+#: calendar/libecal/e-cal.c:3926
 msgid "Repository is offline"
 msgstr "Vendruajtja është jashtë linjës"
 
-#: calendar/libecal/e-cal.c:3900
+#: calendar/libecal/e-cal.c:3928
 msgid "No such calendar"
 msgstr "Kalendari nuk ekziston"
 
-#: calendar/libecal/e-cal.c:3902
+#: calendar/libecal/e-cal.c:3930
 msgid "Object not found"
 msgstr "Objekti nuk u gjet"
 
-#: calendar/libecal/e-cal.c:3904
+#: calendar/libecal/e-cal.c:3932
 msgid "Invalid object"
 msgstr "Objekt i pasaktë"
 
-#: calendar/libecal/e-cal.c:3906
+#: calendar/libecal/e-cal.c:3934
 msgid "URI not loaded"
 msgstr "URl nuk u ngarkua"
 
-#: calendar/libecal/e-cal.c:3908
+#: calendar/libecal/e-cal.c:3936
 msgid "URI already loaded"
 msgstr "URl është e ngarkuar"
 
-#: calendar/libecal/e-cal.c:3910
+#: calendar/libecal/e-cal.c:3938
 msgid "Permission denied"
 msgstr "Leja nuk u pranua"
 
-#: calendar/libecal/e-cal.c:3912
+#: calendar/libecal/e-cal.c:3940
 msgid "Object ID already exists"
 msgstr "ID e objektit ekziston"
 
-#: calendar/libecal/e-cal.c:3914
+#: calendar/libecal/e-cal.c:3942
 msgid "Protocol not supported"
 msgstr "Protokoll i pasuportuar"
 
-#: calendar/libecal/e-cal.c:3916
+#: calendar/libecal/e-cal.c:3944
 msgid "Operation has been cancelled"
 msgstr "Operacioni është anulluar"
 
-#: calendar/libecal/e-cal.c:3918
+#: calendar/libecal/e-cal.c:3946
 msgid "Could not cancel operation"
 msgstr "I pamundur anullimi i operacionit"
 
-#: calendar/libecal/e-cal.c:3920
+#: calendar/libecal/e-cal.c:3948
 msgid "Authentication failed"
 msgstr "Identifikimi dështoi"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3950
 msgid "Authentication required"
 msgstr "Kërkohet autentifikimi"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3952
 msgid "A CORBA exception has occurred"
 msgstr "Ndodhi një përjashtim CORBA"
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3954
 msgid "Unknown error"
 msgstr "Gabim i panjohur"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3956
 msgid "No error"
 msgstr "Asnjë gabim"
 
@@ -872,8 +881,8 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"\"%s\" parashikon që të gjithë argumentet të jenë stringa ose njëri dhe vetëm "
-"një të jetë fallso booleane (#f)"
+"\"%s\" parashikon që të gjithë argumentet të jenë stringa ose njëri dhe "
+"vetëm një të jetë fallso booleane (#f)"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
