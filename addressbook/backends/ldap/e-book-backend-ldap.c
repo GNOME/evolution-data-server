@@ -2977,8 +2977,6 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 
 	d(printf ("ldap_search_handler (%p)\n", view));
 
-	bonobo_object_dup_ref(bonobo_object_corba_objref(BONOBO_OBJECT(view)), NULL);
-
 	if (!search_op->notified_receiving_results) {
 		search_op->notified_receiving_results = TRUE;
 		book_view_notify_status (op->view, _("Receiving LDAP search results..."));
@@ -3028,9 +3026,6 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 		ldap_op_finished (op);
 
 	}
-
-
-	bonobo_object_release_unref(bonobo_object_corba_objref(BONOBO_OBJECT(view)), NULL);
 }
 
 static void
@@ -3038,14 +3033,12 @@ ldap_search_dtor (LDAPOp *op)
 {
 	LDAPSearchOp *search_op = (LDAPSearchOp*) op;
 
-	g_mutex_lock (e_data_book_view_get_mutex (search_op->view));
-
 	d(printf ("ldap_search_dtor (%p)\n", search_op->view));
 
 	/* unhook us from our EDataBookView */
 	g_object_set_data (G_OBJECT (search_op->view), "EBookBackendLDAP.BookView::search_op", NULL);
 
-	g_mutex_unlock (e_data_book_view_get_mutex (search_op->view));
+	bonobo_object_release_unref(bonobo_object_corba_objref(BONOBO_OBJECT(search_op->view)), NULL);
 
 	g_free (search_op);
 }
@@ -3097,6 +3090,8 @@ e_book_backend_ldap_search (EBookBackendLDAP  	*bl,
 			d(printf ("adding search_op (%p, %d)\n", view, search_msgid));
 
 			op->view = view;
+
+			bonobo_object_dup_ref(bonobo_object_corba_objref(BONOBO_OBJECT(view)), NULL);
 
 			ldap_op_add ((LDAPOp*)op, E_BOOK_BACKEND(bl), book, view,
 				     search_msgid,
