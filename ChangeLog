@@ -1,3 +1,8 @@
+2004-01-09  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedataserver/e-source-list.[ch]
+	(e_source_list_peek_group_by_name): new function.
+
 2004-01-08  JP Rosevear <jpr@ximian.com>
 
 	* libedataserver/e-source-list.c (e_source_list_sync): don't

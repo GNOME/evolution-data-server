@@ -436,6 +436,25 @@ e_source_list_peek_group_by_uid (ESourceList *list,
 	return NULL;
 }
 
+ESourceGroup *
+e_source_list_peek_group_by_name (ESourceList *list,
+				  const char *name)
+{
+	GSList *p;
+
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	for (p = list->priv->groups; p != NULL; p = p->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (p->data);
+
+		if (strcmp (e_source_group_peek_name (group), name) == 0)
+			return group;
+	}
+
+	return NULL;
+}
+
 ESource *
 e_source_list_peek_source_by_uid (ESourceList *list,
 				  const char *uid)

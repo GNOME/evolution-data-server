@@ -67,6 +67,8 @@ ESourceList *e_source_list_new_for_gconf_default  (const char  *path);
 GSList       *e_source_list_peek_groups         (ESourceList *list);
 ESourceGroup *e_source_list_peek_group_by_uid   (ESourceList *list,
 						 const char  *uid);
+ESourceGroup *e_source_list_peek_group_by_name  (ESourceList *list,
+						 const char *name);
 ESource      *e_source_list_peek_source_by_uid  (ESourceList *list,
 						 const char  *uid);
 ESource      *e_source_list_peek_source_any     (ESourceList *list);
