@@ -1,3 +1,19 @@
+2005-01-18  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #68599
+
+	* libedata-cal/e-cal-backend-cache.c
+	(e_cal_backend_cache_get_component): make sure we always return a
+	valid ECalComponent.
+	(e_cal_backend_cache_get_components): ditto.
+
+2005-01-17  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/file/e-cal-backend-file.c (add_component,
+	remove_recurrence_cb, remove_component, remove_instance,
+	remove_object_instance_cb):
+	removed code related to the categories_changed signal.
+
 2005-01-17  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file.c (save_file_when_idle): don't

@@ -302,7 +302,11 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const char *uid, con
 		icalcomp = icalparser_parse_string (comp_str);
 		if (icalcomp) {
 			comp = e_cal_component_new ();
-			e_cal_component_set_icalcomponent (comp, icalcomp);
+			if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
+				icalcomponent_free (icalcomp);
+				g_object_unref (comp);
+				comp = NULL;
+			}
 		}
 	}
 
@@ -402,8 +406,12 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
 				kind = icalcomponent_isa (icalcomp);
 				if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT) {
 					comp = e_cal_component_new ();
-					e_cal_component_set_icalcomponent (comp, icalcomp);
-					list = g_list_append (list, comp);
+					if (e_cal_component_set_icalcomponent (comp, icalcomp))
+						list = g_list_append (list, comp);
+					else {
+						icalcomponent_free (icalcomp);
+						g_object_unref (comp);
+					}
 				} else
 					icalcomponent_free (icalcomp);
                         }
