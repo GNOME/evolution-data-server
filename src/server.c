@@ -299,6 +299,7 @@ main (int argc, char **argv)
 	gboolean did_books=FALSE, did_cals=FALSE;
 
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
 	g_message ("Starting server");
