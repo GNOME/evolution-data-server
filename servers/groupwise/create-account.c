@@ -7,14 +7,19 @@
 static GConfClient *conf_client;
 
 static void
-add_account (const char *conf_key, const char *hostname)
+add_account (const char *conf_key, const char *hostname, const char *username)
 {
 	ESourceList *source_list;
 	ESourceGroup *group;
 	ESource *source;
+	char *str;
 
 	source_list = e_source_list_new_for_gconf (conf_client, conf_key);
-	group = e_source_group_new (hostname, "groupwise://");
+
+	str = g_strdup_printf ("%s@%s", username, hostname);
+	group = e_source_group_new (str, "groupwise://");
+	g_free (str);
+
 	source = e_source_new ("Default", hostname);
 	e_source_set_group (source, group);
 
@@ -29,16 +34,16 @@ main (int argc, char *argv[])
 			    argc, argv,
 			    NULL);
 
-	if (argc != 2) {
-		g_print ("Usage: %s hostname\n", argv[0]);
+	if (argc != 3) {
+		g_print ("Usage: %s hostname username\n", argv[0]);
 		return -1;
 	}
 
 	/* initialize variables */
 	conf_client = gconf_client_get_default ();
 
-	add_account ("/apps/evolution/calendar/sources", argv[1]);
-	add_account ("/apps/evolution/tasks/sources", argv[1]);
+	add_account ("/apps/evolution/calendar/sources", argv[1], argv[2]);
+	add_account ("/apps/evolution/tasks/sources", argv[1], argv[2]);
 
 	/* terminate */
 	g_object_unref (conf_client);
