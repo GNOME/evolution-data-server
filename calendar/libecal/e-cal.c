@@ -4087,12 +4087,14 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	if (status != E_CALENDAR_STATUS_OK) {
 		*modified_icalcomp = NULL;
 		g_list_foreach (*users, (GFunc) g_free, NULL);
+		g_list_free (*users);
 		*users = NULL;
 	} else {
 		*modified_icalcomp = icalparser_parse_string (our_op->string);
 		if (!(*modified_icalcomp)) {
 			status = E_CALENDAR_STATUS_INVALID_OBJECT;
 			g_list_foreach (*users, (GFunc) g_free, NULL);
+			g_list_free (*users);
 			*users = NULL;
 		}		
 	}

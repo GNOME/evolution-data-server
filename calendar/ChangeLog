@@ -1,3 +1,7 @@
+2005-01-26  JP Rosevear  <jpr@novell.com>
+
+	* libecal/e-cal.c (e_cal_send_objects): fix leak in the error case
+
 2005-01-25  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file.c (save_file_when_idle):
