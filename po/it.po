@@ -8,8 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.1\n"
-"POT-Creation-Date: 2004-08-02 12:00-0400\n"
-"PO-Revision-Date: 2004-02-11 19:56+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-10 10:40+0200\n"
+"PO-Revision-Date: 2004-08-10 10:43+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <tp@lists.linux.it>,<it@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,6 +23,7 @@ msgid "Loading..."
 msgstr "Caricamento in corso..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
 #: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
@@ -118,9 +120,8 @@ msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" sul libro prima di \"%s\""
 
 #: addressbook/libebook/e-book.c:2355
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: annullato"
+msgstr "e_book_open: annullato"
 
 #: addressbook/libebook/e-book.c:2851
 msgid "e_book_load_uri: Invalid source."
@@ -136,9 +137,9 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: impossibile creare EBookListener"
 
 #: addressbook/libebook/e-book.c:2922
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: nessuna factory accessibile per l'uri `%s'"
+msgstr "e_book_new: nessuna factory accessibile per l'uri `%s'"
 
 #: addressbook/libebook/e-book.c:3080
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
@@ -312,9 +313,8 @@ msgid "Email 3"
 msgstr "Email 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "Email 3"
+msgstr "Email 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -978,5 +978,8 @@ msgstr "Backend del file calendario e webcal di Evolution"
 msgid "Evolution Addressbook file backend"
 msgstr "Backend del file rubrica di Evolution"
 
-#~ msgid "Checklist"
-#~ msgstr "Lista"
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr "Più di un errore di tipo segmentation fault: impossibile mostrare una finestra di errore\n"
