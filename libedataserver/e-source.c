@@ -385,6 +385,28 @@ e_source_uid_from_xml_node (xmlNodePtr node)
 	return retval;
 }
 
+static char *
+build_absolute_uri (ESource *source)
+{
+	const gchar *base_uri_str;
+	gchar *uri_str;
+
+	g_return_val_if_fail (source->priv->group != NULL, NULL);
+	
+	base_uri_str = e_source_group_peek_base_uri (source->priv->group);
+
+	/* If last character in base URI is a dir separator, just concat the strings.
+	 * We don't want to compress e.g. the trailing :// in a protocol specification */
+	if (*base_uri_str && *(base_uri_str + strlen (base_uri_str) - 1) == G_DIR_SEPARATOR)
+		uri_str = g_strconcat (base_uri_str, source->priv->relative_uri, NULL);
+	else
+		uri_str = g_build_filename (e_source_group_peek_base_uri (source->priv->group),
+					    source->priv->relative_uri,
+					    NULL);
+
+	return uri_str;
+}
+
 void
 e_source_set_group (ESource *source,
 		    ESourceGroup *group)
@@ -399,8 +421,14 @@ e_source_set_group (ESource *source,
 		g_object_weak_unref (G_OBJECT (source->priv->group), (GWeakNotify) group_weak_notify, source);
 
 	source->priv->group = group;
-	if (group != NULL)
+	if (group != NULL) {
 		g_object_weak_ref (G_OBJECT (group), (GWeakNotify) group_weak_notify, source);
+
+		if (source->priv->absolute_uri)
+			g_free (source->priv->absolute_uri);
+
+		source->priv->absolute_uri = build_absolute_uri (source);
+	}
 
 	g_signal_emit (source, signals[CHANGED], 0);
 }
@@ -521,13 +549,9 @@ e_source_get_color (ESource *source,
 	return TRUE;
 }
 
-
 char *
 e_source_get_uri (ESource *source)
 {
-	const gchar *base_uri_str;
-	gchar *uri_str;
-
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	if (source->priv->group == NULL) {
@@ -538,18 +562,7 @@ e_source_get_uri (ESource *source)
 		return NULL;
 	}
 
-	base_uri_str = e_source_group_peek_base_uri (source->priv->group);
-
-	/* If last character in base URI is a dir separator, just concat the strings.
-	 * We don't want to compress e.g. the trailing :// in a protocol specification */
-	if (*base_uri_str && *(base_uri_str + strlen (base_uri_str) - 1) == G_DIR_SEPARATOR)
-		uri_str = g_strconcat (base_uri_str, source->priv->relative_uri, NULL);
-	else
-		uri_str = g_build_filename (e_source_group_peek_base_uri (source->priv->group),
-					    source->priv->relative_uri,
-					    NULL);
-
-	return uri_str;
+	return build_absolute_uri (source);
 }
 
 

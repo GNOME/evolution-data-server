@@ -1,3 +1,11 @@
+2003-12-17  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libedataserver/e-source.c (build_absolute_uri): Implement based on
+	factored-out code.
+	(e_source_set_group): Generate and keep an absolute URI so we can
+	work stand-alone if the group goes away.
+	(e_source_get_uri): Use build_absolute_uri ().
+
 2003-12-16  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libedataserver/e-source.c (e_source_equal): Implement. Compares
