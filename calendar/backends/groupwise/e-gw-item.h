@@ -53,7 +53,7 @@ struct _EGwItemClass {
 };
 
 GType    e_gw_item_get_type (void);
-EGwItem *e_gw_item_new_appointment (ECalComponent *comp);
+EGwItem *e_gw_item_new_appointment (const char *container, ECalComponent *comp);
 
 G_END_DECLS
 

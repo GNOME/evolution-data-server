@@ -687,7 +687,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
-		status = e_gw_connection_send_appointment (priv->cnc, comp);
+		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp);
 		if (status != E_GW_CONNECTION_STATUS_OK)
 			break;
 		/* if successful, update the cache */
@@ -733,7 +733,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
-		status = e_gw_connection_send_appointment (priv->cnc, comp);
+		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp);
 		if (status != E_GW_CONNECTION_STATUS_OK)
 			break;
 		/* if successful, update the cache */
@@ -779,10 +779,74 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	return GNOME_Evolution_Calendar_Success;
 }
 
+static ECalBackendSyncStatus
+receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp)
+{
+	ECalComponent *comp, *found_comp;
+	ECalBackendGroupwisePrivate *priv;
+	const char *uid, *rid;
+	char *comp_str;
+	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
+
+	priv = cbgw->priv;
+
+	/* search the object in the cache */
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
+	e_cal_component_get_uid (comp, &uid);
+	rid = e_cal_component_get_recurid_as_string (comp);
+
+	comp_str = e_cal_component_get_as_string (comp);
+
+	found_comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+	if (found_comp) {
+		status = e_cal_backend_groupwise_modify_object (E_CAL_BACKEND_SYNC (cbgw), cal, comp_str,
+								CALOBJ_MOD_THIS, NULL);
+	} else
+		status = e_cal_backend_groupwise_create_object (E_CAL_BACKEND_SYNC (cbgw), cal, comp_str, NULL);
+
+	g_free (comp_str);
+	g_object_unref (comp);
+
+	return status;
+}
+
 /* Update_objects handler for the file backend. */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
+	ECalBackendGroupwise *cbgw;
+        ECalBackendGroupwisePrivate *priv;
+	icalcomponent *icalcomp, *subcomp;
+	icalcomponent_kind kind;
+	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	icalcomp = icalparser_parse_string (calobj);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	kind = icalcomponent_isa (icalcomp);
+	if (kind == ICAL_VCALENDAR_COMPONENT) {
+		subcomp = icalcomponent_get_first_component (icalcomp,
+							     e_cal_backend_get_kind (E_CAL_BACKEND (backend)));
+		while (subcomp) {
+			status = receive_object (cbgw, cal, subcomp);
+			if (status != GNOME_Evolution_Calendar_Success)
+				break;
+			subcomp = icalcomponent_get_next_component (icalcomp,
+								    e_cal_backend_get_kind (E_CAL_BACKEND (backend)));
+		}
+	} else if (kind == e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+		status = receive_object (cbgw, cal, icalcomp);
+	} else
+		status = GNOME_Evolution_Calendar_InvalidObject;
+
+	icalcomponent_free (icalcomp);
+
+	return status;
 }
 
 static ECalBackendSyncStatus

@@ -28,6 +28,7 @@
 
 struct _EGwItemPrivate {
 	EGwItemType item_type;
+	char *container;
 	gpointer item_data;
 };
 
@@ -43,6 +44,10 @@ e_gw_item_dispose (GObject *object)
 
 	priv = item->priv;
 	if (priv) {
+		if (priv->container) {
+			g_free (priv->container);
+			priv->container = NULL;
+		}
 	}
 
 	if (parent_class->dispose)
@@ -112,7 +117,7 @@ e_gw_item_get_type (void)
 }
 
 EGwItem *
-e_gw_item_new_appointment (ECalComponent *comp)
+e_gw_item_new_appointment (const char *container, ECalComponent *comp)
 {
 	EGwItem *item;
 
@@ -120,6 +125,7 @@ e_gw_item_new_appointment (ECalComponent *comp)
 
 	item = g_object_new (E_TYPE_GW_ITEM, NULL);
 	item->priv->item_type = E_GW_ITEM_TYPE_APPOINTMENT;
+	item->priv->container = g_strdup (container);
 	item->priv->item_data = comp;
 
 	return item;

@@ -1,5 +1,20 @@
 2004-01-13  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-item.[ch] (e_gw_item_new_appointment):
+	added a 'container' argument.
+	(e_gw_item_dispose): free new field in the private structure.
+
+	* backends/groupwise/e-gw-connection.[ch]
+	(e_gw_connection_send_appointment): added a 'container' argument.
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_create_object,
+	e_cal_backend_groupwise_modify_object): adapted to changes in
+	e_gw_connection_send_appointment.
+	(e_cal_backend_groupwise_receive_objects): implemented.
+
+2004-01-13  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-connection.[ch]
 	(e_gw_connection_get_items): moved the folder retrieving code to...
 	(e_gw_connection_get_container_id): ...here, new function.

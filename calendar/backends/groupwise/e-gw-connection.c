@@ -636,7 +636,7 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (EGwConnection *cnc, ECalComponent *comp)
+e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp)
 {
 	EGwItem *item;
 	EGwConnectionStatus status;
@@ -644,7 +644,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, ECalComponent *comp)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
-	item = e_gw_item_new_appointment (comp);
+	item = e_gw_item_new_appointment (container, comp);
 	status = e_gw_connection_send_item (cnc, item);
 	g_object_unref (item);
 
