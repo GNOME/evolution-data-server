@@ -14,7 +14,8 @@ create_account_SOURCES = create-account.c
 create_account_LDADD = \
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la           \
 	$(top_builddir)/calendar/backends/file/libecalbackendfile.la    \
-	$(GROUPWISE_LIBS)
+	$(GROUPWISE_LIBS)						\
+	$(E_DATA_SERVER_LIBS)
 
 noinst_LTLIBRARIES = libecalbackendgroupwise.la
 

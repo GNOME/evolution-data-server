@@ -1,3 +1,11 @@
+2003-12-04  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/create-account.c: added simple program to
+	add accounts to the calendar sources until we a GUI to configure
+	them.
+
+	* backends/groupwise/Makefile.am: added noinst program.
+
 2003-12-03  Christian Kellnerc <gicmo@xatom.net>
 
          * libedata-cal/e-cal-backend-sexp.c: added has-recurrences sexp
