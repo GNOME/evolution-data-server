@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-01 03:24+0100\n"
-"PO-Revision-Date: 2004-03-01 15:16+0100\n"
+"POT-Creation-Date: 2004-03-03 03:20+0100\n"
+"PO-Revision-Date: 2004-03-03 13:29+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -762,87 +762,87 @@ msgid "Undefined"
 msgstr "Nedefinováno"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1459
+#: calendar/libecal/e-cal.c:1465
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3930
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3932
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3934
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3936
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3938
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3940
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3942
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3944
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3946
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3948
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3950
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3952
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3954
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3956
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3958
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3960
 msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3962
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:3964
 msgid "No error"
 msgstr "Žádná chyba"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:503
-#: calendar/libedata-cal/e-cal-backend-sexp.c:635
-#: calendar/libedata-cal/e-cal-backend-sexp.c:662
+#: calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: calendar/libedata-cal/e-cal-backend-sexp.c:652
+#: calendar/libedata-cal/e-cal-backend-sexp.c:679
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" neočekává žádné parametry"
@@ -851,14 +851,14 @@ msgstr "\"%s\" neočekává žádné parametry"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:700
+#: calendar/libedata-cal/e-cal-backend-sexp.c:717
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" očekává jeden parametr"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:449
+#: calendar/libedata-cal/e-cal-backend-sexp.c:464
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" očekává jako první parametr řetězec"
@@ -870,7 +870,7 @@ msgstr "\"%s\" očekává jako první parametr řetězec data/času podle ISO 86
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:443
+#: calendar/libedata-cal/e-cal-backend-sexp.c:458
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" očekává dva parametry"
@@ -879,7 +879,7 @@ msgstr "\"%s\" očekává dva parametry"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
 #: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:706
+#: calendar/libedata-cal/e-cal-backend-sexp.c:723
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" očekává jako první parametr time_t"
@@ -894,26 +894,24 @@ msgstr "\"%s\" očekává jako druhý parametr celé číslo"
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" očekává jako druhý parametr time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:457
+#: calendar/libedata-cal/e-cal-backend-sexp.c:472
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" očekává jako druhý parametr řetězec"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:475
+#: calendar/libedata-cal/e-cal-backend-sexp.c:492
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\""
-msgstr ""
-"\"%s\" očekává jako první parametr jedno z \"any\", \"summary\", "
-"\"description\""
+"\"description\", or \"location\""
+msgstr "\"%s\" očekává jako první parametr jedno z \"any\", \"summary\", \"description\" nebo \"location\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:537
+#: calendar/libedata-cal/e-cal-backend-sexp.c:554
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" očekává alespoň jeden parametr"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:551
+#: calendar/libedata-cal/e-cal-backend-sexp.c:568
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
