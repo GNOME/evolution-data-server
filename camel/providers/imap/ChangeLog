@@ -1,3 +1,23 @@
+2005-02-04  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-store.c: Revert jeff's patch.
+	(parse_list_response_as_folder_info): copy the subscribed flag
+	from the storeinfo.
+	(get_folders_online): here too.
+
+2005-02-03  Not Zed  <NotZed@Ximian.com>
+	
+	** See bug #70590.
+
+	* camel-imap-command.c (camel_imap_response_free): handle XGWMOVE
+	response the same as EXPUNGE.
+
+	* camel-imap-folder.c (do_copy): added 'delete' flag, and use
+	xgwmove if its available and we're moving a message.
+
+	* camel-imap-store.c (imap_get_capability): add some groupwise
+	extension flags.
+
 2005-02-02  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-store.c (get_folders_online): Set the

@@ -1436,25 +1436,33 @@ handle_copyuid (CamelImapResponse *response, CamelFolder *source,
 
 static void
 do_copy (CamelFolder *source, GPtrArray *uids,
-	 CamelFolder *destination, CamelException *ex)
+	 CamelFolder *destination, int delete_originals, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (source->parent_store);
 	CamelImapResponse *response;
 	char *uidset;
-	int uid = 0;
+	int uid = 0, last=0, i;
 	
 	while (uid < uids->len && !camel_exception_is_set (ex)) {
 		uidset = imap_uid_array_to_set (source->summary, uids, uid, UID_SET_LIMIT, &uid);
-		
-		response = camel_imap_command (store, source, ex, "UID COPY %s %F",
-					       uidset, destination->full_name);
-		
+
+		if ((store->capabilities & IMAP_CAPABILITY_XGWMOVE) && delete_originals) {
+			response = camel_imap_command (store, source, ex, "UID XGWMOVE %s %F", uidset, destination->full_name);
+			/* TODO: EXPUNGE returns??? */
+			camel_imap_response_free (store, response);
+		} else {
+			response = camel_imap_command (store, source, ex, "UID COPY %s %F", uidset, destination->full_name);
+			if (response && (store->capabilities & IMAP_CAPABILITY_UIDPLUS))
+				handle_copyuid (response, source, destination);
+			camel_imap_response_free (store, response);
+
+			if (!camel_exception_is_set(ex)) {
+				for (i=last;i<uid;i++)
+					camel_folder_delete_message(source, uids->pdata[i]);
+				last = uid;
+			}
+		}
 		g_free (uidset);
-		
-		if (response && (store->capabilities & IMAP_CAPABILITY_UIDPLUS))
-			handle_copyuid (response, source, destination);
-		
-		camel_imap_response_free (store, response);
 	}
 }
 
@@ -1464,7 +1472,7 @@ imap_transfer_online (CamelFolder *source, GPtrArray *uids,
 		      gboolean delete_originals, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (source->parent_store);
-	int count, i;
+	int count;
 
 	/* Sync message flags if needed. */
 	imap_sync_online (source, ex);
@@ -1476,7 +1484,7 @@ imap_transfer_online (CamelFolder *source, GPtrArray *uids,
 	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
 	
 	/* Now copy the messages */
-	do_copy (source, uids, dest, ex);
+	do_copy(source, uids, dest, delete_originals, ex);
 	if (camel_exception_is_set (ex))
 		return;
 
@@ -1485,11 +1493,6 @@ imap_transfer_online (CamelFolder *source, GPtrArray *uids,
 	    camel_folder_summary_count (dest->summary) == count)
 		camel_folder_refresh_info (dest, ex);
 	
-	if (delete_originals) {
-		for (i = 0; i < uids->len; i++)
-			camel_folder_delete_message (source, uids->pdata[i]);
-	}
-
 	/* FIXME */
 	if (transferred_uids)
 		*transferred_uids = NULL;
@@ -1530,14 +1533,11 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 					break;
 			}
 			g_ptr_array_add (realuids, (char *)uid);
-
-			if (delete_originals)
-				camel_folder_delete_message (source, uid);
 		}
 
 		/* If we saw any real UIDs, do a COPY */
 		if (i != first) {
-			do_copy (source, realuids, dest, ex);
+			do_copy (source, realuids, dest, delete_originals, ex);
 			g_ptr_array_set_size (realuids, 0);
 			if (i == uids->len || camel_exception_is_set (ex))
 				break;

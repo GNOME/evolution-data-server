@@ -447,16 +447,39 @@ static struct {
 	{ "UIDPLUS",		IMAP_CAPABILITY_UIDPLUS },
 	{ "LITERAL+",		IMAP_CAPABILITY_LITERALPLUS },
 	{ "STARTTLS",           IMAP_CAPABILITY_STARTTLS },
+	{ "XGWEXTENSIONS",      IMAP_CAPABILITY_XGWEXTENSIONS },
+	{ "XGWMOVE",            IMAP_CAPABILITY_XGWMOVE },
 	{ NULL, 0 }
 };
+
+static void
+parse_capability(CamelImapStore *store, char *capa)
+{
+	char *lasts;
+	int i;
+
+	for (capa = strtok_r (capa, " ", &lasts); capa; capa = strtok_r (NULL, " ", &lasts)) {
+		if (!strncmp (capa, "AUTH=", 5)) {
+			g_hash_table_insert (store->authtypes,
+					     g_strdup (capa + 5),
+					     GINT_TO_POINTER (1));
+			continue;
+		}
+		for (i = 0; capabilities[i].name; i++) {
+			if (g_ascii_strcasecmp (capa, capabilities[i].name) == 0) {
+				store->capabilities |= capabilities[i].flag;
+				break;
+			}
+		}
+	}
+}
 
 static gboolean
 imap_get_capability (CamelService *service, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
 	CamelImapResponse *response;
-	char *result, *capa, *lasts;
-	int i;
+	char *result;
 	
 	CAMEL_SERVICE_ASSERT_LOCKED (store, connect_lock);
 	
@@ -472,23 +495,18 @@ imap_get_capability (CamelService *service, CamelException *ex)
 		return FALSE;
 	
 	/* Skip over "* CAPABILITY ". */
-	capa = result + 13;
-	for (capa = strtok_r (capa, " ", &lasts); capa;
-	     capa = strtok_r (NULL, " ", &lasts)) {
-		if (!strncmp (capa, "AUTH=", 5)) {
-			g_hash_table_insert (store->authtypes,
-					     g_strdup (capa + 5),
-					     GINT_TO_POINTER (1));
-			continue;
-		}
-		for (i = 0; capabilities[i].name; i++) {
-			if (g_ascii_strcasecmp (capa, capabilities[i].name) == 0) {
-				store->capabilities |= capabilities[i].flag;
-				break;
-			}
+	parse_capability(store, result+13);
+	g_free (result);
+
+	/* dunno why the groupwise guys didn't just list this in capabilities */
+	if (store->capabilities & IMAP_CAPABILITY_XGWEXTENSIONS) {
+		/* not critical if this fails */
+		response = camel_imap_command (store, NULL, NULL, "XGWEXTENSIONS");
+		if (response && (result = camel_imap_response_extract (store, response, "XGWEXTENSIONS ", NULL))) {
+			parse_capability(store, result+16);
+			g_free (result);
 		}
 	}
-	g_free (result);
 	
 	imap_set_server_level (store);
 	
@@ -2396,7 +2414,9 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 		si->info.flags = newflags;
 		camel_store_summary_touch((CamelStoreSummary *)imap_store->summary);
 	}
-	
+
+	flags = (flags & ~CAMEL_FOLDER_SUBSCRIBED) | (si->info.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED);
+
 	fi = g_new0 (CamelFolderInfo, 1);
 	fi->name = g_strdup(camel_store_info_name(imap_store->summary, si));
 	fi->full_name = g_strdup(camel_store_info_path(imap_store->summary, si));
@@ -2498,9 +2518,7 @@ get_subscribed_folders (CamelImapStore *imap_store, const char *top, CamelExcept
 		g_free (result);
 		if (!fi)
 			continue;
-		
-		fi->flags |= CAMEL_FOLDER_SUBSCRIBED;
-		
+
 		if (!imap_is_subfolder(fi->full_name, top)) {
 			camel_folder_info_free (fi);
 			continue;
@@ -2561,9 +2579,6 @@ get_folders_online (CamelImapStore *imap_store, const char *pattern,
 		list = response->untagged->pdata[i];
 		fi = parse_list_response_as_folder_info (imap_store, list);
 		if (fi) {
-			if (lsub)
-				fi->flags |= CAMEL_FOLDER_SUBSCRIBED;
-			
 			g_ptr_array_add(folders, fi);
 			g_hash_table_insert(present, fi->full_name, fi);
 		}
@@ -2578,11 +2593,12 @@ get_folders_online (CamelImapStore *imap_store, const char *pattern,
 			continue;
 
 		if (imap_match_pattern(imap_store->dir_sep, pattern, camel_imap_store_info_full_name(imap_store->summary, si))) {
-			if (g_hash_table_lookup(present, camel_store_info_path(imap_store->summary, si)) != NULL) {
+			if ((fi = g_hash_table_lookup(present, camel_store_info_path(imap_store->summary, si))) != NULL) {
 				if (lsub && (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) == 0) {
 					si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
 					camel_store_summary_touch((CamelStoreSummary *)imap_store->summary);
 				}
+				fi->flags = (fi->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (si->flags & CAMEL_FOLDER_SUBSCRIBED);
 			} else {
 				if (lsub) {
 					if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
@@ -2938,37 +2954,6 @@ fail:
 	return NULL;
 }
 
-static void
-get_subscription_info (CamelImapStore *imap_store, GPtrArray *folders, CamelException *ex)
-{
-	CamelImapResponse *response;
-	CamelFolderInfo *fi;
-	char sep, *dir;
-	int flags;
-	int i, j;
-	
-	for (i = 0; i < folders->len; i++) {
-		fi = folders->pdata[i];
-		
-		/* don't check if we already know */
-		if ((fi->flags & CAMEL_FOLDER_SUBSCRIBED))
-			continue;
-		
-		if (!(response = camel_imap_command (imap_store, NULL, NULL, "LSUB \"\" %F", fi->full_name)))
-			return;
-		
-		for (j = 0; j < response->untagged->len; j++) {
-			if (imap_parse_list_response (imap_store, response->untagged->pdata[j], &flags, &sep, &dir)) {
-				/* it's gotta be a match... we only requsted 1 particular folder... */
-				fi->flags |= CAMEL_FOLDER_SUBSCRIBED;
-				g_free (dir);
-			}
-		}
-		
-		camel_imap_response_free (imap_store, response);
-	}
-}
-
 static CamelFolderInfo *
 get_folder_info_online (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
 {
@@ -2993,16 +2978,13 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 
 	if (folders == NULL)
 		goto done;
-	
-	if ((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_INFO))
-		get_subscription_info (imap_store, folders, ex);
-	
+
 	tree = camel_folder_info_build(folders, top, '/', TRUE);
 	g_ptr_array_free(folders, TRUE);
 
 	if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST))
 		get_folder_counts(imap_store, tree, ex);
-	
+
 	d(dumpfi(tree));
 	camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
 done:

@@ -580,7 +580,9 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 			number = strtoul (resp + 2, &p, 10);
 			if (!g_ascii_strcasecmp (p, " EXISTS")) {
 				exists = number;
-			} else if (!strcasecmp (p, " EXPUNGE")) {
+			} else if (!g_ascii_strcasecmp (p, " EXPUNGE")
+				   || !g_ascii_strcasecmp(p, " XGWMOVE")) {
+				/* XGWMOVE response is the same as an EXPUNGE response */
 				if (!expunged) {
 					expunged = g_array_new (FALSE, FALSE,
 								sizeof (int));
