@@ -30,10 +30,11 @@
 #include "e-gw-message.h"
 
 static GObjectClass *parent_class = NULL;
-static SoupSession *soup_session = NULL;
 static GHashTable *loaded_connections = NULL;
 
 struct _EGwConnectionPrivate {
+	SoupSession *soup_session;
+
 	char *uri;
 	char *username;
 	char *password;
@@ -102,6 +103,11 @@ e_gw_connection_dispose (GObject *object)
 	priv = cnc->priv;
 
 	if (priv) {
+		if (priv->soup_session) {
+			g_object_unref (priv->soup_session);
+			priv->soup_session = NULL;
+		}
+
 		if (priv->uri) {
 			g_free (priv->uri);
 			priv->uri = NULL;
@@ -143,8 +149,6 @@ e_gw_connection_finalize (GObject *object)
 	g_free (priv);
 	cnc->priv = NULL;
 
-	g_object_unref (soup_session);
-
 	/* removed the connection from the hash table */
 	if (loaded_connections != NULL) {
 		hash_key = g_strdup_printf ("%s:%s@%s",
@@ -179,27 +183,16 @@ e_gw_connection_class_init (EGwConnectionClass *klass)
 }
 
 static void
-session_weak_ref_cb (gpointer user_data, GObject *where_the_object_was)
-{
-	soup_session = NULL;
-}
-
-static void
 e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 {
 	EGwConnectionPrivate *priv;
 
-	/* create the SoupSession if not already created */
-	if (soup_session)
-		g_object_ref (soup_session);
-	else {
-		soup_session = soup_session_new ();
-		g_object_weak_ref (G_OBJECT (soup_session), (GWeakNotify) session_weak_ref_cb, NULL);
-	}
-
 	/* allocate internal structure */
 	priv = g_new0 (EGwConnectionPrivate, 1);
 	cnc->priv = priv;
+
+	/* create the SoupSession for this connection */
+	priv->soup_session = soup_session_new ();
 }
 
 GType
@@ -310,7 +303,7 @@ e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), NULL);
 
 	soup_soap_message_persist (msg);
-	soup_session_send_message (soup_session, SOUP_MESSAGE (msg));
+	soup_session_send_message (cnc->priv->soup_session, SOUP_MESSAGE (msg));
 	if (SOUP_MESSAGE (msg)->status_code != SOUP_STATUS_OK) {
 		return NULL;
 	}

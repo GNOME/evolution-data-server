@@ -1,5 +1,13 @@
 2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.c: use a SoupSession per
+	EGwConnection, not one for all.
+	(e_gw_connection_dispose): unref the SoupSession here.
+	(e_gw_connection_init): create the SoupSession here.
+	(e_gw_connection_send_message): use the private SoupSession.
+
+2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/soap-test.c: added support for specifying a
 	password in the command line.
 
