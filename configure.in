@@ -1245,6 +1245,17 @@ po/Makefile.in
 
 echo "
 	evolution-data-server has been configured as follows:
-	LDAP support:     $msg_ldap
+	LDAP support:     $msg_ldap"
+if test "$msg_nntp" = "yes"; then
+echo "\
+	NNTP support:     $msg_nntp"
+fi
+echo "\
+	Kerberos 4/5:     $msg_krb4/$msg_krb5
+	SSL support:      $msg_ssl
+	SMIME support:    $msg_smime
+	IPv6 support:     $msg_ipv6
+	Dot Locking:	  $msg_dot
+	File Locking:	  $msg_file
 	Gtk Doc:          $enable_gtk_doc
 "
