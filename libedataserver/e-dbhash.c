@@ -136,7 +136,7 @@ e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data)
 	db_error = dbc->c_get(dbc, &dkey, &ddata, DB_FIRST);
 
 	while (db_error == 0) {
-		(*func) ((const char *)dkey.data, (const char *) ddata.data, user_data);
+		(*func) ((const char *)dkey.data, user_data);
 
 		db_error = dbc->c_get(dbc, &dkey, &ddata, DB_NEXT);
 	}
