@@ -827,7 +827,6 @@ destination_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, 
 	EDestination      *destination;
 	gchar             *string;
 
-
        	destination = e_destination_store_get_destination (destination_store, iter);
 	g_assert (destination);
 

@@ -60,6 +60,12 @@ struct ENameSelectorEntry {
 
 	guint                type_ahead_complete_cb_id;
 	guint                update_completions_cb_id;
+
+	EDestination        *popup_destination;
+
+	/* TEMPORARY */
+	void                 (*contact_editor_func) (EBook *, EContact *, gboolean, gboolean);
+	gpointer             (*contact_list_editor_func) (EBook *, EContact *, gboolean, gboolean);
 };
 
 GType               e_name_selector_entry_get_type               (void);
@@ -72,6 +78,12 @@ void                e_name_selector_entry_set_contact_store      (ENameSelectorE
 EDestinationStore  *e_name_selector_entry_peek_destination_store (ENameSelectorEntry *name_selector_entry);
 void                e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_entry,
 								  EDestinationStore *destination_store);
+
+/* TEMPORARY API - DO NOT USE */
+void                e_name_selector_set_contact_editor_func      (ENameSelectorEntry *name_selector_entry,
+								  gpointer func);
+void                e_name_selector_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry,
+								  gpointer func);
 
 G_END_DECLS
 

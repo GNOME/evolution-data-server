@@ -58,6 +58,7 @@ struct EContactStore {
 GtkType        e_contact_store_get_type     (void);
 EContactStore *e_contact_store_new          (void);
 
+EBook         *e_contact_store_get_book     (EContactStore *contact_store, GtkTreeIter *iter);
 EContact      *e_contact_store_get_contact  (EContactStore *contact_store, GtkTreeIter *iter);
 gboolean       e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
 					     GtkTreeIter *iter);

@@ -1,5 +1,20 @@
 2005-01-24  Hans Petter Jansson  <hpj@novell.com>
 
+	* e-contact-store.c (get_book_at_row): Implement.
+	(e_contact_store_get_book): Implement.
+
+	* e-name-selector-entry.c (prepare_popup_destination): Implement.
+	(find_book_by_contact): Implement.
+	(popup_activate_contact): Implement.
+	(popup_activate_email): Implement.
+	(populate_popup): Implement.
+	(e_name_selector_entry_init): Hook us up to the popup menu.
+	(e_name_selector_entry_set_contact_editor_func)
+	(e_name_selector_entry_set_contact_list_editor_func): Implement lame,
+	temporary hack to get at the contact editors in Evolution.
+
+2005-01-24  Hans Petter Jansson  <hpj@novell.com>
+
 	* e-name-selector-dialog.c (add_section): Set up a custom formatter for
 	destination column.
 	(contact_column_formatter): Format contact lists differently.

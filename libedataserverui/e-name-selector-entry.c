@@ -27,6 +27,8 @@
 #include <gtk/gtkentrycompletion.h>
 #include <gtk/gtkcelllayout.h>
 #include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkseparatormenuitem.h>
 #include <libgnome/gnome-i18n.h>
 
 #include <libebook/e-book.h>
@@ -1544,6 +1546,198 @@ setup_destination_store (ENameSelectorEntry *name_selector_entry)
 	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->destination_store), &iter));
 }
 
+static gboolean
+prepare_popup_destination (ENameSelectorEntry *name_selector_entry, GdkEventButton *event_button)
+{
+	EDestination *destination;
+	PangoLayout  *layout;
+	gint          layout_offset_x;
+	gint          layout_offset_y;
+	gint          x, y;
+	gint          index;
+
+	if (event_button->type != GDK_BUTTON_PRESS)
+		return FALSE;
+
+	if (event_button->button != 3)
+		return FALSE;
+
+	if (name_selector_entry->popup_destination) {
+		g_object_unref (name_selector_entry->popup_destination);
+		name_selector_entry->popup_destination = NULL;
+	}
+
+	gtk_entry_get_layout_offsets (GTK_ENTRY (name_selector_entry),
+				      &layout_offset_x, &layout_offset_y);
+	x = (event_button->x + 0.5) - layout_offset_x;
+	y = (event_button->y + 0.5) - layout_offset_y;
+
+	if (x < 0 || y < 0)
+		return FALSE;
+
+	layout = gtk_entry_get_layout (GTK_ENTRY (name_selector_entry));
+	if (!pango_layout_xy_to_index (layout, x * PANGO_SCALE, y * PANGO_SCALE, &index, NULL))
+		return FALSE;
+
+	index = gtk_entry_layout_index_to_text_index (GTK_ENTRY (name_selector_entry), index);
+	destination = find_destination_at_position (name_selector_entry, index);
+
+	if (!destination || !e_destination_get_contact (destination))
+		return FALSE;
+
+	/* TODO: Unref destination when we finalize */
+	name_selector_entry->popup_destination = g_object_ref (destination);
+	return FALSE;
+}
+
+static EBook *
+find_book_by_contact (GList *books, const gchar *contact_uid)
+{
+	GList *l;
+
+	for (l = books; l; l = g_list_next (l)) {
+		EBook    *book = l->data;
+		EContact *contact;
+		gboolean  result;
+
+		result = e_book_get_contact (book, contact_uid, &contact, NULL);
+		if (contact)
+			g_object_unref (contact);
+
+		if (result)
+			return book;
+	}
+
+	return NULL;
+}
+
+static void
+popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+{
+	EBook        *book;
+	GList        *books;
+	EDestination *destination;
+	EContact     *contact;
+	gchar        *contact_uid;
+	GtkTreeIter   iter;
+
+	destination = name_selector_entry->popup_destination;
+	if (!destination)
+		return;
+
+	contact = e_destination_get_contact (destination);
+	if (!contact)
+		return;
+
+	contact_uid = e_contact_get (contact, E_CONTACT_UID);
+	if (!contact_uid)
+		return;
+
+	books = e_contact_store_get_books (name_selector_entry->contact_store);
+	book = find_book_by_contact (books, contact_uid);
+	g_list_free (books);
+	g_free (contact_uid);
+
+	if (!book)
+		return;
+
+	if (e_destination_is_evolution_list (destination)) {
+		if (!name_selector_entry->contact_list_editor_func)
+			return;
+
+		(*name_selector_entry->contact_list_editor_func) (book, contact, FALSE, TRUE);
+	} else {
+		if (!name_selector_entry->contact_editor_func)
+			return;
+
+		(*name_selector_entry->contact_editor_func) (book, contact, FALSE, TRUE);
+	}
+}
+
+static void
+popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+{
+	EDestination *destination;
+	EContact     *contact;
+	gint          email_num;
+
+	destination = name_selector_entry->popup_destination;
+	if (!destination)
+		return;
+
+	contact = e_destination_get_contact (destination);
+	if (!contact)
+		return;
+
+	email_num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "order"));
+	e_destination_set_contact (destination, contact, email_num);
+}
+
+static void
+populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
+{
+	EDestination *destination;
+	EContact     *contact;
+	GtkWidget    *menu_item;
+	GList        *email_list;
+	GList        *l;
+	gint          i;
+
+	destination = name_selector_entry->popup_destination;
+	if (!destination)
+		return;
+
+	contact = e_destination_get_contact (destination);
+	if (!contact)
+		return;
+
+	/* Prepend the menu items, backwards */
+
+	/* Separator */
+
+	menu_item = gtk_separator_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+
+	/* Addresses */
+
+	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+
+	for (l = email_list, i = 0; l; l = g_list_next (l), i++) {
+		gchar *email = l->data;
+
+		if (!email || *email == '\0')
+			continue;
+
+		menu_item = gtk_menu_item_new_with_label (email);
+		gtk_widget_show (menu_item);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+
+		g_object_set_data (G_OBJECT (menu_item), "order", GINT_TO_POINTER (i));
+		g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_email),
+					  name_selector_entry);
+	}
+
+	/* Separator */
+
+	if (email_list) {
+		menu_item = gtk_separator_menu_item_new ();
+		gtk_widget_show (menu_item);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+	}
+
+	/* Edit Contact item */
+
+	menu_item = gtk_menu_item_new_with_label (e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+
+	g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_contact),
+				  name_selector_entry);
+
+	deep_free_list (email_list);
+}
+
 static void
 e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 {
@@ -1569,6 +1763,11 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
   /* Activation: Complete current entry if possible */
 
   g_signal_connect (name_selector_entry, "activate", G_CALLBACK (entry_activate), name_selector_entry);
+
+  /* Pop-up menu */
+
+  g_signal_connect (name_selector_entry, "button-press-event", G_CALLBACK (prepare_popup_destination), name_selector_entry);
+  g_signal_connect (name_selector_entry, "populate-popup", G_CALLBACK (populate_popup), name_selector_entry);
 
   /* Completion */
 
@@ -1655,4 +1854,16 @@ e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_
 	name_selector_entry->destination_store = g_object_ref (destination_store);
 
 	setup_destination_store (name_selector_entry);
+}
+
+void
+e_name_selector_entry_set_contact_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
+{
+	name_selector_entry->contact_editor_func = func;
+}
+
+void
+e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
+{
+	name_selector_entry->contact_list_editor_func = func;
 }

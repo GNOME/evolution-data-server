@@ -378,6 +378,21 @@ find_contact_by_uid (EContactStore *contact_store, const gchar *find_uid)
 	return -1;
 }
 
+static EBook *
+get_book_at_row (EContactStore *contact_store, gint row)
+{
+	ContactSource *source;
+	gint           source_index;
+	gint           offset;
+
+	source_index = find_contact_source_by_offset (contact_store, row);
+	if (source_index < 0)
+		return NULL;
+
+	source = &g_array_index (contact_store->contact_sources, ContactSource, source_index);
+	return source->book;
+}
+
 static EContact *
 get_contact_at_row (EContactStore *contact_store, gint row)
 {
@@ -737,6 +752,19 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
 /* ----------------- *
  * EContactStore API *
  * ----------------- */
+
+EBook *
+e_contact_store_get_book (EContactStore *contact_store, GtkTreeIter *iter)
+{
+	gint index;
+
+	g_return_val_if_fail (E_IS_CONTACT_STORE (contact_store), NULL);
+	g_return_val_if_fail (ITER_IS_VALID (contact_store, iter), NULL);
+
+	index = ITER_GET (iter);
+
+	return get_book_at_row (contact_store, index);
+}
 
 EContact *
 e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
