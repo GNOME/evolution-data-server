@@ -1,11 +1,19 @@
 2005-01-27  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-folder.c
-	  (groupwise_refresh_info):
-	  (gw_update_summary): using getquickmessages instead of
-	  get items
+	(groupwise_refresh_info):
+	(gw_update_summary): using getquickmessages instead of get items
 
 2005-01-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap4/camel-imap4-summary.c (untagged_fetch_all):
+	Decode References to improve threading code (In-Reply-To from
+	ENVELOPE just wasn't good enough to make users happy). See bug
+	#71808.
+	(untagged_fetch_all): Look at the Content-Type header to decide if
+	the message might contain attachments.
+	(imap4_summary_fetch_all): Added References and Content-Type to
+	our query.
 
 	* providers/imap4/camel-imap4-engine.c (engine_parse_namespace):
 	Fixed to handle "" as the delim portion of the NAMESPACE. Fixes

@@ -429,7 +429,7 @@ envelope_decode_nstring (CamelIMAP4Engine *engine, char **nstring, gboolean rfc2
 }
 
 static CamelSummaryReferences *
-decode_references (const char *string)
+decode_references (const char *string, int inreplyto)
 {
 	struct _camel_header_references *refs, *r;
 	CamelSummaryReferences *references;
@@ -437,8 +437,13 @@ decode_references (const char *string)
 	guint32 i, n = 0;
 	MD5Context md5;
 	
-	if (!(r = refs = camel_header_references_inreplyto_decode (string)))
-		return NULL;
+	if (inreplyto) {
+		if (!(r = refs = camel_header_references_inreplyto_decode (string)))
+			return NULL;
+	} else {
+		if (!(r = refs = camel_header_references_decode (string)))
+			return NULL;
+	}
 	
 	while (r != NULL) {
 		r = r->next;
@@ -463,10 +468,11 @@ decode_references (const char *string)
 static int
 decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_token_t *token, CamelException *ex)
 {
+	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *) info;
+	CamelSummaryReferences *refs;
 	unsigned char md5sum[16];
 	char *nstring;
-	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *)info;
-
+	
 	if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 		return -1;
 	
@@ -522,7 +528,13 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 		goto exception;
 	
 	if (nstring != NULL) {
-		iinfo->info.references = decode_references (nstring);
+		refs = decode_references (nstring, TRUE);
+		
+		if (!iinfo->info.references)
+			iinfo->info.references = refs;
+		else
+			g_free (refs);
+		
 		g_free (nstring);
 	}
 	
@@ -981,10 +993,12 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 				changed |= IMAP4_FETCH_UID;
 			}
 		} else if (!strcmp (token->v.atom, "BODY[HEADER.FIELDS")) {
-			/* Mailing-List headers... */
+			/* References, Content-Type, and Mailing-List headers... */
+			CamelContentType *content_type;
 			struct _camel_header_raw *h;
 			CamelMimeParser *parser;
 			unsigned char *literal;
+			const char *str;
 			size_t n;
 			
 			/* '(' */
@@ -994,7 +1008,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			if (token->token != '(')
 				goto unexpected;
 			
-			/* Mailing-List header name list */
+			/* header name list */
 			do {
 				if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 					goto exception;
@@ -1041,7 +1055,24 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			case CAMEL_MIME_PARSER_STATE_MESSAGE:
 			case CAMEL_MIME_PARSER_STATE_MULTIPART:
 				h = camel_mime_parser_headers_raw (parser);
+				
+				/* find our mailing-list header */
 				iinfo->info.mlist = camel_header_raw_check_mailing_list (&h);
+				
+				/* check if we possibly have attachments */
+				if ((str = camel_header_raw_find (&h, "Content-Type", NULL))) {
+					content_type = camel_content_type_decode (str);
+					if (camel_content_type_is (content_type, "multipart", "*")
+					    && !camel_content_type_is (content_type, "multipart", "alternative"))
+						iinfo->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
+					camel_content_type_unref (content_type);
+				}
+				
+				/* check for References: */
+				if ((str = camel_header_raw_find (&h, "References", NULL))) {
+					g_free (iinfo->info.references);
+					iinfo->info.references = decode_references (str, FALSE);
+				}
 			default:
 				break;
 			}
@@ -1076,7 +1107,10 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 }
 
 #define IMAP4_ALL "FLAGS INTERNALDATE RFC822.SIZE ENVELOPE"
-#define MAILING_LIST_HEADERS " BODY.PEEK[HEADER.FIELDS (List-Post List-Id Mailing-List Originator X-Mailing-List X-Loop X-List Sender Delivered-To Return-Path X-BeenThere List-Unsubscribe)]"
+#define MAILING_LIST_HEADERS "List-Post List-Id Mailing-List Originator X-Mailing-List X-Loop X-List Sender Delivered-To Return-Path X-BeenThere List-Unsubscribe"
+
+#define BASE_HEADER_FIELDS "Content-Type References"
+#define MORE_HEADER_FIELDS BASE_HEADER_FIELDS " " MAILING_LIST_HEADERS
 
 static CamelIMAP4Command *
 imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 first, guint32 last)
@@ -1104,16 +1138,16 @@ imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 first, guint32 las
 	
 	if (last != 0) {
 		if (((CamelIMAP4Folder *) folder)->enable_mlist)
-			query = "FETCH %u:%u (UID " IMAP4_ALL MAILING_LIST_HEADERS ")\r\n";
+			query = "FETCH %u:%u (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" MORE_HEADER_FIELDS ")])\r\n";
 		else
-			query = "FETCH %u:%u (UID " IMAP4_ALL ")\r\n";
+			query = "FETCH %u:%u (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" BASE_HEADER_FIELDS ")])\r\n";
 		
 		ic = camel_imap4_engine_queue (engine, folder, query, first, last);
 	} else {
 		if (((CamelIMAP4Folder *) folder)->enable_mlist)
-			query = "FETCH %u:* (UID " IMAP4_ALL MAILING_LIST_HEADERS ")\r\n";
+			query = "FETCH %u:* (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" MORE_HEADER_FIELDS ")])\r\n";
 		else
-			query = "FETCH %u:* (UID " IMAP4_ALL ")\r\n";
+			query = "FETCH %u:* (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" BASE_HEADER_FIELDS ")])\r\n";
 		
 		ic = camel_imap4_engine_queue (engine, folder, query, first);
 	}
