@@ -1,3 +1,15 @@
+2004-09-06  Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* backends/ldap/e-book-backend-ldap.c : Update 
+	the ldap attribute names for calendar ui and free busy uri
+	fileds to match with what is present in evolutionPerson.schema
+	(add_to_supported_fields) : add E_CONTACT_EMAIL_1 also to list of supported fields.
+	Also use e_contact_field_name function instead of hardcodring field names
+        (anniversary_populate) : correct incorrect contact date
+	parameter passing. Also free the contact date
+
+	Fixes some of the issues mentioned in #59582 	
+	
 2004-08-26  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

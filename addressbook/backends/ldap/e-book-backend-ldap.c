@@ -280,8 +280,8 @@ struct prop_info {
 
 	E_COMPLEX_PROP (E_CONTACT_CATEGORY_LIST,  "category", category_populate, category_ber, category_compare),
 
-	STRING_PROP (E_CONTACT_CALENDAR_URI,   "calCalURI"),
-	STRING_PROP (E_CONTACT_FREEBUSY_URL,   "calFBURL"),
+	STRING_PROP (E_CONTACT_CALENDAR_URI,   "calendarURI"),
+	STRING_PROP (E_CONTACT_FREEBUSY_URL,   "freeBusyURI"),
 	STRING_PROP (E_CONTACT_ICS_CALENDAR,   "icsCalendar"),
 
 #undef E_STRING_PROP
@@ -401,20 +401,22 @@ add_to_supported_fields (EBookBackendLDAP *bl, char **attrs, GHashTable *attr_ha
 			bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (query_prop));
 
 			/* handle the list attributes here */
-			if (!strcmp (query_prop, "email")) {
-				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("email_2"));
-				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("email_3"));
-				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("email_4"));
+			if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_EMAIL))) {
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_1)));
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_2)));
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_4)));
 			}
-			else if (!strcmp (query_prop, "business_phone")) {
-				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("business_phone_2"));
+			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_PHONE_BUSINESS))) {
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_BUSINESS_2)));
 			}
-			else if (!strcmp (query_prop, "home_phone")) {
-				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("home_phone_2"));
+			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_PHONE_HOME))) {
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name(E_CONTACT_PHONE_HOME_2)));
 			}
-			else if (!strcmp (query_prop, "category_list")) {
-				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("categories"));
+			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_CATEGORY_LIST) )) {
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_CATEGORIES)));
 			}
+			
 		}
 	}
 }
@@ -2120,7 +2122,8 @@ anniversary_populate (EContact *contact, char **values)
 {
 	if (values[0]) {
 		EContactDate *dt = e_contact_date_from_string (values[0]);
-		e_contact_set (contact, E_CONTACT_ANNIVERSARY, &dt);
+		e_contact_set (contact, E_CONTACT_ANNIVERSARY, dt);
+		e_contact_date_free (dt);
 	}
 }
 
