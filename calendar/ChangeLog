@@ -1,3 +1,13 @@
+2004-04-16  Harish Krishnaswamy  <set EMAIL_ADDRESS environment variable>
+	
+	Fixes #55802
+	
+	* libecal/e-cal.c: (open_calendar): Create and lock
+	op mutex and unlock ecal before attempting to authenticate.
+	(open_async, async_auth_idle_cb,async_auth_func_cb): implement 
+	async authentication to calendar.
+	
+
 2004-04-15  JP Rosevear  <jpr@ximian.com>
 
 	* libecal/e-cal.c (e_cal_add_timezone): do a little more sanity
