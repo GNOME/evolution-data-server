@@ -306,6 +306,8 @@ calendar/tests/ecal/Makefile
 libdb/Makefile
 libedataserver/Makefile
 libedataserver/libedataserver-1.0.pc
+servers/Makefile
+servers/groupwise/Makefile
 src/Makefile
 docs/Makefile
 docs/reference/Makefile
