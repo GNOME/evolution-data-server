@@ -457,6 +457,24 @@ e_source_list_peek_source_by_uid (ESourceList *list,
 	return NULL;
 }
 
+ESource *
+e_source_list_peek_source_any (ESourceList *list)
+{
+	GSList *p;
+
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
+
+	for (p = list->priv->groups; p != NULL; p = p->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (p->data);
+		GSList *sources;
+		
+		sources = e_source_group_peek_sources (group);
+		if (sources->data)
+			return E_SOURCE (sources->data);
+	}
+
+	return NULL;
+}
 
 gboolean
 e_source_list_add_group (ESourceList *list,

@@ -1,3 +1,10 @@
+2003-12-21  JP Rosevear <jpr@ximian.com>
+
+	* libedataserver/e-source-list.c (e_source_list_peek_source_any):
+	find a source if there is one
+
+	* libedataserver/e-source-list.h: add proto
+
 2003-12-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* src/server.c (setup_logging, setup_interface_check): get the

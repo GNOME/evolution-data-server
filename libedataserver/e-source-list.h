@@ -69,7 +69,7 @@ ESourceGroup *e_source_list_peek_group_by_uid   (ESourceList *list,
 						 const char  *uid);
 ESource      *e_source_list_peek_source_by_uid  (ESourceList *list,
 						 const char  *uid);
-
+ESource      *e_source_list_peek_source_any     (ESourceList *list);
 gboolean  e_source_list_add_group             (ESourceList  *list,
 					       ESourceGroup *group,
 					       int           position);
