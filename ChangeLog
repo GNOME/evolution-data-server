@@ -1,3 +1,11 @@
+2003-11-07  Dan Winship  <danw@ximian.com>
+
+	* configure.in: Remove a bunch more checks that
+	evolution-data-server doesn't need. Change "Evolution" to
+	"evolution-data-server" in two messages. Remove gtk-doc support
+	since there is currently no doc/ directory, and we'll want to use
+	the new GTK_DOC_CHECK macro when we add it back anyway.
+
 2003-11-07  Rodney Dawes  <dobey@ximian.com>
 
 	* configure.in: Remove kerberos checks since we don't need them here
