@@ -242,7 +242,6 @@ static struct prop_info {
 	NORMAL_PROP ( E_CONTACT_NICKNAME, "nickname"),
 	NORMAL_PROP ( E_CONTACT_SPOUSE, "spouse" ),
 	NORMAL_PROP ( E_CONTACT_NOTE, "note"),
-	NORMAL_PROP ( E_CONTACT_UID, "id"),
 	LIST_PROP ( "im_aim",    compare_im_aim ),
 	LIST_PROP ( "im_msn",    compare_im_msn ),
 	LIST_PROP ( "im_icq",    compare_im_icq ),
