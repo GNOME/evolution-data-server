@@ -4,12 +4,14 @@
 # Tomas Kuliavas <tokul@users.sourceforge.net>, 2003-2004.
 # Žygimantas Beručka <uid0@akl.lt>, 2004-2005.
 # 
+#: calendar/backends/weather/e-cal-backend-weather.c:240
+#: calendar/backends/weather/e-cal-backend-weather.c:251
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-31 15:30+0200\n"
-"PO-Revision-Date: 2005-01-31 15:42+0200\n"
+"POT-Creation-Date: 2005-01-31 20:43+0200\n"
+"PO-Revision-Date: 2005-01-31 20:58+0200\n"
 "Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -604,11 +606,13 @@ msgid "List Show Addresses"
 msgstr "Išvesti rodomus adresus"
 
 #: addressbook/libebook/e-contact.c:1208
+#: addressbook/libebook/e-destination.c:616
 msgid "Unnamed List"
 msgstr "Bevardis sąrašas"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:446
+#: libedataserver/e-categories.c:213
 msgid "Birthday"
 msgstr "Gimtadienis"
 
@@ -640,6 +644,7 @@ msgstr "Kalendorius"
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:556
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:799
 #: calendar/backends/http/e-cal-backend-http.c:484
+#: calendar/backends/weather/e-cal-backend-weather.c:449
 msgid "Could not create cache file"
 msgstr "Nepavyko sukurti kešo bylos"
 
@@ -673,9 +678,202 @@ msgstr "Blogas bylos formatas."
 msgid "Not a calendar."
 msgstr "Ne kalendorius."
 
+#: calendar/backends/weather/e-cal-backend-weather.c:140
+msgid "Could not retrieve weather data"
+msgstr "Nepavyko gauti duomenų apie oro sąlygas"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:194
+msgid "Fair"
+msgstr "Giedra"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:195
+msgid "Snow showers"
+msgstr "Stipriai sninga"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:196
+msgid "Snow"
+msgstr "Sninga"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:197
+msgid "Partly cloudy"
+msgstr "Vietomis debesuota"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:198
+msgid "Smoke"
+msgstr "Dūmai"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:199
+msgid "Thunderstorms"
+msgstr "Perkūnija"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:200
+msgid "Cloudy"
+msgstr "Debesuota"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:201
+msgid "Drizzle"
+msgstr "Dulksna"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:202
+msgid "Sunny"
+msgstr "Saulėta"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:203
+msgid "Dust"
+msgstr "Dulkės"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:204
+msgid "Clear"
+msgstr "Giedra"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:205
+msgid "Mostly cloudy"
+msgstr "Labai debesuota"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:206
+msgid "Windy"
+msgstr "Vėjuota"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:207
+msgid "Rain showers"
+msgstr "Stiprus lietus"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:208
+msgid "Foggy"
+msgstr "Rūkas"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:209
+msgid "Rain/snow mixed"
+msgstr "Lietaus/sniego mišinys"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:210
+msgid "Sleet"
+msgstr "Šlapdriba"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:211
+msgid "Very hot/humid"
+msgstr "Labai karšta ir drėgna"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:212
+msgid "Blizzard"
+msgstr "Pūga"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:213
+msgid "Freezing rain"
+msgstr "Šalantis lietus"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:214
+msgid "Haze"
+msgstr "Migla"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:215
+msgid "Blowing snow"
+msgstr "Pustomas sniegas"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:216
+msgid "Freezing drizzle"
+msgstr "Šalanti dulksna"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:217
+msgid "Very cold/wind chill"
+msgstr "Labai šalta/šaltas vėjas"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:218
+msgid "Rain"
+msgstr "Lietus"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:228
+#: calendar/backends/weather/e-cal-backend-weather.c:236
+#: calendar/backends/weather/e-cal-backend-weather.c:238
+#: calendar/backends/weather/e-cal-backend-weather.c:245
+msgid "Weather: Sunny"
+msgstr "Oras: Saulėta"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:229
+#: calendar/backends/weather/e-cal-backend-weather.c:230
+#: calendar/backends/weather/e-cal-backend-weather.c:246
+#: calendar/backends/weather/e-cal-backend-weather.c:249
+msgid "Weather: Snow"
+msgstr "Oras: Sninga"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:231
+msgid "Weather: Partly Cloudy"
+msgstr "Oras: Vietomis debesuota"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:232
+#: calendar/backends/weather/e-cal-backend-weather.c:237
+#: calendar/backends/weather/e-cal-backend-weather.c:242
+#: calendar/backends/weather/e-cal-backend-weather.c:248
+msgid "Weather: Fog"
+msgstr "Oras: Rūkas"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:233
+msgid "Weather: Thunderstorms"
+msgstr "Oras: Perkūnija"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:234
+#: calendar/backends/weather/e-cal-backend-weather.c:239
+msgid "Weather: Cloudy"
+msgstr "Oras: Debesuota"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:235
+#: calendar/backends/weather/e-cal-backend-weather.c:241
+#: calendar/backends/weather/e-cal-backend-weather.c:243
+#: calendar/backends/weather/e-cal-backend-weather.c:244
+#: calendar/backends/weather/e-cal-backend-weather.c:247
+#: calendar/backends/weather/e-cal-backend-weather.c:250
+#: calendar/backends/weather/e-cal-backend-weather.c:252
+msgid "Weather: Rain"
+msgstr "Oras: Lyja"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:327
+#, c-format
+msgid "%.1f°C - %s"
+msgstr "%.1f°C - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:329
+#, c-format
+msgid "%.1f°F - %s"
+msgstr "%.1f°F - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:332
+#, c-format
+msgid "%.1f/%.1f°C - %s"
+msgstr "%.1f/%.1f°C - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:334
+#, c-format
+msgid "%.1f/%.1f°F - %s"
+msgstr "%.1f/%.1f°F - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:340
+#, c-format
+msgid "%d%% chance of precipitation\n"
+msgstr "%d%% kritulių tikimybė\n"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:347
+#, c-format
+msgid "%.1fcm snow\n"
+msgstr "%.1fcm sniego\n"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:349
+#, c-format
+msgid "%.1fin snow\n"
+msgstr "%.1fin sniego\n"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:352
+#, c-format
+msgid "%.1f-%.1fcm snow\n"
+msgstr "%.1f-%.1fcm sniego\n"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:354
+#, c-format
+msgid "%.1f-%.1fin snow\n"
+msgstr "%.1f-%.1fin sniego\n"
+
 #: calendar/libecal/e-cal-component.c:1299
 msgid "Untitled appointment"
-msgstr "Bevardis paskyrimas"
+msgstr "Neįvardintas paskyrimas"
 
 #: calendar/libecal/e-cal-recur.c:3996
 msgid "1st"
@@ -2458,6 +2656,7 @@ msgstr "Skirtas pasiekti Novel Groupwise serverius"
 #: camel/providers/groupwise/camel-groupwise-provider.c:102
 #: camel/providers/imap/camel-imap-provider.c:96
 #: camel/providers/imap4/camel-imap4-provider.c:81
+#: camel/providers/imapp/camel-imapp-provider.c:66
 #: camel/providers/nntp/camel-nntp-provider.c:72
 #: camel/providers/pop3/camel-pop3-provider.c:72
 msgid "Password"
@@ -2748,6 +2947,7 @@ msgid "For reading and storing mail on IMAP servers."
 msgstr "Pašto skaitymui ir rašymui IMAP serveriuose."
 
 #: camel/providers/imap/camel-imap-provider.c:98
+#: camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Naudojant šią parinktį jungiantis prie IMAP serverio bus naudojamas paprasto "
@@ -2790,6 +2990,7 @@ msgstr "SSL nepasiekiamas"
 #: camel/providers/imap/camel-imap-store.c:547
 #: camel/providers/imap/camel-imap-store.c:817
 #: camel/providers/imap4/camel-imap4-store.c:255
+#: camel/providers/imapp/camel-imapp-store.c:248
 #: camel/providers/nntp/camel-nntp-store.c:212
 #: camel/providers/nntp/camel-nntp-store.c:231
 #: camel/providers/pop3/camel-pop3-store.c:181
@@ -2842,6 +3043,7 @@ msgid "No support for authentication type %s"
 msgstr "Nepalaikoma %s tipo autentikacija"
 
 #: camel/providers/imap/camel-imap-store.c:1287
+#: camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sPrašom įvesti %s@%s IMAP slaptažodį"
@@ -3133,6 +3335,38 @@ msgstr "Nėra duomenų"
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "IMAP serveris %s netikėtai atsijungė: %s"
+
+#: camel/providers/imapp/camel-imapp-provider.c:40
+#: camel/providers/pop3/camel-pop3-provider.c:39
+msgid "Message storage"
+msgstr "Laiškų saugojimas"
+
+#: camel/providers/imapp/camel-imapp-provider.c:48
+msgid "IMAP+"
+msgstr "IMAP+"
+
+#: camel/providers/imapp/camel-imapp-provider.c:50
+msgid ""
+"Experimental IMAP 4(.1) client\n"
+"This is untested and unsupported code, you want to use plain imap instead.\n"
+"\n"
+" !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
+msgstr ""
+"Eksperimentinis IMAP 4(.1) klientas\n"
+"Šis kodas yra neišbandytas ir nepalaikomas, vietoj to Jūs norite naudoti\n"
+"paprastą imap.\n"
+"\n"
+" !!! DARBO APLINKOJE JO NENAUDOKITE  !!!\n"
+
+#: camel/providers/imapp/camel-imapp-store.c:251
+#, c-format
+msgid "Could not connect to %s (port %s): %s"
+msgstr "Nepavyko prisijungti prie %s (%s prievadas): %s"
+
+#: camel/providers/imapp/camel-imapp-store.c:348
+#, c-format
+msgid "Could not connect to POP server on %s"
+msgstr "Nepavyko prisijungti prie POP serverio esančio %s"
 
 #: camel/providers/local/camel-local-folder.c:179
 msgid "Index message body data"
@@ -3878,10 +4112,6 @@ msgstr "Parsiunčiamas POP laiškas %d"
 msgid "Unknown reason"
 msgstr "Nežinomas priežastis"
 
-#: camel/providers/pop3/camel-pop3-provider.c:39
-msgid "Message storage"
-msgstr "Laiškų saugojimas"
-
 #: camel/providers/pop3/camel-pop3-provider.c:41
 msgid "Leave messages on server"
 msgstr "Palikti laiškus serveryje"
@@ -4312,6 +4542,209 @@ msgstr "Nepavyko QUIT komanda: %s"
 #: camel/providers/smtp/camel-smtp-transport.c:1401
 msgid "QUIT command failed"
 msgstr "Nepavyko QUIT komanda"
+
+#: libedataserver/e-categories.c:214
+msgid "Business"
+msgstr "Verslas"
+
+#: libedataserver/e-categories.c:215
+msgid "Competition"
+msgstr "Konkursas"
+
+#: libedataserver/e-categories.c:216
+msgid "Favorites"
+msgstr "Mėgiamybės"
+
+#: libedataserver/e-categories.c:217
+msgid "Gifts"
+msgstr "Dovanos"
+
+#: libedataserver/e-categories.c:218
+msgid "Goals/Objectives"
+msgstr "Tikslai/siekiai"
+
+#: libedataserver/e-categories.c:219
+msgid "Holiday"
+msgstr "Atostogos"
+
+#: libedataserver/e-categories.c:220
+msgid "Holiday Cards"
+msgstr "Atostogų kortelės"
+
+#: libedataserver/e-categories.c:221
+msgid "Hot Contacts"
+msgstr "„Karšti“ kontaktai"
+
+#: libedataserver/e-categories.c:222
+msgid "Ideas"
+msgstr "Idėjos"
+
+#: libedataserver/e-categories.c:223
+msgid "International"
+msgstr "Tarptautiniai"
+
+#: libedataserver/e-categories.c:224
+msgid "Key Customer"
+msgstr "Pagrindiniai pirkėjai"
+
+#: libedataserver/e-categories.c:225
+msgid "Miscellaneous"
+msgstr "Įvairūs"
+
+#: libedataserver/e-categories.c:226
+msgid "Personal"
+msgstr "Asmeniniai"
+
+#: libedataserver/e-categories.c:227
+msgid "Phone Calls"
+msgstr "Telefonų skambučiai"
+
+#: libedataserver/e-categories.c:228
+msgid "Status"
+msgstr "Būsena"
+
+#: libedataserver/e-categories.c:229
+msgid "Strategies"
+msgstr "Strategija"
+
+#: libedataserver/e-categories.c:230
+msgid "Suppliers"
+msgstr "Tiekėjai"
+
+#: libedataserver/e-categories.c:231
+msgid "Time & Expenses"
+msgstr "Laikas ir išlaidos"
+
+#: libedataserver/e-categories.c:232
+msgid "VIP"
+msgstr "VIP"
+
+#: libedataserver/e-categories.c:233
+msgid "Waiting"
+msgstr "Laukiama"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format.
+#: libedataserver/e-time-utils.c:173 libedataserver/e-time-utils.c:400
+msgid "%a %m/%d/%Y %I:%M:%S %p"
+msgstr "%a %Y/%m/%d %I:%M:%S %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format.
+#: libedataserver/e-time-utils.c:178 libedataserver/e-time-utils.c:391
+msgid "%a %m/%d/%Y %H:%M:%S"
+msgstr "%a %Y/%m/%d %H:%M:%S"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format, without seconds.
+#: libedataserver/e-time-utils.c:183 libedataserver/e-time-utils.c:396
+msgid "%a %m/%d/%Y %I:%M %p"
+msgstr "%a %Y/%m/%d %I:%M %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format, without seconds.
+#: libedataserver/e-time-utils.c:188 libedataserver/e-time-utils.c:387
+msgid "%a %m/%d/%Y %H:%M"
+msgstr "%a %Y/%m/%d %H:%M"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without minutes or seconds.
+#: libedataserver/e-time-utils.c:193
+msgid "%a %m/%d/%Y %I %p"
+msgstr "%a %Y/%m/%d %I %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without minutes or seconds.
+#: libedataserver/e-time-utils.c:198
+msgid "%a %m/%d/%Y %H"
+msgstr "%a %Y/%m/%d %H"
+
+#. strptime format of a weekday and a date.
+#. strftime format of a weekday and a date.
+#: libedataserver/e-time-utils.c:201 libedataserver/e-time-utils.c:294
+#: libedataserver/e-time-utils.c:382
+msgid "%a %m/%d/%Y"
+msgstr "%a %Y/%m/%d"
+
+#. strptime format of a date and a time, in 12-hour format.
+#: libedataserver/e-time-utils.c:209
+msgid "%m/%d/%Y %I:%M:%S %p"
+msgstr "%Y/%m/%d %I:%M:%S %p"
+
+#. strptime format of a date and a time, in 24-hour format.
+#: libedataserver/e-time-utils.c:213
+msgid "%m/%d/%Y %H:%M:%S"
+msgstr "%Y/%m/%d %H:%M:%S"
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:218
+msgid "%m/%d/%Y %I:%M %p"
+msgstr "%Y/%m/%d %I:%M %p"
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:223
+msgid "%m/%d/%Y %H:%M"
+msgstr "%Y/%m/%d %H:%M"
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without minutes or seconds.
+#: libedataserver/e-time-utils.c:228
+msgid "%m/%d/%Y %I %p"
+msgstr "%Y/%m/%d %I %p"
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without minutes or seconds.
+#: libedataserver/e-time-utils.c:233
+msgid "%m/%d/%Y %H"
+msgstr "%Y/%m/%d %H"
+
+#. strptime format of a weekday and a date.
+#. This is the preferred date format for the locale.
+#: libedataserver/e-time-utils.c:236 libedataserver/e-time-utils.c:297
+msgid "%m/%d/%Y"
+msgstr "%Y/%m/%d"
+
+#. strptime format for a time of day, in 12-hour format.
+#. strftime format of a time in 12-hour format.
+#: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
+msgid "%I:%M:%S %p"
+msgstr "%I:%M:%S %p"
+
+#. strptime format for a time of day, in 24-hour format.
+#. strftime format of a time in 24-hour format.
+#: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
+msgid "%H:%M:%S"
+msgstr "%H:%M:%S"
+
+#. strptime format for time of day, without seconds,
+#. in 12-hour format.
+#. strftime format of a time in 12-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
+msgid "%I:%M %p"
+msgstr "%I:%M %p"
+
+#. strptime format for time of day, without seconds 24-hour format.
+#. strftime format of a time in 24-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
+msgid "%H:%M"
+msgstr "%H:%M"
+
+#. strptime format for hour and AM/PM, 12-hour format.
+#: libedataserver/e-time-utils.c:354
+msgid "%I %p"
+msgstr "%I %p"
 
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
