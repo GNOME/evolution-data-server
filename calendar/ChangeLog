@@ -1,3 +1,9 @@
+2003-11-11  Dan Winship  <danw@ximian.com>
+
+	* libedata-cal/e-cal-backend-sexp.c: Make the time-related sexp
+	function handlers (eg, time-now, make-time, etc) be non-static, so
+	they can be reused by backend-specific calendar sexp parsers.
+
 2003-11-10  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.h: remove dead enums

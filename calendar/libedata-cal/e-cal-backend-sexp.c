@@ -20,7 +20,6 @@
 
 #include <string.h>
 #include <libgnome/gnome-i18n.h>
-#include <libedataserver/e-sexp.h>
 #include <libedataserver/e-util.h>
 #include <libecal/e-cal-time-util.h>
 
@@ -41,8 +40,8 @@ struct _SearchContext {
 	ECalBackend *backend;
 };
 
-static ESExpResult *
-func_time_now (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+ESExpResult *
+e_cal_backend_sexp_func_time_now (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
 	ESExpResult *result;
 
@@ -63,8 +62,8 @@ func_time_now (ESExp *esexp, int argc, ESExpResult **argv, void *data)
  *
  * Constructs a time_t value for the specified date.
  */
-static ESExpResult *
-func_make_time (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+ESExpResult *
+e_cal_backend_sexp_func_make_time (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
 	const char *str;
 	time_t t;
@@ -105,8 +104,8 @@ func_make_time (ESExp *esexp, int argc, ESExpResult **argv, void *data)
  * FIXME: TIMEZONES - need to use a timezone or daylight saving changes will
  * make the result incorrect.
  */
-static ESExpResult *
-func_time_add_day (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+ESExpResult *
+e_cal_backend_sexp_func_time_add_day (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
 	ESExpResult *result;
 	time_t t;
@@ -145,8 +144,8 @@ func_time_add_day (ESExp *esexp, int argc, ESExpResult **argv, void *data)
  *
  * FIXME: TIMEZONES - this uses the current Unix timezone.
  */
-static ESExpResult *
-func_time_day_begin (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+ESExpResult *
+e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
 	time_t t;
 	ESExpResult *result;
@@ -177,8 +176,8 @@ func_time_day_begin (ESExp *esexp, int argc, ESExpResult **argv, void *data)
  *
  * FIXME: TIMEZONES - this uses the current Unix timezone.
  */
-static ESExpResult *
-func_time_day_end (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+ESExpResult *
+e_cal_backend_sexp_func_time_day_end (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
 	time_t t;
 	ESExpResult *result;
@@ -759,11 +758,11 @@ static struct {
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	/* Time-related functions */
-	{ "time-now", func_time_now, 0 },
-	{ "make-time", func_make_time, 0 },
-	{ "time-add-day", func_time_add_day, 0 },
-	{ "time-day-begin", func_time_day_begin, 0 },
-	{ "time-day-end", func_time_day_end, 0 },
+	{ "time-now", e_cal_backend_sexp_func_time_now, 0 },
+	{ "make-time", e_cal_backend_sexp_func_make_time, 0 },
+	{ "time-add-day", e_cal_backend_sexp_func_time_add_day, 0 },
+	{ "time-day-begin", e_cal_backend_sexp_func_time_day_begin, 0 },
+	{ "time-day-end", e_cal_backend_sexp_func_time_day_end, 0 },
 
 	/* Component-related functions */
 	{ "occur-in-time-range?", func_occur_in_time_range, 0 },
