@@ -25,6 +25,7 @@
 #include <config.h>
 #endif
 #include "e-gw-item.h"
+#include "e-gw-message.h"
 
 struct _EGwItemPrivate {
 	EGwItemType item_type;
