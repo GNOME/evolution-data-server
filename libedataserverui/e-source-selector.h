@@ -28,6 +28,8 @@
 #include <gtk/gtktreeview.h>
 #include <libedataserver/e-source-list.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_SOURCE_SELECTOR		(e_source_selector_get_type ())
 #define E_SOURCE_SELECTOR(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SOURCE_SELECTOR, ESourceSelector))
 #define E_SOURCE_SELECTOR_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SOURCE_SELECTOR, ESourceSelectorClass))
@@ -78,5 +80,6 @@ ESource *e_source_selector_peek_primary_selection  (ESourceSelector *selector);
 void     e_source_selector_set_primary_selection   (ESourceSelector *selector,
 						    ESource         *source);
 
+G_END_DECLS
 
 #endif /* _E_SOURCE_SELECTOR_H_ */

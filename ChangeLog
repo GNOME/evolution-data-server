@@ -1,3 +1,11 @@
+2004-10-21  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserverui/Makefile.am:
+	* libedataserverui/e-source-selector-dialog.[ch]: added source
+	selector dialog widget.
+
+	* libedataserverui/e-source-selector.h: added G_BEGIN/END_DECLS.
+
 2004-10-14  JP Rosevear  <jpr@novell.com>
 
 	* libedataserverui/e-source-selector.c: G_DEFINE_TYPE cleanups for

@@ -13,6 +13,7 @@ noinst_PROGRAMS = test-source-selector test-source-option-menu
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
 	e-source-selector.c		\
+	e-source-selector-dialog.c	\
 	e-source-option-menu.c
 
 libedataserverui_1_2_la_LIBADD = 			\
@@ -23,8 +24,9 @@ libedataserverui_1_2_la_LDFLAGS = 										\
 
 libedataserveruiincludedir = $(privincludedir)/libedataserverui
 
-libedataserveruiinclude_HEADERS =		\
+libedataserveruiinclude_HEADERS =	\
 	e-source-selector.h		\
+	e-source-selector-dialog.h	\
 	e-source-option-menu.h
 
 # Test programs
