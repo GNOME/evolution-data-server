@@ -67,6 +67,8 @@ struct _ECalBackendHttpPrivate {
 
 
 
+#define d(x)
+
 static void e_cal_backend_http_dispose (GObject *object);
 static void e_cal_backend_http_finalize (GObject *object);
 static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
@@ -200,14 +202,14 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	priv = cbhttp->priv;
 
 	priv->is_loading = FALSE;
-	g_message ("Retrieval done.\n");
+	d(g_message ("Retrieval done.\n"));
 
 	/* Handle redirection ourselves */
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
 		newuri = soup_message_get_header (msg->response_headers,
 						  "Location");
 
-		g_message ("Redirected to %s\n", newuri);
+		d(g_message ("Redirected to %s\n", newuri));
 
 		if (newuri) {
 			g_free (priv->uri);
@@ -267,7 +269,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	/* free memory */
 	icalcomponent_free (icalcomp);
 
-	g_message ("Retrieval really done.\n");
+	d(g_message ("Retrieval really done.\n"));
 }
 
 static gboolean reload_cb                  (ECalBackendHttp *cbhttp);
@@ -286,7 +288,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	maybe_start_reload_timeout (cbhttp);
 
-	g_message ("Starting retrieval...\n");
+	d(g_message ("Starting retrieval...\n"));
 
 	if (priv->is_loading)
 		return FALSE;
@@ -308,7 +310,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	soup_session_queue_message (priv->soup_session, soup_message,
 				    (SoupMessageCallbackFn) retrieval_done, cbhttp);
 
-	g_message ("Retrieval started.\n");
+	d(g_message ("Retrieval started.\n"));
 	return FALSE;
 }
 
@@ -322,7 +324,7 @@ reload_cb (ECalBackendHttp *cbhttp)
 	if (priv->is_loading)
 		return TRUE;
 
-	g_message ("Reload!\n");
+	d(g_message ("Reload!\n"));
 
 	priv->reload_timeout_id = 0;
 	begin_retrieval_cb (cbhttp);
@@ -338,7 +340,7 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 
 	priv = cbhttp->priv;
 
-	g_message ("Setting reload timeout.\n");
+	d(g_message ("Setting reload timeout.\n"));
 
 	if (priv->reload_timeout_id)
 		return;
@@ -606,7 +608,7 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query));
+	d(g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
 
 	if (!priv->cache) {
 		e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_NoSuchCal);

@@ -78,6 +78,8 @@ struct _ECalBackendFilePrivate {
 
 
 
+#define d(x)
+
 static void e_cal_backend_file_dispose (GObject *object);
 static void e_cal_backend_file_finalize (GObject *object);
 
@@ -359,7 +361,7 @@ check_dup_uid (ECalBackendFile *cbfile, ECalComponent *comp)
 	if (!obj_data)
 		return; /* Everything is fine */
 
-	g_message ("check_dup_uid(): Got object with duplicated UID `%s', changing it...", uid);
+	d(g_message (G_STRLOC ": Got object with duplicated UID `%s', changing it...", uid));
 
 	new_uid = e_cal_component_gen_uid ();
 	e_cal_component_set_uid (comp, new_uid);
@@ -1185,7 +1187,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_message (G_STRLOC ": Getting object list (%s)", sexp);
+	d(g_message (G_STRLOC ": Getting object list (%s)", sexp));
 
 	match_data.search_needed = TRUE;
 	match_data.query = sexp;
@@ -1218,7 +1220,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query));
+	d(g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
 
 	/* try to match all currently existing objects */
 	match_data.search_needed = TRUE;
