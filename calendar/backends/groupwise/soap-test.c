@@ -21,6 +21,8 @@ idle_cb (gpointer data)
 
 	g_main_loop_quit (main_loop);
 
+	g_object_unref (cnc);
+
 	return FALSE;
 }
 
