@@ -4,6 +4,9 @@ Things to do and people working on it
  - Write an ECalBackendCache class to be used by backends to have a
    cache of the objects, persistent between sessions (Rodrigo)
 
+ - Map error codes returned in the "status" SOAP type to our
+   EGwConnectionStatus. This is in e-gw-connection.c#parse_response_status.
+
  - Add a better parameters management API to SoupSoapResponse. Right
    now it returns a GList of xmlNodePtr, which is a bad thing for a
    public API. We should probably either create our specific types, or

@@ -1,3 +1,12 @@
+2003-11-28  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-connection.c (parse_response_status): new
+	function to parse the "status" field returned in the SOAP response.
+	(e_gw_connection_login, e_gw_connection_logout): call above function
+	to get the status, and return that to the caller.
+	
+	* backends/groupwise/TODO: updated with more tasks.
+
 2003-11-27  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedata-cal/e-cal-backend-cache.[ch]: new class implementing a

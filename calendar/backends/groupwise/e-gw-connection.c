@@ -46,7 +46,7 @@ parse_response_status (SoupSoapResponse *response)
 	if (!param)
 		return E_GW_CONNECTION_STATUS_UNKNOWN;
 
-	subparam = soup_soap_response_get_first_child_by_name (param, "code");
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "code");
 	if (!subparam)
 		return E_GW_CONNECTION_STATUS_UNKNOWN;
 
