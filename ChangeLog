@@ -1,3 +1,7 @@
+2003-12-10  Chris Toshok  <toshok@ximian.com>
+
+	* Makefile.am (ACLOCAL_AMFLAGS): remove
+
 2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedataserver/e-file-cache.[ch]: renamed from e-cache.[ch]

@@ -3,8 +3,6 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 SUBDIRS = libdb libedataserver addressbook calendar src docs po
 DIST_SUBDIRS= libedataserver addressbook calendar src docs po
 
-ACLOCAL_AMFLAGS = -I m4
-
 changelogs =			\
 	ChangeLog
 
