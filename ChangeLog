@@ -1,3 +1,14 @@
+2003-11-06  JP Rosevear <jpr@ximian.com>
+	
+	* configure.in (BASE_VERSION): clean up priv* dirs 
+	
+	* src/Makefile.am: install a version binary to libexecdir
+
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in: reflect new
+	binary location
+
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: ditto
+	
 2003-11-05  JP Rosevear <jpr@ximian.com>
 
 	* src/server.c: following renaming of libedata-book

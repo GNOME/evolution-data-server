@@ -1,4 +1,4 @@
-# Process this file with autoconf to produce a configure script.
+ Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
 AC_INIT(evolution-data-server, 0.0.1)
@@ -603,20 +603,18 @@ dnl --- If you add something here, consider whether or not you also
 dnl --- need to add it to one or more .pc.in files (for Connector,
 dnl --- etc)
 
-BASE_VERSION=`echo $VERSION | awk -F. '{print $1 "." $2;}'`
+dnl BASE_VERSION=`echo $VERSION | awk -F. '{print $1 "." $2;}'`
+BASE_VERSION=1.0
 AC_SUBST(BASE_VERSION)
 AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 
-privlibexecdir='${libexecdir}'/evolution/$BASE_VERSION
-AC_SUBST(privlibexecdir)
-
-privdatadir='${datadir}'/evolution-data-server-1.0
+privdatadir='${datadir}'/evolution-data-server-$BASE_VERSION
 AC_SUBST(privdatadir)
 
-privincludedir='${includedir}'/evolution-data-server-1.0
+privincludedir='${includedir}'/evolution-data-server-$BASE_VERSION
 AC_SUBST(privincludedir)
 
-idldir="$datadir/idl/evolution-data-server-1.0"
+idldir="$datadir/idl/evolution-data-server-$BASE_VERSION"
 AC_SUBST(idldir)
 
 serverdir="$libdir/bonobo/servers"
@@ -630,7 +628,7 @@ INTERFACE_VERSION="$BASE_VERSION"
 AC_SUBST(INTERFACE_VERSION)
 AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "INTERFACE_VERSION", [IDL interface version (Major.Minor)])
 
-EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(privlibexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
+EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
 EVO_NAME_SERVER_RULE='%_$(BASE_VERSION).server: %.server ; mv $< $@'
 AC_SUBST(EVO_SUBST_SERVER_RULE)
 AC_SUBST(EVO_NAME_SERVER_RULE)

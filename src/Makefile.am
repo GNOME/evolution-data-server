@@ -34,7 +34,7 @@ $(IDL_GENERATED_H): $(IDLS)
 $(IDL_GENERATED_C): $(IDL_GENERATED_H)
 
 
-privlibexec_PROGRAMS =	\
+noinst_PROGRAMS =	\
 	evolution-data-server
 
 evolution_data_server_SOURCES = \
@@ -47,6 +47,11 @@ evolution_data_server_LDADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book.la	\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
 	$(E_DATA_SERVER_LIBS)
+
+install-evolution-data-server:
+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
+	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)
+
 
 if ENABLE_LDAP
 SERVER_IN_FILE=GNOME_Evolution_DataServerLDAP.server.in.in
@@ -73,6 +78,8 @@ EXTRA_DIST = 						\
 
 BUILT_SOURCES = $(IDL_GENERATED) $(server_DATA)
 CLEANFILES = $(BUILT_SOURCES)
+
+install-exec-local: install-evolution-data-server
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
