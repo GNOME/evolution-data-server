@@ -487,9 +487,9 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	aod.n_triggers = 0;
 
 	e_cal_recur_generate_instances (comp, alarm_start, alarm_end,
-				      add_alarm_occurrences_cb, &aod,
-				      resolve_tzid, user_data,
-				      default_timezone);
+					add_alarm_occurrences_cb, &aod,
+					resolve_tzid, user_data,
+					default_timezone);
 
 	/* We add the ABSOLUTE triggers separately */
 	generate_absolute_triggers (comp, &aod, resolve_tzid, user_data, default_timezone);

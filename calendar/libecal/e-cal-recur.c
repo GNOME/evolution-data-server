@@ -635,8 +635,8 @@ e_cal_recur_generate_instances (ECalComponent		*comp,
 	g_print ("  end  : %li - %s", end, ctime (&end));
 #endif
 	e_cal_recur_generate_instances_of_rule (comp, NULL, start, end,
-					      cb, cb_data, tz_cb, tz_cb_data,
-					      default_timezone);
+						cb, cb_data, tz_cb, tz_cb_data,
+						default_timezone);
 }
 
 
@@ -656,14 +656,14 @@ e_cal_recur_generate_instances (ECalComponent		*comp,
  */
 static void
 e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
-				      icalproperty	 *prop,
-				      time_t		  start,
-				      time_t		  end,
-				      ECalRecurInstanceFn  cb,
-				      gpointer            cb_data,
-				      ECalRecurResolveTimezoneFn  tz_cb,
-				      gpointer		  tz_cb_data,
-				      icaltimezone	 *default_timezone)
+					icalproperty	 *prop,
+					time_t		  start,
+					time_t		  end,
+					ECalRecurInstanceFn  cb,
+					gpointer            cb_data,
+					ECalRecurResolveTimezoneFn  tz_cb,
+					gpointer	            tz_cb_data,
+					icaltimezone	 *default_timezone)
 {
 	ECalComponentDateTime dtstart, dtend;
 	time_t dtstart_time, dtend_time;

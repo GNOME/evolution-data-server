@@ -2697,7 +2697,7 @@ build_component_alarms_list (ECal *ecal, GList *object_list, time_t start, time_
 		}
 
 		alarms = e_cal_util_generate_alarms_for_comp (comp, start, end, omit, e_cal_resolve_tzid_cb,
-							      l->data, ecal->priv->default_zone);
+							      ecal, ecal->priv->default_zone);
 		if (alarms)
 			comp_alarms = g_slist_prepend (comp_alarms, alarms);
 	}
