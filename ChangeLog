@@ -1,3 +1,7 @@
+2004-09-13  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool numbers
+
 2004-09-08  Arafat Medini  <lumina@arabeyes.org>
 
 	* configure.in: Added Arabic locale "ar" to ALL_LINGUAS.
