@@ -1,0 +1,45 @@
+INCLUDES =						\
+	-DG_LOG_DOMAIN=\"EName\"			\
+	-I$(srcdir)					\
+	-I$(srcdir)/..					\
+	-I$(top_srcdir) 				\
+	-I. 						\
+	-I.. 						\
+	-I$(top_builddir)				\
+	$(E_NAME_CFLAGS)
+
+lib_LTLIBRARIES = libename.la
+
+libename_la_SOURCES =					\
+	e-address-western.c				\
+	e-name-western.c
+
+libename_la_LDFLAGS = 										\
+	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)	\
+	-no-undefined
+
+libenameincludedir = $(includedir)/libedataserver-1.0/libename
+
+libenameinclude_HEADERS =				\
+	e-address-western.h				\
+	e-name-western-tables.h				\
+	e-name-western.h
+
+
+#noinst_PROGRAMS =		\
+#	test-ename-western	\
+#	test-ename-western-gtk
+
+#test_ename_western_SOURCES =	\
+#	test-ename-western.c
+
+#test_ename_western_LDADD =	\
+#	$(ename_libs)
+
+#test_ename_western_gtk_SOURCES =				\
+#	test-ename-western-gtk.c
+
+#test_ename_western_gtk_LDADD = 			\
+#	$(ename_libs) 				\
+#	$(E_UTIL_LIBS)				\
+#	$(top_builddir)/e-util/libeutil.la

@@ -1,0 +1,1 @@
+SUBDIRS = idl libebook libedatabook tests

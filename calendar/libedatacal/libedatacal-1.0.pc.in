@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+idldir=@idldir@
+IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
+
+Name: libecal
+Description: Client library for evolution calendars
+Version: @VERSION@
+Requires: libgnome-2.0 libbonobo-2.0 gal-2.2 >= @GAL_REQUIRED@ gnome-vfs-2.0 libedataserver-1.0 libecal-1.0
+Libs: -L${libdir} -ledatacal -lical-evolution
+Cflags: -I${includedir/evolution-data-server-1.0} -I${privincludedir}/libical

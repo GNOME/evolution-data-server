@@ -1,0 +1,793 @@
+# Process this file with autoconf to produce a configure script.
+AC_PREREQ(2.52)
+
+AC_INIT(evolution-data-server, 0.0.1)
+AC_CONFIG_SRCDIR(README)
+AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+
+AM_CONFIG_HEADER(config.h)
+
+# Libtool versioning
+LIBEDATASERVER_CURRENT=0
+LIBEDATASERVER_REVISION=0
+LIBEDATASERVER_AGE=0
+
+LIBECAL_CURRENT=0
+LIBECAL_REVISION=0
+LIBECAL_AGE=0
+
+LIBEDATACAL_CURRENT=0
+LIBEDATACAL_REVISION=0
+LIBEDATACAL_AGE=0
+
+LIBEDATABOOK_CURRENT=0
+LIBEDATABOOK_REVISION=0
+LIBEDATABOOK_AGE=0
+
+LIBEBOOK_CURRENT=0
+LIBEBOOK_REVISION=0
+LIBEBOOK_AGE=0
+
+AC_SUBST(LIBEDATASERVER_CURRENT)
+AC_SUBST(LIBEDATASERVER_REVISION)
+AC_SUBST(LIBEDATASERVER_AGE)
+AC_SUBST(LIBECAL_CURRENT)
+AC_SUBST(LIBECAL_REVISION)
+AC_SUBST(LIBECAL_AGE)
+AC_SUBST(LIBEDATACAL_CURRENT)
+AC_SUBST(LIBEDATACAL_REVISION)
+AC_SUBST(LIBEDATACAL_AGE)
+AC_SUBST(LIBEBOOK_CURRENT)
+AC_SUBST(LIBEBOOK_REVISION)
+AC_SUBST(LIBEBOOK_AGE)
+AC_SUBST(LIBEDATABOOK_CURRENT)
+AC_SUBST(LIBEDATABOOK_REVISION)
+AC_SUBST(LIBEDATABOOK_AGE)
+
+
+AC_CANONICAL_HOST
+AC_DEFINE_UNQUOTED(VERSION_COMMENT, "", [Define if you want a comment appended to the version number])
+
+dnl Put the ACLOCAL flags in the Makefile
+ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+
+dnl Initialize maintainer mode
+AM_MAINTAINER_MODE
+
+AC_ISC_POSIX
+AC_PROG_CC
+AC_PROG_CPP
+AC_C_INLINE
+AM_PROG_LEX
+AC_PROG_YACC
+case $YACC in
+*yacc*)
+	AC_MSG_ERROR(You need bison to build Evolution)
+	;;
+esac
+AC_STDC_HEADERS
+AC_ARG_PROGRAM
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+dnl  Test whether jw is installed
+AC_PATH_PROG(JW,jw,no)
+if test x$JW = xno; then
+  HAVE_JW="no"
+else
+  HAVE_JW="yes"
+fi
+AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
+AC_SUBST(HAVE_JW)
+
+dnl I18N stuff
+AC_PROG_INTLTOOL
+
+ALL_LINGUAS="am az be bg ca cs da de el en_AU en_GB es et eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sr sr@Latn sv tr uk vi zh_CN zh_TW"
+AM_GLIB_GNU_GETTEXT
+
+GETTEXT_PACKAGE=evolution-data-server-1.5
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
+
+localedir='$(prefix)/$(DATADIRNAME)/locale'
+AC_SUBST(localedir)
+
+dnl Initialize libtool
+AM_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
+dnl alloca()
+AC_CHECK_HEADERS(alloca.h)
+
+dnl check for socklen_t (in Unix98)
+AC_MSG_CHECKING(for socklen_t)
+AC_TRY_COMPILE([#include <sys/socket.h>
+socklen_t x;
+],[],[AC_MSG_RESULT(yes)],[
+AC_TRY_COMPILE([#include <sys/socket.h>
+int accept (int, struct sockaddr *, size_t *);
+],[],[
+AC_MSG_RESULT(size_t)
+AC_DEFINE(socklen_t,size_t,[Define to appropriate type if socklen_t is not defined])], [
+AC_MSG_RESULT(int)
+AC_DEFINE(socklen_t,int)])])
+
+dnl
+dnl Purify support
+dnl
+EVO_PURIFY_SUPPORT
+
+dnl ***************
+dnl Timezone checks
+dnl ***************
+AC_CACHE_CHECK(for tm_gmtoff in struct tm, ac_cv_struct_tm_gmtoff,
+	AC_TRY_COMPILE([
+		#include <time.h>
+		], [
+		struct tm tm;
+		tm.tm_gmtoff = 1;
+		], ac_cv_struct_tm_gmtoff=yes, ac_cv_struct_tm_gmtoff=no))
+if test $ac_cv_struct_tm_gmtoff = yes; then
+	AC_DEFINE(HAVE_TM_GMTOFF, 1, [Define if struct tm has a tm_gmtoff member])
+else
+	AC_CACHE_CHECK(for timezone variable, ac_cv_var_timezone,
+		AC_TRY_COMPILE([
+			#include <time.h>
+		], [
+			timezone = 1;
+		], ac_cv_var_timezone=yes, ac_cv_var_timezone=no))
+	if test $ac_cv_var_timezone = yes; then
+		AC_DEFINE(HAVE_TIMEZONE, 1, [Define if libc defines a timezone variable])
+		AC_CACHE_CHECK(for altzone variable, ac_cv_var_altzone,
+			AC_TRY_COMPILE([
+				#include <time.h>
+			], [
+				altzone = 1;
+			], ac_cv_var_altzone=yes, ac_cv_var_altzone=no))
+		if test $ac_cv_var_altzone = yes; then
+			AC_DEFINE(HAVE_ALTZONE, 1, [Define if libc defines an altzone variable])
+		fi
+	else
+		AC_ERROR(unable to find a way to determine timezone)
+	fi
+fi
+
+
+AC_CHECK_FUNCS(mkstemp mkdtemp isblank)
+
+dnl **************************************************
+dnl ctime_r prototype
+dnl **************************************************
+
+AC_CACHE_CHECK([if ctime_r wants three arguments], ac_cv_ctime_r_three_args,
+[
+	AC_TRY_COMPILE([
+		#include <time.h>
+	],[
+		char *buf;
+		time_t date;
+		ctime_r (&date, buf, 100);
+	],[
+		ac_cv_ctime_r_three_args=yes
+	],[
+		ac_cv_ctime_r_three_args=no
+	])
+])
+	
+if test x"$ac_cv_ctime_r_three_args" = xyes ; then
+	AC_DEFINE(CTIME_R_THREE_ARGS, 1, [Solaris-style ctime_r])
+fi
+
+dnl **************************************************
+dnl gethostbyname_r prototype
+dnl **************************************************
+
+AC_CHECK_FUNCS(gethostbyname_r,[
+AC_CACHE_CHECK([if gethostbyname_r wants five arguments], ac_cv_gethostbyname_r_five_args,
+[
+	AC_TRY_COMPILE([
+		#include "confdefs.h"
+		#include <sys/types.h>
+		#include <sys/socket.h>
+		#include <netinet/in.h>
+		#include <netdb.h>
+
+		#define BUFSIZE (sizeof(struct hostent)+10)
+	],[
+		struct hostent hent;
+		char buffer[BUFSIZE];
+		int bufsize=BUFSIZE;
+		int h_errno;
+
+		(void)gethostbyname_r ("www.ximian.com", &hent, buffer, bufsize, &h_errno);
+	],[
+		ac_cv_gethostbyname_r_five_args=yes
+	],[
+		ac_cv_gethostbyname_r_five_args=no
+	])
+])])
+	
+if test "x$ac_cv_gethostbyname_r_five_args" = "xyes" ; then
+	AC_DEFINE(GETHOSTBYNAME_R_FIVE_ARGS, 1, [Solaris-style gethostbyname_r])
+fi
+
+dnl **************************************************
+dnl gethostbyaddr_r prototype
+dnl **************************************************
+
+AC_CHECK_FUNCS(gethostbyaddr_r,[
+AC_CACHE_CHECK([if gethostbyaddr_r wants seven arguments], ac_cv_gethostbyaddr_r_seven_args,
+[
+	AC_TRY_COMPILE([
+		#include "confdefs.h"
+		#include <sys/types.h>
+		#include <sys/socket.h>
+		#include <netinet/in.h>
+		#include <netdb.h>
+
+		#define BUFSIZE (sizeof(struct hostent)+10)
+	],[
+		struct hostent hent;
+		char buffer[BUFSIZE];
+		int bufsize=BUFSIZE;
+		int h_errno;
+
+		(void)gethostbyaddr_r ("www.ximian.com", 14, AF_INET, &hent, buffer, bufsize, &h_errno);
+	],[
+		ac_cv_gethostbyaddr_r_seven_args=yes
+	],[
+		ac_cv_gethostbyaddr_r_seven_args=no
+	])
+])])
+	
+if test "x$ac_cv_gethostbyaddr_r_seven_args" = "xyes" ; then
+	AC_DEFINE(GETHOSTBYADDR_R_SEVEN_ARGS, 1, [Solaris-style gethostbyaddr_r])
+fi
+
+dnl ***********
+dnl * db3 stuff
+dnl ***********
+
+# To ensure that any copy of evolution of a given version can read
+# the data files of any other copy, we require a precise db3 version.
+# This can only change between Evolution versions (and then can only
+# go up.)
+evolution_db_version_major=3
+evolution_db_version_minor=1
+evolution_db_version_patch=17
+
+evolution_db_version=${evolution_db_version_major}.${evolution_db_version_minor}.${evolution_db_version_patch}
+AC_DEFINE_UNQUOTED(EVOLUTION_DB_VERSION_MAJOR,$evolution_db_version_major,[la])
+AC_DEFINE_UNQUOTED(EVOLUTION_DB_VERSION_MINOR,$evolution_db_version_minor,[la])
+AC_DEFINE_UNQUOTED(EVOLUTION_DB_VERSION_PATCH,$evolution_db_version_patch,[la])
+
+
+AC_ARG_WITH(db3,          [  --with-db3=PREFIX              Location of db3],
+	[with_db3_includes="$withval/include"
+	 with_db3_libs="$withval/lib"])
+AC_ARG_WITH(db3-includes, [  --with-db3-includes=PATH       Location of db3 includes],
+	with_db3_includes="$withval")
+AC_ARG_WITH(db3-libs,     [  --with-db3-libs=PATH           Location of db3 libs],
+	with_db3_libs="$withval")
+
+if test -z "$with_db3_libs"; then
+	with_db3_libs="/usr/lib"
+fi
+
+dnl The AC_CACHE_CHECK lets you avoid having to specify --with-db3
+dnl again with later configures
+AC_CACHE_CHECK([for db3 compiler flags], ac_cv_db3_cflags,
+[
+	if test -n "${with_db3_includes}"; then
+		ac_cv_db3_cflags="-I$with_db3_includes"
+	fi
+])
+DB3_CFLAGS=$ac_cv_db3_cflags
+AC_SUBST(DB3_CFLAGS)
+
+CPPFLAGS_save="$CPPFLAGS"
+CPPFLAGS="$DB3_CFLAGS $CPPFLAGS"
+AC_CHECK_HEADERS(db.h db3/db.h, break)
+
+AC_CACHE_CHECK([db3 header version], ac_cv_db3_header_version,
+[
+	AC_TRY_COMPILE([
+		#ifdef HAVE_DB3_DB_H
+		#include <db3/db.h>
+		#else
+		#include <db.h>
+		#endif
+	],[
+		#if DB_VERSION_MAJOR != $evolution_db_version_major || \
+		    DB_VERSION_MINOR != $evolution_db_version_minor || \
+		    DB_VERSION_PATCH != $evolution_db_version_patch
+		#error
+		#endif
+	], :, AC_MSG_ERROR(Found db.h is not version $evolution_db_version))
+
+	ac_cv_db3_header_version=$evolution_db_version
+])
+
+AC_CACHE_CHECK([for db3 library name], ac_cv_db3_ldadd,
+[
+	LIBS_save="$LIBS"
+	ac_cv_db3_ldadd=""
+
+	for name in db db3 db-3.1; do
+		LIBS="$LIBS_save $with_db3_libs/lib${name}.a -lpthread"
+		AC_TRY_LINK([
+			#ifdef HAVE_DB3_DB_H
+			#include <db3/db.h>
+			#else
+			#include <db.h>
+			#endif
+		],[
+			DB *db;
+			db_create (&db, 0, 0);
+		], [
+			ac_cv_db3_ldadd="$with_db3_libs/lib${name}.a -lpthread"
+			break
+		])
+	done
+	LIBS="$LIBS_save"
+
+	if test -z "$ac_cv_db3_ldadd"; then
+		AC_MSG_ERROR(Could not find db3 library)
+	fi
+])
+DB3_LDADD=$ac_cv_db3_ldadd
+AC_SUBST(DB3_LDADD)
+
+AC_CACHE_CHECK([that db3 library version matches header version], ac_cv_db3_lib_version_match,
+[
+	LIBS="$DB3_LDADD $LIBS -pthread"
+	AC_TRY_RUN([
+		#ifdef HAVE_DB3_DB_H
+		#include <db3/db.h>
+		#else
+		#include <db.h>
+		#endif
+
+		int
+		main (void)
+		{
+			int major, minor, patch;
+
+			db_version (&major, &minor, &patch);
+			return !(major == DB_VERSION_MAJOR &&
+				 minor == DB_VERSION_MINOR &&
+				 patch == DB_VERSION_PATCH);
+		}
+	], ac_cv_db3_lib_version_match=yes, ac_cv_db3_lib_version_match=no,
+	ac_cv_db3_lib_version_match=yes)
+])
+if test "$ac_cv_db3_lib_version_match" = no; then
+	AC_MSG_ERROR(db3 headers and library do not match... multiple copies installed?)
+fi
+
+CPPFLAGS="$CPPFLAGS_save"
+LIBS="$LIBS_save"
+
+
+dnl **************************************************
+dnl LDAP support.
+dnl **************************************************
+EVO_LDAP_CHECK(no)
+case $with_openldap in
+no)
+	msg_ldap=no
+	;;
+*)
+	case $with_static_ldap in
+	yes)
+		msg_ldap="yes (static)"
+		;;
+	*)
+		msg_ldap="yes (dynamic)"
+		;;
+	esac
+esac
+
+dnl **************************************************
+dnl * Posix thread support
+dnl **************************************************
+
+dnl GLIB_CONFIG=${GLIB_CONFIG-glib-config}
+dnl GNOME_PTHREAD_CHECK
+
+dnl if test "x$PTHREAD_LIB" = "x" ; then
+dnl 	AC_MSG_ERROR([POSIX threads are currently required for Evolution])
+dnl fi
+
+dnl
+dnl Notice that this is a hack, and we wont be able to use this forever, but
+dnl at least for some time
+dnl
+
+EVO_PTHREAD_CHECK
+
+THREADS_LIBS="$PTHREAD_LIB"
+THREADS_CFLAGS="$PTHREAD_CFLAGS"
+
+AC_SUBST(THREADS_LIBS)
+AC_SUBST(THREADS_CFLAGS)
+AC_DEFINE(ENABLE_THREADS,1,[Required])
+
+dnl ********
+dnl Kerberos
+dnl ********
+AC_ARG_WITH(krb5, [  --with-krb5=PREFIX      Location of Kerberos 5 libs/includes], with_krb5="$withval", with_krb5="no")
+AC_ARG_WITH(krb4, [  --with-krb4=PREFIX      Location of Kerberos 4 libs/includes], with_krb4="$withval", with_krb4="no")
+
+msg_krb5="no"
+if test "x${with_krb5}" != "xno"; then
+	LDFLAGS_save="$LDFLAGS"
+	
+	mitlibs="-lkrb5 -lk5crypto -lcom_err -lgssapi_krb5"
+	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken -lgssapi"
+	AC_CACHE_CHECK([for Kerberos 5], ac_cv_lib_kerberos5,
+	[
+		LDFLAGS="$LDFLAGS -L$with_krb5/lib $mitlibs"
+		AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
+		[
+			LDFLAGS="$LDFLAGS_save -L$with_krb5/lib $heimlibs"
+			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", ac_cv_lib_kerberos5="no")
+		])
+		LDFLAGS="$LDFLAGS_save"
+	])
+	if test "$ac_cv_lib_kerberos5" != "no"; then
+		AC_DEFINE(HAVE_KRB5,1,[Define if you have Krb5])
+		if test "$ac_cv_lib_kerberos5" = "$mitlibs"; then
+			AC_DEFINE(HAVE_MIT_KRB5,1,[Define if you have MIT Krb5])
+			KRB5_CFLAGS="-I$with_krb5/include"
+			msg_krb5="yes (MIT)"
+		else
+			AC_DEFINE(HAVE_HEIMDAL_KRB5,1,[Define if you have Heimdal])
+			KRB5_CFLAGS="-I$with_krb5/include/heimdal"
+			msg_krb5="yes (Heimdal)"
+		fi
+		KRB5_LDFLAGS="-L$with_krb5/lib $ac_cv_lib_kerberos5"
+	fi
+else
+	AC_MSG_CHECKING(for Kerberos 5)
+	AC_MSG_RESULT($with_krb5)
+fi
+
+msg_krb4="no"
+if test "x${with_krb4}" != "xno"; then
+	LDFLAGS_save="$LDFLAGS"
+	AC_CACHE_CHECK(for Kerberos 4, ac_cv_lib_kerberos4,
+	[
+		ac_cv_lib_kerberos4="no"
+
+		mitcompatlibs="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
+		# Look for MIT krb5 compat krb4
+		LDFLAGS="$LDFLAGS -L$with_krb4/lib $mitcompatlibs"
+		AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="$mitcompatlibs")
+		
+		if test "$ac_cv_lib_kerberos4" = "no"; then
+			# Look for KTH krb4
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb -lcrypto -lcom_err -lroken"
+			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken")
+		fi
+		if test "$ac_cv_lib_kerberos4" = "no"; then
+			# Look for old MIT krb4
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb"
+			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb",
+			[
+				LDFLAGS="$LDFLAGS -ldes"
+				AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -ldes")
+			])
+		fi
+	])
+	LDFLAGS="$LDFLAGS_save"
+	if test "$ac_cv_lib_kerberos4" != "no"; then
+		AC_DEFINE(HAVE_KRB4,1,[Define if you have Krb4])
+		msg_krb4="yes"
+		if test -f "$with_krb4/include/krb.h" -o -f "$with_krb4/include/port-sockets.h"; then
+			KRB4_CFLAGS="-I$with_krb4/include"
+		fi
+		if test -d "$with_krb4/include/kerberosIV"; then
+			KRB4_CFLAGS="$KRB4_CFLAGS -I$with_krb4/include/kerberosIV"
+		fi
+		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_lib_kerberos4"
+		
+		CFLAGS_save="$CFLAGS"
+		CFLAGS="$CFLAGS $KRB4_CFLAGS"
+		AC_TRY_COMPILE([#include "krb.h"
+		int krb_sendauth;
+		],[return 0],[AC_DEFINE(NEED_KRB_SENDAUTH_PROTO,1,[Need krb_sendauth proto])],)
+		CFLAGS="$CFLAGS_save"
+	fi
+else
+	AC_MSG_CHECKING(for Kerberos 4)
+	AC_MSG_RESULT(${with_krb4})
+fi
+
+AC_SUBST(KRB5_CFLAGS)
+AC_SUBST(KRB5_LDFLAGS)
+AC_SUBST(KRB4_CFLAGS)
+AC_SUBST(KRB4_LDFLAGS)
+
+dnl *******************
+dnl GObject marshalling
+dnl *******************
+AM_PATH_GLIB_2_0
+
+dnl We use AC_SUBST_FILE because AC_SUBST won't deal with newlines
+EVO_MARSHAL_RULE=$srcdir/marshal.mk
+AC_SUBST_FILE(EVO_MARSHAL_RULE)
+
+dnl *************************
+dnl CFLAGS and LIBS and stuff
+dnl *************************
+
+GNOME_COMPILE_WARNINGS(yes)
+CFLAGS="$CFLAGS $WARN_CFLAGS"
+case $CFLAGS in
+*-Wall*)
+	# Turn off the annoying "comparison between signed and unsigned"
+	# warning in gcc 3.3
+	CFLAGS="$CFLAGS -Wno-sign-compare"
+	;;
+esac
+
+AM_PATH_ORBIT2(2.8.0)
+
+AC_MSG_CHECKING(for CORBA include paths)
+IDL_INCLUDES="-I "`pkg-config --variable=idldir libbonobo-2.0`" -I "`pkg-config --variable=idldir bonobo-activation-2.0`
+AC_MSG_RESULT($IDL_INCLUDES)
+AC_SUBST(IDL_INCLUDES)
+
+dnl Utility macro to set compiler flags for a specific lib.
+AC_DEFUN(EVO_SET_COMPILE_FLAGS, [
+	deps="$2"
+	extra_cflags="$3"
+	extra_libs="$4"
+	PKG_CHECK_MODULES(EVOLUTION, $deps)
+	$1_CFLAGS="$EVOLUTION_CFLAGS \$(WERROR) $extra_cflags"
+	$1_LIBS="$EVOLUTION_LIBS $extra_libs"
+])
+
+dnl --- Required version numbers
+
+GAL_REQUIRED=2.1.0
+GTKHTML_REQUIRED=3.1.1
+
+AC_SUBST(GAL_REQUIRED)
+AC_SUBST(GTKHTML_REQUIRED)
+
+dnl --- Flags to get all the GNOME stuff
+
+FULL_GNOME_DEPS="libbonoboui-2.0 gnome-vfs-2.0 libgnomeui-2.0 libglade-2.0 libgnomecanvas-2.0 libxml-2.0 gconf-2.0 gal-2.2 >= $GAL_REQUIRED"
+
+EVO_SET_COMPILE_FLAGS(GNOME_FULL, $FULL_GNOME_DEPS)
+AC_SUBST(GNOME_FULL_CFLAGS)
+AC_SUBST(GNOME_FULL_LIBS)
+
+CPPFLAGS_save="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS `$PKG_CONFIG --cflags-only-I libgnomeui-2.0`"
+AC_CHECK_HEADERS(libgnomeui/gnome-icon-lookup.h)
+AC_CHECK_HEADERS(libgnomeui/gnome-thumbnail.h)
+CPPFLAGS="$CPPFLAGS_save"
+
+dnl --- Flags for the various libraries we build
+
+EVO_SET_COMPILE_FLAGS(E_NAME, libgnomeui-2.0 libbonoboui-2.0 gal-2.2 >= $GAL_REQUIRED)
+AC_SUBST(E_NAME_CFLAGS)
+AC_SUBST(E_NAME_LIBS)
+
+EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, libxml-2.0 libbonobo-2.0 libgnome-2.0 gal-2.2 >= $GAL_REQUIRED, $THREADS_CFLAGS, $THREADS_LIBS)
+AC_SUBST(E_DATA_SERVER_CFLAGS)
+AC_SUBST(E_DATA_SERVER_LIBS)
+
+dnl --- evolution-addressbook flags
+
+EVOLUTION_ADDRESSBOOK_DEPS="gconf-2.0 libbonoboui-2.0 libglade-2.0 gal-2.2 >= $GAL_REQUIRED libgnomeui-2.0 libgnome-2.0 libgnomecanvas-2.0 gnome-vfs-2.0 libgnomeprintui-2.2 libgtkhtml-3.1 >= $GTKHTML_REQUIRED"
+
+EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
+AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
+AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
+
+dnl --- evolution-calendar flags
+
+EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, libgnome-2.0 libgnomeui-2.0 libbonoboui-2.0 gal-2.2 >= $GAL_REQUIRED libglade-2.0 gnome-vfs-2.0 libgnomeprint-2.2 libgnomeprintui-2.2 libgtkhtml-3.1 >= $GTKHTML_REQUIRED, ${GTKHTML_CFLAGS}, ${GTKHTML_LIBS})
+AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
+AC_SUBST(EVOLUTION_CALENDAR_LIBS)
+
+dnl -- wombat flags
+
+EVO_SET_COMPILE_FLAGS(WOMBAT, gal-2.2 libgnome-2.0, $LDAP_CFLAGS, $LDAP_LIBS)
+AC_SUBST(WOMBAT_CFLAGS)
+AC_SUBST(WOMBAT_LIBS)
+
+dnl *******************
+dnl Special directories
+dnl *******************
+
+dnl --- If you add something here, consider whether or not you also
+dnl --- need to add it to one or more .pc.in files (for Connector,
+dnl --- etc)
+
+BASE_VERSION=`echo $VERSION | awk -F. '{print $1 "." $2;}'`
+AC_SUBST(BASE_VERSION)
+AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
+
+privlibdir='${libdir}'/evolution/$BASE_VERSION
+AC_SUBST(privlibdir)
+
+privlibexecdir='${libexecdir}'/evolution/$BASE_VERSION
+AC_SUBST(privlibexecdir)
+
+privdatadir='${datadir}'/evolution/$BASE_VERSION
+AC_SUBST(privdatadir)
+
+privincludedir='${includedir}'/evolution-$BASE_VERSION
+AC_SUBST(privincludedir)
+
+camel_providerdir="$privlibdir/camel-providers"
+AC_SUBST(camel_providerdir)
+
+componentdir="$privlibdir/components"
+AC_SUBST(componentdir)
+
+idldir="$datadir/idl/evolution-$BASE_VERSION"
+AC_SUBST(idldir)
+
+serverdir="$libdir/bonobo/servers"
+AC_SUBST(serverdir)
+
+evolutionuidir="$privdatadir/ui"
+AC_SUBST(evolutionuidir)
+
+imagesdir="$privdatadir/images"
+AC_SUBST(imagesdir)
+
+buttonsdir="$privdatadir/images/buttons"
+AC_SUBST(buttonsdir)
+
+soundsdir="$privdatadir/sounds"
+AC_SUBST(soundsdir)
+
+gladedir="$privdatadir/glade"
+AC_SUBST(gladedir)
+
+etspecdir="$privdatadir/etspec"
+AC_SUBST(etspecdir)
+
+viewsdir="$privdatadir/views"
+AC_SUBST(viewsdir)
+
+dnl ************************
+dnl IDL/Component Versioning
+dnl ************************
+
+INTERFACE_VERSION="$BASE_VERSION"
+AC_SUBST(INTERFACE_VERSION)
+AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "INTERFACE_VERSION", [IDL interface version (Major.Minor)])
+
+EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(privlibexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
+EVO_NAME_SERVER_RULE='%_$(BASE_VERSION).server: %.server ; mv $< $@'
+AC_SUBST(EVO_SUBST_SERVER_RULE)
+AC_SUBST(EVO_NAME_SERVER_RULE)
+
+##################################################
+# Check for gtk-doc.
+##################################################
+
+AC_ARG_WITH(html-dir, [  --with-html-dir=PATH path to installed docs ])
+
+if test "x$with_html_dir" = "x" ; then
+  HTML_DIR='${datadir}/gnome/html'
+else
+  HTML_DIR=$with_html_dir
+fi
+
+AC_SUBST(HTML_DIR)
+
+AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
+
+gtk_doc_min_version=0.6
+if $GTKDOC ; then 
+    gtk_doc_version=`gtkdoc-mkdb --version`
+    AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
+    if perl <<EOF ; then
+      exit (("$gtk_doc_version" =~ /^[[0-9]]+\.[[0-9]]+$/) &&
+            ("$gtk_doc_version" >= "$gtk_doc_min_version") ? 0 : 1);
+EOF
+      AC_MSG_RESULT(yes)
+   else
+      AC_MSG_RESULT(no)
+      GTKDOC=false
+   fi
+fi
+
+dnl Let people disable the gtk-doc stuff.
+AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc  Use gtk-doc to build documentation [default=auto]], enable_gtk_doc="$enableval", enable_gtk_doc=auto)
+
+if test x$enable_gtk_doc = xauto ; then
+  if test x$GTKDOC = xtrue ; then
+    enable_gtk_doc=yes
+  else
+    enable_gtk_doc=no 
+  fi
+fi
+
+AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+
+dnl ***********
+dnl GConf stuff
+dnl ***********
+AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+AM_GCONF_SOURCE_2
+
+dnl ******************
+dnl Sub-version number
+dnl ******************
+AC_ARG_WITH(sub-version, [  --with-sub-version=VERSION Specify a sub-version string])
+AC_DEFINE_UNQUOTED(SUB_VERSION, "$with_sub_version", [Version substring, for packagers])
+
+AC_ARG_ENABLE(default-binary, [  --disable-default-binary Do not install as the default "evolution" binary  ], , enable_default_binary=no)
+AM_CONDITIONAL(DEFAULT_BINARY, test x$enable_default_binary = xyes)
+
+dnl ******************************
+dnl Makefiles
+dnl ******************************
+
+export privlibdir
+export privincludedir
+export privdatadir
+AC_CONFIG_SUBDIRS(calendar/libical)
+
+EVOLUTION_DIR=`(cd $srcdir; pwd)`
+AC_SUBST(EVOLUTION_DIR)
+
+AC_OUTPUT([
+Makefile
+addressbook/Makefile
+addressbook/idl/Makefile
+addressbook/libebook/Makefile
+addressbook/libebook/libebook-1.0.pc
+addressbook/libedatabook/Makefile
+addressbook/libedatabook/libedatabook-1.0.pc
+addressbook/tests/Makefile
+addressbook/tests/ebook/Makefile
+addressbook/tests/vcard/Makefile
+calendar/Makefile
+calendar/idl/Makefile
+calendar/libecal/Makefile
+calendar/libecal/libecal-1.0.pc
+calendar/libedatacal/Makefile
+calendar/libedatacal/libedatacal-1.0.pc
+libedataserver/Makefile
+libedataserver/libedataserver-1.0.pc
+libedataserver/ename/Makefile
+src/Makefile
+po/Makefile.in
+])
+
+if test "x$with_sub_version" != "x"; then
+echo "
+	Evolution ($with_sub_version) has been configured as follows: "
+else
+echo "
+	Evolution has been configured as follows: "
+fi
+echo "\
+	LDAP support:     $msg_ldap
+	Kerberos 4/5:     $msg_krb4/$msg_krb5
+	Gtk-doc:	  $enable_gtk_doc"
+
+if test x$enable_gtk_doc = xyes; then
+echo "
+	Programming documentation files will be built automatically.
+"
+else
+echo "
+	Programming documentation files will not be built.
+	You may want to install the gtk-doc package
+	so that you will get the Evolution Developer's Guide.
+"
+fi

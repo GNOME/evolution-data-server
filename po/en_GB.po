@@ -1,0 +1,2850 @@
+# English (Commonwealth) translation
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Robert Brady <rwb197@zepler.org> 2000
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evolution 0.6\n"
+"POT-Creation-Date: 2003-11-03 12:46-0500\n"
+"PO-Revision-Date: 2000-10-22 16:19+0100\n"
+"Last-Translator: Robert Brady <rwb197@zepler.org>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: addressbook/libebook/e-book.c:214
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:214
+msgid "e_book_add_contact called on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:221 addressbook/libebook/e-book.c:330
+#: addressbook/libebook/e-book.c:412 addressbook/libebook/e-book.c:511
+#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:701
+#: addressbook/libebook/e-book.c:801 addressbook/libebook/e-book.c:853
+#: addressbook/libebook/e-book.c:946 addressbook/libebook/e-book.c:1075
+#: addressbook/libebook/e-book.c:1173 addressbook/libebook/e-book.c:1397
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:221
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:330
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:412
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:511
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:620
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:701
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:801
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:853
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:946
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1075
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1173
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1397
+msgid "book busy"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:248
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:248
+msgid "Corba exception making Book::addContact call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:323
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:323
+msgid "e_book_commit_contact called on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:357
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:357
+msgid "Corba exception making Book::modifyContact call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:405
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:405
+msgid "e_book_get_supported_fields on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:434
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:434
+msgid "Corba exception making Book::getSupportedFields call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:504
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:504
+msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:534
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:534
+msgid "Corba exception making Book::getSupportedAuthMethods call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:613
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:613
+msgid "e_book_authenticate_user on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:646
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:646
+msgid "Corba exception making Book::authenticateUser call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:694
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:694
+msgid "e_book_get_contact on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:724
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:724
+msgid "Corba exception making Book::getContact call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:794
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:794
+msgid "e_book_remove_contact on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:846
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:846
+msgid "e_book_remove_contacts on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:885
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:885
+msgid "Corba exception making Book::removeContacts call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:939
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:939
+msgid "e_book_get_book_view on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:990
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:990
+msgid "Corba exception making Book::getBookView call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1068
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1068
+msgid "e_book_get_contacts on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1103
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1103
+msgid "Corba exception making Book::getContactList call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1166
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1166
+msgid "e_book_get_changes on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1197
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1197
+msgid "Corba exception making Book::getChanges call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1308
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1308
+msgid "e_book_cancel: there is no current operation"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1327
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1327
+msgid "Corba exception making Book::cancelOperation call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1342
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1342
+msgid "e_book_cancel: couldn't cancel"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1390
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1390
+msgid "e_book_remove on book before e_book_load_uri"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1419
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1419
+msgid "Corba exception making Book::remove call"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1642 addressbook/libebook/e-book.c:1736
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1642
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1736
+#, c-format
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1656
+#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1656
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:90
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:90
+msgid "Unique ID"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:91
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:91
+msgid "File As"
+msgstr ""
+
+#. Name fields
+#. FN isn't really a structured field - we use a getter/setter
+#. so we can set the N property (since evo 1.4 works fine with
+#. vcards that don't even have a N attribute.  *sigh*)
+#: addressbook/libebook/e-contact.c:97
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:97
+msgid "Full Name"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:98
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:98
+msgid "Name"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:99
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:99
+msgid "Given Name"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:100
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:100
+msgid "Family Name"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:101
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:101
+msgid "Nickname"
+msgstr ""
+
+#. Address fields
+#: addressbook/libebook/e-contact.c:104
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:104
+#, fuzzy
+msgid "Address List"
+msgstr "Colours"
+
+#: addressbook/libebook/e-contact.c:105
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:105
+msgid "Home Address"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:106
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:106
+#, fuzzy
+msgid "Work Address"
+msgstr "Colours"
+
+#: addressbook/libebook/e-contact.c:107
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:107
+msgid "Other Address"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:109
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:109
+msgid "Home Address Label"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:110
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:110
+msgid "Work Address Label"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:111
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:111
+msgid "Other Address Label"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:113
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:113
+msgid "Assistant Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:114
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:114
+msgid "Business Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:115
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:115
+msgid "Business Phone 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:116
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:116
+msgid "Business Fax"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:117
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:117
+msgid "Callback Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:118
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:118
+msgid "Car Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:119
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:119
+msgid "Company Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:120
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:120
+msgid "Home Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:121
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:121
+msgid "Home Phone 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:122
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:122
+msgid "Home Fax"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:123
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:123
+msgid "ISDN"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:124
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:124
+msgid "Mobile Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:125
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:125
+msgid "Other Phone"
+msgstr ""
+
+#. XXX
+#: addressbook/libebook/e-contact.c:126
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:126
+msgid "Other Fax"
+msgstr ""
+
+#. XXX
+#: addressbook/libebook/e-contact.c:127
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:127
+msgid "Pager"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:128
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:128
+msgid "Primary Phone"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:129
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:129
+msgid "Radio"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:130
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:130
+msgid "Telex"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:131
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:131
+msgid "TTY"
+msgstr ""
+
+#. Email fields
+#: addressbook/libebook/e-contact.c:134
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:134
+msgid "Email List"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:135
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:135
+msgid "Email 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:136
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:136
+msgid "Email 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:137
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:137
+msgid "Email 3"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:138
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:138
+msgid "Mailer"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:139
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:139
+msgid "Wants HTML Mail"
+msgstr ""
+
+#. Instant messaging fields
+#: addressbook/libebook/e-contact.c:142
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:142
+msgid "AIM Screen Name List"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:143
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:143
+msgid "Jabber Id List"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:144
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:144
+msgid "Yahoo! Screen Name List"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:145
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:145
+msgid "MSN Screen Name List"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:146
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:146
+msgid "ICQ Id List"
+msgstr ""
+
+#. Organizational fields
+#: addressbook/libebook/e-contact.c:149
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:149
+msgid "Organization"
+msgstr "Organisation"
+
+#: addressbook/libebook/e-contact.c:150
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:150
+#, fuzzy
+msgid "Organizational Unit"
+msgstr "Organisation"
+
+#: addressbook/libebook/e-contact.c:151
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:151
+msgid "Office"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:153
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:153
+msgid "Title"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:154
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:154
+msgid "Role"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:155
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:155
+msgid "Manager"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:156
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:156
+msgid "Assistant"
+msgstr ""
+
+#. Web fields
+#: addressbook/libebook/e-contact.c:159
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:159
+msgid "Homepage URL"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:160
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:160
+msgid "Weblog URL"
+msgstr ""
+
+#. Photo/Logo
+#: addressbook/libebook/e-contact.c:163
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:163
+msgid "Photo"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:164
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:164
+#, fuzzy
+msgid "Logo"
+msgstr "Colours"
+
+#: addressbook/libebook/e-contact.c:168
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:168
+msgid "Category List"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:169 addressbook/libebook/e-contact.c:171
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:169
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:171
+msgid "Categories"
+msgstr ""
+
+#. Collaboration fields
+#: addressbook/libebook/e-contact.c:175
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:175
+msgid "Calendar URI"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:176
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:176
+msgid "Free/Busy URL"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:177
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:177
+#, fuzzy
+msgid "ICS Calendar"
+msgstr "Colours"
+
+#. Misc fields
+#: addressbook/libebook/e-contact.c:180
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:180
+msgid "Spouse's Name"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:181
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:181
+msgid "Note"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:183
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:183
+msgid "Birth Date"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:184
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:184
+msgid "Anniversary"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:186
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:186
+msgid "List"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:187
+#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:187
+msgid "List Show Addresses"
+msgstr ""
+
+#: addressbook/libebook/e-destination.c:709
+msgid "Unnamed List"
+msgstr ""
+
+#: addressbook/libedatabook/e-book-backend-file.c:400
+#: addressbook/libedatabook/e-book-backend-vcf.c:104
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-file.c:400
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-vcf.c:104
+msgid "Loading..."
+msgstr ""
+
+#: addressbook/libedatabook/e-book-backend-file.c:402
+#: addressbook/libedatabook/e-book-backend-ldap.c:2768
+#: addressbook/libedatabook/e-book-backend-vcf.c:106
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-file.c:402
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2768
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-vcf.c:106
+msgid "Searching..."
+msgstr ""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:601
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:601
+msgid "Using Distinguished Name (DN)"
+msgstr ""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:604
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:604
+#, fuzzy
+msgid "Using Email Address"
+msgstr "Synchronising \"%s\""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:748
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:748
+#, fuzzy
+msgid "Reconnecting to LDAP server..."
+msgstr "Synchronise \"%s\""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:1250
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1250
+#, fuzzy
+msgid "Adding contact to LDAP server..."
+msgstr "Synchronise \"%s\""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:1339
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1339
+#, fuzzy
+msgid "Removing contact from LDAP server..."
+msgstr "Synchronise \"%s\""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:1539
+#: addressbook/libedatabook/e-book-backend-ldap.c:1542
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1539
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1542
+#, fuzzy
+msgid "Modifying contact from LDAP server..."
+msgstr "Synchronise \"%s\""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:2691
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2691
+msgid "Receiving LDAP search results..."
+msgstr ""
+
+#: addressbook/libedatabook/e-book-backend-ldap.c:2788
+#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2788
+msgid "Error performing search"
+msgstr ""
+
+#: calendar/libecal/e-cal-component.c:1218
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-component.c:1218
+msgid "Untitled appointment"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3989
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3989
+msgid "1st"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3990
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3990
+msgid "2nd"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3991
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3991
+msgid "3rd"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3992
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3992
+msgid "4th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3993
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3993
+msgid "5th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3994
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3994
+msgid "6th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3995
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3995
+msgid "7th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3996
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3996
+msgid "8th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3997
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3997
+msgid "9th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3998
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3998
+msgid "10th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:3999
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3999
+msgid "11th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4000
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4000
+msgid "12th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4001
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4001
+msgid "13th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4002
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4002
+msgid "14th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4003
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4003
+msgid "15th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4004
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4004
+msgid "16th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4005
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4005
+msgid "17th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4006
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4006
+msgid "18th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4007
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4007
+msgid "19th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4008
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4008
+msgid "20th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4009
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4009
+msgid "21st"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4010
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4010
+msgid "22nd"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4011
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4011
+msgid "23rd"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4012
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4012
+msgid "24th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4013
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4013
+msgid "25th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4014
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4014
+msgid "26th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4015
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4015
+msgid "27th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4016
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4016
+msgid "28th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4017
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4017
+msgid "29th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4018
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4018
+msgid "30th"
+msgstr ""
+
+#: calendar/libecal/e-cal-recur.c:4019
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4019
+msgid "31st"
+msgstr ""
+
+#: calendar/libecal/e-cal-util.c:551 calendar/libecal/e-cal-util.c:573
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:551
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:573
+msgid "High"
+msgstr ""
+
+#: calendar/libecal/e-cal-util.c:553 calendar/libecal/e-cal-util.c:575
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:553
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:575
+msgid "Normal"
+msgstr ""
+
+#: calendar/libecal/e-cal-util.c:555 calendar/libecal/e-cal-util.c:577
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:555
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:577
+msgid "Low"
+msgstr ""
+
+#. An empty string is the same as 'None'.
+#: calendar/libecal/e-cal-util.c:571
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:571
+msgid "Undefined"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3780
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3780
+msgid "Invalid argument"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3782
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3782
+msgid "Backend is busy"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3784
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3784
+msgid "Repository is offline"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3786
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3786
+#, fuzzy
+msgid "No such calendar"
+msgstr "Synchronising \"%s\""
+
+#: calendar/libecal/e-cal.c:3788 calendar/libecal/e-cal.c:3798
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3788
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3798
+msgid "Object not found"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3790
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3790
+msgid "Invalid object"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3792
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3792
+msgid "URI not loaded"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3794
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3794
+msgid "URI already loaded"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3796
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3796
+msgid "Permission denied"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3800
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3800
+msgid "Object ID already exists"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3802
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3802
+msgid "Protocol not supported"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3804
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3804
+msgid "Operation has been cancelled"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3806
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3806
+#, fuzzy
+msgid "Could not cancel operation"
+msgstr "Could not initialise Bonobo"
+
+#: calendar/libecal/e-cal.c:3808
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3808
+msgid "Authentication failed"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3810
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3810
+msgid "Authentication required"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3812
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3812
+msgid "A CORBA esception has occurred"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3814
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3814
+msgid "Unknown error"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3816
+#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3816
+msgid "No error"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-file.c:175
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-file.c:175
+msgid "Can't save calendar data: Malformed URI."
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:50
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:50
+msgid "time-now expects 0 arguments"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:74
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:74
+msgid "make-time expects 1 argument"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:79
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:79
+msgid "make-time expects argument 1 to be a string"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:87
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:87
+msgid "make-time argument 1 must be an ISO 8601 date/time string"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:116
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:116
+msgid "time-add-day expects 2 arguments"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:121
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:121
+msgid "time-add-day expects argument 1 to be a time_t"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:128
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:128
+msgid "time-add-day expects argument 2 to be an integer"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:155
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:155
+msgid "time-day-begin expects 1 argument"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:160
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:160
+msgid "time-day-begin expects argument 1 to be a time_t"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:187
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:187
+msgid "time-day-end expects 1 argument"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:192
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:192
+msgid "time-day-end expects argument 1 to be a time_t"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:220
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:220
+msgid "get-vtype expects 0 arguments"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:280
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:280
+msgid "occur-in-time-range? expects 2 arguments"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:285
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:285
+msgid "occur-in-time-range? expects argument 1 to be a time_t"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:292
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:292
+msgid "occur-in-time-range? expects argument 2 to be a time_t"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:436
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:436
+msgid "contains? expects 2 arguments"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:441
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:441
+msgid "contains? expects argument 1 to be a string"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:448
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:448
+msgid "contains? expects argument 2 to be a string"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:465
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:465
+msgid ""
+"contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
+"\""
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:492
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:492
+msgid "has-alarms? expects at least 1 argument"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:497
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:497
+msgid "has-alarms? excepts argument to be a boolean"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:537
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:537
+msgid "has-categories? expects at least 1 argument"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:549
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:549
+msgid ""
+"has-categories? expects all arguments to be strings or one and only one "
+"argument to be a boolean false (#f)"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:629
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:629
+msgid "is-completed? expects 0 arguments"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:666
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:666
+msgid "completed-before? expects 1 argument"
+msgstr ""
+
+#: calendar/libedatacal/e-cal-backend-sexp.c:671
+#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:671
+msgid "completed-before? expects argument 1 to be a time_t"
+msgstr ""
+
+#: evolution-data-server-0.0.1/src/GNOME_Evolution_Wombat.server.in.in.h:1
+#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_Wombat.server.in.in.h:1
+#: src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
+#, fuzzy
+msgid "Evolution Addressbook local/LDAP backend"
+msgstr "Cannot initialise Evolution's mail component."
+
+#: evolution-data-server-0.0.1/src/GNOME_Evolution_Wombat.server.in.in.h:2
+#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
+#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_Wombat.server.in.in.h:2
+#: src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
+#, fuzzy
+msgid "Evolution Calendar local file backend"
+msgstr "Cannot initialise Evolution's mail summary component."
+
+#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
+#, fuzzy
+msgid "Evolution Addressbook local backend"
+msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution LDIF importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution LDIF importer factory"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution VCard Importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution VCard importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Could not load addressbook"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Other Contacts"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Failed to authenticate.\n"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Evolution Addressbook"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Evolution Addressbook LDAP Configuration Control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Addressbook component"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution S/Mime Certificate Management Control"
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Connecting"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Email address:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "LDAP Configuration Assistant"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Selected:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Step 2: Connecting to Server"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "_Display name:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "connecting-tab"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "View Contact List"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "A_ddress..."
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Blog address:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Organi_zation:"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "_Home:"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Address"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Editable"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Argentina"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Chile"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Comoros"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Contact"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Is New Contact"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Changed"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "_Edit Full"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Full Address"
+#~ msgstr "Colours"
+
+#~ msgid "_ZIP Code:"
+#~ msgstr "_Post Code:"
+
+#, fuzzy
+#~ msgid "_List name:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "No contacts"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "1 contact"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "%d contacts"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Copy to folder..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Move to folder..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Selected"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "List Members"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Move contact to"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Copy contact to"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Move contacts to"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Copy contacts to"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "and %d other contacts."
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "and one other contact."
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Print contacts"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Print contact"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Orientation"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Contact Print Test"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Can not open file"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Starting:"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Evolution Alarm"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "C_lose"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Evolution Calendar alarm notification service"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#~ msgid "Could not initialize Bonobo"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "Could not initialize gnome-vfs"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "%d %B %Y"
+#~ msgstr "%m/%d/%Y"
+
+#, fuzzy
+#~ msgid "New Calendar"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "List View"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not open the folder in '%s'"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Email Alarm Options"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Message to Display:"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Message to Send"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Color for tasks due today"
+#~ msgstr "Colours for display"
+
+#, fuzzy
+#~ msgid "T_asks due today:"
+#~ msgstr "Colours for display"
+
+#, fuzzy
+#~ msgid "Could not update object"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "Organizer:"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "_Change Organizer"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Could not create directory for new calendar"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Add New Calendar"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Calendar Group"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Calendar Name"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Other Date"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Save Event"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Description"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "color"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "_Settings..."
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#~ msgid "%a %m/%d/%Y %H:%M:%S"
+#~ msgstr "%a %d/%m/%Y %H:%M:%S"
+
+#~ msgid "%a %m/%d/%Y %I:%M:%S %p"
+#~ msgstr "%a %d/%m/%Y %I:%M:%S %p"
+
+#, fuzzy
+#~ msgid "Location:"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "You don't have the right permissions to update the calendar\n"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Select Calendar Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Select Tasks Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#~ msgid "%a %m/%d/%Y"
+#~ msgstr "%a %d/%m/%Y"
+
+#~ msgid "%m/%d/%Y"
+#~ msgstr "%d/%m/%Y"
+
+#, fuzzy
+#~ msgid "Start Date:"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Due Date:"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "You don't have permission to open the folder in `%s'"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Adding alarms for %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Calendars"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Evolution Calendar and Tasks"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Evolution Calendar configuration control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Calendar viewer"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Evolution Tasks viewer"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Evolution's Calendar component"
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Evolution's Tasks component"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Calendar intelligent importer"
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Evolution iCalendar importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution vCalendar importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Indian/Comoro"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Could not remove cache entry: %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Preparing folder '%s' for offline"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to create pipe to '%s': %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to create create child process '%s': %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Invalid message stream received from %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Syncing folders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Syncing folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid ""
+#~ "Failed to GPG %s: %s\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to GPG %s: %s\n"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to execute gpg: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Unable to parse message content"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to resolve host `%s': %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Resolving address"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot get folder: Invalid operation on this store"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot delete folder: %s: Invalid operation"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot delete folder: %s: No such folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot rename folder: %s: Invalid operation"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot rename folder: %s: No such folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Unable to retrieve message: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to cache %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to connect to IMAP server %s in secure mode: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not connect with command \"%s\": %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Unknown parent folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not connect to POP server on %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not rename '%s': %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Storing folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid ""
+#~ "Could not create directory `%s':\n"
+#~ "%s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot create a folder by this name."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot create directory `%s': %s."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot create folder: %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not rename %s to %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot check folder: %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not store folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Spool folder tree %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to send username to server"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot get message %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not get group list from server."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Unable to save grouplist file for %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not read greeting from %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "No such folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot get POP summary: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not connect to POP server %s (port %d): %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not connect to POP server %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to authenticate on POP server %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid ""
+#~ "Unable to connect to POP server %s.\n"
+#~ "Error sending password: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot attach file %s: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Ximian Evolution"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Out of Office Assistant"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#~ msgid "%a %m/%d/%Y %I:%M %p"
+#~ msgstr "%a %d/%m/%Y %I:%M %p"
+
+#~ msgid "%a %m/%d/%Y %H:%M"
+#~ msgstr "%a %d/%m/%Y %H:%M"
+
+#, fuzzy
+#~ msgid "%a %m/%d/%Y %I %p"
+#~ msgstr "%a %d/%m/%Y %I:%M %p"
+
+#, fuzzy
+#~ msgid "%a %m/%d/%Y %H"
+#~ msgstr "%a %d/%m/%Y %H:%M"
+
+#, fuzzy
+#~ msgid "%m/%d/%Y %I:%M:%S %p"
+#~ msgstr "%a %d/%m/%Y %I:%M:%S %p"
+
+#, fuzzy
+#~ msgid "%m/%d/%Y %H:%M:%S"
+#~ msgstr "%a %d/%m/%Y %H:%M:%S"
+
+#, fuzzy
+#~ msgid "%m/%d/%Y %I:%M %p"
+#~ msgstr "%a %d/%m/%Y %I:%M %p"
+
+#, fuzzy
+#~ msgid "%m/%d/%Y %H:%M"
+#~ msgstr "%a %d/%m/%Y %H:%M"
+
+#, fuzzy
+#~ msgid "%m/%d/%Y %I %p"
+#~ msgstr "%a %d/%m/%Y %I:%M %p"
+
+#, fuzzy
+#~ msgid "%m/%d/%Y %H"
+#~ msgstr "%d/%m/%Y"
+
+#, fuzzy
+#~ msgid "You must choose a date."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "%d-%b-%Y"
+#~ msgstr "%m/%d/%Y"
+
+#, fuzzy
+#~ msgid "You must specify a file name."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "You must specify a folder."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Shell Command"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "You must name this vfolder."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "VFolder source"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "[Default]"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "You must specify a valid script name."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Folder _name"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Select folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cl_ear Flag"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Default"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_Copy Link Location"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Session not initialised"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "Se_nd message to..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_Add to Addressbook"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid ""
+#~ "Cannot save to `%s'\n"
+#~ " %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "message"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Evolution Mail"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Evolution Mail accounts configuration control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Mail component"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Mail composer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Mail composer configuration control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Mail folder viewer"
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Evolution Mail preferences control"
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Scanning %s"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Evolution Elm importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution mbox importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Netscape Mail importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Pine importer"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Scanning mail filters"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Scanning directory"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not open source folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not create temporary mbox store: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not create temporary mbox folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not copy messages to temporary mbox folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Create folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not delete folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Really delete folder \"%s\" and all of its subfolders?"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Rename Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Folder properties"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Folder Name"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_New Folder..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Receiving Mail"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "C_olors"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Color for _misspelled words:"
+#~ msgstr "Colours for display"
+
+#, fuzzy
+#~ msgid "Drafts _folder:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Message Composer"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Message Fonts"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Or_ganization:"
+#~ msgstr "Organisation:"
+
+#~ msgid "Pick a color"
+#~ msgstr "Pick a colour"
+
+#, fuzzy
+#~ msgid "Receiving _Options"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Restore Defaults"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Sent _messages folder:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Pinging %s"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Filtering Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to apply outgoing filters: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Failed to append to local `Sent' folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Removing folder %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Storing folder '%s'"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Refreshing folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Reconnecting to %s"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Setting up vfolder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Updating vfolders for uri: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "vFolders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Edit VFolder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Original Location"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Folder Subscriptions"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "None Selected"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "S_erver:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid ""
+#~ "Cannot transfer folder:\n"
+#~ "%s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Add a Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Sent"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Extra Completion folders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Select Default Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Default Folders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Offline Folders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Autocompletion Folders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot copy folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot move folder: %s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Copy Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Move Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid ""
+#~ "Cannot rename folder:\n"
+#~ "%s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid ""
+#~ "Cannot remove folder:\n"
+#~ "%s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Create New Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Select importer"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Evolution Error"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "_Filename:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Syncing Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Synchronizing \"%s\" (%d of %d) ..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Evolution Settings"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Opening Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Opening Folder \"%s\""
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not open shared folder: %s."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Quit Assistant"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "About Ximian Evolution"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Create New Shortcut Group"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Rename Shortcut"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot create a folder with that name"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Has subfolders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Evolution Test Component"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Active Connections"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "C_alendar:"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "_Contacts:"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Evolution Setup Assistant"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Evolution Shell"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Evolution folder settings configuration control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Folder Settings"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid ""
+#~ "Thanks\n"
+#~ "The Ximian Evolution Team\n"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Cannot access the Ximian Evolution shell."
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Cannot initialize the Ximian Evolution shell: %s"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Purposes"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "E-Mail Address"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Edit"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Organization (O)"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Organizational Unit (OU)"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Could not execute '%s': %s\n"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Copy to Folder..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Create a new all-day event"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Create a new calendar"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "New _Calendar"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "New _Meeting"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Close"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Close this item"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Select all text"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_Delete..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Customize My Evolution"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Post Ne_w Message"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "S_ubscribe to Folders..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_Close"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Send this message"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Change Evolution's settings"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Pi_lot Settings..."
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Ximian Evolution _FAQ"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "As _Sent Folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_Messages"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "_Selection:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Traditional"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "_Clear"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Clear"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Comp"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "icsCalendar"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "ECard"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Birth date"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Related Contacts"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Card"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Public Calendar"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Could not update invalid object"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "You do not have the right permissions to update the calendar\n"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Opening default tasks folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Could not create a PGP signature context"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Evolution Mail configuration interface"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "by %B %d, %Y, %l:%M %P"
+#~ msgstr "%a %d/%m/%Y %I:%M %p"
+
+#, fuzzy
+#~ msgid "Could not create a PGP verfication context"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Local folders/%s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Reconfiguring folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Reconfigure /%s"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Scanning folders ..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Configure the appearance of the Evolution Summary here"
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Evolution Summary"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Summary component"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Summary configuration control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Agen"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Antigua"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Arizona"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Arlington"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Artigas"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Athinai"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Benina"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Boise"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Cagliari"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Cairo"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Calgary"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Campo"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Carlisle"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Chandler"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Cheju"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Chiclayo"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Chico"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Chievres"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Childress"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Chino"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Chita"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Clarinda"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Clarion"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Colima"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Colorado"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Colville"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Comox"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Conroe"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Coro"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Corona"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Homer"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Matamoros"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "McComb"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Morgantown"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Nanning"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Ontario"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Orange"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Pristina"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Rifle"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Roros"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Scranton"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Springfield"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Stauning"
+#~ msgstr "Synchronise \"%s\""
+
+#, fuzzy
+#~ msgid "Tabatinga"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Tallinn"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Tatalina"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Toulouse"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Trenton"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Tyler"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Vaerlose"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Wooster"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "miles"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Weather Settings"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_New Feed"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_Show full path for folders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Copy this folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "_Folder..."
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Configure the fonts used by Evolution here"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Mail font configuration control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "_Clear Flag"
+#~ msgstr "Colours"
+
+#, fuzzy
+#~ msgid "Factory to import LDIF files into Evolution."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Addressbook Storages."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory for the Addressbook Minicard control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid ""
+#~ "Factory for the configuration controls for the Evolution Addressbook."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution Attribute"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "_Evolution attribute:"
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "Display Cards?"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Display Cards"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Calendar."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory for the Evolution Tasks control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory for the calendar iTip view control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory for the sample Calendar control"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory to centralize calendar component editor dialogs"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory to create a component editor factory"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Could not activate Bonobo"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "Factory to import iCalendar files into Evolution"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Imports iCalendar files into Evolution"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Imports vCalendar files into Evolution"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Cannot initialize the Evolution composer."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Display Fonts."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Mail Accounts."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Mailer."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Message Composer."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Evolution mail folder factory component."
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Factory for the Evolution composer."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory for the Mail Summary component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Cannot initialize the Evolution mail component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Cannot initialize Evolution's mail config component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Cannot initialize Evolution's folder info component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory to import mbox into Evolution"
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "All folders"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Apri file"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Summary."
+#~ msgstr "Cannot initialise Evolution's mail summary component."
+
+#, fuzzy
+#~ msgid "Factory for the Evolution Summary component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Executive summary component could not initialize Bonobo.\n"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "Configuration control for Evolution folder settings."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid ""
+#~ "Could not start the Evolution Mailer Assistant interface\n"
+#~ "(%s)"
+#~ msgstr "Cannot initialise Evolution's mail storage hash."
+
+#, fuzzy
+#~ msgid "Could not start the Evolution Mailer Assistant interface\n"
+#~ msgstr "Cannot initialise Evolution's mail storage hash."
+
+#~ msgid "Cannot initialize the Bonobo component system."
+#~ msgstr "Cannot initialise the Bonobo component system."
+
+#, fuzzy
+#~ msgid "Pilot Con_duit Settings..."
+#~ msgstr "Cannot initialise the Evolution shell."
+
+#, fuzzy
+#~ msgid "setup_vfs(): could not initialize GNOME-VFS"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "init_corba(): could not initialize GNOME"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "init_bonobo(): could not initialize Bonobo"
+#~ msgstr "Could not initialise Bonobo"
+
+#, fuzzy
+#~ msgid "en"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~ msgid "Configuration control for the Evolution Addressbook."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory for the Calendar Summary component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "_Other Organizer"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "_Organization:"
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Evolution does not recognize this type of signed message."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Cannot initialize Evolution's Summary component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "All _folders:"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Summarising folder"
+#~ msgstr "Synchronising \"%s\""
+
+#, fuzzy
+#~ msgid "Cannot initialize Evolution's Executive Summary component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#~ msgid "%d/%m/%Y"
+#~ msgstr "%m/%d/%Y"
+
+#, fuzzy
+#~ msgid "Colors for Tasks"
+#~ msgstr "Colours for display"
+
+#, fuzzy
+#~ msgid "Organizer: "
+#~ msgstr "Organisation:"
+
+#, fuzzy
+#~ msgid "Factory for the test bonobo component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#, fuzzy
+#~ msgid "Factory for the test component."
+#~ msgstr "Cannot initialise Evolution's mail component."
+
+#~ msgid "Synchronize"
+#~ msgstr "Synchronise"
+
+#~ msgid "Synchronize Action"
+#~ msgstr "Synchronise Action"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Mr.\n"
+#~ "Mrs.\n"
+#~ "Ms.\n"
+#~ "Miss\n"
+#~ "Dr.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Mr\n"
+#~ "Ms\n"
+#~ "Miss\n"
+#~ "Mrs\n"
+#~ "Dr\n"
+#~ "Prof\n"
+#~ "Rev\n"
+
+#~ msgid ""
+#~ "Enter your name and email address to be used in outgoing mail. You may "
+#~ "also, optionally, enter the name of your organization, and the name of a "
+#~ "file to read your signature from."
+#~ msgstr ""
+#~ "Enter your name and email address to be used in outgoing mail. You may "
+#~ "also, optionally, enter the name of your organisation, and the name of a "
+#~ "file to read your signature from."
+
+#~ msgid "Querying authorization capabilities of \"%s\""
+#~ msgstr "Querying authorisation capabilities of \"%s\""
+
+#~ msgid "Query authorization at \"%s\""
+#~ msgstr "Query authorisation at \"%s\""

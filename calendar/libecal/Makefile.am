@@ -1,0 +1,103 @@
+INCLUDES =						\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DG_LOG_DOMAIN=\"libecal\"			\
+	-I$(top_srcdir)/calendar			\
+	-I$(srcdir) -I$(top_srcdir) 			\
+	-I. 						\
+	-I.. 						\
+	-I$(top_builddir)				\
+	-I$(top_srcdir)/calendar/libical/src		\
+	$(EVOLUTION_CALENDAR_CFLAGS)
+
+AM_CFLAGS = 								\
+	-DG_DISABLE_DEPRECATED=1					\
+	-DGNOME_DISABLE_DEPRECATED=1
+
+# The corba stubs and skels
+CORBA_GENERATED_C =				\
+	evolution-calendar-common.c		\
+	evolution-calendar-skels.c		\
+	evolution-calendar-stubs.c
+CORBA_GENERATED_H =			\
+	evolution-calendar.h
+
+CORBA_GENERATED = $(CORBA_GENERATED_C) $(CORBA_GENERATED_H)
+
+idls =						\
+	$(srcdir)/../idl/evolution-calendar.idl
+
+idl_flags = $(IDL_INCLUDES)
+
+$(CORBA_GENERATED_H): $(idls)
+	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/evolution-calendar.idl
+$(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
+
+# The marshallers
+MARSHAL_GENERATED = e-cal-marshal.c e-cal-marshal.h
+@EVO_MARSHAL_RULE@
+
+# The library
+lib_LTLIBRARIES = libecal.la
+
+libecal_la_SOURCES =		\
+	$(CORBA_GENERATED_C)	\
+	$(MARSHAL_GENERATED)	\
+	e-cal.c			\
+	e-cal-component.c	\
+	e-cal-listener.c	\
+	e-cal-recur.c		\
+	e-cal-time-util.c	\
+	e-cal-types.c		\
+	e-cal-util.c		\
+	e-cal-view.c		\
+	e-cal-view-listener.c
+
+libecal_la_LIBADD =							\
+	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la\
+	$(top_builddir)/libedataserver/libedataserver.la
+
+libecal_la_LDFLAGS = 								\
+	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE)	\
+	-no-undefined
+
+libecalincludedir = $(includedir)/evolution-data-server-1.0/libecal
+
+libecalinclude_HEADERS =	\
+	$(CORBA_GENERATED_H)	\
+	e-cal.h			\
+	e-cal-component.h	\
+	e-cal-listener.h	\
+	e-cal-recur.h		\
+	e-cal-time-util.h	\
+	e-cal-types.h		\
+	e-cal-util.h		\
+	e-cal-view.h		\
+	e-cal-view-listener.h
+
+# The test program
+noinst_PROGRAMS = client-test
+
+client_test_SOURCES =	\
+	client-test.c
+
+client_test_INCLUDES =			\
+	$(INCLUDES)			\
+	-DG_LOG_DOMAIN=\"client-test\"
+
+client_test_LDADD =								\
+	libecal.la								\
+	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
+	$(EVOLUTION_CALENDAR_LIBS)
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libecal-1.0.pc
+
+BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = 				\
+	e-cal-marshal.list		\
+	$(pkgconfig_DATA:.pc=.pc.in)
+
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
