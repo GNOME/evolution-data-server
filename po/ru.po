@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-14 04:24+0100\n"
-"PO-Revision-Date: 2005-02-14 17:58+0200\n"
+"PO-Revision-Date: 2005-02-22 13:40+0200\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
 "Language-Team:  <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1866,7 +1866,7 @@ msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
-"input_token содержит не такую привязку к аканалам, как указано в параметре "
+"input_token содержит не такую привязку к каналам, как указано в параметре "
 "input_chan_bindings."
 
 #: camel/camel-sasl-gssapi.c:174
@@ -2048,7 +2048,7 @@ msgstr "Сертификат шифрования для '%s' не сущест�
 
 #: camel/camel-smime-context.c:314
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
-msgstr "Не удается добавть атрибут SMIMEEncKeyPrefs"
+msgstr "Не удается добавить атрибут SMIMEEncKeyPrefs"
 
 #: camel/camel-smime-context.c:319
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
@@ -4546,7 +4546,7 @@ msgstr "Статус"
 
 #: libedataserver/e-categories.c:242
 msgid "Strategies"
-msgstr "Категории"
+msgstr "Стратегии"
 
 #: libedataserver/e-categories.c:243
 msgid "Suppliers"
