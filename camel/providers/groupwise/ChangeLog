@@ -1,3 +1,11 @@
+2005-03-07  JP Rosevear  <jpr@novell.com>
+
+	From Dave Malcolm <dmalcolm@redhat.com>
+	
+	* camel-groupwise-store-summary.c
+	(camel_groupwise_store_summary_namespace_set): move forward
+	declaration out of block
+
 2005-02-28  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: (groupwise_refresh_info):
