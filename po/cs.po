@@ -9,13 +9,57 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-09 14:24+0100\n"
-"PO-Revision-Date: 2004-01-09 17:21+0100\n"
+"POT-Creation-Date: 2004-01-12 03:36+0100\n"
+"PO-Revision-Date: 2004-01-12 09:46+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: addressbook/backends/file/e-book-backend-file.c:392
+#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+msgid "Loading..."
+msgstr "Načítám..."
+
+#: addressbook/backends/file/e-book-backend-file.c:394
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2860
+#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+msgid "Searching..."
+msgstr "Vyhledávám..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:613
+msgid "Using Distinguished Name (DN)"
+msgstr "Pomocí Distinguished Name (DN)"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:616
+msgid "Using Email Address"
+msgstr "pomocí e-mailové adresy"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:760
+msgid "Reconnecting to LDAP server..."
+msgstr "Připojuji se znovu k serveru LDAP..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1261
+msgid "Adding contact to LDAP server..."
+msgstr "Přidávám kontakt na server LDAP..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1350
+msgid "Removing contact from LDAP server..."
+msgstr "Odstraňuji kontakt ze serveru LDAP..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1550
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1553
+msgid "Modifying contact from LDAP server..."
+msgstr "Upravuji kontakt na serveru LDAP..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2783
+msgid "Receiving LDAP search results..."
+msgstr "Přijímám výsledky hledání LDAP..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2880
+msgid "Error performing search"
+msgstr "Chyba při hledání"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
@@ -366,53 +410,36 @@ msgstr "Seznam"
 msgid "List Show Addresses"
 msgstr "Seznam zobrazených adres"
 
-#: addressbook/libebook/e-contact.c:1076
+#: addressbook/libebook/e-contact.c:1078
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
-#: addressbook/backends/file/e-book-backend-file.c:392
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
-msgid "Loading..."
-msgstr "Načítám..."
+#. Set category and visibility
+#: calendar/backends/contacts/e-cal-backend-contacts.c:408
+msgid "Birthday"
+msgstr "Narozeniny"
 
-#: addressbook/backends/file/e-book-backend-file.c:394
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2858
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
-msgid "Searching..."
-msgstr "Vyhledávám..."
+#: calendar/backends/contacts/e-cal-backend-contacts.c:430
+#, c-format
+msgid "Birthday: %s"
+msgstr "Narozeniny: %s"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:611
-msgid "Using Distinguished Name (DN)"
-msgstr "Pomocí Distinguished Name (DN)"
+#: calendar/backends/contacts/e-cal-backend-contacts.c:449
+#, c-format
+msgid "Anniversary: %s"
+msgstr "Výročí: %s"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:614
-msgid "Using Email Address"
-msgstr "pomocí e-mailové adresy"
+#: calendar/backends/file/e-cal-backend-file.c:176
+msgid "Can't save calendar data: Malformed URI."
+msgstr "Nelze uložit data kalendáře: Chybné URI."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:758
-msgid "Reconnecting to LDAP server..."
-msgstr "Připojuji se znovu k serveru LDAP..."
+#: calendar/backends/http/e-cal-backend-http.c:273
+msgid "Bad file format."
+msgstr "Špatný formát souboru."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1259
-msgid "Adding contact to LDAP server..."
-msgstr "Přidávám kontakt na server LDAP..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1348
-msgid "Removing contact from LDAP server..."
-msgstr "Odstraňuji kontakt ze serveru LDAP..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1548
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1551
-msgid "Modifying contact from LDAP server..."
-msgstr "Upravuji kontakt na serveru LDAP..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2781
-msgid "Receiving LDAP search results..."
-msgstr "Přijímám výsledky hledání LDAP..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2878
-msgid "Error performing search"
-msgstr "Chyba při hledání"
+#: calendar/backends/http/e-cal-backend-http.c:278
+msgid "Not a calendar."
+msgstr "Není to kalendář."
 
 #: calendar/libecal/e-cal-component.c:1218
 msgid "Untitled appointment"
@@ -565,82 +592,82 @@ msgstr "Nedefinováno"
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: calendar/libecal/e-cal.c:3810
+#: calendar/libecal/e-cal.c:3813
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: calendar/libecal/e-cal.c:3812
+#: calendar/libecal/e-cal.c:3815
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: calendar/libecal/e-cal.c:3814
+#: calendar/libecal/e-cal.c:3817
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: calendar/libecal/e-cal.c:3816
+#: calendar/libecal/e-cal.c:3819
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: calendar/libecal/e-cal.c:3818 calendar/libecal/e-cal.c:3828
+#: calendar/libecal/e-cal.c:3821 calendar/libecal/e-cal.c:3831
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: calendar/libecal/e-cal.c:3820
+#: calendar/libecal/e-cal.c:3823
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: calendar/libecal/e-cal.c:3822
+#: calendar/libecal/e-cal.c:3825
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: calendar/libecal/e-cal.c:3824
+#: calendar/libecal/e-cal.c:3827
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: calendar/libecal/e-cal.c:3826
+#: calendar/libecal/e-cal.c:3829
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: calendar/libecal/e-cal.c:3830
+#: calendar/libecal/e-cal.c:3833
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: calendar/libecal/e-cal.c:3832
+#: calendar/libecal/e-cal.c:3835
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: calendar/libecal/e-cal.c:3834
+#: calendar/libecal/e-cal.c:3837
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: calendar/libecal/e-cal.c:3836
+#: calendar/libecal/e-cal.c:3839
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: calendar/libecal/e-cal.c:3838
+#: calendar/libecal/e-cal.c:3841
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
-#: calendar/libecal/e-cal.c:3840
+#: calendar/libecal/e-cal.c:3843
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: calendar/libecal/e-cal.c:3842
+#: calendar/libecal/e-cal.c:3845
 msgid "A CORBA esception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: calendar/libecal/e-cal.c:3844
+#: calendar/libecal/e-cal.c:3847
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: calendar/libecal/e-cal.c:3846
+#: calendar/libecal/e-cal.c:3849
 msgid "No error"
 msgstr "Žádná chyba"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:496
-#: calendar/libedata-cal/e-cal-backend-sexp.c:628
-#: calendar/libedata-cal/e-cal-backend-sexp.c:655
+#: calendar/libedata-cal/e-cal-backend-sexp.c:498
+#: calendar/libedata-cal/e-cal-backend-sexp.c:630
+#: calendar/libedata-cal/e-cal-backend-sexp.c:657
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" neočekává žádné parametry"
@@ -648,13 +675,13 @@ msgstr "\"%s\" neočekává žádné parametry"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:693
+#: calendar/libedata-cal/e-cal-backend-sexp.c:695
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" očekává jeden parametr"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:442
+#: calendar/libedata-cal/e-cal-backend-sexp.c:444
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" očekává jako první parametr řetězec"
@@ -666,7 +693,7 @@ msgstr "\"%s\" očekává jako první parametr řetězec data/času podle ISO 86
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:277
-#: calendar/libedata-cal/e-cal-backend-sexp.c:436
+#: calendar/libedata-cal/e-cal-backend-sexp.c:438
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" očekává dva parametry"
@@ -675,7 +702,7 @@ msgstr "\"%s\" očekává dva parametry"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
 #: calendar/libedata-cal/e-cal-backend-sexp.c:283
-#: calendar/libedata-cal/e-cal-backend-sexp.c:699
+#: calendar/libedata-cal/e-cal-backend-sexp.c:701
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" očekává jako první parametr time_t"
@@ -698,12 +725,12 @@ msgstr "uid? očekává jako první parametr řetězec"
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" očekává jako druhý parametr time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:450
+#: calendar/libedata-cal/e-cal-backend-sexp.c:452
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" očekává jako druhý parametr řetězec"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:468
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -712,12 +739,12 @@ msgstr ""
 "\"%s\" očekává jako první parametr jedno z \"any\", \"summary\", "
 "\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:530
+#: calendar/libedata-cal/e-cal-backend-sexp.c:532
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" očekává alespoň jeden parametr"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:544
+#: calendar/libedata-cal/e-cal-backend-sexp.c:546
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -725,18 +752,6 @@ msgid ""
 msgstr ""
 "\"%s\" očekává jako všechny parametry řetězce nebo právě jeden parametr "
 "boolean false (#f)"
-
-#: calendar/backends/file/e-cal-backend-file.c:176
-msgid "Can't save calendar data: Malformed URI."
-msgstr "Nelze uložit data kalendáře: Chybné URI."
-
-#: calendar/backends/http/e-cal-backend-http.c:273
-msgid "Bad file format."
-msgstr "Špatný formát souboru."
-
-#: calendar/backends/http/e-cal-backend-http.c:278
-msgid "Not a calendar."
-msgstr "Není to kalendář."
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
