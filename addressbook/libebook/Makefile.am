@@ -1,6 +1,8 @@
 INCLUDES =						\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	-DG_LOG_DOMAIN=\"libebook\"			\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)

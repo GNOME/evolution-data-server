@@ -1,5 +1,8 @@
 INCLUDES = 				\
+	-I$(top_srcdir)			\
+	-I$(top_builddir)		\
 	-I$(top_srcdir)/addressbook	\
+	-I$(top_builddir)/addressbook	\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 noinst_PROGRAMS = dump-vcard
