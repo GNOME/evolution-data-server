@@ -52,7 +52,7 @@
 
 #define d(x) x
 
-#define CAMEL_IMAP4_SUMMARY_VERSION  1
+#define CAMEL_IMAP4_SUMMARY_VERSION  2
 
 static void camel_imap4_summary_class_init (CamelIMAP4SummaryClass *klass);
 static void camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *klass);
@@ -118,6 +118,8 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 	folder_summary->message_info_size = sizeof (CamelIMAP4MessageInfo);
 	folder_summary->content_info_size = sizeof (CamelIMAP4MessageContentInfo);
 	
+	summary->have_mlist = FALSE;
+	
 	summary->update_flags = TRUE;
 	summary->uidvalidity_changed = FALSE;
 }
@@ -151,14 +153,24 @@ imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->version) == -1)
 		return -1;
 	
-	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->uidvalidity) == -1)
-		return -1;
-	
 	if (imap4_summary->version > CAMEL_IMAP4_SUMMARY_VERSION) {
 		g_warning ("Unknown IMAP4 summary version\n");
 		errno = EINVAL;
 		return -1;
 	}
+	
+	if (imap4_summary->version >= 2) {
+		/* check that we have Mailing-List info */
+		int have_mlist;
+		
+		if (camel_file_util_decode_fixed_int32 (fin, &have_mlist) == -1)
+			return -1;
+		
+		imap4_summary->have_mlist = have_mlist ? TRUE : FALSE;
+	}
+	
+	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->uidvalidity) == -1)
+		return -1;
 	
 	return 0;
 }
@@ -172,6 +184,9 @@ imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 		return -1;
 	
 	if (camel_file_util_encode_fixed_int32 (fout, CAMEL_IMAP4_SUMMARY_VERSION) == -1)
+		return -1;
+	
+	if (camel_file_util_encode_fixed_int32 (fout, imap4_summary->have_mlist) == -1)
 		return -1;
 	
 	if (camel_file_util_encode_fixed_int32 (fout, imap4_summary->uidvalidity) == -1)
@@ -414,7 +429,7 @@ envelope_decode_nstring (CamelIMAP4Engine *engine, char **nstring, gboolean rfc2
 }
 
 static CamelSummaryReferences *
-decode_references (const char *string)
+decode_references (const char *string, int inreplyto)
 {
 	struct _camel_header_references *refs, *r;
 	CamelSummaryReferences *references;
@@ -422,8 +437,13 @@ decode_references (const char *string)
 	guint32 i, n = 0;
 	MD5Context md5;
 	
-	if (!(r = refs = camel_header_references_inreplyto_decode (string)))
-		return NULL;
+	if (inreplyto) {
+		if (!(r = refs = camel_header_references_inreplyto_decode (string)))
+			return NULL;
+	} else {
+		if (!(r = refs = camel_header_references_decode (string)))
+			return NULL;
+	}
 	
 	while (r != NULL) {
 		r = r->next;
@@ -448,10 +468,11 @@ decode_references (const char *string)
 static int
 decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_token_t *token, CamelException *ex)
 {
+	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *) info;
+	CamelSummaryReferences *refs;
 	unsigned char md5sum[16];
 	char *nstring;
-	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *)info;
-
+	
 	if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 		return -1;
 	
@@ -507,7 +528,13 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 		goto exception;
 	
 	if (nstring != NULL) {
-		iinfo->info.references = decode_references (nstring);
+		refs = decode_references (nstring, TRUE);
+		
+		if (!iinfo->info.references)
+			iinfo->info.references = refs;
+		else
+			g_free (refs);
+		
 		g_free (nstring);
 	}
 	
@@ -737,18 +764,21 @@ imap4_fetch_all_add (struct imap4_fetch_all_t *fetch)
 		
 		if (envelope->changed != IMAP4_FETCH_ALL) {
 			d(fprintf (stderr, "Hmmm, IMAP4 server didn't give us everything for message %d\n", i + 1));
-			camel_message_info_free(envelope->info);
+			camel_message_info_free (envelope->info);
 			g_free (envelope);
 			continue;
 		}
 		
 		if ((info = camel_folder_summary_uid (fetch->summary, camel_message_info_uid (envelope->info)))) {
-			camel_message_info_free(envelope->info);
+			camel_message_info_free (envelope->info);
 			g_free (envelope);
 			continue;
 		}
 		
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (envelope->info));
+		
+		if ((((CamelMessageInfoBase *) envelope->info)->flags & CAMEL_IMAP4_MESSAGE_RECENT))
+			camel_folder_change_info_recent_uid (changes, camel_message_info_uid (envelope->info));
 		
 		camel_folder_summary_add (fetch->summary, envelope->info);
 		g_free (envelope);
@@ -963,10 +993,12 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 				changed |= IMAP4_FETCH_UID;
 			}
 		} else if (!strcmp (token->v.atom, "BODY[HEADER.FIELDS")) {
-			/* Mailing-List headers... */
+			/* References, Content-Type, and Mailing-List headers... */
+			CamelContentType *content_type;
 			struct _camel_header_raw *h;
 			CamelMimeParser *parser;
 			unsigned char *literal;
+			const char *str;
 			size_t n;
 			
 			/* '(' */
@@ -976,7 +1008,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			if (token->token != '(')
 				goto unexpected;
 			
-			/* Mailing-List header name list */
+			/* header name list */
 			do {
 				if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 					goto exception;
@@ -1023,7 +1055,24 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			case CAMEL_MIME_PARSER_STATE_MESSAGE:
 			case CAMEL_MIME_PARSER_STATE_MULTIPART:
 				h = camel_mime_parser_headers_raw (parser);
+				
+				/* find our mailing-list header */
 				iinfo->info.mlist = camel_header_raw_check_mailing_list (&h);
+				
+				/* check if we possibly have attachments */
+				if ((str = camel_header_raw_find (&h, "Content-Type", NULL))) {
+					content_type = camel_content_type_decode (str);
+					if (camel_content_type_is (content_type, "multipart", "*")
+					    && !camel_content_type_is (content_type, "multipart", "alternative"))
+						iinfo->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
+					camel_content_type_unref (content_type);
+				}
+				
+				/* check for References: */
+				if ((str = camel_header_raw_find (&h, "References", NULL))) {
+					g_free (iinfo->info.references);
+					iinfo->info.references = decode_references (str, FALSE);
+				}
 			default:
 				break;
 			}
@@ -1058,7 +1107,10 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 }
 
 #define IMAP4_ALL "FLAGS INTERNALDATE RFC822.SIZE ENVELOPE"
-#define MAILING_LIST_HEADERS " BODY.PEEK[HEADER.FIELDS (List-Post List-Id Mailing-List Originator X-Mailing-List X-Loop X-List Sender Delivered-To Return-Path X-BeenThere List-Unsubscribe)]"
+#define MAILING_LIST_HEADERS "List-Post List-Id Mailing-List Originator X-Mailing-List X-Loop X-List Sender Delivered-To Return-Path X-BeenThere List-Unsubscribe"
+
+#define BASE_HEADER_FIELDS "Content-Type References"
+#define MORE_HEADER_FIELDS BASE_HEADER_FIELDS " " MAILING_LIST_HEADERS
 
 static CamelIMAP4Command *
 imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 first, guint32 last)
@@ -1086,16 +1138,16 @@ imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 first, guint32 las
 	
 	if (last != 0) {
 		if (((CamelIMAP4Folder *) folder)->enable_mlist)
-			query = "FETCH %u:%u (UID " IMAP4_ALL MAILING_LIST_HEADERS ")\r\n";
+			query = "FETCH %u:%u (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" MORE_HEADER_FIELDS ")])\r\n";
 		else
-			query = "FETCH %u:%u (UID " IMAP4_ALL ")\r\n";
+			query = "FETCH %u:%u (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" BASE_HEADER_FIELDS ")])\r\n";
 		
 		ic = camel_imap4_engine_queue (engine, folder, query, first, last);
 	} else {
 		if (((CamelIMAP4Folder *) folder)->enable_mlist)
-			query = "FETCH %u:* (UID " IMAP4_ALL MAILING_LIST_HEADERS ")\r\n";
+			query = "FETCH %u:* (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" MORE_HEADER_FIELDS ")])\r\n";
 		else
-			query = "FETCH %u:* (UID " IMAP4_ALL ")\r\n";
+			query = "FETCH %u:* (UID " IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" BASE_HEADER_FIELDS ")])\r\n";
 		
 		ic = camel_imap4_engine_queue (engine, folder, query, first);
 	}
@@ -1294,18 +1346,12 @@ camel_imap4_summary_set_uidnext (CamelFolderSummary *summary, guint32 uidnext)
 	summary->nextuid = uidnext;
 }
 
-void
-camel_imap4_summary_set_uidvalidity (CamelFolderSummary *summary, guint32 uidvalidity)
+static void
+imap4_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 {
-	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
 	int i, count;
-	
-	g_return_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary));
-	
-	if (imap4_summary->uidvalidity == uidvalidity)
-		return;
 	
 	changes = camel_folder_change_info_new ();
 	count = camel_folder_summary_count (summary);
@@ -1318,11 +1364,26 @@ camel_imap4_summary_set_uidvalidity (CamelFolderSummary *summary, guint32 uidval
 	}
 	
 	camel_folder_summary_clear (summary);
-	camel_data_cache_clear (((CamelIMAP4Folder *) summary->folder)->cache, "cache", NULL);
+	
+	if (uncache)
+		camel_data_cache_clear (((CamelIMAP4Folder *) summary->folder)->cache, "cache", NULL);
 	
 	if (camel_folder_change_info_changed (changes))
 		camel_object_trigger_event (summary->folder, "folder_changed", changes);
 	camel_folder_change_info_free (changes);
+}
+
+void
+camel_imap4_summary_set_uidvalidity (CamelFolderSummary *summary, guint32 uidvalidity)
+{
+	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
+	
+	g_return_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary));
+	
+	if (imap4_summary->uidvalidity == uidvalidity)
+		return;
+	
+	imap4_summary_clear (summary, TRUE);
 	
 	imap4_summary->uidvalidity = uidvalidity;
 	
@@ -1377,8 +1438,9 @@ info_uid_sort (const CamelMessageInfo **info0, const CamelMessageInfo **info1)
 int
 camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *ex)
 {
-	CamelOfflineJournal *journal = ((CamelIMAP4Folder *) summary->folder)->journal;
+	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) summary->folder;
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
+	CamelOfflineJournal *journal = imap4_folder->journal;
 	CamelIMAP4Engine *engine;
 	CamelIMAP4Command *ic;
 	guint32 first = 0;
@@ -1388,6 +1450,12 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	
 	/* FIXME: what do we do if replaying the journal fails? */
 	camel_offline_journal_replay (journal, NULL);
+	
+	if (imap4_folder->enable_mlist && !imap4_summary->have_mlist) {
+		/* need to refetch all summary info to get info->mlist */
+		imap4_summary_clear (summary, FALSE);
+	} else
+		imap4_summary->have_mlist = imap4_folder->enable_mlist;
 	
 	engine = ((CamelIMAP4Store *) summary->folder->parent_store)->engine;
 	scount = camel_folder_summary_count (summary);
@@ -1441,14 +1509,6 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 		imap4_fetch_all_add (ic->user_data);
 		camel_imap4_command_unref (ic);
 		camel_operation_end (NULL);
-		
-#if 0
-		/* Note: this should not be needed - the code that adds envelopes to the summary
-		 * adds them in proper order */
-		
-		/* it's important for these to be sorted sequentially for EXPUNGE events to work */
-		g_ptr_array_sort (summary->messages, (GCompareFunc) info_uid_sort);
-#endif
 	}
 	
 	imap4_summary->update_flags = FALSE;

@@ -68,6 +68,8 @@ struct _CamelIMAP4Summary {
 	
 	guint32 uidvalidity;
 	
+	guint have_mlist:1;
+	
 	guint uidvalidity_changed:1;
 	guint update_flags:1;
 };
