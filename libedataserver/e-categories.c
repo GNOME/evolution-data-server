@@ -31,6 +31,7 @@ typedef struct {
 	char *category;
 	char *icon_file;
 	char *color;
+	gboolean searchable;
 } CategoryInfo;
 
 static gboolean initialized = FALSE;
@@ -113,6 +114,10 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 		*str = g_string_append_c (*str, '"');
 	}
 
+	*str = g_string_append (*str, " searchable=\"");
+	*str = g_string_append_c (*str, cat_info->searchable ? '1' : '0');
+	*str = g_string_append_c (*str, '"');
+
 	*str = g_string_append (*str, "/>");
 }
 
@@ -179,12 +184,23 @@ initialize_categories_config (void)
 
 		doc = xmlParseMemory (str, strlen (str));
 		if (doc) {
-			node = xmlDocGetRootElement (doc);
+			xmlChar *name, *color, *icon, *searchable;
 
+			node = xmlDocGetRootElement (doc);
 			for (children = node->xmlChildrenNode; children != NULL; children = children->next) {
-				e_categories_add (xmlGetProp (children, "a"),
-						  xmlGetProp (children, "color"),
-						  xmlGetProp (children, "icon"));
+				gboolean b = TRUE;
+
+				name = xmlGetProp (children, "a");
+				color = xmlGetProp (children, "color");
+				icon = xmlGetProp (children, "icon");
+				searchable = xmlGetProp (children, "searchable");
+
+				if (searchable) {
+					if (!strcmp (searchable, "0"))
+						b = FALSE;
+				}
+
+				e_categories_add (name, color, icon, b ? "1" : "0");
 			}
 
 			xmlFreeDoc (doc);
@@ -194,27 +210,27 @@ initialize_categories_config (void)
 
 		conf_is_dirty = FALSE;
 	} else {
-		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png");
-		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png");
-		e_categories_add (_("Competition"), NULL, NULL);
-		e_categories_add (_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png");
-		e_categories_add (_("Gifts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_gifts_16.png");
-		e_categories_add (_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png");
-		e_categories_add (_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png");
-		e_categories_add (_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png");
-		e_categories_add (_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png");
-		e_categories_add (_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png");
-		e_categories_add (_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png");
-		e_categories_add (_("Key Customer"), NULL, E_DATA_SERVER_IMAGESDIR "/category_key-customer_16.png");
-		e_categories_add (_("Miscellaneous"), NULL, E_DATA_SERVER_IMAGESDIR "/category_miscellaneous_16.png");
-		e_categories_add (_("Personal"), NULL, E_DATA_SERVER_IMAGESDIR "/category_personal_16.png");
-		e_categories_add (_("Phone Calls"), NULL, E_DATA_SERVER_IMAGESDIR "/category_phonecalls_16.png");
-		e_categories_add (_("Status"), NULL, E_DATA_SERVER_IMAGESDIR "/category_status_16.png");
-		e_categories_add (_("Strategies"), NULL, E_DATA_SERVER_IMAGESDIR "/category_strategies_16.png");
-		e_categories_add (_("Suppliers"), NULL, E_DATA_SERVER_IMAGESDIR "/category_suppliers_16.png");
-		e_categories_add (_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png");
-		e_categories_add (_("VIP"), NULL, NULL);
-		e_categories_add (_("Waiting"), NULL, NULL);
+		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png", TRUE);
+		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png", TRUE);
+		e_categories_add (_("Competition"), NULL, NULL, TRUE);
+		e_categories_add (_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png", TRUE);
+		e_categories_add (_("Gifts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_gifts_16.png", TRUE);
+		e_categories_add (_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png", TRUE);
+		e_categories_add (_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png", TRUE);
+		e_categories_add (_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png", TRUE);
+		e_categories_add (_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png", TRUE);
+		e_categories_add (_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png", TRUE);
+		e_categories_add (_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png", TRUE);
+		e_categories_add (_("Key Customer"), NULL, E_DATA_SERVER_IMAGESDIR "/category_key-customer_16.png", TRUE);
+		e_categories_add (_("Miscellaneous"), NULL, E_DATA_SERVER_IMAGESDIR "/category_miscellaneous_16.png", TRUE);
+		e_categories_add (_("Personal"), NULL, E_DATA_SERVER_IMAGESDIR "/category_personal_16.png", TRUE);
+		e_categories_add (_("Phone Calls"), NULL, E_DATA_SERVER_IMAGESDIR "/category_phonecalls_16.png", TRUE);
+		e_categories_add (_("Status"), NULL, E_DATA_SERVER_IMAGESDIR "/category_status_16.png", TRUE);
+		e_categories_add (_("Strategies"), NULL, E_DATA_SERVER_IMAGESDIR "/category_strategies_16.png", TRUE);
+		e_categories_add (_("Suppliers"), NULL, E_DATA_SERVER_IMAGESDIR "/category_suppliers_16.png", TRUE);
+		e_categories_add (_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png", TRUE);
+		e_categories_add (_("VIP"), NULL, NULL, TRUE);
+		e_categories_add (_("Waiting"), NULL, NULL, TRUE);
 	}
 
 	/* install idle callback to save the file */
@@ -256,12 +272,13 @@ e_categories_get_list (void)
  * @category: name of category to add.
  * @color: associated color.
  * @icon_file: full path of the icon associated to the category.
+ * @searchable: whether the category can be used for searching in the GUI.
  *
  * Adds a new category, with its corresponding color and icon, to the
  * configuration database.
  */
 void
-e_categories_add (const char *category, const char *color, const char *icon_file)
+e_categories_add (const char *category, const char *color, const char *icon_file, gboolean searchable)
 {
 	CategoryInfo *cat_info;
 
@@ -275,8 +292,9 @@ e_categories_add (const char *category, const char *color, const char *icon_file
 	/* add the new category */
 	cat_info = g_new0 (CategoryInfo, 1);
 	cat_info->category = g_strdup (category);
-	cat_info->color = g_strdup (color);
-	cat_info->icon_file = g_strdup (icon_file);
+	cat_info->color = color ? g_strdup (color) : NULL;
+	cat_info->icon_file = icon_file ? g_strdup (icon_file) : NULL;
+	cat_info->searchable = searchable;
 
 	g_hash_table_insert (categories_table, g_strdup (category), cat_info);
 
@@ -421,4 +439,27 @@ e_categories_set_icon_file_for (const char *category, const char *icon_file)
 	cat_info->icon_file = g_strdup (icon_file);
 
 	conf_is_dirty = TRUE;
+}
+
+/**
+ * e_categories_is_searchable:
+ * @category: category name.
+ *
+ * Gets whether the given calendar is to be used for searches in the GUI.
+ *
+ * Return value; %TRUE% if the category is searchable, %FALSE% if not.
+ */
+gboolean
+e_categories_is_searchable (const char *category)
+{
+	CategoryInfo *cat_info;
+
+	if (!initialized)
+		initialize_categories_config ();
+
+	cat_info = g_hash_table_lookup (categories_table, category);
+	if (!cat_info)
+		return FALSE;
+
+	return cat_info->searchable;
 }

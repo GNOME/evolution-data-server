@@ -1,3 +1,10 @@
+2005-01-25  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-categories.[ch] (e_categories_add): added a
+	'searchable' argument.
+	(e_categories_is_searchable): new function.
+	(hash_to_xml_string): add the 'searchable' property to the config.
+
 2005-01-24  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: bump version, libtool numbers
