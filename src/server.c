@@ -97,7 +97,7 @@ last_book_gone_cb (EDataBookFactory *factory, gpointer data)
 }
 
 static gboolean
-setup_pas (void)
+setup_books (void)
 {
 	e_data_book_factory = e_data_book_factory_new ();
 
@@ -141,12 +141,12 @@ last_calendar_gone_cb (EDataCalFactory *factory, gpointer data)
 
 /* Creates the calendar factory object and registers it */
 static gboolean
-setup_pcs (void)
+setup_cals (void)
 {
 	e_data_cal_factory = e_data_cal_factory_new ();
 
 	if (!e_data_cal_factory) {
-		g_message ("setup_pcs(): Could not create the calendar factory");
+		g_warning (G_STRLOC ": Could not create the calendar factory");
 		return FALSE;
 	}
 
@@ -197,7 +197,7 @@ dump_backends (int signal)
 int
 main (int argc, char **argv)
 {
-	gboolean did_pas=FALSE, did_pcs=FALSE;
+	gboolean did_books=FALSE, did_cals=FALSE;
 
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
@@ -218,18 +218,18 @@ main (int argc, char **argv)
 			  CORBA_OBJECT_NIL,
 			  CORBA_OBJECT_NIL);
 
-	if (!( (did_pas = setup_pas ())
-	       && (did_pcs = setup_pcs ())
+	if (!( (did_books = setup_books ())
+	       && (did_cals = setup_cals ())
 		    )) {
 
 		const gchar *failed = NULL;
 
-		if (!did_pas)
-			failed = "PAS";
-		else if (!did_pcs)
-			failed = "PCS";
+		if (!did_books)
+			failed = "BOOKS";
+		else if (!did_cals)
+			failed = "CALS";
 
-		g_message ("main(): could not initialize Server service \"%s\"; terminating", failed);
+		g_error (G_STRLOC ": could not initialize Server service \"%s\"; terminating", failed);
 
 		if (e_data_book_factory) {
 			bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
@@ -244,11 +244,11 @@ main (int argc, char **argv)
 	}
 
 	if (! setup_interface_check ()) {
-		g_message ("Cannot register Server::InterfaceCheck object");
+		g_error (G_STRLOC "Cannot register DataServer::InterfaceCheck object");
 		exit (EXIT_FAILURE);
 	}
 
-	g_print ("Server up and running\n");
+	g_message ("Server up and running\n");
 
 	bonobo_main ();
 
