@@ -478,6 +478,9 @@ view_destroy(gpointer data, GObject *where_object_was)
 	gboolean success = FALSE;
 	EList *views = e_book_backend_get_book_views (book->priv->backend);
 
+	if (!views)
+		return;
+
 	for (iterator = e_list_get_iterator(views);
 	     e_iterator_is_valid(iterator);
 	     e_iterator_next(iterator)) {

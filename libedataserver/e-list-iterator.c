@@ -105,8 +105,11 @@ e_list_iterator_init (EListIterator *list)
 EIterator *
 e_list_iterator_new (EList *list)
 {
-	EListIterator *iterator = g_object_new (E_TYPE_LIST_ITERATOR, NULL);
+	EListIterator *iterator;
 
+	g_return_val_if_fail (list != NULL, NULL);
+
+	iterator = g_object_new (E_TYPE_LIST_ITERATOR, NULL);
 	iterator->list = list;
 	g_object_ref(list);
 	iterator->iterator = list->list;

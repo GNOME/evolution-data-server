@@ -1,3 +1,8 @@
+2004-02-09  Michael Meeks  <michael@ximian.com>
+
+	* libedata-book/e-data-book.c (view_destroy): tolerate NULL
+	book views.
+
 2004-02-08  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/Makefile.am (noinst_PROGRAMS): build
