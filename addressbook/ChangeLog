@@ -1,3 +1,10 @@
+2003-12-05  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-contact.c (e_contact_get_property): Return boxed type
+	for struct.
+	(e_contact_name_from_string): Never pass NULL to
+	e_name_western_parse ().
+
 2003-12-04  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/test-ebook.c (print_email): print out the

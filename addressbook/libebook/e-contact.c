@@ -982,7 +982,7 @@ e_contact_get_property (GObject *object,
 		else { /* struct */
 			gpointer rv = info->struct_getter (contact, attr);
 
-			g_value_set_pointer (value, rv);
+			g_value_set_boxed (value, rv);
 		}
 
 	}
@@ -1218,7 +1218,9 @@ EContactName*
 e_contact_name_from_string (const char *name_str)
 {
 	EContactName *name = e_contact_name_new();
-	ENameWestern *western = e_name_western_parse (name_str);
+	ENameWestern *western;
+
+	western = e_name_western_parse (name_str ? name_str : "");
 	
 	name->prefixes   = g_strdup (western->prefix);
 	name->given      = g_strdup (western->first );
