@@ -40,6 +40,9 @@
 
 2004-12-23  Not Zed  <NotZed@Ximian.com>
 
+	* camel-folder-search.c (check_header): treat a missing header as
+	if it was set to "".
+
 	* camel-object.c (camel_object_is, camel_object_class_is)
 	(camel_interface_is): check for null values before dereferencing
 	them.
