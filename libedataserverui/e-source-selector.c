@@ -297,6 +297,7 @@ cell_toggled_callback (GtkCellRendererToggle *renderer,
 	else
 		select_source (selector, source);
 
+	gtk_tree_model_row_changed (model, path, &iter);
 	g_signal_emit (selector, signals[SELECTION_CHANGED], 0);
 
 	gtk_tree_path_free (path);
