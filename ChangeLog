@@ -1,3 +1,11 @@
+2004-11-25  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libedataserverui/e-source-selector.[ch]:
+	(selector_button_press_event): if rt-clicked on a source 
+	group, set it as primary on the selector and emit a popup event.
+	(e_source_selector_get_primary_source_group): accessor for 
+	primary source group.
+
 2004-11-05  Rodrigo Moya <rodrigo@novell.com>
 
 	* configure.in: use evolution-data-server-$BASE_VERSION as the

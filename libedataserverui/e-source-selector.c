@@ -42,6 +42,7 @@ struct _ESourceSelectorPrivate {
 	
 	GHashTable *selected_sources;
 	GtkTreeRowReference *saved_primary_selection;
+	ESourceGroup *primary_source_group;
 	
 	int rebuild_model_idle_id;
 
@@ -595,9 +596,15 @@ selector_button_press_event (GtkWidget *widget, GdkEventButton *event, ESourceSe
 
 			/* TODO: we could still emit a popup event for this and let the callee decide? */
 			if (E_IS_SOURCE_GROUP (data)) {
-				g_object_unref (data);
+				/* do i need to ref it here */
+				ESourceGroup *group;
 				
-				return FALSE;
+				group = E_SOURCE_GROUP (data);g_object_ref (group);
+				priv->primary_source_group = group;
+				g_signal_emit(selector, signals[POPUP_EVENT], 0, NULL, event, &res);
+				/* data shuld be unreffed after creating the
+				 * new source*/	
+				return res;
 			}
 			
 			source = E_SOURCE (data);
@@ -827,6 +834,22 @@ e_source_selector_get_selection (ESourceSelector *selector)
 	}
 
 	return g_slist_reverse (selection_list);
+}
+
+/**
+ * e_source_selector_get_primary_source_group :
+ * 
+ * Return the primary source group associated with the selector.
+ * Return value: primary_source_group if selector is valid, NULL otherwise.
+ */
+
+ESourceGroup *
+e_source_selector_get_primary_source_group (ESourceSelector *selector)
+{
+	g_return_val_if_fail (E_IS_SOURCE_SELECTOR (selector), NULL);
+	
+	return selector->priv->primary_source_group;
+
 }
 
 /**
