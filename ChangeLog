@@ -1,5 +1,13 @@
 2005-01-04  Rodrigo Moya <rodrigo@novell.com>
 
+	* libedataserver/e-categories.c (idle_saver_cb): new GSourceFunc to be
+	called at idle times.
+	(cleanup_at_exit): save configuration if it's dirty. Remove the idle
+	callback.
+	(initialize_categories_config): install the idle callback.
+
+2005-01-04  Rodrigo Moya <rodrigo@novell.com>
+
 	* art/Makefile.am:
 	* art/category*.png: added category icons from GAL.
 

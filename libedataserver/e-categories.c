@@ -37,6 +37,7 @@ static gboolean initialized = FALSE;
 static GHashTable *categories_table = NULL;
 static GConfClient *conf_client = NULL;
 static gboolean conf_is_dirty = FALSE;
+static guint idle_id = 0;
 
 static void
 free_category_info (CategoryInfo *cat_info)
@@ -52,8 +53,45 @@ free_category_info (CategoryInfo *cat_info)
 }
 
 static void
+hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
+{
+	char *s;
+	CategoryInfo *cat_info = value;
+	GString **str = user_data;
+
+	s = g_strdup_printf ("<category a=\"%s\" color=\"%s\" icon=\"%s\"/>",
+			     cat_info->category, cat_info->color, cat_info->icon_file);
+
+	*str = g_string_append (*str, s);
+
+	g_free (s);
+}
+
+static void
+idle_saver_cb (gpointer user_data)
+{
+	if (conf_is_dirty) {
+		GString *str = g_string_new ("<categories>");
+
+		g_hash_table_foreach (categories_table, (GHFunc) hash_to_xml_string, &str);
+		str = g_string_append (str, "</categories>");
+		gconf_client_set_string (conf_client, "/apps/evolution/general/category_master_list", str->str, NULL);
+
+		g_string_free (str, TRUE);
+
+		conf_is_dirty = FALSE;
+	}
+}
+
+static void
 cleanup_at_exit (void)
 {
+	if (conf_is_dirty)
+		idle_saver_cb (NULL);
+
+	g_source_remove (idle_id);
+	idle_id = 0;
+
 	if (categories_table) {
 		g_hash_table_destroy (categories_table);
 		categories_table = NULL;
@@ -125,6 +163,9 @@ initialize_categories_config (void)
 		e_categories_add (N_("VIP"), NULL, NULL);
 		e_categories_add (N_("Waiting"), NULL, NULL);
 	}
+
+	/* install idle callback to save the file */
+	idle_id = g_idle_add ((GSourceFunc) idle_saver_cb, NULL);
 
 	g_free (str);
 	initialized = TRUE;
