@@ -89,7 +89,6 @@ main (int argc, char **argv)
 		g_error ("Could not initialize Bonobo.");
 
 	camel_init (NULL, 0);
-	camel_mime_utils_init ();
 
 	g_idle_add ((GSourceFunc) start_test, NULL);
 
