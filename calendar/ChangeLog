@@ -1,5 +1,10 @@
 2003-12-24  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_get_items):
+	fixed warning.
+
+2003-12-24  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-message.[ch] (e_gw_message_new_with_header):
 	added 'session_id' argument, to add the <Header> SOAP part if not NULL.
 
