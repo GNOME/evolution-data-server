@@ -639,7 +639,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltaRequest"); 
          if (!msg) { 
                  g_warning (G_STRLOC ": Could not build SOAP message"); 
-		 g_object_unref (cnc); 
+		 // g_object_unref (cnc); 
                  return E_GW_CONNECTION_STATUS_UNKNOWN; 
          } 
         
@@ -652,7 +652,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          response = e_gw_connection_send_message (cnc, msg); 
          if (!response) { 
                  g_object_unref (msg); 
-		 g_object_unref (cnc); 
+		 // g_object_unref (cnc); 
                  return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; 
          } 
 
@@ -660,7 +660,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          if (status != E_GW_CONNECTION_STATUS_OK) { 
  		g_object_unref (response); 
 		g_object_unref (msg); 
- 		g_object_unref (cnc); 
+		//	g_object_unref (cnc); 
  		return status; 
  	} 
 
@@ -669,13 +669,13 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          if (!param) { 
                  g_object_unref (response); 
                  g_object_unref (msg); 
-		 g_object_unref (cnc); 
+		 // g_object_unref (cnc); 
                  return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; 
          } 
 	
          if (!g_ascii_strcasecmp ( soup_soap_parameter_get_string_value (param), "0")) { 
                  g_message ("No deltas"); 
-		 g_object_unref (cnc); 
+		 // g_object_unref (cnc); 
                  return E_GW_CONNECTION_STATUS_OK; 
          }                 
 
@@ -683,7 +683,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          if (!param) { 
                  g_object_unref (response); 
                  g_object_unref (msg); 
-		 g_object_unref (cnc); 
+		 // g_object_unref (cnc); 
                  return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; 
          } 
         
@@ -701,7 +701,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
                                  if (!param_id) { 
                                          g_object_unref (response); 
                                          g_object_unref (msg); 
-                                         g_object_unref (cnc); 
+					 // g_object_unref (cnc); 
                                  } 
                                  uid = (char *)soup_soap_parameter_get_string_value (param_id); 
                                  /*if (!e_cal_backend_cache_remove_component (cache, uid, NULL)) 
@@ -723,7 +723,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
                                 if (!item) { 
                                          g_object_unref (response); 
                                          g_object_unref (msg); 
-                                         g_object_unref (cnc); 
+					 // g_object_unref (cnc); 
  					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; 
                                  } 
                                  /*if (!e_cal_backend_cache_put_component (cache, comp)) 
@@ -983,6 +983,41 @@ e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const ch
 	return status;
 }
 
+EGwConnectionStatus
+e_gw_connection_remove_items (EGwConnection *cnc, const char *container, GList *item_ids)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "removeItemsRequest");
+	if (container && *container)
+		e_gw_message_write_string_parameter (msg, "container", NULL, container);
+
+	soup_soap_message_start_element (msg, "items", NULL, NULL);
+	for (; item_ids != NULL; item_ids = g_list_next (item_ids))
+		e_gw_message_write_string_parameter (msg, "item", NULL, item_ids->data);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
 const char *
 e_gw_connection_get_uri (EGwConnection *cnc)
 {

@@ -78,6 +78,7 @@ EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *c
 EGwConnectionStatus e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes, GSList **updates);
 EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item, char **id);
 EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
+EGwConnectionStatus e_gw_connection_remove_items (EGwConnection *cnc, const char *container, GList *item_ids);
 
 const char         *e_gw_connection_get_uri (EGwConnection *cnc);
 const char         *e_gw_connection_get_session_id (EGwConnection *cnc);
