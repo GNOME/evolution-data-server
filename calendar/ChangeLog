@@ -1,10 +1,19 @@
+2005-01-19  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_receive_objects): set the correct method on the
+	VCALENDAR we create or it will fail in the code below. Deal correctly
+	with detached recurrences.
+	(remove_instance): unref the categories before removing the recurrences
+	from the hash table.
+
 2005-01-19  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
 	(e_cal_backend_groupwise_create_object) : Add 'default' to
 	the view argument, as this is now necessary for the server
 	to display the default values.
-	
+
 2005-01-18  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #68599

@@ -1983,21 +1983,17 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 		return;
 
 	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &hash_rid, &comp)) {
+		/* update the set of categories */
+		e_cal_component_get_categories_list (comp, &categories);
+		e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
+		e_cal_component_free_categories_list (categories);
+
 		/* remove the component from our data */
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
 						e_cal_component_get_icalcomponent (comp));
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
 		obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
 		g_hash_table_remove (obj_data->recurrences, rid);
-		
-		/* update the set of categories */
-		e_cal_component_get_categories_list (comp, &categories);
-		e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
-		e_cal_component_free_categories_list (categories);
-
-		/* free memory */
-		g_free (hash_rid);
-		g_object_unref (comp);
 
 		return;
 	}
@@ -2224,7 +2220,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	ECalBackendFilePrivate *priv;
 	icalcomponent *toplevel_comp, *icalcomp = NULL;
 	icalcomponent_kind kind;
-	icalproperty_method method;
+	icalproperty_method toplevel_method, method;
 	icalcomponent *subcomp;
 	GList *comps, *del_comps, *l;
 	ECalComponent *comp;
@@ -2248,10 +2244,17 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		/* If its not a VCALENDAR, make it one to simplify below */
 		icalcomp = toplevel_comp;
 		toplevel_comp = e_cal_util_new_top_level ();
-		icalcomponent_add_component (toplevel_comp, icalcomp);	
+		if (icalcomponent_get_method (icalcomp) == ICAL_METHOD_CANCEL)
+			icalcomponent_set_method (toplevel_comp, ICAL_METHOD_CANCEL);
+		else
+			icalcomponent_set_method (toplevel_comp, ICAL_METHOD_PUBLISH);
+		icalcomponent_add_component (toplevel_comp, icalcomp);
+	} else {
+		if (!icalcomponent_get_first_property (toplevel_comp, ICAL_METHOD_PROPERTY))
+			icalcomponent_set_method (toplevel_comp, ICAL_METHOD_PUBLISH);
 	}
 
-	method = icalcomponent_get_method (toplevel_comp);
+	toplevel_method = icalcomponent_get_method (toplevel_comp);
 
 	/* Build a list of timezones so we can make sure all the objects have valid info */
 	tzdata.zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -2321,6 +2324,11 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		e_cal_component_get_uid (comp, &uid);
 		rid = e_cal_component_get_recurid_as_string (comp);
 
+		if (icalcomponent_get_first_property (subcomp, ICAL_METHOD_PROPERTY))
+			method = icalcomponent_get_method (subcomp);
+		else
+			method = toplevel_method;
+
 		switch (method) {
 		case ICAL_METHOD_PUBLISH:
 		case ICAL_METHOD_REQUEST:
@@ -2331,7 +2339,10 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 			if (obj_data) {
 				old_object = e_cal_component_get_as_string (obj_data->full_object);
-				remove_component (cbfile, uid, obj_data);
+				if (rid)
+					remove_instance (cbfile, obj_data, rid);
+				else
+					remove_component (cbfile, uid, obj_data);
 				add_component (cbfile, comp, FALSE);
 
 				object = e_cal_component_get_as_string (comp);
