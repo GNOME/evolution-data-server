@@ -1,3 +1,11 @@
+2004-10-08  Chenthill Palanisamy <pchenthill@novell.com>
+ 
+	Fixes #65200
+	* e-gw-connection.c (e_gw_connection_dispose), 
+	(e_gw_connection_finalize):
+	Remove the connection from the hash table in dispose
+	method.
+
 2004-10-07  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #62868
