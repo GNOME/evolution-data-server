@@ -1,3 +1,16 @@
+2005-02-22 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_create_contact) : Return permission denied 
+	error when the book is read only. In case of read/write books
+	Make sure that server returns proper id for created contact.
+	(e_book_backend_groupwise_modify_contact) 
+	(e_book_backend_groupwise_remove_contacts) : Return 
+	permission denied in case of read only book.
+	Also use cursor version of update_cache instead of getItems
+	one 
+	Fixes #72806
+	
 2005-02-19 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libebook/e-vcard.c (e_vcard_remove_attributes) :

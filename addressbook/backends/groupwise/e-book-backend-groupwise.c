@@ -1126,6 +1126,10 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 			e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 			return;
 		}
+		if (!egwb->priv->is_writable) {
+			e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_PermissionDenied, NULL);
+			return;
+		}
 		contact = e_contact_new_from_vcard(vcard);
 		item = e_gw_item_new_empty ();
 		e_gw_item_set_item_type (item, e_contact_get (contact, E_CONTACT_IS_LIST) ? E_GW_ITEM_TYPE_GROUP :E_GW_ITEM_TYPE_CONTACT);
@@ -1158,7 +1162,9 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 		status = e_gw_connection_create_item (egwb->priv->cnc, item, &id);  
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION) 
 			status = e_gw_connection_create_item (egwb->priv->cnc, item, &id);  
-		if (status == E_GW_CONNECTION_STATUS_OK) {
+
+		/* Make sure server has returned  an id for the created contact */
+		if (status == E_GW_CONNECTION_STATUS_OK && id) {
 			e_contact_set (contact, E_CONTACT_UID, id);
 			g_free (id);
 			e_book_backend_cache_add_contact (egwb->priv->cache, contact);
@@ -1196,6 +1202,11 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 		
 		if (ebgw->priv->cnc == NULL) {
 			e_data_book_respond_remove_contacts (book, opid, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
+			return;
+		}
+		
+		if (!ebgw->priv->is_writable) {
+			e_data_book_respond_remove_contacts (book, opid, GNOME_Evolution_Addressbook_PermissionDenied, NULL);
 			return;
 		}
 		
@@ -1287,7 +1298,10 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 			e_data_book_respond_modify (book, opid, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 			return;
 		}
-
+		if (!egwb->priv->is_writable) {
+			e_data_book_respond_modify (book, opid, GNOME_Evolution_Addressbook_PermissionDenied, NULL);
+			return;
+		}
 		contact = e_contact_new_from_vcard(vcard);
 		new_item = e_gw_item_new_empty ();
 
@@ -2119,7 +2133,7 @@ e_book_backend_groupwise_get_changes (EBookBackend *backend,
 
 
 #define CURSOR_ITEM_LIMIT 100
-
+/*
 static gpointer
 build_cache (EBookBackendGroupwise *ebgw)
 {
@@ -2153,35 +2167,35 @@ build_cache (EBookBackendGroupwise *ebgw)
 	
 	
 	return NULL;
-}
+}*/
 
 /*FIXME using cursors for address book seems to be crashing server 
 till it gets fixed we will use get items. cursor implementation is below */
-/*
+
 static gpointer
 build_cache (EBookBackendGroupwise *ebgw)
 {
 	int status;
-	GList *gw_items = NULL;
+	GList *gw_items = NULL, *l;
 	EContact *contact;
 	int cursor;
 	gboolean done = FALSE;
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
 	
 	
-	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "members", NULL, &cursor);
+	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, NULL, NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) 
 		return FALSE;
 	while (!done) {
 
 		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, &gw_items);
 
-		for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
+		for (l = gw_items; l != NULL; l = g_list_next (l)) { 
 			contact = e_contact_new ();
-			fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), ebgw->priv->categories_by_id);
+			fill_contact_from_gw_item (contact, E_GW_ITEM (l->data), ebgw->priv->categories_by_id);
 			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
 			g_object_unref(contact);
-			g_object_unref (gw_items->data);
+			g_object_unref (l->data);
 			
 		}
 		if (!gw_items  || g_list_length (gw_items) == 0) {
@@ -2191,11 +2205,12 @@ build_cache (EBookBackendGroupwise *ebgw)
 		}
 	       	
 		g_list_free (gw_items);
+		gw_items = NULL;
 	}
 	
 	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
 	return NULL;
-}*/
+}
 
 static gboolean
 update_cache (EBookBackendGroupwise *ebgw)
