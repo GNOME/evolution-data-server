@@ -1,5 +1,11 @@
 2005-02-06 Sivaiah Nallagatla <snallagatla@novell.com>
 
+	* libebook/e-contact.h  :  place the E_CONTACT_REV 
+	field before E_CONTACT_NAME_ORG. It seems 
+	all strings fields should be before that, doh 
+
+2005-02-06 Sivaiah Nallagatla <snallagatla@novell.com>
+
 	* libebook/e-contact.[ch] : Added 
 	new field E_CONTACT_REV which reprsnets
 	the revision (last updated time of the contact)
