@@ -50,6 +50,7 @@ struct _EGwItemPrivate {
 	char *priority;
 	char *place;
 	GSList *recipient_list;
+	int trigger; /* alarm */
 
 	/* properties for tasks/calendars */
 	char *icalid;
@@ -285,6 +286,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->start_date = -1;
 	priv->end_date = -1;
 	priv->due_date = -1;
+	priv->trigger = 0;
 	priv->im_list = NULL;
 	priv->email_list = NULL;
 	priv->member_list = NULL;
@@ -1246,6 +1248,17 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 
 		} else if (!g_ascii_strcasecmp (name, "subject"))
 			item->priv->subject = soup_soap_parameter_get_string_value (child);
+		else if (!g_ascii_strcasecmp (name, "alarm")) {
+			const char *enabled;
+			enabled = soup_soap_parameter_get_property (child, "enabled");
+			if (!g_ascii_strcasecmp (enabled, "true") ) {
+				const char *value;
+				value = soup_soap_parameter_get_string_value (child);
+				/* convert it into integer */
+				item->priv->trigger = atoi (value);
+				g_free (value);
+			}
+		}
 		
 	}
 
@@ -1510,6 +1523,22 @@ e_gw_item_set_priority (EGwItem *item, const char *new_priority)
 	item->priv->priority = g_strdup (new_priority);
 }
 
+int
+e_gw_item_get_trigger (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->trigger;
+}
+
+void
+e_gw_item_set_trigger (EGwItem *item, int trigger)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->trigger = trigger;
+}
+
 static char *
 timet_to_string (time_t t)
 {
@@ -1526,6 +1555,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv;
 	char *dtstring;
+	char *alarm;
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), FALSE);
@@ -1541,8 +1571,14 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
 		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
 		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");
+		if (priv->trigger != 0) {
+			alarm = g_strdup_printf ("%d", priv->trigger);
+			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "true");
+			g_free (alarm);
+		}
 		/* FIXME: distribution */
 		break;
+
 	case E_GW_ITEM_TYPE_TASK :
 		soup_soap_message_add_attribute (msg, "type", "Task", "xsi", NULL);
 

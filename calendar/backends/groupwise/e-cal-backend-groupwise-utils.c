@@ -54,6 +54,19 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 		e_cal_component_get_location (comp, &location);
 		e_gw_item_set_place (item, location);
 
+		/* alarms */
+		if (e_cal_component_has_alarms (comp)) {
+			ECalComponentAlarm *alarm;
+			ECalComponentAlarmTrigger trigger;
+			int duration;
+			GList *l = e_cal_component_get_alarm_uids (comp);
+
+			alarm = e_cal_component_get_alarm (comp, l->data);
+			e_cal_component_alarm_get_trigger (alarm, &trigger);
+			duration = abs (icaldurationtype_as_int (trigger.u.rel_duration));
+			e_gw_item_set_trigger (item, duration);
+		}
+		
 		/* FIXME: attendee list, set_distribution */
 		break;
 
@@ -211,6 +224,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 	time_t t;
 	struct icaltimetype itt;
 	int priority;
+	int alarm_duration;
 	EGwItemType item_type;
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
@@ -310,6 +324,21 @@ e_gw_item_to_cal_component (EGwItem *item)
 
 		/* location */
 		e_cal_component_set_location (comp, e_gw_item_get_place (item));
+
+		/* alarms*/
+		/* we negate the value as GW supports only "before" the start of event alarms */
+		alarm_duration = 0 - e_gw_item_get_trigger (item);
+		if (alarm_duration != 0) {
+			ECalComponentAlarm *alarm;
+			ECalComponentAlarmTrigger trigger;
+			
+			alarm = e_cal_component_alarm_new ();
+			e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
+			trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
+			trigger.u.rel_duration = (struct icaldurationtype) icaldurationtype_from_int (alarm_duration);
+			e_cal_component_alarm_set_trigger (alarm, trigger);
+			e_cal_component_add_alarm (comp, alarm);
+		}
 
 		/* FIXME: attendee list, get_distribution */
 		break;

@@ -1,3 +1,14 @@
+2004-04-27  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #56535.
+
+	* e-gw-item.c: (e_gw_item_init),
+	(e_gw_item_new_from_soap_parameter), (e_gw_item_get_trigger),
+	(e_gw_item_set_trigger), (e_gw_item_append_to_soap_message):
+	Added support for saving Alarms in the GW server as well as 
+	read the alarm information during retrieval.
+	* e-gw-item.h: Added get/set functions for alarm trigger.
+
 2004-04-23 Sivaiah Nallagatla   <snallagatla@novell.com>
 	
 	* e_gw_item.c ( append_group_fields_to_soap_message) : add id, distType

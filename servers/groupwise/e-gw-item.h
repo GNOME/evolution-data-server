@@ -160,6 +160,9 @@ void        e_gw_item_set_accept_level (EGwItem *item, const char *new_level);
 const char *e_gw_item_get_priority (EGwItem *item);
 void        e_gw_item_set_priority (EGwItem *item, const char *new_priority);
 
+int e_gw_item_get_trigger (EGwItem *item);
+void e_gw_item_set_trigger (EGwItem *item, int trigger);
+
 typedef struct {
 	char *email;
 	char *display_name;

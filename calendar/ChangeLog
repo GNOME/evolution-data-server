@@ -1,3 +1,13 @@
+2004-04-27  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #56535
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component):
+	Added support for saving Alarms in the GW server as well as 
+	read the alarm information during retrieval.
+
+
 2004-04-23  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* libedata-cal/e-data-cal.c (e_data_cal_notify_changes): Fixed a
