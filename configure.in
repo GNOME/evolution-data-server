@@ -1,7 +1,7 @@
  Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 0.0.1)
+AC_INIT(evolution-data-server, 0.0.2)
 AC_CONFIG_SRCDIR(README)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
@@ -196,7 +196,7 @@ AC_SUBST(EVOLUTION_CALENDAR_LIBS)
 
 dnl --- Groupwise flags
 
-EVO_SET_COMPILE_FLAGS(GROUPWISE, libsoup-2.2 >= 2.1.1)
+EVO_SET_COMPILE_FLAGS(GROUPWISE, libsoup-2.2 >= 2.1.2)
 AC_SUBST(GROUPWISE_CFLAGS)
 AC_SUBST(GROUPWISE_LIBS)
 
