@@ -1,3 +1,7 @@
+2005-02-14  JP Rosevear  <jpr@novell.com>
+
+	* e-gw-connection.h: re-order enums to prevent abi breakage
+
 2004-02-14  Sivaiah Nallagatla   <snallagatla@novell.com>
 
 	* e-gw-connection.h : place _INVALID_CONNECTION
