@@ -308,16 +308,15 @@ impl_notifyObjectsReceived (PortableServer_Servant servant,
 
 static void
 impl_notifyObjectsSent (PortableServer_Servant servant,
-			GNOME_Evolution_Calendar_CallStatus status,
-			GNOME_Evolution_Calendar_UserList *user_list,
-			const CORBA_char *modified_calobj,
+			const GNOME_Evolution_Calendar_CallStatus status,
+			const GNOME_Evolution_Calendar_UserList *user_list,
+			const CORBA_char *calobj,
 			CORBA_Environment *ev)
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	int i;
-	icalcomponent *icalcomp = NULL;
 	GList *users = NULL;
+	int i;
 
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
@@ -328,13 +327,10 @@ impl_notifyObjectsSent (PortableServer_Servant servant,
 	for (i = 0; i < user_list->_length; i++)
 		users = g_list_append (users, g_strdup (user_list->_buffer[i]));
 
-	icalcomp = icalparser_parse_string (modified_calobj);
-
-	g_signal_emit (G_OBJECT (listener), signals[SEND_OBJECTS], 0, convert_status (status), users, icalcomp);
+	g_signal_emit (G_OBJECT (listener), signals[SEND_OBJECTS], 0, convert_status (status), users, calobj);
 
 	g_list_foreach (users, (GFunc) g_free, NULL);
 	g_list_free (users);
-	icalcomponent_free (icalcomp);
 }
 
 static void 
@@ -843,8 +839,8 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, send_objects),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT_POINTER_POINTER,
-			      G_TYPE_NONE, 3, G_TYPE_INT, G_TYPE_POINTER, G_TYPE_POINTER);
+			      e_cal_marshal_VOID__INT_POINTER_STRING,
+			      G_TYPE_NONE, 3, G_TYPE_INT, G_TYPE_POINTER, G_TYPE_STRING);
 	signals[DEFAULT_OBJECT] =
 		g_signal_new ("default_object",
 			      G_TYPE_FROM_CLASS (klass),

@@ -1,3 +1,23 @@
+2004-05-03  JP Rosevear  <jpr@ximian.com>
+
+	Partial fix for #57218
+	
+	* libecal/e-cal.c (cal_objects_sent_cb): copy the object string
+	(e_cal_get_default_object): check the status explicitly
+	(e_cal_get_object): ditto
+	(e_cal_get_timezone): ditto
+	(e_cal_send_objects): parse the string here so we can handle bad
+	parsing properly
+
+	* libecal/e-cal-marshal.list: replace marshaller signature
+
+	* libecal/e-cal-listener.h: update signal proto
+
+	* libecal/e-cal-listener.c (impl_notifyObjectsSent): send back
+	just the text like other similar routines
+	(e_cal_listener_class_init): send back a string as the third arg
+	in the send_objects signal
+
 2004-04-30  Dan Winship  <danw@ximian.com>
 
 	* libecal/e-cal-component.c (get_attendee_list): Fill in some

@@ -67,7 +67,7 @@ typedef struct {
 	void (*discard_alarm) (ECalListener *listener, ECalendarStatus status);
 
  	void (*receive_objects) (ECalListener *listener, ECalendarStatus status);
- 	void (*send_objects) (ECalListener *listener, ECalendarStatus status, GList *users, icalcomponent *modified_icalcomp);
+ 	void (*send_objects) (ECalListener *listener, ECalendarStatus status, GList *users, const char *object);
 
 	void (*default_object) (ECalListener *listener, ECalendarStatus status, const char *object);
 	void (*object) (ECalListener *listener, ECalendarStatus status, const char *object);

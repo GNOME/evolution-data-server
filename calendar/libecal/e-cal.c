@@ -48,7 +48,6 @@ typedef struct {
 	GList *list;
 	gboolean bool;
 	char *string;
-	icalcomponent *icalcomp;
 
 	ECalView *query;
 	ECalViewListener *listener;
@@ -626,7 +625,7 @@ cal_objects_received_cb (ECalListener *listener, ECalendarStatus status, gpointe
 }
 
 static void
-cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *users, icalcomponent *modified_icalcomp, gpointer data)
+cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *users, const char *object, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -642,10 +641,7 @@ cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *user
 
 	op->status = status;
 	op->list = g_list_copy (users);
-	if (modified_icalcomp)
-		op->icalcomp = icalcomponent_new_clone (modified_icalcomp);
-	else
-		op->icalcomp = NULL;
+	op->string = g_strdup (object);
 
 	g_cond_signal (op->cond);
 
@@ -2352,7 +2348,7 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-        if (status) {
+        if (status != E_CALENDAR_STATUS_OK) {
                 *icalcomp = NULL;
         } else {
                 *icalcomp = icalparser_parse_string (our_op->string);
@@ -2434,7 +2430,7 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-        if (status) {
+        if (status != E_CALENDAR_STATUS_OK){ 
                 *icalcomp = NULL;
         } else {
                 *icalcomp = icalparser_parse_string (our_op->string);
@@ -3679,7 +3675,19 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 
 	status = our_op->status;
 	*users = our_op->list;
-	*modified_icalcomp = our_op->icalcomp;
+	if (status != E_CALENDAR_STATUS_OK) {
+		*modified_icalcomp = NULL;
+		g_list_foreach (*users, (GFunc) g_free, NULL);
+		*users = NULL;
+	} else {
+		*modified_icalcomp = icalparser_parse_string (our_op->string);
+		if (!(*modified_icalcomp)) {
+			status = E_CALENDAR_STATUS_INVALID_OBJECT;
+			g_list_foreach (*users, (GFunc) g_free, NULL);
+			*users = NULL;
+		}		
+	}
+	g_free (our_op->string);
 	
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
@@ -3772,8 +3780,8 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	   successful response will notity us via our cv */
 	g_cond_wait (our_op->cond, our_op->mutex);
 
-	status = our_op->status;	
-        if (status) {
+	status = our_op->status;
+        if (status != E_CALENDAR_STATUS_OK){ 
                 icalcomp = NULL;
         } else {
                 icalcomp = icalparser_parse_string (our_op->string);
