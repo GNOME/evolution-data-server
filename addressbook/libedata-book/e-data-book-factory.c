@@ -107,6 +107,17 @@ e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
 			     g_strdup (proto), backend_factory);
 }
 
+static void
+out_of_proc_check (gpointer key, gpointer value, gpointer data)
+{
+	gboolean *out_of_proc = data;
+
+	if ((*out_of_proc))
+	    return;
+
+	*out_of_proc = e_book_backend_has_out_of_proc_clients (value);
+}
+
 /**
  * e_data_book_factory_get_n_backends:
  * @factory: An addressbook factory.
@@ -119,12 +130,18 @@ int
 e_data_book_factory_get_n_backends (EDataBookFactory *factory)
 {
 	int n_backends;
-
+	gboolean out_of_proc = FALSE;
+	
 	g_return_val_if_fail (factory != NULL, -1);
 	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (factory), -1);
 
 	g_mutex_lock (factory->priv->map_mutex);
-	n_backends = g_hash_table_size (factory->priv->active_server_map);
+	g_hash_table_foreach (factory->priv->active_server_map, out_of_proc_check, &out_of_proc);
+
+	if (!out_of_proc)
+		n_backends = 0;
+	else
+		n_backends = g_hash_table_size (factory->priv->active_server_map);
 	g_mutex_unlock (factory->priv->map_mutex);
 
 	return n_backends;

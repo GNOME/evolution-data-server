@@ -91,6 +91,7 @@ gboolean    e_book_backend_add_client               (EBookBackend             *b
 						     EDataBook                *book);
 void        e_book_backend_remove_client            (EBookBackend             *backend,
 						     EDataBook                *book);
+gboolean    e_book_backend_has_out_of_proc_clients (EBookBackend *backend);
 char       *e_book_backend_get_static_capabilities  (EBookBackend             *backend);
 
 gboolean    e_book_backend_is_loaded                (EBookBackend             *backend);
