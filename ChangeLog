@@ -1,5 +1,9 @@
 2003-11-04  JP Rosevear <jpr@ximian.com>
 
+	* MAINTAINERS, TODO: update
+
+2003-11-04  JP Rosevear <jpr@ximian.com>
+
 	* src/server-interface-check.h: use G_*_DECLS and include the data
 	server stub
 	

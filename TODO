@@ -1,4 +1,3 @@
--libtool versioning
 -switch e-mutex to gthreads
 -ensure class/type macros
 -ensure header formatting
