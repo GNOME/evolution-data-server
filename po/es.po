@@ -13,14 +13,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-28 20:02+0100\n"
+"POT-Creation-Date: 2004-03-05 12:35-0500\n"
 "PO-Revision-Date: 2004-02-28 20:04+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.2\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:385
@@ -137,7 +137,8 @@ msgstr "e_book_get_self: no había uid de autocontacto almacenada en gconf"
 
 #: addressbook/libebook/e-book.c:2319
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 "e_book_set_default_source: no había origen para el uid «%s» almacenado en "
 "gconf."
@@ -769,87 +770,87 @@ msgid "Undefined"
 msgstr "Sin definir"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1459
+#: calendar/libecal/e-cal.c:1465
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduzca su contraseña para %s (usuario %s)"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3930
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3932
 msgid "Backend is busy"
 msgstr "El soporte está ocupado"
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3934
 msgid "Repository is offline"
 msgstr "El repositorio está desconectado"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3936
 msgid "No such calendar"
 msgstr "No existe la agenda"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3938
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3940
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3942
 msgid "URI not loaded"
 msgstr "URI no cargada"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3944
 msgid "URI already loaded"
 msgstr "URI ya cargada"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3946
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3948
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3950
 msgid "Protocol not supported"
 msgstr "Protocolo no implementado"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3952
 msgid "Operation has been cancelled"
 msgstr "La operación ha sido cancelada"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3954
 msgid "Could not cancel operation"
 msgstr "No se pudo cancelar la operación"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3956
 msgid "Authentication failed"
 msgstr "Falló en la autenticación"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3958
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3960
 msgid "A CORBA exception has occurred"
 msgstr "Ha ocurrido una excepción CORBA"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3962
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:3964
 msgid "No error"
 msgstr "Sin errores"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:503
-#: calendar/libedata-cal/e-cal-backend-sexp.c:635
-#: calendar/libedata-cal/e-cal-backend-sexp.c:662
+#: calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: calendar/libedata-cal/e-cal-backend-sexp.c:652
+#: calendar/libedata-cal/e-cal-backend-sexp.c:679
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "«%s» no espera ningún argumento"
@@ -858,14 +859,14 @@ msgstr "«%s» no espera ningún argumento"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:700
+#: calendar/libedata-cal/e-cal-backend-sexp.c:717
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "«%s» espera un argumento"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:449
+#: calendar/libedata-cal/e-cal-backend-sexp.c:464
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "«%s» espera que el primer argumento sea una cadena"
@@ -879,7 +880,7 @@ msgstr ""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:443
+#: calendar/libedata-cal/e-cal-backend-sexp.c:458
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "«%s» espera dos argumentos"
@@ -888,7 +889,7 @@ msgstr "«%s» espera dos argumentos"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
 #: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:706
+#: calendar/libedata-cal/e-cal-backend-sexp.c:723
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "«%s» espera que el primer argumento sea de tipo time_t"
@@ -903,24 +904,25 @@ msgstr "«%s» espera que el segundo argumento sea un entero"
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "«%s» espera que el segundo argumento sea de tipo time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:457
+#: calendar/libedata-cal/e-cal-backend-sexp.c:472
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "«%s» espera que el segundo argumento sea una cadena"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:475
-#, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:492
+#, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\""
-msgstr "«%s» espera que el primer argumento sea «any», «summary» ó «description»"
+"\"description\", or \"location\""
+msgstr ""
+"«%s» espera que el primer argumento sea «any», «summary» ó «description»"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:537
+#: calendar/libedata-cal/e-cal-backend-sexp.c:554
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "«%s» espera al menos un argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:551
+#: calendar/libedata-cal/e-cal-backend-sexp.c:568
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -941,4 +943,3 @@ msgstr "Soporte de agenda y webcal de Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Soporte de libretas de direcciones en archivo local de Evolution"
-

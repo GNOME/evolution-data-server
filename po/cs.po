@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-03 03:20+0100\n"
+"POT-Creation-Date: 2004-03-05 12:35-0500\n"
 "PO-Revision-Date: 2004-03-03 13:29+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:385
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -904,7 +904,9 @@ msgstr "\"%s\" očekává jako druhý parametr řetězec"
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr "\"%s\" očekává jako první parametr jedno z \"any\", \"summary\", \"description\" nebo \"location\""
+msgstr ""
+"\"%s\" očekává jako první parametr jedno z \"any\", \"summary\", "
+"\"description\" nebo \"location\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:554
 #, c-format

@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.4.1\n"
-"POT-Creation-Date: 2004-02-20 01:07-0500\n"
+"POT-Creation-Date: 2004-03-05 12:35-0500\n"
 "PO-Revision-Date: 2003-02-02 12:41+0100\n"
 "Last-Translator: Søren Boll Overgaard <boll@debian.org>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -70,83 +70,83 @@ msgstr "Fejl ved søgning"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:218 addressbook/libebook/e-book.c:330
-#: addressbook/libebook/e-book.c:415 addressbook/libebook/e-book.c:517
-#: addressbook/libebook/e-book.c:630 addressbook/libebook/e-book.c:714
-#: addressbook/libebook/e-book.c:817 addressbook/libebook/e-book.c:871
-#: addressbook/libebook/e-book.c:970 addressbook/libebook/e-book.c:1104
-#: addressbook/libebook/e-book.c:1205 addressbook/libebook/e-book.c:1445
-#: addressbook/libebook/e-book.c:2045
+#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
+#: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
+#: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
+#: addressbook/libebook/e-book.c:819 addressbook/libebook/e-book.c:873
+#: addressbook/libebook/e-book.c:972 addressbook/libebook/e-book.c:1106
+#: addressbook/libebook/e-book.c:1207 addressbook/libebook/e-book.c:1447
+#: addressbook/libebook/e-book.c:2047
 #, fuzzy, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" i \"%s\""
 
-#: addressbook/libebook/e-book.c:226 addressbook/libebook/e-book.c:338
-#: addressbook/libebook/e-book.c:423 addressbook/libebook/e-book.c:526
-#: addressbook/libebook/e-book.c:638 addressbook/libebook/e-book.c:722
-#: addressbook/libebook/e-book.c:825 addressbook/libebook/e-book.c:879
-#: addressbook/libebook/e-book.c:978 addressbook/libebook/e-book.c:1112
-#: addressbook/libebook/e-book.c:1213 addressbook/libebook/e-book.c:1453
+#: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
+#: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
+#: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
+#: addressbook/libebook/e-book.c:827 addressbook/libebook/e-book.c:881
+#: addressbook/libebook/e-book.c:980 addressbook/libebook/e-book.c:1114
+#: addressbook/libebook/e-book.c:1215 addressbook/libebook/e-book.c:1455
 msgid "book busy"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:365
-#: addressbook/libebook/e-book.c:445 addressbook/libebook/e-book.c:549
-#: addressbook/libebook/e-book.c:664 addressbook/libebook/e-book.c:745
-#: addressbook/libebook/e-book.c:911 addressbook/libebook/e-book.c:1022
-#: addressbook/libebook/e-book.c:1140 addressbook/libebook/e-book.c:1237
-#: addressbook/libebook/e-book.c:1371 addressbook/libebook/e-book.c:1475
-#: addressbook/libebook/e-book.c:2054
+#: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
+#: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
+#: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
+#: addressbook/libebook/e-book.c:913 addressbook/libebook/e-book.c:1024
+#: addressbook/libebook/e-book.c:1142 addressbook/libebook/e-book.c:1239
+#: addressbook/libebook/e-book.c:1373 addressbook/libebook/e-book.c:1477
+#: addressbook/libebook/e-book.c:2056
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1352
+#: addressbook/libebook/e-book.c:1354
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "Afbryd aktiv e-post-operation"
 
-#: addressbook/libebook/e-book.c:1387
+#: addressbook/libebook/e-book.c:1389
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1746
+#: addressbook/libebook/e-book.c:1748
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1873
+#: addressbook/libebook/e-book.c:1757 addressbook/libebook/e-book.c:1875
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1768
+#: addressbook/libebook/e-book.c:1770
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1867
+#: addressbook/libebook/e-book.c:1869
 msgid "e_book_load_uri: cancelled"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1904
+#: addressbook/libebook/e-book.c:1906
 #, fuzzy, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" i \"%s\""
 
-#: addressbook/libebook/e-book.c:2140
+#: addressbook/libebook/e-book.c:2142
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2317
+#: addressbook/libebook/e-book.c:2319
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:97
+#: addressbook/libebook/e-contact.c:99
 msgid "Unique ID"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:98
+#: addressbook/libebook/e-contact.c:100
 msgid "File As"
 msgstr "Gem som"
 
@@ -154,427 +154,455 @@ msgstr "Gem som"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:104
+#: addressbook/libebook/e-contact.c:106
 msgid "Full Name"
 msgstr "Fulde navn"
 
-#: addressbook/libebook/e-contact.c:105
+#: addressbook/libebook/e-contact.c:107
 msgid "Name"
 msgstr "Navn"
 
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:108
 #, fuzzy
 msgid "Given Name"
 msgstr "Feltnavn"
 
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:109
 msgid "Family Name"
 msgstr "Efternavn"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:110
 msgid "Nickname"
 msgstr "Kaldenavn"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:111
 msgid "Name or Org"
 msgstr ""
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 #, fuzzy
 msgid "Address List"
 msgstr "Adresse"
 
-#: addressbook/libebook/e-contact.c:113
+#: addressbook/libebook/e-contact.c:115
 msgid "Home Address"
 msgstr "Hjemmeadresse"
 
-#: addressbook/libebook/e-contact.c:114
+#: addressbook/libebook/e-contact.c:116
 #, fuzzy
 msgid "Work Address"
 msgstr "Hjemmeadresse"
 
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:117
 msgid "Other Address"
 msgstr "Anden adresse"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:119
 #, fuzzy
 msgid "Home Address Label"
 msgstr "Adresseetikette"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:120
 #, fuzzy
 msgid "Work Address Label"
 msgstr "Adresseetikette"
 
-#: addressbook/libebook/e-contact.c:119
+#: addressbook/libebook/e-contact.c:121
 #, fuzzy
 msgid "Other Address Label"
 msgstr "Adresseetikette"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:123
 msgid "Assistant Phone"
 msgstr "Assistents telefon"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:124
 msgid "Business Phone"
 msgstr "Arbejdstelefon"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:125
 msgid "Business Phone 2"
 msgstr "Arbejdstelefon 2"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:126
 msgid "Business Fax"
 msgstr "Fax på arbejde"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:127
 msgid "Callback Phone"
 msgstr "Telefon for tilbageringing"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:128
 msgid "Car Phone"
 msgstr "Biltelefon"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Company Phone"
 msgstr "Firmatelefon"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Home Phone"
 msgstr "Hjemmetelefon"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Home Phone 2"
 msgstr "Hjemmetelefon 2"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Home Fax"
 msgstr "Fax hjemme"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:133
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Mobile Phone"
 msgstr "Mobiltelefon"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:135
 msgid "Other Phone"
 msgstr "Anden telefon"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:136
 msgid "Other Fax"
 msgstr "Anden fax"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Pager"
 msgstr "Personsøger"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Primary Phone"
 msgstr "Primær telefon"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Radio"
 msgstr "Radio"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:140
 msgid "Telex"
 msgstr "Telex"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:141
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 #, fuzzy
 msgid "Email List"
 msgstr "E-post 2"
 
-#: addressbook/libebook/e-contact.c:143
+#: addressbook/libebook/e-contact.c:145
 #, fuzzy
 msgid "Email 1"
 msgstr "E-post 3"
 
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:146
 msgid "Email 2"
 msgstr "E-post 2"
 
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:147
 msgid "Email 3"
 msgstr "E-post 3"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:148
 msgid "Mailer"
 msgstr "E-postprogram"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:149
 #, fuzzy
 msgid "Wants HTML Mail"
 msgstr "Ønsker HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "AIM Screen Name List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:151
-#, fuzzy
-msgid "Jabber Id List"
-msgstr "Navnløs liste"
-
-#: addressbook/libebook/e-contact.c:152
-msgid "Yahoo! Screen Name List"
-msgstr ""
-
 #: addressbook/libebook/e-contact.c:153
-msgid "MSN Screen Name List"
+msgid "Groupwise Id List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:154
 #, fuzzy
-msgid "ICQ Id List"
-msgstr "Er ny liste"
+msgid "Jabber Id List"
+msgstr "Navnløs liste"
+
+#: addressbook/libebook/e-contact.c:155
+msgid "Yahoo! Screen Name List"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:156
-msgid "AIM Home Screen Name 1"
+msgid "MSN Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:157
-msgid "AIM Home Screen Name 2"
-msgstr ""
-
-#: addressbook/libebook/e-contact.c:158
-msgid "AIM Home Screen Name 3"
-msgstr ""
+#, fuzzy
+msgid "ICQ Id List"
+msgstr "Er ny liste"
 
 #: addressbook/libebook/e-contact.c:159
-msgid "AIM Work Screen Name 1"
+msgid "AIM Home Screen Name 1"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:160
-msgid "AIM Work Screen Name 2"
+msgid "AIM Home Screen Name 2"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:161
-msgid "AIM Work Screen Name 3"
+msgid "AIM Home Screen Name 3"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:162
+msgid "AIM Work Screen Name 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:163
+msgid "AIM Work Screen Name 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:164
+msgid "AIM Work Screen Name 3"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:165
+msgid "Groupwise Home Screen Name 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:166
+msgid "Groupwise Home Screen Name 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Groupwise Home Screen Name 3"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Groupwise Work Screen Name 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Groupwise Work Screen Name 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Groupwise Work Screen Name 3"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:171
 #, fuzzy
 msgid "Jabber Home Id 1"
 msgstr "Navnløs liste"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:172
 #, fuzzy
 msgid "Jabber Home Id 2"
 msgstr "Navnløs liste"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:173
 #, fuzzy
 msgid "Jabber Home Id 3"
 msgstr "Navnløs liste"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:174
 #, fuzzy
 msgid "Jabber Work Id 1"
 msgstr "Navnløs liste"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:175
 #, fuzzy
 msgid "Jabber Work Id 2"
 msgstr "Navnløs liste"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:176
 #, fuzzy
 msgid "Jabber Work Id 3"
 msgstr "Navnløs liste"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:177
 msgid "Yahoo! Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:178
 msgid "Yahoo! Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:183
 msgid "MSN Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:184
 msgid "MSN Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:189
 msgid "ICQ Home Id 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:190
 #, fuzzy
 msgid "ICQ Home Id 2"
 msgstr "Hjemme 2"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Work Id 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Work Id 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 3"
 msgstr ""
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:197
 msgid "Organization"
 msgstr "Organisation"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:198
 msgid "Organizational Unit"
 msgstr "Organisationsenhed"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:199
 msgid "Office"
 msgstr "Kontor"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:201
 msgid "Title"
 msgstr "Titel"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:202
 msgid "Role"
 msgstr "Rolle"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:203
 msgid "Manager"
 msgstr "Leder"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:204
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:207
 msgid "Homepage URL"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:208
 msgid "Weblog URL"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:209
 msgid "Video Conferencing URL"
 msgstr ""
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:212
 #, fuzzy
 msgid "Photo"
 msgstr "Porto"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:213
 #, fuzzy
 msgid "Logo"
 msgstr "Togo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:216
 #, fuzzy
 msgid "X.509 Certificate"
 msgstr "_Certifikat-ID:"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:219
 msgid "Category List"
 msgstr "Kategoriliste"
 
-#: addressbook/libebook/e-contact.c:211
+#: addressbook/libebook/e-contact.c:220
 msgid "Categories"
 msgstr "Kategorier"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:223
 msgid "Calendar URI"
 msgstr "Kalender URI"
 
-#: addressbook/libebook/e-contact.c:215
+#: addressbook/libebook/e-contact.c:224
 msgid "Free/Busy URL"
 msgstr "Ledig/Optaget-URL"
 
-#: addressbook/libebook/e-contact.c:216
+#: addressbook/libebook/e-contact.c:225
 msgid "ICS Calendar"
 msgstr "ICS-kalender"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:228
 #, fuzzy
 msgid "Spouse's Name"
 msgstr "Ægtefælle"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:229
 msgid "Note"
 msgstr "Kommentar"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:231
 msgid "Birth Date"
 msgstr "Fødselsdato"
 
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:232
 msgid "Anniversary"
 msgstr "Bryllupsdag"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:234
 msgid "List"
 msgstr "Liste"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:235
 msgid "List Show Addresses"
 msgstr "Vis visningsadresser"
 
-#: addressbook/libebook/e-contact.c:1218
+#: addressbook/libebook/e-contact.c:1201
 msgid "Unnamed List"
 msgstr "Navnløs liste"
 
@@ -768,96 +796,96 @@ msgid "Undefined"
 msgstr "Udefineret"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1459
+#: calendar/libecal/e-cal.c:1465
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%sAngiv adgangskode for %s (bruger %s)"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3930
 msgid "Invalid argument"
 msgstr "Ugyldige argumenter"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3932
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3934
 #, fuzzy
 msgid "Repository is offline"
 msgstr "\"Offline\" lager"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3936
 #, fuzzy
 msgid "No such calendar"
 msgstr "Mappen %s eksisterer ikke"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3938
 #, fuzzy
 msgid "Object not found"
 msgstr "Objektet kunne ikke findes\n"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3940
 #, fuzzy
 msgid "Invalid object"
 msgstr "Ugyldigt formål"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3942
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook ikke indlæst\n"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3944
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3946
 msgid "Permission denied"
 msgstr "Tilgang nægtet"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3948
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "Kort-ID eksisterer allerede"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3950
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke understøttet"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3952
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operation afbrudt"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3954
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Aflys operation"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3956
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Godkendelse mislykkedes."
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3958
 msgid "Authentication required"
 msgstr "Autenticering kræves"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3960
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3962
 msgid "Unknown error"
 msgstr "Ukendt fejl"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:3964
 msgid "No error"
 msgstr "Ingen fejl"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:503
-#: calendar/libedata-cal/e-cal-backend-sexp.c:635
-#: calendar/libedata-cal/e-cal-backend-sexp.c:662
+#: calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: calendar/libedata-cal/e-cal-backend-sexp.c:652
+#: calendar/libedata-cal/e-cal-backend-sexp.c:679
 #, fuzzy, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "has-categories? forventer mindst 1 argument"
@@ -866,14 +894,14 @@ msgstr "has-categories? forventer mindst 1 argument"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:700
+#: calendar/libedata-cal/e-cal-backend-sexp.c:717
 #, fuzzy, c-format
 msgid "\"%s\" expects one argument"
 msgstr "contains? forventer 2 argumenter"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:449
+#: calendar/libedata-cal/e-cal-backend-sexp.c:464
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "contains? forventer at argument 1 er en streng"
@@ -886,7 +914,7 @@ msgstr ""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:443
+#: calendar/libedata-cal/e-cal-backend-sexp.c:458
 #, fuzzy, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "contains? forventer 2 argumenter"
@@ -895,7 +923,7 @@ msgstr "contains? forventer 2 argumenter"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
 #: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:706
+#: calendar/libedata-cal/e-cal-backend-sexp.c:723
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "time-day-end forventer at argument 1 er af type time_t"
@@ -910,26 +938,26 @@ msgstr "time-add-day forventer at argument 2 er et heltal"
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "time-add-day forventer at argument 1 er en time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:457
+#: calendar/libedata-cal/e-cal-backend-sexp.c:472
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "contains? forventer at argument 2 er en streng"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:475
+#: calendar/libedata-cal/e-cal-backend-sexp.c:492
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\""
+"\"description\", or \"location\""
 msgstr ""
 "contains? forventer at argument 1 er en af \"any\", \"summary\", "
 "\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:537
+#: calendar/libedata-cal/e-cal-backend-sexp.c:554
 #, fuzzy, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "has-categories? forventer mindst 1 argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:551
+#: calendar/libedata-cal/e-cal-backend-sexp.c:568
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -938,41 +966,6 @@ msgstr ""
 "has-categories? forventer at alle argumenter er strenger eller ét, og kun "
 "ét, argument er den booleske værdi falsk (#f)"
 
-#. !/usr/bin/env python
-#. -*- Mode: python -*-
-#. ======================================================================
-#. FILE: Property.py
-#. CREATOR: eric
-#.
-#. DESCRIPTION:
-#.
-#.
-#. $Id$
-#. $Locker$
-#.
-#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
-#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
-#.
-#. This program is free software; you can redistribute it and/or modify
-#. it under the terms of either:
-#.
-#. The LGPL as published by the Free Software Foundation, version
-#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
-#.
-#. Or:
-#.
-#. The Mozilla Public License Version 1.0. You may obtain a copy of
-#. the License at http://www.mozilla.org/MPL/
-#. ======================================================================
-#. def icalerror_supress(arg):
-#. pass
-#. def icalerror_restore(a,b):
-#. pass
-#. Initialize all of the required keys
-#. Get the default kind of value for this property
-#. Use the kind of the existing value
-#. e1=icalerror_supress("MALFORMEDDATA")
-#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 #, fuzzy
 msgid "Evolution Addressbook file and LDAP backend"

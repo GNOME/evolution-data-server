@@ -23,10 +23,6 @@ Handles queries of addressboook data.
 @E_BOOK_QUERY_CONTAINS: 
 @E_BOOK_QUERY_BEGINS_WITH: 
 @E_BOOK_QUERY_ENDS_WITH: 
-@E_BOOK_QUERY_LE: 
-@E_BOOK_QUERY_GT: 
-@E_BOOK_QUERY_GE: 
-@E_BOOK_QUERY_EQ: 
 
 <!-- ##### FUNCTION e_book_query_from_string ##### -->
 <para>
