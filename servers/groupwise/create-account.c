@@ -26,6 +26,12 @@ add_account (const char *conf_key, const char *hostname, const char *username)
 
 	source = e_source_new ("Default", hostname);
 	e_source_group_add_source (group, source, -1);
+
+	e_source_list_sync (source_list, NULL);
+
+	g_object_unref (source);
+	g_object_unref (group);
+	g_object_unref (source_list);
 }
 
 static gboolean

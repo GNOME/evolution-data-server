@@ -1,5 +1,10 @@
 2003-12-04  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/create-account.c: changed to use a main loop,
+	or saving to GConf seems not to work ??
+
+2003-12-04  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/create-account.c (add_account): add the source
 	to the group.
 
