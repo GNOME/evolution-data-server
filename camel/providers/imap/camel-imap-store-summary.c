@@ -48,6 +48,8 @@
 
 #define _PRIVATE(o) (((CamelImapStoreSummary *)(o))->priv)
 
+static void namespace_clear(CamelStoreSummary *s);
+
 static int summary_header_load(CamelStoreSummary *, FILE *);
 static int summary_header_save(CamelStoreSummary *, FILE *);
 
@@ -389,8 +391,6 @@ CamelImapStoreNamespace *camel_imap_store_summary_namespace_new(CamelImapStoreSu
 
 void camel_imap_store_summary_namespace_set(CamelImapStoreSummary *s, CamelImapStoreNamespace *ns)
 {
-	static void namespace_clear(CamelStoreSummary *s);
-
 	d(printf("Setting namesapce to '%s' '%c' -> '%s'\n", ns->full_name, ns->sep, ns->path));
 	namespace_clear((CamelStoreSummary *)s);
 	s->namespace = ns;
