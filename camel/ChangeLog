@@ -1,5 +1,8 @@
 2005-01-19  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/imap4/camel-imap4-command.c: Disable debugging spew
+	unless imap4:command is enabled.
+
 	* camel-offline-folder.c (camel_offline_folder_downsync): Documented.
 
 	* camel-offline-store.c (camel_offline_store_set_network_state):

@@ -39,7 +39,7 @@
 #include "camel-imap4-command.h"
 
 
-#define d(x) x
+#define d(x) (camel_debug ("imap4:command") ? (x) : 0)
 
 
 enum {
@@ -517,8 +517,7 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 		d(fprintf (stderr, "sending: %s ", ic->tag));
 	}
 	
-#if d(!)0
-	{
+	if (camel_debug ("imap4:command")) {
 		int sending = ic->part != ic->parts;
 		unsigned char *eoln, *eob;
 		
@@ -541,7 +540,6 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 			sending = 1;
 		} while (linebuf < eob);
 	}
-#endif
 	
 	linebuf = ic->part->buffer;
 	len = ic->part->buflen;
@@ -634,22 +632,22 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 						goto exception;
 				}
 			} else {
-#if d(!)0
-				fprintf (stderr, "expected anything but this: ");
-				unexpected_token (&token);
-				fprintf (stderr, "\n");
-#endif
+				if (camel_debug ("imap4:command")) {
+					fprintf (stderr, "expected anything but this: ");
+					unexpected_token (&token);
+					fprintf (stderr, "\n");
+				}
 				
 				goto unexpected;
 			}
 			
 			break;
 		} else {
-#if d(!)0
-			fprintf (stderr, "wtf is this: ");
-			unexpected_token (&token);
-			fprintf (stderr, "\n");
-#endif
+			if (camel_debug ("imap4:command")) {
+				fprintf (stderr, "wtf is this: ");
+				unexpected_token (&token);
+				fprintf (stderr, "\n");
+			}
 			
 		unexpected:
 			
