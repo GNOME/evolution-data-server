@@ -622,7 +622,7 @@ dump_common_to_xml_node (ESource *source,
 	ESourcePrivate *priv;
 	gboolean has_color;
 	guint32 color;
-	xmlNodePtr node, properties_node;
+	xmlNodePtr node;
 
 	priv = source->priv;
 
@@ -642,8 +642,12 @@ dump_common_to_xml_node (ESource *source,
 		g_free (color_string);
 	}
 
-	properties_node = xmlNewChild (node, NULL, "properties", NULL);
-	g_hash_table_foreach (priv->properties, (GHFunc) property_dump_cb, properties_node);
+	if (g_hash_table_size (priv->properties) != 0) {
+		xmlNodePtr properties_node;
+
+		properties_node = xmlNewChild (node, NULL, "properties", NULL);
+		g_hash_table_foreach (priv->properties, (GHFunc) property_dump_cb, properties_node);
+	}
 
 	return node;
 }

@@ -85,16 +85,26 @@ load_from_gconf (ESourceList *list)
 
 	for (p = conf_list, pos = 0; p != NULL; p = p->next, pos++) {
 		const char *xml = p->data;
-		xmlDocPtr xmldoc = xmlParseDoc ((char *) xml);
-		char *group_uid = e_source_group_uid_from_xmldoc (xmldoc);
+		xmlDocPtr xmldoc;
+		char *group_uid;
 		ESourceGroup *existing_group;
 
-		if (group_uid == NULL)
+		xmldoc = xmlParseDoc ((char *) xml);
+		if (xmldoc == NULL)
 			continue;
 
-		existing_group = e_source_list_peek_group_by_uid (list, group_uid);
-		if (g_hash_table_lookup (new_groups_hash, existing_group) != NULL)
+		group_uid = e_source_group_uid_from_xmldoc (xmldoc);
+		if (group_uid == NULL) {
+			xmlFreeDoc (xmldoc);
 			continue;
+		}
+
+		existing_group = e_source_list_peek_group_by_uid (list, group_uid);
+		if (g_hash_table_lookup (new_groups_hash, existing_group) != NULL) {
+			xmlFreeDoc (xmldoc);
+			g_free (group_uid);
+			continue;
+		}
 
 		if (existing_group == NULL) {
 			ESourceGroup *new_group = e_source_group_new_from_xmldoc (xmldoc);
@@ -124,6 +134,7 @@ load_from_gconf (ESourceList *list)
 			list->priv->ignore_group_changed --;
 		}
 
+		xmlFreeDoc (xmldoc);
 		g_free (group_uid);
 	}
 

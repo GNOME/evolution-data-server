@@ -1,3 +1,11 @@
+2004-01-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* libedataserver/e-source-list.c: (load_from_gconf):
+	Fix leak.
+	
+	* libedataserver/e-source.c: (dump_common_to_xml_node):
+	Don't output properties tag if there are no properties.
+
 2004-01-14  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedataserver/e-file-cache.c (add_object_to_list): use the GList **
