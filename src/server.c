@@ -41,6 +41,7 @@
 #include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-generic-factory.h>
+#include <gconf/gconf-client.h>
 
 #include <libedataserver/e-data-server-module.h>
 #include <libedata-book/e-data-book-factory.h>
@@ -48,6 +49,7 @@
 
 #include "server-interface-check.h"
 #include "server-logging.h"
+#include "offline-listener.h"
 
 #define E_DATA_SERVER_INTERFACE_CHECK_OAF_ID "OAFIID:GNOME_Evolution_DataServer_InterfaceCheck"
 #define E_DATA_SERVER_LOGGING_OAF_ID "OAFIID:GNOME_Evolution_DataServer_Logging"
@@ -134,6 +136,7 @@ setup_segv_handler (void)
 static gboolean
 termination_handler (gpointer data)
 {
+	
 	if (e_data_cal_factory_get_n_backends (e_data_cal_factory) == 0 &&
 	    e_data_book_factory_get_n_backends (e_data_book_factory) == 0) {
 		g_message ("termination_handler(): Terminating the Server.  Have a nice day.");
@@ -269,7 +272,6 @@ setup_interface_check (void)
 }
 
 
-
 #ifdef DEBUG_BACKENDS
 static void
 dump_backends (int signal)
@@ -283,7 +285,8 @@ int
 main (int argc, char **argv)
 {
 	gboolean did_books=FALSE, did_cals=FALSE;
-
+	OfflineListener *offline_listener = NULL;
+	
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
@@ -333,16 +336,20 @@ main (int argc, char **argv)
 		exit (EXIT_FAILURE);
 	}
 
+
+	offline_listener = offline_listener_new (e_data_book_factory, e_data_cal_factory);	
+	
 	if ( setup_logging ()) {
 			if ( setup_interface_check ()) {
 				g_message ("Server up and running");
-
+				
 				bonobo_main ();
 			} else
 				g_error (G_STRLOC "Cannot register DataServer::InterfaceCheck object");
 	} else
 		g_error (G_STRLOC "Cannot register DataServer::Logging object");
 
+	g_object_unref (offline_listener);
 	bonobo_object_unref (BONOBO_OBJECT (e_data_cal_factory));
 	e_data_cal_factory = NULL;
 
@@ -354,7 +361,7 @@ main (int argc, char **argv)
 
 	bonobo_object_unref (BONOBO_OBJECT (interface_check_iface));
 	interface_check_iface = NULL;
-
+	
 	gnome_vfs_shutdown ();
 
 	return 0;

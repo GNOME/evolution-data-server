@@ -47,7 +47,9 @@ evolution_data_server_SOURCES = \
 	server-interface-check.h	\
 	server-logging.c		\
 	server-logging.h		\
-	server.c
+	server.c                        \
+	offline-listener.c              \
+	offline-listener.h              
 
 evolution_data_server_LDADD =							\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la		\
