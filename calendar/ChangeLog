@@ -1,3 +1,15 @@
+2003-11-20  Harry Lu  <harry.lu@sun.com>
+
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_internal_get_default_timezone): move to the front
+	to avoid a compile warning.
+	(e_cal_backend_file_internal_get_timezone): ditto.
+	(sanitize_component): new function. If the component's timezone is not
+	included in buildin timezone list, convert it to local default timezone.
+	(e_cal_backend_file_create_object): call sanitize_component.
+	(e_cal_backend_file_modify_object): ditto.
+	(e_cal_backend_file_receive_objects): ditto.
+
 2003-11-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-connection.h: fixed typo.

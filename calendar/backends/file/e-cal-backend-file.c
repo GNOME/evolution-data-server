@@ -1485,6 +1485,92 @@ e_cal_backend_file_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const
 	return GNOME_Evolution_Calendar_Success;
 }
 
+static icaltimezone *
+e_cal_backend_file_internal_get_default_timezone (ECalBackend *backend)
+{
+	ECalBackendFile *cbfile;
+	ECalBackendFilePrivate *priv;
+
+	cbfile = E_CAL_BACKEND_FILE (backend);
+	priv = cbfile->priv;
+
+	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
+
+	return priv->default_zone;
+}
+
+static icaltimezone *
+e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const char *tzid)
+{
+	ECalBackendFile *cbfile;
+	ECalBackendFilePrivate *priv;
+	icaltimezone *zone;
+
+	cbfile = E_CAL_BACKEND_FILE (backend);
+	priv = cbfile->priv;
+
+	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
+
+	if (!strcmp (tzid, "UTC"))
+	        zone = icaltimezone_get_utc_timezone ();
+	else {
+		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
+		if (!zone)
+			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	}
+
+	return zone;
+}
+
+static void
+sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
+{
+	ECalComponentDateTime dt;
+	icaltimezone *zone, *default_zone;
+
+	/* Check dtstart, dtend and due's timezone, and convert it to local 
+	 * default timezone if the timezone is not in our builtin timezone
+	 * list */
+	e_cal_component_get_dtstart (comp, &dt);
+	if (dt.value && dt.tzid) {
+		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *)cbfile, dt.tzid);
+		if (!zone) {
+			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *)cbfile);
+			g_free ((char *)dt.tzid);
+			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			e_cal_component_set_dtstart (comp, &dt);
+		}
+	}
+	e_cal_component_free_datetime (&dt);
+
+	e_cal_component_get_dtend (comp, &dt);
+	if (dt.value && dt.tzid) {
+		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *)cbfile, dt.tzid);
+		if (!zone) {
+			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *)cbfile);
+			g_free ((char *)dt.tzid);
+			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			e_cal_component_set_dtend (comp, &dt);
+		}
+	}
+	e_cal_component_free_datetime (&dt);
+	 
+	e_cal_component_get_due (comp, &dt);
+	if (dt.value && dt.tzid) {
+		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *)cbfile, dt.tzid);
+		if (!zone) {
+			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *)cbfile);
+			g_free ((char *)dt.tzid);
+			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			e_cal_component_set_due (comp, &dt);
+		}
+	}
+	e_cal_component_free_datetime (&dt);
+	e_cal_component_abort_sequence (comp);
+
+}	
+
+
 static ECalBackendSyncStatus
 e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, char **uid)
 {
@@ -1530,6 +1616,9 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 	current = icaltime_from_timet (time (NULL), 0);
 	e_cal_component_set_created (comp, &current);
 	e_cal_component_set_last_modified (comp, &current);
+
+	/* sanitize the component*/
+	sanitize_component (cbfile, comp);
 
 	/* Add the object */
 	add_component (cbfile, comp, TRUE);
@@ -1591,6 +1680,9 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	/* Set the last modified time on the component */
 	current = icaltime_from_timet (time (NULL), 0);
 	e_cal_component_set_last_modified (comp, &current);
+
+	/* sanitize the component*/
+	sanitize_component (cbfile, comp);
 
 	/* handle mod_type */
 	switch (mod) {
@@ -1853,6 +1945,8 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	icalproperty_method method;
 	icalcomponent *subcomp;
 	GList *comps, *l;
+	ECalComponent *comp;
+	struct icaltimetype current;
 	ECalBackendFileTzidData tzdata;
 	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
 
@@ -1929,7 +2023,19 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	/* Now we manipulate the components we care about */
 	for (l = comps; l; l = l->next) {
 		subcomp = l->data;
-		
+	
+		/* Create the cal component */
+		comp = e_cal_component_new ();
+		e_cal_component_set_icalcomponent (comp, subcomp);
+
+		/* Set the created and last modified times on the component */
+		current = icaltime_from_timet (time (NULL), 0);
+		e_cal_component_set_created (comp, &current);
+		e_cal_component_set_last_modified (comp, &current);
+
+		/* sanitize the component*/
+		sanitize_component (cbfile, comp); 
+
 		switch (method) {
 		case ICAL_METHOD_PUBLISH:
 		case ICAL_METHOD_REQUEST:
@@ -1981,43 +2087,6 @@ e_cal_backend_file_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
 	/* FIXME Put in a util routine to send stuff via email */
 	
 	return GNOME_Evolution_Calendar_Success;
-}
-
-static icaltimezone *
-e_cal_backend_file_internal_get_default_timezone (ECalBackend *backend)
-{
-	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
-
-	cbfile = E_CAL_BACKEND_FILE (backend);
-	priv = cbfile->priv;
-
-	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
-
-	return priv->default_zone;
-}
-
-static icaltimezone *
-e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const char *tzid)
-{
-	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
-	icaltimezone *zone;
-
-	cbfile = E_CAL_BACKEND_FILE (backend);
-	priv = cbfile->priv;
-
-	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
-
-	if (!strcmp (tzid, "UTC"))
-	        zone = icaltimezone_get_utc_timezone ();
-	else {
-		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
-		if (!zone)
-			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	}
-
-	return zone;
 }
 
 /* Object initialization function for the file backend */
