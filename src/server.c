@@ -42,20 +42,9 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-generic-factory.h>
 
+#include <libedataserver/e-data-server-module.h>
 #include <libedata-book/e-data-book-factory.h>
-#include <backends/file/e-book-backend-file.h>
-#include <backends/vcf/e-book-backend-vcf.h>
-#ifdef HAVE_LDAP
-#include <backends/ldap/e-book-backend-ldap.h>
-#endif
-#include <backends/groupwise/e-book-backend-groupwise.h>
-
 #include <libedata-cal/e-data-cal-factory.h>
-#include <backends/file/e-cal-backend-file-events.h>
-#include <backends/file/e-cal-backend-file-todos.h>
-#include <backends/groupwise/e-cal-backend-groupwise.h>
-#include <backends/http/e-cal-backend-http.h>
-#include <backends/contacts/e-cal-backend-contacts.h>
 
 #include "server-interface-check.h"
 #include "server-logging.h"
@@ -183,19 +172,7 @@ setup_books (void)
 	if (!e_data_book_factory)
 		return FALSE;
 
-	e_data_book_factory_register_backend (
-		e_data_book_factory, "file", e_book_backend_file_new);
-
-	e_data_book_factory_register_backend (
-		e_data_book_factory, "vcf", e_book_backend_vcf_new);
-
-#ifdef HAVE_LDAP
-	e_data_book_factory_register_backend (
-		e_data_book_factory, "ldap", e_book_backend_ldap_new);
-#endif
-
-	e_data_book_factory_register_backend (
-		e_data_book_factory, "groupwise", e_book_backend_groupwise_new);
+	e_data_book_factory_register_backends (e_data_book_factory);
 
 	g_signal_connect (e_data_book_factory,
 			  "last_book_gone",
@@ -232,13 +209,7 @@ setup_cals (void)
 		return FALSE;
 	}
 
-	e_data_cal_factory_register_method (e_data_cal_factory, "file", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_FILE_EVENTS);
-	e_data_cal_factory_register_method (e_data_cal_factory, "file", ICAL_VTODO_COMPONENT, E_TYPE_CAL_BACKEND_FILE_TODOS);
-	e_data_cal_factory_register_method (e_data_cal_factory, "groupwise", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_GROUPWISE);
-	e_data_cal_factory_register_method (e_data_cal_factory, "groupwise", ICAL_VTODO_COMPONENT, E_TYPE_CAL_BACKEND_GROUPWISE);
-	e_data_cal_factory_register_method (e_data_cal_factory, "webcal", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_HTTP);
-	e_data_cal_factory_register_method (e_data_cal_factory, "webcal", ICAL_VTODO_COMPONENT, E_TYPE_CAL_BACKEND_HTTP);
-	e_data_cal_factory_register_method (e_data_cal_factory, "contacts", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_CONTACTS);
+	e_data_cal_factory_register_backends (e_data_cal_factory);
 
 	if (!e_data_cal_factory_register_storage (e_data_cal_factory, E_DATA_CAL_FACTORY_OAF_ID)) {
 		bonobo_object_unref (BONOBO_OBJECT (e_data_cal_factory));
@@ -334,7 +305,9 @@ main (int argc, char **argv)
 			  CORBA_OBJECT_NIL);
 	
 	setup_segv_handler ();
-	
+
+	e_data_server_module_init ();
+
 	if (!( (did_books = setup_books ())
 	       && (did_cals = setup_cals ())
 		    )) {

@@ -10,14 +10,7 @@
 	</oaf_attribute>
 
 	<oaf_attribute name="name" type="string"
-                       _value="Evolution Addressbook file and LDAP backend"/>
-
-        <oaf_attribute name="addressbook:supported_protocols" type="stringv">
-		<item value="ldap"/>
-		<item value="file"/>
-		<item value="vcf"/>
-		<item value="groupwise"/>
-        </oaf_attribute>
+                       _value="Evolution Addressbook file backend"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:GNOME_Evolution_DataServer_CalFactory:@VERSION@"
@@ -31,13 +24,6 @@
 
 	<oaf_attribute name="name" type="string"
                        _value="Evolution Calendar file and webcal backend"/>
-
-        <oaf_attribute name="calendar:supported_protocols" type="stringv">
-		<item value="file"/>
-		<item value="webcal"/>
-		<item value="groupwise"/>
-		<item value="contacts"/>
-        </oaf_attribute>
 </oaf_server>
 
 <oaf_server iid="OAFIID:GNOME_Evolution_DataServer_InterfaceCheck"
@@ -45,7 +31,7 @@
             location="@LIBEXECDIR@/evolution-data-server-@VERSION@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/ServerInterfaceCheck:@VERSION@"/>
+		<item value="IDL:GNOME/Evolution/ServerInterfaceCheck:1.0"/>
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 

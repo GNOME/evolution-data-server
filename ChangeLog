@@ -1,3 +1,37 @@
+2004-09-30  Chris Toshok  <toshok@ximian.com>
+
+	* src/GNOME_Evolution_DataServer.server.in.in: add this
+	(previously generated) file to the build.
+
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in,
+	src/GNOME_Evolution_DataServerNOLDAP.server.in.in: nuke these
+	files.
+	
+	* src/Makefile.am (evolution_data_server_LDADD): remove all the
+	addressbook/calendar backend .la's from here.
+	(SERVER_IN_FILE): always use
+	GNOME_Evolution_DataServer.server.in.in here, and it's no longer
+	generated from LDAP/NOLDAP.
+	(EXTRA_DIST): remove
+	GNOME_Evolution_DataServer{LDAP,NOLDAP}.server.in.in
+	(CLEANFILES): remove GNOME_Evolution_DataServer.server.in.in.
+	
+	* src/server.c (setup_books): replace hardcoded knowledge of
+	backends with a call to e_data_book_factory_register_backends.
+	(setup_cals): remove explicit backend registration with a call to
+	e_data_cal_factory_register_backends.
+	(main): call e_data_server_module_init.
+
+	* libedataserver/Makefile.am (INCLUDES): add extensiondir #define.
+	(libedataserver_la_SOURCES): add e-data-server-module.c
+	(libedataserverinclude_HEADERS): add e-data-server-module.h
+
+	* libedataserver/e-data-server-module.[ch]: new files, manage the
+	extensions.  ripped almost entirely from Dave Camp's nautilus
+	module stuff.
+
+	* configure.in (privlibdir, extensiondir): new Makefile variables.
+
 2004-09-23  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #66209

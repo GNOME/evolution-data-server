@@ -244,11 +244,17 @@ AC_SUBST(privdatadir)
 privincludedir='${includedir}'/evolution-data-server-$BASE_VERSION
 AC_SUBST(privincludedir)
 
+privlibdir='${libdir}'/evolution-data-server-$BASE_VERSION
+AC_SUBST(privlibdir)
+
 idldir="$datadir/idl/evolution-data-server-$BASE_VERSION"
 AC_SUBST(idldir)
 
 serverdir="$libdir/bonobo/servers"
 AC_SUBST(serverdir)
+
+extensiondir='${privlibdir}'/extensions
+AC_SUBST(extensiondir)
 
 dnl ************************
 dnl IDL/Component Versioning
