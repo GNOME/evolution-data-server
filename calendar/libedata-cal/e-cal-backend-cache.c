@@ -56,7 +56,7 @@ get_filename_from_uri (char *uri)
 	}
 
 	/* generate the file name */
-	filename = g_build_filename (g_get_home_dir (), ".evolution/calendar/cache",
+	filename = g_build_filename (g_get_home_dir (), ".evolution/cache/calendar",
 				     mangled_uri, "cache.xml", NULL);
 
 	/* free memory */

@@ -1,5 +1,10 @@
 2004-01-16  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libedata-cal/e-cal-backend-cache.c (get_filename_from_uri): use
+	~/.evolution/cache/calendar for the cache files.
+
+2004-01-16  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-connection.c
 	(e_gw_connection_get_container_id): fixed duplicated variable name.
 

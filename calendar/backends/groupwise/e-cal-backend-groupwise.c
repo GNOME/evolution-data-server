@@ -562,6 +562,8 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
+	g_mutex_lock (priv->mutex);
+
 	g_message (G_STRLOC ": Getting object list (%s)", sexp);
 
 	match_data.search_needed = TRUE;
@@ -574,8 +576,10 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 		match_data.search_needed = FALSE;
 
 	match_data.obj_sexp = e_cal_backend_sexp_new (sexp);
-	if (!match_data.obj_sexp)
+	if (!match_data.obj_sexp) {
+		g_mutex_unlock (priv->mutex);
 		return GNOME_Evolution_Calendar_InvalidQuery;
+	}
 
         for( l = e_cal_backend_cache_get_components (priv->cache); l != NULL; l = g_slist_next (l)) {
                 const char *uid;
@@ -584,6 +588,8 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
                 match_object_sexp (uid, comp, &match_data);
         }
 	*objects = match_data.obj_list;
+
+	g_mutex_unlock (priv->mutex);
 	
 	return GNOME_Evolution_Calendar_Success;
 }
