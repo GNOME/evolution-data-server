@@ -22,6 +22,8 @@
 #ifndef _E_MEMORY_H
 #define _E_MEMORY_H
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 /* memchunks - allocate/free fixed-size blocks of memory */

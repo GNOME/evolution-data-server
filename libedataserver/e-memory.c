@@ -24,7 +24,6 @@
 
 #include <string.h> /* memset() */
 #include <stdlib.h> /* alloca() */
-#include <glib.h>
 
 #define s(x)			/* strv debug */
 #define p(x)   /* poolv debug */

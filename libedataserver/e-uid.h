@@ -23,6 +23,8 @@
 #ifndef E_UID_H
 #define E_UID_H
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 char *e_uid_new  (void);

@@ -1,3 +1,16 @@
+2004-05-03  JP Rosevear  <jpr@ximian.com>
+
+	* libedataserver/e-memory.h: include glib.h for G_BEGIN_DECLS
+
+	* libedataserver/e-uid.h: ditto
+	
+	* libedataserver/e-memory.c: remove unnecessary include
+
+	* libedataserver/e-uid.c: ditto
+	
+	* libedataserver/e-list-iterator.h: order G_BEGIN_DECLS after the
+	glib include
+
 2004-05-03  William Jon McCann  <mccann@jhu.edu>
 
 	* libedataserver/e-account-list.h: 

@@ -9,11 +9,6 @@
 #ifndef __E_LIST_ITERATOR_H__
 #define __E_LIST_ITERATOR_H__
 
-G_BEGIN_DECLS
-
-typedef struct _EListIterator EListIterator;
-typedef struct _EListIteratorClass EListIteratorClass;
-
 #include <stdio.h>
 #include <time.h>
 #include <glib.h>
@@ -22,11 +17,16 @@ typedef struct _EListIteratorClass EListIteratorClass;
 #include <libedataserver/e-iterator.h>
 #include <libedataserver/e-list.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_LIST_ITERATOR            (e_list_iterator_get_type ())
 #define E_LIST_ITERATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_LIST_ITERATOR, EListIterator))
 #define E_LIST_ITERATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_LIST_ITERATOR, EListIteratorClass))
 #define E_IS_LIST_ITERATOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_LIST_ITERATOR))
 #define E_IS_LIST_ITERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_LIST_ITERATOR))
+
+typedef struct _EListIterator EListIterator;
+typedef struct _EListIteratorClass EListIteratorClass;
 
 struct _EListIterator {
 	EIterator      parent;
