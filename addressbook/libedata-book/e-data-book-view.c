@@ -334,7 +334,7 @@ e_data_book_view_construct (EDataBookView                *book_view,
 
 	CORBA_exception_init (&ev);
 
-	priv->listener = CORBA_Object_duplicate (listener, &ev);
+	priv->listener = bonobo_object_dup_ref (listener, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning("Unable to duplicate listener object in pas-book-view.c\n");
 		CORBA_exception_free (&ev);

@@ -1,3 +1,9 @@
+2004-03-30  Chris Toshok  <toshok@ximian.com>
+
+	[ looks like this fixes #55527 ]
+	* libedata-book/e-data-book-view.c (e_data_book_view_construct):
+	use bonobo_object_dup_ref instead of CORBA_Object_duplicate here.
+
 2004-03-28  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c : added new functions
