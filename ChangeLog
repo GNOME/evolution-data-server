@@ -1,3 +1,9 @@
+2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
+
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in:
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in: added "groupwise" to
+	the "calendar:supported_protocols" property.
+
 2003-12-07  JP Rosevear  <jpr@ximian.com>
 
 	* src/GNOME_Evolution_DataServerLDAP.server.in.in: update the repo

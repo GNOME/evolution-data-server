@@ -33,6 +33,7 @@
         <oaf_attribute name="calendar:supported_protocols" type="stringv">
 		<item value="file"/>
 		<item value="webcal"/>
+		<item value="groupwise"/>
         </oaf_attribute>
 </oaf_server>
 
