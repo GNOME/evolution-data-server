@@ -1,3 +1,8 @@
+2004-01-16  Christian Neumair  <chris@gnome-de.org>
+
+	* libedata-cal/e-cal-backend-sexp.c (func_uid):
+	Error message string fix.
+
 2004-01-16  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedata-cal/e-cal-backend-cache.c (get_filename_from_uri): use

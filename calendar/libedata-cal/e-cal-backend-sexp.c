@@ -229,12 +229,15 @@ func_uid (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 	/* Check argument types */
 
 	if (argc != 1) {
-		e_sexp_fatal_error (esexp, _("uid? expects 1 argument"));
+		e_sexp_fatal_error (esexp, _("\"%s\" expects one argument"),
+				    "uid");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_STRING) {
-		e_sexp_fatal_error (esexp, _("uid? expects argument 1 to be a string"));
+		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
+					     "argument to be a string"),
+				    "uid");
 		return NULL;
 	}
 
