@@ -1,3 +1,7 @@
+2005-03-27  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in: Add ne in ALL_LINGUAS
+
 2005-03-23  James Bowes  <bowes@cs.dal.ca>
 
 	* configure.in: Add docs/reference/libedataserver/Makefile 
