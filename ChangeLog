@@ -1,3 +1,8 @@
+2004-12-01  Hans Petter Jansson  <hpj@novell.com>
+
+	* Makefile.am: Build libedataserverui after non-UI libraries that it
+	may depend on.
+
 2004-11-28  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: bump version, libtool numbers
