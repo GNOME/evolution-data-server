@@ -339,13 +339,18 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 			/* Clear the cache before populating it */
 			e_file_cache_clean (E_FILE_CACHE (priv->cache));
-				
+
+			if (priv->default_zone)
+				e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
+	
 			/* Populate the cache for the first time.*/
 			/* start a timed polling thread set to 10 minutes*/
 			cnc_status = populate_cache (cbgw);
 			if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
 				g_object_unref (priv->cnc);
+				g_object_unref (priv->cache);
 				priv->cnc = NULL;
+				priv->cache = NULL;
 				g_warning (G_STRLOC ": Could not populate the cache");
 				return GNOME_Evolution_Calendar_PermissionDenied;
 			} else {

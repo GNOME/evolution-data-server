@@ -86,7 +86,7 @@ set_categories_for_gw_item (EGwItem *item, GList *category_names, ECalBackendGro
 	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
 	
-	g_assert (cnc != NULL || categories_by_name != NULL || categories_by_id != NULL);
+	g_return_if_fail (categories_by_id != NULL || categories_by_name != NULL || cnc != NULL);
 	
 	for (; category_names != NULL; category_names = g_list_next (category_names)) {
                      if (!category_names->data || strlen(category_names->data) == 0 )
@@ -131,8 +131,8 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	struct icaltimetype itt_utc;
 	
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
-	
-	g_assert (default_zone != NULL);
+
+	g_return_if_fail (default_zone != NULL);
 	
 	/* first set specific properties */
 	switch (e_cal_component_get_vtype (comp)) {
@@ -395,7 +395,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
-	g_assert (default_zone != NULL || categories_by_id != NULL);
 
 	comp = e_cal_component_new ();
 
@@ -462,7 +461,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	/* categories */
 	category_ids = e_gw_item_get_categories (item);
 	categories = NULL;
-	if (category_ids) {
+	if (category_ids && categories_by_id) {
 		for (; category_ids != NULL; category_ids = g_list_next (category_ids)) {
 			name = g_hash_table_lookup (categories_by_id, category_ids->data);
 			if (name)

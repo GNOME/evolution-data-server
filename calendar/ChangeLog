@@ -1,3 +1,15 @@
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #65167
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(connect_to_server): Reload the default zone into
+	the cache after clearing it.
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_categories_for_gw_item), e_gw_item_to_cal_component),
+	(set_properties_from_cal_component): replaced the assert
+	statements with If conditions.
+
 2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #64685
