@@ -338,20 +338,19 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	char *errbuf = NULL;
 	gboolean authenticated = FALSE;
-	const char *auth_domain;
 	char *uri;
 
 	CAMEL_SERVICE_ASSERT_LOCKED (groupwise_store, connect_lock);
-	auth_domain = camel_url_get_param (service->url, "auth-domain");
 	if (priv->use_ssl && !g_str_equal (priv->use_ssl, "never")) 
 		uri = g_strconcat ("https://", priv->server_name, ":", priv->port, "/soap", NULL);
 	else 
 		uri = g_strconcat ("http://", priv->server_name, ":", priv->port, "/soap", NULL);
 	service->url->passwd = NULL;
+
 	while (!authenticated) {
 		if (errbuf) {
 			/* We need to un-cache the password before prompting again */
-			camel_session_forget_password (session, service, auth_domain, "password", ex);
+			camel_session_forget_password (session, service, "Groupwise", "password", ex);
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 		}
@@ -365,7 +364,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 						  service->url->user,
 						  service->url->host);
 			service->url->passwd =
-				camel_session_get_password (session, service, auth_domain,
+				camel_session_get_password (session, service, "Groupwise",
 							    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
 			g_free (prompt);
 			g_free (errbuf);

@@ -1,3 +1,9 @@
+2005-02-09  Vivek Jain  <jvivek@novell.com>
+
+	* camel-groupwise-store.c:
+	 (groupwise_auth_loop): make sure auth_domain is "Groupwise"
+	  Fixes bug ** #71752	
+
 2005-02-08  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-utils.c:
