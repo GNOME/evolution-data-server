@@ -699,6 +699,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	   TZID (i.e. floating times) we use the default timezone. */
 	if (dtstart.tzid && !dtstart.value->is_date) {
 		start_zone = (*tz_cb) (dtstart.tzid, tz_cb_data);
+		if (!start_zone)
+			start_zone = default_timezone;
 	} else {
 		start_zone = default_timezone;
 
@@ -737,6 +739,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 
 	if (dtend.tzid && !dtend.value->is_date) {
 		end_zone = (*tz_cb) (dtend.tzid, tz_cb_data);
+		if (!end_zone)
+			end_zone = default_timezone;
 	} else {
 		end_zone = default_timezone;
 	}

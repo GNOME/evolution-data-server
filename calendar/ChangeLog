@@ -1,3 +1,9 @@
+2004-05-14  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal-recur.c (e_cal_recur_generate_instances_of_rule):
+	use the default timezone if we can't get timezones for the start
+	and end dates.
+
 2004-05-13  Rodrigo Moya <rodrigo@ximian.com>
 
 	Fixes #54094
