@@ -1,3 +1,10 @@
+2004-08-02  Not Zed  <NotZed@Ximian.com>
+
+	* src/server.c (gnome_segv_handler): deadlock in non-main threads
+	so we only run once, and increment our recursive-call code
+	properly, and actually exit anyway.  should fix infinite crash
+	loop crap.
+
 2004-07-29  Rodney Dawes  <dobey@novell.com>
 
 	* configure.in: Check for libgnomeui_serverdir with pkgconfig, and

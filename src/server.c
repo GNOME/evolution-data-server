@@ -30,6 +30,8 @@
 
 #include <stdlib.h>
 #include <sys/signal.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include <glib.h>
 #include <libgnome/gnome-init.h>
@@ -83,6 +85,8 @@ static guint termination_handler_id;
 
 static GStaticMutex termination_lock = G_STATIC_MUTEX_INIT;
 
+static pthread_mutex_t segv_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_t main_thread;
 
 static void
 gnome_segv_handler (int signo)
@@ -90,7 +94,14 @@ gnome_segv_handler (int signo)
 	const char *gnome_segv_path;
 	static int in_segv = 0;
 	char *exec;
-	
+
+	if (pthread_self() != main_thread) {
+		/* deadlock intentionally in the sub-threads */
+		pthread_kill(main_thread, signo);
+		pthread_mutex_lock(&segv_mutex);
+	}
+
+	in_segv++;
 	if (in_segv > 2) {
                 /* The fprintf() was segfaulting, we are just totally hosed */
                 _exit (1);
@@ -105,6 +116,8 @@ gnome_segv_handler (int signo)
 	exec = g_strdup_printf ("%s \"" PACKAGE "\" %d \"" VERSION "\"", gnome_segv_path, signo);
 	system (exec);
 	g_free (exec);
+
+	_exit(1);
 }
 
 static void
@@ -118,6 +131,9 @@ setup_segv_handler (void)
 	sigaction (SIGSEGV, &sa, NULL);
 	sigaction (SIGBUS, &sa, NULL);
 	sigaction (SIGFPE, &sa, NULL);
+
+	main_thread = pthread_self();
+	pthread_mutex_lock(&segv_mutex);
 }
 
 
