@@ -1,3 +1,11 @@
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* libedataserver/e-xml-hash-utils.c (e_xmlhash_write): cast field
+	length to int.
+
+	* libedataserver/e-url.c (e_url_shroud): setup string manually
+	don't use *.%s as it depends on locale.
+
 2005-01-10  Rodrigo Moya <rodrigo@novell.com>
 
 	* e-categories.c (escape_string): new function.
