@@ -1,3 +1,12 @@
+2005-02-17  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(e_book_backend_groupwise_authenticate_user): changed
+	the syntax of the get_categories call.
+	(e_book_backend_groupwise_dispose),
+	(e_book_backend_groupwise_init): The hash table need not
+	be created or destroyed here, since connection handles it.
+
 2005-02-14 Sivaiah Nallagatla <snallagatla@novell.com>
 
        * libebook/e-vcard.c (read_attribute_value) :

@@ -2316,7 +2316,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			e_book_backend_notify_writable (backend, is_writable);
 			e_book_backend_notify_connection_status (backend, TRUE); 
 			priv->is_writable = is_writable;
-			e_gw_connection_get_categories (priv->cnc, priv->categories_by_id, priv->categories_by_name);
+			e_gw_connection_get_categories (priv->cnc, &priv->categories_by_id, &priv->categories_by_name);
 			if (!e_gw_connection_get_version(priv->cnc))  
 				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_InvalidServerVersion);
 			else
@@ -2595,15 +2595,6 @@ e_book_backend_groupwise_dispose (GObject *object)
 			g_free (bgw->priv->book_name);
 			bgw->priv->book_name = NULL;
 		}
-		if (bgw->priv->categories_by_id) {
-			g_hash_table_destroy (bgw->priv->categories_by_id);
-			bgw->priv->categories_by_id = NULL;
-		}
-		if (bgw->priv->categories_by_name) {
-			g_hash_table_destroy (bgw->priv->categories_by_name);
-			bgw->priv->categories_by_name = NULL;
-		}
-	
 		if (bgw->priv->cache) {
 			g_object_unref (bgw->priv->cache);
 		}
@@ -2658,8 +2649,6 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	EBookBackendGroupwisePrivate *priv;
                                                                                                                              
 	priv= g_new0 (EBookBackendGroupwisePrivate, 1);
-	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->is_writable = TRUE;
 	priv->is_cache_ready = FALSE;
 	priv->marked_for_offline = FALSE;
