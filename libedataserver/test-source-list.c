@@ -55,7 +55,7 @@ static char *set_color_arg = NULL;
 static gboolean unset_color = FALSE;
 
 static struct poptOption options[] = {
-	{ "key", '0', POPT_ARG_STRING, &key_arg, 0,
+	{ "key", '\0', POPT_ARG_STRING, &key_arg, 0,
 	  "Name of the GConf key to use", "PATH" },
 	{ "source", '\0', POPT_ARG_STRING, &source_arg, 0, 
 	  "UID of source to apply operation to", "UID" },
