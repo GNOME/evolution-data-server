@@ -1,3 +1,11 @@
+2004-07-28  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #60265
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server), (e_cal_backend_groupwise_open):
+	Creates the cache structure after connecting to server and loads 
+	the default timezone after populating the cache.
+
 2004-07-26  Harish Krishnaswamy  <kharish@novell.com>
 
 	Fixes #57651, #58637 and #58643

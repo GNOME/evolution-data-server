@@ -249,6 +249,12 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			} else
 				priv->container_id = NULL;
 
+				priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
+				if (!priv->cache) {
+					g_mutex_unlock (priv->mutex);
+					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
+					return GNOME_Evolution_Calendar_OtherError;
+				}
 
 			/* Populate the cache for the first time.*/
 			/* start a timed polling thread set to 10 minutes*/
@@ -263,6 +269,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				g_object_ref (priv->cache);
 				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
 				priv->mode = CAL_MODE_REMOTE;
+				/* read the default timezone*/
+				priv->default_zone = e_cal_backend_cache_get_default_timezone (priv->cache);
 				return GNOME_Evolution_Calendar_Success;
 			}
 		} else {
@@ -442,22 +450,12 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
                 return GNOME_Evolution_Calendar_Success;
 	}
 
-	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
-	if (!priv->cache) {
-		g_mutex_unlock (priv->mutex);
-		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
-		return GNOME_Evolution_Calendar_OtherError;
-	}
-
 	cbgw->priv->read_only = FALSE;
 	priv->mode = CAL_MODE_LOCAL;
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
 	
-
-	/* read the default timezone*/
-	priv->default_zone = e_cal_backend_cache_get_default_timezone (priv->cache);
-        /* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
+	        /* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 	status = connect_to_server (cbgw);
 
 	g_mutex_unlock (priv->mutex);
