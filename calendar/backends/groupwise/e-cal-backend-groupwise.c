@@ -734,10 +734,30 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 /* Remove_object handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
-				const char *uid, const char *rid,
-				CalObjModType mod, char **object)
+				       const char *uid, const char *rid,
+				       CalObjModType mod, char **object)
 {
-	return GNOME_Evolution_Calendar_OtherError;
+	ECalBackendGroupwise *cbgw;
+        ECalBackendGroupwisePrivate *priv;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	/* if online, remove the item from the server */
+	if (priv->mode == CAL_MODE_REMOTE) {
+		EGwConnectionStatus status;
+
+		/* FIXME: deal with recurrences, and pass the correct 'container' */
+		status = e_gw_connection_remove_item (priv->cnc, NULL, uid);
+		if (status != E_GW_CONNECTION_STATUS_OK)
+			return GNOME_Evolution_Calendar_OtherError;
+	}
+
+	/* remove the component from the cache */
+	if (!e_cal_backend_cache_remove_object (priv->cache, uid, rid))
+		return E_GW_CONNECTION_STATUS_OBJECT_NOT_FOUND;
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Update_objects handler for the file backend. */
