@@ -255,9 +255,10 @@ groupwise_folder_get_message( CamelFolder *folder,
 		camel_multipart_set_boundary (multipart, NULL);
 		if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
 			char *cal_buffer = NULL ;
-			int len ;
+			int len = 0 ;
 			convert_to_calendar (item, &cal_buffer, &len) ;
 			camel_mime_part_set_content(part, cal_buffer, len, "text/calendar") ;
+			g_free (cal_buffer) ;
 		} else
 			camel_mime_part_set_content(part, body, strlen(body), e_gw_item_get_msg_content_type (item)) ;
 		camel_multipart_add_part (multipart, part) ;
@@ -270,9 +271,10 @@ groupwise_folder_get_message( CamelFolder *folder,
 		camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
 		if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
 			char *cal_buffer = NULL ;
-			int len ;
+			int len = 0 ;
 			convert_to_calendar (item, &cal_buffer, &len) ;
 			camel_mime_part_set_content(part, cal_buffer, len,"text/calendar") ;
+			g_free (cal_buffer) ;
 		} else
 			camel_mime_part_set_content(part, " ", strlen(" "),"text/html") ;
 		camel_multipart_add_part (multipart, part) ;
@@ -1009,24 +1011,48 @@ void
 convert_to_calendar (EGwItem *item, char **str, int *len)
 {
 	EGwItemOrganizer *org = e_gw_item_get_organizer(item) ;
+	GSList *recp_list = NULL ;
+	const char *desc = e_gw_item_get_message (item) ;
+	const char *location = e_gw_item_get_place (item) ;
+	char *temp = NULL ;
+	const char *priority = e_gw_item_get_task_priority (item) ;
 
-	*str = g_strconcat ("BEGIN:VCALENDAR","\n", NULL) ;
-	*str = g_strconcat (*str, "METHOD:REQUEST", "\n", NULL) ;
-	*str = g_strconcat (*str, "BEGIN:VEVENT", "\n", NULL) ;
-	*str = g_strconcat (*str, "X-GWITEM-TYPE:APPOINTMENT", "\n", NULL) ;
-	*str = g_strconcat (*str, "DTSTART:", e_gw_item_get_start_date (item), "\n", NULL) ;
-	*str = g_strconcat (*str, "SUMMARY:", e_gw_item_get_subject (item), "\n", NULL) ;
-	*str = g_strconcat (*str, "DTSTAMP:", e_gw_item_get_creation_date (item), "\n", NULL) ;
-	*str = g_strconcat (*str, "X-GWMESSAGEID:", e_gw_item_get_id(item), "\n", NULL) ;
-	*str = g_strconcat (*str, "X-GWRECORDID:", e_gw_item_get_id (item), "\n", NULL) ;
-	if (org)
-	*str = g_strconcat (*str, "ORGANIZER;CN= ",org->display_name, ";ROLE= CHAIR", "\n", " MAILTO:", org->email, "\n",  NULL) ;
-	*str = g_strconcat (*str, "DESCRIPTION:", e_gw_item_get_message(item), "\n", NULL) ;
-	*str = g_strconcat (*str, "LOCATION:", e_gw_item_get_place (item), "\n", NULL) ;
-	*str = g_strconcat (*str, "UID:", e_gw_item_get_icalid (item), "\n", NULL) ;
-	*str = g_strconcat (*str, "END:VEVENT", "\n", NULL) ;
-	*str = g_strconcat (*str, "END:VCALENDAR","\n", NULL) ;
+	recp_list = e_gw_item_get_recipient_list (item) ;
+	if (recp_list) {
+		GSList *rl ;
+
+		for (rl = recp_list ; rl != NULL ; rl = rl->next) {
+			EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
+			temp = g_strconcat ( "ATTENDEE;CN= ",recp->display_name, 
+					     ";ROLE= REQ-PARTICIPANT:", "\n", 
+					     " MAILTO:", recp->email, "\n",  NULL) ;
+		}
+	}
+	*str = g_strconcat ("BEGIN:VCALENDAR","\n", 
+			    "METHOD:REQUEST", "\n", 
+			    "BEGIN:VEVENT", "\n", 
+			    "X-GWITEM-TYPE:APPOINTMENT", "\n", 
+			    "DTSTART:", e_gw_item_get_start_date (item), "\n",
+			    "SUMMARY:", e_gw_item_get_subject (item), "\n",
+	                    "DTSTAMP:", e_gw_item_get_creation_date (item), "\n",
+			    "X-GWMESSAGEID:", e_gw_item_get_id(item), "\n", 
+			    "X-GWSHOW-AS:BUSY", "\n",
+			    "X-GWRECORDID:", e_gw_item_get_id (item), "\n", 
+			    "ORGANIZER;CN= ",org ? org->display_name : "", 
+			    ";ROLE= CHAIR:", "\n", 
+			    " MAILTO:", org ? org->email : "", "\n",
+			    "DESCRIPTION:", desc ? desc : "" , "\n",
+			    temp ? temp : "", "\n", 
+			    "DTEND:", e_gw_item_get_end_date (item), "\n",
+			    "LOCATION:", location ? location : "", "\n", 
+			    "PRIORITY:",priority ? priority : "", "\n",
+			    //"UID:", e_gw_item_get_icalid (item), "\n", NULL) ;
+			    "END:VEVENT", "\n", 
+			    "END:VCALENDAR","\n", 
+			    NULL ) ;
 
 	*len = strlen (*str) ;
+	
+	g_free (temp) ;
 }
 
