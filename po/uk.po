@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution\n"
+"Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-05-07 11:35+0200\n"
+"PO-Revision-Date: 2004-08-19 18:15+0300\n"
 "Last-Translator: Maxim Dzіumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -120,9 +120,8 @@ msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" у книзі після \"%s\""
 
 #: addressbook/libebook/e-book.c:2355
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: скасовано"
+msgstr "e_book_open: скасовано"
 
 #: addressbook/libebook/e-book.c:2851
 msgid "e_book_load_uri: Invalid source."
@@ -138,9 +137,9 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: не вдається створити EBookListener"
 
 #: addressbook/libebook/e-book.c:2922
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: немає доступних фабрик для uri `%s'"
+msgstr "e_book_new: немає доступних фабрик для uri `%s'"
 
 #: addressbook/libebook/e-book.c:3080
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
@@ -313,9 +312,8 @@ msgid "Email 3"
 msgstr "Ел.пошта 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "Ел.пошта 3"
+msgstr "Ел.пошта 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -982,7 +980,4 @@ msgstr "Файл бази даних адресної книги Evolution"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
-
-#~ msgid "Checklist"
-#~ msgstr "Перелік"
+msgstr "Виникло декілька помилок сегментації; не вдається відобразити діалогове вікно помилки\n"
