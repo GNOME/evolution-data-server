@@ -1,3 +1,26 @@
+2004-06-23  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book.c (e_book_response_add_contact): ref in the
+	assignment.
+	(e_book_response_get_supported_fields): same.
+	(e_book_response_get_supported_auth_methods): same.
+	(emit_async_get_contact_response): unref the book before
+	returning.
+	(e_book_response_get_contact): ref the book in the assignment.
+	(emit_async_get_book_view_response): unref the book before
+	returning.
+	(e_book_response_get_book_view): ref the book in the assignment.
+	(e_book_response_get_contacts): same.
+	(emit_async_get_changes_response): unref the book before
+	returning.
+	(e_book_response_get_changes): ref the book in the assignment.
+	(emit_async_generic_response): we ref before registering the idle
+	handler.
+	(e_book_response_generic): ref the book in the assignment.
+	(emit_async_open_response): unref the book before returning
+	(e_book_response_open): ref the book in the assignment.
+	(e_book_response_remove): same.
+
 2004-06-23  Hans Petter Jansson  <hpj@ximan.com>
 
 	* libebook/e-book.c (emit_async_generic_response): Keep a ref on

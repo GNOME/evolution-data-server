@@ -396,9 +396,7 @@ e_book_response_add_contact (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		g_object_ref (book);
-
-		op->book = book;
+		op->book = g_object_ref (book);
 
 		op->idle_id = g_idle_add (emit_async_add_contact_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
@@ -722,9 +720,7 @@ e_book_response_get_supported_fields (EBook       *book,
 		for (l = fields; l; l = l->next)
 			e_list_append (efields, l->data);
 
-		g_object_ref (book);
-
-		op->book = book;
+		op->book = g_object_ref (book);
 		op->elist = efields;
 
 		op->idle_id = g_idle_add (emit_async_elist_response, op);
@@ -892,9 +888,7 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 		for (l = auth_methods; l; l = l->next)
 			e_list_append (emethods, l->data);
 
-		g_object_ref (book);
-
-		op->book = book;
+		op->book = g_object_ref (book);
 		op->elist = emethods;
 
 		op->idle_id = g_idle_add (emit_async_elist_response, op);
@@ -1193,6 +1187,8 @@ emit_async_get_contact_response (gpointer data)
 
 	e_book_clear_op (book, op);
 
+	g_object_unref (book);
+
 	return FALSE;
 }
 
@@ -1224,7 +1220,7 @@ e_book_response_get_contact (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		op->book = book;
+		op->book = g_object_ref (book);
 
 		op->idle_id = g_idle_add (emit_async_get_contact_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
@@ -1613,6 +1609,8 @@ emit_async_get_book_view_response (gpointer data)
 
 	e_book_clear_op (book, op);
 
+	g_object_unref (book);
+
 	return FALSE;
 }
 
@@ -1647,7 +1645,7 @@ e_book_response_get_book_view (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		op->book = book;
+		op->book = g_object_ref (book);
 
 		op->idle_id = g_idle_add (emit_async_get_book_view_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
@@ -1841,9 +1839,7 @@ e_book_response_get_contacts (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		g_object_ref (book);
-
-		op->book = book;
+		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_get_contacts_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
@@ -1983,6 +1979,8 @@ emit_async_get_changes_response (gpointer data)
 						   GINT_TO_POINTER (op->idle_id));
 	e_book_clear_op (book, op);
 
+	g_object_unref (book);
+
 	return FALSE;
 }
 
@@ -2013,7 +2011,7 @@ e_book_response_get_changes (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		op->book = book;
+		op->book = g_object_ref (book);
 		op->idle_id = g_idle_add (emit_async_get_changes_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
@@ -2042,8 +2040,6 @@ emit_async_generic_response (gpointer data)
 	EBookOp *op = data;
 	EBook *book = op->book;
 
-	g_object_ref (book);
-
 	if (op->cb.status)
 		op->cb.status (book, op->status, op->closure);
 
@@ -2052,6 +2048,7 @@ emit_async_generic_response (gpointer data)
 	e_book_clear_op (book, op);
 
 	g_object_unref (book);
+
 	return FALSE;
 }
 
@@ -2079,7 +2076,7 @@ e_book_response_generic (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		op->book = book;
+		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_generic_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
@@ -2321,6 +2318,8 @@ emit_async_open_response (gpointer data)
 						   GINT_TO_POINTER (op->idle_id));
 	e_book_clear_op (book, op);
 
+	g_object_unref (book);
+
 	return FALSE;
 }
 
@@ -2350,7 +2349,7 @@ e_book_response_open (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		op->book = book;
+		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_open_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
@@ -2491,7 +2490,7 @@ e_book_response_remove (EBook       *book,
 		g_mutex_unlock (op->mutex);
 	}
 	else {
-		op->book = book;
+		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_generic_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
@@ -2762,12 +2761,12 @@ fetch_corba_book (EBook       *book,
 	for (l = factories; l; l = l->next) {
 		GNOME_Evolution_Addressbook_BookFactory factory = l->data;
 		CORBA_Environment ev;
-
+		
 		CORBA_exception_init (&ev);
 
 		corba_book = GNOME_Evolution_Addressbook_BookFactory_getBook (factory, source_xml,
-								      bonobo_object_corba_objref (BONOBO_OBJECT (book->priv->listener)),
-								      &ev);
+									      bonobo_object_corba_objref (BONOBO_OBJECT (book->priv->listener)),
+									      &ev);
 
 		if (ev._major != CORBA_NO_EXCEPTION) {
 			CORBA_exception_free (&ev);
