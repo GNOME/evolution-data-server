@@ -12,14 +12,14 @@ INCLUDES =						\
 
 EXTRA_DIST =                          \
 	$(test_scripts)               \
-	testdata.ics                  
-	
+	testdata.ics
+
 test_scripts =                         \
 	test-runner.sh                 \
 	cleanup.sh
-	
+
 # The test program
-noinst_PROGRAMS = test-ecal
+noinst_PROGRAMS = test-ecal test-search
 
 test_ecal_SOURCES =	\
 	test-ecal.c
@@ -29,6 +29,19 @@ test_ecal_INCLUDES =			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
 
 test_ecal_LDADD =								\
+	$(top_builddir)/calendar/libecal/libecal.la				\
+	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
+	$(EVOLUTION_CALENDAR_LIBS)
+
+
+test_search_SOURCES =	\
+	test-search.c
+
+test_search_INCLUDES =			\
+	$(INCLUDES)			\
+	-DG_LOG_DOMAIN=\"test-ecal\"
+
+test_search_LDADD =								\
 	$(top_builddir)/calendar/libecal/libecal.la				\
 	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
 	$(EVOLUTION_CALENDAR_LIBS)

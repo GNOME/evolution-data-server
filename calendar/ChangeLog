@@ -1,5 +1,12 @@
 2004-04-28  JP Rosevear  <jpr@ximian.com>
 
+	* tests/ecal/test-search.c: something to run searches with for
+	test purposes
+
+	* tests/ecal/Makefile.am: build test search 
+
+2004-04-28  JP Rosevear  <jpr@ximian.com>
+
 	Fixes #57080
 	
 	* libedata-cal/e-cal-backend.c
