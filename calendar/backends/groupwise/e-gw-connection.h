@@ -24,11 +24,11 @@
 #ifndef E_GW_CONNECTION_H
 #define E_GW_CONNECTION_H
 
-#include <libsoup/soup-connection.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define E_TYPE_GW_CONNECTION            (gw_connection_get_type ())
+#define E_TYPE_GW_CONNECTION            (e_gw_connection_get_type ())
 #define E_GW_CONNECTION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_GW_CONNECTION,	EGwConnection))
 #define E_GW_CONNECTION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_GW_CONNECTION,	EGwConnectionClass))
 #define E_IS_GW_CONNECTION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_GW_CONNECTION))
@@ -39,16 +39,28 @@ typedef struct _EGwConnectionClass   EGwConnectionClass;
 typedef struct _EGwConnectionPrivate EGwConnectionPrivate;
 
 struct _EGwConnection {
-	SoupConnection parent;
+	GObject parent;
 	EGwConnectionPrivate *priv;
 };
 
 struct _EGwConnectionClass {
-	SoupConnectionClass parent_class;
+	GObjectClass parent_class;
 };
 
 GType          e_gw_connection_get_type (void);
 EGwConnection *e_gw_connection_new (void);
+
+typedef enum {
+	E_GW_CONNECTION_STATUS_OK,
+	E_GW_CONNECTION_STATUS_INVALID_OBJECT,
+	E_GW_CONNECTION_STATUS_OTHER,
+	E_GW_CONNECTION_STATUS_UNKNOWN
+} EGwConnectionStatus;
+
+EGwConnectionStatus e_gw_connection_login (EGwConnection *cnc,
+					   const char *uri,
+					   const char *username,
+					   const char *password);
 
 G_END_DECLS
 

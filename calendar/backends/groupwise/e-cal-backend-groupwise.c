@@ -26,9 +26,11 @@
 #endif
 
 #include "e-cal-backend-groupwise.h"
+#include "e-gw-connection.h"
 
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
+	EGwConnection *cnc;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -65,7 +67,10 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	priv = cbgw->priv;
 
 	/* Clean up */
-	/* FIXME */
+	if (priv->cnc) {
+		g_object_unref (priv->cnc);
+		priv->cnc = NULL;
+	}
 
 	g_free (priv);
 	cbgw->priv = NULL;
@@ -127,8 +132,16 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	/* FIXME */
-	return GNOME_Evolution_Calendar_Success;
+	/* FIXME: obtain username/password from the user */
+
+	/* create connection to server */
+	priv->cnc = e_gw_connection_new ();
+	switch (e_gw_connection_login (priv->cnc, "uri", "username", "password")) {
+	case E_GW_CONNECTION_STATUS_OK :
+		return GNOME_Evolution_Calendar_Success;
+	}
+
+	return E_GW_CONNECTION_STATUS_OTHER;
 }
 
 static ECalBackendSyncStatus

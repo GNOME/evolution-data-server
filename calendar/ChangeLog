@@ -1,3 +1,20 @@
+2003-11-18  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-connection.h: fixed typo.
+
+	* backends/groupwise/e-gw-connection.c: base it on GObject, not
+	SoupConnection.
+	(e_gw_connection_login): new functions.
+	(e_gw_connection_init): create the SoupSession here if it's not
+	created, or ref it if it's already created.
+	(e_gw_connection_finalize): unref the SoupSession here.
+	(session_weak_ref_cb): callback to detect when the SoupSession dies.
+
+	* backends/groupwise/e-cal-backend-groupwise.c: make it use
+	EGwConnection's.
+	(e_cal_backend_groupwise_finalize): unref the EGwConnection.
+	(e_cal_backend_groupwise_open): create the EGwConnection here.
+
 2003-11-17  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/gw-connection.[ch]: new class for managing
