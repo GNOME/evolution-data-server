@@ -1,3 +1,14 @@
+2005-02-03  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-engine.c (camel_imap4_engine_handle_untagged_1):
+	Handle XGWMOVE untagged events as EXPUNGE events.
+
+	* camel-imap4-folder.c (imap4_transfer_messages_to): Optionally
+	use XGWMOVE if the extension is available.
+
+	* camel-imap4-engine.c (camel_imap4_engine_capability): Query for
+	the XGWEXTENSIONS as well if the server supports it.
+
 2005-02-14  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-store-summary.c (store_info_to_folder_info):

@@ -1,6 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/*  Camel
- *  Copyright (C) 1999-2004 Jeffrey Stedfast
+/*
+ *  Authors: Jeffrey Stedfast <fejj@novell.com>
+ *
+ *  Copyright 2005 Novell, Inc. (www.novell.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,6 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ *
  */
 
 
@@ -78,8 +81,13 @@ enum {
 	CAMEL_IMAP4_CAPABILITY_QUOTA            = (1 << 9),
 	CAMEL_IMAP4_CAPABILITY_ACL              = (1 << 10),
 	CAMEL_IMAP4_CAPABILITY_MULTIAPPEND      = (1 << 11),
-	CAMEL_IMAP4_CAPABILITY_useful_lsub      = (1 << 12),
-	CAMEL_IMAP4_CAPABILITY_utf8_search      = (1 << 13),
+	CAMEL_IMAP4_CAPABILITY_UNSELECT         = (1 << 12),
+	
+	CAMEL_IMAP4_CAPABILITY_XGWEXTENSIONS    = (1 << 16),
+	CAMEL_IMAP4_CAPABILITY_XGWMOVE          = (1 << 17),
+	
+	CAMEL_IMAP4_CAPABILITY_useful_lsub      = (1 << 30),
+	CAMEL_IMAP4_CAPABILITY_utf8_search      = (1 << 31),
 };
 
 typedef enum {

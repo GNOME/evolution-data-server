@@ -1,6 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/*  Camel
- *  Copyright (C) 1999-2004 Jeffrey Stedfast
+/*
+ *  Authors: Jeffrey Stedfast <fejj@novell.com>
+ *
+ *  Copyright 2005 Novell, Inc. (www.novell.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,6 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ *
  */
 
 
@@ -44,6 +47,9 @@
 static void camel_imap4_engine_class_init (CamelIMAP4EngineClass *klass);
 static void camel_imap4_engine_init (CamelIMAP4Engine *engine, CamelIMAP4EngineClass *klass);
 static void camel_imap4_engine_finalize (CamelObject *object);
+
+static int parse_xgwextensions (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
+				camel_imap4_token_t *token, CamelException *ex);
 
 
 static CamelObjectClass *parent_class = NULL;
@@ -260,6 +266,22 @@ camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex)
 	
 	camel_imap4_command_unref (ic);
 	
+	if (retval == -1 || !(engine->capa & CAMEL_IMAP4_CAPABILITY_XGWEXTENSIONS))
+		return retval;
+	
+	ic = camel_imap4_engine_prequeue (engine, NULL, "XGWEXTENSIONS\r\n");
+	camel_imap4_command_register_untagged (ic, "XGWEXTENSIONS", parse_xgwextensions);
+	
+	while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
+		;
+	
+	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
+		camel_exception_xfer (ex, &ic->ex);
+		retval = -1;
+	}
+	
+	camel_imap4_command_unref (ic);
+	
 	return retval;
 }
 
@@ -439,13 +461,55 @@ static struct {
 	{ "UIDPLUS",       CAMEL_IMAP4_CAPABILITY_UIDPLUS       }, /* rfc2359 */
 	{ "LITERAL+",      CAMEL_IMAP4_CAPABILITY_LITERALPLUS   }, /* rfc2088 */
 	{ "LOGINDISABLED", CAMEL_IMAP4_CAPABILITY_LOGINDISABLED },
-	{ "STARTTLS",      CAMEL_IMAP4_CAPABILITY_STARTTLS      },
+	{ "STARTTLS",      CAMEL_IMAP4_CAPABILITY_STARTTLS      }, /* rfc3501 */
 	{ "QUOTA",         CAMEL_IMAP4_CAPABILITY_QUOTA         }, /* rfc2087 */
 	{ "ACL",           CAMEL_IMAP4_CAPABILITY_ACL           }, /* rfc2086 */
 	{ "IDLE",          CAMEL_IMAP4_CAPABILITY_IDLE          }, /* rfc2177 */
 	{ "MULTIAPPEND",   CAMEL_IMAP4_CAPABILITY_MULTIAPPEND   }, /* rfc3502 */
+	{ "UNSELECT",      CAMEL_IMAP4_CAPABILITY_UNSELECT      },
+	{ "XGWEXTENSIONS", CAMEL_IMAP4_CAPABILITY_XGWEXTENSIONS }, /* GroupWise extensions */
 	{ NULL,            0                                    }
 };
+
+static struct {
+	const char *name;
+	guint32 flag;
+} imap4_xgwextensions[] = {
+	{ "XGWMOVE",       CAMEL_IMAP4_CAPABILITY_XGWMOVE       }, /* GroupWise MOVE command */
+	{ NULL,            0                                    }
+};
+
+static int
+parse_xgwextensions (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, camel_imap4_token_t *token, CamelException *ex)
+{
+	int i;
+	
+	if (camel_imap4_engine_next_token (engine, token, ex) == -1)
+		return -1;
+	
+	while (token->token == CAMEL_IMAP4_TOKEN_ATOM) {
+		for (i = 0; imap4_xgwextensions[i].name; i++) {
+			if (!g_ascii_strcasecmp (imap4_xgwextensions[i].name, token->v.atom))
+				engine->capa |= imap4_xgwextensions[i].flag;
+		}
+		
+		if (camel_imap4_engine_next_token (engine, token, ex) == -1)
+			return -1;
+	}
+	
+	if (token->token != '\n') {
+		d(fprintf (stderr, "expected ')' to close untagged FETCH response\n"));
+		goto unexpected;
+	}
+	
+	return 0;
+	
+ unexpected:
+	
+	camel_imap4_utils_set_unexpected_token_error (ex, engine, token);
+	
+	return -1;
+}
 
 static gboolean
 auth_free (gpointer key, gpointer value, gpointer user_data)
@@ -460,6 +524,7 @@ engine_parse_capability (CamelIMAP4Engine *engine, int sentinel, CamelException 
 	camel_imap4_token_t token;
 	int i;
 	
+	/* we assume UTF8 searches work until proven otherwise */
 	engine->capa = CAMEL_IMAP4_CAPABILITY_utf8_search;
 	engine->level = 0;
 	
@@ -1132,7 +1197,7 @@ camel_imap4_engine_handle_untagged_1 (CamelIMAP4Engine *engine, camel_imap4_toke
 		/* NOTE: these can be over-ridden by a registered untagged response handler */
 		if (!strcmp ("EXISTS", token->v.atom)) {
 			camel_imap4_summary_set_exists (folder->summary, v);
-		} else if (!strcmp ("EXPUNGE", token->v.atom)) {
+		} else if (!strcmp ("EXPUNGE", token->v.atom) || !strcmp ("XGWMOVE", token->v.atom)) {
 			camel_imap4_summary_expunge (folder->summary, (int) v);
 		} else if (!strcmp ("RECENT", token->v.atom)) {
 			camel_imap4_summary_set_recent (folder->summary, v);

@@ -1119,7 +1119,11 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 	for (i = 0; i < infos->len; i += n) {
 		n = camel_imap4_get_uid_set (engine, src->summary, infos, i, 10 + dest_namelen, &set);
 		
-		ic = camel_imap4_engine_queue (engine, src, "UID COPY %s %F\r\n", set, dest);
+		if (move && (engine->capa & CAMEL_IMAP4_CAPABILITY_XGWMOVE))
+			ic = camel_imap4_engine_queue (engine, src, "UID XGWMOVE %s %F\r\n", set, dest);
+		else
+			ic = camel_imap4_engine_queue (engine, src, "UID COPY %s %F\r\n", set, dest);
+		
 		while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
 			;
 		
@@ -1162,7 +1166,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 		
 		camel_imap4_command_unref (ic);
 		
-		if (move) {
+		if (move && !(engine->capa & CAMEL_IMAP4_CAPABILITY_XGWMOVE)) {
 			for (j = i; j < n; j++) {
 				info = infos->pdata[j];
 				camel_folder_set_message_flags (src, camel_message_info_uid (info),
