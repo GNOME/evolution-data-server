@@ -5,14 +5,12 @@
 # Michal Bukovjan <bukm@centrum.cz>, 2003
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005.
 #
-#: calendar/backends/weather/e-cal-backend-weather.c:240
-#: calendar/backends/weather/e-cal-backend-weather.c:251
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-06 13:36+0100\n"
-"PO-Revision-Date: 2005-02-06 17:16+0100\n"
+"POT-Creation-Date: 2005-02-08 13:54+0100\n"
+"PO-Revision-Date: 2005-02-08 15:11+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -626,39 +624,37 @@ msgstr "Narozeniny: %s"
 msgid "Anniversary: %s"
 msgstr "Výročí: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:192
+#: calendar/backends/file/e-cal-backend-file.c:193
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:509
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:513
 msgid "Invalid server URI"
 msgstr "Neplatné URI serveru"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:556
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:559
-#: camel/providers/groupwise/camel-gw-listener.c:405
-#: camel/providers/groupwise/camel-gw-listener.c:435
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:561
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:564
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:566
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:811
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:571
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:816
 #: calendar/backends/http/e-cal-backend-http.c:484
 #: calendar/backends/weather/e-cal-backend-weather.c:449
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:576
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
 msgid "Could not create thread for populating cache"
 msgstr "Nemohu vytvořit thread pro naplnění cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:587
 #: calendar/libecal/e-cal.c:4528
-#: camel/providers/groupwise/camel-groupwise-folder.c:623
-#: camel/providers/groupwise/camel-groupwise-store.c:526
-#: camel/providers/groupwise/camel-groupwise-store.c:607
-#: camel/providers/groupwise/camel-groupwise-store.c:765
-#: camel/providers/groupwise/camel-groupwise-store.c:961
+#: camel/providers/groupwise/camel-groupwise-folder.c:631
+#: camel/providers/groupwise/camel-groupwise-store.c:527
+#: camel/providers/groupwise/camel-groupwise-store.c:608
+#: camel/providers/groupwise/camel-groupwise-store.c:766
+#: camel/providers/groupwise/camel-groupwise-store.c:962
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
@@ -1034,11 +1030,11 @@ msgstr "Sklad je odpojen"
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: calendar/libecal/e-cal.c:4508 servers/groupwise/e-gw-connection.c:161
+#: calendar/libecal/e-cal.c:4508 servers/groupwise/e-gw-connection.c:162
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: calendar/libecal/e-cal.c:4510 servers/groupwise/e-gw-connection.c:155
+#: calendar/libecal/e-cal.c:4510 servers/groupwise/e-gw-connection.c:156
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
@@ -1054,7 +1050,7 @@ msgstr "URI již bylo načteno"
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: calendar/libecal/e-cal.c:4518 servers/groupwise/e-gw-connection.c:163
+#: calendar/libecal/e-cal.c:4518 servers/groupwise/e-gw-connection.c:164
 msgid "Unknown User"
 msgstr "Neznámý uživatel"
 
@@ -1089,7 +1085,7 @@ msgstr "Došlo k výjimce CORBA"
 #: camel/providers/pop3/camel-pop3-store.c:535
 #: camel/providers/pop3/camel-pop3-store.c:542
 #: camel/providers/pop3/camel-pop3-store.c:548
-#: servers/groupwise/e-gw-connection.c:169
+#: servers/groupwise/e-gw-connection.c:170
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
@@ -1277,12 +1273,11 @@ msgid "You must be working online to complete this operation"
 msgstr "Pro dokončení této operace musíte pracovat on-line"
 
 #: camel/camel-filter-driver.c:689 camel/camel-filter-search.c:522
-#: camel/camel-process.c:48
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
 msgstr "Nemohu vytvořit rouru k '%s': %s"
 
-#: camel/camel-filter-driver.c:733 camel/camel-process.c:90
+#: camel/camel-filter-driver.c:733
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Nemohu vytvořit proces potomka '%s': %s"
@@ -2548,18 +2543,18 @@ msgstr "Požadována odpověď: do "
 msgid "Reply Requested: When convenient"
 msgstr "Požadována odpověď: Podle možností"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:541
+#: camel/providers/groupwise/camel-groupwise-folder.c:549
 #: camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nemohu načíst souhrn pro %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:791
+#: camel/providers/groupwise/camel-groupwise-folder.c:800
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nemohu vytvořit zprávu: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:803
+#: camel/providers/groupwise/camel-groupwise-folder.c:812
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nemohu přidat zprávu do složky `%s': %s"
@@ -2615,8 +2610,8 @@ msgid "Automatically synchronize account locally"
 msgstr "Automaticky synchronizovat místní účet"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:69
-msgid "Address Book and Calendar"
-msgstr "Adresář a kalendář"
+msgid "SOAP Settings"
+msgstr "Nastavení SOAP"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:72
 msgid "Post Office Agent SOAP Port:"
@@ -2665,47 +2660,51 @@ msgstr "Neuvedli jste heslo."
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Nemohu se autentizovat u serveru GroupWise."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:501
+#: camel/providers/groupwise/camel-groupwise-store.c:431
+msgid "Some features may not work correctly with your current server version"
+msgstr "Některé funkce možná s vaší verzí serveru nebudou fungovat správně"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:502
 #: camel/providers/imap/camel-imap-store.c:1870
 #: camel/providers/imap/camel-imap-store.c:2060
 #, c-format
 msgid "No such folder %s"
 msgstr "Složka %s neexistuje"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:551
-#: camel/providers/groupwise/camel-groupwise-store.c:597
+#: camel/providers/groupwise/camel-groupwise-store.c:552
+#: camel/providers/groupwise/camel-groupwise-store.c:598
 #: camel/providers/imap/camel-imap-folder.c:2288
 #: camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Stahuji souhrnné informace pro nové zprávy"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:731
+#: camel/providers/groupwise/camel-groupwise-store.c:732
 msgid "Cannot get folder info in offline mode."
 msgstr "Nemohu získat informace o složce v režimu offline."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:942
+#: camel/providers/groupwise/camel-groupwise-store.c:943
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nemohu vytvářet složky GroupWise v režimu offline."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:993
+#: camel/providers/groupwise/camel-groupwise-store.c:994
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Nemohu odstraňovat složky GroupWise v režimu offline."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1039
+#: camel/providers/groupwise/camel-groupwise-store.c:1040
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Nemohu přejmenovávat složky GroupWise v režimu offline."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1058
+#: camel/providers/groupwise/camel-groupwise-store.c:1059
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Nemohu přejmenovat složku GroupWise `%s' na `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1094
+#: camel/providers/groupwise/camel-groupwise-store.c:1095
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Server GroupWise %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1096
+#: camel/providers/groupwise/camel-groupwise-store.c:1097
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Služba GroupWise pro %s na %s"
@@ -2723,23 +2722,6 @@ msgstr "Doručení pošty Groupwise pomocí %s"
 #: camel/providers/groupwise/camel-groupwise-transport.c:159
 msgid "Sending Message"
 msgstr "Posílám zprávu"
-
-#: camel/providers/groupwise/camel-gw-listener.c:406
-msgid "Tasks"
-msgstr "Úkoly"
-
-#: camel/providers/groupwise/camel-gw-listener.c:436
-msgid "Checklist"
-msgstr "Seznam"
-
-#: camel/providers/groupwise/camel-gw-listener.c:483
-#, c-format
-msgid "%sEnter password for %s (user %s)"
-msgstr "%sZadejte heslo pro %s (uživatel %s)"
-
-#: camel/providers/groupwise/camel-gw-listener.c:494
-msgid "Failed to authenticate.\n"
-msgstr "Nemohu se autentizovat.\n"
 
 #: camel/providers/imap/camel-imap-command.c:219
 #: camel/providers/imap/camel-imap-command.c:258
@@ -3106,7 +3088,9 @@ msgstr "IMAP4 server %s se neočekávaně odpojil: %s"
 #: camel/providers/imap4/camel-imap4-folder.c:85
 msgid ""
 "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr "Povolit detekci poštovních konferencí vyžadovanou pro některé filtry a pravidla v-složek"
+msgstr ""
+"Povolit detekci poštovních konferencí vyžadovanou pro některé filtry a "
+"pravidla v-složek"
 
 #: camel/providers/imap4/camel-imap4-folder.c:398
 #, c-format
@@ -3335,7 +3319,8 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "Experimentální klient IMAP 4(.1)\n"
-"Toto je netestovaný a nepodporovaný kód, chcete místo něj používat obyčejný imap.\n"
+"Toto je netestovaný a nepodporovaný kód, chcete místo něj používat obyčejný "
+"imap.\n"
 "\n"
 " !!! NEPOUŽÍVEJTE TO PRO DŮLEŽITOU POŠTU  !!!\n"
 
@@ -3873,24 +3858,6 @@ msgstr ""
 "Nemohu synchronizovat složku fronty %s: %s\n"
 "Složka je možná poškozena, kopie uložena do `%s'"
 
-#: camel/providers/nntp/camel-nntp-auth.c:44
-#: camel/providers/nntp/camel-nntp-store.c:1156
-#, c-format
-msgid "Please enter the NNTP password for %s@%s"
-msgstr "Zadejte prosím heslo NNTP pro %s@%s"
-
-#: camel/providers/nntp/camel-nntp-auth.c:64
-msgid "Server rejected username"
-msgstr "Server odmítl jméno uživatele"
-
-#: camel/providers/nntp/camel-nntp-auth.c:70
-msgid "Failed to send username to server"
-msgstr "Nemohu odeslat jméno uživatele serveru"
-
-#: camel/providers/nntp/camel-nntp-auth.c:79
-msgid "Server rejected username/password"
-msgstr "Server odmítl jméno uživatele/heslo"
-
 #: camel/providers/nntp/camel-nntp-folder.c:177
 #: camel/providers/nntp/camel-nntp-folder.c:209
 #, c-format
@@ -3912,21 +3879,6 @@ msgstr "Nemůžete posílat zprávy NNTP, když pracujete při odpojení!"
 #: camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Nemůžete kopírovat zprávy ze složky NNTP!"
-
-#: camel/providers/nntp/camel-nntp-grouplist.c:44
-msgid "Could not get group list from server."
-msgstr "Nemohu získat ze serveru seznam skupin."
-
-#: camel/providers/nntp/camel-nntp-grouplist.c:97
-#: camel/providers/nntp/camel-nntp-grouplist.c:106
-#, c-format
-msgid "Unable to load grouplist file for %s: %s"
-msgstr "Nemohu načíst soubor seznamu skupin pro %s: %s"
-
-#: camel/providers/nntp/camel-nntp-grouplist.c:157
-#, c-format
-msgid "Unable to save grouplist file for %s: %s"
-msgstr "Nemohu uložit soubor seznamu skupin pro %s: %s"
 
 #: camel/providers/nntp/camel-nntp-provider.c:44
 msgid ""
@@ -4016,6 +3968,11 @@ msgstr "Nemůžete odstranit složku z úložiště News: místo toho se odhlast
 #: camel/providers/nntp/camel-nntp-store.c:1148
 msgid "Authentication requested but no username provided"
 msgstr "Je požadována autentizace, ale nebylo poskytnuto jméno uživatele"
+
+#: camel/providers/nntp/camel-nntp-store.c:1156
+#, c-format
+msgid "Please enter the NNTP password for %s@%s"
+msgstr "Zadejte prosím heslo NNTP pro %s@%s"
 
 #: camel/providers/nntp/camel-nntp-store.c:1160
 #, c-format
@@ -4819,19 +4776,19 @@ msgstr "Zvolte cíl"
 msgid "_Destination"
 msgstr "_Cíl:"
 
-#: servers/groupwise/e-gw-connection.c:153
+#: servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "Neplatné spojení"
 
-#: servers/groupwise/e-gw-connection.c:157
+#: servers/groupwise/e-gw-connection.c:158
 msgid "Invalid response from server"
 msgstr "Neplatná odpověď od serveru"
 
-#: servers/groupwise/e-gw-connection.c:159
+#: servers/groupwise/e-gw-connection.c:160
 msgid "No response from the server"
 msgstr "Žádná odpověď od serveru"
 
-#: servers/groupwise/e-gw-connection.c:165
+#: servers/groupwise/e-gw-connection.c:166
 msgid "Bad parameter"
 msgstr "Špatný parametr"
 
@@ -4848,6 +4805,39 @@ msgstr "Backend souborů a webcal pro kalendář Evolution"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Došlo k několika chybám segmentace; nemohu zobrazit dialog o chybě\n"
+
+#~ msgid "Address Book and Calendar"
+#~ msgstr "Adresář a kalendář"
+
+#~ msgid "Tasks"
+#~ msgstr "Úkoly"
+
+#~ msgid "Checklist"
+#~ msgstr "Seznam"
+
+#~ msgid "%sEnter password for %s (user %s)"
+#~ msgstr "%sZadejte heslo pro %s (uživatel %s)"
+
+#~ msgid "Failed to authenticate.\n"
+#~ msgstr "Nemohu se autentizovat.\n"
+
+#~ msgid "Server rejected username"
+#~ msgstr "Server odmítl jméno uživatele"
+
+#~ msgid "Failed to send username to server"
+#~ msgstr "Nemohu odeslat jméno uživatele serveru"
+
+#~ msgid "Server rejected username/password"
+#~ msgstr "Server odmítl jméno uživatele/heslo"
+
+#~ msgid "Could not get group list from server."
+#~ msgstr "Nemohu získat ze serveru seznam skupin."
+
+#~ msgid "Unable to load grouplist file for %s: %s"
+#~ msgstr "Nemohu načíst soubor seznamu skupin pro %s: %s"
+
+#~ msgid "Unable to save grouplist file for %s: %s"
+#~ msgstr "Nemohu uložit soubor seznamu skupin pro %s: %s"
 
 #~ msgid "File As"
 #~ msgstr "Uložit jako"
