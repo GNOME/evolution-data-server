@@ -397,7 +397,7 @@ msgstr "Fødselsdato"
 
 #: addressbook/libebook/e-contact.c:196
 msgid "Anniversary"
-msgstr "Bryllupsdag"
+msgstr "Jubileum"
 
 #: addressbook/libebook/e-contact.c:198
 msgid "List"
