@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-07 02:51+0100\n"
-"PO-Revision-Date: 2005-02-07 02:53+0100\n"
+"POT-Creation-Date: 2005-02-08 18:13+0100\n"
+"PO-Revision-Date: 2005-02-08 18:13+0100\n"
 "Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -626,40 +626,38 @@ msgstr "Geburtstag: %s"
 msgid "Anniversary: %s"
 msgstr "Jahrestag: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:192
+#: ../calendar/backends/file/e-cal-backend-file.c:193
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 "Kalenderdaten konnten nicht gespeichert werden: URI fehlerhaft formatiert."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:509
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:513
 msgid "Invalid server URI"
 msgstr "Ungültige Server-URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:556
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:559
-#: ../camel/providers/groupwise/camel-gw-listener.c:405
-#: ../camel/providers/groupwise/camel-gw-listener.c:435
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:561
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:564
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:566
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:811
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:571
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:816
 #: ../calendar/backends/http/e-cal-backend-http.c:484
 #: ../calendar/backends/weather/e-cal-backend-weather.c:449
 msgid "Could not create cache file"
 msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:576
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:581
 msgid "Could not create thread for populating cache"
 msgstr "Thread zum Belegen des Zwischenspeichers konnte nicht angelegt werden"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: ../calendar/libecal/e-cal.c:4528
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:623
-#: ../camel/providers/groupwise/camel-groupwise-store.c:526
-#: ../camel/providers/groupwise/camel-groupwise-store.c:607
-#: ../camel/providers/groupwise/camel-groupwise-store.c:765
-#: ../camel/providers/groupwise/camel-groupwise-store.c:961
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:587
+#: ../calendar/libecal/e-cal.c:4516
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:631
+#: ../camel/providers/groupwise/camel-groupwise-store.c:527
+#: ../camel/providers/groupwise/camel-groupwise-store.c:608
+#: ../camel/providers/groupwise/camel-groupwise-store.c:766
+#: ../camel/providers/groupwise/camel-groupwise-store.c:962
 msgid "Authentication failed"
 msgstr "Legitimation gescheitert"
 
@@ -1019,84 +1017,84 @@ msgstr "Undefiniert"
 msgid "Enter password for %s (user %s)"
 msgstr "Passwort für %s eingeben (Benutzer %s)"
 
-#: ../calendar/libecal/e-cal.c:4500
+#: ../calendar/libecal/e-cal.c:4488
 msgid "Invalid argument"
 msgstr "Argument ungültig"
 
-#: ../calendar/libecal/e-cal.c:4502
+#: ../calendar/libecal/e-cal.c:4490
 msgid "Backend is busy"
 msgstr "Backend belegt"
 
-#: ../calendar/libecal/e-cal.c:4504
+#: ../calendar/libecal/e-cal.c:4492
 msgid "Repository is offline"
 msgstr "Repository offline"
 
 # CHECK
-#: ../calendar/libecal/e-cal.c:4506
+#: ../calendar/libecal/e-cal.c:4494
 msgid "No such calendar"
 msgstr "Kein derartiger Kalender"
 
-#: ../calendar/libecal/e-cal.c:4508 ../servers/groupwise/e-gw-connection.c:161
+#: ../calendar/libecal/e-cal.c:4496 ../servers/groupwise/e-gw-connection.c:162
 msgid "Object not found"
 msgstr "Objekt nicht gefunden"
 
-#: ../calendar/libecal/e-cal.c:4510 ../servers/groupwise/e-gw-connection.c:155
+#: ../calendar/libecal/e-cal.c:4498 ../servers/groupwise/e-gw-connection.c:156
 msgid "Invalid object"
 msgstr "Objekt ungültig"
 
-#: ../calendar/libecal/e-cal.c:4512
+#: ../calendar/libecal/e-cal.c:4500
 msgid "URI not loaded"
 msgstr "URI nicht geladen"
 
-#: ../calendar/libecal/e-cal.c:4514
+#: ../calendar/libecal/e-cal.c:4502
 msgid "URI already loaded"
 msgstr "URI bereits geladen"
 
-#: ../calendar/libecal/e-cal.c:4516
+#: ../calendar/libecal/e-cal.c:4504
 msgid "Permission denied"
 msgstr "Erlaubnis verweigert"
 
-#: ../calendar/libecal/e-cal.c:4518 ../servers/groupwise/e-gw-connection.c:163
+#: ../calendar/libecal/e-cal.c:4506 ../servers/groupwise/e-gw-connection.c:164
 msgid "Unknown User"
 msgstr "Unbekannter Benutzer"
 
-#: ../calendar/libecal/e-cal.c:4520
+#: ../calendar/libecal/e-cal.c:4508
 msgid "Object ID already exists"
 msgstr "Objektkennung existiert bereits"
 
-#: ../calendar/libecal/e-cal.c:4522
+#: ../calendar/libecal/e-cal.c:4510
 msgid "Protocol not supported"
 msgstr "Protokoll nicht unterstützt"
 
-#: ../calendar/libecal/e-cal.c:4524
+#: ../calendar/libecal/e-cal.c:4512
 msgid "Operation has been cancelled"
 msgstr "Aktion wurde abgebrochen"
 
-#: ../calendar/libecal/e-cal.c:4526
+#: ../calendar/libecal/e-cal.c:4514
 msgid "Could not cancel operation"
 msgstr "Aktion konnte nicht abgebrochen werden"
 
-#: ../calendar/libecal/e-cal.c:4530
+#: ../calendar/libecal/e-cal.c:4518
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Legitimation erforderlich"
 
-#: ../calendar/libecal/e-cal.c:4532
+#: ../calendar/libecal/e-cal.c:4520
 msgid "A CORBA exception has occurred"
 msgstr "Es ist eine CORBA-Exception aufgetreten"
 
-#: ../calendar/libecal/e-cal.c:4534
+#: ../calendar/libecal/e-cal.c:4522
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:373
 #: ../camel/providers/pop3/camel-pop3-store.c:535
 #: ../camel/providers/pop3/camel-pop3-store.c:542
 #: ../camel/providers/pop3/camel-pop3-store.c:548
-#: ../servers/groupwise/e-gw-connection.c:169
+#: ../servers/groupwise/e-gw-connection.c:170
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: ../calendar/libecal/e-cal.c:4536
+#: ../calendar/libecal/e-cal.c:4524
 msgid "No error"
 msgstr "Kein Fehler"
 
@@ -1281,12 +1279,11 @@ msgid "You must be working online to complete this operation"
 msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen"
 
 #: ../camel/camel-filter-driver.c:689 ../camel/camel-filter-search.c:522
-#: ../camel/camel-process.c:48
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
 msgstr "Weiterleitung an »%s« konnte nicht erstellt werden: %s"
 
-#: ../camel/camel-filter-driver.c:733 ../camel/camel-process.c:90
+#: ../camel/camel-filter-driver.c:733
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Kindprozess »%s« konnte nicht erstellt werden: %s"
@@ -2606,18 +2603,18 @@ msgstr "Antwort erbeten: durch "
 msgid "Reply Requested: When convenient"
 msgstr "Antwort erbeten: Wenn es passt"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:541
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:549
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Zusammenfassung für %s konnte nicht geladen werden"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:791
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:800
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nachricht konnte nicht angelegt werden: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:803
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:812
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nachricht konnte nicht an Ordner »%s« angehängt werden: %s"
@@ -2725,47 +2722,53 @@ msgstr "Sie haben kein Passwort eingegeben."
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Legitimation am GroupWise-Server gescheitert."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:501
+#: ../camel/providers/groupwise/camel-groupwise-store.c:431
+msgid "Some features may not work correctly with your current server version"
+msgstr ""
+"Einige Funktionen werden mit Ihrer momentanen Server-Version möglicherweise "
+"nicht einwandfrei arbeiten."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:502
 #: ../camel/providers/imap/camel-imap-store.c:1870
 #: ../camel/providers/imap/camel-imap-store.c:2060
 #, c-format
 msgid "No such folder %s"
 msgstr "Ordner %s existiert nicht"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:551
-#: ../camel/providers/groupwise/camel-groupwise-store.c:597
+#: ../camel/providers/groupwise/camel-groupwise-store.c:552
+#: ../camel/providers/groupwise/camel-groupwise-store.c:598
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Zusammenfassungsinformationen für neue Nachrichten werden abgerufen"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:731
+#: ../camel/providers/groupwise/camel-groupwise-store.c:732
 msgid "Cannot get folder info in offline mode."
 msgstr "Ordnerinformationen können im Offline-Modus nicht abgerufen werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:942
+#: ../camel/providers/groupwise/camel-groupwise-store.c:943
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht angelegt werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:993
+#: ../camel/providers/groupwise/camel-groupwise-store.c:994
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht gelöscht werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1039
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1040
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht umbenannt werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1058
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1059
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "GroupWise-Ordner »%s« konnte nicht in »%s« umbenannt werden"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1094
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1095
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-Server %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1096
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1097
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise-Dienst für %s auf %s"
@@ -2783,23 +2786,6 @@ msgstr "GroupWise-E-Mail-Auslieferung über %s"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:159
 msgid "Sending Message"
 msgstr "Nachricht wird verschickt"
-
-#: ../camel/providers/groupwise/camel-gw-listener.c:406
-msgid "Tasks"
-msgstr "Aufgaben"
-
-#: ../camel/providers/groupwise/camel-gw-listener.c:436
-msgid "Checklist"
-msgstr "Checkliste"
-
-#: ../camel/providers/groupwise/camel-gw-listener.c:483
-#, c-format
-msgid "%sEnter password for %s (user %s)"
-msgstr "%sPasswort für %s (Benutzer %s) eingeben"
-
-#: ../camel/providers/groupwise/camel-gw-listener.c:494
-msgid "Failed to authenticate.\n"
-msgstr "Legitimation gescheitert.\n"
 
 #: ../camel/providers/imap/camel-imap-command.c:219
 #: ../camel/providers/imap/camel-imap-command.c:258
@@ -3967,24 +3953,6 @@ msgstr ""
 "Spool-Ordner %s konnte nicht synchronisiert werden: %s\n"
 "Ordner könnte fehlerhaft sein, Kopie in »%s« gespeichert"
 
-#: ../camel/providers/nntp/camel-nntp-auth.c:44
-#: ../camel/providers/nntp/camel-nntp-store.c:1156
-#, c-format
-msgid "Please enter the NNTP password for %s@%s"
-msgstr "Bitte geben Sie das NNTP-Passwort für %s@%s ein"
-
-#: ../camel/providers/nntp/camel-nntp-auth.c:64
-msgid "Server rejected username"
-msgstr "Server wies Benutzername zurück"
-
-#: ../camel/providers/nntp/camel-nntp-auth.c:70
-msgid "Failed to send username to server"
-msgstr "Benutzername konnte nicht an Server übermittelt werden"
-
-#: ../camel/providers/nntp/camel-nntp-auth.c:79
-msgid "Server rejected username/password"
-msgstr "Server wies Benutzername/Passwort zurück"
-
 #: ../camel/providers/nntp/camel-nntp-folder.c:177
 #: ../camel/providers/nntp/camel-nntp-folder.c:209
 #, c-format
@@ -4006,21 +3974,6 @@ msgstr "Sie können im Offline-Modus keine NNTP-Nachrichten veröffentlichen!"
 #: ../camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Nachrichten können nicht aus NNTP-Ordnern kopiert werden!"
-
-#: ../camel/providers/nntp/camel-nntp-grouplist.c:44
-msgid "Could not get group list from server."
-msgstr "Die Gruppenliste konnte nicht vom Server abgerufen werden."
-
-#: ../camel/providers/nntp/camel-nntp-grouplist.c:97
-#: ../camel/providers/nntp/camel-nntp-grouplist.c:106
-#, c-format
-msgid "Unable to load grouplist file for %s: %s"
-msgstr "Gruppenlistendatei für %s konnte nicht geladen werden: %s"
-
-#: ../camel/providers/nntp/camel-nntp-grouplist.c:157
-#, c-format
-msgid "Unable to save grouplist file for %s: %s"
-msgstr "Gruppenlistendatei für %s konnte nicht gespeichert werden: %s"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid ""
@@ -4111,6 +4064,11 @@ msgstr ""
 msgid "Authentication requested but no username provided"
 msgstr ""
 "Legitimation wurde angefragt, es wird jedoch kein Benutzername unterstützt"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1156
+#, c-format
+msgid "Please enter the NNTP password for %s@%s"
+msgstr "Bitte geben Sie das NNTP-Passwort für %s@%s ein"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1160
 #, c-format
@@ -4929,19 +4887,19 @@ msgstr "Ziel wählen"
 msgid "_Destination"
 msgstr "_Ziel"
 
-#: ../servers/groupwise/e-gw-connection.c:153
+#: ../servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "Ungültige Verbindung"
 
-#: ../servers/groupwise/e-gw-connection.c:157
+#: ../servers/groupwise/e-gw-connection.c:158
 msgid "Invalid response from server"
 msgstr "Ungültige Server-Antwort"
 
-#: ../servers/groupwise/e-gw-connection.c:159
+#: ../servers/groupwise/e-gw-connection.c:160
 msgid "No response from the server"
 msgstr "Server liefert keine Antwort"
 
-#: ../servers/groupwise/e-gw-connection.c:165
+#: ../servers/groupwise/e-gw-connection.c:166
 msgid "Bad parameter"
 msgstr "Fehlerhafter Parameter"
 
@@ -4960,6 +4918,36 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Mehrere Speicherzugriffsfehler aufgetreten; Fehlerdialog kann nicht "
 "angezeigt werden\n"
+
+#~ msgid "Tasks"
+#~ msgstr "Aufgaben"
+
+#~ msgid "Checklist"
+#~ msgstr "Checkliste"
+
+#~ msgid "%sEnter password for %s (user %s)"
+#~ msgstr "%sPasswort für %s (Benutzer %s) eingeben"
+
+#~ msgid "Failed to authenticate.\n"
+#~ msgstr "Legitimation gescheitert.\n"
+
+#~ msgid "Server rejected username"
+#~ msgstr "Server wies Benutzername zurück"
+
+#~ msgid "Failed to send username to server"
+#~ msgstr "Benutzername konnte nicht an Server übermittelt werden"
+
+#~ msgid "Server rejected username/password"
+#~ msgstr "Server wies Benutzername/Passwort zurück"
+
+#~ msgid "Could not get group list from server."
+#~ msgstr "Die Gruppenliste konnte nicht vom Server abgerufen werden."
+
+#~ msgid "Unable to load grouplist file for %s: %s"
+#~ msgstr "Gruppenlistendatei für %s konnte nicht geladen werden: %s"
+
+#~ msgid "Unable to save grouplist file for %s: %s"
+#~ msgstr "Gruppenlistendatei für %s konnte nicht gespeichert werden: %s"
 
 #~ msgid "Address Book and Calendar"
 #~ msgstr "Adressbuch und Kalender"
