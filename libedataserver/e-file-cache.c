@@ -52,7 +52,8 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 	switch (property_id) {
 	case PROP_FILENAME :
 		/* make sure the directory for the cache exists */
-		dirname = g_path_get_dirname ((const char *) g_value_get_string (value));
+		priv->filename = g_strdup ( g_value_get_string (value));
+		dirname = g_path_get_dirname (priv->filename);
 		result = e_util_mkdir_hier (dirname, 0700);
 		g_free (dirname);
 		if (result != 0)

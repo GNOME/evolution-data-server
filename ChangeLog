@@ -1,3 +1,8 @@
+2004-08-23  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libedataserver/e-file-cache.c (e_file_cache_set_property) :
+	assing the value set for filename property to priv->filename 
+ 
 2004-08-21  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Added «nb» to ALL_LINGUAS.
