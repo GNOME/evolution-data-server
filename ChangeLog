@@ -1,3 +1,8 @@
+2004-01-12  Rodrigo Moya <rodrigo@ximian.com>
+
+	* src/server-logging.c (server_log_handler): avoid CORBA allocations
+	by using the CORBA_any directly. Free the CORBA exception.
+
 2004-01-10  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedataserver/e-file-cache.c (e_file_cache_set_property): fixed

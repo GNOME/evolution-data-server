@@ -66,7 +66,7 @@ server_log_handler(const gchar *domain,
 	ServerLogging *logging = SERVER_LOGGING (user_data);
 	BonoboEventSource *es = BONOBO_EVENT_SOURCE (logging);
 	CORBA_Environment ev;
-	CORBA_any *value;
+	CORBA_any value;
 	GNOME_Evolution_DataServer_Logging_LogEvent log_event;
 
 	printf ("in server_log_handler\n");
@@ -84,25 +84,17 @@ server_log_handler(const gchar *domain,
 	else if ((flags & G_LOG_LEVEL_DEBUG) == G_LOG_LEVEL_DEBUG)
 		log_event.level = GNOME_Evolution_DataServer_Logging_Debug;
 
-	log_event.domain = CORBA_string_dup (domain);
-	log_event.message = CORBA_string_dup (msg);
+	log_event.domain = (CORBA_char *) domain;
+	log_event.message = (CORBA_char *) msg;
 
-	CORBA_exception_init (&ev);
-
-	value = bonobo_arg_new (TC_GNOME_Evolution_DataServer_Logging_LogEvent);
-
-	BONOBO_ARG_SET_GENERAL (value, log_event,
-				TC_GNOME_Evolution_DataServer_Logging_LogEvent,
-				GNOME_Evolution_DataServer_Logging_LogEvent,
-				NULL);
+	value._type = TC_GNOME_Evolution_DataServer_Logging_LogEvent;
+	value._value = &log_event;
 
 	if (bonobo_event_source_has_listener (es, "log_event")) {
-
-		bonobo_event_source_notify_listeners (es, "log_event", value, &ev); 
+		CORBA_exception_init (&ev);
+		bonobo_event_source_notify_listeners (es, "log_event", &value, &ev); 
+		CORBA_exception_free (&ev);
 	}
-
-	CORBA_free (log_event.domain);
-	CORBA_free (log_event.message);
 
 	g_log_default_handler (domain, flags, msg, NULL);
 }
