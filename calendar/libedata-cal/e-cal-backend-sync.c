@@ -298,7 +298,7 @@ _e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal)
 	ECalBackendSyncStatus status;
 	char *attribute = NULL;
 
-	status = e_cal_backend_sync_get_cal_address (E_CAL_BACKEND_SYNC (backend), cal, &attribute);
+	status = e_cal_backend_sync_get_ldap_attribute (E_CAL_BACKEND_SYNC (backend), cal, &attribute);
 
 	e_data_cal_notify_ldap_attribute (cal, status, attribute);
 
@@ -311,7 +311,7 @@ _e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
 	ECalBackendSyncStatus status;
 	char *capabilities = NULL;
 
-	status = e_cal_backend_sync_get_cal_address (E_CAL_BACKEND_SYNC (backend), cal, &capabilities);
+	status = e_cal_backend_sync_get_static_capabilities (E_CAL_BACKEND_SYNC (backend), cal, &capabilities);
 
 	e_data_cal_notify_static_capabilities (cal, status, capabilities);
 
