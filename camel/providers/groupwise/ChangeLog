@@ -1,3 +1,9 @@
+2005-02-16  Parthasarathi Susarla <sparthasarathi@novell.com>A
+	
+	* camel-groupwise-store.c  (groupwise_get_folder): 
+	* camel-groupwise-folder.c (groupwise_refresh_info):
+	  changing the modified time to the current time
+
 2005-02-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c:
@@ -6,6 +12,15 @@
 	* camel-groupwise-folder.c:
 	  (groupwise_expunge): fixed the problem with deleting mails
 	  using removeItemRequest instead of removeItemsrequest
+
+2005-02-10  Vivek Jain  <jvivek@novell.com>
+	
+	* camel-groupwise-store.c: 
+	(groupwise_get_folder):
+	* camel-groupwise-folder.c
+	(groupwise_refresh_info):	
+	get the "Modified" items in the second_list and
+	append it to the "list"
 
 2005-02-09  Vivek Jain  <jvivek@novell.com>
 
