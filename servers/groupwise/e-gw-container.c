@@ -222,7 +222,7 @@ e_gw_container_set_id (EGwContainer *container, const char *new_id)
 gboolean 
 e_gw_container_get_is_writable (EGwContainer *container)
 {
-	g_return_if_fail (E_IS_GW_CONTAINER (container));
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
 	
 	return container->priv->is_writable;
 

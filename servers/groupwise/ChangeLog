@@ -1,3 +1,8 @@
+2004-03-27  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-container.c  (e_gw_container_is-writable) : return
+        correct types in g_return_val_if_fail macros.
+
 2004-03-26  Rodrigo Moya <rodrigo@ximian.com>
 
 	* e-gw-item.c (e_gw_item_append_to_soap_message): set the <container>
