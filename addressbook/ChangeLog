@@ -1,3 +1,12 @@
+2005-03-07  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-bbok-backend-groupwise.c 
+	(e_book_backend_groupwise_set_mode) : notify writable
+	state after looking at priv->is_writable. Some books 
+	are read only for groupwise. 
+
+	Fixes #73021 
+
 2005-03-02  JP Rosevear  <jpr@novell.com>
 
 	Fixes #73226
