@@ -1,3 +1,10 @@
+2005-02-07  Sivaiah Nallagatla    <snallagatla@novell.com>
+                                                                                                                             
+        * e-gw-item.c (set_contact_fields_from_soap_parameter)
+        (e_gw_item_new_from_soap_parameter) : free the value
+        returned by soup_soap_parameter_get_property. Fixes
+        a memory leak
+
 2005-02-07  Ross Burton  <ross@openedhand.com>
 
 	* create-account.c:

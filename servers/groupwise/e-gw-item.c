@@ -1022,7 +1022,8 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			value = soup_soap_parameter_get_string_value (temp);
 			if (value && (!primary_email ||  !g_str_equal (primary_email, value)))
 				item->priv->email_list = g_list_append (item->priv->email_list, value);
-		}		
+		}
+		g_free (value);
 	}
 	
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "imList");
@@ -1534,6 +1535,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 	else if (!g_ascii_strcasecmp (item_type, "Contact") ) {
 		item->priv->item_type = E_GW_ITEM_TYPE_CONTACT;
 		set_contact_fields_from_soap_parameter (item, param);
+		g_free (item_type);
 		return item;
 	} 
 	else if (!g_ascii_strcasecmp (item_type,"SharedNotification"))
@@ -1543,6 +1545,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 		item->priv->item_type =  E_GW_ITEM_TYPE_ORGANISATION;
 		set_organization_fields_from_soap_parameter (item, param);
+		g_free (item_type);
 		return item;
 	}
 		
@@ -1550,12 +1553,14 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		
 		item->priv->item_type = E_GW_ITEM_TYPE_CONTACT;
 		set_resource_fields_from_soap_parameter (item, param);
+		g_free (item_type);
 		return item;
 	}
 		 
 	else if (!g_ascii_strcasecmp (item_type, "Group")) {
 		item->priv->item_type = E_GW_ITEM_TYPE_GROUP;
 		set_group_fields_from_soap_parameter (item, param);
+		g_free (item_type);
 		return item;
 	}
 	
