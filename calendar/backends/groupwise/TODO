@@ -78,7 +78,8 @@ Step 2 - Basic functionality
  2.7 Addition/removal of calendars. The backend should be able to create new calendars
      when the _open method is called with 'only_if_exists' set to FALSE. In that case,
      it should create the new calendar, and add the new source to the calendar sources
-     tree.
+     tree. Make sure the new-calendar dialog should call that method (e_cal_open) to tell the
+     backend to create the calendar.
      Also, the e_cal_backend_groupwise_remove method should be implemented to allow the
      removal of those calendars.
 
