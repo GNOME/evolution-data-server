@@ -376,7 +376,7 @@ form_uri (ESource *source)
 		port = "7181";
 	use_ssl = e_source_get_property (source, "use_ssl");
 
-	if (use_ssl)
+	if (use_ssl && !g_str_equal (use_ssl, "never"))
 		formed_uri = g_strconcat ("https://", parsed_uri->host,":", port, "/soap", NULL );
 	else 
 		formed_uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
