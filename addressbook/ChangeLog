@@ -1,3 +1,26 @@
+2004-01-30  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-book-async.c (e_book_async_load_source)
+	(e_book_async_load_uri)
+	(e_book_async_get_default_addressbook)
+	(e_book_async_get_supported_fields)
+	(e_book_async_get_supported_auth_methods)
+	(e_book_async_authenticate_user)
+	(e_book_async_get_contact)
+	(e_book_async_remove_contact)
+	(e_book_async_remove_contact_by_id)
+	(e_book_async_remove_contacts)
+	(e_book_async_add_contact)
+	(e_book_async_commit_contact)
+	(e_book_async_get_book_view)
+	(e_book_async_get_contacts): Add argument preconditions.
+
+	* libebook/e-contact.c (e_contact_new_from_vcard)
+	(e_contact_duplicate)
+	(e_contact_name_from_string)
+	(e_contact_name_copy)
+	(e_contact_date_from_string): Add argument preconditions.
+
 2004-01-30  Chris Toshok  <toshok@ximian.com>
 
 	* libedata-book/e-book-backend.c (e_book_backend_remove_client):

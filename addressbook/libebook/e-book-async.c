@@ -138,6 +138,10 @@ e_book_async_load_source (EBook                 *book,
 {
 	LoadSourceMsg *msg;
 
+	g_return_if_fail (E_IS_BOOK (book));
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (open_response != NULL);
+
 	init_async ();
 
 	msg = g_new (LoadSourceMsg, 1);
@@ -160,6 +164,10 @@ e_book_async_load_uri (EBook                 *book,
 	LoadSourceMsg *msg;
  	ESourceGroup *group;
 	ESource *source;
+
+	g_return_if_fail (E_IS_BOOK (book));
+	g_return_if_fail (uri != NULL);
+	g_return_if_fail (open_response != NULL);
 
 	init_async ();
 
@@ -252,6 +260,8 @@ e_book_async_get_default_addressbook (EBookCallback open_response,
 {
 	DefaultBookMsg *msg;
 
+	g_return_if_fail (open_response != NULL);
+
 	init_async ();
 
 	msg = g_new (DefaultBookMsg, 1);
@@ -340,6 +350,8 @@ e_book_async_get_supported_fields (EBook                 *book,
 				   gpointer               closure)
 {
 	GetFieldsMsg *msg;
+
+	g_return_val_if_fail (E_IS_BOOK (book), 0);
 
 	init_async ();
 
@@ -433,6 +445,8 @@ e_book_async_get_supported_auth_methods (EBook                    *book,
 					 gpointer                  closure)
 {
 	GetMethodsMsg *msg;
+
+	g_return_val_if_fail (E_IS_BOOK (book), 0);
 
 	init_async ();
 
@@ -533,6 +547,11 @@ e_book_async_authenticate_user (EBook                 *book,
 {
 	AuthUserMsg *msg;
 
+	g_return_if_fail (E_IS_BOOK (book));
+	g_return_if_fail (user != NULL);
+	g_return_if_fail (passwd != NULL);
+	g_return_if_fail (auth_method != NULL);
+
 	init_async ();
 
 	msg = g_new (AuthUserMsg, 1);
@@ -628,6 +647,9 @@ e_book_async_get_contact (EBook                 *book,
 {
 	GetContactMsg *msg;
 
+	g_return_val_if_fail (E_IS_BOOK (book), 0);
+	g_return_val_if_fail (id != NULL, 0);
+
 	init_async ();
 
 	msg = g_new (GetContactMsg, 1);
@@ -652,18 +674,28 @@ e_book_async_remove_contact (EBook                 *book,
 			     EBookCallback          cb,
 			     gpointer               closure)
 {
-	const char *id = e_contact_get_const (contact, E_CONTACT_UID);
+	const char *id;
+
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	id = e_contact_get_const (contact, E_CONTACT_UID);
 
 	return e_book_async_remove_contact_by_id (book, id, cb, closure);
 }
 
 gboolean
 e_book_async_remove_contact_by_id (EBook                 *book,
-				const char            *id,
-				EBookCallback          cb,
-				gpointer               closure)
+				   const char            *id,
+				   EBookCallback          cb,
+				   gpointer               closure)
 {
-	GList *list = g_list_append (NULL, g_strdup (id));
+	GList *list;
+
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	list = g_list_append (NULL, g_strdup (id));
 
 	return e_book_async_remove_contacts (book, list, cb, closure);
 }
@@ -739,12 +771,15 @@ _remove_contacts_dtor (EBookMsg *msg)
 
 gboolean
 e_book_async_remove_contacts (EBook                 *book,
-			   GList                 *id_list,
-			   EBookCallback          cb,
-			   gpointer               closure)
+			      GList                 *id_list,
+			      EBookCallback          cb,
+			      gpointer               closure)
 {
 	RemoveContactsMsg *msg;
 	GList *l;
+
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
 	init_async ();
 
 	msg = g_new (RemoveContactsMsg, 1);
@@ -846,6 +881,9 @@ e_book_async_add_contact (EBook                 *book,
 {
 	AddContactMsg *msg;
 
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
 	init_async ();
 
 	msg = g_new (AddContactMsg, 1);
@@ -939,6 +977,9 @@ e_book_async_commit_contact (EBook                 *book,
 			     gpointer               closure)
 {
 	CommitContactMsg *msg;
+
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	init_async ();
 
@@ -1041,6 +1082,9 @@ e_book_async_get_book_view (EBook                 *book,
 	GetBookViewMsg *msg;
 	GList *l;
 
+	g_return_val_if_fail (E_IS_BOOK (book), 0);
+	g_return_val_if_fail (query != NULL, 0);
+
 	init_async ();
 
 	msg = g_new (GetBookViewMsg, 1);
@@ -1137,6 +1181,9 @@ e_book_async_get_contacts (EBook                 *book,
 			   gpointer              closure)
 {
 	GetContactsMsg *msg;
+
+	g_return_val_if_fail (E_IS_BOOK (book), 0);
+	g_return_val_if_fail (query != NULL, 0);
 
 	init_async ();
 

@@ -1247,8 +1247,11 @@ e_contact_new (void)
 EContact*
 e_contact_new_from_vcard  (const char *vcard)
 {
-	EContact *contact = g_object_new (E_TYPE_CONTACT, NULL);
+	EContact *contact;
 
+	g_return_val_if_fail (vcard != NULL, NULL);
+
+	contact = g_object_new (E_TYPE_CONTACT, NULL);
 	e_vcard_construct (E_VCARD (contact), vcard);
 
 	return contact;
@@ -1257,9 +1260,13 @@ e_contact_new_from_vcard  (const char *vcard)
 EContact*
 e_contact_duplicate (EContact *contact)
 {
-	char *vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	EContact *c = e_contact_new_from_vcard (vcard);
+	char *vcard;
+	EContact *c;
 
+	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+
+	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	c = e_contact_new_from_vcard (vcard);
 	g_free (vcard);
 
 	return c;
@@ -1393,6 +1400,8 @@ e_contact_name_from_string (const char *name_str)
 	EContactName *name = e_contact_name_new();
 	ENameWestern *western;
 
+	g_return_val_if_fail (name_str != NULL, NULL);
+
 	western = e_name_western_parse (name_str ? name_str : "");
 	
 	name->prefixes   = g_strdup (western->prefix);
@@ -1409,7 +1418,11 @@ e_contact_name_from_string (const char *name_str)
 EContactName*
 e_contact_name_copy (EContactName *n)
 {
-	EContactName *name = e_contact_name_new();
+	EContactName *name;
+
+	g_return_val_if_fail (n != NULL, NULL);
+
+	name = e_contact_name_new();
 	
 	name->prefixes   = g_strdup (n->prefixes);
 	name->given      = g_strdup (n->given);
@@ -1450,9 +1463,12 @@ e_contact_name_get_type (void)
 EContactDate*
 e_contact_date_from_string (const char *str)
 {
-	EContactDate* date = e_contact_date_new();
+	EContactDate* date;
 	int length;
 
+	g_return_val_if_fail (str != NULL, NULL);
+
+	date = e_contact_date_new();
 	length = strlen(str);
 	
 	if (length == 10 ) {
