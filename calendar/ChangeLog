@@ -1,3 +1,8 @@
+2004-08-25  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libecal/e-cal.c: (e_cal_set_default_timezone):
+	Need a return value.
+
 2004-08-25  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c

@@ -4191,7 +4191,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 
 	/* Don't set the same timezone multiple times */
 	if (priv->default_zone == zone)
-		return;
+		return FALSE;
 	
 	/* Make sure the server has the VTIMEZONE data. */
 	if (!e_cal_ensure_timezone_on_server (ecal, zone, error))
