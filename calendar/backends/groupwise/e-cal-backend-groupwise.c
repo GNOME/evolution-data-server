@@ -304,6 +304,9 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 					return GNOME_Evolution_Calendar_OtherError;
 				}
 
+			/* Clear the cache before populating it */
+			e_file_cache_clean (E_FILE_CACHE (priv->cache));
+				
 			/* Populate the cache for the first time.*/
 			/* start a timed polling thread set to 10 minutes*/
 			cnc_status = populate_cache (cbgw);

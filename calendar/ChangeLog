@@ -1,3 +1,9 @@
+2004-08-17  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server): Clear the cache before populating 
+	it.
+	
 2004-08-16  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	* backends/groupwise/e-cal-backend-groupwise.c
