@@ -18,7 +18,7 @@
 #include <dirent.h>
 #include <time.h>
 #include <errno.h>
-#include <db.h>
+#include "db.h"
 #include <sys/stat.h>
 
 #include <libgnome/gnome-i18n.h>
@@ -31,12 +31,6 @@
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-data-book-view.h>
 #include "e-book-backend-file.h"
-
-#if DB_VERSION_MAJOR != 3 || \
-    DB_VERSION_MINOR != 1 || \
-    DB_VERSION_PATCH != 17
-#error Including wrong DB3.  Need libdb 3.1.17.
-#endif
 
 #define CHANGES_DB_SUFFIX ".changes.db"
 
@@ -853,21 +847,11 @@ e_book_backend_file_load_uri (EBookBackend           *backend,
 	gboolean        writable = FALSE;
 	int             db_error;
 	DB *db;
-	int major, minor, patch;
 	time_t db_mtime;
 	struct stat sb;
 
 	g_free(bf->priv->uri);
 	bf->priv->uri = g_strdup (uri);
-
-	db_version (&major, &minor, &patch);
-
-	if (major != 3 ||
-	    minor != 1 ||
-	    patch != 17) {
-		g_warning ("Wrong version of libdb.");
-		return GNOME_Evolution_Addressbook_OtherError;
-	}
 
 	dirname = e_book_backend_file_extract_path_from_uri (uri);
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
@@ -880,7 +864,7 @@ e_book_backend_file_load_uri (EBookBackend           *backend,
 	if (db_error != 0)
 		return GNOME_Evolution_Addressbook_OtherError;
 
-	db_error = db->open (db, filename, NULL, DB_HASH, 0, 0666);
+	db_error = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
 
 	if (db_error == DB_OLD_VERSION) {
 		db_error = e_db3_utils_upgrade_format (filename);
@@ -888,7 +872,7 @@ e_book_backend_file_load_uri (EBookBackend           *backend,
 		if (db_error != 0)
 			return GNOME_Evolution_Addressbook_OtherError;
 
-		db_error = db->open (db, filename, NULL, DB_HASH, 0, 0666);
+		db_error = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
 	}
 
 	bf->priv->file_db = db;
@@ -896,7 +880,7 @@ e_book_backend_file_load_uri (EBookBackend           *backend,
 	if (db_error == 0) {
 		writable = TRUE;
 	} else {
-		db_error = db->open (db, filename, NULL, DB_HASH, DB_RDONLY, 0666);
+		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_RDONLY, 0666);
 
 		if (db_error != 0) {
 			int rv;
@@ -912,7 +896,7 @@ e_book_backend_file_load_uri (EBookBackend           *backend,
 					return GNOME_Evolution_Addressbook_OtherError;
 			}
 
-			db_error = db->open (db, filename, NULL, DB_HASH, DB_CREATE, 0666);
+			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
 
 			if (db_error == 0 && !only_if_exists) {
 				EContact *contact;

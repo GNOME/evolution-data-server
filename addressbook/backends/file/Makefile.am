@@ -2,7 +2,7 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"libebookbackend\"		\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
-	$(DB3_CFLAGS)					\
+	-I$(top_srcdir)/libdb/dist			\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 noinst_LTLIBRARIES = libebookbackendfile.la
