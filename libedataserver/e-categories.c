@@ -141,8 +141,6 @@ initialize_categories_config (void)
 			xmlFreeDoc (doc);
 		}
 
-		conf_is_dirty = FALSE;
-
 		g_free (str);
 	} else {
 		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png");
@@ -169,6 +167,7 @@ initialize_categories_config (void)
 	}
 
 	/* install idle callback to save the file */
+	conf_is_dirty = FALSE;
 	idle_id = g_idle_add ((GSourceFunc) idle_saver_cb, NULL);
 }
 

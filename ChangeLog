@@ -1,6 +1,12 @@
 2005-01-05  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.c (initialize_categories_config): set
+	the configuration to not dirty even when we add the set of built-in
+	categories.
+
+2005-01-05  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-categories.c (initialize_categories_config): set
 	the initialized flag to TRUE before starting, or we'll get infinite
 	recurrent calls to this function.
 
