@@ -1,5 +1,6 @@
 2005-01-27  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	partially Fixes#68541
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
 	(start_freebusy_session), (close_freebusy_session),
 	(e_gw_connection_get_freebusy_info): Return the error
