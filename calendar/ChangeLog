@@ -1,9 +1,15 @@
+2005-01-10 Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backends-groupwise-utils.h:
+	Missed to commit this file before.
+
 2005-01-10  David Trowbridge <trowbrds@cs.colorado.edu>
 
 	* backends/weather/e-cal-backend-weather.c: add the city name to the
 	summary field
 
 2005-01-10  Harish Krishnaswamy  <kharish@novell.com>
+
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
 	(e_cal_backend_groupwise_set_attachments_from_comp),
