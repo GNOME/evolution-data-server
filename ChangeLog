@@ -1,3 +1,9 @@
+2004-11-04  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #69056
+
+	* configure.in: use evolution-data-server-1.0 as GETTEXT_PACKAGE.
+
 2004-11-01  Hans Petter Jansson  <hpj@novell.com>
 
 	* libdb/dbinc/mutex.h: Remove duplicated x86-64 mutex definition.
