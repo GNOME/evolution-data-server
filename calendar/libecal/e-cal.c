@@ -1489,8 +1489,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	const char *username = NULL;
 	char *password = NULL;
 	
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 	

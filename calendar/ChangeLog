@@ -1,3 +1,8 @@
+2005-02-09  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal.c (open_calendar): use e_return_error_if_fail instead
+	of g_return_val_if_fail.
+
 2005-02-08  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal.c (add_instance): set correctly (again) the recurid.
