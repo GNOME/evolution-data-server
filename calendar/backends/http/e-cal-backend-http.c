@@ -387,6 +387,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
 
 			if (server && server[0]) {
+				SoupUri *suri;
 				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
 					char *user, *password;
 
@@ -404,8 +405,10 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 				} else
 					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
 
-				g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, proxy_uri);
+				suri = soup_uri_new (proxy_uri);
+				g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, suri, NULL);
 
+				soup_uri_free (suri);
 				g_free (server);
 				g_free (proxy_uri);
 			}
