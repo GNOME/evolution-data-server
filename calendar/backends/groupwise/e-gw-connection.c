@@ -551,13 +551,13 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         subparam = soup_soap_parameter_get_first_child_by_name (param, "distribution");
         /* FIXME  what to do with 'from' data*/
         subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients");
-        if (subparam) 
+        if (subparam) {
                 attendee_list = get_attendee_list_from_soap_parameter (subparam);
-        if (attendee_list) {
-                e_cal_component_set_attendee_list (comp, attendee_list);
-                g_slist_foreach (attendee_list, (GFunc) g_free, NULL);
+		if (attendee_list) {
+			e_cal_component_set_attendee_list (comp, attendee_list);
+			g_slist_foreach (attendee_list, (GFunc) g_free, NULL);
+		}
         }
-        
 
         /* FIXME  Property - status*/
         /* FIXME  Property priority */  
@@ -568,11 +568,7 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         }
 	
         subparam = soup_soap_parameter_get_first_child_by_name (param, "priority");
-        if (!subparam) {
-                g_object_unref (comp);
-                return NULL;
-        }
-        else {
+        if (subparam) {
                 const char *priority;
                 int i;
                 priority = soup_soap_parameter_get_string_value (subparam);
@@ -611,33 +607,30 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         } else if (type == 2) {
                 /* Property - dueDate*/ 
                 subparam = soup_soap_parameter_get_first_child_by_name (param, "dueDate");
-                if (!subparam) {
-                        g_object_unref (comp);
-                        return NULL;
-                }
-
-                dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-                t = icaltime_from_string (dtstring);
-                g_free (dtstring);
+                if (subparam) {
+			dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
+			t = icaltime_from_string (dtstring);
+			g_free (dtstring);
                 
-                dt.value = &t;
-                dt.tzid = "UTC"; 
-                e_cal_component_set_due (comp, &dt);
+			dt.value = &t;
+			dt.tzid = "UTC"; 
+			e_cal_component_set_due (comp, &dt);
+		}
 
                 /*FIXME  Property - completed - missing server implementation  */
                 /* Only 0 and 100 are legal values since server data is boolean */
                 subparam = soup_soap_parameter_get_first_child_by_name (param, "completed");
                 if (subparam) {
                         const char *completed = soup_soap_parameter_get_string_value (subparam);
-                        int i =0;
+                        int i = 0;
                         if (!g_ascii_strcasecmp (completed, "true")) {
                                 i = 100;
                                 e_cal_component_set_percent (comp, &i);
-                        } else 
+                        } else
                                 e_cal_component_set_percent (comp, &i);
-                }        
+                }
 
-        } 
+        }
 
         return comp;                
 }
@@ -734,7 +727,7 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
         }
 
         e_gw_message_write_string_parameter (msg, "container", NULL, container);
-        e_gw_message_write_string_parameter (msg, "view", NULL, "recipients");
+        //e_gw_message_write_string_parameter (msg, "view", NULL, "recipients");
 	if (filter)
 		e_gw_message_write_string_parameter (msg, "Filter", NULL, filter);
 	e_gw_message_write_footer (msg);

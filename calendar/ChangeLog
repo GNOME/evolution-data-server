@@ -1,6 +1,12 @@
 2004-01-27  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-connection.c
+	(get_e_cal_component_from_soap_parameter): not having the priority
+	or dueDate properties is not an error.
+
+2004-01-27  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-connection.c
 	(get_attendee_list_from_soap_parameter): don't allocate memory for
 	ECalComponentAttendee's fields, make them just point to the values
 	contained in the SoupSoapResponse.

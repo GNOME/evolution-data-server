@@ -76,7 +76,7 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
                 g_list_free (list);
                 return status;
         }
-        
+
         for (l = list; l != NULL; l = g_list_next(l)) {
                 comp = E_CAL_COMPONENT (l->data);
 		e_cal_component_get_uid (comp, &uid);
