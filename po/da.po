@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.4.1\n"
-"POT-Creation-Date: 2003-12-07 19:15-0500\n"
+"POT-Creation-Date: 2003-12-07 20:33-0500\n"
 "PO-Revision-Date: 2003-02-02 12:41+0100\n"
 "Last-Translator: Søren Boll Overgaard <boll@debian.org>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"

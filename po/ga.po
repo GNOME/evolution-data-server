@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: locales 0.01\n"
-"POT-Creation-Date: 2003-12-07 19:15-0500\n"
+"POT-Creation-Date: 2003-12-07 20:33-0500\n"
 "PO-Revision-Date: 2002-01-25 14:00-0000\n"
 "Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
 "Language-Team: Irish <ga@li.org>\n"

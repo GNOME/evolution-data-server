@@ -15,7 +15,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"POT-Creation-Date: 2003-12-07 19:15-0500\n"
+"POT-Creation-Date: 2003-12-07 20:33-0500\n"
 "PO-Revision-Date: 2003-06-15 14:37+0100\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"

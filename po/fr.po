@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.4.4\n"
-"POT-Creation-Date: 2003-12-07 19:15-0500\n"
+"POT-Creation-Date: 2003-12-07 20:33-0500\n"
 "PO-Revision-Date: 2003-08-02 09:33+0200\n"
 "Last-Translator: Brigitte Le Grand <brigitte.le.grand@sun.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
