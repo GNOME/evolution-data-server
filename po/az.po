@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.az\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-16 11:10+0200\n"
+"POT-Creation-Date: 2005-01-14 15:54+0800\n"
 "PO-Revision-Date: 2004-08-18 20:21+0300\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
@@ -19,47 +19,49 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3.1\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:485
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2033
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Yüklənir..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/file/e-book-backend-file.c:487
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2017
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2031
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3401
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Axtarılır..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:618
+#: addressbook/backends/ldap/e-book-backend-ldap.c:647
 msgid "Using Distinguished Name (DN)"
 msgstr "Distinguished Name (DN) İşlədilir"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:621
+#: addressbook/backends/ldap/e-book-backend-ldap.c:650
 msgid "Using Email Address"
 msgstr "Epoçt Ünvanı İşlədilir"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:787
+#: addressbook/backends/ldap/e-book-backend-ldap.c:820
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP vericisinə yenidən bağlantı qurulur..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1307
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1368
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP vericiyə əlaqə əlavə edilir..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1407
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1493
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP vericidən əlaqə silinir..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1630
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1750
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP vericidəki əlaqə təkmilləşdirilir..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3067
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3290
 msgid "Receiving LDAP search results..."
 msgstr "LDAP axtarış nəticələri alınır..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3175
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3421
 msgid "Error performing search"
 msgstr "Axtarış xətası"
 
@@ -67,96 +69,101 @@ msgstr "Axtarış xətası"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
-#: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
-#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
-#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
-#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
-#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
-#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
-#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
-#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
-#: addressbook/libebook/e-book.c:2984
+#: addressbook/libebook/e-book.c:240 addressbook/libebook/e-book.c:244
+#: addressbook/libebook/e-book.c:446 addressbook/libebook/e-book.c:450
+#: addressbook/libebook/e-book.c:579 addressbook/libebook/e-book.c:583
+#: addressbook/libebook/e-book.c:672 addressbook/libebook/e-book.c:676
+#: addressbook/libebook/e-book.c:952 addressbook/libebook/e-book.c:957
+#: addressbook/libebook/e-book.c:1132 addressbook/libebook/e-book.c:1136
+#: addressbook/libebook/e-book.c:1277 addressbook/libebook/e-book.c:1281
+#: addressbook/libebook/e-book.c:1479 addressbook/libebook/e-book.c:1483
+#: addressbook/libebook/e-book.c:1684 addressbook/libebook/e-book.c:1688
+#: addressbook/libebook/e-book.c:1910 addressbook/libebook/e-book.c:1914
+#: addressbook/libebook/e-book.c:2117 addressbook/libebook/e-book.c:2121
+#: addressbook/libebook/e-book.c:3200
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" kitabçada \"%s\"-dan əvvəldədir"
 
-#: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
-#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
-#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
-#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
+#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:459
+#: addressbook/libebook/e-book.c:592 addressbook/libebook/e-book.c:685
+#: addressbook/libebook/e-book.c:967 addressbook/libebook/e-book.c:1146
+#: addressbook/libebook/e-book.c:1291 addressbook/libebook/e-book.c:1492
+#: addressbook/libebook/e-book.c:1697 addressbook/libebook/e-book.c:1924
+#: addressbook/libebook/e-book.c:2130 addressbook/libebook/e-book.c:2468
+#: addressbook/libebook/e-book.c:2664
 msgid "book busy"
 msgstr "kitabça məşğuldur"
 
-#: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
-#: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
-#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
-#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
-#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
-#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
-#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
-#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
-#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
-#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
-#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2993
+#: addressbook/libebook/e-book.c:286 addressbook/libebook/e-book.c:290
+#: addressbook/libebook/e-book.c:492 addressbook/libebook/e-book.c:496
+#: addressbook/libebook/e-book.c:621 addressbook/libebook/e-book.c:625
+#: addressbook/libebook/e-book.c:714 addressbook/libebook/e-book.c:718
+#: addressbook/libebook/e-book.c:996 addressbook/libebook/e-book.c:999
+#: addressbook/libebook/e-book.c:1178 addressbook/libebook/e-book.c:1181
+#: addressbook/libebook/e-book.c:1320 addressbook/libebook/e-book.c:1324
+#: addressbook/libebook/e-book.c:1528 addressbook/libebook/e-book.c:1532
+#: addressbook/libebook/e-book.c:1744 addressbook/libebook/e-book.c:1748
+#: addressbook/libebook/e-book.c:1956 addressbook/libebook/e-book.c:1960
+#: addressbook/libebook/e-book.c:2158 addressbook/libebook/e-book.c:2162
+#: addressbook/libebook/e-book.c:2409 addressbook/libebook/e-book.c:2496
+#: addressbook/libebook/e-book.c:2500 addressbook/libebook/e-book.c:2692
+#: addressbook/libebook/e-book.c:2696 addressbook/libebook/e-book.c:3209
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "\"%s\" çağırışı edən CORBA istisnası"
 
-#: addressbook/libebook/e-book.c:2221
+#: addressbook/libebook/e-book.c:2390
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: hazırda əməliyat yoxdur"
 
-#: addressbook/libebook/e-book.c:2256
+#: addressbook/libebook/e-book.c:2425
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: ləğv edilə bilmədi"
 
-#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
+#: addressbook/libebook/e-book.c:2454 addressbook/libebook/e-book.c:2458
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" kitabçada \"%s\"-dan sonradır"
 
-#: addressbook/libebook/e-book.c:2355
+#: addressbook/libebook/e-book.c:2524
 msgid "e_book_open: cancelled"
 msgstr "e_book_open: ləğv edildi"
 
-#: addressbook/libebook/e-book.c:2851
+#: addressbook/libebook/e-book.c:3066
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Hökmsüz mənbə."
 
-#: addressbook/libebook/e-book.c:2859
+#: addressbook/libebook/e-book.c:3074
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: `%s' üçün heç bir e'malatxana mövcud deyil"
 
-#: addressbook/libebook/e-book.c:2871
+#: addressbook/libebook/e-book.c:3086
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListener yaradıla bilmədi"
 
-#: addressbook/libebook/e-book.c:2922
+#: addressbook/libebook/e-book.c:3138
 #, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr "e_book_new: `%s' üçün heç bir e'malatxana mövcud deyil"
 
-#: addressbook/libebook/e-book.c:3080
+#: addressbook/libebook/e-book.c:3332
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: there was no self contact uid stored in gconf"
 
-#: addressbook/libebook/e-book.c:3191
+#: addressbook/libebook/e-book.c:3443
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 
-#: addressbook/libebook/e-contact.c:100
+#: addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
 msgstr "Xüsusi ID"
 
-#: addressbook/libebook/e-contact.c:101
+#: addressbook/libebook/e-contact.c:103
 msgid "File As"
 msgstr "Fərqli Qeyd Et"
 
@@ -164,437 +171,438 @@ msgstr "Fərqli Qeyd Et"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:109
 msgid "Full Name"
 msgstr "Tam Ad"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:110
 msgid "Name"
 msgstr "Ad"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:111
 msgid "Given Name"
 msgstr "Ad"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:112
 msgid "Family Name"
 msgstr "Soyad"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:113
 msgid "Nickname"
 msgstr "Ləqəb"
 
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 msgid "Name or Org"
 msgstr "Ad ya da Təşkilat"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:117
 msgid "Address List"
 msgstr "Ünvan Siyahısı"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:118
 msgid "Home Address"
 msgstr "Ev Ünvanı"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:119
 msgid "Work Address"
 msgstr "İş Ünvanı"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:120
 msgid "Other Address"
 msgstr "Başqa Ünvan"
 
-#: addressbook/libebook/e-contact.c:120
+#: addressbook/libebook/e-contact.c:122
 msgid "Home Address Label"
 msgstr "Ev Ünvan Etiketi"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:123
 msgid "Work Address Label"
 msgstr "İş Ünvan Etiketi"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:124
 msgid "Other Address Label"
 msgstr "Başqa Ünvan Etiketi"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:126
 msgid "Assistant Phone"
 msgstr "Köməkçi Telefonu"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Phone"
 msgstr "İş Telefonu"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:128
 msgid "Business Phone 2"
 msgstr "2-ci İş Telefonu"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Business Fax"
 msgstr "İş Faksı"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Callback Phone"
 msgstr "Geri axtarma Telefonu"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Car Phone"
 msgstr "Maşın Telefonu"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Company Phone"
 msgstr "Şirkət Telefonu"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Phone"
 msgstr "Ev Telefonu"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Home Phone 2"
 msgstr "2-ci Ev Telefonu"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:135
 msgid "Home Fax"
 msgstr "Ev Faksı"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:136
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Mobile Phone"
 msgstr "Əl Telefonu"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Other Phone"
 msgstr "Digər Telefonlar"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Other Fax"
 msgstr "Başqa faks"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:140
 msgid "Pager"
 msgstr "Peycer"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:141
 msgid "Primary Phone"
 msgstr "Əsas Telefon"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:142
 msgid "Radio"
 msgstr "Radio"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:143
 msgid "Telex"
 msgstr "Teleks"
 
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:147
 msgid "Email List"
 msgstr "Epoçt Siyahısı"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:148
 msgid "Email 1"
 msgstr "Epoçt 1"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:149
 msgid "Email 2"
 msgstr "Epoçt 2"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:150
 msgid "Email 3"
 msgstr "Epoçt 3"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:151
 msgid "Email 4"
 msgstr "Epoçt 4"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "Mailer"
 msgstr "Poçt proqramı"
 
-#: addressbook/libebook/e-contact.c:151
+#: addressbook/libebook/e-contact.c:153
 msgid "Wants HTML Mail"
 msgstr "HTML Məktubu Qəbul Edilir"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:156
 msgid "AIM Screen Name List"
 msgstr "AIM Əlaqə Adları Siyahısı"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:157
 msgid "Groupwise Id List"
 msgstr "Groupwise Id Siyahısı"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:158
 msgid "Jabber Id List"
 msgstr "Jabber Id Siyahısı"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:159
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! Əlaqə Adları Siyahısı"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:160
 msgid "MSN Screen Name List"
 msgstr "MSN Əlaqə Adları Siyahısı"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:161
 msgid "ICQ Id List"
 msgstr "ICQ Id Siyahısı"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 1"
 msgstr "AIM Ev Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Home Screen Name 2"
 msgstr "AIM Ev Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Home Screen Name 3"
 msgstr "AIM Ev Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 1"
 msgstr "AIM İş Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:167
 msgid "AIM Work Screen Name 2"
 msgstr "AIM İş Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:168
 msgid "AIM Work Screen Name 3"
 msgstr "AIM İş Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 1"
 msgstr "Groupwise Ev Ekran Adı 1"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Home Screen Name 2"
 msgstr "Groupwise Ev Ekran Adı 2"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Home Screen Name 3"
 msgstr "Groupwise Ev Ekran Adı 3"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 1"
 msgstr "Groupwise İş Ekran Adı 1"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:173
 msgid "Groupwise Work Screen Name 2"
 msgstr "Groupwise İş Ekran Adı 2"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:174
 msgid "Groupwise Work Screen Name 3"
 msgstr "Groupwise İş Ekran Adı 3"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 1"
 msgstr "Jabber Ev Id-si 1"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Home Id 2"
 msgstr "Jabber Ev Id-si 2"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Home Id 3"
 msgstr "Jabber Ev Id-si 3"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 1"
 msgstr "Jabber İş Id-si 1"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:179
 msgid "Jabber Work Id 2"
 msgstr "Jabber İş Id-si 2"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:180
 msgid "Jabber Work Id 3"
 msgstr "Jabber İş Id-si 3"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! Ev Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! Ev Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! Ev Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! İş Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:185
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! İş Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:186
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! İş Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 1"
 msgstr "MSN Ev Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Home Screen Name 2"
 msgstr "MSN Ev Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Home Screen Name 3"
 msgstr "MSN Ev Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 1"
 msgstr "MSN İş Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:191
 msgid "MSN Work Screen Name 2"
 msgstr "MSN İş Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:192
 msgid "MSN Work Screen Name 3"
 msgstr "MSN İş Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 1"
 msgstr "ICQ Ev Id-si 1"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Home Id 2"
 msgstr "ICQ Ev Id-si 2"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Home Id 3"
 msgstr "ICQ Ev Id-si 3"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 1"
 msgstr "ICQ İş Id-si 1"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:197
 msgid "ICQ Work Id 2"
 msgstr "ICQ İş Id-si 2"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:198
 msgid "ICQ Work Id 3"
 msgstr "ICQ İş Id-si 3"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:201
 msgid "Organization"
 msgstr "Quruluş"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:202
 msgid "Organizational Unit"
 msgstr "Quruluş Bölməsi"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:203
 msgid "Office"
 msgstr "İdarə"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:205
 msgid "Title"
 msgstr "Vəzifə"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:206
 msgid "Role"
 msgstr "Rol"
 
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:207
 msgid "Manager"
 msgstr "İdarəçi"
 
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:208
 msgid "Assistant"
 msgstr "Köməkçi"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:211
 msgid "Homepage URL"
 msgstr "Veb Səhifəsi Ünvanı"
 
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:212
 msgid "Weblog URL"
 msgstr "Vebloq Ünvanı"
 
-#: addressbook/libebook/e-contact.c:211
+#: addressbook/libebook/e-contact.c:213
 msgid "Video Conferencing URL"
 msgstr "Video Görüşmə Ünvanı"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:216
 msgid "Photo"
 msgstr "Foto"
 
-#: addressbook/libebook/e-contact.c:215
+#: addressbook/libebook/e-contact.c:217
 msgid "Logo"
 msgstr "Loqo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:220
 msgid "X.509 Certificate"
 msgstr "X.509 Vəsiqəsi"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:223
 msgid "Category List"
 msgstr "Kateqoriya Siyahısı"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:224
+#: libedataserverui/e-categories-dialog.c:369
 msgid "Categories"
 msgstr "Kateqoriyalar"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:227
 msgid "Calendar URI"
 msgstr "Təqvim Ünvanı"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:228
 msgid "Free/Busy URL"
 msgstr "Sərbəst/Məşğul Ünvanı"
 
-#: addressbook/libebook/e-contact.c:227
+#: addressbook/libebook/e-contact.c:229
 msgid "ICS Calendar"
 msgstr "ICS Təqvimi"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:232
 msgid "Spouse's Name"
 msgstr "Yoldaşının Adı"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:233
 msgid "Note"
 msgstr "Qeyd"
 
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:235
 msgid "Birth Date"
 msgstr "Ad Günü"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:236
 msgid "Anniversary"
 msgstr "İldönümü"
 
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:238
 msgid "List"
 msgstr "Siyahı"
 
-#: addressbook/libebook/e-contact.c:237
+#: addressbook/libebook/e-contact.c:239
 msgid "List Show Addresses"
 msgstr "Ünvanları Göstər"
 
-#: addressbook/libebook/e-contact.c:1206
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "Adsız Siyahı"
 
@@ -613,41 +621,59 @@ msgstr "Ad Günü: %s"
 msgid "Anniversary: %s"
 msgstr "İl dönümü: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:183
+#: calendar/backends/file/e-cal-backend-file.c:174
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Təqvim mə'lumatı qeyd edilə bilmir: Pozulmuş URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:484
 msgid "Invalid server URI"
 msgstr "Səhv verici URI ünvanı"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:531
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:534
+#: camel/providers/groupwise/camel-gw-listener.c:405
+#: camel/providers/groupwise/camel-gw-listener.c:435
 msgid "Calendar"
 msgstr "Təqvim"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:541
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:784
+#: calendar/backends/http/e-cal-backend-http.c:484
 msgid "Could not create cache file"
 msgstr "Ara yaddaş faylı yaradıla bilmədi"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:551
+#, fuzzy
+msgid "Could not create thread for populating cache"
+msgstr "Ara yaddaş faylı yaradıla bilmədi"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:557
+#: calendar/libecal/e-cal.c:4560
+#: camel/providers/groupwise/camel-groupwise-folder.c:533
+#: camel/providers/groupwise/camel-groupwise-store.c:503
+#: camel/providers/groupwise/camel-groupwise-store.c:641
+#: camel/providers/groupwise/camel-groupwise-store.c:800
 msgid "Authentication failed"
 msgstr "Tanıtma bacarılmadı"
 
-#: calendar/backends/http/e-cal-backend-http.c:225
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:776
+#, fuzzy
+msgid "Repository is Offline"
+msgstr "Ambar xətdə deyil"
+
+#: calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
 msgstr "Səhv URI ünvanına istiqamətləndirilib"
 
-#: calendar/backends/http/e-cal-backend-http.c:249
+#: calendar/backends/http/e-cal-backend-http.c:264
 msgid "Bad file format."
 msgstr "Xətalı fayl formatı."
 
-#: calendar/backends/http/e-cal-backend-http.c:255
+#: calendar/backends/http/e-cal-backend-http.c:270
 msgid "Not a calendar."
 msgstr "Təqvim deyil."
 
-#: calendar/libecal/e-cal-component.c:1237
+#: calendar/libecal/e-cal-component.c:1299
 msgid "Untitled appointment"
 msgstr "Adsız görüş"
 
@@ -793,83 +819,95 @@ msgid "Undefined"
 msgstr "Təsvirsiz"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1521
+#: calendar/libecal/e-cal.c:1590
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s üçün şifrəni bildirin (istifadəçi %s)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4532
 msgid "Invalid argument"
 msgstr "Səhv arqument"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4534
 msgid "Backend is busy"
 msgstr "Backend məşğuldur"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4536
 msgid "Repository is offline"
 msgstr "Ambar xətdə deyil"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4538
 msgid "No such calendar"
 msgstr "Belə təqvim yoxdur"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4540 servers/groupwise/e-gw-connection.c:158
 msgid "Object not found"
 msgstr "Üzv tapıla bilmədi"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4542 servers/groupwise/e-gw-connection.c:154
 msgid "Invalid object"
 msgstr "Hökmsüz üzv"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4544
 msgid "URI not loaded"
 msgstr "URI yüklü deyil"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4546
 msgid "URI already loaded"
 msgstr "URI onsuz da yüklüdür"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4548
 msgid "Permission denied"
 msgstr "Səlahiyyət rədd edildi"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4550 servers/groupwise/e-gw-connection.c:160
+#, fuzzy
+msgid "Unknown User"
+msgstr "Namə'lum xəta"
+
+#: calendar/libecal/e-cal.c:4552
 msgid "Object ID already exists"
 msgstr "Üzv ID-si onsuz da mövcuddur"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4554
 msgid "Protocol not supported"
 msgstr "Protokol dəstəklənmir"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4556
 msgid "Operation has been cancelled"
 msgstr "Əməliyyat ləğv edildi"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4558
 msgid "Could not cancel operation"
 msgstr "Əməliyyat ləğv edilə bilmədi"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4562
+#: camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Tanıtma lazımdır"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4564
 msgid "A CORBA exception has occurred"
 msgstr "CORBA istisnası baş verdi"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4566 camel/providers/imap/camel-imap-command.c:304
+#: camel/providers/imap/camel-imap-command.c:401
+#: camel/providers/imap4/camel-imap4-store.c:294
+#: camel/providers/pop3/camel-pop3-store.c:535
+#: camel/providers/pop3/camel-pop3-store.c:542
+#: camel/providers/pop3/camel-pop3-store.c:548
+#: servers/groupwise/e-gw-connection.c:166
 msgid "Unknown error"
 msgstr "Namə'lum xəta"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4568
 msgid "No error"
 msgstr "Xətasız"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
-#: calendar/libedata-cal/e-cal-backend-sexp.c:661
-#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" arqument gözləmir"
@@ -878,7 +916,7 @@ msgstr "\"%s\" arqument gözləmir"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" bir arqument gözləyir"
@@ -899,6 +937,7 @@ msgstr "\"%s\"-ə verilən ilk arqument ISO 8601 tarix/saat qatarı olmalıdır"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" 2 arqument gözləyir"
@@ -907,7 +946,8 @@ msgstr "\"%s\" 2 arqument gözləyir"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
-#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\"-ə verilən ilk arqument time_t olmalıdır"
@@ -918,6 +958,7 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\"-ə verilən ikinci arqument integer olmalıdır"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\"-ə verilən ikinci arqument time_t olmalıdır"
@@ -936,46 +977,3474 @@ msgstr ""
 "\"%s\"-ə verilən ilk arqument \"any\", \"summary\", \"description\"  ya da "
 "\"location\" olmalıdır"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" ən az 1 arqument gözləyir"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr "\"%s\" bütün arqumentlərin qatar olmasını gözləyir"
 
-#: servers/groupwise/e-gw-connection.c:80
+#: camel/camel-cipher-context.c:103
+msgid "Signing is not supported by this cipher"
+msgstr "Bu şifrləmə ilə imza dəstəklənmir"
+
+#: camel/camel-cipher-context.c:129
+#, fuzzy
+msgid "Signing message"
+msgstr "İsmarış göndərilir"
+
+#: camel/camel-cipher-context.c:146
+msgid "Verifying is not supported by this cipher"
+msgstr "Bu şifrləmə ilə təsdiqləmə dəstəklənmir"
+
+#: camel/camel-cipher-context.c:172
+#, fuzzy
+msgid "Verifying message"
+msgstr "İsmarış göndərilir"
+
+#: camel/camel-cipher-context.c:190
+msgid "Encryption is not supported by this cipher"
+msgstr "Bu şifrləmə ilə şifrləmə dəstəklənmir"
+
+#: camel/camel-cipher-context.c:216
+#, fuzzy
+msgid "Encrypting message"
+msgstr "İsmarış göndərilir"
+
+#: camel/camel-cipher-context.c:233
+msgid "Decryption is not supported by this cipher"
+msgstr "Bu şifrləmə ilə şifr açma dəstəklənmir"
+
+#: camel/camel-cipher-context.c:255
+#, fuzzy
+msgid "Decrypting message"
+msgstr "İsmarış göndərilir"
+
+#: camel/camel-cipher-context.c:272
+msgid "You may not import keys with this cipher"
+msgstr "Bu şifrləmə ilə açarları idxal edə bilməyəcəksiniz"
+
+#: camel/camel-cipher-context.c:302
+msgid "You may not export keys with this cipher"
+msgstr "Bu şifrləmə ilə açarları ixrac edə bilməyəcəksiniz"
+
+#: camel/camel-data-cache.c:134
+msgid "Unable to create cache path"
+msgstr "Ön yaddaş cığırı yaradıla bilmədi"
+
+#: camel/camel-data-cache.c:376
+#, c-format
+msgid "Could not remove cache entry: %s: %s"
+msgstr "Ön yaddaş girişi silinə bilmədi: %s: %s"
+
+#: camel/camel-disco-diary.c:195
+#, c-format
+msgid ""
+"Could not write log entry: %s\n"
+"Further operations on this server will not be replayed when you\n"
+"reconnect to the network."
+msgstr ""
+"Qeyd girişi yazıla bilədi: %s\n"
+"Bu vericidəki növbəti əməliyyatlarınızın şəbəkəyə yenidən bağlanmadığınız\n"
+"vaxt təkrar edilməyəcəkdir."
+
+#: camel/camel-disco-diary.c:258
+#, c-format
+msgid ""
+"Could not open `%s':\n"
+"%s\n"
+"Changes made to this folder will not be resynchronized."
+msgstr ""
+"`%s' açıla bilmədi:\n"
+"%s\n"
+"Bu qovluqda aparılmış dəyişikliklər yenidən sinxronlaşdırmayacaqdır."
+
+#: camel/camel-disco-diary.c:294
+msgid "Resynchronizing with server"
+msgstr "Verici ilə yenidən sinxronlaşdırılır"
+
+#: camel/camel-disco-folder.c:42 camel/camel-offline-folder.c:50
+msgid "Copy folder content locally for offline operation"
+msgstr ""
+
+#: camel/camel-disco-folder.c:104 camel/camel-offline-folder.c:107
+msgid "Downloading new messages for offline mode"
+msgstr "Xətd xarici modu üçün yeni məktublar endirilir"
+
+#: camel/camel-disco-folder.c:467
+#, c-format
+msgid "Preparing folder '%s' for offline"
+msgstr "%s qovluğu xətdən qoparılmaq üçün hazırlanır"
+
+#: camel/camel-disco-store.c:405
+msgid "You must be working online to complete this operation"
+msgstr "Bu əməliyyatı bitirmək üçün xətdə olmalısınız"
+
+#: camel/camel-filter-driver.c:669 camel/camel-filter-search.c:512
+#: camel/camel-process.c:48
+#, c-format
+msgid "Failed to create pipe to '%s': %s"
+msgstr "'%s'-a boru yaradıla bilmədi:'%s'"
+
+#: camel/camel-filter-driver.c:713 camel/camel-process.c:90
+#, fuzzy, c-format
+msgid "Failed to create child process '%s': %s"
+msgstr "'%s' törəmə gedişatı yaradıla bilmədi:'%s'"
+
+#: camel/camel-filter-driver.c:756
+#, c-format
+msgid "Invalid message stream received from %s: %s"
+msgstr "'%s'-dan səhv ismarış axımı alındı:'%s'"
+
+#: camel/camel-filter-driver.c:945 camel/camel-filter-driver.c:954
+msgid "Syncing folders"
+msgstr "Qovluqlar sinxronlaşdırılır"
+
+#: camel/camel-filter-driver.c:1043 camel/camel-filter-driver.c:1420
+#, c-format
+msgid "Error parsing filter: %s: %s"
+msgstr "Süzgəc oxuma xətası: %s: %s"
+
+#: camel/camel-filter-driver.c:1052 camel/camel-filter-driver.c:1429
+#, c-format
+msgid "Error executing filter: %s: %s"
+msgstr "Süzgəc işə salma xətası: %s: %s"
+
+#: camel/camel-filter-driver.c:1119
+msgid "Unable to open spool folder"
+msgstr "Növbə qovluğu açıla bilmədi"
+
+#: camel/camel-filter-driver.c:1128
+msgid "Unable to process spool folder"
+msgstr "Növbə qovluğu həll edilə bilmədi"
+
+#: camel/camel-filter-driver.c:1143
+#, c-format
+msgid "Getting message %d (%d%%)"
+msgstr "%d ismarışı alınır (%d%%)"
+
+#: camel/camel-filter-driver.c:1147
+msgid "Cannot open message"
+msgstr "İsmarış açıla bilmir"
+
+#: camel/camel-filter-driver.c:1148 camel/camel-filter-driver.c:1160
+#, c-format
+msgid "Failed on message %d"
+msgstr "%d ismarışında xəta yarandı"
+
+#: camel/camel-filter-driver.c:1174 camel/camel-filter-driver.c:1265
+msgid "Syncing folder"
+msgstr "Qovluq sinxronlaşdırılır"
+
+#: camel/camel-filter-driver.c:1178 camel/camel-filter-driver.c:1270
+msgid "Complete"
+msgstr "Bitdi"
+
+#: camel/camel-filter-driver.c:1235
+#, c-format
+msgid "Getting message %d of %d"
+msgstr "Alınan ismarış: %d / %d"
+
+#: camel/camel-filter-driver.c:1250
+#, c-format
+msgid "Failed at message %d of %d"
+msgstr "%d / %d ismarışında iflas etdi"
+
+#: camel/camel-filter-search.c:135
+msgid "Failed to retrieve message"
+msgstr "İsmarış alına bilmədi"
+
+#: camel/camel-filter-search.c:385
+msgid "Invalid arguments to (system-flag)"
+msgstr "Sistem bayrağına səhv arqumentlər"
+
+#: camel/camel-filter-search.c:400
+msgid "Invalid arguments to (user-tag)"
+msgstr "İstifadəçi bayrağına səhv arqumentlər"
+
+#: camel/camel-filter-search.c:548
+#, c-format
+msgid "Failed to create create child process '%s': %s"
+msgstr "'%s' törəmə gedişatı yaradıla bilmədi:'%s'"
+
+#. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
+#: camel/camel-filter-search.c:670 camel/camel-filter-search.c:678
+#, c-format
+msgid "Error executing filter search: %s: %s"
+msgstr "Süzgəc axtarışı işə salma xətası: %s: %s"
+
+#: camel/camel-folder-search.c:357 camel/camel-folder-search.c:478
+#, c-format
+msgid ""
+"Cannot parse search expression: %s:\n"
+"%s"
+msgstr ""
+"Axtarış ifadəsi oxuna bilmir:%s:\n"
+"%s"
+
+#: camel/camel-folder-search.c:367 camel/camel-folder-search.c:488
+#, c-format
+msgid ""
+"Error executing search expression: %s:\n"
+"%s"
+msgstr ""
+"Axtarış ifadəsi işə salma xətası:%s:\n"
+"%s"
+
+#: camel/camel-folder-search.c:674 camel/camel-folder-search.c:707
+msgid "(match-all) requires a single bool result"
+msgstr ""
+
+#: camel/camel-folder-search.c:757
+msgid "(match-threads) not allowed inside match-all"
+msgstr ""
+
+#: camel/camel-folder-search.c:760 camel/camel-folder-search.c:764
+msgid "(match-threads) requires a match type string"
+msgstr ""
+
+#: camel/camel-folder-search.c:786
+msgid "(match-threads) expects an array result"
+msgstr ""
+
+#: camel/camel-folder-search.c:792
+msgid "(match-threads) requires the folder set"
+msgstr ""
+
+#: camel/camel-folder-search.c:881
+#, c-format
+msgid "Performing query on unknown header: %s"
+msgstr "Namə'lum başlıqda sorğu aparılır: %s"
+
+#: camel/camel-folder.c:610
+#, c-format
+msgid "Unsupported operation: append message: for %s"
+msgstr "%s üçün dəstəklənməyən əməliyyat: ismarış əlavə et"
+
+#: camel/camel-folder.c:1200
+#, c-format
+msgid "Unsupported operation: search by expression: for %s"
+msgstr "%s üçün dəstəklənməyən əməliyyat: ifadəyə görə axtar"
+
+#: camel/camel-folder.c:1240
+#, c-format
+msgid "Unsupported operation: search by uids: for %s"
+msgstr "%s üçün dəstəklənməyən əməliyyat: uid-ə görə axtar"
+
+#: camel/camel-folder.c:1352
+msgid "Moving messages"
+msgstr "İsmarışlar daşınır"
+
+#: camel/camel-folder.c:1352
+msgid "Copying messages"
+msgstr "İsmarışlar köçürülür"
+
+#: camel/camel-folder.c:1601
+#, fuzzy
+msgid "Learning junk"
+msgstr "Xəbərdarlıq"
+
+#: camel/camel-folder.c:1618
+msgid "Learning non-junk"
+msgstr ""
+
+#: camel/camel-folder.c:1637
+msgid "Filtering new message(s)"
+msgstr "Yeni məktub(lar) süzülür"
+
+#: camel/camel-gpg-context.c:735
+#, c-format
+msgid ""
+"Unexpected GnuPG status message encountered:\n"
+"\n"
+"%s"
+msgstr ""
+"Gözlənilməyən GnuPG vəziyyət ismarışı alındı:\n"
+"\n"
+"%s"
+
+#: camel/camel-gpg-context.c:749
+msgid "Failed to parse gpg userid hint."
+msgstr "gpg userid bildirişi oxuna bilmədi."
+
+#: camel/camel-gpg-context.c:773
+msgid "Failed to parse gpg passphrase request."
+msgstr "gpg şifrə istəyi oxuna bilmədi."
+
+#: camel/camel-gpg-context.c:787
+#, c-format
+msgid ""
+"You need a passphrase to unlock the key for\n"
+"user: \"%s\""
+msgstr ""
+"Bu istifadəçi üçün açarın qıfılını aşmaq üçün\n"
+"şifrəyə ehtiyacınız var: \"%s\""
+
+#: camel/camel-gpg-context.c:804 camel/camel-gpg-context.c:1314
+#: camel/camel-gpg-context.c:1498 camel/camel-gpg-context.c:1589
+#: camel/camel-gpg-context.c:1701 camel/providers/nntp/camel-nntp-store.c:1274
+msgid "Cancelled."
+msgstr "Ləğv edildi."
+
+#: camel/camel-gpg-context.c:822
+msgid "Failed to unlock secret key: 3 bad passphrases given."
+msgstr "Gizli açarın qıfılı açıla bilmədi: 3 səhv şifrə bildirildi."
+
+#: camel/camel-gpg-context.c:828
+#, c-format
+msgid "Unexpected response from GnuPG: %s"
+msgstr "GnuPG-dən gözlənilməyən cavab alındı: %s"
+
+#: camel/camel-gpg-context.c:880
+msgid "Failed to encrypt: No valid recipients specified."
+msgstr "Şifrələnə bilmədi:Heç bir hökmlü alıcı bildirilməyib."
+
+#: camel/camel-gpg-context.c:1157
+#, c-format
+msgid ""
+"Failed to GPG %s: %s\n"
+"\n"
+"%s"
+msgstr ""
+"%s GPG ilə şifrələnə bilmədi: %s\n"
+"\n"
+"%s"
+
+#: camel/camel-gpg-context.c:1162
+#, c-format
+msgid "Failed to GPG %s: %s\n"
+msgstr "%s GPG ilə şifrələnə bilmədi: %s\n"
+
+#: camel/camel-gpg-context.c:1275 camel/camel-smime-context.c:389
+#, c-format
+msgid "Could not generate signing data: %s"
+msgstr "İmzalama mə'lumat yaradıla bilmədi: %s"
+
+#: camel/camel-gpg-context.c:1307 camel/camel-gpg-context.c:1766
+#: camel/camel-gpg-context.c:1817
+#, c-format
+msgid "Failed to execute gpg: %s"
+msgstr "gpg icra edilə bilmədi: %s"
+
+#: camel/camel-gpg-context.c:1331 camel/camel-gpg-context.c:1491
+#: camel/camel-gpg-context.c:1582 camel/camel-gpg-context.c:1605
+#: camel/camel-gpg-context.c:1694 camel/camel-gpg-context.c:1718
+#: camel/camel-gpg-context.c:1788 camel/camel-gpg-context.c:1839
+msgid "Failed to execute gpg."
+msgstr "gpg icra edilə bilmədi."
+
+#: camel/camel-gpg-context.c:1350
+msgid "This is a digitally signed message part"
+msgstr "Bu, dijital olaraq imzalanmış ismarış hissəsidir"
+
+#: camel/camel-gpg-context.c:1431 camel/camel-gpg-context.c:1437
+#: camel/camel-gpg-context.c:1443 camel/camel-smime-context.c:692
+#: camel/camel-smime-context.c:703 camel/camel-smime-context.c:710
+msgid "Cannot verify message signature: Incorrect message format"
+msgstr "İsmarış imzası təsdiqlənə bilmədi: səhv ismarış formatı"
+
+#: camel/camel-gpg-context.c:1477
+#, c-format
+msgid "Cannot verify message signature: could not create temp file: %s"
+msgstr "İsmarış imzası təsdiqlənə bilmədi: müvəqqəti fayl yaradıla bilmir: %s"
+
+#: camel/camel-gpg-context.c:1565
+#, c-format
+msgid "Could not generate encrypting data: %s"
+msgstr "Şifrələmə məlumatı yarana bilmədi: %s"
+
+#: camel/camel-gpg-context.c:1623
+msgid "This is a digitally encrypted message part"
+msgstr "Bu, digital olaraq imzalanmış ismarış hissəsidir"
+
+#: camel/camel-gpg-context.c:1674
+msgid "Failed to decrypt MIME part: protocol error"
+msgstr "MIME hissəsinin şifrəsi açıla bilmədi: protokol xətası"
+
+#: camel/camel-gpg-context.c:1725 camel/camel-smime-context.c:966
+msgid "Encrypted content"
+msgstr "Şifrələnmiş məzmun"
+
+#: camel/camel-gpg-context.c:1744
+msgid "Unable to parse message content"
+msgstr "İsmarış məzmunu oxuna bilmədi"
+
+#: camel/camel-gpg-context.c:1767 camel/camel-gpg-context.c:1818
+#: camel/camel-tcp-stream-openssl.c:631
+#: camel/providers/imap4/camel-imap4-engine.c:1465
+#: camel/providers/imap4/camel-imap4-engine.c:1504
+#: camel/providers/imap4/camel-imap4-engine.c:1549
+#: camel/providers/imap4/camel-imap4-engine.c:1605
+#: camel/providers/imap4/camel-imap4-store.c:1250
+#: camel/providers/imap4/camel-imap4-utils.c:575
+#: camel/providers/smtp/camel-smtp-transport.c:163
+#: camel/providers/smtp/camel-smtp-transport.c:218
+msgid "Unknown"
+msgstr "Namə'lum"
+
+#: camel/camel-lock-client.c:100
+#, c-format
+msgid "Cannot build locking helper pipe: %s"
+msgstr "Qıfıllayıcı yardımçı boru yaradıla bilmir: %s"
+
+#: camel/camel-lock-client.c:113
+#, c-format
+msgid "Cannot fork locking helper: %s"
+msgstr "Qıfıllayıcı yardımçı çəngəllənə bilmir: %s"
+
+#: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
+#, c-format
+msgid "Could not lock '%s': protocol error with lock-helper"
+msgstr "'%s' qıfıllana bilmir: lock-helper ilə protokol xətası"
+
+#: camel/camel-lock-client.c:204
+#, c-format
+msgid "Could not lock '%s'"
+msgstr "'%s' qıfıllana bilmədi"
+
+#: camel/camel-lock.c:92 camel/camel-lock.c:113
+#, c-format
+msgid "Could not create lock file for %s: %s"
+msgstr "%s üçün qıfıl faylı yaradıla bilmədi: %s"
+
+#: camel/camel-lock.c:154
+#, c-format
+msgid "Timed out trying to get lock file on %s. Try again later."
+msgstr ""
+"%s üstündəki qıfıl faylının alınması müddəti doldu. Daha sonra yenidən "
+"sınayın."
+
+#: camel/camel-lock.c:209
+#, c-format
+msgid "Failed to get lock using fcntl(2): %s"
+msgstr "fcntl(2) istifadə edilərək qıfıl faylı alına bilmədi: %s"
+
+#: camel/camel-lock.c:272
+#, c-format
+msgid "Failed to get lock using flock(2): %s"
+msgstr "fclock(2) istifadə edilərək qıfıl faylı alına bilmədi: %s"
+
+#: camel/camel-movemail.c:104
+#, c-format
+msgid "Could not check mail file %s: %s"
+msgstr "%s məktub faylı yoxlana bilmədi: %s"
+
+#: camel/camel-movemail.c:117
+#, c-format
+msgid "Could not open mail file %s: %s"
+msgstr "%s məktub faylı açıla bilmədi: %s"
+
+#: camel/camel-movemail.c:125
+#, c-format
+msgid "Could not open temporary mail file %s: %s"
+msgstr "Müvəqqəti məktub faylı %s açıla bilmədi: %s"
+
+#: camel/camel-movemail.c:154
+#, c-format
+msgid "Failed to store mail in temp file %s: %s"
+msgstr "Məktubların müvəqqəti %s faylında saxlanması bacarılmadı: %s"
+
+#: camel/camel-movemail.c:184
+#, c-format
+msgid "Could not create pipe: %s"
+msgstr "Boru yaradıla bilmədi: %s"
+
+#: camel/camel-movemail.c:196
+#, c-format
+msgid "Could not fork: %s"
+msgstr "Çəngəllənə bilmədi: %s"
+
+#: camel/camel-movemail.c:234
+#, c-format
+msgid "Movemail program failed: %s"
+msgstr "Movemail proqramı iflas etdi: %s"
+
+#: camel/camel-movemail.c:235
+msgid "(Unknown error)"
+msgstr "(Namə'lum xəta)"
+
+#: camel/camel-movemail.c:258
+#, c-format
+msgid "Error reading mail file: %s"
+msgstr "Məktub faylı oxuma xətası: %s"
+
+#: camel/camel-movemail.c:269
+#, c-format
+msgid "Error writing mail temp file: %s"
+msgstr "Müvəqqəti məktub faylı yazma xətası: %s"
+
+#: camel/camel-movemail.c:462 camel/camel-movemail.c:529
+#, c-format
+msgid "Error copying mail temp file: %s"
+msgstr "Müvəqqəti məktub faylı köçürmə xətası: %s"
+
+#: camel/camel-multipart-signed.c:586
+msgid "parse error"
+msgstr "oxuma xətası"
+
+#: camel/camel-net-utils.c:446 camel/camel-net-utils.c:608
+#: camel/camel-net-utils.c:739 camel/providers/pop3/camel-pop3-store.c:448
+#: camel/providers/pop3/camel-pop3-store.c:529
+msgid "Cancelled"
+msgstr "Ləğv Edildi"
+
+#: camel/camel-net-utils.c:465
+#, fuzzy
+msgid "cannot create thread"
+msgstr "CMS ismarışı yaradıla bilmir"
+
+#: camel/camel-net-utils.c:612
+#, c-format
+msgid "Resolving: %s"
+msgstr "%s tapılır"
+
+#: camel/camel-net-utils.c:634
+#, fuzzy
+msgid "Host lookup failed"
+msgstr "Qovşaq axtarışı iflas etdi: qovşaq tapılmadı"
+
+#: camel/camel-net-utils.c:636
+#, fuzzy, c-format
+msgid "Host lookup failed: %s: %s"
+msgstr "Qovşaq axtarışı iflas etdi: %s: qovşaq tapılmadı"
+
+#: camel/camel-net-utils.c:743
+msgid "Resolving address"
+msgstr "Ünvan tapılır"
+
+#: camel/camel-net-utils.c:763
+msgid "Name lookup failed"
+msgstr ""
+
+#: camel/camel-net-utils.c:766
+#, fuzzy, c-format
+msgid "Name lookup failed: %s"
+msgstr "NNTP əmri iflas etdi: %s"
+
+#: camel/camel-offline-folder.c:250
+#, fuzzy, c-format
+msgid "Syncing messages in folder '%s' to disk"
+msgstr "İsmarışlar %s qovluğuna köçürülür"
+
+#: camel/camel-offline-journal.c:140 camel/camel-offline-journal.c:163
+#, fuzzy, c-format
+msgid "Cannot write offline journal for folder `%s': %s"
+msgstr "`%s' qovluğu yarana bilmir: %s"
+
+#: camel/camel-provider.c:59
+msgid "Virtual folder email provider"
+msgstr "Virtual qovluq epoçt xidmətçisi"
+
+#: camel/camel-provider.c:61
+msgid "For reading mail as a query of another set of folders"
+msgstr "Başqa qovluq dəstələrinin istəyi olaraq məktubların oxunması üçün"
+
+#: camel/camel-provider.c:185
+#, c-format
+msgid "Could not load %s: Module loading not supported on this system."
+msgstr "%s yüklənə bilmədi: Modul yükləməsi bu sistemdə dəstəklənmir."
+
+#: camel/camel-provider.c:194
+#, c-format
+msgid "Could not load %s: %s"
+msgstr "%s yüklənə bilmədi: %s"
+
+#: camel/camel-provider.c:202
+#, c-format
+msgid "Could not load %s: No initialization code in module."
+msgstr "%s yüklənə bilmədi: Modulda başlatma kodu yoxdur."
+
+#: camel/camel-provider.c:374 camel/camel-session.c:161
+#, c-format
+msgid "No provider available for protocol `%s'"
+msgstr "`%s' protokolu üçün xidmətçi yoxdur"
+
+#: camel/camel-sasl-anonymous.c:35
+msgid "Anonymous"
+msgstr "Anonim"
+
+#: camel/camel-sasl-anonymous.c:37
+msgid "This option will connect to the server using an anonymous login."
+msgstr "Bu seçim vericiyə anonim giriş işlədərək bağlanacaqdır."
+
+#: camel/camel-sasl-anonymous.c:112 camel/camel-sasl-plain.c:88
+msgid "Authentication failed."
+msgstr "Tanıtma bacarılmadı."
+
+#: camel/camel-sasl-anonymous.c:121
+#, c-format
+msgid ""
+"Invalid email address trace information:\n"
+"%s"
+msgstr ""
+"Səhv epoçt ünvanı iz mə'lumatı:\n"
+"%s"
+
+#: camel/camel-sasl-anonymous.c:133
+#, c-format
+msgid ""
+"Invalid opaque trace information:\n"
+"%s"
+msgstr ""
+"Səhv qeyri-şəffaf iz mə'lumatı:\n"
+"%s"
+
+#: camel/camel-sasl-anonymous.c:145
+#, c-format
+msgid ""
+"Invalid trace information:\n"
+"%s"
+msgstr ""
+"Səhv iz mə'lumatı:\n"
+"%s"
+
+#: camel/camel-sasl-cram-md5.c:36
+msgid "CRAM-MD5"
+msgstr "CRAM-MD5"
+
+#: camel/camel-sasl-cram-md5.c:38
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
+msgstr ""
+"Əgər verici dəstəkləyirsə, bu seçim vericiyə e'tibarlı CRAM-MD5 şifrəsi "
+"işlədərək bağlanacaqdır."
+
+#: camel/camel-sasl-digest-md5.c:49
+msgid "DIGEST-MD5"
+msgstr "DIGEST-MD5"
+
+#: camel/camel-sasl-digest-md5.c:51
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
+msgstr ""
+"Əgər verici dəstəkləyirsə, bu seçim vericiyə e'tibarlı DIGEST-MD5 şifrəsi "
+"işlədərək bağlanacaqdır."
+
+#: camel/camel-sasl-digest-md5.c:814
+msgid "Server challenge too long (>2048 octets)\n"
+msgstr "Verici çox uzun dəvət verir (>2048 oktet)\n"
+
+#: camel/camel-sasl-digest-md5.c:823
+msgid "Server challenge invalid\n"
+msgstr "Verici dəvəti səhvdir\n"
+
+#: camel/camel-sasl-digest-md5.c:829
+msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
+msgstr "Verici dəvətində hömksüz \"Qoruma Keyfiyyəti\" bileti vardır\n"
+
+#: camel/camel-sasl-digest-md5.c:859
+msgid "Server response did not contain authorization data\n"
+msgstr "Verici cavabı tanıtma mə'lumatını daxil etmədi\n"
+
+#: camel/camel-sasl-digest-md5.c:877
+msgid "Server response contained incomplete authorization data\n"
+msgstr "Verici cavabı yarımçıq tanıtma mə'lumatı daxil etdi\n"
+
+#: camel/camel-sasl-digest-md5.c:887
+msgid "Server response does not match\n"
+msgstr "Verci cavabı uyğun gəlmir\n"
+
+#: camel/camel-sasl-gssapi.c:57
+msgid "GSSAPI"
+msgstr "GSSAPI"
+
+#: camel/camel-sasl-gssapi.c:59
+msgid "This option will connect to the server using Kerberos 5 authentication."
+msgstr "Bu seçim vericiyə Kerberos 5 tanıtması işlədərək bağlanacaqdır."
+
+#: camel/camel-sasl-gssapi.c:157
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:162
+msgid "The provided target_name parameter was ill-formed."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:165
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:169
+msgid ""
+"The input_token contains different channel bindings to those specified via "
+"the input_chan_bindings parameter."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:174
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:178
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:183
+msgid "The supplied context handle did not refer to a valid context."
+msgstr "Verilən məzmun tutucusu hökmlü məzmuna işarə etmirdi."
+
+#: camel/camel-sasl-gssapi.c:186
+msgid "The consistency checks performed on the input_token failed."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:189
+msgid "The consistency checks performed on the credential failed."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:192
+msgid "The referenced credentials have expired."
+msgstr ""
+
+#: camel/camel-sasl-gssapi.c:198 camel/camel-sasl-gssapi.c:246
+#: camel/camel-sasl-gssapi.c:282 camel/camel-sasl-gssapi.c:297
+#: camel/camel-sasl-kerberos4.c:226
+#: camel/providers/imap/camel-imap-store.c:1222
+msgid "Bad authentication response from server."
+msgstr "Vericidən xətalı tanıtmacavabı alındı."
+
+#: camel/camel-sasl-gssapi.c:307
+msgid "Unsupported security layer."
+msgstr "Dəstəklənməyən təhlükəsizlik layı."
+
+#: camel/camel-sasl-kerberos4.c:42
+msgid "Kerberos 4"
+msgstr "Kerberos 4"
+
+#: camel/camel-sasl-kerberos4.c:44
+msgid "This option will connect to the server using Kerberos 4 authentication."
+msgstr "Bu seçim vericiyə Kerberos 4 tanıtması işlədərək bağlanacaqdır."
+
+#: camel/camel-sasl-kerberos4.c:169
+#, c-format
+msgid ""
+"Could not get Kerberos ticket:\n"
+"%s"
+msgstr ""
+"Kerberos bileti alına bilmədi:\n"
+"%s"
+
+#: camel/camel-sasl-login.c:33
+msgid "Login"
+msgstr "Giriş"
+
+#: camel/camel-sasl-login.c:35 camel/camel-sasl-plain.c:35
+msgid "This option will connect to the server using a simple password."
+msgstr "Bu seçim vericiyə adi şifrə işlədərək bağlanacaqdır."
+
+#: camel/camel-sasl-login.c:128
+msgid "Unknown authentication state."
+msgstr "Namə'lum tanıtma vəziyyəti."
+
+#: camel/camel-sasl-ntlm.c:32
+msgid "NTLM / SPA"
+msgstr "NTLM / SPA"
+
+#: camel/camel-sasl-ntlm.c:34
+msgid ""
+"This option will connect to a Windows-based server using NTLM / Secure "
+"Password Authentication."
+msgstr ""
+
+#: camel/camel-sasl-plain.c:33
+msgid "PLAIN"
+msgstr "PLAIN"
+
+#: camel/camel-sasl-popb4smtp.c:37
+msgid "POP before SMTP"
+msgstr "SMTP-dən əvvəl POP"
+
+#: camel/camel-sasl-popb4smtp.c:39
+msgid "This option will authorise a POP connection before attempting SMTP"
+msgstr "Bu seçim SMTP-dən əvvəl POP bağlantısını sınayacaq"
+
+#: camel/camel-sasl-popb4smtp.c:104
+msgid "POP Source URI"
+msgstr "POP Mənbə URI-si"
+
+#: camel/camel-sasl-popb4smtp.c:107
+msgid "POP Before SMTP auth using an unknown transport"
+msgstr "Namə'lum nəqliyyat işlədilərək SMTP-dən əvvəl POP"
+
+#: camel/camel-sasl-popb4smtp.c:112
+msgid "POP Before SMTP auth using a non-pop source"
+msgstr "Qeyri-POP mənbəyi işlədənrək SMTP-dən əvvəl POP"
+
+#: camel/camel-search-private.c:151
+#, c-format
+msgid "Regular expression compilation failed: %s: %s"
+msgstr "Qaydalı ifadə dərlənməsi bacarılmadı: %s: %s"
+
+#: camel/camel-service.c:272
+#, c-format
+msgid "URL '%s' needs a username component"
+msgstr "'%s' URL-si istifadəçi adı tərkib hissəsinə ehtiyac hiss edir"
+
+#: camel/camel-service.c:276
+#, c-format
+msgid "URL '%s' needs a host component"
+msgstr "'%s' URL-si qovşaq tərkib hissəsinə ehtiyac hiss edir"
+
+#: camel/camel-service.c:280
+#, c-format
+msgid "URL '%s' needs a path component"
+msgstr "'%s' URL-si cığır tərkib hissəsinə ehtiyac hiss edir"
+
+#: camel/camel-session.c:283
+#, c-format
+msgid ""
+"Could not create directory %s:\n"
+"%s"
+msgstr ""
+"%s qovluğu yaradıla bilmədi:\n"
+"%s"
+
+#: camel/camel-smime-context.c:231
+#, c-format
+msgid "Cannot find certificate for '%s'"
+msgstr "'%s' üçün vəsiqə tapıla bilmir"
+
+#: camel/camel-smime-context.c:237
+msgid "Cannot create CMS message"
+msgstr "CMS ismarışı yaradıla bilmir"
+
+#: camel/camel-smime-context.c:242
+#, fuzzy
+msgid "Cannot create CMS signed data"
+msgstr "CMS ilə imzalanmış məlumat yaradıla bilmir"
+
+#: camel/camel-smime-context.c:248
+#, fuzzy
+msgid "Cannot attach CMS signed data"
+msgstr "CMS ilə imzalanmış məlumat ilişdirilə bilmir"
+
+#: camel/camel-smime-context.c:255
+msgid "Cannot attach CMS data"
+msgstr "CMS məlumatı ilişdirilə bilmir"
+
+#: camel/camel-smime-context.c:261
+#, fuzzy
+msgid "Cannot create CMS Signer information"
+msgstr "CMS imzalayan məlumatı yaradıla bilmir"
+
+#: camel/camel-smime-context.c:267
+#, fuzzy
+msgid "Cannot find certificate chain"
+msgstr "'%s' üçün vəsiqə tapıla bilmir"
+
+#: camel/camel-smime-context.c:273
+#, fuzzy
+msgid "Cannot add CMS Signing time"
+msgstr "CMS imzalayan məlumatı əlavə edilə bilmir"
+
+#: camel/camel-smime-context.c:295 camel/camel-smime-context.c:307
+#, fuzzy, c-format
+msgid "Encryption certificate for '%s' does not exist"
+msgstr "'%s' üçün şifrələmə vəsiqəsi mövcud deyil"
+
+#: camel/camel-smime-context.c:314
+msgid "Cannot add SMIMEEncKeyPrefs attribute"
+msgstr "SMIMEEncKeyPrefs atributu əlavə edilə bilmir"
+
+#: camel/camel-smime-context.c:319
+msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
+msgstr "MS SMIMEEncKeyPrefs atributu əlavə edilə bilmir"
+
+#: camel/camel-smime-context.c:324
+msgid "Cannot add encryption certificate"
+msgstr "Şifrələmə vəsiqəsi əlavə edilə bilmir"
+
+#: camel/camel-smime-context.c:330
+#, fuzzy
+msgid "Cannot add CMS Signer information"
+msgstr "CMS imzalayan məlumatı əlavə edilə bilmir"
+
+#: camel/camel-smime-context.c:400 camel/camel-smime-context.c:848
+msgid "Cannot create encoder context"
+msgstr "Kodlama məzmunu yaradıla bilmir"
+
+#: camel/camel-smime-context.c:406
+msgid "Failed to add data to CMS encoder"
+msgstr "CMS şifrələyicisinə məlumat əlavə edilə bilmədi"
+
+#: camel/camel-smime-context.c:411 camel/camel-smime-context.c:865
+msgid "Failed to encode data"
+msgstr "Məlumat şifrələnə bilmədi"
+
+#: camel/camel-smime-context.c:484
+msgid "Unverified"
+msgstr "Təsdiqlənməmiş"
+
+#: camel/camel-smime-context.c:486
+msgid "Good signature"
+msgstr "Düzgün imza"
+
+#: camel/camel-smime-context.c:488
+msgid "Bad signature"
+msgstr "Səhv imza"
+
+#: camel/camel-smime-context.c:490
+msgid "Content tampered with or altered in transit"
+msgstr ""
+
+#: camel/camel-smime-context.c:492
+msgid "Signing certificate not found"
+msgstr "İmzalama vəsiqəsi tapılmadı"
+
+#: camel/camel-smime-context.c:494
+msgid "Signing certificate not trusted"
+msgstr "İmzalama vəsiqəsinə etibar edilmir"
+
+#: camel/camel-smime-context.c:496
+msgid "Signature algorithm unknown"
+msgstr "İmza alqoritmi naməlumdur"
+
+#: camel/camel-smime-context.c:498
+msgid "Signature algorithm unsupported"
+msgstr "İmza alqoritmi dəstəklənmir"
+
+#: camel/camel-smime-context.c:500
+msgid "Malformed signature"
+msgstr "Pozumuş imza"
+
+#: camel/camel-smime-context.c:502
+msgid "Processing error"
+msgstr "Prosesləmə xətası"
+
+#: camel/camel-smime-context.c:539
+#, fuzzy
+msgid "No signed data in signature"
+msgstr "İmzada signedData mövcud deyil"
+
+#: camel/camel-smime-context.c:546
+msgid "Digests missing from enveloped data"
+msgstr "Məlumatdan daycest əksikdir"
+
+#: camel/camel-smime-context.c:559 camel/camel-smime-context.c:569
+msgid "Cannot calculate digests"
+msgstr "Daycestlər hesablana bilmir"
+
+#: camel/camel-smime-context.c:574
+msgid "Cannot set message digests"
+msgstr "İsmarış daycestləri seçilə bilmir"
+
+#: camel/camel-smime-context.c:584 camel/camel-smime-context.c:589
+msgid "Certificate import failed"
+msgstr "Vəsiqə idxalı bacarılmadı"
+
+#: camel/camel-smime-context.c:599
+#, fuzzy
+msgid "Certificate is the only message, cannot verify certificates"
+msgstr "Təkcə vəsiqəli ismarışdır, vəsiqələr yoxlana bilmədi"
+
+#: camel/camel-smime-context.c:602
+#, fuzzy
+msgid "Certificate is the only message, certificates imported and verified"
+msgstr "Təkcə vəsiqəli ismarışdır, vəsiqələr idxal edildi və yoxlandı"
+
+#: camel/camel-smime-context.c:606
+#, fuzzy
+msgid "Cannot find signature digests"
+msgstr "İmza daycestləri tapıla bilmir"
+
+#: camel/camel-smime-context.c:622
+#, c-format
+msgid "Signer: %s <%s>: %s\n"
+msgstr "İmzalayan: %s <%s>: %s\n"
+
+#: camel/camel-smime-context.c:723
+msgid "Decoder failed"
+msgstr "Decoder iflas etdi"
+
+#: camel/camel-smime-context.c:775
+#, fuzzy, c-format
+msgid "Cannot find certificate for `%s'"
+msgstr "'%s' üçün vəsiqə tapıla bilmir"
+
+#: camel/camel-smime-context.c:782
+msgid "Cannot find common bulk encryption algorithm"
+msgstr ""
+
+#. PORT_GetError(); ??
+#: camel/camel-smime-context.c:791
+msgid "Cannot allocate slot for encryption bulk key"
+msgstr ""
+
+#: camel/camel-smime-context.c:802
+#, fuzzy
+msgid "Cannot create CMS Message"
+msgstr "CMS ismarışı yaradıla bilmir"
+
+#: camel/camel-smime-context.c:808
+#, fuzzy
+msgid "Cannot create CMS Enveloped data"
+msgstr "CMS EnvelopedData yaradıla bilmədi"
+
+#: camel/camel-smime-context.c:814
+#, fuzzy
+msgid "Cannot attach CMS Enveloped data"
+msgstr "CMS EnvelopedData ilişdirilə bilmədi"
+
+#: camel/camel-smime-context.c:820
+#, fuzzy
+msgid "Cannot attach CMS data object"
+msgstr "CMS data üzvü ilişdirilə bilmədi"
+
+#: camel/camel-smime-context.c:829
+#, fuzzy
+msgid "Cannot create CMS Recipient information"
+msgstr "CMS RecipientInfo yaradıla bilmədi"
+
+#: camel/camel-smime-context.c:834
+#, fuzzy
+msgid "Cannot add CMS Recipient information"
+msgstr "CMS RecipientInfo əlavə edilə bilmədi"
+
+#: camel/camel-smime-context.c:859
+msgid "Failed to add data to encoder"
+msgstr "Şifrələyiciyə məlumat əlavə edilə bilmədi"
+
+#: camel/camel-smime-context.c:946
+#, c-format
+msgid "Decoder failed, error %d"
+msgstr "Şifrələyici iflas etdi, xət: %d"
+
+#: camel/camel-smime-context.c:953
+msgid "S/MIME Decrypt: No encrypted content found"
+msgstr "S/MIME Decrypt: Şifrələnmiş məzmun mövcud deyil"
+
+#: camel/camel-smime-context.c:980
+msgid "import keys: unimplemented"
+msgstr "düymələri idxal et: hazır deyil"
+
+#: camel/camel-smime-context.c:988
+msgid "export keys: unimplemented"
+msgstr "düymələri ixrac et: hazır deyil"
+
+#: camel/camel-store.c:214
+msgid "Cannot get folder: Invalid operation on this store"
+msgstr "Qovluq alına bilmir: Mənbədə səhv əməliyyat"
+
+#: camel/camel-store.c:244
+#, c-format
+msgid "Cannot create folder `%s': folder exists"
+msgstr "`%s' qovluğu yaradıla bilmir: onsuz da mövcuddur"
+
+#: camel/camel-store.c:298
+msgid "Cannot create folder: Invalid operation on this store"
+msgstr "Qovluq yaradıla bilmir: Mənbədə səhv əməliyyat"
+
+#: camel/camel-store.c:326
+#, c-format
+msgid "Cannot create folder: %s: folder exists"
+msgstr "Qovluq yaradıla bilmir: %s: qovluq mövcuddur"
+
+#: camel/camel-store.c:390 camel/camel-vee-store.c:367
+#: camel/providers/local/camel-maildir-store.c:221
+#, c-format
+msgid "Cannot delete folder: %s: Invalid operation"
+msgstr "Qovluq silinə bilmir: %s: Səhv əməliyyat"
+
+#: camel/camel-store.c:440 camel/camel-vee-store.c:404
+#: camel/providers/local/camel-maildir-store.c:293
+#, c-format
+msgid "Cannot rename folder: %s: Invalid operation"
+msgstr "Qovluq yenidən adlandırıla bilmir: %s: Səhv əməliyyat"
+
+#: camel/camel-store.c:778
+msgid "Trash"
+msgstr "Zibil"
+
+#: camel/camel-store.c:780
+msgid "Junk"
+msgstr "Spam"
+
+#: camel/camel-tcp-stream-openssl.c:568
+msgid "Unable to get issuer's certificate"
+msgstr "Nəşriyyatçının vəsiqəsi alına bilmədi"
+
+#: camel/camel-tcp-stream-openssl.c:570
+msgid "Unable to get Certificate Revocation List"
+msgstr "Vəsiqə Ləğvi siyahısı alına bilmədi"
+
+#: camel/camel-tcp-stream-openssl.c:572
+msgid "Unable to decrypt certificate signature"
+msgstr "Vəsiqə imzasının şifrəsi açıla bilmədi"
+
+#: camel/camel-tcp-stream-openssl.c:574
+msgid "Unable to decrypt Certificate Revocation List signature"
+msgstr "Vəsiqə Ləğvi siyahısının imzasının şifrəsi açıla bilmədi"
+
+#: camel/camel-tcp-stream-openssl.c:576
+msgid "Unable to decode issuer's public key"
+msgstr "Nəşriyyatçının ictimai açarının şifrəsi açıla bilmədi"
+
+#: camel/camel-tcp-stream-openssl.c:578
+msgid "Certificate signature failure"
+msgstr "Vəsiqə imzası xətası"
+
+#: camel/camel-tcp-stream-openssl.c:580
+msgid "Certificate Revocation List signature failure"
+msgstr "Vəsiqə Ləğvi siyahısı imzası xətası"
+
+#: camel/camel-tcp-stream-openssl.c:582
+msgid "Certificate not yet valid"
+msgstr "Vəsiqə hələ hökmlü deyil"
+
+#: camel/camel-tcp-stream-openssl.c:584
+msgid "Certificate has expired"
+msgstr "Sertifikatın vaxtı başa çatıb"
+
+#: camel/camel-tcp-stream-openssl.c:586
+msgid "CRL not yet valid"
+msgstr "CRL hələ hökmlü deyil"
+
+#: camel/camel-tcp-stream-openssl.c:588
+msgid "CRL has expired"
+msgstr "CRL vaxtı başa çatıb"
+
+#: camel/camel-tcp-stream-openssl.c:593
+msgid "Error in CRL"
+msgstr "CRL-də xəta"
+
+#: camel/camel-tcp-stream-openssl.c:595
+msgid "Out of memory"
+msgstr "Yaddaş xaricində"
+
+#: camel/camel-tcp-stream-openssl.c:597
+msgid "Zero-depth self-signed certificate"
+msgstr "Sıfır-dərinlikli öz-özünə imzalı sertifikat"
+
+#: camel/camel-tcp-stream-openssl.c:599
+msgid "Self-signed certificate in chain"
+msgstr "Zincirdə öz-özünə imzalı sertifikat"
+
+#: camel/camel-tcp-stream-openssl.c:601
+msgid "Unable to get issuer's certificate locally"
+msgstr "Nəşriyyatçının sertifikatı yerli olaraq alına bilmədi"
+
+#: camel/camel-tcp-stream-openssl.c:603
+msgid "Unable to verify leaf signature"
+msgstr "Yarpaq sertifikatı təsdiqlənə bilmədi"
+
+#: camel/camel-tcp-stream-openssl.c:605
+msgid "Certificate chain too long"
+msgstr "Sertifikar zinciri çox uzundur"
+
+#: camel/camel-tcp-stream-openssl.c:607
+msgid "Certificate Revoked"
+msgstr "Vəsiqə Ləğv Edildi"
+
+#: camel/camel-tcp-stream-openssl.c:609
+msgid "Invalid Certificate Authority (CA)"
+msgstr "Səhv Vəsiqə Təsdiqi (CA)"
+
+#: camel/camel-tcp-stream-openssl.c:611
+msgid "Path length exceeded"
+msgstr "Çığır uzunluği hüdudu keçdi"
+
+#: camel/camel-tcp-stream-openssl.c:613
+msgid "Invalid purpose"
+msgstr "Səhv məqsəd"
+
+#: camel/camel-tcp-stream-openssl.c:615
+msgid "Certificate untrusted"
+msgstr "Vəsiqə e'tibarlı deyil"
+
+#: camel/camel-tcp-stream-openssl.c:617
+msgid "Certificate rejected"
+msgstr "Vəsiqə rədd edildi"
+
+#: camel/camel-tcp-stream-openssl.c:620
+msgid "Subject/Issuer mismatch"
+msgstr "Mövzu/Nəşriyyatçı uyğunsuzluğu"
+
+#: camel/camel-tcp-stream-openssl.c:622
+msgid "AKID/SKID mismatch"
+msgstr "AKID/SKID uyğunsuzluğu"
+
+#: camel/camel-tcp-stream-openssl.c:624
+msgid "AKID/Issuer serial mismatch"
+msgstr "AKID/Nəşriyyatçı serial uyğunsuzluğu"
+
+#: camel/camel-tcp-stream-openssl.c:626
+msgid "Key usage does not support certificate signing"
+msgstr "Açar istifadəsi vəsiqə imzalamasını dəstəkləmir"
+
+#: camel/camel-tcp-stream-openssl.c:629
+msgid "Error in application verification"
+msgstr "Tə'minat təsdiqləməsində xəta"
+
+#: camel/camel-tcp-stream-openssl.c:696 camel/camel-tcp-stream-ssl.c:827
+#, c-format
+msgid ""
+"Issuer:            %s\n"
+"Subject:           %s\n"
+"Fingerprint:       %s\n"
+"Signature:         %s"
+msgstr ""
+"Nəşriyyatçı:            %s\n"
+"Mövzü:                  %s\n"
+"Barmaq izi:            %s\n"
+"İmza:                    %s"
+
+#: camel/camel-tcp-stream-openssl.c:702 camel/camel-tcp-stream-ssl.c:833
+msgid "GOOD"
+msgstr "HÖKMLÜ"
+
+#: camel/camel-tcp-stream-openssl.c:702 camel/camel-tcp-stream-ssl.c:833
+msgid "BAD"
+msgstr "HÖKMSÜZ"
+
+#: camel/camel-tcp-stream-openssl.c:704
+#, c-format
+msgid ""
+"Bad certificate from %s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept anyway?"
+msgstr ""
+"%s-dan səhv sertifikat:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Yenə də qəbul etmək istəyirsiniz?"
+
+#. construct our user prompt
+#: camel/camel-tcp-stream-ssl.c:837
+#, c-format
+msgid ""
+"SSL Certificate check for %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept?"
+msgstr ""
+"%s-in SSL Sertifikatı yoxlaması:\n"
+"\n"
+"%s\n"
+"\n"
+"Qəbul etmək istəyirsiniz?"
+
+#: camel/camel-tcp-stream-ssl.c:881
+#, c-format
+msgid ""
+"Certificate problem: %s\n"
+"Issuer: %s"
+msgstr ""
+"Vəsiqə problemi: %s\n"
+"Nəşriyyatçı: %s"
+
+#: camel/camel-tcp-stream-ssl.c:933
+#, c-format
+msgid ""
+"Bad certificate domain: %s\n"
+"Issuer: %s"
+msgstr ""
+"Səhv vəsiqə domeni: %s\n"
+"Nəşriyyatçı: %s"
+
+#: camel/camel-tcp-stream-ssl.c:951
+#, c-format
+msgid ""
+"Certificate expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"Sertifikatın vaxtı başa çatıb: %s\n"
+"Nəşriyyatçı: %s"
+
+#: camel/camel-tcp-stream-ssl.c:968
+#, c-format
+msgid ""
+"Certificate revocation list expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"Vəsiqə Ləğvi siyahısının vaxtı başa çatıb: %s\n"
+"Nəşriyyatçı: %s"
+
+#: camel/camel-url.c:293
+#, c-format
+msgid "Could not parse URL `%s'"
+msgstr "`%s' URL-si oxuna bilmədi"
+
+#: camel/camel-vee-folder.c:476
+#, c-format
+msgid "Error storing `%s': %s"
+msgstr "%s saxlanırkən xəta: %s"
+
+#: camel/camel-vee-folder.c:518
+#, c-format
+msgid "No such message %s in %s"
+msgstr "%s içində %s bənzəri ismarış yoxdur"
+
+#: camel/camel-vee-folder.c:643 camel/camel-vee-folder.c:649
+msgid "Cannot copy or move messages into a Virtual Folder"
+msgstr "İsmarışlar Virtual Qovluğa köçürülə ya da daşına bilmir"
+
+#: camel/camel-vee-store.c:343
+msgid "Unmatched"
+msgstr "Oxşar Olmayan"
+
+#: camel/camel-vee-store.c:390
+#, c-format
+msgid "Cannot delete folder: %s: No such folder"
+msgstr "Qovluq silinə bilmir: %s: Qovluq yoxdur"
+
+#: camel/camel-vee-store.c:412
+#, c-format
+msgid "Cannot rename folder: %s: No such folder"
+msgstr "Qovluq yenidən adlandırıla bilmir: %s: Qovluq yoxdur"
+
+#: camel/camel-vtrash-folder.c:47
+msgid "Cannot copy messages to the Trash folder"
+msgstr "İsmarışlar zibil qovluğuna köçürülə bilmir"
+
+#: camel/camel-vtrash-folder.c:49
+msgid "Cannot copy messages to the Junk folder"
+msgstr "İsmarışlar spam qovluğuna köçürülə bilmir"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:104
+#: camel/providers/imap/camel-imap-folder.c:1979
+#, c-format
+msgid ""
+"Cannot get message: %s\n"
+"  %s"
+msgstr ""
+"İsmarıc alına bilmir: %s\n"
+"   %s"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:104
+#: camel/providers/imap/camel-imap-folder.c:1979
+#: camel/providers/local/camel-maildir-folder.c:245
+#: camel/providers/local/camel-mbox-folder.c:403
+#: camel/providers/local/camel-mh-folder.c:203
+msgid "No such message"
+msgstr "Belə ismarış yoxdur"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:120
+#: camel/providers/imap4/camel-imap4-folder.c:696
+#: camel/providers/nntp/camel-nntp-folder.c:157
+#: camel/providers/nntp/camel-nntp-folder.c:233
+#: camel/providers/nntp/camel-nntp-folder.c:372
+#: camel/providers/pop3/camel-pop3-folder.c:263
+#: camel/providers/pop3/camel-pop3-folder.c:431
+#: camel/providers/pop3/camel-pop3-folder.c:492
+#: camel/providers/pop3/camel-pop3-folder.c:510
+msgid "User cancelled"
+msgstr "İstifadəçi ləğv etdi"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:125
+#: camel/providers/imap4/camel-imap4-folder.c:701
+#: camel/providers/nntp/camel-nntp-folder.c:148
+#: camel/providers/nntp/camel-nntp-folder.c:150
+#: camel/providers/nntp/camel-nntp-folder.c:159
+#: camel/providers/nntp/camel-nntp-folder.c:235
+#: camel/providers/pop3/camel-pop3-folder.c:434
+#: camel/providers/pop3/camel-pop3-folder.c:495
+#: camel/providers/pop3/camel-pop3-folder.c:502
+#: camel/providers/pop3/camel-pop3-folder.c:513
+#, c-format
+msgid "Cannot get message %s: %s"
+msgstr "%s ismarışı alına bilmir: %s"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:145
+#: camel/providers/imap4/camel-imap4-folder.c:719
+#, fuzzy
+msgid "This message is not available in offline mode."
+msgstr "Bu ismarış hazırda mövcud deyil"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:171
+#: camel/providers/groupwise/camel-groupwise-folder.c:272
+#, fuzzy
+msgid "Could not get message"
+msgstr "İsmarış yaradıla bilmədi."
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:471
+#: camel/providers/imap/camel-imap-folder.c:245
+#, c-format
+msgid "Could not load summary for %s"
+msgstr "%s üçün mündəricat yüklənə bilmədi"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:685
+#, fuzzy, c-format
+msgid "Cannot create message: %s"
+msgstr "CMS ismarışı yaradıla bilmir"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:697
+#, fuzzy, c-format
+msgid "Cannot append message to folder `%s': %s"
+msgstr "İsmarış mh qovluğuna əlavə edilə bilmir: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-journal.c:240
+#, fuzzy, c-format
+msgid "Cannot get folder container %s"
+msgstr "Qovluq alına bilmir: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-journal.c:328
+#: camel/providers/imap4/camel-imap4-journal.c:276
+#, fuzzy
+msgid "Cannot append message in offline mode: cache unavailable"
+msgstr "İsmarış mh qovluğuna əlavə edilə bilmir: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-journal.c:344
+#: camel/providers/imap4/camel-imap4-journal.c:292
+#, fuzzy, c-format
+msgid "Cannot append message in offline mode: %s"
+msgstr "İsmarış mbox faylına əlava edilə bimir: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:51
+#: camel/providers/imap4/camel-imap4-provider.c:36
+msgid "Checking for new mail"
+msgstr "Yeni poçt yoxlanır"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:53
+msgid "Check for new messages in all folders"
+msgstr "Bütün qovluqlarda yeni poçtu yoxla"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:56
+#: camel/providers/imap/camel-imap-provider.c:64
+#: camel/providers/imap4/camel-imap4-provider.c:49
+#: camel/providers/local/camel-local-provider.c:43
+#: camel/providers/local/camel-local-provider.c:79
+#: camel/providers/local/camel-local-provider.c:99
+msgid "Options"
+msgstr "Seçimlər"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:58
+msgid "Apply filters to new messages in Inbox on this server"
+msgstr "Bu vericidə GƏLƏNLƏR qutusundaki yeni ismarışlara süzgəcləri tətbiq et"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:60
+msgid "Check new messages for Junk contents"
+msgstr "Yeni ismarışlarda Spam izini yoxla"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:62
+msgid "Only check for Junk messages in the INBOX folder"
+msgstr "Spam ismarışlarını təkcə GƏLƏNLƏR qovluğunda axtar"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:64
+#, fuzzy
+msgid "Automatically synchronize account locally"
+msgstr "Uzaqdakı məktubları avtomatik olaraq sinxronlaşdır"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:69
+#, fuzzy
+msgid "Address Book and Calendar"
+msgstr "Ünvan Kitabçası Və Təqvim"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:72
+#, fuzzy
+msgid "Post Office Agent:"
+msgstr "Poçta SOAP Portu:"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:75
+msgid "Post Office Agent SOAP Port:"
+msgstr "Poçta SOAP Portu:"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:78
+#, fuzzy
+msgid "Use Secure Connection (SSL)"
+msgstr "_Etibarlı bağlantı (SSL) işlət:"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:91
+msgid "Novell GroupWise"
+msgstr "Novell GroupWise"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:93
+msgid "For accessing Novell Groupwise servers"
+msgstr "Novell Groupwise vericilərinə yetişmək üçün"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:108
+#: camel/providers/imap/camel-imap-provider.c:96
+#: camel/providers/imap4/camel-imap4-provider.c:81
+#: camel/providers/nntp/camel-nntp-provider.c:72
+#: camel/providers/pop3/camel-pop3-provider.c:72
+msgid "Password"
+msgstr "Şifrə"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:110
+#, fuzzy
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
+msgstr "Bu seçim IMAP vericisinə xam mətn şifrəsi ilə bağlanma imkanı verir."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:267
+#, fuzzy
+msgid "Host or user not availbale in url"
+msgstr "Kateqoriya editoru mövcud deyildir."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:359
+#, fuzzy, c-format
+msgid "%sPlease enter the Groupwise password for %s@%s"
+msgstr "%sXahiş edirik, %s@%s üçün IMAP şifrəsini bildirin"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:373
+#: camel/providers/imap/camel-imap-store.c:1301
+msgid "You didn't enter a password."
+msgstr "Şifrənizi bildirmədiniz."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:382
+#, fuzzy
+msgid "Unable to authenticate to GroupWise server."
+msgstr ""
+"IMAP vericisinə tanıdılma bacarılmadı.\n"
+"%s\n"
+"\n"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:479
+#: camel/providers/imap/camel-imap-store.c:1852
+#: camel/providers/imap/camel-imap-store.c:2042
+#, c-format
+msgid "No such folder %s"
+msgstr "%s adında qovluq yoxdur"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:499
+#: camel/providers/imap/camel-imap-folder.c:2287
+#: camel/providers/imap/camel-imap-folder.c:2357
+msgid "Fetching summary information for new messages"
+msgstr "Yeni ismarışların icmal mə'lumatı alınır"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:610
+#, fuzzy
+msgid "Cannot get folder info in offline mode."
+msgstr "%s qovluğu alına bilmir: qovluq deyil."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:781
+#, fuzzy
+msgid "Cannot create GroupWise folders in offline mode."
+msgstr "Bu adda qovluq yaradıla bilmir."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:830
+#, fuzzy
+msgid "Cannot delete GroupWise folders in offline mode."
+msgstr "`%s' qovluğu silinə bilmir: Xüsusi qovluq"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:873
+#, fuzzy
+msgid "Cannot rename GroupWise folders in offline mode."
+msgstr "Bu adda qovluq yaradıla bilmir."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:879
+#, fuzzy, c-format
+msgid "Cannot rename Groupwise folder `%s' to `%s'"
+msgstr "`%s' qovluğu yaradıla bilmir: Səhv əmr"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:911
+#, fuzzy, c-format
+msgid "GroupWise server %s"
+msgstr "GroupWise"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:913
+#, fuzzy, c-format
+msgid "GroupWise service for %s on %s"
+msgstr "%2$s üstündə %1$s üçün IMAP xidmətləri"
+
+#: camel/providers/groupwise/camel-groupwise-transport.c:121
+#, fuzzy, c-format
+msgid "Groupwise server %s"
+msgstr "Groupwise Id Siyahısı"
+
+#: camel/providers/groupwise/camel-groupwise-transport.c:123
+#, fuzzy, c-format
+msgid "Groupwise mail delivery via %s"
+msgstr "%s vasitəsilə SMTP məktub göndərilməsi"
+
+#: camel/providers/groupwise/camel-groupwise-transport.c:159
+#, fuzzy
+msgid "Sending Message"
+msgstr "İsmarış göndərilir"
+
+#: camel/providers/groupwise/camel-gw-listener.c:406
+msgid "Tasks"
+msgstr "Vəzifələr"
+
+#: camel/providers/groupwise/camel-gw-listener.c:436
+msgid "Checklist"
+msgstr "Yoxlama siyahısı"
+
+#: camel/providers/groupwise/camel-gw-listener.c:483
+#, c-format
+msgid "%sEnter password for %s (user %s)"
+msgstr "%s %s üçün şifrəni bildirin (%s istifadəçisi)"
+
+#: camel/providers/groupwise/camel-gw-listener.c:494
+msgid "Failed to authenticate.\n"
+msgstr "Tanıdılma bacarılmadı.\n"
+
+#: camel/providers/imap/camel-imap-command.c:219
+#: camel/providers/imap/camel-imap-command.c:258
+#: camel/providers/imap/camel-imap-command.c:460
+#: camel/providers/imap/camel-imap-store.c:3209
+msgid "Operation cancelled"
+msgstr "Əməliyyat ləğv edildi"
+
+#: camel/providers/imap/camel-imap-command.c:303
+#: camel/providers/imap/camel-imap-store.c:3212
+#, c-format
+msgid "Server unexpectedly disconnected: %s"
+msgstr "Verici gözlənilməz şəkildə bağlantını kəsdi: %s"
+
+#. for imap ALERT codes, account user@host
+#: camel/providers/imap/camel-imap-command.c:321
+#, c-format
+msgid ""
+"Alert from IMAP server %s@%s:\n"
+"%s"
+msgstr ""
+"%s@%s IMAP vericisindən xəbərdarlıq:\n"
+"%s"
+
+#: camel/providers/imap/camel-imap-command.c:390
+#, c-format
+msgid "Unexpected response from IMAP server: %s"
+msgstr "IMAP vericisindən gözlənilməz cavab: %s"
+
+#: camel/providers/imap/camel-imap-command.c:400
+#, c-format
+msgid "IMAP command failed: %s"
+msgstr "IMAP əmri iflas etdi: %s"
+
+#: camel/providers/imap/camel-imap-command.c:470
+msgid "Server response ended too soon."
+msgstr "Verci cavabı çox tez sonlandı."
+
+#: camel/providers/imap/camel-imap-command.c:675
+#, c-format
+msgid "IMAP server response did not contain %s information"
+msgstr "IMAP vericisinin cavabı %s mə'lumatını daxil etmədi"
+
+#: camel/providers/imap/camel-imap-command.c:711
+#, c-format
+msgid "Unexpected OK response from IMAP server: %s"
+msgstr "IMAP vericisindən gözlənilməz qəbul cavabı: %s"
+
+#: camel/providers/imap/camel-imap-folder.c:226
+#, c-format
+msgid "Could not create directory %s: %s"
+msgstr "%s qovluğu yaradıla bilmədi: %s"
+
+#: camel/providers/imap/camel-imap-folder.c:330
+msgid "Folder was destroyed and recreated on server."
+msgstr "Qovluq dağıdılıb vericidə yenisi yaradıldı."
+
+#. Check UIDs and flags of all messages we already know of.
+#: camel/providers/imap/camel-imap-folder.c:573
+#: camel/providers/imap4/camel-imap4-summary.c:1270
+msgid "Scanning for changed messages"
+msgstr "Dəyişdirilmiş ismarışlar axtarılır"
+
+#: camel/providers/imap/camel-imap-folder.c:1939
+#, c-format
+msgid "Unable to retrieve message: %s"
+msgstr "İsmarış alına bilmədi: %s."
+
+#: camel/providers/imap/camel-imap-folder.c:2021
+#: camel/providers/imap/camel-imap-folder.c:2623
+#: camel/providers/nntp/camel-nntp-folder.c:221
+msgid "This message is not currently available"
+msgstr "Bu ismarış hazırda mövcud deyil"
+
+#: camel/providers/imap/camel-imap-folder.c:2464
+#, c-format
+msgid "Incomplete server response: no information provided for message %d"
+msgstr ""
+
+#: camel/providers/imap/camel-imap-folder.c:2472
+#, c-format
+msgid "Incomplete server response: no UID provided for message %d"
+msgstr ""
+
+#: camel/providers/imap/camel-imap-folder.c:2485
+#, c-format
+msgid ""
+"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgstr ""
+
+#: camel/providers/imap/camel-imap-folder.c:2661
+msgid "Could not find message body in FETCH response."
+msgstr "FETCH cavabında ismarış gövdəsi tapıla bilmədi"
+
+#: camel/providers/imap/camel-imap-message-cache.c:156
+#, c-format
+msgid "Could not open cache directory: %s"
+msgstr "Ön yaddaş qovluğu açıla bilmədi: %s"
+
+#: camel/providers/imap/camel-imap-message-cache.c:253
+#: camel/providers/imap/camel-imap-message-cache.c:310
+#: camel/providers/imap/camel-imap-message-cache.c:341
+#: camel/providers/imap/camel-imap-message-cache.c:373
+#, c-format
+msgid "Failed to cache message %s: %s"
+msgstr "%s ismarışı ön yaddaşa alına bilmədi: %s"
+
+#: camel/providers/imap/camel-imap-message-cache.c:418
+#, c-format
+msgid "Failed to cache %s: %s"
+msgstr "%s ön yaddaşa alına bilmədi: %s"
+
+#: camel/providers/imap/camel-imap-provider.c:44
+msgid "Checking for New Mail"
+msgstr "Yeni Poçt Yoxlanır"
+
+#: camel/providers/imap/camel-imap-provider.c:46
+#: camel/providers/imap4/camel-imap4-provider.c:38
+#, fuzzy
+msgid "C_heck for new messages in all folders"
+msgstr "Bütün qovluqlarda yeni poçtu yoxla"
+
+#: camel/providers/imap/camel-imap-provider.c:49
+msgid "Connection to Server"
+msgstr "Vericiyə Bağlanır"
+
+#: camel/providers/imap/camel-imap-provider.c:51
+#, fuzzy
+msgid "_Use custom command to connect to server"
+msgstr "LDAP vericisinə bağlanma xətası"
+
+#: camel/providers/imap/camel-imap-provider.c:53
+msgid "Command:"
+msgstr "Əmr:"
+
+#: camel/providers/imap/camel-imap-provider.c:56
+#: camel/providers/imap4/camel-imap4-provider.c:41
+#: camel/providers/nntp/camel-nntp-provider.c:42
+msgid "Folders"
+msgstr "Qovluqlar"
+
+#: camel/providers/imap/camel-imap-provider.c:58
+#: camel/providers/imap4/camel-imap4-provider.c:43
+#, fuzzy
+msgid "_Show only subscribed folders"
+msgstr "Ancaq qeydiyyatdan keçmiş qovluqları göstər"
+
+#: camel/providers/imap/camel-imap-provider.c:60
+#: camel/providers/imap4/camel-imap4-provider.c:45
+#, fuzzy
+msgid "O_verride server-supplied folder namespace"
+msgstr "Verici əlavəlı qovluq adı boşluqlarını nəzərə alma"
+
+#: camel/providers/imap/camel-imap-provider.c:62
+#: camel/providers/imap4/camel-imap4-provider.c:47
+msgid "Namespace"
+msgstr "Ad boşluğu"
+
+#: camel/providers/imap/camel-imap-provider.c:66
+#: camel/providers/imap4/camel-imap4-provider.c:51
+#, fuzzy
+msgid "_Apply filters to new messages in INBOX on this server"
+msgstr "Bu vericidə GƏLƏNLƏR qutusundaki yeni ismarışlara süzgəcləri tətbiq et"
+
+#: camel/providers/imap/camel-imap-provider.c:68
+#: camel/providers/imap4/camel-imap4-provider.c:53
+#, fuzzy
+msgid "Check new messages for _Junk contents"
+msgstr "Yeni ismarışlarda Spam izini yoxla"
+
+#: camel/providers/imap/camel-imap-provider.c:70
+#: camel/providers/imap4/camel-imap4-provider.c:55
+#, fuzzy
+msgid "Only check for Junk messa_ges in the INBOX folder"
+msgstr "Spam ismarışlarını təkcə GƏLƏNLƏR qovluğunda axtar"
+
+#: camel/providers/imap/camel-imap-provider.c:72
+#: camel/providers/imap4/camel-imap4-provider.c:57
+#, fuzzy
+msgid "Automatically synchroni_ze remote mail locally"
+msgstr "Uzaqdakı məktubları avtomatik olaraq sinxronlaşdır"
+
+#: camel/providers/imap/camel-imap-provider.c:79
+msgid "IMAP"
+msgstr "IMAP"
+
+#: camel/providers/imap/camel-imap-provider.c:81
+msgid "For reading and storing mail on IMAP servers."
+msgstr "IMAP vericilərində məktubların saxlanması və oxuna bilməsi üçün."
+
+#: camel/providers/imap/camel-imap-provider.c:98
+msgid "This option will connect to the IMAP server using a plaintext password."
+msgstr "Bu seçim IMAP vericisinə xam mətn şifrəsi ilə bağlanma imkanı verir."
+
+#: camel/providers/imap/camel-imap-store.c:421
+#: camel/providers/imap4/camel-imap4-store.c:206
+#, c-format
+msgid "IMAP server %s"
+msgstr "%s IMAP vericisi"
+
+#: camel/providers/imap/camel-imap-store.c:423
+#: camel/providers/imap4/camel-imap4-store.c:208
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "%2$s üstündə %1$s üçün IMAP xidmətləri"
+
+#: camel/providers/imap/camel-imap-store.c:535
+#: camel/providers/imap/camel-imap-store.c:550
+#: camel/providers/imap4/camel-imap4-store.c:240
+#: camel/providers/imap4/camel-imap4-store.c:255
+#: camel/providers/nntp/camel-nntp-store.c:200
+#: camel/providers/nntp/camel-nntp-store.c:215
+#: camel/providers/pop3/camel-pop3-store.c:169
+#: camel/providers/pop3/camel-pop3-store.c:184
+#: camel/providers/smtp/camel-smtp-transport.c:257
+#: camel/providers/smtp/camel-smtp-transport.c:272
+#, fuzzy, c-format
+msgid "Could not connect to %s: %s"
+msgstr "%s vericisinə bağlana bilmədi (port %d): %s"
+
+#: camel/providers/imap/camel-imap-store.c:536
+#: camel/providers/imap4/camel-imap4-store.c:241
+#: camel/providers/nntp/camel-nntp-store.c:201
+#: camel/providers/pop3/camel-pop3-store.c:170
+#: camel/providers/smtp/camel-smtp-transport.c:258
+msgid "SSL unavailable"
+msgstr "SSL mövcud deyil"
+
+#: camel/providers/imap/camel-imap-store.c:547
+#: camel/providers/imap/camel-imap-store.c:817
+#: camel/providers/imap4/camel-imap4-store.c:252
+#: camel/providers/nntp/camel-nntp-store.c:212
+#: camel/providers/nntp/camel-nntp-store.c:231
+#: camel/providers/pop3/camel-pop3-store.c:181
+#: camel/providers/smtp/camel-smtp-transport.c:269
+msgid "Connection cancelled"
+msgstr "Bağlantı ləğv edildi"
+
+#: camel/providers/imap/camel-imap-store.c:655
+#: camel/providers/imap/camel-imap-store.c:677
+#: camel/providers/imap/camel-imap-store.c:683
+#: camel/providers/imap4/camel-imap4-store.c:280
+#: camel/providers/imap4/camel-imap4-store.c:293
+#: camel/providers/imap4/camel-imap4-store.c:309
+#, c-format
+msgid "Failed to connect to IMAP server %s in secure mode: %s"
+msgstr "%2$s təhlükəsizlik modunda %1$s IMAP verisicinə bağlana bilmədi"
+
+#: camel/providers/imap/camel-imap-store.c:656
+#: camel/providers/smtp/camel-smtp-transport.c:326
+#, fuzzy
+msgid "STARTTLS not supported"
+msgstr "SSL/TLS uzantısı dəstəklənmir."
+
+#: camel/providers/imap/camel-imap-store.c:678
+#: camel/providers/imap4/camel-imap4-store.c:281
+#: camel/providers/pop3/camel-pop3-store.c:246
+msgid "SSL negotiations failed"
+msgstr "SSL danışıqları bacarılmadı"
+
+#: camel/providers/imap/camel-imap-store.c:684
+#: camel/providers/imap4/camel-imap4-store.c:310
+#: camel/providers/pop3/camel-pop3-store.c:252
+#: camel/providers/smtp/camel-smtp-transport.c:365
+msgid "SSL is not available in this build"
+msgstr ""
+
+#: camel/providers/imap/camel-imap-store.c:820
+#, c-format
+msgid "Could not connect with command \"%s\": %s"
+msgstr ""
+
+#: camel/providers/imap/camel-imap-store.c:1254
+#, c-format
+msgid "IMAP server %s does not support requested authentication type %s"
+msgstr "%s IMAP vericisi istənən %s tanıtma növünü dəstəkləmir"
+
+#: camel/providers/imap/camel-imap-store.c:1264
+#: camel/providers/smtp/camel-smtp-transport.c:498
+#, c-format
+msgid "No support for authentication type %s"
+msgstr "%s tanıtma növü dəstəklənmir"
+
+#: camel/providers/imap/camel-imap-store.c:1287
+#, c-format
+msgid "%sPlease enter the IMAP password for %s@%s"
+msgstr "%sXahiş edirik, %s@%s üçün IMAP şifrəsini bildirin"
+
+#: camel/providers/imap/camel-imap-store.c:1330
+#, c-format
+msgid ""
+"Unable to authenticate to IMAP server.\n"
+"%s\n"
+"\n"
+msgstr ""
+"IMAP vericisinə tanıdılma bacarılmadı.\n"
+"%s\n"
+"\n"
+
+#: camel/providers/imap/camel-imap-store.c:1870
+#: camel/providers/imap/camel-imap-store.c:2248
+#: camel/providers/imap4/camel-imap4-store.c:770
+#, c-format
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgstr "\"%s\" qovluq adı \"%c\" hərfini daxil etdiyi üçün səhvdir"
+
+#: camel/providers/imap/camel-imap-store.c:1928
+#: camel/providers/imap/camel-imap-store.c:2309
+msgid "The parent folder is not allowed to contain subfolders"
+msgstr "Qonşu qovluq alt qovluqlara malik ola bilməzi"
+
+#: camel/providers/imap/camel-imap-store.c:1983
+#: camel/providers/local/camel-maildir-store.c:192
+#: camel/providers/local/camel-mbox-store.c:210
+#: camel/providers/local/camel-mh-store.c:237
+#, c-format
+msgid "Cannot create folder `%s': folder exists."
+msgstr "`%s' qovluğu yaradıla bilmir: qovluq mövcuddur."
+
+#: camel/providers/imap/camel-imap-store.c:2259
+#, c-format
+msgid "Unknown parent folder: %s"
+msgstr "Naməlum qonşu qovluq: %s"
+
+#: camel/providers/imap4/camel-imap4-command.c:551
+#: camel/providers/imap4/camel-imap4-command.c:558
+#, fuzzy, c-format
+msgid "Failed sending command to IMAP server %s: %s"
+msgstr "%s POP vericisinə tanıdıla bilmədi: %s"
+
+#: camel/providers/imap4/camel-imap4-command.c:661
+#, c-format
+msgid "Unexpected response from IMAP4 server %s: %s"
+msgstr "%s IMAP vericisindən gözlənilməz cavab: %s"
+
+#: camel/providers/imap4/camel-imap4-engine.c:216
+#, fuzzy, c-format
+msgid "Unexpected greeting from IMAP server %s."
+msgstr "IMAP vericisindən gözlənilməz cavab: %s"
+
+#: camel/providers/imap4/camel-imap4-engine.c:410
+#, c-format
+msgid "Cannot select folder `%s': Invalid mailbox name"
+msgstr "`%s' qovluğu seçilə bilmir: Səhv poçt qutusu adı"
+
+#: camel/providers/imap4/camel-imap4-engine.c:416
+#, c-format
+msgid "Cannot select folder `%s': Bad command"
+msgstr "`%s' qovluğu seçilə bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-engine.c:1464
+#: camel/providers/imap4/camel-imap4-engine.c:1503
+#: camel/providers/imap4/camel-imap4-engine.c:1548
+#: camel/providers/imap4/camel-imap4-engine.c:1604
+#, c-format
+msgid "IMAP4 server %s unexpectedly disconnected: %s"
+msgstr "%s vericisi gözlənilməz şəkildə bağlantını kəsdi: %s"
+
+#: camel/providers/imap4/camel-imap4-folder.c:306
+#, fuzzy, c-format
+msgid "Cannot access folder `%s': %s"
+msgstr "`%s' qolvuğu alına bilmir: %s"
+
+#: camel/providers/imap4/camel-imap4-folder.c:365
+#, c-format
+msgid "Cannot sync flags to folder `%s': Unknown"
+msgstr "Bayraqlar '%s' qovluğuna sinxronlaşdırıla bilmir: Naməlum"
+
+#: camel/providers/imap4/camel-imap4-folder.c:371
+#, c-format
+msgid "Cannot sync flags to folder `%s': Bad command"
+msgstr "Bayraqlar '%s' qovluğuna sinxronlaşdırıla bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-folder.c:512
+#, c-format
+msgid "Cannot expunge folder `%s': Unknown"
+msgstr "'%s' qovluğu silinə bilmir: Naməlum"
+
+#: camel/providers/imap4/camel-imap4-folder.c:517
+#, c-format
+msgid "Cannot expunge folder `%s': Bad command"
+msgstr "'%s' qovluğu silinə bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-folder.c:773
+#, c-format
+msgid "Cannot get message %s from folder `%s': No such message"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-folder.c:778
+#, c-format
+msgid "Cannot get message %s from folder `%s': Bad command"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-folder.c:911
+#, c-format
+msgid "Cannot append message to folder `%s': Unknown error"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-folder.c:940
+#, c-format
+msgid "Cannot append message to folder `%s': Bad command"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-folder.c:1048
+#, c-format
+msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-folder.c:1052
+#, c-format
+msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-folder.c:1060
+#, c-format
+msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-folder.c:1064
+#, c-format
+msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-provider.c:64
+msgid "IMAPv4rev1"
+msgstr "IMAPv4rev1"
+
+#: camel/providers/imap4/camel-imap4-provider.c:66
+#, fuzzy
+msgid "For reading and storing mail on IMAPv4rev1 servers."
+msgstr "IMAP vericilərində məktubların saxlanması və oxuna bilməsi üçün."
+
+#: camel/providers/imap4/camel-imap4-provider.c:83
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgstr ""
+"Bu seçim IMAPv4rev1vericisinə xam mətn şifrəsi ilə bağlanma imkanı verir."
+
+#: camel/providers/imap4/camel-imap4-store.c:391
+#, c-format
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-store.c:436
+#, c-format
+msgid "%sPlease enter the IMAP password for %s on host %s"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-store.c:506
+#, c-format
+msgid "Cannot authenticate to IMAP server %s using %s"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-store.c:668
+#: camel/providers/imap4/camel-imap4-store.c:780
+#, fuzzy
+msgid "Cannot create IMAP folders in offline mode."
+msgstr "Bu adda qovluq yaradıla bilmir."
+
+#: camel/providers/imap4/camel-imap4-store.c:707
+#, c-format
+msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-store.c:828
+#, c-format
+msgid "Cannot create folder `%s': Invalid mailbox name"
+msgstr "`%s' qovluğu yaradıla bilmir: Səhv poçt qutusu adı"
+
+#: camel/providers/imap4/camel-imap4-store.c:834
+#, c-format
+msgid "Cannot create folder `%s': Bad command"
+msgstr "`%s' qovluğu yaradıla bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-store.c:865
+#, c-format
+msgid "Cannot delete folder `%s': Special folder"
+msgstr "`%s' qovluğu silinə bilmir: Xüsusi qovluq"
+
+#: camel/providers/imap4/camel-imap4-store.c:872
+#, fuzzy
+msgid "Cannot delete IMAP folders in offline mode."
+msgstr "`%s' qovluğu silinə bilmir: Xüsusi qovluq"
+
+#: camel/providers/imap4/camel-imap4-store.c:931
+#, c-format
+msgid "Cannot delete folder `%s': Invalid mailbox name"
+msgstr "`%s' qovluğu silinə bilmir: Səhv poçt qutusu adı"
+
+#: camel/providers/imap4/camel-imap4-store.c:936
+#, c-format
+msgid "Cannot delete folder `%s': Bad command"
+msgstr "`%s' qovluğu silinə bilmir: Səhv ad"
+
+#: camel/providers/imap4/camel-imap4-store.c:956
+#, fuzzy, c-format
+msgid "Cannot rename folder `%s' to `%s': Special folder"
+msgstr "`%s' qovluğu silinə bilmir: Xüsusi qovluq"
+
+#: camel/providers/imap4/camel-imap4-store.c:963
+#, fuzzy
+msgid "Cannot rename IMAP folders in offline mode."
+msgstr "Bu adda qovluq yaradıla bilmir."
+
+#: camel/providers/imap4/camel-imap4-store.c:994
+#, fuzzy, c-format
+msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
+msgstr "`%s' qovluğu yaradıla bilmir: Səhv poçt qutusu adı"
+
+#: camel/providers/imap4/camel-imap4-store.c:999
+#, fuzzy, c-format
+msgid "Cannot rename folder `%s' to `%s': Bad command"
+msgstr "`%s' qovluğu yaradıla bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-store.c:1248
+#, c-format
+msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
+msgstr ""
+
+#: camel/providers/imap4/camel-imap4-store.c:1250
+msgid "Bad command"
+msgstr "Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-store.c:1288
+#, fuzzy
+msgid "Cannot subscribe to IMAP folders in offline mode."
+msgstr "`%s' qovluğuna abunə oluna bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-store.c:1333
+#, c-format
+msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
+msgstr "`%s' qovluğuna abunə oluna bilmir: Səhv poçt qutusu adı"
+
+#: camel/providers/imap4/camel-imap4-store.c:1338
+#, c-format
+msgid "Cannot subscribe to folder `%s': Bad command"
+msgstr "`%s' qovluğuna abunə oluna bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-store.c:1360
+#, fuzzy
+msgid "Cannot unsubscribe from IMAP folders in offline mode."
+msgstr "`%s' qovluğundan abunəlik ləğv edilə bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-store.c:1405
+#, c-format
+msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
+msgstr "`%s' qovluğundan abunəlik ləğv edilə bilmir: Səhv poçt qutusu adı"
+
+#: camel/providers/imap4/camel-imap4-store.c:1410
+#, c-format
+msgid "Cannot unsubscribe from folder `%s': Bad command"
+msgstr "`%s' qovluğundan abunəlik ləğv edilə bilmir: Səhv əmr"
+
+#: camel/providers/imap4/camel-imap4-summary.c:1294
+#, fuzzy
+msgid "Fetching envelopes for new messages"
+msgstr "Yeni ismarışlar yoxlanır"
+
+#: camel/providers/imap4/camel-imap4-utils.c:368
+#, c-format
+msgid "Unexpected token in response from IMAP server %s: "
+msgstr "%s IMAP vericisindən gözlənilməz cavab: "
+
+#: camel/providers/imap4/camel-imap4-utils.c:391
+msgid "No data"
+msgstr "Məlumat yoxdur"
+
+#: camel/providers/imap4/camel-imap4-utils.c:574
+#, c-format
+msgid "IMAP server %s unexpectedly disconnected: %s"
+msgstr "%s vericisi gözlənilməz şəkildə bağlantını kəsdi: %s"
+
+#: camel/providers/local/camel-local-folder.c:179
+msgid "Index message body data"
+msgstr "İsmarışların məzmun məlumatını indekslə"
+
+#. $HOME relative path + protocol string
+#: camel/providers/local/camel-local-folder.c:391
+#, c-format
+msgid "~%s (%s)"
+msgstr "~%s (%s)"
+
+#. /var/spool/mail relative path + protocol
+#: camel/providers/local/camel-local-folder.c:395
+#: camel/providers/local/camel-local-folder.c:398
+#, c-format
+msgid "mailbox:%s (%s)"
+msgstr "poçt qutusu:%s (%s)"
+
+#. a full path + protocol
+#: camel/providers/local/camel-local-folder.c:402
+#, c-format
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#: camel/providers/local/camel-local-provider.c:45
+msgid "Use the `.folders' folder summary file (exmh)"
+msgstr "`.folders' qovluq icmal faylını (exmh) işlət"
+
+#: camel/providers/local/camel-local-provider.c:52
+msgid "MH-format mail directories"
+msgstr "MH-şəklində məktub qovluqları"
+
+#: camel/providers/local/camel-local-provider.c:53
+msgid "For storing local mail in MH-like mail directories."
+msgstr "Yerli məktubların MH şəklinə məktub qovluqlarında saxlamaq üçün."
+
+#: camel/providers/local/camel-local-provider.c:68
+msgid "Local delivery"
+msgstr "Yerli göndəriş"
+
+#: camel/providers/local/camel-local-provider.c:69
+msgid ""
+"For retrieving (moving) local mail from standard mbox formated spools into "
+"folders managed by Evolution."
+msgstr ""
+
+#: camel/providers/local/camel-local-provider.c:81
+#: camel/providers/local/camel-local-provider.c:100
+msgid "Apply filters to new messages in INBOX"
+msgstr "GƏLƏNLƏR qutusundakı yeni ismarışlara süzgəcləri tətbiq et"
+
+#: camel/providers/local/camel-local-provider.c:88
+msgid "Maildir-format mail directories"
+msgstr "Maildir-şəklində məktub qovluqları"
+
+#: camel/providers/local/camel-local-provider.c:89
+msgid "For storing local mail in maildir directories."
+msgstr "Yerli məktubları maildir qovluqlarında saxlaya bilmək üçün"
+
+#: camel/providers/local/camel-local-provider.c:101
+msgid "Store status headers in Elm/Pine/Mutt format"
+msgstr "Vəziyyət başlıqlarını Elm/Pine/Mutt şəklində saxla"
+
+#: camel/providers/local/camel-local-provider.c:108
+msgid "Standard Unix mbox spool or directory"
+msgstr "Standart UNIX mbox hovuzu ya da qovluğu"
+
+#: camel/providers/local/camel-local-provider.c:109
+msgid ""
+"For reading and storing local mail in external standard mbox spool files.\n"
+"May also be used to read a tree of Elm, Pine, or Mutt style folders."
+msgstr ""
+
+#: camel/providers/local/camel-local-store.c:143
+#: camel/providers/local/camel-local-store.c:254
+#: camel/providers/local/camel-mbox-store.c:353
+#: camel/providers/local/camel-spool-store.c:117
+#, c-format
+msgid "Store root %s is not an absolute path"
+msgstr "%s qovluq kökü dəqiq mütləq cığır deyil"
+
+#: camel/providers/local/camel-local-store.c:150
+#, c-format
+msgid "Store root %s is not a regular directory"
+msgstr "%s qovluq kökü düzgün qovluq deyil"
+
+#: camel/providers/local/camel-local-store.c:159
+#: camel/providers/local/camel-local-store.c:167
+#: camel/providers/local/camel-local-store.c:265
+#, c-format
+msgid "Cannot get folder: %s: %s"
+msgstr "Qovluq alına bilmir: %s: %s"
+
+#: camel/providers/local/camel-local-store.c:179
+msgid "Local stores do not have an inbox"
+msgstr "Yerli qovluqların gələnlər qutusu yoxdur"
+
+#: camel/providers/local/camel-local-store.c:225
+#, c-format
+msgid "Local mail file %s"
+msgstr "%s yeli məktub faylı"
+
+#: camel/providers/local/camel-local-store.c:334
+#, c-format
+msgid "Could not rename folder %s to %s: %s"
+msgstr "%s qovluğu %s adi ilə yenidən adlandırıla bilmədi: %s"
+
+#: camel/providers/local/camel-local-store.c:399
+#, c-format
+msgid "Could not rename '%s': %s"
+msgstr "'%s' yenidən adlandırıla bilmədi: %s"
+
+#: camel/providers/local/camel-local-store.c:424
+#: camel/providers/local/camel-mbox-store.c:282
+#, c-format
+msgid "Could not delete folder summary file `%s': %s"
+msgstr "`%s' qovluq mündəricat faylı silinə bilmədi: %s"
+
+#: camel/providers/local/camel-local-store.c:434
+#: camel/providers/local/camel-mbox-store.c:294
+#, c-format
+msgid "Could not delete folder index file `%s': %s"
+msgstr "`%s' qovluq indeks faylı silinə bilmədi: %s"
+
+#: camel/providers/local/camel-local-store.c:457
+#: camel/providers/local/camel-mbox-store.c:318
+#, c-format
+msgid "Could not delete folder meta file `%s': %s"
+msgstr ""
+
+#: camel/providers/local/camel-local-summary.c:406
+#, c-format
+msgid "Could not save summary: %s: %s"
+msgstr "İcmal qeyd edilə bilmədi: %s :%s"
+
+#: camel/providers/local/camel-local-summary.c:464
+msgid "Unable to add message to summary: unknown reason"
+msgstr "Mündəricata ismarış əlavə edilə bilmədi: namə'lum səbəb"
+
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
+#: camel/providers/local/camel-maildir-folder.c:75
+#: camel/providers/local/camel-maildir-store.c:221
+#: camel/providers/local/camel-maildir-store.c:293
+#: camel/providers/local/camel-maildir-store.c:515
+#: camel/providers/local/camel-maildir-store.c:528
+#: camel/providers/local/camel-spool-store.c:452
+msgid "Inbox"
+msgstr "Gələnlər qutusu"
+
+#: camel/providers/local/camel-maildir-folder.c:215
+msgid "Maildir append message cancelled"
+msgstr "Maildir imsarış əlavə edilməsi ləğv edildi"
+
+#: camel/providers/local/camel-maildir-folder.c:218
+#, c-format
+msgid "Cannot append message to maildir folder: %s: %s"
+msgstr "İsmarış maildir qovluğuna əlavə edilə bilmir: %s: %s "
+
+#: camel/providers/local/camel-maildir-folder.c:244
+#: camel/providers/local/camel-maildir-folder.c:258
+#: camel/providers/local/camel-maildir-folder.c:267
+#: camel/providers/local/camel-mbox-folder.c:402
+#: camel/providers/local/camel-mbox-folder.c:421
+#: camel/providers/local/camel-mbox-folder.c:452
+#: camel/providers/local/camel-mbox-folder.c:460
+#: camel/providers/local/camel-mh-folder.c:202
+#: camel/providers/local/camel-mh-folder.c:213
+#: camel/providers/local/camel-mh-folder.c:222
+#, c-format
+msgid ""
+"Cannot get message: %s from folder %s\n"
+"  %s"
+msgstr ""
+"İsmarış alına bilmir: %2$s qovluğundan %1$s\n"
+"   %3$s"
+
+#: camel/providers/local/camel-maildir-folder.c:268
+msgid "Invalid message contents"
+msgstr "Səhv ismarış məzmunu"
+
+#: camel/providers/local/camel-maildir-store.c:148
+#: camel/providers/local/camel-maildir-store.c:173
+#: camel/providers/local/camel-mbox-store.c:182
+#: camel/providers/local/camel-mbox-store.c:194
+#, c-format
+msgid "Cannot create folder `%s': %s"
+msgstr "`%s' qovluğu yarana bilmir: %s"
+
+#: camel/providers/local/camel-maildir-store.c:161
+#: camel/providers/local/camel-mbox-store.c:152
+#: camel/providers/local/camel-mh-store.c:205
+#, c-format
+msgid "Cannot get folder `%s': %s"
+msgstr "`%s' qolvuğu alına bilmir: %s"
+
+#: camel/providers/local/camel-maildir-store.c:165
+#: camel/providers/local/camel-mbox-store.c:160
+#: camel/providers/local/camel-mh-store.c:212
+#, c-format
+msgid "Cannot get folder `%s': folder does not exist."
+msgstr "`%s' qolvuğu alına bilmir: qovluq mövcud deyil."
+
+#: camel/providers/local/camel-maildir-store.c:189
+#, c-format
+msgid "Cannot get folder `%s': not a maildir directory."
+msgstr "`%s' qovluğu alına bilmir: poçt qutusu qovluğu deyil."
+
+#: camel/providers/local/camel-maildir-store.c:236
+#: camel/providers/local/camel-maildir-store.c:274
+#: camel/providers/local/camel-mh-store.c:261
+#, c-format
+msgid "Could not delete folder `%s': %s"
+msgstr "`%s' qovluğu silinə bilmədi: %s"
+
+#: camel/providers/local/camel-maildir-store.c:238
+msgid "not a maildir directory"
+msgstr "poçt qutusu qovluğu deyil"
+
+#: camel/providers/local/camel-maildir-store.c:440
+#: camel/providers/local/camel-spool-store.c:319
+#: camel/providers/local/camel-spool-store.c:333
+#, c-format
+msgid "Could not scan folder `%s': %s"
+msgstr "`%s' qovluğu oxuna bilmədi: %s"
+
+#: camel/providers/local/camel-maildir-summary.c:425
+#: camel/providers/local/camel-maildir-summary.c:556
+#, c-format
+msgid "Cannot open maildir directory path: %s: %s"
+msgstr "Poçt qutusu qovluğu cığırı açıla bilmir: %s: %s"
+
+#: camel/providers/local/camel-maildir-summary.c:549
+msgid "Checking folder consistency"
+msgstr "Qovluğun düzgünlüyü yoxlanır"
+
+#: camel/providers/local/camel-maildir-summary.c:652
+msgid "Checking for new messages"
+msgstr "Yeni ismarışlar yoxlanır"
+
+#: camel/providers/local/camel-maildir-summary.c:741
+#: camel/providers/local/camel-mbox-summary.c:416
+#: camel/providers/local/camel-mbox-summary.c:589
+#: camel/providers/local/camel-mbox-summary.c:680
+#: camel/providers/local/camel-spool-summary.c:140
+msgid "Storing folder"
+msgstr "Qovluq qeyd edilir"
+
+#: camel/providers/local/camel-mbox-folder.c:210
+#: camel/providers/local/camel-spool-folder.c:176
+#, c-format
+msgid "Cannot create folder lock on %s: %s"
+msgstr "%s üstündə qovluq qıfılı yaradıla bilmir: %s"
+
+#: camel/providers/local/camel-mbox-folder.c:269
+#, c-format
+msgid "Cannot open mailbox: %s: %s\n"
+msgstr "Məktub qutusu açıla bilmir: %s: %s\n"
+
+#: camel/providers/local/camel-mbox-folder.c:329
+msgid "Mail append cancelled"
+msgstr "Məktub əlavəsi ləğv edildi"
+
+#: camel/providers/local/camel-mbox-folder.c:332
+#, c-format
+msgid "Cannot append message to mbox file: %s: %s"
+msgstr "İsmarış mbox faylına əlava edilə bimir: %s: %s"
+
+#: camel/providers/local/camel-mbox-folder.c:453
+msgid "The folder appears to be irrecoverably corrupted."
+msgstr "Qovluq geri dönülməz şəkildə xəsarət alıb."
+
+#: camel/providers/local/camel-mbox-folder.c:461
+#: camel/providers/local/camel-mh-folder.c:223
+#, fuzzy
+msgid "Message construction failed."
+msgstr "İsmarış quruluşu bacarılmadı: Məktub qutusu xəsərlidir?"
+
+#: camel/providers/local/camel-mbox-store.c:174
+#: camel/providers/local/camel-mbox-store.c:359
+msgid "Cannot create a folder by this name."
+msgstr "Bu adda qovluq yaradıla bilmir."
+
+#: camel/providers/local/camel-mbox-store.c:204
+#, c-format
+msgid "Cannot get folder `%s': not a regular file."
+msgstr "%s qovluğu alına bilmir: sıravı fayl deyil."
+
+#: camel/providers/local/camel-mbox-store.c:234
+#: camel/providers/local/camel-mbox-store.c:245
+#: camel/providers/local/camel-mbox-store.c:268
+#, c-format
+msgid ""
+"Could not delete folder `%s':\n"
+"%s"
+msgstr ""
+"`%s' qovluğu silinə bilmədi:\n"
+"%s"
+
+#: camel/providers/local/camel-mbox-store.c:253
+#, c-format
+msgid "`%s' is not a regular file."
+msgstr "`%s' normal fayl deyil."
+
+#: camel/providers/local/camel-mbox-store.c:260
+#, c-format
+msgid "Folder `%s' is not empty. Not deleted."
+msgstr "`%s' qovluğu boş deyil. Silinmədi."
+
+#: camel/providers/local/camel-mbox-store.c:372
+#, c-format
+msgid "Cannot create directory `%s': %s."
+msgstr "%s qovluğu yaradıla bilmədi: %s."
+
+#: camel/providers/local/camel-mbox-store.c:386
+#, c-format
+msgid "Cannot create folder: %s: %s"
+msgstr "Qovluq yaradıla bilmir: %s: %s"
+
+#: camel/providers/local/camel-mbox-store.c:388
+msgid "Folder already exists"
+msgstr "Qovluq onsuz da mövcuddur"
+
+#: camel/providers/local/camel-mbox-store.c:470
+msgid "The new folder name is illegal."
+msgstr "Bildirilən yeni qovluq adı səhvdir."
+
+#: camel/providers/local/camel-mbox-store.c:483
+#, c-format
+msgid "Could not rename `%s': `%s': %s"
+msgstr "'%s' yenidən adlandırıla bilmədi: `%s': %s"
+
+#: camel/providers/local/camel-mbox-store.c:558
+#, c-format
+msgid "Could not rename '%s' to %s: %s"
+msgstr "%s qovluğu %s adı ilə yenidən adlandırıla bilmədi: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:422
+#, c-format
+msgid "Could not open folder: %s: %s"
+msgstr "Qovluq açıla bilmədi: %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:470
+#, c-format
+msgid "Fatal mail parser error near position %ld in folder %s"
+msgstr "%ld yeri yaxınlığında %s qovluğunda ciddi məktub oxuma xətası"
+
+#: camel/providers/local/camel-mbox-summary.c:526
+#, c-format
+msgid "Cannot check folder: %s: %s"
+msgstr "Qovluq yoxlana bilmir: %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:594
+#: camel/providers/local/camel-mbox-summary.c:685
+#: camel/providers/local/camel-spool-summary.c:145
+#, c-format
+msgid "Could not open file: %s: %s"
+msgstr "Fayl açıla bilmir: %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:606
+#: camel/providers/local/camel-spool-summary.c:165
+#, c-format
+msgid "Cannot open temporary mailbox: %s"
+msgstr "Müvəqqəti məktub qutusu açıla bilmir: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:619
+#: camel/providers/local/camel-mbox-summary.c:783
+#, c-format
+msgid "Could not close source folder %s: %s"
+msgstr "Mənbə qovluğu bağlana bilmədi: %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:628
+#, c-format
+msgid "Could not close temp folder: %s"
+msgstr "Müvəqqəti qovluq bağlana bilmədi: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:639
+#, c-format
+msgid "Could not rename folder: %s"
+msgstr "Qovluq yenidən adlandırıla bilmədi: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:723
+#: camel/providers/local/camel-mbox-summary.c:731
+#: camel/providers/local/camel-mbox-summary.c:925
+#: camel/providers/local/camel-mbox-summary.c:933
+msgid "Summary and folder mismatch, even after a sync"
+msgstr "İcmal və qovluq bir birinə uyğun gəlmir, sinxronizasiyadan sonra belə"
+
+#: camel/providers/local/camel-mbox-summary.c:859
+#: camel/providers/local/camel-spool-summary.c:337
+#, c-format
+msgid "Unknown error: %s"
+msgstr ""
+
+#: camel/providers/local/camel-mbox-summary.c:894
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "Qovluq saxlana bilmədi: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:988
+#: camel/providers/local/camel-mbox-summary.c:1014
+#, c-format
+msgid "Error writing to temp mailbox: %s"
+msgstr "Müvəqqəti məktub qutusuna yazma xətası: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:1005
+#, c-format
+msgid "Writing to tmp mailbox failed: %s: %s"
+msgstr "Müvəqqəti məktub qutusuna yazma bacarılmadı: %s: %s"
+
+#: camel/providers/local/camel-mh-folder.c:175
+msgid "MH append message cancelled"
+msgstr "MH ismarış əlavəsi ləğv edildi"
+
+#: camel/providers/local/camel-mh-folder.c:178
+#, c-format
+msgid "Cannot append message to mh folder: %s: %s"
+msgstr "İsmarış mh qovluğuna əlavə edilə bilmir: %s: %s"
+
+#: camel/providers/local/camel-mh-store.c:220
+#, c-format
+msgid "Could not create folder `%s': %s"
+msgstr "`%s' qovluğu yaradıla bilmədi: %s"
+
+#: camel/providers/local/camel-mh-store.c:232
+#, c-format
+msgid "Cannot get folder `%s': not a directory."
+msgstr "%s qovluğu alına bilmir: qovluq deyil."
+
+#: camel/providers/local/camel-mh-summary.c:247
+#, c-format
+msgid "Cannot open MH directory path: %s: %s"
+msgstr "MH cərgə cığırı açıla bilmir: %s: %s"
+
+#: camel/providers/local/camel-spool-store.c:123
+#, c-format
+msgid "Spool `%s' cannot be opened: %s"
+msgstr "`%s' hovuzu açıla bilmir: %s"
+
+#: camel/providers/local/camel-spool-store.c:135
+#, c-format
+msgid "Spool `%s' is not a regular file or directory"
+msgstr "`%s' hovuzu normal fayl ya da qovluq deyil"
+
+#: camel/providers/local/camel-spool-store.c:154
+#, c-format
+msgid "Folder `%s/%s' does not exist."
+msgstr "`%s/%s' qovluğu mövcud deyil."
+
+#: camel/providers/local/camel-spool-store.c:164
+#, c-format
+msgid ""
+"Could not open folder `%s':\n"
+"%s"
+msgstr ""
+"`%s' qovluğu açıla bilmədi: \n"
+"%s"
+
+#: camel/providers/local/camel-spool-store.c:168
+#, c-format
+msgid "Folder `%s' does not exist."
+msgstr "`%s' qovluğu mövcud deyil."
+
+#: camel/providers/local/camel-spool-store.c:173
+#, c-format
+msgid ""
+"Could not create folder `%s':\n"
+"%s"
+msgstr ""
+"`%s' qovluğu yaradıla bilmədi:\n"
+"%s"
+
+#: camel/providers/local/camel-spool-store.c:181
+#, c-format
+msgid "`%s' is not a mailbox file."
+msgstr "`%s' poçt qutusu faylı deyil."
+
+#: camel/providers/local/camel-spool-store.c:198
+msgid "Store does not support an INBOX"
+msgstr "Yer POÇT QUTUSUNU dəstəkləmir"
+
+#: camel/providers/local/camel-spool-store.c:210
+#, c-format
+msgid "Spool mail file %s"
+msgstr "%s hovuz məktub faylı"
+
+#: camel/providers/local/camel-spool-store.c:210
+#, c-format
+msgid "Spool folder tree %s"
+msgstr "%s hovuz qovluq ağacı"
+
+#: camel/providers/local/camel-spool-store.c:218
+msgid "Spool folders cannot be renamed"
+msgstr "Hovuz qovluqları yenidən adlandırıla bilməz"
+
+#: camel/providers/local/camel-spool-store.c:226
+msgid "Spool folders cannot be deleted"
+msgstr "Hovuz qovluqları silinə bilməz"
+
+#: camel/providers/local/camel-spool-summary.c:178
+#: camel/providers/local/camel-spool-summary.c:188
+#: camel/providers/local/camel-spool-summary.c:198
+#, c-format
+msgid "Could not sync temporary folder %s: %s"
+msgstr "%s müvəqqəti qovluğu sinxronlaşdırıla bilmədi: %s"
+
+#: camel/providers/local/camel-spool-summary.c:214
+#, c-format
+msgid "Could not sync spool folder %s: %s"
+msgstr "%s hovuz qovluğu sinxronlaşdırıla bilmədi: %s"
+
+#: camel/providers/local/camel-spool-summary.c:245
+#: camel/providers/local/camel-spool-summary.c:264
+#: camel/providers/local/camel-spool-summary.c:277
+#, c-format
+msgid ""
+"Could not sync spool folder %s: %s\n"
+"Folder may be corrupt, copy saved in `%s'"
+msgstr ""
+"%s hovuz qovluğu sinxronlaşdırıla bilmədi: %s\n"
+"Qovluq xəsarət görmüş ola bilər, nüsxəsi`%s' içində köçürüldü"
+
+#: camel/providers/nntp/camel-nntp-auth.c:44
+#: camel/providers/nntp/camel-nntp-store.c:1156
+#, c-format
+msgid "Please enter the NNTP password for %s@%s"
+msgstr "Xahiş edirik %s@%s hesabı üçün NNTP şifrənizi bildirin"
+
+#: camel/providers/nntp/camel-nntp-auth.c:64
+msgid "Server rejected username"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-auth.c:70
+msgid "Failed to send username to server"
+msgstr "İstifadəçi adı vericiyə göndərilə bilmədi"
+
+#: camel/providers/nntp/camel-nntp-auth.c:79
+msgid "Server rejected username/password"
+msgstr "Verici istifadəçi adı/şifrəni rədd etdi"
+
+#: camel/providers/nntp/camel-nntp-folder.c:177
+#: camel/providers/nntp/camel-nntp-folder.c:209
+#, c-format
+msgid "Internal error: uid in invalid format: %s"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-folder.c:329
+#: camel/providers/nntp/camel-nntp-folder.c:332
+#: camel/providers/nntp/camel-nntp-folder.c:374
+#: camel/providers/nntp/camel-nntp-folder.c:376
+#, fuzzy, c-format
+msgid "Posting failed: %s"
+msgstr "Əməliyyat bacarılmadı: %s"
+
+#: camel/providers/nntp/camel-nntp-folder.c:394
+msgid "You cannot post NNTP messages while working offline!"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-folder.c:405
+msgid "You cannot copy messages from a NNTP folder!"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-grouplist.c:44
+msgid "Could not get group list from server."
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-grouplist.c:97
+#: camel/providers/nntp/camel-nntp-grouplist.c:106
+#, c-format
+msgid "Unable to load grouplist file for %s: %s"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-grouplist.c:157
+#, c-format
+msgid "Unable to save grouplist file for %s: %s"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-provider.c:44
+msgid ""
+"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-provider.c:46
+msgid "In the subscription dialog, show relative folder names"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-provider.c:53
+msgid "USENET news"
+msgstr "USENET xəbərləri"
+
+#: camel/providers/nntp/camel-nntp-provider.c:55
+msgid "This is a provider for reading from and posting toUSENET newsgroups."
+msgstr ""
+"Bu, USENET xəbər qruplarına məktub göndərmək və xəbərləri oxumaq üçün bir "
+"vasitədir."
+
+#: camel/providers/nntp/camel-nntp-provider.c:74
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
+msgstr ""
+"Bu seçim NNTP verisici ilə xam mətn şəklindəki şifrə ilə ünsiyyət quracaqdır."
+
+#: camel/providers/nntp/camel-nntp-store.c:234
+#, c-format
+msgid "Could not read greeting from %s: %s"
+msgstr "%s salamı oxuna bilmədi: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:246
+#, c-format
+msgid "NNTP server %s returned error code %d: %s"
+msgstr "%s NNTP vericisi %d xəta kodunu göndərdi: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:422
+#, c-format
+msgid "USENET News via %s"
+msgstr "%s vasitəsilə USENET Xəbərləri"
+
+#: camel/providers/nntp/camel-nntp-store.c:811
+#, c-format
+msgid ""
+"Error retrieving newsgroups:\n"
+"\n"
+"%s"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-store.c:905
+msgid ""
+"You cannot subscribe to this newsgroup:\n"
+"\n"
+"No such newsgroup. The selected item is a probably a parent folder."
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-store.c:937
+msgid ""
+"You cannot unsubscribe to this newsgroup:\n"
+"\n"
+"newsgroup does not exist!"
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-store.c:962
+msgid "You cannot create a folder in a News store: subscribe instead."
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-store.c:970
+msgid "You cannot rename a folder in a News store."
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-store.c:978
+msgid "You cannot remove a folder in a News store: unsubscribe instead."
+msgstr ""
+
+#: camel/providers/nntp/camel-nntp-store.c:1148
+#, fuzzy
+msgid "Authentication requested but no username provided"
+msgstr "Tanıtma lazımdır"
+
+#: camel/providers/nntp/camel-nntp-store.c:1160
+#, fuzzy, c-format
+msgid "Cannot authenticate to server: %s"
+msgstr "%s POP vericisinə tanıdıla bilmədi: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:1276
+#, c-format
+msgid "NNTP Command failed: %s"
+msgstr "NNTP əmri iflas etdi: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:1332
+#, fuzzy
+msgid "Not connected."
+msgstr "Əlaqə mövcud deyil"
+
+#: camel/providers/nntp/camel-nntp-store.c:1385
+#, c-format
+msgid "No such folder: %s"
+msgstr "Belə qovluq yoxdur: %s"
+
+#: camel/providers/nntp/camel-nntp-summary.c:221
+#: camel/providers/nntp/camel-nntp-summary.c:317
+#, c-format
+msgid "%s: Scanning new messages"
+msgstr "%s: Yeni ismarışlaryoxlanır"
+
+#: camel/providers/nntp/camel-nntp-summary.c:228
+#, fuzzy, c-format
+msgid "Unexpected server response from xover: %s"
+msgstr "IMAP vericisindən gözlənilməz cavab: %s"
+
+#: camel/providers/nntp/camel-nntp-summary.c:331
+#, fuzzy, c-format
+msgid "Unexpected server response from head: %s"
+msgstr "GnuPG-dən gözlənilməyən cavab alındı: %s"
+
+#: camel/providers/nntp/camel-nntp-summary.c:371
+msgid "Use cancel"
+msgstr "Ləğv etməni işlət"
+
+#: camel/providers/nntp/camel-nntp-summary.c:373
+#, c-format
+msgid "Operation failed: %s"
+msgstr "Əməliyyat bacarılmadı: %s"
+
+#: camel/providers/pop3/camel-pop3-folder.c:247
+msgid "Retrieving POP summary"
+msgstr "POP icmalı alınır"
+
+#: camel/providers/pop3/camel-pop3-folder.c:266
+#, c-format
+msgid "Cannot get POP summary: %s"
+msgstr "POP icmalı alına bilmir: %s"
+
+#: camel/providers/pop3/camel-pop3-folder.c:309
+msgid "Expunging deleted messages"
+msgstr "Silinmiş ismarışlar cızılır"
+
+#: camel/providers/pop3/camel-pop3-folder.c:405
+#, c-format
+msgid "No message with uid %s"
+msgstr "%s uid'li ismarış yoxdur"
+
+#. Sigh, most of the crap in this function is so that the cancel button
+#. returns the proper exception code.  Sigh.
+#: camel/providers/pop3/camel-pop3-folder.c:412
+#, c-format
+msgid "Retrieving POP message %d"
+msgstr "%d POP ismarışı alınır"
+
+#: camel/providers/pop3/camel-pop3-folder.c:502
+msgid "Unknown reason"
+msgstr "Namə'lum səbəb"
+
+#: camel/providers/pop3/camel-pop3-provider.c:39
+msgid "Message storage"
+msgstr "İsmarışın saxlanması"
+
+#: camel/providers/pop3/camel-pop3-provider.c:41
+msgid "Leave messages on server"
+msgstr "İsmarışları vericidə burax"
+
+#: camel/providers/pop3/camel-pop3-provider.c:44
+#, c-format
+msgid "Delete after %s day(s)"
+msgstr "%s gün sonra sil"
+
+#: camel/providers/pop3/camel-pop3-provider.c:47
+msgid "Disable support for all POP3 extensions"
+msgstr "Bütün POP3 uzantı dəstəklərini qeyri-fəallaşdır"
+
+#: camel/providers/pop3/camel-pop3-provider.c:55
+msgid "POP"
+msgstr "POP"
+
+#: camel/providers/pop3/camel-pop3-provider.c:57
+msgid "For connecting to and downloading mail from POP servers."
+msgstr "Hər hansı POP vericisinə bağlanmaq və məktub endirmək üçün."
+
+#: camel/providers/pop3/camel-pop3-provider.c:74
+msgid ""
+"This option will connect to the POP server using a plaintext password. This "
+"is the only option supported by many POP servers."
+msgstr ""
+"Bu seçim POP verisici ilə xam mətn şəklindəki şifrə ilə ünsiyyət quracaqdır. "
+"Bu POP vericiləri tərəfindən dəstəklənən yeganə yoldur."
+
+#: camel/providers/pop3/camel-pop3-provider.c:84
+msgid ""
+"This option will connect to the POP server using an encrypted password via "
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
+msgstr ""
+"Bu seçim POP verisici ilə APOP protokolu ilə kodlanmış şifrə ilə ünsiyyət "
+"quracaqdır. Bu seçim bütün vericilər tərəfindən bütün istifadəçilər üçün "
+"dəstəklənməz."
+
+#: camel/providers/pop3/camel-pop3-store.c:204
+#, fuzzy, c-format
+msgid "Failed to read a valid greeting from POP server %s"
+msgstr "%s POP vericisinə tanıdıla bilmədi: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:218
+#: camel/providers/pop3/camel-pop3-store.c:235
+#: camel/providers/pop3/camel-pop3-store.c:245
+#: camel/providers/pop3/camel-pop3-store.c:251
+#, c-format
+msgid "Failed to connect to POP server %s in secure mode: %s"
+msgstr "%s POP vericisinə %s təhlükəsizlik modunda bağlana bilmədi"
+
+#: camel/providers/pop3/camel-pop3-store.c:219
+#, fuzzy
+msgid "STLS not supported"
+msgstr "SSL/TLS uzantısı dəstəklənmir."
+
+#: camel/providers/pop3/camel-pop3-store.c:363
+#, c-format
+msgid "Could not connect to POP server %s"
+msgstr "%s POP vericisinə bağlana bilmədi"
+
+#: camel/providers/pop3/camel-pop3-store.c:404
+#: camel/providers/pop3/camel-pop3-store.c:518
+#, c-format
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
+msgstr ""
+"%s POP vericisinə bağlana bilmədi İstənən tanıtma protokoluna dəstək "
+"verilmir."
+
+#: camel/providers/pop3/camel-pop3-store.c:420
+#, c-format
+msgid "SASL `%s' Login failed for POP server %s: %s"
+msgstr "SASL `%s' %s POP vericisi üçün giriş bacarılmadı: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:432
+#, c-format
+msgid "Cannot login to POP server %s: SASL Protocol error"
+msgstr "%s POP vericisinə girilə bilmədi: SASL Protokol xətası"
+
+#: camel/providers/pop3/camel-pop3-store.c:451
+#, c-format
+msgid "Failed to authenticate on POP server %s: %s"
+msgstr "%s POP vericisinə tanıdıla bilmədi: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:477
+#, c-format
+msgid "%sPlease enter the POP password for %s on host %s"
+msgstr ""
+"%1$sXahiş edirik, %3$s qovşağındakı @%2$s hesabı üçün POP şifrənizi bildirin"
+
+#: camel/providers/pop3/camel-pop3-store.c:532
+#: camel/providers/pop3/camel-pop3-store.c:545
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending password: %s"
+msgstr ""
+"%s POP vericisinə bağlana bilmədi.\n"
+"Şifrə göndərmə xətası : %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:539
+#, fuzzy, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending username: %s"
+msgstr ""
+"%s POP vericisinə bağlana bilmədi.\n"
+"Şifrə göndərmə xətası : %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:644
+#, c-format
+msgid "No such folder `%s'."
+msgstr "`%s' deyə bir qovluq yoxdur."
+
+#: camel/providers/sendmail/camel-sendmail-provider.c:37
+msgid "Sendmail"
+msgstr "Sendmail"
+
+#: camel/providers/sendmail/camel-sendmail-provider.c:39
+msgid ""
+"For delivering mail by passing it to the \"sendmail\" program on the local "
+"system."
+msgstr ""
+"Yerli sistemdəki \"sendmail\" proqramını istifadə edərək məktub göndərmək "
+"üçün."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:114
+msgid "Could not parse recipient list"
+msgstr "Alıcı siyahısı oxuna bilmədi"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:145
+#, c-format
+msgid "Could not create pipe to sendmail: %s: mail not sent"
+msgstr "Sendmail-ə boru yaradıla bilmədi: %s: məktub göndərilmədi"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:166
+#, c-format
+msgid "Could not fork sendmail: %s: mail not sent"
+msgstr "Sendmail çəngəllənə bilmədi: %s: məktub göndərilmədi"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:206
+#, c-format
+msgid "Could not send message: %s"
+msgstr "İsmarış göndərilə bilmədi: %s"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:234
+#, c-format
+msgid "sendmail exited with signal %s: mail not sent."
+msgstr "Sendmail %s siqnalı verərək bağlandı: məktub göndərilmədi."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:241
+#, c-format
+msgid "Could not execute %s: mail not sent."
+msgstr "%s işə salına bilmədi: məktub göndərilmədi."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:246
+#, c-format
+msgid "sendmail exited with status %d: mail not sent."
+msgstr "Sendmail %d vəziyyəti ilə bağlandı: məktub göndərilmədi."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:260
+msgid "sendmail"
+msgstr "sendmail"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:262
+msgid "Mail delivery via the sendmail program"
+msgstr "Sendmail proqramı ilə məktub göndərilməsi"
+
+#: camel/providers/smtp/camel-smtp-provider.c:38
+msgid "SMTP"
+msgstr "SMTP"
+
+#: camel/providers/smtp/camel-smtp-provider.c:40
+msgid "For delivering mail by connecting to a remote mailhub using SMTP."
+msgstr "Uzaq məktub yayıcısına SMTP ilə bağlanaraq məktub göndərmək üçün."
+
+#: camel/providers/smtp/camel-smtp-transport.c:165
+msgid "Syntax error, command unrecognized"
+msgstr "İmla xətası, əmr tanınmır"
+
+#: camel/providers/smtp/camel-smtp-transport.c:167
+msgid "Syntax error in parameters or arguments"
+msgstr "Parametr və ya arqumentlərdə imla xətası"
+
+#: camel/providers/smtp/camel-smtp-transport.c:169
+msgid "Command not implemented"
+msgstr "Əmr yerinə yetirilməyib"
+
+#: camel/providers/smtp/camel-smtp-transport.c:171
+msgid "Command parameter not implemented"
+msgstr "Əmr parametri yerinə yetirilməyib"
+
+#: camel/providers/smtp/camel-smtp-transport.c:173
+msgid "System status, or system help reply"
+msgstr "Sistem vəziyyəti ya da yardım cavabı"
+
+#: camel/providers/smtp/camel-smtp-transport.c:175
+msgid "Help message"
+msgstr "Yardım ismarışı"
+
+#: camel/providers/smtp/camel-smtp-transport.c:177
+msgid "Service ready"
+msgstr "Xidmət hazırdır"
+
+#: camel/providers/smtp/camel-smtp-transport.c:179
+msgid "Service closing transmission channel"
+msgstr "Xidmət nəqliyyat kanallarını bağlayır"
+
+#: camel/providers/smtp/camel-smtp-transport.c:181
+msgid "Service not available, closing transmission channel"
+msgstr "Xidmət uyğun deyildir, nəqliyyat kanalları bağlanır"
+
+#: camel/providers/smtp/camel-smtp-transport.c:183
+msgid "Requested mail action okay, completed"
+msgstr "Sorğulanan məktub gedişatı müvəffəqiyyətlidir, qurtardı"
+
+#: camel/providers/smtp/camel-smtp-transport.c:185
+msgid "User not local; will forward to <forward-path>"
+msgstr "İstifadəçi yerli deyil; <ötürmə-cığırı>na ötürüləcək"
+
+#: camel/providers/smtp/camel-smtp-transport.c:187
+msgid "Requested mail action not taken: mailbox unavailable"
+msgstr "Sorğulanan məktub gedişatı yerinə yetirilmədi: poçt qutusu yoxdur"
+
+#: camel/providers/smtp/camel-smtp-transport.c:189
+msgid "Requested action not taken: mailbox unavailable"
+msgstr "Sorğulanan gedişat yerinə yetirilmədi: poçt qutusu yoxdur"
+
+#: camel/providers/smtp/camel-smtp-transport.c:191
+msgid "Requested action aborted: error in processing"
+msgstr "Sorğulanan gedişat ləğv edildi: oxumada xəta oldu"
+
+#: camel/providers/smtp/camel-smtp-transport.c:193
+msgid "User not local; please try <forward-path>"
+msgstr "İstifadəçi yerli deyil; xahiş edirik, <ötürmə-cığırı>nı sınayın"
+
+#: camel/providers/smtp/camel-smtp-transport.c:195
+msgid "Requested action not taken: insufficient system storage"
+msgstr "Sorğulanan gedişatı yerinə yetirilmədi: əksik sistem yeri"
+
+#: camel/providers/smtp/camel-smtp-transport.c:197
+msgid "Requested mail action aborted: exceeded storage allocation"
+msgstr "Sorğulanan məktub gedişatı ləğv edildi; yer həddi keçilib"
+
+#: camel/providers/smtp/camel-smtp-transport.c:199
+msgid "Requested action not taken: mailbox name not allowed"
+msgstr ""
+"Sorğulanan gedişat yerinə yetirilmədi: poçt qutusu adına icazə verilmir"
+
+#: camel/providers/smtp/camel-smtp-transport.c:201
+msgid "Start mail input; end with <CRLF>.<CRLF>"
+msgstr "Məktub alımı başladı; <CRLF>.<CRLF> ilə sonlandırın"
+
+#: camel/providers/smtp/camel-smtp-transport.c:203
+msgid "Transaction failed"
+msgstr "Nəqliyyat bacarılmadı"
+
+#: camel/providers/smtp/camel-smtp-transport.c:207
+msgid "A password transition is needed"
+msgstr "Şifrə nəqli lazımdır"
+
+#: camel/providers/smtp/camel-smtp-transport.c:209
+msgid "Authentication mechanism is too weak"
+msgstr "Tanıtma mexanizması çox zəifdir"
+
+#: camel/providers/smtp/camel-smtp-transport.c:211
+msgid "Encryption required for requested authentication mechanism"
+msgstr "Sorğulanan tanıtma mexanizması üçün kriptləmək lazımdır"
+
+#: camel/providers/smtp/camel-smtp-transport.c:213
+msgid "Temporary authentication failure"
+msgstr "Müvəqqəti tanıtma iflası"
+
+#: camel/providers/smtp/camel-smtp-transport.c:294
+msgid "Welcome response error"
+msgstr "Cavablama xətasını xoş qarşıla"
+
+#: camel/providers/smtp/camel-smtp-transport.c:325
+#: camel/providers/smtp/camel-smtp-transport.c:358
+#: camel/providers/smtp/camel-smtp-transport.c:364
+#, c-format
+msgid "Failed to connect to SMTP server %s in secure mode: %s"
+msgstr "%s SMTP vericisinə e'tibarlı modda bağlana bilmədi:'%s'"
+
+#: camel/providers/smtp/camel-smtp-transport.c:334
+#, c-format
+msgid "STARTTLS command failed: %s"
+msgstr "STARTTLS əmri iflas etdi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:349
+msgid "STARTTLS command failed"
+msgstr "STARTTLS əmri iflas etdi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:488
+#, c-format
+msgid "SMTP server %s does not support requested authentication type %s."
+msgstr "%s SMTP vericisi istənən %s tanıtma növünü dəstəkləmir."
+
+#: camel/providers/smtp/camel-smtp-transport.c:526
+#, c-format
+msgid "%sPlease enter the SMTP password for %s on host %s"
+msgstr ""
+"%1$sXahiş edirik, %3$s qovşağındakı @%2$s hesabı üçün SMTP şifrənizi bildirin"
+
+#: camel/providers/smtp/camel-smtp-transport.c:545
+#, c-format
+msgid ""
+"Unable to authenticate to SMTP server.\n"
+"%s\n"
+"\n"
+msgstr ""
+"SMTP vericisinə tanıdılma xətası.\n"
+"%s\n"
+"\n"
+
+#: camel/providers/smtp/camel-smtp-transport.c:669
+#, c-format
+msgid "SMTP server %s"
+msgstr "%s SMTP vericisi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:671
+#, c-format
+msgid "SMTP mail delivery via %s"
+msgstr "%s vasitəsilə SMTP məktub göndərilməsi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:689
+msgid "Cannot send message: service not connected."
+msgstr "İsmarış göndrərilə bilmir: xidmətlə bağlı deyil."
+
+#: camel/providers/smtp/camel-smtp-transport.c:695
+msgid "Cannot send message: sender address not valid."
+msgstr "İsmarış göndrərilə bilmir: göndərənin ünvanı səhvdir."
+
+#: camel/providers/smtp/camel-smtp-transport.c:699
+msgid "Sending message"
+msgstr "İsmarış göndərilir"
+
+#: camel/providers/smtp/camel-smtp-transport.c:714
+msgid "Cannot send message: no recipients defined."
+msgstr "İsmarış göndrərilə bilmədi: alıcı bildirilməyib."
+
+#: camel/providers/smtp/camel-smtp-transport.c:725
+msgid "Cannot send message: one or more invalid recipients"
+msgstr "İsmarış göndrərilə bilmədi: bir ya da daha çox səhv alıcı"
+
+#: camel/providers/smtp/camel-smtp-transport.c:894
+msgid "SMTP Greeting"
+msgstr "SMTP Qarşılaması"
+
+#: camel/providers/smtp/camel-smtp-transport.c:920
+#, c-format
+msgid "HELO command failed: %s"
+msgstr "HELO əmri iflas etdi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:937
+msgid "HELO command failed"
+msgstr "HELO əmri iflas etdi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1003
+msgid "SMTP Authentication"
+msgstr "SMTP Tanıtması"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1009
+msgid "Error creating SASL authentication object."
+msgstr "SASL tanıtma cismini yaratma xətası."
+
+#: camel/providers/smtp/camel-smtp-transport.c:1026
+#: camel/providers/smtp/camel-smtp-transport.c:1037
+#, c-format
+msgid "AUTH command failed: %s"
+msgstr "AUTH əmri iflas etdi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1043
+msgid "AUTH command failed"
+msgstr "AUTH əmri iflas etdi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1105
+msgid "Bad authentication response from server.\n"
+msgstr "Vericidən xətalı tanıtma istəyi alındı.\n"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1130
+#, c-format
+msgid "MAIL FROM command failed: %s: mail not sent"
+msgstr "MAIL FROM əmri iflas etdi: %s: məktub göndərilmədi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1147
+msgid "MAIL FROM command failed"
+msgstr "MAIL FROM əmri iflas etdi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1171
+#, c-format
+msgid "RCPT TO command failed: %s: mail not sent"
+msgstr "RCTP TO əmri iflas etdi: %s: məktub göndərilmədi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1190
+#, c-format
+msgid "RCPT TO <%s> failed"
+msgstr "RCPT TO <%s> iflas etdi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1229
+#: camel/providers/smtp/camel-smtp-transport.c:1287
+#: camel/providers/smtp/camel-smtp-transport.c:1306
+#, c-format
+msgid "DATA command failed: %s: mail not sent"
+msgstr "DATA əmri iflas etdi %s: məktub göndərilmədi"
+
+#. we should have gotten instructions on how to use the DATA command:
+#. * 354 Enter mail, end with "." on a line by itself
+#.
+#: camel/providers/smtp/camel-smtp-transport.c:1246
+#: camel/providers/smtp/camel-smtp-transport.c:1322
+msgid "DATA command failed"
+msgstr "DATA əmri iflas etdi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1345
+#, c-format
+msgid "RSET command failed: %s"
+msgstr "RSET əmri iflas etdi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1361
+msgid "RSET command failed"
+msgstr "RSET əmri iflas etdi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1384
+#, c-format
+msgid "QUIT command failed: %s"
+msgstr "QUIT əmri iflas etdi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1398
+msgid "QUIT command failed"
+msgstr "QUIT əmri iflas etdi"
+
+#: libedataserverui/e-categories-dialog.c:90
+#, fuzzy
+msgid "Category Icon"
+msgstr "Bu kateqoriyada"
+
+#: libedataserverui/e-categories-dialog.c:236
+#, c-format
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
+msgstr ""
+
+#: libedataserverui/e-categories-dialog.c:391
+#, fuzzy
+msgid "Category"
+msgstr "_Kateqoriya:"
+
+#: libedataserverui/e-categories-dialog.glade.h:1
+#, fuzzy
+msgid "Category Properties"
+msgstr "Təqvim Xassələri"
+
+#: libedataserverui/e-categories-dialog.glade.h:2
+#, fuzzy
+msgid "Category _Color"
+msgstr "Bu kateqoriyada"
+
+#: libedataserverui/e-categories-dialog.glade.h:3
+#, fuzzy
+msgid "Category _Icon"
+msgstr "Bu kateqoriyada"
+
+#: libedataserverui/e-categories-dialog.glade.h:4
+#, fuzzy
+msgid "Category _Name"
+msgstr "Bu kateqoriyada"
+
+#: libedataserverui/e-categories-dialog.glade.h:5
+#, fuzzy
+msgid "Item(s) belong to these _categories:"
+msgstr "Bu üzv bu kateqoriyalara aitdir:"
+
+#: libedataserverui/e-categories-dialog.glade.h:6
+#, fuzzy
+msgid "_Available Categories:"
+msgstr "_Kateqoriyalar"
+
+#: libedataserverui/e-categories-dialog.glade.h:7
+msgid "_Edit"
+msgstr "_Düzəlt"
+
+#: libedataserverui/e-categories-dialog.glade.h:8
+#, fuzzy
+msgid "categories"
+msgstr "Kateqoriyalar"
+
+#: libedataserverui/e-name-selector-dialog.c:184
+msgid "Select Contacts from Address Book"
+msgstr "Ünvan Kitabçasından Əlaqələri Seç"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:2
+msgid "<b>Contacts</b>"
+msgstr "<b>Əlaqələr</b>"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:3
+msgid "<b>Show Contacts</b>"
+msgstr "<b>Əlaqələri Göstər</b>"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:4
+msgid "Address _Book:"
+msgstr "Ünvan _Kitabçası:"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:5
+#, fuzzy
+msgid "_Search:"
+msgstr "A_xtar"
+
+#. prepare the dialog
+#: libedataserverui/e-source-selector-dialog.c:101
+msgid "Select destination"
+msgstr "Hədəfi seç"
+
+#: libedataserverui/e-source-selector-dialog.c:154
+msgid "_Destination"
+msgstr "_Hədəf"
+
+#: servers/groupwise/e-gw-connection.c:152
 msgid "Invalid connection"
 msgstr "Xətalı bağlantı"
 
-#: servers/groupwise/e-gw-connection.c:84
+#: servers/groupwise/e-gw-connection.c:156
 msgid "Invalid response from server"
 msgstr "Vericidən xətalı cavab"
 
-#: servers/groupwise/e-gw-connection.c:88
+#: servers/groupwise/e-gw-connection.c:162
 msgid "Bad parameter"
 msgstr "Səhv parametr"
 
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
-msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Evolution Ünvan Kitabçası fayl və LDAP backend-i"
-
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
-msgid "Evolution Calendar file and webcal backend"
-msgstr "EvolutionunTəqvim fayl və webcal backend-i"
-
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution Ünvan Kitabçası fayl backend-i"
 
+#: src/GNOME_Evolution_DataServer.server.in.in.h:2
+msgid "Evolution Calendar file and webcal backend"
+msgstr "EvolutionunTəqvim fayl və webcal backend-i"
+
 #. dialog display isn't working out
-#: src/server.c:110
+#: src/server.c:101
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Birdən çox xəta baş verdi, xəta dialoqu göstərilə bilmir\n"
 
+#~ msgid "Evolution Addressbook file and LDAP backend"
+#~ msgstr "Evolution Ünvan Kitabçası fayl və LDAP backend-i"

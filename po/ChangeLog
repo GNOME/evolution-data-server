@@ -1,3 +1,12 @@
+2005-01-14  Not Zed  <NotZed@Ximian.com>
+
+	* POTFILES.in: Added camel/*
+
+	* *.po: Merged in last version of evolution/camel po files.
+
+	* ar.po cy.po he.po hi.po is.po mk.po ml.po wa.po: Added new
+	translations from evolution.
+	
 2005-01-14  Priit Laes <plaes@cvs.gnome.org>
 
 	* POTFILES.in: Added files from libedataserverui directory.

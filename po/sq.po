@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-14 10:49+0200\n"
+"POT-Creation-Date: 2005-01-14 15:54+0800\n"
 "PO-Revision-Date: 2004-10-14 17:30+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -14,47 +14,49 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:440
-#: addressbook/backends/vcf/e-book-backend-vcf.c:437
+#: addressbook/backends/file/e-book-backend-file.c:485
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2033
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Duke ngarkuar..."
 
-#: addressbook/backends/file/e-book-backend-file.c:442
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1884
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3158
-#: addressbook/backends/vcf/e-book-backend-vcf.c:439
+#: addressbook/backends/file/e-book-backend-file.c:487
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2017
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2031
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3401
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Duke kërkuar..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:620
+#: addressbook/backends/ldap/e-book-backend-ldap.c:647
 msgid "Using Distinguished Name (DN)"
 msgstr "Duke përdorur emër të dallueshëm (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:623
+#: addressbook/backends/ldap/e-book-backend-ldap.c:650
 msgid "Using Email Address"
 msgstr "Duke përdorur adresën email"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:789
+#: addressbook/backends/ldap/e-book-backend-ldap.c:820
 msgid "Reconnecting to LDAP server..."
 msgstr "Duke u rilidhur me server-in LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1309
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1368
 msgid "Adding contact to LDAP server..."
 msgstr "Duke shtuar kontaktin tek serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1409
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1493
 msgid "Removing contact from LDAP server..."
 msgstr "Duke fshirë kontaktin nga serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1632
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1750
 msgid "Modifying contact from LDAP server..."
 msgstr "Duke ndryshuar kontaktin nga serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3070
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3290
 msgid "Receiving LDAP search results..."
 msgstr "Duke marrë rezultatet e kërkimit LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3178
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3421
 msgid "Error performing search"
 msgstr "Gabim gjatë kryerjes së kërkimit"
 
@@ -62,96 +64,102 @@ msgstr "Gabim gjatë kryerjes së kërkimit"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
-#: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
-#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
-#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
-#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
-#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
-#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
-#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
-#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
-#: addressbook/libebook/e-book.c:2974
+#: addressbook/libebook/e-book.c:240 addressbook/libebook/e-book.c:244
+#: addressbook/libebook/e-book.c:446 addressbook/libebook/e-book.c:450
+#: addressbook/libebook/e-book.c:579 addressbook/libebook/e-book.c:583
+#: addressbook/libebook/e-book.c:672 addressbook/libebook/e-book.c:676
+#: addressbook/libebook/e-book.c:952 addressbook/libebook/e-book.c:957
+#: addressbook/libebook/e-book.c:1132 addressbook/libebook/e-book.c:1136
+#: addressbook/libebook/e-book.c:1277 addressbook/libebook/e-book.c:1281
+#: addressbook/libebook/e-book.c:1479 addressbook/libebook/e-book.c:1483
+#: addressbook/libebook/e-book.c:1684 addressbook/libebook/e-book.c:1688
+#: addressbook/libebook/e-book.c:1910 addressbook/libebook/e-book.c:1914
+#: addressbook/libebook/e-book.c:2117 addressbook/libebook/e-book.c:2121
+#: addressbook/libebook/e-book.c:3200
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" në rubrikë para \"%s\""
 
-#: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
-#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
-#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
-#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
+#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:459
+#: addressbook/libebook/e-book.c:592 addressbook/libebook/e-book.c:685
+#: addressbook/libebook/e-book.c:967 addressbook/libebook/e-book.c:1146
+#: addressbook/libebook/e-book.c:1291 addressbook/libebook/e-book.c:1492
+#: addressbook/libebook/e-book.c:1697 addressbook/libebook/e-book.c:1924
+#: addressbook/libebook/e-book.c:2130 addressbook/libebook/e-book.c:2468
+#: addressbook/libebook/e-book.c:2664
 msgid "book busy"
 msgstr "rubrika jo në dispozicion për momentin"
 
-#: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
-#: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
-#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
-#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
-#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
-#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
-#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
-#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
-#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
-#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
-#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2983
+#: addressbook/libebook/e-book.c:286 addressbook/libebook/e-book.c:290
+#: addressbook/libebook/e-book.c:492 addressbook/libebook/e-book.c:496
+#: addressbook/libebook/e-book.c:621 addressbook/libebook/e-book.c:625
+#: addressbook/libebook/e-book.c:714 addressbook/libebook/e-book.c:718
+#: addressbook/libebook/e-book.c:996 addressbook/libebook/e-book.c:999
+#: addressbook/libebook/e-book.c:1178 addressbook/libebook/e-book.c:1181
+#: addressbook/libebook/e-book.c:1320 addressbook/libebook/e-book.c:1324
+#: addressbook/libebook/e-book.c:1528 addressbook/libebook/e-book.c:1532
+#: addressbook/libebook/e-book.c:1744 addressbook/libebook/e-book.c:1748
+#: addressbook/libebook/e-book.c:1956 addressbook/libebook/e-book.c:1960
+#: addressbook/libebook/e-book.c:2158 addressbook/libebook/e-book.c:2162
+#: addressbook/libebook/e-book.c:2409 addressbook/libebook/e-book.c:2496
+#: addressbook/libebook/e-book.c:2500 addressbook/libebook/e-book.c:2692
+#: addressbook/libebook/e-book.c:2696 addressbook/libebook/e-book.c:3209
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Përjashtim Corba gjatë thirrjes \"%s\""
 
-#: addressbook/libebook/e-book.c:2221
+#: addressbook/libebook/e-book.c:2390
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: aktualisht nuk ka asnjë operacion"
 
-#: addressbook/libebook/e-book.c:2256
+#: addressbook/libebook/e-book.c:2425
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: i pamundur anullimi"
 
-#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
+#: addressbook/libebook/e-book.c:2454 addressbook/libebook/e-book.c:2458
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" në rubrikë mbas \"%s\""
 
-#: addressbook/libebook/e-book.c:2355
+#: addressbook/libebook/e-book.c:2524
 msgid "e_book_open: cancelled"
 msgstr "e_book_open: u anullua"
 
-#: addressbook/libebook/e-book.c:2840
+#: addressbook/libebook/e-book.c:3066
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Burim i pavlefshëm."
 
-#: addressbook/libebook/e-book.c:2848
+#: addressbook/libebook/e-book.c:3074
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: asnjë factori në dispozicion për `%s'"
 
-#: addressbook/libebook/e-book.c:2860
+#: addressbook/libebook/e-book.c:3086
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: I pamundur krijimi i EBookListener"
 
-#: addressbook/libebook/e-book.c:2912
+#: addressbook/libebook/e-book.c:3138
 #, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr "e_book_new: asnjë factori në dispozicion për uri `%s'"
 
-#: addressbook/libebook/e-book.c:3078
+#: addressbook/libebook/e-book.c:3332
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr "e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
+msgstr ""
+"e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
 
-#: addressbook/libebook/e-book.c:3189
+#: addressbook/libebook/e-book.c:3443
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr ""
+"e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
 
-#: addressbook/libebook/e-contact.c:100
+#: addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
 msgstr "ID e veçantë"
 
-#: addressbook/libebook/e-contact.c:101
+#: addressbook/libebook/e-contact.c:103
 msgid "File As"
 msgstr "File si"
 
@@ -159,437 +167,438 @@ msgstr "File si"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:109
 msgid "Full Name"
 msgstr "Emri dhe Mbiemri"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:110
 msgid "Name"
 msgstr "Emri"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:111
 msgid "Given Name"
 msgstr "Emri i dhënë"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:112
 msgid "Family Name"
 msgstr "Mbiemri"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:113
 msgid "Nickname"
 msgstr "Pseudonimi"
 
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 msgid "Name or Org"
 msgstr "Emri ose Org"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:117
 msgid "Address List"
 msgstr "Lista e adresave"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:118
 msgid "Home Address"
 msgstr "Adresa e shtëpisë"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:119
 msgid "Work Address"
 msgstr "Adresa e punës"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:120
 msgid "Other Address"
 msgstr "Adresa të tjera"
 
-#: addressbook/libebook/e-contact.c:120
+#: addressbook/libebook/e-contact.c:122
 msgid "Home Address Label"
 msgstr "Etiketa e adresës së shtëpisë"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:123
 msgid "Work Address Label"
 msgstr "Etketa e adresës së punës"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:124
 msgid "Other Address Label"
 msgstr "Etiketa e adresave të tjera"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:126
 msgid "Assistant Phone"
 msgstr "Telefoni asistentit"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Phone"
 msgstr "Telefoni në zyrë"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:128
 msgid "Business Phone 2"
 msgstr "Telefoni në zyrë 2"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Business Fax"
 msgstr "Fax-i në zyrë"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Callback Phone"
 msgstr "Telefoni ku të rithirret"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Car Phone"
 msgstr "Telefoni në makinë"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Company Phone"
 msgstr "Telefoni i ndërmarrjes"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Phone"
 msgstr "Telefoni në shtëpi"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Home Phone 2"
 msgstr "Telefoni në shtëpi 2"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:135
 msgid "Home Fax"
 msgstr "Fax-i në shtëpi"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:136
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Mobile Phone"
 msgstr "Celulari"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Other Phone"
 msgstr "Telefonë të tjerë"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Other Fax"
 msgstr "Fax tjetër"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:140
 msgid "Pager"
 msgstr "Faques"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:141
 msgid "Primary Phone"
 msgstr "Telefoni kryesor"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:142
 msgid "Radio"
 msgstr "Radio"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:143
 msgid "Telex"
 msgstr "Telex"
 
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:147
 msgid "Email List"
 msgstr "Lista Email"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:148
 msgid "Email 1"
 msgstr "Email 1"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:149
 msgid "Email 2"
 msgstr "Email 2"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:150
 msgid "Email 3"
 msgstr "Email 3"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:151
 msgid "Email 4"
 msgstr "Email 4"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "Mailer"
 msgstr "Trajtuesi i postës"
 
-#: addressbook/libebook/e-contact.c:151
+#: addressbook/libebook/e-contact.c:153
 msgid "Wants HTML Mail"
 msgstr "Dëshiron Mail në HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:156
 msgid "AIM Screen Name List"
 msgstr "Lista e emrave publikë AIM"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:157
 msgid "Groupwise Id List"
 msgstr "Lista ID Groupwise"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:158
 msgid "Jabber Id List"
 msgstr "Lista ID Jabber"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:159
 msgid "Yahoo! Screen Name List"
 msgstr "Lista e emrave publikë Yahoo!"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:160
 msgid "MSN Screen Name List"
 msgstr "Lista e emrave publikë MSN"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:161
 msgid "ICQ Id List"
 msgstr "Lista e ID ICQ"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 1"
 msgstr "Emri 1 publik AIM për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Home Screen Name 2"
 msgstr "Emri 2 publik AIM për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Home Screen Name 3"
 msgstr "Emri 3 publik AIM për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 1"
 msgstr "Emri 1 publik AIM për në punë"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:167
 msgid "AIM Work Screen Name 2"
 msgstr "Emri 2 publik AIM për në punë"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:168
 msgid "AIM Work Screen Name 3"
 msgstr "Emri 3 publik AIM për në punë"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 1"
 msgstr "Emri 1 publik Groupwise për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Home Screen Name 2"
 msgstr "Emri 2 publik Groupwise për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Home Screen Name 3"
 msgstr "Emri 3 publik Groupwise për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 1"
 msgstr "Emri 1 publik Groupwise për në punë"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:173
 msgid "Groupwise Work Screen Name 2"
 msgstr "Emri 2 publik Groupwise për në punë"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:174
 msgid "Groupwise Work Screen Name 3"
 msgstr "Emri 3 publik Groupwise për në punë"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 1"
 msgstr "Jaber në shtëpi Id 1"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Home Id 2"
 msgstr "Jaber në shtëpi Id 2"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Home Id 3"
 msgstr "Jaber në shtëpi Id 3"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 1"
 msgstr "Jaber në punë Id 1"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:179
 msgid "Jabber Work Id 2"
 msgstr "Jaber në punë Id 2"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:180
 msgid "Jabber Work Id 3"
 msgstr "Jaber në punë Id 3"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Emri publik 1 Yahoo! për shtëpinë"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Emri publik 2 Yahoo! për shtëpinë"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Emri publik 3 Yahoo! për shtëpinë"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Emri publik 1 Yahoo! për në punë"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:185
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Emri publik 2 Yahoo! për në punë"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:186
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Emri publik 3 Yahoo! për në punë"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 1"
 msgstr "Emri publik 1 MSN për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Home Screen Name 2"
 msgstr "Emri publik 2 MSN për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Home Screen Name 3"
 msgstr "Emri publik 3 MSN për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 1"
 msgstr "Emri publik 1 MSN për në punë"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:191
 msgid "MSN Work Screen Name 2"
 msgstr "Emri publik 2 MSN për në punë"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:192
 msgid "MSN Work Screen Name 3"
 msgstr "Emri publik 3 MSN për në punë"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 1"
 msgstr "Id 1 e ICQ për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Home Id 2"
 msgstr "Id 2 e ICQ për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Home Id 3"
 msgstr "Id 3 e ICQ për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 1"
 msgstr "Id 1 e ICQ për në punë"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:197
 msgid "ICQ Work Id 2"
 msgstr "Id 2 e ICQ për në punë"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:198
 msgid "ICQ Work Id 3"
 msgstr "Id 3 e ICQ për në punë"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:201
 msgid "Organization"
 msgstr "Organizata"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:202
 msgid "Organizational Unit"
 msgstr "Njësia organizative"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:203
 msgid "Office"
 msgstr "Zyrë"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:205
 msgid "Title"
 msgstr "Titulli"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:206
 msgid "Role"
 msgstr "Roli"
 
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:207
 msgid "Manager"
 msgstr "Manazhuesi"
 
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:208
 msgid "Assistant"
 msgstr "Asistenti"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:211
 msgid "Homepage URL"
 msgstr "URL e faqes web"
 
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:212
 msgid "Weblog URL"
 msgstr "URL e weblog"
 
-#: addressbook/libebook/e-contact.c:211
+#: addressbook/libebook/e-contact.c:213
 msgid "Video Conferencing URL"
 msgstr "URL për video konferencimet"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:216
 msgid "Photo"
 msgstr "Foto"
 
-#: addressbook/libebook/e-contact.c:215
+#: addressbook/libebook/e-contact.c:217
 msgid "Logo"
 msgstr "Stema"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:220
 msgid "X.509 Certificate"
 msgstr "Çertifikata X.509"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:223
 msgid "Category List"
 msgstr "Lista kategorisë"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:224
+#: libedataserverui/e-categories-dialog.c:369
 msgid "Categories"
 msgstr "Kategoritë"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:227
 msgid "Calendar URI"
 msgstr "URI i kalendarit"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:228
 msgid "Free/Busy URL"
 msgstr "URL lirë/zënë"
 
-#: addressbook/libebook/e-contact.c:227
+#: addressbook/libebook/e-contact.c:229
 msgid "ICS Calendar"
 msgstr "Kalendari ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:232
 msgid "Spouse's Name"
 msgstr "Emri i gruas"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:233
 msgid "Note"
 msgstr "Shënim"
 
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:235
 msgid "Birth Date"
 msgstr "Data e lindjes"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:236
 msgid "Anniversary"
 msgstr "Përvjetori"
 
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:238
 msgid "List"
 msgstr "Lista"
 
-#: addressbook/libebook/e-contact.c:237
+#: addressbook/libebook/e-contact.c:239
 msgid "List Show Addresses"
 msgstr "Lista shfaq adresat"
 
-#: addressbook/libebook/e-contact.c:1206
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "Listë pa emër"
 
@@ -608,45 +617,58 @@ msgstr "Datlindja: %s"
 msgid "Anniversary: %s"
 msgstr "Përvjetori: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:183
+#: calendar/backends/file/e-cal-backend-file.c:174
 msgid "Can't save calendar data: Malformed URI."
 msgstr "E pamundur ruajtja e të dhënës për kalendarin: URl e pasaktë."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:449
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:484
 msgid "Invalid server URI"
 msgstr "URI serveri e pasaktë"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:485
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:488
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:531
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:534
+#: camel/providers/groupwise/camel-gw-listener.c:405
+#: camel/providers/groupwise/camel-gw-listener.c:435
 msgid "Calendar"
 msgstr "Kalendari"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:495
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:541
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:784
+#: calendar/backends/http/e-cal-backend-http.c:484
 msgid "Could not create cache file"
 msgstr "I pamundur krijimi i file cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:505
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:551
 msgid "Could not create thread for populating cache"
 msgstr "I pamundur krijimi i temës për popullimin e cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:511
-#: calendar/libecal/e-cal.c:4315
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:557
+#: calendar/libecal/e-cal.c:4560
+#: camel/providers/groupwise/camel-groupwise-folder.c:533
+#: camel/providers/groupwise/camel-groupwise-store.c:503
+#: camel/providers/groupwise/camel-groupwise-store.c:641
+#: camel/providers/groupwise/camel-groupwise-store.c:800
 msgid "Authentication failed"
 msgstr "Identifikimi dështoi"
 
-#: calendar/backends/http/e-cal-backend-http.c:239
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:776
+#, fuzzy
+msgid "Repository is Offline"
+msgstr "Vendruajtja është jashtë linjës"
+
+#: calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
 msgstr "Ridrejtuar tek URI e pavlefshme"
 
-#: calendar/backends/http/e-cal-backend-http.c:263
+#: calendar/backends/http/e-cal-backend-http.c:264
 msgid "Bad file format."
 msgstr "Format i pavlefshëm file."
 
-#: calendar/backends/http/e-cal-backend-http.c:269
+#: calendar/backends/http/e-cal-backend-http.c:270
 msgid "Not a calendar."
 msgstr "Nuk është një kalendar."
 
-#: calendar/libecal/e-cal-component.c:1269
+#: calendar/libecal/e-cal-component.c:1299
 msgid "Untitled appointment"
 msgstr "Takim pa emër"
 
@@ -792,80 +814,87 @@ msgid "Undefined"
 msgstr "E papërcaktuar"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1523
+#: calendar/libecal/e-cal.c:1590
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Shkruaj fjalëkalimin për %s (përdoruesi %s)"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4532
 msgid "Invalid argument"
 msgstr "Argument i pavlefshëm"
 
-#: calendar/libecal/e-cal.c:4289
+#: calendar/libecal/e-cal.c:4534
 msgid "Backend is busy"
 msgstr "Backend është i zënë"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4536
 msgid "Repository is offline"
 msgstr "Vendruajtja është jashtë linjës"
 
-#: calendar/libecal/e-cal.c:4293
+#: calendar/libecal/e-cal.c:4538
 msgid "No such calendar"
 msgstr "Kalendari nuk ekziston"
 
-#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:155
+#: calendar/libecal/e-cal.c:4540 servers/groupwise/e-gw-connection.c:158
 msgid "Object not found"
 msgstr "Objekti nuk u gjet"
 
-#: calendar/libecal/e-cal.c:4297 servers/groupwise/e-gw-connection.c:151
+#: calendar/libecal/e-cal.c:4542 servers/groupwise/e-gw-connection.c:154
 msgid "Invalid object"
 msgstr "Objekt i pasaktë"
 
-#: calendar/libecal/e-cal.c:4299
+#: calendar/libecal/e-cal.c:4544
 msgid "URI not loaded"
 msgstr "URl nuk u ngarkua"
 
-#: calendar/libecal/e-cal.c:4301
+#: calendar/libecal/e-cal.c:4546
 msgid "URI already loaded"
 msgstr "URl është e ngarkuar"
 
-#: calendar/libecal/e-cal.c:4303
+#: calendar/libecal/e-cal.c:4548
 msgid "Permission denied"
 msgstr "Ndalohet hyrja"
 
-#: calendar/libecal/e-cal.c:4305 servers/groupwise/e-gw-connection.c:157
+#: calendar/libecal/e-cal.c:4550 servers/groupwise/e-gw-connection.c:160
 msgid "Unknown User"
 msgstr "Përdorues i panjohur"
 
-#: calendar/libecal/e-cal.c:4307
+#: calendar/libecal/e-cal.c:4552
 msgid "Object ID already exists"
 msgstr "ID e objektit ekziston"
 
-#: calendar/libecal/e-cal.c:4309
+#: calendar/libecal/e-cal.c:4554
 msgid "Protocol not supported"
 msgstr "Protokoll i pasuportuar"
 
-#: calendar/libecal/e-cal.c:4311
+#: calendar/libecal/e-cal.c:4556
 msgid "Operation has been cancelled"
 msgstr "Operacioni është anulluar"
 
-#: calendar/libecal/e-cal.c:4313
+#: calendar/libecal/e-cal.c:4558
 msgid "Could not cancel operation"
 msgstr "I pamundur anullimi i operacionit"
 
-#: calendar/libecal/e-cal.c:4317
+#: calendar/libecal/e-cal.c:4562
+#: camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Kërkohet autentikimi"
 
-#: calendar/libecal/e-cal.c:4319
+#: calendar/libecal/e-cal.c:4564
 msgid "A CORBA exception has occurred"
 msgstr "Ndodhi një përjashtim CORBA"
 
-#: calendar/libecal/e-cal.c:4321 servers/groupwise/e-gw-connection.c:163
+#: calendar/libecal/e-cal.c:4566 camel/providers/imap/camel-imap-command.c:304
+#: camel/providers/imap/camel-imap-command.c:401
+#: camel/providers/imap4/camel-imap4-store.c:294
+#: camel/providers/pop3/camel-pop3-store.c:535
+#: camel/providers/pop3/camel-pop3-store.c:542
+#: camel/providers/pop3/camel-pop3-store.c:548
+#: servers/groupwise/e-gw-connection.c:166
 msgid "Unknown error"
 msgstr "Gabim i panjohur"
 
-#: calendar/libecal/e-cal.c:4323
+#: calendar/libecal/e-cal.c:4568
 msgid "No error"
 msgstr "Asnjë gabim"
 
@@ -897,7 +926,8 @@ msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
+msgstr ""
+"\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
@@ -956,15 +986,3507 @@ msgstr ""
 "\"%s\" parashikon që të gjithë argumentet të jenë stringa ose njëri dhe "
 "vetëm një të jetë fallso booleane (#f)"
 
-#: servers/groupwise/e-gw-connection.c:149
+#: camel/camel-cipher-context.c:103
+msgid "Signing is not supported by this cipher"
+msgstr "Ky numër nuk suporton firmën"
+
+#: camel/camel-cipher-context.c:129
+msgid "Signing message"
+msgstr "Duke firmosur mesazhin"
+
+#: camel/camel-cipher-context.c:146
+msgid "Verifying is not supported by this cipher"
+msgstr "Ky numër nuk suporton verifikimin"
+
+#: camel/camel-cipher-context.c:172
+msgid "Verifying message"
+msgstr "Duke verifikuar mesazhin"
+
+#: camel/camel-cipher-context.c:190
+msgid "Encryption is not supported by this cipher"
+msgstr "Ky numër nuk suporton kriptimin"
+
+#: camel/camel-cipher-context.c:216
+msgid "Encrypting message"
+msgstr "Duke kriptuar mesazhin"
+
+#: camel/camel-cipher-context.c:233
+msgid "Decryption is not supported by this cipher"
+msgstr "Ky numër nuk suporton dekriptimin"
+
+#: camel/camel-cipher-context.c:255
+msgid "Decrypting message"
+msgstr "Duke dekriptuar mesazhin"
+
+#: camel/camel-cipher-context.c:272
+msgid "You may not import keys with this cipher"
+msgstr "I pamundur importimi i kyçeve me këtë kriptim"
+
+#: camel/camel-cipher-context.c:302
+msgid "You may not export keys with this cipher"
+msgstr "I pamundur eksportimi i kyçeve me këtë kriptim"
+
+#: camel/camel-data-cache.c:134
+msgid "Unable to create cache path"
+msgstr "I pamundur krijimi i pozicionit të cache"
+
+#: camel/camel-data-cache.c:376
+#, c-format
+msgid "Could not remove cache entry: %s: %s"
+msgstr "E pamundur heqja e zërit të cache: %s: %s"
+
+#: camel/camel-disco-diary.c:195
+#, c-format
+msgid ""
+"Could not write log entry: %s\n"
+"Further operations on this server will not be replayed when you\n"
+"reconnect to the network."
+msgstr ""
+"I pamundur shkrimi i log: %s\n"
+"Operacionet e mëtejshme në këtë sever nuk do të përsëriten\n"
+"kur të rilidheni në rrjet."
+
+#: camel/camel-disco-diary.c:258
+#, c-format
+msgid ""
+"Could not open `%s':\n"
+"%s\n"
+"Changes made to this folder will not be resynchronized."
+msgstr ""
+"E pamundur hapja e `%s':\n"
+"%s\n"
+"Ndryshimet e kryera tek kjo kartelë nuk do të resinkronizohen."
+
+#: camel/camel-disco-diary.c:294
+msgid "Resynchronizing with server"
+msgstr "Duke u sinkronizuar me serverin"
+
+#: camel/camel-disco-folder.c:42 camel/camel-offline-folder.c:50
+msgid "Copy folder content locally for offline operation"
+msgstr "Kopjo përmbajtjen e kartelës për modalitetin jashtë linje"
+
+#: camel/camel-disco-folder.c:104 camel/camel-offline-folder.c:107
+msgid "Downloading new messages for offline mode"
+msgstr "Duke shkarkuar mesazhet e rin për modalitetin jashtë linje"
+
+#: camel/camel-disco-folder.c:467
+#, c-format
+msgid "Preparing folder '%s' for offline"
+msgstr "Duke përgatitur kartelën '%s' për modalitetin jashtë linje"
+
+#: camel/camel-disco-store.c:405
+msgid "You must be working online to complete this operation"
+msgstr ""
+"Duhet të punoni në modalitetin në linjë për të plotësuar këtë operacion"
+
+#: camel/camel-filter-driver.c:669 camel/camel-filter-search.c:512
+#: camel/camel-process.c:48
+#, c-format
+msgid "Failed to create pipe to '%s': %s"
+msgstr "I pamundur krijimi i pipe tek '%s': %s"
+
+#: camel/camel-filter-driver.c:713 camel/camel-process.c:90
+#, c-format
+msgid "Failed to create child process '%s': %s"
+msgstr "Krijimi i proçesit bir '%s' dështoi: %s"
+
+#: camel/camel-filter-driver.c:756
+#, c-format
+msgid "Invalid message stream received from %s: %s"
+msgstr "Rrjedhë e pavlefshme mesazhi u mor nga %s: %s"
+
+#: camel/camel-filter-driver.c:945 camel/camel-filter-driver.c:954
+msgid "Syncing folders"
+msgstr "Duke sinkronizuar kartelat"
+
+#: camel/camel-filter-driver.c:1043 camel/camel-filter-driver.c:1420
+#, c-format
+msgid "Error parsing filter: %s: %s"
+msgstr "Gabim në filtrin e shpërndarjes: %s: %s"
+
+#: camel/camel-filter-driver.c:1052 camel/camel-filter-driver.c:1429
+#, c-format
+msgid "Error executing filter: %s: %s"
+msgstr "Gabim gjatë ekzekutimit të filtrit: %s: %s"
+
+#: camel/camel-filter-driver.c:1119
+msgid "Unable to open spool folder"
+msgstr "E pamundur hapja e kartelës për spool"
+
+#: camel/camel-filter-driver.c:1128
+msgid "Unable to process spool folder"
+msgstr "I pamundur proçesimi i kartelës së spool"
+
+#: camel/camel-filter-driver.c:1143
+#, c-format
+msgid "Getting message %d (%d%%)"
+msgstr "Duke marrë mesazhin %d (%d%%)"
+
+#: camel/camel-filter-driver.c:1147
+msgid "Cannot open message"
+msgstr "E pamundur hapja e mesazhit"
+
+#: camel/camel-filter-driver.c:1148 camel/camel-filter-driver.c:1160
+#, c-format
+msgid "Failed on message %d"
+msgstr "Mesazhi %d dështoi"
+
+#: camel/camel-filter-driver.c:1174 camel/camel-filter-driver.c:1265
+msgid "Syncing folder"
+msgstr "Duke sinkronizuar kartelën"
+
+#: camel/camel-filter-driver.c:1178 camel/camel-filter-driver.c:1270
+msgid "Complete"
+msgstr "U plotësua"
+
+#: camel/camel-filter-driver.c:1235
+#, c-format
+msgid "Getting message %d of %d"
+msgstr "Duke marrë mesazhin e %d në %d"
+
+#: camel/camel-filter-driver.c:1250
+#, c-format
+msgid "Failed at message %d of %d"
+msgstr "Gabim në mesazhin %d në %d"
+
+#: camel/camel-filter-search.c:135
+msgid "Failed to retrieve message"
+msgstr "Gabim në marrjen e mesazhit"
+
+#: camel/camel-filter-search.c:385
+msgid "Invalid arguments to (system-flag)"
+msgstr "Argumente të pavlefshme për (flag të sistemit)"
+
+#: camel/camel-filter-search.c:400
+msgid "Invalid arguments to (user-tag)"
+msgstr "Argumentë të pavlefshëm për (zgjedhja përdoruesit)"
+
+#: camel/camel-filter-search.c:548
+#, c-format
+msgid "Failed to create create child process '%s': %s"
+msgstr "Krijimi i proçesit bir '%s' dështoi: %s"
+
+#. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
+#: camel/camel-filter-search.c:670 camel/camel-filter-search.c:678
+#, c-format
+msgid "Error executing filter search: %s: %s"
+msgstr "Gabim gjatë ekzkekutimit të kërkimit me filtër: %s: %s"
+
+#: camel/camel-folder-search.c:357 camel/camel-folder-search.c:478
+#, c-format
+msgid ""
+"Cannot parse search expression: %s:\n"
+"%s"
+msgstr ""
+"I pamundur filtrimi i shprehjes së kërkimit: %s:\n"
+"%s"
+
+#: camel/camel-folder-search.c:367 camel/camel-folder-search.c:488
+#, c-format
+msgid ""
+"Error executing search expression: %s:\n"
+"%s"
+msgstr ""
+"Gabim gjatë ekzekutimit të shprehjes së kërkimit: %s:\n"
+"%s"
+
+#: camel/camel-folder-search.c:674 camel/camel-folder-search.c:707
+msgid "(match-all) requires a single bool result"
+msgstr "(match-all) kërkon një rezultat të vetëm boolean"
+
+#: camel/camel-folder-search.c:757
+msgid "(match-threads) not allowed inside match-all"
+msgstr "(match-threads) nuk lejohet brenda match-all"
+
+#: camel/camel-folder-search.c:760 camel/camel-folder-search.c:764
+msgid "(match-threads) requires a match type string"
+msgstr "(match-threads) kërkon një match të llojit stringë"
+
+#: camel/camel-folder-search.c:786
+msgid "(match-threads) expects an array result"
+msgstr "(match-threads) kërkon një rezultat array"
+
+#: camel/camel-folder-search.c:792
+msgid "(match-threads) requires the folder set"
+msgstr "(match-threads) kërkon përcaktimin e kartelës"
+
+#: camel/camel-folder-search.c:881
+#, c-format
+msgid "Performing query on unknown header: %s"
+msgstr "Është kryer një kërkesë në një header të panjohur: %s"
+
+#: camel/camel-folder.c:610
+#, c-format
+msgid "Unsupported operation: append message: for %s"
+msgstr "I pamundur të shtosh një mesazh tek %s: operacion i pasuportuar"
+
+#: camel/camel-folder.c:1200
+#, c-format
+msgid "Unsupported operation: search by expression: for %s"
+msgstr "I pamundur kërkimi sipas shprehjes: për %s: operacion i pasuportuar"
+
+#: camel/camel-folder.c:1240
+#, c-format
+msgid "Unsupported operation: search by uids: for %s"
+msgstr "I pamundur kërkimi sipas uids: për %s: operacion i pasuportuar"
+
+#: camel/camel-folder.c:1352
+msgid "Moving messages"
+msgstr "Duke lëvizur mesazhet"
+
+#: camel/camel-folder.c:1352
+msgid "Copying messages"
+msgstr "Duke kopjuar mesazhet"
+
+#: camel/camel-folder.c:1601
+msgid "Learning junk"
+msgstr "Mësimi i materialeve të panevojshëm"
+
+#: camel/camel-folder.c:1618
+msgid "Learning non-junk"
+msgstr "Mësimi i materialeve të nevojshëm"
+
+#: camel/camel-folder.c:1637
+msgid "Filtering new message(s)"
+msgstr "Duke filtruar mesazhet e rinj"
+
+#: camel/camel-gpg-context.c:735
+#, c-format
+msgid ""
+"Unexpected GnuPG status message encountered:\n"
+"\n"
+"%s"
+msgstr ""
+"U ndesh një mesazh i papritur i gjendjes GnuPG:\n"
+"\n"
+"%s"
+
+#: camel/camel-gpg-context.c:749
+msgid "Failed to parse gpg userid hint."
+msgstr "Analizimi i gpg userid hint dështoi."
+
+#: camel/camel-gpg-context.c:773
+msgid "Failed to parse gpg passphrase request."
+msgstr "Analizimi i kërkesës gpg passphrase dështoi."
+
+#: camel/camel-gpg-context.c:787
+#, c-format
+msgid ""
+"You need a passphrase to unlock the key for\n"
+"user: \"%s\""
+msgstr ""
+"Nevoitet një fjalëkalim për të zbllokuar kyçin për\n"
+"përdoruesin: \"%s\""
+
+#: camel/camel-gpg-context.c:804 camel/camel-gpg-context.c:1314
+#: camel/camel-gpg-context.c:1498 camel/camel-gpg-context.c:1589
+#: camel/camel-gpg-context.c:1701 camel/providers/nntp/camel-nntp-store.c:1274
+msgid "Cancelled."
+msgstr "U anullua."
+
+#: camel/camel-gpg-context.c:822
+msgid "Failed to unlock secret key: 3 bad passphrases given."
+msgstr ""
+"Zbllokimi i kyçit sekret nuk pati sukses: u dhanë 3 passphrases të gabuara."
+
+#: camel/camel-gpg-context.c:828
+#, c-format
+msgid "Unexpected response from GnuPG: %s"
+msgstr "Përgjigje e papritur nga GnuPG: %s"
+
+#: camel/camel-gpg-context.c:880
+msgid "Failed to encrypt: No valid recipients specified."
+msgstr "I pamundur kriptimi: nuk është përcaktuar asnjë destinim i vlefshëm."
+
+#: camel/camel-gpg-context.c:1157
+#, c-format
+msgid ""
+"Failed to GPG %s: %s\n"
+"\n"
+"%s"
+msgstr ""
+"I pamundur operimi me GPG %s: %s\n"
+"\n"
+"%s"
+
+#: camel/camel-gpg-context.c:1162
+#, c-format
+msgid "Failed to GPG %s: %s\n"
+msgstr "I pamundur operimi me GPG %s: %s\n"
+
+#: camel/camel-gpg-context.c:1275 camel/camel-smime-context.c:389
+#, c-format
+msgid "Could not generate signing data: %s"
+msgstr "I pamundur gjenerimi i të dhënave për firmën: %s"
+
+#: camel/camel-gpg-context.c:1307 camel/camel-gpg-context.c:1766
+#: camel/camel-gpg-context.c:1817
+#, c-format
+msgid "Failed to execute gpg: %s"
+msgstr "Ekzekutimi i gpg dështoi: %s"
+
+#: camel/camel-gpg-context.c:1331 camel/camel-gpg-context.c:1491
+#: camel/camel-gpg-context.c:1582 camel/camel-gpg-context.c:1605
+#: camel/camel-gpg-context.c:1694 camel/camel-gpg-context.c:1718
+#: camel/camel-gpg-context.c:1788 camel/camel-gpg-context.c:1839
+msgid "Failed to execute gpg."
+msgstr "Ekzekutimi i gpg dështoi."
+
+#: camel/camel-gpg-context.c:1350
+msgid "This is a digitally signed message part"
+msgstr "Kjo pjesë e mesazhit është e firmosur"
+
+#: camel/camel-gpg-context.c:1431 camel/camel-gpg-context.c:1437
+#: camel/camel-gpg-context.c:1443 camel/camel-smime-context.c:692
+#: camel/camel-smime-context.c:703 camel/camel-smime-context.c:710
+msgid "Cannot verify message signature: Incorrect message format"
+msgstr ""
+"I pamundur verifikimi i firmës së mesazhit: Format i pavlefshëm mesazhi"
+
+#: camel/camel-gpg-context.c:1477
+#, c-format
+msgid "Cannot verify message signature: could not create temp file: %s"
+msgstr ""
+"I pamundur verifikimi i firmës së mesazhit: nuk arrij të krijoj file të "
+"përkohshëm: %s"
+
+#: camel/camel-gpg-context.c:1565
+#, c-format
+msgid "Could not generate encrypting data: %s"
+msgstr "I pamundur krijimi i të dhënave për kriptim: %s"
+
+#: camel/camel-gpg-context.c:1623
+msgid "This is a digitally encrypted message part"
+msgstr "Kjo pjesë e mesazhit është e kriptuar"
+
+#: camel/camel-gpg-context.c:1674
+msgid "Failed to decrypt MIME part: protocol error"
+msgstr "Dekriptimi i pjesës MIME dështoi: gabim i protokollit"
+
+#: camel/camel-gpg-context.c:1725 camel/camel-smime-context.c:966
+msgid "Encrypted content"
+msgstr "Përmbajtje e kriptuar"
+
+#: camel/camel-gpg-context.c:1744
+msgid "Unable to parse message content"
+msgstr "I pamundur analizimi i përmbajtjes së mesazhit"
+
+#: camel/camel-gpg-context.c:1767 camel/camel-gpg-context.c:1818
+#: camel/camel-tcp-stream-openssl.c:631
+#: camel/providers/imap4/camel-imap4-engine.c:1465
+#: camel/providers/imap4/camel-imap4-engine.c:1504
+#: camel/providers/imap4/camel-imap4-engine.c:1549
+#: camel/providers/imap4/camel-imap4-engine.c:1605
+#: camel/providers/imap4/camel-imap4-store.c:1250
+#: camel/providers/imap4/camel-imap4-utils.c:575
+#: camel/providers/smtp/camel-smtp-transport.c:163
+#: camel/providers/smtp/camel-smtp-transport.c:218
+msgid "Unknown"
+msgstr "Nuk njihet"
+
+#: camel/camel-lock-client.c:100
+#, c-format
+msgid "Cannot build locking helper pipe: %s"
+msgstr "I pamundur krijimi i një pipe bllokimi: %s"
+
+#: camel/camel-lock-client.c:113
+#, c-format
+msgid "Cannot fork locking helper: %s"
+msgstr "E pamundur kryerja e një fork bllokimi: %s"
+
+#: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
+#, c-format
+msgid "Could not lock '%s': protocol error with lock-helper"
+msgstr "I pamundur bllokimi i '%s': gabim protokolli me lock-helper"
+
+#: camel/camel-lock-client.c:204
+#, c-format
+msgid "Could not lock '%s'"
+msgstr "I pamundur bllokimi i '%s'"
+
+#: camel/camel-lock.c:92 camel/camel-lock.c:113
+#, c-format
+msgid "Could not create lock file for %s: %s"
+msgstr "I pamundur krijimi i file të bllokimit për %s: %s"
+
+#: camel/camel-lock.c:154
+#, c-format
+msgid "Timed out trying to get lock file on %s. Try again later."
+msgstr ""
+"Koha skadoi gjatë përpjekjes për të marrë file e lock tek %s. Riprovo më "
+"vonë."
+
+#: camel/camel-lock.c:209
+#, c-format
+msgid "Failed to get lock using fcntl(2): %s"
+msgstr "Marrja e lock duke përdorur fcntl(2) dështoi: %s"
+
+#: camel/camel-lock.c:272
+#, c-format
+msgid "Failed to get lock using flock(2): %s"
+msgstr "Marrja e lock duke përdorur flock(2) dështoi: %s"
+
+#: camel/camel-movemail.c:104
+#, c-format
+msgid "Could not check mail file %s: %s"
+msgstr "I pamundur kontrolli i file mail %s: %s"
+
+#: camel/camel-movemail.c:117
+#, c-format
+msgid "Could not open mail file %s: %s"
+msgstr "E pamundur hapja e file mail %s: %s"
+
+#: camel/camel-movemail.c:125
+#, c-format
+msgid "Could not open temporary mail file %s: %s"
+msgstr "E pamundur hapja e file të përkohshëm mail %s: %s"
+
+#: camel/camel-movemail.c:154
+#, c-format
+msgid "Failed to store mail in temp file %s: %s"
+msgstr "I pamundur magazinimi i mail në file e përkohshëm %s: %s"
+
+#: camel/camel-movemail.c:184
+#, c-format
+msgid "Could not create pipe: %s"
+msgstr "I pamundur krijimi i pipe: %s"
+
+#: camel/camel-movemail.c:196
+#, c-format
+msgid "Could not fork: %s"
+msgstr "E pamundur kryerja e fork: %s"
+
+#: camel/camel-movemail.c:234
+#, c-format
+msgid "Movemail program failed: %s"
+msgstr "Programi i lëvizjes së mail dështoi: %s"
+
+#: camel/camel-movemail.c:235
+msgid "(Unknown error)"
+msgstr "(Gabim i panjohur)"
+
+#: camel/camel-movemail.c:258
+#, c-format
+msgid "Error reading mail file: %s"
+msgstr "Gabim gjatë leximit të file mail: %s"
+
+#: camel/camel-movemail.c:269
+#, c-format
+msgid "Error writing mail temp file: %s"
+msgstr "Gabim gjatë shkrimit të file të përkohshëm mail: %s"
+
+#: camel/camel-movemail.c:462 camel/camel-movemail.c:529
+#, c-format
+msgid "Error copying mail temp file: %s"
+msgstr "Gabim gjatë kopjimit të file të përkohshëm mail: %s"
+
+#: camel/camel-multipart-signed.c:586
+msgid "parse error"
+msgstr "gabim analizimi"
+
+#: camel/camel-net-utils.c:446 camel/camel-net-utils.c:608
+#: camel/camel-net-utils.c:739 camel/providers/pop3/camel-pop3-store.c:448
+#: camel/providers/pop3/camel-pop3-store.c:529
+msgid "Cancelled"
+msgstr "Anulluar"
+
+#: camel/camel-net-utils.c:465
+#, fuzzy
+msgid "cannot create thread"
+msgstr "I pamundur krijimi i mesazhit CMS"
+
+#: camel/camel-net-utils.c:612
+#, c-format
+msgid "Resolving: %s"
+msgstr "Duke zgjidhur: %s"
+
+#: camel/camel-net-utils.c:634
+#, fuzzy
+msgid "Host lookup failed"
+msgstr "Kërkimi i host dështoi: host nuk u gjet"
+
+#: camel/camel-net-utils.c:636
+#, fuzzy, c-format
+msgid "Host lookup failed: %s: %s"
+msgstr "Kërkimi i host dështoi: %s: host nuk u gjet"
+
+#: camel/camel-net-utils.c:743
+msgid "Resolving address"
+msgstr "Duke zgjidhur adresën"
+
+#: camel/camel-net-utils.c:763
+msgid "Name lookup failed"
+msgstr ""
+
+#: camel/camel-net-utils.c:766
+#, fuzzy, c-format
+msgid "Name lookup failed: %s"
+msgstr "Komanda NNTP dështoi: %s"
+
+#: camel/camel-offline-folder.c:250
+#, fuzzy, c-format
+msgid "Syncing messages in folder '%s' to disk"
+msgstr "Duke kopjuar mesazhet në kartelën %s"
+
+#: camel/camel-offline-journal.c:140 camel/camel-offline-journal.c:163
+#, fuzzy, c-format
+msgid "Cannot write offline journal for folder `%s': %s"
+msgstr "I pamundur krijimi i kartelës `%s': %s"
+
+#: camel/camel-provider.c:59
+msgid "Virtual folder email provider"
+msgstr "Fornizues kartelash virtuale email"
+
+#: camel/camel-provider.c:61
+msgid "For reading mail as a query of another set of folders"
+msgstr "Për të lexuar postën si një kërkim i të përbashkët tjetër kartelash"
+
+#: camel/camel-provider.c:185
+#, c-format
+msgid "Could not load %s: Module loading not supported on this system."
+msgstr ""
+"I pamundur ngarkimi i %s: ky sistem nuk suporton ngarkimin e një moduli."
+
+#: camel/camel-provider.c:194
+#, c-format
+msgid "Could not load %s: %s"
+msgstr "I pamundur ngarkimi i %s: %s"
+
+#: camel/camel-provider.c:202
+#, c-format
+msgid "Could not load %s: No initialization code in module."
+msgstr "I pamundur ngarkimi i %s: asnjë kod fillues në modul."
+
+#: camel/camel-provider.c:374 camel/camel-session.c:161
+#, c-format
+msgid "No provider available for protocol `%s'"
+msgstr "Asnjë fornizues në dispozicion për protokollin `%s'"
+
+#: camel/camel-sasl-anonymous.c:35
+msgid "Anonymous"
+msgstr "Anonim"
+
+#: camel/camel-sasl-anonymous.c:37
+msgid "This option will connect to the server using an anonymous login."
+msgstr "Me këtë opcion lidhesh në server duke u futur si anonim."
+
+#: camel/camel-sasl-anonymous.c:112 camel/camel-sasl-plain.c:88
+msgid "Authentication failed."
+msgstr "Autentifikimi dështoi."
+
+#: camel/camel-sasl-anonymous.c:121
+#, c-format
+msgid ""
+"Invalid email address trace information:\n"
+"%s"
+msgstr ""
+"Informacione të pavlefshme të gjurmës së adresës email:\n"
+"%s"
+
+#: camel/camel-sasl-anonymous.c:133
+#, c-format
+msgid ""
+"Invalid opaque trace information:\n"
+"%s"
+msgstr ""
+"Informacione të pavlefshme të gjurmës opake:\n"
+"%s"
+
+#: camel/camel-sasl-anonymous.c:145
+#, c-format
+msgid ""
+"Invalid trace information:\n"
+"%s"
+msgstr ""
+"Informacione të pavlefshme të gjurmës:\n"
+"%s"
+
+#: camel/camel-sasl-cram-md5.c:36
+msgid "CRAM-MD5"
+msgstr "CRAM-MD5"
+
+#: camel/camel-sasl-cram-md5.c:38
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
+msgstr ""
+"Me këtë opcion lidheni në server duke përdorur një fjalëkalim të sigurt CRAM-"
+"MD5, nëse serveri e suporton."
+
+#: camel/camel-sasl-digest-md5.c:49
+msgid "DIGEST-MD5"
+msgstr "DIGEST-MD5"
+
+#: camel/camel-sasl-digest-md5.c:51
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
+msgstr ""
+"Me këtë opcion lidheni në server duke përdorur një fjalëkalim të sigurt "
+"DIGEST-MD5, nëse serveri e suporton."
+
+#: camel/camel-sasl-digest-md5.c:814
+msgid "Server challenge too long (>2048 octets)\n"
+msgstr "Server challenge tepër i gjatë (>2048 octets)\n"
+
+#: camel/camel-sasl-digest-md5.c:823
+msgid "Server challenge invalid\n"
+msgstr "Server challenge i pavlefshëm\n"
+
+#: camel/camel-sasl-digest-md5.c:829
+msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
+msgstr ""
+"Server challenge përmbante një token \"Quality of Protection\" të "
+"pavlefshëm\n"
+
+#: camel/camel-sasl-digest-md5.c:859
+msgid "Server response did not contain authorization data\n"
+msgstr "Përgjigja nga serveri nuk përmban të dhënat e autorizimit\n"
+
+#: camel/camel-sasl-digest-md5.c:877
+msgid "Server response contained incomplete authorization data\n"
+msgstr "Përgjigja nga serveri përmban të dhëna autorizimi jo të plota\n"
+
+#: camel/camel-sasl-digest-md5.c:887
+msgid "Server response does not match\n"
+msgstr "Përgjigja e serverit nuk korrispondon\n"
+
+#: camel/camel-sasl-gssapi.c:57
+msgid "GSSAPI"
+msgstr "GSSAPI"
+
+#: camel/camel-sasl-gssapi.c:59
+msgid "This option will connect to the server using Kerberos 5 authentication."
+msgstr ""
+"Me këtë opcion lidheni në server duke përdorur autentifikimin Kerberos 5."
+
+#: camel/camel-sasl-gssapi.c:157
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
+msgstr ""
+"Mekanizmi i specifikuar nuk është i suportuar nga kredencialet e dhëna, ose "
+"nuk është njohur nga implementimi."
+
+#: camel/camel-sasl-gssapi.c:162
+msgid "The provided target_name parameter was ill-formed."
+msgstr "Parametri target_name i dhënë ishte i keqformuar."
+
+#: camel/camel-sasl-gssapi.c:165
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
+msgstr ""
+"Parametri target_name i dhënë përmbante një lloj emri të pavlefshëm apo të "
+"pasuportuar."
+
+#: camel/camel-sasl-gssapi.c:169
+msgid ""
+"The input_token contains different channel bindings to those specified via "
+"the input_chan_bindings parameter."
+msgstr ""
+"input_token përmban lidhje kanali të ndryshme nga ato të specifikuara me anë "
+"të parametrit input_chan_bindings."
+
+#: camel/camel-sasl-gssapi.c:174
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
+msgstr ""
+"input_token përmban një firmë të pavlefshme, ose një firmë që nuk mund të "
+"verifikohet."
+
+#: camel/camel-sasl-gssapi.c:178
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
+msgstr ""
+"Kredencialet e dhëna nuk ishin të vlefshme për fillimin e përmbajtjes, ose "
+"handle e kredencialit nuk ka të bëjë me asnjë kredencial."
+
+#: camel/camel-sasl-gssapi.c:183
+msgid "The supplied context handle did not refer to a valid context."
+msgstr ""
+"Handle e përmbajtjes së dhënë nuk i referohet një konteksti të vlefshëm."
+
+#: camel/camel-sasl-gssapi.c:186
+msgid "The consistency checks performed on the input_token failed."
+msgstr "Kontrolli i konsistencës kryer tek input_token dështoi."
+
+#: camel/camel-sasl-gssapi.c:189
+msgid "The consistency checks performed on the credential failed."
+msgstr "Kontrolli i konsistencës kryer tek kredenciali dështoi."
+
+#: camel/camel-sasl-gssapi.c:192
+msgid "The referenced credentials have expired."
+msgstr "Kredencialet referues kanë skaduar."
+
+#: camel/camel-sasl-gssapi.c:198 camel/camel-sasl-gssapi.c:246
+#: camel/camel-sasl-gssapi.c:282 camel/camel-sasl-gssapi.c:297
+#: camel/camel-sasl-kerberos4.c:226
+#: camel/providers/imap/camel-imap-store.c:1222
+msgid "Bad authentication response from server."
+msgstr "Përgjigje e pavlefshme autentifikimi nga serveri."
+
+#: camel/camel-sasl-gssapi.c:307
+msgid "Unsupported security layer."
+msgstr "Nivel sigurie i pasuportuar."
+
+#: camel/camel-sasl-kerberos4.c:42
+msgid "Kerberos 4"
+msgstr "Kerberos 4"
+
+#: camel/camel-sasl-kerberos4.c:44
+msgid "This option will connect to the server using Kerberos 4 authentication."
+msgstr ""
+"Me këtë opcion lidheni me serverin duke përdorur Kerberos 4 për "
+"autentifikimin."
+
+#: camel/camel-sasl-kerberos4.c:169
+#, c-format
+msgid ""
+"Could not get Kerberos ticket:\n"
+"%s"
+msgstr ""
+"E pamundur marrja e ticket të Kerberos:\n"
+"%s"
+
+#: camel/camel-sasl-login.c:33
+msgid "Login"
+msgstr "Futu"
+
+#: camel/camel-sasl-login.c:35 camel/camel-sasl-plain.c:35
+msgid "This option will connect to the server using a simple password."
+msgstr ""
+"Me këtë opcion lidheni me serverin duke përdorur një fjalëkalim të thjeshtë."
+
+#: camel/camel-sasl-login.c:128
+msgid "Unknown authentication state."
+msgstr "Gjendje autentifikimi e panjohur."
+
+#: camel/camel-sasl-ntlm.c:32
+msgid "NTLM / SPA"
+msgstr "NTLM / SPA"
+
+#: camel/camel-sasl-ntlm.c:34
+msgid ""
+"This option will connect to a Windows-based server using NTLM / Secure "
+"Password Authentication."
+msgstr ""
+"Me këtë opcion do të lidheni me një server Windows duke përdorur NTLM / "
+"Secure Password Authentication."
+
+#: camel/camel-sasl-plain.c:33
+msgid "PLAIN"
+msgstr "E PA FSHEHUR"
+
+#: camel/camel-sasl-popb4smtp.c:37
+msgid "POP before SMTP"
+msgstr "POP para SMTP"
+
+#: camel/camel-sasl-popb4smtp.c:39
+msgid "This option will authorise a POP connection before attempting SMTP"
+msgstr "Me këtë opcion autorizohet një lidhje POP para se të provohet SMTP"
+
+#: camel/camel-sasl-popb4smtp.c:104
+msgid "POP Source URI"
+msgstr "URI Burimit POP"
+
+#: camel/camel-sasl-popb4smtp.c:107
+msgid "POP Before SMTP auth using an unknown transport"
+msgstr "Autorizim POP para SMTP duke përdorur një transport të panjohur"
+
+#: camel/camel-sasl-popb4smtp.c:112
+msgid "POP Before SMTP auth using a non-pop source"
+msgstr "Autorizim POP para SMTP duke përdorur një burim jo pop"
+
+#: camel/camel-search-private.c:151
+#, c-format
+msgid "Regular expression compilation failed: %s: %s"
+msgstr "Kompilimi i shprehjes së rregullt dështoi: %s: %s"
+
+#: camel/camel-service.c:272
+#, c-format
+msgid "URL '%s' needs a username component"
+msgstr "URL '%s' ka nevojë për një përbërës username"
+
+#: camel/camel-service.c:276
+#, c-format
+msgid "URL '%s' needs a host component"
+msgstr "URL '%s' ka nevojë për një përbërës host"
+
+#: camel/camel-service.c:280
+#, c-format
+msgid "URL '%s' needs a path component"
+msgstr "URL '%s' ka nevojë për një përbërës path"
+
+#: camel/camel-session.c:283
+#, c-format
+msgid ""
+"Could not create directory %s:\n"
+"%s"
+msgstr ""
+"I pamundur krijimi i directory %s:\n"
+"%s"
+
+#: camel/camel-smime-context.c:231
+#, c-format
+msgid "Cannot find certificate for '%s'"
+msgstr "E pamundur gjetja e çertifikatës për '%s'"
+
+#: camel/camel-smime-context.c:237
+msgid "Cannot create CMS message"
+msgstr "I pamundur krijimi i mesazhit CMS"
+
+#: camel/camel-smime-context.c:242
+#, fuzzy
+msgid "Cannot create CMS signed data"
+msgstr "I pamundur krijimi i të dhënave të firmosura CMS"
+
+#: camel/camel-smime-context.c:248
+#, fuzzy
+msgid "Cannot attach CMS signed data"
+msgstr "E pamundur bashkangjitja e të dhënave të firmosura CMS"
+
+#: camel/camel-smime-context.c:255
+msgid "Cannot attach CMS data"
+msgstr "E pamundur bashkangjitja e të dhënave CMS"
+
+#: camel/camel-smime-context.c:261
+#, fuzzy
+msgid "Cannot create CMS Signer information"
+msgstr "I pamundur krijimi i informacioneve të firmuesit CMS"
+
+#: camel/camel-smime-context.c:267
+#, fuzzy
+msgid "Cannot find certificate chain"
+msgstr "E pamundur gjetja e zinxhirit të çertifikatave"
+
+#: camel/camel-smime-context.c:273
+#, fuzzy
+msgid "Cannot add CMS Signing time"
+msgstr "I pamundur shtimi i datës së firmës CMS"
+
+#: camel/camel-smime-context.c:295 camel/camel-smime-context.c:307
+#, fuzzy, c-format
+msgid "Encryption certificate for '%s' does not exist"
+msgstr "Çertifikata e kriptimit për '%s' nuk ekziston"
+
+#: camel/camel-smime-context.c:314
+msgid "Cannot add SMIMEEncKeyPrefs attribute"
+msgstr "I pamundur shtimi i atributit SMIMEEncKeyPrefs"
+
+#: camel/camel-smime-context.c:319
+msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
+msgstr "I pamundur shtimi i atributit MS SMIMEEncKeyPrefs"
+
+#: camel/camel-smime-context.c:324
+msgid "Cannot add encryption certificate"
+msgstr "I pamundur shtimi i çertifikatës së kriptuar"
+
+#: camel/camel-smime-context.c:330
+#, fuzzy
+msgid "Cannot add CMS Signer information"
+msgstr "I pamundur shtimi i informacioneve të firmuesit CMS"
+
+#: camel/camel-smime-context.c:400 camel/camel-smime-context.c:848
+msgid "Cannot create encoder context"
+msgstr "I pamundur krijimi i kontestit të kodifikuesit"
+
+#: camel/camel-smime-context.c:406
+msgid "Failed to add data to CMS encoder"
+msgstr "Shtimi i të dhënave tek kodifikuesi CMS dështoi"
+
+#: camel/camel-smime-context.c:411 camel/camel-smime-context.c:865
+msgid "Failed to encode data"
+msgstr "Kodifikimi i të dhënave dështoi"
+
+#: camel/camel-smime-context.c:484
+msgid "Unverified"
+msgstr "I paverifikuar"
+
+#: camel/camel-smime-context.c:486
+msgid "Good signature"
+msgstr "Firmë korrekte"
+
+#: camel/camel-smime-context.c:488
+msgid "Bad signature"
+msgstr "Firmë e pavlefshme"
+
+#: camel/camel-smime-context.c:490
+msgid "Content tampered with or altered in transit"
+msgstr "Përmbajtja është prekur apo ndryshuar gjatë transportit"
+
+#: camel/camel-smime-context.c:492
+msgid "Signing certificate not found"
+msgstr "Çertifikata e firmës nuk u gjet"
+
+#: camel/camel-smime-context.c:494
+msgid "Signing certificate not trusted"
+msgstr "Çertifikata e firmës nuk është e besueshme"
+
+#: camel/camel-smime-context.c:496
+msgid "Signature algorithm unknown"
+msgstr "Algoritmi i firmës nuk njihet"
+
+#: camel/camel-smime-context.c:498
+msgid "Signature algorithm unsupported"
+msgstr "Algoritmi i firmës nuk suportohet"
+
+#: camel/camel-smime-context.c:500
+msgid "Malformed signature"
+msgstr "Firmë e keqformuar"
+
+#: camel/camel-smime-context.c:502
+msgid "Processing error"
+msgstr "Gabim gjatë proçesimit"
+
+#: camel/camel-smime-context.c:539
+#, fuzzy
+msgid "No signed data in signature"
+msgstr "Firma nuk përmban signedData"
+
+#: camel/camel-smime-context.c:546
+msgid "Digests missing from enveloped data"
+msgstr "Mungojnë mbledhjet nga të dhënat e zarfit"
+
+#: camel/camel-smime-context.c:559 camel/camel-smime-context.c:569
+msgid "Cannot calculate digests"
+msgstr "E pamundur llogaritja e mbledhjeve"
+
+#: camel/camel-smime-context.c:574
+msgid "Cannot set message digests"
+msgstr "E pamundur vendosja e mbledhjes së mesazheve"
+
+#: camel/camel-smime-context.c:584 camel/camel-smime-context.c:589
+msgid "Certificate import failed"
+msgstr "Importimi i çertifikatës dështoi"
+
+#: camel/camel-smime-context.c:599
+#, fuzzy
+msgid "Certificate is the only message, cannot verify certificates"
+msgstr "Mesazh i vetëm çertifikatës, çertifikatat nuk mund të verifikohen"
+
+#: camel/camel-smime-context.c:602
+#, fuzzy
+msgid "Certificate is the only message, certificates imported and verified"
+msgstr "Mesazh i vetëm çertifikatës, çertifikatat u importuan dhe verifikuan"
+
+#: camel/camel-smime-context.c:606
+msgid "Cannot find signature digests"
+msgstr "E pamundur gjetja e mbledhjeve të firmave"
+
+#: camel/camel-smime-context.c:622
+#, c-format
+msgid "Signer: %s <%s>: %s\n"
+msgstr "Firmuesi: %s <%s>: %s\n"
+
+#: camel/camel-smime-context.c:723
+msgid "Decoder failed"
+msgstr "Dekoduesi dështoi"
+
+#: camel/camel-smime-context.c:775
+#, c-format
+msgid "Cannot find certificate for `%s'"
+msgstr "E pamundur gjetja e çertifikatës për `%s'"
+
+#: camel/camel-smime-context.c:782
+msgid "Cannot find common bulk encryption algorithm"
+msgstr "E pamundur gjetja e algoritmit të kriptimit minimal"
+
+#. PORT_GetError(); ??
+#: camel/camel-smime-context.c:791
+msgid "Cannot allocate slot for encryption bulk key"
+msgstr "E pamundur vendosja e një slot për kyçin e kriptimit"
+
+#: camel/camel-smime-context.c:802
+msgid "Cannot create CMS Message"
+msgstr "I pamundur krijimi i mesazhit CMS"
+
+#: camel/camel-smime-context.c:808
+#, fuzzy
+msgid "Cannot create CMS Enveloped data"
+msgstr "I pamundur krijimi i të dhënave zarfi CMS"
+
+#: camel/camel-smime-context.c:814
+#, fuzzy
+msgid "Cannot attach CMS Enveloped data"
+msgstr "E pamundur bashkangjitja e të dhënave zarfi CMS"
+
+#: camel/camel-smime-context.c:820
+msgid "Cannot attach CMS data object"
+msgstr "E pamundur bashkangjitja e objektit të dhëna CMS"
+
+#: camel/camel-smime-context.c:829
+#, fuzzy
+msgid "Cannot create CMS Recipient information"
+msgstr "I pamundur krijimi i informacioneve të marrësit CMS"
+
+#: camel/camel-smime-context.c:834
+#, fuzzy
+msgid "Cannot add CMS Recipient information"
+msgstr "I pamundur shtimi i informacioneve të marrësit CMS"
+
+#: camel/camel-smime-context.c:859
+msgid "Failed to add data to encoder"
+msgstr "Shtimi i të dhënave në kodifikues dështoi"
+
+#: camel/camel-smime-context.c:946
+#, c-format
+msgid "Decoder failed, error %d"
+msgstr "Dekoduesi dështoi, gabim %d"
+
+#: camel/camel-smime-context.c:953
+msgid "S/MIME Decrypt: No encrypted content found"
+msgstr "Dekriptim S/MIME: muk u gjet asnjë përmbajtje e kriptuar"
+
+#: camel/camel-smime-context.c:980
+msgid "import keys: unimplemented"
+msgstr "importimi i kyçeve: jo në dispozicion"
+
+#: camel/camel-smime-context.c:988
+msgid "export keys: unimplemented"
+msgstr "eksportimi i kyçeve: jo në dispozicion"
+
+#: camel/camel-store.c:214
+msgid "Cannot get folder: Invalid operation on this store"
+msgstr "E pamundur marrja e kartelës: operacion i pavlefshëm në këtë arkiv"
+
+#: camel/camel-store.c:244
+#, c-format
+msgid "Cannot create folder `%s': folder exists"
+msgstr "I pamundur krijimi i kartelës `%s': kartela ekziston"
+
+#: camel/camel-store.c:298
+msgid "Cannot create folder: Invalid operation on this store"
+msgstr "I pamundur krijimi i kartelës: operacion i pavlefshëm në këtë arkiv"
+
+#: camel/camel-store.c:326
+#, c-format
+msgid "Cannot create folder: %s: folder exists"
+msgstr "I pamundur krijimi i kartelës: %s: kartela ekziston"
+
+#: camel/camel-store.c:390 camel/camel-vee-store.c:367
+#: camel/providers/local/camel-maildir-store.c:221
+#, c-format
+msgid "Cannot delete folder: %s: Invalid operation"
+msgstr "I pamundur eleminimi i kartelës: %s Veprim i pavlefshëm"
+
+#: camel/camel-store.c:440 camel/camel-vee-store.c:404
+#: camel/providers/local/camel-maildir-store.c:293
+#, c-format
+msgid "Cannot rename folder: %s: Invalid operation"
+msgstr "I pamundur ndryshimi i emrit të kartelës: %s Veprim i pavlefshëm"
+
+#: camel/camel-store.c:778
+msgid "Trash"
+msgstr "Koshi"
+
+#: camel/camel-store.c:780
+msgid "Junk"
+msgstr "Për në plehra"
+
+#: camel/camel-tcp-stream-openssl.c:568
+msgid "Unable to get issuer's certificate"
+msgstr "E pamundur marrja e çertifikatës nga dërguesi"
+
+#: camel/camel-tcp-stream-openssl.c:570
+msgid "Unable to get Certificate Revocation List"
+msgstr "E pamundur marrja e listës me çertifikatat e anulluara"
+
+#: camel/camel-tcp-stream-openssl.c:572
+msgid "Unable to decrypt certificate signature"
+msgstr "I pamundur dekriptimi i firmës së çertifikatës"
+
+#: camel/camel-tcp-stream-openssl.c:574
+msgid "Unable to decrypt Certificate Revocation List signature"
+msgstr "I pamundur dekriptimi i firmës së listës me çertifikatat e anulluara"
+
+#: camel/camel-tcp-stream-openssl.c:576
+msgid "Unable to decode issuer's public key"
+msgstr "I pamundur dekriptimi i kyçit publik të dërguesit"
+
+#: camel/camel-tcp-stream-openssl.c:578
+msgid "Certificate signature failure"
+msgstr "Firmosja e çertifikatës dështoi"
+
+#: camel/camel-tcp-stream-openssl.c:580
+msgid "Certificate Revocation List signature failure"
+msgstr "Firmosja e listës me çertifikatat e anulluara dështoi"
+
+#: camel/camel-tcp-stream-openssl.c:582
+msgid "Certificate not yet valid"
+msgstr "Çertifikatë akoma e pavlefshme"
+
+#: camel/camel-tcp-stream-openssl.c:584
+msgid "Certificate has expired"
+msgstr "Çertifikata ka skaduar"
+
+#: camel/camel-tcp-stream-openssl.c:586
+msgid "CRL not yet valid"
+msgstr "CRL akoma e pavlefshme"
+
+#: camel/camel-tcp-stream-openssl.c:588
+msgid "CRL has expired"
+msgstr "CRL ka skaduar"
+
+#: camel/camel-tcp-stream-openssl.c:593
+msgid "Error in CRL"
+msgstr "Gabim në CRL"
+
+#: camel/camel-tcp-stream-openssl.c:595
+msgid "Out of memory"
+msgstr "Jashtë memorjes"
+
+#: camel/camel-tcp-stream-openssl.c:597
+msgid "Zero-depth self-signed certificate"
+msgstr "Çertifikatë e autofirmosur me thellësi zero"
+
+#: camel/camel-tcp-stream-openssl.c:599
+msgid "Self-signed certificate in chain"
+msgstr "Çertifikatë e autofirmosur në zinxhir"
+
+#: camel/camel-tcp-stream-openssl.c:601
+msgid "Unable to get issuer's certificate locally"
+msgstr "E pamundur marrja në lokale e çertifikatës së dërguesit"
+
+#: camel/camel-tcp-stream-openssl.c:603
+msgid "Unable to verify leaf signature"
+msgstr "I pamundur verifikimi i firmës së fletës"
+
+#: camel/camel-tcp-stream-openssl.c:605
+msgid "Certificate chain too long"
+msgstr "Çertifikatë tepër e gjatë në zinxhir"
+
+#: camel/camel-tcp-stream-openssl.c:607
+msgid "Certificate Revoked"
+msgstr "Çertifikata u anullua"
+
+#: camel/camel-tcp-stream-openssl.c:609
+msgid "Invalid Certificate Authority (CA)"
+msgstr "Autoritet Çertifikimi (CA) i pavlefshëm"
+
+#: camel/camel-tcp-stream-openssl.c:611
+msgid "Path length exceeded"
+msgstr "Gjatësi vendodhje e tepërt"
+
+#: camel/camel-tcp-stream-openssl.c:613
+msgid "Invalid purpose"
+msgstr "Qëllim i pavlefshëm"
+
+#: camel/camel-tcp-stream-openssl.c:615
+msgid "Certificate untrusted"
+msgstr "Çertifikatë e pasigurt"
+
+#: camel/camel-tcp-stream-openssl.c:617
+msgid "Certificate rejected"
+msgstr "Çertifikatë e kthyer mbrapsht"
+
+#: camel/camel-tcp-stream-openssl.c:620
+msgid "Subject/Issuer mismatch"
+msgstr "Subjekti/Dërguesi pa lidhje"
+
+#: camel/camel-tcp-stream-openssl.c:622
+msgid "AKID/SKID mismatch"
+msgstr "AKID/SKID pa lidhje"
+
+#: camel/camel-tcp-stream-openssl.c:624
+msgid "AKID/Issuer serial mismatch"
+msgstr "AKID/Seriali i dërguesit pa lidhje"
+
+#: camel/camel-tcp-stream-openssl.c:626
+msgid "Key usage does not support certificate signing"
+msgstr "Përdorimi i kyçit nuk lejon firmën e çertifikatës"
+
+#: camel/camel-tcp-stream-openssl.c:629
+msgid "Error in application verification"
+msgstr "Gabim gjatë verifikimit të programit"
+
+#: camel/camel-tcp-stream-openssl.c:696 camel/camel-tcp-stream-ssl.c:827
+#, c-format
+msgid ""
+"Issuer:            %s\n"
+"Subject:           %s\n"
+"Fingerprint:       %s\n"
+"Signature:         %s"
+msgstr ""
+"Dërguesi:                         %s\n"
+"Subjekti:                            %s\n"
+"Shenjëdallimi dixhital:        %s\n"
+"Firma:                                %s"
+
+#: camel/camel-tcp-stream-openssl.c:702 camel/camel-tcp-stream-ssl.c:833
+msgid "GOOD"
+msgstr "MIRË"
+
+#: camel/camel-tcp-stream-openssl.c:702 camel/camel-tcp-stream-ssl.c:833
+msgid "BAD"
+msgstr "KEQ"
+
+#: camel/camel-tcp-stream-openssl.c:704
+#, c-format
+msgid ""
+"Bad certificate from %s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept anyway?"
+msgstr ""
+"Çertifikatë jo korrekte nga %s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Dëshiron t'a pranosh sidoqoftë?"
+
+#. construct our user prompt
+#: camel/camel-tcp-stream-ssl.c:837
+#, c-format
+msgid ""
+"SSL Certificate check for %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept?"
+msgstr ""
+"Kontrolli çertifikatës SSL për %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Dëshironi t'a pranoni?"
+
+#: camel/camel-tcp-stream-ssl.c:881
+#, c-format
+msgid ""
+"Certificate problem: %s\n"
+"Issuer: %s"
+msgstr ""
+"Problem me çertifikatën: %s\n"
+"Dërguesi: %s"
+
+#: camel/camel-tcp-stream-ssl.c:933
+#, c-format
+msgid ""
+"Bad certificate domain: %s\n"
+"Issuer: %s"
+msgstr ""
+"Domain çertifikate i gabuar: %s\n"
+"Dërguesi: %s"
+
+#: camel/camel-tcp-stream-ssl.c:951
+#, c-format
+msgid ""
+"Certificate expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"Çertifikatë e skaduar: %s\n"
+"Dërguesi: %s"
+
+#: camel/camel-tcp-stream-ssl.c:968
+#, c-format
+msgid ""
+"Certificate revocation list expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"Lista me çertifikatat e anulluara ka skaduar: %s\n"
+"Dërguesi: %s"
+
+#: camel/camel-url.c:293
+#, c-format
+msgid "Could not parse URL `%s'"
+msgstr "I pamundur interpretimi i URL `%s'"
+
+#: camel/camel-vee-folder.c:476
+#, c-format
+msgid "Error storing `%s': %s"
+msgstr "Gabim gjatë regjistrimit të `%s': %s"
+
+#: camel/camel-vee-folder.c:518
+#, c-format
+msgid "No such message %s in %s"
+msgstr "Mesazhi %s nuk gjendet në %s"
+
+#: camel/camel-vee-folder.c:643 camel/camel-vee-folder.c:649
+msgid "Cannot copy or move messages into a Virtual Folder"
+msgstr "E pamundur lëvizja apo kopjimi i mesazheve në një kartelë virtuale"
+
+#: camel/camel-vee-store.c:343
+msgid "Unmatched"
+msgstr "Jo korrispondues"
+
+#: camel/camel-vee-store.c:390
+#, c-format
+msgid "Cannot delete folder: %s: No such folder"
+msgstr "Eleminimi i kartelës nuk është i mundur: %s: Kartela nuk ekziston"
+
+#: camel/camel-vee-store.c:412
+#, c-format
+msgid "Cannot rename folder: %s: No such folder"
+msgstr "Riemërtimi i kartelës nuk është i mundur: %s: Kartela nuk ekziston"
+
+#: camel/camel-vtrash-folder.c:47
+msgid "Cannot copy messages to the Trash folder"
+msgstr "I pamundur kopjimi i mesazheve në kartelën e Koshit"
+
+#: camel/camel-vtrash-folder.c:49
+msgid "Cannot copy messages to the Junk folder"
+msgstr "I pamundur kopjimi i mesazheve në kartelën \"Për në plehra\""
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:104
+#: camel/providers/imap/camel-imap-folder.c:1979
+#, c-format
+msgid ""
+"Cannot get message: %s\n"
+"  %s"
+msgstr ""
+"E pamundur marrja e mesazhit: %s\n"
+"  %s"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:104
+#: camel/providers/imap/camel-imap-folder.c:1979
+#: camel/providers/local/camel-maildir-folder.c:245
+#: camel/providers/local/camel-mbox-folder.c:403
+#: camel/providers/local/camel-mh-folder.c:203
+msgid "No such message"
+msgstr "Mesazhi nuk u gjet"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:120
+#: camel/providers/imap4/camel-imap4-folder.c:696
+#: camel/providers/nntp/camel-nntp-folder.c:157
+#: camel/providers/nntp/camel-nntp-folder.c:233
+#: camel/providers/nntp/camel-nntp-folder.c:372
+#: camel/providers/pop3/camel-pop3-folder.c:263
+#: camel/providers/pop3/camel-pop3-folder.c:431
+#: camel/providers/pop3/camel-pop3-folder.c:492
+#: camel/providers/pop3/camel-pop3-folder.c:510
+msgid "User cancelled"
+msgstr "Përdorues i hequr"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:125
+#: camel/providers/imap4/camel-imap4-folder.c:701
+#: camel/providers/nntp/camel-nntp-folder.c:148
+#: camel/providers/nntp/camel-nntp-folder.c:150
+#: camel/providers/nntp/camel-nntp-folder.c:159
+#: camel/providers/nntp/camel-nntp-folder.c:235
+#: camel/providers/pop3/camel-pop3-folder.c:434
+#: camel/providers/pop3/camel-pop3-folder.c:495
+#: camel/providers/pop3/camel-pop3-folder.c:502
+#: camel/providers/pop3/camel-pop3-folder.c:513
+#, c-format
+msgid "Cannot get message %s: %s"
+msgstr "E pamundur marrja e mesazhit %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:145
+#: camel/providers/imap4/camel-imap4-folder.c:719
+#, fuzzy
+msgid "This message is not available in offline mode."
+msgstr "Ky mesazh nuk ndodhet aktualisht në dispozicion"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:171
+#: camel/providers/groupwise/camel-groupwise-folder.c:272
+#, fuzzy
+msgid "Could not get message"
+msgstr "I pamundur krijimi i mesazhit."
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:471
+#: camel/providers/imap/camel-imap-folder.c:245
+#, c-format
+msgid "Could not load summary for %s"
+msgstr "I pamundur leximi i përmbledhjes për %s"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:685
+#, fuzzy, c-format
+msgid "Cannot create message: %s"
+msgstr "I pamundur krijimi i mesazhit CMS"
+
+#: camel/providers/groupwise/camel-groupwise-folder.c:697
+#, fuzzy, c-format
+msgid "Cannot append message to folder `%s': %s"
+msgstr "I pamundur shtimi i mesazhit tek kartela mh: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-journal.c:240
+#, fuzzy, c-format
+msgid "Cannot get folder container %s"
+msgstr "E pamundur marrja e kartelës: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-journal.c:328
+#: camel/providers/imap4/camel-imap4-journal.c:276
+#, fuzzy
+msgid "Cannot append message in offline mode: cache unavailable"
+msgstr "I pamundur shtimi i mesazhit tek kartela mh: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-journal.c:344
+#: camel/providers/imap4/camel-imap4-journal.c:292
+#, fuzzy, c-format
+msgid "Cannot append message in offline mode: %s"
+msgstr "I pamundur shtimi i mesazhit tek file mbox: %s: %s"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:51
+#: camel/providers/imap4/camel-imap4-provider.c:36
+msgid "Checking for new mail"
+msgstr "Duke kontrolluar për mesazhe të rinj"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:53
+msgid "Check for new messages in all folders"
+msgstr "Duke kontrolluar për mesazhe të rinj në të gjitha kartelat"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:56
+#: camel/providers/imap/camel-imap-provider.c:64
+#: camel/providers/imap4/camel-imap4-provider.c:49
+#: camel/providers/local/camel-local-provider.c:43
+#: camel/providers/local/camel-local-provider.c:79
+#: camel/providers/local/camel-local-provider.c:99
+msgid "Options"
+msgstr "Mundësitë"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:58
+msgid "Apply filters to new messages in Inbox on this server"
+msgstr "Aplikoi filtrat mesazheve të rinj në \"Inbox\" tek ky server"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:60
+msgid "Check new messages for Junk contents"
+msgstr "Kontrollo nëse mesazhet e rinj përmbajnë material që duhet refuzuar"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:62
+msgid "Only check for Junk messages in the INBOX folder"
+msgstr "Vetëm kontrollo praninë e mesazheve për t'u flakur tek kartela INBOX"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:64
+#, fuzzy
+msgid "Automatically synchronize account locally"
+msgstr "Sinkronizo postën remote në lokale automatikisht"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:69
+msgid "Address Book and Calendar"
+msgstr "Rubrika dhe Kalendari"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:72
+msgid "Post Office Agent:"
+msgstr "Agjenti i zyrës së postës:"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:75
+msgid "Post Office Agent SOAP Port:"
+msgstr "Porta agjentit të zyrës së postës SOAP:"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:78
+msgid "Use Secure Connection (SSL)"
+msgstr "Përdor lidhje të sigurt (SSL)"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:91
+msgid "Novell GroupWise"
+msgstr "GroupWise Novell"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:93
+msgid "For accessing Novell Groupwise servers"
+msgstr "Për të hyrë në server-ët Groupwise Novell"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:108
+#: camel/providers/imap/camel-imap-provider.c:96
+#: camel/providers/imap4/camel-imap4-provider.c:81
+#: camel/providers/nntp/camel-nntp-provider.c:72
+#: camel/providers/pop3/camel-pop3-provider.c:72
+msgid "Password"
+msgstr "Fjalëkalimi"
+
+#: camel/providers/groupwise/camel-groupwise-provider.c:110
+#, fuzzy
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
+msgstr ""
+"Me këtë opcion do të lidheni me serverin IMAP duke përdorur një fjalëkalim "
+"në tekst të thjeshtë."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:267
+#, fuzzy
+msgid "Host or user not availbale in url"
+msgstr "Editori i kategorive nuk është disponibël."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:359
+#, fuzzy, c-format
+msgid "%sPlease enter the Groupwise password for %s@%s"
+msgstr "%sShkruaj fjalëkalimin IMAP për %s@%s"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:373
+#: camel/providers/imap/camel-imap-store.c:1301
+msgid "You didn't enter a password."
+msgstr "Nuk keni shkruar fjalëkalimin."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:382
+#, fuzzy
+msgid "Unable to authenticate to GroupWise server."
+msgstr ""
+"I pamundur autentifikimi në severin IMAP.\n"
+"%s\n"
+"\n"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:479
+#: camel/providers/imap/camel-imap-store.c:1852
+#: camel/providers/imap/camel-imap-store.c:2042
+#, c-format
+msgid "No such folder %s"
+msgstr "Kartela %s nuk ekziston"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:499
+#: camel/providers/imap/camel-imap-folder.c:2287
+#: camel/providers/imap/camel-imap-folder.c:2357
+msgid "Fetching summary information for new messages"
+msgstr "Duke marrë përmbledhjen e informacionit për mesazhet e rinj"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:610
+#, fuzzy
+msgid "Cannot get folder info in offline mode."
+msgstr "E pamundur hapja e kartelës `%s': nuk është një directory."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:781
+#, fuzzy
+msgid "Cannot create GroupWise folders in offline mode."
+msgstr "Nuk është i mundur krijimi i një kartele me këtë emër."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:830
+#, fuzzy
+msgid "Cannot delete GroupWise folders in offline mode."
+msgstr "E pamundur fshirja e kartelës `%s': Kartelë speciale"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:873
+#, fuzzy
+msgid "Cannot rename GroupWise folders in offline mode."
+msgstr "Nuk mund të ndryshoni emrin e një kartele në një magazinë News."
+
+#: camel/providers/groupwise/camel-groupwise-store.c:879
+#, fuzzy, c-format
+msgid "Cannot rename Groupwise folder `%s' to `%s'"
+msgstr ""
+"I pamundur ndryshimi i emrit të kartelës `%s' në `%s': Komandë e pavlefshme"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:911
+#, fuzzy, c-format
+msgid "GroupWise server %s"
+msgstr "GroupWise"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:913
+#, fuzzy, c-format
+msgid "GroupWise service for %s on %s"
+msgstr "Shërbimi IMAP për %s tek %s"
+
+#: camel/providers/groupwise/camel-groupwise-transport.c:121
+#, fuzzy, c-format
+msgid "Groupwise server %s"
+msgstr "Lista ID Groupwise"
+
+#: camel/providers/groupwise/camel-groupwise-transport.c:123
+#, fuzzy, c-format
+msgid "Groupwise mail delivery via %s"
+msgstr "Posta SMTP dorëzohet me anë të programit %s"
+
+#: camel/providers/groupwise/camel-groupwise-transport.c:159
+#, fuzzy
+msgid "Sending Message"
+msgstr "Duke dërguar mesazhin"
+
+#: camel/providers/groupwise/camel-gw-listener.c:406
+msgid "Tasks"
+msgstr "Aktivitete"
+
+#: camel/providers/groupwise/camel-gw-listener.c:436
+msgid "Checklist"
+msgstr "Lista zgjedhjes"
+
+#: camel/providers/groupwise/camel-gw-listener.c:483
+#, c-format
+msgid "%sEnter password for %s (user %s)"
+msgstr "%sShkruaj fjalëkalimin për %s (përdoruesi %s)"
+
+#: camel/providers/groupwise/camel-gw-listener.c:494
+msgid "Failed to authenticate.\n"
+msgstr "Autentifikimi dështoi.\n"
+
+#: camel/providers/imap/camel-imap-command.c:219
+#: camel/providers/imap/camel-imap-command.c:258
+#: camel/providers/imap/camel-imap-command.c:460
+#: camel/providers/imap/camel-imap-store.c:3209
+msgid "Operation cancelled"
+msgstr "Operacioni u anullua"
+
+#: camel/providers/imap/camel-imap-command.c:303
+#: camel/providers/imap/camel-imap-store.c:3212
+#, c-format
+msgid "Server unexpectedly disconnected: %s"
+msgstr "Serveri u shkëput papritur: %s"
+
+#. for imap ALERT codes, account user@host
+#: camel/providers/imap/camel-imap-command.c:321
+#, c-format
+msgid ""
+"Alert from IMAP server %s@%s:\n"
+"%s"
+msgstr ""
+"Paralajmërim nga serveri IMAP %s@%s:\n"
+"%s"
+
+#: camel/providers/imap/camel-imap-command.c:390
+#, c-format
+msgid "Unexpected response from IMAP server: %s"
+msgstr "Përgjigje e papritur nga serveri IMAP: %s"
+
+#: camel/providers/imap/camel-imap-command.c:400
+#, c-format
+msgid "IMAP command failed: %s"
+msgstr "Komanda IMAP dështoi: %s"
+
+#: camel/providers/imap/camel-imap-command.c:470
+msgid "Server response ended too soon."
+msgstr "Përgjigja e serverit përfundoi tepër shpejt."
+
+#: camel/providers/imap/camel-imap-command.c:675
+#, c-format
+msgid "IMAP server response did not contain %s information"
+msgstr "Përgjigja nga serveri IMAP nuk përmban informacionin %s"
+
+#: camel/providers/imap/camel-imap-command.c:711
+#, c-format
+msgid "Unexpected OK response from IMAP server: %s"
+msgstr "Përgjigje OK e papritur nga serveri IMAP: %s"
+
+#: camel/providers/imap/camel-imap-folder.c:226
+#, c-format
+msgid "Could not create directory %s: %s"
+msgstr "I pamundur krijimi i directory %s: %s"
+
+#: camel/providers/imap/camel-imap-folder.c:330
+msgid "Folder was destroyed and recreated on server."
+msgstr "Kartela u shkatërrua dhe u rikrijua në server."
+
+#. Check UIDs and flags of all messages we already know of.
+#: camel/providers/imap/camel-imap-folder.c:573
+#: camel/providers/imap4/camel-imap4-summary.c:1270
+msgid "Scanning for changed messages"
+msgstr "Duke kërkuar për mesazhet e ndryshuara"
+
+#: camel/providers/imap/camel-imap-folder.c:1939
+#, c-format
+msgid "Unable to retrieve message: %s"
+msgstr "E pamundur marrja e mesazhit: %s"
+
+#: camel/providers/imap/camel-imap-folder.c:2021
+#: camel/providers/imap/camel-imap-folder.c:2623
+#: camel/providers/nntp/camel-nntp-folder.c:221
+msgid "This message is not currently available"
+msgstr "Ky mesazh nuk ndodhet aktualisht në dispozicion"
+
+#: camel/providers/imap/camel-imap-folder.c:2464
+#, c-format
+msgid "Incomplete server response: no information provided for message %d"
+msgstr ""
+"Përgjigje e paplotë nga serveri: nuk është dhënë asnjë informatë për "
+"mesazhin %d"
+
+#: camel/providers/imap/camel-imap-folder.c:2472
+#, c-format
+msgid "Incomplete server response: no UID provided for message %d"
+msgstr "Përgjigje e paplotë nga serveri: nuk është dhënë UID për mesazhin %d"
+
+#: camel/providers/imap/camel-imap-folder.c:2485
+#, c-format
+msgid ""
+"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgstr ""
+"Përgjigje e papritur nga serveri: Është dhënë UID identike për mesazhet %d "
+"dhe %d"
+
+#: camel/providers/imap/camel-imap-folder.c:2661
+msgid "Could not find message body in FETCH response."
+msgstr "E pamundur gjetja e trupit të mesazhit tek përgjigja e FETCH."
+
+#: camel/providers/imap/camel-imap-message-cache.c:156
+#, c-format
+msgid "Could not open cache directory: %s"
+msgstr "E pamundur hapja e directory cache: %s"
+
+#: camel/providers/imap/camel-imap-message-cache.c:253
+#: camel/providers/imap/camel-imap-message-cache.c:310
+#: camel/providers/imap/camel-imap-message-cache.c:341
+#: camel/providers/imap/camel-imap-message-cache.c:373
+#, c-format
+msgid "Failed to cache message %s: %s"
+msgstr "E pamundur ruajtja e mesazhit %s në cache: %s"
+
+#: camel/providers/imap/camel-imap-message-cache.c:418
+#, c-format
+msgid "Failed to cache %s: %s"
+msgstr "E pamundur futja në cache të %s: %s"
+
+#: camel/providers/imap/camel-imap-provider.c:44
+msgid "Checking for New Mail"
+msgstr "Kontroll për mesazhe të rinj"
+
+#: camel/providers/imap/camel-imap-provider.c:46
+#: camel/providers/imap4/camel-imap4-provider.c:38
+#, fuzzy
+msgid "C_heck for new messages in all folders"
+msgstr "Duke kontrolluar për mesazhe të rinj në të gjitha kartelat"
+
+#: camel/providers/imap/camel-imap-provider.c:49
+msgid "Connection to Server"
+msgstr "Lidhja me Server-in"
+
+#: camel/providers/imap/camel-imap-provider.c:51
+#, fuzzy
+msgid "_Use custom command to connect to server"
+msgstr "Përdor një komandë të personalizuar për t'u lidhur me serverin"
+
+#: camel/providers/imap/camel-imap-provider.c:53
+msgid "Command:"
+msgstr "Komanda:"
+
+#: camel/providers/imap/camel-imap-provider.c:56
+#: camel/providers/imap4/camel-imap4-provider.c:41
+#: camel/providers/nntp/camel-nntp-provider.c:42
+msgid "Folders"
+msgstr "Kartelat"
+
+#: camel/providers/imap/camel-imap-provider.c:58
+#: camel/providers/imap4/camel-imap4-provider.c:43
+#, fuzzy
+msgid "_Show only subscribed folders"
+msgstr "Shfaq vetëm kartelat në të cilat je regjistruar"
+
+#: camel/providers/imap/camel-imap-provider.c:60
+#: camel/providers/imap4/camel-imap4-provider.c:45
+#, fuzzy
+msgid "O_verride server-supplied folder namespace"
+msgstr "Mbishkruaj hapësirat për emrat e kartelave të dhëna nga serveri"
+
+#: camel/providers/imap/camel-imap-provider.c:62
+#: camel/providers/imap4/camel-imap4-provider.c:47
+msgid "Namespace"
+msgstr "Emri hapësirës"
+
+#: camel/providers/imap/camel-imap-provider.c:66
+#: camel/providers/imap4/camel-imap4-provider.c:51
+#, fuzzy
+msgid "_Apply filters to new messages in INBOX on this server"
+msgstr "Aplikoi filtrat mesazheve të rinj në INBOX tek ky server"
+
+#: camel/providers/imap/camel-imap-provider.c:68
+#: camel/providers/imap4/camel-imap4-provider.c:53
+#, fuzzy
+msgid "Check new messages for _Junk contents"
+msgstr "Kontrollo nëse mesazhet e rinj përmbajnë material që duhet refuzuar"
+
+#: camel/providers/imap/camel-imap-provider.c:70
+#: camel/providers/imap4/camel-imap4-provider.c:55
+#, fuzzy
+msgid "Only check for Junk messa_ges in the INBOX folder"
+msgstr "Vetëm kontrollo praninë e mesazheve për t'u flakur tek kartela INBOX"
+
+#: camel/providers/imap/camel-imap-provider.c:72
+#: camel/providers/imap4/camel-imap4-provider.c:57
+#, fuzzy
+msgid "Automatically synchroni_ze remote mail locally"
+msgstr "Sinkronizo postën remote në lokale automatikisht"
+
+#: camel/providers/imap/camel-imap-provider.c:79
+msgid "IMAP"
+msgstr "IMAP"
+
+#: camel/providers/imap/camel-imap-provider.c:81
+msgid "For reading and storing mail on IMAP servers."
+msgstr "Për të lexuar dhe arkivuar postën në server-ët IMAP."
+
+#: camel/providers/imap/camel-imap-provider.c:98
+msgid "This option will connect to the IMAP server using a plaintext password."
+msgstr ""
+"Me këtë opcion do të lidheni me serverin IMAP duke përdorur një fjalëkalim "
+"në tekst të thjeshtë."
+
+#: camel/providers/imap/camel-imap-store.c:421
+#: camel/providers/imap4/camel-imap4-store.c:206
+#, c-format
+msgid "IMAP server %s"
+msgstr "Serveri IMAP %s"
+
+#: camel/providers/imap/camel-imap-store.c:423
+#: camel/providers/imap4/camel-imap4-store.c:208
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "Shërbimi IMAP për %s tek %s"
+
+#: camel/providers/imap/camel-imap-store.c:535
+#: camel/providers/imap/camel-imap-store.c:550
+#: camel/providers/imap4/camel-imap4-store.c:240
+#: camel/providers/imap4/camel-imap4-store.c:255
+#: camel/providers/nntp/camel-nntp-store.c:200
+#: camel/providers/nntp/camel-nntp-store.c:215
+#: camel/providers/pop3/camel-pop3-store.c:169
+#: camel/providers/pop3/camel-pop3-store.c:184
+#: camel/providers/smtp/camel-smtp-transport.c:257
+#: camel/providers/smtp/camel-smtp-transport.c:272
+#, fuzzy, c-format
+msgid "Could not connect to %s: %s"
+msgstr "E pamundur lidhja me %s (porta %d): %s"
+
+#: camel/providers/imap/camel-imap-store.c:536
+#: camel/providers/imap4/camel-imap4-store.c:241
+#: camel/providers/nntp/camel-nntp-store.c:201
+#: camel/providers/pop3/camel-pop3-store.c:170
+#: camel/providers/smtp/camel-smtp-transport.c:258
+msgid "SSL unavailable"
+msgstr "SSL jo në dispozicion"
+
+#: camel/providers/imap/camel-imap-store.c:547
+#: camel/providers/imap/camel-imap-store.c:817
+#: camel/providers/imap4/camel-imap4-store.c:252
+#: camel/providers/nntp/camel-nntp-store.c:212
+#: camel/providers/nntp/camel-nntp-store.c:231
+#: camel/providers/pop3/camel-pop3-store.c:181
+#: camel/providers/smtp/camel-smtp-transport.c:269
+msgid "Connection cancelled"
+msgstr "Lidhja u anullua"
+
+#: camel/providers/imap/camel-imap-store.c:655
+#: camel/providers/imap/camel-imap-store.c:677
+#: camel/providers/imap/camel-imap-store.c:683
+#: camel/providers/imap4/camel-imap4-store.c:280
+#: camel/providers/imap4/camel-imap4-store.c:293
+#: camel/providers/imap4/camel-imap4-store.c:309
+#, c-format
+msgid "Failed to connect to IMAP server %s in secure mode: %s"
+msgstr "Lidhja në menyrë të sigurt me serverin IMAP %s dështoi: %s"
+
+#: camel/providers/imap/camel-imap-store.c:656
+#: camel/providers/smtp/camel-smtp-transport.c:326
+#, fuzzy
+msgid "STARTTLS not supported"
+msgstr "Shtesa SSL/TLS nuk suportohet."
+
+#: camel/providers/imap/camel-imap-store.c:678
+#: camel/providers/imap4/camel-imap4-store.c:281
+#: camel/providers/pop3/camel-pop3-store.c:246
+msgid "SSL negotiations failed"
+msgstr "Trajtimi SSL dështoi"
+
+#: camel/providers/imap/camel-imap-store.c:684
+#: camel/providers/imap4/camel-imap4-store.c:310
+#: camel/providers/pop3/camel-pop3-store.c:252
+#: camel/providers/smtp/camel-smtp-transport.c:365
+msgid "SSL is not available in this build"
+msgstr ""
+
+#: camel/providers/imap/camel-imap-store.c:820
+#, c-format
+msgid "Could not connect with command \"%s\": %s"
+msgstr "E pamundur lidhja me anë të komandës \"%s\": %s"
+
+#: camel/providers/imap/camel-imap-store.c:1254
+#, c-format
+msgid "IMAP server %s does not support requested authentication type %s"
+msgstr "Serveri IMAP %s nuk suporton llojin e kërkuar %s të autentifikimit"
+
+#: camel/providers/imap/camel-imap-store.c:1264
+#: camel/providers/smtp/camel-smtp-transport.c:498
+#, c-format
+msgid "No support for authentication type %s"
+msgstr "Asnjë suport për llojin e autentifikimit %s"
+
+#: camel/providers/imap/camel-imap-store.c:1287
+#, c-format
+msgid "%sPlease enter the IMAP password for %s@%s"
+msgstr "%sShkruaj fjalëkalimin IMAP për %s@%s"
+
+#: camel/providers/imap/camel-imap-store.c:1330
+#, c-format
+msgid ""
+"Unable to authenticate to IMAP server.\n"
+"%s\n"
+"\n"
+msgstr ""
+"I pamundur autentifikimi në severin IMAP.\n"
+"%s\n"
+"\n"
+
+#: camel/providers/imap/camel-imap-store.c:1870
+#: camel/providers/imap/camel-imap-store.c:2248
+#: camel/providers/imap4/camel-imap4-store.c:770
+#, c-format
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgstr ""
+"Emri i kartelës \"%s\" është i pavlefshëm pasi nuk mund të përmbajë simbolin "
+"\"%c\""
+
+#: camel/providers/imap/camel-imap-store.c:1928
+#: camel/providers/imap/camel-imap-store.c:2309
+msgid "The parent folder is not allowed to contain subfolders"
+msgstr "Kartelës mëmë nuk i lejohet përmbajtja e nënkartelave"
+
+#: camel/providers/imap/camel-imap-store.c:1983
+#: camel/providers/local/camel-maildir-store.c:192
+#: camel/providers/local/camel-mbox-store.c:210
+#: camel/providers/local/camel-mh-store.c:237
+#, c-format
+msgid "Cannot create folder `%s': folder exists."
+msgstr "I pamundur krijimi i kartelës `%s': kartela ekziston."
+
+#: camel/providers/imap/camel-imap-store.c:2259
+#, c-format
+msgid "Unknown parent folder: %s"
+msgstr "Kartelë mëmë e panjohur: %s"
+
+#: camel/providers/imap4/camel-imap4-command.c:551
+#: camel/providers/imap4/camel-imap4-command.c:558
+#, c-format
+msgid "Failed sending command to IMAP server %s: %s"
+msgstr "Dërgimi i komandës serverit IMAP %s dështoi: %s"
+
+#: camel/providers/imap4/camel-imap4-command.c:661
+#, c-format
+msgid "Unexpected response from IMAP4 server %s: %s"
+msgstr "Përgjigje e papritur nga serveri IMAP4 %s: %s"
+
+#: camel/providers/imap4/camel-imap4-engine.c:216
+#, c-format
+msgid "Unexpected greeting from IMAP server %s."
+msgstr "Përgjigje e papritur nga serveri IMAP %s."
+
+#: camel/providers/imap4/camel-imap4-engine.c:410
+#, c-format
+msgid "Cannot select folder `%s': Invalid mailbox name"
+msgstr "E pamundur zgjedhja e kartelës `%s': emër i pavlefshëm mailbox"
+
+#: camel/providers/imap4/camel-imap4-engine.c:416
+#, c-format
+msgid "Cannot select folder `%s': Bad command"
+msgstr "E pamundur zgjedhja e kartelës `%s': komandë e gabuar"
+
+#: camel/providers/imap4/camel-imap4-engine.c:1464
+#: camel/providers/imap4/camel-imap4-engine.c:1503
+#: camel/providers/imap4/camel-imap4-engine.c:1548
+#: camel/providers/imap4/camel-imap4-engine.c:1604
+#, c-format
+msgid "IMAP4 server %s unexpectedly disconnected: %s"
+msgstr "Serveri IMAP4 %s u shkëput në menyrë të papritur: %s"
+
+#: camel/providers/imap4/camel-imap4-folder.c:306
+#, fuzzy, c-format
+msgid "Cannot access folder `%s': %s"
+msgstr "E pamundur hapja e kartelës `%s': %s"
+
+#: camel/providers/imap4/camel-imap4-folder.c:365
+#, c-format
+msgid "Cannot sync flags to folder `%s': Unknown"
+msgstr "I pamundur sinkronizimi i flags tek kartela `%s': nuk njihet"
+
+#: camel/providers/imap4/camel-imap4-folder.c:371
+#, c-format
+msgid "Cannot sync flags to folder `%s': Bad command"
+msgstr "I pamundur sinkronizimi i flags tek kartela `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-folder.c:512
+#, c-format
+msgid "Cannot expunge folder `%s': Unknown"
+msgstr "I pamundur pastrimi i kartelës `%s': nuk njihet"
+
+#: camel/providers/imap4/camel-imap4-folder.c:517
+#, c-format
+msgid "Cannot expunge folder `%s': Bad command"
+msgstr "I pamundur pastrimi i kartelës `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-folder.c:773
+#, c-format
+msgid "Cannot get message %s from folder `%s': No such message"
+msgstr "E pamundur marrja e mesazhit %s nga kartela `%s': mesazhi nuk ekziston"
+
+#: camel/providers/imap4/camel-imap4-folder.c:778
+#, c-format
+msgid "Cannot get message %s from folder `%s': Bad command"
+msgstr "E pamundur marrja e mesazhit %s nga kartela `%s': Komandë e gabuar"
+
+#: camel/providers/imap4/camel-imap4-folder.c:911
+#, c-format
+msgid "Cannot append message to folder `%s': Unknown error"
+msgstr "I pamundur shtimi i mesazhit tek kartela `%s': Gabim i panjohur"
+
+#: camel/providers/imap4/camel-imap4-folder.c:940
+#, c-format
+msgid "Cannot append message to folder `%s': Bad command"
+msgstr "I pamundur shtimi i mesazhit tek kartela `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-folder.c:1048
+#, c-format
+msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
+msgstr ""
+"E pamundur lëvizja e mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
+
+#: camel/providers/imap4/camel-imap4-folder.c:1052
+#, c-format
+msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
+msgstr ""
+"I pamundur kopjimi i mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
+
+#: camel/providers/imap4/camel-imap4-folder.c:1060
+#, c-format
+msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
+msgstr ""
+"E pamundur lëvizja e mesazheve nga kartela `%s' tek kartela `%s': komandë e "
+"pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-folder.c:1064
+#, c-format
+msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
+msgstr ""
+"I pamundur kopjimi i mesazheve nga kartela `%s' tek kartela `%s': komandë e "
+"pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-provider.c:64
+msgid "IMAPv4rev1"
+msgstr "IMAPv4rev1"
+
+#: camel/providers/imap4/camel-imap4-provider.c:66
+#, fuzzy
+msgid "For reading and storing mail on IMAPv4rev1 servers."
+msgstr "Për të lexuar dhe arkivuar postën në server-ët IMAP."
+
+#: camel/providers/imap4/camel-imap4-provider.c:83
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgstr ""
+"Ky opcion do t'ju lidhë me serverin IMAPv4rev1 duke përdorur një fjalëkalim "
+"në tekst të thjeshtë."
+
+#: camel/providers/imap4/camel-imap4-store.c:391
+#, c-format
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr ""
+"I apmundur autentifikimi në server-in IMAP %s duke përdorur mekanizmin e "
+"autentifikimit %s"
+
+#: camel/providers/imap4/camel-imap4-store.c:436
+#, c-format
+msgid "%sPlease enter the IMAP password for %s on host %s"
+msgstr "%sShkruaj fjalëkalimin IMPAP për %s tek host %s"
+
+#: camel/providers/imap4/camel-imap4-store.c:506
+#, c-format
+msgid "Cannot authenticate to IMAP server %s using %s"
+msgstr "Autentifikimi në serverin IMAP %s duke përdorur %s dështoi"
+
+#: camel/providers/imap4/camel-imap4-store.c:668
+#: camel/providers/imap4/camel-imap4-store.c:780
+#, fuzzy
+msgid "Cannot create IMAP folders in offline mode."
+msgstr "Nuk është i mundur krijimi i një kartele me këtë emër."
+
+#: camel/providers/imap4/camel-imap4-store.c:707
+#, c-format
+msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
+msgstr "E pamundur hapja e kartelës `%s' tek serveri IMAP %s: nuk njihet"
+
+#: camel/providers/imap4/camel-imap4-store.c:828
+#, c-format
+msgid "Cannot create folder `%s': Invalid mailbox name"
+msgstr "I pamundur krijimi i kartelës `%s': emër i pavlefshëm mailbox"
+
+#: camel/providers/imap4/camel-imap4-store.c:834
+#, c-format
+msgid "Cannot create folder `%s': Bad command"
+msgstr "I pamundur krijimi i kartelës `%s': Komandë e gabuar"
+
+#: camel/providers/imap4/camel-imap4-store.c:865
+#, c-format
+msgid "Cannot delete folder `%s': Special folder"
+msgstr "E pamundur fshirja e kartelës `%s': Kartelë speciale"
+
+#: camel/providers/imap4/camel-imap4-store.c:872
+#, fuzzy
+msgid "Cannot delete IMAP folders in offline mode."
+msgstr "E pamundur fshirja e kartelës `%s': Kartelë speciale"
+
+#: camel/providers/imap4/camel-imap4-store.c:931
+#, c-format
+msgid "Cannot delete folder `%s': Invalid mailbox name"
+msgstr "E pamundur fshirja e kartelës `%s': emër i pavlefshëm mailbox"
+
+#: camel/providers/imap4/camel-imap4-store.c:936
+#, c-format
+msgid "Cannot delete folder `%s': Bad command"
+msgstr "E pamundur fshirja e kartelës `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-store.c:956
+#, c-format
+msgid "Cannot rename folder `%s' to `%s': Special folder"
+msgstr ""
+"I pamundur ndryshimi i emrit të kartelës `%s' në `%s': Kartelë speciale"
+
+#: camel/providers/imap4/camel-imap4-store.c:963
+#, fuzzy
+msgid "Cannot rename IMAP folders in offline mode."
+msgstr "Nuk mund të ndryshoni emrin e një kartele në një magazinë News."
+
+#: camel/providers/imap4/camel-imap4-store.c:994
+#, c-format
+msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
+msgstr ""
+"I pamundur ndryshimi i emrit të kartelës `%s' në `%s': emër i pavlefshëm "
+"mailbox"
+
+#: camel/providers/imap4/camel-imap4-store.c:999
+#, c-format
+msgid "Cannot rename folder `%s' to `%s': Bad command"
+msgstr ""
+"I pamundur ndryshimi i emrit të kartelës `%s' në `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-store.c:1248
+#, c-format
+msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
+msgstr ""
+"E pamundur marrja e informacionit %s për pattern `%s' në server-in IMAP %s: %"
+"s"
+
+#: camel/providers/imap4/camel-imap4-store.c:1250
+msgid "Bad command"
+msgstr "Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-store.c:1288
+#, fuzzy
+msgid "Cannot subscribe to IMAP folders in offline mode."
+msgstr "I pamundur regjistrimi tek kartela `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-store.c:1333
+#, c-format
+msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
+msgstr "I pamundur regjistrimi tek kartela `%s': emër i pavlefshëm mailbox"
+
+#: camel/providers/imap4/camel-imap4-store.c:1338
+#, c-format
+msgid "Cannot subscribe to folder `%s': Bad command"
+msgstr "I pamundur regjistrimi tek kartela `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-store.c:1360
+#, fuzzy
+msgid "Cannot unsubscribe from IMAP folders in offline mode."
+msgstr "I pamundur ç'regjistrimi nga kartela `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-store.c:1405
+#, c-format
+msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
+msgstr "I pamundur ç'regjistrimi nga kartela `%s': Emër mailbox i gabuar"
+
+#: camel/providers/imap4/camel-imap4-store.c:1410
+#, c-format
+msgid "Cannot unsubscribe from folder `%s': Bad command"
+msgstr "I pamundur ç'regjistrimi nga kartela `%s': Komandë e pavlefshme"
+
+#: camel/providers/imap4/camel-imap4-summary.c:1294
+#, fuzzy
+msgid "Fetching envelopes for new messages"
+msgstr "Kontroll për mesazhe të rinj"
+
+#: camel/providers/imap4/camel-imap4-utils.c:368
+#, c-format
+msgid "Unexpected token in response from IMAP server %s: "
+msgstr "Token e papritur nga përgjigja e server-it IMAP %s: "
+
+#: camel/providers/imap4/camel-imap4-utils.c:391
+msgid "No data"
+msgstr "Asnjë e dhënë"
+
+#: camel/providers/imap4/camel-imap4-utils.c:574
+#, c-format
+msgid "IMAP server %s unexpectedly disconnected: %s"
+msgstr "Serveri IMAP %s u shkëput në menyrë të papritur: %s"
+
+#: camel/providers/local/camel-local-folder.c:179
+msgid "Index message body data"
+msgstr "Treguesi i trupit të të dhënave të mesazhit"
+
+#. $HOME relative path + protocol string
+#: camel/providers/local/camel-local-folder.c:391
+#, c-format
+msgid "~%s (%s)"
+msgstr "~%s (%s)"
+
+#. /var/spool/mail relative path + protocol
+#: camel/providers/local/camel-local-folder.c:395
+#: camel/providers/local/camel-local-folder.c:398
+#, c-format
+msgid "mailbox:%s (%s)"
+msgstr "mailbox:%s (%s)"
+
+#. a full path + protocol
+#: camel/providers/local/camel-local-folder.c:402
+#, c-format
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#: camel/providers/local/camel-local-provider.c:45
+msgid "Use the `.folders' folder summary file (exmh)"
+msgstr "Përdor file përmbledhës së kartelave `.folders' (exmh)"
+
+#: camel/providers/local/camel-local-provider.c:52
+msgid "MH-format mail directories"
+msgstr "Directories në formatin MH"
+
+#: camel/providers/local/camel-local-provider.c:53
+msgid "For storing local mail in MH-like mail directories."
+msgstr "Për të magazinuar postën lokale në diectory të llojit MH."
+
+#: camel/providers/local/camel-local-provider.c:68
+msgid "Local delivery"
+msgstr "Dorëzimet lokale"
+
+#: camel/providers/local/camel-local-provider.c:69
+msgid ""
+"For retrieving (moving) local mail from standard mbox formated spools into "
+"folders managed by Evolution."
+msgstr ""
+"Për të tërhequr (lëvizur) postën lokale nga formati i zakonshëm mbox tek "
+"kartelat e kontrolluara nga Evolution."
+
+#: camel/providers/local/camel-local-provider.c:81
+#: camel/providers/local/camel-local-provider.c:100
+msgid "Apply filters to new messages in INBOX"
+msgstr "Aplikoi filtrat mesazheve të rinj në INBOX"
+
+#: camel/providers/local/camel-local-provider.c:88
+msgid "Maildir-format mail directories"
+msgstr "Directory në formatin Maildir"
+
+#: camel/providers/local/camel-local-provider.c:89
+msgid "For storing local mail in maildir directories."
+msgstr "Për të magazinuar postën lokale në directory të formatit maildir."
+
+#: camel/providers/local/camel-local-provider.c:101
+msgid "Store status headers in Elm/Pine/Mutt format"
+msgstr "Ruaj titujt e gjëndjes në formatin Elm/Pine/Mutt"
+
+#: camel/providers/local/camel-local-provider.c:108
+msgid "Standard Unix mbox spool or directory"
+msgstr "Spool apo directory UNIX standard mbox"
+
+#: camel/providers/local/camel-local-provider.c:109
+msgid ""
+"For reading and storing local mail in external standard mbox spool files.\n"
+"May also be used to read a tree of Elm, Pine, or Mutt style folders."
+msgstr ""
+"Për të lexuar dhe arkivuar postën në file spool të jashtëm standart mbox.\n"
+"Mund të përdoret gjithashtu për të lexuar një degëzim kartelash në stil Elm, "
+"Pine, apo Mutt."
+
+#: camel/providers/local/camel-local-store.c:143
+#: camel/providers/local/camel-local-store.c:254
+#: camel/providers/local/camel-mbox-store.c:353
+#: camel/providers/local/camel-spool-store.c:117
+#, c-format
+msgid "Store root %s is not an absolute path"
+msgstr "Rrënja e arkivimit %s nuk është një path absolut"
+
+#: camel/providers/local/camel-local-store.c:150
+#, c-format
+msgid "Store root %s is not a regular directory"
+msgstr "Rrënja e arkivimit %s nuk është një directory e rregullt"
+
+#: camel/providers/local/camel-local-store.c:159
+#: camel/providers/local/camel-local-store.c:167
+#: camel/providers/local/camel-local-store.c:265
+#, c-format
+msgid "Cannot get folder: %s: %s"
+msgstr "E pamundur marrja e kartelës: %s: %s"
+
+#: camel/providers/local/camel-local-store.c:179
+msgid "Local stores do not have an inbox"
+msgstr "Arkivët lokalë nuk kanë një kartelë të postës në ardhje"
+
+#: camel/providers/local/camel-local-store.c:225
+#, c-format
+msgid "Local mail file %s"
+msgstr "File i postës lokale %s"
+
+#: camel/providers/local/camel-local-store.c:334
+#, c-format
+msgid "Could not rename folder %s to %s: %s"
+msgstr "I pamundur ndryshimi i emrit të kartelës %s në %s: %s"
+
+#: camel/providers/local/camel-local-store.c:399
+#, c-format
+msgid "Could not rename '%s': %s"
+msgstr "I pamundur riemërtimi i '%s': %s"
+
+#: camel/providers/local/camel-local-store.c:424
+#: camel/providers/local/camel-mbox-store.c:282
+#, c-format
+msgid "Could not delete folder summary file `%s': %s"
+msgstr "E pamundur fshirja e përmbledhjes së kartelës `%s': %s"
+
+#: camel/providers/local/camel-local-store.c:434
+#: camel/providers/local/camel-mbox-store.c:294
+#, c-format
+msgid "Could not delete folder index file `%s': %s"
+msgstr "E pamundur fshirja e treguesit të kartelës `%s': %s"
+
+#: camel/providers/local/camel-local-store.c:457
+#: camel/providers/local/camel-mbox-store.c:318
+#, c-format
+msgid "Could not delete folder meta file `%s': %s"
+msgstr "E pamundur fshirja e përmbledhjes së kartelës `%s': %s"
+
+#: camel/providers/local/camel-local-summary.c:406
+#, c-format
+msgid "Could not save summary: %s: %s"
+msgstr "E pamundur ruajtja e përmbledhjes: %s: %s"
+
+#: camel/providers/local/camel-local-summary.c:464
+msgid "Unable to add message to summary: unknown reason"
+msgstr "I pamundur shtimi i mesazhit në përmbledhje: shkaku nuk njihet"
+
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
+#: camel/providers/local/camel-maildir-folder.c:75
+#: camel/providers/local/camel-maildir-store.c:221
+#: camel/providers/local/camel-maildir-store.c:293
+#: camel/providers/local/camel-maildir-store.c:515
+#: camel/providers/local/camel-maildir-store.c:528
+#: camel/providers/local/camel-spool-store.c:452
+msgid "Inbox"
+msgstr "Inbox"
+
+#: camel/providers/local/camel-maildir-folder.c:215
+msgid "Maildir append message cancelled"
+msgstr "Shtimi i mesazhit maildir u anullua"
+
+#: camel/providers/local/camel-maildir-folder.c:218
+#, c-format
+msgid "Cannot append message to maildir folder: %s: %s"
+msgstr "I pamundur shtimi i mesazhit në kartelën maildir: %s: %s"
+
+#: camel/providers/local/camel-maildir-folder.c:244
+#: camel/providers/local/camel-maildir-folder.c:258
+#: camel/providers/local/camel-maildir-folder.c:267
+#: camel/providers/local/camel-mbox-folder.c:402
+#: camel/providers/local/camel-mbox-folder.c:421
+#: camel/providers/local/camel-mbox-folder.c:452
+#: camel/providers/local/camel-mbox-folder.c:460
+#: camel/providers/local/camel-mh-folder.c:202
+#: camel/providers/local/camel-mh-folder.c:213
+#: camel/providers/local/camel-mh-folder.c:222
+#, c-format
+msgid ""
+"Cannot get message: %s from folder %s\n"
+"  %s"
+msgstr ""
+"E pamundur marrja e mesazhit: %s nga kartela %s\n"
+"  %s"
+
+#: camel/providers/local/camel-maildir-folder.c:268
+msgid "Invalid message contents"
+msgstr "Përmbajtje mesazhi e pavlefshme"
+
+#: camel/providers/local/camel-maildir-store.c:148
+#: camel/providers/local/camel-maildir-store.c:173
+#: camel/providers/local/camel-mbox-store.c:182
+#: camel/providers/local/camel-mbox-store.c:194
+#, c-format
+msgid "Cannot create folder `%s': %s"
+msgstr "I pamundur krijimi i kartelës `%s': %s"
+
+#: camel/providers/local/camel-maildir-store.c:161
+#: camel/providers/local/camel-mbox-store.c:152
+#: camel/providers/local/camel-mh-store.c:205
+#, c-format
+msgid "Cannot get folder `%s': %s"
+msgstr "E pamundur hapja e kartelës `%s': %s"
+
+#: camel/providers/local/camel-maildir-store.c:165
+#: camel/providers/local/camel-mbox-store.c:160
+#: camel/providers/local/camel-mh-store.c:212
+#, c-format
+msgid "Cannot get folder `%s': folder does not exist."
+msgstr "E pamundur marrja e kartelës `%s': kartela nuk ekziston."
+
+#: camel/providers/local/camel-maildir-store.c:189
+#, c-format
+msgid "Cannot get folder `%s': not a maildir directory."
+msgstr "E pamundur marrja e kartelës `%s': nuk është një directory maildir."
+
+#: camel/providers/local/camel-maildir-store.c:236
+#: camel/providers/local/camel-maildir-store.c:274
+#: camel/providers/local/camel-mh-store.c:261
+#, c-format
+msgid "Could not delete folder `%s': %s"
+msgstr "I pamundur eleminimi i kartelës `%s': %s"
+
+#: camel/providers/local/camel-maildir-store.c:238
+msgid "not a maildir directory"
+msgstr "nuk është një directory maildir"
+
+#: camel/providers/local/camel-maildir-store.c:440
+#: camel/providers/local/camel-spool-store.c:319
+#: camel/providers/local/camel-spool-store.c:333
+#, c-format
+msgid "Could not scan folder `%s': %s"
+msgstr "I pamundur kontrolli i kartelës `%s': %s"
+
+#: camel/providers/local/camel-maildir-summary.c:425
+#: camel/providers/local/camel-maildir-summary.c:556
+#, c-format
+msgid "Cannot open maildir directory path: %s: %s"
+msgstr "E pamundur hapja e pozicionit të directory maildir: %s: %s"
+
+#: camel/providers/local/camel-maildir-summary.c:549
+msgid "Checking folder consistency"
+msgstr "Kontrolli i gjendjes së kartelës"
+
+#: camel/providers/local/camel-maildir-summary.c:652
+msgid "Checking for new messages"
+msgstr "Kontroll për mesazhe të rinj"
+
+#: camel/providers/local/camel-maildir-summary.c:741
+#: camel/providers/local/camel-mbox-summary.c:416
+#: camel/providers/local/camel-mbox-summary.c:589
+#: camel/providers/local/camel-mbox-summary.c:680
+#: camel/providers/local/camel-spool-summary.c:140
+msgid "Storing folder"
+msgstr "Duke ruajtur kartelën"
+
+#: camel/providers/local/camel-mbox-folder.c:210
+#: camel/providers/local/camel-spool-folder.c:176
+#, c-format
+msgid "Cannot create folder lock on %s: %s"
+msgstr "I pamundur krijimi i kartelës lock në %s: %s"
+
+#: camel/providers/local/camel-mbox-folder.c:269
+#, c-format
+msgid "Cannot open mailbox: %s: %s\n"
+msgstr "E pamundur hapja e mailbox: %s: %s\n"
+
+#: camel/providers/local/camel-mbox-folder.c:329
+msgid "Mail append cancelled"
+msgstr "Shtimi i mesazhit u anullua"
+
+#: camel/providers/local/camel-mbox-folder.c:332
+#, c-format
+msgid "Cannot append message to mbox file: %s: %s"
+msgstr "I pamundur shtimi i mesazhit tek file mbox: %s: %s"
+
+#: camel/providers/local/camel-mbox-folder.c:453
+msgid "The folder appears to be irrecoverably corrupted."
+msgstr "Mesa duket kartela është dëmtuar në menyrë të pariparueshme."
+
+#: camel/providers/local/camel-mbox-folder.c:461
+#: camel/providers/local/camel-mh-folder.c:223
+msgid "Message construction failed."
+msgstr "Ndërtimi i mesazhit dështoi."
+
+#: camel/providers/local/camel-mbox-store.c:174
+#: camel/providers/local/camel-mbox-store.c:359
+msgid "Cannot create a folder by this name."
+msgstr "Nuk është i mundur krijimi i një kartele me këtë emër."
+
+#: camel/providers/local/camel-mbox-store.c:204
+#, c-format
+msgid "Cannot get folder `%s': not a regular file."
+msgstr "E pamundur marrja e kartelës `%s': nuk është një file i rregullt."
+
+#: camel/providers/local/camel-mbox-store.c:234
+#: camel/providers/local/camel-mbox-store.c:245
+#: camel/providers/local/camel-mbox-store.c:268
+#, c-format
+msgid ""
+"Could not delete folder `%s':\n"
+"%s"
+msgstr ""
+"I pamundur eleminimi i kartelës `%s':\n"
+"%s"
+
+#: camel/providers/local/camel-mbox-store.c:253
+#, c-format
+msgid "`%s' is not a regular file."
+msgstr "`%s' nuk është një file i rregullt."
+
+#: camel/providers/local/camel-mbox-store.c:260
+#, c-format
+msgid "Folder `%s' is not empty. Not deleted."
+msgstr "Kartela `%s' nuk është bosh. Nuk do të eleminohet."
+
+#: camel/providers/local/camel-mbox-store.c:372
+#, c-format
+msgid "Cannot create directory `%s': %s."
+msgstr "I pamundur krijimi i directory `%s': %s."
+
+#: camel/providers/local/camel-mbox-store.c:386
+#, c-format
+msgid "Cannot create folder: %s: %s"
+msgstr "I pamundur krijimi i kartelës `%s': %s"
+
+#: camel/providers/local/camel-mbox-store.c:388
+msgid "Folder already exists"
+msgstr "Kartela ekziston"
+
+#: camel/providers/local/camel-mbox-store.c:470
+msgid "The new folder name is illegal."
+msgstr "Emri i ri i kartelës është ilegal."
+
+#: camel/providers/local/camel-mbox-store.c:483
+#, c-format
+msgid "Could not rename `%s': `%s': %s"
+msgstr "I pamundur ndryshimi i emrit të `%s': `%s': %s"
+
+#: camel/providers/local/camel-mbox-store.c:558
+#, c-format
+msgid "Could not rename '%s' to %s: %s"
+msgstr "I pamundur ndryshimi i emrit të `%s' në `%s': %s"
+
+#: camel/providers/local/camel-mbox-summary.c:422
+#, c-format
+msgid "Could not open folder: %s: %s"
+msgstr "E pamundur hapja e kartelës: %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:470
+#, c-format
+msgid "Fatal mail parser error near position %ld in folder %s"
+msgstr ""
+"Gabim fatal i shpërndarjes së postës afër pozicionit %ld në kartelën %s"
+
+#: camel/providers/local/camel-mbox-summary.c:526
+#, c-format
+msgid "Cannot check folder: %s: %s"
+msgstr "I pamundur kontrolli i kartelës: %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:594
+#: camel/providers/local/camel-mbox-summary.c:685
+#: camel/providers/local/camel-spool-summary.c:145
+#, c-format
+msgid "Could not open file: %s: %s"
+msgstr "E pamundur hapja e file: %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:606
+#: camel/providers/local/camel-spool-summary.c:165
+#, c-format
+msgid "Cannot open temporary mailbox: %s"
+msgstr "E pamundur hapja e mailbox të përkohshëm: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:619
+#: camel/providers/local/camel-mbox-summary.c:783
+#, c-format
+msgid "Could not close source folder %s: %s"
+msgstr "E pamundur mbyllja e kartelës burim %s: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:628
+#, c-format
+msgid "Could not close temp folder: %s"
+msgstr "E pamundur mbyllja e kartelës së përkohshme: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:639
+#, c-format
+msgid "Could not rename folder: %s"
+msgstr "I pamundur riemërtimi i kartelës: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:723
+#: camel/providers/local/camel-mbox-summary.c:731
+#: camel/providers/local/camel-mbox-summary.c:925
+#: camel/providers/local/camel-mbox-summary.c:933
+msgid "Summary and folder mismatch, even after a sync"
+msgstr "Përmbledhja dhe kartela nuk korrispondojnë, edhe mbas një sinkronizimi"
+
+#: camel/providers/local/camel-mbox-summary.c:859
+#: camel/providers/local/camel-spool-summary.c:337
+#, c-format
+msgid "Unknown error: %s"
+msgstr "Gabim i panjohur: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:894
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "I pamundur magazinimi i kartelës: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:988
+#: camel/providers/local/camel-mbox-summary.c:1014
+#, c-format
+msgid "Error writing to temp mailbox: %s"
+msgstr "Gabim gjatë shkrimit tek mailbox i përkohshëm: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:1005
+#, c-format
+msgid "Writing to tmp mailbox failed: %s: %s"
+msgstr "Shkrimi në tmp mailbox dështoi: %s: %s"
+
+#: camel/providers/local/camel-mh-folder.c:175
+msgid "MH append message cancelled"
+msgstr "Shtimi i një mesazhi MH u anullua"
+
+#: camel/providers/local/camel-mh-folder.c:178
+#, c-format
+msgid "Cannot append message to mh folder: %s: %s"
+msgstr "I pamundur shtimi i mesazhit tek kartela mh: %s: %s"
+
+#: camel/providers/local/camel-mh-store.c:220
+#, c-format
+msgid "Could not create folder `%s': %s"
+msgstr "I pamundur krijimi i kartelës `%s': %s"
+
+#: camel/providers/local/camel-mh-store.c:232
+#, c-format
+msgid "Cannot get folder `%s': not a directory."
+msgstr "E pamundur hapja e kartelës `%s': nuk është një directory."
+
+#: camel/providers/local/camel-mh-summary.c:247
+#, c-format
+msgid "Cannot open MH directory path: %s: %s"
+msgstr "E pamundur hapja e path të directory MH: %s: %s"
+
+#: camel/providers/local/camel-spool-store.c:123
+#, c-format
+msgid "Spool `%s' cannot be opened: %s"
+msgstr "Spool `%s' nuk mund të hapet: %s"
+
+#: camel/providers/local/camel-spool-store.c:135
+#, c-format
+msgid "Spool `%s' is not a regular file or directory"
+msgstr "Spool `%s' nuk është një file i rregullt apo directory"
+
+#: camel/providers/local/camel-spool-store.c:154
+#, c-format
+msgid "Folder `%s/%s' does not exist."
+msgstr "Kartela `%s/%s' nuk ekziston."
+
+#: camel/providers/local/camel-spool-store.c:164
+#, c-format
+msgid ""
+"Could not open folder `%s':\n"
+"%s"
+msgstr ""
+"E pamundur hapja e kartelës `%s':\n"
+"%s"
+
+#: camel/providers/local/camel-spool-store.c:168
+#, c-format
+msgid "Folder `%s' does not exist."
+msgstr "Kartela `%s' nuk ekziston."
+
+#: camel/providers/local/camel-spool-store.c:173
+#, c-format
+msgid ""
+"Could not create folder `%s':\n"
+"%s"
+msgstr ""
+"I pamundur krijimi i kartelës `%s':\n"
+"%s"
+
+#: camel/providers/local/camel-spool-store.c:181
+#, c-format
+msgid "`%s' is not a mailbox file."
+msgstr "`%s' nuk është një file mailbox."
+
+#: camel/providers/local/camel-spool-store.c:198
+msgid "Store does not support an INBOX"
+msgstr "Arkivi nuk suporton kutinë e postës në ardhje (INBOX)"
+
+#: camel/providers/local/camel-spool-store.c:210
+#, c-format
+msgid "Spool mail file %s"
+msgstr "File spool i postës %s"
+
+#: camel/providers/local/camel-spool-store.c:210
+#, c-format
+msgid "Spool folder tree %s"
+msgstr "Degëzimi i kartelës spool %s"
+
+#: camel/providers/local/camel-spool-store.c:218
+msgid "Spool folders cannot be renamed"
+msgstr "Kartelat spool nuk mund të riemërtohen"
+
+#: camel/providers/local/camel-spool-store.c:226
+msgid "Spool folders cannot be deleted"
+msgstr "Kartelat spool nuk mund të fshihen"
+
+#: camel/providers/local/camel-spool-summary.c:178
+#: camel/providers/local/camel-spool-summary.c:188
+#: camel/providers/local/camel-spool-summary.c:198
+#, c-format
+msgid "Could not sync temporary folder %s: %s"
+msgstr "I pamundur sinkronizimi i kartelës së përkohshme %s: %s"
+
+#: camel/providers/local/camel-spool-summary.c:214
+#, c-format
+msgid "Could not sync spool folder %s: %s"
+msgstr "I pamundur sinkronizimi i kartelës spool %s: %s"
+
+#: camel/providers/local/camel-spool-summary.c:245
+#: camel/providers/local/camel-spool-summary.c:264
+#: camel/providers/local/camel-spool-summary.c:277
+#, c-format
+msgid ""
+"Could not sync spool folder %s: %s\n"
+"Folder may be corrupt, copy saved in `%s'"
+msgstr ""
+"I pamundur sinkronizimi i kartelës spool %s: %s\n"
+"Kartela mund të jetë e dëmtuar, një kopje është ruajtur në `%s'"
+
+#: camel/providers/nntp/camel-nntp-auth.c:44
+#: camel/providers/nntp/camel-nntp-store.c:1156
+#, c-format
+msgid "Please enter the NNTP password for %s@%s"
+msgstr "Shkruaj fjalëkalimin NNTP për %s@%s"
+
+#: camel/providers/nntp/camel-nntp-auth.c:64
+msgid "Server rejected username"
+msgstr "Serveri nuk ka pranuar emrin e përdoruesit"
+
+#: camel/providers/nntp/camel-nntp-auth.c:70
+msgid "Failed to send username to server"
+msgstr "Dërgimi i emrit të përdoruesit në server dështoi"
+
+#: camel/providers/nntp/camel-nntp-auth.c:79
+msgid "Server rejected username/password"
+msgstr "Serveri nuk ka pranuar emrin/fjalëkalimin e përdoruesit"
+
+#: camel/providers/nntp/camel-nntp-folder.c:177
+#: camel/providers/nntp/camel-nntp-folder.c:209
+#, c-format
+msgid "Internal error: uid in invalid format: %s"
+msgstr "gabim i brendshëm: uid është i një formati të pavlefshëm: %s"
+
+#: camel/providers/nntp/camel-nntp-folder.c:329
+#: camel/providers/nntp/camel-nntp-folder.c:332
+#: camel/providers/nntp/camel-nntp-folder.c:374
+#: camel/providers/nntp/camel-nntp-folder.c:376
+#, c-format
+msgid "Posting failed: %s"
+msgstr "Postimi dështoi: %s"
+
+#: camel/providers/nntp/camel-nntp-folder.c:394
+msgid "You cannot post NNTP messages while working offline!"
+msgstr "Nuk mund të dërgoni mesazhe NNTP kur jeni duke punuar i shkëputur!"
+
+#: camel/providers/nntp/camel-nntp-folder.c:405
+msgid "You cannot copy messages from a NNTP folder!"
+msgstr "Nuk mund të kopjoni mesazhe nga një kartelë NNTP!"
+
+#: camel/providers/nntp/camel-nntp-grouplist.c:44
+msgid "Could not get group list from server."
+msgstr "Nuk arrij të marr listën e grupeve nga serveri."
+
+#: camel/providers/nntp/camel-nntp-grouplist.c:97
+#: camel/providers/nntp/camel-nntp-grouplist.c:106
+#, c-format
+msgid "Unable to load grouplist file for %s: %s"
+msgstr "I pamundur ngarkimi i file me listën e grupeve për %s: %s"
+
+#: camel/providers/nntp/camel-nntp-grouplist.c:157
+#, c-format
+msgid "Unable to save grouplist file for %s: %s"
+msgstr "E pamundur ruajtja e file me listën e grupeve për %s: %s"
+
+#: camel/providers/nntp/camel-nntp-provider.c:44
+msgid ""
+"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr ""
+"Shfaq kartelat në formën e shkurtër (d.m.th. c.o.linux në vend të comp.os."
+"linux)"
+
+#: camel/providers/nntp/camel-nntp-provider.c:46
+msgid "In the subscription dialog, show relative folder names"
+msgstr ""
+"Tek dritarja e dialogut të regjistrimit, shfaq emrat e kartelave relative"
+
+#: camel/providers/nntp/camel-nntp-provider.c:53
+msgid "USENET news"
+msgstr "USENET news"
+
+#: camel/providers/nntp/camel-nntp-provider.c:55
+msgid "This is a provider for reading from and posting toUSENET newsgroups."
+msgstr ""
+"Ky është një furnizues për të lexuar dhe postuar tek newsgroups USENET."
+
+#: camel/providers/nntp/camel-nntp-provider.c:74
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
+msgstr ""
+"Me këtë opcion autentifikimi me server-in NNTP kryhet duke përdorur një "
+"fjalëkalim në tekst të thjeshtë."
+
+#: camel/providers/nntp/camel-nntp-store.c:234
+#, c-format
+msgid "Could not read greeting from %s: %s"
+msgstr "I pamundur leximi i përshëndetjeve nga %s: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:246
+#, c-format
+msgid "NNTP server %s returned error code %d: %s"
+msgstr "Serveri NNTP %s u përgjigj me një gabim të kodit %d: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:422
+#, c-format
+msgid "USENET News via %s"
+msgstr "USENET News via %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:811
+#, c-format
+msgid ""
+"Error retrieving newsgroups:\n"
+"\n"
+"%s"
+msgstr ""
+"Gabim gjatë marrjes së newsgroups:\n"
+"\n"
+"%s"
+
+#: camel/providers/nntp/camel-nntp-store.c:905
+msgid ""
+"You cannot subscribe to this newsgroup:\n"
+"\n"
+"No such newsgroup. The selected item is a probably a parent folder."
+msgstr ""
+"I pamundur regjistrimi tek ky newsgroup:\n"
+"\n"
+"Newsgroup nuk ekziston. Elementi i zgjedhur ka mundësi të jetë një kartelë "
+"prind."
+
+#: camel/providers/nntp/camel-nntp-store.c:937
+msgid ""
+"You cannot unsubscribe to this newsgroup:\n"
+"\n"
+"newsgroup does not exist!"
+msgstr ""
+"Nuk mund të ç'regjistroheni nga ky newsgroup:\n"
+"\n"
+"newsgroup nuk ekziston!"
+
+#: camel/providers/nntp/camel-nntp-store.c:962
+msgid "You cannot create a folder in a News store: subscribe instead."
+msgstr ""
+"Nuk mund të krijosh një kartelë në një magazinë News: përkundrazi keni "
+"mundësi të regjistroheni."
+
+#: camel/providers/nntp/camel-nntp-store.c:970
+msgid "You cannot rename a folder in a News store."
+msgstr "Nuk mund të ndryshoni emrin e një kartele në një magazinë News."
+
+#: camel/providers/nntp/camel-nntp-store.c:978
+msgid "You cannot remove a folder in a News store: unsubscribe instead."
+msgstr ""
+"Nuk mund të eleminosh një kartelë në një magazinë News: përkundrazi keni "
+"mundësi të ç'regjistroheni."
+
+#: camel/providers/nntp/camel-nntp-store.c:1148
+#, fuzzy
+msgid "Authentication requested but no username provided"
+msgstr "Kërkohet autentifikimi por nuk është dhënë emri i përdoruesit"
+
+#: camel/providers/nntp/camel-nntp-store.c:1160
+#, c-format
+msgid "Cannot authenticate to server: %s"
+msgstr "Identifikimi me server-in dështoi: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:1276
+#, c-format
+msgid "NNTP Command failed: %s"
+msgstr "Komanda NNTP dështoi: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:1332
+msgid "Not connected."
+msgstr "Jo i lidhur."
+
+#: camel/providers/nntp/camel-nntp-store.c:1385
+#, c-format
+msgid "No such folder: %s"
+msgstr "Kartela nuk u gjet: %s"
+
+#: camel/providers/nntp/camel-nntp-summary.c:221
+#: camel/providers/nntp/camel-nntp-summary.c:317
+#, c-format
+msgid "%s: Scanning new messages"
+msgstr "%s: Duke kërkuar mesazhe të rinj"
+
+#: camel/providers/nntp/camel-nntp-summary.c:228
+#, c-format
+msgid "Unexpected server response from xover: %s"
+msgstr "Përgjigje e papritur serveri nga xover: %s"
+
+#: camel/providers/nntp/camel-nntp-summary.c:331
+#, c-format
+msgid "Unexpected server response from head: %s"
+msgstr "Përgjigje serveri e papritur nga titulli: %s"
+
+#: camel/providers/nntp/camel-nntp-summary.c:371
+msgid "Use cancel"
+msgstr "Përdor anullo"
+
+#: camel/providers/nntp/camel-nntp-summary.c:373
+#, c-format
+msgid "Operation failed: %s"
+msgstr "Operacioni dështoi: %s"
+
+#: camel/providers/pop3/camel-pop3-folder.c:247
+msgid "Retrieving POP summary"
+msgstr "Duke marrë përmbledhjen POP"
+
+#: camel/providers/pop3/camel-pop3-folder.c:266
+#, c-format
+msgid "Cannot get POP summary: %s"
+msgstr "E pamundur marrja e përmbledhjes POP: %s"
+
+#: camel/providers/pop3/camel-pop3-folder.c:309
+msgid "Expunging deleted messages"
+msgstr "Duke pastruar mesazhet e eleminuar"
+
+#: camel/providers/pop3/camel-pop3-folder.c:405
+#, c-format
+msgid "No message with uid %s"
+msgstr "Asnjë mesazh me uid %s"
+
+#. Sigh, most of the crap in this function is so that the cancel button
+#. returns the proper exception code.  Sigh.
+#: camel/providers/pop3/camel-pop3-folder.c:412
+#, c-format
+msgid "Retrieving POP message %d"
+msgstr "Duke tërhequr mesazhin POP %d"
+
+#: camel/providers/pop3/camel-pop3-folder.c:502
+msgid "Unknown reason"
+msgstr "Arsye e panjohur"
+
+#: camel/providers/pop3/camel-pop3-provider.c:39
+msgid "Message storage"
+msgstr "Arkivi i mesazheve"
+
+#: camel/providers/pop3/camel-pop3-provider.c:41
+msgid "Leave messages on server"
+msgstr "Lëri mesazhet në server"
+
+#: camel/providers/pop3/camel-pop3-provider.c:44
+#, c-format
+msgid "Delete after %s day(s)"
+msgstr "Elemino mbas %s dite(ësh)"
+
+#: camel/providers/pop3/camel-pop3-provider.c:47
+msgid "Disable support for all POP3 extensions"
+msgstr "Ç'aktivo suportin për të gjitha shtesat POP3"
+
+#: camel/providers/pop3/camel-pop3-provider.c:55
+msgid "POP"
+msgstr "POP"
+
+#: camel/providers/pop3/camel-pop3-provider.c:57
+msgid "For connecting to and downloading mail from POP servers."
+msgstr "Për t'u lidhur dhe shkarkuar postën nga server-ët POP."
+
+#: camel/providers/pop3/camel-pop3-provider.c:74
+msgid ""
+"This option will connect to the POP server using a plaintext password. This "
+"is the only option supported by many POP servers."
+msgstr ""
+"Me këtë opcion lidhesh me serverin POP duke përdorur një fjalëkalim në tekst "
+"të thjeshtë. Ky është opcioni i vetëm i suportuar nga shumë server POP."
+
+#: camel/providers/pop3/camel-pop3-provider.c:84
+msgid ""
+"This option will connect to the POP server using an encrypted password via "
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
+msgstr ""
+"Me këtë opcion lidhesh me serverin POP duke përdorur një fjalëkalim të "
+"kriptuar me anë të protokollit APOP. Mund të mos funksionojë për të gjithë "
+"përdoruesit edhe në server që pohojnë suportin e këtij protokolli."
+
+#: camel/providers/pop3/camel-pop3-store.c:204
+#, fuzzy, c-format
+msgid "Failed to read a valid greeting from POP server %s"
+msgstr ""
+"I pamundur leximi i një greeting të vlefshëm nga serveri POP %s (porta %d)"
+
+#: camel/providers/pop3/camel-pop3-store.c:218
+#: camel/providers/pop3/camel-pop3-store.c:235
+#: camel/providers/pop3/camel-pop3-store.c:245
+#: camel/providers/pop3/camel-pop3-store.c:251
+#, c-format
+msgid "Failed to connect to POP server %s in secure mode: %s"
+msgstr "Lidhja me serverin POP %s në menyrë të sigurt dështoi: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:219
+#, fuzzy
+msgid "STLS not supported"
+msgstr "Shtesa SSL/TLS nuk suportohet."
+
+#: camel/providers/pop3/camel-pop3-store.c:363
+#, c-format
+msgid "Could not connect to POP server %s"
+msgstr "E pamundur lidhja me serverin POP %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:404
+#: camel/providers/pop3/camel-pop3-store.c:518
+#, c-format
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
+msgstr ""
+"E pamundur lidhja me serverin POP %s. Asnjë suport për mekanizmin e kërkuar "
+"të autentifikimit."
+
+#: camel/providers/pop3/camel-pop3-store.c:420
+#, c-format
+msgid "SASL `%s' Login failed for POP server %s: %s"
+msgstr "SASL `%s' Hyrja dështoi për server-in POP %s: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:432
+#, c-format
+msgid "Cannot login to POP server %s: SASL Protocol error"
+msgstr "E pamundur futja në server-in POP %s: gabim i protokollit SASL"
+
+#: camel/providers/pop3/camel-pop3-store.c:451
+#, c-format
+msgid "Failed to authenticate on POP server %s: %s"
+msgstr "I pamundur identifikimi në serverin POP %s: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:477
+#, c-format
+msgid "%sPlease enter the POP password for %s on host %s"
+msgstr "%sShkruaj fjalëkalimin POP %s tek host %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:532
+#: camel/providers/pop3/camel-pop3-store.c:545
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending password: %s"
+msgstr ""
+"E pamundur lidhja me server-in POP %s\n"
+"Gabim gjatë dërgimit të fjalëkalimit: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:539
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending username: %s"
+msgstr ""
+"E pamundur lidhja me server-in POP %s\n"
+"Gabim gjatë dërgimit të përdoruesit: %s"
+
+#: camel/providers/pop3/camel-pop3-store.c:644
+#, c-format
+msgid "No such folder `%s'."
+msgstr "Kartela `%s' nuk u gjet."
+
+#: camel/providers/sendmail/camel-sendmail-provider.c:37
+msgid "Sendmail"
+msgstr "Sendmail"
+
+#: camel/providers/sendmail/camel-sendmail-provider.c:39
+msgid ""
+"For delivering mail by passing it to the \"sendmail\" program on the local "
+"system."
+msgstr ""
+"Për të shpërndarë postën duke ja kaluar programit \"sendmail\" në sistemin "
+"lokal."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:114
+msgid "Could not parse recipient list"
+msgstr "E pamundur lëvizja e listës së marrësve"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:145
+#, c-format
+msgid "Could not create pipe to sendmail: %s: mail not sent"
+msgstr ""
+"I pamundur krijimi i ridrejtimit drejt sendmail: %s: posta nuk u dërgua"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:166
+#, c-format
+msgid "Could not fork sendmail: %s: mail not sent"
+msgstr "I pamundur krijimi i fork të sendmail: %s: posta nuk u dërgua"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:206
+#, c-format
+msgid "Could not send message: %s"
+msgstr "E pamundur nisja e postës: %s"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:234
+#, c-format
+msgid "sendmail exited with signal %s: mail not sent."
+msgstr "sendmail përfundoi me sinjalin %s: posta nuk u dërgua."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:241
+#, c-format
+msgid "Could not execute %s: mail not sent."
+msgstr "I pamundur ekzekutimi i %s: posta nuk u dërgua."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:246
+#, c-format
+msgid "sendmail exited with status %d: mail not sent."
+msgstr "sendmail përfundoi me gjendjen %d: posta nuk u dërgua."
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:260
+msgid "sendmail"
+msgstr "sendmail"
+
+#: camel/providers/sendmail/camel-sendmail-transport.c:262
+msgid "Mail delivery via the sendmail program"
+msgstr "Posta dorëzohet me anë të programit sendmail"
+
+#: camel/providers/smtp/camel-smtp-provider.c:38
+msgid "SMTP"
+msgstr "SMTP"
+
+#: camel/providers/smtp/camel-smtp-provider.c:40
+msgid "For delivering mail by connecting to a remote mailhub using SMTP."
+msgstr ""
+"Për të dorëzuar postën duke u lidhur me një mailhub remot duke përdorur SMTP."
+
+#: camel/providers/smtp/camel-smtp-transport.c:165
+msgid "Syntax error, command unrecognized"
+msgstr "Gabim sintaksor, komandë e panjohur"
+
+#: camel/providers/smtp/camel-smtp-transport.c:167
+msgid "Syntax error in parameters or arguments"
+msgstr "Gabim sintaksor në parametrat apo argumentet"
+
+#: camel/providers/smtp/camel-smtp-transport.c:169
+msgid "Command not implemented"
+msgstr "Komandë e pasuportuar"
+
+#: camel/providers/smtp/camel-smtp-transport.c:171
+msgid "Command parameter not implemented"
+msgstr "Parametër komande i pasuportuar"
+
+#: camel/providers/smtp/camel-smtp-transport.c:173
+msgid "System status, or system help reply"
+msgstr "Gjendja e sistemit, apo përgjigje ndihme nga sistemi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:175
+msgid "Help message"
+msgstr "Mesazhi i ndihmës"
+
+#: camel/providers/smtp/camel-smtp-transport.c:177
+msgid "Service ready"
+msgstr "Shërbimi gati"
+
+#: camel/providers/smtp/camel-smtp-transport.c:179
+msgid "Service closing transmission channel"
+msgstr "Shërbimi është duke mbyllur kanalin e transmetimit"
+
+#: camel/providers/smtp/camel-smtp-transport.c:181
+msgid "Service not available, closing transmission channel"
+msgstr "Shërbimi nuk është në dispozicion, duke mbyllur kanalin e transmetimit"
+
+#: camel/providers/smtp/camel-smtp-transport.c:183
+msgid "Requested mail action okay, completed"
+msgstr "Veprimi i postës së kërkuar është korrekt, u plotësua"
+
+#: camel/providers/smtp/camel-smtp-transport.c:185
+msgid "User not local; will forward to <forward-path>"
+msgstr "Përdorues jo lokal, përcille tek <forward-path>"
+
+#: camel/providers/smtp/camel-smtp-transport.c:187
+msgid "Requested mail action not taken: mailbox unavailable"
+msgstr "Veprimi i postës i kërkuar nuk u krye: kuti jo në dispozicion"
+
+#: camel/providers/smtp/camel-smtp-transport.c:189
+msgid "Requested action not taken: mailbox unavailable"
+msgstr "Veprimi i kërkuar nuk u krye: kuti jo në dispozicion"
+
+#: camel/providers/smtp/camel-smtp-transport.c:191
+msgid "Requested action aborted: error in processing"
+msgstr "Veprimi i kërkuar u ndërpre: gabim gjatë proçesimit"
+
+#: camel/providers/smtp/camel-smtp-transport.c:193
+msgid "User not local; please try <forward-path>"
+msgstr "Përdorues jo lokal, provo <forward-path>"
+
+#: camel/providers/smtp/camel-smtp-transport.c:195
+msgid "Requested action not taken: insufficient system storage"
+msgstr "Veprimi i kërkuar nuk u krye: hapësirë e pamjaftueshme"
+
+#: camel/providers/smtp/camel-smtp-transport.c:197
+msgid "Requested mail action aborted: exceeded storage allocation"
+msgstr ""
+"Operacioni i kërkuar për postën nuk u plotësua: hapësirë e pamjaftueshme"
+
+#: camel/providers/smtp/camel-smtp-transport.c:199
+msgid "Requested action not taken: mailbox name not allowed"
+msgstr "Veprimi i kërkuar nuk u krye: emri i mailbox nuk pranohet"
+
+#: camel/providers/smtp/camel-smtp-transport.c:201
+msgid "Start mail input; end with <CRLF>.<CRLF>"
+msgstr "Fillimi i input të postës; mbaroje me <CRLF>.<CRLF>"
+
+#: camel/providers/smtp/camel-smtp-transport.c:203
+msgid "Transaction failed"
+msgstr "Shkëmbimi dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:207
+msgid "A password transition is needed"
+msgstr "Nevoitet fjalëkalimi i shkëmbimit"
+
+#: camel/providers/smtp/camel-smtp-transport.c:209
+msgid "Authentication mechanism is too weak"
+msgstr "Mekanizmi i autentifikimit është tepër i dobët"
+
+#: camel/providers/smtp/camel-smtp-transport.c:211
+msgid "Encryption required for requested authentication mechanism"
+msgstr "Mekanizmi i kërkuar i autentifikimit ka nevojë për kriptim"
+
+#: camel/providers/smtp/camel-smtp-transport.c:213
+msgid "Temporary authentication failure"
+msgstr "Dështim i përkohshëm i autentifikimit"
+
+#: camel/providers/smtp/camel-smtp-transport.c:294
+msgid "Welcome response error"
+msgstr "Gabim në përgjigjen e mirëseardhjes"
+
+#: camel/providers/smtp/camel-smtp-transport.c:325
+#: camel/providers/smtp/camel-smtp-transport.c:358
+#: camel/providers/smtp/camel-smtp-transport.c:364
+#, c-format
+msgid "Failed to connect to SMTP server %s in secure mode: %s"
+msgstr "Lidhja me serverin SMTP %s në menyrë të sigurt dështoi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:334
+#, c-format
+msgid "STARTTLS command failed: %s"
+msgstr "Komanda STARTTLS dështoi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:349
+msgid "STARTTLS command failed"
+msgstr "Komanda STARTTLS dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:488
+#, c-format
+msgid "SMTP server %s does not support requested authentication type %s."
+msgstr "Serveri SMTP %s nuk suporton llojin e kërkuar të autentifikimit %s."
+
+#: camel/providers/smtp/camel-smtp-transport.c:526
+#, c-format
+msgid "%sPlease enter the SMTP password for %s on host %s"
+msgstr "%sShkruaj fjalëkalimin SMTP për %s tek host %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:545
+#, c-format
+msgid ""
+"Unable to authenticate to SMTP server.\n"
+"%s\n"
+"\n"
+msgstr ""
+"I pamundur identifikimi tek serveri SMTP.\n"
+"%s\n"
+"\n"
+
+#: camel/providers/smtp/camel-smtp-transport.c:669
+#, c-format
+msgid "SMTP server %s"
+msgstr "Serveri SMTP %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:671
+#, c-format
+msgid "SMTP mail delivery via %s"
+msgstr "Posta SMTP dorëzohet me anë të programit %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:689
+msgid "Cannot send message: service not connected."
+msgstr "Mesazhi nuk mund të dërgohet: shërbimi nuk është lidhur."
+
+#: camel/providers/smtp/camel-smtp-transport.c:695
+msgid "Cannot send message: sender address not valid."
+msgstr "Mesazhi nuk mund të dërgohet: adresë e pavlefshme dërguesi. "
+
+#: camel/providers/smtp/camel-smtp-transport.c:699
+msgid "Sending message"
+msgstr "Duke dërguar mesazhin"
+
+#: camel/providers/smtp/camel-smtp-transport.c:714
+msgid "Cannot send message: no recipients defined."
+msgstr "Mesazhi nuk mund të dërgohet: nuk janë përcaktuar marrësit."
+
+#: camel/providers/smtp/camel-smtp-transport.c:725
+msgid "Cannot send message: one or more invalid recipients"
+msgstr "E pamundur nisja e mesazhit: një apo më shumë adresa të pasakta"
+
+#: camel/providers/smtp/camel-smtp-transport.c:894
+msgid "SMTP Greeting"
+msgstr "Përshëndetje SMTP"
+
+#: camel/providers/smtp/camel-smtp-transport.c:920
+#, c-format
+msgid "HELO command failed: %s"
+msgstr "Komanda HELO dështoi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:937
+msgid "HELO command failed"
+msgstr "Komanda HELO dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1003
+msgid "SMTP Authentication"
+msgstr "Identifikimi SMTP"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1009
+msgid "Error creating SASL authentication object."
+msgstr "Gabim gjatë krijimit të objektit autentifikues SASL."
+
+#: camel/providers/smtp/camel-smtp-transport.c:1026
+#: camel/providers/smtp/camel-smtp-transport.c:1037
+#, c-format
+msgid "AUTH command failed: %s"
+msgstr "Komanda AUTH dështoi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1043
+msgid "AUTH command failed"
+msgstr "Komanda AUTH dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1105
+msgid "Bad authentication response from server.\n"
+msgstr "Përgjigje e pavlefshme autentifikimi nga serveri.\n"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1130
+#, c-format
+msgid "MAIL FROM command failed: %s: mail not sent"
+msgstr "Komanda MAIL FROM dështoi: %s: posta nuk u dërgua"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1147
+msgid "MAIL FROM command failed"
+msgstr "Komanda MAIL FROM dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1171
+#, c-format
+msgid "RCPT TO command failed: %s: mail not sent"
+msgstr "Komanda RCPT TO dështoi: %s: posta nuk u dërgua"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1190
+#, c-format
+msgid "RCPT TO <%s> failed"
+msgstr "RCPT TO <%s> dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1229
+#: camel/providers/smtp/camel-smtp-transport.c:1287
+#: camel/providers/smtp/camel-smtp-transport.c:1306
+#, c-format
+msgid "DATA command failed: %s: mail not sent"
+msgstr "Komanda DATA dështoi: %s: posta nuk u dërgua"
+
+#. we should have gotten instructions on how to use the DATA command:
+#. * 354 Enter mail, end with "." on a line by itself
+#.
+#: camel/providers/smtp/camel-smtp-transport.c:1246
+#: camel/providers/smtp/camel-smtp-transport.c:1322
+msgid "DATA command failed"
+msgstr "Komanda DATA dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1345
+#, c-format
+msgid "RSET command failed: %s"
+msgstr "Komanda RSET dështoi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1361
+msgid "RSET command failed"
+msgstr "Komanda RSET dështoi"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1384
+#, c-format
+msgid "QUIT command failed: %s"
+msgstr "Komanda QUIT dështoi: %s"
+
+#: camel/providers/smtp/camel-smtp-transport.c:1398
+msgid "QUIT command failed"
+msgstr "Komanda QUIT dështoi"
+
+#: libedataserverui/e-categories-dialog.c:90
+#, fuzzy
+msgid "Category Icon"
+msgstr "Kategoria është"
+
+#: libedataserverui/e-categories-dialog.c:236
+#, c-format
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
+msgstr ""
+
+#: libedataserverui/e-categories-dialog.c:391
+#, fuzzy
+msgid "Category"
+msgstr "K_ategoria:"
+
+#: libedataserverui/e-categories-dialog.glade.h:1
+#, fuzzy
+msgid "Category Properties"
+msgstr "Kategoria është"
+
+#: libedataserverui/e-categories-dialog.glade.h:2
+#, fuzzy
+msgid "Category _Color"
+msgstr "Kategoria është"
+
+#: libedataserverui/e-categories-dialog.glade.h:3
+#, fuzzy
+msgid "Category _Icon"
+msgstr "Kategoria është"
+
+#: libedataserverui/e-categories-dialog.glade.h:4
+#, fuzzy
+msgid "Category _Name"
+msgstr "Kategoria është"
+
+#: libedataserverui/e-categories-dialog.glade.h:5
+#, fuzzy
+msgid "Item(s) belong to these _categories:"
+msgstr "Ky kontak u takon këtyre kategorive:"
+
+#: libedataserverui/e-categories-dialog.glade.h:6
+#, fuzzy
+msgid "_Available Categories:"
+msgstr "_Kategoritë"
+
+#: libedataserverui/e-categories-dialog.glade.h:7
+msgid "_Edit"
+msgstr "_Ndrysho"
+
+#: libedataserverui/e-categories-dialog.glade.h:8
+#, fuzzy
+msgid "categories"
+msgstr "Kategoritë"
+
+#: libedataserverui/e-name-selector-dialog.c:184
+msgid "Select Contacts from Address Book"
+msgstr "Zgjidh kontaktet nga rubrika"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:2
+msgid "<b>Contacts</b>"
+msgstr "<b>Kontakte</b>"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:3
+msgid "<b>Show Contacts</b>"
+msgstr "<b>Shfaq kontaktet</b>"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:4
+msgid "Address _Book:"
+msgstr "_Rubrika:"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:5
+msgid "_Search:"
+msgstr "_Kërko:"
+
+#. prepare the dialog
+#: libedataserverui/e-source-selector-dialog.c:101
+msgid "Select destination"
+msgstr "Zgjidh destinimin"
+
+#: libedataserverui/e-source-selector-dialog.c:154
+msgid "_Destination"
+msgstr "_Destinimi"
+
+#: servers/groupwise/e-gw-connection.c:152
 msgid "Invalid connection"
 msgstr "Lidhje e pasaktë"
 
-#: servers/groupwise/e-gw-connection.c:153
+#: servers/groupwise/e-gw-connection.c:156
 msgid "Invalid response from server"
 msgstr "Përgjigje e gabuar nga serveri"
 
-#: servers/groupwise/e-gw-connection.c:159
+#: servers/groupwise/e-gw-connection.c:162
 msgid "Bad parameter"
 msgstr "Parametër i pavlefshëm"
 
@@ -977,10 +4499,9 @@ msgid "Evolution Calendar file and webcal backend"
 msgstr "Backend i file kalendar dhe webcal të Evolution"
 
 #. dialog display isn't working out
-#: src/server.c:99
+#: src/server.c:101
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "U verifikuan  gabime shumëfishe segmentimi; e pamundur shfaqja e dritares së "
 "dialogut të gabimeve\n"
-
