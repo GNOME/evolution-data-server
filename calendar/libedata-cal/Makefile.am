@@ -6,10 +6,6 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar/libical/src		\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-AM_CFLAGS = 								\
-	-DG_DISABLE_DEPRECATED=1					\
-	-DGNOME_DISABLE_DEPRECATED=1
-
 CORBA_GENERATED_H =				\
 	Evolution-DataServer-Calendar.h
 

@@ -9,10 +9,6 @@ INCLUDES =						\
 	-I$(top_srcdir)/calendar/libical/src		\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-AM_CFLAGS = 								\
-	-DG_DISABLE_DEPRECATED=1					\
-	-DGNOME_DISABLE_DEPRECATED=1
-
 # The corba stubs and skels
 CORBA_GENERATED_C =				\
 	Evolution-DataServer-Calendar-common.c		\
