@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-16 23:31+0100\n"
-"PO-Revision-Date: 2005-02-17 00:03+0100\n"
+"PO-Revision-Date: 2005-02-17 00:12+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <it@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -116,7 +116,7 @@ msgstr "Eccezione Corba durante la chiamata \"%s\""
 #: ../addressbook/libebook/e-book.c:2390
 #, c-format
 msgid "%s: there is no current operation"
-msgstr "%s: non c'�un'operazione corrente"
+msgstr "%s: non c'è un'operazione corrente"
 
 #: ../addressbook/libebook/e-book.c:2425
 #, c-format
@@ -151,12 +151,12 @@ msgstr "%s: impossibile creare EBookListener"
 #: ../addressbook/libebook/e-book.c:3332
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
-msgstr "%s: non c'�un uid del proprio contatto memorizzato in gconf"
+msgstr "%s: non c'è un uid del proprio contatto memorizzato in gconf"
 
 #: ../addressbook/libebook/e-book.c:3443
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr "%s: non c'�sorgente per l'uid \"%s\"  memorizzato in gconf."
+msgstr "%s: non c'è sorgente per l'uid \"%s\"  memorizzato in gconf."
 
 #: ../addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
@@ -504,7 +504,7 @@ msgstr "Organizzazione"
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "Organizational Unit"
-msgstr "Unit�organizzativa"
+msgstr "Unità organizzativa"
 
 #: ../addressbook/libebook/e-contact.c:203
 msgid "Office"
@@ -681,7 +681,7 @@ msgstr "Formato di file errato"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:270
 msgid "Not a calendar."
-msgstr "Non �un calendario."
+msgstr "Non è un calendario."
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:140
 msgid "Could not retrieve weather data"
@@ -833,23 +833,23 @@ msgstr "Meteo: pioggia"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:327
 #, c-format
-msgid "%.1fC - %s"
-msgstr "%.1fC - %s"
+msgid "%.1f°C - %s"
+msgstr "%.1f°C - %s"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:329
 #, c-format
-msgid "%.1fF - %s"
-msgstr "%.1fF - %s"
+msgid "%.1f°F - %s"
+msgstr "%.1f°F - %s"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:332
 #, c-format
-msgid "%.1f/%.1fC - %s"
-msgstr "%.1f/%.1fC - %s"
+msgid "%.1f/%.1f°C - %s"
+msgstr "%.1f/%.1f°C - %s"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:334
 #, c-format
-msgid "%.1f/%.1fF - %s"
-msgstr "%.1f/%.1fF - %s"
+msgid "%.1f/%.1f°F - %s"
+msgstr "%.1f/%.1f°F - %s"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:340
 #, c-format
@@ -1033,15 +1033,15 @@ msgstr "Argomento non valido"
 
 #: ../calendar/libecal/e-cal.c:4490
 msgid "Backend is busy"
-msgstr "Il backend �occupato"
+msgstr "Il backend è occupato"
 
 #: ../calendar/libecal/e-cal.c:4492
 msgid "Repository is offline"
-msgstr "Il repository non �in linea"
+msgstr "Il repository non è in linea"
 
 #: ../calendar/libecal/e-cal.c:4494
 msgid "No such calendar"
-msgstr "Non �presente alcun calendario"
+msgstr "Non è presente alcun calendario"
 
 #: ../calendar/libecal/e-cal.c:4496 ../servers/groupwise/e-gw-connection.c:162
 msgid "Object not found"
@@ -1057,7 +1057,7 @@ msgstr "URI non caricato"
 
 #: ../calendar/libecal/e-cal.c:4502
 msgid "URI already loaded"
-msgstr "URI gi�caricato"
+msgstr "URI già caricato"
 
 #: ../calendar/libecal/e-cal.c:4504
 msgid "Permission denied"
@@ -1077,7 +1077,7 @@ msgstr "Protocollo non supportato"
 
 #: ../calendar/libecal/e-cal.c:4512
 msgid "Operation has been cancelled"
-msgstr "L'operazione �stata annullata"
+msgstr "L'operazione è stata annullata"
 
 #: ../calendar/libecal/e-cal.c:4514
 msgid "Could not cancel operation"
@@ -1090,7 +1090,7 @@ msgstr "Autenticazione richiesta"
 
 #: ../calendar/libecal/e-cal.c:4520
 msgid "A CORBA exception has occurred"
-msgstr "�occorsa un'eccezione CORBA"
+msgstr "È occorsa un'eccezione CORBA"
 
 #: ../calendar/libecal/e-cal.c:4522
 #: ../camel/providers/imap/camel-imap-command.c:304
@@ -1284,7 +1284,7 @@ msgstr "Preparazione cartella \"%s\" per l'accesso fuorilinea"
 
 #: ../camel/camel-disco-store.c:405
 msgid "You must be working online to complete this operation"
-msgstr "�necessario essere collegati per completare questa operazione"
+msgstr "È necessario essere collegati per completare questa operazione"
 
 #: ../camel/camel-filter-driver.c:689 ../camel/camel-filter-search.c:523
 #, c-format
@@ -1419,7 +1419,7 @@ msgstr "(match-threads) richiede l'impostazione cartella"
 #: ../camel/camel-folder-search.c:881
 #, c-format
 msgid "Performing query on unknown header: %s"
-msgstr "�stata effettuata una ricerca su un header sconosciuto: %s"
+msgstr "È stata effettuata una ricerca su un header sconosciuto: %s"
 
 #: ../camel/camel-folder.c:610
 #, c-format
@@ -1465,7 +1465,7 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"�stato riscontrato un messaggio di stato GnuPG inaspettato:\n"
+"È stato riscontrato un messaggio di stato GnuPG inaspettato:\n"
 "\n"
 "%s"
 
@@ -1483,7 +1483,7 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: \"%s\""
 msgstr ""
-"�necessaria una passphrase per sbloccare la chiave\n"
+"È necessaria una passphrase per sbloccare la chiave\n"
 "per l'utente: \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
