@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution.HEAD.be\n"
-"POT-Creation-Date: 2004-03-05 12:35-0500\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2003-05-25 19:42GMT+2\n"
 "Last-Translator: Vital Khilko <dojlid@mova.org>\n"
 "Language-Team: belarusian <i18n@mova.org>\n"
@@ -13,14 +13,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:385
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Загрузка..."
 
-#: addressbook/backends/file/e-book-backend-file.c:387
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+#: addressbook/backends/file/e-book-backend-file.c:434
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Пошук..."
 
@@ -55,7 +55,7 @@ msgstr "Зьмяненьне карткі на паслужніку LDAP..."
 msgid "Receiving LDAP search results..."
 msgstr "Атрыманьне вынікаў пошуку з паслужніка LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "Памылка заданага пошуку"
 
@@ -595,50 +595,68 @@ msgstr "Сьпіс"
 msgid "List Show Addresses"
 msgstr "Сьпіс адлюстраваных адрэсаў"
 
-#: addressbook/libebook/e-contact.c:1201
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "Сьпіс бяз назвы"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:418
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 #, fuzzy
 msgid "Birthday"
 msgstr "_Дзень народзінаў:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "_Дзень народзінаў:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:459
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "_Юбілей:"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Немагчыма захаваць даньні каляндара: Памылковы URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#, fuzzy
+msgid "Invalid server URI"
+msgstr "Памылковая мэта"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 msgid "Calendar"
 msgstr "Каляндар"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 #, fuzzy
 msgid "Checklist"
 msgstr "Густая дымка"
 
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
+#, fuzzy
+msgid "Authentication failed"
+msgstr "Аўтарызацыя не адбылася."
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#, fuzzy
+msgid "Could not create cache file"
+msgstr ""
+"Неатрымалася стварыць файл \"%s\":\n"
+"%s"
+
+#: calendar/backends/http/e-cal-backend-http.c:221
 #, fuzzy
 msgid "Redirected to Invalid URI"
 msgstr "Памылковы URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:241
 #, fuzzy
 msgid "Bad file format."
 msgstr "Фармат часу:"
 
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:246
 #, fuzzy
 msgid "Not a calendar."
 msgstr "Тэчка %s адсутнічае "
@@ -789,153 +807,148 @@ msgid "Undefined"
 msgstr "Нявызначаны"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1465
+#: calendar/libecal/e-cal.c:1486
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%sУвядзіце пароль для %s (карыстальнік %s)"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "Недапушчальны аргумэнт"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:4035
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Сховішча знаходзіцца ў адлучаным стане"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:4037
 #, fuzzy
 msgid "No such calendar"
 msgstr "Тэчка %s адсутнічае "
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "Аб'ект адсутнічае\n"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "Памылковая мэта"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:4043
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook не загружана\n"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "Адмоўлена ў доступе"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4049
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "Ід карткі ужо існуе"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "Пратакол не падтрымліваецца"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4053
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Дзеяньне адмененае"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4055
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Адменена апэрацыі"
 
-#: calendar/libecal/e-cal.c:3956
-#, fuzzy
-msgid "Authentication failed"
-msgstr "Аўтарызацыя не адбылася."
-
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "Аўтарызацыя патрабуецца"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Невядомая памылка"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "Няма памылкі"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:520
-#: calendar/libedata-cal/e-cal-backend-sexp.c:652
-#: calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: calendar/libedata-cal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:518
+#: calendar/libedata-cal/e-cal-backend-sexp.c:650
+#: calendar/libedata-cal/e-cal-backend-sexp.c:677
 #, fuzzy, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "has-categories? патрабуе хацяб адзін аргумэнт"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:74
-#: calendar/libedata-cal/e-cal-backend-sexp.c:162
-#: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:717
+#: calendar/libedata-cal/e-cal-backend-sexp.c:75
+#: calendar/libedata-cal/e-cal-backend-sexp.c:163
+#: calendar/libedata-cal/e-cal-backend-sexp.c:197
+#: calendar/libedata-cal/e-cal-backend-sexp.c:233
+#: calendar/libedata-cal/e-cal-backend-sexp.c:715
 #, fuzzy, c-format
 msgid "\"%s\" expects one argument"
 msgstr "contains? патрабуе два аргумэнты"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:464
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:462
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "contains? патрабуе радок у якасьці аргумэнта 1"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#: calendar/libedata-cal/e-cal-backend-sexp.c:90
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "аргумэнт 1 make-time мусіць быць радком даты ў фармаце ISO 8601"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:458
+#: calendar/libedata-cal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:305
+#: calendar/libedata-cal/e-cal-backend-sexp.c:456
 #, fuzzy, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "contains? патрабуе два аргумэнты"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:126
-#: calendar/libedata-cal/e-cal-backend-sexp.c:168
-#: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:723
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:721
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "time-day-end патрабуе тып time_t у якасьці аргумэнта 1"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#: calendar/libedata-cal/e-cal-backend-sexp.c:135
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "time-add-day патрабуе цэлы лік у якасьці аргумэнта 2"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:296
+#: calendar/libedata-cal/e-cal-backend-sexp.c:319
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "time-add-day патрабуе тып time_t у якасьці аргумэнта 1"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:472
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "contains? патрабуе радок у якасьці аргумэнта 2"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:490
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -943,12 +956,12 @@ msgid ""
 msgstr ""
 "contains? патрабуе аргумэнт 1 адным з \"любы\", \"агулам\", \"апісаньне\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:554
+#: calendar/libedata-cal/e-cal-backend-sexp.c:552
 #, fuzzy, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "has-categories? патрабуе хацяб адзін аргумэнт"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:568
+#: calendar/libedata-cal/e-cal-backend-sexp.c:566
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -956,6 +969,20 @@ msgid ""
 msgstr ""
 "has-categories? патрабуе усе аргумэнты як радкі ці адзін і толькі адзін "
 "аргумэнт як булева мана (#f)"
+
+#: servers/groupwise/e-gw-connection.c:80
+#, fuzzy
+msgid "Invalid connection"
+msgstr "Памылковая мэта"
+
+#: servers/groupwise/e-gw-connection.c:84
+#, fuzzy
+msgid "Invalid response from server"
+msgstr "Кепскі адказ на аўтарызацыю з паслужніка."
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr ""
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 #, fuzzy
@@ -6655,9 +6682,6 @@ msgstr "Праграма лакальнай кнігі адрэсаў \"Эвал
 #~ "Жаданы парамэтар target_name мане недапушчальны тып назвы, ці гэты тып не "
 #~ "падтрымліваецца"
 
-#~ msgid "Bad authentication response from server."
-#~ msgstr "Кепскі адказ на аўтарызацыю з паслужніка."
-
 #~ msgid "Failed to resolve host `%s': %s"
 #~ msgstr "Збой вызначэньня вузла \"%s\": %s"
 
@@ -6878,9 +6902,6 @@ msgstr "Праграма лакальнай кнігі адрэсаў \"Эвал
 
 #~ msgid "Path length exceeded"
 #~ msgstr "Перавышана даўжыня шляху"
-
-#~ msgid "Invalid purpose"
-#~ msgstr "Памылковая мэта"
 
 #~ msgid "Certificate untrusted"
 #~ msgstr "Сэртыфікат ненадзейны"
@@ -7355,13 +7376,6 @@ msgstr "Праграма лакальнай кнігі адрэсаў \"Эвал
 #~ "%s"
 #~ msgstr ""
 #~ "Немагчыма стварыць каталёг %s:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not create file `%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Неатрымалася стварыць файл \"%s\":\n"
 #~ "%s"
 
 #~ msgid "`%s' is not a regular file."

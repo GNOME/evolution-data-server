@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.3.1.99\n"
-"POT-Creation-Date: 2004-03-05 12:35-0500\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2003-03-23 11:33+0800\n"
 "Last-Translator: Chao-Hsiung Liao <pesder.liao@msa.hinet.net>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -17,16 +17,16 @@ msgstr ""
 
 # mail/mail-send-recv.c:287
 # mail/mail-send-recv.c:333
-#: addressbook/backends/file/e-book-backend-file.c:385
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "載入中..."
 
 # addressbook/gui/search/e-addressbook-search-dialog.c:158
 # mail/mail-search.c:242
-#: addressbook/backends/file/e-book-backend-file.c:387
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+#: addressbook/backends/file/e-book-backend-file.c:434
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "搜尋..."
 
@@ -69,7 +69,7 @@ msgid "Receiving LDAP search results..."
 msgstr "接收 LDAP 搜尋結果..."
 
 # executive-summary/component/e-summary.c:940
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "進行搜尋時發生錯誤"
 
@@ -695,59 +695,82 @@ msgid "List Show Addresses"
 msgstr "清單顯示地址"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:1201
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "未命名的清單"
 
 # addressbook/contact-editor/contact-editor.glade.h:20
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:418
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 #, fuzzy
 msgid "Birthday"
 msgstr "生日(_Y):"
 
 # addressbook/contact-editor/contact-editor.glade.h:20
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "生日(_Y):"
 
 # addressbook/contact-editor/contact-editor.glade.h:2
-#: calendar/backends/contacts/e-cal-backend-contacts.c:459
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "週年紀念(_V):"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 
+# camel/providers/local/camel-maildir-folder.c:218
+# camel/providers/local/camel-mh-folder.c:203
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#, fuzzy
+msgid "Invalid server URI"
+msgstr "無效的目的"
+
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 # ui/evolution-calendar.xml.h:3
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 msgid "Calendar"
 msgstr "行事曆"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 #, fuzzy
 msgid "Checklist"
 msgstr "濃靄"
 
+# camel/camel-sasl-anonymous.c:110
+# camel/camel-sasl-plain.c:87
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
+#, fuzzy
+msgid "Authentication failed"
+msgstr "驗証失敗。"
+
+# camel/providers/local/camel-mbox-store.c:110
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#, fuzzy
+msgid "Could not create cache file"
+msgstr ""
+"無法建立檔案“%s”：\n"
+"%s"
+
 # mail/mail-config.glade.h:37
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/http/e-cal-backend-http.c:221
 #, fuzzy
 msgid "Redirected to Invalid URI"
 msgstr "無效的 URI"
 
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:50
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:241
 #, fuzzy
 msgid "Bad file format."
 msgstr "時間格式:"
 
 # camel/providers/imap/camel-imap-store.c:803
 # mail/mail-local.c:334
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:246
 #, fuzzy
 msgid "Not a calendar."
 msgstr "沒有這個資料夾 %s"
@@ -950,69 +973,69 @@ msgstr "未指定"
 
 # camel/camel-smime-context.c:194
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1465
+#: calendar/libecal/e-cal.c:1486
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s請輸入 %s 所需的密碼(使用者 %s)"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "無效的參數"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr ""
 
 # shell/e-shell-view-menu.c:602
 # shell/e-shell-view-menu.c:614
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:4035
 #, fuzzy
 msgid "Repository is offline"
 msgstr "資料庫離線"
 
 # camel/providers/imap/camel-imap-store.c:803
 # mail/mail-local.c:334
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:4037
 #, fuzzy
 msgid "No such calendar"
 msgstr "沒有這個資料夾 %s"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "找不到物件\n"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "無效的目的"
 
 # addressbook/conduit/address-conduit.c:214
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:4043
 #, fuzzy
 msgid "URI not loaded"
 msgstr "尚未載入 EBook\n"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr ""
 
 # shell/e-storage.c:475
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "權限不足"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4049
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "名片 ID 已經存在"
 
 # shell/e-storage.c:477
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "通訊協定不支援"
 
@@ -1020,125 +1043,136 @@ msgstr "通訊協定不支援"
 # camel/camel-remote-store.c:399
 # camel/camel-remote-store.c:470
 # camel/providers/imap/camel-imap-command.c:287
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4053
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "作業已取消"
 
 # calendar/gui/e-itip-control.c:883
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4055
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "取消作業"
 
-# camel/camel-sasl-anonymous.c:110
-# camel/camel-sasl-plain.c:87
-#: calendar/libecal/e-cal.c:3956
-#, fuzzy
-msgid "Authentication failed"
-msgstr "驗証失敗。"
-
 # camel/providers/smtp/camel-smtp-transport.c:218
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "要求驗證"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr ""
 
 # camel/providers/imap/camel-imap-command.c:241
 # shell/e-storage.c:481
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "不明的錯誤"
 
 # shell/e-storage.c:459
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "沒有錯誤"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:520
-#: calendar/libedata-cal/e-cal-backend-sexp.c:652
-#: calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: calendar/libedata-cal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:518
+#: calendar/libedata-cal/e-cal-backend-sexp.c:650
+#: calendar/libedata-cal/e-cal-backend-sexp.c:677
 #, fuzzy, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "has-categories? 要求至少 1 個參數"
 
 # camel/providers/smtp/camel-smtp-transport.c:170
-#: calendar/libedata-cal/e-cal-backend-sexp.c:74
-#: calendar/libedata-cal/e-cal-backend-sexp.c:162
-#: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:717
+#: calendar/libedata-cal/e-cal-backend-sexp.c:75
+#: calendar/libedata-cal/e-cal-backend-sexp.c:163
+#: calendar/libedata-cal/e-cal-backend-sexp.c:197
+#: calendar/libedata-cal/e-cal-backend-sexp.c:233
+#: calendar/libedata-cal/e-cal-backend-sexp.c:715
 #, fuzzy, c-format
 msgid "\"%s\" expects one argument"
 msgstr "contains? 要求 2 個參數"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:464
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:462
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "contains? 要求參數 1 為字串"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#: calendar/libedata-cal/e-cal-backend-sexp.c:90
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "make-time 參數 1 必須為 ISO 8601 日期/時間字串"
 
 # camel/providers/smtp/camel-smtp-transport.c:170
-#: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:458
+#: calendar/libedata-cal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:305
+#: calendar/libedata-cal/e-cal-backend-sexp.c:456
 #, fuzzy, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "contains? 要求 2 個參數"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:126
-#: calendar/libedata-cal/e-cal-backend-sexp.c:168
-#: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:723
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:721
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "time-day-end 要求參數 1 為 time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#: calendar/libedata-cal/e-cal-backend-sexp.c:135
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "time-add-day 要求參數 2 為整數"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:296
+#: calendar/libedata-cal/e-cal-backend-sexp.c:319
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "time-add-day 要求參數 1 為 time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:472
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "contains? 要求參數 2 為字串"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:490
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr "contains? 要求參數 1 為 \"any\", \"summary\", \"description\" 其中之一"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:554
+#: calendar/libedata-cal/e-cal-backend-sexp.c:552
 #, fuzzy, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "has-categories? 要求至少 1 個參數"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:568
+#: calendar/libedata-cal/e-cal-backend-sexp.c:566
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
 "has-categories? 要求所有的參數為字串或僅有的一個為布林值 false(#f) 的參數"
+
+# camel/providers/local/camel-maildir-folder.c:218
+# camel/providers/local/camel-mh-folder.c:203
+#: servers/groupwise/e-gw-connection.c:80
+#, fuzzy
+msgid "Invalid connection"
+msgstr "無效的目的"
+
+# camel/camel-sasl-kerberos4.c:218
+# camel/providers/imap/camel-imap-store.c:433
+#: servers/groupwise/e-gw-connection.c:84
+#, fuzzy
+msgid "Invalid response from server"
+msgstr "來自伺服器的不良許可回應。"
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr ""
 
 # addressbook/gui/component/GNOME_Evolution_Addressbook.oaf.in.h:5
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
@@ -8113,11 +8147,6 @@ msgstr "Evolution 目錄服務迷你名片檢視"
 #~ "This option will connect to the server using Kerberos 5 authentication."
 #~ msgstr "這個選項將會使用 Kerberos 4 驗證連線至伺服器。"
 
-# camel/camel-sasl-kerberos4.c:218
-# camel/providers/imap/camel-imap-store.c:433
-#~ msgid "Bad authentication response from server."
-#~ msgstr "來自伺服器的不良許可回應。"
-
 # camel/camel-filter-driver.c:670
 # camel/camel-filter-driver.c:679
 #, fuzzy
@@ -8375,11 +8404,6 @@ msgstr "Evolution 目錄服務迷你名片檢視"
 
 #~ msgid "Path length exceeded"
 #~ msgstr "路徑長度過長"
-
-# camel/providers/local/camel-maildir-folder.c:218
-# camel/providers/local/camel-mh-folder.c:203
-#~ msgid "Invalid purpose"
-#~ msgstr "無效的目的"
 
 #~ msgid "Certificate untrusted"
 #~ msgstr "憑證不被信任"
@@ -9014,14 +9038,6 @@ msgstr "Evolution 目錄服務迷你名片檢視"
 #~ "%s"
 #~ msgstr ""
 #~ "無法建立目錄 %s：\n"
-#~ "%s"
-
-# camel/providers/local/camel-mbox-store.c:110
-#~ msgid ""
-#~ "Could not create file `%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "無法建立檔案“%s”：\n"
 #~ "%s"
 
 # camel/providers/local/camel-mbox-store.c:119

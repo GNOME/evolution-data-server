@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.0.6\n"
-"POT-Creation-Date: 2004-03-05 12:35-0500\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2000-11-01 00:40+0100\n"
 "Last-Translator: Quico Llach <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <linux@softcatala.org>\n"
@@ -15,15 +15,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:385
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 #, fuzzy
 msgid "Loading..."
 msgstr "_Paràmetres"
 
-#: addressbook/backends/file/e-book-backend-file.c:387
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+#: addressbook/backends/file/e-book-backend-file.c:434
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 #, fuzzy
 msgid "Searching..."
 msgstr "Cerca"
@@ -62,7 +62,7 @@ msgstr "Imprimeix l'agenda"
 msgid "Receiving LDAP search results..."
 msgstr ""
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 #, fuzzy
 msgid "Error performing search"
 msgstr "Error en llegir el fitxer de correu: %s"
@@ -636,51 +636,69 @@ msgstr "és"
 msgid "List Show Addresses"
 msgstr "Comprova l'adreça"
 
-#: addressbook/libebook/e-contact.c:1201
+#: addressbook/libebook/e-contact.c:1197
 #, fuzzy
 msgid "Unnamed List"
 msgstr "Contacte _nou"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:418
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 #, fuzzy
 msgid "Birthday"
 msgstr "_Data de naixement:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "_Data de naixement:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:459
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "Ani_versari:"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#, fuzzy
+msgid "Invalid server URI"
+msgstr "adjunció"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 msgid "Calendar"
 msgstr "Agenda"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 #, fuzzy
 msgid "Checklist"
 msgstr "Cotxe"
 
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
+#, fuzzy
+msgid "Authentication failed"
+msgstr "Autenticació:"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#, fuzzy
+msgid "Could not create cache file"
+msgstr ""
+"No s'ha pogut crear el fitxer `%s':\n"
+"%s"
+
+#: calendar/backends/http/e-cal-backend-http.c:221
 #, fuzzy
 msgid "Redirected to Invalid URI"
 msgstr "Agenda"
 
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:241
 #, fuzzy
 msgid "Bad file format."
 msgstr "Format de l'hora:"
 
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:246
 #, fuzzy
 msgid "Not a calendar."
 msgstr "seva agenda"
@@ -832,171 +850,180 @@ msgid "Undefined"
 msgstr ""
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1465
+#: calendar/libecal/e-cal.c:1486
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Si us plau, introduïu la contrasenya NNTP per a %s@%s"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:4031
 #, fuzzy
 msgid "Invalid argument"
 msgstr "adjunció"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:4035
 #, fuzzy
 msgid "Repository is offline"
 msgstr "S'està movent"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:4037
 #, fuzzy
 msgid "No such calendar"
 msgstr "seva agenda"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "No es pot executar el Bug Buddy."
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "adjunció"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:4043
 #, fuzzy
 msgid "URI not loaded"
 msgstr "no és"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "Permís denegat"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4049
 msgid "Object ID already exists"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4051
 #, fuzzy
 msgid "Protocol not supported"
 msgstr "Operació no suportada"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4053
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Obre l'agenda"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4055
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Cancel·lat"
 
-#: calendar/libecal/e-cal.c:3956
-#, fuzzy
-msgid "Authentication failed"
-msgstr "Autenticació:"
-
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:4059
 #, fuzzy
 msgid "Authentication required"
 msgstr "Autenticació:"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Error desconegut"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "Cap error"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:520
-#: calendar/libedata-cal/e-cal-backend-sexp.c:652
-#: calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: calendar/libedata-cal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:518
+#: calendar/libedata-cal/e-cal-backend-sexp.c:650
+#: calendar/libedata-cal/e-cal-backend-sexp.c:677
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:74
-#: calendar/libedata-cal/e-cal-backend-sexp.c:162
-#: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:717
+#: calendar/libedata-cal/e-cal-backend-sexp.c:75
+#: calendar/libedata-cal/e-cal-backend-sexp.c:163
+#: calendar/libedata-cal/e-cal-backend-sexp.c:197
+#: calendar/libedata-cal/e-cal-backend-sexp.c:233
+#: calendar/libedata-cal/e-cal-backend-sexp.c:715
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:464
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:462
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#: calendar/libedata-cal/e-cal-backend-sexp.c:90
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:458
+#: calendar/libedata-cal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:305
+#: calendar/libedata-cal/e-cal-backend-sexp.c:456
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:126
-#: calendar/libedata-cal/e-cal-backend-sexp.c:168
-#: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:723
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:721
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "Crea una nova cita"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#: calendar/libedata-cal/e-cal-backend-sexp.c:135
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:296
+#: calendar/libedata-cal/e-cal-backend-sexp.c:319
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:472
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:490
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr "Crea una nova cita"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:554
+#: calendar/libedata-cal/e-cal-backend-sexp.c:552
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:568
+#: calendar/libedata-cal/e-cal-backend-sexp.c:566
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
+msgstr ""
+
+#: servers/groupwise/e-gw-connection.c:80
+#, fuzzy
+msgid "Invalid connection"
+msgstr "adjunció"
+
+#: servers/groupwise/e-gw-connection.c:84
+#, fuzzy
+msgid "Invalid response from server"
+msgstr "Resposta inesperada del servidor IMAP: %s"
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
 msgstr ""
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
@@ -4809,10 +4836,6 @@ msgstr "Conducte de la llibreta d'adreces de l'Evolution"
 #~ "autenticar-vos-hi."
 
 #, fuzzy
-#~ msgid "Bad authentication response from server."
-#~ msgstr "Resposta inesperada del servidor IMAP: %s"
-
-#, fuzzy
 #~ msgid "Failed to resolve host `%s': %s"
 #~ msgstr "No s'ha pogut crear el conducte a %s: %s"
 
@@ -4959,10 +4982,6 @@ msgstr "Conducte de la llibreta d'adreces de l'Evolution"
 #, fuzzy
 #~ msgid "Unable to verify leaf signature"
 #~ msgstr "No s'ha pogut recuperar el missatge %s del servidor POP: %s"
-
-#, fuzzy
-#~ msgid "Invalid purpose"
-#~ msgstr "adjunció"
 
 #, fuzzy
 #~ msgid "Could not parse URL `%s'"
@@ -5367,13 +5386,6 @@ msgstr "Conducte de la llibreta d'adreces de l'Evolution"
 #~ "%s"
 #~ msgstr ""
 #~ "No s'ha pogut crear el directori %s:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not create file `%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "No s'ha pogut crear el fitxer `%s':\n"
 #~ "%s"
 
 #~ msgid "`%s' is not a regular file."

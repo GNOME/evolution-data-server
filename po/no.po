@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-26 18:33+0100\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2004-03-26 18:34+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:432
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -20,7 +20,7 @@ msgid "Loading..."
 msgstr "Laster..."
 
 #: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Søker..."
@@ -53,7 +53,7 @@ msgstr "Endrer kontakt fra LDAP-tjener..."
 msgid "Receiving LDAP search results..."
 msgstr "Mottar søkeresultater fra LDAP-tjener..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "Feil ved utføring av søk"
 
@@ -570,26 +570,26 @@ msgstr "Liste"
 msgid "List Show Addresses"
 msgstr "Vis adresse som liste"
 
-#: addressbook/libebook/e-contact.c:1203
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "Liste uten navn"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:429
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 msgid "Birthday"
 msgstr "Fødselsdag"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:451
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, c-format
 msgid "Birthday: %s"
 msgstr "Fødselsdag: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Bryllupsdag: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
@@ -605,24 +605,24 @@ msgstr "Kalender"
 msgid "Checklist"
 msgstr "Sjekkliste"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:3974
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
 msgid "Could not create cache file"
 msgstr "Kunne ikke opprette bufferfil"
 
-#: calendar/backends/http/e-cal-backend-http.c:219
+#: calendar/backends/http/e-cal-backend-http.c:221
 msgid "Redirected to Invalid URI"
 msgstr "Omdirigert til ugyldig URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:239
+#: calendar/backends/http/e-cal-backend-http.c:241
 msgid "Bad file format."
 msgstr "Ugyldig filformat."
 
-#: calendar/backends/http/e-cal-backend-http.c:244
+#: calendar/backends/http/e-cal-backend-http.c:246
 msgid "Not a calendar."
 msgstr "Ikke en kalender."
 
@@ -777,71 +777,71 @@ msgstr "Udefinert"
 msgid "Enter password for %s (user %s)"
 msgstr "Oppgi passord for %s (bruker %s)"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4035
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4037
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: calendar/libecal/e-cal.c:3956 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: calendar/libecal/e-cal.c:3958 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4043
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
-#: calendar/libecal/e-cal.c:3966
+#: calendar/libecal/e-cal.c:4049
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: calendar/libecal/e-cal.c:3968
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: calendar/libecal/e-cal.c:3970
+#: calendar/libecal/e-cal.c:4053
 msgid "Operation has been cancelled"
 msgstr "Operasjonen ble avbrutt"
 
-#: calendar/libecal/e-cal.c:3972
+#: calendar/libecal/e-cal.c:4055
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: calendar/libecal/e-cal.c:3976
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: calendar/libecal/e-cal.c:3978
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr "Et CORBA-unntak har oppstått"
 
-#: calendar/libecal/e-cal.c:3980 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: calendar/libecal/e-cal.c:3982
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "Ingen feil"
 

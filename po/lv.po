@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution for latvian\n"
-"POT-Creation-Date: 2004-03-05 12:35-0500\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2003-02-03 23:02+0200\n"
 "Last-Translator: Pēteris Krišjānis <peteris.krisjanis@os.lv>\n"
 "Language-Team: Latvian <lv@li.org>\n"
@@ -14,14 +14,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:385
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Ielādēju..."
 
-#: addressbook/backends/file/e-book-backend-file.c:387
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+#: addressbook/backends/file/e-book-backend-file.c:434
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Meklēju..."
 
@@ -58,7 +58,7 @@ msgstr "Mainu karti no LDAP servera..."
 msgid "Receiving LDAP search results..."
 msgstr "Saņemu LDAP meklēšanas rezultātus..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "Kļūda izpildot meklēšanu"
 
@@ -604,50 +604,68 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Cita adrese"
 
-#: addressbook/libebook/e-contact.c:1201
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "Nenosaukts saraksts"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:418
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 #, fuzzy
 msgid "Birthday"
 msgstr "_Dzimšanas diena:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "_Dzimšanas diena:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:459
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "Ikga_dējs:"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#, fuzzy
+msgid "Invalid server URI"
+msgstr "Nepareizs mērķis"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 msgid "Calendar"
 msgstr "Kalendārs"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 #, fuzzy
 msgid "Checklist"
 msgstr "Bieza dūmaka"
 
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
+#, fuzzy
+msgid "Authentication failed"
+msgstr "Autentifikācija izjukusi."
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
+#, fuzzy
+msgid "Could not create cache file"
+msgstr ""
+"Nevarēju izveidot failu '%s':\n"
+"%s"
+
+#: calendar/backends/http/e-cal-backend-http.c:221
 #, fuzzy
 msgid "Redirected to Invalid URI"
 msgstr "Nepareizs URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:241
 #, fuzzy
 msgid "Bad file format."
 msgstr "Laika formāts:"
 
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:246
 #, fuzzy
 msgid "Not a calendar."
 msgstr "Nav tādas mapes %s"
@@ -798,153 +816,148 @@ msgid "Undefined"
 msgstr "Nedefinēts"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1465
+#: calendar/libecal/e-cal.c:1486
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%sIevadiet %s paroli (lietotājs %s)"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "Nepareizs arguments"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:4035
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Repozitorijs nesaistes režīmā"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:4037
 #, fuzzy
 msgid "No such calendar"
 msgstr "Nav tādas mapes %s"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "Objektu nevarēja atrast\n"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "Nepareizs mērķis"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:4043
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EGrāmata (EBook) nav ielādēta\n"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "Atļauja liegta"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4049
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "Kartes ID jau eksistē"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "Protokols nav atbalstīts"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4053
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operācija atsaukta"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4055
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Atsaukt operāciju"
 
-#: calendar/libecal/e-cal.c:3956
-#, fuzzy
-msgid "Authentication failed"
-msgstr "Autentifikācija izjukusi."
-
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "Pieprasīta autentifikācija"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Nezināma kļūda"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "Nav kļūdas"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:520
-#: calendar/libedata-cal/e-cal-backend-sexp.c:652
-#: calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: calendar/libedata-cal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:518
+#: calendar/libedata-cal/e-cal-backend-sexp.c:650
+#: calendar/libedata-cal/e-cal-backend-sexp.c:677
 #, fuzzy, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "has-categories? gaida vismaz 1 argumentu"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:74
-#: calendar/libedata-cal/e-cal-backend-sexp.c:162
-#: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:717
+#: calendar/libedata-cal/e-cal-backend-sexp.c:75
+#: calendar/libedata-cal/e-cal-backend-sexp.c:163
+#: calendar/libedata-cal/e-cal-backend-sexp.c:197
+#: calendar/libedata-cal/e-cal-backend-sexp.c:233
+#: calendar/libedata-cal/e-cal-backend-sexp.c:715
 #, fuzzy, c-format
 msgid "\"%s\" expects one argument"
 msgstr "contains? gaida 2 arguments"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:464
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:462
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "contains? gaida, ka arguments 1 būs virkne"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#: calendar/libedata-cal/e-cal-backend-sexp.c:90
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "make-time argumentam nr. 1 jābūt ISO 8601 datuma/laika virknei"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:458
+#: calendar/libedata-cal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:305
+#: calendar/libedata-cal/e-cal-backend-sexp.c:456
 #, fuzzy, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "contains? gaida 2 arguments"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:126
-#: calendar/libedata-cal/e-cal-backend-sexp.c:168
-#: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:723
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:721
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "time-day-end gaida, ka arguments 1 būs time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#: calendar/libedata-cal/e-cal-backend-sexp.c:135
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "time-add-day gaida, ka arguments 2 būs vesels skaitlis"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:296
+#: calendar/libedata-cal/e-cal-backend-sexp.c:319
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "time-add-day gaida, ka arguments 1 būs time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:472
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "contains? gaida, ka arguments 2 būs virkne"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:490
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -953,12 +966,12 @@ msgstr ""
 "contains? gaida, ka arguments 1 būs viens no \"any\", \"summary\", "
 "\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:554
+#: calendar/libedata-cal/e-cal-backend-sexp.c:552
 #, fuzzy, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "has-categories? gaida vismaz 1 argumentu"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:568
+#: calendar/libedata-cal/e-cal-backend-sexp.c:566
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -966,6 +979,20 @@ msgid ""
 msgstr ""
 "has-categories? gaida, ka visi argumenti ir virknes vai viens un tikai viens "
 "arguments ir būla nepareizi (boolean false (#f))"
+
+#: servers/groupwise/e-gw-connection.c:80
+#, fuzzy
+msgid "Invalid connection"
+msgstr "Nepareizs mērķis"
+
+#: servers/groupwise/e-gw-connection.c:84
+#, fuzzy
+msgid "Invalid response from server"
+msgstr "Slikta autentifikācijas atbilde no servera."
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr ""
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 #, fuzzy
@@ -6699,9 +6726,6 @@ msgstr "Evolution adrešu grāmatas minikaršu skatītājs"
 #~ "This option will connect to the server using Kerberos 5 authentication."
 #~ msgstr "Šī opcija savienos ar serveri lietojot Kerberos 4 autentifikāciju. "
 
-#~ msgid "Bad authentication response from server."
-#~ msgstr "Slikta autentifikācijas atbilde no servera."
-
 #, fuzzy
 #~ msgid "Failed to resolve host `%s': %s"
 #~ msgstr "Neizdevās izveidot kanālu %s: %s"
@@ -6906,9 +6930,6 @@ msgstr "Evolution adrešu grāmatas minikaršu skatītājs"
 
 #~ msgid "Path length exceeded"
 #~ msgstr "Ceļa garums pārsniegts"
-
-#~ msgid "Invalid purpose"
-#~ msgstr "Nepareizs mērķis"
 
 #~ msgid "Certificate untrusted"
 #~ msgstr "Neuzticams sertifikāts"
@@ -7383,13 +7404,6 @@ msgstr "Evolution adrešu grāmatas minikaršu skatītājs"
 #~ "%s"
 #~ msgstr ""
 #~ "Nevarēja izveidot direktoriju %s:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not create file `%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Nevarēju izveidot failu '%s':\n"
 #~ "%s"
 
 #~ msgid "`%s' is not a regular file."

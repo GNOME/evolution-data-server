@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.90\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-25 12:07-0500\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2004-03-25 16:07-0500\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:432
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -20,7 +20,7 @@ msgid "Loading..."
 msgstr "Carregando..."
 
 #: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Pesquisando..."
@@ -53,7 +53,7 @@ msgstr "Modificando contato do servidor LDAP..."
 msgid "Receiving LDAP search results..."
 msgstr "Recebendo resultados da pesquisa LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "Erro ao executar pesquisa"
 
@@ -572,26 +572,26 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Listar endereços de exibição"
 
-#: addressbook/libebook/e-contact.c:1203
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "Lista sem nome"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:429
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 msgid "Birthday"
 msgstr "Aniversário"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:451
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, c-format
 msgid "Birthday: %s"
 msgstr "Aniversário: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Bodas: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Não é possível salvar dados da agenda: URI malformada."
 
@@ -607,24 +607,24 @@ msgstr "Agenda"
 msgid "Checklist"
 msgstr "Lista de tarefas"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:3962
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
 msgid "Authentication failed"
 msgstr "Falhou a autenticação"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
 msgid "Could not create cache file"
 msgstr "Não foi possível criar arquivo de cache"
 
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/http/e-cal-backend-http.c:221
 msgid "Redirected to Invalid URI"
 msgstr "Redirecionado para URI inválida"
 
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:241
 msgid "Bad file format."
 msgstr "Formato da arquivo inválido."
 
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:246
 msgid "Not a calendar."
 msgstr "Não é uma agenda."
 
@@ -779,71 +779,71 @@ msgstr "Indefinido"
 msgid "Enter password for %s (user %s)"
 msgstr "Entre senha para %s (usuário %s)"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr "O backend está ocupado"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:4035
 msgid "Repository is offline"
 msgstr "O repositório está desconectado"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:4037
 msgid "No such calendar"
 msgstr "Não existe tal agenda"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objeto não foi encontrado"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4043
 msgid "URI not loaded"
 msgstr "URI não foi carregada"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr "URI já foi carregada"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "Permissão negada"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4049
 msgid "Object ID already exists"
 msgstr "O ID do objeto já existe"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:4053
 msgid "Operation has been cancelled"
 msgstr "A operação foi cancelada"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4055
 msgid "Could not cancel operation"
 msgstr "Não foi possível cancelar a operação"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "Autenticação exigida"
 
-#: calendar/libecal/e-cal.c:3966
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr "Ocorreu uma exceçao CORBA"
 
-#: calendar/libecal/e-cal.c:3968
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: calendar/libecal/e-cal.c:3970
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "Sem erro"
 
@@ -930,6 +930,20 @@ msgid ""
 msgstr ""
 "\"%s\" espera que todos os argumentos sejam strings ou um e somente um "
 "argumento que seja um falso booleano (#f)"
+
+#: servers/groupwise/e-gw-connection.c:80
+#, fuzzy
+msgid "Invalid connection"
+msgstr "Objeto inválido"
+
+#: servers/groupwise/e-gw-connection.c:84
+#, fuzzy
+msgid "Invalid response from server"
+msgstr "URI de servidor inválida"
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr ""
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"

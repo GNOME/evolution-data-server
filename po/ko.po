@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-25 22:10+0900\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2004-03-25 22:10+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:432
@@ -22,7 +22,7 @@ msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
 #: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "찾는 중입니다..."
@@ -55,7 +55,7 @@ msgstr "연락처를 LDAP 서버에서 고치는 중입니다..."
 msgid "Receiving LDAP search results..."
 msgstr "LDAP 찾기 결과를 받는 중입니다..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "찾기를 수행하는 중 오류가 발생했습니다"
 
@@ -573,26 +573,26 @@ msgstr "목록"
 msgid "List Show Addresses"
 msgstr "목록의 주소 표시"
 
-#: addressbook/libebook/e-contact.c:1203
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "이름 없는 목록"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:429
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 msgid "Birthday"
 msgstr "생일"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:451
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, c-format
 msgid "Birthday: %s"
 msgstr "생일: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, c-format
 msgid "Anniversary: %s"
 msgstr "기념일: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "달력 데이터를 저장할 수 없습니다; URI 형식이 틀렸습니다."
 
@@ -608,24 +608,24 @@ msgstr "달력"
 msgid "Checklist"
 msgstr "검사 목록"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:3962
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
 msgid "Authentication failed"
 msgstr "인증이 실패했습니다"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
 msgid "Could not create cache file"
 msgstr "캐시 파일을 만들 수 없습니다"
 
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/http/e-cal-backend-http.c:221
 msgid "Redirected to Invalid URI"
 msgstr "잘못된 URI로 리다이렉트했습니다"
 
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:241
 msgid "Bad file format."
 msgstr "파일 형식이 틀렸습니다."
 
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:246
 msgid "Not a calendar."
 msgstr "달력이 아닙니다."
 
@@ -780,71 +780,71 @@ msgstr "정의안됨"
 msgid "Enter password for %s (user %s)"
 msgstr "%s(사용자 %s)의 열쇠글을 입력하십시오"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "인자가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr "백엔드가 사용중입니다"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:4035
 msgid "Repository is offline"
 msgstr "저장고가 오프라인 상태입니다"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:4037
 msgid "No such calendar"
 msgstr "그런 달력이 없습니다"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "오브젝트를 찾을 수 없습니다"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "오브젝트가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4043
 msgid "URI not loaded"
 msgstr "URI를 읽어들이지 못했습니다"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr "URI를 이미 읽어들였습니다"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "권한이 거부되었습니다"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4049
 msgid "Object ID already exists"
 msgstr "오브젝트 ID가 이미 있습니다"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "프로토콜이 지원되지 않습니다"
 
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:4053
 msgid "Operation has been cancelled"
 msgstr "작업이 취소되었습니다"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4055
 msgid "Could not cancel operation"
 msgstr "작업을 취소할 수 없습니다"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
-#: calendar/libecal/e-cal.c:3966
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 예외가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:3968
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "알 수 없는 오류가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:3970
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "오류 없음"
 
@@ -930,6 +930,20 @@ msgid ""
 msgstr ""
 "\"%s\"의 모든 인자가 문자열이거나, 아니면 인자가 한 개이고 불리언 거짓 (#f) "
 "값이어야 합니다"
+
+#: servers/groupwise/e-gw-connection.c:80
+#, fuzzy
+msgid "Invalid connection"
+msgstr "오브젝트가 잘못되었습니다"
+
+#: servers/groupwise/e-gw-connection.c:84
+#, fuzzy
+msgid "Invalid response from server"
+msgstr "서버 URI가 틀렸습니다"
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr ""
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"

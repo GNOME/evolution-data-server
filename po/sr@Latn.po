@@ -8,15 +8,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-26 17:15+0100\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2004-03-26 17:16+0100\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:432
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -24,7 +25,7 @@ msgid "Loading..."
 msgstr "Učitavam..."
 
 #: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Tražim..."
@@ -57,7 +58,7 @@ msgstr "Menjam kontakt na LDAP serveru..."
 msgid "Receiving LDAP search results..."
 msgstr "Primam rezultate pretrage sa LDAP servera"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "Greška tokom pretrage"
 
@@ -574,26 +575,26 @@ msgstr "Spisak"
 msgid "List Show Addresses"
 msgstr "Spisak prikazanih adresa"
 
-#: addressbook/libebook/e-contact.c:1203
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "Lista bez imena"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:429
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 msgid "Birthday"
 msgstr "Rođendan"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:451
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, c-format
 msgid "Birthday: %s"
 msgstr "Rođendan: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Godišnjica: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Ne mogu da sačuvam podatke iz kalendara: Loša URI."
 
@@ -609,24 +610,24 @@ msgstr "Kalendar"
 msgid "Checklist"
 msgstr "Spisak za overu"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:3974
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
 msgid "Authentication failed"
 msgstr "Neuspešna identifikacija"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
 msgid "Could not create cache file"
 msgstr "Ne mogu da napravim datoteku za ostavu"
 
-#: calendar/backends/http/e-cal-backend-http.c:219
+#: calendar/backends/http/e-cal-backend-http.c:221
 msgid "Redirected to Invalid URI"
 msgstr "Preusmeren na neispravnu adresu"
 
-#: calendar/backends/http/e-cal-backend-http.c:239
+#: calendar/backends/http/e-cal-backend-http.c:241
 msgid "Bad file format."
 msgstr "Loš zapis datoteke."
 
-#: calendar/backends/http/e-cal-backend-http.c:244
+#: calendar/backends/http/e-cal-backend-http.c:246
 msgid "Not a calendar."
 msgstr "Nije kalendar."
 
@@ -781,71 +782,71 @@ msgstr "Nedefinisano"
 msgid "Enter password for %s (user %s)"
 msgstr "Unesite lozinku za %s (korisnik %s)"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "Neispravan argument"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr "Podrška je zauzeta"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4035
 msgid "Repository is offline"
 msgstr "Skladište nije povezano"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4037
 msgid "No such calendar"
 msgstr "Nema takvog kalendara"
 
-#: calendar/libecal/e-cal.c:3956 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objekat nije nađen"
 
-#: calendar/libecal/e-cal.c:3958 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Neispravan predmet"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4043
 msgid "URI not loaded"
 msgstr "Adresa nije učitana"
 
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr "Adresa je već učitana"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "Zabranjen pristup"
 
-#: calendar/libecal/e-cal.c:3966
+#: calendar/libecal/e-cal.c:4049
 msgid "Object ID already exists"
 msgstr "ID objekta već postoji"
 
-#: calendar/libecal/e-cal.c:3968
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "Protokol nije podržan"
 
-#: calendar/libecal/e-cal.c:3970
+#: calendar/libecal/e-cal.c:4053
 msgid "Operation has been cancelled"
 msgstr "Operacija je obustavljena"
 
-#: calendar/libecal/e-cal.c:3972
+#: calendar/libecal/e-cal.c:4055
 msgid "Could not cancel operation"
 msgstr "Ne mogu da otkažem operaciju"
 
-#: calendar/libecal/e-cal.c:3976
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "Neophodna identifikacija"
 
-#: calendar/libecal/e-cal.c:3978
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr "Došlo je do CORBA izuzetka"
 
-#: calendar/libecal/e-cal.c:3980 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Nepoznata greška"
 
-#: calendar/libecal/e-cal.c:3982
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "Nema greške"
 
@@ -915,7 +916,9 @@ msgstr "„%s“ očekuje da drugi argument bude niska"
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr "„%s“ očekuje da prvi argument bude ili „any“, „summary“, „description“ ili „location“"
+msgstr ""
+"„%s“ očekuje da prvi argument bude ili „any“, „summary“, „description“ ili "
+"„location“"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:552
 #, c-format

@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-23 10:20+0900\n"
+"POT-Creation-Date: 2004-04-02 10:46-0500\n"
 "PO-Revision-Date: 2004-03-23 10:19+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:432
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -23,7 +23,7 @@ msgid "Loading..."
 msgstr "読み込み中..."
 
 #: addressbook/backends/file/e-book-backend-file.c:434
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2848
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "検索中..."
@@ -56,7 +56,7 @@ msgstr "LDAP サーバにある連絡先の修正中..."
 msgid "Receiving LDAP search results..."
 msgstr "LDAP サーバ検索結果の取得中..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2868
 msgid "Error performing search"
 msgstr "検索中にエラーが発生しました"
 
@@ -573,26 +573,26 @@ msgstr "一覧"
 msgid "List Show Addresses"
 msgstr "住所を表示する一覧です"
 
-#: addressbook/libebook/e-contact.c:1203
+#: addressbook/libebook/e-contact.c:1197
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:429
+#: calendar/backends/contacts/e-cal-backend-contacts.c:439
 msgid "Birthday"
 msgstr "誕生日"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:451
+#: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #, c-format
 msgid "Birthday: %s"
 msgstr "誕生日: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: calendar/backends/contacts/e-cal-backend-contacts.c:484
 #, c-format
 msgid "Anniversary: %s"
 msgstr "記念日: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:181
+#: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "カレンダのデータを保存できません: URI が間違っています。"
 
@@ -608,24 +608,24 @@ msgstr "カレンダ"
 msgid "Checklist"
 msgstr "チェックリスト"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:3962
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
+#: calendar/libecal/e-cal.c:4057
 msgid "Authentication failed"
 msgstr "認証に失敗しました"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:419
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
 
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/http/e-cal-backend-http.c:221
 msgid "Redirected to Invalid URI"
 msgstr "不正な URI へのリダイレクト"
 
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:241
 msgid "Bad file format."
 msgstr "ファイルのフォ−マットが間違っています。"
 
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:246
 msgid "Not a calendar."
 msgstr "カレンダではありません。"
 
@@ -780,71 +780,71 @@ msgstr "未定義"
 msgid "Enter password for %s (user %s)"
 msgstr "%s (ユーザ %s) のパスワードを入力して下さい"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:4031
 msgid "Invalid argument"
 msgstr "不正な引数"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:4033
 msgid "Backend is busy"
 msgstr "バックエンドが処理中です"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:4035
 msgid "Repository is offline"
 msgstr "リポジトリはオフラインです"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:4037
 msgid "No such calendar"
 msgstr "そのようなカレンダはありません"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "オブジェクトが不正です"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:4043
 msgid "URI not loaded"
 msgstr "URI を読み込んでいません"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:4045
 msgid "URI already loaded"
 msgstr "URL は既に読み込み済みです"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:4047
 msgid "Permission denied"
 msgstr "権限がありません"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:4049
 msgid "Object ID already exists"
 msgstr "既にオブジェクト ID が存在しています"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:4051
 msgid "Protocol not supported"
 msgstr "プロトコルはサポートされていません"
 
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:4053
 msgid "Operation has been cancelled"
 msgstr "操作をキャンセルしました"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:4055
 msgid "Could not cancel operation"
 msgstr "操作をキャンセルできませんでした"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:4059
 msgid "Authentication required"
 msgstr "認証を必要としています"
 
-#: calendar/libecal/e-cal.c:3966
+#: calendar/libecal/e-cal.c:4061
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 例外が発生しました"
 
-#: calendar/libecal/e-cal.c:3968
+#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "不明なエラーです"
 
-#: calendar/libecal/e-cal.c:3970
+#: calendar/libecal/e-cal.c:4065
 msgid "No error"
 msgstr "エラーはありません"
 
@@ -930,6 +930,20 @@ msgid ""
 "be a boolean false (#f)"
 msgstr ""
 "\"%s\" は全てまたは一つが文字列で、論理値 FAULSE (#f) を一つだけ必要とします"
+
+#: servers/groupwise/e-gw-connection.c:80
+#, fuzzy
+msgid "Invalid connection"
+msgstr "オブジェクトが不正です"
+
+#: servers/groupwise/e-gw-connection.c:84
+#, fuzzy
+msgid "Invalid response from server"
+msgstr "サーバ URI が不正です"
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr ""
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
