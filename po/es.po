@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-05-30 14:40+0200\n"
+"POT-Creation-Date: 2004-08-19 21:46+0200\n"
+"PO-Revision-Date: 2004-08-19 21:47+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,14 +25,14 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "Cargando..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1854
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "Buscando..."
 
@@ -607,16 +607,16 @@ msgid "Unnamed List"
 msgstr "Lista de anónimos"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "Cumpleaños"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "Cumpleaños: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversario %s"
@@ -629,17 +629,17 @@ msgstr "No se pudo guardar los datos de la agenda. URL malformada."
 msgid "Invalid server URI"
 msgstr "URI del servidor inválida"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:293
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:296
 msgid "Calendar"
 msgstr "Agenda"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:303
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:328
+#: calendar/libecal/e-cal.c:4298
 msgid "Authentication failed"
 msgstr "Falló en la autenticación"
 
@@ -806,71 +806,71 @@ msgstr "Sin definir"
 msgid "Enter password for %s (user %s)"
 msgstr "Introduzca su contraseña para %s (usuario %s)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4272
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4274
 msgid "Backend is busy"
 msgstr "El soporte está ocupado"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4276
 msgid "Repository is offline"
 msgstr "El repositorio está desconectado"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4278
 msgid "No such calendar"
 msgstr "No existe la agenda"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4282 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4284
 msgid "URI not loaded"
 msgstr "URI no cargada"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4286
 msgid "URI already loaded"
 msgstr "URI ya cargada"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4288
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4290
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4292
 msgid "Protocol not supported"
 msgstr "Protocolo no implementado"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4294
 msgid "Operation has been cancelled"
 msgstr "La operación ha sido cancelada"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4296
 msgid "Could not cancel operation"
 msgstr "No se pudo cancelar la operación"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4300
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4302
 msgid "A CORBA exception has occurred"
 msgstr "Ha ocurrido una excepción CORBA"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4304 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4306
 msgid "No error"
 msgstr "Sin errores"
 
@@ -989,7 +989,7 @@ msgstr "Soporte de libretas de direcciones en archivo local de Evolution"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Han ocurrido fallos de segmentación múltiples; no se puede mostrar el diálogo de error\n"
 
 #~ msgid "Checklist"
 #~ msgstr "Lista de comprobación"
