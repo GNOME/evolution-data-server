@@ -16,7 +16,6 @@
 
 #include <libgnome/gnome-i18n.h>
 #include <libedataserver/e-component-listener.h>
-#include <libedataserver/e-msgport.h>
 
 #include "e-book-marshal.h"
 #include "e-book-listener.h"
@@ -62,10 +61,9 @@ enum {
 static guint e_book_signals [LAST_SIGNAL];
 
 typedef struct {
-	EMutex *mutex;
-	pthread_cond_t cond;
+	GMutex *mutex;
+	GCond *cond;
 	EBookStatus status;
-
 	char *id;
 	GList *list;
 	EContact *contact;
@@ -101,7 +99,7 @@ struct _EBookPrivate {
 
 	EBookOp *current_op;
 
-	EMutex *mutex;
+	GMutex *mutex;
 
 	gchar *uri;
 
@@ -130,8 +128,8 @@ e_book_new_op (EBook *book)
 {
 	EBookOp *op = g_new0 (EBookOp, 1);
 
-	op->mutex = e_mutex_new (E_MUTEX_SIMPLE);
-	pthread_cond_init (&op->cond, 0);
+	op->mutex = g_mutex_new ();
+	op->cond = g_cond_new ();
 
 	book->priv->current_op = op;
 
@@ -153,8 +151,8 @@ static void
 e_book_op_free (EBookOp *op)
 {
 	/* XXX more stuff here */
-	pthread_cond_destroy (&op->cond);
-	e_mutex_destroy (op->mutex);
+	g_cond_free (op->cond);
+	g_mutex_free (op->mutex);
 	g_free (op);
 }
 
@@ -173,7 +171,7 @@ e_book_clear_op (EBook *book,
 		 EBookOp *op)
 {
 	e_book_op_remove (book, op);
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 	e_book_op_free (op);
 }
 
@@ -203,17 +201,17 @@ e_book_add_contact (EBook           *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_add_contact called on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -223,9 +221,9 @@ e_book_add_contact (EBook           *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -250,7 +248,7 @@ e_book_add_contact (EBook           *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	e_contact_set (contact, E_CONTACT_UID, our_op->id);
@@ -277,14 +275,14 @@ e_book_response_add_contact (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 	op->id = g_strdup (id);
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -312,17 +310,17 @@ e_book_commit_contact (EBook           *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_commit_contact called on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -332,9 +330,9 @@ e_book_commit_contact (EBook           *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -359,7 +357,7 @@ e_book_commit_contact (EBook           *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	e_contact_set (contact, E_CONTACT_UID, our_op->id);
@@ -394,26 +392,26 @@ e_book_get_supported_fields  (EBook            *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (fields,                   E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_get_supported_fields on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 	}
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -437,7 +435,7 @@ e_book_get_supported_fields  (EBook            *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	*fields = our_op->list;
@@ -461,14 +459,14 @@ e_book_response_get_supported_fields (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 	op->list = fields;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -493,17 +491,17 @@ e_book_get_supported_auth_methods (EBook            *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (auth_methods,             E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_get_supported_auth_methods on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -511,9 +509,9 @@ e_book_get_supported_auth_methods (EBook            *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -537,7 +535,7 @@ e_book_get_supported_auth_methods (EBook            *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	*auth_methods = our_op->list;
@@ -561,14 +559,14 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 	op->list = auth_methods;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -602,17 +600,17 @@ e_book_authenticate_user (EBook         *book,
 	e_return_error_if_fail (passwd,                   E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (auth_method,              E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_authenticate_user on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -620,9 +618,9 @@ e_book_authenticate_user (EBook         *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -648,7 +646,7 @@ e_book_authenticate_user (EBook         *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 
@@ -683,17 +681,17 @@ e_book_get_contact (EBook       *book,
 	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (contact,                     E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_get_contact on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -701,9 +699,9 @@ e_book_get_contact (EBook       *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -726,7 +724,7 @@ e_book_get_contact (EBook       *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	*contact = our_op->contact;
@@ -752,14 +750,14 @@ e_book_response_get_contact (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 	op->contact = contact;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -783,23 +781,23 @@ e_book_remove_contact (EBook       *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_remove_contact on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
 	}
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	list = g_list_append (NULL, (char*)id);
 
@@ -835,17 +833,17 @@ e_book_remove_contacts (EBook    *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (ids,                      E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_remove_contacts on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -853,9 +851,9 @@ e_book_remove_contacts (EBook    *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -887,7 +885,7 @@ e_book_remove_contacts (EBook    *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 
@@ -928,17 +926,17 @@ e_book_get_book_view (EBook       *book,
 	e_return_error_if_fail (query,                          E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book_view,                      E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_get_book_view on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -946,9 +944,9 @@ e_book_get_book_view (EBook       *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -992,7 +990,7 @@ e_book_get_book_view (EBook       *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	*book_view = our_op->view;
@@ -1019,16 +1017,16 @@ e_book_response_get_book_view (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 	op->view = e_book_view_new (corba_book_view, op->listener);
 
 	bonobo_object_ref(BONOBO_OBJECT(op->listener));
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -1057,17 +1055,17 @@ e_book_get_contacts (EBook       *book,
 	e_return_error_if_fail (query,                          E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (contacts,                       E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_get_contacts on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -1075,9 +1073,9 @@ e_book_get_contacts (EBook       *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -1105,7 +1103,7 @@ e_book_get_contacts (EBook       *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	*contacts = our_op->list;
@@ -1130,14 +1128,14 @@ e_book_response_get_contacts (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 	op->list = contact_list;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -1155,17 +1153,17 @@ e_book_get_changes (EBook       *book,
 	e_return_error_if_fail (changeid,                       E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (changes,                        E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_get_changes on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -1173,9 +1171,9 @@ e_book_get_changes (EBook       *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -1199,7 +1197,7 @@ e_book_get_changes (EBook       *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 	*changes = our_op->list;
@@ -1224,14 +1222,14 @@ e_book_response_get_changes (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 	op->list = change_list;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 void
@@ -1263,13 +1261,13 @@ e_book_response_generic (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 /**
@@ -1297,10 +1295,10 @@ e_book_cancel (EBook   *book,
 	gboolean rv;
 	CORBA_Environment ev;
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->current_op == NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
 			     _("e_book_cancel: there is no current operation"));
 		return FALSE;
@@ -1308,15 +1306,15 @@ e_book_cancel (EBook   *book,
 
 	op = book->priv->current_op;
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	status = GNOME_Evolution_Addressbook_Book_cancelOperation(book->priv->corba_book, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
-		e_mutex_unlock (op->mutex);
+		g_mutex_unlock (op->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -1330,7 +1328,7 @@ e_book_cancel (EBook   *book,
 	if (status == E_BOOK_ERROR_OK) {
 		op->status = E_BOOK_ERROR_CANCELLED;
 
-		pthread_cond_signal (&op->cond);
+		g_cond_signal (op->cond);
 
 		rv = TRUE;
 	}
@@ -1340,7 +1338,7 @@ e_book_cancel (EBook   *book,
 		rv = FALSE;
 	}
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 
 	return rv;
 }
@@ -1358,13 +1356,13 @@ e_book_response_open (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -1379,17 +1377,17 @@ e_book_remove (EBook   *book,
 
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 
-	e_mutex_lock (book->priv->mutex);
+	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
 			     _("e_book_remove on book before e_book_load_uri"));
 		return FALSE;
 	}
 
 	if (book->priv->current_op != NULL) {
-		e_mutex_unlock (book->priv->mutex);
+		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
 		return FALSE;
@@ -1397,9 +1395,9 @@ e_book_remove (EBook   *book,
 
 	our_op = e_book_new_op (book);
 
-	e_mutex_lock (our_op->mutex);
+	g_mutex_lock (our_op->mutex);
 
-	e_mutex_unlock (book->priv->mutex);
+	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
 
@@ -1421,7 +1419,7 @@ e_book_remove (EBook   *book,
 
 	/* wait for something to happen (both cancellation and a
 	   successful response will notity us via our cv */
-	e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
 
@@ -1445,13 +1443,13 @@ e_book_response_remove (EBook       *book,
 	  return;
 	}
 
-	e_mutex_lock (op->mutex);
+	g_mutex_lock (op->mutex);
 
 	op->status = status;
 
-	pthread_cond_signal (&op->cond);
+	g_cond_signal (op->cond);
 
-	e_mutex_unlock (op->mutex);
+	g_mutex_unlock (op->mutex);
 }
 
 
@@ -1667,7 +1665,7 @@ e_book_load_uri (EBook        *book,
 
 		our_op = e_book_new_op (book);
 
-		e_mutex_lock (our_op->mutex);
+		g_mutex_lock (our_op->mutex);
 
 		CORBA_exception_init (&ev);
 
@@ -1702,7 +1700,7 @@ e_book_load_uri (EBook        *book,
 
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		e_mutex_cond_wait (&our_op->cond, our_op->mutex);
+		g_cond_wait (our_op->cond, our_op->mutex);
 
 		status = our_op->status;
 
@@ -1947,7 +1945,7 @@ e_book_init (EBook *book)
 	book->priv             = g_new0 (EBookPrivate, 1);
 	book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 	book->priv->uri        = NULL;
-	book->priv->mutex      = e_mutex_new (E_MUTEX_REC);
+	book->priv->mutex      = g_mutex_new ();
 }
 
 static void

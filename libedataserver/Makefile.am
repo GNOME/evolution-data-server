@@ -24,7 +24,6 @@ libedataserver_la_SOURCES =		\
 	e-list.c			\
 	e-list-iterator.c		\
 	e-memory.c			\
-	e-msgport.c			\
 	e-sexp.c			\
 	e-uid.c				\
 	e-url.c				\
@@ -52,7 +51,6 @@ libedataserverinclude_HEADERS =		\
 	e-list.h			\
 	e-list-iterator.h		\
 	e-memory.h			\
-	e-msgport.h			\
 	e-sexp.h			\
 	e-uid.h				\
 	e-url.h				\

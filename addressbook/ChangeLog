@@ -1,5 +1,9 @@
 2003-11-06  JP Rosevear <jpr@ximian.com>
 
+	* libebook/e-book.c: replace e_mutex stuff with gthread stuff
+
+2003-11-06  JP Rosevear <jpr@ximian.com>
+
 	* Makefile.am: build new subdirs
 
 	* backends/*: build the file, vcf and ldap backends here

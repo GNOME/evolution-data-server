@@ -1,3 +1,7 @@
+2003-11-06  JP Rosevear  <jpr@ximian.com>
+
+	* libecal/e-cal.c: replace e_mutex stuff with gthread stuff
+
 2003-11-06  JP Rosevear <jpr@ximian.com>
 
 	* Makefile.am: build new subdirs

@@ -1,3 +1,7 @@
+2003-11-06  JP Rosevear <jpr@ximian.com>
+
+	* libedataserver/Makefile.am: e-msgport is no longer needed
+
 2003-11-06  JP Rosevear  <jpr@ximian.com>
 
 	* src/server.c: include the addressbook backend files properly
