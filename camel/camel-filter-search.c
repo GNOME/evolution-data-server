@@ -617,11 +617,11 @@ spam_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
 	ESExpResult *r;
 	gboolean retval = FALSE;
 	
-	if (argc == 0)
+	if (fms->session->spam_plugin != NULL) {
 		retval = camel_spam_plugin_check_spam (fms->session->spam_plugin, camel_filter_search_get_message (fms, f));
 	
-	fprintf (stderr, "spam filter => %s\n", retval ? "*SPAM*" : "clean");
-
+		fprintf (stderr, "spam filter => %s\n", retval ? "*SPAM*" : "clean");
+	}
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.number = retval;
 
