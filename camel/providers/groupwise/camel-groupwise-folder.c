@@ -248,7 +248,30 @@ groupwise_folder_get_message( CamelFolder *folder,
 	if (org)
 		camel_internet_address_add (from_addr,org->display_name,org->email) ;
 	
+	if (e_gw_item_get_reply_request (item)) {
+		char *reply_within; 
+		const char *mess = e_gw_item_get_message (item);
+		char *value;
 
+		reply_within = e_gw_item_get_reply_within (item);
+		if (reply_within) {
+			time_t t;
+			char *temp;
+
+			t = e_gw_connection_get_date_from_string (reply_within);
+			temp = ctime (&t);
+			temp [strlen (temp)-1] = '\0';
+			value = g_strconcat (N_("Reply Requested: by "), temp, "\n\n", mess ? mess : "", NULL);
+			e_gw_item_set_message (item, (const char *) value);
+			g_free (value);
+
+		} else {
+			value = g_strconcat (N_("Reply Requested: When convenient"), "\n\n", mess ? mess : "", NULL);
+			e_gw_item_set_message (item, (const char *) value);
+			g_free (value);
+		}
+	}
+	
 	/*Content and content-type*/
 	body = g_strdup(e_gw_item_get_message(item));
 	if (body) {

@@ -392,9 +392,10 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 		e_gw_item_set_reply_request (item, TRUE) ;
 	
 	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_WITHIN) ;
-	if (send_options) 
+	if (send_options) { 
+		e_gw_item_set_reply_request (item, TRUE);
 		e_gw_item_set_reply_within (item, send_options) ;
-
+	}
 	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message),X_EXPIRE_AFTER) ;
 	if (send_options)
 		e_gw_item_set_expires (item, send_options) ;

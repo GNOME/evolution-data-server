@@ -1,3 +1,11 @@
+2005-02-04  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_folder_get_message): Added
+	a string for Reply requested. Appended with the subject.
+	* camel-groupwise-utils.c:
+	(camel_groupwise_util_item_from_message): set reply requested to
+	true.
+
 2005-02-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c: 
