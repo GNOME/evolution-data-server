@@ -1,3 +1,14 @@
+2005-03-22  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #73508
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_get_static_capabilities):
+	* libecal/e-cal-util.h: Added a new static capability 
+	to check and set the partstat as NEEDS ACTION for the
+	organizer.
+	* libecal/e-cal.[ch] (e_cal_get_organizer_must_accept):
+	Added a function to check the static capability.
+
 2005-03-12  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:
