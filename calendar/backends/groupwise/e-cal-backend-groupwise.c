@@ -1315,7 +1315,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 static ECalBackendSyncStatus
 receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp)
 {
-	ECalComponent *comp;
+	ECalComponent *comp, *modif_comp = NULL;
 	ECalBackendGroupwisePrivate *priv;
 	icalproperty_method method;
 	EGwConnectionStatus status;
@@ -1328,6 +1328,9 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	method = icalcomponent_get_method (icalcomp);
 	
 	status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp, method, &remove);
+
+	if (status == E_GW_CONNECTION_STATUS_OK && !modif_comp)
+		return GNOME_Evolution_Calendar_Success;
 
 	/* update the cache */
 	if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -1367,11 +1370,6 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 
 	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT)
 		return  GNOME_Evolution_Calendar_InvalidObject;
-	/* We need not do this when evolution starts deleting the calendar items from mail component 
-	   as when they are handled. The BAD_PARAMETER is checked due to the absence of proper error
-	   code from the server */
-	else if (status == E_GW_CONNECTION_STATUS_BAD_PARAMETER)
-		return GNOME_Evolution_Calendar_PermissionDenied;
 	return GNOME_Evolution_Calendar_OtherError;
 }
 
