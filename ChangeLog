@@ -1,3 +1,8 @@
+2004-11-05  Rodrigo Moya <rodrigo@novell.com>
+
+	* configure.in: use evolution-data-server-$BASE_VERSION as the
+	GETTEXT_PACKAGE.
+
 2004-11-03  Ryan Skadberg  <skadz@stigmata.org>
 
 	Fixes #69056
