@@ -2769,8 +2769,8 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 
 		comp = l->data;
 		e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,
-					      e_cal_resolve_tzid_cb, ecal,
-					      priv->default_zone);
+						e_cal_resolve_tzid_cb, ecal,
+						priv->default_zone);
 		g_object_unref (comp);
 	}
 

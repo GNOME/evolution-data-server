@@ -1,3 +1,19 @@
+2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-cal-backend-cache.[ch]
+	(e_cal_backend_cache_get_timezone, e_cal_backend_cache_put_timezone,
+	e_cal_backend_cache_remove_timezone): new functions to support
+	timezones in the cache.
+	(e_cal_backend_cache_get_components): only append to the returned
+	list the VEVENT's and VTODO's components.
+	(e_cal_backend_cache_init): create a hash table to store all the
+	icaltimezone objects we create in e_cal_backend_cache_get_timezone.
+	(e_cal_backend_cache_finalize): free the timezones hash table.
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_remove_object): remove object based on the
+	Groupwise item ID, not the iCalendar ID.
+
 2004-03-18  JP Rosevear <jpr@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c

@@ -29,6 +29,7 @@
 
 struct _ECalBackendCachePrivate {
 	char *uri;
+	GHashTable *timezones;
 };
 
 /* Property IDs */
@@ -112,6 +113,13 @@ e_cal_backend_cache_get_property (GObject *object, guint property_id, GValue *va
 }
 
 static void
+free_timezone_hash (gpointer key, gpointer value, gpointer user_data)
+{
+	g_free (key);
+	icaltimezone_free (value, 1);
+}
+
+static void
 e_cal_backend_cache_finalize (GObject *object)
 {
 	ECalBackendCache *cache;
@@ -124,6 +132,12 @@ e_cal_backend_cache_finalize (GObject *object)
 		if (priv->uri) {
 			g_free (priv->uri);
 			priv->uri = NULL;
+		}
+
+		if (priv->timezones) {
+			g_hash_table_foreach (priv->timezones, (GHFunc) free_timezone_hash, NULL);
+			g_hash_table_destroy (priv->timezones);
+			priv->timezones = NULL;
 		}
 
 		g_free (priv);
@@ -184,7 +198,10 @@ e_cal_backend_cache_init (ECalBackendCache *cache)
 	ECalBackendCachePrivate *priv;
 
 	priv = g_new0 (ECalBackendCachePrivate, 1);
+	priv->timezones = g_hash_table_new (g_str_hash, g_str_equal);
+
 	cache->priv = priv;
+
 }
 
 /**
@@ -380,13 +397,86 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
                 if (comp_str) {
                         icalcomp = icalparser_parse_string (comp_str);
                         if (icalcomp) {
-                                comp = e_cal_component_new ();
-                                e_cal_component_set_icalcomponent (comp, icalcomp);
-                                list = g_list_append (list, comp);
+				icalcomponent_kind kind;
+
+				kind = icalcomponent_isa (icalcomp);
+				if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT) {
+					comp = e_cal_component_new ();
+					e_cal_component_set_icalcomponent (comp, icalcomp);
+					list = g_list_append (list, comp);
+				} else
+					icalcomponent_free (icalcomp);
                         }
                 }
                 
         }
 
         return list;
+}
+
+const icaltimezone *
+e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid)
+{
+	icaltimezone *zone;
+	const char *comp_str;
+	ECalBackendCachePrivate *priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+	g_return_val_if_fail (tzid != NULL, NULL);
+
+	priv = cache->priv;
+
+	/* we first look for the timezone in the timezones hash table */
+	zone = g_hash_table_lookup (priv->timezones, tzid);
+	if (zone)
+		return (const icaltimezone *) zone;
+
+	/* if not found look for the timezone in the cache */
+	comp_str = e_file_cache_get_object (E_FILE_CACHE (cache), tzid);
+	if (comp_str) {
+		icalcomponent *icalcomp;
+
+		icalcomp = icalparser_parse_string (comp_str);
+		if (icalcomp) {
+			zone = icaltimezone_new ();
+			if (icaltimezone_set_component (zone, icalcomp) == 1)
+				g_hash_table_insert (priv->timezones, g_strdup (tzid), zone);
+			else {
+				icalcomponent_free (icalcomp);
+				icaltimezone_free (zone, 1);
+			}
+		}
+	}
+
+	return (const icaltimezone *) zone;
+}
+
+gboolean
+e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
+	g_return_val_if_fail (zone != NULL, FALSE);
+
+	/* FIXME */
+	return FALSE;
+}
+
+gboolean
+e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
+{
+	gpointer orig_key, orig_value;
+	ECalBackendCachePrivate *priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
+	g_return_val_if_fail (tzid != NULL, FALSE);
+
+	priv = cache->priv;
+
+	if (g_hash_table_lookup_extended (priv->timezones, tzid, &orig_key, &orig_value)) {
+		g_hash_table_remove (priv->timezones, tzid);
+		g_free (orig_key);
+		icaltimezone_free (orig_value, 1);
+	}
+
+	return e_file_cache_remove_object (E_FILE_CACHE (cache), tzid);
 }

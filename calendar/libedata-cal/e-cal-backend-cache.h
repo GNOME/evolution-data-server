@@ -44,17 +44,21 @@ typedef struct {
 	EFileCacheClass parent_class;
 } ECalBackendCacheClass;
 
-GType             e_cal_backend_cache_get_type (void);
+GType               e_cal_backend_cache_get_type (void);
 
-ECalBackendCache *e_cal_backend_cache_new (const char *uri);
-ECalComponent    *e_cal_backend_cache_get_component (ECalBackendCache *cache,
-						     const char *uid,
-						     const char *rid);
-gboolean          e_cal_backend_cache_put_component (ECalBackendCache *cache, ECalComponent *comp);
-gboolean          e_cal_backend_cache_remove_component (ECalBackendCache *cache,
-							const char *uid,
-							const char *rid);
-GList           *e_cal_backend_cache_get_components (ECalBackendCache *cache);
+ECalBackendCache   *e_cal_backend_cache_new (const char *uri);
+ECalComponent      *e_cal_backend_cache_get_component (ECalBackendCache *cache,
+						       const char *uid,
+						       const char *rid);
+gboolean            e_cal_backend_cache_put_component (ECalBackendCache *cache, ECalComponent *comp);
+gboolean            e_cal_backend_cache_remove_component (ECalBackendCache *cache,
+							  const char *uid,
+							  const char *rid);
+GList              *e_cal_backend_cache_get_components (ECalBackendCache *cache);
+
+const icaltimezone *e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid);
+gboolean            e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone);
+gboolean            e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid);
 
 G_END_DECLS
 

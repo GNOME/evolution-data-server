@@ -976,16 +976,43 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	/* if online, remove the item from the server */
 	if (priv->mode == CAL_MODE_REMOTE) {
 		EGwConnectionStatus status;
+		char *calobj;
+		icalproperty *icalprop;
+		icalcomponent *icalcomp;
 
-		/* FIXME: deal with recurrences */
-		status = e_gw_connection_remove_item (priv->cnc, priv->container_id, uid);
+		status = e_cal_backend_groupwise_get_object (backend, cal, uid, rid, &calobj);
 		if (status != E_GW_CONNECTION_STATUS_OK)
-			return GNOME_Evolution_Calendar_OtherError;
+			return GNOME_Evolution_Calendar_ObjectNotFound;
+
+		icalcomp = icalparser_parse_string (calobj);
+		g_free (calobj);
+		if (!icalcomp)
+			return GNOME_Evolution_Calendar_InvalidObject;
+
+		/* search the component for the X-EVOLUTION-GROUPWISE-ID property */
+		icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+		while (icalprop) {
+			const char *x_name, *x_val;
+
+			x_name = icalproperty_get_x_name (icalprop);
+			x_val = icalproperty_get_x (icalprop);
+			if (!strcmp (x_name, "X-EVOLUTION-GROUPWISE-ID")) {
+				status = e_gw_connection_remove_item (priv->cnc, priv->container_id, x_val);
+
+				icalcomponent_free (icalcomp);
+				if (status == E_GW_CONNECTION_STATUS_OK)
+					return GNOME_Evolution_Calendar_Success;
+				else
+					return GNOME_Evolution_Calendar_OtherError;
+			}
+
+			icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+		}
 	}
 
 	/* remove the component from the cache */
 	if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid))
-		return E_GW_CONNECTION_STATUS_OBJECT_NOT_FOUND;
+		return GNOME_Evolution_Calendar_ObjectNotFound;
 
 	return GNOME_Evolution_Calendar_Success;
 }
