@@ -1,9 +1,34 @@
+2005-03-09  Not Zed  <NotZed@Ximian.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_load_source): use a single global ref-counted
+	db-env for all opened db's.
+	(e_book_backend_file_dispose): clean up the env when finished.
+
+2005-03-07  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-bbok-backend-groupwise.c 
+	(e_book_backend_groupwise_set_mode) : notify writable
+	state after looking at priv->is_writable. Some books 
+	are read only for groupwise. 
+
+	Fixes #73021 
+
 2005-03-02  JP Rosevear  <jpr@novell.com>
 
+	Fixes #73226
+	
 	* libebook/e-destination.c (e_destination_list_get_dests): get a
 	list of destination addresses
 
 	* libebook/e-destination.h: add proto
+
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #72878
+
+	* libebook/e-destination.c (e_destination_copy): copy the raw
+	address.
 
 2005-02-28  Sivaiah Nallagatla  <snallagatla@novell.com>
 

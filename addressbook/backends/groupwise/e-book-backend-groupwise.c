@@ -2561,7 +2561,10 @@ e_book_backend_groupwise_set_mode (EBookBackend *backend, int mode)
 			}
 		}
 		else if (mode == GNOME_Evolution_Addressbook_MODE_REMOTE) {
-			e_book_backend_notify_writable (backend, TRUE);
+			if (bg->priv->is_writable)
+				e_book_backend_notify_writable (backend, TRUE);
+			else 
+				e_book_backend_notify_writable (backend, FALSE);
 			e_book_backend_notify_connection_status (backend, TRUE);
 			e_book_backend_notify_auth_required (backend);
 		}

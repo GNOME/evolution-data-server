@@ -71,6 +71,12 @@ struct _EBookBackendFilePrivate {
 	EBookBackendSummary *summary;
 };
 
+static GStaticMutex global_env_lock = G_STATIC_MUTEX_INIT;
+static struct {
+	int ref_count;
+	DB_ENV *env;
+} global_env;
+
 static void
 string_to_dbt(const char *str, DBT *dbt)
 {
@@ -1037,14 +1043,34 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
-	db_error = db_env_create (&env, 0);
-	if (db_error != 0) {
-		g_warning ("db_env_create failed with %d", db_error);
-		return GNOME_Evolution_Addressbook_OtherError;
-	}
-	env->open (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+	g_static_mutex_lock(&global_env_lock);
+	if (global_env.ref_count > 0) {
+		env = global_env.env;
+		global_env.ref_count++;
+	} else {
+		db_error = db_env_create (&env, 0);
+		if (db_error != 0) {
+			g_warning ("db_env_create failed with %d", db_error);
+			g_static_mutex_unlock(&global_env_lock);
+			return GNOME_Evolution_Addressbook_OtherError;
+		}
 
-	env->set_errcall (env, file_errcall);
+		db_error = env->open (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+		if (db_error != 0) {
+			env->close(env, 0);
+			g_warning ("db_env_open failed with %d", db_error);
+			g_static_mutex_unlock(&global_env_lock);
+			return GNOME_Evolution_Addressbook_OtherError;
+		}
+
+		env->set_errcall (env, file_errcall);
+
+		global_env.env = env;
+		global_env.ref_count = 1;
+	}
+	g_static_mutex_unlock(&global_env_lock);
+
+	bf->priv->env = env;
 
 	db_error = db_create (&db, env, 0);
 	if (db_error != 0) {
@@ -1271,8 +1297,13 @@ e_book_backend_file_dispose (GObject *object)
 		if (bf->priv->file_db)
 			bf->priv->file_db->close (bf->priv->file_db, 0);
 
-		if (bf->priv->env)
-			bf->priv->env->close (bf->priv->env, 0);
+		g_static_mutex_lock(&global_env_lock);
+		global_env.ref_count--;
+		if (global_env.ref_count == 0) {
+			global_env.env->close(global_env.env, 0);
+			global_env.env = NULL;
+		}
+		g_static_mutex_unlock(&global_env_lock);
 
 		if (bf->priv->summary)
 			g_object_unref(bf->priv->summary);

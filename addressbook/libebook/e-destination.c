@@ -216,6 +216,7 @@ e_destination_copy (const EDestination *dest)
 	}
 
 	/* XXX other settings? */
+        new_dest->priv->raw = g_strdup(dest->priv->raw);
 
 	return new_dest;
 }
