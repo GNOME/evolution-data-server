@@ -1,3 +1,8 @@
+2005-03-11  Chenthill Palanisamy  <pchenthill@novell.com>
+     
+        * e-source-selector.c (selector_button_press_event): Do
+	not emit popup signals when clicked on the source group.
+
 2005-03-04  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #38408

@@ -594,14 +594,13 @@ selector_button_press_event (GtkWidget *widget, GdkEventButton *event, ESourceSe
 		if (gtk_tree_model_get_iter (GTK_TREE_MODEL (priv->tree_store), &iter, path)) {
 			gtk_tree_model_get (GTK_TREE_MODEL (priv->tree_store), &iter, 0, &data, -1);
 
-			/* TODO: we could still emit a popup event for this and let the callee decide? */
+			/* Do not emit popup since we will not be able to get the source */	
 			if (E_IS_SOURCE_GROUP (data)) {
 				/* do i need to ref it here */
 				ESourceGroup *group;
 				
 				group = E_SOURCE_GROUP (data);g_object_ref (group);
 				priv->primary_source_group = group;
-				g_signal_emit(selector, signals[POPUP_EVENT], 0, NULL, event, &res);
 				/* data shuld be unreffed after creating the
 				 * new source*/	
 				return res;
