@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-26 03:24+0100\n"
-"PO-Revision-Date: 2004-02-26 11:19+0100\n"
+"POT-Creation-Date: 2004-03-01 03:24+0100\n"
+"PO-Revision-Date: 2004-03-01 15:16+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -307,24 +307,24 @@ msgid "AIM Screen Name List"
 msgstr "Seznam přezdívek AIM"
 
 #: addressbook/libebook/e-contact.c:153
+msgid "Groupwise Id List"
+msgstr "Seznam Id Groupwise"
+
+#: addressbook/libebook/e-contact.c:154
 msgid "Jabber Id List"
 msgstr "Seznam Id Jabberu"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Yahoo! Screen Name List"
 msgstr "Seznam přezdívek Yahoo!"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 msgid "MSN Screen Name List"
 msgstr "Seznam přezdívek MSN"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "ICQ Id List"
 msgstr "Seznam ICQ Id"
-
-#: addressbook/libebook/e-contact.c:157
-msgid "Groupwise Id List"
-msgstr "Seznam Id Groupwise"
 
 #: addressbook/libebook/e-contact.c:159
 msgid "AIM Home Screen Name 1"
@@ -351,205 +351,229 @@ msgid "AIM Work Screen Name 3"
 msgstr "Přezdívka AIM v práci 3"
 
 #: addressbook/libebook/e-contact.c:165
+msgid "Groupwise Home Screen Name 1"
+msgstr "Přezdívka Groupwise doma 1"
+
+#: addressbook/libebook/e-contact.c:166
+msgid "Groupwise Home Screen Name 2"
+msgstr "Přezdívka Groupwise doma 2"
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Groupwise Home Screen Name 3"
+msgstr "Přezdívka Groupwise doma 3"
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Groupwise Work Screen Name 1"
+msgstr "Přezdívka Groupwise v práci 1"
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Groupwise Work Screen Name 2"
+msgstr "Přezdívka Groupwise v práci 2"
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Groupwise Work Screen Name 3"
+msgstr "Přezdívka Groupwise v práci 3"
+
+#: addressbook/libebook/e-contact.c:171
 msgid "Jabber Home Id 1"
 msgstr "ID Jabberu doma 1"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:172
 msgid "Jabber Home Id 2"
 msgstr "ID Jabberu doma 2"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 3"
 msgstr "ID Jabberu doma 3"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Work Id 1"
 msgstr "ID Jabberu v práci 1"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Work Id 2"
 msgstr "ID Jabberu v práci 2"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 3"
 msgstr "ID Jabberu v práci 3"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:177
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Přezdívka Yahoo! doma 1"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:178
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Přezdívka Yahoo! doma 2"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Přezdívka Yahoo! doma 3"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Přezdívka Yahoo! v práci 1"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Přezdívka Yahoo! v práci 2"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Přezdívka Yahoo! v práci 3"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:183
 msgid "MSN Home Screen Name 1"
 msgstr "Přezdívka MSN doma 1"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:184
 msgid "MSN Home Screen Name 2"
 msgstr "Přezdívka MSN doma 2"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 3"
 msgstr "Přezdívka MSN doma 3"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Work Screen Name 1"
 msgstr "Přezdívka MSN v práci 1"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Work Screen Name 2"
 msgstr "Přezdívka MSN v práci 2"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 3"
 msgstr "Přezdívka MSN v práci 3"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:189
 msgid "ICQ Home Id 1"
 msgstr "ICQ ID doma 1"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:190
 msgid "ICQ Home Id 2"
 msgstr "ICQ ID doma 2"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 3"
 msgstr "ICQ ID doma 3"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Work Id 1"
 msgstr "ICQ ID v práci 1"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Work Id 2"
 msgstr "ICQ ID v práci 2"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 3"
 msgstr "ICQ ID v práci 3"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:197
 msgid "Organization"
 msgstr "Organizace"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:198
 msgid "Organizational Unit"
 msgstr "Organizační jednotka"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:199
 msgid "Office"
 msgstr "Kancelář"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:201
 msgid "Title"
 msgstr "Titul"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:202
 msgid "Role"
 msgstr "Funkce"
 
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:203
 msgid "Manager"
 msgstr "Vedoucí"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:204
 msgid "Assistant"
 msgstr "Asistent"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:207
 msgid "Homepage URL"
 msgstr "URL domovské stránky"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:208
 msgid "Weblog URL"
 msgstr "URL weblogu"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:209
 msgid "Video Conferencing URL"
 msgstr "URL pro videokonference"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:212
 msgid "Photo"
 msgstr "Fotografie"
 
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:213
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:216
 msgid "X.509 Certificate"
 msgstr "Certifikát X.509"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:219
 msgid "Category List"
 msgstr "Seznam kategorií"
 
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:220
 msgid "Categories"
 msgstr "Kategorie"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:217
+#: addressbook/libebook/e-contact.c:223
 msgid "Calendar URI"
 msgstr "URI kalendáře"
 
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:224
 msgid "Free/Busy URL"
 msgstr "URL volno/zaneprázdněn"
 
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:225
 msgid "ICS Calendar"
 msgstr "Kalendář ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:228
 msgid "Spouse's Name"
 msgstr "Partner/-ka"
 
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:229
 msgid "Note"
 msgstr "Poznámka"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:231
 msgid "Birth Date"
 msgstr "Narozeniny"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:232
 msgid "Anniversary"
 msgstr "Výročí"
 
-#: addressbook/libebook/e-contact.c:228
+#: addressbook/libebook/e-contact.c:234
 msgid "List"
 msgstr "Seznam"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:235
 msgid "List Show Addresses"
 msgstr "Seznam zobrazených adres"
 
-#: addressbook/libebook/e-contact.c:1195
+#: addressbook/libebook/e-contact.c:1201
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
