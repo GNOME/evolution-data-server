@@ -14,6 +14,6 @@ calendar/libecal/e-cal-recur.c
 calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
 calendar/libedata-cal/e-cal-backend-sexp.c
+servers/groupwise/e-gw-connection.c
 src/GNOME_Evolution_DataServerLDAP.server.in.in
 src/GNOME_Evolution_DataServerNOLDAP.server.in.in
-
