@@ -1,3 +1,10 @@
+2004-01-09  Ross Burton  <ross@burtonini.com>
+
+	* libebook/e-book-async.h:
+	* libebook/e-book-async.c:
+	Change the API of e_book_async_get_book_view and
+	e_book_async_get_contacts to match e-book.h.
+
 2004-01-08  Ross Burton  <ross@burtonini.com>
 
 	* libebook/e-contact.c:

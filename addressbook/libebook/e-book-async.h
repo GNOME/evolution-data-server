@@ -71,7 +71,7 @@ guint     e_book_async_get_contact              (EBook                 *book,
 						 gpointer               closure);
 
 guint     e_book_async_get_contacts             (EBook                 *book,
-						 const char            *query,
+						 EBookQuery            *query,
 						 EBookContactsCallback  cb,
 						 gpointer               closure);
 
@@ -103,7 +103,9 @@ gboolean  e_book_async_commit_contact           (EBook                 *book,
 						 gpointer               closure);
 
 guint     e_book_async_get_book_view            (EBook                 *book,
-						 const gchar           *query, /* XXX this needs to change to an EBookQuery */
+						 EBookQuery            *query,
+						 GList                 *requested_fields,
+						 int                    max_results,
 						 EBookBookViewCallback  cb,
 						 gpointer               closure);
 

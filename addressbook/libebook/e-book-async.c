@@ -970,6 +970,8 @@ typedef struct {
 
 	EBook *book;
 	EBookQuery *query;
+	GList *requested_fields;
+	int max_results;
 	EBookBookViewCallback cb;
 	gpointer closure;
 } GetBookViewMsg;
@@ -1015,7 +1017,7 @@ _get_book_view_handler (EBookMsg *msg)
 	e_book_msg_init ((EBookMsg*)response, _get_book_view_response_handler, _get_book_view_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
-	if (!e_book_get_book_view (view_msg->book, view_msg->query, NULL, -1, &response->book_view, &error)) {
+	if (!e_book_get_book_view (view_msg->book, view_msg->query, view_msg->requested_fields, view_msg->max_results, &response->book_view, &error)) {
 		response->status = error->code;
 		g_error_free (error);
 	}
@@ -1030,18 +1032,22 @@ static void
 _get_book_view_dtor (EBookMsg *msg)
 {
 	GetBookViewMsg *view_msg = (GetBookViewMsg *)msg;
-	
+	g_list_foreach (view_msg->requested_fields, (GFunc)g_free, NULL);
+	g_list_free (view_msg->requested_fields); 
 	e_book_query_unref (view_msg->query);
 	g_free (view_msg);
 }
 
 guint
 e_book_async_get_book_view (EBook                 *book,
-			    const gchar           *query,
+			    EBookQuery            *query,
+			    GList                 *requested_fields,
+			    int                    max_results,
 			    EBookBookViewCallback  cb,
 			    gpointer               closure)
 {
 	GetBookViewMsg *msg;
+	GList *l;
 
 	init_async ();
 
@@ -1049,7 +1055,11 @@ e_book_async_get_book_view (EBook                 *book,
 	e_book_msg_init ((EBookMsg*)msg, _get_book_view_handler, _get_book_view_dtor);
 
 	msg->book = g_object_ref (book);
-	msg->query = e_book_query_from_string (query);
+	msg->query = e_book_query_ref (query);
+	msg->requested_fields = g_list_copy (requested_fields);
+	for (l = msg->requested_fields; l; l = l->next)
+		l->data = g_strdup (l->data);
+	msg->max_results = max_results;
 	msg->cb = cb;
 	msg->closure = closure;
 
@@ -1130,7 +1140,7 @@ _get_contacts_dtor (EBookMsg *msg)
 
 guint
 e_book_async_get_contacts (EBook                 *book,
-			   const gchar           *query,
+			   EBookQuery            *query,
 			   EBookContactsCallback  cb,
 			   gpointer              closure)
 {
@@ -1142,7 +1152,7 @@ e_book_async_get_contacts (EBook                 *book,
 	e_book_msg_init ((EBookMsg*)msg, _get_contacts_handler, _get_contacts_dtor);
 
 	msg->book = g_object_ref (book);
-	msg->query = e_book_query_from_string (query);
+	msg->query = e_book_query_ref (query);
 	msg->cb = cb;
 	msg->closure = closure;
 
