@@ -29,6 +29,7 @@
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-i18n.h>
+#include <bonobo/bonobo-main.h>
 #include <libgnome/gnome-util.h>
 
 #include <libedataserver/e-component-listener.h>
@@ -1326,6 +1327,23 @@ fetch_corba_cal (ECal *ecal, ESource *source, ECalSourceType type)
 	return result;
 }
 
+/* one-time start up for libecal */
+static void
+e_cal_activate ()
+{
+	static GStaticMutex e_cal_lock = G_STATIC_MUTEX_INIT;
+	static gboolean activated = FALSE;
+	
+	g_static_mutex_lock (&e_cal_lock);
+	if (!activated) {
+		activated = TRUE;
+		
+		if (!bonobo_is_initialized ())
+			bonobo_init (NULL, NULL);
+	}
+	g_static_mutex_unlock (&e_cal_lock);
+}
+
 /**
  * e_cal_new:
  * @source: 
@@ -1341,7 +1359,9 @@ ECal *
 e_cal_new (ESource *source, ECalSourceType type)
 {
 	ECal *ecal;
-
+	
+	e_cal_activate ();
+	
 	ecal = g_object_new (E_TYPE_CAL, NULL);
 
 	if (!fetch_corba_cal (ecal, source, type)) {

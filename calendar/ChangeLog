@@ -1,3 +1,11 @@
+2004-08-09  Jeffrey Stedfast  <fejj@novell.com>
+
+	Fixes bug #58150
+
+	* libecal/e-cal.c (e_cal_activate): init bonobo if it isn't
+	already initialised.
+	(e_cal_new): Call e_cal_activate().
+
 2004-08-09  Harish Krishnaswamy  <kharish@novell.com>
 
 	Fixes #58643 - the gw backend assembles the xgwrecordid
