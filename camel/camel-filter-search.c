@@ -91,7 +91,7 @@ static ESExpResult *get_current_date (struct _ESExp *f, int argc, struct _ESExpR
 static ESExpResult *header_source (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 static ESExpResult *get_size (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 static ESExpResult *pipe_message (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
-static ESExpResult *spam_filter (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
+static ESExpResult *spam_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 
 /* builtin functions */
 static struct {
@@ -120,7 +120,7 @@ static struct {
 	{ "header-source",      (ESExpFunc *) header_source,      0 },
 	{ "get-size",           (ESExpFunc *) get_size,           0 },
 	{ "pipe-message",       (ESExpFunc *) pipe_message,       0 },
-	{ "spam-filter",        (ESExpFunc *) spam_filter,        0 },
+	{ "spam-test",          (ESExpFunc *) spam_test,          0 },
 };
 
 
@@ -612,7 +612,7 @@ pipe_message (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 }
 
 static ESExpResult *
-spam_filter (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
+spam_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
 {
 	ESExpResult *r;
 	gboolean retval = FALSE;
