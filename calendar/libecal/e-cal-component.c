@@ -4046,25 +4046,31 @@ get_attendee_list (GSList *attendee_list, GSList **al)
 		if (attendee->member_param)
 			a->member = icalparameter_get_member (attendee->member_param);		
 		if (attendee->cutype_param)
-			a->cutype = icalparameter_get_cutype (attendee->cutype_param);			
+			a->cutype = icalparameter_get_cutype (attendee->cutype_param);
+		else
+			a->cutype = ICAL_CUTYPE_UNKNOWN;
 		if (attendee->role_param)
 			a->role = icalparameter_get_role (attendee->role_param);
+		else
+			a->role = ICAL_ROLE_REQPARTICIPANT;
 		if (attendee->partstat_param)
-			a->status = icalparameter_get_role (attendee->partstat_param);
+			a->status = icalparameter_get_partstat (attendee->partstat_param);
+		else
+			a->status = ICAL_PARTSTAT_NEEDSACTION;
 		if (attendee->rsvp_param && icalparameter_get_rsvp (attendee->rsvp_param) == ICAL_RSVP_TRUE)
 			a->rsvp = TRUE;
 		else
 			a->rsvp = FALSE;
 		if (attendee->delfrom_param)
-			a->delfrom = icalparameter_get_sentby (attendee->delfrom_param);
+			a->delfrom = icalparameter_get_delegatedfrom (attendee->delfrom_param);
 		if (attendee->delto_param)
-			a->delto = icalparameter_get_sentby (attendee->delto_param);
+			a->delto = icalparameter_get_delegatedto (attendee->delto_param);
 		if (attendee->sentby_param)
 			a->sentby = icalparameter_get_sentby (attendee->sentby_param);
 		if (attendee->cn_param)
-			a->cn = icalparameter_get_sentby (attendee->cn_param);
+			a->cn = icalparameter_get_cn (attendee->cn_param);
 		if (attendee->language_param)
-			a->language = icalparameter_get_sentby (attendee->language_param);
+			a->language = icalparameter_get_language (attendee->language_param);
 
 		*al = g_slist_prepend (*al, a);
 	}

@@ -1,3 +1,9 @@
+2004-04-30  Dan Winship  <danw@ximian.com>
+
+	* libecal/e-cal-component.c (get_attendee_list): Fill in some
+	default values to avoid libical assertions later. Also, fix some
+	really awful cut+pastos
+
 2004-04-28  JP Rosevear  <jpr@ximian.com>
 
 	* tests/ecal/test-search.c: something to run searches with for
