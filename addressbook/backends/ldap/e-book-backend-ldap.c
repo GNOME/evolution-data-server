@@ -384,6 +384,8 @@ find_book_view (EBookBackendLDAP *bl)
 	g_object_unref (iter);
 
 	return rv;
+#else
+	return NULL;
 #endif
 }
 

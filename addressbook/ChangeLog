@@ -1,5 +1,14 @@
 2004-01-09  Jeffrey Stedfast  <fejj@ximian.com>
 
+	* tests/ebook/test-date.c (main): Don't let control reach the end
+	of a non-void function
+
+	* backends/ldap/e-book-backend-ldap.c (find_book_view): Don't let
+	control reach the end of a non-void function
+
+	* libebook/e-contact.c (cert_getter): Don't let control reach the
+	end of a non-void function
+
 	* tests/ebook/test-string.c: Same as below.
 
 	* tests/ebook/test-photo.c: #include <string.h> for strlen and

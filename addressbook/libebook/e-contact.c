@@ -553,6 +553,8 @@ cert_getter (EContact *contact, EVCardAttribute *attr)
 	   up via NSS, but that would require the additional NSS dep
 	   here, and we'd have more than one process opening the
 	   certdb, which is bad.  *sigh* */
+	
+	return NULL;
 }
 
 static void

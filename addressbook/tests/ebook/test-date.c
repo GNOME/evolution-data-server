@@ -33,4 +33,6 @@ main (int argc, char **argv)
 	  printf ("failed\n");
 	else
 	  printf ("passed\n");
+	
+	return 0;
 }
