@@ -1,3 +1,26 @@
+2004-12-20  Not Zed  <NotZed@Ximian.com>
+
+	* camel-operation.c (camel_operation_init): remove
+	(camel_operation_shutdown): remove.
+	(co_getcc): new helper to get the current thread-specific value &
+	init if need be.
+
+	* camel-mime-utils.c (camel_mime_utils_init): removed, taken from
+	prebuilt tables now.
+	(header_remove_bits, header_init_bits, header_decode_init) 
+	(base64_init): removed, handled by perl script now.
+
+	* camel.c (camel_shutdown): dont shutdown mime utils anymore.
+
+	* camel-mime-utils.c (mailing_list_init): move the mailing list
+	init stuff from camel-mime-utils-init to here.
+	(camel_header_raw_check_mailing_list): call mailing_list_once to
+	init the regular expression tables.
+	(camel_mime_utils_shutdown): removed, it can 'leak' the static
+	memory.
+	(base64_init): removed, this data never changes, keep table in
+	static memory.
+
 2004-12-15  Rodney Dawes  <dobey@novell.com>
 
 	* Makefile.am: Move camel-search-private.h to libcamelinclude_HEADERS

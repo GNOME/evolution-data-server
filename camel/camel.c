@@ -46,7 +46,6 @@ static int initialised = FALSE;
 static void
 camel_shutdown (void)
 {
-	void camel_operation_shutdown (void);
 	CamelCertDB *certdb;
 	
 	if (!initialised)
@@ -64,9 +63,6 @@ camel_shutdown (void)
 		camel_object_unref (certdb);
 	}
 	
-	camel_operation_shutdown ();
-	camel_mime_utils_shutdown ();
-	
 	initialised = FALSE;
 }
 
@@ -75,7 +71,6 @@ camel_init (const char *configdir, gboolean nss_init)
 {
 	CamelCertDB *certdb;
 	char *path;
-	void camel_operation_init(void);
 	
 	if (initialised)
 		return 0;
@@ -84,9 +79,6 @@ camel_init (const char *configdir, gboolean nss_init)
 
 	/* initialise global camel_object_type */
 	camel_object_get_type();
-
-	camel_mime_utils_init();
-	camel_operation_init();
 
 #ifdef HAVE_NSS
 	if (nss_init) {

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -87,32 +86,24 @@ static pthread_mutex_t operation_lock = PTHREAD_MUTEX_INITIALIZER;
 static unsigned int stamp (void);
 static EDList operation_list = E_DLIST_INITIALISER(operation_list);
 static pthread_key_t operation_key;
+static pthread_once_t operation_once = PTHREAD_ONCE_INIT;
 
 typedef struct _CamelOperationMsg {
 	EMsg msg;
 } CamelOperationMsg ;
 
-/**
- * camel_operation_init:
- * @void: 
- * 
- * Init internal variables.  Only call this once.
- **/
-void
-camel_operation_init(void)
+static void
+co_createspecific(void)
 {
 	pthread_key_create(&operation_key, NULL);
 }
 
-/**
- * camel_operation_shutdown:
- *
- * Cleans up internal variables.
- **/
-void
-camel_operation_shutdown (void)
+static CamelOperation *
+co_getcc(void)
 {
-	pthread_key_delete (operation_key);
+	pthread_once(&operation_once, co_createspecific);
+
+	return (CamelOperation *)pthread_getspecific(operation_key);
 }
 
 /**
@@ -175,7 +166,7 @@ camel_operation_mute(CamelOperation *cc)
 CamelOperation *
 camel_operation_registered (void)
 {
-	CamelOperation *cc = (CamelOperation *)pthread_getspecific(operation_key);
+	CamelOperation *cc = co_getcc();
 
 	if (cc)
 		camel_operation_ref(cc);
@@ -249,7 +240,7 @@ void
 camel_operation_cancel_block (CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc) {
 		LOCK();
@@ -270,7 +261,7 @@ void
 camel_operation_cancel_unblock (CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc) {
 		LOCK();
@@ -331,7 +322,7 @@ void
 camel_operation_uncancel(CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc) {
 		CamelOperationMsg *msg;
@@ -362,7 +353,7 @@ camel_operation_uncancel(CamelOperation *cc)
 CamelOperation *
 camel_operation_register (CamelOperation *cc)
 {
-	CamelOperation *oldcc = pthread_getspecific(operation_key);
+	CamelOperation *oldcc = co_getcc();
 
 	pthread_setspecific(operation_key, cc);
 
@@ -378,6 +369,7 @@ camel_operation_register (CamelOperation *cc)
 void
 camel_operation_unregister (CamelOperation *cc)
 {
+	pthread_once(&operation_once, co_createspecific);
 	pthread_setspecific(operation_key, NULL);
 }
 
@@ -399,7 +391,7 @@ camel_operation_cancel_check (CamelOperation *cc)
 	d(printf("checking for cancel in thread %d\n", pthread_self()));
 
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	LOCK();
 
@@ -438,7 +430,7 @@ int
 camel_operation_cancel_fd (CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc == NULL || cc->blocked)
 		return -1;
@@ -468,7 +460,7 @@ PRFileDesc *
 camel_operation_cancel_prfd (CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc == NULL || cc->blocked)
 		return NULL;
@@ -501,7 +493,7 @@ camel_operation_start (CamelOperation *cc, char *what, ...)
 	struct _status_stack *s;
 
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc == NULL)
 		return;
@@ -548,7 +540,7 @@ camel_operation_start_transient (CamelOperation *cc, char *what, ...)
 	struct _status_stack *s;
 
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc == NULL || cc->status == NULL)
 		return;
@@ -601,7 +593,7 @@ camel_operation_progress (CamelOperation *cc, int pc)
 	char *msg = NULL;
 
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc == NULL)
 		return;
@@ -673,7 +665,7 @@ camel_operation_end (CamelOperation *cc)
 	int pc = 0;
 
 	if (cc == NULL)
-		cc = (CamelOperation *)pthread_getspecific(operation_key);
+		cc = co_getcc();
 
 	if (cc == NULL)
 		return;

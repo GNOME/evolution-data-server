@@ -160,6 +160,7 @@ libcamel_1_2_la_SOURCES = 				\
 	camel-mime-part-utils.c			\
 	camel-mime-part.c			\
 	camel-mime-utils.c			\
+	camel-mime-tables.c			\
 	camel-multipart-encrypted.c		\
 	camel-multipart-signed.c		\
 	camel-multipart.c			\
@@ -273,6 +274,9 @@ camel_index_control_1_2_LDADD =			\
 	libcamel-1.2.la				\
 	$(libcamel_1_2_la_LIBADD)
 
+camel-mime-tables.c: gentables.pl
+	perl gentables.pl > $@
+
 install-exec-hook:
 	@if test -n "$(CAMEL_LOCK_HELPER_USER)"; then \
 	    if test `whoami` = root ; then \
@@ -313,5 +317,6 @@ noinst_HEADERS =				\
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
+	gentables.pl				\
 	ChangeLog.pre-1-4			\
 	README
