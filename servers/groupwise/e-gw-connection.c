@@ -46,7 +46,73 @@ struct _EGwConnectionPrivate {
 	char *user_name;
 	char *user_email;
 	char *user_uuid;
+	GMutex *reauth_mutex;
 };
+
+static EGwConnectionStatus 
+reauthenticate (EGwConnection *cnc) 
+{
+	EGwConnectionPrivate  *priv;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	SoupSoapParameter *param;
+	EGwConnectionStatus status = -1;
+	char *session = NULL;
+	
+	priv = cnc->priv;
+	g_mutex_lock (priv->reauth_mutex);
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getCategoryListRequest");
+	e_gw_message_write_footer (msg);
+
+        /* just to make sure we still have invlaid session 
+	   when multiple e_gw_connection apis see inavlid connection error 
+	   at the sma time this prevents this function sending login requests multiple times */
+	response = e_gw_connection_send_message (cnc, msg); 
+        if (!response) {
+                g_object_unref (msg);
+		g_mutex_unlock (priv->reauth_mutex);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+        status = e_gw_connection_parse_response_status (response);
+	g_object_unref (response);
+
+	if (status == E_GW_CONNECTION_STATUS_OK) {
+		g_mutex_unlock (priv->reauth_mutex);
+		return status;
+	}
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (priv->uri, NULL, "loginRequest");
+	soup_soap_message_start_element (msg, "auth", "types", NULL);
+	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
+					 "http://www.w3.org/2001/XMLSchema-instance");
+	e_gw_message_write_string_parameter (msg, "username", "types", priv->username);
+	e_gw_message_write_string_parameter (msg, "password", "types", priv->password);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (response) 
+		status = e_gw_connection_parse_response_status (response);
+
+	if (status == E_GW_CONNECTION_STATUS_OK) {
+		param = soup_soap_response_get_first_parameter_by_name (response, "session");
+		if (param) 
+			session = soup_soap_parameter_get_string_value (param);
+			
+	}
+		
+	if (session) {
+		g_free (priv->session_id);
+		priv->session_id = session;
+	} 
+	g_object_unref (msg);
+	if (response)
+		g_object_unref (response);
+	g_mutex_unlock (priv->reauth_mutex);
+	return status;
+	
+}
 
 EGwConnectionStatus
 e_gw_connection_parse_response_status (SoupSoapResponse *response)
@@ -65,6 +131,7 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	case 0 : return E_GW_CONNECTION_STATUS_OK;
 	case 59905 : return E_GW_CONNECTION_STATUS_BAD_PARAMETER;
 	case 59914: return E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED;
+	case 59910: return E_GW_CONNECTION_STATUS_INVALID_CONNECTION;
 		/* FIXME: map all error codes */
 	}
 
@@ -197,6 +264,10 @@ e_gw_connection_dispose (GObject *object)
 			g_free (priv->user_uuid);
 			priv->user_uuid = NULL;
 		}
+		if (priv->reauth_mutex) {
+			g_mutex_free (priv->reauth_mutex);
+			priv->reauth_mutex = NULL;
+		}
 	}
 
 	if (parent_class->dispose)
@@ -243,6 +314,7 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 
 	/* create the SoupSession for this connection */
 	priv->soup_session = soup_session_sync_new ();
+	priv->reauth_mutex = g_mutex_new ();
 }
 
 GType
@@ -326,7 +398,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	cnc->priv->uri = g_strdup (uri);
 	cnc->priv->username = g_strdup (username);
 	cnc->priv->password = g_strdup (password);
-	cnc->priv->session_id = g_strdup (soup_soap_parameter_get_string_value (param));
+	cnc->priv->session_id = soup_soap_parameter_get_string_value (param);
 
 	/* retrieve user information */
 	param = soup_soap_response_get_first_parameter_by_name (response, "userinfo");
@@ -426,7 +498,9 @@ e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
         g_object_unref (msg);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-                g_object_unref (response);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
                 return status;
         }
 
@@ -527,6 +601,8 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
 
         status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
@@ -596,6 +672,8 @@ e_gw_connection_get_items_from_ids (EGwConnection *cnc, const char *container, c
 
         status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
@@ -806,7 +884,8 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item, GSList **id_list)
 			*id_list = g_slist_append (*id_list, soup_soap_parameter_get_string_value (param));
 		}
 	}
-
+	else if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (msg);
 	g_object_unref (response);
 
@@ -847,11 +926,13 @@ e_gw_connection_create_item (EGwConnection *cnc, EGwItem *item, char** id)
 	}
 
 	status = e_gw_connection_parse_response_status (response);
-	if ( status == E_GW_CONNECTION_STATUS_OK) {
+	if (status == E_GW_CONNECTION_STATUS_OK) {
 		param = soup_soap_response_get_first_parameter_by_name (response, "id");
 		if (param != NULL) 
 			*id = g_strdup (soup_soap_parameter_get_string_value (param));
-	}
+	} else if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	
 	g_object_unref (msg);
 	g_object_unref (response);
 
@@ -892,6 +973,8 @@ e_gw_connection_modify_item (EGwConnection *cnc, const char *id , EGwItem *item)
 	}
 
 	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (msg);
 	g_object_unref (response);
 
@@ -930,6 +1013,8 @@ e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char 
 
         status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
@@ -983,7 +1068,8 @@ e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const ch
 	}
 
 	status = e_gw_connection_parse_response_status (response);
-
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	/* free memory */
 	g_object_unref (response);
 	g_object_unref (msg);
@@ -1019,7 +1105,8 @@ e_gw_connection_remove_items (EGwConnection *cnc, const char *container, GList *
 	}
 
 	status = e_gw_connection_parse_response_status (response);
-
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	/* free memory */
 	g_object_unref (response);
 	g_object_unref (msg);
@@ -1048,6 +1135,8 @@ e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *
         }
 
         status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
@@ -1073,6 +1162,8 @@ e_gw_connection_decline_request (EGwConnection *cnc, const char *id)
         }
 
         status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
@@ -1099,6 +1190,8 @@ e_gw_connection_retract_request (EGwConnection *cnc, const char *id, const char 
         }
 
         status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
@@ -1124,6 +1217,8 @@ e_gw_connection_complete_request (EGwConnection *cnc, const char *id)
         }
 
         status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
@@ -1274,6 +1369,8 @@ e_gw_connection_create_book (EGwConnection *cnc, char *book_name, char**id)
 
         status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
@@ -1321,6 +1418,8 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
         g_object_unref (msg);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
                 g_object_unref (response);
                 return status;
         }
@@ -1429,6 +1528,8 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
 
         status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
@@ -1509,6 +1610,8 @@ e_gw_connection_add_members (EGwConnection *cnc, const char *group_id, GList *me
         }
 
         status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
@@ -1551,6 +1654,8 @@ e_gw_connection_remove_members (EGwConnection *cnc, const char *group_id, GList 
         }
 
         status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
@@ -1589,6 +1694,8 @@ e_gw_connection_create_cursor (EGwConnection *cnc, const char *container, const 
 	
 	status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
@@ -1638,12 +1745,14 @@ e_gw_connection_destroy_cursor (EGwConnection *cnc, const char *container,  int 
         }
 	
 	status = e_gw_connection_parse_response_status (response);
-	
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
      
 }
+
 
 
 EGwConnectionStatus
@@ -1675,6 +1784,10 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
 	
 	status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
