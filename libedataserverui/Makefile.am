@@ -28,7 +28,8 @@ libedataserverui_1_2_la_SOURCES =	\
 	e-name-selector-model.c		\
 	e-source-selector.c		\
 	e-source-selector-dialog.c	\
-	e-source-option-menu.c
+	e-source-option-menu.c		\
+	e-tree-model-generator.c
 
 libedataserverui_1_2_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
@@ -49,7 +50,8 @@ libedataserveruiinclude_HEADERS =	\
 	e-name-selector-model.h		\
 	e-source-selector.h		\
 	e-source-selector-dialog.h	\
-	e-source-option-menu.h
+	e-source-option-menu.h		\
+	e-tree-model-generator.h
 
 # Test programs
 test_source_selector_SOURCES = test-source-selector.c

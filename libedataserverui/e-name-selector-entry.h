@@ -28,6 +28,7 @@
 #include <libebook/e-contact.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>
+#include <libedataserverui/e-tree-model-generator.h>
 
 G_BEGIN_DECLS
 
@@ -46,18 +47,19 @@ struct ENameSelectorEntryClass {
 };
 
 struct ENameSelectorEntry {
-	GtkEntry            parent;
+	GtkEntry             parent;
 
 	/* Private */
 
-	PangoAttrList      *attr_list;
-	ESourceList        *source_list;
-	EContactStore      *contact_store;
-	EDestinationStore  *destination_store;
-	GtkEntryCompletion *entry_completion;
+	PangoAttrList       *attr_list;
+	ESourceList         *source_list;
+	EContactStore       *contact_store;
+	ETreeModelGenerator *email_generator;
+	EDestinationStore   *destination_store;
+	GtkEntryCompletion  *entry_completion;
 
-	guint               type_ahead_complete_cb_id;
-	guint               update_completions_cb_id;
+	guint                type_ahead_complete_cb_id;
+	guint                update_completions_cb_id;
 };
 
 GType               e_name_selector_entry_get_type               (void);

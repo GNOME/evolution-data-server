@@ -1,3 +1,16 @@
+2005-01-22  Hans Petter Jansson  <hpj@novell.com>
+
+	* Makefile.am (libedataserverui_1_2_la_SOURCES)
+	(libedataserveruiinclude_HEADERS): Add newly implemented
+	ETreeModelGenerator to build.
+
+	* e-tree-model-generator.[ch]: Implement ETreeModelGenerator, a model
+	wrapper similar to GtkTreeModelFilter, but with the capability to map
+	each child row to an arbitrary number of rows, including zero, and pass
+	a permutation identifier to the user's modify callback.
+
+	* e-name-selector-dialog.c (contact_column_formatter): 
+
 2005-01-19  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-name-selector-entry.c (sanitize_string): Implement.

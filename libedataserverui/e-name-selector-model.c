@@ -38,8 +38,11 @@ typedef struct {
 }
 Section;
 
-static gboolean filter_show_not_in_destinations (EContactStore *contact_store, GtkTreeIter *iter,
-						 ENameSelectorModel *name_selector_model);
+static gint generate_contact_rows  (EContactStore *contact_store, GtkTreeIter *iter,
+				    ENameSelectorModel *name_selector_model);
+static void override_email_address (EContactStore *contact_store, GtkTreeIter *iter,
+				    gint permutation_n, gint column, GValue *value,
+				    ENameSelectorModel *name_selector_model);
 
 /* ------------------ *
  * Class/object setup *
@@ -62,11 +65,16 @@ e_name_selector_model_init (ENameSelectorModel *name_selector_model)
 {
 	name_selector_model->sections       = g_array_new (FALSE, FALSE, sizeof (Section));
 	name_selector_model->contact_store  = e_contact_store_new ();
-	name_selector_model->contact_filter = GTK_TREE_MODEL_FILTER (
-		gtk_tree_model_filter_new (GTK_TREE_MODEL (name_selector_model->contact_store), NULL));
-	gtk_tree_model_filter_set_visible_func (name_selector_model->contact_filter,
-						(GtkTreeModelFilterVisibleFunc) filter_show_not_in_destinations,
+
+	name_selector_model->contact_filter =
+		e_tree_model_generator_new (GTK_TREE_MODEL (name_selector_model->contact_store));
+	e_tree_model_generator_set_generate_func (name_selector_model->contact_filter,
+						  (ETreeModelGeneratorGenerateFunc) generate_contact_rows,
+						  name_selector_model, NULL);
+	e_tree_model_generator_set_modify_func (name_selector_model->contact_filter,
+						(ETreeModelGeneratorModifyFunc) override_email_address,
 						name_selector_model, NULL);
+
 	g_object_unref (name_selector_model->contact_store);
 
 	name_selector_model->destination_uid_hash = NULL;
@@ -121,13 +129,25 @@ e_name_selector_model_new (void)
  * GtkTreeModelFilter filtering *
  * ---------------------------- */
 
-static gboolean
-filter_show_not_in_destinations (EContactStore *contact_store, GtkTreeIter *iter,
-				 ENameSelectorModel *name_selector_model)
+static void
+deep_free_list (GList *list)
+{
+	GList *l;
+
+	for (l = list; l; l = g_list_next (l))
+		g_free (l->data);
+
+	g_list_free (list);
+}
+
+static gint
+generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
+		       ENameSelectorModel *name_selector_model)
 {
 	EContact    *contact;
 	const gchar *contact_uid;
 	gboolean     result = TRUE;
+	gint         n_rows;
 	gint         i;
 
 	contact = e_contact_store_get_contact (contact_store, iter);
@@ -159,7 +179,39 @@ filter_show_not_in_destinations (EContactStore *contact_store, GtkTreeIter *iter
 		g_list_free (destinations);
 	}
 
-	return result;
+	if (result) {
+		EContact *contact;
+		GList    *email_list;
+
+		contact = e_contact_store_get_contact (contact_store, iter);
+		email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+		n_rows = g_list_length (email_list);
+		deep_free_list (email_list);
+	} else {
+		n_rows = 0;
+	}
+
+	return n_rows;
+}
+
+static void
+override_email_address (EContactStore *contact_store, GtkTreeIter *iter,
+			gint permutation_n, gint column, GValue *value,
+			ENameSelectorModel *name_selector_model)
+{
+	if (column == E_CONTACT_EMAIL_1) {
+		EContact *contact;
+		GList    *email_list;
+		gchar    *email;
+
+		contact = e_contact_store_get_contact (contact_store, iter);
+		email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+		email = g_strdup (g_list_nth_data (email_list, permutation_n));
+		g_value_set_string (value, email);
+		deep_free_list (email_list);
+	} else {
+		gtk_tree_model_get_value (GTK_TREE_MODEL (contact_store), iter, column, value);
+	}
 }
 
 /* --------------- *
@@ -286,7 +338,7 @@ e_name_selector_model_peek_contact_store (ENameSelectorModel *name_selector_mode
 	return name_selector_model->contact_store;
 }
 
-GtkTreeModelFilter *
+ETreeModelGenerator *
 e_name_selector_model_peek_contact_filter (ENameSelectorModel *name_selector_model)
 {
 	g_return_val_if_fail (E_IS_NAME_SELECTOR_MODEL (name_selector_model), NULL);

@@ -24,7 +24,7 @@
 #define E_NAME_SELECTOR_MODEL_H
 
 #include <glib.h>
-#include <gtk/gtktreemodelfilter.h>
+#include <libedataserverui/e-tree-model-generator.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>
 
@@ -40,15 +40,15 @@ typedef struct ENameSelectorModel       ENameSelectorModel;
 typedef struct ENameSelectorModelClass  ENameSelectorModelClass;
 
 struct ENameSelectorModel {
-	GObject             parent;
+	GObject              parent;
 
 	/* Private */
 
-	GArray             *sections;
-	EContactStore      *contact_store;
-	GtkTreeModelFilter *contact_filter;
+	GArray              *sections;
+	EContactStore       *contact_store;
+	ETreeModelGenerator *contact_filter;
 
-	GHashTable         *destination_uid_hash;
+	GHashTable          *destination_uid_hash;
 };
 
 struct ENameSelectorModelClass {
@@ -59,24 +59,24 @@ struct ENameSelectorModelClass {
 	void (* section_removed) (gchar *name);
 };
 
-GType               e_name_selector_model_get_type            (void);
-ENameSelectorModel *e_name_selector_model_new                 (void);
+GType                e_name_selector_model_get_type            (void);
+ENameSelectorModel  *e_name_selector_model_new                 (void);
 
-EContactStore      *e_name_selector_model_peek_contact_store  (ENameSelectorModel *name_selector_model);
-GtkTreeModelFilter *e_name_selector_model_peek_contact_filter (ENameSelectorModel *name_selector_model);
+EContactStore       *e_name_selector_model_peek_contact_store  (ENameSelectorModel *name_selector_model);
+ETreeModelGenerator *e_name_selector_model_peek_contact_filter (ENameSelectorModel *name_selector_model);
 
 /* Deep copy of section names; free strings and list when you're done */
-GList              *e_name_selector_model_list_sections       (ENameSelectorModel *name_selector_model);
+GList               *e_name_selector_model_list_sections       (ENameSelectorModel *name_selector_model);
 
 /* pretty_name will be newly allocated, but destination_store must be reffed if you keep it */
-gboolean            e_name_selector_model_peek_section        (ENameSelectorModel *name_selector_model,
-							       const gchar *name, gchar **pretty_name,
-							       EDestinationStore **destination_store);
-void                e_name_selector_model_add_section         (ENameSelectorModel *name_selector_model,
-							       const gchar *name, const gchar *pretty_name,
-							       EDestinationStore *destination_store);
-void                e_name_selector_model_remove_section      (ENameSelectorModel *name_selector_model,
-							       const gchar *name);
+gboolean             e_name_selector_model_peek_section        (ENameSelectorModel *name_selector_model,
+								const gchar *name, gchar **pretty_name,
+								EDestinationStore **destination_store);
+void                 e_name_selector_model_add_section         (ENameSelectorModel *name_selector_model,
+								const gchar *name, const gchar *pretty_name,
+								EDestinationStore *destination_store);
+void                 e_name_selector_model_remove_section      (ENameSelectorModel *name_selector_model,
+								const gchar *name);
 
 G_END_DECLS
 

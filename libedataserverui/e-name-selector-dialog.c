@@ -54,6 +54,9 @@ static void     contact_activated         (ENameSelectorDialog *name_selector_di
 static void     destination_activated     (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path,
 					   GtkTreeViewColumn *column, GtkTreeView *tree_view);
 static void     remove_books              (ENameSelectorDialog *name_selector_dialog);
+static void     contact_column_formatter  (GtkTreeViewColumn *column, GtkCellRenderer *cell,
+					   GtkTreeModel *model, GtkTreeIter *iter,
+					   ENameSelectorDialog *name_selector_dialog);
 
 /* ------------------ *
  * Class/object setup *
@@ -130,7 +133,9 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	column = gtk_tree_view_column_new ();
 	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
-	gtk_tree_view_column_add_attribute (column, cell_renderer, "text", E_CONTACT_FILE_AS);
+	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
+						 (GtkTreeCellDataFunc) contact_column_formatter,
+						 name_selector_dialog, NULL);
 	gtk_tree_view_append_column (name_selector_dialog->contact_view, column);
 	g_signal_connect_swapped (name_selector_dialog->contact_view, "row-activated",
 				  G_CALLBACK (contact_activated), name_selector_dialog);
@@ -254,16 +259,21 @@ escape_sexp_string (const gchar *string)
 }
 
 static void
-sort_iter_to_contact_store_iter (ENameSelectorDialog *name_selector_dialog, GtkTreeIter *iter)
+sort_iter_to_contact_store_iter (ENameSelectorDialog *name_selector_dialog, GtkTreeIter *iter,
+				 gint *email_n)
 {
-	GtkTreeModelFilter *contact_filter;
-	GtkTreeIter         child_iter;
+	ETreeModelGenerator *contact_filter;
+	GtkTreeIter          child_iter;
+	gint                 email_n_local;
 
 	contact_filter = e_name_selector_model_peek_contact_filter (name_selector_dialog->name_selector_model);
 
 	gtk_tree_model_sort_convert_iter_to_child_iter (name_selector_dialog->contact_sort,
 							&child_iter, iter);
-	gtk_tree_model_filter_convert_iter_to_child_iter (contact_filter, iter, &child_iter);
+	e_tree_model_generator_convert_iter_to_child_iter (contact_filter, iter, &email_n_local, &child_iter);
+
+	if (email_n)
+		*email_n = email_n_local;
 }
 
 static ESource *
@@ -287,7 +297,7 @@ find_first_source (ESourceList *source_list)
 }
 
 static void
-add_destination (EDestinationStore *destination_store, EContact *contact)
+add_destination (EDestinationStore *destination_store, EContact *contact, gint email_n)
 {
 	EDestination *destination;
 
@@ -295,7 +305,7 @@ add_destination (EDestinationStore *destination_store, EContact *contact)
 	 * source automatically) */
 
 	destination = e_destination_new ();
-	e_destination_set_contact (destination, contact, 0);
+	e_destination_set_contact (destination, contact, email_n);
 	e_destination_store_append_destination (destination_store, destination);
 	g_object_unref (destination);
 }
@@ -567,6 +577,7 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	EContact          *contact;
 	GtkTreeIter        iter;
 	Section           *section;
+	gint               email_n;
 
 	/* When a contact is activated, we transfer it to the first destination on our list */
 
@@ -583,7 +594,7 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 				      &iter, path))
 		g_assert_not_reached ();
 
-	sort_iter_to_contact_store_iter (name_selector_dialog, &iter);
+	sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
 
 	contact = e_contact_store_get_contact (contact_store, &iter);
 	if (!contact) {
@@ -598,7 +609,7 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 		return;
 	}
 
-	add_destination (destination_store, contact);
+	add_destination (destination_store, contact, email_n);
 }
 
 static void
@@ -646,6 +657,7 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 	gint               section_index;
 	Section           *section;
 	EDestination      *destination;
+	gint               email_n;
 
 	/* Get the contact to be transferred */
 
@@ -657,7 +669,7 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 		return;
 	}
 
-	sort_iter_to_contact_store_iter (name_selector_dialog, &iter);
+	sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
 
 	contact = e_contact_store_get_contact (contact_store, &iter);
 	if (!contact) {
@@ -680,7 +692,7 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 		return;
 	}
 
-	add_destination (destination_store, contact);
+	add_destination (destination_store, contact, email_n);
 }
 
 /* --------------------- *
@@ -690,13 +702,13 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 static void
 setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 {
-	EContactStore      *contact_store;
-	GtkTreeModelFilter *contact_filter;
-	GtkTreeSelection   *contact_selection;
-	EBookQuery         *book_query;
-	GList              *new_sections;
-	GList              *l;
-	gint                i;
+	EContactStore       *contact_store;
+	ETreeModelGenerator *contact_filter;
+	GtkTreeSelection    *contact_selection;
+	EBookQuery          *book_query;
+	GList               *new_sections;
+	GList               *l;
+	gint                 i;
 
 	/* Rid UI of previous destination sections */
 
@@ -753,6 +765,49 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	search_changed (name_selector_dialog);
 	contact_selection_changed (name_selector_dialog);
+}
+
+static void
+deep_free_list (GList *list)
+{
+	GList *l;
+
+	for (l = list; l; l = g_list_next (l))
+		g_free (l->data);
+
+	g_list_free (list);
+}
+
+static void
+contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model,
+			  GtkTreeIter *iter, ENameSelectorDialog *name_selector_dialog)
+{
+	EContactStore *contact_store;
+	EContact      *contact;
+	GtkTreeIter    contact_store_iter;
+	GList         *email_list;
+	gchar         *string;
+	gchar         *file_as_str;
+	gchar         *email_str;
+	gint           email_n;
+
+	contact_store_iter = *iter;
+	sort_iter_to_contact_store_iter (name_selector_dialog, &contact_store_iter, &email_n);
+
+	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
+	contact = e_contact_store_get_contact (contact_store, &contact_store_iter);
+	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+	email_str = g_list_nth_data (email_list, email_n);
+	file_as_str = e_contact_get (contact, E_CONTACT_FILE_AS);
+
+	string = g_strdup_printf ("%s <%s>", file_as_str ? file_as_str : "",
+				  email_str ? email_str : "");
+
+	g_free (file_as_str);
+	deep_free_list (email_list);
+
+	g_object_set (cell, "text", string, NULL);
+	g_free (string);
 }
 
 /* ----------------------- *

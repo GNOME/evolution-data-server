@@ -1165,30 +1165,23 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel
 	gint           cursor_pos;
 	const gchar   *text;
 	gchar         *raw_address;
+	GtkTreeIter    generator_iter;
 	GtkTreeIter    contact_iter;
+	gint           email_n;
 
 	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
-							  &contact_iter, iter);
+							  &generator_iter, iter);
+	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->email_generator,
+							   &contact_iter, &email_n,
+							   &generator_iter);
 
 	contact = e_contact_store_get_contact (name_selector_entry->contact_store, &contact_iter);
-
-	/* Find the matching field, in case the user entered a specific e-mail address.
-	 * The default is to use the first e-mail. */
-
 	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
-	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	raw_address = get_address_at_position (text, cursor_pos);
-
-	if (raw_address)
-		contact_match_cue (contact, raw_address, &matched_field, NULL);
-
-	if (matched_field < E_CONTACT_FIRST_EMAIL_ID || matched_field > E_CONTACT_LAST_EMAIL_ID)
-		matched_field = E_CONTACT_EMAIL_1;
 
 	/* Set the contact in the model's destination */
 
 	destination = find_destination_at_position (name_selector_entry, cursor_pos);
-	e_destination_set_contact (destination, contact, matched_field - E_CONTACT_FIRST_EMAIL_ID);
+	e_destination_set_contact (destination, contact, email_n);
 	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
 
 	/* Place cursor at end of address */
@@ -1217,12 +1210,89 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 }
 
 static void
+deep_free_list (GList *list)
+{
+	GList *l;
+
+	for (l = list; l; l = g_list_next (l))
+		g_free (l->data);
+
+	g_list_free (list);
+}
+
+static void
+contact_layout_formatter (GtkCellLayout *cell_layout, GtkCellRenderer *cell, GtkTreeModel *model,
+			  GtkTreeIter *iter, ENameSelectorEntry *name_selector_entry)
+{
+	EContact      *contact;
+	GtkTreeIter    generator_iter;
+	GtkTreeIter    contact_store_iter;
+	GList         *email_list;
+	gchar         *string;
+	gchar         *file_as_str;
+	gchar         *email_str;
+	gint           email_n;
+
+	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
+							  &generator_iter, iter);
+	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->email_generator,
+							   &contact_store_iter, &email_n,
+							   &generator_iter);
+
+	contact = e_contact_store_get_contact (name_selector_entry->contact_store, &contact_store_iter);
+	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+	email_str = g_list_nth_data (email_list, email_n);
+	file_as_str = e_contact_get (contact, E_CONTACT_FILE_AS);
+
+	string = g_strdup_printf ("%s <%s>", file_as_str ? file_as_str : "",
+				  email_str ? email_str : "");
+
+	g_free (file_as_str);
+	deep_free_list (email_list);
+
+	g_object_set (cell, "text", string, NULL);
+	g_free (string);
+}
+
+static gint
+generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
+		       ENameSelectorEntry *name_selector_entry)
+{
+	EContact    *contact;
+	const gchar *contact_uid;
+	GList       *email_list;
+	gint         n_rows;
+
+	contact = e_contact_store_get_contact (contact_store, iter);
+	g_assert (contact != NULL);
+
+	contact_uid = e_contact_get_const (contact, E_CONTACT_UID);
+	if (!contact_uid)
+		return 0;  /* Can happen with broken databases */
+
+	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+	n_rows = g_list_length (email_list);
+	deep_free_list (email_list);
+
+	return n_rows;
+}
+
+static void
 setup_contact_store (ENameSelectorEntry *name_selector_entry)
 {
+	if (name_selector_entry->email_generator)
+		g_object_unref (name_selector_entry->email_generator);
+	name_selector_entry->email_generator =
+		e_tree_model_generator_new (GTK_TREE_MODEL (name_selector_entry->contact_store));
+
+	e_tree_model_generator_set_generate_func (name_selector_entry->email_generator,
+						  (ETreeModelGeneratorGenerateFunc) generate_contact_rows,
+						  name_selector_entry, NULL);
+
 	/* Assign the store to the entry completion */
 
 	gtk_entry_completion_set_model (name_selector_entry->entry_completion,
-					GTK_TREE_MODEL (name_selector_entry->contact_store));
+					GTK_TREE_MODEL (name_selector_entry->email_generator));
 }
 
 static void
@@ -1475,6 +1545,8 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
   /* Completion */
 
+  name_selector_entry->email_generator = NULL;
+
   name_selector_entry->entry_completion = gtk_entry_completion_new ();
   gtk_entry_completion_set_match_func (name_selector_entry->entry_completion,
 				       (GtkEntryCompletionMatchFunc) completion_match_cb, NULL, NULL);
@@ -1488,8 +1560,10 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
   renderer = gtk_cell_renderer_text_new ();
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
 			      renderer, TRUE);
-  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
-				 renderer, "text", E_CONTACT_FILE_AS);
+  gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
+				      GTK_CELL_RENDERER (renderer),
+				      (GtkCellLayoutDataFunc) contact_layout_formatter,
+				      name_selector_entry, NULL);
 
   /* Completion store */
 
