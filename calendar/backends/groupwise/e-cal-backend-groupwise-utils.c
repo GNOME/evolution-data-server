@@ -354,9 +354,9 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
         /* FIXME users is just a buch of user names - associate it with uid,
          * email id apart from the name*/
         
-        soup_soap_message_start_element (msg, "users", "types", NULL); 
+        soup_soap_message_start_element (msg, "users", NULL, NULL); 
         for ( l = users; l != NULL; l = g_list_next (l)) {
-		soup_soap_message_start_element (msg, "user", "types", NULL); 
+		soup_soap_message_start_element (msg, "user", NULL, NULL); 
                 e_gw_message_write_string_parameter (msg, "email", NULL, l->data);
 		soup_soap_message_end_element (msg);
         }
@@ -373,8 +373,8 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
         icaltime = icaltime_from_timet(end, FALSE);
         end_date = icaltime_as_ical_string (icaltime);
         	
-        e_gw_message_write_string_parameter (msg, "startDate", "http://www.w3.org/2001/XMLSchema", start_date);
-        e_gw_message_write_string_parameter (msg, "endDate", "http://www.w3.org/2001/XMLSchema", end_date);
+        e_gw_message_write_string_parameter (msg, "startDate", NULL, start_date);
+        e_gw_message_write_string_parameter (msg, "endDate", NULL, end_date);
         
 	e_gw_message_write_footer (msg);
 

@@ -1,6 +1,11 @@
 2004-03-18  JP Rosevear <jpr@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(start_freebusy_session): remove xml prefixes
+
+2004-03-18  JP Rosevear <jpr@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
 	(start_freebusy_session): list the the addresses in the <email>
 	attribute
 
