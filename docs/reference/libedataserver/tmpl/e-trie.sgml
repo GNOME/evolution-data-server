@@ -1,0 +1,64 @@
+<!-- ##### SECTION Title ##### -->
+ETrie
+
+<!-- ##### SECTION Short_Description ##### -->
+A trie data structure.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT ETrie ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_trie_new ##### -->
+<para>
+
+</para>
+
+@icase: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_trie_free ##### -->
+<para>
+
+</para>
+
+@trie: 
+
+
+<!-- ##### FUNCTION e_trie_add ##### -->
+<para>
+
+</para>
+
+@trie: 
+@pattern: 
+@pattern_id: 
+
+
+<!-- ##### FUNCTION e_trie_search ##### -->
+<para>
+
+</para>
+
+@trie: 
+@buffer: 
+@buflen: 
+@matched_id: 
+@Returns: 
+
+

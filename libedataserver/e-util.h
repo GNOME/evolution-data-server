@@ -35,7 +35,7 @@ int          e_util_mkdir_hier (const char *path, mode_t mode);
 
 gchar       *e_util_strstrcase (const gchar *haystack, const gchar *needle);
 gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);
-const gchar *e_util_utf8_strstrcase (const gchar *s1, const gchar *s2);
+const gchar *e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle);
 const gchar *e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle);
 
 size_t e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm);

@@ -32,7 +32,7 @@
  * 
  * Generate a new unique string for use e.g. in account lists.
  * 
- * Return value: the newly generated UID.  The caller should free the string
+ * Return value: The newly generated UID.  The caller should free the string
  * when it's done with it.
  **/
 char *

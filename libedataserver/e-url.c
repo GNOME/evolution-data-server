@@ -31,6 +31,14 @@
 #include <string.h>
 #include "e-url.h"
 
+/**
+ * e_url_shroud:
+ * @url: The url to shroud.
+ *
+ * Removes the moniker (i.e. mailto:) from a url.
+ *
+ * Returns: The newly-allocated shrouded url.
+ **/
 char *
 e_url_shroud (const char *url)
 {
@@ -66,6 +74,16 @@ e_url_shroud (const char *url)
 	return shrouded;
 }
 
+/**
+ * e_url_equal:
+ * @url1: The first url to compare.
+ * @url2: The second url to compare.
+ *
+ * Checks two urls for equality, after first removing any monikers on
+ * the urls.
+ *
+ * Returns: %TRUE if the urls are equal, %FALSE if they are not.
+ **/
 gboolean
 e_url_equal (const char *url1, const char *url2)
 {
@@ -110,6 +128,14 @@ uri_decode (char *part)
 	*d = '\0';
 }
 
+/**
+ * e_uri_new:
+ * @uri_string: The uri to represent as an #EUri.
+ *
+ * Creates an #EUri representation of the uri given in @uri_string.
+ *
+ * Returns: The newly-allocated #EUri structure.
+ **/
 EUri *
 e_uri_new (const char *uri_string)
 {
@@ -244,6 +270,12 @@ e_uri_new (const char *uri_string)
 	return uri;
 }
 
+/**
+ * e_uri_free:
+ * @uri: A pointer to the #EUri to free.
+ *
+ * Frees the memory of an #EUri structure.
+ **/
 void
 e_uri_free (EUri *uri)
 {
@@ -262,6 +294,15 @@ e_uri_free (EUri *uri)
 	}
 }
 
+/**
+ * e_uri_get_param:
+ * @uri: The #EUri to get the parameter from.
+ * @name: The name of the parameter to get.
+ *
+ * Retrieves the value of the parameter associated with @name in @uri.
+ *
+ * Returns: The value of the parameter.
+ **/
 const char *
 e_uri_get_param (EUri *uri, const char *name)
 {
@@ -276,6 +317,14 @@ copy_param_cb (GQuark key_id, gpointer data, gpointer user_data)
 	g_datalist_id_set_data_full (&params, key_id, g_strdup (data), g_free);
 }
 
+/**
+ * e_uri_copy:
+ * @uri: The #EUri to copy.
+ *
+ * Makes a copy of @uri.
+ *
+ * Returns: The newly-allocated copy of @uri.
+ **/
 EUri *
 e_uri_copy (EUri *uri)
 {
@@ -302,6 +351,16 @@ e_uri_copy (EUri *uri)
 	return uri_copy;
 }
 
+/**
+ * e_uri_to_string:
+ * @uri: The #EUri to convert to a string.
+ * @show_password: Whether or not to show the password in the string.
+ *
+ * Creates a string representation of @uri. The password will only be
+ * included in the string if @show_password is set to %TRUE.
+ *
+ * Returns: The string representation of @uri.
+ **/
 char *
 e_uri_to_string (EUri *uri, gboolean show_password)
 {
