@@ -1635,7 +1635,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 
 	/* Get the UID */
 	comp_uid = icalcomponent_get_uid (icalcomp);
-	
+
 	/* check the object is not in our cache */
 	if (lookup_component (cbfile, comp_uid)) {
 		icalcomponent_free (icalcomp);
@@ -2094,15 +2094,6 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		case ICAL_METHOD_REPLY:
 			if (e_cal_backend_file_get_object (backend, cal, uid, rid, &calobj)
 			    == GNOME_Evolution_Calendar_Success) {
-				char *returned_uid;
-
-				calobj = (char *) icalcomponent_as_ical_string (subcomp);
-				status = e_cal_backend_file_create_object (backend, cal, calobj, &returned_uid);
-				if (status != GNOME_Evolution_Calendar_Success)
-					goto error;
-
-				e_cal_backend_notify_object_created (E_CAL_BACKEND (backend), calobj);
-			} else {
 				char *old_object;
 
 				calobj = (char *) icalcomponent_as_ical_string (subcomp);
@@ -2113,6 +2104,15 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old_object, calobj);
 
 				g_free (old_object);
+			} else {
+				char *returned_uid;
+
+				calobj = (char *) icalcomponent_as_ical_string (subcomp);
+				status = e_cal_backend_file_create_object (backend, cal, calobj, &returned_uid);
+				if (status != GNOME_Evolution_Calendar_Success)
+					goto error;
+
+				e_cal_backend_notify_object_created (E_CAL_BACKEND (backend), calobj);
 			}
 			break;
 		case ICAL_METHOD_ADD:
