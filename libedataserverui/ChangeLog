@@ -1,0 +1,39 @@
+2004-12-22  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-destination-store.c (e_destination_store_insert_destination): Don't
+	push entries past end of array, ever.
+
+	* e-name-selector-dialog.c (e_name_selector_dialog_dispose): Disconnect
+	from model and clear out the books we're holding.
+	(remove_books): Convenience function that removes all boks from our
+	watch list.
+	(source_selected): Use remove_books ().
+
+	* e-name-selector.c (add_section): Don't take a destination store, we
+	don't need it here.
+	(e_name_selector_dialog): Connect to the window's delete-event, so we
+	can hide it instead of destroying.
+	(e_name_selector_peek_section_entry): Simplify this code a bit. Set the
+	common destination store for the relevant section, on the entry.
+
+	* e-name-selector-entry.c (build_textrep_for_contact): Use just the name
+	for completion, not name + email.
+	(contact_match_cue): Implement.
+	(find_existing_completion): Use contact_match_cue ().
+	(generate_attribute_list): Implement.
+	(expose_event): Implement, applies attribute list.
+	(type_ahead_complete): Rebuild the attribute list if we complete a
+	contact.
+	(modify_destination_at_position): Rebuild attributes as necessary.
+	(sync_destination_at_position): Update cursor position for caller.
+	Rebuild attribute list after sync.
+	(insert_unichar): Clean up handling of comma insertion.
+	(completion_match_selected): Implement.
+	(destination_row_changed): Don't insert the email address. Clear the
+	completion model so we don't get odd completion suggestions. Rebuild
+	the attribute list.
+	(destination_row_inserted): Don't insert the email address.
+	(destination_row_deleted): Clear the completion model. Rebuild the
+	attribute list.
+	(e_name_selector_entry_init): Connect to the expose signal so we can
+	apply attributes.

@@ -50,6 +50,7 @@ struct ENameSelectorEntry {
 
 	/* Private */
 
+	PangoAttrList      *attr_list;
 	ESourceList        *source_list;
 	EContactStore      *contact_store;
 	EDestinationStore  *destination_store;

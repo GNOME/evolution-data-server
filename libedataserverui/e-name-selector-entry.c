@@ -432,14 +432,12 @@ build_textrep_for_contact (EContact *contact, EContactField cue_field)
 	g_assert (email);
 	g_assert (strlen (email) > 0);
 
-	if (e_contact_get (contact, E_CONTACT_IS_LIST))
+	if (name)
 		textrep = g_strdup_printf ("%s", name);
-	else if (name)
-		textrep = g_strdup_printf ("%s <%s>", name, email);
 	else
 		textrep = g_strdup_printf ("%s", email);
 
-	/* HACK: We need to quote. Replace commas with spaces for the time being. */
+	/* HACK: We can't handle commas in names. Replace commas with spaces for the time being. */
 	while ((p0 = g_utf8_strchr (textrep, -1, ',')))
 		*p0 = ' ';
 
@@ -449,15 +447,74 @@ build_textrep_for_contact (EContact *contact, EContactField cue_field)
 }
 
 static gboolean
-find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *cue_str,
-			  EContact **contact, gchar **text, EContactField *matched_field)
+contact_match_cue (EContact *contact, const gchar *cue_str,
+		   EContactField *matched_field, gint *matched_field_rank)
 {
 	EContactField  fields [] = { E_CONTACT_FULL_NAME, E_CONTACT_NICKNAME, E_CONTACT_FILE_AS,
 				     E_CONTACT_EMAIL_1, E_CONTACT_EMAIL_2, E_CONTACT_EMAIL_3,
 				     E_CONTACT_EMAIL_4 };
+	gchar         *email;
+	gboolean       result = FALSE;
+	gint           cue_len;
+	gint           i;
+
+	g_assert (contact);
+	g_assert (cue_str);
+
+	if (g_utf8_strlen (cue_str, -1) < COMPLETION_CUE_MIN_LEN)
+		return FALSE;
+
+	cue_len = strlen (cue_str);
+
+	/* Make sure contact has an email address */
+	email = e_contact_get (contact, E_CONTACT_EMAIL_1);
+	if (!email || !*email) {
+		g_free (email);
+		return FALSE;
+	}
+	g_free (email);
+
+	for (i = 0; i < G_N_ELEMENTS (fields); i++) {
+		gchar *value;
+
+		/* Don't match e-mail addresses in contact lists */
+		if (e_contact_get (contact, E_CONTACT_IS_LIST) &&
+		    fields [i] >= E_CONTACT_FIRST_EMAIL_ID &&
+		    fields [i] <= E_CONTACT_LAST_EMAIL_ID)
+			continue;
+
+		value = e_contact_get (contact, fields [i]);
+		if (!value)
+			continue;
+
+		ENS_DEBUG (g_print ("Comparing '%s' to '%s'\n", value, cue_str));
+
+		if (!utf8_casefold_collate_len (value, cue_str, cue_len)) {
+			/* TODO: We have to check if the value needs quoting, and
+			 * if we're accepting a quoted match. */
+			if (matched_field)
+				*matched_field = fields [i];
+			if (matched_field_rank)
+				*matched_field_rank = i;
+
+			result = TRUE;
+			g_free (value);
+			break;
+		}
+		g_free (value);
+	}
+
+	return result;
+}
+
+static gboolean
+find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *cue_str,
+			  EContact **contact, gchar **text, EContactField *matched_field)
+{
 	GtkTreeIter    iter;
-	EContact      *best_contact     = NULL;
-	gint           best_field_index = G_N_ELEMENTS (fields);
+	EContact      *best_contact    = NULL;
+	gint           best_field_rank = G_MAXINT;
+	EContactField  best_field;
 	gint           cue_len;
 
 	g_assert (cue_str);
@@ -469,52 +526,20 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 		return FALSE;
 
 	do {
-		EContact *current_contact;
-		gchar    *email;
-		gint      i;
+		EContact      *current_contact;
+		gint           current_field_rank;
+		EContactField  current_field;
+		gboolean       matches;
 
 		current_contact = e_contact_store_get_contact (name_selector_entry->contact_store, &iter);
 		if (!current_contact)
 			continue;
 
-		/* Make sure contact has an email address */
-		email = e_contact_get (current_contact, E_CONTACT_EMAIL_1);
-		if (!email || !strlen (email)) {
-			g_free (email);
-			continue;
-		}
-		g_free (email);
-
-		for (i = 0; i < G_N_ELEMENTS (fields) && i < best_field_index; i++) {
-			gchar *value;
-
-			/* Don't match e-mail addresses in contact lists */
-			if (e_contact_get (current_contact, E_CONTACT_IS_LIST) &&
-			    fields [i] >= E_CONTACT_FIRST_EMAIL_ID &&
-			    fields [i] <= E_CONTACT_LAST_EMAIL_ID)
-				continue;
-
-			value = e_contact_get (current_contact, fields [i]);
-			if (!value)
-				continue;
-
-			/* FIXME: We can't handle commas in names yet. */
-			if (g_utf8_strchr (value, -1, ',')) {
-				g_free (value);
-				continue;
-			}
-
-			ENS_DEBUG (g_print ("Comparing '%s' to '%s'\n", value, cue_str));
-
-			if (!utf8_casefold_collate_len (value, cue_str, cue_len)) {
-				/* TODO: We have to check if the value needs quoting, and
-				 * if we're accepting a quoted match. */
-				best_contact = current_contact;
-				best_field_index = i;
-				g_free (value);
-				break;
-			}
-			g_free (value);
+		matches = contact_match_cue (current_contact, cue_str, &current_field, &current_field_rank);
+		if (matches && current_field_rank < best_field_rank) {
+			best_contact    = current_contact;
+			best_field_rank = current_field_rank;
+			best_field      = current_field;
 		}
 	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->contact_store), &iter));
 
@@ -524,11 +549,68 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 	if (contact)
 		*contact = best_contact;
 	if (text)
-		*text = build_textrep_for_contact (best_contact, fields [best_field_index]);
+		*text = build_textrep_for_contact (best_contact, best_field);
 	if (matched_field)
-		*matched_field = fields [best_field_index];
+		*matched_field = best_field;
 
 	return TRUE;
+}
+
+static void
+generate_attribute_list (ENameSelectorEntry *name_selector_entry)
+{
+	PangoLayout    *layout;
+	PangoAttrList  *attr_list;
+	const gchar    *text;
+	gint            i;
+
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	layout = gtk_entry_get_layout (GTK_ENTRY (name_selector_entry));
+
+	/* Set up the attribute list */
+
+	attr_list = pango_attr_list_new ();
+
+	if (name_selector_entry->attr_list)
+		pango_attr_list_unref (name_selector_entry->attr_list);
+
+	name_selector_entry->attr_list = attr_list;
+
+	/* Parse the entry's text and apply attributes to real contacts */
+
+	for (i = 0; ; i++) {
+		EDestination   *destination;
+		PangoAttribute *attr;
+		gint            start_pos;
+		gint            end_pos;
+
+		if (!get_range_by_index (text, i, &start_pos, &end_pos))
+			break;
+
+		destination = find_destination_at_position (name_selector_entry, start_pos);
+		g_assert (destination);
+
+		if (!e_destination_get_contact (destination))
+			continue;
+
+		attr = pango_attr_underline_new (PANGO_UNDERLINE_SINGLE);
+		attr->start_index = g_utf8_offset_to_pointer (text, start_pos) - text;
+		attr->end_index = g_utf8_offset_to_pointer (text, end_pos) - text;
+		pango_attr_list_insert (attr_list, attr);
+	}
+
+	pango_layout_set_attributes (layout, attr_list);
+}
+
+static gboolean
+expose_event (ENameSelectorEntry *name_selector_entry)
+{
+	PangoLayout *layout;
+
+	layout = gtk_entry_get_layout (GTK_ENTRY (name_selector_entry));
+	pango_layout_set_attributes (layout, name_selector_entry->attr_list);
+
+	return FALSE;
 }
 
 static void
@@ -589,6 +671,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 			email_n = matched_field - E_CONTACT_FIRST_EMAIL_ID;
 
 		e_destination_set_contact (destination, contact, email_n);
+		generate_attribute_list (name_selector_entry);
 	}
 
 	g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
@@ -678,6 +761,7 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	gchar        *raw_address;
 	gint          index;
 	gint          range_start, range_end;
+	gboolean      rebuild_attributes = FALSE;
 
 	destination = find_destination_at_position (name_selector_entry, pos);
 	g_assert (destination);
@@ -686,6 +770,9 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	raw_address = get_address_at_position (text, pos);
 	g_assert (raw_address);
 
+	if (e_destination_get_contact (destination))
+		rebuild_attributes = TRUE;
+
 	g_signal_handlers_block_by_func (name_selector_entry->destination_store,
 					 destination_row_changed, name_selector_entry);
 	e_destination_set_raw (destination, raw_address);
@@ -693,6 +780,9 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 					   destination_row_changed, name_selector_entry);
 
 	g_free (raw_address);
+
+	if (rebuild_attributes)
+		generate_attribute_list (name_selector_entry);
 }
 
 static void
@@ -712,30 +802,44 @@ remove_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 }
 
 static void
-sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint pos)
+sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint range_pos, gint *cursor_pos)
 {
 	EDestination *destination;
 	const gchar  *text;
+	const gchar  *address;
+	gint          address_len;
 	gint          range_start, range_end;
 
-	destination = find_destination_at_position (name_selector_entry, pos);
+	destination = find_destination_at_position (name_selector_entry, range_pos);
 	g_assert (destination);
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	if (!get_range_at_position (text, pos, &range_start, &range_end)) {
+	if (!get_range_at_position (text, range_pos, &range_start, &range_end)) {
 		g_warning ("ENameSelectorEntry is out of sync with model!");
 		return;
+	}
+
+	address = e_destination_get_textrep (destination, FALSE);
+	address_len = g_utf8_strlen (address, -1);
+
+	if (cursor_pos) {
+		/* Update cursor placement */
+		if (*cursor_pos >= range_end)
+			*cursor_pos += address_len - (range_end - range_start);
+		else if (*cursor_pos > range_start)
+			*cursor_pos = range_start + address_len;
 	}
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
-	text = e_destination_get_textrep (destination, e_destination_is_evolution_list (destination) ? FALSE : TRUE);
-	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &range_start);
+	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), address, -1, &range_start);
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+
+	generate_attribute_list (name_selector_entry);
 }
 
 static void
@@ -774,33 +878,53 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 		return 0;
 
 	/* Comma is not allowed:
-	 * - Before or after another comma.
-	 * - Before " ," or after ", ".
+	 * - After another comma.
 	 * - At start of string. */
 
 	if (c == ',') {
 		const gchar *p0;
+		gint         start_pos;
+		gint         end_pos;
+		gboolean     at_start = FALSE;
+		gboolean     at_end   = FALSE;
 
-		if ((str_context [1] == ',' || str_context [1] == '\0' || str_context [2] == ',') ||
-		    (str_context [0] == ',' && str_context [1] == ' ') ||
-		    (str_context [2] == ' ' && str_context [3] == ','))
+		if (str_context [1] == ',' || str_context [1] == '\0')
 			return 0;
 
+		/* We do this so we can avoid disturbing destinations with completed contacts
+		 * either before or after the destination being inserted. */
+		get_range_at_position (text, *pos, &start_pos, &end_pos);
+		if (*pos <= start_pos)
+			at_start = TRUE;
+		if (*pos >= end_pos)
+			at_end = TRUE;
+
+		/* Must insert comma first, so modify_destination_at_position can do its job
+		 * correctly, splitting up the contact if necessary. */
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, pos);
 
 		/* Update model */
 		g_assert (*pos >= 2);
 
-		text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-		p0 = g_utf8_offset_to_pointer (text, *pos);
-		if (!*p0) {
-			sync_destination_at_position (name_selector_entry, *pos - 2);
-			*pos = g_utf8_strlen (text, -1);
+		/* If we inserted the comma at the end of, or in the middle of, an existing
+		 * address, add a new destination for what appears after comma. Else, we
+		 * have to add a destination for what appears before comma (a blank one). */
+		if (at_end) {
+			/* End: Add last, sync first */
+			insert_destination_at_position (name_selector_entry, *pos);
+			sync_destination_at_position (name_selector_entry, *pos - 2, pos);
+			/* Sync generates the attributes list */
+		} else if (at_start) {
+			/* Start: Add first */
+			insert_destination_at_position (name_selector_entry, *pos - 2);
+			generate_attribute_list (name_selector_entry);
 		} else {
+			/* Middle: */
+			insert_destination_at_position (name_selector_entry, *pos);
 			modify_destination_at_position (name_selector_entry, *pos - 2);
+			generate_attribute_list (name_selector_entry);
 		}
 
-		insert_destination_at_position (name_selector_entry, *pos);
 		return 2;
 	}
 
@@ -940,6 +1064,41 @@ static gboolean
 completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel *model,
 			   GtkTreeIter *iter)
 {
+	EContactStore *contact_store;
+	EContact      *contact;
+	EDestination  *destination;
+	EContactField  matched_field = E_CONTACT_EMAIL_1;
+	gint           cursor_pos;
+	const gchar   *text;
+	gchar         *raw_address;
+	GtkTreeIter    contact_iter;
+
+	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
+							  &contact_iter, iter);
+
+	contact = e_contact_store_get_contact (name_selector_entry->contact_store, &contact_iter);
+
+	/* Find the matching field, in case the user entered a specific e-mail address.
+	 * The default is to use the first e-mail. */
+
+	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	raw_address = get_address_at_position (text, cursor_pos);
+
+	if (raw_address)
+		contact_match_cue (contact, raw_address, &matched_field, NULL);
+
+	if (matched_field < E_CONTACT_FIRST_EMAIL_ID || matched_field > E_CONTACT_LAST_EMAIL_ID)
+		matched_field = E_CONTACT_EMAIL_1;
+
+	/* Set the contact in the model's destination */
+
+	destination = find_destination_at_position (name_selector_entry, cursor_pos);
+	e_destination_set_contact (destination, contact, matched_field - E_CONTACT_FIRST_EMAIL_ID);
+	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
+
+	/* Place cursor at end of address */
+	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), cursor_pos);
 	return TRUE;
 }
 
@@ -1007,11 +1166,14 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
-	text = e_destination_get_textrep (destination, TRUE);
+	text = e_destination_get_textrep (destination, FALSE);
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &range_start);
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+
+	clear_completion_model (name_selector_entry);
+	generate_attribute_list (name_selector_entry);
 }
 
 static void
@@ -1051,7 +1213,7 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 
-	text = e_destination_get_textrep (destination, TRUE);
+	text = e_destination_get_textrep (destination, FALSE);
 
 	if (comma_before)
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &insert_pos);
@@ -1062,6 +1224,9 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &insert_pos);
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+
+	clear_completion_model (name_selector_entry);
+	generate_attribute_list (name_selector_entry);
 }
 
 static void
@@ -1127,6 +1292,9 @@ destination_row_deleted (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+	clear_completion_model (name_selector_entry);
+	generate_attribute_list (name_selector_entry);
 }
 
 static void
@@ -1156,6 +1324,10 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
   g_signal_connect (name_selector_entry, "insert-text", G_CALLBACK (user_insert_text), name_selector_entry);
   g_signal_connect (name_selector_entry, "delete-text", G_CALLBACK (user_delete_text), name_selector_entry);
+
+  /* Exposition */
+
+  g_signal_connect (name_selector_entry, "expose-event", G_CALLBACK (expose_event), name_selector_entry);
 
   /* Completion */
 

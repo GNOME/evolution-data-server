@@ -53,6 +53,7 @@ static void     setup_name_selector_model (ENameSelectorDialog *name_selector_di
 static void     contact_activated         (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path);
 static void     destination_activated     (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path,
 					   GtkTreeViewColumn *column, GtkTreeView *tree_view);
+static void     remove_books              (ENameSelectorDialog *name_selector_dialog);
 
 /* ------------------ *
  * Class/object setup *
@@ -189,6 +190,12 @@ e_name_selector_dialog_dispose (GObject *object)
 {
 	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
 
+	g_signal_handlers_disconnect_matched (name_selector_dialog->name_selector_model,
+					      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL,
+					      name_selector_dialog);
+
+	remove_books (name_selector_dialog);
+
 	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose)
 		G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
 }
@@ -276,6 +283,31 @@ add_destination (EDestinationStore *destination_store, EContact *contact)
 	e_destination_set_contact (destination, contact, 0);
 	e_destination_store_append_destination (destination_store, destination);
 	g_object_unref (destination);
+}
+
+static void
+remove_books (ENameSelectorDialog *name_selector_dialog)
+{
+	EContactStore *contact_store;
+	GList         *books;
+	GList         *l;
+
+	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
+
+	/* Remove books (should be just one) being viewed */
+	books = e_contact_store_get_books (contact_store);
+	for (l = books; l; l = g_list_next (l)) {
+		EBook *book = l->data;
+		e_contact_store_remove_book (contact_store, book);
+	}
+	g_list_free (books);
+
+	/* See if we have a book pending; stop loading it if so */
+	if (name_selector_dialog->pending_book) {
+		e_book_cancel (name_selector_dialog->pending_book, NULL);
+		g_object_unref (name_selector_dialog->pending_book);
+		name_selector_dialog->pending_book = NULL;
+	}
 }
 
 /* ------------------ *
@@ -458,22 +490,8 @@ source_selected (ENameSelectorDialog *name_selector_dialog, ESource *source)
 	GList         *books;
 	GList         *l;
 
-	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
-
-	/* Remove books (should be just one) being viewed */
-	books = e_contact_store_get_books (contact_store);
-	for (l = books; l; l = g_list_next (l)) {
-		EBook *book = l->data;
-		e_contact_store_remove_book (contact_store, book);
-	}
-	g_list_free (books);
-
-	/* See if we already have a book pending; stop loading it if so */
-	if (name_selector_dialog->pending_book) {
-		e_book_cancel (name_selector_dialog->pending_book, NULL);
-		g_object_unref (name_selector_dialog->pending_book);
-		name_selector_dialog->pending_book = NULL;
-	}
+	/* Remove any previous books being shown or loaded */
+	remove_books (name_selector_dialog);
 
 	/* Start loading selected book */
 	name_selector_dialog->pending_book = e_book_new (source, NULL);

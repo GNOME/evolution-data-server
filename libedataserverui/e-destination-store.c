@@ -324,9 +324,11 @@ e_destination_store_insert_destination (EDestinationStore *destination_store,
 	g_ptr_array_set_size (destination_store->destinations,
 			      destination_store->destinations->len + 1);
 
-	memmove (destination_store->destinations->pdata + index + 1,
-		 destination_store->destinations->pdata + index,
-		 (destination_store->destinations->len - 1) * sizeof (gpointer));
+	if (destination_store->destinations->len - 1 - index > 0) {
+		memmove (destination_store->destinations->pdata + index + 1,
+			 destination_store->destinations->pdata + index,
+			 (destination_store->destinations->len - 1 - index) * sizeof (gpointer));
+	}
 
 	destination_store->destinations->pdata [index] = destination;
 	start_destination (destination_store, destination);

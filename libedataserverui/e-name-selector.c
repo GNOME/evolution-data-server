@@ -90,15 +90,14 @@ e_name_selector_new (void)
  * ------- */
 
 static gint
-add_section (ENameSelector *name_selector, const gchar *name, EDestinationStore *destination_store)
+add_section (ENameSelector *name_selector, const gchar *name)
 {
 	Section section;
 
 	g_assert (name != NULL);
 
 	memset (&section, 0, sizeof (Section));
-
-	section.name  = g_strdup (name);
+	section.name = g_strdup (name);
 
 	g_array_append_val (name_selector->sections, section);
 	return name_selector->sections->len - 1;
@@ -156,6 +155,8 @@ e_name_selector_peek_dialog (ENameSelector *name_selector)
 	if (!name_selector->dialog) {
 		name_selector->dialog = e_name_selector_dialog_new ();
 		e_name_selector_dialog_set_model (name_selector->dialog, name_selector->model);
+		g_signal_connect (name_selector->dialog, "delete-event",
+				  G_CALLBACK (gtk_widget_hide_on_delete), name_selector);
 	}
 
 	return name_selector->dialog;
@@ -164,27 +165,27 @@ e_name_selector_peek_dialog (ENameSelector *name_selector)
 ENameSelectorEntry *
 e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *name)
 {
+	EDestinationStore *destination_store;
 	Section *section;
 	gint     n;
 
 	g_return_val_if_fail (E_IS_NAME_SELECTOR (name_selector), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
+	if (!e_name_selector_model_peek_section (name_selector->model, name,
+						 NULL, &destination_store))
+		return NULL;
+
 	n = find_section_by_name (name_selector, name);
-	if (n < 0) {
-		EDestinationStore *destination_store;
-
-		if (!e_name_selector_model_peek_section (name_selector->model, name,
-							 NULL, &destination_store))
-			return NULL;
-
-		n = add_section (name_selector, name, destination_store);
-	}
+	if (n < 0)
+		n = add_section (name_selector, name);
 
 	section = &g_array_index (name_selector->sections, Section, n);
 
-	if (!section->entry)
+	if (!section->entry) {
 		section->entry = e_name_selector_entry_new ();
+		e_name_selector_entry_set_destination_store (section->entry, destination_store);
+	}
 
 	return section->entry;
 }
