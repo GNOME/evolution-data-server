@@ -1510,6 +1510,25 @@ e_book_response_remove (EBook       *book,
 	g_mutex_unlock (op->mutex);
 }
 
+typedef struct
+{
+	EBook *book;
+	gboolean writable;
+}  EBookWritableData;
+
+static gboolean
+e_book_idle_writable (gpointer data)
+{
+	EBookWritableData *write_data = data;
+	
+	g_signal_emit (G_OBJECT (write_data->book), e_book_signals [WRITABLE_STATUS], 0, write_data->writable);
+
+	g_object_unref (write_data->book);
+	g_free (write_data);
+	
+	return FALSE;
+}
+
 
 
 static void
@@ -1550,9 +1569,20 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
 	case GetSupportedAuthMethodsResponse:
 		e_book_response_get_supported_auth_methods (book, resp->status, resp->list);
 		break;
-	case WritableStatusEvent:
+	case WritableStatusEvent: 
+	{
+		EBookWritableData *write_data;
+
 		book->priv->writable = resp->writable;
-		g_signal_emit (book, e_book_signals [WRITABLE_STATUS], 0, resp->writable);
+	
+		write_data = g_new0 (EBookWritableData, 1);
+
+		write_data->book = g_object_ref (book);
+		write_data->writable = book->priv->writable;
+		
+		g_idle_add (e_book_idle_writable, write_data);
+	}
+	
 		break;
 	default:
 		g_error ("EBook: Unknown response code %d!\n",
