@@ -20,52 +20,52 @@
  * USA
  */
 
-#include <camel/camel-spam-plugin.h>
+#include <camel/camel-junk-plugin.h>
 
 #define d(x) x
 
 const char *
-camel_spam_plugin_get_name (CamelSpamPlugin *csp)
+camel_junk_plugin_get_name (CamelJunkPlugin *csp)
 {
 	g_return_val_if_fail (csp->get_name != NULL, NULL);
 
-	d(fprintf (stderr, "camel_spam_plugin_get_namen");)
+	d(fprintf (stderr, "camel_junk_plugin_get_namen");)
 
 	return (*csp->get_name) ();
 }
 
 int
-camel_spam_plugin_check_spam (CamelSpamPlugin *csp, CamelMimeMessage *message)
+camel_junk_plugin_check_junk (CamelJunkPlugin *csp, CamelMimeMessage *message)
 {
-	g_return_val_if_fail (csp->check_spam != NULL, FALSE);
+	g_return_val_if_fail (csp->check_junk != NULL, FALSE);
 
-	d(fprintf (stderr, "camel_spam_plugin_check_spam\n");)
+	d(fprintf (stderr, "camel_junk_plugin_check_junk\n");)
 
-	return (*csp->check_spam) (message);
+	return (*csp->check_junk) (message);
 }
 
 void
-camel_spam_plugin_report_spam (CamelSpamPlugin *csp, CamelMimeMessage *message)
+camel_junk_plugin_report_junk (CamelJunkPlugin *csp, CamelMimeMessage *message)
 {
-	d(fprintf (stderr, "camel_spam_plugin_report_spam\n");)
+	d(fprintf (stderr, "camel_junk_plugin_report_junk\n");)
 
-	if (csp->report_spam)
-		(*csp->report_spam) (message);
+	if (csp->report_junk)
+		(*csp->report_junk) (message);
 }
 
 void
-camel_spam_plugin_report_ham (CamelSpamPlugin *csp, CamelMimeMessage *message)
+camel_junk_plugin_report_notjunk (CamelJunkPlugin *csp, CamelMimeMessage *message)
 {
-	d(fprintf (stderr, "camel_spam_plugin_report_ham\n");)
+	d(fprintf (stderr, "camel_junk_plugin_report_notjunk\n");)
 
-	if (csp->report_ham)
-		(*csp->report_ham) (message);
+	if (csp->report_notjunk)
+		(*csp->report_notjunk) (message);
 }
 
 void
-camel_spam_plugin_commit_reports (CamelSpamPlugin *csp)
+camel_junk_plugin_commit_reports (CamelJunkPlugin *csp)
 {
-	d(fprintf (stderr, "camel_spam_plugin_commit_reports\n");)
+	d(fprintf (stderr, "camel_junk_plugin_commit_reports\n");)
 
 	if (csp->commit_reports)
 		(*csp->commit_reports) ();

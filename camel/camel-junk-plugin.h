@@ -20,41 +20,41 @@
  * USA
  */
 
-#ifndef _CAMEL_SPAM_PLUGIN_H
-#define _CAMEL_SPAM_PLUGIN_H
+#ifndef _CAMEL_JUNK_PLUGIN_H
+#define _CAMEL_JUNK_PLUGIN_H
 
 #include <camel/camel-mime-message.h>
 
-#define CAMEL_SPAM_PLUGIN(x) ((CamelSpamPlugin *) x)
+#define CAMEL_JUNK_PLUGIN(x) ((CamelJunkPlugin *) x)
 
-typedef struct _CamelSpamPlugin CamelSpamPlugin;
+typedef struct _CamelJunkPlugin CamelJunkPlugin;
 
-struct _CamelSpamPlugin
+struct _CamelJunkPlugin
 {
-	/* spam filter human readable name, translated */
+	/* junk filter human readable name, translated */
 	const char * (*get_name) (void);
 
 	/* should be set to 1 */
 	int api_version;
 
-	/* when called, it should return TRUE if message is identified as spam,
+	/* when called, it should return TRUE if message is identified as junk,
 	   FALSE otherwise */
-	int (*check_spam) (CamelMimeMessage *message);
+	int (*check_junk) (CamelMimeMessage *message);
 
-	/* called when user identified a message to be spam */
-	void (*report_spam) (CamelMimeMessage *message);
+	/* called when user identified a message to be junk */
+	void (*report_junk) (CamelMimeMessage *message);
 
-	/* called when user identified a message not to be spam */
-	void (*report_ham) (CamelMimeMessage *message);
+	/* called when user identified a message not to be junk */
+	void (*report_notjunk) (CamelMimeMessage *message);
 
-	/* called after one or more spam/ham(s) reported */
+	/* called after one or more junk/ham(s) reported */
 	void (*commit_reports) (void);
 };
 
-const char * camel_spam_plugin_get_name (CamelSpamPlugin *csp);
-int camel_spam_plugin_check_spam (CamelSpamPlugin *csp, CamelMimeMessage *message);
-void camel_spam_plugin_report_spam (CamelSpamPlugin *csp, CamelMimeMessage *message);
-void camel_spam_plugin_report_ham (CamelSpamPlugin *csp, CamelMimeMessage *message);
-void camel_spam_plugin_commit_reports (CamelSpamPlugin *csp);
+const char * camel_junk_plugin_get_name (CamelJunkPlugin *csp);
+int camel_junk_plugin_check_junk (CamelJunkPlugin *csp, CamelMimeMessage *message);
+void camel_junk_plugin_report_junk (CamelJunkPlugin *csp, CamelMimeMessage *message);
+void camel_junk_plugin_report_notjunk (CamelJunkPlugin *csp, CamelMimeMessage *message);
+void camel_junk_plugin_commit_reports (CamelJunkPlugin *csp);
 
 #endif
