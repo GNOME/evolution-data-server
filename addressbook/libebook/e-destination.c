@@ -336,10 +336,11 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 	g_return_if_fail (contact && E_IS_CONTACT (contact));
 
 	if (dest->priv->contact != contact || dest->priv->email_num != email_num) {
+		g_object_ref (contact);
 
 		e_destination_clear (dest);
 
-		dest->priv->contact = g_object_ref (contact);
+		dest->priv->contact = contact;
 
 		dest->priv->contact_uid = e_contact_get (dest->priv->contact, E_CONTACT_UID);
 

@@ -1,9 +1,13 @@
+2005-01-24  Hans Petter Jansson  <hpj@novell.com>
+
+	* libebook/e-destination.c (e_destination_set_contact): Ref the new
+	contact before unreffing the old one. Safe if it's the same one.
+
 2005-01-23  Sivaiah Nallagatla <snallagatla@novell.com> 
 
 	* backends/groupwise/e-book-backend-groupwise.c 
 	(e_book_backend_groupwise_load_source) : change if 
 	condtion from if(marked_offline) to if (!marked_offline), Doh
-	
 
 2005-01-17  Sivaiah Nallagatla <snallagatla@novell.com> 
 
