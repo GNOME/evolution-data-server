@@ -31,9 +31,9 @@ $(CORBA_GENERATED_H): $(idls)
 $(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 
 # The libraray
-lib_LTLIBRARIES = libedata-cal.la
+lib_LTLIBRARIES = libedata-cal-1.2.la
 
-libedata_cal_la_SOURCES =		\
+libedata_cal_1_2_la_SOURCES =		\
 	$(CORBA_GENERATED_C)		\
 	e-cal-backend.c			\
 	e-cal-backend-cache.c		\
@@ -44,12 +44,12 @@ libedata_cal_la_SOURCES =		\
 	e-data-cal-factory.c		\
 	e-data-cal-view.c
 
-libedata_cal_la_LIBADD =					\
+libedata_cal_1_2_la_LIBADD =					\
 	$(EVOLUTION_CALENDAR_LIBS)				\
-	$(top_builddir)/calendar/libecal/libecal.la		\
-	$(top_builddir)/libedataserver/libedataserver.la
+	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
-libedata_cal_la_LDFLAGS = 								\
+libedata_cal_1_2_la_LDFLAGS = 								\
 	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE)
 
 libedata_calincludedir = $(privincludedir)/libedata-cal
@@ -66,14 +66,18 @@ libedata_calinclude_HEADERS = 		\
 	e-data-cal-factory.h		\
 	e-data-cal-view.h
 
+%-$(BASE_VERSION).pc: %.pc
+	 cp $< $@
+
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedata-cal-1.0.pc
+pkgconfig_DATA = libedata-cal-$(BASE_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
+DISTCLEANFILES = $(pkgconfig_DATA)
 
-EXTRA_DIST = 				\
-	$(pkgconfig_DATA:.pc=.pc.in)
+EXTRA_DIST = 						\
+	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

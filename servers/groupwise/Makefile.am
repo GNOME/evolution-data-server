@@ -10,19 +10,19 @@ noinst_PROGRAMS = create-account soap-test
 
 create_account_SOURCES = create-account.c
 create_account_LDADD = 						\
-	$(top_builddir)/libedataserver/libedataserver.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(SOUP_LIBS)						\
 	$(E_DATA_SERVER_LIBS)
 
 soap_test_SOURCES = soap-test.c
 soap_test_LDADD = 					\
 	$(SOUP_LIBS)					\
-	libegroupwise.la				\
+	libegroupwise-1.2.la				\
 	$(E_DATA_SERVER_LIBS) 
 
-lib_LTLIBRARIES = libegroupwise.la
+lib_LTLIBRARIES = libegroupwise-1.2.la
 
-libegroupwise_la_SOURCES =			\
+libegroupwise_1_2_la_SOURCES =			\
 	e-gw-connection.c			\
 	e-gw-connection.h			\
 	e-gw-container.c			\
@@ -34,11 +34,11 @@ libegroupwise_la_SOURCES =			\
 	e-gw-filter.c                           \
 	e-gw-filter.h                   
 
-libegroupwise_la_LIBADD =						\
+libegroupwise_1_2_la_LIBADD =						\
 	$(E_DATA_SERVER_LIBS)						\
 	$(SOUP_LIBS)
 
-libegroupwise_la_LDFLAGS =                                               \
+libegroupwise_1_2_la_LDFLAGS =                                               \
         -version-info $(LIBEGROUPWISE_CURRENT):$(LIBEGROUPWISE_REVISION):$(LIBEGROUPWISE_AGE)
 
 libegroupwiseincludedir = $(privincludedir)/groupwise
@@ -50,7 +50,12 @@ libegroupwiseinclude_HEADERS =                  \
 	e-gw-item.h                             \
 	e-gw-filter.h                        
 
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libegroupwise-1.0.pc
+%-$(BASE_VERSION).pc: %.pc
+	 cp $< $@
 
-EXTRA_DIST = $(pkgconfig_DATA:.pc=.pc.in)
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libegroupwise-$(BASE_VERSION).pc
+
+EXTRA_DIST = $(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
+
+DISTCLEANFILES = $(pkgconfig_DATA)

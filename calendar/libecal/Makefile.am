@@ -36,9 +36,9 @@ MARSHAL_GENERATED = e-cal-marshal.c e-cal-marshal.h
 @EVO_MARSHAL_RULE@
 
 # The library
-lib_LTLIBRARIES = libecal.la
+lib_LTLIBRARIES = libecal-1.2.la
 
-libecal_la_SOURCES =		\
+libecal_1_2_la_SOURCES =		\
 	$(CORBA_GENERATED_C)	\
 	$(MARSHAL_GENERATED)	\
 	e-cal.c			\
@@ -50,14 +50,14 @@ libecal_la_SOURCES =		\
 	e-cal-view.c		\
 	e-cal-view-listener.c
 
-libecal_la_LIBADD =									\
+libecal_1_2_la_LIBADD =									\
 	$(EVOLUTION_CALENDAR_LIBS)							\
 	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la		\
 	$(top_builddir)/calendar/libical/src/libicalvcal/libicalvcal-evolution.la	\
-	$(top_builddir)/calendar/libical/src/libicalss/libicalss-evolution.la	\
-	$(top_builddir)/libedataserver/libedataserver.la
+	$(top_builddir)/calendar/libical/src/libicalss/libicalss-evolution.la		\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
-libecal_la_LDFLAGS = 								\
+libecal_1_2_la_LDFLAGS = 								\
 	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE)
 
 libecalincludedir = $(privincludedir)/libecal
@@ -74,15 +74,20 @@ libecalinclude_HEADERS =	\
 	e-cal-view.h		\
 	e-cal-view-listener.h
 
+%-$(BASE_VERSION).pc: %.pc
+	 cp $< $@
+
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libecal-1.0.pc
+pkgconfig_DATA = libecal-$(BASE_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
+DISTCLEANFILES = $(pkgconfig_DATA)
 
-EXTRA_DIST = 				\
-	e-cal-marshal.list		\
-	$(pkgconfig_DATA:.pc=.pc.in)
+EXTRA_DIST = 						\
+	e-cal-marshal.list				\
+	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
+

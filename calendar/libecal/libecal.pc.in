@@ -8,9 +8,9 @@ IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
 
 privincludedir=@privincludedir@
 
-Name: libedatabook
-Description: Backend library for evolution address books
+Name: libedatacal
+Description: Backend library for evolution calendars
 Version: @VERSION@
-Requires: libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ libgnome-2.0 libedataserver-1.0 libebook-1.0
-Libs: -L${libdir} -ledata-book
+Requires: libgnome-2.0 libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ libedataserver-1.2
+Libs: -L${libdir} -lecal-1.2
 Cflags: -I${privincludedir}

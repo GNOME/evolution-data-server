@@ -19,27 +19,27 @@ AC_SUBST(BASE_VERSION)
 AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 
 # Libtool versioning
-LIBEDATASERVER_CURRENT=5
-LIBEDATASERVER_REVISION=1
-LIBEDATASERVER_AGE=2
+LIBEDATASERVER_CURRENT=0
+LIBEDATASERVER_REVISION=0
+LIBEDATASERVER_AGE=0
 
-LIBECAL_CURRENT=7
-LIBECAL_REVISION=4
-LIBECAL_AGE=1
+LIBECAL_CURRENT=0
+LIBECAL_REVISION=0
+LIBECAL_AGE=0
 
-LIBEDATACAL_CURRENT=6
-LIBEDATACAL_REVISION=4
-LIBEDATACAL_AGE=1
+LIBEDATACAL_CURRENT=0
+LIBEDATACAL_REVISION=0
+LIBEDATACAL_AGE=0
 
-LIBEDATABOOK_CURRENT=1
-LIBEDATABOOK_REVISION=1
+LIBEDATABOOK_CURRENT=0
+LIBEDATABOOK_REVISION=0
 LIBEDATABOOK_AGE=0
 
-LIBEBOOK_CURRENT=8
-LIBEBOOK_REVISION=2
+LIBEBOOK_CURRENT=0
+LIBEBOOK_REVISION=0
 LIBEBOOK_AGE=0
 
-LIBEGROUPWISE_CURRENT=4
+LIBEGROUPWISE_CURRENT=0
 LIBEGROUPWISE_REVISION=0
 LIBEGROUPWISE_AGE=0
 
@@ -286,13 +286,13 @@ AC_CONFIG_SUBDIRS(libdb/dist)
 
 AC_OUTPUT([
 Makefile
-evolution-data-server-1.0.pc
+evolution-data-server.pc
 addressbook/Makefile
 addressbook/idl/Makefile
 addressbook/libebook/Makefile
-addressbook/libebook/libebook-1.0.pc
+addressbook/libebook/libebook.pc
 addressbook/libedata-book/Makefile
-addressbook/libedata-book/libedata-book-1.0.pc
+addressbook/libedata-book/libedata-book.pc
 addressbook/backends/Makefile
 addressbook/backends/file/Makefile
 addressbook/backends/vcf/Makefile
@@ -304,9 +304,9 @@ addressbook/tests/vcard/Makefile
 calendar/Makefile
 calendar/idl/Makefile
 calendar/libecal/Makefile
-calendar/libecal/libecal-1.0.pc
+calendar/libecal/libecal.pc
 calendar/libedata-cal/Makefile
-calendar/libedata-cal/libedata-cal-1.0.pc
+calendar/libedata-cal/libedata-cal.pc
 calendar/backends/Makefile
 calendar/backends/file/Makefile
 calendar/backends/groupwise/Makefile
@@ -316,10 +316,10 @@ calendar/tests/Makefile
 calendar/tests/ecal/Makefile
 libdb/Makefile
 libedataserver/Makefile
-libedataserver/libedataserver-1.0.pc
+libedataserver/libedataserver.pc
 servers/Makefile
 servers/groupwise/Makefile
-servers/groupwise/libegroupwise-1.0.pc 
+servers/groupwise/libegroupwise.pc 
 src/Makefile
 docs/Makefile
 docs/reference/Makefile

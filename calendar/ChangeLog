@@ -1,3 +1,20 @@
+2004-09-23  JP Rosevear  <jpr@novell.com>
+
+	* libecal/Makefile.am: build a versioned lib, don't hard
+	code the pkgconfig version
+
+	* libedata-cal/Makefile.am: ditto
+	
+	* backends/file/Makefile.am: link against the correct library version
+	
+	* backends/http/Makefile.am: ditto
+
+	* backends/groupwise/Makefile.am: ditto
+
+	* backends/contacts/Makefile.am: ditto
+
+	* tests/ecal/Makefile.am: ditto
+	
 2004-09-22  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.[ch]:

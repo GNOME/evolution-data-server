@@ -29,9 +29,9 @@ MARSHAL_GENERATED = e-data-book-marshal.c e-data-book-marshal.h
 @EVO_MARSHAL_RULE@
 
 # The library
-lib_LTLIBRARIES = libedata-book.la
+lib_LTLIBRARIES = libedata-book-1.2.la
 
-libedata_book_la_SOURCES =				\
+libedata_book_1_2_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
 	$(CORBA_GENERATED_C)				\
 	e-book-backend-sexp.c				\
@@ -43,12 +43,12 @@ libedata_book_la_SOURCES =				\
 	e-data-book.c					\
 	ximian-vcard.h
 
-libedata_book_la_LIBADD =					\
+libedata_book_1_2_la_LIBADD =					\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
-	$(top_builddir)/addressbook/libebook/libebook.la	\
-	$(top_builddir)/libedataserver/libedataserver.la
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
-libedata_book_la_LDFLAGS = 									\
+libedata_book_1_2_la_LDFLAGS = 									\
 	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE)
 
 libedata_bookincludedir = $(privincludedir)/libedata-book
@@ -64,15 +64,19 @@ libedata_bookinclude_HEADERS =				\
 	e-data-book-view.h				\
 	e-data-book.h
 
+%-$(BASE_VERSION).pc: %.pc
+	 cp $< $@
+
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedata-book-1.0.pc
+pkgconfig_DATA = libedata-book-$(BASE_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
+DISTCLEANFILES = $(pkgconfig_DATA)
 
-EXTRA_DIST = 				\
-	e-data-book-marshal.list	\
-	$(pkgconfig_DATA:.pc=.pc.in)
+EXTRA_DIST = 						\
+	e-data-book-marshal.list			\
+	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

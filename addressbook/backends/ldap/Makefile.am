@@ -15,8 +15,8 @@ libebookbackendldap_la_SOURCES =			\
 
 libebookbackendldap_la_LIBADD =						\
 	$(LDAP_LIBS)							\
-	$(top_builddir)/addressbook/libedata-book/libedata-book.la	\
-	$(top_builddir)/libedataserver/libedataserver.la
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
 LDAP_SCHEMA =						\
 	evolutionperson.schema

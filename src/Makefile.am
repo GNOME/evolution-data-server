@@ -56,16 +56,16 @@ LDAP_BACKEND_LIB=
 endif
 
 evolution_data_server_LDADD =							\
-	$(top_builddir)/addressbook/libedata-book/libedata-book.la		\
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la		\
 	$(top_builddir)/addressbook/backends/file/libebookbackendfile.la	\
 	$(top_builddir)/addressbook/backends/vcf/libebookbackendvcf.la		\
 	$(top_builddir)/addressbook/backends/groupwise/libebookbackendgroupwise.la \
 	$(LDAP_BACKEND_LIB)							\
-	$(top_builddir)/calendar/libedata-cal/libedata-cal.la			\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
 	$(top_builddir)/calendar/backends/file/libecalbackendfile.la		\
 	$(top_builddir)/calendar/backends/groupwise/libecalbackendgroupwise.la	\
 	$(top_builddir)/calendar/backends/http/libecalbackendhttp.la		\
-	$(top_builddir)/addressbook/libebook/libebook.la			\
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la			\
 	$(top_builddir)/calendar/backends/contacts/libecalbackendcontacts.la	\
 	$(LDAP_LIBS)								\
 	$(E_DATA_SERVER_LIBS)

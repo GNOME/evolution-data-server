@@ -24,7 +24,7 @@ GTKDOC_CFLAGS  =					\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar/libical/src		\
 	$(EVOLUTION_CALENDAR_CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/calendar/libecal/libecal.la $(EVOLUTION_CALENDAR_LIBS)
+GTKDOC_LIBS = $(top_builddir)/calendar/libecal/libecal-1.2.la $(EVOLUTION_CALENDAR_LIBS)
 
 ####################################
 # Everything below here is generic #

@@ -24,7 +24,7 @@ GTKDOC_CFLAGS  =					\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook/libical/src		\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/addressbook/libebook/libebook.la $(EVOLUTION_ADDRESSBOOK_LIBS)
+GTKDOC_LIBS = $(top_builddir)/addressbook/libebook/libebook-1.2.la $(EVOLUTION_ADDRESSBOOK_LIBS)
 
 ####################################
 # Everything below here is generic #

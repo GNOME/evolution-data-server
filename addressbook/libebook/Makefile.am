@@ -31,9 +31,9 @@ MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
 @EVO_MARSHAL_RULE@
 
 # The library
-lib_LTLIBRARIES = libebook.la
+lib_LTLIBRARIES = libebook-1.2.la
 
-libebook_la_SOURCES =					\
+libebook_1_2_la_SOURCES =					\
 	$(CORBA_GENERATED_C)				\
 	$(MARSHAL_GENERATED)				\
 	e-address-western.c				\
@@ -46,11 +46,11 @@ libebook_la_SOURCES =					\
 	e-name-western.c				\
 	e-vcard.c
 
-libebook_la_LIBADD =					\
+libebook_1_2_la_LIBADD =					\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)			\
-	$(top_builddir)/libedataserver/libedataserver.la
+	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
-libebook_la_LDFLAGS = 							\
+libebook_1_2_la_LDFLAGS = 							\
 	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE)
 
 libebookincludedir = $(privincludedir)/libebook
@@ -69,15 +69,19 @@ libebookinclude_HEADERS =				\
 	e-name-western-tables.h				\
 	e-vcard.h
 
+%-$(BASE_VERSION).pc: %.pc
+	 cp $< $@
+
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libebook-1.0.pc
+pkgconfig_DATA = libebook-$(BASE_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
+DISTCLEANFILES = $(pkgconfig_DATA)
 
-EXTRA_DIST = 				\
-	e-book-marshal.list		\
-	$(pkgconfig_DATA:.pc=.pc.in)
+EXTRA_DIST = 						\
+	e-book-marshal.list				\
+	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

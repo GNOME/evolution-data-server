@@ -1,3 +1,23 @@
+2004-09-23  JP Rosevear  <jpr@novell.com>
+
+	* libebook/Makefile.am: build a versioned lib, don't hard
+	code the pkgconfig version
+
+	* libedata-book/Makefile.am: ditto
+	
+	* backends/file/Makefile.am: link against the correct library
+	version
+	
+	* backends/groupwise/Makefile.am: ditto
+
+	* backends/vcf/Makefile.am: ditto
+
+	* backends/ldap/Makefile.am: ditto
+
+	* tests/vcard/Makefile.am: ditto
+
+	* tests/ebook/Makefile.am: ditto
+	
 2004-09-22  William Jon McCann  <mccann@jhu.edu>
 
 	* libebook/e-book.c (emit_async_open_response)
