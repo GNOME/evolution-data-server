@@ -2299,10 +2299,13 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-        if (status)
+        if (status) {
                 *icalcomp = NULL;
-        else
+        } else {
                 *icalcomp = icalparser_parse_string (our_op->string);
+		if (!(*icalcomp))
+			status = E_CALENDAR_STATUS_INVALID_OBJECT;
+	}
 	g_free (our_op->string);
 
 	e_calendar_remove_op (ecal, our_op);
@@ -2378,8 +2381,13 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-	*icalcomp = icalparser_parse_string (our_op->string);
-	/* FIXME if the parse fails its an error */
+        if (status) {
+                *icalcomp = NULL;
+        } else {
+                *icalcomp = icalparser_parse_string (our_op->string);
+		if (!(*icalcomp))
+			status = E_CALENDAR_STATUS_INVALID_OBJECT;
+	}
 	g_free (our_op->string);
 
 	e_calendar_remove_op (ecal, our_op);
@@ -3711,18 +3719,22 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	   successful response will notity us via our cv */
 	g_cond_wait (our_op->cond, our_op->mutex);
 
-	status = our_op->status;
-	
-	icalcomp = icalparser_parse_string (our_op->string);
+	status = our_op->status;	
+        if (status) {
+                icalcomp = NULL;
+        } else {
+                icalcomp = icalparser_parse_string (our_op->string);
+		if (!icalcomp)
+			status = E_CALENDAR_STATUS_INVALID_OBJECT;
+	}
 	g_free (our_op->string);
 	
-	/* FIXME Invalid object status? */
 	if (!icalcomp) {
 		e_calendar_remove_op (ecal, our_op);
 		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OBJECT_NOT_FOUND, error);
+		E_CALENDAR_CHECK_STATUS (status, error);
 	}
 	
 	*zone = icaltimezone_new ();	

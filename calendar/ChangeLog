@@ -1,3 +1,12 @@
+2004-03-31  JP Rosevear <jpr@ximian.com>
+
+	Fixes #54713
+	
+	* libecal/e-cal.c (e_cal_get_object): only try to parse the string
+	if the status is good
+	(e_cal_get_timezone): ditto
+	(e_cal_get_default_object): ditto
+	
 2004-03-29  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libecal/e-cal.c (e_cal_generate_instances): added support for dealing
