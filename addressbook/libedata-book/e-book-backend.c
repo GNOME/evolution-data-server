@@ -369,6 +369,11 @@ e_book_backend_remove_client (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
+	/* up our backend's refcount here so that last_client_gone
+	   doesn't end up unreffing us (while we're holding the
+	   lock) */
+	g_object_ref (backend);
+
 	/* Disconnect */
 	g_mutex_lock (backend->priv->clients_mutex);
 	backend->priv->clients = g_list_remove (backend->priv->clients, book);
@@ -380,6 +385,8 @@ e_book_backend_remove_client (EBookBackend *backend,
 		last_client_gone (backend);
 
 	g_mutex_unlock (backend->priv->clients_mutex);
+
+	g_object_unref (backend);
 }
 
 char *

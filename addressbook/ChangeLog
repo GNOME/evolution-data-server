@@ -1,3 +1,9 @@
+2004-01-30  Chris Toshok  <toshok@ximian.com>
+
+	* libedata-book/e-book-backend.c (e_book_backend_remove_client):
+	add ref/unref around this function body so that we don't get
+	unreffed by something below last_client_gone.
+
 2004-01-29  Chris Toshok  <toshok@ximian.com>
 
 	* libedata-book/ximian-vcard.h (XIMIAN_VCARD): update for new
