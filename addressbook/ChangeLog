@@ -1,3 +1,9 @@
+2004-02-04  Michael Meeks  <michael@ximian.com>
+
+	* libebook/e-book-async.c (_get_book_view_handler):
+	g_new0 so we don't have a bogus uninitialized pointer
+	to segv on in _get_book_view_response_dtor.
+
 2004-02-03  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-vcard.c (e_vcard_to_string_vcard_30): use "VCARD"

@@ -105,7 +105,7 @@ _load_source_handler (EBookMsg *msg)
 	LoadSourceResponse *response;
 	GError *error = NULL;
 
-	response = g_new (LoadSourceResponse, 1);
+	response = g_new0 (LoadSourceResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _load_source_response_handler, _load_source_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -231,7 +231,7 @@ _default_book_handler (EBookMsg *msg)
 	DefaultBookResponse *response;
 	GError *error = NULL;
 
-	response = g_new (DefaultBookResponse, 1);
+	response = g_new0 (DefaultBookResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _default_book_response_handler, _default_book_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -329,7 +329,7 @@ _get_fields_handler (EBookMsg *msg)
 	GetFieldsResponse *response;
 	GError *error = NULL;
 
-	response = g_new (GetFieldsResponse, 1);
+	response = g_new0 (GetFieldsResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _get_fields_response_handler, _get_fields_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -423,7 +423,7 @@ _get_methods_handler (EBookMsg *msg)
 	GetMethodsResponse *response;
 	GError *error = NULL;
 
-	response = g_new (GetMethodsResponse, 1);
+	response = g_new0 (GetMethodsResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _get_methods_response_handler, _get_methods_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -509,7 +509,7 @@ _auth_user_handler (EBookMsg *msg)
 	AuthUserResponse *response;
 	GError *error = NULL;
 
-	response = g_new (AuthUserResponse, 1);
+	response = g_new0 (AuthUserResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _auth_user_response_handler, _auth_user_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -614,7 +614,7 @@ _get_contact_handler (EBookMsg *msg)
 	GetContactResponse *response;
 	GError *error = NULL;
 
-	response = g_new (GetContactResponse, 1);
+	response = g_new0 (GetContactResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _get_contact_response_handler, _get_contact_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -744,7 +744,7 @@ _remove_contacts_handler (EBookMsg *msg)
 	RemoveContactsResponse *response;
 	GError *error = NULL;
 
-	response = g_new (RemoveContactsResponse, 1);
+	response = g_new0 (RemoveContactsResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _remove_contacts_response_handler, _remove_contacts_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -845,7 +845,7 @@ _add_contact_handler (EBookMsg *msg)
 	AddContactResponse *response;
 	GError *error = NULL;
 
-	response = g_new (AddContactResponse, 1);
+	response = g_new0 (AddContactResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _add_contact_response_handler, _add_contact_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -945,7 +945,7 @@ _commit_contact_handler (EBookMsg *msg)
 	CommitContactResponse *response;
 	GError *error = NULL;
 
-	response = g_new (CommitContactResponse, 1);
+	response = g_new0 (CommitContactResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _commit_contact_response_handler, _commit_contact_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -1046,7 +1046,7 @@ _get_book_view_handler (EBookMsg *msg)
 	GetBookViewResponse *response;
 	GError *error = NULL;
 
-	response = g_new (GetBookViewResponse, 1);
+	response = g_new0 (GetBookViewResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _get_book_view_response_handler, _get_book_view_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
@@ -1150,7 +1150,7 @@ _get_contacts_handler (EBookMsg *msg)
 	GetContactsResponse *response;
 	GError *error = NULL;
 
-	response = g_new (GetContactsResponse, 1);
+	response = g_new0 (GetContactsResponse, 1);
 	e_book_msg_init ((EBookMsg*)response, _get_contacts_response_handler, _get_contacts_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
