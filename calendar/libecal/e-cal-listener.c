@@ -899,7 +899,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_STRUCT_OFFSET (ECalListenerClass, get_changes),
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT_POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_INT, G_TYPE_POINTER);
+			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
 	signals[GET_FREE_BUSY] =
 		g_signal_new ("get_free_busy",
 			      G_TYPE_FROM_CLASS (klass),
@@ -907,7 +907,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_STRUCT_OFFSET (ECalListenerClass, get_free_busy),
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT_POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_INT, G_TYPE_POINTER);
+			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
 	signals[QUERY] =
 		g_signal_new ("query",
 			      G_TYPE_FROM_CLASS (klass),

@@ -1,3 +1,8 @@
+2003-12-15  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal-listener.c (e_cal_listener_class_init): fix the
+	number of parameters for get free busy and get_changes
+
 2003-12-15  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/e-cal-backend-sync.c (_e_cal_backend_sync_get_ldap_attribute,
@@ -15,7 +20,7 @@
 	* backends/http/e-cal-backend-http.c
 	(e_cal_backend_http_get_static_capabilities): ditto.
 
-2003-12-14    <jpr@ximian.com>
+2003-12-14  JP Rosevear <jpr@ximian.com>	
 
 	* libecal/e-cal-component.c (set_datetime): don't remove and then
 	free the param, lest we double free it
