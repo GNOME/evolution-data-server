@@ -901,6 +901,10 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			g_object_unref (comp);
 			return GNOME_Evolution_Calendar_OtherError;
 		}
+
+		if (*uid)
+			e_cal_component_set_uid (comp, *uid);
+
 		/* if successful, update the cache */
 	case CAL_MODE_LOCAL :
 		/* in offline mode, we just update the cache */
