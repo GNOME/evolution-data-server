@@ -1,3 +1,11 @@
+2005-02-28  Sivaiah Nallagatla  <snallagatla@novell.com>
+
+	* backends/groupwise/e-bbok-backend-groupwise.c 
+	(e_book_backend_groupwise_get_contact_list) 
+	(book_view_thread) (build_cache) : pass "name email
+	default members" as the view instead of just "members"
+	need to work well with latest server.
+	
 2005-02-25  Sivaiah Nallagatla  <snallagatla@novell.com>
 
        * libedata-book/e-book-backend.c (e_book_backend_notify_writable)

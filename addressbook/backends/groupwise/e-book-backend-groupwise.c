@@ -822,7 +822,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, count);
 	items = NULL;
 	if (count)
-		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &items);
+		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "name email default members", filter, &items);
 	for (; items != NULL; items = g_list_next (items )) {
 		GList *emails;
 		GList *ptr;
@@ -1849,9 +1849,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 			
 			ids = e_book_backend_cache_search (egwb->priv->cache, query);
 			if (ids->len > 0) {
-				status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, "members", ids, &gw_items);
+				status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, "name email default members", ids, &gw_items);
 				if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-				status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, "members", ids, &gw_items);
+				status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, "name email default members", ids, &gw_items);
 			}
 			match_needed = FALSE;
 			g_ptr_array_free (ids, TRUE);
@@ -1862,9 +1862,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 				filter = e_book_backend_groupwise_build_gw_filter (egwb, query, &is_auto_completion, NULL);
 			if (filter)
 				match_needed = FALSE;
-			status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &gw_items);
+			status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "name email default members", filter, &gw_items);
 			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-				status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &gw_items);
+				status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "name email default members", filter, &gw_items);
 			
 		}
 		
@@ -1955,8 +1955,7 @@ book_view_thread (gpointer data)
 	gwb  = closure->bg;
 	gw_items = NULL;
 
-
-	bonobo_object_ref (book_view);
+       	bonobo_object_ref (book_view);
 	g_mutex_lock (closure->mutex);
 	g_cond_signal (closure->cond);
 	g_mutex_unlock (closure->mutex);
@@ -1999,7 +1998,7 @@ book_view_thread (gpointer data)
 		}
 
 		filter = e_book_backend_groupwise_build_gw_filter (gwb, query, &is_auto_completion, &search_string);
-		view = "members";
+		view = "name email default members";
 		if (is_auto_completion) 
 			view = "name email";
 		if (is_auto_completion && !gwb->priv->is_writable) {
@@ -2145,7 +2144,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
 	
 	
-	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "members", NULL, &gw_items);
+	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "name email default members", NULL, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK) 
 		return FALSE;
 	
@@ -2184,12 +2183,12 @@ build_cache (EBookBackendGroupwise *ebgw)
 	const char *position = E_GW_CURSOR_POSITION_START;
 	
 	
-	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, NULL, NULL, &cursor);
+	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "name email default members", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) 
 		return FALSE;
 	while (!done) {
 
-		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &gw_items);
+		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, TRUE, CURSOR_ITEM_LIMIT, position, &gw_items);
 
 		for (l = gw_items; l != NULL; l = g_list_next (l)) { 
 			contact = e_contact_new ();
@@ -2236,7 +2235,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 
 	filter = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "modified", time_string);
-	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "members", filter, &gw_items);
+	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "name email default members", filter, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK)
 		return FALSE;
 	
