@@ -36,6 +36,7 @@ Test   : Description
 9.vcf  : A vCard that ends (\0) in the middle of an attribute
          name/group.
 
-10.vcf : A vCard with an attribute with more than 1 group specified.
+10.vcf : A vCard with an attribute with more than 1 group specified.  Also
+         has an attributed with a quoted parameter value.
 
 ----------------------

@@ -10,6 +10,7 @@ main(int argc, char **argv)
 {
 	EVCard *vcard;
 	GString *str = g_string_new ("");
+	char *parsed_vcard;
 
 	if (argc < 2)
 	  return 0;
@@ -27,6 +28,14 @@ main(int argc, char **argv)
 	vcard = e_vcard_new_from_string (str->str);
 
 	e_vcard_dump_structure (vcard);
+
+	parsed_vcard = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+
+	printf ("\nvcard: %s\n", parsed_vcard);
+
+	g_object_unref (vcard);
+
+	g_free (parsed_vcard);
 
 	return 0;
 }

@@ -1,3 +1,16 @@
+2003-11-11  Chris Toshok  <toshok@ximian.com>
+
+	* tests/vcard/dump-vcard.c (main): convert the vcard to a string
+	and print it out as well.  also fix the evcard leak.
+
+	* tests/vcard/README: add blurb about 10.vcf.
+
+	* tests/vcard/Makefile.am (EXTRA_DIST): add 10.vcf
+
+	* tests/vcard/10.vcf: new quotted attribute parameter value test.
+
+	* tests/vcard/[1-9].vcf: add these back in.
+
 2003-11-10  JP Rosevear <jpr@ximian.com>
 
 	* libebook/e-book-listener.c: remove construct method, it did
