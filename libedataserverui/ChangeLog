@@ -1,4 +1,4 @@
-2005-03-11  Chenthill Palanisamy  <pchenthill@novell.com>
+2005-03-22  Chenthill Palanisamy  <pchenthill@novell.com>
      
         * e-source-selector.c (selector_button_press_event): Do
 	not emit popup signals when clicked on the source group.
