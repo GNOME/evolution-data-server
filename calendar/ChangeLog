@@ -1,5 +1,15 @@
 2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise-utils.[ch]: new files
+	to contain all calendar-specific code from libegroupwise.
+	(e_gw_item_new_from_cal_component, e_gw_item_to_cal_component,
+	e_gw_connection_send_appointment): new functions.
+
+	* backends/groupwise/e-cal-backend-groupwise.c: include new header
+	file.
+
+2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/create-account.c:
 	* backends/groupwise/soap-test.c:
 	* backends/groupwise/e-gw-*: moved to $top_srcdir/servers/groupwise.

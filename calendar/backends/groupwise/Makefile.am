@@ -16,7 +16,9 @@ noinst_LTLIBRARIES = libecalbackendgroupwise.la
 
 libecalbackendgroupwise_la_SOURCES =		\
 	e-cal-backend-groupwise.c		\
-	e-cal-backend-groupwise.h
+	e-cal-backend-groupwise.h		\
+	e-cal-backend-groupwise-utils.c		\
+	e-cal-backend-groupwise-utils.h
 
 libecalbackendgroupwise_la_LIBADD =					\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\

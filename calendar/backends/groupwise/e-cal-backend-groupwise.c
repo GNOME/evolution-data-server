@@ -35,6 +35,7 @@
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-time-util.h>
 #include "e-cal-backend-groupwise.h"
+#include "e-cal-backend-groupwise-utils.h"
 #include "e-gw-connection.h"
 
 /* Private part of the CalBackendGroupwise structure */
