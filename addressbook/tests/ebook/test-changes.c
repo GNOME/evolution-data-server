@@ -18,7 +18,6 @@ int
 main (int argc, char **argv)
 {
 	EBook *book;
-	gboolean status;
 	EContact *contact;
 	GList *changes;
 	GError *error = NULL;
@@ -32,10 +31,14 @@ main (int argc, char **argv)
 	mktemp (file_template);
 
 	/* create a temp addressbook in /tmp */
-	book = e_book_new ();
-
 	printf ("loading addressbook\n");
-	if (!e_book_load_uri (book, file_template, FALSE, &error)) {
+	book = e_book_new_from_uri (file_template, &error);
+	if (!book) {
+		printf ("failed to create addressbook: `%s': %s\n", file_template, error->message);
+		exit(0);
+	}
+
+	if (!e_book_open (book, FALSE, &error)) {
 		printf ("failed to open addressbook: `%s': %s\n", file_template, error->message);
 		exit(0);
 	}
@@ -71,7 +74,7 @@ main (int argc, char **argv)
 		exit(0);
 	}
 
-	printf ("got changed vcard back: %s\n", e_contact_get_const (change->contact, E_CONTACT_UID));
+	printf ("got changed vcard back: %s\n", (char*)e_contact_get_const (change->contact, E_CONTACT_UID));
 
 	e_book_free_change_list (changes);
 

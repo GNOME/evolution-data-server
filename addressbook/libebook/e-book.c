@@ -78,9 +78,9 @@ typedef struct {
 } EBookOp;
 
 typedef enum {
-	E_BOOK_URI_NOT_LOADED,
-	E_BOOK_URI_LOADING,
-	E_BOOK_URI_LOADED
+	E_BOOK_SOURCE_NOT_LOADED,
+	E_BOOK_SOURCE_LOADING,
+	E_BOOK_SOURCE_LOADED
 } EBookLoadState;
 
 struct _EBookPrivate {
@@ -210,15 +210,15 @@ e_book_add_contact (EBook           *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     /* translators: the placeholders will be filled by
 			      * function names, e.g.
 			      * "e_book_add_contact" on book before 
-			      * "e_book_load_uri */
+			      * "e_book_open */
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_add_contact", "e_book_load_uri");
+			     "e_book_add_contact", "e_book_open");
 		return FALSE;
 	}
 
@@ -326,11 +326,11 @@ e_book_commit_contact (EBook           *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_commit_contact", "e_book_load_uri");
+			     "e_book_commit_contact", "e_book_open");
 		return FALSE;
 	}
 
@@ -411,11 +411,11 @@ e_book_get_supported_fields  (EBook            *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_get_supported_fields", "e_book_load_uri");
+			     "e_book_get_supported_fields", "e_book_open");
 		return FALSE;
 	}
 
@@ -513,12 +513,12 @@ e_book_get_supported_auth_methods (EBook            *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
 			     "e_book_get_supported_auth_methods",
-			     "e_book_load_uri");
+			     "e_book_open");
 		return FALSE;
 	}
 
@@ -626,11 +626,11 @@ e_book_authenticate_user (EBook         *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_authenticate_user", "e_book_load_uri");
+			     "e_book_authenticate_user", "e_book_open");
 		return FALSE;
 	}
 
@@ -706,15 +706,15 @@ e_book_get_contact (EBook       *book,
 
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (contact,                     E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (contact,                  E_BOOK_ERROR_INVALID_ARG);
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_get_contact", "e_book_load_uri");
+			     "e_book_get_contact", "e_book_open");
 		return FALSE;
 	}
 
@@ -850,11 +850,11 @@ e_book_remove_contacts (EBook    *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_remove_contacts", "e_book_load_uri");
+			     "e_book_remove_contacts", "e_book_open");
 		return FALSE;
 	}
 
@@ -949,11 +949,11 @@ e_book_get_book_view (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_get_book_view", "e_book_load_uri");
+			     "e_book_get_book_view", "e_book_open");
 		return FALSE;
 	}
 
@@ -1083,11 +1083,11 @@ e_book_get_contacts (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_get_contacts", "e_book_load_uri");
+			     "e_book_get_contacts", "e_book_open");
 		return FALSE;
 	}
 
@@ -1184,11 +1184,11 @@ e_book_get_changes (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
 		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 			     _("\"%s\" on book before \"%s\""),
-			     "e_book_get_changes", "e_book_load_uri");
+			     "e_book_get_changes", "e_book_open");
 		return FALSE;
 	}
 
@@ -1378,6 +1378,95 @@ e_book_cancel (EBook   *book,
 	return rv;
 }
 
+
+
+/**
+ * e_book_open:
+ * @book: an #EBook
+ * @only_if_exists: if #TRUE, fail if this book doesn't already exist otherwise create it first
+ * @error: a #GError to set on failure
+ *
+ * Opens the addressbook, making it ready for queries and other operations.
+ *
+ * Return value: #TRUE if the book was successfully opened, #FALSE otherwise.
+ */
+gboolean
+e_book_open (EBook     *book,
+	     gboolean   only_if_exists,
+	     GError   **error)
+{
+	CORBA_Environment ev;
+	EBookOp *our_op;
+	EBookStatus status;
+
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+
+	g_mutex_lock (book->priv->mutex);
+
+	if (book->priv->load_state != E_BOOK_SOURCE_NOT_LOADED) {
+		g_mutex_unlock (book->priv->mutex);
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_ALREADY_LOADED,
+			     _("\"%s\" on book after \"%s\""),
+			     "e_book_load_source", "e_book_load_source");
+		return FALSE;
+	}
+
+	if (book->priv->current_op != NULL) {
+		g_mutex_unlock (book->priv->mutex);
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
+			     _("book busy"));
+		return FALSE;
+	}
+
+	our_op = e_book_new_op (book);
+
+	g_mutex_lock (our_op->mutex);
+
+	g_mutex_unlock (book->priv->mutex);
+
+	CORBA_exception_init (&ev);
+
+	/* will eventually end up calling e_book_response_remove */
+	GNOME_Evolution_Addressbook_Book_open (book->priv->corba_book, only_if_exists, &ev);
+
+	if (ev._major != CORBA_NO_EXCEPTION) {
+
+		e_book_clear_op (book, our_op);
+
+		CORBA_exception_free (&ev);
+
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
+			     _("CORBA exception making \"%s\" call"),
+			     "Book::open");
+		return FALSE;
+	}
+
+	CORBA_exception_free (&ev);
+
+	/* wait for something to happen (both cancellation and a
+	   successful response will notity us via our cv */
+	g_cond_wait (our_op->cond, our_op->mutex);
+
+	status = our_op->status;
+
+	e_book_clear_op (book, our_op);
+
+	if (status == E_BOOK_ERROR_CANCELLED) {
+		/* Cancelled */
+		book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CANCELLED,
+			     _("e_book_open: cancelled"));
+		return FALSE;
+	}
+	else if (status == E_BOOK_ERROR_OK) {
+		book->priv->load_state = E_BOOK_SOURCE_LOADED;
+		return TRUE;
+	}
+	else {
+		E_BOOK_CHECK_STATUS (status, error);
+	}
+}
+
 static void
 e_book_response_open (EBook       *book,
 		      EBookStatus  status)
@@ -1423,14 +1512,6 @@ e_book_remove (EBook   *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 
 	g_mutex_lock (book->priv->mutex);
-
-	if (book->priv->load_state != E_BOOK_URI_LOADED) {
-		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
-			     _("\"%s\" on book before \"%s\""),
-			     "e_book_remove", "e_book_load_uri");
-		return FALSE;
-	}
 
 	if (book->priv->current_op != NULL) {
 		g_mutex_unlock (book->priv->mutex);
@@ -1597,9 +1678,9 @@ e_book_unload_uri (EBook   *book,
 	CORBA_Environment ev;
 
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->load_state != E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_NOT_LOADED);
+	e_return_error_if_fail (book->priv->load_state != E_BOOK_SOURCE_NOT_LOADED, E_BOOK_ERROR_SOURCE_NOT_LOADED);
 
-	if (book->priv->load_state == E_BOOK_URI_LOADED) {
+	if (book->priv->load_state == E_BOOK_SOURCE_LOADED) {
 		/* Release the remote GNOME_Evolution_Addressbook_Book in the PAS. */
 		CORBA_exception_init (&ev);
 
@@ -1615,13 +1696,13 @@ e_book_unload_uri (EBook   *book,
 		bonobo_object_unref (BONOBO_OBJECT (book->priv->listener));
 
 		book->priv->listener   = NULL;
-		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
+		book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
 		g_free (book->priv->cap);
 		book->priv->cap = NULL;
 		book->priv->cap_queried = FALSE;
 		book->priv->writable = FALSE;
 	}
-	else if (book->priv->load_state == E_BOOK_URI_LOADING) {
+	else if (book->priv->load_state == E_BOOK_SOURCE_LOADING) {
 		e_book_cancel (book, error);
 	}
 
@@ -1639,7 +1720,7 @@ backend_died_cb (EComponentListener *cl, gpointer user_data)
 {
 	EBook *book = user_data;
                                                                                                                               
-	book->priv->load_state = E_BOOK_URI_NOT_LOADED;
+	book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
         g_signal_emit (book, e_book_signals [BACKEND_DIED], 0);
 }
 
@@ -1714,7 +1795,6 @@ activate_factories_for_uri (EBook *book, const char *uri)
 static gboolean
 fetch_corba_book (EBook       *book,
 		  ESource     *source,
-		  gboolean     only_if_exists,
 		  GError     **error)
 {
 	GNOME_Evolution_Addressbook_Book corba_book = CORBA_OBJECT_NIL;
@@ -1722,14 +1802,12 @@ fetch_corba_book (EBook       *book,
 	gchar *source_xml;
 	GList *factories;
 	GList *l;
-	EBookStatus status = E_BOOK_ERROR_OTHER_ERROR;
 	gboolean rv = FALSE;
 
 	uri = e_source_get_uri (source);
 	if (!uri) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_OTHER_ERROR,
 			     _("e_book_load_uri: Invalid source."));
-		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		return FALSE;
 	}
 
@@ -1738,7 +1816,6 @@ fetch_corba_book (EBook       *book,
 	if (!factories) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
 			     _("e_book_load_uri: no factories available for uri `%s'"), uri);
-		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		return FALSE;
 	}
 
@@ -1751,7 +1828,6 @@ fetch_corba_book (EBook       *book,
 		g_warning ("e_book_load_uri: Could not create EBookListener!\n");
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_OTHER_ERROR,
 			     _("e_book_load_uri: Could not create EBookListener"));
-		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		return FALSE;
 	}
 	book->priv->listener_signal = g_signal_connect (book->priv->listener, "response",
@@ -1769,17 +1845,7 @@ fetch_corba_book (EBook       *book,
 
 	for (l = factories; l; l = l->next) {
 		GNOME_Evolution_Addressbook_BookFactory factory = l->data;
-		EBookOp *our_op;
 		CORBA_Environment ev;
-
-		/* we don't bother locking the book's mutex here
-		   before creating the op since there should be no way
-		   another thread could get to a place where they
-		   could add an op (as the load_state !=
-		   E_BOOK_URI_LOADED) */
-		our_op = e_book_new_op (book);
-
-		g_mutex_lock (our_op->mutex);
 
 		CORBA_exception_init (&ev);
 
@@ -1788,41 +1854,10 @@ fetch_corba_book (EBook       *book,
 								      &ev);
 
 		if (ev._major != CORBA_NO_EXCEPTION) {
-			e_book_clear_op (book, our_op);
-
 			CORBA_exception_free (&ev);
 			continue;
 		}
-
-		GNOME_Evolution_Addressbook_Book_open (corba_book,
-						       only_if_exists,
-						       &ev);
-
-		if (ev._major != CORBA_NO_EXCEPTION) {
-			/* kill the listener so the book will die */
-			g_signal_handler_disconnect (book->priv->listener, book->priv->listener_signal);
-			bonobo_object_unref (book->priv->listener);
-			book->priv->listener = NULL;
-
-			e_book_clear_op (book, our_op);
-
-			CORBA_exception_free (&ev);
-			continue;
-		}
-
-		CORBA_exception_free (&ev);
-
-		/* wait for something to happen (both cancellation and a
-		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
-
-		status = our_op->status;
-
-		/* remove the op from the book's hash of operations */
-		e_book_clear_op (book, our_op);
-
-		if (status == E_BOOK_ERROR_CANCELLED
-		    || status == E_BOOK_ERROR_OK) {
+		else if (corba_book != CORBA_OBJECT_NIL) {
 			rv = TRUE;
 			break;
 		}
@@ -1835,139 +1870,17 @@ fetch_corba_book (EBook       *book,
 		CORBA_Object_release ((CORBA_Object)l->data, NULL);
 
 	if (rv == TRUE) {
-		if (status == E_BOOK_ERROR_OK) {
-			book->priv->corba_book = corba_book;
-			book->priv->load_state = E_BOOK_URI_LOADED;
-			book->priv->comp_listener = e_component_listener_new (book->priv->corba_book);
-			book->priv->died_signal = g_signal_connect (book->priv->comp_listener,
-								    "component_died",
-								    G_CALLBACK (backend_died_cb), book);
-		} else {
-			/* Cancelled */
-			book->priv->load_state = E_BOOK_URI_NOT_LOADED;
-			g_signal_handler_disconnect (book->priv->listener, book->priv->listener_signal);
-			bonobo_object_unref (book->priv->listener);
-			book->priv->listener = NULL;
-			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CANCELLED,
-				     _("e_book_load_uri: cancelled"));
-		}
+		book->priv->corba_book = corba_book;
+		book->priv->comp_listener = e_component_listener_new (book->priv->corba_book);
+		book->priv->died_signal = g_signal_connect (book->priv->comp_listener,
+							    "component_died",
+							    G_CALLBACK (backend_died_cb), book);
 	}
 	else {
-		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
-			     _("e_book_load_uri: no factories available for uri `%s'"), uri);
+			     _("e_book_new: no factories available for uri `%s'"), uri);
 	}
 		
-	return rv;
-}
-
-/**
- * e_book_load_source:
- * @book: an #EBook
- * @source: the #ESource to load
- * @only_if_exists: if #TRUE, fail if this source doesn't already exist otherwise create it first
- * @error: a #GError to set on failure
- *
- * Load the specified source into the book.
- *
- * Return value: #TRUE if the source was loaded, #FALSE otherwise.
- */
-gboolean
-e_book_load_source (EBook *book,
-		    ESource *source,
-		    gboolean only_if_exists,
-		    GError **error)
-{
-	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
-
-	g_mutex_lock (book->priv->mutex);
-
-	if (book->priv->load_state != E_BOOK_URI_NOT_LOADED) {
-		g_mutex_unlock (book->priv->mutex);
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_ALREADY_LOADED,
-			     _("\"%s\" on book after \"%s\""),
-			     "e_book_load_source", "e_book_load_source");
-		return FALSE;
-	}
-
-	/* we have to set this here so that future calls to
-	   e_book_load* will fail.  It will be cleared to
-	   E_BOOK_URI_NOT_LOADED in fetch_corba_book if there's an
-	   error. */
-	book->priv->load_state = E_BOOK_URI_LOADING;
-
-	g_mutex_unlock (book->priv->mutex);
-
-	return fetch_corba_book (book, source, only_if_exists, error);
-}
-
-/**
- * e_book_load_uri:
- * @book: an #EBook
- * @uri: the URI to load
- * @only_if_exists: if #TRUE, fail if this URI doesn't already exist otherwise create it first
- * @error: a #GError to set on failure
- *
- * Create an #ESource from #url and load the source. See e_book_load_source().
- *
- * Return value: #TRUE if the URI was loaded, #FALSE otherwise.
- */
-gboolean
-e_book_load_uri (EBook        *book,
-		 const char   *uri,
-		 gboolean      only_if_exists,
-		 GError      **error)
-{
-	ESourceGroup *group;
-	ESource *source;
-	gboolean rv;
-
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (uri,                      E_BOOK_ERROR_INVALID_ARG);
-
-	group = e_source_group_new ("", uri);
-	source = e_source_new ("", "");
-	e_source_set_group (source, group);
-
-	rv = e_book_load_source (book, source, only_if_exists, error);
-
-	g_object_unref (source);
-	g_object_unref (group);
-
-	return rv;
-}
-
-/**
- * e_book_load_local_addressbook:
- * @book: an #EBook
- * @error: a #GError
- *
- * Load the local address book into #book.
- *
- * Return value: #TRUE on success, #FALSE otherwise.
- */
-gboolean
-e_book_load_local_addressbook (EBook   *book,
-			       GError **error)
-{
-	char *filename;
-	char *uri;
-	gboolean rv;
-
-	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
-
-	filename = g_build_filename (g_get_home_dir(),
-				     ".evolution/addressbook/local/system",
-				     NULL);
-	uri = g_strdup_printf ("file://%s", filename);
-
-	g_free (filename);
-	
-	rv = e_book_load_uri (book, uri, FALSE, error);
-	
-	g_free (uri);
-
 	return rv;
 }
 
@@ -2025,10 +1938,10 @@ e_book_get_static_capabilities (EBook   *book,
 
 		CORBA_exception_init (&ev);
 
-		if (book->priv->load_state != E_BOOK_URI_LOADED) {
-			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+		if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 				     _("\"%s\" on book before \"%s\""),
-				     "e_book_get_static_capabilities", "e_book_load_uri");
+				     "e_book_get_static_capabilities", "e_book_open");
 			return g_strdup ("");
 		}
 
@@ -2107,9 +2020,9 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 	GConfClient *gconf;
 	char *uid;
 
-	*book = e_book_new ();
+	*book = e_book_new_system_addressbook (&e);
 
-	if (!e_book_load_local_addressbook (*book, &e)) {
+	if (!*book) {
 		g_propagate_error (error, e);
 		return FALSE;
 	}
@@ -2176,74 +2089,6 @@ e_book_is_self (EContact *contact)
 
 
 /**
- * e_book_get_default_addressbook:
- * @book: The address of a pointer to an #EBook
- * @error: A #GError pointer
- * 
- * Convience function to open the default address book. Pass it the address of a
- * #EBook* and if this returns #TRUE, #book is set to an opened #EBook.
- * 
- * Return value: #TRUE if the default addressbook was opened, otherwise #FALSE.
- */
-gboolean
-e_book_get_default_addressbook (EBook **book, GError **error)
-{
-	ESourceList *sources;
-	GSList *g;
-	GError *err = NULL;
-	ESource *default_source = NULL;
-	gboolean rv = TRUE;
-
-	e_return_error_if_fail (book, E_BOOK_ERROR_INVALID_ARG);
-
-	if (!e_book_get_addressbooks (&sources, &err)) {
-		g_propagate_error (error, err);
-		return FALSE;
-	}
-
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
-		ESourceGroup *group = E_SOURCE_GROUP (g->data);
-		GSList *s;
-		for (s = e_source_group_peek_sources (group); s; s = s->next) {
-			ESource *source = E_SOURCE (s->data);
-
-			if (e_source_get_property (source, "default")) {
-				default_source = source;
-				break;
-			}
-		}
-
-		if (default_source)
-			break;
-	}
-
-	*book = e_book_new ();
-
-	if (default_source) {
-		if (!e_book_load_source (*book, default_source, TRUE, &err)) {
-			g_propagate_error (error, err);
-			rv = FALSE;
-			goto done;
-		}
-	}
-	else {
-		if (!e_book_load_local_addressbook (*book, &err)) {
-			g_propagate_error (error, err);
-			rv = FALSE;
-			goto done;
-		}
-	}
-
- done:
-	if (!rv) {
-		g_object_unref (*book);
-		*book = NULL;
-	}
-	g_object_unref (sources);
-	return rv;
-}
-
-/**
  * e_book_set_default_addressbook:
  * @book: An #EBook pointer
  * @error: A #GError pointer
@@ -2259,7 +2104,7 @@ e_book_set_default_addressbook (EBook *book, GError **error)
 	ESource *source;
 
 	e_return_error_if_fail (book && E_IS_BOOK (book),                        E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->load_state == E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_ALREADY_LOADED);
+	e_return_error_if_fail (book->priv->load_state == E_BOOK_SOURCE_NOT_LOADED, E_BOOK_ERROR_SOURCE_ALREADY_LOADED);
 
 	source = e_book_get_source (book);
 
@@ -2381,29 +2226,164 @@ e_book_activate()
 }
 
 
-
 /**
  * e_book_new:
  *
- * Creates a new #EBook. Use e_book_load_uri() or
- * e_book_load_local_addressbook() to access a data store.  Alternatively use
- * e_book_get_default_addressbook().
+ * @source: An #ESource pointer
+ * @error: A #GError pointer
+ *
+ * Creates a new #EBook corresponding to the given source.  There are
+ * only two operations that are valid on this book at this point:
+ * e_book_open(), and e_book_remove().
  *
  * Return value: a new but unopened #EBook.
- **/
+ */
 EBook*
-e_book_new (void)
+e_book_new (ESource *source, GError **error)
 {
+	EBook *book;
+
+	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
+
 	e_book_activate ();
-	return g_object_new (E_TYPE_BOOK, NULL);
+
+	book = g_object_new (E_TYPE_BOOK, NULL);
+
+	book->priv->source = g_object_ref (source);
+
+	if (!fetch_corba_book (book, source, error)) {
+		g_object_unref (book);
+		return NULL;
+	}
+
+	return book;
 }
 
+/**
+ * e_book_new_from_uri:
+ *
+ * @uri: the URI to load
+ * @error: A #GError pointer
+ *
+ * Creates a new #EBook corresponding to the given uri.  See the
+ * documentation for e_book_new for further information.
+ *
+ * Return value: a new but unopened #EBook.
+ */
+EBook*
+e_book_new_from_uri (const char *uri, GError **error)
+{
+	ESourceGroup *group;
+	ESource *source;
+	EBook *book;
+
+	e_return_error_if_fail (uri,                      E_BOOK_ERROR_INVALID_ARG);
+
+	group = e_source_group_new ("", uri);
+	source = e_source_new ("", "");
+	e_source_set_group (source, group);
+
+	book = e_book_new (source, error);
+
+	g_object_unref (source);
+	g_object_unref (group);
+
+	return book;
+}
+
+/**
+ * e_book_new_system_addressbook:
+ *
+ * @uri: the URI to load
+ * @error: A #GError pointer
+ *
+ * Creates a new #EBook corresponding to the user's system
+ * addressbook.  See the documentation for e_book_new for further
+ * information.
+ *
+ * Return value: a new but unopened #EBook.
+ */
+EBook*
+e_book_new_system_addressbook    (GError **error)
+{
+	char *filename;
+	char *uri;
+	EBook *book;
+
+	filename = g_build_filename (g_get_home_dir(),
+				     ".evolution/addressbook/local/system",
+				     NULL);
+	uri = g_strdup_printf ("file://%s", filename);
+
+	g_free (filename);
+	
+	book = e_book_new_from_uri (uri, error);
+
+	g_free (uri);
+
+	return book;
+}
+
+/**
+ * e_book_new_default_addressbook:
+ *
+ * @uri: the URI to load
+ * @error: A #GError pointer
+ *
+ * Creates a new #EBook corresponding to the user's default
+ * addressbook.  See the documentation for e_book_new for further
+ * information.
+ *
+ * Return value: a new but unopened #EBook.
+ */
+EBook*
+e_book_new_default_addressbook   (GError **error)
+{
+	ESourceList *sources;
+	GSList *g;
+	GError *err = NULL;
+	ESource *default_source = NULL;
+	EBook *book;
+
+	if (!e_book_get_addressbooks (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (g->data);
+		GSList *s;
+		for (s = e_source_group_peek_sources (group); s; s = s->next) {
+			ESource *source = E_SOURCE (s->data);
+
+			if (e_source_get_property (source, "default")) {
+				default_source = source;
+				break;
+			}
+		}
+
+		if (default_source)
+			break;
+	}
+
+	if (default_source)
+		book = e_book_new (default_source, &err);
+	else
+		book = e_book_new_system_addressbook (&err);
+
+	if (!book)
+		g_propagate_error (error, err);
+
+	g_object_unref (sources);
+
+	return book;
+}
 
 static void
 e_book_init (EBook *book)
 {
 	book->priv             = g_new0 (EBookPrivate, 1);
-	book->priv->load_state = E_BOOK_URI_NOT_LOADED;
+	book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
 	book->priv->uri        = NULL;
 	book->priv->source     = NULL;
 	book->priv->mutex      = g_mutex_new ();
@@ -2424,7 +2404,7 @@ e_book_dispose (GObject *object)
 			book->priv->comp_listener = NULL;
 		}
 
-		if (book->priv->load_state == E_BOOK_URI_LOADED)
+		if (book->priv->load_state == E_BOOK_SOURCE_LOADED)
 			e_book_unload_uri (book, NULL);
 
 		CORBA_exception_init (&ev);

@@ -59,25 +59,18 @@ struct _EBookClass {
 };
 
 /* Creating a new addressbook. */
-EBook    *e_book_new                       (void);
+EBook    *e_book_new                       (ESource *source, GError **error);
+EBook    *e_book_new_from_uri              (const char *uri, GError **error);
+EBook    *e_book_new_system_addressbook    (GError **error);
+EBook    *e_book_new_default_addressbook   (GError **error);
 
-/* loading arbitrary addressbooks */
-gboolean e_book_load_source                (EBook       *book,
-					    ESource     *source,
-					    gboolean     only_if_exists,
-					    GError     **error);
-
-gboolean e_book_load_uri                   (EBook       *book,
-					    const char  *uri,
+/* loading addressbooks */
+gboolean e_book_open                       (EBook       *book,
 					    gboolean     only_if_exists,
 					    GError     **error);
 
 gboolean e_book_remove                     (EBook       *book,
 					    GError     **error);
-
-/* convenience function for loading the "local" contact folder */
-gboolean e_book_load_local_addressbook     (EBook   *book,
-					    GError **error);
 
 gboolean e_book_get_supported_fields       (EBook       *book,
 					    GList      **fields,
@@ -159,7 +152,6 @@ gboolean    e_book_set_self                (EBook *book, EContact *contact, GErr
 gboolean    e_book_is_self                 (EContact *contact);
 
 /* Addressbook Discovery */
-gboolean    e_book_get_default_addressbook (EBook **book, GError **error);
 gboolean    e_book_set_default_addressbook (EBook  *book, GError **error);
 gboolean    e_book_set_default_source      (ESource *source, GError **error);
 gboolean    e_book_get_addressbooks        (ESourceList** addressbook_sources, GError **error);

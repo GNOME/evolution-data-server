@@ -67,10 +67,14 @@ main (int argc, char **argv)
 	** the actual ebook foo
 	*/
 
-	book = e_book_new ();
-
 	printf ("loading addressbook\n");
-	status = e_book_load_local_addressbook (book, NULL);
+	book = e_book_new_system_addressbook (NULL);
+	if (book == NULL) {
+		printf ("failed to create local addressbook\n");
+		exit(0);
+	}
+
+	status = e_book_open (book, FALSE, NULL);
 	if (status == FALSE) {
 		printf ("failed to open local addressbook\n");
 		exit(0);

@@ -83,7 +83,6 @@ int
 main (int argc, char **argv)
 {
 	EBook *book;
-	gboolean status;
 
 	gnome_program_init("test-ebook", "0.0", LIBGNOME_MODULE, argc, argv, NULL);
 
@@ -94,10 +93,10 @@ main (int argc, char **argv)
 	** the actual ebook foo
 	*/
 
-	book = e_book_new ();
+	book = e_book_new_system_addressbook (NULL);
 
 	printf ("loading addressbook\n");
-	e_book_async_load_local_addressbook (book, book_loaded_cb, book);
+	e_book_async_open (book, FALSE, book_loaded_cb, book);
 
 	bonobo_main();
 

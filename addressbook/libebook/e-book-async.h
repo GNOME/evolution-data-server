@@ -33,21 +33,9 @@ typedef void (*EBookBookViewCallback) (EBook *book, EBookStatus status, EBookVie
 typedef void (*EBookFieldsCallback)   (EBook *book, EBookStatus status, EList *fields, gpointer closure);
 typedef void (*EBookAuthMethodsCallback) (EBook *book, EBookStatus status, EList *auth_methods, gpointer closure);
 
-void      e_book_async_load_uri                 (EBook                 *book,
-						 const char            *uri,
+void      e_book_async_open                     (EBook                 *book,
+						 gboolean               only_if_exists,
 						 EBookCallback          open_response,
-						 gpointer               closure);
-
-void      e_book_async_load_source              (EBook                 *book,
-						 ESource               *source,
-						 EBookCallback          open_response,
-						 gpointer               closure);
-
-void      e_book_async_load_local_addressbook   (EBook                 *book,
-						 EBookCallback          open_response,
-						 gpointer               closure);
-
-void      e_book_async_get_default_addressbook  (EBookCallback          open_response,
 						 gpointer               closure);
 
 guint     e_book_async_get_supported_fields     (EBook                 *book,

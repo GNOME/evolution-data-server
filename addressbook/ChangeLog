@@ -1,3 +1,61 @@
+2004-05-19  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/*.c: port to new e_book_new/e_book_open apis.
+	
+	* libebook/e-book-types.h (EBookStatus): URI -> SOURCE.
+
+	* libebook/e-book-async.c (e_book_async_open): new function,
+	mostly the same as e_book_async_load_source was.
+	(e_book_async_load_local_addressbook, e_book_async_load_source,
+	e_book_async_load_uri, e_book_async_get_default_addressbook):
+	nuke.
+	
+	* libebook/e-book-async.h: remove prototypes for
+	e_book_async_load_uri/source/local_address, and
+	e_book_async_get_default_addressbook.
+
+	* libebook/e-book.c (EBookLoadState): URI -> SOURCE.
+	(e_book_add_contact): URI -> SOURCE, and "e_book_load_uri" ->
+	"e_book_open"
+	(e_book_commit_contact): same.
+	(e_book_get_supported_fields): same.
+	(e_book_get_supported_auth_methods): same.
+	(e_book_authenticate_user): same.
+	(e_book_get_contact): same.
+	(e_book_remove_contacts): same.
+	(e_book_get_book_view): same.
+	(e_book_get_contacts): same.
+	(e_book_get_changes): same.
+	(e_book_open): new function, mostly split out from the old
+	contents of fetch_corba_book.  call Book::open here.
+	(e_book_remove): we no longer require the book is loaded here, as
+	the source (and corba book) is associated at e_book_new time.
+	(e_book_unload_uri): URI -> SOURCE.
+	(backend_died_cb): same.
+	(fetch_corba_book): split out roughly half of the inner loop (the
+	part that calls Book::open).  This does nothing more than find a
+	factory that will hand us a reference to a corba book.
+	(e_book_load_source, e_book_load_uri,
+	e_book_load_local_addressbook, e_book_get_default_addressbook):
+	nuke.
+	(e_book_get_static_capabilities): URI -> SOURCE.
+	(e_book_get_self): use new e_book_new* api.
+	(e_book_set_default_addressbook): URI -> SOURCE.
+	(e_book_new): set the source and call fetch_corba_book here.
+	(e_book_new_from_uri): new function, implement in terms of the new
+	e_book_new.
+	(e_book_new_system_addressbook): new function, implement in terms
+	of e_book_new_from_uri.
+	(e_book_new_default_addressbook): new function, implement in terms
+	of the new e_book_new.
+	(e_book_init): URI -> SOURCE.
+	(e_book_dispose): same.
+
+	* libebook/e-book.h: rework the e_book_new_* api to be more like
+	the calendar.  gone is the constructor with no args.  now you
+	associate a source/uri/etc with an ebook at creation time.  Also,
+	add e_book_open, and remove all the e_book_load_* calls.
+
 2004-05-19  Hans Petter Jansson  <hpj@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c (add_to_supported_fields):

@@ -86,9 +86,10 @@ typedef struct {
 	EBookMsg msg;
 
 	EBook *book;
+	gboolean only_if_exists;
 	EBookCallback open_response;
 	gpointer closure;
-} LoadLocalBookMsg;
+} OpenMsg;
 
 typedef struct {
 	EBookMsg msg;
@@ -97,284 +98,74 @@ typedef struct {
 	EBookStatus status;
 	EBookCallback open_response;
 	gpointer closure;
-} LoadLocalBookResponse;
+} OpenResponse;
 
 static void
-_load_local_book_response_handler (EBookMsg *msg)
+_open_response_handler (EBookMsg *msg)
 {
-	LoadLocalBookResponse *resp = (LoadLocalBookResponse*)msg;
+	OpenResponse *resp = (OpenResponse*)msg;
 
 	resp->open_response (resp->book, resp->status, resp->closure);
 }
 
 static void
-_load_local_book_response_dtor (EBookMsg *msg)
+_open_response_dtor (EBookMsg *msg)
 {
-	LoadLocalBookResponse *resp = (LoadLocalBookResponse*)msg;
+	OpenResponse *resp = (OpenResponse*)msg;
 
 	g_object_unref (resp->book);
 	g_free (resp);
 }
 
 static void
-_load_local_book_handler (EBookMsg *msg)
+_open_handler (EBookMsg *msg)
 {
-	LoadLocalBookMsg *load_msg = (LoadLocalBookMsg *)msg;
-	LoadLocalBookResponse *response;
+	OpenMsg *open_msg = (OpenMsg *)msg;
+	OpenResponse *response;
 	GError *error = NULL;
 
-	response = g_new0 (LoadLocalBookResponse, 1);
-	e_book_msg_init ((EBookMsg*)response, _load_local_book_response_handler, _load_local_book_response_dtor);
+	response = g_new0 (OpenResponse, 1);
+	e_book_msg_init ((EBookMsg*)response, _open_response_handler, _open_response_dtor);
 
 	response->status = E_BOOK_ERROR_OK;
-	if (!e_book_load_local_addressbook (load_msg->book, &error)) {
+	if (!e_book_open (open_msg->book, open_msg->only_if_exists, &error)) {
 		response->status = error->code;
 		g_error_free (error);
 	}
 
-	response->book = load_msg->book;
-	response->open_response = load_msg->open_response;
-	response->closure = load_msg->closure;
+	response->book = open_msg->book;
+	response->open_response = open_msg->open_response;
+	response->closure = open_msg->closure;
 
 	push_response (response);
 }
 
 static void
-_load_local_book_dtor (EBookMsg *msg)
+_open_dtor (EBookMsg *msg)
 {
-	LoadLocalBookMsg *load_msg = (LoadLocalBookMsg *)msg;
+	OpenMsg *open_msg = (OpenMsg *)msg;
 	
-	g_free (load_msg);
+	g_free (open_msg);
 }
 
 void
-e_book_async_load_local_addressbook (EBook                 *book,
-				     EBookCallback          open_response,
-				     gpointer               closure)
+e_book_async_open (EBook                 *book,
+		   gboolean               only_if_exists,
+		   EBookCallback          open_response,
+		   gpointer               closure)
 {
-	LoadLocalBookMsg *msg;
+	OpenMsg *msg;
 
 	g_return_if_fail (E_IS_BOOK (book));
 	g_return_if_fail (open_response != NULL);
 
 	init_async ();
 
-	msg = g_new (LoadLocalBookMsg, 1);
-	e_book_msg_init ((EBookMsg*)msg, _load_local_book_handler, _load_local_book_dtor);
+	msg = g_new (OpenMsg, 1);
+	e_book_msg_init ((EBookMsg*)msg, _open_handler, _open_dtor);
 
 	msg->book = g_object_ref (book);
-	msg->open_response = open_response;
-	msg->closure = closure;
-
-	g_async_queue_push (to_worker_queue, msg);
-}
-
-
-
-typedef struct {
-	EBookMsg msg;
-
-	EBook *book;
-	ESource *source;
-	EBookCallback open_response;
-	gpointer closure;
-} LoadSourceMsg;
-
-typedef struct {
-	EBookMsg msg;
-
-	EBook *book;
-	EBookStatus status;
-	EBookCallback open_response;
-	gpointer closure;
-} LoadSourceResponse;
-
-static void
-_load_source_response_handler (EBookMsg *msg)
-{
-	LoadSourceResponse *resp = (LoadSourceResponse*)msg;
-
-	resp->open_response (resp->book, resp->status, resp->closure);
-}
-
-static void
-_load_source_response_dtor (EBookMsg *msg)
-{
-	LoadSourceResponse *resp = (LoadSourceResponse*)msg;
-
-	g_object_unref (resp->book);
-	g_free (resp);
-}
-
-static void
-_load_source_handler (EBookMsg *msg)
-{
-	LoadSourceMsg *source_msg = (LoadSourceMsg *)msg;
-	LoadSourceResponse *response;
-	GError *error = NULL;
-
-	response = g_new0 (LoadSourceResponse, 1);
-	e_book_msg_init ((EBookMsg*)response, _load_source_response_handler, _load_source_response_dtor);
-
-	response->status = E_BOOK_ERROR_OK;
-	if (!e_book_load_source (source_msg->book, source_msg->source, FALSE, &error)) {
-		response->status = error->code;
-		g_error_free (error);
-	}
-
-	response->book = source_msg->book;
-	response->open_response = source_msg->open_response;
-	response->closure = source_msg->closure;
-
-	push_response (response);
-}
-
-static void
-_load_source_dtor (EBookMsg *msg)
-{
-	LoadSourceMsg *source_msg = (LoadSourceMsg *)msg;
-	
-	g_object_unref (source_msg->source);
-	g_free (source_msg);
-}
-
-void
-e_book_async_load_source (EBook                 *book,
-			  ESource               *source,
-			  EBookCallback          open_response,
-			  gpointer               closure)
-{
-	LoadSourceMsg *msg;
-
-	g_return_if_fail (E_IS_BOOK (book));
-	g_return_if_fail (E_IS_SOURCE (source));
-	g_return_if_fail (open_response != NULL);
-
-	init_async ();
-
-	msg = g_new (LoadSourceMsg, 1);
-	e_book_msg_init ((EBookMsg*)msg, _load_source_handler, _load_source_dtor);
-
-	msg->book = g_object_ref (book);
-	msg->source = e_source_copy (source);
-	msg->open_response = open_response;
-	msg->closure = closure;
-
-	g_async_queue_push (to_worker_queue, msg);
-}
-
-void
-e_book_async_load_uri (EBook                 *book,
-		       const char            *uri,
-		       EBookCallback          open_response,
-		       gpointer               closure)
-{
-	LoadSourceMsg *msg;
- 	ESourceGroup *group;
-	ESource *source;
-
-	g_return_if_fail (E_IS_BOOK (book));
-	g_return_if_fail (uri != NULL);
-	g_return_if_fail (open_response != NULL);
-
-	init_async ();
-
-	msg = g_new (LoadSourceMsg, 1);
-	e_book_msg_init ((EBookMsg*)msg, _load_source_handler, _load_source_dtor);
-
-	group = e_source_group_new ("", uri);
-	source = e_source_new ("", "");
-	e_source_set_group (source, group);
-
-	msg->book = g_object_ref (book);
-	msg->source = e_source_copy (source);
-	msg->open_response = open_response;
-	msg->closure = closure;
-
-	g_async_queue_push (to_worker_queue, msg);
-
-	g_object_unref (source);
-	g_object_unref (group);
-}
-
-
-
-
-typedef struct {
-	EBookMsg msg;
-
-	EBookCallback open_response;
-	gpointer closure;
-} DefaultBookMsg;
-
-typedef struct {
-	EBookMsg msg;
-
-	EBook *book;
-	EBookStatus status;
-	EBookCallback open_response;
-	gpointer closure;
-} DefaultBookResponse;
-
-static void
-_default_book_response_handler (EBookMsg *msg)
-{
-	LoadSourceResponse *resp = (LoadSourceResponse*)msg;
-
-	resp->open_response (resp->book, resp->status, resp->closure);
-}
-
-static void
-_default_book_response_dtor (EBookMsg *msg)
-{
-	LoadSourceResponse *resp = (LoadSourceResponse*)msg;
-
-	g_free (resp);
-}
-
-static void
-_default_book_handler (EBookMsg *msg)
-{
-	DefaultBookMsg *dfb_msg = (DefaultBookMsg *)msg;
-	DefaultBookResponse *response;
-	GError *error = NULL;
-
-	response = g_new0 (DefaultBookResponse, 1);
-	e_book_msg_init ((EBookMsg*)response, _default_book_response_handler, _default_book_response_dtor);
-
-	response->status = E_BOOK_ERROR_OK;
-	if (!e_book_get_default_addressbook (&response->book, &error)) {
-		response->status = error->code;
-		g_error_free (error);
-	}
-
-	response->open_response = dfb_msg->open_response;
-	response->closure = dfb_msg->closure;
-
-	push_response (response);
-}
-
-static void
-_default_book_dtor (EBookMsg *msg)
-{
-	DefaultBookMsg *dfb_msg = (DefaultBookMsg *)msg;
-	
-	g_free (dfb_msg);
-}
-
-void
-e_book_async_get_default_addressbook (EBookCallback open_response,
-				      gpointer      closure)
-{
-	DefaultBookMsg *msg;
-
-	g_return_if_fail (open_response != NULL);
-
-	init_async ();
-
-	msg = g_new (DefaultBookMsg, 1);
-	e_book_msg_init ((EBookMsg*)msg, _default_book_handler, _default_book_dtor);
-
+	msg->only_if_exists = only_if_exists;
 	msg->open_response = open_response;
 	msg->closure = closure;
 

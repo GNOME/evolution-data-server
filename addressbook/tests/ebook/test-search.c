@@ -29,9 +29,13 @@ main (int argc, char **argv)
 		exit (0);
 	}
 
-	book = e_book_new ();
+	book = e_book_new_from_uri (argv[1], NULL);
+	if (!book) {
+		printf ("failed to create ebook\n");
+		exit(0);
+	}
 
-	status = e_book_load_uri (book, argv[1], TRUE, NULL);
+	status = e_book_open (book, TRUE, NULL);
 	if (status == FALSE) {
 		printf ("failed to open addressbook\n");
 		exit(0);
