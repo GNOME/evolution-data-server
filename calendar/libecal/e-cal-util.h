@@ -123,6 +123,8 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_SAVE_SCHEDULES              "save-schedules"
 #define CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK	  "no-conv-to-assign-task"
 #define CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR		  "no-conv-to-recur"
+#define CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS		  "no-general-options"
+#define CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS		  "require-send-options"
 
 /* Recurrent events. Management for instances */
 icalcomponent *e_cal_util_construct_instance (icalcomponent *icalcomp,

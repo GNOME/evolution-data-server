@@ -116,6 +116,118 @@ set_categories_for_gw_item (EGwItem *item, GList *category_names, ECalBackendGro
              e_gw_item_set_categories (item, category_ids);
 }
 
+static void
+add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default_zone)
+{
+	const char *x_val;
+	const char *x_name;
+	icalcomponent *icalcomp;
+	icalproperty *icalprop;
+	struct icaltimetype temp;
+
+	icalcomp = e_cal_component_get_icalcomponent (comp);
+	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+
+	while (icalprop) {
+
+		x_name = icalproperty_get_x_name (icalprop);
+		
+		if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-PRIORITY")) {
+			x_val = icalproperty_get_x (icalprop);
+			switch (atoi (x_val)) {
+				case 1:  e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_HIGH);
+					 break;
+				case 2:  e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_STANDARD);
+					 break;
+				case 3:	 e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_LOW);
+					 break;
+				default: e_gw_item_set_priority (item, NULL);
+					 break;
+			}
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-REPLY")) {
+			e_gw_item_set_reply_request (item, TRUE);
+			x_val = icalproperty_get_x (icalprop);
+			if (strcmp (x_val, "convenient"))
+				e_gw_item_set_reply_within (item, (char *) x_val);	
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-EXPIRE")) {
+			char *expire = NULL;
+			x_val = icalproperty_get_x (icalprop);
+			temp = icaltime_current_time_with_zone (default_zone ? default_zone : icaltimezone_get_utc_timezone ());
+			icaltime_adjust (&temp, atoi (x_val), 0, 0, 0); 
+			icaltime_set_timezone (&temp, default_zone);
+			temp = icaltime_convert_to_zone (temp, icaltimezone_get_utc_timezone ());
+			expire = icaltime_as_ical_string (temp);
+			e_gw_item_set_expires (item, (char *) expire);
+			g_free (expire);
+
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-DELAY")) {
+			char *delay = NULL;
+			x_val = icalproperty_get_x (icalprop);
+			temp = icaltime_from_string (x_val);
+			icaltime_set_timezone (&temp, default_zone);
+			temp = icaltime_convert_to_zone (temp, icaltimezone_get_utc_timezone ());
+			delay = icaltime_as_ical_string (temp);
+			e_gw_item_set_delay_until (item, (char *) delay);
+			g_free (delay);
+					
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-TRACKINFO")) {
+			x_val = icalproperty_get_x (icalprop);
+			switch (atoi (x_val)) {
+				case 1: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED);
+					break;
+				case 2:	e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED_OPENED);
+					break;
+				case 3: e_gw_item_set_track_info (item, E_GW_ITEM_ALL);
+					break;
+				default: e_gw_item_set_track_info (item, E_GW_ITEM_NONE);
+					 break;
+			}
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-OPENED")) {
+			int i = 0;
+			x_val = icalproperty_get_x (icalprop);
+			i = atoi (x_val);
+			switch (i) {
+				case 0: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_NONE);
+					break;
+				case 1: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_MAIL);
+			}
+			
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-ACCEPTED")) {
+			int i = 0;
+			x_val = icalproperty_get_x (icalprop);
+			i = atoi (x_val);
+			switch (i) {
+				case 0: e_gw_item_set_notify_accepted (item, E_GW_ITEM_NOTIFY_NONE);
+					break;
+				case 1: e_gw_item_set_notify_accepted (item, E_GW_ITEM_NOTIFY_MAIL);
+			}
+
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-DECLINED")) {
+			int i = 0;
+			x_val = icalproperty_get_x (icalprop);
+			i = atoi (x_val);
+			switch (i) {
+				case 0: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_NONE);
+					break;
+				case 1: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_MAIL);
+			}
+
+		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-COMPLETED")) {
+			int i = 0;
+			x_val = icalproperty_get_x (icalprop);
+			i = atoi (x_val);
+			switch (i) {
+				case 0: e_gw_item_set_notify_completed (item, E_GW_ITEM_NOTIFY_NONE);
+					break;
+				case 1: e_gw_item_set_notify_completed (item, E_GW_ITEM_NOTIFY_MAIL);
+			}
+		}
+
+		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+	}
+
+}
+
 static EGwItem *
 set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBackendGroupwise *cbgw)
 {
@@ -132,7 +244,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 
-	g_return_if_fail (default_zone != NULL);
+	g_return_val_if_fail ((default_zone != NULL), NULL);
 	
 	/* first set specific properties */
 	switch (e_cal_component_get_vtype (comp)) {
@@ -191,24 +303,24 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
 			e_gw_item_set_due_date (item, icaltime_as_ical_string (itt_utc));
 		}
+		
+			/* priority */
+		 priority = NULL;
+		 e_cal_component_get_priority (comp, &priority);
+		 if (priority && *priority) {
+			 if (*priority >= 7)
+				 e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_LOW);
+			 else if (*priority >= 5)
+				 e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_STANDARD);
+			 else if (*priority >= 1)
+				 e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_HIGH);
+			 else
+				 e_gw_item_set_task_priority (item, NULL);
 
-		/* priority */
-		priority = NULL;
-		e_cal_component_get_priority (comp, &priority);
-		if (priority && *priority) {
-			if (*priority >= 7)
-				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_LOW);
-			else if (*priority >= 5)
-				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_STANDARD);
-			else if (*priority >= 1)
-				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_HIGH);
-			else
-				e_gw_item_set_priority (item, NULL);
-
-			e_cal_component_free_priority (priority);
-		}
-
-		/* completed */
+			 e_cal_component_free_priority (priority);
+		 }
+	  
+			/* completed */
 		e_cal_component_get_completed (comp, &dt.value);
 		if (dt.value) {
 			e_gw_item_set_completed (item, TRUE);
@@ -252,6 +364,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		g_string_free (str, TRUE);
 		e_cal_component_free_text_list (slist);
 	}
+
 
 	/* start date */
 	e_cal_component_get_dtstart (comp, &dt);
@@ -331,6 +444,10 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		}
 				
 		e_gw_item_set_recipient_list (item, recipient_list);
+
+		/* Send Options */
+		add_send_options_data_to_item (item, comp, default_zone);
+
 	}
 
 	if (e_cal_component_has_organizer (comp)) {
@@ -646,7 +763,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			e_cal_component_set_due (comp, &dt);
 		}
 		/* priority */
-		description = e_gw_item_get_priority (item);
+		description = e_gw_item_get_task_priority (item);
 		if (description) {
 			if (!strcmp (description, E_GW_ITEM_PRIORITY_STANDARD))
 				priority = 5;
@@ -1174,7 +1291,7 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	const char *classification, *cache_classification;
 	const char *accept_level, *cache_accept_level;
 	const char *place, *cache_place;
-	const char *priority, *cache_priority;
+	const char *task_priority, *cache_task_priority;
 	int trigger, cache_trigger;
 	char *due_date, *cache_due_date;
 	char *start_date, *cache_start_date;
@@ -1215,6 +1332,6 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	}
 	else if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
 		SET_DELTA(due_date);
-		SET_DELTA (priority);
+		SET_DELTA(task_priority);
 	}
 }

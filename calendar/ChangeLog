@@ -1,3 +1,15 @@
+2004-12-15  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(add_send_options_data_to_item),
+	(set_properties_from_cal_component):Added a new local function
+	for reading the properties  for send options.
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_get_static_capabilities): Checked for new 
+	static capabilities.
+	* libecal/e-cal-util.h: Defined two new static capabilities required for 
+	send options.
+
 2004-12-13  Harish Krishnaswamy <kharish@novell.com>
 
 	* libedata-cal/e-cal-backend.c 
