@@ -5,6 +5,8 @@
 static GThread *worker_thread;
 static GAsyncQueue *to_worker_queue;
 static GAsyncQueue *from_worker_queue;
+static GStaticMutex idle_mutex = G_STATIC_MUTEX_INIT;
+static guint idle_id = -1;
 
 typedef struct _EBookMsg EBookMsg;
 
@@ -29,16 +31,34 @@ worker (gpointer data)
 }
 
 static gboolean
-main_thread_check_for_response (gpointer data)
+main_thread_get_response (gpointer data)
 {
 	EBookMsg *msg;
+
+	g_static_mutex_lock (&idle_mutex);
+
+	idle_id = -1;
 
 	while ((msg = g_async_queue_try_pop (from_worker_queue)) != NULL) {
 		msg->handler (msg);
 		msg->dtor (msg);
 	}
-	
-	return TRUE;
+
+	g_static_mutex_unlock (&idle_mutex);
+
+	return FALSE;
+}
+
+static void
+push_response (gpointer response)
+{
+	g_static_mutex_lock (&idle_mutex);
+
+	g_async_queue_push (from_worker_queue, response);
+	if (idle_id == -1)
+		idle_id = g_idle_add (main_thread_get_response, NULL);
+
+	g_static_mutex_unlock (&idle_mutex);
 }
 
 static void
@@ -57,8 +77,96 @@ init_async()
 		to_worker_queue = g_async_queue_new ();
 		from_worker_queue = g_async_queue_new ();
 		worker_thread = g_thread_create (worker, NULL, FALSE, NULL);
-		g_timeout_add (300, main_thread_check_for_response, NULL);
 	}
+}
+
+
+
+typedef struct {
+	EBookMsg msg;
+
+	EBook *book;
+	EBookCallback open_response;
+	gpointer closure;
+} LoadLocalBookMsg;
+
+typedef struct {
+	EBookMsg msg;
+
+	EBook *book;
+	EBookStatus status;
+	EBookCallback open_response;
+	gpointer closure;
+} LoadLocalBookResponse;
+
+static void
+_load_local_book_response_handler (EBookMsg *msg)
+{
+	LoadLocalBookResponse *resp = (LoadLocalBookResponse*)msg;
+
+	resp->open_response (resp->book, resp->status, resp->closure);
+}
+
+static void
+_load_local_book_response_dtor (EBookMsg *msg)
+{
+	LoadLocalBookResponse *resp = (LoadLocalBookResponse*)msg;
+
+	g_object_unref (resp->book);
+	g_free (resp);
+}
+
+static void
+_load_local_book_handler (EBookMsg *msg)
+{
+	LoadLocalBookMsg *load_msg = (LoadLocalBookMsg *)msg;
+	LoadLocalBookResponse *response;
+	GError *error = NULL;
+
+	response = g_new0 (LoadLocalBookResponse, 1);
+	e_book_msg_init ((EBookMsg*)response, _load_local_book_response_handler, _load_local_book_response_dtor);
+
+	response->status = E_BOOK_ERROR_OK;
+	if (!e_book_load_local_addressbook (load_msg->book, &error)) {
+		response->status = error->code;
+		g_error_free (error);
+	}
+
+	response->book = load_msg->book;
+	response->open_response = load_msg->open_response;
+	response->closure = load_msg->closure;
+
+	push_response (response);
+}
+
+static void
+_load_local_book_dtor (EBookMsg *msg)
+{
+	LoadLocalBookMsg *load_msg = (LoadLocalBookMsg *)msg;
+	
+	g_free (load_msg);
+}
+
+void
+e_book_async_load_local_addressbook (EBook                 *book,
+				     EBookCallback          open_response,
+				     gpointer               closure)
+{
+	LoadLocalBookMsg *msg;
+
+	g_return_if_fail (E_IS_BOOK (book));
+	g_return_if_fail (open_response != NULL);
+
+	init_async ();
+
+	msg = g_new (LoadLocalBookMsg, 1);
+	e_book_msg_init ((EBookMsg*)msg, _load_local_book_handler, _load_local_book_dtor);
+
+	msg->book = g_object_ref (book);
+	msg->open_response = open_response;
+	msg->closure = closure;
+
+	g_async_queue_push (to_worker_queue, msg);
 }
 
 
@@ -118,7 +226,7 @@ _load_source_handler (EBookMsg *msg)
 	response->open_response = source_msg->open_response;
 	response->closure = source_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -189,6 +297,7 @@ e_book_async_load_uri (EBook                 *book,
 	g_object_unref (group);
 }
 
+
 
 
 typedef struct {
@@ -243,7 +352,7 @@ _default_book_handler (EBookMsg *msg)
 	response->open_response = dfb_msg->open_response;
 	response->closure = dfb_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -341,7 +450,7 @@ _get_fields_handler (EBookMsg *msg)
 	response->cb = fields_msg->cb;
 	response->closure = fields_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 guint
@@ -436,7 +545,7 @@ _get_methods_handler (EBookMsg *msg)
 	response->cb = methods_msg->cb;
 	response->closure = methods_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 guint
@@ -521,7 +630,7 @@ _auth_user_handler (EBookMsg *msg)
 	response->cb = auth_msg->cb;
 	response->closure = auth_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -626,7 +735,7 @@ _get_contact_handler (EBookMsg *msg)
 	response->cb = get_contact_msg->cb;
 	response->closure = get_contact_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -756,7 +865,7 @@ _remove_contacts_handler (EBookMsg *msg)
 	response->cb = remove_contacts_msg->cb;
 	response->closure = remove_contacts_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -861,7 +970,7 @@ _add_contact_handler (EBookMsg *msg)
 	response->cb = add_contact_msg->cb;
 	response->closure = add_contact_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -957,7 +1066,7 @@ _commit_contact_handler (EBookMsg *msg)
 	response->cb = commit_contact_msg->cb;
 	response->closure = commit_contact_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -1058,7 +1167,7 @@ _get_book_view_handler (EBookMsg *msg)
 	response->cb = view_msg->cb;
 	response->closure = view_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void
@@ -1162,7 +1271,7 @@ _get_contacts_handler (EBookMsg *msg)
 	response->cb = view_msg->cb;
 	response->closure = view_msg->closure;
 
-	g_async_queue_push (from_worker_queue, response);
+	push_response (response);
 }
 
 static void

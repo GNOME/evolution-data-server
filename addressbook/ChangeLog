@@ -1,5 +1,31 @@
 2004-02-08  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book-async.c (main_thread_get_response): lock the
+	idle mutex around this function, reset it to -1, and return FALSE.
+	(push_response): abstract out all the g_async_queue_push stuff
+	from the various handlers.  do proper locking, and register the
+	main thread idle handler if we need to.
+	(e_book_async_load_local_addressbook): new function.  async
+	version of e_book_load_local_addressbok.
+	(*_handler): use push_response instead of g_async_queue_push.
+	(init_async): remove the timeout stuff.  we register idle handlers
+	when we need to.  no more polling the async queue.
+
+	* libebook/e-book-async.h: add prototype for
+	e_book_async_load_local_addressbook.
+
+	* libebook/e-book-view-listener.c (main_thread_get_response): new
+	function to read responses from the CORBA request threads.
+	(e_book_view_listener_queue_response): don't just emit a signal
+	here, as that causes the response to be handled on the request
+	thread, and hoists re-entrancy requirements on calling code.
+	instead, push the response onto the async queue.
+	(e_book_view_listener_new): initialize the
+	queue/idle_mutex/idle_id.
+	(e_book_view_listener_dispose): dispose of the idle foo/queue.
+
+2004-02-08  Chris Toshok  <toshok@ximian.com>
+
 	* backends/file/e-book-backend-file.c
 	(e_book_backend_file_start_book_view): don't free the
 	closure/mutex inside the loop, then access it again right after

@@ -27,9 +27,44 @@ static guint e_book_view_listener_signals [LAST_SIGNAL];
 
 static BonoboObjectClass          *parent_class;
 
+#define READ_END 0
+#define WRITE_END 1
+
 struct _EBookViewListenerPrivate {
 	guint stopped      : 1;
+	GAsyncQueue *queue;
+
+	GMutex *idle_mutex;
+	guint idle_id;
 };
+
+static gboolean
+main_thread_get_response (gpointer data)
+{
+	EBookViewListener *listener = data;
+	EBookViewListenerResponse *response;
+
+	bonobo_object_ref (listener);
+
+	g_mutex_lock (listener->priv->idle_mutex);
+
+	/* remove the idle call */
+
+	while ((response = g_async_queue_try_pop (listener->priv->queue)) != NULL) {
+
+		g_signal_emit (listener, e_book_view_listener_signals [RESPONSE], 0, response);
+
+		bonobo_object_unref (listener);
+	}
+
+	listener->priv->idle_id = -1;
+
+	g_mutex_unlock (listener->priv->idle_mutex);
+
+	bonobo_object_unref (listener);
+       
+	return FALSE;
+}
 
 static void
 e_book_view_listener_queue_response (EBookViewListener         *listener,
@@ -49,7 +84,15 @@ e_book_view_listener_queue_response (EBookViewListener         *listener,
 		return;
 	}
 
-	g_signal_emit (listener, e_book_view_listener_signals [RESPONSE], 0, response);
+	bonobo_object_ref (listener);
+
+	g_mutex_lock (listener->priv->idle_mutex);
+
+	g_async_queue_push (listener->priv->queue, response);
+
+	if (listener->priv->idle_id == -1)
+		listener->priv->idle_id = g_idle_add (main_thread_get_response, listener);
+	g_mutex_unlock (listener->priv->idle_mutex);
 }
 
 /* Add, Remove, Modify */
@@ -223,12 +266,6 @@ e_book_view_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatu
 	}
 }
 
-static void
-e_book_view_listener_construct      (EBookViewListener *listener)
-{
-	/* nothing needed here */
-}
-
 /**
  * e_book_view_listener_new:
  *
@@ -242,10 +279,12 @@ e_book_view_listener_new ()
 	EBookViewListener *listener;
 
 	listener = g_object_new (E_TYPE_BOOK_VIEW_LISTENER,
-				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_ALL_AT_IDLE, NULL),
+				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 				 NULL);
 
-	e_book_view_listener_construct (listener);
+	listener->priv->queue = g_async_queue_new();
+	listener->priv->idle_mutex = g_mutex_new();
+	listener->priv->idle_id = -1;
 
 	return listener;
 }
@@ -270,6 +309,13 @@ e_book_view_listener_dispose (GObject *object)
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (object);
 
 	if (listener->priv) {
+		if (listener->priv->idle_id != -1)
+			g_source_remove (listener->priv->idle_id);
+
+		g_mutex_free (listener->priv->idle_mutex);
+
+		g_async_queue_unref (listener->priv->queue);
+
 		g_free (listener->priv);
 		listener->priv = NULL;
 	}
