@@ -507,8 +507,10 @@ enum {
 	MODE_TLS,
 };
 
+#ifdef HAVE_SSL
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
+#endif
 
 static gboolean
 connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, CamelException *ex)
@@ -647,6 +649,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		return TRUE;
 	}
 	
+#ifdef HAVE_SSL
 	if (!(store->capabilities & IMAP_CAPABILITY_STARTTLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to IMAP server %s in secure mode: %s"),
@@ -675,6 +678,12 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 				      service->url->host, _("SSL negotiations failed"));
 		goto exception;
 	}
+#else
+	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+			      _("Failed to connect to IMAP server %s in secure mode: %s"),
+			      service->url->host, _("SSL is not available in this build"));
+	goto exception;
+#endif /* HAVE_SSL */
 	
 	/* rfc2595, section 4 states that after a successful STLS
            command, the client MUST discard prior CAPA responses */

@@ -225,8 +225,10 @@ enum {
 	MODE_TLS,
 };
 
+#ifdef HAVE_SSL
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
+#endif
 
 static gboolean
 connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, CamelException *ex)
@@ -317,6 +319,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		return TRUE;
 	}
 	
+#ifdef HAVE_SSL
 	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_STARTTLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to SMTP server %s in secure mode: %s"),
@@ -356,6 +359,12 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 				      service->url->host, g_strerror (errno));
 		goto exception_cleanup;
 	}
+#else
+	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+			      _("Failed to connect to SMTP server %s in secure mode: %s"),
+			      service->url->host, _("SSL is not available in this build"));
+	goto exception_cleanup;
+#endif /* HAVE_SSL */
 	
 	/* We are supposed to re-EHLO after a successful STARTTLS to
            re-fetch any supported extensions. */

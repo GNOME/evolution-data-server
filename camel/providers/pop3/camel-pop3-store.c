@@ -142,8 +142,10 @@ enum {
 	MODE_TLS,
 };
 
+#ifdef HAVE_SSL
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
+#endif
 
 static gboolean
 connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, CamelException *ex)
@@ -210,6 +212,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		return TRUE;
 	}
 	
+#ifdef HAVE_SSL
 	if (!(store->engine->capa & CAMEL_POP3_CAP_STLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to POP server %s in secure mode: %s"),
@@ -243,6 +246,12 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 				      service->url->host, _("SSL negotiations failed"));
 		goto stls_exception;
 	}
+#else
+	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Failed to connect to POP server %s in secure mode: %s"),
+				      service->url->host, _("SSL negotiations failed"));
+	goto stls_exception;
+#endif /* HAVE_SSL */
 	
 	camel_object_unref (tcp_stream);
 	

@@ -30,7 +30,10 @@
 #include <camel/camel-sasl.h>
 #include <camel/camel-utf8.h>
 #include <camel/camel-tcp-stream-raw.h>
+
+#ifdef HAVE_SSL
 #include <camel/camel-tcp-stream-ssl.h>
+#endif
 
 #include <camel/camel-private.h>
 
@@ -212,8 +215,10 @@ enum {
 	MODE_TLS,
 };
 
+#ifdef HAVE_SSL
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
+#endif
 
 static gboolean
 connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, CamelException *ex)
@@ -269,6 +274,7 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 		return TRUE;
 	}
 	
+#ifdef HAVE_SSL
 	if (!(engine->capa & CAMEL_IMAP4_CAPABILITY_STARTTLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to IMAP server %s in secure mode: %s"),
@@ -298,6 +304,13 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 	camel_imap4_command_unref (ic);
 	
 	return TRUE;
+#else
+	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+			      _("Failed to connect to IMAP server %s in secure mode: %s"),
+			      service->url->host, _("SSL is not available in this build"));
+	
+	return FALSE;
+#endif /* HAVE_SSL */
 }
 
 static struct {
