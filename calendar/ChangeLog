@@ -1,3 +1,10 @@
+2004-05-22  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/file/e-cal-backend-file.c (add_component): make sure we
+	process correctly the detached instances.
+	(match_object_sexp): deal with hash table entries not containing
+	a full_object (ie, detached recurrences).
+
 2004-05-21  JP Rosevear  <jpr@novell.com>
 
 	* backends/file/e-cal-backend-file.c
