@@ -229,6 +229,32 @@ e_file_cache_get_object (EFileCache *cache, const char *key)
 	return find_data.found_value;
 }
 
+static void
+add_object_to_list (gpointer key, gpointer value, gpointer user_data)
+{
+	GSList **list = user_data;
+
+	list = g_slist_prepend (list, value);
+}
+
+/**
+ * e_file_cache_get_objects:
+ */
+GSList *
+e_file_cache_get_objects (EFileCache *cache)
+{
+	EFileCachePrivate *priv;
+	GSList *list = NULL;
+
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
+
+	priv = cache->priv;
+
+	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_object_to_list, &list);
+
+	return list;
+}
+
 /**
  * e_file_cache_add_object:
  */

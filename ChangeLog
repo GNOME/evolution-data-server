@@ -1,3 +1,8 @@
+2004-01-05  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedataserver/e-file-cache.[ch] (e_file_cache_get_objects): new
+	function to get all objects in the cache.
+
 2003-12-29  JP Rosevear <jpr@ximian.com>
 
 	* configure.in: bump libsoup requirement, version, libtool numbers

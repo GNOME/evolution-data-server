@@ -48,6 +48,7 @@ GType       e_file_cache_get_type (void);
 EFileCache *e_file_cache_new (const char *filename);
 
 const char *e_file_cache_get_object (EFileCache *cache, const char *key);
+GSList     *e_file_cache_get_objects (EFileCache *cache);
 gboolean    e_file_cache_add_object (EFileCache *cache, const char *key, const char *value);
 gboolean    e_file_cache_replace_object (EFileCache *cache, const char *key, const char *new_value);
 gboolean    e_file_cache_remove_object (EFileCache *cache, const char *key);
