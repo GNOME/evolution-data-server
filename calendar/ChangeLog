@@ -1,4 +1,4 @@
-2004-02-03  Chris Toshok  <toshok@m198-139.dsl.rawbw.com>
+2004-02-03  Chris Toshok  <toshok@ximian.com>
 
 	* backends/groupwise/e-gw-connection.c (parse_response_status):
 	E_GW_CONNECTION_BAD_PARAMETER ->
