@@ -851,7 +851,11 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
-	char *str_uri;
+	char *str_uri, *dirname;
+	const char *fname;
+	GDir *dir;
+	GError *error = NULL;
+	gboolean success;
 	
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -866,16 +870,33 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 		return GNOME_Evolution_Calendar_PermissionDenied;
 	}
 
-	/* FIXME Remove backup file and whole directory too? */
-	if (unlink (str_uri) != 0) {
+	/* remove all files in the directory */
+	dirname = g_path_get_dirname (str_uri);
+	dir = g_dir_open (dirname, 0, &error);
+	if (!dir) {
 		g_free (str_uri);
+		g_free (dirname);
 
-		return GNOME_Evolution_Calendar_OtherError;
+		return GNOME_Evolution_Calendar_PermissionDenied;
 	}
-	
+
+	while ((fname = g_dir_read_name (dir))) {
+		if (unlink (fname) != 0) {
+			g_free (str_uri);
+			g_free (dirname);
+
+			return GNOME_Evolution_Calendar_OtherError;
+		}
+	}
+
+	/* remove the directory itself */
+	success = rmdir (dirname) != 0;
+		
+	g_dir_close (dir);
 	g_free (str_uri);
-	
-	return GNOME_Evolution_Calendar_Success;
+	g_free (dirname);
+
+	return success ? GNOME_Evolution_Calendar_Success : GNOME_Evolution_Calendar_OtherError;
 }
 
 /* is_loaded handler for the file backend */
