@@ -63,7 +63,7 @@ gboolean  e_source_update_from_xml_node  (ESource    *source,
 					  xmlNodePtr  node,
 					  gboolean   *changed_return);
 
-char *e_source_name_from_xml_node  (xmlNodePtr node);
+char *e_source_uid_from_xml_node  (xmlNodePtr node);
 
 void  e_source_set_group         (ESource      *source,
 				  ESourceGroup *group);
@@ -73,6 +73,7 @@ void  e_source_set_relative_uri  (ESource      *source,
 				  const char   *relative_uri);
 
 ESourceGroup *e_source_peek_group         (ESource *source);
+const char   *e_source_peek_uid		  (ESource *source);
 const char   *e_source_peek_name          (ESource *source);
 const char   *e_source_peek_relative_uri  (ESource *source);
 

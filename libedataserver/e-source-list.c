@@ -89,13 +89,13 @@ load_from_gconf (ESourceList *list)
 	for (p = conf_list, pos = 0; p != NULL; p = p->next, pos++) {
 		const char *xml = p->data;
 		xmlDocPtr xmldoc = xmlParseDoc ((char *) xml);
-		char *group_name = e_source_group_name_from_xmldoc (xmldoc);
+		char *group_uid = e_source_group_uid_from_xmldoc (xmldoc);
 		ESourceGroup *existing_group;
 
-		if (group_name == NULL)
+		if (group_uid == NULL)
 			continue;
 
-		existing_group = e_source_list_peek_group_by_name (list, group_name);
+		existing_group = e_source_list_peek_group_by_uid (list, group_uid);
 		if (g_hash_table_lookup (new_groups_hash, existing_group) != NULL)
 			continue;
 
@@ -127,7 +127,7 @@ load_from_gconf (ESourceList *list)
 			list->priv->ignore_group_changed --;
 		}
 
-		g_free (group_name);
+		g_free (group_uid);
 	}
 
 	new_groups_list = g_slist_reverse (new_groups_list);
@@ -372,18 +372,18 @@ e_source_list_peek_groups (ESourceList *list)
 }
 
 ESourceGroup *
-e_source_list_peek_group_by_name (ESourceList *list,
-				  const char *name)
+e_source_list_peek_group_by_uid (ESourceList *list,
+				 const char *uid)
 {
 	GSList *p;
 
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
-	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
 
 	for (p = list->priv->groups; p != NULL; p = p->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
 
-		if (strcmp (e_source_group_peek_name (group), name) == 0)
+		if (strcmp (e_source_group_peek_uid (group), uid) == 0)
 			return group;
 	}
 
@@ -391,21 +391,21 @@ e_source_list_peek_group_by_name (ESourceList *list,
 }
 
 ESource *
-e_source_list_peek_source_by_name (ESourceList *list,
-				   const char *group_name,
-				   const char *source_name)
+e_source_list_peek_source_by_uid (ESourceList *list,
+				  const char *group_uid,
+				  const char *source_uid)
 {
 	ESourceGroup *group;
 
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
-	g_return_val_if_fail (group_name != NULL, NULL);
-	g_return_val_if_fail (source_name != NULL, NULL);
+	g_return_val_if_fail (group_uid != NULL, NULL);
+	g_return_val_if_fail (source_uid != NULL, NULL);
 
-	group = e_source_list_peek_group_by_name (list, group_name);
+	group = e_source_list_peek_group_by_uid (list, group_uid);
 	if (group == NULL)
 		return NULL;
 
-	return e_source_group_peek_source_by_name (group, source_name);
+	return e_source_group_peek_source_by_uid (group, source_uid);
 }
 
 
@@ -417,7 +417,7 @@ e_source_list_add_group (ESourceList *list,
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
-	if (e_source_list_peek_group_by_name (list, e_source_group_peek_name (group)) != NULL)
+	if (e_source_list_peek_group_by_uid (list, e_source_group_peek_uid (group)) != NULL)
 		return FALSE;
 
 	list->priv->groups = g_slist_insert (list->priv->groups, group, position);
@@ -438,7 +438,7 @@ e_source_list_remove_group (ESourceList *list,
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
-	if (e_source_list_peek_group_by_name (list, e_source_group_peek_name (group)) == NULL)
+	if (e_source_list_peek_group_by_uid (list, e_source_group_peek_uid (group)) == NULL)
 		return FALSE;
 
 	remove_group (list, group);
@@ -446,15 +446,15 @@ e_source_list_remove_group (ESourceList *list,
 }
 
 gboolean
-e_source_list_remove_group_by_name (ESourceList *list,
-				    const char *name)
+e_source_list_remove_group_by_uid (ESourceList *list,
+				    const char *uid)
 {
 	ESourceGroup *group;
 	
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
-	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
 
-	group = e_source_list_peek_group_by_name (list, name);
+	group = e_source_list_peek_group_by_uid (list, uid);
 	if (group== NULL)
 		return FALSE;
 
@@ -463,21 +463,21 @@ e_source_list_remove_group_by_name (ESourceList *list,
 }
 
 gboolean
-e_source_list_remove_source_by_name (ESourceList *list,
-				     const char *group_name,
-				     const char *source_name)
+e_source_list_remove_source_by_uid (ESourceList *list,
+				     const char *group_uid,
+				     const char *source_uid)
 {
 	ESourceGroup *group;
 
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
-	g_return_val_if_fail (group_name != NULL, FALSE);
-	g_return_val_if_fail (source_name != NULL, FALSE);
+	g_return_val_if_fail (group_uid != NULL, FALSE);
+	g_return_val_if_fail (source_uid != NULL, FALSE);
 
-	group = e_source_list_peek_group_by_name (list, group_name);
+	group = e_source_list_peek_group_by_uid (list, group_uid);
 	if (group== NULL)
 		return FALSE;
 
-	return e_source_group_remove_source_by_name (group, source_name);
+	return e_source_group_remove_source_by_uid (group, source_uid);
 }
 
 

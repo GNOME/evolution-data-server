@@ -24,6 +24,7 @@
 
 #include "e-source-group.h"
 
+#include "e-uid.h"
 #include "e-util-marshal.h"
 
 #include <gal/util/e-util.h>
@@ -37,6 +38,7 @@ static GObjectClass *parent_class = NULL;
 /* Private members.  */
 
 struct _ESourceGroupPrivate {
+	char *uid;
 	char *name;
 	char *base_uri;
 
@@ -99,6 +101,7 @@ impl_finalize (GObject *object)
 {
 	ESourceGroupPrivate *priv = E_SOURCE_GROUP (object)->priv;
 
+	g_free (priv->uid);
 	g_free (priv->name);
 	g_free (priv->base_uri);
 	g_free (priv);
@@ -170,6 +173,7 @@ e_source_group_new (const char *name,
 	g_return_val_if_fail (base_uri != NULL, NULL);
 
 	new = g_object_new (e_source_group_get_type (), NULL);
+	new->priv->uid = e_uid_new ();
 
 	e_source_group_set_name (new, name);
 	e_source_group_set_base_uri (new, base_uri);
@@ -197,8 +201,9 @@ ESourceGroup *
 e_source_group_new_from_xmldoc (xmlDocPtr doc)
 {
 	xmlNodePtr root, p;
-	xmlChar *name = NULL;
-	xmlChar *base_uri = NULL;
+	xmlChar *uid;
+	xmlChar *name;
+	xmlChar *base_uri;
 	ESourceGroup *new = NULL;
 
 	g_return_val_if_fail (doc != NULL, NULL);
@@ -207,13 +212,19 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	if (strcmp (root->name, "group") != 0)
 		return NULL;
 
+	uid = xmlGetProp (root, "uid");
 	name = xmlGetProp (root, "name");
 	base_uri = xmlGetProp (root, "base_uri");
 
-	if (name == NULL || base_uri == NULL)
+	if (uid == NULL || name == NULL || base_uri == NULL)
 		goto done;
 
-	new = e_source_group_new (name, base_uri);
+	new = g_object_new (e_source_group_get_type (), NULL);
+	new->priv->uid = g_strdup (uid);
+
+	e_source_group_set_name (new, name);
+	e_source_group_set_base_uri (new, base_uri);
+
 	for (p = root->children; p != NULL; p = p->next) {
 		ESource *new_source = e_source_new_from_xml_node (p);
 		e_source_group_add_source (new, new_source, -1);
@@ -296,12 +307,12 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 
 	for (nodep = root->children; nodep != NULL; nodep = nodep->next) {
 		ESource *existing_source;
-		char *source_name = e_source_name_from_xml_node (nodep);
+		char *uid = e_source_uid_from_xml_node (nodep);
 
-		if (source_name == NULL)
+		if (uid == NULL)
 			continue;
 
-		existing_source = e_source_group_peek_source_by_name (group, source_name);
+		existing_source = e_source_group_peek_source_by_uid (group, uid);
 		if (g_hash_table_lookup (new_sources_hash, existing_source) != NULL)
 			continue;
 
@@ -335,7 +346,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 			group->priv->ignore_source_changed --;
 		}
 
-		g_free (source_name);
+		g_free (uid);
 	}
 
 	new_sources_list = g_slist_reverse (new_sources_list);
@@ -379,7 +390,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 }
 
 char *
-e_source_group_name_from_xmldoc (xmlDocPtr doc)
+e_source_group_uid_from_xmldoc (xmlDocPtr doc)
 {
 	xmlNodePtr root = doc->children;
 	xmlChar *name;
@@ -388,7 +399,7 @@ e_source_group_name_from_xmldoc (xmlDocPtr doc)
 	if (strcmp (root->name, "group") != 0)
 		return NULL;
 
-	name = xmlGetProp (root, "name");
+	name = xmlGetProp (root, "uid");
 	if (name == NULL)
 		return NULL;
 
@@ -430,6 +441,14 @@ void e_source_group_set_base_uri (ESourceGroup *group,
 
 
 const char *
+e_source_group_peek_uid (ESourceGroup *group)
+{
+	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), NULL);
+
+	return group->priv->uid;
+}
+
+const char *
 e_source_group_peek_name (ESourceGroup *group)
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), NULL);
@@ -455,13 +474,13 @@ e_source_group_peek_sources (ESourceGroup *group)
 }
 
 ESource *
-e_source_group_peek_source_by_name (ESourceGroup *group,
-				    const char *source_name)
+e_source_group_peek_source_by_uid (ESourceGroup *group,
+				    const char *uid)
 {
 	GSList *p;
 
 	for (p = group->priv->sources; p != NULL; p = p->next) {
-		if (strcmp (e_source_peek_name (E_SOURCE (p->data)), source_name) == 0)
+		if (strcmp (e_source_peek_uid (E_SOURCE (p->data)), uid) == 0)
 			return E_SOURCE (p->data);
 	}
 
@@ -475,7 +494,7 @@ e_source_group_add_source (ESourceGroup *group,
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
-	if (e_source_group_peek_source_by_name (group, e_source_peek_name (source)) != NULL)
+	if (e_source_group_peek_source_by_uid (group, e_source_peek_uid (source)) != NULL)
 		return FALSE;
 
 	e_source_set_group (source, group);
@@ -512,18 +531,18 @@ e_source_group_remove_source (ESourceGroup *group,
 }
 
 gboolean
-e_source_group_remove_source_by_name (ESourceGroup *group,
-				      const char *name)
+e_source_group_remove_source_by_uid (ESourceGroup *group,
+				     const char *uid)
 {
 	GSList *p;
 
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
-	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
 
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		ESource *source = E_SOURCE (p->data);
 
-		if (strcmp (e_source_peek_name (source), name) == 0) {
+		if (strcmp (e_source_peek_uid (source), uid) == 0) {
 			group->priv->sources = g_slist_remove_link (group->priv->sources, p);
 			g_signal_emit (group, signals[SOURCE_REMOVED], 0, source);
 			g_signal_emit (group, signals[CHANGED], 0);
@@ -548,6 +567,7 @@ e_source_group_to_xml (ESourceGroup *group)
 	doc = xmlNewDoc ("1.0");
 
 	root = xmlNewDocNode (doc, NULL, "group", NULL);
+	xmlSetProp (root, "uid", e_source_group_peek_uid (group));
 	xmlSetProp (root, "name", e_source_group_peek_name (group));
 	xmlSetProp (root, "base_uri", e_source_group_peek_base_uri (group));
 

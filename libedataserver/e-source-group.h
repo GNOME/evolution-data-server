@@ -71,27 +71,28 @@ gboolean  e_source_group_update_from_xmldoc  (ESourceGroup *group,
 					      xmlDocPtr     doc,
 					      gboolean     *changed_return);
 
-char *e_source_group_name_from_xmldoc  (xmlDocPtr doc);
+char *e_source_group_uid_from_xmldoc  (xmlDocPtr doc);
 
 void  e_source_group_set_name      (ESourceGroup *group,
 				    const char   *name);
 void  e_source_group_set_base_uri  (ESourceGroup *group,
 				    const char   *base_uri);
 
+const char *e_source_group_peek_uid       (ESourceGroup *group);
 const char *e_source_group_peek_name      (ESourceGroup *group);
 const char *e_source_group_peek_base_uri  (ESourceGroup *group);
 
-GSList  *e_source_group_peek_sources         (ESourceGroup *group);
-ESource *e_source_group_peek_source_by_name  (ESourceGroup *group,
-					      const char   *source_name);
+GSList  *e_source_group_peek_sources        (ESourceGroup *group);
+ESource *e_source_group_peek_source_by_uid  (ESourceGroup *group,
+					     const char   *source_uid);
 
-gboolean  e_source_group_add_source             (ESourceGroup *group,
-						 ESource      *source,
-						 int           position);
-gboolean  e_source_group_remove_source          (ESourceGroup *group,
-						 ESource      *source);
-gboolean  e_source_group_remove_source_by_name  (ESourceGroup *group,
-						 const char   *name);
+gboolean  e_source_group_add_source            (ESourceGroup *group,
+						ESource      *source,
+						int           position);
+gboolean  e_source_group_remove_source         (ESourceGroup *group,
+						ESource      *source);
+gboolean  e_source_group_remove_source_by_uid  (ESourceGroup *group,
+						const char   *uid);
 
 char *e_source_group_to_xml (ESourceGroup *group);
 

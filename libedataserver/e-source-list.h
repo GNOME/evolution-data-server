@@ -63,23 +63,23 @@ ESourceList *e_source_list_new            (void);
 ESourceList *e_source_list_new_for_gconf  (GConfClient *client,
 					   const char  *path);
 
-GSList       *e_source_list_peek_groups          (ESourceList *list);
-ESourceGroup *e_source_list_peek_group_by_name   (ESourceList *list,
-						  const char  *source_group);
-ESource      *e_source_list_peek_source_by_name  (ESourceList *list,
-						  const char  *group_name,
-						  const char  *source_name);
+GSList       *e_source_list_peek_groups         (ESourceList *list);
+ESourceGroup *e_source_list_peek_group_by_uid   (ESourceList *list,
+						 const char  *source_group);
+ESource      *e_source_list_peek_source_by_uid  (ESourceList *list,
+						 const char  *group_name,
+						 const char  *source_name);
 
-gboolean  e_source_list_add_group              (ESourceList  *list,
-						ESourceGroup *group,
-						int           position);
-gboolean  e_source_list_remove_group           (ESourceList  *list,
-						ESourceGroup *group);
-gboolean  e_source_list_remove_group_by_name   (ESourceList  *list,
-						const char   *name);
-gboolean  e_source_list_remove_source_by_name  (ESourceList  *list,
-						const char   *group_name,
-						const char   *source_name);
+gboolean  e_source_list_add_group             (ESourceList  *list,
+					       ESourceGroup *group,
+					       int           position);
+gboolean  e_source_list_remove_group          (ESourceList  *list,
+					       ESourceGroup *group);
+gboolean  e_source_list_remove_group_by_uid   (ESourceList  *list,
+					       const char   *name);
+gboolean  e_source_list_remove_source_by_uid  (ESourceList  *list,
+					       const char   *group_name,
+					       const char   *source_name);
 
 gboolean  e_source_list_sync  (ESourceList  *list,
 			       GError      **error);

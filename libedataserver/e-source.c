@@ -25,6 +25,7 @@
 #include "e-source.h"
 
 #include "e-util-marshal.h"
+#include "e-uid.h"
 
 #include <string.h>
 #include <gal/util/e-util.h>
@@ -40,6 +41,8 @@ static GObjectClass *parent_class = NULL;
 
 struct _ESourcePrivate {
 	ESourceGroup *group;
+
+	char *uid;
 	char *name;
 	char *relative_uri;
 };
@@ -73,6 +76,7 @@ impl_finalize (GObject *object)
 {
 	ESourcePrivate *priv = E_SOURCE (object)->priv;
 
+	g_free (priv->uid);
 	g_free (priv->name);
 	g_free (priv->relative_uri);
 	g_free (priv);
@@ -138,6 +142,7 @@ e_source_new  (const char *name,
 	g_return_val_if_fail (relative_uri != NULL, NULL);
 
 	source = g_object_new (e_source_get_type (), NULL);
+	source->priv->uid = e_uid_new ();
 
 	e_source_set_name (source, name);
 	e_source_set_relative_uri (source, relative_uri);
@@ -147,24 +152,33 @@ e_source_new  (const char *name,
 ESource *
 e_source_new_from_xml_node (xmlNodePtr node)
 {
-	ESource *retval = NULL;
+	ESource *source;
+	xmlChar *uid;
 	xmlChar *name;
 	xmlChar *relative_uri;
 
+	uid = xmlGetProp (node, "uid");
 	name = xmlGetProp (node, "name");
 	relative_uri = xmlGetProp (node, "relative_uri");
 
-	if (name == NULL || relative_uri == NULL)
-		retval = NULL;
-	else
-		retval = e_source_new (name, relative_uri);
+	if (uid == NULL || name == NULL || relative_uri == NULL) {
+		source = NULL;
+	} else {
+		source = g_object_new (e_source_get_type (), NULL);
 
+		source->priv->uid = g_strdup (uid);
+		e_source_set_name (source, name);
+		e_source_set_relative_uri (source, relative_uri);
+	}
+
+	if (uid != NULL)
+		xmlFree (uid);
 	if (name != NULL)
 		xmlFree (name);
 	if (relative_uri != NULL)
 		xmlFree (relative_uri);
 
-	return retval;
+	return source;
 }
 
 /**
@@ -228,16 +242,16 @@ e_source_update_from_xml_node (ESource *source,
  * free the string.
  **/
 char *
-e_source_name_from_xml_node (xmlNodePtr node)
+e_source_uid_from_xml_node (xmlNodePtr node)
 {
-	xmlChar *name = xmlGetProp (node, "name");
+	xmlChar *uid = xmlGetProp (node, "uid");
 	char *retval;
 
-	if (name == NULL)
+	if (uid == NULL)
 		return NULL;
 
-	retval = g_strdup (name);
-	xmlFree (name);
+	retval = g_strdup (uid);
+	xmlFree (uid);
 	return retval;
 }
 
@@ -301,6 +315,14 @@ e_source_peek_group (ESource *source)
 }
 
 const char *
+e_source_peek_uid (ESource *source)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	return source->priv->uid;
+}
+
+const char *
 e_source_peek_name (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -339,6 +361,7 @@ e_source_dump_to_xml_node (ESource *source,
 
 	xmlNodePtr node = xmlNewChild (parent_node, NULL, "source", NULL);
 
+	xmlSetProp (node, "uid", e_source_peek_uid (source));
 	xmlSetProp (node, "name", e_source_peek_name (source));
 	xmlSetProp (node, "relative_uri", e_source_peek_relative_uri (source));
 }

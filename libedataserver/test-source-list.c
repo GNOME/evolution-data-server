@@ -56,9 +56,9 @@ static struct poptOption options[] = {
 	{ "key", '0', POPT_ARG_STRING, &key_arg, 0,
 	  "Name of the GConf key to use", "PATH" },
 	{ "source", '\0', POPT_ARG_STRING, &source_arg, 0, 
-	  "Name of source to apply operation to", "NAME" },
+	  "UID of source to apply operation to", "UID" },
 	{ "group", '\0', POPT_ARG_STRING, &group_arg, 0, 
-	  "Name of group to apply operation to", "NAME" },
+	  "UID of group to apply operation to", "UID" },
 	{ "add-group", '\0', POPT_ARG_STRING, &add_group_arg, 0,
 	  "Add group of specified name", "NAME" },
 	{ "add-source", '\0', POPT_ARG_STRING, &add_source_arg, 0,
@@ -95,7 +95,7 @@ dump_source (ESource *source)
 {
 	char *uri = e_source_get_uri (source);
 
-	g_print ("\tSource:\n");
+	g_print ("\tSource %s\n", e_source_peek_uid (source));
 	g_print ("\t\tname: %s\n", e_source_peek_name (source));
 	g_print ("\t\trelative_uri: %s\n", e_source_peek_relative_uri (source));
 	g_print ("\t\tabsolute_uri: %s\n", uri);
@@ -108,7 +108,7 @@ dump_group (ESourceGroup *group)
 {
 	GSList *sources, *p;
 
-	g_print ("Group:\n");
+	g_print ("Group %s\n", e_source_group_peek_uid (group));
 	g_print ("\tname: %s\n", e_source_group_peek_name (group));
 	g_print ("\tbase_uri: %s\n", e_source_group_peek_base_uri (group));
 
@@ -130,6 +130,11 @@ dump_list (void)
 	GSList *groups, *p;
 
 	groups = e_source_list_peek_groups (list);
+	if (groups == NULL) {
+		g_print ("(No items)\n");
+		return;
+	}
+
 	for (p = groups; p != NULL; p = p->next)
 		dump_group (E_SOURCE_GROUP (p->data));
 }
@@ -290,13 +295,12 @@ static int
 on_idle_do_stuff (void *unused_data)
 {
 	GConfClient *client = gconf_client_get_default ();
+	ESourceGroup *new_group = NULL;
 
 	list = e_source_list_new_for_gconf (client, key_arg);
 	g_object_unref (client);
 
 	if (add_group_arg != NULL) {
-		ESourceGroup *new_group;
-
 		if (group_arg != NULL) {
 			fprintf (stderr, "--add-group and --group cannot be used at the same time.\n");
 			exit (1);
@@ -316,7 +320,7 @@ on_idle_do_stuff (void *unused_data)
 	if (remove_group_arg != NULL) {
 		ESourceGroup *group;
 
-		group = e_source_list_peek_group_by_name (list, remove_group_arg);
+		group = e_source_list_peek_group_by_uid (list, remove_group_arg);
 		if (group == NULL) {
 			fprintf (stderr, "No such group \"%s\".\n", remove_group_arg);
 			exit (1);
@@ -330,7 +334,7 @@ on_idle_do_stuff (void *unused_data)
 		ESourceGroup *group;
 		ESource *new_source;
 
-		if (group_arg == NULL && add_group_arg == NULL) {
+		if (group_arg == NULL && new_group == NULL) {
 			fprintf (stderr,
 				 "When using --add-source, you need to specify a group using either --group\n"
 				 "or --add-group.\n");
@@ -343,10 +347,14 @@ on_idle_do_stuff (void *unused_data)
 			exit (1);
 		}
 
-		group = e_source_list_peek_group_by_name (list, group_arg == NULL ? add_group_arg : group_arg);
-		if (group == NULL) {
-			fprintf (stderr, "No such group \"%s\".\n", group_arg == NULL ? add_group_arg : group_arg);
-			exit (1);
+		if (group_arg == NULL) {
+			group = new_group;
+		} else {
+			group = e_source_list_peek_group_by_uid (list, group_arg);
+			if (group == NULL) {
+				fprintf (stderr, "No such group \"%s\".\n", group_arg == NULL ? add_group_arg : group_arg);
+				exit (1);
+			}
 		}
 
 		new_source = e_source_new (add_source_arg, set_relative_uri_arg);
@@ -362,13 +370,13 @@ on_idle_do_stuff (void *unused_data)
 			exit (1);
 		}
 
-		source = e_source_list_peek_source_by_name (list, group_arg, remove_source_arg);
+		source = e_source_list_peek_source_by_uid (list, group_arg, remove_source_arg);
 		if (source == NULL) {
 			fprintf (stderr, "No such source \"%s\" in group \"%s\".\n", remove_source_arg, group_arg);
 			exit (1);
 		}
 
-		e_source_list_remove_source_by_name (list, group_arg, remove_source_arg);
+		e_source_list_remove_source_by_uid (list, group_arg, remove_source_arg);
 		e_source_list_sync (list, NULL);
 	}
 
@@ -381,7 +389,7 @@ on_idle_do_stuff (void *unused_data)
 		}
 
 		if (source_arg != NULL) {
-			ESource *source = e_source_list_peek_source_by_name (list, group_arg, source_arg);
+			ESource *source = e_source_list_peek_source_by_uid (list, group_arg, source_arg);
 
 			if (source != NULL) {
 				e_source_set_name (source, set_name_arg);
@@ -390,7 +398,7 @@ on_idle_do_stuff (void *unused_data)
 				exit (1);
 			}
 		} else {
-			ESourceGroup *group = e_source_list_peek_group_by_name (list, group_arg);
+			ESourceGroup *group = e_source_list_peek_group_by_uid (list, group_arg);
 
 			if (group != NULL) {
 				e_source_group_set_name (group, set_name_arg);
@@ -413,7 +421,7 @@ on_idle_do_stuff (void *unused_data)
 			exit (1);
 		}
 
-		source = e_source_list_peek_source_by_name (list, group_arg, source_arg);
+		source = e_source_list_peek_source_by_uid (list, group_arg, source_arg);
 		e_source_set_relative_uri (source, set_relative_uri_arg);
 		e_source_list_sync (list, NULL);
 	}
@@ -423,11 +431,11 @@ on_idle_do_stuff (void *unused_data)
 
 		if (group_arg == NULL) {
 			fprintf (stderr,
-				 "When using --set-base-uri, you need to specify a source using --group.\n");
+				 "When using --set-base-uri, you need to specify a group using --group.\n");
 			exit (1);
 		}
 
-		group = e_source_list_peek_group_by_name (list, group_arg);
+		group = e_source_list_peek_group_by_uid (list, group_arg);
 		e_source_group_set_base_uri (group, set_base_uri_arg);
 		e_source_list_sync (list, NULL);
 	}
