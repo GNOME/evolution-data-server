@@ -1,3 +1,7 @@
+2003-11-26  JP Rosevear  <jpr@ximian.com>
+
+	* tags: add a dummy file for disting
+
 2003-11-25  Chris Toshok  <toshok@ximian.com>
 
 	* libdb/dist/configure.ac: switch the order of AC_DISABLE_SHARED
