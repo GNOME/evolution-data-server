@@ -1,3 +1,4 @@
+# translation of el.po to 
 # translation of el.po to Greek
 # translation of evolution-data-server.HEAD.el.po to Greek
 # Greek translation of evolution.
@@ -22,31 +23,32 @@
 # Revised by Nikos Niktaris <niktarin@yahoo.com>, 2001, 2002.
 # Revised by Panayotis Pakos <aeikineton@yahoo.com>, 2001, 2002.
 # review by <ta_panta_rei@flashmail.com>, 2003.
-# Nikos Charonitakis <charosn@her.forthnet.gr>, 2003.
+# Nikos Charonitakis <charosn@her.forthnet.gr>, 2003, 2005.
 # Kostas Papadimas <pkst@gnome.org>, 2003, 2004, 2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-19 18:08+0200\n"
-"PO-Revision-Date: 2005-02-19 18:08+0200\n"
-"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"POT-Creation-Date: 2005-02-27 00:30+0200\n"
+"PO-Revision-Date: 2005-02-27 00:54+0200\n"
+"Last-Translator: Nikos Charonitakis <charosn@her.forthnet.gr>\n"
+"Language-Team:  <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.9.1\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:513
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2032
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2046
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Γίνεται φόρτωση..."
 
 #: addressbook/backends/file/e-book-backend-file.c:515
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2016
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2044
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3401
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
@@ -54,11 +56,11 @@ msgstr "Γίνεται αναζήτηση..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:647
 msgid "Using Distinguished Name (DN)"
-msgstr "Χρήση Διακεκριμένου ονόματος  (DN)"
+msgstr "Χρήση Διακεκριμένου ονόματος (DN)"
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:650
 msgid "Using Email Address"
-msgstr "Χρήση διεύθυνσης  Email "
+msgstr "Χρήση Διεύθυνσης Email "
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:820
 msgid "Reconnecting to LDAP server..."
@@ -150,27 +152,27 @@ msgstr "\"%s\" στο βιβλίο μετά από \"%s\""
 #: addressbook/libebook/e-book.c:2524
 #, c-format
 msgid "%s: cancelled"
-msgstr "%s:·Ακυρώθηκε"
+msgstr "%s: ακυρώθηκε"
 
 #: addressbook/libebook/e-book.c:3066
 #, c-format
 msgid "%s: Invalid source."
-msgstr "%s:·μη έγκυρη πηγή."
+msgstr "%s: Μη έγκυρη πηγή."
 
 #: addressbook/libebook/e-book.c:3074 addressbook/libebook/e-book.c:3138
 #, c-format
 msgid "%s: no factories available for uri `%s'"
-msgstr "%s:·δεν υπάρχουν διαθέσιμα εργοστάσια για uri `%s'"
+msgstr "%s: δεν υπάρχουν διαθέσιμα εργοστάσια για uri `%s'"
 
 #: addressbook/libebook/e-book.c:3086
 #, c-format
 msgid "%s: Could not create EBookListener"
-msgstr "%s:·Αδυναμία δημιουργίας EBookListener"
+msgstr "%s: Αδυναμία δημιουργίας EBookListener"
 
 #: addressbook/libebook/e-book.c:3332
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
-msgstr "%s:· there was no self contact uid stored in gconf"
+msgstr "%s: there was no self contact uid stored in gconf"
 
 #: addressbook/libebook/e-book.c:3443
 #, c-format
@@ -548,7 +550,7 @@ msgstr "Βοηθός"
 #. Web fields
 #: addressbook/libebook/e-contact.c:211
 msgid "Homepage URL"
-msgstr "URL αρχικής σελίδας"
+msgstr "URL Αρχικής Σελίδας"
 
 #: addressbook/libebook/e-contact.c:212
 msgid "Weblog URL"
@@ -556,7 +558,7 @@ msgstr "Weblog URL"
 
 #: addressbook/libebook/e-contact.c:213
 msgid "Video Conferencing URL"
-msgstr "URL τηλεδιάσκεψης"
+msgstr "URL Τηλεδιάσκεψης"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:216
@@ -570,12 +572,12 @@ msgstr "Λογότυπο"
 #. Security fields
 #: addressbook/libebook/e-contact.c:220
 msgid "X.509 Certificate"
-msgstr "Πιστοποιητικό"
+msgstr "Πιστοποιητικό X.509"
 
 #. Contact categories
 #: addressbook/libebook/e-contact.c:223
 msgid "Category List"
-msgstr "Λίστα κατηγορίας"
+msgstr "Λίστα Κατηγορίας"
 
 #: addressbook/libebook/e-contact.c:224
 #: libedataserverui/e-categories-dialog.c:370
@@ -589,7 +591,7 @@ msgstr "URI Ημερολογίου"
 
 #: addressbook/libebook/e-contact.c:228
 msgid "Free/Busy URL"
-msgstr "Διαθέσιμο/απασχολημένο URL"
+msgstr "Διαθέσιμο/Απασχολημένο URL"
 
 #: addressbook/libebook/e-contact.c:229
 msgid "ICS Calendar"
@@ -649,44 +651,44 @@ msgstr "Επέτειος: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Αποτυχία αποθήκευσης δεδομένων ημερολογίου. Κακοδιατυπωμένο URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:771
-#: camel/providers/groupwise/camel-groupwise-folder.c:265
+#: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
+#: camel/providers/groupwise/camel-groupwise-folder.c:293
 msgid "Reply Requested: by "
 msgstr "Αίτηση·απάντησης: από"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:776
-#: camel/providers/groupwise/camel-groupwise-folder.c:270
+#: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
+#: camel/providers/groupwise/camel-groupwise-folder.c:298
 msgid "Reply Requested: When convenient"
 msgstr "Αίτηση απάντησης: Όταν είναι βολικό"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:514
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:526
 msgid "Invalid server URI"
 msgstr "Μη έγκυρο server·URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:562
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:565
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:574
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:577
 msgid "Calendar"
 msgstr "Ημερολόγιο"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:572
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:808
-#: calendar/backends/http/e-cal-backend-http.c:484
-#: calendar/backends/weather/e-cal-backend-weather.c:449
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:820
+#: calendar/backends/http/e-cal-backend-http.c:492
+#: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Αδυναμία δημιουργίας αρχείου cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:594
 msgid "Could not create thread for populating cache"
 msgstr "Αδυναμία δημιουργίας thread·for·populating·cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:588
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:600
 #: calendar/libecal/e-cal.c:4516
-#: camel/providers/groupwise/camel-groupwise-folder.c:643
-#: camel/providers/groupwise/camel-groupwise-folder.c:658
-#: camel/providers/groupwise/camel-groupwise-store.c:525
-#: camel/providers/groupwise/camel-groupwise-store.c:629
+#: camel/providers/groupwise/camel-groupwise-folder.c:672
+#: camel/providers/groupwise/camel-groupwise-folder.c:690
+#: camel/providers/groupwise/camel-groupwise-store.c:526
+#: camel/providers/groupwise/camel-groupwise-store.c:628
 #: camel/providers/groupwise/camel-groupwise-store.c:787
-#: camel/providers/groupwise/camel-groupwise-store.c:983
+#: camel/providers/groupwise/camel-groupwise-store.c:985
 msgid "Authentication failed"
 msgstr "Η πιστοποίηση απέτυχε"
 
@@ -696,7 +698,7 @@ msgstr "Αναδρομολόγηση σε μη έγκυρο URI"
 
 #: calendar/backends/http/e-cal-backend-http.c:264
 msgid "Bad file format."
-msgstr "Λανθασμένη μορφή αρχείου"
+msgstr "Λανθασμένη μορφή αρχείου."
 
 #: calendar/backends/http/e-cal-backend-http.c:270
 msgid "Not a calendar."
@@ -811,34 +813,34 @@ msgstr "Βροχή"
 #: calendar/backends/weather/e-cal-backend-weather.c:238
 #: calendar/backends/weather/e-cal-backend-weather.c:245
 msgid "Weather: Sunny"
-msgstr "Καιρός·:·Ηλιόλουστος"
+msgstr "Καιρός: Ηλιόλουστος"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:229
 #: calendar/backends/weather/e-cal-backend-weather.c:230
 #: calendar/backends/weather/e-cal-backend-weather.c:246
 #: calendar/backends/weather/e-cal-backend-weather.c:249
 msgid "Weather: Snow"
-msgstr "Καιρός·:·Χιόνι"
+msgstr "Καιρός: Χιόνι"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:231
 msgid "Weather: Partly Cloudy"
-msgstr "Καιρός : Μερική συννεφιά"
+msgstr "Καιρός: Μερική Συννεφιά"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:232
 #: calendar/backends/weather/e-cal-backend-weather.c:237
 #: calendar/backends/weather/e-cal-backend-weather.c:242
 #: calendar/backends/weather/e-cal-backend-weather.c:248
 msgid "Weather: Fog"
-msgstr "Καιρός·:·Ομίχλη"
+msgstr "Καιρός: Ομίχλη"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:233
 msgid "Weather: Thunderstorms"
-msgstr "Καιρός : Ηλεκτρικές καταιγίδες"
+msgstr "Καιρός: Ηλεκτρικές καταιγίδες"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:234
 #: calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Weather: Cloudy"
-msgstr "Καιρός·:·Συννεφιά"
+msgstr "Καιρός: Συννεφιά"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:235
 #: calendar/backends/weather/e-cal-backend-weather.c:241
@@ -848,7 +850,7 @@ msgstr "Καιρός·:·Συννεφιά"
 #: calendar/backends/weather/e-cal-backend-weather.c:250
 #: calendar/backends/weather/e-cal-backend-weather.c:252
 msgid "Weather: Rain"
-msgstr "Καιρός : Βροχή"
+msgstr "Καιρός: Βροχή"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:327
 #, c-format
@@ -1064,7 +1066,7 @@ msgstr "Δεν υπάρχει τέτοιο ημερολόγιο"
 
 #: calendar/libecal/e-cal.c:4496 servers/groupwise/e-gw-connection.c:165
 msgid "Object not found"
-msgstr "Το αντικείμενο δεν βρέθηκε"
+msgstr "Δε βρέθηκε το αντικείμενο"
 
 #: calendar/libecal/e-cal.c:4498 servers/groupwise/e-gw-connection.c:159
 msgid "Invalid object"
@@ -1119,7 +1121,7 @@ msgstr "Δημιουργήθηκε εξαίρεση CORBΑ"
 #: camel/providers/pop3/camel-pop3-store.c:548
 #: servers/groupwise/e-gw-connection.c:173
 msgid "Unknown error"
-msgstr "Άγνωστο Σφάλμα"
+msgstr "Άγνωστο σφάλμα"
 
 #: calendar/libecal/e-cal.c:4524
 msgid "No error"
@@ -1304,8 +1306,7 @@ msgstr "Προετοιμασία φακέλου '%s' για εργασία χω�
 
 #: camel/camel-disco-store.c:405
 msgid "You must be working online to complete this operation"
-msgstr ""
-"Πρέπει να είστε συνδεμένοι στο δίκτυο για να ολοκληρωθεί αυτή η διαδικασία"
+msgstr "Πρέπει να είστε συνδεμένοι στο δίκτυο για να ολοκληρωθεί αυτή η διαδικασία"
 
 #: camel/camel-filter-driver.c:689 camel/camel-filter-search.c:523
 #, c-format
@@ -1378,7 +1379,7 @@ msgstr "Αποτυχία στο μήνυμα %d από %d"
 
 #: camel/camel-filter-search.c:136
 msgid "Failed to retrieve message"
-msgstr "Αποτυχία ανάκτησης μηνύματος."
+msgstr "Αποτυχία ανάκτησης μηνύματος"
 
 #: camel/camel-filter-search.c:396
 msgid "Invalid arguments to (system-flag)"
@@ -1455,8 +1456,7 @@ msgstr "Μη υποστηριζόμενη λειτουργία: αναζήτησ
 #: camel/camel-folder.c:1240
 #, c-format
 msgid "Unsupported operation: search by uids: for %s"
-msgstr ""
-"Μη υποστηριζόμενη λειτουργία: αναζήτηση βάσει ταυτοτήτων χρήστη: για %s"
+msgstr "Μη υποστηριζόμενη λειτουργία: αναζήτηση βάσει ταυτοτήτων χρήστη: για %s"
 
 #: camel/camel-folder.c:1352
 msgid "Moving messages"
@@ -1524,7 +1524,7 @@ msgstr "Αναπάντεχη απάντηση από GnuPG: %s"
 
 #: camel/camel-gpg-context.c:879
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "Δεν ήταν δυνατή η κρυπτογράφηση: δεν έχουν οριστεί έγκυροι παραλήπτες"
+msgstr "Δεν ήταν δυνατή η κρυπτογράφηση: δεν έχουν οριστεί έγκυροι παραλήπτες."
 
 #. always called on an i/o error
 #: camel/camel-gpg-context.c:1138 camel/camel-gpg-context.c:1262
@@ -1543,7 +1543,7 @@ msgstr "Δεν ήταν δυνατή η υπογραφή δεδομένων:%s"
 #: camel/camel-gpg-context.c:1623 camel/camel-gpg-context.c:1638
 #: camel/camel-gpg-context.c:1703 camel/camel-gpg-context.c:1748
 msgid "Failed to execute gpg."
-msgstr "Αποτυχία εκτέλεσης gpg"
+msgstr "Αποτυχία εκτέλεσης gpg."
 
 #: camel/camel-gpg-context.c:1296
 msgid "This is a digitally signed message part"
@@ -1553,8 +1553,7 @@ msgstr "Αυτό το σημείο του μηνύματος είναι ψηφι
 #: camel/camel-gpg-context.c:1389 camel/camel-smime-context.c:692
 #: camel/camel-smime-context.c:703 camel/camel-smime-context.c:710
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr ""
-"Δεν ήταν δυνατή η επαλήθευση υπογραφής μηνύματος: Εσφαλμένη μορφή μηνύματος"
+msgstr "Δεν ήταν δυνατή η επαλήθευση υπογραφής μηνύματος: Εσφαλμένη μορφή μηνύματος"
 
 #: camel/camel-gpg-context.c:1423
 #, c-format
@@ -1610,8 +1609,7 @@ msgstr "Αδύνατη η δικράνωση βοηθήματος κλειδωμ
 #: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr ""
-"Δεν ήταν δυνατό να κλειδωθεί το %s: σφάλμα πρωτοκόλλου με βοήθημα κλειδωμάτων"
+msgstr "Δεν ήταν δυνατό να κλειδωθεί το %s: σφάλμα πρωτοκόλλου με βοήθημα κλειδωμάτων"
 
 #: camel/camel-lock-client.c:204
 #, c-format
@@ -1626,8 +1624,7 @@ msgstr "Δεν ήταν δυνατή η δημιουργία αρχείου κλ
 #: camel/camel-lock.c:154
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
-msgstr ""
-"Εκτός χρόνου για την λήψη αρχείου κλειδώματος στο %s. Προσπαθήστε αργότερα."
+msgstr "Εκτός χρόνου για την λήψη αρχείου κλειδώματος στο %s. Προσπαθήστε αργότερα."
 
 #: camel/camel-lock.c:209
 #, c-format
@@ -1782,7 +1779,7 @@ msgstr "Ανώνυμη"
 
 #: camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr "Με την επιλογή αυτή θα συνδεθεί στο διακομιστή με ανώνυμη προσπέλαση"
+msgstr "Με την επιλογή αυτή θα συνδεθεί στο διακομιστή με ανώνυμη προσπέλαση."
 
 #: camel/camel-sasl-anonymous.c:112 camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
@@ -1849,8 +1846,7 @@ msgstr "Μη έγκυρο challenge διακομιστή\n"
 
 #: camel/camel-sasl-digest-md5.c:829
 msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
-msgstr ""
-"Το challenge διακομιστή περιέχει μη έγκυρο κουπόνι \"Ποιότητας Προστασίας\"\n"
+msgstr "Το challenge διακομιστή περιέχει μη έγκυρο κουπόνι \"Ποιότητας Προστασίας\"\n"
 
 #: camel/camel-sasl-digest-md5.c:859
 msgid "Server response did not contain authorization data\n"
@@ -1858,8 +1854,7 @@ msgstr "Στην απάντηση του διακομιστή δεν υπάρχ�
 
 #: camel/camel-sasl-digest-md5.c:877
 msgid "Server response contained incomplete authorization data\n"
-msgstr ""
-"Στην απάντηση του διακομιστή δεν υπάρχουν όλα τα δεδομένα εξουσιοδότησης\n"
+msgstr "Στην απάντηση του διακομιστή δεν υπάρχουν όλα τα δεδομένα εξουσιοδότησης\n"
 
 #: camel/camel-sasl-digest-md5.c:887
 msgid "Server response does not match\n"
@@ -1921,8 +1916,7 @@ msgstr ""
 
 #: camel/camel-sasl-gssapi.c:183
 msgid "The supplied context handle did not refer to a valid context."
-msgstr ""
-"Το παρεχόμενο χειριστήριο περιεχομένου δεν αναφέρετε σε έγκυρο περιεχόμενο."
+msgstr "Το παρεχόμενο χειριστήριο περιεχομένου δεν αναφέρετε σε έγκυρο περιεχόμενο."
 
 #: camel/camel-sasl-gssapi.c:186
 msgid "The consistency checks performed on the input_token failed."
@@ -1941,7 +1935,7 @@ msgstr "Τα αναφερόμενα διαπιστευτήρια έχουν λή
 #: camel/camel-sasl-kerberos4.c:226
 #: camel/providers/imap/camel-imap-store.c:1243
 msgid "Bad authentication response from server."
-msgstr "Εσφαλμένη απάντηση πιστοποίησης από τον διακομιστή"
+msgstr "Εσφαλμένη απάντηση πιστοποίησης από τον διακομιστή."
 
 #: camel/camel-sasl-gssapi.c:307
 msgid "Unsupported security layer."
@@ -1953,8 +1947,7 @@ msgstr "Kerberos 4"
 
 #: camel/camel-sasl-kerberos4.c:44
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr ""
-"Με την επιλογή αυτή θα συνδεθεί στο διακομιστή με την πιστοποίηση Kerberos 4."
+msgstr "Με την επιλογή αυτή θα συνδεθεί στο διακομιστή με την πιστοποίηση Kerberos 4."
 
 #: camel/camel-sasl-kerberos4.c:169
 #, c-format
@@ -1971,8 +1964,7 @@ msgstr "Είσοδος"
 
 #: camel/camel-sasl-login.c:35 camel/camel-sasl-plain.c:35
 msgid "This option will connect to the server using a simple password."
-msgstr ""
-"Με την επιλογή αυτή θα γίνει σύνδεση στο διακομιστή με χρήση ενός κωδικού."
+msgstr "Με την επιλογή αυτή θα γίνει σύνδεση στο διακομιστή με χρήση ενός κωδικού."
 
 #: camel/camel-sasl-login.c:128
 msgid "Unknown authentication state."
@@ -2177,8 +2169,7 @@ msgstr "Μήνυμα μόνο με πιστοποιητικό, αδυναμία 
 
 #: camel/camel-smime-context.c:602
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
-"Μήνυμα μόνο με πιστοποιητικό, τα πιστοποιητικά εισήχθησαν και επιβεβαιώθηκαν"
+msgstr "Μήνυμα μόνο με πιστοποιητικό, τα πιστοποιητικά εισήχθησαν και επιβεβαιώθηκαν"
 
 #: camel/camel-smime-context.c:606
 msgid "Cannot find signature digests"
@@ -2254,8 +2245,7 @@ msgstr "εξαγωγή κλειδιών: δεν έχει εφαρμοστεί"
 
 #: camel/camel-store.c:214
 msgid "Cannot get folder: Invalid operation on this store"
-msgstr ""
-"Δεν είναι δυνατό να γίνει η λήψη του φακέλου: Μη έγκυρη σε αυτή την αποθήκη"
+msgstr "Δεν είναι δυνατό να γίνει η λήψη του φακέλου: Μη έγκυρη σε αυτή την αποθήκη"
 
 #: camel/camel-store.c:244
 #, c-format
@@ -2264,8 +2254,7 @@ msgstr "Δεν είναι δυνατή η δημιουργία φακέλου`%s
 
 #: camel/camel-store.c:298
 msgid "Cannot create folder: Invalid operation on this store"
-msgstr ""
-"Δεν είναι δυνατό να δημιουργηθεί ο φακέλος: Μη έγκυρη σε αυτή την αποθήκη"
+msgstr "Δεν είναι δυνατό να δημιουργηθεί ο φακέλος: Μη έγκυρη σε αυτή την αποθήκη"
 
 #: camel/camel-store.c:326
 #, c-format
@@ -2533,8 +2522,7 @@ msgstr "Δεν ήταν δυνατή η διαγραφή του φακέλου %
 #: camel/camel-vee-store.c:412
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr ""
-"Δεν ήταν δυνατή η μετονομασία του φακέλου %s: Δεν υπάρχει τέτοιος φάκελος"
+msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου %s: Δεν υπάρχει τέτοιος φάκελος"
 
 #: camel/camel-vtrash-folder.c:48
 msgid "Cannot copy messages to the Trash folder"
@@ -2542,10 +2530,9 @@ msgstr "Δεν ήταν δυνατή η αντιγραφή μηνυμάτων σ
 
 #: camel/camel-vtrash-folder.c:50
 msgid "Cannot copy messages to the Junk folder"
-msgstr ""
-"Δεν ήταν δυνατή η αντιγραφή μηνυμάτων στον φάκελο ανεπιθύμητης αλληλογραφίας"
+msgstr "Δεν ήταν δυνατή η αντιγραφή μηνυμάτων στον φάκελο ανεπιθύμητης αλληλογραφίας"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:109
+#: camel/providers/groupwise/camel-groupwise-folder.c:111
 #: camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2555,15 +2542,15 @@ msgstr ""
 "Δεν μπορεί να γίνει η λήψη του μηνύματος: %s\n"
 "  %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:109
+#: camel/providers/groupwise/camel-groupwise-folder.c:111
 #: camel/providers/imap/camel-imap-folder.c:1980
 #: camel/providers/local/camel-maildir-folder.c:245
-#: camel/providers/local/camel-mbox-folder.c:403
+#: camel/providers/local/camel-mbox-folder.c:340
 #: camel/providers/local/camel-mh-folder.c:203
 msgid "No such message"
 msgstr "Δεν υπάρχει τέτοιο μήνυμα"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:124
+#: camel/providers/groupwise/camel-groupwise-folder.c:126
 #: camel/providers/imap4/camel-imap4-folder.c:788
 #: camel/providers/nntp/camel-nntp-folder.c:157
 #: camel/providers/nntp/camel-nntp-folder.c:233
@@ -2575,7 +2562,7 @@ msgstr "Δεν υπάρχει τέτοιο μήνυμα"
 msgid "User cancelled"
 msgstr "Ακυρώθηκε από τον χρήστη"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:129
+#: camel/providers/groupwise/camel-groupwise-folder.c:131
 #: camel/providers/imap4/camel-imap4-folder.c:793
 #: camel/providers/nntp/camel-nntp-folder.c:148
 #: camel/providers/nntp/camel-nntp-folder.c:150
@@ -2589,27 +2576,27 @@ msgstr "Ακυρώθηκε από τον χρήστη"
 msgid "Cannot get message %s: %s"
 msgstr "Αδυναμία λήψης μηνύματος %s: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:149
+#: camel/providers/groupwise/camel-groupwise-folder.c:151
 #: camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
-msgstr "Το μήνυμα δεν είναι διαθέσιμο σε λειτουργία χωρίς σύνδεση"
+msgstr "Το μήνυμα δεν είναι διαθέσιμο σε λειτουργία χωρίς σύνδεση."
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:177
+#: camel/providers/groupwise/camel-groupwise-folder.c:179
 msgid "Could not get message"
 msgstr "Δεν ήταν δυνατή η λήψη μηνύματος"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:563
+#: camel/providers/groupwise/camel-groupwise-folder.c:589
 #: camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Δεν ήταν δυνατή η φόρτωση της περίληψης για  %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:825
+#: camel/providers/groupwise/camel-groupwise-folder.c:857
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Δεν ήταν δυνατή η δημιουργία μηνύματος :·%s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:837
+#: camel/providers/groupwise/camel-groupwise-folder.c:869
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στον φάκελο·`%s':·%s"
@@ -2630,8 +2617,7 @@ msgstr ""
 #: camel/providers/imap4/camel-imap4-journal.c:336
 #, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr ""
-"Δεν είναι δυνατή η προσθήκη του μηνύματος σε λειτουργία·χωρίς·σύνδεση:·%s"
+msgstr "Δεν είναι δυνατή η προσθήκη του μηνύματος σε λειτουργία·χωρίς·σύνδεση:·%s"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:36
@@ -2665,7 +2651,7 @@ msgstr "Έλεγχος για ανεπιθύμητα μηνύματα μόνο �
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Automatically synchronize account locally"
-msgstr "Αυτόματος συγχρονισμός αλληλογραφίας τοπικά"
+msgstr "Αυτόματος συγχρονισμός λογαριασμού τοπικά"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:69
 msgid "SOAP Settings"
@@ -2693,8 +2679,7 @@ msgid "Password"
 msgstr "Κωδικός Πρόσβασης"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:104
-msgid ""
-"This option will connect to the GroupWise server using a plaintext password."
+msgid "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 "Με την επιλογή αύτη θα γίνει σύνδεση στο διακομιστή GroupWise με χρήση "
 "κωδικού απλού κειμένου."
@@ -2715,23 +2700,23 @@ msgstr "Δεν έχετε εισάγει κωδικό πρόσβασης."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:389
 msgid "Unable to authenticate to GroupWise server."
-msgstr "Δεν ήταν δυνατή η πιστοποίηση στο διακομιστή GroupWise"
+msgstr "Δεν ήταν δυνατή η πιστοποίηση στο διακομιστή GroupWise."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:430
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
-"Μερικές λειτουργίες μπορεί να μην είναι διαθέσιμες με την τρέχουσα έκδοση "
+"Μερικές λειτουργίες μπορεί να μην λειτουργούν σωστά με την τρέχουσα έκδοση "
 "του εξυπηρετητή σας"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:500
+#: camel/providers/groupwise/camel-groupwise-store.c:501
 #: camel/providers/imap/camel-imap-store.c:1873
 #: camel/providers/imap/camel-imap-store.c:2063
 #, c-format
 msgid "No such folder %s"
 msgstr "Δεν υπάρχει τέτοιος φάκελος %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:550
-#: camel/providers/groupwise/camel-groupwise-store.c:619
+#: camel/providers/groupwise/camel-groupwise-store.c:551
+#: camel/providers/groupwise/camel-groupwise-store.c:618
 #: camel/providers/imap/camel-imap-folder.c:2288
 #: camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
@@ -2739,35 +2724,31 @@ msgstr "Λήψη πληροφορίες περίληψης για νέα μην�
 
 #: camel/providers/groupwise/camel-groupwise-store.c:753
 msgid "Cannot get folder info in offline mode."
-msgstr ""
-"Δεν είναι δυνατή η λήψη πληροφοριών φακέλου σε λειτουργία χωρίς σύνδεση."
+msgstr "Δεν είναι δυνατή η λήψη πληροφοριών φακέλου σε λειτουργία χωρίς σύνδεση."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:964
+#: camel/providers/groupwise/camel-groupwise-store.c:966
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr ""
-"Δεν ήταν δυνατή η δημιουργία φακέλων GroupWise·σε·λειτουργία·χωρίς·σύνδεση"
+msgstr "Δεν ήταν δυνατή η δημιουργία φακέλων GroupWise·σε·λειτουργία·χωρίς·σύνδεση."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1015
+#: camel/providers/groupwise/camel-groupwise-store.c:1017
 msgid "Cannot delete GroupWise folders in offline mode."
-msgstr ""
-"Δεν ήταν δυνατή η διαγραφή των φακέλων GroupWise σε λειτουργία χωρίς σύνδεση"
+msgstr "Δεν ήταν δυνατή η διαγραφή των φακέλων GroupWise σε λειτουργία χωρίς σύνδεση."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1061
+#: camel/providers/groupwise/camel-groupwise-store.c:1063
 msgid "Cannot rename GroupWise folders in offline mode."
-msgstr ""
-"Δεν ήταν δυνατή η μετονομασία φακέλων GroupWise σε λειτουργία χωρίς σύνδεση."
+msgstr "Δεν ήταν δυνατή η μετονομασία φακέλων GroupWise σε λειτουργία χωρίς σύνδεση."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1080
+#: camel/providers/groupwise/camel-groupwise-store.c:1081
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου Groupwise`%s' σε `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1116
+#: camel/providers/groupwise/camel-groupwise-store.c:1117
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Εξυπηρετητής GroupWise %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1118
+#: camel/providers/groupwise/camel-groupwise-store.c:1119
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Υπηρεσία GroupWise για %s στο %s"
@@ -2872,8 +2853,7 @@ msgstr "Ημιτελής απόκριση διακομιστή: δε δόθηκ�
 
 #: camel/providers/imap/camel-imap-folder.c:2486
 #, c-format
-msgid ""
-"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "Απρόσμενη απάντηση διακομιστή: Ταυτόσημα UID για τα μηνύματα %d και %d"
 
 #: camel/providers/imap/camel-imap-folder.c:2662
@@ -2946,8 +2926,7 @@ msgstr "Namespace"
 #: camel/providers/imap/camel-imap-provider.c:66
 #: camel/providers/imap4/camel-imap4-provider.c:58
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr ""
-"Εφαρμογή _φίλτρων στα νέα μηνύματα στα ΕΙΣΕΡΧΟΜΕΝΑ σ' αυτόν τον διακομιστή"
+msgstr "Εφαρμογή _φίλτρων στα νέα μηνύματα στα ΕΙΣΕΡΧΟΜΕΝΑ σ' αυτόν τον διακομιστή"
 
 #: camel/providers/imap/camel-imap-provider.c:68
 #: camel/providers/imap4/camel-imap4-provider.c:60
@@ -2957,7 +2936,7 @@ msgstr "Έλεγχος νέων μηνυμάτων για ανεπι_θύμητ�
 #: camel/providers/imap/camel-imap-provider.c:70
 #: camel/providers/imap4/camel-imap4-provider.c:62
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Έλεγχος για ανεπιθύμητα μηνύματα μόνο στον φάκελο εισερχομένων"
+msgstr "Έλεγχος για Ανεπιθύμητα μη_νύματα μόνο στο φάκελο εισερχομένων"
 
 #: camel/providers/imap/camel-imap-provider.c:72
 #: camel/providers/imap4/camel-imap4-provider.c:64
@@ -3033,8 +3012,7 @@ msgstr "Η σύνδεση ακυρώθηκε"
 #: camel/providers/imap4/camel-imap4-store.c:391
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
-msgstr ""
-"Δεν ήταν δυνατή η σύνδεση με τον διακομιστή IMAP %s σε ασφαλή λειτουργία: %s"
+msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή IMAP %s σε ασφαλή λειτουργία: %s"
 
 #: camel/providers/imap/camel-imap-store.c:674
 #: camel/providers/smtp/camel-smtp-transport.c:326
@@ -3070,15 +3048,14 @@ msgstr "Δεν ήταν δυνατή η σύνδεση με την εντολή 
 #: camel/providers/local/camel-maildir-store.c:289
 #: camel/providers/local/camel-maildir-store.c:511
 #: camel/providers/local/camel-maildir-store.c:524
-#: camel/providers/local/camel-spool-store.c:452
+#: camel/providers/local/camel-spool-store.c:460
 msgid "Inbox"
 msgstr "Εισερχόμενα"
 
 #: camel/providers/imap/camel-imap-store.c:1275
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr ""
-"Ο διακομιστής IMAP %s δεν υποστηρίζει την αιτούμενο τύπο πιστοποίησης %s"
+msgstr "Ο διακομιστής IMAP %s δεν υποστηρίζει την αιτούμενο τύπο πιστοποίησης %s"
 
 #: camel/providers/imap/camel-imap-store.c:1285
 #: camel/providers/smtp/camel-smtp-transport.c:501
@@ -3107,8 +3084,7 @@ msgstr ""
 #: camel/providers/imap/camel-imap-store.c:2269
 #: camel/providers/imap4/camel-imap4-store.c:856
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "Το όνομα φακέλου \"%s\" δεν είναι έγκυρο δε μπορεί να περιέχει τον χαρακτήρα "
 "\"%c\""
@@ -3120,11 +3096,11 @@ msgstr "Ο γονικός φάκελος δεν επιτρέπεται να πε
 
 #: camel/providers/imap/camel-imap-store.c:2004
 #: camel/providers/local/camel-maildir-store.c:190
-#: camel/providers/local/camel-mbox-store.c:210
+#: camel/providers/local/camel-mbox-store.c:199
 #: camel/providers/local/camel-mh-store.c:237
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
-msgstr "Δεν είναι δυνατή η δημιουργία φακέλου: `%s': ο φάκελος υπάρχει"
+msgstr "Δεν είναι δυνατή η δημιουργία φακέλου: `%s': ο φάκελος υπάρχει."
 
 #: camel/providers/imap/camel-imap-store.c:2280
 #, c-format
@@ -3145,7 +3121,7 @@ msgstr "Απροσδόκητη απάντηση από τον διακομιστ
 #: camel/providers/imap4/camel-imap4-engine.c:222
 #, c-format
 msgid "Unexpected greeting from IMAP server %s."
-msgstr "Απροσδόκητος χαιρετισμός από τον διακομιστή IMAP: %s"
+msgstr "Απροσδόκητος χαιρετισμός από τον διακομιστή IMAP: %s."
 
 #: camel/providers/imap4/camel-imap4-engine.c:432
 #, c-format
@@ -3166,8 +3142,7 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "Απροσδόκητη αποσύνδεση του διακομιστή IMAP4 %s: %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:85
-msgid ""
-"Enable Mailing-List detection required for some filter and vFolder rules"
+msgid "Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr ""
 "Απαιτείται ενεργοποίηση εντοπισμού λίστας αλληλογραφίας για κάποιους κανόνες "
 "φίλτρου και εικονικών φακέλων"
@@ -3185,8 +3160,7 @@ msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαι�
 #: camel/providers/imap4/camel-imap4-folder.c:463
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr ""
-"Δεν είναι δυνατός ο συγχρονισμός σημαιών στον φάκελο `%s': Εσφαλμένη εντολή"
+msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαιών στον φάκελο `%s': Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-folder.c:604
 #, c-format
@@ -3220,8 +3194,7 @@ msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος σ
 #: camel/providers/imap4/camel-imap4-folder.c:1032
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
-msgstr ""
-"Δεν είναι δυνατή η προσθήκη μηνύματος στον φάκελο`%s': Εσφαλμένη εντολή"
+msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στον φάκελο`%s': Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1144
 #, c-format
@@ -3260,16 +3233,14 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "Για ανάγνωση και αποθήκευση μηνυμάτων σε διακομιστές ·IMAPv4rev1."
 
 #: camel/providers/imap4/camel-imap4-provider.c:90
-msgid ""
-"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
 "Με την επιλογή αύτη θα γίνει σύνδεση στο διακομιστή IMAPv4rev1 με χρήση "
 "κωδικού απλού κειμένου."
 
 #: camel/providers/imap4/camel-imap4-store.c:477
 #, c-format
-msgid ""
-"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr ""
 "Δεν ήταν δυνατή η σύνδεση με το διακομιστή IMAP %s με χρήση του %sμηχανισμού "
 "πιστοποίησης"
@@ -3287,13 +3258,12 @@ msgstr "Δεν είναι δυνατή η πιστοποίηση στο διακ
 #: camel/providers/imap4/camel-imap4-store.c:754
 #: camel/providers/imap4/camel-imap4-store.c:866
 msgid "Cannot create IMAP folders in offline mode."
-msgstr "Δεν ήταν δυνατή η δημιουργία φακέλων IMAP σε λειτουργία χωρίς σύνδεση"
+msgstr "Δεν ήταν δυνατή η δημιουργία φακέλων IMAP σε λειτουργία χωρίς σύνδεση."
 
 #: camel/providers/imap4/camel-imap4-store.c:793
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
-msgstr ""
-"Δεν είναι δυνατή η λήψη του φακέλου: `%s' στον διακομιστή IMAP %s: Άγνωστο"
+msgstr "Δεν είναι δυνατή η λήψη του φακέλου: `%s' στον διακομιστή IMAP %s: Άγνωστο"
 
 #: camel/providers/imap4/camel-imap4-store.c:914
 #, c-format
@@ -3312,7 +3282,7 @@ msgstr "Δεν ήταν δυνατή η διαγραφή του φακέλου `
 
 #: camel/providers/imap4/camel-imap4-store.c:958
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "Δεν ήταν δυνατή η διαγραφή φακέλων·IMAP·σε·λειτουργία·χωρίς·σύνδεση"
+msgstr "Δεν ήταν δυνατή η διαγραφή φακέλων·IMAP·σε·λειτουργία·χωρίς·σύνδεση."
 
 #: camel/providers/imap4/camel-imap4-store.c:1017
 #, c-format
@@ -3327,12 +3297,11 @@ msgstr "Δεν ήταν δυνατή η διαγραφή του φακέλου`%
 #: camel/providers/imap4/camel-imap4-store.c:1042
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr ""
-"Δεν ήταν δυνατή η μετονομασία του φακέλου `%s' σε `%s' : Ειδικός φάκελος"
+msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου `%s' σε `%s' : Ειδικός φάκελος"
 
 #: camel/providers/imap4/camel-imap4-store.c:1049
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr "Δεν ήταν δυνατή η μετονομασία φακέλων·IMAP·σε·λειτουργία·χωρίς·σύνδεση"
+msgstr "Δεν ήταν δυνατή η μετονομασία φακέλων·IMAP·σε·λειτουργία·χωρίς·σύνδεση."
 
 #: camel/providers/imap4/camel-imap4-store.c:1080
 #, c-format
@@ -3344,14 +3313,12 @@ msgstr ""
 #: camel/providers/imap4/camel-imap4-store.c:1085
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
-msgstr ""
-"Δεν ήταν δυνατή η μετονομασία του φακέλου `%s' σε `%s' : Εσφαλμένη εντολή"
+msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου `%s' σε `%s' : Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-store.c:1432
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr ""
-"Αδυναμία λήψης %s πληροφοριών για το pattern `%s' στον διακομιστή IMAP %s: %s"
+msgstr "Αδυναμία λήψης %s πληροφοριών για το pattern `%s' στον διακομιστή IMAP %s: %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:1434
 msgid "Bad command"
@@ -3359,7 +3326,7 @@ msgstr "Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-store.c:1472
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "Δεν ήταν δυνατή η εγγραφή σε φάκελους·IMAP·σε·λειτουργία·χωρίς·σύνδεση"
+msgstr "Δεν ήταν δυνατή η εγγραφή σε φάκελους·IMAP·σε·λειτουργία·χωρίς·σύνδεση."
 
 #: camel/providers/imap4/camel-imap4-store.c:1517
 #, c-format
@@ -3373,8 +3340,7 @@ msgstr "Δεν ήταν δυνατή η εγγραφή στον φάκελο %s:
 
 #: camel/providers/imap4/camel-imap4-store.c:1544
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr ""
-"Δεν είναι δυνατή η αποχώρηση από φάκελους·IMAP·σε·λειτουργία·χωρίς·σύνδεση"
+msgstr "Δεν είναι δυνατή η αποχώρηση από φάκελους·IMAP·σε·λειτουργία·χωρίς·σύνδεση."
 
 #: camel/providers/imap4/camel-imap4-store.c:1589
 #, c-format
@@ -3437,25 +3403,25 @@ msgstr "Αδυναμία σύνδεσης στο %s (θύρα %s):·%s"
 msgid "Could not connect to POP server on %s"
 msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP σε %s "
 
-#: camel/providers/local/camel-local-folder.c:179
+#: camel/providers/local/camel-local-folder.c:173
 msgid "Index message body data"
 msgstr "Δεδομένα σώματος μηνύματος καταλόγου"
 
 #. $HOME relative path + protocol string
-#: camel/providers/local/camel-local-folder.c:391
+#: camel/providers/local/camel-local-folder.c:378
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
 #. /var/spool/mail relative path + protocol
-#: camel/providers/local/camel-local-folder.c:395
-#: camel/providers/local/camel-local-folder.c:398
+#: camel/providers/local/camel-local-folder.c:382
+#: camel/providers/local/camel-local-folder.c:385
 #, c-format
 msgid "mailbox:%s (%s)"
 msgstr "mailbox:%s (%s)"
 
 #. a full path + protocol
-#: camel/providers/local/camel-local-folder.c:402
+#: camel/providers/local/camel-local-folder.c:389
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -3495,7 +3461,7 @@ msgstr "Κατάλογοι μηνυμάτων σε φορμά Maildir"
 
 #: camel/providers/local/camel-local-provider.c:89
 msgid "For storing local mail in maildir directories."
-msgstr "Για την αποθήκευση τοπικών μηνυμάτων σε καταλόγους maildir"
+msgstr "Για την αποθήκευση τοπικών μηνυμάτων σε καταλόγους maildir."
 
 #: camel/providers/local/camel-local-provider.c:101
 msgid "Store status headers in Elm/Pine/Mutt format"
@@ -3514,60 +3480,59 @@ msgstr ""
 "Μπορεί ακόμα να χρησιμοποιηθούν για την ανάγνωση δέντρου φακέλων στυλ Elm, "
 "Pine, ή Mutt."
 
-#: camel/providers/local/camel-local-store.c:143
-#: camel/providers/local/camel-local-store.c:254
-#: camel/providers/local/camel-mbox-store.c:353
-#: camel/providers/local/camel-spool-store.c:117
+#: camel/providers/local/camel-local-store.c:150
+#: camel/providers/local/camel-local-store.c:261
+#: camel/providers/local/camel-mbox-store.c:342
+#: camel/providers/local/camel-spool-store.c:125
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "Η αποθήκη του root %s δεν είναι απόλυτη θέση"
 
-#: camel/providers/local/camel-local-store.c:150
+#: camel/providers/local/camel-local-store.c:157
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "Η αποθήκη του root %s δεν είναι κανονικός κατάλογος"
 
-#: camel/providers/local/camel-local-store.c:159
-#: camel/providers/local/camel-local-store.c:167
-#: camel/providers/local/camel-local-store.c:265
+#: camel/providers/local/camel-local-store.c:166
+#: camel/providers/local/camel-local-store.c:174
+#: camel/providers/local/camel-local-store.c:272
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Δεν είναι δυνατή η λήψη του φακέλου: %s: %s"
 
-#: camel/providers/local/camel-local-store.c:179
+#: camel/providers/local/camel-local-store.c:186
 msgid "Local stores do not have an inbox"
 msgstr "Οι τοπικές αποθήκες δεν έχουν εισερχόμενα"
 
-#: camel/providers/local/camel-local-store.c:225
+#: camel/providers/local/camel-local-store.c:232
 #, c-format
 msgid "Local mail file %s"
 msgstr "Τοπικό αρχείο μηνυμάτων %s"
 
-#: camel/providers/local/camel-local-store.c:334
+#: camel/providers/local/camel-local-store.c:341
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
 msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου %s στο %s: %s"
 
-#: camel/providers/local/camel-local-store.c:399
+#: camel/providers/local/camel-local-store.c:406
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "Δεν ήταν δυνατή η μετονομασία '%s': %s"
 
-#: camel/providers/local/camel-local-store.c:424
-#: camel/providers/local/camel-mbox-store.c:282
+#: camel/providers/local/camel-local-store.c:431
+#: camel/providers/local/camel-mbox-store.c:271
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
 msgstr "Δεν ήταν δυνατή η διαγραφή του αρχείου περίληψης του φακέλου `%s': %s"
 
-#: camel/providers/local/camel-local-store.c:434
-#: camel/providers/local/camel-mbox-store.c:294
+#: camel/providers/local/camel-local-store.c:441
+#: camel/providers/local/camel-mbox-store.c:283
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
-msgstr ""
-"Δεν ήταν δυνατή η διαγραφή του αρχείου περιεχομένων του φακέλου `%s': %s"
+msgstr "Δεν ήταν δυνατή η διαγραφή του αρχείου περιεχομένων του φακέλου `%s': %s"
 
-#: camel/providers/local/camel-local-store.c:457
-#: camel/providers/local/camel-mbox-store.c:318
+#: camel/providers/local/camel-local-store.c:464
+#: camel/providers/local/camel-mbox-store.c:307
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
 msgstr "Δεν ήταν δυνατή η διαγραφή του αρχείου περίληψης του φακέλου `%s': %s"
@@ -3593,10 +3558,10 @@ msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος σ
 #: camel/providers/local/camel-maildir-folder.c:244
 #: camel/providers/local/camel-maildir-folder.c:258
 #: camel/providers/local/camel-maildir-folder.c:267
-#: camel/providers/local/camel-mbox-folder.c:402
-#: camel/providers/local/camel-mbox-folder.c:421
-#: camel/providers/local/camel-mbox-folder.c:452
-#: camel/providers/local/camel-mbox-folder.c:460
+#: camel/providers/local/camel-mbox-folder.c:339
+#: camel/providers/local/camel-mbox-folder.c:358
+#: camel/providers/local/camel-mbox-folder.c:389
+#: camel/providers/local/camel-mbox-folder.c:397
 #: camel/providers/local/camel-mh-folder.c:202
 #: camel/providers/local/camel-mh-folder.c:213
 #: camel/providers/local/camel-mh-folder.c:222
@@ -3614,21 +3579,21 @@ msgstr "Μη έγκυρα περιεχόμενα στο μήνυμα"
 
 #: camel/providers/local/camel-maildir-store.c:146
 #: camel/providers/local/camel-maildir-store.c:171
-#: camel/providers/local/camel-mbox-store.c:182
-#: camel/providers/local/camel-mbox-store.c:194
+#: camel/providers/local/camel-mbox-store.c:171
+#: camel/providers/local/camel-mbox-store.c:183
 #, c-format
 msgid "Cannot create folder `%s': %s"
 msgstr "Δεν είναι δυνατή η δημιουργία φακέλου `%s': %s"
 
 #: camel/providers/local/camel-maildir-store.c:159
-#: camel/providers/local/camel-mbox-store.c:152
+#: camel/providers/local/camel-mbox-store.c:141
 #: camel/providers/local/camel-mh-store.c:205
 #, c-format
 msgid "Cannot get folder `%s': %s"
 msgstr "Δεν είναι δυνατή η λήψη του φακέλου: %s: %s"
 
 #: camel/providers/local/camel-maildir-store.c:163
-#: camel/providers/local/camel-mbox-store.c:160
+#: camel/providers/local/camel-mbox-store.c:149
 #: camel/providers/local/camel-mh-store.c:212
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
@@ -3651,8 +3616,8 @@ msgid "not a maildir directory"
 msgstr "δεν είναι κατάλογος maildir"
 
 #: camel/providers/local/camel-maildir-store.c:436
-#: camel/providers/local/camel-spool-store.c:319
-#: camel/providers/local/camel-spool-store.c:333
+#: camel/providers/local/camel-spool-store.c:327
+#: camel/providers/local/camel-spool-store.c:341
 #, c-format
 msgid "Could not scan folder `%s': %s"
 msgstr "Δεν ήταν δυνατή η σάρωση του φακέλου `%s': %s"
@@ -3679,48 +3644,48 @@ msgstr "Έλεγχος για νέα μηνύματα"
 msgid "Storing folder"
 msgstr "Φάκελος αποθήκευσης"
 
-#: camel/providers/local/camel-mbox-folder.c:210
-#: camel/providers/local/camel-spool-folder.c:176
+#: camel/providers/local/camel-mbox-folder.c:147
+#: camel/providers/local/camel-spool-folder.c:148
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
 msgstr "Δεν ήταν δυνατό το κλείδωμα του φακέλου στο %s: %s"
 
-#: camel/providers/local/camel-mbox-folder.c:269
+#: camel/providers/local/camel-mbox-folder.c:206
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "Δεν είναι δυνατό το άνοιγμα του mailbox: %s: %s\n"
 
-#: camel/providers/local/camel-mbox-folder.c:329
+#: camel/providers/local/camel-mbox-folder.c:266
 msgid "Mail append cancelled"
 msgstr "Ακύρωση πρόσθεσης μηνυμάτων"
 
-#: camel/providers/local/camel-mbox-folder.c:332
+#: camel/providers/local/camel-mbox-folder.c:269
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "Δεν είναι δυνατή η προσθήκη του μηνύματος στο αρχείο mbox: %s: %s"
 
-#: camel/providers/local/camel-mbox-folder.c:453
+#: camel/providers/local/camel-mbox-folder.c:390
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Ο φάκελος φαίνεται να έχει ανεπανόρθωτη ζημιά."
 
-#: camel/providers/local/camel-mbox-folder.c:461
+#: camel/providers/local/camel-mbox-folder.c:398
 #: camel/providers/local/camel-mh-folder.c:223
 msgid "Message construction failed."
 msgstr "Αποτυχία κατασκευής μηνύματος."
 
-#: camel/providers/local/camel-mbox-store.c:174
-#: camel/providers/local/camel-mbox-store.c:359
+#: camel/providers/local/camel-mbox-store.c:163
+#: camel/providers/local/camel-mbox-store.c:348
 msgid "Cannot create a folder by this name."
-msgstr "Δεν ήταν δυνατή η δημιουργία φακέλου με αυτό το όνομα"
+msgstr "Δεν ήταν δυνατή η δημιουργία φακέλου με αυτό το όνομα."
 
-#: camel/providers/local/camel-mbox-store.c:204
+#: camel/providers/local/camel-mbox-store.c:193
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
-msgstr "Δεν είναι δυνατή η λήψη του φακέλου `%s': δεν είναι κανονικό αρχείο"
+msgstr "Δεν είναι δυνατή η λήψη του φακέλου `%s': δεν είναι κανονικό αρχείο."
 
+#: camel/providers/local/camel-mbox-store.c:223
 #: camel/providers/local/camel-mbox-store.c:234
-#: camel/providers/local/camel-mbox-store.c:245
-#: camel/providers/local/camel-mbox-store.c:268
+#: camel/providers/local/camel-mbox-store.c:257
 #, c-format
 msgid ""
 "Could not delete folder `%s':\n"
@@ -3729,40 +3694,40 @@ msgstr ""
 "Δεν ήταν δυνατή η διαγραφή του φακέλου `%s':\n"
 "%s"
 
-#: camel/providers/local/camel-mbox-store.c:253
+#: camel/providers/local/camel-mbox-store.c:242
 #, c-format
 msgid "`%s' is not a regular file."
 msgstr "`%s' δεν είναι κανονικό αρχείο."
 
-#: camel/providers/local/camel-mbox-store.c:260
+#: camel/providers/local/camel-mbox-store.c:249
 #, c-format
 msgid "Folder `%s' is not empty. Not deleted."
 msgstr "Ο φάκελος `%s' δεν είναι άδειος. Δεν έγινε η διαγραφή."
 
-#: camel/providers/local/camel-mbox-store.c:372
+#: camel/providers/local/camel-mbox-store.c:361
 #, c-format
 msgid "Cannot create directory `%s': %s."
 msgstr "Δεν ήταν δυνατή η δημιουργία του καταλόγου `%s': %s."
 
-#: camel/providers/local/camel-mbox-store.c:386
+#: camel/providers/local/camel-mbox-store.c:375
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "Δεν είναι δυνατή η δημιουργία φακέλου: %s: %s"
 
-#: camel/providers/local/camel-mbox-store.c:388
+#: camel/providers/local/camel-mbox-store.c:377
 msgid "Folder already exists"
 msgstr "Ο φάκελος υπάρχει ήδη"
 
-#: camel/providers/local/camel-mbox-store.c:470
+#: camel/providers/local/camel-mbox-store.c:459
 msgid "The new folder name is illegal."
 msgstr "Το όνομα του νέου φακέλου δεν είναι έγκυρο."
 
-#: camel/providers/local/camel-mbox-store.c:483
+#: camel/providers/local/camel-mbox-store.c:472
 #, c-format
 msgid "Could not rename `%s': `%s': %s"
 msgstr "Δεν ήταν δυνατή η μετονομασία `%s': `%s': %s"
 
-#: camel/providers/local/camel-mbox-store.c:558
+#: camel/providers/local/camel-mbox-store.c:547
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Δεν ήταν δυνατή η μετονομασία του '%s' σε %s: %s"
@@ -3775,8 +3740,7 @@ msgstr "Δεν ήταν δυνατό το άνοιγμα του φακέλου: 
 #: camel/providers/local/camel-mbox-summary.c:470
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr ""
-"Μοιραίο σφάλμα ανάλυσης αλληλογραφίας κοντά στην τοποθεσία %ld στο φάκελο %s"
+msgstr "Μοιραίο σφάλμα ανάλυσης αλληλογραφίας κοντά στην τοποθεσία %ld στο φάκελο %s"
 
 #: camel/providers/local/camel-mbox-summary.c:526
 #, c-format
@@ -3858,29 +3822,29 @@ msgstr "Δεν ήταν δυνατό να δημιουργηθεί ο φάκελ
 #: camel/providers/local/camel-mh-store.c:232
 #, c-format
 msgid "Cannot get folder `%s': not a directory."
-msgstr "Δεν είναι δυνατή η λήψη του φακέλου `%s': δεν είναι κατάλογος"
+msgstr "Δεν είναι δυνατή η λήψη του φακέλου `%s': δεν είναι κατάλογος."
 
 #: camel/providers/local/camel-mh-summary.c:247
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Δεν είναι δυνατό να βρεθεί η θέση καταλόγου του ΜΗ: %s: %s"
 
-#: camel/providers/local/camel-spool-store.c:123
+#: camel/providers/local/camel-spool-store.c:131
 #, c-format
 msgid "Spool `%s' cannot be opened: %s"
 msgstr "Το Spool `%s' δεν μπορεί να ανοιχθεί: %s"
 
-#: camel/providers/local/camel-spool-store.c:135
+#: camel/providers/local/camel-spool-store.c:143
 #, c-format
 msgid "Spool `%s' is not a regular file or directory"
 msgstr "Spool `%s' δεν είναι κανονικός κατάλογος ή αρχείο"
 
-#: camel/providers/local/camel-spool-store.c:154
+#: camel/providers/local/camel-spool-store.c:162
 #, c-format
 msgid "Folder `%s/%s' does not exist."
 msgstr "Ο φάκελος`%s/%s' δεν υπάρχει."
 
-#: camel/providers/local/camel-spool-store.c:164
+#: camel/providers/local/camel-spool-store.c:172
 #, c-format
 msgid ""
 "Could not open folder `%s':\n"
@@ -3889,12 +3853,12 @@ msgstr ""
 "Δεν ήταν δυνατό το άνοιγμα του φακέλου`%s':\n"
 "%s"
 
-#: camel/providers/local/camel-spool-store.c:168
+#: camel/providers/local/camel-spool-store.c:176
 #, c-format
 msgid "Folder `%s' does not exist."
 msgstr "Ο φάκελος `%s' δεν υπάρχει."
 
-#: camel/providers/local/camel-spool-store.c:173
+#: camel/providers/local/camel-spool-store.c:181
 #, c-format
 msgid ""
 "Could not create folder `%s':\n"
@@ -3903,30 +3867,30 @@ msgstr ""
 "Δεν ήταν δυνατό να δημιουργηθεί ο φάκελος`%s':\n"
 "%s"
 
-#: camel/providers/local/camel-spool-store.c:181
+#: camel/providers/local/camel-spool-store.c:189
 #, c-format
 msgid "`%s' is not a mailbox file."
 msgstr "`%s' δεν είναι αρχείο αλληλογραφίας."
 
-#: camel/providers/local/camel-spool-store.c:198
+#: camel/providers/local/camel-spool-store.c:206
 msgid "Store does not support an INBOX"
 msgstr " Η αποθήκευση δεν υποστηρίζει ένα INBOX"
 
-#: camel/providers/local/camel-spool-store.c:210
+#: camel/providers/local/camel-spool-store.c:218
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Αρχείο αλληλογραφίας spool %s"
 
-#: camel/providers/local/camel-spool-store.c:210
+#: camel/providers/local/camel-spool-store.c:218
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Δέντρο φακέλου spool %s"
 
-#: camel/providers/local/camel-spool-store.c:218
+#: camel/providers/local/camel-spool-store.c:226
 msgid "Spool folders cannot be renamed"
 msgstr "Οι φάκελοι spool δε μπορούν να μετονομασθούν"
 
-#: camel/providers/local/camel-spool-store.c:226
+#: camel/providers/local/camel-spool-store.c:234
 msgid "Spool folders cannot be deleted"
 msgstr "Οι φάκελοι spool δε μπορούν να διαγραφούν"
 
@@ -3976,10 +3940,8 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Δεν ήταν δυνατή η αντιγραφή μηνυμάτων από έναν φάκελο NNTP!"
 
 #: camel/providers/nntp/camel-nntp-provider.c:44
-msgid ""
-"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr ""
-"Εμφάνιση φακέλων σε σύντμηση (π.χ l.g.linux αντί για local.greek.linux)"
+msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr "Εμφάνιση φακέλων σε σύντμηση (π.χ l.g.linux αντί για local.greek.linux)"
 
 #: camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
@@ -3993,7 +3955,7 @@ msgstr "Ειδήσεις USENET"
 msgid "This is a provider for reading from and posting toUSENET newsgroups."
 msgstr ""
 "Αυτός είναι ένας παροχέας για την ανάγνωση και δημοσίευση μηνυμάτων σε "
-"ομάδες ειδήσεων USENET"
+"ομάδες ειδήσεων USENET."
 
 #: camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -4159,7 +4121,7 @@ msgstr "Διαγραφή μετά από %s ημέρα(ες)"
 
 #: camel/providers/pop3/camel-pop3-provider.c:47
 msgid "Disable support for all POP3 extensions"
-msgstr "Απενεργοποίηση υποστήριξης για όλες τις επεκτάσεις POP3 "
+msgstr "Απενεργοποίηση υποστήριξης για όλες τις επεκτάσεις POP3"
 
 #: camel/providers/pop3/camel-pop3-provider.c:55
 msgid "POP"
@@ -4186,13 +4148,12 @@ msgid ""
 msgstr ""
 "Με την επιλογή αυτή θα γίνει σύνδεση στο διακομιστή ΡΟΡ με την χρήση "
 "κρυπτογραφημένου κωδικού πρόσβασης. Αυτό μπορεί να μη λειτουργεί για όλους "
-"του χρήστες, ακόμα και αν οι διακομιστές υποστηρίζουν το αντίθετο."
+"τους χρήστες, ακόμα και αν οι διακομιστές υποστηρίζουν το αντίθετο."
 
 #: camel/providers/pop3/camel-pop3-store.c:204
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr ""
-"Δεν είναι δυνατή η ανάγνωση έγκυρου χαιρετισμού από τον διακομιστή POP %s "
+msgstr "Δεν είναι δυνατή η ανάγνωση έγκυρου χαιρετισμού από τον διακομιστή POP %s "
 
 #: camel/providers/pop3/camel-pop3-store.c:218
 #: camel/providers/pop3/camel-pop3-store.c:235
@@ -4200,8 +4161,7 @@ msgstr ""
 #: camel/providers/pop3/camel-pop3-store.c:251
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr ""
-"Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s σε ασφαλή λειτουργία: %s"
+msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s σε ασφαλή λειτουργία: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:219
 msgid "STLS not supported"
@@ -4210,7 +4170,7 @@ msgstr "Η επέκταση SSL/TLS δεν υποστηρίζεται"
 #: camel/providers/pop3/camel-pop3-store.c:363
 #, c-format
 msgid "Could not connect to POP server %s"
-msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s "
+msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:404
 #: camel/providers/pop3/camel-pop3-store.c:518
@@ -4312,8 +4272,7 @@ msgstr "Δεν είναι δυνατό να εκτελεστεί το %s: το �
 #: camel/providers/sendmail/camel-sendmail-transport.c:246
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
-msgstr ""
-"το πρόγραμμα sendmail τερματίστηκε σε κατάσταση %d: το μήνυμα δε στάλθηκε."
+msgstr "το πρόγραμμα sendmail τερματίστηκε σε κατάσταση %d: το μήνυμα δε στάλθηκε."
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:260
 msgid "sendmail"
@@ -4407,8 +4366,7 @@ msgstr ""
 
 #: camel/providers/smtp/camel-smtp-transport.c:199
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr ""
-"Η αιτηθείσα ενέργεια δεν εκτελέστηκε: το όνομα του mailbox δεν επιτρέπεται"
+msgstr "Η αιτηθείσα ενέργεια δεν εκτελέστηκε: το όνομα του mailbox δεν επιτρέπεται"
 
 #: camel/providers/smtp/camel-smtp-transport.c:201
 msgid "Start mail input; end with <CRLF>.<CRLF>"
@@ -4443,8 +4401,7 @@ msgstr "Σφάλμα απάντησης Welcome"
 #: camel/providers/smtp/camel-smtp-transport.c:364
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr ""
-"Δεν ήταν δυνατή η σύνδεση με τον διακομιστή SMTP %s σε ασφαλή λειτουργία: %s"
+msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή SMTP %s σε ασφαλή λειτουργία: %s"
 
 #: camel/providers/smtp/camel-smtp-transport.c:334
 #, c-format
@@ -4458,8 +4415,7 @@ msgstr "Η εντολή STARTTLS απέτυχε"
 #: camel/providers/smtp/camel-smtp-transport.c:491
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr ""
-"Ο διακομιστής SMTP %s δεν υποστηρίζει τον τύπο πιστοποίησης %s που ζητήθηκε"
+msgstr "Ο διακομιστής SMTP %s δεν υποστηρίζει τον τύπο πιστοποίησης %s που ζητήθηκε."
 
 #: camel/providers/smtp/camel-smtp-transport.c:529
 #, c-format
@@ -4489,7 +4445,7 @@ msgstr "Παράδοση μηνυμάτων μέσω %s"
 
 #: camel/providers/smtp/camel-smtp-transport.c:692
 msgid "Cannot send message: service not connected."
-msgstr "Δεν είναι δυνατή η αποστολή του μηνύματος: δεν καθορίστηκε υπηρεσία"
+msgstr "Δεν είναι δυνατή η αποστολή του μηνύματος: δεν καθορίστηκε υπηρεσία."
 
 #: camel/providers/smtp/camel-smtp-transport.c:698
 msgid "Cannot send message: sender address not valid."
@@ -4503,8 +4459,7 @@ msgstr "Γίνεται αποστολή μηνύματος"
 
 #: camel/providers/smtp/camel-smtp-transport.c:717
 msgid "Cannot send message: no recipients defined."
-msgstr ""
-"Δεν είναι δυνατή η αποστολή του μηνύματος: δεν καθορίστηκαν παραλήπτες."
+msgstr "Δεν είναι δυνατή η αποστολή του μηνύματος: δεν καθορίστηκαν παραλήπτες."
 
 #: camel/providers/smtp/camel-smtp-transport.c:728
 msgid "Cannot send message: one or more invalid recipients"
@@ -4641,7 +4596,7 @@ msgstr "Διεθνή"
 
 #: libedataserver/e-categories.c:237
 msgid "Key Customer"
-msgstr "Key Customer"
+msgstr "Σημαντικός Πελάτης"
 
 #: libedataserver/e-categories.c:238
 msgid "Miscellaneous"
@@ -4653,7 +4608,7 @@ msgstr "Προσωπικά"
 
 #: libedataserver/e-categories.c:240
 msgid "Phone Calls"
-msgstr "Κλησεις τηλεφώνου"
+msgstr "Τηλεφωνήματα"
 
 #: libedataserver/e-categories.c:241
 msgid "Status"
@@ -4669,7 +4624,7 @@ msgstr "Προμηθευτές"
 
 #: libedataserver/e-categories.c:244
 msgid "Time & Expenses"
-msgstr "Χρόνος & έξοδα"
+msgstr "Χρόνος & Έξοδα"
 
 #: libedataserver/e-categories.c:245
 msgid "VIP"
@@ -4804,7 +4759,7 @@ msgstr "%I %p"
 
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
-msgstr "Εικονίδιο κατηγορίας"
+msgstr "Εικονίδιο Κατηγορίας"
 
 #: libedataserverui/e-categories-dialog.c:237
 #, c-format
@@ -4821,19 +4776,19 @@ msgstr "Κατηγορία"
 
 #: libedataserverui/e-categories-dialog.glade.h:1
 msgid "Category Properties"
-msgstr "Ιδιότητες κατηγορίας"
+msgstr "Ιδιότητες Κατηγορίας"
 
 #: libedataserverui/e-categories-dialog.glade.h:2
 msgid "Category _Color"
-msgstr "_Χρώμα κατηγορίας"
+msgstr "_Χρώμα Κατηγορίας"
 
 #: libedataserverui/e-categories-dialog.glade.h:3
 msgid "Category _Icon"
-msgstr "Ε_ικονίδιο·κατηγορίας"
+msgstr "Ε_ικονίδιο Κατηγορίας"
 
 #: libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Name"
-msgstr "Ό_νομα·κατηγορίας"
+msgstr "Ό_νομα Κατηγορίας"
 
 #: libedataserverui/e-categories-dialog.glade.h:5
 msgid "Item(s) belong to these _categories:"
@@ -4841,7 +4796,7 @@ msgstr "Τα παρακάτω αντικείμενα ανήκουν σε αυτ�
 
 #: libedataserverui/e-categories-dialog.glade.h:6
 msgid "_Available Categories:"
-msgstr "Διαθέσιμες _κατηγορίες"
+msgstr "Διαθέσιμες _Κατηγορίες:"
 
 #: libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Edit"
@@ -4851,7 +4806,7 @@ msgstr "_Επεξεργασία"
 msgid "categories"
 msgstr "κατηγορίες"
 
-#: libedataserverui/e-name-selector-dialog.c:197
+#: libedataserverui/e-name-selector-dialog.c:200
 msgid "Select Contacts from Address Book"
 msgstr "Επιλογή Επαφών από το Βιβλίο Διευθύνσεων"
 
@@ -4930,41 +4885,3 @@ msgstr "Αρχείο Βιβλίου Διευθύνσεων του Evolution κα
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Multiple segmentation faults occurred; can't display error dialog\n"
 
-#~ msgid "File As"
-#~ msgstr "Αρχειοθέτηση Ως"
-
-#~ msgid "Repository is Offline"
-#~ msgstr "Το αρχείο φύλαξης είναι εκτός δικτύου"
-
-#~ msgid "Address Book and Calendar"
-#~ msgstr "Βιβλίο Διευθύνσεων και Ημερολόγιο"
-
-#~ msgid "Tasks"
-#~ msgstr "Εργασίες"
-
-#~ msgid "Checklist"
-#~ msgstr "Checklist"
-
-#~ msgid "%sEnter password for %s (user %s)"
-#~ msgstr "%sΕισάγετε κωδικό πρόσβασης για %s (χρήστης %s)"
-
-#~ msgid "Failed to authenticate.\n"
-#~ msgstr "Δεν ήταν δυνατή η πιστοποίηση.\n"
-
-#~ msgid "Server rejected username"
-#~ msgstr "Ο διακομιστής απέρριψε το όνομα χρήστη"
-
-#~ msgid "Failed to send username to server"
-#~ msgstr "Αποτυχία σποστολής ονόματος χρήστη στον διακομιστή"
-
-#~ msgid "Server rejected username/password"
-#~ msgstr "Ο διακομιστής απέρριψε το όνομα χρήστη/κωδικό"
-
-#~ msgid "Could not get group list from server."
-#~ msgstr "Αδυναμία λήψης λίστας ομάδας από τον διακομιστή"
-
-#~ msgid "Unable to load grouplist file for %s: %s"
-#~ msgstr "Αδυναμία φόρτωσης αρχείου λίστας ομάδας για %s: %s"
-
-#~ msgid "Unable to save grouplist file for %s: %s"
-#~ msgstr "Αδυναμία αποθήκευσης αρχείου λίστας ομάδας για %s: %s"
