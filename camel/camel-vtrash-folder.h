@@ -39,8 +39,8 @@ extern "C" {
 typedef struct _CamelVTrashFolder      CamelVTrashFolder;
 typedef struct _CamelVTrashFolderClass CamelVTrashFolderClass;
 
-#define CAMEL_VTRASH_NAME "Trash"
-#define CAMEL_VJUNK_NAME "Junk"
+#define CAMEL_VTRASH_NAME ".#evolution/Trash"
+#define CAMEL_VJUNK_NAME ".#evolution/Junk"
 
 enum _camel_vtrash_folder_t {
 	CAMEL_VTRASH_FOLDER_TRASH,

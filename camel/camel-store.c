@@ -673,7 +673,7 @@ add_special_info (CamelStore *store, CamelFolderInfo *info, const char *name, co
 	
 	parent = NULL;
 	for (fi = info; fi; fi = fi->next) {
-		if (!strcmp (fi->name, name))
+		if (!strcmp (fi->full_name, name))
 			break;
 		parent = fi;
 	}
