@@ -1,3 +1,10 @@
+2005-01-19  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_create_object) : Add 'default' to
+	the view argument, as this is now necessary for the server
+	to display the default values.
+	
 2005-01-18  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #68599

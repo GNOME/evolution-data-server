@@ -1388,7 +1388,8 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			}
 			
 			/* convert uid_list to GPtrArray and get the items in a list */
-			e_gw_connection_get_items_from_ids (priv->cnc, priv->container_id, "recipients message",
+			e_gw_connection_get_items_from_ids (priv->cnc,
+					priv->container_id, "recipients message default",
 					uid_array, &list);
 			/* FIXME  check if list is null and status may have
 			 * failed. */
