@@ -1,3 +1,12 @@
+2005-01-18  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-name-selector-entry.c (find_destination_by_index): Tolerate
+	the case where you're trying to get the first contact and we
+	have zero, without warning.
+	(sync_destination_at_position): Accept the fact that we may not get a
+	destination to sync (happens if there are no destinations and the user
+	activated the entry), and return instead of failing an assertion.
+
 2005-01-12  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #28532

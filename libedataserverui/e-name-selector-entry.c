@@ -248,7 +248,10 @@ find_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index)
 	path = gtk_tree_path_new_from_indices (index, -1);
 	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_entry->destination_store),
 				      &iter, path)) {
-		g_warning ("ENameSelectorEntry is out of sync with model!");
+		/* If we have zero destinations, getting a NULL destination at index 0
+		 * is valid. */
+		if (index > 0)
+			g_warning ("ENameSelectorEntry is out of sync with model!");
 		gtk_tree_path_free (path);
 		return NULL;
 	}
@@ -838,8 +841,11 @@ sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint rang
 	gint          address_len;
 	gint          range_start, range_end;
 
+	/* Get the destination we're looking at. Note that the entry may be empty, and so
+	 * there may not be one. */
 	destination = find_destination_at_position (name_selector_entry, range_pos);
-	g_assert (destination);
+	if (!destination)
+		return;
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	if (!get_range_at_position (text, range_pos, &range_start, &range_end)) {
