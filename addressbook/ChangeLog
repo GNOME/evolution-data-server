@@ -1,3 +1,10 @@
+2004-09-22  Diego Gonzalez <diego@pemas.net>
+
+	Fixes #66574.
+
+	* libebook/e-book.c (e_book_get_self): open the book before
+	getting the contact.
+
 2004-09-22  William Jon McCann  <mccann@jhu.edu>
 
 	* libebook/e-book.c (emit_async_open_response)
