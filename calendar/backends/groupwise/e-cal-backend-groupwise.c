@@ -219,7 +219,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	g_object_unref (priv->cnc);
 	priv->cnc = NULL;
 
-	return GNOME_Evolution_Calendar_OtherError;
+	return GNOME_Evolution_Calendar_AuthenticationFailed;
 }
 
 static ECalBackendSyncStatus

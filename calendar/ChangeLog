@@ -1,3 +1,9 @@
+2003-12-16  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_open): return an AuthenticationFailed error
+	when we can't open the connection.
+
 2003-12-16  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.c (e_cal_get_free_busy): the info is already in
