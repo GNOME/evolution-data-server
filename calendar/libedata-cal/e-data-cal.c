@@ -1128,7 +1128,7 @@ e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus st
 	}
 	
 	CORBA_exception_init (&ev);
-	GNOME_Evolution_Calendar_CalListener_notifyDefaultTimezoneSet (priv->listener, status, &ev);
+	GNOME_Evolution_Calendar_CalListener_notifyChanges (priv->listener, status, &seq, &ev);
 
 	CORBA_free (seq._buffer);
 

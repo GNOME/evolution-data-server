@@ -1,3 +1,10 @@
+2004-04-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* libedata-cal/e-data-cal.c (e_data_cal_notify_changes): Fixed a
+	c/p bug. Don't call notifyDefaultTimezoneSet, we want to
+	notifyChanges! Took me long enough to track this little bugger
+	down.
+
 2004-04-21  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* backends/file/e-cal-backend-file.c
