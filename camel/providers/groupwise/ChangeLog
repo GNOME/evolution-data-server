@@ -1,3 +1,10 @@
+2005-02-01  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel-groupwise-folder.c: (convert_to_calendar): Remove
+	the container id, from the item id and set it to X-GWRECORD
+	id. Add temp to strconcat so that all attendees get appended
+	to the string.
+
 2005-02-01 Vivek Jain <jvivek@novell.com>
   see bug #71758 
  * camel-groupwise-store.c 

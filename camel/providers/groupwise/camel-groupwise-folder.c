@@ -1061,16 +1061,17 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	GSList *recp_list = NULL ;
 	const char *desc = e_gw_item_get_message (item) ;
 	const char *location = e_gw_item_get_place (item) ;
-	char *temp = NULL ;
+	char *temp = "", **tmp;
 	const char *priority = e_gw_item_get_task_priority (item) ;
 
+	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 	recp_list = e_gw_item_get_recipient_list (item) ;
 	if (recp_list) {
 		GSList *rl ;
 
 		for (rl = recp_list ; rl != NULL ; rl = rl->next) {
 			EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
-			temp = g_strconcat ( "ATTENDEE;CN= ",recp->display_name, 
+			temp = g_strconcat (temp, "ATTENDEE;CN= ",recp->display_name, 
 					     ";ROLE= REQ-PARTICIPANT:", "\n", 
 					     " MAILTO:", recp->email, "\n",  NULL) ;
 		}
@@ -1084,7 +1085,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	                    "DTSTAMP:", e_gw_item_get_creation_date (item), "\n",
 			    "X-GWMESSAGEID:", e_gw_item_get_id(item), "\n", 
 			    "X-GWSHOW-AS:BUSY", "\n",
-			    "X-GWRECORDID:", e_gw_item_get_id (item), "\n", 
+			    "X-GWRECORDID:", tmp [0], "\n", 
 			    "ORGANIZER;CN= ",org ? org->display_name : "", 
 			    ";ROLE= CHAIR:", "\n", 
 			    " MAILTO:", org ? org->email : "", "\n",
@@ -1101,5 +1102,6 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	*len = strlen (*str) ;
 	
 	g_free (temp) ;
+	g_strfreev (tmp);
 }
 
