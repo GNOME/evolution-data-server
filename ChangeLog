@@ -1,3 +1,8 @@
+2005-02-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libedataserver/e-data-server-module.c: (load_module_dir):
+	Don't leak the module path.
+
 2005-02-09  Hans Petter Jansson  <hpj@novell.com>
 
 	* libdb/dbinc/mutex.h: Fix PPC assembly.

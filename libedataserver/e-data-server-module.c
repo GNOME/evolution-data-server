@@ -199,6 +199,7 @@ load_module_dir (const char *dirname)
 							     name, 
 							     NULL);
 				e_data_server_module_load_file (filename);
+				g_free (filename);
 			}
 		}
 
