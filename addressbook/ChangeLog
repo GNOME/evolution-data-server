@@ -1,3 +1,9 @@
+2004-04-07  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.h: reorder the EVC_X #defines a bit, and add in
+	all he EVC_X_DEST_* #defines (for use with the new EDestination
+	stuff.)
+
 2044-04-07  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c (func_is) :
