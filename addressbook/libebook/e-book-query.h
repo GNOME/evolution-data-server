@@ -6,6 +6,8 @@
 
 G_BEGIN_DECLS
 
+#define E_TYPE_BOOK_QUERY (e_book_query_get_type ())
+
 typedef struct EBookQuery EBookQuery;
 
 typedef enum {
@@ -43,6 +45,9 @@ EBookQuery* e_book_query_field_test   (EContactField   field,
 
 /* a special any field contains query */
 EBookQuery* e_book_query_any_field_contains (const char  *value);
+
+GType       e_book_query_get_type (void);
+EBookQuery* e_book_query_copy     (EBookQuery *q);
 
 G_END_DECLS
 

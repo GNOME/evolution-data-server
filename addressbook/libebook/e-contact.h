@@ -21,6 +21,12 @@
 #define E_IS_CONTACT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CONTACT))
 #define E_CONTACT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CONTACT, EContactClass))
 
+#define E_TYPE_CONTACT_DATE       (e_contact_date_get_type ())
+#define E_TYPE_CONTACT_NAME       (e_contact_name_get_type ())
+#define E_TYPE_CONTACT_PHOTO      (e_contact_photo_get_type ())
+#define E_TYPE_CONTACT_CERT       (e_contact_cert_get_type ())
+#define E_TYPE_CONTACT_ADDRESS    (e_contact_address_get_type ())
+
 typedef struct _EContact EContact;
 typedef struct _EContactClass EContactClass;
 typedef struct _EContactPrivate EContactPrivate;

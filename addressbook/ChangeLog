@@ -1,3 +1,20 @@
+2004-02-20  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes bug #53994 ]
+	
+	* libebook/e-book-query.c (e_book_query_get_type): new function,
+	supply e_book_query_copy as the CopyFunc, and e_book_query_unref
+	as the FreeFunc.
+	(e_book_query_copy): new function, just convert @q to a string and
+	reparse it, ala the EVCard copy function.
+
+	* libebook/e-book-query.h: add prototypes for
+	e_book_query_get_type and e_book_query_copy.  also add
+	E_TYPE_BOOK_QUERY.
+
+	* libebook/e-contact.h: add
+	E_TYPE_CONTACT_{DATE,NAME,PHOTO,CERT,ADDRESS}.
+
 2004-02-12  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book-listener.c

@@ -626,3 +626,25 @@ e_book_query_to_string    (EBookQuery *q)
 
 	return g_string_free (str, FALSE);
 }
+
+GType
+e_book_query_get_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("EBookQuery",
+							(GBoxedCopyFunc) e_book_query_copy,
+							(GBoxedFreeFunc) e_book_query_unref);
+	return type_id;
+}
+
+EBookQuery*
+e_book_query_copy (EBookQuery *q)
+{
+	char *str = e_book_query_to_string (q);
+	EBookQuery *nq = e_book_query_from_string (str);
+
+	g_free (str);
+	return nq;
+}
