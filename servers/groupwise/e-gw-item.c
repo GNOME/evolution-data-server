@@ -2463,7 +2463,6 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 	soup_soap_message_write_string (msg, attachment->data) ;
 	soup_soap_message_end_element (msg) ;
 	
-	g_free (size) ;
 	soup_soap_message_end_element (msg) ;
 	g_free (size) ;
 }

@@ -1,3 +1,8 @@
+2005-01-10  Harish Krishnaswamy  <kharish@novell.com>
+	* e-gw-item.c
+	  (add_attachment_to_soap_message): remove the 
+	  duplicate free on size.
+
 2005-01-10  Sivaiah Nallagatla <snallagatla@novell.com>
                                                                                                                              
         * e-gw-connection.[ch](e_gw_connection_purge_deleted_items)
