@@ -475,7 +475,7 @@ remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
 	l = g_list_find (priv->comp, comp);
 	priv->comp = g_list_delete_link (priv->comp, l);
 
-	/* update the set of categories */
+	/* Update the set of categories */
 	e_cal_component_get_categories_list (comp, &categories);
 	e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
 	e_cal_component_free_categories_list (categories);
@@ -488,45 +488,37 @@ remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
  * icalcomponent.
  */
 static void
-remove_component (ECalBackendFile *cbfile, ECalComponent *comp)
+remove_component (ECalBackendFile *cbfile, const char *uid, ECalBackendFileObject *obj_data)
 {
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
-	const char *uid;
 	GList *l;
 	GSList *categories;
-	ECalBackendFileObject *obj_data;
 
 	priv = cbfile->priv;
 
 	/* Remove the icalcomp from the toplevel */
+	if (obj_data->full_object) {
+		icalcomp = e_cal_component_get_icalcomponent (obj_data->full_object);
+		g_assert (icalcomp != NULL);
 
-	icalcomp = e_cal_component_get_icalcomponent (comp);
-	g_assert (icalcomp != NULL);
+		icalcomponent_remove_component (priv->icalcomp, icalcomp);
 
-	icalcomponent_remove_component (priv->icalcomp, icalcomp);
+		/* Remove it from our mapping */
+		l = g_list_find (priv->comp, obj_data->full_object);
+		g_assert (l != NULL);
+		priv->comp = g_list_delete_link (priv->comp, l);
 
-	/* Remove it from our mapping */
-
-	e_cal_component_get_uid (comp, &uid);
-	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
-	if (!obj_data)
-		return;
-
-	g_hash_table_remove (priv->comp_uid_hash, uid);
-
-	l = g_list_find (priv->comp, comp);
-	g_assert (l != NULL);
-	priv->comp = g_list_delete_link (priv->comp, l);
+		/* Update the set of categories */
+		e_cal_component_get_categories_list (obj_data->full_object, &categories);
+		e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
+		e_cal_component_free_categories_list (categories);
+	}
 
 	/* remove the recurrences also */
-	g_hash_table_foreach_remove (obj_data->recurrences, (GHFunc) remove_recurrence_cb, cbfile);
+	g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_recurrence_cb, cbfile);
 
-	/* Update the set of categories */
-	e_cal_component_get_categories_list (comp, &categories);
-	e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
-	e_cal_component_free_categories_list (categories);
-
+	g_hash_table_remove (priv->comp_uid_hash, uid);
 	free_object ((gpointer) uid, (gpointer) obj_data, NULL);
 }
 
@@ -1723,7 +1715,6 @@ remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 {
 	time_t fromtt, instancett;
 	GSList *categories;
-	char *rid = key;
 	ECalComponent *instance = value;
 	RemoveRecurrenceData *rrdata = user_data;
 
@@ -1829,8 +1820,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			return GNOME_Evolution_Calendar_Success;
 		}
 
-		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
-						  (void **) &real_rid, (void **) &recurrence)) {
+		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &real_rid, &recurrence)) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (recurrence);
 
@@ -1876,7 +1866,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
 
-			remove_component (cbfile, obj_data->full_object);
+			remove_component (cbfile, comp_uid, obj_data);
 
 			/* Add the new object */
 			add_component (cbfile, comp, TRUE);
@@ -1938,7 +1928,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		if (old_object)
 			*old_object = e_cal_component_get_as_string (obj_data->full_object);
 
-		remove_component (cbfile, obj_data->full_object);
+		remove_component (cbfile, comp_uid, obj_data);
 
 		/* Add the new object */
 		add_component (cbfile, comp, TRUE);
@@ -1960,7 +1950,7 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 	if (!rid || !*rid)
 		return;
 
-	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (void **) &hash_rid, (void **) &comp)) {
+	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &hash_rid, &comp)) {
 		/* remove the component from our data */
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
 						e_cal_component_get_icalcomponent (comp));
@@ -2027,27 +2017,21 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	case CALOBJ_MOD_ALL :
 		if (comp) {
 			*old_object = e_cal_component_get_as_string (comp);
-			remove_component (cbfile, comp);
 		} else {
 			char *real_rid;
 
-			if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &real_rid, &comp)) {
+			if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &real_rid, &comp))
 				*old_object = e_cal_component_get_as_string (comp);
-			}
 		}
 
-		rrdata.cbfile = cbfile;
-		rrdata.obj_data = obj_data;
-		rrdata.rid = rid;
-		rrdata.mod = mod;
-		g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_object_instance_cb, &rrdata);
+		remove_component (cbfile, uid, obj_data);
 
 		*object = NULL;
 		break;
 	case CALOBJ_MOD_THIS :
 		*old_object = e_cal_component_get_as_string (comp);
 		if (!rid || !*rid) {
-			remove_component (cbfile, comp);
+			remove_component (cbfile, uid, obj_data);
 			*object = NULL;
 		} else {
 			remove_instance (cbfile, obj_data, rid);
@@ -2093,15 +2077,18 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 static gboolean
 cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp)
 {
-	ECalComponent *old_comp;
+	ECalBackendFileObject *obj_data;
+	ECalBackendFilePrivate *priv;
+
+	priv = cbfile->priv;
 
 	/* Find the old version of the component. */
-	old_comp = lookup_component (cbfile, icalcomponent_get_uid (icalcomp));
-	if (!old_comp)
+	obj_data = g_hash_table_lookup (priv->comp_uid_hash, icalcomponent_get_uid (icalcomp));
+	if (!obj_data)
 		return FALSE;
 
 	/* And remove it */
-	remove_component (cbfile, old_comp);
+	remove_component (cbfile, icalcomponent_get_uid (icalcomp), obj_data);
 
 	return TRUE;
 }
@@ -2212,7 +2199,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	for (l = comps; l; l = l->next) {
 		const char *uid, *rid;
 		char *object, *old_object;
-		ECalComponent *old_comp;
+		ECalBackendFileObject *obj_data;
 
 		subcomp = l->data;
 	
@@ -2232,10 +2219,10 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		case ICAL_METHOD_PUBLISH:
 		case ICAL_METHOD_REQUEST:
 		case ICAL_METHOD_REPLY:
-			old_comp = lookup_component (cbfile, uid);
-			if (old_comp) {
-				old_object = e_cal_component_get_as_string (old_comp);
-				remove_component (cbfile, old_comp);
+			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
+			if (obj_data) {
+				old_object = e_cal_component_get_as_string (obj_data->full_object);
+				remove_component (cbfile, uid, obj_data);
 				add_component (cbfile, comp, FALSE);
 
 				object = e_cal_component_get_as_string (comp);
@@ -2244,7 +2231,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				g_free (old_object);
 			} else {
 				add_component (cbfile, comp, FALSE);
-				
+
 				object = e_cal_component_get_as_string (comp);
 				e_cal_backend_notify_object_created (E_CAL_BACKEND (backend), object);
 				g_free (object);
@@ -2266,9 +2253,9 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		case ICAL_METHOD_CANCEL:
 			if (cancel_received_object (cbfile, subcomp)) {
 				object = (char *) icalcomponent_as_ical_string (subcomp);
-				old_comp = lookup_component (cbfile, uid);
-				if (old_comp)
-					old_object = e_cal_component_get_as_string (old_comp);
+				obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
+				if (obj_data)
+					old_object = e_cal_component_get_as_string (obj_data->full_object);
 				else
 					old_object = NULL;
 

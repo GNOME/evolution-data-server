@@ -1,3 +1,18 @@
+2004-12-24  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/file/e-cal-backend-file.c (remove_component): made it work
+	for objects with only detached instances.
+	(remove_object_instance_cb): fixed warning.
+	(e_cal_backend_file_modify_object, e_cal_backend_file_remove_object,
+	e_cal_backend_file_receive_objects): adapted to changes in
+	remove_component.
+	(e_cal_backend_file_remove_object): call remove_component for the
+	CALOBJ_MOD_ALL case, since remove_component takes care of everything
+	now.
+	(cancel_received_object): look for the object in the comp_uid_hash,
+	since we need to pass the ECalBackendFileObject struct to
+	remove_component.
+
 2004-12-23  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-data-cal-view.c (impl_EDataCalView_start): removed
