@@ -2934,19 +2934,25 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 
 	for (l = objects; l; l = l->next) {
 		ECalComponent *comp;
+		icaltimezone *default_zone;
+
+		if (priv->default_zone)
+			default_zone = priv->default_zone;
+		else
+			default_zone = icaltimezone_get_utc_timezone ();
 
 		comp = l->data;
 		if (e_cal_component_is_instance (comp)) {
 			/* keep the detached instances apart */
 			e_cal_recur_generate_instances (comp, start, end, add_instance, &detached_instances,
 							e_cal_resolve_tzid_cb, ecal,
-							priv->default_zone);
+							default_zone);
 
 			g_object_unref (comp);
 		} else {
 			e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,
 							e_cal_resolve_tzid_cb, ecal,
-							priv->default_zone);
+							default_zone);
 
 			g_object_unref (comp);
 		}
