@@ -1,3 +1,10 @@
+2004-01-29  Chris Toshok  <toshok@m198-139.dsl.rawbw.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_load_source): honor the @only_if_exists arg
+	before creating the db or directory.  i.e. fix this so it's not
+	completely broken.
+
 2004-01-28  Radek Doulik  <rodo@ximian.com>
 
 	* libebook/e-contact.c (e_contact_set_property): use "CATEGORIES"

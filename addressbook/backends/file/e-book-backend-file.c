@@ -883,7 +883,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	} else {
 		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_RDONLY, 0666);
 
-		if (db_error != 0) {
+		if (db_error != 0 && !only_if_exists) {
 			int rv;
 
 			/* the database didn't exist, so we create the
@@ -899,7 +899,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
 
-			if (db_error == 0 && !only_if_exists) {
+			if (db_error == 0) {
 				EContact *contact;
 
 				contact = do_create(bf, XIMIAN_VCARD);
