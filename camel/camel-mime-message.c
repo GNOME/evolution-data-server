@@ -525,16 +525,24 @@ process_header (CamelMedium *medium, const char *name, const char *value)
 	header_type = (CamelHeaderType) g_hash_table_lookup (header_name_table, name);
 	switch (header_type) {
 	case HEADER_FROM:
-		if (message->from)
-			camel_object_unref (message->from);
-		message->from = camel_internet_address_new ();
-		camel_address_decode (CAMEL_ADDRESS (message->from), value);
+		addr = camel_internet_address_new();
+		if (camel_address_decode((CamelAddress *)addr, value) <= 0) {
+			camel_object_unref(addr);
+		} else {
+			if (message->from)
+				camel_object_unref(message->from);
+			message->from = addr;
+		}
 		break;
 	case HEADER_REPLY_TO:
-		if (message->reply_to)
-			camel_object_unref (message->reply_to);
-		message->reply_to = camel_internet_address_new ();
-		camel_address_decode (CAMEL_ADDRESS (message->reply_to), value);
+		addr = camel_internet_address_new();
+		if (camel_address_decode((CamelAddress *)addr, value) <= 0) {
+			camel_object_unref(addr);
+		} else {
+			if (message->reply_to)
+				camel_object_unref(message->reply_to);
+			message->reply_to = addr;
+		}
 		break;
 	case HEADER_SUBJECT:
 		g_free (message->subject);

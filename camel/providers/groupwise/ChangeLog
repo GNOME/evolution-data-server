@@ -1,3 +1,24 @@
+2005-03-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	  (gw_update_summary): using GString. An efficient way
+	  for fixing bug #72145
+
+2005-03-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c:
+	  (groupwise_get_folder): add peek and status views to 
+	  the creatCursorRequest
+	* camel-groupwise-folder.c:
+	  (gw_update_summary): initialise the status flag
+	  variable.
+	  *** Fixes bug #73308
+
+2005-03-09  Sankar P <psankar@novell.com>
+
+	* camel-groupwise-utils.c:(camel_groupwise_util_item_from_message)
+	Added code to fix the problem of Priority not set in outgoing mails
+
 2005-03-07  JP Rosevear  <jpr@novell.com>
 
 	From Dave Malcolm <dmalcolm@redhat.com>
@@ -5,6 +26,35 @@
 	* camel-groupwise-store-summary.c
 	(camel_groupwise_store_summary_namespace_set): move forward
 	declaration out of block
+	
+2005-03-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c:
+	  (groupwise_get_folder): added recipient view
+	  for get quick messages
+	* camel-groupwise-folder.c:
+	  (groupwise_refresh_info): added recipient view
+	  for get quick messages
+	  (gw_update_summary): parse the recipient list
+	  for mail ids to be set in the "To" field of the 
+	  summary.
+	  ** Fixes # 72145
+
+2005-03-03  Vivek Jain <jvivek@novell.com>
+
+	***Fixes # 72455
+		 #73231
+		 #73239		
+	* camel-groupwise-folder.c :(gw_update_summary)
+	initialize status_flags to 0
+
+2005-03-02  Vivek Jain <jvivek@novell.com>
+
+	***Fixes # 72373
+	* camel-groupwise-store.c :(groupwise_get_folder)
+	* camel-groupwise_folder.c :(groupwise_refresh_info)
+	pass types as NULL in the call of e_gw_connection_get_quick_messages
+	to retrieve all the items
 
 2005-02-28  Parthasarathi Susarla <sparthasarathi@novell.com>
 	

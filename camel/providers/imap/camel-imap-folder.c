@@ -765,11 +765,11 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 	gboolean unset;
 	int i, j, max;
 	
-	if (((CamelImapFolder *)folder)->read_only) {
+	if (folder->permanent_flags == 0) {
 		imap_sync_offline (folder, ex);
 		return;
 	}
-
+	
 	camel_exception_init (&local_ex);
 	CAMEL_SERVICE_LOCK (store, connect_lock);
 	

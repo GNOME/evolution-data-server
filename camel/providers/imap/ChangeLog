@@ -1,3 +1,10 @@
+2005-03-10  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-folder.c (imap_sync_online): READ-ONLY doesn't mean
+	we can't sync flags, allow flag syncing even in READ-ONLY mode
+	since the RFC states that flags listed in PERMANENTFLAGS are
+	always settable.
+
 2005-03-07  JP Rosevear  <jpr@novell.com>
 
 	From Dave Malcolm <dmalcolm@redhat.com>
@@ -5,6 +12,13 @@
 	* camel-imap-store-summary.c
 	(camel_imap_store_summary_namespace_set): move forward declaration
 	out of block to fix gcc4 compilation
+	
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #73112
+
+	* camel-imap-store.c (query_auth_types): don't re-connect if we're
+	already connected.
 
 2005-02-22  Not Zed  <NotZed@Ximian.com>
 

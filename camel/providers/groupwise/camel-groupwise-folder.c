@@ -93,12 +93,10 @@ groupwise_folder_get_message( CamelFolder *folder,
 	EGwConnectionStatus status ;
 	EGwConnection *cnc ;
 	EGwItem *item ;
-	char *dtstring ;
+	char *dtstring = NULL;
 	CamelStream *stream, *cache_stream;
 	CamelMultipart *multipart ;
 	int errno;
-	GList *read_items = NULL ;
-	guint32 item_status ;
 	struct _camel_header_address *ha;
 	char *subs_email;
 	struct _camel_header_address *to_list = NULL, *cc_list = NULL, *bcc_list=NULL;
@@ -392,12 +390,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 
 	camel_object_unref (multipart) ;
 	
-	item_status = e_gw_item_get_item_status (item);
-	if ( !(item_status & E_GW_ITEM_STAT_READ)) {
-		read_items = g_list_append (read_items, (char *)uid) ;
-		e_gw_connection_mark_read (cnc, read_items) ;
-	}
-
 	g_object_unref (item) ;
 	
 	if (body)
@@ -626,13 +618,14 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store) ;
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder) ;
 	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
+	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *)folder->summary;
 	EGwConnection *cnc = cnc_lookup (priv) ;
 	int status ;
 	GList *list = NULL;
 	GSList *slist = NULL, *sl ;
 	char *container_id = NULL ;
 	char *time_string = NULL, *t_str = NULL ;
-
+	
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name)) ;
 	if (!container_id) {
 		g_print ("\nERROR - Container id not present. Cannot refresh info\n") ;
@@ -654,10 +647,9 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-					"distribution created attachments subject",
-					&t_str, "New", "Mail", NULL, -1, &slist) ;
+					"peek recipient distribution created attachments subject status",
+					&t_str, "New", NULL, NULL, -1, &slist) ;
 	
-	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
@@ -665,6 +657,12 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 		return ;
 	}
 	
+	/* store t_str into the summary */
+	if (summary->time_string)
+		g_free (summary->time_string);
+	summary->time_string = g_strdup (t_str);
+	g_free (t_str), t_str = NULL;
+
 	for ( sl = slist ; sl != NULL; sl = sl->next) {
 		list = g_list_append (list, sl->data) ;
 	}
@@ -673,8 +671,8 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	t_str = g_strdup (time_string);
 	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-				"distribution created attachments subject",
-				&t_str, "Modified", "Mail", NULL, -1, &slist) ;
+				"peek recipient distribution created attachments subject status",
+				&t_str, "Modified", NULL, NULL, -1, &slist) ;
 	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -710,9 +708,11 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	CamelGroupwiseMessageInfo *mi = NULL;
 	GPtrArray *msg ;
 	GSList *attach_list = NULL ;
-	guint32 item_status, status_flags;
+	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL ;
 	int scount ;
+	gboolean exists = FALSE ;
+	GString *str = g_string_new (NULL);
 	
 //	CAMEL_SERVICE_ASSERT_LOCKED (gw_store, connect_lock);
 
@@ -727,21 +727,15 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		EGwItemOrganizer *org ;
 		char *date = NULL, *temp_date = NULL ;
 		const char *id ;
+		GSList *recp_list = NULL ;
+		status_flags = 0;
 
 		id = e_gw_item_get_id (item) ;
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id) ;
+		if (mi) 
+			exists = TRUE ;
 
-		if (mi) {
-			/*Message exists*/
-			item_status = e_gw_item_get_item_status (item);
-			/*if (item_status & E_GW_ITEM_STAT_DELETED)
-				status_flags |= CAMEL_MESSAGE_DELETED;*/
-			if (item_status & E_GW_ITEM_STAT_REPLIED)
-				status_flags |= CAMEL_MESSAGE_ANSWERED;
-			mi->info.flags |= status_flags;
-			camel_folder_change_info_change_uid (changes, e_gw_item_get_id (item)) ;
-		} else {
-			/*New message*/
+		if (!exists) {
 			mi = camel_message_info_new (folder->summary) ; 
 			if (mi->info.content == NULL) {
 				mi->info.content = camel_folder_summary_content_info_new (folder->summary);
@@ -749,51 +743,73 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			}
 
 			type = e_gw_item_get_item_type (item) ;
-
-
-			if (type == E_GW_ITEM_TYPE_CONTACT) {
+			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
+				exists = FALSE;
 				continue ;
-
-			} else if (type == E_GW_ITEM_TYPE_UNKNOWN) 
-				continue ;
-
-			status_flags = 0;
-			item_status = e_gw_item_get_item_status (item);
-			if (item_status & E_GW_ITEM_STAT_READ)
-				status_flags |= CAMEL_MESSAGE_SEEN;
-			/*if (item_status & E_GW_ITEM_STAT_DELETED)
-				status_flags |= CAMEL_MESSAGE_DELETED;*/
-			if (item_status & E_GW_ITEM_STAT_REPLIED)
-				status_flags |= CAMEL_MESSAGE_ANSWERED;
-			mi->info.flags |= status_flags;
-
-			attach_list = e_gw_item_get_attach_id_list (item) ;
-			if (attach_list)  
-				mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
-
-			org = e_gw_item_get_organizer (item) ; 
-			if (org) {
-				mi->info.from = g_strconcat(org->display_name,"<",org->email,">",NULL) ;
-				mi->info.to = g_strdup(e_gw_item_get_to (item)) ;
 			}
 
-			temp_date = e_gw_item_get_creation_date(item) ;
-			if (temp_date) {
-				time_t time = e_gw_connection_get_date_from_string (temp_date) ;
-				time_t actual_time = camel_header_decode_date (ctime(&time), NULL) ;
-				mi->info.date_sent = mi->info.date_received = actual_time ;
+		}
+
+		item_status = e_gw_item_get_item_status (item);
+		if (item_status & E_GW_ITEM_STAT_READ)
+			status_flags |= CAMEL_MESSAGE_SEEN;
+		/*if (item_status & E_GW_ITEM_STAT_DELETED)
+		  status_flags |= CAMEL_MESSAGE_DELETED;*/
+		if (item_status & E_GW_ITEM_STAT_REPLIED)
+			status_flags |= CAMEL_MESSAGE_ANSWERED;
+		mi->info.flags |= status_flags;
+
+		attach_list = e_gw_item_get_attach_id_list (item) ;
+		if (attach_list)  
+			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
+
+		org = e_gw_item_get_organizer (item) ; 
+		if (org) {
+			g_string_append_printf (str, "%s <%s>",org->display_name, org->email);
+			mi->info.from = camel_pstring_strdup (str->str);
+		}
+		g_string_truncate (str, 0);
+		recp_list = e_gw_item_get_recipient_list (item);
+		if (recp_list) {
+			GSList *rl;
+			int i = 0;
+			for (rl = recp_list; rl != NULL; rl = rl->next) {
+				EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
+				if (recp->type == E_GW_ITEM_RECIPIENT_TO) {
+					if (i)
+						str = g_string_append (str, ", ");
+					g_string_append_printf (str,"%s <%s>", recp->display_name, recp->email);
+				}
+				i++;
 			}
-			mi->info.uid = g_strdup (e_gw_item_get_id (item)) ;
-			mi->info.subject = g_strdup (e_gw_item_get_subject(item)) ;
+			mi->info.to = camel_pstring_strdup (str->str);
+			g_string_truncate (str, 0);
+		}
 
+		temp_date = e_gw_item_get_creation_date(item) ;
+		if (temp_date) {
+			time_t time = e_gw_connection_get_date_from_string (temp_date) ;
+			time_t actual_time = camel_header_decode_date (ctime(&time), NULL) ;
+			mi->info.date_sent = mi->info.date_received = actual_time ;
+		}
 
+		mi->info.uid = g_strdup(e_gw_item_get_id(item));
+		
+		mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
+		
+		if (exists) 
+			camel_folder_change_info_change_uid (changes, e_gw_item_get_id (item)) ;
+		else {
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi) ;
 			camel_folder_change_info_add_uid (changes, mi->info.uid) ;
-			g_ptr_array_add (msg, mi) ;
-			g_free(date) ;
 		}
+
+		g_ptr_array_add (msg, mi) ;
+		g_free(date) ;
+		exists = FALSE ;
 		
 	}
+	g_string_free (str, TRUE);
 	camel_object_trigger_event (folder, "folder_changed", changes) ;
 	/*	for (seq=0 ; seq<msg->len ; seq++) {
 		if ( (mi = msg->pdata[seq]) )

@@ -972,7 +972,9 @@ query_auth_types (CamelService *service, CamelException *ex)
 		return NULL;
 	
 	CAMEL_SERVICE_LOCK (store, connect_lock);
-	connected = connect_to_server_wrapper (service, ex);
+	connected = store->istream != NULL && store->connected;
+	if (!connected)
+		connected = connect_to_server_wrapper (service, ex);
 	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 	if (!connected)
 		return NULL;

@@ -106,6 +106,7 @@ struct _CamelFilterDriverPrivate {
 	gboolean terminated;       /* message processing was terminated */
 	gboolean deleted;          /* message was marked for deletion */
 	gboolean copied;           /* message was copied to some folder or another */
+	gboolean moved;		   /* message was moved to some folder or another */
 	
 	CamelMimeMessage *message; /* input message */
 	CamelMessageInfo *info;    /* message summary info */
@@ -553,8 +554,7 @@ do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 			}
 			
 			if (!camel_exception_is_set (p->ex)) {
-				/* a 'move' is a copy & delete */
-				p->copied = TRUE;
+				p->moved = TRUE;
 				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Move to folder %s", folder);
 			}
 		}
@@ -1413,6 +1413,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver, CamelMimeMessage 
 	p->terminated = FALSE;
 	p->deleted = FALSE;
 	p->copied = FALSE;
+	p->moved = FALSE;
 	p->message = message;
 	p->info = info;
 	p->uid = uid;
@@ -1479,7 +1480,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver, CamelMimeMessage 
 	}
 	
 	/* Logic: if !Moved and there exists a default folder... */
-	if (!(p->copied && p->deleted) && p->defaultfolder) {
+	if (!(p->copied && p->deleted) && !p->moved && p->defaultfolder) {
 		/* copy it to the default inbox */
 		filtered = TRUE;
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Copy to default folder");

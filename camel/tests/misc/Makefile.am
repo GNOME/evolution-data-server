@@ -16,11 +16,12 @@ LDADD = \
 	$(INTLLIBS)
 
 check_PROGRAMS =  	\
+	test1		\
+	test2		\
 	url		\
 	url-scan	\
 	utf7		\
-	split		\
-	test2
+	split
 
 TESTS = url utf7 split url-scan test2
 

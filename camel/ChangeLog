@@ -3,6 +3,41 @@
 	* tests/misc/test2.c: fix the case of the charset specification,
 	now we properly canonicalise them.
 
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #73015
+
+	* tests/misc/test1.c: Test case for references decoding.
+
+	* camel-mime-utils.c (header_decode_addrspec): if we get no start
+	word, then return NULL not "".
+
+2005-03-02  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #70195
+
+	* camel-mime-utils.c (rfc2047_encode_word): if we fail to convert
+	all the buffer, skip the content we didn't convert - don't just
+	skip the number of bytes we didn't convert from the start of the
+	string.
+	(header_encode_phrase_merge_words): when we merge the word, make
+	sure we merge the encoding too.
+
+2005-03-02  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #70590 (again)
+
+	* camel-filter-driver.c (camel_filter_driver_filter_message):
+	don't drop to default folder if we moved it.
+	(do_move): mark moved, not copied.
+
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #72876
+
+	* camel-mime-message.c (process_header): if there are no addresses
+	in from or reply-to header, don't save empty address list.
+
 2005-02-28  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #72609
