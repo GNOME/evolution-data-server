@@ -1,3 +1,8 @@
+2004-05-28  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedata-cal/e-data-cal-factory.c (backend_last_client_gone_cb):
+	disconnect from signals on the removed backend.
+
 2004-05-28  Harish Krishnaswamy  <kharish@novell.com>
 
 

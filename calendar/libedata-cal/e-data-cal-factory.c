@@ -139,6 +139,9 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 
 	g_hash_table_remove (priv->backends, uristr);
 
+	g_signal_handlers_disconnect_matched (backend, G_SIGNAL_MATCH_DATA,
+					      0, 0, NULL, NULL, data);
+
 	/* Notify upstream if there are no more backends */
 
 	if (g_hash_table_size (priv->backends) == 0)
