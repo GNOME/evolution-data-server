@@ -1,60 +1,6 @@
 # evolution/acinclude.m4
 # shared configure.in hacks between Evolution and Connector
 
-# EVO_CHECK_LIB(dispname, pkgname, minvers[, maxvers])
-# Checks if the package with human-readable name @dispname, known
-# to gnome-config as @pkgname exists and has an appropriate version.
-# The version must be >= @minvers. If @maxvers is equal to @minvers,
-# it must be exactly that version. Otherwise, if @maxvers is set,
-# the version must be LESS THAN @maxvers (not less than or equal).
-AC_DEFUN([EVO_CHECK_LIB], [
-	dispname="$1"
-	pkgname="$2"
-	minvers="$3"
-	maxvers="$4"
-
-	AC_MSG_CHECKING(for $dispname)
-
-	if gnome-config --libs $pkgname > /dev/null 2>&1; then
-		pkgvers=`gnome-config --modversion $pkgname | sed -e 's/^[[^0-9]]*//'`
-	else
-		pkgvers=not
-	fi
-	AC_MSG_RESULT($pkgvers found)
-
-	pkgvers=`echo $pkgvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
-	cmpminvers=`echo $minvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
-	cmpmaxvers=`echo $maxvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
-	ok=yes
-	if test "$pkgvers" -lt $cmpminvers; then
-		ok=no
-	elif test -n "$maxvers"; then
-		if test "$pkgvers" -gt $cmpmaxvers; then
-			ok=no
-		elif test "$maxvers" != "$minvers" -a "$cmpmaxvers" -eq "$pkgvers"; then
-			ok=no
-		fi
-	fi
-	if test $ok = no; then
-		case $maxvers in
-		"")
-			dispvers="$minvers or higher"
-			;;
-		$minvers)
-			dispvers="$minvers (exactly)"
-			;;
-		*)
-			dispvers="$minvers or higher, but less than $maxvers,"
-			;;
-		esac
-
-		AC_MSG_ERROR([
-""
-"You need $dispname $dispvers to build $PACKAGE"
-"If you think you already have this installed, consult the README."])
-	fi
-])
-
 
 # EVO_PURIFY_SUPPORT
 # Add --enable-purify. If the user turns it on, subst PURIFY and set
@@ -85,22 +31,13 @@ AC_DEFUN([EVO_PURIFY_SUPPORT], [
 AC_DEFUN([EVO_LDAP_CHECK], [
 	default="$1"
 
-	AC_ARG_WITH(openldap,     [  --with-openldap=[no/yes/PREFIX]      Enable LDAP support in evolution])
+	AC_ARG_WITH(openldap,     [  --with-openldap=[no/yes/PREFIX]      Enable LDAP support in evolution], with_openldap="$withval", with_openldap="/usr")
+	AC_ARG_WITH(openldap-libs,[  --with-openldap-libs=DIR             Location of openldap libraries to link with], with_openldap_libs="$withval", with_openldap_libs="$with_openldap/lib")
+	AC_ARG_WITH(openldap-includes,[  --with-openldap-includes=DIR         Location of openldap libraries to link with], with_openldap_includes="$withval", with_openldap_includes="$with_openldap/include")
 	AC_ARG_WITH(static-ldap,  [  --with-static-ldap=[no/yes]          Link LDAP support statically into evolution ])
-	AC_CACHE_CHECK([for OpenLDAP], ac_cv_with_openldap, ac_cv_with_openldap="${with_openldap:=$default}")
-	case $ac_cv_with_openldap in
-	no|"")
-		with_openldap=no
-		;;
-	yes)
-		with_openldap=/usr
-		;;
-	*)
-		with_openldap=$ac_cv_with_openldap
-		LDAP_CFLAGS="-I$ac_cv_with_openldap/include"
-		LDAP_LDFLAGS="-L$ac_cv_with_openldap/lib"
-		;;
-	esac
+
+	LDAP_CFLAGS="-I$with_openldap_includes"
+	LDAP_LDFLAGS="-L$with_openldap_libs"
 
 	if test "$with_openldap" != no; then
 		AC_DEFINE(HAVE_LDAP,1,[Define if you have LDAP support])
@@ -134,20 +71,20 @@ AC_DEFUN([EVO_LDAP_CHECK], [
 		AC_CHECK_LIB(nsl, gethostbyaddr, LDAP_LIBS="$LDAP_LIBS -lnsl")
 		AC_CHECK_LIB(lber, ber_get_tag, [
 			if test "$with_static_ldap" = "yes"; then
-				LDAP_LIBS="$with_openldap/lib/liblber.a $LDAP_LIBS"
+				LDAP_LIBS="$with_openldap_libs/liblber.a $LDAP_LIBS"
 
 				# libldap might depend on OpenSSL... We need to pull
 				# in the dependency libs explicitly here since we're
 				# not using libtool for the configure test.
-				if test -f $with_openldap/lib/libldap.la; then
-					LDAP_LIBS="`. $with_openldap/lib/libldap.la; echo $dependency_libs` $LDAP_LIBS"
+				if test -f $with_openldap_libs/libldap.la; then
+					LDAP_LIBS="`. $with_openldap_libs/libldap.la; echo $dependency_libs` $LDAP_LIBS"
 				fi
 			else
 				LDAP_LIBS="-llber $LDAP_LIBS"
 			fi
 			AC_CHECK_LIB(ldap, ldap_open, [
 					if test $with_static_ldap = "yes"; then
-						LDAP_LIBS="$with_openldap/lib/libldap.a $LDAP_LIBS"
+						LDAP_LIBS="$with_openldap_libs/libldap.a $LDAP_LIBS"
 					else
 						LDAP_LIBS="-lldap $LDAP_LIBS"
 					fi],
@@ -164,6 +101,7 @@ AC_DEFUN([EVO_LDAP_CHECK], [
 	fi
 	AM_CONDITIONAL(ENABLE_LDAP, test $with_openldap != no)
 ])
+
 
 # EVO_PTHREAD_CHECK
 AC_DEFUN([EVO_PTHREAD_CHECK],[

@@ -1,3 +1,8 @@
+2004-08-13  Rodney Dawes  <dobey@novell.com>
+
+	* acinclude.m4: Remove EVO_CHECK_LIB
+	Update EVO_LDAP_CHECK to support --with-openldap-{libs,includes}
+
 2004-08-09  Ankit Patel <ankit@redhat.com>
 
 	* configure.in: Added Gujarati & Panjabi
