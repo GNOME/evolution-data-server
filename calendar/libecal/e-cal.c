@@ -2366,9 +2366,9 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
  * e_cal_get_object:
  * @ecal: A calendar ecal.
  * @uid: Unique identifier for a calendar component.
- * @rid: 
+ * @rid: Recurrence identifier.
  * @icalcomp: Return value for the calendar component object.
- * @error: 
+ * @error: Placeholder for error information.
  *
  * Queries a calendar for a calendar component object based on its unique
  * identifier.
@@ -2378,7 +2378,6 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 gboolean
 e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **icalcomp, GError **error)
 {
-
 	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarStatus status;
@@ -2431,9 +2430,164 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
         if (status != E_CALENDAR_STATUS_OK){ 
                 *icalcomp = NULL;
         } else {
-                *icalcomp = icalparser_parse_string (our_op->string);
-		if (!(*icalcomp))
+		icalcomponent *tmp_icalcomp;
+		icalcomponent_kind kind;
+
+                tmp_icalcomp = icalparser_parse_string (our_op->string);
+		if (!tmp_icalcomp) {
 			status = E_CALENDAR_STATUS_INVALID_OBJECT;
+			*icalcomp = NULL;
+		} else {
+			kind = icalcomponent_isa (tmp_icalcomp);
+			if ((kind == ICAL_VEVENT_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_EVENT) ||
+			    (kind == ICAL_VTODO_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_TODO)) {
+				*icalcomp = icalcomponent_new_clone (tmp_icalcomp);
+			} else if (kind == ICAL_VCALENDAR_COMPONENT) {
+				icalcomponent *subcomp = NULL;
+
+				switch (priv->type) {
+				case E_CAL_SOURCE_TYPE_EVENT :
+					subcomp = icalcomponent_get_first_component (tmp_icalcomp, ICAL_VEVENT_COMPONENT);
+					break;
+				case E_CAL_SOURCE_TYPE_TODO :
+					subcomp = icalcomponent_get_first_component (tmp_icalcomp, ICAL_VTODO_COMPONENT);
+					break;
+				case E_CAL_SOURCE_TYPE_JOURNAL :
+					subcomp = icalcomponent_get_first_component (tmp_icalcomp, ICAL_VJOURNAL_COMPONENT);
+					break;
+				}
+
+				/* we are only interested in the first component */
+				if (subcomp)
+					*icalcomp = icalcomponent_new_clone (subcomp);
+			}
+
+			icalcomponent_free (tmp_icalcomp);
+		}
+	}
+	g_free (our_op->string);
+
+	e_calendar_remove_op (ecal, our_op);
+	g_mutex_unlock (our_op->mutex);
+	e_calendar_free_op (our_op);
+
+	E_CALENDAR_CHECK_STATUS (status, error);
+}
+
+/**
+ * e_cal_get_objects_for_uid:
+ * @ecal: A calendar ecal.
+ * @uid: Unique identifier for a calendar component.
+ * @objects: Return value for the list of objects obtained from the backend.
+ * @error: Placeholder for error information.
+ *
+ * Queries a calendar for all calendar components with the given unique
+ * ID. This will return any recurring event and all its detached recurrences.
+ * For non-recurring events, it will just return the object with that ID.
+ *
+ * Return value: Result code based on the status of the operation.
+ **/
+gboolean
+e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError **error)
+{
+	ECalPrivate *priv;
+	CORBA_Environment ev;
+	ECalendarStatus status;
+	ECalendarOp *our_op;
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+
+	priv = ecal->priv;
+	*objects = NULL;
+
+	g_mutex_lock (ecal->priv->mutex);
+
+	if (ecal->priv->load_state != E_CAL_LOAD_LOADED) {
+		g_mutex_unlock (ecal->priv->mutex);
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
+	}
+
+	if (ecal->priv->current_op != NULL) {
+		g_mutex_unlock (ecal->priv->mutex);
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
+	}
+
+	our_op = e_calendar_new_op (ecal);
+
+	g_mutex_lock (our_op->mutex);
+
+	g_mutex_unlock (ecal->priv->mutex);
+
+	CORBA_exception_init (&ev);
+
+	GNOME_Evolution_Calendar_Cal_getObject (priv->cal, uid, "", &ev);
+	if (BONOBO_EX (&ev)) {
+		e_calendar_remove_op (ecal, our_op);
+		g_mutex_unlock (our_op->mutex);
+		e_calendar_free_op (our_op);
+
+		CORBA_exception_free (&ev);
+
+		g_warning (G_STRLOC ": Unable to contact backend");
+
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
+	}
+
+	CORBA_exception_free (&ev);
+
+	/* wait for something to happen (both cancellation and a
+	   successful response will notity us via our cv */
+	g_cond_wait (our_op->cond, our_op->mutex);
+
+	status = our_op->status;
+        if (status != E_CALENDAR_STATUS_OK){ 
+                *objects = NULL;
+        } else {
+		icalcomponent *icalcomp;
+		icalcomponent_kind kind;
+
+		icalcomp = icalparser_parse_string (our_op->string);
+		if (!icalcomp) {
+			status = E_CALENDAR_STATUS_INVALID_OBJECT;
+			*objects = NULL;
+		} else {
+			ECalComponent *comp;
+
+			kind = icalcomponent_isa (icalcomp);
+			if ((kind == ICAL_VEVENT_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_EVENT) ||
+			    (kind == ICAL_VTODO_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_TODO)) {
+				comp = e_cal_component_new ();
+				e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
+				*objects = g_list_append (NULL, comp);
+			} else if (kind == ICAL_VCALENDAR_COMPONENT) {
+				icalcomponent *subcomp;
+				icalcomponent_kind kind_to_find;
+
+				switch (priv->type) {
+				case E_CAL_SOURCE_TYPE_EVENT :
+					kind_to_find = ICAL_VEVENT_COMPONENT;
+					break;
+				case E_CAL_SOURCE_TYPE_TODO :
+					kind_to_find = ICAL_VTODO_COMPONENT;
+					break;
+				case E_CAL_SOURCE_TYPE_JOURNAL :
+					kind_to_find = ICAL_VJOURNAL_COMPONENT;
+					break;
+				}
+
+				*objects = NULL;
+				subcomp = icalcomponent_get_first_component (icalcomp, kind_to_find);
+				while (subcomp) {
+					comp = e_cal_component_new ();
+					e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp));
+					*objects = g_list_append (*objects, comp);
+
+					subcomp = icalcomponent_get_next_component (icalcomp, kind_to_find);
+				}
+			}
+
+			icalcomponent_free (icalcomp);
+		}
 	}
 	g_free (our_op->string);
 
@@ -2885,30 +3039,32 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 
 	priv = ecal->priv;
 
-	iso_start = isodate_from_time_t (start);
-	if (!iso_start)
-		return;
-
-	iso_end = isodate_from_time_t (end);
-	if (!iso_end) {
-		g_free (iso_start);
-		return;
-	}
-
 	/* Generate objects */
-	if (uid && *uid)
-		query = g_strdup_printf ("(and (occur-in-time-range? (make-time \"%s\") (make-time \"%s\")) (uid? \"%s\"))",
-					 iso_start, iso_end, uid);
-	else
+	if (uid && *uid) {
+		if (!e_cal_get_objects_for_uid (ecal, uid, &objects, NULL))
+			return;
+	}
+	else {
+		iso_start = isodate_from_time_t (start);
+		if (!iso_start)
+			return;
+
+		iso_end = isodate_from_time_t (end);
+		if (!iso_end) {
+			g_free (iso_start);
+			return;
+		}
+
 		query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
 					 iso_start, iso_end);
-	g_free (iso_start);
-	g_free (iso_end);
-	if (!e_cal_get_object_list_as_comp (ecal, query, &objects, NULL)) {
+		g_free (iso_start);
+		g_free (iso_end);
+		if (!e_cal_get_object_list_as_comp (ecal, query, &objects, NULL)) {
+			g_free (query);
+			return;
+		}
 		g_free (query);
-		return;
-	}	
-	g_free (query);
+	}
 
 	instances = NULL;
 

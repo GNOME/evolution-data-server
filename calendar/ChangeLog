@@ -1,3 +1,18 @@
+2004-10-28  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal.[ch] (e_cal_get_objects_for_uid): new function
+	to retrieve objects and detached recurrences for that object.
+	(e_cal_get_object): deal with the backend returning a VCALENDAR
+	object. In that case, just get the first component of the same
+	type we are using.
+	(generate_instances): when we have an UID, use the new function
+	e_cal_get_objects_for_uid, avoiding countless calls to
+	e_cal_get_object_list.
+
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_get_object):
+	if we have detached instances, return a VCALENDAR with the master
+	object and any detached instance.
+
 2004-10-15  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes #67031
@@ -14,6 +29,7 @@
 	of the backends
 
 2004-10-14  Harish Krishnaswamy  <kharish@novell.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	(get_deltas) : removed stray debug code that should not have
 	been there in the first place.
