@@ -1,3 +1,18 @@
+2004-02-03  Rodney Dawes  <dobey@ximian.com>
+
+	* backends/http/e-cal-backend-http.c: Don't keep a global SoupMessage
+	(e_cal_backend_http_fianlize): Abort the session, as we may have
+	multiple messages running
+	(webcal_to_http_method): Return a copy if we aren't parsing a webcal:,
+	as there is no need to return NULL, since we just check and copy the
+	original anyway
+	(retrieval_done): Handle redirection, and don't rely on a global
+	SoupMessage for things, and don't try to set the SoupMessage to NULL
+	(begin_retrieval_cb): Allow multiple messages, and disable automatic
+	redirect handling, as we need to handle it ourselves
+	(maybe_start_reload_timeout): We want minutes, not seconds, so we need
+	to multiply the refresh value by 60000 instead of 1000
+
 2004-02-03  Dan Winship  <danw@ximian.com>
 
 	* backends/http/e-cal-backend-http.c (e_cal_backend_http_finalize,

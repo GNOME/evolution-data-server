@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Evolution calendar - iCalendar http backend
  *
  * Copyright (C) 2003 Novell, Inc.
@@ -58,7 +59,6 @@ struct _ECalBackendHttpPrivate {
 
 	/* Soup handles for remote file */
 	SoupSession *soup_session;
-	SoupMessage *soup_message;
 
 	/* Reload */
 	guint reload_timeout_id;
@@ -69,6 +69,7 @@ struct _ECalBackendHttpPrivate {
 
 static void e_cal_backend_http_dispose (GObject *object);
 static void e_cal_backend_http_finalize (GObject *object);
+static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
 
 static ECalBackendSyncClass *parent_class;
 
@@ -103,11 +104,6 @@ e_cal_backend_http_finalize (GObject *object)
 
 	/* Clean up */
 
-	if (priv->soup_message) {
-		soup_session_cancel_message (priv->soup_session, priv->soup_message);
-		priv->soup_message = NULL;
-	}
-
 	if (priv->cache) {
 		g_object_unref (priv->cache);
 		priv->cache = NULL;
@@ -119,6 +115,7 @@ e_cal_backend_http_finalize (GObject *object)
 	}
 
 	if (priv->soup_session) {
+		soup_session_abort (priv->soup_session);
 		g_object_unref (priv->soup_session);
 		priv->soup_session = NULL;
 	}
@@ -186,7 +183,7 @@ static gchar *
 webcal_to_http_method (const gchar *webcal_str)
 {
 	if (strncmp ("webcal://", webcal_str, sizeof ("webcal://") - 1))
-		return NULL;
+		return g_strdup (webcal_str);
 
 	return g_strconcat ("http://", webcal_str + sizeof ("webcal://") - 1, NULL);
 }
@@ -196,6 +193,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp, *subcomp;
+	const char *newuri;
 	char *str;
 
 	priv = cbhttp->priv;
@@ -203,30 +201,47 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	priv->is_loading = FALSE;
 	g_message ("Retrieval done.\n");
 
+	/* Handle redirection ourselves */
+	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
+		newuri = soup_message_get_header (msg->response_headers,
+						  "Location");
+
+		g_message ("Redirected to %s\n", newuri);
+
+		if (newuri) {
+			g_free (priv->uri);
+
+			priv->uri = webcal_to_http_method (newuri);
+			begin_retrieval_cb (cbhttp);
+		} else {
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
+						    _("Redirected to Invalid URI"));
+		}
+
+		return;
+	}
+
 	/* check status code */
-	if (priv->soup_message->status_code != SOUP_STATUS_OK) {
+	if (!SOUP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
-					    soup_status_get_phrase (priv->soup_message->status_code));
-		priv->soup_message = NULL;
+					    soup_status_get_phrase (msg->status_code));
 		return;
 	}
 
 	/* get the calendar from the response */
-	str = g_malloc0 (priv->soup_message->response.length + 1);
-	strncpy (str, msg->response.body, priv->soup_message->response.length);
+	str = g_malloc0 (msg->response.length + 1);
+	strncpy (str, msg->response.body, msg->response.length);
 	icalcomp = icalparser_parse_string (str);
 	g_free (str);
 
 	if (!icalcomp) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
-		priv->soup_message = NULL;
 		return;
 	}
 
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
 		icalcomponent_free (icalcomp);
-		priv->soup_message = NULL;
 		return;
 	}
 
@@ -249,7 +264,6 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	/* free memory */
 	icalcomponent_free (icalcomp);
-	priv->soup_message = NULL;
 
 	g_message ("Retrieval really done.\n");
 }
@@ -260,8 +274,8 @@ static void     maybe_start_reload_timeout (ECalBackendHttp *cbhttp);
 static gboolean
 begin_retrieval_cb (ECalBackendHttp *cbhttp)
 {
-	gchar *source_uri_str;
 	ECalBackendHttpPrivate *priv;
+	SoupMessage *soup_message;
 
 	priv = cbhttp->priv;
 
@@ -271,9 +285,6 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	maybe_start_reload_timeout (cbhttp);
 
 	g_message ("Starting retrieval...\n");
-
-	if (priv->soup_message != NULL)
-		return FALSE;
 
 	if (priv->is_loading)
 		return FALSE;
@@ -285,14 +296,14 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 		priv->soup_session = soup_session_async_new ();
 	}
 
-	source_uri_str = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
-	if (!source_uri_str)
-		source_uri_str = g_strdup (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
+	if (priv->uri == NULL)
+		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
 
 	/* create message to be sent to server */
-	priv->soup_message = soup_message_new (SOUP_METHOD_GET, source_uri_str);
-	g_free (source_uri_str);
-	soup_session_queue_message (priv->soup_session, priv->soup_message,
+	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
+	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
+
+	soup_session_queue_message (priv->soup_session, soup_message,
 				    (SoupMessageCallbackFn) retrieval_done, cbhttp);
 
 	g_message ("Retrieval started.\n");
@@ -338,7 +349,7 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 
 	refresh_str = e_source_get_property (source, "refresh");
 
-	priv->reload_timeout_id = g_timeout_add ((refresh_str ? atoi (refresh_str) : 30) * 1000,
+	priv->reload_timeout_id = g_timeout_add ((refresh_str ? atoi (refresh_str) : 30) * 60000,
 						 (GSourceFunc) reload_cb, cbhttp);
 }
 
