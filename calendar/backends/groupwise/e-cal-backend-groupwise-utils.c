@@ -766,6 +766,9 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 	default:
 		status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 	}	
+	
+	if (status == E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED)
+		return E_GW_CONNECTION_STATUS_OK;
 
 	return status;
 }
