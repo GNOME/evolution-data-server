@@ -404,7 +404,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 				} else
 					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
 
-				g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
+				g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, proxy_uri);
 
 				g_free (server);
 				g_free (proxy_uri);
