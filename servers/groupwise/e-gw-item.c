@@ -132,9 +132,12 @@ free_im_address ( gpointer address, gpointer data)
 {
 	IMAddress *im_address;
 	im_address = (IMAddress *) address;
+	
 	if (im_address) {
-		g_free (im_address->service);
-		g_free (im_address->address);
+		if (im_address->service)
+			g_free (im_address->service);
+		if (im_address->address)
+			g_free (im_address->address);
 		g_free (im_address);
 	}
 }
@@ -724,6 +727,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp))
 			{
 				IMAddress *im_address = g_new0(IMAddress, 1);
+				im_address->address = im_address->service = NULL;
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "service");
 				if (second_level_child)
 					value = soup_soap_parameter_get_string_value (second_level_child);
@@ -737,7 +741,8 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				if (im_address->service && im_address->address)
 					item->priv->im_list = g_list_append (item->priv->im_list, im_address);
 				else 
-					free_im_address(im_address, NULL);
+					free_im_address (im_address, NULL);					
+				
 			}
 	}
 	
