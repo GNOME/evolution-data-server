@@ -1,3 +1,11 @@
+2004-04-28  JP Rosevear  <jpr@ximian.com>
+
+	Fixes #57080
+	
+	* libedata-cal/e-cal-backend.c
+	(e_cal_backend_notify_object_modified): make sure the item was
+	actually in the query before so we don't send bogus removes
+
 2004-04-27  Harish Krishnaswamy  <kharish@novell.com>
 
 	Fixes #56535
