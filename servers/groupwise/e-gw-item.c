@@ -238,7 +238,7 @@ EGwItem *
 e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param)
 {
 	EGwItem *item;
-	const char *item_type;
+	char *item_type;
 	SoupSoapParameter *subparam, *child;
 	
 	g_return_val_if_fail (param != NULL, NULL);
@@ -255,9 +255,12 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 	else if (!g_ascii_strcasecmp (item_type, "Task"))
 		item->priv->item_type = E_GW_ITEM_TYPE_TASK;
 	else {
+		g_free (item_type);
 		g_object_unref (item);
 		return NULL;
 	}
+
+	g_free (item_type);
 
 	item->priv->container = g_strdup (container);
 
