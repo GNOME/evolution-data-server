@@ -1,3 +1,13 @@
+2004-09-09  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes #63385.
+
+	* libebook/e-book.c (fetch_corba_book): Use g_signal_connect_object ()
+	to connect to the listener, so we won't be destroyed in another thread
+	while processing signals from it.
+	(e_book_dispose): Only disconnect the listener signal if it hasn't
+	already been done by GLib. Bug compatibility.
+
 2004-08-26  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

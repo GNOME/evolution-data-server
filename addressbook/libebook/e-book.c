@@ -2871,8 +2871,9 @@ fetch_corba_book (EBook       *book,
 			     _("e_book_load_uri: Could not create EBookListener"));
 		return FALSE;
 	}
-	book->priv->listener_signal = g_signal_connect (book->priv->listener, "response",
-							G_CALLBACK (e_book_handle_response), book);
+	book->priv->listener_signal = g_signal_connect_object (book->priv->listener, "response",
+							       G_CALLBACK (e_book_handle_response),
+							       book, 0);
 
 	g_free (book->priv->uri);
 	book->priv->uri = uri;
@@ -3511,7 +3512,9 @@ e_book_dispose (GObject *object)
 		CORBA_exception_free (&ev);
 
 		if (book->priv->listener) {
-			g_signal_handler_disconnect (book->priv->listener, book->priv->listener_signal);
+			/* GLib bug compatibility */
+			if (g_signal_handler_is_connected (book->priv->listener, book->priv->listener_signal))
+				g_signal_handler_disconnect (book->priv->listener, book->priv->listener_signal);
 			bonobo_object_unref (book->priv->listener);
 			book->priv->listener = NULL;
 		}
