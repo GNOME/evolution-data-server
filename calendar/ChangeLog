@@ -1,3 +1,10 @@
+2005-03-12  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(connect_to_server): Run the get deltas in a thread to
+	avoid the inresponsiveness of the GUI when evolution
+	changes mode from offline to online.
+
 2005-03-12  Harish Krishnaswamy <kharish@novell.com>
 	
 	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas) :

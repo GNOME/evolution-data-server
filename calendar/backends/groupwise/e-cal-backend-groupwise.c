@@ -548,18 +548,22 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 		if (priv->cnc && priv->cache) {
 			priv->mode = CAL_MODE_REMOTE;
-			
-			if (priv->mode_changed && !priv->timeout_id) {
+			if (priv->mode_changed && !priv->timeout_id && (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) == ICAL_VEVENT_COMPONENT)) {
+				GThread *thread1;
 				priv->mode_changed = FALSE;
-				if (get_deltas (cbgw)) {
-					if (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) == ICAL_VEVENT_COMPONENT)
-						priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
-				} else {
-					g_warning (G_STRLOC ": Could not populate the cache");
-					return GNOME_Evolution_Calendar_PermissionDenied;	
-				}
-			}	 
 
+				thread1 = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
+				if (!thread1) {
+					g_warning (G_STRLOC ": %s", error->message);
+					g_error_free (error);
+
+					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
+					return GNOME_Evolution_Calendar_OtherError;
+				}
+				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+
+			}
+	
 			return GNOME_Evolution_Calendar_Success;
 		}
 		priv->mode_changed = FALSE;
