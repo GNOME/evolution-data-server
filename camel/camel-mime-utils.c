@@ -1779,7 +1779,7 @@ header_decode_atom(const char **in)
 
 	header_decode_lwsp(&inptr);
 	start = inptr;
-	while (camel_mime_is_atom(*inptr))
+	while (*inptr && camel_mime_is_atom(*inptr))
 		inptr++;
 	*in = inptr;
 	if (inptr > start)
