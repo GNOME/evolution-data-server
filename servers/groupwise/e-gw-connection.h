@@ -129,7 +129,7 @@ EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const char *c
 EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const char *id ,const char *new_name) ;
 EGwConnectionStatus e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag); 
 EGwConnectionStatus e_gw_connection_accept_shared_folder (EGwConnection *cnc, gchar *folder_name, gchar *container_id, gchar *item_id, gchar *desc);
-
+EGwConnectionStatus e_gw_connection_purge_deleted_items (EGwConnection *cnc);
 G_END_DECLS
 
 #endif

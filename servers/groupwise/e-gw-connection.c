@@ -2378,3 +2378,29 @@ e_gw_connection_accept_shared_folder (EGwConnection *cnc, gchar *name, gchar *co
 
 }
 
+EGwConnectionStatus 
+e_gw_connection_purge_deleted_items (EGwConnection *cnc)
+{
+
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_UNKNOWN;
+	
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "purgeDeletedItemsRequest");
+	e_gw_message_write_footer (msg);
+	response =  e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+
+}
+
