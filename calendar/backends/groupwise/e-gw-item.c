@@ -638,24 +638,24 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	case E_GW_ITEM_TYPE_APPOINTMENT :
 		soup_soap_message_add_attribute (msg, "type", "Appointment", "xsi", NULL);
 
-		e_gw_message_write_string_parameter (msg, "acceptLevel", priv->accept_level ? priv->accept_level : "", NULL);
-		e_gw_message_write_string_parameter (msg, "place", priv->place ? priv->place : "", NULL);
+		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
+		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");
 		/* FIXME: distribution */
 		break;
 	case E_GW_ITEM_TYPE_TASK :
 		soup_soap_message_add_attribute (msg, "type", "Task", "xsi", NULL);
 
 		if (icaltime_is_valid_time (priv->due_date))
-			e_gw_message_write_string_parameter (msg, "dueDate", icaltime_as_ical_string (priv->due_date), NULL);
+			e_gw_message_write_string_parameter (msg, "dueDate", NULL, icaltime_as_ical_string (priv->due_date));
 		else
-			e_gw_message_write_string_parameter (msg, "dueDate", "", NULL);
+			e_gw_message_write_string_parameter (msg, "dueDate", NULL, "");
 
 		if (priv->completed)
-			e_gw_message_write_string_parameter (msg, "completed", "1", NULL);
+			e_gw_message_write_string_parameter (msg, "completed", NULL, "1");
 		else
-			e_gw_message_write_string_parameter (msg, "completed", "0", NULL);
+			e_gw_message_write_string_parameter (msg, "completed", NULL, "0");
 
-		e_gw_message_write_string_parameter (msg, "priority", priv->priority ? priv->priority : "", NULL);
+		e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "");
 		break;
 	default :
 		g_warning (G_STRLOC ": Unknown type for item");
@@ -663,30 +663,30 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	}
 
 	/* add all properties */
-	e_gw_message_write_string_parameter (msg, "id", priv->id, NULL);
-	e_gw_message_write_string_parameter (msg, "subject", priv->subject ? priv->subject : "", NULL);
-	e_gw_message_write_string_parameter (msg, "message", priv->message ? priv->message : "", NULL);
+	e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
+	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
+	e_gw_message_write_string_parameter (msg, "message", NULL, priv->message ? priv->message : "");
 	if (icaltime_is_valid_time (priv->start_date))
-		e_gw_message_write_string_parameter (msg, "startDate", icaltime_as_ical_string (priv->start_date), NULL);
+		e_gw_message_write_string_parameter (msg, "startDate", NULL, icaltime_as_ical_string (priv->start_date));
 	if (icaltime_is_valid_time (priv->end_date))
-		e_gw_message_write_string_parameter (msg, "endDate", icaltime_as_ical_string (priv->end_date), NULL);
+		e_gw_message_write_string_parameter (msg, "endDate", NULL, icaltime_as_ical_string (priv->end_date));
 	else
-		e_gw_message_write_string_parameter (msg, "endDate", "", NULL);
+		e_gw_message_write_string_parameter (msg, "endDate", NULL, "");
 	if (icaltime_is_valid_time (priv->creation_date))
-		e_gw_message_write_string_parameter (msg, "created", icaltime_as_ical_string (priv->creation_date), NULL);
+		e_gw_message_write_string_parameter (msg, "created", NULL, icaltime_as_ical_string (priv->creation_date));
 
 	switch (priv->classification) {
 	case E_CAL_COMPONENT_CLASS_PUBLIC :
-		e_gw_message_write_string_parameter (msg, "class", "Public", NULL);
+		e_gw_message_write_string_parameter (msg, "class", NULL, "Public");
 		break;
 	case E_CAL_COMPONENT_CLASS_PRIVATE :
-		e_gw_message_write_string_parameter (msg, "class", "Private", NULL);
+		e_gw_message_write_string_parameter (msg, "class", NULL, "Private");
 		break;
 	case E_CAL_COMPONENT_CLASS_CONFIDENTIAL :
-		e_gw_message_write_string_parameter (msg, "class", "Confidential", NULL);
+		e_gw_message_write_string_parameter (msg, "class", NULL, "Confidential");
 		break;
 	default :
-		e_gw_message_write_string_parameter (msg, "class", "", NULL);
+		e_gw_message_write_string_parameter (msg, "class", NULL, "");
 	}
 
 	/* finalize the SOAP element */

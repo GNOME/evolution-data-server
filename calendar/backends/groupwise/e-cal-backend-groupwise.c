@@ -591,7 +591,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
                 ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
 		if ((!search_needed) ||
-		    (e_cal_backend_sexp_match_comp (cbsexp, comp, backend))) {
+		    (e_cal_backend_sexp_match_comp (cbsexp, comp, E_CAL_BACKEND (backend)))) {
 			*objects = g_list_append (*objects, e_cal_component_get_as_string (comp));
 		}
         }
