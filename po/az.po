@@ -1,3 +1,4 @@
+# translation of evolution-data-server.HEAD.po to Azerbaijani
 # translation of evolution-data-server.HEAD.po to Azerbaijani Turkish
 # -------------------------------------------------------
 # Copyright (C) 2000, 2004 Free Software Foundation, Inc.
@@ -7,15 +8,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
-"PO-Revision-Date: 2004-01-30 13:43+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-06-03 03:28+0200\n"
+"PO-Revision-Date: 2004-06-10 20:57+0300\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
-"Language-Team: Azerbaijani Turkish <gnome@azitt.com>\n"
+"Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
-"X-Generator: KBabel 1.0.2\n"
+"X-Generator: KBabel 1.3\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -103,14 +104,13 @@ msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: ləğv edilə bilmədi"
 
 #: addressbook/libebook/e-book.c:1409
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "\"%s\" kitabçada \"%s\"-dan əvvəldədir"
+msgstr "\"%s\" kitabçada \"%s\"-dan sonradır"
 
 #: addressbook/libebook/e-book.c:1458
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: ləğv edildi"
+msgstr "e_book_open: ləğv edildi"
 
 #: addressbook/libebook/e-book.c:1810
 msgid "e_book_load_uri: Invalid source."
@@ -126,9 +126,9 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListener yaradıla bilmədi"
 
 #: addressbook/libebook/e-book.c:1881
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: `%s' üçün heç bir e'malatxana mövcud deyil"
+msgstr "e_book_new: `%s' üçün heç bir e'malatxana mövcud deyil"
 
 #: addressbook/libebook/e-book.c:2038
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
@@ -136,10 +136,8 @@ msgstr "e_book_get_self: there was no self contact uid stored in gconf"
 
 #: addressbook/libebook/e-book.c:2147
 #, c-format
-msgid ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -300,9 +298,8 @@ msgid "Email 3"
 msgstr "Epoçt 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "Epoçt 3"
+msgstr "Epoçt 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -319,7 +316,7 @@ msgstr "AIM Əlaqə Adları Siyahısı"
 
 #: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
-msgstr ""
+msgstr "Groupwise Id Siyahısı"
 
 #: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
@@ -362,34 +359,28 @@ msgid "AIM Work Screen Name 3"
 msgstr "AIM İş Əlaqə Adı 3"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Groupwise Home Screen Name 1"
-msgstr "AIM Ev Əlaqə Adı 1"
+msgstr "Groupwise Ev Ekran Adı 1"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Groupwise Home Screen Name 2"
-msgstr "AIM Ev Əlaqə Adı 2"
+msgstr "Groupwise Ev Ekran Adı 2"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Groupwise Home Screen Name 3"
-msgstr "AIM Ev Əlaqə Adı 3"
+msgstr "Groupwise Ev Ekran Adı 3"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Groupwise Work Screen Name 1"
-msgstr "AIM İş Əlaqə Adı 1"
+msgstr "Groupwise İş Ekran Adı 1"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Groupwise Work Screen Name 2"
-msgstr "AIM İş Əlaqə Adı 2"
+msgstr "Groupwise İş Ekran Adı 2"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Groupwise Work Screen Name 3"
-msgstr "AIM İş Əlaqə Adı 3"
+msgstr "Groupwise İş Ekran Adı 3"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
@@ -615,13 +606,12 @@ msgstr "Təqvim mə'lumatı qeyd edilə bilmir: Pozulmuş URI"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
 msgid "Invalid server URI"
-msgstr ""
+msgstr "Səhv verici URI ünvanı"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
-#, fuzzy
 msgid "Calendar"
-msgstr "Təqvim Ünvanı"
+msgstr "Təqvim"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #: calendar/libecal/e-cal.c:4288
@@ -629,13 +619,12 @@ msgid "Authentication failed"
 msgstr "Tanıtma bacarılmadı"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
-#, fuzzy
 msgid "Could not create cache file"
-msgstr "Əməliyyat ləğv edilə bilmədi"
+msgstr "Ara yaddaş faylı yaradıla bilmədi"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
-msgstr ""
+msgstr "Səhv URI ünvanına istiqamətləndirilib"
 
 #: calendar/backends/http/e-cal-backend-http.c:249
 msgid "Bad file format."
@@ -926,13 +915,11 @@ msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\"-ə verilən ikinci arqument qatar olmalıdır"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr ""
-"\"%s\"-ə verilən ilk arqument \"any\", \"summary\" ya da \"description\" "
-"olmalıdır"
+msgstr "\"%s\"-ə verilən ilk arqument \"any\", \"summary\", \"description\"  ya da \"location\" olmalıdır"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
@@ -944,22 +931,19 @@ msgstr "\"%s\" ən az 1 arqument gözləyir"
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
+msgstr "\"%s\" bütün arqumentlərin qatar olmasını gözləyir"
 
 #: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
 msgid "Invalid connection"
-msgstr "Hökmsüz üzv"
+msgstr "Xətalı bağlantı"
 
 #: servers/groupwise/e-gw-connection.c:84
 msgid "Invalid response from server"
-msgstr ""
+msgstr "Vericidən xətalı cavab"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "Səhv parametr"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
@@ -973,3 +957,4 @@ msgstr "EvolutionunTəqvim fayl və webcal backend-i"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution Ünvan Kitabçası fayl backend-i"
+
