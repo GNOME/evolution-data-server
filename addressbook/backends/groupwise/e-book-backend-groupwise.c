@@ -2411,7 +2411,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	if (offline  && g_str_equal (offline, "1"))
 		priv->marked_for_offline = TRUE;
 	
-	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL &&  priv->marked_for_offline ) {
+	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL &&  !priv->marked_for_offline ) {
 		return GNOME_Evolution_Addressbook_OfflineUnavailable;
 	}
 	
