@@ -2042,6 +2042,8 @@ emit_async_generic_response (gpointer data)
 	EBookOp *op = data;
 	EBook *book = op->book;
 
+	g_object_ref (book);
+
 	if (op->cb.status)
 		op->cb.status (book, op->status, op->closure);
 
@@ -2049,6 +2051,7 @@ emit_async_generic_response (gpointer data)
 						   GINT_TO_POINTER (op->idle_id));
 	e_book_clear_op (book, op);
 
+	g_object_unref (book);
 	return FALSE;
 }
 

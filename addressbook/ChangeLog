@@ -1,3 +1,9 @@
+2004-06-23  Hans Petter Jansson  <hpj@ximan.com>
+
+	* libebook/e-book.c (emit_async_generic_response): Keep a ref on
+	the book while we're accessing it, since the callback might unref
+	it to zero, causing a crash.
+
 2004-06-22  Chris Toshok  <toshok@ximian.com>
 
 	* libedata-book/e-data-book-view.c
