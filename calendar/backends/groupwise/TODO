@@ -20,7 +20,7 @@ Step 1 - Infrastructure
       We need the list of status codes returned by the server from the GW team.
 
  1.5 Write script/program to easily add an account until we have the configuration
-     GUI.
+     GUI -> done
 
 Step 2 - Basic functionality
 
