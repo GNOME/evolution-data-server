@@ -854,10 +854,12 @@ e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const ch
 
 	/* build the SOAP message */
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "removeItemRequest");
-	
-	if (container && *container)
-		e_gw_message_write_string_parameter (msg, "container", NULL, container);
-	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+
+	//if (container && *container)
+	//	e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	soup_soap_message_start_element (msg, "items", NULL, NULL);
+	e_gw_message_write_string_parameter (msg, "item", NULL, id);
+	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 
 	/* send message to server */
