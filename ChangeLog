@@ -1,3 +1,14 @@
+2005-01-21  Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * libedataserver/e-source.c
+       (e_source_update_from_xml_node) : look for
+       case where passed in node does not contain any properites.
+       In the case reset the properites of the source
+       and emit the changed signal
+       makes personal books unselectable
+       from auto-completion
+ 	Fixes #69816 too  
+
 2005-01-08  Not Zed  <NotZed@Ximian.com>
 
 	* libedataserver/e-xml-hash-utils.c (e_xmlhash_write): cast field
