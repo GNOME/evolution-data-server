@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-22 13:28-0500\n"
-"PO-Revision-Date: 2005-03-22 13:04-0400\n"
+"POT-Creation-Date: 2005-03-30 23:27-0500\n"
+"PO-Revision-Date: 2005-03-30 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -556,7 +556,7 @@ msgid "Category List"
 msgstr "Category List"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:407
+#: ../libedataserverui/e-categories-dialog.c:408
 msgid "Categories"
 msgstr "Categories"
 
@@ -651,7 +651,7 @@ msgid "Calendar"
 msgstr "Calendar"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:829
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
@@ -662,7 +662,7 @@ msgid "Could not create thread for populating cache"
 msgstr "Could not create thread for populating cache"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
-#: ../calendar/libecal/e-cal.c:4528
+#: ../calendar/libecal/e-cal.c:4537
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:667
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:691
 #: ../camel/providers/groupwise/camel-groupwise-store.c:528
@@ -1028,72 +1028,72 @@ msgstr "Undefined"
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: ../calendar/libecal/e-cal.c:4500
+#: ../calendar/libecal/e-cal.c:4509
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: ../calendar/libecal/e-cal.c:4502
+#: ../calendar/libecal/e-cal.c:4511
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: ../calendar/libecal/e-cal.c:4504
+#: ../calendar/libecal/e-cal.c:4513
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: ../calendar/libecal/e-cal.c:4506
+#: ../calendar/libecal/e-cal.c:4515
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: ../calendar/libecal/e-cal.c:4508 ../servers/groupwise/e-gw-connection.c:165
+#: ../calendar/libecal/e-cal.c:4517 ../servers/groupwise/e-gw-connection.c:165
 msgid "Object not found"
 msgstr "Object not found"
 
-#: ../calendar/libecal/e-cal.c:4510 ../servers/groupwise/e-gw-connection.c:159
+#: ../calendar/libecal/e-cal.c:4519 ../servers/groupwise/e-gw-connection.c:159
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: ../calendar/libecal/e-cal.c:4512
+#: ../calendar/libecal/e-cal.c:4521
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: ../calendar/libecal/e-cal.c:4514
+#: ../calendar/libecal/e-cal.c:4523
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: ../calendar/libecal/e-cal.c:4516
+#: ../calendar/libecal/e-cal.c:4525
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: ../calendar/libecal/e-cal.c:4518 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:4527 ../servers/groupwise/e-gw-connection.c:167
 msgid "Unknown User"
 msgstr "Unknown User"
 
-#: ../calendar/libecal/e-cal.c:4520
+#: ../calendar/libecal/e-cal.c:4529
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: ../calendar/libecal/e-cal.c:4522
+#: ../calendar/libecal/e-cal.c:4531
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: ../calendar/libecal/e-cal.c:4524
+#: ../calendar/libecal/e-cal.c:4533
 msgid "Operation has been cancelled"
 msgstr "Operation has been canceled"
 
-#: ../calendar/libecal/e-cal.c:4526
+#: ../calendar/libecal/e-cal.c:4535
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: ../calendar/libecal/e-cal.c:4530
+#: ../calendar/libecal/e-cal.c:4539
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: ../calendar/libecal/e-cal.c:4532
+#: ../calendar/libecal/e-cal.c:4541
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: ../calendar/libecal/e-cal.c:4534
+#: ../calendar/libecal/e-cal.c:4543
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1104,7 +1104,7 @@ msgstr "A CORBA exception has occurred"
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: ../calendar/libecal/e-cal.c:4536
+#: ../calendar/libecal/e-cal.c:4545
 msgid "No error"
 msgstr "No error"
 
@@ -2521,7 +2521,7 @@ msgid "No such message"
 msgstr "No such message"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:126
-#: ../camel/providers/imap4/camel-imap4-folder.c:788
+#: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
 #: ../camel/providers/nntp/camel-nntp-folder.c:372
@@ -2533,7 +2533,7 @@ msgid "User cancelled"
 msgstr "User cancelled"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:131
-#: ../camel/providers/imap4/camel-imap4-folder.c:793
+#: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
 #: ../camel/providers/nntp/camel-nntp-folder.c:159
@@ -2547,7 +2547,7 @@ msgid "Cannot get message %s: %s"
 msgstr "Cannot get message %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:151
-#: ../camel/providers/imap4/camel-imap4-folder.c:811
+#: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "This message is not available in offline mode."
 
@@ -3128,52 +3128,57 @@ msgstr "Cannot sync flags to folder `%s': Unknown"
 msgid "Cannot sync flags to folder `%s': Bad command"
 msgstr "Cannot sync flags to folder `%s': Bad command"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:604
+#: ../camel/providers/imap4/camel-imap4-folder.c:603
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
 msgstr "Cannot expunge folder `%s': Unknown"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:609
+#: ../camel/providers/imap4/camel-imap4-folder.c:608
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
 msgstr "Cannot expunge folder `%s': Bad command"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:865
+#: ../camel/providers/imap4/camel-imap4-folder.c:864
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr "Cannot get message %s from folder `%s': No such message"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:870
+#: ../camel/providers/imap4/camel-imap4-folder.c:869
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr "Cannot get message %s from folder `%s': Bad command"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1003
+#: ../camel/providers/imap4/camel-imap4-folder.c:913
+#, c-format
+msgid "Cannot append message to folder `%s': Folder is read-only"
+msgstr "Cannot append message to folder `%s': Folder is read-only"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1009
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "Cannot append message to folder `%s': Unknown error"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1032
+#: ../camel/providers/imap4/camel-imap4-folder.c:1038
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "Cannot append message to folder `%s': Bad command"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1144
+#: ../camel/providers/imap4/camel-imap4-folder.c:1150
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "Cannot move messages from folder `%s' to folder `%s': Unknown"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1148
+#: ../camel/providers/imap4/camel-imap4-folder.c:1154
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1156
+#: ../camel/providers/imap4/camel-imap4-folder.c:1162
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr "Cannot move messages from folder `%s' to folder `%s': Bad command"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1160
+#: ../camel/providers/imap4/camel-imap4-folder.c:1166
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr "Cannot copy messages from folder `%s' to folder `%s': Bad command"
@@ -4570,7 +4575,7 @@ msgstr "Waiting"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:173 ../libedataserver/e-time-utils.c:400
+#: ../libedataserver/e-time-utils.c:179 ../libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S %p"
 
@@ -4578,7 +4583,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:178 ../libedataserver/e-time-utils.c:391
+#: ../libedataserver/e-time-utils.c:184 ../libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -4586,7 +4591,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:183 ../libedataserver/e-time-utils.c:396
+#: ../libedataserver/e-time-utils.c:189 ../libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M %p"
 
@@ -4594,78 +4599,78 @@ msgstr "%a %d/%m/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:188 ../libedataserver/e-time-utils.c:387
+#: ../libedataserver/e-time-utils.c:194 ../libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:193
+#: ../libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %d/%m/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:198
+#: ../libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:201 ../libedataserver/e-time-utils.c:294
-#: ../libedataserver/e-time-utils.c:382
+#: ../libedataserver/e-time-utils.c:207 ../libedataserver/e-time-utils.c:300
+#: ../libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:209
+#: ../libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d/%m/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:213
+#: ../libedataserver/e-time-utils.c:219
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:218
+#: ../libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d/%m/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:223
+#: ../libedataserver/e-time-utils.c:229
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d/%m/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:228
+#: ../libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
 msgstr "%d/%m/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:233
+#: ../libedataserver/e-time-utils.c:239
 msgid "%m/%d/%Y %H"
 msgstr "%d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:236 ../libedataserver/e-time-utils.c:297
+#: ../libedataserver/e-time-utils.c:242 ../libedataserver/e-time-utils.c:303
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:337 ../libedataserver/e-time-utils.c:436
+#: ../libedataserver/e-time-utils.c:348 ../libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:341 ../libedataserver/e-time-utils.c:428
+#: ../libedataserver/e-time-utils.c:352 ../libedataserver/e-time-utils.c:459
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4673,19 +4678,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:346 ../libedataserver/e-time-utils.c:433
+#: ../libedataserver/e-time-utils.c:357 ../libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:350 ../libedataserver/e-time-utils.c:425
+#: ../libedataserver/e-time-utils.c:361 ../libedataserver/e-time-utils.c:456
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:354
+#: ../libedataserver/e-time-utils.c:365
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -4701,7 +4706,7 @@ msgstr "Failed to authenticate.\n"
 msgid "Category Icon"
 msgstr "Category Icon"
 
-#: ../libedataserverui/e-categories-dialog.c:265
+#: ../libedataserverui/e-categories-dialog.c:266
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4710,7 +4715,7 @@ msgstr ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 
-#: ../libedataserverui/e-categories-dialog.c:432
+#: ../libedataserverui/e-categories-dialog.c:433
 msgid "Category"
 msgstr "Category"
 
