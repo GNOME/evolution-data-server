@@ -17,7 +17,7 @@
 #include "e-contact.h"
 #include "e-book-marshal.h"
 
-#define d(x) x
+#define d(x)
 
 static EBookViewStatus e_book_view_listener_convert_status (GNOME_Evolution_Addressbook_CallStatus status);
 

@@ -2409,7 +2409,7 @@ emit_async_open_response (gpointer data)
 	EBookOp *op = data;
 	EBook *book = op->book;
 
-	printf ("in async_open_response\n");
+	d(printf ("in async_open_response\n"));
 
 	g_mutex_lock (book->priv->mutex);
 
@@ -2443,7 +2443,7 @@ e_book_response_open (EBook       *book,
 {
 	EBookOp *op;
 
-	printf ("in e_book_response_open\n");
+	d(printf ("in e_book_response_open\n"));
 
 	g_mutex_lock (book->priv->mutex);
 
