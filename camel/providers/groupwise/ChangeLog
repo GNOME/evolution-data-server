@@ -3,6 +3,10 @@
 	* camel-groupwise-folder.c
 	  (groupwise_folder_get_message): fix for Bug #72142
 	  resolved a deadlock
+	
+	* camel-groupwise-store.c
+	  (groupwise_get_folder_info): fix for Bug #71990
+	  add a '/' whenever we find it missing
 
 2005-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
 	

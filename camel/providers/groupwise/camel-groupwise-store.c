@@ -749,7 +749,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	int status;
 	GPtrArray *folders;
 	GList *folder_list = NULL, *temp_list = NULL ;
-	const char *url, *top_folder;
+	const char *url, *top_folder, *temp_url ;
 	char *temp_str = NULL, *folder_real = NULL ;
 	CamelFolderInfo *info = NULL ;
 	
@@ -796,7 +796,11 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 				   (CAMEL_URL_HIDE_PASSWORD|
 				    CAMEL_URL_HIDE_PARAMS|
 				    CAMEL_URL_HIDE_AUTH) );
-
+	if ( url[strlen(url) - 1] != '/') {
+		temp_url = g_strconcat (url, "/", NULL) ;
+		g_free ((char *)url) ;
+		url = temp_url ;
+	}
 	/*Populate the hash table for finding the mapping from container id <-> folder name*/
 	for (;temp_list != NULL ; temp_list = g_list_next (temp_list) ) {
 		const char *name, *id, *parent ;
@@ -825,6 +829,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		gchar *par_name = NULL;
 		EGwContainer *container = E_GW_CONTAINER (folder_list->data) ;
 		EGwContainerType type = e_gw_container_get_container_type (container) ;
+		const char *name = e_gw_container_get_name (container) ;
 
 		if (e_gw_container_is_root (container)) 
 			continue ;
@@ -858,9 +863,9 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 
 		if (par_name != NULL) {
 			gchar *temp_parent = NULL, *temp = NULL ;
-			gchar *str = g_strconcat (par_name,"/",e_gw_container_get_name (container), NULL) ;
+			gchar *str = g_strconcat (par_name,"/",name, NULL) ;
 
-			fi->name = g_strdup (e_gw_container_get_name (container) ) ;
+			fi->name = g_strdup (name) ;
 
 			temp_parent = g_hash_table_lookup (priv->parent_hash, parent) ;
 			while (temp_parent) {
@@ -878,8 +883,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 			g_free (str) ;
 		}
 		else {
-			fi->name =  fi->full_name = g_strdup (e_gw_container_get_name (container));
-			fi->uri = g_strconcat (url, "", e_gw_container_get_name(container), NULL) ;
+			fi->name =  fi->full_name = g_strdup (name);
+			fi->uri = g_strconcat (url, "", name, NULL) ;
 
 		}
 
@@ -892,8 +897,9 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		fi->total = e_gw_container_get_total_count (container) ;
 		fi->unread = e_gw_container_get_unread_count (container) ;
 		g_ptr_array_add (folders, fi);
-		
+		name = NULL ;
 	}
+	g_free ((char *)url) ;
 	if ( (top != NULL) && (folders->len == 0)) {
 		/*temp_str already contains the value if any*/
 		if (temp_str) {
@@ -1040,7 +1046,7 @@ groupwise_rename_folder(CamelStore *store,
 	if (temp_new) 
 		temp_new++ ;
 	else
-		temp_new = new_name ;
+		temp_new = (char *)new_name ;
 		
 	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , new_name) != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
