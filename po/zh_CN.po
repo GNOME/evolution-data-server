@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-19 13:19+0100\n"
+"POT-Creation-Date: 2005-04-04 04:16+0200\n"
 "PO-Revision-Date: 2005-02-13 16:08+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -558,7 +558,7 @@ msgid "Category List"
 msgstr "类别列表"
 
 #: addressbook/libebook/e-contact.c:224
-#: libedataserverui/e-categories-dialog.c:371
+#: libedataserverui/e-categories-dialog.c:372
 msgid "Categories"
 msgstr "类别"
 
@@ -643,27 +643,23 @@ msgstr "请求回复：方便时"
 msgid "Invalid server URI"
 msgstr "无效的服务器 URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "无法为获得差异线索"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "日历"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "无法创建缓存文件"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "无法为增殖缓存创建线索"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4528
 #: camel/providers/groupwise/camel-groupwise-folder.c:654
 #: camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -1025,7 +1021,7 @@ msgid "Undefined"
 msgstr "未定义"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1538
+#: calendar/libecal/e-cal.c:1538 libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "为 %s 输入密码 (用户 %s)"
@@ -2712,7 +2708,7 @@ msgstr "发送信件"
 
 #: camel/providers/imap/camel-imap-command.c:219
 #: camel/providers/imap/camel-imap-command.c:258
-#: camel/providers/imap/camel-imap-command.c:463
+#: camel/providers/imap/camel-imap-command.c:465
 #: camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "操作已取消"
@@ -2744,16 +2740,16 @@ msgstr "来自 IMAP 服务器的意外应答：%s"
 msgid "IMAP command failed: %s"
 msgstr "IMAP 命令失败：%s"
 
-#: camel/providers/imap/camel-imap-command.c:473
+#: camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "服务器应答结束太快。"
 
-#: camel/providers/imap/camel-imap-command.c:680
+#: camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP 服务器应答不含有 %s 信息"
 
-#: camel/providers/imap/camel-imap-command.c:716
+#: camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "来自 IMAP 服务器意外的 OK 应答：%s"
@@ -3682,7 +3678,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "无法打开临时邮件箱：%s"
 
 #: camel/providers/local/camel-mbox-summary.c:619
-#: camel/providers/local/camel-mbox-summary.c:783
+#: camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "无法关闭来源文件夹 %s：%s"
@@ -3697,31 +3693,32 @@ msgstr "无法关闭临时文件夹：%s"
 msgid "Could not rename folder: %s"
 msgstr "无法重命名文件夹：%s"
 
-#: camel/providers/local/camel-mbox-summary.c:723
-#: camel/providers/local/camel-mbox-summary.c:731
-#: camel/providers/local/camel-mbox-summary.c:925
-#: camel/providers/local/camel-mbox-summary.c:933
+#: camel/providers/local/camel-mbox-summary.c:696
+#: camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "无法存储文件夹：%s"
+
+#: camel/providers/local/camel-mbox-summary.c:733
+#: camel/providers/local/camel-mbox-summary.c:741
+#: camel/providers/local/camel-mbox-summary.c:935
+#: camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "即使同步后，概要和文件夹仍然不匹配"
 
-#: camel/providers/local/camel-mbox-summary.c:859
+#: camel/providers/local/camel-mbox-summary.c:869
 #: camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "未知的错误：%s"
 
-#: camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "无法存储文件夹：%s"
-
-#: camel/providers/local/camel-mbox-summary.c:988
-#: camel/providers/local/camel-mbox-summary.c:1014
+#: camel/providers/local/camel-mbox-summary.c:998
+#: camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "写入临时文件夹错误：%s"
 
-#: camel/providers/local/camel-mbox-summary.c:1005
+#: camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "写入临时文件夹失败：%s：%s"
@@ -4533,7 +4530,7 @@ msgstr "等候"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: libedataserver/e-time-utils.c:173 libedataserver/e-time-utils.c:400
+#: libedataserver/e-time-utils.c:179 libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%Y-%m-%d %A %H:%M:%S"
 
@@ -4541,7 +4538,7 @@ msgstr "%Y-%m-%d %A %H:%M:%S"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: libedataserver/e-time-utils.c:178 libedataserver/e-time-utils.c:391
+#: libedataserver/e-time-utils.c:184 libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%Y-%m-%d %A %H:%M:%S"
 
@@ -4549,7 +4546,7 @@ msgstr "%Y-%m-%d %A %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: libedataserver/e-time-utils.c:183 libedataserver/e-time-utils.c:396
+#: libedataserver/e-time-utils.c:189 libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%Y-%m-%d %A %H:%M"
 
@@ -4557,78 +4554,78 @@ msgstr "%Y-%m-%d %A %H:%M"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: libedataserver/e-time-utils.c:188 libedataserver/e-time-utils.c:387
+#: libedataserver/e-time-utils.c:194 libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%Y-%m-%d %A %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:193
+#: libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%Y-%m-%d %A %H"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:198
+#: libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
 msgstr "%Y-%m-%d %A %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: libedataserver/e-time-utils.c:201 libedataserver/e-time-utils.c:294
-#: libedataserver/e-time-utils.c:382
+#: libedataserver/e-time-utils.c:207 libedataserver/e-time-utils.c:300
+#: libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
 msgstr "%Y-%m-%d %A"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: libedataserver/e-time-utils.c:209
+#: libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%Y-%m-%d %H:%M:%S"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: libedataserver/e-time-utils.c:213
+#: libedataserver/e-time-utils.c:219
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%Y-%m-%d %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:218
+#: libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%Y-%m-%d %H:%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:223
+#: libedataserver/e-time-utils.c:229
 msgid "%m/%d/%Y %H:%M"
 msgstr "%Y-%m-%d %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:228
+#: libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
 msgstr "%Y-%m-%d %H"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:233
+#: libedataserver/e-time-utils.c:239
 msgid "%m/%d/%Y %H"
 msgstr "%Y-%m-%d %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: libedataserver/e-time-utils.c:236 libedataserver/e-time-utils.c:297
+#: libedataserver/e-time-utils.c:242 libedataserver/e-time-utils.c:303
 msgid "%m/%d/%Y"
 msgstr "%Y-%m-%d"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
+#: libedataserver/e-time-utils.c:348 libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
 msgstr "%H:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
+#: libedataserver/e-time-utils.c:352 libedataserver/e-time-utils.c:459
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4636,34 +4633,42 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
+#: libedataserver/e-time-utils.c:357 libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
+#: libedataserver/e-time-utils.c:361 libedataserver/e-time-utils.c:456
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: libedataserver/e-time-utils.c:354
+#: libedataserver/e-time-utils.c:365
 msgid "%I %p"
 msgstr "%H"
+
+#: libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "匿名访问 LDAP 服务器"
+
+#: libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "进行身份验证失败。\n"
 
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "类别图标"
 
-#: libedataserverui/e-categories-dialog.c:238
+#: libedataserverui/e-categories-dialog.c:239
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "配置中已经有类别“%s”了。请使用另外一个名称"
 
-#: libedataserverui/e-categories-dialog.c:396
+#: libedataserverui/e-categories-dialog.c:397
 msgid "Category"
 msgstr "类别"
 
@@ -4785,3 +4790,6 @@ msgstr "Evolution 日历文件和 Webcal 后端"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "发生了多个段错误；无法显示错误对话框\n"
+
+#~ msgid "Could not create thread for getting deltas"
+#~ msgstr "无法为获得差异线索"
