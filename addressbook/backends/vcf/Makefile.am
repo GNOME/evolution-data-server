@@ -18,4 +18,4 @@ libebookbackendvcf_la_LIBADD =						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
 libebookbackendvcf_la_LDFLAGS =		\
-	-avoid-version
+	-module -avoid-version

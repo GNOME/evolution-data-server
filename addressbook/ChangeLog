@@ -1,3 +1,11 @@
+2005-01-21  Hans Petter Jansson  <hpj@novell.com>
+
+	* backends/vcf/Makefile.am:
+	* backends/ldap/Makefile.am:
+	* backends/groupwise/Makefile.am:
+	* backends/file/Makefile.am:
+	Build as modules.
+
 2005-01-30  Sivaiah Nallagatla <snallagtla@novell.com>
 
        * libebook/e-vcarc.c (skip_until) :

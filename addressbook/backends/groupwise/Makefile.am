@@ -19,7 +19,7 @@ libebookbackendgroupwise_la_LIBADD =						\
 	$(SOUP_LIBS)
 
 libebookbackendgroupwise_la_LDFLAGS =		\
-	-avoid-version
+	-module -avoid-version
 
 noinst_PROGRAMS = create-account
 create_account_SOURCES = create-account.c
