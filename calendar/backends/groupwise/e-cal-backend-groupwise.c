@@ -88,11 +88,11 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		comp = e_gw_item_to_cal_component (item);
 		g_object_unref (item);
 		if (E_IS_CAL_COMPONENT (comp)) {
+			e_cal_component_commit_sequence (comp);
 			if (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) ==
 			    icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
 				e_cal_component_get_uid (comp, &uid);
 				rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
-				e_cal_component_commit_sequence (comp);
 				e_cal_backend_cache_put_component (priv->cache, comp);
 				g_free (rid);
 			}
