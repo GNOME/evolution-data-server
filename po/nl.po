@@ -17,22 +17,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-06 14:24+0100\n"
-"PO-Revision-Date: 2004-03-06 17:26+0100\n"
+"POT-Creation-Date: 2004-03-21 03:37+0100\n"
+"PO-Revision-Date: 2004-03-21 11:13+0100\n"
 "Last-Translator: Daniel van Eeden <daniel_e@dds.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit"
 
-#: addressbook/backends/file/e-book-backend-file.c:385
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Bezig met laden..."
 
-#: addressbook/backends/file/e-book-backend-file.c:387
+#: addressbook/backends/file/e-book-backend-file.c:434
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2847
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Bezig met zoeken..."
 
@@ -585,21 +585,21 @@ msgstr "Lijst"
 msgid "List Show Addresses"
 msgstr "Lijst adressen weergeven"
 
-#: addressbook/libebook/e-contact.c:1201
+#: addressbook/libebook/e-contact.c:1203
 msgid "Unnamed List"
 msgstr "Lijst van onbenoemden"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:418
+#: calendar/backends/contacts/e-cal-backend-contacts.c:429
 msgid "Birthday"
 msgstr "Geboortedatum"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:451
 #, c-format
 msgid "Birthday: %s"
 msgstr "Geboortedatum: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:459
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Verjaardag: %s"
@@ -608,13 +608,26 @@ msgstr "Verjaardag: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan kalender gegevens niet bewaren: ongeldige URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+msgid "Invalid server URI"
+msgstr "Ongeldige server URI"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 msgid "Calendar"
 msgstr "Kalender"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 msgid "Checklist"
 msgstr "Aftekenlijst"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/libecal/e-cal.c:3962
+msgid "Authentication failed"
+msgstr "Aanmelding mislukt"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+msgid "Could not create cache file"
+msgstr "Kan cache bestand niet aanmaken"
 
 #: calendar/backends/http/e-cal-backend-http.c:218
 msgid "Redirected to Invalid URI"
@@ -774,147 +787,143 @@ msgid "Undefined"
 msgstr "Ongedefinieerd"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1465
+#: calendar/libecal/e-cal.c:1486
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Wachtwoord invoeren voor %s (gebruiker %s)"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3936
 msgid "Invalid argument"
 msgstr "Ongeldige argument"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3938
 msgid "Backend is busy"
 msgstr "Backend is bezig"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3940
 msgid "Repository is offline"
 msgstr "Opslagplaats offline"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3942
 msgid "No such calendar"
 msgstr "Kalender bestaat niet"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3944
 msgid "Object not found"
 msgstr "Object niet gevonden"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3946
 msgid "Invalid object"
 msgstr "Ongeldig object"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3948
 msgid "URI not loaded"
 msgstr "URI niet geladen"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3950
 msgid "URI already loaded"
 msgstr "URI is reeds geladen"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3952
 msgid "Permission denied"
 msgstr "Operatie niet toegestaan"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3954
 msgid "Object ID already exists"
 msgstr "Object-ID bestaat reeds"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3956
 msgid "Protocol not supported"
 msgstr "Protocol niet ondersteund"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3958
 msgid "Operation has been cancelled"
 msgstr "Operatie is geannuleerd"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3960
 msgid "Could not cancel operation"
 msgstr "Kon operatie niet annuleren"
 
-#: calendar/libecal/e-cal.c:3956
-msgid "Authentication failed"
-msgstr "Aanmelding mislukt"
-
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:3964
 msgid "Authentication required"
 msgstr "Aanmelding is vereist"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:3966
 msgid "A CORBA exception has occurred"
 msgstr "Er is een CORBA uitzondering opgetreden"
 
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:3968
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:3970
 msgid "No error"
 msgstr "Geen fout"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:520
-#: calendar/libedata-cal/e-cal-backend-sexp.c:652
-#: calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: calendar/libedata-cal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:518
+#: calendar/libedata-cal/e-cal-backend-sexp.c:650
+#: calendar/libedata-cal/e-cal-backend-sexp.c:677
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" verwacht geen argumenten"
 
 # 'wil ipv verwacht?
-#: calendar/libedata-cal/e-cal-backend-sexp.c:74
-#: calendar/libedata-cal/e-cal-backend-sexp.c:162
-#: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:717
+#: calendar/libedata-cal/e-cal-backend-sexp.c:75
+#: calendar/libedata-cal/e-cal-backend-sexp.c:163
+#: calendar/libedata-cal/e-cal-backend-sexp.c:197
+#: calendar/libedata-cal/e-cal-backend-sexp.c:233
+#: calendar/libedata-cal/e-cal-backend-sexp.c:715
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" verwacht één argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:464
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:462
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" verwacht dat het eerste argument een tekenreeks is"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#: calendar/libedata-cal/e-cal-backend-sexp.c:90
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "\"%s\" verwacht dat het eerste argument een datum/tijd tekenreeks is in ISO "
 "8601 vorm"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:458
+#: calendar/libedata-cal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:305
+#: calendar/libedata-cal/e-cal-backend-sexp.c:456
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" verwacht twee argumenten"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:126
-#: calendar/libedata-cal/e-cal-backend-sexp.c:168
-#: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:723
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:721
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" verwacht dat het eerste argument een time_t is"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#: calendar/libedata-cal/e-cal-backend-sexp.c:135
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" verwacht dat het tweede argument een geheel getal is"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:296
+#: calendar/libedata-cal/e-cal-backend-sexp.c:319
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" verwacht dat het tweede argument een time_t is"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:472
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" verwacht dat het tweede argument een tekenreeks is"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:490
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -923,12 +932,12 @@ msgstr ""
 "\"%s\" verwacht dat het eerste argument een keuze is uit: \"any\", \"summary"
 "\", \"description\" of \"location\"."
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:554
+#: calendar/libedata-cal/e-cal-backend-sexp.c:552
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" verwacht op zijn minst één argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:568
+#: calendar/libedata-cal/e-cal-backend-sexp.c:566
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
