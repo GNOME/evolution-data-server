@@ -1366,7 +1366,7 @@ e_contact_pretty_name (EContactField field_id)
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
-	textdomain (GETTEXT_PACKAGE);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
 	for (i = 0; i < G_N_ELEMENTS (field_info); i ++) {

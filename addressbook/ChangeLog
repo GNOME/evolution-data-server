@@ -1,3 +1,10 @@
+2005-01-27  Christophe Fergeau  <teuf@gnome.org>
+
+	* libebook/e-contact.c (e_contact_pretty_name):
+	Replace the textdomain call with bind_textdomain_codeset
+
+	Fixes #71116
+
 2005-01-24  Hans Petter Jansson  <hpj@novell.com>
 
 	* libebook/e-destination.c (e_destination_set_contact): Ref the new
