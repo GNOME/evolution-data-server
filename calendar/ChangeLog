@@ -1,3 +1,8 @@
+2003-12-03  Christian Kellnerc <gicmo@xatom.net>
+
+         * libedata-cal/e-cal-backend-sexp.c: added has-recurrences sexp
+	 function
+
 2003-12-03  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: use a cache
