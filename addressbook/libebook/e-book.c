@@ -1340,6 +1340,8 @@ e_book_cancel (EBook   *book,
 	gboolean rv;
 	CORBA_Environment ev;
 
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
+
 	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->current_op == NULL) {
@@ -1601,7 +1603,7 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
  *
  * Return value: #TRUE on success, #FALSE otherwise.
  */
-gboolean
+static gboolean
 e_book_unload_uri (EBook   *book,
 		   GError **error)
 {
@@ -1943,6 +1945,8 @@ e_book_load_local_addressbook (EBook   *book,
 	char *uri;
 	gboolean rv;
 
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
+
 	filename = g_build_filename (g_get_home_dir(),
 				     ".evolution/addressbook/local/system",
 				     NULL);
@@ -1968,6 +1972,8 @@ e_book_load_local_addressbook (EBook   *book,
 const char *
 e_book_get_uri (EBook *book)
 {
+	g_return_val_if_fail (book && E_IS_BOOK (book), NULL);
+
 	return book->priv->uri;
 }
 
@@ -1982,6 +1988,8 @@ e_book_get_uri (EBook *book)
 ESource *
 e_book_get_source (EBook *book)
 {
+	g_return_val_if_fail (book && E_IS_BOOK (book), NULL);
+
 	return book->priv->source;
 }
 
@@ -1999,6 +2007,8 @@ const char *
 e_book_get_static_capabilities (EBook   *book,
 				GError **error)
 {
+	g_return_val_if_fail (book && E_IS_BOOK (book), NULL);
+
 	if (!book->priv->cap_queried) {
 		CORBA_Environment ev;
 		char *temp;
@@ -2006,17 +2016,20 @@ e_book_get_static_capabilities (EBook   *book,
 		CORBA_exception_init (&ev);
 
 		if (book->priv->load_state != E_BOOK_URI_LOADED) {
-			g_warning ("e_book_unload_uri: No URI is loaded!\n");
-			return g_strdup("");
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_URI_NOT_LOADED,
+				     _("\"%s\" on book before \"%s\""),
+				     "e_book_get_static_capabilities", "e_book_load_uri");
+			return g_strdup ("");
 		}
 
 		temp = GNOME_Evolution_Addressbook_Book_getStaticCapabilities(book->priv->corba_book, &ev);
 
 		if (ev._major != CORBA_NO_EXCEPTION) {
-			g_warning ("e_book_get_static_capabilities: Exception "
-				   "during get_static_capabilities!\n");
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
+				     _("CORBA exception making \"%s\" call"),
+				     "Book::getStaticCapabilities");
 			CORBA_exception_free (&ev);
-			return g_strdup("");
+			return g_strdup ("");
 		}
 
 		book->priv->cap = g_strdup(temp);
@@ -2044,7 +2057,11 @@ gboolean
 e_book_check_static_capability (EBook *book,
 				const char  *cap)
 {
-	const char *caps = e_book_get_static_capabilities (book, NULL);
+	const char *caps;
+
+	g_return_val_if_fail (book && E_IS_BOOK (book), FALSE);
+
+	caps = e_book_get_static_capabilities (book, NULL);
 
 	/* XXX this is an inexact test but it works for our use */
 	if (caps && strstr (caps, cap))
@@ -2064,6 +2081,8 @@ e_book_check_static_capability (EBook *book,
 gboolean
 e_book_is_writable (EBook *book)
 {
+	g_return_val_if_fail (book && E_IS_BOOK (book), FALSE);
+
 	return book->priv->writable;
 }
 
@@ -2110,11 +2129,15 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 gboolean
 e_book_set_self (EBook *book, EContact *contact, GError **error)
 {
-	GConfClient *gconf = gconf_client_get_default();
+	GConfClient *gconf;
 
+	e_return_error_if_fail (book && E_IS_BOOK (book),          E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+
+	gconf = gconf_client_get_default();
 	gconf_client_set_string (gconf, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID), NULL);
-
 	g_object_unref (gconf);
+
 	return TRUE;
 }
 
@@ -2124,6 +2147,10 @@ e_book_is_self (EContact *contact)
 	GConfClient *gconf;
 	char *uid;
 	gboolean rv;
+
+	/* XXX this should probably be e_return_error_if_fail, but we
+	   need a GError** arg for that */
+	g_return_val_if_fail (contact && E_IS_CONTACT (contact), FALSE);
 
 	gconf = gconf_client_get_default();
 	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
@@ -2156,6 +2183,8 @@ e_book_get_default_addressbook (EBook **book, GError **error)
 	GError *err = NULL;
 	ESource *default_source = NULL;
 	gboolean rv = TRUE;
+
+	e_return_error_if_fail (*book, E_BOOK_ERROR_INVALID_ARG);
 
 	if (!e_book_get_addressbooks (&sources, &err)) {
 		g_propagate_error (error, err);
@@ -2215,13 +2244,14 @@ e_book_get_default_addressbook (EBook **book, GError **error)
  * Return value: #TRUE if the setting was stored in libebook's ESourceList, otherwise #FALSE.
  */
 gboolean
-e_book_set_default_addressbook (EBook  *book, GError **error)
+e_book_set_default_addressbook (EBook *book, GError **error)
 {
-	ESource *source = e_book_get_source (book);
-	if (!source) {
-		/* XXX gerror */
-		return FALSE;
-	}
+	ESource *source;
+
+	e_return_error_if_fail (book && E_IS_BOOK (book),                        E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book->priv->load_state == E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_ALREADY_LOADED);
+
+	source = e_book_get_source (book);
 
 	return e_book_set_default_source (source, error);
 }
@@ -2245,6 +2275,8 @@ e_book_set_default_source (ESource *source, GError **error)
 	GError *err = NULL;
 	GSList *g;
 
+	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
+
 	uid = e_source_peek_uid (source);
 
 	if (!e_book_get_addressbooks (&sources, &err)) {
@@ -2256,7 +2288,8 @@ e_book_set_default_source (ESource *source, GError **error)
 	   it's not we don't bother adding it, just return an error */
 	source = e_source_list_peek_source_by_uid (sources, uid);
 	if (!source) {
-		/* XXX gerror */
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SUCH_SOURCE,
+			     _("e_book_set_default_source: there was no source for uid `%s' stored in gconf."), uid);
 		g_object_unref (sources);
 		return FALSE;
 	}
@@ -2295,8 +2328,11 @@ e_book_set_default_source (ESource *source, GError **error)
 gboolean
 e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 {
-	GConfClient *gconf = gconf_client_get_default();
+	GConfClient *gconf;
 
+	e_return_error_if_fail (*addressbook_sources, E_BOOK_ERROR_INVALID_ARG);
+
+	gconf = gconf_client_get_default();
 	*addressbook_sources = e_source_list_new_for_gconf (gconf, "/apps/evolution/addressbook/sources");
 	g_object_unref (gconf);
 

@@ -72,9 +72,6 @@ gboolean e_book_load_uri                   (EBook       *book,
 					    gboolean     only_if_exists,
 					    GError     **error);
 
-gboolean e_book_unload_uri                 (EBook       *book,
-					    GError     **error);
-
 gboolean e_book_remove                     (EBook       *book,
 					    GError     **error);
 

@@ -1,5 +1,30 @@
 2004-01-27  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book.h: remove the prototype for e_book_unload_uri.
+	If you want to unload the uri, unref the book and create a new
+	one.
+
+	* libebook/e-book.c (e_book_cancel): add some preconditions.
+	(e_book_load_local_addressbook): same.
+	(e_book_get_source): same.
+	(e_book_get_static_capabilities): same.  also, set the GError
+	instead of generating a g_warning.  This should probably return
+	NULL in the error cases instead of g_strdup(""), but i'm not sure
+	if that'll break things.
+	(e_book_check_static_capability): add some preconditions.
+	(e_book_is_writable): same.
+	(e_book_set_self): same.
+	(e_book_is_self): same.
+	(e_book_set_default_addressbook): same.
+	(e_book_set_default_source): same.
+	(e_book_get_addressbooks): same.
+	(e_book_unload_uri): make this static.
+	
+	* libebook/e-book-types.h (EBookStatus): add
+	E_BOOK_ERROR_NO_SUCH_SOURCE.
+
+2004-01-27  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.c (e_book_load_local_addressbook): change the
 	local addressbook path to .evolution/addressbook/local/system, and
 	pass FALSE for @only_if_exists, so it'll always be created if it's
