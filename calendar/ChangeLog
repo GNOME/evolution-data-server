@@ -1,3 +1,10 @@
+2005-03-06  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #72454
+
+	* backends/http/e-cal-backend-http.c (begin_retrieval_cb): added missing
+	NULL to g_object_set call.
+
 2005-02-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: 
