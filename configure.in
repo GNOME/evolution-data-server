@@ -1,7 +1,7 @@
  Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 0.0.92)
+AC_INIT(evolution-data-server, 0.0.92.1)
 AC_CONFIG_SRCDIR(README)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
@@ -243,7 +243,7 @@ dnl ************************
 
 INTERFACE_VERSION="$BASE_VERSION"
 AC_SUBST(INTERFACE_VERSION)
-AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "INTERFACE_VERSION", [IDL interface version (Major.Minor)])
+AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "$INTERFACE_VERSION", [IDL interface version (Major.Minor)])
 
 EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
 EVO_NAME_SERVER_RULE='%_$(BASE_VERSION).server: %.server ; mv $< $@'
