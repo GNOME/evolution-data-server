@@ -1,5 +1,15 @@
 2004-06-09  Chris Toshok  <toshok@ximian.com>
 
+	[ probable fix for #58803 ]
+	
+	* backends/ldap/e-book-backend-ldap.c (ldap_search_handler):
+	remove the ref/unref of the book view here.
+	(e_book_backend_ldap_search): move the dup_ref of the book view
+	here.
+	(ldap_search_dtor): and the release_unref to here.
+
+2004-06-09  Chris Toshok  <toshok@ximian.com>
+
 	* backends/ldap/e-book-backend-ldap.c (ldap_search_dtor): we don't
 	need to lock/unlock the view's mutex anymore.
 
