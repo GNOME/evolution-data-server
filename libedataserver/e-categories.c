@@ -52,19 +52,68 @@ free_category_info (CategoryInfo *cat_info)
 	g_free (cat_info);
 }
 
+static char *
+escape_string (const char *source)
+{
+	GString *str;
+	char *dest;
+
+	str = g_string_new ("");
+
+	while (*source) {
+		switch (*source) {
+                case '<':
+                        str = g_string_append (str, "&lt;");
+                        break;
+                case '>':
+                        str = g_string_append (str, "&gt;");
+                        break;
+                case '&':
+                        str = g_string_append (str, "&amp;");
+                        break;
+                case '"':
+                        str = g_string_append (str, "&quot;");
+                        break;
+
+                default:
+                        str = g_string_append_c (str, *source);
+                        break;
+                }
+                source++;
+	}
+
+	dest = str->str;
+	g_string_free (str, FALSE);
+
+	return dest;
+}
+
 static void
 hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 {
-	char *s;
 	CategoryInfo *cat_info = value;
 	GString **str = user_data;
+	char *s;
 
-	s = g_strdup_printf ("<category a=\"%s\" color=\"%s\" icon=\"%s\"/>",
-			     cat_info->category, cat_info->color, cat_info->icon_file);
+	*str = g_string_append (*str, "<category a=\"");
 
+	s = escape_string (cat_info->category);
 	*str = g_string_append (*str, s);
-
 	g_free (s);
+
+	*str = g_string_append_c (*str, '"');
+	if (cat_info->color) {
+		*str = g_string_append (*str, " color=\"");
+		*str = g_string_append (*str, cat_info->color);
+		*str = g_string_append_c (*str, '"');
+	}
+	if (cat_info->icon_file) {
+		*str = g_string_append (*str, " icon=\"");
+		*str = g_string_append (*str, cat_info->icon_file);
+		*str = g_string_append_c (*str, '"');
+	}
+
+	*str = g_string_append (*str, "/>");
 }
 
 static void
@@ -142,6 +191,8 @@ initialize_categories_config (void)
 		}
 
 		g_free (str);
+
+		conf_is_dirty = FALSE;
 	} else {
 		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png");
 		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png");
@@ -167,7 +218,6 @@ initialize_categories_config (void)
 	}
 
 	/* install idle callback to save the file */
-	conf_is_dirty = FALSE;
 	idle_id = g_idle_add ((GSourceFunc) idle_saver_cb, NULL);
 }
 

@@ -1,3 +1,10 @@
+2005-01-10  Rodrigo Moya <rodrigo@novell.com>
+
+	* e-categories.c (escape_string): new function.
+	(hash_to_xml_string): add category names after escaping them.
+	(initialize_categories_config): mark the configuration as not dirty
+	only when we just got the list of categories from it.
+
 2005-01-07  David Trowbridge <David.Trowbridge@Colorado.edu>
 
 	* configure.in:
