@@ -1,3 +1,8 @@
+2004-01-16  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.c (categories_changed_idle_cb): remove debug
+	statement
+
 2004-01-16  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libecal/e-cal.c (e_cal_open): return AUTH_REQUIRED error if

@@ -944,8 +944,6 @@ categories_changed_idle_cb (gpointer data)
 	ECalCategoryData *cat_data = data;
 	int i;
 	
-	g_message (G_STRLOC ": categories_changed_idle");
-
 	g_signal_emit (G_OBJECT (cat_data->ecal), e_cal_signals[CATEGORIES_CHANGED], 0, cat_data->categories);
 
 	g_object_unref (cat_data->ecal);
