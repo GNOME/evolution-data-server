@@ -20,10 +20,8 @@
  * USA
  */
 
-
 #ifndef CAMEL_LOCAL_STORE_H
 #define CAMEL_LOCAL_STORE_H 1
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,27 +35,26 @@ extern "C" {
 #define CAMEL_LOCAL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_LOCAL_STORE_TYPE, CamelLocalStoreClass))
 #define CAMEL_IS_LOCAL_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_LOCAL_STORE_TYPE))
 
-
 typedef struct {
 	CamelStore parent_object;	
+
 	char *toplevel_dir;
-	
 } CamelLocalStore;
-
-
 
 typedef struct {
 	CamelStoreClass parent_class;
 
+	char *(*get_full_path)(CamelLocalStore *ls, const char *full_name);
+	char *(*get_meta_path)(CamelLocalStore *ls, const char *full_name, const char *ext);
 } CamelLocalStoreClass;
-
-
-/* public methods */
 
 /* Standard Camel function */
 CamelType camel_local_store_get_type (void);
 
 const gchar *camel_local_store_get_toplevel_dir (CamelLocalStore *store);
+
+#define camel_local_store_get_full_path(ls, name) ((CamelLocalStoreClass *)((CamelObject *)ls)->klass)->get_full_path((CamelLocalStore *)ls, name)
+#define camel_local_store_get_meta_path(ls, name, ext) ((CamelLocalStoreClass *)((CamelObject *)ls)->klass)->get_meta_path((CamelLocalStore *)ls, name, ext)
 
 #ifdef __cplusplus
 }

@@ -56,8 +56,6 @@ static CamelFolderClass *parent_class = NULL;
 #define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 #define CSPOOLS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static char *spool_get_full_path(CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name);
-static char *spool_get_meta_path(CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name, const char *ext);
 static CamelLocalSummary *spool_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
 
 static int spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
@@ -72,8 +70,6 @@ camel_spool_folder_class_init(CamelSpoolFolderClass *klass)
 
 	parent_class = (CamelFolderClass *)camel_mbox_folder_get_type();
 
-	lklass->get_full_path = spool_get_full_path;
-	lklass->get_meta_path = spool_get_meta_path;
 	lklass->create_summary = spool_create_summary;
 	lklass->lock = spool_lock;
 	lklass->unlock = spool_unlock;
@@ -131,30 +127,6 @@ camel_spool_folder_new(CamelStore *parent_store, const char *full_name, guint32 
 	}
 
 	return folder;
-}
-
-static char *
-spool_get_full_path(CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name)
-{
-	return g_strdup_printf ("%s/%s", toplevel_dir, full_name);
-}
-
-static char *
-spool_get_meta_path(CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name, const char *ext)
-{
-	CamelService *service = (CamelService *)((CamelFolder *)lf)->parent_store;
-	char *root = camel_session_get_storage_path(service->session, service, NULL);
-	char *path;
-
-	if (root == NULL)
-		return NULL;
-
-
-	camel_mkdir(root, 0777);
-	path = g_strdup_printf("%s/%s%s", root, full_name, ext);
-	g_free(root);
-
-	return path;
 }
 
 static CamelLocalSummary *

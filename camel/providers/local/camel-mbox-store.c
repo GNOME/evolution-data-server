@@ -53,6 +53,8 @@ static void delete_folder(CamelStore *store, const char *folder_name, CamelExcep
 static void rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex);
 static CamelFolderInfo *create_folder(CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex);
 static CamelFolderInfo *get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelException *ex);
+static char *mbox_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext);
+static char *mbox_get_full_path(CamelLocalStore *ls, const char *full_name);
 
 static void
 camel_mbox_store_class_init(CamelMboxStoreClass *camel_mbox_store_class)
@@ -69,6 +71,9 @@ camel_mbox_store_class_init(CamelMboxStoreClass *camel_mbox_store_class)
 	
 	camel_store_class->get_folder_info = get_folder_info;
 	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
+
+	((CamelLocalStoreClass *)camel_store_class)->get_full_path = mbox_get_full_path;
+	((CamelLocalStoreClass *)camel_store_class)->get_meta_path = mbox_get_meta_path;
 }
 
 CamelType
@@ -87,22 +92,6 @@ camel_mbox_store_get_type(void)
 	}
 	
 	return camel_mbox_store_type;
-}
-
-static char *
-mbox_folder_name_to_path(CamelStore *store, const char *folder_name)
-{
-	const char *toplevel_dir = CAMEL_LOCAL_STORE(store)->toplevel_dir;
-	
-	return camel_mbox_folder_get_full_path(NULL, toplevel_dir, folder_name);
-}
-
-static char *
-mbox_folder_name_to_meta_path(CamelStore *store, const char *folder_name, const char *ext)
-{
-	const char *toplevel_dir = CAMEL_LOCAL_STORE(store)->toplevel_dir;
-	
-	return camel_mbox_folder_get_meta_path(NULL, toplevel_dir, folder_name, ext);
 }
 
 static char *extensions[] = {
@@ -140,7 +129,7 @@ get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelExcep
 	if (!((CamelStoreClass *) parent_class)->get_folder(store, folder_name, flags, ex))
 		return NULL;
 	
-	name = mbox_folder_name_to_path(store, folder_name);
+	name = camel_local_store_get_full_path(store, folder_name);
 	
 	if (stat(name, &st) == -1) {
 		const char *basename;
@@ -226,7 +215,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	char *name, *path;
 	struct stat st;
 	
-	name = mbox_folder_name_to_path(store, folder_name);
+	name = camel_local_store_get_full_path(store, folder_name);
 	path = g_strdup_printf("%s.sbd", name);
 	
 	if (rmdir(path) == -1 && errno != ENOENT) {
@@ -276,7 +265,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	 * naming convention is different. Need to find a way for
 	 * CamelLocalStore to be able to construct the folder & meta
 	 * paths itself */
-	path = mbox_folder_name_to_meta_path(store, folder_name, ".ev-summary");
+	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary");
 	if (unlink(path) == -1 && errno != ENOENT) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 				     _("Could not delete folder summary file `%s': %s"),
@@ -288,7 +277,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	
 	g_free(path);
 	
-	path = mbox_folder_name_to_meta_path(store, folder_name, ".ibex");
+	path = camel_local_store_get_meta_path(store, folder_name, ".ibex");
 	if (camel_text_index_remove(path) == -1 && errno != ENOENT) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 				     _("Could not delete folder index file `%s': %s"),
@@ -311,7 +300,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	}
 	
 	if (path == NULL)
-		path = mbox_folder_name_to_meta_path(store, folder_name, ".cmeta");
+		path = camel_local_store_get_meta_path(store, folder_name, ".cmeta");
 	
 	if (unlink(path) == -1 && errno != ENOENT) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
@@ -365,7 +354,7 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 	else
 		name = g_strdup(folder_name);
 	
-	path = mbox_folder_name_to_path(store, name);
+	path = camel_local_store_get_full_path(store, name);
 	
 	dir = g_path_get_dirname(path);
 	if (camel_mkdir(dir, 0777) == -1 && errno != EEXIST) {
@@ -409,18 +398,18 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 static int
 xrename(CamelStore *store, const char *old_name, const char *new_name, const char *ext, gboolean missingok)
 {
-	const char *toplevel_dir =((CamelLocalStore *) store)->toplevel_dir;
+	CamelLocalStore *ls = (CamelLocalStore *)store;
 	char *oldpath, *newpath;
 	struct stat st;
 	int ret = -1;
 	int err = 0;
 	
 	if (ext != NULL) {
-		oldpath = camel_mbox_folder_get_meta_path(NULL, toplevel_dir, old_name, ext);
-		newpath = camel_mbox_folder_get_meta_path(NULL, toplevel_dir, new_name, ext);
+		oldpath = camel_local_store_get_meta_path(ls, old_name, ext);
+		newpath = camel_local_store_get_meta_path(ls, new_name, ext);
 	} else {
-		oldpath = camel_mbox_folder_get_full_path(NULL, toplevel_dir, old_name);
-		newpath = camel_mbox_folder_get_full_path(NULL, toplevel_dir, new_name);
+		oldpath = camel_local_store_get_full_path(ls, old_name);
+		newpath = camel_local_store_get_full_path(ls, new_name);
 	}
 	
 	if (stat(oldpath, &st) == -1) {
@@ -473,8 +462,8 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 	
 	/* try to rollback failures, has obvious races */
 	
-	oldibex = mbox_folder_name_to_meta_path(store, old, ".ibex");
-	newibex = mbox_folder_name_to_meta_path(store, new, ".ibex");
+	oldibex = camel_local_store_get_meta_path(store, old, ".ibex");
+	newibex = camel_local_store_get_meta_path(store, new, ".ibex");
 	
 	newdir = g_path_get_dirname(newibex);
 	if (camel_mkdir(newdir, 0777) == -1) {
@@ -611,12 +600,10 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 	} else {
 		char *path, *folderpath;
 		CamelMboxSummary *mbs;
-		const char *root;
 
 		/* This should be fast enough not to have to test for INFO_FAST */
-		root = camel_local_store_get_toplevel_dir((CamelLocalStore *)store);
-		path = camel_mbox_folder_get_meta_path(NULL, root, fi->full_name, ".ev-summary");
-		folderpath = camel_mbox_folder_get_full_path(NULL, root, fi->full_name);
+		path = camel_local_store_get_meta_path(store, fi->full_name, ".ev-summary");
+		folderpath = camel_local_store_get_full_path(store, fi->full_name);
 		
 		mbs = (CamelMboxSummary *)camel_mbox_summary_new(NULL, path, folderpath, NULL);
 		if (camel_folder_summary_header_load((CamelFolderSummary *)mbs) != -1) {
@@ -761,7 +748,7 @@ get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExceptio
 	CamelURL *url;
 	
 	top = top ? top : "";
-	path = mbox_folder_name_to_path(store, top);
+	path = camel_local_store_get_full_path(store, top);
 	
 	if (*top == '\0') {
 		/* requesting root dir scan */
@@ -835,4 +822,65 @@ get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExceptio
 	g_free(path);
 	
 	return fi;
+}
+
+static char *
+mbox_get_full_path(CamelLocalStore *ls, const char *full_name)
+{
+	const char *inptr = full_name;
+	int subdirs = 0;
+	char *path, *p;
+	
+	while (*inptr != '\0') {
+		if (*inptr == '/')
+			subdirs++;
+		inptr++;
+	}
+	
+	path = g_malloc (strlen (ls->toplevel_dir) + (inptr - full_name) + (4 * subdirs) + 1);
+	p = g_stpcpy (path, ls->toplevel_dir);
+	
+	inptr = full_name;
+	while (*inptr != '\0') {
+		while (*inptr != '/' && *inptr != '\0')
+			*p++ = *inptr++;
+		
+		if (*inptr == '/') {
+			p = g_stpcpy (p, ".sbd/");
+			inptr++;
+			
+			/* strip extranaeous '/'s */
+			while (*inptr == '/')
+				inptr++;
+		}
+	}
+	
+	*p = '\0';
+	
+	return path;
+}
+
+static char *
+mbox_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext)
+{
+/*#define USE_HIDDEN_META_FILES*/
+#ifdef USE_HIDDEN_META_FILES
+	char *name, *slash;
+	
+	name = g_alloca (strlen (full_name) + strlen (ext) + 2);
+	if ((slash = strrchr (full_name, '/')))
+		sprintf (name, "%.*s.%s%s", slash - full_name + 1, full_name, slash + 1, ext);
+	else
+		sprintf (name, ".%s%s", full_name, ext);
+	
+	return mbox_get_full_path(ls, name);
+#else
+	char *full_path, *path;
+	
+	full_path = mbox_get_full_path(ls, full_name);
+	path = g_strdup_printf ("%s%s", full_path, ext);
+	g_free (full_path);
+	
+	return path;
+#endif
 }

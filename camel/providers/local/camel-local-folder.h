@@ -74,10 +74,6 @@ typedef struct {
 
 	/* Virtual methods */	
 	
-	/* path construction, only used at init */
-	char * (* get_full_path)(CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name);
-	char * (* get_meta_path)(CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name, const char *ext);
-	
 	/* summary factory, only used at init */
 	CamelLocalSummary *(*create_summary)(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
 

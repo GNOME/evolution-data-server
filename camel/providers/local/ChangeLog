@@ -1,3 +1,24 @@
+2005-02-24  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #59507
+
+	* camel-spool-store.c (spool_get_full_path): handle mbox/elm cases
+	explictly, not based on stat of path.
+	(spool_get_meta_path): store all meta files in ~/.evolution
+	somewhere.
+
+	* camel-local-folder.c (camel_local_folder_construct): remove the
+	special case test for a direct folder, leave it to subclasses to
+	decide.
+
+	* camel-local-store.c (local_get_trash, local_get_junk): calculate
+	the state file based on the new store get_meta_path calls.  Also
+	use the CAMEL_VJUNK_NAME, etc.
+
+	* camel-local-folder.c, camel-local-store.c: Moved the
+	get_meta_path and get_full_path routines to the store instead of
+	the folder.  fix all subclasses.
+
 2005-02-23  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #71812

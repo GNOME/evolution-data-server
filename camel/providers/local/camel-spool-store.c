@@ -42,6 +42,8 @@
 #include "camel-url.h"
 #include "camel-private.h"
 #include "camel-i18n.h"
+#include "camel-session.h"
+#include "camel-file-utils.h"
 
 #define d(x)
 
@@ -59,6 +61,9 @@ static void free_folder_info (CamelStore *store, CamelFolderInfo *fi);
 
 static void delete_folder(CamelStore *store, const char *folder_name, CamelException *ex);
 static void rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex);
+
+static char *spool_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext);
+static char *spool_get_full_path(CamelLocalStore *ls, const char *full_name);
 
 static CamelStoreClass *parent_class = NULL;
 
@@ -80,6 +85,9 @@ camel_spool_store_class_init (CamelSpoolStoreClass *camel_spool_store_class)
 
 	camel_store_class->delete_folder = delete_folder;
 	camel_store_class->rename_folder = rename_folder;
+
+	((CamelLocalStoreClass *)camel_store_class)->get_full_path = spool_get_full_path;
+	((CamelLocalStoreClass *)camel_store_class)->get_meta_path = spool_get_meta_path;
 }
 
 CamelType
@@ -463,4 +471,32 @@ get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExceptio
 		return get_folder_info_mbox(store, top, flags, ex);
 	else
 		return get_folder_info_elm(store, top, flags, ex);
+}
+
+static char *
+spool_get_full_path(CamelLocalStore *ls, const char *full_name)
+{
+	if (((CamelSpoolStore *)ls)->type == CAMEL_SPOOL_STORE_MBOX)
+		/* a trailing / is always present on toplevel_dir from CamelLocalStore */
+		return g_strndup(ls->toplevel_dir, strlen(ls->toplevel_dir)-1);
+	else
+		return g_strdup_printf("%s/%s", ls->toplevel_dir, full_name);
+}
+
+static char *
+spool_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext)
+{
+	char *root = camel_session_get_storage_path(((CamelService *)ls)->session, (CamelService *)ls, NULL);
+	char *path, *key;
+
+	if (root == NULL)
+		return NULL;
+
+	camel_mkdir(root, 0777);
+	key = camel_file_util_safe_filename(full_name);
+	path = g_strdup_printf("%s/%s%s", root, key, ext);
+	g_free(key);
+	g_free(root);
+
+	return path;
 }

@@ -41,6 +41,7 @@
 #include "camel-local-folder.h"
 #include <camel/camel-text-index.h>
 #include <camel/camel-file-utils.h>
+#include <camel/camel-vtrash-folder.h>
 
 #define d(x) 
 
@@ -58,6 +59,9 @@ static CamelFolderInfo *get_folder_info (CamelStore *store, const char *top, gui
 static void delete_folder(CamelStore *store, const char *folder_name, CamelException *ex);
 static void rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex);
 static CamelFolderInfo *create_folder(CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex);
+
+static char *local_get_full_path(CamelLocalStore *lf, const char *full_name);
+static char *local_get_meta_path(CamelLocalStore *lf, const char *full_name, const char *ext);
 
 static CamelStoreClass *parent_class = NULL;
 
@@ -82,6 +86,9 @@ camel_local_store_class_init (CamelLocalStoreClass *camel_local_store_class)
 	camel_store_class->create_folder = create_folder;
 	camel_store_class->delete_folder = delete_folder;
 	camel_store_class->rename_folder = rename_folder;
+
+	camel_local_store_class->get_full_path = local_get_full_path;
+	camel_local_store_class->get_meta_path = local_get_meta_path;
 }
 
 static void
@@ -186,7 +193,7 @@ local_get_trash(CamelStore *store, CamelException *ex)
 	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_trash(store, ex);
 
 	if (folder) {
-		char *state = g_build_filename(((CamelLocalStore *)store)->toplevel_dir, ".Trash.cmeta", NULL);
+		char *state = camel_local_store_get_meta_path(store, CAMEL_VTRASH_NAME, ".cmeta");
 
 		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
 		g_free(state);
@@ -203,7 +210,7 @@ local_get_junk(CamelStore *store, CamelException *ex)
 	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_junk(store, ex);
 
 	if (folder) {
-		char *state = g_build_filename(((CamelLocalStore *)store)->toplevel_dir, ".Junk.cmeta", NULL);
+		char *state = camel_local_store_get_meta_path(store, CAMEL_VJUNK_NAME, ".cmeta");
 
 		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
 		g_free(state);
@@ -474,4 +481,16 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	camel_object_trigger_event (store, "folder_deleted", fi);
 	
 	camel_folder_info_free (fi);
+}
+
+static char *
+local_get_full_path(CamelLocalStore *ls, const char *full_name)
+{
+	return g_strdup_printf("%s%s", ls->toplevel_dir, full_name);
+}
+
+static char *
+local_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext)
+{
+	return g_strdup_printf("%s%s%s", ls->toplevel_dir, full_name, ext);
 }

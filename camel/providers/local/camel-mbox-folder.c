@@ -76,8 +76,6 @@ camel_mbox_folder_class_init(CamelMboxFolderClass * camel_mbox_folder_class)
 	camel_folder_class->append_message = mbox_append_message;
 	camel_folder_class->get_message = mbox_get_message;
 
-	lclass->get_full_path = camel_mbox_folder_get_full_path;
-	lclass->get_meta_path = camel_mbox_folder_get_meta_path;
 	lclass->create_summary = mbox_create_summary;
 	lclass->lock = mbox_lock;
 	lclass->unlock = mbox_unlock;
@@ -129,67 +127,6 @@ camel_mbox_folder_new(CamelStore *parent_store, const char *full_name, guint32 f
 							     parent_store, full_name, flags, ex);
 
 	return folder;
-}
-
-char *
-camel_mbox_folder_get_full_path (CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name)
-{
-	const char *inptr = full_name;
-	int subdirs = 0;
-	char *path, *p;
-	
-	while (*inptr != '\0') {
-		if (*inptr == '/')
-			subdirs++;
-		inptr++;
-	}
-	
-	path = g_malloc (strlen (toplevel_dir) + (inptr - full_name) + (4 * subdirs) + 1);
-	p = g_stpcpy (path, toplevel_dir);
-	
-	inptr = full_name;
-	while (*inptr != '\0') {
-		while (*inptr != '/' && *inptr != '\0')
-			*p++ = *inptr++;
-		
-		if (*inptr == '/') {
-			p = g_stpcpy (p, ".sbd/");
-			inptr++;
-			
-			/* strip extranaeous '/'s */
-			while (*inptr == '/')
-				inptr++;
-		}
-	}
-	
-	*p = '\0';
-	
-	return path;
-}
-
-char *
-camel_mbox_folder_get_meta_path (CamelLocalFolder *lf, const char *toplevel_dir, const char *full_name, const char *ext)
-{
-/*#define USE_HIDDEN_META_FILES*/
-#ifdef USE_HIDDEN_META_FILES
-	char *name, *slash;
-	
-	name = g_alloca (strlen (full_name) + strlen (ext) + 2);
-	if ((slash = strrchr (full_name, '/')))
-		sprintf (name, "%.*s.%s%s", slash - full_name + 1, full_name, slash + 1, ext);
-	else
-		sprintf (name, ".%s%s", full_name, ext);
-	
-	return camel_mbox_folder_get_full_path (lf, toplevel_dir, name);
-#else
-	char *full_path, *path;
-	
-	full_path = camel_mbox_folder_get_full_path (lf, toplevel_dir, full_name);
-	path = g_strdup_printf ("%s%s", full_path, ext);
-	g_free (full_path);
-	
-	return path;
-#endif
 }
 
 static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index)
