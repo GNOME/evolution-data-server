@@ -25,6 +25,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <string.h>
 #include <bonobo/bonobo-i18n.h>
 
 #include "e-cal-backend-contacts.h"
@@ -64,6 +66,11 @@ typedef struct _ContactRecord {
         EContact            *contact;
         ECalComponent       *comp_birthday, *comp_anniversary;
 } ContactRecord;
+
+#define d(x)
+
+#define ANNIVERSARY_UID_EXT "-anniversary"
+#define BIRTHDAY_UID_EXT   "-birthday"
 
 static ECalComponent * create_birthday (ECalBackendContacts *cbc, EContact *contact);
 static ECalComponent * create_anniversary (ECalBackendContacts *cbc, EContact *contact);
@@ -377,7 +384,7 @@ cdate_to_icaltime (EContactDate *cdate)
 
 /* Contact -> Event creator */
 static ECalComponent *
-create_component (ECalBackendContacts *cbc, EContactDate *cdate, const char *summary)
+create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate, const char *summary)
 {
         ECalComponent             *cal_comp;
 	ECalComponentText          comp_summary;
@@ -386,19 +393,22 @@ create_component (ECalBackendContacts *cbc, EContactDate *cdate, const char *sum
         ECalComponentDateTime      dt;
 	struct icalrecurrencetype  r;
         GSList recur_list;
-
+	
         g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbc), 0);
 
         if (!cdate)
                 return NULL;
         
         ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-
+	
         /* Create the event object */
         cal_comp = e_cal_component_new ();
-        e_cal_component_gen_uid ();
 	e_cal_component_set_icalcomponent (cal_comp, ical_comp);
 
+	/* Set uid */
+	d(g_message ("Creating UID: %s", uid));
+	e_cal_component_set_uid (cal_comp, uid);
+	
         /* Set all-day event's date from contact data */
         itt = cdate_to_icaltime (cdate);
         dt.value = &itt;
@@ -444,13 +454,15 @@ create_birthday (ECalBackendContacts *cbc, EContact *contact)
         EContactDate  *cdate;
         ECalComponent *cal_comp;
 	char          *summary;
-        const char    *name;
-        
+        const char    *name, *uid;
+
         cdate = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
         name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+
+	uid = g_strdup_printf ("%s%s", (char *) e_contact_get (contact, E_CONTACT_UID), BIRTHDAY_UID_EXT);
         summary = g_strdup_printf (_("Birthday: %s"), name);
         
-        cal_comp = create_component (cbc, cdate, summary);
+        cal_comp = create_component (cbc, uid, cdate, summary);
 
         g_free (summary);
         
@@ -463,13 +475,15 @@ create_anniversary (ECalBackendContacts *cbc, EContact *contact)
         EContactDate  *cdate;
         ECalComponent *cal_comp;
 	char          *summary;
-        const char    *name;
+        const char    *name, *uid;
         
         cdate = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
         name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+
+	uid = g_strdup_printf ("%s%s", (char *) e_contact_get (contact, E_CONTACT_UID), ANNIVERSARY_UID_EXT);
         summary = g_strdup_printf (_("Anniversary: %s"), name);
         
-        cal_comp = create_component (cbc, cdate, summary);
+        cal_comp = create_component (cbc, uid, cdate, summary);
 
         g_free (summary);
 
@@ -485,7 +499,11 @@ static ECalBackendSyncStatus
 e_cal_backend_contacts_get_cal_address (ECalBackendSync *backend, EDataCal *cal,
 					char **address)
 {
-	/* WRITE ME */
+	/* A contact backend has no particular email address associated
+	 * with it (although that would be a useful feature some day).
+	 */
+	*address = NULL;
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -493,7 +511,8 @@ static ECalBackendSyncStatus
 e_cal_backend_contacts_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal,
 					   char **attribute)
 {
-	/* WRITE ME */
+	*attribute = NULL;
+	
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -501,7 +520,11 @@ static ECalBackendSyncStatus
 e_cal_backend_contacts_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal,
 						char **address)
 {
-	/* WRITE ME */
+	/* A contact backend has no particular email address associated
+	 * with it (although that would be a useful feature some day).
+	 */
+	*address = NULL;
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -509,7 +532,8 @@ static ECalBackendSyncStatus
 e_cal_backend_contacts_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal,
 						char **capabilities)
 {
-	/* WRITE ME */
+ 	*capabilities = NULL;
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -517,7 +541,7 @@ static ECalBackendSyncStatus
 e_cal_backend_contacts_remove (ECalBackendSync *backend, EDataCal *cal)
 {
 	/* WRITE ME */
-	return GNOME_Evolution_Calendar_Success;
+	return GNOME_Evolution_Calendar_PermissionDenied;
 }
 
 static ECalBackendSyncStatus
@@ -532,8 +556,43 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal,
 				   const char *uid, const char *rid,
 				   char **object)
 {
-	/* WRITE ME */
-	return GNOME_Evolution_Calendar_Success;
+        ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
+        ECalBackendContactsPrivate *priv = cbc->priv;	
+	ContactRecord *record;
+	char *real_uid;
+	
+	if (!uid)
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+	else if (g_str_has_suffix (uid, ANNIVERSARY_UID_EXT))
+		real_uid = g_strndup (uid, strlen (uid) - strlen (ANNIVERSARY_UID_EXT));
+	else if (g_str_has_suffix (uid, BIRTHDAY_UID_EXT))
+		real_uid = g_strndup (uid, strlen (uid) - strlen (BIRTHDAY_UID_EXT));
+	else
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+
+	record = g_hash_table_lookup (priv->tracked_contacts, real_uid);
+	g_free (real_uid);
+	
+	if (!record)
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+
+        if (record->comp_birthday) {
+                *object = e_cal_component_get_as_string (record->comp_birthday);
+		
+		d(g_message ("Return birthday: %s", *object));
+		return GNOME_Evolution_Calendar_Success;
+	}
+	
+        if (record->comp_anniversary) {
+                *object = e_cal_component_get_as_string (record->comp_anniversary);
+
+		d(g_message ("Return anniversary: %s", *object));
+		return GNOME_Evolution_Calendar_Success;
+        }
+
+	d(g_message ("Returning nothing for uid: %s", uid));
+
+	return GNOME_Evolution_Calendar_ObjectNotFound;
 }
 
 static ECalBackendSyncStatus

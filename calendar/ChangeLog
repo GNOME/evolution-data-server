@@ -1,5 +1,21 @@
 2004-03-31  JP Rosevear <jpr@ximian.com>
 
+	Fixes #56111
+	
+	* backends/contacts/e-cal-backend-contacts.c (create_component):
+	take a uid for the icalcomp
+	(create_birthday): create a uid from the contact uid and a
+	birthday designator
+	(create_anniversary): ditto for anniversary
+	(e_cal_backend_contacts_get_cal_address): set the address to NULL
+	when returning success
+	(e_cal_backend_contacts_get_ldap_attribute): ditto for the
+	attribute
+	(e_cal_backend_contacts_remove): can't remove a read only calendar
+	(e_cal_backend_contacts_get_object): implement
+	
+2004-03-31  JP Rosevear <jpr@ximian.com>
+
 	Fixes #54713
 	
 	* libecal/e-cal.c (e_cal_get_object): only try to parse the string
