@@ -610,8 +610,6 @@ impl_notifyCalSetMode (PortableServer_Servant servant,
 	if (!priv->notify)
 		return;
 
-	g_message ("notify_set_mode");
-
 	g_assert (priv->cal_set_mode_fn != NULL);
 	(* priv->cal_set_mode_fn) (listener, status, mode, priv->fn_data);
 }
@@ -632,8 +630,6 @@ impl_notifyErrorOccurred (PortableServer_Servant servant,
 	if (!priv->notify)
 		return;
 
-	g_message ("notify_error");
-
 	g_assert (priv->error_occurred_fn != NULL);
 	(* priv->error_occurred_fn) (listener, message, priv->fn_data);
 }
@@ -652,8 +648,6 @@ impl_notifyCategoriesChanged (PortableServer_Servant servant,
 
 	if (!priv->notify)
 		return;
-
-	g_message ("notify_categories");
 
 	g_assert (priv->categories_changed_fn != NULL);
 	(* priv->categories_changed_fn) (listener, categories, priv->fn_data);

@@ -1,3 +1,9 @@
+2004-01-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* libecal/e-cal-listener.c: (impl_notifyCalSetMode),
+	(impl_notifyErrorOccurred), (impl_notifyCategoriesChanged):
+	Remove debugging spew.
+
 2004-01-15  Radek Doulik  <rodo@ximian.com>
 
 	* libecal/e-cal.c (e_cal_is_read_only): fix the return value, it
