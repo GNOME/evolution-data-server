@@ -461,12 +461,12 @@ compare_alarm_instance (gconstpointer a, gconstpointer b)
  */
 ECalComponentAlarms *
 e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
-				   time_t start,
-				   time_t end,
-				   ECalComponentAlarmAction *omit,
-				   ECalRecurResolveTimezoneFn resolve_tzid,
-				   gpointer user_data,
-				   icaltimezone *default_timezone)
+				     time_t start,
+				     time_t end,
+				     ECalComponentAlarmAction *omit,
+				     ECalRecurResolveTimezoneFn resolve_tzid,
+				     gpointer user_data,
+				     icaltimezone *default_timezone)
 {
 	GList *alarm_uids;
 	time_t alarm_start, alarm_end;
@@ -778,11 +778,11 @@ struct instance_data {
 };
 
 static void
-check_instance (icalcomponent *comp, struct icaltime_span span, void *data)
+check_instance (icalcomponent *comp, struct icaltime_span *span, void *data)
 {
 	struct instance_data *instance = data;
 
-	if (span.start == instance->start)
+	if (span->start == instance->start)
 		instance->found = TRUE;
 }
 
@@ -866,7 +866,6 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
 	struct icaltimetype itt, recur;
 	struct icalrecurrencetype rule;
 	icalrecur_iterator *iter;
-	struct instance_data instance;
 
 	g_return_if_fail (icalcomp != NULL);
 	g_return_if_fail (mod != CALOBJ_MOD_ALL);

@@ -1,3 +1,9 @@
+2004-08-26  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal-util.c (check_instance): match the prototype expected
+	in icalcomponent_foreach_recurrence.
+	(e_cal_util_remove_instances): fixed warning.
+
 2004-08-25  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* libecal/e-cal.c: (e_cal_set_default_timezone):
@@ -9,7 +15,7 @@
 	(populate_cache): Used a static mutex to avoid the 
 	the simulataneous calls from calendar and tasks to
 	ReadCursorRequest which crashes the server.
-	
+
 2004-08-24  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c 
