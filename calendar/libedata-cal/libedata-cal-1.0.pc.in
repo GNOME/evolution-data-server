@@ -11,6 +11,6 @@ privincludedir=@privincludedir@
 Name: libecal
 Description: Client library for evolution calendars
 Version: @VERSION@
-Requires: libgnome-2.0 libbonobo-2.0 gnome-vfs-2.0 libedataserver-1.0 libecal-1.0
+Requires: libgnome-2.0 libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ gnome-vfs-2.0 libedataserver-1.0 libecal-1.0
 Libs: -L${libdir} -ledata-cal -lecal
 Cflags: -I${privincludedir}

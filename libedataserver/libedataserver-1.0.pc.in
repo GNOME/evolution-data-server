@@ -11,6 +11,6 @@ privincludedir=@privincludedir@
 Name: libedataserver
 Description: Utily library for evolution data servers
 Version: @VERSION@
-Requires: libbonobo-2.0 libgnome-2.0 libxml-2.0
+Requires: libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ libgnome-2.0 libxml-2.0
 Libs: -L${libdir} -ledataserver
 Cflags: -I${privincludedir}

@@ -11,6 +11,6 @@ privincludedir=@privincludedir@
 Name: libedatabook
 Description: Backend library for evolution address books
 Version: @VERSION@
-Requires: libbonobo-2.0 libgnome-2.0 libedataserver-1.0 libebook-1.0
+Requires: libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ libgnome-2.0 libedataserver-1.0 libebook-1.0
 Libs: -L${libdir} -ledata-book
 Cflags: -I${privincludedir}

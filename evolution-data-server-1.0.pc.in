@@ -9,4 +9,4 @@ IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
 Name: evolution-data-server
 Description: The evolution data server for the calendar and addressbook
 Version: @VERSION@
-Requires: libgnome-2.0 libbonobo-2.0
+Requires: libgnome-2.0 libbonobo-2.0 >= @LIBBONOBO_REQUIRED@
