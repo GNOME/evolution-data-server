@@ -10,19 +10,20 @@
 # Mendel Mobach <mendel@mobach.nl>, 2001.
 # Kees van den Broek <kvdb@NOSPAMkvdb.net>, 2003.
 # Tino Meinen <a.t.meinen@chello.nl>, 2004.
+# Daniel van Eeden <daniel_e@dds.nl>, 2004
 # ---------------------------------------
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-24 03:52+0100\n"
-"PO-Revision-Date: 2004-02-11 15:14+0100\n"
-"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
+"POT-Creation-Date: 2004-02-29 03:22+0100\n"
+"PO-Revision-Date: 2004-02-29 11:18+0100\n"
+"Last-Translator: Daniel van Eeden <daniel_e@dds.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: addressbook/backends/file/e-book-backend-file.c:385
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -71,84 +72,84 @@ msgstr "Fout bij het zoeken"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:218 addressbook/libebook/e-book.c:330
-#: addressbook/libebook/e-book.c:415 addressbook/libebook/e-book.c:517
-#: addressbook/libebook/e-book.c:630 addressbook/libebook/e-book.c:714
-#: addressbook/libebook/e-book.c:817 addressbook/libebook/e-book.c:871
-#: addressbook/libebook/e-book.c:970 addressbook/libebook/e-book.c:1104
-#: addressbook/libebook/e-book.c:1205 addressbook/libebook/e-book.c:1445
-#: addressbook/libebook/e-book.c:2045
+#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
+#: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
+#: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
+#: addressbook/libebook/e-book.c:819 addressbook/libebook/e-book.c:873
+#: addressbook/libebook/e-book.c:972 addressbook/libebook/e-book.c:1106
+#: addressbook/libebook/e-book.c:1207 addressbook/libebook/e-book.c:1447
+#: addressbook/libebook/e-book.c:2047
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" op boek voor \"%s\""
 
-#: addressbook/libebook/e-book.c:226 addressbook/libebook/e-book.c:338
-#: addressbook/libebook/e-book.c:423 addressbook/libebook/e-book.c:526
-#: addressbook/libebook/e-book.c:638 addressbook/libebook/e-book.c:722
-#: addressbook/libebook/e-book.c:825 addressbook/libebook/e-book.c:879
-#: addressbook/libebook/e-book.c:978 addressbook/libebook/e-book.c:1112
-#: addressbook/libebook/e-book.c:1213 addressbook/libebook/e-book.c:1453
+#: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
+#: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
+#: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
+#: addressbook/libebook/e-book.c:827 addressbook/libebook/e-book.c:881
+#: addressbook/libebook/e-book.c:980 addressbook/libebook/e-book.c:1114
+#: addressbook/libebook/e-book.c:1215 addressbook/libebook/e-book.c:1455
 msgid "book busy"
 msgstr "boek bezig"
 
-#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:365
-#: addressbook/libebook/e-book.c:445 addressbook/libebook/e-book.c:549
-#: addressbook/libebook/e-book.c:664 addressbook/libebook/e-book.c:745
-#: addressbook/libebook/e-book.c:911 addressbook/libebook/e-book.c:1022
-#: addressbook/libebook/e-book.c:1140 addressbook/libebook/e-book.c:1237
-#: addressbook/libebook/e-book.c:1371 addressbook/libebook/e-book.c:1475
-#: addressbook/libebook/e-book.c:2054
+#: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
+#: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
+#: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
+#: addressbook/libebook/e-book.c:913 addressbook/libebook/e-book.c:1024
+#: addressbook/libebook/e-book.c:1142 addressbook/libebook/e-book.c:1239
+#: addressbook/libebook/e-book.c:1373 addressbook/libebook/e-book.c:1477
+#: addressbook/libebook/e-book.c:2056
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA uitzondering roept \"%s\" aan"
 
 # actie/bewerking/operatie?
-#: addressbook/libebook/e-book.c:1352
+#: addressbook/libebook/e-book.c:1354
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: er is momenteel geen operatie"
 
-#: addressbook/libebook/e-book.c:1387
+#: addressbook/libebook/e-book.c:1389
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: kon niet annuleren"
 
-#: addressbook/libebook/e-book.c:1746
+#: addressbook/libebook/e-book.c:1748
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Ongeldige bron"
 
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1873
+#: addressbook/libebook/e-book.c:1757 addressbook/libebook/e-book.c:1875
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: geen fabrieken beschikbaar voor uri `%s'"
 
-#: addressbook/libebook/e-book.c:1768
+#: addressbook/libebook/e-book.c:1770
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Kon EBookListener niet aanmaken"
 
-#: addressbook/libebook/e-book.c:1867
+#: addressbook/libebook/e-book.c:1869
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: geannuleerd"
 
-#: addressbook/libebook/e-book.c:1904
+#: addressbook/libebook/e-book.c:1906
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" op boek na \"%s\""
 
-#: addressbook/libebook/e-book.c:2140
+#: addressbook/libebook/e-book.c:2142
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: er is geen zelfcontact uid opgeslagen in gconf"
 
-#: addressbook/libebook/e-book.c:2317
+#: addressbook/libebook/e-book.c:2319
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 "e_book_set_default_source: er is geen bron voor uid `%s' opgeslagen in gconf."
 
-#: addressbook/libebook/e-contact.c:97
+#: addressbook/libebook/e-contact.c:99
 msgid "Unique ID"
 msgstr "Unieke ID"
 
-#: addressbook/libebook/e-contact.c:98
+#: addressbook/libebook/e-contact.c:100
 msgid "File As"
 msgstr "Opslaan als"
 
@@ -156,407 +157,435 @@ msgstr "Opslaan als"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:104
+#: addressbook/libebook/e-contact.c:106
 msgid "Full Name"
 msgstr "Volledige naam"
 
-#: addressbook/libebook/e-contact.c:105
+#: addressbook/libebook/e-contact.c:107
 msgid "Name"
 msgstr "Naam"
 
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:108
 msgid "Given Name"
 msgstr "Gegeven naam"
 
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:109
 msgid "Family Name"
 msgstr "Achternaam"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:110
 msgid "Nickname"
 msgstr "Bijnaam"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:111
 msgid "Name or Org"
 msgstr "Naam van org."
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 msgid "Address List"
 msgstr "Adreslijst"
 
-#: addressbook/libebook/e-contact.c:113
+#: addressbook/libebook/e-contact.c:115
 msgid "Home Address"
 msgstr "Huisadres"
 
-#: addressbook/libebook/e-contact.c:114
+#: addressbook/libebook/e-contact.c:116
 msgid "Work Address"
 msgstr "Werkadres"
 
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:117
 msgid "Other Address"
 msgstr "Ander adres"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:119
 msgid "Home Address Label"
 msgstr "Huisadres label"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:120
 msgid "Work Address Label"
 msgstr "Werkadres label"
 
-#: addressbook/libebook/e-contact.c:119
+#: addressbook/libebook/e-contact.c:121
 msgid "Other Address Label"
 msgstr "Ander adres label"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:123
 msgid "Assistant Phone"
 msgstr "Assistent Telefoon"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:124
 msgid "Business Phone"
 msgstr "Bedrijfstelefoon"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:125
 msgid "Business Phone 2"
 msgstr "Bedrijf Telefoon-2"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:126
 msgid "Business Fax"
 msgstr "Bedrijfsfax"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:127
 msgid "Callback Phone"
 msgstr "TerugbelTelefoon"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:128
 msgid "Car Phone"
 msgstr "Autotelefoon"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Company Phone"
 msgstr "Bedrijfstelefoon"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Home Phone"
 msgstr "Thuis telefoon"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Home Phone 2"
 msgstr "Thuis telefoon 2"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Home Fax"
 msgstr "Fax thuis"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:133
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Mobile Phone"
 msgstr "Mobiele telefoon"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:135
 msgid "Other Phone"
 msgstr "Andere telefoon"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:136
 msgid "Other Fax"
 msgstr "Andere Fax"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Pager"
 msgstr "Pieper"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Primary Phone"
 msgstr "Eerste telefoon"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Radio"
 msgstr "Radio"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:140
 msgid "Telex"
 msgstr "Telex"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:141
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 msgid "Email List"
 msgstr "E-maillijst"
 
-#: addressbook/libebook/e-contact.c:143
+#: addressbook/libebook/e-contact.c:145
 msgid "Email 1"
 msgstr "E-mail 1"
 
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:146
 msgid "Email 2"
 msgstr "E-mail 2"
 
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:147
 msgid "Email 3"
 msgstr "E-mail 3"
 
 # Mailprogramma?
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:148
 msgid "Mailer"
 msgstr "E-mailprogramma"
 
 # Verkiest HTML-mail
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:149
 msgid "Wants HTML Mail"
 msgstr "Heeft liever HTML-mail"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "AIM Screen Name List"
 msgstr "AIM schermnaam lijst"
 
-#: addressbook/libebook/e-contact.c:151
+#: addressbook/libebook/e-contact.c:153
+msgid "Groupwise Id List"
+msgstr "Groupwise Id lijst"
+
+#: addressbook/libebook/e-contact.c:154
 msgid "Jabber Id List"
 msgstr "Jabber ID-lijst"
 
-#: addressbook/libebook/e-contact.c:152
+#: addressbook/libebook/e-contact.c:155
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! schermnaam lijst"
 
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:156
 msgid "MSN Screen Name List"
 msgstr "MSN schermnaam lijst"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:157
 msgid "ICQ Id List"
 msgstr "ICQ ID lijst"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:159
 msgid "AIM Home Screen Name 1"
 msgstr "AIM thuis schermnaam 1"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:160
 msgid "AIM Home Screen Name 2"
 msgstr "AIM thuis schermnaam 2"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 3"
 msgstr "AIM thuis schermnaam 3"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Work Screen Name 1"
 msgstr "AIM werk schermnaam 1"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Work Screen Name 2"
 msgstr "AIM werk schermnaam 2"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 3"
 msgstr "AIM werk schermnaam 3"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:165
+msgid "Groupwise Home Screen Name 1"
+msgstr "Groupwise thuis schermnaam 1"
+
+#: addressbook/libebook/e-contact.c:166
+msgid "Groupwise Home Screen Name 2"
+msgstr "Groupwise thuis schermnaam 2"
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Groupwise Home Screen Name 3"
+msgstr "Groupwise thuis schermnaam 3"
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Groupwise Work Screen Name 1"
+msgstr "Groupwise werk schermnaam 1"
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Groupwise Work Screen Name 2"
+msgstr "Groupwise werk schermnaam 2"
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Groupwise Work Screen Name 3"
+msgstr "Groupwise werk schermnaam 3"
+
+#: addressbook/libebook/e-contact.c:171
 msgid "Jabber Home Id 1"
 msgstr "Jabber thuis ID 1"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:172
 msgid "Jabber Home Id 2"
 msgstr "Jabber thuis ID 2"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 3"
 msgstr "Jabber thuis ID 3"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Work Id 1"
 msgstr "Jabber werk ID 1"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Work Id 2"
 msgstr "Jabber werk ID 2"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 3"
 msgstr "Jabber werk ID 3"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:177
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! thuis schermnaam 1"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:178
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! thuis schermnaam 2"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! thuis schermnaam 3"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! werk schermnaam 1"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! werk schermnaam 2"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! werk schermnaam 3"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:183
 msgid "MSN Home Screen Name 1"
 msgstr "MSN thuis schermnaam 1"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:184
 msgid "MSN Home Screen Name 2"
 msgstr "MSN thuis schermnaam 2"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 3"
 msgstr "MSN thuis schermnaam 3"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Work Screen Name 1"
 msgstr "MSN werk schermnaam 1"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Work Screen Name 2"
 msgstr "MSN werk schermnaam 2"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 3"
 msgstr "MSN werk schermnaam 3"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:189
 msgid "ICQ Home Id 1"
 msgstr "ICQ thuis ID 1"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:190
 msgid "ICQ Home Id 2"
 msgstr "ICQ thuis ID 2"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 3"
 msgstr "ICQ thuis ID 3"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Work Id 1"
 msgstr "ICQ werk ID 1"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Work Id 2"
 msgstr "ICQ werk ID 2"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 3"
 msgstr "ICQ werk ID 3"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:197
 msgid "Organization"
 msgstr "Organisatie"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:198
 msgid "Organizational Unit"
 msgstr "Organisatie"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:199
 msgid "Office"
 msgstr "Kantoor"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:201
 msgid "Title"
 msgstr "Functie"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:202
 msgid "Role"
 msgstr "Rol"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:203
 msgid "Manager"
 msgstr "Manager"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:204
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:207
 msgid "Homepage URL"
 msgstr "Homepage URL"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:208
 msgid "Weblog URL"
 msgstr "Weblog URL"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:209
 msgid "Video Conferencing URL"
 msgstr "Videoconferentie URL"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:212
 msgid "Photo"
 msgstr "Foto"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:213
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:216
 msgid "X.509 Certificate"
 msgstr "X.509 certificaat"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:219
 msgid "Category List"
 msgstr "Categorie lijst"
 
-#: addressbook/libebook/e-contact.c:211
+#: addressbook/libebook/e-contact.c:220
 msgid "Categories"
 msgstr "Categorieën"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:223
 msgid "Calendar URI"
 msgstr "Kalender URI"
 
-#: addressbook/libebook/e-contact.c:215
+#: addressbook/libebook/e-contact.c:224
 msgid "Free/Busy URL"
 msgstr "Vrij/Bezet URL"
 
-#: addressbook/libebook/e-contact.c:216
+#: addressbook/libebook/e-contact.c:225
 msgid "ICS Calendar"
 msgstr "ICS Kalender"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:228
 msgid "Spouse's Name"
 msgstr "Naam Echtgeno(o)t(e)"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:229
 msgid "Note"
 msgstr "Opmerkingen"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:231
 msgid "Birth Date"
 msgstr "Geboortedatum"
 
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:232
 msgid "Anniversary"
 msgstr "Verjaardag"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:234
 msgid "List"
 msgstr "Lijst"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:235
 msgid "List Show Addresses"
 msgstr "Lijst adressen weergeven"
 
-#: addressbook/libebook/e-contact.c:1218
+#: addressbook/libebook/e-contact.c:1201
 msgid "Unnamed List"
 msgstr "Lijst van onbenoemden"
 
@@ -579,14 +608,13 @@ msgstr "Verjaardag: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan kalender gegevens niet bewaren: ongeldige URI."
 
-#. GRUT modified this item
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
 msgid "Calendar"
 msgstr "Kalender"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
 msgid "Checklist"
-msgstr ""
+msgstr "Aftekenlijst"
 
 #: calendar/backends/http/e-cal-backend-http.c:218
 msgid "Redirected to Invalid URI"
