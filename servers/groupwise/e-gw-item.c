@@ -1242,7 +1242,7 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 {
 	EGwItem *item;
         char *item_type;
-	SoupSoapParameter *subparam, *child;
+	SoupSoapParameter *subparam, *child, *category_param;
 	gboolean is_group_item = TRUE;
 	
 	g_return_val_if_fail (param != NULL, NULL);
@@ -1377,7 +1377,23 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 
 		} else if (!g_ascii_strcasecmp (name, "iCalId"))
 			item->priv->icalid = soup_soap_parameter_get_string_value (child);
-		else if (!g_ascii_strcasecmp (name, "id"))
+
+		else if (!g_ascii_strcasecmp (name, "categories")) { 
+			for (category_param = soup_soap_parameter_get_first_child_by_name (child, "category");
+		     	     category_param != NULL;
+		    	     category_param = soup_soap_parameter_get_next_child_by_name (category_param, "category")) {
+
+					value = soup_soap_parameter_get_string_value (category_param);
+					if (value) {
+						char **components = g_strsplit (value, "@", -1);
+						g_free (value);
+						value = components[0];
+						item->priv->category_list = g_list_append (item->priv->category_list, g_strdup (value));
+						g_strfreev(components);
+					}
+			  }
+
+		} else if (!g_ascii_strcasecmp (name, "id"))
 			item->priv->id = soup_soap_parameter_get_string_value (child);
 
 		else if (!g_ascii_strcasecmp (name, "message")) {
@@ -1841,7 +1857,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 	soup_soap_message_start_element (msg, "message", NULL, NULL);
 	if (priv->message) {
 		char *str;
-
+		
 		str = soup_base64_encode (priv->message, strlen (priv->message));
 		dtstring = g_strdup_printf ("%d", strlen (str));
 		soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
@@ -1860,6 +1876,19 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 				priv->start_date);
 	}
 
+	if (priv->category_list) {
+			soup_soap_message_start_element (msg, "categories", NULL, NULL);
+			
+			if (priv->category_list && priv->category_list->data) 
+				soup_soap_message_add_attribute (msg, "types:primary", priv->category_list->data, NULL, NULL);
+			
+			for (; priv->category_list != NULL; priv->category_list = g_list_next (priv->category_list)) 
+				if (priv->category_list->data) {
+					e_gw_message_write_string_parameter (msg, "category", NULL, priv->category_list->data);
+				}
+			soup_soap_message_end_element (msg);
+		}
+	
 	/* handle recurrences */
 	if (item->priv->recurrence_dates) {
 		GSList *date;
@@ -2051,7 +2080,20 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 		soup_soap_message_start_element (msg, "delete", NULL, NULL);
 		break;
 	}
+	if (g_hash_table_lookup (changes, "categories")){
+		GList *list;	
+		list = g_hash_table_lookup (changes, "categories");
 
+		soup_soap_message_start_element (msg, "categories", NULL, NULL);
+		if (list != NULL && list->data) 
+			soup_soap_message_add_attribute (msg, "types:primary",list->data, NULL, NULL);
+			for (; list != NULL; list = g_list_next (list)) 
+				if (list->data) {
+					e_gw_message_write_string_parameter (msg, "category", NULL, list->data);
+			}
+		soup_soap_message_end_element (msg);
+		g_list_free (list);
+	}
 	if (g_hash_table_lookup (changes, "subject"))
 		e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
 	if (g_hash_table_lookup (changes, "start_date")) {
