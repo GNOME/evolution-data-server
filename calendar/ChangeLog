@@ -1,5 +1,15 @@
 2004-01-05  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-message.[ch]
+	(e_gw_message_write_string_parameter): added 'prefix' argument, for
+	not hard-coding all parameters to the "types" prefix.
+
+	* backends/groupwise/e-gw-connection.c (logout, e_gw_connection_new,
+	e_gw_connection_get_items): pass the XML prefix to
+	e_gw_message_write_string_parameter().
+
+2004-01-05  Rodrigo Moya <rodrigo@ximian.com>
+
 	* libedata-cal/e-cal-backend-cache.[ch] (e_cal_backend_cache_put_object):
 	merged _add_component and _replace_component into a single function.
 

@@ -112,9 +112,9 @@ e_gw_message_new_with_header (const char *uri, const char *session_id, const cha
 }
 
 void
-e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, const char *value)
+e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, const char *prefix, const char *value)
 {
-	soup_soap_message_start_element (msg, name, "types", NULL);
+	soup_soap_message_start_element (msg, name, prefix, NULL);
 	soup_soap_message_write_string (msg, value);
 	soup_soap_message_end_element (msg);
 }

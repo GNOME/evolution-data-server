@@ -29,7 +29,8 @@
 G_BEGIN_DECLS
 
 SoupSoapMessage *e_gw_message_new_with_header (const char *uri, const char *session_id, const char *method_name);
-void             e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, const char *value);
+void             e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name,
+						      const char *prefix, const char *value);
 void             e_gw_message_write_footer (SoupSoapMessage *msg);
 
 G_END_DECLS

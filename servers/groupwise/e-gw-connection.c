@@ -76,7 +76,7 @@ logout (EGwConnection *cnc)
 
 	/* build the SOAP message */
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "logoutRequest");
-	e_gw_message_write_string_parameter (msg, "session", cnc->priv->session_id);
+	e_gw_message_write_string_parameter (msg, "session", "types", cnc->priv->session_id);
 	e_gw_message_write_footer (msg);
 
 	/* send message to server */
@@ -268,10 +268,9 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	soup_soap_message_start_element (msg, "auth", "types", NULL);
 	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
 					 "http://www.w3.org/2001/XMLSchema-instance");
-	e_gw_message_write_string_parameter (msg, "username", username);
-	if (password && *password) {
-		e_gw_message_write_string_parameter (msg, "password", password);
-	}
+	e_gw_message_write_string_parameter (msg, "username", "types", username);
+	if (password && *password)
+		e_gw_message_write_string_parameter (msg, "password", "types", password);
 	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 
@@ -377,8 +376,6 @@ e_gw_connection_get_items (EGwConnection *cnc, GSList **list)
         g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
         
 	/* build the SOAP message */
-        /* FIXME : e_gw_message_new_with_header does not allow additional elements to be 
-	added in the header. Using soap_message functions directly.*/                                                                                                                              
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getItemsRequest");
         if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
@@ -386,7 +383,7 @@ e_gw_connection_get_items (EGwConnection *cnc, GSList **list)
         }
         
 	/* FIXME: Need to obtain the uid for calendar and use here */
-        e_gw_message_write_string_parameter (msg, "container", "A.dom1.po1.100.0.1.0.1@19");
+        e_gw_message_write_string_parameter (msg, "container", NULL, "A.dom1.po1.100.0.1.0.1@19");
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
