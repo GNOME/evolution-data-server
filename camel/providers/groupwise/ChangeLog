@@ -1,3 +1,10 @@
+2005-02-25  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: 
+	  (groupwise_rename_folder),
+	  (groupwise_get_folder_info) : 
+	  Fixes bug #72965
+	  
 2005-02-25  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_refresh_info):

@@ -798,11 +798,13 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 			temp_str++ ;
 			top_folder = g_hash_table_lookup (priv->name_hash, temp_str) ;	
 		} else
-			top_folder = g_hash_table_lookup (priv->name_hash, top) ;	
-
+			top_folder = g_hash_table_lookup (priv->name_hash, top) ;
+		/* 'top' is a valid path, but doesnt have a container id
+		 *  return NULL */
+		if (!top_folder)
+			return NULL ;
 	}
 
-	
 	status = e_gw_connection_get_container_list (priv->cnc, top_folder, &folder_list);
 	if (status != E_GW_CONNECTION_STATUS_OK ) {
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
@@ -1061,7 +1063,6 @@ groupwise_rename_folder(CamelStore *store,
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename GroupWise folders in offline mode."));
 		return;
 	}
-	
 	CAMEL_SERVICE_LOCK (store, connect_lock) ;
 	temp_old = strrchr (old_name,'/') ;
 	if (temp_old) {
@@ -1076,7 +1077,7 @@ groupwise_rename_folder(CamelStore *store,
 	else
 		temp_new = (char *)new_name ;
 		
-	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , new_name) != E_GW_CONNECTION_STATUS_OK) {
+	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , temp_new) != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
 				      old_name, new_name);
 		CAMEL_SERVICE_UNLOCK (store, connect_lock) ;
