@@ -1,5 +1,10 @@
 2005-01-19  Rodrigo Moya <rodrigo@novell.com>
 
+	* backends/file/e-cal-backend-file.c (cancel_received_object): deal
+	with instances.
+
+2005-01-19  Rodrigo Moya <rodrigo@novell.com>
+
 	* backends/file/e-cal-backend-file.c
 	(e_cal_backend_file_receive_objects): set the correct method on the
 	VCALENDAR we create or it will fail in the code below. Deal correctly

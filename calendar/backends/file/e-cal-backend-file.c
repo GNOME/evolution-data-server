@@ -2107,6 +2107,8 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp)
 {
 	ECalBackendFileObject *obj_data;
 	ECalBackendFilePrivate *priv;
+	const char *rid;
+	ECalComponent *comp;
 
 	priv = cbfile->priv;
 
@@ -2116,7 +2118,17 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp)
 		return FALSE;
 
 	/* And remove it */
-	remove_component (cbfile, icalcomponent_get_uid (icalcomp), obj_data);
+	comp = e_cal_component_new ();
+	if (!e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp))) {
+		g_object_unref (comp);
+		return FALSE;
+	}
+
+	rid = e_cal_component_get_recurid_as_string (comp);
+	if (rid && *rid)
+		remove_instance (cbfile, obj_data, rid);
+	else
+		remove_component (cbfile, icalcomponent_get_uid (icalcomp), obj_data);
 
 	return TRUE;
 }
