@@ -200,7 +200,7 @@ notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 	const char *calobj = value;
 	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (user_data);
 
-	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), uid, calobj);
+	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), uid, calobj, NULL);
 
 	return TRUE;
 }
@@ -788,7 +788,8 @@ e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 static ECalBackendSyncStatus
 e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				const char *uid, const char *rid,
-				CalObjModType mod, char **object)
+				CalObjModType mod, char **old_object,
+				char **object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -797,6 +798,8 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	priv = cbhttp->priv;
 
 	g_return_val_if_fail (uid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+
+	*old_object = *object = NULL;
 
 	return GNOME_Evolution_Calendar_PermissionDenied;
 }

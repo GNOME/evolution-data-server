@@ -176,7 +176,7 @@ contact_record_free (ContactRecord *cr)
 	if (cr->comp_birthday) {
 		comp_str = e_cal_component_get_as_string (cr->comp_birthday);
 		e_cal_component_get_uid (cr->comp_birthday, &uid);
-		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str);
+		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str, NULL);
 		g_free (comp_str);
 		g_object_unref (G_OBJECT (cr->comp_birthday));
 	}
@@ -185,7 +185,7 @@ contact_record_free (ContactRecord *cr)
 	if (cr->comp_anniversary) {
 		comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
 		e_cal_component_get_uid (cr->comp_anniversary, &uid);
-		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str);
+		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str, NULL);
 		g_free (comp_str);
 		g_object_unref (G_OBJECT (cr->comp_anniversary));
 	}

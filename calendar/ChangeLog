@@ -1,3 +1,47 @@
+2004-12-15  Rodrigo Moya <rodrigo@novell.com>
+
+	Merge from recurrences-work-branch
+
+	* libecal/e-cal.c (open_calendar): added missing calls to
+	e_calendar_remove_op/e_calendar_free_op.
+	(add_instance): enable code to set the recurrence ID on each instance.
+
+	* libedata-cal/e-data-cal.[ch] (e_data_cal_notify_object_removed): added
+	new argument to have backends send both the object before and after the
+	modification.
+
+	* libedata-cal/e-cal-backend.[ch] (e_cal_backend_modify_object):
+	pass correct number of arguments to e_cal_backend_notify_object_removed.
+	(match_query_and_notify, e_cal_backend_notify_object_modified): separated
+	the notification logic from e_cal_backend_notify_object_modified.
+	(e_cal_backend_notify_object_removed): added new argument to have
+	backends send both the object before and after the modification.
+
+	* libedata-cal/e-cal-backend-sync.[ch] (e_cal_backend_sync_remove_object):
+	added a new argument to send the object as it was before being removed.
+	Also, change meaning of 'object' argument to contain the object as it
+	is after being modified, or NULL if it was removed.
+	(_e_cal_backend_remove_object): adapted to change in method arguments
+	and pass correct number of arguments to e_data_cal_notify_object_removed.
+
+	* backends/contacts/e-cal-backend-contacts.c (contact_record_free):
+	pass correct number of arguments to e_cal_backend_notify_object_removed.
+	
+	* backends/file/e-cal-backend-file.c (notify_removals_cb,
+	e_cal_backend_file_receive_objects):
+	pass correct number of arguments to e_cal_backend_notify_object_removed.
+	(remove_object_instance_cb, e_cal_backend_file_modify_object): adapted to
+	support detached recurrences and THISANDPRIOR/THISANDFUTURE.
+	(e_cal_backend_file_remove_object): adapted to method changes.
+
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas, receive_object):
+	pass correct number of arguments to e_cal_backend_notify_object_removed.
+	(e_cal_backend_groupwise_remove_object): adapted to method changes.
+
+	* backends/http/e-cal-backend-http.c (notify_and_remove_from_cache):
+	pass correct number of arguments to e_cal_backend_notify_object_removed.
+	(e_cal_backend_http_remove_object): adapted to method changes.
+
 2004-12-15  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:

@@ -1507,14 +1507,18 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		priv->load_state = E_CAL_LOAD_AUTHENTICATING;
 
 		if (priv->auth_func == NULL) {
+			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
+			e_calendar_free_op (our_op);
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
 		username = e_source_get_property (priv->source, "username");
 		if (!username) {
+			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
+			e_calendar_free_op (our_op);
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
@@ -1526,7 +1530,9 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 		password = priv->auth_func (ecal, prompt, key, priv->auth_user_data);
 		if (!password) {
+			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
+			e_calendar_free_op (our_op);
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED; 
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
@@ -2903,7 +2909,7 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 {
 	GList **list;
 	struct comp_instance *ci;
-	struct icaltimetype itt_start;
+	struct icaltimetype itt, itt_start;
 	icalcomponent *icalcomp;
 
 	list = data;
@@ -2913,7 +2919,6 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 	icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
 	itt_start = icalcomponent_get_dtstart (icalcomp);
 
-#if 0
 	/* set the RECUR-ID for the instance */
 	if (e_cal_util_component_has_recurrences (icalcomp)) {
 		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
@@ -2921,12 +2926,10 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 			icalcomponent_set_recurrenceid (icalcomp, itt);
 		}
 	}
-#endif
 
 	/* add the instance to the list */
 	ci->comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (ci->comp, icalcomp);
-
 	
 	ci->start = start;
 	ci->end = end;

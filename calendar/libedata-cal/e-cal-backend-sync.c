@@ -128,13 +128,14 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 ECalBackendSyncStatus
 e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid,
-				  CalObjModType mod, char **object)
+				  CalObjModType mod, char **old_object, char **object)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync != NULL,
 			      GNOME_Evolution_Calendar_UnsupportedMethod);
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync) (backend, cal, uid, rid, mod, object);
+	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync) (backend, cal, uid, rid, mod,
+									       old_object, object);
 }
 
 ECalBackendSyncStatus
@@ -375,21 +376,21 @@ static void
 _e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid, CalObjModType mod)
 {
 	ECalBackendSyncStatus status;
-	char *object = NULL;
+	char *object = NULL, *old_object = NULL;
 	
-	status = e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, uid, rid, mod, &object);
+	status = e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, uid, rid, mod, &old_object, &object);
 
 	if (status == GNOME_Evolution_Calendar_Success) {
 		char *calobj = NULL;
 
 		if (e_cal_backend_sync_get_object (E_CAL_BACKEND_SYNC (backend), cal, uid, NULL, &calobj)
 		    == GNOME_Evolution_Calendar_Success) {
-			e_data_cal_notify_object_modified (cal, status, object, calobj);
+			e_data_cal_notify_object_modified (cal, status, old_object, calobj);
 			g_free (calobj);
 		} else
-			e_data_cal_notify_object_removed (cal, status, uid, object);
+			e_data_cal_notify_object_removed (cal, status, uid, old_object, object);
 	} else
-		e_data_cal_notify_object_removed (cal, status, uid, object);
+		e_data_cal_notify_object_removed (cal, status, uid, old_object, object);
 
 	g_free (object);
 }

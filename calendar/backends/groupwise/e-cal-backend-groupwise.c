@@ -321,7 +321,7 @@ get_deltas (gpointer handle)
 				(vtype == E_CAL_COMPONENT_TODO)) {
 			comp_str = e_cal_component_get_as_string (comp);
 			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), 
-								(char *) l->data, comp_str);
+							     (char *) l->data, comp_str, NULL);
 			e_cal_backend_cache_remove_component (cache, (const char *) l->data, NULL);
 			g_free (comp_str);
 		}
@@ -1413,7 +1413,8 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				       const char *uid, const char *rid,
-				       CalObjModType mod, char **object)
+				       CalObjModType mod, char **old_object,
+				       char **object)
 {
 	ECalBackendGroupwise *cbgw;
         ECalBackendGroupwisePrivate *priv;
@@ -1421,6 +1422,8 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
+
+	*old_object = *object = NULL;
 
 	/* if online, remove the item from the server */
 	if (priv->mode == CAL_MODE_REMOTE) {
@@ -1432,6 +1435,8 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		status = e_cal_backend_groupwise_get_object (backend, cal, uid, rid, &calobj);
 		if (status != GNOME_Evolution_Calendar_Success)
 			return status;
+
+		*old_object = calobj;
 
 		icalcomp = icalparser_parse_string (calobj);
 		if (!icalcomp) {
@@ -1517,7 +1522,8 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 			
 			e_cal_component_get_uid (comp, (const char **) &uid);
 			e_cal_backend_cache_remove_component (priv->cache, uid, NULL);
-			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), uid, e_cal_component_get_as_string (comp));
+			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), uid, e_cal_component_get_as_string (comp), NULL);
+			g_free (comp);
 		}
 		else {
 			char *cache_comp = NULL, *temp, *new_comp = NULL;
