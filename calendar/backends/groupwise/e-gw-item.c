@@ -637,15 +637,59 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	switch (priv->item_type) {
 	case E_GW_ITEM_TYPE_APPOINTMENT :
 		soup_soap_message_add_attribute (msg, "type", "Appointment", "xsi", NULL);
+
+		e_gw_message_write_string_parameter (msg, "acceptLevel", priv->accept_level ? priv->accept_level : "", NULL);
+		e_gw_message_write_string_parameter (msg, "place", priv->place ? priv->place : "", NULL);
+		/* FIXME: distribution */
 		break;
 	case E_GW_ITEM_TYPE_TASK :
 		soup_soap_message_add_attribute (msg, "type", "Task", "xsi", NULL);
+
+		if (icaltime_is_valid_time (priv->due_date))
+			e_gw_message_write_string_parameter (msg, "dueDate", icaltime_as_ical_string (priv->due_date), NULL);
+		else
+			e_gw_message_write_string_parameter (msg, "dueDate", "", NULL);
+
+		if (priv->completed)
+			e_gw_message_write_string_parameter (msg, "completed", "1", NULL);
+		else
+			e_gw_message_write_string_parameter (msg, "completed", "0", NULL);
+
+		e_gw_message_write_string_parameter (msg, "priority", priv->priority ? priv->priority : "", NULL);
 		break;
 	default :
 		g_warning (G_STRLOC ": Unknown type for item");
 		return FALSE;
 	}
 
+	/* add all properties */
+	e_gw_message_write_string_parameter (msg, "id", priv->id, NULL);
+	e_gw_message_write_string_parameter (msg, "subject", priv->subject ? priv->subject : "", NULL);
+	e_gw_message_write_string_parameter (msg, "message", priv->message ? priv->message : "", NULL);
+	if (icaltime_is_valid_time (priv->start_date))
+		e_gw_message_write_string_parameter (msg, "startDate", icaltime_as_ical_string (priv->start_date), NULL);
+	if (icaltime_is_valid_time (priv->end_date))
+		e_gw_message_write_string_parameter (msg, "endDate", icaltime_as_ical_string (priv->end_date), NULL);
+	else
+		e_gw_message_write_string_parameter (msg, "endDate", "", NULL);
+	if (icaltime_is_valid_time (priv->creation_date))
+		e_gw_message_write_string_parameter (msg, "created", icaltime_as_ical_string (priv->creation_date), NULL);
+
+	switch (priv->classification) {
+	case E_CAL_COMPONENT_CLASS_PUBLIC :
+		e_gw_message_write_string_parameter (msg, "class", "Public", NULL);
+		break;
+	case E_CAL_COMPONENT_CLASS_PRIVATE :
+		e_gw_message_write_string_parameter (msg, "class", "Private", NULL);
+		break;
+	case E_CAL_COMPONENT_CLASS_CONFIDENTIAL :
+		e_gw_message_write_string_parameter (msg, "class", "Confidential", NULL);
+		break;
+	default :
+		e_gw_message_write_string_parameter (msg, "class", "", NULL);
+	}
+
+	/* finalize the SOAP element */
 	soup_soap_message_end_element (msg);
 
 	return TRUE;

@@ -1,5 +1,10 @@
 2004-01-29  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-item.c (e_gw_item_append_to_soap_message):
+	write all properties to the message.
+
+2004-01-29  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-item.[ch] (e_gw_item_new_from_soap_parameter,
 	e_gw_item_to_cal_component, e_gw_item_get_id, e_gw_item_set_id,
 	e_gw_item_get_creation_date, e_gw_item_set_creation_date,
