@@ -19,6 +19,9 @@ Step 1 - Infrastructure
       EGwConnectionStatus. This is in e-gw-connection.c#parse_response_status.
       We need the list of status codes returned by the server from the GW team.
 
+ 1.5 Write script/program to easily add an account until we have the configuration
+     GUI.
+
 Step 2 - Basic functionality
 
  2.1 Make the ECalBackendGroupwise class use ECalBackendCache, so that after
@@ -43,9 +46,7 @@ Step 2 - Basic functionality
 	  - Implement e_cal_backend_groupwise_get_alarm_email_address
 	  - Implement e_cal_backend_groupwise_get_static_capabilities
 
- 2.4 Implement configuration of GW accounts.
-
- 2.5 Implement modification of objects on the server. This involves adding,
+ 2.4 Implement modification of objects on the server. This involves adding,
      removing and updating objects (either tasks, events or timezones) and
      implementing the following methods on the backend:
            - Implement e_cal_backend_groupwise_add_timezone
@@ -56,8 +57,12 @@ Step 2 - Basic functionality
 	   - Implement e_cal_backend_groupwise_remove_object
 	   - Implement e_cal_backend_groupwise_receive_objects
 	   - Implement e_cal_backend_groupwise_send_objects
+     When sending modifications to the server, only deltas (the fields that have
+     been modified) are sent, so we shoould compare the objects with the cache
+     and get the deltas out of that. When a successful update is made to the
+     server, the cache must be updated.
 
- 2.6 Implement queries to the server. This involves implementing the following
+ 2.5 Implement queries to the server. This involves implementing the following
      backend methods:
             - Implement e_cal_backend_groupwise_get_object_list
 	    - Implement e_cal_backend_groupwise_start_query
@@ -67,15 +72,17 @@ Step 2 - Basic functionality
      of contacting the server for each query, or making a cache of queries, like we
      had in Evolution 1.4.
 
- 2.7 Free/Busy. This is the implementation of the e_cal_backend_groupwise_get_free_busy
+ 2.6 Free/Busy. This is the implementation of the e_cal_backend_groupwise_get_free_busy
      method on the backend.
 
- 2.8 Addition/removal of calendars. The backend should be able to create new calendars
+ 2.7 Addition/removal of calendars. The backend should be able to create new calendars
      when the _open method is called with 'only_if_exists' set to FALSE. In that case,
      it should create the new calendar, and add the new source to the calendar sources
      tree.
      Also, the e_cal_backend_groupwise_remove method should be implemented to allow the
      removal of those calendars.
+
+ 2.8 Implement configuration of GW accounts.
 
 Step 3 - Extra
 
