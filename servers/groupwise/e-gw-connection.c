@@ -2318,7 +2318,7 @@ e_gw_connection_move_item (EGwConnection *cnc, const char *id, const char *dest_
 
 	
 	/* build the SOAP message */
-	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "moveItemsRequest");
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "moveItemRequest");
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 	e_gw_message_write_string_parameter (msg, "container", NULL,dest_container_id);
 	if (from_container_id)
