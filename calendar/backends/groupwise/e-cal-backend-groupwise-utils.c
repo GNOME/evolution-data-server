@@ -521,7 +521,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			attendee->value = g_strconcat("MAILTO:", recipient->email, NULL);
 			if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
 				attendee->role = ICAL_ROLE_REQPARTICIPANT;
-			else if (recipient->type == E_GW_ITEM_RECIPIENT_CC)
+			else if (recipient->type == E_GW_ITEM_RECIPIENT_CC || recipient->type == E_GW_ITEM_RECIPIENT_BC)
 				attendee->role = ICAL_ROLE_OPTPARTICIPANT;
 			else 
 				attendee->role = ICAL_ROLE_NONE;

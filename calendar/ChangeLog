@@ -1,3 +1,9 @@
+2004-08-13  Chenthill Palanisamy <pchenthill@novell.com>
+
+        * backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): handle the BC recipient type
+         with TO and CC.	
+
 2004-08-12  Not Zed  <NotZed@Ximian.com>
 
 	* libecal/e-cal.c (async_auth_func_cb): removed.
