@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-27 00:50+0900\n"
-"PO-Revision-Date: 2004-02-27 00:51+0900\n"
+"POT-Creation-Date: 2004-03-06 02:51+0900\n"
+"PO-Revision-Date: 2004-03-06 02:52+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -307,24 +307,24 @@ msgid "AIM Screen Name List"
 msgstr "AIM 대화명 목록"
 
 #: addressbook/libebook/e-contact.c:153
+msgid "Groupwise Id List"
+msgstr "Groupwise ID 목록"
+
+#: addressbook/libebook/e-contact.c:154
 msgid "Jabber Id List"
 msgstr "Jabber ID 목록"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! 대화명 목록"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 msgid "MSN Screen Name List"
 msgstr "MSN 대화명 목록"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "ICQ Id List"
 msgstr "ICQ ID 목록"
-
-#: addressbook/libebook/e-contact.c:157
-msgid "Groupwise Id List"
-msgstr "Groupwise ID 목록"
 
 #: addressbook/libebook/e-contact.c:159
 msgid "AIM Home Screen Name 1"
@@ -351,205 +351,229 @@ msgid "AIM Work Screen Name 3"
 msgstr "AIM 직장 대화명 3"
 
 #: addressbook/libebook/e-contact.c:165
+msgid "Groupwise Home Screen Name 1"
+msgstr "Groupwise 집 대화명 1"
+
+#: addressbook/libebook/e-contact.c:166
+msgid "Groupwise Home Screen Name 2"
+msgstr "Groupwise 집 대화명 2"
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Groupwise Home Screen Name 3"
+msgstr "Groupwise 집 대화명 3"
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Groupwise Work Screen Name 1"
+msgstr "Groupwise 직장 대화명 1"
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Groupwise Work Screen Name 2"
+msgstr "Groupwise 직장 대화명 2"
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Groupwise Work Screen Name 3"
+msgstr "Groupwise 직장 대화명 3"
+
+#: addressbook/libebook/e-contact.c:171
 msgid "Jabber Home Id 1"
 msgstr "Jabber 집 ID 1"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:172
 msgid "Jabber Home Id 2"
 msgstr "Jabber 집 ID 2"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 3"
 msgstr "Jabber 집 ID 3"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Work Id 1"
 msgstr "Jabber 직장 ID 1"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Work Id 2"
 msgstr "Jabber 직장 ID 2"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 3"
 msgstr "Jabber 직장 ID 3"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:177
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! 집 대화명 1"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:178
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! 집 대화명 2"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! 집 대화명 3"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! 직장 대화명 1"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! 직장 대화명 2"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! 직장 대화명 3"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:183
 msgid "MSN Home Screen Name 1"
 msgstr "MSN 집 대화명 1"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:184
 msgid "MSN Home Screen Name 2"
 msgstr "MSN 집 대화명 2"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 3"
 msgstr "MSN 집 대화명 3"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Work Screen Name 1"
 msgstr "MSN 직장 대화명 1"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Work Screen Name 2"
 msgstr "MSN 직장 대화명 2"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 3"
 msgstr "MSN 직장 대화명 3"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:189
 msgid "ICQ Home Id 1"
 msgstr "ICQ 집 ID 1"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:190
 msgid "ICQ Home Id 2"
 msgstr "ICQ 집 ID 2"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 3"
 msgstr "ICQ 집 ID 3"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Work Id 1"
 msgstr "ICQ 직장 ID 1"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Work Id 2"
 msgstr "ICQ 직장 ID 2"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 3"
 msgstr "ICQ 직장 ID 3"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:197
 msgid "Organization"
 msgstr "조직"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:198
 msgid "Organizational Unit"
 msgstr "조직 부서"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:199
 msgid "Office"
 msgstr "사무실"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:201
 msgid "Title"
 msgstr "제목"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:202
 msgid "Role"
 msgstr "역할"
 
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:203
 msgid "Manager"
 msgstr "관리자"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:204
 msgid "Assistant"
 msgstr "비서"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:207
 msgid "Homepage URL"
 msgstr "홈페이지 URL"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:208
 msgid "Weblog URL"
 msgstr "웹로그 URL"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:209
 msgid "Video Conferencing URL"
 msgstr "화상 회의 URL"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:212
 msgid "Photo"
 msgstr "사진"
 
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:213
 msgid "Logo"
 msgstr "로고"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:216
 msgid "X.509 Certificate"
 msgstr "X.509 인증서"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:219
 msgid "Category List"
 msgstr "분류 목록"
 
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:220
 msgid "Categories"
 msgstr "분류"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:217
+#: addressbook/libebook/e-contact.c:223
 msgid "Calendar URI"
 msgstr "달력 URI"
 
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:224
 msgid "Free/Busy URL"
 msgstr "약속 있음/없음 URL"
 
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:225
 msgid "ICS Calendar"
 msgstr "ICS 달력"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:228
 msgid "Spouse's Name"
 msgstr "배우자 이름"
 
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:229
 msgid "Note"
 msgstr "노트"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:231
 msgid "Birth Date"
 msgstr "생일"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:232
 msgid "Anniversary"
 msgstr "기념일"
 
-#: addressbook/libebook/e-contact.c:228
+#: addressbook/libebook/e-contact.c:234
 msgid "List"
 msgstr "목록"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:235
 msgid "List Show Addresses"
 msgstr "목록의 주소 표시"
 
-#: addressbook/libebook/e-contact.c:1195
+#: addressbook/libebook/e-contact.c:1201
 msgid "Unnamed List"
 msgstr "이름 없는 목록"
 
@@ -738,87 +762,87 @@ msgid "Undefined"
 msgstr "정의안됨"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1459
+#: calendar/libecal/e-cal.c:1465
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s(사용자 %s)의 열쇠글을 입력하십시오"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3930
 msgid "Invalid argument"
 msgstr "인자가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3932
 msgid "Backend is busy"
 msgstr "백엔드가 사용중입니다"
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3934
 msgid "Repository is offline"
 msgstr "저장고가 오프라인 상태입니다"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3936
 msgid "No such calendar"
 msgstr "그런 달력이 없습니다"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3938
 msgid "Object not found"
 msgstr "오브젝트를 찾을 수 없습니다"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3940
 msgid "Invalid object"
 msgstr "오브젝트가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3942
 msgid "URI not loaded"
 msgstr "URI를 읽어들이지 못했습니다"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3944
 msgid "URI already loaded"
 msgstr "URI를 이미 읽어들였습니다"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3946
 msgid "Permission denied"
 msgstr "권한이 거부되었습니다"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3948
 msgid "Object ID already exists"
 msgstr "오브젝트 ID가 이미 있습니다"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3950
 msgid "Protocol not supported"
 msgstr "프로토콜이 지원되지 않습니다"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3952
 msgid "Operation has been cancelled"
 msgstr "작업이 취소되었습니다"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3954
 msgid "Could not cancel operation"
 msgstr "작업을 취소할 수 없습니다"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3956
 msgid "Authentication failed"
 msgstr "인증이 실패했습니다"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3958
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3960
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 예외가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3962
 msgid "Unknown error"
 msgstr "알 수 없는 오류가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:3964
 msgid "No error"
 msgstr "오류 없음"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:503
-#: calendar/libedata-cal/e-cal-backend-sexp.c:635
-#: calendar/libedata-cal/e-cal-backend-sexp.c:662
+#: calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: calendar/libedata-cal/e-cal-backend-sexp.c:652
+#: calendar/libedata-cal/e-cal-backend-sexp.c:679
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\"에는 인자가 필요 없습니다"
@@ -827,14 +851,14 @@ msgstr "\"%s\"에는 인자가 필요 없습니다"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:700
+#: calendar/libedata-cal/e-cal-backend-sexp.c:717
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\"에는 한 개의 인자가 필요합니다"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:449
+#: calendar/libedata-cal/e-cal-backend-sexp.c:464
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\"의 첫번째 인자가 문자열이어야 합니다"
@@ -846,7 +870,7 @@ msgstr "\"%s\"의 첫번째 인자가 ISO 8601 날짜/시각 문자열이어야 
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:443
+#: calendar/libedata-cal/e-cal-backend-sexp.c:458
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\"에는 두 개의 인자가 필요합니다"
@@ -855,7 +879,7 @@ msgstr "\"%s\"에는 두 개의 인자가 필요합니다"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
 #: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:706
+#: calendar/libedata-cal/e-cal-backend-sexp.c:723
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\"의 첫번째 인자가 time_t 값이어야 합니다"
@@ -870,26 +894,24 @@ msgstr "\"%s\"의 두번째 인자가 정수 값이어야 합니다"
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\"의 두번째 인자가 time_t여야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:457
+#: calendar/libedata-cal/e-cal-backend-sexp.c:472
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\"의 두번째 인자가 문자열이어야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:475
+#: calendar/libedata-cal/e-cal-backend-sexp.c:492
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\""
-msgstr ""
-"\"%s\"의 첫번째 인자가 \"any\", \"summary\", \"description\"중의 하나여야 합"
-"니다"
+"\"description\", or \"location\""
+msgstr "\"%s\"의 첫번째 인자가 \"any\", \"summary\", \"description\", \"location\" 중의 하나여야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:537
+#: calendar/libedata-cal/e-cal-backend-sexp.c:554
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\"에는 최소한 한 개의 인자가 필요합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:551
+#: calendar/libedata-cal/e-cal-backend-sexp.c:568
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
