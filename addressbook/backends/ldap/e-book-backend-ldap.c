@@ -401,6 +401,7 @@ add_to_supported_fields (EBookBackendLDAP *bl, char **attrs, GHashTable *attr_ha
 			if (!strcmp (query_prop, "email")) {
 				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("email_2"));
 				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("email_3"));
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("email_4"));
 			}
 			else if (!strcmp (query_prop, "business_phone")) {
 				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("business_phone_2"));
@@ -1868,10 +1869,11 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 
 
 
-static EContactField email_ids[3] = {
+static EContactField email_ids[4] = {
 	E_CONTACT_EMAIL_1,
 	E_CONTACT_EMAIL_2,
-	E_CONTACT_EMAIL_3
+	E_CONTACT_EMAIL_3,
+	E_CONTACT_EMAIL_4
 };
 
 /* List property functions */
@@ -1879,7 +1881,7 @@ static void
 email_populate(EContact *contact, char **values)
 {
 	int i;
-	for (i = 0; values[i] && i < 3; i ++)
+	for (i = 0; values[i] && i < 4; i ++)
 		e_contact_set (contact, email_ids[i], values[i]);
 }
 
@@ -1890,7 +1892,7 @@ email_ber(EContact *contact)
 	const char *emails[3];
 	int i, j, num = 0;
 
-	for (i = 0; i < 3; i ++) {
+	for (i = 0; i < 4; i ++) {
 		emails[i] = e_contact_get (contact, email_ids[i]);
 		if (emails[i])
 			num++;
@@ -1905,7 +1907,7 @@ email_ber(EContact *contact)
 		result[i] = g_new (struct berval, 1);
 
 	j = 0;
-	for (i = 0; i < 3; i ++) {
+	for (i = 0; i < 4; i ++) {
 		if (emails[i]) {
 			result[j]->bv_val = g_strdup (emails[i]);
 			result[j++]->bv_len = strlen (emails[i]);
@@ -1923,7 +1925,7 @@ email_compare (EContact *contact1, EContact *contact2)
 	const char *email1, *email2;
 	int i;
 
-	for (i = 0; i < 3; i ++) {
+	for (i = 0; i < 4; i ++) {
 		gboolean equal;
 		email1 = e_contact_get_const (contact1, email_ids[i]);
 		email2 = e_contact_get_const (contact2, email_ids[i]);

@@ -48,6 +48,7 @@ typedef enum {
 	E_CONTACT_EMAIL_1,     	 /* synthetic string field */
 	E_CONTACT_EMAIL_2,     	 /* synthetic string field */
 	E_CONTACT_EMAIL_3,     	 /* synthetic string field */
+	E_CONTACT_EMAIL_4,       /* synthetic string field */
 
 	E_CONTACT_MAILER,        /* string field */
 
@@ -190,7 +191,7 @@ typedef enum {
 	E_CONTACT_FIRST_PHONE_ID     = E_CONTACT_PHONE_ASSISTANT,
 	E_CONTACT_LAST_PHONE_ID      = E_CONTACT_PHONE_TTYTDD,
 	E_CONTACT_FIRST_EMAIL_ID     = E_CONTACT_EMAIL_1,
-	E_CONTACT_LAST_EMAIL_ID      = E_CONTACT_EMAIL_3,
+	E_CONTACT_LAST_EMAIL_ID      = E_CONTACT_EMAIL_4,
 	E_CONTACT_FIRST_ADDRESS_ID   = E_CONTACT_ADDRESS_HOME,
 	E_CONTACT_LAST_ADDRESS_ID    = E_CONTACT_ADDRESS_OTHER,
 	E_CONTACT_FIRST_LABEL_ID     = E_CONTACT_ADDRESS_LABEL_HOME,

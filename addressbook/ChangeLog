@@ -1,3 +1,27 @@
+2004-05-19  Hans Petter Jansson  <hpj@ximian.com>
+
+	* backends/ldap/e-book-backend-ldap.c (add_to_supported_fields):
+	Add EMAIL_4 field.
+	(email_ids): Add EMAIL_4.
+	(email_populate): Ditto.
+	(email_ber): Ditto.
+
+	* libebook/e-contact.c (field_info): Add EMAIL_4 field.
+
+	* libebook/e-contact.h: Add EMAIL_4 field.
+
+	* libedata-book/e-book-backend-sexp.c (compare_email): Add
+	EMAIL_4.
+
+	* libedata-book/e-book-backend-summary.c: Add EMAIL_4 to structs,
+	bump version to 5000 (5.0).
+	(free_summary_item): Add EMAIL_4.
+	(e_book_backend_summary_load_item): Ditto.
+	(e_book_backend_summary_save_item): Ditto.
+	(e_book_backend_summary_add_contact): Ditto.
+	(do_compare): Ditto.
+	(e_book_backend_summary_get_summary_vcard): Ditto.
+
 2004-05-18  Chris Toshok  <toshok@ximian.com>
 
 	[ fixes #58522, and some other misc update problems ]

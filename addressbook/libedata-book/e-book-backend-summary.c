@@ -68,6 +68,7 @@ typedef struct {
 	char *email_1;
 	char *email_2;
 	char *email_3;
+	char *email_4;
 	gboolean wants_html;
 	gboolean wants_html_set;
 	gboolean list;
@@ -86,6 +87,7 @@ typedef struct {
 	guint16 email_1_len;
 	guint16 email_2_len;
 	guint16 email_3_len;
+	guint16 email_4_len;
 	guint8  wants_html;
 	guint8  wants_html_set;
 	guint8  list;
@@ -105,8 +107,9 @@ typedef struct {
 #define PAS_SUMMARY_FILE_VERSION_2_0 2000
 #define PAS_SUMMARY_FILE_VERSION_3_0 3000
 #define PAS_SUMMARY_FILE_VERSION_4_0 4000
+#define PAS_SUMMARY_FILE_VERSION_5_0 5000
 
-#define PAS_SUMMARY_FILE_VERSION PAS_SUMMARY_FILE_VERSION_4_0
+#define PAS_SUMMARY_FILE_VERSION PAS_SUMMARY_FILE_VERSION_5_0
 
 static void
 free_summary_item (EBookBackendSummaryItem *item)
@@ -120,6 +123,7 @@ free_summary_item (EBookBackendSummaryItem *item)
 	g_free (item->email_1);
 	g_free (item->email_2);
 	g_free (item->email_3);
+	g_free (item->email_4);
 	g_free (item);
 }
 
@@ -327,6 +331,7 @@ e_book_backend_summary_load_item (EBookBackendSummary *summary,
 		disk_item.email_1_len = ntohs (disk_item.email_1_len);
 		disk_item.email_2_len = ntohs (disk_item.email_2_len);
 		disk_item.email_3_len = ntohs (disk_item.email_3_len);
+		disk_item.email_4_len = ntohs (disk_item.email_4_len);
 
 		item = g_new0 (EBookBackendSummaryItem, 1);
 
@@ -414,6 +419,15 @@ e_book_backend_summary_load_item (EBookBackendSummary *summary,
 				return FALSE;
 			}
 			item->email_3 = buf;
+		}
+
+		if (disk_item.email_4_len) {
+			buf = read_string (fp, disk_item.email_4_len);
+			if (!buf) {
+				free_summary_item (item);
+				return FALSE;
+			}
+			item->email_4 = buf;
 		}
 
 		/* the only field that has to be there is the id */
@@ -589,6 +603,9 @@ e_book_backend_summary_save_item (EBookBackendSummary *summary, FILE *fp, EBookB
 	len = item->email_3 ? strlen (item->email_3) : 0;
 	disk_item.email_3_len = htons (len);
 
+	len = item->email_4 ? strlen (item->email_4) : 0;
+	disk_item.email_4_len = htons (len);
+
 	disk_item.wants_html = item->wants_html;
 	disk_item.wants_html_set = item->wants_html_set;
 	disk_item.list = item->list;
@@ -615,6 +632,8 @@ e_book_backend_summary_save_item (EBookBackendSummary *summary, FILE *fp, EBookB
 	if (!save_string (item->email_2, fp))
 		return FALSE;
 	if (!save_string (item->email_3, fp))
+		return FALSE;
+	if (!save_string (item->email_4, fp))
 		return FALSE;
 
 	return TRUE;
@@ -706,6 +725,7 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
 	new_item->email_1    = e_contact_get (contact, E_CONTACT_EMAIL_1);
 	new_item->email_2    = e_contact_get (contact, E_CONTACT_EMAIL_2);
 	new_item->email_3    = e_contact_get (contact, E_CONTACT_EMAIL_3);
+	new_item->email_4    = e_contact_get (contact, E_CONTACT_EMAIL_4);
 	new_item->list       = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_IS_LIST));
 	new_item->list_show_addresses = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_LIST_SHOW_ADDRESSES));
 	new_item->wants_html = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_WANTS_HTML));
@@ -724,6 +744,7 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
 	summary->priv->size += new_item->email_1 ? strlen (new_item->email_1) : 0;
 	summary->priv->size += new_item->email_2 ? strlen (new_item->email_2) : 0;
 	summary->priv->size += new_item->email_3 ? strlen (new_item->email_3) : 0;
+	summary->priv->size += new_item->email_4 ? strlen (new_item->email_4) : 0;
 #endif
 	e_book_backend_summary_touch (summary);
 }
@@ -905,9 +926,11 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
 				char *email_1 = item->email_1;
 				char *email_2 = item->email_2;
 				char *email_3 = item->email_3;
+				char *email_4 = item->email_4;
 				if ((email_1 && compare (email_1, argv[1]->value.string))
 				    || (email_2 && compare (email_2, argv[1]->value.string))
-				    || (email_3 && compare (email_3, argv[1]->value.string)))
+				    || (email_3 && compare (email_3, argv[1]->value.string))
+				    || (email_4 && compare (email_4, argv[1]->value.string)))
 					g_ptr_array_add (result, item->id);
 			}
 			else if (!strcmp (argv[0]->value.string, "file_as")) {
@@ -1068,6 +1091,7 @@ e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const cha
 		e_contact_set (contact, E_CONTACT_EMAIL_1, item->email_1);
 		e_contact_set (contact, E_CONTACT_EMAIL_2, item->email_2);
 		e_contact_set (contact, E_CONTACT_EMAIL_3, item->email_3);
+		e_contact_set (contact, E_CONTACT_EMAIL_4, item->email_4);
 
 		e_contact_set (contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (item->list));
 		e_contact_set (contact, E_CONTACT_LIST_SHOW_ADDRESSES, GINT_TO_POINTER (item->list_show_addresses));

@@ -101,7 +101,7 @@ compare_email (EContact *contact, const char *str,
 {
 	int i;
 
-	for (i = E_CONTACT_EMAIL_1; i <= E_CONTACT_EMAIL_3; i ++) {
+	for (i = E_CONTACT_EMAIL_1; i <= E_CONTACT_EMAIL_4; i ++) {
 		const char *email = e_contact_get_const (contact, i);
 
 		if (email && compare(email, str))
