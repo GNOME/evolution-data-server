@@ -70,6 +70,11 @@ static EDataCalFactory *e_data_cal_factory;
 
 static EDataBookFactory *e_data_book_factory;
 
+/* The other interfaces we implement */
+
+static ServerLogging *logging_iface;
+static ServerInterfaceCheck *interface_check_iface;
+
 /* Timeout interval in milliseconds for termination */
 #define EXIT_TIMEOUT 5000
 
@@ -197,8 +202,9 @@ setup_cals (void)
 static gboolean
 setup_logging (void)
 {
-	ServerLogging *logging_iface = server_logging_new ();
 	int result;
+
+	logging_iface = server_logging_new ();
 
 	server_logging_register_domain (logging_iface, NULL);
 	server_logging_register_domain (logging_iface, "Gdk");
@@ -225,9 +231,9 @@ setup_logging (void)
 static gboolean
 setup_interface_check (void)
 {
-	ServerInterfaceCheck *interface_check_iface = server_interface_check_new ();
 	int result;
 
+	interface_check_iface = server_interface_check_new ();
 	result = bonobo_activation_active_server_register (E_DATA_SERVER_INTERFACE_CHECK_OAF_ID,
 							   BONOBO_OBJREF (interface_check_iface));
 
@@ -294,25 +300,27 @@ main (int argc, char **argv)
 		exit (EXIT_FAILURE);
 	}
 
-	if (! setup_logging ()) {
+	if ( setup_logging ()) {
+			if ( setup_interface_check ()) {
+				g_message ("Server up and running");
+
+				bonobo_main ();
+			} else
+				g_error (G_STRLOC "Cannot register DataServer::InterfaceCheck object");
+	} else
 		g_error (G_STRLOC "Cannot register DataServer::Logging object");
-		exit (EXIT_FAILURE);
-	}
-
-	if (! setup_interface_check ()) {
-		g_error (G_STRLOC "Cannot register DataServer::InterfaceCheck object");
-		exit (EXIT_FAILURE);
-	}
-
-	g_message ("Server up and running");
-
-	bonobo_main ();
 
 	bonobo_object_unref (BONOBO_OBJECT (e_data_cal_factory));
 	e_data_cal_factory = NULL;
 
 	bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
 	e_data_book_factory = NULL;
+
+	bonobo_object_unref (BONOBO_OBJECT (logging_iface));
+	logging_iface = NULL;
+
+	bonobo_object_unref (BONOBO_OBJECT (interface_check_iface));
+	interface_check_iface = NULL;
 
 	gnome_vfs_shutdown ();
 

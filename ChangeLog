@@ -1,3 +1,10 @@
+2003-12-18  Rodrigo Moya <rodrigo@ximian.com>
+
+	* src/server.c (setup_logging, setup_interface_check): get the
+	BonoboObject's we create here out of the function.
+	(main): re-organize extra interfaces initialization code, and
+	make sure we unref all objects we have created.
+
 2003-12-17  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libedataserver/e-source.c (build_absolute_uri): Implement based on
