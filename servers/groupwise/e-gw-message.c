@@ -83,6 +83,7 @@ e_gw_message_new_with_header (const char *uri, const char *session_id, const cha
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "Content-Type", "text/xml");
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
 				 "Evolution/" VERSION);
+	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers,"Connection",  "Keep-Alive");
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction", method_name);
 
 	if (g_getenv ("GROUPWISE_DEBUG"))
