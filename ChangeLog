@@ -1,5 +1,7 @@
 2004-11-16  Not Zed  <NotZed@Ximian.com>
 
+	* Makefile.am (DIST_SUBDIRS, SUBDIRS): Added camel.
+
 	* configure.in: Added more camel required config checks.  Build
 	the camel makefiles.  Not sure if this should be in its own
 	configure.in.
