@@ -1,5 +1,5 @@
 # evolution-data-server - Dutch translation
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000, 2001, 2003, 2004, 2005 Free Software Foundation, Inc.
 # Arjan Scherpenisse <acscherp@wins.uva.nl>, 2000
 # Gerard Oskamp <gerard@linuxfreak.nl>, 2000
 # Dennis Smit <synap@area101.penguin.nl>, 2000
@@ -10,7 +10,7 @@
 # Mendel Mobach <mendel@mobach.nl>, 2001.
 # Kees van den Broek <kvdb@NOSPAMkvdb.net>, 2003.
 # Tino Meinen <a.t.meinen@chello.nl>, 2004.
-# Daniel van Eeden <daniel_e@dds.nl>, 2004
+# Daniel van Eeden <daniel_e@dds.nl>, 2004, 2005.
 # ---------------------------------------
 #
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: Evolution\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-14 15:54+0800\n"
-"PO-Revision-Date: 2004-08-10 14:14+0200\n"
+"PO-Revision-Date: 2005-01-28 12:07+0100\n"
 "Last-Translator: Daniel van Eeden <daniel_e@dds.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -571,7 +571,7 @@ msgstr "Categorie lijst"
 #: addressbook/libebook/e-contact.c:224
 #: libedataserverui/e-categories-dialog.c:369
 msgid "Categories"
-msgstr "Categorieën"
+msgstr "Categoriën"
 
 #. Collaboration fields
 #: addressbook/libebook/e-contact.c:227
@@ -652,9 +652,8 @@ msgid "Could not create cache file"
 msgstr "Kan cache bestand niet aanmaken"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:551
-#, fuzzy
 msgid "Could not create thread for populating cache"
-msgstr "Kan cache bestand niet aanmaken"
+msgstr "Kan geen tread voor het populeren van de cache maken."
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:557
 #: calendar/libecal/e-cal.c:4560
@@ -666,9 +665,8 @@ msgid "Authentication failed"
 msgstr "Aanmelding mislukt"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:776
-#, fuzzy
 msgid "Repository is Offline"
-msgstr "Opslagplaats offline"
+msgstr "Repository is offline"
 
 #: calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
@@ -870,9 +868,8 @@ msgid "Permission denied"
 msgstr "Operatie niet toegestaan"
 
 #: calendar/libecal/e-cal.c:4550 servers/groupwise/e-gw-connection.c:160
-#, fuzzy
 msgid "Unknown User"
-msgstr "Onbekende fout"
+msgstr "Onbekende gebruiker"
 
 #: calendar/libecal/e-cal.c:4552
 msgid "Object ID already exists"
@@ -929,7 +926,7 @@ msgstr "\"%s\" verwacht geen argumenten"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
-msgstr "\"%s\" verwacht één argument"
+msgstr "\"%s\" verwacht Ã©Ã©n argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
 #: calendar/libedata-cal/e-cal-backend-sexp.c:88
@@ -992,7 +989,7 @@ msgstr ""
 #: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
-msgstr "\"%s\" verwacht op zijn minst één argument"
+msgstr "\"%s\" verwacht op zijn minst Ã©Ã©n argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
@@ -1000,7 +997,7 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"\"%s\" verwacht dat alle argumenten tekenreeksen zijn, of dat slechts één "
+"\"%s\" verwacht dat alle argumenten tekenreeksen zijn, of dat slechts Ã©Ã©n "
 "argument een boolese: 'onwaar' is (#f)"
 
 #: camel/camel-cipher-context.c:103
@@ -1080,7 +1077,7 @@ msgstr "Aan het synchroniseren met de server"
 
 #: camel/camel-disco-folder.c:42 camel/camel-offline-folder.c:50
 msgid "Copy folder content locally for offline operation"
-msgstr "Kopieër de inhoud van de map lokaal voor offline gebruik"
+msgstr "De inhoud van de map lokaal kopiëren voor offline gebruik"
 
 #: camel/camel-disco-folder.c:104 camel/camel-offline-folder.c:107
 msgid "Downloading new messages for offline mode"
@@ -1522,9 +1519,9 @@ msgid "Host lookup failed"
 msgstr "Opzoeken host mislukt"
 
 #: camel/camel-net-utils.c:636
-#, fuzzy, c-format
+#, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr "Opzoeken host mislukt"
+msgstr "Host opzoeken mislukt: %s: %s"
 
 #: camel/camel-net-utils.c:743
 msgid "Resolving address"
@@ -1535,19 +1532,19 @@ msgid "Name lookup failed"
 msgstr "Opzoeken naam mislukt"
 
 #: camel/camel-net-utils.c:766
-#, fuzzy, c-format
+#, c-format
 msgid "Name lookup failed: %s"
-msgstr "Opzoeken naam mislukt"
+msgstr "Naam opzoeken mislukt: %s"
 
 #: camel/camel-offline-folder.c:250
-#, fuzzy, c-format
+#, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "Berichten worden gekopieerd naar map %s"
+msgstr "Synchroniseren van berichten in de map '%s' naar schijf"
 
 #: camel/camel-offline-journal.c:140 camel/camel-offline-journal.c:163
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
-msgstr "Kan map niet aanmaken: `%s': %s"
+msgstr "Kan het offline journaal voor de map `%s' niet schrijven: %s"
 
 #: camel/camel-provider.c:59
 msgid "Virtual folder email provider"
@@ -1855,12 +1852,10 @@ msgid "Cannot create CMS message"
 msgstr "Kan geen CMS-bericht aanmaken"
 
 #: camel/camel-smime-context.c:242
-#, fuzzy
 msgid "Cannot create CMS signed data"
 msgstr "Kan geen CMS-ondertekende-data aanmaken"
 
 #: camel/camel-smime-context.c:248
-#, fuzzy
 msgid "Cannot attach CMS signed data"
 msgstr "Kan geen CMS-ondertekende-data bijvoegen"
 
@@ -1869,22 +1864,19 @@ msgid "Cannot attach CMS data"
 msgstr "Kan geen CMS-data bijvoegen"
 
 #: camel/camel-smime-context.c:261
-#, fuzzy
 msgid "Cannot create CMS Signer information"
-msgstr "Kan geen CMS-ontertekenaarsinfo aanmaken"
+msgstr "Kan geen CMS-ondertekenaarsinfo aanmaken"
 
 #: camel/camel-smime-context.c:267
-#, fuzzy
 msgid "Cannot find certificate chain"
 msgstr "Kan certificaatketting niet vinden"
 
 #: camel/camel-smime-context.c:273
-#, fuzzy
 msgid "Cannot add CMS Signing time"
 msgstr "Kan CMS ontertekeninstijd niet toevoegen"
 
 #: camel/camel-smime-context.c:295 camel/camel-smime-context.c:307
-#, fuzzy, c-format
+#, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "Het versleutelingscertificaat voor '%s' bestaat niet"
 
@@ -1901,7 +1893,6 @@ msgid "Cannot add encryption certificate"
 msgstr "Kan encryptiecertificaat niet toevoegen"
 
 #: camel/camel-smime-context.c:330
-#, fuzzy
 msgid "Cannot add CMS Signer information"
 msgstr "Kan CMS ontertekenaars info niet toevoegen"
 
@@ -1960,9 +1951,8 @@ msgid "Processing error"
 msgstr "Analysefout"
 
 #: camel/camel-smime-context.c:539
-#, fuzzy
 msgid "No signed data in signature"
-msgstr "Geen signedData in handtekening"
+msgstr "Geen ondertekende data in handtekening"
 
 #: camel/camel-smime-context.c:546
 msgid "Digests missing from enveloped data"
@@ -1981,15 +1971,12 @@ msgid "Certificate import failed"
 msgstr "Certificaatimport mislukt"
 
 #: camel/camel-smime-context.c:599
-#, fuzzy
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "Bericht met enkel een certificaat, kan certificaten niet verifiëren"
 
 #: camel/camel-smime-context.c:602
-#, fuzzy
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
-"Bericht met enkel certificaat, certificaten geimporteerd en geverifieerd"
+msgstr "Bericht met enkel certificaat, certificaten geïmporteerd en geverifieerd"
 
 #: camel/camel-smime-context.c:606
 msgid "Cannot find signature digests"
@@ -2023,12 +2010,10 @@ msgid "Cannot create CMS Message"
 msgstr "Kan geen CMS-bericht aanmaken"
 
 #: camel/camel-smime-context.c:808
-#, fuzzy
 msgid "Cannot create CMS Enveloped data"
 msgstr "Kan geen CMS EnvelopedData maken"
 
 #: camel/camel-smime-context.c:814
-#, fuzzy
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Kan CMS EnvelopedData niet bijvoegen"
 
@@ -2037,12 +2022,10 @@ msgid "Cannot attach CMS data object"
 msgstr "Kan CMS-gegevensobject niet bijvoegen"
 
 #: camel/camel-smime-context.c:829
-#, fuzzy
 msgid "Cannot create CMS Recipient information"
-msgstr "Kan geen CMS RecipientInfo maken"
+msgstr "Kan geen CMS ontvangersinformatie maken"
 
 #: camel/camel-smime-context.c:834
-#, fuzzy
 msgid "Cannot add CMS Recipient information"
 msgstr "Kan geen CMS ontvangersinfo toevoegen"
 
@@ -2061,7 +2044,7 @@ msgstr "S/MIME Decrypten: Geen versleutelde inhoud gevonden"
 
 #: camel/camel-smime-context.c:980
 msgid "import keys: unimplemented"
-msgstr "sleutels importeren: niet geïmplementeerd"
+msgstr "sleutels importeren: niet geÃ¯mplementeerd"
 
 #: camel/camel-smime-context.c:988
 msgid "export keys: unimplemented"
@@ -2348,11 +2331,11 @@ msgstr "Kon de naam van map: %s niet wijzigen naar: map bestaat niet"
 
 #: camel/camel-vtrash-folder.c:47
 msgid "Cannot copy messages to the Trash folder"
-msgstr "Kan het bericht niet naar de Trash map kopieëren"
+msgstr "Kan het bericht niet naar de Trash map kopiëren"
 
 #: camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Kan berichten niet kopieëren naar troep-map"
+msgstr "Kan berichten niet kopiëren naar troep-map"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:104
 #: camel/providers/imap/camel-imap-folder.c:1979
@@ -2400,15 +2383,13 @@ msgstr "Kan bericht: %s niet verkrijgen: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:145
 #: camel/providers/imap4/camel-imap4-folder.c:719
-#, fuzzy
 msgid "This message is not available in offline mode."
-msgstr "Dit bericht is nu niet beschikbaar"
+msgstr "Dit bericht is niet beschikbaar in offline modus."
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:171
 #: camel/providers/groupwise/camel-groupwise-folder.c:272
-#, fuzzy
 msgid "Could not get message"
-msgstr "Kon bericht niet aanmaken."
+msgstr "Kon bericht niet verkrijgen"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:471
 #: camel/providers/imap/camel-imap-folder.c:245
@@ -2417,31 +2398,30 @@ msgid "Could not load summary for %s"
 msgstr "Kon samenvatting voor %s niet laden"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:685
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create message: %s"
-msgstr "Kan geen CMS-bericht aanmaken"
+msgstr "Aanmaken van bericht mislukt: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:697
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message to folder `%s': %s"
-msgstr "Kan bericht niet toevoegen aan mh map %s: %s"
+msgstr "Kan bericht niet toevoegen aan map `%s': %s"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get folder container %s"
-msgstr "Kan map niet verkrijgen: %s: %s"
+msgstr "Kan mappen container %s niet verkrijgen"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:328
 #: camel/providers/imap4/camel-imap4-journal.c:276
-#, fuzzy
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Kan bericht niet toevoegen aan mh map %s: %s"
+msgstr "Kan bericht niet toevoegen in offline modus: cache niet beschikbaar"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:344
 #: camel/providers/imap4/camel-imap4-journal.c:292
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr "Kan bericht niet aan mbox-bestand toevoegen: %s: %s"
+msgstr "Kan bericht niet toevoegen in offline modus: %s"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:36
@@ -2474,9 +2454,8 @@ msgid "Only check for Junk messages in the INBOX folder"
 msgstr "Controleer enkel op troep in nieuwe berichten in de inbox map"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:64
-#, fuzzy
 msgid "Automatically synchronize account locally"
-msgstr "Automatisch lokaal synchroniseren met post op afstand"
+msgstr "Account automatisch lokaal synchroniseren"
 
 #
 #: camel/providers/groupwise/camel-groupwise-provider.c:69
@@ -2512,22 +2491,18 @@ msgid "Password"
 msgstr "Wachtwoord"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:110
-#, fuzzy
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
-msgstr ""
-"Deze optie zal bij het verbinden met de IMAP-server het wachtwoord versturen "
-"als platte tekst."
+msgstr "Deze optie zal met de GroupWise server verbinden met behulp van een gewone tekst wachtwoord."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:267
-#, fuzzy
 msgid "Host or user not availbale in url"
-msgstr "Categoriebewerker niet beschikbaar."
+msgstr "Host of gebruiker niet beschikbaar in url"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:359
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the Groupwise password for %s@%s"
-msgstr "%sVoer het IMAP-wachtwoord voor %s@%s in"
+msgstr "%sVoer het GroupWise wachtwoord in voor %s@%s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:373
 #: camel/providers/imap/camel-imap-store.c:1301
@@ -2535,12 +2510,8 @@ msgid "You didn't enter a password."
 msgstr "U heeft geen wachtwoord ingevoerd"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:382
-#, fuzzy
 msgid "Unable to authenticate to GroupWise server."
-msgstr ""
-"Fout bij het aanmelden bij de IMAP-server.\n"
-"%s\n"
-"\n"
+msgstr "Fout bij het aanmelden bij de GroupWise server."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:479
 #: camel/providers/imap/camel-imap-store.c:1852
@@ -2556,52 +2527,47 @@ msgid "Fetching summary information for new messages"
 msgstr "Ophalen van samenvattingsinformatie van nieuwe berichten"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:610
-#, fuzzy
 msgid "Cannot get folder info in offline mode."
-msgstr "Kan map `%s' niet verkrijgen: is geen map."
+msgstr "Kan geen mapinformatie verkrijgen in offline modus."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:781
-#, fuzzy
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr "Kan geen map met die naam maken"
+msgstr "Kan geen GroupWise mappen in offline modus aanmaken."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:830
-#, fuzzy
 msgid "Cannot delete GroupWise folders in offline mode."
-msgstr "Kan de map %s niet verwijderen: Speciale map"
+msgstr "Kan geen GroupWise mappen verwijderen in offline modus."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:873
-#, fuzzy
 msgid "Cannot rename GroupWise folders in offline mode."
-msgstr "U kan geen mappen hernoemen in een nieuws opslag."
+msgstr "Kan geen GroupWise mappen hernoemen in offline modus."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:879
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "Kan map `%s' niet hernoemen naar `%s': Opdracht onjuist"
+msgstr "Kan de GroupWise map `%s' niet hernoemen naar `%s'"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:911
-#, fuzzy, c-format
+#, c-format
 msgid "GroupWise server %s"
-msgstr "GroupWise"
+msgstr "GroupWise server %s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:913
-#, fuzzy, c-format
+#, c-format
 msgid "GroupWise service for %s on %s"
-msgstr "IMAP-dienst voor %s op %s"
+msgstr "GroupWise service voor %s op %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise server %s"
-msgstr "Groupwise Id lijst"
+msgstr "Groupwise server %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:123
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise mail delivery via %s"
-msgstr "Postaflevering via %s"
+msgstr "GroupWise postaflevering via %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:159
-#, fuzzy
 msgid "Sending Message"
 msgstr "Bericht wordt verstuurd"
 
@@ -2741,18 +2707,16 @@ msgstr "Controleren op nieuwe e-mail"
 
 #: camel/providers/imap/camel-imap-provider.c:46
 #: camel/providers/imap4/camel-imap4-provider.c:38
-#, fuzzy
 msgid "C_heck for new messages in all folders"
-msgstr "Controleer op nieuwe berichten in alle mappen"
+msgstr "Controleer op nieuwe beric_hten in alle mappen"
 
 #: camel/providers/imap/camel-imap-provider.c:49
 msgid "Connection to Server"
 msgstr "Verbinden met server"
 
 #: camel/providers/imap/camel-imap-provider.c:51
-#, fuzzy
 msgid "_Use custom command to connect to server"
-msgstr "Gebruik een aangepaste opdracht om met de server te verbinden"
+msgstr "_Gebruik een aangepaste opdracht om met de server te verbinden"
 
 #: camel/providers/imap/camel-imap-provider.c:53
 msgid "Command:"
@@ -2766,15 +2730,13 @@ msgstr "Mappen"
 
 #: camel/providers/imap/camel-imap-provider.c:58
 #: camel/providers/imap4/camel-imap4-provider.c:43
-#, fuzzy
 msgid "_Show only subscribed folders"
-msgstr "Laat alleen de aangemelde mappen zien"
+msgstr "_Laat alleen de aangemelde mappen zien"
 
 #: camel/providers/imap/camel-imap-provider.c:60
 #: camel/providers/imap4/camel-imap4-provider.c:45
-#, fuzzy
 msgid "O_verride server-supplied folder namespace"
-msgstr "Overschrijf servergegeven mappen naamruimte"
+msgstr "O_verschrijf servergegeven mappen naamruimte"
 
 #: camel/providers/imap/camel-imap-provider.c:62
 #: camel/providers/imap4/camel-imap4-provider.c:47
@@ -2783,27 +2745,23 @@ msgstr "Naamruimte:"
 
 #: camel/providers/imap/camel-imap-provider.c:66
 #: camel/providers/imap4/camel-imap4-provider.c:51
-#, fuzzy
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "Pas filters toe op alle nieuwe berichten in de INBOX op deze server"
+msgstr "P_as filters toe op alle nieuwe berichten in de INBOX op deze server"
 
 #: camel/providers/imap/camel-imap-provider.c:68
 #: camel/providers/imap4/camel-imap4-provider.c:53
-#, fuzzy
 msgid "Check new messages for _Junk contents"
-msgstr "Controleer nieuwe berichten op troep"
+msgstr "Controleer nieuwe berichten op _troep"
 
 #: camel/providers/imap/camel-imap-provider.c:70
 #: camel/providers/imap4/camel-imap4-provider.c:55
-#, fuzzy
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Controleer enkel op troep in nieuwe berichten in de inbox map"
+msgstr "Controleer enkel op troep in nieuwe berichten in de INBOX map"
 
 #: camel/providers/imap/camel-imap-provider.c:72
 #: camel/providers/imap4/camel-imap4-provider.c:57
-#, fuzzy
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "Automatisch lokaal synchroniseren met post op afstand"
+msgstr "Automatisch lokaal synchroni_seren met post op afstand"
 
 #: camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -2875,9 +2833,8 @@ msgstr "Fout bij opzetten van beveiligde verbinding met IMAP-server %s: %s"
 
 #: camel/providers/imap/camel-imap-store.c:656
 #: camel/providers/smtp/camel-smtp-transport.c:326
-#, fuzzy
 msgid "STARTTLS not supported"
-msgstr "SSL/TLS extensie niet ondersteund"
+msgstr "STARTTLS niet ondersteund"
 
 #: camel/providers/imap/camel-imap-store.c:678
 #: camel/providers/imap4/camel-imap4-store.c:281
@@ -2890,7 +2847,7 @@ msgstr "SSL-onderhandelingen mislukt"
 #: camel/providers/pop3/camel-pop3-store.c:252
 #: camel/providers/smtp/camel-smtp-transport.c:365
 msgid "SSL is not available in this build"
-msgstr ""
+msgstr "SSL is niet beschikbar in deze bouw"
 
 #: camel/providers/imap/camel-imap-store.c:820
 #, c-format
@@ -2985,9 +2942,9 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "De verbinding is onverwacht verbroken door IMAP4-server %s: %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:306
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot access folder `%s': %s"
-msgstr "Kan map niet verkrijgen `%s': %s"
+msgstr "Kan map niet benaderen `%s': %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:365
 #, c-format
@@ -3058,9 +3015,8 @@ msgid "IMAPv4rev1"
 msgstr "IMAPv4rev1"
 
 #: camel/providers/imap4/camel-imap4-provider.c:66
-#, fuzzy
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "Voor het lezen en opslaan van post op IMAP servers."
+msgstr "Voor het lezen en opslaan van post op IMAPv4rev1 servers."
 
 #: camel/providers/imap4/camel-imap4-provider.c:83
 msgid ""
@@ -3089,9 +3045,8 @@ msgstr "Authenticatie op IMAP-server %s middels %s mislukt"
 
 #: camel/providers/imap4/camel-imap4-store.c:668
 #: camel/providers/imap4/camel-imap4-store.c:780
-#, fuzzy
 msgid "Cannot create IMAP folders in offline mode."
-msgstr "Kan geen map met die naam maken"
+msgstr "Kan geen IMAP mappen aanmake in offline modus."
 
 #: camel/providers/imap4/camel-imap4-store.c:707
 #, c-format
@@ -3114,9 +3069,8 @@ msgid "Cannot delete folder `%s': Special folder"
 msgstr "Kan de map %s niet verwijderen: Speciale map"
 
 #: camel/providers/imap4/camel-imap4-store.c:872
-#, fuzzy
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "Kan de map %s niet verwijderen: Speciale map"
+msgstr "Kan geen IMAP mappen verwijderen in offline modus."
 
 #: camel/providers/imap4/camel-imap4-store.c:931
 #, c-format
@@ -3134,9 +3088,8 @@ msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "Kan map `%s' niet hernoemen naar `%s': Speciale map"
 
 #: camel/providers/imap4/camel-imap4-store.c:963
-#, fuzzy
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr "U kan geen mappen hernoemen in een nieuws opslag."
+msgstr "Kan geen IMAP mappen hernoemen in offline mode."
 
 #: camel/providers/imap4/camel-imap4-store.c:994
 #, c-format
@@ -3159,9 +3112,8 @@ msgid "Bad command"
 msgstr "Ongeldige opdracht"
 
 #: camel/providers/imap4/camel-imap4-store.c:1288
-#, fuzzy
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "Kan niet inschrijven voor map `%s': Slechte opdracht"
+msgstr "Kan niet inschrijven op IMAP mappen in offline modus."
 
 #: camel/providers/imap4/camel-imap4-store.c:1333
 #, c-format
@@ -3174,9 +3126,8 @@ msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "Kan niet inschrijven voor map `%s': Slechte opdracht"
 
 #: camel/providers/imap4/camel-imap4-store.c:1360
-#, fuzzy
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr "Kan niet uitschrijven bij map `%s': Slechte opdracht"
+msgstr "Kan niet uitschrijven bij map IMAP mappen in offline modus."
 
 #: camel/providers/imap4/camel-imap4-store.c:1405
 #, c-format
@@ -3189,9 +3140,8 @@ msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Kan niet uitschrijven bij map `%s': Slechte opdracht"
 
 #: camel/providers/imap4/camel-imap4-summary.c:1294
-#, fuzzy
 msgid "Fetching envelopes for new messages"
-msgstr "Bezig met controleren op nieuwe berichten"
+msgstr "Bezig met ophalen van enveloppen voor nieuwe berichten"
 
 #: camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
@@ -3769,7 +3719,7 @@ msgstr "U kunt geen NNTP berichten posten als u offline werkt!"
 
 #: camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr "Het kopieëren van berichten vanuit een NNTP folder is onmogelijk!"
+msgstr "Het kopiëren van berichten vanuit een NNTP folder is onmogelijk!"
 
 #: camel/providers/nntp/camel-nntp-grouplist.c:44
 msgid "Could not get group list from server."
@@ -3999,9 +3949,9 @@ msgstr ""
 "gebruikers, zelfs niet op servers die beweren het te ondersteunen."
 
 #: camel/providers/pop3/camel-pop3-store.c:204
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "Lezen mislukt van geldige begroeting van POP-server %s (poort %s)"
+msgstr "Lezen mislukt van geldige begroeting van POP-server %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:218
 #: camel/providers/pop3/camel-pop3-store.c:235
@@ -4012,9 +3962,8 @@ msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Fout bij opzetten van beveiligde verbinding met POP-server %s: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:219
-#, fuzzy
 msgid "STLS not supported"
-msgstr "SSL/TLS extensie niet ondersteund"
+msgstr "STLS niet ondersteund"
 
 #: camel/providers/pop3/camel-pop3-store.c:363
 #, c-format
@@ -4147,11 +4096,11 @@ msgstr "Syntactische fout in parameters of argumenten"
 
 #: camel/providers/smtp/camel-smtp-transport.c:169
 msgid "Command not implemented"
-msgstr "Opdracht niet geïmplementeerd"
+msgstr "Opdracht niet geÃ¯mplementeerd"
 
 #: camel/providers/smtp/camel-smtp-transport.c:171
 msgid "Command parameter not implemented"
-msgstr "Opdrachtparameter niet geïmplementeerd"
+msgstr "Opdrachtparameter niet geÃ¯mplementeerd"
 
 #: camel/providers/smtp/camel-smtp-transport.c:173
 msgid "System status, or system help reply"
@@ -4392,60 +4341,51 @@ msgid "QUIT command failed"
 msgstr "QUIT-opdracht mislukt: %s"
 
 #: libedataserverui/e-categories-dialog.c:90
-#, fuzzy
 msgid "Category Icon"
-msgstr "Categorie is"
+msgstr "Categorie Pictogram"
 
 #: libedataserverui/e-categories-dialog.c:236
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr ""
+msgstr "Er is al een catagorie '%s' in de configuratie. Gebruik een andere naam"
 
 #: libedataserverui/e-categories-dialog.c:391
-#, fuzzy
 msgid "Category"
-msgstr "_Categorie:"
+msgstr "Categorie"
 
 #: libedataserverui/e-categories-dialog.glade.h:1
-#, fuzzy
 msgid "Category Properties"
-msgstr "Categorie is"
+msgstr "Categorie eigenschappen"
 
 #: libedataserverui/e-categories-dialog.glade.h:2
-#, fuzzy
 msgid "Category _Color"
-msgstr "Categorie is"
+msgstr "Categorie _Kleur"
 
 #: libedataserverui/e-categories-dialog.glade.h:3
-#, fuzzy
 msgid "Category _Icon"
-msgstr "Categorie is"
+msgstr "Categorie _Pictogram"
 
 #: libedataserverui/e-categories-dialog.glade.h:4
-#, fuzzy
 msgid "Category _Name"
-msgstr "Categorie is"
+msgstr "Categorie _naam"
 
 #: libedataserverui/e-categories-dialog.glade.h:5
-#, fuzzy
 msgid "Item(s) belong to these _categories:"
-msgstr "Dit contact behoort tot de categoriëen:"
+msgstr "Item(s) behoren/behoort tot de _categorieën:"
 
 #: libedataserverui/e-categories-dialog.glade.h:6
-#, fuzzy
 msgid "_Available Categories:"
-msgstr "_Categorieën"
+msgstr "Beschikb_are categorieën:"
 
 #: libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Edit"
 msgstr "Be_werken"
 
 #: libedataserverui/e-categories-dialog.glade.h:8
-#, fuzzy
 msgid "categories"
-msgstr "Categorieën"
+msgstr "categorieën"
 
 #: libedataserverui/e-name-selector-dialog.c:184
 msgid "Select Contacts from Address Book"
@@ -4505,6 +4445,3 @@ msgstr "Evolution kalender bestand en webcal backend"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Meerdere segmentatie fouten; kan het fout-dialoog niet weergeven\n"
-
-#~ msgid "Evolution Addressbook file and LDAP backend"
-#~ msgstr "Evolution adresboek bestand en LDAP-backend"
