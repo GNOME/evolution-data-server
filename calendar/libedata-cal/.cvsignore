@@ -5,3 +5,5 @@ Evolution-DataServer-Calendar-skels.c
 Evolution-DataServer-Calendar-stubs.c
 Evolution-DataServer-Calendar.h
 libedata-cal-1.0.pc
+libedata-cal-1.2.pc
+libedata-cal.pc

@@ -4,3 +4,5 @@ libedataserverui.pc
 libedataserverui-1.2.pc
 test-source-selector
 test-source-option-menu
+e-data-server-ui-marshal.c
+e-data-server-ui-marshal.h

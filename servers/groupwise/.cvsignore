@@ -3,3 +3,4 @@ Makefile.in
 create-account
 libegroupwise-*.pc
 soap-test
+libegroupwise.pc

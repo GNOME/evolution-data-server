@@ -8,3 +8,5 @@ client-test
 e-cal-marshal.c
 e-cal-marshal.h
 libecal-1.0.pc
+libecal-1.2.pc
+libecal.pc
