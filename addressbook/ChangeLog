@@ -1,5 +1,11 @@
 2003-12-07  JP Rosevear  <jpr@ximian.com>
 
+	* libedata-book/e-data-book-factory.c: version the OAFIID
+
+	* libebook/e-book.c (activate_factories_for_uri): update repo id
+	
+2003-12-07  JP Rosevear  <jpr@ximian.com>
+
 	* libebook/e-book.c (activate_factories_for_uri): use the
 	versioned repo id
 

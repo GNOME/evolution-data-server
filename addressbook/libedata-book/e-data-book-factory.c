@@ -20,7 +20,7 @@
 #include "e-data-book-marshal.h"
 #include "e-data-book-factory.h"
 
-#define DEFAULT_E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_BookFactory"
+#define DEFAULT_E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_BookFactory:" BASE_VERSION
 
 static BonoboObjectClass          *e_data_book_factory_parent_class;
 

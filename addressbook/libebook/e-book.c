@@ -1569,7 +1569,7 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	}
 
 	protocol = g_strndup (uri, colon-uri);
-	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/BookFactory:" BASE_VERSION "')"
+	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" BASE_VERSION "')"
 				 " AND addressbook:supported_protocols.has ('%s')", protocol
 				 );
 
