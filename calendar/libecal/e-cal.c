@@ -902,12 +902,12 @@ typedef struct
 {
 	ECal *ecal;
 	char *message;
-}  ECalBackendErrorData;
+}  ECalErrorData;
 
 static gboolean
 backend_error_idle_cb (gpointer data)
 {
-	ECalBackendErrorData *error_data = data;
+	ECalErrorData *error_data = data;
 	
 	g_signal_emit (G_OBJECT (error_data->ecal), e_cal_signals[BACKEND_ERROR], 0, error_data->message);
 
@@ -922,9 +922,9 @@ backend_error_idle_cb (gpointer data)
 static void
 backend_error_cb (ECalListener *listener, const char *message, gpointer data)
 {
-	ECalBackendErrorData *error_data;
+	ECalErrorData *error_data;
 	
-	error_data = g_new0 (ECalBackendErrorData, 1);
+	error_data = g_new0 (ECalErrorData, 1);
 
 	error_data->ecal = g_object_ref (data);
 	error_data->message = g_strdup (message);
@@ -936,12 +936,12 @@ typedef struct
 {
 	ECal *ecal;
 	GPtrArray *categories;
-}  ECalBackendCategoryData;
+}  ECalCategoryData;
 
 static gboolean
 categories_changed_idle_cb (gpointer data)
 {
-	ECalBackendCategoryData *cat_data = data;
+	ECalCategoryData *cat_data = data;
 	int i;
 	
 	g_message (G_STRLOC ": categories_changed_idle");
@@ -962,10 +962,10 @@ static void
 categories_changed_cb (ECalListener *listener, const GNOME_Evolution_Calendar_StringSeq *categories,
 		       gpointer data)
 {
-	ECalBackendCategoryData *cat_data;
+	ECalCategoryData *cat_data;
 	int i;
 
-	cat_data = g_new0 (ECalBackendCategoryData, 1);
+	cat_data = g_new0 (ECalCategoryData, 1);
 
 	cat_data->ecal = g_object_ref (data);
 	cat_data->categories = g_ptr_array_sized_new (categories->_length);
