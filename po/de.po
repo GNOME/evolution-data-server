@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-16 10:25+0100\n"
-"PO-Revision-Date: 2005-03-16 10:17+0100\n"
+"POT-Creation-Date: 2005-03-23 11:50+0100\n"
+"PO-Revision-Date: 2005-03-23 11:46+0100\n"
 "Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -645,27 +645,23 @@ msgstr "Antwort erbeten: Wenn es passt"
 msgid "Invalid server URI"
 msgstr "Ungültige Server-URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "Thread zum Abrufen von Änderungen konnte nicht angelegt werden"
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "Thread zum Belegen des Zwischenspeichers konnte nicht angelegt werden"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: ../calendar/libecal/e-cal.c:4528
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:654
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -1027,7 +1023,7 @@ msgid "Undefined"
 msgstr "Undefiniert"
 
 #. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1538
+#: ../calendar/libecal/e-cal.c:1538 ../libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Passwort für %s eingeben (Benutzer %s)"
@@ -2795,7 +2791,7 @@ msgstr "Nachricht wird verschickt"
 
 #: ../camel/providers/imap/camel-imap-command.c:219
 #: ../camel/providers/imap/camel-imap-command.c:258
-#: ../camel/providers/imap/camel-imap-command.c:463
+#: ../camel/providers/imap/camel-imap-command.c:465
 #: ../camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "Vorgang abgebrochen"
@@ -2827,16 +2823,16 @@ msgstr "Unerwartete Antwort von IMAP-Server: %s"
 msgid "IMAP command failed: %s"
 msgstr "IMAP-Befehl gescheitert: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:473
+#: ../camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "Antwort des Servers endete zu früh."
 
-#: ../camel/providers/imap/camel-imap-command.c:680
+#: ../camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "Antwort des IMAP-Servers enthielt keine %s-Informationen"
 
-#: ../camel/providers/imap/camel-imap-command.c:716
+#: ../camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Unerwartete OK-Antwort von IMAP-Server: %s"
@@ -3804,7 +3800,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "Temporäres Postfach konnte nicht angelegt werden: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:619
-#: ../camel/providers/local/camel-mbox-summary.c:783
+#: ../camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Quellordner %s konnte nicht geschlossen werden: %s"
@@ -3819,33 +3815,34 @@ msgstr "Temporärer Ordner konnte nicht geschlossen werden: %s"
 msgid "Could not rename folder: %s"
 msgstr "Ordner konnte nicht umbenannt werden: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:723
-#: ../camel/providers/local/camel-mbox-summary.c:731
-#: ../camel/providers/local/camel-mbox-summary.c:925
-#: ../camel/providers/local/camel-mbox-summary.c:933
+#: ../camel/providers/local/camel-mbox-summary.c:696
+#: ../camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "Ordner konnte nicht gespeichert werden: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:935
+#: ../camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr ""
 "Zusammenfassung und Order stimmen nicht überein, sogar nach einer "
 "Synchronisierung"
 
-#: ../camel/providers/local/camel-mbox-summary.c:859
+#: ../camel/providers/local/camel-mbox-summary.c:869
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Unbekannter Fehler: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "Ordner konnte nicht gespeichert werden: %s"
-
-#: ../camel/providers/local/camel-mbox-summary.c:988
-#: ../camel/providers/local/camel-mbox-summary.c:1014
+#: ../camel/providers/local/camel-mbox-summary.c:998
+#: ../camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Fehler beim Schreiben in temporäres Postfach: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1005
+#: ../camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Fehler beim Schreiben in temporäres Postfach %s: %s"
@@ -4798,6 +4795,14 @@ msgstr "%k:%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: ../libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "Der Zugriff auf den LDAP-Server erfolgt anonym"
+
+#: ../libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "Legitimation gescheitert.\n"
+
 #: ../libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "Kategoriesymbol"
@@ -4937,6 +4942,9 @@ msgstr ""
 "Mehrere Speicherzugriffsfehler aufgetreten; Fehlerdialog kann nicht "
 "angezeigt werden\n"
 
+#~ msgid "Could not create thread for getting deltas"
+#~ msgstr "Thread zum Abrufen von Änderungen konnte nicht angelegt werden"
+
 #~ msgid "Tasks"
 #~ msgstr "Aufgaben"
 
@@ -4945,9 +4953,6 @@ msgstr ""
 
 #~ msgid "%sEnter password for %s (user %s)"
 #~ msgstr "%sPasswort für %s (Benutzer %s) eingeben"
-
-#~ msgid "Failed to authenticate.\n"
-#~ msgstr "Legitimation gescheitert.\n"
 
 #~ msgid "Server rejected username"
 #~ msgstr "Server wies Benutzername zurück"
