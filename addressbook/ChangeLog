@@ -1,3 +1,15 @@
+2004-07-14  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book.c (e_book_idle_writable): simplify this a bit,
+	since we don't need to pass the writable state in a closure - we
+	can just get it from the book.  also wrap stuff up in a mutex
+	since we can get multiple report_writable calls from a backend.
+	(e_book_handle_response): make sure we only have 1 idle call at a
+	time going, and simplify the closure passing to be just the EBook.
+	same with the mutex juju.
+	(e_book_dispose): remove the writable idle callback if there is
+	one registered.
+
 2004-07-13  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book.c (e_book_get_self): only propagate the GError

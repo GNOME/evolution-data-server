@@ -129,6 +129,8 @@ struct _EBookPrivate {
 
 	gulong listener_signal;
 	gulong died_signal;
+
+	gint writable_idle_id;
 };
 
 
@@ -2498,22 +2500,21 @@ e_book_response_remove (EBook       *book,
 	}
 }
 
-typedef struct
-{
-	EBook *book;
-	gboolean writable;
-}  EBookWritableData;
-
 static gboolean
 e_book_idle_writable (gpointer data)
 {
-	EBookWritableData *write_data = data;
-	
-	g_signal_emit (G_OBJECT (write_data->book), e_book_signals [WRITABLE_STATUS], 0, write_data->writable);
+	EBook *book = data;
+	gboolean writable;
 
-	g_object_unref (write_data->book);
-	g_free (write_data);
-	
+	g_mutex_lock (book->priv->mutex);
+	writable = book->priv->writable;
+	book->priv->writable_idle_id = 0;
+	g_mutex_unlock (book->priv->mutex);
+
+	g_signal_emit (G_OBJECT (book), e_book_signals [WRITABLE_STATUS], 0, writable);
+
+	g_object_unref (book);
+
 	return FALSE;
 }
 
@@ -2523,7 +2524,6 @@ static void
 e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EBook *book)
 {
 	EContact *contact;
-	EBookWritableData *write_data;
 
 	switch (resp->op) {
 	case CreateContactResponse:
@@ -2562,12 +2562,13 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
 	case WritableStatusEvent: 
 		book->priv->writable = resp->writable;
 	
-		write_data = g_new0 (EBookWritableData, 1);
+		g_mutex_lock (book->priv->mutex);
+		if (book->priv->writable_idle_id == 0) {
+			g_object_ref (book);
+			book->priv->writable_idle_id = g_idle_add (e_book_idle_writable, book);
+		}
+		g_mutex_unlock (book->priv->mutex);
 
-		write_data->book = g_object_ref (book);
-		write_data->writable = book->priv->writable;
-		
-		g_idle_add (e_book_idle_writable, write_data);
 		break;
 	default:
 		g_error ("EBook: Unknown response code %d!\n",
@@ -3401,6 +3402,9 @@ e_book_dispose (GObject *object)
 		g_hash_table_destroy (book->priv->id_to_op);
 
 		g_mutex_free (book->priv->mutex);
+
+		if (book->priv->writable_idle_id)
+			g_source_remove (book->priv->writable_idle_id);
 
 		g_free (book->priv);
 		book->priv = NULL;
