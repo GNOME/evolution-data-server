@@ -1,3 +1,28 @@
+2004-11-16  Not Zed  <NotZed@Ximian.com>
+
+	* tests/lib/folders.c (test_folder_message_ops): updated counts for
+	delete also marking unread.
+
+	* tests/lib/camel-test.c (camel_test_provider_init): new api for
+	initialising test system 'in-build'.
+
+	* camel-provider.c: remove the assertions, init if we need to,k
+	use pthread_once stuff to serialise it.
+
+	* tests/folder/test3.c (main): remove gtk stuff (???).
+
+	* tests/*: Fix all the makefiles.  Made make-check work 'in-build'.
+
+	* tests/lib/folders.c (test_folder_counts): update for api changes.
+	(test_message_info): similar.
+
+	* providers/Makefile.am: removed groupwise from the build, this
+	can't go in here anymore, not in its current state.
+
+	* camel-net-utils.c (camel_gethostbyaddr_r)
+	(camel_gethostbyname_r): the old e_gethost* calls from
+	e-host-utils.c.
+
 2004-11-15  Not Zed  <NotZed@Ximian.com>
 
 	* providers/imap/camel-imap-utils.c (imap_path_to_physical):

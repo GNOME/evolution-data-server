@@ -6,15 +6,10 @@ camel_provider_LTLIBRARIES = libcamelpop3.la
 camel_provider_DATA = libcamelpop3.urls
 
 INCLUDES =					\
-	-I..					\
-	-I$(srcdir)/..				\
-	-I$(srcdir)/../../..			\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)/camel			\
-	-I$(top_srcdir)/e-util			\
 	$(CAMEL_CFLAGS)				\
-	$(GNOME_INCLUDEDIR)			\
-	$(GTK_INCLUDEDIR)			\
 	-DG_LOG_DOMAIN=\"camel-pop3-provider\"
 
 libcamelpop3_la_SOURCES = 			\
@@ -33,6 +28,7 @@ libcamelpop3include_HEADERS =			\
 
 libcamelpop3_la_LDFLAGS = -avoid-version -module
 
-libcamelpop3_la_LIBADD = $(top_builddir)/e-util/libeutil.la
+libcamelpop3_la_LIBADD = \
+	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la
 
 EXTRA_DIST = libcamelpop3.urls

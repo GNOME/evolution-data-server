@@ -5,15 +5,11 @@ libcamellocalincludedir = $(privincludedir)/camel
 camel_provider_LTLIBRARIES = libcamellocal.la
 camel_provider_DATA = libcamellocal.urls
 
-INCLUDES = -I.. \
-	-I$(srcdir)/..				\
+INCLUDES = \
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/intl			\
-	-I$(top_srcdir)/e-util			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\
-	$(GNOME_INCLUDEDIR)			\
-	$(GTK_INCLUDEDIR)			\
 	-DG_LOG_DOMAIN=\"camel-local-provider\"
 
 libcamellocal_la_SOURCES = 			\
@@ -56,6 +52,7 @@ noinst_HEADERS =				\
 
 libcamellocal_la_LDFLAGS = -avoid-version -module
 
-libcamellocal_la_LIBADD = $(top_builddir)/e-util/libeutil.la
+libcamellocal_la_LIBADD = \
+	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la
 
 EXTRA_DIST = libcamellocal.urls

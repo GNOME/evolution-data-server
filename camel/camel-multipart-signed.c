@@ -43,7 +43,7 @@
 #include "camel-multipart-signed.h"
 #include "camel-mime-part.h"
 #include "camel-exception.h"
-#include "md5-utils.h"
+#include "libedataserver/md5-utils.h"
 
 #include "camel-stream-filter.h"
 #include "camel-seekable-substream.h"

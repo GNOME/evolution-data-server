@@ -12,7 +12,6 @@ privlib_LTLIBRARIES = libcamel.la libcamel-provider.la
 
 INCLUDES = -I.. -I$(srcdir)/.. 			 	\
 	-I$(top_srcdir)/intl			 	\
-	-I$(top_srcdir)/e-util			 	\
 	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"	\
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
 	-DG_LOG_DOMAIN=\"camel\"			\
@@ -106,10 +105,10 @@ libcamel_providerinclude_HEADERS =			\
 	camel-vee-summary.h			\
 	camel-vtrash-folder.h
 
-libcamel_provider_la_LDFLAGS = -version-info 0:0:0
+libcamel_provider_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE)
 
 libcamel_provider_la_LIBADD =			\
-	$(top_builddir)/e-util/libeutil.la 	\
+	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la 	\
 	libcamel.la				\
 	$(CAMEL_LIBS)
 
@@ -246,7 +245,7 @@ libcamelinclude_HEADERS =			\
 libcamel_la_LDFLAGS = -version-info 0:0:0
 
 libcamel_la_LIBADD =				\
-	$(top_builddir)/e-util/libeutil.la 	\
+	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la 	\
 	$(CAMEL_LIBS)
 
 camel_lock_helper_SOURCES = 			\
@@ -263,9 +262,8 @@ camel_index_control_SOURCES =			\
 	camel-index-control.c
 
 camel_index_control_LDADD =			\
-	$(libcamel_la_LIBADD)			\
-	libcamel.la
-#	$(EVOLUTION_MAIL_LIBS)
+	libcamel.la				\
+	$(libcamel_la_LIBADD)
 
 install-exec-hook:
 	@if test -n "$(CAMEL_LOCK_HELPER_USER)"; then \
