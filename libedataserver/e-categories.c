@@ -121,7 +121,7 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 	*str = g_string_append (*str, "/>");
 }
 
-static void
+static gboolean
 idle_saver_cb (gpointer user_data)
 {
 	if (conf_is_dirty) {
@@ -134,6 +134,19 @@ idle_saver_cb (gpointer user_data)
 		g_string_free (str, TRUE);
 
 		conf_is_dirty = FALSE;
+	}
+
+	idle_id = 0;
+
+	return FALSE;
+}
+
+static void
+save_config (void)
+{
+	conf_is_dirty = TRUE;
+	if (!idle_id) {
+		idle_id = g_idle_add ((GSourceFunc) idle_saver_cb, NULL);
 	}
 }
 
@@ -231,10 +244,9 @@ initialize_categories_config (void)
 		e_categories_add (_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png", TRUE);
 		e_categories_add (_("VIP"), NULL, NULL, TRUE);
 		e_categories_add (_("Waiting"), NULL, NULL, TRUE);
-	}
 
-	/* install idle callback to save the file */
-	idle_id = g_idle_add ((GSourceFunc) idle_saver_cb, NULL);
+		save_config ();
+	}
 }
 
 static void
@@ -298,7 +310,7 @@ e_categories_add (const char *category, const char *color, const char *icon_file
 
 	g_hash_table_insert (categories_table, g_strdup (category), cat_info);
 
-	conf_is_dirty = TRUE;
+	save_config ();
 }
 
 /**
@@ -318,7 +330,7 @@ e_categories_remove (const char *category)
 	if (g_hash_table_lookup (categories_table, category)) {
 		g_hash_table_remove (categories_table, category);
 
-		conf_is_dirty = TRUE;
+		save_config ();
 	}
 }
 
@@ -389,7 +401,7 @@ e_categories_set_color_for (const char *category, const char *color)
 		g_free (cat_info->color);
 	cat_info->color = g_strdup (color);
 
-	conf_is_dirty = TRUE;
+	save_config ();
 }
 
 /**
@@ -438,7 +450,7 @@ e_categories_set_icon_file_for (const char *category, const char *icon_file)
 		g_free (cat_info->icon_file);
 	cat_info->icon_file = g_strdup (icon_file);
 
-	conf_is_dirty = TRUE;
+	save_config ();
 }
 
 /**

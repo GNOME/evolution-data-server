@@ -1,3 +1,13 @@
+2005-02-03  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-categories.c (idle_saver_cb): changed to return a
+	gboolean and always FALSE to remove the idle callback after saving.
+	(save_config): new function that marks the config as dirty and installs
+	the idle callback.
+	(initialize_categories_config, e_categories_remove, e_categories_add,
+	e_categories_set_color_for, e_categories_set_icon_file_for): call
+	save_config() when saving the categories.
+
 2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
 
 	* configure.in: Generate the old imap makefile.
