@@ -2508,7 +2508,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		char *str;
 		
 		str = soup_base64_encode (priv->message, strlen (priv->message));
-		dtstring = g_strdup_printf ("%d", strlen (str));
+		dtstring = g_strdup_printf ("%d", (int)strlen (str));
 		soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
 		g_free (dtstring);
 		soup_soap_message_write_string (msg, str);
@@ -2830,7 +2830,7 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 			char *str, *message;
 
 			str = soup_base64_encode (priv->message, strlen (priv->message));
-			message = g_strdup_printf ("%d", strlen (str));
+			message = g_strdup_printf ("%d", (int)strlen (str));
 			soup_soap_message_add_attribute (msg, "length", message, NULL, NULL);
 			g_free (message);
 			soup_soap_message_write_string (msg, str);

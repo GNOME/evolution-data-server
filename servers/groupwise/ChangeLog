@@ -1,3 +1,8 @@
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* e-gw-item.c (e_gw_item_set_calendar_item_elements): cast strlen to int.
+	(append_event_changes_to_soap_message): same.
+
 2005-01-11  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	* e-gw-item.c
@@ -209,7 +214,6 @@
 	* doc/gw-soap-types.xsd : checked in new schema files
 	which has shared folder notifacaton changes and updateFrequentContacts
 	send option 
- 
 	 
 2004-11-18  Sivaiah Nallagatla <snallagatla@novell.com>
 
