@@ -197,6 +197,7 @@ skip_content(CamelMimeParser *cmp)
 		break;
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		/* message body part */
+		(void)camel_mime_parser_step(cmp, &buf, &len);
 		skip_content(cmp);
 
 		/* clean up followon state if any, see camel-mime-message.c */
