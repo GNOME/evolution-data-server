@@ -1,5 +1,12 @@
 2004-02-02  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-vcard.c (e_vcard_attribute_remove_params): clear
+	attr->encoding_set and attr->encoding, since that is just cached
+	information from the attribute parameters.  Fixes a spurious
+	g_warning.
+
+2004-02-02  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-vcard.c (e_vcard_attribute_remove_values): make sure
 	to set attr->decoded_values to NULL as well.  fixes oddness when
 	overwriting the PHOTO attribute.
