@@ -310,12 +310,6 @@ impl_BookListener_respond_progress (PortableServer_Servant servant,
 {
 }
 
-static void
-e_book_listener_construct (EBookListener *listener)
-{
-	/* nothing to do here */
-}
-
 /**
  * e_book_listener_new:
  * @book: the #EBook for which the listener is to be bound
@@ -332,8 +326,6 @@ e_book_listener_new ()
 	listener = g_object_new (E_TYPE_BOOK_LISTENER,
 				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 				 NULL);
-
-	e_book_listener_construct (listener);
 
 	return listener;
 }

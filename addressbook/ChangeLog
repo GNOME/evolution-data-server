@@ -1,3 +1,8 @@
+2003-11-10  JP Rosevear <jpr@ximian.com>
+
+	* libebook/e-book-listener.c: remove construct method, it did
+	nothing and should use construct time args in future if needed
+
 2003-11-10  Dan Winship  <danw@ximian.com>
 
 	* libebook/e-contact.c (e_contact_date_equal): New utility
