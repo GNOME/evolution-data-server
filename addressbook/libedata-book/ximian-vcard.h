@@ -1,14 +1,13 @@
 #define XIMIAN_VCARD \
 "BEGIN:VCARD\n" \
-"X-EVOLUTION-FILE-AS:Ximian\\, Inc.\n" \
-"ADR;TYPE=WORK:;Suite 3 West;401 Park Drive;Boston;MA;02215;USA\n" \
-"LABEL;TYPE=WORK:401 Park Drive\\nSuite 3 West\\nBoston\\, MA\\n02215\\nUSA\n" \
-"TEL;WORK;VOICE:(617) 375-3800\n" \
-"TEL;WORK;FAX:(617) 236-8630\n" \
+"X-EVOLUTION-FILE-AS:Novell Ximian Group\n" \
+"ADR;TYPE=WORK:;Suite 500;8 Cambridge Center;Cambridge;MA;02142;USA\n" \
+"LABEL;TYPE=WORK:8 Cambridge Center, Suite 500\\nCambridge\\, MA\\n02142\\nUSA\n" \
+"TEL;WORK;VOICE:(617) 613-2000\n" \
+"TEL;WORK;FAX:(617) 613-2001\n" \
 "EMAIL;INTERNET:hello@ximian.com\n" \
 "URL:http://www.ximian.com/\n" \
-"ORG:Ximian\\, Inc.;\n" \
-"NOTE:Welcome to the Ximian Addressbook.\n" \
+"ORG:Novell;Ximian Group\n" \
 "PHOTO;ENCODING=b;TYPE=JPEG:/9j/4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRo\n" \
 " IFRoZSBHSU1Q/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCM\n" \
 " cHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMj\n" \
