@@ -24,13 +24,17 @@
 
 #define d(x) x
 
-gchar *
+const char *
 camel_spam_plugin_get_name (CamelSpamPlugin *csp)
 {
-	return csp->name;
+	g_return_val_if_fail (csp->get_name != NULL, NULL);
+
+	d(fprintf (stderr, "camel_spam_plugin_get_namen");)
+
+	return (*csp->get_name) ();
 }
 
-gboolean
+int
 camel_spam_plugin_check_spam (CamelSpamPlugin *csp, CamelMimeMessage *message)
 {
 	g_return_val_if_fail (csp->check_spam != NULL, FALSE);

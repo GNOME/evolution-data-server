@@ -23,7 +23,6 @@
 #ifndef _CAMEL_SPAM_PLUGIN_H
 #define _CAMEL_SPAM_PLUGIN_H
 
-#include <glib.h>
 #include <camel/camel-mime-message.h>
 
 #define CAMEL_SPAM_PLUGIN(x) ((CamelSpamPlugin *) x)
@@ -32,28 +31,28 @@ typedef struct _CamelSpamPlugin CamelSpamPlugin;
 
 struct _CamelSpamPlugin
 {
-	/* spam filter human readable name */
-	gchar *name;
+	/* spam filter human readable name, translated */
+	const char * (*get_name) (void);
 
 	/* should be set to 1 */
-	gint   api_version;
+	int api_version;
 
 	/* when called, it should return TRUE if message is identified as spam,
 	   FALSE otherwise */
-	gboolean (*check_spam)    (CamelMimeMessage *message);
+	int (*check_spam) (CamelMimeMessage *message);
 
 	/* called when user identified a message to be spam */
-	void     (*report_spam)   (CamelMimeMessage *message);
+	void (*report_spam) (CamelMimeMessage *message);
 
 	/* called when user identified a message not to be spam */
-	void     (*report_ham) (CamelMimeMessage *message);
+	void (*report_ham) (CamelMimeMessage *message);
 
 	/* called after one or more spam/ham(s) reported */
-	void     (*commit_reports) (void);
+	void (*commit_reports) (void);
 };
 
-gchar * camel_spam_plugin_get_name (CamelSpamPlugin *csp);
-gboolean camel_spam_plugin_check_spam (CamelSpamPlugin *csp, CamelMimeMessage *message);
+const char * camel_spam_plugin_get_name (CamelSpamPlugin *csp);
+int camel_spam_plugin_check_spam (CamelSpamPlugin *csp, CamelMimeMessage *message);
 void camel_spam_plugin_report_spam (CamelSpamPlugin *csp, CamelMimeMessage *message);
 void camel_spam_plugin_report_ham (CamelSpamPlugin *csp, CamelMimeMessage *message);
 void camel_spam_plugin_commit_reports (CamelSpamPlugin *csp);
