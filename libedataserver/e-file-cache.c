@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* e-cache.c
+/* e-file-cache.c
  *
  * Copyright (C) 2003 Novell, Inc.
  *
@@ -21,11 +21,11 @@
 
 #include <config.h>
 #include <string.h>
-#include "e-cache.h"
+#include "e-file-cache.h"
 #include "e-util.h"
 #include "e-xml-hash-utils.h"
 
-struct _ECachePrivate {
+struct _EFileCachePrivate {
 	char *filename;
 	EXmlHash *xml_hash;
 };
@@ -39,13 +39,13 @@ enum {
 static GObjectClass *parent_class = NULL;
 
 static void
-e_cache_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+e_file_cache_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	ECache *cache;
-	ECachePrivate *priv;
+	EFileCache *cache;
+	EFileCachePrivate *priv;
 	char *dirname;
 
-	cache = E_CACHE (object);
+	cache = E_FILE_CACHE (object);
 	priv = cache->priv;
 
 	switch (property_id) {
@@ -65,12 +65,12 @@ e_cache_set_property (GObject *object, guint property_id, const GValue *value, G
 }
 
 static void
-e_cache_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+e_file_cache_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	ECache *cache;
-	ECachePrivate *priv;
+	EFileCache *cache;
+	EFileCachePrivate *priv;
 
-	cache = E_CACHE (object);
+	cache = E_FILE_CACHE (object);
 	priv = cache->priv;
 
 	switch (property_id) {
@@ -83,12 +83,12 @@ e_cache_get_property (GObject *object, guint property_id, GValue *value, GParamS
 }
 
 static void
-e_cache_finalize (GObject *object)
+e_file_cache_finalize (GObject *object)
 {
-	ECache *cache;
-	ECachePrivate *priv;
+	EFileCache *cache;
+	EFileCachePrivate *priv;
 
-	cache = E_CACHE (object);
+	cache = E_FILE_CACHE (object);
 	priv = cache->priv;
 
 	if (priv) {
@@ -110,16 +110,16 @@ e_cache_finalize (GObject *object)
 }
 
 static void
-e_cache_class_init (ECacheClass *klass)
+e_file_cache_class_init (EFileCacheClass *klass)
 {
 	GObjectClass *object_class;
 
 	parent_class = g_type_class_peek_parent (klass);
 
 	object_class = G_OBJECT_CLASS (klass);
-	object_class->finalize = e_cache_finalize;
-	object_class->set_property = e_cache_set_property;
-	object_class->get_property = e_cache_get_property;
+	object_class->finalize = e_file_cache_finalize;
+	object_class->set_property = e_file_cache_set_property;
+	object_class->get_property = e_file_cache_get_property;
 
 	g_object_class_install_property (object_class, PROP_FILENAME,
 					 g_param_spec_string ("filename", NULL, NULL, "",
@@ -128,60 +128,60 @@ e_cache_class_init (ECacheClass *klass)
 }
 
 static void
-e_cache_init (ECache *cache)
+e_file_cache_init (EFileCache *cache)
 {
-	ECachePrivate *priv;
+	EFileCachePrivate *priv;
 
-	priv = g_new0 (ECachePrivate, 1);
+	priv = g_new0 (EFileCachePrivate, 1);
 	cache->priv = priv;
 }
 
 /**
- * e_cache_get_type:
+ * e_file_cache_get_type:
  * @void:
  *
- * Registers the #ECache class if necessary, and returns the type ID
+ * Registers the #EFileCache class if necessary, and returns the type ID
  * associated to it.
  *
- * Return value: The type ID of the #ECache class.
+ * Return value: The type ID of the #EFileCache class.
  **/
 GType
-e_cache_get_type (void)
+e_file_cache_get_type (void)
 {
 	static GType type = 0;
 
 	if (!type) {
 		static GTypeInfo info = {
-                        sizeof (ECacheClass),
+                        sizeof (EFileCacheClass),
                         (GBaseInitFunc) NULL,
                         (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cache_class_init,
+                        (GClassInitFunc) e_file_cache_class_init,
                         NULL, NULL,
-                        sizeof (ECache),
+                        sizeof (EFileCache),
                         0,
-                        (GInstanceInitFunc) e_cache_init,
+                        (GInstanceInitFunc) e_file_cache_init,
                 };
-		type = g_type_register_static (G_TYPE_OBJECT, "ECache", &info, 0);
+		type = g_type_register_static (G_TYPE_OBJECT, "EFileCache", &info, 0);
 	}
 
 	return type;
 }
 
 /**
- * e_cache_new
+ * e_file_cache_new
  * @filename: filename where the cache is kept.
  *
- * Creates a new #ECache object, which implements a cache of
+ * Creates a new #EFileCache object, which implements a cache of
  * objects, very useful for remote backends.
  *
  * Return value: The newly created object.
  */
-ECache *
-e_cache_new (const char *filename)
+EFileCache *
+e_file_cache_new (const char *filename)
 {
-	ECache *cache;
+	EFileCache *cache;
 
-	cache = g_object_new (E_TYPE_CACHE, "filename", filename, NULL);
+	cache = g_object_new (E_TYPE_FILE_CACHE, "filename", filename, NULL);
 
 	return cache;
 }
@@ -207,15 +207,15 @@ find_object_in_hash (gpointer key, gpointer value, gpointer user_data)
 }
 
 /**
- * e_cache_get_object:
+ * e_file_cache_get_object:
  */
 const char *
-e_cache_get_object (ECache *cache, const char *key)
+e_file_cache_get_object (EFileCache *cache, const char *key)
 {
 	CacheFindData find_data;
-	ECachePrivate *priv;
+	EFileCachePrivate *priv;
 
-	g_return_val_if_fail (E_IS_CACHE (cache), NULL);
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
 	priv = cache->priv;
@@ -230,19 +230,19 @@ e_cache_get_object (ECache *cache, const char *key)
 }
 
 /**
- * e_cache_add_object:
+ * e_file_cache_add_object:
  */
 gboolean
-e_cache_add_object (ECache *cache, const char *key, const char *value)
+e_file_cache_add_object (EFileCache *cache, const char *key, const char *value)
 {
-	ECachePrivate *priv;
+	EFileCachePrivate *priv;
 
-	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
 	priv = cache->priv;
 
-	if (e_cache_get_object (cache, key))
+	if (e_file_cache_get_object (cache, key))
 		return FALSE;
 
 	e_xmlhash_add (priv->xml_hash, key, value);
@@ -252,41 +252,41 @@ e_cache_add_object (ECache *cache, const char *key, const char *value)
 }
 
 /**
- * e_cache_replace_object:
+ * e_file_cache_replace_object:
  */
 gboolean
-e_cache_replace_object (ECache *cache, const char *key, const char *new_value)
+e_file_cache_replace_object (EFileCache *cache, const char *key, const char *new_value)
 {
-	ECachePrivate *priv;
+	EFileCachePrivate *priv;
 
-	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
 	priv = cache->priv;
 
-	if (!e_cache_get_object (cache, key))
+	if (!e_file_cache_get_object (cache, key))
 		return FALSE;
 
-	if (!e_cache_remove_object (cache, key))
+	if (!e_file_cache_remove_object (cache, key))
 		return FALSE;
 
-	return e_cache_add_object (cache, key, new_value);
+	return e_file_cache_add_object (cache, key, new_value);
 }
 
 /**
- * e_cache_remove_object:
+ * e_file_cache_remove_object:
  */
 gboolean
-e_cache_remove_object (ECache *cache, const char *key)
+e_file_cache_remove_object (EFileCache *cache, const char *key)
 {
-	ECachePrivate *priv;
+	EFileCachePrivate *priv;
 
-	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
 	priv = cache->priv;
 
-	if (!e_cache_get_object (cache, key))
+	if (!e_file_cache_get_object (cache, key))
 		return FALSE;
 
 	e_xmlhash_remove (priv->xml_hash, key);
@@ -296,17 +296,17 @@ e_cache_remove_object (ECache *cache, const char *key)
 }
 
 /**
- * e_cache_get_filename:
- * @cache: A %ECache object.
+ * e_file_cache_get_filename:
+ * @cache: A %EFileCache object.
  *
  * Gets the name of the file where the cache is being stored.
  *
  * Return value: The name of the cache.
  */
 const char *
-e_cache_get_filename (ECache *cache)
+e_file_cache_get_filename (EFileCache *cache)
 {
-	g_return_val_if_fail (E_IS_CACHE (cache), NULL);
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
 	return (const char *) cache->priv->filename;
 }
 

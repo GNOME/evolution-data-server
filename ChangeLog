@@ -1,4 +1,12 @@
 2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedataserver/e-file-cache.[ch]: renamed from e-cache.[ch]
+	to avoid conflicts with GAL's ECache class, which might get
+	registered before.
+
+	* libedataserver/Makefile.am: added new files.
+
+2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
 	
 	* libedataserver/e-util.[ch] (e_util_mkdir_hier): added this
 	function from GAL, needed for the cache objects.

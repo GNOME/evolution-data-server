@@ -16,10 +16,10 @@ libedataserver_la_SOURCES =		\
 	$(MARSHAL_GENERATED)		\
 	e-account-list.c		\
 	e-account.c			\
-	e-cache.c			\
 	e-component-listener.c		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
+	e-file-cache.c			\
 	e-iterator.c			\
 	e-list.c			\
 	e-list-iterator.c		\
@@ -45,10 +45,10 @@ libedataserverincludedir = $(privincludedir)/libedataserver
 libedataserverinclude_HEADERS =		\
 	e-account-list.h		\
 	e-account.h			\
-	e-cache.h			\
 	e-component-listener.h		\
 	e-db3-utils.h			\
 	e-dbhash.h			\
+	e-file-cache.h			\
 	e-iterator.h			\
 	e-list.h			\
 	e-list-iterator.h		\
