@@ -4297,6 +4297,8 @@ e_cal_get_error_message (ECalendarStatus status)
 		return _("URI already loaded");
 	case E_CALENDAR_STATUS_PERMISSION_DENIED :
 		return _("Permission denied");
+	case E_CALENDAR_STATUS_UNKNOWN_USER :
+		return _("Unknown User");
 	case E_CALENDAR_STATUS_OBJECT_ID_ALREADY_EXISTS :
 		return _("Object ID already exists");
 	case E_CALENDAR_STATUS_PROTOCOL_NOT_SUPPORTED :

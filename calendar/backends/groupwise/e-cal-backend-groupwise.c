@@ -1194,7 +1194,11 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 		status = e_gw_connection_create_appointment (priv->cnc, priv->container_id, cbgw, comp, &uid_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);
-			return GNOME_Evolution_Calendar_OtherError;
+
+			if (status == E_GW_CONNECTION_STATUS_UNKNOWN_USER)
+				return GNOME_Evolution_Calendar_UnknownUser;
+			else
+				return GNOME_Evolution_Calendar_OtherError;
 		}
 	
 		if (uid_list && (g_slist_length (uid_list) == 1)) {
