@@ -60,6 +60,16 @@ string_to_dbt(const char *str, DBT *dbt)
 	dbt->size = strlen (str) + 1;
 }
 
+static EContact*
+create_contact (char *uid, const char *vcard)
+{
+	EContact *contact = e_contact_new_from_vcard (vcard);
+	if (!e_contact_get_const (contact, E_CONTACT_UID))
+		e_contact_set (contact, E_CONTACT_UID, uid);
+
+	return contact;
+}
+
 static void
 build_summary (EBookBackendFilePrivate *bfpriv)
 {
@@ -84,7 +94,7 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 		/* don't include the version in the list of cards */
 		if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
 		    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-			EContact *contact = e_contact_new_from_vcard (vcard_dbt.data);
+			EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 			e_book_backend_summary_add_contact (bfpriv->summary, contact);
 			g_object_unref (contact);
 		}
@@ -454,7 +464,8 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 
 			if (db_error == 0) {
-				EContact *contact = e_contact_new_from_vcard (vcard_dbt.data);
+				EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
+				/* notify_update will check if it matches for us */
 				e_data_book_view_notify_update (book_view, contact);
 				g_object_unref (contact);
 			}
@@ -483,9 +494,7 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 
 			/* don't include the version in the list of cards */
 			if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-				char *vcard_string = vcard_dbt.data;
-				EContact *contact = e_contact_new_from_vcard (vcard_string);
-
+				EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 				/* notify_update will check if it matches for us */
 				e_data_book_view_notify_update (book_view, contact);
 				g_object_unref (contact);
@@ -627,7 +636,8 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 				 * and can change without the rest of the
 				 * card changing 
 				 */
-				contact = e_contact_new_from_vcard (vcard_dbt.data);
+				contact = create_contact (id_dbt.data, vcard_dbt.data);
+
 #if notyet
 				g_object_set (card, "last_use", NULL, "use_score", 0.0, NULL);
 #endif
@@ -793,7 +803,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, char *old_version)
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 				EContact *contact;
 
-				contact = e_contact_new_from_vcard (vcard_dbt.data);
+				contact = create_contact (id_dbt.data, vcard_dbt.data);
 
 				/* the cards we're looking for are
 				   created with a normal id dbt, but
@@ -893,20 +903,26 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	g_free (uri);
 
 	db_error = e_db3_utils_maybe_recover (filename);
-	if (db_error != 0)
+	if (db_error != 0) {
+		g_warning ("db recovery failed with %d", db_error);
 		return GNOME_Evolution_Addressbook_OtherError;
+	}
 
 	db_error = db_create (&db, NULL, 0);
-	if (db_error != 0)
+	if (db_error != 0) {
+		g_warning ("db_create failed with %d", db_error);
 		return GNOME_Evolution_Addressbook_OtherError;
+	}
 
 	db_error = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
 
 	if (db_error == DB_OLD_VERSION) {
 		db_error = e_db3_utils_upgrade_format (filename);
 
-		if (db_error != 0)
+		if (db_error != 0) {
+			g_warning ("db format upgrade failed with %d", db_error);
 			return GNOME_Evolution_Addressbook_OtherError;
+		}
 
 		db_error = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
 	}
@@ -933,8 +949,10 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			}
 
 			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
-
-			if (db_error == 0) {
+			if (db_error != 0) {
+				g_warning ("db->open (... DB_CREATE ...) failed with %d", db_error);
+			}
+			else {
 				EContact *contact;
 
 				contact = do_create(bf, XIMIAN_VCARD);
@@ -954,6 +972,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	if (!e_book_backend_file_maybe_upgrade_db (bf)) {
 		db->close (db, 0);
 		bf->priv->file_db = NULL;
+		g_warning ("e_book_backend_file_maybe_upgrade_db failed");
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -965,6 +984,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	if (stat (bf->priv->filename, &sb) == -1) {
 		db->close (db, 0);
 		bf->priv->file_db = NULL;
+		g_warning ("stat(%s) failed", bf->priv->filename);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 	db_mtime = sb.st_mtime;

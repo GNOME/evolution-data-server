@@ -1,3 +1,17 @@
+2004-04-06  Chris Toshok  <toshok@ximian.com>
+
+	* backends/file/e-book-backend-file.c (create_contact): new
+	function, for use when creating a contact from the db.  all the
+	libedata-book machinery depends on the contact having a UID, so if
+	it doesn't have one (i.e. it's been corrupted), set it to be the
+	uid we pass in (the db key).
+	(build_summary): use create_contact
+	(e_book_backend_file_start_book_view): same.
+	(e_book_backend_file_get_changes): same.
+	(e_book_backend_file_upgrade_db): same.
+	(e_book_backend_file_load_source): add lots more g_warning spew in
+	the event the load fails.
+
 2004-04-05  Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* e-book-backend-groupwise.c : added code to build groupwise filter from 
