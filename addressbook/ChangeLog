@@ -1,3 +1,13 @@
+2004-04-19  Sivaiah Nallagatla   <snallagatla@novell.com>
+	* e-book-backend-groupwise.c  (book_view_thread) : the start_ 
+	book_view implementation is moved this method and executed in a separate thread
+	(e_book_backend_groupwise_start_book_view) : start the new thread for getting book view
+	(e_book_backend_groupwise_stop_book_view ) : set the stopped closure
+        field to TRUE and join on the thread.
+	(e_book_backend_groupwise_load_source) : change the separtor used between uri 
+	and book name to ';' from '?'
+
+
 2004-04-17  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-vcard.c (e_vcard_remove_attributes): Don't pass NULL
