@@ -1,6 +1,12 @@
 2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_remove_object): remove the object from the
+	cache in the remote case also.
+
+2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
 	(e_cal_backend_groupwise_remove_object): if we don't find the
 	X-EVOLUTION-GROUPWISE-ID property, the object didn't come from
 	the server, so don't try to remove it.

@@ -1000,9 +1000,12 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				status = e_gw_connection_remove_item (priv->cnc, priv->container_id, x_val);
 
 				icalcomponent_free (icalcomp);
-				if (status == E_GW_CONNECTION_STATUS_OK)
+				if (status == E_GW_CONNECTION_STATUS_OK) {
+					/* remove the component from the cache */
+					if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid))
+						return GNOME_Evolution_Calendar_ObjectNotFound;
 					return GNOME_Evolution_Calendar_Success;
-				else
+				} else
 					return GNOME_Evolution_Calendar_OtherError;
 			}
 
