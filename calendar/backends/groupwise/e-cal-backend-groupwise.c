@@ -202,7 +202,6 @@ get_deltas (gpointer handle)
 	const struct tm *tm;
 	struct stat buf;
         
-	return TRUE;
 	if (!handle)
 		return FALSE;
 	
@@ -378,8 +377,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 
-	g_message ("Entered cache_init stage\n");
-
 	/* We poke the cache for a default timezone. Its
 	 * absence indicates that the cache file has not been
 	 * populated before. */
@@ -400,7 +397,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 	} else {
 		GList *cache_items = NULL, *l;
 		/* notify the ecal about the objects already in cache */
-		g_message ("updating views from cache\n");
 		cache_items = e_cal_backend_cache_get_components (priv->cache);
 		
 		for (l = cache_items; l; l = g_list_next (l)) {
@@ -409,7 +405,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 
 			if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
 				cal_string = e_cal_component_get_as_string (comp);
-				g_message ("Adding \n%s\n", cal_string);
 				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), cal_string);
 				g_free (cal_string);
 			}
@@ -417,7 +412,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 		}		
 		if (cache_items)
 			g_list_free (cache_items);
-		g_message ("updated views from cache\n");
 		
 		/* get the deltas from the cache */
 		if (get_deltas (cbgw)) {
