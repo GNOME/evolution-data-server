@@ -589,9 +589,13 @@ e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 
 	g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	if (!zone)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+	/* first try to get the timezone from the cache */
+	zone = e_cal_backend_cache_get_timezone (priv->cache, tzid);
+	if (!zone) {
+		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+		if (!zone)
+			return GNOME_Evolution_Calendar_ObjectNotFound;
+	}
 
 	icalcomp = icaltimezone_get_component (zone);
 	if (!icalcomp)
@@ -608,6 +612,8 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	icalcomponent *tz_comp;
+	icaltimezone *zone;
 
 	cbhttp = (ECalBackendHttp *) backend;
 
@@ -616,7 +622,19 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 
 	priv = cbhttp->priv;
 
-	/* FIXME: add the timezone to the cache */
+	tz_comp = icalparser_parse_string (tzobj);
+	if (!tz_comp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	if (icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT) {
+		icalcomponent_free (tz_comp);
+		return GNOME_Evolution_Calendar_InvalidObject;
+	}
+
+	zone = icaltimezone_new ();
+	icaltimezone_set_component (zone, tz_comp);
+	e_cal_backend_cache_put_timezone (priv->cache, zone);
+
 	return GNOME_Evolution_Calendar_Success;
 }
 

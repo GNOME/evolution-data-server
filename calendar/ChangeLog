@@ -1,3 +1,12 @@
+2004-12-22  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/http/e-cal-backend-http.c (e_cal_backend_http_get_timezone):
+	search timezones in the cache also.
+	(e_cal_backend_http_add_timezone): add the timezones to the cache.
+
+	* libecal/e-cal-util.c (e_cal_util_construct_instance): removed
+	FIXME comment.
+
 2004-12-21  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file.c (e_cal_backend_file_remove_object):

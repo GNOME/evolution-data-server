@@ -811,7 +811,6 @@ e_cal_util_construct_instance (icalcomponent *icalcomp,
 		return NULL;
 
 	/* Make sure the specified instance really exists */
-	/* FIXME: does the libical recurrence code work correctly now? */
 	start = icaltime_convert_to_zone (rid, icaltimezone_get_utc_timezone ());
 	end = start;
 	icaltime_adjust (&end, 0, 0, 0, 1);
