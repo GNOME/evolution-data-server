@@ -33,6 +33,7 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade-xml.h>
@@ -243,7 +244,7 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 			category_icon = gtk_entry_get_text (
 				GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
 
-			e_categories_add (category_name, NULL, category_icon ? category_icon : NULL);
+			e_categories_add (category_name, NULL, category_icon ? category_icon : NULL, TRUE);
 
 			gtk_list_store_append (
 				GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),

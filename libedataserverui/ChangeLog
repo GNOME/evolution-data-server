@@ -1,3 +1,8 @@
+2005-01-25  Rodrigo Moya <rodrigo@novell.com>
+
+	* e-categories-dialog.c (new_button_clicked): set all new categories to
+	be searchable.
+
 2005-01-24  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-name-selector-entry.c (editor_closed_cb): Implement.
