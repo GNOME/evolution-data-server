@@ -8,143 +8,69 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.1\n"
-"POT-Creation-Date: 2003-12-29 10:50-0500\n"
-"PO-Revision-Date: 2003-12-10 16:10+0100\n"
+"POT-Creation-Date: 2004-01-07 17:16+0100\n"
+"PO-Revision-Date: 2004-01-07 17:16+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
 "Language-Team:  <tp@lists.linux.it>,<it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/libebook/e-book.c:213
-msgid "e_book_add_contact called on book before e_book_load_uri"
-msgstr "e_book_add_contact chiamata sulla rubrica prima di e_book_load_uri"
+#. translators: the placeholders will be filled by
+#. * function names, e.g.
+#. * "e_book_add_contact" on book before
+#. * "e_book_load_uri
+#: addressbook/libebook/e-book.c:217 addressbook/libebook/e-book.c:329
+#: addressbook/libebook/e-book.c:414 addressbook/libebook/e-book.c:516
+#: addressbook/libebook/e-book.c:629 addressbook/libebook/e-book.c:713
+#: addressbook/libebook/e-book.c:816 addressbook/libebook/e-book.c:870
+#: addressbook/libebook/e-book.c:969 addressbook/libebook/e-book.c:1103
+#: addressbook/libebook/e-book.c:1203 addressbook/libebook/e-book.c:1441
+#, c-format
+msgid "\"%s\" on book before \"%s\""
+msgstr "\"%s\" sul libro prima di \"%s\""
 
-#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:330
-#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:513
-#: addressbook/libebook/e-book.c:623 addressbook/libebook/e-book.c:705
-#: addressbook/libebook/e-book.c:806 addressbook/libebook/e-book.c:859
-#: addressbook/libebook/e-book.c:956 addressbook/libebook/e-book.c:1088
-#: addressbook/libebook/e-book.c:1186 addressbook/libebook/e-book.c:1421
+#: addressbook/libebook/e-book.c:225 addressbook/libebook/e-book.c:337
+#: addressbook/libebook/e-book.c:422 addressbook/libebook/e-book.c:525
+#: addressbook/libebook/e-book.c:637 addressbook/libebook/e-book.c:721
+#: addressbook/libebook/e-book.c:824 addressbook/libebook/e-book.c:878
+#: addressbook/libebook/e-book.c:977 addressbook/libebook/e-book.c:1111
+#: addressbook/libebook/e-book.c:1211 addressbook/libebook/e-book.c:1449
 msgid "book busy"
 msgstr "rubrica occupata"
 
-#: addressbook/libebook/e-book.c:247
-msgid "Corba exception making Book::addContact call"
-msgstr "Eccezione corba durante la chiamata Book::addContact"
+#: addressbook/libebook/e-book.c:252 addressbook/libebook/e-book.c:364
+#: addressbook/libebook/e-book.c:444 addressbook/libebook/e-book.c:548
+#: addressbook/libebook/e-book.c:663 addressbook/libebook/e-book.c:744
+#: addressbook/libebook/e-book.c:910 addressbook/libebook/e-book.c:1021
+#: addressbook/libebook/e-book.c:1139 addressbook/libebook/e-book.c:1235
+#: addressbook/libebook/e-book.c:1367 addressbook/libebook/e-book.c:1471
+#, c-format
+msgid "CORBA exception making \"%s\" call"
+msgstr "Eccezione Corba durante la chiamata \"%s\""
 
-#: addressbook/libebook/e-book.c:323
-msgid "e_book_commit_contact called on book before e_book_load_uri"
-msgstr ""
-"e_book_commit_contact è stato chiamato su una rubrica prima di "
-"e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:357
-msgid "Corba exception making Book::modifyContact call"
-msgstr "Eccezione corba durante la chiamata Book::modifyContact"
-
-#: addressbook/libebook/e-book.c:406
-msgid "e_book_get_supported_fields on book before e_book_load_uri"
-msgstr "e_book_get_supported_fields sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:435
-msgid "Corba exception making Book::getSupportedFields call"
-msgstr "Eccezione corba durante la chiamata Book::getSupportedFields"
-
-#: addressbook/libebook/e-book.c:506
-msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
-msgstr "e_book_get_supported_auth_methods sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:536
-msgid "Corba exception making Book::getSupportedAuthMethods call"
-msgstr "Eccezione corba durante la chiamata Book::getSupportedAuthMethods"
-
-#: addressbook/libebook/e-book.c:616
-msgid "e_book_authenticate_user on book before e_book_load_uri"
-msgstr "e_book_authenticate_user sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:649
-msgid "Corba exception making Book::authenticateUser call"
-msgstr "Eccezione corba durante la chiamata Book::getSupportedAuthMethods"
-
-#: addressbook/libebook/e-book.c:698
-msgid "e_book_get_contact on book before e_book_load_uri"
-msgstr "e_book_get_contact sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:728
-msgid "Corba exception making Book::getContact call"
-msgstr "Eccezione CORBA nell'eseguire la chiamata Book::getContact"
-
-#: addressbook/libebook/e-book.c:799
-msgid "e_book_remove_contact on book before e_book_load_uri"
-msgstr "e_book_remove_contact sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:852
-msgid "e_book_remove_contacts on book before e_book_load_uri"
-msgstr "e_book_remove_contacts sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:891
-msgid "Corba exception making Book::removeContacts call"
-msgstr "Eccezione Corba nell'eseguire la chiamata Book::removeContacts"
-
-#: addressbook/libebook/e-book.c:949
-msgid "e_book_get_book_view on book before e_book_load_uri"
-msgstr "e_book_get_book_view sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:1000
-msgid "Corba exception making Book::getBookView call"
-msgstr "Eccezione Corba nell'eseguire la chiamata Book::getBookView"
-
-#: addressbook/libebook/e-book.c:1081
-msgid "e_book_get_contacts on book before e_book_load_uri"
-msgstr "e_book_get_contacts sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:1116
-msgid "Corba exception making Book::getContactList call"
-msgstr "Eccezione Corba nell'eseguire la chiamata Book::getContactList"
-
-#: addressbook/libebook/e-book.c:1179
-msgid "e_book_get_changes on book before e_book_load_uri"
-msgstr "e_book_get_changes sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:1210
-msgid "Corba exception making Book::getChanges call"
-msgstr "Eccezione Corba nell'esecuzione della chiamata Book::getChanges"
-
-#: addressbook/libebook/e-book.c:1322
+#: addressbook/libebook/e-book.c:1348
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: non c'è un'operazione corrente"
 
-#: addressbook/libebook/e-book.c:1341
-msgid "Corba exception making Book::cancelOperation call"
-msgstr "Eccezione Corba nell'eseguire la chiamata Book::cancelOperation"
-
-#: addressbook/libebook/e-book.c:1356
+#: addressbook/libebook/e-book.c:1383
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: impossibile cancellare"
 
-#: addressbook/libebook/e-book.c:1414
-msgid "e_book_remove on book before e_book_load_uri"
-msgstr "e_book_remove sul libro prima di e_book_load_uri"
-
-#: addressbook/libebook/e-book.c:1443
-msgid "Corba exception making Book::remove call"
-msgstr "Eccezione Corba durante la chiamata Book::remove"
-
-#: addressbook/libebook/e-book.c:1672
+#: addressbook/libebook/e-book.c:1701
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: sorgente non valida."
 
-#: addressbook/libebook/e-book.c:1680 addressbook/libebook/e-book.c:1784
+#: addressbook/libebook/e-book.c:1709 addressbook/libebook/e-book.c:1813
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: nessuna factory accessibile per l'uri `%s'"
 
-#: addressbook/libebook/e-book.c:1694
+#: addressbook/libebook/e-book.c:1723
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: impossibile creare EBookListener"
 
-#: addressbook/libebook/e-book.c:2023
+#: addressbook/libebook/e-book.c:2052
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 "e_book_get_self: non c'è un uid del proprio contatto memorizzato in gconf"
@@ -388,7 +314,7 @@ msgstr "Logo"
 #. Security fields
 #: addressbook/libebook/e-contact.c:175
 msgid "X.509 Certificate"
-msgstr ""
+msgstr "Certificato X.509"
 
 #: addressbook/libebook/e-contact.c:179
 msgid "Category List"
@@ -436,16 +362,16 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Lista mostra indirizzi"
 
-#: addressbook/libebook/e-contact.c:1074
+#: addressbook/libebook/e-contact.c:1075
 msgid "Unnamed List"
 msgstr "Elenco senza nome"
 
-#: addressbook/backends/file/e-book-backend-file.c:390
+#: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
 msgid "Loading..."
 msgstr "Caricamento in corso..."
 
-#: addressbook/backends/file/e-book-backend-file.c:392
+#: addressbook/backends/file/e-book-backend-file.c:394
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2858
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
@@ -630,190 +556,172 @@ msgid "Undefined"
 msgstr "Non definita"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1399
+#: calendar/libecal/e-cal.c:1398
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr ""
+msgstr "Inserire password per %s (utente %s)"
 
-#: calendar/libecal/e-cal.c:3812
+#: calendar/libecal/e-cal.c:3805
 msgid "Invalid argument"
 msgstr "Argomento non valido"
 
-#: calendar/libecal/e-cal.c:3814
+#: calendar/libecal/e-cal.c:3807
 msgid "Backend is busy"
 msgstr "Il backend è occupato"
 
-#: calendar/libecal/e-cal.c:3816
+#: calendar/libecal/e-cal.c:3809
 msgid "Repository is offline"
 msgstr "Il repository non è in linea"
 
-#: calendar/libecal/e-cal.c:3818
+#: calendar/libecal/e-cal.c:3811
 msgid "No such calendar"
 msgstr "Non è presente alcun calendario"
 
-#: calendar/libecal/e-cal.c:3820 calendar/libecal/e-cal.c:3830
+#: calendar/libecal/e-cal.c:3813 calendar/libecal/e-cal.c:3823
 msgid "Object not found"
 msgstr "Oggetto non trovato"
 
-#: calendar/libecal/e-cal.c:3822
+#: calendar/libecal/e-cal.c:3815
 msgid "Invalid object"
 msgstr "Oggetto non valido"
 
-#: calendar/libecal/e-cal.c:3824
+#: calendar/libecal/e-cal.c:3817
 msgid "URI not loaded"
 msgstr "URI non caricato"
 
-#: calendar/libecal/e-cal.c:3826
+#: calendar/libecal/e-cal.c:3819
 msgid "URI already loaded"
 msgstr "URI già caricato"
 
-#: calendar/libecal/e-cal.c:3828
+#: calendar/libecal/e-cal.c:3821
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: calendar/libecal/e-cal.c:3832
+#: calendar/libecal/e-cal.c:3825
 msgid "Object ID already exists"
 msgstr "ID dell'oggetto esiste già"
 
-#: calendar/libecal/e-cal.c:3834
+#: calendar/libecal/e-cal.c:3827
 msgid "Protocol not supported"
 msgstr "Protocollo non supportato"
 
-#: calendar/libecal/e-cal.c:3836
+#: calendar/libecal/e-cal.c:3829
 msgid "Operation has been cancelled"
 msgstr "L'operazione è stata annullata"
 
-#: calendar/libecal/e-cal.c:3838
+#: calendar/libecal/e-cal.c:3831
 msgid "Could not cancel operation"
 msgstr "Impossibila annullare l'operazione"
 
-#: calendar/libecal/e-cal.c:3840
+#: calendar/libecal/e-cal.c:3833
 msgid "Authentication failed"
 msgstr "Autenticazione fallita"
 
-#: calendar/libecal/e-cal.c:3842
+#: calendar/libecal/e-cal.c:3835
 msgid "Authentication required"
 msgstr "Autenticazione richiesta"
 
-#: calendar/libecal/e-cal.c:3844
+#: calendar/libecal/e-cal.c:3837
 msgid "A CORBA esception has occurred"
 msgstr "È occorsa un'eccezione CORBA"
 
-#: calendar/libecal/e-cal.c:3846
+#: calendar/libecal/e-cal.c:3839
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
-#: calendar/libecal/e-cal.c:3848
+#: calendar/libecal/e-cal.c:3841
 msgid "No error"
 msgstr "Nessun errore"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-msgid "time-now expects 0 arguments"
-msgstr "time-now prevede 0 argomenti"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:496
+#: calendar/libedata-cal/e-cal-backend-sexp.c:628
+#: calendar/libedata-cal/e-cal-backend-sexp.c:655
+#, c-format
+msgid "\"%s\" expects no arguments"
+msgstr "\"%s\" non prevede alcun argomento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:73
-msgid "make-time expects 1 argument"
-msgstr "make-time prevede 1 argomento"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:74
+#: calendar/libedata-cal/e-cal-backend-sexp.c:162
+#: calendar/libedata-cal/e-cal-backend-sexp.c:196
+#: calendar/libedata-cal/e-cal-backend-sexp.c:693
+#, c-format
+msgid "\"%s\" expects one argument"
+msgstr "\"%s\" prevede un argomento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:78
-msgid "make-time expects argument 1 to be a string"
-msgstr "make-time prevede che l'argomento 1 sia una stringa"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:80
+#: calendar/libedata-cal/e-cal-backend-sexp.c:442
+#, c-format
+msgid "\"%s\" expects the first argument to be a string"
+msgstr "\"%s\" prevede che il primo argomento sia una stringa"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:86
-msgid "make-time argument 1 must be an ISO 8601 date/time string"
-msgstr "make-time prevede che l'argomento 1 sia una stringa ISO 8601 data/ora"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:115
-msgid "time-add-day expects 2 arguments"
-msgstr "time-add-day prevede 2 argomenti"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#, c-format
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr ""
+"\"%s\" prevede che il primo argomento sia una stringa data/ora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-msgid "time-add-day expects argument 1 to be a time_t"
-msgstr "time-add-day prevede che l'argomento 1 sia un time_t"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:277
+#: calendar/libedata-cal/e-cal-backend-sexp.c:436
+#, c-format
+msgid "\"%s\" expects two arguments"
+msgstr "\"%s\" prevede due argomenti"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:127
-msgid "time-add-day expects argument 2 to be an integer"
-msgstr "time-add-day prevede che l'argomento 2 sia un intero"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:126
+#: calendar/libedata-cal/e-cal-backend-sexp.c:168
+#: calendar/libedata-cal/e-cal-backend-sexp.c:202
+#: calendar/libedata-cal/e-cal-backend-sexp.c:283
+#: calendar/libedata-cal/e-cal-backend-sexp.c:699
+#, c-format
+msgid "\"%s\" expects the first argument to be a time_t"
+msgstr "\"%s\" prevede che il primo argomento sia un time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:154
-msgid "time-day-begin expects 1 argument"
-msgstr "time-day-begin prevede 1 argomento"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#, c-format
+msgid "\"%s\" expects the second argument to be an integer"
+msgstr "\"%s\" prevede che il secondo argomento sia un intero"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:159
-msgid "time-day-begin expects argument 1 to be a time_t"
-msgstr "time-day-begin prevede che l'argomento 1 sia un time_t"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+msgid "uid? expects 1 argument"
+msgstr "uid? prevede 1 argomento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:186
-msgid "time-day-end expects 1 argument"
-msgstr "time-day-end prevede 1 argomento"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:237
+msgid "uid? expects argument 1 to be a string"
+msgstr "uid? prevede che l'argomento 1 sia una stringa"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:191
-msgid "time-day-end expects argument 1 to be a time_t"
-msgstr "time-day-end prevede che l'argomento 1 sia un time_t"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:291
+#, c-format
+msgid "\"%s\" expects the second argument to be a time_t"
+msgstr "\"%s\" prevede che il secondo argomento sia un time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:223
-msgid "occur-in-time-range? expects 2 arguments"
-msgstr "occur-in-time-range? prevede 2 argomenti"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:450
+#, c-format
+msgid "\"%s\" expects the second argument to be a string"
+msgstr "\"%s\" prevede che il secondo argomento sia una stringa"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:228
-msgid "occur-in-time-range? expects argument 1 to be a time_t"
-msgstr "occur-in-time-range? prevede che l'argomento 1 sia un time_t"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:235
-msgid "occur-in-time-range? expects argument 2 to be a time_t"
-msgstr "occur-in-time-range? prevede che l'argomento 2 sia un time_t"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:379
-msgid "contains? expects 2 arguments"
-msgstr "contains? prevede 2 argomenti"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:384
-msgid "contains? expects argument 1 to be a string"
-msgstr "contains? prevede che l'argomento 1 sia una stringa"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:391
-msgid "contains? expects argument 2 to be a string"
-msgstr "contains? prevede che l'argomento 2 sia una stringa"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:408
+#: calendar/libedata-cal/e-cal-backend-sexp.c:468
+#, c-format
 msgid ""
-"contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
-"\""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\""
 msgstr ""
-"contains? prevede che l'argomento 1 sia \"any\", \"summary\" o \"description"
-"\""
+"\"%s\" prevede che il primo argomento sia \"any\", \"summary\" o "
+"\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:434
-msgid "has-alarms? expects no arguments"
-msgstr "has-alarms? non prevede alcun argomento"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:530
+#, c-format
+msgid "\"%s\" expects at least one argument"
+msgstr "\"%s\" prevede almeno un argomento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:467
-msgid "has-categories? expects at least 1 argument"
-msgstr "has-categories? prevede almeno 1 argomento"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:479
+#: calendar/libedata-cal/e-cal-backend-sexp.c:544
+#, c-format
 msgid ""
-"has-categories? expects all arguments to be strings or one and only one "
-"argument to be a boolean false (#f)"
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
 msgstr ""
-"has-categories? prevede che tutti gli argomenti siano stringhe e che uno "
-"solo sia falso (#f)"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:558
-msgid "has-recurrences? expects no arguments"
-msgstr "has-recurrences? non prevede alcun argomento"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:584
-msgid "is-completed? expects 0 arguments"
-msgstr "is-completed? non prevede alcun argomento"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:621
-msgid "completed-before? expects 1 argument"
-msgstr "completed-before? prevede un solo argomento"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:626
-msgid "completed-before? expects argument 1 to be a time_t"
-msgstr "completed-before? prevede che l'argomento 1 sia un time_t"
+"\"%s\" prevede che tutti gli argomenti siano stringhe o uno e soltanto uno "
+"falso booleano (#f)"
 
 #: calendar/backends/file/e-cal-backend-file.c:176
 msgid "Can't save calendar data: Malformed URI."
