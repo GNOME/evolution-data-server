@@ -38,6 +38,19 @@ struct _EBookViewListenerPrivate {
 	guint idle_id;
 };
 
+static void
+free_response (EBookViewListenerResponse *response)
+{
+	g_return_if_fail (response != NULL);
+
+	g_list_foreach (response->ids, (GFunc)g_free, NULL);
+	g_list_free (response->ids);
+	g_list_foreach (response->contacts, (GFunc) g_object_unref, NULL);
+	g_list_free (response->contacts);
+	g_free (response->message);
+	g_free (response);
+}
+
 static gboolean
 main_thread_get_response (gpointer data)
 {
@@ -53,6 +66,8 @@ main_thread_get_response (gpointer data)
 	while ((response = g_async_queue_try_pop (listener->priv->queue)) != NULL) {
 
 		g_signal_emit (listener, e_book_view_listener_signals [RESPONSE], 0, response);
+
+		free_response (response);
 
 		bonobo_object_unref (listener);
 	}
@@ -74,13 +89,7 @@ e_book_view_listener_queue_response (EBookViewListener         *listener,
 		return;
 
 	if (listener->priv->stopped) {
-		/* Free response and return */
-		g_list_foreach (response->ids, (GFunc)g_free, NULL);
-		g_list_free (response->ids);
-		g_list_foreach (response->contacts, (GFunc) g_object_unref, NULL);
-		g_list_free (response->contacts);
-		g_free (response->message);
-		g_free (response);
+		free_response (response);
 		return;
 	}
 

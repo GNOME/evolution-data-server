@@ -44,9 +44,6 @@ e_book_view_do_added_event (EBookView                 *book_view,
 {
 	g_signal_emit (book_view, e_book_view_signals [CONTACTS_ADDED], 0,
 		       resp->contacts);
-
-	g_list_foreach (resp->contacts, (GFunc) g_object_unref, NULL);
-	g_list_free (resp->contacts);
 }
 
 static void
@@ -55,9 +52,6 @@ e_book_view_do_modified_event (EBookView                 *book_view,
 {
 	g_signal_emit (book_view, e_book_view_signals [CONTACTS_CHANGED], 0,
 		       resp->contacts);
-
-	g_list_foreach (resp->contacts, (GFunc) g_object_unref, NULL);
-	g_list_free (resp->contacts);
 }
 
 static void
@@ -66,9 +60,6 @@ e_book_view_do_removed_event (EBookView                 *book_view,
 {
 	g_signal_emit (book_view, e_book_view_signals [CONTACTS_REMOVED], 0,
 		       resp->ids);
-
-	g_list_foreach (resp->ids, (GFunc) g_free, NULL);
-	g_list_free (resp->ids);
 }
 
 static void
@@ -85,13 +76,13 @@ e_book_view_do_status_message_event (EBookView                 *book_view,
 {
 	g_signal_emit (book_view, e_book_view_signals [STATUS_MESSAGE], 0,
 		       resp->message);
-	g_free(resp->message);
 }
 
 
 static void
 e_book_view_handle_response (EBookViewListener *listener, EBookViewListenerResponse *resp, EBookView *book_view)
 {
+	/* we shouldn't need this check.  EBVL only emits the signal when resp != NULL */
 	if (resp == NULL)
 		return;
 
@@ -116,8 +107,6 @@ e_book_view_handle_response (EBookViewListener *listener, EBookViewListenerRespo
 			 resp->op);
 		break;
 	}
-
-	g_free (resp);
 }
 
 static gboolean
@@ -137,7 +126,7 @@ e_book_view_construct (EBookView *book_view, GNOME_Evolution_Addressbook_BookVie
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_book_view_construct: Exception duplicating corba_book_view.\n");
 		CORBA_exception_free (&ev);
-		book_view->priv->corba_book_view = NULL;
+		book_view->priv->corba_book_view = CORBA_OBJECT_NIL;
 		return FALSE;
 	}
 
@@ -236,6 +225,8 @@ e_book_view_dispose (GObject *object)
 
 		if (book_view->priv->corba_book_view) {
 			CORBA_exception_init (&ev);
+
+			GNOME_Evolution_Addressbook_BookView_dispose (book_view->priv->corba_book_view, &ev);
 
 			bonobo_object_release_unref (book_view->priv->corba_book_view, &ev);
 

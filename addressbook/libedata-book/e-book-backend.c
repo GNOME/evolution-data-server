@@ -306,7 +306,7 @@ last_client_gone (EBookBackend *backend)
 EList*
 e_book_backend_get_book_views (EBookBackend *backend)
 {
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
 	return g_object_ref (backend->priv->views);
 }
@@ -315,6 +315,8 @@ void
 e_book_backend_add_book_view (EBookBackend *backend,
 			      EDataBookView *view)
 {
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
 	g_mutex_lock (backend->priv->views_mutex);
 
 	e_list_append (backend->priv->views, view);
@@ -326,6 +328,8 @@ void
 e_book_backend_remove_book_view (EBookBackend *backend,
 				 EDataBookView *view)
 {
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
 	g_mutex_lock (backend->priv->views_mutex);
 
 	e_list_remove (backend->priv->views, view);
@@ -590,7 +594,7 @@ e_book_backend_init (EBookBackend *backend)
 
 	priv          = g_new0 (EBookBackendPrivate, 1);
 	priv->clients = NULL;
-	priv->views   = e_list_new((EListCopyFunc) g_object_ref, (EListFreeFunc) g_object_unref, NULL);
+	priv->views   = e_list_new((EListCopyFunc) NULL, (EListFreeFunc) NULL, NULL);
 	priv->open_mutex = g_mutex_new ();
 	priv->clients_mutex = g_mutex_new ();
 	priv->views_mutex = g_mutex_new ();

@@ -126,15 +126,6 @@ impl_GNOME_Evolution_Addressbook_Book_modifyContact (PortableServer_Servant serv
 }
 
 static void
-view_listener_died_cb (gpointer cnx, gpointer user_data)
-{
-	EDataBookView *book_view = E_DATA_BOOK_VIEW (user_data);
-
-	e_book_backend_stop_book_view (e_data_book_view_get_backend (book_view), book_view);
-	e_book_backend_remove_book_view (e_data_book_view_get_backend (book_view), book_view);
-}
-
-static void
 impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servant,
 				   const GNOME_Evolution_Addressbook_BookViewListener listener,
 				   const CORBA_char *search,
@@ -167,13 +158,9 @@ impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servan
 		return;
 	}
 
-	ORBit_small_listen_for_broken (e_data_book_view_get_listener (view), G_CALLBACK (view_listener_died_cb), view);
-
 	e_book_backend_add_book_view (backend, view);
-
+	
 	e_data_book_respond_get_book_view (book, GNOME_Evolution_Addressbook_Success, view);
-
-	g_object_unref (view);
 }
 
 
@@ -474,27 +461,7 @@ static void
 view_destroy(gpointer data, GObject *where_object_was)
 {
 	EDataBook           *book = (EDataBook *)data;
-	EIterator         *iterator;
-	gboolean success = FALSE;
-	EList *views = e_book_backend_get_book_views (book->priv->backend);
-
-	if (!views)
-		return;
-
-	for (iterator = e_list_get_iterator(views);
-	     e_iterator_is_valid(iterator);
-	     e_iterator_next(iterator)) {
-		const EDataBookView *view = e_iterator_get(iterator);
-		if (view == (EDataBookView*)where_object_was) {
-			e_iterator_delete(iterator);
-			success = TRUE;
-			break;
-		}
-	}
-	if (!success)
-		g_warning ("Failed to remove from book_views list");
-	g_object_unref(iterator);
-	g_object_unref(views);
+	e_book_backend_remove_book_view (book->priv->backend, (EDataBookView*)where_object_was);
 }
 
 /**
@@ -502,8 +469,8 @@ view_destroy(gpointer data, GObject *where_object_was)
  */
 void
 e_data_book_respond_get_book_view (EDataBook                           *book,
-				GNOME_Evolution_Addressbook_CallStatus  status,
-				EDataBookView                       *book_view)
+				   GNOME_Evolution_Addressbook_CallStatus  status,
+				   EDataBookView                       *book_view)
 {
 	CORBA_Environment ev;
 	CORBA_Object      object = CORBA_OBJECT_NIL;

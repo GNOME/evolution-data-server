@@ -77,6 +77,8 @@ module Addressbook {
 	interface BookView : Bonobo::Unknown {
 		oneway void start ();
 		oneway void stop ();
+
+		oneway void dispose ();
 	};
 
 	interface Book : Bonobo::Unknown {

@@ -167,6 +167,8 @@ impl_BookListener_respond_get_view (PortableServer_Servant servant,
 	response.book_view = bonobo_object_dup_ref (book_view, ev);
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
+
+	bonobo_object_release_unref (book_view, ev);
 }
 
 static void
@@ -323,7 +325,7 @@ e_book_listener_new ()
 	EBookListener *listener;
 
 	listener = g_object_new (E_TYPE_BOOK_LISTENER,
-				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
+				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_THREAD, NULL),
 				 NULL);
 
 	return listener;

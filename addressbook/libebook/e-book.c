@@ -1058,7 +1058,7 @@ e_book_response_get_book_view (EBook       *book,
 	op->status = status;
 	op->view = e_book_view_new (corba_book_view, op->listener);
 
-	bonobo_object_ref(BONOBO_OBJECT(op->listener));
+	bonobo_object_unref(BONOBO_OBJECT(op->listener));
 
 	g_cond_signal (op->cond);
 
@@ -2352,7 +2352,7 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 {
 	GConfClient *gconf;
 
-	e_return_error_if_fail (*addressbook_sources, E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (addressbook_sources, E_BOOK_ERROR_INVALID_ARG);
 
 	gconf = gconf_client_get_default();
 	*addressbook_sources = e_source_list_new_for_gconf (gconf, "/apps/evolution/addressbook/sources");

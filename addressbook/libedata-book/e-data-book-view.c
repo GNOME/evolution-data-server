@@ -40,6 +40,17 @@ struct _EDataBookViewPrivate {
 };
 
 static void
+view_listener_died_cb (gpointer cnx, gpointer user_data)
+{
+	EDataBookView *book_view = E_DATA_BOOK_VIEW (user_data);
+
+	if (book_view) {
+		e_book_backend_stop_book_view (e_data_book_view_get_backend (book_view), book_view);
+		bonobo_object_unref (book_view);
+	}
+}
+
+static void
 send_pending_adds (EDataBookView *book_view, gboolean reset)
 {
 	CORBA_Environment ev;
@@ -304,10 +315,10 @@ e_data_book_view_notify_status_message (EDataBookView *book_view,
 
 static void
 e_data_book_view_construct (EDataBookView                *book_view,
-			 EBookBackend                 *backend,
-			 GNOME_Evolution_Addressbook_BookViewListener  listener,
-			 const char                 *card_query,
-			 EBookBackendSExp         *card_sexp)
+			    EBookBackend                 *backend,
+			    GNOME_Evolution_Addressbook_BookViewListener  listener,
+			    const char                 *card_query,
+			    EBookBackendSExp         *card_sexp)
 {
 	EDataBookViewPrivate *priv;
 	CORBA_Environment ev;
@@ -331,6 +342,8 @@ e_data_book_view_construct (EDataBookView                *book_view,
 	priv->backend = backend;
 	priv->card_query = g_strdup (card_query);
 	priv->card_sexp = card_sexp;
+
+	ORBit_small_listen_for_broken (e_data_book_view_get_listener (book_view), G_CALLBACK (view_listener_died_cb), book_view);
 }
 
 /**
@@ -354,12 +367,25 @@ impl_GNOME_Evolution_Addressbook_BookView_stop (PortableServer_Servant servant,
 	e_book_backend_stop_book_view (e_data_book_view_get_backend (view), view);
 }
 
+static void
+impl_GNOME_Evolution_Addressbook_BookView_dispose (PortableServer_Servant servant,
+						   CORBA_Environment *ev)
+{
+	EDataBookView *view = E_DATA_BOOK_VIEW (bonobo_object (servant));
+
+	ORBit_small_unlisten_for_broken (e_data_book_view_get_listener (view), G_CALLBACK (view_listener_died_cb));
+
+	bonobo_object_unref (view);
+}
+
 /**
  * e_data_book_view_get_card_query
  */
 const char*
 e_data_book_view_get_card_query (EDataBookView *book_view)
 {
+	g_return_val_if_fail (book_view, NULL);
+
 	return book_view->priv->card_query;
 }
 
@@ -369,18 +395,24 @@ e_data_book_view_get_card_query (EDataBookView *book_view)
 EBookBackendSExp*
 e_data_book_view_get_card_sexp (EDataBookView *book_view)
 {
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);
+
 	return book_view->priv->card_sexp;
 }
 
 EBookBackend*
 e_data_book_view_get_backend (EDataBookView *book_view)
 {
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);
+
 	return book_view->priv->backend;
 }
 
 GNOME_Evolution_Addressbook_BookViewListener
 e_data_book_view_get_listener (EDataBookView  *book_view)
 {
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), CORBA_OBJECT_NIL);
+
 	return book_view->priv->listener;
 }
 
@@ -447,6 +479,7 @@ e_data_book_view_class_init (EDataBookViewClass *klass)
 
 	epv->start                = impl_GNOME_Evolution_Addressbook_BookView_start;
 	epv->stop                 = impl_GNOME_Evolution_Addressbook_BookView_stop;
+	epv->dispose              = impl_GNOME_Evolution_Addressbook_BookView_dispose;
 
 }
 

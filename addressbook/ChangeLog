@@ -1,3 +1,63 @@
+2004-02-11  Chris Toshok  <toshok@ximian.com>
+
+	* libedata-book/e-data-book.c (view_listener_died_cb): nuke, moved
+	to e-data-book-view.c.
+	(impl_GNOME_Evolution_Addressbook_Book_getBookView): remove the
+	call to ORBit_small_listen_for_broken.  That's handled in
+	e-data-book-view.c too, and don't g_object_unref the view (it's a
+	BonoboObject anyway, and we can't unref it after the oneway corba
+	call like we could before when it wasn't oneway.)
+	(view_destroy): just call e_book_backend_remove_book_view.
+
+	* libedata-book/e-data-book-view.c (view_listener_died_cb): move
+	this here from e-data-book.c.
+	(e_data_book_view_construct): call ORBit_small_listen_for_broken
+	here.
+	(impl_GNOME_Evolution_Addressbook_BookView_dispose): call
+	ORBit_small_unlisten_for_broken, and unref the view.
+	(e_data_book_view_get_card_query): add arg check.
+	(e_data_book_view_get_backend): same.
+	(e_data_book_view_get_listener): same.
+	(e_data_book_view_class_init): fill in epv->dispose.
+
+	* libedata-book/e-book-backend.c (e_book_backend_get_book_views):
+	FALSE => NULL.
+	(e_book_backend_add_book_view): add a arg check.
+	(e_book_backend_remove_book_view): same.
+	(e_book_backend_init): don't use ref/unref for the EList
+	functions, since we use a weakref to manage the contents of the
+	list elsewhere.
+
+	* libebook/e-book-listener.c (impl_BookListener_respond_get_view):
+	release_unref after the signal.  the callee must ref to keep the
+	book_view alive.
+
+	* libebook/e-book-view.c (e_book_view_do_added_event): don't free
+	up the response stuff here, it's handled in the listener code now.
+	(e_book_view_do_modified_event): same.
+	(e_book_view_do_removed_event): same.
+	(e_book_view_do_status_message_event): same.
+	(e_book_view_handle_response): add a comment about a useless (imo)
+	check.  also, don't g_free (resp).
+	(e_book_view_construct):
+	(e_book_view_dispose): call BookView::dispose before we
+	release_unref it.
+
+	* libebook/e-book-view-listener.c (free_response): new method.
+	free up an EBookViewListenerResponse*.
+	(main_thread_get_response): call free_response on the response
+	after emitting the signal.
+	(e_book_view_listener_queue_response): just call free_response
+	here instead of duplicating its code.
+
+	* libebook/e-book.c (e_book_response_get_book_view): we don't want
+	to ref the listener here.  *unref* it.
+	(e_book_get_addressbooks): check addressbook_sources, not
+	*addressbook_sources, in the precondition.
+
+	* idl/Evolution-DataServer-Addressbook.idl (BookView): add dispose
+	call.
+
 2004-02-09  Michael Meeks  <michael@ximian.com>
 
 	* libedata-book/e-data-book.c (view_destroy): tolerate NULL
