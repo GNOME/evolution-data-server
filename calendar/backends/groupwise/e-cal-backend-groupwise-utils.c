@@ -1099,7 +1099,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		}
 
 		e_cal_component_commit_sequence (comp);
-		*freebusy = g_list_append (*freebusy, g_strdup (e_cal_component_get_as_string (comp)));
+		*freebusy = g_list_append (*freebusy, e_cal_component_get_as_string (comp));
 		g_object_unref (comp);
 	}
 

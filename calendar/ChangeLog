@@ -1,3 +1,12 @@
+2004-12-02  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(receive_object): Freed the string variables and unref the 
+	components.
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_get_freebusy_info): Need not use strdup here.
+	
+
 2004-11-18 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c 

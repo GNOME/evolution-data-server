@@ -1494,8 +1494,10 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	
 	status = e_gw_connection_send_appointment (cbgw, priv->container_id, comp, method, &remove, &modif_comp);
 
-	if (status == E_GW_CONNECTION_STATUS_OK && !modif_comp)
+	if (status == E_GW_CONNECTION_STATUS_OK && !modif_comp) {
+		g_object_unref (comp);
 		return GNOME_Evolution_Calendar_Success;
+	}
 
 	/* update the cache */
 	if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -1505,10 +1507,9 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 			e_cal_component_get_uid (comp, (const char **) &uid);
 			e_cal_backend_cache_remove_component (priv->cache, uid, NULL);
 			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), uid, e_cal_component_get_as_string (comp));
-			g_free (comp);
 		}
 		else {
-			char *cache_comp = NULL, *temp;
+			char *cache_comp = NULL, *temp, *new_comp = NULL;
 			ECalComponent *cache_component;
 			
 			e_cal_component_commit_sequence (modif_comp);
@@ -1521,23 +1522,26 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 			}
 
 			e_cal_backend_cache_put_component (priv->cache, modif_comp);	
-			
+			e_cal_component_commit_sequence (modif_comp);
+			new_comp = e_cal_component_get_as_string (modif_comp);
+
 			if (cache_comp)
-				e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp, e_cal_component_get_as_string (modif_comp));
+				e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp, new_comp);
 			else
-				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), e_cal_component_get_as_string (modif_comp));
+				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), new_comp);
 				
 			g_free (cache_comp);
-			g_free (modif_comp);
+			g_free (new_comp);
 			g_free (temp);
-			g_free (cache_component);
 		}
-		
+		g_object_unref (comp);	
 		return GNOME_Evolution_Calendar_Success;
 	}
 
-	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT)
+	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT) {
+		g_object_unref (comp);
 		return  GNOME_Evolution_Calendar_InvalidObject;
+	}
 	return GNOME_Evolution_Calendar_OtherError;
 }
 
