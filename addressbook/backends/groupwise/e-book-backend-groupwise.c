@@ -27,6 +27,9 @@
 #include <e-gw-filter.h>
 #include <libgnome/gnome-i18n.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
 
 static EBookBackendClass *e_book_backend_groupwise_parent_class;
                                                                                                                              
@@ -1125,9 +1128,9 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 		e_data_book_respond_remove_contacts (book, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 		return;
 	}
-	e_gw_connection_remove_items (ebgw->priv->cnc, ebgw->priv->container_id, id_list);
 	for ( ; id_list != NULL; id_list = g_list_next (id_list)) {
 		id = (char*) id_list->data;
+		e_gw_connection_remove_item (ebgw->priv->cnc, ebgw->priv->container_id, id);
 		deleted_ids =  g_list_append (deleted_ids, id);
 		e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
 	}
@@ -1895,9 +1898,53 @@ build_summary (EBookBackendGroupwise *ebgw)
 		g_object_unref (gw_items->data);
 		
 	}
+	g_list_free (gw_items);
 	return FALSE;
 }
 
+static gboolean
+update_summary (EBookBackendGroupwise *ebgw)
+{
+	int status;
+	GList *gw_items = NULL;
+	EContact *contact;
+	EGwFilter *filter;
+	time_t mod_time;
+	char time_string[25];
+	const struct tm *tm;
+	struct stat buf;
+	
+	stat (ebgw->priv->summary_file_name, &buf);
+	mod_time = buf.st_mtime;
+	tm = gmtime (&mod_time);
+	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+
+	filter = e_gw_filter_new ();
+	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "modified", time_string);
+	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, NULL, filter, &gw_items);
+	if (status != E_GW_CONNECTION_STATUS_OK)
+		return FALSE;
+	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
+		char *id;
+		contact = e_contact_new ();
+		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), ebgw->priv->categories_by_id);
+		id =  e_contact_get (contact, E_CONTACT_UID);
+		if (e_book_backend_summary_check_contact (ebgw->priv->summary, id)) {
+			e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
+			e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
+			
+		} else
+		    e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
+		g_object_unref(contact);
+		g_object_unref (gw_items->data);
+		
+		    
+	}
+	g_object_unref (filter);
+	g_list_free (gw_items);
+	return FALSE;
+
+}
 static void
 e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 					    EDataBook    *book,
@@ -1953,6 +2000,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	priv->summary = e_book_backend_summary_new (priv->summary_file_name, 5000);
        	if (e_book_backend_summary_load (priv->summary) == FALSE)
 		g_idle_add ((GSourceFunc)build_summary ,ebgw);  
+	g_idle_add ((GSourceFunc)update_summary ,ebgw);
 }
 
 static void
