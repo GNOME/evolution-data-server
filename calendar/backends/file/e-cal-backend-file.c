@@ -29,6 +29,7 @@
 #include <bonobo/bonobo-moniker-util.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libedataserver/e-util.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-time-util.h>
@@ -780,9 +781,19 @@ reload_cal (ECalBackendFile *cbfile, const char *uristr)
 static ECalBackendSyncStatus
 create_cal (ECalBackendFile *cbfile, const char *uristr)
 {
+	char *dirname;
 	ECalBackendFilePrivate *priv;
 
 	priv = cbfile->priv;
+
+	/* Create the directory to contain the file */
+	dirname = g_path_get_dirname (uristr);
+	if (e_util_mkdir_hier (dirname, 0700) != 0) {
+		g_free (dirname);
+		return GNOME_Evolution_Calendar_NoSuchCal;
+	}
+
+	g_free (dirname);
 
 	/* Create the new calendar information */
 	priv->icalcomp = e_cal_util_new_top_level ();
