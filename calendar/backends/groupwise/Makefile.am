@@ -9,6 +9,13 @@ INCLUDES =						\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(GROUPWISE_CFLAGS)
 
+noinst_PROGRAMS = create-account
+create_account_SOURCES = create-account.c
+create_account_LDADD = \
+	$(top_builddir)/calendar/libedata-cal/libedata-cal.la           \
+	$(top_builddir)/calendar/backends/file/libecalbackendfile.la    \
+	$(GROUPWISE_LIBS)
+
 noinst_LTLIBRARIES = libecalbackendgroupwise.la
 
 libecalbackendgroupwise_la_SOURCES =		\
