@@ -1,3 +1,9 @@
+2004-09-22  William Jon McCann  <mccann@jhu.edu>
+
+	* libebook/e-book.c (emit_async_open_response)
+	(e_book_response_open): 
+	* libebook/e-book-view-listener.c (d): Disable debugging noise.
+
 2004-09-16 Sivaiah Nallagatla  <snallagatla@novell.com>
 
 	* backends/gropwise/e-book-backend-groupwise.c
