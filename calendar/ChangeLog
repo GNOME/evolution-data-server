@@ -1,5 +1,12 @@
 2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_remove_object): if we don't find the
+	X-EVOLUTION-GROUPWISE-ID property, the object didn't come from
+	the server, so don't try to remove it.
+
+2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
+
 	* libedata-cal/e-cal-backend-cache.[ch]
 	(e_cal_backend_cache_get_timezone, e_cal_backend_cache_put_timezone,
 	e_cal_backend_cache_remove_timezone): new functions to support

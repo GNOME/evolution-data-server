@@ -1008,6 +1008,11 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 			icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
 		}
+
+		icalcomponent_free (icalcomp);
+
+		/* if there was no X-EVOLUTION-GROUPWISE-ID property, return NOT_FOUND */
+		return GNOME_Evolution_Calendar_ObjectNotFound;
 	}
 
 	/* remove the component from the cache */
