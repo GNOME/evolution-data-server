@@ -1,3 +1,12 @@
+2005-01-31  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #64682
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_create_appointment): IF the appointment
+	is moved from another calendar, send the createItemsRequest 
+	to the server, so that it does not send mails to the 
+	recipients.
+
 2005-01-31  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c

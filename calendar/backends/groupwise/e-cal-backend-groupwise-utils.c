@@ -1077,7 +1077,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 				
 				if (!g_strncasecmp (email_id, "mailto:", 7))
 					email_id += 7;
-			
+
 				if (!g_ascii_strcasecmp (email_id, e_gw_connection_get_user_email (cnc))) {
 					attendee = tmp;
 					break;
@@ -1151,13 +1151,38 @@ e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, E
 {
 	EGwItem *item;
 	EGwConnectionStatus status;
+	icalproperty *icalprop;
+	gboolean move_cal = FALSE;
+	icalcomponent *icalcomp;
+	char *id = NULL;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
+	icalcomp = e_cal_component_get_icalcomponent (comp);
+
+	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+	while (icalprop) {
+		const char *x_name;
+
+		x_name = icalproperty_get_x_name (icalprop);
+		if (!strcmp (x_name, "X-EVOLUTION-MOVE-CALENDAR")) {
+			move_cal = TRUE;
+			break;
+		}
+
+		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+	}
+
 	item = e_gw_item_new_from_cal_component (container, cbgw, comp);
 	e_gw_item_set_container_id (item, container);
-	status = e_gw_connection_send_item (cnc, item, id_list);
+	if (!move_cal)
+		status = e_gw_connection_send_item (cnc, item, id_list);
+	else {
+		e_gw_item_set_source (item, "personal");
+		status = e_gw_connection_create_item (cnc, item, &id);
+		*id_list = g_slist_append (*id_list, id);
+	}
 	g_object_unref (item);
 
 	return status;
