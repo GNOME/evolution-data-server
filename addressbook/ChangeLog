@@ -16,13 +16,13 @@
 
 2004-07-23  Sivaiah Nallagatla <snallagatla@novell.com>
 
-       * backends/groupwise/e-book-backend-groupwise.c
-       (e_book_backend_groupwise_load_source) : read the "use_ssl"
-       property from ESource and form the uri accrodingly
-       (e_book_backend_groupwise_authenticate_user) : when "use_ssl" is
-       "when-posible", try with https first and then http if that fails.
-       (e_book_backend_groupwise_init) (e_book_backend_groupwise_dispose) :
-       initialize and free the newly added priv member use_ssl
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_load_source) : read the "use_ssl"
+	property from ESource and form the uri accrodingly
+	(e_book_backend_groupwise_authenticate_user) : when "use_ssl" is
+	"when-posible", try with https first and then http if that fails.
+	(e_book_backend_groupwise_init) (e_book_backend_groupwise_dispose) :
+	initialize and free the newly added priv member use_ssl
 
 2004-07-19  Hans Petter Jansson  <hpj@ximian.com>
 
