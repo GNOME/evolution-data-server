@@ -1211,12 +1211,36 @@ ensure_alarm_properties_cb (gpointer key, gpointer value, gpointer data)
 	case ICAL_ACTION_DISPLAY:
 		/* Ensure we have a DESCRIPTION property */
 		prop = icalcomponent_get_first_property (alarm, ICAL_DESCRIPTION_PROPERTY);
-		if (prop)
-			break;
+		if (prop) {
+			if (priv->summary.prop) {
+				icalproperty *xprop;
 
-		if (!priv->summary.prop)
+				xprop = icalcomponent_get_first_property (alarm, ICAL_X_PROPERTY);
+				while (xprop) {
+					str = icalproperty_get_x_name (xprop);
+					if (!strcmp (str, "X-EVOLUTION-NEEDS-DESCRIPTION")) {
+						icalproperty_set_description (prop, priv->summary.prop);
+
+						icalcomponent_remove_property (alarm, xprop);
+						icalproperty_free (xprop);
+						break;
+					}
+
+					xprop = icalcomponent_get_next_property (alarm, ICAL_X_PROPERTY);
+				}
+
+				break;
+			}
+		}
+
+		if (!priv->summary.prop) {
 			str = _("Untitled appointment");
-		else
+
+			/* add the X-EVOLUTION-NEEDS-DESCRIPTION property */
+			prop = icalproperty_new_x ("1");
+			icalproperty_set_x_name (prop, "X-EVOLUTION-NEEDS-DESCRIPTION");
+			icalcomponent_add_property (alarm, prop);
+		} else
 			str = icalproperty_get_summary (priv->summary.prop);
 
 		prop = icalproperty_new_description (str);
@@ -3802,6 +3826,55 @@ e_cal_component_get_summary (ECalComponent *comp, ECalComponentText *summary)
 		summary->altrep = NULL;
 }
 
+typedef struct {
+	char *old_summary;
+	char *new_summary;
+} SetAlarmDescriptionData;
+
+static void
+set_alarm_description_cb (gpointer key, gpointer value, gpointer user_data)
+{
+	icalcomponent *alarm;
+	icalproperty *icalprop, *desc_prop;
+	SetAlarmDescriptionData *sadd;
+	gboolean changed = FALSE;
+	char *old_summary = NULL;
+
+	alarm = value;
+	sadd = user_data;
+
+	/* set the new description on the alarm */
+	desc_prop = icalcomponent_get_first_property (alarm, ICAL_DESCRIPTION_PROPERTY);
+	if (desc_prop)
+		old_summary = icalproperty_get_description (desc_prop);
+	else
+		desc_prop = icalproperty_new_description (sadd->new_summary);
+
+	/* remove the X-EVOLUTION-NEEDS_DESCRIPTION property */
+	icalprop = icalcomponent_get_first_property (alarm, ICAL_X_PROPERTY);
+	while (icalprop) {
+		const char *x_name;
+
+		x_name = icalproperty_get_x_name (icalprop);
+		if (!strcmp (x_name, "X-EVOLUTION-NEEDS-DESCRIPTION")) {
+			icalcomponent_remove_property (alarm, icalprop);
+			icalproperty_free (icalprop);
+
+			icalproperty_set_description (desc_prop, sadd->new_summary);
+			changed = TRUE;
+			break;
+		}
+
+		icalprop = icalcomponent_get_next_property (alarm, ICAL_X_PROPERTY);
+	}
+
+	if (!changed) {
+		if (!strcmp (old_summary ? old_summary : "", sadd->old_summary ? sadd->old_summary : "")) {
+			icalproperty_set_description (desc_prop, sadd->new_summary);
+		}
+	}
+}
+
 /**
  * e_cal_component_set_summary:
  * @comp: A calendar component object.
@@ -3813,6 +3886,7 @@ void
 e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
 {
 	ECalComponentPrivate *priv;
+	SetAlarmDescriptionData sadd;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
@@ -3834,9 +3908,11 @@ e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
 
 	g_return_if_fail (summary->value != NULL);
 
-	if (priv->summary.prop)
+	if (priv->summary.prop) {
+		sadd.old_summary = icalproperty_get_summary (priv->summary.prop);
 		icalproperty_set_summary (priv->summary.prop, (char *) summary->value);
-	else {
+	} else {
+		sadd.old_summary = NULL;
 		priv->summary.prop = icalproperty_new_summary ((char *) summary->value);
 		icalcomponent_add_property (priv->icalcomp, priv->summary.prop);
 	}
@@ -3857,6 +3933,10 @@ e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
  		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
  		priv->summary.altrep_param = NULL; 
 	}
+
+	/* look for alarms that need a description */
+	sadd.new_summary = summary->value;
+	g_hash_table_foreach (priv->alarm_uid_hash, set_alarm_description_cb, &sadd);
 }
 
 /**

@@ -1,10 +1,22 @@
+2004-07-15  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #57142
+
+	* libecal/e-cal-component.c (ensure_alarm_properties_cb): add the
+	X-EVOLUTION-NEEDS-DESCRIPTION property to the alarms we create
+	with no description, and remove the property from the alarms with
+	a description already.
+
+	(e_cal_component_set_summary, set_alarm_description_cb): set the
+	description on the alarms when the summary changes and remove the
+	above property when we set a valid description.
+
 2004-07-14  Chenthill Palanisamy <pchenthill@novell.com>
 
        Fixes #60344
        * backends/groupwise/e-cal-backend-groupwise.c:
        (e_cal_backend_groupwise_internal_get_timezone):
        Send the timezone present in tzid instead of sending UTC timezone.
-
 
 2004-07-12  Harish Krishnaswamy  <kharish@novell.com>
 
