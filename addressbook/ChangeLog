@@ -1,5 +1,11 @@
 2004-04-14  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-contact.c (e_contact_set_property): remove the
+	MULTI_ELEM attribute if the string is NULL or empty.  This keeps
+	us from writing out empty EMAIL attributes.
+
+2004-04-14  Chris Toshok  <toshok@ximian.com>
+
 	[ fixes part of bug #55776 ]
 	
 	* backends/ldap/e-book-backend-ldap.c

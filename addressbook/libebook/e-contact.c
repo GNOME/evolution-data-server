@@ -430,7 +430,7 @@ fn_getter (EContact *contact, EVCardAttribute *attr)
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
 
-		return g_strdup (p && p->data ? p->data : "");
+		return p && p->data ? p->data : "";
 	}
 	else
 		return NULL;
@@ -694,6 +694,7 @@ e_contact_set_property (GObject *object,
 			int num_left = info->list_elem;
 			GList *attrs = e_vcard_get_attributes (E_VCARD (contact));
 			GList *l;
+			char *sval;
 
 			for (l = attrs; l; l = l->next) {
 				const char *name;
@@ -709,17 +710,24 @@ e_contact_set_property (GObject *object,
 				}
 			}
 
-			if (found) {
-				/* we found it, overwrite it */
-				e_vcard_attribute_remove_values (attr);
+			sval = g_value_get_string (value);
+			if (sval && *sval) {
+				if (found) {
+					/* we found it, overwrite it */
+					e_vcard_attribute_remove_values (attr);
+				}
+				else {
+					/* we didn't find it - add a new attribute */
+					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
+					e_vcard_add_attribute (E_VCARD (contact), attr);
+				}
+
+				e_vcard_attribute_add_value (attr, sval);
 			}
 			else {
-				/* we didn't find it - add a new attribute */
-				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
-				e_vcard_add_attribute (E_VCARD (contact), attr);
+				if (found)
+					e_vcard_remove_attribute (E_VCARD (contact), attr);
 			}
-
-			e_vcard_attribute_add_value (attr, g_value_get_string (value));
 		}
 		else if (info->t & E_CONTACT_FIELD_TYPE_ATTR_TYPE) {
 			/* XXX this is kinda broken - we don't insert
