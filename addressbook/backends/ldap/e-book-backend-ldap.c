@@ -3473,7 +3473,7 @@ e_book_backend_ldap_remove (EBookBackend *backend, EDataBook *book, guint32 opid
 static char*
 e_book_backend_ldap_get_static_capabilities (EBookBackend *backend)
 {
-	return g_strdup("net");
+	return g_strdup("net,anon-access");
 }
 
 static gboolean

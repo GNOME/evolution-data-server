@@ -1,3 +1,9 @@
+2004-08-12  Sivaiah Nallagatla <snallagatla@novell.com>
+
+        * backends/ldap/e-book-backend-ldap.c
+        (e_book_backend_ldap_get_static_capabilities) : add "anon-access"
+        static capability
+
 2004-08-09  Chris Toshok  <toshok@ximian.com>
 
 	* tests/vcard/README (Test): add note about 11.vcf.
