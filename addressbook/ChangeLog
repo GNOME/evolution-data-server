@@ -1,4 +1,4 @@
-2005-01-21  Hans Petter Jansson  <hpj@novell.com>
+2005-01-31  Hans Petter Jansson  <hpj@novell.com>
 
 	* backends/vcf/Makefile.am:
 	* backends/ldap/Makefile.am:
