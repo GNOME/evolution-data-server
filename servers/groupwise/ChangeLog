@@ -1,3 +1,8 @@
+2004-05-25 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-item.c (e_gw_item_append_changes_to_soap_message) : add a case of 
+	organization type also, its handling is same as contact  
+
 2004-05-18  Harish Krishnaswamy  <kharish@novell.com>
 	
 	Fixes #56320 and related timezone issues.
