@@ -557,7 +557,6 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 					g_warning (G_STRLOC ": %s", error->message);
 					g_error_free (error);
 
-					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
 					return GNOME_Evolution_Calendar_OtherError;
 				}
 				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
