@@ -1,5 +1,10 @@
 2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.[ch] (parse_response_status):
+	added new error code.
+
+2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.c (populate_cache):
 	add all retrieved items to the cache, since calendar and tasks
 	both use the same cache file.
