@@ -542,13 +542,17 @@ success:				\n\
 	bne 1f;				\
 	stwcx. %2,0,%1;			\
 	bne- 0b;			\
+	isync;				\
 1:"					\
 	: "=&r" (__r)			\
 	: "r" (__l), "r" (__one));	\
 	!(__r & 1);			\
 })
 #endif
-#define	MUTEX_UNSET(tsl)	(*(tsl) = 0)
+#define	MUTEX_UNSET(tsl)	({					\
+		asm volatile("lwsync # MUTEX_UNSET ":::"memory");	\
+		(*(tsl) = 0);						\
+	})
 #define	MUTEX_INIT(tsl)		MUTEX_UNSET(tsl)
 #endif
 #endif
@@ -666,6 +670,40 @@ typedef int tsl_t;
 #endif
 
 /*********************************************************************
+ * MIPS/gcc assembly.
+ *********************************************************************/
+#ifdef HAVE_MUTEX_MIPS_GCC_ASSEMBLY
+typedef unsigned int tsl_t;
+#define MUTEX_ALIGN     sizeof(unsigned int)
+
+#ifdef LOAD_ACTUAL_MUTEX_CODE
+/*
+ * For gcc/MIPS;
+ */
+#define MUTEX_SET(tsl) ({                                               \
+        tsl_t tmp, res;                                                 \
+        register tsl_t *__l = (tsl);                                    \
+        __asm__ __volatile__(                                           \
+                ".set\tnoreorder\t\t# test_and_set_bit\n"               \
+                "1:\tll\t%0, %1\n\t"                                    \
+                "ori\t%2, %0, 1\n\t"                                    \
+                "sc\t%2, %1\n\t"                                        \
+                "beqz\t%2, 1b\n\t"                                      \
+                " andi\t%2, %0, 1\n\t"                                  \
+                "sync\n\t"                                              \
+                ".set\treorder"                                         \
+                : "=&r" (tmp), "=m" (*__l), "=&r" (res)                 \
+                : "m" (*__l)                                            \
+                : "memory");                                            \
+                (res ^ 1) & 1;                                          \
+})
+
+#define	MUTEX_UNSET(tsl)	(*(tsl) = 0)
+#define	MUTEX_INIT(tsl)		MUTEX_UNSET(tsl)
+#endif
+#endif
+
+/*********************************************************************
  * x86/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_X86_GCC_ASSEMBLY
@@ -713,6 +751,61 @@ typedef unsigned char tsl_t;
 #define  MUTEX_UNSET(tsl)  (*(tsl) = 0)
 #define  MUTEX_INIT(tsl)   MUTEX_UNSET(tsl)
 #endif
+#endif
+
+/*********************************************************************
+ * x86_64/gcc assembly.
+ *********************************************************************/
+#ifdef HAVE_MUTEX_X86_64_GCC_ASSEMBLY
+typedef unsigned char tsl_t;
+
+#ifdef LOAD_ACTUAL_MUTEX_CODE
+/*
+ * For gcc/x86-64, 0 is clear, 1 is set.
+ */
+#define	MUTEX_SET(tsl) ({						\
+	register tsl_t *__l = (tsl);					\
+	int __r;							\
+	asm volatile("movq $1,%%rax; lock; xchgb %1,%%al; xorq $1,%%rax"\
+	    : "=&a" (__r), "=m" (*__l)					\
+	    : "1" (*__l)						\
+	    );								\
+	__r & 1;							\
+})
+
+#define	MUTEX_UNSET(tsl)	(*(tsl) = 0)
+#define	MUTEX_INIT(tsl)		MUTEX_UNSET(tsl)
+#endif
+#endif
+
+/*********************************************************************
+ * alphalinux/gcc assembly.
+ *********************************************************************/
+#ifdef HAVE_MUTEX_ALPHA_LINUX_ASSEMBLY
+typedef unsigned long int tsl_t;
+
+#define	MUTEX_ALIGN	8
+#endif
+
+/*********************************************************************
+ * sparc32linux/gcc assembly.
+ *********************************************************************/
+#ifdef HAVE_MUTEX_SPARC32_LINUX_ASSEMBLY
+typedef unsigned char tsl_t;
+#endif
+
+/*********************************************************************
+ * sparc64linux/gcc assembly.
+ *********************************************************************/
+#ifdef HAVE_MUTEX_SPARC64_LINUX_ASSEMBLY
+typedef unsigned char tsl_t;
+#endif
+
+/*********************************************************************
+ * s390linux/gcc assembly.
+ *********************************************************************/
+#ifdef HAVE_MUTEX_S390_LINUX_ASSEMBLY
+typedef volatile int tsl_t;
 #endif
 
 /*

@@ -325,22 +325,22 @@ __lock_region_size(dbenv)
 	 * map one-to-one with the __db_shalloc calls in __lock_init.
 	 */
 	retval = 0;
-	retval += __db_shalloc_size(sizeof(DB_LOCKREGION), 1);
-	retval += __db_shalloc_size(dbenv->lk_modes * dbenv->lk_modes, 1);
+	retval += __db_shalloc_size(sizeof(DB_LOCKREGION), sizeof(db_align_t));
+	retval += __db_shalloc_size(dbenv->lk_modes * dbenv->lk_modes, sizeof(db_align_t));
 	retval += __db_shalloc_size(
-	    __db_tablesize(dbenv->lk_max_lockers) * (sizeof(DB_HASHTAB)), 1);
+	    __db_tablesize(dbenv->lk_max_lockers) * (sizeof(DB_HASHTAB)), sizeof(db_align_t));
 	retval += __db_shalloc_size(
-	    __db_tablesize(dbenv->lk_max_objects) * (sizeof(DB_HASHTAB)), 1);
+	    __db_tablesize(dbenv->lk_max_objects) * (sizeof(DB_HASHTAB)), sizeof(db_align_t));
 #ifdef HAVE_MUTEX_SYSTEM_RESOURCES
 	retval +=
-	    __db_shalloc_size(sizeof(REGMAINT) + __lock_region_maint(dbenv), 1);
+	    __db_shalloc_size(sizeof(REGMAINT) + __lock_region_maint(dbenv), sizeof(db_align_t));
 #endif
 	retval += __db_shalloc_size(
 	    sizeof(struct __db_lock), MUTEX_ALIGN) * dbenv->lk_max;
 	retval += __db_shalloc_size(
-	    sizeof(DB_LOCKOBJ), 1) * dbenv->lk_max_objects;
+	    sizeof(DB_LOCKOBJ), sizeof(db_align_t)) * dbenv->lk_max_objects;
 	retval += __db_shalloc_size(
-	    sizeof(DB_LOCKER), 1) * dbenv->lk_max_lockers;
+	    sizeof(DB_LOCKER), sizeof(db_align_t)) * dbenv->lk_max_lockers;
 
 	/*
 	 * Include 16 bytes of string space per lock.  DB doesn't use it
