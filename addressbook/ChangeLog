@@ -1,3 +1,10 @@
+2003-11-28  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/Makefile.am (test_ebook_view_LDADD): new variable.
+	(noinst_PROGRAMS): add test-ebook-view
+
+	* tests/ebook/test-ebook-view.c: new test for ebook view's.
+
 2003-11-26  Hans Petter Jansson  <hpj@ximian.com>
 
 	* backends/file/e-book-backend-file.c (e_book_backend_file_load_uri):
