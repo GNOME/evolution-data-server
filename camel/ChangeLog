@@ -1,3 +1,10 @@
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #72876
+
+	* camel-mime-message.c (process_header): if there are no addresses
+	in from or reply-to header, don't save empty address list.
+
 2005-02-28  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #72609
