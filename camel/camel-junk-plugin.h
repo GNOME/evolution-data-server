@@ -23,11 +23,10 @@
 #ifndef _CAMEL_JUNK_PLUGIN_H
 #define _CAMEL_JUNK_PLUGIN_H
 
-#include <camel/camel-mime-message.h>
-
 #define CAMEL_JUNK_PLUGIN(x) ((CamelJunkPlugin *) x)
 
 typedef struct _CamelJunkPlugin CamelJunkPlugin;
+struct _CamelMimeMessage;
 
 struct _CamelJunkPlugin
 {
@@ -39,22 +38,22 @@ struct _CamelJunkPlugin
 
 	/* when called, it should return TRUE if message is identified as junk,
 	   FALSE otherwise */
-	int (*check_junk) (CamelMimeMessage *message);
+	int (*check_junk) (struct _CamelMimeMessage *message);
 
 	/* called when user identified a message to be junk */
-	void (*report_junk) (CamelMimeMessage *message);
+	void (*report_junk) (struct _CamelMimeMessage *message);
 
 	/* called when user identified a message not to be junk */
-	void (*report_notjunk) (CamelMimeMessage *message);
+	void (*report_notjunk) (struct _CamelMimeMessage *message);
 
 	/* called after one or more junk/ham(s) reported */
 	void (*commit_reports) (void);
 };
 
 const char * camel_junk_plugin_get_name (CamelJunkPlugin *csp);
-int camel_junk_plugin_check_junk (CamelJunkPlugin *csp, CamelMimeMessage *message);
-void camel_junk_plugin_report_junk (CamelJunkPlugin *csp, CamelMimeMessage *message);
-void camel_junk_plugin_report_notjunk (CamelJunkPlugin *csp, CamelMimeMessage *message);
+int camel_junk_plugin_check_junk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
+void camel_junk_plugin_report_junk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
+void camel_junk_plugin_report_notjunk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 void camel_junk_plugin_commit_reports (CamelJunkPlugin *csp);
 
 #endif

@@ -20,7 +20,10 @@
  * USA
  */
 
+#include <stdio.h>
+#include <glib.h>
 #include <camel/camel-junk-plugin.h>
+#include <camel/camel-mime-message.h>
 
 #define d(x) x
 
