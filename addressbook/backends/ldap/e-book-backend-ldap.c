@@ -3038,14 +3038,10 @@ ldap_search_dtor (LDAPOp *op)
 {
 	LDAPSearchOp *search_op = (LDAPSearchOp*) op;
 
-	g_mutex_lock (e_data_book_view_get_mutex (search_op->view));
-
 	d(printf ("ldap_search_dtor (%p)\n", search_op->view));
 
 	/* unhook us from our EDataBookView */
 	g_object_set_data (G_OBJECT (search_op->view), "EBookBackendLDAP.BookView::search_op", NULL);
-
-	g_mutex_unlock (e_data_book_view_get_mutex (search_op->view));
 
 	g_free (search_op);
 }
