@@ -623,7 +623,7 @@ stop_view (EContactStore *contact_store, EBookView *view)
 }
 
 static void
-free_contact_ptrarray (GPtrArray *contacts)
+clear_contact_ptrarray (GPtrArray *contacts)
 {
 	gint i;
 
@@ -632,6 +632,13 @@ free_contact_ptrarray (GPtrArray *contacts)
 		g_object_unref (contact);
 	}
 
+	g_ptr_array_set_size (contacts, 0);
+}
+
+static void
+free_contact_ptrarray (GPtrArray *contacts)
+{
+	clear_contact_ptrarray (contacts);
 	g_ptr_array_free (contacts, TRUE);
 }
 
@@ -668,15 +675,13 @@ clear_contact_source (EContactStore *contact_store, ContactSource *source)
 		gtk_tree_path_free (path);
 	}
 
-	/* Free main and pending views, cached contacts */
+	/* Free main and pending views, clear cached contacts */
 
 	if (source->book_view) {
 		stop_view (contact_store, source->book_view);
 		g_object_unref (source->book_view);
-		free_contact_ptrarray (source->contacts);  /* This array should be empty here */
 
 		source->book_view = NULL;
-		source->contacts  = NULL;
 	}
 
 	if (source->book_view_pending) {
@@ -701,8 +706,9 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
 		return;
 	}
 
-	/* TODO: Error checking */
-	e_book_get_book_view (source->book, contact_store->query, NULL, -1, &view, NULL);
+	if (!e_book_is_opened (source->book) ||
+	    !e_book_get_book_view (source->book, contact_store->query, NULL, -1, &view, NULL))
+		view = NULL;
 
 	if (source->book_view) {
 		if (source->book_view_pending) {
@@ -712,13 +718,19 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
 		}
 
 		source->book_view_pending = view;
-		source->contacts_pending  = g_ptr_array_new ();
 
-		start_view (contact_store, view);
+		if (source->book_view_pending) {
+			source->contacts_pending = g_ptr_array_new ();
+			start_view (contact_store, view);
+		} else {
+			source->contacts_pending = NULL;
+		}
 	} else {
 		source->book_view = view;
-		source->contacts  = g_ptr_array_new ();
-		start_view (contact_store, view);
+
+		if (source->book_view) {
+			start_view (contact_store, view);
+		}
 	}
 }
 
@@ -760,7 +772,8 @@ e_contact_store_get_books (EContactStore *contact_store)
 void
 e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 {
-	ContactSource *source;
+	ContactSource  source;
+	ContactSource *indexed_source;
 	EBookView     *view;
 
 	g_return_if_fail (E_IS_CONTACT_STORE (contact_store));
@@ -770,15 +783,15 @@ e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 		return;
 	}
 
-	source = g_new0 (ContactSource, 1);
-	source->book = g_object_ref (book);
-	g_array_append_val (contact_store->contact_sources, *source);
-	g_free (source);
+	memset (&source, 0, sizeof (ContactSource));
+	source.book     = g_object_ref (book);
+	source.contacts = g_ptr_array_new ();
+	g_array_append_val (contact_store->contact_sources, source);
 
-	source = &g_array_index (contact_store->contact_sources, ContactSource,
-				 contact_store->contact_sources->len - 1);
+	indexed_source = &g_array_index (contact_store->contact_sources, ContactSource,
+					 contact_store->contact_sources->len - 1);
 
-	query_contact_source (contact_store, source);
+	query_contact_source (contact_store, indexed_source);
 }
 
 void
@@ -799,6 +812,7 @@ e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
 
 	source = &g_array_index (contact_store->contact_sources, ContactSource, source_index);
 	clear_contact_source (contact_store, source);
+	free_contact_ptrarray (source->contacts);
 	g_object_unref (book);
 
 	g_array_remove_index (contact_store->contact_sources, source_index);  /* Preserve order */

@@ -21,6 +21,7 @@ libedataserverui_1_2_la_SOURCES =	\
 	e-destination-store.c		\
 	e-contact-store.c		\
 	e-name-selector-dialog.c	\
+	e-name-selector-entry.c		\
 	e-name-selector-model.c		\
 	e-source-selector.c		\
 	e-source-selector-dialog.c	\
@@ -39,6 +40,7 @@ libedataserveruiinclude_HEADERS =	\
 	e-destination-store.h		\
 	e-contact-store.h		\
 	e-name-selector-dialog.h	\
+	e-name-selector-entry.h		\
 	e-name-selector-model.h		\
 	e-source-selector.h		\
 	e-source-selector-dialog.h	\

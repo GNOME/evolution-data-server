@@ -1,3 +1,36 @@
+2004-12-20  Hans Petter Jansson  <hpj@novell.com>
+
+	* libedataserverui/e-contact-store.c (clear_contact_ptrarray):
+	Implement.
+	(free_contact_ptrarray): Use clear_contact_ptrarray () to unref the
+	contacts.
+	(clear_contact_source): Keep the primary contact array around even
+	when it's empty.
+	(query_contact_source): Make sure the book is opened before we
+	try to open a view to it. Set view to NULL if we can't get one.
+	(e_contact_store_add_book): Allocate temporary memory on stack.
+	(e_contact_store_remove_book): Free the primary contact array.
+
+	* libedataserverui/e-destination-store.c
+	(e_destination_store_insert_destination): Implement.
+	(e_destination_store_append_destination): Renamed from
+	_add_destination (). Connect to destination's "changed" signal.
+	(e_destination_store_remove_destination): Disconnect from
+	"changed" signal.
+
+	* libedataserverui/e-name-selector-dialog.c (add_destination):
+	Use e_destination_store_append_destination ().
+
+	* libedataserverui/test-name-selector.c (start_test): We don't
+	need the gconf_path. Set up an ENameSelectorEntry for testing.
+	(main): Remove junk related to gconf_path.
+
+	* libedataserverui/e-name-selector-entry.[ch]: Implement a completing
+	entry for Evolution contacts. Still considered unstable.
+
+	* libedataserverui/Makefile.am (libedataserverui_1_2_la_SOURCES)
+	(libedataserveruiinclude_HEADERS): Add ENameSelectorEntry to build.
+
 2004-12-17  JP Rosevear  <jpr@novell.com>
 
 	* libedataserverui/test-name-selector.c (close_dialog): destroy

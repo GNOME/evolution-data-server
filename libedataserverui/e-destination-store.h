@@ -70,7 +70,9 @@ EDestination      *e_destination_store_get_destination    (EDestinationStore *de
 /* Returns a shallow copy; free the list when done, but don't unref elements */
 GList             *e_destination_store_list_destinations  (EDestinationStore *destination_store);
 
-void               e_destination_store_add_destination    (EDestinationStore *destination_store,
+void               e_destination_store_insert_destination (EDestinationStore *destination_store,
+							   gint index, EDestination *destination);
+void               e_destination_store_append_destination (EDestinationStore *destination_store,
 							   EDestination *destination);
 void               e_destination_store_remove_destination (EDestinationStore *destination_store,
 							   EDestination *destination);

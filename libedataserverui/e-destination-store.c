@@ -306,7 +306,35 @@ e_destination_store_list_destinations (EDestinationStore *destination_store)
 }
 
 void
-e_destination_store_add_destination (EDestinationStore *destination_store, EDestination *destination)
+e_destination_store_insert_destination (EDestinationStore *destination_store,
+					gint index, EDestination *destination)
+{
+	g_return_if_fail (E_IS_DESTINATION_STORE (destination_store));
+	g_return_if_fail (index >= 0);
+
+	if (find_destination_by_pointer (destination_store, destination) >= 0) {
+		g_warning ("Same destination added more than once to EDestinationStore!");
+		return;
+	}
+
+	g_object_ref (destination);
+
+	index = MIN (index, destination_store->destinations->len);
+
+	g_ptr_array_set_size (destination_store->destinations,
+			      destination_store->destinations->len + 1);
+
+	memmove (destination_store->destinations->pdata + index + 1,
+		 destination_store->destinations->pdata + index,
+		 (destination_store->destinations->len - 1) * sizeof (gpointer));
+
+	destination_store->destinations->pdata [index] = destination;
+	start_destination (destination_store, destination);
+	row_inserted (destination_store, index);
+}
+
+void
+e_destination_store_append_destination (EDestinationStore *destination_store, EDestination *destination)
 {
 	g_return_if_fail (E_IS_DESTINATION_STORE (destination_store));
 
@@ -318,6 +346,7 @@ e_destination_store_add_destination (EDestinationStore *destination_store, EDest
 	g_object_ref (destination);
 
 	g_ptr_array_add (destination_store->destinations, destination);
+	start_destination (destination_store, destination);
 	row_inserted (destination_store, destination_store->destinations->len - 1);
 }
 
@@ -334,6 +363,7 @@ e_destination_store_remove_destination (EDestinationStore *destination_store, ED
 		return;
 	}
 
+	stop_destination (destination_store, destination);
 	g_object_unref (destination);
 
 	g_ptr_array_remove_index (destination_store->destinations, n);

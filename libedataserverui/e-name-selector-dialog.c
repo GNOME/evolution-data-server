@@ -274,7 +274,7 @@ add_destination (EDestinationStore *destination_store, EContact *contact)
 
 	destination = e_destination_new ();
 	e_destination_set_contact (destination, contact, 0);
-	e_destination_store_add_destination (destination_store, destination);
+	e_destination_store_append_destination (destination_store, destination);
 	g_object_unref (destination);
 }
 
