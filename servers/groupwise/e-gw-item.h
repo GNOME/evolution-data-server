@@ -100,6 +100,8 @@ EGwItemType e_gw_item_get_item_type (EGwItem *item);
 void        e_gw_item_set_item_type (EGwItem *item, EGwItemType new_type);
 const char *e_gw_item_get_container_id (EGwItem *item);
 void        e_gw_item_set_container_id (EGwItem *item, const char *new_id);
+const char *e_gw_item_get_icalid (EGwItem *item);
+void        e_gw_item_set_icalid (EGwItem *item, const char *new_icalid);
 const char *e_gw_item_get_id (EGwItem *item);
 void        e_gw_item_set_id (EGwItem *item, const char *new_id);
 time_t      e_gw_item_get_creation_date (EGwItem *item);
@@ -162,8 +164,6 @@ typedef struct {
 		E_GW_ITEM_RECIPIENT_NONE
 	} type;
 } EGwItemRecipient;
-
-
 
 gboolean    e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 

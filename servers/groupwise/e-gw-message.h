@@ -37,6 +37,10 @@ void             e_gw_message_write_string_parameter_with_attribute (SoupSoapMes
 								     const char *value, 
 								     const char *attrubute_name,
 								     const char *attribute_value);
+void             e_gw_message_write_base64_parameter (SoupSoapMessage *msg,
+						      const char *name,
+						      const char *prefix,
+						      const char *value);
 
 void             e_gw_message_write_footer (SoupSoapMessage *msg);
 

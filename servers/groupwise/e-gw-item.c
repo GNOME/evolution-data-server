@@ -31,9 +31,6 @@
 #include "e-gw-connection.h"
 #include "e-gw-message.h"
 
-
-
-
 struct _EGwItemPrivate {
 	EGwItemType item_type;
 	char *container;
@@ -53,7 +50,10 @@ struct _EGwItemPrivate {
 	char *place;
 	GSList *recipient_list;
 	
-	/*properties for contacts */
+	/* properties for tasks/calendars */
+	char *icalid;
+
+	/* properties for contacts */
 	FullName *full_name;
 	GList *email_list;
 	GList *im_list;
@@ -64,8 +64,7 @@ struct _EGwItemPrivate {
 	/* changes */
 	GHashTable *additions;
 	GHashTable *updates;
-	GHashTable *deletions;
-	
+	GHashTable *deletions;	
 };
 
 static GObjectClass *parent_class = NULL;
@@ -183,6 +182,11 @@ e_gw_item_dispose (GObject *object)
 		if (priv->place) {
 			g_free (priv->place);
 			priv->place = NULL;
+		}
+
+		if (priv->icalid) {
+			g_free (priv->icalid);
+			priv->icalid = NULL;
 		}
 
 		if (priv->recipient_list) {
@@ -1023,7 +1027,6 @@ append_group_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	
 }
 
-
 EGwItem *
 e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param)
 {
@@ -1140,7 +1143,9 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			item->priv->end_date = e_gw_connection_get_date_from_string (value);
 			g_free (value);
 
-		} else if (!g_ascii_strcasecmp (name, "id"))
+		} else if (!g_ascii_strcasecmp (name, "iCalId"))
+			item->priv->icalid = soup_soap_parameter_get_string_value (child);
+		else if (!g_ascii_strcasecmp (name, "id"))
 			item->priv->id = soup_soap_parameter_get_string_value (child);
 
 		else if (!g_ascii_strcasecmp (name, "message"))
@@ -1196,6 +1201,24 @@ e_gw_item_set_container_id (EGwItem *item, const char *new_id)
 	if (item->priv->container)
 		g_free (item->priv->container);
 	item->priv->container = g_strdup (new_id);
+}
+
+const char *
+e_gw_item_get_icalid (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return (const char *) item->priv->icalid;
+}
+
+void
+e_gw_item_set_icalid (EGwItem *item, const char *new_icalid)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->icalid)
+		g_free (item->priv->icalid);
+	item->priv->icalid = g_strdup (new_icalid);
 }
 
 const char *
@@ -1433,6 +1456,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		soup_soap_message_add_attribute (msg, "type", "Appointment", "xsi", NULL);
 
 		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
+		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
 		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");
 		/* FIXME: distribution */
 		break;
@@ -1451,6 +1475,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		else
 			e_gw_message_write_string_parameter (msg, "completed", NULL, "0");
 
+		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
 		e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "");
 		break;
 	case E_GW_ITEM_TYPE_CONTACT :
@@ -1469,9 +1494,10 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	}
 
 	/* add all properties */
-	e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
+	if (priv->id)
+		e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
-	e_gw_message_write_string_parameter (msg, "message", NULL, priv->message ? priv->message : "");
+	e_gw_message_write_base64_parameter (msg, "message", NULL, priv->message ? priv->message : "");
 	if (priv->start_date != -1) {
 		dtstring = timet_to_string (priv->start_date);
 		e_gw_message_write_string_parameter (msg, "startDate", NULL, dtstring);
