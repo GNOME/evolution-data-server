@@ -1088,9 +1088,18 @@ AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 
 dnl --- Camel flags
-EVO_SET_COMPILE_FLAGS(CAMEL, glib-2.0 gthread-2.0 $mozilla_nss,
+
+zlib_found=false
+dnl deflateInit is a #define, use deflateEnd instead
+AC_CHECK_LIB(z, deflateEnd,
+    [ AC_CHECK_HEADER(zlib.h, zlib_found=true) ])                                                                                                                                                                            
+if test "x$zlib_found" = "xfalse"; then
+    AC_MSG_ERROR([*** zlib is required])
+fi
+
+EVO_SET_COMPILE_FLAGS(CAMEL, glib-2.0 gthread-2.0 $mozilla_nss, 
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS,
-	              $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $MANUAL_NSS_LIBS)
+	              -lz $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 AC_SUBST(CAMEL_GROUPWISE_CFLAGS)
