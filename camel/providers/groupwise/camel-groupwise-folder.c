@@ -633,7 +633,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	char *container_id = NULL ;
 	char *cache_file_name ;
 	time_t mod_time = time (0) ;
-	char time_string[100] = {0} ;
+	char time_string[100] = {0}, *t_str ;
 	const struct tm *tm ;
 	struct stat buf ;
 
@@ -659,12 +659,15 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 
 	tm = gmtime (&mod_time) ;
 	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm) ;
+	t_str = g_strdup (time_string);
 	
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
-
+	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
 					"distribution created attachments subject",
-					time_string, "New", "Mail", NULL, -1, &slist) ;
+					&t_str, "New", "Mail", NULL, -1, &slist) ;
+	
+	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
@@ -677,9 +680,12 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	}
 	g_slist_free (slist);
 	slist = NULL;
+	t_str = g_strdup (time_string);
+	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
 				"distribution created attachments subject",
-				time_string, "Modified", "Mail", NULL, -1, &slist) ;
+				&t_str, "Modified", "Mail", NULL, -1, &slist) ;
+	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);

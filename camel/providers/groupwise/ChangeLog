@@ -1,3 +1,11 @@
+2005-02-25  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_refresh_info):
+	* camel-groupwise-store.c: (groupwise_get_folder),
+	(groupwise_get_folder_info): Made changes since the
+	getQm function has been changed to take the fourth 
+	argument (startdate) as double pointer.
+
 2005-02-25  Harish Krishnaswamy  <kharish@novell.com>
 
 	* camel-groupwise-store.c: (groupwise_get_folder):

@@ -536,7 +536,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	if(summary_count) {
 		char *cache_file_name ;
 		time_t mod_time = time (0) ;
-		char time_string[100] = {0} ;
+		char time_string[100] = {0}, *t_str;
 		const struct tm *tm ;
 		struct stat buf;
 		
@@ -549,10 +549,13 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		tm = gmtime (&mod_time);
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 		camel_operation_start (NULL, _("Fetching summary information for new messages"));
+		t_str = g_strdup (time_string);
 
+		/* FIXME send the time stamp which the server sends */
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
 				"distribution attachments subject created",
-				time_string, "New", "Mail", NULL, -1, &slist) ;
+				&t_str, "New", "Mail", NULL, -1, &slist) ;
+		g_free (t_str), t_str = NULL;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
@@ -572,9 +575,12 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 		g_slist_free (slist);
 		slist = NULL;
+		t_str = g_strdup (time_string);
+		/* FIXME send the time stamp which the server sends */
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
 					"distribution attachments subject created",
-					time_string, "Modified", "Mail", NULL, -1, &slist) ; 
+					&t_str, "Modified", "Mail", NULL, -1, &slist) ; 
+		g_free (t_str), t_str = NULL;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
@@ -820,6 +826,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 				   (CAMEL_URL_HIDE_PASSWORD|
 				    CAMEL_URL_HIDE_PARAMS|
 				    CAMEL_URL_HIDE_AUTH) );
+
 	if ( url[strlen(url) - 1] != '/') {
 		temp_url = g_strconcat (url, "/", NULL) ;
 		g_free ((char *)url) ;
@@ -909,7 +916,6 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		else {
 			fi->name =  fi->full_name = g_strdup (name);
 			fi->uri = g_strconcat (url, "", name, NULL) ;
-
 		}
 
 		if (e_gw_container_get_is_shared_to_me (container))
