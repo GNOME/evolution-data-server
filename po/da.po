@@ -4819,6 +4819,14 @@ msgstr "Vælg en målmappe"
 msgid "_Destination"
 msgstr "_Målmappe"
 
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "Husk denne adgangs_kode"
+
+#: ../libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "_Husk denne adgangskode for resten af denne session"
+
 #: ../servers/groupwise/e-gw-connection.c:157
 msgid "Invalid connection"
 msgstr "Ugyldig forbindelse"
@@ -11806,12 +11814,6 @@ msgstr "Der opstod flere segmenteringsfejl; fejlvindue kan ikke vises\n"
 
 #~ msgid "Enter Password"
 #~ msgstr "Indtast adgangskode"
-
-#~ msgid "_Remember this password"
-#~ msgstr "Husk denne adgangs_kode"
-
-#~ msgid "_Remember this password for the remainder of this session"
-#~ msgstr "_Husk denne adgangskode for resten af denne session"
 
 #~ msgid "Could not save signature file: %s"
 #~ msgstr "Kunne ikke gemme signaturfilen: %s"

@@ -4853,6 +4853,14 @@ msgstr "Wybierz miejsce docelowe"
 msgid "_Destination"
 msgstr "Miejsce _docelowe"
 
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "_Zapamiętanie hasła"
+
+#: ../libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "_Zapamiętanie tego hasła na czas bieżącej sesji"
+
 #: ../servers/groupwise/e-gw-connection.c:157
 msgid "Invalid connection"
 msgstr "Błędne połączenie"

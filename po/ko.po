@@ -4776,6 +4776,14 @@ msgstr "대상을 선택하십시오"
 msgid "_Destination"
 msgstr "대상(_D):"
 
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "이 열쇠글 기억(_R)"
+
+#: ../libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "이 세션에서 이 열쇠글을 기억합니다(_R)"
+
 #: ../servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "연결이 잘못되었습니다"

@@ -4806,6 +4806,14 @@ msgstr "Seleccione destino"
 msgid "_Destination"
 msgstr "_Destino"
 
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "_Recuerda esta contraseña"
+
+#: ../libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "_Recordar esta clave durante el resto de esta sesión"
+
 #: ../servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "Conexión inválida"
