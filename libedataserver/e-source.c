@@ -257,8 +257,12 @@ e_source_set_group (ESource *source,
 	if (source->priv->group == group)
 		return;
 
+	if (source->priv->group != NULL)
+		g_object_weak_unref (G_OBJECT (source->priv->group), (GWeakNotify) group_weak_notify, source);
+
 	source->priv->group = group;
-	g_object_weak_ref (G_OBJECT (group), (GWeakNotify) group_weak_notify, source);
+	if (group != NULL)
+		g_object_weak_ref (G_OBJECT (group), (GWeakNotify) group_weak_notify, source);
 
 	g_signal_emit (source, signals[CHANGED], 0);
 }
