@@ -1,0 +1,7 @@
+camel/camel-news-address.c
+camel/camel-process.c
+camel/providers/nntp/camel-nntp-auth.c
+camel/providers/nntp/camel-nntp-grouplist.c
+camel/providers/nntp/camel-nntp-newsrc.c
+camel/providers/nntp/camel-nntp-utils.c
+camel/providers/nntp/test-newsrc.c

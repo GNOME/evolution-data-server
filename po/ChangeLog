@@ -1,5 +1,12 @@
 2005-02-07  JP Rosevear  <jpr@novell.com>
 
+	* POTFILES.skip: skip files that aren't built but might be needed
+	for reference
+
+	* POTFILES.in: remove dead files
+	
+2005-02-07  JP Rosevear  <jpr@novell.com>
+
 	* POTFILES.in: remove dead file
 
 2005-02-07  Jordi Mallach  <jordi@sindominio.net>
