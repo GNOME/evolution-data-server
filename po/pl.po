@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"POT-Creation-Date: 2004-01-29 16:26-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-04 09:05+0100\n"
 "PO-Revision-Date: 2002-09-24 01:06+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -24,7 +24,7 @@ msgid "Loading..."
 msgstr "Wczytywanie..."
 
 #: addressbook/backends/file/e-book-backend-file.c:394
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2860
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2861
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "Wyszukiwanie..."
@@ -54,11 +54,11 @@ msgstr "Usuwanie kontaktu na serwerze LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Modyfikowanie kontaktu na serwerze LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2783
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2784
 msgid "Receiving LDAP search results..."
 msgstr "Pobieranie wyników wyszukiwania na LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2880
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2881
 msgid "Error performing search"
 msgstr "Błąd przy wykonywaniu wyszukiwania"
 
@@ -548,21 +548,21 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Lista wyświetlanych adresów"
 
-#: addressbook/libebook/e-contact.c:1174
+#: addressbook/libebook/e-contact.c:1214
 msgid "Unnamed List"
 msgstr "Lista kontaktów bez nazwy"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:408
+#: calendar/backends/contacts/e-cal-backend-contacts.c:416
 msgid "Birthday"
 msgstr "Urodziny"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:430
+#: calendar/backends/contacts/e-cal-backend-contacts.c:438
 #, c-format
 msgid "Birthday: %s"
 msgstr "Urodziny: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:449
+#: calendar/backends/contacts/e-cal-backend-contacts.c:457
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Rocznica: %s"
@@ -571,11 +571,15 @@ msgstr "Rocznica: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nie można zapisać danych kalendarza: Błędny adres URI."
 
-#: calendar/backends/http/e-cal-backend-http.c:216
+#: calendar/backends/http/e-cal-backend-http.c:218
+msgid "Redirected to Invalid URI"
+msgstr "Przekierowanie na niepoprawny adres URI"
+
+#: calendar/backends/http/e-cal-backend-http.c:238
 msgid "Bad file format."
 msgstr "Błędny format pliku."
 
-#: calendar/backends/http/e-cal-backend-http.c:223
+#: calendar/backends/http/e-cal-backend-http.c:243
 msgid "Not a calendar."
 msgstr "To nie jest kalendarz."
 
@@ -888,41 +892,6 @@ msgstr ""
 "\"%s\" wymaga, aby wszystkie argumenty były napisami, lub aby podany był "
 "dokładnie jeden argument, będący fałszem logicznym (#f)"
 
-#. !/usr/bin/env python
-#. -*- Mode: python -*-
-#. ======================================================================
-#. FILE: Property.py
-#. CREATOR: eric
-#.
-#. DESCRIPTION:
-#.
-#.
-#. $Id$
-#. $Locker$
-#.
-#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
-#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
-#.
-#. This program is free software; you can redistribute it and/or modify
-#. it under the terms of either:
-#.
-#. The LGPL as published by the Free Software Foundation, version
-#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
-#.
-#. Or:
-#.
-#. The Mozilla Public License Version 1.0. You may obtain a copy of
-#. the License at http://www.mozilla.org/MPL/
-#. ======================================================================
-#. def icalerror_supress(arg):
-#. pass
-#. def icalerror_restore(a,b):
-#. pass
-#. Initialize all of the required keys
-#. Get the default kind of value for this property
-#. Use the kind of the existing value
-#. e1=icalerror_supress("MALFORMEDDATA")
-#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Wsparcie LDAP i plikowe książki adresowej Evolution"
