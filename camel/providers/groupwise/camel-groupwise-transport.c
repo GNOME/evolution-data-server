@@ -158,7 +158,7 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	CamelMimePart *mime_part = CAMEL_MIME_PART(message) ;
 	
 	guint part_count ;
-+	GSList *sent_item_list = NULL, *recipient_list = NULL, *attach_list = NULL ;
+	GSList *sent_item_list = NULL, *recipient_list = NULL, *attach_list = NULL ;
 	char *url = NULL ;
 	int i ;
 
@@ -298,7 +298,6 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	
 	camel_operation_end (NULL) ;
 
-	g_free (buffer) ;
 
 	return TRUE;
 }

@@ -68,6 +68,7 @@ void groupwise_transfer_online ( CamelFolder *source,
 				      CamelException *ex) ;
 
 static int gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args) ;
+void convert_to_calendar (EGwItem *item, char **str, int *len) ;
 
 #define d(x) x
 
@@ -674,7 +675,6 @@ groupwise_transfer_online ( CamelFolder *source, GPtrArray *uids,
 		*transferred_uids = NULL ;
 }
 
-}
 static void
 groupwise_expunge_uids_online (CamelFolder *folder, GPtrArray *uids, CamelException *ex)
 {
