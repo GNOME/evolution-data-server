@@ -2,6 +2,8 @@
 
 	** See bug #65329
 
+	* camel-vee-store.c (camel_vee-store_init): api chanes
+
 	* camel-vtrash-folder.c (camel_vtrash_folder_new): api chagne and
 	translate the short name.
 
