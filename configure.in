@@ -415,102 +415,6 @@ AC_SUBST(THREADS_LIBS)
 AC_SUBST(THREADS_CFLAGS)
 AC_DEFINE(ENABLE_THREADS,1,[Required])
 
-dnl ********
-dnl Kerberos
-dnl ********
-AC_ARG_WITH(krb5, [  --with-krb5=PREFIX      Location of Kerberos 5 libs/includes], with_krb5="$withval", with_krb5="no")
-AC_ARG_WITH(krb4, [  --with-krb4=PREFIX      Location of Kerberos 4 libs/includes], with_krb4="$withval", with_krb4="no")
-
-msg_krb5="no"
-if test "x${with_krb5}" != "xno"; then
-	LDFLAGS_save="$LDFLAGS"
-	
-	mitlibs="-lkrb5 -lk5crypto -lcom_err -lgssapi_krb5"
-	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken -lgssapi"
-	AC_CACHE_CHECK([for Kerberos 5], ac_cv_lib_kerberos5,
-	[
-		LDFLAGS="$LDFLAGS -L$with_krb5/lib $mitlibs"
-		AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
-		[
-			LDFLAGS="$LDFLAGS_save -L$with_krb5/lib $heimlibs"
-			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", ac_cv_lib_kerberos5="no")
-		])
-		LDFLAGS="$LDFLAGS_save"
-	])
-	if test "$ac_cv_lib_kerberos5" != "no"; then
-		AC_DEFINE(HAVE_KRB5,1,[Define if you have Krb5])
-		if test "$ac_cv_lib_kerberos5" = "$mitlibs"; then
-			AC_DEFINE(HAVE_MIT_KRB5,1,[Define if you have MIT Krb5])
-			KRB5_CFLAGS="-I$with_krb5/include"
-			msg_krb5="yes (MIT)"
-		else
-			AC_DEFINE(HAVE_HEIMDAL_KRB5,1,[Define if you have Heimdal])
-			KRB5_CFLAGS="-I$with_krb5/include/heimdal"
-			msg_krb5="yes (Heimdal)"
-		fi
-		KRB5_LDFLAGS="-L$with_krb5/lib $ac_cv_lib_kerberos5"
-	fi
-else
-	AC_MSG_CHECKING(for Kerberos 5)
-	AC_MSG_RESULT($with_krb5)
-fi
-
-msg_krb4="no"
-if test "x${with_krb4}" != "xno"; then
-	LDFLAGS_save="$LDFLAGS"
-	AC_CACHE_CHECK(for Kerberos 4, ac_cv_lib_kerberos4,
-	[
-		ac_cv_lib_kerberos4="no"
-
-		mitcompatlibs="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
-		# Look for MIT krb5 compat krb4
-		LDFLAGS="$LDFLAGS -L$with_krb4/lib $mitcompatlibs"
-		AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="$mitcompatlibs")
-		
-		if test "$ac_cv_lib_kerberos4" = "no"; then
-			# Look for KTH krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb -lcrypto -lcom_err -lroken"
-			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken")
-		fi
-		if test "$ac_cv_lib_kerberos4" = "no"; then
-			# Look for old MIT krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb"
-			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb",
-			[
-				LDFLAGS="$LDFLAGS -ldes"
-				AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -ldes")
-			])
-		fi
-	])
-	LDFLAGS="$LDFLAGS_save"
-	if test "$ac_cv_lib_kerberos4" != "no"; then
-		AC_DEFINE(HAVE_KRB4,1,[Define if you have Krb4])
-		msg_krb4="yes"
-		if test -f "$with_krb4/include/krb.h" -o -f "$with_krb4/include/port-sockets.h"; then
-			KRB4_CFLAGS="-I$with_krb4/include"
-		fi
-		if test -d "$with_krb4/include/kerberosIV"; then
-			KRB4_CFLAGS="$KRB4_CFLAGS -I$with_krb4/include/kerberosIV"
-		fi
-		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_lib_kerberos4"
-		
-		CFLAGS_save="$CFLAGS"
-		CFLAGS="$CFLAGS $KRB4_CFLAGS"
-		AC_TRY_COMPILE([#include "krb.h"
-		int krb_sendauth;
-		],[return 0],[AC_DEFINE(NEED_KRB_SENDAUTH_PROTO,1,[Need krb_sendauth proto])],)
-		CFLAGS="$CFLAGS_save"
-	fi
-else
-	AC_MSG_CHECKING(for Kerberos 4)
-	AC_MSG_RESULT(${with_krb4})
-fi
-
-AC_SUBST(KRB5_CFLAGS)
-AC_SUBST(KRB5_LDFLAGS)
-AC_SUBST(KRB4_CFLAGS)
-AC_SUBST(KRB4_LDFLAGS)
-
 dnl *******************
 dnl GObject marshalling
 dnl *******************
@@ -727,7 +631,6 @@ echo "
 fi
 echo "\
 	LDAP support:     $msg_ldap
-	Kerberos 4/5:     $msg_krb4/$msg_krb5
 	Gtk-doc:	  $enable_gtk_doc"
 
 if test x$enable_gtk_doc = xyes; then

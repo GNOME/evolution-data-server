@@ -1,3 +1,7 @@
+2003-11-07  Rodney Dawes  <dobey@ximian.com>
+
+	* configure.in: Remove kerberos checks since we don't need them here
+
 2003-11-06  JP Rosevear <jpr@ximian.com>
 
 	* configure.in: output new .pc file
