@@ -21,11 +21,13 @@ libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
 	e-categories-dialog.c		\
 	e-destination-store.c		\
+	e-book-auth-util.c		\
 	e-contact-store.c		\
 	e-name-selector.c		\
 	e-name-selector-dialog.c	\
 	e-name-selector-entry.c		\
 	e-name-selector-model.c		\
+	e-passwords.c			\
 	e-source-selector.c		\
 	e-source-selector-dialog.c	\
 	e-source-option-menu.c		\
@@ -43,11 +45,13 @@ libedataserveruiincludedir = $(privincludedir)/libedataserverui
 libedataserveruiinclude_HEADERS =	\
 	e-categories-dialog.h		\
 	e-destination-store.h		\
+	e-book-auth-util.h		\
 	e-contact-store.h		\
 	e-name-selector.h		\
 	e-name-selector-dialog.h	\
 	e-name-selector-entry.h		\
 	e-name-selector-model.h		\
+	e-passwords.h			\
 	e-source-selector.h		\
 	e-source-selector-dialog.h	\
 	e-source-option-menu.h		\

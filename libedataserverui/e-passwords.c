@@ -52,7 +52,6 @@
 
 #include "e-passwords.h"
 #include "libedataserver/e-msgport.h"
-#include "widgets/misc/e-error.h"
 
 #ifndef ENABLE_THREADS
 #define ENABLE_THREADS (1)

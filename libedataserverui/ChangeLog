@@ -1,3 +1,22 @@
+2005-02-23  Hans Petter Jansson  <hpj@novell.com>
+
+	* Makefile.am (libedataserverui_1_2_la_SOURCES)
+	(libedataserveruiinclude_HEADERS): Add e-book-auth-util and
+	e-passwords.
+
+	* e-name-selector-dialog.c (source_selected): Use the authenticating
+	book loader utility.
+	(search_changed): Upgrade query to something that works with all
+	backends.
+
+	* e-name-selector-entry.c (setup_default_contact_store): Use the
+	authenticating book loader utility.
+
+	* e-book-auth-util.c:
+	* e-book-auth-util.h: Add the authenticating book loader utility.
+
+	* e-passwords.c: Remove e-error.h include, it's unnecessary.
+
 2005-02-21  Harry Lu <harry.lu@sun.com>
 
 	Fix for 9605.

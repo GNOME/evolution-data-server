@@ -34,6 +34,7 @@
 #include <libebook/e-book.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
+#include <libedataserverui/e-book-auth-util.h>
 
 #include "e-name-selector-entry.h"
 
@@ -1348,11 +1349,10 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 			if (!completion || g_ascii_strcasecmp (completion, "true"))
 				continue;
 
-			book = e_book_new (source, NULL);
+			book = e_load_book_source (source, NULL, NULL);
 			if (!book)
 				continue;
 
-			e_book_async_open (book, TRUE, NULL, NULL);
 			e_contact_store_add_book (name_selector_entry->contact_store, book);
 			g_object_unref (book);
 		}

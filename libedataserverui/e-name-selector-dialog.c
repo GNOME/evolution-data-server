@@ -34,6 +34,7 @@
 #include <libedataserverui/e-source-option-menu.h>
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-contact-store.h>
+#include <libedataserverui/e-book-auth-util.h>
 #include "e-name-selector-dialog.h"
 
 typedef struct {
@@ -539,12 +540,8 @@ source_selected (ENameSelectorDialog *name_selector_dialog, ESource *source)
 	remove_books (name_selector_dialog);
 
 	/* Start loading selected book */
-	name_selector_dialog->pending_book = e_book_new (source, NULL);
-	if (!name_selector_dialog->pending_book)
-		return;
-
-	e_book_async_open (name_selector_dialog->pending_book, TRUE,
-			   book_opened, name_selector_dialog);
+	name_selector_dialog->pending_book = e_load_book_source (source, book_opened,
+								 name_selector_dialog);
 }
 
 /* --------------- *
@@ -562,7 +559,11 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 
 	text = gtk_entry_get_text (name_selector_dialog->search_entry);
 	text_escaped = escape_sexp_string (text);
-	query_string = g_strdup_printf ("(contains \"file_as\" %s)", text_escaped);
+	query_string = g_strdup_printf ("(or (beginswith \"file_as\" %s) "
+					"    (beginswith \"full_name\" %s) "
+					"    (beginswith \"email\" %s) "
+					"    (beginswith \"nickname\" %s))",
+					text_escaped, text_escaped, text_escaped, text_escaped);
 	book_query = e_book_query_from_string (query_string);
 	g_free (query_string);
 	g_free (text_escaped);
