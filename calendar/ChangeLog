@@ -1,9 +1,14 @@
+2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal.c (e_cal_get_alarms_for_object): pass the correct
+	callback data for e_cal_resolve_tzid_cb().
+
 2004-01-07  JP Rosevear <jpr@ximian.com>
 
 	* libedata-cal/Makefile.am: remove DISABLE_DEPRECATED flags
 
 	* libecal/Makefile.am: ditto
-	
+
 2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libecal/e-cal.c (build_component_alarms_list): clone the icalcomponent

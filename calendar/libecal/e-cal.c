@@ -2828,7 +2828,7 @@ e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
 	}
 
 	*alarms = e_cal_util_generate_alarms_for_comp (comp, start, end, omit, e_cal_resolve_tzid_cb,
-						       icalcomp, priv->default_zone);
+						       ecal, priv->default_zone);
 
 	return TRUE;
 }
