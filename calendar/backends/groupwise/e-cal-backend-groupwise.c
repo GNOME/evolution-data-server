@@ -27,7 +27,12 @@
 
 #include <string.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <libedataserver/e-xml-hash-utils.h>
 #include <libedata-cal/e-cal-backend-cache.h>
+#include <libedata-cal/e-cal-backend-util.h>
+#include <libecal/e-cal-component.h>
+#include <libecal/e-cal-time-util.h>
 #include "e-cal-backend-groupwise.h"
 #include "e-gw-connection.h"
 
@@ -35,7 +40,6 @@
 struct _ECalBackendGroupwisePrivate {
 	/* A mutex to control access to the private structure */
 	GMutex *mutex;
-
 	EGwConnection *cnc;
 	ECalBackendCache *cache;
 	gboolean read_only;
@@ -43,6 +47,7 @@ struct _ECalBackendGroupwisePrivate {
 	char *username;
 	char *password;
 	CalMode mode;
+	icaltimezone *default_zone;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -50,6 +55,9 @@ static void e_cal_backend_groupwise_finalize (GObject *object);
 
 #define PARENT_TYPE E_TYPE_CAL_BACKEND_SYNC
 static ECalBackendClass *parent_class = NULL;
+
+/* Time interval in milliseconds for obtaining changes from server and refresh the cache. */
+#define CACHE_REFRESH_INTERVAL 600000
 
 /* Dispose handler for the file backend */
 static void
@@ -110,7 +118,6 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
-
 
 /* Calendar backend methods */
 
@@ -187,49 +194,57 @@ convert_uri (const char *gw_uri)
 	return vuri;
 }
 
+/* FIXME: This method is also in the file backend. Can be moved to
+ * ECalComponent. */
+static const char *
+get_rid_string (ECalComponent *comp)
+{
+        ECalComponentRange range;
+        struct icaltimetype tt;
+                                                                                   
+        e_cal_component_get_recurid (comp, &range);
+        if (!range.datetime.value)
+                return "0";
+        tt = *range.datetime.value;
+        e_cal_component_free_range (&range);
+                                                                                   
+        return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
+                icaltime_as_ical_string (tt) : "0";
+}
+
 /* Initialy populate the cache from the server */
-//static EGwConnectionStatus
 static EGwConnectionStatus
 populate_cache (ECalBackendGroupwisePrivate *priv)
 {
 	EGwConnectionStatus status;
-	SoupSoapParameter *param;
+        ECalComponent *comp;
 	const char *uid;
 	const char *rid;
-	const char *calobj;
         GSList *list = NULL, *l;
 
         /* get all the objects from the server */
-        status = e_gw_connection_get_items (priv->cnc, &list);
+        status = e_gw_connection_get_items (priv->cnc, NULL, &list);
         if (status != E_GW_CONNECTION_STATUS_OK)
                 return status;
-
-        /* update the cache */
-        g_mutex_lock (priv->mutex);
-
-        for (l = list; l; l = l->next) {
-		param = (SoupSoapParameter *) l->data;
-		uid = soup_soap_parameter_get_first_child_by_name (param, "iCalId");
-		rid = soup_soap_parameter_get_first_child_by_name (param, "recurrance");
-		calobj = soup_soap_parameter_get_string_value (param);
-		e_cal_backend_cache_put_component (priv->cache, uid, rid, calobj);
+        
+        for (l = list; l != NULL; l = g_slist_next(l)) {
+                comp = E_CAL_COMPONENT (l->data);
+		e_cal_component_get_uid (comp, &uid);
+                rid = g_strdup (get_rid_string (comp));
+                /* l contains e-cal-components*/
+                e_cal_component_commit_sequence (comp);
+		e_cal_backend_cache_put_component (priv->cache, uid, rid, 
+                                e_cal_component_get_as_string (comp));
         }
-
-	g_mutex_unlock (priv->mutex);
-
-	return E_GW_CONNECTION_STATUS_OK;        
+        return E_GW_CONNECTION_STATUS_OK;        
                                                                                                                     
 }
 
-static void
+static EGwConnectionStatus 
 update_cache (gpointer *data)
 {
-	EGwConnection *cnc;
-
-        cnc = E_GW_CONNECTION (data);
-        /* FIXME: Get all changes from the server since last poll  */
-        /* FIXME: parse the response and update the cache*/
-        /*status =  e_gw_connection_get_items_with_Filter (cnc, &list);*/
+        /* FIXME: to implemented using the getDeltas call */
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 /* Open handler for the file backend */
@@ -246,6 +261,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	g_mutex_lock (priv->mutex);
 
 	/* create the local cache */
+        /* FIXME: if the cache already exists - read it and get deltas. */
 	if (priv->cache)
 		g_object_unref (priv->cache);
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
@@ -260,7 +276,8 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	priv->mode = CAL_MODE_LOCAL;
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
-
+        priv->default_zone = icaltimezone_get_utc_timezone ();        
+		
 	g_mutex_unlock (priv->mutex);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -361,8 +378,7 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 								   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
 								   GNOME_Evolution_Calendar_MODE_REMOTE);
 				} else {
-					/* FIXME : add a symbolic constant for the time-out */
-					g_timeout_add (600000, (GSourceFunc) update_cache, (gpointer) cbgw);
+                                        g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) update_cache, (gpointer) cbgw);
 
 					priv->mode = CAL_MODE_REMOTE;
 					e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
@@ -404,9 +420,6 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 	case ICAL_VTODO_COMPONENT:
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
 		break;
-	case ICAL_VJOURNAL_COMPONENT:
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
-		break;
 	default:
 		g_object_unref (comp);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -418,7 +431,7 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 	return GNOME_Evolution_Calendar_Success;
 }
 
-/* Get_object_component handler for the file backend */
+/* Get_object_component handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
 {
@@ -443,17 +456,17 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 	return GNOME_Evolution_Calendar_ObjectNotFound;
 }
 
-/* Get_timezone_object handler for the file backend */
+/* Get_timezone_object handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
 {
-	ECalBackendGroupwise *cbfile;
+	ECalBackendGroupwise *cbgw;
         ECalBackendGroupwisePrivate *priv;
         icaltimezone *zone;
         icalcomponent *icalcomp;
 
-        cbfile = E_CAL_BACKEND_GROUPWISE (backend);
-        priv = cbfile->priv;
+        cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+        priv = cbgw->priv;
 
         g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
@@ -485,13 +498,13 @@ e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal
 {
 }
 
-/* Get_objects_in_range handler for the file backend */
+/* Get_objects_in_range handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
 {
 }
 
-/* get_query handler for the file backend */
+/* get_query handler for the groupwise backend */
 static void
 e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 {
@@ -546,6 +559,7 @@ static ECalBackendSyncStatus
 e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
 }
+
 
 /* Object initialization function for the file backend */
 static void
