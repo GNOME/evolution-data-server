@@ -4274,6 +4274,8 @@ e_cal_get_error_message (ECalendarStatus status)
 		return _("Authentication failed");
 	case E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED :
 		return _("Authentication required");
+	case E_CALENDAR_STATUS_UNABLE_TO_BOOK :
+		return _("Unable to book time");
 	case E_CALENDAR_STATUS_CORBA_EXCEPTION :
 		return _("A CORBA exception has occurred");
 	case E_CALENDAR_STATUS_OTHER_ERROR :

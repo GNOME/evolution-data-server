@@ -2119,10 +2119,6 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		e_cal_component_set_created (comp, &current);
 		e_cal_component_set_last_modified (comp, &current);
 
-		/* sanitize the component*/
-		/* XFFIXME We already checked for the timezones above */
-		sanitize_component (cbfile, comp); 
-
 		e_cal_component_get_uid (comp, &uid);
 		rid = e_cal_component_get_recurid_as_string (comp);
 
@@ -2150,6 +2146,8 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 			break;
 		case ICAL_METHOD_ADD:
 			/* FIXME This should be doable once all the recurid stuff is done */
+			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			goto error;
 			break;
 		case ICAL_METHOD_COUNTER:
 			status = GNOME_Evolution_Calendar_UnsupportedMethod;

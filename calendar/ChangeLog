@@ -1,3 +1,12 @@
+2004-05-28  JP Rosevear  <jpr@novell.com>
+
+	Fixes #55524
+	
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_receive_objects): don't sanitize the
+	component, we already check for valid timezones and the zones
+	aren't merged in yet anyhow
+
 2004-05-28  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-data-cal-factory.c (backend_last_client_gone_cb):
