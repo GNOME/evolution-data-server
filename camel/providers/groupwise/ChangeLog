@@ -1,3 +1,7 @@
-
+2005-02-01 Vivek Jain <jvivek@novell.com>
+  see bug #71758 
+ * camel-groupwise-store.c 
+ (groupwise_get_folder_info) : set the folder type of Inbox to Inbox using
+ flag	
 Refer to main changelog for earlier changes.
 

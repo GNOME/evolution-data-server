@@ -817,13 +817,16 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		gchar *par_name = NULL;
 		EGwContainer *container = E_GW_CONTAINER (folder_list->data) ;
 		EGwContainerType type = e_gw_container_get_container_type (container) ;
-		
+
 		if (e_gw_container_is_root (container)) 
 			continue ;
 		if ( (type == E_GW_CONTAINER_TYPE_CALENDAR) || (type == E_GW_CONTAINER_TYPE_CONTACTS) )
 			continue ;
 
 		fi = g_new0 (CamelFolderInfo, 1);
+
+		if (type == E_GW_CONTAINER_TYPE_INBOX)
+			fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
 
 		/*
 		  parent_hash contains the "parent id <-> container id" combination. So we form
