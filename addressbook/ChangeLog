@@ -1,3 +1,9 @@
+2004-04-14  Chris Toshok  <toshok@ximian.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_remove): fix c&p error, unlink filename and
+	summary_filename, not filename twice.
+
 2004-04-10  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

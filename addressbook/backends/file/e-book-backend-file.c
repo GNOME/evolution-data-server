@@ -1039,7 +1039,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	/* unref the summary before we remove the file so it's not written out again */
 	g_object_unref (bf->priv->summary);
 	bf->priv->summary = NULL;
-	if (-1 == unlink (bf->priv->filename))
+	if (-1 == unlink (bf->priv->summary_filename))
 		g_warning ("failed to remove summary file `%s`: %s", bf->priv->summary_filename, strerror (errno));
 
 	dir = g_dir_open (bf->priv->dirname, 0, NULL);
