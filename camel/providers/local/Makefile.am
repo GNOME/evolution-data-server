@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-libcamellocalincludedir = $(privincludedir)/camel
-
 camel_provider_LTLIBRARIES = libcamellocal.la
 camel_provider_DATA = libcamellocal.urls
 
@@ -30,7 +28,7 @@ libcamellocal_la_SOURCES = 			\
 	camel-spool-store.c			\
 	camel-spool-summary.c
 
-libcamellocalinclude_HEADERS =			\
+noinst_HEADERS =				\
 	camel-local-folder.h			\
 	camel-local-store.h			\
 	camel-local-summary.h			\
@@ -45,9 +43,7 @@ libcamellocalinclude_HEADERS =			\
 	camel-maildir-summary.h			\
 	camel-spool-folder.h			\
 	camel-spool-store.h			\
-	camel-spool-summary.h
-
-noinst_HEADERS =				\
+	camel-spool-summary.h			\
 	camel-local-private.h
 
 libcamellocal_la_LDFLAGS = -avoid-version -module

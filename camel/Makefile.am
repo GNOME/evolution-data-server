@@ -2,11 +2,17 @@
 
 SUBDIRS = . providers tests
 
+%-$(BASE_VERSION).pc: %.pc
+	 cp $< $@
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = camel-$(BASE_VERSION).pc
+
 libcamelincludedir = $(privincludedir)/camel
 libcamel_providerincludedir = $(privincludedir)/camel
 
-camellibexecdir = $(privlibexecdir)/camel
-camellibexec_PROGRAMS =	camel-lock-helper camel-index-control
+camellibexecdir = $(libexecdir)
+camellibexec_PROGRAMS =	camel-lock-helper-1.2 camel-index-control-1.2
 
 privlib_LTLIBRARIES = libcamel.la libcamel-provider.la
 
@@ -248,28 +254,28 @@ libcamel_la_LIBADD =				\
 	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la 	\
 	$(CAMEL_LIBS)
 
-camel_lock_helper_SOURCES = 			\
+camel_lock_helper_1_2_SOURCES = 		\
 	camel-lock-helper.c 			\
 	camel-lock-helper.h
 
 # NOTE: This needs to be cleaned up, it shouldn't link with all this crap,
 # because it might be setuid.
-camel_lock_helper_LDADD =			\
+camel_lock_helper_1_2_LDADD =			\
 	camel-lock.o				\
 	$(libcamel_la_LIBADD)
 
-camel_index_control_SOURCES =			\
+camel_index_control_1_2_SOURCES =		\
 	camel-index-control.c
 
-camel_index_control_LDADD =			\
+camel_index_control_1_2_LDADD =			\
 	libcamel.la				\
 	$(libcamel_la_LIBADD)
 
 install-exec-hook:
 	@if test -n "$(CAMEL_LOCK_HELPER_USER)"; then \
 	    if test `whoami` = root ; then \
-	 	chown $(CAMEL_LOCK_HELPER_USER) $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
-		chmod u+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
+	 	chown $(CAMEL_LOCK_HELPER_USER) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
+		chmod u+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
 	    else \
 	    	echo '*** WARNING ***' ; \
 		    echo "Camel will not be able to open mbox files until you perform the following steps:" ; \
@@ -283,14 +289,14 @@ install-exec-hook:
 	fi
 	@if test -n "$(CAMEL_LOCK_HELPER_GROUP)"; then \
 	    if test `whoami` = root ; then \
-	    	chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
-		    chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
+	    	chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
+		    chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
 	    else \
 	    	echo '*** WARNING ***' ; \
 		    echo "Camel will not be able to open mbox files until you perform the following steps:" ; \
 		    echo "    1. Become root" ; \
-		    echo "    2. chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper" ; \
-		    echo "    3. chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper" ; \
+		    echo "    2. chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION)" ; \
+		    echo "    3. chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION)" ; \
 		    echo '*** WARNING ***' ; \
 	    fi \
 	else \
@@ -298,11 +304,13 @@ install-exec-hook:
 	fi
 
 noinst_HEADERS =				\
+	broken-date-parser.h			\
 	camel-charset-map-private.h		\
 	camel-private.h				\
 	camel-search-private.h			\
 	camel-html-parser.h
 
 EXTRA_DIST =					\
+	$(pkgconfig_DATA:.pc=.pc.in) 		\
 	ChangeLog.pre-1-4			\
 	README

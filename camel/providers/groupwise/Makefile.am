@@ -12,7 +12,7 @@ INCLUDES = \
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/camel/providers/imap		\
 	-I$(top_srcdir)/camel/providers/smtp		\
-	$(CAMEL_CFLAGS)			\
+	$(CAMEL_GROUPWISE_CFLAGS)			\
 	-DCAMEL_PROVIDERDIR=\"$(camel_providerdir)\"	\
 	-DG_LOG_DOMAIN=\"camel-groupwise-provider\"
 

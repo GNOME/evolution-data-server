@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-libcamelsmtpincludedir = $(privincludedir)/camel
-
 camel_provider_LTLIBRARIES = libcamelsmtp.la
 camel_provider_DATA = libcamelsmtp.urls
 
@@ -16,9 +14,8 @@ libcamelsmtp_la_SOURCES = 			\
 	camel-smtp-provider.c			\
 	camel-smtp-transport.c
 
-libcamelsmtpinclude_HEADERS =			\
+noinst_HEADERS =			\
 	camel-smtp-transport.h
-
 
 libcamelsmtp_la_LDFLAGS = -avoid-version -module
 
