@@ -44,8 +44,7 @@ struct _EBookBackendGroupwisePrivate {
 	gboolean is_writable;
 	char *summary_file_name;
 	EBookBackendSummary *summary;
-	char *old_name;
-	gboolean to_be_renamed;
+	gboolean is_summary_ready;
 };
 
 #define ELEMENT_TYPE_SIMPLE 0x01
@@ -1099,7 +1098,7 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 	if (egwb->priv->cnc == NULL) {
 		e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 	}
-       
+       	
 	contact = e_contact_new_from_vcard(vcard);
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_item_type (item, e_contact_get (contact, E_CONTACT_IS_LIST) ? E_GW_ITEM_TYPE_GROUP :E_GW_ITEM_TYPE_CONTACT);
@@ -1428,10 +1427,8 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 				else 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
 			}
-			else if (sexp_data->is_personal_book)
-				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, gw_field_name, str);
 			else 
-				sexp_data->is_filter_valid = FALSE;
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, gw_field_name, str);
 		}
 		else 
 		     sexp_data->is_filter_valid = FALSE; 
@@ -1479,10 +1476,9 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 				else 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
 			}
-			else if (sexp_data->is_personal_book)
-				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, gw_field_name, str);
 			else 
-				sexp_data->is_filter_valid = FALSE;
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, gw_field_name, str);
+		
 		}
 		else 
 		     sexp_data->is_filter_valid = FALSE;
@@ -1532,10 +1528,9 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 				else 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
 			}
-			else if (sexp_data->is_personal_book)
-				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, gw_field_name, str);
 			else 
-				sexp_data->is_filter_valid = FALSE;
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, gw_field_name, str);
+			
 		}
 		else 
 			sexp_data->is_filter_valid = FALSE;
@@ -1602,10 +1597,8 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 				else 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
 			}
-			else if (sexp_data->is_personal_book)
-				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, gw_field_name, str);
 			else 
-				sexp_data->is_filter_valid = FALSE;
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, gw_field_name, str);
 		}
 		else 
 			sexp_data->is_filter_valid = FALSE;
@@ -1816,28 +1809,30 @@ book_view_thread (gpointer data)
 	gwb  = closure->bg;
 	gw_items = NULL;
 
+
 	bonobo_object_ref (book_view);
+	g_mutex_lock (closure->mutex);
+	g_cond_signal (closure->cond);
+	g_mutex_unlock (closure->mutex);
+
 	if (gwb->priv->cnc == NULL) {
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_AuthenticationRequired);
 		bonobo_object_unref (book_view);
 		return NULL; 
 	}
-	e_data_book_view_notify_status_message (book_view, _("Searching..."));
-	g_mutex_lock (closure->mutex);
-	g_cond_signal (closure->cond);
-	g_mutex_unlock (closure->mutex);
+
+
 	query = e_data_book_view_get_card_query (book_view);
-	
+	e_data_book_view_notify_status_message (book_view, _("Searching..."));
 	status =  E_GW_CONNECTION_STATUS_OK;
-	if (e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {
+	if (gwb->priv->is_summary_ready && e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {
 	
 		ids = e_book_backend_summary_search (gwb->priv->summary, query);
 		if (ids->len > 0)
 			status = e_gw_connection_get_items_from_ids (gwb->priv->cnc, gwb->priv->container_id, NULL, ids, &gw_items);
 		g_ptr_array_free (ids, TRUE);
 	} else { 
-		if (strcmp (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
-			filter = e_book_backend_groupwise_build_gw_filter (gwb, query);
+		filter = e_book_backend_groupwise_build_gw_filter (gwb, query);
 		status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, NULL, filter, &gw_items);
 	}
 	
@@ -1883,7 +1878,7 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
        	g_mutex_lock (closure->mutex);
 	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
 	g_cond_wait (closure->cond, closure->mutex);
-
+	
 	/* at this point we know the book view thread is actually running */
 	g_mutex_unlock (closure->mutex);
 }
@@ -1924,8 +1919,10 @@ build_summary (EBookBackendGroupwise *ebgw)
 	GList *gw_items = NULL;
 	EContact *contact;
 	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, NULL, NULL, &gw_items);
-	if (status != E_GW_CONNECTION_STATUS_OK)
+	if (status != E_GW_CONNECTION_STATUS_OK) 
 		return FALSE;
+
+
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), ebgw->priv->categories_by_id);
@@ -1934,6 +1931,7 @@ build_summary (EBookBackendGroupwise *ebgw)
 		g_object_unref (gw_items->data);
 		
 	}
+	ebgw->priv->is_summary_ready = TRUE;
 	g_list_free (gw_items);
 	return FALSE;
 }
@@ -1960,6 +1958,7 @@ update_summary (EBookBackendGroupwise *ebgw)
 	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, NULL, filter, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK)
 		return FALSE;
+	
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		char *id;
 		contact = e_contact_new ();
@@ -1976,6 +1975,7 @@ update_summary (EBookBackendGroupwise *ebgw)
 		
 		    
 	}
+	ebgw->priv->is_summary_ready = TRUE;
 	g_object_unref (filter);
 	g_list_free (gw_items);
 	return FALSE;
@@ -2035,9 +2035,13 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
              
 	e_util_mkdir_hier (g_path_get_dirname (priv->summary_file_name), 0700);
 	priv->summary = e_book_backend_summary_new (priv->summary_file_name, 5000);
-       	if (e_book_backend_summary_load (priv->summary) == FALSE)
-		g_idle_add ((GSourceFunc)build_summary ,ebgw);  
-	g_idle_add ((GSourceFunc)update_summary ,ebgw);
+       	
+	if (priv->is_writable) { /* no summaries for system address book*/
+		if(e_book_backend_summary_load (priv->summary) == FALSE)
+			g_idle_add ((GSourceFunc)build_summary ,ebgw);  
+		else 
+			g_idle_add ((GSourceFunc)update_summary ,ebgw);
+	}
 }
 
 static void
@@ -2216,6 +2220,7 @@ e_book_backend_groupwise_dispose (GObject *object)
 			bgw->priv->summary_file_name = NULL;
 		}
 		if (bgw->priv->summary) {
+			e_book_backend_summary_save(bgw->priv->summary);
 			g_object_unref (bgw->priv->summary);
 			bgw->priv->summary = NULL;
 		}
@@ -2268,6 +2273,7 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->is_writable = TRUE;
+	priv->is_summary_ready = FALSE;
 	backend->priv = priv;
 	
 }

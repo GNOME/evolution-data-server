@@ -1,3 +1,15 @@
+2004-07-03  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(book_view_thread) : fix the problem
+	of returning from the fucntion without singalling the
+	parent thread when cnc is null. A probable fix for #60947
+	Also send the query to server when summary is not present
+	(build_summary), (update_summary) : set priv->is_summary_ready 
+	to TRUE when summary loading is done  
+	 
+
+	
 2004-06-26  Chris Toshok  <toshok@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c (get_ldap_library_info): use
