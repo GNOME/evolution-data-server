@@ -64,6 +64,7 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	switch (soup_soap_parameter_get_int_value (subparam)) {
 	case 0 : return E_GW_CONNECTION_STATUS_OK;
 	case 59905 : return E_GW_CONNECTION_STATUS_BAD_PARAMETER;
+	case 59914: return E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED;
 		/* FIXME: map all error codes */
 	}
 
