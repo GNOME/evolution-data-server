@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:3.0
+X-EVOLUTION-FILE-AS:AttributeParam\, Invalid
+FN:Invalid AttributeParam
+N:AttributeParam;Invalid;;;
+NOPARAM;:pas-id-4094434A00000001
+TAIL;PARAM=value;:pas-id-4094434A00000001
+MIDDLE;PARAM=value;;PARAM2=value2:pas-id-4094434A00000001
+END:VCARD

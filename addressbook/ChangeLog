@@ -1,3 +1,9 @@
+2004-08-03  Chris Toshok  <toshok@ximian.com>
+
+	* tests/vcard/Makefile.am (EXTRA_DIST): add 11.vcf.
+
+	* tests/vcard/11.vcf: new test, for missing attribute parameters.
+
 2004-07-23  Sivaiah Nallagatla <snallagatla@novell.com>
 
        * backends/groupwise/e-book-backend-groupwise.c
