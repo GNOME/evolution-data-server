@@ -7,21 +7,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-05 12:59+0100\n"
-"PO-Revision-Date: 2005-03-05 17:28-0300\n"
+"POT-Creation-Date: 2005-04-02 12:15+0200\n"
+"PO-Revision-Date: 2005-04-02 13:33-0300\n"
 "Last-Translator: Afonso Celso Medina <medina@maua.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:513
+#: addressbook/backends/file/e-book-backend-file.c:519
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Carregando..."
 
-#: addressbook/backends/file/e-book-backend-file.c:515
+#: addressbook/backends/file/e-book-backend-file.c:521
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3401
@@ -555,7 +555,7 @@ msgid "Category List"
 msgstr "Lista de categorias"
 
 #: addressbook/libebook/e-contact.c:224
-#: libedataserverui/e-categories-dialog.c:371
+#: libedataserverui/e-categories-dialog.c:372
 msgid "Categories"
 msgstr "Categorias"
 
@@ -602,7 +602,7 @@ msgid "Last Revision"
 msgstr "Última Revisão"
 
 #: addressbook/libebook/e-contact.c:1210
-#: addressbook/libebook/e-destination.c:616
+#: addressbook/libebook/e-destination.c:617
 msgid "Unnamed List"
 msgstr "Lista sem nome"
 
@@ -627,16 +627,16 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Não é possível salvar dados da agenda: URI malformada."
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
-#: camel/providers/groupwise/camel-groupwise-folder.c:293
+#: camel/providers/groupwise/camel-groupwise-folder.c:291
 msgid "Reply Requested: by "
 msgstr "Resposta Solicitada: por"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
-#: camel/providers/groupwise/camel-groupwise-folder.c:298
+#: camel/providers/groupwise/camel-groupwise-folder.c:296
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Solicitada: Quando conveniente"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:532
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:529
 msgid "Invalid server URI"
 msgstr "URI de servidor inválida"
 
@@ -647,7 +647,7 @@ msgstr "Agenda"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
-#: calendar/backends/http/e-cal-backend-http.c:492
+#: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Não foi possível criar arquivo de cache"
@@ -657,13 +657,13 @@ msgid "Could not create thread for populating cache"
 msgstr "Impossível criar thread para ocupar o cache"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
-#: calendar/libecal/e-cal.c:4516
-#: camel/providers/groupwise/camel-groupwise-folder.c:662
-#: camel/providers/groupwise/camel-groupwise-folder.c:680
+#: calendar/libecal/e-cal.c:4528
+#: camel/providers/groupwise/camel-groupwise-folder.c:654
+#: camel/providers/groupwise/camel-groupwise-folder.c:678
 #: camel/providers/groupwise/camel-groupwise-store.c:528
-#: camel/providers/groupwise/camel-groupwise-store.c:629
-#: camel/providers/groupwise/camel-groupwise-store.c:791
-#: camel/providers/groupwise/camel-groupwise-store.c:989
+#: camel/providers/groupwise/camel-groupwise-store.c:628
+#: camel/providers/groupwise/camel-groupwise-store.c:790
+#: camel/providers/groupwise/camel-groupwise-store.c:988
 msgid "Authentication failed"
 msgstr "Falhou a autenticação"
 
@@ -1018,77 +1018,77 @@ msgid "Undefined"
 msgstr "Indefinido"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1534
+#: calendar/libecal/e-cal.c:1538 libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Entre senha para %s (usuário %s)"
 
-#: calendar/libecal/e-cal.c:4488
+#: calendar/libecal/e-cal.c:4500
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: calendar/libecal/e-cal.c:4490
+#: calendar/libecal/e-cal.c:4502
 msgid "Backend is busy"
 msgstr "O backend está ocupado"
 
-#: calendar/libecal/e-cal.c:4492
+#: calendar/libecal/e-cal.c:4504
 msgid "Repository is offline"
 msgstr "O repositório está desconectado"
 
-#: calendar/libecal/e-cal.c:4494
+#: calendar/libecal/e-cal.c:4506
 msgid "No such calendar"
 msgstr "Não existe tal agenda"
 
-#: calendar/libecal/e-cal.c:4496 servers/groupwise/e-gw-connection.c:165
+#: calendar/libecal/e-cal.c:4508 servers/groupwise/e-gw-connection.c:165
 msgid "Object not found"
 msgstr "Objeto não foi encontrado"
 
-#: calendar/libecal/e-cal.c:4498 servers/groupwise/e-gw-connection.c:159
+#: calendar/libecal/e-cal.c:4510 servers/groupwise/e-gw-connection.c:159
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: calendar/libecal/e-cal.c:4500
+#: calendar/libecal/e-cal.c:4512
 msgid "URI not loaded"
 msgstr "URI não foi carregada"
 
-#: calendar/libecal/e-cal.c:4502
+#: calendar/libecal/e-cal.c:4514
 msgid "URI already loaded"
 msgstr "URI já foi carregada"
 
-#: calendar/libecal/e-cal.c:4504
+#: calendar/libecal/e-cal.c:4516
 msgid "Permission denied"
 msgstr "Permissão negada"
 
-#: calendar/libecal/e-cal.c:4506 servers/groupwise/e-gw-connection.c:167
+#: calendar/libecal/e-cal.c:4518 servers/groupwise/e-gw-connection.c:167
 msgid "Unknown User"
 msgstr "Usuário Desconhecido"
 
-#: calendar/libecal/e-cal.c:4508
+#: calendar/libecal/e-cal.c:4520
 msgid "Object ID already exists"
 msgstr "O ID do objeto já existe"
 
-#: calendar/libecal/e-cal.c:4510
+#: calendar/libecal/e-cal.c:4522
 msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
-#: calendar/libecal/e-cal.c:4512
+#: calendar/libecal/e-cal.c:4524
 msgid "Operation has been cancelled"
 msgstr "A operação foi cancelada"
 
-#: calendar/libecal/e-cal.c:4514
+#: calendar/libecal/e-cal.c:4526
 msgid "Could not cancel operation"
 msgstr "Não foi possível cancelar a operação"
 
-#: calendar/libecal/e-cal.c:4518
+#: calendar/libecal/e-cal.c:4530
 #: camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Autenticação exigida"
 
-#: calendar/libecal/e-cal.c:4520
+#: calendar/libecal/e-cal.c:4532
 msgid "A CORBA exception has occurred"
 msgstr "Ocorreu uma exceçao CORBA"
 
-#: calendar/libecal/e-cal.c:4522 camel/providers/imap/camel-imap-command.c:304
+#: calendar/libecal/e-cal.c:4534 camel/providers/imap/camel-imap-command.c:304
 #: camel/providers/imap/camel-imap-command.c:404
 #: camel/providers/imap4/camel-imap4-store.c:376
 #: camel/providers/pop3/camel-pop3-store.c:535
@@ -1098,7 +1098,7 @@ msgstr "Ocorreu uma exceçao CORBA"
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: calendar/libecal/e-cal.c:4524
+#: calendar/libecal/e-cal.c:4536
 msgid "No error"
 msgstr "Sem erro"
 
@@ -1301,12 +1301,12 @@ msgstr "Stream de mensagem inválida recebida de %s: %s"
 msgid "Syncing folders"
 msgstr "Sincronizando pastas"
 
-#: camel/camel-filter-driver.c:1075 camel/camel-filter-driver.c:1452
+#: camel/camel-filter-driver.c:1075 camel/camel-filter-driver.c:1453
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Erro ao analisar filtro: %s: %s"
 
-#: camel/camel-filter-driver.c:1084 camel/camel-filter-driver.c:1461
+#: camel/camel-filter-driver.c:1084 camel/camel-filter-driver.c:1462
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Erro ao executar filtro: %s: %s"
@@ -1481,7 +1481,7 @@ msgstr ""
 "para o usuário: \"%s\""
 
 #: camel/camel-gpg-context.c:803 camel/camel-gpg-context.c:1000
-#: camel/providers/nntp/camel-nntp-store.c:1274
+#: camel/providers/nntp/camel-nntp-store.c:1275
 msgid "Cancelled."
 msgstr "Cancelada."
 
@@ -1909,7 +1909,7 @@ msgstr "As credenciais de referência expiraram."
 #: camel/camel-sasl-gssapi.c:198 camel/camel-sasl-gssapi.c:246
 #: camel/camel-sasl-gssapi.c:282 camel/camel-sasl-gssapi.c:297
 #: camel/camel-sasl-kerberos4.c:226
-#: camel/providers/imap/camel-imap-store.c:1243
+#: camel/providers/imap/camel-imap-store.c:1245
 msgid "Bad authentication response from server."
 msgstr "Resposta de autenticação do servidor inválida."
 
@@ -2510,7 +2510,7 @@ msgstr "Não é possível copiar mensagem para a lixeira"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Não é possível copiar mensagem para a pasta Indesejada"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:111
+#: camel/providers/groupwise/camel-groupwise-folder.c:109
 #: camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2520,7 +2520,7 @@ msgstr ""
 "Não é possível obter mensagem: %s\n"
 "  %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:111
+#: camel/providers/groupwise/camel-groupwise-folder.c:109
 #: camel/providers/imap/camel-imap-folder.c:1980
 #: camel/providers/local/camel-maildir-folder.c:245
 #: camel/providers/local/camel-mbox-folder.c:340
@@ -2528,7 +2528,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Não existe tal mensagem"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:126
+#: camel/providers/groupwise/camel-groupwise-folder.c:124
 #: camel/providers/imap4/camel-imap4-folder.c:788
 #: camel/providers/nntp/camel-nntp-folder.c:157
 #: camel/providers/nntp/camel-nntp-folder.c:233
@@ -2540,7 +2540,7 @@ msgstr "Não existe tal mensagem"
 msgid "User cancelled"
 msgstr "O usuário cancelou"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:131
+#: camel/providers/groupwise/camel-groupwise-folder.c:129
 #: camel/providers/imap4/camel-imap4-folder.c:793
 #: camel/providers/nntp/camel-nntp-folder.c:148
 #: camel/providers/nntp/camel-nntp-folder.c:150
@@ -2554,27 +2554,27 @@ msgstr "O usuário cancelou"
 msgid "Cannot get message %s: %s"
 msgstr "Não é possível obter mensagem: %s: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:151
+#: camel/providers/groupwise/camel-groupwise-folder.c:149
 #: camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "Esta mensagem não está disponível no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:179
+#: camel/providers/groupwise/camel-groupwise-folder.c:177
 msgid "Could not get message"
 msgstr "Impossível obter mensagem"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:589
+#: camel/providers/groupwise/camel-groupwise-folder.c:581
 #: camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Não foi possível carregar resumo para %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:850
+#: camel/providers/groupwise/camel-groupwise-folder.c:866
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Impossível criar mensagem: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:862
+#: camel/providers/groupwise/camel-groupwise-folder.c:878
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Impossível acrescentar mensagem à pasta `%s': %s"
@@ -2671,7 +2671,7 @@ msgid "%sPlease enter the Groupwise password for %s@%s"
 msgstr "%sPor favor, entre a senha do Groupwise para %s@%s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:375
-#: camel/providers/imap/camel-imap-store.c:1322
+#: camel/providers/imap/camel-imap-store.c:1324
 msgid "You didn't enter a password."
 msgstr "Você não entrou uma senha."
 
@@ -2686,45 +2686,45 @@ msgstr ""
 "servidor atual"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:503
-#: camel/providers/imap/camel-imap-store.c:1873
-#: camel/providers/imap/camel-imap-store.c:2063
+#: camel/providers/imap/camel-imap-store.c:1875
+#: camel/providers/imap/camel-imap-store.c:2065
 #, c-format
 msgid "No such folder %s"
 msgstr "Não existe a pasta %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:619
+#: camel/providers/groupwise/camel-groupwise-store.c:618
 #: camel/providers/imap/camel-imap-folder.c:2288
 #: camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Pegando informação de resumo para novas mensagens"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:757
+#: camel/providers/groupwise/camel-groupwise-store.c:756
 msgid "Cannot get folder info in offline mode."
 msgstr "Impossível obter a informação da pasta no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:970
+#: camel/providers/groupwise/camel-groupwise-store.c:969
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Impossível criar pastas do GroupWise no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1021
+#: camel/providers/groupwise/camel-groupwise-store.c:1020
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Não é possível excluir pastas do GroupWise no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1067
+#: camel/providers/groupwise/camel-groupwise-store.c:1066
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Impossível renomear pastas do GroupWise no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1085
+#: camel/providers/groupwise/camel-groupwise-store.c:1084
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Impossível renomear pastas do GroupWise `%s' para `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1121
+#: camel/providers/groupwise/camel-groupwise-store.c:1120
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor GroupWise %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1123
+#: camel/providers/groupwise/camel-groupwise-store.c:1122
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Serviço GroupWise para %s em %s"
@@ -2745,13 +2745,13 @@ msgstr "Enviando Mensagem"
 
 #: camel/providers/imap/camel-imap-command.c:219
 #: camel/providers/imap/camel-imap-command.c:258
-#: camel/providers/imap/camel-imap-command.c:463
-#: camel/providers/imap/camel-imap-store.c:3238
+#: camel/providers/imap/camel-imap-command.c:465
+#: camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "Operação cancelada"
 
 #: camel/providers/imap/camel-imap-command.c:303
-#: camel/providers/imap/camel-imap-store.c:3241
+#: camel/providers/imap/camel-imap-store.c:3243
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "O servidor se desconectou inesperadamente: %s"
@@ -2777,16 +2777,16 @@ msgstr "Resposta inesperada do servidor IMAP: %s"
 msgid "IMAP command failed: %s"
 msgstr "O comando IMAP falhou: %s"
 
-#: camel/providers/imap/camel-imap-command.c:473
+#: camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "Resposta do servidor terminou cedo demais."
 
-#: camel/providers/imap/camel-imap-command.c:680
+#: camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "Resposta do servidor IMAP não contém informação de %s"
 
-#: camel/providers/imap/camel-imap-command.c:716
+#: camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Resposta OK inesperada do servidor IMAP: %s"
@@ -3021,8 +3021,8 @@ msgid "Could not connect with command \"%s\": %s"
 msgstr "Não foi possível conectar com o comando \"%s\": %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: camel/providers/imap/camel-imap-store.c:1019
-#: camel/providers/imap/camel-imap-store.c:2427
+#: camel/providers/imap/camel-imap-store.c:1021
+#: camel/providers/imap/camel-imap-store.c:2429
 #: camel/providers/imap4/camel-imap4-store-summary.c:368
 #: camel/providers/imap4/camel-imap4-store.c:1267
 #: camel/providers/local/camel-maildir-folder.c:75
@@ -3034,24 +3034,24 @@ msgstr "Não foi possível conectar com o comando \"%s\": %s"
 msgid "Inbox"
 msgstr "Caixa de entrada"
 
-#: camel/providers/imap/camel-imap-store.c:1275
+#: camel/providers/imap/camel-imap-store.c:1277
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "O servidor IMAP %s não suporta o tipo de autenticação pedido %s"
 
-#: camel/providers/imap/camel-imap-store.c:1285
+#: camel/providers/imap/camel-imap-store.c:1287
 #: camel/providers/smtp/camel-smtp-transport.c:501
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Sem suporte para o tipo de autenticação %s"
 
-#: camel/providers/imap/camel-imap-store.c:1308
+#: camel/providers/imap/camel-imap-store.c:1310
 #: camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sPor favor, entre a senha IMAP para %s@%s"
 
-#: camel/providers/imap/camel-imap-store.c:1351
+#: camel/providers/imap/camel-imap-store.c:1353
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3062,20 +3062,20 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: camel/providers/imap/camel-imap-store.c:1891
-#: camel/providers/imap/camel-imap-store.c:2269
+#: camel/providers/imap/camel-imap-store.c:1893
+#: camel/providers/imap/camel-imap-store.c:2271
 #: camel/providers/imap4/camel-imap4-store.c:856
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "O nome de pasta \"%s\" é inválido pois ele contém o caractere \"%c\""
 
-#: camel/providers/imap/camel-imap-store.c:1949
-#: camel/providers/imap/camel-imap-store.c:2331
+#: camel/providers/imap/camel-imap-store.c:1951
+#: camel/providers/imap/camel-imap-store.c:2333
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "A pasta pai não pode conter sub-pastas"
 
-#: camel/providers/imap/camel-imap-store.c:2004
+#: camel/providers/imap/camel-imap-store.c:2006
 #: camel/providers/local/camel-maildir-store.c:190
 #: camel/providers/local/camel-mbox-store.c:199
 #: camel/providers/local/camel-mh-store.c:237
@@ -3083,7 +3083,7 @@ msgstr "A pasta pai não pode conter sub-pastas"
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Não é possível criar pasta `%s': pasta existe."
 
-#: camel/providers/imap/camel-imap-store.c:2280
+#: camel/providers/imap/camel-imap-store.c:2282
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Pasta pai desconhecida: %s"
@@ -3743,7 +3743,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "Não é possível abrir caixa postal temporária: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:619
-#: camel/providers/local/camel-mbox-summary.c:783
+#: camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Não foi possível fechar pasta fonte %s: %s"
@@ -3758,31 +3758,32 @@ msgstr "Não foi possível fechar pasta temporária: %s"
 msgid "Could not rename folder: %s"
 msgstr "Não foi possível renomear pasta: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:723
-#: camel/providers/local/camel-mbox-summary.c:731
-#: camel/providers/local/camel-mbox-summary.c:925
-#: camel/providers/local/camel-mbox-summary.c:933
+#: camel/providers/local/camel-mbox-summary.c:696
+#: camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "Não foi possível armazenar pasta: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:733
+#: camel/providers/local/camel-mbox-summary.c:741
+#: camel/providers/local/camel-mbox-summary.c:935
+#: camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "O resumo e a pasta não casam, mesmo após uma sincronização"
 
-#: camel/providers/local/camel-mbox-summary.c:859
+#: camel/providers/local/camel-mbox-summary.c:869
 #: camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Erro desconhecido: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "Não foi possível armazenar pasta: %s"
-
-#: camel/providers/local/camel-mbox-summary.c:988
-#: camel/providers/local/camel-mbox-summary.c:1014
+#: camel/providers/local/camel-mbox-summary.c:998
+#: camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Erro ao escrever para a caixa postal temporária: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:1005
+#: camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "A escrita na caixa postal temporária falhou: %s: %s"
@@ -3958,12 +3959,12 @@ msgstr "Não foi possível ler saudação de %s: %s"
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Servidor NNTP %s retornou código de erro %d: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:422
+#: camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
 msgid "USENET News via %s"
 msgstr "Notícias USENET via %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:811
+#: camel/providers/nntp/camel-nntp-store.c:812
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3974,7 +3975,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: camel/providers/nntp/camel-nntp-store.c:905
+#: camel/providers/nntp/camel-nntp-store.c:906
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -3984,7 +3985,7 @@ msgstr ""
 "\n"
 "Não existe tal grupo. O item selecionado provavelmente é uma pasta pai."
 
-#: camel/providers/nntp/camel-nntp-store.c:937
+#: camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -3994,46 +3995,46 @@ msgstr ""
 "\n"
 "Grupo de notícias não existe!"
 
-#: camel/providers/nntp/camel-nntp-store.c:962
+#: camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Não é possível criar uma pasta num repositório de notícias: é possível se "
 "inscrever."
 
-#: camel/providers/nntp/camel-nntp-store.c:970
+#: camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot rename a folder in a News store."
 msgstr "Não é possível renomear uma pasta num repositório de notícias."
 
-#: camel/providers/nntp/camel-nntp-store.c:978
+#: camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Não é possível remover uma pasta de um repositório de notícias: é possível "
 "cancelar a inscrição."
 
-#: camel/providers/nntp/camel-nntp-store.c:1148
+#: camel/providers/nntp/camel-nntp-store.c:1149
 msgid "Authentication requested but no username provided"
 msgstr "Foi pedida a autenticação mas não foi fornecido o nome do usuário"
 
-#: camel/providers/nntp/camel-nntp-store.c:1156
+#: camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Por favor, entre a senha NNTP para %s@%s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1160
+#: camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Não é possível autenticar-se com o servidor: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1276
+#: camel/providers/nntp/camel-nntp-store.c:1277
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "O comando NNTP falhou: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1332
+#: camel/providers/nntp/camel-nntp-store.c:1333
 msgid "Not connected."
 msgstr "Não conectado."
 
-#: camel/providers/nntp/camel-nntp-store.c:1385
+#: camel/providers/nntp/camel-nntp-store.c:1386
 #, c-format
 msgid "No such folder: %s"
 msgstr "Não existe a pasta: %s"
@@ -4610,7 +4611,7 @@ msgstr "Esperando"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: libedataserver/e-time-utils.c:173 libedataserver/e-time-utils.c:400
+#: libedataserver/e-time-utils.c:179 libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S"
 
@@ -4618,7 +4619,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: libedataserver/e-time-utils.c:178 libedataserver/e-time-utils.c:391
+#: libedataserver/e-time-utils.c:184 libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -4626,7 +4627,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: libedataserver/e-time-utils.c:183 libedataserver/e-time-utils.c:396
+#: libedataserver/e-time-utils.c:189 libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M"
 
@@ -4634,78 +4635,78 @@ msgstr "%a %d/%m/%Y %I:%M"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: libedataserver/e-time-utils.c:188 libedataserver/e-time-utils.c:387
+#: libedataserver/e-time-utils.c:194 libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:193
+#: libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %d/%m/%Y %I"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:198
+#: libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: libedataserver/e-time-utils.c:201 libedataserver/e-time-utils.c:294
-#: libedataserver/e-time-utils.c:382
+#: libedataserver/e-time-utils.c:207 libedataserver/e-time-utils.c:300
+#: libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: libedataserver/e-time-utils.c:209
+#: libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d/%m/%Y %I:%M:%S"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: libedataserver/e-time-utils.c:213
+#: libedataserver/e-time-utils.c:219
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:218
+#: libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d/%m/%Y %I:%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:223
+#: libedataserver/e-time-utils.c:229
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d/%m/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:228
+#: libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
 msgstr "%d/%m/%Y %I"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:233
+#: libedataserver/e-time-utils.c:239
 msgid "%m/%d/%Y %H"
 msgstr "%d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: libedataserver/e-time-utils.c:236 libedataserver/e-time-utils.c:297
+#: libedataserver/e-time-utils.c:242 libedataserver/e-time-utils.c:303
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
+#: libedataserver/e-time-utils.c:348 libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
+#: libedataserver/e-time-utils.c:352 libedataserver/e-time-utils.c:459
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4713,27 +4714,35 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
+#: libedataserver/e-time-utils.c:357 libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
 msgstr "%I:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
+#: libedataserver/e-time-utils.c:361 libedataserver/e-time-utils.c:456
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: libedataserver/e-time-utils.c:354
+#: libedataserver/e-time-utils.c:365
 msgid "%I %p"
 msgstr "%I"
+
+#: libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "Acessando o servidor LDAP anonimamente"
+
+#: libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "Falha ao autenticar.\n"
 
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "Ícone da Categoria"
 
-#: libedataserverui/e-categories-dialog.c:238
+#: libedataserverui/e-categories-dialog.c:239
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4741,7 +4750,7 @@ msgid ""
 msgstr ""
 "Já existe uma categoria '%s' na configuração. Por favor, utilize outro nome"
 
-#: libedataserverui/e-categories-dialog.c:396
+#: libedataserverui/e-categories-dialog.c:397
 msgid "Category"
 msgstr "Categoria"
 
@@ -4816,6 +4825,14 @@ msgstr "Pesquisar"
 #: libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "_Search:"
 msgstr "_Pesquisar:"
+
+#: libedataserverui/e-passwords.c:471
+msgid "_Remember this password"
+msgstr "_Lembrar dessa senha"
+
+#: libedataserverui/e-passwords.c:472
+msgid "_Remember this password for the remainder of this session"
+msgstr "_Lembrar dessa senha pelo restante dessa sessão"
 
 #. prepare the dialog
 #: libedataserverui/e-source-selector-dialog.c:101
@@ -4899,9 +4916,6 @@ msgstr ""
 
 #~ msgid "%sEnter password for %s (user %s)"
 #~ msgstr "%sEntre senha para %s (usuário %s)"
-
-#~ msgid "Failed to authenticate.\n"
-#~ msgstr "Falha ao autenticar.\n"
 
 #~ msgid "Server rejected username"
 #~ msgstr "Servidor rejeitou o nome do usuário"
