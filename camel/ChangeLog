@@ -1,3 +1,13 @@
+2005-02-02  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-store.h (CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_INFO):
+	Added. Hint to the provider that we want the
+	CAMEL_FOLDER_SUBSCRIBED flag (even if we aren't requesting
+	CAMEL_STORE_FOLDER_INO_SUBSCRIBED).
+
+	* camel-folder-summary.h: Added some RESERVED bits for the
+	summary->flags (last 24 bits are for provider specific flags).
+
 2005-02-01  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #65329
