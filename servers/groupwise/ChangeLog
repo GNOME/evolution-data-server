@@ -1,5 +1,15 @@
 2004-03-27  Sivaiah Nallagatla <snallagatla@novell.com>
 
+	* e_gw_connection.[ch]:  added new api e_gw_connection_get_categories
+	to read categories of an item 
+	* e_gw_item.[ch] : added the folloiwng apis
+	e_gw_item_get_categories, e_gw_item_set_categories
+	e_gw_item_set_category_name, e_gw_item_get_category_name
+	Also added the logic to get/set categories from/to soap message 
+	respectively
+
+2004-03-27  Sivaiah Nallagatla <snallagatla@novell.com>
+
 	* e-gw-container.c  (e_gw_container_is-writable) : return
         correct types in g_return_val_if_fail macros.
 

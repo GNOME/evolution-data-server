@@ -1159,3 +1159,73 @@ e_gw_connection_get_address_book_id ( EGwConnection *cnc, char *book_name, char*
 	return status;
 
 }
+
+
+EGwConnectionStatus 
+e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id, GHashTable *categories_by_name)
+{
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        SoupSoapParameter *param, *subparam, *second_level_child;
+	const char *id, *name;
+        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getCategoryListRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+       	e_gw_message_write_footer (msg);
+
+        /* send message to server */
+        response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+        status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	}
+
+	/* if status is OK - parse result. return the list */	
+	param = soup_soap_response_get_first_parameter_by_name (response, "categories");
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+	
+	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "category");
+	     subparam != NULL;
+	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "category")) {
+		id = name = NULL;
+		second_level_child = soup_soap_parameter_get_first_child_by_name (subparam, "id");
+		if (second_level_child)
+			id = soup_soap_parameter_get_string_value (second_level_child);
+		second_level_child = soup_soap_parameter_get_first_child_by_name (subparam, "name");
+		if (second_level_child)
+			name = soup_soap_parameter_get_string_value (second_level_child);
+		if (id && name) {
+			if (categories_by_id) 
+				g_hash_table_insert (categories_by_id, g_strdup (id), g_strdup (name));
+			if (categories_by_name) 
+				g_hash_table_insert (categories_by_name, g_strdup (name), g_strdup (id));
+		}
+		
+        }
+               
+	/* free memory */
+        g_object_unref (response);
+	g_object_unref (msg);
+
+        return E_GW_CONNECTION_STATUS_OK;
+
+
+}
+

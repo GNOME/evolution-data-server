@@ -46,6 +46,7 @@ typedef enum {
 	E_GW_ITEM_TYPE_GROUP,
 	E_GW_ITEM_TYPE_ORGANISATION,
 	E_GW_ITEM_TYPE_RESOURCE,
+	E_GW_ITEM_TYPE_CATEGORY,
 	E_GW_ITEM_TYPE_UNKNOWN
 	
 } EGwItemType;
@@ -132,8 +133,12 @@ PostalAddress* e_gw_item_get_address (EGwItem *item, char *address_type);
 void        e_gw_item_set_address (EGwItem *item, char *addres_type, PostalAddress *address);
 GList*      e_gw_item_get_im_list (EGwItem *item);
 void        e_gw_item_set_im_list (EGwItem *item, GList *im_list);
+void        e_gw_item_set_categories (EGwItem *item, GList *category_list);
+GList*      e_gw_item_get_categories (EGwItem *item);
 void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *field_name, gpointer field_value);
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
+void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
+char* e_gw_item_get_category_name (EGwItem *item);
 
 #define E_GW_ITEM_CLASSIFICATION_PUBLIC       "Public"
 #define E_GW_ITEM_CLASSIFICATION_PRIVATE      "Private"
