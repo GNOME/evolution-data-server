@@ -56,8 +56,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <libebook/e-book.h>
-#include "eab-marshal.h"
-#include "eab-book-util.h"
 
 #include <glib.h>
 #include <libxml/xmlmemory.h>
@@ -97,6 +95,29 @@ static gboolean       e_destination_xml_decode         (EDestination *dest, xmlN
 static void           e_destination_clear              (EDestination *dest);
 
 static GObjectClass *parent_class;
+
+/* Copied from eab-book-util.c. The name selector also keeps its own copy... */
+static gint
+utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
+{
+	gchar *s1 = g_utf8_casefold(str1, len);
+	gchar *s2 = g_utf8_casefold(str2, len);
+	gint rv;
+
+	rv = g_utf8_collate (s1, s2);
+
+	g_free (s1);
+	g_free (s2);
+
+	return rv;
+}
+
+/* Copied from eab-book-util.c. The name selector also keeps its own copy... */
+static gint
+utf8_casefold_collate (const gchar *str1, const gchar *str2)
+{
+	return utf8_casefold_collate_len (str1, str2, -1);
+}
 
 static void
 e_destination_dispose (GObject *obj)
@@ -296,7 +317,7 @@ e_destination_equal (const EDestination *a, const EDestination *b)
 	/* Just in case name returns NULL */
 	na = e_destination_get_name (a);
 	nb = e_destination_get_name (b);
-	if ((na || nb) && !(na && nb && ! e_utf8_casefold_collate (na, nb)))
+	if ((na || nb) && !(na && nb && ! utf8_casefold_collate (na, nb)))
 		return FALSE;
 	
 	if (!g_ascii_strcasecmp (e_destination_get_email (a), e_destination_get_email (b)))

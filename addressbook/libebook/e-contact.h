@@ -185,6 +185,7 @@ typedef enum {
 	E_CONTACT_X509_CERT,     /* structured field (EContactCert) */
 
 	E_CONTACT_FIELD_LAST,
+	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
 
 	/* useful constants */
 	E_CONTACT_LAST_SIMPLE_STRING = E_CONTACT_NAME_OR_ORG,

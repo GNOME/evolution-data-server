@@ -1,3 +1,16 @@
+2004-12-08  Hans Petter Jansson  <hpj@novell.com>
+
+	* libebook/Makefile.am: Build e-destination.c, install e-destination.h.
+	Link with Camel.
+
+	* libebook/e-contact.h: Include E_CONTACT_FIELD_FIRST in the field
+	enum (currently, the fields are numbered starting at 1).
+
+	* libebook/e-destination.c: Remove bogus includes.
+	(utf8_casefold_collate_len)
+	(utf8_casefold_collate): Keep local copies of these functions for now.
+	(e_destination_equal): Use local utf8_casefold_collate ().
+
 2004-12-08  Rodney Dawes <dobey@novell.com>
 
 	* libebook/e-book-contact.c: #include <config.h>
