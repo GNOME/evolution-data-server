@@ -108,22 +108,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
         return E_GW_CONNECTION_STATUS_OK;        
 }
 
-static GnomeVFSURI *
-convert_uri (const char *gw_uri)
-{
-	char *real_uri;
-	GnomeVFSURI *vuri;
-
-	if (strncmp ("groupwise://", gw_uri, sizeof ("groupwise://") - 1))
-		return NULL;
-
-	real_uri = g_strconcat ("http://", gw_uri + sizeof ("groupwise://") - 1, NULL);
-	vuri = gnome_vfs_uri_new ((const char *) real_uri);
-
-	g_free (real_uri);
-
-	return vuri;
-}
 
 static EGwConnectionStatus
 get_deltas (gpointer handle)
@@ -187,6 +171,8 @@ form_uri (ESource *source)
 	char *uri;
 	const char *port;
 	char *formed_uri;
+	const char *use_ssl;
+	
        	EUri *parsed_uri;
 
 	uri = e_source_get_uri (source);
@@ -200,9 +186,13 @@ form_uri (ESource *source)
        	port = e_source_get_property (source, "port");
 	if (port == NULL)
 		port = "7181";
+	use_ssl = e_source_get_property (source, "use_ssl");
 
-       	formed_uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
-
+	if (use_ssl)
+		formed_uri = g_strconcat ("https://", parsed_uri->host,":", port, "/soap", NULL );
+	else 
+		formed_uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
+	
 	g_free (uri);
 	e_uri_free (parsed_uri);
 	return formed_uri;
@@ -216,14 +206,16 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	ECalBackendGroupwisePrivate *priv;
 	EGwConnectionStatus cnc_status;
 	ESource *source;
-
+	const char *use_ssl;
+	char *http_uri;
 	priv = cbgw->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
 	real_uri = NULL;
 	if (source)
 		real_uri = form_uri (source);
-	
+	use_ssl = e_source_get_property (source, "use_ssl");
+ 
 	if (!real_uri) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Invalid server URI"));
 		return GNOME_Evolution_Calendar_NoSuchCal;
@@ -234,6 +226,11 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			priv->username,
 			priv->password);
 
+		if (!E_IS_GW_CONNECTION(priv->cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
+			http_uri = g_strconcat ("http://", real_uri + 8, NULL);
+			priv->cnc = e_gw_connection_new (http_uri, priv->username, priv->password);
+			g_free (http_uri);
+		}
 		g_free (real_uri);
 			
 		/* As of now we are assuming that logged in user has write rights to calender */
