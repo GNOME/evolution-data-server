@@ -1,3 +1,11 @@
+2005-01-07  Rodrigo Moya <rodrigo@novell.com>
+
+	* e-categories-dialog.c (e_categories_dialog_set_categories): added
+	missing code to set the widgets to the specificied categories list.
+	(e_categories_dialog_init): set dialog's title and connect to "toggled"
+	signal on the GtkCellRendererToggle.
+	(category_toggled_cb): callback for the "toggled" signal.
+
 2005-01-05  Rodrigo Moya <rodrigo@novell.com>
 
 	* e-categories-dialog.h: fixed class structure.

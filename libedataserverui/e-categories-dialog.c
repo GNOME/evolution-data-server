@@ -17,12 +17,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <string.h>
 #include <glib/gi18n.h>
 #include <gtk/gtkbox.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrenderertoggle.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkliststore.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktreeview.h>
 #include <glade/glade-xml.h>
@@ -84,6 +86,52 @@ e_categories_dialog_class_init (ECategoriesDialogClass *klass)
 }
 
 static void
+add_comma_sep_categories (gpointer key, gpointer value, gpointer user_data)
+{
+	GString **str = user_data;
+
+	if (strlen ((GString *) (*str)->str) > 0)
+		*str = g_string_append (*str, ",");
+
+	*str = g_string_append (*str, (const char *) key);
+}
+
+static void
+category_toggled_cb (GtkCellRenderer *renderer, const gchar *path, gpointer user_data)
+{
+	ECategoriesDialogPrivate *priv;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	ECategoriesDialog *dialog = user_data;
+
+	priv = dialog->priv;
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->categories_list));
+
+	if (gtk_tree_model_get_iter_from_string (model, &iter, path)) {
+		gboolean place_bool;
+		gchar *place_string;
+		GString *str;
+
+		gtk_tree_model_get (model, &iter, 0, &place_bool, 1, &place_string, -1);
+		if (place_bool) {
+			g_hash_table_remove (priv->selected_categories, place_string);
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, FALSE, -1);
+		} else {
+			g_hash_table_insert (priv->selected_categories, g_strdup (place_string), g_strdup (place_string));
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, TRUE, -1);
+		}
+
+		str = g_string_new ("");
+		g_hash_table_foreach (priv->selected_categories, (GHFunc) add_comma_sep_categories, &str);
+		gtk_entry_set_text (GTK_ENTRY (priv->categories_entry), str->str);
+
+		/* free memory */
+		g_string_free (str, TRUE);
+		g_free (place_string);
+	}
+}
+
+static void
 e_categories_dialog_init (ECategoriesDialog *dialog)
 {
 	ECategoriesDialogPrivate *priv;
@@ -94,7 +142,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkWidget *main_widget;
 
 	priv = g_new0 (ECategoriesDialogPrivate, 1);
-	priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	dialog->priv = priv;
 
 	/* load the UI from our Glade file */
@@ -112,6 +160,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Categories"));
 
 	/* set up the categories list */
 	model = gtk_list_store_new (2, G_TYPE_BOOLEAN, G_TYPE_STRING);
@@ -127,6 +176,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_tree_view_set_model (GTK_TREE_VIEW (priv->categories_list), GTK_TREE_MODEL (model));
 
 	renderer = gtk_cell_renderer_toggle_new ();
+	g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (category_toggled_cb), dialog);
 	column = gtk_tree_view_column_new_with_attributes ("?", renderer, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
 
@@ -190,11 +240,41 @@ void
 e_categories_dialog_set_categories (ECategoriesDialog *dialog, const char *categories)
 {
 	ECategoriesDialogPrivate *priv;
+	gchar **arr;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
 
 	g_return_if_fail (E_IS_CATEGORIES_DIALOG (dialog));
 
 	priv = dialog->priv;
 
-	/* FIXME: update model and hash table */
+	/* clean up the table of selected categories */
+	g_hash_table_foreach_remove (priv->selected_categories, (GHRFunc) gtk_true, NULL);
+
+	arr = g_strsplit (categories, ",", 0);
+	if (arr) {
+		int i;
+		for (i = 0; i < G_N_ELEMENTS (arr); i++)
+			g_hash_table_insert (priv->selected_categories, g_strdup (arr[i]), g_strdup (arr[i]));
+
+		g_strfreev (arr);
+	}
+
+	/* set the widgets */
 	gtk_entry_set_text (GTK_ENTRY (priv->categories_entry), categories);
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->categories_list));
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			char *place_string;
+
+			gtk_tree_model_get (model, &iter, 1, &place_string, -1);
+			if (g_hash_table_lookup (priv->selected_categories, place_string))
+				gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, TRUE, -1);
+			else
+				gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, FALSE, -1);
+
+			g_free (place_string);
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
 }
