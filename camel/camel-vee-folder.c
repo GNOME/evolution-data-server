@@ -673,7 +673,7 @@ static void vee_delete(CamelFolder *folder)
 		camel_object_unref(f);
 		CAMEL_VEE_FOLDER_LOCK(folder, subfolder_lock);
 	}
-	CAMEL_VEE_FOLDER_LOCK(folder, subfolder_lock);
+	CAMEL_VEE_FOLDER_UNLOCK(folder, subfolder_lock);
 
 	((CamelFolderClass *)camel_vee_folder_parent)->delete(folder);
 }
