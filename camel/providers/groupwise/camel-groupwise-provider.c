@@ -29,12 +29,14 @@
 #endif
 
 #include <string.h>
-#include "camel-imap-store.h"
+#include <gmodule.h>
 #include "camel-provider.h"
 #include "camel-session.h"
 #include "camel-url.h"
 #include "camel-sasl.h"
 #include "camel-i18n.h"
+#include "camel-groupwise-store.h"
+#include "camel-groupwise-transport.h"
 
 static void add_hash (guint *hash, char *s);
 static guint groupwise_url_hash (gconstpointer key);
@@ -59,7 +61,7 @@ CamelProviderConfEntry groupwise_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk_inbox", "filter_junk",
 	  N_("Only check for Junk messages in the INBOX folder"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "offline_sync", NULL,
-	  N_("Automatically synchronize account locally"), "0" },
+	  N_("Automatically synchronize remote mail locally"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 
 	/* extra Groupwise  configuration settings */
@@ -105,7 +107,7 @@ static CamelProvider groupwise_provider = {
 CamelServiceAuthType camel_groupwise_password_authtype = {
 	N_("Password"),
 	
-	N_("This option will connect to the IMAP server using a "
+	N_("This option will connect to the GroupWise server using a "
 	   "plaintext password."),
 	
 	"",
@@ -127,21 +129,24 @@ groupwise_auto_detect_cb (CamelURL *url, GHashTable **auto_detected,
 void
 camel_provider_module_init(void)
 {
-	CamelProvider *imap_provider;
+	CamelProvider *imap_provider = NULL;
 	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
+	gboolean use_soap_mailer = g_getenv ("SOAP_MAILER") != NULL;
 
-	imap_provider =  camel_provider_get("imap://", &ex);
+	if (!use_soap_mailer)
+	    imap_provider =  camel_provider_get("imap://", &ex);
+
 	groupwise_provider.url_hash = groupwise_url_hash;
 	groupwise_provider.url_equal = groupwise_url_equal;
 	groupwise_provider.auto_detect = groupwise_auto_detect_cb;
 	groupwise_provider.authtypes = g_list_prepend (groupwise_provider.authtypes, &camel_groupwise_password_authtype);
-	if (imap_provider != NULL) {
-		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] =  imap_provider->object_types [CAMEL_PROVIDER_STORE];
-		camel_provider_register(&groupwise_provider);
+	if (use_soap_mailer) {
+		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] =  camel_groupwise_store_get_type() ;
+		groupwise_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_groupwise_transport_get_type();
 	} else {
-		camel_exception_clear(&ex);
+		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];
 	}
-
+	camel_provider_register (&groupwise_provider);
 }
 
 

@@ -1,3 +1,16 @@
+2004-12-23  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* providers/groupwise/camel-groupwise-store.[ch]
+	* providers/groupwise/camel-groupwise-transport.[ch]
+	* providers/groupwise/camel-groupwise-utils.[ch]
+	* providers/groupwise/camel-groupwise-store-summary.[ch]
+	* providers/groupwise/camel-groupwise-summary.[ch]:
+	 Added the above files for implementing mailer for soap based
+	 camel provider for groupwise server.
+	* providers/groupwise/Makefile.am : added new files to SOURCES 
+	* providers/groupwise/camel-groupwise-provider.c:(camel_provider_module_init): 
+	check for an environment variable SOAP_MAILER, if not present will use IMAP 
+	instead of soap.
+
 2004-12-23  Not Zed  <NotZed@Ximian.com>
 
 	* camel-object.c (camel_object_is, camel_object_class_is)
