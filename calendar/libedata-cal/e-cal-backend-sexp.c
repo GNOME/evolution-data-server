@@ -304,6 +304,7 @@ func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 	SearchContext *ctx = data;
 	time_t start, end;
 	ESExpResult *result;
+	icaltimezone *default_zone;
 
 	/* Check argument types */
 
@@ -330,11 +331,15 @@ func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 	end = argv[1]->value.time;
 
 	/* See if the object occurs in the specified time range */
+	default_zone = e_cal_backend_internal_get_default_timezone (ctx->backend);
+	if (!default_zone)
+		default_zone = icaltimezone_get_utc_timezone ();
+
 	ctx->occurs = FALSE;
 	e_cal_recur_generate_instances (ctx->comp, start, end,
 					(ECalRecurInstanceFn) check_instance_time_range_cb,
 					ctx, resolve_tzid_cb, ctx,
-					e_cal_backend_internal_get_default_timezone (ctx->backend));
+					default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = ctx->occurs;
