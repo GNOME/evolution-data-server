@@ -1,0 +1,971 @@
+# translation of evolution-data-server.HEAD.po to Punjabi
+# translation of evolution-data-server.HEAD.po to Gujarati
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Ankit Patel <ankit@pune.redhat.com>, 2004.
+# Amanpreet Singh Alam <aalam@redhat.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evolution-data-server.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-14 03:37+0200\n"
+"PO-Revision-Date: 2004-07-20 17:56+0530\n"
+"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
+"Language-Team: Punjabi <pa@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+
+#: addressbook/backends/file/e-book-backend-file.c:433
+#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+msgid "Loading..."
+msgstr "લાવી રહ્યા છીએ..."
+
+#: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3155
+#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+msgid "Searching..."
+msgstr "શોધી રહ્યા છીએ..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:618
+msgid "Using Distinguished Name (DN)"
+msgstr "વિસ્તૃત નામ(DN) વાપરી રહ્યા છીએ"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:621
+msgid "Using Email Address"
+msgstr "ઈમેઈલ સરનામું વાપરી રહ્યા છીએ"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:787
+msgid "Reconnecting to LDAP server..."
+msgstr "LDAP સર્વર સાથે ફરીથી જોડાઈ રહ્યા છીએ..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1307
+msgid "Adding contact to LDAP server..."
+msgstr "LDAP સર્વરમાં સંપર્ક ઉમેરી રહ્યા છીએ..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1407
+msgid "Removing contact from LDAP server..."
+msgstr "LDAP સર્વરમાંથી સંપર્ક દૂર કરી રહ્યા છીએ..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1630
+msgid "Modifying contact from LDAP server..."
+msgstr "LDAP સર્વરમાં સંપર્ક સુધારી રહ્યા છીએ..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3067
+msgid "Receiving LDAP search results..."
+msgstr "LDAP શોધનાં પરિણામો મેળવી રહ્યા છીએ..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3175
+msgid "Error performing search"
+msgstr "શોધ કરવામાં ભૂલ"
+
+#. translators: the placeholders will be filled by
+#. * function names, e.g.
+#. * "e_book_add_contact" on book before
+#. * "e_book_open
+#: addressbook/libebook/e-book.c:234 addressbook/libebook/e-book.c:238
+#: addressbook/libebook/e-book.c:428 addressbook/libebook/e-book.c:432
+#: addressbook/libebook/e-book.c:560 addressbook/libebook/e-book.c:564
+#: addressbook/libebook/e-book.c:751 addressbook/libebook/e-book.c:756
+#: addressbook/libebook/e-book.c:922 addressbook/libebook/e-book.c:926
+#: addressbook/libebook/e-book.c:1063 addressbook/libebook/e-book.c:1067
+#: addressbook/libebook/e-book.c:1253 addressbook/libebook/e-book.c:1257
+#: addressbook/libebook/e-book.c:1458 addressbook/libebook/e-book.c:1462
+#: addressbook/libebook/e-book.c:1677 addressbook/libebook/e-book.c:1681
+#: addressbook/libebook/e-book.c:1870 addressbook/libebook/e-book.c:1874
+#: addressbook/libebook/e-book.c:2858
+#, c-format
+msgid "\"%s\" on book before \"%s\""
+msgstr "\"%s\" પહેલા \"%s\" ચોપડીમાં હતું"
+
+#: addressbook/libebook/e-book.c:247 addressbook/libebook/e-book.c:441
+#: addressbook/libebook/e-book.c:573 addressbook/libebook/e-book.c:766
+#: addressbook/libebook/e-book.c:936 addressbook/libebook/e-book.c:1077
+#: addressbook/libebook/e-book.c:1266 addressbook/libebook/e-book.c:1471
+#: addressbook/libebook/e-book.c:1691 addressbook/libebook/e-book.c:1883
+#: addressbook/libebook/e-book.c:2198 addressbook/libebook/e-book.c:2377
+msgid "book busy"
+msgstr "ચોપડી વ્યસ્ત છે"
+
+#: addressbook/libebook/e-book.c:278 addressbook/libebook/e-book.c:282
+#: addressbook/libebook/e-book.c:472 addressbook/libebook/e-book.c:476
+#: addressbook/libebook/e-book.c:599 addressbook/libebook/e-book.c:603
+#: addressbook/libebook/e-book.c:793 addressbook/libebook/e-book.c:796
+#: addressbook/libebook/e-book.c:966 addressbook/libebook/e-book.c:969
+#: addressbook/libebook/e-book.c:1104 addressbook/libebook/e-book.c:1108
+#: addressbook/libebook/e-book.c:1302 addressbook/libebook/e-book.c:1306
+#: addressbook/libebook/e-book.c:1518 addressbook/libebook/e-book.c:1522
+#: addressbook/libebook/e-book.c:1721 addressbook/libebook/e-book.c:1725
+#: addressbook/libebook/e-book.c:1909 addressbook/libebook/e-book.c:1913
+#: addressbook/libebook/e-book.c:2139 addressbook/libebook/e-book.c:2224
+#: addressbook/libebook/e-book.c:2228 addressbook/libebook/e-book.c:2403
+#: addressbook/libebook/e-book.c:2407 addressbook/libebook/e-book.c:2867
+#, c-format
+msgid "CORBA exception making \"%s\" call"
+msgstr "CORBA અપવાદ \"%s\" ને બોલાવે છે"
+
+#: addressbook/libebook/e-book.c:2120
+msgid "e_book_cancel: there is no current operation"
+msgstr "e_book_cancel: ત્યાં કોઈ વર્તમાન પ્રક્રિયા નથી"
+
+#: addressbook/libebook/e-book.c:2155
+msgid "e_book_cancel: couldn't cancel"
+msgstr "e_book_cancel: નકારી શકાયું નહિ"
+
+#: addressbook/libebook/e-book.c:2184 addressbook/libebook/e-book.c:2188
+#, c-format
+msgid "\"%s\" on book after \"%s\""
+msgstr "\"%s\" પછી ચોપડીમાં \"%s\" છે"
+
+#: addressbook/libebook/e-book.c:2250
+msgid "e_book_open: cancelled"
+msgstr "e_book_open: નકારાઈ ગયું"
+
+#: addressbook/libebook/e-book.c:2725
+msgid "e_book_load_uri: Invalid source."
+msgstr "e_book_load_uri: અયોગ્ય સ્રોત"
+
+#: addressbook/libebook/e-book.c:2733
+#, c-format
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr "e_book_load_uri: uri `%s' માટે કોઈ કારખાનાઓ ઉપ્લબ્ધ નથી"
+
+#: addressbook/libebook/e-book.c:2745
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr "e_book_load_uri: ઈ-બુક સાંભળનારને બનાવી શકાઈ નહિ"
+
+#: addressbook/libebook/e-book.c:2796
+#, c-format
+msgid "e_book_new: no factories available for uri `%s'"
+msgstr "e_book_new: uri `%s' માટે કોઈ કારખાનાઓ ઉપ્લબ્ધ નથી"
+
+#: addressbook/libebook/e-book.c:2954
+msgid "e_book_get_self: there was no self contact uid stored in gconf"
+msgstr "e_book_get_self: જીકોન્ફમાં સંગ્રહાયેલ એવું કોઈ સંપર્ક uid નથી"
+
+#: addressbook/libebook/e-book.c:3065
+#, c-format
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr "e_book_set_default_source: જીકોન્ફમાં સંગ્રહાયેલ uid `%s' માટે કોઈ સ્રોત કોડ નથી."
+
+#: addressbook/libebook/e-contact.c:100
+msgid "Unique ID"
+msgstr "અનન્ય ID"
+
+#: addressbook/libebook/e-contact.c:101
+msgid "File As"
+msgstr "ફાઈલ આ રીતે"
+
+#. Name fields
+#. FN isn't really a structured field - we use a getter/setter
+#. so we can set the N property (since evo 1.4 works fine with
+#. vcards that don't even have a N attribute.  *sigh*)
+#: addressbook/libebook/e-contact.c:107
+msgid "Full Name"
+msgstr "પૂરુ નામ"
+
+#: addressbook/libebook/e-contact.c:108
+msgid "Name"
+msgstr "નામ"
+
+#: addressbook/libebook/e-contact.c:109
+msgid "Given Name"
+msgstr "આપેલ નામ"
+
+#: addressbook/libebook/e-contact.c:110
+msgid "Family Name"
+msgstr "પરિવારનું નામ"
+
+#: addressbook/libebook/e-contact.c:111
+msgid "Nickname"
+msgstr "લાડકું નામ"
+
+#: addressbook/libebook/e-contact.c:112
+msgid "Name or Org"
+msgstr "નામ અથવા સંસ્થા"
+
+#. Address fields
+#: addressbook/libebook/e-contact.c:115
+msgid "Address List"
+msgstr "સરનામાની યાદી"
+
+#: addressbook/libebook/e-contact.c:116
+msgid "Home Address"
+msgstr "ઘરનું સરનામું"
+
+#: addressbook/libebook/e-contact.c:117
+msgid "Work Address"
+msgstr "કામ કરવાનું સરનામું"
+
+#: addressbook/libebook/e-contact.c:118
+msgid "Other Address"
+msgstr "બીજા સરનામાઓ"
+
+#: addressbook/libebook/e-contact.c:120
+msgid "Home Address Label"
+msgstr "ઘરના સરનામાનું લેબલ"
+
+#: addressbook/libebook/e-contact.c:121
+msgid "Work Address Label"
+msgstr "કામ કરવાના સરનામાનું લેબલ"
+
+#: addressbook/libebook/e-contact.c:122
+msgid "Other Address Label"
+msgstr "બીજા સરનામાઓનું લેબલ"
+
+#: addressbook/libebook/e-contact.c:124
+msgid "Assistant Phone"
+msgstr "મદદગાર ફોન"
+
+#: addressbook/libebook/e-contact.c:125
+msgid "Business Phone"
+msgstr "ધંંધા માટેનો ફોન"
+
+#: addressbook/libebook/e-contact.c:126
+msgid "Business Phone 2"
+msgstr "ધંંધા માટેનો ફોન ૨"
+
+#: addressbook/libebook/e-contact.c:127
+msgid "Business Fax"
+msgstr "ધંંધા માટેનો ફેક્સ"
+
+#: addressbook/libebook/e-contact.c:128
+msgid "Callback Phone"
+msgstr "કોલબેક ફોન"
+
+#: addressbook/libebook/e-contact.c:129
+msgid "Car Phone"
+msgstr "ગાડીનો ફોન"
+
+#: addressbook/libebook/e-contact.c:130
+msgid "Company Phone"
+msgstr "કંપનીનો ફોન"
+
+#: addressbook/libebook/e-contact.c:131
+msgid "Home Phone"
+msgstr "ઘરનો ફોન"
+
+#: addressbook/libebook/e-contact.c:132
+msgid "Home Phone 2"
+msgstr "ઘરનો ફોન ૨"
+
+#: addressbook/libebook/e-contact.c:133
+msgid "Home Fax"
+msgstr "ઘરનો ફેક્સ"
+
+#: addressbook/libebook/e-contact.c:134
+msgid "ISDN"
+msgstr "ISDN"
+
+#: addressbook/libebook/e-contact.c:135
+msgid "Mobile Phone"
+msgstr "મોબાઈલ ફોન"
+
+#: addressbook/libebook/e-contact.c:136
+msgid "Other Phone"
+msgstr "બીજા ફોન"
+
+#: addressbook/libebook/e-contact.c:137
+msgid "Other Fax"
+msgstr "બીજા ફેક્સ"
+
+#: addressbook/libebook/e-contact.c:138
+msgid "Pager"
+msgstr "પેજર"
+
+#: addressbook/libebook/e-contact.c:139
+msgid "Primary Phone"
+msgstr "પ્રાથમિક ફોન"
+
+#: addressbook/libebook/e-contact.c:140
+msgid "Radio"
+msgstr "રેડિયો"
+
+#: addressbook/libebook/e-contact.c:141
+msgid "Telex"
+msgstr "ટેલેક્સ"
+
+#: addressbook/libebook/e-contact.c:142
+msgid "TTY"
+msgstr "TTY"
+
+#. Email fields
+#: addressbook/libebook/e-contact.c:145
+msgid "Email List"
+msgstr "ઈમેઈલની યાદી"
+
+#: addressbook/libebook/e-contact.c:146
+msgid "Email 1"
+msgstr "ઈ-મેઈલ ૧"
+
+#: addressbook/libebook/e-contact.c:147
+msgid "Email 2"
+msgstr "ઈ-મેઈલ ૨"
+
+#: addressbook/libebook/e-contact.c:148
+msgid "Email 3"
+msgstr "ઈ-મેઈલ ૩"
+
+#: addressbook/libebook/e-contact.c:149
+msgid "Email 4"
+msgstr "ઈ-મેઈલ ૪"
+
+#: addressbook/libebook/e-contact.c:150
+msgid "Mailer"
+msgstr "મેઈલ કરનાર"
+
+#: addressbook/libebook/e-contact.c:151
+msgid "Wants HTML Mail"
+msgstr "ને HTML મેઈલની જરુર છે"
+
+#. Instant messaging fields
+#: addressbook/libebook/e-contact.c:154
+msgid "AIM Screen Name List"
+msgstr "AIM સ્ક્રીનના નામની યાદી"
+
+#: addressbook/libebook/e-contact.c:155
+msgid "Groupwise Id List"
+msgstr "જૂથ પ્રમાણે Id ની યાદી"
+
+#: addressbook/libebook/e-contact.c:156
+msgid "Jabber Id List"
+msgstr "જેબર Id ની યાદી"
+
+#: addressbook/libebook/e-contact.c:157
+msgid "Yahoo! Screen Name List"
+msgstr "યાહુ સ્ક્રીન નામની યાદી"
+
+#: addressbook/libebook/e-contact.c:158
+msgid "MSN Screen Name List"
+msgstr "MSN સ્ક્રીનના નામની યાદી"
+
+#: addressbook/libebook/e-contact.c:159
+msgid "ICQ Id List"
+msgstr "ICQ Id યાદી"
+
+#: addressbook/libebook/e-contact.c:161
+msgid "AIM Home Screen Name 1"
+msgstr "AIM ઘરની સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:162
+msgid "AIM Home Screen Name 2"
+msgstr "AIM ઘરની સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:163
+msgid "AIM Home Screen Name 3"
+msgstr "AIM ઘરની સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:164
+msgid "AIM Work Screen Name 1"
+msgstr "AIM કામ કરવાની સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:165
+msgid "AIM Work Screen Name 2"
+msgstr "AIM કામ કરવાની સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:166
+msgid "AIM Work Screen Name 3"
+msgstr "AIM કામ કરવાની સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Groupwise Home Screen Name 1"
+msgstr "જૂથ પ્રમાણે ઘરની સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Groupwise Home Screen Name 2"
+msgstr "જૂથ પ્રમાણે ઘરની સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Groupwise Home Screen Name 3"
+msgstr "જૂથ પ્રમાણે ઘરની સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Groupwise Work Screen Name 1"
+msgstr "જૂથ પ્રમાણે કામ કરવાની સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:171
+msgid "Groupwise Work Screen Name 2"
+msgstr "જૂથ પ્રમાણે કામ કરવાની સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:172
+msgid "Groupwise Work Screen Name 3"
+msgstr "જૂથ પ્રમાણે કામ કરવાની સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:173
+msgid "Jabber Home Id 1"
+msgstr "જેબર ઘર Id ૧"
+
+#: addressbook/libebook/e-contact.c:174
+msgid "Jabber Home Id 2"
+msgstr "જેબર ઘર Id ૨"
+
+#: addressbook/libebook/e-contact.c:175
+msgid "Jabber Home Id 3"
+msgstr "જેબર ઘર Id ૩"
+
+#: addressbook/libebook/e-contact.c:176
+msgid "Jabber Work Id 1"
+msgstr "જેબર કામ કરવાનું Id ૧"
+
+#: addressbook/libebook/e-contact.c:177
+msgid "Jabber Work Id 2"
+msgstr "જેબર કામ કરવાનું Id ૨"
+
+#: addressbook/libebook/e-contact.c:178
+msgid "Jabber Work Id 3"
+msgstr "જેબર કામ કરવાનું Id ૩"
+
+#: addressbook/libebook/e-contact.c:179
+msgid "Yahoo! Home Screen Name 1"
+msgstr "યાહુ! ઘર સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:180
+msgid "Yahoo! Home Screen Name 2"
+msgstr "યાહુ! ઘર સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:181
+msgid "Yahoo! Home Screen Name 3"
+msgstr "યાહુ! ઘર સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:182
+msgid "Yahoo! Work Screen Name 1"
+msgstr "યાહુ! કામ કરવાની સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:183
+msgid "Yahoo! Work Screen Name 2"
+msgstr "યાહુ! કામ કરવાની સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:184
+msgid "Yahoo! Work Screen Name 3"
+msgstr "યાહુ! કામ કરવાની સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:185
+msgid "MSN Home Screen Name 1"
+msgstr "MSN ઘર સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:186
+msgid "MSN Home Screen Name 2"
+msgstr "MSN ઘર સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:187
+msgid "MSN Home Screen Name 3"
+msgstr "MSN ઘર સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:188
+msgid "MSN Work Screen Name 1"
+msgstr "MSN કામ કરવાની સ્ક્રીનનું નામ ૧"
+
+#: addressbook/libebook/e-contact.c:189
+msgid "MSN Work Screen Name 2"
+msgstr "MSN કામ કરવાની સ્ક્રીનનું નામ ૨"
+
+#: addressbook/libebook/e-contact.c:190
+msgid "MSN Work Screen Name 3"
+msgstr "MSN કામ કરવાની સ્ક્રીનનું નામ ૩"
+
+#: addressbook/libebook/e-contact.c:191
+msgid "ICQ Home Id 1"
+msgstr "ICQ ઘર Id ૧"
+
+#: addressbook/libebook/e-contact.c:192
+msgid "ICQ Home Id 2"
+msgstr "ICQ ઘર Id ૨"
+
+#: addressbook/libebook/e-contact.c:193
+msgid "ICQ Home Id 3"
+msgstr "ICQ ઘર Id ૩"
+
+#: addressbook/libebook/e-contact.c:194
+msgid "ICQ Work Id 1"
+msgstr "ICQ કામ કરવાનું Id ૧"
+
+#: addressbook/libebook/e-contact.c:195
+msgid "ICQ Work Id 2"
+msgstr "ICQ કામ કરવાનું Id ૨"
+
+#: addressbook/libebook/e-contact.c:196
+msgid "ICQ Work Id 3"
+msgstr "ICQ કામ કરવાનું Id ૩"
+
+#. Organizational fields
+#: addressbook/libebook/e-contact.c:199
+msgid "Organization"
+msgstr "સંસ્થા"
+
+#: addressbook/libebook/e-contact.c:200
+msgid "Organizational Unit"
+msgstr "સંસ્થાનો અેકમ"
+
+#: addressbook/libebook/e-contact.c:201
+msgid "Office"
+msgstr "ઓફિસ"
+
+#: addressbook/libebook/e-contact.c:203
+msgid "Title"
+msgstr "શીર્ષક"
+
+#: addressbook/libebook/e-contact.c:204
+msgid "Role"
+msgstr "ભૂમિકા"
+
+#: addressbook/libebook/e-contact.c:205
+msgid "Manager"
+msgstr "વ્યવસ્થાપક"
+
+#: addressbook/libebook/e-contact.c:206
+msgid "Assistant"
+msgstr "સહાયક"
+
+#. Web fields
+#: addressbook/libebook/e-contact.c:209
+msgid "Homepage URL"
+msgstr "ઘરપાનું URL"
+
+#: addressbook/libebook/e-contact.c:210
+msgid "Weblog URL"
+msgstr "વેબલોગ URL"
+
+#: addressbook/libebook/e-contact.c:211
+msgid "Video Conferencing URL"
+msgstr "વિડીયો મંત્રણા URL"
+
+#. Photo/Logo
+#: addressbook/libebook/e-contact.c:214
+msgid "Photo"
+msgstr "ફોટો"
+
+#: addressbook/libebook/e-contact.c:215
+msgid "Logo"
+msgstr "લોગો"
+
+#. Security fields
+#: addressbook/libebook/e-contact.c:218
+msgid "X.509 Certificate"
+msgstr "X.509 પ્રમાણપત્ર"
+
+#. Contact categories
+#: addressbook/libebook/e-contact.c:221
+msgid "Category List"
+msgstr "વર્ગની યાદી"
+
+#: addressbook/libebook/e-contact.c:222
+msgid "Categories"
+msgstr "વર્ગો"
+
+#. Collaboration fields
+#: addressbook/libebook/e-contact.c:225
+msgid "Calendar URI"
+msgstr "કેલેન્ડર URI"
+
+#: addressbook/libebook/e-contact.c:226
+msgid "Free/Busy URL"
+msgstr "મુક્ત/વ્યસ્ત URL"
+
+#: addressbook/libebook/e-contact.c:227
+msgid "ICS Calendar"
+msgstr "ICS કેલેન્ડર"
+
+#. Misc fields
+#: addressbook/libebook/e-contact.c:230
+msgid "Spouse's Name"
+msgstr "પત્નીનું નામ"
+
+#: addressbook/libebook/e-contact.c:231
+msgid "Note"
+msgstr "નોંધ"
+
+#: addressbook/libebook/e-contact.c:233
+msgid "Birth Date"
+msgstr "જન્મ તારીખ"
+
+#: addressbook/libebook/e-contact.c:234
+msgid "Anniversary"
+msgstr "સાલગીરી"
+
+#: addressbook/libebook/e-contact.c:236
+msgid "List"
+msgstr "યાદી"
+
+#: addressbook/libebook/e-contact.c:237
+msgid "List Show Addresses"
+msgstr "યાદી સરનામાઓ બતાવે છે"
+
+#: addressbook/libebook/e-contact.c:1206
+msgid "Unnamed List"
+msgstr "નામ વગરની યાદી"
+
+#. Set category and visibility
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+msgid "Birthday"
+msgstr "જન્મ દિવસ"
+
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
+#, c-format
+msgid "Birthday: %s"
+msgstr "જન્મ દિવસ: %s"
+
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
+#, c-format
+msgid "Anniversary: %s"
+msgstr "સાલગીરી: %s"
+
+#: calendar/backends/file/e-cal-backend-file.c:183
+msgid "Can't save calendar data: Malformed URI."
+msgstr "કેલેન્ડરની માહીતી સંગ્રહી શકાતી નથી: મેલફોર્મવાળી URI"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+msgid "Invalid server URI"
+msgstr "અયોગ્ય સર્વર URI"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+msgid "Calendar"
+msgstr "કેલેન્ડર"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
+#: calendar/libecal/e-cal.c:4288
+msgid "Authentication failed"
+msgstr "સત્તાધિકાર નિષ્ફળ"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+msgid "Could not create cache file"
+msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
+
+#: calendar/backends/http/e-cal-backend-http.c:225
+msgid "Redirected to Invalid URI"
+msgstr "અયોગ્ય URI ફરીથી દિશામાન કરાયું"
+
+#: calendar/backends/http/e-cal-backend-http.c:249
+msgid "Bad file format."
+msgstr "ફાઈલનું બંધારણ ખરાબ છે."
+
+#: calendar/backends/http/e-cal-backend-http.c:255
+msgid "Not a calendar."
+msgstr "કેલેન્ડર નથી."
+
+#: calendar/libecal/e-cal-component.c:1218
+msgid "Untitled appointment"
+msgstr "શીર્ષક વગરનો મેળાપ"
+
+#: calendar/libecal/e-cal-recur.c:3996
+msgid "1st"
+msgstr "પહેલું"
+
+#: calendar/libecal/e-cal-recur.c:3997
+msgid "2nd"
+msgstr "બીજુ"
+
+#: calendar/libecal/e-cal-recur.c:3998
+msgid "3rd"
+msgstr "ત્રીજુ"
+
+#: calendar/libecal/e-cal-recur.c:3999
+msgid "4th"
+msgstr "ચોથુ"
+
+#: calendar/libecal/e-cal-recur.c:4000
+msgid "5th"
+msgstr "પાંચમું"
+
+#: calendar/libecal/e-cal-recur.c:4001
+msgid "6th"
+msgstr "છઠ્ઠુ"
+
+#: calendar/libecal/e-cal-recur.c:4002
+msgid "7th"
+msgstr "સાતમું"
+
+#: calendar/libecal/e-cal-recur.c:4003
+msgid "8th"
+msgstr "આઠમુ"
+
+#: calendar/libecal/e-cal-recur.c:4004
+msgid "9th"
+msgstr "નવમુ"
+
+#: calendar/libecal/e-cal-recur.c:4005
+msgid "10th"
+msgstr "દસમુ"
+
+#: calendar/libecal/e-cal-recur.c:4006
+msgid "11th"
+msgstr "અગિયારમુ"
+
+#: calendar/libecal/e-cal-recur.c:4007
+msgid "12th"
+msgstr "બારમુ"
+
+#: calendar/libecal/e-cal-recur.c:4008
+msgid "13th"
+msgstr "તેરમુ"
+
+#: calendar/libecal/e-cal-recur.c:4009
+msgid "14th"
+msgstr "ચૌદમું"
+
+#: calendar/libecal/e-cal-recur.c:4010
+msgid "15th"
+msgstr "પંદરમું"
+
+#: calendar/libecal/e-cal-recur.c:4011
+msgid "16th"
+msgstr "સોળમું"
+
+#: calendar/libecal/e-cal-recur.c:4012
+msgid "17th"
+msgstr "સત્તરમું"
+
+#: calendar/libecal/e-cal-recur.c:4013
+msgid "18th"
+msgstr "અઢારમું"
+
+#: calendar/libecal/e-cal-recur.c:4014
+msgid "19th"
+msgstr "ઓગણીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4015
+msgid "20th"
+msgstr "વીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4016
+msgid "21st"
+msgstr "એકવીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4017
+msgid "22nd"
+msgstr "બાવીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4018
+msgid "23rd"
+msgstr "ત્રેવીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4019
+msgid "24th"
+msgstr "ચોવીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4020
+msgid "25th"
+msgstr "પચ્ચીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4021
+msgid "26th"
+msgstr "છવ્વીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4022
+msgid "27th"
+msgstr "સત્તાવીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4023
+msgid "28th"
+msgstr "અઠ્ઠાવીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4024
+msgid "29th"
+msgstr "ઓગણત્રીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4025
+msgid "30th"
+msgstr "ત્રીસમું"
+
+#: calendar/libecal/e-cal-recur.c:4026
+msgid "31st"
+msgstr "એકત્રીસમું"
+
+#: calendar/libecal/e-cal-util.c:569 calendar/libecal/e-cal-util.c:591
+msgid "High"
+msgstr "ઊંચુ"
+
+#: calendar/libecal/e-cal-util.c:571 calendar/libecal/e-cal-util.c:593
+msgid "Normal"
+msgstr "સામાન્ય"
+
+#: calendar/libecal/e-cal-util.c:573 calendar/libecal/e-cal-util.c:595
+msgid "Low"
+msgstr "નીચુ"
+
+#. An empty string is the same as 'None'.
+#: calendar/libecal/e-cal-util.c:589
+msgid "Undefined"
+msgstr "અવ્યાખ્યાયિત"
+
+#. actually ask the client for authentication
+#: calendar/libecal/e-cal.c:1490
+#, c-format
+msgid "Enter password for %s (user %s)"
+msgstr "%s (વપરાશકર્તા %s) માટે પાસવર્ડ દાખલ કરો"
+
+#: calendar/libecal/e-cal.c:4262
+msgid "Invalid argument"
+msgstr "અયોગ્ય દલીલ"
+
+#: calendar/libecal/e-cal.c:4264
+msgid "Backend is busy"
+msgstr "પાશ્વ ભાગ વ્યસ્ત છે"
+
+#: calendar/libecal/e-cal.c:4266
+msgid "Repository is offline"
+msgstr "રીપોઝીટરી ઓફલાઈન છે"
+
+#: calendar/libecal/e-cal.c:4268
+msgid "No such calendar"
+msgstr "આવુ કોઈ કેલેન્ડર જ નથી"
+
+#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+msgid "Object not found"
+msgstr "ઓબ્જેક્ટ મળ્યો નથી"
+
+#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+msgid "Invalid object"
+msgstr "અયોગ્ય ઓબ્જેક્ટ"
+
+#: calendar/libecal/e-cal.c:4274
+msgid "URI not loaded"
+msgstr "URI લવાઈ નથી"
+
+#: calendar/libecal/e-cal.c:4276
+msgid "URI already loaded"
+msgstr "URI પહેલેથી જ લવાઈ ગઈ છે"
+
+#: calendar/libecal/e-cal.c:4278
+msgid "Permission denied"
+msgstr "પરવાનગી નથી"
+
+#: calendar/libecal/e-cal.c:4280
+msgid "Object ID already exists"
+msgstr "ઓબ્જેક્ટ ID પહેલાથી જ હાજર છે"
+
+#: calendar/libecal/e-cal.c:4282
+msgid "Protocol not supported"
+msgstr "પ્રોટોકોલને આધાર નથી"
+
+#: calendar/libecal/e-cal.c:4284
+msgid "Operation has been cancelled"
+msgstr "પ્રક્રિયા નકારી દેવામાં આવી છે."
+
+#: calendar/libecal/e-cal.c:4286
+msgid "Could not cancel operation"
+msgstr "પ્રક્રિયા નકારી શકાતી નથી"
+
+#: calendar/libecal/e-cal.c:4290
+msgid "Authentication required"
+msgstr "સત્તાધિકારની જરુરિયાત છે"
+
+#: calendar/libecal/e-cal.c:4292
+msgid "A CORBA exception has occurred"
+msgstr "CORBA નો અપવાદ ઊભો થયો છે"
+
+#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+msgid "Unknown error"
+msgstr "અજાણી ભૂલ"
+
+#: calendar/libecal/e-cal.c:4296
+msgid "No error"
+msgstr "કોઈ ભૂલ નથી"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:529
+#: calendar/libedata-cal/e-cal-backend-sexp.c:661
+#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#, c-format
+msgid "\"%s\" expects no arguments"
+msgstr "\"%s\" ને કોઈ દલીલની જરુર નથી"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:75
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#, c-format
+msgid "\"%s\" expects one argument"
+msgstr "\"%s\" ને એક દલીલની જરુર છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:88
+#: calendar/libedata-cal/e-cal-backend-sexp.c:245
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
+#, c-format
+msgid "\"%s\" expects the first argument to be a string"
+msgstr "\"%s\" એ પહેલી દલીલ શબ્દમાળા હોવી જોઈએ એમ ઈચ્છે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:96
+#, c-format
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr "\"%s\" એ પહેલી દલીલ ISO 8601 તારીખ/સમય શબ્દમાળા હોવી જોઈએ એમ ઈચ્છે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:312
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#, c-format
+msgid "\"%s\" expects two arguments"
+msgstr "\"%s\" ને બે દલીલની જરુર છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:133
+#: calendar/libedata-cal/e-cal-backend-sexp.c:175
+#: calendar/libedata-cal/e-cal-backend-sexp.c:209
+#: calendar/libedata-cal/e-cal-backend-sexp.c:318
+#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#, c-format
+msgid "\"%s\" expects the first argument to be a time_t"
+msgstr "\"%s\" એ પહેલી દલીલ time_t હોવી જોઈએ એમ ઈચ્છે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:141
+#, c-format
+msgid "\"%s\" expects the second argument to be an integer"
+msgstr "\"%s\" એ બીજી દલીલ ઈન્ટીજર હોવીહોવી જોઈએ એમ ઈચ્છે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#, c-format
+msgid "\"%s\" expects the second argument to be a time_t"
+msgstr "\"%s\" એ બીજી દલીલ time_t હોવી જોઈએ એમ ઈચ્છે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:481
+#, c-format
+msgid "\"%s\" expects the second argument to be a string"
+msgstr "\"%s\" એ બીજી દલીલ શબ્દમાળા હોવી જોઈએ એમ ઈચ્છે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
+#, c-format
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\", or \"location\""
+msgstr "\"%s\" એ પહેલી દલીલ ક્યાં તો \"કંઈ પણ\", \"ભાવાર્થ\" અથવા \"વર્ણન\" અથવા \"જગ્યા\" ાળા હોવી જોઈએ એમ ઈચ્છે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#, c-format
+msgid "\"%s\" expects at least one argument"
+msgstr "\"%s\" ઓછામાં ઓછી એક દલીલની ઈચ્છા રાખે છે"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#, c-format
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr "\"%s\" એ બધી દલીલો શબ્દમાળાઓ હોવી જોઈએ અથવા એક અને  માત્ર એક દલીલ બુલીયન ખોટું હોવી જોઈએ (#f)"
+
+#: servers/groupwise/e-gw-connection.c:80
+msgid "Invalid connection"
+msgstr "અયોગ્ય જોડાણ"
+
+#: servers/groupwise/e-gw-connection.c:84
+msgid "Invalid response from server"
+msgstr "સર્વરમાંથી આવતો વળતો જવાબ અયોગ્ય છે"
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr "ખોટા પરિમાણ"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
+msgid "Evolution Addressbook file and LDAP backend"
+msgstr "ઈવોલ્યુશન સરનામાપોથી ફાઈલ અને LDAP પાશ્વ ભાગમાં છે"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
+msgid "Evolution Calendar file and webcal backend"
+msgstr "ઈવોલ્યુશન કેલેન્ડર ફાઈલ અને વેબકોલ પાશ્વ ભાગમાં છે"
+
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
+msgid "Evolution Addressbook file backend"
+msgstr "ઈવોલ્યુશન સરનામાપોથી ફાઈલ પાશ્વ ભાગમાં છે"
+
