@@ -1768,8 +1768,10 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), egwb->priv->categories_by_id);
-		if (match_needed &&  e_book_backend_sexp_match_contact (card_sexp, contact))
-			vcard_list = g_list_append (vcard_list, e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30));
+		if (match_needed) {  
+			if (e_book_backend_sexp_match_contact (card_sexp, contact))
+				vcard_list = g_list_append (vcard_list, e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30));
+		}
 		else 
 			vcard_list = g_list_append (vcard_list, e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30));
 		g_object_unref (contact);
