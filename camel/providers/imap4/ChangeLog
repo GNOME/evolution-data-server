@@ -1,3 +1,13 @@
+2005-02-02  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-store.c (imap4_build_folder_info): Set the
+	CAMEL_FOLDER_SUBSCRIBED bit on the fi->flags if the info was
+	gotten via an LSUB response.
+	(imap4_build_folder_info): If our caller has requested
+	subscription info, make sure to get it.
+	(imap4_subscription_info): Get whether or not a folder is
+	subscribed.
+
 2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-summary.c (imap4_header_load): Changed to have the

@@ -1159,11 +1159,44 @@ imap4_status (CamelStore *store, CamelFolderInfo *fi)
 	g_ptr_array_free (array, TRUE);
 }
 
+static void
+imap4_subscription_info (CamelStore *store, CamelFolderInfo *fi)
+{
+	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
+	camel_imap4_list_t *lsub;
+	CamelIMAP4Command *ic;
+	GPtrArray *array;
+	char *mailbox;
+	int id, i;
+	
+	mailbox = imap4_folder_utf7_name (store, fi->full_name, '\0');
+	ic = camel_imap4_engine_queue (engine, NULL, "LSUB \"\" %S\r\n", mailbox);
+	camel_imap4_command_register_untagged (ic, "LSUB", camel_imap4_untagged_list);
+	ic->user_data = array = g_ptr_array_new ();
+	
+	while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
+		;
+	
+	camel_imap4_command_unref (ic);
+	for (i = 0; i < array->len; i++) {
+		lsub = array->pdata[i];
+		
+		if (!strcmp (lsub->name, mailbox))
+			fi->flags |= CAMEL_FOLDER_SUBSCRIBED;
+		
+		g_free (lsub->name);
+		g_free (lsub);
+	}
+	
+	g_ptr_array_free (array, TRUE);
+}
+
 static CamelFolderInfo *
 imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtrArray *array)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelFolder *folder = (CamelFolder *) engine->folder;
+	gboolean lsub = (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED);
 	camel_imap4_list_t *list;
 	CamelFolderInfo *fi;
 	char *name, *p;
@@ -1203,7 +1236,7 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 		fi->full_name = name;
 		fi->name = g_strdup (p ? p + 1: name);
 		fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-		fi->flags = list->flags;
+		fi->flags = list->flags | (lsub ? CAMEL_FOLDER_SUBSCRIBED : 0);
 		fi->unread = -1;
 		fi->total = -1;
 		
@@ -1213,6 +1246,9 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 		} else if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST)) {
 			imap4_status (store, fi);
 		}
+		
+		if ((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_INFO) && !(fi->flags & CAMEL_FOLDER_SUBSCRIBED))
+			imap4_subscription_info (store, fi);
 		
 		g_free (list->name);
 		g_free (list);
