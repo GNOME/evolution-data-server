@@ -1,3 +1,7 @@
+2003-12-07  JP Rosevear  <jpr@ximian.com>
+
+	* libecal/e-cal.c (get_factories): use the versioned repo id
+
 2003-12-04  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/create-account.c (add_account): add the username
