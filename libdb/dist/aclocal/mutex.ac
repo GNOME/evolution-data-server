@@ -194,28 +194,31 @@ fi
 # Try with and without the -lpthread library.  If the user specified we use
 # POSIX pthreads mutexes, and we fail to find the full interface, try and
 # configure for just intra-process support.
-if test "$db_cv_mutex" = no -o "$db_cv_mutex" = "posix_only"; then
-	AM_PTHREADS_SHARED("POSIX/pthreads")
-fi
-if test "$db_cv_mutex" = no -o \
-    "$db_cv_mutex" = "posix_only" -o "$db_cv_mutex" = "posix_library_only"; then
-	LIBS="$LIBS -lpthread"
-	AM_PTHREADS_SHARED("POSIX/pthreads/library")
-	LIBS="$orig_libs"
-fi
-if test "$db_cv_mutex" = "posix_only"; then
-	AM_PTHREADS_PRIVATE("POSIX/pthreads/private")
-fi
-if test "$db_cv_mutex" = "posix_only" -o \
-    "$db_cv_mutex" = "posix_library_only"; then
-	LIBS="$LIBS -lpthread"
-	AM_PTHREADS_PRIVATE("POSIX/pthreads/library/private")
-	LIBS="$orig_libs"
-fi
+if test "$db_cv_pthreadsmutexes" = yes; then
+	if test "$db_cv_mutex" = no -o "$db_cv_mutex" = "posix_only"; then
+		AM_PTHREADS_SHARED("POSIX/pthreads")
+	fi
+	if test "$db_cv_mutex" = no -o \
+	    "$db_cv_mutex" = "posix_only" -o \
+	    "$db_cv_mutex" = "posix_library_only"; then
+		LIBS="$LIBS -lpthread"
+		AM_PTHREADS_SHARED("POSIX/pthreads/library")
+		LIBS="$orig_libs"
+	fi
+	if test "$db_cv_mutex" = "posix_only"; then
+		AM_PTHREADS_PRIVATE("POSIX/pthreads/private")
+	fi
+	if test "$db_cv_mutex" = "posix_only" -o \
+	    "$db_cv_mutex" = "posix_library_only"; then
+		LIBS="$LIBS -lpthread"
+		AM_PTHREADS_PRIVATE("POSIX/pthreads/library/private")
+		LIBS="$orig_libs"
+	fi
 
-if test "$db_cv_mutex" = "posix_only" -o \
-    "$db_cv_mutex" = "posix_library_only"; then
-	AC_MSG_ERROR([unable to find POSIX 1003.1 mutex interfaces])
+	if test "$db_cv_mutex" = "posix_only" -o \
+	    "$db_cv_mutex" = "posix_library_only"; then
+		AC_MSG_ERROR([unable to find POSIX 1003.1 mutex interfaces])
+	fi
 fi
 
 # msemaphore: HPPA only
@@ -425,6 +428,17 @@ AC_TRY_COMPILE(,[
 ], [db_cv_mutex="S390/gcc-assembly"])
 fi
 
+# AMD64/gcc: FreeBSD, NetBSD, BSD/OS, Linux
+if test "$db_cv_mutex" = no; then
+AC_TRY_COMPILE(,[
+#if (defined(x86_64) || defined(__x86_64__)) && defined(__GNUC__)
+	exit(0);
+#else
+	FAIL TO COMPILE/LINK
+#endif
+], [db_cv_mutex="x86_64/gcc-assembly"])
+fi
+
 # ia86/gcc: Linux
 if test "$db_cv_mutex" = no; then
 AC_TRY_COMPILE(,[
@@ -570,6 +584,10 @@ x86/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
 			AC_DEFINE(HAVE_MUTEX_X86_GCC_ASSEMBLY)
 			AH_TEMPLATE(HAVE_MUTEX_X86_GCC_ASSEMBLY,
 			    [Define to 1 to use the GCC compiler and x86 assembly language mutexes.]);;
+x86_64/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
+			AC_DEFINE(HAVE_MUTEX_X86_64_GCC_ASSEMBLY)
+			AH_TEMPLATE(HAVE_MUTEX_X86_64_GCC_ASSEMBLY,
+			    [Define to 1 to use the GCC compiler and amd64 assembly language mutexes.]);;
 UNIX/fcntl)		AC_MSG_WARN(
 			    [NO FAST MUTEXES FOUND FOR THIS COMPILER/ARCHITECTURE.])
 			ADDITIONAL_OBJS="mut_fcntl${o} $ADDITIONAL_OBJS"

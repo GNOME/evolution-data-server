@@ -1,3 +1,12 @@
+2004-09-21  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libdb/dbinc/mutex.h
+	* libdb/dist/configure
+	* libdb/dist/aclocal/mutex.ac
+	* libdb/dist/aclocal/options.ac:
+	Applied patch from Toshok that fixes issues related to NPTL and AMD
+	processors.
+
 2004-09-16  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: update version to 1.1.0 and BASE_VERSION to 1.2
