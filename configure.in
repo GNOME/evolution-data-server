@@ -200,6 +200,18 @@ EVO_SET_COMPILE_FLAGS(GROUPWISE, libsoup-2.2 >= 2.1.2)
 AC_SUBST(GROUPWISE_CFLAGS)
 AC_SUBST(GROUPWISE_LIBS)
 
+dnl --- Debug flags
+
+AC_ARG_ENABLE(debug,
+              [  --enable-debug=[no/yes] turn on debugging [default=no]],,
+              enable_debug=no)
+
+if test "x$enable_debug" = "xyes"; then
+	CFLAGS = "$CFLAGS -DG_ENABLE_DEBUG"
+else
+	CFLAGS = "$CFLAGS -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS"
+fi
+
 dnl *******************
 dnl Special directories
 dnl *******************
