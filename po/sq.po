@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server gnome-2-10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-22 13:13+0100\n"
-"PO-Revision-Date: 2005-03-22 16:49+0100\n"
+"POT-Creation-Date: 2005-03-31 12:16+0200\n"
+"PO-Revision-Date: 2005-03-31 19:28+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -554,7 +554,7 @@ msgid "Category List"
 msgstr "Lista kategorisë"
 
 #: addressbook/libebook/e-contact.c:224
-#: libedataserverui/e-categories-dialog.c:371
+#: libedataserverui/e-categories-dialog.c:372
 msgid "Categories"
 msgstr "Kategoritë"
 
@@ -639,27 +639,23 @@ msgstr "Kërkohet përgjigja: Kur dëshiron"
 msgid "Invalid server URI"
 msgstr "URI serveri e pasaktë"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "I pamundur krijimi i temës për marrjen e deltës"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Kalendari"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "I pamundur krijimi i file cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "I pamundur krijimi i temës për popullimin e cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4528
 #: camel/providers/groupwise/camel-groupwise-folder.c:654
 #: camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -2523,7 +2519,7 @@ msgid "No such message"
 msgstr "Mesazhi nuk u gjet"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:124
-#: camel/providers/imap4/camel-imap4-folder.c:788
+#: camel/providers/imap4/camel-imap4-folder.c:787
 #: camel/providers/nntp/camel-nntp-folder.c:157
 #: camel/providers/nntp/camel-nntp-folder.c:233
 #: camel/providers/nntp/camel-nntp-folder.c:372
@@ -2535,7 +2531,7 @@ msgid "User cancelled"
 msgstr "Përdorues i hequr"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:129
-#: camel/providers/imap4/camel-imap4-folder.c:793
+#: camel/providers/imap4/camel-imap4-folder.c:792
 #: camel/providers/nntp/camel-nntp-folder.c:148
 #: camel/providers/nntp/camel-nntp-folder.c:150
 #: camel/providers/nntp/camel-nntp-folder.c:159
@@ -2549,7 +2545,7 @@ msgid "Cannot get message %s: %s"
 msgstr "E pamundur marrja e mesazhit %s: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:149
-#: camel/providers/imap4/camel-imap4-folder.c:811
+#: camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Ky mesazh nuk ndodhet aktualisht në dispozicion në modalitetin jashtë linje."
 
@@ -3137,54 +3133,59 @@ msgstr "I pamundur sinkronizimi i flags tek kartela `%s': nuk njihet"
 msgid "Cannot sync flags to folder `%s': Bad command"
 msgstr "I pamundur sinkronizimi i flags tek kartela `%s': Komandë e pavlefshme"
 
-#: camel/providers/imap4/camel-imap4-folder.c:604
+#: camel/providers/imap4/camel-imap4-folder.c:603
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
 msgstr "I pamundur pastrimi i kartelës `%s': nuk njihet"
 
-#: camel/providers/imap4/camel-imap4-folder.c:609
+#: camel/providers/imap4/camel-imap4-folder.c:608
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
 msgstr "I pamundur pastrimi i kartelës `%s': Komandë e pavlefshme"
 
-#: camel/providers/imap4/camel-imap4-folder.c:865
+#: camel/providers/imap4/camel-imap4-folder.c:864
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr "E pamundur marrja e mesazhit %s nga kartela `%s': mesazhi nuk ekziston"
 
-#: camel/providers/imap4/camel-imap4-folder.c:870
+#: camel/providers/imap4/camel-imap4-folder.c:869
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr "E pamundur marrja e mesazhit %s nga kartela `%s': Komandë e gabuar"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1003
+#: camel/providers/imap4/camel-imap4-folder.c:913
+#, c-format
+msgid "Cannot append message to folder `%s': Folder is read-only"
+msgstr "I pamundur shtimi i mesazhit tek kartela `%s': Kartela është në vetëm lexim"
+
+#: camel/providers/imap4/camel-imap4-folder.c:1009
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "I pamundur shtimi i mesazhit tek kartela `%s': Gabim i panjohur"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1032
+#: camel/providers/imap4/camel-imap4-folder.c:1038
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "I pamundur shtimi i mesazhit tek kartela `%s': Komandë e pavlefshme"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1144
+#: camel/providers/imap4/camel-imap4-folder.c:1150
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "E pamundur lëvizja e mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1148
+#: camel/providers/imap4/camel-imap4-folder.c:1154
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr "I pamundur kopjimi i mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1156
+#: camel/providers/imap4/camel-imap4-folder.c:1162
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "E pamundur lëvizja e mesazheve nga kartela `%s' tek kartela `%s': komandë e "
 "pavlefshme"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1160
+#: camel/providers/imap4/camel-imap4-folder.c:1166
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
@@ -4595,7 +4596,7 @@ msgstr "Në pritje"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: libedataserver/e-time-utils.c:173 libedataserver/e-time-utils.c:400
+#: libedataserver/e-time-utils.c:179 libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %m/%d/%Y %I:%M:%S %p"
 
@@ -4603,7 +4604,7 @@ msgstr "%a %m/%d/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: libedataserver/e-time-utils.c:178 libedataserver/e-time-utils.c:391
+#: libedataserver/e-time-utils.c:184 libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %m/%d/%Y %H:%M:%S"
 
@@ -4611,7 +4612,7 @@ msgstr "%a %m/%d/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: libedataserver/e-time-utils.c:183 libedataserver/e-time-utils.c:396
+#: libedataserver/e-time-utils.c:189 libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %m/%d/%Y %I:%M %p"
 
@@ -4619,78 +4620,78 @@ msgstr "%a %m/%d/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: libedataserver/e-time-utils.c:188 libedataserver/e-time-utils.c:387
+#: libedataserver/e-time-utils.c:194 libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %m/%d/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:193
+#: libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %m/%d/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:198
+#: libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: libedataserver/e-time-utils.c:201 libedataserver/e-time-utils.c:294
-#: libedataserver/e-time-utils.c:382
+#: libedataserver/e-time-utils.c:207 libedataserver/e-time-utils.c:300
+#: libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
 msgstr "%a %m/%d/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: libedataserver/e-time-utils.c:209
+#: libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: libedataserver/e-time-utils.c:213
+#: libedataserver/e-time-utils.c:219
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%m/%d/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:218
+#: libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%m/%d/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:223
+#: libedataserver/e-time-utils.c:229
 msgid "%m/%d/%Y %H:%M"
 msgstr "%m/%d/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:228
+#: libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
 msgstr "%m/%d/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:233
+#: libedataserver/e-time-utils.c:239
 msgid "%m/%d/%Y %H"
 msgstr "%m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: libedataserver/e-time-utils.c:236 libedataserver/e-time-utils.c:297
+#: libedataserver/e-time-utils.c:242 libedataserver/e-time-utils.c:303
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
+#: libedataserver/e-time-utils.c:348 libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
+#: libedataserver/e-time-utils.c:352 libedataserver/e-time-utils.c:459
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4698,19 +4699,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
+#: libedataserver/e-time-utils.c:357 libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
+#: libedataserver/e-time-utils.c:361 libedataserver/e-time-utils.c:456
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: libedataserver/e-time-utils.c:354
+#: libedataserver/e-time-utils.c:365
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -4726,14 +4727,14 @@ msgstr "Autentifikimi dështoi.\n"
 msgid "Category Icon"
 msgstr "Ikona e kategorisë"
 
-#: libedataserverui/e-categories-dialog.c:238
+#: libedataserverui/e-categories-dialog.c:239
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "Një kategori '%s' ekziston në konfigurim. Përdor një emër tjetër"
 
-#: libedataserverui/e-categories-dialog.c:396
+#: libedataserverui/e-categories-dialog.c:397
 msgid "Category"
 msgstr "Kategoria"
 
