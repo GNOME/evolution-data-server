@@ -212,6 +212,8 @@ else
 	DEBUG_CFLAGS = "-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS"
 fi
 
+AC_SUBST(DEBUG_CFLAGS)
+
 dnl *******************
 dnl Special directories
 dnl *******************
