@@ -145,14 +145,13 @@ groupwise_folder_get_message( CamelFolder *folder,
 		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
 		return msg;
 	}
-	
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("This message is not available in offline mode."));
 		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
 		return NULL;
 	}
-		
+
 	folder_name = g_strdup(folder->name) ;
 	temp_name = strrchr (folder_name,'/') ;
 	if(temp_name == NULL) {
@@ -411,7 +410,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 	if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", uid, NULL))) {
 			if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, cache_stream) == -1
-					|| camel_stream_flush (cache_stream) == -1)
+					|| camel_stream_flush (cache_stream) == -1) 
 				camel_data_cache_remove (gw_folder->cache, "cache", uid, NULL);
 			camel_object_unref (cache_stream);
 		}
@@ -547,12 +546,14 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 					const char *uid = camel_message_info_uid (info) ;
 					status = e_gw_connection_remove_item (cnc, container_id, uid);
 					if (status == E_GW_CONNECTION_STATUS_OK) {
-						camel_folder_summary_remove_uid (folder->summary, uid) ;
+						camel_folder_summary_remove (folder->summary, info) ;
 						camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
+						i--; count--;
 					}
 				}
 			}
 		}
+		camel_message_info_free (info);
 		
 	}
 
@@ -642,16 +643,17 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	char *container_id = NULL ;
 	char *time_string = NULL, *t_str = NULL ;
 
+	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_warning ("In offline mode. Cannot refresh!!!\n");
+		return ;
+	}
+
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name)) ;
 	if (!container_id) {
 		g_print ("\nERROR - Container id not present. Cannot refresh info\n") ;
 		return ;
 	}
 
-	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		g_free (container_id) ;
-		return ;
-	}
 	
 	if (camel_folder_is_frozen (folder) ) {
 		gw_folder->need_refresh = TRUE ;
@@ -1044,9 +1046,10 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 			status = e_gw_connection_remove_item (cnc, container_id, uid);
 			if (status == E_GW_CONNECTION_STATUS_OK) {
 				camel_folder_change_info_remove_uid (changes, (char *) uid);
-				camel_folder_summary_remove_uid (folder->summary, uid) ;
+				camel_folder_summary_remove (folder->summary, info) ;
 				camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
 				delete = TRUE ;
+				i--;  max--;
 			}
 		}
 		camel_message_info_free (info);

@@ -1,3 +1,10 @@
+2005-03-31  Sankar P <psankar@novell.com>
+
+	* camel-groupwise-folder.c: 
+	  (groupwise_expunge) (groupwise_sync)
+	  Pushed the index up one count on deletion of a summary item.
+ 	  Fixes #74183
+
 2005-03-31  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:(groupwise_transfer_messages_to):
