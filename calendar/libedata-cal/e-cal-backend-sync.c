@@ -75,7 +75,8 @@ e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal 
 }
 
 ECalBackendSyncStatus
-e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists)
+e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
+			  const char *username, const char *password)
 {
 	ECalBackendSyncPrivate *priv;
 	ECalBackendSyncStatus status;
@@ -86,7 +87,7 @@ e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only
 
 	g_mutex_lock (priv->sync_mutex);
 
-	status = (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->open_sync) (backend, cal, only_if_exists);
+	status = (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->open_sync) (backend, cal, only_if_exists, username, password);
 
 	g_mutex_unlock (priv->sync_mutex);
 
@@ -319,11 +320,12 @@ _e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
 }
 
 static void
-_e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists)
+_e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists,
+		     const char *username, const char *password)
 {
 	ECalBackendSyncStatus status;
 
-	status = e_cal_backend_sync_open (E_CAL_BACKEND_SYNC (backend), cal, only_if_exists);
+	status = e_cal_backend_sync_open (E_CAL_BACKEND_SYNC (backend), cal, only_if_exists, username, password);
 
 	e_data_cal_notify_open (cal, status);
 }

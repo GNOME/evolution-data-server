@@ -55,6 +55,7 @@ typedef enum {
 /* Whether the ecal is not loaded, is being loaded, or is already loaded */
 typedef enum {
 	E_CAL_LOAD_NOT_LOADED,
+	E_CAL_LOAD_AUTHENTICATING,
 	E_CAL_LOAD_LOADING,
 	E_CAL_LOAD_LOADED
 } ECalLoadState;
@@ -83,10 +84,10 @@ struct _ECalClass {
 	void (* backend_died) (ECal *ecal);
 };
 
-typedef gchar * (* ECalAuthFunc) (ECal *ecal,
-				  const gchar *prompt,
-				  const gchar *key,
-				  gpointer user_data);
+typedef char * (* ECalAuthFunc) (ECal *ecal,
+				 const char *prompt,
+				 const char *key,
+				 gpointer user_data);
 
 GType e_cal_get_type (void);
 

@@ -154,7 +154,7 @@ module Calendar {
 		/* A calendar is identified by its URI */
 		readonly attribute string uri;
 
-		oneway void open (in boolean only_if_exists);
+		oneway void open (in boolean only_if_exists, in string username, in string password);
 		oneway void remove ();
 
 		/* Check write permissions for calendar */

@@ -73,7 +73,7 @@ struct _ECalBackendClass {
 	void (* get_ldap_attribute) (ECalBackend *backend, EDataCal *cal);
 	void (* get_static_capabilities) (ECalBackend *backend, EDataCal *cal);
 	
-	void (* open) (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists);
+	void (* open) (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists, const char *username, const char *password);
 	void (* remove) (ECalBackend *backend, EDataCal *cal);
 
 	/* Object related virtual methods */
@@ -127,7 +127,7 @@ void e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal)
 void e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal);
 void e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal);
 
-void e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists);
+void e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists, const char *username, const char *password);
 void e_cal_backend_remove (ECalBackend *backend, EDataCal *cal);
 
 void e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const char *calobj);

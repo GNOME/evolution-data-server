@@ -562,6 +562,8 @@ e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
  * @only_if_exists: Whether the calendar should be opened only if it already
  * exists.  If FALSE, a new calendar will be created when the specified @uri
  * does not exist.
+ * @username: User name to use for authentication (if needed).
+ * @password: Password for @username.
  *
  * Opens a calendar backend with data from a calendar stored at the specified
  * URI.
@@ -569,13 +571,14 @@ e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
  * Return value: An operation status code.
  **/
 void
-e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists)
+e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists,
+		    const char *username, const char *password)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->open != NULL);
-	(* CLASS (backend)->open) (backend, cal, only_if_exists);
+	(* CLASS (backend)->open) (backend, cal, only_if_exists, username, password);
 }
 
 void

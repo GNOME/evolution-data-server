@@ -1,3 +1,24 @@
+2003-12-19  Rodrigo Moya <rodrigo@ximian.com>
+
+	* idl/Evolution-DataServer-Calendar.idl: added 'username' and 'password'
+	arguments to Cal::open method, so that we can send authentication
+	from the clients.
+
+	* libedata-cal/e-cal-backend.[ch] (e_cal_backend_open):
+	* libedata-cal/e-cal-backend-sync.[ch] (e_cal_backend_sync_open,
+	_e_cal_backend_open):
+	* libedata-cal/e-data-cal.c (impl_Cal_open):
+	* backends/http/e-cal-backend-http.c (e_cal_backend_http_open):
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_open):
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_open): adapted
+	to changes in above method.
+
+	* libecal/e-cal.[ch]: added E_CAL_LOAD_AUTHENTICATING to LoadState enum.
+	(e_cal_open): check with the ESource if the server needs authentication
+	or not, and if so, ask the client's provided auth function. Call
+	GNOME_Evolution_Calendar_Cal_Open with the new arguments.
+
 2003-12-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: use a GMutex for

@@ -65,6 +65,8 @@ impl_Cal_get_uri (PortableServer_Servant servant,
 static void
 impl_Cal_open (PortableServer_Servant servant,
 	       CORBA_boolean only_if_exists,
+	       const CORBA_char *username,
+	       const CORBA_char *password,
 	       CORBA_Environment *ev)
 {
 	EDataCal *cal;
@@ -73,7 +75,7 @@ impl_Cal_open (PortableServer_Servant servant,
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
-	e_cal_backend_open (priv->backend, cal, only_if_exists);
+	e_cal_backend_open (priv->backend, cal, only_if_exists, username, password);
 }
 
 static void

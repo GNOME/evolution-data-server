@@ -1274,7 +1274,7 @@ e_cal_new (ESource *source, CalObjType type)
 
 		return NULL;
 	}
-	
+
 	return ecal;
 }
 
@@ -1358,6 +1358,7 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
+	const char *username = NULL, *password = NULL;
 	
 	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
@@ -1371,6 +1372,35 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
+	/* see if the backend needs authentication */
+	if (e_source_get_property (priv->source, "auth")) {
+		char *prompt, *key;
+
+		priv->load_state = E_CAL_LOAD_AUTHENTICATING;
+
+		if (priv->auth_func == NULL) {
+			g_mutex_unlock (priv->mutex);
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
+		}
+
+		username = e_source_get_property (priv->source, "username");
+		if (!username) {
+			g_mutex_unlock (priv->mutex);
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
+		}
+
+		/* actually ask the client for authentication */
+		prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
+					  e_source_peek_name (priv->source), username);
+		key = e_source_get_uri (priv->source);
+
+		password = priv->auth_func (ecal, prompt, key, priv->auth_user_data);
+
+		g_free (prompt);
+		g_free (key);
+	}
+
+	/* start the open operation */
 	our_op = e_calendar_new_op (ecal);
 
 	g_mutex_lock (our_op->mutex);
@@ -1381,7 +1411,13 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 
 	priv->load_state = E_CAL_LOAD_LOADING;
 
-	GNOME_Evolution_Calendar_Cal_open (priv->cal, only_if_exists, &ev);
+	GNOME_Evolution_Calendar_Cal_open (priv->cal, only_if_exists,
+					   username ? username : "",
+					   password ? password : "",
+					   &ev);
+	if (password)
+		g_free (password);
+
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		g_mutex_unlock (our_op->mutex);

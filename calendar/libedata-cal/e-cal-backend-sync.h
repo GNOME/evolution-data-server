@@ -39,7 +39,7 @@ struct _ECalBackendSyncClass {
 	ECalBackendSyncStatus (*get_ldap_attribute_sync)  (ECalBackendSync *backend, EDataCal *cal, char **attribute);
 	ECalBackendSyncStatus (*get_static_capabilities_sync)  (ECalBackendSync *backend, EDataCal *cal, char **capabilities);
 
-	ECalBackendSyncStatus (*open_sync)  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists);
+	ECalBackendSyncStatus (*open_sync)  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists, const char *username, const char *password);
 	ECalBackendSyncStatus (*remove_sync)  (ECalBackendSync *backend, EDataCal *cal);
 
 	ECalBackendSyncStatus (*create_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj, char **uid);
@@ -89,8 +89,10 @@ ECalBackendSyncStatus e_cal_backend_sync_get_static_capabilities (ECalBackendSyn
 							       EDataCal             *cal,
 							       char           **capabiliites);
 ECalBackendSyncStatus e_cal_backend_sync_open                    (ECalBackendSync  *backend,
-							       EDataCal             *cal,
-							       gboolean         only_if_exists);
+								  EDataCal             *cal,
+								  gboolean         only_if_exists,
+								  const char *username,
+								  const char *password);
 ECalBackendSyncStatus e_cal_backend_sync_remove                  (ECalBackendSync  *backend,
 							       EDataCal             *cal);
 ECalBackendSyncStatus e_cal_backend_sync_create_object           (ECalBackendSync  *backend,

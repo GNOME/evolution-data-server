@@ -365,7 +365,8 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists)
+e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
+			 const char *username, const char *password)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -393,7 +394,7 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 	}
 
-	e_cal_backend_sync_open (priv->file_backend, cal, FALSE);
+	e_cal_backend_sync_open (priv->file_backend, cal, FALSE, username, password);
 	return GNOME_Evolution_Calendar_Success;
 }
 

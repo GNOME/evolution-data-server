@@ -828,7 +828,8 @@ get_uri_string (ECalBackend *backend)
 
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists)
+e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
+			 const char *username, const char *password)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;

@@ -113,7 +113,7 @@ e_cal_backend_groupwise_is_read_only (ECalBackendSync *backend, EDataCal *cal, g
 	return GNOME_Evolution_Calendar_Success;
 }
 
-/*return email address of the person who opened the calender */
+/* return email address of the person who opened the calender */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_cal_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
@@ -176,7 +176,8 @@ convert_uri (const char *gw_uri)
 
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists)
+e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
+			      const char *username, const char *password)
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
@@ -214,8 +215,8 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 					    GNOME_VFS_URI_HIDE_USER_NAME |
 		                            GNOME_VFS_URI_HIDE_PASSWORD);
 	priv->cnc = e_gw_connection_new (real_uri,
-					 gnome_vfs_uri_get_user_name (vuri),
-					 gnome_vfs_uri_get_password (vuri));
+					 username ? username : gnome_vfs_uri_get_user_name (vuri),
+					 password ? password : gnome_vfs_uri_get_password (vuri));
 
 	gnome_vfs_uri_unref (vuri);
 	g_free (real_uri);
