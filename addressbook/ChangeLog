@@ -1,3 +1,40 @@
+2004-07-19  Hans Petter Jansson  <hpj@ximian.com>
+
+	Really fixes #61052, #61466, #61160. Tested.
+
+	* libebook/e-book.c (e_book_op_remove): Don't lock the book's
+	mutex here, for symmetry with e_book_new_op ().
+	(do_add_contact): Lock book around op removal.
+	(do_commit_contact): Ditto.
+	(do_get_supported_fields): Ditto.
+	(do_get_supported_auth_methods): Ditto.
+	(do_authenticate_user): Ditto.
+	(do_get_contact): Ditto.
+	(do_get_contacts): Ditto.
+	(do_get_changes): Ditto.
+	(do_open): Ditto.
+	(do_remove): Ditto.
+	(emit_async_add_contact_response): Widen the scope of the
+	book's lock.
+	(emit_async_elist_response): Ditto.
+	(emit_async_get_contact_response): Ditto.
+	(emit_async_get_book_view_response): Ditto.
+	(emit_async_get_contacts_response): Ditto.
+	(emit_async_get_changes_response): Ditto.
+	(emit_async_generic_response): Ditto.
+	(emit_async_open_response): Ditto.
+	(e_book_response_add_contact): Lock book around op manipulation,
+	widen scope.
+	(e_book_response_get_supported_fields): Ditto.
+	(e_book_response_get_supported_auth_methods): Ditto.
+	(e_book_response_get_contact): Ditto.
+	(e_book_response_get_book_view): Ditto.
+	(e_book_response_get_contacts): Ditto.
+	(e_book_response_get_changes): Ditto.
+	(e_book_response_generic): Ditto.
+	(e_book_response_open): Ditto.
+	(e_book_response_remove): Ditto.
+
 2004-07-19  Sivaiah Nallagatla <snallagatla@novell.com> 
 	
 	* libedata-book/e-book-backend-sexp.c (compare_address) : provided

@@ -193,10 +193,8 @@ static void
 e_book_op_remove (EBook *book,
 		  EBookOp *op)
 {
-	g_mutex_lock (book->priv->mutex);
 	g_hash_table_remove (book->priv->id_to_op,
 			     &op->opid);
-	g_mutex_unlock (book->priv->mutex);
 }
 
 static void
@@ -273,7 +271,9 @@ do_add_contact (gboolean          sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -300,7 +300,9 @@ do_add_contact (gboolean          sync,
 		e_contact_set (contact, E_CONTACT_UID, our_op->id);
 		g_free (our_op->id);
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -359,15 +361,16 @@ emit_async_add_contact_response (gpointer data)
 	if (op->cb.id)
 		op->cb.id (book, op->status, op->id, op->closure);
 
+	g_mutex_lock (book->priv->mutex);
+
 	g_free (op->id);
 
-	g_mutex_lock (book->priv->mutex);
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -383,9 +386,12 @@ e_book_response_add_contact (EBook       *book,
 
 	d(printf ("e_book_response_add_contact\n"));
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_add_contact: Cannot find operation ");
 		return;
 	}
@@ -405,11 +411,11 @@ e_book_response_add_contact (EBook       *book,
 		op->book = g_object_ref (book);
 
 		op->idle_id = g_idle_add (emit_async_add_contact_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 
@@ -471,7 +477,9 @@ do_commit_contact (gboolean        sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -499,7 +507,9 @@ do_commit_contact (gboolean        sync,
 		g_free (our_op->id);
 
 		/* remove the op from the book's hash of operations */
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -579,6 +589,7 @@ do_get_supported_fields (gboolean             sync,
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
 			     _("book busy"));
+		return FALSE;
 	}
 
 	our_op = e_book_new_op (book, sync);
@@ -598,7 +609,9 @@ do_get_supported_fields (gboolean             sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -620,13 +633,15 @@ do_get_supported_fields (gboolean             sync,
 
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
-		   successful response will notity us via our cv */
+		   successful response will notify us via our cv */
 		g_cond_wait (our_op->cond, our_op->mutex);
 
 		status = our_op->status;
 		*fields = our_op->list;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -680,15 +695,16 @@ emit_async_elist_response (gpointer data)
 	if (op->cb.elist)
 		op->cb.elist (book, op->status, op->elist, op->closure);
 
+	g_mutex_lock (book->priv->mutex);
+
 	g_object_unref (op->elist);
 
-	g_mutex_lock (book->priv->mutex);
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -702,9 +718,12 @@ e_book_response_get_supported_fields (EBook       *book,
 {
 	EBookOp *op;
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_get_supported_fields: Cannot find operation ");
 		return;
 	}
@@ -734,11 +753,11 @@ e_book_response_get_supported_fields (EBook       *book,
 		op->elist = efields;
 
 		op->idle_id = g_idle_add (emit_async_elist_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 
@@ -796,7 +815,9 @@ do_get_supported_auth_methods (gboolean             sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -821,7 +842,9 @@ do_get_supported_auth_methods (gboolean             sync,
 		status = our_op->status;
 		*auth_methods = our_op->list;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -874,9 +897,12 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 {
 	EBookOp *op;
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_get_supported_auth_methods: Cannot find operation ");
 		return;
 	}
@@ -904,11 +930,11 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 		op->elist = emethods;
 
 		op->idle_id = g_idle_add (emit_async_elist_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 
@@ -971,7 +997,9 @@ do_authenticate_user (gboolean        sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -995,7 +1023,9 @@ do_authenticate_user (gboolean        sync,
 
 		status = our_op->status;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -1109,7 +1139,9 @@ do_get_contact (gboolean sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -1135,7 +1167,9 @@ do_get_contact (gboolean sync,
 		status = our_op->status;
 		*contact = our_op->contact;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -1194,15 +1228,16 @@ emit_async_get_contact_response (gpointer data)
 	if (op->cb.contact)
 		op->cb.contact (book, op->status, op->contact, op->closure);
 
+	g_mutex_lock (book->priv->mutex);
+
 	g_object_unref (op->contact);
 
-	g_mutex_lock (book->priv->mutex);
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -1218,9 +1253,12 @@ e_book_response_get_contact (EBook       *book,
 
 	d(printf ("e_book_response_get_contact\n"));
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_get_contact: Cannot find operation ");
 		return;
 	}
@@ -1239,11 +1277,11 @@ e_book_response_get_contact (EBook       *book,
 		op->book = g_object_ref (book);
 
 		op->idle_id = g_idle_add (emit_async_get_contact_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 
@@ -1620,15 +1658,16 @@ emit_async_get_book_view_response (gpointer data)
 	if (op->cb.book_view)
 		op->cb.book_view (book, op->status, op->view, op->closure);
 
+	g_mutex_lock (book->priv->mutex);
+
 	g_object_unref (op->view);
 
-	g_mutex_lock (book->priv->mutex);
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -1645,9 +1684,12 @@ e_book_response_get_book_view (EBook       *book,
 
 	d(printf ("e_book_response_get_book_view\n"));
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_get_book_view: Cannot find operation ");
 		return;
 	}
@@ -1668,11 +1710,11 @@ e_book_response_get_book_view (EBook       *book,
 		op->book = g_object_ref (book);
 
 		op->idle_id = g_idle_add (emit_async_get_book_view_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 
@@ -1734,7 +1776,9 @@ do_get_contacts (gboolean sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -1761,7 +1805,9 @@ do_get_contacts (gboolean sync,
 		status = our_op->status;
 		*contacts = our_op->list;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -1819,16 +1865,18 @@ emit_async_get_contacts_response (gpointer data)
 
 	if (op->cb.list)
 		op->cb.list (book, op->status, op->list, op->closure);
+
+	g_mutex_lock (book->priv->mutex);
+
 	g_list_foreach (op->list, (GFunc)g_object_unref, NULL);
 	g_list_free (op->list);
 
-	g_mutex_lock (book->priv->mutex);
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -1844,9 +1892,12 @@ e_book_response_get_contacts (EBook       *book,
 
 	EBookOp *op;
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_get_contacts: Cannot find operation ");
 		return;
 	}
@@ -1867,11 +1918,11 @@ e_book_response_get_contacts (EBook       *book,
 		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_get_contacts_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 
@@ -1927,7 +1978,9 @@ do_get_changes (gboolean sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -1954,7 +2007,9 @@ do_get_changes (gboolean sync,
 		status = our_op->status;
 		*changes = our_op->list;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -2000,15 +2055,17 @@ emit_async_get_changes_response (gpointer data)
 
 	if (op->cb.list)
 		op->cb.list (book, op->status, op->list, op->closure);
-	e_book_free_change_list (op->list);
 
 	g_mutex_lock (book->priv->mutex);
+
+	e_book_free_change_list (op->list);
+
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -2023,9 +2080,12 @@ e_book_response_get_changes (EBook       *book,
 
 	EBookOp *op;
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_get_changes: Cannot find operation ");
 		return;
 	}
@@ -2043,11 +2103,11 @@ e_book_response_get_changes (EBook       *book,
 	else {
 		op->book = g_object_ref (book);
 		op->idle_id = g_idle_add (emit_async_get_changes_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 void
@@ -2076,12 +2136,13 @@ emit_async_generic_response (gpointer data)
 		op->cb.status (book, op->status, op->closure);
 
 	g_mutex_lock (book->priv->mutex);
+
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -2094,9 +2155,12 @@ e_book_response_generic (EBook       *book,
 {
 	EBookOp *op;
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_generic: Cannot find operation ");
 		return;
 	}
@@ -2114,11 +2178,11 @@ e_book_response_generic (EBook       *book,
 		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_generic_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 /**
@@ -2252,7 +2316,9 @@ do_open (gboolean sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -2278,7 +2344,9 @@ do_open (gboolean sync,
 
 		status = our_op->status;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		if (status == E_BOOK_ERROR_CANCELLED) {
 			/* Cancelled */
@@ -2343,21 +2411,26 @@ emit_async_open_response (gpointer data)
 
 	printf ("in async_open_response\n");
 
+	g_mutex_lock (book->priv->mutex);
+
 	if (op->status == E_BOOK_ERROR_OK)
 		book->priv->load_state = E_BOOK_SOURCE_LOADED;
 	else
 		book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
 
+	g_mutex_unlock (book->priv->mutex);
+
 	if (op->cb.status)
 		op->cb.status (book, op->status, op->closure);
 
 	g_mutex_lock (book->priv->mutex);
+
 	book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
 						   GINT_TO_POINTER (op->idle_id));
-	g_mutex_unlock (book->priv->mutex);
 
 	e_book_clear_op (book, op);
 
+	g_mutex_unlock (book->priv->mutex);
 	g_object_unref (book);
 
 	return FALSE;
@@ -2372,9 +2445,12 @@ e_book_response_open (EBook       *book,
 
 	printf ("in e_book_response_open\n");
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_open: Cannot find operation ");
 		return;
 	}
@@ -2392,11 +2468,11 @@ e_book_response_open (EBook       *book,
 		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_open_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 
@@ -2436,7 +2512,9 @@ do_remove (gboolean sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -2462,7 +2540,9 @@ do_remove (gboolean sync,
 
 		status = our_op->status;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -2515,9 +2595,12 @@ e_book_response_remove (EBook       *book,
 
 	d(printf ("e_book_response_remove\n"));
 
+	g_mutex_lock (book->priv->mutex);
+
 	op = e_book_get_op (book, opid);
 
 	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
 		g_warning ("e_book_response_remove: Cannot find operation ");
 		return;
 	}
@@ -2535,11 +2618,11 @@ e_book_response_remove (EBook       *book,
 		op->book = g_object_ref (book);
 		op->status = status;
 		op->idle_id = g_idle_add (emit_async_generic_response, op);
-		g_mutex_lock (book->priv->mutex);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
-		g_mutex_unlock (book->priv->mutex);
 	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 static gboolean
