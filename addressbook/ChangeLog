@@ -1,4 +1,14 @@
 2005-01-28  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libedata-book/e-book-backend-sexp.c 
+	(compare_name) : while comparing name
+	use given name too along with surname and full_name strings
+	Just using full name breaks completion based on given name
+	where full name has prefixes like Mr
+	
+	Fixes #67267
+	
+2005-01-28  Sivaiah Nallagatla <snallagatla@novell.com>
                                                                                                                              
         * libedata-book/e-book-backend-summary.c (do_compare) :
         use surname, givenname and full_name for searches on name
