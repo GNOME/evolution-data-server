@@ -6,7 +6,8 @@
 	(category_populate): un-ifdef this.
 	(category_ber): same.
 	(category_compare): same.
-	(e_book_backend_ldap_class_init): fill in EBookBackendClass::get_contact_list.
+	(e_book_backend_ldap_class_init): fill in
+	EBookBackendClass::get_contact_list.
 
 2003-11-11  Chris Toshok  <toshok@ximian.com>
 
