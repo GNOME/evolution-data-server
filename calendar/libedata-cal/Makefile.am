@@ -35,7 +35,8 @@ lib_LTLIBRARIES = libedata-cal.la
 
 libedata_cal_la_SOURCES =		\
 	$(CORBA_GENERATED_C)		\
-	e-cal-backend.c			 \
+	e-cal-backend.c			\
+	e-cal-backend-cache.c		\
 	e-cal-backend-sexp.c		\
 	e-cal-backend-sync.c		\
 	e-cal-backend-util.c		\
@@ -55,6 +56,7 @@ libedata_calincludedir = $(privincludedir)/libedata-cal
 libedata_calinclude_HEADERS = 		\
 	$(CORBA_GENERATED_H)		\
 	e-cal-backend.h			\
+	e-cal-backend-cache.h		\
 	e-cal-backend-sync.h		\
 	e-cal-backend-util.h		\
 	e-cal-backend-sexp.h		\

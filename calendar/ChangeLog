@@ -1,3 +1,10 @@
+2003-11-27  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-cal-backend-cache.[ch]: new class implementing a
+	cache of calendar/tasks objects.
+
+	* libedata-cal/Makefile.am: added new files.
+
 2003-11-26  Hans Petter Jansson  <hpj@ximian.com>
 
 	* idl/Evolution-DataServer-Calendar.idl (getCal): Take source XML
