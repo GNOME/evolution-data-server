@@ -557,8 +557,13 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 		     category_param = soup_soap_parameter_get_next_child_by_name (category_param, "category")) {
 
 			value = soup_soap_parameter_get_string_value (category_param);
-			if (value)
+			if (value) {
+				char **components = g_strsplit (value, "@", -1);
+				value = components[0];
 				priv->category_list = g_list_append (priv->category_list, g_strdup (value));
+				g_strfreev(components);
+				
+			}
 				
 		}
 	}
@@ -896,7 +901,7 @@ append_common_addressbook_item_fields_to_soap_message (GHashTable *simple_fields
 
 	soup_soap_message_start_element (msg, "categories", NULL, NULL);
 	if (category_list && category_list->data) 
-		soup_soap_message_add_attribute (msg, "primary", category_list->data, NULL, NULL);
+		soup_soap_message_add_attribute (msg, "types:primary", category_list->data, NULL, NULL);
 	for (; category_list != NULL; category_list = g_list_next (category_list)) 
 		if (category_list->data) {
 			e_gw_message_write_string_parameter (msg, "category", NULL, category_list->data);

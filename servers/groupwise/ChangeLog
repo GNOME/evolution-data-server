@@ -1,3 +1,10 @@
+2004-04-15 Sivaiah nallagatla   <snallagatla@novell.com>
+	
+	* e-gw-connection.c (e_gw_connection_get_categories)
+	* e_gw_item.c (set_common_addresbook_item_fields_from_soap_parameter) : strip off
+	the part present after "@" symbol in categories ids 
+
+	
 2004-04-07  Sivaiah Nallagatla  <snallagatla@novell.com>
 
 	* e-gw-connection.c  (e_gw_connection_create_book) :
