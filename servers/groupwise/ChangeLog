@@ -1,3 +1,13 @@
+2004-10-04  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #66484
+	* e-gw-connection.[ch] (EGwConnectionStatus):
+	Added a enum variable for the code error User not
+	found error message from the server.
+	* e-gw-connection.c (e_gw_connection_parse_response_status),
+	(e_gw_connection_get_error_message):		
+	Added the code 53505 and used the new enum variable.
+
 2004-10-01  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #62868

@@ -64,6 +64,7 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	switch (soup_soap_parameter_get_int_value (subparam)) {
 	case 0 : return E_GW_CONNECTION_STATUS_OK;
 	case 59905 : return E_GW_CONNECTION_STATUS_BAD_PARAMETER;
+	case 53505 : return E_GW_CONNECTION_STATUS_UNKNOWN_USER;
 	case 59914: return E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED;
 		/* FIXME: map all error codes */
 	}
@@ -85,6 +86,8 @@ e_gw_connection_get_error_message (EGwConnectionStatus status)
 		return _("Invalid response from server");
 	case E_GW_CONNECTION_STATUS_OBJECT_NOT_FOUND :
 		return _("Object not found");
+	case E_GW_CONNECTION_STATUS_UNKNOWN_USER :
+		return _("Unknown User");
 	case E_GW_CONNECTION_STATUS_BAD_PARAMETER :
 		return _("Bad parameter");
 	case E_GW_CONNECTION_STATUS_OTHER :
