@@ -10,15 +10,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-10.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-16 21:37+0100\n"
-"PO-Revision-Date: 2005-03-17 09:39+0530\n"
+"POT-Creation-Date: 2005-03-23 04:06+0100\n"
+"PO-Revision-Date: 2005-03-23 09:58+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati <gu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
-"Plural-Forms: Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -649,27 +650,23 @@ msgstr "પ્રત્યુત્તરની માંગણી થયેલ 
 msgid "Invalid server URI"
 msgstr "અયોગ્ય સર્વર URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "ડેલ્ટાસ મેળવવા માટે થ્રેડ બનાવી શક્યા નહિં"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "કેલેન્ડર"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "કેશ બનાવવા માટે થ્રેડ બનાવી શક્યા નથી"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4528
 #: camel/providers/groupwise/camel-groupwise-folder.c:654
 #: camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -1031,7 +1028,7 @@ msgid "Undefined"
 msgstr "અવ્યાખ્યાયિત"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1538
+#: calendar/libecal/e-cal.c:1538 libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s (વપરાશકર્તા %s) માટે પાસવર્ડ દાખલ કરો"
@@ -2726,7 +2723,7 @@ msgstr "સંદેશો મોકલી રહ્યા છીએ"
 
 #: camel/providers/imap/camel-imap-command.c:219
 #: camel/providers/imap/camel-imap-command.c:258
-#: camel/providers/imap/camel-imap-command.c:463
+#: camel/providers/imap/camel-imap-command.c:465
 #: camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "પ્રક્રિયા નકારી દેવામાં આવી"
@@ -2758,16 +2755,16 @@ msgstr "IMAP સર્વર તરફથી અનિચ્છનિય જવ�
 msgid "IMAP command failed: %s"
 msgstr "IMAP આદેશ નિષ્ફળ: %s"
 
-#: camel/providers/imap/camel-imap-command.c:473
+#: camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "સર્વરનો જવાબ ખૂબ જલદી અંત થઈ ગયો."
 
-#: camel/providers/imap/camel-imap-command.c:680
+#: camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP સર્વરનો જવાબ %s જાણકારી સમાવતો નથી"
 
-#: camel/providers/imap/camel-imap-command.c:716
+#: camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "IMAP સર્વરમાંથી અનિચ્છનિય બરાબર જવાબ: %s"
@@ -3691,7 +3688,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "કામચલાઉ મેઈલબોક્સ ખોલી શકતા નથી: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:619
-#: camel/providers/local/camel-mbox-summary.c:783
+#: camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "સ્રોત ફોલ્ડર %s ને બંધ કરી શક્યા નહિં: %s"
@@ -3706,31 +3703,32 @@ msgstr "કામચલાઉ ફોલ્ડર બંધ કરી શક્�
 msgid "Could not rename folder: %s"
 msgstr "ફોલ્ડરનું નામ બદલી શક્યા નહિં: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:723
-#: camel/providers/local/camel-mbox-summary.c:731
-#: camel/providers/local/camel-mbox-summary.c:925
-#: camel/providers/local/camel-mbox-summary.c:933
+#: camel/providers/local/camel-mbox-summary.c:696
+#: camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "ફોલ્ડર સંગ્રહી શક્યા નહિં: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:733
+#: camel/providers/local/camel-mbox-summary.c:741
+#: camel/providers/local/camel-mbox-summary.c:935
+#: camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "સાર અને ફોલ્ડરનું બંધબેસવું નહિં, સુમેળ કર્યા પછી પણ"
 
-#: camel/providers/local/camel-mbox-summary.c:859
+#: camel/providers/local/camel-mbox-summary.c:869
 #: camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "અજ્ઞાત ભૂલ: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "ફોલ્ડર સંગ્રહી શક્યા નહિં: %s"
-
-#: camel/providers/local/camel-mbox-summary.c:988
-#: camel/providers/local/camel-mbox-summary.c:1014
+#: camel/providers/local/camel-mbox-summary.c:998
+#: camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "કામચલાઉ મેઈલબોક્સ લખવામાં ભૂલ: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:1005
+#: camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "કામચલાઉ મેઈલબોક્સમાં લખવામાં ભૂલ: %s: %s"
@@ -4659,6 +4657,14 @@ msgstr "%H:%M"
 #: libedataserver/e-time-utils.c:354
 msgid "%I %p"
 msgstr "%I %p"
+
+#: libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "LDAP સર્વર અનામિક રીતે વાપરી રહ્યા છીએ"
+
+#: libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "સત્તાધિકરણ આપવામાં નિષ્ફળ.\n"
 
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
