@@ -2385,6 +2385,8 @@ e_book_backend_groupwise_cancel_operation (EBookBackend *backend, EDataBook *boo
 	return GNOME_Evolution_Addressbook_CouldNotCancel;
 }
 
+
+
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_groupwise_load_source (EBookBackend           *backend,
 				      ESource                *source,
@@ -2400,10 +2402,11 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	int i;
 	const char *use_ssl;
 	const char *offline;
-	printf ("load source .................\n");
+
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
-	
+	g_object_ref (source);
+
 	offline = e_source_get_property (source, "offline_sync");
 	if (offline  && g_str_equal (offline, "1"))
 		priv->marked_for_offline = TRUE;
@@ -2411,6 +2414,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL &&  priv->marked_for_offline ) {
 		return GNOME_Evolution_Addressbook_OfflineUnavailable;
 	}
+	
 	uri =  e_source_get_uri (source);
 	priv->original_uri = g_strdup (uri);
 	if(uri == NULL)
@@ -2429,7 +2433,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	if (port == NULL)
 		port = "7181";
 	use_ssl = e_source_get_property (source, "use_ssl");
-	if (use_ssl) 
+	if (use_ssl && !g_str_equal (use_ssl, "never")) 
 		priv->uri = g_strconcat ("https://", parsed_uri->host,":", port, "/soap", NULL );
 	else 
 		priv->uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );

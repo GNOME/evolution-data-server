@@ -1,3 +1,10 @@
+2005-01-17  Sivaiah Nallagatla <snallagatla@novell.com> 
+
+	* backends/groupwise/e-book-backend-groupwise.c (
+	e_book_backend_groupwise_load_source) : use https always except 
+	when use_ssl is "never". This change is part of the changes done to remove
+	separate settings for ssl for soap in account config  
+
 2005-01-13  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libedatabook/e-book-backend-summary.c (do_compare):
