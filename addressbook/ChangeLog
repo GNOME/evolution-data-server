@@ -1,3 +1,14 @@
+2004-04-20  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/Makefile.am: add test-nonexistent-id and test-query.
+	
+	* tests/ebook/test-nonexistent-id.c: test for both
+	e_book_remove_contact (which was broken until recently) and the
+	behavior of libebook when you try to remove a non-existent id.
+
+	* tests/ebook/test-query.c: new test, to see if we correctly
+	unparse/parse queries.
+
 2004-04-19  Sivaiah Nallagatla   <snallagatla@novell.com>
 	* e-book-backend-groupwise.c  (book_view_thread) : the start_ 
 	book_view implementation is moved this method and executed in a separate thread
