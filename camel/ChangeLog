@@ -1,5 +1,14 @@
 2005-02-01  Not Zed  <NotZed@Ximian.com>
 
+	** See bug #65329
+
+	* camel-vtrash-folder.c (camel_vtrash_folder_new): api chagne and
+	translate the short name.
+
+	* camel-vee-folder.c (camel_vee_folder_construct): take full-name
+	argument separately from short-name.
+	(camel_vee_folder_new): calculate short-name.
+
 	* camel-store.c (camel_store_get_folder_info): set the folder type
 	hint.
 
