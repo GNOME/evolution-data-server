@@ -183,7 +183,7 @@ webcal_to_http_method (const gchar *webcal_str)
 static gchar *
 uri_to_cache_dir (const gchar *uri_str)
 {
-	gchar *http_uri_str, *dir_str, *escaped_dir_str;
+	gchar *http_uri_str, *dir_str, *escaped_dir_str, *retval;
 	GnomeVFSURI *uri;
 
 	http_uri_str = webcal_to_http_method (uri_str);
@@ -220,9 +220,12 @@ uri_to_cache_dir (const gchar *uri_str)
 		return NULL;
 	}
 
-	return g_build_filename (g_get_home_dir (),
-				 "/.evolution/calendar/webcal/",
-				 escaped_dir_str, NULL);
+	retval = g_build_filename (g_get_home_dir (),
+				   "/.evolution/calendar/webcal/",
+				   escaped_dir_str, NULL);
+	g_free (escaped_dir_str);
+
+	return retval;
 }
 
 static gboolean

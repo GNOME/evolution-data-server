@@ -925,8 +925,8 @@ static void
 e_cal_backend_file_set_mode (ECalBackend *backend, CalMode mode)
 {
 	e_cal_backend_notify_mode (backend,
-				 GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
-				 GNOME_Evolution_Calendar_MODE_LOCAL);
+				   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
+				   GNOME_Evolution_Calendar_MODE_LOCAL);
 	
 }
 
