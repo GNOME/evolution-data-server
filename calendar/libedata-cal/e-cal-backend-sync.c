@@ -457,6 +457,8 @@ _e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 	status = e_cal_backend_sync_get_timezone (E_CAL_BACKEND_SYNC (backend), cal, tzid, &object);
 
 	e_data_cal_notify_timezone_requested (cal, status, object);
+
+	g_free (object);
 }
 
 static void

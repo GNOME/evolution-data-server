@@ -308,6 +308,7 @@ func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 			zone = e_cal_backend_internal_get_default_timezone (ctx->backend);
 		
 		tt = icaltime_as_timet_with_zone (*dt.value, zone);
+		e_cal_component_free_datetime (&dt);
 		if (tt >= start && tt <= end)
 			occurs = TRUE;
 		else {
@@ -321,6 +322,7 @@ func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 				tt = icaltime_as_timet_with_zone (*dt.value, zone);
 				if (tt >= start && tt <= end)
 					occurs = TRUE;
+				e_cal_component_free_datetime (&dt);
 			}
 		}
 	}

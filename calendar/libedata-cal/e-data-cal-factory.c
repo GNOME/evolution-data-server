@@ -450,11 +450,13 @@ e_data_cal_factory_register_method (EDataCalFactory *factory, const char *method
 			g_free (method_str);
 
 			return;
-		}		
+		}
+
+		g_free (method_str);
 	} else {
 		kinds = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 		g_hash_table_insert (priv->methods, method_str, kinds);
-	}	
+	}
 	
 	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), GINT_TO_POINTER (backend_type));
 }

@@ -1,5 +1,18 @@
 2004-01-10  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libedata-cal/e-cal-backend-sexp.c (func_occur_in_time_range):
+	don't leak the dates retrieved with e_cal_component_get_dtstart/dtend.
+
+	* libedata-cal/e-cal-backend-sync.c (_e_cal_backend_get_timezone):
+	free the 'object' string returned by the provider's get_timezone
+	method.
+
+	* libedata-cal/e-data-cal-factory.c
+	(e_data_cal_factory_register_method):
+	g_free the string returned by g_ascii_strdown().
+
+2004-01-10  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.c
 	(e_cal_backend_groupwise_get_timezone): fixed copy/paste typo.
 	(e_cal_backend_groupwise_remove, e_cal_backend_groupwise_add_timezone,

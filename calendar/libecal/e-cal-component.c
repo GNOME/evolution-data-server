@@ -2089,7 +2089,7 @@ set_datetime (ECalComponent *comp, struct datetime *datetime,
    used for the DUE date if DUE doesn't exist. */
 static void
 e_cal_component_get_start_plus_duration (ECalComponent *comp,
-				       ECalComponentDateTime *dt)
+					 ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 	struct icaldurationtype duration;
