@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
+"POT-Creation-Date: 2004-08-14 22:26+0300\n"
 "PO-Revision-Date: 2004-06-10 06:18+0200\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -596,16 +596,16 @@ msgid "Unnamed List"
 msgstr "Nimeämätön lista"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "Syntymäpäivä"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "Syntymäpäivä: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Vuosipäivä: %s"
@@ -977,4 +977,4 @@ msgstr "Evolution osoitekirjan tiedostotaustajärjestelmä"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Tapahtui useita ohjelman kaatumisia; virheikkunaa ei voida näyttää\n"
