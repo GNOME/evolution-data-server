@@ -1,11 +1,22 @@
+2005-02-03  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_categories_for_gw_item), (add_send_options_data_to_item),
+	(set_properties_from_cal_component), (get_attach_data_from_server),
+	(e_gw_item_to_cal_component), (e_gw_connection_send_appointment),
+	(e_gw_connection_get_freebusy_info),
+	(e_cal_backend_groupwise_store_settings): Fixed the compiler warnings
+	and set the datetime value for the replywithin variable due to change
+	in schemas.
+
 2005-01-03 Vivek Jain <jvivek@novell.com>
-	* idl/Evolution-DataServer-Calendar.idl 
+	* idl/Evolution-DataServer-Calendar.idl: 
 	  added InvalidServerVersion in the callstatus
-	* libecal/e-cal-types.h (added INVALID_SEVER_VERSION)
-	* libecal/e-cal-listener.c (convert_status) added
+	* libecal/e-cal-types.h: (added INVALID_SEVER_VERSION)
+	* libecal/e-cal-listener.c (convert_status): added
 	  INVALID_SERVER_VERSION
 	* backends/groupwise/e-cal-backend-groupwise.c
-	(connect_to_server) return the different callstatus if server doesn't return the
+	(connect_to_server): return the different callstatus if server doesn't return the
 	version
 
 2005-02-02  Ross Burton  <ross@burtonini.com>

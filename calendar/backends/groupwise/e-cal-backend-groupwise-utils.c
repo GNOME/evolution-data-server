@@ -82,7 +82,7 @@ e_cal_component_get_gw_id (ECalComponent *comp)
 }
 
 static void 
-set_categories_for_gw_item (EGwItem *item, GList *category_names, ECalBackendGroupwise *cbgw)
+set_categories_for_gw_item (EGwItem *item, GSList *category_names, ECalBackendGroupwise *cbgw)
 {
 	GHashTable *categories_by_name, *categories_by_id;
 	EGwConnection *cnc;
@@ -99,7 +99,7 @@ set_categories_for_gw_item (EGwItem *item, GList *category_names, ECalBackendGro
 	
 	g_return_if_fail (categories_by_id != NULL || categories_by_name != NULL || cnc != NULL);
 	
-	for (; category_names != NULL; category_names = g_list_next (category_names)) {
+	for (; category_names != NULL; category_names = g_slist_next (category_names)) {
                      if (!category_names->data || strlen(category_names->data) == 0 )
                              continue;
                      id = g_hash_table_lookup (categories_by_name, category_names->data);
@@ -136,7 +136,9 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 	icalproperty *icalprop;
 	struct icaltimetype temp;
 	gboolean sendoptions_set = FALSE;
+	icaltimezone *utc;
 
+	utc = icaltimezone_get_utc_timezone ();
 	icalcomp = e_cal_component_get_icalcomponent (comp);
 	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
 
@@ -160,28 +162,34 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-REPLY")) {
 			e_gw_item_set_reply_request (item, TRUE);
 			x_val = icalproperty_get_x (icalprop);
-			if (strcmp (x_val, "convenient"))
-				e_gw_item_set_reply_within (item, (char *) x_val);	
+			if (strcmp (x_val, "convenient")) {
+				const char *value;
+				int i = atoi (x_val);
+				temp = icaltime_current_time_with_zone (default_zone ? default_zone : utc);
+				icaltime_adjust (&temp, i, 0, 0, 0);
+				icaltime_set_timezone (&temp, default_zone);
+				temp = icaltime_convert_to_zone (temp, utc);
+				value = icaltime_as_ical_string (temp);
+				e_gw_item_set_reply_within (item, (char *) value);	
+			}
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-EXPIRE")) {
-			char *expire = NULL;
+			const char *expire = NULL;
 			x_val = icalproperty_get_x (icalprop);
-			temp = icaltime_current_time_with_zone (default_zone ? default_zone : icaltimezone_get_utc_timezone ());
+			temp = icaltime_current_time_with_zone (default_zone ? default_zone : utc);
 			icaltime_adjust (&temp, atoi (x_val), 0, 0, 0); 
 			icaltime_set_timezone (&temp, default_zone);
-			temp = icaltime_convert_to_zone (temp, icaltimezone_get_utc_timezone ());
+			temp = icaltime_convert_to_zone (temp, utc);
 			expire = icaltime_as_ical_string (temp);
 			e_gw_item_set_expires (item, (char *) expire);
-			g_free (expire);
 
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-DELAY")) {
-			char *delay = NULL;
+			const char *delay = NULL;
 			x_val = icalproperty_get_x (icalprop);
 			temp = icaltime_from_string (x_val);
 			icaltime_set_timezone (&temp, default_zone);
-			temp = icaltime_convert_to_zone (temp, icaltimezone_get_utc_timezone ());
+			temp = icaltime_convert_to_zone (temp, utc);
 			delay = icaltime_as_ical_string (temp);
 			e_gw_item_set_delay_until (item, (char *) delay);
-			g_free (delay);
 					
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-TRACKINFO")) {
 			sendoptions_set = TRUE;
@@ -341,7 +349,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	ECalComponentTransparency transp;
 	ECalComponentText text;
 	int *priority;
-	GList *categories;
+	GSList *categories;
 	GSList *slist, *sl;
 	icaltimezone *default_zone, *utc;
 	struct icaltimetype itt_utc;
@@ -618,7 +626,7 @@ get_attach_data_from_server (GSList *attach_item_list, ECalBackendGroupwise *cbg
 		EGwItemAttachment *attach_item = (EGwItemAttachment *) l->data;
 	
 		status = e_gw_connection_get_attachment (cnc, attach_item->id, 0, -1, 
-			(const char *)&(attach_item->data), &(attach_item->size)); 
+			(const char **)&(attach_item->data), &(attach_item->size)); 
 
 		if (status != E_GW_CONNECTION_STATUS_OK ) {
 			g_warning ("Failed to read the attachment from the server\n");
@@ -693,7 +701,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	ECalComponentDateTime dt;
 	const char *description, *uid;
 	char *t, *name;
-	GList *category_ids, *categories;
+	GList *category_ids;
+        GSList *categories;
 	GHashTable *categories_by_id;
 	gboolean is_allday;
 	icaltimezone *default_zone;
@@ -786,11 +795,11 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		for (; category_ids != NULL; category_ids = g_list_next (category_ids)) {
 			name = g_hash_table_lookup (categories_by_id, category_ids->data);
 			if (name)
-				categories = g_list_append (categories, name);
+				categories = g_slist_append (categories, name);
 		}
 		if (categories) {
 			e_cal_component_set_categories_list (comp,categories);
-			g_list_free (categories);
+			g_slist_free (categories);
 		}
 	}
 
@@ -898,7 +907,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		 * from a n/w call here */
 		attach_data = (EGwItemAttachment *) attach_list->data;
 		status  = e_gw_connection_get_attachment (e_cal_backend_groupwise_get_connection (cbgw), attach_data->id, 0, 0, 
-					(const char *)&attachment, &attach_length); 
+				(const char *)&attachment, &attach_length); 
 		if (status == E_GW_CONNECTION_STATUS_OK) 
 			g_message ("DEBUG : Spewing out the attachment\n%s\n", attachment);		
 		else 
@@ -1066,7 +1075,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 		/* get attendee here and add the list along. */
 		if (e_cal_component_has_attendees (comp)) {
 			GSList *attendee_list, *l;
-			char *email_id;
+			const char *email_id;
 			ECalComponentAttendee  *attendee = NULL, *tmp;
 
 			
@@ -1348,14 +1357,14 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	     subparam != NULL;
 	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "freeBusyStats")) {
 		SoupSoapParameter *param_outstanding;
-		const char *outstanding;
+		const char *outstanding = NULL;
 
 		param_outstanding = soup_soap_parameter_get_first_child_by_name (subparam, "outstanding");
 		if (param_outstanding)
 			outstanding = soup_soap_parameter_get_string_value (param_outstanding);
 		/* Try 12 times - this is approximately 2 minutes of time to
 		 * obtain the free/busy information from the server */
-		if (strcmp (outstanding, "0") && (request_iteration < 12)) {
+		if (outstanding && strcmp (outstanding, "0") && (request_iteration < 12)) {
 			request_iteration++;
 			g_object_unref (msg);
 		        g_object_unref (response);
@@ -1630,7 +1639,7 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 	uid = e_source_peek_uid (source);
 	source = e_source_list_peek_source_by_uid (source_list, uid);
 	if (gopts) {
-			/* priority */
+		/* priority */
 		switch (gopts->priority) {
 			case E_GW_PRIORITY_HIGH:
 				value = g_strdup ("high");
@@ -1647,29 +1656,29 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 		e_source_set_property (source, "priority", value);
 		g_free (value), value = NULL;
 
-			/* Reply Requested */
-		/*TODO Fill the value if it is not "convinient" */
+		/* Reply Requested */
 		if (gopts->reply_enabled) {
 			if (gopts->reply_convenient)
 				value = g_strdup ("convinient");
 			else 
 				value = g_strdup_printf ("%d",gopts->reply_within);
-		 } else
+		} else
 			value = g_strdup ("none");
 		e_source_set_property (source, "reply-requested", value);
 		g_free (value), value = NULL;
-		
-			/* Delay delivery */
+
+		/* Delay delivery */
 		if (gopts->delay_enabled) {
-				tt = icaltime_today ();
-				icaltime_adjust (&tt, gopts->delay_until, 0, 0, 0);
-				value = icaltime_as_ical_string (tt);
+			const char *value;
+			tt = icaltime_today ();
+			icaltime_adjust (&tt, gopts->delay_until, 0, 0, 0);
+			value = icaltime_as_ical_string (tt);
 		} else
 			value = g_strdup ("none");
 		e_source_set_property (source, "delay-delivery", value);
 		g_free (value), value = NULL;
-		
-			/* Expiration date */
+
+		/* Expiration date */
 		if (gopts->expiration_enabled)
 			value =  g_strdup_printf ("%d", gopts->expire_after);
 		else
@@ -1677,9 +1686,9 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 		e_source_set_property (source, "expiration", value);
 		g_free (value), value = NULL;
 	}
-		
+
 	if (sopts) {
-			/* status tracking */
+		/* status tracking */
 		if (sopts->tracking_enabled) {
 			switch (sopts->track_when) {
 				case E_GW_DELIVERED :
@@ -1706,4 +1715,4 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 }
 
 
-	
+
