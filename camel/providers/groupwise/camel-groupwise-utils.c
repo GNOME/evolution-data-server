@@ -26,6 +26,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <glib.h>
+#include <libsoup/soup-misc.h>
 #include "camel-groupwise-utils.h"
 
 #include <camel/camel-service.h>
