@@ -2387,7 +2387,7 @@ e_book_cancel (EBook   *book,
 	if (e_book_get_current_sync_op (book) == NULL) {
 		g_mutex_unlock (book->priv->mutex);
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
-			     _("e_book_cancel: there is no current operation"));
+			     _("%s: there is no current operation"), "e_book_cacnel");
 		return FALSE;
 	}
 
@@ -2422,7 +2422,7 @@ e_book_cancel (EBook   *book,
 	}
 	else {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
-			     _("e_book_cancel: couldn't cancel"));
+			     _("%s: couldn't cancel"), "e_book_cancel");
 		rv = FALSE;
 	}
 
@@ -2521,7 +2521,7 @@ do_open (gboolean sync,
 			/* Cancelled */
 			book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
 			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CANCELLED,
-				     _("e_book_open: cancelled"));
+				     _("%s: cancelled"), "e_book_open");
 			return FALSE;
 		}
 		else if (status == E_BOOK_ERROR_OK) {
@@ -3063,7 +3063,7 @@ fetch_corba_book (EBook       *book,
 	uri = e_source_get_uri (source);
 	if (!uri) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_OTHER_ERROR,
-			     _("e_book_load_uri: Invalid source."));
+			     _("%s: Invalid source."), "e_book_load_uri");
 		return FALSE;
 	}
 
@@ -3071,7 +3071,7 @@ fetch_corba_book (EBook       *book,
 	factories = activate_factories_for_uri (book, uri);
 	if (!factories) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
-			     _("e_book_load_uri: no factories available for uri `%s'"), uri);
+			     _("%s: no factories available for uri `%s'"), "e_book_load_uri", uri);
 		return FALSE;
 	}
 
@@ -3083,7 +3083,7 @@ fetch_corba_book (EBook       *book,
 	if (book->priv->listener == NULL) {
 		g_warning ("e_book_load_uri: Could not create EBookListener!\n");
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_OTHER_ERROR,
-			     _("e_book_load_uri: Could not create EBookListener"));
+			     _("%s: Could not create EBookListener"), "e_book_load_uri");
 		return FALSE;
 	}
 	book->priv->listener_signal = g_signal_connect_object (book->priv->listener, "response",
@@ -3329,7 +3329,7 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 		g_object_unref (*book);
 		*book = NULL;
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SELF_CONTACT,
-			     _("e_book_get_self: there was no self contact uid stored in gconf"));
+			     _("%s: there was no self contact uid stored in gconf"), "e_book_get_self");
 		return FALSE;
 	}
 
@@ -3440,7 +3440,7 @@ e_book_set_default_source (ESource *source, GError **error)
 	source = e_source_list_peek_source_by_uid (sources, uid);
 	if (!source) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SUCH_SOURCE,
-			     _("e_book_set_default_source: there was no source for uid `%s' stored in gconf."), uid);
+			     _("%s: there was no source for uid `%s' stored in gconf."), "e_book_set_default_source", uid);
 		g_object_unref (sources);
 		return FALSE;
 	}
