@@ -343,13 +343,12 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	int *priority;
 	GList *categories;
 	GSList *slist, *sl;
-	icaltimezone *default_zone;
+	icaltimezone *default_zone, *utc;
 	struct icaltimetype itt_utc;
 	
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
+	utc = icaltimezone_get_utc_timezone ();
 
-	g_return_val_if_fail ((default_zone != NULL), NULL);
-	
 	/* first set specific properties */
 	switch (e_cal_component_get_vtype (comp)) {
 	case E_CAL_COMPONENT_EVENT :
@@ -389,8 +388,8 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		e_cal_component_get_dtend (comp, &dt);
 		if (dt.value) {
 			if (!icaltime_get_timezone (*dt.value))
-				icaltime_set_timezone (dt.value, default_zone);
-			itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+				icaltime_set_timezone (dt.value, default_zone ? default_zone : utc);
+			itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 			e_gw_item_set_end_date (item, icaltime_as_ical_string (itt_utc));
 		}
 
@@ -404,7 +403,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		if (dt.value) {
 			if (!icaltime_get_timezone (*dt.value))
 				icaltime_set_timezone (dt.value, default_zone);
-			itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+			itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 			e_gw_item_set_due_date (item, icaltime_as_ical_string (itt_utc));
 		}
 		
@@ -475,7 +474,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	if (dt.value) {
 		if (!icaltime_get_timezone (*dt.value))
 			icaltime_set_timezone (dt.value, default_zone);
-		itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+		itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 		e_gw_item_set_start_date (item, icaltime_as_ical_string (itt_utc));
 	} else if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 		/* appointments need the start date property */
@@ -492,7 +491,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	if (dt.value) {
 		if (!icaltime_get_timezone (*dt.value))
 			icaltime_set_timezone (dt.value, default_zone);
-		itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+		itt_utc = icaltime_convert_to_zone (*dt.value, utc); 
 		e_gw_item_set_creation_date (item, icaltime_as_ical_string (itt_utc));
 	} else {
 		struct icaltimetype itt;
@@ -574,7 +573,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		if (dt.tzid)
 			e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, (icaltimezone *) default_zone);		
 		else 
-			e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, icaltimezone_get_utc_timezone());		
+			e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, utc);		
 
 		recur_dates = g_slist_delete_link (recur_dates, recur_dates);
 		

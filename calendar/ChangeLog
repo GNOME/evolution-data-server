@@ -1,3 +1,9 @@
+2005-01-20  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component): If the default zone is
+	not set use utc, instead of returning NULL for the item.
+
 2005-01-19  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file.c (cancel_received_object): deal
