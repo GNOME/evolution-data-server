@@ -30,9 +30,6 @@
 #include "e-data-server-ui-marshal.h"
 #include "e-source-option-menu.h"
 
-static GtkOptionMenuClass *parent_class = NULL;
-
-
 /* We set data on each menu item specifying the corresponding ESource using this key.  */
 #define MENU_ITEM_SOURCE_DATA_ID	"ESourceOptionMenu:Source"
 
@@ -211,7 +208,7 @@ e_source_option_menu_dispose (GObject *object)
 		priv->selected_source = NULL;
 	}
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	(* G_OBJECT_CLASS (e_source_option_menu_parent_class)->dispose) (object);
 }
 
 static void
@@ -221,7 +218,7 @@ e_source_option_menu_finalize (GObject *object)
 
 	g_free (priv);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* G_OBJECT_CLASS (e_source_option_menu_parent_class)->finalize) (object);
 }
 
 
@@ -234,8 +231,6 @@ e_source_option_menu_class_init (ESourceOptionMenuClass *class)
 
 	object_class->dispose  = e_source_option_menu_dispose;
 	object_class->finalize = e_source_option_menu_finalize;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	signals[SOURCE_SELECTED] = 
 		g_signal_new ("source_selected",

@@ -35,9 +35,6 @@
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"
 
-static GtkTreeViewClass *parent_class = NULL;
-
-
 struct _ESourceSelectorPrivate {
 	ESourceList *list;
 
@@ -647,7 +644,7 @@ e_source_selector_dispose (GObject *object)
 
 	clear_saved_primary_selection (E_SOURCE_SELECTOR (object));
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	(* G_OBJECT_CLASS (e_source_selector_parent_class)->dispose) (object);
 }
 
 static void
@@ -657,7 +654,7 @@ e_source_selector_finalize (GObject *object)
 
 	g_free (priv);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* G_OBJECT_CLASS (e_source_selector_parent_class)->finalize) (object);
 }
 
 
@@ -679,8 +676,6 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 
 	object_class->dispose  = e_source_selector_dispose;
 	object_class->finalize = e_source_selector_finalize;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	signals[SELECTION_CHANGED] = 
 		g_signal_new ("selection_changed",

@@ -1,5 +1,12 @@
 2004-10-14  JP Rosevear  <jpr@novell.com>
 
+	* libedataserverui/e-source-selector.c: G_DEFINE_TYPE cleanups for
+	parent class
+
+	* libedataserverui/e-source-option-menu.c: ditto
+	
+2004-10-14  JP Rosevear  <jpr@novell.com>
+	
 	* libedataserverui/libedataserverui.pc.in: link to the right lib
 	and require libedataserver 1.2
 
