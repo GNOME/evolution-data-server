@@ -898,6 +898,7 @@ e_gw_connection_get_session_id (EGwConnection *cnc)
 const char *
 e_gw_connection_get_user_name (EGwConnection *cnc)
 {
+	g_return_val_if_fail (cnc != NULL, NULL);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 
 	return (const char *) cnc->priv->user_name;
@@ -906,6 +907,7 @@ e_gw_connection_get_user_name (EGwConnection *cnc)
 const char* 
 e_gw_connection_get_user_email (EGwConnection *cnc)
 {
+	g_return_val_if_fail (cnc != NULL, NULL);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
   
 	return (const char*) cnc->priv->user_email;

@@ -3,8 +3,7 @@ INCLUDES =						\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	$(SOUP_CFLAGS)					\
-	$(E_DATA_SERVER_CFLAGS)				\
-	$(DEBUG_CFLAGS)
+	$(E_DATA_SERVER_CFLAGS)
 
 noinst_PROGRAMS = create-account soap-test
 

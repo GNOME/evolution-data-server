@@ -25,8 +25,6 @@
 #include <libsoup/soup-uri.h>
 #include "e-gw-message.h"
 
-#ifdef G_ENABLE_DEBUG
-
 static void
 print_header (gpointer name, gpointer value, gpointer data)
 {
@@ -70,8 +68,6 @@ setup_debug (SoupSoapMessage *msg)
 	soup_message_add_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
 }
 
-#endif
-
 SoupSoapMessage *
 e_gw_message_new_with_header (const char *uri, const char *session_id, const char *method_name)
 {
@@ -88,9 +84,8 @@ e_gw_message_new_with_header (const char *uri, const char *session_id, const cha
 				 "Evolution/" VERSION);
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction", method_name);
 
-#ifdef G_ENABLE_DEBUG
-	setup_debug (msg);
-#endif
+	if (g_getenv ("GROUWISE_DEBUG"))
+		setup_debug (msg);
 
 	soup_soap_message_start_envelope (msg);
 	if (session_id && *session_id) {
@@ -139,11 +134,10 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 
 	soup_soap_message_persist (msg);
 
-#ifdef G_ENABLE_DEBUG
-	/* print request's body */
-	fputc ('\n', stdout);
-	fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
-	fputc ('\n', stdout);
-#endif
-
+	if (g_getenv ("GROUPWISE_DEBUG")) {
+		/* print request's body */
+		fputc ('\n', stdout);
+		fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
+		fputc ('\n', stdout);
+	}
 }
