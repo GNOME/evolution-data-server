@@ -1,3 +1,10 @@
+2003-01-11  Christian Hammond <chipx86@gnupdate.org>
+ 
+ 	* addressbook/libebook/e-contact.[ch]: Changed the IM account field
+ 	types from LIST_FIELD to MULTI_LIST_FIELD, as discussed with Chris
+ 	Toshok. Added convenience fields for WORK and HOME entries for each
+ 	IM account list. Add support for setting LIST_FIELD types.
+ 
 2004-01-09  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* tests/ebook/test-date.c (main): Don't let control reach the end

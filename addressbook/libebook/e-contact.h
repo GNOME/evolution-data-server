@@ -108,6 +108,37 @@ typedef enum {
 	E_CONTACT_IM_MSN,     	 /* Multi-valued */
 	E_CONTACT_IM_ICQ,     	 /* Multi-valued */
 
+	E_CONTACT_IM_AIM_HOME_1,     /* Synthetic string field */
+	E_CONTACT_IM_AIM_HOME_2,     /* Synthetic string field */
+	E_CONTACT_IM_AIM_HOME_3,     /* Synthetic string field */
+	E_CONTACT_IM_AIM_WORK_1,     /* Synthetic string field */
+	E_CONTACT_IM_AIM_WORK_2,     /* Synthetic string field */
+	E_CONTACT_IM_AIM_WORK_3,     /* Synthetic string field */
+	E_CONTACT_IM_JABBER_HOME_1,  /* Synthetic string field */
+	E_CONTACT_IM_JABBER_HOME_2,  /* Synthetic string field */
+	E_CONTACT_IM_JABBER_HOME_3,  /* Synthetic string field */
+	E_CONTACT_IM_JABBER_WORK_1,  /* Synthetic string field */
+	E_CONTACT_IM_JABBER_WORK_2,  /* Synthetic string field */
+	E_CONTACT_IM_JABBER_WORK_3,  /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_HOME_1,   /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_HOME_2,   /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_HOME_3,   /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_WORK_1,   /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_WORK_2,   /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_WORK_3,   /* Synthetic string field */
+	E_CONTACT_IM_MSN_HOME_1,     /* Synthetic string field */
+	E_CONTACT_IM_MSN_HOME_2,     /* Synthetic string field */
+	E_CONTACT_IM_MSN_HOME_3,     /* Synthetic string field */
+	E_CONTACT_IM_MSN_WORK_1,     /* Synthetic string field */
+	E_CONTACT_IM_MSN_WORK_2,     /* Synthetic string field */
+	E_CONTACT_IM_MSN_WORK_3,     /* Synthetic string field */
+	E_CONTACT_IM_ICQ_HOME_1,     /* Synthetic string field */
+	E_CONTACT_IM_ICQ_HOME_2,     /* Synthetic string field */
+	E_CONTACT_IM_ICQ_HOME_3,     /* Synthetic string field */
+	E_CONTACT_IM_ICQ_WORK_1,     /* Synthetic string field */
+	E_CONTACT_IM_ICQ_WORK_2,     /* Synthetic string field */
+	E_CONTACT_IM_ICQ_WORK_3,     /* Synthetic string field */
+
 	/* Address fields */
 	E_CONTACT_ADDRESS,       /* Multi-valued structured (EContactAddress) */
 	E_CONTACT_ADDRESS_HOME,  /* synthetic structured field (EContactAddress) */
