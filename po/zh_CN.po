@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
-"PO-Revision-Date: 2004-05-16 02:01+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-06-13 03:24+0200\n"
+"PO-Revision-Date: 2004-06-13 13:06+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -24,7 +24,7 @@ msgid "Loading..."
 msgstr "正在装入..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "正在搜索..."
@@ -53,11 +53,11 @@ msgstr "正在从 LDAP 服务器删除联系人..."
 msgid "Modifying contact from LDAP server..."
 msgstr "正在修改 LDAP 服务器上的联系人..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "正在接收 LDAP 的搜索结果..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 msgid "Error performing search"
 msgstr "执行搜索错误"
 
@@ -73,7 +73,7 @@ msgstr "执行搜索错误"
 #: addressbook/libebook/e-book.c:1943
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr ""
+msgstr "“%2$s”前的“%1$s”"
 
 #: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
 #: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
@@ -93,54 +93,52 @@ msgstr "通讯簿忙"
 #: addressbook/libebook/e-book.c:1541 addressbook/libebook/e-book.c:1952
 #, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr ""
+msgstr "CORBA 需要执行“%s”调用"
 
 #: addressbook/libebook/e-book.c:1337
 msgid "e_book_cancel: there is no current operation"
-msgstr ""
+msgstr "e_book_cancel：没有当前操作"
 
 #: addressbook/libebook/e-book.c:1372
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel：无法取消"
 
 #: addressbook/libebook/e-book.c:1409
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "“%2$s”中的“%1$s”"
+msgstr "“%2$s”后的“%1$s”"
 
 #: addressbook/libebook/e-book.c:1458
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: 来源错误"
+msgstr "e_book_open：已取消"
 
 #: addressbook/libebook/e-book.c:1810
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri：无效来源。"
 
 #: addressbook/libebook/e-book.c:1818
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
-msgstr "e_book_load_uri: 对于URI '%s' 没有可用的因素"
+msgstr "e_book_load_uri：对于 URI“%s”没有可用的工厂"
 
 #: addressbook/libebook/e-book.c:1830
 msgid "e_book_load_uri: Could not create EBookListener"
-msgstr "e_book_load_uri: 不能创建EBookListener"
+msgstr "e_book_load_uri：不能创建 EBookListener"
 
 #: addressbook/libebook/e-book.c:1881
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: 对于URI '%s' 没有可用的因素"
+msgstr "e_book_new：对于 URI“%s”没有可用的工厂"
 
 #: addressbook/libebook/e-book.c:2038
-#, fuzzy
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr "e_book_get_self: gconf中没有存储可用的uid"
+msgstr "e_book_get_self：gconf 中没有存储自身联系人的 uid"
 
 #: addressbook/libebook/e-book.c:2147
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_get_self: gconf中没有存储可用的uid"
+msgstr "e_book_set_default_source：gconf 中没有存储 uid“%s”的源。"
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -301,9 +299,8 @@ msgid "Email 3"
 msgstr "电子邮件 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "电子邮件 3"
+msgstr "电子邮件 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -562,9 +559,8 @@ msgstr "ICS 日历"
 
 #. Misc fields
 #: addressbook/libebook/e-contact.c:230
-#, fuzzy
 msgid "Spouse's Name"
-msgstr "配偶"
+msgstr "配偶姓名"
 
 #: addressbook/libebook/e-contact.c:231
 msgid "Note"
@@ -879,9 +875,9 @@ msgstr "“%s”需要一个参数"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:88
 #: calendar/libedata-cal/e-cal-backend-sexp.c:245
 #: calendar/libedata-cal/e-cal-backend-sexp.c:473
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "第一个参数应该是字符串"
+msgstr "“%s”需要第一个参数是字符串"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
