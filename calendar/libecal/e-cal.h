@@ -190,14 +190,11 @@ char* e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp);
 const char * e_cal_get_error_message (ECalendarStatus status);
 
 /* Calendar/Tasks Discovery */
-gboolean    e_cal_get_default_calendar (ECal **ecal, GError **error);
-gboolean    e_cal_get_default_tasks (ECal **ecal, GError **error);
-gboolean    e_cal_set_default_calendar (ECal  *ecal, GError **error);
-gboolean    e_cal_set_default_tasks (ECal  *ecal, GError **error);
-gboolean    e_cal_set_default_calendar_source      (ESource *source, GError **error);
-gboolean    e_cal_set_default_tasks_source      (ESource *source, GError **error);
-gboolean    e_cal_get_calendars        (ESourceList **calendar_sources, GError **error);
-gboolean    e_cal_get_tasks        (ESourceList **task_sources, GError **error);
+gboolean    e_cal_open_default (ECal **ecal, ECalSourceType type, GError **error);
+
+gboolean    e_cal_set_default (ECal  *ecal, GError **error);
+gboolean    e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error);
+gboolean    e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error);
 
 G_END_DECLS
 

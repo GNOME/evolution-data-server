@@ -1,3 +1,13 @@
+2004-02-04  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.h: redo protos
+
+	* libecal/e-cal.c (e_cal_open_default): open the default ecal
+	based on type
+	(e_cal_set_default): set the default based on type
+	(e_cal_set_default_source): ditto
+	(e_cal_get_sources): get the source list based on type
+
 2004-02-04  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libecal/e-cal.c (open_calendar): new function created from

@@ -4030,35 +4030,21 @@ get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, GError **er
 }
 
 gboolean
-e_cal_get_default_calendar (ECal **ecal, GError **error)
+e_cal_open_default (ECal **ecal, ECalSourceType type, GError **error)
 {
 	ESourceList *sources;
 	GError *err = NULL;
 
-	if (!e_cal_get_calendars (&sources, &err)) {
+	if (!e_cal_get_sources (&sources, type, &err)) {
 		g_propagate_error (error, err);
 		return FALSE;
 	}
 
-	return get_default (ecal, sources, E_CAL_SOURCE_TYPE_EVENT, error);
+	return get_default (ecal, sources, type, error);
 }
 
 gboolean
-e_cal_get_default_tasks (ECal **ecal, GError **error)
-{
-	ESourceList *sources;
-	GError *err = NULL;
-
-	if (!e_cal_get_tasks (&sources, &err)) {
-		g_propagate_error (error, err);
-		return FALSE;
-	}
-
-	return get_default (ecal, sources, E_CAL_SOURCE_TYPE_TODO, error);
-}	
-
-gboolean
-e_cal_set_default_calendar (ECal *ecal, GError **error)
+e_cal_set_default (ECal *ecal, GError **error)
 {
 	ESource *source = e_cal_get_source (ecal);
 	if (!source) {
@@ -4066,20 +4052,7 @@ e_cal_set_default_calendar (ECal *ecal, GError **error)
 		return FALSE;
 	}
 
-	return e_cal_set_default_calendar_source (source, error);
-}
-
-
-gboolean
-e_cal_set_default_tasks (ECal *ecal, GError **error)
-{
-	ESource *source = e_cal_get_source (ecal);
-	if (!source) {
-		/* XXX gerror */
-		return FALSE;
-	}
-
-	return e_cal_set_default_tasks_source (source, error);
+	return e_cal_set_default_source (source, ecal->priv->type, error);
 }
 
 static gboolean
@@ -4122,26 +4095,12 @@ set_default_source (ESourceList *sources, ESource *source, GError **error)
 }
 
 gboolean
-e_cal_set_default_calendar_source (ESource *source, GError **error)
+e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error)
 {
 	ESourceList *sources;
 	GError *err = NULL;
 
-	if (!e_cal_get_calendars (&sources, &err)) {
-		g_propagate_error (error, err);
-		return FALSE;
-	}
-
-	return set_default_source (sources, source, error);
-}
-
-gboolean
-e_cal_set_default_tasks_source (ESource *source, GError **error)
-{
-	ESourceList *sources;
-	GError *err = NULL;
-
-	if (!e_cal_get_tasks (&sources, &err)) {
+	if (!e_cal_get_sources (&sources, type, &err)) {
 		g_propagate_error (error, err);
 		return FALSE;
 	}
@@ -4161,13 +4120,20 @@ get_sources (ESourceList **sources, const char *key, GError **error)
 }
 
 gboolean
-e_cal_get_calendars (ESourceList **calendar_sources, GError **error)
+e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error)
 {
-	return get_sources (calendar_sources, "/apps/evolution/calendar/sources", error);
-}
-
-gboolean
-e_cal_get_tasks (ESourceList **task_sources, GError **error)
-{
-	return get_sources (task_sources, "/apps/evolution/tasks/sources", error);
+	switch (type) {
+	case E_CAL_SOURCE_TYPE_EVENT:
+		return get_sources (sources, "/apps/evolution/calendar/sources", error);		
+		break;
+	case E_CAL_SOURCE_TYPE_TODO:
+		return get_sources (sources, "/apps/evolution/tasks/sources", error);
+		break;
+	default:
+		/* FIXME Fill in error */
+		return FALSE;
+	}
+	
+	/* FIXME Fill in error */
+	return FALSE;	
 }
