@@ -673,7 +673,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 	GString *str = g_string_new ("");
 
-	str = g_string_append (str, "BEGIN:vCard" CRLF);
+	str = g_string_append (str, "BEGIN:VCARD" CRLF);
 
 	/* we hardcode the version (since we're outputting to a
 	   specific version) and ignore any version attributes the
@@ -777,7 +777,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		g_string_free (attr_str, TRUE);
 	}
 
-	str = g_string_append (str, "END:vCard");
+	str = g_string_append (str, "END:VCARD");
 
 	return g_string_free (str, FALSE);
 }

@@ -1,3 +1,9 @@
+2004-02-03  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.c (e_vcard_to_string_vcard_30): use "VCARD"
+	instead of "vCard" because gnome-vfs is busted and doesn't use a
+	case insensitive string check.
+
 2004-02-02  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-contact.c (GETSET_FIELD): these are also of type
