@@ -1,5 +1,16 @@
 2004-06-01  Rodrigo Moya <rodrigo@novell.com>
 
+	* libecal/e-cal.c (e_cal_generate_instances): moved all the logic...
+	(generate_instances): ...here, so that we can specify a UID to
+	generate instances only for that UID.
+	(e_cal_generate_instances_for_object): use generate_instances
+	function and specify the UID of the object.
+
+	* libedata-cal/e-cal-backend-sexp.c (e_cal_backend_sexp_match_comp):
+	added checks for arguments.
+
+2004-06-01  Rodrigo Moya <rodrigo@novell.com>
+
 	* libecal/e-cal.c (e_cal_generate_instances_for_object,
 	e_cal_generate_instances): allow -1 for the start and end times.
 	(load_static_capabilities, add_instance): fixed warnings.
