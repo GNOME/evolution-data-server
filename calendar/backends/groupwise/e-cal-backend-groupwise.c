@@ -68,16 +68,16 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
         ECalComponent *comp;
 	const char *uid;
 	char *rid;
-        GSList *list = NULL, *l;
+        GList *list = NULL, *l;
 
         /* get all the objects from the server */
         status = e_gw_connection_get_items (priv->cnc, priv->container_id, NULL, &list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
-                g_slist_free (list);
+                g_list_free (list);
                 return status;
         }
         
-        for (l = list; l != NULL; l = g_slist_next(l)) {
+        for (l = list; l != NULL; l = g_list_next(l)) {
                 comp = E_CAL_COMPONENT (l->data);
 		e_cal_component_get_uid (comp, &uid);
                 rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
@@ -87,7 +87,7 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
                 g_free (comp);
         }
         
-        g_slist_free (list);
+        g_list_free (list);
         return E_GW_CONNECTION_STATUS_OK;        
                                                                                                                     
 }
@@ -95,8 +95,13 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
 static EGwConnectionStatus 
 update_cache (gpointer *data)
 {
-        /* FIXME: to implemented using the getDeltas call */
-	return E_GW_CONNECTION_STATUS_OK;
+        ECalBackendGroupwise *cbgw;
+        EGwConnection *cnc;
+        EGwConnectionStatus status;
+	cbgw = E_CAL_BACKEND_GROUPWISE (data);
+        cnc = cbgw->priv->cnc;
+        status = e_gw_connection_get_deltas (cnc, cbgw->priv->cache);
+        return status;
 }
 
 static GnomeVFSURI *
@@ -306,6 +311,8 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 
 	return GNOME_Evolution_Calendar_Success;
 }
+
+
 
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
@@ -577,12 +584,12 @@ match_object_sexp (gpointer key, gpointer value, gpointer data)
 
 /* Get_objects_in_range handler for the groupwise backend */
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GSList **objects)
+e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 	MatchObjectData match_data;
-        GSList *l;
+        GList *l;
         
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -606,7 +613,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 		return GNOME_Evolution_Calendar_InvalidQuery;
 	}
 
-        for( l = e_cal_backend_cache_get_components (priv->cache); l != NULL; l = g_slist_next (l)) {
+        for( l = e_cal_backend_cache_get_components (priv->cache); l != NULL; l = g_list_next (l)) {
                 const char *uid;
                 ECalComponent *comp = E_CAL_COMPONENT (l);
                 e_cal_component_get_uid (comp, &uid);
@@ -627,7 +634,7 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 	MatchObjectData match_data;
-        GSList *l;
+        GList *l;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -669,8 +676,8 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 
 /* Get_free_busy handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GSList *users,
-				time_t start, time_t end, GSList **freebusy)
+e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
+				time_t start, time_t end, GList **freebusy)
 {
        EGwConnectionStatus status;
        ECalBackendGroupwise *cbgw;
@@ -685,12 +692,115 @@ e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, 
        return GNOME_Evolution_Calendar_Success; 
 }
 
-/* Get_changes handler for the file backend */
+typedef struct 
+{
+	ECalBackendGroupwise *backend;
+	icalcomponent_kind kind;
+	GList *deletes;
+	EXmlHash *ehash;
+} ECalBackendGroupwiseComputeChangesData;
+
+static void
+e_cal_backend_groupwise_compute_changes_foreach_key (const char *key, gpointer data)
+{
+	ECalBackendGroupwiseComputeChangesData *be_data = data;
+                
+                if (!e_cal_backend_cache_get_component (be_data->backend->priv->cache, key, NULL)) {
+		ECalComponent *comp;
+
+		comp = e_cal_component_new ();
+		if (be_data->kind == ICAL_VTODO_COMPONENT)
+			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+		else
+			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+
+		e_cal_component_set_uid (comp, key);
+		be_data->deletes = g_list_prepend (be_data->deletes, e_cal_component_get_as_string (comp));
+
+		e_xmlhash_remove (be_data->ehash, key);
+ 	}
+}
+
+static ECalBackendSyncStatus
+e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const char *change_id,
+				  GList **adds, GList **modifies, GList **deletes)
+{
+        ECalBackendSyncStatus status;
+	ECalBackendCache *cache;
+	char    *filename;
+	EXmlHash *ehash;
+	ECalBackendGroupwiseComputeChangesData be_data;
+	GList *i, *list = NULL;
+	gchar *unescaped_uri;
+
+	cache = cbgw->priv->cache;
+
+	/* FIXME Will this always work? */
+	unescaped_uri = gnome_vfs_unescape_string (cbgw->priv->uri, "");
+	filename = g_strdup_printf ("%s-%s.db", unescaped_uri, change_id);
+	ehash = e_xmlhash_new (filename);
+	g_free (filename);
+	g_free (unescaped_uri);
+
+        status = e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (cbgw), NULL, NULL, &list);
+        if (status != GNOME_Evolution_Calendar_Success)
+                return status;
+        
+        /* Calculate adds and modifies */
+	for (i = list; i != NULL; i = g_list_next (i)) {
+		const char *uid;
+		char *calobj;
+
+		e_cal_component_get_uid (i->data, &uid);
+		calobj = e_cal_component_get_as_string (i->data);
+
+		g_assert (calobj != NULL);
+
+		/* check what type of change has occurred, if any */
+		switch (e_xmlhash_compare (ehash, uid, calobj)) {
+		case E_XMLHASH_STATUS_SAME:
+			break;
+		case E_XMLHASH_STATUS_NOT_FOUND:
+			*adds = g_list_prepend (*adds, g_strdup (calobj));
+			e_xmlhash_add (ehash, uid, calobj);
+			break;
+		case E_XMLHASH_STATUS_DIFFERENT:
+			*modifies = g_list_prepend (*modifies, g_strdup (calobj));
+			e_xmlhash_add (ehash, uid, calobj);
+			break;
+		}
+
+		g_free (calobj);
+	}
+
+	/* Calculate deletions */
+	be_data.backend = cbgw;
+	be_data.kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+	be_data.deletes = NULL;
+	be_data.ehash = ehash;
+   	e_xmlhash_foreach_key (ehash, (EXmlHashFunc)e_cal_backend_groupwise_compute_changes_foreach_key, &be_data);
+
+	*deletes = be_data.deletes;
+
+	e_xmlhash_write (ehash);
+  	e_xmlhash_destroy (ehash);
+	
+	return GNOME_Evolution_Calendar_Success;
+}
+
+/* Get_changes handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id,
 				     GList **adds, GList **modifies, GList **deletes)
 {
-	return GNOME_Evolution_Calendar_OtherError;
+        ECalBackendGroupwise *cbgw;
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_InvalidObject);
+	g_return_val_if_fail (change_id != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+
+	return e_cal_backend_groupwise_compute_changes (cbgw, change_id, adds, modifies, deletes);
+
 }
 
 /* Discard_alarm handler for the file backend */
