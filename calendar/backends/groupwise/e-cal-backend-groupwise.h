@@ -52,6 +52,10 @@ struct _ECalBackendGroupwiseClass {
 };
 
 GType   e_cal_backend_groupwise_get_type (void);
+EGwConnection* e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw);
+GHashTable* e_cal_backend_groupwise_get_categories_by_id (ECalBackendGroupwise *cbgw);
+GHashTable* e_cal_backend_groupwise_get_categories_by_name (ECalBackendGroupwise *cbgw);
+icaltimezone* e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw);
 void    e_cal_backend_groupwise_notify_error_code (ECalBackendGroupwise *cbgw, EGwConnectionStatus status);
 
 G_END_DECLS

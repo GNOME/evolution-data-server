@@ -52,6 +52,9 @@ struct _ECalBackendGroupwisePrivate {
 	char *container_id;
 	CalMode mode;
 	icaltimezone *default_zone;
+	GHashTable *categories_by_id;
+	GHashTable *categories_by_name;
+
 
 	/* fields for storing info while offline */
 	char *user_email;
@@ -65,6 +68,38 @@ static ECalBackendClass *parent_class = NULL;
 
 /* Time interval in milliseconds for obtaining changes from server and refresh the cache. */
 #define CACHE_REFRESH_INTERVAL 600000
+
+EGwConnection *
+e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw) {
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
+
+	return cbgw->priv->cnc;
+}
+
+GHashTable *
+e_cal_backend_groupwise_get_categories_by_id (ECalBackendGroupwise *cbgw) {
+	
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
+	
+	return cbgw->priv->categories_by_id;
+}
+
+GHashTable *
+e_cal_backend_groupwise_get_categories_by_name (ECalBackendGroupwise *cbgw) {
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
+
+	return cbgw->priv->categories_by_name;
+}
+
+icaltimezone *
+e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw) {
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
+
+	return cbgw->priv->default_zone;
+}
 
 /* Initialy populate the cache from the server */
 static EGwConnectionStatus
@@ -85,11 +120,18 @@ populate_cache (ECalBackendGroupwise *cbgw)
                 return status;
         }
 
+	/* get the list of category ids and corresponding names from the server */
+	status = e_gw_connection_get_categories (priv->cnc, priv->categories_by_id, priv->categories_by_name);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+                return status;
+        }
+
         for (l = list; l != NULL; l = g_list_next(l)) {
 		EGwItem *item;
 
 		item = E_GW_ITEM (l->data);
-		comp = e_gw_item_to_cal_component (item, priv->default_zone);
+		comp = e_gw_item_to_cal_component (item, cbgw);
 		g_object_unref (item);
 		if (E_IS_CAL_COMPONENT (comp)) {
 			e_cal_component_commit_sequence (comp);
@@ -135,7 +177,7 @@ get_deltas (gpointer handle)
 	if (adds) {
 		for (l = adds; l != NULL; l = g_slist_next (l)) {
 			EGwItem *item = (EGwItem *) l->data;
-			ECalComponent *comp = e_gw_item_to_cal_component (item, cbgw->priv->default_zone);
+			ECalComponent *comp = e_gw_item_to_cal_component (item, cbgw);
 			if (!comp)
 				g_message ("Invalid component returned");
 			else if (!e_cal_backend_cache_put_component (cache, comp)) 
@@ -152,7 +194,7 @@ get_deltas (gpointer handle)
 			/* FIXME  currently, just overwrite the fields with the
 			 * update.*/
 			e_cal_backend_cache_remove_component (cache, e_gw_item_get_id (item), NULL);
-			e_cal_backend_cache_put_component (cache, e_gw_item_to_cal_component (item, cbgw->priv->default_zone));
+			e_cal_backend_cache_put_component (cache, e_gw_item_to_cal_component (item, cbgw));
 		}
 	}
 
@@ -333,6 +375,16 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->password) {
 		g_free (priv->password);
 		priv->password = NULL;
+	}
+
+	if (priv->categories_by_id) {
+	        g_hash_table_destroy (priv->categories_by_id);
+		priv->categories_by_id = NULL;
+	}
+
+	if (priv->categories_by_name) {
+	        g_hash_table_destroy (priv->categories_by_name);
+	        priv->categories_by_name = NULL;
 	}
 
 	if (priv->container_id) {
@@ -1002,7 +1054,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
-		status = e_gw_connection_create_appointment (priv->cnc, priv->container_id, priv->default_zone, comp, &uid_list);
+		status = e_gw_connection_create_appointment (priv->cnc, priv->container_id, cbgw, comp, &uid_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);
 			return GNOME_Evolution_Calendar_OtherError;
@@ -1031,7 +1083,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 				EGwItem *item;
 
 				item = (EGwItem *) tmp->data;
-				e_cal_comp = e_gw_item_to_cal_component (item, priv->default_zone); 
+				e_cal_comp = e_gw_item_to_cal_component (item, cbgw); 
 				e_cal_component_commit_sequence (e_cal_comp);
 				sanitize_component (backend, e_cal_comp, g_ptr_array_index (uid_array, i));
 				e_cal_backend_cache_put_component (priv->cache, e_cal_comp);
@@ -1076,7 +1128,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
-	item = e_gw_item_new_from_cal_component (priv->container_id, priv->default_zone, comp);
+	item = e_gw_item_new_from_cal_component (priv->container_id, cbgw, comp);
 
 	/* check if the object exists */
 	switch (priv->mode) {
@@ -1089,7 +1141,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 
-		cache_item =  e_gw_item_new_from_cal_component (priv->container_id, priv->default_zone, cache_comp);
+		cache_item =  e_gw_item_new_from_cal_component (priv->container_id, cbgw, cache_comp);
 		if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
 			gboolean completed, cache_completed;
 			
@@ -1376,6 +1428,9 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 	ECalBackendGroupwisePrivate *priv;
 
 	priv = g_new0 (ECalBackendGroupwisePrivate, 1);
+
+	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	/* create the mutex for thread safety */
 	priv->mutex = g_mutex_new ();

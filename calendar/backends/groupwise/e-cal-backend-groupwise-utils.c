@@ -70,8 +70,54 @@ e_cal_component_get_gw_id (ECalComponent *comp)
 	return NULL;
 }
 
+static void 
+set_categories_for_gw_item (EGwItem *item, GList *category_names, ECalBackendGroupwise *cbgw)
+{
+	GHashTable *categories_by_name, *categories_by_id;
+	EGwConnection *cnc;
+	GList *category_ids;
+	char *id;
+	int status;
+
+	category_ids = NULL;
+	id = NULL;
+
+	categories_by_name = e_cal_backend_groupwise_get_categories_by_name (cbgw);
+	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
+	cnc = e_cal_backend_groupwise_get_connection (cbgw);
+	
+	g_assert (cnc != NULL || categories_by_name != NULL || categories_by_id != NULL);
+	
+	for (; category_names != NULL; category_names = g_list_next (category_names)) {
+                     if (!category_names->data || strlen(category_names->data) == 0 )
+                             continue;
+                     id = g_hash_table_lookup (categories_by_name, category_names->data);
+                     if (id)
+                            category_ids = g_list_append (category_ids, g_strdup (id));
+                     else {
+                             EGwItem *category_item;
+                            category_item = e_gw_item_new_empty();
+                             e_gw_item_set_item_type (category_item,  E_GW_ITEM_TYPE_CATEGORY);
+                             e_gw_item_set_category_name (category_item, category_names->data);
+                             status = e_gw_connection_create_item (cnc, category_item, &id);
+                             if (status == E_GW_CONNECTION_STATUS_OK && id != NULL) {
+                                     char **components = g_strsplit (id, "@", -1);
+                                     char *temp_id = components[0];
+    
+                                     g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup(temp_id));
+                                     g_hash_table_insert (categories_by_id, g_strdup(temp_id), g_strdup (category_names->data));
+                                     category_ids = g_list_append (category_ids, g_strdup(temp_id));
+                                     g_free (id);
+                                     g_strfreev(components);
+                             }
+                             g_object_unref (category_item);
+                     }
+             }
+             e_gw_item_set_categories (item, category_ids);
+}
+
 static EGwItem *
-set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const icaltimezone *default_zone)
+set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBackendGroupwise *cbgw)
 {
 	const char *uid, *location;
 	ECalComponentDateTime dt;
@@ -79,9 +125,15 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 	ECalComponentTransparency transp;
 	ECalComponentText text;
 	int *priority;
+	GList *categories;
 	GSList *slist, *sl;
+	icaltimezone *default_zone;
 	struct icaltimetype itt_utc;
-
+	
+	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
+	
+	g_assert (default_zone != NULL);
+	
 	/* first set specific properties */
 	switch (e_cal_component_get_vtype (comp)) {
 	case E_CAL_COMPONENT_EVENT :
@@ -97,6 +149,10 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 		/* location */
 		e_cal_component_get_location (comp, &location);
 		e_gw_item_set_place (item, location);
+
+		/* categories */
+		e_cal_component_get_categories_list (comp, &categories);
+		set_categories_for_gw_item (item, categories, cbgw);
 
 		/* alarms */
 		if (e_cal_component_has_alarms (comp)) {
@@ -303,7 +359,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 }
 
 EGwItem *
-e_gw_item_new_from_cal_component (const char *container, const icaltimezone *default_zone, ECalComponent *comp)
+e_gw_item_new_from_cal_component (const char *container, ECalBackendGroupwise *cbgw, ECalComponent *comp)
 {
 	EGwItem *item;
 
@@ -312,17 +368,21 @@ e_gw_item_new_from_cal_component (const char *container, const icaltimezone *def
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_container_id (item, container);
 	
-	return set_properties_from_cal_component (item, comp, default_zone);
+	return set_properties_from_cal_component (item, comp, cbgw);
 }
 
 ECalComponent *
-e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
+e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 {
 	ECalComponent *comp;
 	ECalComponentText text;
 	ECalComponentDateTime dt;
 	const char *description;
-	char *t;
+	char *t, *name;
+	GList *category_ids, *categories;
+	GHashTable *categories_by_id;
+	icaltimezone *default_zone;
+
 	struct icaltimetype itt, itt_utc;
 	int priority;
 	int percent;
@@ -331,7 +391,11 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	EGwItemOrganizer *organizer;
 	EGwItemType item_type;
 
+	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
+	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
+
 	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	g_assert (default_zone != NULL || categories_by_id != NULL);
 
 	comp = e_cal_component_new ();
 
@@ -395,7 +459,20 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	}
 	g_free (t);
 	
-	
+	/* categories */
+	category_ids = e_gw_item_get_categories (item);
+	categories = NULL;
+	if (category_ids) {
+		for (; category_ids != NULL; category_ids = g_list_next (category_ids)) {
+			name = g_hash_table_lookup (categories_by_id, category_ids->data);
+			if (name)
+				categories = g_list_append (categories, name);
+		}
+		if (categories) {
+			e_cal_component_set_categories_list (comp,categories);
+			g_list_free (categories);
+		}
+	}	
 
 	/* start date */
 	/* should i duplicate here ? */
@@ -663,7 +740,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 }
 
 EGwConnectionStatus
-e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, GSList **id_list)
+e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, ECalBackendGroupwise *cbgw, ECalComponent *comp, GSList **id_list)
 {
 	EGwItem *item;
 	EGwConnectionStatus status;
@@ -671,7 +748,7 @@ e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, i
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
-	item = e_gw_item_new_from_cal_component (container, default_zone, comp);
+	item = e_gw_item_new_from_cal_component (container, cbgw, comp);
 	e_gw_item_set_container_id (item, container);
 	status = e_gw_connection_send_item (cnc, item, id_list);
 	g_object_unref (item);
@@ -951,6 +1028,47 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, #fieldname, (gpointer) fieldname );           \
 	}G_STMT_END
 
+static void 
+set_categories_changes (EGwItem *new_item, EGwItem *old_item)
+{
+	GList *old_category_list;
+	GList *new_category_list;
+	GList *temp, *old_categories_copy, *added_categories = NULL;
+	gboolean categories_matched;
+	char *category1, *category2;
+	old_category_list = e_gw_item_get_categories (old_item);
+	new_category_list = e_gw_item_get_categories (new_item);
+	if (old_category_list && new_category_list) {
+		old_categories_copy = g_list_copy (old_category_list);
+		for ( ; new_category_list != NULL; new_category_list = g_list_next (new_category_list)) {
+			
+			category1  = new_category_list->data;
+			temp = old_category_list;
+			categories_matched  = FALSE;
+			for(; temp != NULL; temp = g_list_next (temp)) {
+				category2 = temp->data;
+				if ( g_str_equal (category1, category2)) {
+					categories_matched = TRUE;
+					old_categories_copy = g_list_remove (old_categories_copy, category2);
+					break;
+				}
+				
+			}
+			if (!categories_matched)
+				added_categories = g_list_append (added_categories, category1);
+		}
+		
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "categories", added_categories);
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "categories", old_categories_copy);
+
+	} else if (!new_category_list && old_category_list) {
+		e_gw_item_set_change (new_item,  E_GW_ITEM_CHANGE_TYPE_DELETE, "categories", old_category_list);
+	} else if (new_category_list && !old_category_list) {
+		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "categories", new_category_list);
+	}
+
+}
+
 void
 e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 {
@@ -973,6 +1091,7 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 
 	
 	SET_DELTA(start_date);
+	set_categories_changes (item, cache_item);
 	/*FIXME  recipient_list modifications need go here after server starts
 	 * supporting retraction */
 	if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {

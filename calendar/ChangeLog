@@ -1,3 +1,23 @@
+2004-08-02  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #57127
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(ECalBackendGroupwisePrivate): Added two hash tables
+	for the category ids and names.
+	(e_cal_backend_groupwise_get_connection), 
+	(e_cal_backend_groupwise_get_default_zone), 
+	(e_cal_backend_groupwise_get_categories_by_id),
+	(e_cal_backend_groupwise_get_categories_by_name):
+	Added to access the ECalBackendGroupwisePrivate structure.
+	* backends/groupwise/e-cal-backend-groupwise-utils.c: 
+	(e_gw_item_new_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_connection_create_appointment), (set_properties_from_cal_component):
+	Changed the argument from icaltimezone to ECalBackendGroupwise to 
+	access ECalBackendGroupwisePrivate structure for storing categories 
+	to calendar components.
+	(set_categories_for_gw_item): Added to store the categories in GW item.
+	(set_categories_changes): Added to update the category changes.
+
 2004-07-30  Harish Krishnaswamy  <kharish@novell.com>
 	
 	Fixes #59335
