@@ -16,6 +16,7 @@ libedataserver_la_SOURCES =		\
 	$(MARSHAL_GENERATED)		\
 	e-account-list.c		\
 	e-account.c			\
+	e-cache.c			\
 	e-component-listener.c		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
@@ -44,6 +45,7 @@ libedataserverincludedir = $(privincludedir)/libedataserver
 libedataserverinclude_HEADERS =		\
 	e-account-list.h		\
 	e-account.h			\
+	e-cache.h			\
 	e-component-listener.h		\
 	e-db3-utils.h			\
 	e-dbhash.h			\

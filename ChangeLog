@@ -1,3 +1,10 @@
+2003-12-01  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedataserver/e-cache.[ch]: new class for a cache implementation,
+	to be shared between calendar and addressbook backends.
+
+	* libedataserver/Makefile.am: added new files.
+
 2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libedataserver/e-source.c (e_source_to_standalone_xml): Allow
