@@ -1,4 +1,6 @@
-2005-01-21  Jeffrey Stedfast  <fejj@ximian.com>
+2005-01-21  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-offline-journal.c: Same.
 
 	* camel-offline-folder.c (camel_offline_folder_downsync): Use a
 	new macro to get the class from the offline folder object, don't

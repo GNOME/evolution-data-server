@@ -45,6 +45,7 @@
 
 #define d(x) x
 
+#define CAMEL_OFFLINE_JOURNAL_GET_CLASS(o) (CAMEL_OFFLINE_JOURNAL_CLASS (CAMEL_OBJECT_GET_CLASS (o)))
 
 static void camel_offline_journal_class_init (CamelOfflineJournalClass *klass);
 static void camel_offline_journal_init (CamelOfflineJournal *journal, CamelOfflineJournalClass *klass);
@@ -96,7 +97,7 @@ camel_offline_journal_finalize (CamelObject *object)
 	g_free (journal->filename);
 	
 	while ((entry = e_dlist_remhead (&journal->queue)))
-		CAMEL_OFFLINE_JOURNAL_CLASS (journal)->entry_free (journal, entry);
+		CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_free (journal, entry);
 }
 
 
@@ -110,7 +111,7 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
 	journal->folder = folder;
 	
 	if ((fp = fopen (filename, "r"))) {
-		while ((entry = CAMEL_OFFLINE_JOURNAL_CLASS (journal)->entry_load (journal, fp)))
+		while ((entry = CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_load (journal, fp)))
 			e_dlist_addtail (&journal->queue, entry);
 		
 		fclose (fp);
@@ -145,7 +146,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 	fp = fdopen (fd, "w");
 	entry = journal->queue.head;
 	while (entry->next) {
-		if (CAMEL_OFFLINE_JOURNAL_CLASS (journal)->entry_write (journal, entry, fp) == -1)
+		if (CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_write (journal, entry, fp) == -1)
 			goto exception;
 		entry = entry->next;
 	}
@@ -181,7 +182,7 @@ camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
 	entry = journal->queue.head;
 	while (entry->next) {
 		next = entry->next;
-		if (CAMEL_OFFLINE_JOURNAL_CLASS (journal)->entry_play (journal, entry, &lex) == -1) {
+		if (CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_play (journal, entry, &lex) == -1) {
 			if (failed == 0)
 				camel_exception_xfer (ex, &lex);
 			camel_exception_clear (&lex);
