@@ -2,6 +2,7 @@ INCLUDES =								\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/addressbook					\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"				\
+	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
 	$(E_DATA_SERVER_UI_CFLAGS)
 
 # The marshallers
@@ -9,11 +10,17 @@ MARSHAL_GENERATED = e-data-server-ui-marshal.c e-data-server-ui-marshal.h
 @EVO_MARSHAL_RULE@
 
 lib_LTLIBRARIES = libedataserverui-1.2.la
-noinst_PROGRAMS = test-source-selector test-source-option-menu test-contact-store
+noinst_PROGRAMS = 			\
+	test-source-selector		\
+	test-source-option-menu		\
+	test-contact-store
 
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
+	e-destination-store.c		\
 	e-contact-store.c		\
+	e-name-selector-dialog.c	\
+	e-name-selector-model.c		\
 	e-source-selector.c		\
 	e-source-selector-dialog.c	\
 	e-source-option-menu.c
@@ -28,7 +35,10 @@ libedataserverui_1_2_la_LDFLAGS = 										\
 libedataserveruiincludedir = $(privincludedir)/libedataserverui
 
 libedataserveruiinclude_HEADERS =	\
+	e-destination-store.h		\
 	e-contact-store.h		\
+	e-name-selector-dialog.h	\
+	e-name-selector-model.h		\
 	e-source-selector.h		\
 	e-source-selector-dialog.h	\
 	e-source-option-menu.h
@@ -58,7 +68,10 @@ test_contact_store_LDADD =					\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedataserverui-$(BASE_VERSION).pc
 
+glade_DATA = e-name-selector-dialog.glade
+
 EXTRA_DIST = 						\
+	$(glade_DATA)					\
 	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)

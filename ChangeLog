@@ -1,5 +1,39 @@
 2004-12-16  Hans Petter Jansson  <hpj@novell.com>
 
+	* libedataserver/e-data-server-marshal.list: Add NONE:STRING.
+
+	* libedataserverui/e-destination-store.[ch]: Implement
+	EDestinationStore, a GtkTreeModel interface to a list of
+	EDestinations.
+
+	* libedataserverui/e-name-selector-model.[ch]: Implement
+	ENameSelectorModel, a model that provides an EContactStore and a
+	list of EDestinationStores whose members are filtered out from
+	the EContactStore.
+
+	* libedataserverui/e-name-selector-dialog.[ch]: Implement
+	ENameSelectorDialog, a GtkDialog that lets you select EContacts
+	interactively, producing lists of EDestinations.
+
+	* libedataserverui/e-name-selector-dialog.glade: The Glade XML
+	specification for the ENameSelectorDialog interface.
+
+	* libedataserverui/e-contact-store.c (e_contact_store_get_contact):
+	Implement.
+	(e_contact_store_get_books): Free a small temp allocation.
+	(e_contact_store_remove_book): Get the pointer to the source struct.
+
+	* libedataserverui/libedataserverui.pc.in (gladedir): Set this var.
+
+	* Makefile.am (INCLUDES): Add a define providing the installed
+	Glade directory.
+	(libedataserverui_1_2_la_SOURCES): Add new files.
+	(libedataserveruiinclude_HEADERS): Add new files.
+	(glade_DATA): Add new Glade file.
+	(EXTRA_DIST): Dist glade_DATA.
+
+2004-12-16  Hans Petter Jansson  <hpj@novell.com>
+
 	* configure.in: Pull in libglade-2.0.
 
 2004-12-09  Hans Petter Jansson  <hpj@novell.com>

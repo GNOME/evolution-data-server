@@ -38,11 +38,14 @@ G_BEGIN_DECLS
 #define E_IS_CONTACT_STORE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_CONTACT_STORE))
 #define E_CONTACT_STORE_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), E_TYPE_CONTACT_STORE, EContactStoreClass))
 
-typedef struct _EContactStore       EContactStore;
-typedef struct _EContactStoreClass  EContactStoreClass;
+typedef struct EContactStore       EContactStore;
+typedef struct EContactStoreClass  EContactStoreClass;
 
-struct _EContactStore
-{
+struct EContactStoreClass {
+	GObjectClass parent_class;
+};
+
+struct EContactStore {
 	GObject     parent;
 
 	/* Private */
@@ -52,13 +55,10 @@ struct _EContactStore
 	GArray     *contact_sources;
 };
 
-struct _EContactStoreClass
-{
-	GObjectClass parent_class;
-};
-
 GtkType        e_contact_store_get_type    (void);
 EContactStore *e_contact_store_new         (void);
+
+EContact      *e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter);
 
 /* Returns a shallow copy; free the list when done, but don't unref elements */
 GList         *e_contact_store_get_books   (EContactStore *contact_store);

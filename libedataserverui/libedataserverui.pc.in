@@ -7,6 +7,7 @@ idldir=@idldir@
 IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
 
 privincludedir=@privincludedir@
+gladedir=@gladedir@
 
 Name: libedataserverui
 Description: GUI utility library for evolution data server

@@ -39,7 +39,7 @@ G_STMT_START {                                            \
 	(iter)->user_data = GINT_TO_POINTER (index);        \
 } G_STMT_END
 
-static void         e_contact_store_init            (EContactStore      *file_list);
+static void         e_contact_store_init            (EContactStore      *contact_store);
 static void         e_contact_store_class_init      (EContactStoreClass *class);
 static void         e_contact_store_tree_model_init (GtkTreeModelIface  *iface);
 static void         e_contact_store_finalize        (GObject            *object);
@@ -177,11 +177,7 @@ e_contact_store_finalize (GObject *object)
 EContactStore *
 e_contact_store_new (void)
 {
-	EContactStore *contact_store;
-
-	contact_store = E_CONTACT_STORE (g_object_new (e_contact_store_get_type (), NULL));
-
-	return contact_store;
+	return E_CONTACT_STORE (g_object_new (E_TYPE_CONTACT_STORE, NULL));
 }
 
 /* ------------------ *
@@ -730,6 +726,19 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
  * EContactStore API *
  * ----------------- */
 
+EContact *
+e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
+{
+	gint index;
+
+	g_return_val_if_fail (E_IS_CONTACT_STORE (contact_store), NULL);
+	g_return_val_if_fail (ITER_IS_VALID (contact_store, iter), NULL);
+
+	index = ITER_GET (iter);
+
+	return get_contact_at_row (contact_store, index);
+}
+
 GList *
 e_contact_store_get_books (EContactStore *contact_store)
 {
@@ -764,6 +773,7 @@ e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 	source = g_new0 (ContactSource, 1);
 	source->book = g_object_ref (book);
 	g_array_append_val (contact_store->contact_sources, *source);
+	g_free (source);
 
 	source = &g_array_index (contact_store->contact_sources, ContactSource,
 				 contact_store->contact_sources->len - 1);
@@ -787,6 +797,7 @@ e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
 		return;
 	}
 
+	source = &g_array_index (contact_store->contact_sources, ContactSource, source_index);
 	clear_contact_source (contact_store, source);
 	g_object_unref (book);
 
