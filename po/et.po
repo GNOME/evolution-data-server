@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution 1.0.2\n"
-"POT-Creation-Date: 2004-02-09 14:14-0500\n"
+"POT-Creation-Date: 2004-02-20 01:07-0500\n"
 "PO-Revision-Date: 2002-03-08 19:58+0200\n"
 "Last-Translator: Tõivo Leedjärv <toivo@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -74,73 +74,73 @@ msgstr "Viga kaardi eemaldamisel"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:216 addressbook/libebook/e-book.c:328
-#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:515
-#: addressbook/libebook/e-book.c:628 addressbook/libebook/e-book.c:712
-#: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
-#: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
-#: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
-#: addressbook/libebook/e-book.c:2042
+#: addressbook/libebook/e-book.c:218 addressbook/libebook/e-book.c:330
+#: addressbook/libebook/e-book.c:415 addressbook/libebook/e-book.c:517
+#: addressbook/libebook/e-book.c:630 addressbook/libebook/e-book.c:714
+#: addressbook/libebook/e-book.c:817 addressbook/libebook/e-book.c:871
+#: addressbook/libebook/e-book.c:970 addressbook/libebook/e-book.c:1104
+#: addressbook/libebook/e-book.c:1205 addressbook/libebook/e-book.c:1445
+#: addressbook/libebook/e-book.c:2045
 #, fuzzy, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "Ava programmiga %s..."
 
-#: addressbook/libebook/e-book.c:224 addressbook/libebook/e-book.c:336
-#: addressbook/libebook/e-book.c:421 addressbook/libebook/e-book.c:524
-#: addressbook/libebook/e-book.c:636 addressbook/libebook/e-book.c:720
-#: addressbook/libebook/e-book.c:823 addressbook/libebook/e-book.c:877
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1110
-#: addressbook/libebook/e-book.c:1210 addressbook/libebook/e-book.c:1450
+#: addressbook/libebook/e-book.c:226 addressbook/libebook/e-book.c:338
+#: addressbook/libebook/e-book.c:423 addressbook/libebook/e-book.c:526
+#: addressbook/libebook/e-book.c:638 addressbook/libebook/e-book.c:722
+#: addressbook/libebook/e-book.c:825 addressbook/libebook/e-book.c:879
+#: addressbook/libebook/e-book.c:978 addressbook/libebook/e-book.c:1112
+#: addressbook/libebook/e-book.c:1213 addressbook/libebook/e-book.c:1453
 msgid "book busy"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:251 addressbook/libebook/e-book.c:363
-#: addressbook/libebook/e-book.c:443 addressbook/libebook/e-book.c:547
-#: addressbook/libebook/e-book.c:662 addressbook/libebook/e-book.c:743
-#: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
-#: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
-#: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
-#: addressbook/libebook/e-book.c:2051
+#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:365
+#: addressbook/libebook/e-book.c:445 addressbook/libebook/e-book.c:549
+#: addressbook/libebook/e-book.c:664 addressbook/libebook/e-book.c:745
+#: addressbook/libebook/e-book.c:911 addressbook/libebook/e-book.c:1022
+#: addressbook/libebook/e-book.c:1140 addressbook/libebook/e-book.c:1237
+#: addressbook/libebook/e-book.c:1371 addressbook/libebook/e-book.c:1475
+#: addressbook/libebook/e-book.c:2054
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1349
+#: addressbook/libebook/e-book.c:1352
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "Katkestab käimasoleva sõnumioperatsiooni"
 
-#: addressbook/libebook/e-book.c:1384
+#: addressbook/libebook/e-book.c:1387
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1743
+#: addressbook/libebook/e-book.c:1746
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
+#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1873
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1765
+#: addressbook/libebook/e-book.c:1768
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1864
+#: addressbook/libebook/e-book.c:1867
 msgid "e_book_load_uri: cancelled"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1901
+#: addressbook/libebook/e-book.c:1904
 #, fuzzy, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "Ava programmiga %s..."
 
-#: addressbook/libebook/e-book.c:2137
+#: addressbook/libebook/e-book.c:2140
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2314
+#: addressbook/libebook/e-book.c:2317
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -593,17 +593,17 @@ msgid "Unnamed List"
 msgstr "Nimetu kontaktide nimekiri"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:416
+#: calendar/backends/contacts/e-cal-backend-contacts.c:418
 #, fuzzy
 msgid "Birthday"
 msgstr "_Sünnipäev:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:438
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "_Sünnipäev:"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:457
+#: calendar/backends/contacts/e-cal-backend-contacts.c:459
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "_Aastapäev:"
@@ -611,6 +611,15 @@ msgstr "_Aastapäev:"
 #: calendar/backends/file/e-cal-backend-file.c:181
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+msgid "Calendar"
+msgstr "Kalender"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#, fuzzy
+msgid "Checklist"
+msgstr "Tihedalt hajusat udu"
 
 #: calendar/backends/http/e-cal-backend-http.c:218
 #, fuzzy
@@ -4591,9 +4600,6 @@ msgstr "Evolution Addressbook minicard viewer"
 
 #~ msgid "Tasks"
 #~ msgstr "Ülesanded"
-
-#~ msgid "Calendar"
-#~ msgstr "Kalender"
 
 #~ msgid "Could not open the folder in `%s'"
 #~ msgstr "Ei saa avada '%s' kausta"
@@ -19005,9 +19011,6 @@ msgstr "Evolution Addressbook minicard viewer"
 
 #~ msgid "Moderate mist"
 #~ msgstr "Keskmise hajusat udu"
-
-#~ msgid "Thick mist"
-#~ msgstr "Tihedalt hajusat udu"
 
 #~ msgid "Shallow mist"
 #~ msgstr "Madal hajus udu"

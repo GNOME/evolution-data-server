@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS = 1.6
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 
 SUBDIRS = libdb libedataserver servers addressbook calendar src docs po
@@ -23,6 +24,10 @@ EXTRA_DIST = 			\
 	intltool-extract.in	\
 	$(pkgconfig_DATA:.pc=.pc.in) \
 	$(LIBDB_FILES)
+
+DISTCLEANFILES = intltool-extract intltool-merge intltool-update
+distclean-local:
+	(cd libdb && $(MAKE) $(AM_MAKEFLAGS) distclean)
 
 LIBDB_FILES= \
 $(srcdir)/libdb/Makefile.am \

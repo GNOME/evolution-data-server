@@ -1,3 +1,18 @@
+2004-02-23  JP Rosevear <jpr@ximian.com>
+
+	* Makefile.am: make sure to distclean libdb
+
+	* autogen.sh: require automake 1.6
+	
+	* marshal.mk: make sure we use the srcdir as the location of the
+	list file
+
+	* libdb/dist/Makefile.in: add installcheck target that does
+	nothing, don't remove tags
+
+	* src/Makefile.am: add extra libical includes for srcdir !=
+	builddir
+
 2004-02-13  Chris Toshok  <toshok@ximian.com>
 
 	* libedataserver/Makefile.am (libedataserver_la_LIBADD): use

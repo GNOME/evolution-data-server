@@ -95,7 +95,7 @@ EXTRA_DIST = 						\
 	GNOME_Evolution_DataServerNOLDAP.server.in.in
 
 BUILT_SOURCES = $(IDL_GENERATED) $(server_DATA)
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) GNOME_Evolution_DataServer.server.in.in
 
 install-exec-local: install-evolution-data-servers
 

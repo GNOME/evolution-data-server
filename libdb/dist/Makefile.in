@@ -539,8 +539,6 @@ db_verify: db_verify@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
 library_install: install_setup
 library_install: install_include install_lib install_utilities install_docs
 
-uninstall: uninstall_include uninstall_lib uninstall_utilities uninstall_docs
-
 install_setup:
 	@test -d $(prefix) || \
 	    ($(mkdir) -p $(prefix) && $(chmod) $(dmode) $(prefix))
@@ -656,7 +654,7 @@ mostly-clean clean:
 	$(rm) -rf $(RPC_CLIENT_OBJS) $(RPC_SRV_OBJS) $(RPC_CXXSRV_OBJS)
 	$(rm) -rf $(UTIL_PROGS) *.exe $(CLEAN_LIST)
 	$(rm) -rf $(JAVA_CLASSTOP) $(JAVA_RPCCLASSES) $(rpc_jarfile)
-	$(rm) -rf tags *@o@ *.o *.o.lock *.lo core *.core
+	$(rm) -rf *@o@ *.o *.o.lock *.lo core *.core
 	$(rm) -rf ALL.OUT.* BUILD PARALLEL_TESTDIR.* RPMS RPM_INSTALL
 	$(rm) -rf RUN_LOG RUNQUEUE SOURCES SPECS SRPMS TESTDIR TESTDIR.A
 	$(rm) -rf logtrack_seen.db tm .libs $(LIB_INSTALL_FILE_LIST)
@@ -670,7 +668,7 @@ distclean maintainer-clean realclean: clean
 	$(rm) -rf $(REALCLEAN_LIST)
 	$(rm) -rf libtool
 
-check depend dvi info obj TAGS:
+check installcheck depend dvi info obj TAGS uninstall:
 	@echo "$@: make target not supported" && true
 
 dist:

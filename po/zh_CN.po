@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"POT-Creation-Date: 2004-02-09 14:37+0100\n"
+"POT-Creation-Date: 2004-02-20 01:07-0500\n"
 "PO-Revision-Date: 2003-09-07 11:09+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -68,75 +68,75 @@ msgstr "执行搜索错误"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:216 addressbook/libebook/e-book.c:328
-#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:515
-#: addressbook/libebook/e-book.c:628 addressbook/libebook/e-book.c:712
-#: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
-#: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
-#: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
-#: addressbook/libebook/e-book.c:2042
+#: addressbook/libebook/e-book.c:218 addressbook/libebook/e-book.c:330
+#: addressbook/libebook/e-book.c:415 addressbook/libebook/e-book.c:517
+#: addressbook/libebook/e-book.c:630 addressbook/libebook/e-book.c:714
+#: addressbook/libebook/e-book.c:817 addressbook/libebook/e-book.c:871
+#: addressbook/libebook/e-book.c:970 addressbook/libebook/e-book.c:1104
+#: addressbook/libebook/e-book.c:1205 addressbook/libebook/e-book.c:1445
+#: addressbook/libebook/e-book.c:2045
 #, fuzzy, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "“%2$s”中的“%1$s”"
 
-#: addressbook/libebook/e-book.c:224 addressbook/libebook/e-book.c:336
-#: addressbook/libebook/e-book.c:421 addressbook/libebook/e-book.c:524
-#: addressbook/libebook/e-book.c:636 addressbook/libebook/e-book.c:720
-#: addressbook/libebook/e-book.c:823 addressbook/libebook/e-book.c:877
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1110
-#: addressbook/libebook/e-book.c:1210 addressbook/libebook/e-book.c:1450
+#: addressbook/libebook/e-book.c:226 addressbook/libebook/e-book.c:338
+#: addressbook/libebook/e-book.c:423 addressbook/libebook/e-book.c:526
+#: addressbook/libebook/e-book.c:638 addressbook/libebook/e-book.c:722
+#: addressbook/libebook/e-book.c:825 addressbook/libebook/e-book.c:879
+#: addressbook/libebook/e-book.c:978 addressbook/libebook/e-book.c:1112
+#: addressbook/libebook/e-book.c:1213 addressbook/libebook/e-book.c:1453
 msgid "book busy"
 msgstr "通讯簿正在被使用"
 
-#: addressbook/libebook/e-book.c:251 addressbook/libebook/e-book.c:363
-#: addressbook/libebook/e-book.c:443 addressbook/libebook/e-book.c:547
-#: addressbook/libebook/e-book.c:662 addressbook/libebook/e-book.c:743
-#: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
-#: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
-#: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
-#: addressbook/libebook/e-book.c:2051
+#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:365
+#: addressbook/libebook/e-book.c:445 addressbook/libebook/e-book.c:549
+#: addressbook/libebook/e-book.c:664 addressbook/libebook/e-book.c:745
+#: addressbook/libebook/e-book.c:911 addressbook/libebook/e-book.c:1022
+#: addressbook/libebook/e-book.c:1140 addressbook/libebook/e-book.c:1237
+#: addressbook/libebook/e-book.c:1371 addressbook/libebook/e-book.c:1475
+#: addressbook/libebook/e-book.c:2054
 #, fuzzy, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "在调用Book::remove时，Corba异常"
 
-#: addressbook/libebook/e-book.c:1349
+#: addressbook/libebook/e-book.c:1352
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "取消当前邮件操作"
 
-#: addressbook/libebook/e-book.c:1384
+#: addressbook/libebook/e-book.c:1387
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: 无法取消"
 
-#: addressbook/libebook/e-book.c:1743
+#: addressbook/libebook/e-book.c:1746
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: 来源错误"
 
-#: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
+#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1873
 #, fuzzy, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: 对于URI '%s' 没有可用的因素"
 
-#: addressbook/libebook/e-book.c:1765
+#: addressbook/libebook/e-book.c:1768
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: 不能创建EBookListener"
 
-#: addressbook/libebook/e-book.c:1864
+#: addressbook/libebook/e-book.c:1867
 #, fuzzy
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: 来源错误"
 
-#: addressbook/libebook/e-book.c:1901
+#: addressbook/libebook/e-book.c:1904
 #, fuzzy, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "“%2$s”中的“%1$s”"
 
-#: addressbook/libebook/e-book.c:2137
+#: addressbook/libebook/e-book.c:2140
 #, fuzzy
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: gconf中没有存储可用的uid"
 
-#: addressbook/libebook/e-book.c:2314
+#: addressbook/libebook/e-book.c:2317
 #, fuzzy, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -598,17 +598,17 @@ msgid "Unnamed List"
 msgstr "未命名的列表"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:416
+#: calendar/backends/contacts/e-cal-backend-contacts.c:418
 #, fuzzy
 msgid "Birthday"
 msgstr "生日(_Y)："
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:438
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "生日(_Y)："
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:457
+#: calendar/backends/contacts/e-cal-backend-contacts.c:459
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "周年(_V)："
@@ -616,6 +616,15 @@ msgstr "周年(_V)："
 #: calendar/backends/file/e-cal-backend-file.c:181
 msgid "Can't save calendar data: Malformed URI."
 msgstr "无法保存日历数据：URI 格式错误。"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#, fuzzy
+msgid "Calendar"
+msgstr "日历 URI"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+msgid "Checklist"
+msgstr ""
 
 #: calendar/backends/http/e-cal-backend-http.c:218
 #, fuzzy
@@ -941,6 +950,41 @@ msgid ""
 "be a boolean false (#f)"
 msgstr "has-categories? 的所有参数都应该为字符串或者它唯一的参数为布尔假 (#f)"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Evolution 地址簿文件和 LDAP 后端"
@@ -953,4 +997,3 @@ msgstr "Evolution 日历文件和 Webcal 后端"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution 地址簿文件后端"
-
