@@ -35,6 +35,7 @@ extern "C" {
 
 #include <camel/camel-object.h>
 #include <camel/camel-provider.h>
+#include <camel/camel-spam-plugin.h>
 
 #include <e-util/e-msgport.h>
 
@@ -59,6 +60,8 @@ struct _CamelSession
 	char *storage_path;
 	GHashTable *providers, *modules;
 	gboolean online;
+
+	CamelSpamPlugin *spam_plugin;
 };
 
 #ifdef ENABLE_THREADS
