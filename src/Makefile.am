@@ -15,7 +15,9 @@ INCLUDES =						\
 	-I$(top_srcdir)/calendar/libical/src/libical	\
 	-I$(top_builddir)/calendar/libical/src/libical	\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	$(SOUP_CFLAGS)					\
 	$(E_DATA_SERVER_CFLAGS)
+
 
 IDLS = \
 	Evolution-DataServer.idl
