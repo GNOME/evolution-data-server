@@ -1,3 +1,8 @@
+2004-03-25  William Jon McCann  <mccann@jhu.edu>
+
+	* src/server.c (setup_cals): add registration of webcal protocol
+	for tasks.
+
 2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
 
 	* src/Makefile.am: added $SOUP_CFLAGS, needed for

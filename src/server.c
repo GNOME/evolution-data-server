@@ -187,6 +187,7 @@ setup_cals (void)
 	e_data_cal_factory_register_method (e_data_cal_factory, "groupwise", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_GROUPWISE);
 	e_data_cal_factory_register_method (e_data_cal_factory, "groupwise", ICAL_VTODO_COMPONENT, E_TYPE_CAL_BACKEND_GROUPWISE);
 	e_data_cal_factory_register_method (e_data_cal_factory, "webcal", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_HTTP);
+	e_data_cal_factory_register_method (e_data_cal_factory, "webcal", ICAL_VTODO_COMPONENT, E_TYPE_CAL_BACKEND_HTTP);
 	e_data_cal_factory_register_method (e_data_cal_factory, "contacts", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_CONTACTS);
 
 	if (!e_data_cal_factory_register_storage (e_data_cal_factory, E_DATA_CAL_FACTORY_OAF_ID)) {
