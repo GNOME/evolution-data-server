@@ -1,3 +1,18 @@
+2004-05-20  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes bug #58495 ]
+	
+	* libebook/e-book-async.c (worker): this is now a thread pool
+	function, so there's no to_worker_queue to pop things off of.
+	(init_async): create the thread pool with MAX_WORKERS threads
+	maximum.
+	(e_book_async_open, e_book_async_get_supported_fields)
+	(e_book_async_get_supported_auth_methods)
+	(e_book_async_authenticate_user, e_book_async_get_contact)
+	(e_book_async_remove_contacts, e_book_async_add_contact)
+	(e_book_async_commit_contact, e_book_async_get_book_view)
+	(e_book_async_get_contacts): use g_thread_pool_push here.
+
 2004-05-19  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/*.c: port to new e_book_new/e_book_open apis.

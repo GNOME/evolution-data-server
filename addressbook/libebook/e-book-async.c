@@ -2,8 +2,9 @@
 
 #include "libebook/e-book-async.h"
 
-static GThread *worker_thread;
-static GAsyncQueue *to_worker_queue;
+#define MAX_WORKERS 20
+static GThreadPool *worker_pool;
+
 static GAsyncQueue *from_worker_queue;
 static GStaticMutex idle_mutex = G_STATIC_MUTEX_INIT;
 static guint idle_id = -1;
@@ -18,16 +19,13 @@ struct _EBookMsg {
 	EBookMsgDtor dtor;
 };
 
-static gpointer
-worker (gpointer data)
+static void
+worker (gpointer data, gpointer user_data)
 {
-	while (TRUE) {
-		EBookMsg *msg = g_async_queue_pop (to_worker_queue);
-		msg->handler (msg);
-		msg->dtor (msg);
-	}
+	EBookMsg *msg = data;
 
-	return NULL;
+	msg->handler (msg);
+	msg->dtor (msg);
 }
 
 static gboolean
@@ -74,9 +72,8 @@ init_async()
 	static gboolean init_done = FALSE;
 	if (!init_done) {
 		init_done = TRUE;
-		to_worker_queue = g_async_queue_new ();
 		from_worker_queue = g_async_queue_new ();
-		worker_thread = g_thread_create (worker, NULL, FALSE, NULL);
+		worker_pool = g_thread_pool_new (worker, NULL, MAX_WORKERS, FALSE, NULL);
 	}
 }
 
@@ -169,7 +166,7 @@ e_book_async_open (EBook                 *book,
 	msg->open_response = open_response;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 }
 
 
@@ -261,7 +258,7 @@ e_book_async_get_supported_fields (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return 0;
 }
@@ -356,7 +353,7 @@ e_book_async_get_supported_auth_methods (EBook                    *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return 0;
 }
@@ -463,7 +460,7 @@ e_book_async_authenticate_user (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 }
 
 
@@ -559,7 +556,7 @@ e_book_async_get_contact (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return 0;
 }
@@ -691,7 +688,7 @@ e_book_async_remove_contacts (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return 0;
 }
@@ -793,7 +790,7 @@ e_book_async_add_contact (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return TRUE;
 }
@@ -890,7 +887,7 @@ e_book_async_commit_contact (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return TRUE;
 }
@@ -998,7 +995,7 @@ e_book_async_get_book_view (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return 0;
 }
@@ -1094,7 +1091,7 @@ e_book_async_get_contacts (EBook                 *book,
 	msg->cb = cb;
 	msg->closure = closure;
 
-	g_async_queue_push (to_worker_queue, msg);
+	g_thread_pool_push (worker_pool, msg, NULL);
 
 	return 0;
 }
