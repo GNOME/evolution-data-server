@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-31 20:43+0200\n"
-"PO-Revision-Date: 2005-01-31 20:58+0200\n"
+"POT-Creation-Date: 2005-02-01 01:34+0200\n"
+"PO-Revision-Date: 2005-02-01 01:38+0200\n"
 "Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -1573,10 +1573,10 @@ msgstr "Nepavyko apdoroti laiško turinio"
 
 #: camel/camel-gpg-context.c:1765 camel/camel-gpg-context.c:1816
 #: camel/camel-tcp-stream-openssl.c:631
-#: camel/providers/imap4/camel-imap4-engine.c:1470
-#: camel/providers/imap4/camel-imap4-engine.c:1509
-#: camel/providers/imap4/camel-imap4-engine.c:1554
-#: camel/providers/imap4/camel-imap4-engine.c:1610
+#: camel/providers/imap4/camel-imap4-engine.c:1482
+#: camel/providers/imap4/camel-imap4-engine.c:1521
+#: camel/providers/imap4/camel-imap4-engine.c:1566
+#: camel/providers/imap4/camel-imap4-engine.c:1622
 #: camel/providers/imap4/camel-imap4-store.c:1307
 #: camel/providers/imap4/camel-imap4-utils.c:575
 #: camel/providers/smtp/camel-smtp-transport.c:163
@@ -2135,15 +2135,15 @@ msgstr "Paraše nėra pasirašytų duomenų"
 
 #: camel/camel-smime-context.c:546
 msgid "Digests missing from enveloped data"
-msgstr ""
+msgstr "Įpakuotuose duomenyse nėra santraukų"
 
 #: camel/camel-smime-context.c:559 camel/camel-smime-context.c:569
 msgid "Cannot calculate digests"
-msgstr ""
+msgstr "Negalima suskaičiuoti santraukų"
 
 #: camel/camel-smime-context.c:574
 msgid "Cannot set message digests"
-msgstr ""
+msgstr "Negalima nurodyti žinutės santraukų"
 
 #: camel/camel-smime-context.c:584 camel/camel-smime-context.c:589
 msgid "Certificate import failed"
@@ -2160,7 +2160,7 @@ msgstr ""
 
 #: camel/camel-smime-context.c:606
 msgid "Cannot find signature digests"
-msgstr ""
+msgstr "Nepavyko rasti parašo santraukų"
 
 #: camel/camel-smime-context.c:622
 #, c-format
@@ -2822,7 +2822,7 @@ msgstr "Aplankas serveryje buvo sunaikintas ir vėl sukurtas."
 
 #. Check UIDs and flags of all messages we already know of.
 #: camel/providers/imap/camel-imap-folder.c:573
-#: camel/providers/imap4/camel-imap4-summary.c:1472
+#: camel/providers/imap4/camel-imap4-summary.c:1468
 msgid "Scanning for changed messages"
 msgstr "Ieškoma pakeistų laiškų"
 
@@ -3110,10 +3110,10 @@ msgstr "Nepavyko pasirinkti aplanko „%s“: netinkamas paštadėžės pavadini
 msgid "Cannot select folder `%s': Bad command"
 msgstr "Nepavyko pasirinkti aplanko „%s“: bloga komanda"
 
-#: camel/providers/imap4/camel-imap4-engine.c:1469
-#: camel/providers/imap4/camel-imap4-engine.c:1508
-#: camel/providers/imap4/camel-imap4-engine.c:1553
-#: camel/providers/imap4/camel-imap4-engine.c:1609
+#: camel/providers/imap4/camel-imap4-engine.c:1481
+#: camel/providers/imap4/camel-imap4-engine.c:1520
+#: camel/providers/imap4/camel-imap4-engine.c:1565
+#: camel/providers/imap4/camel-imap4-engine.c:1621
 #, c-format
 msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "IMAP4 serveris %s netikėtai atsijungė: %s"
@@ -3318,7 +3318,7 @@ msgstr "Nepavyko atsisakyti aplanko „%s“: blogas paštadėžės pavadinimas"
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Nepavyko atsisakyti aplanko „%s“: bloga komanda"
 
-#: camel/providers/imap4/camel-imap4-summary.c:1497
+#: camel/providers/imap4/camel-imap4-summary.c:1493
 msgid "Fetching envelopes for new messages"
 msgstr "Parsiunčiami naujų laiškų vokai"
 
