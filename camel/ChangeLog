@@ -1,5 +1,10 @@
 2005-03-01  Not Zed  <NotZed@Ximian.com>
 
+	* tests/misc/test2.c: fix the case of the charset specification,
+	now we properly canonicalise them.
+
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
 	** See bug #73015
 
 	* tests/misc/test1.c: Test case for references decoding.
