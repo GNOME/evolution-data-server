@@ -1,3 +1,12 @@
+2005-03-04  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #38408
+
+	* e-categories-dialog.c (check_category_name): new function to check
+	categories entered by the user for invalid characters.
+	(new_button_clicked_cb): added category name checking. Also, run the
+	dialog continously while there are validation errors.
+
 2005-03-01  Harry Lu <harry.lu@sun.com>
 
 	Fix for 73010.

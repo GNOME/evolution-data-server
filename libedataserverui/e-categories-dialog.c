@@ -212,6 +212,29 @@ entry_changed_cb (GtkEditable *editable, gpointer user_data)
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
 }
 
+static char *
+check_category_name (const char *name)
+{
+	GString *str = NULL;
+	char *p = (char *) name;
+
+	str = g_string_new ("");
+	while (*p) {
+		switch (*p) {
+		case ',' :
+			break;
+		default :
+			str = g_string_append_c (str, *p);
+		}
+		p++;
+	}
+
+	p = str->str;
+	g_string_free (str, FALSE);
+
+	return p;
+}
+
 static void
 new_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
@@ -224,37 +247,50 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 	if (!prop_dialog)
 		return;
 
-	if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
-		const char *category_name, *category_icon;
-		GtkTreeIter iter;
+	do {
+		if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
+			const char *category_name, *category_icon;
+			char *correct_category_name;
+			GtkTreeIter iter;
 
-		category_name = gtk_entry_get_text (GTK_ENTRY (prop_dialog->category_name));
-		if (e_categories_exist (category_name)) {
-			GtkWidget *error_dialog;
+			category_name = gtk_entry_get_text (GTK_ENTRY (prop_dialog->category_name));
+			correct_category_name = check_category_name (category_name);
 
-			error_dialog = gtk_message_dialog_new (
-				GTK_WINDOW (prop_dialog->the_dialog),
-				0, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-				_("There is already a category '%s' in the configuration. Please use another name"),
-				category_name);
+			if (e_categories_exist (correct_category_name)) {
+				GtkWidget *error_dialog;
 
-			gtk_dialog_run (GTK_DIALOG (error_dialog));
-			gtk_widget_destroy (error_dialog);
-		} else {
-			/* FIXME: get color */
-			category_icon = gtk_entry_get_text (
-				GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
+				error_dialog = gtk_message_dialog_new (
+					GTK_WINDOW (prop_dialog->the_dialog),
+					0, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+					_("There is already a category '%s' in the configuration. Please use another name"),
+					category_name);
 
-			e_categories_add (category_name, NULL, category_icon ? category_icon : NULL, TRUE);
+				gtk_dialog_run (GTK_DIALOG (error_dialog));
+				gtk_widget_destroy (error_dialog);
+				g_free (correct_category_name);
+			} else {
+				/* FIXME: get color */
+				category_icon = gtk_entry_get_text (
+					GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
 
-			gtk_list_store_append (
-				GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
-				&iter);
-			gtk_list_store_set (
-				GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
-				&iter, 0, FALSE, 1, category_name, -1);
-		}
-	}
+				e_categories_add (correct_category_name, NULL, category_icon ? category_icon : NULL, TRUE);
+
+				gtk_list_store_append (
+					GTK_LIST_STORE (gtk_tree_view_get_model (
+								GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
+					&iter);
+				gtk_list_store_set (
+					GTK_LIST_STORE (gtk_tree_view_get_model (
+								GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
+					&iter, 0, FALSE, 1, correct_category_name, -1);
+
+				g_free (correct_category_name);
+
+				break;
+			}
+		} else
+			break;
+	} while (TRUE);
 
 	free_properties_dialog (prop_dialog);
 }
