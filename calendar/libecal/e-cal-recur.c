@@ -3767,7 +3767,10 @@ cal_object_time_from_time	(CalObjTime	*cotime,
 {
 	struct icaltimetype tt;
 
-	tt = icaltime_from_timet_with_zone (t, FALSE, zone);
+	if (zone)
+		tt = icaltime_from_timet_with_zone (t, FALSE, zone);
+	else
+		tt = icaltime_from_timet (t, FALSE);
 
 	cotime->year     = tt.year;
 	cotime->month    = tt.month - 1;
