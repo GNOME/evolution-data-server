@@ -166,6 +166,7 @@ static EContactFieldInfo field_info[] = {
 	/* Web fields */
 	STRING_FIELD (E_CONTACT_HOMEPAGE_URL, EVC_URL,        "homepage_url", N_("Homepage URL"), FALSE),
 	STRING_FIELD (E_CONTACT_BLOG_URL,     EVC_X_BLOG_URL, "blog_url",     N_("Weblog URL"),   FALSE),
+	STRING_FIELD (E_CONTACT_VIDEO_URL,     EVC_X_VIDEO_URL, "video_url",     N_("Video Conferencing URL"),   FALSE),
 
 	/* Photo/Logo */
 	STRUCT_FIELD    (E_CONTACT_PHOTO, EVC_PHOTO, "photo", N_("Photo"), FALSE, photo_getter, photo_setter, e_contact_photo_get_type),

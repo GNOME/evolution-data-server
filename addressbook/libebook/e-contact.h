@@ -89,6 +89,7 @@ typedef enum {
 	E_CONTACT_CALENDAR_URI,  /* string field */
 	E_CONTACT_FREEBUSY_URL,  /* string field */
 	E_CONTACT_ICS_CALENDAR,  /* string field */
+	E_CONTACT_VIDEO_URL,      /* string field */
 
 	/* misc fields */
 	E_CONTACT_SPOUSE,        /* string field */
