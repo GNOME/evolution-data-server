@@ -190,8 +190,7 @@ char* e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp);
 const char * e_cal_get_error_message (ECalendarStatus status);
 
 /* Calendar/Tasks Discovery */
-gboolean    e_cal_open_default (ECal **ecal, ECalSourceType type, GError **error);
-
+gboolean    e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error);
 gboolean    e_cal_set_default (ECal  *ecal, GError **error);
 gboolean    e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error);
 gboolean    e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error);

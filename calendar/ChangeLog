@@ -1,5 +1,14 @@
 2004-02-04  JP Rosevear <jpr@ximian.com>
 
+	* libecal/e-cal.h: update proto
+
+	* libecal/e-cal.c (async_idle_cb): return FALSE to remove the idle
+	handler
+	(get_default): take an auth func and use it 
+	(e_cal_open_default): ditto
+
+2004-02-04  JP Rosevear <jpr@ximian.com>
+
 	* libecal/e-cal.h: redo protos
 
 	* libecal/e-cal.c (e_cal_open_default): open the default ecal

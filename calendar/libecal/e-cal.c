@@ -1565,6 +1565,8 @@ async_idle_cb (gpointer data)
 	/* free memory */
 	g_object_unref (ccad->ecal);
 	g_free (ccad);
+
+	return FALSE;
 }
 
 static gpointer
@@ -3958,7 +3960,7 @@ e_cal_get_error_message (ECalendarStatus status)
 }
 
 static gboolean
-get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, GError **error)
+get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error)
 {
 	GSList *g;
 	GError *err = NULL;
@@ -3989,6 +3991,7 @@ get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, GError **er
 			goto done;
 		}
 
+		e_cal_set_auth_func (*ecal, func, data);
 		if (!e_cal_open (*ecal, TRUE, &err)) {
 			g_propagate_error (error, err);
 			rv = FALSE;
@@ -4012,6 +4015,7 @@ get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, GError **er
 			goto done;
 		}
 
+		e_cal_set_auth_func (*ecal, func, data);
 		if (!e_cal_open (*ecal, TRUE, &err)) {
 			g_propagate_error (error, err);
 			rv = FALSE;
@@ -4030,7 +4034,7 @@ get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, GError **er
 }
 
 gboolean
-e_cal_open_default (ECal **ecal, ECalSourceType type, GError **error)
+e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error)
 {
 	ESourceList *sources;
 	GError *err = NULL;
@@ -4040,7 +4044,7 @@ e_cal_open_default (ECal **ecal, ECalSourceType type, GError **error)
 		return FALSE;
 	}
 
-	return get_default (ecal, sources, type, error);
+	return get_default (ecal, sources, type, func, data, error);
 }
 
 gboolean
