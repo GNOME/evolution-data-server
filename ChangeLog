@@ -1,3 +1,10 @@
+2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libedataserver/e-source.c (e_source_set_property): Emit changed
+	signal.
+	(copy_property): Implement.
+	(e_source_copy): Implement. Creates a standalone copy of a source.
+
 2003-11-29  Chris Toshok  <toshok@ximian.com>
 
 	* src/GNOME_Evolution_DataServerLDAP.server.in.in: add

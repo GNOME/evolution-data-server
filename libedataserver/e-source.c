@@ -664,6 +664,8 @@ e_source_set_property (ESource *source,
 		g_hash_table_replace (priv->properties, g_strdup (property), g_strdup (value));
 	else
 		g_hash_table_remove (priv->properties, property);
+
+	g_signal_emit (source, signals[CHANGED], 0);
 }
 
 
@@ -677,3 +679,35 @@ e_source_foreach_property (ESource *source, GHFunc func, gpointer data)
 
 	g_hash_table_foreach (priv->properties, func, data);
 }
+
+
+static void
+copy_property (const gchar *key, const gchar *value, ESource *new_source)
+{
+	e_source_set_property (new_source, key, value);
+}
+
+
+ESource *
+e_source_copy (ESource *source)
+{
+	ESource *new_source;
+	guint32  color;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	new_source = g_object_new (e_source_get_type (), NULL);
+	new_source->priv->uid = g_strdup (e_source_peek_uid (source));
+
+	e_source_set_name (new_source, e_source_peek_name (source));
+
+	if (e_source_get_color (source, &color))
+		e_source_set_color (new_source, color);
+
+	new_source->priv->absolute_uri = e_source_get_uri (source);
+
+	e_source_foreach_property (source, (GHFunc) copy_property, new_source);
+
+	return source;
+}
+
