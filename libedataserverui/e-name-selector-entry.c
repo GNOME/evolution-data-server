@@ -348,41 +348,43 @@ build_destination_at_position (const gchar *string, gint pos)
 static gchar *
 name_style_query (const gchar *field, const gchar *value)
 {
-	gchar   *cpy = g_strdup (value), *c;
+	gchar   *spaced_str;
+	gchar   *comma_str;
 	GString *out = g_string_new ("");
 	gchar  **strv;
 	gchar   *query;
 	gint     i;
 
-	for (c = cpy; *c; c++) {
-		if (*c == ',')
-			*c = ' ';
+	spaced_str = sanitize_string (value);
+	g_strstrip (spaced_str);
+
+	strv = g_strsplit (spaced_str, " ", 0);
+
+	if (strv [0] && strv [1]) {
+		g_string_append (out, "(or ");
+		comma_str = g_strjoinv (", ", strv);
+	} else {
+		comma_str = NULL;
 	}
 
-	strv = g_strsplit (cpy, " ", 0);
+	g_string_append (out, " (beginswith ");
+	e_sexp_encode_string (out, field);
+	e_sexp_encode_string (out, spaced_str);
+	g_string_append (out, ")");
 
-	if (strv [0] && strv [1])
-		g_string_append (out, "(and ");
-
-	for (i = 0; strv [i]; i++) {
-		if (i == 0)
-			g_string_append (out, "(beginswith ");
-		else
-			g_string_append (out, " (beginswith ");
+	if (comma_str) {
+		g_string_append (out, " (beginswith ");
 
 		e_sexp_encode_string (out, field);
-		g_strstrip (strv [i]);
-		e_sexp_encode_string (out, strv [i]);
-		g_string_append (out, ")");
+		g_strstrip (comma_str);
+		e_sexp_encode_string (out, comma_str);
+		g_string_append (out, "))");
 	}
 
-	if (strv [0] && strv [1])
-		g_string_append (out, ")");
+	query = g_string_free (out, FALSE);
 
-	query = out->str;
-	g_string_free (out, FALSE);
-
-	g_free (cpy);
+	g_free (spaced_str);
+	g_free (comma_str);
 	g_strfreev (strv);
 
 	return query;
@@ -552,6 +554,7 @@ contact_match_cue (EContact *contact, const gchar *cue_str,
 
 	for (i = 0; i < G_N_ELEMENTS (fields); i++) {
 		gchar *value;
+		gchar *value_sane;
 
 		/* Don't match e-mail addresses in contact lists */
 		if (e_contact_get (contact, E_CONTACT_IS_LIST) &&
@@ -563,19 +566,22 @@ contact_match_cue (EContact *contact, const gchar *cue_str,
 		if (!value)
 			continue;
 
+		value_sane = sanitize_string (value);
+		g_free (value);
+
 		ENS_DEBUG (g_print ("Comparing '%s' to '%s'\n", value, cue_str));
 
-		if (!utf8_casefold_collate_len (value, cue_str, cue_len)) {
+		if (!utf8_casefold_collate_len (value_sane, cue_str, cue_len)) {
 			if (matched_field)
 				*matched_field = fields [i];
 			if (matched_field_rank)
 				*matched_field_rank = i;
 
 			result = TRUE;
-			g_free (value);
+			g_free (value_sane);
 			break;
 		}
-		g_free (value);
+		g_free (value_sane);
 	}
 
 	return result;

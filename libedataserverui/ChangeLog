@@ -1,5 +1,14 @@
 2005-01-22  Hans Petter Jansson  <hpj@novell.com>
 
+	* e-name-selector-entry.c (name_style_query): Query for the full string
+	with spaces, and the same string elements with comma-space separation.
+	Fixes broken completion for names with spaces in them.
+	(contact_match_cue): Sanitize the value to match before matching. This
+	allows us to match strings that cannot be represented as-is in the
+	entry.
+
+2005-01-22  Hans Petter Jansson  <hpj@novell.com>
+
 	* Makefile.am (libedataserverui_1_2_la_SOURCES)
 	(libedataserveruiinclude_HEADERS): Add newly implemented
 	ETreeModelGenerator to build.
