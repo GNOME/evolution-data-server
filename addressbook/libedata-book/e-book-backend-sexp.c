@@ -218,7 +218,7 @@ static struct prop_info {
 	LIST_PROP ( "email",     compare_email ),
 	LIST_PROP ( "phone",     compare_phone ),
 	LIST_PROP ( "address",   compare_address ),
-	LIST_PROP ( "category",  compare_category ),
+	LIST_PROP ( "category_list",  compare_category ),
 };
 static int num_prop_infos = sizeof(prop_info_table) / sizeof(prop_info_table[0]);
 

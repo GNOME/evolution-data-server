@@ -1,5 +1,15 @@
 2004-03-30  Chris Toshok  <toshok@ximian.com>
  
+	[ backend portion of fix for #51977 ]
+	* libedata-book/e-book-backend-sexp.c (prop_info_table): category
+	-> category_list.
+
+	* libebook/e-contact.c (e_contact_get_property): LIST fields (of
+	which there is one, "category_list"), need to duplicate both the
+	list and the list elements before returning from ::get_property.
+	
+2004-03-30  Chris Toshok  <toshok@ximian.com>
+ 
 	[ backend portion of fix for #54528 ]
 	* libebook/e-vcard.c (read_attribute_params): deal with vcards
 	that specify the encoding as "BASE64", even though this isn't the

@@ -1085,8 +1085,14 @@ e_contact_get_property (GObject *object,
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
 
-		if (attr)
-			g_value_set_pointer (value, e_vcard_attribute_get_values (attr));
+		if (attr) {
+			GList *list = g_list_copy (e_vcard_attribute_get_values (attr));
+			GList *l;
+			for (l = list; l; l = l->next)
+				l->data = g_strdup (l->data);
+
+			g_value_set_pointer (value, list);
+		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST_ELEM) {
 		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
