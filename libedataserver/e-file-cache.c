@@ -237,7 +237,7 @@ add_object_to_list (gpointer key, gpointer value, gpointer user_data)
 {
 	GSList **list = user_data;
 
-	list = g_slist_prepend (list, value);
+	*list = g_slist_prepend (*list, value);
 }
 
 /**

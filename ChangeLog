@@ -1,3 +1,8 @@
+2004-01-14  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedataserver/e-file-cache.c (add_object_to_list): use the GList **
+	correctly when calling g_slist_prepend.
+
 2004-01-13  Laurent Dhima  <laurenti@alblinux.net>
 
 	* configure.in: Added "sq" to ALL_LINGUAS.
