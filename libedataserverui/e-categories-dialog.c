@@ -251,7 +251,7 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 				&iter);
 			gtk_list_store_set (
 				GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
-				0, FALSE, 1, category_name, -1);
+				&iter, 0, FALSE, 1, category_name, -1);
 		}
 	}
 

@@ -1,3 +1,10 @@
+2005-02-25  Rodrigo Moya  <rodrigo@novell.com>
+
+	* e-categories-dialog.c (new_button_clicked_cb) :
+	Pass iter to gtk_list_store_set , so that
+	new cateogy gets added properly.
+	Fixes #73011
+	
 2005-02-23  Hans Petter Jansson  <hpj@novell.com>
 
 	* Makefile.am (libedataserverui_1_2_la_SOURCES)
