@@ -23,6 +23,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libedataserver/e-dbhash.h>
 #include <libedataserver/e-db3-utils.h>
+#include <libedataserver/e-util.h>
 #include <libebook/e-contact.h>
 
 #include <libedata-book/e-book-backend-sexp.h>
@@ -129,9 +130,10 @@ do_create(EBookBackendFile  *bf,
 	if (0 == db_error) {
 		db_error = db->sync (db, 0);
 		if (db_error != 0)
-			g_warning ("db->sync failed.\n");
+			g_warning ("db->sync failed with %d", db_error);
 	}
 	else {
+		g_warning ("db->put failed with %d", db_error);
 		g_object_unref (contact);
 		contact = NULL;
 	}
@@ -886,7 +888,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 			/* the database didn't exist, so we create the
 			   directory then the .db */
-			rv = mkdir (dirname, 0777);
+			rv = e_util_mkdir_hier (dirname, 0777);
 			if (rv == -1 && errno != EEXIST) {
 				g_warning ("failed to make directory %s: %s", dirname, strerror (errno));
 				if (errno == EACCES || errno == EPERM)
