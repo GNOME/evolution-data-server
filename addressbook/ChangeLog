@@ -1,5 +1,13 @@
 2004-01-26  Chris Toshok  <toshok@ximian.com>
 
+	* tests/ebook/Makefile.am (noinst_PROGRAMS): add
+	test-untyped-phones.
+	(test_untyped_phones_LDADD): new variable.
+
+	* tests/ebook/test-untyped-phones.c: new test for 40013.
+
+2004-01-26  Chris Toshok  <toshok@ximian.com>
+
 	[ fixes bug #53228 ]
 	
 	* tests/ebook/test-categories.c: new test.
