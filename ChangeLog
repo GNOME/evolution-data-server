@@ -1,3 +1,8 @@
+2005-01-07  David Trowbridge <David.Trowbridge@Colorado.edu>
+
+	* configure.in:
+	* Makefile.am: added weather calendar backend to build.
+
 2005-01-05  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.c (initialize_categories_config): set

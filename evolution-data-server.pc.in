@@ -4,6 +4,8 @@ libdir=@libdir@
 includedir=@includedir@
 privlibdir=@privlibdir@
 extensiondir=@extensiondir@
+datadir=@datadir@
+privdatadir=@privdatadir@
 
 idldir=@idldir@
 IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
