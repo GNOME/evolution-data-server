@@ -1,3 +1,26 @@
+2004-01-23  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.c (e_vcard_unescape_string): make public.
+	(e_vcard_escape_string): same.
+	(e_vcard_to_string_vcard_30): use the public escape_string
+	function.
+	(e_vcard_dump_structure): same.
+
+	* libebook/e-vcard.h (e_vcard_unescape_string): expose this
+	(e_vcard_escape_string): and this.
+
+	* libebook/e-contact.h: rearrange the enum again, to keep
+	strings/structs separate.
+
+	* libebook/e-book.c (e_book_get_default_addressbook): might as
+	well switch this to the new folder layout.
+	(e_book_load_local_addressbook): same.
+
+	* libebook/e-contact.c (e_contact_find_attribute_with_types): only
+	find the attribute that matches the types explicitly.  this is the
+	only way to implement "other phone/fax" currently.
+	(e_contact_set_property): same.
+
 2004-01-21  Nat Friedman <nat@novell.com>
 
 	* libedata-book/e-book-backend-sexp.c (compare_im): New function

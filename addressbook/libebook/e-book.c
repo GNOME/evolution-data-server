@@ -1930,7 +1930,7 @@ e_book_load_local_addressbook (EBook   *book,
 	gboolean rv;
 
 	filename = g_build_filename (g_get_home_dir(),
-				     "evolution/local/Contacts",
+				     ".evolution/addressbook/local/OnThisComputer/Personal",
 				     NULL);
 	uri = g_strdup_printf ("file://%s", filename);
 
@@ -2146,7 +2146,7 @@ e_book_get_default_addressbook (EBook **book, GError **error)
 	*book = e_book_new ();
 
 	path = g_build_filename (g_get_home_dir (),
-				 "evolution/local/Contacts",
+				 ".evolution/addressbook/local/OnThisComputer/Personal",
 				 NULL);
 	uri = g_strdup_printf ("file://%s", path);
 	g_free (path);

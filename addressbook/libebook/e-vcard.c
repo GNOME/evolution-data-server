@@ -563,8 +563,8 @@ parse (EVCard *evc, const char *str)
 	g_free (buf);
 }
 
-static char*
-escape_string (const char *s)
+char*
+e_vcard_escape_string (const char *s)
 {
 	GString *str = g_string_new ("");
 	const char *p;
@@ -598,9 +598,8 @@ escape_string (const char *s)
 	return g_string_free (str, FALSE);
 }
 
-#if notyet
-static char*
-unescape_string (const char *s)
+char*
+e_vcard_unescape_string (const char *s)
 {
 	GString *str = g_string_new ("");
 	const char *p;
@@ -630,7 +629,6 @@ unescape_string (const char *s)
 
 	return g_string_free (str, FALSE);
 }
-#endif
 
 void
 e_vcard_construct (EVCard *evc, const char *str)
@@ -742,7 +740,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			char *value = v->data;
 			char *escaped_value = NULL;
 
-			escaped_value = escape_string (value);
+			escaped_value = e_vcard_escape_string (value);
 
 			attr_str = g_string_append (attr_str, escaped_value);
 			if (v->next)
@@ -810,7 +808,7 @@ e_vcard_dump_structure (EVCard *evc)
 				printf ("    |   [%d] = %s", i,param->name);
 				printf ("(");
 				for (v = param->values; v; v = v->next) {
-					char *value = escape_string ((char*)v->data);
+					char *value = e_vcard_escape_string ((char*)v->data);
 					printf ("%s", value);
 					if (v->next)
 						printf (",");

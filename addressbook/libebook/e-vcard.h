@@ -167,4 +167,8 @@ GList*           e_vcard_attribute_get_params       (EVCardAttribute *attr);
 const char*      e_vcard_attribute_param_get_name   (EVCardAttributeParam *param);
 GList*           e_vcard_attribute_param_get_values (EVCardAttributeParam *param);
 
+/* Utility functions. */
+char*            e_vcard_escape_string (const char *str);
+char*            e_vcard_unescape_string (const char *str);
+
 #endif /* _EVCARD_H */

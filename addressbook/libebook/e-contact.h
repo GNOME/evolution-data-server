@@ -95,19 +95,6 @@ typedef enum {
 	E_CONTACT_SPOUSE,        /* string field */
 	E_CONTACT_NOTE,          /* string field */
 
-	/* fields used for describing contact lists.  a contact list
-	   is just a contact with _IS_LIST set to true.  the members
-	   are listed in the _EMAIL field. */
-	E_CONTACT_IS_LIST,             /* boolean field */
-	E_CONTACT_LIST_SHOW_ADDRESSES, /* boolean field */
-
-	/* Instant Messaging fields */
-	E_CONTACT_IM_AIM,     	 /* Multi-valued */
-	E_CONTACT_IM_JABBER,  	 /* Multi-valued */
-	E_CONTACT_IM_YAHOO,   	 /* Multi-valued */
-	E_CONTACT_IM_MSN,     	 /* Multi-valued */
-	E_CONTACT_IM_ICQ,     	 /* Multi-valued */
-
 	E_CONTACT_IM_AIM_HOME_1,     /* Synthetic string field */
 	E_CONTACT_IM_AIM_HOME_2,     /* Synthetic string field */
 	E_CONTACT_IM_AIM_HOME_3,     /* Synthetic string field */
@@ -139,6 +126,11 @@ typedef enum {
 	E_CONTACT_IM_ICQ_WORK_2,     /* Synthetic string field */
 	E_CONTACT_IM_ICQ_WORK_3,     /* Synthetic string field */
 
+	/* Convenience field for getting a name from the contact.
+	   Returns the first one of [File-As, Full Name, Org, Email1]
+	   to be set */
+	E_CONTACT_NAME_OR_ORG,
+
 	/* Address fields */
 	E_CONTACT_ADDRESS,       /* Multi-valued structured (EContactAddress) */
 	E_CONTACT_ADDRESS_HOME,  /* synthetic structured field (EContactAddress) */
@@ -154,7 +146,21 @@ typedef enum {
 	E_CONTACT_NAME,        	 /* structured field (EContactName) */
 	E_CONTACT_EMAIL,       	 /* Multi-valued */
 
+	/* Instant Messaging fields */
+	E_CONTACT_IM_AIM,     	 /* Multi-valued */
+	E_CONTACT_IM_JABBER,  	 /* Multi-valued */
+	E_CONTACT_IM_YAHOO,   	 /* Multi-valued */
+	E_CONTACT_IM_MSN,     	 /* Multi-valued */
+	E_CONTACT_IM_ICQ,     	 /* Multi-valued */
+
 	E_CONTACT_WANTS_HTML,    /* boolean field */
+
+	/* fields used for describing contact lists.  a contact list
+	   is just a contact with _IS_LIST set to true.  the members
+	   are listed in the _EMAIL field. */
+	E_CONTACT_IS_LIST,             /* boolean field */
+	E_CONTACT_LIST_SHOW_ADDRESSES, /* boolean field */
+
 
 	E_CONTACT_BIRTH_DATE,    /* structured field (EContactDate) */
 	E_CONTACT_ANNIVERSARY,   /* structured field (EContactDate) */
@@ -162,15 +168,10 @@ typedef enum {
 	/* Security Fields */
 	E_CONTACT_X509_CERT,                  /* structured field (EContactCert) */
 
-	/* Convenience field for getting a name from the contact.
-	   Returns the first one of [File-As, Full Name, Org, Email1]
-	   to be set */
-	E_CONTACT_NAME_OR_ORG,
-
 	E_CONTACT_FIELD_LAST,
 
 	/* useful constants */
-	E_CONTACT_LAST_SIMPLE_STRING = E_CONTACT_NOTE,
+	E_CONTACT_LAST_SIMPLE_STRING = E_CONTACT_NAME_OR_ORG,
 	E_CONTACT_FIRST_PHONE_ID     = E_CONTACT_PHONE_ASSISTANT,
 	E_CONTACT_LAST_PHONE_ID      = E_CONTACT_PHONE_TTYTDD,
 	E_CONTACT_FIRST_EMAIL_ID     = E_CONTACT_EMAIL_1,

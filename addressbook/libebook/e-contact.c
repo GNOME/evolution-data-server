@@ -130,8 +130,8 @@ static EContactFieldInfo field_info[] = {
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_HOME_FAX,     EVC_TEL, "home_fax",          N_("Home Fax"),         FALSE, "HOME", "FAX",           0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_ISDN,         EVC_TEL, "isdn_phone",        N_("ISDN"),             FALSE, "ISDN",                  0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_MOBILE,       EVC_TEL, "mobile_phone",      N_("Mobile Phone"),     FALSE, "CELL",                  0),
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_OTHER,        EVC_TEL, "other_phone",       N_("Other Phone"),      FALSE, "VOICE",                 0), /* XXX */
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_OTHER_FAX,    EVC_TEL, "other_fax",         N_("Other Fax"),        FALSE, "FAX",                   0), /* XXX */
+	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_OTHER,        EVC_TEL, "other_phone",       N_("Other Phone"),      FALSE, "VOICE",                 0),
+	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_OTHER_FAX,    EVC_TEL, "other_fax",         N_("Other Fax"),        FALSE, "FAX",                   0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PAGER,        EVC_TEL, "pager",             N_("Pager"),            FALSE, "PAGER",                 0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PRIMARY,      EVC_TEL, "primary_phone",     N_("Primary Phone"),    FALSE, "PREF",                  0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_RADIO,        EVC_TEL, "radio",             N_("Radio"),            FALSE, EVC_X_RADIO,     0),
@@ -704,15 +704,8 @@ e_contact_set_property (GObject *object,
 				const char *name, *group;
 				gboolean found_needed1, found_needed2;
 
-				if (!info->attr_type1)
-					found_needed1 = TRUE;
-				else
-					found_needed1 = FALSE;
-
-				if (!info->attr_type2)
-					found_needed2 = TRUE;
-				else
-					found_needed2 = FALSE;
+				found_needed1 = (info->attr_type1 == NULL);
+				found_needed2 = (info->attr_type2 == NULL);
 
 				attr = l->data;
 				group = e_vcard_attribute_get_group (attr);
@@ -729,10 +722,24 @@ e_contact_set_property (GObject *object,
 						if (!strcasecmp (name, EVC_TYPE)) {
 							GList *values = e_vcard_attribute_param_get_values (param);
 							if (values && values->data) {
-								if (!found_needed1 && !strcasecmp ((char*)values->data, info->attr_type1))
+								gboolean matches = FALSE;
+								if (!found_needed1 && !strcasecmp ((char*)values->data, info->attr_type1)) {
 									found_needed1 = TRUE;
-								else if (!found_needed2 && !strcasecmp ((char*)values->data, info->attr_type2))
+									matches = TRUE;
+								}
+								else if (!found_needed2 && !strcasecmp ((char*)values->data, info->attr_type2)) {
 									found_needed2 = TRUE;
+									matches = TRUE;
+								}
+								if (!matches) {
+									/* this is to enforce that we find an attribute
+									   with *only* the TYPE='s we need.  This may seem like
+									   an odd restriction but it's the only way at present to
+									   implement the Other Fax and Other Phone attributes. */
+									found_needed1 =
+										found_needed2 = FALSE;
+									break;
+								}
 							}
 						}
 
@@ -932,15 +939,8 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 		EVCardAttribute *attr = l->data;
 		const char *name, *group;
 
-		if (!type_needed1)
-			found_needed1 = TRUE;
-		else
-			found_needed1 = FALSE;
-
-		if (!type_needed2)
-			found_needed2 = TRUE;
-		else
-			found_needed2 = FALSE;
+		found_needed1 = (type_needed1 == NULL);
+		found_needed2 = (type_needed2 == NULL);
 
 		group = e_vcard_attribute_get_group (attr);
 		name = e_vcard_attribute_get_name (attr);
@@ -956,10 +956,26 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 				if (!strcasecmp (name, EVC_TYPE)) {
 					GList *values = e_vcard_attribute_param_get_values (param);
 					if (values && values->data) {
-						if (!found_needed1 && !strcasecmp ((char*)values->data, type_needed1))
+						gboolean matches = FALSE;
+
+						if (!found_needed1 && !strcasecmp ((char*)values->data, type_needed1)) {
 							found_needed1 = TRUE;
-						else if (!found_needed2 && !strcasecmp ((char*)values->data, type_needed2))
+							matches = TRUE;
+						}
+						else if (!found_needed2 && !strcasecmp ((char*)values->data, type_needed2)) {
 							found_needed2 = TRUE;
+							matches = TRUE;
+						}
+
+						if (!matches) {
+							/* this is to enforce that we find an attribute
+							   with *only* the TYPE='s we need.  This may seem like
+							   an odd restriction but it's the only way at present to
+							   implement the Other Fax and Other Phone attributes. */
+							found_needed1 =
+								found_needed2 = FALSE;
+							break;
+						}
 					}
 				}
 
