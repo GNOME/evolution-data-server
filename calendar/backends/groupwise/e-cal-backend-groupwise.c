@@ -1038,13 +1038,73 @@ e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal
 }
 
 static ECalBackendSyncStatus
+send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp)
+{
+	ECalComponent *comp;
+	ECalBackendGroupwisePrivate *priv;
+	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
+
+	priv = cbgw->priv;
+
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
+
+	switch (priv->mode) {
+	case CAL_MODE_ANY :
+	case CAL_MODE_REMOTE :
+		/* when online, send the item to the server */
+		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp);
+		break;
+	case CAL_MODE_LOCAL :
+		/* in offline mode, we just update the cache */
+		e_cal_backend_cache_put_component (priv->cache, comp);
+		break;
+	}
+
+	g_object_unref (comp);
+
+	return status;
+}
+
+static ECalBackendSyncStatus
 e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
 				      char **modified_calobj)
 {
-	/* FIXME */
+	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_OtherError;
+	icalcomponent *icalcomp, *subcomp;
+	icalcomponent_kind kind;
+	ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwisePrivate *priv;
+
 	*users = NULL;
 	*modified_calobj = NULL;
-	return GNOME_Evolution_Calendar_OtherError;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	icalcomp = icalparser_parse_string (calobj);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	kind = icalcomponent_isa (icalcomp);
+	if (kind == ICAL_VCALENDAR_COMPONENT) {
+		subcomp = icalcomponent_get_first_component (icalcomp,
+							     e_cal_backend_get_kind (E_CAL_BACKEND (backend)));
+		while (subcomp) {
+			status = send_object (cbgw, cal, subcomp);
+			if (status != GNOME_Evolution_Calendar_Success)
+				break;
+			subcomp = icalcomponent_get_next_component (icalcomp,
+								    e_cal_backend_get_kind (E_CAL_BACKEND (backend)));
+		}
+	} else if (kind == e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+		status = send_object (cbgw, cal, icalcomp);
+	} else
+		status = GNOME_Evolution_Calendar_InvalidObject;
+
+	icalcomponent_free (icalcomp);
+
+	return status;
 }
 
 
