@@ -305,6 +305,27 @@ e_categories_remove (const char *category)
 }
 
 /**
+ * e_categories_exist:
+ * @category: category to be searched.
+ *
+ * Checks whether the given category is available in the configuration.
+ *
+ * Return value: %TRUE if the category is available, %FALSE otherwise.
+ */
+gboolean
+e_categories_exist (const char *category)
+{
+	CategoryInfo *cat_info;
+
+	if (!initialized)
+		initialize_categories_config ();
+
+	cat_info = g_hash_table_lookup (categories_table, category);
+
+	return cat_info ? TRUE : FALSE;
+}
+
+/**
  * e_categories_get_color_for:
  * @category: category to retrieve the color for.
  *

@@ -30,6 +30,7 @@ GList      *e_categories_get_list (void);
 void        e_categories_add (const char *category, const char *color, const char *icon_file);
 void        e_categories_remove (const char *category);
 
+gboolean    e_categories_exist (const char *category);
 const char *e_categories_get_color_for (const char *category);
 void        e_categories_set_color_for (const char *category, const char *color);
 const char *e_categories_get_icon_file_for (const char *category);
