@@ -1,3 +1,11 @@
+2005-02-08  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c:
+	  (groupwise_get_folder)
+	* camel-groupwise-folder.c:
+	  (groupwise_refresh_info):
+	  Fixes bug ** #72106
+	  
 2005-02-08  Vivek Jain  <jvivek@novell.com>
 
 	* camel-groupwise-store.c :

@@ -552,7 +552,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		camel_operation_start (NULL, _("Fetching summary information for new messages"));
 
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
-				"default distribution attachments subject created",
+				"distribution attachments subject created",
 				time_string, "New", "Mail", NULL, -1, &slist) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -578,7 +578,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		g_mutex_lock (mutex) ;
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"default attachments distribution created subject",
+				"attachments distribution created subject",
 				NULL,
 				&cursor) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {

@@ -625,7 +625,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-					"default distribution created attachments subject",
+					"distribution created attachments subject",
 					time_string, "New", "Mail", NULL, -1, &slist) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
