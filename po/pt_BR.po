@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-26 22:35+0100\n"
-"PO-Revision-Date: 2005-03-03 14:25-0300\n"
+"POT-Creation-Date: 2005-03-05 12:59+0100\n"
+"PO-Revision-Date: 2005-03-05 17:28-0300\n"
 "Last-Translator: Afonso Celso Medina <medina@maua.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
@@ -16,14 +16,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:513
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2046
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Carregando..."
 
 #: addressbook/backends/file/e-book-backend-file.c:515
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2044
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3401
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
@@ -152,9 +152,7 @@ msgstr "%s: não existia uid de auto contato no gconf"
 #: addressbook/libebook/e-book.c:3443
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr ""
-"%s: não existia fonte para o uid `%s' armazenado no "
-"gconf."
+msgstr "%s: não existia fonte para o uid `%s' armazenado no gconf."
 
 #: addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
@@ -557,7 +555,7 @@ msgid "Category List"
 msgstr "Lista de categorias"
 
 #: addressbook/libebook/e-contact.c:224
-#: libedataserverui/e-categories-dialog.c:370
+#: libedataserverui/e-categories-dialog.c:371
 msgid "Categories"
 msgstr "Categorias"
 
@@ -638,34 +636,34 @@ msgstr "Resposta Solicitada: por"
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Solicitada: Quando conveniente"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:526
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:532
 msgid "Invalid server URI"
 msgstr "URI de servidor inválida"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:574
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:577
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Agenda"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:820
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:492
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Não foi possível criar arquivo de cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:594
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "Impossível criar thread para ocupar o cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:600
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4516
-#: camel/providers/groupwise/camel-groupwise-folder.c:672
-#: camel/providers/groupwise/camel-groupwise-folder.c:690
-#: camel/providers/groupwise/camel-groupwise-store.c:526
-#: camel/providers/groupwise/camel-groupwise-store.c:628
-#: camel/providers/groupwise/camel-groupwise-store.c:787
-#: camel/providers/groupwise/camel-groupwise-store.c:985
+#: camel/providers/groupwise/camel-groupwise-folder.c:662
+#: camel/providers/groupwise/camel-groupwise-folder.c:680
+#: camel/providers/groupwise/camel-groupwise-store.c:528
+#: camel/providers/groupwise/camel-groupwise-store.c:629
+#: camel/providers/groupwise/camel-groupwise-store.c:791
+#: camel/providers/groupwise/camel-groupwise-store.c:989
 msgid "Authentication failed"
 msgstr "Falhou a autenticação"
 
@@ -690,9 +688,8 @@ msgid "Fair"
 msgstr "Agradável"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:195
-#, fuzzy
 msgid "Snow showers"
-msgstr "Nevasca"
+msgstr "Neve breve"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:196
 msgid "Snow"
@@ -703,7 +700,6 @@ msgid "Partly cloudy"
 msgstr "Parcialmente nublado"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:198
-#, fuzzy
 msgid "Smoke"
 msgstr "Fumaça"
 
@@ -724,7 +720,6 @@ msgid "Sunny"
 msgstr "Ensolarado"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:203
-#, fuzzy
 msgid "Dust"
 msgstr "Poeira"
 
@@ -733,9 +728,8 @@ msgid "Clear"
 msgstr "Claro"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:205
-#, fuzzy
 msgid "Mostly cloudy"
-msgstr "Nublado"
+msgstr "Nublado na maior parte do tempo"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Windy"
@@ -746,18 +740,16 @@ msgid "Rain showers"
 msgstr "Pancadas de chuva"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:208
-#, fuzzy
 msgid "Foggy"
-msgstr "Nevoento"
+msgstr "Enevoado"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Rain/snow mixed"
-msgstr "Chuva e neve misturados"
+msgstr "Chuva e neve misturadas"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:210
-#, fuzzy
 msgid "Sleet"
-msgstr "Chuva e neve"
+msgstr "Chuva com neve"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Very hot/humid"
@@ -780,7 +772,6 @@ msgid "Blowing snow"
 msgstr "Neve com ventania"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:216
-#, fuzzy
 msgid "Freezing drizzle"
 msgstr "Chuvisco congelado"
 
@@ -1291,71 +1282,71 @@ msgstr "Preparando pasta '%s' para desconexão"
 msgid "You must be working online to complete this operation"
 msgstr "Você deve estar trabalhando conectado para completar esta operação"
 
-#: camel/camel-filter-driver.c:689 camel/camel-filter-search.c:523
+#: camel/camel-filter-driver.c:701 camel/camel-filter-search.c:523
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
 msgstr "Falha ao criar pipe para '%s': %s"
 
-#: camel/camel-filter-driver.c:733
+#: camel/camel-filter-driver.c:745
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Falha ao criar processo filho '%s': %s"
 
-#: camel/camel-filter-driver.c:776
+#: camel/camel-filter-driver.c:788
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Stream de mensagem inválida recebida de %s: %s"
 
-#: camel/camel-filter-driver.c:965 camel/camel-filter-driver.c:974
+#: camel/camel-filter-driver.c:977 camel/camel-filter-driver.c:986
 msgid "Syncing folders"
 msgstr "Sincronizando pastas"
 
-#: camel/camel-filter-driver.c:1063 camel/camel-filter-driver.c:1440
+#: camel/camel-filter-driver.c:1075 camel/camel-filter-driver.c:1452
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Erro ao analisar filtro: %s: %s"
 
-#: camel/camel-filter-driver.c:1072 camel/camel-filter-driver.c:1449
+#: camel/camel-filter-driver.c:1084 camel/camel-filter-driver.c:1461
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Erro ao executar filtro: %s: %s"
 
-#: camel/camel-filter-driver.c:1139
+#: camel/camel-filter-driver.c:1151
 msgid "Unable to open spool folder"
 msgstr "Não é possível abrir a pasta de fila"
 
-#: camel/camel-filter-driver.c:1148
+#: camel/camel-filter-driver.c:1160
 msgid "Unable to process spool folder"
 msgstr "Não é possível processar a pasta de fila"
 
-#: camel/camel-filter-driver.c:1163
+#: camel/camel-filter-driver.c:1175
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Obtendo mensagem %d (%d%%)"
 
-#: camel/camel-filter-driver.c:1167
+#: camel/camel-filter-driver.c:1179
 msgid "Cannot open message"
 msgstr "Não é possível abrir mensagem"
 
-#: camel/camel-filter-driver.c:1168 camel/camel-filter-driver.c:1180
+#: camel/camel-filter-driver.c:1180 camel/camel-filter-driver.c:1192
 #, c-format
 msgid "Failed on message %d"
 msgstr "Falha na mensagem %d"
 
-#: camel/camel-filter-driver.c:1194 camel/camel-filter-driver.c:1285
+#: camel/camel-filter-driver.c:1206 camel/camel-filter-driver.c:1297
 msgid "Syncing folder"
 msgstr "Sincronizando pasta"
 
-#: camel/camel-filter-driver.c:1198 camel/camel-filter-driver.c:1290
+#: camel/camel-filter-driver.c:1210 camel/camel-filter-driver.c:1302
 msgid "Complete"
 msgstr "Concluída"
 
-#: camel/camel-filter-driver.c:1255
+#: camel/camel-filter-driver.c:1267
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Obtendo mensagem %d de %d"
 
-#: camel/camel-filter-driver.c:1270
+#: camel/camel-filter-driver.c:1282
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falha na mensagem %d de %d"
@@ -2578,12 +2569,12 @@ msgstr "Impossível obter mensagem"
 msgid "Could not load summary for %s"
 msgstr "Não foi possível carregar resumo para %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:857
+#: camel/providers/groupwise/camel-groupwise-folder.c:850
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Impossível criar mensagem: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:869
+#: camel/providers/groupwise/camel-groupwise-folder.c:862
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Impossível acrescentar mensagem à pasta `%s': %s"
@@ -2690,49 +2681,50 @@ msgstr "Impossível autenticar se ao servidor GroupWise."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:430
 msgid "Some features may not work correctly with your current server version"
-msgstr "Algumas características podem não funcionar corretamente com sua versão de servidor atual"
+msgstr ""
+"Algumas características podem não funcionar corretamente com sua versão de "
+"servidor atual"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:501
+#: camel/providers/groupwise/camel-groupwise-store.c:503
 #: camel/providers/imap/camel-imap-store.c:1873
 #: camel/providers/imap/camel-imap-store.c:2063
 #, c-format
 msgid "No such folder %s"
 msgstr "Não existe a pasta %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:551
-#: camel/providers/groupwise/camel-groupwise-store.c:618
+#: camel/providers/groupwise/camel-groupwise-store.c:619
 #: camel/providers/imap/camel-imap-folder.c:2288
 #: camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Pegando informação de resumo para novas mensagens"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:753
+#: camel/providers/groupwise/camel-groupwise-store.c:757
 msgid "Cannot get folder info in offline mode."
 msgstr "Impossível obter a informação da pasta no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:966
+#: camel/providers/groupwise/camel-groupwise-store.c:970
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Impossível criar pastas do GroupWise no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1017
+#: camel/providers/groupwise/camel-groupwise-store.c:1021
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Não é possível excluir pastas do GroupWise no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1063
+#: camel/providers/groupwise/camel-groupwise-store.c:1067
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Impossível renomear pastas do GroupWise no modo desconectado."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1081
+#: camel/providers/groupwise/camel-groupwise-store.c:1085
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Impossível renomear pastas do GroupWise `%s' para `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1117
+#: camel/providers/groupwise/camel-groupwise-store.c:1121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor GroupWise %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1119
+#: camel/providers/groupwise/camel-groupwise-store.c:1123
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Serviço GroupWise para %s em %s"
@@ -3133,7 +3125,9 @@ msgstr "Servidor IMAP4 %s se desconectou inesperadamente: %s"
 #: camel/providers/imap4/camel-imap4-folder.c:85
 msgid ""
 "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr "Ativar detecção de Mailing-List necessária para alguns filtros e regras vFolder"
+msgstr ""
+"Ativar detecção de Mailing-List necessária para alguns filtros e regras "
+"vFolder"
 
 #: camel/providers/imap4/camel-imap4-folder.c:398
 #, c-format
@@ -3376,7 +3370,8 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "Cliente IMAP 4(.1) experimental\n"
-"Este código não foi testado e ainda é não-suportado, você deve usar o imap comum.\n"
+"Este código não foi testado e ainda é não-suportado, você deve usar o imap "
+"comum.\n"
 "\n"
 " !!! NÃO USE ISTO PARA EMAIL DE PRODUÇÃO  !!!\n"
 
@@ -4738,7 +4733,7 @@ msgstr "%I"
 msgid "Category Icon"
 msgstr "Ícone da Categoria"
 
-#: libedataserverui/e-categories-dialog.c:237
+#: libedataserverui/e-categories-dialog.c:238
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4746,7 +4741,7 @@ msgid ""
 msgstr ""
 "Já existe uma categoria '%s' na configuração. Por favor, utilize outro nome"
 
-#: libedataserverui/e-categories-dialog.c:395
+#: libedataserverui/e-categories-dialog.c:396
 msgid "Category"
 msgstr "Categoria"
 
