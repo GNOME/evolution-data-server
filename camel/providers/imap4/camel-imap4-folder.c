@@ -48,6 +48,7 @@
 #include "camel-imap4-store.h"
 #include "camel-imap4-engine.h"
 #include "camel-imap4-folder.h"
+#include "camel-imap4-journal.h"
 #include "camel-imap4-stream.h"
 #include "camel-imap4-command.h"
 #include "camel-imap4-summary.h"
@@ -139,6 +140,7 @@ camel_imap4_folder_init (CamelIMAP4Folder *folder, CamelIMAP4FolderClass *klass)
 	folder->sync_offline = FALSE;
 	folder->utf7_name = NULL;
 	folder->cachedir = NULL;
+	folder->journal = NULL;
 	folder->search = NULL;
 }
 
@@ -152,6 +154,11 @@ camel_imap4_folder_finalize (CamelObject *object)
 	if (folder->cache)
 		camel_object_unref (folder->cache);
 	
+	if (folder->journal) {
+		camel_imap4_journal_write (folder->journal, NULL);
+		camel_object_unref (folder->journal);
+	}
+	
 	g_free (folder->utf7_name);
 	g_free (folder->cachedir);
 }
@@ -163,7 +170,7 @@ imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	int i, count = 0;
 	guint32 tag;
 	
-	for (i = 0; i <args->argc; i++) {
+	for (i = 0; i < args->argc; i++) {
 		CamelArgGet *arg = &args->argv[i];
 		
 		tag = arg->tag;
@@ -228,14 +235,21 @@ imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 
 
 static char *
-imap_get_summary_filename (const char *path)
+imap4_get_summary_filename (const char *path)
 {
 	/* /path/to/imap/summary */
 	return g_build_filename (path, "summary", NULL);
 }
 
 static char *
-imap_build_filename (const char *toplevel_dir, const char *full_name)
+imap4_get_journal_filename (const char *path)
+{
+	/* /path/to/imap/journal */
+	return g_build_filename (path, "journal", NULL);
+}
+
+static char *
+imap4_build_filename (const char *toplevel_dir, const char *full_name)
 {
 	const char *inptr = full_name;
 	int subdirs = 0;
@@ -277,14 +291,14 @@ imap_build_filename (const char *toplevel_dir, const char *full_name)
 }
 
 static char *
-imap_store_build_filename (void *store, const char *full_name)
+imap4_store_build_filename (void *store, const char *full_name)
 {
-	CamelIMAP4Store *imap_store = (CamelIMAP4Store *) store;
+	CamelIMAP4Store *imap4_store = (CamelIMAP4Store *) store;
 	char *toplevel_dir;
 	char *path;
 	
-	toplevel_dir = g_strdup_printf ("%s/folders", imap_store->storage_path);
-	path = imap_build_filename (toplevel_dir, full_name);
+	toplevel_dir = g_strdup_printf ("%s/folders", imap4_store->storage_path);
+	path = imap4_build_filename (toplevel_dir, full_name);
 	g_free (toplevel_dir);
 	
 	return path;
@@ -294,7 +308,7 @@ imap_store_build_filename (void *store, const char *full_name)
 CamelFolder *
 camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException *ex)
 {
-	CamelIMAP4Folder *imap_folder;
+	CamelIMAP4Folder *imap4_folder;
 	char *utf7_name, *name, *p;
 	CamelFolder *folder;
 	char *path;
@@ -323,21 +337,25 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	
 	utf7_name = camel_utf8_utf7 (utf7_name);
 	
-	folder = (CamelFolder *) (imap_folder = (CamelIMAP4Folder *) camel_object_new (CAMEL_TYPE_IMAP4_FOLDER));
+	folder = (CamelFolder *) (imap4_folder = (CamelIMAP4Folder *) camel_object_new (CAMEL_TYPE_IMAP4_FOLDER));
 	camel_folder_construct (folder, store, full_name, name);
-	imap_folder->utf7_name = utf7_name;
+	imap4_folder->utf7_name = utf7_name;
 	
 	folder->summary = camel_imap4_summary_new (folder);
-	imap_folder->cachedir = imap_store_build_filename (store, folder->full_name);
-	camel_mkdir (imap_folder->cachedir, 0777);
+	imap4_folder->cachedir = imap4_store_build_filename (store, folder->full_name);
+	camel_mkdir (imap4_folder->cachedir, 0777);
 	
-	imap_folder->cache = camel_data_cache_new (imap_folder->cachedir, 0, NULL);
+	imap4_folder->cache = camel_data_cache_new (imap4_folder->cachedir, 0, NULL);
 	
-	path = imap_get_summary_filename (imap_folder->cachedir);
+	path = imap4_get_summary_filename (imap4_folder->cachedir);
 	camel_folder_summary_set_filename (folder->summary, path);
 	g_free (path);
 	
-	imap_folder->search = camel_imap4_search_new (((CamelIMAP4Store *) store)->engine, imap_folder->cachedir);
+	path = imap4_get_journal_filename (imap4_folder->cachedir);
+	imap4_folder->journal = camel_imap4_journal_new (imap4_folder, path);
+	g_free (path);
+	
+	imap4_folder->search = camel_imap4_search_new (((CamelIMAP4Store *) store)->engine, imap4_folder->cachedir);
 	
 	if (camel_session_is_online (((CamelService *) store)->session)) {
 		/* we don't care if the summary loading fails here */
@@ -707,12 +725,12 @@ untagged_fetch (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, 
 			}
 		} else {
 			/* wtf? */
-			fprintf (stderr, "huh? %s?...\n", token->v.atom);
+			d(fprintf (stderr, "huh? %s?...\n", token->v.atom));
 		}
 	} while (1);
 	
 	if (token->token != ')') {
-		fprintf (stderr, "expected ')' to close untagged FETCH response\n");
+		d(fprintf (stderr, "expected ')' to close untagged FETCH response\n"));
 		goto unexpected;
 	}
 	
@@ -732,7 +750,7 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
 	CamelSession *session = ((CamelService *) folder->parent_store)->session;
-	CamelIMAP4Folder *imap_folder = (CamelIMAP4Folder *) folder;
+	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
 	CamelMimeMessage *message = NULL;
 	CamelStream *stream, *cache;
 	CamelIMAP4Command *ic;
@@ -740,7 +758,7 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 	
-	if (imap_folder->cache && (stream = camel_data_cache_get (imap_folder->cache, "cache", uid, ex))) {
+	if (imap4_folder->cache && (stream = camel_data_cache_get (imap4_folder->cache, "cache", uid, ex))) {
 		message = camel_mime_message_new ();
 		
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream) == -1) {
@@ -812,10 +830,10 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		camel_stream_reset (stream);
 		
 		/* cache the message locally */
-		if (imap_folder->cache && (cache = camel_data_cache_add (imap_folder->cache, "cache", uid, NULL))) {
+		if (imap4_folder->cache && (cache = camel_data_cache_add (imap4_folder->cache, "cache", uid, NULL))) {
 			if (camel_stream_write_to_stream (stream, cache) == -1
 			    || camel_stream_flush (cache) == -1)
-				camel_data_cache_remove (imap_folder->cache, "cache", uid, NULL);
+				camel_data_cache_remove (imap4_folder->cache, "cache", uid, NULL);
 			camel_object_unref (cache);
 		}
 		
@@ -870,7 +888,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		*appended_uid = NULL;
 	
 	if (!camel_session_is_online (session)) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot append messages to IMAP folders in offline mode."));
+		camel_imap4_journal_append (((CamelIMAP4Folder *) folder)->journal, message, info, ex);
 		return;
 	}
 	
@@ -1029,16 +1047,8 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 	GPtrArray *infos;
 	char *set;
 	
-	if (!camel_session_is_online (session)) {
-		if (move)
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
-					     _("Cannot move messages to or from IMAP folders in offline mode."));
-		else
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
-					     _("Cannot copy messages to or from IMAP folders in offline mode."));
-		
-		return;
-	}
+	if (transferred_uids)
+		*transferred_uids = NULL;
 	
 	infos = g_ptr_array_new ();
 	for (i = 0; i < uids->len; i++) {
@@ -1056,6 +1066,30 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 	g_ptr_array_sort (infos, (GCompareFunc) info_uid_sort);
 	
 	CAMEL_SERVICE_LOCK (src->parent_store, connect_lock);
+	
+	/* check for offline operation */
+	if (!camel_session_is_online (session)) {
+		CamelMimeMessage *message;
+		
+		for (i = 0; i < infos->len; i++) {
+			info = infos->pdata[i];
+			
+			if (!(message = imap4_get_message (src, camel_message_info_uid (info), ex)))
+				break;
+			
+			camel_imap4_journal_append (((CamelIMAP4Folder *) dest)->journal, message, info, ex);
+			camel_object_unref (message);
+			
+			if (camel_exception_is_set (ex))
+				break;
+			
+			if (move)
+				camel_folder_set_message_flags (src, camel_message_info_uid (info),
+								CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
+		}
+		
+		goto done;
+	}
 	
 	dest_namelen = strlen (camel_imap4_folder_utf7_name ((CamelIMAP4Folder *) dest));
 	
@@ -1119,7 +1153,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
  done:
 	
 	for (i = 0; i < infos->len; i++)
-		camel_message_info_free(infos->pdata[i]);
+		camel_message_info_free (infos->pdata[i]);
 	g_ptr_array_free (infos, TRUE);
 	
 	CAMEL_SERVICE_LOCK (src->parent_store, connect_lock);

@@ -40,6 +40,8 @@ extern "C" {
 typedef struct _CamelIMAP4Folder CamelIMAP4Folder;
 typedef struct _CamelIMAP4FolderClass CamelIMAP4FolderClass;
 
+struct _CamelIMAP4Journal;
+
 enum {
 	CAMEL_IMAP4_FOLDER_ARG_SYNC_OFFLINE = CAMEL_FOLDER_ARG_LAST,
 	CAMEL_IMAP4_FOLDER_ARG_LAST = CAMEL_FOLDER_ARG_LAST + 0x100
@@ -56,6 +58,8 @@ struct _CamelIMAP4Folder {
 	unsigned int sync_offline:1;
 	
 	CamelFolderSearch *search;
+	
+	struct _CamelIMAP4Journal *journal;
 	CamelDataCache *cache;
 	
 	char *cachedir;

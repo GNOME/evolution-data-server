@@ -1,3 +1,19 @@
+2004-12-14  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-journal.[c,h]: New source files
+	implementing a basic journal.
+
+	* providers/imap4/camel-imap4-summary.c
+	(camel_imap4_summary_flush_updates): Replay the journal.
+
+	* providers/imap4/camel-imap4-folder.c
+	(camel_imap4_folder_finalize): Write/unref the journal.
+	(camel_imap4_folder_new): Create a journal object.
+	(imap4_append_message): Journal the message append if we're in
+	offline mode.
+	(imap4_transfer_messages_to): Implement offline copy/move support
+	using the new journal code.
+
 2004-12-09  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-folder.c (imap4_append_message):
