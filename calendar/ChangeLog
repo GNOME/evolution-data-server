@@ -1,3 +1,10 @@
+2004-12-05  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_gw_connection_send_appointment) : Pass view argument while calling
+	e_gw_connection_get_item.
+
+ 
 2004-12-02  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:
