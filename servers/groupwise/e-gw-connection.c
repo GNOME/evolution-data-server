@@ -47,6 +47,7 @@ struct _EGwConnectionPrivate {
 	char *user_name;
 	char *user_email;
 	char *user_uuid;
+	EGwSendOptions *opts;
 	GMutex *reauth_mutex;
 };
 
@@ -269,6 +270,11 @@ e_gw_connection_dispose (GObject *object)
 			g_mutex_free (priv->reauth_mutex);
 			priv->reauth_mutex = NULL;
 		}
+
+		if (priv->opts) {
+			g_object_unref (priv->opts);
+			priv->opts = NULL;
+		}
 	}
 
 	if (parent_class->dispose)
@@ -316,6 +322,7 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 	/* create the SoupSession for this connection */
 	priv->soup_session = soup_session_sync_new ();
 	priv->reauth_mutex = g_mutex_new ();
+	priv->opts = NULL;
 }
 
 GType
@@ -1511,6 +1518,60 @@ e_gw_connection_get_address_book_id ( EGwConnection *cnc, char *book_name, char*
 
 }
 
+EGwConnectionStatus
+e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam;
+	EGwConnectionPrivate *priv;
+
+	priv = cnc->priv;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	if (priv->opts) {
+		g_object_ref (priv->opts);
+		opts = &priv->opts;
+		
+		return E_GW_CONNECTION_STATUS_OK;
+	}
+
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getSettingsRequest");
+	if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+       	e_gw_message_write_footer (msg);
+
+        /* send message to server */
+        response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+        status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	}
+	
+	param = soup_soap_response_get_first_parameter_by_name (response, "settings");
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        } else 
+		*opts =	e_gw_sendoptions_new_from_soap_parameter (param);
+		
+	
+	return E_GW_CONNECTION_STATUS_OK;
+}
 
 EGwConnectionStatus 
 e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id, GHashTable *categories_by_name)

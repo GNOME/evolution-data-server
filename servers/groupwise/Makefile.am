@@ -29,6 +29,8 @@ libegroupwise_1_2_la_SOURCES =			\
 	e-gw-container.h			\
 	e-gw-item.c				\
 	e-gw-item.h				\
+	e-gw-sendoptions.h			\
+	e-gw-sendoptions.c			\
 	e-gw-message.c				\
 	e-gw-message.h                          \
 	e-gw-filter.c                           \
@@ -48,6 +50,7 @@ libegroupwiseinclude_HEADERS =                  \
 	e-gw-container.h                        \
 	e-gw-message.h                          \
 	e-gw-item.h                             \
+	e-gw-sendoptions.h			\
 	e-gw-filter.h                        
 
 %-$(BASE_VERSION).pc: %.pc

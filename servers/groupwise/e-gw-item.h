@@ -192,6 +192,7 @@ void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *f
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
 char* e_gw_item_get_category_name (EGwItem *item);
+void e_gw_item_set_sendoptions (EGwItem *item, gboolean set);
 void e_gw_item_set_reply_request (EGwItem *item, gboolean set);
 gboolean e_gw_item_get_reply_request (EGwItem *item);
 void e_gw_item_set_reply_within (EGwItem *item, char *reply_within);

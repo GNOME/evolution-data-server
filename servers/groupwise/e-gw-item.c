@@ -85,6 +85,7 @@ struct _EGwItemPrivate {
 
 	/***** Send Options *****/
 	
+	gboolean set_sendoptions;
 	/* Reply Request */
 	char *reply_within;
 	gboolean reply_request_set;
@@ -436,6 +437,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->reply_within = NULL;
 	priv->reply_request_set = FALSE;
 	priv->autodelete = FALSE;
+	priv->set_sendoptions = FALSE;
 	priv->expires = NULL;
 	priv->delay_until = NULL;
 	priv->attach_list = NULL ;
@@ -2094,6 +2096,14 @@ e_gw_item_get_msg_content_type (EGwItem *item)
 }
 
 void
+e_gw_item_set_sendoptions (EGwItem *item, gboolean set)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->set_sendoptions = set;
+}
+
+void
 e_gw_item_set_reply_request (EGwItem *item, gboolean set)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
@@ -2363,54 +2373,57 @@ add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	
 	soup_soap_message_end_element (msg);
 	
-	soup_soap_message_start_element (msg, "sendoptions", NULL, NULL);
+	if (priv->set_sendoptions) {	
+		soup_soap_message_start_element (msg, "sendoptions", NULL, NULL);
+		
+		if (priv->reply_request_set) {
+			
+			soup_soap_message_start_element (msg, "requestReply", NULL, NULL);
+			
+			if (priv->reply_within)
+				e_gw_message_write_string_parameter (msg, "withinNDays", NULL, priv->reply_within);
+			
+			soup_soap_message_end_element (msg);
+		}
 	
-	if (priv->reply_request_set) {
+		soup_soap_message_start_element (msg, "statusTracking", NULL, NULL);
 		
-		soup_soap_message_start_element (msg, "requestReply", NULL, NULL);
+		soup_soap_message_add_attribute (msg, "autoDelete", priv->autodelete ? "1" : "0", NULL, NULL);
+	
+		switch (priv->track_info) {
+			case E_GW_ITEM_DELIVERED : soup_soap_message_write_string (msg, "Delivered");
+				 break;
+			case E_GW_ITEM_DELIVERED_OPENED : soup_soap_message_write_string (msg, "DeliveredAndOpened");
+				 break;
+			case E_GW_ITEM_ALL : soup_soap_message_write_string (msg, "All");
+				 break;
+			default: soup_soap_message_write_string (msg, "None");
+		}
 		
-		if (priv->reply_within)
-			e_gw_message_write_string_parameter (msg, "withinNDays", NULL, priv->reply_within);
+		soup_soap_message_end_element (msg);
+	
+		soup_soap_message_start_element (msg, "notification", NULL, NULL);
+		switch (priv->item_type) {
 		
+		/* TODO Uncomment this after the completed element is available in shemas */
+		case E_GW_ITEM_TYPE_TASK :
+	//		add_return_notification (msg, "completed", priv->notify_completed);
+			
+		case E_GW_ITEM_TYPE_APPOINTMENT:
+			add_return_notification (msg, "accepted", priv->notify_accepted);
+			add_return_notification (msg, "declined", priv->notify_declined);
+			add_return_notification (msg, "opened", priv->notify_opened);
+			break;
+		
+		default:
+			add_return_notification (msg, "opened", priv->notify_opened);
+			add_return_notification (msg, "deleted", priv->notify_deleted);
+		}
+		soup_soap_message_end_element (msg);
+
 		soup_soap_message_end_element (msg);
 	}
 
-	soup_soap_message_start_element (msg, "statusTracking", NULL, NULL);
-	
-	soup_soap_message_add_attribute (msg, "autoDelete", priv->autodelete ? "1" : "0", NULL, NULL);
-
-	switch (priv->track_info) {
-		case E_GW_ITEM_DELIVERED : soup_soap_message_write_string (msg, "Delivered");
-			 break;
-		case E_GW_ITEM_DELIVERED_OPENED : soup_soap_message_write_string (msg, "DeliveredAndOpened");
-			 break;
-		case E_GW_ITEM_ALL : soup_soap_message_write_string (msg, "All");
-			 break;
-		default: soup_soap_message_write_string (msg, "None");
-	}
-	
-	soup_soap_message_end_element (msg);
-
-	soup_soap_message_start_element (msg, "notification", NULL, NULL);
-	switch (priv->item_type) {
-	
-	/* TODO Uncomment this after the completed element is available in shemas */
-	case E_GW_ITEM_TYPE_TASK :
-//		add_return_notification (msg, "completed", priv->notify_completed);
-		
-	case E_GW_ITEM_TYPE_APPOINTMENT:
-		add_return_notification (msg, "accepted", priv->notify_accepted);
-		add_return_notification (msg, "declined", priv->notify_declined);
-		add_return_notification (msg, "opened", priv->notify_opened);
-		break;
-		
-	default:
-		add_return_notification (msg, "opened", priv->notify_opened);
-		add_return_notification (msg, "deleted", priv->notify_deleted);
-	}
-	soup_soap_message_end_element (msg);
-
-	soup_soap_message_end_element (msg);
 	soup_soap_message_end_element (msg);
 }
 
@@ -2465,7 +2478,8 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 
 	if (priv->recipient_list != NULL) {
 		add_distribution_to_soap_message (item, msg);
-		append_gw_item_options (msg, item);
+		if (priv->set_sendoptions)
+			append_gw_item_options (msg, item);
 	}
 
 	soup_soap_message_start_element (msg, "message", NULL, NULL);
@@ -2543,8 +2557,10 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		/*distribution*/
 		add_distribution_to_soap_message(item, msg) ;
 		
-		/* item options */
-		append_gw_item_options (msg, item);
+		if (priv->set_sendoptions) {
+			/* item options */
+			append_gw_item_options (msg, item);
+		}
 		
 		/*message*/
 		soup_soap_message_start_element (msg, "message", NULL, NULL);

@@ -1,3 +1,20 @@
+2005-01-06  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* Makefile.am:
+	* e-gw-sendoptions.[ch]: Adding two new files for send options.
+	* e-gw-connection.c: (e_gw_connection_dispose),
+	(e_gw_connection_init), (e_gw_connection_get_settings):
+	* e-gw-connection.h: Added the send options variable to the
+	structure and added a function to get the send options settings
+	from the server.
+	* e-gw-item.c: (e_gw_item_init), (e_gw_item_set_sendoptions),
+	(add_distribution_to_soap_message),
+	(e_gw_item_set_calendar_item_elements),
+	(e_gw_item_append_to_soap_message):
+	* e-gw-item.h: Added a boolean variable set_sendoptions. Now the 
+	send options will be sent to the server only when this variable is
+	set.
+
 2005-01-06  Parthasarathi Susarla <sparthasarathi@novell.com>
 
        * e-gw-item.[ch]: support for attachments for soap mailer
@@ -28,14 +45,13 @@
 	(e_gw_container_get_is_shared_to_me)
 	(e_gw_container_get_rights)
 	(e_gw_container_form_message) : to form the request message
-
 	and for setting these the following static methods in 
 	* e-gw-container.c 
 	(e_gw_container_set_owner)
 	(e_gw_container_set_modified)
 	(e_gw_container_set_sequence) 
 	(e_gw_container_set_is_shared_by_me)
-	(e_gw_container_set_is_shared_to_me) 
+	(e_gw_container_set_is_shared_to_me):
 	
 2004-12-15  Chenthill Palanisamy <pchenthill@novell.com>
 
