@@ -1,59 +1,59 @@
 # Brazilian Portuguese translation of Evolution Data Server.
 # Copyright (C) 2000-2004 Free Software Foundation, Inc.
-# Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000-2004.
+# Gustavo Maciel Dias Vieira <gustavo@sagui.org>, 2000-2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server 0.0.91\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
-"PO-Revision-Date: 2004-04-13 17:03-0400\n"
-"Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
+"Project-Id-Version: evolution-data-server 0.0.94\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-06-25 14:51-0400\n"
+"PO-Revision-Date: 2004-06-25 14:53-0400\n"
+"Last-Translator: Gustavo Maciel Dias Vieira <gustavo@sagui.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
-#: addressbook/backends/file/e-book-backend-file.c:428
-#: addressbook/backends/vcf/e-book-backend-vcf.c:452
+#: addressbook/backends/file/e-book-backend-file.c:433
+#: addressbook/backends/vcf/e-book-backend-vcf.c:445
 msgid "Loading..."
 msgstr "Carregando..."
 
-#: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
-#: addressbook/backends/vcf/e-book-backend-vcf.c:454
+#: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3155
+#: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
 msgstr "Pesquisando..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:615
+#: addressbook/backends/ldap/e-book-backend-ldap.c:618
 msgid "Using Distinguished Name (DN)"
 msgstr "Usando Distinguished Name (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:618
+#: addressbook/backends/ldap/e-book-backend-ldap.c:621
 msgid "Using Email Address"
 msgstr "Usando endereço eletrônico"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:784
+#: addressbook/backends/ldap/e-book-backend-ldap.c:787
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando ao servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1299
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1307
 msgid "Adding contact to LDAP server..."
 msgstr "Adicionando contato ao servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1395
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1407
 msgid "Removing contact from LDAP server..."
 msgstr "Removendo contato do servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1610
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1630
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contato do servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3067
 msgid "Receiving LDAP search results..."
 msgstr "Recebendo resultados da pesquisa LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3175
 msgid "Error performing search"
 msgstr "Erro ao executar pesquisa"
 
@@ -61,77 +61,87 @@ msgstr "Erro ao executar pesquisa"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
-#: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
-#: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
-#: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
-#: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
-#: addressbook/libebook/e-book.c:1943
+#: addressbook/libebook/e-book.c:234 addressbook/libebook/e-book.c:238
+#: addressbook/libebook/e-book.c:428 addressbook/libebook/e-book.c:432
+#: addressbook/libebook/e-book.c:560 addressbook/libebook/e-book.c:564
+#: addressbook/libebook/e-book.c:751 addressbook/libebook/e-book.c:756
+#: addressbook/libebook/e-book.c:922 addressbook/libebook/e-book.c:926
+#: addressbook/libebook/e-book.c:1063 addressbook/libebook/e-book.c:1067
+#: addressbook/libebook/e-book.c:1253 addressbook/libebook/e-book.c:1257
+#: addressbook/libebook/e-book.c:1458 addressbook/libebook/e-book.c:1462
+#: addressbook/libebook/e-book.c:1677 addressbook/libebook/e-book.c:1681
+#: addressbook/libebook/e-book.c:1870 addressbook/libebook/e-book.c:1874
+#: addressbook/libebook/e-book.c:2858
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" no livro antes de \"%s\""
 
-#: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
-#: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
-#: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
-#: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
-#: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
-#: addressbook/libebook/e-book.c:1417 addressbook/libebook/e-book.c:1519
+#: addressbook/libebook/e-book.c:247 addressbook/libebook/e-book.c:441
+#: addressbook/libebook/e-book.c:573 addressbook/libebook/e-book.c:766
+#: addressbook/libebook/e-book.c:936 addressbook/libebook/e-book.c:1077
+#: addressbook/libebook/e-book.c:1266 addressbook/libebook/e-book.c:1471
+#: addressbook/libebook/e-book.c:1691 addressbook/libebook/e-book.c:1883
+#: addressbook/libebook/e-book.c:2198 addressbook/libebook/e-book.c:2377
 msgid "book busy"
 msgstr "livro ocupado"
 
-#: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
-#: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
-#: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
-#: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
-#: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
-#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1439
-#: addressbook/libebook/e-book.c:1541 addressbook/libebook/e-book.c:1952
+#: addressbook/libebook/e-book.c:278 addressbook/libebook/e-book.c:282
+#: addressbook/libebook/e-book.c:472 addressbook/libebook/e-book.c:476
+#: addressbook/libebook/e-book.c:599 addressbook/libebook/e-book.c:603
+#: addressbook/libebook/e-book.c:793 addressbook/libebook/e-book.c:796
+#: addressbook/libebook/e-book.c:966 addressbook/libebook/e-book.c:969
+#: addressbook/libebook/e-book.c:1104 addressbook/libebook/e-book.c:1108
+#: addressbook/libebook/e-book.c:1302 addressbook/libebook/e-book.c:1306
+#: addressbook/libebook/e-book.c:1518 addressbook/libebook/e-book.c:1522
+#: addressbook/libebook/e-book.c:1721 addressbook/libebook/e-book.c:1725
+#: addressbook/libebook/e-book.c:1909 addressbook/libebook/e-book.c:1913
+#: addressbook/libebook/e-book.c:2139 addressbook/libebook/e-book.c:2224
+#: addressbook/libebook/e-book.c:2228 addressbook/libebook/e-book.c:2403
+#: addressbook/libebook/e-book.c:2407 addressbook/libebook/e-book.c:2867
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Exceção CORBA fazendo a chamada \"%s\""
 
-#: addressbook/libebook/e-book.c:1337
+#: addressbook/libebook/e-book.c:2120
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: não há operação atual"
 
-#: addressbook/libebook/e-book.c:1372
+#: addressbook/libebook/e-book.c:2155
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: não foi possível cancelar"
 
-#: addressbook/libebook/e-book.c:1409
+#: addressbook/libebook/e-book.c:2184 addressbook/libebook/e-book.c:2188
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" no livro após \"%s\""
 
-#: addressbook/libebook/e-book.c:1458
-#, fuzzy
+#: addressbook/libebook/e-book.c:2250
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: cancelado"
+msgstr "e_book_open: cancelado"
 
-#: addressbook/libebook/e-book.c:1810
+#: addressbook/libebook/e-book.c:2725
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Fonte inválida."
 
-#: addressbook/libebook/e-book.c:1818
+#: addressbook/libebook/e-book.c:2733
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: não existem fábricas disponíveis para a URI `%s'"
 
-#: addressbook/libebook/e-book.c:1830
+#: addressbook/libebook/e-book.c:2745
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Não foi possível criar EBookListener"
 
-#: addressbook/libebook/e-book.c:1881
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:2796
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: não existem fábricas disponíveis para a URI `%s'"
+msgstr "e_book_new: não existem fábricas disponíveis para a URI `%s'"
 
-#: addressbook/libebook/e-book.c:2038
+#: addressbook/libebook/e-book.c:2953
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: não existia uid de auto contato no gconf"
 
-#: addressbook/libebook/e-book.c:2147
+#: addressbook/libebook/e-book.c:3062
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -298,9 +308,8 @@ msgid "Email 3"
 msgstr "E-mail 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "E-mail 3"
+msgstr "E-mail 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -582,21 +591,21 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Listar endereços de exibição"
 
-#: addressbook/libebook/e-contact.c:1209
+#: addressbook/libebook/e-contact.c:1206
 msgid "Unnamed List"
 msgstr "Lista sem nome"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 msgid "Birthday"
 msgstr "Aniversário"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
 #, c-format
 msgid "Birthday: %s"
 msgstr "Aniversário: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Bodas: %s"
