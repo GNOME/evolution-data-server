@@ -2,6 +2,10 @@
 
 	* providers/imap4/camel-imap4-store.c (imap4_get_folder_info):
 	Respect the user's namespace override setting.
+	(imap4_get_folder_info): Changed the behaviour a bit to work like
+	the old imap code: only use the cache if the network is
+	unavailable, otherwise always scan the server for the folder
+	listing.
 
 2005-01-24  Parthasarathi Susarla <sparthasarathi@novell.com>
 

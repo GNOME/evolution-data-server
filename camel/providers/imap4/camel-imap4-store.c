@@ -1182,6 +1182,7 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	
 	CAMEL_SERVICE_LOCK (store, connect_lock);
 	
+#ifdef USE_FOLDER_INFO_CACHE_LOGIC_FOR_SPEED
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL
 	    || engine->state == CAMEL_IMAP4_ENGINE_DISCONNECTED) {
 		fi = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, base, flags);
@@ -1194,6 +1195,16 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		return fi;
 	}
+#else
+	/* this is the way the old imap code was meant to work (except it was broken and disregarded the
+	 * NETWORK_UNAVAIL state and went online anyway if fi was NULL, but we won't be evil like that)
+	 */
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		fi = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, base, flags);
+		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+		return fi;
+	}
+#endif
 	
  check_online:
 	
