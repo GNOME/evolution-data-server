@@ -34,7 +34,7 @@ libedataserver_la_SOURCES =		\
 	md5-utils.c
 
 libedataserver_la_LIBADD = 				\
-	$(top_builddir)/libdb/dist/libdb.a
+	$(top_builddir)/libdb/dist/libdb-4.1.la
 
 libedataserver_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)

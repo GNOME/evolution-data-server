@@ -1,3 +1,15 @@
+2004-02-13  Chris Toshok  <toshok@ximian.com>
+
+	* libedataserver/Makefile.am (libedataserver_la_LIBADD): use
+	libdb-4.1.la instead of libdb.a.
+
+	* libdb/dist/configure.ac: remove all the static/shared logic and
+	force libtool to be used.  also, remove -rpath from the SOFLAGS.
+	without -rpath and -static libtool builds the equivalent of a
+	noinst_ automake library.
+
+	* libdb/dist/configure: regen configure from configure.ac.
+
 2004-02-12  Chris Toshok  <toshok@ximian.com>
 
 	* configure.in (AM_PATH_ORBIT2): up our requirement to 2.9.8.
