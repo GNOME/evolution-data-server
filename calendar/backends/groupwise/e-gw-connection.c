@@ -37,6 +37,24 @@ struct _EGwConnectionPrivate {
 	char *session_id;
 };
 
+static EGwConnectionStatus
+parse_response_status (SoupSoapResponse *response)
+{
+	SoupSoapParameter *param, *subparam;
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "status");
+	if (!param)
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+
+	subparam = soup_soap_response_get_first_child_by_name (param, "code");
+	if (!subparam)
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+
+	/* FIXME: map 'code' to EGwConnectionStatus */
+
+	return E_GW_CONNECTION_STATUS_OK;
+}
+
 static void
 e_gw_connection_dispose (GObject *object)
 {
@@ -179,6 +197,7 @@ e_gw_connection_login (EGwConnection *cnc,
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
 	SoupSoapParameter *param;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
@@ -201,6 +220,8 @@ e_gw_connection_login (EGwConnection *cnc,
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
 
+	status = parse_response_status (response);
+
 	param = soup_soap_response_get_first_parameter_by_name (response, "username");
 	if (!param) {
 		g_object_unref (response);
@@ -213,7 +234,7 @@ e_gw_connection_login (EGwConnection *cnc,
 	/* free memory */
 	g_object_unref (response);
 
-	return E_GW_CONNECTION_STATUS_OK;
+	return status;
 }
 
 EGwConnectionStatus
@@ -221,6 +242,7 @@ e_gw_connection_logout (EGwConnection *cnc)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
@@ -240,8 +262,10 @@ e_gw_connection_logout (EGwConnection *cnc)
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
 
+	status = parse_response_status (response);
+
 	/* free memory */
 	g_object_unref (response);
 
-	return E_GW_CONNECTION_STATUS_OK;
+	return status;
 }
