@@ -1,4 +1,14 @@
+2005-01-31  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-engine.c (camel_imap4_engine_iterate): On connect
+	failures, disconnect our streams and set our engine state to
+	DISCONNECTED.
+
 2005-01-28  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-summary.c (untagged_fetch_all): Get rid of the
+	warnings about the mlist string not being strdup'd by the string
+	pool.
 
 	* camel-imap4-store.c (imap4_get_folder_info): In the ic1 error
 	case, xfer the ic1 exception, not the ic0 exception (which might

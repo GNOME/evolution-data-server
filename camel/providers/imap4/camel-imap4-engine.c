@@ -1297,6 +1297,18 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 			ic = (CamelIMAP4Command *) e_dlist_remhead (&engine->queue);
 			ic->status = CAMEL_IMAP4_COMMAND_ERROR;
 			camel_exception_xfer (&ic->ex, &rex);
+			camel_imap4_command_unref (ic);
+			
+			/* FIXME: in a perfect world, if the connect failure was due to the user cancelling the
+			 * passwd dialog, we'd either send a LOGOUT command here -or- we'd leave the connection
+			 * open but in the PREAUTH state that we'd later be able to handle if the user queued
+			 * more commands on the engine. */
+			engine->state = CAMEL_IMAP4_ENGINE_DISCONNECTED;
+			camel_object_unref (engine->istream);
+			engine->istream = NULL;
+			camel_object_unref (engine->ostream);
+			engine->ostream = NULL;
+			
 			return -1;
 		}
 	}

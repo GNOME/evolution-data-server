@@ -434,29 +434,22 @@ decode_references (const char *string, int inreplyto)
 	struct _camel_header_references *refs, *r;
 	CamelSummaryReferences *references;
 	unsigned char md5sum[16];
-	guint32 i, n = 0;
-	MD5Context md5;
+	guint32 i, n;
 	
 	if (inreplyto) {
-		if (!(r = refs = camel_header_references_inreplyto_decode (string)))
+		if (!(refs = camel_header_references_inreplyto_decode (string)))
 			return NULL;
 	} else {
-		if (!(r = refs = camel_header_references_decode (string)))
+		if (!(refs = camel_header_references_decode (string)))
 			return NULL;
 	}
 	
-	while (r != NULL) {
-		r = r->next;
-		n++;
-	}
-	
+	n = camel_header_references_list_size (&refs);
 	references = g_malloc (sizeof (CamelSummaryReferences) + (sizeof (CamelSummaryMessageID) * (n - 1)));
 	references->size = n;
 	
-	for (i = 0, r = refs; i < n; i++, r = r->next) {
-		md5_init (&md5);
-		md5_update (&md5, r->id, strlen (r->id));
-		md5_final (&md5, md5sum);
+	for (i = 0, r = refs; r != NULL; i++, r = r->next) {
+		md5_get_digest (r->id, strlen (r->id), md5sum);
 		memcpy (references->references[i].id.hash, md5sum, sizeof (references->references[i].id.hash));
 	}
 	
@@ -999,6 +992,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			CamelMimeParser *parser;
 			unsigned char *literal;
 			const char *str;
+			char *mlist;
 			size_t n;
 			
 			/* '(' */
@@ -1057,7 +1051,9 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 				h = camel_mime_parser_headers_raw (parser);
 				
 				/* find our mailing-list header */
-				iinfo->info.mlist = camel_header_raw_check_mailing_list (&h);
+				mlist = camel_header_raw_check_mailing_list (&h);
+				iinfo->info.mlist = camel_pstring_strdup (mlist);
+				g_free (mlist);
 				
 				/* check if we possibly have attachments */
 				if ((str = camel_header_raw_find (&h, "Content-Type", NULL))) {
