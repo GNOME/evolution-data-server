@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
-"POT-Creation-Date: 2003-11-03 12:46-0500\n"
+"POT-Creation-Date: 2003-11-03 14:21-0500\n"
 "PO-Revision-Date: 2003-09-15 13:49+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <tp@lists.linux.it>,<it@li.org>\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/libebook/e-book.c:214
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:214
 msgid "e_book_add_contact called on book before e_book_load_uri"
 msgstr ""
 
@@ -27,166 +26,124 @@ msgstr ""
 #: addressbook/libebook/e-book.c:801 addressbook/libebook/e-book.c:853
 #: addressbook/libebook/e-book.c:946 addressbook/libebook/e-book.c:1075
 #: addressbook/libebook/e-book.c:1173 addressbook/libebook/e-book.c:1397
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:221
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:330
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:412
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:511
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:620
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:701
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:801
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:853
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:946
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1075
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1173
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1397
 msgid "book busy"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:248
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:248
 msgid "Corba exception making Book::addContact call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:323
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:323
 msgid "e_book_commit_contact called on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:357
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:357
 msgid "Corba exception making Book::modifyContact call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:405
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:405
 msgid "e_book_get_supported_fields on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:434
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:434
 msgid "Corba exception making Book::getSupportedFields call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:504
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:504
 msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:534
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:534
 msgid "Corba exception making Book::getSupportedAuthMethods call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:613
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:613
 msgid "e_book_authenticate_user on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:646
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:646
 msgid "Corba exception making Book::authenticateUser call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:694
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:694
 msgid "e_book_get_contact on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:724
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:724
 msgid "Corba exception making Book::getContact call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:794
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:794
 msgid "e_book_remove_contact on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:846
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:846
 msgid "e_book_remove_contacts on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:885
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:885
 msgid "Corba exception making Book::removeContacts call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:939
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:939
 msgid "e_book_get_book_view on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:990
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:990
 msgid "Corba exception making Book::getBookView call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1068
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1068
 msgid "e_book_get_contacts on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1103
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1103
 msgid "Corba exception making Book::getContactList call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1166
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1166
 msgid "e_book_get_changes on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1197
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1197
 msgid "Corba exception making Book::getChanges call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1308
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1308
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "Annulla l'operazione corrente di posta"
 
 #: addressbook/libebook/e-book.c:1327
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1327
 msgid "Corba exception making Book::cancelOperation call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1342
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1342
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1390
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1390
 msgid "e_book_remove on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1419
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1419
 msgid "Corba exception making Book::remove call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1642 addressbook/libebook/e-book.c:1736
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1642
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1736
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1656
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1656
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:90
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:90
 msgid "Unique ID"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:91
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:91
 msgid "File As"
 msgstr "Memorizza come"
 
@@ -195,796 +152,635 @@ msgstr "Memorizza come"
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
 #: addressbook/libebook/e-contact.c:97
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:97
 msgid "Full Name"
 msgstr "Nome e cognome"
 
 #: addressbook/libebook/e-contact.c:98
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:98
 msgid "Name"
 msgstr "Nome"
 
 #: addressbook/libebook/e-contact.c:99
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:99
 #, fuzzy
 msgid "Given Name"
 msgstr "Nome del campo"
 
 #: addressbook/libebook/e-contact.c:100
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:100
 msgid "Family Name"
 msgstr "Cognome"
 
 #: addressbook/libebook/e-contact.c:101
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:101
 msgid "Nickname"
 msgstr "Nickname"
 
 #. Address fields
 #: addressbook/libebook/e-contact.c:104
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:104
 #, fuzzy
 msgid "Address List"
 msgstr "Indirizzo"
 
 #: addressbook/libebook/e-contact.c:105
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:105
 msgid "Home Address"
 msgstr "Indirizzo di casa"
 
 #: addressbook/libebook/e-contact.c:106
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:106
 #, fuzzy
 msgid "Work Address"
 msgstr "Indirizzo di casa"
 
 #: addressbook/libebook/e-contact.c:107
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:107
 msgid "Other Address"
 msgstr "Altro indirizzo"
 
 #: addressbook/libebook/e-contact.c:109
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:109
 #, fuzzy
 msgid "Home Address Label"
 msgstr "Etichetta indirizzo"
 
 #: addressbook/libebook/e-contact.c:110
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:110
 #, fuzzy
 msgid "Work Address Label"
 msgstr "Etichetta indirizzo"
 
 #: addressbook/libebook/e-contact.c:111
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:111
 #, fuzzy
 msgid "Other Address Label"
 msgstr "Etichetta indirizzo"
 
 #: addressbook/libebook/e-contact.c:113
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:113
 msgid "Assistant Phone"
 msgstr "Telefono assistente"
 
 #: addressbook/libebook/e-contact.c:114
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:114
 msgid "Business Phone"
 msgstr "Telefono ufficio"
 
 #: addressbook/libebook/e-contact.c:115
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:115
 msgid "Business Phone 2"
 msgstr "Telefono ufficio 2"
 
 #: addressbook/libebook/e-contact.c:116
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:116
 msgid "Business Fax"
 msgstr "Fax ufficio"
 
 #: addressbook/libebook/e-contact.c:117
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:117
 msgid "Callback Phone"
 msgstr "Telefono a cui richiamare"
 
 #: addressbook/libebook/e-contact.c:118
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:118
 msgid "Car Phone"
 msgstr "Telefono auto"
 
 #: addressbook/libebook/e-contact.c:119
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:119
 msgid "Company Phone"
 msgstr "Telefono ditta"
 
 #: addressbook/libebook/e-contact.c:120
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:120
 msgid "Home Phone"
 msgstr "Telefono di casa"
 
 #: addressbook/libebook/e-contact.c:121
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:121
 msgid "Home Phone 2"
 msgstr "Telefono casa 2"
 
 #: addressbook/libebook/e-contact.c:122
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:122
 msgid "Home Fax"
 msgstr "Fax casa"
 
 #: addressbook/libebook/e-contact.c:123
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:123
 msgid "ISDN"
 msgstr "ISDN"
 
 #: addressbook/libebook/e-contact.c:124
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:124
 msgid "Mobile Phone"
 msgstr "Cellulare"
 
 #: addressbook/libebook/e-contact.c:125
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:125
 msgid "Other Phone"
 msgstr "Altro telefono"
 
 #. XXX
 #: addressbook/libebook/e-contact.c:126
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:126
 msgid "Other Fax"
 msgstr "Altro fax"
 
 #. XXX
 #: addressbook/libebook/e-contact.c:127
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:127
 msgid "Pager"
 msgstr "Cercapersone"
 
 #: addressbook/libebook/e-contact.c:128
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:128
 msgid "Primary Phone"
 msgstr "Telefono principale"
 
 #: addressbook/libebook/e-contact.c:129
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:129
 msgid "Radio"
 msgstr "Radio"
 
 #: addressbook/libebook/e-contact.c:130
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:130
 msgid "Telex"
 msgstr "Telex"
 
 #: addressbook/libebook/e-contact.c:131
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:131
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
 #: addressbook/libebook/e-contact.c:134
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:134
 #, fuzzy
 msgid "Email List"
 msgstr "Email 2"
 
 #: addressbook/libebook/e-contact.c:135
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:135
 #, fuzzy
 msgid "Email 1"
 msgstr "Email 3"
 
 #: addressbook/libebook/e-contact.c:136
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:136
 msgid "Email 2"
 msgstr "Email 2"
 
 #: addressbook/libebook/e-contact.c:137
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:137
 msgid "Email 3"
 msgstr "Email 3"
 
 #: addressbook/libebook/e-contact.c:138
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:138
 msgid "Mailer"
 msgstr "Gestore di posta"
 
 #: addressbook/libebook/e-contact.c:139
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:139
 #, fuzzy
 msgid "Wants HTML Mail"
 msgstr "Vuole HTML"
 
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:142
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:142
 msgid "AIM Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:143
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:143
 #, fuzzy
 msgid "Jabber Id List"
 msgstr "Elenco senza nome"
 
 #: addressbook/libebook/e-contact.c:144
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:144
 msgid "Yahoo! Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:145
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:145
 msgid "MSN Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:146
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:146
 #, fuzzy
 msgid "ICQ Id List"
 msgstr "È un nuovo elenco"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:149
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:149
 msgid "Organization"
 msgstr "Organizzazione"
 
 #: addressbook/libebook/e-contact.c:150
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:150
 msgid "Organizational Unit"
 msgstr "Unità organizzativa"
 
 #: addressbook/libebook/e-contact.c:151
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:151
 msgid "Office"
 msgstr "Ufficio"
 
 #: addressbook/libebook/e-contact.c:153
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:153
 msgid "Title"
 msgstr "Qualifica"
 
 #: addressbook/libebook/e-contact.c:154
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:154
 msgid "Role"
 msgstr "Ruolo"
 
 #: addressbook/libebook/e-contact.c:155
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:155
 msgid "Manager"
 msgstr "Manager"
 
 #: addressbook/libebook/e-contact.c:156
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:156
 msgid "Assistant"
 msgstr "Assistente"
 
 #. Web fields
 #: addressbook/libebook/e-contact.c:159
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:159
 msgid "Homepage URL"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:160
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:160
 msgid "Weblog URL"
 msgstr ""
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:163
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:163
 #, fuzzy
 msgid "Photo"
 msgstr "Porto"
 
 #: addressbook/libebook/e-contact.c:164
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:164
 #, fuzzy
 msgid "Logo"
 msgstr "Togo"
 
 #: addressbook/libebook/e-contact.c:168
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:168
 msgid "Category List"
 msgstr "Elenco categorie"
 
 #: addressbook/libebook/e-contact.c:169 addressbook/libebook/e-contact.c:171
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:169
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:171
 msgid "Categories"
 msgstr "Categorie"
 
 #. Collaboration fields
 #: addressbook/libebook/e-contact.c:175
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:175
 msgid "Calendar URI"
 msgstr "URI Calendario"
 
 #: addressbook/libebook/e-contact.c:176
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:176
 msgid "Free/Busy URL"
 msgstr "URL libero/occupato"
 
 #: addressbook/libebook/e-contact.c:177
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:177
 msgid "ICS Calendar"
 msgstr "Calendario ICS"
 
 #. Misc fields
 #: addressbook/libebook/e-contact.c:180
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:180
 #, fuzzy
 msgid "Spouse's Name"
 msgstr "Coniuge"
 
 #: addressbook/libebook/e-contact.c:181
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:181
 msgid "Note"
 msgstr "Note"
 
 #: addressbook/libebook/e-contact.c:183
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:183
 msgid "Birth Date"
 msgstr "Data di nascita"
 
 #: addressbook/libebook/e-contact.c:184
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:184
 msgid "Anniversary"
 msgstr "Anniversario"
 
 #: addressbook/libebook/e-contact.c:186
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:186
 msgid "List"
 msgstr "Elenco"
 
 #: addressbook/libebook/e-contact.c:187
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:187
 msgid "List Show Addresses"
 msgstr "Elenco mostra indirizzi"
 
-#: addressbook/libebook/e-destination.c:709
-msgid "Unnamed List"
-msgstr "Elenco senza nome"
-
 #: addressbook/libedatabook/e-book-backend-file.c:400
 #: addressbook/libedatabook/e-book-backend-vcf.c:104
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-file.c:400
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-vcf.c:104
 msgid "Loading..."
 msgstr "Caricamento in corso..."
 
 #: addressbook/libedatabook/e-book-backend-file.c:402
 #: addressbook/libedatabook/e-book-backend-ldap.c:2768
 #: addressbook/libedatabook/e-book-backend-vcf.c:106
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-file.c:402
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2768
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-vcf.c:106
 msgid "Searching..."
 msgstr "Ricerca in corso..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:601
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "Uso nome distintivo (DN)"
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:604
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "Uso indirizzo Email"
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:748
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "Riconnessione al server LDAP..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1250
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1250
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "Aggiunta di una card al server LDAP in corso..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1339
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1339
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "Rimozione di una card dal server LDAP in corso..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1539
 #: addressbook/libedatabook/e-book-backend-ldap.c:1542
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1539
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1542
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "Modifica di una card nel server LDAP in corso..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:2691
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2691
 msgid "Receiving LDAP search results..."
 msgstr "Ricezione dei risultati della ricerca LDAP in corso..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:2788
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2788
 msgid "Error performing search"
 msgstr "Errore nell'esecuzione della ricerca"
 
 #: calendar/libecal/e-cal-component.c:1218
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-component.c:1218
 msgid "Untitled appointment"
 msgstr "Appuntamento senza titolo"
 
 #: calendar/libecal/e-cal-recur.c:3989
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3989
 msgid "1st"
 msgstr "1"
 
 #: calendar/libecal/e-cal-recur.c:3990
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3990
 msgid "2nd"
 msgstr "2"
 
 #: calendar/libecal/e-cal-recur.c:3991
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3991
 msgid "3rd"
 msgstr "3"
 
 #: calendar/libecal/e-cal-recur.c:3992
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3992
 msgid "4th"
 msgstr "4"
 
 #: calendar/libecal/e-cal-recur.c:3993
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3993
 msgid "5th"
 msgstr "5"
 
 #: calendar/libecal/e-cal-recur.c:3994
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3994
 msgid "6th"
 msgstr "6"
 
 #: calendar/libecal/e-cal-recur.c:3995
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3995
 msgid "7th"
 msgstr "7"
 
 #: calendar/libecal/e-cal-recur.c:3996
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3996
 msgid "8th"
 msgstr "8"
 
 #: calendar/libecal/e-cal-recur.c:3997
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3997
 msgid "9th"
 msgstr "9"
 
 #: calendar/libecal/e-cal-recur.c:3998
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3998
 msgid "10th"
 msgstr "10"
 
 #: calendar/libecal/e-cal-recur.c:3999
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3999
 msgid "11th"
 msgstr "11"
 
 #: calendar/libecal/e-cal-recur.c:4000
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4000
 msgid "12th"
 msgstr "12"
 
 #: calendar/libecal/e-cal-recur.c:4001
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4001
 msgid "13th"
 msgstr "13"
 
 #: calendar/libecal/e-cal-recur.c:4002
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4002
 msgid "14th"
 msgstr "14"
 
 #: calendar/libecal/e-cal-recur.c:4003
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4003
 msgid "15th"
 msgstr "15"
 
 #: calendar/libecal/e-cal-recur.c:4004
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4004
 msgid "16th"
 msgstr "16"
 
 #: calendar/libecal/e-cal-recur.c:4005
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4005
 msgid "17th"
 msgstr "17"
 
 #: calendar/libecal/e-cal-recur.c:4006
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4006
 msgid "18th"
 msgstr "18"
 
 #: calendar/libecal/e-cal-recur.c:4007
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4007
 msgid "19th"
 msgstr "19"
 
 #: calendar/libecal/e-cal-recur.c:4008
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4008
 msgid "20th"
 msgstr "20"
 
 #: calendar/libecal/e-cal-recur.c:4009
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4009
 msgid "21st"
 msgstr "21"
 
 #: calendar/libecal/e-cal-recur.c:4010
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4010
 msgid "22nd"
 msgstr "22"
 
 #: calendar/libecal/e-cal-recur.c:4011
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4011
 msgid "23rd"
 msgstr "23"
 
 #: calendar/libecal/e-cal-recur.c:4012
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4012
 msgid "24th"
 msgstr "24"
 
 #: calendar/libecal/e-cal-recur.c:4013
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4013
 msgid "25th"
 msgstr "25"
 
 #: calendar/libecal/e-cal-recur.c:4014
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4014
 msgid "26th"
 msgstr "26"
 
 #: calendar/libecal/e-cal-recur.c:4015
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4015
 msgid "27th"
 msgstr "27"
 
 #: calendar/libecal/e-cal-recur.c:4016
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4016
 msgid "28th"
 msgstr "28"
 
 #: calendar/libecal/e-cal-recur.c:4017
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4017
 msgid "29th"
 msgstr "29"
 
 #: calendar/libecal/e-cal-recur.c:4018
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4018
 msgid "30th"
 msgstr "30"
 
 #: calendar/libecal/e-cal-recur.c:4019
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4019
 msgid "31st"
 msgstr "31"
 
 #: calendar/libecal/e-cal-util.c:551 calendar/libecal/e-cal-util.c:573
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:551
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:573
 msgid "High"
 msgstr "Alta"
 
 #: calendar/libecal/e-cal-util.c:553 calendar/libecal/e-cal-util.c:575
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:553
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:575
 msgid "Normal"
 msgstr "Normale"
 
 #: calendar/libecal/e-cal-util.c:555 calendar/libecal/e-cal-util.c:577
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:555
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:577
 msgid "Low"
 msgstr "Bassa"
 
 #. An empty string is the same as 'None'.
 #: calendar/libecal/e-cal-util.c:571
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:571
 msgid "Undefined"
 msgstr "Non definita"
 
 #: calendar/libecal/e-cal.c:3780
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3780
 msgid "Invalid argument"
 msgstr "Argomento non valido"
 
 #: calendar/libecal/e-cal.c:3782
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3782
 msgid "Backend is busy"
 msgstr ""
 
 #: calendar/libecal/e-cal.c:3784
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3784
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Deposito non in linea"
 
 #: calendar/libecal/e-cal.c:3786
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3786
 #, fuzzy
 msgid "No such calendar"
 msgstr "Non è presente la cartella %s"
 
 #: calendar/libecal/e-cal.c:3788 calendar/libecal/e-cal.c:3798
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3788
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3798
 #, fuzzy
 msgid "Object not found"
 msgstr "Impossibile trovare l'oggetto\n"
 
 #: calendar/libecal/e-cal.c:3790
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3790
 #, fuzzy
 msgid "Invalid object"
 msgstr "Scopo non valido"
 
 #: calendar/libecal/e-cal.c:3792
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3792
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook non caricato\n"
 
 #: calendar/libecal/e-cal.c:3794
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3794
 msgid "URI already loaded"
 msgstr ""
 
 #: calendar/libecal/e-cal.c:3796
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3796
 msgid "Permission denied"
 msgstr "Permesso negato"
 
 #: calendar/libecal/e-cal.c:3800
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3800
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "ID della card esiste già"
 
 #: calendar/libecal/e-cal.c:3802
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3802
 msgid "Protocol not supported"
 msgstr "Protocollo non supportato"
 
 #: calendar/libecal/e-cal.c:3804
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3804
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operazione annullata"
 
 #: calendar/libecal/e-cal.c:3806
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3806
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Annulla operazione"
 
 #: calendar/libecal/e-cal.c:3808
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3808
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Autenticazione non riuscita"
 
 #: calendar/libecal/e-cal.c:3810
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3810
 msgid "Authentication required"
 msgstr "Autenticazione richiesta"
 
 #: calendar/libecal/e-cal.c:3812
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3812
 msgid "A CORBA esception has occurred"
 msgstr ""
 
 #: calendar/libecal/e-cal.c:3814
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3814
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
 #: calendar/libecal/e-cal.c:3816
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3816
 msgid "No error"
 msgstr "Nessun errore"
 
 #: calendar/libedatacal/e-cal-backend-file.c:175
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-file.c:175
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Impossibile salvare la data di calendario: URI malformulata."
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:50
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:50
 msgid "time-now expects 0 arguments"
 msgstr "time-now prevede 0 argomenti"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:74
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:74
 msgid "make-time expects 1 argument"
 msgstr "make-time prevede 1 argomento"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:79
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:79
 msgid "make-time expects argument 1 to be a string"
 msgstr "make-time prevede che l'argomento 1 sia una stringa"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:87
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:87
 msgid "make-time argument 1 must be an ISO 8601 date/time string"
 msgstr "make-time prevede che l'argomento 1 sia una stringa ISO 8601 data/ora"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:116
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:116
 msgid "time-add-day expects 2 arguments"
 msgstr "time-add-day prevede 2 argomenti"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:121
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:121
 msgid "time-add-day expects argument 1 to be a time_t"
 msgstr "time-add-day prevede che l'argomento 1 sia un time_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:128
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:128
 msgid "time-add-day expects argument 2 to be an integer"
 msgstr "time-add-day prevede che l'argomento 1 sia un intero"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:155
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:155
 msgid "time-day-begin expects 1 argument"
 msgstr "time-day-begin prevede 1 argomento"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:160
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:160
 msgid "time-day-begin expects argument 1 to be a time_t"
 msgstr "time-day-begin prevede che l'argomento 1 sia un time_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:187
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:187
 msgid "time-day-end expects 1 argument"
 msgstr "time-day-end prevede 1 argomento"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:192
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:192
 msgid "time-day-end expects argument 1 to be a time_t"
 msgstr "time-day-end prevede che l'argomento 1 sia un time_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:220
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:220
 msgid "get-vtype expects 0 arguments"
 msgstr "get-vtype prevede 0 argomenti"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:280
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:280
 msgid "occur-in-time-range? expects 2 arguments"
 msgstr "occur-in-time-range? prevede 2 argomenti"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:285
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:285
 msgid "occur-in-time-range? expects argument 1 to be a time_t"
 msgstr "occur-in-time-range? prevede che l'argomento 1 sia un time_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:292
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:292
 msgid "occur-in-time-range? expects argument 2 to be a time_t"
 msgstr "occur-in-time-range? prevede che l'argomento 2 sia un time_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:436
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:436
 msgid "contains? expects 2 arguments"
 msgstr "contiene? prevede 2 argomenti"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:441
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:441
 msgid "contains? expects argument 1 to be a string"
 msgstr "contiene? prevede che l'argomento 1 sia una stringa"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:448
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:448
 msgid "contains? expects argument 2 to be a string"
 msgstr "contiene? prevede che l'argomento 2 sia una stringa"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:465
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:465
 msgid ""
 "contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
 "\""
@@ -993,24 +789,20 @@ msgstr ""
 "\"descrizione\""
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:492
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:492
 #, fuzzy
 msgid "has-alarms? expects at least 1 argument"
 msgstr "ha categorie? prevede almeno 1 argomento"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:497
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:497
 #, fuzzy
 msgid "has-alarms? excepts argument to be a boolean"
 msgstr "contiene? prevede che l'argomento 2 sia una stringa"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:537
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:537
 msgid "has-categories? expects at least 1 argument"
 msgstr "ha categorie? prevede almeno 1 argomento"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:549
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:549
 msgid ""
 "has-categories? expects all arguments to be strings or one and only one "
 "argument to be a boolean false (#f)"
@@ -1019,41 +811,35 @@ msgstr ""
 "solo sia falso (#f)"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:629
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:629
 msgid "is-completed? expects 0 arguments"
 msgstr "is-completed? non vuole nessun argomento"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:666
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:666
 msgid "completed-before? expects 1 argument"
 msgstr "completed-before? vuole un solo argomento"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:671
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:671
 msgid "completed-before? expects argument 1 to be a time_t"
 msgstr "completed-before? richiede che il primo argomento sia di tipo time_t"
 
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_Wombat.server.in.in.h:1
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
 #: src/GNOME_Evolution_Wombat.server.in.in.h:1
 #: src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
 msgid "Evolution Addressbook local/LDAP backend"
 msgstr "Backend della rubrica locale/LDAP di Evolution"
 
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_Wombat.server.in.in.h:2
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_Wombat.server.in.in.h:2
 #: src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
 msgid "Evolution Calendar local file backend"
 msgstr "Backend dei file del calendario locale di Evolution"
 
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
 #: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
 #, fuzzy
 msgid "Evolution Addressbook local backend"
 msgstr "Backend della rubrica locale/LDAP di Evolution"
+
+#~ msgid "Unnamed List"
+#~ msgstr "Elenco senza nome"
 
 #~ msgid "Evolution LDIF importer"
 #~ msgstr "Importatore LDIF di Evolution."

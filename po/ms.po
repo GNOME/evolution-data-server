@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution HEAD\n"
-"POT-Creation-Date: 2003-11-03 12:46-0500\n"
+"POT-Creation-Date: 2003-11-03 14:21-0500\n"
 "PO-Revision-Date: 2003-07-21 08:00+0800\n"
 "Last-Translator: Mimos Open Source Development Group <syed@mimos.my>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sf.net>\n"
@@ -15,7 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/libebook/e-book.c:214
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:214
 msgid "e_book_add_contact called on book before e_book_load_uri"
 msgstr ""
 
@@ -25,166 +24,124 @@ msgstr ""
 #: addressbook/libebook/e-book.c:801 addressbook/libebook/e-book.c:853
 #: addressbook/libebook/e-book.c:946 addressbook/libebook/e-book.c:1075
 #: addressbook/libebook/e-book.c:1173 addressbook/libebook/e-book.c:1397
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:221
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:330
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:412
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:511
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:620
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:701
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:801
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:853
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:946
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1075
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1173
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1397
 msgid "book busy"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:248
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:248
 msgid "Corba exception making Book::addContact call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:323
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:323
 msgid "e_book_commit_contact called on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:357
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:357
 msgid "Corba exception making Book::modifyContact call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:405
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:405
 msgid "e_book_get_supported_fields on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:434
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:434
 msgid "Corba exception making Book::getSupportedFields call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:504
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:504
 msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:534
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:534
 msgid "Corba exception making Book::getSupportedAuthMethods call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:613
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:613
 msgid "e_book_authenticate_user on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:646
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:646
 msgid "Corba exception making Book::authenticateUser call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:694
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:694
 msgid "e_book_get_contact on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:724
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:724
 msgid "Corba exception making Book::getContact call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:794
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:794
 msgid "e_book_remove_contact on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:846
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:846
 msgid "e_book_remove_contacts on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:885
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:885
 msgid "Corba exception making Book::removeContacts call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:939
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:939
 msgid "e_book_get_book_view on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:990
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:990
 msgid "Corba exception making Book::getBookView call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1068
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1068
 msgid "e_book_get_contacts on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1103
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1103
 msgid "Corba exception making Book::getContactList call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1166
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1166
 msgid "e_book_get_changes on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1197
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1197
 msgid "Corba exception making Book::getChanges call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1308
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1308
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "Batalkan pengendalian mel semasa"
 
 #: addressbook/libebook/e-book.c:1327
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1327
 msgid "Corba exception making Book::cancelOperation call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1342
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1342
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1390
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1390
 msgid "e_book_remove on book before e_book_load_uri"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1419
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1419
 msgid "Corba exception making Book::remove call"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1642 addressbook/libebook/e-book.c:1736
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1642
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1736
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1656
-#: evolution-data-server-0.0.1/addressbook/libebook/e-book.c:1656
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:90
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:90
 msgid "Unique ID"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:91
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:91
 msgid "File As"
 msgstr "Failkan Sebagai"
 
@@ -193,796 +150,635 @@ msgstr "Failkan Sebagai"
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
 #: addressbook/libebook/e-contact.c:97
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:97
 msgid "Full Name"
 msgstr "Nama Penuh"
 
 #: addressbook/libebook/e-contact.c:98
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:98
 msgid "Name"
 msgstr "Nama"
 
 #: addressbook/libebook/e-contact.c:99
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:99
 #, fuzzy
 msgid "Given Name"
 msgstr "Nama Medan"
 
 #: addressbook/libebook/e-contact.c:100
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:100
 msgid "Family Name"
 msgstr "Nama Keluarga"
 
 #: addressbook/libebook/e-contact.c:101
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:101
 msgid "Nickname"
 msgstr "Nama ringkas"
 
 #. Address fields
 #: addressbook/libebook/e-contact.c:104
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:104
 #, fuzzy
 msgid "Address List"
 msgstr "Alamat"
 
 #: addressbook/libebook/e-contact.c:105
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:105
 msgid "Home Address"
 msgstr "Alamat Rumah"
 
 #: addressbook/libebook/e-contact.c:106
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:106
 #, fuzzy
 msgid "Work Address"
 msgstr "Alamat Rumah"
 
 #: addressbook/libebook/e-contact.c:107
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:107
 msgid "Other Address"
 msgstr "Alamat Lain"
 
 #: addressbook/libebook/e-contact.c:109
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:109
 #, fuzzy
 msgid "Home Address Label"
 msgstr "Label Alamat"
 
 #: addressbook/libebook/e-contact.c:110
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:110
 #, fuzzy
 msgid "Work Address Label"
 msgstr "Label Alamat"
 
 #: addressbook/libebook/e-contact.c:111
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:111
 #, fuzzy
 msgid "Other Address Label"
 msgstr "Label Alamat"
 
 #: addressbook/libebook/e-contact.c:113
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:113
 msgid "Assistant Phone"
 msgstr "Telefon Pembantu"
 
 #: addressbook/libebook/e-contact.c:114
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:114
 msgid "Business Phone"
 msgstr "Telefon Perniagaan"
 
 #: addressbook/libebook/e-contact.c:115
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:115
 msgid "Business Phone 2"
 msgstr "Telefon Perniagaan 2"
 
 #: addressbook/libebook/e-contact.c:116
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:116
 msgid "Business Fax"
 msgstr "Faks Perniagaan"
 
 #: addressbook/libebook/e-contact.c:117
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:117
 msgid "Callback Phone"
 msgstr "Telefon Panggil Balik"
 
 #: addressbook/libebook/e-contact.c:118
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:118
 msgid "Car Phone"
 msgstr "Telefon Kereta"
 
 #: addressbook/libebook/e-contact.c:119
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:119
 msgid "Company Phone"
 msgstr "Telefon Syarikat"
 
 #: addressbook/libebook/e-contact.c:120
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:120
 msgid "Home Phone"
 msgstr "Telefon Rumah"
 
 #: addressbook/libebook/e-contact.c:121
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:121
 msgid "Home Phone 2"
 msgstr "Telefon Rumah 2"
 
 #: addressbook/libebook/e-contact.c:122
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:122
 msgid "Home Fax"
 msgstr "Faks Rumah"
 
 #: addressbook/libebook/e-contact.c:123
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:123
 msgid "ISDN"
 msgstr "ISDN"
 
 #: addressbook/libebook/e-contact.c:124
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:124
 msgid "Mobile Phone"
 msgstr "Telefon Bimbit"
 
 #: addressbook/libebook/e-contact.c:125
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:125
 msgid "Other Phone"
 msgstr "Telefon Lain"
 
 #. XXX
 #: addressbook/libebook/e-contact.c:126
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:126
 msgid "Other Fax"
 msgstr "Faks Lain"
 
 #. XXX
 #: addressbook/libebook/e-contact.c:127
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:127
 msgid "Pager"
 msgstr "Pengelui"
 
 #: addressbook/libebook/e-contact.c:128
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:128
 msgid "Primary Phone"
 msgstr "Telefon Utama"
 
 #: addressbook/libebook/e-contact.c:129
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:129
 msgid "Radio"
 msgstr "Radio"
 
 #: addressbook/libebook/e-contact.c:130
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:130
 msgid "Telex"
 msgstr "Teleks"
 
 #: addressbook/libebook/e-contact.c:131
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:131
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
 #: addressbook/libebook/e-contact.c:134
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:134
 #, fuzzy
 msgid "Email List"
 msgstr "E-mel 2"
 
 #: addressbook/libebook/e-contact.c:135
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:135
 #, fuzzy
 msgid "Email 1"
 msgstr "E-mel 3"
 
 #: addressbook/libebook/e-contact.c:136
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:136
 msgid "Email 2"
 msgstr "E-mel 2"
 
 #: addressbook/libebook/e-contact.c:137
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:137
 msgid "Email 3"
 msgstr "E-mel 3"
 
 #: addressbook/libebook/e-contact.c:138
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:138
 msgid "Mailer"
 msgstr "Pengemel"
 
 #: addressbook/libebook/e-contact.c:139
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:139
 #, fuzzy
 msgid "Wants HTML Mail"
 msgstr "Inginkan HTML"
 
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:142
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:142
 msgid "AIM Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:143
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:143
 #, fuzzy
 msgid "Jabber Id List"
 msgstr "Senarai Tanpa Nama"
 
 #: addressbook/libebook/e-contact.c:144
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:144
 msgid "Yahoo! Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:145
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:145
 msgid "MSN Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:146
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:146
 #, fuzzy
 msgid "ICQ Id List"
 msgstr "Ialah Senarai Baru"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:149
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:149
 msgid "Organization"
 msgstr "Organisasi"
 
 #: addressbook/libebook/e-contact.c:150
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:150
 msgid "Organizational Unit"
 msgstr "Unit Organisasi"
 
 #: addressbook/libebook/e-contact.c:151
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:151
 msgid "Office"
 msgstr "Pejabat"
 
 #: addressbook/libebook/e-contact.c:153
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:153
 msgid "Title"
 msgstr "Gelaran"
 
 #: addressbook/libebook/e-contact.c:154
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:154
 msgid "Role"
 msgstr "Peranan"
 
 #: addressbook/libebook/e-contact.c:155
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:155
 msgid "Manager"
 msgstr "Pengurus"
 
 #: addressbook/libebook/e-contact.c:156
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:156
 msgid "Assistant"
 msgstr "Pembantu"
 
 #. Web fields
 #: addressbook/libebook/e-contact.c:159
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:159
 msgid "Homepage URL"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:160
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:160
 msgid "Weblog URL"
 msgstr ""
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:163
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:163
 #, fuzzy
 msgid "Photo"
 msgstr "Porto"
 
 #: addressbook/libebook/e-contact.c:164
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:164
 #, fuzzy
 msgid "Logo"
 msgstr "Togo"
 
 #: addressbook/libebook/e-contact.c:168
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:168
 msgid "Category List"
 msgstr "Senarai Kategori"
 
 #: addressbook/libebook/e-contact.c:169 addressbook/libebook/e-contact.c:171
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:169
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:171
 msgid "Categories"
 msgstr "Kategori"
 
 #. Collaboration fields
 #: addressbook/libebook/e-contact.c:175
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:175
 msgid "Calendar URI"
 msgstr "Kalendar URI"
 
 #: addressbook/libebook/e-contact.c:176
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:176
 msgid "Free/Busy URL"
 msgstr "URL Bebas/Sibuk"
 
 #: addressbook/libebook/e-contact.c:177
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:177
 msgid "ICS Calendar"
 msgstr "Kalendar ICS"
 
 #. Misc fields
 #: addressbook/libebook/e-contact.c:180
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:180
 #, fuzzy
 msgid "Spouse's Name"
 msgstr "Pasangan"
 
 #: addressbook/libebook/e-contact.c:181
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:181
 msgid "Note"
 msgstr "Nota"
 
 #: addressbook/libebook/e-contact.c:183
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:183
 msgid "Birth Date"
 msgstr "Tarikh Lahir"
 
 #: addressbook/libebook/e-contact.c:184
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:184
 msgid "Anniversary"
 msgstr "Ulang tahun"
 
 #: addressbook/libebook/e-contact.c:186
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:186
 msgid "List"
 msgstr "Senarai"
 
 #: addressbook/libebook/e-contact.c:187
-#: evolution-data-server-0.0.1/addressbook/libebook/e-contact.c:187
 msgid "List Show Addresses"
 msgstr "Senaraikan Tunjukkan Alamat"
 
-#: addressbook/libebook/e-destination.c:709
-msgid "Unnamed List"
-msgstr "Senarai Tanpa Nama"
-
 #: addressbook/libedatabook/e-book-backend-file.c:400
 #: addressbook/libedatabook/e-book-backend-vcf.c:104
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-file.c:400
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-vcf.c:104
 msgid "Loading..."
 msgstr "Sedang memuatkan..."
 
 #: addressbook/libedatabook/e-book-backend-file.c:402
 #: addressbook/libedatabook/e-book-backend-ldap.c:2768
 #: addressbook/libedatabook/e-book-backend-vcf.c:106
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-file.c:402
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2768
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-vcf.c:106
 msgid "Searching..."
 msgstr "Sedang mencari..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:601
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "Menggunakan Nama Berbeza (NB)"
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:604
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "Menggunakan Alamat E-mel"
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:748
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "Menyambungkan semula ke pelayan LDAP..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1250
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1250
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "Menambahkan kad ke pelayan LDAP..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1339
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1339
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "Mengeluarkan kad dari pelayan LDAP..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1539
 #: addressbook/libedatabook/e-book-backend-ldap.c:1542
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1539
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:1542
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "Mengubahsuaikan kad dari pelayan LDAP..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:2691
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2691
 msgid "Receiving LDAP search results..."
 msgstr "Menerima hasil carian LDAP..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:2788
-#: evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c:2788
 msgid "Error performing search"
 msgstr "Ralat ketika membuat carian"
 
 #: calendar/libecal/e-cal-component.c:1218
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-component.c:1218
 msgid "Untitled appointment"
 msgstr "Temu janji tak berjudul"
 
 #: calendar/libecal/e-cal-recur.c:3989
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3989
 msgid "1st"
 msgstr "1"
 
 #: calendar/libecal/e-cal-recur.c:3990
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3990
 msgid "2nd"
 msgstr "2"
 
 #: calendar/libecal/e-cal-recur.c:3991
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3991
 msgid "3rd"
 msgstr "3"
 
 #: calendar/libecal/e-cal-recur.c:3992
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3992
 msgid "4th"
 msgstr "4"
 
 #: calendar/libecal/e-cal-recur.c:3993
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3993
 msgid "5th"
 msgstr "5"
 
 #: calendar/libecal/e-cal-recur.c:3994
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3994
 msgid "6th"
 msgstr "6"
 
 #: calendar/libecal/e-cal-recur.c:3995
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3995
 msgid "7th"
 msgstr "7"
 
 #: calendar/libecal/e-cal-recur.c:3996
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3996
 msgid "8th"
 msgstr "8"
 
 #: calendar/libecal/e-cal-recur.c:3997
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3997
 msgid "9th"
 msgstr "9"
 
 #: calendar/libecal/e-cal-recur.c:3998
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3998
 msgid "10th"
 msgstr "10"
 
 #: calendar/libecal/e-cal-recur.c:3999
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:3999
 msgid "11th"
 msgstr "11"
 
 #: calendar/libecal/e-cal-recur.c:4000
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4000
 msgid "12th"
 msgstr "12"
 
 #: calendar/libecal/e-cal-recur.c:4001
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4001
 msgid "13th"
 msgstr "13"
 
 #: calendar/libecal/e-cal-recur.c:4002
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4002
 msgid "14th"
 msgstr "14"
 
 #: calendar/libecal/e-cal-recur.c:4003
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4003
 msgid "15th"
 msgstr "15"
 
 #: calendar/libecal/e-cal-recur.c:4004
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4004
 msgid "16th"
 msgstr "16"
 
 #: calendar/libecal/e-cal-recur.c:4005
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4005
 msgid "17th"
 msgstr "17"
 
 #: calendar/libecal/e-cal-recur.c:4006
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4006
 msgid "18th"
 msgstr "18"
 
 #: calendar/libecal/e-cal-recur.c:4007
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4007
 msgid "19th"
 msgstr "19"
 
 #: calendar/libecal/e-cal-recur.c:4008
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4008
 msgid "20th"
 msgstr "20"
 
 #: calendar/libecal/e-cal-recur.c:4009
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4009
 msgid "21st"
 msgstr "21"
 
 #: calendar/libecal/e-cal-recur.c:4010
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4010
 msgid "22nd"
 msgstr "22"
 
 #: calendar/libecal/e-cal-recur.c:4011
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4011
 msgid "23rd"
 msgstr "23"
 
 #: calendar/libecal/e-cal-recur.c:4012
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4012
 msgid "24th"
 msgstr "24"
 
 #: calendar/libecal/e-cal-recur.c:4013
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4013
 msgid "25th"
 msgstr "25"
 
 #: calendar/libecal/e-cal-recur.c:4014
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4014
 msgid "26th"
 msgstr "26"
 
 #: calendar/libecal/e-cal-recur.c:4015
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4015
 msgid "27th"
 msgstr "27"
 
 #: calendar/libecal/e-cal-recur.c:4016
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4016
 msgid "28th"
 msgstr "28"
 
 #: calendar/libecal/e-cal-recur.c:4017
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4017
 msgid "29th"
 msgstr "29"
 
 #: calendar/libecal/e-cal-recur.c:4018
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4018
 msgid "30th"
 msgstr "30"
 
 #: calendar/libecal/e-cal-recur.c:4019
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c:4019
 msgid "31st"
 msgstr "31"
 
 #: calendar/libecal/e-cal-util.c:551 calendar/libecal/e-cal-util.c:573
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:551
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:573
 msgid "High"
 msgstr "Tinggi"
 
 #: calendar/libecal/e-cal-util.c:553 calendar/libecal/e-cal-util.c:575
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:553
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:575
 msgid "Normal"
 msgstr "Normal"
 
 #: calendar/libecal/e-cal-util.c:555 calendar/libecal/e-cal-util.c:577
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:555
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:577
 msgid "Low"
 msgstr "Rendah"
 
 #. An empty string is the same as 'None'.
 #: calendar/libecal/e-cal-util.c:571
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c:571
 msgid "Undefined"
 msgstr "Tidak ditentukan"
 
 #: calendar/libecal/e-cal.c:3780
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3780
 msgid "Invalid argument"
 msgstr "Argumen tak sah"
 
 #: calendar/libecal/e-cal.c:3782
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3782
 msgid "Backend is busy"
 msgstr ""
 
 #: calendar/libecal/e-cal.c:3784
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3784
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Repositori luar talian"
 
 #: calendar/libecal/e-cal.c:3786
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3786
 #, fuzzy
 msgid "No such calendar"
 msgstr "Folder tersebut tidak ada%s"
 
 #: calendar/libecal/e-cal.c:3788 calendar/libecal/e-cal.c:3798
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3788
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3798
 #, fuzzy
 msgid "Object not found"
 msgstr "Objek tidak dapat dijumpai\n"
 
 #: calendar/libecal/e-cal.c:3790
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3790
 #, fuzzy
 msgid "Invalid object"
 msgstr "Tujuan tak sah"
 
 #: calendar/libecal/e-cal.c:3792
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3792
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook tidak dimuatkan\n"
 
 #: calendar/libecal/e-cal.c:3794
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3794
 msgid "URI already loaded"
 msgstr ""
 
 #: calendar/libecal/e-cal.c:3796
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3796
 msgid "Permission denied"
 msgstr "Kebenaran dinafikan"
 
 #: calendar/libecal/e-cal.c:3800
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3800
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "ID Kad telah wujud"
 
 #: calendar/libecal/e-cal.c:3802
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3802
 msgid "Protocol not supported"
 msgstr "Protokol tidak disokong"
 
 #: calendar/libecal/e-cal.c:3804
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3804
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Pengendalian dibatalkan"
 
 #: calendar/libecal/e-cal.c:3806
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3806
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Batalkan Pengendalian"
 
 #: calendar/libecal/e-cal.c:3808
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3808
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Pengesahan gagal."
 
 #: calendar/libecal/e-cal.c:3810
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3810
 msgid "Authentication required"
 msgstr "Pengesahan diperlukan"
 
 #: calendar/libecal/e-cal.c:3812
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3812
 msgid "A CORBA esception has occurred"
 msgstr ""
 
 #: calendar/libecal/e-cal.c:3814
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3814
 msgid "Unknown error"
 msgstr "Ralat tak diketahui"
 
 #: calendar/libecal/e-cal.c:3816
-#: evolution-data-server-0.0.1/calendar/libecal/e-cal.c:3816
 msgid "No error"
 msgstr "Tiada ralat"
 
 #: calendar/libedatacal/e-cal-backend-file.c:175
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-file.c:175
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Tidak dapat menyimpan data kalendar: URI pincang bentuk."
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:50
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:50
 msgid "time-now expects 0 arguments"
 msgstr "masa sekarang menjangkakan 0 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:74
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:74
 msgid "make-time expects 1 argument"
 msgstr "peruntukan masa menjangkakan 1 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:79
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:79
 msgid "make-time expects argument 1 to be a string"
 msgstr "peruntukan masa menjangkakan argumen 1 sebagai rentetan"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:87
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:87
 msgid "make-time argument 1 must be an ISO 8601 date/time string"
 msgstr "peruntukan masa argumen 1 mestilah rentetan tarikh/masa ISO 8601"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:116
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:116
 msgid "time-add-day expects 2 arguments"
 msgstr "masa tambah hari menjangkakan 2 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:121
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:121
 msgid "time-add-day expects argument 1 to be a time_t"
 msgstr "masa tambah hari menjangkakan argumen 1 sebagai masa_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:128
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:128
 msgid "time-add-day expects argument 2 to be an integer"
 msgstr "masa tambah hari menjangkakan argumen 2 sebagai integer"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:155
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:155
 msgid "time-day-begin expects 1 argument"
 msgstr "masa hari bermula menjangkakan 1 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:160
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:160
 msgid "time-day-begin expects argument 1 to be a time_t"
 msgstr "masa hari bermula menjangkakan argumen 1 sebagai masa_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:187
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:187
 msgid "time-day-end expects 1 argument"
 msgstr "masa hari berakhir menjangkakan 1 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:192
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:192
 msgid "time-day-end expects argument 1 to be a time_t"
 msgstr "masa hari berakhir menjangkakan argumen 1 sebagai masa_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:220
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:220
 msgid "get-vtype expects 0 arguments"
 msgstr "dapatkan vtype menjangkakan 0 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:280
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:280
 msgid "occur-in-time-range? expects 2 arguments"
 msgstr "berlaku dalam julat masa? menjangkakan 2 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:285
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:285
 msgid "occur-in-time-range? expects argument 1 to be a time_t"
 msgstr "berlaku dalam julat masa? menjangkakan argumen 1 sebagai masa_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:292
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:292
 msgid "occur-in-time-range? expects argument 2 to be a time_t"
 msgstr "berlaku dalam julat masa? menjangkakan argumen 2 sebagai masa_t"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:436
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:436
 msgid "contains? expects 2 arguments"
 msgstr "mengandungi? menjangkakan 2 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:441
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:441
 msgid "contains? expects argument 1 to be a string"
 msgstr "mengandungi? menjangkakan argumen 1 sebagai rentetan"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:448
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:448
 msgid "contains? expects argument 2 to be a string"
 msgstr "mengandungi? menjangkakan argumen 2 sebagai rentetan"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:465
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:465
 msgid ""
 "contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
 "\""
@@ -991,24 +787,20 @@ msgstr ""
 "\", \"ringkasan\", \"huraian\""
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:492
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:492
 #, fuzzy
 msgid "has-alarms? expects at least 1 argument"
 msgstr "mempunyai kategori? menjangkakan sekurang-kurangnya 1 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:497
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:497
 #, fuzzy
 msgid "has-alarms? excepts argument to be a boolean"
 msgstr "mengandungi? menjangkakan argumen 2 sebagai rentetan"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:537
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:537
 msgid "has-categories? expects at least 1 argument"
 msgstr "mempunyai kategori? menjangkakan sekurang-kurangnya 1 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:549
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:549
 msgid ""
 "has-categories? expects all arguments to be strings or one and only one "
 "argument to be a boolean false (#f)"
@@ -1017,41 +809,35 @@ msgstr ""
 "satunya argumen sebagai boolean palsu (#f)"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:629
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:629
 msgid "is-completed? expects 0 arguments"
 msgstr "siap? menjangkakan 0 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:666
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:666
 msgid "completed-before? expects 1 argument"
 msgstr "siap sebelum? menjangkakan 1 argumen"
 
 #: calendar/libedatacal/e-cal-backend-sexp.c:671
-#: evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c:671
 msgid "completed-before? expects argument 1 to be a time_t"
 msgstr "siap sebelum? menjangkakan argumen 1 sebagai masa_t"
 
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_Wombat.server.in.in.h:1
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
 #: src/GNOME_Evolution_Wombat.server.in.in.h:1
 #: src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
 msgid "Evolution Addressbook local/LDAP backend"
 msgstr "Bahagian belakang setempat/LDAP Buku Alamat Evolution"
 
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_Wombat.server.in.in.h:2
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_Wombat.server.in.in.h:2
 #: src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
 msgid "Evolution Calendar local file backend"
 msgstr "Bahagian belakang fail setempat Kalendar Evolution"
 
-#: evolution-data-server-0.0.1/src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
 #: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
 #, fuzzy
 msgid "Evolution Addressbook local backend"
 msgstr "Bahagian belakang setempat/LDAP Buku Alamat Evolution"
+
+#~ msgid "Unnamed List"
+#~ msgstr "Senarai Tanpa Nama"
 
 #~ msgid "Evolution LDIF importer"
 #~ msgstr "Pengimport LDIF Evolution"
