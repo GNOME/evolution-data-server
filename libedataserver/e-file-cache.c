@@ -204,6 +204,8 @@ e_file_cache_new (const char *filename)
  * @cache: A #EFileCache object.
  *
  * Remove the cache from disk.
+ *
+ * Returns: TRUE if successful, FALSE otherwise.
  */
 gboolean
 e_file_cache_remove (EFileCache *cache)
@@ -252,6 +254,41 @@ e_file_cache_remove (EFileCache *cache)
 		priv->xml_hash = NULL;
 
 		return success;
+	}
+
+	return TRUE;
+}
+
+static void
+add_key_to_list (const char *key, const char *value, gpointer user_data)
+{
+	GList **keys = user_data;
+
+	*keys = g_list_append (*keys, key);
+}
+
+/**
+ * e_file_cache_clean:
+ * @cache: A #EFileCache object.
+ *
+ * Clean up the cache's contents.
+ *
+ * Returns: TRUE if successful, FALSE otherwise.
+ */
+gboolean
+e_file_cache_clean (EFileCache *cache)
+{
+	EFileCachePrivate *priv;
+	GList *keys = NULL;
+
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
+
+	priv = cache->priv;
+
+	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_list, &keys);
+	while (keys != NULL) {
+		e_file_cache_remove_object (cache, (const char *) keys->data);
+		keys = g_list_remove (keys, keys->data);
 	}
 
 	return TRUE;
