@@ -3,7 +3,6 @@
 	xmlns="http://schemas.novell.com/2003/10/NCSP/methods.xsd" 
 	xmlns:tns="http://schemas.novell.com/2003/10/NCSP/methods.xsd"
 	xmlns:types="http://schemas.novell.com/2003/10/NCSP/types.xsd"
-	xmlns:enums="http://schemas.novell.com/2003/10/NCSP/enums.xsd"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 	<!-- Method accept (Request) -->
@@ -26,11 +25,34 @@
 		</xs:complexType>
 	</xs:element>
 
+	<!-- Method addItems (Request) -->
+	<xs:element name="addItemRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:choice>
+					<xs:element name="id" type="types:uid"/>
+					<xs:element name="items" type="types:ItemRefList"/>
+					<xs:element name="members" type="types:GroupMemberList"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method addItems (Response) -->
+	<xs:element name="addItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<!-- Method closeFreeBusySession (Request) -->
 	<xs:element name="closeFreeBusySessionRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="session" type="xs:string"/>
+				<xs:element name="freeBusySessionId" type="xs:int"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -107,7 +129,11 @@
 	<xs:element name="createItemRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="item" type="types:Item"/>
+				<xs:choice>
+					<xs:element name="book" type="types:AddressBook"/>
+					<xs:element name="entry" type="types:AccessRightEntry"/>
+					<xs:element name="item" type="types:Item"/>
+				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -182,14 +208,16 @@
 
 	<!-- Method getAttachment (Request) -->
 	<xs:element name="getAttachmentRequest">
-		<xs:documentation>
-			This work only for file attachments.
-			If you try to specify an embedded item, you will get an error.
-			If you specify offset = 0 and length = -1,
-				you will receive the whole attachment.
-			You can supply other values for offset and length to receive
-				a part of the attachment.
-		</xs:documentation>
+		<xs:annotation>
+			<xs:documentation>
+				This work only for file attachments.
+				If you try to specify an embedded item, you will get an error.
+				If you specify offset = 0 and length = -1,
+					you will receive the whole attachment.
+				You can supply other values for offset and length to receive
+					a part of the attachment.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="id" type="types:uid"/>
@@ -224,13 +252,45 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:choice>
-					<xs:element name="acl" type="types:AccessControlList"/>
+					<xs:element name="accessRights" type="types:AccessRightList"/>
 					<xs:element name="books" type="types:AddressBookList"/>
 					<xs:element name="categories" type="types:CategoryList"/>
 					<xs:element name="folders" type="types:FolderList"/>
 					<xs:element name="proxies" type="types:ProxyList"/>
 					<!-- <xs:element name="rules" type="types:RuleList"/> -->
+					<xs:element name="timezones" type="types:TimezoneList"/>
 				</xs:choice>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method getDelta (Request) -->
+	<xs:element name="getDeltaRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="AddressBookItem" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Appointment" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="CalendarItem" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Contact" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Folder" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Group" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Item" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Mail" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Note" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="PhoneMessage" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="Task" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method getDelta (Response) -->
+	<xs:element name="getDeltaResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="used" type="xs:unsignedInt"/>
+				<xs:element name="changed" type="xs:boolean"/>
+				<xs:element name="deltas" type="types:DeltaList"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -260,7 +320,7 @@
 	<xs:element name="getFreeBusyRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="session" type="xs:string"/>
+				<xs:element name="freeBusySessionId" type="xs:string"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -269,6 +329,7 @@
 	<xs:element name="getFreeBusyResponse">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="freeBusyStats" type="types:FreeBusyStats"/>
 				<xs:element name="freeBusyInfo" type="types:FreeBusyInfoList"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
@@ -322,7 +383,7 @@
 	<xs:element name="loginRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="auth" type="types;Authentication"/>
+				<xs:element name="auth" type="types:Authentication"/>
 				<xs:element name="language" type="xs:language"/>
 				<xs:element name="version" type="xs:decimal"/>
 			</xs:sequence>
@@ -399,7 +460,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="id" type="types:uid"/>
-				<xs:element name="updates" type="types:UpdateList"/>
+				<xs:element name="updates" type="types:FolderChanges"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -418,7 +479,10 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="id" type="types:uid"/>
-				<xs:element name="updates" type="types:UpdateList"/>
+				<xs:choice>
+					<xs:element name="updates" type="types:AccessRightChanges"/>
+					<xs:element name="updates" type="types:ItemChanges"/>
+				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -556,7 +620,11 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="container" type="types:uid"/>
-				<xs:element name="id" type="types:uid"/>
+				<xs:choice>
+					<xs:element name="id" type="types:uid"/>
+					<xs:element name="items" type="types:ItemRefList"/>
+					<xs:element name="members" type="types:GroupMemberList"/>
+				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -596,7 +664,6 @@
 				<xs:element name="users" type="types:FreeBusyUserList"/>
 				<xs:element name="startDate" type="xs:dateTime"/>
 				<xs:element name="endDate" type="xs:dateTime"/>
-				<xs:element name="timeout" type="xs:int"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -605,7 +672,7 @@
 	<xs:element name="startFreeBusySessionResponse">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="session" type="xs:string"/>
+				<xs:element name="freeBusySessionId" type="xs:int"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
