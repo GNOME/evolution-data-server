@@ -2,6 +2,8 @@
 
 	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
 	Default enable_mlist to ON.
+	(imap4_append_message): Don't compare date_received against -1,
+	compare it to 0 (since that's what it'll be if unset).
 
 2005-01-24  Jeffrey Stedfast  <fejj@ximian.com>
 

@@ -924,7 +924,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	}
 	
 	/* construct the optional date_time string */
-	if (iinfo->info.date_received != (time_t) -1) {
+	if (iinfo->info.date_received > (time_t) 0) {
 		int tzone;
 		
 #ifdef HAVE_LOCALTIME_R
