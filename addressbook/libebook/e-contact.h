@@ -101,36 +101,42 @@ typedef enum {
 	E_CONTACT_SPOUSE,        /* string field */
 	E_CONTACT_NOTE,          /* string field */
 
-	E_CONTACT_IM_AIM_HOME_1,     /* Synthetic string field */
-	E_CONTACT_IM_AIM_HOME_2,     /* Synthetic string field */
-	E_CONTACT_IM_AIM_HOME_3,     /* Synthetic string field */
-	E_CONTACT_IM_AIM_WORK_1,     /* Synthetic string field */
-	E_CONTACT_IM_AIM_WORK_2,     /* Synthetic string field */
-	E_CONTACT_IM_AIM_WORK_3,     /* Synthetic string field */
-	E_CONTACT_IM_JABBER_HOME_1,  /* Synthetic string field */
-	E_CONTACT_IM_JABBER_HOME_2,  /* Synthetic string field */
-	E_CONTACT_IM_JABBER_HOME_3,  /* Synthetic string field */
-	E_CONTACT_IM_JABBER_WORK_1,  /* Synthetic string field */
-	E_CONTACT_IM_JABBER_WORK_2,  /* Synthetic string field */
-	E_CONTACT_IM_JABBER_WORK_3,  /* Synthetic string field */
-	E_CONTACT_IM_YAHOO_HOME_1,   /* Synthetic string field */
-	E_CONTACT_IM_YAHOO_HOME_2,   /* Synthetic string field */
-	E_CONTACT_IM_YAHOO_HOME_3,   /* Synthetic string field */
-	E_CONTACT_IM_YAHOO_WORK_1,   /* Synthetic string field */
-	E_CONTACT_IM_YAHOO_WORK_2,   /* Synthetic string field */
-	E_CONTACT_IM_YAHOO_WORK_3,   /* Synthetic string field */
-	E_CONTACT_IM_MSN_HOME_1,     /* Synthetic string field */
-	E_CONTACT_IM_MSN_HOME_2,     /* Synthetic string field */
-	E_CONTACT_IM_MSN_HOME_3,     /* Synthetic string field */
-	E_CONTACT_IM_MSN_WORK_1,     /* Synthetic string field */
-	E_CONTACT_IM_MSN_WORK_2,     /* Synthetic string field */
-	E_CONTACT_IM_MSN_WORK_3,     /* Synthetic string field */
-	E_CONTACT_IM_ICQ_HOME_1,     /* Synthetic string field */
-	E_CONTACT_IM_ICQ_HOME_2,     /* Synthetic string field */
-	E_CONTACT_IM_ICQ_HOME_3,     /* Synthetic string field */
-	E_CONTACT_IM_ICQ_WORK_1,     /* Synthetic string field */
-	E_CONTACT_IM_ICQ_WORK_2,     /* Synthetic string field */
-	E_CONTACT_IM_ICQ_WORK_3,     /* Synthetic string field */
+	E_CONTACT_IM_AIM_HOME_1,       /* Synthetic string field */
+	E_CONTACT_IM_AIM_HOME_2,       /* Synthetic string field */
+	E_CONTACT_IM_AIM_HOME_3,       /* Synthetic string field */
+	E_CONTACT_IM_AIM_WORK_1,       /* Synthetic string field */
+	E_CONTACT_IM_AIM_WORK_2,       /* Synthetic string field */
+	E_CONTACT_IM_AIM_WORK_3,       /* Synthetic string field */
+	E_CONTACT_IM_GROUPWISE_HOME_1, /* Synthetic string field */
+	E_CONTACT_IM_GROUPWISE_HOME_2, /* Synthetic string field */
+	E_CONTACT_IM_GROUPWISE_HOME_3, /* Synthetic string field */
+	E_CONTACT_IM_GROUPWISE_WORK_1, /* Synthetic string field */
+	E_CONTACT_IM_GROUPWISE_WORK_2, /* Synthetic string field */
+	E_CONTACT_IM_GROUPWISE_WORK_3, /* Synthetic string field */
+	E_CONTACT_IM_JABBER_HOME_1,    /* Synthetic string field */
+	E_CONTACT_IM_JABBER_HOME_2,    /* Synthetic string field */
+	E_CONTACT_IM_JABBER_HOME_3,    /* Synthetic string field */
+	E_CONTACT_IM_JABBER_WORK_1,    /* Synthetic string field */
+	E_CONTACT_IM_JABBER_WORK_2,    /* Synthetic string field */
+	E_CONTACT_IM_JABBER_WORK_3,    /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_HOME_1,     /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_HOME_2,     /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_HOME_3,     /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_WORK_1,     /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_WORK_2,     /* Synthetic string field */
+	E_CONTACT_IM_YAHOO_WORK_3,     /* Synthetic string field */
+	E_CONTACT_IM_MSN_HOME_1,       /* Synthetic string field */
+	E_CONTACT_IM_MSN_HOME_2,       /* Synthetic string field */
+	E_CONTACT_IM_MSN_HOME_3,       /* Synthetic string field */
+	E_CONTACT_IM_MSN_WORK_1,       /* Synthetic string field */
+	E_CONTACT_IM_MSN_WORK_2,       /* Synthetic string field */
+	E_CONTACT_IM_MSN_WORK_3,       /* Synthetic string field */
+	E_CONTACT_IM_ICQ_HOME_1,       /* Synthetic string field */
+	E_CONTACT_IM_ICQ_HOME_2,       /* Synthetic string field */
+	E_CONTACT_IM_ICQ_HOME_3,       /* Synthetic string field */
+	E_CONTACT_IM_ICQ_WORK_1,       /* Synthetic string field */
+	E_CONTACT_IM_ICQ_WORK_2,       /* Synthetic string field */
+	E_CONTACT_IM_ICQ_WORK_3,       /* Synthetic string field */
 
 	/* Convenience field for getting a name from the contact.
 	   Returns the first one of [File-As, Full Name, Org, Email1]
@@ -154,7 +160,7 @@ typedef enum {
 
 	/* Instant Messaging fields */
 	E_CONTACT_IM_AIM,     	 /* Multi-valued */
-	E_CONTACT_IM_GROUPWISE,   /* Multi-valued */
+	E_CONTACT_IM_GROUPWISE,  /* Multi-valued */
 	E_CONTACT_IM_JABBER,  	 /* Multi-valued */
 	E_CONTACT_IM_YAHOO,   	 /* Multi-valued */
 	E_CONTACT_IM_MSN,     	 /* Multi-valued */
@@ -173,7 +179,7 @@ typedef enum {
 	E_CONTACT_ANNIVERSARY,   /* structured field (EContactDate) */
 
 	/* Security Fields */
-	E_CONTACT_X509_CERT,                  /* structured field (EContactCert) */
+	E_CONTACT_X509_CERT,     /* structured field (EContactCert) */
 
 	E_CONTACT_FIELD_LAST,
 
