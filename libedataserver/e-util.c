@@ -22,6 +22,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <alloca.h>
 #include <glib/gfileutils.h>
 #include <glib/gmem.h>
 #include <glib/gmessages.h>

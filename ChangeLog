@@ -1,3 +1,15 @@
+2004-08-25  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libedataserver/e-file-cache.c: (add_key_to_list),
+	(add_object_to_list):
+	Add missing include, fix warnings.
+
+	* libedataserver/e-util.c: add missing include.
+
+	* servers/groupwise/e-gw-connection.c:
+	(e_gw_connection_get_categories):
+	Fix type, causing warnings.
+
 2004-08-23  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libedataserver/e-file-cache.c (e_file_cache_set_property) :

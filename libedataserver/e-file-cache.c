@@ -21,6 +21,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <unistd.h>
 #include "e-file-cache.h"
 #include "e-util.h"
 #include "e-xml-hash-utils.h"
@@ -265,7 +266,7 @@ add_key_to_list (const char *key, const char *value, gpointer user_data)
 {
 	GList **keys = user_data;
 
-	*keys = g_list_append (*keys, key);
+	*keys = g_list_append (*keys, (char *) key);
 }
 
 /**
@@ -343,7 +344,7 @@ add_object_to_list (const char *key, const char *value, gpointer user_data)
 {
 	GSList **list = user_data;
 
-	*list = g_slist_prepend (*list, value);
+	*list = g_slist_prepend (*list, (char *) value);
 }
 
 /**
