@@ -1,3 +1,23 @@
+2004-01-22 Harish K <kharish@novell.com>
+        * calendar/backends/groupwise/e-cal-backend-groupwise.c
+          (populate_cache, e_cal_backend_groupwise_get_object_list,
+          e_cal_backend_groupwise_get_free_busy ) :changed implementation
+          to use GList instead of GSList, aligning to the rest of the
+          backends.
+          (e_cal_backend_groupwise_get_changes, update_cache): implemented.
+        * calendar/backends/groupwise/e-gw-connection.c
+          (get_attendee_list_from_soap_parameter) : modified 
+          get_attendee_list_from_string to handle recipients element.
+          (get_e_cal_component_from_soap_parameter) -fixed memory leaks.
+          (update_cache_item) : implemented.
+          (e_gw_connection_get_freebusy_info, start_freebusy_session)
+          GSList to GList changes.
+        * calendar/backends/groupwise/e-gw-connection.h : updated 
+          declarations for the above changes.
+        * calendar/libedata-cal/e-cal-backend-cache.[ch] :
+          (e_cal_backend_cache_get_components) : return GList instead of
+          GSList.
+          
 2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
