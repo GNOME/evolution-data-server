@@ -503,7 +503,6 @@ do_commit_contact (gboolean        sync,
 		g_cond_wait (our_op->cond, our_op->mutex);
 
 		status = our_op->status;
-		e_contact_set (contact, E_CONTACT_UID, our_op->id);
 		g_free (our_op->id);
 
 		/* remove the op from the book's hash of operations */
