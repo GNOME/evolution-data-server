@@ -812,6 +812,17 @@ e_destination_list_show_addresses (const EDestination *dest)
 	return dest->priv->show_addresses;
 }
 
+const GList *
+e_destination_list_get_dests (const EDestination *dest)
+{
+	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
+	
+	if (!e_destination_is_evolution_list (dest))
+		return NULL;
+
+	return dest->priv->list_dests;
+}
+
 gboolean
 e_destination_get_html_mail_pref (const EDestination *dest)
 {

@@ -92,6 +92,7 @@ const char    *e_destination_get_address        (const EDestination *);  /* "Jan
 
 gboolean       e_destination_is_evolution_list   (const EDestination *);
 gboolean       e_destination_list_show_addresses (const EDestination *);
+const GList   *e_destination_list_get_dests      (const EDestination *);
 
 /* If true, they want HTML mail. */
 void           e_destination_set_html_mail_pref (EDestination *dest, gboolean flag);
