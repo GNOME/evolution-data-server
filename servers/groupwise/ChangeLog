@@ -1,3 +1,10 @@
+2005-01-10  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-item.c (add_attachment_to_soap_message),
+	(e_gw_item_set_calendar_item_elements):
+	Map the attachment related information between
+	e-gw-item and the soap representation.
+
 2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* e-gw-item.c

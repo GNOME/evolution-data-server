@@ -3,7 +3,7 @@
  * Authors : 
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
- *
+ *  Harish Krishnaswamy <kharish@novell.com>
  * Copyright 2003, Novell, Inc.
  *
  * This program is free software; you can redistribute it and/or 
@@ -2465,6 +2465,7 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 	soup_soap_message_write_string (msg, attachment->data) ;
 	soup_soap_message_end_element (msg) ;
 	
+	g_free (size) ;
 	soup_soap_message_end_element (msg) ;
 	g_free (size) ;
 }
@@ -2474,6 +2475,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv = item->priv;
 	char *dtstring;
+	GSList *attach_list;
 
 	if (priv->id)
 		e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
@@ -2541,6 +2543,17 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		/*the icalid is fed to the server only if we are not saving
 		 * recurring items */
 		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
+	}
+
+	/*attachments*/
+	soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
+	attach_list = e_gw_item_get_attach_id_list (item) ;
+	if (attach_list) {
+		GSList *al ;
+		for (al = attach_list ; al != NULL ;  al = al->next) {
+			EGwItemAttachment *attachment = (EGwItemAttachment *)al->data ;
+			add_attachment_to_soap_message (attachment, msg) ;
+		}
 	}
 }
 
