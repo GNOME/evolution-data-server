@@ -168,7 +168,7 @@ gboolean e_cal_remove_object_with_mod (ECal *ecal, const char *uid, const char *
 gboolean e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const char *auid, GError **error);
 
 gboolean e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error);
-gboolean e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GError **error);
+gboolean e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomponent **modified_icalcomp, GError **error);
 
 gboolean e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **error);
 gboolean e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error);

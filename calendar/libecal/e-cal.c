@@ -48,6 +48,7 @@ typedef struct {
 	GList *list;
 	gboolean bool;
 	char *string;
+	icalcomponent *icalcomp;
 
 	ECalView *query;
 	ECalViewListener *listener;
@@ -606,7 +607,7 @@ cal_objects_received_cb (ECalListener *listener, ECalendarStatus status, gpointe
 }
 
 static void
-cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, gpointer data)
+cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *users, icalcomponent *modified_icalcomp, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -621,6 +622,11 @@ cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, gpointer da
 	g_mutex_lock (op->mutex);
 
 	op->status = status;
+	op->list = g_list_copy (users);
+	if (modified_icalcomp)
+		op->icalcomp = icalcomponent_new_clone (modified_icalcomp);
+	else
+		op->icalcomp = NULL;
 
 	g_cond_signal (op->cond);
 
@@ -3468,7 +3474,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 }
 
 gboolean
-e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
+e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomponent **modified_icalcomp, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -3520,6 +3526,8 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
+	*users = our_op->list;
+	*modified_icalcomp = our_op->icalcomp;
 	
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);

@@ -49,7 +49,8 @@ struct _ECalBackendSyncClass {
 	ECalBackendSyncStatus (*discard_alarm_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid);
 
 	ECalBackendSyncStatus (*receive_objects_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj);
-	ECalBackendSyncStatus (*send_objects_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj);
+	ECalBackendSyncStatus (*send_objects_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
+						     char **modified_calobj);
 
 	ECalBackendSyncStatus (*get_default_object_sync)  (ECalBackendSync *backend, EDataCal *cal, char **object);
 	ECalBackendSyncStatus (*get_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object);
@@ -116,8 +117,10 @@ ECalBackendSyncStatus e_cal_backend_sync_receive_objects         (ECalBackendSyn
 							       EDataCal             *cal,
 							       const char      *calobj);
 ECalBackendSyncStatus e_cal_backend_sync_send_objects            (ECalBackendSync  *backend,
-							       EDataCal             *cal,
-							       const char      *calobj);
+								  EDataCal             *cal,
+								  const char      *calobj,
+								  GList **users,
+								  char **modified_calobj);
 ECalBackendSyncStatus e_cal_backend_sync_get_default_object         (ECalBackendSync  *backend,
 								 EDataCal             *cal,
 								 char           **object);

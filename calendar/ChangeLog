@@ -1,3 +1,42 @@
+2004-03-01  Rodrigo Moya <rodrigo@ximian.com>
+
+	* idl/Evolution-DataServer-Calendar.idl: added new arguments to the
+	notifyObjectsSent method for backends to return the list of users and
+	events for which it operated.
+
+	* libedata-cal/e-data-cal.[ch] (e_data_cal_notify_objects_sent): added
+	new argument and call the listener's notifyObjectsSent method with
+	a GNOME_Evolution_Calendar_UserList.
+
+	* libedata-cal/e-cal-backend-sync.[ch] (e_cal_backend_sync_send_objects,
+	_e_cal_backend_send_objects): added new arguments.
+
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_send_objects):
+	* backends/http/e-cal-backend-http.c (e_cal_backend_http_send_objects):
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_send_objects):
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_send_objects): adapted to changes in
+	ECalBackend/ECalBackendSync API.
+
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_receive_objects,
+	e_cal_backend_file_send_objects): removed wrong return statement.
+
+	* libecal/e-cal-marshal.list: added new marshaller.
+
+	* libecal/e-cal.[ch] (e_cal_send_objects): get the user list from the
+	operation's result.
+	(cal_objects_sent_cb): added the new arguments and copy them to the
+	operation's result.
+
+	* libecal/e-cal-listener.[ch]: added new arguments to "send_objects"
+	signal.
+	(impl_notifyObjectsSent): added UserList argument to CORBA method, and
+	convert the CORBA user list to a GList to be passed to the signal
+	handlers.
+	(e_cal_listener_class_init): added new arguments to "send_objects"
+	signal.
+
 2004-02-26  JP Rosevear <jpr@ximian.com>
 
 	* tests/ecal/test-ecal.c: make EXPECTED a macro so it compiles

@@ -87,7 +87,8 @@ void e_data_cal_notify_object_removed  (EDataCal *cal, GNOME_Evolution_Calendar_
 void e_data_cal_notify_alarm_discarded (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status);
 
 void e_data_cal_notify_objects_received (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status);
-void e_data_cal_notify_objects_sent     (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status);
+void e_data_cal_notify_objects_sent     (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GList *users,
+					 const char *calobj);
 
 void e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 				       const char *object);

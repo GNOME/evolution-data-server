@@ -1038,8 +1038,12 @@ e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
+				      char **modified_calobj)
 {
+	/* FIXME */
+	*users = NULL;
+	*modified_calobj = NULL;
 	return GNOME_Evolution_Calendar_OtherError;
 }
 

@@ -745,13 +745,17 @@ e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
+				 char **modified_calobj)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
+
+	*users = NULL;
+	*modified_calobj = NULL;
 
 	return GNOME_Evolution_Calendar_PermissionDenied;
 }

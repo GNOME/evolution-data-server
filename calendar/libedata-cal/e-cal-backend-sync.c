@@ -158,13 +158,14 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 }
 
 ECalBackendSyncStatus
-e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
+				 char **modified_calobj)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 
 	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync);
 	
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync) (backend, cal, calobj);
+	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync) (backend, cal, calobj, users, modified_calobj);
 }
 
 ECalBackendSyncStatus
@@ -401,10 +402,15 @@ static void
 _e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const char *calobj)
 {
 	ECalBackendSyncStatus status;
+	GList *users = NULL;
+	char *modified_calobj = NULL;
 
-	status = e_cal_backend_sync_send_objects (E_CAL_BACKEND_SYNC (backend), cal, calobj);
+	status = e_cal_backend_sync_send_objects (E_CAL_BACKEND_SYNC (backend), cal, calobj, &users, &modified_calobj);
+	e_data_cal_notify_objects_sent (cal, status, users, modified_calobj);
 
-	e_data_cal_notify_objects_sent (cal, status);
+	g_list_foreach (users, (GFunc) g_free, NULL);
+	g_list_free (users);
+	g_free (modified_calobj);
 }
 
 static void

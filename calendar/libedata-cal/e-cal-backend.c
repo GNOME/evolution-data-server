@@ -852,7 +852,7 @@ e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const char *
 	g_return_if_fail (calobj != NULL);
 
 	g_assert (CLASS (backend)->receive_objects != NULL);
-	return (* CLASS (backend)->receive_objects) (backend, cal, calobj);
+	(* CLASS (backend)->receive_objects) (backend, cal, calobj);
 }
 
 void
@@ -863,7 +863,7 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const char *cal
 	g_return_if_fail (calobj != NULL);
 
 	g_assert (CLASS (backend)->send_objects != NULL);
-	return (* CLASS (backend)->send_objects) (backend, cal, calobj);
+	(* CLASS (backend)->send_objects) (backend, cal, calobj);
 }
 
 /**

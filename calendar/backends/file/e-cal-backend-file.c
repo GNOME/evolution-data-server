@@ -2157,10 +2157,12 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_file_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_file_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
+				 char **modified_calobj)
 {
-	/* FIXME Put in a util routine to send stuff via email */
-	
+	*users = NULL;
+	*modified_calobj = NULL;
+
 	return GNOME_Evolution_Calendar_Success;
 }
 

@@ -586,8 +586,10 @@ e_cal_backend_contacts_receive_objects (ECalBackendSync *backend, EDataCal *cal,
 
 static ECalBackendSyncStatus
 e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal,
-				     const char *calobj)
+				     const char *calobj, GList **users, char **modified_calobj)
 {
+	*users = NULL;
+	*modified_calobj = NULL;
 	/* TODO: Investigate this */
 	return GNOME_Evolution_Calendar_Success;
 }

@@ -888,10 +888,11 @@ e_data_cal_notify_alarm_discarded (EDataCal *cal, GNOME_Evolution_Calendar_CallS
 }
 
 void
-e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status)
+e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GList *users, const char *calobj)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
+	GNOME_Evolution_Calendar_UserList *corba_users;
 
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
@@ -899,13 +900,25 @@ e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStat
 	priv = cal->priv;
 	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
 
+	corba_users = GNOME_Evolution_Calendar_UserList__alloc ();
+	corba_users->_length = g_list_length (users);
+	if (users) {
+		GList *l;
+		int n;
+
+		corba_users->_buffer = CORBA_sequence_GNOME_Evolution_Calendar_User_allocbuf (corba_users->_length);
+		for (l = users, n = 0; l != NULL; l = l->next, n++)
+			corba_users->_buffer[n] = CORBA_string_dup (l->data);
+	}
+
 	CORBA_exception_init (&ev);
-	GNOME_Evolution_Calendar_CalListener_notifyObjectsSent (priv->listener, status, &ev);
+	GNOME_Evolution_Calendar_CalListener_notifyObjectsSent (priv->listener, status, corba_users, calobj, &ev);
 
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of objects sent");
 
-	CORBA_exception_free (&ev);	
+	CORBA_exception_free (&ev);
+	CORBA_free (corba_users);
 }
 
 void
