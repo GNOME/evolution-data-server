@@ -1,6 +1,12 @@
 2005-01-07  Rodrigo Moya <rodrigo@novell.com>
 
-	* e-categories-config.c (e_categories_config_init): set the "active"
+	* e-categories-config.c (e_categories_dialog_init): set default response
+	and disable on startup the OK button.
+	(category_toggled_cb, entry_changed_cb): enable OK button on changes.
+
+2005-01-07  Rodrigo Moya <rodrigo@novell.com>
+
+	* e-categories-config.c (e_categories_dialog_init): set the "active"
 	property on the GtkTreeViewColumn.
 	(e_categories_dialog_set_categories): process correctly the strings
 	array we get from g_strsplit.

@@ -128,7 +128,17 @@ category_toggled_cb (GtkCellRenderer *renderer, const gchar *path, gpointer user
 		/* free memory */
 		g_string_free (str, TRUE);
 		g_free (place_string);
+
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
 	}
+}
+
+static void
+entry_changed_cb (GtkEditable *editable, gpointer user_data)
+{
+	ECategoriesDialog *dialog = user_data;
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
 }
 
 static void
@@ -160,6 +170,8 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Categories"));
 
 	/* set up the categories list */
@@ -206,6 +218,8 @@ e_categories_dialog_new (const char *initial_category_list)
 	dialog = E_CATEGORIES_DIALOG (g_object_new (E_TYPE_CATEGORIES_DIALOG, NULL));
 	if (initial_category_list)
 		e_categories_dialog_set_categories (dialog, initial_category_list);
+
+	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed", entry_changed_cb, dialog);
 
 	return GTK_WIDGET (dialog);
 }
