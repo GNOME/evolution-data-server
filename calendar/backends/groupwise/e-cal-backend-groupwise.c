@@ -1024,14 +1024,14 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 		cache_comp = e_cal_backend_cache_get_component (priv->cache, e_gw_item_get_icalid (item), NULL);
 		if (!cache_comp) {
 			g_message ("CRITICAL : Could not find the object in cache");
-			return GNOME_Evolution_Calendar_InvalidObject;
+			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 
 		cache_item =  e_gw_item_new_from_cal_component (priv->container_id, priv->default_zone, cache_comp);
 		e_gw_item_set_changes (item, cache_item); 
 		g_object_unref (cache_comp);
 
-		// the second argument is redundant.	
+		/* the second argument is redundant */
 		status = e_gw_connection_modify_item (priv->cnc, e_gw_item_get_id (item), item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);

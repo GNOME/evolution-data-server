@@ -1,3 +1,9 @@
+2004-05-25  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_modify_object): return ObjectNotFound error
+	instead of InvalidObject when the object is not found.
+
 2004-05-22  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/file/e-cal-backend-file.c (add_component): make sure we
