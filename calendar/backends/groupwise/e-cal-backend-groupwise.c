@@ -329,6 +329,9 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
 					return GNOME_Evolution_Calendar_OtherError;
 				}
+			
+			/* read the default timezone*/
+			priv->default_zone = e_cal_backend_cache_get_default_timezone (priv->cache);
 
 			/* Clear the cache before populating it */
 			e_file_cache_clean (E_FILE_CACHE (priv->cache));
@@ -346,8 +349,6 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				g_object_ref (priv->cache);
 				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
 				priv->mode = CAL_MODE_REMOTE;
-				/* read the default timezone*/
-				priv->default_zone = e_cal_backend_cache_get_default_timezone (priv->cache);
 				return GNOME_Evolution_Calendar_Success;
 			}
 		} else {

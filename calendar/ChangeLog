@@ -1,3 +1,10 @@
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64688
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server): store the default zone in
+	backend before populating the cache.
+	
 2004-08-27  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-cal-backend-sexp.c (func_has_alarms_in_range): new
