@@ -1,3 +1,10 @@
+2004-01-28  Radek Doulik  <rodo@ximian.com>
+
+	* libebook/e-contact.c (e_contact_set_property): use "CATEORIES"
+	instead of null vcard_field_name
+	(e_contact_set_property): check for NULL string value, test for
+	single category
+
 2004-01-27  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book-async.h: nuke the prototype for

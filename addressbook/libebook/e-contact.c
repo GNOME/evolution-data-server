@@ -816,20 +816,27 @@ e_contact_set_property (GObject *object,
 		else {
 			switch (info->field_id) {
 			case E_CONTACT_CATEGORIES: {
-				EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+				EVCardAttribute *attr = e_contact_get_first_attr (contact, "CATEGORIES");
 				char **split, **s;
+				const char *str;
 
 				if (attr)
 					e_vcard_attribute_remove_values (attr);
 				else
 					/* we didn't find it - add a new attribute */
-					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
+					attr = e_vcard_attribute_new (NULL, "CATEGORIES");
 
-				split = g_strsplit (g_value_get_string (value), ",", 0);
-				for (s = split; *s; s++) {
-					e_vcard_attribute_add_value (attr, g_strstrip (*s));
+				str = g_value_get_string (value);
+				if (str) {
+					split = g_strsplit (str, ",", 0);
+					if (split) {
+						for (s = split; *s; s++) {
+							e_vcard_attribute_add_value (attr, g_strstrip (*s));
+						}
+						g_strfreev (split);
+					} else
+						e_vcard_attribute_add_value (attr, str);
 				}
-				g_strfreev (split);
 				break;
 			}
 			default:
