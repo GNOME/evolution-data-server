@@ -84,13 +84,14 @@ static void contacts_removed_cb (EBookView *book_view, const GList *contact_ids,
 static BookRecord *
 book_record_new (ECalBackendContacts *cbc, ESource *source)
 {
-        EBook      *book = e_book_new ();
+        EBook      *book;
         GList      *fields = 0;
         EBookQuery *query;
         EBookView  *book_view;
         BookRecord *br;
         
-        e_book_load_source (book, source, TRUE, NULL);
+	book = e_book_new (source, NULL);
+        e_book_open (book, TRUE, NULL);
         
         /* Create book view */
         fields = g_list_append (fields, (char*)e_contact_field_name (E_CONTACT_FILE_AS));
