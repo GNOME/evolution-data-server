@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.15\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"POT-Creation-Date: 2004-06-11 11:51-0400\n"
 "PO-Revision-Date: 2001-09-12 16:59+0800\n"
 "Last-Translator: Tiberiu Micu <tibimicu@gmx.net>\n"
 "Language-Team: Română <ro@li.org>\n"
@@ -21,7 +21,7 @@ msgid "Loading..."
 msgstr "Încarc..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Caut..."
@@ -56,11 +56,11 @@ msgstr "Şterge card de la serverul LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificare card pentru serverul LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "Primesc rezultatele căutării LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 #, fuzzy
 msgid "Error performing search"
 msgstr "Eroare ştergere card"

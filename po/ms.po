@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution HEAD\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"POT-Creation-Date: 2004-06-11 11:51-0400\n"
 "PO-Revision-Date: 2003-07-21 08:00+0800\n"
 "Last-Translator: Mimos Open Source Development Group <syed@mimos.my>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sf.net>\n"
@@ -20,7 +20,7 @@ msgid "Loading..."
 msgstr "Sedang memuatkan..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Sedang mencari..."
@@ -52,11 +52,11 @@ msgstr "Mengeluarkan kad dari pelayan LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Mengubahsuaikan kad dari pelayan LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "Menerima hasil carian LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 msgid "Error performing search"
 msgstr "Ralat ketika membuat carian"
 

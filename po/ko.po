@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"POT-Creation-Date: 2004-06-11 11:51-0400\n"
 "PO-Revision-Date: 2004-03-25 22:10+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
@@ -22,7 +22,7 @@ msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "찾는 중입니다..."
@@ -51,11 +51,11 @@ msgstr "연락처를 LDAP 서버에서 지우는 중입니다..."
 msgid "Modifying contact from LDAP server..."
 msgstr "연락처를 LDAP 서버에서 고치는 중입니다..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "LDAP 찾기 결과를 받는 중입니다..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 msgid "Error performing search"
 msgstr "찾기를 수행하는 중 오류가 발생했습니다"
 

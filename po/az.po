@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"POT-Creation-Date: 2004-06-11 11:51-0400\n"
 "PO-Revision-Date: 2004-01-30 13:43+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani Turkish <gnome@azitt.com>\n"
@@ -23,7 +23,7 @@ msgid "Loading..."
 msgstr "Yüklənir..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Axtarılır..."
@@ -52,11 +52,11 @@ msgstr "LDAP vericidən əlaqə silinir..."
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP vericidəki əlaqə təkmilləşdirilir..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "LDAP axtarış nəticələri alınır..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 msgid "Error performing search"
 msgstr "Axtarış xətası"
 

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"POT-Creation-Date: 2004-06-11 11:51-0400\n"
 "PO-Revision-Date: 2004-05-07 11:35+0200\n"
 "Last-Translator: Maxim Dzіumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -23,7 +23,7 @@ msgid "Loading..."
 msgstr "Завантаження..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Пошук..."
@@ -52,11 +52,11 @@ msgstr "Видалення контакту із сервера LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Зміна контакту на сервері LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "Отримання результатів пошуку з сервера LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 msgid "Error performing search"
 msgstr "Помилка виконання пошуку"
 

@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"POT-Creation-Date: 2004-06-11 11:51-0400\n"
 "PO-Revision-Date: 2002-09-24 01:06+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -24,7 +24,7 @@ msgid "Loading..."
 msgstr "Wczytywanie..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Wyszukiwanie..."
@@ -53,11 +53,11 @@ msgstr "Usuwanie kontaktu na serwerze LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Modyfikowanie kontaktu na serwerze LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "Pobieranie wyników wyszukiwania na LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 msgid "Error performing search"
 msgstr "Błąd przy wykonywaniu wyszukiwania"
 
