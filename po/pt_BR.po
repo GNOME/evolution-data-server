@@ -1,21 +1,18 @@
-# translation of evolution-data-server.HEAD.po to Português/Brasil
 # Brazilian Portuguese translation of Evolution Data Server.
 # Copyright (C) 2000-2004 Free Software Foundation, Inc.
 # Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000-2004.
-# Afonso Celso Medina <medina@maua.br>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.HEAD\n"
+"Project-Id-Version: evolution-data-server 0.0.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-09 14:11+0200\n"
-"PO-Revision-Date: 2004-04-09 15:18-0300\n"
-"Last-Translator: Afonso Celso Medina <medina@maua.br>\n"
-"Language-Team: Português/Brasil <gnome-l10n-br@listas.cipsga.org.br>\n"
+"POT-Creation-Date: 2004-04-13 16:58-0400\n"
+"PO-Revision-Date: 2004-04-13 17:03-0400\n"
+"Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
+"Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.2\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:442
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -34,7 +31,7 @@ msgstr "Usando Distinguished Name (DN)"
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:602
 msgid "Using Email Address"
-msgstr "Usando Endereço Eletrônico"
+msgstr "Usando endereço eletrônico"
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:768
 msgid "Reconnecting to LDAP server..."
@@ -131,7 +128,8 @@ msgstr "e_book_get_self: não existia uid de auto contato no gconf"
 
 #: addressbook/libebook/e-book.c:2319
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 "e_book_set_default_source: não existia fonte para o uid `%s' armazenado no "
 "gconf."
@@ -142,7 +140,7 @@ msgstr "ID único"
 
 #: addressbook/libebook/e-contact.c:100
 msgid "File As"
-msgstr "Arquivar Como"
+msgstr "Arquivar como"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -150,7 +148,7 @@ msgstr "Arquivar Como"
 #. vcards that don't even have a N attribute.  *sigh*)
 #: addressbook/libebook/e-contact.c:106
 msgid "Full Name"
-msgstr "Nome Completo"
+msgstr "Nome completo"
 
 #: addressbook/libebook/e-contact.c:107
 msgid "Name"
@@ -158,7 +156,7 @@ msgstr "Nome"
 
 #: addressbook/libebook/e-contact.c:108
 msgid "Given Name"
-msgstr "Primeiro Nome"
+msgstr "Primeiro nome"
 
 #: addressbook/libebook/e-contact.c:109
 msgid "Family Name"
@@ -175,71 +173,71 @@ msgstr "Nome ou Org"
 #. Address fields
 #: addressbook/libebook/e-contact.c:114
 msgid "Address List"
-msgstr "Lista de Endereços"
+msgstr "Lista de endereços"
 
 #: addressbook/libebook/e-contact.c:115
 msgid "Home Address"
-msgstr "Endereço Residencial"
+msgstr "Endereço residencial"
 
 #: addressbook/libebook/e-contact.c:116
 msgid "Work Address"
-msgstr "Endereço Comercial"
+msgstr "Endereço comercial"
 
 #: addressbook/libebook/e-contact.c:117
 msgid "Other Address"
-msgstr "Outro Endereço"
+msgstr "Outro endereço"
 
 #: addressbook/libebook/e-contact.c:119
 msgid "Home Address Label"
-msgstr "Rótulo do Endereço Residencial"
+msgstr "Rótulo do endereço residencial"
 
 #: addressbook/libebook/e-contact.c:120
 msgid "Work Address Label"
-msgstr "Rótulo do Endereço Comercial"
+msgstr "Rótulo do endereço comercial"
 
 #: addressbook/libebook/e-contact.c:121
 msgid "Other Address Label"
-msgstr "Rótulo de Outros Endereços"
+msgstr "Rótulo de outros endereços"
 
 #: addressbook/libebook/e-contact.c:123
 msgid "Assistant Phone"
-msgstr "Telefone do Assistente:"
+msgstr "Telefone do assistente:"
 
 #: addressbook/libebook/e-contact.c:124
 msgid "Business Phone"
-msgstr "Telefone Comercial"
+msgstr "Telefone comercial"
 
 #: addressbook/libebook/e-contact.c:125
 msgid "Business Phone 2"
-msgstr "Telefone Comercial 2"
+msgstr "Telefone comercial 2"
 
 #: addressbook/libebook/e-contact.c:126
 msgid "Business Fax"
-msgstr "Fax Comercial"
+msgstr "Fax comercial"
 
 #: addressbook/libebook/e-contact.c:127
 msgid "Callback Phone"
-msgstr "Telefone de Retorno"
+msgstr "Telefone de retorno"
 
 #: addressbook/libebook/e-contact.c:128
 msgid "Car Phone"
-msgstr "Telefone do Carro"
+msgstr "Telefone do carro"
 
 #: addressbook/libebook/e-contact.c:129
 msgid "Company Phone"
-msgstr "Telefone da Empresa"
+msgstr "Telefone da empresa"
 
 #: addressbook/libebook/e-contact.c:130
 msgid "Home Phone"
-msgstr "Telefone Residencial"
+msgstr "Telefone residencial"
 
 #: addressbook/libebook/e-contact.c:131
 msgid "Home Phone 2"
-msgstr "Telefone Residencial 2"
+msgstr "Telefone residencial 2"
 
 #: addressbook/libebook/e-contact.c:132
 msgid "Home Fax"
-msgstr "Fax Residencial"
+msgstr "Fax residencial"
 
 #: addressbook/libebook/e-contact.c:133
 msgid "ISDN"
@@ -247,15 +245,15 @@ msgstr "ISDN"
 
 #: addressbook/libebook/e-contact.c:134
 msgid "Mobile Phone"
-msgstr "Telefone Celular"
+msgstr "Telefone celular"
 
 #: addressbook/libebook/e-contact.c:135
 msgid "Other Phone"
-msgstr "Outro Telefone"
+msgstr "Outro telefone"
 
 #: addressbook/libebook/e-contact.c:136
 msgid "Other Fax"
-msgstr "Outro Fax"
+msgstr "Outro fax"
 
 #: addressbook/libebook/e-contact.c:137
 msgid "Pager"
@@ -263,7 +261,7 @@ msgstr "Pager"
 
 #: addressbook/libebook/e-contact.c:138
 msgid "Primary Phone"
-msgstr "Telefone Principal"
+msgstr "Telefone principal"
 
 #: addressbook/libebook/e-contact.c:139
 msgid "Radio"
@@ -280,23 +278,23 @@ msgstr "TTY"
 #. Email fields
 #: addressbook/libebook/e-contact.c:144
 msgid "Email List"
-msgstr "Lista de Emails"
+msgstr "Lista de e-mails"
 
 #: addressbook/libebook/e-contact.c:145
 msgid "Email 1"
-msgstr "Email 1"
+msgstr "E-mail 1"
 
 #: addressbook/libebook/e-contact.c:146
 msgid "Email 2"
-msgstr "Email 2"
+msgstr "E-mail 2"
 
 #: addressbook/libebook/e-contact.c:147
 msgid "Email 3"
-msgstr "Email 3"
+msgstr "E-mail 3"
 
 #: addressbook/libebook/e-contact.c:148
 msgid "Mailer"
-msgstr "Programa de Correio"
+msgstr "Programa de correio"
 
 #: addressbook/libebook/e-contact.c:149
 msgid "Wants HTML Mail"
@@ -610,7 +608,7 @@ msgid "Checklist"
 msgstr "Lista de tarefas"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4057
+#: calendar/libecal/e-cal.c:4062
 msgid "Authentication failed"
 msgstr "Falhou a autenticação"
 
@@ -781,71 +779,71 @@ msgstr "Indefinido"
 msgid "Enter password for %s (user %s)"
 msgstr "Entre senha para %s (usuário %s)"
 
-#: calendar/libecal/e-cal.c:4031
+#: calendar/libecal/e-cal.c:4036
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: calendar/libecal/e-cal.c:4033
+#: calendar/libecal/e-cal.c:4038
 msgid "Backend is busy"
 msgstr "O backend está ocupado"
 
-#: calendar/libecal/e-cal.c:4035
+#: calendar/libecal/e-cal.c:4040
 msgid "Repository is offline"
 msgstr "O repositório está desconectado"
 
-#: calendar/libecal/e-cal.c:4037
+#: calendar/libecal/e-cal.c:4042
 msgid "No such calendar"
 msgstr "Não existe tal agenda"
 
-#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objeto não foi encontrado"
 
-#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: calendar/libecal/e-cal.c:4043
+#: calendar/libecal/e-cal.c:4048
 msgid "URI not loaded"
 msgstr "URI não foi carregada"
 
-#: calendar/libecal/e-cal.c:4045
+#: calendar/libecal/e-cal.c:4050
 msgid "URI already loaded"
 msgstr "URI já foi carregada"
 
-#: calendar/libecal/e-cal.c:4047
+#: calendar/libecal/e-cal.c:4052
 msgid "Permission denied"
 msgstr "Permissão negada"
 
-#: calendar/libecal/e-cal.c:4049
+#: calendar/libecal/e-cal.c:4054
 msgid "Object ID already exists"
 msgstr "O ID do objeto já existe"
 
-#: calendar/libecal/e-cal.c:4051
+#: calendar/libecal/e-cal.c:4056
 msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
-#: calendar/libecal/e-cal.c:4053
+#: calendar/libecal/e-cal.c:4058
 msgid "Operation has been cancelled"
 msgstr "A operação foi cancelada"
 
-#: calendar/libecal/e-cal.c:4055
+#: calendar/libecal/e-cal.c:4060
 msgid "Could not cancel operation"
 msgstr "Não foi possível cancelar a operação"
 
-#: calendar/libecal/e-cal.c:4059
+#: calendar/libecal/e-cal.c:4064
 msgid "Authentication required"
 msgstr "Autenticação exigida"
 
-#: calendar/libecal/e-cal.c:4061
+#: calendar/libecal/e-cal.c:4066
 msgid "A CORBA exception has occurred"
 msgstr "Ocorreu uma exceçao CORBA"
 
-#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: calendar/libecal/e-cal.c:4065
+#: calendar/libecal/e-cal.c:4070
 msgid "No error"
 msgstr "Sem erro"
 
@@ -876,7 +874,8 @@ msgstr "\"%s\" espera que o primeiro argumento seja uma string"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:90
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" espera que o primeiro argumento seja uma string de data/hora ISO 8601"
+msgstr ""
+"\"%s\" espera que o primeiro argumento seja uma string de data/hora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:121
 #: calendar/libedata-cal/e-cal-backend-sexp.c:305
@@ -934,15 +933,15 @@ msgstr ""
 
 #: servers/groupwise/e-gw-connection.c:80
 msgid "Invalid connection"
-msgstr "Conecção inválida"
+msgstr "Conexão inválida"
 
 #: servers/groupwise/e-gw-connection.c:84
 msgid "Invalid response from server"
-msgstr "Resposta do servidor inválida"
+msgstr "Resposta inválida do servidor"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr "Parâmetro defeituoso"
+msgstr "Parâmetro inválido"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
@@ -956,4 +955,3 @@ msgstr "Backend para arquivo e webcal da agenda do Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend para arquivo do catálogo de endereços do Evolution"
-
