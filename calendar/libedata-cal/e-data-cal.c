@@ -41,6 +41,9 @@ struct _EDataCalPrivate {
 
 	/* Listener on the client we notify */
 	GNOME_Evolution_Calendar_CalListener listener;
+
+	/* Cache of live queries */
+	GHashTable *live_queries;
 };
 
 /* Cal::get_uri method */
@@ -205,19 +208,32 @@ impl_Cal_getObject (PortableServer_Servant servant,
 	e_cal_backend_get_object (priv->backend, cal, uid, rid);
 }
 
-/* Cal::getObjectsInRange method */
+/* Cal::getObjectList method */
 static void
 impl_Cal_getObjectList (PortableServer_Servant servant,
-			const CORBA_char *query,
+			const CORBA_char *sexp,
 			CORBA_Environment *ev)
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
+	EDataCalView *query;
 	
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
-	e_cal_backend_get_object_list (priv->backend, cal, query);
+	query = g_hash_table_lookup (priv->live_queries, sexp);
+	if (query) {
+		GList *matched_objects;
+
+		matched_objects = e_data_cal_view_get_matched_objects (query);
+		e_data_cal_notify_object_list (
+			cal,
+			e_data_cal_view_is_done (query) ? e_data_cal_view_get_done_status (query) : GNOME_Evolution_Calendar_Success,
+			matched_objects);
+
+		g_list_free (matched_objects);
+	} else
+		e_cal_backend_get_object_list (priv->backend, cal, sexp);
 }
 
 /* Cal::getChanges method */
@@ -368,8 +384,16 @@ impl_Cal_getQuery (PortableServer_Servant servant,
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
+	/* first see if we already have the query in the cache */
+	query = g_hash_table_lookup (priv->live_queries, sexp);
+	if (query) {
+		e_data_cal_view_add_listener (query, ql);
+		e_data_cal_notify_query (cal, GNOME_Evolution_Calendar_Success, query);
+		return;
+	}
+
 	/* we handle this entirely here, since it doesn't require any
-	   backend involvement now that we have pas_book_view_start to
+	   backend involvement now that we have e_cal_view_start to
 	   actually kick off the search. */
 
 	obj_sexp = e_cal_backend_sexp_new (sexp);
@@ -387,11 +411,10 @@ impl_Cal_getQuery (PortableServer_Servant servant,
 		return;
 	}
 
+	g_hash_table_insert (priv->live_queries, g_strdup (sexp), query);
 	e_cal_backend_add_query (priv->backend, query);
 
 	e_data_cal_notify_query (cal, GNOME_Evolution_Calendar_Success, query);
-
-	g_object_unref (query);
 }
 
 
@@ -538,7 +561,7 @@ e_data_cal_get_listener (EDataCal *cal)
 
 /* Destroy handler for the calendar */
 static void
-cal_finalize (GObject *object)
+e_data_cal_finalize (GObject *object)
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
@@ -560,6 +583,9 @@ cal_finalize (GObject *object)
 	priv->listener = NULL;
 	CORBA_exception_free (&ev);
 
+	g_hash_table_destroy (priv->live_queries);
+	priv->live_queries = NULL;
+
 	g_free (priv);
 
 	if (G_OBJECT_CLASS (parent_class)->finalize)
@@ -578,7 +604,7 @@ e_data_cal_class_init (EDataCalClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 
 	/* Class method overrides */
-	object_class->finalize = cal_finalize;
+	object_class->finalize = e_data_cal_finalize;
 
 	/* Epv methods */
 	epv->_get_uri = impl_Cal_get_uri;
@@ -618,6 +644,9 @@ e_data_cal_init (EDataCal *cal, EDataCalClass *klass)
 	cal->priv = priv;
 
 	priv->listener = CORBA_OBJECT_NIL;
+	priv->live_queries = g_hash_table_new_full (g_str_hash, g_str_equal,
+						    (GDestroyNotify) g_free,
+						    (GDestroyNotify) g_object_unref);
 }
 
 BONOBO_TYPE_FUNC_FULL (EDataCal, GNOME_Evolution_Calendar_Cal, PARENT_TYPE, e_data_cal);
@@ -999,7 +1028,7 @@ e_data_cal_notify_object_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of object list");
 
-	CORBA_exception_free (&ev);	
+	CORBA_exception_free (&ev);
 
 	CORBA_free(seq._buffer);
 }

@@ -52,29 +52,36 @@ struct _EDataCalViewClass {
 };
 
 GType                 e_data_cal_view_get_type (void);
-EDataCalView                *e_data_cal_view_new (ECalBackend                             *backend,
-				 GNOME_Evolution_Calendar_CalViewListener  ql,
-				 ECalBackendSExp                   *sexp);
+EDataCalView         *e_data_cal_view_new (ECalBackend                             *backend,
+					   GNOME_Evolution_Calendar_CalViewListener  ql,
+					   ECalBackendSExp                   *sexp);
+void                  e_data_cal_view_add_listener (EDataCalView *query, GNOME_Evolution_Calendar_CalViewListener ql);
 const char           *e_data_cal_view_get_text (EDataCalView *query);
-ECalBackendSExp *e_data_cal_view_get_object_sexp (EDataCalView *query);
-gboolean e_data_cal_view_object_matches (EDataCalView *query, const char *object);
+ECalBackendSExp      *e_data_cal_view_get_object_sexp (EDataCalView *query);
+gboolean              e_data_cal_view_object_matches (EDataCalView *query, const char *object);
+
+GList                *e_data_cal_view_get_matched_objects (EDataCalView *query);
+gboolean              e_data_cal_view_is_started (EDataCalView *query);
+gboolean              e_data_cal_view_is_done (EDataCalView *query);
+GNOME_Evolution_Calendar_CallStatus e_data_cal_view_get_done_status (EDataCalView *query);
+
 void                  e_data_cal_view_notify_objects_added (EDataCalView       *query,
-						  const GList *objects);
+							    const GList *objects);
 void                  e_data_cal_view_notify_objects_added_1 (EDataCalView       *query,
-						    const char *object);
+							      const char *object);
 void                  e_data_cal_view_notify_objects_modified (EDataCalView       *query,
-						     const GList *objects);
+							       const GList *objects);
 void                  e_data_cal_view_notify_objects_modified_1 (EDataCalView       *query,
-						     const char *object);
+								 const char *object);
 void                  e_data_cal_view_notify_objects_removed (EDataCalView       *query,
-						    const GList *uids);
+							      const GList *uids);
 void                  e_data_cal_view_notify_objects_removed_1 (EDataCalView       *query,
-						    const char *uid);
+								const char *uid);
 void                  e_data_cal_view_notify_progress (EDataCalView      *query,
-						   const char *message,
-						   int         percent);
+						       const char *message,
+						       int         percent);
 void                  e_data_cal_view_notify_done (EDataCalView                               *query,
-					       GNOME_Evolution_Calendar_CallStatus status);
+						   GNOME_Evolution_Calendar_CallStatus status);
 
 G_END_DECLS
 
