@@ -4800,6 +4800,14 @@ msgstr "転送先の選択"
 msgid "_Destination"
 msgstr "転送先(_D)"
 
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "このパスワードを記憶する(_R)"
+
+#: ../libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "このパスワードをこのセッション用に保存する(_R)"
+
 #: ../servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "接続が不正です"

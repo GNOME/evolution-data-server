@@ -4780,6 +4780,14 @@ msgstr "Velg mål"
 msgid "_Destination"
 msgstr "_Mål"
 
+#: libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "Husk dette passo_rdet"
+
+#: libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "Husk dette passo_rdet for resten av denne sesjonen"
+
 #: servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "Ugyldig tilkobling"

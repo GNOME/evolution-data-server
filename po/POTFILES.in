@@ -198,6 +198,7 @@ libedataserverui/e-categories-dialog.c
 libedataserverui/e-categories-dialog.glade
 libedataserverui/e-name-selector-dialog.c
 libedataserverui/e-name-selector-dialog.glade
+libedataserverui/e-passwords.c
 libedataserverui/e-source-selector-dialog.c
 servers/groupwise/e-gw-connection.c
 src/GNOME_Evolution_DataServer.server.in.in

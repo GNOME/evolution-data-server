@@ -4877,6 +4877,14 @@ msgstr "Suchen"
 msgid "_Search:"
 msgstr "_Suchen:"
 
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "An dieses Passwort _erinnern"
+
+#: ../libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "Für den Rest dieser Sitzung an dieses Passwort _erinnern"
+
 # CHECK
 #. prepare the dialog
 #: ../libedataserverui/e-source-selector-dialog.c:101

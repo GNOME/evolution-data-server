@@ -4811,6 +4811,14 @@ msgstr "Valitse kohde"
 msgid "_Destination"
 msgstr "_Kohde"
 
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password"
+msgstr "_Muista tämä salasana"
+
+#: ../libedataserverui/e-passwords.c:473
+msgid "_Remember this password for the remainder of this session"
+msgstr "Muista salasana tämän istunnon loppuun asti"
+
 #: ../servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "Virheellinen yhteys"
