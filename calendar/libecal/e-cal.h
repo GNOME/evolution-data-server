@@ -38,7 +38,6 @@ G_BEGIN_DECLS
 #define E_IS_CAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL))
 
 #define E_CAL_OPEN_STATUS_ENUM_TYPE     (e_cal_open_status_enum_get_type ())
-#define E_CAL_REMOVE_STATUS_ENUM_TYPE   (e_cal_remove_status_enum_get_type ())
 #define E_CAL_SET_MODE_STATUS_ENUM_TYPE (e_cal_set_mode_status_enum_get_type ())
 #define CAL_MODE_ENUM_TYPE                   (cal_mode_enum_get_type ())
 
@@ -61,22 +60,6 @@ typedef enum {
 	E_CAL_SET_MODE_ERROR,
 	E_CAL_SET_MODE_NOT_SUPPORTED
 } ECalSetModeStatus;
-
-/* Get status for the e_cal_get_object() function */
-typedef enum {
-	E_CAL_GET_SUCCESS,
-	E_CAL_GET_NOT_FOUND,
-	E_CAL_GET_SYNTAX_ERROR
-} ECalGetStatus;
-
-/* Status for update_object(s) and remove_object */
-typedef enum {
-	E_CAL_RESULT_SUCCESS,
-	E_CAL_RESULT_CORBA_ERROR,
-	E_CAL_RESULT_INVALID_OBJECT,
-	E_CAL_RESULT_NOT_FOUND,
-	E_CAL_RESULT_PERMISSION_DENIED
-} ECalResult;
 
 /* Whether the ecal is not loaded, is being loaded, or is already loaded */
 typedef enum {

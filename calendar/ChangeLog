@@ -1,5 +1,9 @@
 2003-11-10  JP Rosevear <jpr@ximian.com>
 
+	* libecal/e-cal.h: remove dead enums
+
+2003-11-10  JP Rosevear <jpr@ximian.com>
+
 	* libecal/e-cal.h: mark struct as private
 
 	* libecal/e-cal.c: fix documentation headers
