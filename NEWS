@@ -1,3 +1,33 @@
+Evolution Data Server 1.1.1, 2004-11-28
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Calendar
+
+    #69624 - make changes in evo corresponding to soap schema changes (Siva)
+
+  * All
+
+    #69056 - Translations set to wrong version (Ryan Skadzberg)
+    #68737 - Crash on Migrating (JP)
+  
+Other bugs
+
+  * Addressbook
+    - add API to determine required fields (Siva)
+
+  * All
+    - allow access to primary source selector (Harish)
+
+Updated Translations:
+	- sr (Danilo Segan)
+	- sr@Latn (Danilo Segan)
+	- cs (Miloslav Trmac)
+	- sq (Laurent Dhima)
+	- en_CA (Adam Weinberger)
+	- en_GB (David Lodge)
+
 Evolution Data Server 1.1.0, 2004-11-01
 ----------------------------------------
 

@@ -40,7 +40,6 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 @book_view: 
 @list: 
 @msg: 
-@percent: 
 @connected: 
 @writable: 
 @id: 
@@ -62,6 +61,7 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 @GetChangesResponse: 
 @AuthenticationResponse: 
 @GetSupportedFieldsResponse: 
+@GetRequiredFieldsResponse: 
 @GetSupportedAuthMethodsResponse: 
 @LinkStatusEvent: 
 @WritableStatusEvent: 
