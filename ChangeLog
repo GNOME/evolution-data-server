@@ -1,4 +1,6 @@
-2003-11-06    <jpr@ximian.com>
+2003-11-06  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: output new .pc file
 
 	* evolution-data-server-1.0.pc.in: pkconfig for idl
 

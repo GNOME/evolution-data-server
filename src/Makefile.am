@@ -43,11 +43,17 @@ evolution_data_server_SOURCES = \
 	server-interface-check.h	\
 	server.c
 
+if ENABLE_LDAP
+LDAP_BACKEND_LIB=$(top_builddir)/addressbook/backends/ldap/libebookbackendldap.la
+else
+LDAP_BACKEND_LIB=
+endif
+
 evolution_data_server_LDADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book.la	\
 	$(top_builddir)/addressbook/backends/file/libebookbackendfile.la\
 	$(top_builddir)/addressbook/backends/vcf/libebookbackendvcf.la	\
-	$(top_builddir)/addressbook/backends/ldap/libebookbackendldap.la\
+	$(LDAP_BACKEND_LIB)						\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
 	$(top_builddir)/calendar/backends/file/libecalbackendfile.la	\
 	$(top_builddir)/calendar/backends/http/libecalbackendhttp.la	\
