@@ -53,6 +53,7 @@
 #include "camel-nntp-private.h"
 #include "camel-nntp-resp-codes.h"
 #include "camel-i18n.h"
+#include "camel-net-utils.h"
 
 #define w(x)
 extern int camel_verbose_debug;

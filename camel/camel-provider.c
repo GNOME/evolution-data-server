@@ -41,7 +41,7 @@
 #include "camel-exception.h"
 #include "camel-string-utils.h"
 #include "camel-vee-store.h"
-#include "e-util/e-msgport.h"
+#include "libedataserver/e-msgport.h"
 #include "camel-i18n.h"
 
 /* table of CamelProviderModule's */
@@ -52,6 +52,8 @@ static EMutex *provider_lock;
 
 #define LOCK() e_mutex_lock(provider_lock);
 #define UNLOCK() e_mutex_unlock(provider_lock);
+
+static int provider_init = 0;
 
 /* The vfolder provider is always available */
 static CamelProvider vee_provider = {
@@ -86,12 +88,11 @@ camel_provider_init (void)
 	struct dirent *d;
 	char *p, *name, buf[80];
 	CamelProviderModule *m;
-	static int init = 0;
 
-	if (init)
+	if (provider_init)
 		return;
 
-	init = 1;
+	provider_init = 1;
 
 	provider_lock = e_mutex_new(E_MUTEX_REC);
 	module_table = g_hash_table_new(camel_strcase_hash, camel_strcase_equal);
@@ -167,6 +168,8 @@ camel_provider_load(const char *path, CamelException *ex)
 	GModule *module;
 	CamelProvider *(*camel_provider_module_init) (void);
 
+	g_assert(provider_init);
+
 	if (!g_module_supported ()) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not load %s: Module loading "
@@ -208,6 +211,7 @@ camel_provider_register(CamelProvider *provider)
 	CamelProviderConfEntry *conf;
 	GList *l;
 
+	g_assert(provider_init);
 	g_return_if_fail (provider != NULL);
 
 	LOCK();
@@ -284,6 +288,8 @@ camel_provider_list(gboolean load)
 {
 	GList *list = NULL;
 
+	g_assert(provider_init);
+
 	LOCK();
 
 	if (load) {
@@ -328,6 +334,7 @@ camel_provider_get(const char *url_string, CamelException *ex)
 	char *protocol;
 	size_t len;
 
+	g_assert(provider_init);
 	g_return_val_if_fail(url_string != NULL, NULL);
 
 	len = strcspn(url_string, ":");
@@ -388,7 +395,8 @@ camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
 			    GHashTable **auto_detected, CamelException *ex)
 {
 	g_return_val_if_fail (provider != NULL, -1);
-	
+
+	g_assert(provider_init);	
 	if (provider->auto_detect) {
 		return provider->auto_detect (url, auto_detected, ex);
 	} else {

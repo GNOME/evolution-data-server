@@ -1,3 +1,28 @@
+2004-11-15  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-utils.c (imap_path_to_physical):
+	copied from e-path.c.
+	(imap_path_find_folders): copied from e-path.c.
+
+	* camel.h: remove the provider stuff from the header.
+
+	* camel-provider.c: globalise provider_init variable, and asserton
+	it in all functions that rely on it.
+
+	* camel-service.c: removed getaddrinfo/etc.
+
+	* camel-net-utils.[ch]: separate out camel_getaddrinfo etc.
+
+	* Makefile.am: split camel into 2 libraries, libcamel and
+	libcamel-store.
+
+	* camel-multipart-signed.c (camel_multipart_signed_sign)
+	(camel_multipart_signed_verify, prepare_sign): remove old
+	deprecated api.
+
+	* camel-multipart-encrypted.c (camel_multipart_encrypted_encrypt) 
+	(camel_multipart_encrypted_decrypt): remove old deprecated api.
+
 2004-11-12  Not Zed  <NotZed@Ximian.com>
 
         ** Merge in notzed-messageinfo-branch, fix some minor conflicts.
