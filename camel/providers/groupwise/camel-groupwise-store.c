@@ -615,14 +615,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			return NULL ;
 		}
 
-		status = e_gw_connection_position_cursor (priv->cnc, container_id, cursor, "end", 1) ;
-		if (status != E_GW_CONNECTION_STATUS_OK) {
-			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
-			g_mutex_unlock (mutex) ;
-			return NULL ;
-		}
-
-
 		camel_operation_start (NULL, _("Fetching summary information for new messages"));
 		camel_folder_summary_clear (folder->summary) ;
 
