@@ -273,6 +273,12 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		/* As of now we are assuming that logged in user has write rights to calender */
 		/* we need to read actual rights from server when we implement proxy user access */
 		cbgw->priv->read_only = FALSE;
+
+		if (priv->cnc && priv->cache) {
+			priv->mode = CAL_MODE_REMOTE;
+			return GNOME_Evolution_Calendar_Success;
+		}
+
 	
 		if (E_IS_GW_CONNECTION (priv->cnc)) {
 			icalcomponent_kind kind;
