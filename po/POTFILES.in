@@ -2,7 +2,6 @@
 # Please keep this list in alphabetic order.
 addressbook/libebook/e-book.c
 addressbook/libebook/e-contact.c
-addressbook/libebook/e-destination.c
 addressbook/libedatabook/e-book-backend-file.c
 addressbook/libedatabook/e-book-backend-ldap.c
 addressbook/libedatabook/e-book-backend-vcf.c
@@ -12,20 +11,6 @@ calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
 calendar/libedatacal/e-cal-backend-file.c
 calendar/libedatacal/e-cal-backend-sexp.c
-evolution-data-server-0.0.1/addressbook/libebook/e-book.c
-evolution-data-server-0.0.1/addressbook/libebook/e-contact.c
-evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-file.c
-evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-ldap.c
-evolution-data-server-0.0.1/addressbook/libedatabook/e-book-backend-vcf.c
-evolution-data-server-0.0.1/calendar/libecal/e-cal-component.c
-evolution-data-server-0.0.1/calendar/libecal/e-cal-recur.c
-evolution-data-server-0.0.1/calendar/libecal/e-cal-util.c
-evolution-data-server-0.0.1/calendar/libecal/e-cal.c
-evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-file.c
-evolution-data-server-0.0.1/calendar/libedatacal/e-cal-backend-sexp.c
-evolution-data-server-0.0.1/src/GNOME_Evolution_Wombat.server.in.in
-evolution-data-server-0.0.1/src/GNOME_Evolution_WombatLDAP.server.in.in
-evolution-data-server-0.0.1/src/GNOME_Evolution_WombatNOLDAP.server.in.in
 src/GNOME_Evolution_Wombat.server.in.in
 src/GNOME_Evolution_WombatLDAP.server.in.in
 src/GNOME_Evolution_WombatNOLDAP.server.in.in
