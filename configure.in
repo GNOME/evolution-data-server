@@ -401,6 +401,7 @@ calendar/libedata-cal/Makefile
 calendar/libedata-cal/libedata-cal-1.0.pc
 calendar/backends/Makefile
 calendar/backends/file/Makefile
+calendar/backends/groupwise/Makefile
 calendar/backends/http/Makefile
 libedataserver/Makefile
 libedataserver/libedataserver-1.0.pc

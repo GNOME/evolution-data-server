@@ -52,6 +52,7 @@
 #include <libedata-cal/e-data-cal-factory.h>
 #include <backends/file/e-cal-backend-file-events.h>
 #include <backends/file/e-cal-backend-file-todos.h>
+#include <backends/groupwise/e-cal-backend-groupwise.h>
 #include <backends/http/e-cal-backend-http.h>
 
 #include "server-interface-check.h"
@@ -171,6 +172,8 @@ setup_cals (void)
 
 	e_data_cal_factory_register_method (e_data_cal_factory, "file", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_FILE_EVENTS);
 	e_data_cal_factory_register_method (e_data_cal_factory, "file", ICAL_VTODO_COMPONENT, E_TYPE_CAL_BACKEND_FILE_TODOS);
+	e_data_cal_factory_register_method (e_data_cal_factory, "groupwise", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_GROUPWISE);
+	e_data_cal_factory_register_method (e_data_cal_factory, "groupwise", ICAL_VTODO_COMPONENT, E_TYPE_CAL_BACKEND_GROUPWISE);
 	e_data_cal_factory_register_method (e_data_cal_factory, "webcal", ICAL_VEVENT_COMPONENT, E_TYPE_CAL_BACKEND_HTTP);
 
 	if (!e_data_cal_factory_register_storage (e_data_cal_factory, E_DATA_CAL_FACTORY_OAF_ID)) {

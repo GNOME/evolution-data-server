@@ -49,15 +49,16 @@ else
 LDAP_BACKEND_LIB=
 endif
 
-evolution_data_server_LDADD =						\
-	$(top_builddir)/addressbook/libedata-book/libedata-book.la	\
-	$(top_builddir)/addressbook/backends/file/libebookbackendfile.la\
-	$(top_builddir)/addressbook/backends/vcf/libebookbackendvcf.la	\
-	$(LDAP_BACKEND_LIB)						\
-	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
-	$(top_builddir)/calendar/backends/file/libecalbackendfile.la	\
-	$(top_builddir)/calendar/backends/http/libecalbackendhttp.la	\
-	$(LDAP_LIBS)							\
+evolution_data_server_LDADD =							\
+	$(top_builddir)/addressbook/libedata-book/libedata-book.la		\
+	$(top_builddir)/addressbook/backends/file/libebookbackendfile.la	\
+	$(top_builddir)/addressbook/backends/vcf/libebookbackendvcf.la		\
+	$(LDAP_BACKEND_LIB)							\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal.la			\
+	$(top_builddir)/calendar/backends/file/libecalbackendfile.la		\
+	$(top_builddir)/calendar/backends/groupwise/libecalbackendgroupwise.la	\
+	$(top_builddir)/calendar/backends/http/libecalbackendhttp.la		\
+	$(LDAP_LIBS)								\
 	$(E_DATA_SERVER_LIBS)
 
 install-evolution-data-server:
