@@ -21,6 +21,8 @@
 #include "e-book-marshal.h"
 #include "e-book-listener.h"
 
+#define d(x)
+
 GMainContext *_ebook_context;
 
 static GObjectClass *parent_class;
@@ -201,7 +203,7 @@ e_book_add_contact (EBook           *book,
 	CORBA_Environment ev;
 	char *vcard_str;
 
-	printf ("e_book_add_contact\n");
+	d(printf ("e_book_add_contact\n"));
 
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
@@ -277,13 +279,13 @@ e_book_response_add_contact (EBook       *book,
 {
 	EBookOp *op;
 
-	printf ("e_book_response_add_contact\n");
+	d(printf ("e_book_response_add_contact\n"));
 
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_add_contact: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_add_contact: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -472,8 +474,8 @@ e_book_response_get_supported_fields (EBook       *book,
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_get_supported_fields: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_get_supported_fields: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -576,8 +578,8 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_get_supported_auth_methods: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_get_supported_auth_methods: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -768,13 +770,13 @@ e_book_response_get_contact (EBook       *book,
 {
 	EBookOp *op;
 
-	printf ("e_book_response_get_contact\n");
+	d(printf ("e_book_response_get_contact\n"));
 
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_get_contact: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_get_contact: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -1046,13 +1048,13 @@ e_book_response_get_book_view (EBook       *book,
 
 	EBookOp *op;
 
-	printf ("e_book_response_get_book_view\n");
+	d(printf ("e_book_response_get_book_view\n"));
 
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_get_book_view: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_get_book_view: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -1167,8 +1169,8 @@ e_book_response_get_contacts (EBook       *book,
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_get_contacts: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_get_contacts: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -1264,8 +1266,8 @@ e_book_response_get_changes (EBook       *book,
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_get_contacts: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_get_contacts: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -1303,8 +1305,8 @@ e_book_response_generic (EBook       *book,
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_generic: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_generic: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -1402,8 +1404,8 @@ e_book_response_open (EBook       *book,
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_open: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_open: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);
@@ -1496,13 +1498,13 @@ e_book_response_remove (EBook       *book,
 {
 	EBookOp *op;
 
-	printf ("e_book_response_remove\n");
+	d(printf ("e_book_response_remove\n"));
 
 	op = e_book_get_op (book);
 
 	if (op == NULL) {
-	  g_warning ("e_book_response_remove: Cannot find operation ");
-	  return;
+		g_warning ("e_book_response_remove: Cannot find operation ");
+		return;
 	}
 
 	g_mutex_lock (op->mutex);

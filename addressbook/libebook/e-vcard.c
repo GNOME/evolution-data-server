@@ -26,6 +26,8 @@
 #include <ctype.h>
 #include "e-vcard.h"
 
+#define d(x)
+
 #define CRLF "\r\n"
 
 typedef enum {
@@ -523,16 +525,13 @@ parse (EVCard *evc, const char *str)
 		*end = '\0';
 	}
 	
-#if DEBUG_FOLDING
-	printf ("BEFORE FOLDING:\n");
-	printf (str);
-#endif
 	buf = fold_lines (buf);
 
-#if DEBUG_FOLDING
-	printf ("\n\nAFTER FOLDING:\n");
-	printf (buf);
-#endif
+	d(printf ("BEFORE FOLDING:\n"));
+	d(printf (str));
+	d(printf ("\n\nAFTER FOLDING:\n"));
+	d(printf (buf));
+
 	p = buf;
 
 	attr = read_attribute (&p);
@@ -958,8 +957,8 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr, const char *value, i
 		/* make sure the decoded list is up to date */
 		e_vcard_attribute_get_values_decoded (attr);
 
-		printf ("base64 encoded value: %s\n", b64_data);
-		printf ("original length: %d\n", len);
+		d(printf ("base64 encoded value: %s\n", b64_data));
+		d(printf ("original length: %d\n", len));
 
 		attr->values = g_list_append (attr->values, b64_data);
 		attr->decoded_values = g_list_append (attr->decoded_values, decoded);
@@ -1243,12 +1242,10 @@ _evc_base64_encode_close(unsigned char *in, size_t inlen, gboolean break_lines, 
 	c1 = ((unsigned char *)save)[1];
 	c2 = ((unsigned char *)save)[2];
 	
-#if 0
 	d(printf("mode = %d\nc1 = %c\nc2 = %c\n",
 		 (int)((char *)save)[0],
 		 (int)((char *)save)[1],
 		 (int)((char *)save)[2]));
-#endif
 
 	switch (((char *)save)[0]) {
 	case 2:
@@ -1289,9 +1286,7 @@ _evc_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, uns
 	inptr = in;
 	outptr = out;
 
-#if 0
 	d(printf("we have %d chars, and %d saved chars\n", len, ((char *)save)[0]));
-#endif
 
 	if (len + ((char *)save)[0] > 2) {
 		unsigned char *inend = in+len-2;
@@ -1329,11 +1324,9 @@ _evc_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, uns
 		*state = already;
 	}
 
-#if 0
 	d(printf("state = %d, len = %d\n",
 		 (int)((char *)save)[0],
 		 len));
-#endif
 
 	if (len>0) {
 		register char *saveout;
@@ -1349,12 +1342,10 @@ _evc_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, uns
 		((char *)save)[0]+=len;
 	}
 
-#if 0
 	d(printf("mode = %d\nc1 = %c\nc2 = %c\n",
 		 (int)((char *)save)[0],
 		 (int)((char *)save)[1],
 		 (int)((char *)save)[2]));
-#endif
 
 	return outptr-out;
 }

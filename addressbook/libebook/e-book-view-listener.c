@@ -16,6 +16,8 @@
 #include "e-contact.h"
 #include "e-book-marshal.h"
 
+#define d(x)
+
 static EBookViewStatus e_book_view_listener_convert_status (GNOME_Evolution_Addressbook_CallStatus status);
 
 enum {
@@ -198,7 +200,7 @@ impl_BookViewListener_notify_contacts_added (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	printf ("impl_BookViewListener_notify_contacts_added\n");
+	d(printf ("impl_BookViewListener_notify_contacts_added\n"));
 
 	e_book_view_listener_queue_sequence_event (
 		listener, ContactsAddedEvent, vcards);
@@ -211,7 +213,7 @@ impl_BookViewListener_notify_contacts_removed (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	printf ("impl_BookViewListener_notify_contacts_removed\n");
+	d(printf ("impl_BookViewListener_notify_contacts_removed\n"));
 
 	e_book_view_listener_queue_idlist_event (listener, ContactsRemovedEvent, ids);
 }
@@ -223,7 +225,7 @@ impl_BookViewListener_notify_contacts_changed (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	printf ("impl_BookViewListener_notify_contacts_changed\n");
+	d(printf ("impl_BookViewListener_notify_contacts_changed\n"));
 
 	e_book_view_listener_queue_sequence_event (
 		listener, ContactsModifiedEvent, vcards);
@@ -236,7 +238,7 @@ impl_BookViewListener_notify_sequence_complete (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	printf ("impl_BookViewListener_notify_sequence_complete\n");
+	d(printf ("impl_BookViewListener_notify_sequence_complete\n"));
 
 	e_book_view_listener_queue_status_event (listener, SequenceCompleteEvent,
 						 e_book_view_listener_convert_status (status));
@@ -250,7 +252,7 @@ impl_BookViewListener_notify_progress (PortableServer_Servant  servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	printf ("impl_BookViewListener_notify_progress\n");
+	d(printf ("impl_BookViewListener_notify_progress\n"));
 
 	e_book_view_listener_queue_message_event (listener, StatusMessageEvent, message);
 }

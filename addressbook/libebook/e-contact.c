@@ -30,6 +30,8 @@
 #include "e-book.h"
 #include "e-name-western.h"
 
+#define d(x)
+
 struct _EContactPrivate {
 };
 
@@ -822,7 +824,7 @@ e_contact_set_property (GObject *object,
 				if (!sval || !*sval)
 					return;
 
-				printf ("adding new %s\n", info->vcard_field_name);
+				d(printf ("adding new %s\n", info->vcard_field_name));
 
 				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 				e_vcard_add_attribute (E_VCARD (contact), attr);
@@ -883,7 +885,7 @@ e_contact_set_property (GObject *object,
 		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : (char*)g_value_get_string (value);
 
 		if (attr && data) {
-			printf ("overwriting existing %s\n", info->vcard_field_name);
+			d(printf ("overwriting existing %s\n", info->vcard_field_name));
 			/* remove all existing values and parameters.
 			   the setter will add the correct ones */
 			e_vcard_attribute_remove_values (attr);
@@ -892,7 +894,7 @@ e_contact_set_property (GObject *object,
 			info->struct_setter (contact, attr, data);
 		}
 		else if (data) {
-			printf ("adding new %s\n", info->vcard_field_name);
+			d(printf ("adding new %s\n", info->vcard_field_name));
 			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 
 			e_vcard_add_attribute (E_VCARD (contact), attr);
@@ -900,7 +902,7 @@ e_contact_set_property (GObject *object,
 			info->struct_setter (contact, attr, data);
 		}
 		else if (attr) {
-			printf ("removing %s\n", info->vcard_field_name);
+			d(printf ("removing %s\n", info->vcard_field_name));
 
 			e_vcard_remove_attribute (E_VCARD (contact), attr);
 		}
@@ -911,7 +913,7 @@ e_contact_set_property (GObject *object,
 		/* first we search for an attribute we can overwrite */
 		attr = e_contact_get_first_attr (contact, info->vcard_field_name);
 		if (attr) {
-			printf ("setting %s to `%s'\n", info->vcard_field_name, g_value_get_string (value));
+			d(printf ("setting %s to `%s'\n", info->vcard_field_name, g_value_get_string (value)));
 			e_vcard_attribute_remove_values (attr);
 			e_vcard_attribute_add_value (attr, g_value_get_boolean (value) ? "TRUE" : "FALSE");
 		}
@@ -929,7 +931,7 @@ e_contact_set_property (GObject *object,
 		/* first we search for an attribute we can overwrite */
 		attr = e_contact_get_first_attr (contact, info->vcard_field_name);
 		if (attr) {
-			printf ("setting %s to `%s'\n", info->vcard_field_name, sval);
+			d(printf ("setting %s to `%s'\n", info->vcard_field_name, sval));
 			e_vcard_attribute_remove_values (attr);
 			if (sval)
 				e_vcard_attribute_add_value (attr, sval);
@@ -966,32 +968,6 @@ e_contact_set_property (GObject *object,
 	else {
 		g_warning ("unhandled attribute `%s'", info->vcard_field_name);
 	}
-}
-
-static GList *
-e_contact_get_email_list (EContact *contact)
-{
-	GList *rv = NULL;
-	GList *attrs, *l;
-
-	attrs = e_vcard_get_attributes (E_VCARD (contact));
-
-	for (l = attrs; l; l = l->next) {
-		EVCardAttribute *attr = l->data;
-		const char *name, *group;
-
-		group = e_vcard_attribute_get_group (attr);
-		name = e_vcard_attribute_get_name (attr);
-
-		/* all the attributes we care about should be in group "" */
-		if ((!group || !*group) && !strcasecmp (name, EVC_EMAIL)) {
-			GList *v = e_vcard_attribute_get_values (attr);
-
-			rv = g_list_append (rv, v ? g_strdup (v->data) : NULL);
-		}
-	}
-
-	return rv;
 }
 
 static EVCardAttribute *
@@ -1401,7 +1377,7 @@ e_contact_get_const (EContact *contact, EContactField field_id)
 void
 e_contact_set (EContact *contact, EContactField field_id, gpointer value)
 {
-	printf ("e_contact_set (%p, %d, %p)\n", contact, field_id, value);
+	d(printf ("e_contact_set (%p, %d, %p)\n", contact, field_id, value));
 
 	g_return_if_fail (contact && E_IS_CONTACT (contact));
 	g_return_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST);

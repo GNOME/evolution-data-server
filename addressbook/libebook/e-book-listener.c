@@ -15,6 +15,8 @@
 #include "e-book-listener.h"
 #include "e-book-marshal.h"
 
+#define d(x)
+
 extern GMainContext *_ebook_context;
 
 static EBookStatus e_book_listener_convert_status (GNOME_Evolution_Addressbook_CallStatus status);
@@ -160,7 +162,7 @@ impl_BookListener_respond_get_view (PortableServer_Servant servant,
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	EBookListenerResponse response;
 
-	printf ("impl_BookListener_respond_get_view\n");
+	d(printf ("impl_BookListener_respond_get_view\n"));
 
 	if (listener->priv->stopped)
 		return;

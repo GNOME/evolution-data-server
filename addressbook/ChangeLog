@@ -1,3 +1,37 @@
+2004-02-23  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.c (parse): wrap spew in "#define d(x)".
+	(e_vcard_attribute_add_value_decoded): same.
+	(_evc_base64_encode_close): same.
+	(_evc_base64_encode_step): same.
+
+	* libebook/e-contact.c (e_contact_set_property): wrap spew in
+	"#define d(x)".
+	(e_contact_set): same.
+	(e_contact_get_email_list): nuke dead function.
+
+	* libebook/e-book.c (e_book_add_contact): wrap spew in "#define
+	d(x)" and reindent.
+	(e_book_response_add_contact): same.
+	(e_book_response_get_contact): same.
+	(e_book_response_get_book_view): same.
+	(e_book_response_get_contacts): reindent.
+	(e_book_response_get_changes): same.
+	(e_book_response_generic): same.
+	(e_book_response_open): same.
+	(e_book_response_remove): same.
+
+	* libebook/e-book-view-listener.c
+	(impl_BookViewListener_notify_contacts_added): wrap spew in
+	"#define d(x)".
+	(impl_BookViewListener_notify_contacts_removed): same.
+	(impl_BookViewListener_notify_contacts_changed): same.
+	(impl_BookViewListener_notify_sequence_complete): same.
+	(impl_BookViewListener_notify_progress): same.
+
+	* libebook/e-book-listener.c (impl_BookListener_respond_get_view):
+	wrap spew in "#define d(x)".
+
 2004-02-23  JP Rosevear <jpr@ximian.com>
 
 	* tests/vcard/Makefile.am: add extra includes for srcdir !=
