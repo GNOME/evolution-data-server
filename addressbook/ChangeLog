@@ -53,7 +53,7 @@
 	(do_open) (e_book_load_uri) (fetch_corba_book)
 	(e_book_get_self) (e_book_set_default_source) :
 	Generalize the messages marked for
-	translation. Fixes #68712
+	translation. Fixes #68172
 	
 2005-01-27  Christophe Fergeau  <teuf@gnome.org>
 
