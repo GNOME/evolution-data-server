@@ -1,3 +1,10 @@
+2004-03-15  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-cal-backend-sexp.c (func_occur_in_time_range): expand
+	recurrences for the given time range to be sure that we return the
+	correct events.
+	(check_instance_time_range_cb): callback to check the expanded recurrences.
+
 2004-03-15  Rodney Dawes  <dobey@ximian.com>
 
 	* libecal/libecal-1.0.pc.in:
@@ -5,9 +12,10 @@
 	the libbonobo dependency
 
 2004-03-14  Harish K <kharish@novell.com>
+
 	* calendar/backends/groupwise/e-cal-backend-groupwise.c :
 	Update calls to e_gw_connection_get_items with the new prototype.
-	
+
 2004-03-11  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedata-cal/e-data-cal.c (e_data_cal_notify_objects_sent): guard

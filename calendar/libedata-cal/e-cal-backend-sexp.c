@@ -38,6 +38,7 @@ struct _ECalBackendSExpPrivate {
 struct _SearchContext {
 	ECalComponent *comp;
 	ECalBackend *backend;
+	gboolean occurs;
 };
 
 ESExpResult *
@@ -259,6 +260,30 @@ func_uid (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 	return result;
 }
 
+static gboolean
+check_instance_time_range_cb (ECalComponent *comp, time_t instance_start, time_t instance_end, gpointer data)
+{
+	SearchContext *ctx = data;
+
+	/* if we get called, the event has an occurrence in the given time range */
+	ctx->occurs = TRUE;
+
+	return FALSE;
+}
+
+static icaltimezone *
+resolve_tzid_cb (const char *tzid, gpointer user_data)
+{
+	SearchContext *ctx = user_data;
+                                                                                
+        if (!tzid || !tzid[0])
+                return NULL;
+        else if (!strcmp (tzid, "UTC"))
+                return icaltimezone_get_utc_timezone ();
+                                                                                
+        return e_cal_backend_internal_get_timezone (ctx->backend, tzid);
+}
+
 /* (occur-in-time-range? START END)
  *
  * START - time_t, start of the time range
@@ -271,10 +296,8 @@ static ESExpResult *
 func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
 	SearchContext *ctx = data;
-	time_t start, end, tt;
-	gboolean occurs;
+	time_t start, end;
 	ESExpResult *result;
-	ECalComponentDateTime dt;
 
 	/* Check argument types */
 
@@ -301,39 +324,14 @@ func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 	end = argv[1]->value.time;
 
 	/* See if the object occurs in the specified time range */
-	occurs = FALSE;
-	
-	e_cal_component_get_dtstart (ctx->comp, &dt);
-	if (dt.value) {
-		icaltimezone *zone;
-
-		if (dt.tzid)
-			zone = e_cal_backend_internal_get_timezone (ctx->backend, dt.tzid);
-		else
-			zone = e_cal_backend_internal_get_default_timezone (ctx->backend);
-		
-		tt = icaltime_as_timet_with_zone (*dt.value, zone);
-		e_cal_component_free_datetime (&dt);
-		if (tt >= start && tt <= end)
-			occurs = TRUE;
-		else {
-			e_cal_component_get_dtend (ctx->comp, &dt);
-			if (dt.value) {
-				if (dt.tzid)
-					zone = e_cal_backend_internal_get_timezone (ctx->backend, dt.tzid);
-				else
-					zone = e_cal_backend_internal_get_default_timezone (ctx->backend);
-
-				tt = icaltime_as_timet_with_zone (*dt.value, zone);
-				if (tt >= start && tt <= end)
-					occurs = TRUE;
-				e_cal_component_free_datetime (&dt);
-			}
-		}
-	}
+	ctx->occurs = FALSE;
+	e_cal_recur_generate_instances (ctx->comp, start, end,
+					(ECalRecurInstanceFn) check_instance_time_range_cb,
+					ctx, resolve_tzid_cb, ctx,
+					e_cal_backend_internal_get_default_timezone (ctx->backend));
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = occurs;
+	result->value.bool = ctx->occurs;
 
 	return result;
 }
