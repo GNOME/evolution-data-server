@@ -1,5 +1,13 @@
 2004-07-13  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book.c (e_book_get_self): only propagate the GError
+	if @error != NULL.  Fixes some console warnings.
+	(e_book_set_default_source): same.
+	(e_book_new_system_addressbook): same.
+	(e_book_new_default_addressbook): same.
+
+2004-07-13  Chris Toshok  <toshok@ximian.com>
+
 	[ fixes #58639 ]
 	
 	* libebook/e-book-listener.c (impl_BookListener_respond_get_view):

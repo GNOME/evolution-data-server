@@ -2938,7 +2938,8 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 	*book = e_book_new_system_addressbook (&e);
 
 	if (!*book) {
-		g_propagate_error (error, e);
+		if (error)
+			g_propagate_error (error, e);
 		return FALSE;
 	}
 
@@ -2957,7 +2958,8 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 	if (!e_book_get_contact (*book, uid, contact, &e)) {
 		g_object_unref (*book);
 		*book = NULL;
-		g_propagate_error (error, e);
+		if (error)
+			g_propagate_error (error, e);
 		return FALSE;
 	}
 
@@ -3050,7 +3052,8 @@ e_book_set_default_source (ESource *source, GError **error)
 	uid = e_source_peek_uid (source);
 
 	if (!e_book_get_addressbooks (&sources, &err)) {
-		g_propagate_error (error, err);
+		if (error)
+			g_propagate_error (error, err);
 		return FALSE;
 	}
 
@@ -3078,7 +3081,8 @@ e_book_set_default_source (ESource *source, GError **error)
 	e_source_set_property (source, "default", "true");
 
 	if (!e_source_list_sync (sources, &err)) {
-		g_propagate_error (error, err);
+		if (error)
+			g_propagate_error (error, err);
 		return FALSE;
 	}
 
@@ -3228,7 +3232,8 @@ e_book_new_system_addressbook    (GError **error)
 	EBook *book;
 
 	if (!e_book_get_addressbooks (&sources, &err)) {
-		g_propagate_error (error, err);
+		if (error)
+			g_propagate_error (error, err);
 		return FALSE;
 	}
 
@@ -3267,8 +3272,10 @@ e_book_new_system_addressbook    (GError **error)
 		g_free (uri);
 	}
 
-	if (!book)
-		g_propagate_error (error, err);
+	if (!book) {
+		if (error)
+			g_propagate_error (error, err);
+	}
 
 	g_object_unref (sources);
 
@@ -3297,7 +3304,8 @@ e_book_new_default_addressbook   (GError **error)
 	EBook *book;
 
 	if (!e_book_get_addressbooks (&sources, &err)) {
-		g_propagate_error (error, err);
+		if (error)
+			g_propagate_error (error, err);
 		return FALSE;
 	}
 
@@ -3322,8 +3330,10 @@ e_book_new_default_addressbook   (GError **error)
 	else
 		book = e_book_new_system_addressbook (&err);
 
-	if (!book)
-		g_propagate_error (error, err);
+	if (!book) {
+		if (error)
+			g_propagate_error (error, err);
+	}
 
 	g_object_unref (sources);
 
