@@ -79,6 +79,10 @@ typedef enum {
 struct _EBookListenerResponse {
 	EBookListenerOperation  op;
 
+	/* The tag that e_book_* assigned to the operation this is a
+	   response for */
+	guint32                 opid;
+
 	/* For most Response notifications */
 	EBookStatus             status;
 

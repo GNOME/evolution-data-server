@@ -3,7 +3,7 @@
 #include <libgnome/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
-#include <libebook/e-book-async.h>
+#include <libebook/e-book.h>
 
 static void
 print_email (EContact *contact)

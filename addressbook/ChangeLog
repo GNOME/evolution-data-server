@@ -1,3 +1,200 @@
+2004-06-17  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/test-ebook-async.c: down with e-book-async.h, up
+	with e-book.h.
+
+	* libedata-book/e-data-book.h: add @opid args to all the
+	e_data_book_respond* functions.
+
+	* libedata-book/e-data-book.c
+	(impl_GNOME_Evolution_Addressbook_Book_open): add @opid arg and
+	pass it on.
+	(impl_GNOME_Evolution_Addressbook_Book_remove): same.
+	(impl_GNOME_Evolution_Addressbook_Book_getContact): same.
+	(impl_GNOME_Evolution_Addressbook_Book_getContactList): same.
+	(impl_GNOME_Evolution_Addressbook_Book_authenticateUser): same.
+	(impl_GNOME_Evolution_Addressbook_Book_addContact): same.
+	(impl_GNOME_Evolution_Addressbook_Book_removeContacts): same.
+	(impl_GNOME_Evolution_Addressbook_Book_modifyContact): same.
+	(impl_GNOME_Evolution_Addressbook_Book_getBookView): same.
+	(impl_GNOME_Evolution_Addressbook_Book_getChanges): same.
+	(impl_GNOME_Evolution_Addressbook_Book_getSupportedFields): same.
+	(impl_GNOME_Evolution_Addressbook_Book_getSupportedAuthMethods): same.
+	(e_data_book_respond_open): same.
+	(e_data_book_respond_remove): same.
+	(e_data_book_respond_create): same.
+	(e_data_book_respond_remove_contacts): same.
+	(e_data_book_respond_modify): same.
+	(e_data_book_respond_authenticate_user): same.
+	(e_data_book_respond_get_supported_fields): same.
+	(e_data_book_respond_get_supported_auth_methods): same.
+	(e_data_book_respond_get_book_view): same.
+	(e_data_book_respond_get_contact): same.
+	(e_data_book_respond_get_contact_list): same.
+	(e_data_book_respond_get_changes): same.
+
+	* libedata-book/e-book-backend.h: add @opid args everywhere.
+
+	* libedata-book/e-book-backend.c (e_book_backend_open): add @opid
+	arg, and pass it along to the backend subclass, as well as all
+	calls to e_data_book_respond_*.
+	(e_book_backend_remove): same.
+	(e_book_backend_create_contact): same.
+	(e_book_backend_remove_contacts): same.
+	(e_book_backend_modify_contact): same.
+	(e_book_backend_get_contact): same.
+	(e_book_backend_get_contact_list): same.
+	(e_book_backend_start_book_view): same.
+	(e_book_backend_stop_book_view): same.
+	(e_book_backend_get_changes): same.
+	(e_book_backend_authenticate_user): same.
+	(e_book_backend_get_supported_fields): same.
+	(e_book_backend_get_supported_auth_methods): same.
+
+	* libedata-book/e-book-backend-sync.h: add @opid args everywhere.
+
+	* libedata-book/e-book-backend-sync.c
+	(e_book_backend_sync_create_contact): add @opid arg and pass it
+	along to subclass.
+	(e_book_backend_sync_remove): same.
+	(e_book_backend_sync_remove_contacts): same.
+	(e_book_backend_sync_modify_contact): same.
+	(e_book_backend_sync_get_contact): same.
+	(e_book_backend_sync_get_contact_list): same.
+	(e_book_backend_sync_get_changes): same.
+	(e_book_backend_sync_authenticate_user): same.
+	(e_book_backend_sync_get_supported_fields): same.
+	(e_book_backend_sync_get_supported_auth_methods): same.
+	(_e_book_backend_remove): same.
+	(_e_book_backend_create_contact): same.
+	(_e_book_backend_remove_contacts): same.
+	(_e_book_backend_modify_contact): same.
+	(_e_book_backend_get_contact): same.
+	(_e_book_backend_get_contact_list): same.
+	(_e_book_backend_get_changes): same.
+	(_e_book_backend_authenticate_user): same.
+	(_e_book_backend_get_supported_fields): same.
+	(_e_book_backend_get_supported_auth_methods): same.
+
+	* libebook/e-book.c (struct EBookOp): augment this structure with
+	enough info to handle the asynchronous operations.
+	(struct _EBookPrivate): remove the current_op pointer and add a
+	hashtable mapping ids to ops.  The current sync op is always id 0.
+	(e_book_new_op): add @sync arg.
+	(e_book_get_op): add @opid arg, and look up the op in the
+	hashtable.
+	(e_book_get_current_sync_op): convenience function to lookup the
+	current sync op.
+	(e_book_op_remove): remove the op from the hashtable.
+	(do_add_contact): split out all the code from e_book_add_contact
+	here, and make it handle both synchronous and async calling
+	sequences.
+	(e_book_add_contact): call do_add_contact.
+	(e_book_async_add_contact): same.
+	(e_book_response_add_contact): handle both sync/async ops.  sync =
+	notify on our cvar and return.  async = add idle handler that will
+	call the op's callback.
+	(emit_async_add_contact_response): idle handler for adding
+	contacts asynchronously.
+	(do_commit_contact): same pattern as above...
+	(do_get_supported_fields): same.
+	(do_get_supported_auth_methods): same.
+	(do_authenticate_user): same.
+	(do_get_contact): same.
+	(do_remove_contacts): same.
+	(do_get_book_view): same.
+	(do_get_contacts): same.
+	(do_get_changes): same.
+	(do_open): same.
+	(do_remove): same.
+
+	* libebook/e-book.h: move all the async api foo here.
+
+	* libebook/e-book-listener.h (struct _EBookListenerResponse): add
+	opid slot.
+
+	* libebook/e-book-listener.c
+	(impl_BookListener_respond_create_contact): add @opid arg and add
+	it to the response struct.
+	(impl_BookListener_respond_remove_contacts): same.
+	(impl_BookListener_respond_modify_contact): same.
+	(impl_BookListener_respond_get_contact): same.
+	(impl_BookListener_respond_get_contact_list): same.
+	(impl_BookListener_respond_get_view): same.
+	(impl_BookListener_respond_get_changes): same
+	(impl_BookListener_respond_open_book): same.
+	(impl_BookListener_respond_remove_book): same.
+	(impl_BookListener_respond_authentication_result): same.
+	(impl_BookListener_respond_get_supported_fields): same.
+	(impl_BookListener_respond_get_supported_auth_methods): same.
+
+	* libebook/Makefile.am (libebook_la_SOURCES): remove
+	e-book-async.c
+	(libebookinclude_HEADERS): remove e-book-async.h
+
+	* idl/Evolution-DataServer-Addressbook.idl: add opid args to all
+	the oneway void Book methods, and to all the responses in
+	BookListener.
+
+	* backends/vcf/e-book-backend-vcf.c
+	(e_book_backend_vcf_create_contact)
+	(e_book_backend_vcf_remove_contacts)
+	(e_book_backend_vcf_modify_contact)
+	(e_book_backend_vcf_get_contact)
+	(e_book_backend_vcf_get_contact_list)
+	(e_book_backend_vcf_authenticate_user)
+	(e_book_backend_vcf_get_supported_fields): add @opid arg.
+	(init_closure): make this more like the file:// backend.
+	(closure_destroy): free the cvar.
+	(book_view_thread): move the search code into another thread.
+	(e_book_backend_vcf_start_book_view): steal this from the file
+	backend.
+	(e_book_backend_vcf_stop_book_view): same.
+
+	* backends/ldap/e-book-backend-ldap.c (struct LDAPOp): add opid.
+	(ldap_op_add): add @opid arg.
+	(create_contact_handler): use op->opid in calls to
+	e_data_book_respond_*.
+	(e_book_backend_ldap_create_contact): same.
+	(remove_contact_handler): same.
+	(e_book_backend_ldap_remove_contacts): same.
+	(modify_contact_modify_handler): same.
+	(modify_contact_search_handler): same.
+	(e_book_backend_ldap_modify_contact): same.
+	(get_contact_handler): same.
+	(e_book_backend_ldap_get_contact): same.
+	(contact_list_handler): same.
+	(e_book_backend_ldap_get_contact_list): same.
+	(e_book_backend_ldap_authenticate_user): same.
+	(e_book_backend_ldap_get_supported_fields): same.
+	(e_book_backend_ldap_get_supported_auth_methods): same.
+	(e_book_backend_ldap_get_changes): add @opid arg.
+	(e_book_backend_ldap_remove): same.
+
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_create_contact)
+	(e_book_backend_groupwise_remove_contacts)
+	(e_book_backend_groupwise_modify_contact)
+	(e_book_backend_groupwise_get_contact)
+	(e_book_backend_groupwise_get_contact_list)
+	(e_book_backend_groupwise_get_changes)
+	(e_book_backend_groupwise_authenticate_user)
+	(e_book_backend_groupwise_get_supported_fields)
+	(e_book_backend_groupwise_get_supported_auth_methods)
+	(e_book_backend_groupwise_remove): : add @opid arg, and pass it to
+	e_data_book_respond_* functions.
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_create_contact)
+	(e_book_backend_file_remove_contacts)
+	(e_book_backend_file_modify_contact)
+	(e_book_backend_file_get_contact)
+	(e_book_backend_file_get_contact_list)
+	(e_book_backend_file_get_changes)
+	(e_book_backend_file_authenticate_user)
+	(e_book_backend_file_get_supported_fields)
+	(e_book_backend_file_remove): add @opid arg.
+
 2004-06-16  Not Zed  <NotZed@Ximian.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c

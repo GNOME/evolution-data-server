@@ -86,45 +86,47 @@ module Addressbook {
 		/*
 		 * Opening/creating addressbooks.
 		 */
-		oneway void open (in boolean only_if_exists);
+		oneway void open (in long opid, in boolean only_if_exists);
 
 		/*
 		 * Removing addressbooks.
 		 */
-		oneway void remove ();
+		oneway void remove (in long opid);
 
 		/*
 		 * Fetching contacts in the addresbook.
 		 */
-		oneway void getContact (in ContactId id);
+		oneway void getContact (in long opid, in ContactId id);
 
-		oneway void authenticateUser (in string user, in string passwd,
+		oneway void authenticateUser (in long opid,
+					      in string user, in string passwd,
 					      in string authMethod);
 
 		/*
 		 * Adding and deleting contacts in the book.
 		 */
-		oneway void addContact    (in VCard vcard);
-		oneway void removeContacts (in ContactIdList Id);
+		oneway void addContact     (in long opid, in VCard vcard);
+		oneway void removeContacts (in long opid, in ContactIdList Id);
 	        
 		/*
 		 * Modifying contacts in the addressbook.
 		 */
-		oneway void modifyContact (in VCard vcard);
+		oneway void modifyContact (in long opid, in VCard vcard);
 		
 		/*
 		 * These two functions return a book view to the book
 		 * listener.  This is for people who want a live view
 		 * of the addressbook.
 		 */
-		oneway void getBookView (in BookViewListener listener, in string query,
+		oneway void getBookView (in long opid,
+					 in BookViewListener listener, in string query,
 					 in stringlist requested_fields, in long max_results);
 
-		oneway void getChanges  (in string change_id);
+		oneway void getChanges  (in long opid, in string change_id);
 
-		oneway void getContactList (in string query);
+		oneway void getContactList (in long opid, in string query);
 
-		oneway void getSupportedFields ();
+		oneway void getSupportedFields (in long opid);
 
 		/*
 		 * This function returns a list of strings
@@ -148,7 +150,7 @@ module Addressbook {
 		 * as it will be passed unchanged to the backend auth
 		 * function (eg. ldap_sasl_bind)
 		 */
-		oneway void getSupportedAuthMethods ();
+		oneway void getSupportedAuthMethods (in long opid);
 
 		string getStaticCapabilities ();
 
@@ -161,19 +163,19 @@ module Addressbook {
 
 	interface BookListener : Bonobo::Unknown {
 
-		oneway void notifyContactCreated       (in CallStatus status, in ContactId Id);
-		oneway void notifyContactsRemoved      (in CallStatus status);
-		oneway void notifyContactModified      (in CallStatus status);
+		oneway void notifyContactCreated       (in long opid, in CallStatus status, in ContactId Id);
+		oneway void notifyContactsRemoved      (in long opid, in CallStatus status);
+		oneway void notifyContactModified      (in long opid, in CallStatus status);
 		oneway void notifyProgress             (in string status_message, in short precent);
-		oneway void notifyBookOpened           (in CallStatus status);
-		oneway void notifyBookRemoved          (in CallStatus status);
-		oneway void notifyViewRequested        (in CallStatus status, in BookView view);
-		oneway void notifyChangesRequested     (in CallStatus status, in BookChangeList changes);
-		oneway void notifyContactRequested     (in CallStatus status, in VCard vcard);
-		oneway void notifyContactListRequested (in CallStatus status, in stringlist contacts);
-		oneway void notifySupportedFields      (in CallStatus status, in stringlist fields);
-		oneway void notifyAuthenticationResult (in CallStatus status);
-		oneway void notifySupportedAuthMethods (in CallStatus status, in stringlist auth_methods);
+		oneway void notifyBookOpened           (in long opid, in CallStatus status);
+		oneway void notifyBookRemoved          (in long opid, in CallStatus status);
+		oneway void notifyViewRequested        (in long opid, in CallStatus status, in BookView view);
+		oneway void notifyChangesRequested     (in long opid, in CallStatus status, in BookChangeList changes);
+		oneway void notifyContactRequested     (in long opid, in CallStatus status, in VCard vcard);
+		oneway void notifyContactListRequested (in long opid, in CallStatus status, in stringlist contacts);
+		oneway void notifySupportedFields      (in long opid, in CallStatus status, in stringlist fields);
+		oneway void notifyAuthenticationResult (in long opid, in CallStatus status);
+		oneway void notifySupportedAuthMethods (in long opid, in CallStatus status, in stringlist auth_methods);
 
 		oneway void notifyWritable (in boolean writable);
 	};

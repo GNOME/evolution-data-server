@@ -83,6 +83,7 @@ e_book_backend_get_source (EBookBackend *backend)
 void
 e_book_backend_open (EBookBackend *backend,
 		     EDataBook    *book,
+		     guint32       opid,
 		     gboolean      only_if_exists)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -92,14 +93,14 @@ e_book_backend_open (EBookBackend *backend,
 
 	if (backend->priv->loaded) {
 		e_data_book_respond_open (
-			book, GNOME_Evolution_Addressbook_Success);
+			book, opid, GNOME_Evolution_Addressbook_Success);
 
 		e_data_book_report_writable (book, backend->priv->writable);
 	} else {
 		GNOME_Evolution_Addressbook_CallStatus status =
 			e_book_backend_load_source (backend, e_data_book_get_source (book), only_if_exists);
 
-		e_data_book_respond_open (book, status);
+		e_data_book_respond_open (book, opid, status);
 
 		if (status == GNOME_Evolution_Addressbook_Success)
 			e_data_book_report_writable (book, backend->priv->writable);
@@ -110,19 +111,21 @@ e_book_backend_open (EBookBackend *backend,
 
 void
 e_book_backend_remove (EBookBackend *backend,
-		    EDataBook    *book)
+		       EDataBook    *book,
+		       guint32       opid)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->remove);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove) (backend, book);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove) (backend, book, opid);
 }
 
 void
 e_book_backend_create_contact (EBookBackend *backend,
 			       EDataBook    *book,
+			       guint32       opid,
 			       const char   *vcard)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -131,12 +134,13 @@ e_book_backend_create_contact (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->create_contact);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contact) (backend, book, vcard);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contact) (backend, book, opid, vcard);
 }
 
 void
 e_book_backend_remove_contacts (EBookBackend *backend,
 				EDataBook    *book,
+				guint32       opid,
 				GList        *id_list)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -145,12 +149,13 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts) (backend, book, id_list);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts) (backend, book, opid, id_list);
 }
 
 void
 e_book_backend_modify_contact (EBookBackend *backend,
 			       EDataBook    *book,
+			       guint32       opid,
 			       const char   *vcard)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -159,12 +164,13 @@ e_book_backend_modify_contact (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact) (backend, book, vcard);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact) (backend, book, opid, vcard);
 }
 
 void
 e_book_backend_get_contact (EBookBackend *backend,
 			    EDataBook    *book,
+			    guint32       opid,
 			    const char   *id)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -173,12 +179,13 @@ e_book_backend_get_contact (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact) (backend, book, id);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact) (backend, book, opid, id);
 }
 
 void
 e_book_backend_get_contact_list (EBookBackend *backend,
 				 EDataBook    *book,
+				 guint32       opid,
 				 const char   *query)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -187,7 +194,7 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list) (backend, book, query);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list) (backend, book, opid, query);
 }
 
 void
@@ -217,6 +224,7 @@ e_book_backend_stop_book_view (EBookBackend  *backend,
 void
 e_book_backend_get_changes (EBookBackend *backend,
 			    EDataBook    *book,
+			    guint32       opid,
 			    const char   *change_id)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -225,12 +233,13 @@ e_book_backend_get_changes (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_changes);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_changes) (backend, book, change_id);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_changes) (backend, book, opid, change_id);
 }
 
 void
 e_book_backend_authenticate_user (EBookBackend *backend,
 				  EDataBook    *book,
+				  guint32       opid,
 				  const char   *user,
 				  const char   *passwd,
 				  const char   *auth_method)
@@ -241,12 +250,13 @@ e_book_backend_authenticate_user (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user) (backend, book, user, passwd, auth_method);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user) (backend, book, opid, user, passwd, auth_method);
 }
 
 void
 e_book_backend_get_supported_fields (EBookBackend *backend,
-				     EDataBook    *book)
+				     EDataBook    *book,
+				     guint32       opid)
 
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -254,19 +264,20 @@ e_book_backend_get_supported_fields (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_fields);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_fields) (backend, book);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_fields) (backend, book, opid);
 }
 
 void
 e_book_backend_get_supported_auth_methods (EBookBackend *backend,
-					   EDataBook    *book)
+					   EDataBook    *book,
+					   guint32       opid)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_auth_methods);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_auth_methods) (backend, book);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_auth_methods) (backend, book, opid);
 }
 
 GNOME_Evolution_Addressbook_CallStatus

@@ -37,7 +37,6 @@ libebook_la_SOURCES =					\
 	$(CORBA_GENERATED_C)				\
 	$(MARSHAL_GENERATED)				\
 	e-address-western.c				\
-	e-book-async.c					\
 	e-book-listener.c				\
 	e-book-query.c					\
 	e-book-view-listener.c				\
@@ -59,7 +58,6 @@ libebookincludedir = $(privincludedir)/libebook
 libebookinclude_HEADERS =				\
 	$(CORBA_GENERATED_H)				\
 	e-address-western.h				\
-	e-book-async.h					\
 	e-book-listener.h				\
 	e-book-query.h					\
 	e-book-view-listener.h				\

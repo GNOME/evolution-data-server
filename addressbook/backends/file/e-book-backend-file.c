@@ -157,6 +157,7 @@ do_create(EBookBackendFile  *bf,
 static EBookBackendSyncStatus
 e_book_backend_file_create_contact (EBookBackendSync *backend,
 				    EDataBook *book,
+				    guint32 opid,
 				    const char *vcard,
 				    EContact **contact)
 {
@@ -176,7 +177,8 @@ e_book_backend_file_create_contact (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_remove_contacts (EBookBackendSync *backend,
-				     EDataBook    *book,
+				     EDataBook *book,
+				     guint32 opid,
 				     GList *id_list,
 				     GList **ids)
 {
@@ -222,7 +224,8 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_modify_contact (EBookBackendSync *backend,
-				    EDataBook    *book,
+				    EDataBook *book,
+				    guint32 opid,
 				    const char *vcard,
 				    EContact **contact)
 {
@@ -276,7 +279,8 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_contact (EBookBackendSync *backend,
-				 EDataBook    *book,
+				 EDataBook *book,
+				 guint32 opid,
 				 const char *id,
 				 char **vcard)
 {
@@ -304,7 +308,8 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_contact_list (EBookBackendSync *backend,
-				      EDataBook    *book,
+				      EDataBook *book,
+				      guint32 opid,
 				      const char *query,
 				      GList **contacts)
 {
@@ -592,7 +597,8 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_changes (EBookBackendSync *backend,
-				 EDataBook    *book,
+				 EDataBook *book,
+				 guint32 opid,
 				 const char *change_id,
 				 GList **changes_out)
 {
@@ -733,7 +739,8 @@ e_book_backend_file_extract_path_from_uri (const char *uri)
 
 static EBookBackendSyncStatus
 e_book_backend_file_authenticate_user (EBookBackendSync *backend,
-				       EDataBook    *book,
+				       EDataBook *book,
+				       guint32 opid,
 				       const char *user,
 				       const char *passwd,
 				       const char *auth_method)
@@ -743,7 +750,8 @@ e_book_backend_file_authenticate_user (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
-					  EDataBook    *book,
+					  EDataBook *book,
+					  guint32 opid,
 					  GList **fields_out)
 {
 	GList *fields = NULL;
@@ -1028,7 +1036,8 @@ select_changes (const char *name)
 
 static EBookBackendSyncStatus
 e_book_backend_file_remove (EBookBackendSync *backend,
-			    EDataBook        *book)
+			    EDataBook        *book,
+			    guint32           opid)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	GDir *dir;

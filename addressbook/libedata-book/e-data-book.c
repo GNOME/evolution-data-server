@@ -30,29 +30,32 @@ struct _EDataBookPrivate {
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_open (PortableServer_Servant servant,
+					    const CORBA_long opid,
 					    const CORBA_boolean only_if_exists,
 					    CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
-	printf ("impl_GNOME_Evolution_Addressbook_Book_open\n");
+	printf ("impl_GNOME_Evolution_Addressbook_Book_open (%p)\n", book);
 
-	e_book_backend_open (e_data_book_get_backend (book), book, only_if_exists);
+	e_book_backend_open (e_data_book_get_backend (book), book, opid, only_if_exists);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_remove (PortableServer_Servant servant,
+					      const CORBA_long opid,
 					      CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
 	printf ("impl_GNOME_Evolution_Addressbook_Book_remove\n");
 
-	e_book_backend_remove (e_data_book_get_backend (book), book);
+	e_book_backend_remove (e_data_book_get_backend (book), book, opid);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_getContact (PortableServer_Servant servant,
+						  const CORBA_long opid,
 						  const CORBA_char *id,
 						  CORBA_Environment *ev)
 {
@@ -60,11 +63,12 @@ impl_GNOME_Evolution_Addressbook_Book_getContact (PortableServer_Servant servant
 
 	printf ("impl_GNOME_Evolution_Addressbook_Book_getContact\n");
 
-	e_book_backend_get_contact (e_data_book_get_backend (book), book, id);
+	e_book_backend_get_contact (e_data_book_get_backend (book), book, opid, id);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_getContactList (PortableServer_Servant servant,
+						      const CORBA_long opid,
 						      const CORBA_char *query,
 						      CORBA_Environment *ev)
 {
@@ -72,11 +76,12 @@ impl_GNOME_Evolution_Addressbook_Book_getContactList (PortableServer_Servant ser
 
 	printf ("impl_GNOME_Evolution_Addressbook_Book_getContactList\n");
 
-	e_book_backend_get_contact_list (e_data_book_get_backend (book), book, query);
+	e_book_backend_get_contact_list (e_data_book_get_backend (book), book, opid, query);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_authenticateUser (PortableServer_Servant servant,
+							const CORBA_long opid,
 							const char* user,
 							const char* passwd,
 							const char* auth_method,
@@ -85,21 +90,23 @@ impl_GNOME_Evolution_Addressbook_Book_authenticateUser (PortableServer_Servant s
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
 	e_book_backend_authenticate_user (e_data_book_get_backend (book), book,
-				       user, passwd, auth_method);
+					  opid, user, passwd, auth_method);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_addContact (PortableServer_Servant servant,
+						  const CORBA_long opid,
 						  const CORBA_char *vcard,
 						  CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
-	e_book_backend_create_contact (e_data_book_get_backend (book), book, vcard);
+	e_book_backend_create_contact (e_data_book_get_backend (book), book, opid, vcard);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_removeContacts (PortableServer_Servant servant,
+						      const CORBA_long opid,
 						      const GNOME_Evolution_Addressbook_ContactIdList *ids,
 						      CORBA_Environment *ev)
 {
@@ -110,28 +117,30 @@ impl_GNOME_Evolution_Addressbook_Book_removeContacts (PortableServer_Servant ser
 	for (i = 0; i < ids->_length; i ++)
 		id_list = g_list_append (id_list, ids->_buffer[i]);
 
-	e_book_backend_remove_contacts (e_data_book_get_backend (book), book, id_list);
+	e_book_backend_remove_contacts (e_data_book_get_backend (book), book, opid, id_list);
 
 	g_list_free (id_list);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_modifyContact (PortableServer_Servant servant,
+						     const CORBA_long opid,
 						     const CORBA_char *vcard,
 						     CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
-	e_book_backend_modify_contact (e_data_book_get_backend (book), book, vcard);
+	e_book_backend_modify_contact (e_data_book_get_backend (book), book, opid, vcard);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servant,
-				   const GNOME_Evolution_Addressbook_BookViewListener listener,
-				   const CORBA_char *search,
-				   const GNOME_Evolution_Addressbook_stringlist* requested_fields,
-				   const CORBA_long max_results,
-				   CORBA_Environment *ev)
+						   const CORBA_long opid,
+						   const GNOME_Evolution_Addressbook_BookViewListener listener,
+						   const CORBA_char *search,
+						   const GNOME_Evolution_Addressbook_stringlist* requested_fields,
+						   const CORBA_long max_results,
+						   CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 	EBookBackend *backend = e_data_book_get_backend (book);
@@ -146,7 +155,7 @@ impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servan
 
 	card_sexp = e_book_backend_sexp_new (search);
 	if (!card_sexp) {
-		e_data_book_respond_get_book_view (book, GNOME_Evolution_Addressbook_InvalidQuery, NULL);
+		e_data_book_respond_get_book_view (book, opid, GNOME_Evolution_Addressbook_InvalidQuery, NULL);
 		return;
 	}
 
@@ -155,29 +164,30 @@ impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servan
 
 	if (!view) {
 		g_object_unref (card_sexp);
-		e_data_book_respond_get_book_view (book, GNOME_Evolution_Addressbook_OtherError, NULL);
+		e_data_book_respond_get_book_view (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 		return;
 	}
 
 	e_book_backend_add_book_view (backend, view);
 	
-	e_data_book_respond_get_book_view (book, GNOME_Evolution_Addressbook_Success, view);
+	e_data_book_respond_get_book_view (book, opid, GNOME_Evolution_Addressbook_Success, view);
 }
 
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_getChanges (PortableServer_Servant servant,
-				 const CORBA_char *change_id,
-				 CORBA_Environment *ev)
+						  const CORBA_long opid,
+						  const CORBA_char *change_id,
+						  CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
-	e_book_backend_get_changes (e_data_book_get_backend (book), book, change_id);
+	e_book_backend_get_changes (e_data_book_get_backend (book), book, opid, change_id);
 }
 
 static char *
 impl_GNOME_Evolution_Addressbook_Book_getStaticCapabilities (PortableServer_Servant servant,
-					     CORBA_Environment *ev)
+							     CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 	char *temp;
@@ -191,20 +201,22 @@ impl_GNOME_Evolution_Addressbook_Book_getStaticCapabilities (PortableServer_Serv
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_getSupportedFields (PortableServer_Servant servant,
+							  const CORBA_long opid,
 							  CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
-	e_book_backend_get_supported_fields (e_data_book_get_backend (book), book);
+	e_book_backend_get_supported_fields (e_data_book_get_backend (book), book, opid);
 }
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_getSupportedAuthMethods (PortableServer_Servant servant,
+							       const CORBA_long opid,
 							       CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
-	e_book_backend_get_supported_auth_methods (e_data_book_get_backend (book), book);
+	e_book_backend_get_supported_auth_methods (e_data_book_get_backend (book), book, opid);
 }
 
 static GNOME_Evolution_Addressbook_CallStatus
@@ -245,13 +257,14 @@ e_data_book_get_source (EDataBook *book)
  * e_data_book_respond_open:
  */
 void
-e_data_book_respond_open (EDataBook                           *book,
-		       GNOME_Evolution_Addressbook_CallStatus  status)
+e_data_book_respond_open (EDataBook                              *book,
+			  guint32                                 opid,
+			  GNOME_Evolution_Addressbook_CallStatus  status)
 {
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
-	GNOME_Evolution_Addressbook_BookListener_notifyBookOpened (book->priv->listener, status, &ev);
+	GNOME_Evolution_Addressbook_BookListener_notifyBookOpened (book->priv->listener, opid, status, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_respond_open: Exception "
@@ -266,12 +279,13 @@ e_data_book_respond_open (EDataBook                           *book,
  */
 void
 e_data_book_respond_remove (EDataBook                           *book,
-			 GNOME_Evolution_Addressbook_CallStatus  status)
+			    guint32                              opid,
+			    GNOME_Evolution_Addressbook_CallStatus  status)
 {
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
-	GNOME_Evolution_Addressbook_BookListener_notifyBookRemoved (book->priv->listener, status, &ev);
+	GNOME_Evolution_Addressbook_BookListener_notifyBookRemoved (book->priv->listener, opid, status, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_respond_remove: Exception "
@@ -285,9 +299,10 @@ e_data_book_respond_remove (EDataBook                           *book,
  * e_data_book_respond_create:
  */
 void
-e_data_book_respond_create (EDataBook                                *book,
-			 GNOME_Evolution_Addressbook_CallStatus  status,
-			 EContact                               *contact)
+e_data_book_respond_create (EDataBook                              *book,
+			    guint32                                 opid,
+			    GNOME_Evolution_Addressbook_CallStatus  status,
+			    EContact                               *contact)
 {
 	CORBA_Environment ev;
 
@@ -299,7 +314,7 @@ e_data_book_respond_create (EDataBook                                *book,
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Addressbook_BookListener_notifyContactCreated (
-		book->priv->listener, status,
+		book->priv->listener, opid, status,
 		status == GNOME_Evolution_Addressbook_Success ? e_contact_get_const (contact, E_CONTACT_UID) : "",
 		&ev);
 
@@ -315,9 +330,10 @@ e_data_book_respond_create (EDataBook                                *book,
  * e_data_book_respond_remove_contacts:
  */
 void
-e_data_book_respond_remove_contacts (EDataBook                                *book,
-				  GNOME_Evolution_Addressbook_CallStatus  status,
-				  GList                                  *ids)
+e_data_book_respond_remove_contacts (EDataBook                              *book,
+				     guint32                                 opid,
+				     GNOME_Evolution_Addressbook_CallStatus  status,
+				     GList                                  *ids)
 {
 	CORBA_Environment ev;
 	GList *i;
@@ -331,7 +347,7 @@ e_data_book_respond_remove_contacts (EDataBook                                *b
 	}
 
 	GNOME_Evolution_Addressbook_BookListener_notifyContactsRemoved (
-		book->priv->listener, status, &ev);
+		book->priv->listener, opid, status, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_respond_remove: Exception "
@@ -345,9 +361,10 @@ e_data_book_respond_remove_contacts (EDataBook                                *b
  * e_data_book_respond_modify:
  */
 void
-e_data_book_respond_modify (EDataBook                                *book,
-			 GNOME_Evolution_Addressbook_CallStatus  status,
-			 EContact                               *contact)
+e_data_book_respond_modify (EDataBook                              *book,
+			    guint32                                 opid,
+			    GNOME_Evolution_Addressbook_CallStatus  status,
+			    EContact                               *contact)
 {
 	CORBA_Environment ev;
 
@@ -359,7 +376,7 @@ e_data_book_respond_modify (EDataBook                                *book,
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Addressbook_BookListener_notifyContactModified (
-		book->priv->listener, status, &ev);
+		book->priv->listener, opid, status, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_respond_modify: Exception "
@@ -373,15 +390,16 @@ e_data_book_respond_modify (EDataBook                                *book,
  * e_data_book_respond_authenticate_user:
  */
 void
-e_data_book_respond_authenticate_user (EDataBook                           *book,
-				    GNOME_Evolution_Addressbook_CallStatus  status)
+e_data_book_respond_authenticate_user (EDataBook                              *book,
+				       guint32                                 opid,
+				       GNOME_Evolution_Addressbook_CallStatus  status)
 {
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Addressbook_BookListener_notifyAuthenticationResult (
-		book->priv->listener, status, &ev);
+		book->priv->listener, opid, status, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_respond_authenticate_user: Exception "
@@ -392,9 +410,10 @@ e_data_book_respond_authenticate_user (EDataBook                           *book
 }
 
 void
-e_data_book_respond_get_supported_fields (EDataBook *book,
-				       GNOME_Evolution_Addressbook_CallStatus  status,
-				       GList   *fields)
+e_data_book_respond_get_supported_fields (EDataBook                              *book,
+					  guint32                                 opid,
+					  GNOME_Evolution_Addressbook_CallStatus  status,
+					  GList                                  *fields)
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_stringlist stringlist;
@@ -417,7 +436,7 @@ e_data_book_respond_get_supported_fields (EDataBook *book,
 	printf ("calling GNOME_Evolution_Addressbook_BookListener_notifySupportedFields\n");
 
 	GNOME_Evolution_Addressbook_BookListener_notifySupportedFields (
-			book->priv->listener, status,
+			book->priv->listener, opid, status,
 			&stringlist,
 			&ev);
 
@@ -427,9 +446,10 @@ e_data_book_respond_get_supported_fields (EDataBook *book,
 }
 
 void
-e_data_book_respond_get_supported_auth_methods (EDataBook *book,
-					     GNOME_Evolution_Addressbook_CallStatus  status,
-					     GList   *auth_methods)
+e_data_book_respond_get_supported_auth_methods (EDataBook                              *book,
+						guint32                                 opid,
+						GNOME_Evolution_Addressbook_CallStatus  status,
+						GList                                  *auth_methods)
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_stringlist stringlist;
@@ -450,7 +470,7 @@ e_data_book_respond_get_supported_auth_methods (EDataBook *book,
 	}
 
 	GNOME_Evolution_Addressbook_BookListener_notifySupportedAuthMethods (
-			book->priv->listener, status,
+			book->priv->listener, opid, status,
 			&stringlist,
 			&ev);
 
@@ -470,9 +490,10 @@ view_destroy(gpointer data, GObject *where_object_was)
  * e_data_book_respond_get_book_view:
  */
 void
-e_data_book_respond_get_book_view (EDataBook                           *book,
+e_data_book_respond_get_book_view (EDataBook                              *book,
+				   guint32                                 opid,
 				   GNOME_Evolution_Addressbook_CallStatus  status,
-				   EDataBookView                       *book_view)
+				   EDataBookView                          *book_view)
 {
 	CORBA_Environment ev;
 	CORBA_Object      object = CORBA_OBJECT_NIL;
@@ -488,7 +509,7 @@ e_data_book_respond_get_book_view (EDataBook                           *book,
 	}
 
 	GNOME_Evolution_Addressbook_BookListener_notifyViewRequested (
-		book->priv->listener, status, object, &ev);
+		book->priv->listener, opid, status, object, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_respond_get_book_view: Exception "
@@ -502,15 +523,17 @@ e_data_book_respond_get_book_view (EDataBook                           *book,
  * e_data_book_respond_get_contact:
  */
 void
-e_data_book_respond_get_contact (EDataBook                           *book,
-			      GNOME_Evolution_Addressbook_CallStatus  status,
-			      char                              *vcard)
+e_data_book_respond_get_contact (EDataBook                              *book,
+				 guint32                                 opid,
+				 GNOME_Evolution_Addressbook_CallStatus  status,
+				 char                                   *vcard)
 {
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Addressbook_BookListener_notifyContactRequested (book->priv->listener,
+									 opid,
 									 status,
 									 vcard,
 									 &ev);
@@ -525,9 +548,10 @@ e_data_book_respond_get_contact (EDataBook                           *book,
  * e_data_book_respond_get_contact_list:
  */
 void
-e_data_book_respond_get_contact_list (EDataBook                           *book,
-				   GNOME_Evolution_Addressbook_CallStatus  status,
-				   GList                             *card_list)
+e_data_book_respond_get_contact_list (EDataBook                              *book,
+				      guint32                                 opid,
+				      GNOME_Evolution_Addressbook_CallStatus  status,
+				      GList                                  *card_list)
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_stringlist stringlist;
@@ -551,6 +575,7 @@ e_data_book_respond_get_contact_list (EDataBook                           *book,
 
 
 	GNOME_Evolution_Addressbook_BookListener_notifyContactListRequested (book->priv->listener,
+									     opid,
 									     status,
 									     &stringlist,
 									     &ev);
@@ -567,9 +592,10 @@ e_data_book_respond_get_contact_list (EDataBook                           *book,
  * e_data_book_respond_get_changes:
  */
 void
-e_data_book_respond_get_changes (EDataBook                                *book,
-			      GNOME_Evolution_Addressbook_CallStatus  status,
-			      GList                                  *changes)
+e_data_book_respond_get_changes (EDataBook                              *book,
+				 guint32                                 opid,
+				 GNOME_Evolution_Addressbook_CallStatus  status,
+				 GList                                  *changes)
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_BookChangeList changelist;
@@ -595,6 +621,7 @@ e_data_book_respond_get_changes (EDataBook                                *book,
 	g_list_free (changes);
 
 	GNOME_Evolution_Addressbook_BookListener_notifyChangesRequested (book->priv->listener,
+									 opid,
 									 status,
 									 &changelist,
 									 &ev);
@@ -612,7 +639,7 @@ e_data_book_respond_get_changes (EDataBook                                *book,
  */
 void
 e_data_book_report_writable (EDataBook                           *book,
-			  gboolean                           writable)
+			     gboolean                           writable)
 {
 	CORBA_Environment ev;
 
@@ -631,9 +658,9 @@ e_data_book_report_writable (EDataBook                           *book,
 
 static void
 e_data_book_construct (EDataBook                *book,
-		    EBookBackend             *backend,
-		    ESource *source,
-		    GNOME_Evolution_Addressbook_BookListener listener)
+		       EBookBackend             *backend,
+		       ESource *source,
+		       GNOME_Evolution_Addressbook_BookListener listener)
 {
 	EDataBookPrivate *priv;
 	CORBA_Environment ev;
@@ -666,7 +693,7 @@ e_data_book_construct (EDataBook                *book,
 EDataBook *
 e_data_book_new (EBookBackend                               *backend,
 		 ESource *source,
-	      GNOME_Evolution_Addressbook_BookListener  listener)
+		 GNOME_Evolution_Addressbook_BookListener  listener)
 {
 	EDataBook *book;
 	char *caps = e_book_backend_get_static_capabilities (backend);

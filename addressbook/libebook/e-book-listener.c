@@ -63,15 +63,17 @@ e_book_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatus sta
 }
 
 static void
-impl_BookListener_respond_create_contact (PortableServer_Servant                                    servant,
-					  const GNOME_Evolution_Addressbook_CallStatus              status,
-					  const CORBA_char*                                         id,
-					  CORBA_Environment                                        *ev)
+impl_BookListener_respond_create_contact (PortableServer_Servant servant,
+					  const CORBA_long opid,
+					  const GNOME_Evolution_Addressbook_CallStatus status,
+					  const CORBA_char* id,
+					  CORBA_Environment *ev)
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	EBookListenerResponse response;
 
 	response.op       = CreateContactResponse;
+	response.opid     = opid;
 	response.status   = e_book_listener_convert_status (status);
 	response.id       = g_strdup (id);
 
@@ -82,6 +84,7 @@ impl_BookListener_respond_create_contact (PortableServer_Servant                
 
 static void
 impl_BookListener_respond_remove_contacts (PortableServer_Servant servant,
+					   const CORBA_long opid,
 					   const GNOME_Evolution_Addressbook_CallStatus status,
 					   CORBA_Environment *ev)
 {
@@ -89,6 +92,7 @@ impl_BookListener_respond_remove_contacts (PortableServer_Servant servant,
 	EBookListenerResponse response;
 
 	response.op       = RemoveContactResponse;
+	response.opid     = opid;
 	response.status   = e_book_listener_convert_status (status);
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
@@ -96,6 +100,7 @@ impl_BookListener_respond_remove_contacts (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_modify_contact (PortableServer_Servant servant,
+					  const CORBA_long opid,
 					  const GNOME_Evolution_Addressbook_CallStatus status,
 					  CORBA_Environment *ev)
 {
@@ -103,6 +108,7 @@ impl_BookListener_respond_modify_contact (PortableServer_Servant servant,
 	EBookListenerResponse response;
 
 	response.op       = ModifyContactResponse;
+	response.opid     = opid;
 	response.status   = e_book_listener_convert_status (status);
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
@@ -110,6 +116,7 @@ impl_BookListener_respond_modify_contact (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_get_contact (PortableServer_Servant servant,
+				       const CORBA_long opid,
 				       const GNOME_Evolution_Addressbook_CallStatus status,
 				       const CORBA_char* card,
 				       CORBA_Environment *ev)
@@ -118,6 +125,7 @@ impl_BookListener_respond_get_contact (PortableServer_Servant servant,
 	EBookListenerResponse response;
 
 	response.op       = GetContactResponse;
+	response.opid     = opid;
 	response.status   = e_book_listener_convert_status (status);
 	response.vcard    = g_strdup (card);
 
@@ -128,6 +136,7 @@ impl_BookListener_respond_get_contact (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_get_contact_list (PortableServer_Servant servant,
+					    const CORBA_long opid,
 					    const GNOME_Evolution_Addressbook_CallStatus status,
 					    const GNOME_Evolution_Addressbook_stringlist *cards,
 					    CORBA_Environment *ev)
@@ -140,6 +149,7 @@ impl_BookListener_respond_get_contact_list (PortableServer_Servant servant,
 		return;
 
 	response.op     = GetContactListResponse;
+	response.opid   = opid;
 	response.status = e_book_listener_convert_status (status);
 	response.list   = NULL;
 
@@ -155,6 +165,7 @@ impl_BookListener_respond_get_contact_list (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_get_view (PortableServer_Servant servant,
+				    const CORBA_long opid,
 				    const GNOME_Evolution_Addressbook_CallStatus status,
 				    const GNOME_Evolution_Addressbook_BookView book_view,
 				    CORBA_Environment *ev)
@@ -168,6 +179,7 @@ impl_BookListener_respond_get_view (PortableServer_Servant servant,
 		return;
 
 	response.op        = GetBookViewResponse;
+	response.opid      = opid;
 	response.status    = e_book_listener_convert_status (status);
 	response.book_view = bonobo_object_dup_ref (book_view, ev);
 
@@ -178,6 +190,7 @@ impl_BookListener_respond_get_view (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_get_changes (PortableServer_Servant servant,
+				       const CORBA_long opid,
 				       const GNOME_Evolution_Addressbook_CallStatus status,
 				       const GNOME_Evolution_Addressbook_BookChangeList *changes,
 				       CORBA_Environment *ev)
@@ -187,6 +200,7 @@ impl_BookListener_respond_get_changes (PortableServer_Servant servant,
 	int i;
 
 	response.op     = GetChangesResponse;
+	response.opid   = opid;
 	response.status = e_book_listener_convert_status (status);
 	response.list   = NULL;
 
@@ -215,6 +229,7 @@ impl_BookListener_respond_get_changes (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_open_book (PortableServer_Servant servant,
+				     const CORBA_long opid,
 				     const GNOME_Evolution_Addressbook_CallStatus status,
 				     CORBA_Environment *ev)
 {
@@ -222,6 +237,7 @@ impl_BookListener_respond_open_book (PortableServer_Servant servant,
 	EBookListenerResponse response;
 
 	response.op       = OpenBookResponse;
+	response.opid     = opid;
 	response.status   = e_book_listener_convert_status (status);
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
@@ -229,6 +245,7 @@ impl_BookListener_respond_open_book (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_remove_book (PortableServer_Servant servant,
+				       const CORBA_long opid,
 				       const GNOME_Evolution_Addressbook_CallStatus status,
 				       CORBA_Environment *ev)
 {
@@ -236,6 +253,7 @@ impl_BookListener_respond_remove_book (PortableServer_Servant servant,
 	EBookListenerResponse response;
 
 	response.op       = RemoveBookResponse;
+	response.opid     = opid;
 	response.status   = e_book_listener_convert_status (status);
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
@@ -243,6 +261,7 @@ impl_BookListener_respond_remove_book (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_authentication_result (PortableServer_Servant servant,
+						 const CORBA_long opid,
 						 const GNOME_Evolution_Addressbook_CallStatus status,
 						 CORBA_Environment *ev)
 {
@@ -250,6 +269,7 @@ impl_BookListener_respond_authentication_result (PortableServer_Servant servant,
 	EBookListenerResponse response;
 
 	response.op       = AuthenticationResponse;
+	response.opid     = opid;
 	response.status   = e_book_listener_convert_status (status);
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
@@ -257,6 +277,7 @@ impl_BookListener_respond_authentication_result (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_get_supported_fields (PortableServer_Servant servant,
+						const CORBA_long opid,
 						const GNOME_Evolution_Addressbook_CallStatus status,
 						const GNOME_Evolution_Addressbook_stringlist *fields,
 						CORBA_Environment *ev)
@@ -266,6 +287,7 @@ impl_BookListener_respond_get_supported_fields (PortableServer_Servant servant,
 	int i;
 
 	response.op     = GetSupportedFieldsResponse;
+	response.opid   = opid;
 	response.status = e_book_listener_convert_status (status);
 	response.list   = NULL;
 
@@ -277,6 +299,7 @@ impl_BookListener_respond_get_supported_fields (PortableServer_Servant servant,
 
 static void
 impl_BookListener_respond_get_supported_auth_methods (PortableServer_Servant servant,
+						      const CORBA_long opid,
 						      const GNOME_Evolution_Addressbook_CallStatus status,
 						      const GNOME_Evolution_Addressbook_stringlist *auth_methods,
 						      CORBA_Environment *ev)
@@ -286,6 +309,7 @@ impl_BookListener_respond_get_supported_auth_methods (PortableServer_Servant ser
 	int i;
 
 	response.op     = GetSupportedAuthMethodsResponse;
+	response.opid   = opid;
 	response.status = e_book_listener_convert_status (status);
 	response.list   = NULL;
 
