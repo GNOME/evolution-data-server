@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+#include <string.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libedata-cal/e-cal-backend-cache.h>
 #include "e-cal-backend-groupwise.h"
 #include "e-gw-connection.h"
@@ -129,12 +131,32 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 	return GNOME_Evolution_Calendar_Success;
 }
 
+static GnomeVFSURI *
+convert_uri (const char *gw_uri)
+{
+	char *real_uri;
+	GnomeVFSURI *vuri;
+
+	if (strncmp ("groupwise://", gw_uri, sizeof ("groupwise://") - 1))
+		return NULL;
+
+	real_uri = g_strconcat ("http://", gw_uri + sizeof ("groupwise://") - 1, NULL);
+	vuri = gnome_vfs_uri_new ((const char *) real_uri);
+
+	g_free (real_uri);
+
+	return vuri;
+}
+
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists)
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
+	GnomeVFSURI *vuri;
+	char *real_uri;
+	EGwConnectionStatus status;
 	
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -144,15 +166,28 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		g_object_unref (priv->cache);
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 
-	/* FIXME: obtain username/password from the user */
+	/* convert the URI */
+	vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+	if (!vuri)
+		return GNOME_Evolution_Calendar_UnsupportedMethod;
 
 	/* FIXME: login to the server only if we're online */
 	/* create connection to server */
 	priv->cnc = e_gw_connection_new ();
-	switch (e_gw_connection_login (priv->cnc, e_cal_backend_get_uri (E_CAL_BACKEND (backend)),
-				       "username", "password")) {
+	real_uri = gnome_vfs_uri_to_string ((const GnomeVFSURI *) vuri,
+					    GNOME_VFS_URI_HIDE_USER_NAME |
+		                            GNOME_VFS_URI_HIDE_PASSWORD);
+	status =e_gw_connection_login (priv->cnc, real_uri,
+				       gnome_vfs_uri_get_user_name (vuri),
+				       gnome_vfs_uri_get_password (vuri));
+
+	gnome_vfs_uri_unref (vuri);
+	g_free (real_uri);
+
+	switch (status) {
 	case E_GW_CONNECTION_STATUS_OK :
 		return GNOME_Evolution_Calendar_Success;
+	default :
 	}
 
 	/* free memory */

@@ -1,3 +1,11 @@
+2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c (convert_uri):
+	new function to convert "groupwise://" URIs to "http://".
+	(e_cal_backend_groupwise_open): call the above function to
+	get a GnomeVFSURI, and use it as a temporary hack to get
+	username and password.
+
 2003-12-07  JP Rosevear  <jpr@ximian.com>
 
 	* libedata-cal/e-data-cal-factory.c: version the oafiid
