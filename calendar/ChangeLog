@@ -1,3 +1,10 @@
+2004-08-03  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_send_appointment): Add ':' as a separator
+	while appending the container id to the xgwrecordid to
+	generate the item_id.
+
 2004-08-02  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #58642.

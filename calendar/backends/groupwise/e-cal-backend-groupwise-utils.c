@@ -669,7 +669,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 	/* When the icalcomponent is obtained through the itip message rather
 	 * than from the SOAP protocol, the container id has to be explicitly 
 	 * added to the xgwrecordid inorder to obtain the item id. */
-	item_id = g_strconcat (e_cal_component_get_gw_id (comp), container, NULL);
+	item_id = g_strconcat (e_cal_component_get_gw_id (comp), ":", container, NULL);
 	switch (method) {
 	case ICAL_METHOD_REQUEST:
 		/* get attendee here and add the list along. */
