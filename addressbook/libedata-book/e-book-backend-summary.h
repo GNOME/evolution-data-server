@@ -26,7 +26,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <libedatabook/e-data-book-types.h>
+#include <libedata-book/e-data-book-types.h>
 #include <libebook/e-contact.h>
 
 #define E_TYPE_BACKEND_SUMMARY        (e_book_backend_summary_get_type ())

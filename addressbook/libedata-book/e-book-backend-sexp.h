@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <libebook/e-contact.h>
-#include <libedatabook/e-data-book-types.h>
+#include <libedata-book/e-data-book-types.h>
 
 #define E_TYPE_BACKEND_SEXP        (e_book_backend_sexp_get_type ())
 #define E_BOOK_BACKEND_SEXP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_SEXP, EBookBackendSExp))

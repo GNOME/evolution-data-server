@@ -16,8 +16,8 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <libebook/e-contact.h>
-#include <libedatabook/Evolution-DataServer-Addressbook.h>
-#include <libedatabook/e-data-book-types.h>
+#include <libedata-book/Evolution-DataServer-Addressbook.h>
+#include <libedata-book/e-data-book-types.h>
 
 #define E_TYPE_DATA_BOOK_VIEW        (e_data_book_view_get_type ())
 #define E_DATA_BOOK_VIEW(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DATA_BOOK_VIEW, EDataBookView))

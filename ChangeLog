@@ -1,5 +1,11 @@
 2003-11-05  JP Rosevear <jpr@ximian.com>
 
+	* src/server.c: following renaming of libedata-book
+
+	* src/server-interface.[hc]: ditto
+
+2003-11-05  JP Rosevear <jpr@ximian.com>
+
 	* src/server.c: following renaming of libedata-cal
 
 	* src/server-interface.[hc]: ditto

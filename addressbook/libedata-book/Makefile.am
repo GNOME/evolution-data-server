@@ -1,5 +1,5 @@
 INCLUDES =						\
-	-DG_LOG_DOMAIN=\"libedatabook\"			\
+	-DG_LOG_DOMAIN=\"libedata_book\"			\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(DB3_CFLAGS)					\
@@ -49,9 +49,9 @@ ldapschemadir = $(privdatadir)
 ldapschema_DATA= $(LDAP_SCHEMA)
 
 # The library
-lib_LTLIBRARIES = libedatabook.la
+lib_LTLIBRARIES = libedata-book.la
 
-libedatabook_la_SOURCES =				\
+libedata_book_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
 	$(CORBA_GENERATED_C)				\
 	e-book-backend-file.c				\
@@ -66,18 +66,18 @@ libedatabook_la_SOURCES =				\
 	e-data-book.c					\
 	ximian-vcard.h
 
-libedatabook_la_LIBADD =					\
+libedata_book_la_LIBADD =					\
 	$(LDAP_LIBS)						\
 	$(top_builddir)/addressbook/libebook/libebook.la	\
 	$(top_builddir)/libedataserver/libedataserver.la
 
-libedatabook_la_LDFLAGS = 									\
+libedata_book_la_LDFLAGS = 									\
 	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE)	\
 	-no-undefined
 
-libedatabookincludedir = $(privincludedir)/libedatabook
+libedata_bookincludedir = $(privincludedir)/libedata-book
 
-libedatabookinclude_HEADERS =				\
+libedata_bookinclude_HEADERS =				\
 	$(CORBA_GENERATED_H)				\
 	e-book-backend-file.h				\
 	$(LDAP_SOURCE_H)				\
@@ -92,7 +92,7 @@ libedatabookinclude_HEADERS =				\
 	e-data-book.h
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedatabook-1.0.pc
+pkgconfig_DATA = libedata-book-1.0.pc
 
 BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)

@@ -5,7 +5,7 @@
 #ifndef __E_BOOK_BACKEND_LDAP_H__
 #define __E_BOOK_BACKEND_LDAP_H__
 
-#include <libedatabook/e-book-backend.h>
+#include <libedata-book/e-book-backend.h>
 
 #define E_TYPE_BACKEND_LDAP        (e_book_backend_ldap_get_type ())
 #define E_BOOK_BACKEND_LDAP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_LDAP, EBookBackendLDAP))

@@ -25,9 +25,9 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <libebook/e-contact.h>
-#include <libedatabook/Evolution-DataServer-Addressbook.h>
-#include <libedatabook/e-data-book-types.h>
-#include <libedatabook/e-data-book.h>
+#include <libedata-book/Evolution-DataServer-Addressbook.h>
+#include <libedata-book/e-data-book-types.h>
+#include <libedata-book/e-data-book.h>
 
 #define E_TYPE_BACKEND         (e_book_backend_get_type ())
 #define E_BOOK_BACKEND(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND, EBookBackend))

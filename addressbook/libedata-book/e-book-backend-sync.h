@@ -6,9 +6,9 @@
 #define __E_BOOK_BACKEND_SYNC_H__
 
 #include <glib.h>
-#include <libedatabook/Evolution-DataServer-Addressbook.h>
-#include <libedatabook/e-data-book-types.h>
-#include <libedatabook/e-book-backend.h>
+#include <libedata-book/Evolution-DataServer-Addressbook.h>
+#include <libedata-book/e-data-book-types.h>
+#include <libedata-book/e-book-backend.h>
 
 #define E_TYPE_BACKEND_SYNC         (e_book_backend_sync_get_type ())
 #define E_BOOK_BACKEND_SYNC(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_SYNC, EBookBackendSync))

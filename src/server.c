@@ -27,11 +27,11 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-generic-factory.h>
 
-#include <libedatabook/e-data-book-factory.h>
-#include <libedatabook/e-book-backend-file.h>
-#include <libedatabook/e-book-backend-vcf.h>
+#include <libedata-book/e-data-book-factory.h>
+#include <libedata-book/e-book-backend-file.h>
+#include <libedata-book/e-book-backend-vcf.h>
 #ifdef HAVE_LDAP
-#include <libedatabook/e-book-backend-ldap.h>
+#include <libedata-book/e-book-backend-ldap.h>
 #endif
 
 #include <libedata-cal/e-data-cal-factory.h>

@@ -44,7 +44,7 @@ evolution_data_server_SOURCES = \
 	server.c
 
 evolution_data_server_LDADD =						\
-	$(top_builddir)/addressbook/libedatabook/libedatabook.la	\
+	$(top_builddir)/addressbook/libedata-book/libedata-book.la	\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
 	$(E_DATA_SERVER_LIBS)
 

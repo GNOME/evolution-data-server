@@ -8,7 +8,7 @@
 #ifndef __E_BOOK_BACKEND_VCF_H__
 #define __E_BOOK_BACKEND_VCF_H__
 
-#include <libedatabook/e-book-backend-sync.h>
+#include <libedata-book/e-book-backend-sync.h>
 
 #define E_TYPE_BACKEND_VCF        (e_book_backend_vcf_get_type ())
 #define E_BOOK_BACKEND_VCF(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_VCF, EBookBackendVCF))

@@ -706,8 +706,8 @@ addressbook/Makefile
 addressbook/idl/Makefile
 addressbook/libebook/Makefile
 addressbook/libebook/libebook-1.0.pc
-addressbook/libedatabook/Makefile
-addressbook/libedatabook/libedatabook-1.0.pc
+addressbook/libedata-book/Makefile
+addressbook/libedata-book/libedata-book-1.0.pc
 addressbook/tests/Makefile
 addressbook/tests/ebook/Makefile
 addressbook/tests/vcard/Makefile
