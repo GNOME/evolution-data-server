@@ -1,3 +1,10 @@
+2004-09-30  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes bug #66368.
+
+	* libebook/e-contact.c (e_contact_new_from_vcard): If the constructed
+	vcard does not have a file_as attribute, try to generate one.
+
 2004-09-30  Chris Toshok  <toshok@ximian.com>
 
 	* libedata-book/e-data-book-factory.c
