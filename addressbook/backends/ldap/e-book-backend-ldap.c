@@ -280,8 +280,8 @@ struct prop_info {
 
 	E_COMPLEX_PROP (E_CONTACT_CATEGORY_LIST,  "category", category_populate, category_ber, category_compare),
 
-	STRING_PROP (E_CONTACT_CALENDAR_URI,   "calendarURI"),
-	STRING_PROP (E_CONTACT_FREEBUSY_URL,   "freeBusyURI"),
+	STRING_PROP (E_CONTACT_CALENDAR_URI,   "calCalURI"),
+	STRING_PROP (E_CONTACT_FREEBUSY_URL,   "calFBURL"),
 	STRING_PROP (E_CONTACT_ICS_CALENDAR,   "icsCalendar"),
 
 #undef E_STRING_PROP
