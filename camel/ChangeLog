@@ -1,3 +1,9 @@
+2005-01-19  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* providers/groupwise/camel-groupwise-folder.c
+	(groupwise_folder_get_message): set the message id as the uid
+	for the CamelMimeMessage
+	
 2005-01-18  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-store.c:

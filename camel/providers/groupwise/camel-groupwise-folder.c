@@ -161,6 +161,8 @@ groupwise_folder_get_message( CamelFolder *folder,
 	/*Create and populate the MIME Message structure*/
 	msg = camel_mime_message_new () ;
 
+	camel_mime_message_set_message_id (msg, uid) ;
+
 	multipart = camel_multipart_new () ;
 
 
