@@ -70,6 +70,10 @@ typedef enum {
 	E_GW_CONNECTION_STATUS_UNKNOWN
 } EGwConnectionStatus;
 
+#define E_GW_CURSOR_POSITION_CURRENT "current"
+#define E_GW_CURSOR_POSITION_START "start"
+#define E_GW_CURSOR_POSITION_END "end"
+
 SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
 EGwConnectionStatus e_gw_connection_parse_response_status (SoupSoapResponse *response);
 const char         *e_gw_connection_get_error_message (EGwConnectionStatus status);
@@ -116,7 +120,7 @@ EGwConnectionStatus e_gw_connection_get_items_from_ids (EGwConnection *cnc, cons
 
 EGwConnectionStatus e_gw_connection_create_cursor (EGwConnection *cnc, const char *container, const char *view, EGwFilter *filter, int *cursor);
 EGwConnectionStatus e_gw_connection_destroy_cursor (EGwConnection *cnc, const char *container,  int cursor);
-EGwConnectionStatus e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, GList **item_list);
+EGwConnectionStatus e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **item_list);
 EGwConnectionStatus e_gw_connection_position_cursor (EGwConnection *cnc, const char *container, int cursor, const char *seek, int offset);
 
 EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const char *container, const char *view, const char *start_date, const char *message_list, const char *item_types, const char *item_sources, int count, GSList **item_list);

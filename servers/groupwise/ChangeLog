@@ -1,3 +1,9 @@
+2005-02-24  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-connection.[ch]: (e_gw_connection_read_cursor):
+	Added 'position' field to the readCursor request reflecting
+	the related server fix and the schema change.
+
 2005-02-22  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-item.c (e_gw_item_append_to_soap_message): 

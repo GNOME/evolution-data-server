@@ -2060,7 +2060,7 @@ e_gw_connection_position_cursor (EGwConnection *cnc, const char *container, int 
 }
 
 EGwConnectionStatus
-e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, GList **item_list)
+e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **item_list)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -2075,6 +2075,7 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
 	/* there is problem in read curosr if you set this, uncomment after the problem 
 	   is fixed in server */
 	e_gw_message_write_string_parameter (msg, "forward", NULL, forward ? "true": "false");
+	e_gw_message_write_string_parameter (msg, "position", NULL, cursor_seek);
 	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	e_gw_message_write_int_parameter (msg, "count", NULL, count);
 	
