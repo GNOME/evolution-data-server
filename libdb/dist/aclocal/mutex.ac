@@ -226,7 +226,7 @@ fi
 if test "$db_cv_mutex" = no; then
 AC_TRY_LINK([
 #include <sys/mman.h>],[
-#if defined(__hppa)
+#if defined(__hppa__)
 	typedef msemaphore tsl_t;
 	msemaphore x;
 	msem_init(&x, 0);
@@ -352,6 +352,17 @@ AC_TRY_COMPILE(,[
 ], [db_cv_mutex="ARM/gcc-assembly"])
 fi
 
+# MIPS/gcc: Linux
+if test "$db_cv_mutex" = no; then
+AC_TRY_COMPILE(,[
+#if (defined(__mips) || defined(__mips__)) && defined(__GNUC__)
+	exit(0);
+#else
+	FAIL TO COMPILE/LINK
+#endif
+], [db_cv_mutex="MIPS/gcc-assembly"])
+fi
+
 # PaRisc/gcc: HP/UX
 if test "$db_cv_mutex" = no; then
 AC_TRY_COMPILE(,[
@@ -439,6 +450,18 @@ AC_TRY_COMPILE(,[
 ], [db_cv_mutex="x86_64/gcc-assembly"])
 fi
 
+# x86-64/gcc: FreeBSD, NetBSD, BSD/OS, Linux
+if test "$db_cv_mutex" = no; then
+AC_TRY_RUN([main(){
+#if defined(__x86_64__)
+#if defined(__GNUC__)
+	exit(0);
+#endif
+#endif
+	exit(1);
+}], [db_cv_mutex="x86_64/gcc-assembly"])
+fi
+
 # ia86/gcc: Linux
 if test "$db_cv_mutex" = no; then
 AC_TRY_COMPILE(,[
@@ -449,6 +472,53 @@ AC_TRY_COMPILE(,[
 #endif
 ], [db_cv_mutex="ia64/gcc-assembly"])
 fi
+
+dnl alphalinux/gcc: Linux
+if test "$db_cv_mutex" = no; then
+AC_TRY_RUN([main(){
+#if defined(__alpha__)
+#if defined(__linux__)
+       exit(0);
+#endif
+#endif
+       exit(1);
+}], [db_cv_mutex="alphalinux/gcc-assembly"])
+fi
+
+dnl sparc32linux/gcc: Linux
+if test "$db_cv_mutex" = no; then
+AC_TRY_RUN([main(){
+#if defined(__sparc__) && !defined(__arch64__)
+#if defined(__linux__)
+       exit(0);
+#endif
+#endif
+       exit(1);
+}], [db_cv_mutex="sparc32linux/gcc-assembly"])
+fi
+
+dnl sparc64linux/gcc: Linux
+if test "$db_cv_mutex" = no; then
+AC_TRY_RUN([main(){
+#if defined(__sparc__) && defined(__arch64__)
+#if defined(__linux__)
+       exit(0);
+#endif
+#endif
+       exit(1);
+}], [db_cv_mutex="sparc64linux/gcc-assembly"])
+fi
+
+dnl s390linux/gcc: Linux
+if test "$db_cv_mutex" = no; then
+AC_TRY_RUN([main(){
+#if defined(__linux__) && defined(__s390__)
+       exit(0);
+#endif
+       exit(1);
+}], [db_cv_mutex="s390linux/gcc-assembly"])
+fi
+
 
 # uts/cc: UTS
 if test "$db_cv_mutex" = no; then
@@ -580,6 +650,10 @@ UTS/cc-assembly)	ADDITIONAL_OBJS="$ADDITIONAL_OBJS uts4.cc${o}"
 			AC_DEFINE(HAVE_MUTEX_UTS_CC_ASSEMBLY)
 			AH_TEMPLATE(HAVE_MUTEX_UTS_CC_ASSEMBLY,
 			    [Define to 1 to use the UTS compiler and assembly language mutexes.]);;
+MIPS/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
+			AC_DEFINE(HAVE_MUTEX_MIPS_GCC_ASSEMBLY)
+			AH_TEMPLATE(HAVE_MUTEX_MIPS_GCC_ASSEMBLY,
+			    [Define to 1 to use the GCC compiler and Mips assembly language mutexes.]);;
 x86/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
 			AC_DEFINE(HAVE_MUTEX_X86_GCC_ASSEMBLY)
 			AH_TEMPLATE(HAVE_MUTEX_X86_GCC_ASSEMBLY,
@@ -588,6 +662,22 @@ x86_64/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
 			AC_DEFINE(HAVE_MUTEX_X86_64_GCC_ASSEMBLY)
 			AH_TEMPLATE(HAVE_MUTEX_X86_64_GCC_ASSEMBLY,
 			    [Define to 1 to use the GCC compiler and amd64 assembly language mutexes.]);;
+alphalinux/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
+			AC_DEFINE(HAVE_MUTEX_ALPHA_LINUX_ASSEMBLY)
+			AH_TEMPLATE(HAVE_MUTEX_ALPHA_LINUX_ASSEMBLY,
+			   [Define to use the GCC compiler and alpha assembly language mutexes.]);;
+sparc32linux/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
+			AC_DEFINE(HAVE_MUTEX_SPARC32_LINUX_ASSEMBLY)
+			AH_TEMPLATE(HAVE_MUTEX_SPARC32_LINUX_ASSEMBLY,
+			   [Define to use the GCC compiler and sparc64 assembly language mutexes.]);;
+sparc64linux/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
+			AC_DEFINE(HAVE_MUTEX_SPARC64_LINUX_ASSEMBLY)
+			AH_TEMPLATE(HAVE_MUTEX_SPARC64_LINUX_ASSEMBLY,
+			   [Define to use the GCC compiler and sparc64 assembly language mutexes.]);;
+s390linux/gcc-assembly)	ADDITIONAL_OBJS="mut_tas${o} $ADDITIONAL_OBJS"
+			AC_DEFINE(HAVE_MUTEX_S390_LINUX_ASSEMBLY)
+			AH_TEMPLATE(HAVE_MUTEX_S390_LINUX_ASSEMBLY,
+			   [Define to use the GCC compiler and s390 assembly language mutexes.]);;
 UNIX/fcntl)		AC_MSG_WARN(
 			    [NO FAST MUTEXES FOUND FOR THIS COMPILER/ARCHITECTURE.])
 			ADDITIONAL_OBJS="mut_fcntl${o} $ADDITIONAL_OBJS"

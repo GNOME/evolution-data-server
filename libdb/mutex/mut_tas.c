@@ -18,6 +18,18 @@ static const char revid[] = "$Id$";
 #include <string.h>
 #include <unistd.h>
 #endif
+#ifdef HAVE_MUTEX_ALPHA_LINUX_ASSEMBLY
+#include "alphalinux.gcc"
+#endif
+#ifdef HAVE_MUTEX_SPARC32_LINUX_ASSEMBLY
+#include "sparc32linux.gcc"
+#endif
+#ifdef HAVE_MUTEX_SPARC64_LINUX_ASSEMBLY
+#include "sparc64linux.gcc"
+#endif
+#ifdef HAVE_MUTEX_S390_LINUX_ASSEMBLY
+#include "s390linux.gcc"
+#endif
 
 /*
  * This is where we load in the actual test-and-set mutex code.

@@ -1,3 +1,17 @@
+2004-10-11  Hans Petter Jansson  <hpj@ximian.com>
+
+	Probably fixes bugs #67600 and #65996.
+
+	* libdb/dbinc/mutex.h
+	* libdb/dist/config.hin
+	* libdb/dist/configure
+	* libdb/mutex/mut_tas.c
+	* libdb/lock/lock_region.c
+	* libdb/dist/aclocal/mutex.ac
+	* libdb/dist/aclocal/libtool.ac: Commit mutex portability changes for
+	x86-64 and a couple of other archs, and rebuild the generated
+	configure files.
+
 2004-10-04  Chris Toshok  <toshok@ximian.com>
 
 	* libedataserver/e-data-server-module.h: add the prototype for the
