@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.0\n"
-"POT-Creation-Date: 2004-01-12 21:29-0500\n"
-"PO-Revision-Date: 2004-01-11 13:15+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-16 13:44+0100\n"
+"PO-Revision-Date: 2004-01-16 13:49+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -306,148 +306,124 @@ msgid "ICQ Id List"
 msgstr "Liste med ICQ-IDer"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Liste over skjermnavn for AIM"
+msgstr "AIM-skjermnavn 1 hjemme"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "Liste over skjermnavn for AIM"
+msgstr "AIM-skjermnavn 2 hjemme"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "Liste over skjermnavn for AIM"
+msgstr "AIM-skjermnavn 3 hjemme"
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "Liste over skjermnavn for AIM"
+msgstr "AIM-skjermnavn 1 arbeid"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "Liste over skjermnavn for AIM"
+msgstr "AIM-skjermnavn 2 arbeid"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "Liste over skjermnavn for AIM"
+msgstr "AIM-skjermnavn 3 arbeid"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Liste med Jabber-IDer"
+msgstr "Jabber-ID 1 hjemme"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Liste med Jabber-IDer"
+msgstr "Jabber-ID 2 hjemme"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Liste med Jabber-IDer"
+msgstr "Jabber-ID 3 hjemme"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Liste med Jabber-IDer"
+msgstr "Jabber-ID 1 arbeid"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Liste med Jabber-IDer"
+msgstr "Jabber-ID 2 arbeid"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Liste med Jabber-IDer"
+msgstr "Jabber-ID 3 arbeid"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Liste med skjermnavn for Yahoo!"
+msgstr "Skjermnavn 1 for Yahoo!, hjemme"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Liste med skjermnavn for Yahoo!"
+msgstr "Skjermnavn 2 for Yahoo!, hjemme"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Liste med skjermnavn for Yahoo!"
+msgstr "Skjermnavn 3 for Yahoo!, hjemme"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Liste med skjermnavn for Yahoo!"
+msgstr "Skjermnavn 1 for Yahoo!, arbeid"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Liste med skjermnavn for Yahoo!"
+msgstr "Skjermnavn 2 for Yahoo!, arbeid"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Liste med skjermnavn for Yahoo!"
+msgstr "Skjermnavn 3 for Yahoo!, arbeid"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "Liste med skjermnavn for MSN"
+msgstr "Skjermnavn 1 for MSN, hjemme"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "Liste med skjermnavn for MSN"
+msgstr "Skjermnavn 2 for MSN, hjemme"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "Liste med skjermnavn for MSN"
+msgstr "Skjermnavn 3 for MSN, hjemme"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "Liste med skjermnavn for MSN"
+msgstr "Skjermnavn 1 for MSN, arbeid"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "Liste med skjermnavn for MSN"
+msgstr "Skjermnavn 2 for MSN, arbeid"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "Liste med skjermnavn for MSN"
+msgstr "Skjermnavn 3 for MSN, arbeid"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "ICQ-ID 1 hjemme"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "ICQ-ID 2 hjemme"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "ICQ-ID 3 hjemme"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "ICQ-ID 1 arbeid"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "ICQ-ID 2 arbeid"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "ICQ-ID 3 arbeid"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:188
