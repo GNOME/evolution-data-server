@@ -16,13 +16,15 @@ typedef enum {
   E_BOOK_QUERY_BEGINS_WITH,
   E_BOOK_QUERY_ENDS_WITH,
 
-#if notyet
-  E_BOOK_QUERY_LT,
-  E_BOOK_QUERY_LE,
-  E_BOOK_QUERY_GT,
-  E_BOOK_QUERY_GE,
-  E_BOOK_QUERY_EQ,
-#endif
+  /*
+    Consider these "coming soon". 
+
+    E_BOOK_QUERY_LT,
+    E_BOOK_QUERY_LE,
+    E_BOOK_QUERY_GT,
+    E_BOOK_QUERY_GE,
+    E_BOOK_QUERY_EQ,
+  */
 } EBookQueryTest;
 
 EBookQuery* e_book_query_from_string  (const char *query_string);
