@@ -57,6 +57,7 @@ gboolean          e_cal_backend_cache_put_component (ECalBackendCache *cache,
 gboolean          e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 							const char *uid,
 							const char *rid);
+GSList           *e_cal_backend_cache_get_components (ECalBackendCache *cache);
 
 G_END_DECLS
 
