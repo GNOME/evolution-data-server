@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-17 01:22+0000\n"
-"PO-Revision-Date: 2005-03-17 01:25+0000\n"
+"POT-Creation-Date: 2005-03-22 19:40+0000\n"
+"PO-Revision-Date: 2005-03-22 19:40+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -641,27 +641,23 @@ msgstr "Resposta Pedida: Quando possível "
 msgid "Invalid server URI"
 msgstr "URI de servidor inválido"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "Incapaz de criar thread para obter deltas"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Calendário"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Incapaz de criar o ficheiro de cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "Incapaz de criar thread para popular a cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4528
 #: camel/providers/groupwise/camel-groupwise-folder.c:654
 #: camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -1023,7 +1019,7 @@ msgid "Undefined"
 msgstr "Indefinida"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1538
+#: calendar/libecal/e-cal.c:1538 libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza a senha para %s (utilizador %s)"
@@ -2755,7 +2751,7 @@ msgstr "A Enviar a Mensagem"
 
 #: camel/providers/imap/camel-imap-command.c:219
 #: camel/providers/imap/camel-imap-command.c:258
-#: camel/providers/imap/camel-imap-command.c:463
+#: camel/providers/imap/camel-imap-command.c:465
 #: camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "Operação cancelada"
@@ -2787,16 +2783,16 @@ msgstr "Resposta inesperada de servidor IMAP: %s"
 msgid "IMAP command failed: %s"
 msgstr "Falha no comando IMAP: %s"
 
-#: camel/providers/imap/camel-imap-command.c:473
+#: camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "Resposta de servidor terminou demasiado cedo."
 
-#: camel/providers/imap/camel-imap-command.c:680
+#: camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "Resposta de servidor IMAP não contém a informação %s"
 
-#: camel/providers/imap/camel-imap-command.c:716
+#: camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Resposta OK inesperada de servidor IMAP: %s"
@@ -3752,7 +3748,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "Incapaz de abrir a caixa de email temporária: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:619
-#: camel/providers/local/camel-mbox-summary.c:783
+#: camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Incapaz de fechar a pasta de origem %s: %s"
@@ -3767,31 +3763,32 @@ msgstr "Incapaz de fechar a pasta temporária: %s"
 msgid "Could not rename folder: %s"
 msgstr "Incapaz de renomear a pasta: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:723
-#: camel/providers/local/camel-mbox-summary.c:731
-#: camel/providers/local/camel-mbox-summary.c:925
-#: camel/providers/local/camel-mbox-summary.c:933
+#: camel/providers/local/camel-mbox-summary.c:696
+#: camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "Incapaz de armazenar a pasta: %s"
+
+#: camel/providers/local/camel-mbox-summary.c:733
+#: camel/providers/local/camel-mbox-summary.c:741
+#: camel/providers/local/camel-mbox-summary.c:935
+#: camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Resumo e pasta não coincidem, mesmo depois de uma sincronização"
 
-#: camel/providers/local/camel-mbox-summary.c:859
+#: camel/providers/local/camel-mbox-summary.c:869
 #: camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Erro desconhecido: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "Incapaz de armazenar a pasta: %s"
-
-#: camel/providers/local/camel-mbox-summary.c:988
-#: camel/providers/local/camel-mbox-summary.c:1014
+#: camel/providers/local/camel-mbox-summary.c:998
+#: camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Erro ao gravar na caixa de correio temporária: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:1005
+#: camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Falha ao gravar para caixa correio temporária: %s: %s"
@@ -4737,6 +4734,14 @@ msgstr "%H:%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "A aceder anonimamente ao Servidor LDAP"
+
+#: libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "Falha ao autenticar-se.\n"
+
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "Ícone de Categoria"
@@ -4873,6 +4878,9 @@ msgstr ""
 "Ocorreram múltiplas falhas de segmentação; incapaz de apresentar o diálogo "
 "de erro\n"
 
+#~ msgid "Could not create thread for getting deltas"
+#~ msgstr "Incapaz de criar thread para obter deltas"
+
 #~ msgid "e_book_open: cancelled"
 #~ msgstr "e_book_open: cancelado"
 
@@ -4908,9 +4916,6 @@ msgstr ""
 
 #~ msgid "%sEnter password for %s (user %s)"
 #~ msgstr "%sIntroduza a senha para %s (utilizador %s)"
-
-#~ msgid "Failed to authenticate.\n"
-#~ msgstr "Falha ao autenticar-se.\n"
 
 #~ msgid "Server rejected username"
 #~ msgstr "O servidor rejeitou o utilizador"
