@@ -1,5 +1,11 @@
 2005-01-23  Jeffrey Stedfast  <fejj@ximian.com>
 
+	* providers/imap4/camel-imap4-summary.c (untagged_fetch_all):
+	Handle BODY[HEADER.FIELDS ...] responses for cases where we may
+	wish to query for mailing-list headers.
+	(imap4_summary_fetch_all): If enable_mlist is set for this folder,
+	then query for mailing-list headers as well.
+
 	* providers/imap4/camel-imap4-folder.c (imap4_getv): Added a new
 	property to enable mlist detection (which will change our summary
 	query to the same as the old imap code).
