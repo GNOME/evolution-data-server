@@ -39,7 +39,6 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<!-- Access Control List -->
 	<xs:complexType name="AccessControlList">
 		<xs:sequence>
 			<xs:element name="entry" type="tns:AccessControlListEntry" minOccurs="0" maxOccurs="unbounded"/>
@@ -87,24 +86,24 @@
 
 	<xs:complexType name="AccessRightList">
 		<xs:sequence>
-			<xs:element name="entry" type="tns:AccessRightListEntry" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="entry" type="tns:AccessRightEntry" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="AddressBook">
-		<xs:sequence>
-			<xs:element ref="tns:id" minOccurs="0"/>
-			<xs:element ref="tns:name" minOccurs="0"/>
-			<xs:element ref="tns:version" minOccurs="0"/>
-			<xs:element ref="tns:modified" minOccurs="0"/>
-			<xs:element name="isPersonal" type="xs:boolean" minOccurs="0"/>
-			<xs:element name="isFrequentContacts" type="xs:boolean" minOccurs="0"/>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="tns:Item">
+				<xs:sequence>
+					<xs:element name="isPersonal" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="isFrequentContacts" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="AddressBookItem">
 		<xs:complexContent>
-			<xs:extension base="tns:Item">
+			<xs:extension base="tns:ContainerItem">
 				<xs:sequence>
 					<xs:element ref="tns:uuid" minOccurs="0"/>
 					<xs:element name="comment" type="xs:string" minOccurs="0"/>
@@ -173,7 +172,7 @@
 
 	<xs:complexType name="BoxEntry">
 		<xs:complexContent>
-			<xs:extension base="tns:Item">
+			<xs:extension base="tns:ContainerItem">
 				<xs:sequence>
 					<xs:element name="status" type="tns:ItemStatus" minOccurs="0"/>
 					<xs:element name="thread" type="xs:string" minOccurs="0"/>
@@ -198,22 +197,15 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:group name="CalendarReturnNotification">
-		<xs:sequence>
-			<xs:element name="accepted" type="tns:ReturnNotificationOptions"/>
-			<xs:element name="declined" type="tns:ReturnNotificationOptions"/>
-		</xs:sequence>
-	</xs:group>
-
 	<xs:complexType name="Category">
-		<xs:sequence>
-			<xs:element ref="tns:id"/>
-			<xs:element ref="tns:name" minOccurs="0"/>
-			<xs:element name="type" type="tns:CategoryType"/>
-			<xs:element name="color" type="xs:unsignedInt" minOccurs="0"/>
-			<xs:element ref="tns:version" minOccurs="0"/>
-			<xs:element ref="tns:modified" minOccurs="0"/>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="tns:Item">
+				<xs:sequence>
+				<xs:element name="type" type="tns:CategoryType" minOccurs="0"/>
+				<xs:element name="color" type="xs:unsignedInt" minOccurs="0"/>
+			</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="CategoryList">
@@ -222,7 +214,6 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<!-- List of category references -->
 	<xs:complexType name="CategoryRefList">
 		<xs:sequence>
 			<xs:element name="category" type="tns:uid" minOccurs="0" maxOccurs="unbounded"/>
@@ -244,19 +235,31 @@
 		<xs:complexContent>
 			<xs:extension base="tns:AddressBookItem">
 				<xs:sequence>
-					<xs:element name="fullName" type="tns:FullName"/>
-					<xs:element name="emailList" type="tns:EmailAddressList"/>
-					<xs:element name="imList" type="tns:ImAddressList"/>
-					<xs:element name="phoneList" type="tns:PhoneList"/>
-					<xs:element name="addressList" type="tns:PostalAddressList"/>
-					<xs:element name="officeInfo" type="tns:OfficeInfo"/>
-					<xs:element name="personalInfo" type="tns:PersonalInfo"/>
+					<xs:element name="fullName" type="tns:FullName" minOccurs="0"/>
+					<xs:element name="emailList" type="tns:EmailAddressList" minOccurs="0"/>
+					<xs:element name="imList" type="tns:ImAddressList" minOccurs="0"/>
+					<xs:element name="phoneList" type="tns:PhoneList" minOccurs="0"/>
+					<xs:element name="addressList" type="tns:PostalAddressList" minOccurs="0"/>
+					<xs:element name="officeInfo" type="tns:OfficeInfo" minOccurs="0"/>
+					<xs:element name="personalInfo" type="tns:PersonalInfo" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
-	<!-- Reference to Container (folder, address book, etc.) -->
+	<xs:complexType name="ContainerItem">
+		<xs:complexContent>
+			<xs:extension base="tns:Item">
+				<xs:sequence>
+					<xs:element name="container" type="tns:ContainerRef" minOccurs="1" maxOccurs="unbounded"/>
+					<xs:element name="categories" type="tns:CategoryRefList" minOccurs="0"/>
+					<xs:element name="created" type="xs:dateTime" minOccurs="0"/>
+					<xs:element name="customs" type="tns:CustomList" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
 	<xs:complexType name="ContainerRef">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
@@ -292,6 +295,19 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:complexType name="Custom">
+		<xs:sequence>
+			<xs:element name="field" type="xs:string"/>
+			<xs:element name="value" type="xs:anyType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CustomList">
+		<xs:sequence>
+			<xs:element name="custom" type="tns:Custom" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:simpleType name="Day">
 		<xs:restriction base="xs:unsignedByte">
 			<xs:maxInclusive value="30"/>
@@ -306,31 +322,22 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:complexType name="DeltaEntry">
-		<xs:sequence>
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="folder" type="tns:Folder"/>
-				<xs:element name="item" type="tns:Item"/>
-			</xs:choice>
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:complexType name="DeltaList">
 		<xs:sequence>
-			<xs:element name="add" type="tns:DeltaEntry" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="delete" type="tns:DeltaEntry" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="update" type="tns:DeltaEntry" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="add" type="tns:Items" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="delete" type="tns:Items" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="update" type="tns:Items" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Distribution">
 		<xs:sequence>
-			<xs:element name="from" type="tns:From"/>
-			<xs:element name="to" type="xs:string"/>
-			<xs:element name="cc" type="xs:string"/>
-			<xs:element name="bc" type="xs:string"/>
+			<xs:element name="from" type="tns:From" minOccurs="0"/>
+			<xs:element name="to" type="xs:string" minOccurs="0"/>
+			<xs:element name="cc" type="xs:string" minOccurs="0"/>
+			<xs:element name="bc" type="xs:string" minOccurs="0"/>
 			<xs:element name="recipients" type="tns:RecipientList"/>
-			<xs:element name="sendoptions" type="tns:SendOptions"/>
+			<xs:element name="sendoptions" type="tns:SendOptions" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -344,19 +351,20 @@
 
 	<xs:complexType name="DocumentRef">
 		<xs:complexContent>
-			<xs:extension base="tns:BoxEntry">
+			<xs:extension base="tns:Mail">
 				<xs:sequence>
-					<xs:element name="library" type="xs:string"/>
+					<xs:element name="library" type="tns:NameAndEmail"/>
 					<xs:element name="number" type="xs:unsignedInt"/>
-					<xs:element name="filename" type="xs:string"/>
+					<xs:element name="filename" type="xs:string" minOccurs="0"/>
 					<xs:element name="docType" type="xs:string"/>
-					<xs:element name="creator" type="tns:uid"/>
-					<xs:element name="created" type="xs:dateTime"/>
+					<xs:element name="author" type="tns:NameAndEmail"/>
+					<xs:element name="creator" type="tns:NameAndEmail"/>
 					<xs:element name="officialVersion" type="xs:unsignedInt"/>
 					<xs:element name="currentVersion" type="xs:unsignedInt"/>
+					<xs:element name="version" type="xs:unsignedInt"/>
 					<xs:element name="versionDescription" type="xs:string"/>
-					<xs:element name="fileSize" type="xs:unsignedInt"/>
-					<xs:element name="acl" type="tns:AccessControlList"/>
+					<xs:element name="fileSize" type="xs:unsignedInt" minOccurs="0"/>
+					<xs:element name="acl" type="tns:AccessControlList" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -371,59 +379,76 @@
 
 	<xs:complexType name="Filter">
 		<xs:sequence>
-			<xs:group ref="tns:FilterElements" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="element" type="tns:FilterElement" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:group name="FilterElements">
-		<xs:choice>
-			<xs:element name="and" type="tns:FilterGroup"/>
-			<xs:element name="or" type="tns:FilterGroup"/>
-			<xs:element name="not" type="tns:FilterGroup"/>
-			<xs:element name="eq" type="tns:FilterEntry"/>
-			<xs:element name="ne" type="tns:FilterEntry"/>
-			<xs:element name="gt" type="tns:FilterEntry"/>
-			<xs:element name="lt" type="tns:FilterEntry"/>
-			<xs:element name="gte" type="tns:FilterEntry"/>
-			<xs:element name="lte" type="tns:FilterEntry"/>
-			<xs:element name="contains" type="tns:FilterEntry"/>
-			<xs:element name="containsWord" type="tns:FilterEntry"/>
-			<xs:element name="begins" type="tns:FilterEntry"/>
-			<xs:element name="exists" type="tns:FilterEntry"/>
-			<xs:element name="notExist" type="tns:FilterEntry"/>
-		</xs:choice>
-	</xs:group>
+	<xs:complexType name="FilterElement">
+		<xs:sequence>
+			<xs:element name="op" type="tns:FilterOp"/>
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="FilterEntry">
-		<xs:sequence>
-			<xs:element name="field" type="xs:string"/>
-			<xs:element name="value" type="xs:anyType"/>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="tns:FilterElement">
+				<xs:sequence>
+					<xs:element name="field" type="xs:string"/>
+					<xs:element name="value" type="xs:anyType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="FilterGroup">
-		<xs:sequence>
-			<xs:group ref="tns:FilterElements" minOccurs="1" maxOccurs="unbounded"/>
-		</xs:sequence>
+		<xs:annotation>
+			<xs:documentation>
+				FilterGroup comprises FilterOp "and", "or" or "not"
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tns:FilterElement">
+				<xs:sequence>
+					<xs:element name="element" type="tns:FilterElement" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
-	<!-- Folder Structure -->
+	<xs:simpleType name="FilterOp">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="and"/>
+			<xs:enumeration value="or"/>
+			<xs:enumeration value="not"/>
+			<xs:enumeration value="eq"/>
+			<xs:enumeration value="ne"/>
+			<xs:enumeration value="gt"/>
+			<xs:enumeration value="lt"/>
+			<xs:enumeration value="gte"/>
+			<xs:enumeration value="lte"/>
+			<xs:enumeration value="contains"/>
+			<xs:enumeration value="containsWord"/>
+			<xs:enumeration value="begins"/>
+			<xs:enumeration value="exists"/>
+			<xs:enumeration value="notExist"/>
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:complexType name="Folder">
-		<xs:sequence>
-			<xs:element ref="tns:id" minOccurs="0"/>
-			<xs:element ref="tns:name" minOccurs="0"/>
-			<xs:element name="parent" type="tns:uid"/>
-			<xs:element ref="tns:description" minOccurs="0"/>
-			<xs:element ref="tns:version" minOccurs="0"/>
-			<xs:element ref="tns:modified" minOccurs="0"/>
-			<xs:element name="count" type="xs:int" minOccurs="0"/>
-			<xs:element name="hasUnread" type="xs:boolean" minOccurs="0"/>
-			<xs:element name="unreadCount" type="xs:int" minOccurs="0"/>
-			<xs:element ref="tns:sequence" minOccurs="0"/>
-			<xs:element name="settings" type="tns:uid" minOccurs="0"/>
-			<xs:element name="hasSubfolders" type="xs:boolean" minOccurs="0"/>
-			<xs:element name="changes" type="tns:FolderChanges" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="tns:Item">
+				<xs:sequence>
+					<xs:element name="parent" type="tns:uid"/>
+					<xs:element ref="tns:description" minOccurs="0"/>
+					<xs:element name="count" type="xs:int" minOccurs="0"/>
+					<xs:element name="hasUnread" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="unreadCount" type="xs:int" minOccurs="0"/>
+					<xs:element ref="tns:sequence" minOccurs="0"/>
+					<xs:element name="settings" type="tns:uid" minOccurs="0"/>
+					<xs:element name="hasSubfolders" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="FolderACL">
@@ -450,15 +475,6 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:complexType name="FolderChanges">
-		<xs:sequence>
-			<xs:element name="add" type="tns:Folder" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="delete" type="tns:Folder" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="update" type="tns:Folder" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-	</xs:complexType>
-
-	<!-- Folder List -->
 	<xs:complexType name="FolderList">
 		<xs:sequence>
 			<xs:element name="folder" type="tns:Folder" minOccurs="0" maxOccurs="unbounded"/>
@@ -539,7 +555,7 @@
 		<xs:complexContent>
 			<xs:extension base="tns:NameAndEmail">
 				<xs:sequence>
-					<xs:element name="replyTo" type="xs:string"/>
+					<xs:element name="replyTo" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -547,12 +563,12 @@
 
 	<xs:complexType name="FullName">
 		<xs:sequence>
-			<xs:element ref="tns:displayName"/>
-			<xs:element name="namePrefix" type="xs:string"/>
-			<xs:element name="firstName" type="xs:string"/>
-			<xs:element name="middleName" type="xs:string"/>
-			<xs:element name="lastName" type="xs:string"/>
-			<xs:element name="nameSuffix" type="xs:string"/>
+			<xs:element ref="tns:displayName" minOccurs="0"/>
+			<xs:element name="namePrefix" type="xs:string" minOccurs="0"/>
+			<xs:element name="firstName" type="xs:string" minOccurs="0"/>
+			<xs:element name="middleName" type="xs:string" minOccurs="0"/>
+			<xs:element name="lastName" type="xs:string" minOccurs="0"/>
+			<xs:element name="nameSuffix" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -615,18 +631,23 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<!-- Item -->
 	<xs:complexType name="Item">
 		<xs:sequence>
 			<xs:element ref="tns:id" minOccurs="0"/>
-			<xs:element name="container" type="tns:ContainerRef" minOccurs="1" maxOccurs="unbounded"/>
 			<xs:element ref="tns:name" minOccurs="0"/>
-			<xs:element name="created" type="xs:dateTime" minOccurs="0"/>
-			<xs:element name="categories" type="tns:CategoryRefList" minOccurs="0"/>
 			<xs:element ref="tns:version" minOccurs="0"/>
 			<xs:element ref="tns:modified" minOccurs="0"/>
 			<xs:element name="changes" type="tns:ItemChanges" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
+		<xs:attribute name="type" type="xsi:type"/>
+	</xs:complexType>
+
+	<xs:complexType name="ItemArg">
+		<xs:simpleContent>
+			<xs:extension base="tns:uid">
+				<xs:attribute name="type" type="xsi:type"/>
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:complexType name="ItemChanges">
@@ -645,16 +666,15 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<!-- Item List -->
 	<xs:complexType name="ItemList">
-		<xs:sequence>
-			<xs:element name="item" type="tns:Item" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:attribute name="offset" type="xs:int"/>
-		<xs:attribute name="count" type="xs:int"/>
+		<xs:complexContent>
+			<xs:extension base="tns:Items">
+				<xs:attribute name="offset" type="xs:int"/>
+				<xs:attribute name="count" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
-	<!-- "Send Options" that apply to any item create -->
 	<xs:complexType name="ItemOptions">
 		<xs:sequence>
 			<xs:element name="priority" type="tns:ItemOptionsPriority" minOccurs="0" default="Standard"/>
@@ -686,7 +706,12 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<!-- Indicates the "Box Type" of the message -->
+	<xs:complexType name="Items">
+		<xs:sequence>
+			<xs:element name="item" type="tns:Item" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:simpleType name="ItemSource">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="received"/>
@@ -696,7 +721,6 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<!-- Item Status Flags -->
 	<xs:complexType name="ItemStatus">
 		<xs:sequence>
 			<xs:element name="accepted" type="xs:boolean" minOccurs="0"/>
@@ -715,9 +739,10 @@
 			<xs:extension base="tns:BoxEntry">
 				<xs:sequence>
 					<xs:element ref="tns:subject"/>
+					<xs:element name="originalSubject" type="xs:string" minOccurs="0"/>
 					<xs:element name="distribution" type="tns:Distribution"/>
-					<xs:element name="message" type="tns:MessageBody"/>
-					<xs:element name="attachments" type="tns:AttachmentInfo"/>
+					<xs:element name="message" type="tns:MessageBody" minOccurs="0"/>
+					<xs:element name="attachments" type="tns:AttachmentInfo" minOccurs="0"/>
 					<xs:element name="options" type="tns:ItemOptions" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -755,9 +780,9 @@
 
 	<xs:complexType name="NameAndEmail">
 		<xs:sequence>
-			<xs:element ref="tns:displayName"/>
-			<xs:element ref="tns:email"/>
-			<xs:element ref="tns:uuid"/>
+			<xs:element ref="tns:displayName" minOccurs="0"/>
+			<xs:element ref="tns:email" minOccurs="0"/>
+			<xs:element ref="tns:uuid" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -779,10 +804,10 @@
 
 	<xs:complexType name="OfficeInfo">
 		<xs:sequence>
-			<xs:element name="organization" type="tns:ItemRef"/>
-			<xs:element name="department" type="xs:string"/>
-			<xs:element name="title" type="xs:string"/>
-			<xs:element name="website" type="xs:anyURI"/>
+			<xs:element name="organization" type="tns:ItemRef" minOccurs="0"/>
+			<xs:element name="department" type="xs:string" minOccurs="0"/>
+			<xs:element name="title" type="xs:string" minOccurs="0"/>
+			<xs:element name="website" type="xs:anyURI" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -790,11 +815,11 @@
 		<xs:complexContent>
 			<xs:extension base="tns:AddressBookItem">
 				<xs:sequence>
-					<xs:element name="contact" type="tns:ItemRef"/>
-					<xs:element name="phone" type="xs:string"/>
-					<xs:element name="fax" type="xs:string"/>
-					<xs:element name="address" type="tns:PostalAddress"/>
-					<xs:element name="website" type="xs:anyURI"/>
+					<xs:element name="contact" type="tns:ItemRef" minOccurs="0"/>
+					<xs:element name="phone" type="xs:string" minOccurs="0"/>
+					<xs:element name="fax" type="xs:string" minOccurs="0"/>
+					<xs:element name="address" type="tns:PostalAddress" minOccurs="0"/>
+					<xs:element name="website" type="xs:anyURI" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -802,8 +827,8 @@
 
 	<xs:complexType name="PersonalInfo">
 		<xs:sequence>
-			<xs:element name="birthday" type="xs:date" nillable="true"/>
-			<xs:element name="website" type="xs:anyURI"/>
+			<xs:element name="birthday" type="xs:date" nillable="true" minOccurs="0"/>
+			<xs:element name="website" type="xs:anyURI" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -830,10 +855,10 @@
 		<xs:complexContent>
 			<xs:extension base="tns:Mail">
 				<xs:sequence>
-					<xs:element name="caller" type="xs:string"/>
-					<xs:element name="company" type="xs:string"/>
-					<xs:element name="phone" type="xs:string"/>
-					<xs:element name="flags" type="tns:PhoneFlags"/>
+					<xs:element name="caller" type="xs:string" minOccurs="0"/>
+					<xs:element name="company" type="xs:string" minOccurs="0"/>
+					<xs:element name="phone" type="xs:string" minOccurs="0"/>
+					<xs:element name="flags" type="tns:PhoneFlags" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -852,10 +877,7 @@
 			<xs:extension base="tns:Authentication">
 				<xs:sequence>
 					<xs:element name="username" type="xs:string"/>
-					<xs:choice>
-						<xs:element name="password" type="xs:string" minOccurs="0"/>
-						<xs:element name="proxy" type="xs:string" minOccurs="0"/>
-					</xs:choice>
+					<xs:element name="password" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -863,16 +885,13 @@
 
 	<xs:complexType name="PostalAddress">
 		<xs:sequence>
-			<xs:element ref="tns:description"/>
-			<xs:element name="streetAddress" type="xs:string"/>
-			<xs:element name="location" type="xs:string"/>
-			<xs:element name="city" type="xs:string"/>
-			<xs:choice>
-				<xs:element name="state" type="xs:string"/>
-				<xs:element name="province" type="xs:string"/>
-			</xs:choice>
-			<xs:element name="postalCode" type="xs:string"/>
-			<xs:element name="country" type="xs:string"/>
+			<xs:element ref="tns:description" minOccurs="0"/>
+			<xs:element name="streetAddress" type="xs:string" minOccurs="0"/>
+			<xs:element name="location" type="xs:string" minOccurs="0"/>
+			<xs:element name="city" type="xs:string" minOccurs="0"/>
+			<xs:element name="state" type="xs:string" minOccurs="0"/>
+			<xs:element name="postalCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="country" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="type" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -885,9 +904,9 @@
 
 	<xs:complexType name="ProblemEntry">
 		<xs:sequence>
-			<xs:element name="element" type="xs:string"/>
-			<xs:element ref="tns:code"/>
-			<xs:element ref="tns:description"/>
+			<xs:element name="element" type="xs:string" minOccurs="0"/>
+			<xs:element ref="tns:code" minOccurs="0"/>
+			<xs:element ref="tns:description" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -895,6 +914,17 @@
 		<xs:sequence>
 			<xs:element name="entry" type="tns:ProblemEntry" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Proxy">
+		<xs:complexContent>
+			<xs:extension base="tns:Authentication">
+				<xs:sequence>
+					<xs:element name="username" type="xs:string"/>
+					<xs:element name="proxy" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ProxyList">
@@ -958,22 +988,27 @@
 		<xs:complexContent>
 			<xs:extension base="tns:AddressBookItem">
 				<xs:sequence>
-					<xs:element name="phone" type="xs:string"/>
-					<xs:element name="resourceType" type="xs:string"/>
-					<xs:element ref="tns:email"/>
-					<xs:element name="owner" type="tns:ItemRef"/>
+					<xs:element name="phone" type="xs:string" minOccurs="0"/>
+					<xs:element name="resourceType" type="xs:string" minOccurs="0"/>
+					<xs:element ref="tns:email" minOccurs="0"/>
+					<xs:element name="owner" type="tns:ItemRef" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ReturnNotification">
+		<xs:annotation>
+			<xs:documentation>
+				A calendar item will have opened, accepted and decliened (not deleted)
+				A box entry item will have opened and deleted
+			</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="opened" type="tns:ReturnNotificationOptions"/>
-			<xs:choice>
-				<xs:element name="deleted" type="tns:ReturnNotificationOptions"/>
-				<xs:group ref="tns:CalendarReturnNotification"/>
-			</xs:choice>
+			<xs:element name="opened" type="tns:ReturnNotificationOptions" minOccurs="0"/>
+			<xs:element name="deleted" type="tns:ReturnNotificationOptions" minOccurs="0"/>
+			<xs:element name="accepted" type="tns:ReturnNotificationOptions" minOccurs="0"/>
+			<xs:element name="declined" type="tns:ReturnNotificationOptions" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -984,7 +1019,6 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<!-- Rights -->
 	<xs:complexType name="Rights">
 		<xs:all>
 			<xs:element name="read" type="xs:boolean" minOccurs="0"/>
@@ -1023,7 +1057,6 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<!-- Return Status -->
 	<xs:complexType name="Status">
 		<xs:sequence>
 			<xs:element ref="tns:code"/>
@@ -1066,8 +1099,8 @@
 			<xs:extension base="tns:CalendarItem">
 				<xs:sequence>
 					<xs:element name="dueDate" type="xs:date"/>
-					<xs:element name="taskPriority" type="xs:string"/>
-					<xs:element name="completed" type="xs:boolean"/>
+					<xs:element name="taskPriority" type="xs:string" minOccurs="0"/>
+					<xs:element name="completed" type="xs:boolean" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1113,7 +1146,6 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<!-- Unique ID -->
 	<xs:simpleType name="uid">
 		<xs:annotation>
 			<xs:documentation>
@@ -1138,17 +1170,15 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<!-- UserInfo Structure -->
 	<xs:complexType name="UserInfo">
 		<xs:sequence>
 			<xs:element ref="tns:name"/>
-			<xs:element ref="tns:email"/>
-			<xs:element ref="tns:uuid"/>
+			<xs:element ref="tns:email" minOccurs="0"/>
+			<xs:element ref="tns:uuid" minOccurs="0"/>
 			<xs:any/>
 		</xs:sequence>
 	</xs:complexType>
 
-	<!-- Unique User ID -->
 	<xs:simpleType name="UUID">
 		<xs:annotation>
 			<xs:documentation>
@@ -1163,7 +1193,6 @@
 		<xs:restriction base="xs:string"/>
 	</xs:simpleType>
 
-	<!-- View (list of fields) -->
 	<xs:simpleType name="View">
 		<xs:list itemType="xs:string"/>
 	</xs:simpleType>

@@ -3,9 +3,9 @@
 	xmlns="http://schemas.novell.com/2003/10/NCSP/methods.xsd" 
 	xmlns:tns="http://schemas.novell.com/2003/10/NCSP/methods.xsd"
 	xmlns:types="http://schemas.novell.com/2003/10/NCSP/types.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<!-- Method accept (Request) -->
 	<xs:element name="acceptRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -16,7 +16,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method accept (Response) -->
 	<xs:element name="acceptResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -25,21 +24,15 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method addItems (Request) -->
 	<xs:element name="addItemRequest">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="container" type="types:uid"/>
-				<xs:choice>
-					<xs:element name="id" type="types:uid"/>
-					<xs:element name="items" type="types:ItemRefList"/>
-					<xs:element name="members" type="types:GroupMemberList"/>
-				</xs:choice>
+				<xs:element name="id" type="types:uid"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method addItems (Response) -->
 	<xs:element name="addItemResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -48,7 +41,40 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method closeFreeBusySession (Request) -->
+	<xs:element name="addItemsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="items" type="types:ItemRefList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="addItemsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="addMembersRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="members" type="types:GroupMemberList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="addMembersResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="closeFreeBusySessionRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -57,7 +83,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method closeFreeBusySession (Response) -->
 	<xs:element name="closeFreeBusySessionResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -66,7 +91,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method complete (Request) -->
 	<xs:element name="completeRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -75,7 +99,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method complete (Response) -->
 	<xs:element name="completeResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -84,19 +107,17 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method createCursor (Request) -->
 	<xs:element name="createCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="container" type="types:uid"/>
 				<xs:element name="view" type="types:View"/>
 				<xs:element name="filter" type="types:Filter"/>
-				<xs:element name="sort" type="types:Sort"/>
+<!--				<xs:element name="sort" type="types:Sort"/> -->
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method createCursor (Response) -->
 	<xs:element name="createCursorResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -106,39 +127,14 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method createFolder (Request) -->
-	<xs:element name="createFolderRequest">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="folder" type="types:Folder"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<!-- Method createFolder (Response) -->
-	<xs:element name="createFolderResponse">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="id" type="types:uid"/>
-				<xs:element name="status" type="types:Status"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<!-- Method createItem (Request) -->
 	<xs:element name="createItemRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:choice>
-					<xs:element name="book" type="types:AddressBook"/>
-					<xs:element name="entry" type="types:AccessRightEntry"/>
-					<xs:element name="item" type="types:Item"/>
-				</xs:choice>
+				<xs:element name="item" type="types:ItemArg"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method createItem (Response) -->
 	<xs:element name="createItemResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -148,7 +144,23 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method decline (Request) -->
+	<xs:element name="createProxyAccessRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="entry" type="types:AccessRightEntry"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="createProxyAccessResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="declineRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -158,7 +170,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method decline (Response) -->
 	<xs:element name="declineResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -167,7 +178,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method delegate (Request) -->
 	<xs:element name="delegateRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -179,7 +189,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method delegate (Response) -->
 	<xs:element name="delegateResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -188,7 +197,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method destroyCursor (Request) -->
 	<xs:element name="destroyCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -197,7 +205,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method destroyCursor (Response) -->
 	<xs:element name="destroyCursorResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -206,7 +213,18 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getAttachment (Request) -->
+	<xs:element name="getAddressBookListRequest">
+	</xs:element>
+
+	<xs:element name="getAddressBookListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="books" type="types:AddressBookList"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="getAttachmentRequest">
 		<xs:annotation>
 			<xs:documentation>
@@ -227,7 +245,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getAttachment (Response) -->
 	<xs:element name="getAttachmentResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -237,35 +254,30 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="getContainerListRequest">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="parent" type="types:uid"/>
-				<xs:element name="view" type="types:View"/>
-				<xs:element name="recurse" type="xs:boolean"/>
-			</xs:sequence>
-		</xs:complexType>
+	<xs:element name="getCategoryListRequest">
 	</xs:element>
 
-	<!-- Method: getContainerList (Response) -->
-	<xs:element name="getContainerListResponse">
+	<xs:element name="getCategoryListResponse">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:choice>
-					<xs:element name="accessRights" type="types:AccessRightList"/>
-					<xs:element name="books" type="types:AddressBookList"/>
-					<xs:element name="categories" type="types:CategoryList"/>
-					<xs:element name="folders" type="types:FolderList"/>
-					<xs:element name="proxies" type="types:ProxyList"/>
-					<!-- <xs:element name="rules" type="types:RuleList"/> -->
-					<xs:element name="timezones" type="types:TimezoneList"/>
-				</xs:choice>
+				<xs:element name="categories" type="types:CategoryList"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getDelta (Request) -->
+	<xs:element name="getCustomListRequest">
+	</xs:element>
+
+	<xs:element name="getCustomListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="customs" type="types:CustomList"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="getDeltaRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -280,11 +292,10 @@
 				<xs:element name="Note" type="xs:string" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="PhoneMessage" type="xs:string" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="Task" type="xs:string" minOccurs="0" maxOccurs="1"/>
-			</xs:sequence/>
+			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getDelta (Response) -->
 	<xs:element name="getDeltaResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -296,27 +307,25 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method: getFolder (Request) -->
-	<xs:element name="getFolderRequest">
+	<xs:element name="getFolderListRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="id" type="types:uid"/>
+				<xs:element name="parent" type="types:uid"/>
 				<xs:element name="view" type="types:View"/>
+				<xs:element name="recurse" type="xs:boolean"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getFolder (Response) -->
-	<xs:element name="getFolderResponse">
+	<xs:element name="getFolderListResponse">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="folder" type="types:Folder"/>
+				<xs:element name="folders" type="types:FolderList"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getFreeBusy (Request) -->
 	<xs:element name="getFreeBusyRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -325,7 +334,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getFreeBusy (Response) -->
 	<xs:element name="getFreeBusyResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -336,7 +344,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getItem (Request) -->
 	<xs:element name="getItemRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -346,7 +353,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getItem (Response) -->
 	<xs:element name="getItemResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -356,30 +362,63 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getItems (Request) -->
 	<xs:element name="getItemsRequest">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="container" type="types:uid"/>
 				<xs:element name="view" type="types:View"/>
 				<xs:element name="filter" type="types:Filter"/>
-				<xs:element name="sort" type="types:Sort"/>
+<!--				<xs:element name="sort" type="types:Sort"/> -->
 				<xs:element name="count" type="xs:int" default="-1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method getItems (Response) -->
 	<xs:element name="getItemsResponse">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="items" type="types:ItemList"/>
+				<xs:element name="items" type="types:Items"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method: login (Request) -->
+	<xs:element name="getProxyAccessListRequest">
+	</xs:element>
+
+	<xs:element name="getProxyAccessListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="accessRights" type="types:AccessRightList"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="getProxyListRequest">
+	</xs:element>
+
+	<xs:element name="getProxyListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="proxies" type="types:ProxyList"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="getTimezoneListRequest">
+	</xs:element>
+
+	<xs:element name="getTimezoneListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="timezones" type="types:TimezoneList"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="loginRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -390,7 +429,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method: login (Response) -->
 	<xs:element name="loginResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -401,16 +439,9 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method: logout (Request) -->
 	<xs:element name="logoutRequest">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="session" type="xs:string"/>
-			</xs:sequence>
-		</xs:complexType>
 	</xs:element>
 
-	<!-- Method: logout (Response) -->
 	<xs:element name="logoutResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -419,7 +450,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method markRead (Request) -->
 	<xs:element name="markReadRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -428,7 +458,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method markRead (Response) -->
 	<xs:element name="markReadResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -437,7 +466,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method markUnRead (Request) -->
 	<xs:element name="markUnReadRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -446,7 +474,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method markUnRead (Response) -->
 	<xs:element name="markUnReadResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -455,39 +482,15 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method modifyFolder (Request) -->
-	<xs:element name="modifyFolderRequest">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="id" type="types:uid"/>
-				<xs:element name="updates" type="types:FolderChanges"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<!-- Method modifyFolder (Response) -->
-	<xs:element name="modifyFolderResponse">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="status" type="types:Status"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<!-- Method modifyItem (Request) -->
 	<xs:element name="modifyItemRequest">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="id" type="types:uid"/>
-				<xs:choice>
-					<xs:element name="updates" type="types:AccessRightChanges"/>
-					<xs:element name="updates" type="types:ItemChanges"/>
-				</xs:choice>
+				<xs:element name="updates" type="types:ItemChanges"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method modifyItem (Response) -->
 	<xs:element name="modifyItemResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -496,7 +499,23 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method positionCursor (Request) -->
+	<xs:element name="modifyProxyAccessRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="updates" type="types:AccessRightChanges"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyProxyAccessResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="positionCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -507,7 +526,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method positionCursor (Response) -->
 	<xs:element name="positionCursorResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -516,7 +534,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method purgeDeletedItems (Request) -->
 	<xs:element name="purgeDeletedItemsRequest">
 		<xs:annotation>
 			<xs:documentation>
@@ -529,7 +546,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method purgeDeletedItems (Response) -->
 	<xs:element name="purgeDeletedItemsResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -538,7 +554,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method purgeItem (Request) -->
 	<xs:element name="purgeItemRequest">
 		<xs:annotation>
 			<xs:documentation>
@@ -557,7 +572,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method purgeItem (Response) -->
 	<xs:element name="purgeItemResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -566,7 +580,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method readCursor (Request) -->
 	<xs:element name="readCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -577,7 +590,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method readCursor (Response) -->
 	<xs:element name="readCursorResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -587,25 +599,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method removeFolder (Request) -->
-	<xs:element name="removeFolderRequest">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="id" type="types:uid"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<!-- Method removeFolder (Response) -->
-	<xs:element name="removeFolderResponse">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="status" type="types:Status"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<!-- Method removeItem (Request) -->
 	<xs:element name="removeItemRequest">
 		<xs:annotation>
 			<xs:documentation>
@@ -619,17 +612,12 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="container" type="types:uid"/>
-				<xs:choice>
-					<xs:element name="id" type="types:uid"/>
-					<xs:element name="items" type="types:ItemRefList"/>
-					<xs:element name="members" type="types:GroupMemberList"/>
-				</xs:choice>
+				<xs:element name="container" type="types:uid" nillable="true"/>
+				<xs:element name="id" type="types:uid"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method removeItem (Response) -->
 	<xs:element name="removeItemResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -638,16 +626,64 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method sendItem (Request) -->
-	<xs:element name="sendItemRequest">
+	<xs:element name="removeItemsRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="item" type="types:Item"/>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="items" type="types:ItemRefList"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method sendItem (Response) -->
+	<xs:element name="removeItemsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="removeMembersRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="members" type="types:GroupMemberList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="removeMembersResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="removeProxyAccessRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="removeProxyAccessResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="sendItemRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="item" type="types:ItemArg"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="sendItemResponse">
 		<xs:complexType>
 			<xs:sequence>
@@ -657,7 +693,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method startFreeBusySession (Request) -->
 	<xs:element name="startFreeBusySessionRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -668,7 +703,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Method startFreeBusySession (Response) -->
 	<xs:element name="startFreeBusySessionResponse">
 		<xs:complexType>
 			<xs:sequence>

@@ -1,3 +1,8 @@
+2004-03-02 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* doc/gw-soap-types.xml :
+	* doc/gw-soap-methods.xml : checked in latest  version of these files 
+
 2004-02-13  JP Rosevear <jpr@ximian.com>
 
 	* Makefile.am: additional includes for builddir != srcdir
