@@ -10,7 +10,7 @@ static GMainLoop *main_loop;
 static char *arg_hostname, *arg_username, *arg_password;
 
 static void
-add_account (const char *conf_key, const char *hostname, const char *username, const char *password)
+add_account (const char *conf_key, const char *hostname, const char *username)
 {
 	ESourceList *source_list;
 	ESourceGroup *group;
@@ -19,15 +19,15 @@ add_account (const char *conf_key, const char *hostname, const char *username, c
 
 	source_list = e_source_list_new_for_gconf (conf_client, conf_key);
 
-	group_name = g_strdup_printf ("%s@%s", username, hostname);
+	group_name = g_strdup_printf (hostname);
 	group = e_source_group_new (group_name, "groupwise://");
 	e_source_list_add_group (source_list, group, -1);
 
-	if (password && *password) {
-		g_free (group_name);
-		group_name = g_strdup_printf ("%s:%s@%s/soap/", username, password, hostname);
-	}
+	g_free (group_name);
+	group_name = g_strdup_printf ("%s:7181/soap/", hostname);
 	source = e_source_new ("Calendar", group_name);
+	e_source_set_property (source, "auth", "1");
+	e_source_set_property (source, "username", username);
 	e_source_group_add_source (group, source, -1);
 
 	e_source_list_sync (source_list, NULL);
@@ -41,8 +41,8 @@ add_account (const char *conf_key, const char *hostname, const char *username, c
 static gboolean
 idle_cb (gpointer data)
 {
-	add_account ("/apps/evolution/calendar/sources", arg_hostname, arg_username, arg_password);
-	add_account ("/apps/evolution/tasks/sources", arg_hostname, arg_username, arg_password);
+	add_account ("/apps/evolution/calendar/sources", arg_hostname, arg_username);
+	add_account ("/apps/evolution/tasks/sources", arg_hostname, arg_username);
 
 	g_main_loop_quit (main_loop);
 
