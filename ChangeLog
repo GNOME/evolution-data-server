@@ -1,3 +1,7 @@
+2003-12-07  Chris Toshok  <toshok@ximian.com>
+
+	* libdb/dist/Makefile.in: make install depend on all.
+
 2003-12-07  JP Rosevear  <jpr@ximian.com>
 
 	* configure.in: bump version and libsoup requirement
