@@ -1,3 +1,26 @@
+Evolution Data Server 1.0.3, 2004-12-06
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Calendar
+
+    #59904 - Speed up calendar queries (Rodrigo)
+    #69624 - make changes in evo corresponding to soap schema changes  (Siva)
+  
+Other bugs
+
+  * Address Book
+    - prevent e_book_commit_contact from crashing on multiple calls (Diego Gonzalez)
+    - prevent file backend from crashing if uid of vcard is NULL (Diego Gonzalez)
+
+  * Calendar
+    - fix libical build for automake 1.9 (Rodney)
+    - fix putenv usage for portability (Julio M. Merino Vidal)
+
+Updated Translations:
+	- sv (Christian Rose)
+
 Evolution Data Server 1.0.2, 2004-10-11
 ----------------------------------------
 
