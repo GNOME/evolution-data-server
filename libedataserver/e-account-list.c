@@ -26,7 +26,6 @@
 #include "e-data-server-marshal.h"
 
 #include <string.h>
-#include <gal/util/e-util.h>
 
 struct EAccountListPrivate {
 	GConfClient *gconf;
@@ -122,8 +121,28 @@ finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-E_MAKE_TYPE (e_account_list, "EAccountList", EAccountList, class_init, init, PARENT_TYPE)
+GType
+e_account_list_get_type (void)
+{
+	static GType type = 0;
 
+	if (!type) {
+		static GTypeInfo const object_info = {
+			sizeof (EAccountListClass),
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc) class_init,
+			(GClassFinalizeFunc) NULL,
+			NULL,
+			sizeof (EAccountList),
+			0,
+			(GInstanceInitFunc) init
+		};
+		type = g_type_register_static (PARENT_TYPE, "EAccountList", &object_info, 0);
+	}
+
+	return type;
+}
 
 static void
 gconf_accounts_changed (GConfClient *client, guint cnxn_id,

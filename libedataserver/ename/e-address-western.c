@@ -20,7 +20,7 @@
 #else
 
 #include <ename/e-address-western.h>
-#include <gal/util/e-util.h>
+#include <e-util.h>
 
 #endif
 
@@ -273,8 +273,6 @@ e_address_western_extract_postal_code (gchar *line)
 	return g_strndup ( (line+start), end-start);
 }
 
-
-
 static void
 e_address_western_extract_street (gchar *line, gchar **street, gchar **extended)
 {
@@ -282,7 +280,7 @@ e_address_western_extract_street (gchar *line, gchar **street, gchar **extended)
 	gint cntr;
 
 	for (cntr = 0; extended_keywords[cntr] != NULL; cntr++) {
-		split = e_strstrcase (line, extended_keywords[cntr]);
+		split = e_util_strstrcase (line, extended_keywords[cntr]);
 		if (split != NULL)
 			break;
 	}

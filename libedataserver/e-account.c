@@ -27,8 +27,6 @@
 
 #include <string.h>
 
-#include <gal/util/e-util.h>
-
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlmemory.h>
@@ -105,8 +103,28 @@ finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-E_MAKE_TYPE (e_account, "EAccount", EAccount, class_init, init, PARENT_TYPE)
+GType
+e_account_get_type (void)
+{
+	static GType type = 0;
 
+	if (!type) {
+		static GTypeInfo const object_info = {
+			sizeof (EAccountClass),
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc) class_init,
+			(GClassFinalizeFunc) NULL,
+			NULL,
+			sizeof (EAccount),
+			0,
+			(GInstanceInitFunc) init
+		};
+		type = g_type_register_static (PARENT_TYPE, "EAccount", &object_info, 0);
+	}
+
+	return type;
+}
 
 /**
  * e_account_new:

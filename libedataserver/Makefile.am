@@ -28,6 +28,7 @@ libedataserver_la_SOURCES =		\
 	e-sexp.c			\
 	e-uid.c				\
 	e-url.c				\
+	e-util.c			\
 	e-xml-hash-utils.c		\
 	md5-utils.c
 
@@ -55,6 +56,7 @@ libedataserverinclude_HEADERS =		\
 	e-sexp.h			\
 	e-uid.h				\
 	e-url.h				\
+	e-util.h			\
 	e-xml-hash-utils.h		\
 	md5-utils.h
 
