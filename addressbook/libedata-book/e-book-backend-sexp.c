@@ -198,6 +198,12 @@ static struct prop_info {
 	NORMAL_PROP ( E_CONTACT_FILE_AS, "file_as" ),
 	LIST_PROP ( "full_name", compare_name), /* not really a list, but we need to compare both full and surname */
 	NORMAL_PROP ( E_CONTACT_HOMEPAGE_URL, "url"),
+	NORMAL_PROP ( E_CONTACT_BLOG_URL, "blog_url"),
+	NORMAL_PROP ( E_CONTACT_CALENDAR_URI, "calurl"),
+	NORMAL_PROP ( E_CONTACT_FREEBUSY_URL, "fburl"),
+	NORMAL_PROP ( E_CONTACT_ICS_CALENDAR, "icscalendar"),
+	NORMAL_PROP ( E_CONTACT_VIDEO_URL, "video_url"),
+
 	NORMAL_PROP ( E_CONTACT_MAILER, "mailer"),
 	NORMAL_PROP ( E_CONTACT_ORG, "org"),
 	NORMAL_PROP ( E_CONTACT_ORG_UNIT, "org_unit"),

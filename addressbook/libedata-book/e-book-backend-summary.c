@@ -834,6 +834,7 @@ static struct {
 	{ "is", func_check, 0 },
 	{ "beginswith", func_check, 0 },
 	{ "endswith", func_check, 0 },
+	{ "exists", func_check, 0 }
 };
 
 gboolean

@@ -1,3 +1,11 @@
+2004-05-02  Chris Toshok  <toshok@ximian.com>
+
+	* libedata-book/e-book-backend-sexp.c (prop_info_table): add
+	BLOG_URL, CALENDAR_URI, FREEBUSY_URL, ICS_CALENDAR, and VIDEO_URL.
+
+	* libedata-book/e-book-backend-summary.c (check_symbols): add
+	"exists".
+
 2004-04-28  Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* backends/groupwise/e-book-backend-groupwise.c 
