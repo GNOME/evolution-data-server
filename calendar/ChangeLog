@@ -1,5 +1,12 @@
 2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.[ch]
+	(e_cal_backend_groupwise_notify_error_code): new function.
+	(populate_cache, get_deltas, connect_to_server,
+	e_cal_backend_groupwise_open): notify clients of any error.
+
+2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-cal-backend-groupwise-utils.c
 	(start_freebusy_session): don't use the "types:" prefix for the
 	<user> SOAP element.

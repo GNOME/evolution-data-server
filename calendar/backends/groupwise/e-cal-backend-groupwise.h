@@ -25,6 +25,7 @@
 #define E_CAL_BACKEND_GROUPWISE_H
 
 #include <libedata-cal/e-cal-backend-sync.h>
+#include <servers/groupwise/e-gw-connection.h>
 
 G_BEGIN_DECLS
 
@@ -51,6 +52,7 @@ struct _ECalBackendGroupwiseClass {
 };
 
 GType   e_cal_backend_groupwise_get_type (void);
+void    e_cal_backend_groupwise_notify_error_code (ECalBackendGroupwise *cbgw, EGwConnectionStatus status);
 
 G_END_DECLS
 

@@ -82,6 +82,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
         status = e_gw_connection_get_items (priv->cnc, priv->container_id, "recipients", NULL, &list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
                 g_list_free (list);
+		e_cal_backend_groupwise_notify_error_code (cbgw, status);
                 return status;
         }
 
@@ -132,7 +133,7 @@ get_deltas (gpointer handle)
         EGwConnectionStatus status; 
 	GSList *deletes = NULL, *updates = NULL, *adds = NULL, *l;
         
-	cbgw = (ECalBackendGroupwise *)handle;
+	cbgw = (ECalBackendGroupwise *) handle;
  	cnc = cbgw->priv->cnc; 
  	cache = cbgw->priv->cache; 
 
@@ -140,14 +141,14 @@ get_deltas (gpointer handle)
 	status = e_gw_connection_get_deltas (cnc, &adds, &deletes, &updates);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_warning (G_STRLOC ": Could not refresh the cache");
+		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return status;
 	}
 	
 	if (deletes) {
 		for (l = deletes; l != NULL; l = g_slist_next(l)) {
 			if (!e_cal_backend_cache_remove_component (cache, (char *)l->data, NULL)) 
-                                         g_message ("Could not remove %s", (char *)l->data);
+				g_message ("Could not remove %s", (char *)l->data);
 		}
 	}
 
@@ -172,7 +173,6 @@ get_deltas (gpointer handle)
 			 * update.*/
 			e_cal_backend_cache_remove_component (cache, e_gw_item_get_id (item), NULL);
 			e_cal_backend_cache_put_component (cache, e_gw_item_to_cal_component (item));
-				
 		}
 	}
 
@@ -192,6 +192,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	/* convert the URI */
 	vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
 	if (!vuri) {
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Invalid server URI"));
 		return GNOME_Evolution_Calendar_NoSuchCal;
 	} else {
 		/* create connection to server */
@@ -243,8 +244,10 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			}
 
 			return status;
-		} else
+		} else {
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
 			return GNOME_Evolution_Calendar_AuthenticationFailed;
+		}
 	}
 
 	return GNOME_Evolution_Calendar_Success;
@@ -414,8 +417,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 	if (!priv->cache) {
 		g_mutex_unlock (priv->mutex);
-		g_warning (G_STRLOC ": Could not create cache file for %s",
-			   e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
 		return GNOME_Evolution_Calendar_OtherError;
 	}
 
@@ -1258,4 +1260,16 @@ e_cal_backend_groupwise_get_type (void)
 	}
 
 	return e_cal_backend_groupwise_type;
+}
+
+void
+e_cal_backend_groupwise_notify_error_code (ECalBackendGroupwise *cbgw, EGwConnectionStatus status)
+{
+	const char *msg;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw));
+
+	msg = e_gw_connection_get_error_message (status);
+	if (msg)
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), msg);
 }
