@@ -644,11 +644,10 @@ open_cal (ECalBackendFile *cbfile, const char *uristr)
 	}
 
 	priv->icalcomp = icalcomp;
+	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
 
 	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	scan_vcalendar (cbfile);
-
-	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
 
 	return GNOME_Evolution_Calendar_Success;
 }

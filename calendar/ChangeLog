@@ -1,3 +1,9 @@
+2003-12-21  JP Rosevear <jpr@ximian.com>
+
+	* backends/file/e-cal-backend-file.c (open_cal): set the uri
+	before scanning the vcalendar because we may have to fix duplicate
+	UIDs (and hence save the calendar)
+
 2003-12-19 JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.c (e_cal_get_alarms_in_range): create a valid sexp
