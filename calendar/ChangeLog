@@ -1,9 +1,19 @@
+2005-02-25  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	Changed the getQm calls since the function has been changed.
+	Send the time stamps received from the server.
+	* libedata-cal/e-cal-backend-cache.c:
+	(e_cal_backend_cache_put_server_utc_time),
+	(e_cal_backend_cache_get_server_utc_time):
+	* libedata-cal/e-cal-backend-cache.h:  Added functions
+	to put the server UTC time in cache.
+
 2005-02-25  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache):
 	Do not use position cursor calls anymore. use position field in 
 	read cursor request.
-	
 	
 2005-02-22  Rodrigo Moya <rodrigo@novell.com>
 

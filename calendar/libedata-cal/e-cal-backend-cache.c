@@ -614,3 +614,28 @@ e_cal_backend_cache_get_marker (ECalBackendCache *cache)
 		return "";
 	return NULL;
 }
+
+gboolean
+e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, char *utc_str)
+{
+	char *value;
+	gboolean ret_val = FALSE;
+	
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
+
+	value = g_strdup (utc_str);
+
+	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), "server_utc_time", value)))
+		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), "server_utc_time", value);
+
+	return ret_val;
+}
+
+const char *
+e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
+{
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+	
+       	return	e_file_cache_get_object (E_FILE_CACHE (cache), "server_utc_time");
+}

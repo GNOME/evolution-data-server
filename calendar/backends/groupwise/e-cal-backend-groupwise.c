@@ -198,12 +198,9 @@ get_deltas (gpointer handle)
  	ECalBackendCache *cache; 
         EGwConnectionStatus status; 
 	GSList *item_list, *cache_keys, *l;
-	const char *cache_file_name;
 	char *comp_str;
-	static time_t mod_time = 0;
-	GTimeVal time_val;
-	char time_string[100];
-	const struct tm *tm;
+	char *time_string = NULL;
+	static char *t_str = NULL; 
 	struct stat buf;
         
 	if (!handle)
@@ -217,21 +214,30 @@ get_deltas (gpointer handle)
 	if (priv->mode == CAL_MODE_LOCAL)
 		return FALSE;
 
-	if (!mod_time) {
-		cache_file_name = e_file_cache_get_filename (E_FILE_CACHE (priv->cache));
-		printf ("%s %d\n", cache_file_name, stat (cache_file_name, &buf));
-		mod_time = buf.st_mtime;
+	if (!t_str) {
+		t_str = (char *) e_cal_backend_cache_get_server_utc_time (cache);
+		if (!t_str) {
+			icaltimetype temp;
+			time_t current_time;
+			const struct tm *tm;
+
+			g_warning (" Could not get the correct time stamp for using in getQuick Messages\n");
+			temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+			current_time = icaltime_as_timet (temp);
+			tm = gmtime (&current_time);
+			strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+		}
 	}
 
-	tm = gmtime (&mod_time);
-	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
-	
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+	time_string = g_strdup (t_str);
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
+	g_free (time_string), time_string = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+		g_free (t_str), t_str = NULL;
 				
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
 			return TRUE;
@@ -267,13 +273,17 @@ get_deltas (gpointer handle)
 		item_list = NULL;
 	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
+	
+	/* We must use the same timestamp used for getQm call with message list New */ 
+	time_string = g_strdup (t_str);
 
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"attachments recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"attachments recipients message recipientStatus  default", &time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", &time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 
 		
+	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
 			return TRUE;
@@ -283,6 +293,10 @@ get_deltas (gpointer handle)
 	}
 
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
+	
+	e_cal_backend_cache_put_server_utc_time (cache, time_string);
+	t_str = time_string;
+
 	for (; item_list != NULL; item_list = g_slist_next(item_list)) {
 		EGwItem *item = E_GW_ITEM(item_list->data);
 		ECalComponent *modified_comp, *cache_comp;
@@ -310,11 +324,11 @@ get_deltas (gpointer handle)
 		g_slist_free (item_list);
 		item_list = NULL;
 	}
-
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
+	
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
 
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
@@ -368,9 +382,6 @@ get_deltas (gpointer handle)
 		item_list = NULL;
 	}
 		
-	g_get_current_time (&time_val);
-	mod_time = time_val.tv_sec;
-
         return TRUE;        
 }
 
@@ -452,7 +463,12 @@ cache_init (ECalBackendGroupwise *cbgw)
 			/*FIXME  why dont we do a notify here */
 			return GNOME_Evolution_Calendar_PermissionDenied;
 		} else {
+			char *utc_str;
+			
+			utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
 			e_cal_backend_cache_set_marker (priv->cache);
+			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
+
 			/*  Set up deltas only if it is a Calendar backend */
 			if (kind == ICAL_VEVENT_COMPONENT)
 				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
@@ -769,7 +785,7 @@ in_offline (ECalBackendGroupwise *cbgw) {
 		priv->cnc = NULL;
 	}
 
-	
+
 }
 
 /* Open handler for the file backend */
