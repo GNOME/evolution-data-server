@@ -1,5 +1,10 @@
 2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-imap4-provider.c: Added command option.
+
+	* camel-imap4-store.c (connect_to_server_process): Implemented.
+	(connect_to_server_wrapper): Call above when appropriate.
+
 	* camel-imap4-engine.c (camel_imap4_engine_parse_resp_code):
 	handle CAMEL_IMAP4_RESP_CODE_ALERT explicitly in the switch
 	statement and have it break out. This prevents the code from

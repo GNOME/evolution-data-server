@@ -29,6 +29,7 @@
 
 #include <camel/camel-sasl.h>
 #include <camel/camel-utf8.h>
+#include <camel/camel-stream-process.h>
 #include <camel/camel-tcp-stream-raw.h>
 
 #ifdef HAVE_SSL
@@ -212,6 +213,79 @@ imap4_get_name (CamelService *service, gboolean brief)
 					service->url->user, service->url->host);
 }
 
+
+static gboolean
+connect_to_server_process (CamelIMAP4Engine *engine, const char *format, CamelException *ex)
+{
+	CamelService *service = engine->service;
+	CamelStream *stream;
+	const char *start;
+	GString *exec;
+	
+	exec = g_string_new ("");
+	start = format;
+	
+	while (*format) {
+		register char ch = *format++;
+		
+		if (ch == '%') {
+			g_string_append_len (exec, start, format - start - 1);
+			
+			switch (*format) {
+			case '%':
+				/* literal % */
+				g_string_append_c (exec, '%');
+				break;
+			case 'h':
+				g_string_append (exec, service->url->host);
+				break;
+			case 'u':
+				g_string_append (exec, service->url->user);
+				break;
+			default:
+				g_warning ("unknown formatter '%%%c'", *format);
+				g_string_append_c (exec, '%');
+				g_string_append_c (exec, *format);
+				break;
+			}
+			
+			format++;
+			
+			start = format;
+		}
+	}
+	
+	g_string_append (exec, start);
+	
+	stream = camel_stream_process_new ();
+	
+	if (camel_stream_process_connect ((CamelStreamProcess *) stream, exec->str, NULL) == -1) {
+		if (errno == EINTR)
+			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+					     _("Connection cancelled"));
+		else
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+					      _("Could not connect with command \"%s\": %s"),
+					      exec->str, g_strerror (errno));
+		
+		camel_object_unref (stream);
+		g_string_free (exec, TRUE);
+		return FALSE;
+	}
+	
+	g_string_free (exec, TRUE);
+	
+	if (camel_imap4_engine_take_stream (engine, stream, ex) == -1)
+		return FALSE;
+	
+	if (camel_imap4_engine_capability (engine, ex) == -1)
+		return FALSE;
+	
+	camel_imap4_store_summary_set_capabilities (((CamelIMAP4Store *) service)->summary, engine->capa);
+	
+	return TRUE;
+}
+
 enum {
 	MODE_CLEAR,
 	MODE_SSL,
@@ -335,9 +409,13 @@ connect_to_server_wrapper (CamelIMAP4Engine *engine, CamelException *ex)
 	CamelService *service = engine->service;
 	struct addrinfo *ai, hints;
 	const char *ssl_mode;
+	const char *command;
 	int mode, ret, i;
 	const char *port;
 	char *serv;
+	
+	if ((command = camel_url_get_param (service->url, "command")))
+		return connect_to_server_process (engine, command, ex);
 	
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
