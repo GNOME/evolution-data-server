@@ -253,6 +253,9 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	e_source_group_set_readonly (new, readonly_str && !strcmp (readonly_str, "yes"));
 
  done:
+	if (uid != NULL)
+		xmlFree (uid);
+
 	if (name != NULL)
 		xmlFree (name);
 	if (base_uri != NULL)
