@@ -85,7 +85,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store) ;
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelGroupwiseMessageInfo *mi = NULL ;
-	char *temp_name, *folder_name, *container_id, *body ;
+	char *temp_name, *folder_name, *container_id, *body , *temp_str = NULL ;
 	CamelInternetAddress *from_addr, *to_addr, *cc_addr, *bcc_addr ;
 	GSList *recipient_list, *attach_list ;
 	EGwItemOrganizer *org ;
@@ -308,10 +308,16 @@ groupwise_folder_get_message( CamelFolder *folder,
 		camel_object_unref (part) ;
 	}
 	
-	camel_mime_message_set_subject (msg, e_gw_item_get_subject(item) ) ;
+	temp_str = (char *)e_gw_item_get_subject(item) ;
+	if(temp_str) 
+		camel_mime_message_set_subject (msg, temp_str) ;
 	dtstring = e_gw_item_get_creation_date (item) ;
-	if (dtstring) 
-		camel_mime_message_set_date (msg, e_gw_connection_get_date_from_string (dtstring), 0 ) ;
+	if(dtstring) {
+		time_t time = e_gw_connection_get_date_from_string (dtstring) ;
+		struct tm *tm = localtime (&time) ;
+		time_t actual_time = mktime (tm) ;
+		camel_mime_message_set_date (msg, actual_time, 0) ;
+	}
 	camel_mime_message_set_from (msg, from_addr) ;
 	
 
@@ -328,10 +334,12 @@ groupwise_folder_get_message( CamelFolder *folder,
 			int len ;
 			CamelMimePart *part ;
 
-			status = e_gw_connection_get_attachment (cnc, g_strdup(attach->id), 0, -1, (const char **)&attachment, &len) ;
+			status = e_gw_connection_get_attachment (cnc, 
+					                         g_strdup(attach->id), 0, -1, 
+								 (const char **)&attachment, &len) ;
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get attachment"));
-				g_message ("Could not get attachment\n") ;
+				g_warning ("Could not get attachment\n") ;
 				continue ;
 			}
 			if (attach && (len !=0) ) {
@@ -621,6 +629,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 					time_string, "New", "Mail", NULL, -1, &slist) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 		g_free (container_id) ;
 		return ;
 	}
