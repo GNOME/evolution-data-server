@@ -1,3 +1,33 @@
+2005-01-13  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69024.
+
+	* providers/nntp/camel-nntp-store.c
+	(nntp_store_get_subscribed_folder_info): emit a folder_changed
+	event if refreshing it added any changes.
+
+2005-01-12  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47824.
+
+	* camel-multipart-signed.c (parse_content): re-implemented to use
+	camel-mime-parser.  For the annoying pathalogical case of re-used
+	multipart boundary markers.
+
+	* camel-mime-parser.c (folder_scan_step): modified the multipart
+	state so that we don't try to match the same boundary again if
+	we've already seen an end boundary for this part.  This is for the
+	annoying case of a multipart inside a multipart which shares an
+	identical boundary marker (groupwise!).
+	(camel_mime_parser_tell_start_boundary): new function to indicate
+	the offset of the start of the last boundary.
+
+	* tests/message/test3.c (main): remove the nonfatal fixme & put
+	extra null check for pre/postface text checks.
+
+	* tests/message/test2.c (convert): use size_t for iconv length
+	types.
+
 2005-01-11  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-store-summary.c

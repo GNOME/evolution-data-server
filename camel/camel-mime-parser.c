@@ -104,6 +104,7 @@ struct _header_scan_state {
 	unsigned int eof:1;		/* reached eof? */
 
 	off_t start_of_from;	/* where from started */
+	off_t start_of_boundary; /* where the last boundary started */
 	off_t start_of_headers;	/* where headers started from the last scan */
 
 	off_t header_start;	/* start of last header, or -1 */
@@ -160,6 +161,8 @@ static int folder_scan_skip_line(struct _header_scan_state *s, GByteArray *save)
 static off_t folder_seek(struct _header_scan_state *s, off_t offset, int whence);
 static off_t folder_tell(struct _header_scan_state *s);
 static int folder_read(struct _header_scan_state *s);
+static void folder_push_part(struct _header_scan_state *s, struct _header_scan_stack *h);
+
 #ifdef MEMPOOL
 static void header_append_mempool(struct _header_scan_state *s, struct _header_scan_stack *h, char *header, int offset);
 #endif
@@ -747,6 +750,24 @@ camel_mime_parser_tell_start_from (CamelMimeParser *parser)
 }
 
 /**
+ * camel_mime_parser_tell_start_boundary:
+ * @parser: MIME parser object
+ * 
+ * When parsing a multipart, this returns the start of the last
+ * boundary.
+ * 
+ * Return value: The start of the boundary, or -1 if there
+ * was no boundary encountered yet.
+ **/
+off_t
+camel_mime_parser_tell_start_boundary(CamelMimeParser *parser)
+{
+	struct _header_scan_state *s = _PRIVATE (parser);
+
+	return s->start_of_boundary;
+}
+
+/**
  * camel_mime_parser_seek:
  * @parser: MIME parser object
  * @offset: Number of bytes to offset the seek by.
@@ -785,6 +806,30 @@ camel_mime_parser_state (CamelMimeParser *parser)
 	struct _header_scan_state *s = _PRIVATE (parser);
 	
 	return s->state;
+}
+
+/**
+ * camel_mime_parser_push_state:
+ * @mp: MIME parser object
+ * @newstate: New state
+ * @boundary: Boundary marker for state.
+ * 
+ * Pre-load a new parser state.  Used to post-parse multipart content
+ * without headers.
+ **/
+void
+camel_mime_parser_push_state(CamelMimeParser *mp, enum _camel_mime_parser_state newstate, const char *boundary)
+{
+	struct _header_scan_stack *h;
+	struct _header_scan_state *s = _PRIVATE(mp);
+
+	h = g_malloc0(sizeof(*h));
+	h->boundarylen = strlen(boundary)+2;
+	h->boundarylenfinal = h->boundarylen+2;
+	h->boundary = g_malloc(h->boundarylen+3);
+	sprintf(h->boundary, "--%s--", boundary);
+	folder_push_part(s, h);
+	s->state = newstate;
 }
 
 /**
@@ -1409,6 +1454,7 @@ folder_scan_init(void)
 
 	s->start_of_from = -1;
 	s->start_of_headers = -1;
+	s->start_of_boundary = -1;
 
 	s->midline = FALSE;
 	s->scan_from = FALSE;
@@ -1480,8 +1526,7 @@ folder_scan_step(struct _header_scan_state *s, char **databuffer, size_t *datale
 	struct _header_scan_stack *h, *hb;
 	const char *content;
 	const char *bound;
-	int type;
-	int state;
+	int type, state, seenlast;
 	CamelContentType *ct = NULL;
 	struct _header_scan_filter *f;
 	size_t presize;
@@ -1651,6 +1696,14 @@ tail_recurse:
 		
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		h = s->parts;
+		/* This mess looks for the next boundary on this
+		level.  Once it finds the last one, it keeps going,
+		looking for post-multipart content ('postface').
+		Because messages might have duplicate boundaries for
+		different parts, it makes sure it stops if its already
+		found an end boundary for this part.  It handles
+		truncated and missing boundaries appropriately too. */
+		seenlast = FALSE;
 		do {
 			do {
 				hb = folder_scan_content(s, &state, databuffer, datalength);
@@ -1671,15 +1724,17 @@ tail_recurse:
 				}
 			} while (hb==h && *datalength>0);
 			h->prestage++;
-			if (*datalength==0 && hb==h) {
-				d(printf("got boundary: %s\n", hb->boundary));
+			if (*datalength==0 && hb==h && !seenlast) {
+				d(printf("got boundary: %s last=%d\n", hb->boundary, state));
+				s->start_of_boundary = folder_tell(s);
 				folder_scan_skip_line(s, NULL);
 				if (!state) {
 					s->state = CAMEL_MIME_PARSER_STATE_FROM;
 					folder_scan_step(s, databuffer, datalength);
 					s->parts->savestate = CAMEL_MIME_PARSER_STATE_MULTIPART; /* set return state for the new head part */
 					return;
-				}
+				} else
+					seenlast = TRUE;
 			} else {
 				break;
 			}
