@@ -383,6 +383,7 @@ static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
 	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS "," \
+				  CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY "," \
 				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","   \
 	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR "," \
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE);

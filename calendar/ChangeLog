@@ -1,3 +1,9 @@
+2004-04-08  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_get_static_capabilities): add the 
+	ONE_ALARM_ONLY static capability.
+
 2004-04-06  Harish K <kharish@novell.com>
 	
 	Fixes #55169
