@@ -1,3 +1,10 @@
+2004-05-18  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-item.c (set_contact_fields_from_soap_parameter) : read organization_id
+	also from soap response
+	* e-gw-item.c (append_office_info_to_soap_message) : just append org_name of organization-id
+	 is not present
+
 2004-05-17  Rodney Dawes  <dobey@ximian.com>
 
 	* Makefile.am (libegroupwise_la_LIBADD): Add $(E_DATA_SERVER_LIBS)

@@ -777,7 +777,9 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			value = soup_soap_parameter_get_string_value (temp);
 			if(value)
 				g_hash_table_insert (simple_fields, "organization", value);
-			
+			value = soup_soap_parameter_get_property(temp, "uid");
+			if (value)
+				g_hash_table_insert (simple_fields, "organization_id", value);
 		}
 		temp = soup_soap_parameter_get_first_child_by_name (subparam, "department");
 		if(temp) {
@@ -1045,10 +1047,10 @@ append_office_info_to_soap_message (GHashTable *simple_fields, SoupSoapMessage *
 	soup_soap_message_start_element (msg, "officeInfo", NULL, NULL);
 	value = g_hash_table_lookup (simple_fields, "organization_id");
 	org_name = g_hash_table_lookup (simple_fields, "organization");
-
 	if (value && org_name) 
 		e_gw_message_write_string_parameter_with_attribute (msg, "organization", NULL, org_name, "uid", value);
-	
+	else if(org_name)
+		e_gw_message_write_string_parameter (msg, "organization", NULL, org_name);
 	value = g_hash_table_lookup (simple_fields, "department");
 	if (value)
 		e_gw_message_write_string_parameter (msg, "department", NULL, value);
