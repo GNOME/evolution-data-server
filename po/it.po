@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-16 23:31+0100\n"
-"PO-Revision-Date: 2005-02-17 00:12+0100\n"
+"PO-Revision-Date: 2005-02-17 00:22+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <it@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -164,7 +164,7 @@ msgstr "ID Univoco"
 
 #: ../addressbook/libebook/e-contact.c:103
 msgid "File Under"
-msgstr ""
+msgstr "File sotto"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -777,7 +777,7 @@ msgstr "Vento e neve"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Freezing drizzle"
-msgstr ""
+msgstr "Pioggia leggera giacciata"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very cold/wind chill"
@@ -2684,7 +2684,7 @@ msgstr "Impossibile utenticarsi al server GroupWise."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:430
 msgid "Some features may not work correctly with your current server version"
-msgstr ""
+msgstr "Alcune caratteristiche potrebbero non funzionare correttamente con la versione del server corrente"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:500
 #: ../camel/providers/imap/camel-imap-store.c:1873
@@ -3370,6 +3370,10 @@ msgid ""
 "\n"
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
+"Client IMAP 4(.1) sperimentale\n"
+"Codice non controllato e non supportato, usare invece imap normale.\n"
+"\n"
+"!!! NON USARE PER LA GESTIONE NORMALE DELLA POSTA !!!\n"
 
 #: ../camel/providers/imapp/camel-imapp-store.c:251
 #, c-format
@@ -4593,7 +4597,7 @@ msgstr "Fornitori"
 
 #: ../libedataserver/e-categories.c:244
 msgid "Time & Expenses"
-msgstr ""
+msgstr "Tempo e spese"
 
 #: ../libedataserver/e-categories.c:245
 msgid "VIP"
@@ -4609,7 +4613,7 @@ msgstr "In attesa"
 #. time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:173 ../libedataserver/e-time-utils.c:400
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%a %d/%m/%Y %H.%M.%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format.
@@ -4617,7 +4621,7 @@ msgstr ""
 #. time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:178 ../libedataserver/e-time-utils.c:391
 msgid "%a %m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%a %d/%m/%Y %H.%M.%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without seconds.
@@ -4625,7 +4629,7 @@ msgstr ""
 #. time, in 12-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:183 ../libedataserver/e-time-utils.c:396
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%a %d/%m/%Y %I.%M %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without seconds.
@@ -4633,78 +4637,78 @@ msgstr ""
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:188 ../libedataserver/e-time-utils.c:387
 msgid "%a %m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%a %d/%m/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:193
 msgid "%a %m/%d/%Y %I %p"
-msgstr ""
+msgstr "%a %d/%m/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:198
 msgid "%a %m/%d/%Y %H"
-msgstr ""
+msgstr "%a %d/%m/%Y"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
 #: ../libedataserver/e-time-utils.c:201 ../libedataserver/e-time-utils.c:294
 #: ../libedataserver/e-time-utils.c:382
 msgid "%a %m/%d/%Y"
-msgstr ""
+msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:209
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%d/%m/%Y %I.%M.%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:213
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%d/%m/%Y %H.%M.%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:218
 msgid "%m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%d/%m/%Y %I.%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:223
 msgid "%m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%d/%m/%Y %H.%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:228
 msgid "%m/%d/%Y %I %p"
-msgstr ""
+msgstr "%d/%m/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:233
 msgid "%m/%d/%Y %H"
-msgstr ""
+msgstr "%d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
 #: ../libedataserver/e-time-utils.c:236 ../libedataserver/e-time-utils.c:297
 msgid "%m/%d/%Y"
-msgstr ""
+msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
 #: ../libedataserver/e-time-utils.c:337 ../libedataserver/e-time-utils.c:436
 msgid "%I:%M:%S %p"
-msgstr ""
+msgstr "%I.%M.%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
 #: ../libedataserver/e-time-utils.c:341 ../libedataserver/e-time-utils.c:428
 msgid "%H:%M:%S"
-msgstr ""
+msgstr "%H.%M.%S"
 
 #. strptime format for time of day, without seconds,
 #. in 12-hour format.
@@ -4712,19 +4716,19 @@ msgstr ""
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:346 ../libedataserver/e-time-utils.c:433
 msgid "%I:%M %p"
-msgstr ""
+msgstr "%I.%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:350 ../libedataserver/e-time-utils.c:425
 msgid "%H:%M"
-msgstr ""
+msgstr "%H.%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:354
 msgid "%I %p"
-msgstr ""
+msgstr "%I %p"
 
 #: ../libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
@@ -4779,7 +4783,7 @@ msgstr "Seleziona contatti dalla rubrica"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "\t\t\t\t\t\t"
-msgstr ""
+msgstr "\t\t\t\t\t\t"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
 msgid "*"
