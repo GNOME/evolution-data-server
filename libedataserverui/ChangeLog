@@ -1,3 +1,8 @@
+2004-12-30  JP Rosevear  <jpr@novell.com>
+
+	* Makefile.am (INCLUDES): include the addressbook builddir as well
+	for generated files
+
 2004-12-24  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-name-selector-entry.c (find_destination_by_index): Return NULL on

@@ -1,6 +1,7 @@
 INCLUDES =								\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/addressbook					\
+	-I$(top_builddir)/addressbook					\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"				\
 	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
 	$(E_DATA_SERVER_UI_CFLAGS)
