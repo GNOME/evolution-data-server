@@ -1,3 +1,7 @@
+2005-02-14  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, requires, libtool numbers
+
 2005-01-21  Sivaiah Nallagatla <snallagatla@novell.com>
 
        * libedataserver/e-source.c

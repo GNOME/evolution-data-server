@@ -1,3 +1,43 @@
+Evolution Data Server 1.0.4, 2005-02-14
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Address Book
+
+    #64298 - G/W failure to authenticate (Siva)
+    #67541 - LDAP password not to be remembered (Siva)
+    #66854 - Some strings are missed to translation (Rodney)
+    #71116 - wrong gettext initialization breaks translation (Rodney)
+    #70918 - Importing kontact vcard causes inifinite loop (Siva)
+
+  * Calendar
+
+    #64682 - Moving an appointment from one calendar to another sends update (Chen)
+    #67031 - GroupWise tasks are not getting updated in any way (Chen)
+
+  * All
+
+    #69186 - cannot remove GAL from Autocomplete in settings (Siva)
+    #64298 - G/W failure to authenticate (Siva)
+  
+Other bugs
+
+  * Calendar
+    - warning fixes (Michael)
+    - fix groupwise ssl usage (Harish)
+
+  * Address Book
+    - fix vcard note migration issues if containing non-ascii chars (Siva)
+    - fix groupwise ssl usage (Harish)
+
+  * All
+    - 64 bit fixes (Michael)
+
+Updated Translations:
+    -et (Priit Laes)
+    -ru (Leonid Kanter)
+
 Evolution Data Server 1.0.3, 2004-12-06
 ----------------------------------------
 
