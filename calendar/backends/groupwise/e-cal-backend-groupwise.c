@@ -92,18 +92,6 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
                                                                                                                     
 }
 
-static EGwConnectionStatus 
-update_cache (gpointer *data)
-{
-        ECalBackendGroupwise *cbgw;
-        EGwConnection *cnc;
-        EGwConnectionStatus status;
-	cbgw = E_CAL_BACKEND_GROUPWISE (data);
-        cnc = cbgw->priv->cnc;
-        status = e_gw_connection_get_deltas (cnc, cbgw->priv->cache);
-        return status;
-}
-
 static GnomeVFSURI *
 convert_uri (const char *gw_uri)
 {
@@ -176,8 +164,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				g_warning (G_STRLOC ": Could not populate the cache");
 				return GNOME_Evolution_Calendar_PermissionDenied;
 			} else {
-				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) update_cache, (gpointer) cbgw);
-
+				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) e_gw_connection_get_deltas, (gpointer) cbgw);
 				priv->mode = CAL_MODE_REMOTE;
 			}
 
@@ -462,9 +449,6 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 	case ICAL_VTODO_COMPONENT:
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
 		break;
- 	case ICAL_VJOURNAL_COMPONENT:
- 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
- 		break;
 	default:
 		g_object_unref (comp);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
