@@ -1,3 +1,10 @@
+2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c (match_recurrence_sexp,
+	match_object_sexp): use a GSList, which is what we are passed
+	to e_cal_backend_groupwise_get_object_list.
+	(e_cal_backend_groupwise_start_query): fixed warning.
+
 2004-01-20  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c

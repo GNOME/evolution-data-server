@@ -531,7 +531,7 @@ e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal
 }
 
 typedef struct {
-	GList *obj_list;
+	GSList *obj_list;
 	gboolean search_needed;
 	const char *query;
 	ECalBackendSExp *obj_sexp;
@@ -547,8 +547,8 @@ match_recurrence_sexp (gpointer key, gpointer value, gpointer data)
 
 	if ((!match_data->search_needed) ||
 	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
-		match_data->obj_list = g_list_append (match_data->obj_list,
-						      e_cal_component_get_as_string (comp));
+		match_data->obj_list = g_slist_append (match_data->obj_list,
+						       e_cal_component_get_as_string (comp));
 	}
 }
 
@@ -560,8 +560,8 @@ match_object_sexp (gpointer key, gpointer value, gpointer data)
 
 	if ((!match_data->search_needed) ||
 	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
-		match_data->obj_list = g_list_append (match_data->obj_list,
-						      e_cal_component_get_as_string (comp));
+		match_data->obj_list = g_slist_append (match_data->obj_list,
+						       e_cal_component_get_as_string (comp));
 
                 /* FIXME recurrances should also be handled here */ 
 	}
@@ -642,7 +642,7 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 		return;
 	}
 
-        status = e_cal_backend_groupwise_get_object_list (backend, NULL, match_data.query, &l );
+        status = e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (backend), NULL, match_data.query, &l );
 
         if ( status != GNOME_Evolution_Calendar_Success )
                 return;
