@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
-"POT-Creation-Date: 2004-02-20 01:07-0500\n"
-"PO-Revision-Date: 2004-02-20 07:16+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-26 21:04+0100\n"
+"PO-Revision-Date: 2004-02-26 21:05+0100\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
@@ -66,82 +66,82 @@ msgstr "Greška tokom pretrage"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:218 addressbook/libebook/e-book.c:330
-#: addressbook/libebook/e-book.c:415 addressbook/libebook/e-book.c:517
-#: addressbook/libebook/e-book.c:630 addressbook/libebook/e-book.c:714
-#: addressbook/libebook/e-book.c:817 addressbook/libebook/e-book.c:871
-#: addressbook/libebook/e-book.c:970 addressbook/libebook/e-book.c:1104
-#: addressbook/libebook/e-book.c:1205 addressbook/libebook/e-book.c:1445
-#: addressbook/libebook/e-book.c:2045
+#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
+#: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
+#: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
+#: addressbook/libebook/e-book.c:819 addressbook/libebook/e-book.c:873
+#: addressbook/libebook/e-book.c:972 addressbook/libebook/e-book.c:1106
+#: addressbook/libebook/e-book.c:1207 addressbook/libebook/e-book.c:1447
+#: addressbook/libebook/e-book.c:2047
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "„%s“ na kalendaru pre „%s“"
 
-#: addressbook/libebook/e-book.c:226 addressbook/libebook/e-book.c:338
-#: addressbook/libebook/e-book.c:423 addressbook/libebook/e-book.c:526
-#: addressbook/libebook/e-book.c:638 addressbook/libebook/e-book.c:722
-#: addressbook/libebook/e-book.c:825 addressbook/libebook/e-book.c:879
-#: addressbook/libebook/e-book.c:978 addressbook/libebook/e-book.c:1112
-#: addressbook/libebook/e-book.c:1213 addressbook/libebook/e-book.c:1453
+#: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
+#: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
+#: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
+#: addressbook/libebook/e-book.c:827 addressbook/libebook/e-book.c:881
+#: addressbook/libebook/e-book.c:980 addressbook/libebook/e-book.c:1114
+#: addressbook/libebook/e-book.c:1215 addressbook/libebook/e-book.c:1455
 msgid "book busy"
 msgstr "imenik zauzet"
 
-#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:365
-#: addressbook/libebook/e-book.c:445 addressbook/libebook/e-book.c:549
-#: addressbook/libebook/e-book.c:664 addressbook/libebook/e-book.c:745
-#: addressbook/libebook/e-book.c:911 addressbook/libebook/e-book.c:1022
-#: addressbook/libebook/e-book.c:1140 addressbook/libebook/e-book.c:1237
-#: addressbook/libebook/e-book.c:1371 addressbook/libebook/e-book.c:1475
-#: addressbook/libebook/e-book.c:2054
+#: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
+#: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
+#: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
+#: addressbook/libebook/e-book.c:913 addressbook/libebook/e-book.c:1024
+#: addressbook/libebook/e-book.c:1142 addressbook/libebook/e-book.c:1239
+#: addressbook/libebook/e-book.c:1373 addressbook/libebook/e-book.c:1477
+#: addressbook/libebook/e-book.c:2056
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Corba izuzetak poziva „%s“"
 
-#: addressbook/libebook/e-book.c:1352
+#: addressbook/libebook/e-book.c:1354
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: nema tekuće operacije"
 
-#: addressbook/libebook/e-book.c:1387
+#: addressbook/libebook/e-book.c:1389
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: ne mogu da otkažem"
 
-#: addressbook/libebook/e-book.c:1746
+#: addressbook/libebook/e-book.c:1748
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: neispravan izvor."
 
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1873
+#: addressbook/libebook/e-book.c:1757 addressbook/libebook/e-book.c:1875
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: nema dostupnih tvornica za adresu „%s“"
 
-#: addressbook/libebook/e-book.c:1768
+#: addressbook/libebook/e-book.c:1770
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: ne mogu da napravim EBookListener"
 
-#: addressbook/libebook/e-book.c:1867
+#: addressbook/libebook/e-book.c:1869
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: otkazan"
 
-#: addressbook/libebook/e-book.c:1904
+#: addressbook/libebook/e-book.c:1906
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "„%s“ na adresaru pre „%s“"
 
-#: addressbook/libebook/e-book.c:2140
+#: addressbook/libebook/e-book.c:2142
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: nema svog JIB-a kontakta u GKonfu"
 
-#: addressbook/libebook/e-book.c:2317
+#: addressbook/libebook/e-book.c:2319
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr "e_book_set_default_source: nema izvora za JIB „%s“ u GKonfu."
 
-#: addressbook/libebook/e-contact.c:97
+#: addressbook/libebook/e-contact.c:99
 msgid "Unique ID"
 msgstr "Jedinstveni IB"
 
-#: addressbook/libebook/e-contact.c:98
+#: addressbook/libebook/e-contact.c:100
 msgid "File As"
 msgstr "Zavedi kao"
 
@@ -149,405 +149,409 @@ msgstr "Zavedi kao"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:104
+#: addressbook/libebook/e-contact.c:106
 msgid "Full Name"
 msgstr "Puno ime"
 
-#: addressbook/libebook/e-contact.c:105
+#: addressbook/libebook/e-contact.c:107
 msgid "Name"
 msgstr "Ime"
 
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:108
 msgid "Given Name"
 msgstr "Dato ime"
 
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:109
 msgid "Family Name"
 msgstr "Prezime"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:110
 msgid "Nickname"
 msgstr "Nadimak"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:111
 msgid "Name or Org"
 msgstr "Ime ili udruženje"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 msgid "Address List"
 msgstr "Spisak adresa"
 
-#: addressbook/libebook/e-contact.c:113
+#: addressbook/libebook/e-contact.c:115
 msgid "Home Address"
 msgstr "Kućna adresa"
 
-#: addressbook/libebook/e-contact.c:114
+#: addressbook/libebook/e-contact.c:116
 msgid "Work Address"
 msgstr "Adresa na poslu"
 
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:117
 msgid "Other Address"
 msgstr "Druga adresa"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:119
 msgid "Home Address Label"
 msgstr "Oznaka kućne adrese"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:120
 msgid "Work Address Label"
 msgstr "Oznaka adrese na poslu"
 
-#: addressbook/libebook/e-contact.c:119
+#: addressbook/libebook/e-contact.c:121
 msgid "Other Address Label"
 msgstr "Oznaka druge adrese"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:123
 msgid "Assistant Phone"
 msgstr "Pomoćni telefon"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:124
 msgid "Business Phone"
 msgstr "Telefon na poslu"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:125
 msgid "Business Phone 2"
 msgstr "2. telefon na poslu"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:126
 msgid "Business Fax"
 msgstr "Poslovni faks"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:127
 msgid "Callback Phone"
 msgstr "Povratni telefon"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:128
 msgid "Car Phone"
 msgstr "Telefon u kolima"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Company Phone"
 msgstr "Telefon preduzeća"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Home Phone"
 msgstr "Kućni telefon"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Home Phone 2"
 msgstr "2. kućni telefon"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Home Fax"
 msgstr "Kućni faks"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:133
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Mobile Phone"
 msgstr "Mobilni telefon"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:135
 msgid "Other Phone"
 msgstr "Drugi telefon"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:136
 msgid "Other Fax"
 msgstr "Drugi faks"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Pager"
 msgstr "Pejdžer"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Primary Phone"
 msgstr "Glavni telefon"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Radio"
 msgstr "Radio"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:140
 msgid "Telex"
 msgstr "Teleks"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:141
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 msgid "Email List"
 msgstr "Spisak e-adresa"
 
-#: addressbook/libebook/e-contact.c:143
+#: addressbook/libebook/e-contact.c:145
 msgid "Email 1"
 msgstr "1. e-adresa"
 
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:146
 msgid "Email 2"
 msgstr "2. e-adresa"
 
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:147
 msgid "Email 3"
 msgstr "3. e-adresa"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:148
 msgid "Mailer"
 msgstr "Pošiljalac"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:149
 msgid "Wants HTML Mail"
 msgstr "Želi HTML poštu"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "AIM Screen Name List"
 msgstr "Spisak ekranskih imena za AIM"
 
-#: addressbook/libebook/e-contact.c:151
+#: addressbook/libebook/e-contact.c:153
 msgid "Jabber Id List"
 msgstr "Spisak DŽaber naloga"
 
-#: addressbook/libebook/e-contact.c:152
+#: addressbook/libebook/e-contact.c:154
 msgid "Yahoo! Screen Name List"
 msgstr "Spisak ekranskih imena za Jahu!"
 
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:155
 msgid "MSN Screen Name List"
 msgstr "Spisak ekranskih imena za MSN"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:156
 msgid "ICQ Id List"
 msgstr "Spisak ICQ IB-eva"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
+msgid "Groupwise Id List"
+msgstr "Spisak Grupvajz IB-ova"
+
+#: addressbook/libebook/e-contact.c:159
 msgid "AIM Home Screen Name 1"
 msgstr "1. kućni nadimak za AIM"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:160
 msgid "AIM Home Screen Name 2"
 msgstr "2. kućni nadimak za AIM"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 3"
 msgstr "3. kućni nadimak za AIM"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Work Screen Name 1"
 msgstr "1. poslovni nadimak za AIM"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Work Screen Name 2"
 msgstr "2. poslovni nadimak za AIM"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 3"
 msgstr "3. poslovni nadimak za AIM"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:165
 msgid "Jabber Home Id 1"
 msgstr "1. kućni DŽaber nalog"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:166
 msgid "Jabber Home Id 2"
 msgstr "2. kućni DŽaber nalog"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:167
 msgid "Jabber Home Id 3"
 msgstr "3. kućni DŽaber nalog"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:168
 msgid "Jabber Work Id 1"
 msgstr "1. poslovni DŽaber nalog"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:169
 msgid "Jabber Work Id 2"
 msgstr "2. poslovni DŽaber nalog"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:170
 msgid "Jabber Work Id 3"
 msgstr "3. poslovni DŽaber nalog"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:171
 msgid "Yahoo! Home Screen Name 1"
 msgstr "1. kućni Jahu! nalog"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:172
 msgid "Yahoo! Home Screen Name 2"
 msgstr "2. kućni Jahu! nalog"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:173
 msgid "Yahoo! Home Screen Name 3"
 msgstr "3. kućni Jahu! nalog"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:174
 msgid "Yahoo! Work Screen Name 1"
 msgstr "1. poslovni Jahu! nalog"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:175
 msgid "Yahoo! Work Screen Name 2"
 msgstr "2. poslovni Jahu! nalog"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:176
 msgid "Yahoo! Work Screen Name 3"
 msgstr "3. poslovni Jahu! nalog"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:177
 msgid "MSN Home Screen Name 1"
 msgstr "1. kućni MSN nalog"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:178
 msgid "MSN Home Screen Name 2"
 msgstr "2. kućni MSN nalog"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:179
 msgid "MSN Home Screen Name 3"
 msgstr "3. kućni MSN nalog"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:180
 msgid "MSN Work Screen Name 1"
 msgstr "1. poslovni MSN nalog"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:181
 msgid "MSN Work Screen Name 2"
 msgstr "2. poslovni MSN nalog"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:182
 msgid "MSN Work Screen Name 3"
 msgstr "3. poslovni MSN nalog"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:183
 msgid "ICQ Home Id 1"
 msgstr "1. kućni ICQ nalog"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:184
 msgid "ICQ Home Id 2"
 msgstr "2. kućni ICQ nalog"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:185
 msgid "ICQ Home Id 3"
 msgstr "3. kućni ICQ nalog"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:186
 msgid "ICQ Work Id 1"
 msgstr "1. poslovni ICQ nalog"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:187
 msgid "ICQ Work Id 2"
 msgstr "2. poslovni ICQ nalog"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:188
 msgid "ICQ Work Id 3"
 msgstr "3. poslovni ICQ nalog"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:191
 msgid "Organization"
 msgstr "Organizacija"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:192
 msgid "Organizational Unit"
 msgstr "Organizaciona jedinica"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:193
 msgid "Office"
 msgstr "Kancelarija"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:195
 msgid "Title"
 msgstr "Titula"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:196
 msgid "Role"
 msgstr "Uloga"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:197
 msgid "Manager"
 msgstr "Rukovodilac"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:198
 msgid "Assistant"
 msgstr "Pomoćnik"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:201
 msgid "Homepage URL"
 msgstr "Adresa lične strane"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:202
 msgid "Weblog URL"
 msgstr "Adresa veb dnevnika"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:203
 msgid "Video Conferencing URL"
 msgstr "Adresa video konferencije"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:206
 msgid "Photo"
 msgstr "Slika"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:207
 msgid "Logo"
 msgstr "Logotip"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:210
 msgid "X.509 Certificate"
 msgstr "X.509 sertifikat"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:213
 msgid "Category List"
 msgstr "Spisak kategorija"
 
-#: addressbook/libebook/e-contact.c:211
+#: addressbook/libebook/e-contact.c:214
 msgid "Categories"
 msgstr "Kategorije"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:217
 msgid "Calendar URI"
 msgstr "Adresa kalendara"
 
-#: addressbook/libebook/e-contact.c:215
+#: addressbook/libebook/e-contact.c:218
 msgid "Free/Busy URL"
 msgstr "Adresa za slobodan/zauzet"
 
-#: addressbook/libebook/e-contact.c:216
+#: addressbook/libebook/e-contact.c:219
 msgid "ICS Calendar"
 msgstr "ICS kalendar"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:222
 msgid "Spouse's Name"
 msgstr "Ime supružnika"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:223
 msgid "Note"
 msgstr "Napomena"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:225
 msgid "Birth Date"
 msgstr "Rođendan"
 
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:226
 msgid "Anniversary"
 msgstr "Godišnjica"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:228
 msgid "List"
 msgstr "Spisak"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:229
 msgid "List Show Addresses"
 msgstr "Spisak prikazanih adresa"
 
-#: addressbook/libebook/e-contact.c:1218
+#: addressbook/libebook/e-contact.c:1195
 msgid "Unnamed List"
 msgstr "Lista bez imena"
 
