@@ -1,5 +1,32 @@
 2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
 
+	* Makefile.am:
+	* e-gw-connection.c: removed calendar specific code.
+	(e_gw_connection_get_date_from_string): use time_t's instead of
+	icaltimetype's.
+	(start_freebusy_session, close_freebusy_session,
+	e_gw_connection_get_freebusy_info): moved to the calendar backend.
+	(e_gw_connection_get_uri, e_gw_connection_get_session_id): new
+	functions.
+	(e_gw_parse_response_status): made public.
+
+	* e-gw-item.[ch]
+	(e_gw_item_get_creation_date, e_gw_set_creation_date,
+	e_gw_item_get_start_date, e_gw_item_set_start_date,
+	e_gw_item_get_end_date, e_gw_item_set_end_date,
+	e_gw_item_get_due_date, e_gw_item_set_due_date):
+	use time_t's not icaltimetype's.
+	(e_gw_item_append_to_soap_message): use the time_t's.
+	(e_gw_item_get_classification, e_gw_item_set_classification):
+	don't use ECalComponentClassification, but a string, which is what
+	the server returns.
+	(e_gw_item_dispose): free the classification, which is now a string.
+	(set_recipìent_list_from_soap_parameter): renamed from set_attendee_...
+	to not be calendar-specific.
+	(e_gw_item_new_from_soap_parameter): s/attendee/recipient.
+
+2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
+
 	* e-gw-item.[ch] (e_gw_item_new_from_cal_component,
 	e_gw_item_to_cal_component): removed all calendar-specific code.
 	(e_gw_item_get_item_type, e_gw_item_set_item_type,

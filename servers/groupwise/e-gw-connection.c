@@ -27,7 +27,6 @@
 #include <string.h>
 #include <libsoup/soup-session-sync.h>
 #include <libsoup/soup-soap-message.h>
-#include <libecal/e-cal-component.h>
 #include "e-gw-connection.h"
 #include "e-gw-message.h"
 
@@ -46,8 +45,8 @@ struct _EGwConnectionPrivate {
 	char *user_uuid;
 };
 
-static EGwConnectionStatus
-parse_response_status (SoupSoapResponse *response)
+EGwConnectionStatus
+e_gw_connection_parse_response_status (SoupSoapResponse *response)
 {
 	SoupSoapParameter *param, *subparam;
 
@@ -89,7 +88,7 @@ logout (EGwConnection *cnc)
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
 
-	status = parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 
 	/* free memory */
 	g_object_unref (response);
@@ -285,7 +284,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 		return NULL;
 	}
 
-	status = parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 
 	param = soup_soap_response_get_first_parameter_by_name (response, "session");
 	if (!param) {
@@ -396,7 +395,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 
-        status = parse_response_status (response);
+        status = e_gw_connection_parse_response_status (response);
         g_object_unref (msg);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -497,7 +496,7 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 
-        status = parse_response_status (response);
+        status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_object_unref (response);
                 g_object_unref (msg);
@@ -561,7 +560,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
                  return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; 
          } 
 
-         status = parse_response_status (response); 
+         status = e_gw_connection_parse_response_status (response); 
          if (status != E_GW_CONNECTION_STATUS_OK) { 
  		g_object_unref (response); 
 		g_object_unref (msg); 
@@ -691,7 +690,7 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
 
-	status = parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 
 	g_object_unref (msg);
 	g_object_unref (response);
@@ -724,7 +723,7 @@ e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const ch
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
 
-	status = parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 
 	/* free memory */
 	g_object_unref (response);
@@ -733,226 +732,22 @@ e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const ch
 	return status;
 }
 
-static EGwConnectionStatus
-start_freebusy_session (EGwConnection *cnc, GList *users, 
-               time_t start, time_t end, const char **session)
+const char *
+e_gw_connection_get_uri (EGwConnection *cnc)
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param;
-        GList *l;
-        icaltimetype icaltime;
-        const char *start_date, *end_date;
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 
-	if (users == NULL)
-                return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
-
-        /* build the SOAP message */
-	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "startFreeBusySessionRequest");
-        /* FIXME users is just a buch of user names - associate it with uid,
-         * email id apart from the name*/
-        
-        soup_soap_message_start_element (msg, "users", "types", NULL); 
-        for ( l = users; l != NULL; l = g_list_next (l)) {
-                e_gw_message_write_string_parameter (msg, "user", NULL, l->data);
-        }
-	
-        soup_soap_message_end_element (msg);
-
-        /*FIXME check if this needs to be formatted into GW form with separators*/
-        /*FIXME  the following code converts time_t to String representation
-         * through icaltime. Find if a direct conversion exists.  */ 
-        /* Timezone in server is assumed to be UTC */
-        icaltime = icaltime_from_timet(start, FALSE );
-        start_date = icaltime_as_ical_string (icaltime);
-        
-        icaltime = icaltime_from_timet(end, FALSE);
-        end_date = icaltime_as_ical_string (icaltime);
-        	
-        e_gw_message_write_string_parameter (msg, "startDate", "http://www.w3.org/2001/XMLSchema", start_date);
-        e_gw_message_write_string_parameter (msg, "endDate", "http://www.w3.org/2001/XMLSchema", end_date);
-        
-	e_gw_message_write_footer (msg);
-
-	/* send message to server */
-	response = e_gw_connection_send_message (cnc, msg);
-	if (!response) {
-		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-	}
-
-	status = parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK)
-        {
-                g_object_unref (msg);
-                g_object_unref (response);
-                return status;
-        }
-        
-       	/* if status is OK - parse result, return the list */
-        param = soup_soap_response_get_first_parameter_by_name (response, "freeBusySessionId");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
-	
-	*session = soup_soap_parameter_get_string_value (param); 
-        /* free memory */
-	g_object_unref (response);
-	g_object_unref (msg);
-
-	return status;
+	return (const char *) cnc->priv->uri;
 }
 
-static EGwConnectionStatus 
-close_freebusy_session (EGwConnection *cnc, const char *session)
+const char *
+e_gw_connection_get_session_id (EGwConnection *cnc)
 {
-        SoupSoapMessage *msg;
-	SoupSoapResponse *response;
-	EGwConnectionStatus status;
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 
-        /* build the SOAP message */
-	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "closeFreeBusySessionRequest");
-       	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
-        e_gw_message_write_footer (msg);
-
-	/* send message to server */
-	response = e_gw_connection_send_message (cnc, msg);
-	if (!response) {
-		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-	}
-
-	status = parse_response_status (response);
-
-        g_object_unref (msg);
-        g_object_unref (response);
-        return status;
+	return (const char *) cnc->priv->session_id;
 }
 
-EGwConnectionStatus
-e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy)
-{
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
-        const char *session;
-
-	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
-
-        /* Perform startFreeBusySession */
-        status = start_freebusy_session (cnc, users, start, end, &session); 
-        /*FIXME log error messages  */
-        if (status != E_GW_CONNECTION_STATUS_OK)
-                return status;
-
-        /* getFreeBusy */
-        /* build the SOAP message */
-	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getFreeBusyRequest");
-       	e_gw_message_write_string_parameter (msg, "session", NULL, session);
-        e_gw_message_write_footer (msg);
-
-	/* send message to server */
-	response = e_gw_connection_send_message (cnc, msg);
-	if (!response) {
-		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-	}
-
-	status = parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
-                g_object_unref (msg);
-                g_object_unref (response);
-                return status;
-        }
-
-        /* FIXME  the FreeBusyStats are not used currently.  */
-        param = soup_soap_response_get_first_parameter_by_name (response, "freeBusyInfo");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
-
-        for (subparam = soup_soap_parameter_get_first_child_by_name (param, "user");
-	     subparam != NULL;
-	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "user")) {
-		SoupSoapParameter *param_blocks, *subparam_block, *tmp;
-		const char *uuid = NULL, *email = NULL, *name = NULL;
-
-		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
-		if (tmp)
-			email = soup_soap_parameter_get_string_value (tmp);
-		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "uuid");
-		if (tmp)
-			uuid = soup_soap_parameter_get_string_value (tmp);
-		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "displayName");
-		if (tmp)
-			name = soup_soap_parameter_get_string_value (tmp);
-
-		param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
-		if (!param_blocks) {
-			g_object_unref (response);
-			g_object_unref (msg);
-			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-		}
-        
-		for (subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
-		     subparam_block != NULL;
-		     subparam_block = soup_soap_parameter_get_next_child_by_name (subparam_block, "block")) {
-
-			/* process each block and create ECal free/busy components.*/ 
-			SoupSoapParameter *tmp;
-			ECalComponent *comp;
-			ECalComponentOrganizer organizer;
-			ECalComponentDateTime dt;
-			icaltimetype t;
-			const char *start, *end;
-
-			comp = e_cal_component_new ();
-			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
-			/* FIXME  verify the mappings b/w response and ECalComponent */
-			if (name)
-				organizer.cn = name;
-			if (email)
-				organizer.sentby = email;
-			if (uuid)
-				organizer.value = uuid;
-			e_cal_component_set_organizer (comp, &organizer);
-
-			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
-			if (tmp) {
-				start = soup_soap_parameter_get_string_value (tmp);
-				t = e_gw_connection_get_date_from_string (start);
-				dt.value = &t;
-				dt.tzid = "UTC"; 
-				e_cal_component_set_dtstart (comp, &dt);
-			}        
-
-			tmp = soup_soap_parameter_get_first_child_by_name (subparam, "endDate");
-			if (tmp) {
-				end = soup_soap_parameter_get_string_value (tmp);
-				t = e_gw_connection_get_date_from_string (end);
-				dt.value = &t;
-				dt.tzid = "UTC"; 
-				e_cal_component_set_dtend (comp, &dt);
-			}
-
-			*freebusy = g_list_append (*freebusy, comp);
-		}
-	}
-
-        g_object_unref (msg);
-        g_object_unref (response);
-
-        /* closeFreeBusySession*/
-        return close_freebusy_session (cnc, session);
-}
-
-        
 const char *
 e_gw_connection_get_user_name (EGwConnection *cnc)
 {
@@ -978,12 +773,50 @@ e_gw_connection_get_user_uuid (EGwConnection *cnc)
 	return (const char *) cnc->priv->user_uuid;
 }
 
-struct icaltimetype
+static time_t
+timet_from_string (const char *str)
+{
+	struct tm date;
+        int len, i;
+                                                              
+        g_return_val_if_fail (str != NULL, -1);
+
+	/* yyyymmdd[Thhmmss[Z]] */
+        len = strlen (str);
+
+        if (!(len == 8 || len == 15 || len == 16))
+                return -1;
+
+        for (i = 0; i < len; i++)
+                if (!((i != 8 && i != 15 && isdigit (str[i]))
+                      || (i == 8 && str[i] == 'T')
+                      || (i == 15 && str[i] == 'Z')))
+                        return -1;
+
+#define digit_at(x,y) (x[y] - '0')
+
+	date.tm_year = digit_at (str, 0) * 1000
+                + digit_at (str, 1) * 100
+                + digit_at (str, 2) * 10
+                + digit_at (str, 3);
+        date.tm_mon = digit_at (str, 4) * 10 + digit_at (str, 5);
+        date.tm_mday = digit_at (str, 6) * 10 + digit_at (str, 7);
+        if (len > 8) {
+                date.tm_hour = digit_at (str, 9) * 10 + digit_at (str, 10);
+                date.tm_min  = digit_at (str, 11) * 10 + digit_at (str, 12);
+                date.tm_sec  = digit_at (str, 13) * 10 + digit_at (str, 14);
+        } else
+		date.tm_hour = date.tm_min = date.tm_sec = 0;
+
+	return mktime (&date);
+}
+
+time_t
 e_gw_connection_get_date_from_string (const char *dtstring)
 {
-	struct icaltimetype t;
         char *str2;
         int i, j, len = strlen (dtstring);
+	time_t t;
 	
         str2 = g_malloc0 (len);
         for (i = 0,j = 0; i < len; i++) {
@@ -994,7 +827,7 @@ e_gw_connection_get_date_from_string (const char *dtstring)
         }
 
 	str2[j] = '\0';
-	t = icaltime_from_string (str2);
+	t = timet_from_string (str2);
 	g_free (str2);
 
         return t;

@@ -65,6 +65,7 @@ typedef enum {
 } EGwConnectionStatus;
 
 SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
+EGwConnectionStatus e_gw_connection_parse_response_status (SoupSoapResponse *response);
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
 EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list);
@@ -75,14 +76,15 @@ EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *c
 EGwConnectionStatus e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes, GSList **updates);
 EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item);
 EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
-EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users,
-						       time_t start, time_t end, GList **freebusy);
 
+const char         *e_gw_connection_get_uri (EGwConnection *cnc);
+const char         *e_gw_connection_get_session_id (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_uuid (EGwConnection *cnc);
 
-struct icaltimetype e_gw_connection_get_date_from_string (const char *dtstring);
+time_t              e_gw_connection_get_date_from_string (const char *dtstring);
+
 G_END_DECLS
 
 #endif

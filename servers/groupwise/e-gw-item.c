@@ -35,21 +35,29 @@ struct _EGwItemPrivate {
 
 	/* properties */
 	char *id;
-	struct icaltimetype creation_date;
-	struct icaltimetype start_date;
-	struct icaltimetype end_date;
-	struct icaltimetype due_date;
+	time_t creation_date;
+	time_t start_date;
+	time_t end_date;
+	time_t due_date;
 	gboolean completed;
 	char *subject;
 	char *message;
-	ECalComponentClassification classification;
+	char *classification;
 	char *accept_level;
 	char *priority;
 	char *place;
-	GSList *attendee_list;
+	GSList *recipient_list;
 };
 
 static GObjectClass *parent_class = NULL;
+
+static void
+free_recipient (EGwItemRecipient *recipient, gpointer data)
+{
+	g_free (recipient->email);
+	g_free (recipient->display_name);
+	g_free (recipient);
+}
 
 static void
 e_gw_item_dispose (GObject *object)
@@ -81,6 +89,11 @@ e_gw_item_dispose (GObject *object)
 			priv->message = NULL;
 		}
 
+		if (priv->classification) {
+			g_free (priv->classification);
+			priv->classification = NULL;
+		}
+
 		if (priv->accept_level) {
 			g_free (priv->accept_level);
 			priv->accept_level = NULL;
@@ -96,8 +109,9 @@ e_gw_item_dispose (GObject *object)
 			priv->place = NULL;
 		}
 
-		if (priv->attendee_list) {
-			g_slist_foreach (priv->attendee_list, (GFunc) g_free, NULL);
+		if (priv->recipient_list) {
+			g_slist_foreach (priv->recipient_list, (GFunc) free_recipient, NULL);
+			priv->recipient_list = NULL;
 		}	
 	}
 
@@ -142,6 +156,10 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	/* allocate internal structure */
 	priv = g_new0 (EGwItemPrivate, 1);
 	priv->item_type = E_GW_ITEM_TYPE_UNKNOWN;
+	priv->creation_date = -1;
+	priv->start_date = -1;
+	priv->end_date = -1;
+	priv->due_date = -1;
 
 	item->priv = priv;
 }
@@ -175,29 +193,29 @@ e_gw_item_new_empty (void)
 }
 
 static void 
-set_attendee_list_from_soap_parameter (GSList *attendee_list, SoupSoapParameter *param)
+set_recipient_list_from_soap_parameter (GSList *list, SoupSoapParameter *param)
 {
         SoupSoapParameter *param_recipient;
         char *email, *cn;
-	ECalComponentAttendee *attendee;
+	EGwItemRecipient *recipient;
 
         for (param_recipient = soup_soap_parameter_get_first_child_by_name (param, "recipient");
-                param_recipient != NULL;
-                param_recipient = soup_soap_parameter_get_next_child_by_name (param, "recipient")) {
-
+	     param_recipient != NULL;
+	     param_recipient = soup_soap_parameter_get_next_child_by_name (param, "recipient")) {
                 SoupSoapParameter *subparam;
-		attendee = g_new0 (ECalComponentAttendee, 1);	
+
+		recipient = g_new0 (EGwItemRecipient, 1);	
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "email");
                 if (subparam) {
                         email = soup_soap_parameter_get_string_value (subparam);
                         if (email)
-                                attendee->value = email;
+                                recipient->email = email;
                 }        
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "displayName");
                 if (subparam) {
                         cn = soup_soap_parameter_get_string_value (subparam);
                         if (cn)
-                                attendee->cn = cn;
+                                recipient->display_name = cn;
                 }
                 
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "distType");
@@ -205,14 +223,14 @@ set_attendee_list_from_soap_parameter (GSList *attendee_list, SoupSoapParameter 
                         const char *dist_type;
                         dist_type = soup_soap_parameter_get_string_value (subparam);
                         if (!strcmp (dist_type, "TO")) 
-                                attendee->role = ICAL_ROLE_REQPARTICIPANT;
+                                recipient->type = E_GW_ITEM_RECIPIENT_TO;
                         else if (!strcmp (dist_type, "CC"))
-                                attendee->role = ICAL_ROLE_OPTPARTICIPANT;
+                                recipient->type = E_GW_ITEM_RECIPIENT_CC;
                         else
-                                attendee->role = ICAL_ROLE_NONPARTICIPANT;
+				recipient->type = E_GW_ITEM_RECIPIENT_NONE;
                 }
 
-                attendee_list = g_slist_append (attendee_list, attendee);
+                list = g_slist_append (list, recipient);
         }        
 }
 
@@ -268,18 +286,7 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			item->priv->accept_level = soup_soap_parameter_get_string_value (child);
 
 		else if (!g_ascii_strcasecmp (name, "class")) {
-			value = soup_soap_parameter_get_string_value (child);
-
-			if (!g_ascii_strcasecmp (value, "Public"))
-				item->priv->classification = E_CAL_COMPONENT_CLASS_PUBLIC;
-			else if (!g_ascii_strcasecmp (value, "Private"))
-				item->priv->classification = E_CAL_COMPONENT_CLASS_PRIVATE;
-			else if (!g_ascii_strcasecmp (value, "Confidential"))
-				item->priv->classification = E_CAL_COMPONENT_CLASS_CONFIDENTIAL;
-			else
-				item->priv->classification = E_CAL_COMPONENT_CLASS_UNKNOWN;
-
-			g_free (value);
+			item->priv->classification = soup_soap_parameter_get_string_value (child);
 
 		} else if (!g_ascii_strcasecmp (name, "completed")) {
 			value = soup_soap_parameter_get_string_value (child);
@@ -299,9 +306,9 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 
 			tp = soup_soap_parameter_get_first_child_by_name (child, "recipients");
 			if (tp) {
-				/* FIXME: see set_attendee_list_from... in e-gw-connection.c */
-				item->priv->attendee_list = NULL;
-				set_attendee_list_from_soap_parameter (item->priv->attendee_list, tp);
+				g_slist_foreach (item->priv->recipient_list, (GFunc) free_recipient, NULL);
+				item->priv->recipient_list = NULL;
+				set_recipient_list_from_soap_parameter (item->priv->recipient_list, tp);
 			}
 
 		} else if (!g_ascii_strcasecmp (name, "dueDate")) {
@@ -390,64 +397,64 @@ e_gw_item_set_id (EGwItem *item, const char *new_id)
 	item->priv->id = g_strdup (new_id);
 }
 
-struct icaltimetype
+time_t
 e_gw_item_get_creation_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
 
 	return item->priv->creation_date;
 }
 
 void
-e_gw_item_set_creation_date (EGwItem *item, struct icaltimetype new_date)
+e_gw_item_set_creation_date (EGwItem *item, time_t new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
 	item->priv->creation_date = new_date;
 }
 
-struct icaltimetype
+time_t
 e_gw_item_get_start_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
 
 	return item->priv->start_date;
 }
 
 void
-e_gw_item_set_start_date (EGwItem *item, struct icaltimetype new_date)
+e_gw_item_set_start_date (EGwItem *item, time_t new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
 	item->priv->start_date = new_date;
 }
 
-struct icaltimetype
+time_t
 e_gw_item_get_end_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
 
 	return item->priv->end_date;
 }
 
 void
-e_gw_item_set_end_date (EGwItem *item, struct icaltimetype new_date)
+e_gw_item_set_end_date (EGwItem *item, time_t new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
 	item->priv->end_date = new_date;
 }
 
-struct icaltimetype
+time_t
 e_gw_item_get_due_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
 
 	return item->priv->due_date;
 }
 
 void
-e_gw_item_set_due_date (EGwItem *item, struct icaltimetype new_date)
+e_gw_item_set_due_date (EGwItem *item, time_t new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
@@ -508,20 +515,22 @@ e_gw_item_set_place (EGwItem *item, const char *new_place)
 	item->priv->place = g_strdup (new_place);
 }
 
-ECalComponentClassification
+const char *
 e_gw_item_get_classification (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), E_CAL_COMPONENT_CLASS_UNKNOWN);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
-	return item->priv->classification;
+	return (const char *) item->priv->classification;
 }
 
 void
-e_gw_item_set_classification (EGwItem *item, ECalComponentClassification new_class)
+e_gw_item_set_classification (EGwItem *item, const char *new_class)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
-	item->priv->classification = new_class;
+	if (item->priv->classification)
+		g_free (item->priv->classification);
+	item->priv->classification = g_strdup (new_class);
 }
 
 gboolean
@@ -576,10 +585,22 @@ e_gw_item_set_priority (EGwItem *item, const char *new_priority)
 	item->priv->priority = g_strdup (new_priority);
 }
 
+static char *
+timet_to_string (time_t t)
+{
+	gchar *ret;
+
+	ret = g_malloc (17); /* 4+2+2+1+2+2+2+1 + 1 */
+	strftime (ret, 17, "%Y%m%dT%H%M%SZ", gmtime (&t));
+
+	return ret;
+}
+
 gboolean
 e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv;
+	char *dtstring;
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), FALSE);
@@ -599,9 +620,11 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	case E_GW_ITEM_TYPE_TASK :
 		soup_soap_message_add_attribute (msg, "type", "Task", "xsi", NULL);
 
-		if (icaltime_is_valid_time (priv->due_date))
-			e_gw_message_write_string_parameter (msg, "dueDate", NULL, icaltime_as_ical_string (priv->due_date));
-		else
+		if (priv->due_date != -1) {
+			dtstring = timet_to_string (priv->due_date);
+			e_gw_message_write_string_parameter (msg, "dueDate", NULL, dtstring);
+			g_free (dtstring);
+		} else
 			e_gw_message_write_string_parameter (msg, "dueDate", NULL, "");
 
 		if (priv->completed)
@@ -620,28 +643,27 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
 	e_gw_message_write_string_parameter (msg, "message", NULL, priv->message ? priv->message : "");
-	if (icaltime_is_valid_time (priv->start_date))
-		e_gw_message_write_string_parameter (msg, "startDate", NULL, icaltime_as_ical_string (priv->start_date));
-	if (icaltime_is_valid_time (priv->end_date))
-		e_gw_message_write_string_parameter (msg, "endDate", NULL, icaltime_as_ical_string (priv->end_date));
-	else
-		e_gw_message_write_string_parameter (msg, "endDate", NULL, "");
-	if (icaltime_is_valid_time (priv->creation_date))
-		e_gw_message_write_string_parameter (msg, "created", NULL, icaltime_as_ical_string (priv->creation_date));
-
-	switch (priv->classification) {
-	case E_CAL_COMPONENT_CLASS_PUBLIC :
-		e_gw_message_write_string_parameter (msg, "class", NULL, "Public");
-		break;
-	case E_CAL_COMPONENT_CLASS_PRIVATE :
-		e_gw_message_write_string_parameter (msg, "class", NULL, "Private");
-		break;
-	case E_CAL_COMPONENT_CLASS_CONFIDENTIAL :
-		e_gw_message_write_string_parameter (msg, "class", NULL, "Confidential");
-		break;
-	default :
-		e_gw_message_write_string_parameter (msg, "class", NULL, "");
+	if (priv->start_date != -1) {
+		dtstring = timet_to_string (priv->start_date);
+		e_gw_message_write_string_parameter (msg, "startDate", NULL, dtstring);
+		g_free (dtstring);
 	}
+	if (priv->end_date != -1) {
+		dtstring = timet_to_string (priv->end_date);
+		e_gw_message_write_string_parameter (msg, "endDate", NULL, dtstring);
+		g_free (dtstring);
+	} else
+		e_gw_message_write_string_parameter (msg, "endDate", NULL, "");
+	if (priv->creation_date != -1) {
+		dtstring = timet_to_string (priv->creation_date);
+		e_gw_message_write_string_parameter (msg, "created", NULL, dtstring);
+		g_free (dtstring);
+	}
+
+	if (priv->classification)
+		e_gw_message_write_string_parameter (msg, "class", NULL, priv->classification);
+	else
+		e_gw_message_write_string_parameter (msg, "class", NULL, "");
 
 	/* finalize the SOAP element */
 	soup_soap_message_end_element (msg);
