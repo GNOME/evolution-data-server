@@ -25,6 +25,34 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="acceptShareRequest">
+		<xs:annotation>
+			<xs:documentation>
+				container is requied for accepting a shared folder notification.
+				It is the container id of the folder where the new folder will be
+				placed.
+				If name or container are not sent, the original values from the
+				notification message will be used.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="name" type="xs:string" minOccurs="0"/>
+				<xs:element name="container" type="types:uid" minOccurs="0"/>
+				<xs:element ref="types:description" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="acceptShareResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="addItemRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -217,6 +245,45 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="forwardRequest">
+		<xs:annotation>
+			<xs:documentation>
+				Forwarding a message is a two step process.
+				First you call the method with the id of the original item.
+				A new mail item is returned.
+				It has the orignal subject.
+				The caller is responsible to prepend "Fwd:" or what ever they
+				want to modify the original subject.
+				If the caller wants the original message body returned, they need
+				to supply message or message/RTF in the view.
+				It is up to the caller to modify the message body in any way.
+				When all of the changes to the returned mail item are complete,
+				the caller would then call sendRequest with the new mail item.
+				A linkInfo element is return in the mail item. That element needs
+				to be passed unchanged in the sendRequest.
+				If the caller wants to send the original item as an attachment to
+				the new mail item, the caller would pass <embed>1</embed> in the
+				forwardRequest.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="view" type="types:View" nillable="true"/>
+				<xs:element name="embed" type="xs:boolean" default="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="forwardResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="item" type="types:Item"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="getAddressBookListRequest">
 	</xs:element>
 
@@ -277,35 +344,6 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="customs" type="types:CustomList"/>
-				<xs:element name="status" type="types:Status"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<xs:element name="getDeltaRequest">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="AddressBookItem" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Appointment" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="CalendarItem" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Contact" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Folder" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Group" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Item" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Mail" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Note" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="PhoneMessage" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="Task" type="xs:string" minOccurs="0" maxOccurs="1"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<xs:element name="getDeltaResponse">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="used" type="xs:unsignedInt"/>
-				<xs:element name="changed" type="xs:boolean"/>
-				<xs:element name="deltas" type="types:DeltaList"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -606,6 +644,32 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="moveItemRequest">
+		<xs:annotation>
+			<xs:documentation>
+				This method will link (copy) or move items into the container.
+				To do a link (copy) do not supply a from container.
+				To move item(s) from one container to another supply the from
+				container id.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="from" type="types:uid" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="moveItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="positionCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -763,6 +827,45 @@
 	<xs:element name="removeProxyAccessResponse">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="replyRequest">
+		<xs:annotation>
+			<xs:documentation>
+				Replying to a message is a two step process.
+				First you call the method with the id of the original item.
+				A new mail item is returned.
+				It has the orignal subject.
+				The caller is responsible to prepend "Re:" or what ever they
+				want to modify the original subject.
+				If the caller wants the original message body returned, they need
+				to supply message or message/RTF in the view.
+				It is up to the caller to modify the message body in any way.
+				When all of the changes to the returned mail item are complete,
+				the caller would then call sendRequest with the new mail item.
+				If the caller wants to reply to all recipeints of the original
+				item, the caller needs to pass recipients in the view.
+				If recipients is not in the view, the response will be addressed
+				to the original sender.
+				A linkInfo element is return in the mail item. That element needs
+				to be passed unchanged in the sendRequest.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="view" type="types:View" nillable="true"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="replyResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="item" type="types:Item"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>

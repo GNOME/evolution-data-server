@@ -160,10 +160,10 @@
 	<xs:complexType name="AttachmentItemInfo">
 		<xs:sequence>
 			<xs:element name="id" type="tns:AttachmentID" minOccurs="0"/>
-			<xs:element ref="tns:name"/>
+			<xs:element ref="tns:name" minOccurs="0"/>
 			<xs:element name="contentId" type="xs:string" minOccurs="0"/>
 			<xs:element name="contentType" type="xs:string" minOccurs="0"/>
-			<xs:element name="size" type="xs:unsignedInt"/>
+			<xs:element name="size" type="xs:unsignedInt" minOccurs="0"/>
 			<xs:element name="date" type="xs:dateTime" minOccurs="0"/>
 			<xs:element name="data" type="xs:base64Binary" minOccurs="0"/>
 		</xs:sequence>
@@ -182,6 +182,7 @@
 					<xs:element name="source" type="tns:ItemSource" minOccurs="0"/>
 					<xs:element name="delivered" type="xs:dateTime"/>
 					<xs:element name="class" type="tns:ItemClass" minOccurs="0"/>
+					<xs:element name="security" type="tns:ItemSecurity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -310,6 +311,7 @@
 		<xs:sequence>
 			<xs:element name="field" type="xs:string"/>
 			<xs:element name="value" type="xs:anyType" minOccurs="0"/>
+			<xs:element name="locked" type="xs:boolean" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -347,14 +349,6 @@
 				<xs:attribute name="userid" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
-	</xs:complexType>
-
-	<xs:complexType name="DeltaList">
-		<xs:sequence>
-			<xs:element name="add" type="tns:Items" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="delete" type="tns:Items" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="update" type="tns:Items" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Distribution">
@@ -737,6 +731,17 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:simpleType name="ItemSecurity">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Normal"/>
+			<xs:enumeration value="Proprietary"/>
+			<xs:enumeration value="Confidential"/>
+			<xs:enumeration value="Secret"/>
+			<xs:enumeration value="TopSecret"/>
+			<xs:enumeration value="ForYourEyesOnly"/>
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:simpleType name="ItemSource">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="received"/>
@@ -763,6 +768,20 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="LinkInfo">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string"/>
+			<xs:element name="type" type="tns:LinkType"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="LinkType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="forward"/>
+			<xs:enumeration value="reply"/>
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:complexType name="Mail">
 		<xs:complexContent>
 			<xs:extension base="tns:BoxEntry">
@@ -773,6 +792,7 @@
 					<xs:element name="message" type="tns:MessageBody" minOccurs="0"/>
 					<xs:element name="attachments" type="tns:AttachmentInfo" minOccurs="0"/>
 					<xs:element name="options" type="tns:ItemOptions" minOccurs="0"/>
+					<xs:element name="link" type="tns:LinkInfo" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1059,6 +1079,7 @@
 			<xs:element name="transferred" type="xs:dateTime" minOccurs="0"/>
 			<xs:element name="transferDelayed" type="xs:dateTime" minOccurs="0"/>
 			<xs:element name="downloaded" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="downloadedByThirdParty" type="xs:dateTime" minOccurs="0"/>
 			<xs:element name="retractRequested" type="xs:dateTime" minOccurs="0"/>
 			<xs:element name="retracted" type="xs:dateTime" minOccurs="0"/>
 			<xs:element name="opened" type="xs:dateTime" minOccurs="0"/>
@@ -1120,6 +1141,7 @@
 			<xs:element name="deleted" type="tns:ReturnNotificationOptions" minOccurs="0"/>
 			<xs:element name="accepted" type="tns:ReturnNotificationOptions" minOccurs="0"/>
 			<xs:element name="declined" type="tns:ReturnNotificationOptions" minOccurs="0"/>
+			<xs:element name="completed" type="tns:ReturnNotificationOptions" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -1194,6 +1216,7 @@
 			<xs:extension base="tns:Mail">
 				<xs:sequence>
 					<xs:element name="notification" type ="tns:NotificationType" minOccurs="1"/>
+					<xs:element ref="tns:description" minOccurs="0"/>
 					<xs:element ref="tns:rights" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
