@@ -1,3 +1,20 @@
+2003-11-27  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libedataserver/e-source.c (impl_finalize): Destroy properties table.
+	(init): Create properties table.
+	(import_properties): Implement. Imports properties from XML tree to
+	table.
+	(e_source_update_from_xml_node): Import properties to table.
+	(property_dump_cb): Implement. Dumps a property to XML tree.
+	(dump_common_to_xml_node): Dump properties to XML tree.
+	(e_source_get_property): Implement.
+	(e_source_set_property): Implement.
+	(e_source_foreach_property): Implement.
+
+	* libedataserver/test-source-list.c (dump_property): Implement.
+	(dump_source): Dump properties.
+	(on_idle_do_stuff): Add --property, --set-value, --unset-value args.
+
 2003-11-26  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libedataserver/e-source.c (impl_finalize): Support absolute URI.

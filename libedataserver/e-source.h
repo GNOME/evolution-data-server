@@ -89,5 +89,13 @@ void  e_source_dump_to_xml_node  (ESource    *source,
 				  xmlNodePtr  parent_node);
 char *e_source_to_standalone_xml (ESource *source);
 
+const gchar *e_source_get_property     (ESource *source,
+					const gchar *property);
+void         e_source_set_property     (ESource *source,
+					const gchar *property,
+					const gchar *value);
+void         e_source_foreach_property (ESource *source,
+					GHFunc func,
+					gpointer data);
 
 #endif /* _E_SOURCE_H_ */

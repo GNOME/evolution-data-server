@@ -50,6 +50,8 @@ struct _ESourcePrivate {
 
 	gboolean has_color;
 	guint32 color;
+
+	GHashTable *properties;
 };
 
 
@@ -85,6 +87,9 @@ impl_finalize (GObject *object)
 	g_free (priv->name);
 	g_free (priv->relative_uri);
 	g_free (priv->absolute_uri);
+
+	g_hash_table_destroy (priv->properties);
+
 	g_free (priv);
 
 	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -133,6 +138,9 @@ init (ESource *source)
 
 	priv = g_new0 (ESourcePrivate, 1);
 	source->priv = priv;
+
+	priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+						  g_free, g_free);
 }
 
 GType
@@ -198,6 +206,34 @@ e_source_new_from_xml_node (xmlNodePtr node)
 	return NULL;
 }
 
+
+static void
+import_properties (ESource *source,
+		   xmlNodePtr prop_root)
+{
+	ESourcePrivate *priv = source->priv;
+	xmlNodePtr prop_node;
+
+	for (prop_node = prop_root->children; prop_node; prop_node = prop_node->next) {
+		xmlChar *name, *value;
+
+		if (!prop_node->name || strcmp (prop_node->name, "property"))
+			continue;
+
+		name = xmlGetProp (prop_node, "name");
+		value = xmlGetProp (prop_node, "value");
+
+		if (name && value)
+			g_hash_table_insert (priv->properties, g_strdup (name), g_strdup (value));
+
+		if (name)
+			xmlFree (name);
+		if (value)
+			xmlFree (value);
+	}
+}
+
+
 /**
  * e_source_update_from_xml_node:
  * @source: An ESource.
@@ -262,6 +298,19 @@ e_source_update_from_xml_node (ESource *source,
 			source->priv->has_color = TRUE;
 			source->priv->color = color;
 			changed = TRUE;
+		}
+	}
+
+	for (node = node->children; node; node = node->next) {
+		if (!node->name)
+			continue;
+
+		if (!strcmp (node->name, "properties")) {
+			g_hash_table_destroy (source->priv->properties);
+			source->priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+									  g_free, g_free);
+			import_properties (source, node);
+			break;
 		}
 	}
 
@@ -477,13 +526,27 @@ e_source_get_uri (ESource *source)
 }
 
 
+static void
+property_dump_cb (const gchar *key, const gchar *value, xmlNodePtr root)
+{
+	xmlNodePtr node;
+
+	node = xmlNewChild (root, NULL, "property", NULL);
+	xmlSetProp (node, "name", key);
+	xmlSetProp (node, "value", value);
+}
+
+
 static xmlNodePtr
 dump_common_to_xml_node (ESource *source,
 			 xmlNodePtr parent_node)
 {
+	ESourcePrivate *priv;
 	gboolean has_color;
 	guint32 color;
-	xmlNodePtr node;
+	xmlNodePtr node, properties_node;
+
+	priv = source->priv;
 
 	if (parent_node)
 		node = xmlNewChild (parent_node, NULL, "source", NULL);
@@ -500,6 +563,9 @@ dump_common_to_xml_node (ESource *source,
 		xmlSetProp (node, "color", color_string);
 		g_free (color_string);
 	}
+
+	properties_node = xmlNewChild (node, NULL, "properties", NULL);
+	g_hash_table_foreach (priv->properties, (GHFunc) property_dump_cb, properties_node);
 
 	return node;
 }
@@ -568,4 +634,46 @@ e_source_new_from_standalone_xml (const char *xml)
 	xmlFreeDoc (doc);
 
 	return source;
+}
+
+
+const gchar *
+e_source_get_property (ESource *source,
+		       const gchar *property)
+{
+	ESourcePrivate *priv;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+	priv = source->priv;
+
+	return g_hash_table_lookup (priv->properties, property);
+}
+
+
+void
+e_source_set_property (ESource *source,
+		       const gchar *property,
+		       const gchar *value)
+{
+	ESourcePrivate *priv;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	priv = source->priv;
+
+	if (value)
+		g_hash_table_replace (priv->properties, g_strdup (property), g_strdup (value));
+	else
+		g_hash_table_remove (priv->properties, property);
+}
+
+
+void
+e_source_foreach_property (ESource *source, GHFunc func, gpointer data)
+{
+	ESourcePrivate *priv;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	priv = source->priv;
+
+	g_hash_table_foreach (priv->properties, func, data);
 }

@@ -47,10 +47,13 @@ static char *add_group_arg = NULL;
 static char *add_source_arg = NULL;
 static char *remove_group_arg = NULL;
 static char *remove_source_arg = NULL;
+static char *property_arg = NULL;
 static char *set_name_arg = NULL;
 static char *set_base_uri_arg = NULL;
 static char *set_relative_uri_arg = NULL;
 static char *set_color_arg = NULL;
+static char *set_value_arg = NULL;
+static gboolean unset_value = FALSE;
 static gboolean unset_color = FALSE;
 
 static struct poptOption options[] = {
@@ -68,6 +71,8 @@ static struct poptOption options[] = {
 	  "Remove group of specified name", "NAME" },
 	{ "remove-source", '\0', POPT_ARG_STRING, &remove_source_arg, 0,
 	  "Remove source of specified name", "NAME" },
+	{ "property", '\0', POPT_ARG_STRING, &property_arg, 0,
+	  "Name of source property to apply operation to", "PROPERTY" },
 	{ "set-name", '\0', POPT_ARG_STRING, &set_name_arg, 0,
 	  "Set name of source or group.  When used with --group, it sets the name of a group.  "
 	  "When used with both --group and --source, it sets the name of a source.", "NAME" },
@@ -79,6 +84,10 @@ static struct poptOption options[] = {
 	  "Set the color of a source.  Use with --source or --add-source.", "COLOR (rrggbb)" },
 	{ "unset-color", '\0', POPT_ARG_NONE, &unset_color, 0,
 	  "Unset the color of a source.  Use with --source or --add-source.", NULL },
+	{ "set-value", '\0', POPT_ARG_STRING, &set_value_arg, 0,
+	  "Set a property on a source.  Use with --source and --property.", NULL },
+	{ "unset-value", '\0', POPT_ARG_NONE, &unset_value, 0,
+	  "Unset a property on a source.  Use with --source and --property.", NULL },
 	{ "listen", '\0', POPT_ARG_NONE, &listen, 0,
 	  "Wait and listen for changes.", "" },
 	{ "dump", '\0', POPT_ARG_NONE, &dump, 0,
@@ -94,6 +103,11 @@ static void group_removed_callback (ESourceList *list, ESourceGroup *group);
 static void source_added_callback (ESourceGroup *group, ESource *source);
 static void source_removed_callback (ESourceGroup *group, ESource *source);
 
+static void
+dump_property (const gchar *prop, const gchar *value)
+{
+	g_print ("\t\t\t%s: %s\n", prop, value);
+}
 
 static void
 dump_source (ESource *source)
@@ -110,6 +124,9 @@ dump_source (ESource *source)
 	has_color = e_source_get_color (source, &color);
 	if (has_color)
 		g_print ("\t\tcolor: %06x\n", color);
+
+	g_print ("\t\tproperties:\n");
+	e_source_foreach_property (source, (GHFunc) dump_property, NULL);
 
 	g_free (uri);
 }
@@ -481,6 +498,54 @@ on_idle_do_stuff (void *unused_data)
 
 		group = e_source_list_peek_group_by_uid (list, group_arg);
 		e_source_group_set_base_uri (group, set_base_uri_arg);
+		e_source_list_sync (list, NULL);
+	}
+
+	if (set_value_arg != NULL) {
+		ESource *source;
+
+		if (add_source_arg == NULL && source_arg == NULL) {
+			fprintf (stderr,
+				 "When using --set-value, you need to specify a source using --source\n");
+			exit (1);
+		}
+
+		if (property_arg == NULL) {
+			fprintf (stderr,
+				 "When using --set-value, you need to specify a property using --property\n");
+			exit (1);
+		}
+
+		if (add_source_arg != NULL)
+			source = new_source;
+		else
+			source = e_source_list_peek_source_by_uid (list, source_arg);
+
+		e_source_set_property (source, property_arg, set_value_arg);
+		e_source_list_sync (list, NULL);
+	}
+
+	if (unset_value) {
+		ESource *source;
+
+		if (add_source_arg == NULL && source_arg == NULL) {
+			fprintf (stderr,
+				 "When using --unset-value, you need to specify a source using --source\n");
+			exit (1);
+		}
+
+		if (property_arg == NULL) {
+			fprintf (stderr,
+				 "When using --unset-value, you need to specify a property using --property\n");
+			exit (1);
+		}
+
+		if (add_source_arg != NULL)
+			source = new_source;
+		else
+			source = e_source_list_peek_source_by_uid (list, source_arg);
+
+		e_source_set_property (source, property_arg, NULL);
 		e_source_list_sync (list, NULL);
 	}
 
