@@ -892,16 +892,22 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 	}
 
 	while ((fname = g_dir_read_name (dir))) {
-		if (unlink (fname) != 0) {
+		char *full_path;
+
+		full_path = g_build_filename (dirname, fname, NULL);
+		if (unlink (full_path) != 0) {
+			g_free (full_path);
 			g_free (str_uri);
 			g_free (dirname);
 
 			return GNOME_Evolution_Calendar_OtherError;
 		}
+
+		g_free (full_path);
 	}
 
 	/* remove the directory itself */
-	success = rmdir (dirname) != 0;
+	success = rmdir (dirname) == 0;
 		
 	g_dir_close (dir);
 	g_free (str_uri);
