@@ -13,6 +13,7 @@
 	<xs:element name="id" type="tns:uid"/>
 	<xs:element name="modified" type="xs:dateTime"/>
 	<xs:element name="name" type="xs:string"/>
+	<xs:element name="recurrenceKey" type="xs:unsignedInt"/>
 	<xs:element name="rights" type="tns:Rights"/>
 	<xs:element name="sequence" type="xs:unsignedInt"/>
 	<xs:element name="startDate" type="xs:dateTime"/>
@@ -192,7 +193,7 @@
 				<xs:sequence>
 					<xs:element ref="tns:startDate" minOccurs="0"/>
 					<xs:element name="rdate" type="tns:RecurrenceDateType" minOccurs="0"/>
-					<xs:element name="isRecurring" type="xs:boolean" minOccurs="0" />
+					<xs:element name="isRecurring" ref="tns:recurrenceKey" minOccurs="0"/>
 					<xs:element name="iCalId" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -740,6 +741,10 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:simpleType name="ItemSourceList">
+	  <xs:list itemType="ItemSource"/>
+	</xs:simpleType>
+
 	<xs:complexType name="ItemStatus">
 		<xs:sequence>
 			<xs:element name="accepted" type="xs:boolean" minOccurs="0"/>
@@ -775,6 +780,14 @@
 		<xs:attribute name="defaultPart" type="xs:string"/>
 	</xs:complexType>
 
+	 <xs:simpleType name="MessageList">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="All"/>
+			<xs:enumeration value="Modified"/>
+			<xs:enumeration value="New"/>
+		</xs:restriction>
+	 </xs:simpleType>
+
 	<xs:complexType name="MessagePart">
 		<xs:simpleContent>
 			<xs:extension base="xs:base64Binary">
@@ -784,6 +797,22 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+
+	 <xs:simpleType name="MessageType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Appointment"/>
+			<xs:enumeration value="CalendarItem"/>
+			<xs:enumeration value="DocumentReference"/>
+			<xs:enumeration value="Mail"/>
+			<xs:enumeration value="Note"/>
+			<xs:enumeration value="PhoneMessage"/>
+			<xs:enumeration value="Task"/>
+		</xs:restriction>
+	 </xs:simpleType>
+
+	<xs:simpleType name="MessageTypeList">
+	  <xs:list itemType="MessageType"/>
+	</xs:simpleType>
 
 	<xs:simpleType name="Minute">
 		<xs:restriction base="xs:unsignedByte">
@@ -912,7 +941,7 @@
 			<xs:element name="postalCode" type="xs:string" minOccurs="0"/>
 			<xs:element name="country" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
-		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="tns:PostalAddressType" use="required"/>
 	</xs:complexType>
 
 	<xs:complexType name="PostalAddressList">
@@ -920,6 +949,13 @@
 			<xs:element name="address" type="tns:PostalAddress" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:simpleType name="PostalAddressType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Home"/>
+			<xs:enumeration value="Office"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="ProblemEntry">
 		<xs:sequence>
@@ -1219,6 +1255,7 @@
 		<xs:complexContent>
 			<xs:extension base="tns:Authentication">
 				<xs:sequence>
+					<xs:element name="username" type="xs:string"/>
 					<xs:element name="name" type="xs:string"/>
 					<xs:element name="key" type="xs:string"/>
 				</xs:sequence>

@@ -12,7 +12,7 @@
 				<xs:element name="items" type="types:ItemRefList"/>
 				<xs:element name="comment" type="xs:string"/>
 				<xs:element name="acceptLevel" type="types:AcceptLevel"/>
-				<xs:element name="recurrenceAllInstances" type="xs:boolean" minOccurs="0" />
+				<xs:element name="recurrenceAllInstances" type="types:recurrenceKey" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -112,9 +112,9 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="container" type="types:uid"/>
-				<xs:element name="view" type="types:View"/>
-				<xs:element name="filter" type="types:Filter"/>
-<!--				<xs:element name="sort" type="types:Sort"/> -->
+				<xs:element name="view" type="types:View" minOccurs="0" />
+				<xs:element name="filter" type="types:Filter" minOccurs="0" />
+<!--				<xs:element name="sort" type="types:Sort" minOccurs="0" /> -->
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -167,7 +167,7 @@
 			<xs:sequence>
 				<xs:element name="items" type="types:ItemRefList"/>
 				<xs:element name="comment" type="xs:string"/>
-				<xs:element name="recurrenceAllInstances" type="xs:boolean" minOccurs="0" />
+				<xs:element name="recurrenceAllInstances" type="types:recurrenceKey" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -187,7 +187,7 @@
 				<xs:element name="commentToOrganizer" type="xs:string"/>
 				<xs:element name="commentToDelegatee" type="xs:string"/>
 				<xs:element name="distribution" type="types:Distribution"/>
-				<xs:element name="recurrenceAllInstances" type="xs:boolean" minOccurs="0" />
+				<xs:element name="recurrenceAllInstances" type="types:recurrenceKey" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -203,6 +203,7 @@
 	<xs:element name="destroyCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
 				<xs:element name="cursor" type="xs:int"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -387,6 +388,57 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="getQuickMessagesRequest">
+		<xs:annotation>
+			<xs:documentation>
+				This method provides a quicker access to mail items.
+				It does this by only access fields that are stored in the
+				database index. The fields in the index are: id, status, modified,
+				container, message type, categories, subject, orignalSubject, and
+				source.
+				The New list is the fastest access.
+				The Modified list is slower.
+				The All list is the slowest.
+				If you pass a startDate, the test is for any item that is newer
+				than that date. (The list does not include that date.)
+				If you don't pass a container string. The query will be across
+				all folders.
+				If you don't pass a types list, the query will be for all message
+				types unless the container is the Calendar folder. In that case
+				the default will be "CalendarItem. "CalendarItem" is a special
+				case it represents Appointment, Note and Task.
+				You can select the source types you want to see. If you don't
+				specify a source, you will get received, draft and personal.
+				If you don't specify a view, the above fields will be returned.
+				If you specify other fields than the above fields, they will not
+				be returned.
+				You can restrict the number of items return by specifying a count.
+				All items will be returned if no count is given.
+				
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="list" type="types:MessageList"/>
+				<xs:element ref="types:startDate" minOccurs="0"/>
+				<xs:element name="container" type="types:uid" minOccurs="0"/>
+				<xs:element name="types" type="types:MessageTypeList" minOccurs="0"/>
+				<xs:element name="source" type="types:ItemSourceList" minOccurs="0"/>
+				<xs:element name="view" type="types:View" minOccurs="0"/>
+				<xs:element name="count" type="xs:int" default="-1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="getQuickMessagesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="items" type="types:Items"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="getProxyAccessListRequest">
 	</xs:element>
 
@@ -556,6 +608,7 @@
 	<xs:element name="positionCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
 				<xs:element name="cursor" type="xs:int"/>
 				<xs:element name="seek" type="types:CursorSeek"/>
 				<xs:element name="offset" type="xs:int"/>
@@ -620,8 +673,9 @@
 	<xs:element name="readCursorRequest">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
 				<xs:element name="cursor" type="xs:int"/>
-				<xs:element name="forward" type="xs:boolean"/>
+				<xs:element name="forward" type="xs:boolean" default="1"/>
 				<xs:element name="count" type="xs:int"/>
 			</xs:sequence>
 		</xs:complexType>

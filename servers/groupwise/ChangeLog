@@ -1,3 +1,9 @@
+2004-08-19 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* doc/gw-soap-types.xsd 
+	* doc/gw-soap-mehtods.xsd : check in latest 
+	soap schemas 
+
 2004-08-13  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* e-gw-item.h
