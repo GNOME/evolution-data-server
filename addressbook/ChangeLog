@@ -1,5 +1,46 @@
 2004-04-06  Chris Toshok  <toshok@ximian.com>
 
+	* backends/ldap/e-book-backend-ldap.c (struct
+	_EBookBackendLDAPPrivate): add a mutex around our it_to_op
+	GHashTable.
+	(struct _EBookBackendLDAPCursorPrivate): nuke.
+	(view_destroy): lock around access to id_to_op.
+	(add_to_supported_fields): plug leak (don't strdup the arg to
+	g_hash_table_lookup.)
+	(query_ldap_root_dse): fix c&p bugs with
+	supported_fields/supported_auth_methods.
+	(e_book_backend_ldap_connect): add a check for
+	LDAP_PARTIAL_RESULTS (which is apparently what certain versions of
+	GWIA's ldap returns when we try a root dse query.)  Also, try a v2
+	bind if the v3 bind fails.
+	(ldap_op_add): lock access to id_to_op hash.
+	(ldap_op_finished): same.
+	(create_contact_handler): add more debug spew (additional ldap
+	error info.)
+	(remove_contact_handler): same.
+	(modify_contact_modify_handler): same.
+	(modify_contact_search_handler): same.
+	(get_contact_handler): same.
+	(contact_list_handler): same.
+	(poll_ldap): lock around id_to_op.
+	(ldap_search_handler): add more spew, and just use view instead of
+	search_op->view.
+	(ldap_search_dtor): lock the book view's mutex here, and clear the
+	::search_op g_object_data.
+	(e_book_backend_ldap_search): set the book view's ::search_op.
+	(e_book_backend_ldap_start_book_view): add race detection with
+	::stop here.
+	(e_book_backend_ldap_stop_book_view): same.
+	(e_book_backend_ldap_load_source): make the default for
+	unrecognized ssl type "NO" instead of "WHENEVER".
+	(e_book_backend_ldap_dispose): lock access to id_to_op while we
+	destroy it, and free our mutex.  also free up some additional
+	private data we were leaking before (the ->ldap_host,
+	->ldap_rootdn).
+	(e_book_backend_ldap_init): init the mutex.
+
+2004-04-06  Chris Toshok  <toshok@ximian.com>
+
 	* backends/file/e-book-backend-file.c (create_contact): new
 	function, for use when creating a contact from the db.  all the
 	libedata-book machinery depends on the contact having a UID, so if
