@@ -1,5 +1,13 @@
 2004-03-12  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-contact.c (e_contact_set_property): in the CATEGORIES
+	case when we're adding a new attribute to the vcard, make sure to
+	call e_vcard_add_attribute after creating it.  also, use
+	EVC_CATEGORIES instead of hardcoding the string.
+	(e_contact_get_property): use EVC_CATEGORIES.
+	
+2004-03-12  Chris Toshok  <toshok@ximian.com>
+
 	* tests/ebook/test-categories.c (main): test setting CATEGORIES as
 	well as CATEGORY_LIST.
 

@@ -858,15 +858,17 @@ e_contact_set_property (GObject *object,
 		else {
 			switch (info->field_id) {
 			case E_CONTACT_CATEGORIES: {
-				EVCardAttribute *attr = e_contact_get_first_attr (contact, "CATEGORIES");
+				EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
 				char **split, **s;
 				const char *str;
 
 				if (attr)
 					e_vcard_attribute_remove_values (attr);
-				else
+				else {
 					/* we didn't find it - add a new attribute */
-					attr = e_vcard_attribute_new (NULL, "CATEGORIES");
+					attr = e_vcard_attribute_new (NULL, EVC_CATEGORIES);
+					e_vcard_add_attribute (E_VCARD (contact), attr);
+				}
 
 				str = g_value_get_string (value);
 				if (str) {
@@ -1207,7 +1209,7 @@ e_contact_get_property (GObject *object,
 			break;
 		}
 		case E_CONTACT_CATEGORIES: {
-			EVCardAttribute *attr = e_contact_get_first_attr (contact, "CATEGORIES");
+			EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
 			char *rv = NULL;
 
 			if (attr) {
