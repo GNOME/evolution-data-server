@@ -1,5 +1,13 @@
 2003-12-29  Chris Toshok  <toshok@ximian.com>
 
+	* tests/ebook/test-undefinedfield.c: new test - make sure we
+	return NULL for undefined/unimplemented fields.
+
+	* tests/ebook/Makefile.am (noinst_PROGRAMS): add
+	test-undefinedfield.
+
+2003-12-29  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-contact.c (e_contact_get_property): reset the GValue
 	if there's a problem getting it (will force it to NULL).
 
