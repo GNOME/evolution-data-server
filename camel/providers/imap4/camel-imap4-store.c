@@ -76,7 +76,7 @@ static void imap4_unsubscribe_folder (CamelStore *store, const char *folder_name
 static void imap4_noop (CamelStore *store, CamelException *ex);
 
 
-static CamelStoreClass *parent_class = NULL;
+static CamelOfflineStoreClass *parent_class = NULL;
 
 
 CamelType
@@ -85,7 +85,7 @@ camel_imap4_store_get_type (void)
 	static CamelType type = 0;
 	
 	if (!type) {
-		type = camel_type_register (CAMEL_STORE_TYPE,
+		type = camel_type_register (camel_offline_store_get_type (),
 					    "CamelIMAP4Store",
 					    sizeof (CamelIMAP4Store),
 					    sizeof (CamelIMAP4StoreClass),
@@ -126,7 +126,7 @@ camel_imap4_store_class_init (CamelIMAP4StoreClass *klass)
 	CamelServiceClass *service_class = (CamelServiceClass *) klass;
 	CamelStoreClass *store_class = (CamelStoreClass *) klass;
 	
-	parent_class = (CamelStoreClass *) camel_type_get_global_classfuncs (CAMEL_STORE_TYPE);
+	parent_class = (CamelOfflineStoreClass *) camel_type_get_global_classfuncs (CAMEL_TYPE_OFFLINE_STORE);
 	
 	service_class->construct = imap4_construct;
 	service_class->get_name = imap4_get_name;

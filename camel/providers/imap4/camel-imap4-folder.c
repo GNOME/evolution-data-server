@@ -56,12 +56,6 @@
 
 #define d(x) x
 
-static GSList *imap4_folder_props = NULL;
-
-static CamelProperty imap4_prop_list[] = {
-	{ CAMEL_IMAP4_FOLDER_SYNC_OFFLINE, "sync_offline", N_("Copy folder content locally for offline operation") },
-};
-
 static void camel_imap4_folder_class_init (CamelIMAP4FolderClass *klass);
 static void camel_imap4_folder_init (CamelIMAP4Folder *folder, CamelIMAP4FolderClass *klass);
 static void camel_imap4_folder_finalize (CamelObject *object);
@@ -82,7 +76,7 @@ static GPtrArray *imap4_search_by_uids (CamelFolder *folder, const char *expr, G
 static void imap4_search_free (CamelFolder *folder, GPtrArray *uids);
 
 
-static CamelFolderClass *parent_class = NULL;
+static CamelOfflineFolderClass *parent_class = NULL;
 
 
 CamelType
@@ -91,7 +85,7 @@ camel_imap4_folder_get_type (void)
 	static CamelType type = 0;
 	
 	if (!type) {
-		type = camel_type_register (CAMEL_FOLDER_TYPE,
+		type = camel_type_register (camel_offline_folder_get_type (),
 					    "CamelIMAP4Folder",
 					    sizeof (CamelIMAP4Folder),
 					    sizeof (CamelIMAP4FolderClass),
@@ -109,14 +103,8 @@ camel_imap4_folder_class_init (CamelIMAP4FolderClass *klass)
 {
 	CamelFolderClass *folder_class = (CamelFolderClass *) klass;
 	CamelObjectClass *object_class = (CamelObjectClass *) klass;
-	int i;
 	
-	parent_class = (CamelFolderClass *) camel_type_get_global_classfuncs (CAMEL_FOLDER_TYPE);
-	
-	for (i = 0; i < G_N_ELEMENTS (imap4_prop_list); i++) {
-		imap4_prop_list[i].description = _(imap4_prop_list[i].description);
-		imap4_folder_props = g_slist_prepend (imap4_folder_props, &imap4_prop_list[i]);
-	}
+	parent_class = (CamelOfflineFolderClass *) camel_type_get_global_classfuncs (CAMEL_OFFLINE_FOLDER_TYPE);
 	
 	object_class->getv = imap4_getv;
 	object_class->setv = imap4_setv;
@@ -137,7 +125,6 @@ camel_imap4_folder_init (CamelIMAP4Folder *folder, CamelIMAP4FolderClass *klass)
 {
 	((CamelFolder *) folder)->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY | CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
 	
-	folder->sync_offline = FALSE;
 	folder->utf7_name = NULL;
 	folder->cachedir = NULL;
 	folder->journal = NULL;
@@ -155,7 +142,7 @@ camel_imap4_folder_finalize (CamelObject *object)
 		camel_object_unref (folder->cache);
 	
 	if (folder->journal) {
-		camel_imap4_journal_write (folder->journal, NULL);
+		camel_offline_journal_write (folder->journal, NULL);
 		camel_object_unref (folder->journal);
 	}
 	
@@ -166,70 +153,12 @@ camel_imap4_folder_finalize (CamelObject *object)
 static int
 imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
-	CamelArgGetV props;
-	int i, count = 0;
-	guint32 tag;
-	
-	for (i = 0; i < args->argc; i++) {
-		CamelArgGet *arg = &args->argv[i];
-		
-		tag = arg->tag;
-		
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
-		case CAMEL_FOLDER_ARG_PROPERTIES:
-			props.argc = 1;
-			props.argv[0] = *arg;
-			((CamelObjectClass *) parent_class)->getv (object, ex, &props);
-			*arg->ca_ptr = g_slist_concat (*arg->ca_ptr, g_slist_copy (imap4_folder_props));
-			break;
-		case CAMEL_IMAP4_FOLDER_ARG_SYNC_OFFLINE:
-			*arg->ca_int = ((CamelIMAP4Folder *) object)->sync_offline;
-			break;
-		default:
-			count++;
-			continue;
-		}
-		
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
-	}
-	
-	if (count)
-		return ((CamelObjectClass *) parent_class)->getv (object, ex, args);
-	
-	return 0;
+	return ((CamelObjectClass *) parent_class)->getv (object, ex, args);
 }
 
 static int
 imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
-	CamelIMAP4Folder *folder = (CamelIMAP4Folder *) object;
-	gboolean save = FALSE;
-	guint32 tag;
-	int i;
-	
-	for (i = 0; i < args->argc; i++) {
-		CamelArg *arg = &args->argv[i];
-		
-		tag = arg->tag;
-		
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_IMAP4_FOLDER_ARG_SYNC_OFFLINE:
-			if (folder->sync_offline != arg->ca_int) {
-				folder->sync_offline = arg->ca_int;
-				save = TRUE;
-			}
-			break;
-		default:
-			continue;
-		}
-		
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
-	}
-	
-	if (save)
-		camel_object_state_write (object);
-	
 	return ((CamelObjectClass *) parent_class)->setv (object, ex, args);
 }
 
@@ -874,7 +803,8 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
 	CamelSession *session = ((CamelService *) folder->parent_store)->session;
 	CamelIMAP4Summary *summary = (CamelIMAP4Summary *) folder->summary;
-	const CamelIMAP4MessageInfo *iinfo = (const CamelIMAP4MessageInfo *)info;
+	const CamelIMAP4MessageInfo *iinfo = (const CamelIMAP4MessageInfo *) info;
+	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
 	CamelIMAP4RespCode *resp;
 	CamelIMAP4Command *ic;
 	CamelFolderInfo *fi;
@@ -888,7 +818,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		*appended_uid = NULL;
 	
 	if (!camel_session_is_online (session)) {
-		camel_imap4_journal_append (((CamelIMAP4Folder *) folder)->journal, message, info, appended_uid, ex);
+		camel_imap4_journal_append ((CamelIMAP4Journal *) imap4_folder->journal, message, info, appended_uid, ex);
 		return;
 	}
 	
@@ -1069,6 +999,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 	
 	/* check for offline operation */
 	if (!camel_session_is_online (session)) {
+		CamelIMAP4Journal *journal = (CamelIMAP4Journal *) ((CamelIMAP4Folder *) dest)->journal;
 		CamelMimeMessage *message;
 		
 		for (i = 0; i < infos->len; i++) {
@@ -1077,7 +1008,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 			if (!(message = imap4_get_message (src, camel_message_info_uid (info), ex)))
 				break;
 			
-			camel_imap4_journal_append (((CamelIMAP4Folder *) dest)->journal, message, info, NULL, ex);
+			camel_imap4_journal_append (journal, message, info, NULL, ex);
 			camel_object_unref (message);
 			
 			if (camel_exception_is_set (ex))

@@ -51,8 +51,13 @@ static void camel_imap4_journal_class_init (CamelIMAP4JournalClass *klass);
 static void camel_imap4_journal_init (CamelIMAP4Journal *journal, CamelIMAP4JournalClass *klass);
 static void camel_imap4_journal_finalize (CamelObject *object);
 
+static void imap4_entry_free (CamelOfflineJournal *journal, EDListNode *entry);
+static EDListNode *imap4_entry_load (CamelOfflineJournal *journal, FILE *in);
+static int imap4_entry_write (CamelOfflineJournal *journal, EDListNode *entry, FILE *out);
+static int imap4_entry_play (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex);
 
-static CamelObjectClass *parent_class = NULL;
+
+static CamelOfflineJournalClass *parent_class = NULL;
 
 
 CamelType
@@ -61,7 +66,7 @@ camel_imap4_journal_get_type (void)
 	static CamelType type = 0;
 	
 	if (!type) {
-		type = camel_type_register (camel_object_get_type (),
+		type = camel_type_register (camel_offline_journal_get_type (),
 					    "CamelIMAP4Journal",
 					    sizeof (CamelIMAP4Journal),
 					    sizeof (CamelIMAP4JournalClass),
@@ -77,34 +82,39 @@ camel_imap4_journal_get_type (void)
 static void
 camel_imap4_journal_class_init (CamelIMAP4JournalClass *klass)
 {
-	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
+	CamelOfflineJournalClass *journal_class = (CamelOfflineJournalClass *) klass;
+	
+	parent_class = (CamelOfflineJournalClass *) camel_type_get_global_classfuncs (CAMEL_TYPE_OFFLINE_JOURNAL);
+	
+	journal_class->entry_free = imap4_entry_free;
+	journal_class->entry_load = imap4_entry_load;
+	journal_class->entry_write = imap4_entry_write;
+	journal_class->entry_play = imap4_entry_play;
 }
 
 static void
 camel_imap4_journal_init (CamelIMAP4Journal *journal, CamelIMAP4JournalClass *klass)
 {
-	journal->folder = NULL;
-	journal->filename = NULL;
-	e_dlist_init (&journal->queue);
+	
 }
 
 static void
 camel_imap4_journal_finalize (CamelObject *object)
 {
-	CamelIMAP4Journal *journal = (CamelIMAP4Journal *) object;
-	CamelIMAP4JournalEntry *entry;
 	
-	g_free (journal->filename);
-	
-	while ((entry = (CamelIMAP4JournalEntry *) e_dlist_remhead (&journal->queue))) {
-		g_free (entry->v.append_uid);
-		g_free (entry);
-	}
 }
 
+static void
+imap4_entry_free (CamelOfflineJournal *journal, EDListNode *entry)
+{
+	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;
+	
+	g_free (imap4_entry->v.append_uid);
+	g_free (imap4_entry);
+}
 
-static CamelIMAP4JournalEntry *
-imap4_journal_entry_load (FILE *in)
+static EDListNode *
+imap4_entry_load (CamelOfflineJournal *journal, FILE *in)
 {
 	CamelIMAP4JournalEntry *entry;
 	
@@ -123,7 +133,7 @@ imap4_journal_entry_load (FILE *in)
 		goto exception;
 	}
 	
-	return entry;
+	return (EDListNode *) entry;
 	
  exception:
 	
@@ -140,50 +150,17 @@ imap4_journal_entry_load (FILE *in)
 	return NULL;
 }
 
-
-CamelIMAP4Journal *
-camel_imap4_journal_new (CamelIMAP4Folder *folder, const char *filename)
-{
-	CamelIMAP4Journal *journal;
-	EDListNode *entry;
-	FILE *fp;
-	
-	g_return_val_if_fail (CAMEL_IS_IMAP4_FOLDER (folder), NULL);
-	
-	journal = (CamelIMAP4Journal *) camel_object_new (camel_imap4_journal_get_type ());
-	journal->filename = g_strdup (filename);
-	journal->folder = folder;
-	
-	if ((fp = fopen (filename, "r"))) {
-		while ((entry = (EDListNode *) imap4_journal_entry_load (fp)))
-			e_dlist_addtail (&journal->queue, entry);
-		
-		fclose (fp);
-	}
-	
-	return journal;
-}
-
-
-void
-camel_imap4_journal_set_filename (CamelIMAP4Journal *journal, const char *filename)
-{
-	g_return_if_fail (CAMEL_IS_IMAP4_JOURNAL (journal));
-	
-	g_free (journal->filename);
-	journal->filename = g_strdup (filename);
-}
-
-
 static int
-imap4_journal_entry_write (CamelIMAP4JournalEntry *entry, FILE *out)
+imap4_entry_write (CamelOfflineJournal *journal, EDListNode *entry, FILE *out)
 {
-	if (camel_file_util_encode_uint32 (out, entry->type) == -1)
+	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;
+	
+	if (camel_file_util_encode_uint32 (out, imap4_entry->type) == -1)
 		return -1;
 	
-	switch (entry->type) {
+	switch (imap4_entry->type) {
 	case CAMEL_IMAP4_JOURNAL_ENTRY_APPEND:
-		if (camel_file_util_encode_string (out, entry->v.append_uid))
+		if (camel_file_util_encode_string (out, imap4_entry->v.append_uid))
 			return -1;
 		
 		break;
@@ -194,55 +171,11 @@ imap4_journal_entry_write (CamelIMAP4JournalEntry *entry, FILE *out)
 	return 0;
 }
 
-
-int
-camel_imap4_journal_write (CamelIMAP4Journal *journal, CamelException *ex)
-{
-	CamelIMAP4JournalEntry *entry;
-	EDListNode *node;
-	FILE *fp;
-	int fd;
-	
-	if ((fd = open (journal->filename, O_CREAT | O_TRUNC | O_WRONLY, 0666)) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot write IMAP4 offline journal: %s"),
-				      g_strerror (errno));
-		return -1;
-	}
-	
-	fp = fdopen (fd, "w");
-	node = journal->queue.head;
-	while (node->next) {
-		entry = (CamelIMAP4JournalEntry *) node;
-		if (imap4_journal_entry_write (entry, fp) == -1)
-			goto exception;
-		node = node->next;
-	}
-	
-	if (fsync (fd) == -1)
-		goto exception;
-	
-	fclose (fp);
-	
-	return 0;
-	
- exception:
-	
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Cannot write IMAP4 offline journal: %s"),
-			      g_strerror (errno));
-	
-	fclose (fp);
-	
-	return -1;
-}
-
-
 static int
-imap4_journal_entry_play_append (CamelIMAP4Journal *journal, CamelIMAP4JournalEntry *entry, CamelException *ex)
+imap4_entry_play_append (CamelOfflineJournal *journal, CamelIMAP4JournalEntry *entry, CamelException *ex)
 {
-	CamelIMAP4Folder *imap4_folder = journal->folder;
-	CamelFolder *folder = (CamelFolder *) imap4_folder;
+	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) journal->folder;
+	CamelFolder *folder = journal->folder;
 	CamelMimeMessage *message;
 	CamelMessageInfo *info;
 	CamelStream *stream;
@@ -289,17 +222,19 @@ imap4_journal_entry_play_append (CamelIMAP4Journal *journal, CamelIMAP4JournalEn
  done:
 	
 	camel_folder_summary_remove_uid (folder->summary, entry->v.append_uid);
-	camel_data_cache_remove (journal->folder->cache, "cache", entry->v.append_uid, NULL);
+	camel_data_cache_remove (imap4_folder->cache, "cache", entry->v.append_uid, NULL);
 	
 	return 0;
 }
 
 static int
-imap4_journal_entry_play (CamelIMAP4Journal *journal, CamelIMAP4JournalEntry *entry, CamelException *ex)
+imap4_entry_play (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex)
 {
-	switch (entry->type) {
+	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;
+	
+	switch (imap4_entry->type) {
 	case CAMEL_IMAP4_JOURNAL_ENTRY_APPEND:
-		return imap4_journal_entry_play_append (journal, entry, ex);
+		return imap4_entry_play_append (journal, imap4_entry, ex);
 	default:
 		g_assert_not_reached ();
 		return -1;
@@ -307,39 +242,27 @@ imap4_journal_entry_play (CamelIMAP4Journal *journal, CamelIMAP4JournalEntry *en
 }
 
 
-int
-camel_imap4_journal_replay (CamelIMAP4Journal *journal, CamelException *ex)
+
+CamelOfflineJournal *
+camel_imap4_journal_new (CamelIMAP4Folder *folder, const char *filename)
 {
-	EDListNode *node, *next;
-	CamelException lex;
-	int failed = 0;
+	CamelOfflineJournal *journal;
 	
-	camel_exception_init (&lex);
+	g_return_val_if_fail (CAMEL_IS_IMAP4_FOLDER (folder), NULL);
 	
-	node = journal->queue.head;
-	while (node->next) {
-		next = node->next;
-		if (imap4_journal_entry_play (journal, (CamelIMAP4JournalEntry *) node, &lex) == -1) {
-			if (failed == 0)
-				camel_exception_xfer (ex, &lex);
-			camel_exception_clear (&lex);
-			failed++;
-		} else {
-			e_dlist_remove (node);
-		}
-		node = next;
-	}
+	journal = (CamelOfflineJournal *) camel_object_new (camel_imap4_journal_get_type ());
+	camel_offline_journal_construct (journal, (CamelFolder *) folder, filename);
 	
-	if (failed > 0)
-		return -1;
-	
-	return 0;
+	return journal;
 }
 
 
 void
-camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi, char **appended_uid, CamelException *ex)
+camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *message,
+			    const CamelMessageInfo *mi, char **appended_uid, CamelException *ex)
 {
+	CamelOfflineJournal *journal = (CamelOfflineJournal *) imap4_journal;
+	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) journal->folder;
 	CamelFolder *folder = (CamelFolder *) journal->folder;
 	CamelIMAP4JournalEntry *entry;
 	CamelMessageInfoBase *a, *b;
@@ -348,7 +271,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *messag
 	guint32 nextuid;
 	char *uid;
 	
-	if (journal->folder->cache == NULL) {
+	if (imap4_folder->cache == NULL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 				     _("Cannot append message in offline mode: cache unavailable"));
 		return;
@@ -357,7 +280,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *messag
 	nextuid = camel_folder_summary_next_uid (folder->summary);
 	uid = g_strdup_printf ("-%u", nextuid);
 	
-	if (!(cache = camel_data_cache_add (journal->folder->cache, "cache", uid, ex))) {
+	if (!(cache = camel_data_cache_add (imap4_folder->cache, "cache", uid, ex))) {
 		folder->summary->nextuid--;
 		g_free (uid);
 		return;
@@ -368,7 +291,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *messag
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot append message in offline mode: %s"),
 				      g_strerror (errno));
-		camel_data_cache_remove (journal->folder->cache, "cache", uid, NULL);
+		camel_data_cache_remove (imap4_folder->cache, "cache", uid, NULL);
 		folder->summary->nextuid--;
 		camel_object_unref (cache);
 		g_free (uid);

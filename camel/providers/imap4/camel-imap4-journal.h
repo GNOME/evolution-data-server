@@ -28,7 +28,7 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-msgport.h>
+#include <camel/camel-offline-journal.h>
 #include <camel/camel-mime-message.h>
 
 #ifdef __cplusplus
@@ -64,28 +64,19 @@ struct _CamelIMAP4JournalEntry {
 };
 
 struct _CamelIMAP4Journal {
-	CamelObject parent_object;
+	CamelOfflineJournal parent_object;
 	
-	struct _CamelIMAP4Folder *folder;
-	char *filename;
-	EDList queue;
 };
 
 struct _CamelIMAP4JournalClass {
-	CamelObjectClass parent_class;
+	CamelOfflineJournalClass parent_class;
 	
 };
 
 
 CamelType camel_imap4_journal_get_type (void);
 
-CamelIMAP4Journal *camel_imap4_journal_new (struct _CamelIMAP4Folder *folder, const char *filename);
-
-void camel_imap4_journal_set_filename (CamelIMAP4Journal *journal, const char *filename);
-
-int camel_imap4_journal_write (CamelIMAP4Journal *journal, CamelException *ex);
-
-int camel_imap4_journal_replay (CamelIMAP4Journal *journal, CamelException *ex);
+CamelOfflineJournal *camel_imap4_journal_new (struct _CamelIMAP4Folder *folder, const char *filename);
 
 /* interfaces for adding a journal entry */
 void camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi,

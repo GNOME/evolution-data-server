@@ -37,6 +37,7 @@
 
 #include <camel/camel-file-utils.h>
 #include <camel/camel-string-utils.h>
+#include <camel/camel-offline-journal.h>
 #include <camel/camel-i18n.h>
 
 #include "camel-imap4-store.h"
@@ -44,7 +45,6 @@
 #include "camel-imap4-folder.h"
 #include "camel-imap4-stream.h"
 #include "camel-imap4-command.h"
-#include "camel-imap4-journal.h"
 #include "camel-imap4-utils.h"
 
 #include "camel-imap4-summary.h"
@@ -1254,7 +1254,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	g_return_val_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary), -1);
 	
 	/* FIXME: what do we do if replaying the journal fails? */
-	camel_imap4_journal_replay (((CamelIMAP4Folder *) summary->folder)->journal, NULL);
+	camel_offline_journal_replay (((CamelIMAP4Folder *) summary->folder)->journal, NULL);
 	
 	engine = ((CamelIMAP4Store *) summary->folder->parent_store)->engine;
 	scount = camel_folder_summary_count (summary);

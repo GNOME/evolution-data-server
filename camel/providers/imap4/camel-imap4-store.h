@@ -21,7 +21,7 @@
 #ifndef __CAMEL_IMAP4_STORE_H__
 #define __CAMEL_IMAP4_STORE_H__
 
-#include <camel/camel-store.h>
+#include <camel/camel-offline-store.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,7 +41,7 @@ typedef struct _CamelIMAP4StoreClass CamelIMAP4StoreClass;
 struct _CamelIMAP4Engine;
 
 struct _CamelIMAP4Store {
-	CamelStore parent_object;
+	CamelOfflineStore parent_object;
 	
 	struct _CamelIMAP4StoreSummary *summary;
 	struct _CamelIMAP4Engine *engine;
@@ -49,7 +49,7 @@ struct _CamelIMAP4Store {
 };
 
 struct _CamelIMAP4StoreClass {
-	CamelStoreClass parent_class;
+	CamelOfflineStoreClass parent_class;
 	
 };
 

@@ -24,6 +24,8 @@
 #include <camel/camel-store.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-data-cache.h>
+#include <camel/camel-offline-folder.h>
+#include <camel/camel-offline-journal.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,24 +44,12 @@ typedef struct _CamelIMAP4FolderClass CamelIMAP4FolderClass;
 
 struct _CamelIMAP4Journal;
 
-enum {
-	CAMEL_IMAP4_FOLDER_ARG_SYNC_OFFLINE = CAMEL_FOLDER_ARG_LAST,
-	CAMEL_IMAP4_FOLDER_ARG_LAST = CAMEL_FOLDER_ARG_LAST + 0x100
-};
-
-
-enum {
-	CAMEL_IMAP4_FOLDER_SYNC_OFFLINE = CAMEL_IMAP4_FOLDER_ARG_SYNC_OFFLINE | CAMEL_ARG_BOO,
-};
-
 struct _CamelIMAP4Folder {
-	CamelFolder parent_object;
-	
-	unsigned int sync_offline:1;
+	CamelOfflineFolder parent_object;
 	
 	CamelFolderSearch *search;
 	
-	struct _CamelIMAP4Journal *journal;
+	CamelOfflineJournal *journal;
 	CamelDataCache *cache;
 	
 	char *cachedir;
