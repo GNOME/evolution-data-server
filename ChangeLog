@@ -1,3 +1,8 @@
+2005-01-14  Not Zed  <NotZed@Ximian.com>
+
+	* libedataserver/e-sexp.c: reverted rodrigo's change.  We never
+	build ESexp as a GObject anymore (it is used by camel).
+
 2005-01-12  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.[ch] (e_categories_exist): new function.
