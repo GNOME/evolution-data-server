@@ -2905,8 +2905,8 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 	priv = ecal->priv;
 	g_return_if_fail (priv->load_state == E_CAL_LOAD_LOADED);
 
-	g_return_if_fail (start != -1 && end != -1);
-	g_return_if_fail (start <= end);
+	g_return_if_fail (start >= -1);
+	g_return_if_fail (end >= -1);
 	g_return_if_fail (cb != NULL);
 
 	iso_start = isodate_from_time_t (start);
@@ -3028,7 +3028,8 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	GList *instances = NULL;
 
 	g_return_if_fail (E_IS_CAL (ecal));
-	g_return_if_fail (start <= end);
+	g_return_if_fail (start >= -1);
+	g_return_if_fail (end >= -1);
 	g_return_if_fail (cb != NULL);
 
 	priv = ecal->priv;

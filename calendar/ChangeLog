@@ -1,7 +1,7 @@
 2004-06-01  Rodrigo Moya <rodrigo@novell.com>
 
-	* libecal/e-cal.c (e_cal_generate_instances_for_object): allow -1
-	for the start and end times.
+	* libecal/e-cal.c (e_cal_generate_instances_for_object,
+	e_cal_generate_instances): allow -1 for the start and end times.
 
 2004-06-01  JP Rosevear  <jpr@novell.com>
 
