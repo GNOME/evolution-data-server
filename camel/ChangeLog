@@ -1,3 +1,8 @@
+2004-12-23  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* providers/groupwise/camel-groupwise-provider.c : changed the
+	offline_sync setting label 
+
 2004-12-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	* providers/groupwise/camel-groupwise-private.h:
 	  Added the file which was missed out in the previous commit.
