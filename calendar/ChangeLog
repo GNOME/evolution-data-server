@@ -1,3 +1,8 @@
+2004-02-04  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal.c (open_async): g_object_unref the ECal, not the
+	ECalAsyncData structure.
+
 2004-02-03  Rodney Dawes  <dobey@ximian.com>
 
 	* backends/http/e-cal-backend-http.c: Don't keep a global SoupMessage

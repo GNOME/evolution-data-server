@@ -1555,7 +1555,7 @@ open_async (gpointer data)
 
 	g_clear_error (&error);
 
-	g_object_unref (ccad);
+	g_object_unref (ccad->ecal);
 	g_free (ccad);
 	
 	return FALSE;	
