@@ -1,3 +1,9 @@
+2004-01-29  Chris Toshok  <toshok@ximian.com>
+
+	* libedata-book/ximian-vcard.h (XIMIAN_VCARD): update for new
+	office location, and change the FILE-AS/ORG fields to say Novell
+	Ximian Group.
+
 2004-01-30  Radek Doulik  <rodo@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c (contact_list_dtor): don't
