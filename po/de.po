@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-06 18:03+0100\n"
-"PO-Revision-Date: 2005-02-06 17:37+0100\n"
+"POT-Creation-Date: 2005-02-07 02:51+0100\n"
+"PO-Revision-Date: 2005-02-07 02:53+0100\n"
 "Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2675,8 +2675,8 @@ msgid "Automatically synchronize account locally"
 msgstr "Konto automatisch lokal synchronisieren"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:69
-msgid "Address Book and Calendar"
-msgstr "Adressbuch und Kalender"
+msgid "SOAP Settings"
+msgstr "SOAP-Einstellungen"
 
 # CHECK
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:72
@@ -4960,6 +4960,9 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Mehrere Speicherzugriffsfehler aufgetreten; Fehlerdialog kann nicht "
 "angezeigt werden\n"
+
+#~ msgid "Address Book and Calendar"
+#~ msgstr "Adressbuch und Kalender"
 
 #~ msgid "File As"
 #~ msgstr "Einsortieren unter"
