@@ -1,3 +1,8 @@
+2004-04-15  JP Rosevear  <jpr@ximian.com>
+
+	* libecal/e-cal.c (e_cal_add_timezone): do a little more sanity
+	checking on what we send
+
 2004-04-12  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	Fixes #56517
