@@ -575,11 +575,5 @@ e_source_list_sync (ESourceList *list,
 	g_slist_foreach (conf_list, (GFunc) g_free, NULL);
 	g_slist_free (conf_list);
 
-	if (list->priv->gconf_notify_id != 0) {
-		gconf_client_notify_remove (list->priv->gconf_client,
-					    list->priv->gconf_notify_id);
-		list->priv->gconf_notify_id = 0;
-	}
-
 	return retval;
 }
