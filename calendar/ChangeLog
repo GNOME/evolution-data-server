@@ -1,5 +1,9 @@
 2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_properties_from_cal_component, e_gw_item_to_cal_component):
+	adapted to changes in EGwItem.
+
 	* libecal/e-cal.c (e_cal_open_async): no need to make the thread joinable.
 
 2004-02-06  Rodrigo Moya <rodrigo@ximian.com>

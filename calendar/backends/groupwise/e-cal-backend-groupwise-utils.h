@@ -39,6 +39,9 @@ ECalComponent *e_gw_item_to_cal_component (EGwItem *item);
  * Connection-related utility functions
  */
 EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp);
+EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users,
+						       time_t start, time_t end, GList **freebusy);
+
 
 G_END_DECLS
 

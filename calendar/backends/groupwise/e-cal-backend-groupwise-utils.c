@@ -21,6 +21,9 @@
  * USA
  */
 
+#include <string.h>
+#include <e-gw-connection.h>
+#include <e-gw-message.h>
 #include "e-cal-backend-groupwise-utils.h"
 
 static EGwItem *
@@ -59,7 +62,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 		/* due date */
 		e_cal_component_get_due (comp, &dt);
 		if (dt.value) {
-			e_gw_item_set_due_date (item, *dt.value);
+			e_gw_item_set_due_date (item, icaltime_as_timet (*dt.value));
 			e_cal_component_free_datetime (&dt);
 		}
 
@@ -124,7 +127,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 	/* start date */
 	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value) {
-		e_gw_item_set_start_date (item, *dt.value);
+		e_gw_item_set_start_date (item, icaltime_as_timet (*dt.value));
 	} else if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 		/* appointments need the start date property */
 		g_object_unref (item);
@@ -133,25 +136,36 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 
 	/* end date */
 	e_cal_component_get_dtend (comp, &dt);
-	if (dt.value) {
-		e_gw_item_set_end_date (item, *dt.value);
-	}
+	if (dt.value)
+		e_gw_item_set_end_date (item, icaltime_as_timet (*dt.value));
 
 	/* creation date */
 	e_cal_component_get_created (comp, &dt.value);
 	if (dt.value) {
-		e_gw_item_set_creation_date (item, *dt.value);
+		e_gw_item_set_creation_date (item, icaltime_as_timet (*dt.value));
 		e_cal_component_free_datetime (&dt);
 	} else {
 		struct icaltimetype itt;
 
 		e_cal_component_get_dtstamp (comp, &itt);
-		e_gw_item_set_creation_date (item, itt);
+		e_gw_item_set_creation_date (item, icaltime_as_timet (itt));
 	}
 
 	/* classification */
 	e_cal_component_get_classification (comp, &classif);
-	e_gw_item_set_classification (item, classif);
+	switch (classif) {
+	case E_CAL_COMPONENT_CLASS_PUBLIC :
+		e_gw_item_set_classification (item, E_GW_ITEM_CLASSIFICATION_PUBLIC);
+		break;
+	case E_CAL_COMPONENT_CLASS_PRIVATE :
+		e_gw_item_set_classification (item, E_GW_ITEM_CLASSIFICATION_PRIVATE);
+		break;
+	case E_CAL_COMPONENT_CLASS_CONFIDENTIAL :
+		e_gw_item_set_classification (item, E_GW_ITEM_CLASSIFICATION_CONFIDENTIAL);
+		break;
+	default :
+		e_gw_item_set_classification (item, NULL);
+	}
 
 	return item;
 }
@@ -176,6 +190,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 	ECalComponentText text;
 	ECalComponentDateTime dt;
 	const char *description;
+	time_t t;
 	struct icaltimetype itt;
 	int priority;
 	EGwItemType item_type;
@@ -218,22 +233,36 @@ e_gw_item_to_cal_component (EGwItem *item)
 	}
 
 	/* creation date */
-	itt = e_gw_item_get_creation_date (item);
+	t = e_gw_item_get_creation_date (item);
+	itt = icaltime_from_timet (t, 0);
 	e_cal_component_set_created (comp, &itt);
 	e_cal_component_set_dtstamp (comp, &itt);
 
 	/* start date */
-	itt = e_gw_item_get_start_date (item);
+	t = e_gw_item_get_start_date (item);
+	itt = icaltime_from_timet (t, 0);
 	dt.value = &itt;
 	e_cal_component_set_dtstart (comp, &dt);
 
 	/* end date */
-	itt = e_gw_item_get_end_date (item);
+	t = e_gw_item_get_end_date (item);
+	itt = icaltime_from_timet (t, 0);
 	dt.value = &itt;
 	e_cal_component_set_dtend (comp, &dt);
 
 	/* classification */
-	e_cal_component_set_classification (comp, e_gw_item_get_classification (item));
+	description = e_gw_item_get_classification (item);
+	if (description) {
+		if (strcmp (description, E_GW_ITEM_CLASSIFICATION_PUBLIC) == 0)
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PUBLIC);
+		else if (strcmp (description, E_GW_ITEM_CLASSIFICATION_PRIVATE) == 0)
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PRIVATE);
+		else if (strcmp (description, E_GW_ITEM_CLASSIFICATION_CONFIDENTIAL) == 0)
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_CONFIDENTIAL);
+		else
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_NONE);
+	} else
+		e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_NONE);
 
 	/* set specific properties */
 	switch (item_type) {
@@ -254,7 +283,8 @@ e_gw_item_to_cal_component (EGwItem *item)
 		break;
 	case E_GW_ITEM_TYPE_TASK :
 		/* due date */
-		itt = e_gw_item_get_due_date (item);
+		t = e_gw_item_get_due_date (item);
+		itt = icaltime_from_timet (t, 0);
 		dt.value = &itt;
 		e_cal_component_set_due (comp, &dt);
 		break;
@@ -296,4 +326,232 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 	g_object_unref (item);
 
 	return status;
+}
+
+static EGwConnectionStatus
+start_freebusy_session (EGwConnection *cnc, GList *users, 
+               time_t start, time_t end, const char **session)
+{
+        SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        SoupSoapParameter *param;
+        GList *l;
+        icaltimetype icaltime;
+        const char *start_date, *end_date;
+
+	if (users == NULL)
+                return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+
+        /* build the SOAP message */
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc),
+					    e_gw_connection_get_session_id (cnc),
+					    "startFreeBusySessionRequest");
+        /* FIXME users is just a buch of user names - associate it with uid,
+         * email id apart from the name*/
+        
+        soup_soap_message_start_element (msg, "users", "types", NULL); 
+        for ( l = users; l != NULL; l = g_list_next (l)) {
+                e_gw_message_write_string_parameter (msg, "user", NULL, l->data);
+        }
+
+        soup_soap_message_end_element (msg);
+
+        /*FIXME check if this needs to be formatted into GW form with separators*/
+        /*FIXME  the following code converts time_t to String representation
+         * through icaltime. Find if a direct conversion exists.  */ 
+        /* Timezone in server is assumed to be UTC */
+        icaltime = icaltime_from_timet(start, FALSE );
+        start_date = icaltime_as_ical_string (icaltime);
+        
+        icaltime = icaltime_from_timet(end, FALSE);
+        end_date = icaltime_as_ical_string (icaltime);
+        	
+        e_gw_message_write_string_parameter (msg, "startDate", "http://www.w3.org/2001/XMLSchema", start_date);
+        e_gw_message_write_string_parameter (msg, "endDate", "http://www.w3.org/2001/XMLSchema", end_date);
+        
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK)
+        {
+                g_object_unref (msg);
+                g_object_unref (response);
+                return status;
+        }
+        
+       	/* if status is OK - parse result, return the list */
+        param = soup_soap_response_get_first_parameter_by_name (response, "freeBusySessionId");
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+	
+	*session = soup_soap_parameter_get_string_value (param); 
+        /* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
+
+static EGwConnectionStatus 
+close_freebusy_session (EGwConnection *cnc, const char *session)
+{
+        SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+        /* build the SOAP message */
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc),
+					    e_gw_connection_get_session_id (cnc),
+					    "closeFreeBusySessionRequest");
+       	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
+        e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+
+        g_object_unref (msg);
+        g_object_unref (response);
+        return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy)
+{
+        SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        SoupSoapParameter *param, *subparam;
+        const char *session;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+
+        /* Perform startFreeBusySession */
+        status = start_freebusy_session (cnc, users, start, end, &session); 
+        /*FIXME log error messages  */
+        if (status != E_GW_CONNECTION_STATUS_OK)
+                return status;
+
+        /* getFreeBusy */
+        /* build the SOAP message */
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc),
+					    e_gw_connection_get_session_id (cnc),
+					    "getFreeBusyRequest");
+       	e_gw_message_write_string_parameter (msg, "session", NULL, session);
+        e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+                g_object_unref (msg);
+                g_object_unref (response);
+                return status;
+        }
+
+        /* FIXME  the FreeBusyStats are not used currently.  */
+        param = soup_soap_response_get_first_parameter_by_name (response, "freeBusyInfo");
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+        for (subparam = soup_soap_parameter_get_first_child_by_name (param, "user");
+	     subparam != NULL;
+	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "user")) {
+		SoupSoapParameter *param_blocks, *subparam_block, *tmp;
+		const char *uuid = NULL, *email = NULL, *name = NULL;
+
+		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
+		if (tmp)
+			email = soup_soap_parameter_get_string_value (tmp);
+		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "uuid");
+		if (tmp)
+			uuid = soup_soap_parameter_get_string_value (tmp);
+		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "displayName");
+		if (tmp)
+			name = soup_soap_parameter_get_string_value (tmp);
+
+		param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
+		if (!param_blocks) {
+			g_object_unref (response);
+			g_object_unref (msg);
+			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		}
+        
+		for (subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
+		     subparam_block != NULL;
+		     subparam_block = soup_soap_parameter_get_next_child_by_name (subparam_block, "block")) {
+
+			/* process each block and create ECal free/busy components.*/ 
+			SoupSoapParameter *tmp;
+			ECalComponent *comp;
+			ECalComponentOrganizer organizer;
+			ECalComponentDateTime dt;
+			icaltimetype itt;
+			time_t t;
+			const char *start, *end;
+
+			comp = e_cal_component_new ();
+			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
+			/* FIXME  verify the mappings b/w response and ECalComponent */
+			if (name)
+				organizer.cn = name;
+			if (email)
+				organizer.sentby = email;
+			if (uuid)
+				organizer.value = uuid;
+			e_cal_component_set_organizer (comp, &organizer);
+
+			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
+			if (tmp) {
+				start = soup_soap_parameter_get_string_value (tmp);
+				t = e_gw_connection_get_date_from_string (start);
+				itt = icaltime_from_timet (t, 0);
+				dt.value = &itt;
+				dt.tzid = "UTC"; 
+				e_cal_component_set_dtstart (comp, &dt);
+			}        
+
+			tmp = soup_soap_parameter_get_first_child_by_name (subparam, "endDate");
+			if (tmp) {
+				end = soup_soap_parameter_get_string_value (tmp);
+				t = e_gw_connection_get_date_from_string (end);
+				itt = icaltime_from_timet (t, 0);
+				dt.value = &itt;
+				dt.tzid = "UTC"; 
+				e_cal_component_set_dtend (comp, &dt);
+			}
+
+			*freebusy = g_list_append (*freebusy, comp);
+		}
+	}
+
+        g_object_unref (msg);
+        g_object_unref (response);
+
+        /* closeFreeBusySession*/
+        return close_freebusy_session (cnc, session);
 }
