@@ -76,7 +76,7 @@ char               *e_gw_connection_get_container_id (EGwConnection *cnc, const 
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
 					       const char *view, EGwFilter *filter, GList **list);
 EGwConnectionStatus e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes, GSList **updates);
-EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item, char **id);
+EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item, GSList **id_list);
 EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
 EGwConnectionStatus e_gw_connection_remove_items (EGwConnection *cnc, const char *container, GList *item_ids);
 
@@ -94,6 +94,10 @@ char               *e_gw_connection_format_date_string (const char *dtstring);
 EGwConnectionStatus e_gw_connection_create_item (EGwConnection *cnc, EGwItem *item, char** id);
 EGwConnectionStatus e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char *id, EGwItem **item);
 EGwConnectionStatus e_gw_connection_modify_item (EGwConnection *cnc, const char *id, EGwItem *item);
+EGwConnectionStatus e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *accept_level);
+EGwConnectionStatus e_gw_connection_decline_request (EGwConnection *cnc, const char *id);
+EGwConnectionStatus e_gw_connection_retract_request (EGwConnection *cnc, const char *id, const char *comment, gboolean retract_all, gboolean resend);
+EGwConnectionStatus e_gw_connection_complete_request (EGwConnection *cnc, const char *id);
 EGwConnectionStatus e_gw_connection_create_book (EGwConnection *cnc, char *book_name, char**id);
 EGwConnectionStatus e_gw_connection_remove_book (EGwConnection *cnc, char *book_uid);
 EGwConnectionStatus e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_list);

@@ -1,3 +1,32 @@
+2004-07-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-connection.c: 
+	(e_gw_connection_new) : Fix for #59471 by getting around the server 
+	defect. Substitute the first . by @.
+	(e_gw_connection_get_deltas): Fix for #56853. The server may indicate
+	that there are changes but not provide deltas if they are outside our 
+	interest. This is now considered a valid response.
+	(e_gw_connection_send_item): Handle the change in the SOAP interface.
+	The sendItemResponse now returns a list of ids.
+	(e_gw_connection_accept_request), (e_gw_connection_decline_request),
+	(e_gw_connection_retract_request), (e_gw_connection_complete_request):
+	Implemented.
+
+	* e-gw-connection.h: Declaration for the added functions.
+
+	* e-gw-item.c: 
+	(e_gw_item_new_from_soap_parameter): Add organizer only if the item
+	source is not 'personal'. Use 'priority' instead of Taskpriority for
+	Todos as recommended by the server team.
+	(e_gw_item_set_calendar_item_elements): Organize common properties
+	to Appointments and todo-s into a separate function.
+	(e_gw_item_append_to_soap_message),
+	(append_event_changes_to_soap_message),
+	(e_gw_item_append_changes_to_soap_message): reorder soap elements
+	in the sequence specified by the schema. The server does not enforce this 
+	but doing it right anyway..
+
+
 2004-06-15  Harish Krishnaswamy  <kharish@novell.com>
 
 	Fixes #59352

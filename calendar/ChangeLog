@@ -1,3 +1,33 @@
+2004-07-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_cal_component_get_gw_id): Access method for getting the 
+	XGWRECORDID property from the calendar component.
+	(set_properties_from_cal_component): Range of priority value
+	HIGH extended to include values 1 and 2.
+	The X-EVOLUTION-GROUPWISE-ID is now referred as XGWRECORDID
+	for consistency with the ITIP messages.
+	(e_gw_item_to_cal_component) : Absence of due_date does not 
+	invalidate the task component. Fixes #60926.
+	(e_gw_connection_send_appointment),(e_gw_connection_create_appointment):
+	Implemented.
+	(e_gw_connection_get_freebusy_info):
+	(e_gw_item_set_changes): Fixed compiler warnings.
+	
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	Declarations for added functions.
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(populate_cache) : Removed unused variables.
+	(set_container_id): Extracted a function out of the code as it is
+	used twice.
+	(e_cal_backend_groupwise_create_object): Handle changes in the SOAP interface.
+	The server now returns 	a list of uids. This is to allow creation of recurring 
+	calendar events.
+	(e_cal_backend_groupwise_modify_object): Fix some leaks.
+	(e_cal_backend_groupwise_remove_object), (receive_object),
+	(send_object), (e_cal_backend_groupwise_send_objects): Use the newly created
+	functions for handling group calendar items.
+
 2004-07-12  Sivaiah Nallagatla   <snallagatla@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c

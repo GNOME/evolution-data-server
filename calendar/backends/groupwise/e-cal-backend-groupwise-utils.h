@@ -39,10 +39,16 @@ void          e_gw_item_set_changes (EGwItem *item, EGwItem *cached_item);
 /*
  * Connection-related utility functions
  */
-EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, char **id);
+EGwConnectionStatus e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, GSList **id_list);
+EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, icalproperty_method method);
 EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users,
-			       time_t start, time_t end, GList **freebusy, icaltimezone *default_zone);
+						       time_t start, time_t end, GList **freebusy);
 
+/*
+ * Component related utility functions
+ */
+  
+const char *e_cal_component_get_gw_id (ECalComponent *comp);
 G_END_DECLS
 
 #endif

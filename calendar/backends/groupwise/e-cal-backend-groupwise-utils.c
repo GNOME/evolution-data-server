@@ -48,6 +48,28 @@ resolve_tzid_cb (const char *tzid, gpointer data)
 	return NULL;
 }
 
+const char *
+e_cal_component_get_gw_id (ECalComponent *comp)
+{
+	icalproperty *prop;	
+	
+	prop = icalcomponent_get_first_property (e_cal_component_get_icalcomponent (comp),
+						 ICAL_X_PROPERTY);
+	while (prop) {
+		const char *x_name, *x_val;
+
+		x_name = icalproperty_get_x_name (prop);
+		x_val = icalproperty_get_x (prop);
+		if (!strcmp (x_name, "X-GWRECORDID")) {
+			return x_val;
+		}
+
+		prop = icalcomponent_get_next_property (e_cal_component_get_icalcomponent (comp),
+							ICAL_X_PROPERTY);
+	}
+	return NULL;
+}
+
 static EGwItem *
 set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const icaltimezone *default_zone)
 {
@@ -58,7 +80,6 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 	ECalComponentText text;
 	int *priority;
 	GSList *slist, *sl;
-	icalproperty *prop;
 	struct icaltimetype itt_utc;
 
 	/* first set specific properties */
@@ -123,7 +144,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_LOW);
 			else if (*priority >= 5)
 				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_STANDARD);
-			else if (*priority >= 3)
+			else if (*priority >= 1)
 				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_HIGH);
 			else
 				e_gw_item_set_priority (item, NULL);
@@ -147,21 +168,8 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 
 	/* set common properties */
 	/* GW server ID */
-	prop = icalcomponent_get_first_property (e_cal_component_get_icalcomponent (comp),
-						 ICAL_X_PROPERTY);
-	while (prop) {
-		const char *x_name, *x_val;
-
-		x_name = icalproperty_get_x_name (prop);
-		x_val = icalproperty_get_x (prop);
-		if (!strcmp (x_name, "X-EVOLUTION-GROUPWISE-ID")) {
-			e_gw_item_set_id (item, x_val);
-			break;
-		}
-
-		prop = icalcomponent_get_next_property (e_cal_component_get_icalcomponent (comp),
-							ICAL_X_PROPERTY);
-	}
+	e_gw_item_set_id (item, e_cal_component_get_gw_id (comp));
+	
 	
 	/* UID */
 	e_cal_component_get_uid (comp, &uid);
@@ -266,16 +274,14 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 	}
 
 	if (e_cal_component_has_organizer (comp)) {
-		ECalComponentOrganizer *cal_organizer;
+		ECalComponentOrganizer cal_organizer;
 		EGwItemOrganizer *organizer = NULL;
 
-		e_cal_component_get_organizer (comp, cal_organizer);
-		if (cal_organizer) {
-			organizer = g_new0 (EGwItemOrganizer, 1);
-			organizer->display_name = g_strdup (cal_organizer->cn);
-			organizer->email = g_strdup (cal_organizer->value + 7);
-			e_gw_item_set_organizer (item, organizer);
-		}
+		e_cal_component_get_organizer (comp, &cal_organizer);
+		organizer = g_new0 (EGwItemOrganizer, 1);
+		organizer->display_name = g_strdup (cal_organizer.cn);
+		organizer->email = g_strdup (cal_organizer.value + 7);
+		e_gw_item_set_organizer (item, organizer);
 	}
 
 	
@@ -287,7 +293,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 
 		e_cal_recur_generate_instances (comp, -1, -1,
 				get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, 
-				default_zone);		
+				(icaltimezone *) default_zone);		
 		recur_dates = g_slist_delete_link (recur_dates, recur_dates);
 		
 		e_gw_item_set_recurrence_dates (item, recur_dates);
@@ -347,7 +353,7 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 		icalproperty *icalprop;
 
 		icalprop = icalproperty_new_x (description);
-		icalproperty_set_x_name (icalprop, "X-EVOLUTION-GROUPWISE-ID");
+		icalproperty_set_x_name (icalprop, "X-GWRECORDID");
 		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
 	}
 
@@ -527,23 +533,21 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	case E_GW_ITEM_TYPE_TASK :
 		/* due date */
 		t = e_gw_item_get_due_date (item);
-		if (!t)
-			break;
-		itt_utc = icaltime_from_string (t);
-		if (!icaltime_get_timezone (itt_utc))
-			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-		if (default_zone) {
-			itt = icaltime_convert_to_zone (itt_utc, default_zone); 
-			icaltime_set_timezone (&itt, default_zone);
-			dt.value = &itt;
-			dt.tzid = icaltimezone_get_tzid (default_zone);
-		} else {
-			dt.value = &itt_utc;
-			dt.tzid = g_strdup ("UTC");
+		if (t) {
+			itt_utc = icaltime_from_string (t);
+			if (!icaltime_get_timezone (itt_utc))
+				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+			if (default_zone) {
+				itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+				icaltime_set_timezone (&itt, default_zone);
+				dt.value = &itt;
+				dt.tzid = icaltimezone_get_tzid (default_zone);
+			} else {
+				dt.value = &itt_utc;
+				dt.tzid = g_strdup ("UTC");
+			}
+			e_cal_component_set_due (comp, &dt);
 		}
-		e_cal_component_set_due (comp, &dt);
-		break;
-
 		/* priority */
 		description = e_gw_item_get_priority (item);
 		if (description) {
@@ -574,7 +578,88 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, char **id)
+e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, icalproperty_method method)
+{
+	EGwConnectionStatus status;
+	icalparameter_partstat partstat;
+	
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+
+	switch (method) {
+	case ICAL_METHOD_REPLY:
+		/* get attendee here and add the list along. */
+		if (e_cal_component_has_attendees (comp))
+		{
+			GSList *attendee_list, *l;
+			ECalComponentAttendee  *attendee = NULL, *tmp;
+
+			
+			e_cal_component_get_attendee_list (comp, &attendee_list);
+			for (l = attendee_list; l ; l = g_slist_next (l)) {
+				tmp = (ECalComponentAttendee *) (l->data);
+				if (!strcmp (tmp->value + 7, e_gw_connection_get_user_email (cnc))) {
+					attendee = tmp;
+					break;
+				}
+			}
+			if (attendee) {
+				partstat = attendee->status;
+			}
+			else {
+				status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+				break;
+			}
+			if (attendee_list)
+				e_cal_component_free_attendee_list (attendee_list);
+			
+		}
+		else {
+			status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+			break;
+		}
+		
+		
+		switch (partstat) {
+		ECalComponentTransparency transp;
+			
+		case ICAL_PARTSTAT_ACCEPTED: 
+			e_cal_component_get_transparency (comp, &transp);
+			if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE) 
+				status = e_gw_connection_accept_request (cnc, e_cal_component_get_gw_id (comp), "Busy");
+			else 
+				status = e_gw_connection_accept_request (cnc, e_cal_component_get_gw_id (comp), "Free");
+			break;
+		case ICAL_PARTSTAT_DECLINED:
+			status = e_gw_connection_decline_request (cnc, e_cal_component_get_gw_id (comp));
+			break;
+		case ICAL_PARTSTAT_TENTATIVE:
+			status = e_gw_connection_accept_request (cnc, e_cal_component_get_gw_id (comp), "Tentative");
+			break;
+		case ICAL_PARTSTAT_COMPLETED:
+			status = e_gw_connection_complete_request (cnc, e_cal_component_get_gw_id (comp));
+
+		default :
+			status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+	
+		}
+
+		break;
+
+	case ICAL_METHOD_CANCEL:
+		status = e_gw_connection_retract_request (cnc, e_cal_component_get_gw_id (comp), NULL, FALSE, FALSE);
+		break;
+	default:
+		status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+	}	
+
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, GSList **id_list)
 {
 	EGwItem *item;
 	EGwConnectionStatus status;
@@ -584,7 +669,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ica
 
 	item = e_gw_item_new_from_cal_component (container, default_zone, comp);
 	e_gw_item_set_container_id (item, container);
-	status = e_gw_connection_send_item (cnc, item, id);
+	status = e_gw_connection_send_item (cnc, item, id_list);
 	g_object_unref (item);
 
 	return status;
@@ -695,7 +780,7 @@ close_freebusy_session (EGwConnection *cnc, const char *session)
 }
 
 EGwConnectionStatus
-e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy, icaltimezone *default_zone)
+e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy)
 {
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
@@ -808,10 +893,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				start = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (start);
-				if (default_zone)
-					itt = icaltime_from_timet_with_zone (t, 0, default_zone);
-				else
-					itt = icaltime_from_timet_with_zone (t, 0, 0);
+				itt = icaltime_from_timet (t, 0);
 				ipt.start = itt;
 			}        
 
@@ -819,10 +901,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				end = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (end);
-				if (default_zone)
-					itt = icaltime_from_timet_with_zone (t, 0, default_zone);
-				else
-					itt = icaltime_from_timet_with_zone (t, 0, 0);
+				itt = icaltime_from_timet (t, 0);
 				ipt.end = itt;
 			}
 			icalprop = icalproperty_new_freebusy (ipt);
@@ -860,24 +939,27 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	cache_##fieldname = e_gw_item_get_##fieldname (cache_item);                                           \
 	if ( cache_##fieldname ) {                                                                            \
 		if (!fieldname )                                                                               \
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, #fieldname, cache_##fieldname );\
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, #fieldname, (gpointer) cache_##fieldname );\
 		else if (strcmp ( fieldname, cache_##fieldname ))                                               \
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, #fieldname, fieldname );\
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, #fieldname, (gpointer) fieldname );\
 	}                                                                                                 \
 	else if ( fieldname )                                                                               \
-		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, #fieldname, fieldname );           \
+		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, #fieldname, (gpointer) fieldname );           \
 	}G_STMT_END
 
 void
 e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 {
-	char *subject, *cache_subject;
-	char *message, *cache_message;
+	const char *subject, *cache_subject;
+	const char *message, *cache_message;
 	const char *classification, *cache_classification;
-	char *accept_level, *cache_accept_level;
-	char *place, *cache_place;
-	char *priority, *cache_priority;
+	const char *accept_level, *cache_accept_level;
+	const char *place, *cache_place;
+	const char *priority, *cache_priority;
 	int trigger, cache_trigger;
+	char *due_date, *cache_due_date;
+	char *start_date, *cache_start_date;
+	char *end_date, *cache_end_date;
 
 	/* TODO assert the types of the items are the same */
 
@@ -885,15 +967,13 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	SET_DELTA(message);
 	SET_DELTA(classification);
 
-	if (strcmp (e_gw_item_get_start_date (item), e_gw_item_get_start_date (cache_item)))
-		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "startDate", e_gw_item_get_start_date (item));
 	
+	SET_DELTA(start_date);
 	/*FIXME  recipient_list modifications need go here after server starts
 	 * supporting retraction */
 	if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 
-		if (strcmp (e_gw_item_get_end_date (item), e_gw_item_get_end_date (cache_item)))
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "endDate", e_gw_item_get_end_date (item));
+		SET_DELTA(end_date);
 		SET_DELTA(accept_level);
 		SET_DELTA(place);
 		trigger = e_gw_item_get_trigger (item);
@@ -910,8 +990,8 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	else if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
 		gboolean completed, cache_completed;
 		
-		if (strcmp (e_gw_item_get_due_date (item), e_gw_item_get_due_date (cache_item)))
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "dueDate", e_gw_item_get_due_date (item));
+		SET_DELTA(due_date);
+		
 		completed = e_gw_item_get_completed (item);
 		cache_completed = e_gw_item_get_completed (cache_item);
 		if ((completed && !cache_completed) || (!completed && cache_completed))
