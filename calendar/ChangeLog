@@ -1,3 +1,11 @@
+2005-02-04  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal.c (generate_instances): don't expand recurrences
+	for detached instances.
+
+	* tests/ecal/test-recur.c:
+	* tests/ecal/Makefile.am: added recurrence test.
+
 2005-02-04  Ross Burton  <ross@burtonini.com>
 
 	* tests/ecal/test-search.c:
@@ -15,6 +23,7 @@
 	in schemas.
 
 2005-01-03 Vivek Jain <jvivek@novell.com>
+
 	* idl/Evolution-DataServer-Calendar.idl: 
 	  added InvalidServerVersion in the callstatus
 	* libecal/e-cal-types.h: (added INVALID_SEVER_VERSION)

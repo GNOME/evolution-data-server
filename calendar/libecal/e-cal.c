@@ -2954,6 +2954,8 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 	if (e_cal_util_component_has_recurrences (icalcomp)) {
 		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
 			itt = icaltime_from_timet (start, itt_start.is_date);
+ 			if (itt_start.zone)
+ 				icaltimezone_convert_time (&itt, icaltimezone_get_utc_timezone (), itt_start.zone);
 			icalcomponent_set_recurrenceid (icalcomp, itt);
 		}
 	}
@@ -3112,12 +3114,32 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 
 		comp = l->data;
 		if (e_cal_component_is_instance (comp)) {
-			/* keep the detached instances apart */
-			e_cal_recur_generate_instances (comp, start, end, add_instance, &detached_instances,
-							e_cal_resolve_tzid_cb, ecal,
-							default_zone);
+			struct comp_instance *ci;
+			struct icaltimetype recur_time, start_time, end_time;
 
-			g_object_unref (comp);
+			/* keep the detached instances apart */
+			ci = g_new0 (struct comp_instance, 1);
+			ci->comp = comp;
+	
+			recur_time = icalcomponent_get_recurrenceid (e_cal_component_get_icalcomponent (comp));
+			start_time = icalcomponent_get_dtstart (e_cal_component_get_icalcomponent (comp));
+			end_time = icalcomponent_get_dtend (e_cal_component_get_icalcomponent (comp));
+
+			if (priv->default_zone) {
+				ci->start = icaltime_as_timet_with_zone (recur_time,
+									 start_time.zone ? start_time.zone : priv->default_zone);
+				ci->end = ci->start +
+					(icaltime_as_timet_with_zone (end_time,
+								      end_time.zone ? end_time.zone : priv->default_zone) -
+					 icaltime_as_timet_with_zone (start_time,
+								      start_time.zone ? start_time.zone : priv->default_zone));
+			} else {
+				ci->start = icaltime_as_timet_with_zone (recur_time, priv->default_zone);
+				ci->end = ci->start +
+					(icaltime_as_timet (end_time) - icaltime_as_timet (start_time));
+			}
+
+			detached_instances = g_list_prepend (detached_instances, ci);
 		} else {
 			e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,
 							e_cal_resolve_tzid_cb, ecal,

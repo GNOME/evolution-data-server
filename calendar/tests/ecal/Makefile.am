@@ -19,28 +19,30 @@ test_scripts =                         \
 	cleanup.sh
 
 # The test program
-noinst_PROGRAMS = test-ecal test-search
+noinst_PROGRAMS = test-ecal test-recur test-search
 
-test_ecal_SOURCES =	\
-	test-ecal.c
-
+test_ecal_SOURCES = test-ecal.c
 test_ecal_INCLUDES =			\
 	$(INCLUDES)			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
-
 test_ecal_LDADD =								\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
 	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
 	$(EVOLUTION_CALENDAR_LIBS)
 
+test_recur_SOURCES = test-recur.c
+test_recur_INCLUDES =			\
+	$(INCLUDES)			\
+	-DG_LOG_DOMAIN=\"test-ecal\"
+test_recur_LDADD =								\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
+	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
+	$(EVOLUTION_CALENDAR_LIBS)
 
-test_search_SOURCES =	\
-	test-search.c
-
+test_search_SOURCES = test-search.c
 test_search_INCLUDES =			\
 	$(INCLUDES)			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
-
 test_search_LDADD =								\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
 	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
