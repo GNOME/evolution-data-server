@@ -59,6 +59,10 @@ struct _ECalBackendHttpPrivate {
 	/* Soup handles for remote file */
 	SoupSession *soup_session;
 	SoupMessage *soup_message;
+
+	/* Reload */
+	guint reload_timeout_id;
+	guint is_loading : 1;
 };
 
 
@@ -197,6 +201,9 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	priv = cbhttp->priv;
 
+	priv->is_loading = FALSE;
+	g_message ("Retrieval done.\n");
+
 	/* check status code */
 	if (priv->soup_message->status_code != SOUP_STATUS_OK) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
@@ -248,7 +255,12 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	icalcomponent_free (icalcomp);
 	g_object_unref (priv->soup_message);
 	priv->soup_message = NULL;
+
+	g_message ("Retrieval really done.\n");
 }
+
+static gboolean reload_cb                  (ECalBackendHttp *cbhttp);
+static void     maybe_start_reload_timeout (ECalBackendHttp *cbhttp);
 
 static gboolean
 begin_retrieval_cb (ECalBackendHttp *cbhttp)
@@ -261,8 +273,17 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	if (priv->mode != CAL_MODE_REMOTE)
 		return TRUE;
 
+	maybe_start_reload_timeout (cbhttp);
+
+	g_message ("Starting retrieval...\n");
+
 	if (priv->soup_message != NULL)
 		return FALSE;
+
+	if (priv->is_loading)
+		return FALSE;
+
+	priv->is_loading = TRUE;
 
 	/* create the Soup session if not already created */
 	if (!priv->soup_session) {
@@ -279,7 +300,48 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	soup_session_queue_message (priv->soup_session, priv->soup_message,
 				    (SoupMessageCallbackFn) retrieval_done, cbhttp);
 
+	g_message ("Retrieval started.\n");
 	return FALSE;
+}
+
+static gboolean
+reload_cb (ECalBackendHttp *cbhttp)
+{
+	ECalBackendHttpPrivate *priv;
+
+	priv = cbhttp->priv;
+
+	g_message ("Reload!\n");
+
+	priv->reload_timeout_id = 0;
+	begin_retrieval_cb (cbhttp);
+	return FALSE;
+}
+
+static void
+maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
+{
+	ECalBackendHttpPrivate *priv;
+	ESource *source;
+	const gchar *refresh_str;
+
+	priv = cbhttp->priv;
+
+	g_message ("Setting reload timeout.\n");
+
+	if (priv->reload_timeout_id)
+		return;
+
+	source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
+	if (!source) {
+		g_warning ("Could not get source for ECalBackendHttp reload.");
+		return;
+	}
+
+	refresh_str = e_source_get_property (source, "refresh");
+
+	priv->reload_timeout_id = g_timeout_add ((refresh_str ? atoi (refresh_str) : 30) * 1000,
+						 (GSourceFunc) reload_cb, cbhttp);
 }
 
 /* Open handler for the file backend */
@@ -729,6 +791,7 @@ e_cal_backend_http_init (ECalBackendHttp *cbhttp, ECalBackendHttpClass *class)
 	cbhttp->priv = priv;
 
 	priv->uri = NULL;
+	priv->reload_timeout_id = 0;
 }
 
 /* Class initialization function for the file backend */
