@@ -70,21 +70,6 @@ libecalinclude_HEADERS =	\
 	e-cal-view.h		\
 	e-cal-view-listener.h
 
-# The test program
-noinst_PROGRAMS = client-test
-
-client_test_SOURCES =	\
-	client-test.c
-
-client_test_INCLUDES =			\
-	$(INCLUDES)			\
-	-DG_LOG_DOMAIN=\"client-test\"
-
-client_test_LDADD =								\
-	libecal.la								\
-	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
-	$(EVOLUTION_CALENDAR_LIBS)
-
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libecal-1.0.pc
 

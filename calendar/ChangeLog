@@ -1,5 +1,9 @@
 2004-01-21  JP Rosevear <jpr@ximian.com>
 
+	* libecal/Makefile.am: don't build client test
+
+2004-01-21  JP Rosevear <jpr@ximian.com>
+
 	* tests/ecal/test-ecal.c: the beginnings of a test client
 
 	* tests/ecal/Makefile.am: build the test client
