@@ -1,3 +1,11 @@
+2005-01-10  Sushma Rai <rsushma@novell.com>
+
+	* camel-provider.[ch] (camel_provider_validate_user):
+	Given the server URL, validates the user credentials if
+	the provider supports.
+	Added temporarily for Exchange connector, will be removed
+	once connector plugin is made external.
+
 2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-folder.c

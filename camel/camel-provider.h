@@ -136,6 +136,7 @@ typedef struct {
 #define CAMEL_PROVIDER_CONF_DEFAULT_PATH      { CAMEL_PROVIDER_CONF_ENTRY, "path", NULL, N_("_Path:"), "" }
 
 typedef int (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, CamelException *ex);
+typedef gboolean (*CamelProviderValidateUserFunc) (CamelURL *camel_url, char *url, CamelException *ex);
 
 typedef struct {
 	/* Provider name used in CamelURLs. */
@@ -169,6 +170,8 @@ typedef struct {
 	
 	/* auto-detection function */
 	CamelProviderAutoDetectFunc auto_detect;
+
+	CamelProviderValidateUserFunc validate_user;
 	
 	/* CamelType(s) of its store and/or transport. If both are
 	 * set, then they are assumed to be linked together and the
@@ -223,6 +226,11 @@ void camel_provider_module_init(void);
 int camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
 				GHashTable **auto_detected, CamelException *ex);
 
+/* This API is added for exchange connector and will be REMOVED once the 
+   exchange-account-setup plugin is moved out in to the Evolution Exchange
+   Connector */
+gboolean camel_provider_validate_user (CamelProvider *provider, CamelURL *camel_url, 
+					char *url, CamelException *ex);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
