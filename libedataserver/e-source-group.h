@@ -85,6 +85,8 @@ const char *e_source_group_peek_base_uri  (ESourceGroup *group);
 GSList  *e_source_group_peek_sources        (ESourceGroup *group);
 ESource *e_source_group_peek_source_by_uid  (ESourceGroup *group,
 					     const char   *source_uid);
+ESource *e_source_group_peek_source_by_name (ESourceGroup *group,
+					     const char   *source_name);
 
 gboolean  e_source_group_add_source            (ESourceGroup *group,
 						ESource      *source,

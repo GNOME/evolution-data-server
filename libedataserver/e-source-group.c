@@ -475,12 +475,26 @@ e_source_group_peek_sources (ESourceGroup *group)
 
 ESource *
 e_source_group_peek_source_by_uid (ESourceGroup *group,
-				    const char *uid)
+				   const char *uid)
 {
 	GSList *p;
 
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		if (strcmp (e_source_peek_uid (E_SOURCE (p->data)), uid) == 0)
+			return E_SOURCE (p->data);
+	}
+
+	return NULL;
+}
+
+ESource *
+e_source_group_peek_source_by_name (ESourceGroup *group,
+				    const char *name)
+{
+	GSList *p;
+
+	for (p = group->priv->sources; p != NULL; p = p->next) {
+		if (strcmp (e_source_peek_name (E_SOURCE (p->data)), name) == 0)
 			return E_SOURCE (p->data);
 	}
 
