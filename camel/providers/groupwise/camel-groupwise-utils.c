@@ -307,48 +307,64 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 		guint part_count ;
 		
 		part_count = camel_multipart_get_number (mp) ;
+		g_print ("Contains Multiple parts: %d\n", part_count) ;
 		for ( i=0 ; i<part_count ; i++) {
 			CamelContentType *type ;
 			CamelMimePart *part ;
 			CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new () ;
 			CamelDataWrapper *dw = camel_data_wrapper_new () ;
-			EGwItemAttachment *attachment = g_new0 (EGwItemAttachment, 1) ;
+			EGwItemAttachment *attachment ; 
 			const char *disposition, *filename ;
 			char *buffer = NULL ;
 			char *mime_type = NULL ;
 			int len ;
-
+			/*
+			 * XXX:
+			 * Assuming the first part always is the actual message
+			 * and an attachment otherwise.....
+			 */
 			part = camel_multipart_get_part (mp, i) ;
 			dw = camel_medium_get_content_object (CAMEL_MEDIUM (part)) ;
-			
-
 			camel_data_wrapper_write_to_stream(dw, (CamelStream *)content) ;
 			buffer = g_malloc0 (content->buffer->len+1) ;
-			g_print (">>>>>> length:%d |||\n", content->buffer->len) ;
 			buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
-			g_print (">>>>>> buffer: \n %s\n", buffer) ;
 			len = content->buffer->len ;
 
 			filename = camel_mime_part_get_filename (part) ;
-			if (!filename) {
-				/*the message*/
+			disposition = camel_mime_part_get_disposition (part) ;
+			mime_type = camel_data_wrapper_get_mime_type (dw) ;
+			type = camel_mime_part_get_content_type(part) ;
+
+			if (i == 0) {
+				e_gw_item_set_content_type (item, mime_type) ;
 				e_gw_item_set_message (item, buffer) ;
 			} else {
-				mime_type = camel_data_wrapper_get_mime_type (dw) ;
-				g_print (">>>>mime:%s |||\n", mime_type) ;
-				type = camel_mime_part_get_content_type(part) ;
-				disposition = camel_mime_part_get_disposition (part) ;
-				attachment->data = g_malloc0 (content->buffer->len+1) ;
-				attachment->data = memcpy (attachment->data, content->buffer->data, content->buffer->len) ;
-				attachment->name = g_strdup (filename) ;
+				attachment = g_new0 (EGwItemAttachment, 1) ;
+				if (filename) {
+					attachment->data = g_malloc0 (content->buffer->len+1) ;
+					attachment->data = memcpy (attachment->data, 
+							           content->buffer->data, 
+							           content->buffer->len) ;
+					attachment->size = content->buffer->len ;
+				} else {
+					char *temp_str ;
+					int temp_len ;
+					temp_str = soup_base64_encode (buffer, len) ;
+					temp_len = strlen (temp_str) ;
+					attachment->data = g_strdup (temp_str) ;
+					attachment->size = temp_len ;
+					g_free (temp_str) ;
+					temp_str = NULL ;
+					temp_len = 0 ;
+				}
+				attachment->name = g_strdup (filename ? filename : "") ;
 				attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype) ;
-				g_print (">>>>>> %s/%s <<<<<< \n", type->type, type->subtype) ;
-				attachment->size = content->buffer->len ;
 				
 				attach_list = g_slist_append (attach_list, attachment) ;
-				g_free (mime_type) ;
 			}
+
 			g_free (buffer) ;
+			g_free (mime_type) ;
 			camel_object_unref (content) ;
 
 		} /*end of for*/
