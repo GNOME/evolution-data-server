@@ -1,3 +1,16 @@
+2004-08-23  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_get_contact_list)
+	(book_view_thread)
+	(set_members_in_gw_item) : add "members" view 
+	while getting items explicitly to take care of change in server 
+	behaviour 
+        (e_book_backnd_groupwise_start_book_view) : make the thread 
+	non-joinable 
+	(e_book_backend_groupwise_stop_book_view) : don;'t try to join
+	the thread as it is acusing gui blokcing when server response is slow	
+	
 2004-08-20  Chris Toshok  <toshok@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c

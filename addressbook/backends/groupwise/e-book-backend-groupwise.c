@@ -805,7 +805,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, count);
 	items = NULL;
 	if (count)
-		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &items);
+		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &items);
 	for (; items != NULL; items = g_list_next (items )) {
 		GList *emails;
 		GList *ptr;
@@ -1735,7 +1735,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	
 		ids = e_book_backend_summary_search (egwb->priv->summary, query);
 		if (ids->len > 0)
-			status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, NULL, ids, &gw_items);
+			status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, "members", ids, &gw_items);
 		match_needed = FALSE;
 		g_ptr_array_free (ids, TRUE);
 	} else { 
@@ -1743,7 +1743,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 			filter = e_book_backend_groupwise_build_gw_filter (egwb, query, &is_auto_completion);
 		if (filter)
 			match_needed = FALSE;
-		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &gw_items);
+		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &gw_items);
 	}
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -1843,8 +1843,10 @@ book_view_thread (gpointer data)
 	query = e_data_book_view_get_card_query (book_view);
 
 	filter = e_book_backend_groupwise_build_gw_filter (gwb, query, &is_auto_completion);
+	view = "members";
 	if (is_auto_completion)
 		view = "name email";
+	
 	if (!gwb->priv->is_writable && !filter) {
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 		bonobo_object_unref (book_view);
@@ -1908,7 +1910,7 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 	GroupwiseBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_GROUPWISE (backend));
 	
 	g_mutex_lock (closure->mutex);
-	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
+	closure->thread = g_thread_create (book_view_thread, book_view, FALSE, NULL);
 	g_cond_wait (closure->cond, closure->mutex);
 	
 	/* at this point we know the book view thread is actually running */
@@ -1920,16 +1922,13 @@ e_book_backend_groupwise_stop_book_view (EBookBackend  *backend,
 					 EDataBookView *book_view)
 {
 	GroupwiseBackendSearchClosure *closure = get_closure (book_view);
-	gboolean need_join = FALSE;
+	
 
 	g_mutex_lock (closure->mutex);
 	if (!closure->stopped)
-		need_join = TRUE;
-	closure->stopped = TRUE;
+		closure->stopped = TRUE;
 	g_mutex_unlock (closure->mutex);
 	
-	if (need_join)
-		g_thread_join (closure->thread);
 }
 
 static void
@@ -1950,7 +1949,7 @@ build_summary (EBookBackendGroupwise *ebgw)
 	int status;
 	GList *gw_items = NULL;
 	EContact *contact;
-	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, NULL, NULL, &gw_items);
+	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "members", NULL, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK) 
 		return FALSE;
 
@@ -1987,7 +1986,7 @@ update_summary (EBookBackendGroupwise *ebgw)
 
 	filter = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "modified", time_string);
-	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, NULL, filter, &gw_items);
+	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "members", filter, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK)
 		return FALSE;
 	
