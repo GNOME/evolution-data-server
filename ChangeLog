@@ -1,3 +1,15 @@
+2005-01-04  Rodrigo Moya <rodrigo@novell.com>
+
+	* art/Makefile.am:
+	* art/category*.png: added category icons from GAL.
+
+	* Makefile.am:
+	* configure.in: added 'art' directory to build.
+
+	* libedataserver/e-categories.[ch]: moved categories API from evolution.
+
+	* libedataserver/Makefile.am: added new files to the build.
+
 2004-12-31  JP Rosevear  <jpr@novell.com>
 
 	* Makefile.am: clean iconv-detect.h

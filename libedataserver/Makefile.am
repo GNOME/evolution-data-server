@@ -3,6 +3,7 @@ INCLUDES =								\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-I$(top_srcdir)/libdb/dist					\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
+	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
 	$(E_DATA_SERVER_CFLAGS)
 
 # The marshallers
@@ -16,6 +17,7 @@ libedataserver_1_2_la_SOURCES =		\
 	$(MARSHAL_GENERATED)		\
 	e-account-list.c		\
 	e-account.c			\
+	e-categories.c			\
 	e-component-listener.c		\
 	e-data-server-module.c		\
 	e-dbhash.c			\
@@ -52,6 +54,7 @@ libedataserverincludedir = $(privincludedir)/libedataserver
 libedataserverinclude_HEADERS =		\
 	e-account-list.h		\
 	e-account.h			\
+	e-categories.h			\
 	e-component-listener.h		\
 	e-data-server-module.h		\
 	e-db3-utils.h			\
