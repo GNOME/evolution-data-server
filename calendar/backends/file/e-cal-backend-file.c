@@ -1988,7 +1988,7 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
 		g_hash_table_remove (obj_data->recurrences, rid);
 		obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
-
+		
 		/* update the set of categories */
 		e_cal_component_get_categories_list (comp, &categories);
 		e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
@@ -2046,8 +2046,23 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 	switch (mod) {
 	case CALOBJ_MOD_ALL :
-		*old_object = e_cal_component_get_as_string (comp);
-		remove_component (cbfile, comp);
+		if (comp) {
+			*old_object = e_cal_component_get_as_string (comp);
+			remove_component (cbfile, comp);
+		} else {
+			char *real_rid;
+
+			if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &real_rid, &comp)) {
+				*old_object = e_cal_component_get_as_string (comp);
+			}
+		}
+
+		rrdata.cbfile = cbfile;
+		rrdata.obj_data = obj_data;
+		rrdata.rid = rid;
+		rrdata.mod = mod;
+		g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_object_instance_cb, &rrdata);
+
 		*object = NULL;
 		break;
 	case CALOBJ_MOD_THIS :
@@ -2059,11 +2074,6 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			remove_instance (cbfile, obj_data, rid);
 			*object = e_cal_component_get_as_string (obj_data->full_object);
 		}
-		*object = e_cal_component_get_as_string (comp);
-		if (!rid || !*rid)
-			remove_component (cbfile, comp);
-		else
-			remove_instance (cbfile, obj_data, rid);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
