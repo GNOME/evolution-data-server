@@ -1,5 +1,12 @@
 2005-03-12  Harish Krishnaswamy <kharish@novell.com>
 	
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas) :
+	use 'peek' while downloading new items so when the calendar gets 
+	the new item before the mailer has a chance to retrieve it, the item
+	is not flagged read.
+	
+2005-03-12  Harish Krishnaswamy <kharish@novell.com>
+	
 	Fixes a memory corruption issue in GW backend 
 	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas) :
 	strftime should be passed an array of sufficient length, not a

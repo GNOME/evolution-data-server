@@ -224,10 +224,10 @@ get_deltas (gpointer handle)
 	}
 
 	time_string = g_strdup (t_str);
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 				
