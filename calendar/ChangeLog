@@ -1,5 +1,10 @@
 2003-12-16  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/soap-test.c (idle_cb): unref the EGwConnection
+	object, so that the logout message is sent to the server.
+
+2003-12-16  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.c
 	(e_cal_backend_groupwise_open): return an AuthenticationFailed error
 	when we can't open the connection.
