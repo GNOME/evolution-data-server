@@ -21,6 +21,7 @@
 #include <string.h>
 #include <libgnome/gnome-i18n.h>
 #include <libedataserver/e-sexp.h>
+#include <libedataserver/e-util.h>
 #include <libecal/e-cal-time-util.h>
 
 #include "e-cal-backend-sexp.h"
@@ -196,62 +197,6 @@ func_time_day_end (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_TIME);
 	result->value.time = time_day_end (t);
-
-	return result;
-}
-
-/* (get-vtype)
- *
- * Returns a string indicating the type of component (VEVENT, VTODO, VJOURNAL,
- * VFREEBUSY, VTIMEZONE, UNKNOWN).
- */
-static ESExpResult *
-func_get_vtype (ESExp *esexp, int argc, ESExpResult **argv, void *data)
-{
-	SearchContext *ctx = data;
-	ECalComponentVType vtype;
-	char *str;
-	ESExpResult *result;
-
-	/* Check argument types */
-
-	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("get-vtype expects 0 arguments"));
-		return NULL;
-	}
-
-	/* Get the type */
-
-	vtype = e_cal_component_get_vtype (ctx->comp);
-
-	switch (vtype) {
-	case E_CAL_COMPONENT_EVENT:
-		str = g_strdup ("VEVENT");
-		break;
-
-	case E_CAL_COMPONENT_TODO:
-		str = g_strdup ("VTODO");
-		break;
-
-	case E_CAL_COMPONENT_JOURNAL:
-		str = g_strdup ("VJOURNAL");
-		break;
-
-	case E_CAL_COMPONENT_FREEBUSY:
-		str = g_strdup ("VFREEBUSY");
-		break;
-
-	case E_CAL_COMPONENT_TIMEZONE:
-		str = g_strdup ("VTIMEZONE");
-		break;
-
-	default:
-		str = g_strdup ("UNKNOWN");
-		break;
-	}
-
-	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
-	result->value.string = str;
 
 	return result;
 }
@@ -472,7 +417,7 @@ func_contains (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 	return result;
 }
 
-/* (has-alarms? #f|#t)
+/* (has-alarms?)
  *
  * A boolean value for components that have/dont have alarms.
  *
@@ -487,25 +432,14 @@ func_has_alarms (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 
 	/* Check argument types */
 
-	if (argc != 1) {
-		e_sexp_fatal_error (esexp, _("has-alarms? expects at least 1 argument"));
-		return NULL;
-	}
-
-	if (argv[0]->type != ESEXP_RES_BOOL) {
-		e_sexp_fatal_error (esexp, _("has-alarms? excepts argument to be a boolean"));
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("has-alarms? expects no arguments"));
 		return NULL;
 	}
 
 	has_to_have_alarms = argv[0]->value.bool;
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-
-	if (has_to_have_alarms && e_cal_component_has_alarms (ctx->comp))
-		result->value.bool = TRUE;
-	else if (!has_to_have_alarms && !e_cal_component_has_alarms (ctx->comp))
-		result->value.bool = TRUE;
-	else
-		result->value.bool = FALSE;
+	result->value.bool = e_cal_component_has_alarms (ctx->comp);
 
 	return result;
 }
@@ -832,7 +766,6 @@ static struct {
 	{ "time-day-end", func_time_day_end, 0 },
 
 	/* Component-related functions */
-	{ "get-vtype", func_get_vtype, 0 },
 	{ "occur-in-time-range?", func_occur_in_time_range, 0 },
 	{ "contains?", func_contains, 0 },
 	{ "has-alarms?", func_has_alarms, 0 },

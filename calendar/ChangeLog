@@ -1,3 +1,10 @@
+2003-11-10  Dan Winship  <danw@ximian.com>
+
+	* libedata-cal/e-cal-backend-sexp.c: Remove get-vtype from the
+	query language, since it is redundant now.
+	(func_has_alarms): Remove the boolean arg from has-alarms. You can
+	just say (not (has-alarms?)).
+
 2003-11-10  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.h: add proto
