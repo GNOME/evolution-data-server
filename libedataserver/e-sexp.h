@@ -8,27 +8,16 @@
 #include <time.h>
 #include <glib.h>
 
-#ifdef E_SEXP_IS_G_OBJECT
 #include <glib-object.h>
-#endif
 
 G_BEGIN_DECLS
 
-#ifdef E_SEXP_IS_G_OBJECT
 #define E_TYPE_SEXP            (e_sexp_get_type ())
 #define E_SEXP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SEXP, ESExp))
 #define E_SEXP_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SEXP, ESExpClass))
 #define IS_E_SEXP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SEXP))
 #define IS_E_SEXP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_SEXP))
 #define E_SEXP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_SEXP, ESExpClass))
-#else
-#define E_TYPE_SEXP            (0)
-#define E_SEXP(obj)            ((struct _ESExp *) (obj))
-#define E_SEXP_CLASS(klass)    ((struct _ESExpClass *) (klass))
-#define IS_E_SEXP(obj)         (1)
-#define IS_E_SEXP_CLASS(obj)   (1)
-#define E_SEXP_GET_CLASS(obj)  (NULL)
-#endif
 
 typedef struct _ESExp      ESExp;
 typedef struct _ESExpClass ESExpClass;
@@ -104,11 +93,7 @@ struct _ESExpTerm {
 
 
 struct _ESExp {
-#ifdef E_SEXP_IS_G_OBJECT
 	GObject parent_object;
-#else
-	int refcount;
-#endif
 	GScanner *scanner;	/* for parsing text version */
 	ESExpTerm *tree;	/* root of expression tree */
 	
@@ -123,24 +108,13 @@ struct _ESExp {
 };
 
 struct _ESExpClass {
-#ifdef E_SEXP_IS_G_OBJECT
 	GObjectClass parent_class;
-#else
-	int dummy;
-#endif
 };
 
-#ifdef E_SEXP_IS_G_OBJECT
 GType           e_sexp_get_type		(void);
-#endif
 ESExp 	       *e_sexp_new		(void);
-#ifdef E_SEXP_IS_G_OBJECT
 #define         e_sexp_ref(f)           g_object_ref (f)
 #define         e_sexp_unref(f)         g_object_unref (f)
-#else
-void		e_sexp_ref		(ESExp *f);
-void		e_sexp_unref		(ESExp *f);
-#endif
 void		e_sexp_add_function  	(ESExp *f, int scope, char *name, ESExpFunc *func, void *data);
 void		e_sexp_add_ifunction  	(ESExp *f, int scope, char *name, ESExpIFunc *func, void *data);
 void		e_sexp_add_variable  	(ESExp *f, int scope, char *name, ESExpTerm *value);

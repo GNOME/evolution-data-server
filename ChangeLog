@@ -1,3 +1,11 @@
+2005-01-12  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-sexp.[ch]: removed the usage of the
+	E_SEXP_IS_G_OBJECT macro, since it was not being set anywhere.
+	(e_sexp_new): fixed some typoes.
+	(e_sexp_class_init): use g_type_class_peek_parent to get the
+	parent class for our class.
+
 2005-01-08  Not Zed  <NotZed@Ximian.com>
 
 	* libedataserver/e-xml-hash-utils.c (e_xmlhash_write): cast field

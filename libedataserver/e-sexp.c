@@ -105,9 +105,7 @@ static struct _ESExpTerm * parse_value(ESExp *f);
 
 static void parse_dump_term(struct _ESExpTerm *t, int depth);
 
-#ifdef E_SEXP_IS_G_OBJECT
 static GObjectClass *parent_class;
-#endif
 
 static GScannerConfig scanner_config =
 {
@@ -1032,7 +1030,6 @@ parse_list(ESExp *f, int gotbrace)
 
 static void e_sexp_finalise(void *);
 
-#ifdef E_SEXP_IS_G_OBJECT
 static void
 e_sexp_class_init (ESExpClass *klass)
 {
@@ -1040,9 +1037,8 @@ e_sexp_class_init (ESExpClass *klass)
 
 	object_class->finalize = e_sexp_finalise;
 
-	parent_class = g_type_class_ref (g_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 }
-#endif
 
 /* 'builtin' functions */
 static struct {
@@ -1090,9 +1086,7 @@ e_sexp_finalise(void *o)
 	g_scanner_scope_foreach_symbol(s->scanner, 0, free_symbol, 0);
 	g_scanner_destroy(s->scanner);
 
-#ifdef E_SEXP_IS_G_OBJECT
 	G_OBJECT_CLASS (parent_class)->finalize (o);
-#endif
 }
 
 static void
@@ -1113,12 +1107,8 @@ e_sexp_init (ESExp *s)
 		}
 	}
 
-#ifndef E_SEXP_IS_G_OBJECT
-	s->refcount = 1;
-#endif
 }
 
-#ifdef E_SEXP_IS_G_OBJECT
 GType
 e_sexp_get_type (void)
 {
@@ -1142,38 +1132,14 @@ e_sexp_get_type (void)
 	
 	return type;
 }
-#endif
 
 ESExp *
 e_sexp_new (void)
 {
-#ifdef E_SEXP_IS_G_OBJECT
-	ESExp *f = (ESexp *) g_object_new (E_TYPE_SEXP, NULL);
-#else
-	ESExp *f = g_malloc0 (sizeof (ESExp));
-	e_sexp_init (f);
-#endif
+	ESExp *f = (ESExp *) g_object_new (E_TYPE_SEXP, NULL);
 	
 	return f;
 }
-
-#ifndef E_SEXP_IS_G_OBJECT
-void
-e_sexp_ref (ESExp *f)
-{
-	f->refcount++;
-}
-
-void
-e_sexp_unref (ESExp *f)
-{
-	f->refcount--;
-	if (f->refcount == 0) {
-		e_sexp_finalise(f);
-		g_free(f);
-	}
-}
-#endif
 
 void
 e_sexp_add_function(ESExp *f, int scope, char *name, ESExpFunc *func, void *data)
