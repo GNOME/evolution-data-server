@@ -219,23 +219,28 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
 	EGwConnectionStatus status;
         ECalComponent *comp;
 	const char *uid;
-	const char *rid;
+	char *rid;
         GSList *list = NULL, *l;
 
         /* get all the objects from the server */
         status = e_gw_connection_get_items (priv->cnc, NULL, &list);
-        if (status != E_GW_CONNECTION_STATUS_OK)
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+                g_slist_free (list);
                 return status;
+        }
         
         for (l = list; l != NULL; l = g_slist_next(l)) {
                 comp = E_CAL_COMPONENT (l->data);
 		e_cal_component_get_uid (comp, &uid);
                 rid = g_strdup (get_rid_string (comp));
-                /* l contains e-cal-components*/
                 e_cal_component_commit_sequence (comp);
 		e_cal_backend_cache_put_component (priv->cache, uid, rid, 
                                 e_cal_component_get_as_string (comp));
+                g_free (rid);
+                g_free (comp);
         }
+        
+        g_slist_free (list);
         return E_GW_CONNECTION_STATUS_OK;        
                                                                                                                     
 }
@@ -263,7 +268,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	/* create the local cache */
         /* FIXME: if the cache already exists - read it and get deltas. */
 	if (priv->cache)
-		g_object_unref (priv->cache);
+                return GNOME_Evolution_Calendar_Success;
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 	if (!priv->cache) {
 		g_mutex_unlock (priv->mutex);
@@ -425,6 +430,9 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 	case ICAL_VTODO_COMPONENT:
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
 		break;
+ 	case ICAL_VJOURNAL_COMPONENT:
+ 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
+ 		break;
 	default:
 		g_object_unref (comp);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -505,17 +513,127 @@ e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal
 	return GNOME_Evolution_Calendar_OtherError;
 }
 
+typedef struct {
+	GList *obj_list;
+	gboolean search_needed;
+	const char *query;
+	ECalBackendSExp *obj_sexp;
+	ECalBackend *backend;
+	icaltimezone *default_zone;
+} MatchObjectData;
+
+static void
+match_recurrence_sexp (gpointer key, gpointer value, gpointer data)
+{
+	ECalComponent *comp = value;
+	MatchObjectData *match_data = data;
+
+	if ((!match_data->search_needed) ||
+	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
+		match_data->obj_list = g_list_append (match_data->obj_list,
+						      e_cal_component_get_as_string (comp));
+	}
+}
+
+static void
+match_object_sexp (gpointer key, gpointer value, gpointer data)
+{
+	ECalComponent *comp = value;
+	MatchObjectData *match_data = data;
+
+	if ((!match_data->search_needed) ||
+	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
+		match_data->obj_list = g_list_append (match_data->obj_list,
+						      e_cal_component_get_as_string (comp));
+
+                /* FIXME recurrances should also be handled here */ 
+	}
+}
+
 /* Get_objects_in_range handler for the groupwise backend */
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
+e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GSList **objects)
 {
-	return GNOME_Evolution_Calendar_OtherError;
+	ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwisePrivate *priv;
+	MatchObjectData match_data;
+        GSList *l;
+        
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	g_message (G_STRLOC ": Getting object list (%s)", sexp);
+
+	match_data.search_needed = TRUE;
+	match_data.query = sexp;
+	match_data.obj_list = NULL;
+	match_data.backend = E_CAL_BACKEND (backend);
+	match_data.default_zone = priv->default_zone;
+
+	if (!strcmp (sexp, "#t"))
+		match_data.search_needed = FALSE;
+
+	match_data.obj_sexp = e_cal_backend_sexp_new (sexp);
+	if (!match_data.obj_sexp)
+		return GNOME_Evolution_Calendar_InvalidQuery;
+
+        for( l = e_cal_backend_cache_get_components (priv->cache); l != NULL; l = g_slist_next (l)) {
+                const char *uid;
+                ECalComponent *comp = E_CAL_COMPONENT (l);
+                e_cal_component_get_uid (comp, &uid);
+                match_object_sexp (uid, comp, &match_data);
+        }
+	*objects = match_data.obj_list;
+	
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* get_query handler for the groupwise backend */
 static void
 e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 {
+        ECalBackendSyncStatus status;
+	ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwisePrivate *priv;
+	MatchObjectData match_data;
+        GSList *l;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query));
+
+	/* try to match all currently existing objects */
+	match_data.search_needed = TRUE;
+	match_data.query = e_data_cal_view_get_text (query);
+	match_data.obj_list = NULL;
+	match_data.backend = backend;
+	match_data.default_zone = priv->default_zone;
+
+	if (!strcmp (match_data.query, "#t"))
+		match_data.search_needed = FALSE;
+
+	match_data.obj_sexp = e_data_cal_view_get_object_sexp (query);
+	if (!match_data.obj_sexp) {
+		e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_InvalidQuery);
+		return;
+	}
+
+        status = e_cal_backend_groupwise_get_object_list (backend, NULL, match_data.query, &l );
+
+        if ( status != GNOME_Evolution_Calendar_Success )
+                return;
+        
+       	/* notify listeners of all objects */
+	if (match_data.obj_list) {
+		e_data_cal_view_notify_objects_added (query, (const GList *) match_data.obj_list);
+
+		/* free memory */
+		g_list_foreach (match_data.obj_list, (GFunc) g_free, NULL);
+		g_list_free (match_data.obj_list);
+	}
+
+	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
 }
 
 /* Get_free_busy handler for the file backend */
