@@ -1,3 +1,28 @@
+2005-01-03  Vivek Jain <jvivek@novell.com>
+
+	* e-gw-connection.[ch] : added a function to share a folder
+	(e_gw_connection_share_folder)
+	
+	*e-gw-container.[ch] : Added One structure for reperenting a user
+	corresponding to a folder (EShUsers),
+	Added functions 
+	(e_gw_container_get_user_list) : gets list of users for a folder
+	(e_gw_container_get_owner): gets owner of the folder
+	(e_gw_container_get_modified) : gets when modified last
+	(e_gw_container_get_sequence) : gets the sequence of the folder
+	(e_gw_container_get_is_shared_by_me)
+	(e_gw_container_get_is_shared_to_me)
+	(e_gw_container_get_rights)
+	(e_gw_container_form_message) : to form the request message
+
+	and for setting these the following static methods in 
+	* e-gw-container.c 
+	(e_gw_container_set_owner)
+	(e_gw_container_set_modified)
+	(e_gw_container_set_sequence) 
+	(e_gw_container_set_is_shared_by_me)
+	(e_gw_container_set_is_shared_to_me) 
+	
 2004-12-15  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* e-gw-item.c:

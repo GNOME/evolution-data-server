@@ -25,6 +25,7 @@
 #define E_GW_CONTAINER_H
 
 #include <libsoup/soup-soap-response.h>
+#include <libsoup/soup-soap-message.h>
 
 G_BEGIN_DECLS
 
@@ -34,6 +35,7 @@ G_BEGIN_DECLS
 #define E_IS_GW_CONTAINER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_GW_CONTAINER))
 #define E_IS_GW_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_GW_CONTAINER))
 
+typedef struct _EShUsers            EShUsers;
 typedef struct _EGwContainer        EGwContainer;
 typedef struct _EGwContainerClass   EGwContainerClass;
 typedef struct _EGwContainerPrivate EGwContainerPrivate;
@@ -45,6 +47,11 @@ struct _EGwContainer {
 
 struct _EGwContainerClass {
 	GObjectClass parent_class;
+};
+
+struct _EShUsers {
+	char *email;
+	int rights;
 };
 
 GType         e_gw_container_get_type (void);
@@ -62,6 +69,14 @@ void          e_gw_container_set_is_writable (EGwContainer *container, gboolean 
 gboolean     e_gw_container_get_is_frequent_contacts (EGwContainer *container);
 void         e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_frequent_contacts);
 gboolean    e_gw_container_is_root (EGwContainer *container) ;
+const char *  e_gw_container_get_owner(EGwContainer *container);
+const char *  e_gw_container_get_modified(EGwContainer *container);
+int           e_gw_container_get_sequence(EGwContainer *container);
+gboolean      e_gw_container_get_is_shared_by_me(EGwContainer *container);
+gboolean      e_gw_container_get_is_shared_to_me(EGwContainer *container);
+int 	      e_gw_container_get_rights(EGwContainer *container, gchar *email);
+void 	      e_gw_container_get_user_list(EGwContainer *container, GList **user_list);
+void	      e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, const char *sub, const char *mesg, int flag);
 
 G_END_DECLS
 

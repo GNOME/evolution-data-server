@@ -2094,3 +2094,29 @@ e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char 
 	return status;
 }
 
+EGwConnectionStatus 
+e_gw_connection_share_folder(EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag) 
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_UNKNOWN;
+
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc), e_gw_connection_get_session_id (cnc), "modifyItemRequest");
+	e_gw_container_form_message (msg, id, new_list, sub, mesg, flag);
+	e_gw_message_write_footer (msg);
+	response =  e_gw_connection_send_message (cnc, msg);
+	
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
