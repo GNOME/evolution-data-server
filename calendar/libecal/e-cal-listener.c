@@ -30,8 +30,6 @@
 struct ECalListenerPrivate {
 	/* Notification functions and their closure data */
 	ECalListenerCalSetModeFn cal_set_mode_fn;
-	ECalListenerErrorOccurredFn error_occurred_fn;
-	ECalListenerCategoriesChangedFn categories_changed_fn;
 	gpointer fn_data;
 
 	/* Whether notification is desired */
@@ -62,6 +60,8 @@ enum {
 	GET_CHANGES,
 	GET_FREE_BUSY,
 	QUERY,
+	CATEGORIES_CHANGED,
+	BACKEND_ERROR,
 	LAST_SIGNAL
 };
 
@@ -630,8 +630,7 @@ impl_notifyErrorOccurred (PortableServer_Servant servant,
 	if (!priv->notify)
 		return;
 
-	g_assert (priv->error_occurred_fn != NULL);
-	(* priv->error_occurred_fn) (listener, message, priv->fn_data);
+	g_signal_emit (G_OBJECT (listener), signals[BACKEND_ERROR], 0, message);
 }
 
 /* ::notifyCategoriesChanged method */
@@ -649,8 +648,7 @@ impl_notifyCategoriesChanged (PortableServer_Servant servant,
 	if (!priv->notify)
 		return;
 
-	g_assert (priv->categories_changed_fn != NULL);
-	(* priv->categories_changed_fn) (listener, categories, priv->fn_data);
+	g_signal_emit (G_OBJECT (listener), signals[CATEGORIES_CHANGED], 0, categories);
 }
 
 
@@ -663,9 +661,6 @@ e_cal_listener_init (ECalListener *listener, ECalListenerClass *klass)
 
 	priv = g_new0 (ECalListenerPrivate, 1);
 	listener->priv = priv;
-
-	priv->error_occurred_fn = NULL;
-	priv->categories_changed_fn = NULL;
 
 	priv->notify = TRUE;
 }
@@ -683,8 +678,6 @@ e_cal_listener_finalize (GObject *object)
 	listener = E_CAL_LISTENER (object);
 	priv = listener->priv;
 
-	priv->error_occurred_fn = NULL;
-	priv->categories_changed_fn = NULL;
 	priv->fn_data = NULL;
 
 	priv->notify = FALSE;
@@ -910,6 +903,22 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT_POINTER,
 			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
+	signals[CATEGORIES_CHANGED] =
+		g_signal_new ("categories_changed",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ECalListenerClass, categories_changed),
+			      NULL, NULL,
+			      e_cal_marshal_VOID__POINTER,
+			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[BACKEND_ERROR] =
+		g_signal_new ("backend_error",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ECalListenerClass, backend_error),
+			      NULL, NULL,
+			      e_cal_marshal_VOID__STRING,
+			      G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
 BONOBO_TYPE_FUNC_FULL (ECalListener,
@@ -919,24 +928,18 @@ BONOBO_TYPE_FUNC_FULL (ECalListener,
 
 ECalListener *
 e_cal_listener_construct (ECalListener *listener,
-			ECalListenerCalSetModeFn cal_set_mode_fn,
-			ECalListenerErrorOccurredFn error_occurred_fn,
-			ECalListenerCategoriesChangedFn categories_changed_fn,
-			gpointer fn_data)
+			  ECalListenerCalSetModeFn cal_set_mode_fn,
+			  gpointer fn_data)
 {
 	ECalListenerPrivate *priv;
 
 	g_return_val_if_fail (listener != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_LISTENER (listener), NULL);
  	g_return_val_if_fail (cal_set_mode_fn != NULL, NULL);
-	g_return_val_if_fail (error_occurred_fn != NULL, NULL);
-	g_return_val_if_fail (categories_changed_fn != NULL, NULL);
 
 	priv = listener->priv;
 
 	priv->cal_set_mode_fn = cal_set_mode_fn;
-	priv->error_occurred_fn = error_occurred_fn;
-	priv->categories_changed_fn = categories_changed_fn;
 	priv->fn_data = fn_data;
 
 	return listener;
@@ -946,9 +949,6 @@ e_cal_listener_construct (ECalListener *listener,
  * e_cal_listener_new:
  * @cal_set_mode_fn: Function callback for notification that a
  * calendar changed modes
- * @error_occurred_fn:  Function that will be called to notify errors.
- * @categories_changed_fn: Function that will be called to notify that the list
- * of categories that are present in the calendar's objects has changed.
  * @fn_data: losure data pointer that will be passed to the notification
  * functions.
  * 
@@ -958,14 +958,11 @@ e_cal_listener_construct (ECalListener *listener,
  **/
 ECalListener *
 e_cal_listener_new (ECalListenerCalSetModeFn cal_set_mode_fn,
-		  ECalListenerErrorOccurredFn error_occurred_fn,
-		  ECalListenerCategoriesChangedFn categories_changed_fn,
-		  gpointer fn_data)
+		    gpointer fn_data)
 {
 	ECalListener *listener;
 
-	g_return_val_if_fail (error_occurred_fn != NULL, NULL);
-	g_return_val_if_fail (categories_changed_fn != NULL, NULL);
+	g_return_val_if_fail (cal_set_mode_fn != NULL, NULL);
 
 	listener = g_object_new (E_TYPE_CAL_LISTENER, 
 				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
@@ -973,8 +970,6 @@ e_cal_listener_new (ECalListenerCalSetModeFn cal_set_mode_fn,
 
 	return e_cal_listener_construct (listener,
 					 cal_set_mode_fn,
-					 error_occurred_fn,
-					 categories_changed_fn,
 					 fn_data);
 }
 

@@ -1,3 +1,27 @@
+2004-02-01  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.h: order the signals more sensibly
+
+	* libecal/e-cal.c (destroy_factories): use G_STRLOC
+	(categories_changed_cb): set the size of the array so the length
+	is set
+	(e_cal_init): remove extra listener args, listen for new signals
+
+	* libecal/e-cal-marshal.list: add signal marshaller
+
+	* libecal/e-cal-listener.h: add new signals, remove function
+	callback protos, update protos
+
+	* libecal/e-cal-listener.c (impl_notifyErrorOccurred): emit error
+	signal
+	(impl_notifyCategoriesChanged): emit categories changed signal
+	(e_cal_listener_init): remove dead initializations
+	(e_cal_listener_finalize): remove dead finalizations
+	(e_cal_listener_class_init): add category and error signals
+	(e_cal_listener_construct): remove error and category function
+	params
+	(e_cal_listener_new): ditto
+
 2004-01-31  JP Rosevear  <jpr@ximian.com>
 
 	* libecal/e-cal.c (e_cal_is_read_only): return a proper GError and

@@ -81,6 +81,9 @@ typedef struct {
 	void (*get_free_busy) (ECalListener *listener, ECalendarStatus status, GList *freebusy);
 	
 	void (*query) (ECalListener *listener, ECalendarStatus status, GNOME_Evolution_Calendar_CalView query);
+
+	void (*categories_changed) (ECalListener *listener, ECalendarStatus status, GPtrArray *categories);
+	void (*backend_error) (ECalListener *listener, ECalendarStatus status, const char *message);
 } ECalListenerClass;
 
 /* Notification functions */
@@ -89,26 +92,13 @@ typedef void (* ECalListenerCalSetModeFn) (ECalListener *listener,
 					  GNOME_Evolution_Calendar_CalMode mode,
 					  gpointer data);
 
-typedef void (* ECalListenerErrorOccurredFn) (ECalListener *listener,
-					     const char *message,
-					     gpointer data);
-
-typedef void (* ECalListenerCategoriesChangedFn) (ECalListener *listener,
-						 const GNOME_Evolution_Calendar_StringSeq *categories,
-						 gpointer data);
-
-
 GType e_cal_listener_get_type (void);
 
 ECalListener *e_cal_listener_construct (ECalListener *listener,
 				     ECalListenerCalSetModeFn cal_set_mode_fn,
-				     ECalListenerErrorOccurredFn error_occurred_fn,
-				     ECalListenerCategoriesChangedFn categories_changed_fn,
 				     gpointer fn_data);
 
 ECalListener *e_cal_listener_new (ECalListenerCalSetModeFn cal_set_mode_fn,
-			       ECalListenerErrorOccurredFn error_occurred_fn,
-			       ECalListenerCategoriesChangedFn categories_changed_fn,
 			       gpointer fn_data);
 
 void e_cal_listener_stop_notification (ECalListener *listener);

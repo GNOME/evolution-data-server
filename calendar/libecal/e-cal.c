@@ -262,7 +262,7 @@ destroy_factories (ECal *ecal)
 
 		result = CORBA_Object_is_nil (factory, &ev);
 		if (BONOBO_EX (&ev)) {
-			g_message ("destroy_factories(): could not see if a factory was nil");
+			g_message (G_STRLOC ": could not see if a factory was nil");
 			CORBA_exception_free (&ev);
 
 			continue;
@@ -273,7 +273,7 @@ destroy_factories (ECal *ecal)
 
 		CORBA_Object_release (factory, &ev);
 		if (BONOBO_EX (&ev)) {
-			g_message ("destroy_factories(): could not release a factory");
+			g_message (G_STRLOC ": could not release a factory");
 			CORBA_exception_free (&ev);
 		}
 	}
@@ -966,11 +966,12 @@ categories_changed_cb (ECalListener *listener, const GNOME_Evolution_Calendar_St
 	cat_data = g_new0 (ECalCategoryData, 1);
 
 	cat_data->ecal = g_object_ref (data);
-	cat_data->categories = g_ptr_array_sized_new (categories->_length);
+	cat_data->categories = g_ptr_array_new ();
+	g_ptr_array_set_size (cat_data->categories, categories->_length);
 
 	for (i = 0; i < categories->_length; i++)
 		cat_data->categories->pdata[i] = g_strdup (categories->_buffer[i]);
-
+	
 	g_idle_add (categories_changed_idle_cb, cat_data);
 }
 
@@ -1041,10 +1042,7 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
 	priv->uri = NULL;
 	priv->mutex = g_mutex_new ();
-	priv->listener = e_cal_listener_new (cal_set_mode_cb,
-					     backend_error_cb,
-					     categories_changed_cb,
-					     ecal);
+	priv->listener = e_cal_listener_new (cal_set_mode_cb, ecal);
 
 	priv->cal_address = NULL;
 	priv->alarm_email_address = NULL;
@@ -1077,6 +1075,8 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 	g_signal_connect (G_OBJECT (priv->listener), "get_changes", G_CALLBACK (cal_get_changes_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "get_free_busy", G_CALLBACK (cal_get_free_busy_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "query", G_CALLBACK (cal_query_cb), ecal);
+	g_signal_connect (G_OBJECT (priv->listener), "categories_changed", G_CALLBACK (categories_changed_cb), ecal);
+	g_signal_connect (G_OBJECT (priv->listener), "backend_error", G_CALLBACK (backend_error_cb), ecal);
 }
 
 /* Finalize handler for the calendar ecal */
