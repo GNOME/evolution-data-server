@@ -1143,6 +1143,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	if (!*text) {
 		/* If the entry was completely cleared, remove the initial destination too */
 		remove_destination_by_index (name_selector_entry, 0);
+		generate_attribute_list (name_selector_entry);
 	} else {
 		modify_destination_at_position (name_selector_entry, start_pos);
 	}
@@ -1213,6 +1214,17 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	get_range_at_position (text, cursor_pos, &range_start, &range_end);
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
+}
+
+static gboolean
+user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
+{
+	if (!event_focus->in)
+		entry_activate (name_selector_entry);
+
+	clear_completion_model (name_selector_entry);
+
+	return FALSE;
 }
 
 static void
@@ -1540,6 +1552,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
   g_signal_connect (name_selector_entry, "insert-text", G_CALLBACK (user_insert_text), name_selector_entry);
   g_signal_connect (name_selector_entry, "delete-text", G_CALLBACK (user_delete_text), name_selector_entry);
+  g_signal_connect (name_selector_entry, "focus-out-event", G_CALLBACK (user_focus_out), name_selector_entry);
 
   /* Exposition */
 

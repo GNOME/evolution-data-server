@@ -1,3 +1,11 @@
+2005-01-24  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-name-selector-entry.c (user_delete_text): If all destinations are
+	removed in one fell swoop, remember to rebuild the attribute list.
+	(user_focus_out): Implement. Completes the current entry (if possible)
+	and clears the completion model so the popup won't show.
+	(e_name_selector_entry_init): Connect to the focus-out-event.
+
 2005-01-22  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-name-selector-entry.c (name_style_query): Query for the full string
