@@ -1,3 +1,12 @@
+2004-05-10  Sivaiah Nallagatla  <snallagatla@novell.com>
+	
+	* e-gw-container.[ch] (e_gw_container_get_is_frequent_contacts)
+	(e_gw_container_set_is_frequent_contacts) : new apis to get and set
+	whther the container is Frequent Contacts folder 
+	
+	* e-gw-connection.c (e_gw_connection_get_addressbook_list) : read 
+	isFrequentContacts parameter from soap response and set it in container 
+
 2004-05-04  Sivaiah Nallagatla  <snallagatla@novell.com>
 	* e-gw-item.c  (free_full_name) : make it as function as we 
 	have to at more than one place
@@ -68,6 +77,7 @@
                                                                                                                               
         * e-gw-connection.c (e_gw_connection_remove_item) : remove items and item from
         the request and add  container id to request
+
 
 2004-04-01  Rodrigo Moya <rodrigo@ximian.com>
 

@@ -1063,7 +1063,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	SoupSoapResponse *response;
         EGwConnectionStatus status;
 	SoupSoapParameter *param;
-	SoupSoapParameter *is_personal_param;
+	SoupSoapParameter *type_param;
 	char *value;
 	
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
@@ -1107,14 +1107,22 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 			container = e_gw_container_new_from_soap_parameter (subparam);
 			if (container) {
 				*container_list = g_list_append (*container_list, container);
-				is_personal_param = soup_soap_parameter_get_first_child_by_name (subparam, "isPersonal");
+				type_param = soup_soap_parameter_get_first_child_by_name (subparam, "isPersonal");
 				value = NULL;
-				if (is_personal_param)
-					value = soup_soap_parameter_get_string_value (is_personal_param);
+				if (type_param)
+					value = soup_soap_parameter_get_string_value (type_param);
 				if (value && g_str_equal(value , "1"))
 					e_gw_container_set_is_writable (container, TRUE);
 				else 
 					e_gw_container_set_is_writable (container, FALSE);
+				g_free (value);
+				value = NULL;
+			        type_param = soup_soap_parameter_get_first_child_by_name (subparam, "isFrequentContacts");
+				if (type_param)
+                                        value = soup_soap_parameter_get_string_value (type_param);
+                                if (value && g_str_equal(value , "1"))
+                                        e_gw_container_set_is_frequent_contacts (container, TRUE);
+                                                                        
 				g_free (value);
 					
 			}

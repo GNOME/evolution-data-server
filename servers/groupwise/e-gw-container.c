@@ -31,6 +31,7 @@ struct _EGwContainerPrivate {
 	char *name;
 	char *id;
 	gboolean is_writable;
+	gboolean is_frequent_contacts; /*indicates  whether this folder is frequent contacts or not */
 };
 
 static GObjectClass *parent_class = NULL;
@@ -96,7 +97,8 @@ e_gw_container_init (EGwContainer *container, EGwContainerClass *klass)
 
 	/* allocate internal structure */
 	priv = g_new0 (EGwContainerPrivate, 1);
-
+	priv->is_writable = TRUE;
+	priv->is_frequent_contacts = FALSE;
 	container->priv = priv;
 }
 
@@ -235,3 +237,21 @@ e_gw_container_set_is_writable (EGwContainer *container, gboolean is_writable)
 	
 	container->priv->is_writable = is_writable;
 }
+
+gboolean 
+e_gw_container_get_is_frequent_contacts (EGwContainer *container)
+{
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
+                                                                                                                             
+        return container->priv->is_frequent_contacts;
+
+}
+
+void
+e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_frequent_contacts)
+{
+        g_return_if_fail (E_IS_GW_CONTAINER (container));
+                                                                                                                             
+        container->priv->is_frequent_contacts = is_frequent_contacts;
+}
+

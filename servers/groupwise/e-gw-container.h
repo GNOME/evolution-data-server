@@ -57,7 +57,8 @@ const char   *e_gw_container_get_id (EGwContainer *container);
 void          e_gw_container_set_id (EGwContainer *container, const char *new_id);
 gboolean      e_gw_container_get_is_writable (EGwContainer *container);
 void          e_gw_container_set_is_writable (EGwContainer *container, gboolean writable);
-
+gboolean     e_gw_container_get_is_frequent_contacts (EGwContainer *container);
+void         e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_frequent_contacts);
 G_END_DECLS
 
 #endif
