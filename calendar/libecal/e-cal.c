@@ -610,7 +610,6 @@ cal_objects_received_cb (ECalListener *listener, ECalendarStatus status, gpointe
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
-	GList *l;
 
 	op = e_calendar_get_op (ecal);
 
@@ -746,9 +745,6 @@ cal_get_timezone_cb (ECalListener *listener, ECalendarStatus status, const char 
 
 	op->status = status;
 	op->string = g_strdup (object);
-
-	for (l = op->list; l; l = l->next)
-		l->data = g_strdup (l->data);
 
 	g_cond_signal (op->cond);
 
