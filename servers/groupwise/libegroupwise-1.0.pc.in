@@ -1,0 +1,16 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+idldir=@idldir@
+IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
+
+privincludedir=@privincludedir@
+
+Name: libegroupwise
+Description: Client library for accessing groupwise POA through SOAP interface
+Version: @VERSION@
+Requires: libsoup-2.2 >= @LIBSOUP_REQUIRED@ 
+Libs: -L${libdir} -legroupwise
+Cflags: -I${privincludedir}/groupwise

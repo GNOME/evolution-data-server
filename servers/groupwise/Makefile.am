@@ -1,3 +1,4 @@
+
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"libegroupwise\"		\
 	-I$(top_srcdir)					\
@@ -5,7 +6,7 @@ INCLUDES =						\
 	$(SOUP_CFLAGS)					\
 	$(E_DATA_SERVER_CFLAGS)
 
-noinst_PROGRAMS = create-account soap-test
+noinst_PROGRAMS = create-account soap-test 
 
 create_account_SOURCES = create-account.c
 create_account_LDADD = 						\
@@ -17,9 +18,9 @@ soap_test_SOURCES = soap-test.c
 soap_test_LDADD = 						\
 	$(SOUP_LIBS)						\
 	$(top_builddir)/servers/groupwise/libegroupwise.la	\
-	$(E_DATA_SERVER_LIBS)
+	$(E_DATA_SERVER_LIBS) 
 
-noinst_LTLIBRARIES = libegroupwise.la
+lib_LTLIBRARIES = libegroupwise.la
 
 libegroupwise_la_SOURCES =			\
 	e-gw-connection.c			\
@@ -35,3 +36,19 @@ libegroupwise_la_SOURCES =			\
 
 libegroupwise_la_LIBADD =						\
 	$(SOUP_LIBS)
+libegroupwise_la_LDFLAGS =                                               \
+        -version-info $(LIBEGROUPWISE_CURRENT):$(LIBEGROUPWISE_REVISION):$(LIBEGROUPWISE_AGE)
+
+libegroupwiseincludedir = $(privincludedir)/groupwise
+
+libegroupwiseinclude_HEADERS =                  \
+        e-gw-connection.h                       \
+	e-gw-container.h                        \
+	e-gw-message.h                          \
+	e-gw-item.h                             \
+	e-gw-filter.h                        
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libegroupwise-1.0.pc
+
+EXTRA_DIST = $(pkgconfig_DATA:.pc=.pc.in)
