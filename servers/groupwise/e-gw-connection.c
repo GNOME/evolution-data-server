@@ -2404,3 +2404,72 @@ e_gw_connection_purge_deleted_items (EGwConnection *cnc)
 
 }
 
+EGwConnectionStatus
+e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "markReadRequest");
+
+	soup_soap_message_start_element (msg, "items", NULL, NULL);
+	for (; item_ids != NULL; item_ids = g_list_next (item_ids))
+		e_gw_message_write_string_parameter (msg, "item", NULL, item_ids->data);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "markUnReadRequest");
+
+	soup_soap_message_start_element (msg, "items", NULL, NULL);
+	for (; item_ids != NULL; item_ids = g_list_next (item_ids))
+		e_gw_message_write_string_parameter (msg, "item", NULL, item_ids->data);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}

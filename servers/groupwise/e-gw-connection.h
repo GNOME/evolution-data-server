@@ -119,7 +119,7 @@ EGwConnectionStatus e_gw_connection_position_cursor (EGwConnection *cnc, const c
 EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const char *container, const char *view, const char *start_date, const char *message_list, const char *item_types, const char *item_sources, int count, GSList **item_list);
 
 EGwConnectionStatus e_gw_connection_create_folder(EGwConnection *cnc, const char *parent_name,const char *folder_name, char **container_id) ;
-EGwConnectionStatus e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, int length, const char **attachment, int *attach_lenght) ;
+EGwConnectionStatus e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, int length, unsigned char **attachment, int *attach_lenght) ;
 EGwConnectionStatus e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char *id) ;
 EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *item_ids) ;
 EGwConnectionStatus e_gw_connection_move_item (EGwConnection *cnc, const char *id, const char *dest_container_id, const char *from_container_id);
@@ -130,6 +130,9 @@ EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const cha
 EGwConnectionStatus e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag); 
 EGwConnectionStatus e_gw_connection_accept_shared_folder (EGwConnection *cnc, gchar *folder_name, gchar *container_id, gchar *item_id, gchar *desc);
 EGwConnectionStatus e_gw_connection_purge_deleted_items (EGwConnection *cnc);
+
+EGwConnectionStatus e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids) ;
+EGwConnectionStatus e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids) ;
 G_END_DECLS
 
 #endif

@@ -1,5 +1,11 @@
 2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
 
+	* e-gw-connection.[ch]
+	  (e_gw_connection_mark_read): mark messages read
+	  (e_gw_connection_mark_unread): mark messages unread
+
+2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+
 	* e-gw-connection.c
 	  (e_gw_connection_move_item): changed moveItemsRequest
 	  to moveItemRequest.
