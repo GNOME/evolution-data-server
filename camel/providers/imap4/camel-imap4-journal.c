@@ -338,10 +338,12 @@ camel_imap4_journal_replay (CamelIMAP4Journal *journal, CamelException *ex)
 
 
 void
-camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, CamelMessageInfo *mi, CamelException *ex)
+camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi, char **appended_uid, CamelException *ex)
 {
 	CamelFolder *folder = (CamelFolder *) journal->folder;
 	CamelIMAP4JournalEntry *entry;
+	CamelMessageInfoBase *a, *b;
+	CamelMessageInfo *info;
 	CamelStream *cache;
 	guint32 nextuid;
 	char *uid;
@@ -380,4 +382,22 @@ camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *messag
 	entry->v.append_uid = uid;
 	
 	e_dlist_addtail (&journal->queue, (EDListNode *) entry);
+	
+	info = camel_folder_summary_info_new_from_message (folder->summary, message);
+	info->uid = g_strdup (uid);
+	
+	a = (CamelMessageInfoBase *) info;
+	b = (CamelMessageInfoBase *) mi;
+	
+	camel_flag_list_copy (&a->user_flags, &b->user_flags);
+	camel_tag_list_copy (&a->user_tags, &b->user_tags);
+	a->date_received = b->date_received;
+	a->date_sent = b->date_sent;
+	a->flags = b->flags;
+	a->size = b->size;
+	
+	camel_folder_summary_add (folder->summary, info);
+	
+	if (appended_uid)
+		*appended_uid = g_strdup (uid);
 }

@@ -888,7 +888,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		*appended_uid = NULL;
 	
 	if (!camel_session_is_online (session)) {
-		camel_imap4_journal_append (((CamelIMAP4Folder *) folder)->journal, message, info, ex);
+		camel_imap4_journal_append (((CamelIMAP4Folder *) folder)->journal, message, info, appended_uid, ex);
 		return;
 	}
 	
@@ -1077,7 +1077,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 			if (!(message = imap4_get_message (src, camel_message_info_uid (info), ex)))
 				break;
 			
-			camel_imap4_journal_append (((CamelIMAP4Folder *) dest)->journal, message, info, ex);
+			camel_imap4_journal_append (((CamelIMAP4Folder *) dest)->journal, message, info, NULL, ex);
 			camel_object_unref (message);
 			
 			if (camel_exception_is_set (ex))
@@ -1156,7 +1156,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 		camel_message_info_free (infos->pdata[i]);
 	g_ptr_array_free (infos, TRUE);
 	
-	CAMEL_SERVICE_LOCK (src->parent_store, connect_lock);
+	CAMEL_SERVICE_UNLOCK (src->parent_store, connect_lock);
 }
 
 static GPtrArray *

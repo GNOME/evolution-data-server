@@ -88,7 +88,8 @@ int camel_imap4_journal_write (CamelIMAP4Journal *journal, CamelException *ex);
 int camel_imap4_journal_replay (CamelIMAP4Journal *journal, CamelException *ex);
 
 /* interfaces for adding a journal entry */
-void camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, CamelMessageInfo *mi, CamelException *ex);
+void camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi,
+				 char **appended_uid, CamelException *ex);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,20 @@
 2004-12-14  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/imap4/camel-imap4-folder.c
+	(imap4_transfer_messages_to): Doh. Unlock the connect_lock at the
+	end, don't lock it again :)
+
+	* providers/imap4/camel-imap4-journal.c
+	(camel_imap4_journal_append): Now takes an appended_uid
+	argument. Also fixed to add a message-info place-holder to the
+	summary.
+
+	* providers/imap4/camel-imap4-folder.c (imap4_append_message): get
+	an appedned_uid for the journalled append.
+	(imap4_transfer_messages_to): Updated for appended_uid API change.
+
+2004-12-14  Jeffrey Stedfast  <fejj@novell.com>
+
 	* providers/imap4/camel-imap4-journal.[c,h]: New source files
 	implementing a basic journal.
 
