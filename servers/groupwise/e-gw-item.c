@@ -1381,7 +1381,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 {
 	EGwItem *item;
         char *item_type;
-	SoupSoapParameter *subparam, *child, *category_param, *attachment_param;
+	SoupSoapParameter *subparam, *child, *category_param, *attachment_param, *notification_param ;
 	gboolean is_group_item = TRUE;
 	GList *user_email = NULL;
 	
@@ -1449,6 +1449,11 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			subparam = soup_soap_parameter_get_first_child_by_name (changes, "update");
 	}
 	else subparam = param; /* The item is a complete one, not a delta  */
+	/*If its a notification - reset type*/
+	notification_param = soup_soap_parameter_get_first_child_by_name (param,"notification") ;
+	if (notification_param) {
+			item->priv->item_type = E_GW_ITEM_TYPE_NOTIFICATION;
+	}
 	
 	/* now add all properties to the private structure */
 	for (child = soup_soap_parameter_get_first_child (subparam);
@@ -2017,7 +2022,7 @@ e_gw_item_get_organizer (EGwItem *item)
 void
 e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL) ;
+	g_return_if_fail (E_IS_GW_ITEM (item)) ;
 	if (attach_list) {
 		g_slist_foreach (item->priv->attach_list, (GFunc)free_attach, NULL) ;
 		g_slist_free (item->priv->attach_list) ;

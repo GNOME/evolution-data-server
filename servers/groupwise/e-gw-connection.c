@@ -2155,6 +2155,89 @@ e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char 
 	return status;
 }
 
+EGwConnectionStatus
+e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *item_ids)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (item_ids != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "addItemsRequest");
+
+	if (container && *container)
+		e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	
+	soup_soap_message_start_element (msg, "items", NULL, NULL);
+	for (; item_ids != NULL; item_ids = g_list_next (item_ids))
+		e_gw_message_write_string_parameter (msg, "item", NULL, item_ids->data);
+	soup_soap_message_end_element (msg);
+
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
+
+EGwConnectionStatus 
+e_gw_connection_rename_folder (EGwConnection *cnc, const char *id ,const char *new_name)
+{
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "modifyItemRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+
+	soup_soap_message_start_element (msg, "updates", NULL, NULL);
+	soup_soap_message_start_element (msg, "update", NULL, NULL);
+	e_gw_message_write_string_parameter (msg, "name", NULL, new_name);
+	soup_soap_message_end_element (msg) ;
+	soup_soap_message_end_element (msg) ;
+	
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	g_object_unref (msg);
+	g_object_unref (response);
+
+	return status;
+		
+}
+
 EGwConnectionStatus 
 e_gw_connection_share_folder(EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag) 
 {

@@ -120,7 +120,11 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 EGwConnectionStatus e_gw_connection_create_folder(EGwConnection *cnc, const char *parent_name,const char *folder_name, char **container_id) ;
 EGwConnectionStatus e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, int length, const char **attachment, int *attach_lenght) ;
 EGwConnectionStatus e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char *id) ;
+EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *item_ids) ;
+EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const char *id ,const char *new_name) ;
 EGwConnectionStatus e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts);
++EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *item_ids) ;
++EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const char *id ,const char *new_name) ;
 EGwConnectionStatus e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag); 
 
 

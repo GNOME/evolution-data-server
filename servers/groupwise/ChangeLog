@@ -1,3 +1,13 @@
+2005-01-06  Parthasarathi Susarla <sparthasarathi@novell.com>
+ 
+	* e-gw-item.[ch]: 
+	  (e_gw_item_new_from_soap_parameter): new item type for notifcation
+	  of shared folder
+	* e-gw-connection.[ch]:
+	  (e_gw_connection_add_items),
+	  (e_gw_connection_rename_folder): support for renaming of folders
+
+	  
 2005-01-06  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	* Makefile.am:
