@@ -5,9 +5,9 @@
 # Changwoo Ryu <cwryu@debian.org>, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server 0.0.4\n"
+"Project-Id-Version: evolution-data-server 0.0.5\n"
 "POT-Creation-Date: 2004-01-12 21:29-0500\n"
-"PO-Revision-Date: 2004-01-10 14:34+0900\n"
+"PO-Revision-Date: 2004-01-21 02:29+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -307,148 +307,124 @@ msgid "ICQ Id List"
 msgstr "ICQ ID 목록"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "AIM 대화명 목록"
+msgstr "AIM 집 대화명 1"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "AIM 대화명 목록"
+msgstr "AIM 집 대화명 2"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "AIM 대화명 목록"
+msgstr "AIM 집 대화명 3"
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "AIM 대화명 목록"
+msgstr "AIM 직장 대화명 1"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "AIM 대화명 목록"
+msgstr "AIM 직장 대화명 2"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "AIM 대화명 목록"
+msgstr "AIM 직장 대화명 3"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Jabber ID 목록"
+msgstr "Jabber 집 ID 1"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Jabber ID 목록"
+msgstr "Jabber 집 ID 2"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Jabber ID 목록"
+msgstr "Jabber 집 ID 3"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Jabber ID 목록"
+msgstr "Jabber 직장 ID 1"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Jabber ID 목록"
+msgstr "Jabber 직장 ID 2"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Jabber ID 목록"
+msgstr "Jabber 직장 ID 3"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo! 대화명 목록"
+msgstr "Yahoo! 집 대화명 1"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo! 대화명 목록"
+msgstr "Yahoo! 집 대화명 2"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo! 대화명 목록"
+msgstr "Yahoo! 집 대화명 3"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo! 대화명 목록"
+msgstr "Yahoo! 직장 대화명 1"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo! 대화명 목록"
+msgstr "Yahoo! 직장 대화명 2"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo! 대화명 목록"
+msgstr "Yahoo! 직장 대화명 3"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "MSN 대화명 목록"
+msgstr "MSN 집 대화명 1"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "MSN 대화명 목록"
+msgstr "MSN 집 대화명 2"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "MSN 대화명 목록"
+msgstr "MSN 집 대화명 3"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "MSN 대화명 목록"
+msgstr "MSN 직장 대화명 1"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "MSN 대화명 목록"
+msgstr "MSN 직장 대화명 2"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "MSN 대화명 목록"
+msgstr "MSN 직장 대화명 3"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "ICQ 집 ID 1"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "ICQ 집 ID 2"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "ICQ 집 ID 3"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "ICQ 직장 ID 1"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "ICQ 직장 ID 2"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "ICQ 직장 ID 3"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:188
