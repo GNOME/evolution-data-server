@@ -2581,7 +2581,6 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 					comp = e_cal_component_new ();
 					e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp));
 					*objects = g_list_append (*objects, comp);
-
 					subcomp = icalcomponent_get_next_component (icalcomp, kind_to_find);
 				}
 			}
@@ -3030,7 +3029,7 @@ static void
 generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 		    ECalRecurInstanceFn cb, gpointer cb_data)
 {
-	GList *objects;
+	GList *objects = NULL;
 	GList *instances, *detached_instances = NULL;
 	GList *l;
 	char *query;

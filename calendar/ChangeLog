@@ -1,3 +1,14 @@
+2004-12-09  Harish Krishnamwamy <kharish@novell.com>
+	Fixes for various leaks causing memory build-ups in eds.
+	
+	* libecal/e-cal-listener.c (impl_notifyFreeBusy):
+	l->data should be unref'd - not free'd.
+	* libedata-cal/e-cal-backend.c (get_queries):
+	Do not ref the queries while returning them. This is unnecessary.
+	* libedata-cal/e-cal-backend-sexp.c (e_cal_backend_sexp_match_comp) :
+	unref the comp and backend while returning.
+	
+	
 2004-12-06  Harish Krishnaswamy <kharish@novell.com> 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c 
 	(e_gw_connection_send_appointment) : Add correct view arguments 

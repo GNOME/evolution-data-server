@@ -502,7 +502,7 @@ e_cal_backend_get_queries (ECalBackend *backend)
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
-	return g_object_ref (backend->priv->queries);
+	return backend->priv->queries;
 }
 
 

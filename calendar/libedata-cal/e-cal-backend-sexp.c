@@ -981,9 +981,11 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalB
 	sexp->priv->search_context->backend = g_object_ref (backend);
 
 	/* if it's not a valid vcard why is it in our db? :) */
-	if (!sexp->priv->search_context->comp)
+	if (!sexp->priv->search_context->comp)  {
+		g_object_unref (sexp->priv->search_context->comp);
+		g_object_unref (sexp->priv->search_context->backend);
 		return FALSE;
-
+	}
 	r = e_sexp_eval(sexp->priv->search_sexp);
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.bool);

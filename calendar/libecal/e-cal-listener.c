@@ -584,7 +584,7 @@ impl_notifyFreeBusy (PortableServer_Servant servant,
 	g_signal_emit (G_OBJECT (listener), signals[GET_FREE_BUSY], 0, convert_status (status), freebusy);
 
 	for (l = freebusy; l; l = l->next)
-		g_free (l->data);
+		g_object_unref (G_OBJECT (l->data));
 	g_list_free (freebusy);
 }
 
