@@ -250,7 +250,7 @@ find_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index)
 				      &iter, path)) {
 		g_warning ("ENameSelectorEntry is out of sync with model!");
 		gtk_tree_path_free (path);
-		return;
+		return NULL;
 	}
 	gtk_tree_path_free (path);
 
@@ -612,9 +612,13 @@ generate_attribute_list (ENameSelectorEntry *name_selector_entry)
 			break;
 
 		destination = find_destination_at_position (name_selector_entry, start_pos);
-		g_assert (destination);
+		/* g_assert (destination);
+		 *
+		 * The above assertion is correct, but I'm disabling it temporarily as
+		 * users have reported crashes. The cause is somewhere else.
+		 */
 
-		if (!e_destination_get_contact (destination))
+		if (!destination || !e_destination_get_contact (destination))
 			continue;
 
 		attr = pango_attr_underline_new (PANGO_UNDERLINE_SINGLE);
@@ -1344,12 +1348,27 @@ destination_row_deleted (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 static void
 setup_destination_store (ENameSelectorEntry *name_selector_entry)
 {
+	GtkTreeIter  iter;
+	GtkTreePath *path;
+
 	g_signal_connect_swapped (name_selector_entry->destination_store, "row-changed",
 				  G_CALLBACK (destination_row_changed), name_selector_entry);
 	g_signal_connect_swapped (name_selector_entry->destination_store, "row-deleted",
 				  G_CALLBACK (destination_row_deleted), name_selector_entry);
 	g_signal_connect_swapped (name_selector_entry->destination_store, "row-inserted",
 				  G_CALLBACK (destination_row_inserted), name_selector_entry);
+
+	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (name_selector_entry->destination_store), &iter))
+		return;
+
+	do {
+		GtkTreePath *path;
+
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (name_selector_entry->destination_store), &iter);
+		g_assert (path);
+
+		destination_row_inserted (name_selector_entry, path, &iter);
+	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->destination_store), &iter));
 }
 
 static void

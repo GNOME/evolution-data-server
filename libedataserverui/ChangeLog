@@ -1,3 +1,11 @@
+2004-12-24  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-name-selector-entry.c (find_destination_by_index): Return NULL on
+	failure.
+	(generate_attribute_list): Temporarily disable an assertion.
+	(setup_destination_store): Add previously existing destinations to
+	the store.
+
 2004-12-23  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-name-selector-entry.c (escape_sexp_string): Implement as a wrapper
