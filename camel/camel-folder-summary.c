@@ -1630,7 +1630,7 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 	CamelMessageInfoBase *mi;
 	guint count;
 	int i;
-	char *subject, *from, *to, *cc, *mlist, *uid;;
+	char *subject, *from, *to, *cc, *mlist, *uid;
 
 	mi = (CamelMessageInfoBase *)camel_message_info_new(s);
 
