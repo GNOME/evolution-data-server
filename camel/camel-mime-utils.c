@@ -1233,7 +1233,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 			if (e_iconv (ic, &inptr, &convlen, &out, &outlen) == (size_t) -1 && errno != EINVAL) {
 				w(g_warning("Conversion problem: conversion truncated: %s", strerror (errno)));
 				/* blah, we include it anyway, better than infinite loop ... */
-				inptr = p + convlen;
+				inptr += convlen;
 			} else {
 				/* make sure we flush out any shift state */
 				e_iconv (ic, NULL, 0, &out, &outlen);
@@ -1536,7 +1536,7 @@ header_encode_phrase_merge_words (GList **wordsp)
 				if (MERGED_WORD_LT_FOLDLEN (next->end - word->start, MAX (word->type, next->type))) {
 					/* the resulting word type is the MAX of the 2 types */
 					word->type = MAX(word->type, next->type);
-					
+					word->encoding = MAX(word->encoding, next->encoding);
 					word->end = next->end;
 					words = g_list_remove_link (words, nextl);
 					g_list_free_1 (nextl);
