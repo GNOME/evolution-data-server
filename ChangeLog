@@ -1,3 +1,8 @@
+2004-06-23  Jeffrey Stedfast  <fejj@novell.com>
+
+	* src/server.c (main): Register a segv handler to popup bug-buddy
+	or whatever. Fixes bug #51165.
+
 2004-06-14  Not Zed  <NotZed@Ximian.com>
 
 	* libedataserver/e-source-group.c

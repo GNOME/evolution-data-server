@@ -29,9 +29,7 @@
 /*#define DEBUG_BACKENDS*/
 
 #include <stdlib.h>
-#ifdef DEBUG_BACKENDS
 #include <sys/signal.h>
-#endif
 
 #include <glib.h>
 #include <libgnome/gnome-init.h>
@@ -85,7 +83,44 @@ static guint termination_handler_id;
 
 static GStaticMutex termination_lock = G_STATIC_MUTEX_INIT;
 
-
+
+static void
+gnome_segv_handler (int signo)
+{
+	const char *gnome_segv_path;
+	static int in_segv = 0;
+	char *exec;
+	
+	if (in_segv > 2) {
+                /* The fprintf() was segfaulting, we are just totally hosed */
+                _exit (1);
+        } else if (in_segv > 1) {
+                /* dialog display isn't working out */
+                fprintf (stderr, _("Multiple segmentation faults occurred; can't display error dialog\n"));
+                _exit (1);
+        }
+	
+	if (!(gnome_segv_path = g_find_program_in_path ("gnome_segv2")))
+		gnome_segv_path = PREFIX "/libexec/gnome_segv2";
+	
+	exec = g_strdup_printf ("%s \"" PACKAGE "\" %d \"" VERSION "\"", gnome_segv_path, signo);
+	system (exec);
+	g_free (exec);
+}
+
+static void
+setup_segv_handler (void)
+{
+	struct sigaction sa;
+	
+	sa.sa_flags = 0;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_handler = gnome_segv_handler;
+	sigaction (SIGSEGV, &sa, NULL);
+	sigaction (SIGBUS, &sa, NULL);
+	sigaction (SIGFPE, &sa, NULL);
+}
+
 
 /* Termination */
 
@@ -281,7 +316,9 @@ main (int argc, char **argv)
 			  bonobo_activation_orb_get(),
 			  CORBA_OBJECT_NIL,
 			  CORBA_OBJECT_NIL);
-
+	
+	setup_segv_handler ();
+	
 	if (!( (did_books = setup_books ())
 	       && (did_cals = setup_cals ())
 		    )) {
