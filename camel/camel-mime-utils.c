@@ -2102,6 +2102,9 @@ header_decode_addrspec(const char **in)
 		}
 	} else {
 		w(g_warning("invalid addr-spec, no local part"));
+		g_string_free(addr, TRUE);
+
+		return NULL;
 	}
 
 	/* FIXME: return null on error? */

@@ -1,3 +1,12 @@
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #73015
+
+	* tests/misc/test1.c: Test case for references decoding.
+
+	* camel-mime-utils.c (header_decode_addrspec): if we get no start
+	word, then return NULL not "".
+
 2005-03-02  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #70195
