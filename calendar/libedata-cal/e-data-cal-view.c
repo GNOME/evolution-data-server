@@ -222,7 +222,6 @@ impl_EDataCalView_start (PortableServer_Servant servant, CORBA_Environment *ev)
 	priv = query->priv;
 
 	if (priv->started) {
-		g_warning (G_STRLOC ": Query already started, notifying matched objects");
 		g_hash_table_foreach (priv->matched_objects, (GHFunc) notify_matched_object_cb, query);
 
 		/* notify all listeners correctly if the query is already done */
@@ -237,7 +236,6 @@ impl_EDataCalView_start (PortableServer_Servant servant, CORBA_Environment *ev)
 
 					ld->notified_done = TRUE;
 
-					g_warning (G_STRLOC ": Query already done before, notifying new listener");
 					CORBA_exception_init (&ev);
 					GNOME_Evolution_Calendar_CalViewListener_notifyQueryDone (
 						ld->listener, priv->done_status, &ev);
@@ -246,7 +244,6 @@ impl_EDataCalView_start (PortableServer_Servant servant, CORBA_Environment *ev)
 			}
 		}
 	} else {
-		g_warning (G_STRLOC ": Starting new query");
 		priv->started = TRUE;
 		e_cal_backend_start_query (priv->backend, query);
 

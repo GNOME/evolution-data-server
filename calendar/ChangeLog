@@ -1,5 +1,8 @@
 2004-12-23  Rodrigo Moya <rodrigo@novell.com>
 
+	* libedata-cal/e-data-cal-view.c (impl_EDataCalView_start): removed
+	warnings.
+
 	* backends/file/e-cal-backend-file.c: changed recurrence hash table
 	to use g_hash_table_new and automatic disposal of key/value pairs.
 	(free_recurrence): removed, not needed now.
