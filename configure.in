@@ -553,21 +553,15 @@ AC_DEFUN(EVO_SET_COMPILE_FLAGS, [
 
 dnl --- Flags to get all the GNOME stuff
 
-FULL_GNOME_DEPS="libbonoboui-2.0 gnome-vfs-2.0 libgnomeui-2.0 libglade-2.0 libgnomecanvas-2.0 libxml-2.0 gconf-2.0"
+FULL_GNOME_DEPS="gnome-vfs-2.0 libgnome-2.0 libxml-2.0 gconf-2.0"
 
 EVO_SET_COMPILE_FLAGS(GNOME_FULL, $FULL_GNOME_DEPS)
 AC_SUBST(GNOME_FULL_CFLAGS)
 AC_SUBST(GNOME_FULL_LIBS)
 
-CPPFLAGS_save="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS `$PKG_CONFIG --cflags-only-I libgnomeui-2.0`"
-AC_CHECK_HEADERS(libgnomeui/gnome-icon-lookup.h)
-AC_CHECK_HEADERS(libgnomeui/gnome-thumbnail.h)
-CPPFLAGS="$CPPFLAGS_save"
-
 dnl --- Flags for the various libraries we build
 
-EVO_SET_COMPILE_FLAGS(E_NAME, libgnomeui-2.0 libbonoboui-2.0)
+EVO_SET_COMPILE_FLAGS(E_NAME, glib-2.0)
 AC_SUBST(E_NAME_CFLAGS)
 AC_SUBST(E_NAME_LIBS)
 
@@ -577,7 +571,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 
 dnl --- evolution-addressbook flags
 
-EVOLUTION_ADDRESSBOOK_DEPS="gconf-2.0 libbonobo-2.0 libgnomeui-2.0 libgnome-2.0 gnome-vfs-2.0"
+EVOLUTION_ADDRESSBOOK_DEPS="gconf-2.0 libbonobo-2.0 libgnome-2.0 gnome-vfs-2.0"
 
 EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
