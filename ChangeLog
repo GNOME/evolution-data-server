@@ -1,3 +1,7 @@
+2004-10-27  JP Rosevear  <jpr@novell.com>
+
+	* src/server.c: include just include signal.h for portability
+
 2004-10-21  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserverui/Makefile.am:

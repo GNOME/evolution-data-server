@@ -29,7 +29,7 @@
 /*#define DEBUG_BACKENDS*/
 
 #include <stdlib.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
 
