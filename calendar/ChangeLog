@@ -1,3 +1,11 @@
+2004-06-28  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #60463
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_get_freebusy_info):
+	Added a timezone  argument and used it to convert the freebusy 
+	times to default timezone.
+
 2004-06-15  Harish Krishnaswamy  <kharish@novell.com>
 
 	Fixes #59352	
