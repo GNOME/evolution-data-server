@@ -20,6 +20,8 @@
  * Author: Chris Toshok (toshok@ximian.com)
  */
 
+#include <config.h>
+
 #include <glib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -1361,6 +1363,11 @@ e_contact_pretty_name (EContactField field_id)
 	int i;
 
 	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST, "");
+
+#ifdef ENABLE_NLS
+	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
+#endif
 
 	for (i = 0; i < G_N_ELEMENTS (field_info); i ++) {
 		if (field_id == field_info[i].field_id)
