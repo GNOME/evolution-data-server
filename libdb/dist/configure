@@ -1035,11 +1035,10 @@ Optional Features:
   --enable-test           Configure to run the test suite.
   --enable-uimutexes      Force use of Unix International mutexes.
   --enable-umrw           Mask harmless unitialized memory read/writes.
-  --enable-shared=PKGS  build shared libraries default=yes
+  --enable-shared=PKGS  build shared libraries default=no
   --enable-static=PKGS  build static libraries default=yes
   --enable-fast-install=PKGS  optimize for fast installation default=yes
   --disable-libtool-lock  avoid locking (might break parallel builds)
-  --enable-shared=PKGS  build shared libraries default=no
   --disable-largefile     omit support for large files
 
 Optional Packages:
@@ -1654,7 +1653,7 @@ DB_VERSION_PATCH=25
 
 DB_VERSION_UNIQUE_NAME=_4001
 
-DB_VERSION_STRING="\"Sleepycat Software: Berkeley DB 4.1.25: (November 23, 2003)\""
+DB_VERSION_STRING="\"Sleepycat Software: Berkeley DB 4.1.25: (November 25, 2003)\""
 
 
 # Set the default installation location.
@@ -4929,7 +4928,7 @@ no) enable_shared=no ;;
   ;;
 esac
 else
-  enable_shared=yes
+  enable_shared=no
 fi;
 # Check whether --enable-static or --disable-static was given.
 if test "${enable_static+set}" = set; then
@@ -6471,7 +6470,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6474 "configure"' > conftest.$ac_ext
+  echo '#line 6473 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7018,7 +7017,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:7021: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:7020: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -8925,7 +8924,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8928 "configure"
+#line 8927 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9023,7 +9022,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9026 "configure"
+#line 9025 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9755,28 +9754,6 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 # Prevent multiple expansion
 
 
-# Check whether --enable-shared or --disable-shared was given.
-if test "${enable_shared+set}" = set; then
-  enableval="$enable_shared"
-  p=${PACKAGE-default}
-case $enableval in
-yes) enable_shared=yes ;;
-no) enable_shared=no ;;
-*)
-  enable_shared=no
-  # Look at the argument we got.  We use all the common list separators.
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:,"
-  for pkg in $enableval; do
-    if test "X$pkg" = "X$p"; then
-      enable_shared=yes
-    fi
-  done
-  IFS="$ac_save_ifs"
-  ;;
-esac
-else
-  enable_shared=no
-fi;
 
 LIBTOOL="\$(SHELL) ./libtool"
 SOFLAGS="-rpath \$(libdir)"
@@ -10029,7 +10006,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 10032 "configure" */
+/* #line 10009 "configure" */
 public class Test {
 }
 EOF

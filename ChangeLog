@@ -1,5 +1,15 @@
 2003-11-25  Chris Toshok  <toshok@ximian.com>
 
+	* libdb/dist/configure.ac: switch the order of AC_DISABLE_SHARED
+	and AC_PROG_LIBTOOL.
+
+	* libdb/dist/configure: same.
+	
+	* libedataserver/Makefile.am (libedataserver_la_LIBADD): switch to
+	dist/libdb.a
+
+2003-11-25  Chris Toshok  <toshok@ximian.com>
+
 	* libdb/dist/configure.ac: AC_DISABLE_SHARED.
 	
 	* libdb/dist/configure: same.

@@ -254,8 +254,8 @@ export CC CCC
 CCC=CXX
 
 # Libtool configuration.
-AC_PROG_LIBTOOL
 AC_DISABLE_SHARED
+AC_PROG_LIBTOOL
 
 LIBTOOL="\$(SHELL) ./libtool"
 SOFLAGS="-rpath \$(libdir)"
