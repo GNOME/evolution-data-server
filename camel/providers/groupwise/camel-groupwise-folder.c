@@ -697,6 +697,8 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 
 	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 
+	camel_folder_summary_save (folder->summary);
+
 	g_free (container_id) ;
 	return ;
 }
