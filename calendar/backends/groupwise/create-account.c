@@ -15,20 +15,20 @@ add_account (const char *conf_key, const char *hostname, const char *username)
 	ESourceList *source_list;
 	ESourceGroup *group;
 	ESource *source;
-	char *str;
+	char *group_name;
 
 	source_list = e_source_list_new_for_gconf (conf_client, conf_key);
 
-	str = g_strdup_printf ("%s@%s", username, hostname);
-	group = e_source_group_new (str, "groupwise://");
-	g_free (str);
+	group_name = g_strdup_printf ("%s@%s", username, hostname);
+	group = e_source_group_new (group_name, "groupwise://");
 	e_source_list_add_group (source_list, group, -1);
 
-	source = e_source_new ("Default", hostname);
+	source = e_source_new ("Default", group_name);
 	e_source_group_add_source (group, source, -1);
 
 	e_source_list_sync (source_list, NULL);
 
+	g_free (group_name);
 	g_object_unref (source);
 	g_object_unref (group);
 	g_object_unref (source_list);
