@@ -255,6 +255,7 @@ CCC=CXX
 
 # Libtool configuration.
 AC_PROG_LIBTOOL
+AC_DISABLE_SHARED
 
 LIBTOOL="\$(SHELL) ./libtool"
 SOFLAGS="-rpath \$(libdir)"

@@ -1,5 +1,16 @@
 2003-11-25  Chris Toshok  <toshok@ximian.com>
 
+	* libdb/dist/configure.ac: AC_DISABLE_SHARED.
+	
+	* libdb/dist/configure: same.
+	
+	* libedataserver/e-db3-utils.c: remove the db3 version checks.
+
+	* libedataserver/e-dbhash.c: same.
+	(e_dbhash_new): pass NULL for txn.
+
+2003-11-25  Chris Toshok  <toshok@ximian.com>
+
 	* libedataserver/Makefile.am (INCLUDES): use the embedded db4.
 	(libedataserver_la_LIBADD): explicitly list the db4 .a since I
 	suck at getting libtool to do what I want.

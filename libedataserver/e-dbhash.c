@@ -12,14 +12,8 @@
 
 #include <string.h>
 #include <fcntl.h>
-#include <db.h>
+#include "db.h"
 #include "md5-utils.h"
-
-#if DB_VERSION_MAJOR != 3 || \
-    DB_VERSION_MINOR != 1 || \
-    DB_VERSION_PATCH != 17
-#error Including wrong DB3.  Need libdb 3.1.17.
-#endif
 
 struct _EDbHashPrivate 
 {
@@ -33,26 +27,15 @@ e_dbhash_new (const char *filename)
 	DB *db;
 	int rv;
 
-	int major, minor, patch;
-
-	db_version (&major, &minor, &patch);
-
-	if (major != 3 ||
-	    minor != 1 ||
-	    patch != 17) {
-		g_warning ("Wrong version of libdb.");
-		return NULL;
-	}
-
 	/* Attempt to open the database */
 	rv = db_create (&db, NULL, 0);
 	if (rv != 0) {
 		return NULL;
 	}
 
-	rv = db->open (db, filename, NULL, DB_HASH, 0, 0666);
+	rv = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
 	if (rv != 0) {
-		rv = db->open (db, filename, NULL, DB_HASH, DB_CREATE, 0666);
+		rv = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
 
 		if (rv != 0)
 			return NULL;

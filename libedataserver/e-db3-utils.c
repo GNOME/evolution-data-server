@@ -4,19 +4,13 @@
 
 #include "e-db3-utils.h"
 
-#include <db.h>
+#include "db.h"
 
 #include <errno.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <libgnome/gnome-util.h>
-
-#if DB_VERSION_MAJOR != 3 || \
-    DB_VERSION_MINOR != 1 || \
-    DB_VERSION_PATCH != 17
-#error Including wrong DB3.  Need libdb 3.1.17.
-#endif
 
 static char *
 get_check_filename (const char *filename)
