@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0\n"
-"POT-Creation-Date: 2004-03-20 14:45+0100\n"
-"PO-Revision-Date: 2004-03-20 14:45+CET\n"
+"POT-Creation-Date: 2004-03-20 22:39+0100\n"
+"PO-Revision-Date: 2004-03-20 22:39+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "MIME-Version: 1.0\n"
@@ -14,13 +14,13 @@ msgstr ""
 "X-Generator: TransDict server\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:432
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Učitavam..."
 
 #: addressbook/backends/file/e-book-backend-file.c:434
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2847
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Tražim..."
 
@@ -590,13 +590,26 @@ msgstr "Godišnjica: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Ne mogu spremiti podatke kalendara: Neispravna adresa."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+msgid "Invalid server URI"
+msgstr "Neispravni URI poslužitelja"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 msgid "Calendar"
 msgstr "Kalendar"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 msgid "Checklist"
 msgstr "Kontrolni popis"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/libecal/e-cal.c:3962
+msgid "Authentication failed"
+msgstr "Neuspješna identifikacija"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+msgid "Could not create cache file"
+msgstr "Nisam mogao stvoriti datoteku pričuvne memorije"
 
 #: calendar/backends/http/e-cal-backend-http.c:218
 msgid "Redirected to Invalid URI"
@@ -756,79 +769,75 @@ msgid "Undefined"
 msgstr "Neodređeno"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1465
+#: calendar/libecal/e-cal.c:1486
 msgid "Enter password for %s (user %s)"
 msgstr "Unesite lozinku za %s (korisnik %s)"
 
-#: calendar/libecal/e-cal.c:3929
+#: calendar/libecal/e-cal.c:3936
 msgid "Invalid argument"
 msgstr "Nedozvoljeni argument"
 
-#: calendar/libecal/e-cal.c:3931
+#: calendar/libecal/e-cal.c:3938
 msgid "Backend is busy"
 msgstr "Pozadinska aplikacija je zauzeta"
 
-#: calendar/libecal/e-cal.c:3933
+#: calendar/libecal/e-cal.c:3940
 msgid "Repository is offline"
 msgstr "Repozitorij nije priključen na mrežu"
 
-#: calendar/libecal/e-cal.c:3935
+#: calendar/libecal/e-cal.c:3942
 msgid "No such calendar"
 msgstr "Ne postoji takav kalendar"
 
-#: calendar/libecal/e-cal.c:3937
+#: calendar/libecal/e-cal.c:3944
 msgid "Object not found"
 msgstr "Objekt nije nađen"
 
-#: calendar/libecal/e-cal.c:3939
+#: calendar/libecal/e-cal.c:3946
 msgid "Invalid object"
 msgstr "Neispravni objekt"
 
-#: calendar/libecal/e-cal.c:3941
+#: calendar/libecal/e-cal.c:3948
 msgid "URI not loaded"
 msgstr "URI nije učitan"
 
-#: calendar/libecal/e-cal.c:3943
+#: calendar/libecal/e-cal.c:3950
 msgid "URI already loaded"
 msgstr "URI je već učitan"
 
-#: calendar/libecal/e-cal.c:3945
+#: calendar/libecal/e-cal.c:3952
 msgid "Permission denied"
 msgstr "Pristup odbijen"
 
-#: calendar/libecal/e-cal.c:3947
+#: calendar/libecal/e-cal.c:3954
 msgid "Object ID already exists"
 msgstr "ID objekta već postoji"
 
-#: calendar/libecal/e-cal.c:3949
+#: calendar/libecal/e-cal.c:3956
 msgid "Protocol not supported"
 msgstr "Protokol nije podržan"
 
-#: calendar/libecal/e-cal.c:3951
+#: calendar/libecal/e-cal.c:3958
 msgid "Operation has been cancelled"
 msgstr "Operacija je prekinuta"
 
-#: calendar/libecal/e-cal.c:3953
+#: calendar/libecal/e-cal.c:3960
 msgid "Could not cancel operation"
 msgstr "Ne mogu otkazati operaciju"
 
-#: calendar/libecal/e-cal.c:3955
-msgid "Authentication failed"
-msgstr "Neuspješna identifikacija"
-
-#: calendar/libecal/e-cal.c:3957
+#: calendar/libecal/e-cal.c:3964
 msgid "Authentication required"
 msgstr "Zahtijev za autentifikaciju obavezan"
 
-#: calendar/libecal/e-cal.c:3959
+#: calendar/libecal/e-cal.c:3966
 msgid "A CORBA exception has occurred"
 msgstr "Dogodila se iznimka za CORBA-a"
 
-#: calendar/libecal/e-cal.c:3961
+#: calendar/libecal/e-cal.c:3968
 msgid "Unknown error"
 msgstr "Nepoznata greška"
 
-#: calendar/libecal/e-cal.c:3963
+#: calendar/libecal/e-cal.c:3970
 msgid "No error"
 msgstr "Nema greške"
 
