@@ -69,6 +69,31 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 }
 
+const char *
+e_gw_connection_get_error_message (EGwConnectionStatus status)
+{
+	switch (status) {
+	case E_GW_CONNECTION_STATUS_OK :
+		break;
+	case E_GW_CONNECTION_STATUS_INVALID_CONNECTION :
+		return _("Invalid connection");
+	case E_GW_CONNECTION_STATUS_INVALID_OBJECT :
+		return _("Invalid object");
+	case E_GW_CONNECTION_STATUS_INVALID_RESPONSE :
+		return _("Invalid response from server");
+	case E_GW_CONNECTION_STATUS_OBJECT_NOT_FOUND :
+		return _("Object not found");
+	case E_GW_CONNECTION_STATUS_BAD_PARAMETER :
+		return _("Bad parameter");
+	case E_GW_CONNECTION_STATUS_OTHER :
+	case E_GW_CONNECTION_STATUS_UNKNOWN :
+	default :
+		return _("Unknown error");
+	}
+
+	return NULL;
+}
+
 static EGwConnectionStatus
 logout (EGwConnection *cnc)
 {
