@@ -1,3 +1,9 @@
+2004-08-27  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_properties_from_cal_component): set the acceptLevel
+	for the appointment as Free if its not Busy.
+
 2004-08-26  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal-util.c (check_instance): match the prototype expected
@@ -28,7 +34,7 @@
 	(receive_object): update the client view when a meeting
 	is accepted or declined.
 
-2004-08-16  Chenthill Palanisamy <pchenthill@novell.com>
+2004-08-23  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes bug #62857
 	* backends/groupwise/e-cal-backend-groupwise.c

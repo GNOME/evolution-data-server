@@ -144,7 +144,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE)
 			e_gw_item_set_accept_level (item, E_GW_ITEM_ACCEPT_LEVEL_BUSY);
 		else
-			e_gw_item_set_accept_level (item, NULL);
+			e_gw_item_set_accept_level (item, E_GW_ITEM_ACCEPT_LEVEL_FREE);
 
 		/* location */
 		e_cal_component_get_location (comp, &location);
