@@ -2307,6 +2307,15 @@ e_cal_get_save_schedules (ECal *ecal)
 	return check_capability (ecal, CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 }
 
+gboolean 
+e_cal_get_organizer_must_accept (ECal *ecal)
+{
+	g_return_val_if_fail (ecal != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+
+	return check_capability (ecal, CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT);
+}
+
 gboolean
 e_cal_set_mode (ECal *ecal, CalMode mode)
 {

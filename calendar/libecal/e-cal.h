@@ -128,6 +128,7 @@ gboolean e_cal_get_one_alarm_only (ECal *ecal);
 gboolean e_cal_get_organizer_must_attend (ECal *ecal);
 gboolean e_cal_get_save_schedules (ECal *ecal);
 gboolean e_cal_get_static_capability (ECal *ecal, const char *cap);
+gboolean e_cal_get_organizer_must_accept (ECal *ecal);
 
 gboolean e_cal_set_mode (ECal *ecal, CalMode mode);
 
