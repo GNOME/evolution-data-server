@@ -1,3 +1,11 @@
+2005-01-24  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #71625, and bug #56110.
+
+	* providers/imap/camel-imap-folder.c (get_content): when getting a
+	simple content for a message, don't get .TEXT, as that is the full
+	content of a message, not the part itself.
+
 2005-01-23  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* providers/imap4/camel-imap4-summary.c (untagged_fetch_all):
