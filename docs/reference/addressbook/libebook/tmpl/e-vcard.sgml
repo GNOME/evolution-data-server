@@ -14,305 +14,10 @@ Does the low-level parsing work for contact information. This data is more conve
 #e-contact
 </para>
 
-<!-- ##### MACRO EVC_ADR ##### -->
+<!-- ##### STRUCT EVCard ##### -->
 <para>
 
 </para>
-
-
-
-<!-- ##### MACRO EVC_BDAY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_CALURI ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_CATEGORIES ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_EMAIL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_ENCODING ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_FBURL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_FN ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_ICSCALENDAR ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_LABEL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_LOGO ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_MAILER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_NICKNAME ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_N ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_NOTE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_ORG ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_PHOTO ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_PRODID ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_QUOTEDPRINTABLE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_REV ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_ROLE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_TEL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_TITLE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_UID ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_URL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_VALUE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_VERSION ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_AIM ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_ANNIVERSARY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_ASSISTANT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_BIRTHDAY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_BLOG_URL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_FILE_AS ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_ICQ ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_JABBER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_LIST_SHOW_ADDRESSES ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_LIST ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_MANAGER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_MSN ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_SPOUSE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_WANTS_HTML ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_YAHOO ##### -->
-<para>
-
-</para>
-
 
 
 <!-- ##### ENUM EVCardFormat ##### -->
@@ -649,5 +354,306 @@ Does the low-level parsing work for contact information. This data is more conve
 
 @param: 
 @Returns: 
+
+
+<!-- ##### MACRO EVC_ADR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_BDAY ##### -->
+<para>
+Birthday
+</para>
+
+
+
+<!-- ##### MACRO EVC_CALURI ##### -->
+<para>
+Calendar URL
+</para>
+
+
+
+<!-- ##### MACRO EVC_CATEGORIES ##### -->
+<para>
+Categories
+</para>
+
+
+
+<!-- ##### MACRO EVC_EMAIL ##### -->
+<para>
+Email address
+</para>
+
+
+
+<!-- ##### MACRO EVC_ENCODING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_FBURL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_FN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_ICSCALENDAR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_LABEL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_LOGO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_MAILER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_NICKNAME ##### -->
+<para>
+Nickname
+</para>
+
+
+
+<!-- ##### MACRO EVC_N ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_NOTE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_ORG ##### -->
+<para>
+Organisation
+</para>
+
+
+
+<!-- ##### MACRO EVC_PHOTO ##### -->
+<para>
+Photo
+</para>
+
+
+
+<!-- ##### MACRO EVC_PRODID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_QUOTEDPRINTABLE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_REV ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_ROLE ##### -->
+<para>
+Role
+</para>
+
+
+
+<!-- ##### MACRO EVC_TEL ##### -->
+<para>
+Telephone
+</para>
+
+
+
+<!-- ##### MACRO EVC_TITLE ##### -->
+<para>
+Title
+</para>
+
+
+
+<!-- ##### MACRO EVC_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_UID ##### -->
+<para>
+Unique ID
+</para>
+
+
+
+<!-- ##### MACRO EVC_URL ##### -->
+<para>
+Home page URL
+</para>
+
+
+
+<!-- ##### MACRO EVC_VALUE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_VERSION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_AIM ##### -->
+<para>
+AIM ID
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_ANNIVERSARY ##### -->
+<para>
+Wedding anniversary
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_ASSISTANT ##### -->
+<para>
+Assistant
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_BIRTHDAY ##### -->
+<para>
+Birthday
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_BLOG_URL ##### -->
+<para>
+Blog URL
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_FILE_AS ##### -->
+<para>
+File As
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_ICQ ##### -->
+<para>
+ICQ number
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_JABBER ##### -->
+<para>
+Jabber ID
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_LIST_SHOW_ADDRESSES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_LIST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_MANAGER ##### -->
+<para>
+Mananger
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_MSN ##### -->
+<para>
+MSN ID
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_SPOUSE ##### -->
+<para>
+Spouse
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_WANTS_HTML ##### -->
+<para>
+Wants HTML mail
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_YAHOO ##### -->
+<para>
+Yahoo ID
+</para>
+
 
 

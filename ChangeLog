@@ -1,3 +1,11 @@
+2003-12-23  Ross Burton  <ross@burtonini.com>
+
+	* docs/reference/addressbook/libebook/tmpl/*:
+	* docs/reference/addressbook/libebook/libebook-docs.sgml:
+	* docs/reference/addressbook/libebook/libebook-sections.txt
+	* docs/reference/addressbook/libebook/libebook.types:
+	Updated API documentation.
+
 2003-12-21  JP Rosevear <jpr@ximian.com>
 
 	* libedataserver/e-source-list.c (e_source_list_peek_source_any):

@@ -61,6 +61,7 @@
 #define EVC_X_ASSISTANT     "X-EVOLUTION-ASSISTANT"
 #define EVC_X_BIRTHDAY      "X-EVOLUTION-BIRTHDAY"
 #define EVC_X_BLOG_URL      "X-EVOLUTION-BLOG-URL"
+#define EVC_X_VIDEO_URL      "X-EVOLUTION-VIDEO-URL"
 #define EVC_X_CALLBACK      "X-EVOLUTION-CALLBACK"
 #define EVC_X_FILE_AS       "X-EVOLUTION-FILE-AS"
 #define EVC_X_ICQ           "X-ICQ"
@@ -96,7 +97,7 @@ typedef struct _EVCardAttributeParam EVCardAttributeParam;
 
 struct _EVCard {
 	GObject parent;
-
+	/*< private >*/
 	EVCardPrivate *priv;
 };
 

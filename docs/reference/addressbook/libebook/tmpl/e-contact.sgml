@@ -14,6 +14,12 @@ A convenient way of accessing the contact information in EVCard objects.
 #e-vcard
 </para>
 
+<!-- ##### STRUCT EContact ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### ENUM EContactField ##### -->
 <para>
 
@@ -64,6 +70,7 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_CALENDAR_URI: 
 @E_CONTACT_FREEBUSY_URL: 
 @E_CONTACT_ICS_CALENDAR: 
+@E_CONTACT_VIDEO_URL: 
 @E_CONTACT_SPOUSE: 
 @E_CONTACT_NOTE: 
 @E_CONTACT_IS_LIST: 
@@ -86,7 +93,6 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_BIRTH_DATE: 
 @E_CONTACT_ANNIVERSARY: 
 @E_CONTACT_X509_CERT: 
-@E_CONTACT_X509_CERT_SHA1_FINGERPRINT: 
 @E_CONTACT_NAME_OR_ORG: 
 @E_CONTACT_FIELD_LAST: 
 @E_CONTACT_LAST_SIMPLE_STRING: 
@@ -99,47 +105,29 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_FIRST_LABEL_ID: 
 @E_CONTACT_LAST_LABEL_ID: 
 
-<!-- ##### STRUCT EContactName ##### -->
+<!-- ##### TYPEDEF EContactName ##### -->
 <para>
 
 </para>
 
-@family: 
-@given: 
-@additional: 
-@prefixes: 
-@suffixes: 
 
-<!-- ##### STRUCT EContactPhoto ##### -->
+<!-- ##### TYPEDEF EContactPhoto ##### -->
 <para>
 
 </para>
 
-@length: 
-@data: 
 
-<!-- ##### STRUCT EContactAddress ##### -->
+<!-- ##### TYPEDEF EContactAddress ##### -->
 <para>
 
 </para>
 
-@address_format: 
-@po: 
-@ext: 
-@street: 
-@locality: 
-@region: 
-@code: 
-@country: 
 
-<!-- ##### STRUCT EContactDate ##### -->
+<!-- ##### TYPEDEF EContactDate ##### -->
 <para>
 
 </para>
 
-@year: 
-@month: 
-@day: 
 
 <!-- ##### FUNCTION e_contact_new ##### -->
 <para>
@@ -220,6 +208,16 @@ A convenient way of accessing the contact information in EVCard objects.
 </para>
 
 @dt: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_date_equal ##### -->
+<para>
+
+</para>
+
+@dt1: 
+@dt2: 
 @Returns: 
 
 
@@ -316,4 +314,344 @@ A convenient way of accessing the contact information in EVCard objects.
 @field_name: 
 @Returns: 
 
+
+<!-- ##### ARG EContact:address ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:address-home ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:address-label-home ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:address-label-other ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:address-label-work ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:address-other ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:address-work ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:anniversary ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:assistant ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:assistant-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:birth-date ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:blog-url ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:business-fax ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:business-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:business-phone-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:callback-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:caluri ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:car-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:categories ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:company-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:email ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:email-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:email-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:email-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:family-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:fburl ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:file-as ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:full-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:given-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:home-fax ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:home-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:home-phone-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:homepage-url ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:icscalendar ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:id ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-aim ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-icq ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-jabber ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-msn ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-yahoo ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:isdn-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:list ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:list-show-addresses ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:logo ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:mailer ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:manager ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:mobile-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:name-or-org ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:nickname ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:note ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:office ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:org ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:org-unit ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:other-fax ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:other-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:pager ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:photo ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:primary-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:radio ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:role ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:spouse ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:telex ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:title ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:tty ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:video-url ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:wants-html ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:x509Cert ##### -->
+<para>
+
+</para>
 

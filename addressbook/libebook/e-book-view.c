@@ -155,9 +155,6 @@ e_book_view_construct (EBookView *book_view, GNOME_Evolution_Addressbook_BookVie
 	return TRUE;
 }
 
-/**
- * e_book_view_new:
- */
 EBookView *
 e_book_view_new (GNOME_Evolution_Addressbook_BookView corba_book_view, EBookViewListener *listener)
 {

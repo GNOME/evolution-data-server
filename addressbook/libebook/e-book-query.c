@@ -65,12 +65,32 @@ conjoin (EBookQueryType type, int nqs, EBookQuery **qs, gboolean unref)
 	return ret;
 }
 
+/**
+ * e_book_query_and:
+ * @nqs: the number of queries to AND
+ * @qs: pointer to an array of #EBookQuery items
+ * @unref: if #TRUE, the new query takes ownership of the existing queries
+ *
+ * Create a new #EBookQuery which is the logical AND of the queries in #qs.
+ *
+ * Return value: A new #EBookQuery
+ */
 EBookQuery *
 e_book_query_and (int nqs, EBookQuery **qs, gboolean unref)
 {
 	return conjoin (E_BOOK_QUERY_TYPE_AND, nqs, qs, unref);
 }
 
+/**
+ * e_book_query_or:
+ * @nqs: the number of queries to OR
+ * @qs: pointer to an array of #EBookQuery items
+ * @unref: if #TRUE, the new query takes ownership of the existing queries
+ *
+ * Create a new #EBookQuery which is the logical OR of the queries in #qs.
+ *
+ * Return value: A new #EBookQuery
+ */
 EBookQuery *
 e_book_query_or (int nqs, EBookQuery **qs, gboolean unref)
 {
@@ -98,6 +118,15 @@ conjoinv (EBookQueryType type, EBookQuery *q, va_list ap)
 	return ret;
 }
 
+/**
+ * e_book_query_andv:
+ * @q: first #EBookQuery
+ * @Varargs: #NULL terminated list of #EBookQuery pointers
+ *
+ * Create a new #EBookQuery which is the logical AND of the queries specified.
+ *
+ * Return value: A new #EBookQuery
+ */
 EBookQuery *
 e_book_query_andv (EBookQuery *q, ...)
 {
@@ -107,6 +136,15 @@ e_book_query_andv (EBookQuery *q, ...)
 	return conjoinv (E_BOOK_QUERY_TYPE_AND, q, ap);
 }
 
+/**
+ * e_book_query_orv:
+ * @q: first #EBookQuery
+ * @Varargs: #NULL terminated list of #EBookQuery pointers
+ *
+ * Create a new #EBookQuery which is the logical OR of the queries specified.
+ *
+ * Return value: A new #EBookQuery
+ */
 EBookQuery *
 e_book_query_orv (EBookQuery *q, ...)
 {
@@ -116,6 +154,15 @@ e_book_query_orv (EBookQuery *q, ...)
 	return conjoinv (E_BOOK_QUERY_TYPE_OR, q, ap);
 }
 
+/**
+ * e_book_query_not:
+ * @q: an #EBookQuery
+ * @unref: if #TRUE, the new query takes ownership of the existing queries
+ *
+ * Create a new #EBookQuery which is the opposite of #q.
+ *
+ * Return value: the new #EBookQuery
+ */
 EBookQuery *
 e_book_query_not (EBookQuery *q, gboolean unref)
 {
@@ -129,6 +176,16 @@ e_book_query_not (EBookQuery *q, gboolean unref)
 	return ret;
 }
 
+/**
+ * e_book_query_field_test:
+ * @field: an #EContactField to test
+ * @test: the test to apply
+ * @value: the value to test for
+ *
+ * Create a new #EBookQuery which tests @field for @value using the test @test.
+ *
+ * Return value: the new #EBookQuery
+ */
 EBookQuery *
 e_book_query_field_test (EContactField field,
 			 EBookQueryTest test,
@@ -144,6 +201,13 @@ e_book_query_field_test (EContactField field,
 	return ret;
 }
 
+/**
+ * e_book_query_field_exists:
+ * @field: a #EContactField
+ *
+ * Create a new #EBookQuery which tests if the field @field exists.
+ * Return value: the new #EBookQuery
+ */
 EBookQuery *
 e_book_query_field_exists (EContactField field)
 {
@@ -155,6 +219,14 @@ e_book_query_field_exists (EContactField field)
 	return ret;
 }
 
+/**
+ * e_book_query_any_field_contains:
+ * @value: a value
+ *
+ * Create a new #EBookQuery which tests if any field contains @value.
+ *
+ * Return value: the new #EBookQuery
+ */
 EBookQuery *
 e_book_query_any_field_contains (const char *value)
 {
@@ -166,6 +238,13 @@ e_book_query_any_field_contains (const char *value)
 	return ret;
 }
 
+/**
+ * e_book_query_unref:
+ * @q: an #EBookQuery
+ *
+ * Decrement the reference count on @q. When the reference count reaches 0, @q
+ * will be freed and any child queries will have e_book_query_unref() called.
+ */
 void
 e_book_query_unref (EBookQuery *q)
 {
@@ -201,10 +280,18 @@ e_book_query_unref (EBookQuery *q)
 	g_free (q);
 }
 
-void
+/**
+ * e_book_query_ref:
+ * @q: a #EBookQuery
+ *
+ * Increment the reference count on @q.
+ * Return value: @q
+ */
+EBookQuery *
 e_book_query_ref (EBookQuery *q)
 {
 	q->ref_count++;
+	return q;
 }
 
 static ESExpResult *
@@ -413,6 +500,14 @@ static struct {
 	{ "endswith", func_endswith, 0 },
 };
 
+/**
+ * e_book_query_from_string:
+ * @query_string: the query
+ *
+ * Parse @query_string and return a new #EBookQuery representing it.
+ *
+ * Return value: the new #EBookValue
+ */
 EBookQuery*
 e_book_query_from_string  (const char *query_string)
 {
@@ -461,6 +556,15 @@ e_book_query_from_string  (const char *query_string)
 	return retval;
 }
 
+/**
+ * e_book_query_to_string:
+ * @q: an #EBookQuery
+ *
+ * Return the string representation of @q.
+ *
+ * Return value: The string form of the query. This string should be freed when
+ * finished with.
+ */
 char*
 e_book_query_to_string    (EBookQuery *q)
 {

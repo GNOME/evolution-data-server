@@ -33,6 +33,7 @@ struct _EBook;  /* Forward reference */
 
 struct _EBookView {
 	GObject     parent;
+	/*< private >*/
 	EBookViewPrivate *priv;
 };
 

@@ -312,9 +312,8 @@ impl_BookListener_respond_progress (PortableServer_Servant servant,
 
 /**
  * e_book_listener_new:
- * @book: the #EBook for which the listener is to be bound
  *
- * Creates and returns a new #EBookListener for the book.
+ * Creates and returns a new #EBookListener.
  *
  * Returns: a new #EBookListener
  */

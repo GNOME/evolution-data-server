@@ -33,8 +33,10 @@ Handles queries of addressboook data.
 
 </para>
 
-@sexp: 
+@query_string: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@sexp: 
 
 
 <!-- ##### FUNCTION e_book_query_to_string ##### -->
@@ -52,6 +54,7 @@ Handles queries of addressboook data.
 </para>
 
 @q: 
+@Returns: 
 
 
 <!-- ##### FUNCTION e_book_query_unref ##### -->
@@ -109,9 +112,11 @@ Handles queries of addressboook data.
 
 </para>
 
-@qs: 
+@q: 
 @unref: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@qs: 
 
 
 <!-- ##### FUNCTION e_book_query_field_exists ##### -->

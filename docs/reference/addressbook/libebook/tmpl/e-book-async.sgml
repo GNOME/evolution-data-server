@@ -102,6 +102,17 @@ Handles asynchronous interactions with the EBook.
 @closure: 
 
 
+<!-- ##### FUNCTION e_book_async_load_source ##### -->
+<para>
+
+</para>
+
+@book: 
+@source: 
+@open_response: 
+@closure: 
+
+
 <!-- ##### FUNCTION e_book_async_load_uri ##### -->
 <para>
 
@@ -256,6 +267,8 @@ Handles asynchronous interactions with the EBook.
 
 @book: 
 @query: 
+@requested_fields: 
+@max_results: 
 @cb: 
 @closure: 
 @Returns: 

@@ -14,18 +14,11 @@ A physical address in the format used in the Western hemisphere.
 
 </para>
 
-<!-- ##### STRUCT EAddressWestern ##### -->
+<!-- ##### TYPEDEF EAddressWestern ##### -->
 <para>
 
 </para>
 
-@po_box: 
-@extended: 
-@street: 
-@locality: 
-@region: 
-@postal_code: 
-@country: 
 
 <!-- ##### FUNCTION e_address_western_parse ##### -->
 <para>

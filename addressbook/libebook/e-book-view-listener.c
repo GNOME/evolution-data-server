@@ -231,9 +231,8 @@ e_book_view_listener_construct      (EBookViewListener *listener)
 
 /**
  * e_book_view_listener_new:
- * @book: the #EBookView for which the listener is to be bound
  *
- * Creates and returns a new #EBookViewListener for the book.
+ * Creates and returns a new #EBookViewListener.
  *
  * Returns: a new #EBookViewListener
  */

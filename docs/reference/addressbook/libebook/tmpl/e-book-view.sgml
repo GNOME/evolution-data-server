@@ -16,6 +16,12 @@ addressbook itself.
 #e-book-view-listener, #e-book
 </para>
 
+<!-- ##### STRUCT EBookView ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION e_book_view_new ##### -->
 <para>
 
@@ -50,4 +56,46 @@ addressbook itself.
 
 @book_view: 
 
+
+<!-- ##### SIGNAL EBookView::contacts-added ##### -->
+<para>
+Fired when more contacts are found.  Each contact in the list will be unref'd
+when done, and the list freed, so simply reference any contacts you want to
+keep.
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::contacts-changed ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::contacts-removed ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::sequence-complete ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::status-message ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
 

@@ -23,10 +23,10 @@ typedef enum {
 #endif
 } EBookQueryTest;
 
-EBookQuery* e_book_query_from_string  (const char *sexp);
+EBookQuery* e_book_query_from_string  (const char *query_string);
 char*       e_book_query_to_string    (EBookQuery *q);
 
-void        e_book_query_ref          (EBookQuery *q);
+EBookQuery* e_book_query_ref          (EBookQuery *q);
 void        e_book_query_unref        (EBookQuery *q);
 
 EBookQuery* e_book_query_and          (int nqs, EBookQuery **qs, gboolean unref);
@@ -34,7 +34,7 @@ EBookQuery* e_book_query_andv         (EBookQuery *q, ...);
 EBookQuery* e_book_query_or           (int nqs, EBookQuery **qs, gboolean unref);
 EBookQuery* e_book_query_orv          (EBookQuery *q, ...);
 
-EBookQuery* e_book_query_not          (EBookQuery *qs, gboolean unref);
+EBookQuery* e_book_query_not          (EBookQuery *q, gboolean unref);
 
 EBookQuery* e_book_query_field_exists (EContactField   field);
 EBookQuery* e_book_query_field_test   (EContactField   field,

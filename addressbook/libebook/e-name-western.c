@@ -961,9 +961,9 @@ e_name_western_parse (const char *full_name)
 
 /**
  * e_name_western_free:
- * @name: An ENameWestern object which needs to be freed.
+ * @w: An ENameWestern object which needs to be freed.
  *
- * Deep-frees @name
+ * Deep-frees @w
  */
 void
 e_name_western_free (ENameWestern *w)

@@ -33,6 +33,7 @@ typedef struct _EBookViewListenerResponse EBookViewListenerResponse;
 
 struct _EBookViewListener {
 	BonoboObject           parent;
+	/*< private >*/
 	EBookViewListenerPrivate *priv;
 };
 

@@ -14,18 +14,11 @@ e-name-western
 
 </para>
 
-<!-- ##### STRUCT ENameWestern ##### -->
+<!-- ##### TYPEDEF ENameWestern ##### -->
 <para>
 
 </para>
 
-@prefix: 
-@first: 
-@middle: 
-@nick: 
-@last: 
-@suffix: 
-@full: 
 
 <!-- ##### FUNCTION e_name_western_parse ##### -->
 <para>

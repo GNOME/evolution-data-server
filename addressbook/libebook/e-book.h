@@ -37,6 +37,7 @@ typedef struct _EBookPrivate EBookPrivate;
 
 struct _EBook {
 	GObject       parent;
+	/*< private >*/
 	EBookPrivate *priv;
 };
 
@@ -108,7 +109,7 @@ gboolean e_book_remove_contact             (EBook       *book,
 					    GError     **error);
 
 gboolean e_book_remove_contacts            (EBook       *book,
-					    GList       *id_list,
+					    GList       *ids,
 					    GError     **error);
 
 /* Adding contacts. */

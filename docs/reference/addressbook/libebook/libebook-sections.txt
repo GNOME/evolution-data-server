@@ -1,11 +1,13 @@
 <SECTION>
 <FILE>e-book-listener</FILE>
-EBookListenerResponse
 <TITLE>EBookListener</TITLE>
+EBookListener
+EBookListenerResponse
 EBookListenerOperation
 e_book_listener_new
 e_book_listener_stop
 <SUBSECTION Standard>
+EBookListenerClass
 E_BOOK_LISTENER
 E_IS_BOOK_LISTENER
 E_TYPE_BOOK_LISTENER
@@ -19,12 +21,14 @@ EBookListenerPrivate
 
 <SECTION>
 <FILE>e-book-view-listener</FILE>
-EBookViewListenerResponse
 <TITLE>EBookViewListener</TITLE>
+EBookViewListener
+EBookViewListenerResponse
 EBookViewListenerOperation
 e_book_view_listener_new
 e_book_view_listener_stop
 <SUBSECTION Standard>
+EBookViewListenerClass
 E_BOOK_VIEW_LISTENER
 E_IS_BOOK_VIEW_LISTENER
 E_TYPE_BOOK_VIEW_LISTENER
@@ -39,11 +43,13 @@ EBookViewListenerPrivate
 <SECTION>
 <FILE>e-book-view</FILE>
 <TITLE>EBookView</TITLE>
+EBookView
 e_book_view_new
 e_book_view_set_book
 e_book_view_start
 e_book_view_stop
 <SUBSECTION Standard>
+EBookViewClass
 E_BOOK_VIEW
 E_IS_BOOK_VIEW
 E_TYPE_BOOK_VIEW
@@ -58,7 +64,9 @@ EBookViewPrivate
 <SECTION>
 <FILE>e-book</FILE>
 <TITLE>EBook</TITLE>
+EBook
 e_book_new
+e_book_load_source
 e_book_load_uri
 e_book_unload_uri
 e_book_remove
@@ -82,9 +90,11 @@ e_book_is_writable
 e_book_cancel
 e_book_get_self
 e_book_set_self
+e_book_is_self
 e_book_get_default_addressbook
 e_book_get_addressbooks
 <SUBSECTION Standard>
+EBookClass
 E_BOOK
 E_IS_BOOK
 E_TYPE_BOOK
@@ -98,12 +108,13 @@ EBookPrivate
 
 <SECTION>
 <FILE>e-contact</FILE>
+<TITLE>EContact</TITLE>
+EContact
 EContactField
 EContactName
 EContactPhoto
 EContactAddress
 EContactDate
-<TITLE>EContact</TITLE>
 e_contact_new
 e_contact_new_from_vcard
 e_contact_duplicate
@@ -113,6 +124,7 @@ e_contact_set
 e_contact_date_new
 e_contact_date_from_string
 e_contact_date_to_string
+e_contact_date_equal
 e_contact_name_new
 e_contact_name_to_string
 e_contact_name_from_string
@@ -125,19 +137,65 @@ e_contact_field_name
 e_contact_pretty_name
 e_contact_field_id
 <SUBSECTION Standard>
+EContactClass
 E_CONTACT
 E_IS_CONTACT
 E_TYPE_CONTACT
-e_contact_get_type
 E_CONTACT_CLASS
 E_IS_CONTACT_CLASS
 E_CONTACT_GET_CLASS
+e_contact_get_type
+e_contact_address_get_type
+e_contact_photo_get_type
+e_contact_name_get_type
+e_contact_date_get_type
+
 <SUBSECTION Private>
 EContactPrivate
 </SECTION>
 
 <SECTION>
 <FILE>e-vcard</FILE>
+<TITLE>EVCard</TITLE>
+EVCard
+EVCardFormat
+EVCardAttribute
+EVCardAttributeParam
+e_vcard_construct
+e_vcard_new
+e_vcard_new_from_string
+e_vcard_to_string
+e_vcard_dump_structure
+e_vcard_attribute_new
+e_vcard_attribute_free
+e_vcard_attribute_copy
+e_vcard_remove_attributes
+e_vcard_remove_attribute
+e_vcard_add_attribute
+e_vcard_add_attribute_with_value
+e_vcard_add_attribute_with_values
+e_vcard_attribute_add_value
+e_vcard_attribute_add_value_decoded
+e_vcard_attribute_add_values
+e_vcard_attribute_remove_values
+e_vcard_attribute_remove_params
+e_vcard_attribute_param_new
+e_vcard_attribute_param_free
+e_vcard_attribute_param_copy
+e_vcard_attribute_add_param
+e_vcard_attribute_add_param_with_value
+e_vcard_attribute_add_param_with_values
+e_vcard_attribute_param_add_value
+e_vcard_attribute_param_add_values
+e_vcard_attribute_param_remove_values
+e_vcard_get_attributes
+e_vcard_attribute_get_group
+e_vcard_attribute_get_name
+e_vcard_attribute_get_values
+e_vcard_attribute_get_values_decoded
+e_vcard_attribute_get_params
+e_vcard_attribute_param_get_name
+e_vcard_attribute_param_get_values
 EVC_ADR
 EVC_BDAY
 EVC_CALURI
@@ -181,46 +239,8 @@ EVC_X_MSN
 EVC_X_SPOUSE
 EVC_X_WANTS_HTML
 EVC_X_YAHOO
-EVCardFormat
-EVCardAttribute
-EVCardAttributeParam
-<TITLE>EVCard</TITLE>
-e_vcard_construct
-e_vcard_new
-e_vcard_new_from_string
-e_vcard_to_string
-e_vcard_dump_structure
-e_vcard_attribute_new
-e_vcard_attribute_free
-e_vcard_attribute_copy
-e_vcard_remove_attributes
-e_vcard_remove_attribute
-e_vcard_add_attribute
-e_vcard_add_attribute_with_value
-e_vcard_add_attribute_with_values
-e_vcard_attribute_add_value
-e_vcard_attribute_add_value_decoded
-e_vcard_attribute_add_values
-e_vcard_attribute_remove_values
-e_vcard_attribute_remove_params
-e_vcard_attribute_param_new
-e_vcard_attribute_param_free
-e_vcard_attribute_param_copy
-e_vcard_attribute_add_param
-e_vcard_attribute_add_param_with_value
-e_vcard_attribute_add_param_with_values
-e_vcard_attribute_param_add_value
-e_vcard_attribute_param_add_values
-e_vcard_attribute_param_remove_values
-e_vcard_get_attributes
-e_vcard_attribute_get_group
-e_vcard_attribute_get_name
-e_vcard_attribute_get_values
-e_vcard_attribute_get_values_decoded
-e_vcard_attribute_get_params
-e_vcard_attribute_param_get_name
-e_vcard_attribute_param_get_values
 <SUBSECTION Standard>
+EVCardClass
 E_VCARD
 E_IS_VCARD
 E_TYPE_VCARD
@@ -242,6 +262,7 @@ EBookContactsCallback
 EBookBookViewCallback
 EBookFieldsCallback
 EBookAuthMethodsCallback
+e_book_async_load_source
 e_book_async_load_uri
 e_book_async_get_default_addressbook
 e_book_async_unload_uri
@@ -260,6 +281,7 @@ e_book_async_get_book_view
 
 <SECTION>
 <FILE>e-book-query</FILE>
+EBookQuery
 EBookQueryTest
 e_book_query_from_string
 e_book_query_to_string
@@ -287,6 +309,7 @@ EBookChange
 
 <SECTION>
 <FILE>e-address-western</FILE>
+<TITLE>EAddressWestern</TITLE>
 EAddressWestern
 e_address_western_parse
 e_address_western_free
@@ -298,6 +321,7 @@ e_address_western_free
 
 <SECTION>
 <FILE>e-name-western</FILE>
+<TITLE>ENameWestern</TITLE>
 ENameWestern
 e_name_western_parse
 e_name_western_free

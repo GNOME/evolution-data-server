@@ -189,7 +189,7 @@ typedef struct {
 
 struct _EContact {
 	EVCard parent;
-
+	/*< private >*/
 	EContactPrivate *priv;
 };
 

@@ -15,11 +15,29 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 #e-book-listener, #e-book-view
 </para>
 
+<!-- ##### STRUCT EBook ##### -->
+<para>
+#EBook has no publicly available members.
+</para>
+
+
 <!-- ##### FUNCTION e_book_new ##### -->
 <para>
 
 </para>
 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_load_source ##### -->
+<para>
+
+</para>
+
+@book: 
+@source: 
+@only_if_exists: 
+@error: 
 @Returns: 
 
 
@@ -129,7 +147,7 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 </para>
 
 @book: 
-@id_list: 
+@ids: 
 @error: 
 @Returns: 
 
@@ -252,7 +270,7 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 
 <!-- ##### FUNCTION e_book_get_self ##### -->
 <para>
-Gets the address information for the current Evolution user.
+
 </para>
 
 @contact: 
@@ -274,6 +292,15 @@ Gets the address information for the current Evolution user.
 @id: 
 
 
+<!-- ##### FUNCTION e_book_is_self ##### -->
+<para>
+
+</para>
+
+@contact: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_book_get_default_addressbook ##### -->
 <para>
 
@@ -293,4 +320,19 @@ Gets the address information for the current Evolution user.
 @error: 
 @Returns: 
 
+
+<!-- ##### SIGNAL EBook::backend-died ##### -->
+<para>
+The backend for this address book has died.
+</para>
+
+@ebook: the object which received the signal.
+
+<!-- ##### SIGNAL EBook::writable-status ##### -->
+<para>
+
+</para>
+
+@ebook: the object which received the signal.
+@arg1: 
 
