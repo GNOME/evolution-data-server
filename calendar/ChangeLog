@@ -1,3 +1,12 @@
+2003-11-05  JP Rosevear <jpr@ximian.com>
+
+	* libecal/Makefile.am: LIBADD all the relevant libical libs
+
+	* libecal/libecal-1.0.pc.in: no need to explicitly link
+	libical-evolution
+
+	* libedatacal/libedatacal-1.0.pc.in: ditto; fix include dir
+	
 2003-11-05  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedatacal/e-cal-backend-sexp.c: removed GAL dependency.

@@ -52,8 +52,10 @@ libecal_la_SOURCES =		\
 	e-cal-view.c		\
 	e-cal-view-listener.c
 
-libecal_la_LIBADD =							\
-	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la\
+libecal_la_LIBADD =									\
+	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la		\
+	$(top_builddir)/calendar/libical/src/libicalvcal/libicalvcal-evolution.la	\
+	$(top_builddir)/calendar/libical/src/libicalss/libicalss-evolution.la	\
 	$(top_builddir)/libedataserver/libedataserver.la
 
 libecal_la_LDFLAGS = 								\
