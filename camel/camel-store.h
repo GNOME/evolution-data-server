@@ -131,11 +131,10 @@ struct _CamelStore
 
 #define CAMEL_STORE_FOLDER_CREATE_EXCL (CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_FOLDER_EXCL)
 
-#define CAMEL_STORE_FOLDER_INFO_FAST       (1 << 0)         /* don't lookup message counts if slow */
-#define CAMEL_STORE_FOLDER_INFO_RECURSIVE  (1 << 1)         /* include -all- subfolders */
-#define CAMEL_STORE_FOLDER_INFO_SUBSCRIBED (1 << 2)         /* only include subscribed folders */
-#define CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL (1 << 3)         /* don't include vTrash/vJunk folders */
-#define CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_INFO (1 << 4)  /* include subscription flags */
+#define CAMEL_STORE_FOLDER_INFO_FAST       (1 << 0)
+#define CAMEL_STORE_FOLDER_INFO_RECURSIVE  (1 << 1)
+#define CAMEL_STORE_FOLDER_INFO_SUBSCRIBED (1 << 2)
+#define CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL (1 << 3)  /* don't include vTrash/vJunk folders */
 
 typedef struct {
 	CamelServiceClass parent_class;
