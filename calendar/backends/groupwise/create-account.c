@@ -19,10 +19,9 @@ add_account (const char *conf_key, const char *hostname, const char *username)
 	str = g_strdup_printf ("%s@%s", username, hostname);
 	group = e_source_group_new (str, "groupwise://");
 	g_free (str);
+	e_source_list_add_group (source_list, group, -1);
 
 	source = e_source_new ("Default", hostname);
-
-	e_source_list_add_group (source_list, group, -1);
 	e_source_group_add_source (group, source, -1);
 }
 
