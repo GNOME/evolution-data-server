@@ -1,3 +1,10 @@
+2003-11-05  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedatabook/e-book-backend-sexp.c:
+	* libedatabook/e-book-backend-summary.c:
+	* libedatabook/e-book-backend-vcf.c:
+	* libedatabook/e-book-backend-file.c: removed GAL dependency.
+
 2003-11-04  JP Rosvear <jpr@ximian.com>
 
 	* libedatabook/e-data-book-factory.c: use properly name spaced

@@ -21,8 +21,6 @@
 #include <sys/stat.h>
 
 #include <libgnome/gnome-i18n.h>
-#include <gal/util/e-util.h>
-#include <gal/widgets/e-unicode.h>
 #include <libedataserver/e-dbhash.h>
 #include <libedataserver/e-db3-utils.h>
 #include <libebook/e-contact.h>

@@ -33,8 +33,8 @@
 
 #include <netinet/in.h>
 
-#include <gal/widgets/e-unicode.h>
 #include <libedataserver/e-sexp.h>
+#include <libedataserver/e-util.h>
 #include <libebook/e-contact.h>
 #include "e-book-backend-summary.h"
 
@@ -927,7 +927,7 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 {
 	EBookBackendSummary *summary = data;
 
-	return do_compare (summary, f, argc, argv, (char *(*)(const char*, const char*)) e_utf8_strstrcase);
+	return do_compare (summary, f, argc, argv, (char *(*)(const char*, const char*)) e_util_utf8_strstrcase);
 }
 
 static char *
@@ -951,7 +951,7 @@ static char *
 endswith_helper (const char *s1, const char *s2)
 {
 	char *p;
-	if ((p = (char*)e_utf8_strstrcase(s1, s2))
+	if ((p = (char*)e_util_utf8_strstrcase(s1, s2))
 	    && (strlen(p) == strlen(s2)))
 		return p;
 	else
@@ -970,7 +970,7 @@ static char *
 beginswith_helper (const char *s1, const char *s2)
 {
 	char *p;
-	if ((p = (char*)e_utf8_strstrcase(s1, s2))
+	if ((p = (char*)e_util_utf8_strstrcase(s1, s2))
 	    && (p == s1))
 		return p;
 	else

@@ -20,7 +20,7 @@
 
 #include <string.h>
 #include <libedataserver/e-sexp.h>
-#include <gal/widgets/e-unicode.h>
+#include <libedataserver/e-util.h>
 #include "e-book-backend-sexp.h"
 
 static GObjectClass *parent_class;
@@ -221,7 +221,7 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 {
 	SearchContext *ctx = data;
 
-	return entry_compare (ctx, f, argc, argv, (char *(*)(const char*, const char*)) e_utf8_strstrcase);
+	return entry_compare (ctx, f, argc, argv, (char *(*)(const char*, const char*)) e_util_utf8_strstrcase);
 }
 
 static char *
@@ -245,7 +245,7 @@ static char *
 endswith_helper (const char *s1, const char *s2)
 {
 	char *p;
-	if ((p = (char*)e_utf8_strstrcase(s1, s2))
+	if ((p = (char*) e_util_utf8_strstrcase(s1, s2))
 	    && (strlen(p) == strlen(s2)))
 		return p;
 	else
@@ -264,7 +264,7 @@ static char *
 beginswith_helper (const char *s1, const char *s2)
 {
 	char *p;
-	if ((p = (char*)e_utf8_strstrcase(s1, s2))
+	if ((p = (char*) e_util_utf8_strstrcase(s1, s2))
 	    && (p == s1))
 		return p;
 	else
@@ -310,7 +310,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 				}
 				else if (info->prop_type == PROP_TYPE_LIST) {
 				/* the special searches that match any of the list elements */
-					truth = info->list_compare (ctx->contact, "", (char *(*)(const char*, const char*)) e_utf8_strstrcase);
+					truth = info->list_compare (ctx->contact, "", (char *(*)(const char*, const char*)) e_util_utf8_strstrcase);
 				}
 
 				break;

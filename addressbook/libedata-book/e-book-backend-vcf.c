@@ -18,8 +18,6 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#include <gal/util/e-util.h>
-#include <gal/widgets/e-unicode.h>
 #include <libgnome/gnome-i18n.h>
 #include <libebook/e-contact.h>
  
