@@ -1,3 +1,13 @@
+2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes nasty crash in e-d-s
+
+	* libedataserver/e-xml-hash-utils.[ch]: EXmlHashFunc gets 3 arguments.
+	(foreach_hash_func): pass the value also to the XML hash function.
+
+	* libedataserver/e-file-cache.c (add_object_to_list): use the correct
+	argument types.
+
 2004-01-15  JP Rosevear <jpr@ximian.com>
 
 	* libedataserver/e-source-list.c (e_source_list_peek_source_any):

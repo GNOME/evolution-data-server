@@ -44,7 +44,7 @@ typedef enum {
 	E_XMLHASH_STATUS_NOT_FOUND
 } EXmlHashStatus;
 
-typedef void (* EXmlHashFunc) (const char *key, gpointer user_data);
+typedef void (* EXmlHashFunc) (const char *key, const char *value, gpointer user_data);
 
 typedef struct EXmlHash EXmlHash;
 

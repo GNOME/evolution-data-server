@@ -233,7 +233,7 @@ e_file_cache_get_object (EFileCache *cache, const char *key)
 }
 
 static void
-add_object_to_list (gpointer key, gpointer value, gpointer user_data)
+add_object_to_list (const char *key, const char *value, gpointer user_data)
 {
 	GSList **list = user_data;
 

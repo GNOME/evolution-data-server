@@ -207,11 +207,11 @@ typedef struct {
 } foreach_data_t;
 
 static void
-foreach_hash_func (gpointer key, gpointer value, gpointer user_data)
+foreach_hash_func (gpointer  key, gpointer value, gpointer user_data)
 {
 	foreach_data_t *data = (foreach_data_t *) user_data;
 
-	data->func (key, data->user_data);
+	data->func ((const char *) key, (const char *) value, data->user_data);
 }
 
 void
