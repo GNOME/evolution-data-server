@@ -1,3 +1,18 @@
+2004-01-28 Harish K <kharish@novell.com>
+	* calendar/backends/groupwise/e-cal-backend-groupwise.c :
+	Pass the correct arguments to the callback function 
+	* calendar/backends/groupwise/e-gw-connection.c :
+	(e_gw_connection_get_container_id) : Initialize container_list.
+	(e-gw-connection_get_deltas) : fixed the prototype to match
+	the callback prototype
+	(set_attendee_list_from_soap_param): modified 
+	get_attendee_list_from_soap_param to update calendar component
+	within the same function.
+	(e-gw-connection_get_items) : check item types before creating
+	e-cal-components.
+	* calendar/backends/groupwise/e-gw-connection.h : added 
+	CacheUpdateHandle structure. 
+
 2004-01-28  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.h: add protos

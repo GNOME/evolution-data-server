@@ -386,13 +386,13 @@ get_evo_date_from_string (const char * str1)
         return str2;
 }
 
-static GSList*
-get_attendee_list_from_soap_parameter (SoupSoapParameter *param)
+static void 
+set_attendee_list_from_soap_parameter (ECalComponent *comp, SoupSoapParameter *param)
 {
         SoupSoapParameter *param_recipient;
         GSList *list = NULL;
         ECalComponentAttendee *attendee;
-        const char *email, *cn;
+        char *email, *cn;
 
         for (param_recipient = soup_soap_parameter_get_first_child_by_name (param, "recipient");
                 param_recipient != NULL;
@@ -428,8 +428,16 @@ get_attendee_list_from_soap_parameter (SoupSoapParameter *param)
 
                 list = g_slist_append (list, attendee);
         }        
-
-        return list;
+	if (list) {
+		GSList *l;
+		e_cal_component_set_attendee_list (comp, list);
+		for (l = list; l != NULL; l = g_slist_next (l)) {
+			ECalComponentAttendee *attendee = (ECalComponentAttendee *)l->data;
+			g_free (attendee->cn);
+			g_free (attendee->value);
+		}	
+		g_slist_foreach (list, (GFunc) g_free, NULL);
+	}
 }
 
 static ECalComponent* 
@@ -443,7 +451,6 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         ECalComponentText summary;
         struct icaltimetype t;
         int type = 0; /* type : stores enum value of ECalcomponentVType for local access*/ 
-        GSList *attendee_list = NULL;
 
         /* FIXME: need to add some validation code*/
         comp = e_cal_component_new();        
@@ -454,9 +461,6 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         } else if (!g_ascii_strcasecmp (item_type, "Task")) {
                 type = 2;
                 e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
-        } else if (!g_ascii_strcasecmp (item_type, "Note")) {
-                type = 3;
-                e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
         } else {
                 g_object_unref (comp);
                 return NULL;
@@ -551,13 +555,8 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         subparam = soup_soap_parameter_get_first_child_by_name (param, "distribution");
         /* FIXME  what to do with 'from' data*/
         subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients");
-        if (subparam) {
-                attendee_list = get_attendee_list_from_soap_parameter (subparam);
-		if (attendee_list) {
-			e_cal_component_set_attendee_list (comp, attendee_list);
-			g_slist_foreach (attendee_list, (GFunc) g_free, NULL);
-		}
-        }
+        if (subparam) 
+		set_attendee_list_from_soap_parameter (comp, subparam);
 
         /* FIXME  Property - status*/
         /* FIXME  Property priority */  
@@ -707,7 +706,7 @@ char *
 e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 {
         EGwConnectionStatus status;
-	GList *container_list, *l;
+	GList *container_list = NULL, *l;
 	char *container_id = NULL;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
@@ -783,12 +782,18 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
                 subparam != NULL;
                 subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) { 
-                        ECalComponent *comp = NULL;
-                        comp = get_e_cal_component_from_soap_parameter (subparam);
-                        if (comp)
-                                *list = g_list_append (*list, comp);
-                        else
-                                continue; /*FIXME: skips element if error. need to generate proper error*/
+                        char *item_type;
+			ECalComponent *comp = NULL;
+		       	item_type = xmlGetProp (subparam, "type");
+			if ((!g_ascii_strcasecmp (item_type, "Appointment")) || 
+					(!g_ascii_strcasecmp (item_type, "Task"))) {
+				comp = get_e_cal_component_from_soap_parameter (subparam);
+				if (comp)
+					*list = g_list_append (*list, comp);
+				else
+					continue; 
+			}	
+			/*Code for handling other types would go here */
         }
                
 	/* free memory */
@@ -809,7 +814,6 @@ gboolean update_cache_item (ECalBackendCache *cache, SoupSoapParameter *param)
         ECalComponentText summary;
         struct icaltimetype t;
         int type = 0; /* type : stores enum value of ECalcomponentVType for local access*/ 
-        GSList *attendee_list = NULL;
 
         /* FIXME: need to add some validation code*/
         
@@ -903,11 +907,8 @@ gboolean update_cache_item (ECalBackendCache *cache, SoupSoapParameter *param)
                 /* FIXME  what to do with 'from' data*/
                 
                 subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients");
-                if (subparam) {
-                        attendee_list = get_attendee_list_from_soap_parameter (subparam);
-                        if (attendee_list)
-                                e_cal_component_set_attendee_list (comp, attendee_list);
-                }        
+                if (subparam) 
+			set_attendee_list_from_soap_parameter (comp, subparam);
         }        
 
         /* FIXME  Property - status*/
@@ -983,19 +984,29 @@ gboolean update_cache_item (ECalBackendCache *cache, SoupSoapParameter *param)
 
 
 EGwConnectionStatus
-e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
+e_gw_connection_get_deltas (gpointer handle)
 {
+	CacheUpdateHandle *update_handle;
+	EGwConnection *cnc;
+	ECalBackendCache *cache;
 	SoupSoapMessage *msg;
         SoupSoapResponse *response;
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+        
+	update_handle = (CacheUpdateHandle *) handle;
+	cnc = update_handle->cnc;
+	cache = update_handle->cache;
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltaRequest");
         if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
+		g_object_unref (cnc);
+		g_object_unref (cache);
+		g_free (update_handle);
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
         
@@ -1007,6 +1018,9 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
+		g_object_unref (cnc);
+		g_object_unref (cache);
+		g_free (update_handle);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 
@@ -1014,6 +1028,9 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
         if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_object_unref (response);
                 g_object_unref (msg);
+		g_object_unref (cnc);
+		g_object_unref (cache);
+		g_free (update_handle);
 		return status;
 	}
 
@@ -1022,11 +1039,17 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
         if (!param) {
                 g_object_unref (response);
                 g_object_unref (msg);
+		g_object_unref (cnc);
+		g_object_unref (cache);
+		g_free (update_handle);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 	
         if (!g_ascii_strcasecmp ( soup_soap_parameter_get_string_value (param), "0")) {
                 g_message ("No deltas");
+		g_object_unref (cnc);
+		g_object_unref (cache);
+		g_free (update_handle);
                 return E_GW_CONNECTION_STATUS_OK;
         }                
 
@@ -1034,6 +1057,9 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
         if (!param) {
                 g_object_unref (response);
                 g_object_unref (msg);
+		g_object_unref (cnc);
+		g_object_unref (cache);
+		g_free (update_handle);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
         
@@ -1051,7 +1077,9 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
                                 if (!param_id) {
                                         g_object_unref (response);
                                         g_object_unref (msg);
-                                        return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                                        g_object_unref (cnc);
+					g_object_unref (cache);
+					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
                                 }
                                 uid = soup_soap_parameter_get_string_value (param_id);
                                 if (!e_cal_backend_cache_remove_component (cache, uid, NULL))
@@ -1071,7 +1099,9 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
                                 if (!comp) {
                                         g_object_unref (response);
                                         g_object_unref (msg);
-                                        return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                                        g_object_unref (cnc);
+					g_object_unref (cache);
+					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
                                 }
                                 if (!e_cal_backend_cache_put_component (cache, comp))
                                         g_message ("Could not add the component");
@@ -1092,6 +1122,7 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
 	/* free memory */
         g_object_unref (response);
 	g_object_unref (msg);
+	g_free (update_handle);
 
         return E_GW_CONNECTION_STATUS_OK;        
 }

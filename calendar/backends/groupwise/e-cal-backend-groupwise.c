@@ -163,7 +163,12 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				g_warning (G_STRLOC ": Could not populate the cache");
 				return GNOME_Evolution_Calendar_PermissionDenied;
 			} else {
-				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) e_gw_connection_get_deltas, (gpointer) cbgw);
+				CacheUpdateHandle *update_handle = g_new0 (CacheUpdateHandle, 1);
+				update_handle->cnc = priv->cnc;
+				g_object_ref (priv->cnc);
+				update_handle->cache = priv->cache;
+				g_object_ref (priv->cache);
+				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) e_gw_connection_get_deltas, (gpointer) update_handle);
 				priv->mode = CAL_MODE_REMOTE;
 			}
 

@@ -64,6 +64,11 @@ typedef enum {
 	E_GW_CONNECTION_STATUS_UNKNOWN
 } EGwConnectionStatus;
 
+typedef struct {
+	EGwConnection *cnc;
+	ECalBackendCache *cache;
+} CacheUpdateHandle;
+
 SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
@@ -72,7 +77,7 @@ void                e_gw_connection_free_container_list (GList *container_list);
 char               *e_gw_connection_get_container_id (EGwConnection *cnc, const char *name);
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
 					       const char *filter, GList **list);
-EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache);
+EGwConnectionStatus e_gw_connection_get_deltas (gpointer update_handle);
 EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item);
 EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp);
 EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
