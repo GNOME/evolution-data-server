@@ -27,8 +27,8 @@ static CamelSession *session;
 /* ASCII sorted on full_name */
 static CamelFolderInfo fi_list_1[] = {
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.", "Inbox", ".", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#Junk", "Junk", "Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#Trash", "Trash", "Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Junk", "Junk", ".#evolution/Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Trash", "Trash", ".#evolution/Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox", "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox/foo", "foo", "testbox/foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox2", "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
@@ -36,8 +36,8 @@ static CamelFolderInfo fi_list_1[] = {
 
 static CamelFolderInfo fi_list_2[] = {
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.", "Inbox", ".", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#Junk", "Junk", "Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#Trash", "Trash", "Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Junk", "Junk", ".#evolution/Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Trash", "Trash", ".#evolution/Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox", "testbox", "testbox", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox2", "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
