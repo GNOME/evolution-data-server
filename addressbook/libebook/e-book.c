@@ -554,8 +554,99 @@ e_book_async_commit_contact (EBook                 *book,
 				   cb, closure);
 }
 
+static gboolean
+do_get_required_fields (gboolean             sync,
+			 EBook               *book,
+			 GList              **fields,
+			 GError             **error,
+			 EBookEListCallback   cb,
+			 gpointer             closure)
+{
+	EBookOp *our_op;
+	EBookStatus status;
+	CORBA_Environment ev;
 
-
+	g_mutex_lock (book->priv->mutex);
+
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
+		g_mutex_unlock (book->priv->mutex);
+		if (error) {
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
+				     _("\"%s\" on book before \"%s\""),
+				     "e_book_get_required_fields", "e_book_open");
+		}
+		else {
+			g_warning (_("\"%s\" on book before \"%s\""),
+				   "e_book_get_required_fields", "e_book_open");
+		}
+		return FALSE;
+	}
+
+	if (sync && e_book_get_current_sync_op (book) != NULL) {
+		g_mutex_unlock (book->priv->mutex);
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_BUSY,
+			     _("book busy"));
+		return FALSE;
+	}
+
+	our_op = e_book_new_op (book, sync);
+
+	g_mutex_lock (our_op->mutex);
+
+	g_mutex_unlock (book->priv->mutex);
+
+	CORBA_exception_init (&ev);
+
+	our_op->cb.elist = cb;
+	our_op->closure = closure;
+
+	/* will eventually end up calling
+	   _e_book_response_get_supported_fields */
+	GNOME_Evolution_Addressbook_Book_getRequiredFields(book->priv->corba_book, our_op->opid, &ev);
+
+	if (ev._major != CORBA_NO_EXCEPTION) {
+
+		g_mutex_lock (book->priv->mutex);
+		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
+
+		CORBA_exception_free (&ev);
+
+		if (error) {
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
+				     _("CORBA exception making \"%s\" call"),
+				     "Book::getRequiredFields");
+		}
+		else {
+			g_warning (_("CORBA exception making \"%s\" call"),
+				   "Book::getRequiredFields");
+		}
+
+		return FALSE;
+	}
+
+
+	CORBA_exception_free (&ev);
+
+	if (sync) {
+		/* wait for something to happen (both cancellation and a
+		   successful response will notify us via our cv */
+		g_cond_wait (our_op->cond, our_op->mutex);
+
+		status = our_op->status;
+		*fields = our_op->list;
+
+		g_mutex_lock (book->priv->mutex);
+		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
+
+		E_BOOK_CHECK_STATUS (status, error);
+	}
+	else {
+		return TRUE;
+	}
+}
+
 static gboolean
 do_get_supported_fields (gboolean             sync,
 			 EBook               *book,
@@ -649,6 +740,31 @@ do_get_supported_fields (gboolean             sync,
 	}
 }
 
+gboolean
+e_book_get_required_fields  (EBook            *book,
+			      GList           **fields,
+			      GError          **error)
+{
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (fields,                   E_BOOK_ERROR_INVALID_ARG);
+
+	return do_get_required_fields (TRUE,
+					book, fields, error,
+					NULL, NULL);
+}
+
+guint
+e_book_async_get_required_fields (EBook              *book,
+				   EBookEListCallback  cb,
+				   gpointer            closure)
+{
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	return !do_get_required_fields (FALSE,
+					 book, NULL, NULL,
+					 cb, closure);
+}
+
 /**
  * e_book_get_supported_fields:
  * @book: an #EBook
@@ -707,6 +823,57 @@ emit_async_elist_response (gpointer data)
 	g_object_unref (book);
 
 	return FALSE;
+}
+
+static void
+e_book_response_get_required_fields (EBook       *book,
+				      guint32      opid,
+				      EBookStatus  status,
+				      GList       *fields)
+
+{
+	EBookOp *op;
+
+	g_mutex_lock (book->priv->mutex);
+
+	op = e_book_get_op (book, opid);
+
+	if (op == NULL) {
+		g_mutex_unlock (book->priv->mutex);
+		g_warning ("e_book_response_get_required_fields: Cannot find operation ");
+		return;
+	}
+
+	if (op->synchronous) {
+		g_mutex_lock (op->mutex);
+
+		op->status = status;
+		op->list = fields;
+
+		g_cond_signal (op->cond);
+
+		g_mutex_unlock (op->mutex);
+	}
+	else {
+		GList *l;
+		EList *efields = e_list_new ((EListCopyFunc) g_strdup, 
+					     (EListFreeFunc) g_free,
+					     NULL);
+
+		g_object_ref (book);
+
+		for (l = fields; l; l = l->next)
+			e_list_append (efields, l->data);
+
+		op->book = g_object_ref (book);
+		op->elist = efields;
+
+		op->idle_id = g_idle_add (emit_async_elist_response, op);
+		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
+							    GINT_TO_POINTER (op->idle_id));
+	}
+
+	g_mutex_unlock (book->priv->mutex);
 }
 
 static void
@@ -2679,6 +2846,9 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
 		break;
 	case GetSupportedFieldsResponse:
 		e_book_response_get_supported_fields (book, resp->opid, resp->status, resp->list);
+		break;
+	case GetRequiredFieldsResponse:
+		e_book_response_get_required_fields (book, resp->opid, resp->status, resp->list);
 		break;
 	case GetSupportedAuthMethodsResponse:
 		e_book_response_get_supported_auth_methods (book, resp->opid, resp->status, resp->list);

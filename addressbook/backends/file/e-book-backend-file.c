@@ -769,6 +769,21 @@ e_book_backend_file_authenticate_user (EBookBackendSync *backend,
 }
 
 static EBookBackendSyncStatus
+e_book_backend_file_get_required_fields (EBookBackendSync *backend,
+					  EDataBook *book,
+					  guint32 opid,
+					  GList **fields_out)
+{
+	GList *fields = NULL;
+	int i;
+
+	fields = g_list_append (fields , g_strdup(e_contact_field_name (E_CONTACT_FILE_AS)));
+	*fields_out = fields;
+	return GNOME_Evolution_Addressbook_Success;
+}
+
+
+static EBookBackendSyncStatus
 e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 					  EDataBook *book,
 					  guint32 opid,
@@ -1223,6 +1238,8 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	sync_class->get_changes_sync           = e_book_backend_file_get_changes;
 	sync_class->authenticate_user_sync     = e_book_backend_file_authenticate_user;
 	sync_class->get_supported_fields_sync  = e_book_backend_file_get_supported_fields;
+	sync_class->get_required_fields_sync   = e_book_backend_file_get_required_fields;
+	
 
 	object_class->dispose = e_book_backend_file_dispose;
 }

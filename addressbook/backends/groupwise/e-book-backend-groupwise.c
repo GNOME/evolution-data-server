@@ -2127,6 +2127,22 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 }
 
 static void
+e_book_backend_groupwise_get_required_fields (EBookBackend *backend,
+					       EDataBook    *book,
+					       guint32       opid)
+{
+	GList *fields = NULL;
+	int i;
+  
+	fields = g_list_append (fields , e_contact_field_name (E_CONTACT_FILE_AS));
+	e_data_book_respond_get_supported_fields (book, opid,
+						  GNOME_Evolution_Addressbook_Success,
+						  fields);
+	g_list_free (fields);
+ 
+}
+
+static void
 e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 					       EDataBook    *book,
 					       guint32       opid)
@@ -2147,7 +2163,7 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 	e_data_book_respond_get_supported_fields (book, opid,
 						  GNOME_Evolution_Addressbook_Success,
 						  fields);
- 
+	g_list_free (fields);
 }
 
 static GNOME_Evolution_Addressbook_CallStatus
@@ -2362,6 +2378,7 @@ e_book_backend_groupwise_class_init (EBookBackendGroupwiseClass *klass)
 	parent_class->stop_book_view          = e_book_backend_groupwise_stop_book_view;
 	parent_class->get_changes             = e_book_backend_groupwise_get_changes;
 	parent_class->authenticate_user       = e_book_backend_groupwise_authenticate_user;
+	parent_class->get_required_fields     = e_book_backend_groupwise_get_required_fields;
 	parent_class->get_supported_fields    = e_book_backend_groupwise_get_supported_fields;
 	parent_class->get_supported_auth_methods = e_book_backend_groupwise_get_supported_auth_methods;
 	parent_class->cancel_operation        = e_book_backend_groupwise_cancel_operation;

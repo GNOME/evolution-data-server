@@ -274,6 +274,29 @@ impl_BookListener_respond_authentication_result (PortableServer_Servant servant,
 }
 
 static void
+impl_BookListener_respond_get_required_fields (PortableServer_Servant servant,
+						const CORBA_long opid,
+						const GNOME_Evolution_Addressbook_CallStatus status,
+						const GNOME_Evolution_Addressbook_stringlist *fields,
+						CORBA_Environment *ev)
+{
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
+	EBookListenerResponse response;
+	int i;
+
+	response.op     = GetRequiredFieldsResponse;
+	response.opid   = opid;
+	response.status = e_book_listener_convert_status (status);
+	response.list   = NULL;
+
+	for (i = 0; i < fields->_length; i ++)
+		response.list = g_list_prepend (response.list, g_strdup (fields->_buffer[i]));
+
+	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
+}
+
+
+static void
 impl_BookListener_respond_get_supported_fields (PortableServer_Servant servant,
 						const CORBA_long opid,
 						const GNOME_Evolution_Addressbook_CallStatus status,
@@ -398,6 +421,7 @@ e_book_listener_class_init (EBookListenerClass *klass)
 	epv->notifyContactsRemoved      = impl_BookListener_respond_remove_contacts;
 	epv->notifyContactModified      = impl_BookListener_respond_modify_contact;
 	epv->notifyAuthenticationResult = impl_BookListener_respond_authentication_result;
+	epv->notifyRequiredFields      = impl_BookListener_respond_get_required_fields;
 	epv->notifySupportedFields      = impl_BookListener_respond_get_supported_fields;
 	epv->notifySupportedAuthMethods = impl_BookListener_respond_get_supported_auth_methods;
 	epv->notifyContactRequested     = impl_BookListener_respond_get_contact;

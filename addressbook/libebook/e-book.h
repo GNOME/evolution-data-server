@@ -92,6 +92,13 @@ gboolean e_book_remove                     (EBook       *book,
 guint    e_book_async_remove               (EBook   *book,
 					    EBookCallback cb,
 					    gpointer closure);
+gboolean e_book_get_required_fields       (EBook       *book,
+					    GList      **fields,
+					    GError     **error);
+
+guint    e_book_async_get_required_fields (EBook              *book,
+					    EBookEListCallback  cb,
+					    gpointer            closure);
 
 gboolean e_book_get_supported_fields       (EBook       *book,
 					    GList      **fields,

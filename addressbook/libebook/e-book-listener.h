@@ -68,6 +68,7 @@ typedef enum {
 	GetChangesResponse,
 	AuthenticationResponse,
 	GetSupportedFieldsResponse,
+	GetRequiredFieldsResponse,
 	GetSupportedAuthMethodsResponse,
 
 	/* Async events */

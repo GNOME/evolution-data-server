@@ -80,6 +80,10 @@ void                    e_data_book_respond_get_supported_fields (EDataBook     
 								  guint32                                 opid,
 								  GNOME_Evolution_Addressbook_CallStatus  status,
 								  GList                                  *fields);
+void                    e_data_book_respond_get_required_fields (EDataBook                              *book,
+								  guint32                                 opid,
+								  GNOME_Evolution_Addressbook_CallStatus  status,
+								  GList                                  *fields);
 void                    e_data_book_respond_get_supported_auth_methods (EDataBook                              *book,
 									guint32                                 opid,
 									GNOME_Evolution_Addressbook_CallStatus  status,

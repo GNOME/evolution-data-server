@@ -3356,6 +3356,30 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 }
 
 static void
+e_book_backend_ldap_get_required_fields (EBookBackend *backend,
+					  EDataBook    *book,
+					  guint32       opid)
+
+{
+	GList *fields = NULL;
+	
+	
+	/*FIMEME we should look at mandatory attributs in the schema
+	  and return all those fields here */
+	fields = g_list_append (fields, e_contact_field_name (E_CONTACT_FILE_AS));
+	fields = g_list_append (fields, e_contact_field_name (E_CONTACT_FULL_NAME));
+	fields = g_list_append (fields, e_contact_field_name (E_CONTACT_FAMILY_NAME));
+	
+	
+	e_data_book_respond_get_required_fields (book,
+						  opid,
+						  GNOME_Evolution_Addressbook_Success,
+						  fields);
+	g_list_free (fields);
+}
+
+
+static void
 e_book_backend_ldap_get_supported_fields (EBookBackend *backend,
 					  EDataBook    *book,
 					  guint32       opid)
@@ -3590,6 +3614,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->stop_book_view          = e_book_backend_ldap_stop_book_view;
 	parent_class->get_changes             = e_book_backend_ldap_get_changes;
 	parent_class->authenticate_user       = e_book_backend_ldap_authenticate_user;
+	parent_class->get_required_fields    = e_book_backend_ldap_get_required_fields;
 	parent_class->get_supported_fields    = e_book_backend_ldap_get_supported_fields;
 	parent_class->get_supported_auth_methods = e_book_backend_ldap_get_supported_auth_methods;
 	parent_class->cancel_operation	      = e_book_backend_ldap_cancel_operation;

@@ -62,6 +62,7 @@ struct _EBookBackendClass {
 	void (*stop_book_view) (EBookBackend *backend, EDataBookView *book_view);
 	void (*get_changes) (EBookBackend *backend, EDataBook *book, guint32 opid, const char *change_id);
 	void (*authenticate_user) (EBookBackend *backend, EDataBook *book, guint32 opid, const char *user, const char *passwd, const char *auth_method);
+	void (*get_required_fields) (EBookBackend *backend, EDataBook *bokk, guint32 opid);
 	void (*get_supported_fields) (EBookBackend *backend, EDataBook *book, guint32 opid);
 	void (*get_supported_auth_methods) (EBookBackend *backend, EDataBook *book, guint32 opid);
 	GNOME_Evolution_Addressbook_CallStatus (*cancel_operation) (EBookBackend *backend, EDataBook *book);
@@ -137,6 +138,11 @@ void        e_book_backend_authenticate_user        (EBookBackend             *b
 void        e_book_backend_get_supported_fields     (EBookBackend             *backend,
 						     EDataBook                *book,
 						     guint32                   opid);
+
+void        e_book_backend_get_required_fields      (EBookBackend             *backend,
+						     EDataBook                *book,
+						     guint32                   opid);
+
 void        e_book_backend_get_supported_auth_methods (EBookBackend           *backend,
 						       EDataBook              *book,
 						       guint32                 opid);

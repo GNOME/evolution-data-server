@@ -254,6 +254,20 @@ e_book_backend_authenticate_user (EBookBackend *backend,
 }
 
 void
+e_book_backend_get_required_fields (EBookBackend *backend,
+				     EDataBook    *book,
+				     guint32       opid)
+
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_required_fields);
+
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_required_fields) (backend, book, opid);
+}
+
+void
 e_book_backend_get_supported_fields (EBookBackend *backend,
 				     EDataBook    *book,
 				     guint32       opid)

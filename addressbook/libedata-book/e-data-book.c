@@ -199,6 +199,20 @@ impl_GNOME_Evolution_Addressbook_Book_getStaticCapabilities (PortableServer_Serv
 	return ret_val;
 }
 
+
+static void
+impl_GNOME_Evolution_Addressbook_Book_getRequiredFields (PortableServer_Servant servant,
+							  const CORBA_long opid,
+							  CORBA_Environment *ev)
+
+{
+
+	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
+
+	e_book_backend_get_required_fields (e_data_book_get_backend (book), book, opid);
+	
+}
+
 static void
 impl_GNOME_Evolution_Addressbook_Book_getSupportedFields (PortableServer_Servant servant,
 							  const CORBA_long opid,
@@ -408,6 +422,44 @@ e_data_book_respond_authenticate_user (EDataBook                              *b
 
 	CORBA_exception_free (&ev);
 }
+
+void
+e_data_book_respond_get_required_fields (EDataBook                              *book,
+					  guint32                                 opid,
+					  GNOME_Evolution_Addressbook_CallStatus  status,
+					  GList                                  *fields)
+{
+
+	CORBA_Environment ev;
+	GNOME_Evolution_Addressbook_stringlist stringlist;
+	int num_fields;
+	int i;
+	GList *iter;
+
+	CORBA_exception_init (&ev);
+
+	num_fields = g_list_length (fields);
+
+	stringlist._buffer = CORBA_sequence_CORBA_string_allocbuf (num_fields);
+	stringlist._maximum = num_fields;
+	stringlist._length = num_fields;
+
+	for (i = 0, iter = fields; iter; iter = iter->next, i ++) {
+		stringlist._buffer[i] = CORBA_string_dup ((char*)iter->data);
+	}
+
+	printf ("calling GNOME_Evolution_Addressbook_BookListener_notifyRequiredFields\n");
+
+	GNOME_Evolution_Addressbook_BookListener_notifyRequiredFields (
+			book->priv->listener, opid, status,
+			&stringlist,
+			&ev);
+
+	CORBA_exception_free (&ev);
+
+	CORBA_free(stringlist._buffer);
+}
+
 
 void
 e_data_book_respond_get_supported_fields (EDataBook                              *book,
@@ -756,6 +808,7 @@ e_data_book_class_init (EDataBookClass *klass)
 	epv->modifyContact           = impl_GNOME_Evolution_Addressbook_Book_modifyContact;
 	epv->getStaticCapabilities   = impl_GNOME_Evolution_Addressbook_Book_getStaticCapabilities;
 	epv->getSupportedFields      = impl_GNOME_Evolution_Addressbook_Book_getSupportedFields;
+	epv->getRequiredFields       = impl_GNOME_Evolution_Addressbook_Book_getRequiredFields;
 	epv->getSupportedAuthMethods = impl_GNOME_Evolution_Addressbook_Book_getSupportedAuthMethods;
 	epv->getBookView             = impl_GNOME_Evolution_Addressbook_Book_getBookView;
 	epv->getChanges              = impl_GNOME_Evolution_Addressbook_Book_getChanges;

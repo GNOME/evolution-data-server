@@ -127,6 +127,7 @@ module Addressbook {
 		oneway void getContactList (in long opid, in string query);
 
 		oneway void getSupportedFields (in long opid);
+		oneway void getRequiredFields (in long pid);
 
 		/*
 		 * This function returns a list of strings
@@ -174,9 +175,10 @@ module Addressbook {
 		oneway void notifyContactRequested     (in long opid, in CallStatus status, in VCard vcard);
 		oneway void notifyContactListRequested (in long opid, in CallStatus status, in stringlist contacts);
 		oneway void notifySupportedFields      (in long opid, in CallStatus status, in stringlist fields);
+		oneway void notifyRequiredFields       (in long opid, in CallStatus status, in stringlist fields);
 		oneway void notifyAuthenticationResult (in long opid, in CallStatus status);
 		oneway void notifySupportedAuthMethods (in long opid, in CallStatus status, in stringlist auth_methods);
-
+		
 		oneway void notifyWritable (in boolean writable);
 	};
 

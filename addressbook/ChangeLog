@@ -1,3 +1,62 @@
+2004-11-28  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libebook/e-book.[ch] :
+	(e_book_get_required_fields) 
+	(e_book_async_get_required_fields) 
+	(do_get_required_fields)
+	(e_book_response_get_required_fields)
+	(e_book_response_get_required_fields): new methods 
+	to required fields defined by backends
+	(e_book_handle_response) : added handling for
+	GetRequiredFieldsResponse case
+
+	* libebook/e-book-listener.[ch]
+	Added GetRequiredFieldsResponse to book listener
+	operations
+	(impl_BookListener_respond_get_required_fields):
+	new method for required fields
+	(e_book_listener_class_init) : init notifyRequiredFields
+	with corresponding implementation method
+
+	* idl/Evolution-DataServer-Addressbook.idl : added getRequiredFields
+	and notifyRequiredFields to book and book listener interfaces
+
+	* libedatabook/e-data-book.[ch] : 
+	(impl_GNOME_Evolution_Addressbook_Book_getRequiredFields)
+	(e_data_book_respond_get_required_fields) : new methods for required 
+	fields handling 
+	(e_data_book_class_init) : init notifyRequiredFields
+        with corresponding implementation method
+
+	* libedatabook/e-book-backend.[ch] : 
+	(e_book_backend_get_required_fields) : new methods 
+	for required fields handling.
+	
+	* libedatabook/e-book-backend-sync.[ch] : 
+	(e_book_backend_sync_get_required_fields)
+	(_e_book_backend_get_required_fields) : ditto
+	(e_book_backend_sync_class_init) : init the new get_required_fields
+	method 
+
+	* backends/file/e-book-backend-file.c :
+	(e_book_backend_file_get_required_fields) : get_required_fields
+	implementation
+	(e_book_backend_file_class_init) : init get_requires_method
+
+	* backends/vcf/e-book-backend-vcf.c :
+	(e_book_backend_vcf_get_required_fields)
+	(e_book_backend_vcf_class_init) :ditto
+
+	* backends/ldap/e-book-backend-ldap.c :
+	(e_book_backend_ldap_get_required_fields)
+	(e_book_backend_ldap_class_init) : ditto
+
+	* backends/groupwise/e-book-backend-groupwise.c :
+	(e_book_backend_groupwise_get_required_fields)
+	(e_book_backend_groupwise_class_init) :ditto
+	
+
+	
 2004-10-30  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c (

@@ -158,6 +158,21 @@ e_book_backend_sync_authenticate_user (EBookBackendSync *backend,
 }
 
 EBookBackendSyncStatus
+e_book_backend_sync_get_required_fields (EBookBackendSync *backend,
+					  EDataBook *book,
+					  guint32 opid,
+					  GList **fields)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
+	g_return_val_if_fail (fields, GNOME_Evolution_Addressbook_OtherError);
+	
+	g_assert (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_required_fields_sync);
+
+	return (* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_required_fields_sync) (backend, book, opid, fields);
+}
+
+EBookBackendSyncStatus
 e_book_backend_sync_get_supported_fields (EBookBackendSync *backend,
 					  EDataBook *book,
 					  guint32 opid,
@@ -311,6 +326,24 @@ _e_book_backend_authenticate_user (EBookBackend *backend,
 }
 
 static void
+_e_book_backend_get_required_fields (EBookBackend *backend,
+				      EDataBook    *book,
+				      guint32       opid)
+{
+	EBookBackendSyncStatus status;
+	GList *fields = NULL;
+
+	status = e_book_backend_sync_get_required_fields (E_BOOK_BACKEND_SYNC (backend), book, opid, &fields);
+
+	e_data_book_respond_get_required_fields (book, opid, status, fields);
+
+	if (fields) {
+		g_list_foreach (fields, (GFunc)g_free, NULL);
+		g_list_free (fields);
+	}
+}
+
+static void
 _e_book_backend_get_supported_fields (EBookBackend *backend,
 				      EDataBook    *book,
 				      guint32       opid)
@@ -390,6 +423,7 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 	backend_class->get_contact_list = _e_book_backend_get_contact_list;
 	backend_class->get_changes = _e_book_backend_get_changes;
 	backend_class->authenticate_user = _e_book_backend_authenticate_user;
+	backend_class->get_required_fields = _e_book_backend_get_required_fields;
 	backend_class->get_supported_fields = _e_book_backend_get_supported_fields;
 	backend_class->get_supported_auth_methods = _e_book_backend_get_supported_auth_methods;
 
