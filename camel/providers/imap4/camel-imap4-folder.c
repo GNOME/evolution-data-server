@@ -286,7 +286,7 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	
 	imap4_folder->search = camel_imap4_search_new (((CamelIMAP4Store *) store)->engine, imap4_folder->cachedir);
 	
-	if (camel_session_is_online (((CamelService *) store)->session)) {
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
 		/* we don't care if the summary loading fails here */
 		camel_folder_summary_load (folder->summary);
 		
@@ -450,7 +450,7 @@ static void
 imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
-	CamelSession *session = ((CamelService *) folder->parent_store)->session;
+	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
 	CamelIMAP4MessageInfo *iinfo;
 	CamelMessageInfo *info;
 	CamelIMAP4Command *ic;
@@ -459,7 +459,7 @@ imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	int id, max, i;
 	int retval;
 	
-	if (!camel_session_is_online (session))
+	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 	
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
@@ -541,12 +541,12 @@ static void
 imap4_refresh_info (CamelFolder *folder, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
-	CamelSession *session = ((CamelService *) folder->parent_store)->session;
+	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
 	CamelFolder *selected = (CamelFolder *) engine->folder;
 	CamelIMAP4Command *ic;
 	int id;
 	
-	if (!camel_session_is_online (session))
+	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 	
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
@@ -678,7 +678,7 @@ static CamelMimeMessage *
 imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
-	CamelSession *session = ((CamelService *) folder->parent_store)->session;
+	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
 	CamelMimeMessage *message = NULL;
 	CamelStream *stream, *cache;
@@ -713,7 +713,7 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		return message;
 	}
 	
-	if (!camel_session_is_online (session)) {
+	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("This message is not available in offline mode."));
@@ -801,7 +801,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		      const CamelMessageInfo *info, char **appended_uid, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
-	CamelSession *session = ((CamelService *) folder->parent_store)->session;
+	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
 	CamelIMAP4Summary *summary = (CamelIMAP4Summary *) folder->summary;
 	const CamelIMAP4MessageInfo *iinfo = (const CamelIMAP4MessageInfo *) info;
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
@@ -817,7 +817,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	if (appended_uid)
 		*appended_uid = NULL;
 	
-	if (!camel_session_is_online (session)) {
+	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_imap4_journal_append ((CamelIMAP4Journal *) imap4_folder->journal, message, info, appended_uid, ex);
 		return;
 	}
@@ -970,7 +970,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 			    GPtrArray **transferred_uids, gboolean move, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) src->parent_store)->engine;
-	CamelSession *session = ((CamelService *) src->parent_store)->session;
+	CamelOfflineStore *offline = (CamelOfflineStore *) src->parent_store;
 	int i, j, n, id, dest_namelen;
 	CamelMessageInfo *info;
 	CamelIMAP4Command *ic;
@@ -998,7 +998,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 	CAMEL_SERVICE_LOCK (src->parent_store, connect_lock);
 	
 	/* check for offline operation */
-	if (!camel_session_is_online (session)) {
+	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		CamelIMAP4Journal *journal = (CamelIMAP4Journal *) ((CamelIMAP4Folder *) dest)->journal;
 		CamelMimeMessage *message;
 		

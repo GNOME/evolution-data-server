@@ -44,7 +44,7 @@ static void offline_folder_downsync (CamelOfflineFolder *offline, const char *ex
 
 static CamelFolderClass *parent_class = NULL;
 
-static GSList *offline_folder_props;
+static GSList *offline_folder_props = NULL;
 
 static CamelProperty offline_prop_list[] = {
 	{ CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE, "sync_offline", N_("Copy folder content locally for offline operation") },
