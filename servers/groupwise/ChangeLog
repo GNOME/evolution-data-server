@@ -1,3 +1,14 @@
+2004-10-15  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #67031
+	* e-gw-item.[ch] (e_gw_item_set_completed_date), 
+	(e_gw_item_get_completed_date):
+	Added apis to get and set the completion date for tasks.
+	* e-gw-item.c (set_recipient_list_from_soap_parameter):
+	Set the completion date for group tasks.
+	(_EGwItemPrivate): Added a string variable completed_date.
+	(e_gw_item_init): Initialized the variable.
+
 2004-10-13 Sivaiah Nallagatla    <snallagatla@novell.com>
                                                                                                     
         * e-gw-connection.c (reauthenitcate) : new function to reautheicate
