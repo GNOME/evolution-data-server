@@ -791,7 +791,6 @@ groupwise_get_folder_info_online (CamelStore *store,
 		
 		g_ptr_array_add (folders, fi);
 		
-	
 	}
 	if ( (top != NULL) && (folders->len == 0)) {
 		/*temp_str already contains the value if any*/
@@ -949,7 +948,8 @@ groupwise_rename_folder(CamelStore *store,
 			const char *new_name,
 			CamelException *ex)
 {
-/*	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
+	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
 	char *oldpath, *newpath, *storepath, *newname ;
 	CamelSession *session = ((CamelService *)store)->session ;
 
@@ -957,8 +957,7 @@ groupwise_rename_folder(CamelStore *store,
 	if (!camel_session_is_online (session)) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folders in offline mode.")) ;
 		return ;
-	}*/
-
+	}
 
 }
 
