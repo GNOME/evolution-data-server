@@ -566,12 +566,27 @@ e_gw_connection_get_items (EGwConnection *cnc, const char * filter, GSList **lis
         return E_GW_CONNECTION_STATUS_OK;        
 }
 
+const char *
+e_gw_connection_get_user_name (EGwConnection *cnc)
+{
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+
+	return (const char *) cnc->priv->user_name;
+}
+
 const char* 
 e_gw_connection_get_user_email (EGwConnection *cnc)
 {
-    g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
   
-    return (const char*) cnc->priv->user_email;
+	return (const char*) cnc->priv->user_email;
 	
 }
 
+const char *
+e_gw_connection_get_user_uuid (EGwConnection *cnc)
+{
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+
+	return (const char *) cnc->priv->user_uuid;
+}
