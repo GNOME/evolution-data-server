@@ -1,3 +1,11 @@
+2005-03-03  Vivek Jain <jvivek@novell.com>
+
+	***Fixes # 72455
+		 #73231
+		 #73239		
+	* camel-groupwise-folder.c :(gw_update_summary)
+	initialize status_flags to 0
+
 2005-03-02  Vivek Jain <jvivek@novell.com>
 
 	***Fixes # 72373

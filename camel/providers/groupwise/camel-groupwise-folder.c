@@ -710,7 +710,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	CamelGroupwiseMessageInfo *mi = NULL;
 	GPtrArray *msg ;
 	GSList *attach_list = NULL ;
-	guint32 item_status, status_flags;
+	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL ;
 	int scount ;
 	
