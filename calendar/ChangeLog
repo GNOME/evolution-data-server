@@ -1,3 +1,15 @@
+2005-02-02  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #72004
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(e_cal_backend_groupwise_get_free_busy),
+	(e_cal_backend_groupwise_create_object),
+	(e_cal_backend_groupwise_modify_object),
+	(e_cal_backend_groupwise_remove_object), (receive_object): If
+	Invalid connection error is returned from e-gw-connection, perform
+	the operation again since re_authenticate method in gw-connection.c
+	would give us a new valid session.
+
 2005-01-31  Hans Petter Jansson  <hpj@novell.com>
 
 	* idl/Evolution-DataServer-Calendar.idl: Change the name of the

@@ -230,12 +230,15 @@ get_deltas (gpointer handle)
 	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+	
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+ 
+	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-			mod_time = 0;
+				
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
 			return TRUE;
-		}
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
@@ -271,8 +274,12 @@ get_deltas (gpointer handle)
 
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 	
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
+
+		
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE)
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
 			return TRUE;
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
@@ -311,8 +318,11 @@ get_deltas (gpointer handle)
 
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
 
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
+
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE)
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
 			return TRUE;
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
@@ -1164,6 +1174,10 @@ e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, 
        }
 
        status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy, cbgw->priv->default_zone);
+
+       if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+	       status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy, cbgw->priv->default_zone);
+
        if (status != E_GW_CONNECTION_STATUS_OK)
                return GNOME_Evolution_Calendar_OtherError;
        return GNOME_Evolution_Calendar_Success; 
@@ -1378,6 +1392,10 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
 		status = e_gw_connection_create_appointment (priv->cnc, priv->container_id, cbgw, comp, &uid_list);
+		
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_create_appointment (priv->cnc, priv->container_id, cbgw, comp, &uid_list);
+
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);
 
@@ -1497,6 +1515,10 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 			if (completed && !cache_completed) {
 				/*FIXME  return values. */
 				status = e_gw_connection_complete_request (priv->cnc, e_gw_item_get_id (item));
+			
+				if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+					status = e_gw_connection_complete_request (priv->cnc, e_gw_item_get_id (item));
+				
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_object_unref (comp);
 					g_object_unref (cache_comp);
@@ -1510,6 +1532,10 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 		/* the second argument is redundant */
 		status = e_gw_connection_modify_item (priv->cnc, e_gw_item_get_id (item), item);
+		
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_modify_item (priv->cnc, e_gw_item_get_id (item), item);
+
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);
 			g_object_unref (cache_comp);
@@ -1589,6 +1615,9 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 		/* remove the object */
 		status = e_gw_connection_remove_item (priv->cnc, priv->container_id, id_to_remove);
+
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_remove_item (priv->cnc, priv->container_id, id_to_remove);
 
 		icalcomponent_free (icalcomp);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -1712,6 +1741,9 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	if (e_cal_component_has_attachments (comp))
 		fetch_attachments (cbgw, comp);
 	status = e_gw_connection_send_appointment (cbgw, priv->container_id, comp, method, &remove, &modif_comp);
+
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_send_appointment (cbgw, priv->container_id, comp, method, &remove, &modif_comp);
 
 	if (status == E_GW_CONNECTION_STATUS_OK && !modif_comp) {
 		g_object_unref (comp);
