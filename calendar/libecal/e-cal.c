@@ -2752,13 +2752,30 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 {
 	GList **list;
 	struct comp_instance *ci;
+	struct icaltimetype itt, itt_start;
+	icalcomponent *icalcomp;
 
 	list = data;
 
 	ci = g_new (struct comp_instance, 1);
 
-	ci->comp = comp;
-	g_object_ref (G_OBJECT (ci->comp));
+	icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
+	itt_start = icalcomponent_get_dtstart (icalcomp);
+
+#if 0
+	/* set the RECUR-ID for the instance */
+	if (e_cal_util_component_has_recurrences (icalcomp)) {
+		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
+			itt = icaltime_from_timet (start, itt_start.is_date);
+			icalcomponent_set_recurrenceid (icalcomp, itt);
+		}
+	}
+#endif
+
+	/* add the instance to the list */
+	ci->comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (ci->comp, icalcomp);
+
 	
 	ci->start = start;
 	ci->end = end;
@@ -2785,19 +2802,22 @@ compare_comp_instance (gconstpointer a, gconstpointer b)
 static GList *
 process_detached_instances (GList *instances, GList *detached_instances)
 {
-	struct comp_instance *ci;
-	GList *dl, *instances_to_remove = NULL;
+	struct comp_instance *ci, *cid;
+	GList *dl, *unprocessed_instances = NULL;
 
 	for (dl = detached_instances; dl != NULL; dl = dl->next) {
 		GList *il;
 		const char *uid;
+		gboolean processed;
 		ECalComponentRange recur_id, instance_recur_id;
-		ECalComponent *comp = dl->data;
 
-		e_cal_component_get_uid (comp, &uid);
-		e_cal_component_get_recurid (comp, &recur_id);
+		processed = FALSE;
 
-		/* search for coincident instances */
+		cid = dl->data;
+		e_cal_component_get_uid (cid->comp, &uid);
+		e_cal_component_get_recurid (cid->comp, &recur_id);
+
+		/* search for coincident instances already expanded */
 		for (il = instances; il != NULL; il = il->next) {
 			const char *instance_uid;
 			int cmp;
@@ -2806,38 +2826,49 @@ process_detached_instances (GList *instances, GList *detached_instances)
 			e_cal_component_get_uid (ci->comp, &instance_uid);
 			e_cal_component_get_recurid (ci->comp, &instance_recur_id);
 			if (strcmp (uid, instance_uid) == 0) {
-				/* replace it */
-				if (strcmp (e_cal_component_get_recurid_as_string (comp),
-					    e_cal_component_get_recurid_as_string (ci->comp)) == 0) {
+				if (strcmp (e_cal_component_get_recurid_as_string (ci->comp),
+					    e_cal_component_get_recurid_as_string (cid->comp)) == 0) {
 					g_object_unref (ci->comp);
-					ci->comp = g_object_ref (comp);
-					continue;
-				}
+					ci->comp = g_object_ref (cid->comp);
+					ci->start = cid->start;
+					ci->end = cid->end;
 
-				/* mark other instances based on the detached instance's type as delete */
-				cmp = icaltime_compare (*instance_recur_id.datetime.value,
-							*recur_id.datetime.value);
-				switch (recur_id.type) {
-				case E_CAL_COMPONENT_RANGE_THISPRIOR :
-					if (cmp <= 0)
-						instances_to_remove = g_list_prepend (instances_to_remove, ci);
-					break;
-				case E_CAL_COMPONENT_RANGE_THISFUTURE :
-					if (cmp >= 0)
-						instances_to_remove = g_list_prepend (instances_to_remove, ci);
-					break;
+					processed = TRUE;
+				} else {
+					cmp = icaltime_compare (*instance_recur_id.datetime.value,
+								*recur_id.datetime.value);
+					if ((recur_id.type == E_CAL_COMPONENT_RANGE_THISPRIOR && cmp <= 0) ||
+					    (recur_id.type == E_CAL_COMPONENT_RANGE_THISFUTURE && cmp >= 0)) {
+						ECalComponent *comp;
+
+						comp = e_cal_component_new ();
+						e_cal_component_set_icalcomponent (
+							comp,
+							icalcomponent_new_clone (e_cal_component_get_icalcomponent (cid->comp)));
+						e_cal_component_set_recurid (comp, &instance_recur_id);
+
+						/* replace the generated instances */
+						g_object_unref (ci->comp);
+						ci->comp = comp;
+					}
 				}
 			}
 		}
+
+		if (!processed)
+			unprocessed_instances = g_list_prepend (unprocessed_instances, cid);
 	}
 
-	/* remove all duplicated instances */
-	for (dl = instances_to_remove; dl; dl = dl->next) {
-		ci = dl->data;
+	/* add the unprocessed instances (ie, detached instances with no master object */
+	while (unprocessed_instances != NULL) {
+		cid = unprocessed_instances->data;
+		ci = g_new0 (struct comp_instance, 1);
+		ci->comp = g_object_ref (cid->comp);
+		ci->start = cid->start;
+		ci->end = cid->end;
+		instances = g_list_append (instances, ci);
 
-		instances = g_list_remove (instances, ci);
-		g_object_unref (G_OBJECT (ci->comp));
-		g_free (ci);
+		unprocessed_instances = g_list_remove (unprocessed_instances, cid);
 	}
 
 	return instances;
@@ -2846,7 +2877,6 @@ process_detached_instances (GList *instances, GList *detached_instances)
 /**
  * e_cal_generate_instances:
  * @ecal: A calendar ecal.
- * @type: Bitmask with types of objects to return.
  * @start: Start time for query.
  * @end: End time for query.
  * @cb: Callback for each generated instance.
@@ -2880,7 +2910,15 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 	g_return_if_fail (cb != NULL);
 
 	iso_start = isodate_from_time_t (start);
-	iso_end   = isodate_from_time_t (end);
+	if (!iso_start)
+		return;
+
+	iso_end = isodate_from_time_t (end);
+	if (!iso_end) {
+		g_free (iso_start);
+		return;
+	}
+
 	/* Generate objects */
 	query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
 				 iso_start, iso_end);
@@ -2899,8 +2937,12 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 
 		comp = l->data;
 		if (e_cal_component_is_instance (comp)) {
-			/* if we get a detached instance, keep it apart to process it later */
-			detached_instances = g_list_prepend (detached_instances, comp);
+			/* keep the detached instances apart */
+			e_cal_recur_generate_instances (comp, start, end, add_instance, &detached_instances,
+							e_cal_resolve_tzid_cb, ecal,
+							priv->default_zone);
+
+			g_object_unref (comp);
 		} else {
 			e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,
 							e_cal_resolve_tzid_cb, ecal,
@@ -2941,8 +2983,89 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 
 	g_list_free (instances);
 
-	g_list_foreach (detached_instances, (GFunc) g_object_unref, NULL);
+	for (l = detached_instances; l; l = l->next) {
+		struct comp_instance *ci;
+
+		ci = l->data;
+		g_object_unref (G_OBJECT (ci->comp));
+		g_free (ci);
+	}
+
 	g_list_free (detached_instances);
+}
+
+/**
+ * e_cal_generate_instances_for_object:
+ * @ecal: A calendar ecal.
+ * @icalcomp: Object to generate instances from.
+ * @start: Start time for query.
+ * @end: End time for query.
+ * @cb: Callback for each generated instance.
+ * @cb_data: Closure data for the callback.
+ *
+ * Does a combination of e_cal_get_object_list () and
+ * cal_recur_generate_instances(), like e_cal_generate_instances(), but
+ * for a single object.
+ *
+ * The callback function should do a g_object_ref() of the calendar component
+ * it gets passed if it intends to keep it around.
+ **/
+void
+e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
+				     time_t start, time_t end,
+				     ECalRecurInstanceFn cb, gpointer cb_data)
+{
+	ECalPrivate *priv;
+	ECalComponent *comp;
+	const char *uid, *rid;
+	gboolean result;
+	GList *instances = NULL;
+
+	g_return_if_fail (E_IS_CAL (ecal));
+	g_return_if_fail (start != -1 && end != -1);
+	g_return_if_fail (start <= end);
+	g_return_if_fail (cb != NULL);
+
+	priv = ecal->priv;
+
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
+
+	/* generate all instances in the given time range */
+	e_cal_generate_instances (ecal, start, end, add_instance, &instances);
+
+	/* now only return back the instances for the given object */
+	e_cal_component_get_uid (comp, &uid);
+	rid = e_cal_component_get_recurid_as_string (comp);
+
+	result = TRUE;
+	while (instances != NULL) {
+		struct comp_instance *ci;
+		const char *instance_uid, *instance_rid;
+
+		ci = instances->data;
+
+		if (result) {
+			e_cal_component_get_uid (ci->comp, &instance_uid);
+			instance_rid = e_cal_component_get_recurid_as_string (ci->comp);
+
+			if (instance_uid && strcmp (uid, instance_uid) == 0) {
+				if (rid && *rid) {
+					if (instance_rid && *instance_rid && strcmp (rid, instance_rid) == 0)
+						result = (* cb) (ci->comp, ci->start, ci->end, cb_data);
+				} else
+					result = (* cb)  (ci->comp, ci->start, ci->end, cb_data);
+			}
+		}
+
+		/* remove instance from list */
+		instances = g_list_remove (instances, ci);
+		g_object_unref (ci->comp);
+		g_free (ci);
+	}
+
+	/* clean up */
+	g_object_unref (comp);
 }
 
 /* Builds a list of ECalComponentAlarms structures */
@@ -4088,6 +4211,13 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
+
+	/* set the default timezone internally if successful */
+	if (our_op->status == E_CALENDAR_STATUS_OK) {
+		g_mutex_lock (priv->mutex);
+		priv->default_zone = zone;
+		g_mutex_unlock (priv->mutex);
+	}
 
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);

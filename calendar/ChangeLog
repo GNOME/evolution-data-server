@@ -1,3 +1,12 @@
+2004-05-12  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal.c (e_cal_generate_instances): fixed gtk-doc comments,
+	and process correctly detached instances.
+	(e_cal_generate_instances_for_object): new function.
+	(e_cal_set_default_timezone): set the internal default timezone when
+	the call to the backend is successful.
+	(process_detached_instances): process correctly the detached instances.
+
 2004-05-12  Harish Krishnaswamy  <kharish@novell.com>
 
 

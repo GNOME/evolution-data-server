@@ -798,7 +798,7 @@ check_instance (icalcomponent *comp, struct icaltime_span span, void *data)
  **/
 icalcomponent *
 e_cal_util_construct_instance (icalcomponent *icalcomp,
-			     struct icaltimetype rid)
+			       struct icaltimetype rid)
 {
 	struct instance_data instance;
 	struct icaltimetype start, end;
@@ -859,8 +859,8 @@ time_matches_rid (struct icaltimetype itt, struct icaltimetype rid, CalObjModTyp
  **/
 void
 e_cal_util_remove_instances (icalcomponent *icalcomp,
-			   struct icaltimetype rid,
-			   CalObjModType mod)
+			     struct icaltimetype rid,
+			     CalObjModType mod)
 {
 	icalproperty *prop;
 	struct icaltimetype itt, recur;
