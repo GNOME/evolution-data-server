@@ -9,7 +9,40 @@
 	each child row to an arbitrary number of rows, including zero, and pass
 	a permutation identifier to the user's modify callback.
 
-	* e-name-selector-dialog.c (contact_column_formatter): 
+	* e-name-selector-dialog.c (contact_column_formatter): Implement a
+	data formatter for the contact list. This makes it show both names
+	and e-mail addresses.
+	(e_name_selector_dialog_init): Set up data formatter.
+	(sort_iter_to_contact_store_iter): Replace GtkTreeModelFilter with
+	ETreeModelGenerator, and return the email permutation along with the
+	contact iter.
+	(add_destination): Take the email permutation as an argument, and set
+	it in the contact instead of defaulting to the first one.
+	(contact_activated): Pass on email_n.
+	(transfer_button_clicked): Ditto.
+	(setup_name_selector_model): Use ETreeModelGenerator.
+	(deep_free_list): Implement.
+
+	* e-name-selector-entry.c (completion_match_selected): Add the
+	conversion for the e-mail generator, and set the selected e-mail
+	permutation in the destination.
+	(deep_free_list): Implement.
+	(contact_layout_formatter): Implement a data formatter for the
+	completion list, so we can show both names and e-mail addresses.
+	(generate_contact_rows): Implement an e-mail permutation generator.
+	(setup_contact_store): Set up the e-mail generator.
+	(e_name_selector_entry_init): Init the generator pointer. Set up the
+	data formatter.
+
+	* e-name-selector-model.c (e_name_selector_model_init): Replace
+	the GtkTreeModelFilter with an ETreeModelGenerator.
+	(deep_free_list): Implement.
+	(generate_contact_rows): Replace filter_show_not_in_destinations ()
+	with this function, which both filters and generates per-email
+	permutations.
+	(override_email_address): Override the contents of the
+	E_CONTACT_EMAIL_1 string field with the relevant address.
+	(e_name_selector_model_peek_contact_filter): Now returns a generator.
 
 2005-01-19  Hans Petter Jansson  <hpj@novell.com>
 
