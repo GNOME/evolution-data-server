@@ -1,3 +1,10 @@
+2005-03-10  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-folder.c (imap_sync_online): READ-ONLY doesn't mean
+	we can't sync flags, allow flag syncing even in READ-ONLY mode
+	since the RFC states that flags listed in PERMANENTFLAGS are
+	always settable.
+
 2005-03-01  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #73112
