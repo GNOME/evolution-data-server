@@ -209,6 +209,7 @@ skip_until (char **p, char *s)
 
 		if (s_matches)
 			break;
+		lp = g_utf8_next_char (lp);
 	}
 
 	*p = lp;
@@ -426,6 +427,12 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 			g_warning ("invalid character found in parameter spec");
 			g_string_assign (str, "");
 			skip_until (&lp, ":;");
+			
+			if (*lp == '\r') {
+				lp = g_utf8_next_char (lp); /* \n */
+				lp = g_utf8_next_char (lp); /* start of the next line */
+				break;
+			}
 		}
 	}
 
