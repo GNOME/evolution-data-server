@@ -28,7 +28,7 @@ idle_cb (gpointer data)
 
 		/* get list of containers */
 		g_print ("Getting list of containers...\n");
-		if (e_gw_connection_get_container_list (cnc, &container_list) == E_GW_CONNECTION_STATUS_OK) {
+		if (e_gw_connection_get_container_list (cnc, "folders", &container_list) == E_GW_CONNECTION_STATUS_OK) {
 			GList *container;
 
 			for (container = container_list; container != NULL; container = container->next)
