@@ -39,4 +39,5 @@ weatherdata_DATA = $(weatherdata_in_files:.xml.in=.xml)
 %.xml:	%.xml.in
 	cp $< $@
 
+DISTCLEANFILES = Locations.xml
 EXTRA_DIST = Locations.xml.in

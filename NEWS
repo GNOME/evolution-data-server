@@ -1,3 +1,45 @@
+Evolution Data Server 1.1.3, 2005-01-10
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Calendar
+
+    #68533 - evolution-alarm-notify appears to cause an e_data_book leak (Harish)
+
+  * Camel
+
+    #70556 - Unable load messages info from MS Exchange by IMAP (Michael)
+    #70919 - Crash during fetching mail (mail has gpg signature) (Michael)
+  
+Other bugs
+
+  * Addressbook
+    - Merge offline support for groupwise, ldap (Siva, Chen, Hans)
+
+  * Calendar
+    - Backend attachment support (Harish)
+    - Weather calendar (David Trowbridge)
+    - Handle send options for groupwise (Chen)
+    - Fixed problems when items only had detached instances (Rodrigo)
+    - Merge offline support for groupwise, ldap, webcal (Siva, Chen)
+
+  * Camel
+    - Merge groupwise SOAP mailer (Partha)
+    - IMAP4 offline support (Jeff)
+    - Groupwise offline support (JP, Jeff, Partha)
+    - 64 bit fixes (David Mosberger-Tang)
+
+  * All
+    - move e-categories and rewrite (Rodrigo)
+    - emit source_changed signal if properties change (David Trowbridge)
+    - implement e-name-selector class, without bonobo (Hans)
+
+Updated Translations:
+	- bg (Vladimir Petkov)
+	- ja (Takeshi AIHANA)
+	- ru (Leonid Kanter)
+
 Evolution Data Server 1.1.2, 2004-12-20
 ----------------------------------------
 

@@ -65,6 +65,7 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 @GetSupportedAuthMethodsResponse: 
 @LinkStatusEvent: 
 @WritableStatusEvent: 
+@AuthRequiredEvent: 
 @ProgressEvent: 
 
 <!-- ##### FUNCTION e_book_listener_new ##### -->
