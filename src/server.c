@@ -35,9 +35,9 @@
 #endif
 
 #include <libedata-cal/e-data-cal-factory.h>
-#include <libedata-cal/e-cal-backend-file-events.h>
-#include <libedata-cal/e-cal-backend-file-todos.h>
-#include <libedata-cal/e-cal-backend-http.h>
+#include <backends/file/e-cal-backend-file-events.h>
+#include <backends/file/e-cal-backend-file-todos.h>
+#include <backends/http/e-cal-backend-http.h>
 
 #include "server-interface-check.h"
 

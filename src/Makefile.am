@@ -46,6 +46,8 @@ evolution_data_server_SOURCES = \
 evolution_data_server_LDADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book.la	\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
+	$(top_builddir)/calendar/backends/file/libecalbackendfile.la	\
+	$(top_builddir)/calendar/backends/http/libecalbackendhttp.la	\
 	$(E_DATA_SERVER_LIBS)
 
 install-evolution-data-server:

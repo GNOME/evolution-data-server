@@ -22,7 +22,7 @@
 #ifndef E_CAL_BACKEND_FILE_EVENTS_H
 #define E_CAL_BACKEND_FILE_EVENTS_H
 
-#include <libedata-cal/e-cal-backend-file.h>
+#include "e-cal-backend-file.h"
 
 G_BEGIN_DECLS
 

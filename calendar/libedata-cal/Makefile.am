@@ -1,5 +1,5 @@
 INCLUDES =						\
-	-DG_LOG_DOMAIN=\"libedatacal\"			\
+	-DG_LOG_DOMAIN=\"libedata-cal\"			\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
 	-I$(top_srcdir)/calendar/libical/src		\
@@ -36,11 +36,6 @@ lib_LTLIBRARIES = libedata-cal.la
 libedata_cal_la_SOURCES =		\
 	$(CORBA_GENERATED_C)		\
 	e-cal-backend.c			 \
-	e-cal-backend-file-events.c	\
-	e-cal-backend-file-todos.c	\
-	e-cal-backend-file.c		\
-	e-cal-backend-http.c		\
-	e-cal-backend-http.h		\
 	e-cal-backend-sexp.c		\
 	e-cal-backend-sync.c		\
 	e-cal-backend-util.c		\
@@ -61,9 +56,6 @@ libedata_calincludedir = $(privincludedir)/libedata-cal
 libedata_calinclude_HEADERS = 		\
 	$(CORBA_GENERATED_H)		\
 	e-cal-backend.h			\
-	e-cal-backend-file-events.h	\
-	e-cal-backend-file-todos.h	\
-	e-cal-backend-file.h		\
 	e-cal-backend-sync.h		\
 	e-cal-backend-util.h		\
 	e-cal-backend-sexp.h		\

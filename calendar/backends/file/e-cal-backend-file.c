@@ -32,9 +32,9 @@
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
+#include <libedata-cal/e-cal-backend-util.h>
+#include <libedata-cal/e-cal-backend-sexp.h>
 #include "e-cal-backend-file-events.h"
-#include "e-cal-backend-util.h"
-#include "e-cal-backend-sexp.h"
 
 
 

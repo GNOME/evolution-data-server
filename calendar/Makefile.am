@@ -1,1 +1,1 @@
-SUBDIRS = libical idl libecal libedata-cal
+SUBDIRS = libical idl libecal libedata-cal backends
