@@ -2690,8 +2690,7 @@ build_component_alarms_list (ECal *ecal, GList *object_list, time_t start, time_
 		ECalComponentAlarmAction omit[] = {-1};
 
 		comp = e_cal_component_new ();
-		if (!e_cal_component_set_icalcomponent (comp, (icalcomponent *) l->data)) {
-			icalcomponent_free (l->data);
+		if (!e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (l->data))) {
 			g_object_unref (G_OBJECT (comp));
 			continue;
 		}
@@ -2747,7 +2746,7 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 
 	alarms = build_component_alarms_list (ecal, object_list, start, end);
 
-	g_list_foreach (object_list, (GFunc) g_free, NULL);
+	g_list_foreach (object_list, (GFunc) icalcomponent_free, NULL);
 	g_list_free (object_list);
 	g_free (sexp);
 

@@ -1,5 +1,13 @@
 2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libecal/e-cal.c (build_component_alarms_list): clone the icalcomponent
+	to avoid having a pointer to an object that is freed afterwards, in
+	e_cal_get_alarms_in_range.
+	(e_cal_get_alarms_in_range): use icalcomponent_free to free the objects
+	in the list returned by e_cal_get_object_list.
+
+2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
+
 	* libecal/e-cal.c (build_component_alarms_list): pass the correct
 	data (an ECal, not an icalcomponent) to e_cal_resolve_tzid_cb.
 
