@@ -1,3 +1,22 @@
+2004-12-11  Hans Petter Jansson  <hpj@novell.com>
+
+	* libebook/e-destination.h: Add "changed" signal.
+
+	* libebook/e-destination.c: Add "changed" signal.
+	(e_destination_class_init): Init changed signal.
+	(e_destination_set_book): Emit changed signal. Additionally, fix
+	something that looks like a long standing bug; a negated test would
+	make it crash if dest->priv->source_uid was NULL when the book was
+	being set.
+	(e_destination_set_contact_uid)
+	(e_destination_set_source_uid)
+	(e_destination_set_name)
+	(e_destination_set_email)
+	(e_destination_set_auto_recipient)
+	(e_destination_set_raw)
+	(e_destination_set_html_mail_pref)
+	(e_destination_set_contact): Emit changed signal.
+
 2004-12-09  Hans Petter Jansson  <hpj@novell.com>
 
 	* libebook/e-destination.c: Remove antiquated comments.

@@ -40,6 +40,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <libebook/e-book.h>
+#include <libedataserver/e-data-server-marshal.h>
 
 #include <glib.h>
 #include <libxml/xmlmemory.h>
@@ -77,6 +78,15 @@ static gboolean       e_destination_from_contact       (const EDestination *);
 static xmlNodePtr     e_destination_xml_encode         (const EDestination *dest);
 static gboolean       e_destination_xml_decode         (EDestination *dest, xmlNodePtr node);
 static void           e_destination_clear              (EDestination *dest);
+
+/* Signals */
+
+enum {
+	CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0 };
 
 static GObjectClass *parent_class;
 
@@ -125,6 +135,15 @@ e_destination_class_init (EDestinationClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	parent_class = g_type_class_ref (G_TYPE_OBJECT);
+
+	signals [CHANGED] =
+		g_signal_new ("changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EDestinationClass, changed),
+			      NULL, NULL,
+			      e_data_server_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	object_class->dispose = e_destination_dispose;
 }
@@ -389,6 +408,8 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 			/* handle the normal contact case */
 			/* is there anything to do here? */
 		}
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 
@@ -402,10 +423,11 @@ e_destination_set_book (EDestination *dest, EBook *book)
 
 	source = e_book_get_source (book);
 
-	if (dest->priv->source_uid || strcmp (e_source_peek_uid (source), dest->priv->source_uid)) {
+	if (!dest->priv->source_uid || strcmp (e_source_peek_uid (source), dest->priv->source_uid)) {
 		e_destination_clear (dest);
-
 		dest->priv->source_uid = g_strdup (e_source_peek_uid (source));
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 
@@ -430,6 +452,8 @@ e_destination_set_contact_uid (EDestination *dest, const char *uid, gint email_n
 			g_object_unref (dest->priv->contact);
 			dest->priv->contact = NULL;
 		}
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 
@@ -444,6 +468,8 @@ e_destination_set_source_uid (EDestination *dest, const char *uid)
 
 		g_free (dest->priv->source_uid);
 		dest->priv->source_uid = g_strdup (uid);
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 
@@ -471,6 +497,8 @@ e_destination_set_name (EDestination *dest, const char *name)
 		dest->priv->addr = NULL;
 		g_free (dest->priv->textrep);
 		dest->priv->textrep = NULL;
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 
@@ -498,6 +526,8 @@ e_destination_set_email (EDestination *dest, const char *email)
 		dest->priv->addr = NULL;
 		g_free (dest->priv->textrep);
 		dest->priv->textrep = NULL;
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 
@@ -522,6 +552,8 @@ e_destination_set_auto_recipient (EDestination *dest, gboolean value)
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	
 	dest->priv->auto_recipient = value;
+
+	g_signal_emit (dest, signals [CHANGED], 0);
 }
 
 EContact *
@@ -718,8 +750,9 @@ e_destination_set_raw (EDestination *dest, const char *raw)
 	if (dest->priv->raw == NULL || strcmp (dest->priv->raw, raw)) {
 			
 		e_destination_clear (dest);
-
 		dest->priv->raw = g_strdup (raw);
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 
@@ -796,6 +829,8 @@ e_destination_set_html_mail_pref (EDestination *dest, gboolean x)
 	dest->priv->html_mail_override = TRUE;
 	if (dest->priv->wants_html_mail != x) {
 		dest->priv->wants_html_mail = x;
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
 }
 

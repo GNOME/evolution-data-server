@@ -55,8 +55,10 @@ struct _EDestination {
 struct _EDestinationClass {
 	GObjectClass parent_class;
 
+	/* Signals */
+	void (* changed) (EDestination *destination);
+
 	/* Padding for future expansion */
-	void (*_ebook_reserved0) (void);
 	void (*_ebook_reserved1) (void);
 	void (*_ebook_reserved2) (void);
 	void (*_ebook_reserved3) (void);
