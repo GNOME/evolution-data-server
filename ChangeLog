@@ -1,3 +1,9 @@
+2004-09-24  JP Rosevear  <jpr@novell.com>
+
+	* NEWS: update
+
+	* configure.in: bump version, libtool numbers
+
 2004-09-23  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #66209

@@ -1,3 +1,43 @@
+Evolution Data Server 1.0.1, 2004-09-24
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Calendar
+
+    #66383 - Warning fixes in calendar code (Dave Malcom)
+    #64955 - C99-ism in libecal (Vincent Noel)
+    #59904 - Calendar query caching (Rodrigo)
+    #65167 - Crash sending task to GroupWise (Chen)
+    #64685 - Appointment requests that have been replied to give "Invalid Object" error (Chen)
+    #63513 - G/W appointment acceptance fails ('invalid object') (Chen)
+    #64688 - mixing UTC and localtime in Appointment view (Chen)
+
+  * All
+
+    #66209 - only first source color change is saved to gconf (Michael)
+    #64062 - new all day recurring events do not show busy time or as all day appts (Chen)
+  
+Other bugs
+
+  * Address Book
+    - disable debugging noise (William Jon McCann)
+    - don't search summary for groupwise system address book (Siva)
+
+  * Calendar
+    - support groupwise all day events
+
+  * All
+    - fix e-d-s issues on NPTL and AMD machines (Chris, Frederic Crozat, Hans, Dave Malcolm)
+
+Updated Translations:
+	- fr (Craig Jeffares)
+	- zh_TW (Craig Jeffares)
+	- sk (Stanislav Visnovsky)
+	- fa (Roozbeh Pournader)
+	- id (Mohammad DAMT)
+	- ar (Arafat Medini)
+
 Evolution Data Server 1.0.0, 2004-09-13
 ----------------------------------------
 
