@@ -1,3 +1,18 @@
+2005-03-11  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-folder.c (imap4_sync): Don't try to EXPUNGE in
+	READ-ONLY mode.
+	(imap4_sync_changes): Don't check permanent_flags here.
+	(imap4_sync): Check permanent_flags here instead and don't bother
+	wasting cycles if permanent_flags is empty.
+	(imap4_sync): Don't attempt to EXPUNGE if the folder is READ-ONLY.
+	(imap4_append_message): Set an exception if the folder is
+	read-only and don't bother trying to append.
+
+	* camel-imap4-engine.c (camel_imap4_engine_select_folder): Set the
+	READ-ONLY bit on the folder if the server says we've opened it in
+	READ-ONLY mode.
+
 2005-02-03  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-engine.c (camel_imap4_engine_handle_untagged_1):
