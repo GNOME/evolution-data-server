@@ -644,7 +644,7 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	priv = item->priv;
 
 	if ( (subparam = soup_soap_parameter_get_first_child_by_name (param, "requestReply")) ) {		
-		child = soup_soap_parameter_get_first_child_by_name (subparam, "WhenConvenient");
+		child = soup_soap_parameter_get_first_child_by_name (subparam, "whenConvenient");
 		if (child) {
 			value = soup_soap_parameter_get_string_value (child);
 			if (value && !g_ascii_strcasecmp (value, "1")) 
@@ -659,6 +659,7 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			if (value) {
 				char *date;
 				date = e_gw_connection_format_date_string (value);
+				priv->reply_request_set = TRUE;
 				priv->reply_within = date;
 			}
 
@@ -2477,13 +2478,13 @@ append_gw_item_options (SoupSoapMessage *msg, EGwItem *item)
 	soup_soap_message_start_element (msg, "options", NULL, NULL);
 	
 	/* Priority */
-	e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "");
+	e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "0");
 
 	/* Expiration date */
-	e_gw_message_write_string_parameter (msg, "expires", NULL, priv->expires ? priv->expires : "");
+	e_gw_message_write_string_parameter (msg, "expires", NULL, priv->expires ? priv->expires : "0");
 	
 	/* Delay delivery */
-	e_gw_message_write_string_parameter (msg, "delayDeliveryUntil", NULL, priv->delay_until ? priv->delay_until : "");
+	e_gw_message_write_string_parameter (msg, "delayDeliveryUntil", NULL, priv->delay_until ? priv->delay_until : "0");
 
 	soup_soap_message_end_element (msg);
 }

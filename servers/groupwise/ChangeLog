@@ -1,3 +1,9 @@
+2005-02-04  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-item.c: (set_sendoptions_from_soap_parameter),
+	(append_gw_item_options): Set the whenconvenient flag
+	correctly.
+
 2005-02-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-connection.c: 
