@@ -1,3 +1,12 @@
+2005-02-02  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-store.c (get_folders_online): Set the
+	CAMEL_FOLDER_SUBSCRIBED flag appropriately.
+	(get_subscribed_folders): Set here too.
+	(get_subscription_info): Set the subscribed bit.
+	(get_folder_info_online): If subscribed info is requested, fill
+	it.
+
 2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-summary.c (summary_header_load): Bumped version to 3

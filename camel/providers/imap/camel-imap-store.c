@@ -2498,7 +2498,9 @@ get_subscribed_folders (CamelImapStore *imap_store, const char *top, CamelExcept
 		g_free (result);
 		if (!fi)
 			continue;
-
+		
+		fi->flags |= CAMEL_FOLDER_SUBSCRIBED;
+		
 		if (!imap_is_subfolder(fi->full_name, top)) {
 			camel_folder_info_free (fi);
 			continue;
@@ -2559,6 +2561,9 @@ get_folders_online (CamelImapStore *imap_store, const char *pattern,
 		list = response->untagged->pdata[i];
 		fi = parse_list_response_as_folder_info (imap_store, list);
 		if (fi) {
+			if (lsub)
+				fi->flags |= CAMEL_FOLDER_SUBSCRIBED;
+			
 			g_ptr_array_add(folders, fi);
 			g_hash_table_insert(present, fi->full_name, fi);
 		}
@@ -2933,6 +2938,37 @@ fail:
 	return NULL;
 }
 
+static void
+get_subscription_info (CamelImapStore *imap_store, GPtrArray *folders, CamelException *ex)
+{
+	CamelImapResponse *response;
+	CamelFolderInfo *fi;
+	char sep, *dir;
+	int flags;
+	int i, j;
+	
+	for (i = 0; i < folders->len; i++) {
+		fi = folders->pdata[i];
+		
+		/* don't check if we already know */
+		if ((fi->flags & CAMEL_FOLDER_SUBSCRIBED))
+			continue;
+		
+		if (!(response = camel_imap_command (imap_store, NULL, NULL, "LSUB \"\" %F", fi->full_name)))
+			return;
+		
+		for (j = 0; j < response->untagged->len; j++) {
+			if (imap_parse_list_response (imap_store, response->untagged->pdata[j], &flags, &sep, &dir)) {
+				/* it's gotta be a match... we only requsted 1 particular folder... */
+				fi->flags |= CAMEL_FOLDER_SUBSCRIBED;
+				g_free (dir);
+			}
+		}
+		
+		camel_imap_response_free (imap_store, response);
+	}
+}
+
 static CamelFolderInfo *
 get_folder_info_online (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
 {
@@ -2957,13 +2993,16 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 
 	if (folders == NULL)
 		goto done;
-
+	
+	if ((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_INFO))
+		get_subscription_info (imap_store, folders, ex);
+	
 	tree = camel_folder_info_build(folders, top, '/', TRUE);
 	g_ptr_array_free(folders, TRUE);
 
 	if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST))
 		get_folder_counts(imap_store, tree, ex);
-
+	
 	d(dumpfi(tree));
 	camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
 done:
