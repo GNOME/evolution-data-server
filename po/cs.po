@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-07 03:29+0100\n"
-"PO-Revision-Date: 2004-01-07 19:31+0100\n"
+"POT-Creation-Date: 2004-01-09 14:24+0100\n"
+"PO-Revision-Date: 2004-01-09 17:21+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -302,67 +302,71 @@ msgstr "URL domovské stránky"
 msgid "Weblog URL"
 msgstr "URL weblogu"
 
+#: addressbook/libebook/e-contact.c:169
+msgid "Video Conferencing URL"
+msgstr "URL pro videokonference"
+
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:172
 msgid "Photo"
 msgstr "Fotografie"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:173
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:176
 msgid "X.509 Certificate"
 msgstr "Certifikát X.509"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:180
 msgid "Category List"
 msgstr "Seznam kategorií"
 
-#: addressbook/libebook/e-contact.c:180 addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:181 addressbook/libebook/e-contact.c:183
 msgid "Categories"
 msgstr "Kategorie"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:187
 msgid "Calendar URI"
 msgstr "URI Kalendáře"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:188
 msgid "Free/Busy URL"
 msgstr "URL volno/zaneprázdněn"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:189
 msgid "ICS Calendar"
 msgstr "Kalendář ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:192
 msgid "Spouse's Name"
 msgstr "Partner/-ka"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:193
 msgid "Note"
 msgstr "Poznámka"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:195
 msgid "Birth Date"
 msgstr "Narozeniny"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:196
 msgid "Anniversary"
 msgstr "Výročí"
 
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:198
 msgid "List"
 msgstr "Seznam"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:199
 msgid "List Show Addresses"
 msgstr "Seznam zobrazených adres"
 
-#: addressbook/libebook/e-contact.c:1075
+#: addressbook/libebook/e-contact.c:1076
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
@@ -561,75 +565,75 @@ msgstr "Nedefinováno"
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: calendar/libecal/e-cal.c:3808
+#: calendar/libecal/e-cal.c:3810
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: calendar/libecal/e-cal.c:3810
+#: calendar/libecal/e-cal.c:3812
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: calendar/libecal/e-cal.c:3812
+#: calendar/libecal/e-cal.c:3814
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: calendar/libecal/e-cal.c:3814
+#: calendar/libecal/e-cal.c:3816
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: calendar/libecal/e-cal.c:3816 calendar/libecal/e-cal.c:3826
+#: calendar/libecal/e-cal.c:3818 calendar/libecal/e-cal.c:3828
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: calendar/libecal/e-cal.c:3818
+#: calendar/libecal/e-cal.c:3820
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: calendar/libecal/e-cal.c:3820
+#: calendar/libecal/e-cal.c:3822
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: calendar/libecal/e-cal.c:3822
+#: calendar/libecal/e-cal.c:3824
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: calendar/libecal/e-cal.c:3824
+#: calendar/libecal/e-cal.c:3826
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: calendar/libecal/e-cal.c:3828
+#: calendar/libecal/e-cal.c:3830
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: calendar/libecal/e-cal.c:3830
+#: calendar/libecal/e-cal.c:3832
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: calendar/libecal/e-cal.c:3832
+#: calendar/libecal/e-cal.c:3834
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: calendar/libecal/e-cal.c:3834
+#: calendar/libecal/e-cal.c:3836
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: calendar/libecal/e-cal.c:3836
+#: calendar/libecal/e-cal.c:3838
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
-#: calendar/libecal/e-cal.c:3838
+#: calendar/libecal/e-cal.c:3840
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: calendar/libecal/e-cal.c:3840
+#: calendar/libecal/e-cal.c:3842
 msgid "A CORBA esception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: calendar/libecal/e-cal.c:3842
+#: calendar/libecal/e-cal.c:3844
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: calendar/libecal/e-cal.c:3844
+#: calendar/libecal/e-cal.c:3846
 msgid "No error"
 msgstr "Žádná chyba"
 
