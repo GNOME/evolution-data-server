@@ -14,7 +14,8 @@
 
 #include <libebook/e-contact.h>
 #include <libgnome/gnome-i18n.h>
-#include <libedataserver/e-sexp.h>                                                                                                                             
+#include <libedataserver/e-sexp.h>
+#include <libedataserver/e-url.h> 
 #include <libedata-book/e-book-backend-sexp.h>
 #include <libedata-book/e-book-backend-summary.h>
 #include <libedata-book/e-data-book.h>
@@ -770,7 +771,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 		GList *ptr;
 		temp_item = E_GW_ITEM (items->data);
 		emails = e_gw_item_get_email_list (temp_item);
-		if (temp && (ptr = g_list_find_custom (temp, emails->data, strcmp ))) {
+		if (temp && (ptr = g_list_find_custom (temp, emails->data, strcasecmp ))) {
 			
 			temp = g_list_remove_link (temp, ptr);
 			g_list_free (ptr);
@@ -1042,6 +1043,7 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 
 	egwb = E_BOOK_BACKEND_GROUPWISE (backend);
 	if (egwb->priv->cnc == NULL) {
+		printf ("connection null\n");
 		e_data_book_respond_create(book, GNOME_Evolution_Addressbook_OtherError, NULL);
 		return;
 	}
@@ -1079,7 +1081,7 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 		e_contact_set (contact, E_CONTACT_UID, id);
 		g_free (id);
 		e_data_book_respond_create(book,  GNOME_Evolution_Addressbook_Success, contact);
-	       
+		
 	}
 	else {
 		e_data_book_respond_create(book, GNOME_Evolution_Addressbook_OtherError, NULL);
@@ -1649,7 +1651,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		e_data_book_respond_get_contact_list (book, GNOME_Evolution_Addressbook_ContactNotFound,
 						      vcard_list);
 	}
-
+	printf ("in contact list\n");
 	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_data_book_respond_get_contact_list (book, GNOME_Evolution_Addressbook_OtherError,
@@ -1781,7 +1783,7 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 				     EDataBookView *book_view)
 {
 	GroupwiseBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_GROUPWISE (backend));
-
+	printf ("in book view\n");
 	g_mutex_lock (closure->mutex);
 	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
 	g_cond_wait (closure->cond, closure->mutex);
@@ -1905,6 +1907,9 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
         char *book_name;
 	const char *uri;
 	char **tokens;
+   	char *port;
+	EUri *parsed_uri;
+
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
 	uri =  e_source_get_uri (source);
@@ -1913,17 +1918,28 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	tokens = g_strsplit (uri, ";", 2);
 	g_free (uri);
 	if (tokens[0]) 
-		uri = tokens[0];
-	priv->uri = g_strconcat ("http://", uri +12, NULL );
-	priv->only_if_exists = only_if_exists;
+		uri = g_strdup(tokens[0]);
 	book_name = g_strdup (tokens[1]);
-	g_strfreev (tokens);
 	if(book_name == NULL)
 		return  GNOME_Evolution_Addressbook_OtherError;
+	g_strfreev (tokens);
+	parsed_uri = e_uri_new (uri);
+	port = e_source_get_property (source, "port");
+	if (port == NULL)
+		port = "7181";
+       
+	priv->uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
+	priv->only_if_exists = only_if_exists;
+	
+	
 	priv->book_name = book_name;
 	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_set_is_writable (E_BOOK_BACKEND(backend), FALSE);  
-	return GNOME_Evolution_Addressbook_Success;	
+	
+	g_free (uri);
+	e_uri_free (parsed_uri);
+	return GNOME_Evolution_Addressbook_Success;
+
 }
 
 static void

@@ -1,3 +1,11 @@
+2004-05-25 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_load_source) : port
+	is no longer part of uri, read it from e-source
+	 (set_memebers_in_groupwise_item) : compare emails with ignore case
+	fixes #58888
+
 2004-05-25  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book-query.c (e_book_query_to_string): encode the
