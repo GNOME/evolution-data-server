@@ -542,6 +542,31 @@ func_has_categories (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 	return result;
 }
 
+/* (has-recurrences?)
+ *
+ * A boolean value for components that have/dont have recurrences.
+ *
+ * Returns: a boolean indicating whether the component has recurrences or not.
+ */
+static ESExpResult *
+func_has_recurrences (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	ESExpResult *result;
+
+	/* Check argument types */
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("has-recurrences? expects no arguments"));
+		return NULL;
+	}
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.bool = e_cal_component_has_recurrences (ctx->comp);
+
+	return result;
+}
+
 /* (is-completed?)
  *
  * Returns a boolean indicating whether the component is completed (i.e. has
@@ -768,6 +793,7 @@ static struct {
 	{ "occur-in-time-range?", func_occur_in_time_range, 0 },
 	{ "contains?", func_contains, 0 },
 	{ "has-alarms?", func_has_alarms, 0 },
+	{ "has-recurrences?", func_has_recurrences, 0 },
 	{ "has-categories?", func_has_categories, 0 },
 	{ "is-completed?", func_is_completed, 0 },
 	{ "completed-before?", func_completed_before, 0 }
