@@ -29,7 +29,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkstock.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libedataserverui/e-source-option-menu.h>
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-contact-store.h>

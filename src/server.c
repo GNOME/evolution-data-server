@@ -34,11 +34,11 @@
 #include <pthread.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-init.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <gconf/gconf-client.h>

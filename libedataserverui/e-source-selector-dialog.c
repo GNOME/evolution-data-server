@@ -25,7 +25,7 @@
 #include <config.h>
 #endif
 
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #include <glib-object.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>

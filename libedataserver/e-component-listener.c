@@ -8,10 +8,14 @@
  * Copyright 2002, Ximian, Inc.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <glib/gi18n-lib.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-object.h>
 #include "e-component-listener.h"
-#include <libgnome/gnome-i18n.h>
 
 #define PARENT_TYPE GTK_TYPE_OBJECT
 

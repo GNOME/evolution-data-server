@@ -28,7 +28,7 @@
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktreednd.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include "e-destination-store.h"
 
 #define ITER_IS_VALID(destination_store, iter) ((iter)->stamp == (destination_store)->stamp)

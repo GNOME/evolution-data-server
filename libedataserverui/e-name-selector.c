@@ -30,7 +30,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libebook/e-book.h>
 #include <libebook/e-contact.h>
 #include <libedataserverui/e-contact-store.h>

@@ -1,3 +1,12 @@
+2005-02-03  Ross Burton  <ross@burtonini.com>
+
+	* libedataserver/e-categories.c:
+	* libedataserver/e-component-listener.c:
+	* libedataserver/e-time-utils.c:
+	* servers/groupwise/e-gw-connection.c:
+	* src/server.c:
+	Use glib/gi18n.h.
+
 2005-02-03  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.c (idle_saver_cb): changed to return a

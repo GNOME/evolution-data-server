@@ -29,7 +29,7 @@
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkseparatormenuitem.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 
 #include <libebook/e-book.h>
 #include <libebook/e-contact.h>

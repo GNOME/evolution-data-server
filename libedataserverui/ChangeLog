@@ -1,3 +1,16 @@
+2005-02-03  Ross Burton  <ross@burtonini.com>
+
+	* libedataserverui/e-categories-dialog.c:
+	* libedataserverui/e-contact-store.c:
+	* libedataserverui/e-destination-store.c:
+	* libedataserverui/e-name-selector-dialog.c:
+	* libedataserverui/e-name-selector-entry.c:
+	* libedataserverui/e-name-selector-model.c:
+	* libedataserverui/e-name-selector.c:
+	* libedataserverui/e-source-selector-dialog.c:
+	* libedataserverui/e-tree-model-generator.c:
+	Use glib/gi18n.h.
+
 2005-01-27  Hao Sheng <hao.sheng@sun.com>
 
 	* e-name-selector-dialog.c:
