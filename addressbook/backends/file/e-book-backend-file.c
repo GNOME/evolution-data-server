@@ -497,7 +497,7 @@ e_book_backend_file_stop_book_view (EBookBackend  *backend,
 	printf ("stopping book view!\n");
 	g_mutex_lock (closure->mutex);
 	closure->stopped = TRUE;
-	g_mutex_lock (closure->mutex);
+	g_mutex_unlock (closure->mutex);
 }
 
 typedef struct {

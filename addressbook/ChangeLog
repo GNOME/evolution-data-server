@@ -1,3 +1,9 @@
+2004-02-02  Michael Meeks  <michael@ximian.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_stop_book_view): unlock after
+	taking a lock.
+
 2004-01-30  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-book-async.c (e_book_async_load_source)
