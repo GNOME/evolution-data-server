@@ -1,5 +1,12 @@
+2005-01-28  Not Zed  <NotZed@Ximian.com>
 
-** This provider is dead.
+	** See bug #22496.
+
+	* camel-imap-command.c (camel_imap_command_response): check for no
+	and bad [alert] as well as ok [alert].
+	
+
+	** This provider is dead.
 
 Refer to main changelog for earlier changes.
 
