@@ -1,4 +1,5 @@
 Makefile
 Makefile.in
-libedataserver-1.0.pc
+libedataserver.pc
+libedataserver-1.2.pc
 test-source-list
