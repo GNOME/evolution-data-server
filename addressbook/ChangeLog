@@ -1,3 +1,12 @@
+2004-06-18  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes #57628 ]
+	
+	* libebook/e-book.c (e_book_new_system_addressbook): use the
+	new_default_addressbook model, and search for a property on
+	sources (system=true).  If we find one, use that source, otherwise
+	default to ~/.evolution/local/system.
+
 2004-06-17  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/test-ebook-async.c: down with e-book-async.h, up

@@ -3219,20 +3219,57 @@ e_book_new_from_uri (const char *uri, GError **error)
 EBook*
 e_book_new_system_addressbook    (GError **error)
 {
-	char *filename;
-	char *uri;
+	ESourceList *sources;
+	GSList *g;
+	GError *err = NULL;
+	ESource *system_source = NULL;
 	EBook *book;
 
-	filename = g_build_filename (g_get_home_dir(),
-				     ".evolution/addressbook/local/system",
-				     NULL);
-	uri = g_strdup_printf ("file://%s", filename);
+	if (!e_book_get_addressbooks (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
 
-	g_free (filename);
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (g->data);
+		GSList *s;
+		for (s = e_source_group_peek_sources (group); s; s = s->next) {
+			ESource *source = E_SOURCE (s->data);
+
+			if (e_source_get_property (source, "system")) {
+				system_source = source;
+				break;
+			}
+		}
+
+		if (system_source)
+			break;
+	}
+
+	if (system_source) {
+		book = e_book_new (system_source, &err);
+	}
+	else {
+		char *filename;
+		char *uri;
+		book = e_book_new_system_addressbook (&err);
+
+		filename = g_build_filename (g_get_home_dir(),
+					     ".evolution/addressbook/local/system",
+					     NULL);
+		uri = g_strdup_printf ("file://%s", filename);
+
+		g_free (filename);
 	
-	book = e_book_new_from_uri (uri, error);
+		book = e_book_new_from_uri (uri, error);
 
-	g_free (uri);
+		g_free (uri);
+	}
+
+	if (!book)
+		g_propagate_error (error, err);
+
+	g_object_unref (sources);
 
 	return book;
 }
