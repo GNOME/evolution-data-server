@@ -380,7 +380,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	
 	time_interval = CACHE_REFRESH_INTERVAL;
-	e_cal_backend_cache_set_marker (priv->cache);
 	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
 	if (time_interval_string) {
 		time_interval = g_ascii_strtod (time_interval_string, NULL);

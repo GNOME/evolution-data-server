@@ -1,5 +1,11 @@
 2004-10-29  Sivaiah Nallagatla <snallagatla@novell.com>
 
+	* backends/groupwise/e-ca-backend-groupwise.c 
+	(cache_init) : remove the set_marker call from the begining of the 
+	functions. accidently placed in the last commit 
+
+2004-10-29  Sivaiah Nallagatla <snallagatla@novell.com>
+
         * backends/groupwise/e-cal-backends-groupwise.c
         (cache_init) : Read the getQm poll interval
         from GETQM_TIME_INTERVAL. If not availbale
