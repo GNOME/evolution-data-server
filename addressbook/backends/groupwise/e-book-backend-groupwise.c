@@ -1115,7 +1115,7 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	
 		gw_field_name = NULL;
 		if (g_str_equal (propname, "full_name"))
-			gw_field_name = "FullName";
+			gw_field_name = "fullName";
 		else if (g_str_equal (propname, "email"))
 			gw_field_name = "emailList/email";
 		else if (g_str_equal (propname, "file_as") || g_str_equal (propname, "nickname"))

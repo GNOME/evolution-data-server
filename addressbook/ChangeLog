@@ -1,3 +1,8 @@
+2044-04-07  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c (func_is) :
+	Correct a small type in field name  FullName -> fullName
+	 
 2004-04-06  Chris Toshok  <toshok@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c (struct
