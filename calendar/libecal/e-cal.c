@@ -1325,6 +1325,11 @@ e_cal_new (ESource *source, ECalSourceType type)
 		return NULL;
 	}
 
+	/* initialize component listener */
+	ecal->priv->comp_listener = e_component_listener_new ((Bonobo_Unknown) ecal->priv->cal);
+	g_signal_connect (G_OBJECT (ecal->priv->comp_listener), "component_died",
+			  G_CALLBACK (backend_died_cb), ecal);
+
 	return ecal;
 }
 
