@@ -72,4 +72,5 @@ int      e_path_rmdir        (const char *prefix, const char *vpath);
 
 EGwItem *camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients);
 void do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new) ;
+GSList * add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_type);
 #endif

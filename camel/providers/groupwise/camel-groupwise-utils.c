@@ -33,6 +33,7 @@
 #include <camel/camel-multipart.h>
 #include <camel/camel-stream-mem.h>
 #include <camel/camel-address.h>
+#include <camel/camel-mime-message.h>
 
 #define SUBFOLDER_DIR_NAME     "subfolders"
 #define SUBFOLDER_DIR_NAME_LEN 10
@@ -259,6 +260,29 @@ e_path_rmdir (const char *prefix, const char *vpath)
 	return 0;
 }
 
+GSList *
+add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_type)
+{
+	int total_add,i;
+	EGwItemRecipient *recipient ;
+	
+	total_add = camel_address_length (recipients) ;
+	for (i=0 ; i<total_add ; i++) {
+		const char *name = NULL, *addr = NULL ;
+		if(camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
+
+			recipient = g_new0 (EGwItemRecipient, 1);
+
+			recipient->email = g_strdup (addr) ;
+			recipient->display_name = g_strdup (name) ;
+			recipient->type = recipient_type;
+			recipient->status = E_GW_ITEM_STAT_NONE ;
+			recipient_list= g_slist_append (recipient_list, recipient) ;
+		}
+	}
+	return recipient_list;
+}
+
 EGwItem *
 camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients)
 {
@@ -278,22 +302,20 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 
 	/*Egroupwise item*/
 	item = e_gw_item_new_empty () ;
-
+	
 	/*poulate recipient list*/
-	total_add = camel_address_length (recipients) ;
-	for (i=0 ; i<total_add ; i++) {
-		const char *name = NULL, *addr = NULL ;
-		if(camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
+	camel_address_remove(recipients,-1);
+	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO)));
+	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_TO);
 
-			recipient = g_new0 (EGwItemRecipient, 1);
+	camel_address_remove(recipients,-1);
+	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC)));
+	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_CC);
+	
+	camel_address_remove(recipients,-1);
+	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC)));
+	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_BC);
 
-			recipient->email = g_strdup (addr) ;
-			recipient->display_name = g_strdup (name) ;
-			recipient->type = E_GW_ITEM_RECIPIENT_TO;
-			recipient->status = E_GW_ITEM_STAT_NONE ;
-			recipient_list= g_slist_append (recipient_list, recipient) ;
-		}
-	}
 
 	/** Get the mime parts from CamelMimemessge **/
 	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));

@@ -1,3 +1,13 @@
+2005-02-28  Sankar P <psankar@novell.com>
+
+	* camel-groupwise-utils.c: (camel_groupwise_util_item_from_message):
+	  Changed the way in which the recipients list is generated so as to 
+	  facilitate handling of CC and BCC addresses.
+	* camel-groupwise-utils.[ch]: (add_recipients)
+	  Implemented the function add_recipients to prepare recipients list of 
+	  specified type.
+	  Fixes bug #73008
+
 2005-02-25  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c: 
