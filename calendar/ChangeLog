@@ -1,3 +1,9 @@
+2005-01-26  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/file/e-cal-backend-file.c (add_component): save the file
+	when we add the component to the toplevel.
+	(remove_component): make sure we always save the file.
+
 2005-01-26  JP Rosevear  <jpr@novell.com>
 
 	* libecal/e-cal.c (e_cal_send_objects): fix leak in the error case

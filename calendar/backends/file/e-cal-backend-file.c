@@ -477,6 +477,8 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 		g_assert (icalcomp != NULL);
 
 		icalcomponent_add_component (priv->icalcomp, icalcomp);
+
+		save (cbfile);
 	}
 
 	/* Update the set of categories */
@@ -553,6 +555,8 @@ remove_component (ECalBackendFile *cbfile, const char *uid, ECalBackendFileObjec
 
 	g_hash_table_remove (priv->comp_uid_hash, uid);
 	free_object ((gpointer) uid, (gpointer) obj_data, NULL);
+
+	save (cbfile);
 }
 
 /* Scans the toplevel VCALENDAR component and stores the objects it finds */
@@ -1658,7 +1662,6 @@ sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
 	e_cal_component_abort_sequence (comp);
 
 }	
-
 
 static ECalBackendSyncStatus
 e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
