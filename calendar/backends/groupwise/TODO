@@ -25,7 +25,7 @@ Step 1 - Infrastructure
 Step 2 - Basic functionality
 
  2.1 Make the ECalBackendGroupwise class use ECalBackendCache, so that after
-     first connecting to a server we can keep the calendar in the cache.
+     first connecting to a server we can keep the calendar in the cache -> done
 
  2.2 Implement retrieval of objects, that will be saved to the cache. This is
      probably best done by listening to modifications on the server, and updating
