@@ -1,3 +1,12 @@
+2005-03-18  Vivek Jain <jvivek@novell.com>
+	
+	**Fixes bug #73458
+	* camel-groupwise-utils.h: changed the  X_RETURN_NOTIFY_DECLINE to 
+	 X_RETURN_NOTIFY_DELETE 
+	* camel-groupwise-utils.c: check the property and then call
+	 (e_gw_item_set_notify_deleted) instead of
+	 (e_gw_item_set_notify_declined )
+
 2005-03-17  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:(convert_to_calendar):

@@ -473,12 +473,12 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 			case 1: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_MAIL);
 		}
 	}
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_DECLINE) ;
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_DELETE) ;
 	if (send_options) {
 		switch (atoi(send_options)) {
-			case 0: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_NONE);
+			case 0: e_gw_item_set_notify_deleted (item, E_GW_ITEM_NOTIFY_NONE);
 				break;
-			case 1: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_MAIL);
+			case 1: e_gw_item_set_notify_deleted (item, E_GW_ITEM_NOTIFY_MAIL);
 		}
 	}	
 	
