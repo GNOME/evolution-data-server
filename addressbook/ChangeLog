@@ -1,3 +1,9 @@
+2004-04-28  Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(set_member_changes) : new function added to apply changes 
+	in the contact-list on server 	
+	
 2004-04-27  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* backends/file/e-book-backend-file.c

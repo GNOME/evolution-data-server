@@ -48,7 +48,6 @@ static void populate_full_name (EContact *contact, gpointer data);
 static void set_full_name_in_gw_item (EGwItem *item, gpointer data);
 static void set_full_name_changes (EGwItem *new_item, EGwItem *old_item);
 static void populate_contact_members (EContact *contact, gpointer data);
-static void set_members_changes (EGwItem *new_item, EGwItem *old_item);
 static void set_categories_changes (EGwItem *new_item, EGwItem *old_item);
 static void populate_birth_date (EContact *contact, gpointer data);
 static void set_birth_date_in_gw_item (EGwItem *item, gpointer data);
@@ -86,7 +85,7 @@ struct field_element_mapping {
 	{ E_CONTACT_ORG, ELEMENT_TYPE_SIMPLE, "organization"},
 	{ E_CONTACT_ORG_UNIT, ELEMENT_TYPE_SIMPLE, "department"},
 	{ E_CONTACT_TITLE, ELEMENT_TYPE_SIMPLE, "title"},
-	{ E_CONTACT_EMAIL, ELEMENT_TYPE_COMPLEX, "members", populate_contact_members, NULL, set_members_changes},
+	{ E_CONTACT_EMAIL, ELEMENT_TYPE_COMPLEX, "members", populate_contact_members, NULL, NULL},
 	{ E_CONTACT_ADDRESS_HOME, ELEMENT_TYPE_COMPLEX, "Home", populate_address, set_address_in_gw_item, set_address_changes },
 	{ E_CONTACT_IM_AIM, ELEMENT_TYPE_COMPLEX, "ims", populate_ims, set_ims_in_gw_item, set_im_changes },
 	{ E_CONTACT_CATEGORIES, ELEMENT_TYPE_COMPLEX, "categories", NULL, NULL, set_categories_changes},
@@ -651,11 +650,13 @@ populate_contact_members (EContact *contact, gpointer data)
 	member_list = e_gw_item_get_member_list (item);
 	for (; member_list != NULL; member_list = g_list_next (member_list)) {
 		EVCardAttribute *attr;
-                attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
+		EGroupMember *member;
+		member = (EGroupMember *) member_list->data;
+		attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
 		e_vcard_attribute_add_param_with_value (attr,
                                                         e_vcard_attribute_param_new (EVC_X_DEST_EMAIL),
-							member_list->data);
-		e_vcard_attribute_add_value (attr, member_list->data);
+							member->email);
+		e_vcard_attribute_add_value (attr, member->email);
 		e_vcard_add_attribute (E_VCARD (contact), attr);
 	}
 		
@@ -667,7 +668,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 
 {
   	GList*  members, *temp, *items;
-	GList *ids;
+	GList *group_members;
 	char *email;
 	EGwFilter *filter;
 	int status;
@@ -688,24 +689,51 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	}
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, count);
 	items = NULL;
-	ids = NULL;
+	group_members = NULL;
 	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &items);
 	for (; items != NULL; items = g_list_next (items )) {
+		EGroupMember *member;
 		temp_item = E_GW_ITEM (items->data);
 		id = g_strdup (e_gw_item_get_id (temp_item));
-		ids = g_list_append (ids, id);
+		member = g_new0 (EGroupMember , 1);
+		member->id = id;
+		group_members = g_list_append (group_members, member);
 		g_object_unref (temp_item);
 	}
 	g_list_free (items);
-       	e_gw_item_set_member_list (item, ids);
+       	e_gw_item_set_member_list (item, group_members);
   
 }
 
 static void 
-set_members_changes (EGwItem *new_item, EGwItem *old_item)
+set_member_changes (EGwItem *new_item, EGwItem *old_item, EBookBackendGroupwise *egwb)
 {
+	GList *old_members, *new_members ;
+	GList *old_ids,  *new_ids,  *additions, *deletions;
+       	old_ids = new_ids = additions = deletions = NULL;
+	old_members = e_gw_item_get_member_list (old_item);
+	new_members = e_gw_item_get_member_list (new_item);
+	for ( ;old_members != NULL; old_members = g_list_next (old_members)) {
+		EGroupMember *member;
+		member = (EGroupMember *)old_members->data;
+		old_ids = g_list_append (old_ids, member->id);
+	}
+	for ( ;new_members != NULL; new_members = g_list_next (new_members)) {
+		EGroupMember *member;
+		member = (EGroupMember *)new_members->data;
+		new_ids = g_list_append (new_ids, member->id);
+	}
 	
-
+	compare_string_lists (old_ids, new_ids, &additions, &deletions);
+	if (additions) 
+		e_gw_connection_add_members (egwb->priv->cnc, e_gw_item_get_id (old_item), additions);
+	if (deletions)
+		e_gw_connection_remove_members (egwb->priv->cnc, e_gw_item_get_id (old_item), deletions);
+	g_list_free (new_ids);
+	g_list_free (old_ids);
+	g_list_free (additions);
+	g_list_free (deletions);
+		
 }
 
 
@@ -877,9 +905,11 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
      
     
 	}
+	id = NULL;
 	status = e_gw_connection_create_item (egwb->priv->cnc, item, &id);  
        	if (status == E_GW_CONNECTION_STATUS_OK) {
 		e_contact_set (contact, E_CONTACT_UID, id);
+		g_free (id);
 		e_data_book_respond_create(book,  GNOME_Evolution_Addressbook_Success, contact);
 	       
 	}
@@ -947,7 +977,8 @@ set_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 				}
 									
 			} else if (element_type == ELEMENT_TYPE_COMPLEX) {
-				mappings[i].set_changes(new_item, old_item);
+				if (mappings[i].field_id != E_CONTACT_EMAIL)
+					mappings[i].set_changes(new_item, old_item);
 			}
     
 	}
@@ -995,7 +1026,7 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 		}
    
 	}
-
+	
 	id = e_contact_get (contact, E_CONTACT_UID);
 	old_item = NULL;
 	status = e_gw_connection_get_item (egwb->priv->cnc, egwb->priv->container_id, id,  &old_item);
@@ -1003,6 +1034,8 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 		e_data_book_respond_modify (book, GNOME_Evolution_Addressbook_OtherError, NULL);
 		return;
 	}
+	if (e_contact_get (contact, E_CONTACT_IS_LIST))
+		set_member_changes (new_item, old_item, egwb);
 	set_changes_in_gw_item (new_item, old_item);
 	e_gw_item_set_item_type (new_item, e_gw_item_get_item_type (old_item));
 	status = e_gw_connection_modify_item (egwb->priv->cnc, id, new_item);
