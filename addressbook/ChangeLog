@@ -1,3 +1,7 @@
+2004-08-09  Chris Toshok  <toshok@ximian.com>
+
+	* tests/vcard/README (Test): add note about 11.vcf.
+
 2004-08-03  Chris Toshok  <toshok@ximian.com>
 
 	[ fixes #61719 ]
