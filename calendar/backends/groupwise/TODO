@@ -89,7 +89,7 @@ Step 2 - Basic functionality
 	   - Implement e_cal_backend_groupwise_send_objects, which lets the
 	     server send a meeting invitation in whatever means it's got.
      When sending modifications to the server, only deltas (the fields that have
-     been modified) are sent, so we shoould compare the objects with the cache
+     been modified) are sent, so we should compare the objects with the cache
      and get the deltas out of that. When a successful update is made to the
      server, the cache must be updated.
 

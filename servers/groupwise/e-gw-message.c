@@ -21,21 +21,83 @@
  * USA
  */
 
+#include <config.h>
 #include "e-gw-message.h"
+
+#ifdef G_ENABLE_DEBUG
+
+static void
+print_header (gpointer name, gpointer value, gpointer data)
+{
+	g_print ("%s: %s\n", (char *) name, (char *) value);
+}
+
+static void
+debug_handler (SoupMessage *msg, gpointer user_data)
+{
+	g_print ("%d %s\nE2k-Debug: %p @ %lu\n",
+                msg->status_code, msg->reason_phrase,
+                msg, time (0));
+
+	/* print headers */
+	soup_message_foreach_header (msg, print_header, NULL);
+
+	/* print response */
+	if (msg->response.length) {
+		fputc ('\n', stdout);
+		fwrite (msg->response.body, 1, msg->response.length, stdout);
+		fputc ('\n', stdout);
+	}
+}
+
+static void
+setup_debug (SoupSoapMessage *msg)
+{
+	const SoupUri *suri;
+
+	uri = soup_message_get_uri (SOUP_MESSAGE (msg));
+	g_print ("%s %s%s%s HTTP/1.1\nSOAP-Debug: %p @ %lu\n",
+		 SOUP_MESSAGE (msg)->method, uri->path,
+		 uri->query ? "?" : "",
+		 uri->query ? uri->query : "",
+		 msg, (unsigned long) time (0));
+
+	/* print message headers */
+	print_header ("Host", uri->host, NULL);
+	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers, print_header, NULL);
+
+	/* print request's body */
+	fputc ('\n', stdout);
+	fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
+	fputc ('\n', stdout);
+
+	soup_message_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
+}
+
+#endif
 
 SoupSoapMessage *
 e_gw_message_new_with_header (const char *uri, const char *method_name)
 {
 	SoupSoapMessage *msg;
 
-	msg = soup_soap_message_new (SOUP_METHOD_GET, uri, FALSE, NULL, NULL, NULL);
+	msg = soup_soap_message_new (SOUP_METHOD_POST, uri, FALSE, NULL, NULL, NULL);
 	if (!msg) {
 		g_warning (G_STRLOC ": Could not build SOAP message");
 		return NULL;
 	}
 
+#ifdef G_ENABLE_DEBUG
+	setup_debug (
+#endif
+
+	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
+				 "Evolution/" VERSION);
+
 	soup_soap_message_start_envelope (msg);
 	soup_soap_message_start_body (msg);
+	soup_soap_message_add_attribute (msg, "encodingStyle", "", "SOAP-ENV", NULL);
+
 	soup_soap_message_start_element (msg, method_name, NULL, NULL);
 
 	return msg;
