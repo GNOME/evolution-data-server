@@ -1,3 +1,11 @@
+2004-03-18  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_properties_from_cal_component): set the GW item ID based on the
+	X-EVOLUTION-GROUPWISE-ID property.
+	(e_gw_item_to_cal_component): add the above property to the created
+	ECalComponent, and use our iCalendar ID to set the "iCalId" property.
+
 2004-03-18  JP Rosevear <jpr@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c

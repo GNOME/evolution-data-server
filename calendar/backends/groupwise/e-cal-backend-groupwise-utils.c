@@ -36,6 +36,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 	ECalComponentText text;
 	int *priority;
 	GSList *slist, *sl;
+	icalproperty *prop;
 
 	/* first set specific properties */
 	switch (e_cal_component_get_vtype (comp)) {
@@ -98,9 +99,26 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 	}
 
 	/* set common properties */
+	/* GW server ID */
+	prop = icalcomponent_get_first_property (e_cal_component_get_icalcomponent (comp),
+						 ICAL_X_PROPERTY);
+	while (prop) {
+		const char *x_name, *x_val;
+
+		x_name = icalproperty_get_x_name (prop);
+		x_val = icalproperty_get_x (prop);
+		if (!strcmp (x_name, "X-EVOLUTION-GROUPWISE-ID")) {
+			e_gw_item_set_id (item, x_val);
+			break;
+		}
+
+		prop = icalcomponent_get_next_property (e_cal_component_get_icalcomponent (comp),
+							ICAL_X_PROPERTY);
+	}
+	
 	/* UID */
 	e_cal_component_get_uid (comp, &uid);
-	e_gw_item_set_id (item, uid);
+	e_gw_item_set_icalid (item, uid);
 
 	/* subject */
 	e_cal_component_get_summary (comp, &text);
@@ -211,8 +229,18 @@ e_gw_item_to_cal_component (EGwItem *item)
 	}
 
 	/* set common properties */
+	/* GW server ID */
+	description = e_gw_item_get_id (item);
+	if (description) {
+		icalproperty *icalprop;
+
+		icalprop = icalproperty_new_x (description);
+		icalproperty_set_x_name (icalprop, "X-EVOLUTION-GROUPWISE-ID");
+		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
+	}
+
 	/* UID */
-	e_cal_component_set_uid (comp, e_gw_item_get_id (item));
+	e_cal_component_set_uid (comp, e_gw_item_get_icalid (item));
 
 	/* summary */
 	text.value = e_gw_item_get_subject (item);
