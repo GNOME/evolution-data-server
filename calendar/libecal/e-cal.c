@@ -1448,6 +1448,10 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 		key = e_source_get_uri (priv->source);
 
 		password = priv->auth_func (ecal, prompt, key, priv->auth_user_data);
+		if (!password) {
+			g_mutex_unlock (priv->mutex);
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
+		}
 
 		g_free (prompt);
 		g_free (key);

@@ -364,7 +364,7 @@ GSList *
 e_cal_backend_cache_get_components (ECalBackendCache *cache)
 {
         char *comp_str;
-        GSList *l,*list = NULL;
+        GSList *l, *list = NULL;
 	icalcomponent *icalcomp;
 	ECalComponent *comp = NULL;
         
@@ -385,7 +385,6 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
                 }
                 
         }
+
         return list;
 }
-
-

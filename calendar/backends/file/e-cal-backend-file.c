@@ -1626,7 +1626,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 
 static ECalBackendSyncStatus
 e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
-				CalObjModType mod, char **old_object)
+				  CalObjModType mod, char **old_object)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1666,7 +1666,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	/* Create the cal component */
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
-	
+
 	/* Set the last modified time on the component */
 	current = icaltime_from_timet (time (NULL), 0);
 	e_cal_component_set_last_modified (comp, &current);
@@ -1685,6 +1685,9 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
 						  &real_rid, &recurrence)) {
+			if (old_object)
+				*old_object = e_cal_component_get_as_string (recurrence);
+
 			/* remove the component from our data */
 			icalcomponent_remove_component (priv->icalcomp,
 							e_cal_component_get_icalcomponent (recurrence));
@@ -1707,7 +1710,10 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 			e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old, new);
 
-			g_free (old);
+			if (old_object)
+				*old_object = old;
+			else
+				g_free (old);
 			g_free (new);
 		}
 
@@ -1724,6 +1730,9 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		/* in this case, we blow away all recurrences, and start over
 		   with a clean component */
 		/* Remove the old version */
+		if (old_object)
+			*old_object = e_cal_component_get_as_string (obj_data->full_object);
+
 		remove_component (cbfile, obj_data->full_object);
 
 		/* Add the new object */
@@ -1732,9 +1741,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	}
 
 	save (cbfile);
-
-	if (old_object)
-		*old_object = e_cal_component_get_as_string (comp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

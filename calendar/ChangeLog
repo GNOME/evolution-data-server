@@ -1,3 +1,12 @@
+2004-01-16  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal.c (e_cal_open): return AUTH_REQUIRED error if
+	we don't get a password from the authentication function.
+
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_modify_object): store the old object before
+	actually losing it.
+
 2004-01-16  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.c: name space the idle data structs properly
