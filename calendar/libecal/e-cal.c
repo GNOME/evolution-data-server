@@ -1460,6 +1460,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	if (ecal->priv->current_op != NULL) {
 		g_mutex_unlock (ecal->priv->mutex);
+		*status = E_CALENDAR_STATUS_BUSY;
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
@@ -1477,12 +1478,14 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 		if (priv->auth_func == NULL) {
 			g_mutex_unlock (our_op->mutex);
+			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
 		username = e_source_get_property (priv->source, "username");
 		if (!username) {
 			g_mutex_unlock (our_op->mutex);
+			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
@@ -1494,6 +1497,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		password = priv->auth_func (ecal, prompt, key, priv->auth_user_data);
 		if (!password) {
 			g_mutex_unlock (our_op->mutex);
+			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED; 
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 

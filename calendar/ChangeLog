@@ -1,3 +1,10 @@
+2004-07-30  Harish Krishnaswamy  <kharish@novell.com>
+	
+	Fixes #59335
+	
+	* libecal/e-cal.c: (open_calendar): Set the status correctly
+	on all exit points from the function.
+
 2004-07-28  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #60265
