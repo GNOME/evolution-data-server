@@ -153,7 +153,6 @@ e_book_get_op (EBook *book)
 static void
 e_book_op_free (EBookOp *op)
 {
-	/* XXX more stuff here */
 	g_cond_free (op->cond);
 	g_mutex_free (op->mutex);
 	g_free (op);

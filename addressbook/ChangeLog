@@ -1,5 +1,10 @@
 2004-02-04  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book.c (e_book_op_free): remove the misleading "XXX
+	more here" comment from here - there's nothing else to free here.
+
+2004-02-04  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.c (e_book_load_source): lock the book's mutex
 	before checking load_state.  Also, set the load_state to
 	E_BOOK_URI_LOADING before we relinquish the lock.  It will be
