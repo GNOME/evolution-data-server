@@ -39,6 +39,8 @@ extern "C" {
 #define CAMEL_IMAP4_SUMMARY_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_FOLDER_SUMMARY, CamelIMAP4SummaryClass))
 
 typedef struct _CamelIMAP4MessageInfo CamelIMAP4MessageInfo;
+typedef struct _CamelIMAP4MessageContentInfo CamelIMAP4MessageContentInfo;
+
 typedef struct _CamelIMAP4Summary CamelIMAP4Summary;
 typedef struct _CamelIMAP4SummaryClass CamelIMAP4SummaryClass;
 
@@ -48,6 +50,11 @@ struct _CamelIMAP4MessageInfo {
 	CamelMessageInfoBase info;
 	
 	guint32 server_flags;
+};
+
+struct _CamelIMAP4MessageContentInfo {
+	CamelMessageContentInfo info;
+	
 };
 
 struct _CamelIMAP4Summary {

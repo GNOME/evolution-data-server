@@ -739,7 +739,7 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	 * Outlook). Also, some IMAP servers such as GroupWise don't
 	 * store mail in MIME format and so must re-construct the
 	 * entire message in order to extract the requested part, so
-	 * it is *mush* more efficient (generally) to just request the
+	 * it is *much* more efficient (generally) to just request the
 	 * entire message anyway. */
 	ic = camel_imap4_engine_queue (engine, folder, "UID FETCH %s BODY.PEEK[]\r\n", uid);
 	camel_imap4_command_register_untagged (ic, "FETCH", untagged_fetch);

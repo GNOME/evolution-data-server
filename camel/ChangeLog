@@ -1,5 +1,16 @@
 2005-01-21  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/Makefile.am: Removed "imap" from the build and made
+	"imap4" the default.
+
+	* providers/imap4/libcamelimap4.urls: Fixed to only list "imap"
+
+	* providers/imap4/camel-imap4-provider.c: Changed the 'protocol'
+	string to "imap" from "imap4" so we override the old imap urls.
+
+	* providers/imap4/camel-imap4-summary.c: Updated to load/save in
+	the same format as the old imap code so no migration is necessary.
+
 	* camel-offline-journal.c: Same.
 
 	* camel-offline-folder.c (camel_offline_folder_downsync): Use a

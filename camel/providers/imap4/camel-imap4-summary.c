@@ -63,7 +63,9 @@ static int imap4_header_save (CamelFolderSummary *summary, FILE *fout);
 static CamelMessageInfo *imap4_message_info_new_from_header (CamelFolderSummary *summary, struct _camel_header_raw *header);
 static CamelMessageInfo *imap4_message_info_load (CamelFolderSummary *summary, FILE *fin);
 static int imap4_message_info_save (CamelFolderSummary *summary, FILE *fout, CamelMessageInfo *info);
-
+static CamelMessageInfo *imap4_message_info_clone (CamelFolderSummary *summary, const CamelMessageInfo *mi);
+static CamelMessageContentInfo *imap4_content_info_load (CamelFolderSummary *summary, FILE *in);
+static int imap4_content_info_save (CamelFolderSummary *summary, FILE *out, CamelMessageContentInfo *info);
 
 static CamelFolderSummaryClass *parent_class = NULL;
 
@@ -100,6 +102,9 @@ camel_imap4_summary_class_init (CamelIMAP4SummaryClass *klass)
 	summary_class->message_info_new_from_header = imap4_message_info_new_from_header;
 	summary_class->message_info_load = imap4_message_info_load;
 	summary_class->message_info_save = imap4_message_info_save;
+	summary_class->message_info_clone = imap4_message_info_clone;
+	summary_class->content_info_load = imap4_content_info_load;
+	summary_class->content_info_save = imap4_content_info_save;
 }
 
 static void
@@ -111,6 +116,7 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
 	
 	folder_summary->message_info_size = sizeof (CamelIMAP4MessageInfo);
+	folder_summary->content_info_size = sizeof (CamelIMAP4MessageContentInfo);
 	
 	summary->update_flags = TRUE;
 	summary->uidvalidity_changed = FALSE;
@@ -1133,6 +1139,40 @@ imap4_message_info_save (CamelFolderSummary *summary, FILE *fout, CamelMessageIn
 		return -1;
 	
 	return 0;
+}
+
+static CamelMessageInfo *
+imap4_message_info_clone (CamelFolderSummary *summary, const CamelMessageInfo *mi)
+{
+	const CamelIMAP4MessageInfo *src = (const CamelIMAP4MessageInfo *) mi;
+	CamelIMAP4MessageInfo *dest;
+	
+	dest = (CamelIMAP4MessageInfo *) CAMEL_FOLDER_SUMMARY_CLASS (parent_class)->message_info_clone (summary, mi);
+	dest->server_flags = src->server_flags;
+	
+	/* FIXME: parent clone should do this */
+	dest->info.content = camel_folder_summary_content_info_new (summary);
+	
+	return (CamelMessageInfo *) dest;
+}
+
+static CamelMessageContentInfo *
+imap4_content_info_load (CamelFolderSummary *summary, FILE *in)
+{
+	if (fgetc (in))
+		return CAMEL_FOLDER_SUMMARY_CLASS (parent_class)->content_info_load (summary, in);
+	else
+		return camel_folder_summary_content_info_new (summary);
+}
+
+static int
+imap4_content_info_save (CamelFolderSummary *summary, FILE *out, CamelMessageContentInfo *info)
+{
+	if (info->type) {
+		fputc (1, out);
+		return CAMEL_FOLDER_SUMMARY_CLASS (parent_class)->content_info_save (summary, out, info);
+	} else
+		return fputc (0, out);
 }
 
 
