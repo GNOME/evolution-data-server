@@ -1535,7 +1535,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		soup_soap_message_add_attribute (msg, "type", "Appointment", "xsi", NULL);
 
 		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
-		e_gw_message_write_string_parameter (msg, "iCalID", NULL, priv->icalid ? priv->icalid : "");
+		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
 		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");
 		/* FIXME: distribution */
 		break;
@@ -1554,7 +1554,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		else
 			e_gw_message_write_string_parameter (msg, "completed", NULL, "0");
 
-		e_gw_message_write_string_parameter (msg, "iCalID", NULL, priv->icalid ? priv->icalid : "");
+		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
 		e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "");
 		break;
 	case E_GW_ITEM_TYPE_CONTACT :
