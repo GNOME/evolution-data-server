@@ -1,3 +1,44 @@
+2004-04-17  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-vcard.c (e_vcard_remove_attributes): Don't pass NULL
+	attr_group on to string comparison function.
+	(e_vcard_escape_string)
+	(e_vcard_attribute_new): Separate variable initialization from
+	declaration.
+	(e_vcard_unescape_string)
+	(e_vcard_new_from_string)
+	(e_vcard_to_string_vcard_30)
+	(e_vcard_dump_structure)
+	(e_vcard_attribute_new)
+	(e_vcard_attribute_free)
+	(e_vcard_remove_attribute)
+	(e_vcard_add_attribute)
+	(e_vcard_add_attribute_with_value)
+	(e_vcard_add_attribute_with_values)
+	(e_vcard_attribute_add_values)
+	(e_vcard_attribute_remove_values)
+	(e_vcard_attribute_param_free)
+	(e_vcard_attribute_param_copy)
+	(e_vcard_attribute_add_param)
+	(e_vcard_attribute_param_add_value)
+	(e_vcard_attribute_param_add_values)
+	(e_vcard_attribute_add_param_with_value)
+	(e_vcard_attribute_add_param_with_values)
+	(e_vcard_attribute_param_remove_values)
+	(e_vcard_get_attributes)
+	(e_vcard_attribute_get_group)
+	(e_vcard_attribute_get_name)
+	(e_vcard_attribute_get_values)
+	(e_vcard_attribute_get_values_decoded)
+	(e_vcard_attribute_is_single_valued)
+	(e_vcard_attribute_get_value)
+	(e_vcard_attribute_get_value_decoded)
+	(e_vcard_attribute_has_type)
+	(e_vcard_attribute_param_get_name)
+	(e_vcard_attribute_param_get_values)
+	(_evc_base64_encode_simple)
+	(_evc_base64_decode_simple): Insert preconditions.
+
 2004-04-16  Chris Toshok  <toshok@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c
