@@ -1,3 +1,10 @@
+2005-02-08  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_remove_object): Assign the
+	value for the *object as NULL and duped value to
+	*old_object since calobj is freed later.
+
 2005-02-07  JP Rosevear  <jpr@novell.com>
 
 	* backends/weather/e-cal-backend-weather.c (getCategory): don't

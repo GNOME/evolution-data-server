@@ -1597,7 +1597,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		if (status != GNOME_Evolution_Calendar_Success)
 			return status;
 
-		*old_object = calobj;
+		*old_object = strdup (calobj);
 
 		icalcomp = icalparser_parse_string (calobj);
 		if (!icalcomp) {
@@ -1638,7 +1638,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				g_free (calobj);
 				return GNOME_Evolution_Calendar_ObjectNotFound;
 			}
-			*object = g_strdup (calobj);
+			*object = NULL;
 			g_free (calobj);
 			return GNOME_Evolution_Calendar_Success;
 		} else {
@@ -1655,9 +1655,6 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		g_free (calobj);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 	}
-
-	*object = g_strdup (calobj);
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static void
