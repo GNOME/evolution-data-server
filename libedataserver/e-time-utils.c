@@ -124,15 +124,21 @@ locale_supports_12_hour_format (void)
 }
 
 
-/*
- * Parses a string containing a date and a time. The date is expected to be
- * in a format something like "Wed 3/13/00 14:20:00", though we use gettext
- * to support the appropriate local formats and we try to accept slightly
- * different formats, e.g. the weekday can be skipped and we can accept 12-hour
- * formats with an am/pm string.
+/**
+ * e_time_parse_date_and_time:
+ * @value: The string to parse a date and time from.
+ * @result: A #tm to store the result in.
  *
- * Returns E_TIME_PARSE_OK if it could not be parsed, E_TIME_PARSE_NONE if it
- * was empty, or E_TIME_PARSE_INVALID if it couldn't be parsed.
+ * Parses a string @value containing a date and a time and stores the
+ * result in @result. The date in @value is expected to be in a format
+ * like "Wed 3/13/00 14:20:00", though gettext() is used to support the
+ * appropriate local formats. There is also some leniency on the
+ * format of the string, e.g. the weekday can be skipped or 12-hour
+ * formats with am/pm can be used.
+ *
+ * Returns: E_TIME_PARSE_OK if the string was successfully parsed,
+ *          E_TIME_PARSE_NONE if the string was empty, or 
+ *          E_TIME_PARSE_INVALID if the string could not be parsed.
  */
 ETimeParseStatus
 e_time_parse_date_and_time		(const char	*value,
@@ -274,10 +280,10 @@ e_time_parse_date_and_time		(const char	*value,
  * @result: Return value for the parsed date.
  * 
  * Takes in a date string entered by the user and tries to convert it to
- * a struct tm.
+ * a struct #tm.
  * 
- * Return value: Result code indicating whether the @value was an empty
- * string, a valid date, or an invalid date.
+ * Returns: An #ETimeParseStatus result code indicating whether
+ * @value was an empty string, a valid date, or an invalid date.
  **/
 ETimeParseStatus
 e_time_parse_date (const char *value, struct tm *result)
@@ -316,15 +322,20 @@ e_time_parse_date (const char *value, struct tm *result)
 }
 
 
-/*
- * Parses a string containing a time. It is expected to be in a format
- * something like "14:20:00", though we use gettext to support the appropriate
- * local formats and we try to accept slightly different formats, e.g. we can
- * accept 12-hour formats with an am/pm string.
+/**
+ * e_time_parse_time:
+ * @value: The string to parse a time from.
+ * @result: A #tm to store the result in.
  *
- * Returns E_TIME_PARSE_OK if it could not be parsed, E_TIME_PARSE_NONE if it
- * was empty, or E_TIME_PARSE_INVALID if it couldn't be parsed.
- */
+ * Parses @value, a string containing a time. @value is expected to be
+ * in a format like "14:20:00". gettext() is used to
+ * support the appropriate local formats and slightly
+ * different formats, such as 12-hour formats with am/pm,
+ * are accepted as well.
+ *
+ * Returns: An #ETimeParseStatus result code indicating whether
+ * @value was an empty string, a valid date, or an invalid date.
+ **/
 ETimeParseStatus
 e_time_parse_time (const char *value, struct tm *result)
 {
@@ -361,11 +372,22 @@ e_time_parse_time (const char *value, struct tm *result)
 }
 
 
-/* Creates a string representation of a time value and stores it in buffer.
-   buffer_size should be about 64 to be safe. If show_midnight is FALSE, and
-   the time is midnight, then we just show the date. If show_zero_seconds
-   is FALSE, then if the time has zero seconds only the hour and minute are
-   shown. */
+/**
+ * e_time_format_date_and_time:
+ * @date_tm: The #tm to convert to a string.
+ * @use_24_hour_format: A #gboolean.
+ * @show_midnight: A #gboolean.
+ * @show_zero_seconds: A #gboolean.
+ * @buffer: A #char buffer to store the time string in.
+ * @buffer_size: The length of @buffer.
+ *
+ * Creates a string representation of the time value @date_tm and
+ * stores it in @buffer.  @buffer_size should be at least 64 to be
+ * safe. If @show_midnight is #FALSE, and the time is midnight, then
+ * only the date is stored in @buffer. If @show_zero_seconds is
+ * #FALSE, then if the time has zero seconds only the hour and minute
+ * of the time are stored in @buffer.
+ **/
 void
 e_time_format_date_and_time		(struct tm	*date_tm,
 					 gboolean	 use_24_hour_format,
@@ -407,8 +429,17 @@ e_time_format_date_and_time		(struct tm	*date_tm,
 }
 
 
-/* Creates a string representation of a time value and stores it in buffer.
-   buffer_size should be about 64 to be safe. */
+/**
+ * e_time_format_time:
+ * @date_tm: The #tm to convert to a string.
+ * @use_24_hour_format: A #gboolean.
+ * @show_zero_seconds: A #gboolean.
+ * @buffer: The #char buffer to store the result in.
+ * @buffer_size: The length of @buffer.
+ *  
+ * Creates a string representation of a time value in @date_tm and
+ * stores it in @buffer. @buffer_size should be at least 64.
+ **/
 void
 e_time_format_time			(struct tm	*date_tm,
 					 gboolean	 use_24_hour_format,
@@ -443,7 +474,14 @@ e_time_format_time			(struct tm	*date_tm,
 }
 
 
-/* Like mktime(3), but assumes UTC instead of local timezone. */
+/**
+ * e_mktime_utc:
+ * @tm: The #tm to convert to a calendar time representation.
+ * 
+ * Like mktime(3), but assumes UTC instead of local timezone.
+ * 
+ * Returns: The calendar time representation of @tm.
+ **/
 time_t
 e_mktime_utc (struct tm *tm)
 {
@@ -468,8 +506,16 @@ e_mktime_utc (struct tm *tm)
 	return tt;
 }
 
-/* Like localtime_r(3), but also returns an offset in seconds after UTC.
-   (Calling gmtime with tt + offset would generate the same tm) */
+/**
+ * e_localtime_with_offset:
+ * @tt: The #time_t to convert.
+ * @tm: The #tm to store the result in.
+ * @offset: The #int to store the offset in.
+ *
+ * Converts the calendar time time representation @tt to a broken-down
+ * time representation, store in @tm, and provides the offset in
+ * seconds from UTC time, stored in @offset.
+ **/
 void
 e_localtime_with_offset (time_t tt, struct tm *tm, int *offset)
 {

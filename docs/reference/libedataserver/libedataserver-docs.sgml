@@ -9,9 +9,11 @@
   <chapter>
     <title>Evolution API Reference: libedataserver, utility library</title>
     <!--<xi:include href="xml/e-cal-view.xml"/>-->
+    <xi:include href="xml/e-time-utils.xml"/>
     <xi:include href="xml/e-trie.xml"/>
     <xi:include href="xml/e-util.xml"/>
     <xi:include href="xml/e-url.xml"/>
+    <xi:include href="xml/e-xml-hash-utils.xml"/>
     <xi:include href="xml/md5-utils.xml"/>
   </chapter>
 </book>

@@ -1,0 +1,148 @@
+<!-- ##### SECTION Title ##### -->
+EXMLHash
+
+<!-- ##### SECTION Short_Description ##### -->
+Functions for manipulating xml as a hash table.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### TYPEDEF EXmlHash ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM EXmlHashType ##### -->
+<para>
+
+</para>
+
+@E_XML_HASH_TYPE_OBJECT_UID: 
+@E_XML_HASH_TYPE_PROPERTY: 
+
+<!-- ##### ENUM EXmlHashStatus ##### -->
+<para>
+
+</para>
+
+@E_XMLHASH_STATUS_SAME: 
+@E_XMLHASH_STATUS_DIFFERENT: 
+@E_XMLHASH_STATUS_NOT_FOUND: 
+
+<!-- ##### USER_FUNCTION EXmlHashFunc ##### -->
+<para>
+
+</para>
+
+@key: 
+@value: 
+@user_data: 
+
+
+<!-- ##### FUNCTION e_xml_to_hash ##### -->
+<para>
+
+</para>
+
+@doc: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_xml_from_hash ##### -->
+<para>
+
+</para>
+
+@hash: 
+@type: 
+@root_node: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_xml_destroy_hash ##### -->
+<para>
+
+</para>
+
+@hash: 
+
+
+<!-- ##### FUNCTION e_xmlhash_new ##### -->
+<para>
+
+</para>
+
+@filename: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_xmlhash_add ##### -->
+<para>
+
+</para>
+
+@hash: 
+@key: 
+@data: 
+
+
+<!-- ##### FUNCTION e_xmlhash_remove ##### -->
+<para>
+
+</para>
+
+@hash: 
+@key: 
+
+
+<!-- ##### FUNCTION e_xmlhash_compare ##### -->
+<para>
+
+</para>
+
+@hash: 
+@key: 
+@compare_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_xmlhash_foreach_key ##### -->
+<para>
+
+</para>
+
+@hash: 
+@func: 
+@user_data: 
+
+
+<!-- ##### FUNCTION e_xmlhash_write ##### -->
+<para>
+
+</para>
+
+@hash: 
+
+
+<!-- ##### FUNCTION e_xmlhash_destroy ##### -->
+<para>
+
+</para>
+
+@hash: 
+
+
