@@ -1,4 +1,16 @@
+2004-01-27  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_start_query): fixed memory leaks and use
+	g_list_* functions for GList's, not g_slist_*.
+	(match_object_sexp, match_recurrence_sexp): removed unneeded functions,
+	we match the object directly in get_object_list.
+	(e_cal_backend_groupwise_start_query): call get_object_list to retrieve
+	the matched objects and call e_data_cal_view_notify_* functions
+	appropriately.
+
 2004-01-26  Harish K <kharish@novell.com>
+
 	* calendar/backends/groupwise/e-cal-backend-groupwise.c :
 	(e_cal_backend_groupwise_internal_get_default_timezone,
 	e_cal_backend_groupwise_internal_get_timezone) : added and 
@@ -14,7 +26,7 @@
 
 2004-01-24  Rodrigo Moya <rodrigo@ximian.com>
 
-	* calendar/backends/http/e-cal-backend-http.c: make it use
+	* backends/http/e-cal-backend-http.c: make it use
 	ECalBackendCache for its cache, and libsoup for the HTTP
 	retrieval.
 	(retrieval_progress_cb, uri_to_cache_dir, ensure_cache_dir): removed

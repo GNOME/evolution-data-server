@@ -528,51 +528,15 @@ e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal
 	return GNOME_Evolution_Calendar_OtherError;
 }
 
-typedef struct {
-	GSList *obj_list;
-	gboolean search_needed;
-	const char *query;
-	ECalBackendSExp *obj_sexp;
-	ECalBackend *backend;
-	icaltimezone *default_zone;
-} MatchObjectData;
-
-static void
-match_recurrence_sexp (gpointer key, gpointer value, gpointer data)
-{
-	ECalComponent *comp = value;
-	MatchObjectData *match_data = data;
-
-	if ((!match_data->search_needed) ||
-	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
-		match_data->obj_list = g_slist_append (match_data->obj_list,
-						       e_cal_component_get_as_string (comp));
-	}
-}
-
-static void
-match_object_sexp (gpointer key, gpointer value, gpointer data)
-{
-	ECalComponent *comp = value;
-	MatchObjectData *match_data = data;
-
-	if ((!match_data->search_needed) ||
-	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
-		match_data->obj_list = g_slist_append (match_data->obj_list,
-						       e_cal_component_get_as_string (comp));
-
-                /* FIXME recurrances should also be handled here */ 
-	}
-}
-
 /* Get_objects_in_range handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
-	MatchObjectData match_data;
-        GList *l;
+        GList *components, *l;
+	ECalBackendSExp *cbsexp;
+	gboolean search_needed = TRUE;
         
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -581,29 +545,28 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 
 	g_message (G_STRLOC ": Getting object list (%s)", sexp);
 
-	match_data.search_needed = TRUE;
-	match_data.query = sexp;
-	match_data.obj_list = NULL;
-	match_data.backend = E_CAL_BACKEND (backend);
-	match_data.default_zone = priv->default_zone;
-
 	if (!strcmp (sexp, "#t"))
-		match_data.search_needed = FALSE;
+		search_needed = FALSE;
 
-	match_data.obj_sexp = e_cal_backend_sexp_new (sexp);
-	if (!match_data.obj_sexp) {
+	cbsexp = e_cal_backend_sexp_new (sexp);
+	if (!cbsexp) {
 		g_mutex_unlock (priv->mutex);
 		return GNOME_Evolution_Calendar_InvalidQuery;
 	}
 
-        for( l = e_cal_backend_cache_get_components (priv->cache); l != NULL; l = g_list_next (l)) {
-                const char *uid;
-		ECalComponent *comp = E_CAL_COMPONENT (l->data);
+	*objects = NULL;
+	components = e_cal_backend_cache_get_components (priv->cache);
+        for (l = components; l != NULL; l = l->next) {
+                ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
-                e_cal_component_get_uid (comp, &uid);
-                match_object_sexp (uid, comp, &match_data);
+		if ((!search_needed) ||
+		    (e_cal_backend_sexp_match_comp (cbsexp, comp, backend))) {
+			*objects = g_list_append (*objects, e_cal_component_get_as_string (comp));
+		}
         }
-	*objects = match_data.obj_list;
+
+	g_list_foreach (components, (GFunc) g_object_unref, NULL);
+	g_list_free (components);
 
 	g_mutex_unlock (priv->mutex);
 	
@@ -617,42 +580,27 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
         ECalBackendSyncStatus status;
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
-	MatchObjectData match_data;
-        GList *l;
+        GList *objects = NULL;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
 	g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query));
 
-	/* try to match all currently existing objects */
-	match_data.search_needed = TRUE;
-	match_data.query = e_data_cal_view_get_text (query);
-	match_data.obj_list = NULL;
-	match_data.backend = backend;
-	match_data.default_zone = priv->default_zone;
-
-	if (!strcmp (match_data.query, "#t"))
-		match_data.search_needed = FALSE;
-
-	match_data.obj_sexp = e_data_cal_view_get_object_sexp (query);
-	if (!match_data.obj_sexp) {
-		e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_InvalidQuery);
-		return;
+        status = e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (backend), NULL,
+							  e_data_cal_view_get_text (query), &objects);
+        if (status != GNOME_Evolution_Calendar_Success) {
+		e_data_cal_view_notify_done (query, status);
+                return;
 	}
 
-        status = e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (backend), NULL, match_data.query, &l );
-
-        if ( status != GNOME_Evolution_Calendar_Success )
-                return;
-        
        	/* notify listeners of all objects */
-	if (match_data.obj_list) {
-		e_data_cal_view_notify_objects_added (query, (const GList *) match_data.obj_list);
+	if (objects) {
+		e_data_cal_view_notify_objects_added (query, (const GList *) objects);
 
 		/* free memory */
-		g_list_foreach ((GList *) match_data.obj_list, (GFunc) g_free, NULL);
-		g_list_free ((GList *) match_data.obj_list);
+		g_list_foreach (objects, (GFunc) g_free, NULL);
+		g_list_free (objects);
 	}
 
 	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
