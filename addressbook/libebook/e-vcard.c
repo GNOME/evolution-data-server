@@ -235,19 +235,23 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 				 * 2 kinds of line folding
 				 */
 			}
-			else if (isalnum(a) && isalnum (b)) {
-				char c;
+			else if (isxdigit(a) && isxdigit (b)) {
+				gunichar c;
 
 				a = tolower (a);
 				b = tolower (b);
 
 				c = (((a>='a'?a-'a'+10:a-'0')&0x0f) << 4)
 					| ((b>='a'?b-'a'+10:b-'0')&0x0f);
-
-				str = g_string_append_c (str, c);
+				
+				str = g_string_append_unichar (str, c);
 			}
-			/* silently consume malformed input, and
-			   continue parsing */
+			else 
+				{
+					str = g_string_append_c (str, a);
+					str = g_string_append_c (str, b);
+				}
+			
 			lp++;
 		}
 		else if (*lp == '\\') {
@@ -516,6 +520,8 @@ read_attribute (char **p)
 		/* skip past the ';' */
 		lp = g_utf8_next_char(lp);
 		read_attribute_params (attr, &lp, &is_qp);
+		if (is_qp)
+			attr->encoding = EVC_ENCODING_RAW;
 	}
 	if (*lp == ':') {
 		/* skip past the ':' */
@@ -798,13 +804,18 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		 */
 		l = 0;
 		do {
-			if (attr_str->len - l > 75) {
+			
+			if ((g_utf8_strlen (attr_str->str, -1) -l) > 75) {
+				char *p;
+
 				l += 75;
-				attr_str = g_string_insert_len (attr_str, l, CRLF " ", sizeof (CRLF " ") - 1);
+				p = g_utf8_offset_to_pointer (attr_str->str, l);
+			
+				attr_str = g_string_insert_len (attr_str, (p - attr_str->str), CRLF " ", sizeof (CRLF " ") - 1);
 			}
 			else
 				break;
-		} while (l < attr_str->len);
+		} while (l < g_utf8_strlen (attr_str->str, -1));
 
 		attr_str = g_string_append (attr_str, CRLF);
 
