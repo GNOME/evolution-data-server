@@ -1,3 +1,8 @@
+2005-02-02  Vivek Jain  <jvivek@novell.com>
+	* /providers/groupwise/camel-groupwise-store.c 
+	(groupwise_connect): add an alert message if the server doesn't return
+	the version  
+
 2005-02-01  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-groupwise-folder.c: (convert_to_calendar): Remove

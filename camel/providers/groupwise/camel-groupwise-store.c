@@ -405,7 +405,8 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	CamelGroupwiseStore *store = CAMEL_GROUPWISE_STORE (service);
 	CamelGroupwiseStorePrivate *priv = store->priv;
 	CamelGroupwiseStoreNamespace *ns;
-	
+	CamelSession *session = service->session;
+
 	d("in groupwise store connect\n");
 	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
@@ -423,13 +424,20 @@ groupwise_connect (CamelService *service, CamelException *ex)
 		camel_service_disconnect (service, TRUE, NULL);
 		return FALSE;
 	}
-	
+
+	if (!e_gw_connection_get_version (priv->cnc)) {
+		char *warning;
+		warning = g_strdup_printf ("Some features may not work correctly with your current server version");
+		camel_session_alert_user(session, CAMEL_SESSION_ALERT_WARNING, warning, FALSE);
+		g_free (warning);
+	}
+
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);
-	
+
 	ns = camel_groupwise_store_summary_namespace_new (store->summary, priv->storage_path, '/');
 	camel_groupwise_store_summary_namespace_set (store->summary, ns);
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);
-	
+
 	CAMEL_SERVICE_UNLOCK (service, connect_lock);
 	if (E_IS_GW_CONNECTION (priv->cnc))
 		return TRUE;
