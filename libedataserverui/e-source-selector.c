@@ -522,6 +522,8 @@ void
 e_source_selector_show_selection (ESourceSelector *selector,
 				  gboolean show)
 {
+	g_return_if_fail (E_IS_SOURCE_SELECTOR (selector));
+
 	show = !! show;
 	if (show == selector->priv->checkboxes_shown)
 		return;
@@ -544,6 +546,8 @@ e_source_selector_show_selection (ESourceSelector *selector,
 gboolean
 e_source_selector_selection_shown (ESourceSelector *selector)
 {
+	g_return_if_fail (E_IS_SOURCE_SELECTOR (selector));
+
 	return selector->priv->checkboxes_shown;
 }
 
