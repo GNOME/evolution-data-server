@@ -35,7 +35,9 @@ libegroupwise_la_SOURCES =			\
 	e-gw-filter.h                   
 
 libegroupwise_la_LIBADD =						\
+	$(E_DATA_SERVER_LIBS)						\
 	$(SOUP_LIBS)
+
 libegroupwise_la_LDFLAGS =                                               \
         -version-info $(LIBEGROUPWISE_CURRENT):$(LIBEGROUPWISE_REVISION):$(LIBEGROUPWISE_AGE)
 

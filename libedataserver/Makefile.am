@@ -34,6 +34,7 @@ libedataserver_la_SOURCES =		\
 	md5-utils.c
 
 libedataserver_la_LIBADD = 				\
+	$(E_DATA_SERVER_LIBS)				\
 	$(top_builddir)/libdb/dist/libdb-4.1.la
 
 libedataserver_la_LDFLAGS = 										\

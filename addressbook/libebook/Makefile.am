@@ -48,6 +48,7 @@ libebook_la_SOURCES =					\
 	e-vcard.c
 
 libebook_la_LIBADD =					\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)			\
 	$(top_builddir)/libedataserver/libedataserver.la
 
 libebook_la_LDFLAGS = 							\

@@ -1,5 +1,14 @@
+2004-05-17  Rodney Dawes  <dobey@ximian.com>
+
+	* libedataserver/Makefile.am (libedataserver_la_LIBADD):
+	Add $(E_DATA_SERVER_LIBS) to link all the right dependencies for the
+	mono bindings to work correctly
+
+	Fixes #58615
+
 2004-05-04  Edward Rudd <urkle@outoforder.cc>
-	* addressbook/backend/ldap/e-book-backend-ldap.c: Added new	complex
+	
+	* addressbook/backend/ldap/e-book-backend-ldap.c: Added new complex
 	handlers for postal address fields. Bug # 45210
 
 2004-05-03  JP Rosevear  <jpr@ximian.com>

@@ -45,6 +45,7 @@ libedata_cal_la_SOURCES =		\
 	e-data-cal-view.c
 
 libedata_cal_la_LIBADD =					\
+	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(top_builddir)/calendar/libecal/libecal.la		\
 	$(top_builddir)/libedataserver/libedataserver.la
 

@@ -44,6 +44,7 @@ libedata_book_la_SOURCES =				\
 	ximian-vcard.h
 
 libedata_book_la_LIBADD =					\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(top_builddir)/addressbook/libebook/libebook.la	\
 	$(top_builddir)/libedataserver/libedataserver.la
 

@@ -1,3 +1,11 @@
+2004-05-17  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am (libegroupwise_la_LIBADD): Add $(E_DATA_SERVER_LIBS)
+	to link all the right dependencies for the mono bindings to work
+	correctly
+
+	Fixes #58615
+
 2004-05-14  Sivaiah Nallagatla  <snallagatla@novell.com>
 	
 	* e-gw-item.c (e_gw_item_new_from_soap_parameter) : set item type to 
