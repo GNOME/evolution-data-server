@@ -1,3 +1,10 @@
+2004-05-13  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #54094
+
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_modify_object):
+	deal correctly with CALOBJ_MOD_THIS for master objects.
+
 2004-05-12  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libecal/e-cal.c (e_cal_generate_instances): fixed gtk-doc comments,
