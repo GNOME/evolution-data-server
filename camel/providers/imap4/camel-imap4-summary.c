@@ -148,10 +148,10 @@ imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 	if (CAMEL_FOLDER_SUMMARY_CLASS (parent_class)->summary_header_load (summary, fin) == -1)
 		return -1;
 	
-	if (camel_file_util_decode_uint32 (fin, &imap4_summary->version) == -1)
+	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->version) == -1)
 		return -1;
 	
-	if (camel_file_util_decode_uint32 (fin, &imap4_summary->uidvalidity) == -1)
+	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->uidvalidity) == -1)
 		return -1;
 	
 	if (imap4_summary->version > CAMEL_IMAP4_SUMMARY_VERSION) {
@@ -171,10 +171,10 @@ imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 	if (CAMEL_FOLDER_SUMMARY_CLASS (parent_class)->summary_header_save (summary, fout) == -1)
 		return -1;
 	
-	if (camel_file_util_encode_uint32 (fout, CAMEL_IMAP4_SUMMARY_VERSION) == -1)
+	if (camel_file_util_encode_fixed_int32 (fout, CAMEL_IMAP4_SUMMARY_VERSION) == -1)
 		return -1;
 	
-	if (camel_file_util_encode_uint32 (fout, imap4_summary->uidvalidity) == -1)
+	if (camel_file_util_encode_fixed_int32 (fout, imap4_summary->uidvalidity) == -1)
 		return -1;
 	
 	return 0;

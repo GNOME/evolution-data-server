@@ -1,5 +1,10 @@
 2005-01-21  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/imap4/camel-imap4-summary.c (imap4_header_load): Fixed
+	to load fixed_int32's rather than uint32's.
+	(imap4_header_save): Fixed to save fixed_int32's rather than
+	uint32's for compat with old imap code.
+
 	* providers/Makefile.am: Removed "imap" from the build and made
 	"imap4" the default.
 
