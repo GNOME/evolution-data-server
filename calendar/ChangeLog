@@ -1,3 +1,12 @@
+2005-02-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #72958
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_create_object): If the server
+	sends the status succes without uid present, then it
+	must be due to delay delivery set, so do not put the component
+	in the cache since it might not be created in the server.
+
 2005-02-28  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):

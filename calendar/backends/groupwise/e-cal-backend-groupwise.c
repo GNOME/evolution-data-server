@@ -1417,8 +1417,9 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 				return GNOME_Evolution_Calendar_OtherError;
 		}
 	
+		/* If delay deliver has been set, server will not send the uid */
 		if (!uid_list)
-			return GNOME_Evolution_Calendar_OtherError;
+			return GNOME_Evolution_Calendar_Success;
 		
 		if (g_slist_length (uid_list) == 1) {
 			server_uid = (char *) uid_list->data;
