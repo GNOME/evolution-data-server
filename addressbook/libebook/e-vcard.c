@@ -998,9 +998,11 @@ e_vcard_attribute_remove_values (EVCardAttribute *attr)
 {
 	g_list_foreach (attr->values, (GFunc)g_free, NULL);
 	g_list_free (attr->values);
+	attr->values = NULL;
+
 	g_list_foreach (attr->decoded_values, (GFunc)free_gstring, NULL);
 	g_list_free (attr->decoded_values);
-	attr->values = NULL;
+	attr->decoded_values = NULL;
 }
 
 void

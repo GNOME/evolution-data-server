@@ -1,3 +1,9 @@
+2004-02-02  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.c (e_vcard_attribute_remove_values): make sure
+	to set attr->decoded_values to NULL as well.  fixes oddness when
+	overwriting the PHOTO attribute.
+
 2004-02-02  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-contact.c (photo_getter): Return NULL if image length is
