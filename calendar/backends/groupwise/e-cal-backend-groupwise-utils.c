@@ -318,6 +318,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 		t = e_gw_item_get_due_date (item);
 		itt = icaltime_from_timet (t, 0);
 		dt.value = &itt;
+		dt.tzid = g_strdup ("UTC");
 		e_cal_component_set_due (comp, &dt);
 		break;
 
