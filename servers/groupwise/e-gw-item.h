@@ -56,9 +56,13 @@ struct _EGwItemClass {
 };
 
 GType               e_gw_item_get_type (void);
+EGwItem            *e_gw_item_new_empty (void);
 EGwItem            *e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param);
-EGwItem            *e_gw_item_new_from_cal_component (const char *container, ECalComponent *comp);
 
+EGwItemType         e_gw_item_get_item_type (EGwItem *item);
+void                e_gw_item_set_item_type (EGwItem *item, EGwItemType new_type);
+const char         *e_gw_item_get_container_id (EGwItem *item);
+void                e_gw_item_set_container_id (EGwItem *item, const char *new_id);
 const char         *e_gw_item_get_id (EGwItem *item);
 void                e_gw_item_set_id (EGwItem *item, const char *new_id);
 struct icaltimetype e_gw_item_get_creation_date (EGwItem *item);
@@ -94,7 +98,6 @@ const char         *e_gw_item_get_priority (EGwItem *item);
 void                e_gw_item_set_priority (EGwItem *item, const char *new_priority);
 
 gboolean            e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
-ECalComponent      *e_gw_item_to_cal_component (EGwItem *item);
 
 G_END_DECLS
 

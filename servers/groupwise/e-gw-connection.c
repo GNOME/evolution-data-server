@@ -700,22 +700,6 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp)
-{
-	EGwItem *item;
-	EGwConnectionStatus status;
-
-	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
-
-	item = e_gw_item_new_from_cal_component (container, comp);
-	status = e_gw_connection_send_item (cnc, item);
-	g_object_unref (item);
-
-	return status;
-}
-
-EGwConnectionStatus
 e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id)
 {
 	SoupSoapMessage *msg;

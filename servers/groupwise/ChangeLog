@@ -1,5 +1,16 @@
 2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
 
+	* e-gw-item.[ch] (e_gw_item_new_from_cal_component,
+	e_gw_item_to_cal_component): removed all calendar-specific code.
+	(e_gw_item_get_item_type, e_gw_item_set_item_type,
+	e_gw_item_get_container_id, e_gw_item_set_container_id): new functions.
+	(e_gw_item_new_empty): new function to create empty EGwItem's.
+
+	* e-gw-connection.[ch] (e_gw_connection_send_appointment): removed
+	calendar-specific code.
+
+2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
+
 	* Makefile.am: re-enabled create-account test program, it does not need
 	the calendar libraries.
 
