@@ -1,4 +1,12 @@
 2005-01-28  Sivaiah Nallagatla <snallagatla@novell.com>
+                                                                                                                             
+        * libedata-book/e-book-backend-summary.c (do_compare) :
+        use surname, givenname and full_name for searches on name
+        not just full_name value
+                                                                                                                             
+        Fixes #71827
+
+2005-01-28  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libebook/e-book.c (e_book_cancel)
 	(do_open) (e_book_load_uri) (fetch_corba_book)
