@@ -1341,18 +1341,22 @@ set_local_attachment_store (ECal *ecal)
 	}
 
 	/* the file backend uses its uri as the attachment store*/
-	if (g_str_has_prefix (priv->uri, "file://"))
+	if (g_str_has_prefix (priv->uri, "file://")) {
 		priv->local_attachment_store = g_strdup (priv->uri);
-	if (g_str_has_prefix (priv->uri, "groupwise://")) {
+	} else if (g_str_has_prefix (priv->uri, "groupwise://")) {
 		/* points to the location of the cache*/
 		priv->local_attachment_store = 
 			g_strconcat ("file://", g_get_home_dir (), "/", ".evolution/cache/calendar",
 				     "/", mangled_uri, NULL);
-	}
-	if (g_str_has_prefix (priv->uri, "exchange://")) {
+	} else if (g_str_has_prefix (priv->uri, "exchange://")) {
 		priv->local_attachment_store = g_strdup_printf ("file://%s/.evolution/exchange/%s", 
 					g_get_home_dir (), mangled_uri);
-	}
+	} else if (g_str_has_prefix (priv->uri, "scalix://")) {
+                priv->local_attachment_store = g_strdup_printf ("file://%s/.evolution/cache/scalix/%s/attach",
+                                        g_get_home_dir (), mangled_uri);
+        }
+
+	g_free (mangled_uri);
 }
 
 /**

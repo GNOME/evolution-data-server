@@ -1,3 +1,9 @@
+2005-04-06  Christian Kellner  <gicmo@gnome.org>
+	* libecal/e-cal.c (set_local_attachment_store): 
+	Add support for scalix provider. Also plug a 
+	small mem leak.
+	Patch from Carsten Guenther <Carsten.Guenther@scalix.com>
+
 2005-03-24  Chenthill Palanisamy  <pchenthill@novell.com>
 	
 	Fixes #73336	
