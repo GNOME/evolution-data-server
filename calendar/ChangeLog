@@ -1,3 +1,9 @@
+2003-11-07  Dan Winship  <danw@ximian.com>
+
+	* libecal/Makefile.am (libecal_la_LDFLAGS): Remove -no-undefined
+
+	* libedata-cal/Makefile.am (libedata_cal_la_LDFLAGS): Likewise
+
 2003-11-06    <jpr@ximian.com>
 
 	* libecal/e-cal-view-listener.h: match the signals better
