@@ -1,3 +1,14 @@
+2004-04-02  Dan Winship  <danw@ximian.com>
+
+	* libedata-book/e-book-backend-sync.c
+	(_e_book_backend_create_contact,
+	_e_book_backend_remove_contacts,
+	_e_book_backend_modify_contact,
+	_e_book_backend_get_contact,
+	_e_book_backend_get_supported_fields,
+	_e_book_backend_get_supported_auth_methods): Don't try to free the
+	returned data if the method didn't actually return anything
+
 2004-04-02  JP Rosevear  <jpr@ximian.com>
 
 	* backends/groupwise/Makefile.am: fix includes for builddir != srcdir

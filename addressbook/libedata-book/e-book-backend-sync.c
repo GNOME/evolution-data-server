@@ -194,13 +194,14 @@ _e_book_backend_create_contact (EBookBackend *backend,
 				const char *vcard)
 {
 	EBookBackendSyncStatus status;
-	EContact *contact;
+	EContact *contact = NULL;
 
 	status = e_book_backend_sync_create_contact (E_BOOK_BACKEND_SYNC (backend), book, vcard, &contact);
 
 	e_data_book_respond_create (book, status, contact);
 
-	g_object_unref (contact);
+	if (contact)
+		g_object_unref (contact);
 }
 
 static void
@@ -215,7 +216,8 @@ _e_book_backend_remove_contacts (EBookBackend *backend,
 
 	e_data_book_respond_remove_contacts (book, status, ids);
 
-	g_list_free (ids);
+	if (ids)
+		g_list_free (ids);
 }
 
 static void
@@ -224,13 +226,14 @@ _e_book_backend_modify_contact (EBookBackend *backend,
 				const char *vcard)
 {
 	EBookBackendSyncStatus status;
-	EContact *contact;
+	EContact *contact = NULL;
 
 	status = e_book_backend_sync_modify_contact (E_BOOK_BACKEND_SYNC (backend), book, vcard, &contact);
 
 	e_data_book_respond_modify (book, status, contact);
 
-	g_object_unref (contact);
+	if (contact)
+		g_object_unref (contact);
 }
 
 static void
@@ -239,13 +242,14 @@ _e_book_backend_get_contact (EBookBackend *backend,
 			     const char *id)
 {
 	EBookBackendSyncStatus status;
-	char *vcard;
+	char *vcard = NULL;
 
 	status = e_book_backend_sync_get_contact (E_BOOK_BACKEND_SYNC (backend), book, id, &vcard);
 
 	e_data_book_respond_get_contact (book, status, vcard);
 
-	g_free (vcard);
+	if (vcard)
+		g_free (vcard);
 }
 
 static void
@@ -301,8 +305,10 @@ _e_book_backend_get_supported_fields (EBookBackend *backend,
 
 	e_data_book_respond_get_supported_fields (book, status, fields);
 
-	g_list_foreach (fields, (GFunc)g_free, NULL);
-	g_list_free (fields);
+	if (fields) {
+		g_list_foreach (fields, (GFunc)g_free, NULL);
+		g_list_free (fields);
+	}
 }
 
 static void
@@ -316,8 +322,10 @@ _e_book_backend_get_supported_auth_methods (EBookBackend *backend,
 
 	e_data_book_respond_get_supported_auth_methods (book, status, methods);
 
-	g_list_foreach (methods, (GFunc)g_free, NULL);
-	g_list_free (methods);
+	if (methods) {
+		g_list_foreach (methods, (GFunc)g_free, NULL);
+		g_list_free (methods);
+	}
 }
 
 static void
