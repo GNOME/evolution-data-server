@@ -1,3 +1,10 @@
+2005-01-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap4/camel-imap4-folder.c (imap4_getv): Added a new
+	property to enable mlist detection (which will change our summary
+	query to the same as the old imap code).
+	(imap4_setv): Implemented.
+
 2005-01-21  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-summary.c (imap4_header_load): Fixed

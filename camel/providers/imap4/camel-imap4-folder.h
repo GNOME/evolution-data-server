@@ -44,6 +44,15 @@ typedef struct _CamelIMAP4FolderClass CamelIMAP4FolderClass;
 
 struct _CamelIMAP4Journal;
 
+enum {
+	CAMEL_IMAP4_FOLDER_ARG_ENABLE_MLIST = CAMEL_OFFLINE_FOLDER_ARG_LAST,
+	CAMEL_IMAP4_FOLDER_ARG_LAST = CAMEL_OFFLINE_FOLDER_ARG_LAST + 0x100
+};
+
+enum {
+	CAMEL_IMAP4_FOLDER_ENABLE_MLIST = CAMEL_IMAP4_FOLDER_ARG_ENABLE_MLIST | CAMEL_ARG_BOO,
+};
+
 struct _CamelIMAP4Folder {
 	CamelOfflineFolder parent_object;
 	
@@ -54,6 +63,8 @@ struct _CamelIMAP4Folder {
 	
 	char *cachedir;
 	char *utf7_name;
+	
+	unsigned int enable_mlist:1;
 };
 
 struct _CamelIMAP4FolderClass {

@@ -79,6 +79,13 @@ static void imap4_search_free (CamelFolder *folder, GPtrArray *uids);
 static CamelOfflineFolderClass *parent_class = NULL;
 
 
+static GSList *imap4_folder_props = NULL;
+
+static CamelProperty imap4_prop_list[] = {
+	{ CAMEL_IMAP4_FOLDER_ENABLE_MLIST, "mlist_info", N_("Enable Mailing-List detection required for some filter and vFolder rules") },
+};
+
+
 CamelType
 camel_imap4_folder_get_type (void)
 {
@@ -103,8 +110,16 @@ camel_imap4_folder_class_init (CamelIMAP4FolderClass *klass)
 {
 	CamelFolderClass *folder_class = (CamelFolderClass *) klass;
 	CamelObjectClass *object_class = (CamelObjectClass *) klass;
+	int i;
 	
 	parent_class = (CamelOfflineFolderClass *) camel_type_get_global_classfuncs (CAMEL_OFFLINE_FOLDER_TYPE);
+	
+	if (imap4_folder_props == NULL) {
+		for (i = 0; i < G_N_ELEMENTS (imap4_prop_list); i++) {
+			imap4_prop_list[i].description = _(imap4_prop_list[i].description);
+			imap4_folder_props = g_slist_prepend (imap4_folder_props, &imap4_prop_list[i]);
+		}
+	}
 	
 	object_class->getv = imap4_getv;
 	object_class->setv = imap4_setv;
@@ -153,12 +168,70 @@ camel_imap4_folder_finalize (CamelObject *object)
 static int
 imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
-	return ((CamelObjectClass *) parent_class)->getv (object, ex, args);
+	CamelArgGetV props;
+	int i, count = 0;
+	guint32 tag;
+	
+	for (i = 0; i < args->argc; i++) {
+		CamelArgGet *arg = &args->argv[i];
+		
+		tag = arg->tag;
+		
+		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
+		case CAMEL_FOLDER_ARG_PROPERTIES:
+			props.argc = 1;
+			props.argv[0] = *arg;
+			((CamelObjectClass *) parent_class)->getv (object, ex, &props);
+			*arg->ca_ptr = g_slist_concat (*arg->ca_ptr, g_slist_copy (imap4_folder_props));
+			break;
+		case CAMEL_IMAP4_FOLDER_ARG_ENABLE_MLIST:
+			*arg->ca_int = ((CamelIMAP4Folder *) object)->enable_mlist;
+			break;
+		default:
+			count++;
+			continue;
+		}
+		
+		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	}
+	
+	if (count)
+		return ((CamelObjectClass *) parent_class)->getv (object, ex, args);
+	
+	return 0;
 }
 
 static int
 imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
+	CamelIMAP4Folder *folder = (CamelIMAP4Folder *) object;
+	gboolean save = FALSE;
+	guint32 tag;
+	int i;
+	
+	for (i = 0; i < args->argc; i++) {
+		CamelArg *arg = &args->argv[i];
+		
+		tag = arg->tag;
+		
+		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_IMAP4_FOLDER_ARG_ENABLE_MLIST:
+			if (folder->enable_mlist != arg->ca_int) {
+				folder->enable_mlist = arg->ca_int;
+				save = TRUE;
+			}
+			break;
+		default:
+			continue;
+		}
+		
+		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	}
+	
+	if (save)
+		camel_object_state_write (object);
+	
 	return ((CamelObjectClass *) parent_class)->setv (object, ex, args);
 }
 
