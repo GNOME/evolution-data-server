@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = 1.6
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 
-SUBDIRS = libdb libedataserver servers addressbook calendar src docs po
-DIST_SUBDIRS= libedataserver servers addressbook calendar src docs po
+SUBDIRS = libdb libedataserver libedataserverui servers addressbook calendar src docs po
+DIST_SUBDIRS= libedataserver libedataserverui servers addressbook calendar src docs po
 
 changelogs =			\
 	ChangeLog

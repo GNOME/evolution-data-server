@@ -1,5 +1,9 @@
 2004-10-13  JP Rosevear  <jpr@novell.com>
 
+	* Makefile.am: build libedataserverui
+
+2004-10-13  JP Rosevear  <jpr@novell.com>
+	
 	* libedataserverui/test-source-option-menu.c: move from evolution
 	
 	* libedataserverui/e-source-selector.c: ditto
