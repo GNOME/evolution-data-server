@@ -1,5 +1,11 @@
 2005-02-01  Not Zed  <NotZed@Ximian.com>
 
+	* camel-store.c (camel_store_get_folder_info): set the folder type
+	hint.
+
+	* camel-store.h: add a bitfield for a folder-type hint.  used to
+	indicate inbox/trash/etc (mainly for gui icons).
+
 	** See bug #38791 and bug #36142.
 
 	* camel-gpg-context.c (gpg_ctx_op_step): use poll rather than

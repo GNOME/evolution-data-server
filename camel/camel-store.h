@@ -74,8 +74,26 @@ typedef struct _CamelFolderInfo {
 #define CAMEL_FOLDER_SYSTEM (1<<6)
 /* a virtual folder that can't be copied to, and can only be moved to if in an existing folder */
 #define CAMEL_FOLDER_VTRASH (1<<7)
+/* a shared folder i'm accessing */
 #define CAMEL_FOLDER_SHARED_TO_ME (1<<8)
+/* a folder that i'm sharing */
 #define CAMEL_FOLDER_SHARED_BY_ME (1<<9)
+
+/* use 3 bits as a hint for a folder type */
+#define CAMEL_FOLDER_TYPE_MASK (7 << 10)
+#define CAMEL_FOLDER_TYPE_BIT (10)
+/* a normal folder */
+#define CAMEL_FOLDER_TYPE_NORMAL (0 << 10)
+/* an inbox folder */
+#define CAMEL_FOLDER_TYPE_INBOX (1 << 10)
+/* an outbox folder */
+#define CAMEL_FOLDER_TYPE_OUTBOX (2 << 10)
+/* a rubbish folder */
+#define CAMEL_FOLDER_TYPE_TRASH (3 << 10)
+/* a spam folder */
+#define CAMEL_FOLDER_TYPE_JUNK (4 << 10)
+
+/* next bit is 1<<13 */
 
 /* Structure of rename event's event_data */
 typedef struct _CamelRenameInfo {

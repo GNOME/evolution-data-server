@@ -663,7 +663,7 @@ get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelExcepti
 }
 
 static void
-add_special_info (CamelStore *store, CamelFolderInfo *info, const char *name, const char *translated, gboolean unread_count)
+add_special_info (CamelStore *store, CamelFolderInfo *info, const char *name, const char *translated, gboolean unread_count, guint32 flags)
 {
 	CamelFolderInfo *fi, *vinfo, *parent;
 	char *uri, *path;
@@ -711,7 +711,7 @@ add_special_info (CamelStore *store, CamelFolderInfo *info, const char *name, co
 	}
 	
 	/* Fill in the new fields */
-	vinfo->flags |= CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH;
+	vinfo->flags |= flags;
 	vinfo->full_name = g_strdup (name);
 	vinfo->name = g_strdup (translated);
 	vinfo->uri = uri;
@@ -775,9 +775,9 @@ camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, C
 	
 	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
 		if (info->uri && (store->flags & CAMEL_STORE_VTRASH))
-			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE);
+			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
 		if (info->uri && (store->flags & CAMEL_STORE_VJUNK))
-			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE);
+			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
 	}
 
 	if (camel_debug_start("store:folder_info")) {
