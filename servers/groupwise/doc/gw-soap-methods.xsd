@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<xs:schema targetNamespace="http://schemas.novell.com/2003/10/NCSP/methods.xsd" elementFormDefault="qualified"
+	xmlns="http://schemas.novell.com/2003/10/NCSP/methods.xsd" 
+	xmlns:tns="http://schemas.novell.com/2003/10/NCSP/methods.xsd"
+	xmlns:types="http://schemas.novell.com/2003/10/NCSP/types.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Method: login (Request) -->
+	<xs:element name="loginRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="username" type="xs:string" />
+				<xs:element name="password" type="xs:string" />
+				<xs:element name="language" type="xs:language" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method: login (Response) -->
+	<xs:element name="loginResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status" />
+				<xs:element name="session" type="xs:string" />
+				<xs:element name="userinfo" type="types:UserInfo" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method: logout (Request) -->
+	<xs:element name="logoutRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method: logout (Response) -->
+	<xs:element name="logoutResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method: getFolderList (Request) -->
+	<xs:element name="getFolderListRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="parent" type="types:uid" />
+				<xs:element name="view" type="types:View" />
+				<xs:element name="recurse" type="xs:boolean" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method: getFolderList (Response) -->
+	<xs:element name="getFolderListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status" />
+				<xs:element name="folders" type="types:FolderList" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method: getFolder (Request) -->
+	<xs:element name="getFolderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="view" type="types:View"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method getFolder (Response) -->
+	<xs:element name="getFolderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="folder" type="types:Folder"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method getItems (Request) -->
+	<xs:element name="getItemsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="view" type="types:View"/>
+				<xs:element name="filter" type="types:Filter"/>
+				<xs:element name="sort" type="types:Sort"/>
+				<xs:element name="count" type="xs:int" default="-1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method getItems (Response) -->
+	<xs:element name="getItemsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="items" type="types:ItemList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method createCursor (Request) -->
+	<xs:element name="createCursorRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="view" type="types:View"/>
+				<xs:element name="filter" type="types:Filter"/>
+				<xs:element name="sort" type="types:Sort"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method createCursor (Response) -->
+	<xs:element name="createCursorResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="cursor" type="xs:int"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method positionCursor (Request) -->
+	<xs:element name="positionCursorRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="cursor" type="xs:int"/>
+				<xs:element name="seek" type="types:CursorSeek"/>
+				<xs:element name="offset" type="xs:int"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method positionCursor (Response) -->
+	<xs:element name="positionCursorResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method readCursor (Request) -->
+	<xs:element name="readCursorRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="cursor" type="xs:int"/>
+				<xs:element name="forward" type="xs:boolean"/>
+				<xs:element name="count" type="xs:int"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method readCursor (Response) -->
+	<xs:element name="readCursorResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="items" type="types:ItemList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method destroyCursor (Request) -->
+	<xs:element name="destroyCursorRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="cursor" type="xs:int"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method destroyCursor (Response) -->
+	<xs:element name="destroyCursorResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method getItem (Request) -->
+	<xs:element name="getItemRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="view" type="types:View" nillable="true"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method getItem (Response) -->
+	<xs:element name="getItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="item" type="types:Item"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method createItem (Request) -->
+	<xs:element name="createItemRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="item" type="types:Item"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method createItem (Response) -->
+	<xs:element name="createItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="id" type="types:uid"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method removeItem (Request) -->
+	<xs:element name="removeItemRequest">
+		<xs:annotation>
+			<xs:documentation>
+				If the container is not specified then the item is 
+				   removed from all of the containers that it is linked
+				   to and is stored in the "Trash".
+				If the container is specified then the item is only
+				   removed from that specific container and it's link
+				   is stored in the "Trash".
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="id" type="types:uid"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method removeItem (Response) -->
+	<xs:element name="removeItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method purgeItem (Request) -->
+	<xs:element name="purgeItemRequest">
+		<xs:annotation>
+			<xs:documentation>
+				If the container is not specified then all of the item
+				   links are removed and the item is permanently deleted.
+				If the container is specified then only the specific link
+				   to the container is deleted. If the last remaining link
+				   is deleted then the item will be deleted.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="id" type="types:uid"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method purgeItem (Response) -->
+	<xs:element name="purgeItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method purgeDeletedItems (Request) -->
+	<xs:element name="purgeDeletedItemsRequest">
+		<xs:annotation>
+			<xs:documentation>
+				This method permanently deletes all items that were previously
+				   marked for deletion (i.e. stored in the "Trash").
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence/>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method purgeDeletedItems (Response) -->
+	<xs:element name="purgeDeletedItemsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method modifyItem (Request) -->
+	<xs:element name="modifyItemRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="updates" type="types:UpdateList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method modifyItem (Response) -->
+	<xs:element name="modifyItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method createFolder (Request) -->
+	<xs:element name="createFolderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="folder" type="types:Folder"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method createFolder (Response) -->
+	<xs:element name="createFolderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="id" type="types:uid"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method removeFolder (Request) -->
+	<xs:element name="removeFolderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="types:uid"/>
+				<xs:element name="id" type="types:uid"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method removeFolder (Response) -->
+	<xs:element name="removeFolderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method modifyFolder (Request) -->
+	<xs:element name="modifyFolderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="types:uid"/>
+				<xs:element name="updates" type="types:UpdateList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method modifyFolder (Response) -->
+	<xs:element name="modifyFolderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method startFreeBusySession (Request) -->
+	<xs:element name="startFreeBusySessionRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="users" type="types:FreeBusyUserList"/>
+				<xs:element name="startDate" type="xs:dateTime"/>
+				<xs:element name="endDate" type="xs:dateTime"/>
+				<xs:element name="timeout" type="xs:int"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method startFreeBusySession (Response) -->
+	<xs:element name="startFreeBusySessionResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="session" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method getFreeBusy (Request) -->
+	<xs:element name="getFreeBusyRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method getFreeBusy (Response) -->
+	<xs:element name="getFreeBusyResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+				<xs:element name="freeBusyInfo" type="types:FreeBusyInfoList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method closeFreeBusySession (Request) -->
+	<xs:element name="closeFreeBusySession">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Method closeFreeBusySession (Response) -->
+	<xs:element name="closeFreeBusySessionResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

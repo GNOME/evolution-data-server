@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<xs:schema targetNamespace="http://schemas.novell.com/2003/10/NCSP/enums.xsd"
+                  elementFormDefault="qualified"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://schemas.novell.com/2003/10/NCSP/enums.xsd">
+                  
+<xs:simpleType name="FolderType">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="Mailbox" />
+		<xs:enumeration value="SentItems" />
+		<xs:enumeration value="WorkInProgress" />
+		<xs:enumeration value="Trash" />
+		<xs:enumeration value="Calendar" />
+		<xs:enumeration value="Contacts" />
+		<xs:enumeration value="Documents" />
+		<xs:enumeration value="Checklist" />
+		<xs:enumeration value="Cabinet" />
+		<xs:enumeration value="Normal" />
+		<xs:enumeration value="NNTP" />
+		<xs:enumeration value="IMAP" />
+		<xs:enumeration value="Query" />
+		<xs:enumeration value="JunkMail" />
+	</xs:restriction>
+</xs:simpleType>
+
+<!-- Indicates the "Box Type" of the message -->
+<xs:simpleType name="ItemSource">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="received"/>
+		<xs:enumeration value="sent"/>
+		<xs:enumeration value="draft"/>
+		<xs:enumeration value="personal"/>
+	</xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
