@@ -30,6 +30,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtkliststore.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkmessagedialog.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktreeview.h>
@@ -226,18 +227,31 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 		GtkTreeIter iter;
 
 		category_name = gtk_entry_get_text (GTK_ENTRY (prop_dialog->category_name));
-		/* FIXME: get color */
-		category_icon = gtk_entry_get_text (
-			GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
+		if (e_categories_exist (category_name)) {
+			GtkWidget *error_dialog;
 
-		e_categories_add (category_name, NULL, category_icon ? category_icon : NULL);
+			error_dialog = gtk_message_dialog_new (
+				GTK_WINDOW (prop_dialog->the_dialog),
+				0, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+				_("There is already a category '%s' in the configuration. Please use another name"),
+				category_name);
 
-		gtk_list_store_append (
-			GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
-			&iter);
-		gtk_list_store_set (
-			GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
-			0, FALSE, 1, category_name, -1);
+			gtk_dialog_run (GTK_DIALOG (error_dialog));
+			gtk_widget_destroy (error_dialog);
+		} else {
+			/* FIXME: get color */
+			category_icon = gtk_entry_get_text (
+				GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
+
+			e_categories_add (category_name, NULL, category_icon ? category_icon : NULL);
+
+			gtk_list_store_append (
+				GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
+				&iter);
+			gtk_list_store_set (
+				GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
+				0, FALSE, 1, category_name, -1);
+		}
 	}
 
 	free_properties_dialog (prop_dialog);

@@ -1,3 +1,10 @@
+2005-01-12  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #28532
+	
+	* e-categories-dialog.c (new_button_clicked): don't allow creation of
+	categories with names already being used.
+
 2005-01-10  Rodrigo Moya <rodrigo@novell.com>
 
 	* e-categories-dialog.c (delete_button_clicked_cb): added missing
