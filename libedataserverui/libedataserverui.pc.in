@@ -1,0 +1,16 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+idldir=@idldir@
+IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
+
+privincludedir=@privincludedir@
+
+Name: libedataserverui
+Description: GUI utility library for evolution data server
+Version: @VERSION@
+Requires: libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ libgnome-2.0 libxml-2.0 ORBit-2.0 >= @ORBIT_REQUIRED@ 
+Libs: -L${libdir} -ledataserver-1.2
+Cflags: -I${privincludedir}

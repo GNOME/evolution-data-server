@@ -73,7 +73,7 @@ main (int argc, char **argv)
 	GnomeProgram *program;
 	const char *gconf_path;
 
-	program = gnome_program_init ("test-source-list", "0.0", LIBGNOMEUI_MODULE, argc, argv, NULL);
+	program = gnome_program_init ("test-source-option-menu", "0.0", LIBGNOMEUI_MODULE, argc, argv, NULL);
 
 	if (argc < 2)
 		gconf_path = "/apps/evolution/calendar/sources";

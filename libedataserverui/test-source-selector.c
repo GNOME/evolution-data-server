@@ -75,7 +75,7 @@ check_toggled_callback (GtkToggleButton *button,
 }
 
 static int
-on_idle_create_widget (void *unused_data)
+on_idle_create_widget (const char *gconf_path)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -92,7 +92,7 @@ on_idle_create_widget (void *unused_data)
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
 	gconf_client = gconf_client_get_default ();
-	list = e_source_list_new_for_gconf (gconf_client, "/apps/evolution/test/source_list");
+	list = e_source_list_new_for_gconf (gconf_client, gconf_path);
 	selector = e_source_selector_new (list);
 	g_signal_connect (selector, "selection_changed", G_CALLBACK (selection_changed_callback), NULL);
 
@@ -119,12 +119,19 @@ int
 main (int argc, char **argv)
 {
 	GnomeProgram *program;
+	const char *gconf_path;
 
-	program = gnome_program_init ("test-source-list", "0.0",
+	program = gnome_program_init ("test-source-selector", "0.0",
 				      LIBGNOMEUI_MODULE, argc, argv,
 				      NULL);
 
-	g_idle_add (on_idle_create_widget, NULL);
+	if (argc < 2)
+		gconf_path = "/apps/evolution/calendar/sources";
+	else
+		gconf_path = argv [1];
+
+	g_idle_add ((GSourceFunc) on_idle_create_widget, (void *) gconf_path);
+
 	gtk_main ();
 
 	return 0;

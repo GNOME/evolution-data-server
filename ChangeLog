@@ -1,3 +1,24 @@
+2004-10-13  JP Rosevear  <jpr@novell.com>
+
+	* libedataserverui/test-source-option-menu.c: move from evolution
+	
+	* libedataserverui/e-source-selector.c: ditto
+
+	* libedataserverui/e-source-selector.h: ditto
+
+	* libedataserverui/e-source-option-menu.c: ditto
+
+	* libedataserverui/e-source-option-menu.h: ditto
+
+	* libedataserverui/test-source-selector.c: ditto
+
+	* libedataserverui/libedataserverui.pc.in: add a pkg-config file
+
+	* libedataserverui/Makefile.am: build libedataserverui and test progs
+
+	* configure.in: add libtool versioning for libedataserverui and
+	output the files
+
 2004-10-11  Hans Petter Jansson  <hpj@ximian.com>
 
 	Probably fixes bugs #67600 and #65996.

@@ -20,19 +20,16 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
-#include "e-source-option-menu.h"
-
-#include "e-util-marshal.h"
-
-#include <gal/util/e-util.h>
+#endif
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 
+#include "e-data-server-ui-marshal.h"
+#include "e-source-option-menu.h"
 
-#define PARENT_TYPE gtk_option_menu_get_type ()
 static GtkOptionMenuClass *parent_class = NULL;
 
 
@@ -46,6 +43,12 @@ struct _ESourceOptionMenuPrivate {
 	ESource *selected_source;
 };
 
+typedef struct {
+	ESourceOptionMenu *option_menu;
+	ESource *source;
+	ESource *found_source;
+	int i;
+} ForeachMenuItemData;
 
 enum {
 	SOURCE_SELECTED,
@@ -54,16 +57,9 @@ enum {
 
 static uint signals[NUM_SIGNALS] = { 0 };
 
+G_DEFINE_TYPE (ESourceOptionMenu, e_source_option_menu, GTK_TYPE_OPTION_MENU)
 
 /* Selecting a source.  */
-
-typedef struct {
-	ESourceOptionMenu *option_menu;
-	ESource *source;
-	ESource *found_source;
-	int i;
-} ForeachMenuItemData;
-
 static void
 select_source_foreach_menu_item (GtkWidget *menu_item,
 				 ForeachMenuItemData *data)
@@ -201,7 +197,7 @@ connect_signals (ESourceOptionMenu *menu)
 /* GObject methods.  */
 
 static void
-impl_dispose (GObject *object)
+e_source_option_menu_dispose (GObject *object)
 {
 	ESourceOptionMenuPrivate *priv = E_SOURCE_OPTION_MENU (object)->priv;
 
@@ -219,7 +215,7 @@ impl_dispose (GObject *object)
 }
 
 static void
-impl_finalize (GObject *object)
+e_source_option_menu_finalize (GObject *object)
 {
 	ESourceOptionMenuPrivate *priv = E_SOURCE_OPTION_MENU (object)->priv;
 
@@ -232,12 +228,12 @@ impl_finalize (GObject *object)
 /* Initialization.  */
 
 static void
-class_init (ESourceOptionMenuClass *class)
+e_source_option_menu_class_init (ESourceOptionMenuClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	object_class->dispose  = impl_dispose;
-	object_class->finalize = impl_finalize;
+	object_class->dispose  = e_source_option_menu_dispose;
+	object_class->finalize = e_source_option_menu_finalize;
 
 	parent_class = g_type_class_peek_parent (class);
 
@@ -247,13 +243,13 @@ class_init (ESourceOptionMenuClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceOptionMenuClass, source_selected),
 			      NULL, NULL,
-			      e_util_marshal_VOID__POINTER,
+			      e_data_server_ui_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 }
 
 static void
-init (ESourceOptionMenu *source_option_menu)
+e_source_option_menu_init (ESourceOptionMenu *source_option_menu)
 {
 	ESourceOptionMenuPrivate *priv;
 
@@ -302,6 +298,3 @@ e_source_option_menu_select (ESourceOptionMenu *menu,
 
 	select_source (menu, source);
 }
-
-
-E_MAKE_TYPE (e_source_option_menu, "ESourceOptionMenu", ESourceOptionMenu, class_init, init, PARENT_TYPE)

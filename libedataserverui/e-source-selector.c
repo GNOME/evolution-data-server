@@ -21,13 +21,9 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
-#include "e-source-selector.h"
-
-#include "e-util-marshal.h"
-
-#include <gal/util/e-util.h>
+#endif
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtktreeselection.h>
@@ -36,7 +32,9 @@
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 
-#define PARENT_TYPE gtk_tree_view_get_type ()
+#include "e-data-server-ui-marshal.h"
+#include "e-source-selector.h"
+
 static GtkTreeViewClass *parent_class = NULL;
 
 
@@ -72,6 +70,7 @@ enum {
 };
 static unsigned int signals[NUM_SIGNALS] = { 0 };
 
+G_DEFINE_TYPE (ESourceSelector, e_source_selector, GTK_TYPE_TREE_VIEW)
 
 /* Selection management.  */
 
@@ -622,7 +621,7 @@ selector_button_press_event (GtkWidget *widget, GdkEventButton *event, ESourceSe
 /* GObject methods.  */
 
 static void
-impl_dispose (GObject *object)
+e_source_selector_dispose (GObject *object)
 {
 	ESourceSelectorPrivate *priv = E_SOURCE_SELECTOR (object)->priv;
 
@@ -652,7 +651,7 @@ impl_dispose (GObject *object)
 }
 
 static void
-impl_finalize (GObject *object)
+e_source_selector_finalize (GObject *object)
 {
 	ESourceSelectorPrivate *priv = E_SOURCE_SELECTOR (object)->priv;
 
@@ -661,21 +660,6 @@ impl_finalize (GObject *object)
 	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
-static gboolean
-e_source_selector_popup_menu (GtkWidget *widget)
-{
-	ESourceSelector *selector = E_SOURCE_SELECTOR (widget);
-	ESource *source = e_source_selector_peek_primary_selection (selector);
-	gboolean res = FALSE;
-
-	if (source) {
-		g_object_ref (source);
-		g_signal_emit (selector, signals[POPUP_EVENT], 0, source, NULL, &res);
-		g_object_unref (source);
-	}
-
-	return res;
-}
 
 /* Initialization.  */
 static gboolean
@@ -689,15 +673,12 @@ ess_bool_accumulator(GSignalInvocationHint *ihint, GValue *out, const GValue *in
 }
 
 static void
-class_init (ESourceSelectorClass *class)
+e_source_selector_class_init (ESourceSelectorClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class);
 
-	object_class->dispose  = impl_dispose;
-	object_class->finalize = impl_finalize;
-
-	widget_class->popup_menu = e_source_selector_popup_menu;
+	object_class->dispose  = e_source_selector_dispose;
+	object_class->finalize = e_source_selector_finalize;
 
 	parent_class = g_type_class_peek_parent (class);
 
@@ -707,7 +688,7 @@ class_init (ESourceSelectorClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceSelectorClass, selection_changed),
 			      NULL, NULL,
-			      e_util_marshal_VOID__VOID,
+			      e_data_server_ui_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	signals[PRIMARY_SELECTION_CHANGED] = 
@@ -716,7 +697,7 @@ class_init (ESourceSelectorClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceSelectorClass, primary_selection_changed),
 			      NULL, NULL,
-			      e_util_marshal_VOID__VOID,
+			      e_data_server_ui_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 	signals[POPUP_EVENT] =
 		g_signal_new ("popup_event",
@@ -724,13 +705,13 @@ class_init (ESourceSelectorClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceSelectorClass, popup_event),
 			      ess_bool_accumulator, NULL,
-			      e_util_marshal_BOOLEAN__OBJECT_BOXED,
+			      e_data_server_ui_marshal_BOOLEAN__OBJECT_BOXED,
 			      G_TYPE_BOOLEAN, 2, G_TYPE_OBJECT,
 			      GDK_TYPE_EVENT|G_SIGNAL_TYPE_STATIC_SCOPE);
 }
 
 static void
-init (ESourceSelector *selector)
+e_source_selector_init (ESourceSelector *selector)
 {
 	ESourceSelectorPrivate *priv;
 	GtkTreeViewColumn *column;
@@ -1118,5 +1099,3 @@ e_source_selector_set_primary_selection (ESourceSelector *selector, ESource *sou
 	}
 }
 
-
-E_MAKE_TYPE (e_source_selector, "ESourceSelector", ESourceSelector, class_init, init, PARENT_TYPE)
