@@ -1341,6 +1341,7 @@ typedef struct {
 	gboolean is_filter_valid;
 	gboolean is_personal_book;
 	int auto_completion; 
+	char *search_string;
 } EBookBackendGroupwiseSExpData;
 
 static ESExpResult *
@@ -1520,6 +1521,7 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 		if (g_str_equal (propname, "full_name")) {
 			gw_field_name = "fullName";
 			sexp_data->auto_completion |= BEGINS_WITH_NAME;
+			sexp_data->search_string = g_strdup (str);
 		}
 		else if (g_str_equal (propname, "email")) {
 			gw_field_name = "emailList/email";
@@ -1646,7 +1648,7 @@ static struct {
 
 
 static EGwFilter*
-e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const char *query, gpointer is_auto_completion)
+e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const char *query, gpointer is_auto_completion, char ** search_string)
 {
 	ESExp *sexp;
 	ESExpResult *r;
@@ -1663,6 +1665,8 @@ e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const cha
 	sexp_data->is_filter_valid = TRUE;
 	sexp_data->is_personal_book = e_book_backend_is_writable ( E_BOOK_BACKEND (ebgw));
 	sexp_data->auto_completion = 0;
+	sexp_data->search_string = NULL;
+
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
@@ -1683,6 +1687,8 @@ e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const cha
 	if (sexp_data->is_filter_valid) {
 		if (sexp_data->auto_completion == AUTO_COMPLETION_QUERY)
 			*(gboolean *)is_auto_completion = TRUE;
+		if (search_string)
+			*search_string = sexp_data->search_string;
 		g_free (sexp_data);
 		return filter;
 	}
@@ -1740,7 +1746,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		g_ptr_array_free (ids, TRUE);
 	} else { 
 		if (strcmp (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
-			filter = e_book_backend_groupwise_build_gw_filter (egwb, query, &is_auto_completion);
+			filter = e_book_backend_groupwise_build_gw_filter (egwb, query, &is_auto_completion, NULL);
 		if (filter)
 			match_needed = FALSE;
 		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &gw_items);
@@ -1823,6 +1829,7 @@ book_view_thread (gpointer data)
 	GroupwiseBackendSearchClosure *closure = get_closure (book_view);
 	char *view = NULL;
 	gboolean is_auto_completion = FALSE;
+	char *search_string = NULL;
 
 	gwb  = closure->bg;
 	gw_items = NULL;
@@ -1842,16 +1849,30 @@ book_view_thread (gpointer data)
 
 	query = e_data_book_view_get_card_query (book_view);
 
-	filter = e_book_backend_groupwise_build_gw_filter (gwb, query, &is_auto_completion);
+	filter = e_book_backend_groupwise_build_gw_filter (gwb, query, &is_auto_completion, &search_string);
 	view = "members";
-	if (is_auto_completion)
+	if (is_auto_completion) 
 		view = "name email";
-	
+	if (is_auto_completion && !gwb->priv->is_writable) {
+		g_object_unref (filter);
+		filter = NULL;
+
+		if (search_string) {
+			filter = e_gw_filter_new ();
+			e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/lastName", search_string);
+			e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/firstName", search_string);
+			e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+			g_free (search_string);
+			
+		}
+	}
+
 	if (!gwb->priv->is_writable && !filter) {
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 		bonobo_object_unref (book_view);
 		return NULL; 
 	}
+	
 	e_data_book_view_notify_status_message (book_view, _("Searching..."));
 	status =  E_GW_CONNECTION_STATUS_OK;
 	if (gwb->priv->is_summary_ready && e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {

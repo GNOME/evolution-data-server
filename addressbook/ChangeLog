@@ -1,3 +1,17 @@
+2004-10-04  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise-ebook-backend-groupwise.c :
+	(e_book_backend_groupwise_build_gw_filter) : add an argument 
+	to get the search string present in query
+	(book_view_thread) : create a gw filter with just firstName
+	and lastNmae in case of system address book. This is to simplify the
+	auto completion query. Server team believes that this improves scalability limit 
+	(e_book_backend_groupwise_get_contact_list) : pass NULL to 
+	extra arument added to e_book_backend_groupwise_build_gw_filter
+	. We do't need top get back serch string here 
+ 
+
+
 2004-09-30  Hans Petter Jansson  <hpj@ximian.com>
 
 	Fixes bug #66368.
