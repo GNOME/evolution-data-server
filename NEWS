@@ -1,3 +1,24 @@
+Evolution Data Server 1.2.0, 2005-03-07
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+    #73226 - Missing symbol in e-destination (JP)
+
+  * Addressbook
+    #72454 - Crash for webcals with gnome proxy setting (Rodrigo)
+
+  * All
+    #73010 - Cannot cancel/close 'Category icon' popup (Harry Lu)
+	
+Updated Translations:
+	- pt_BR (Raphael Higino)
+	- hu (Laszlo Dvornik)
+	- sr (Igor Nestorovic)
+	- sr@Latn (Igor Nestorovic)
+	- ca (Xavier Conde Rueda)
+
 Evolution Data Server 1.1.6, 2005-02-28
 ---------------------------------------
 
