@@ -1,3 +1,9 @@
+2005-03-31  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:(groupwise_transfer_messages_to):
+	  deleting the messages only if the copy is successful
+	  ***	fixes bug 73897
+	
 2005-03-15  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #73421
