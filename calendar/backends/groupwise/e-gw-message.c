@@ -83,6 +83,7 @@ e_gw_message_new_with_header (const char *uri, const char *method_name)
 		return NULL;
 	}
 
+	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "Content-Type", "text/xml");
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
 				 "Evolution/" VERSION);
 
@@ -113,6 +114,8 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 	soup_soap_message_end_element (msg);
 	soup_soap_message_end_body (msg);
 	soup_soap_message_end_envelope (msg);
+
+	soup_soap_message_persist (msg);
 
 #ifdef G_ENABLE_DEBUG
 	/* print request's body */
