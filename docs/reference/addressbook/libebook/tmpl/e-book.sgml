@@ -1,0 +1,314 @@
+<!-- ##### SECTION Title ##### -->
+EBook
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EBookPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_book_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_load_uri ##### -->
+<para>
+
+</para>
+
+@book: 
+@uri: 
+@only_if_exists: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_unload_uri ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_remove ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_load_local_addressbook ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_supported_fields ##### -->
+<para>
+
+</para>
+
+@book: 
+@fields: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_supported_auth_methods ##### -->
+<para>
+
+</para>
+
+@book: 
+@auth_methods: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_authenticate_user ##### -->
+<para>
+
+</para>
+
+@book: 
+@user: 
+@passwd: 
+@auth_method: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_contact ##### -->
+<para>
+
+</para>
+
+@book: 
+@id: 
+@contact: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_remove_contact ##### -->
+<para>
+
+</para>
+
+@book: 
+@id: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_remove_contacts ##### -->
+<para>
+
+</para>
+
+@book: 
+@id_list: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_add_contact ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_commit_contact ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_book_view ##### -->
+<para>
+
+</para>
+
+@book: 
+@query: 
+@requested_fields: 
+@max_results: 
+@book_view: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_contacts ##### -->
+<para>
+
+</para>
+
+@book: 
+@query: 
+@contacts: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_changes ##### -->
+<para>
+
+</para>
+
+@book: 
+@changeid: 
+@changes: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_free_change_list ##### -->
+<para>
+
+</para>
+
+@change_list: 
+
+
+<!-- ##### FUNCTION e_book_get_uri ##### -->
+<para>
+
+</para>
+
+@book: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_static_capabilities ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_check_static_capability ##### -->
+<para>
+
+</para>
+
+@book: 
+@cap: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_is_writable ##### -->
+<para>
+
+</para>
+
+@book: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_cancel ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_self ##### -->
+<para>
+
+</para>
+
+@contact: 
+@book: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_set_self ##### -->
+<para>
+
+</para>
+
+@book: 
+@id: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_default_addressbook ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_addressbooks ##### -->
+<para>
+
+</para>
+
+@addressbook_sources: 
+@error: 
+@Returns: 
+
+
+<!-- ##### SIGNAL EBook::backend-died ##### -->
+<para>
+
+</para>
+
+@ebook: the object which received the signal.
+
+<!-- ##### SIGNAL EBook::writable-status ##### -->
+<para>
+
+</para>
+
+@ebook: the object which received the signal.
+@arg1: 
+

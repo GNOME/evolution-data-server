@@ -363,6 +363,11 @@ dnl ***********
 AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
 AM_GCONF_SOURCE_2
 
+dnl *************
+dnl Gtk Doc stuff
+dnl *************
+GTK_DOC_CHECK
+
 dnl ******************************
 dnl Makefiles
 dnl ******************************
@@ -400,10 +405,17 @@ calendar/backends/http/Makefile
 libedataserver/Makefile
 libedataserver/libedataserver-1.0.pc
 src/Makefile
+docs/Makefile
+docs/reference/Makefile
+docs/reference/addressbook/Makefile
+docs/reference/addressbook/libebook/Makefile
+docs/reference/calendar/Makefile
+docs/reference/calendar/libecal/Makefile
 po/Makefile.in
 ])
 
 echo "
 	evolution-data-server has been configured as follows:
 	LDAP support:     $msg_ldap
+	Gtk Doc:          $enable_gtk_doc
 "

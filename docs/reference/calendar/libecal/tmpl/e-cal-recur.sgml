@@ -1,0 +1,53 @@
+<!-- ##### SECTION Title ##### -->
+e-cal-recur
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### USER_FUNCTION ECalRecurInstanceFn ##### -->
+<para>
+
+</para>
+
+@comp: 
+@instance_start: 
+@instance_end: 
+@data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION ECalRecurResolveTimezoneFn ##### -->
+<para>
+
+</para>
+
+@tzid: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_recur_generate_instances ##### -->
+<para>
+
+</para>
+
+@comp: 
+@start: 
+@end: 
+@cb: 
+@cb_data: 
+@tz_cb: 
+@tz_cb_data: 
+@default_timezone: 
+
+

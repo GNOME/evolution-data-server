@@ -1,0 +1,7 @@
+#include <glib-object.h>
+e_book_listener_get_type
+e_book_view_listener_get_type
+e_book_view_get_type
+e_book_get_type
+e_contact_get_type
+e_vcard_get_type

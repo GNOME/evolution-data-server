@@ -1,0 +1,650 @@
+<!-- ##### SECTION Title ##### -->
+ECal
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT ECal ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_CAL_OPEN_STATUS_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO E_CAL_REMOVE_STATUS_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO E_CAL_SET_MODE_STATUS_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_MODE_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT ECalPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM ECalOpenStatus ##### -->
+<para>
+
+</para>
+
+@E_CAL_OPEN_SUCCESS: 
+@E_CAL_OPEN_ERROR: 
+@E_CAL_OPEN_NOT_FOUND: 
+@E_CAL_OPEN_PERMISSION_DENIED: 
+@E_CAL_OPEN_METHOD_NOT_SUPPORTED: 
+
+<!-- ##### ENUM ECalSetModeStatus ##### -->
+<para>
+
+</para>
+
+@E_CAL_SET_MODE_SUCCESS: 
+@E_CAL_SET_MODE_ERROR: 
+@E_CAL_SET_MODE_NOT_SUPPORTED: 
+
+<!-- ##### ENUM ECalGetStatus ##### -->
+<para>
+
+</para>
+
+@E_CAL_GET_SUCCESS: 
+@E_CAL_GET_NOT_FOUND: 
+@E_CAL_GET_SYNTAX_ERROR: 
+
+<!-- ##### ENUM ECalResult ##### -->
+<para>
+
+</para>
+
+@E_CAL_RESULT_SUCCESS: 
+@E_CAL_RESULT_CORBA_ERROR: 
+@E_CAL_RESULT_INVALID_OBJECT: 
+@E_CAL_RESULT_NOT_FOUND: 
+@E_CAL_RESULT_PERMISSION_DENIED: 
+
+<!-- ##### ENUM ECalLoadState ##### -->
+<para>
+
+</para>
+
+@E_CAL_LOAD_NOT_LOADED: 
+@E_CAL_LOAD_LOADING: 
+@E_CAL_LOAD_LOADED: 
+
+<!-- ##### USER_FUNCTION ECalAuthFunc ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@prompt: 
+@key: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_open_status_enum_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_set_mode_status_enum_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION cal_mode_enum_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_new ##### -->
+<para>
+
+</para>
+
+@uri: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_set_auth_func ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION e_cal_open ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@only_if_exists: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_open_async ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@only_if_exists: 
+
+
+<!-- ##### FUNCTION e_cal_remove_calendar ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_uri_list ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@mode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_load_state ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_uri ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_is_read_only ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@read_only: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_cal_address ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@cal_address: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_alarm_email_address ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@alarm_address: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_ldap_attribute ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@ldap_attribute: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_one_alarm_only ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_organizer_must_attend ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_save_schedules ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_static_capability ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@cap: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_set_mode ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@mode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_default_object ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@icalcomp: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_object ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@uid: 
+@rid: 
+@icalcomp: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_changes ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@change_id: 
+@changes: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_free_change_list ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION e_cal_get_object_list ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@query: 
+@objects: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_object_list_as_comp ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@query: 
+@objects: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_free_object_list ##### -->
+<para>
+
+</para>
+
+@objects: 
+
+
+<!-- ##### FUNCTION e_cal_get_free_busy ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@users: 
+@start: 
+@end: 
+@freebusy: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_generate_instances ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@type: 
+@start: 
+@end: 
+@cb: 
+@cb_data: 
+
+
+<!-- ##### FUNCTION e_cal_get_alarms_in_range ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@start: 
+@end: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_free_alarms ##### -->
+<para>
+
+</para>
+
+@comp_alarms: 
+
+
+<!-- ##### FUNCTION e_cal_get_alarms_for_object ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@uid: 
+@start: 
+@end: 
+@alarms: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_create_object ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@icalcomp: 
+@uid: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_modify_object ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@icalcomp: 
+@mod: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_remove_object ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@uid: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_remove_object_with_mod ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@uid: 
+@rid: 
+@mod: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_discard_alarm ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@comp: 
+@auid: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_receive_objects ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@icalcomp: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_send_objects ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@icalcomp: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_timezone ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@tzid: 
+@zone: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_add_timezone ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@izone: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_set_default_timezone ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@zone: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_query ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@sexp: 
+@query: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_resolve_tzid_cb ##### -->
+<para>
+
+</para>
+
+@tzid: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_component_as_string ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@icalcomp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_error_message ##### -->
+<para>
+
+</para>
+
+@status: 
+@Returns: 
+
+
+<!-- ##### SIGNAL ECal::backend-died ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+
+<!-- ##### SIGNAL ECal::backend-error ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECal::cal-opened ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECal::cal-set-mode ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECal::categories-changed ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECal::forget-password ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+

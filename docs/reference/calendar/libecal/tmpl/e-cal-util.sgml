@@ -1,0 +1,345 @@
+<!-- ##### SECTION Title ##### -->
+e-cal-util
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF CalObjInstance ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION cal_obj_instance_list_free ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### ENUM CalObjType ##### -->
+<para>
+
+</para>
+
+@CALOBJ_TYPE_EVENT: 
+@CALOBJ_TYPE_TODO: 
+@CALOBJ_TYPE_JOURNAL: 
+@CALOBJ_TYPE_ANY: 
+
+<!-- ##### ENUM CalObjModType ##### -->
+<para>
+
+</para>
+
+@CALOBJ_MOD_THIS: 
+@CALOBJ_MOD_THISANDPRIOR: 
+@CALOBJ_MOD_THISANDFUTURE: 
+@CALOBJ_MOD_ALL: 
+
+<!-- ##### ENUM CalMode ##### -->
+<para>
+
+</para>
+
+@CAL_MODE_INVALID: 
+@CAL_MODE_LOCAL: 
+@CAL_MODE_REMOTE: 
+@CAL_MODE_ANY: 
+
+<!-- ##### FUNCTION cal_obj_uid_list_free ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION e_cal_util_new_top_level ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_parse_ics_file ##### -->
+<para>
+
+</para>
+
+@filename: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_generate_alarms_for_comp ##### -->
+<para>
+
+</para>
+
+@comp: 
+@start: 
+@end: 
+@omit: 
+@resolve_tzid: 
+@user_data: 
+@default_timezone: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_generate_alarms_for_list ##### -->
+<para>
+
+</para>
+
+@comps: 
+@start: 
+@end: 
+@omit: 
+@comp_alarms: 
+@resolve_tzid: 
+@user_data: 
+@default_timezone: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_resolve_tzid ##### -->
+<para>
+
+</para>
+
+@tzid: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_priority_to_string ##### -->
+<para>
+
+</para>
+
+@priority: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_priority_from_string ##### -->
+<para>
+
+</para>
+
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_expand_uri ##### -->
+<para>
+
+</para>
+
+@uri: 
+@tasks: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_add_timezones_from_component ##### -->
+<para>
+
+</para>
+
+@vcal_comp: 
+@icalcomp: 
+
+
+<!-- ##### FUNCTION e_cal_util_component_is_instance ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_component_has_alarms ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_component_has_organizer ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_component_has_recurrences ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_component_has_rdates ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_component_has_rrules ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_event_dates_match ##### -->
+<para>
+
+</para>
+
+@icalcomp1: 
+@icalcomp2: 
+@Returns: 
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_TRANSPARENCY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_REMOVE_ALARMS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_SAVE_SCHEDULES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION e_cal_util_construct_instance ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@rid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_remove_instances ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@rid: 
+@mod: 
+
+

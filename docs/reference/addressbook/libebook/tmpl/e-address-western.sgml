@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+e-address-western
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF EAddressWestern ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_address_western_parse ##### -->
+<para>
+
+</para>
+
+@address: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_address_western_free ##### -->
+<para>
+
+</para>
+
+@eaw: 
+
+

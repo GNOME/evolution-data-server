@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+e-name-western
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF ENameWestern ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_name_western_parse ##### -->
+<para>
+
+</para>
+
+@full_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_western_free ##### -->
+<para>
+
+</para>
+
+@w: 
+
+

@@ -1,0 +1,97 @@
+<!-- ##### SECTION Title ##### -->
+EBookView
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EBookViewPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_book_view_new ##### -->
+<para>
+
+</para>
+
+@corba_book_view: 
+@listener: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_view_set_book ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@book: 
+
+
+<!-- ##### FUNCTION e_book_view_start ##### -->
+<para>
+
+</para>
+
+@book_view: 
+
+
+<!-- ##### FUNCTION e_book_view_stop ##### -->
+<para>
+
+</para>
+
+@book_view: 
+
+
+<!-- ##### SIGNAL EBookView::contacts-added ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::contacts-changed ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::contacts-removed ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::sequence-complete ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EBookView::status-message ##### -->
+<para>
+
+</para>
+
+@ebookview: the object which received the signal.
+@arg1: 
+

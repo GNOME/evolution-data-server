@@ -1,0 +1,80 @@
+<!-- ##### SECTION ./tmpl/e-book-marshal.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-book-marshal.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-book-marshal.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-book-marshal.sgml:Title ##### -->
+e-book-marshal
+
+
+<!-- ##### MACRO e_book_marshal_NONE__BOOL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_NONE__INT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_NONE__NONE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_NONE__POINTER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_NONE__STRING ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_VOID__BOOLEAN ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_VOID__INT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_VOID__POINTER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_VOID__STRING ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_book_marshal_VOID__VOID ##### -->
+<para>
+
+</para>
+
+

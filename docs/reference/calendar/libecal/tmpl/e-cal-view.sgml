@@ -1,0 +1,159 @@
+<!-- ##### SECTION Title ##### -->
+ECalView
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT ECal ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_CAL_VIEW_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO E_CAL_VIEW ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO E_CAL_VIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### MACRO IS_E_CAL_VIEW ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO IS_E_CAL_VIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### STRUCT ECalViewPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_cal_view_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_view_new ##### -->
+<para>
+
+</para>
+
+@corba_view: 
+@listener: 
+@client: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_view_get_client ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_view_start ##### -->
+<para>
+
+</para>
+
+@view: 
+
+
+<!-- ##### SIGNAL ECalView::objects-added ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::objects-modified ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::objects-removed ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::view-done ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalView::view-progress ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ARG ECalView:client ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalView:listener ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalView:view ##### -->
+<para>
+
+</para>
+

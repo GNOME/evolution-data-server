@@ -1,0 +1,6 @@
+#include <glib-object.h>
+e_cal_get_type
+e_cal_view_get_type
+e_cal_listener_get_type
+e_cal_view_listener_get_type
+e_cal_component_get_type

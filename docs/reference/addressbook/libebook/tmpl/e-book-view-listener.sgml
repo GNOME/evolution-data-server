@@ -1,0 +1,68 @@
+<!-- ##### SECTION Title ##### -->
+EBookViewListener
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EBookViewListenerPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EBookViewListenerResponse ##### -->
+<para>
+
+</para>
+
+@op: 
+@status: 
+@ids: 
+@contacts: 
+@message: 
+
+<!-- ##### ENUM EBookViewListenerOperation ##### -->
+<para>
+
+</para>
+
+@ContactsAddedEvent: 
+@ContactsRemovedEvent: 
+@ContactsModifiedEvent: 
+@SequenceCompleteEvent: 
+@StatusMessageEvent: 
+
+<!-- ##### FUNCTION e_book_view_listener_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_view_listener_stop ##### -->
+<para>
+
+</para>
+
+@listener: 
+
+
+<!-- ##### SIGNAL EBookViewListener::response ##### -->
+<para>
+
+</para>
+
+@ebookviewlistener: the object which received the signal.
+@arg1: 
+

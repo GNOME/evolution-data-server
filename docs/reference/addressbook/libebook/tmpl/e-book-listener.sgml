@@ -1,0 +1,83 @@
+<!-- ##### SECTION Title ##### -->
+EBookListener
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EBookListenerPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EBookListenerResponse ##### -->
+<para>
+
+</para>
+
+@op: 
+@status: 
+@book_view: 
+@list: 
+@msg: 
+@percent: 
+@connected: 
+@writable: 
+@id: 
+@vcard: 
+
+<!-- ##### ENUM EBookListenerOperation ##### -->
+<para>
+
+</para>
+
+@OpenBookResponse: 
+@RemoveBookResponse: 
+@CreateContactResponse: 
+@RemoveContactResponse: 
+@ModifyContactResponse: 
+@GetContactResponse: 
+@GetContactListResponse: 
+@GetBookViewResponse: 
+@GetChangesResponse: 
+@AuthenticationResponse: 
+@GetSupportedFieldsResponse: 
+@GetSupportedAuthMethodsResponse: 
+@LinkStatusEvent: 
+@WritableStatusEvent: 
+@ProgressEvent: 
+
+<!-- ##### FUNCTION e_book_listener_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_listener_stop ##### -->
+<para>
+
+</para>
+
+@listener: 
+
+
+<!-- ##### SIGNAL EBookListener::response ##### -->
+<para>
+
+</para>
+
+@ebooklistener: the object which received the signal.
+@arg1: 
+

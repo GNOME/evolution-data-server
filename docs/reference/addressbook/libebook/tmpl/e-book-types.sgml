@@ -1,0 +1,82 @@
+<!-- ##### SECTION Title ##### -->
+e-book-types
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_BOOK_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION e_book_error_quark ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### ENUM EBookStatus ##### -->
+<para>
+
+</para>
+
+@E_BOOK_ERROR_OK: 
+@E_BOOK_ERROR_INVALID_ARG: 
+@E_BOOK_ERROR_BUSY: 
+@E_BOOK_ERROR_REPOSITORY_OFFLINE: 
+@E_BOOK_ERROR_NO_SUCH_BOOK: 
+@E_BOOK_ERROR_URI_NOT_LOADED: 
+@E_BOOK_ERROR_URI_ALREADY_LOADED: 
+@E_BOOK_ERROR_PERMISSION_DENIED: 
+@E_BOOK_ERROR_CONTACT_NOT_FOUND: 
+@E_BOOK_ERROR_CONTACT_ID_ALREADY_EXISTS: 
+@E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED: 
+@E_BOOK_ERROR_CANCELLED: 
+@E_BOOK_ERROR_COULD_NOT_CANCEL: 
+@E_BOOK_ERROR_AUTHENTICATION_FAILED: 
+@E_BOOK_ERROR_AUTHENTICATION_REQUIRED: 
+@E_BOOK_ERROR_TLS_NOT_AVAILABLE: 
+@E_BOOK_ERROR_CORBA_EXCEPTION: 
+@E_BOOK_ERROR_OTHER_ERROR: 
+
+<!-- ##### ENUM EBookViewStatus ##### -->
+<para>
+
+</para>
+
+@E_BOOK_VIEW_STATUS_OK: 
+@E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED: 
+@E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED: 
+@E_BOOK_VIEW_ERROR_INVALID_QUERY: 
+@E_BOOK_VIEW_ERROR_QUERY_REFUSED: 
+@E_BOOK_VIEW_ERROR_OTHER_ERROR: 
+
+<!-- ##### ENUM EBookChangeType ##### -->
+<para>
+
+</para>
+
+@E_BOOK_CHANGE_CARD_ADDED: 
+@E_BOOK_CHANGE_CARD_DELETED: 
+@E_BOOK_CHANGE_CARD_MODIFIED: 
+
+<!-- ##### TYPEDEF EBookChange ##### -->
+<para>
+
+</para>
+
+

@@ -1,0 +1,659 @@
+<!-- ##### SECTION Title ##### -->
+EVCard
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO EVC_ADR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_BDAY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_CALURI ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_CATEGORIES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_EMAIL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_ENCODING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_FBURL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_FN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_ICSCALENDAR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_LABEL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_LOGO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_MAILER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_NICKNAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_N ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_NOTE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_ORG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_PHOTO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_PRODID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_QUOTEDPRINTABLE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_REV ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_ROLE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_TEL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_TITLE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_UID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_URL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_VALUE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_VERSION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_AIM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_ANNIVERSARY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_ASSISTANT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_BIRTHDAY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_BLOG_URL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_FILE_AS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_ICQ ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_JABBER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_LIST_SHOW_ADDRESSES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_LIST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_MANAGER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_MSN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_SPOUSE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_WANTS_HTML ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_YAHOO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM EVCardFormat ##### -->
+<para>
+
+</para>
+
+@EVC_FORMAT_VCARD_21: 
+@EVC_FORMAT_VCARD_30: 
+
+<!-- ##### STRUCT EVCardPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EVCardAttribute ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EVCardAttributeParam ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_vcard_construct ##### -->
+<para>
+
+</para>
+
+@evc: 
+@str: 
+
+
+<!-- ##### FUNCTION e_vcard_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_new_from_string ##### -->
+<para>
+
+</para>
+
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_to_string ##### -->
+<para>
+
+</para>
+
+@evc: 
+@format: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_dump_structure ##### -->
+<para>
+
+</para>
+
+@evc: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_new ##### -->
+<para>
+
+</para>
+
+@attr_group: 
+@attr_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_free ##### -->
+<para>
+
+</para>
+
+@attr: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_copy ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_remove_attributes ##### -->
+<para>
+
+</para>
+
+@evcard: 
+@attr_group: 
+@attr_name: 
+
+
+<!-- ##### FUNCTION e_vcard_remove_attribute ##### -->
+<para>
+
+</para>
+
+@evcard: 
+@attr: 
+
+
+<!-- ##### FUNCTION e_vcard_add_attribute ##### -->
+<para>
+
+</para>
+
+@evcard: 
+@attr: 
+
+
+<!-- ##### FUNCTION e_vcard_add_attribute_with_value ##### -->
+<para>
+
+</para>
+
+@evcard: 
+@attr: 
+@value: 
+
+
+<!-- ##### FUNCTION e_vcard_add_attribute_with_values ##### -->
+<para>
+
+</para>
+
+@evcard: 
+@attr: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_add_value ##### -->
+<para>
+
+</para>
+
+@attr: 
+@value: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_add_value_decoded ##### -->
+<para>
+
+</para>
+
+@attr: 
+@value: 
+@len: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_add_values ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_remove_values ##### -->
+<para>
+
+</para>
+
+@attr: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_remove_params ##### -->
+<para>
+
+</para>
+
+@attr: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_new ##### -->
+<para>
+
+</para>
+
+@param_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_free ##### -->
+<para>
+
+</para>
+
+@param: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_copy ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_add_param ##### -->
+<para>
+
+</para>
+
+@attr: 
+@param: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_add_param_with_value ##### -->
+<para>
+
+</para>
+
+@attr: 
+@param: 
+@value: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_add_param_with_values ##### -->
+<para>
+
+</para>
+
+@attr: 
+@param: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_add_value ##### -->
+<para>
+
+</para>
+
+@param: 
+@value: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_add_values ##### -->
+<para>
+
+</para>
+
+@param: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_remove_values ##### -->
+<para>
+
+</para>
+
+@param: 
+
+
+<!-- ##### FUNCTION e_vcard_get_attributes ##### -->
+<para>
+
+</para>
+
+@evcard: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_get_group ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_get_name ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_get_values ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_get_values_decoded ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_get_params ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_get_name ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_get_values ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+

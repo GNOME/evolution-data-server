@@ -1,0 +1,71 @@
+<!-- ##### SECTION Title ##### -->
+ECalViewListener
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT ECalViewListenerPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_cal_view_listener_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### SIGNAL ECalViewListener::objects-added ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::objects-modified ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::objects-removed ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::view-done ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::view-progress ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+@arg2: 
+

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<book id="index" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <bookinfo>
+    <title>[Insert name here] Reference Manual</title>
+  </bookinfo>
+
+  <chapter>
+    <title>[Insert title here]</title>
+    <xi:include href="xml/e-book-listener.xml"/>
+    <xi:include href="xml/e-book-view-listener.xml"/>
+    <xi:include href="xml/e-book-view.xml"/>
+    <xi:include href="xml/e-book.xml"/>
+    <xi:include href="xml/e-contact.xml"/>
+    <xi:include href="xml/e-vcard.xml"/>
+    <xi:include href="xml/e-book-async.xml"/>
+    <xi:include href="xml/e-book-query.xml"/>
+    <xi:include href="xml/e-book-types.xml"/>
+    <xi:include href="xml/e-address-western.xml"/>
+    <xi:include href="xml/e-name-western.xml"/>
+  </chapter>
+</book>
