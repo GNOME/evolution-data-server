@@ -1063,6 +1063,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			g_free (server_uid);
 			/* if successful, update the cache */
 			e_cal_backend_cache_put_component (priv->cache, comp);
+			*calobj = e_cal_component_get_as_string (comp);
 		} else {
 			
 			GList *list = NULL, *tmp;
@@ -1084,6 +1085,18 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 				e_cal_component_commit_sequence (e_cal_comp);
 				sanitize_component (backend, e_cal_comp, g_ptr_array_index (uid_array, i));
 				e_cal_backend_cache_put_component (priv->cache, e_cal_comp);
+				
+				if (i == 0) {
+					*calobj = e_cal_component_get_as_string (e_cal_comp);	
+				}
+
+				if (i != 0) {
+					char *temp;
+					temp = e_cal_component_get_as_string (e_cal_comp);
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), g_strdup(temp));
+					g_free (temp);
+				}
+
 				g_object_unref (e_cal_comp);
 			}
 			g_ptr_array_free (uid_array, TRUE);
@@ -1092,8 +1105,6 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	default :
 		break;
 	}
-
-	*calobj = e_cal_component_get_as_string (comp);
 
 	g_object_unref (comp);
 
