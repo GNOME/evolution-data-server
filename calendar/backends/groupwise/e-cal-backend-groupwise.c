@@ -1362,6 +1362,11 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 
 	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT)
 		return  GNOME_Evolution_Calendar_InvalidObject;
+	/* We need not do this when evolution starts deleting the calendar items from mail component 
+	   as when they are handled. The BAD_PARAMETER is checked due to the absence of proper error
+	   code from the server */
+	else if (status == E_GW_CONNECTION_STATUS_BAD_PARAMETER)
+		return GNOME_Evolution_Calendar_PermissionDenied;
 	return GNOME_Evolution_Calendar_OtherError;
 }
 

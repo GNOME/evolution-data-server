@@ -1,9 +1,18 @@
 2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
 
+	Fixes #64685
+	* backends/groupwise/e-cal-backends-groupwise.c
+	(receive_object): Send the error message as 
+	Permission Denied when the attendee tries to accept the 
+	appointment more than once since we get the error message as
+	bad parameter from the server.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
 	Fixes 63513
 	* backends/groupwise/e-cal-backends-groupwise-utils.c
 	(e_gw_connection_send_appointment): Do a case insensitive
-	comparison between the email ids.
+	comparison between the email ids. This is a partial fix.
 
 2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
 
