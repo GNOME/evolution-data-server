@@ -1,3 +1,10 @@
+2004-06-15 Sivaiah Nallagatla   <snallagatla@novell.com>
+
+	* e-gw-item.h : added "name" member ot EGroupMember structure
+	* e-gw-item.c (free_memeber) : free the newly added member also
+	 (set_group_fields_from_soap_parameter) : read name also
+	from soap response
+
 2004-06-14  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-item.c: (e_gw_item_dispose), (e_gw_item_init),

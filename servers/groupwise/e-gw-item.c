@@ -125,6 +125,8 @@ free_member (gpointer member, gpointer data)
 		g_free (group_member->id);
 	if (group_member->email)
 		g_free (group_member->email);
+	if (group_member->name)
+		g_free (group_member->name);
 	g_free (group_member);
 }
 
@@ -876,12 +878,16 @@ set_group_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "id");
 			if (second_level_child)
 				id = soup_soap_parameter_get_string_value (second_level_child);
-			if (id&&email) {
+			
+			if (id && email) {
 				EGroupMember *member = g_new0 (EGroupMember, 1);
 				member->id = id;
 				member->email = email;
+				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "name");
+				member->name =  soup_soap_parameter_get_string_value (second_level_child); 
 				item->priv->member_list = g_list_append (item->priv->member_list, member);
 			}
+			      
 			
 		}
 	}

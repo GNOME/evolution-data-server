@@ -95,6 +95,7 @@ typedef struct {
 typedef struct {
 	char *id;
 	char *email;
+	char *name;
 } EGroupMember;
 
 GType       e_gw_item_get_type (void);
