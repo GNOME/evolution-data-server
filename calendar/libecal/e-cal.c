@@ -1440,13 +1440,21 @@ e_cal_new_system_tasks (void)
  * @func: The authentication function
  * @data: User data to be used when calling the authentication function
  *
- * Associates the given authentication function with a calendar ecal. This
- * function will be called any time the calendar server needs a password
- * from the ecal. So, calendar ecals should provide such authentication
- * function, which, when called, should act accordingly (by showing a dialog
- * box, for example, to ask the user for the password).
+ * Sets the given authentication function on the calendar ecal. This
+ * function will be called any time the calendar server needs a
+ * password for an operation associated with the calendar and should
+ * be supplied before any calendar is opened.
  *
- * The authentication function must have the following form:
+ * When a calendar is opened asynchronously, the open function is
+ * processed in a concurrent thread.  This means that the
+ * authentication function will also be called from this thread.  As
+ * such, the authentication callback cannot directly call any
+ * functions that must be called from the main thread.  For example
+ * any Gtk+ related functions, which must be proxied synchronously to
+ * the main thread by the callback.
+ *
+ * The authentication function has the following signature
+ * (ECalAuthFunc):
  *	char * auth_func (ECal *ecal,
  *			  const gchar *prompt,
  *			  const gchar *key,
@@ -1603,27 +1611,10 @@ typedef struct {
 	gboolean exists;
 	gboolean result;
 	ECalendarStatus status;
-	ECalAuthFunc real_auth_func;
-	gpointer real_auth_user_data;
 	const char *auth_prompt;
 	const char *auth_key;
 	char *password;
-	GMutex *mutex;
-	GCond *cond;
 } ECalAsyncData;
-
-static gboolean
-async_auth_idle_cb (gpointer data)
-{
-	ECalAsyncData *ccad = data;
-
-	g_mutex_lock (ccad->mutex);
-	ccad->password = ccad->real_auth_func (ccad->ecal, ccad->auth_prompt, ccad->auth_key, ccad->real_auth_user_data);
-	g_cond_signal (ccad->cond);
-	g_mutex_unlock (ccad->mutex);
-	
-	return FALSE;
-}
 
 static gboolean
 async_signal_idle_cb (gpointer data)
@@ -1632,11 +1623,6 @@ async_signal_idle_cb (gpointer data)
 
 	g_signal_emit (G_OBJECT (ccad->ecal), e_cal_signals[CAL_OPENED], 0, ccad->status);
 
-	ccad->ecal->priv->auth_func = ccad->real_auth_func;
-	ccad->ecal->priv->auth_user_data = ccad->real_auth_user_data;
-	g_mutex_free (ccad->mutex);
-	g_cond_free (ccad->cond);
-
 	/* free memory */
 	g_object_unref (ccad->ecal);
 	g_free (ccad);
@@ -1644,39 +1630,10 @@ async_signal_idle_cb (gpointer data)
 	return FALSE;
 }
 
-static char *
-async_auth_func_cb (ECal *ecal, const char *prompt, const char *key, gpointer user_data)
-{
-	ECalAsyncData *ccad = user_data;
-	char * password;
-
-	ccad->auth_prompt = prompt;
-	ccad->auth_key = key;
-
-	g_idle_add ((GSourceFunc) async_auth_idle_cb, ccad);
-		
-	g_mutex_lock (ccad->mutex);
-	g_cond_wait (ccad->cond, ccad->mutex);
-	password = ccad->password;
-	ccad->password = NULL;
-	g_mutex_unlock (ccad->mutex);	
-
-	return password;
-}
-
-
 static gpointer
 open_async (gpointer data) 
 {
 	ECalAsyncData *ccad = data;
-
-	ccad->mutex = g_mutex_new ();
-	ccad->cond = g_cond_new ();
-
-	ccad->real_auth_func = ccad->ecal->priv->auth_func;
-	ccad->real_auth_user_data = ccad->ecal->priv->auth_user_data;
-	ccad->ecal->priv->auth_func = async_auth_func_cb;
-	ccad->ecal->priv->auth_user_data = ccad;
 
 	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status);
 	g_idle_add ((GSourceFunc) async_signal_idle_cb, ccad);
@@ -1684,6 +1641,20 @@ open_async (gpointer data)
 	return GINT_TO_POINTER (ccad->result);
 }
 
+/**
+ * e_cal_open_async:
+ * @ecal: A calendar.
+ * @only_if_exists: If TRUE, then only open the calendar if it already
+ * exists.  If FALSE, then create a new calendar if it doesn't already
+ * exist.
+ * 
+ * Open the calendar asynchronously.  The calendar will emit the
+ * "cal_opened" signal when the operation has completed.
+ * 
+ * Because this operation runs in another thread, any authentication
+ * callback set on the calendar will be called from this other thread.
+ * See e_cal_set_auth_func() for details.
+ **/
 void
 e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 {

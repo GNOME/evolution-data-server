@@ -1,3 +1,10 @@
+2004-08-12  Not Zed  <NotZed@Ximian.com>
+
+	* libecal/e-cal.c (async_auth_func_cb): removed.
+	(open_async): dont override the auth callback.  It is now up to
+	the caller to ensure they're thread-safe and serialised
+	appropriately.
+
 2004-08-09  Jeffrey Stedfast  <fejj@novell.com>
 
 	Fixes bug #58150
