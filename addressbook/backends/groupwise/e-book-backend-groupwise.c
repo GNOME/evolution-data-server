@@ -1731,7 +1731,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	}
 
 	status = E_GW_CONNECTION_STATUS_OK;
-	if (e_book_backend_summary_is_summary_query (egwb->priv->summary, query)) {
+	if (egwb->priv->is_summary_ready && e_book_backend_summary_is_summary_query (egwb->priv->summary, query)) {
 	
 		ids = e_book_backend_summary_search (egwb->priv->summary, query);
 		if (ids->len > 0)
