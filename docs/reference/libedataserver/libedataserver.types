@@ -1,5 +1,4 @@
 #include <glib-object.h>
-e_account_list_get_type
 e_account_get_type
 e_component_listener_get_type
 e_file_cache_get_type
