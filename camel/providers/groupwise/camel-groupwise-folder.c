@@ -98,7 +98,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CamelMultipart *multipart ;
 	int errno;
 	GList *read_items = NULL ;
-	
+	guint32 item_status ;
 	/* see if it is there in cache */
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 
@@ -174,6 +174,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 	status = e_gw_connection_get_item (cnc, container_id, uid, "default distribution recipient message attachments subject notification created recipientStatus status", &item) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
+		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
 		return NULL;
 	}
 	
@@ -331,6 +332,12 @@ groupwise_folder_get_message( CamelFolder *folder,
 	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
 
 	camel_object_unref (multipart) ;
+	
+	item_status = e_gw_item_get_item_status (item);
+	if ( !(item_status & E_GW_ITEM_STAT_READ)) {
+		read_items = g_list_append (read_items, (char *)uid) ;
+		e_gw_connection_mark_read (cnc, read_items) ;
+	}
 
 	g_object_unref (item) ;
 	
@@ -349,8 +356,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
 
-	read_items = g_list_append (read_items, (char *)uid) ;
-	e_gw_connection_mark_read (cnc, read_items) ;
 
 	return msg ;
 

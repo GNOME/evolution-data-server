@@ -1,4 +1,10 @@
-2005-02-01  Parthasarathi Susarla <sparthasarathi@novell.com>
+2005-02-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c
+	  (groupwise_folder_get_message): fix for Bug #72142
+	  resolved a deadlock
+
+2005-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c
 	  (groupwise_get_folder): camel flag for folder type
