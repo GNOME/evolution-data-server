@@ -1,3 +1,10 @@
+2004-07-19  Sivaiah Nallagatla <snallagatla@novell.com> 
+	
+	* libedata-book/e-book-backend-sexp.c (compare_address) : provided
+	implementation, search in all fileds of all types of addresses 
+	till a match occurs
+	Fixes #58701
+  
 2004-07-16  Chris Toshok  <toshok@ximian.com>
 
 	[ fixes #61052 ]
