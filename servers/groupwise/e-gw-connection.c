@@ -500,7 +500,7 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
 	/* Message Body set to description */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "message");
 	if (subparam) {
-		const char *description; 
+		char *description; 
 		GSList *l = NULL;
 
 		description = g_strdup (soup_soap_parameter_get_string_value (subparam));

@@ -1,3 +1,9 @@
+2004-01-26  JP Rosevear <jpr@ximian.com>
+
+	* backends/groupwise/e-gw-connection.c
+	(get_e_cal_component_from_soap_parameter): description is not
+	const
+
 2004-01-27  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
