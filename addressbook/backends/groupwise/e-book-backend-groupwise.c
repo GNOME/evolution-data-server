@@ -1129,6 +1129,8 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 	}
 	id = NULL;
 	status = e_gw_connection_create_item (egwb->priv->cnc, item, &id);  
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION) 
+		status = e_gw_connection_create_item (egwb->priv->cnc, item, &id);  
        	if (status == E_GW_CONNECTION_STATUS_OK) {
 		e_contact_set (contact, E_CONTACT_UID, id);
 		g_free (id);
@@ -1740,8 +1742,11 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	if (egwb->priv->is_summary_ready && e_book_backend_summary_is_summary_query (egwb->priv->summary, query)) {
 	
 		ids = e_book_backend_summary_search (egwb->priv->summary, query);
-		if (ids->len > 0)
+		if (ids->len > 0) {
 			status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, "members", ids, &gw_items);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, egwb->priv->container_id, "members", ids, &gw_items);
+		}
 		match_needed = FALSE;
 		g_ptr_array_free (ids, TRUE);
 	} else { 
@@ -1750,6 +1755,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		if (filter)
 			match_needed = FALSE;
 		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &gw_items);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "members", filter, &gw_items);
+			
 	}
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -1878,12 +1886,17 @@ book_view_thread (gpointer data)
 	if (gwb->priv->is_summary_ready && e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {
 	
 		ids = e_book_backend_summary_search (gwb->priv->summary, query);
-		if (ids->len > 0) 
+		if (ids->len > 0) {
 			status = e_gw_connection_get_items_from_ids (gwb->priv->cnc, gwb->priv->container_id, view, ids, &gw_items);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_get_items_from_ids (gwb->priv->cnc, gwb->priv->container_id, view, ids, &gw_items);
+		}
 		g_ptr_array_free (ids, TRUE);
 	} else { 
 		
 		status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, view, filter, &gw_items);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, view, filter, &gw_items);
 	}
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -2071,6 +2084,8 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	id = NULL;
 	is_writable = FALSE;
 	status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		if ( (id == NULL) && !priv->only_if_exists ) {
 			status = e_gw_connection_create_book (priv->cnc, priv->book_name,  &id);

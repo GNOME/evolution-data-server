@@ -1,3 +1,13 @@
+2004-10-13 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backend/groupwise/e-book-backend-groupwise.c (
+	e_book_backend_groupwise_create_contact) 
+	(e_book_backend_groupwise_get_contact_list)
+	(book_view_thread) (e_book_backend_groupwise_authenticate_user)
+	: call the e_gw_connection_* api again if the retuned status 
+	code is E_GW_CONNECTION_STATUS_INVALID_CONNECTION. Part of the fix 
+	for #64298 
+
 2004-10-04  Chris Toshok  <toshok@ximian.com>
 
 	* backends/groupwise/e-book-backend-groupwise-factory.c: use the new
