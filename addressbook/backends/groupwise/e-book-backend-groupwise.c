@@ -716,10 +716,15 @@ set_categories_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroupwi
 			e_gw_item_set_item_type (category_item,  E_GW_ITEM_TYPE_CATEGORY);
 			e_gw_item_set_category_name (category_item, category_names->data);
 			status = e_gw_connection_create_item (egwb->priv->cnc, category_item, &id);
-			if (status == E_GW_CONNECTION_STATUS_OK && id!= NULL) {
-				g_hash_table_insert (categories_by_name, g_strdup (category_names->data), id);
-				g_hash_table_insert (egwb->priv->categories_by_id, id, g_strdup (category_names->data));
-				category_ids = g_list_append (category_ids, id);
+			if (status == E_GW_CONNECTION_STATUS_OK && id != NULL) {
+				char **components = g_strsplit (id, "@", -1);
+				char *temp_id = components[0];
+							
+				g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup(temp_id));
+				g_hash_table_insert (egwb->priv->categories_by_id, g_strdup(temp_id), g_strdup (category_names->data));
+				category_ids = g_list_append (category_ids, g_strdup(temp_id));
+				g_free (id);
+				g_strfreev(components);
 			}
 			g_object_unref (category_item);
 			
