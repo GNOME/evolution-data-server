@@ -1,5 +1,11 @@
 2004-08-03  Chris Toshok  <toshok@ximian.com>
 
+	[ fixes #61719 ]
+	* libebook/e-vcard.c (read_attribute_params): fix the one
+	remaining g_assert_not_reached case.
+
+2004-08-03  Chris Toshok  <toshok@ximian.com>
+
 	* tests/vcard/Makefile.am (EXTRA_DIST): add 11.vcf.
 
 	* tests/vcard/11.vcf: new test, for missing attribute parameters.

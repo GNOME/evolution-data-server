@@ -399,8 +399,20 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 						lp = g_utf8_next_char (lp);
 				}
 				else {
-					/* XXX more here */
-					g_assert_not_reached ();
+					/* we've got an attribute with a truly empty
+					   attribute parameter.  So it's of the form:
+					   
+					   ATTR;[PARAM=value;]*;[PARAM=value;]*:
+
+					   (note the extra ';')
+
+					   the only thing to do here is, well.. nothing.
+					   we skip over the character if it's not a colon,
+					   and the rest is handled for us: We'll either
+					   continue through the loop again if we hit a ';',
+					   or we'll break out correct below if it was a ':' */
+					if (!colon)
+						lp = g_utf8_next_char (lp);
 				}
 			}
 			if (param && !comma) {
