@@ -1,3 +1,7 @@
+2003-11-19  JP Rosevear <jpr@ximian.com>
+
+	* MAINTAINERS: Update
+
 2003-11-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* configure.in: require libsoup version from CVS (2.1.1).
