@@ -896,6 +896,12 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 
 		fi->total = e_gw_container_get_total_count (container) ;
 		fi->unread = e_gw_container_get_unread_count (container) ;
+		/*refresh info*/
+		if (groupwise_store->current_folder &&
+		    strcmp (groupwise_store->current_folder->full_name, fi->full_name) == 0) {
+
+			CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->refresh_info(groupwise_store->current_folder, ex);
+		}
 		g_ptr_array_add (folders, fi);
 		name = NULL ;
 	}

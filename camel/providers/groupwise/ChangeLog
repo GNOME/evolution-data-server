@@ -1,3 +1,12 @@
+2005-02-04  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: 
+	  (groupwise_get_folder_info): call refresh info 
+	  when Send/Recieve is clicked
+	* camel-groupwise-folder.c:
+	  initialisation of variables and a little code 
+	  cleanup
+
 2005-02-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c

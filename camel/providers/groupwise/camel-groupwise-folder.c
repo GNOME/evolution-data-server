@@ -526,7 +526,6 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 	g_free(state_file);
 	camel_object_state_read(folder);
 
-	//	gw_folder = CAMEL_GROUPWISE_FOLDER (folder) ;
 	gw_folder->cache = camel_data_cache_new (folder_dir,0 ,ex) ;
 	if (!gw_folder->cache) {
 		camel_object_unref (folder) ;
@@ -625,7 +624,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 void
 gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) 
 {
-	CamelGroupwiseMessageInfo *mi ;
+	CamelGroupwiseMessageInfo *mi = NULL;
 	GPtrArray *msg ;
 	GSList *attach_list = NULL ;
 	guint32 item_status, status_flags;
@@ -1106,7 +1105,8 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 
 	*len = strlen (*str) ;
 	
-	g_free (temp) ;
+	if (temp && strlen(temp))
+		g_free (temp) ;
 	g_strfreev (tmp);
 }
 
