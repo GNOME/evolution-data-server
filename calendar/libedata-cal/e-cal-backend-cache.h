@@ -60,6 +60,10 @@ const icaltimezone *e_cal_backend_cache_get_timezone (ECalBackendCache *cache, c
 gboolean            e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone);
 gboolean            e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid);
 
+gboolean            e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone);
+icaltimezone       *e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache);
+
+
 G_END_DECLS
 
 #endif

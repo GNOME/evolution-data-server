@@ -38,10 +38,10 @@ struct _EGwItemPrivate {
 
 	/* properties */
 	char *id;
-	time_t creation_date;
-	time_t start_date;
-	time_t end_date;
-	time_t due_date;
+	char *creation_date;
+	char *start_date;
+	char *end_date;
+	char *due_date;
 	gboolean completed;
 	char *subject;
 	char *message;
@@ -301,10 +301,10 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	/* allocate internal structure */
 	priv = g_new0 (EGwItemPrivate, 1);
 	priv->item_type = E_GW_ITEM_TYPE_UNKNOWN;
-	priv->creation_date = -1;
-	priv->start_date = -1;
-	priv->end_date = -1;
-	priv->due_date = -1;
+	priv->creation_date = NULL;
+	priv->start_date = NULL;
+	priv->end_date = NULL; 
+	priv->due_date = NULL; 
 	priv->trigger = 0;
 	priv->recipient_list = NULL;
 	priv->completed = FALSE;
@@ -1247,9 +1247,12 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			g_free (value);
 
 		} else if (!g_ascii_strcasecmp (name, "created")) {
+			char *formatted_date;
 			value = soup_soap_parameter_get_string_value (child);
-			item->priv->creation_date = e_gw_connection_get_date_from_string (value);
+			formatted_date = e_gw_connection_format_date_string (value);
+			e_gw_item_set_creation_date (item, formatted_date);
 			g_free (value);
+			g_free (formatted_date);
 
 		} else if (!g_ascii_strcasecmp (name, "distribution")) {
 			SoupSoapParameter *tp;
@@ -1262,14 +1265,20 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			}
 
 		} else if (!g_ascii_strcasecmp (name, "dueDate")) {
+			char *formatted_date; 
 			value = soup_soap_parameter_get_string_value (child);
-			item->priv->due_date = e_gw_connection_get_date_from_string (value);
+			formatted_date = e_gw_connection_format_date_string (value);
+			e_gw_item_set_due_date (item, formatted_date);
 			g_free (value);
-
+			g_free (formatted_date);
+			
 		} else if (!g_ascii_strcasecmp (name, "endDate")) {
+			char *formatted_date; 
 			value = soup_soap_parameter_get_string_value (child);
-			item->priv->end_date = e_gw_connection_get_date_from_string (value);
+			formatted_date = e_gw_connection_format_date_string (value);
+			e_gw_item_set_end_date (item, formatted_date);
 			g_free (value);
+			g_free (formatted_date); 
 
 		} else if (!g_ascii_strcasecmp (name, "iCalId"))
 			item->priv->icalid = soup_soap_parameter_get_string_value (child);
@@ -1294,8 +1303,10 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			item->priv->priority = soup_soap_parameter_get_string_value (child);
 
 		else if (!g_ascii_strcasecmp (name, "startDate")) {
+			char *formatted_date;
 			value = soup_soap_parameter_get_string_value (child);
-			item->priv->start_date = e_gw_connection_get_date_from_string (value);
+			formatted_date = e_gw_connection_format_date_string (value);
+			e_gw_item_set_start_date (item, formatted_date);
 			g_free (value);
 
 		} else if (!g_ascii_strcasecmp (name, "subject"))
@@ -1387,68 +1398,76 @@ e_gw_item_set_id (EGwItem *item, const char *new_id)
 	item->priv->id = g_strdup (new_id);
 }
 
-time_t
+char *
 e_gw_item_get_creation_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
 	return item->priv->creation_date;
 }
 
 void
-e_gw_item_set_creation_date (EGwItem *item, time_t new_date)
+e_gw_item_set_creation_date (EGwItem *item, const char *new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
-	item->priv->creation_date = new_date;
+	if (item->priv->creation_date)
+		g_free (item->priv->creation_date);
+	item->priv->creation_date = g_strdup (new_date);
 }
 
-time_t
+char *
 e_gw_item_get_start_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
 	return item->priv->start_date;
 }
 
 void
-e_gw_item_set_start_date (EGwItem *item, time_t new_date)
+e_gw_item_set_start_date (EGwItem *item, const char *new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
-	item->priv->start_date = new_date;
+	if (item->priv->start_date)
+		g_free (item->priv->start_date);
+	item->priv->start_date = g_strdup (new_date);
 }
 
-time_t
+char *
 e_gw_item_get_end_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
 	return item->priv->end_date;
 }
 
 void
-e_gw_item_set_end_date (EGwItem *item, time_t new_date)
+e_gw_item_set_end_date (EGwItem *item, const char *new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
-	item->priv->end_date = new_date;
+	if (item->priv->end_date)
+		g_free (item->priv->end_date);
+	item->priv->end_date = g_strdup (new_date);
 }
 
-time_t
+char *
 e_gw_item_get_due_date (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), -1);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
 	return item->priv->due_date;
 }
 
 void
-e_gw_item_set_due_date (EGwItem *item, time_t new_date)
+e_gw_item_set_due_date (EGwItem *item, const char *new_date)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
-	item->priv->due_date = new_date;
+	if (item->priv->due_date)
+		g_free (item->priv->due_date);
+	item->priv->due_date = g_strdup (new_date);
 }
 
 const char *
@@ -1606,17 +1625,6 @@ e_gw_item_set_trigger (EGwItem *item, int trigger)
 	item->priv->trigger = trigger;
 }
 
-static char *
-timet_to_string (time_t t)
-{
-	gchar *ret;
-
-	ret = g_malloc (17); /* 4+2+2+1+2+2+2+1 + 1 */
-	strftime (ret, 17, "%Y%m%dT%H%M%SZ", gmtime (&t));
-
-	return ret;
-}
-
 static void
 add_distribution_to_soap_message (GSList *recipient_list, SoupSoapMessage *msg)
 {
@@ -1676,16 +1684,18 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		}
 		if (priv->recipient_list != NULL)
 			add_distribution_to_soap_message (priv->recipient_list, msg);
+		if (priv->end_date) {
+			e_gw_message_write_string_parameter (msg, "endDate", NULL, priv->end_date);
+		} else
+			e_gw_message_write_string_parameter (msg, "endDate", NULL, "");
 		
 		break;
 
 	case E_GW_ITEM_TYPE_TASK :
 		soup_soap_message_add_attribute (msg, "type", "Task", "xsi", NULL);
 
-		if (priv->due_date != -1) {
-			dtstring = timet_to_string (priv->due_date);
-			e_gw_message_write_string_parameter (msg, "dueDate", NULL, dtstring);
-			g_free (dtstring);
+		if (priv->due_date) {
+			e_gw_message_write_string_parameter (msg, "dueDate", NULL, priv->due_date);
 		} else
 			e_gw_message_write_string_parameter (msg, "dueDate", NULL, "");
 
@@ -1746,21 +1756,13 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 
 	soup_soap_message_end_element (msg);
 
-	if (priv->start_date != -1) {
-		dtstring = timet_to_string (priv->start_date);
-		e_gw_message_write_string_parameter (msg, "startDate", NULL, dtstring);
-		g_free (dtstring);
+	if (priv->start_date) {
+		e_gw_message_write_string_parameter (msg, "startDate", NULL, 
+				priv->start_date);
 	}
-	if (priv->end_date != -1) {
-		dtstring = timet_to_string (priv->end_date);
-		e_gw_message_write_string_parameter (msg, "endDate", NULL, dtstring);
-		g_free (dtstring);
-	} else
-		e_gw_message_write_string_parameter (msg, "endDate", NULL, "");
-	if (priv->creation_date != -1) {
-		dtstring = timet_to_string (priv->creation_date);
-		e_gw_message_write_string_parameter (msg, "created", NULL, dtstring);
-		g_free (dtstring);
+	
+	if (priv->creation_date) {
+		e_gw_message_write_string_parameter (msg, "created", NULL, priv->creation_date);
 	}
 
 	if (priv->classification)
@@ -1839,7 +1841,6 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 {
 	GHashTable *changes;
 	EGwItemPrivate *priv;
-	char *dtstring;
 
 	priv = item->priv;
 	changes = NULL;
@@ -1863,28 +1864,24 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 	if (g_hash_table_lookup (changes, "subject"))
 		e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
 	if (g_hash_table_lookup (changes, "startDate")) {
-		if (priv->start_date != -1) {
-			dtstring = timet_to_string (priv->start_date);
-			e_gw_message_write_string_parameter (msg, "startDate", NULL, dtstring);
-			g_free (dtstring);
+		if (priv->start_date) {
+			e_gw_message_write_string_parameter (msg, "startDate", NULL, priv->start_date); 
 		}
 	}
 	if (g_hash_table_lookup (changes, "endDate")) {
-		if (priv->end_date != -1) {
-			dtstring = timet_to_string (priv->end_date);
-			e_gw_message_write_string_parameter (msg, "endDate", NULL, dtstring);
-			g_free (dtstring);
+		if (priv->end_date) {
+			e_gw_message_write_string_parameter (msg, "endDate", NULL, priv->end_date);
 		}
 	}
 	if (g_hash_table_lookup (changes, "message")) {
 		soup_soap_message_start_element (msg, "message", NULL, NULL);
 		if (priv->message) {
-			char *str;
+			char *str, *message;
 
 			str = soup_base64_encode (priv->message, strlen (priv->message));
-			dtstring = g_strdup_printf ("%d", strlen (str));
-			soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
-			g_free (dtstring);
+			message = g_strdup_printf ("%d", strlen (str));
+			soup_soap_message_add_attribute (msg, "length", message, NULL, NULL);
+			g_free (message);
 			soup_soap_message_write_string (msg, str);
 			g_free (str);
 		} else {
@@ -1894,7 +1891,7 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 
 		soup_soap_message_end_element (msg);
 	}
-	if (g_hash_table_lookup (changes, "class"))
+	if (g_hash_table_lookup (changes, "classification"))
 		e_gw_message_write_string_parameter (msg, "class", NULL, priv->classification);
 
 	if (g_hash_table_lookup (changes, "acceptLevel"))

@@ -995,6 +995,24 @@ timet_from_string (const char *str)
 	return mktime (&date);
 }
 
+char *
+e_gw_connection_format_date_string (const char *dtstring)
+{
+        char *str2;
+        int i, j, len = strlen (dtstring);
+	
+        str2 = g_malloc0 (len);
+        for (i = 0,j = 0; i < len; i++) {
+                if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
+			str2[j] = dtstring[i];
+			j++;
+                }
+        }
+
+	str2[j] = '\0';
+        return str2;
+}
+
 time_t
 e_gw_connection_get_date_from_string (const char *dtstring)
 {

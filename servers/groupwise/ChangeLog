@@ -1,3 +1,24 @@
+2004-05-18  Harish Krishnaswamy  <kharish@novell.com>
+	
+	Fixes #56320 and related timezone issues.
+	All datetime related fields are stored as strings and
+	not as time_t structures.
+       
+	* e-gw-connection.c: (e_gw_connection_format_date_string):
+	Convert the Groupwise datetime string into the format preferred
+	by the ical library.
+	* e-gw-connection.h:
+	* e-gw-item.c: (e_gw_item_init),
+	(e_gw_item_new_from_soap_parameter), (e_gw_item_get_creation_date),
+	(e_gw_item_set_creation_date), (e_gw_item_get_start_date),
+	(e_gw_item_set_start_date), (e_gw_item_get_end_date),
+	(e_gw_item_set_end_date), (e_gw_item_get_due_date),
+	(e_gw_item_set_due_date), (e_gw_item_append_to_soap_message),
+	(append_event_changes_to_soap_message):
+	Replace all time_t related conversions with string<->icaltimetype.
+	* e-gw-item.h: Update arguments and return values on the get/set
+	functions.
+
 2004-05-18  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-item.c (set_contact_fields_from_soap_parameter) : read organization_id

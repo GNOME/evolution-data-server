@@ -1,3 +1,34 @@
+2004-05-18  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #56320 and related timezone issues.
+	Convert datetime from the Groupwise string format between icaltime
+	directly w/o using time_t structures.
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component),
+	(e_gw_item_new_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_connection_send_appointment), (e_gw_item_set_changes):
+	use the default_timezone info while performing the conversions.
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
+	(get_deltas), (connect_to_server),
+	(e_cal_backend_groupwise_finalize), (e_cal_backend_groupwise_open),
+	(e_cal_backend_groupwise_add_timezone):
+	Add timezone to the cache and allow evolution to set the default timezone.
+	(e_cal_backend_groupwise_set_default_timezone),
+	(e_cal_backend_groupwise_create_object),
+	(e_cal_backend_groupwise_modify_object), (receive_object),
+	(send_object), (e_cal_backend_groupwise_init):
+	* libedata-cal/e-cal-backend-cache.c:
+	(e_cal_backend_cache_put_default_timezone),
+	(e_cal_backend_cache_get_default_timezone):
+	Store default timezone information in the cache so that eds remembers the
+	client timezone information while populating the cache in the next session.
+	Since the cache population happens while the calendar is still loading, evolution
+	would not have had a chance to set the timezone yet.
+	
+	* libedata-cal/e-cal-backend-cache.h: Added get/put functions for
+	default timezone.
+
 2004-05-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedata-cal/e-cal-backend-sexp.c (func_occur_in_time_range): always

@@ -32,14 +32,14 @@ G_BEGIN_DECLS
 /*
  * Items management
  */
-EGwItem       *e_gw_item_new_from_cal_component (const char *container, ECalComponent *comp);
-ECalComponent *e_gw_item_to_cal_component (EGwItem *item);
+EGwItem       *e_gw_item_new_from_cal_component (const char *container, const icaltimezone *default_zone, ECalComponent *comp);
+ECalComponent *e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone);
 void          e_gw_item_set_changes (EGwItem *item, EGwItem *cached_item);
 
 /*
  * Connection-related utility functions
  */
-EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, char **id);
+EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, char **id);
 EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users,
 						       time_t start, time_t end, GList **freebusy);
 

@@ -27,7 +27,7 @@
 #include "e-cal-backend-groupwise-utils.h"
 
 static EGwItem *
-set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
+set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const icaltimezone *default_zone)
 {
 	const char *uid, *location;
 	ECalComponentDateTime dt;
@@ -37,6 +37,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 	int *priority;
 	GSList *slist, *sl;
 	icalproperty *prop;
+	struct icaltimetype itt_utc;
 
 	/* first set specific properties */
 	switch (e_cal_component_get_vtype (comp)) {
@@ -94,9 +95,12 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 
 		/* end date */
 		e_cal_component_get_dtend (comp, &dt);
-		if (dt.value)
-			e_gw_item_set_end_date (item, icaltime_as_timet_with_zone (*dt.value, 
-						icaltimezone_get_builtin_timezone_from_tzid (dt.tzid)));
+		if (dt.value) {
+			if (!icaltime_get_timezone (*dt.value))
+				icaltime_set_timezone (dt.value, default_zone);
+			itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+			e_gw_item_set_end_date (item, icaltime_as_ical_string (itt_utc));
+		}
 
 		break;
 
@@ -106,8 +110,10 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 		/* due date */
 		e_cal_component_get_due (comp, &dt);
 		if (dt.value) {
-			e_gw_item_set_due_date (item, icaltime_as_timet (*dt.value));
-			e_cal_component_free_datetime (&dt);
+			if (!icaltime_get_timezone (*dt.value))
+				icaltime_set_timezone (dt.value, default_zone);
+			itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+			e_gw_item_set_due_date (item, icaltime_as_ical_string (itt_utc));
 		}
 
 		/* priority */
@@ -130,7 +136,6 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 		e_cal_component_get_completed (comp, &dt.value);
 		if (dt.value) {
 			e_gw_item_set_completed (item, TRUE);
-			e_cal_component_free_datetime (&dt);
 		} else
 			e_gw_item_set_completed (item, FALSE);
 
@@ -188,26 +193,28 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 	/* start date */
 	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value) {
-		e_gw_item_set_start_date (item, 
-			icaltime_as_timet_with_zone (*dt.value, icaltimezone_get_builtin_timezone_from_tzid (dt.tzid)));
+		if (!icaltime_get_timezone (*dt.value))
+			icaltime_set_timezone (dt.value, default_zone);
+		itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+		e_gw_item_set_start_date (item, icaltime_as_ical_string (itt_utc));
 	} else if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 		/* appointments need the start date property */
 		g_object_unref (item);
 		return NULL;
 	}
 
-
 	/* creation date */
 	e_cal_component_get_created (comp, &dt.value);
 	if (dt.value) {
-		e_gw_item_set_creation_date (item, 
-			icaltime_as_timet_with_zone (*dt.value, icaltimezone_get_builtin_timezone_from_tzid (dt.tzid)));
-		e_cal_component_free_datetime (&dt);
+		if (!icaltime_get_timezone (*dt.value))
+			icaltime_set_timezone (dt.value, default_zone);
+		itt_utc = icaltime_convert_to_zone (*dt.value, icaltimezone_get_utc_timezone ());
+		e_gw_item_set_creation_date (item, icaltime_as_ical_string (itt_utc));
 	} else {
 		struct icaltimetype itt;
 
 		e_cal_component_get_dtstamp (comp, &itt);
-		e_gw_item_set_creation_date (item, icaltime_as_timet (itt));
+		e_gw_item_set_creation_date (item, icaltime_as_ical_string (itt));
 	}
 
 	/* classification */
@@ -230,7 +237,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 }
 
 EGwItem *
-e_gw_item_new_from_cal_component (const char *container, ECalComponent *comp)
+e_gw_item_new_from_cal_component (const char *container, const icaltimezone *default_zone, ECalComponent *comp)
 {
 	EGwItem *item;
 
@@ -239,18 +246,18 @@ e_gw_item_new_from_cal_component (const char *container, ECalComponent *comp)
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_container_id (item, container);
 	
-	return set_properties_from_cal_component (item, comp);
+	return set_properties_from_cal_component (item, comp, default_zone);
 }
 
 ECalComponent *
-e_gw_item_to_cal_component (EGwItem *item)
+e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 {
 	ECalComponent *comp;
 	ECalComponentText text;
 	ECalComponentDateTime dt;
 	const char *description;
-	time_t t;
-	struct icaltimetype itt;
+	char *t;
+	struct icaltimetype itt, itt_utc;
 	int priority;
 	int alarm_duration;
 	GSList *recipient_list, *rl, *attendee_list = NULL;
@@ -305,26 +312,42 @@ e_gw_item_to_cal_component (EGwItem *item)
 
 	/* creation date */
 	t = e_gw_item_get_creation_date (item);
-	itt = icaltime_from_timet (t, 0);
+	itt_utc = icaltime_from_string (t);
+	if (!icaltime_get_timezone (itt_utc))
+		icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+	if (default_zone) {
+		itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+		icaltime_set_timezone (&itt, default_zone);
+		e_cal_component_set_created (comp, &itt);
+		e_cal_component_set_dtstamp (comp, &itt);
+		
+	} else {
+		e_cal_component_set_created (comp, &itt_utc);
+		e_cal_component_set_dtstamp (comp, &itt_utc);
+	}
+	g_free (t);
 	
-	e_cal_component_set_created (comp, &itt);
-	e_cal_component_set_dtstamp (comp, &itt);
+	
 
 	/* start date */
+	/* should i duplicate here ? */
 	t = e_gw_item_get_start_date (item);
-	itt = icaltime_from_timet (t, 0);
-	dt.value = &itt;
-	dt.tzid = g_strdup ("UTC");
+	itt_utc = icaltime_from_string (t);
+	if (!icaltime_get_timezone (itt_utc))
+		icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+	if (default_zone) {
+		itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+		icaltime_set_timezone (&itt, default_zone);
+		dt.value = &itt;
+		dt.tzid = icaltimezone_get_tzid (default_zone);
+	} else {
+		dt.value = &itt_utc;
+		dt.tzid = g_strdup ("UTC");
+	}
 	e_cal_component_set_dtstart (comp, &dt);
-	g_free (dt.tzid);
+	g_free (t);
 
-	/* end date */
-	t = e_gw_item_get_end_date (item);
-	itt = icaltime_from_timet (t, 0);
-	dt.value = &itt;
-	dt.tzid = g_strdup ("UTC");
-	e_cal_component_set_dtend (comp, &dt);
-	g_free (dt.tzid);
+	
 
 	/* classification */
 	description = e_gw_item_get_classification (item);
@@ -354,6 +377,23 @@ e_gw_item_to_cal_component (EGwItem *item)
 
 		/* location */
 		e_cal_component_set_location (comp, e_gw_item_get_place (item));
+
+		/* end date */
+		t = e_gw_item_get_end_date (item);
+		itt_utc = icaltime_from_string (t);
+		if (!icaltime_get_timezone (itt_utc))
+			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+		if (default_zone) {
+			itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+			icaltime_set_timezone (&itt, default_zone);
+			dt.value = &itt;
+			dt.tzid = icaltimezone_get_tzid (default_zone);
+		} else {
+			dt.value = &itt_utc;
+			dt.tzid = g_strdup ("UTC");
+		}
+		
+		e_cal_component_set_dtend (comp, &dt);
 
 		/* alarms*/
 		/* we negate the value as GW supports only "before" the start of event alarms */
@@ -398,9 +438,18 @@ e_gw_item_to_cal_component (EGwItem *item)
 	case E_GW_ITEM_TYPE_TASK :
 		/* due date */
 		t = e_gw_item_get_due_date (item);
-		itt = icaltime_from_timet (t, 0);
-		dt.value = &itt;
-		dt.tzid = g_strdup ("UTC");
+		itt_utc = icaltime_from_string (t);
+		if (!icaltime_get_timezone (itt_utc))
+			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+		if (default_zone) {
+			itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+			icaltime_set_timezone (&itt, default_zone);
+			dt.value = &itt;
+			dt.tzid = icaltimezone_get_tzid (default_zone);
+		} else {
+			dt.value = &itt_utc;
+			dt.tzid = g_strdup ("UTC");
+		}
 		e_cal_component_set_due (comp, &dt);
 		break;
 
@@ -428,7 +477,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, char **id)
+e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, char **id)
 {
 	EGwItem *item;
 	EGwConnectionStatus status;
@@ -436,7 +485,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
-	item = e_gw_item_new_from_cal_component (container, comp);
+	item = e_gw_item_new_from_cal_component (container, default_zone, comp);
 	e_gw_item_set_container_id (item, container);
 	status = e_gw_connection_send_item (cnc, item, id);
 	g_object_unref (item);
@@ -725,23 +774,24 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 {
 	char *subject, *cache_subject;
 	char *message, *cache_message;
-	char *classification, *cache_classification;
+	const char *classification, *cache_classification;
 	char *accept_level, *cache_accept_level;
 	char *place, *cache_place;
 	char *priority, *cache_priority;
-		
+	int trigger, cache_trigger;
+
 	/* TODO assert the types of the items are the same */
 
 	SET_DELTA(subject);
 	SET_DELTA(message);
 	SET_DELTA(classification);
 
-	if (difftime (e_gw_item_get_start_date (item), e_gw_item_get_start_date (cache_item)))
+	if (strcmp (e_gw_item_get_start_date (item), e_gw_item_get_start_date (cache_item)))
 		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "startDate", e_gw_item_get_start_date (item));
 	
 	if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 
-		if (difftime (e_gw_item_get_end_date (item), e_gw_item_get_end_date (cache_item)))
+		if (strcmp (e_gw_item_get_end_date (item), e_gw_item_get_end_date (cache_item)))
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "endDate", e_gw_item_get_end_date (item));
 		accept_level = e_gw_item_get_accept_level (item);                                                       
 		cache_accept_level = e_gw_item_get_accept_level (cache_item);                                           
@@ -755,24 +805,26 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "acceptLevel", accept_level ); 
 		
 		SET_DELTA(place);
-		if ( e_gw_item_get_trigger (cache_item) ) {                                                                            
-			if (!e_gw_item_get_trigger (item) )                                                                               
-				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, "alarm", e_gw_item_get_trigger (cache_item));
-			else if (e_gw_item_get_trigger (item) != e_gw_item_get_trigger (cache_item))                                               
-				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "alarm", e_gw_item_get_trigger (item));
+		trigger = e_gw_item_get_trigger (item);
+		cache_trigger = e_gw_item_get_trigger (cache_item);
+		if (cache_trigger) {                                                                            
+			if (!trigger)                                                                               
+				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, "alarm", &cache_trigger);
+			else if (trigger != cache_trigger)
+				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "alarm", &trigger);
 		}                                                                                                 
-		else if ( e_gw_item_get_trigger (item) )                                                                               
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "alarm", e_gw_item_get_trigger (item)); 
+		else if (trigger)                                                                               
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "alarm", &trigger);
 	}
 	else if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
 		gboolean completed, cache_completed;
 		
-		if (difftime (e_gw_item_get_due_date (item), e_gw_item_get_due_date (cache_item)))
+		if (strcmp (e_gw_item_get_due_date (item), e_gw_item_get_due_date (cache_item)))
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "dueDate", e_gw_item_get_due_date (item));
 		completed = e_gw_item_get_completed (item);
 		cache_completed = e_gw_item_get_completed (cache_item);
 		if ((completed && !cache_completed) || (!completed && cache_completed))
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "completed", completed);
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "completed", &completed);
 		SET_DELTA (priority);
 	}
 }

@@ -501,6 +501,69 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 }
 
 gboolean
+e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone)
+{
+	ECalBackendCachePrivate *priv;
+	icalcomponent *icalcomp;
+	gboolean retval;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
+
+	priv = cache->priv;
+
+	/* add the timezone to the cache file */
+	icalcomp = icaltimezone_get_component (default_zone);
+	if (!icalcomp)
+		return FALSE;
+
+	if (e_file_cache_get_object (E_FILE_CACHE (cache), "default_zone")) {
+		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), "default_zone",
+						      icalcomponent_as_ical_string (icalcomp));
+	} else {
+		retval = e_file_cache_add_object (E_FILE_CACHE (cache),
+						 "default_zone",
+						  icalcomponent_as_ical_string (icalcomp));
+	}
+
+	if (!retval)
+		return FALSE;
+
+	return TRUE;
+
+}
+
+icaltimezone *
+e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
+{
+	icaltimezone *zone;
+	const char *comp_str;
+	ECalBackendCachePrivate *priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+
+	priv = cache->priv;
+
+	/*  look for the timezone in the cache */
+	comp_str = e_file_cache_get_object (E_FILE_CACHE (cache), "default_zone");
+	if (comp_str) {
+		icalcomponent *icalcomp;
+
+		icalcomp = icalparser_parse_string (comp_str);
+		if (icalcomp) {
+			zone = icaltimezone_new ();
+			if (icaltimezone_set_component (zone, icalcomp) == 1) {
+				return zone;
+			} else {
+				icalcomponent_free (icalcomp);
+				icaltimezone_free (zone, 1);
+			}
+		}
+	}
+
+	return NULL;
+}
+
+gboolean
 e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
 {
 	gpointer orig_key, orig_value;

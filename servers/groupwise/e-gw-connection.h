@@ -87,6 +87,8 @@ const char         *e_gw_connection_get_user_uuid (EGwConnection *cnc);
 
 
 time_t              e_gw_connection_get_date_from_string (const char *dtstring);
+char               *e_gw_connection_format_date_string (const char *dtstring);
+
 
 EGwConnectionStatus e_gw_connection_create_item (EGwConnection *cnc, EGwItem *item, char** id);
 EGwConnectionStatus e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char *id, EGwItem **item);
