@@ -212,6 +212,48 @@ e_cal_backend_sexp_func_time_day_end (ESExp *esexp, int argc, ESExpResult **argv
 	return result;
 }
 
+/* (uid? UID)
+ *
+ * UID - the uid of the component
+ *
+ * Returns a boolean indicating whether the component has the given UID
+ */
+static ESExpResult *
+func_uid (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	const char *uid = NULL, *arg_uid;
+	gboolean equal;
+	ESExpResult *result;
+
+	/* Check argument types */
+
+	if (argc != 1) {
+		e_sexp_fatal_error (esexp, _("uid? expects 1 argument"));
+		return NULL;
+	}
+
+	if (argv[0]->type != ESEXP_RES_STRING) {
+		e_sexp_fatal_error (esexp, _("uid? expects argument 1 to be a string"));
+		return NULL;
+	}
+
+	arg_uid = argv[0]->value.string;	
+	e_cal_component_get_uid (ctx->comp, &uid);
+
+	if (!arg_uid && !uid)
+		equal = TRUE;
+	else if ((!arg_uid || !uid) && arg_uid != uid)
+		equal = FALSE;
+	else if (e_util_utf8_strstrcase (arg_uid, uid) != NULL && strlen (arg_uid) == strlen (uid))
+		equal = TRUE;
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.bool = equal;
+
+	return result;
+}
+
 /* (occur-in-time-range? START END)
  *
  * START - time_t, start of the time range
@@ -820,6 +862,7 @@ static struct {
 	{ "time-day-end", e_cal_backend_sexp_func_time_day_end, 0 },
 
 	/* Component-related functions */
+	{ "uid?", func_uid, 0 },
 	{ "occur-in-time-range?", func_occur_in_time_range, 0 },
 	{ "contains?", func_contains, 0 },
 	{ "has-alarms?", func_has_alarms, 0 },
@@ -890,7 +933,7 @@ e_cal_backend_sexp_new (const char *text)
 	sexp->priv->search_sexp = e_sexp_new();
 	sexp->priv->text = g_strdup (text);
 
-	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp->priv->search_sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, sexp->priv->search_context);
