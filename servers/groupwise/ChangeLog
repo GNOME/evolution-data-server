@@ -1,3 +1,7 @@
+2004-02-13  JP Rosevear <jpr@ximian.com>
+
+	* Makefile.am: additional includes for builddir != srcdir
+
 2004-02-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* soap-test.c: added code to get the containers list and display all

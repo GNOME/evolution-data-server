@@ -1,5 +1,7 @@
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"libegroupwise\"		\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
 	$(SOUP_CFLAGS)					\
 	$(E_DATA_SERVER_CFLAGS)				\
 	$(DEBUG_CFLAGS)
