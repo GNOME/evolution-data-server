@@ -13,14 +13,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
-"POT-Creation-Date: 2004-05-19 11:11-0400\n"
-"PO-Revision-Date: 2004-04-02 02:11+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-05-30 14:35+0200\n"
+"PO-Revision-Date: 2004-05-30 14:40+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.3.1\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
@@ -30,53 +30,53 @@ msgid "Loading..."
 msgstr "Cargando..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3069
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Buscando..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:614
+#: addressbook/backends/ldap/e-book-backend-ldap.c:615
 msgid "Using Distinguished Name (DN)"
 msgstr "Usando nombre distintivo (ND)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:617
+#: addressbook/backends/ldap/e-book-backend-ldap.c:618
 msgid "Using Email Address"
 msgstr "Usando dirección de correo"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:783
+#: addressbook/backends/ldap/e-book-backend-ldap.c:784
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando al servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1298
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1299
 msgid "Adding contact to LDAP server..."
 msgstr "Añadiendo contacto al servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1394
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1395
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto del servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1609
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1610
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto del servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3089
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
-#. * "e_book_load_uri
+#. * "e_book_open
 #: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
 #: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
 #: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
 #: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
 #: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
-#: addressbook/libebook/e-book.c:1430 addressbook/libebook/e-book.c:2030
+#: addressbook/libebook/e-book.c:1943
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "«%s» en la libreta antes que «%s»..."
@@ -86,7 +86,7 @@ msgstr "«%s» en la libreta antes que «%s»..."
 #: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
 #: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
 #: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
-#: addressbook/libebook/e-book.c:1438
+#: addressbook/libebook/e-book.c:1417 addressbook/libebook/e-book.c:1519
 msgid "book busy"
 msgstr "libreta ocupada"
 
@@ -95,8 +95,8 @@ msgstr "libreta ocupada"
 #: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
 #: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
 #: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
-#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1460
-#: addressbook/libebook/e-book.c:2039
+#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1439
+#: addressbook/libebook/e-book.c:1541 addressbook/libebook/e-book.c:1952
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Excepción Corba haciendo la llamada «%s»"
@@ -109,33 +109,38 @@ msgstr "e_book_cancel: no hay operación actual"
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: no se pudo cancelar"
 
-#: addressbook/libebook/e-book.c:1731
-msgid "e_book_load_uri: Invalid source."
-msgstr "e_book_load_uri: Origen inválido"
-
-#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1858
-#, c-format
-msgid "e_book_load_uri: no factories available for uri `%s'"
-msgstr "e_book_load_uri: no hay fábricas disponibles para uri «%s»"
-
-#: addressbook/libebook/e-book.c:1753
-msgid "e_book_load_uri: Could not create EBookListener"
-msgstr "e_book_load_uri: No se pudo crear EBookListener"
-
-#: addressbook/libebook/e-book.c:1852
-msgid "e_book_load_uri: cancelled"
-msgstr "e_book_load_uri: cancelado"
-
-#: addressbook/libebook/e-book.c:1889
+#: addressbook/libebook/e-book.c:1409
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "«%s» en la libreta antes que «%s»"
 
-#: addressbook/libebook/e-book.c:2125
+#: addressbook/libebook/e-book.c:1458
+msgid "e_book_open: cancelled"
+msgstr "e_book_open: cancelado"
+
+#: addressbook/libebook/e-book.c:1810
+msgid "e_book_load_uri: Invalid source."
+msgstr "e_book_load_uri: Origen inválido"
+
+#: addressbook/libebook/e-book.c:1818
+#, c-format
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr "e_book_load_uri: no hay fábricas disponibles para uri «%s»"
+
+#: addressbook/libebook/e-book.c:1830
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr "e_book_load_uri: No se pudo crear EBookListener"
+
+#: addressbook/libebook/e-book.c:1881
+#, c-format
+msgid "e_book_new: no factories available for uri `%s'"
+msgstr "e_book_new: no hay fábricas disponibles para uri «%s»"
+
+#: addressbook/libebook/e-book.c:2038
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: no había uid de autocontacto almacenada en gconf"
 
-#: addressbook/libebook/e-book.c:2302
+#: addressbook/libebook/e-book.c:2147
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -291,311 +296,315 @@ msgstr "Lista de correo"
 
 #: addressbook/libebook/e-contact.c:146
 msgid "Email 1"
-msgstr "Correo 1"
+msgstr "Correo-e 1"
 
 #: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
-msgstr "Correo electrónico 2"
+msgstr "Correo-e 2"
 
 #: addressbook/libebook/e-contact.c:148
 msgid "Email 3"
-msgstr "Correo electrónico 3"
+msgstr "Correo-e 3"
 
 #: addressbook/libebook/e-contact.c:149
-msgid "Mailer"
-msgstr "Transporte"
+msgid "Email 4"
+msgstr "Correo-e 4"
 
 #: addressbook/libebook/e-contact.c:150
+msgid "Mailer"
+msgstr "Mensajería"
+
+#: addressbook/libebook/e-contact.c:151
 msgid "Wants HTML Mail"
 msgstr "Desea correo HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:154
 msgid "AIM Screen Name List"
 msgstr "Lista de nombres de pantalla AIM"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
 msgstr "Lista de Id de grupos"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
 msgstr "Lista de ID Jabber"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "Yahoo! Screen Name List"
 msgstr "Lista de identificadores Yahoo!"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:158
 msgid "MSN Screen Name List"
 msgstr "Lista de identificadores MSN"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:159
 msgid "ICQ Id List"
 msgstr "Lista de identificadores ICQ"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
 msgstr "Nombre de pantalla AIM 1 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 2"
 msgstr "Nombre de pantalla AIM 2 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 3"
 msgstr "Nombre de pantalla AIM 3 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 1"
 msgstr "Nombre de pantalla AIM 1 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 2"
 msgstr "Nombre de pantalla AIM 2 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 3"
 msgstr "Nombre de pantalla AIM 3 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:167
 msgid "Groupwise Home Screen Name 1"
 msgstr "Nombre de pantalla de grupo 1 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:168
 msgid "Groupwise Home Screen Name 2"
 msgstr "Nombre de pantalla de grupo 2 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 3"
 msgstr "Nombre de pantalla de grupo 3 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Work Screen Name 1"
 msgstr "Nombre de pantalla de grupo 1 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Work Screen Name 2"
 msgstr "Nombre de pantalla de grupo 2 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 3"
 msgstr "Nombre de pantalla de grupo 3 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
 msgstr "ID Jabber 1 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 2"
 msgstr "ID Jabber 2 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 3"
 msgstr "ID Jabber 3 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 1"
 msgstr "ID Jabber 1 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 2"
 msgstr "ID Jabber 2 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 3"
 msgstr "ID Jabber 3 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
 msgstr "ID Yahoo! 1 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 2"
 msgstr "ID Yahoo! 2 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 3"
 msgstr "ID Yahoo! 3 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 1"
 msgstr "ID Yahoo! 1 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 2"
 msgstr "ID Yahoo! 2 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 3"
 msgstr "ID Yahoo! 2 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 1"
 msgstr "ID MSN 1 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 2"
 msgstr "ID MSN 2 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 3"
 msgstr "ID MSN 3 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 1"
 msgstr "ID MSN 1 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 2"
 msgstr "ID MSN 2 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 3"
 msgstr "ID MSN 3 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
 msgstr "ID ICQ 1 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Home Id 2"
 msgstr "ID ICQ 2 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 3"
 msgstr "ID ICQ 3 (domicilio)"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 1"
 msgstr "ID ICQ 1 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 2"
 msgstr "ID ICQ 2 (trabajo)"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 3"
 msgstr "ID ICQ 3 (trabajo)"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:199
 msgid "Organization"
 msgstr "Organización"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:200
 msgid "Organizational Unit"
 msgstr "Unidad de organización"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:201
 msgid "Office"
 msgstr "Oficina"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:203
 msgid "Title"
 msgstr "Titulación"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:204
 msgid "Role"
 msgstr "Papel"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:205
 msgid "Manager"
 msgstr "Jefe"
 
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:206
 msgid "Assistant"
 msgstr "Secretario"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:208
+#: addressbook/libebook/e-contact.c:209
 msgid "Homepage URL"
 msgstr "Direción de página inicial"
 
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:210
 msgid "Weblog URL"
 msgstr "Dirección de Weblog"
 
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:211
 msgid "Video Conferencing URL"
 msgstr "URL para videoconferencia"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:214
 msgid "Photo"
 msgstr "Foto"
 
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:215
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:217
+#: addressbook/libebook/e-contact.c:218
 msgid "X.509 Certificate"
 msgstr "Certificado X.509"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:221
 msgid "Category List"
 msgstr "Lista de categorías"
 
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:222
 msgid "Categories"
 msgstr "Categorías"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:225
 msgid "Calendar URI"
 msgstr "URI de agenda"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:226
 msgid "Free/Busy URL"
 msgstr "URL de disponibilidad:"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:227
 msgid "ICS Calendar"
 msgstr "Agenda ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:230
 msgid "Spouse's Name"
 msgstr "Cónyuge"
 
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:231
 msgid "Note"
 msgstr "Nota"
 
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:233
 msgid "Birth Date"
 msgstr "Fecha de nacimiento"
 
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:234
 msgid "Anniversary"
 msgstr "Aniversario"
 
-#: addressbook/libebook/e-contact.c:235
+#: addressbook/libebook/e-contact.c:236
 msgid "List"
 msgstr "Lista"
 
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:237
 msgid "List Show Addresses"
 msgstr "Mostrar direcciones de la lista"
 
-#: addressbook/libebook/e-contact.c:1208
+#: addressbook/libebook/e-contact.c:1209
 msgid "Unnamed List"
 msgstr "Lista de anónimos"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:441
 msgid "Birthday"
 msgstr "Cumpleaños"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: calendar/backends/contacts/e-cal-backend-contacts.c:465
 #, c-format
 msgid "Birthday: %s"
 msgstr "Cumpleaños: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:485
+#: calendar/backends/contacts/e-cal-backend-contacts.c:486
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversario %s"
@@ -604,21 +613,21 @@ msgstr "Aniversario %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "No se pudo guardar los datos de la agenda. URL malformada."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
 msgid "Invalid server URI"
 msgstr "URI del servidor inválida"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
 msgid "Calendar"
 msgstr "Agenda"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #: calendar/libecal/e-cal.c:4274
 msgid "Authentication failed"
 msgstr "Falló en la autenticación"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
 
@@ -842,14 +851,18 @@ msgid "Authentication required"
 msgstr "Autenticación requerida"
 
 #: calendar/libecal/e-cal.c:4278
+msgid "Unable to book time"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:4280
 msgid "A CORBA exception has occurred"
 msgstr "Ha ocurrido una excepción CORBA"
 
-#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4282 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4284
 msgid "No error"
 msgstr "Sin errores"
 
