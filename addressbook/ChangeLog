@@ -1,3 +1,13 @@
+2004-09-09  Sivaiah Nallagatla  <snallagatla@novell.com>
+
+	Part of fix for #59582.
+	
+	* backends/ldap/e-book-backend-ldap.c (add_to_supported_fields): add
+	E_CONTACT_EMAIL_1 also to list of supported fields. Also use
+	e_contact_field_name function instead of hardcodring field names
+        (anniversary_populate): correct incorrect contact date parameter
+	passing. Also free the contact date.
+
 2004-09-09  Hans Petter Jansson  <hpj@ximian.com>
 
 	Fixes #63385.
