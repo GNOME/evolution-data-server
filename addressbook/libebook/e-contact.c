@@ -26,9 +26,9 @@
 #include <string.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
-#include <libedataserver/ename/e-name-western.h>
 #include "e-contact.h"
 #include "e-book.h"
+#include "e-name-western.h"
 
 struct _EContactPrivate {
 };

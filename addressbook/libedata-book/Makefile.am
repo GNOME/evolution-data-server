@@ -50,8 +50,7 @@ libedata_book_la_LIBADD =					\
 	$(top_builddir)/libedataserver/libedataserver.la
 
 libedata_book_la_LDFLAGS = 									\
-	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE)	\
-	-no-undefined
+	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE)
 
 libedata_bookincludedir = $(privincludedir)/libedata-book
 

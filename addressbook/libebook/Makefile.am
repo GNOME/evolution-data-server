@@ -38,6 +38,7 @@ lib_LTLIBRARIES = libebook.la
 libebook_la_SOURCES =					\
 	$(CORBA_GENERATED_C)				\
 	$(MARSHAL_GENERATED)				\
+	e-address-western.c				\
 	e-book-async.c					\
 	e-book-listener.c				\
 	e-book-query.c					\
@@ -45,19 +46,20 @@ libebook_la_SOURCES =					\
 	e-book-view.c					\
 	e-book.c					\
 	e-contact.c					\
+	e-name-western.c				\
 	e-vcard.c
 
 libebook_la_LIBADD =					\
 	$(top_builddir)/libedataserver/libedataserver.la
 
 libebook_la_LDFLAGS = 							\
-	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE)	\
-	-no-undefined
+	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE)
 
 libebookincludedir = $(privincludedir)/libebook
 
 libebookinclude_HEADERS =				\
 	$(CORBA_GENERATED_H)				\
+	e-address-western.h				\
 	e-book-async.h					\
 	e-book-listener.h				\
 	e-book-query.h					\
@@ -66,6 +68,8 @@ libebookinclude_HEADERS =				\
 	e-book-types.h					\
 	e-book.h					\
 	e-contact.h					\
+	e-name-western.h				\
+	e-name-western-tables.h				\
 	e-vcard.h
 
 pkgconfigdir = $(libdir)/pkgconfig

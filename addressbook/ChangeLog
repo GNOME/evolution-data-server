@@ -1,3 +1,17 @@
+2003-11-07  Dan Winship  <danw@ximian.com>
+
+	* libebook/e-address-western.c: 
+	* libebook/e-name-western.c: Move these here.
+
+	* libebook/e-contact.c: Update e-name-western include
+
+	* libebook/Makefile.am (libebook_la_SOURCES): Add
+	e-address-western.c and e-name-western.c.
+	(libebookinclude_HEADERS): and their headers
+	(libebook_la_LDFLAGS): Remove -no-undefined
+
+	* libedata-book/Makefile.am (libedata_book_la_LDFLAGS): Likewise
+
 2003-11-06  Dan Winship  <danw@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c: Remove the word "process"
