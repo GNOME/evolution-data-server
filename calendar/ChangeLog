@@ -1,3 +1,14 @@
+2004-01-09 Harish K <kharish@novell.com>
+        * backends/groupwise/e-cal-backend-groupwise.c
+        (populate_cache): implemented.
+
+        * backends/groupwise/e-gw-connection.h:
+        added declaration for e_gw_connection_get_items.
+        
+        * backends/groupwise/e-gw-connection.c:
+        (e-gw-connection-get-items) :implementation to obtain 
+        calendar data from GW using SOAP.
+
 2004-01-08  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.c (convert_type): kill warning
