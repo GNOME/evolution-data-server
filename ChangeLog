@@ -1,3 +1,7 @@
+2003-11-26  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am: remove \ on last line of LIBDB_FILES
+
 2003-11-26  JP Rosevear  <jpr@ximian.com>
 
 	* tags: add a dummy file for disting

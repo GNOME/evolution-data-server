@@ -2139,4 +2139,5 @@ $(srcdir)/libdb/docs/utility/db_printlog.html \
 $(srcdir)/libdb/docs/utility/db_recover.html \
 $(srcdir)/libdb/docs/utility/db_stat.html \
 $(srcdir)/libdb/docs/utility/db_upgrade.html \
-$(srcdir)/libdb/docs/utility/db_verify.html \
+$(srcdir)/libdb/docs/utility/db_verify.html
+
