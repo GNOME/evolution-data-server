@@ -399,7 +399,6 @@ calendar/backends/file/Makefile
 calendar/backends/http/Makefile
 libedataserver/Makefile
 libedataserver/libedataserver-1.0.pc
-libedataserver/ename/Makefile
 src/Makefile
 po/Makefile.in
 ])

@@ -12,6 +12,8 @@
 	(libedataserver_la_LIBADD): Remove libename
 	(libedataserver_la_LDFLAGS): Remove -no-undefined
 
+	* configure.in (AC_OUTPUT): Remove libedataserver/ename/Makefile
+
 2003-11-07  Rodney Dawes  <dobey@ximian.com>
 
 	* configure.in: Remove kerberos checks since we don't need them here
