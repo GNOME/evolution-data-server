@@ -3145,12 +3145,12 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 
 	iso_start = isodate_from_time_t (start);
 	if (!iso_start)
-		return;
+		return NULL;
 
 	iso_end = isodate_from_time_t (end);
 	if (!iso_end) {
 		g_free (iso_start);
-		return;
+		return NULL;
 	}
 
 	/* build the query string */

@@ -48,6 +48,34 @@ struct attendee {
 	icalparameter *language_param;
 };
 
+struct text {
+	icalproperty *prop;
+	icalparameter *altrep_param;
+};
+
+struct datetime {
+	icalproperty *prop;
+	icalparameter *tzid_param;
+};
+
+struct organizer {
+	icalproperty *prop;
+	icalparameter *sentby_param;
+	icalparameter *cn_param;
+	icalparameter *language_param;
+};
+
+struct period {
+	icalproperty *prop;
+	icalparameter *value_param;
+};
+
+struct recur_id {
+	struct datetime recur_time;
+	
+	icalparameter *range_param;
+};
+
 /* Private part of the CalComponent structure */
 struct _ECalComponentPrivate {
 	/* The icalcomponent we wrap */
@@ -64,11 +92,6 @@ struct _ECalComponentPrivate {
 
 	icalproperty *classification;
 
-	struct text {
-		icalproperty *prop;
-		icalparameter *altrep_param;
-	};
-
 	GSList *comment_list; /* list of struct text */
 
 	icalproperty *completed;
@@ -78,11 +101,6 @@ struct _ECalComponentPrivate {
 	icalproperty *created;
 
 	GSList *description_list; /* list of struct text */
-
-	struct datetime {
-		icalproperty *prop;
-		icalparameter *tzid_param;
-	};
 
 	struct datetime dtstart;
 	struct datetime dtend;
@@ -101,30 +119,12 @@ struct _ECalComponentPrivate {
 	GSList *exdate_list; /* list of struct datetime */
 	GSList *exrule_list; /* list of icalproperty objects */
 
-	struct organizer {
-		icalproperty *prop;
-		icalparameter *sentby_param;
-		icalparameter *cn_param;
-		icalparameter *language_param;
-	};
-
 	struct organizer organizer;
 	
 	icalproperty *geo;
 	icalproperty *last_modified;
 	icalproperty *percent;
 	icalproperty *priority;
-
-	struct period {
-		icalproperty *prop;
-		icalparameter *value_param;
-	};
-
-	struct recur_id {
-		struct datetime recur_time;
-		
-		icalparameter *range_param;
-	};
 
 	struct recur_id recur_id;
 	
