@@ -1,3 +1,18 @@
+2004-12-09  Hans Petter Jansson  <hpj@novell.com>
+
+	* libedataserverui/e-contact-store.[ch]: Implement EContactStore,
+	a GtkTreeModel interface to EBook views.
+
+	* libedataserverui/test-contact-store.c: Implement an interactive
+	test for EContactStore.
+
+	* libedataserverui/Makefile.am (libedataserveruiinclude_HEADERS)
+	(libedataserverui_1_2_la_SOURCES): Build e-contact-store.c and install
+	e-contact-store.h.
+	(test_contact_store_SOURCES)
+	(test_contact_store_LDADD): Build the interactive test for
+	EContactStore.
+
 2004-12-09  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: check for zlib, for the gzip mime filter

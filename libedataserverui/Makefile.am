@@ -1,5 +1,6 @@
 INCLUDES =								\
 	-I$(top_srcdir)							\
+	-I$(top_srcdir)/addressbook					\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"				\
 	$(E_DATA_SERVER_UI_CFLAGS)
 
@@ -8,15 +9,17 @@ MARSHAL_GENERATED = e-data-server-ui-marshal.c e-data-server-ui-marshal.h
 @EVO_MARSHAL_RULE@
 
 lib_LTLIBRARIES = libedataserverui-1.2.la
-noinst_PROGRAMS = test-source-selector test-source-option-menu
+noinst_PROGRAMS = test-source-selector test-source-option-menu test-contact-store
 
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
+	e-contact-store.c		\
 	e-source-selector.c		\
 	e-source-selector-dialog.c	\
 	e-source-option-menu.c
 
-libedataserverui_1_2_la_LIBADD = 			\
+libedataserverui_1_2_la_LIBADD = 				\
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(E_DATA_SERVER_LIBS)
 
 libedataserverui_1_2_la_LDFLAGS = 										\
@@ -25,6 +28,7 @@ libedataserverui_1_2_la_LDFLAGS = 										\
 libedataserveruiincludedir = $(privincludedir)/libedataserverui
 
 libedataserveruiinclude_HEADERS =	\
+	e-contact-store.h		\
 	e-source-selector.h		\
 	e-source-selector-dialog.h	\
 	e-source-option-menu.h
@@ -38,6 +42,12 @@ test_source_selector_LDADD = 					\
 
 test_source_option_menu_SOURCES = test-source-option-menu.c
 test_source_option_menu_LDADD = 				\
+	libedataserverui-1.2.la 				\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(E_DATA_SERVER_UI_LIBS)
+
+test_contact_store_SOURCES = test-contact-store.c
+test_contact_store_LDADD =					\
 	libedataserverui-1.2.la 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)
