@@ -237,7 +237,7 @@ getCategory (WeatherForecast *report)
 		case WEATHER_DUST:			return _("Weather: Fog");
 		case WEATHER_CLEAR:			return _("Weather: Sunny");
 		case WEATHER_MOSTLY_CLOUDY:		return _("Weather: Cloudy");
-		case WEATHER_WINDY:			return _("");
+		case WEATHER_WINDY:			return "";
 		case WEATHER_RAIN_SHOWERS:		return _("Weather: Rain");
 		case WEATHER_FOGGY:			return _("Weather: Fog");
 		case WEATHER_RAIN_OR_SNOW_MIXED:	return _("Weather: Rain");
@@ -248,7 +248,7 @@ getCategory (WeatherForecast *report)
 		case WEATHER_HAZE:			return _("Weather: Fog");
 		case WEATHER_BLOWING_SNOW:		return _("Weather: Snow");
 		case WEATHER_FREEZING_DRIZZLE:		return _("Weather: Rain");
-		case WEATHER_VERY_COLD_WIND_CHILL:	return _("");
+		case WEATHER_VERY_COLD_WIND_CHILL:	return "";
 		case WEATHER_RAIN:			return _("Weather: Rain");
 		default:				return NULL;
 	}

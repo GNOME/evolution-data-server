@@ -1,3 +1,8 @@
+2005-02-07  JP Rosevear  <jpr@novell.com>
+
+	* backends/weather/e-cal-backend-weather.c (getCategory): don't
+	translate the empty string
+
 2005-02-07  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:
