@@ -71,11 +71,16 @@ void  e_source_set_name          (ESource      *source,
 				  const char   *name);
 void  e_source_set_relative_uri  (ESource      *source,
 				  const char   *relative_uri);
+void  e_source_set_color         (ESource      *source,
+				  guint32       color);
+void  e_source_unset_color       (ESource      *source);
 
 ESourceGroup *e_source_peek_group         (ESource *source);
-const char   *e_source_peek_uid		  (ESource *source);
+const char   *e_source_peek_uid           (ESource *source);
 const char   *e_source_peek_name          (ESource *source);
 const char   *e_source_peek_relative_uri  (ESource *source);
+gboolean      e_source_get_color          (ESource *source,
+					   guint32 *color_return);
 
 char *e_source_get_uri  (ESource *source);
 

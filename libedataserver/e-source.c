@@ -37,6 +37,10 @@ static GObjectClass *parent_class = NULL;
 #define ES_CLASS(obj)  E_SOURCE_CLASS (G_OBJECT_GET_CLASS (obj))
 
 
+/* String used to put the color in the XML.  */
+#define COLOR_FORMAT_STRING "%06x"
+
+
 /* Private members.  */
 
 struct _ESourcePrivate {
@@ -45,6 +49,9 @@ struct _ESourcePrivate {
 	char *uid;
 	char *name;
 	char *relative_uri;
+
+	gboolean has_color;
+	guint32 color;
 };
 
 
@@ -154,31 +161,21 @@ e_source_new_from_xml_node (xmlNodePtr node)
 {
 	ESource *source;
 	xmlChar *uid;
-	xmlChar *name;
-	xmlChar *relative_uri;
 
 	uid = xmlGetProp (node, "uid");
-	name = xmlGetProp (node, "name");
-	relative_uri = xmlGetProp (node, "relative_uri");
+	if (uid == NULL)
+		return NULL;
 
-	if (uid == NULL || name == NULL || relative_uri == NULL) {
-		source = NULL;
-	} else {
-		source = g_object_new (e_source_get_type (), NULL);
+	source = g_object_new (e_source_get_type (), NULL);
 
-		source->priv->uid = g_strdup (uid);
-		e_source_set_name (source, name);
-		e_source_set_relative_uri (source, relative_uri);
-	}
+	source->priv->uid = g_strdup (uid);
+	xmlFree (uid);
 
-	if (uid != NULL)
-		xmlFree (uid);
-	if (name != NULL)
-		xmlFree (name);
-	if (relative_uri != NULL)
-		xmlFree (relative_uri);
+	if (e_source_update_from_xml_node (source, node, NULL))
+		return source;
 
-	return source;
+	g_object_unref (source);
+	return NULL;
 }
 
 /**
@@ -198,35 +195,63 @@ e_source_update_from_xml_node (ESource *source,
 {
 	xmlChar *name;
 	xmlChar *relative_uri;
+	xmlChar *color_string;
 	gboolean retval;
-
-	*changed_return = FALSE;
+	gboolean changed = FALSE;
 
 	name = xmlGetProp (node, "name");
 	relative_uri = xmlGetProp (node, "relative_uri");
+	color_string = xmlGetProp (node, "color");
 
 	if (name == NULL || relative_uri == NULL) {
 		retval = FALSE;
-	} else if (strcmp (name, e_source_peek_name (source)) != 0
-		   || strcmp (relative_uri, e_source_peek_relative_uri (source)) != 0) {
-		retval = TRUE;
+		goto done;
+	}
 
+	if (source->priv->name == NULL
+	    || strcmp (name, source->priv->name) != 0
+	    || source->priv->relative_uri == NULL
+	    || strcmp (relative_uri, source->priv->relative_uri) != 0) {
 		g_free (source->priv->name);
 		source->priv->name = g_strdup (name);
 
 		g_free (source->priv->relative_uri);
 		source->priv->relative_uri = g_strdup (relative_uri);
 
-		g_signal_emit (source, signals[CHANGED], 0);
-		*changed_return = TRUE;
-	} else {
-		retval = TRUE;
+		changed = TRUE;
 	}
+
+	if (color_string == NULL) {
+		if (source->priv->has_color) {
+			source->priv->has_color = FALSE;
+			changed = TRUE;
+		}
+	} else {
+		guint32 color = 0;
+
+		sscanf (color_string, COLOR_FORMAT_STRING, &color);
+		if (! source->priv->has_color || source->priv->color != color) {
+			source->priv->has_color = TRUE;
+			source->priv->color = color;
+			changed = TRUE;
+		}
+	}
+
+	retval = TRUE;
+
+ done:
+	if (changed)
+		g_signal_emit (source, signals[CHANGED], 0);
+
+	if (changed_return != NULL)
+		*changed_return = changed;
 
 	if (name != NULL)
 		xmlFree (name);
 	if (relative_uri != NULL)
 		xmlFree (relative_uri);
+	if (color_string != NULL)
+		xmlFree (color_string);
 
 	return retval;
 }
@@ -305,6 +330,33 @@ e_source_set_relative_uri (ESource *source,
 	g_signal_emit (source, signals[CHANGED], 0);
 }
 
+void
+e_source_set_color (ESource *source,
+		    guint32 color)
+{
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	if (source->priv->has_color && source->priv->color == color)
+		return;
+
+	source->priv->has_color = TRUE;
+	source->priv->color = color;
+
+	g_signal_emit (source, signals[CHANGED], 0);
+}
+
+void
+e_source_unset_color (ESource *source)
+{
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	if (! source->priv->has_color)
+		return;
+
+	source->priv->has_color = FALSE;
+	g_signal_emit (source, signals[CHANGED], 0);
+}
+
 
 ESourceGroup *
 e_source_peek_group (ESource *source)
@@ -338,6 +390,32 @@ e_source_peek_relative_uri (ESource *source)
 	return source->priv->relative_uri;
 }
 
+/**
+ * e_source_get_color:
+ * @source: An ESource
+ * @color_return: Pointer to a variable where the returned color will be
+ * stored.
+ * 
+ * If @source has an associated color, return it in *@color_return.
+ * 
+ * Return value: %TRUE if the @source has a defined color (and hence
+ * *@color_return was set), %FALSE otherwise.
+ **/
+gboolean
+e_source_get_color (ESource *source,
+		    guint32 *color_return)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	if (! source->priv->has_color)
+		return FALSE;
+
+	if (color_return != NULL)
+		*color_return = source->priv->color;
+
+	return TRUE;
+}
+
 
 char *
 e_source_get_uri (ESource *source)
@@ -357,6 +435,9 @@ void
 e_source_dump_to_xml_node (ESource *source,
 			   xmlNodePtr parent_node)
 {
+	gboolean has_color;
+	guint32 color;
+
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	xmlNodePtr node = xmlNewChild (parent_node, NULL, "source", NULL);
@@ -364,6 +445,13 @@ e_source_dump_to_xml_node (ESource *source,
 	xmlSetProp (node, "uid", e_source_peek_uid (source));
 	xmlSetProp (node, "name", e_source_peek_name (source));
 	xmlSetProp (node, "relative_uri", e_source_peek_relative_uri (source));
+
+	has_color = e_source_get_color (source, &color);
+	if (has_color) {
+		char *color_string = g_strdup_printf (COLOR_FORMAT_STRING, color);
+		xmlSetProp (node, "color", color_string);
+		g_free (color_string);
+	}
 }
 
 

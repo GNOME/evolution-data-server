@@ -51,6 +51,8 @@ static char *remove_source_arg = NULL;
 static char *set_name_arg = NULL;
 static char *set_base_uri_arg = NULL;
 static char *set_relative_uri_arg = NULL;
+static char *set_color_arg = NULL;
+static gboolean unset_color = FALSE;
 
 static struct poptOption options[] = {
 	{ "key", '0', POPT_ARG_STRING, &key_arg, 0,
@@ -74,6 +76,10 @@ static struct poptOption options[] = {
 	  "Set relative URI of a source.  Use with --source or --add-source.", "NAME" },
 	{ "set-base-uri", '\0', POPT_ARG_STRING, &set_base_uri_arg, 0,
 	  "Set base URI of a group.  Use with --group or --add-group.", "NAME" },
+	{ "set-color", '\0', POPT_ARG_STRING, &set_color_arg, 0,
+	  "Set the color of a source.  Use with --source or --add-source.", "COLOR (rrggbb)" },
+	{ "unset-color", '\0', POPT_ARG_NONE, &unset_color, 0,
+	  "Unset the color of a source.  Use with --source or --add-source.", NULL },
 	{ "listen", '\0', POPT_ARG_NONE, &listen, 0,
 	  "Wait and listen for changes.", "" },
 	{ "dump", '\0', POPT_ARG_NONE, &dump, 0,
@@ -94,11 +100,17 @@ static void
 dump_source (ESource *source)
 {
 	char *uri = e_source_get_uri (source);
+	gboolean has_color;
+	guint32 color;
 
 	g_print ("\tSource %s\n", e_source_peek_uid (source));
 	g_print ("\t\tname: %s\n", e_source_peek_name (source));
 	g_print ("\t\trelative_uri: %s\n", e_source_peek_relative_uri (source));
 	g_print ("\t\tabsolute_uri: %s\n", uri);
+
+	has_color = e_source_get_color (source, &color);
+	if (has_color)
+		g_print ("\t\tcolor: %06x\n", color);
 
 	g_free (uri);
 }
@@ -296,6 +308,7 @@ on_idle_do_stuff (void *unused_data)
 {
 	GConfClient *client = gconf_client_get_default ();
 	ESourceGroup *new_group = NULL;
+	ESource *new_source = NULL;
 
 	list = e_source_list_new_for_gconf (client, key_arg);
 	g_object_unref (client);
@@ -332,7 +345,6 @@ on_idle_do_stuff (void *unused_data)
 
 	if (add_source_arg != NULL) {
 		ESourceGroup *group;
-		ESource *new_source;
 
 		if (group_arg == NULL && new_group == NULL) {
 			fprintf (stderr,
@@ -423,6 +435,46 @@ on_idle_do_stuff (void *unused_data)
 
 		source = e_source_list_peek_source_by_uid (list, group_arg, source_arg);
 		e_source_set_relative_uri (source, set_relative_uri_arg);
+		e_source_list_sync (list, NULL);
+	}
+
+	if (set_color_arg != NULL) {
+		ESource *source;
+		guint32 color;
+
+		if (add_source_arg == NULL && (source_arg == NULL || group_arg == NULL)) {
+			fprintf (stderr,
+				 "When using --set-color, you need to specify a source using --group\n"
+				 "and --source.\n");
+			exit (1);
+		}
+
+		if (add_source_arg != NULL)
+			source = new_source;
+		else
+			source = e_source_list_peek_source_by_uid (list, group_arg, source_arg);
+
+		sscanf (set_color_arg, "%06x", &color);
+		e_source_set_color (source, color);
+		e_source_list_sync (list, NULL);
+	}
+
+	if (unset_color) {
+		ESource *source;
+
+		if (add_source_arg == NULL && (source_arg == NULL || group_arg == NULL)) {
+			fprintf (stderr,
+				 "When using --unset-color, you need to specify a source using --group\n"
+				 "and --source.\n");
+			exit (1);
+		}
+
+		if (add_source_arg != NULL)
+			source = new_source;
+		else
+			source = e_source_list_peek_source_by_uid (list, group_arg, source_arg);
+
+		e_source_unset_color (source);
 		e_source_list_sync (list, NULL);
 	}
 
