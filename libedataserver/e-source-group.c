@@ -247,6 +247,11 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	
 	for (p = root->children; p != NULL; p = p->next) {
 		ESource *new_source = e_source_new_from_xml_node (p);
+
+		if (new_source == NULL) {
+			g_object_unref (new);
+			goto done;
+		}
 		e_source_group_add_source (new, new_source, -1);
 	}
 
