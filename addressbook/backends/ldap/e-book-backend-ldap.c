@@ -967,7 +967,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 			new_prop_present = (new_prop != NULL);
 		}
 		else {
-			new_prop_bers = prop_info[i].ber_func (new);
+			new_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (new) : NULL;
 			new_prop_present = (new_prop_bers != NULL);
 		}
 
@@ -994,11 +994,11 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 				if (new_prop && current_prop)
 					include = *new_prop && strcmp (new_prop, current_prop);
 				else
-					include = (!!new_prop != !!current_prop);
+					include = (new_prop != current_prop) && (!new_prop || *new_prop); /* empty strings cause problems */
 			}
 			else {
 				int j;
-				struct berval **current_prop_bers = prop_info[i].ber_func (current);
+				struct berval **current_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (current) : NULL;
 
 				current_prop_present = (current_prop_bers != NULL);
 
@@ -1011,7 +1011,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 					g_free (current_prop_bers);
 				}
 
-				include = !prop_info[i].compare_func (new, current);
+				include = prop_info[i].compare_func ? !prop_info[i].compare_func (new, current) : FALSE;
 			}
 		}
 
@@ -1747,8 +1747,6 @@ contact_list_dtor (LDAPOp *op)
 {
 	LDAPGetContactListOp *contact_list_op = (LDAPGetContactListOp*)op;
 
-	g_list_foreach (contact_list_op->contacts, (GFunc)g_object_unref, NULL);
-	g_list_free (contact_list_op->contacts);
 	g_free (contact_list_op);
 }
 
@@ -2162,7 +2160,10 @@ category_compare (EContact *contact1, EContact *contact2)
 	categories1 = e_contact_get_const (contact1, E_CONTACT_CATEGORIES);
 	categories2 = e_contact_get_const (contact2, E_CONTACT_CATEGORIES);
 
-	equal = !strcmp (categories1, categories2);
+	if (categories1 && categories2)
+		equal = !strcmp (categories1, categories2);
+	else
+		equal = (categories1 == categories2);
 
 	g_free (categories1);
 	g_free (categories2);
