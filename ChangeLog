@@ -1,3 +1,7 @@
+2004-01-24  Rodrigo Moya <rodrigo@ximian.com>
+
+	* configure.in: s/GROUPWISE/SOUP.
+
 2004-01-22  Thomas Cataldo  <tcataldo@users.sourceforge.net>
 
 	* libedataserver/e-xml-hash-utils.c: (e_xml_to_hash):
