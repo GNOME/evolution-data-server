@@ -123,6 +123,7 @@ typedef struct {
 	char *contentType ;
 	int size ;
 	char *date ;
+	char *data ;
 } EGwItemAttachment ;
 
 typedef enum {
@@ -245,6 +246,7 @@ EGwItemOrganizer *e_gw_item_get_organizer (EGwItem *item);
 void e_gw_item_set_organizer (EGwItem  *item, EGwItemOrganizer *organizer);
 
 GSList * e_gw_item_get_attach_id_list (EGwItem *item) ;
+void e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list) ;
 
 
 GSList *e_gw_item_get_recurrence_dates (EGwItem *item);

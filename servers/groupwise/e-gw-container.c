@@ -31,6 +31,8 @@ struct _EGwContainerPrivate {
 	char *name;
 	char *id;
 	char *parent;
+	guint32 unread ;
+	guint32 total ;
 	int sequence;
 	char *owner;	
 	GList *user_list;	
@@ -205,7 +207,33 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		e_gw_container_set_parent_id (container, (const char *) value);
 		g_free (value) ;
 	}
-/* Is shared by me*/
+	/* retrive the unread and total count */
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "hasUnread") ;
+	if (!subparam) {
+		container->priv->unread = 0 ;
+	} else {
+		subparam = soup_soap_parameter_get_first_child_by_name (param, "unreadCount") ;
+		if (subparam) {
+			value = soup_soap_parameter_get_string_value (subparam) ;
+			if (value)
+				container->priv->unread = atoi(value) ;
+			else
+				container->priv->unread = 0 ; /*XXX:should it be 0?*/
+
+			g_free (value) ;
+		}
+	}
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "count") ;
+	if (subparam) {
+		value = soup_soap_parameter_get_string_value (subparam) ;
+		if (value)
+			container->priv->total = atoi(value) ;
+		else
+			/*XXX:Some problem - should return FALSE??*/
+			g_free (value) ;
+	}
+	/* Is shared by me*/
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "isSharedByMe");
 	if (!subparam) {
 		e_gw_container_set_is_shared_by_me(container, FALSE);
@@ -320,7 +348,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		}
 
 		return TRUE;
-	}
+}
 
 void 
 e_gw_container_get_user_list (EGwContainer *container, GList **user_list)
@@ -512,6 +540,24 @@ e_gw_container_set_parent_id (EGwContainer *container, const char *parent_id)
 
 	priv->parent = g_strdup (parent_id) ;
 }
+
+guint32
+e_gw_container_get_total_count (EGwContainer *container)
+{
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), -1) ;
+
+	return container->priv->total ;
+}
+		
+guint32
+e_gw_container_get_unread_count (EGwContainer *container)
+{
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), -1) ;
+
+	return container->priv->unread ;
+
+}
+
 
 gboolean 
 e_gw_container_get_is_writable (EGwContainer *container)

@@ -64,6 +64,8 @@ const char   *e_gw_container_get_id (EGwContainer *container);
 void          e_gw_container_set_id (EGwContainer *container, const char *new_id);
 const char   *e_gw_container_get_parent_id (EGwContainer *container) ;
 void 	      e_gw_container_set_parent_id (EGwContainer *container, const char *parent_id) ;
+guint32       e_gw_container_get_total_count (EGwContainer *container) ;
+guint32       e_gw_container_get_unread_count (EGwContainer *container) ;
 gboolean      e_gw_container_get_is_writable (EGwContainer *container);
 void          e_gw_container_set_is_writable (EGwContainer *container, gboolean writable);
 gboolean     e_gw_container_get_is_frequent_contacts (EGwContainer *container);

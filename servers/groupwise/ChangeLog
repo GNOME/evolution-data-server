@@ -1,3 +1,17 @@
+2005-01-06  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+       * e-gw-item.[ch]: support for attachments for soap mailer
+         (free_attach),
+         (e_gw_item_set_attach_id_list),
+         (add_attachment_to_soap_message),
+         (e_gw_item_set_calendar_item_elemets)
+       * e-gw-container.[ch]: retrive the unread and total count from
+         the soap response.
+         (e_gw_container_set_from_soap_parameter),
+         (e_gw_container_get_total_count),
+         (e_gw_container_get_unread_count)
+
+
 2005-01-03  Vivek Jain <jvivek@novell.com>
 
 	* e-gw-connection.[ch] : added a function to share a folder
