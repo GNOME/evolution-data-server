@@ -1,3 +1,10 @@
+2005-01-19  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-message.c (e_gw_message_write_footer):
+	mask the password with 'X' characters while dumping 
+	liginRequest to screen 
+	fixes #70067
+
 2005-01-12  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-item.[ch]

@@ -156,9 +156,34 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 	soup_soap_message_persist (msg);
 
 	if (g_getenv ("GROUPWISE_DEBUG")) {
-		/* print request's body */
-		fputc ('\n', stdout);
-		fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
-		fputc ('\n', stdout);
+		const char *header = soup_message_get_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction");
+		if (header && g_str_equal (header, "loginRequest")) {
+			gchar *body;
+			gchar *begin = NULL;
+			gchar *end = NULL;
+			
+			body = g_strndup (SOUP_MESSAGE (msg)->request.body, SOUP_MESSAGE (msg)->request.length);
+			begin = g_strrstr (body, "<types:password>");
+			if (begin) 
+				begin = begin + strlen ("<types:password>");
+			end = g_strrstr (body , "</types:password>");
+			if (begin && end) {
+				gchar *tmp;
+				for (tmp = begin; tmp < end; tmp++)
+					*tmp='X';
+				
+			}
+			fputc ('\n', stdout);
+			fwrite (body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
+			fputc ('\n', stdout);	
+			g_free (body);
+		}
+		else {		
+	
+			/* print request's body */
+			fputc ('\n', stdout);
+			fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
+			fputc ('\n', stdout);
+		}
 	}
 }
