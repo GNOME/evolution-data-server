@@ -1,5 +1,13 @@
 2004-01-12  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_open):
+	* backends/http/e-cal-backend-http.c (e_cal_backend_http_open): made
+	the backends start online always, until we fix the online/offline
+	handling via the shell.
+
+2004-01-12  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-connection.[ch]
 	(e_gw_connection_get_user_name, e_gw_connection_get_user_uuid): new
 	functions.

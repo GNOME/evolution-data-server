@@ -397,6 +397,8 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 						      E_CAL_BACKEND (backend));
 		g_free (cache_dir);
 
+		/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
+		priv->mode = CAL_MODE_REMOTE;
 		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 	}
 

@@ -280,6 +280,9 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		
 	g_mutex_unlock (priv->mutex);
 
+	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
+	e_cal_backend_set_mode (E_CAL_BACKEND (backend), CAL_MODE_REMOTE);
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
