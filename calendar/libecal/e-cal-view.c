@@ -141,9 +141,17 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 	
 	switch (property_id) {
 	case PROP_VIEW:
+		if (priv->view != CORBA_OBJECT_NIL)
+			bonobo_object_release_unref (priv->view, NULL);
+
 		priv->view = bonobo_object_dup_ref (g_value_get_pointer (value), NULL);
 		break;
 	case PROP_LISTENER:
+		if (priv->listener) {
+			g_signal_handlers_disconnect_matched (priv->listener, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
+			bonobo_object_unref (BONOBO_OBJECT (priv->listener));
+		}
+
 		priv->listener = bonobo_object_ref (g_value_get_pointer (value));
 
 		g_signal_connect (G_OBJECT (priv->listener), "objects_added", 

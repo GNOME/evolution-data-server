@@ -1,3 +1,8 @@
+2005-01-17  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal-view.c (e_cal_view_set_property): make sure we clean
+	up the old view and listener before setting the new ones.
+
 2005-01-12  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #67974
