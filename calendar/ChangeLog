@@ -1,3 +1,13 @@
+2004-10-15  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #67031
+	* backends/groupwise/e-cal-backends-groupwise-utils.c
+	(e_gw_item_to_cal_component): Set the completed date. For
+	posted tasks set it as the current time.
+	* backends/groupwise/e-cal-backends-groupwise.c
+	(e_cal_backend_groupwise_modify_object): Update the item in
+	the cache after completing the task.
+
 2004-10-14  Rodney Dawes  <dobey@novell.com>
 
 	* backends/*/Makefile.am: Add -avoid-version to LDFLAGS for all

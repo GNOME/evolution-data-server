@@ -1358,6 +1358,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 					g_object_unref (cache_comp);
 					return GNOME_Evolution_Calendar_OtherError;
 				}
+				e_cal_backend_cache_put_component (priv->cache, comp);
 				break;
 			}
 		}

@@ -660,9 +660,28 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		e_cal_component_set_priority (comp, &priority);
 
 		/* EGwItem's completed is a boolean */
-		if (e_gw_item_get_completed (item)) 
+		if (e_gw_item_get_completed (item)) {
 			percent = 100;
-		else 
+			
+			t = e_gw_item_get_completed_date (item);
+			if (t) {
+				itt_utc = icaltime_from_string (t);
+				if (!icaltime_get_timezone (itt_utc))
+					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+				if (default_zone) {
+					itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+					icaltime_set_timezone (&itt, default_zone);
+					e_cal_component_set_completed (comp, &itt);
+				} else 
+					e_cal_component_set_completed (comp, &itt_utc);
+			} else {
+				/* We are setting the completion date as the current time due to
+				   the absence of completion element in the soap interface for posted
+				   tasks */
+				itt = icaltime_today ();
+				e_cal_component_set_completed (comp,&itt);
+			}
+		} else 
 			percent =0;
 		e_cal_component_set_percent (comp, &percent);
 
