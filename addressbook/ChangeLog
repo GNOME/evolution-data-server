@@ -1,3 +1,15 @@
+2004-02-02  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-contact.c (photo_setter): Handle NULL.
+	(fn_setter): Handle NULL.
+	(n_setter): Handle NULL.
+	(adr_setter): Handle NULL.
+	(date_getter): Return NULL if attr present, but no value.
+	(date_setter): Handle NULL.
+	(cert_setter): Handle NULL.
+	(e_contact_set_property): Don't pass NULL data to setters, remove the
+	attribute (if present) instead.
+
 2004-02-02  Michael Meeks  <michael@ximian.com>
 
 	* backends/file/e-book-backend-file.c

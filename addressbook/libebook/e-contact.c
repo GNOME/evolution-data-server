@@ -381,6 +381,9 @@ photo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 	const char *mime_type;
 	char *image_type = "X-EVOLUTION-UNKNOWN";
 
+	if (!photo)
+		return;
+
 	e_vcard_attribute_add_param_with_value (attr,
 						e_vcard_attribute_param_new (EVC_ENCODING),
 						"b");
@@ -423,6 +426,11 @@ fn_getter (EContact *contact, EVCardAttribute *attr)
 static void
 fn_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
+	gchar *name_str = data;
+
+	if (!name_str)
+		return;
+
 	e_vcard_attribute_add_value (attr, (char*)data);
 
 	attr = e_contact_get_first_attr (contact, EVC_N);
@@ -462,6 +470,9 @@ static void
 n_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactName *name = data;
+
+	if (!name)
+		return;
 
 	e_vcard_attribute_add_value (attr, name->family);
 	e_vcard_attribute_add_value (attr, name->given);
@@ -520,6 +531,9 @@ adr_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactAddress *addr = data;
 
+	if (!addr)
+		return;
+
 	e_vcard_attribute_add_value (attr, addr->po);
 	e_vcard_attribute_add_value (attr, addr->ext);
 	e_vcard_attribute_add_value (attr, addr->street);
@@ -536,7 +550,12 @@ date_getter (EContact *contact, EVCardAttribute *attr)
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
-		EContactDate *date = e_contact_date_from_string (p && p->data ? (char*)p->data : "");
+		EContactDate *date;
+
+		if (p && p->data && ((gchar *) p->data) [0])
+			date = e_contact_date_from_string ((char *) p->data);
+		else
+			date = NULL;
 
 		return date;
 	}
@@ -548,7 +567,12 @@ static void
 date_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactDate *date = data;
-	char *str = e_contact_date_to_string (date);
+	char *str;
+
+	if (!date)
+		return;
+
+	str = e_contact_date_to_string (date);
 
 	e_vcard_attribute_add_value (attr, str);
 	g_free (str);
@@ -588,6 +612,9 @@ static void
 cert_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactCert *cert = data;
+
+	if (!cert)
+		return;
 
 	e_vcard_attribute_add_param_with_value (attr,
 						e_vcard_attribute_param_new (EVC_ENCODING),
@@ -849,21 +876,28 @@ e_contact_set_property (GObject *object,
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
 		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : g_value_get_pointer (value);
 
-		if (attr) {
+		if (attr && data) {
 			printf ("overwriting existing %s\n", info->vcard_field_name);
 			/* remove all existing values and parameters.
 			   the setter will add the correct ones */
 			e_vcard_attribute_remove_values (attr);
 			e_vcard_attribute_remove_params (attr);
+
+			info->struct_setter (contact, attr, data);
 		}
-		else {
+		else if (data) {
 			printf ("adding new %s\n", info->vcard_field_name);
 			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 
 			e_vcard_add_attribute (E_VCARD (contact), attr);
-		}
 
-		info->struct_setter (contact, attr, data);
+			info->struct_setter (contact, attr, data);
+		}
+		else if (attr) {
+			printf ("removing %s\n", info->vcard_field_name);
+
+			e_vcard_remove_attribute (E_VCARD (contact), attr);
+		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
 		EVCardAttribute *attr;
