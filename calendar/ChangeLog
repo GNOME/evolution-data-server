@@ -1,3 +1,25 @@
+2004-01-13 Harish K <kharish@novell.com>
+        * calendar/backends/groupwise/e-cal-backend-groupwise.c
+          (populate_cache): fixed memory leaks.
+          (e_cal_backend_groupwise_open): return function with success when
+          invoked again after the cache has been created already.
+          (e_cal_backend_groupwise_get_object_list): implemented.
+          (e_cal_backend_groupwise_start_query): implemented.
+          
+        * calendar/backends/groupwise/e-gw-connection.c
+          (get_e_cal_component_from_soap_parameter): modification to strip 
+          date and time separators in argument before calling 
+          icaltime_from_string.
+        * calendar/backends/groupwise/e-gw-connection.h
+          (e_gw_connection_get_delta): - Added declaration.
+        * calendar/libedata-cal/e-cal-backend-cache.c
+          (e_cal_backend_cache_constructor): Added the function and updated
+          class_init to use it.
+          (e_cal_backend_cache_get_components): Added method to wrap 
+          e_file_cache_get_objects for better abstraction.
+          (e_cal_backend_cache_set_property): fixed NULL termination to argument
+          list.                
+
 2004-01-12  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
