@@ -107,6 +107,7 @@ GList *e_cal_uri_list (ECal *ecal, CalMode mode);
 
 ECalLoadState e_cal_get_load_state (ECal *ecal);
 
+ESource *e_cal_get_source (ECal *ecal);
 const char *e_cal_get_uri (ECal *ecal);
 
 gboolean e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error);

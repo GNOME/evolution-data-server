@@ -61,6 +61,7 @@ struct _ECalPrivate {
 	/* URI of the calendar that is being loaded or is already loaded, or
 	 * NULL if we are not loaded.
 	 */
+	ESource *source;
 	char *uri;
 	CalObjType type;
 	
@@ -1051,6 +1052,11 @@ e_cal_finalize (GObject *object)
 
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
 
+	if (priv->source) {
+		g_object_unref (priv->source);
+		priv->source = NULL;
+	}
+
 	if (priv->uri) {
 		g_free (priv->uri);
 		priv->uri = NULL;
@@ -1215,6 +1221,9 @@ fetch_corba_cal (ECal *ecal, ESource *source, CalObjType type)
 		g_free (str_uri);
 		return FALSE;
 	}
+
+	g_object_ref (source);
+	priv->source = source;
 
 	priv->uri = g_strdup (str_uri);
 	priv->type = type;
@@ -1581,6 +1590,27 @@ e_cal_get_load_state (ECal *ecal)
 
 	priv = ecal->priv;
 	return priv->load_state;
+}
+
+/**
+ * e_cal_get_source:
+ * @ecal: A calendar ecal.
+ * 
+ * Queries the source that is open in a calendar ecal.
+ * 
+ * Return value: The source of the calendar that is already loaded or is being
+ * loaded, or NULL if the ecal has not started a load request yet.
+ **/
+ESource *
+e_cal_get_source (ECal *ecal)
+{
+	ECalPrivate *priv;
+
+	g_return_val_if_fail (ecal != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL (ecal), NULL);
+
+	priv = ecal->priv;
+	return priv->source;
 }
 
 /**
