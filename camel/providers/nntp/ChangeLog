@@ -1,0 +1,13 @@
+2005-03-16  Not Zed  <NotZed@Ximian.com>
+
+	* modified patch below to make it a bit simpler.
+
+2005-01-22  Jeff Bailey <jbailey@ubuntu.com>
+
+        * camel-nntp-store.c (connect_to_server): Allow the username to be
+	  an empty string as well as a NULL for anonymous connections.
+
+2005-03-16  Not Zed  <NotZed@Ximian.com>
+
+	* added nntp changelog
+
