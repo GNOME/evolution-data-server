@@ -615,8 +615,7 @@ populate_full_name (EContact *contact, gpointer data)
 	item = E_GW_ITEM(data);
 	full_name = e_gw_item_get_full_name (item);
 	if (full_name) {
-		full_name_string = g_strconcat ( (full_name->name_prefix == NULL) ? "\0" : full_name->name_prefix, " ",
-			    (full_name->first_name == NULL) ? "\0" :    full_name->first_name, " ",
+		full_name_string = g_strconcat ( (full_name->first_name == NULL) ? "\0" :    full_name->first_name, " ",
 			    (full_name->middle_name == NULL) ? "\0" : full_name->middle_name, " ",
 			    full_name->last_name == NULL ? "\0" : full_name->last_name, " ",
 			    (full_name->name_suffix == NULL ) ? "\0" : full_name->name_suffix, NULL);
