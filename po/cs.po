@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-25 20:10+0100\n"
-"PO-Revision-Date: 2005-03-26 01:08+0100\n"
+"POT-Creation-Date: 2005-03-31 04:14+0200\n"
+"PO-Revision-Date: 2005-03-31 10:40+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2512,7 +2512,7 @@ msgid "No such message"
 msgstr "Taková zpráva neexistuje"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:124
-#: camel/providers/imap4/camel-imap4-folder.c:788
+#: camel/providers/imap4/camel-imap4-folder.c:787
 #: camel/providers/nntp/camel-nntp-folder.c:157
 #: camel/providers/nntp/camel-nntp-folder.c:233
 #: camel/providers/nntp/camel-nntp-folder.c:372
@@ -2524,7 +2524,7 @@ msgid "User cancelled"
 msgstr "Uživatel zrušen"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:129
-#: camel/providers/imap4/camel-imap4-folder.c:793
+#: camel/providers/imap4/camel-imap4-folder.c:792
 #: camel/providers/nntp/camel-nntp-folder.c:148
 #: camel/providers/nntp/camel-nntp-folder.c:150
 #: camel/providers/nntp/camel-nntp-folder.c:159
@@ -2538,7 +2538,7 @@ msgid "Cannot get message %s: %s"
 msgstr "Nemohu získat zprávu %s: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:149
-#: camel/providers/imap4/camel-imap4-folder.c:811
+#: camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Tato zpráva není dostupná v režimu offline."
 
@@ -3123,52 +3123,57 @@ msgstr "Nemohu synchronizovat značky do složky `%s': Neznámé"
 msgid "Cannot sync flags to folder `%s': Bad command"
 msgstr "Nemohu synchronizovat značky do složky `%s': Špatný příkaz"
 
-#: camel/providers/imap4/camel-imap4-folder.c:604
+#: camel/providers/imap4/camel-imap4-folder.c:603
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
 msgstr "Nemohu vyčistit složku `%s': Neznámé"
 
-#: camel/providers/imap4/camel-imap4-folder.c:609
+#: camel/providers/imap4/camel-imap4-folder.c:608
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
 msgstr "Nemohu vyčistit složku `%s': Špatný příkaz"
 
-#: camel/providers/imap4/camel-imap4-folder.c:865
+#: camel/providers/imap4/camel-imap4-folder.c:864
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr "Nemohu získat zprávu %s ze složky %s: Tato zpráva neexistuje"
 
-#: camel/providers/imap4/camel-imap4-folder.c:870
+#: camel/providers/imap4/camel-imap4-folder.c:869
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr "Nemohu získat zprávu %s ze složky %s: Špatný příkaz"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1003
+#: camel/providers/imap4/camel-imap4-folder.c:913
+#, c-format
+msgid "Cannot append message to folder `%s': Folder is read-only"
+msgstr "Nemohu přidat zprávu do složky `%s': Složka je jen pro čtení"
+
+#: camel/providers/imap4/camel-imap4-folder.c:1009
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "Nemohu přidat zprávu do složky `%s': Neznámá chyba"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1032
+#: camel/providers/imap4/camel-imap4-folder.c:1038
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "Nemohu přidat zprávu do složky `%s': Špatný příkaz"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1144
+#: camel/providers/imap4/camel-imap4-folder.c:1150
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "Nemohu přesunout zprávy ze složky `%s' do složky `%s': Neznámé"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1148
+#: camel/providers/imap4/camel-imap4-folder.c:1154
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr "Nemohu zkopírovat zprávy ze složky `%s' do složky `%s': Neznámé"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1156
+#: camel/providers/imap4/camel-imap4-folder.c:1162
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr "Nemohu přesunout zprávy ze složky `%s' do složky `%s': Špatný příkaz"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1160
+#: camel/providers/imap4/camel-imap4-folder.c:1166
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr "Nemohu zkopírovat zprávy ze složky `%s' do složky `%s': Špatný příkaz"
@@ -4568,7 +4573,7 @@ msgstr "Čeká"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: libedataserver/e-time-utils.c:173 libedataserver/e-time-utils.c:400
+#: libedataserver/e-time-utils.c:179 libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%A %d.%m.%Y %I:%M:%S %p"
 
@@ -4576,7 +4581,7 @@ msgstr "%A %d.%m.%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: libedataserver/e-time-utils.c:178 libedataserver/e-time-utils.c:391
+#: libedataserver/e-time-utils.c:184 libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%A %d.%m.%Y %H:%M:%S"
 
@@ -4584,7 +4589,7 @@ msgstr "%A %d.%m.%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: libedataserver/e-time-utils.c:183 libedataserver/e-time-utils.c:396
+#: libedataserver/e-time-utils.c:189 libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%A %d.%m.%Y %I:%M %p"
 
@@ -4592,78 +4597,78 @@ msgstr "%A %d.%m.%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: libedataserver/e-time-utils.c:188 libedataserver/e-time-utils.c:387
+#: libedataserver/e-time-utils.c:194 libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%A %d.%m.%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:193
+#: libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%A %d.%m.%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: libedataserver/e-time-utils.c:198
+#: libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
 msgstr "%A %d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: libedataserver/e-time-utils.c:201 libedataserver/e-time-utils.c:294
-#: libedataserver/e-time-utils.c:382
+#: libedataserver/e-time-utils.c:207 libedataserver/e-time-utils.c:300
+#: libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
 msgstr "%A %d.%m.%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: libedataserver/e-time-utils.c:209
+#: libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d.%m.%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: libedataserver/e-time-utils.c:213
+#: libedataserver/e-time-utils.c:219
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d.%m.%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:218
+#: libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d.%m.%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:223
+#: libedataserver/e-time-utils.c:229
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d.%m.%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:228
+#: libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
 msgstr "%d.%m.%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: libedataserver/e-time-utils.c:233
+#: libedataserver/e-time-utils.c:239
 msgid "%m/%d/%Y %H"
 msgstr "%d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: libedataserver/e-time-utils.c:236 libedataserver/e-time-utils.c:297
+#: libedataserver/e-time-utils.c:242 libedataserver/e-time-utils.c:303
 msgid "%m/%d/%Y"
 msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
+#: libedataserver/e-time-utils.c:348 libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
+#: libedataserver/e-time-utils.c:352 libedataserver/e-time-utils.c:459
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4671,19 +4676,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
+#: libedataserver/e-time-utils.c:357 libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
+#: libedataserver/e-time-utils.c:361 libedataserver/e-time-utils.c:456
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: libedataserver/e-time-utils.c:354
+#: libedataserver/e-time-utils.c:365
 msgid "%I %p"
 msgstr "%I %p"
 
