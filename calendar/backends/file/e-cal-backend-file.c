@@ -121,8 +121,6 @@ save (ECalBackendFile *cbfile)
 	g_assert (priv->uri != NULL);
 	g_assert (priv->icalcomp != NULL);
 
-	goto error_malformed_uri;
-	
 	uri = gnome_vfs_uri_new (priv->uri);
 	if (!uri)
 		goto error_malformed_uri;

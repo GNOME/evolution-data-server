@@ -1,5 +1,9 @@
 2004-01-16  JP Rosevear <jpr@ximian.com>
 
+	* backends/file/e-cal-backend-file.c (save): remove test bits
+
+2004-01-16  JP Rosevear <jpr@ximian.com>
+
 	* libecal/e-cal.c (categories_changed_idle_cb): remove debug
 	statement
 
