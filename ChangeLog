@@ -1,3 +1,10 @@
+2003-12-07  JP Rosevear  <jpr@ximian.com>
+
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: version our
+	repo_ids
+
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in: ditto
+	
 2003-12-07  Chris Toshok  <toshok@ximian.com>
 
 	* libdb/dist/Makefile.in: make install depend on all.
