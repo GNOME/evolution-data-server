@@ -895,7 +895,6 @@ e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const ch
 	if (container && *container)
 		e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
-	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 
 	/* send message to server */
@@ -1027,7 +1026,8 @@ e_gw_connection_create_book (EGwConnection *cnc, char *book_name, char**id)
 	char *value;
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "createItemRequest");
-        soup_soap_message_start_element (msg, "book", NULL, NULL);
+	soup_soap_message_start_element (msg, "item", NULL, NULL);
+	soup_soap_message_add_attribute (msg, "type", "AddressBook", "xsi", NULL);
 	e_gw_message_write_string_parameter (msg, "name", NULL, book_name);
 	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
@@ -1040,7 +1040,6 @@ e_gw_connection_create_book (EGwConnection *cnc, char *book_name, char**id)
 
         status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
-		printf ("connection status OK\n");
 		g_object_unref (response);
                 g_object_unref (msg);
 		return status;
@@ -1211,6 +1210,7 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
 		if (second_level_child)
 			name = soup_soap_parameter_get_string_value (second_level_child);
 		if (id && name) {
+			id = g_strsplit (id, "@", -1) [0];
 			if (categories_by_id) 
 				g_hash_table_insert (categories_by_id, g_strdup (id), g_strdup (name));
 			if (categories_by_name) 
