@@ -325,7 +325,7 @@ e_book_listener_new ()
 	EBookListener *listener;
 
 	listener = g_object_new (E_TYPE_BOOK_LISTENER,
-				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_THREAD, NULL),
+				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 				 NULL);
 
 	return listener;

@@ -1,5 +1,9 @@
 2004-02-11  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book-listener.c (e_book_listener_new): fix typo.
+
+2004-02-11  Chris Toshok  <toshok@ximian.com>
+
 	* libedata-book/e-data-book.c (view_listener_died_cb): nuke, moved
 	to e-data-book-view.c.
 	(impl_GNOME_Evolution_Addressbook_Book_getBookView): remove the
