@@ -437,10 +437,13 @@ cache_init (ECalBackendGroupwise *cbgw)
 			return GNOME_Evolution_Calendar_PermissionDenied;
 		} else {
 			e_cal_backend_cache_set_marker (priv->cache);
-			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
+			/*  Set up deltas only if it is a Calendar backend */
+			if (kind == ICAL_VEVENT_COMPONENT)
+				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
 			return GNOME_Evolution_Calendar_Success;
 		}
+
 	} else {
 		GList *cache_items = NULL, *l;
 		/* notify the ecal about the objects already in cache */
@@ -518,10 +521,10 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			
 			if (!priv->timeout_id) {
 				if (get_deltas (cbgw)) {
-					priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+					if (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) == ICAL_VEVENT_COMPONENT)
+						priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
 				} else {
 					g_warning (G_STRLOC ": Could not populate the cache");
-	ECalBackendSyncStatus status;
 					return GNOME_Evolution_Calendar_PermissionDenied;	
 				}
 			}	 

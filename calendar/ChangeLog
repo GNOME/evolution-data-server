@@ -1,3 +1,10 @@
+2005-01-31  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(cache_init, connect_to_server): GW Task backend now relies
+	on the Calendar backend to fetch changes. This reduces the
+	load on the GW server.
+	
 2005-01-29 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* calendar/backends/groupwise/e-cal-backend-groupwise.c 
