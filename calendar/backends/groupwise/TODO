@@ -1,17 +1,17 @@
 Things to do and people working on it
 -------------------------------------
 
+ - Decide on the way to add groups for the Groupwise accounts. Should we
+   use the 'new-calendar' dialog, with some mechanism to allow backends to
+   specify what parameters they expect from the user? or use a config control?
+   The decided way so far seems to have, evolution/servers, all the config
+   controls for the extra servers. Ask Dan about this.
+
  - Write an ECalBackendCache class to be used by backends to have a
    cache of the objects, persistent between sessions (Rodrigo)
 
  - Map error codes returned in the "status" SOAP type to our
    EGwConnectionStatus. This is in e-gw-connection.c#parse_response_status.
-
- - Add a better parameters management API to SoupSoapResponse. Right
-   now it returns a GList of xmlNodePtr, which is a bad thing for a
-   public API. We should probably either create our specific types, or
-   just return the xmlNodePtr's themselves, but having them as gpointer's
-   in the public API, and provide accessor functions.
 
  - Add missing SOAP methods to EGwConnection (Rodrigo)
 
