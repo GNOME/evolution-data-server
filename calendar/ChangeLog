@@ -1,5 +1,12 @@
 2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
 
+	Fixes 63513
+	* backends/groupwise/e-cal-backends-groupwise-utils.c
+	(e_gw_connection_send_appointment): Do a case insensitive
+	comparison between the email ids.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
 	Fixes #64398
 	* backends/groupwise/e-cal-backend-groupwise.c
 	(ECalBackendGroupwisePrivate): added an variable to store 
@@ -10,6 +17,13 @@
 	(get_deltas): It should not crash in any case if handle is
 	NULL.
 
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes 63513
+	* backends/groupwise/e-cal-backends-groupwise-utils.c
+	(e_gw_connection_send_appointment): Do a case insensitive
+	comparison between the email ids.
+	
 2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	* libecal/e-cal-utils.h:

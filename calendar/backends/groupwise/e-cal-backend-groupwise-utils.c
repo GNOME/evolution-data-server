@@ -685,13 +685,19 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 		/* get attendee here and add the list along. */
 		if (e_cal_component_has_attendees (comp)) {
 			GSList *attendee_list, *l;
+			char *email_id;
 			ECalComponentAttendee  *attendee = NULL, *tmp;
 
 			
 			e_cal_component_get_attendee_list (comp, &attendee_list);
 			for (l = attendee_list; l ; l = g_slist_next (l)) {
 				tmp = (ECalComponentAttendee *) (l->data);
-				if (!strcmp (tmp->value + 7, e_gw_connection_get_user_email (cnc))) {
+				email_id = tmp->value;
+				
+				if (!g_strncasecmp (email_id, "mailto:", 7))
+					email_id += 7;
+			
+				if (!g_ascii_strcasecmp (email_id, e_gw_connection_get_user_email (cnc))) {
 					attendee = tmp;
 					break;
 				}
