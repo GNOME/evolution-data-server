@@ -1,10 +1,13 @@
 
 #include <config.h>
 #include <gconf/gconf-client.h>
+#include <glib/gmain.h>
 #include <libgnome/gnome-init.h>
 #include <libedataserver/e-source-list.h>
 
 static GConfClient *conf_client;
+static GMainLoop *main_loop;
+static char *arg_hostname, *arg_username;
 
 static void
 add_account (const char *conf_key, const char *hostname, const char *username)
@@ -25,6 +28,17 @@ add_account (const char *conf_key, const char *hostname, const char *username)
 	e_source_group_add_source (group, source, -1);
 }
 
+static gboolean
+idle_cb (gpointer data)
+{
+	add_account ("/apps/evolution/calendar/sources", arg_hostname, arg_username);
+	add_account ("/apps/evolution/tasks/sources", arg_hostname, arg_username);
+
+	g_main_loop_quit (main_loop);
+
+	return FALSE;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -38,14 +52,18 @@ main (int argc, char *argv[])
 		return -1;
 	}
 
-	/* initialize variables */
+	arg_hostname = argv[1];
+	arg_username = argv[2];
+
 	conf_client = gconf_client_get_default ();
 
-	add_account ("/apps/evolution/calendar/sources", argv[1], argv[2]);
-	add_account ("/apps/evolution/tasks/sources", argv[1], argv[2]);
+	main_loop = g_main_loop_new (NULL, TRUE);
+	g_idle_add ((GSourceFunc) idle_cb, NULL);
+	g_main_loop_run (main_loop);
 
 	/* terminate */
 	g_object_unref (conf_client);
+	g_main_loop_unref (main_loop);
 
 	return 0;
 }
