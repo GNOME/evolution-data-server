@@ -1,3 +1,7 @@
+2004-09-08  Arafat Medini  <lumina@arabeyes.org>
+
+	* configure.in: Added Arabic locale "ar" to ALL_LINGUAS.
+
 2004-09-04  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
 
 	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS.
