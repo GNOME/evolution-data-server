@@ -775,6 +775,9 @@ camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex
 	}
 	
 	switch (code) {
+	case CAMEL_IMAP4_RESP_CODE_ALERT:
+		/* nothing to do here, handled after switch statement */
+		break;
 	case CAMEL_IMAP4_RESP_CODE_BADCHARSET:
 		/* apparently we don't support UTF-8 afterall */
 		engine->capa &= ~CAMEL_IMAP4_CAPABILITY_utf8_search;
