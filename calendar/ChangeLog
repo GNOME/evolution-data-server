@@ -1,5 +1,11 @@
 2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_open): added missing g_mutex_unlock
+	call.
+
+2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-connection.c
 	(get_e_cal_component_from_soap_parameter): check arguments before
 	passing them to functions to avoid warnings at runtime.

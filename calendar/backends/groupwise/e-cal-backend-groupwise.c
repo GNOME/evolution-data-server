@@ -322,8 +322,10 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	/* create the local cache */
         /* FIXME: if the cache already exists - read it and get deltas. */
-	if (priv->cache)
+	if (priv->cache) {
+		g_mutex_unlock (priv->mutex);
                 return GNOME_Evolution_Calendar_Success;
+	}
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 	if (!priv->cache) {
 		g_mutex_unlock (priv->mutex);
