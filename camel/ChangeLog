@@ -1,3 +1,9 @@
+2005-01-24  JP Rosevear  <jpr@novell.com>
+
+	* tests/folder/test6.c: get imap4 not imap
+
+	* tests/folder/test4.c: ditto
+	
 2005-01-24  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
