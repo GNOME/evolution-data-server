@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"POT-Creation-Date: 2004-01-12 21:29-0500\n"
+"POT-Creation-Date: 2004-01-26 12:42-0500\n"
 "PO-Revision-Date: 2001-09-17 15:10+0200\n"
 "Last-Translator: Manuel A. Fernández Montecelo <manuel@sindominio.net>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -116,20 +116,20 @@ msgstr "Cancela-la operación de correo actual"
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1701
+#: addressbook/libebook/e-book.c:1731
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1709 addressbook/libebook/e-book.c:1813
+#: addressbook/libebook/e-book.c:1739 addressbook/libebook/e-book.c:1843
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1723
+#: addressbook/libebook/e-book.c:1753
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2052
+#: addressbook/libebook/e-book.c:2082
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
@@ -257,12 +257,10 @@ msgstr "Teléfono Móbil"
 msgid "Other Phone"
 msgstr "Outro Teléfono"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
 msgstr "Outro Fax"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:135
 msgid "Pager"
 msgstr "Buscapersoas"
@@ -581,7 +579,7 @@ msgstr "Brétema"
 msgid "List Show Addresses"
 msgstr "Outro Enderezo"
 
-#: addressbook/libebook/e-contact.c:1131
+#: addressbook/libebook/e-contact.c:1147
 #, fuzzy
 msgid "Unnamed List"
 msgstr "Contacto Sen Nome"
@@ -602,16 +600,16 @@ msgstr "_Aniversario:"
 msgid "Anniversary: %s"
 msgstr "Ani_versario:"
 
-#: calendar/backends/file/e-cal-backend-file.c:176
+#: calendar/backends/file/e-cal-backend-file.c:177
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 
-#: calendar/backends/http/e-cal-backend-http.c:276
+#: calendar/backends/http/e-cal-backend-http.c:216
 #, fuzzy
 msgid "Bad file format."
 msgstr "Formato da hora:"
 
-#: calendar/backends/http/e-cal-backend-http.c:281
+#: calendar/backends/http/e-cal-backend-http.c:223
 #, fuzzy
 msgid "Not a calendar."
 msgstr "Non existe o cartafol %s"
@@ -763,97 +761,97 @@ msgid "Undefined"
 msgstr "Indefinida"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1400
+#: calendar/libecal/e-cal.c:1449
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza o seu contrasinal para %s"
 
-#: calendar/libecal/e-cal.c:3813
+#: calendar/libecal/e-cal.c:3868
 #, fuzzy
 msgid "Invalid argument"
 msgstr "Argumentos non válidos"
 
-#: calendar/libecal/e-cal.c:3815
+#: calendar/libecal/e-cal.c:3870
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3817
+#: calendar/libecal/e-cal.c:3872
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Repositorio desconectado"
 
-#: calendar/libecal/e-cal.c:3819
+#: calendar/libecal/e-cal.c:3874
 #, fuzzy
 msgid "No such calendar"
 msgstr "Non existe o cartafol %s"
 
-#: calendar/libecal/e-cal.c:3821 calendar/libecal/e-cal.c:3831
+#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
 #, fuzzy
 msgid "Object not found"
 msgstr "¡Non se puido envia-lo elemento!\n"
 
-#: calendar/libecal/e-cal.c:3823
+#: calendar/libecal/e-cal.c:3878
 #, fuzzy
 msgid "Invalid object"
 msgstr "Argumentos non válidos"
 
-#: calendar/libecal/e-cal.c:3825
+#: calendar/libecal/e-cal.c:3880
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook non cargado\n"
 
-#: calendar/libecal/e-cal.c:3827
+#: calendar/libecal/e-cal.c:3882
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3829
+#: calendar/libecal/e-cal.c:3884
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: calendar/libecal/e-cal.c:3833
+#: calendar/libecal/e-cal.c:3888
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "O ID da Tarxeta xa existe"
 
-#: calendar/libecal/e-cal.c:3835
+#: calendar/libecal/e-cal.c:3890
 msgid "Protocol not supported"
 msgstr "Protocolo non soportado"
 
-#: calendar/libecal/e-cal.c:3837
+#: calendar/libecal/e-cal.c:3892
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operación cancelada"
 
-#: calendar/libecal/e-cal.c:3839
+#: calendar/libecal/e-cal.c:3894
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Cancelar Operación"
 
-#: calendar/libecal/e-cal.c:3841
+#: calendar/libecal/e-cal.c:3896
 #, fuzzy
 msgid "Authentication failed"
 msgstr "A autenticación fallou."
 
-#: calendar/libecal/e-cal.c:3843
+#: calendar/libecal/e-cal.c:3898
 msgid "Authentication required"
 msgstr "Autenticación requirida"
 
-#: calendar/libecal/e-cal.c:3845
+#: calendar/libecal/e-cal.c:3900
 msgid "A CORBA esception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3847
+#: calendar/libecal/e-cal.c:3902
 msgid "Unknown error"
 msgstr "Erro descoñecido"
 
-#: calendar/libecal/e-cal.c:3849
+#: calendar/libecal/e-cal.c:3904
 msgid "No error"
 msgstr "Sen erros"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:498
-#: calendar/libedata-cal/e-cal-backend-sexp.c:630
-#: calendar/libedata-cal/e-cal-backend-sexp.c:657
+#: calendar/libedata-cal/e-cal-backend-sexp.c:503
+#: calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: calendar/libedata-cal/e-cal-backend-sexp.c:662
 #, fuzzy, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "has-categories? espera polo menos 1 argumento"
@@ -861,13 +859,15 @@ msgstr "has-categories? espera polo menos 1 argumento"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:695
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#: calendar/libedata-cal/e-cal-backend-sexp.c:700
 #, fuzzy, c-format
 msgid "\"%s\" expects one argument"
 msgstr "contains? espera 2 argumentos"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:444
+#: calendar/libedata-cal/e-cal-backend-sexp.c:238
+#: calendar/libedata-cal/e-cal-backend-sexp.c:449
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "contains? espera que o argumento 1 sexa unha cadea"
@@ -878,8 +878,8 @@ msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "o argumento 1 de make-time debe ser unha cadea data/hora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:277
-#: calendar/libedata-cal/e-cal-backend-sexp.c:438
+#: calendar/libedata-cal/e-cal-backend-sexp.c:282
+#: calendar/libedata-cal/e-cal-backend-sexp.c:443
 #, fuzzy, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "contains? espera 2 argumentos"
@@ -887,8 +887,8 @@ msgstr "contains? espera 2 argumentos"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:283
-#: calendar/libedata-cal/e-cal-backend-sexp.c:701
+#: calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: calendar/libedata-cal/e-cal-backend-sexp.c:706
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "time-day-end espera que o argumento 1 sexa un time_t"
@@ -898,27 +898,17 @@ msgstr "time-day-end espera que o argumento 1 sexa un time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "time-add-day espera que o argumento 2 sexa un enteiro"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#, fuzzy
-msgid "uid? expects 1 argument"
-msgstr "make-time espera 1 argumento"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:237
-#, fuzzy
-msgid "uid? expects argument 1 to be a string"
-msgstr "contains? espera que o argumento 1 sexa unha cadea"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:291
+#: calendar/libedata-cal/e-cal-backend-sexp.c:296
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "time-add-day espera que o argumento 1 sexa un time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:452
+#: calendar/libedata-cal/e-cal-backend-sexp.c:457
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "contains? espera que o argumento 2 sexa unha cadea"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:475
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -927,12 +917,12 @@ msgstr ""
 "contains? espera que o argumento 1 sexa un de \"any\", \"summary\", "
 "\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:532
+#: calendar/libedata-cal/e-cal-backend-sexp.c:537
 #, fuzzy, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "has-categories? espera polo menos 1 argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:546
+#: calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, fuzzy, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -991,6 +981,14 @@ msgstr "Compoñente do resumo executivo da axenda de Evolution."
 #, fuzzy
 msgid "Evolution Addressbook file backend"
 msgstr "Visor de minitarxetas do Libro de Enderezos de Evolution"
+
+#, fuzzy
+#~ msgid "uid? expects 1 argument"
+#~ msgstr "make-time espera 1 argumento"
+
+#, fuzzy
+#~ msgid "uid? expects argument 1 to be a string"
+#~ msgstr "contains? espera que o argumento 1 sexa unha cadea"
 
 #~ msgid "time-now expects 0 arguments"
 #~ msgstr "time-now espera 0 argumentos"

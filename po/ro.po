@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.15\n"
-"POT-Creation-Date: 2004-01-12 21:29-0500\n"
+"POT-Creation-Date: 2004-01-26 12:42-0500\n"
 "PO-Revision-Date: 2001-09-12 16:59+0800\n"
 "Last-Translator: Tiberiu Micu <tibimicu@gmx.net>\n"
 "Language-Team: Română <ro@li.org>\n"
@@ -108,20 +108,20 @@ msgstr "Renunţă la operaţia de mail curentă"
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1701
+#: addressbook/libebook/e-book.c:1731
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1709 addressbook/libebook/e-book.c:1813
+#: addressbook/libebook/e-book.c:1739 addressbook/libebook/e-book.c:1843
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1723
+#: addressbook/libebook/e-book.c:1753
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2052
+#: addressbook/libebook/e-book.c:2082
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
@@ -248,12 +248,10 @@ msgstr "Telefon mobil"
 msgid "Other Phone"
 msgstr "Alt telefon"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
 msgstr "Alt Fax"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:135
 msgid "Pager"
 msgstr "Pager"
@@ -567,7 +565,7 @@ msgstr "Ceaţă"
 msgid "List Show Addresses"
 msgstr "Altă adresă"
 
-#: addressbook/libebook/e-contact.c:1131
+#: addressbook/libebook/e-contact.c:1147
 #, fuzzy
 msgid "Unnamed List"
 msgstr "Contact schimbat:"
@@ -588,16 +586,16 @@ msgstr "Ziua de naştere:"
 msgid "Anniversary: %s"
 msgstr "Ani_versare:"
 
-#: calendar/backends/file/e-cal-backend-file.c:176
+#: calendar/backends/file/e-cal-backend-file.c:177
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 
-#: calendar/backends/http/e-cal-backend-http.c:276
+#: calendar/backends/http/e-cal-backend-http.c:216
 #, fuzzy
 msgid "Bad file format."
 msgstr "Format timp:"
 
-#: calendar/backends/http/e-cal-backend-http.c:281
+#: calendar/backends/http/e-cal-backend-http.c:223
 #, fuzzy
 msgid "Not a calendar."
 msgstr "Nu există dosarul %s"
@@ -749,97 +747,97 @@ msgid "Undefined"
 msgstr "Nedefinit"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1400
+#: calendar/libecal/e-cal.c:1449
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduceţi parola pentru %s"
 
-#: calendar/libecal/e-cal.c:3813
+#: calendar/libecal/e-cal.c:3868
 #, fuzzy
 msgid "Invalid argument"
 msgstr "Conţinut invalid al mesajului"
 
-#: calendar/libecal/e-cal.c:3815
+#: calendar/libecal/e-cal.c:3870
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3817
+#: calendar/libecal/e-cal.c:3872
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Depozitare offline"
 
-#: calendar/libecal/e-cal.c:3819
+#: calendar/libecal/e-cal.c:3874
 #, fuzzy
 msgid "No such calendar"
 msgstr "Nu există dosarul %s"
 
-#: calendar/libecal/e-cal.c:3821 calendar/libecal/e-cal.c:3831
+#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
 #, fuzzy
 msgid "Object not found"
 msgstr "Bug buddy nu poate fi rulat."
 
-#: calendar/libecal/e-cal.c:3823
+#: calendar/libecal/e-cal.c:3878
 #, fuzzy
 msgid "Invalid object"
 msgstr "Conţinut invalid al mesajului"
 
-#: calendar/libecal/e-cal.c:3825
+#: calendar/libecal/e-cal.c:3880
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook neîncărcat\n"
 
-#: calendar/libecal/e-cal.c:3827
+#: calendar/libecal/e-cal.c:3882
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3829
+#: calendar/libecal/e-cal.c:3884
 msgid "Permission denied"
 msgstr "Acces interzis"
 
-#: calendar/libecal/e-cal.c:3833
+#: calendar/libecal/e-cal.c:3888
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "ID-ul card-ului există deja"
 
-#: calendar/libecal/e-cal.c:3835
+#: calendar/libecal/e-cal.c:3890
 msgid "Protocol not supported"
 msgstr "Protocol nesuportat"
 
-#: calendar/libecal/e-cal.c:3837
+#: calendar/libecal/e-cal.c:3892
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operaţia anulată"
 
-#: calendar/libecal/e-cal.c:3839
+#: calendar/libecal/e-cal.c:3894
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Anulare operaţie"
 
-#: calendar/libecal/e-cal.c:3841
+#: calendar/libecal/e-cal.c:3896
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Eşec la autentificare."
 
-#: calendar/libecal/e-cal.c:3843
+#: calendar/libecal/e-cal.c:3898
 msgid "Authentication required"
 msgstr "Necesită autentificare"
 
-#: calendar/libecal/e-cal.c:3845
+#: calendar/libecal/e-cal.c:3900
 msgid "A CORBA esception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3847
+#: calendar/libecal/e-cal.c:3902
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
 
-#: calendar/libecal/e-cal.c:3849
+#: calendar/libecal/e-cal.c:3904
 msgid "No error"
 msgstr "Fără eroare"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:498
-#: calendar/libedata-cal/e-cal-backend-sexp.c:630
-#: calendar/libedata-cal/e-cal-backend-sexp.c:657
+#: calendar/libedata-cal/e-cal-backend-sexp.c:503
+#: calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: calendar/libedata-cal/e-cal-backend-sexp.c:662
 #, fuzzy, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "Eroare de sintaxă la parametri sau argumente"
@@ -847,13 +845,15 @@ msgstr "Eroare de sintaxă la parametri sau argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:695
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#: calendar/libedata-cal/e-cal-backend-sexp.c:700
 #, fuzzy, c-format
 msgid "\"%s\" expects one argument"
 msgstr "Eroare de sintaxă la parametri sau argumente"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:444
+#: calendar/libedata-cal/e-cal-backend-sexp.c:238
+#: calendar/libedata-cal/e-cal-backend-sexp.c:449
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr ""
@@ -864,8 +864,8 @@ msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:277
-#: calendar/libedata-cal/e-cal-backend-sexp.c:438
+#: calendar/libedata-cal/e-cal-backend-sexp.c:282
+#: calendar/libedata-cal/e-cal-backend-sexp.c:443
 #, fuzzy, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "Eroare de sintaxă la parametri sau argumente"
@@ -873,8 +873,8 @@ msgstr "Eroare de sintaxă la parametri sau argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:283
-#: calendar/libedata-cal/e-cal-backend-sexp.c:701
+#: calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: calendar/libedata-cal/e-cal-backend-sexp.c:706
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "înainte de începerea întâlnirii"
@@ -884,38 +884,29 @@ msgstr "înainte de începerea întâlnirii"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#, fuzzy
-msgid "uid? expects 1 argument"
-msgstr "Eroare de sintaxă la parametri sau argumente"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:237
-msgid "uid? expects argument 1 to be a string"
-msgstr ""
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:291
+#: calendar/libedata-cal/e-cal-backend-sexp.c:296
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:452
+#: calendar/libedata-cal/e-cal-backend-sexp.c:457
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:475
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\""
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:532
+#: calendar/libedata-cal/e-cal-backend-sexp.c:537
 #, fuzzy, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "Eroare de sintaxă la parametri sau argumente"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:546
+#: calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -972,6 +963,10 @@ msgstr "Evolution calendar iTip/iMip vizualizator"
 #, fuzzy
 msgid "Evolution Addressbook file backend"
 msgstr "Vizualizor agendă minicard Evolution"
+
+#, fuzzy
+#~ msgid "uid? expects 1 argument"
+#~ msgstr "Eroare de sintaxă la parametri sau argumente"
 
 #, fuzzy
 #~ msgid "has-recurrences? expects no arguments"

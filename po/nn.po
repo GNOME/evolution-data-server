@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
-"POT-Creation-Date: 2004-01-12 21:29-0500\n"
+"POT-Creation-Date: 2004-01-26 12:42-0500\n"
 "PO-Revision-Date: 2003-10-28 11:42+0100\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -107,20 +107,20 @@ msgstr "Avbryt den aktive e-post-operasjonen"
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1701
+#: addressbook/libebook/e-book.c:1731
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1709 addressbook/libebook/e-book.c:1813
+#: addressbook/libebook/e-book.c:1739 addressbook/libebook/e-book.c:1843
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1723
+#: addressbook/libebook/e-book.c:1753
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2052
+#: addressbook/libebook/e-book.c:2082
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
@@ -247,12 +247,10 @@ msgstr "Mobiltelefon"
 msgid "Other Phone"
 msgstr "Alternativ telefon"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
 msgstr "Alternativ faks"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:135
 msgid "Pager"
 msgstr "Personsøkjar"
@@ -557,7 +555,7 @@ msgstr "Liste"
 msgid "List Show Addresses"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:1131
+#: addressbook/libebook/e-contact.c:1147
 msgid "Unnamed List"
 msgstr "Liste utan namn"
 
@@ -577,16 +575,16 @@ msgstr "_Fødselsdag:"
 msgid "Anniversary: %s"
 msgstr "_Merkedag"
 
-#: calendar/backends/file/e-cal-backend-file.c:176
+#: calendar/backends/file/e-cal-backend-file.c:177
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikkje lagra kalenderdata. Feil i adresse."
 
-#: calendar/backends/http/e-cal-backend-http.c:276
+#: calendar/backends/http/e-cal-backend-http.c:216
 #, fuzzy
 msgid "Bad file format."
 msgstr "Tidsformat:"
 
-#: calendar/backends/http/e-cal-backend-http.c:281
+#: calendar/backends/http/e-cal-backend-http.c:223
 #, fuzzy
 msgid "Not a calendar."
 msgstr "Mappa «%s» finst ikkje"
@@ -737,97 +735,97 @@ msgid "Undefined"
 msgstr "Udefinert"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1400
+#: calendar/libecal/e-cal.c:1449
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%sSkriv inn passord for %s (brukar %s)"
 
-#: calendar/libecal/e-cal.c:3813
+#: calendar/libecal/e-cal.c:3868
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: calendar/libecal/e-cal.c:3815
+#: calendar/libecal/e-cal.c:3870
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3817
+#: calendar/libecal/e-cal.c:3872
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Fråkopla lager"
 
-#: calendar/libecal/e-cal.c:3819
+#: calendar/libecal/e-cal.c:3874
 #, fuzzy
 msgid "No such calendar"
 msgstr "Mappa «%s» finst ikkje"
 
-#: calendar/libecal/e-cal.c:3821 calendar/libecal/e-cal.c:3831
+#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
 #, fuzzy
 msgid "Object not found"
 msgstr "Fann ikkje objekt.\n"
 
-#: calendar/libecal/e-cal.c:3823
+#: calendar/libecal/e-cal.c:3878
 #, fuzzy
 msgid "Invalid object"
 msgstr "Ugyldig argument"
 
-#: calendar/libecal/e-cal.c:3825
+#: calendar/libecal/e-cal.c:3880
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook vart ikkje lasta\n"
 
-#: calendar/libecal/e-cal.c:3827
+#: calendar/libecal/e-cal.c:3882
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3829
+#: calendar/libecal/e-cal.c:3884
 msgid "Permission denied"
 msgstr "Nekta tilgang"
 
-#: calendar/libecal/e-cal.c:3833
+#: calendar/libecal/e-cal.c:3888
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "Kort-id eksisterar allereide"
 
-#: calendar/libecal/e-cal.c:3835
+#: calendar/libecal/e-cal.c:3890
 msgid "Protocol not supported"
 msgstr "Protokollen er ikkje støtta"
 
-#: calendar/libecal/e-cal.c:3837
+#: calendar/libecal/e-cal.c:3892
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operasjonen vart avbroten"
 
-#: calendar/libecal/e-cal.c:3839
+#: calendar/libecal/e-cal.c:3894
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Avbryt operasjon"
 
-#: calendar/libecal/e-cal.c:3841
+#: calendar/libecal/e-cal.c:3896
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Autentisering feila."
 
-#: calendar/libecal/e-cal.c:3843
+#: calendar/libecal/e-cal.c:3898
 #, fuzzy
 msgid "Authentication required"
 msgstr "Autentisering:"
 
-#: calendar/libecal/e-cal.c:3845
+#: calendar/libecal/e-cal.c:3900
 msgid "A CORBA esception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3847
+#: calendar/libecal/e-cal.c:3902
 msgid "Unknown error"
 msgstr "Ukjend feil"
 
-#: calendar/libecal/e-cal.c:3849
+#: calendar/libecal/e-cal.c:3904
 msgid "No error"
 msgstr "Ingen feil"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:498
-#: calendar/libedata-cal/e-cal-backend-sexp.c:630
-#: calendar/libedata-cal/e-cal-backend-sexp.c:657
+#: calendar/libedata-cal/e-cal-backend-sexp.c:503
+#: calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: calendar/libedata-cal/e-cal-backend-sexp.c:662
 #, fuzzy, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "make-time ventar 1 argument"
@@ -835,13 +833,15 @@ msgstr "make-time ventar 1 argument"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:695
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#: calendar/libedata-cal/e-cal-backend-sexp.c:700
 #, fuzzy, c-format
 msgid "\"%s\" expects one argument"
 msgstr "make-time ventar 1 argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:444
+#: calendar/libedata-cal/e-cal-backend-sexp.c:238
+#: calendar/libedata-cal/e-cal-backend-sexp.c:449
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "make-time ventar at argument 1 er ein streng"
@@ -852,8 +852,8 @@ msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "make-time krev at argument 1 er ein dato/tid-streng på ISO 8601-format"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:277
-#: calendar/libedata-cal/e-cal-backend-sexp.c:438
+#: calendar/libedata-cal/e-cal-backend-sexp.c:282
+#: calendar/libedata-cal/e-cal-backend-sexp.c:443
 #, fuzzy, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "make-time ventar 1 argument"
@@ -861,8 +861,8 @@ msgstr "make-time ventar 1 argument"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:283
-#: calendar/libedata-cal/e-cal-backend-sexp.c:701
+#: calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: calendar/libedata-cal/e-cal-backend-sexp.c:706
 #, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "time-add-day ventar at argument 1 er ein time_t"
@@ -872,39 +872,29 @@ msgstr "time-add-day ventar at argument 1 er ein time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "time-add-day ventar at argument 2 er eit heiltal"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#, fuzzy
-msgid "uid? expects 1 argument"
-msgstr "make-time ventar 1 argument"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:237
-#, fuzzy
-msgid "uid? expects argument 1 to be a string"
-msgstr "make-time ventar at argument 1 er ein streng"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:291
+#: calendar/libedata-cal/e-cal-backend-sexp.c:296
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "time-add-day ventar at argument 1 er ein time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:452
+#: calendar/libedata-cal/e-cal-backend-sexp.c:457
 #, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "make-time ventar at argument 1 er ein streng"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:475
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\""
 msgstr ""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:532
+#: calendar/libedata-cal/e-cal-backend-sexp.c:537
 #, fuzzy, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "make-time ventar 1 argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:546
+#: calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -961,6 +951,14 @@ msgstr "Tilgjengelege lenkjer:"
 #, fuzzy
 msgid "Evolution Addressbook file backend"
 msgstr "Evolutions addressebok minikortlesar"
+
+#, fuzzy
+#~ msgid "uid? expects 1 argument"
+#~ msgstr "make-time ventar 1 argument"
+
+#, fuzzy
+#~ msgid "uid? expects argument 1 to be a string"
+#~ msgstr "make-time ventar at argument 1 er ein streng"
 
 #~ msgid "time-now expects 0 arguments"
 #~ msgstr "time-now ventar ingen argument"

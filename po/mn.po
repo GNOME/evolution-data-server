@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.5\n"
-"POT-Creation-Date: 2004-01-25 14:57+0100\n"
+"POT-Creation-Date: 2004-01-26 12:42-0500\n"
 "PO-Revision-Date: 2004-01-25 21:18+0100\n"
 "Last-Translator: Sanlig Badral <badral@openmn.org>\n"
 "Language-Team: Mongolian <openmn-gnome@lists.sf.net>\n"
@@ -62,49 +62,31 @@ msgstr "Хайлт хийж байхал алдаа"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:217
-#: addressbook/libebook/e-book.c:329
-#: addressbook/libebook/e-book.c:414
-#: addressbook/libebook/e-book.c:516
-#: addressbook/libebook/e-book.c:629
-#: addressbook/libebook/e-book.c:713
-#: addressbook/libebook/e-book.c:816
-#: addressbook/libebook/e-book.c:870
-#: addressbook/libebook/e-book.c:969
-#: addressbook/libebook/e-book.c:1103
-#: addressbook/libebook/e-book.c:1203
-#: addressbook/libebook/e-book.c:1441
+#: addressbook/libebook/e-book.c:217 addressbook/libebook/e-book.c:329
+#: addressbook/libebook/e-book.c:414 addressbook/libebook/e-book.c:516
+#: addressbook/libebook/e-book.c:629 addressbook/libebook/e-book.c:713
+#: addressbook/libebook/e-book.c:816 addressbook/libebook/e-book.c:870
+#: addressbook/libebook/e-book.c:969 addressbook/libebook/e-book.c:1103
+#: addressbook/libebook/e-book.c:1203 addressbook/libebook/e-book.c:1441
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" -г номон дээр \"%s\"-н өмнө дуудах"
 
-#: addressbook/libebook/e-book.c:225
-#: addressbook/libebook/e-book.c:337
-#: addressbook/libebook/e-book.c:422
-#: addressbook/libebook/e-book.c:525
-#: addressbook/libebook/e-book.c:637
-#: addressbook/libebook/e-book.c:721
-#: addressbook/libebook/e-book.c:824
-#: addressbook/libebook/e-book.c:878
-#: addressbook/libebook/e-book.c:977
-#: addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1211
-#: addressbook/libebook/e-book.c:1449
+#: addressbook/libebook/e-book.c:225 addressbook/libebook/e-book.c:337
+#: addressbook/libebook/e-book.c:422 addressbook/libebook/e-book.c:525
+#: addressbook/libebook/e-book.c:637 addressbook/libebook/e-book.c:721
+#: addressbook/libebook/e-book.c:824 addressbook/libebook/e-book.c:878
+#: addressbook/libebook/e-book.c:977 addressbook/libebook/e-book.c:1111
+#: addressbook/libebook/e-book.c:1211 addressbook/libebook/e-book.c:1449
 msgid "book busy"
 msgstr "Ном сул биш"
 
-#: addressbook/libebook/e-book.c:252
-#: addressbook/libebook/e-book.c:364
-#: addressbook/libebook/e-book.c:444
-#: addressbook/libebook/e-book.c:548
-#: addressbook/libebook/e-book.c:663
-#: addressbook/libebook/e-book.c:744
-#: addressbook/libebook/e-book.c:910
-#: addressbook/libebook/e-book.c:1021
-#: addressbook/libebook/e-book.c:1139
-#: addressbook/libebook/e-book.c:1235
-#: addressbook/libebook/e-book.c:1367
-#: addressbook/libebook/e-book.c:1471
+#: addressbook/libebook/e-book.c:252 addressbook/libebook/e-book.c:364
+#: addressbook/libebook/e-book.c:444 addressbook/libebook/e-book.c:548
+#: addressbook/libebook/e-book.c:663 addressbook/libebook/e-book.c:744
+#: addressbook/libebook/e-book.c:910 addressbook/libebook/e-book.c:1021
+#: addressbook/libebook/e-book.c:1139 addressbook/libebook/e-book.c:1235
+#: addressbook/libebook/e-book.c:1367 addressbook/libebook/e-book.c:1471
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA exception \"%s\" дуудалт хийж байна"
@@ -121,8 +103,7 @@ msgstr "e_book_cancel: болих боломжгүй"
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Хүчингүй эх."
 
-#: addressbook/libebook/e-book.c:1739
-#: addressbook/libebook/e-book.c:1843
+#: addressbook/libebook/e-book.c:1739 addressbook/libebook/e-book.c:1843
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: `%s' URI хаягийн хувьд фактор алга"
@@ -133,7 +114,9 @@ msgstr "e_book_load_uri: EBookListener үүсгэж чадсангүй"
 
 #: addressbook/libebook/e-book.c:2082
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr "e_book_get_self: gconf хадгалагдсан Self-Contact-хэрэглэгчийн таних тэмдэг алга"
+msgstr ""
+"e_book_get_self: gconf хадгалагдсан Self-Contact-хэрэглэгчийн таних тэмдэг "
+"алга"
 
 #: addressbook/libebook/e-contact.c:97
 msgid "Unique ID"
@@ -502,8 +485,7 @@ msgstr "X.509 Гэрчилгээ"
 msgid "Category List"
 msgstr "Ангилалын жагсаалт"
 
-#: addressbook/libebook/e-contact.c:212
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:212 addressbook/libebook/e-contact.c:214
 msgid "Categories"
 msgstr "Ангилал"
 
@@ -704,18 +686,15 @@ msgstr "30-р"
 msgid "31st"
 msgstr "31-р"
 
-#: calendar/libecal/e-cal-util.c:569
-#: calendar/libecal/e-cal-util.c:591
+#: calendar/libecal/e-cal-util.c:569 calendar/libecal/e-cal-util.c:591
 msgid "High"
 msgstr "Өндөр"
 
-#: calendar/libecal/e-cal-util.c:571
-#: calendar/libecal/e-cal-util.c:593
+#: calendar/libecal/e-cal-util.c:571 calendar/libecal/e-cal-util.c:593
 msgid "Normal"
 msgstr "Энгийн"
 
-#: calendar/libecal/e-cal-util.c:573
-#: calendar/libecal/e-cal-util.c:595
+#: calendar/libecal/e-cal-util.c:573 calendar/libecal/e-cal-util.c:595
 msgid "Low"
 msgstr "Нам"
 
@@ -746,8 +725,7 @@ msgstr "Хадгалагч оффлайн"
 msgid "No such calendar"
 msgstr "Ийм цагалбар алга"
 
-#: calendar/libecal/e-cal.c:3876
-#: calendar/libecal/e-cal.c:3886
+#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
 msgid "Object not found"
 msgstr "Объект олдсонгүй"
 
@@ -804,9 +782,9 @@ msgid "No error"
 msgstr "Алдаагүй"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#: calendar/libedata-cal/e-cal-backend-sexp.c:633
-#: calendar/libedata-cal/e-cal-backend-sexp.c:660
+#: calendar/libedata-cal/e-cal-backend-sexp.c:503
+#: calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: calendar/libedata-cal/e-cal-backend-sexp.c:662
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" аргумент шаардахгүй"
@@ -815,14 +793,14 @@ msgstr "\"%s\" аргумент шаардахгүй"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:698
+#: calendar/libedata-cal/e-cal-backend-sexp.c:700
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" нэг аргумент шаардаж байна"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:447
+#: calendar/libedata-cal/e-cal-backend-sexp.c:449
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" эхний аргументдаа тэмдэгт мөр шаардаж байна"
@@ -833,8 +811,8 @@ msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "\"%s\" эхний аргументдаа ISO 8601 date/time тэмдэгт мөр шаардаж байна"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:280
-#: calendar/libedata-cal/e-cal-backend-sexp.c:441
+#: calendar/libedata-cal/e-cal-backend-sexp.c:282
+#: calendar/libedata-cal/e-cal-backend-sexp.c:443
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" хоёр аргумент шаардаж байна"
@@ -842,8 +820,8 @@ msgstr "\"%s\" хоёр аргумент шаардаж байна"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: calendar/libedata-cal/e-cal-backend-sexp.c:704
+#: calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: calendar/libedata-cal/e-cal-backend-sexp.c:706
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" эхний аргумент time_t байхыг шаардаж байна"
@@ -853,31 +831,74 @@ msgstr "\"%s\" эхний аргумент time_t байхыг шаардаж б
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" эхний аргумент integer байхыг шаардаж байна"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:294
+#: calendar/libedata-cal/e-cal-backend-sexp.c:296
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" хоёрдах аргумент time_t байхыг шаардаж байна"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:455
+#: calendar/libedata-cal/e-cal-backend-sexp.c:457
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" хоёрдах аргумент тэмдэгт мөр байхыг шаардаж байна"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:473
+#: calendar/libedata-cal/e-cal-backend-sexp.c:475
 #, c-format
-msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\""
-msgstr "\"%s\" эхний аргумент \"any\", \"summary\", эсвэл \"description\" байхыг шаардаж байна"
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\""
+msgstr ""
+"\"%s\" эхний аргумент \"any\", \"summary\", эсвэл \"description\" байхыг "
+"шаардаж байна"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:535
+#: calendar/libedata-cal/e-cal-backend-sexp.c:537
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" ядаж нэг аргумент шаардаж байна"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:549
+#: calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
-msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
-msgstr "\"%s\" бүх аргумент тэмдэгт мөр эсвэл зөвхөн ганц аргумент boolean false (#f) байхыг шаардаж байна"
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr ""
+"\"%s\" бүх аргумент тэмдэгт мөр эсвэл зөвхөн ганц аргумент boolean false "
+"(#f) байхыг шаардаж байна"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Эволюц-Хаягийн дэвтэр-файл ба LDAP-Backend"
@@ -890,4 +911,3 @@ msgstr "Эволюц-цагалбар-файл ба Webcal-Backend"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Эволюц-Хаягийн дэвтэр-файл ба Backend"
-

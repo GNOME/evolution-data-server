@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.5\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-22 10:42-0500\n"
+"POT-Creation-Date: 2004-01-26 12:42-0500\n"
 "PO-Revision-Date: 2004-01-22 14:49-0500\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -233,12 +233,10 @@ msgstr "Telefone celular"
 msgid "Other Phone"
 msgstr "Outro telefone"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
 msgstr "Outro fax"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:135
 msgid "Pager"
 msgstr "Pager"
@@ -527,7 +525,7 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Listar endereços de exibição"
 
-#: addressbook/libebook/e-contact.c:1131
+#: addressbook/libebook/e-contact.c:1147
 msgid "Unnamed List"
 msgstr "Lista sem nome"
 
@@ -550,11 +548,11 @@ msgstr "Bodas: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Não é possível salvar dados da agenda: URI malformada."
 
-#: calendar/backends/http/e-cal-backend-http.c:276
+#: calendar/backends/http/e-cal-backend-http.c:216
 msgid "Bad file format."
 msgstr "Formato da arquivo inválido."
 
-#: calendar/backends/http/e-cal-backend-http.c:281
+#: calendar/backends/http/e-cal-backend-http.c:223
 msgid "Not a calendar."
 msgstr "Não é uma agenda."
 
@@ -709,82 +707,82 @@ msgstr "Indefinido"
 msgid "Enter password for %s (user %s)"
 msgstr "Entre senha para %s (usuário %s)"
 
-#: calendar/libecal/e-cal.c:3866
+#: calendar/libecal/e-cal.c:3868
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: calendar/libecal/e-cal.c:3868
+#: calendar/libecal/e-cal.c:3870
 msgid "Backend is busy"
 msgstr "O backend está ocupado"
 
-#: calendar/libecal/e-cal.c:3870
+#: calendar/libecal/e-cal.c:3872
 msgid "Repository is offline"
 msgstr "O repositório está desconectado"
 
-#: calendar/libecal/e-cal.c:3872
+#: calendar/libecal/e-cal.c:3874
 msgid "No such calendar"
 msgstr "Não existe tal agenda"
 
-#: calendar/libecal/e-cal.c:3874 calendar/libecal/e-cal.c:3884
+#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
 msgid "Object not found"
 msgstr "Objeto não foi encontrado"
 
-#: calendar/libecal/e-cal.c:3876
+#: calendar/libecal/e-cal.c:3878
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: calendar/libecal/e-cal.c:3878
+#: calendar/libecal/e-cal.c:3880
 msgid "URI not loaded"
 msgstr "URI não foi carregada"
 
-#: calendar/libecal/e-cal.c:3880
+#: calendar/libecal/e-cal.c:3882
 msgid "URI already loaded"
 msgstr "URI já foi carregada"
 
-#: calendar/libecal/e-cal.c:3882
+#: calendar/libecal/e-cal.c:3884
 msgid "Permission denied"
 msgstr "Permissão negada"
 
-#: calendar/libecal/e-cal.c:3886
+#: calendar/libecal/e-cal.c:3888
 msgid "Object ID already exists"
 msgstr "O ID do objeto já existe"
 
-#: calendar/libecal/e-cal.c:3888
+#: calendar/libecal/e-cal.c:3890
 msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
-#: calendar/libecal/e-cal.c:3890
+#: calendar/libecal/e-cal.c:3892
 msgid "Operation has been cancelled"
 msgstr "A operação foi cancelada"
 
-#: calendar/libecal/e-cal.c:3892
+#: calendar/libecal/e-cal.c:3894
 msgid "Could not cancel operation"
 msgstr "Não foi possível cancelar a operação"
 
-#: calendar/libecal/e-cal.c:3894
+#: calendar/libecal/e-cal.c:3896
 msgid "Authentication failed"
 msgstr "Falhou a autenticação"
 
-#: calendar/libecal/e-cal.c:3896
+#: calendar/libecal/e-cal.c:3898
 msgid "Authentication required"
 msgstr "Autenticação exigida"
 
-#: calendar/libecal/e-cal.c:3898
+#: calendar/libecal/e-cal.c:3900
 msgid "A CORBA esception has occurred"
 msgstr "Ocorreu uma exceçao CORBA"
 
-#: calendar/libecal/e-cal.c:3900
+#: calendar/libecal/e-cal.c:3902
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: calendar/libecal/e-cal.c:3902
+#: calendar/libecal/e-cal.c:3904
 msgid "No error"
 msgstr "Sem erro"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#: calendar/libedata-cal/e-cal-backend-sexp.c:633
-#: calendar/libedata-cal/e-cal-backend-sexp.c:660
+#: calendar/libedata-cal/e-cal-backend-sexp.c:503
+#: calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: calendar/libedata-cal/e-cal-backend-sexp.c:662
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" não espera argumentos"
@@ -793,14 +791,14 @@ msgstr "\"%s\" não espera argumentos"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:698
+#: calendar/libedata-cal/e-cal-backend-sexp.c:700
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" espera um argumento"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:447
+#: calendar/libedata-cal/e-cal-backend-sexp.c:449
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" espera que o primeiro argumento seja uma string"
@@ -808,11 +806,12 @@ msgstr "\"%s\" espera que o primeiro argumento seja uma string"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:89
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" espera que o primeiro argumento seja uma string de data/hora ISO 8601"
+msgstr ""
+"\"%s\" espera que o primeiro argumento seja uma string de data/hora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:280
-#: calendar/libedata-cal/e-cal-backend-sexp.c:441
+#: calendar/libedata-cal/e-cal-backend-sexp.c:282
+#: calendar/libedata-cal/e-cal-backend-sexp.c:443
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" espera dois argumentos"
@@ -820,8 +819,8 @@ msgstr "\"%s\" espera dois argumentos"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: calendar/libedata-cal/e-cal-backend-sexp.c:704
+#: calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: calendar/libedata-cal/e-cal-backend-sexp.c:706
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" espera que o primeiro argumento seja um time_t"
@@ -831,34 +830,38 @@ msgstr "\"%s\" espera que o primeiro argumento seja um time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" espera que o segundo argumento seja um inteiro"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:294
+#: calendar/libedata-cal/e-cal-backend-sexp.c:296
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" espera que o segundo argumento seja um time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:455
+#: calendar/libedata-cal/e-cal-backend-sexp.c:457
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" espera que o segundo argumento seja uma string"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:473
+#: calendar/libedata-cal/e-cal-backend-sexp.c:475
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\""
-msgstr "\"%s\" espera que o primeiro argumento seja um de \"any\", \"summary\" ou \"description\""
+msgstr ""
+"\"%s\" espera que o primeiro argumento seja um de \"any\", \"summary\" ou "
+"\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:535
+#: calendar/libedata-cal/e-cal-backend-sexp.c:537
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" espera pelo menos um argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:549
+#: calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr "\"%s\" espera que todos os argumentos sejam strings ou um e somente um argumento que seja um falso booleano (#f)"
+msgstr ""
+"\"%s\" espera que todos os argumentos sejam strings ou um e somente um "
+"argumento que seja um falso booleano (#f)"
 
 #. !/usr/bin/env python
 #. -*- Mode: python -*-

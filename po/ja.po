@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-19 22:57+0900\n"
+"POT-Creation-Date: 2004-01-26 12:42-0500\n"
 "PO-Revision-Date: 2004-01-19 15:19+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -236,12 +236,10 @@ msgstr "携帯電話の番号"
 msgid "Other Phone"
 msgstr "その他の電話番号"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
 msgstr "その他の FAX 番号"
 
-#. XXX
 #: addressbook/libebook/e-contact.c:135
 msgid "Pager"
 msgstr "ポケベルの番号"
@@ -530,7 +528,7 @@ msgstr "一覧"
 msgid "List Show Addresses"
 msgstr "住所を表示する一覧です"
 
-#: addressbook/libebook/e-contact.c:1131
+#: addressbook/libebook/e-contact.c:1147
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
 
@@ -549,15 +547,15 @@ msgstr "誕生日: %s"
 msgid "Anniversary: %s"
 msgstr "記念日: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:176
+#: calendar/backends/file/e-cal-backend-file.c:177
 msgid "Can't save calendar data: Malformed URI."
 msgstr "カレンダのデータを保存できません: URI が間違っています。"
 
-#: calendar/backends/http/e-cal-backend-http.c:276
+#: calendar/backends/http/e-cal-backend-http.c:216
 msgid "Bad file format."
 msgstr "ファイルのフォ−マットが間違っています。"
 
-#: calendar/backends/http/e-cal-backend-http.c:281
+#: calendar/backends/http/e-cal-backend-http.c:223
 msgid "Not a calendar."
 msgstr "カレンダではありません。"
 
@@ -707,87 +705,87 @@ msgid "Undefined"
 msgstr "未定義"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1444
+#: calendar/libecal/e-cal.c:1449
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s (ユーザ %s) のパスワードを入力して下さい"
 
-#: calendar/libecal/e-cal.c:3861
+#: calendar/libecal/e-cal.c:3868
 msgid "Invalid argument"
 msgstr "不正な引数"
 
-#: calendar/libecal/e-cal.c:3863
+#: calendar/libecal/e-cal.c:3870
 msgid "Backend is busy"
 msgstr "バックエンドが処理中です"
 
-#: calendar/libecal/e-cal.c:3865
+#: calendar/libecal/e-cal.c:3872
 msgid "Repository is offline"
 msgstr "リポジトリはオフラインです"
 
-#: calendar/libecal/e-cal.c:3867
+#: calendar/libecal/e-cal.c:3874
 msgid "No such calendar"
 msgstr "そのようなカレンダはありません"
 
-#: calendar/libecal/e-cal.c:3869 calendar/libecal/e-cal.c:3879
+#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: calendar/libecal/e-cal.c:3871
+#: calendar/libecal/e-cal.c:3878
 msgid "Invalid object"
 msgstr "オブジェクトが不正です"
 
-#: calendar/libecal/e-cal.c:3873
+#: calendar/libecal/e-cal.c:3880
 msgid "URI not loaded"
 msgstr "URI を読み込んでいません"
 
-#: calendar/libecal/e-cal.c:3875
+#: calendar/libecal/e-cal.c:3882
 msgid "URI already loaded"
 msgstr "URL は既に読み込み済みです"
 
-#: calendar/libecal/e-cal.c:3877
+#: calendar/libecal/e-cal.c:3884
 msgid "Permission denied"
 msgstr "権限がありません"
 
-#: calendar/libecal/e-cal.c:3881
+#: calendar/libecal/e-cal.c:3888
 msgid "Object ID already exists"
 msgstr "既にオブジェクト ID が存在しています"
 
-#: calendar/libecal/e-cal.c:3883
+#: calendar/libecal/e-cal.c:3890
 msgid "Protocol not supported"
 msgstr "プロトコルはサポートされていません"
 
-#: calendar/libecal/e-cal.c:3885
+#: calendar/libecal/e-cal.c:3892
 msgid "Operation has been cancelled"
 msgstr "操作をキャンセルしました"
 
-#: calendar/libecal/e-cal.c:3887
+#: calendar/libecal/e-cal.c:3894
 msgid "Could not cancel operation"
 msgstr "操作をキャンセルできませんでした"
 
-#: calendar/libecal/e-cal.c:3889
+#: calendar/libecal/e-cal.c:3896
 msgid "Authentication failed"
 msgstr "認証に失敗しました"
 
-#: calendar/libecal/e-cal.c:3891
+#: calendar/libecal/e-cal.c:3898
 msgid "Authentication required"
 msgstr "認証を必要としています"
 
-#: calendar/libecal/e-cal.c:3893
+#: calendar/libecal/e-cal.c:3900
 msgid "A CORBA esception has occurred"
 msgstr "CORBA 例外が発生しました"
 
-#: calendar/libecal/e-cal.c:3895
+#: calendar/libecal/e-cal.c:3902
 msgid "Unknown error"
 msgstr "不明なエラーです"
 
-#: calendar/libecal/e-cal.c:3897
+#: calendar/libecal/e-cal.c:3904
 msgid "No error"
 msgstr "エラーはありません"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#: calendar/libedata-cal/e-cal-backend-sexp.c:633
-#: calendar/libedata-cal/e-cal-backend-sexp.c:660
+#: calendar/libedata-cal/e-cal-backend-sexp.c:503
+#: calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: calendar/libedata-cal/e-cal-backend-sexp.c:662
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" は引数を必要としません"
@@ -796,14 +794,14 @@ msgstr "\"%s\" は引数を必要としません"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:698
+#: calendar/libedata-cal/e-cal-backend-sexp.c:700
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" は引数を一つ必要とします"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:447
+#: calendar/libedata-cal/e-cal-backend-sexp.c:449
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" は最初の引数として文字列を必要とします"
@@ -815,8 +813,8 @@ msgstr ""
 "\"%s\" は最初の引数として \"ISO 8601 日付/時刻\" の文字列を必要とします"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:280
-#: calendar/libedata-cal/e-cal-backend-sexp.c:441
+#: calendar/libedata-cal/e-cal-backend-sexp.c:282
+#: calendar/libedata-cal/e-cal-backend-sexp.c:443
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" は引数を二つ必要とします"
@@ -824,8 +822,8 @@ msgstr "\"%s\" は引数を二つ必要とします"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: calendar/libedata-cal/e-cal-backend-sexp.c:704
+#: calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: calendar/libedata-cal/e-cal-backend-sexp.c:706
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" は最初の引数として time_t 型の値を必要とします"
@@ -835,17 +833,17 @@ msgstr "\"%s\" は最初の引数として time_t 型の値を必要とします
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" は二番目の引数として整数値を必要とします"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:294
+#: calendar/libedata-cal/e-cal-backend-sexp.c:296
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" は二番目の引数として time_t 型の値を必要とします"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:455
+#: calendar/libedata-cal/e-cal-backend-sexp.c:457
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" は二番目の引数として文字列を必要とします"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:473
+#: calendar/libedata-cal/e-cal-backend-sexp.c:475
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -854,12 +852,12 @@ msgstr ""
 "\"%s\" は最初の引数として \"any\", \"summary| または \"description\" のいずれ"
 "か一つ引数を必要とします"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:535
+#: calendar/libedata-cal/e-cal-backend-sexp.c:537
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" は少なくとも引数を一つ必要とします"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:549
+#: calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -867,6 +865,41 @@ msgid ""
 msgstr ""
 "\"%s\" は全てまたは一つが文字列で、論理値 FAULSE (#f) を一つだけ必要とします"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Evolution アドレス帳ファイルと LDAP のバックエンド"
