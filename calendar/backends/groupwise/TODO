@@ -123,7 +123,7 @@ Step 2 - Basic functionality
 
 Step 3 - Extra
 
- 3.1 Offline/Online mode:
+ 3.1 Offline/Online mode: -> Done
             - Implement e_cal_backend_groupwise_get_mode, which returns the current
 	      online/offline mode of the backend.
 	    - Implement e_cal_backend_groupwise_set_mode, used by clients to
