@@ -1,3 +1,13 @@
+2003-12-03  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: use a cache
+	to keep the objects from the server.
+	(e_cal_backend_groupwise_finalize): unref the cache object.
+	(e_cal_backend_groupwise_open): load/create the local cache.
+	(e_cal_backend_groupwise_get_object): look for the object in
+	the cache.
+	(e_cal_backend_groupwise_class_init): fixed warning.
+
 2003-12-01  William Jon McCann  <mccann@jhu.edu>
  
         * libecal/e-cal.c (e_cal_generate_instances): Fix query and

@@ -25,12 +25,14 @@
 #include <config.h>
 #endif
 
+#include <libedata-cal/e-cal-backend-cache.h>
 #include "e-cal-backend-groupwise.h"
 #include "e-gw-connection.h"
 
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
 	EGwConnection *cnc;
+	ECalBackendCache *cache;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -70,6 +72,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->cnc) {
 		g_object_unref (priv->cnc);
 		priv->cnc = NULL;
+	}
+
+	if (priv->cache) {
+		g_object_unref (priv->cache);
+		priv->cache = NULL;
 	}
 
 	g_free (priv);
@@ -132,8 +139,14 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
+	/* create the local cache */
+	if (priv->cache)
+		g_object_unref (priv->cache);
+	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+
 	/* FIXME: obtain username/password from the user */
 
+	/* FIXME: login to the server only if we're online */
 	/* create connection to server */
 	priv->cnc = e_gw_connection_new ();
 	switch (e_gw_connection_login (priv->cnc, e_cal_backend_get_uri (E_CAL_BACKEND (backend)),
@@ -193,6 +206,25 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
 {
+	ECalComponent *comp;
+	ECalBackendGroupwisePrivate *priv;
+	ECalBackendGroupwise *cbgw = (ECalBackendGroupwise *) backend;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_OtherError);
+
+	priv = cbgw->priv;
+
+	/* search the object in the cache */
+	comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+	if (comp) {
+		*object = e_cal_component_get_as_string (comp);
+		g_object_unref (comp);
+
+		return GNOME_Evolution_Calendar_Success;
+	}
+
+	/* FIXME: get the object from the server */
+	return GNOME_Evolution_Calendar_ObjectNotFound;
 }
 
 /* Get_timezone_object handler for the file backend */
@@ -296,7 +328,7 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
 
-	parent_class = (ECalBackendSyncClass *) g_type_class_peek_parent (class);
+	parent_class = g_type_class_peek_parent (class);
 
 	object_class->dispose = e_cal_backend_groupwise_dispose;
 	object_class->finalize = e_cal_backend_groupwise_finalize;
