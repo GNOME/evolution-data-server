@@ -1,5 +1,15 @@
 2004-02-08  Chris Toshok  <toshok@ximian.com>
 
+	* tests/ebook/Makefile.am (noinst_PROGRAMS): build
+	test-ebook-async
+
+	* tests/ebook/test-ebook-async.c: async version of test-ebook.c
+
+	* tests/ebook/test-ebook.c (main): remove the call to
+	bonobo_main_quit here - we don't need it.
+
+2004-02-08  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book-async.c (main_thread_get_response): lock the
 	idle mutex around this function, reset it to -1, and return FALSE.
 	(push_response): abstract out all the g_async_queue_push stuff

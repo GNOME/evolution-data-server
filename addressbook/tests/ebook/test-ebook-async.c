@@ -3,7 +3,7 @@
 #include <libgnome/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
-#include <libebook/e-book.h>
+#include <libebook/e-book-async.h>
 
 static void
 print_email (EContact *contact)
@@ -26,48 +26,57 @@ print_email (EContact *contact)
 }
 
 static void
+print_all_emails_cb (EBook *book, EBookStatus status, GList *contacts, gpointer closure)
+{
+	GList *c;
+
+	if (status == E_BOOK_ERROR_OK) {
+		for (c = contacts; c; c = c->next) {
+			EContact *contact = E_CONTACT (c->data);
+
+			print_email (contact);
+		}
+	}
+
+	bonobo_main_quit ();
+}
+
+static void
 print_all_emails (EBook *book)
 {
 	EBookQuery *query;
-	gboolean status;
-	GList *cards, *c;
 
 	query = e_book_query_field_exists (E_CONTACT_FULL_NAME);
 
-	status = e_book_get_contacts (book, query, &cards, NULL);
+	e_book_async_get_contacts (book, query, print_all_emails_cb, NULL);
 
 	e_book_query_unref (query);
+}
 
-	if (status == FALSE) {
-		printf ("error %d getting card list\n", status);
-		exit(0);
-	}
-
-	for (c = cards; c; c = c->next) {
-		EContact *contact = E_CONTACT (c->data);
-
+static void
+print_email_cb (EBook *book, EBookStatus status, EContact *contact, gpointer closure)
+{
+	if (status == E_BOOK_ERROR_OK)
 		print_email (contact);
 
-		g_object_unref (contact);
-	}
-	g_list_free (cards);
+	printf ("printing all contacts\n");
+	print_all_emails (book);
 }
 
 static void
 print_one_email (EBook *book)
 {
-	EContact *contact;
-	GError *error = NULL;
+	e_book_async_get_contact (book, "pas-id-0002023", print_email_cb, NULL);
+}
 
-	if (!e_book_get_contact (book, "pas-id-0002023", &contact, &error)) {
-		printf ("error %d getting card: %s\n", error->code, error->message);
-		g_clear_error (&error);
+static void
+book_loaded_cb (EBook *book, EBookStatus status, gpointer data)
+{
+	if (status != E_BOOK_ERROR_OK)
 		return;
-	}
 
-	print_email (contact);
-
-	g_object_unref (contact);
+	printf ("printing one contact\n");
+	print_one_email (book);
 }
 
 int
@@ -88,19 +97,9 @@ main (int argc, char **argv)
 	book = e_book_new ();
 
 	printf ("loading addressbook\n");
-	status = e_book_load_local_addressbook (book, NULL);
-	if (status == FALSE) {
-		printf ("failed to open local addressbook\n");
-		exit(0);
-	}
+	e_book_async_load_local_addressbook (book, book_loaded_cb, book);
 
-	printf ("printing one contact\n");
-	print_one_email (book);
-
-	printf ("printing all contacts\n");
-	print_all_emails (book);
-
-	g_object_unref (book);
+	bonobo_main();
 
 	return 0;
 }
