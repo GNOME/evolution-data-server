@@ -1,3 +1,8 @@
+2004-12-06  Harish Krishnaswamy <kharish@novell.com> 
+	* backends/groupwise/e-cal-backend-groupwise-utils.c 
+	(e_gw_connection_send_appointment) : Add correct view arguments 
+	specific to appointment. 'folders' is not used by appointments.
+	
 2004-12-05  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c

@@ -799,7 +799,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	if (!*remove && status == E_GW_CONNECTION_STATUS_OK) {
 		EGwItem *item;
 
-		status = e_gw_connection_get_item (cnc, container, item_id, "folders",&item);
+		status = e_gw_connection_get_item (cnc, container, item_id, "recipients message recipientStatus attachments",&item);
 		*created_comp = e_gw_item_to_cal_component (item, cbgw);
 	}
 
