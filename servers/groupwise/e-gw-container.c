@@ -624,6 +624,13 @@ e_gw_container_is_root (EGwContainer *container)
 	return container->priv->is_root ;
 }
 
+EGwContainerType
+e_gw_container_get_type (EGwContainer *container)
+{
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE) ;
+	return container->priv->type ;
+}
+
 /* flag specifies whether we are adding to acl or deleting one or more entries*/
 /* flag = 1 :delete entry
  * flag = 2 :update entry

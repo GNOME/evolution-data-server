@@ -54,6 +54,22 @@ struct _EShUsers {
 	int rights;
 };
 
+typedef enum {
+	E_GW_CONTAINER_TYPE_ROOT,
+	E_GW_CONTAINER_TYPE_INBOX,
+	E_GW_CONTAINER_TYPE_OUTBOX,
+	E_GW_CONTAINER_TYPE_CALENDAR,
+	E_GW_CONTAINER_TYPE_CONTACTS,
+	E_GW_CONTAINER_TYPE_DOCUMENTS,
+	E_GW_CONTAINER_TYPE_QUERY,
+	E_GW_CONTAINER_TYPE_CHECKLIST,
+	E_GW_CONTAINER_TYPE_DRAFT,
+	E_GW_CONTAINER_TYPE_CABINET,
+	E_GW_CONTAINER_TYPE_TRASH,
+	E_GW_CONTAINER_TYPE_FOLDER
+	
+} EGwContainerType ;
+
 GType         e_gw_container_get_type (void);
 EGwContainer *e_gw_container_new_from_soap_parameter (SoupSoapParameter *param);
 gboolean      e_gw_container_set_from_soap_parameter (EGwContainer *container,
