@@ -16,6 +16,9 @@ Evolution:BookListener interface.
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### MACRO E_BOOK_ERROR ##### -->
 <para>
 
@@ -57,6 +60,7 @@ Evolution:BookListener interface.
 @E_BOOK_ERROR_NO_SUCH_SOURCE: 
 @E_BOOK_ERROR_OFFLINE_UNAVAILABLE: 
 @E_BOOK_ERROR_OTHER_ERROR: 
+@E_BOOK_ERROR_INVALID_SERVER_VERSION: 
 
 <!-- ##### ENUM EBookViewStatus ##### -->
 <para>

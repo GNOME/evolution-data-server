@@ -15,6 +15,9 @@ Handles asynchronous interactions with the EBook.
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### USER_FUNCTION EBookCallback ##### -->
 <para>
 

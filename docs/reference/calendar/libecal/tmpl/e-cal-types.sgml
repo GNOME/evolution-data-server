@@ -14,6 +14,9 @@ e-cal-types
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### MACRO E_CALENDAR_ERROR ##### -->
 <para>
 
@@ -62,4 +65,5 @@ e-cal-types
 @E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED: 
 @E_CALENDAR_STATUS_CORBA_EXCEPTION: 
 @E_CALENDAR_STATUS_OTHER_ERROR: 
+@E_CALENDAR_STATUS_INVALID_SERVER_VERSION: 
 

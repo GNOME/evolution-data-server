@@ -8,6 +8,14 @@
 @CALOBJ_TYPE_JOURNAL: 
 @CALOBJ_TYPE_ANY: 
 
+<!-- ##### SIGNAL ECal::categories-changed ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+
 <!-- ##### SIGNAL ECal::forget-password ##### -->
 <para>
 

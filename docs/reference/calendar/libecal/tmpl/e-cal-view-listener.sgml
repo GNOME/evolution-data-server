@@ -14,6 +14,9 @@ Listens for responses and event notifications sent by #e-cal-view.
 #e-cal-view
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### FUNCTION e_cal_view_listener_new ##### -->
 <para>
 

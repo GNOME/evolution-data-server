@@ -14,11 +14,19 @@ A convenient way of accessing the contact information in EVCard objects.
 #e-vcard
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT EContact ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### ARG EContact:Rev ##### -->
+<para>
+
+</para>
 
 <!-- ##### ARG EContact:address ##### -->
 <para>
@@ -645,6 +653,7 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_IM_ICQ_WORK_1: 
 @E_CONTACT_IM_ICQ_WORK_2: 
 @E_CONTACT_IM_ICQ_WORK_3: 
+@E_CONTACT_REV: 
 @E_CONTACT_NAME_OR_ORG: 
 @E_CONTACT_ADDRESS: 
 @E_CONTACT_ADDRESS_HOME: 

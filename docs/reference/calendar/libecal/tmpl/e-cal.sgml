@@ -14,6 +14,9 @@ Represents an entire calendar or task list, not individual items within them.2
 #e-cal-listener, #e-cal-view
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT ECal ##### -->
 <para>
 
@@ -51,14 +54,6 @@ Represents an entire calendar or task list, not individual items within them.2
 @ecal: the object which received the signal.
 @arg1: 
 @arg2: 
-
-<!-- ##### SIGNAL ECal::categories-changed ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-@arg1: 
 
 <!-- ##### MACRO E_CAL_SET_MODE_STATUS_ENUM_TYPE ##### -->
 <para>
