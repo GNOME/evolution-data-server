@@ -808,8 +808,10 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const char *ca
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
-	g_assert (CLASS (backend)->create_object != NULL);
-	(* CLASS (backend)->create_object) (backend, cal, calobj);
+	if (CLASS (backend)->create_object)
+		(* CLASS (backend)->create_object) (backend, cal, calobj);
+	else
+		e_data_cal_notify_object_created (cal, GNOME_Evolution_Calendar_PermissionDenied, NULL, NULL);
 }
 
 void
@@ -819,8 +821,10 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *ca
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
-	g_assert (CLASS (backend)->modify_object != NULL);
-	(* CLASS (backend)->modify_object) (backend, cal, calobj, mod);
+	if (CLASS (backend)->modify_object)
+		(* CLASS (backend)->modify_object) (backend, cal, calobj, mod);
+	else
+		e_data_cal_notify_object_removed (cal, GNOME_Evolution_Calendar_PermissionDenied, NULL, NULL);
 }
 
 /**
