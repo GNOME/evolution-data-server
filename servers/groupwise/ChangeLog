@@ -1,3 +1,7 @@
+2004-03-19  JP Rosevear <jpr@ximian.com>
+
+	* e-gw-connection.c: 
+
 2004-03-19  Rodrigo Moya <rodrigo@ximian.com>
 
 	* e-gw-connection.[ch] (e_gw_connection_get_error_message): new function.

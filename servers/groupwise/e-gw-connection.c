@@ -26,6 +26,7 @@
 #endif
 #include <string.h>
 #include <ctype.h>
+#include <libgnome/gnome-i18n.h>
 #include <libsoup/soup-session-sync.h>
 #include <libsoup/soup-soap-message.h>
 #include "e-gw-connection.h"
