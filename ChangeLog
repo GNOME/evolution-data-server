@@ -1,3 +1,7 @@
+2004-02-12  Chris Toshok  <toshok@ximian.com>
+
+	* configure.in (AM_PATH_ORBIT2): up our requirement to 2.9.8.
+
 2004-02-09  Michael Meeks  <michael@ximian.com>
 
 	* libedataserver/e-list-iterator.c (e_list_iterator_new),
