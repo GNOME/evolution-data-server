@@ -1,5 +1,7 @@
 2004-01-30  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/http/Makefile.am: LOG_DOMAIN is ...http, not ...file.
+
 	* backends/http/e-cal-backend-http.c (reaload_cb): don't start a new
 	updload if we're already uploading.
 
