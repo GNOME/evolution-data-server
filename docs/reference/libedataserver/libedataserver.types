@@ -1,0 +1,11 @@
+#include <glib-object.h>
+e_account_list_get_type
+e_account_get_type
+e_component_listener_get_type
+e_file_cache_get_type
+e_iterator_get_type
+e_list_iterator_get_type
+e_list_get_type
+e_source_group_get_type
+e_source_list_get_type
+e_source_get_type
