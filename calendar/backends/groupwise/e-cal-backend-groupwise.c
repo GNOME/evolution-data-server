@@ -795,7 +795,7 @@ e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, 
        cbgw = E_CAL_BACKEND_GROUPWISE (backend);
        cnc = cbgw->priv->cnc;
 
-       status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy);
+       status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy, cbgw->priv->default_zone);
        if (status != E_GW_CONNECTION_STATUS_OK)
                return GNOME_Evolution_Calendar_OtherError;
        return GNOME_Evolution_Calendar_Success; 

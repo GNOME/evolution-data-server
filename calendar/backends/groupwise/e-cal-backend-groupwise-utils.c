@@ -780,7 +780,7 @@ close_freebusy_session (EGwConnection *cnc, const char *session)
 }
 
 EGwConnectionStatus
-e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy)
+e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy, icaltimezone *default_zone)
 {
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
@@ -893,7 +893,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				start = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (start);
-				itt = icaltime_from_timet (t, 0);
+				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : 0);
 				ipt.start = itt;
 			}        
 
@@ -901,7 +901,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				end = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (end);
-				itt = icaltime_from_timet (t, 0);
+				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : 0);
 				ipt.end = itt;
 			}
 			icalprop = icalproperty_new_freebusy (ipt);
