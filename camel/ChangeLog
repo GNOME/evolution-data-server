@@ -1,3 +1,32 @@
+2005-01-11  JP Rosevear  <jpr@novell.com>
+
+	* providers/groupwise/camel-groupwise-transport.h: remove defines
+
+	* providers/groupwise/camel-groupwise-transport.c (groupwise_send_to) 
+	(groupwise_send_to): use util routine to build item
+
+	* providers/groupwise/camel-groupwise-store.h: new protos
+
+	* providers/groupwise/camel-groupwise-store.c
+	(groupwise_rename_folder): use new api name and don't strdup the
+	lookup name
+	(camel_groupwise_store_folder_lookup): find folder from container id
+
+	* providers/groupwise/camel-groupwise-journal.[hc]: implement
+	journalling for append and transfer
+
+	* providers/groupwise/camel-groupwise-folder.h: add journal member
+
+	* providers/groupwise/camel-groupwise-folder.c
+	(groupwise_folder_get_message): use new api name and don't strdup
+	the lookup name
+	(groupwise_refresh_info): ditto
+	(groupwise_append_message): ditto
+	(groupwise_expunge): ditto
+	(groupwise_transfer_messages_to): handle being in offline mode
+
+	* providers/groupwise/Makefile.am: build journal sources
+
 2005-01-11 Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-folder.c
