@@ -912,7 +912,8 @@ e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStat
 	}
 
 	CORBA_exception_init (&ev);
-	GNOME_Evolution_Calendar_CalListener_notifyObjectsSent (priv->listener, status, corba_users, calobj, &ev);
+	GNOME_Evolution_Calendar_CalListener_notifyObjectsSent (priv->listener, status, corba_users,
+								calobj ? calobj : "", &ev);
 
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of objects sent");

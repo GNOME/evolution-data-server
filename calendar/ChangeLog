@@ -1,3 +1,12 @@
+2004-03-11  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-data-cal.c (e_data_cal_notify_objects_sent): guard
+	against sending NULL strings to CORBA.
+
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_receive_objects,
+	e_cal_backend_contacts_send_objects): return PermissionDenied error.
+
 2004-03-09  JP Rosevear <jpr@ximian.com>
 
 	Fixes #55389

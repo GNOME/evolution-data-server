@@ -592,7 +592,7 @@ static ECalBackendSyncStatus
 e_cal_backend_contacts_receive_objects (ECalBackendSync *backend, EDataCal *cal,
 					const char *calobj)
 {
-	return GNOME_Evolution_Calendar_UnsupportedMethod;	
+	return GNOME_Evolution_Calendar_PermissionDenied;	
 }
 
 static ECalBackendSyncStatus
@@ -602,7 +602,7 @@ e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal,
 	*users = NULL;
 	*modified_calobj = NULL;
 	/* TODO: Investigate this */
-	return GNOME_Evolution_Calendar_Success;
+	return GNOME_Evolution_Calendar_PermissionDenied;
 }
 
 /* Then the real implementations */
