@@ -1,3 +1,8 @@
+2004-10-07  JP Rosevear  <jpr@novell.com>
+  
+  	* libecal/e-cal.c (e_cal_new_system_tasks): load the correct type
+  	of events
+	
 2004-10-06  JP Rosevear  <jpr@novell.com>
  
  	Fixes #67513
