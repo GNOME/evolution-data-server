@@ -7,3 +7,5 @@ Evolution-DataServer-Addressbook.h
 e-data-book-marshal.c
 e-data-book-marshal.h
 libedata-book-1.0.pc
+libedata-book-1.2.pc
+libedata-book.pc
