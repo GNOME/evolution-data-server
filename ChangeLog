@@ -1,3 +1,7 @@
+2004-04-21  Tomasz Kłoczko <kloczek@pld.org.pl>
+
+	* acinclude.m4: minor fixes (added missing [] quotation).
+
 2004-04-19  JP Rosevear  <jpr@ximian.com>
 
 	* configure.in: bump version, libtool numbers

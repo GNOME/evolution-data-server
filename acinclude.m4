@@ -7,7 +7,7 @@
 # The version must be >= @minvers. If @maxvers is equal to @minvers,
 # it must be exactly that version. Otherwise, if @maxvers is set,
 # the version must be LESS THAN @maxvers (not less than or equal).
-AC_DEFUN(EVO_CHECK_LIB, [
+AC_DEFUN([EVO_CHECK_LIB], [
 	dispname="$1"
 	pkgname="$2"
 	minvers="$3"
@@ -59,7 +59,7 @@ AC_DEFUN(EVO_CHECK_LIB, [
 # EVO_PURIFY_SUPPORT
 # Add --enable-purify. If the user turns it on, subst PURIFY and set
 # the automake conditional ENABLE_PURIFY
-AC_DEFUN(EVO_PURIFY_SUPPORT, [
+AC_DEFUN([EVO_PURIFY_SUPPORT], [
 	AC_ARG_ENABLE(purify, 
 	[  --enable-purify=[no/yes]      Enable support for building executables with Purify.],,enable_purify=no)
 	AC_PATH_PROG(PURIFY, purify, impure)
@@ -82,7 +82,7 @@ AC_DEFUN(EVO_PURIFY_SUPPORT, [
 # configured, HAVE_LDAP will be defined and the automake conditional
 # ENABLE_LDAP will be set. LDAP_CFLAGS and LDAP_LIBS will be set
 # appropriately.
-AC_DEFUN(EVO_LDAP_CHECK, [
+AC_DEFUN([EVO_LDAP_CHECK], [
 	default="$1"
 
 	AC_ARG_WITH(openldap,     [  --with-openldap=[no/yes/PREFIX]      Enable LDAP support in evolution])
