@@ -248,8 +248,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	}
 #else
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to connect to POP server %s in secure mode: %s"),
-				      service->url->host, _("SSL negotiations failed"));
+			      _("Failed to connect to POP server %s in secure mode: %s"),
+			      service->url->host, _("SSL is not available in this build"));
 	goto stls_exception;
 #endif /* HAVE_SSL */
 	
