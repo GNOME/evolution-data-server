@@ -25,3 +25,6 @@ libecalbackendfile_la_SOURCES =		\
 libecalbackendfile_la_LIBADD =					\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la
 
+
+libecalbackendfile_la_LDFLAGS =		\
+	-avoid-version

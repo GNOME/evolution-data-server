@@ -1,3 +1,8 @@
+2004-10-14  Rodney Dawes  <dobey@novell.com>
+
+	* backends/*/Makefile.am: Add -avoid-version to LDFLAGS for all
+	of the backends
+	
 2004-10-13 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backend/groupwise/e-book-backend-groupwise.c (

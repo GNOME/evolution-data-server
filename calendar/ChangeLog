@@ -1,3 +1,8 @@
+2004-10-14  Rodney Dawes  <dobey@novell.com>
+
+	* backends/*/Makefile.am: Add -avoid-version to LDFLAGS for all
+	of the backends
+
 2004-10-14  Harish Krishnaswamy  <kharish@novell.com>
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	(get_deltas) : removed stray debug code that should not have

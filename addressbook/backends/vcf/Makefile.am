@@ -16,3 +16,6 @@ libebookbackendvcf_la_SOURCES =			\
 libebookbackendvcf_la_LIBADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la
+
+libebookbackendvcf_la_LDFLAGS =		\
+	-avoid-version

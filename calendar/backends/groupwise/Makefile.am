@@ -31,3 +31,6 @@ libecalbackendgroupwise_la_LIBADD =					\
 	$(top_builddir)/calendar/backends/file/libecalbackendfile.la\
 	$(top_builddir)/servers/groupwise/libegroupwise-1.2.la		\
 	$(SOUP_LIBS)
+
+libecalbackendgroupwise_la_LDFLAGS =		\
+	-avoid-version

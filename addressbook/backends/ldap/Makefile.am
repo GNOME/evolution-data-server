@@ -19,6 +19,9 @@ libebookbackendldap_la_LIBADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
+libebookbackendldap_la_LDFLAGS =	\
+	-avoid-version
+
 LDAP_SCHEMA =						\
 	evolutionperson.schema
 
