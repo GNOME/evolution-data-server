@@ -591,6 +591,7 @@ char*
 e_book_query_to_string    (EBookQuery *q)
 {
 	GString *str = g_string_new ("(");
+	GString *encoded = g_string_new ("");
 	int i;
 	char *s = NULL;
 
@@ -632,19 +633,23 @@ e_book_query_to_string    (EBookQuery *q)
 			break;
 		}
 
-		/* XXX need to escape q->query.field_test.value */
-		g_string_append_printf (str, "%s \"%s\" \"%s\"",
+		e_sexp_encode_string (encoded, q->query.field_test.value);
+
+		g_string_append_printf (str, "%s \"%s\" %s",
 					s,
 					e_contact_field_name (q->query.field_test.field),
-					q->query.field_test.value);
+					encoded->str);
 		break;
 	case E_BOOK_QUERY_TYPE_ANY_FIELD_CONTAINS:
-		g_string_append_printf (str, "contains \"x-evolution-any-field\" \"%s\"", q->query.any_field_contains.value);
+		e_sexp_encode_string (encoded, q->query.any_field_contains.value);
+		g_string_append_printf (str, "contains \"x-evolution-any-field\" %s", encoded->str);
 		break;
 	}
 	 
 
 	g_string_append (str, ")");
+
+	g_string_free (encoded, TRUE);
 
 	return g_string_free (str, FALSE);
 }
