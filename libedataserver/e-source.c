@@ -373,7 +373,13 @@ e_source_update_from_xml_node (ESource *source,
 			changed = TRUE;
 		}
 	}
-
+	if (g_hash_table_size (source->priv->properties) && !node->children) {
+		g_hash_table_destroy (source->priv->properties);
+		source->priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+								  g_free, g_free);
+		changed = TRUE;
+	}
+	
 	for (node = node->children; node; node = node->next) {
 		if (!node->name)
 			continue;

@@ -1,3 +1,13 @@
+2005-01-21  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libedataserver/e-source.c 
+	(e_source_update_from_xml_node) : look for 
+	case where passed in node does not contain any properites.
+	In the case reset the properites of the source
+	and emit the changed signal
+	makes personal books unselectable
+	from auto-completion 
+	
 2005-01-14  Priit Laes <amd@store20.com>
 
 	* configure.in: Added 'ar', 'cy', 'he', 'hi', 'is', 'mk', 'ml',	
