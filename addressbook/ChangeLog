@@ -1,3 +1,12 @@
+2004-03-18  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/Makefile.am (noinst_PROGRAMS): add test-stress-bookviews.
+
+	* tests/ebook/test-stress-bookviews.c: create and dispose of a ton of
+	EBookViews very quickly.  designed to flush out races/problems in
+	the way we use bonobo/orbit (and at the time of its writing it
+	does show a problem).
+
 2004-03-17  Chris Toshok  <toshok@ximian.com>
 
 	* backends/vcf/e-book-backend-vcf.c (closure_destroy): new
