@@ -1,3 +1,11 @@
+2004-12-23  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-name-selector-entry.c (escape_sexp_string): Implement as a wrapper
+	for e_sexp_encode_string ().
+	(set_completion_query): Encode strings. Free all strings after use.
+	(entry_activate): Implement.
+	(e_name_selector_entry_init): Connect to our own activation signal.
+
 2004-12-22  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-destination-store.c (e_destination_store_insert_destination): Don't

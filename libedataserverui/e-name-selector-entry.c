@@ -332,11 +332,27 @@ name_style_query (const gchar *field, const gchar *value)
 	return query;
 }
 
+static gchar *
+escape_sexp_string (const gchar *string)
+{
+	GString *gstring;
+	gchar   *encoded_string;
+
+	gstring = g_string_new ("");
+	e_sexp_encode_string (gstring, string);
+
+	encoded_string = gstring->str;
+	g_string_free (gstring, FALSE);
+
+	return encoded_string;
+}
+
 static void
 set_completion_query (ENameSelectorEntry *name_selector_entry, const gchar *cue_str)
 {
 	EBookQuery *book_query;
 	gchar      *query_str;
+	gchar      *encoded_cue_str;
 	gchar      *full_name_query_str;
 	gchar      *file_as_query_str;
 
@@ -346,16 +362,24 @@ set_completion_query (ENameSelectorEntry *name_selector_entry, const gchar *cue_
 		return;
 	}
 
+	encoded_cue_str     = escape_sexp_string (cue_str);
 	full_name_query_str = name_style_query ("full_name", cue_str);
 	file_as_query_str   = name_style_query ("file_as",   cue_str);
 
 	query_str = g_strdup_printf ("(or "
-				     " (beginswith \"nickname\"  \"%s\") "
-				     " (beginswith \"email\"     \"%s\") "
+				     " (beginswith \"nickname\"  %s) "
+				     " (beginswith \"email\"     %s) "
 				     " %s "
 				     " %s "
 				     ")",
-				     cue_str, cue_str, full_name_query_str, file_as_query_str);
+				     encoded_cue_str, encoded_cue_str,
+				     full_name_query_str, file_as_query_str);
+
+	g_free (file_as_query_str);
+	g_free (full_name_query_str);
+	g_free (encoded_cue_str);
+
+	ENS_DEBUG (g_print ("%s\n", query_str));
 
 	book_query = e_book_query_from_string (query_str);
 	e_contact_store_set_query (name_selector_entry->contact_store, book_query);
@@ -1098,8 +1122,28 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel
 	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
 
 	/* Place cursor at end of address */
+
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), cursor_pos);
 	return TRUE;
+}
+
+static void
+entry_activate (ENameSelectorEntry *name_selector_entry)
+{
+	gint         cursor_pos;
+	gint         range_start, range_end;
+	const gchar *text;
+
+	/* Show us what's really there */
+
+	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
+	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
+
+	/* Place cursor at end of address */
+
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	get_range_at_position (text, cursor_pos, &range_start, &range_end);
+	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
 }
 
 static void
@@ -1328,6 +1372,10 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
   /* Exposition */
 
   g_signal_connect (name_selector_entry, "expose-event", G_CALLBACK (expose_event), name_selector_entry);
+
+  /* Activation: Complete current entry if possible */
+
+  g_signal_connect (name_selector_entry, "activate", G_CALLBACK (entry_activate), name_selector_entry);
 
   /* Completion */
 
