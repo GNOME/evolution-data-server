@@ -8,10 +8,12 @@
 static void
 print_email (EContact *contact)
 {
-	char *file_as = e_contact_get (contact, E_CONTACT_FILE_AS);
+	char *file_as = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+	char *name_or_org = e_contact_get_const (contact, E_CONTACT_NAME_OR_ORG);
 	GList *emails, *e;
 
 	printf ("Contact: %s\n", file_as);
+	printf ("Name or org: %s\n", name_or_org);
 	printf ("Email addresses:\n");
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
@@ -19,8 +21,6 @@ print_email (EContact *contact)
 	}
 	g_list_foreach (emails, (GFunc)g_free, NULL);
 	g_list_free (emails);
-
-	g_free (file_as);
 
 	printf ("\n");
 }

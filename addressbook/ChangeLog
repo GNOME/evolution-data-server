@@ -1,3 +1,13 @@
+2003-12-04  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/test-ebook.c (print_email): print out the
+	NAME_OR_ORG of the contact too.
+
+	* libebook/e-contact.h (EContactField): add NAME_OR_ORG.
+
+	* libebook/e-contact.c (field_info): add NAME_OR_ORG.
+	(e_contact_get_property): handle NAME_OR_ORG.
+
 2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-book.c (e_book_unload_uri): When clearing the cached

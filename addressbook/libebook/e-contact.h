@@ -131,6 +131,11 @@ typedef enum {
 	E_CONTACT_X509_CERT,                  /* string field */
 	E_CONTACT_X509_CERT_SHA1_FINGERPRINT, /* string field */
 
+	/* Convenience field for getting a name from the contact.
+	   Returns the first one of [File-As, Full Name, Org, Email1]
+	   to be set */
+	E_CONTACT_NAME_OR_ORG,
+
 	E_CONTACT_FIELD_LAST,
 
 	/* useful constants */
