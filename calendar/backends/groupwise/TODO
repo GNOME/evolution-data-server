@@ -83,4 +83,9 @@ Step 3 - Extra
             - Implement e_cal_backend_groupwise_get_mode
 	    - Implement e_cal_backend_groupwise_set_mode
 
+ 3.2 Folder properties. Each calendar/tasks folder should be configurable from the
+     UI. The source selector widget will display a 'Properties' menu item in the
+     popup menu which will show up a dialog that allows the user to change the folder
+     properties (name, permissions, whatever). We need to decide on how this is done,
+     since the GUI should not know anything about Groupwise.
 
