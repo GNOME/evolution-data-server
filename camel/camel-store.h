@@ -74,6 +74,8 @@ typedef struct _CamelFolderInfo {
 #define CAMEL_FOLDER_SYSTEM (1<<6)
 /* a virtual folder that can't be copied to, and can only be moved to if in an existing folder */
 #define CAMEL_FOLDER_VTRASH (1<<7)
+#define CAMEL_FOLDER_SHARED_TO_ME (1<<8)
+#define CAMEL_FOLDER_SHARED_BY_ME (1<<9)
 
 /* Structure of rename event's event_data */
 typedef struct _CamelRenameInfo {
