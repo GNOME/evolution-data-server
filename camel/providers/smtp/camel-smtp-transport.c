@@ -1063,8 +1063,8 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 		broken_smtp_server:
 			d(fprintf (stderr, "Your SMTP server's implementation of the %s SASL\n"
 				   "authentication mechanism is broken. Please report this to the\n"
-				   "appropriate vendor and suggest that they re-read rfc2222 again\n"
-				   "for the first time (specifically Section 4, paragraph 2).\n",
+				   "appropriate vendor and suggest that they re-read rfc2554 again\n"
+				   "for the first time (specifically Section 4).\n",
 				   mech));
 		}
 		
@@ -1223,7 +1223,7 @@ static gboolean
 smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelException *ex)
 {
 	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
-	struct _header_raw *header, *savedbcc, *n, *tail;
+	struct _camel_header_raw *header, *savedbcc, *n, *tail;
 	char *cmdbuf, *respbuf = NULL;
 	CamelStreamFilter *filtered_stream;
 	CamelMimeFilter *crlffilter;
@@ -1282,9 +1282,9 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelExcept
 	
 	/* unlink the bcc headers */
 	savedbcc = NULL;
-	tail = (struct _header_raw *) &savedbcc;
+	tail = (struct _camel_header_raw *) &savedbcc;
 	
-	header = (struct _header_raw *) &CAMEL_MIME_PART (message)->headers;
+	header = (struct _camel_header_raw *) &CAMEL_MIME_PART (message)->headers;
 	n = header->next;
 	while (n != NULL) {
 		if (!strcasecmp (n->name, "Bcc")) {

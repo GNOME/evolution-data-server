@@ -66,7 +66,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 	
 	/* read in the entire content */
 	buffer = g_byte_array_new ();
-	while (camel_mime_parser_step (mp, &buf, &len) != HSCAN_BODY_END) {
+	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END) {
 		d(printf("appending o/p data: %d: %.*s\n", len, len, buf));
 		g_byte_array_append (buffer, buf, len);
 	}
@@ -88,13 +88,13 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 
 	ct = camel_mime_parser_content_type (mp);
 
-	encoding = header_content_encoding_decode (camel_mime_parser_header (mp, "Content-Transfer-Encoding", NULL));
+	encoding = camel_content_transfer_encoding_decode (camel_mime_parser_header (mp, "Content-Transfer-Encoding", NULL));
 	
 	switch (camel_mime_parser_state (mp)) {
-	case HSCAN_HEADER:
+	case CAMEL_MIME_PARSER_STATE_HEADER:
 		d(printf("Creating body part\n"));
 		/* multipart/signed is some fucked up type that we must treat as binary data, fun huh, idiots. */
-		if (header_content_type_is (ct, "multipart", "signed")) {
+		if (camel_content_type_is (ct, "multipart", "signed")) {
 			content = (CamelDataWrapper *) camel_multipart_signed_new ();
 			camel_multipart_construct_from_parser ((CamelMultipart *) content, mp);
 		} else {
@@ -102,16 +102,16 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 			simple_data_wrapper_construct_from_parser (content, mp);
 		}
 		break;
-	case HSCAN_MESSAGE:
+	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		d(printf("Creating message part\n"));
 		content = (CamelDataWrapper *) camel_mime_message_new ();
 		camel_mime_part_construct_from_parser ((CamelMimePart *)content, mp);
 		break;
-	case HSCAN_MULTIPART:
+	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		d(printf("Creating multi-part\n"));
-		if (header_content_type_is (ct, "multipart", "encrypted"))
+		if (camel_content_type_is (ct, "multipart", "encrypted"))
 			content = (CamelDataWrapper *) camel_multipart_encrypted_new ();
-		else if (header_content_type_is (ct, "multipart", "signed"))
+		else if (camel_content_type_is (ct, "multipart", "signed"))
 			content = (CamelDataWrapper *) camel_multipart_signed_new ();
 		else
 			content = (CamelDataWrapper *) camel_multipart_new ();
@@ -125,7 +125,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 	
 	if (content) {
 		if (encoding)
-			content->encoding = camel_mime_part_encoding_from_string (encoding);
+			content->encoding = camel_transfer_encoding_from_string (encoding);
 
 		/* would you believe you have to set this BEFORE you set the content object???  oh my god !!!! */
 		camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type (dw));

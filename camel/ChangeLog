@@ -1,3 +1,342 @@
+2003-09-22  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #41610
+	
+	* providers/pop3/camel-pop3-folder.c (cmd_tocache): protect a
+	divide by 0 for 0 length messages.
+
+2003-09-22  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-provider.c: Added "offline_sync"
+	option, which lets you synchronise all mail to local storage
+	automagically.
+
+	* camel-disco-folder.c (cdf_folder_changed): hook onto the folder
+	changed single, for all new messages, check that they are online
+	using another thread, if the offline_sync option has been enabled
+	for this store.
+
+2003-09-21  Not Zed  <NotZed@Ximian.com>
+
+	* camel-session.c (session_thread_destroy): call proper entry
+	point for freeing the message.
+
+2003-09-18  Not Zed  <NotZed@Ximian.com>
+
+	* camel-folder.c (filter_filter): register the filtering process
+	for progress, and do progress of the filtering process.
+
+2003-09-17  Not Zed  <NotZed@Ximian.com>
+
+	* camel.c (camel_init): init camel operation.
+
+	* camel-operation.c (camel_operation_reset): removed, not used,
+	not worth it.
+	(camel_operation_mute): new method to stop all status updates
+	permanently.
+	(*): Changed to use thread specific data and a list rather than a
+	hashtable.
+	(cancel_thread): removed.
+	(camel_operation_register): return the previously registered op.
+
+2003-09-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/nntp/camel-nntp-store.c (connect_to_server): Fix the
+	code that creates a new ssl stream to pass the correct arguments
+	and the proper flags.
+
+	* providers/imapp/camel-imapp-folder.c (imap_sync): Cast the
+	CamelFolder to a CamelIMAPPFolder to hush some compiler warnings.
+
+	* camel-mime-utils.h: Define a struct _CamelContentDisposition
+	(allows the imapp code to compile)
+
+	* providers/imapp/camel-imapp-driver.c: #include <string.h>
+
+2003-09-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.c (camel_transfer_encoding_to_string): New
+	function to replace the one from camel-mime-part.c
+	(camel_transfer_encoding_from_string): Same.
+	(camel_content_transfer_encoding_decode): Renamed from
+	camel_header_content_encoding_decode().
+
+	* camel-mime-part.c (camel_mime_part_encoding_to_string): Removed.
+	(camel_mime_part_encoding_from_string): Removed.
+
+	* camel-data-wrapper.[c,h]: updated for CamelTransferEncoding
+	namespace changes
+
+	* camel-folder-summary.c: updated for CamelTransferEncoding
+	namespace changes
+
+	* camel-mime-filter-bestenc.[c,h]: updated for CamelTransferEncoding
+	namespace changes
+
+	* camel-mime-message.c: updated for CamelTransferEncoding
+	namespace changes
+
+	* camel-mime-part-utils.c: updated for CamelTransferEncoding
+	namespace changes
+
+	* camel-multipart-signed.c: updated for CamelTransferEncoding
+	namespace changes
+
+	* camel-smime-context.c: updated for CamelTransferEncoding
+	namespace changes
+
+	* providers/imapp/camel-imapp-utils.c: updated for
+	CamelTransferEncoding namespace changes
+
+	* tests/lib/messages.c: updated for CamelTransferEncoding
+	namespace changes
+
+	* tests/message/test1.c: updated for CamelTransferEncoding
+	namespace changes
+
+2003-09-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.[c,h]: namespaced the encoding/decoding
+	routines.
+
+	* camel-mime-filter-basic.c: updated for namespace changes to the
+	encoding/decoding routines in camel-mime-utils.c
+
+	* camel-multipart.c: updated for namespace changes to the
+	encoding/decoding routines in camel-mime-utils.c
+
+	* camel-sasl-digest-md5.c: updated for namespace changes to the
+	encoding/decoding routines in camel-mime-utils.c
+
+	* camel-sasl.c: updated for namespace changes to the
+	encoding/decoding routines in camel-mime-utils.c
+	
+	* camel-vee-folder.c: updated for namespace changes to the
+	encoding/decoding routines in camel-mime-utils.c
+
+	* providers/imap/camel-imap-search.c: updated for namespace
+	changes to the encoding/decoding routines in camel-mime-utils.c
+
+	* providers/pop3/camel-pop3-folder.c: updated for namespace
+	changes to the encoding/decoding routines in camel-mime-utils.c
+
+2003-08-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-parser.[c,h]: s/HSCAN_/CAMEL_MIME_PARSER_STATE_/g and
+	s/_header_state/_camel_mime_parser_state/g
+
+	* camel-filter-driver.c: Same.
+
+	* camel-folder-summary.c: Here too.
+
+	* camel-http-stream.c: And here.
+
+	* camel-mime-message.c: ...
+
+	* camel-mime-part-utils.c: ...
+
+	* camel-mime-part.c: ...
+
+	* camel-movemail.c: ...
+
+	* camel-multipart-signed.c: ...
+
+	* camel-multipart.c: ...
+
+	* providers/local/camel-mbox-folder.c: ...
+
+	* providers/local/camel-mbox-summary.c: ...
+
+	* providers/local/camel-mh-summary.c: ...
+
+	* providers/nntp/camel-nntp-summary.c: ...
+
+	* providers/pop3/camel-pop3-folder.c: ...
+
+2003-08-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.[c,h]: Namespaced.
+
+	* camel-data-wrapper.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-digest-folder.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-filter-driver.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-filter-search.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-folder-search.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-folder-summary.[c,h]: updated for namespace changed made
+	to camel-mime-utils.[c,h]
+
+	* camel-http-stream.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-http-stream.h: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-internet-address.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-medium.[c,h]: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-mime-message.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-mime-parser.[c,h]: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-mime-part-utils.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-mime-part.[c,h]: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-movemail.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-multipart-encrypted.c: updated for namespace changed made
+	to camel-mime-utils.[c,h]
+
+	* camel-multipart-signed.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-multipart.c: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* camel-search-private.[c,h]: updated for namespace changed made
+	to camel-mime-utils.[c,h]
+
+	* camel-types.h: updated for namespace changed made to
+	camel-mime-utils.[c,h]
+
+	* providers/imap/camel-imap-folder.c: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/imap/camel-imap-store-summary.c: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/imap/camel-imap-utils.c: updated for namespace changed
+	made to camel-mime-utils.[c,h]
+
+	* providers/imapp/camel-imapp-utils.[c,h]: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/local/camel-local-summary.[c,h]: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/local/camel-maildir-summary.c: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/local/camel-mbox-summary.c: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/local/camel-spool-summary.h: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/nntp/camel-nntp-summary.c: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/nntp/camel-nntp-utils.c: updated for namespace changed
+	made to camel-mime-utils.[c,h]
+
+	* providers/pop3/camel-pop3-folder.c: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+	* providers/sendmail/camel-sendmail-transport.c: updated for
+	namespace changed made to camel-mime-utils.[c,h]
+
+	* providers/smtp/camel-smtp-transport.c: updated for namespace
+	changed made to camel-mime-utils.[c,h]
+
+2003-09-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/local/camel-mbox-folder.c
+	(camel_mbox_folder_get_full_path): Implement a temp hack so trunk
+	works until we merge in new-ui-branch.
+
+	* camel-stream-filter.c (do_flush): Don't warning about how we
+	haven't written anything to the stream, this is not an
+	error. fflush() doesn't care if you try to fflush() a stream
+	without writing to it, so we shouldn't care either.
+
+2003-09-15  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imapp/camel-imapp-store.c (store_resp_list)
+	(imap_login, try_sasl, imap_try_authenticate): removed dead code.
+
+	* providers/imapp/camel-imapp-stream.c: return -1 if stream not
+	set.
+
+	* providers/imapp/camel-imapp-engine.c (iterate_completion): put
+	done request on the done queue, so all requests are always
+	somewhere.
+	(camel_imapp_engine_command_free): just spit warnings of active
+	messages being freed, but abort if the item isn't in any list.
+	Also remove the node from its list before going on.
+	(iterate_untagged, iterate_continuation, iterate_completion):
+	staticifiy.
+
+	* providers/imapp/camel-imapp-provider.c
+	(camel_imapp_module_init): move camel_exception_setup call here.
+
+	* providers/imapp/camel-imapp-driver.c
+	(camel_imapp_driver_get_type): remove execption setup here, it
+	isn't early enough.
+	(camel_imapp_driver_list): handle exceptions.
+
+2003-09-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/local/camel-mbox-folder.c
+	(camel_mbox_folder_get_full_path): Implements
+	CamelLocalFolder::get_full_path() (publicly namespaced so that
+	CamelMboxStore can re-use them).
+	(camel_mbox_folder_get_meta_path): Same.
+
+	* providers/local/camel-mbox-store.c (get_folder): Changed the way
+	the path is constructed, since we now handle subdirectories and
+	stuff.
+	(delete_folder): Try deleting the Folder.sbd directory. We also
+	need to manage our own meta files since CamelLocalStore's impl
+	constructs paths differently than what we need.
+	(create_folder): Implemented.
+	(rename_folder): Implemented.
+	(scan_dir): Scan an mbox tree
+	(get_folder_info): Implemented using scan_dir().
+
+	* providers/local/camel-local-store.c (delete_folder): Set fi->url
+	to the correct value, meaning we need to prefix it with the
+	protocol and the folder_name is not actually part of the path, it
+	is a separate component to the url.
+
+	* providers/local/camel-local-folder.c
+	(camel_local_folder_construct): Use the new class virtual method
+	to construct the full folder path and all the meta files.
+	(local_get_full_path): Implemented default get_full_path method.
+	(local_get_meta_path): Implemented default get_meta_path method.
+
+2003-09-11  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (noinst_LTLIBRARIES): Remove libcamel-static.la
+
+2003-09-05  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-store.c (imap_noop): call
+	camel_folder_sync bypassing the folder lock.  See
+	imap_store_refresh_folders too.
+
+2003-09-04  David Woodhouse  <dwmw2@infradead.org>
+
+	* providers/camel-imap-store.[ch]: Add PREAUTH handling and
+	pine/mutt/etpan/etc.-style 'ssh <mailhost> exec imapd' support.
+	
 2003-09-03  David Woodhouse  <dwmw2@infradead.org>
 
 	* camel-stream-process.[ch]: New stream implementation for running
@@ -219,7 +558,7 @@
 	class's default mime_type.
 	(camel_mime_part_finalize): Don't need to unref the content_type
 	anymore.
-M	(process_header): Updated to use CamelDataWrapper's mime_type
+	(process_header): Updated to use CamelDataWrapper's mime_type
 	field.
 	(camel_mime_part_set_filename): Same.
 	(camel_mime_part_get_filename): Same.

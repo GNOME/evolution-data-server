@@ -75,8 +75,8 @@ camel_data_wrapper_init (gpointer object, gpointer klass)
 	camel_data_wrapper->priv = g_malloc (sizeof (struct _CamelDataWrapperPrivate));
 	pthread_mutex_init (&camel_data_wrapper->priv->stream_lock, NULL);
 	
-	camel_data_wrapper->mime_type = header_content_type_new ("application", "octet-stream");
-	camel_data_wrapper->encoding = CAMEL_MIME_PART_ENCODING_DEFAULT;
+	camel_data_wrapper->mime_type = camel_content_type_new ("application", "octet-stream");
+	camel_data_wrapper->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
 	camel_data_wrapper->offline = FALSE;
 }
 
@@ -90,7 +90,7 @@ camel_data_wrapper_finalize (CamelObject *object)
 	g_free (camel_data_wrapper->priv);
 	
 	if (camel_data_wrapper->mime_type)
-		header_content_type_unref (camel_data_wrapper->mime_type);
+		camel_content_type_unref (camel_data_wrapper->mime_type);
 	
 	if (camel_data_wrapper->stream)
 		camel_object_unref (camel_data_wrapper->stream);
@@ -179,17 +179,17 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	fstream = (CamelStream *) camel_stream_filter_new_with_stream (stream);
 	
 	switch (data_wrapper->encoding) {
-	case CAMEL_MIME_PART_ENCODING_BASE64:
+	case CAMEL_TRANSFER_ENCODING_BASE64:
 		filter = (CamelMimeFilter *) camel_mime_filter_basic_new_type (CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
 		camel_object_unref (filter);
 		break;
-	case CAMEL_MIME_PART_ENCODING_QUOTEDPRINTABLE:
+	case CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE:
 		filter = (CamelMimeFilter *) camel_mime_filter_basic_new_type (CAMEL_MIME_FILTER_BASIC_QP_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
 		camel_object_unref (filter);
 		break;
-	case CAMEL_MIME_PART_ENCODING_UUENCODE:
+	case CAMEL_TRANSFER_ENCODING_UUENCODE:
 		filter = (CamelMimeFilter *) camel_mime_filter_basic_new_type (CAMEL_MIME_FILTER_BASIC_UU_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
 		camel_object_unref (filter);
@@ -198,7 +198,7 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 		break;
 	}
 	
-	if (header_content_type_is (data_wrapper->mime_type, "text", "*")) {
+	if (camel_content_type_is (data_wrapper->mime_type, "text", "*")) {
 		filter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_DECODE,
 						     CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
@@ -270,8 +270,8 @@ static void
 set_mime_type (CamelDataWrapper *data_wrapper, const char *mime_type)
 {
 	if (data_wrapper->mime_type)
-		header_content_type_unref (data_wrapper->mime_type);
-	data_wrapper->mime_type = header_content_type_decode (mime_type);
+		camel_content_type_unref (data_wrapper->mime_type);
+	data_wrapper->mime_type = camel_content_type_decode (mime_type);
 }
 
 /**
@@ -299,7 +299,7 @@ camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
 static char *
 get_mime_type (CamelDataWrapper *data_wrapper)
 {
-	return header_content_type_simple (data_wrapper->mime_type);
+	return camel_content_type_simple (data_wrapper->mime_type);
 }
 
 /**
@@ -354,10 +354,10 @@ set_mime_type_field (CamelDataWrapper *data_wrapper,
 	g_return_if_fail (mime_type != NULL);
 
 	if (data_wrapper->mime_type)
-		header_content_type_unref (data_wrapper->mime_type);
+		camel_content_type_unref (data_wrapper->mime_type);
 	data_wrapper->mime_type = mime_type;
 	if (mime_type)
-		header_content_type_ref (data_wrapper->mime_type);
+		camel_content_type_ref (data_wrapper->mime_type);
 }
 
 void
