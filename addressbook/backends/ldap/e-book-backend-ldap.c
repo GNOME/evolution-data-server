@@ -41,9 +41,9 @@
 #include <libedataserver/e-sexp.h>
 #include <libebook/e-contact.h>
 
-#include "e-book-backend-sexp.h"
-#include "e-data-book.h"
-#include "e-data-book-view.h"
+#include <libedata-book/e-book-backend-sexp.h>
+#include <libedata-book/e-data-book.h>
+#include <libedata-book/e-data-book-view.h>
 #include "e-book-backend-ldap.h"
 
 /* this is broken currently, don't enable it */

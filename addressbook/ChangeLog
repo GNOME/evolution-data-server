@@ -1,3 +1,11 @@
+2003-11-06  JP Rosevear <jpr@ximian.com>
+
+	* Makefile.am: build new subdirs
+
+	* backends/*: build the file, vcf and ldap backends here
+
+	* libedata-cal/Makefile.am: no longer build them here	
+	
 2003-11-05  JP Rosevear <jpr@ximian.com>
 
 	* rename libedatabook to libedata-book

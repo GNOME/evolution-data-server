@@ -6,4 +6,3 @@
 -ensure license
 -ensure authors
 -G_STRLOC for errors
--have backends link separately

@@ -21,9 +21,9 @@
 #include <libgnome/gnome-i18n.h>
 #include <libebook/e-contact.h>
  
-#include "e-data-book.h"
-#include "e-data-book-view.h"
-#include "e-book-backend-sexp.h"
+#include <libedata-book/e-data-book.h>
+#include <libedata-book/e-data-book-view.h>
+#include <libedata-book/e-book-backend-sexp.h>
 #include "e-book-backend-vcf.h"
 
 #define PAS_ID_PREFIX "pas-id-"
@@ -468,7 +468,7 @@ e_book_backend_vcf_process_get_supported_fields (EBookBackendSync *backend,
 	return GNOME_Evolution_Addressbook_Success;
 }
 
-#include "ximian-vcard.h"
+#include <libedata-book/ximian-vcard.h>
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_vcf_load_uri (EBookBackend             *backend,

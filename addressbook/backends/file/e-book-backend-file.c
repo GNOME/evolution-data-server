@@ -25,11 +25,10 @@
 #include <libedataserver/e-db3-utils.h>
 #include <libebook/e-contact.h>
 
-#include "e-book-backend-sexp.h"
-#include "e-book-backend-summary.h"
-#include "e-book-backend-summary.h"
-#include "e-data-book.h"
-#include "e-data-book-view.h"
+#include <libedata-book/e-book-backend-sexp.h>
+#include <libedata-book/e-book-backend-summary.h>
+#include <libedata-book/e-data-book.h>
+#include <libedata-book/e-data-book-view.h>
 #include "e-book-backend-file.h"
 
 #if DB_VERSION_MAJOR != 3 || \
@@ -841,7 +840,7 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 	return ret_val;
 }
 
-#include "ximian-vcard.h"
+#include <libedata-book/ximian-vcard.h>
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_file_load_uri (EBookBackend             *backend,

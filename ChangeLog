@@ -1,9 +1,15 @@
 2003-11-06  JP Rosevear  <jpr@ximian.com>
 
+	* src/server.c: include the addressbook backend files properly
+
+	* src/Makefile.am: link to the individual addressbook backends
+
+2003-11-06  JP Rosevear  <jpr@ximian.com>
+
 	* src/server.c: include the backend files properly
 
 	* src/Makefile.am: link to the individual backends
-
+	
 2003-11-06  JP Rosevear <jpr@ximian.com>
 	
 	* configure.in (BASE_VERSION): clean up priv* dirs 

@@ -589,12 +589,6 @@ EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, libxml-2.0 libgnome-2.0 libbonobo-2.0 
 AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
 AC_SUBST(EVOLUTION_CALENDAR_LIBS)
 
-dnl -- wombat flags
-
-EVO_SET_COMPILE_FLAGS(WOMBAT, libgnome-2.0, $LDAP_CFLAGS, $LDAP_LIBS)
-AC_SUBST(WOMBAT_CFLAGS)
-AC_SUBST(WOMBAT_LIBS)
-
 dnl *******************
 dnl Special directories
 dnl *******************
@@ -706,6 +700,10 @@ addressbook/libebook/Makefile
 addressbook/libebook/libebook-1.0.pc
 addressbook/libedata-book/Makefile
 addressbook/libedata-book/libedata-book-1.0.pc
+addressbook/backends/Makefile
+addressbook/backends/file/Makefile
+addressbook/backends/vcf/Makefile
+addressbook/backends/ldap/Makefile
 addressbook/tests/Makefile
 addressbook/tests/ebook/Makefile
 addressbook/tests/vcard/Makefile
