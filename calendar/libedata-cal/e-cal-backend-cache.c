@@ -38,15 +38,16 @@ static GObjectClass *parent_class = NULL;
 static char *
 get_filename_from_uri (char *uri)
 {
-	char *mangled_uri, *c, *filename;
+	char *mangled_uri, *filename;
+	int i;
 
 	/* mangle the URI to not contain invalid characters */
 	mangled_uri = g_strdup (uri);
-	for (c = mangled_uri; c != NULL; c++) {
-		switch (*c) {
+	for (i = 0; i < strlen (mangled_uri); i++) {
+		switch (mangled_uri[i]) {
 		case ':' :
 		case '/' :
-			*c = '_';
+			mangled_uri[i] = '_';
 		}
 	}
 

@@ -3,6 +3,9 @@
 	* libedata-cal/e-cal-backend-cache.h: the class structure derives
 	from EFileCacheClass, not EFileCache.
 
+	* libedata-cal/e-cal-backend-cache.c (get_filename_from_uri): iterate
+	correctly over the characters in the URI.
+
 2003-11-08  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedata-cal/e-cal-backend-cache.[ch]: use EFileCache instead
