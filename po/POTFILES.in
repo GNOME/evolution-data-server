@@ -72,7 +72,6 @@ camel/camel-mime-message.c
 camel/camel-mime-parser.c
 camel/camel-mime-part-utils.c
 camel/camel-mime-part.c
-camel/camel-mime-tables.c
 camel/camel-mime-utils.c
 camel/camel-movemail.c
 camel/camel-multipart-encrypted.c

@@ -1,3 +1,7 @@
+2005-01-14  Adam Weinberger  <adamw@gnome.org>
+
+	* POTFILES.in: Removed nonexistant file from list.
+
 2005-01-14  Not Zed  <NotZed@Ximian.com>
 
 	* POTFILES.in: Added camel/*
