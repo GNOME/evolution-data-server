@@ -1,5 +1,3 @@
-
-#include <libgnome/gnome-init.h>
 #include <string.h>
 #include <libebook/e-book.h>
 
@@ -18,8 +16,6 @@ main (int argc, char **argv)
 {
 	int i;
 	gboolean failure = FALSE;
-
-	gnome_program_init("test-query", "0.0", LIBGNOME_MODULE, argc, argv, NULL);
 
 	for (i = 0; i < G_N_ELEMENTS (queries); i ++) {
 		EBookQuery *query = e_book_query_from_string (queries[i]);

@@ -1,3 +1,8 @@
+2005-02-04  Ross Burton  <ross@burtonini.com>
+
+	* tests/ecal/test-search.c:
+	Remove useless libgnome usage.
+
 2005-02-03  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:

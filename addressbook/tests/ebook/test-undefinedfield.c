@@ -1,5 +1,3 @@
-
-#include <libgnome/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <libebook/e-book.h>
@@ -9,8 +7,6 @@ main (int argc, char **argv)
 {
 	EContact *contact;
 	gpointer test;
-
-	gnome_program_init("test-undefinedfield", "0.0", LIBGNOME_MODULE, argc, argv, NULL);
 
 	if (bonobo_init (&argc, argv) == FALSE)
 		g_error ("Could not initialize Bonobo");

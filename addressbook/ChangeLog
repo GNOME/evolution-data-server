@@ -1,3 +1,23 @@
+2005-02-04  Ross Burton  <ross@burtonini.com>
+
+	* backends/groupwise/create-account.c:
+	* tests/ebook/test-categories.c:
+	* tests/ebook/test-changes.c:
+	* tests/ebook/test-date.c:
+	* tests/ebook/test-ebook-async.c:
+	* tests/ebook/test-ebook-view.c:
+	* tests/ebook/test-ebook.c:
+	* tests/ebook/test-nonexistent-id.c:
+	* tests/ebook/test-photo.c:
+	* tests/ebook/test-query.c:
+	* tests/ebook/test-search.c:
+	* tests/ebook/test-self.c:
+	* tests/ebook/test-stress-bookviews.c:
+	* tests/ebook/test-string.c:
+	* tests/ebook/test-undefinedfield.c:
+	* tests/ebook/test-untyped-phones.c:
+	Remove useless libgnome usage.
+
 2005-02-04  Vivek Jain  <jvivek@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c

@@ -1,12 +1,9 @@
-#include <libgnome/gnome-init.h>
 #include <libebook/e-book.h>
 
 int main (int argc, char **argv) 
 {
 	GError *err = NULL;
 	EBook *book = NULL;
-
-	gnome_program_init("test-nonexistent-id", "0.0", LIBGNOME_MODULE, argc, argv, NULL);
 
 	printf ("loading addressbook\n");
 	book = e_book_new_system_addressbook (NULL);

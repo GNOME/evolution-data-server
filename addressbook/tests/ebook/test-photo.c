@@ -1,5 +1,3 @@
-
-#include <libgnome/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,8 +30,6 @@ main (int argc, char **argv)
 {
 	EContact *contact;
 	EContactPhoto *photo, *new_photo;
-
-	gnome_program_init("test-photo", "0.0", LIBGNOME_MODULE, argc, argv, NULL);
 
 	if (bonobo_init (&argc, argv) == FALSE)
 		g_error ("Could not initialize Bonobo");
