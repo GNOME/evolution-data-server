@@ -51,7 +51,7 @@ parse_response_status (SoupSoapResponse *response)
 {
 	SoupSoapParameter *param, *subparam;
 
-	param = soup_soap_response_get_first_parameter_by_name (response, "Status");
+	param = soup_soap_response_get_first_parameter_by_name (response, "status");
 	if (!param)
 		return E_GW_CONNECTION_STATUS_UNKNOWN;
 

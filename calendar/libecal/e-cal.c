@@ -149,14 +149,14 @@ e_cal_set_mode_status_enum_get_type (void)
 
 	if (!e_cal_set_mode_status_enum_type) {
 		static GEnumValue values [] = {
-		  { E_CAL_SET_MODE_SUCCESS,          "ECalSetModeSuccess",         "success"     },
-		  { E_CAL_SET_MODE_ERROR,            "ECalSetModeError",           "error"       },
-		  { E_CAL_SET_MODE_NOT_SUPPORTED,    "ECalSetModeNotSupported",    "unsupported" },
-		  { -1,                                   NULL,                              NULL          }
+			{ E_CAL_SET_MODE_SUCCESS,          "ECalSetModeSuccess",         "success"     },
+			{ E_CAL_SET_MODE_ERROR,            "ECalSetModeError",           "error"       },
+			{ E_CAL_SET_MODE_NOT_SUPPORTED,    "ECalSetModeNotSupported",    "unsupported" },
+			{ -1,                                   NULL,                              NULL          }
 		};
 
 		e_cal_set_mode_status_enum_type =
-		  g_enum_register_static ("ECalSetModeStatusEnum", values);
+			g_enum_register_static ("ECalSetModeStatusEnum", values);
 	}
 
 	return e_cal_set_mode_status_enum_type;
@@ -169,11 +169,11 @@ cal_mode_enum_get_type (void)
 
 	if (!cal_mode_enum_type) {
 		static GEnumValue values [] = {
-		  { CAL_MODE_INVALID,                     "CalModeInvalid",                  "invalid" },
-		  { CAL_MODE_LOCAL,                       "CalModeLocal",                    "local"   },
-		  { CAL_MODE_REMOTE,                      "CalModeRemote",                   "remote"  },
-		  { CAL_MODE_ANY,                         "CalModeAny",                      "any"     },
-		  { -1,                                   NULL,                              NULL      }
+			{ CAL_MODE_INVALID,                     "CalModeInvalid",                  "invalid" },
+			{ CAL_MODE_LOCAL,                       "CalModeLocal",                    "local"   },
+			{ CAL_MODE_REMOTE,                      "CalModeRemote",                   "remote"  },
+			{ CAL_MODE_ANY,                         "CalModeAny",                      "any"     },
+			{ -1,                                   NULL,                              NULL      }
 		};
 
 		cal_mode_enum_type = g_enum_register_static ("CalModeEnum", values);
