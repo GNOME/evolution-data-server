@@ -21,6 +21,8 @@
 #include "e-book-marshal.h"
 #include "e-book-listener.h"
 
+GMainContext *_ebook_context;
+
 static GObjectClass *parent_class;
 
 #define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
@@ -2365,7 +2367,7 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 static void*
 startup_mainloop (void *arg)
 {
-	GMainLoop *loop = g_main_loop_new (NULL, FALSE);
+	GMainLoop *loop = g_main_loop_new (_ebook_context, FALSE);
 	g_main_loop_run (loop);
 	return NULL;
 }
@@ -2381,6 +2383,8 @@ e_book_activate()
 	if (!activated) {
 		pthread_t ebook_mainloop_thread;
 		activated = TRUE;
+
+		_ebook_context = g_main_context_new ();
 
 		if (!bonobo_is_initialized ())
 			bonobo_init (NULL, NULL);

@@ -15,6 +15,8 @@
 #include "e-book-listener.h"
 #include "e-book-marshal.h"
 
+extern GMainContext *_ebook_context;
+
 static EBookStatus e_book_listener_convert_status (GNOME_Evolution_Addressbook_CallStatus status);
 
 enum {
@@ -325,7 +327,7 @@ e_book_listener_new ()
 	EBookListener *listener;
 
 	listener = g_object_new (E_TYPE_BOOK_LISTENER,
-				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
+				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_ON_CONTEXT, _ebook_context, NULL),
 				 NULL);
 
 	return listener;
