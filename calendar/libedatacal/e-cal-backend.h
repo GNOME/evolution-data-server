@@ -27,7 +27,7 @@
 #include <libedataserver/e-list.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-component.h>
-#include "evolution-calendar.h"
+#include <libedatacal/Evolution-DataServer-Calendar.h>
 #include <libedatacal/e-data-cal-common.h>
 #include <libedatacal/e-data-cal.h>
 #include <libedatacal/e-data-cal-view.h>

@@ -11,22 +11,22 @@ AM_CFLAGS = 								\
 	-DGNOME_DISABLE_DEPRECATED=1
 
 CORBA_GENERATED_H =				\
-	evolution-calendar.h
+	Evolution-DataServer-Calendar.h
 
 CORBA_GENERATED_C =				\
-	evolution-calendar-common.c		\
-	evolution-calendar-skels.c		\
-	evolution-calendar-stubs.c
+	Evolution-DataServer-Calendar-common.c		\
+	Evolution-DataServer-Calendar-skels.c		\
+	Evolution-DataServer-Calendar-stubs.c
 
 CORBA_GENERATED = $(CORBA_GENERATED_H) $(CORBA_GENERATED_C)
 
 idls =						\
-	$(srcdir)/../idl/evolution-calendar.idl
+	$(srcdir)/../idl/Evolution-DataServer-Calendar.idl
 
 idl_flags = -I $(srcdir) $(IDL_INCLUDES)
 
 $(CORBA_GENERATED_H): $(idls)
-	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/evolution-calendar.idl
+	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/Evolution-DataServer-Calendar.idl
 
 $(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 

@@ -1,3 +1,29 @@
+2003-11-04  JP Rosevear <jpr@ximian.com>
+
+	* libedatacal/e-data-cal-factory.c: remove corba header include
+
+	* libedatacal/e-cal-backend-sync.h: include corba header properly
+	
+	* libedatacal/e-data-cal.h: ditto
+
+	* libedatacal/e-data-cal-view.h: ditto
+
+	* libedatacal/e-data-cal-factory.h: ditto
+
+	* libedatacal/e-cal-backend.h: ditto
+
+	* libedatacal/Makefile.am: reflect idl name change
+
+	* libecal/e-cal-listener.h: include corba header properly
+
+	* libecal/e-cal-view.h: ditto
+
+	* libecal/e-cal-view-listener.h: ditto
+
+	* libecal/Makefile.am: reflect idl name change
+
+	* idl/Makefile.am: rename the idl to Evolution-DataServer-Calendar.idl
+
 2003-11-03  Hans Petter Jansson  <hpj@ximian.com>
 
 	* calendar/libedatacal/e-cal-backend-file.c (free_calendar_components)

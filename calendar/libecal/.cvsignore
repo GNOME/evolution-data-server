@@ -1,0 +1,10 @@
+Makefile
+Makefile.in
+Evolution-DataServer-Calendar-common.c
+Evolution-DataServer-Calendar-skels.c
+Evolution-DataServer-Calendar-stubs.c
+Evolution-DataServer-Calendar.h
+client-test
+e-cal-marshal.c
+e-cal-marshal.h
+libecal-1.0.pc

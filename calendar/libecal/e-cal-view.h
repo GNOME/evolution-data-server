@@ -22,9 +22,9 @@
 #define E_CAL_VIEW_H
 
 #include <glib-object.h>
+#include <libecal/Evolution-DataServer-Calendar.h>
 #include <libecal/e-cal-types.h>
 #include <libecal/e-cal-view-listener.h>
-#include "evolution-calendar.h"
 
 G_BEGIN_DECLS
 

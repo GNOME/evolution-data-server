@@ -6,8 +6,8 @@
 #define __E_CAL_BACKEND_SYNC_H__
 
 #include <glib.h>
+#include <libedatacal/Evolution-DataServer-Calendar.h>
 #include <libedatacal/e-cal-backend.h>
-#include "evolution-calendar.h"
 
 G_BEGIN_DECLS
 

@@ -22,7 +22,7 @@
 #define E_CAL_LISTENER_H
 
 #include <bonobo/bonobo-object.h>
-#include "evolution-calendar.h"
+#include <libecal/Evolution-DataServer-Calendar.h>
 #include <libecal/e-cal-types.h>
 
 G_BEGIN_DECLS
