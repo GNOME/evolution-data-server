@@ -408,6 +408,9 @@ add_to_supported_fields (EBookBackendLDAP *bl, char **attrs, GHashTable *attr_ha
 			else if (!strcmp (query_prop, "home_phone")) {
 				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("home_phone_2"));
 			}
+			else if (!strcmp (query_prop, "category_list")) {
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup ("categories"));
+			}
 		}
 	}
 }
@@ -1442,8 +1445,8 @@ modify_contact_modify_handler (LDAPOp *op, LDAPMessage *res)
 	if (LDAP_RES_MODIFY != ldap_msgtype (res)) {
 		g_warning ("incorrect msg type %d passed to modify_contact_handler", ldap_msgtype (res));
 		e_data_book_respond_modify (op->book,
-					 GNOME_Evolution_Addressbook_OtherError,
-					 NULL);
+					    GNOME_Evolution_Addressbook_OtherError,
+					    NULL);
 		ldap_op_finished (op);
 		return;
 	}
@@ -1459,8 +1462,8 @@ modify_contact_modify_handler (LDAPOp *op, LDAPMessage *res)
 
 	/* and lastly respond */
 	e_data_book_respond_modify (op->book,
-				 ldap_error_to_response (ldap_error),
-				 modify_op->contact);
+				    ldap_error_to_response (ldap_error),
+				    modify_op->contact);
 	ldap_op_finished (op);
 }
 
@@ -1483,8 +1486,8 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 		if (!e) {
 			g_warning ("uh, this shouldn't happen");
 			e_data_book_respond_modify (op->book,
-						 GNOME_Evolution_Addressbook_OtherError,
-						 NULL);
+						    GNOME_Evolution_Addressbook_OtherError,
+						    NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -1515,8 +1518,8 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 		if (ldap_error != LDAP_SUCCESS) {
 			/* more here i'm sure */
 			e_data_book_respond_modify (op->book,
-						 ldap_error_to_response (ldap_error),
-						 NULL);
+						    ldap_error_to_response (ldap_error),
+						    NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -1550,8 +1553,8 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 			else {
 				g_warning ("ldap_modify_ext returned %d\n", ldap_error);
 				e_data_book_respond_modify (op->book,
-							 ldap_error_to_response (ldap_error),
-							 NULL);
+							    ldap_error_to_response (ldap_error),
+							    NULL);
 				ldap_op_finished (op);
 				return;
 			}
@@ -1563,8 +1566,8 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 	else {
 		g_warning ("unhandled result type %d returned", msg_type);
 		e_data_book_respond_modify (op->book,
-					 GNOME_Evolution_Addressbook_OtherError,
-					 NULL);
+					    GNOME_Evolution_Addressbook_OtherError,
+					    NULL);
 		ldap_op_finished (op);
 	}
 }
@@ -1622,8 +1625,8 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 	else {
 		g_warning ("ldap_search_ext returned %d\n", ldap_error);
 		e_data_book_respond_modify (book,
-					 GNOME_Evolution_Addressbook_OtherError,
-					 NULL);
+					    GNOME_Evolution_Addressbook_OtherError,
+					    NULL);
 		modify_contact_dtor ((LDAPOp*)modify_op);
 	}
 }
@@ -2197,20 +2200,23 @@ category_ber (EContact *contact)
 {
 	struct berval** result = NULL;
 	GList *categories;
-	int i;
 
 	categories = e_contact_get (contact, E_CONTACT_CATEGORY_LIST);
 
 	if (g_list_length (categories) != 0) {
+		int i;
 		GList *iter;
 		result = g_new0 (struct berval*, g_list_length (categories) + 1);
 
-		for (iter = categories, i = 0; iter; iter = iter->next, i++) {
+		for (iter = categories, i = 0; iter; iter = iter->next) {
 			char *category = iter->data;
 
-			result[i] = g_new (struct berval, 1);
-			result[i]->bv_val = g_strdup (category);
-			result[i]->bv_len = strlen (category);
+			if (category && *category) {
+				result[i] = g_new (struct berval, 1);
+				result[i]->bv_val = g_strdup (category);
+				result[i]->bv_len = strlen (category);
+				i++;
+			}
 		}
 	}
 
@@ -2222,7 +2228,7 @@ category_ber (EContact *contact)
 static gboolean
 category_compare (EContact *contact1, EContact *contact2)
 {
-	char *categories1, *categories2;
+	const char *categories1, *categories2;
 	gboolean equal;
 
 	categories1 = e_contact_get_const (contact1, E_CONTACT_CATEGORIES);
@@ -2232,9 +2238,6 @@ category_compare (EContact *contact1, EContact *contact2)
 		equal = !strcmp (categories1, categories2);
 	else
 		equal = (categories1 == categories2);
-
-	g_free (categories1);
-	g_free (categories2);
 
 	return equal;
 }
@@ -2273,7 +2276,7 @@ other_address_populate(EContact * card, char **values)
 	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_OTHER);
 }
 
-struct berval **
+static struct berval **
 address_ber(EContact * card, EContactField field)
 {
 	struct berval **result = NULL;

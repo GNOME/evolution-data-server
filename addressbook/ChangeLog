@@ -1,3 +1,16 @@
+2004-05-17  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes bug #57505 ]
+	
+	* backends/ldap/e-book-backend-ldap.c (category_ber): only include
+	category list elements in the ber if they're non-empty.
+	(category_compare): don't free the const char*'s.
+	(address_ber): make static.
+	(add_to_supported_fields): make sure "categories" gets included in
+	the list if we support "category_list", since the contact editor
+	uses the former, not the latter (and they're really the same thing
+	as far as the backend is concerned.)
+
 2004-05-10 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c (populate_ims) :
