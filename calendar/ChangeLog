@@ -1,3 +1,14 @@
+2004-05-19  Rodrigo Moya <rodrigo@ximian.com>
+
+	Removes 100s of error dialogs as reported in #54211
+
+	* backends/http/e-cal-backend-http.c: added a flag to know when the
+	backend has been opened.
+	(reload_cb): set the "opened" flag to TRUE when we reload.
+	(retrieval_done): only notify errors when opening the backend, not
+	on each reload, or we'll get many error message dialogs when left
+	running for a few hours.
+
 2004-05-18  Harish Krishnaswamy  <kharish@novell.com>
 
 	Fixes #56320 and related timezone issues.

@@ -63,6 +63,9 @@ struct _ECalBackendHttpPrivate {
 	/* Reload */
 	guint reload_timeout_id;
 	guint is_loading : 1;
+
+	/* Flags */
+	gboolean opened;
 };
 
 
@@ -217,8 +220,10 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 			priv->uri = webcal_to_http_method (newuri);
 			begin_retrieval_cb (cbhttp);
 		} else {
-			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
-						    _("Redirected to Invalid URI"));
+			if (!priv->opened) {
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
+							    _("Redirected to Invalid URI"));
+			}
 		}
 
 		return;
@@ -226,8 +231,10 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	/* check status code */
 	if (!SOUP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
-		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
-					    soup_status_get_phrase (msg->status_code));
+		if (!priv->opened) {
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
+						    soup_status_get_phrase (msg->status_code));
+		}
 		return;
 	}
 
@@ -238,12 +245,14 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	g_free (str);
 
 	if (!icalcomp) {
-		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
+		if (!priv->opened)
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
 		return;
 	}
 
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
-		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
+		if (!priv->opened)
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
 		icalcomponent_free (icalcomp);
 		return;
 	}
@@ -327,6 +336,7 @@ reload_cb (ECalBackendHttp *cbhttp)
 	d(g_message ("Reload!\n"));
 
 	priv->reload_timeout_id = 0;
+	priv->opened = TRUE;
 	begin_retrieval_cb (cbhttp);
 	return FALSE;
 }
@@ -809,6 +819,7 @@ e_cal_backend_http_init (ECalBackendHttp *cbhttp, ECalBackendHttpClass *class)
 
 	priv->uri = NULL;
 	priv->reload_timeout_id = 0;
+	priv->opened = FALSE;
 }
 
 /* Class initialization function for the file backend */
