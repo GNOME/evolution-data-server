@@ -1406,6 +1406,9 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		set_contact_fields_from_soap_parameter (item, param);
 		return item;
 	} 
+	else if (!g_ascii_strcasecmp (item_type,"SharedNotification"))
+		item->priv->item_type = E_GW_ITEM_TYPE_NOTIFICATION ;
+
 	else if (!g_ascii_strcasecmp (item_type, "Organization")) {
 
 		item->priv->item_type =  E_GW_ITEM_TYPE_ORGANISATION;
@@ -1450,11 +1453,6 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			subparam = soup_soap_parameter_get_first_child_by_name (changes, "update");
 	}
 	else subparam = param; /* The item is a complete one, not a delta  */
-	/*If its a notification - reset type*/
-	notification_param = soup_soap_parameter_get_first_child_by_name (param,"notification") ;
-	if (notification_param) {
-			item->priv->item_type = E_GW_ITEM_TYPE_NOTIFICATION;
-	}
 	
 	/* now add all properties to the private structure */
 	for (child = soup_soap_parameter_get_first_child (subparam);
