@@ -1,3 +1,7 @@
+2004-05-04  Edward Rudd <urkle@outoforder.cc>
+	* addressbook/backend/ldap/e-book-backend-ldap.c: Added new	complex
+	handlers for postal address fields. Bug # 45210
+
 2004-05-03  JP Rosevear  <jpr@ximian.com>
 
 	* libedataserver/e-memory.h: include glib.h for G_BEGIN_DECLS

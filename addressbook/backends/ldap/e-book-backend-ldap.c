@@ -163,6 +163,18 @@ static void category_populate (EContact *contact, char **values);
 struct berval** category_ber (EContact *contact);
 static gboolean category_compare (EContact *contact1, EContact *contact2);
 
+static void home_address_populate(EContact * card, char **values);
+struct berval **home_address_ber(EContact * card);
+static gboolean home_address_compare(EContact * ecard1, EContact * ecard2);
+
+static void work_address_populate(EContact * card, char **values);
+struct berval **work_address_ber(EContact * card);
+static gboolean work_address_compare(EContact * ecard1, EContact * ecard2);
+
+static void other_address_populate(EContact * card, char **values);
+struct berval **other_address_ber(EContact * card);
+static gboolean other_address_compare(EContact * ecard1, EContact * ecard2);
+
 static void photo_populate (EContact *contact, struct berval **ber_values);
 
 static void cert_populate (EContact *contact, struct berval **ber_values);
@@ -235,9 +247,9 @@ struct prop_info {
 	E_STRING_PROP (E_CONTACT_ASSISTANT, "assistantName"), 
 
 	/* addresses */
-	STRING_PROP   (E_CONTACT_ADDRESS_LABEL_WORK,  "postalAddress"),
-	STRING_PROP   (E_CONTACT_ADDRESS_LABEL_HOME,  "homePostalAddress"),
-	E_STRING_PROP (E_CONTACT_ADDRESS_LABEL_OTHER, "otherPostalAddress"),
+	COMPLEX_PROP  (E_CONTACT_ADDRESS_LABEL_WORK, "postalAddress", work_address_populate, work_address_ber, work_address_compare),
+	COMPLEX_PROP  (E_CONTACT_ADDRESS_LABEL_HOME,     "homePostalAddress", home_address_populate, home_address_ber, home_address_compare),
+	E_COMPLEX_PROP(E_CONTACT_ADDRESS_LABEL_OTHER,    "otherPostalAddress", other_address_populate, other_address_ber, other_address_compare),
 
 	/* photos */
 	BINARY_PROP  (E_CONTACT_PHOTO,       "jpegPhoto", photo_populate, NULL/*XXX*/, NULL/*XXX*/),
@@ -2225,6 +2237,117 @@ category_compare (EContact *contact1, EContact *contact2)
 	g_free (categories2);
 
 	return equal;
+}
+
+static void
+address_populate(EContact * card, char **values, EContactField field)
+{
+	if (values[0]) {
+		char *temp = g_strdup(values[0]);
+		char *i;
+		for (i = temp; *i != '\0'; i++) {
+			if (*i == '$') {
+				*i = '\n';
+			}
+		}
+		e_contact_set(card, field, temp);
+		g_free(temp);
+	}
+}
+
+static void
+home_address_populate(EContact * card, char **values)
+{
+	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_HOME);
+}
+
+static void
+work_address_populate(EContact * card, char **values)
+{
+	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_WORK);
+}
+
+static void
+other_address_populate(EContact * card, char **values)
+{
+	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_OTHER);
+}
+
+struct berval **
+address_ber(EContact * card, EContactField field)
+{
+	struct berval **result = NULL;
+	char *address, *i;
+
+	address = e_contact_get(card, field);
+	if (address) {
+		for (i = address; *i != '\0'; i++) {
+			if (*i == '\n') {
+				*i = '$';
+			}
+		}
+
+		result = g_new(struct berval *, 2);
+		result[0] = g_new(struct berval, 1);
+		result[0]->bv_val = address;
+		result[0]->bv_len = strlen(address);
+
+		result[1] = NULL;
+	}
+	return result;
+}
+
+struct berval **
+home_address_ber(EContact * card)
+{
+	return address_ber(card, E_CONTACT_ADDRESS_LABEL_HOME);
+}
+
+struct berval **
+work_address_ber(EContact * card)
+{
+	return address_ber(card, E_CONTACT_ADDRESS_LABEL_WORK);
+}
+
+struct berval **
+other_address_ber(EContact * card)
+{
+	return address_ber(card, E_CONTACT_ADDRESS_LABEL_OTHER);
+}
+
+static gboolean
+address_compare(EContact * ecard1, EContact * ecard2, EContactField field)
+{
+	const char *address1, *address2;
+
+	gboolean equal;
+	address1 = e_contact_get_const(ecard1, field);
+	address2 = e_contact_get_const(ecard2, field);
+
+	if (address1 && address2)
+		equal = !strcmp(address1, address2);
+	else
+		equal = (!!address1 == !!address2);
+
+	return equal;
+}
+
+static gboolean
+home_address_compare(EContact * ecard1, EContact * ecard2)
+{
+	return address_compare(ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_HOME);
+}
+
+static gboolean
+work_address_compare(EContact * ecard1, EContact * ecard2)
+{
+	return address_compare(ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_WORK);
+}
+
+static gboolean
+other_address_compare(EContact * ecard1, EContact * ecard2)
+{
+	return address_compare(ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_OTHER);
 }
 
 static void
