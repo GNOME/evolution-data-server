@@ -1,3 +1,8 @@
+2004-04-02  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-message.c (e_gw_message_write_string-parameter_with_attribute) :
+	append the passed in attribute name and value to message 
+
 2004-04-01  Sivaiah nallagatla <snallagatla@novell.com>
                                                                                                                               
         * e-gw-connection.c (e_gw_connection_remove_item) : remove items and item from
