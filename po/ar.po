@@ -7,136 +7,154 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-10 19:11+0200\n"
-"PO-Revision-Date: 2004-05-30 14:00+0200\n"
+"POT-Creation-Date: 2004-09-12 03:14+0200\n"
+"PO-Revision-Date: 2004-09-13 18:52+0200\n"
 "Last-Translator: Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit"
 
-#: addressbook/backends/file/e-book-backend-file.c:442
-#: addressbook/backends/vcf/e-book-backend-vcf.c:452
+#: addressbook/backends/file/e-book-backend-file.c:440
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "جاري التحميل..."
 
-#: addressbook/backends/file/e-book-backend-file.c:444
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
-#: addressbook/backends/vcf/e-book-backend-vcf.c:454
+#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1855
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3158
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "جاري البحث..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:599
+#: addressbook/backends/ldap/e-book-backend-ldap.c:620
 msgid "Using Distinguished Name (DN)"
 msgstr "جاري إستعمال الإسم المميّز (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:602
+#: addressbook/backends/ldap/e-book-backend-ldap.c:623
 msgid "Using Email Address"
 msgstr "جاري إستعمال البريد الإلكتروني"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:768
+#: addressbook/backends/ldap/e-book-backend-ldap.c:789
 msgid "Reconnecting to LDAP server..."
 msgstr "جاري إعادة الإتِّصال بنادل LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1309
 msgid "Adding contact to LDAP server..."
 msgstr "جاري إضافة المراسَل لنادل LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1409
 msgid "Removing contact from LDAP server..."
 msgstr "جاري حذف المراسَل من نادل LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1632
 msgid "Modifying contact from LDAP server..."
 msgstr "جاري تعديل المراسَل من نادل LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3070
 msgid "Receiving LDAP search results..."
 msgstr "جاري تلقّي نتائج بحث LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3178
 msgid "Error performing search"
 msgstr "خطأ أثناء البحث"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
-#. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
-#: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
-#: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
-#: addressbook/libebook/e-book.c:819 addressbook/libebook/e-book.c:873
-#: addressbook/libebook/e-book.c:972 addressbook/libebook/e-book.c:1106
-#: addressbook/libebook/e-book.c:1207 addressbook/libebook/e-book.c:1447
-#: addressbook/libebook/e-book.c:2047
+#. * "e_book_open
+#: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
+#: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
+#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
+#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
+#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
+#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
+#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
+#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
+#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
+#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
+#: addressbook/libebook/e-book.c:2985
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" مسجَّلة قبل \"%s\""
 
-#: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
-#: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
-#: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
-#: addressbook/libebook/e-book.c:827 addressbook/libebook/e-book.c:881
-#: addressbook/libebook/e-book.c:980 addressbook/libebook/e-book.c:1114
-#: addressbook/libebook/e-book.c:1215 addressbook/libebook/e-book.c:1455
+#: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
+#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
+#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
+#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
+#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
+#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
 msgid "book busy"
 msgstr "الكتاب مشغول"
 
-#: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
-#: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
-#: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
-#: addressbook/libebook/e-book.c:913 addressbook/libebook/e-book.c:1024
-#: addressbook/libebook/e-book.c:1142 addressbook/libebook/e-book.c:1239
-#: addressbook/libebook/e-book.c:1373 addressbook/libebook/e-book.c:1477
-#: addressbook/libebook/e-book.c:2056
+#: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
+#: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
+#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
+#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
+#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
+#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
+#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
+#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
+#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
+#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
+#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
+#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
+#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2994
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "إستثناء كوربا عند نداء \"%s\""
 
-#: addressbook/libebook/e-book.c:1354
+#: addressbook/libebook/e-book.c:2221
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: لا توجد عملية حالية"
 
-#: addressbook/libebook/e-book.c:1389
+#: addressbook/libebook/e-book.c:2256
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: لم يمكن الإلغاء"
 
-#: addressbook/libebook/e-book.c:1748
-msgid "e_book_load_uri: Invalid source."
-msgstr "e_load_uri: مصدر غير صحيح."
-
-#: addressbook/libebook/e-book.c:1757 addressbook/libebook/e-book.c:1875
-#, c-format
-msgid "e_book_load_uri: no factories available for uri `%s'"
-msgstr "e_book_load_uri: لا توجد معامل للعنوان `%s'"
-
-#: addressbook/libebook/e-book.c:1770
-msgid "e_book_load_uri: Could not create EBookListener"
-msgstr "e_book_load_uri: لم يمكن إنشاء مستمع الكتاب الإلكتروني"
-
-#: addressbook/libebook/e-book.c:1869
-msgid "e_book_load_uri: cancelled"
-msgstr "e_book_load_uri: تمَّ الإلغاء"
-
-#: addressbook/libebook/e-book.c:1906
+#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" مسجَّلة قبل \"%s\""
 
-#: addressbook/libebook/e-book.c:2142
+#: addressbook/libebook/e-book.c:2355
+msgid "e_book_open: cancelled"
+msgstr "e_book_load_uri: ألغي"
+
+#: addressbook/libebook/e-book.c:2851
+msgid "e_book_load_uri: Invalid source."
+msgstr "e_load_uri: مصدر غير صحيح."
+
+#: addressbook/libebook/e-book.c:2859
+#, c-format
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr "e_book_load_uri: لا توجد معامل للعنوان `%s'"
+
+#: addressbook/libebook/e-book.c:2871
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr "e_book_load_uri: لم يمكن إنشاء مستمع الكتاب الإلكتروني"
+
+#: addressbook/libebook/e-book.c:2923
+#, c-format
+msgid "e_book_new: no factories available for uri `%s'"
+msgstr "e_book_load_uri: لا مصانع متوفّرة للعنوان `%s'"
+
+#: addressbook/libebook/e-book.c:3081
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self:·لم توجد هوية واجهة مستخدم لموصل ذاتي في جكونف"
 
-#: addressbook/libebook/e-book.c:2319
+#: addressbook/libebook/e-book.c:3192
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_set_default_source: لا يوجد مصدر مخزون في gconf لهويَّة المستخدم `%s'."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr ""
+"e_book_set_default_source: لا يوجد مصدر مخزون في gconf لهويَّة المستخدم `%s'."
 
-#: addressbook/libebook/e-contact.c:99
+#: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
 msgstr "الهويَّة الفريدة"
 
-#: addressbook/libebook/e-contact.c:100
+#: addressbook/libebook/e-contact.c:101
 msgid "File As"
 msgstr "الملف كـ"
 
@@ -144,447 +162,451 @@ msgstr "الملف كـ"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:107
 msgid "Full Name"
 msgstr "الإسم الكامل"
 
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:108
 msgid "Name"
 msgstr "الإسم"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:109
 msgid "Given Name"
 msgstr "الإسم الأوَّل"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:110
 msgid "Family Name"
 msgstr "إسم العائلة"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:111
 msgid "Nickname"
 msgstr "الإسم المستعار"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:112
 msgid "Name or Org"
 msgstr "الإسم أو المنظَّمة"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:114
+#: addressbook/libebook/e-contact.c:115
 msgid "Address List"
 msgstr "قائمة العناوين"
 
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:116
 msgid "Home Address"
 msgstr "عنوان المنزل"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:117
 msgid "Work Address"
 msgstr "عنوان العمل"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:118
 msgid "Other Address"
 msgstr "عنوان آخر"
 
-#: addressbook/libebook/e-contact.c:119
+#: addressbook/libebook/e-contact.c:120
 msgid "Home Address Label"
 msgstr "علامة عنوان المنزل"
 
-#: addressbook/libebook/e-contact.c:120
+#: addressbook/libebook/e-contact.c:121
 msgid "Work Address Label"
 msgstr "علامة عنوان العمل"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:122
 msgid "Other Address Label"
 msgstr "علامة عنوان آخر"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:124
 msgid "Assistant Phone"
 msgstr "هاتف المعاون"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:125
 msgid "Business Phone"
 msgstr "هاتف العمل"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:126
 msgid "Business Phone 2"
 msgstr "هاتف العمل 2"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Fax"
 msgstr "فاكس العمل"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:128
 msgid "Callback Phone"
 msgstr "هاتف الإتِّصال المعاكس"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:129
 msgid "Car Phone"
 msgstr "هاتف السَّيارة"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:130
 msgid "Company Phone"
 msgstr "هاتف الشَّركة"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:131
 msgid "Home Phone"
 msgstr "هاتف المنزل"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:132
 msgid "Home Phone 2"
 msgstr "هاتف المنزل 2"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Fax"
 msgstr "فاكس المنزل"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:134
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:135
 msgid "Mobile Phone"
 msgstr "الهاتف الجوَّال"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:136
 msgid "Other Phone"
 msgstr "هاتف آخر"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:137
 msgid "Other Fax"
 msgstr "فاكس آخر"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:138
 msgid "Pager"
 msgstr "بيبر"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:139
 msgid "Primary Phone"
 msgstr "الهاتف الأساسي"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:140
 msgid "Radio"
 msgstr "مذياع"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:141
 msgid "Telex"
 msgstr "تلكس"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:142
 msgid "TTY"
 msgstr "المُبرقة الكاتبة (هاتف الصُّم)"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:145
 msgid "Email List"
 msgstr "قائمة البريد الإلكتروني"
 
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:146
 msgid "Email 1"
 msgstr "البريد الإلكتروني 1"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
 msgstr "البريد الالكتروني 2"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:148
 msgid "Email 3"
 msgstr "البريد الالكتروني 3"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:149
+msgid "Email 4"
+msgstr "البريد الالكتروني 4"
+
+#: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
 msgstr "المرسِل"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:151
 msgid "Wants HTML Mail"
 msgstr "يريد بريد HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:152
+#: addressbook/libebook/e-contact.c:154
 msgid "AIM Screen Name List"
 msgstr "قائمة أسماء شاشة AIM"
 
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
 msgstr "قائمة هويَّات كروب-وايز"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
 msgstr "قائمة هويَّات جابّر"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:157
 msgid "Yahoo! Screen Name List"
 msgstr "قائمة أسماء شاشة ياهو"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:158
 msgid "MSN Screen Name List"
 msgstr "قائمة أسماء شاشة MSN"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:159
 msgid "ICQ Id List"
 msgstr "قائمة هويَّات ICQ"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
 msgstr "إسم شاشة AIM المنزل 1"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 2"
 msgstr "إسم شاشة AIM المنزل 2"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 3"
 msgstr "إسم شاشة AIM المنزل 3"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 1"
 msgstr "إسم شاشة AIM العمل 1"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 2"
 msgstr "إسم شاشة AIM العمل 2"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 3"
 msgstr "إسم شاشة AIM العمل 3"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:167
 msgid "Groupwise Home Screen Name 1"
 msgstr "إسم شاشة كروب-وايز المنزل 1"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:168
 msgid "Groupwise Home Screen Name 2"
 msgstr "إسم شاشة كروب-وايز المنزل 2"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 3"
 msgstr "إسم شاشة كروب-وايز المنزل 3"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Work Screen Name 1"
 msgstr "إسم شاشة كروب-وايز العمل 1"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Work Screen Name 2"
 msgstr "إسم شاشة كروب-وايز العمل 2"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 3"
 msgstr "إسم شاشة كروب-وايز العمل 3"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
 msgstr "هويَّة جابّر المنزل 1"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 2"
 msgstr "هويَّة جابّر المنزل 2"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 3"
 msgstr "هويَّة جابّر المنزل 3"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 1"
 msgstr "هويَّة جابّر العمل 1"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 2"
 msgstr "هويَّة جابّر العمل 2"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 3"
 msgstr "هويَّة جابّر العمل 3"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
 msgstr "إسم شاشة ياهو المنزل 1"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 2"
 msgstr "إسم شاشة ياهو المنزل 2"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 3"
 msgstr "إسم شاشة ياهو المنزل 3"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 1"
 msgstr "إسم شاشة ياهو العمل 1"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 2"
 msgstr "إسم شاشة ياهو العمل 2"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 3"
 msgstr "إسم شاشة ياهو العمل 3"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 1"
 msgstr "إسم شاشة MSN المنزل 1"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 2"
 msgstr "إسم شاشة MSN المنزل 2"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 3"
 msgstr "إسم شاشة MSN المنزل 3"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 1"
 msgstr "إسم شاشة MSN العمل 1"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 2"
 msgstr "إسم شاشة MSN العمل 2"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 3"
 msgstr "إسم شاشة MSN العمل 3"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
 msgstr "هويَّة ICQ المنزل 1"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Home Id 2"
 msgstr "هويَّة ICQ المنزل 2"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 3"
 msgstr "هويَّة ICQ المنزل 3"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 1"
 msgstr "هويَّة ICQ العمل 1"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 2"
 msgstr "هويَّة ICQ العمل 2"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 3"
 msgstr "هويَّة ICQ العمل 3"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:199
 msgid "Organization"
 msgstr "التَّنظيم"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:200
 msgid "Organizational Unit"
 msgstr "الوحدة التَّنظيمية"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:201
 msgid "Office"
 msgstr "المكتب"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:203
 msgid "Title"
 msgstr "اللَّقب"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:204
 msgid "Role"
 msgstr "الدَّور"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:205
 msgid "Manager"
 msgstr "المدير"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:206
 msgid "Assistant"
 msgstr "المساعد"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:209
 msgid "Homepage URL"
 msgstr "عنوان الصَّفحة الرَّئيسيَّة"
 
-#: addressbook/libebook/e-contact.c:208
+#: addressbook/libebook/e-contact.c:210
 msgid "Weblog URL"
 msgstr "عنوان سجل الإنترنت"
 
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:211
 msgid "Video Conferencing URL"
 msgstr "عنوان إجتماعات الفيديو"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:212
+#: addressbook/libebook/e-contact.c:214
 msgid "Photo"
 msgstr "صورة"
 
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:215
 msgid "Logo"
 msgstr "الشِّعار"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:216
+#: addressbook/libebook/e-contact.c:218
 msgid "X.509 Certificate"
 msgstr "شهادة X.509"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:221
 msgid "Category List"
 msgstr "قائمة الفئات"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:222
 msgid "Categories"
 msgstr "الفئات"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:225
 msgid "Calendar URI"
 msgstr "عنوان الرُّزنامة"
 
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:226
 msgid "Free/Busy URL"
 msgstr "عنوان متفرِّغ/مشغول"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:227
 msgid "ICS Calendar"
 msgstr "رزنامة ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:228
+#: addressbook/libebook/e-contact.c:230
 msgid "Spouse's Name"
 msgstr "إسم الزّوج/الزّوجة"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:231
 msgid "Note"
 msgstr "ملاحظة"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:233
 msgid "Birth Date"
 msgstr "تاريخ الميلاد"
 
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:234
 msgid "Anniversary"
 msgstr "الذِّكرى السَّنوية"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:236
 msgid "List"
 msgstr "القائمة"
 
-#: addressbook/libebook/e-contact.c:235
+#: addressbook/libebook/e-contact.c:237
 msgid "List Show Addresses"
 msgstr "القائمة تظهر العناوين"
 
-#: addressbook/libebook/e-contact.c:1197
+#: addressbook/libebook/e-contact.c:1206
 msgid "Unnamed List"
 msgstr "قائمة غير مسمّاة"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "تاريخ الميلاد"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "تاريخ الميلاد: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:485
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "الذِّكرى السَّنوية: %s"
@@ -593,164 +615,161 @@ msgstr "الذِّكرى السَّنوية: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "لم يمكن حفظ بيانات الرُّزنامة: العنوان مشوَّه"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:283
 msgid "Invalid server URI"
 msgstr "عنوان نادل غير صحيح"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:322
 msgid "Calendar"
 msgstr "الرُّزنامة"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
-msgid "Checklist"
-msgstr "قائمة المراجعة"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4057
-msgid "Authentication failed"
-msgstr "فشل التوثُّق"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:329
 msgid "Could not create cache file"
 msgstr "لم يمكن إنشاء ملف الكاشيه"
 
-#: calendar/backends/http/e-cal-backend-http.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:354
+#: calendar/libecal/e-cal.c:4311
+msgid "Authentication failed"
+msgstr "فشل التوثُّق"
+
+#: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
 msgstr "إعادة توجيه لعنوان غير صحيح"
 
-#: calendar/backends/http/e-cal-backend-http.c:241
+#: calendar/backends/http/e-cal-backend-http.c:249
 msgid "Bad file format."
 msgstr "نَسَق ملف غير صالح"
 
-#: calendar/backends/http/e-cal-backend-http.c:246
+#: calendar/backends/http/e-cal-backend-http.c:255
 msgid "Not a calendar."
 msgstr "ليس بِرُزنامة."
 
-#: calendar/libecal/e-cal-component.c:1218
+#: calendar/libecal/e-cal-component.c:1237
 msgid "Untitled appointment"
 msgstr "موعد دون عنوان"
 
-#: calendar/libecal/e-cal-recur.c:3989
+#: calendar/libecal/e-cal-recur.c:3996
 msgid "1st"
 msgstr "الأوَّل"
 
-#: calendar/libecal/e-cal-recur.c:3990
+#: calendar/libecal/e-cal-recur.c:3997
 msgid "2nd"
 msgstr "الثَّاني"
 
-#: calendar/libecal/e-cal-recur.c:3991
+#: calendar/libecal/e-cal-recur.c:3998
 msgid "3rd"
 msgstr "الثَّالث"
 
-#: calendar/libecal/e-cal-recur.c:3992
+#: calendar/libecal/e-cal-recur.c:3999
 msgid "4th"
 msgstr "الرَّابع"
 
-#: calendar/libecal/e-cal-recur.c:3993
+#: calendar/libecal/e-cal-recur.c:4000
 msgid "5th"
 msgstr "الخامس"
 
-#: calendar/libecal/e-cal-recur.c:3994
+#: calendar/libecal/e-cal-recur.c:4001
 msgid "6th"
 msgstr "السَّادس"
 
-#: calendar/libecal/e-cal-recur.c:3995
+#: calendar/libecal/e-cal-recur.c:4002
 msgid "7th"
 msgstr "السَّابع"
 
-#: calendar/libecal/e-cal-recur.c:3996
+#: calendar/libecal/e-cal-recur.c:4003
 msgid "8th"
 msgstr "الثَّامن"
 
-#: calendar/libecal/e-cal-recur.c:3997
+#: calendar/libecal/e-cal-recur.c:4004
 msgid "9th"
 msgstr "التَّاسع"
 
-#: calendar/libecal/e-cal-recur.c:3998
+#: calendar/libecal/e-cal-recur.c:4005
 msgid "10th"
 msgstr "العاشر"
 
-#: calendar/libecal/e-cal-recur.c:3999
+#: calendar/libecal/e-cal-recur.c:4006
 msgid "11th"
 msgstr "الحادي عشر"
 
-#: calendar/libecal/e-cal-recur.c:4000
+#: calendar/libecal/e-cal-recur.c:4007
 msgid "12th"
 msgstr "الثَّاني عشر"
 
-#: calendar/libecal/e-cal-recur.c:4001
+#: calendar/libecal/e-cal-recur.c:4008
 msgid "13th"
 msgstr "الثَّالث عشر"
 
-#: calendar/libecal/e-cal-recur.c:4002
+#: calendar/libecal/e-cal-recur.c:4009
 msgid "14th"
 msgstr "الرَّابع عشر"
 
-#: calendar/libecal/e-cal-recur.c:4003
+#: calendar/libecal/e-cal-recur.c:4010
 msgid "15th"
 msgstr "الخامس عشر"
 
-#: calendar/libecal/e-cal-recur.c:4004
+#: calendar/libecal/e-cal-recur.c:4011
 msgid "16th"
 msgstr "السَّادس عشر"
 
-#: calendar/libecal/e-cal-recur.c:4005
+#: calendar/libecal/e-cal-recur.c:4012
 msgid "17th"
 msgstr "السَّابع عشر"
 
-#: calendar/libecal/e-cal-recur.c:4006
+#: calendar/libecal/e-cal-recur.c:4013
 msgid "18th"
 msgstr "الثَّامن عشر"
 
-#: calendar/libecal/e-cal-recur.c:4007
+#: calendar/libecal/e-cal-recur.c:4014
 msgid "19th"
 msgstr "التَّاسع عشر"
 
-#: calendar/libecal/e-cal-recur.c:4008
+#: calendar/libecal/e-cal-recur.c:4015
 msgid "20th"
 msgstr "العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4009
+#: calendar/libecal/e-cal-recur.c:4016
 msgid "21st"
 msgstr "الحادي و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4010
+#: calendar/libecal/e-cal-recur.c:4017
 msgid "22nd"
 msgstr "الثَّاني و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4011
+#: calendar/libecal/e-cal-recur.c:4018
 msgid "23rd"
 msgstr "الثَّالث و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4012
+#: calendar/libecal/e-cal-recur.c:4019
 msgid "24th"
 msgstr "الرَّابع و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4013
+#: calendar/libecal/e-cal-recur.c:4020
 msgid "25th"
 msgstr "الخامس و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4014
+#: calendar/libecal/e-cal-recur.c:4021
 msgid "26th"
 msgstr "السَّادس و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4015
+#: calendar/libecal/e-cal-recur.c:4022
 msgid "27th"
 msgstr "السَّابع و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4016
+#: calendar/libecal/e-cal-recur.c:4023
 msgid "28th"
 msgstr "الثَّامن و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4017
+#: calendar/libecal/e-cal-recur.c:4024
 msgid "29th"
 msgstr "التَّاسع و العشرين"
 
-#: calendar/libecal/e-cal-recur.c:4018
+#: calendar/libecal/e-cal-recur.c:4025
 msgid "30th"
 msgstr "الثَّلاثين"
 
-#: calendar/libecal/e-cal-recur.c:4019
+#: calendar/libecal/e-cal-recur.c:4026
 msgid "31st"
 msgstr "الحادي و الثَّلاثين"
 
@@ -772,162 +791,165 @@ msgid "Undefined"
 msgstr "غير معرَّف"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1486
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "أدخل كلمة السِّر ل%s (المستخدم %s)"
 
-#: calendar/libecal/e-cal.c:4031
+#: calendar/libecal/e-cal.c:4285
 msgid "Invalid argument"
 msgstr "معطى غير صحيح"
 
-#: calendar/libecal/e-cal.c:4033
+#: calendar/libecal/e-cal.c:4287
 msgid "Backend is busy"
 msgstr "الخلفيَّة مشغولة"
 
-#: calendar/libecal/e-cal.c:4035
+#: calendar/libecal/e-cal.c:4289
 msgid "Repository is offline"
 msgstr "المستودع غير متَّصل"
 
-#: calendar/libecal/e-cal.c:4037
+#: calendar/libecal/e-cal.c:4291
 msgid "No such calendar"
 msgstr "لا رُزنامة بهذا الإسم"
 
-#: calendar/libecal/e-cal.c:4039 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4293 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "لم يوجد الكائن"
 
-#: calendar/libecal/e-cal.c:4041 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "كائن غير صحيح"
 
-#: calendar/libecal/e-cal.c:4043
+#: calendar/libecal/e-cal.c:4297
 msgid "URI not loaded"
 msgstr "العنوان غير محمَّل"
 
-#: calendar/libecal/e-cal.c:4045
+#: calendar/libecal/e-cal.c:4299
 msgid "URI already loaded"
 msgstr "العنوان محمَّل سلفاً"
 
-#: calendar/libecal/e-cal.c:4047
+#: calendar/libecal/e-cal.c:4301
 msgid "Permission denied"
 msgstr "رُفض التَّرخيص"
 
-#: calendar/libecal/e-cal.c:4049
+#: calendar/libecal/e-cal.c:4303
 msgid "Object ID already exists"
 msgstr "هويَّة الكائن موجودة سلفاً"
 
-#: calendar/libecal/e-cal.c:4051
+#: calendar/libecal/e-cal.c:4305
 msgid "Protocol not supported"
 msgstr "البروتوكول غير مدعوم"
 
-#: calendar/libecal/e-cal.c:4053
+#: calendar/libecal/e-cal.c:4307
 msgid "Operation has been cancelled"
 msgstr "أُلغيت العملية"
 
-#: calendar/libecal/e-cal.c:4055
+#: calendar/libecal/e-cal.c:4309
 msgid "Could not cancel operation"
 msgstr "لم يمكن إلغاء العملية"
 
-#: calendar/libecal/e-cal.c:4059
+#: calendar/libecal/e-cal.c:4313
 msgid "Authentication required"
 msgstr "مطلوبٌ التَّوثيق"
 
-#: calendar/libecal/e-cal.c:4061
+#: calendar/libecal/e-cal.c:4315
 msgid "A CORBA exception has occurred"
 msgstr "وقع إستثناء كوربا"
 
-#: calendar/libecal/e-cal.c:4063 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4317 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "خطأ مجهول"
 
-#: calendar/libecal/e-cal.c:4065
+#: calendar/libecal/e-cal.c:4319
 msgid "No error"
 msgstr "لا خطأ"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
-#: calendar/libedata-cal/e-cal-backend-sexp.c:518
-#: calendar/libedata-cal/e-cal-backend-sexp.c:650
-#: calendar/libedata-cal/e-cal-backend-sexp.c:677
+#: calendar/libedata-cal/e-cal-backend-sexp.c:529
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" لا ترتقب أيّة معطيات"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:75
-#: calendar/libedata-cal/e-cal-backend-sexp.c:163
-#: calendar/libedata-cal/e-cal-backend-sexp.c:197
-#: calendar/libedata-cal/e-cal-backend-sexp.c:233
-#: calendar/libedata-cal/e-cal-backend-sexp.c:715
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" ترتقب معطىً واحداً"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
-#: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:462
+#: calendar/libedata-cal/e-cal-backend-sexp.c:88
+#: calendar/libedata-cal/e-cal-backend-sexp.c:245
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" ترتقب أن يكون المعطى الأوَّل سلسلةً"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:90
+#: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "\"%s\" ترتقب أن يكون المعطى الأوَّل سلسلة تاريخ/زمن ISO8601"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:121
-#: calendar/libedata-cal/e-cal-backend-sexp.c:305
-#: calendar/libedata-cal/e-cal-backend-sexp.c:456
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:312
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" ترتقب معطيين اثنين"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:127
-#: calendar/libedata-cal/e-cal-backend-sexp.c:169
-#: calendar/libedata-cal/e-cal-backend-sexp.c:203
-#: calendar/libedata-cal/e-cal-backend-sexp.c:311
-#: calendar/libedata-cal/e-cal-backend-sexp.c:721
+#: calendar/libedata-cal/e-cal-backend-sexp.c:133
+#: calendar/libedata-cal/e-cal-backend-sexp.c:175
+#: calendar/libedata-cal/e-cal-backend-sexp.c:209
+#: calendar/libedata-cal/e-cal-backend-sexp.c:318
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" ترتقب أن يكون المعطى الأوَّل من نوع time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:135
+#: calendar/libedata-cal/e-cal-backend-sexp.c:141
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" ترتقب أن يكون المعطى الأوّل عدداً صحيحاً"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:319
+#: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" ترتقب أن يكون المعطى الثّاني من نوع time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:481
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" ترتقب أن يكون المعطى الثّاني سلسلةً"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:490
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"\"%s\" ترتقب أن يكون المعطى الأوّل إمّا \"any\" "
-"أو \"summary\" أو \"description\" "
-"أو \"location\""
+"\"%s\" ترتقب أن يكون المعطى الأوّل إمّا \"any\" أو \"summary\" أو \"description"
+"\" أو \"location\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:552
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" ترتقب معطىً واحداً على الأقل"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:566
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"\"%s\" يترتقب أن تكون كل المتغيّرات سلاسلاً "
-"أو أن يكون متغير واحد و واحد فقط منطقيّاً (#f)"
+"\"%s\" يترتقب أن تكون كل المتغيّرات سلاسلاً أو أن يكون متغير واحد و واحد فقط "
+"منطقيّاً (#f)"
 
 #: servers/groupwise/e-gw-connection.c:80
 msgid "Invalid connection"
@@ -953,4 +975,10 @@ msgstr "ملف رزنامة افليوشن و خلفيّة وبْكال"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "خلفيّة ملف دفتر عناوين افليوشن"
+
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr "حدثت إنهيارات عديدة و لا يمكن عرض حوار الخطأ\n"
 
