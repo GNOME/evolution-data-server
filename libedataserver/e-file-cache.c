@@ -44,6 +44,7 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 	EFileCache *cache;
 	EFileCachePrivate *priv;
 	char *dirname;
+	int result;
 
 	cache = E_FILE_CACHE (object);
 	priv = cache->priv;
@@ -52,7 +53,9 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 	case PROP_FILENAME :
 		/* make sure the directory for the cache exists */
 		dirname = g_path_get_dirname ((const char *) g_value_get_string (value));
-		if (e_util_mkdir_hier (dirname, 0700) != 0)
+		result = e_util_mkdir_hier (dirname, 0700);
+		g_free (dirname);
+		if (result != 0)
 			break;
 
 		if (priv->xml_hash)
