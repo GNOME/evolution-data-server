@@ -487,7 +487,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc),
 					    e_gw_connection_get_session_id (cnc),
 					    "getFreeBusyRequest");
-       	e_gw_message_write_string_parameter (msg, "session", NULL, session);
+       	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
         e_gw_message_write_footer (msg);
 
 	/* send message to server */
