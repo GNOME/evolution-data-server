@@ -1,3 +1,10 @@
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #73112
+
+	* camel-imap-store.c (query_auth_types): don't re-connect if we're
+	already connected.
+
 2005-02-22  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #61468
