@@ -1,3 +1,19 @@
+2004-08-09  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #62415.
+	* e-gw-connection.c: 
+	(e_gw_connection_new): remove unused variable. 
+	(e_gw_connection_get_items), (e_gw_connection_get_items_from_ids),
+	(e_gw_connection_get_deltas), (e_gw_connection_get_item):
+	update 	e_gw_item_new_from_soap_parameter calls with new parameter.
+	(e_gw_connection_accept_request): accept_level should be outside the
+	items element. (funny, the server did not catch us doing this).
+	* e-gw-item.[ch]: (set_recipient_list_from_soap_parameter): send item 
+	pointer instead of the list pointer since we need to access the 
+	self-status as well.
+	(e_gw_item_new_from_soap_parameter): add parmater email. set the 
+	self_status of the e_gw_item from the mail properties.
+
 2004-08-02  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #57127

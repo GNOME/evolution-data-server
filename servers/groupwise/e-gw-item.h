@@ -105,7 +105,7 @@ typedef struct {
 
 GType       e_gw_item_get_type (void);
 EGwItem    *e_gw_item_new_empty (void);
-EGwItem    *e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param);
+EGwItem    *e_gw_item_new_from_soap_parameter (const char *email, const char *container, SoupSoapParameter *param);
 
 EGwItemType e_gw_item_get_item_type (EGwItem *item);
 void        e_gw_item_set_item_type (EGwItem *item, EGwItemType new_type);
@@ -185,6 +185,12 @@ void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_date
 int e_gw_item_get_trigger (EGwItem *item);
 void e_gw_item_set_trigger (EGwItem *item, int trigger);
 
+typedef enum {
+	E_GW_ITEM_STAT_ACCEPTED,
+	E_GW_ITEM_STAT_DECLINED,
+	E_GW_ITEM_STAT_NONE
+} ItemStatus; 
+
 typedef struct {
 	char *email;
 	char *display_name;
@@ -194,11 +200,7 @@ typedef struct {
 		E_GW_ITEM_RECIPIENT_NONE
 	} type;
 
-	enum {
-		E_GW_ITEM_STAT_ACCEPTED,
-		E_GW_ITEM_STAT_DECLINED,
-		E_GW_ITEM_STAT_NONE
-	} status;
+	ItemStatus status;
 } EGwItemRecipient;
 
 gboolean    e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg);

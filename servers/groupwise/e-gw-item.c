@@ -56,6 +56,11 @@ struct _EGwItemPrivate {
 
 	/* properties for tasks/calendars */
 	char *icalid;
+	/* if the self is not the organizer of the item, the 
+	 * status is not reflected in the recipientStatus.
+	 * Hence it should be gleaned from the 'status' element
+	 * of the Mail, the parent item.*/
+	ItemStatus self_status;
 	/* properties for category items*/
 	char *category_name;
 
@@ -371,12 +376,15 @@ e_gw_item_new_empty (void)
 }
 
 static void 
-set_recipient_list_from_soap_parameter (GSList **list, SoupSoapParameter *param)
+set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 {
         SoupSoapParameter *param_recipient;
         char *email, *cn;
 	EGwItemRecipient *recipient;
+	GList *email_list;
 
+	email_list = e_gw_item_get_email_list (item);
+	
         for (param_recipient = soup_soap_parameter_get_first_child_by_name (param, "recipient");
 	     param_recipient != NULL;
 	     param_recipient = soup_soap_parameter_get_next_child_by_name (param_recipient, "recipient")) {
@@ -412,20 +420,28 @@ set_recipient_list_from_soap_parameter (GSList **list, SoupSoapParameter *param)
 		
 		/* update Recipient Status
 		 look for accepted/declined and update the item else set it
-		 to none.*/
-		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientType");
+		 to none. */
+		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientStatus");
                 if (subparam) {
-                        const char *recip_type;
-                        recip_type = soup_soap_parameter_get_string_value (subparam);
-                        if (!strcmp (recip_type, "accepted")) 
+                        if (soup_soap_parameter_get_first_child_by_name (subparam, "deleted"))
+				recipient->status = E_GW_ITEM_STAT_DECLINED;
+			if (soup_soap_parameter_get_first_child_by_name (subparam, "declined"))
+				recipient->status = E_GW_ITEM_STAT_DECLINED;
+			else if (soup_soap_parameter_get_first_child_by_name (subparam, "accepted")) 
 				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
-                        else if (!strcmp (recip_type, "deleted"))
-                                recipient->status = E_GW_ITEM_STAT_DECLINED;
-                        else
-				recipient->status = E_GW_ITEM_RECIPIENT_NONE;
+			else 	
+				recipient->status = E_GW_ITEM_STAT_NONE;
                 }
+		else {
+			/* if recipientStatus is not provided, use the
+			 * self_status, obtained from the mail properties. */
+			if (!strcmp ((const char *)email_list->data, recipient->email)) 
+				recipient->status = item->priv->self_status;
+			else
+				recipient->status = E_GW_ITEM_STAT_NONE;
+		}
 		
-                *list = g_slist_append (*list, recipient);
+                item->priv->recipient_list = g_slist_append (item->priv->recipient_list, recipient);
         }        
 }
 
@@ -1238,12 +1254,13 @@ append_group_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 }
 
 EGwItem *
-e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param)
+e_gw_item_new_from_soap_parameter (const char *email, const char *container, SoupSoapParameter *param)
 {
 	EGwItem *item;
         char *item_type;
 	SoupSoapParameter *subparam, *child, *category_param;
 	gboolean is_group_item = TRUE;
+	GList *user_email = NULL;
 	
 	g_return_val_if_fail (param != NULL, NULL);
 
@@ -1292,6 +1309,9 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 	g_free (item_type);
 
 	item->priv->container = g_strdup (container);
+	/* set the email of the user */
+	user_email = g_list_append (user_email, g_strdup (email));
+	e_gw_item_set_email_list (item, user_email);
 
 	/* If the parameter consists of changes - populate deltas */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "changes");
@@ -1328,6 +1348,16 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 				item->priv->completed = FALSE;
 			g_free (value);
 
+		} else if (!g_ascii_strcasecmp (name, "status")) {
+			if (soup_soap_parameter_get_first_child_by_name (child, "deleted"))
+				item->priv->self_status = E_GW_ITEM_STAT_DECLINED;
+			else if (soup_soap_parameter_get_first_child_by_name (child, "declined"))
+				item->priv->self_status = E_GW_ITEM_STAT_DECLINED;
+			else if (soup_soap_parameter_get_first_child_by_name (child, "accepted"))
+				item->priv->self_status = E_GW_ITEM_STAT_ACCEPTED;
+			else 
+				item->priv->self_status = E_GW_ITEM_STAT_NONE;
+
 		} else if (!g_ascii_strcasecmp (name, "created")) {
 			char *formatted_date;
 			value = soup_soap_parameter_get_string_value (child);
@@ -1343,7 +1373,7 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			if (tp) {
 				g_slist_foreach (item->priv->recipient_list, (GFunc) free_recipient, NULL);
 				item->priv->recipient_list = NULL;
-				set_recipient_list_from_soap_parameter (&item->priv->recipient_list, tp);
+				set_recipient_list_from_soap_parameter (item, tp);
 			}
 			tp = soup_soap_parameter_get_first_child_by_name (child, "from");
 			if (tp && is_group_item) {

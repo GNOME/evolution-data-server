@@ -331,7 +331,6 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	if (param) {
 		SoupSoapParameter *subparam;
 		const char *param_value;
-		int i;
 
 		subparam = soup_soap_parameter_get_first_child_by_name (param, "email");
 		if (subparam) {
@@ -545,7 +544,7 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
 	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
 		EGwItem *item;
 
-		item = e_gw_item_new_from_soap_parameter (container, subparam);
+		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		if (item)
 			*list = g_list_append (*list, item);
         }
@@ -614,7 +613,7 @@ e_gw_connection_get_items_from_ids (EGwConnection *cnc, const char *container, c
 	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
 		EGwItem *item;
 
-		item = e_gw_item_new_from_soap_parameter (container, subparam);
+		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		if (item)
 			*list = g_list_append (*list, item);
         }
@@ -723,7 +722,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
 				/*process each item */  
 				EGwItem *item;
 				/*FIXME  pass the container id */
-				item = e_gw_item_new_from_soap_parameter ("Calendar", subparam);
+				item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "Calendar", subparam);
                                 if (!item) { 
                                          g_object_unref (response); 
                                          g_object_unref (msg); 
@@ -745,7 +744,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
 			 EGwItem *item;
 			 /*process each item */
 			 /*item = get_item_from_updates (subparam);*/
-			 item = e_gw_item_new_from_soap_parameter ("Calendar", subparam);
+			 item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "Calendar", subparam);
 			 if (item)
 				 *updates = g_slist_append (*updates, item);
                  } 
@@ -942,7 +941,7 @@ e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char 
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 	
-       	*item = e_gw_item_new_from_soap_parameter (container, param);
+       	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, param);
 	
                
 	/* free memory */
@@ -1036,8 +1035,8 @@ e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "acceptRequest");
 	soup_soap_message_start_element (msg, "items", NULL, NULL);
 	e_gw_message_write_string_parameter (msg, "item", NULL, id);
-	e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, accept_level);
 	soup_soap_message_end_element (msg);
+	e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, accept_level);
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
