@@ -154,7 +154,7 @@ groupwise_send_to (CamelTransport *transport,
 	EGwItemRecipient *recipient ;
 	EGwItemOrganizer *org = g_new0 (EGwItemOrganizer, 1) ;
 
-	char *display_name = NULL, *email = NULL ;
+	char *display_name = NULL, *email = NULL, *send_options = NULL ;
 
 	int total_add ;
 
@@ -228,7 +228,6 @@ groupwise_send_to (CamelTransport *transport,
 			const char *disposition, *filename ;
 			char *buffer = NULL ;
 			char *mime_type = NULL ;
-			char *temp_buf = NULL ;
 			int len ;
 
 			part = camel_multipart_get_part (mp, i) ;
@@ -286,7 +285,6 @@ groupwise_send_to (CamelTransport *transport,
 		g_free (buffer) ;
 		camel_object_unref (content) ;
 	}
-
 	/*Populate EGwItem*/
 	/*From Address*/
 	camel_internet_address_get ((CamelInternetAddress *)from, 0 , &display_name, &email) ;
@@ -302,6 +300,58 @@ groupwise_send_to (CamelTransport *transport,
 	e_gw_item_set_subject (item, camel_mime_message_get_subject(message)) ;
 	/*attachmets*/
 	e_gw_item_set_attach_id_list (item, attach_list) ;
+	
+	/*send options*/
+	e_gw_item_set_sendoptions (item, TRUE) ;
+
+	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_CONVENIENT)) 
+		e_gw_item_set_reply_request (item, TRUE) ;
+	
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_WITHIN) ;
+	if (send_options) 
+		e_gw_item_set_reply_within (item, send_options) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message),X_EXPIRE_AFTER) ;
+	if (send_options)
+		e_gw_item_set_expires (item, send_options) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_DELAY_UNTIL) ;
+	if (send_options)
+		e_gw_item_set_delay_until (item, send_options) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_TRACK_WHEN) ;
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case 1: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED);
+				break;
+			case 2: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED_OPENED);
+				break;
+			case 3: e_gw_item_set_track_info (item, E_GW_ITEM_ALL);
+				break;
+			default: e_gw_item_set_track_info (item, E_GW_ITEM_NONE);
+				 break;
+		}
+	}
+
+	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_AUTODELETE))
+		e_gw_item_set_autodelete (item, TRUE) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_OPEN) ;
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case 0: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_NONE);
+				break;
+			case 1: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_MAIL);
+		}
+	}
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_DECLINE) ;
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case 0: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_NONE);
+				break;
+			case 1: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_MAIL);
+		}
+	}
 
 	/*Send item*/
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list) ;

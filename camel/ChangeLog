@@ -1,4 +1,19 @@
 2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-folder.c
+	  (groupwise_folder_get_message),
+	  (groupwise_refresh_info): included default and notification
+	  in the view list for e_gw_connection_get_item.
+	
+	* providers/groupwise/camel-groupwise-store.c
+	  (groupwise_get_folder_online):included default and notification
+	  in the view list for e_gw_connection_get_items.
+	
+	* providers/groupwis/camel-groupwise-transport.[ch]
+	  (groupwise_send_to): sets send options in EGwItem by parsing the
+	  camelmimemessage for send-option headers
+
+2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-store-summary.[ch]:
 	  implements the CamelStoreSummary Class providing support

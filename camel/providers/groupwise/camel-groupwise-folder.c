@@ -92,6 +92,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 	EGwConnectionStatus status ;
 	EGwConnection *cnc ;
 	EGwItem *item ;
+	char *dtstring ;
 	CamelStream *stream, *cache_stream;
 	CamelMultipart *multipart ;
 	int errno;
@@ -166,7 +167,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 
 	cnc = cnc_lookup (priv) ;
 
-	status = e_gw_connection_get_item (cnc, container_id, uid, "recipient message attachments", &item) ;
+	status = e_gw_connection_get_item (cnc, container_id, uid, "default distribution recipient message attachments subject notification created", &item) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
 		return NULL;
@@ -248,7 +249,9 @@ groupwise_folder_get_message( CamelFolder *folder,
 	}
 	
 	camel_mime_message_set_subject (msg, e_gw_item_get_subject(item) ) ;
-	camel_mime_message_set_date (msg, e_gw_connection_get_date_from_string (e_gw_item_get_creation_date(item)), 0 ) ;
+	dtstring = e_gw_item_get_creation_date (item) ;
+	if (dtstring) 
+		camel_mime_message_set_date (msg, e_gw_connection_get_date_from_string (dtstring), 0 ) ;
 	camel_mime_message_set_from (msg, from_addr) ;
 	
 
@@ -261,11 +264,11 @@ groupwise_folder_get_message( CamelFolder *folder,
 
 		for (al = attach_list ; al != NULL ; al = al->next) {
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data ;
-			char *attachment ;
+			unsigned char *attachment ;
 			int len ;
 			CamelMimePart *part ;
 
-			status = e_gw_connection_get_attachment (cnc, g_strdup(attach->id), 0, -1, (const char **)&attachment, &len) ;
+			status = e_gw_connection_get_attachment (cnc, g_strdup(attach->id), 0, -1, (unsigned char **)&attachment, &len) ;
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
 				return NULL;
@@ -464,7 +467,6 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	int status ;
 	GList *list = NULL;
 	char *container_id = NULL ;
-	//int summary_count = camel_folder_summary_count(folder->summary) ;
 
 	container_id = g_strdup (container_id_lookup(priv, g_strdup (folder->name))) ;
 	if (!container_id) {
@@ -481,7 +483,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 		gw_folder->need_refresh = TRUE ;
 	}
 
-	status = e_gw_connection_get_items (cnc_lookup(priv), container_id, "attachments", NULL, &list) ;
+	status = e_gw_connection_get_items (cnc_lookup(priv), container_id, "default distribution attachments message subject created recipient notification", NULL, &list) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		g_free (container_id) ;
@@ -870,6 +872,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	*str = g_strconcat (*str, "DTSTAMP:", e_gw_item_get_creation_date (item), "\n", NULL) ;
 	*str = g_strconcat (*str, "X-GWMESSAGEID:", e_gw_item_get_id(item), "\n", NULL) ;
 	*str = g_strconcat (*str, "X-GWRECORDID:", e_gw_item_get_id (item), "\n", NULL) ;
+	if (org)
 	*str = g_strconcat (*str, "ORGANIZER;CN= ",org->display_name, ";ROLE= CHAIR", "\n", " MAILTO:", org->email, "\n",  NULL) ;
 	*str = g_strconcat (*str, "DESCRIPTION:", e_gw_item_get_message(item), "\n", NULL) ;
 	*str = g_strconcat (*str, "LOCATION:", e_gw_item_get_place (item), "\n", NULL) ;

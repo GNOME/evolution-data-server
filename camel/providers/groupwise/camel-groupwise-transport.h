@@ -38,6 +38,21 @@ extern "C" {
 #define CAMEL_GROUPWISE_TRANSPORT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_GROUPWISE_TRANSPORT_TYPE, CamelGroupwiseTransportClass))
 #define CAMEL_IS_GROUPWISE_TRANSPORT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GROUPWISE_TRANSPORT_TYPE))
 
+/*Headers for send options*/
+#define X_SEND_OPTIONS        "X-gw-send-options"
+/*General Options*/
+#define X_SEND_OPT_PRIORITY   "X-gw-send-opt-priority"
+#define X_REPLY_CONVENIENT    "X-reply-convenient"
+#define X_REPLY_WITHIN        "X-reply-within"
+#define X_EXPIRE_AFTER        "X-expire-after"
+#define X_DELAY_UNTIL         "X-delay-until"
+
+/*Status Tracking Options*/
+#define X_TRACK_WHEN            "X-track-when"
+#define X_AUTODELETE            "X-auto-delete"
+#define X_RETURN_NOTIFY_OPEN    "X-return-notify-open"
+#define X_RETURN_NOTIFY_DECLINE "X-return-notify-decline"
+
 
 typedef struct {
 	CamelTransport parent_object;

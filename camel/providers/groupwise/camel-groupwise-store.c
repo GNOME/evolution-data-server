@@ -553,7 +553,7 @@ groupwise_get_folder_online( CamelStore *store,
 
 	camel_operation_start (NULL, _("Fetching summary information for new messages"));
 
-	status = e_gw_connection_get_items (priv->cnc, container_id, "default attachments distribution created subject", NULL, &list) ;
+	status = e_gw_connection_get_items (priv->cnc, container_id, "default attachments distribution created subject message notification", NULL, &list) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		g_free (container_id) ;
