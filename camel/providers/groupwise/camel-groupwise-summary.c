@@ -195,8 +195,8 @@ gw_message_info_load (CamelFolderSummary *s, FILE *in)
 
 	return info ;
 error:
-	//camel_folder_summary_info_free (s,in) ;
-	camel_folder_info_free (in) ;
+	camel_message_info_free (info) ;
+	return NULL ;
 }
 
 

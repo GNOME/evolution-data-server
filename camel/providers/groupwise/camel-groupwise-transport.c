@@ -154,7 +154,8 @@ groupwise_send_to (CamelTransport *transport,
 	EGwItemRecipient *recipient ;
 	EGwItemOrganizer *org = g_new0 (EGwItemOrganizer, 1) ;
 
-	char *display_name = NULL, *email = NULL, *send_options = NULL ;
+	const char *display_name = NULL, *email = NULL ;
+	char *send_options = NULL ;
 
 	int total_add ;
 

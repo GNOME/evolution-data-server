@@ -947,9 +947,8 @@ groupwise_rename_folder(CamelStore *store,
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
-	char *oldpath, *newpath, *storepath, *newname ;
+	char *oldpath, *newpath, *storepath ;
 	char *container_id ;
-	CamelSession *session = ((CamelService *)store)->session ;
 
 	
 	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex)) {
