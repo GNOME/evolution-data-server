@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-01-22 10:42-0500\n"
-"PO-Revision-Date: 2004-01-22 10:50-0500\n"
+"PO-Revision-Date: 2004-01-22 14:49-0500\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Carregando..."
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2860
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
-msgstr "Buscando..."
+msgstr "Pesquisando..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:613
 msgid "Using Distinguished Name (DN)"
@@ -52,11 +52,11 @@ msgstr "Modificando contato do servidor LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2783
 msgid "Receiving LDAP search results..."
-msgstr "Recebendo resultados da busca LDAP..."
+msgstr "Recebendo resultados da pesquisa LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2880
 msgid "Error performing search"
-msgstr "Erro ao executar busca"
+msgstr "Erro ao executar pesquisa"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
