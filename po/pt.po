@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-15 20:25+0000\n"
-"PO-Revision-Date: 2005-03-15 20:30+0000\n"
+"POT-Creation-Date: 2005-03-17 01:22+0000\n"
+"PO-Revision-Date: 2005-03-17 01:25+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1487,7 +1487,7 @@ msgstr ""
 "para o utilizador: \"%s\""
 
 #: camel/camel-gpg-context.c:803 camel/camel-gpg-context.c:1000
-#: camel/providers/nntp/camel-nntp-store.c:1274
+#: camel/providers/nntp/camel-nntp-store.c:1275
 msgid "Cancelled."
 msgstr "Cancelado."
 
@@ -3967,12 +3967,12 @@ msgstr "Incapaz de ler as boas vindas de %s: %s"
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Servidor NNTP %s devolveu o código de erro %d: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:422
+#: camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
 msgid "USENET News via %s"
 msgstr "Notícias USENET via %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:811
+#: camel/providers/nntp/camel-nntp-store.c:812
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3983,7 +3983,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: camel/providers/nntp/camel-nntp-store.c:905
+#: camel/providers/nntp/camel-nntp-store.c:906
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -3993,7 +3993,7 @@ msgstr ""
 "\n"
 "Grupo inexistente. O item seleccionado é provavelmente uma pasta pai."
 
-#: camel/providers/nntp/camel-nntp-store.c:937
+#: camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4003,44 +4003,44 @@ msgstr ""
 "\n"
 "O grupo de notícias não existe!"
 
-#: camel/providers/nntp/camel-nntp-store.c:962
+#: camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Não pode criar uma pasta num armazenamento de Notícias: subscreva-a."
 
-#: camel/providers/nntp/camel-nntp-store.c:970
+#: camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot rename a folder in a News store."
 msgstr "Não pode renomear uma pasta num armazenamento de notícias."
 
-#: camel/providers/nntp/camel-nntp-store.c:978
+#: camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Não pode remover uma pasta num armazenamento de Notícias: remova a "
 "subscrição."
 
-#: camel/providers/nntp/camel-nntp-store.c:1148
+#: camel/providers/nntp/camel-nntp-store.c:1149
 msgid "Authentication requested but no username provided"
 msgstr "Autenticação requerida mas nenhum utilizador especificado"
 
-#: camel/providers/nntp/camel-nntp-store.c:1156
+#: camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Introduza a senha NNTP para %s@%s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1160
+#: camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Incapaz de se autenticar no servidor: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1276
+#: camel/providers/nntp/camel-nntp-store.c:1277
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "Falha no comando NNTP: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1332
+#: camel/providers/nntp/camel-nntp-store.c:1333
 msgid "Not connected."
 msgstr "Desligado."
 
-#: camel/providers/nntp/camel-nntp-store.c:1385
+#: camel/providers/nntp/camel-nntp-store.c:1386
 #, c-format
 msgid "No such folder: %s"
 msgstr "Pasta inexistente: %s"
@@ -4823,6 +4823,14 @@ msgstr "Procurar"
 #: libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "_Search:"
 msgstr "_Procurar:"
+
+#: libedataserverui/e-passwords.c:471
+msgid "_Remember this password"
+msgstr "_Recordar esta senha"
+
+#: libedataserverui/e-passwords.c:472
+msgid "_Remember this password for the remainder of this session"
+msgstr "_Recordar esta senha durante o resto desta sessão"
 
 #. prepare the dialog
 #: libedataserverui/e-source-selector-dialog.c:101
