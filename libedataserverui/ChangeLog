@@ -1,5 +1,11 @@
 2005-01-24  Hans Petter Jansson  <hpj@novell.com>
 
+	* e-name-selector-entry.c (editor_closed_cb): Implement.
+	(popup_activate_contact): Set up unref callback for when an editor
+	closes.
+
+2005-01-24  Hans Petter Jansson  <hpj@novell.com>
+
 	* e-contact-store.c (get_book_at_row): Implement.
 	(e_contact_store_get_book): Implement.
 

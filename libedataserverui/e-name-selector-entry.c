@@ -1612,6 +1612,12 @@ find_book_by_contact (GList *books, const gchar *contact_uid)
 }
 
 static void
+editor_closed_cb (GtkObject *editor, gpointer data)
+{
+	g_object_unref (editor);
+}
+
+static void
 popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
 	EBook        *book;
@@ -1642,15 +1648,23 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 		return;
 
 	if (e_destination_is_evolution_list (destination)) {
+		GtkWidget *contact_list_editor;
+
 		if (!name_selector_entry->contact_list_editor_func)
 			return;
 
-		(*name_selector_entry->contact_list_editor_func) (book, contact, FALSE, TRUE);
+		contact_list_editor = (*name_selector_entry->contact_list_editor_func) (book, contact, FALSE, TRUE);
+		g_signal_connect (contact_list_editor, "editor_closed",
+				  G_CALLBACK (editor_closed_cb), NULL);
 	} else {
+		GtkWidget *contact_editor;
+
 		if (!name_selector_entry->contact_editor_func)
 			return;
 
-		(*name_selector_entry->contact_editor_func) (book, contact, FALSE, TRUE);
+		contact_editor = (*name_selector_entry->contact_editor_func) (book, contact, FALSE, TRUE);
+		g_signal_connect (contact_editor, "editor_closed",
+				  G_CALLBACK (editor_closed_cb), NULL);
 	}
 }
 

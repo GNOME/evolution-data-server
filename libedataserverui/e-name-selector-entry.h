@@ -64,7 +64,7 @@ struct ENameSelectorEntry {
 	EDestination        *popup_destination;
 
 	/* TEMPORARY */
-	void                 (*contact_editor_func) (EBook *, EContact *, gboolean, gboolean);
+	gpointer             (*contact_editor_func) (EBook *, EContact *, gboolean, gboolean);
 	gpointer             (*contact_list_editor_func) (EBook *, EContact *, gboolean, gboolean);
 };
 
