@@ -15,6 +15,37 @@
 	(e_source_selector_get_primary_source_group): accessor for 
 	primary source group.
 
+2004-11-16  Not Zed  <NotZed@Ximian.com>
+
+	* Makefile.am (DIST_SUBDIRS, SUBDIRS): Added camel.
+
+	* configure.in: Added more camel required config checks.  Build
+	the camel makefiles.  Not sure if this should be in its own
+	configure.in.
+
+2004-11-15  Not Zed  <NotZed@Ximian.com>
+
+	* libedataserver/e-util.c: include config.h.
+
+	* libedataserver/e-sexp.c: updated from evolution/e-util.
+
+	* libedataserver/e-memory.c: updated from evolution/e-util.
+
+	* iconv-detect.c: added iconv format checker.
+
+	* configure.in: add stftime checks and iconv charset format checks.
+
+	* libedataserver/e-util.c (e_strftime): copied from gal/e-util.h.
+
+	* libedataserver/e-time-utils.c (parse_with_strptime): reove
+	e-utf8 depenedncy.
+
+	* libedataserver/e-iconv.[ch]: Moved from gal/util.
+
+	* libedataserver/e-trie.[ch]: Moved from evolution/e-util.
+	* libedataserver/e-msgport.[ch]: Moved from evolution/e-util.
+	* libedataserver/e-time-utils.[ch]: Moved from evolution/e-util.
+
 2004-11-05  Rodrigo Moya <rodrigo@novell.com>
 
 	* configure.in: use evolution-data-server-$BASE_VERSION as the
