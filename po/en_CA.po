@@ -1,15 +1,15 @@
 # English/Canada translation of evolution-data-server.
-# Copyright (C) 2004 Adam Weinberger and the GNOME Foundation
+# Copyright (C) 2004-2005 Adam Weinberger and the GNOME Foundation
 # This file is distributed under the same licence as the evolution-data-server package.
-# Adam Weinberger <adamw@gnome.org>, 2004.
+# Adam Weinberger <adamw@gnome.org>, 2004, 2005.
 # 
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-14 15:54+0800\n"
-"PO-Revision-Date: 2004-10-13 13:04-0400\n"
+"POT-Creation-Date: 2005-01-14 13:35-0500\n"
+"PO-Revision-Date: 2005-01-14 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -653,9 +653,8 @@ msgid "Authentication failed"
 msgstr "Authentication failed"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:776
-#, fuzzy
 msgid "Repository is Offline"
-msgstr "Repository is offline"
+msgstr "Repository is Offline"
 
 #: calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
@@ -1497,9 +1496,9 @@ msgid "Host lookup failed"
 msgstr "Host lookup failed"
 
 #: camel/camel-net-utils.c:636
-#, fuzzy, c-format
+#, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr "Host lookup failed"
+msgstr "Host lookup failed: %s: %s"
 
 #: camel/camel-net-utils.c:743
 msgid "Resolving address"
@@ -1510,19 +1509,19 @@ msgid "Name lookup failed"
 msgstr "Name lookup failed"
 
 #: camel/camel-net-utils.c:766
-#, fuzzy, c-format
+#, c-format
 msgid "Name lookup failed: %s"
-msgstr "Name lookup failed"
+msgstr "Name lookup failed: %s"
 
 #: camel/camel-offline-folder.c:250
-#, fuzzy, c-format
+#, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "Copying messages into folder %s"
+msgstr "Syncing messages in folder '%s' to disk"
 
 #: camel/camel-offline-journal.c:140 camel/camel-offline-journal.c:163
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
-msgstr "Cannot create folder `%s': %s"
+msgstr "Cannot write offline journal for folder `%s': %s"
 
 #: camel/camel-provider.c:59
 msgid "Virtual folder email provider"
@@ -2039,13 +2038,12 @@ msgid "Cannot create folder: %s: folder exists"
 msgstr "Cannot create folder: %s: folder exists"
 
 #: camel/camel-store.c:390 camel/camel-vee-store.c:367
-#: camel/providers/local/camel-maildir-store.c:221
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Cannot delete folder: %s: Invalid operation"
 
 #: camel/camel-store.c:440 camel/camel-vee-store.c:404
-#: camel/providers/local/camel-maildir-store.c:293
+#: camel/providers/local/camel-maildir-store.c:243
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Cannot rename folder: %s: Invalid operation"
@@ -2353,15 +2351,13 @@ msgstr "Cannot get message %s: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:145
 #: camel/providers/imap4/camel-imap4-folder.c:719
-#, fuzzy
 msgid "This message is not available in offline mode."
-msgstr "This message is not currently available"
+msgstr "This message is not available in offline mode."
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:171
 #: camel/providers/groupwise/camel-groupwise-folder.c:272
-#, fuzzy
 msgid "Could not get message"
-msgstr "Could not create message."
+msgstr "Could not get message"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:471
 #: camel/providers/imap/camel-imap-folder.c:245
@@ -2370,31 +2366,30 @@ msgid "Could not load summary for %s"
 msgstr "Could not load summary for %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:685
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create message: %s"
-msgstr "Cannot create CMS message"
+msgstr "Cannot create message: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:697
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message to folder `%s': %s"
-msgstr "Cannot append message to mh folder: %s: %s"
+msgstr "Cannot append message to folder `%s': %s"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get folder container %s"
-msgstr "Cannot get folder: %s: %s"
+msgstr "Cannot get folder container %s"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:328
-#: camel/providers/imap4/camel-imap4-journal.c:276
-#, fuzzy
+#: camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Cannot append message to mh folder: %s: %s"
+msgstr "Cannot append message in offline mode: cache unavailable"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:344
-#: camel/providers/imap4/camel-imap4-journal.c:292
-#, fuzzy, c-format
+#: camel/providers/imap4/camel-imap4-journal.c:336
+#, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr "Cannot append message to mbox file: %s: %s"
+msgstr "Cannot append message in offline mode: %s"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:36
@@ -2427,9 +2422,8 @@ msgid "Only check for Junk messages in the INBOX folder"
 msgstr "Only check for Junk messages in the INBOX folder"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:64
-#, fuzzy
 msgid "Automatically synchronize account locally"
-msgstr "Automatically synchronize remote mail locally"
+msgstr "Automatically synchronize account locally"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:69
 msgid "Address Book and Calendar"
@@ -2464,21 +2458,19 @@ msgid "Password"
 msgstr "Password"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:110
-#, fuzzy
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
-"This option will connect to the IMAP server using a plaintext password."
+"This option will connect to the GroupWise server using a plaintext password."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:267
-#, fuzzy
 msgid "Host or user not availbale in url"
-msgstr "Category editor not available."
+msgstr "Host or user in URL not available"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:359
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the Groupwise password for %s@%s"
-msgstr "%sPlease enter the IMAP password for %s@%s"
+msgstr "%sPlease enter the Groupwise password for %s@%s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:373
 #: camel/providers/imap/camel-imap-store.c:1301
@@ -2486,12 +2478,8 @@ msgid "You didn't enter a password."
 msgstr "You didn't enter a password."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:382
-#, fuzzy
 msgid "Unable to authenticate to GroupWise server."
-msgstr ""
-"Unable to authenticate to IMAP server.\n"
-"%s\n"
-"\n"
+msgstr "Unable to authenticate to GroupWise server."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:479
 #: camel/providers/imap/camel-imap-store.c:1852
@@ -2507,54 +2495,49 @@ msgid "Fetching summary information for new messages"
 msgstr "Fetching summary information for new messages"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:610
-#, fuzzy
 msgid "Cannot get folder info in offline mode."
-msgstr "Cannot get folder `%s': not a directory."
+msgstr "Cannot get folder info in offline mode."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:781
-#, fuzzy
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr "Cannot create a folder by this name."
+msgstr "Cannot create GroupWise folders in offline mode."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:830
-#, fuzzy
 msgid "Cannot delete GroupWise folders in offline mode."
-msgstr "Cannot delete folder `%s': Special folder"
+msgstr "Cannot delete GroupWise folders in offline mode."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:873
-#, fuzzy
 msgid "Cannot rename GroupWise folders in offline mode."
-msgstr "You cannot rename a folder in a News store."
+msgstr "Cannot rename GroupWise folders in offline mode."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:879
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "Cannot rename folder `%s' to `%s': Bad command"
+msgstr "Cannot rename Groupwise folder `%s' to `%s'"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:911
-#, fuzzy, c-format
+#, c-format
 msgid "GroupWise server %s"
-msgstr "GroupWise"
+msgstr "GroupWise server %s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:913
-#, fuzzy, c-format
+#, c-format
 msgid "GroupWise service for %s on %s"
-msgstr "IMAP service for %s on %s"
+msgstr "GroupWise service for %s on %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise server %s"
-msgstr "Groupwise Id List"
+msgstr "Groupwise server %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:123
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise mail delivery via %s"
-msgstr "SMTP mail delivery via %s"
+msgstr "Groupwise mail delivery via %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:159
-#, fuzzy
 msgid "Sending Message"
-msgstr "Sending message"
+msgstr "Sending Message"
 
 #: camel/providers/groupwise/camel-gw-listener.c:406
 msgid "Tasks"
@@ -2631,7 +2614,7 @@ msgstr "Folder was destroyed and recreated on server."
 
 #. Check UIDs and flags of all messages we already know of.
 #: camel/providers/imap/camel-imap-folder.c:573
-#: camel/providers/imap4/camel-imap4-summary.c:1270
+#: camel/providers/imap4/camel-imap4-summary.c:1272
 msgid "Scanning for changed messages"
 msgstr "Scanning for changed messages"
 
@@ -2691,18 +2674,16 @@ msgstr "Checking for New Mail"
 
 #: camel/providers/imap/camel-imap-provider.c:46
 #: camel/providers/imap4/camel-imap4-provider.c:38
-#, fuzzy
 msgid "C_heck for new messages in all folders"
-msgstr "Check for new messages in all folders"
+msgstr "C_heck for new messages in all folders"
 
 #: camel/providers/imap/camel-imap-provider.c:49
 msgid "Connection to Server"
 msgstr "Connection to Server"
 
 #: camel/providers/imap/camel-imap-provider.c:51
-#, fuzzy
 msgid "_Use custom command to connect to server"
-msgstr "Use custom command to connect to server"
+msgstr "_Use custom command to connect to server"
 
 #: camel/providers/imap/camel-imap-provider.c:53
 msgid "Command:"
@@ -2716,15 +2697,13 @@ msgstr "Folders"
 
 #: camel/providers/imap/camel-imap-provider.c:58
 #: camel/providers/imap4/camel-imap4-provider.c:43
-#, fuzzy
 msgid "_Show only subscribed folders"
-msgstr "Show only subscribed folders"
+msgstr "_Show only subscribed folders"
 
 #: camel/providers/imap/camel-imap-provider.c:60
 #: camel/providers/imap4/camel-imap4-provider.c:45
-#, fuzzy
 msgid "O_verride server-supplied folder namespace"
-msgstr "Override server-supplied folder namespace"
+msgstr "O_verride server-supplied folder namespace"
 
 #: camel/providers/imap/camel-imap-provider.c:62
 #: camel/providers/imap4/camel-imap4-provider.c:47
@@ -2733,27 +2712,23 @@ msgstr "Namespace"
 
 #: camel/providers/imap/camel-imap-provider.c:66
 #: camel/providers/imap4/camel-imap4-provider.c:51
-#, fuzzy
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "Apply filters to new messages in INBOX on this server"
+msgstr "_Apply filters to new messages in INBOX on this server"
 
 #: camel/providers/imap/camel-imap-provider.c:68
 #: camel/providers/imap4/camel-imap4-provider.c:53
-#, fuzzy
 msgid "Check new messages for _Junk contents"
-msgstr "Check new messages for Junk contents"
+msgstr "Check new messages for _Junk contents"
 
 #: camel/providers/imap/camel-imap-provider.c:70
 #: camel/providers/imap4/camel-imap4-provider.c:55
-#, fuzzy
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Only check for Junk messages in the INBOX folder"
+msgstr "Only check for Junk messa_ges in the INBOX folder"
 
 #: camel/providers/imap/camel-imap-provider.c:72
 #: camel/providers/imap4/camel-imap4-provider.c:57
-#, fuzzy
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "Automatically synchronize remote mail locally"
+msgstr "Automatically synchroni_ze remote mail locally"
 
 #: camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -2838,7 +2813,7 @@ msgstr "SSL negotiations failed"
 #: camel/providers/pop3/camel-pop3-store.c:252
 #: camel/providers/smtp/camel-smtp-transport.c:365
 msgid "SSL is not available in this build"
-msgstr ""
+msgstr "SSL is not available in this build"
 
 #: camel/providers/imap/camel-imap-store.c:820
 #, c-format
@@ -2887,7 +2862,7 @@ msgid "The parent folder is not allowed to contain subfolders"
 msgstr "The parent folder is not allowed to contain subfolders"
 
 #: camel/providers/imap/camel-imap-store.c:1983
-#: camel/providers/local/camel-maildir-store.c:192
+#: camel/providers/local/camel-maildir-store.c:149
 #: camel/providers/local/camel-mbox-store.c:210
 #: camel/providers/local/camel-mh-store.c:237
 #, c-format
@@ -2934,9 +2909,9 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "IMAP4 server %s unexpectedly disconnected: %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:306
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot access folder `%s': %s"
-msgstr "Cannot get folder `%s': %s"
+msgstr "Cannot access folder `%s': %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:365
 #, c-format
@@ -3003,9 +2978,8 @@ msgid "IMAPv4rev1"
 msgstr "IMAPv4rev1"
 
 #: camel/providers/imap4/camel-imap4-provider.c:66
-#, fuzzy
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "For reading and storing mail on IMAP servers."
+msgstr "For reading and storing mail on IMAPv4rev1 servers."
 
 #: camel/providers/imap4/camel-imap4-provider.c:83
 msgid ""
@@ -3032,9 +3006,8 @@ msgstr "Cannot authenticate to IMAP server %s using %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:668
 #: camel/providers/imap4/camel-imap4-store.c:780
-#, fuzzy
 msgid "Cannot create IMAP folders in offline mode."
-msgstr "Cannot create a folder by this name."
+msgstr "Cannot create IMAP folders in offline mode."
 
 #: camel/providers/imap4/camel-imap4-store.c:707
 #, c-format
@@ -3057,9 +3030,8 @@ msgid "Cannot delete folder `%s': Special folder"
 msgstr "Cannot delete folder `%s': Special folder"
 
 #: camel/providers/imap4/camel-imap4-store.c:872
-#, fuzzy
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "Cannot delete folder `%s': Special folder"
+msgstr "Cannot delete IMAP folders in offline mode."
 
 #: camel/providers/imap4/camel-imap4-store.c:931
 #, c-format
@@ -3077,9 +3049,8 @@ msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "Cannot rename folder `%s' to `%s': Special folder"
 
 #: camel/providers/imap4/camel-imap4-store.c:963
-#, fuzzy
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr "You cannot rename a folder in a News store."
+msgstr "Cannot rename IMAP folders in offline mode."
 
 #: camel/providers/imap4/camel-imap4-store.c:994
 #, c-format
@@ -3101,9 +3072,8 @@ msgid "Bad command"
 msgstr "Bad command"
 
 #: camel/providers/imap4/camel-imap4-store.c:1288
-#, fuzzy
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "Cannot subscribe to folder `%s': Bad command"
+msgstr "Cannot subscribe to IMAP folders in offline mode."
 
 #: camel/providers/imap4/camel-imap4-store.c:1333
 #, c-format
@@ -3116,9 +3086,8 @@ msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "Cannot subscribe to folder `%s': Bad command"
 
 #: camel/providers/imap4/camel-imap4-store.c:1360
-#, fuzzy
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr "Cannot unsubscribe from folder `%s': Bad command"
+msgstr "Cannot unsubscribe from IMAP folders in offline mode."
 
 #: camel/providers/imap4/camel-imap4-store.c:1405
 #, c-format
@@ -3130,10 +3099,9 @@ msgstr "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Cannot unsubscribe from folder `%s': Bad command"
 
-#: camel/providers/imap4/camel-imap4-summary.c:1294
-#, fuzzy
+#: camel/providers/imap4/camel-imap4-summary.c:1297
 msgid "Fetching envelopes for new messages"
-msgstr "Checking for new messages"
+msgstr "Fetching envelopes for new messages"
 
 #: camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
@@ -3291,12 +3259,9 @@ msgstr "Could not save summary: %s: %s"
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Unable to add message to summary: unknown reason"
 
-#. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: camel/providers/local/camel-maildir-folder.c:75
-#: camel/providers/local/camel-maildir-store.c:221
-#: camel/providers/local/camel-maildir-store.c:293
-#: camel/providers/local/camel-maildir-store.c:515
-#: camel/providers/local/camel-maildir-store.c:528
+#: camel/providers/local/camel-maildir-store.c:243
+#: camel/providers/local/camel-maildir-store.c:259
 #: camel/providers/local/camel-spool-store.c:452
 msgid "Inbox"
 msgstr "Inbox"
@@ -3332,45 +3297,44 @@ msgstr ""
 msgid "Invalid message contents"
 msgstr "Invalid message contents"
 
-#: camel/providers/local/camel-maildir-store.c:148
-#: camel/providers/local/camel-maildir-store.c:173
-#: camel/providers/local/camel-mbox-store.c:182
-#: camel/providers/local/camel-mbox-store.c:194
-#, c-format
-msgid "Cannot create folder `%s': %s"
-msgstr "Cannot create folder `%s': %s"
-
-#: camel/providers/local/camel-maildir-store.c:161
+#: camel/providers/local/camel-maildir-store.c:119
 #: camel/providers/local/camel-mbox-store.c:152
 #: camel/providers/local/camel-mh-store.c:205
 #, c-format
 msgid "Cannot get folder `%s': %s"
 msgstr "Cannot get folder `%s': %s"
 
-#: camel/providers/local/camel-maildir-store.c:165
+#: camel/providers/local/camel-maildir-store.c:123
 #: camel/providers/local/camel-mbox-store.c:160
 #: camel/providers/local/camel-mh-store.c:212
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
 msgstr "Cannot get folder `%s': folder does not exist."
 
-#: camel/providers/local/camel-maildir-store.c:189
+#: camel/providers/local/camel-maildir-store.c:131
+#: camel/providers/local/camel-mbox-store.c:182
+#: camel/providers/local/camel-mbox-store.c:194
+#, c-format
+msgid "Cannot create folder `%s': %s"
+msgstr "Cannot create folder `%s': %s"
+
+#: camel/providers/local/camel-maildir-store.c:146
 #, c-format
 msgid "Cannot get folder `%s': not a maildir directory."
 msgstr "Cannot get folder `%s': not a maildir directory."
 
-#: camel/providers/local/camel-maildir-store.c:236
-#: camel/providers/local/camel-maildir-store.c:274
+#: camel/providers/local/camel-maildir-store.c:186
+#: camel/providers/local/camel-maildir-store.c:224
 #: camel/providers/local/camel-mh-store.c:261
 #, c-format
 msgid "Could not delete folder `%s': %s"
 msgstr "Could not delete folder `%s': %s"
 
-#: camel/providers/local/camel-maildir-store.c:238
+#: camel/providers/local/camel-maildir-store.c:188
 msgid "not a maildir directory"
 msgstr "not a maildir directory"
 
-#: camel/providers/local/camel-maildir-store.c:440
+#: camel/providers/local/camel-maildir-store.c:366
 #: camel/providers/local/camel-spool-store.c:319
 #: camel/providers/local/camel-spool-store.c:333
 #, c-format
@@ -4324,9 +4288,8 @@ msgid "QUIT command failed"
 msgstr "QUIT command failed"
 
 #: libedataserverui/e-categories-dialog.c:90
-#, fuzzy
 msgid "Category Icon"
-msgstr "Category is"
+msgstr "Category Icon"
 
 #: libedataserverui/e-categories-dialog.c:236
 #, c-format
@@ -4334,50 +4297,44 @@ msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
 
 #: libedataserverui/e-categories-dialog.c:391
-#, fuzzy
 msgid "Category"
-msgstr "C_ategory:"
+msgstr "Category"
 
 #: libedataserverui/e-categories-dialog.glade.h:1
-#, fuzzy
 msgid "Category Properties"
-msgstr "Category is"
+msgstr "Category Properties"
 
 #: libedataserverui/e-categories-dialog.glade.h:2
-#, fuzzy
 msgid "Category _Color"
-msgstr "Category is"
+msgstr "Category _Colour"
 
 #: libedataserverui/e-categories-dialog.glade.h:3
-#, fuzzy
 msgid "Category _Icon"
-msgstr "Category is"
+msgstr "Category _Icon"
 
 #: libedataserverui/e-categories-dialog.glade.h:4
-#, fuzzy
 msgid "Category _Name"
-msgstr "Category is"
+msgstr "Category _Name"
 
 #: libedataserverui/e-categories-dialog.glade.h:5
-#, fuzzy
 msgid "Item(s) belong to these _categories:"
-msgstr "This contact belongs to these categories:"
+msgstr "Item(s) belong to these _categories:"
 
 #: libedataserverui/e-categories-dialog.glade.h:6
-#, fuzzy
 msgid "_Available Categories:"
-msgstr "_Categories"
+msgstr "_Available Categories:"
 
 #: libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Edit"
 msgstr "_Edit"
 
 #: libedataserverui/e-categories-dialog.glade.h:8
-#, fuzzy
 msgid "categories"
-msgstr "Categories"
+msgstr "categories"
 
 #: libedataserverui/e-name-selector-dialog.c:184
 msgid "Select Contacts from Address Book"
