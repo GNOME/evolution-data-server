@@ -195,7 +195,7 @@ get_deltas (gpointer handle)
 	GSList *item_list, *cache_keys, *l;
 	char *comp_str;
 	char *time_string = NULL;
-	static char *t_str = NULL; 
+	char t_str [100]; 
 	struct stat buf;
         
 	if (!handle)
@@ -210,19 +210,17 @@ get_deltas (gpointer handle)
 	if (priv->mode == CAL_MODE_LOCAL)
 		return FALSE;
 
-	if (!t_str) {
-		t_str = (char *) e_cal_backend_cache_get_server_utc_time (cache);
-		if (!t_str) {
-			icaltimetype temp;
-			time_t current_time;
-			const struct tm *tm;
+	g_strlcpy (t_str, e_cal_backend_cache_get_server_utc_time (cache), 100);
+	if (!*t_str || !strcmp (t_str, "")) {
+		icaltimetype temp;
+		time_t current_time;
+		const struct tm *tm;
 
-			g_warning (" Could not get the correct time stamp for using in getQuick Messages\n");
-			temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-			current_time = icaltime_as_timet (temp);
-			tm = gmtime (&current_time);
-			strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
-		}
+		g_warning (" Could not get the correct time stamp for using in getQuick Messages\n");
+		temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+		current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
+		tm = gmtime (&current_time);
+		strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	}
 
 	time_string = g_strdup (t_str);
@@ -232,7 +230,6 @@ get_deltas (gpointer handle)
 		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_free (t_str), t_str = NULL;
 				
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
 			return TRUE;

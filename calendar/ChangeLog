@@ -1,3 +1,11 @@
+2005-03-12  Harish Krishnaswamy <kharish@novell.com>
+	
+	Fixes a memory corruption issue in GW backend 
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas) :
+	strftime should be passed an array of sufficient length, not a
+	char *. Fetch t_str from cache - so you are always sure of having 
+	the correct value.Add some extra safety code checking empty strings.
+	
 2005-03-08  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #73141
