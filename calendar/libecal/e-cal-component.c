@@ -3006,7 +3006,6 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 		}
 	} else if (priv->organizer.sentby_param) {
 		icalproperty_remove_parameter (priv->organizer.prop, ICAL_SENTBY_PARAMETER);
-		icalparameter_free (priv->organizer.sentby_param);
 		priv->organizer.sentby_param = NULL;
 	}
 
@@ -3024,7 +3023,6 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 		}
 	} else if (priv->organizer.cn_param) {
 		icalproperty_remove_parameter (priv->organizer.prop, ICAL_CN_PARAMETER);
-		icalparameter_free (priv->organizer.cn_param);
 		priv->organizer.cn_param = NULL;
 	}
 
@@ -3042,7 +3040,6 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 		}
 	} else if (priv->organizer.language_param) {
 		icalproperty_remove_parameter (priv->organizer.prop, ICAL_LANGUAGE_PARAMETER);
-		icalparameter_free (priv->organizer.language_param);
 		priv->organizer.language_param = NULL;
 	}
 
@@ -3857,9 +3854,8 @@ e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
 						    priv->summary.altrep_param);
 		}
 	} else if (priv->summary.altrep_param) {
-		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
-		icalparameter_free (priv->summary.altrep_param);
-		priv->summary.altrep_param = NULL;
+ 		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
+ 		priv->summary.altrep_param = NULL; 
 	}
 }
 

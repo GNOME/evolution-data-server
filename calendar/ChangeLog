@@ -1,3 +1,12 @@
+2004-05-07  JP Rosevear  <jpr@ximian.com>
+
+	Fixes #57908
+	
+	* libecal/e-cal-component.c (e_cal_component_set_organizer):
+	prevent double frees
+	(e_cal_component_set_organizer): ditto
+	(e_cal_component_set_summary): ditto
+
 2004-05-06  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libecal/e-cal.c: (load_static_capabilities): assign capabilities
