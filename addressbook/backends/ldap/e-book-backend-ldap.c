@@ -2986,30 +2986,10 @@ e_book_backend_ldap_start_book_view (EBookBackend  *backend,
 				     EDataBookView *view)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	LDAPSearchOp *op;
 
 	d(printf ("start_book_view (%p)\n", view));
 
-	g_mutex_lock (e_data_book_view_get_mutex (view));
-
-	op = g_object_get_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op");
-
-	if (op) {
-		/* the only way op can be set here is if we raced with
-		   stop_book_view and lost.  make sure by checking
-		   op->aborted. */
-		if (!op->aborted) {
-			g_warning ("lost race with stop_book_view, but op->aborted != TRUE");
-		}
-
-		g_free (op);
-		g_object_set_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op", NULL);
-	}
-	else {
-		e_book_backend_ldap_search (bl, NULL /* XXX ugh */, view);
-	}
-
-	g_mutex_unlock (e_data_book_view_get_mutex (view));
+	e_book_backend_ldap_search (bl, NULL /* XXX ugh */, view);
 }
 
 static void
@@ -3020,19 +3000,9 @@ e_book_backend_ldap_stop_book_view (EBookBackend  *backend,
 
 	d(printf ("stop_book_view (%p)\n", view));
 
-	g_mutex_lock (e_data_book_view_get_mutex (view));
-
 	op = g_object_get_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op");
-	if (op) {
+	if (op)
 		ldap_op_finished ((LDAPOp*)op);
-	}
-	else {
-		op = g_new0 (LDAPSearchOp, 1);
-		op->aborted = TRUE;
-		g_object_set_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op", op);
-	}
-
-	g_mutex_unlock (e_data_book_view_get_mutex (view));
 }
 
 static void

@@ -1,3 +1,70 @@
+2004-04-16  Chris Toshok  <toshok@ximian.com>
+
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_start_book_view): remove the race prevention
+	stuff from here, since we set up everything before returning and
+	we know that stop_book_view won't be called before we return.
+	(e_book_backend_ldap_stop_book_view): same.
+
+	* backends/file/e-book-backend-file.c (FileBackendSearchClosure):
+	add slots for a GCond and GThread, as well as for our backend
+	here.
+	(closure_destroy): destroy the cvar.
+	(init_closure): init the cvar, thread, and backend slots.
+	(book_view_thread): new function - this contains the majority of
+	the code in the old ::start_book_view, except it lacks any of the
+	race prevention code, which it no longer needs.  We use the cvar
+	to keep the ::start_book_view thread waiting until the view is
+	actually set up and is about to enter the loop, so we know that
+	the search closure has been initialized.
+	(e_book_backend_file_start_book_view): start up the
+	book_view_thread with the closure's mutex locked so it'll pause
+	until we wait on the condition variable.  by the time we return
+	from this method we know the book view thread has started and is
+	at the point where the loop starts.
+	(e_book_backend_file_stop_book_view): set the stopped closure
+	field to TRUE and join on the thread.  remove all the race
+	prevention code from here too.  yay.
+
+	* libedata-book/e-data-book-view.c (e_data_book_view_new): switch
+	from PER_REQUEST to PER_OBJECT.  This means that all requests are
+	serialized per object, but come in on a thread specific to this
+	object.
+	(e_data_book_view_dispose): destroy the id's hash table.
+
+	* libebook/e-book-view.c (e_book_view_start): start our
+	EBookViewListener.
+	(e_book_view_stop): stop the listener.
+
+	* libebook/e-book-view-listener.h: add prototypes for
+	e_book_view_listener_start and _stop.
+
+	* libebook/e-book-view-listener.c
+	(impl_BookViewListener_notify_contacts_added): add the thread id
+	to the spew.
+	(impl_BookViewListener_notify_contacts_removed): same.
+	(impl_BookViewListener_notify_contacts_changed): same.
+	(impl_BookViewListener_notify_sequence_complete): same.
+	(impl_BookViewListener_notify_progress): same.
+	(e_book_view_listener_init): we start off in a stopped state.
+	(e_book_view_listener_start): new function - set stopped to FALSE.
+	The next message queued will create the idle handler.
+	(e_book_view_listener_stop): remove the idle handler and set
+	stopped to TRUE - this will cause all _queue_message calls to drop
+	the messages.
+
+	* libebook/e-contact.c (struct _EContactPrivate): add "int
+	padding", just so that g_new (EContactPrivate, 1) doesn't return
+	NULL.
+	(e_contact_dispose): similar change to e-vcard's dispose method.
+	don't return early if ->priv == NULL, as we need to chain up to
+	the parent's dispoes method.  this and/or the struct
+	_EContactPrivate change plug a memory leak as well that was
+	causing the EVCardPrivate to go unfreed.
+
+	* libebook/e-vcard.c (e_vcard_dispose): don't return if evc->priv
+	is NULL - we still need to chain up the parent's dispose method.
+
 2004-04-15  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

@@ -454,7 +454,7 @@ e_data_book_view_new (EBookBackend *backend,
 	EDataBookView *book_view;
 
 	book_view = g_object_new (E_TYPE_DATA_BOOK_VIEW,
-				  "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
+				  "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_OBJECT, NULL),
 				  NULL);
 	
 	e_data_book_view_construct (book_view, backend, listener, card_query, card_sexp, max_results);
@@ -482,10 +482,10 @@ e_data_book_view_dispose (GObject *object)
 		g_object_unref (book_view->priv->card_sexp);
 
 		g_mutex_free (book_view->priv->pending_mutex);
-		book_view->priv->pending_mutex = NULL;
 
 		g_mutex_free (book_view->priv->mutex);
-		book_view->priv->mutex = NULL;
+
+		g_hash_table_destroy (book_view->priv->ids);
 
 		g_free (book_view->priv);
 		book_view->priv = NULL;

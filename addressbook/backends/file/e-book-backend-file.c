@@ -32,7 +32,7 @@
 #include <libedata-book/e-data-book-view.h>
 #include "e-book-backend-file.h"
 
-#define d(x)
+#define d(x) x
 
 #define CHANGES_DB_SUFFIX ".changes.db"
 
@@ -364,7 +364,10 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 }
 
 typedef struct {
+	EBookBackendFile *bf;
 	GMutex *mutex;
+	GCond *cond;
+	GThread *thread;
 	gboolean stopped;
 } FileBackendSearchClosure;
 
@@ -373,15 +376,19 @@ closure_destroy (FileBackendSearchClosure *closure)
 {
 	d(printf ("destroying search closure\n"));
 	g_mutex_free (closure->mutex);
+	g_cond_free (closure->cond);
 	g_free (closure);
 }
 
 static FileBackendSearchClosure*
-init_closure (EDataBookView *book_view)
+init_closure (EDataBookView *book_view, EBookBackendFile *bf)
 {
 	FileBackendSearchClosure *closure = g_new (FileBackendSearchClosure, 1);
 
-	closure->mutex = g_mutex_new();
+	closure->bf = bf;
+	closure->mutex = g_mutex_new ();
+	closure->cond = g_cond_new ();
+	closure->thread = NULL;
 	closure->stopped = FALSE;
 
 	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendFile.BookView::closure",
@@ -396,12 +403,12 @@ get_closure (EDataBookView *book_view)
 	return g_object_get_data (G_OBJECT (book_view), "EBookBackendFile.BookView::closure");
 }
 
-static void
-e_book_backend_file_start_book_view (EBookBackend  *backend,
-				     EDataBookView *book_view)
+static gpointer
+book_view_thread (gpointer data)
 {
-	FileBackendSearchClosure *closure;
-	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	EDataBookView *book_view = data;
+	FileBackendSearchClosure *closure = get_closure (book_view);
+	EBookBackendFile *bf = closure->bf;
 	const char *query;
 	DB  *db;
 	DBT id_dbt, vcard_dbt;
@@ -410,30 +417,9 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 
 	d(printf ("starting initial population of book view\n"));
 
-	g_mutex_lock (e_data_book_view_get_mutex (book_view));
-
-	closure = get_closure (book_view);
-	if (closure) {
-		/* the only way op can be set here is if we raced with
-		   stop_book_view and lost.  make sure by checking
-		   op->stopped. */
-		if (!closure->stopped) {
-			g_warning ("lost race with stop_book_view, but op->stopped != TRUE");
-		}
-		g_object_set_data (G_OBJECT (book_view), "EBookBackendFile.BookView::closure", NULL);
-		g_mutex_unlock (e_data_book_view_get_mutex (book_view));
-		return;
-	}
-	else {
-		closure = init_closure (book_view);
-		closure->stopped = FALSE;
-	}
-
 	/* ref the book view because it'll be removed and unrefed
 	   when/if it's stopped */
 	bonobo_object_ref (book_view);
-
-	g_mutex_unlock (e_data_book_view_get_mutex (book_view));
 	
 	db = bf->priv->file_db;
 	query = e_data_book_view_get_card_query (book_view);
@@ -442,6 +428,11 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 		e_data_book_view_notify_status_message (book_view, _("Loading..."));
 	else
 		e_data_book_view_notify_status_message (book_view, _("Searching..."));
+
+	d(printf ("signalling parent thread\n"));
+	g_mutex_lock (closure->mutex);
+	g_cond_signal (closure->cond);
+	g_mutex_unlock (closure->mutex);
 
 	if (e_book_backend_summary_is_summary_query (bf->priv->summary, query)) {
 		/* do a summary query */
@@ -516,32 +507,45 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 	/* unref the */
 	bonobo_object_unref (book_view);
 
-	d(printf ("finished initial population of book view\n"));
+	d(printf ("finished population of book view\n"));
+
+	return NULL;
+}
+
+static void
+e_book_backend_file_start_book_view (EBookBackend  *backend,
+				     EDataBookView *book_view)
+{
+	FileBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_FILE (backend));
+
+	g_mutex_lock (closure->mutex);
+
+	d(printf ("starting book view thread\n"));
+	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
+
+	g_cond_wait (closure->cond, closure->mutex);
+
+	/* at this point we know the book view thread is actually running */
+	g_mutex_unlock (closure->mutex);
+	d(printf ("returning from start_book_view\n"));
 }
 
 static void
 e_book_backend_file_stop_book_view (EBookBackend  *backend,
 				    EDataBookView *book_view)
 {
-	FileBackendSearchClosure *closure;
+	FileBackendSearchClosure *closure = get_closure (book_view);
+	gboolean need_join = FALSE;
 
-	g_mutex_lock (e_data_book_view_get_mutex (book_view));
+	d(printf ("stopping query\n"));
+	g_mutex_lock (closure->mutex);
+	if (!closure->stopped)
+		need_join = TRUE;
+	closure->stopped = TRUE;
+	g_mutex_unlock (closure->mutex);
 
-	closure = get_closure (book_view);
-
-	if (closure) {
-		d(printf ("stopping running query!\n"));
-		g_mutex_lock (closure->mutex);
-		closure->stopped = TRUE;
-		g_mutex_unlock (closure->mutex);
-	}
-	else {
-		d(printf ("either the query is already finished or hasn't started yet (we won the race)\n"));
-		closure = init_closure (book_view);
-		closure->stopped = TRUE;
-	}
-
-	g_mutex_unlock (e_data_book_view_get_mutex (book_view));
+	if (need_join)
+		g_thread_join (closure->thread);
 }
 
 typedef struct {

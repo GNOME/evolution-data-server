@@ -68,14 +68,14 @@ e_vcard_dispose (GObject *object)
 {
 	EVCard *evc = E_VCARD (object);
 
-	if (!evc->priv)
-		return;
+	if (evc->priv) {
 
-	g_list_foreach (evc->priv->attributes, (GFunc)e_vcard_attribute_free, NULL);
-	g_list_free (evc->priv->attributes);
+		g_list_foreach (evc->priv->attributes, (GFunc)e_vcard_attribute_free, NULL);
+		g_list_free (evc->priv->attributes);
 
-	g_free (evc->priv);
-	evc->priv = NULL;
+		g_free (evc->priv);
+		evc->priv = NULL;
+	}
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		G_OBJECT_CLASS (parent_class)->dispose (object);

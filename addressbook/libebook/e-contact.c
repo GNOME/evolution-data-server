@@ -33,6 +33,7 @@
 #define d(x)
 
 struct _EContactPrivate {
+	int padding;
 };
 
 #define E_CONTACT_FIELD_TYPE_STRING       0x00000001   /* used for simple single valued attributes */
@@ -251,13 +252,13 @@ e_contact_dispose (GObject *object)
 {
 	EContact *ec = E_CONTACT (object);
 
-	if (!ec->priv)
-		return;
+	if (ec->priv) {
 
-	/* XXX free instance specific stuff */
+		/* XXX free instance specific stuff */
 
-	g_free (ec->priv);
-	ec->priv = NULL;
+		g_free (ec->priv);
+		ec->priv = NULL;
+	}
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		G_OBJECT_CLASS (parent_class)->dispose (object);

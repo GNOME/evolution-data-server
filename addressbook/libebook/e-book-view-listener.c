@@ -17,7 +17,7 @@
 #include "e-contact.h"
 #include "e-book-marshal.h"
 
-#define d(x)
+#define d(x) x
 
 static EBookViewStatus e_book_view_listener_convert_status (GNOME_Evolution_Addressbook_CallStatus status);
 
@@ -197,7 +197,7 @@ impl_BookViewListener_notify_contacts_added (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	d(printf ("impl_BookViewListener_notify_contacts_added\n"));
+	d(printf ("%p: impl_BookViewListener_notify_contacts_added (%p)\n", pthread_self(), listener));
 
 	e_book_view_listener_queue_sequence_event (
 		listener, ContactsAddedEvent, vcards);
@@ -210,7 +210,7 @@ impl_BookViewListener_notify_contacts_removed (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	d(printf ("impl_BookViewListener_notify_contacts_removed\n"));
+	d(printf ("%p: impl_BookViewListener_notify_contacts_removed (%p)\n", pthread_self(), listener));
 
 	e_book_view_listener_queue_idlist_event (listener, ContactsRemovedEvent, ids);
 }
@@ -222,7 +222,7 @@ impl_BookViewListener_notify_contacts_changed (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	d(printf ("impl_BookViewListener_notify_contacts_changed\n"));
+	d(printf ("%p: impl_BookViewListener_notify_contacts_changed (%p)\n", pthread_self(), listener));
 
 	e_book_view_listener_queue_sequence_event (
 		listener, ContactsModifiedEvent, vcards);
@@ -235,7 +235,7 @@ impl_BookViewListener_notify_sequence_complete (PortableServer_Servant servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	d(printf ("impl_BookViewListener_notify_sequence_complete\n"));
+	d(printf ("%p: impl_BookViewListener_notify_sequence_complete (%p)\n", pthread_self(), listener));
 
 	e_book_view_listener_queue_status_event (listener, SequenceCompleteEvent,
 						 e_book_view_listener_convert_status (status));
@@ -249,7 +249,7 @@ impl_BookViewListener_notify_progress (PortableServer_Servant  servant,
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (bonobo_object (servant));
 
-	d(printf ("impl_BookViewListener_notify_progress\n"));
+	d(printf ("%p: impl_BookViewListener_notify_progress (%p,`%s')\n", pthread_self(), listener, message));
 
 	e_book_view_listener_queue_message_event (listener, StatusMessageEvent, message);
 }
@@ -287,7 +287,7 @@ e_book_view_listener_new ()
 	EBookViewListener *listener;
 
 	listener = g_object_new (E_TYPE_BOOK_VIEW_LISTENER,
-				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
+				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_OBJECT, NULL),
 				 NULL);
 
 	listener->priv->queue = g_async_queue_new();
@@ -301,14 +301,28 @@ static void
 e_book_view_listener_init (EBookViewListener *listener)
 {
 	listener->priv                 = g_new0 (EBookViewListenerPrivate, 1);
-	listener->priv->stopped        = FALSE;
+	listener->priv->stopped        = TRUE;
+}
+
+void
+e_book_view_listener_start (EBookViewListener *listener)
+{
+	g_return_if_fail (E_IS_BOOK_VIEW_LISTENER (listener));
+	d(printf ("%p: e_book_view_listener_start (%p)\n", pthread_self(), listener));
+	listener->priv->stopped = FALSE;
 }
 
 void
 e_book_view_listener_stop (EBookViewListener *listener)
 {
 	g_return_if_fail (E_IS_BOOK_VIEW_LISTENER (listener));
+	d(printf ("%p: e_book_view_listener_stop (%p)\n", pthread_self(), listener));
 	listener->priv->stopped = TRUE;
+
+	if (listener->priv->idle_id != -1) {
+		g_source_remove (listener->priv->idle_id);
+		listener->priv->idle_id = -1;
+	}
 }
 
 static void

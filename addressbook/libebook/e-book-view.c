@@ -179,6 +179,8 @@ e_book_view_start (EBookView *book_view)
 
 	CORBA_exception_init (&ev);
 
+	e_book_view_listener_start (book_view->priv->listener);
+
 	GNOME_Evolution_Addressbook_BookView_start (book_view->priv->corba_book_view, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
@@ -194,6 +196,8 @@ e_book_view_stop (EBookView *book_view)
 	g_return_if_fail (book_view && E_IS_BOOK_VIEW (book_view));
 
 	CORBA_exception_init (&ev);
+
+	e_book_view_listener_stop (book_view->priv->listener);
 
 	GNOME_Evolution_Addressbook_BookView_stop (book_view->priv->corba_book_view, &ev);
 
