@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-18 14:25+0100\n"
-"PO-Revision-Date: 2003-12-18 18:12+0100\n"
+"POT-Creation-Date: 2003-12-21 03:24+0100\n"
+"PO-Revision-Date: 2003-12-21 14:53+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -146,11 +146,11 @@ msgstr "e_book_load_uri: Nemohu vytvořit EBookListener"
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: v gconf nebylo uloženo uid kontaktu sama sebe"
 
-#: addressbook/libebook/e-contact.c:94
+#: addressbook/libebook/e-contact.c:97
 msgid "Unique ID"
 msgstr "Jedinečné ID"
 
-#: addressbook/libebook/e-contact.c:95
+#: addressbook/libebook/e-contact.c:98
 msgid "File As"
 msgstr "Uložit jako"
 
@@ -158,277 +158,282 @@ msgstr "Uložit jako"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:101
+#: addressbook/libebook/e-contact.c:104
 msgid "Full Name"
 msgstr "Celé jméno"
 
-#: addressbook/libebook/e-contact.c:102
+#: addressbook/libebook/e-contact.c:105
 msgid "Name"
 msgstr "Jméno"
 
-#: addressbook/libebook/e-contact.c:103
+#: addressbook/libebook/e-contact.c:106
 msgid "Given Name"
 msgstr "Křestní jméno"
 
-#: addressbook/libebook/e-contact.c:104
+#: addressbook/libebook/e-contact.c:107
 msgid "Family Name"
 msgstr "Příjmení"
 
-#: addressbook/libebook/e-contact.c:105
+#: addressbook/libebook/e-contact.c:108
 msgid "Nickname"
 msgstr "Přezdívka"
 
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:109
 msgid "Name or Org"
 msgstr "Jméno nebo organizace"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:112
 msgid "Address List"
 msgstr "Seznam adres"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:113
 msgid "Home Address"
 msgstr "Adresa domů"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:114
 msgid "Work Address"
 msgstr "Adresa do práce"
 
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:115
 msgid "Other Address"
 msgstr "Další adresa"
 
-#: addressbook/libebook/e-contact.c:114
+#: addressbook/libebook/e-contact.c:117
 msgid "Home Address Label"
 msgstr "Popisek adresy domů"
 
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:118
 msgid "Work Address Label"
 msgstr "Popisek adresy do práce"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:119
 msgid "Other Address Label"
 msgstr "Popisek další adresy"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:121
 msgid "Assistant Phone"
 msgstr "Telefon asistenta"
 
-#: addressbook/libebook/e-contact.c:119
+#: addressbook/libebook/e-contact.c:122
 msgid "Business Phone"
 msgstr "Telefon do práce"
 
-#: addressbook/libebook/e-contact.c:120
+#: addressbook/libebook/e-contact.c:123
 msgid "Business Phone 2"
 msgstr "2. telefon do práce"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:124
 msgid "Business Fax"
 msgstr "Fax do práce"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:125
 msgid "Callback Phone"
 msgstr "Telefon pro zpětný dotaz"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:126
 msgid "Car Phone"
 msgstr "Telefon do auta"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:127
 msgid "Company Phone"
 msgstr "Firemní telefon"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:128
 msgid "Home Phone"
 msgstr "Telefon domů"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:129
 msgid "Home Phone 2"
 msgstr "2. telefon domů"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:130
 msgid "Home Fax"
 msgstr "Fax domů"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:131
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:132
 msgid "Mobile Phone"
 msgstr "Mobilní telefon"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:133
 msgid "Other Phone"
 msgstr "Další telefon"
 
 #. XXX
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:134
 msgid "Other Fax"
 msgstr "Další fax"
 
 #. XXX
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:135
 msgid "Pager"
 msgstr "Pager"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:136
 msgid "Primary Phone"
 msgstr "Primární telefon"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:137
 msgid "Radio"
 msgstr "Rádio"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:138
 msgid "Telex"
 msgstr "Telex"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:139
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:142
 msgid "Email List"
 msgstr "Seznam e-mailů"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:143
 msgid "Email 1"
 msgstr "1. e-mail"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:144
 msgid "Email 2"
 msgstr "2. e-mail"
 
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:145
 msgid "Email 3"
 msgstr "3. e-mail"
 
-#: addressbook/libebook/e-contact.c:143
+#: addressbook/libebook/e-contact.c:146
 msgid "Mailer"
 msgstr "Program pro elektronickou poštu"
 
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:147
 msgid "Wants HTML Mail"
 msgstr "Chce poštu v HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:150
 msgid "AIM Screen Name List"
 msgstr "Seznam přezdívek AIM"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:151
 msgid "Jabber Id List"
 msgstr "Seznam Id Jabberu"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:152
 msgid "Yahoo! Screen Name List"
 msgstr "Seznam přezdívek Yahoo!"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:153
 msgid "MSN Screen Name List"
 msgstr "Seznam přezdívek MSN"
 
-#: addressbook/libebook/e-contact.c:151
+#: addressbook/libebook/e-contact.c:154
 msgid "ICQ Id List"
 msgstr "Seznam ICQ Id"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:157
 msgid "Organization"
 msgstr "Organizace"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:158
 msgid "Organizational Unit"
 msgstr "Organizační jednotka"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:159
 msgid "Office"
 msgstr "Kancelář"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:161
 msgid "Title"
 msgstr "Titul"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:162
 msgid "Role"
 msgstr "Funkce"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:163
 msgid "Manager"
 msgstr "Vedoucí"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:164
 msgid "Assistant"
 msgstr "Asistent"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:167
 msgid "Homepage URL"
 msgstr "URL domovské stránky"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:168
 msgid "Weblog URL"
 msgstr "URL weblogu"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:171
 msgid "Photo"
 msgstr "Fotografie"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:172
 msgid "Logo"
 msgstr "Logo"
 
-#: addressbook/libebook/e-contact.c:173
+#. Security fields
+#: addressbook/libebook/e-contact.c:175
+msgid "X.509 Certificate"
+msgstr "Certifikát X.509"
+
+#: addressbook/libebook/e-contact.c:179
 msgid "Category List"
 msgstr "Seznam kategorií"
 
-#: addressbook/libebook/e-contact.c:174 addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:180 addressbook/libebook/e-contact.c:182
 msgid "Categories"
 msgstr "Kategorie"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:186
 msgid "Calendar URI"
 msgstr "URI Kalendáře"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:187
 msgid "Free/Busy URL"
 msgstr "URL volno/zaneprázdněn"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:188
 msgid "ICS Calendar"
 msgstr "Kalendář ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:191
 msgid "Spouse's Name"
 msgstr "Partner/-ka"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:192
 msgid "Note"
 msgstr "Poznámka"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:194
 msgid "Birth Date"
 msgstr "Narozeniny"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:195
 msgid "Anniversary"
 msgstr "Výročí"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:197
 msgid "List"
 msgstr "Seznam"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:198
 msgid "List Show Addresses"
 msgstr "Seznam zobrazených adres"
 
-#: addressbook/libebook/e-contact.c:1029
+#: addressbook/libebook/e-contact.c:1074
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
@@ -438,41 +443,41 @@ msgid "Loading..."
 msgstr "Načítám..."
 
 #: addressbook/backends/file/e-book-backend-file.c:392
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2835
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2858
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "Vyhledávám..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:600
+#: addressbook/backends/ldap/e-book-backend-ldap.c:611
 msgid "Using Distinguished Name (DN)"
 msgstr "Pomocí Distinguished Name (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:603
+#: addressbook/backends/ldap/e-book-backend-ldap.c:614
 msgid "Using Email Address"
 msgstr "pomocí e-mailové adresy"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:747
+#: addressbook/backends/ldap/e-book-backend-ldap.c:758
 msgid "Reconnecting to LDAP server..."
 msgstr "Připojuji se znovu k serveru LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1248
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1259
 msgid "Adding contact to LDAP server..."
 msgstr "Přidávám kontakt na server LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1337
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1348
 msgid "Removing contact from LDAP server..."
 msgstr "Odstraňuji kontakt ze serveru LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1537
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1540
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1548
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1551
 msgid "Modifying contact from LDAP server..."
 msgstr "Upravuji kontakt na serveru LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2758
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2781
 msgid "Receiving LDAP search results..."
 msgstr "Přijímám výsledky hledání LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2855
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2878
 msgid "Error performing search"
 msgstr "Chyba při hledání"
 
@@ -621,75 +626,81 @@ msgstr "Nízká"
 msgid "Undefined"
 msgstr "Nedefinováno"
 
-#: calendar/libecal/e-cal.c:3771
+#. actually ask the client for authentication
+#: calendar/libecal/e-cal.c:1382
+#, c-format
+msgid "Enter password for %s (user %s)"
+msgstr "Zadejte heslo pro %s (uživatel %s)"
+
+#: calendar/libecal/e-cal.c:3796
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: calendar/libecal/e-cal.c:3773
+#: calendar/libecal/e-cal.c:3798
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: calendar/libecal/e-cal.c:3775
+#: calendar/libecal/e-cal.c:3800
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: calendar/libecal/e-cal.c:3777
+#: calendar/libecal/e-cal.c:3802
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: calendar/libecal/e-cal.c:3779 calendar/libecal/e-cal.c:3789
+#: calendar/libecal/e-cal.c:3804 calendar/libecal/e-cal.c:3814
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: calendar/libecal/e-cal.c:3781
+#: calendar/libecal/e-cal.c:3806
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: calendar/libecal/e-cal.c:3783
+#: calendar/libecal/e-cal.c:3808
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: calendar/libecal/e-cal.c:3785
+#: calendar/libecal/e-cal.c:3810
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: calendar/libecal/e-cal.c:3787
+#: calendar/libecal/e-cal.c:3812
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: calendar/libecal/e-cal.c:3791
+#: calendar/libecal/e-cal.c:3816
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: calendar/libecal/e-cal.c:3793
+#: calendar/libecal/e-cal.c:3818
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: calendar/libecal/e-cal.c:3795
+#: calendar/libecal/e-cal.c:3820
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: calendar/libecal/e-cal.c:3797
+#: calendar/libecal/e-cal.c:3822
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: calendar/libecal/e-cal.c:3799
+#: calendar/libecal/e-cal.c:3824
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
-#: calendar/libecal/e-cal.c:3801
+#: calendar/libecal/e-cal.c:3826
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: calendar/libecal/e-cal.c:3803
+#: calendar/libecal/e-cal.c:3828
 msgid "A CORBA esception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: calendar/libecal/e-cal.c:3805
+#: calendar/libecal/e-cal.c:3830
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: calendar/libecal/e-cal.c:3807
+#: calendar/libecal/e-cal.c:3832
 msgid "No error"
 msgstr "Žádná chyba"
 
@@ -765,7 +776,9 @@ msgstr "contains? očekává jako druhý parametr řetězec"
 msgid ""
 "contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
 "\""
-msgstr "contains? očekává jako první parametr jedno z \"any\", \"summary\", \"description\""
+msgstr ""
+"contains? očekává jako první parametr jedno z \"any\", \"summary\", "
+"\"description\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:435
 msgid "has-alarms? expects no arguments"
@@ -779,7 +792,9 @@ msgstr "has-categories? očekává alespoň jeden parametr"
 msgid ""
 "has-categories? expects all arguments to be strings or one and only one "
 "argument to be a boolean false (#f)"
-msgstr "has-categories? očekává jako všechny parametry řetězce nebo právě jeden parametr boolean false (#f)"
+msgstr ""
+"has-categories? očekává jako všechny parametry řetězce nebo právě jeden "
+"parametr boolean false (#f)"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:560
 msgid "has-recurrences? expects no arguments"
@@ -821,4 +836,3 @@ msgstr "Backend souborů a webcal pro kalendář Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend soubrů pro adresář Evolution"
-
