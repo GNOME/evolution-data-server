@@ -2401,12 +2401,12 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 	fi->name = g_strdup(camel_store_info_name(imap_store->summary, si));
 	fi->full_name = g_strdup(camel_store_info_path(imap_store->summary, si));
 	if (!g_ascii_strcasecmp(fi->full_name, "inbox"))
-		flags |= CAMEL_FOLDER_SYSTEM;
+		flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
 	/* HACK: some servers report noinferiors for all folders (uw-imapd)
 	   We just translate this into nochildren, and let the imap layer enforce
 	   it.  See create folder */
 	if (flags & CAMEL_FOLDER_NOINFERIORS)
-		flags = (fi->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
+		flags = (flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 	fi->flags = flags;
 	
 	url = camel_url_new (imap_store->base_url, NULL);
