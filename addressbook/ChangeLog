@@ -1,3 +1,15 @@
+2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-book-async.c (_load_uri_response_handler)
+	(_load_uri_response_dtor)
+	(_load_uri_handler)
+	(_load_uri_dtor)
+	(_default_book_response_handler)
+	(_default_book_response_dtor): Pass source instead of URI, and
+	s/uri/source/.
+	(e_book_async_load_source): Implement.
+	(e_book_async_load_uri): Create a source and pass that to worker.
+
 2003-11-28  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/Makefile.am (test_ebook_view_LDADD): new variable.

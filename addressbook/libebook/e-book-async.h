@@ -38,6 +38,11 @@ void      e_book_async_load_uri                 (EBook                 *book,
 						 EBookCallback          open_response,
 						 gpointer               closure);
 
+void      e_book_async_load_source              (EBook                 *book,
+						 ESource               *source,
+						 EBookCallback          open_response,
+						 gpointer               closure);
+
 void      e_book_async_get_default_addressbook  (EBookCallback          open_response,
 						 gpointer               closure);
 
