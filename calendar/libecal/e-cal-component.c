@@ -4941,7 +4941,7 @@ e_cal_component_alarm_get_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
 	g_assert (alarm->icalcomp != NULL);
 
 	if (!alarm->action) {
-		*action = CAL_ALARM_NONE;
+		*action = E_CAL_COMPONENT_ALARM_NONE;
 		return;
 	}
 
@@ -4949,27 +4949,27 @@ e_cal_component_alarm_get_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
 
 	switch (ipa) {
 	case ICAL_ACTION_AUDIO:
-		*action = CAL_ALARM_AUDIO;
+		*action = E_CAL_COMPONENT_ALARM_AUDIO;
 		break;
 
 	case ICAL_ACTION_DISPLAY:
-		*action = CAL_ALARM_DISPLAY;
+		*action = E_CAL_COMPONENT_ALARM_DISPLAY;
 		break;
 
 	case ICAL_ACTION_EMAIL:
-		*action = CAL_ALARM_EMAIL;
+		*action = E_CAL_COMPONENT_ALARM_EMAIL;
 		break;
 
 	case ICAL_ACTION_PROCEDURE:
-		*action = CAL_ALARM_PROCEDURE;
+		*action = E_CAL_COMPONENT_ALARM_PROCEDURE;
 		break;
 
 	case ICAL_ACTION_NONE:
-		*action = CAL_ALARM_NONE;
+		*action = E_CAL_COMPONENT_ALARM_NONE;
 		break;
 
 	default:
-		*action = CAL_ALARM_UNKNOWN;
+		*action = E_CAL_COMPONENT_ALARM_UNKNOWN;
 	}
 }
 
@@ -4986,25 +4986,25 @@ e_cal_component_alarm_set_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
 	enum icalproperty_action ipa;
 
 	g_return_if_fail (alarm != NULL);
-	g_return_if_fail (action != CAL_ALARM_NONE);
-	g_return_if_fail (action != CAL_ALARM_UNKNOWN);
+	g_return_if_fail (action != E_CAL_COMPONENT_ALARM_NONE);
+	g_return_if_fail (action != E_CAL_COMPONENT_ALARM_UNKNOWN);
 
 	g_assert (alarm->icalcomp != NULL);
 
 	switch (action) {
-	case CAL_ALARM_AUDIO:
+	case E_CAL_COMPONENT_ALARM_AUDIO:
 		ipa = ICAL_ACTION_AUDIO;
 		break;
 
-	case CAL_ALARM_DISPLAY:
+	case E_CAL_COMPONENT_ALARM_DISPLAY:
 		ipa = ICAL_ACTION_DISPLAY;
 		break;
 
-	case CAL_ALARM_EMAIL:
+	case E_CAL_COMPONENT_ALARM_EMAIL:
 		ipa = ICAL_ACTION_EMAIL;
 		break;
 
-	case CAL_ALARM_PROCEDURE:
+	case E_CAL_COMPONENT_ALARM_PROCEDURE:
 		ipa = ICAL_ACTION_PROCEDURE;
 		break;
 

@@ -1,5 +1,17 @@
 2003-11-04  JP Rosevear <jpr@ximian.com>
 
+	* libecal/libecal-1.0.pc.in (prefix): include priv dir stuff for
+	libical
+
+	* libedatacal/libedatacal-1.0.pc.in (prefix): ditto
+	
+	* libecal/e-cal-component.[hc]: properly name space alarm action
+	enum
+
+	* libecal/e-cal-types.h: properly name space change types	
+	
+2003-11-04  JP Rosevear <jpr@ximian.com>
+
 	* libedatacal/e-data-cal-factory.c: remove corba header include
 
 	* libedatacal/e-cal-backend-sync.h: include corba header properly

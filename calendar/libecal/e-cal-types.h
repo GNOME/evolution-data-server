@@ -34,9 +34,9 @@ G_BEGIN_DECLS
 GQuark e_calendar_error_quark (void) G_GNUC_CONST;
 
 typedef enum {
-	CAL_CLIENT_CHANGE_ADDED = 1 << 0,
-	CAL_CLIENT_CHANGE_MODIFIED = 1 << 1,
-	CAL_CLIENT_CHANGE_DELETED = 1 << 2
+	E_CAL_CHANGE_ADDED = 1 << 0,
+	E_CAL_CHANGE_MODIFIED = 1 << 1,
+	E_CAL_CHANGE_DELETED = 1 << 2
 } ECalChangeType;
 
 typedef struct 

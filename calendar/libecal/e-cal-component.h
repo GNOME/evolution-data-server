@@ -369,12 +369,12 @@ typedef struct {
 
 /* Alarm types */
 typedef enum {
-	CAL_ALARM_NONE,
-	CAL_ALARM_AUDIO,
-	CAL_ALARM_DISPLAY,
-	CAL_ALARM_EMAIL,
-	CAL_ALARM_PROCEDURE,
-	CAL_ALARM_UNKNOWN
+	E_CAL_COMPONENT_ALARM_NONE,
+	E_CAL_COMPONENT_ALARM_AUDIO,
+	E_CAL_COMPONENT_ALARM_DISPLAY,
+	E_CAL_COMPONENT_ALARM_EMAIL,
+	E_CAL_COMPONENT_ALARM_PROCEDURE,
+	E_CAL_COMPONENT_ALARM_UNKNOWN
 } ECalComponentAlarmAction;
 
 /* Whether a trigger is relative to the start or end of an event occurrence, or
