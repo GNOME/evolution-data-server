@@ -1,3 +1,11 @@
+2004-07-14  Chenthill Palanisamy <pchenthill@novell.com>
+
+       Fixes #60344
+       * backends/groupwise/e-cal-backend-groupwise.c:
+       (e_cal_backend_groupwise_internal_get_timezone):
+       Send the timezone present in tzid instead of sending UTC timezone.
+
+
 2004-07-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:

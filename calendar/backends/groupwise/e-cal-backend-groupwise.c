@@ -928,7 +928,14 @@ e_cal_backend_groupwise_internal_get_default_timezone (ECalBackend *backend)
 static icaltimezone *
 e_cal_backend_groupwise_internal_get_timezone (ECalBackend *backend, const char *tzid)
 {
-	return icaltimezone_get_utc_timezone ();
+	icaltimezone *zone;
+
+	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+	if (!zone)
+		return icaltimezone_get_utc_timezone();
+
+	return zone;
 }
 
 static void
