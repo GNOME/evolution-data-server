@@ -1,3 +1,10 @@
+2005-03-01  Harry Lu <harry.lu@sun.com>
+
+	Fix for 73010.
+
+	* e-categories-dialog.c: (load_properties_dialog): set modal for
+	the gnome_file_entry.
+
 2005-02-25  Rodrigo Moya  <rodrigo@novell.com>
 
 	* e-categories-dialog.c (new_button_clicked_cb) :
