@@ -1,3 +1,12 @@
+2004-12-03  Rodney Dawes  <dobey@novell.com>
+
+	* configure.in: Remove the commented out OpenSSL block
+	Don't do pkg-config --exists for mozilla, just try to use the
+	PKG_CONFIG() macro, and set have_nss="no" if it fails
+
+	* libedataserver/Makefile.am: Add NSS_CFLAGS and NSS_LIBS for the
+	e-msgport code that needs it
+
 2004-12-03  Jeffrey Stedfast  <fejj@novell.com>
 
 	* configure.in: Display configuration info after configure runs
