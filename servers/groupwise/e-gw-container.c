@@ -26,6 +26,7 @@
 #endif
 #include <string.h>
 #include "e-gw-container.h"
+#include "e-gw-message.h"
 
 struct _EGwContainerPrivate {
 	char *name;

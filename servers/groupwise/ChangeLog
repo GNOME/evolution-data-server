@@ -1,3 +1,17 @@
+2005-02-03  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-container.c: Included  the file e-gw-message.h
+	to remove the warning.
+	* e-gw-item.c: (get_notification_value),
+	(set_sendoptions_from_soap_parameter),
+	(e_gw_item_new_from_soap_parameter):Added code to read 
+	the send options from the server for the items recevied.
+	(add_distribution_to_soap_message): Changed the WithinNdays
+	in reply requested to byDate and added a WhenConvenient element.
+	* e-gw-sendoptions.c: (parse_general_options),
+	(set_general_options_changes): Changed the name of the 
+	elements due to change in schemas.
+
 2005-02-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	Fix Reviewed by Chenthill Palanisamy <pchenthill@novell.com>

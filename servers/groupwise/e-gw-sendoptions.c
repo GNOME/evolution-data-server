@@ -313,17 +313,24 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 				val = soup_soap_parameter_get_string_value (val_param);
 
 	       		if (val) {
-		 		/* TODO What will be the soap response when the val is not None */
 				if (!strcasecmp (val, "None"))
 					gopts->reply_enabled = FALSE;
-				else {
-					gint i = atoi (val);							
-					if (i < 0)
-						gopts->reply_convenient = TRUE;
-					else
-						gopts->reply_within = i;
+				else if (!strcasecmp (val, "WhenConvenient")) {
+					gopts->reply_enabled = TRUE;
+					gopts->reply_convenient = TRUE;
+				} else {
+					char *temp;
+					int i = 0;
+					
+					val_param = soup_soap_parameter_get_first_child_by_name (val_param, "WithinNDays");
+					temp = soup_soap_parameter_get_string_value (val_param); 
+				
+					if (temp)	
+						i = atoi (temp);							
 
+					gopts->reply_within = i;
 					gopts->reply_enabled = TRUE;		
+					g_free (temp);
 				}
 			}
 		} else if (!g_ascii_strcasecmp (field, "mailExpireDays")) {
@@ -563,13 +570,17 @@ set_general_options_changes (SoupSoapMessage *msg, EGwSendOptionsGeneral *n_gopt
 		
 		if (n_gopts->reply_enabled) {
 			if (n_gopts->reply_convenient)
-				value = g_strdup ("-1");
+				value = g_strdup ("WhenConvenient");
 			else 
 				value = g_strdup_printf ("%d", n_gopts->reply_within);	
 		} else 
 			value = g_strdup ("None");
 		
-		e_gw_sendoptions_write_settings (msg, "mailReplyRequested", value, NULL, TRUE);
+		if (n_gopts->reply_enabled && !n_gopts->reply_convenient)
+			e_gw_sendoptions_write_settings (msg, "mailReplyRequested", value, "WithinNDays" , FALSE);
+		else
+			e_gw_sendoptions_write_settings (msg, "mailReplyRequested", value, NULL, TRUE);
+
 		g_free (value), value = NULL;
 	}
 

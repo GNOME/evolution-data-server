@@ -617,6 +617,81 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
                 item->priv->recipient_list = g_slist_append (item->priv->recipient_list, recipient);
         }        
 }
+static EGwTrackInfo
+get_notification_value (SoupSoapParameter *param, const char *param_name)
+{
+	SoupSoapParameter *subparam;
+	
+	if ((subparam = soup_soap_parameter_get_first_child_by_name (param, param_name))) {
+		char *value = NULL;
+		
+		subparam = soup_soap_parameter_get_first_child_by_name (subparam, "mail");
+		if (subparam)
+			value = soup_soap_parameter_get_string_value (subparam);
+		if (value && !g_ascii_strcasecmp (value, "1"))
+			return E_GW_ITEM_NOTIFY_MAIL;
+	}
+	return E_GW_ITEM_NOTIFY_NONE;
+}
+
+static void
+set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
+{
+	EGwItemPrivate *priv;
+	SoupSoapParameter *subparam, *child;
+	char *value = NULL;
+
+	priv = item->priv;
+
+	if ( (subparam = soup_soap_parameter_get_first_child_by_name (param, "requestReply")) ) {		
+		child = soup_soap_parameter_get_first_child_by_name (subparam, "WhenConvenient");
+		if (child) {
+			value = soup_soap_parameter_get_string_value (child);
+			if (value && !g_ascii_strcasecmp (value, "1")) 
+				priv->reply_request_set = TRUE;
+		}	
+
+		if (!priv->reply_request_set) {
+			child = soup_soap_parameter_get_first_child_by_name (subparam, "byDate");
+			
+			if (child)
+				value = soup_soap_parameter_get_string_value (child);
+			if (value) {
+				char *date;
+				date = e_gw_connection_format_date_string (value);
+				priv->reply_within = date;
+			}
+
+		}
+		g_free (value), value = NULL;
+	}	
+
+	if ( (subparam = soup_soap_parameter_get_first_child_by_name (param, "statusTracking"))) {
+		value = soup_soap_parameter_get_string_value (subparam);
+	       if (value) {
+		       if (!g_ascii_strcasecmp (value, "Delivered")) 
+			       priv->track_info = E_GW_DELIVERED;
+		       else if (!g_ascii_strcasecmp (value, "DeliveredAndOpened")) 
+				priv->track_info = E_GW_DELIVERED_OPENED;
+		       else if (!g_ascii_strcasecmp (value, "All")) 
+				priv->track_info = E_GW_ALL;
+		       
+		       g_free (value), value = NULL;
+
+		       value = soup_soap_parameter_get_property (subparam, "autoDelete");
+		       if (value && !g_ascii_strcasecmp (value, "1"))
+		      		priv->autodelete = TRUE; 
+	       }	       
+	}
+
+	if ( (subparam = soup_soap_parameter_get_first_child_by_name (param, "notification"))) {
+		priv->notify_opened = get_notification_value (subparam, "opened");	
+		priv->notify_deleted = get_notification_value (subparam, "deleted");	
+		priv->notify_accepted = get_notification_value (subparam, "accepted");	
+		priv->notify_declined = get_notification_value (subparam, "declined");	
+		priv->notify_completed = get_notification_value (subparam, "completed");	
+	}
+}
 
 char*
 e_gw_item_get_field_value (EGwItem *item, char *field_name)
@@ -1436,7 +1511,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 {
 	EGwItem *item;
         char *item_type;
-	SoupSoapParameter *subparam, *child, *category_param, *attachment_param, *notification_param ;
+	SoupSoapParameter *subparam, *child, *category_param, *attachment_param;
 	gboolean is_group_item = TRUE;
 	GList *user_email = NULL;
 	
@@ -1584,6 +1659,11 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 				item->priv->recipient_list = NULL;
 				set_recipient_list_from_soap_parameter (item, tp);
 			}
+			
+			tp = soup_soap_parameter_get_first_child_by_name (child, "sendoptions");
+			if (tp) 
+				set_sendoptions_from_soap_parameter (item, tp);		
+
 			tp = soup_soap_parameter_get_first_child_by_name (child, "from");
 			if (tp && is_group_item) {
 				SoupSoapParameter *subparam;
@@ -1597,6 +1677,32 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 					organizer->email = soup_soap_parameter_get_string_value (subparam);
 				e_gw_item_set_organizer (item, organizer);
 			}
+
+		} else if (!g_ascii_strcasecmp (name, "options")) {
+			SoupSoapParameter *subparam;
+			char *value = NULL;
+
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "priority");
+			if (subparam)
+				value = soup_soap_parameter_get_string_value (subparam);
+			if (value)
+				item->priv->priority = g_strdup (value);
+
+			g_free (value), value = NULL;
+
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "expires");
+			if (subparam)
+				value = soup_soap_parameter_get_string_value (subparam);
+			if (value)
+				item->priv->expires = g_strdup (value);	
+			g_free (value), value = NULL;
+
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "delayDeliveryUntil");
+			if (subparam)
+				value = soup_soap_parameter_get_string_value (subparam);
+			if (value)
+				item->priv->delay_until = g_strdup (value);
+			g_free (value), value = NULL;
 
 		} else if (!g_ascii_strcasecmp (name, "dueDate")) {
 			char *formatted_date; 
@@ -2440,17 +2546,19 @@ add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	
 	if (priv->set_sendoptions) {	
 		soup_soap_message_start_element (msg, "sendoptions", NULL, NULL);
-		
+			
+		soup_soap_message_start_element (msg, "requestReply", NULL, NULL);
 		if (priv->reply_request_set) {
 			
-			soup_soap_message_start_element (msg, "requestReply", NULL, NULL);
+			if (priv->reply_within)  
+				e_gw_message_write_string_parameter (msg, "byDate", NULL, priv->reply_within);
+			else 
+				e_gw_message_write_string_parameter (msg, "whenConvenient", NULL, "1");
 			
-			if (priv->reply_within)
-				e_gw_message_write_string_parameter (msg, "withinNDays", NULL, priv->reply_within);
-			
-			soup_soap_message_end_element (msg);
-		}
-	
+		} else
+			soup_soap_message_write_string (msg, "0");
+		soup_soap_message_end_element (msg);
+
 		soup_soap_message_start_element (msg, "statusTracking", NULL, NULL);
 		
 		soup_soap_message_add_attribute (msg, "autoDelete", priv->autodelete ? "1" : "0", NULL, NULL);
@@ -2470,9 +2578,8 @@ add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		soup_soap_message_start_element (msg, "notification", NULL, NULL);
 		switch (priv->item_type) {
 		
-		/* TODO Uncomment this after the completed element is available in shemas */
 		case E_GW_ITEM_TYPE_TASK :
-	//		add_return_notification (msg, "completed", priv->notify_completed);
+			add_return_notification (msg, "completed", priv->notify_completed);
 			
 		case E_GW_ITEM_TYPE_APPOINTMENT:
 			add_return_notification (msg, "accepted", priv->notify_accepted);
