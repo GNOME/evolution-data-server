@@ -1,5 +1,11 @@
 2004-09-30  Chris Toshok  <toshok@ximian.com>
 
+	* evolution-data-server.pc.in (extensiondir,privlibdir): add these
+	variables so extension authors can find the place to install their
+	stuff.
+
+2004-09-30  Chris Toshok  <toshok@ximian.com>
+
 	* src/GNOME_Evolution_DataServer.server.in.in: add this
 	(previously generated) file to the build.
 
