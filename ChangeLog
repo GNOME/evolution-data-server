@@ -1,5 +1,10 @@
 2004-08-13  Rodney Dawes  <dobey@novell.com>
 
+	* acinclude.m4: Revert previous EVO_LDAP_CHECK changes, aren't working
+	as well as expceted and determined in testing
+
+2004-08-13  Rodney Dawes  <dobey@novell.com>
+
 	* acinclude.m4: Remove EVO_CHECK_LIB
 	Update EVO_LDAP_CHECK to support --with-openldap-{libs,includes}
 

@@ -121,10 +121,10 @@ no)
 *)
 	case $with_static_ldap in
 	yes)
-		msg_ldap="yes (static)"
+		msg_ldap="$with_openldap (static)"
 		;;
 	*)
-		msg_ldap="yes (dynamic)"
+		msg_ldap="$with_openldap (dynamic)"
 		;;
 	esac
 esac
