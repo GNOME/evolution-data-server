@@ -9,58 +9,55 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"POT-Creation-Date: 2004-04-19 09:18-0400\n"
-"PO-Revision-Date: 2003-09-07 11:09+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-05-15 14:43+0200\n"
+"PO-Revision-Date: 2004-05-16 02:01+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
-#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "正在装入..."
 
-#: addressbook/backends/file/e-book-backend-file.c:444
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
+#: addressbook/backends/file/e-book-backend-file.c:430
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3061
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "正在搜索..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:599
+#: addressbook/backends/ldap/e-book-backend-ldap.c:611
 msgid "Using Distinguished Name (DN)"
 msgstr "使用已识别的姓名 (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:602
+#: addressbook/backends/ldap/e-book-backend-ldap.c:614
 msgid "Using Email Address"
 msgstr "使用电子邮件地址"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:768
+#: addressbook/backends/ldap/e-book-backend-ldap.c:780
 msgid "Reconnecting to LDAP server..."
 msgstr "正在重新连接 LDAP 服务器..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
-#, fuzzy
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1295
 msgid "Adding contact to LDAP server..."
-msgstr "正在将卡片添加到 LDAP 服务器..."
+msgstr "正在将联系人添加到 LDAP 服务器..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
-#, fuzzy
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1391
 msgid "Removing contact from LDAP server..."
-msgstr "正在从 LDAP 服务器删除卡片..."
+msgstr "正在从 LDAP 服务器删除联系人..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
-#, fuzzy
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1606
 msgid "Modifying contact from LDAP server..."
-msgstr "正在修改 LDAP 服务器上的卡片..."
+msgstr "正在修改 LDAP 服务器上的联系人..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2974
 msgid "Receiving LDAP search results..."
 msgstr "正在接收 LDAP 的搜索结果..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3081
 msgid "Error performing search"
 msgstr "执行搜索错误"
 
@@ -71,82 +68,80 @@ msgstr "执行搜索错误"
 #: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
 #: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
 #: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
-#: addressbook/libebook/e-book.c:819 addressbook/libebook/e-book.c:873
-#: addressbook/libebook/e-book.c:972 addressbook/libebook/e-book.c:1106
-#: addressbook/libebook/e-book.c:1207 addressbook/libebook/e-book.c:1447
-#: addressbook/libebook/e-book.c:2047
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
+#: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
+#: addressbook/libebook/e-book.c:1430 addressbook/libebook/e-book.c:2030
+#, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "“%2$s”中的“%1$s”"
+msgstr ""
 
 #: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
 #: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
 #: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
-#: addressbook/libebook/e-book.c:827 addressbook/libebook/e-book.c:881
-#: addressbook/libebook/e-book.c:980 addressbook/libebook/e-book.c:1114
-#: addressbook/libebook/e-book.c:1215 addressbook/libebook/e-book.c:1455
+#: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
+#: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
+#: addressbook/libebook/e-book.c:1438
 msgid "book busy"
-msgstr "通讯簿正在被使用"
+msgstr "通讯簿忙"
 
 #: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
 #: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
 #: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
-#: addressbook/libebook/e-book.c:913 addressbook/libebook/e-book.c:1024
-#: addressbook/libebook/e-book.c:1142 addressbook/libebook/e-book.c:1239
-#: addressbook/libebook/e-book.c:1373 addressbook/libebook/e-book.c:1477
-#: addressbook/libebook/e-book.c:2056
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
+#: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
+#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1460
+#: addressbook/libebook/e-book.c:2039
+#, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr "在调用Book::remove时，Corba异常"
+msgstr ""
 
-#: addressbook/libebook/e-book.c:1354
-#, fuzzy
+#: addressbook/libebook/e-book.c:1337
 msgid "e_book_cancel: there is no current operation"
-msgstr "取消当前邮件操作"
+msgstr ""
 
-#: addressbook/libebook/e-book.c:1389
+#: addressbook/libebook/e-book.c:1372
 msgid "e_book_cancel: couldn't cancel"
-msgstr "e_book_cancel: 无法取消"
+msgstr "e_book_cancel：无法取消"
 
-#: addressbook/libebook/e-book.c:1748
+#: addressbook/libebook/e-book.c:1731
 msgid "e_book_load_uri: Invalid source."
-msgstr "e_book_load_uri: 来源错误"
+msgstr "e_book_load_uri：无效来源。"
 
-#: addressbook/libebook/e-book.c:1757 addressbook/libebook/e-book.c:1875
+#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1858
 #, fuzzy, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: 对于URI '%s' 没有可用的因素"
 
-#: addressbook/libebook/e-book.c:1770
+#: addressbook/libebook/e-book.c:1753
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: 不能创建EBookListener"
 
-#: addressbook/libebook/e-book.c:1869
+#: addressbook/libebook/e-book.c:1852
 #, fuzzy
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: 来源错误"
 
-#: addressbook/libebook/e-book.c:1906
+#: addressbook/libebook/e-book.c:1889
 #, fuzzy, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "“%2$s”中的“%1$s”"
 
-#: addressbook/libebook/e-book.c:2142
+#: addressbook/libebook/e-book.c:2125
 #, fuzzy
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: gconf中没有存储可用的uid"
 
-#: addressbook/libebook/e-book.c:2319
+#: addressbook/libebook/e-book.c:2302
 #, fuzzy, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr "e_book_get_self: gconf中没有存储可用的uid"
 
-#: addressbook/libebook/e-contact.c:99
-msgid "Unique ID"
-msgstr "唯一的ID"
-
 #: addressbook/libebook/e-contact.c:100
+msgid "Unique ID"
+msgstr "唯一的 ID"
+
+#: addressbook/libebook/e-contact.c:101
 msgid "File As"
 msgstr "存档为"
 
@@ -154,498 +149,451 @@ msgstr "存档为"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:107
 msgid "Full Name"
 msgstr "全名"
 
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:108
 msgid "Name"
 msgstr "姓名"
 
-#: addressbook/libebook/e-contact.c:108
-#, fuzzy
-msgid "Given Name"
-msgstr "域名"
-
 #: addressbook/libebook/e-contact.c:109
+msgid "Given Name"
+msgstr "名"
+
+#: addressbook/libebook/e-contact.c:110
 msgid "Family Name"
 msgstr "姓"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:111
 msgid "Nickname"
 msgstr "昵称"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:112
 msgid "Name or Org"
 msgstr "名称或组织"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:114
-#, fuzzy
-msgid "Address List"
-msgstr "地址"
-
 #: addressbook/libebook/e-contact.c:115
+msgid "Address List"
+msgstr "地址列表"
+
+#: addressbook/libebook/e-contact.c:116
 msgid "Home Address"
 msgstr "家庭地址"
 
-#: addressbook/libebook/e-contact.c:116
-#, fuzzy
-msgid "Work Address"
-msgstr "家庭地址"
-
 #: addressbook/libebook/e-contact.c:117
+msgid "Work Address"
+msgstr "办公地址"
+
+#: addressbook/libebook/e-contact.c:118
 msgid "Other Address"
 msgstr "其它地址"
 
-#: addressbook/libebook/e-contact.c:119
-#, fuzzy
-msgid "Home Address Label"
-msgstr "地址标签"
-
 #: addressbook/libebook/e-contact.c:120
-#, fuzzy
-msgid "Work Address Label"
-msgstr "地址标签"
+msgid "Home Address Label"
+msgstr "家庭地址标签"
 
 #: addressbook/libebook/e-contact.c:121
-#, fuzzy
-msgid "Other Address Label"
-msgstr "地址标签"
+msgid "Work Address Label"
+msgstr "工作地址标签"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:122
+msgid "Other Address Label"
+msgstr "其它地址标签"
+
+#: addressbook/libebook/e-contact.c:124
 msgid "Assistant Phone"
 msgstr "助手电话"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:125
 msgid "Business Phone"
 msgstr "商务电话"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:126
 msgid "Business Phone 2"
 msgstr "商务电话 2"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Fax"
 msgstr "商务传真"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:128
 msgid "Callback Phone"
 msgstr "回拨电话"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:129
 msgid "Car Phone"
 msgstr "车载电话"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:130
 msgid "Company Phone"
 msgstr "公司电话"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:131
 msgid "Home Phone"
 msgstr "家庭电话"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:132
 msgid "Home Phone 2"
 msgstr "家庭电话 2"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Fax"
 msgstr "家庭传真"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:134
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:135
 msgid "Mobile Phone"
 msgstr "移动电话"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:136
 msgid "Other Phone"
 msgstr "其它电话"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:137
 msgid "Other Fax"
 msgstr "其它传真"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:138
 msgid "Pager"
 msgstr "寻呼机"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:139
 msgid "Primary Phone"
 msgstr "主要电话"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:140
 msgid "Radio"
 msgstr "收音机"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:141
 msgid "Telex"
 msgstr "电传"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:142
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:144
-#, fuzzy
-msgid "Email List"
-msgstr "电子邮件 2"
-
 #: addressbook/libebook/e-contact.c:145
-#, fuzzy
-msgid "Email 1"
-msgstr "电子邮件 3"
+msgid "Email List"
+msgstr "邮件列表"
 
 #: addressbook/libebook/e-contact.c:146
+msgid "Email 1"
+msgstr "电子邮件 1"
+
+#: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
 msgstr "电子邮件 2"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:148
 msgid "Email 3"
 msgstr "电子邮件 3"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:149
 msgid "Mailer"
 msgstr "邮件程序"
 
-#: addressbook/libebook/e-contact.c:149
-#, fuzzy
+#: addressbook/libebook/e-contact.c:150
 msgid "Wants HTML Mail"
-msgstr "需要 HTML"
+msgstr "想要 HTML 邮件"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:152
-#, fuzzy
-msgid "AIM Screen Name List"
-msgstr "AIM屏幕名字列表"
-
 #: addressbook/libebook/e-contact.c:153
-msgid "Groupwise Id List"
-msgstr ""
+msgid "AIM Screen Name List"
+msgstr "AIM 屏幕名列表"
 
 #: addressbook/libebook/e-contact.c:154
-#, fuzzy
-msgid "Jabber Id List"
-msgstr "未命名的列表"
+msgid "Groupwise Id List"
+msgstr "Groupwise Id 列表"
 
 #: addressbook/libebook/e-contact.c:155
-#, fuzzy
-msgid "Yahoo! Screen Name List"
-msgstr "Yahoo!屏幕名字列表"
+msgid "Jabber Id List"
+msgstr "Jabber Id 列表"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
-msgid "MSN Screen Name List"
-msgstr "MSN屏幕名字列表"
+msgid "Yahoo! Screen Name List"
+msgstr "Yahoo! 屏幕名列表"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
-msgid "ICQ Id List"
-msgstr "ICQ的ID列表"
+msgid "MSN Screen Name List"
+msgstr "MSN 屏幕名列表"
 
-#: addressbook/libebook/e-contact.c:159
-#, fuzzy
-msgid "AIM Home Screen Name 1"
-msgstr "AIM屏幕名字列表"
+#: addressbook/libebook/e-contact.c:158
+msgid "ICQ Id List"
+msgstr "ICQ Id 列表"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
-msgid "AIM Home Screen Name 2"
-msgstr "AIM屏幕名字列表"
+msgid "AIM Home Screen Name 1"
+msgstr "AIM 家庭屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
-msgid "AIM Home Screen Name 3"
-msgstr "AIM屏幕名字列表"
+msgid "AIM Home Screen Name 2"
+msgstr "AIM 家庭屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
-msgid "AIM Work Screen Name 1"
-msgstr "AIM屏幕名字列表"
+msgid "AIM Home Screen Name 3"
+msgstr "AIM 家庭屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
-msgid "AIM Work Screen Name 2"
-msgstr "AIM屏幕名字列表"
+msgid "AIM Work Screen Name 1"
+msgstr "AIM 工作屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
-msgid "AIM Work Screen Name 3"
-msgstr "AIM屏幕名字列表"
+msgid "AIM Work Screen Name 2"
+msgstr "AIM 工作屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
-msgid "Groupwise Home Screen Name 1"
-msgstr "AIM屏幕名字列表"
+msgid "AIM Work Screen Name 3"
+msgstr "AIM 工作屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
-msgid "Groupwise Home Screen Name 2"
-msgstr "AIM屏幕名字列表"
+msgid "Groupwise Home Screen Name 1"
+msgstr "Groupwise 家庭屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
-msgid "Groupwise Home Screen Name 3"
-msgstr "AIM屏幕名字列表"
+msgid "Groupwise Home Screen Name 2"
+msgstr "Groupwise 家庭屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
-msgid "Groupwise Work Screen Name 1"
-msgstr "AIM屏幕名字列表"
+msgid "Groupwise Home Screen Name 3"
+msgstr "Groupwise 家庭屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
-msgid "Groupwise Work Screen Name 2"
-msgstr "AIM屏幕名字列表"
+msgid "Groupwise Work Screen Name 1"
+msgstr "Groupwise 工作屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
-msgid "Groupwise Work Screen Name 3"
-msgstr "AIM屏幕名字列表"
+msgid "Groupwise Work Screen Name 2"
+msgstr "Groupwise 工作屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
-msgid "Jabber Home Id 1"
-msgstr "未命名的列表"
+msgid "Groupwise Work Screen Name 3"
+msgstr "Groupwise 工作屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
-msgid "Jabber Home Id 2"
-msgstr "未命名的列表"
+msgid "Jabber Home Id 1"
+msgstr "Jabber 家庭 Id 1"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
-msgid "Jabber Home Id 3"
-msgstr "未命名的列表"
+msgid "Jabber Home Id 2"
+msgstr "Jabber 家庭 Id 2"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
-msgid "Jabber Work Id 1"
-msgstr "未命名的列表"
+msgid "Jabber Home Id 3"
+msgstr "Jabber 家庭 Id 3"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
-msgid "Jabber Work Id 2"
-msgstr "未命名的列表"
+msgid "Jabber Work Id 1"
+msgstr "Jabber 工作 Id 1"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
-msgid "Jabber Work Id 3"
-msgstr "未命名的列表"
+msgid "Jabber Work Id 2"
+msgstr "Jabber 工作 Id 2"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
-msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo!屏幕名字列表"
+msgid "Jabber Work Id 3"
+msgstr "Jabber 工作 Id 3"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
-msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo!屏幕名字列表"
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Yahoo! 家庭屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
-msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo!屏幕名字列表"
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Yahoo! 家庭屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:180
-#, fuzzy
-msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo!屏幕名字列表"
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Yahoo! 家庭屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:181
-#, fuzzy
-msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo!屏幕名字列表"
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Yahoo! 工作屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:182
-#, fuzzy
-msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo!屏幕名字列表"
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Yahoo! 工作屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:183
-#, fuzzy
-msgid "MSN Home Screen Name 1"
-msgstr "MSN屏幕名字列表"
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Yahoo! 工作屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:184
-#, fuzzy
-msgid "MSN Home Screen Name 2"
-msgstr "MSN屏幕名字列表"
+msgid "MSN Home Screen Name 1"
+msgstr "MSN 家庭屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:185
-#, fuzzy
-msgid "MSN Home Screen Name 3"
-msgstr "MSN屏幕名字列表"
+msgid "MSN Home Screen Name 2"
+msgstr "MSN 家庭屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:186
-#, fuzzy
-msgid "MSN Work Screen Name 1"
-msgstr "MSN屏幕名字列表"
+msgid "MSN Home Screen Name 3"
+msgstr "MSN 家庭屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:187
-#, fuzzy
-msgid "MSN Work Screen Name 2"
-msgstr "MSN屏幕名字列表"
+msgid "MSN Work Screen Name 1"
+msgstr "MSN 工作屏幕名 1"
 
 #: addressbook/libebook/e-contact.c:188
-#, fuzzy
-msgid "MSN Work Screen Name 3"
-msgstr "MSN屏幕名字列表"
+msgid "MSN Work Screen Name 2"
+msgstr "MSN 工作屏幕名 2"
 
 #: addressbook/libebook/e-contact.c:189
-msgid "ICQ Home Id 1"
-msgstr ""
+msgid "MSN Work Screen Name 3"
+msgstr "MSN 工作屏幕名 3"
 
 #: addressbook/libebook/e-contact.c:190
-#, fuzzy
-msgid "ICQ Home Id 2"
-msgstr "家庭 2"
+msgid "ICQ Home Id 1"
+msgstr "ICQ 家庭 Id 1"
 
 #: addressbook/libebook/e-contact.c:191
-msgid "ICQ Home Id 3"
-msgstr ""
+msgid "ICQ Home Id 2"
+msgstr "ICQ 家庭 Id 2"
 
 #: addressbook/libebook/e-contact.c:192
-msgid "ICQ Work Id 1"
-msgstr ""
+msgid "ICQ Home Id 3"
+msgstr "ICQ 家庭 Id 3"
 
 #: addressbook/libebook/e-contact.c:193
-msgid "ICQ Work Id 2"
-msgstr ""
+msgid "ICQ Work Id 1"
+msgstr "ICQ 工作 Id 1"
 
 #: addressbook/libebook/e-contact.c:194
+msgid "ICQ Work Id 2"
+msgstr "ICQ 工作 Id 2"
+
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "ICQ 工作 Id 3"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:198
 msgid "Organization"
 msgstr "组织"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:199
 msgid "Organizational Unit"
 msgstr "组织单元"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:200
 msgid "Office"
 msgstr "办公室"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:202
 msgid "Title"
 msgstr "头衔"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:203
 msgid "Role"
 msgstr "角色"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:204
 msgid "Manager"
 msgstr "经理"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:205
 msgid "Assistant"
 msgstr "助手"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:207
-msgid "Homepage URL"
-msgstr "个人主页URL"
-
 #: addressbook/libebook/e-contact.c:208
-msgid "Weblog URL"
-msgstr "网络日记URL"
+msgid "Homepage URL"
+msgstr "个人主页 URL"
 
 #: addressbook/libebook/e-contact.c:209
+msgid "Weblog URL"
+msgstr "网络日记 URL"
+
+#: addressbook/libebook/e-contact.c:210
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr "视频会议 URL"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:212
+#: addressbook/libebook/e-contact.c:213
 msgid "Photo"
 msgstr "照片"
 
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:214
 msgid "Logo"
 msgstr "标志"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:216
-#, fuzzy
+#: addressbook/libebook/e-contact.c:217
 msgid "X.509 Certificate"
-msgstr "X.509证书 ID(_C)："
+msgstr "X.509 证书"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:220
 msgid "Category List"
 msgstr "类别列表"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:221
 msgid "Categories"
 msgstr "类别"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:224
 msgid "Calendar URI"
 msgstr "日历 URI"
 
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:225
 msgid "Free/Busy URL"
 msgstr "空闲/繁忙 URL"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:226
 msgid "ICS Calendar"
 msgstr "ICS 日历"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:228
+#: addressbook/libebook/e-contact.c:229
 #, fuzzy
 msgid "Spouse's Name"
 msgstr "配偶"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:230
 msgid "Note"
 msgstr "注释"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:232
 msgid "Birth Date"
 msgstr "生日"
 
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:233
 msgid "Anniversary"
 msgstr "周年纪念日"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:235
 msgid "List"
 msgstr "列表"
 
-#: addressbook/libebook/e-contact.c:235
+#: addressbook/libebook/e-contact.c:236
 msgid "List Show Addresses"
 msgstr "列表显示地址"
 
-#: addressbook/libebook/e-contact.c:1197
+#: addressbook/libebook/e-contact.c:1196
 msgid "Unnamed List"
 msgstr "未命名的列表"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:440
-#, fuzzy
 msgid "Birthday"
-msgstr "生日(_Y)："
+msgstr "生日"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:464
-#, fuzzy, c-format
+#, c-format
 msgid "Birthday: %s"
-msgstr "生日(_Y)："
+msgstr "生日：%s"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:485
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "周年(_V)："
+msgstr "周年：%s"
 
 #: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
@@ -653,167 +601,159 @@ msgstr "无法保存日历数据：URI 格式错误。"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
 msgid "Invalid server URI"
-msgstr ""
+msgstr "无效的服务器 URI"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
-#, fuzzy
-msgid "Calendar"
-msgstr "日历 URI"
-
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
-msgid "Checklist"
-msgstr ""
+msgid "Calendar"
+msgstr "日历"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4062
+#: calendar/libecal/e-cal.c:4268
 msgid "Authentication failed"
 msgstr "认证失败"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
-#, fuzzy
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:425
 msgid "Could not create cache file"
-msgstr "取消操作"
+msgstr "无法创建缓存文件"
 
 #: calendar/backends/http/e-cal-backend-http.c:221
-#, fuzzy
 msgid "Redirected to Invalid URI"
-msgstr "无效 URI"
+msgstr "已重定向到无效 URI"
 
 #: calendar/backends/http/e-cal-backend-http.c:241
-#, fuzzy
 msgid "Bad file format."
-msgstr "时间格式："
+msgstr "无效的文件格式。"
 
 #: calendar/backends/http/e-cal-backend-http.c:246
-#, fuzzy
 msgid "Not a calendar."
-msgstr "没有文件夹 %s"
+msgstr "不是日历。"
 
 #: calendar/libecal/e-cal-component.c:1218
 msgid "Untitled appointment"
 msgstr "无标题约会"
 
-#: calendar/libecal/e-cal-recur.c:3989
+#: calendar/libecal/e-cal-recur.c:3993
 msgid "1st"
 msgstr "1日"
 
-#: calendar/libecal/e-cal-recur.c:3990
+#: calendar/libecal/e-cal-recur.c:3994
 msgid "2nd"
 msgstr "2日"
 
-#: calendar/libecal/e-cal-recur.c:3991
+#: calendar/libecal/e-cal-recur.c:3995
 msgid "3rd"
 msgstr "3日"
 
-#: calendar/libecal/e-cal-recur.c:3992
+#: calendar/libecal/e-cal-recur.c:3996
 msgid "4th"
 msgstr "4日"
 
-#: calendar/libecal/e-cal-recur.c:3993
+#: calendar/libecal/e-cal-recur.c:3997
 msgid "5th"
 msgstr "5日"
 
-#: calendar/libecal/e-cal-recur.c:3994
+#: calendar/libecal/e-cal-recur.c:3998
 msgid "6th"
 msgstr "6日"
 
-#: calendar/libecal/e-cal-recur.c:3995
+#: calendar/libecal/e-cal-recur.c:3999
 msgid "7th"
 msgstr "7日"
 
-#: calendar/libecal/e-cal-recur.c:3996
+#: calendar/libecal/e-cal-recur.c:4000
 msgid "8th"
 msgstr "8日"
 
-#: calendar/libecal/e-cal-recur.c:3997
+#: calendar/libecal/e-cal-recur.c:4001
 msgid "9th"
 msgstr "9日"
 
-#: calendar/libecal/e-cal-recur.c:3998
+#: calendar/libecal/e-cal-recur.c:4002
 msgid "10th"
 msgstr "10日"
 
-#: calendar/libecal/e-cal-recur.c:3999
+#: calendar/libecal/e-cal-recur.c:4003
 msgid "11th"
 msgstr "11日"
 
-#: calendar/libecal/e-cal-recur.c:4000
+#: calendar/libecal/e-cal-recur.c:4004
 msgid "12th"
 msgstr "12日"
 
-#: calendar/libecal/e-cal-recur.c:4001
+#: calendar/libecal/e-cal-recur.c:4005
 msgid "13th"
 msgstr "13日"
 
-#: calendar/libecal/e-cal-recur.c:4002
+#: calendar/libecal/e-cal-recur.c:4006
 msgid "14th"
 msgstr "14日"
 
-#: calendar/libecal/e-cal-recur.c:4003
+#: calendar/libecal/e-cal-recur.c:4007
 msgid "15th"
 msgstr "15日"
 
-#: calendar/libecal/e-cal-recur.c:4004
+#: calendar/libecal/e-cal-recur.c:4008
 msgid "16th"
 msgstr "16日"
 
-#: calendar/libecal/e-cal-recur.c:4005
+#: calendar/libecal/e-cal-recur.c:4009
 msgid "17th"
 msgstr "17日"
 
-#: calendar/libecal/e-cal-recur.c:4006
+#: calendar/libecal/e-cal-recur.c:4010
 msgid "18th"
 msgstr "18八日"
 
-#: calendar/libecal/e-cal-recur.c:4007
+#: calendar/libecal/e-cal-recur.c:4011
 msgid "19th"
 msgstr "19日"
 
-#: calendar/libecal/e-cal-recur.c:4008
+#: calendar/libecal/e-cal-recur.c:4012
 msgid "20th"
 msgstr "20日"
 
-#: calendar/libecal/e-cal-recur.c:4009
+#: calendar/libecal/e-cal-recur.c:4013
 msgid "21st"
 msgstr "21日"
 
-#: calendar/libecal/e-cal-recur.c:4010
+#: calendar/libecal/e-cal-recur.c:4014
 msgid "22nd"
 msgstr "22日"
 
-#: calendar/libecal/e-cal-recur.c:4011
+#: calendar/libecal/e-cal-recur.c:4015
 msgid "23rd"
 msgstr "23日"
 
-#: calendar/libecal/e-cal-recur.c:4012
+#: calendar/libecal/e-cal-recur.c:4016
 msgid "24th"
 msgstr "24日"
 
-#: calendar/libecal/e-cal-recur.c:4013
+#: calendar/libecal/e-cal-recur.c:4017
 msgid "25th"
 msgstr "25日"
 
-#: calendar/libecal/e-cal-recur.c:4014
+#: calendar/libecal/e-cal-recur.c:4018
 msgid "26th"
 msgstr "26日"
 
-#: calendar/libecal/e-cal-recur.c:4015
+#: calendar/libecal/e-cal-recur.c:4019
 msgid "27th"
 msgstr "27日"
 
-#: calendar/libecal/e-cal-recur.c:4016
+#: calendar/libecal/e-cal-recur.c:4020
 msgid "28th"
 msgstr "28日"
 
-#: calendar/libecal/e-cal-recur.c:4017
+#: calendar/libecal/e-cal-recur.c:4021
 msgid "29th"
 msgstr "29日"
 
-#: calendar/libecal/e-cal-recur.c:4018
+#: calendar/libecal/e-cal-recur.c:4022
 msgid "30th"
 msgstr "30日"
 
-#: calendar/libecal/e-cal-recur.c:4019
+#: calendar/libecal/e-cal-recur.c:4023
 msgid "31st"
 msgstr "31日"
 
@@ -835,177 +775,170 @@ msgid "Undefined"
 msgstr "未定义"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1486
-#, fuzzy, c-format
+#: calendar/libecal/e-cal.c:1488
+#, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "为 %s 输入口令 (用户 %s)"
+msgstr "为 %s 输入密码 (用户 %s)"
 
-#: calendar/libecal/e-cal.c:4036
+#: calendar/libecal/e-cal.c:4242
 msgid "Invalid argument"
 msgstr "无效参数"
 
-#: calendar/libecal/e-cal.c:4038
+#: calendar/libecal/e-cal.c:4244
 msgid "Backend is busy"
 msgstr "后台繁忙"
 
-#: calendar/libecal/e-cal.c:4040
-#, fuzzy
+#: calendar/libecal/e-cal.c:4246
 msgid "Repository is offline"
 msgstr "仓库离线"
 
-#: calendar/libecal/e-cal.c:4042
-#, fuzzy
+#: calendar/libecal/e-cal.c:4248
 msgid "No such calendar"
-msgstr "没有文件夹 %s"
+msgstr "没有这样的日历"
 
-#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
-#, fuzzy
+#: calendar/libecal/e-cal.c:4250 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
-msgstr "找不到对象\n"
+msgstr "找不到对象"
 
-#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
-#, fuzzy
+#: calendar/libecal/e-cal.c:4252 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
-msgstr "无效目的"
+msgstr "无效对象"
 
-#: calendar/libecal/e-cal.c:4048
-#, fuzzy
+#: calendar/libecal/e-cal.c:4254
 msgid "URI not loaded"
-msgstr "没有装入 EBook\n"
+msgstr "URI 未装入"
 
-#: calendar/libecal/e-cal.c:4050
+#: calendar/libecal/e-cal.c:4256
 msgid "URI already loaded"
 msgstr "URI已经载入"
 
-#: calendar/libecal/e-cal.c:4052
+#: calendar/libecal/e-cal.c:4258
 msgid "Permission denied"
 msgstr "没有权限"
 
-#: calendar/libecal/e-cal.c:4054
+#: calendar/libecal/e-cal.c:4260
 msgid "Object ID already exists"
 msgstr "对象 ID 已经存在"
 
-#: calendar/libecal/e-cal.c:4056
+#: calendar/libecal/e-cal.c:4262
 msgid "Protocol not supported"
 msgstr "不支持的协议"
 
-#: calendar/libecal/e-cal.c:4058
+#: calendar/libecal/e-cal.c:4264
 msgid "Operation has been cancelled"
 msgstr "操作已取消"
 
-#: calendar/libecal/e-cal.c:4060
-#, fuzzy
+#: calendar/libecal/e-cal.c:4266
 msgid "Could not cancel operation"
-msgstr "取消操作"
+msgstr "无法取消操作"
 
-#: calendar/libecal/e-cal.c:4064
+#: calendar/libecal/e-cal.c:4270
 msgid "Authentication required"
 msgstr "必须认证"
 
-#: calendar/libecal/e-cal.c:4066
-#, fuzzy
+#: calendar/libecal/e-cal.c:4272
 msgid "A CORBA exception has occurred"
-msgstr "发生CORBA异常"
+msgstr "发生了 CORBA 异常"
 
-#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "未知的错误"
 
-#: calendar/libecal/e-cal.c:4070
+#: calendar/libecal/e-cal.c:4276
 msgid "No error"
 msgstr "无错误"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
-#: calendar/libedata-cal/e-cal-backend-sexp.c:518
-#: calendar/libedata-cal/e-cal-backend-sexp.c:650
-#: calendar/libedata-cal/e-cal-backend-sexp.c:677
-#, fuzzy, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:524
+#: calendar/libedata-cal/e-cal-backend-sexp.c:656
+#: calendar/libedata-cal/e-cal-backend-sexp.c:683
+#, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "has-categories? 至少需要 1 个参数"
+msgstr "“%s”不需要参数"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:75
-#: calendar/libedata-cal/e-cal-backend-sexp.c:163
-#: calendar/libedata-cal/e-cal-backend-sexp.c:197
-#: calendar/libedata-cal/e-cal-backend-sexp.c:233
-#: calendar/libedata-cal/e-cal-backend-sexp.c:715
-#, fuzzy, c-format
-msgid "\"%s\" expects one argument"
-msgstr "contains? 需要 2 个参数"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:81
-#: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:462
-#, fuzzy, c-format
-msgid "\"%s\" expects the first argument to be a string"
-msgstr "contains? 的第一个参数应该是字符串"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:90
-#, fuzzy, c-format
-msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "make-time 的第一个参数必须是 ISO 8601 日期/时间字符串"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:121
-#: calendar/libedata-cal/e-cal-backend-sexp.c:305
-#: calendar/libedata-cal/e-cal-backend-sexp.c:456
-#, fuzzy, c-format
-msgid "\"%s\" expects two arguments"
-msgstr "contains? 需要 2 个参数"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
-#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
 #: calendar/libedata-cal/e-cal-backend-sexp.c:721
-#, fuzzy, c-format
+#, c-format
+msgid "\"%s\" expects one argument"
+msgstr "“%s”需要一个参数"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:88
+#: calendar/libedata-cal/e-cal-backend-sexp.c:245
+#: calendar/libedata-cal/e-cal-backend-sexp.c:468
+#, c-format
+msgid "expects the first argument to be a string"
+msgstr "第一个参数应该是字符串"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:96
+#, c-format
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr "“%s”的第一个参数必须是 ISO 8601 日期/时间字符串"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:462
+#, c-format
+msgid "\"%s\" expects two arguments"
+msgstr "“%s”需要两个参数"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:133
+#: calendar/libedata-cal/e-cal-backend-sexp.c:175
+#: calendar/libedata-cal/e-cal-backend-sexp.c:209
+#: calendar/libedata-cal/e-cal-backend-sexp.c:317
+#: calendar/libedata-cal/e-cal-backend-sexp.c:727
+#, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "time-day-end 的第一个参数应该是 time_t"
+msgstr "“%s”的第一个参数应该是 time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:135
-#, fuzzy, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:141
+#, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "time-add-day 的第二个参数应该是整数"
+msgstr "“%s”的第二个参数应该是整数"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:319
-#, fuzzy, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:325
+#, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "time-add-day 的第一个参数应该是 time_t"
+msgstr "“%s”的第一个参数应该是 time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
-#, fuzzy, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:476
+#, c-format
 msgid "\"%s\" expects the second argument to be a string"
-msgstr "contains? 的第二个参数应该是字符串"
+msgstr "“%s”的第二个参数应该是字符串"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:490
-#, fuzzy, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:496
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr "contains? 的第一个参数必须是“任意”、“概要”、“描述”之一"
+msgstr "“%s”的第一个参数必须是“任意”、“概要”、“描述”之一"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:552
-#, fuzzy, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:558
+#, c-format
 msgid "\"%s\" expects at least one argument"
-msgstr "has-categories? 至少需要 1 个参数"
+msgstr "“%s”至少需要一个参数"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:566
-#, fuzzy, c-format
+#: calendar/libedata-cal/e-cal-backend-sexp.c:572
+#, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr "has-categories? 的所有参数都应该为字符串或者它唯一的参数为布尔假 (#f)"
+msgstr "“%s”的所有参数都应该为字符串或者它唯一的参数为布尔假 (#f)"
 
 #: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
 msgid "Invalid connection"
-msgstr "无效目的"
+msgstr "无效连接"
 
 #: servers/groupwise/e-gw-connection.c:84
 msgid "Invalid response from server"
-msgstr ""
+msgstr "服务器的响应无效"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "无效参数"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
