@@ -1,3 +1,12 @@
+2005-01-27  Rodney Dawes <dobey@novell.com>
+
+	* libebook/e-book-contact.c: #include <config.h>
+	(e_contact_pretty_name): Bind and set the textdomain for eds so that
+	we get translated strings when we call this outside of eds, as it is
+	public API
+
+	Fixes #66854 and #71116
+
 2004-12-19 Sivaiah Nallagatla    <snallagatla@novell.com>
                                                                                                                              
         * backends/ldap/e-book-backend-ldap.c
