@@ -1,23 +1,22 @@
-# Hungarian translation of Evolution
-# András Tímár <timar@gnome.hu>, 2001-2003.
-# Szabolcs BAN <shooby@gnome.hu>, 2001.
-# Zsiráf <zsiraf@mylinux.hu>, 2003.
+# Hungarian translation of evolution-data-server.
+# Copyright (C) 2001-2004 Free Software Foundation, Inc.
+# Szabolcs Ban <shooby@gnome.hu>, 2001.
+# Andras Timar <timar@gnome.hu>, 2001-2003.
+# Zsiraf <zsiraf@mylinux.hu>, 2003.
 # Gabor Kelemen <kg0021@stud.unideb.hu>, 2004.
-#
+# Laszlo Dvornik <dvornik@invitel.hu>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
-"PO-Revision-Date: 2004-04-12 17:30+0200\n"
-"Last-Translator: Gabor Kelemen <kg0021@stud.unideb.hu>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-06-02 14:15+0200\n"
+"PO-Revision-Date: 2004-06-02 18:28+0200\n"
+"Last-Translator: Laszlo Dvornik <dvornik@invitel.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
-"X-Generator: KBabel 1.3.1\n"
-"Plural-Forms:  nplurals=1; plural=0;\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -43,17 +42,14 @@ msgid "Reconnecting to LDAP server..."
 msgstr "Újrakapcsolódás az LDAP-kiszolgálóhoz..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1299
-#, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "Névjegy hozzáadása az LDAP-kiszolgálóhoz..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1395
-#, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "Névjegy eltávolítása az LDAP-kiszolgálóról..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1610
-#, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "Névjegy módosítása az LDAP-kiszolgálón..."
 
@@ -75,9 +71,9 @@ msgstr "Hiba a keresés közben"
 #: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
 #: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
 #: addressbook/libebook/e-book.c:1943
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "\"%s\" \"%s\"-ben"
+msgstr ""
 
 #: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
 #: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
@@ -101,24 +97,24 @@ msgstr ""
 
 #: addressbook/libebook/e-book.c:1337
 msgid "e_book_cancel: there is no current operation"
-msgstr "e_book_cancel: jelenleg nincs művelet"
+msgstr "e_book_cancel: nincs jelenlegi művelet"
 
 #: addressbook/libebook/e-book.c:1372
 msgid "e_book_cancel: couldn't cancel"
-msgstr ""
+msgstr "e_book_cancel: nem lehet megszakítani"
 
 #: addressbook/libebook/e-book.c:1409
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "\"%s\" \"%s\"-ben"
+msgstr ""
 
 #: addressbook/libebook/e-book.c:1458
 msgid "e_book_open: cancelled"
-msgstr ""
+msgstr "e_book_open: megszakítva"
 
 #: addressbook/libebook/e-book.c:1810
 msgid "e_book_load_uri: Invalid source."
-msgstr ""
+msgstr "e_book_load_uri: Érvénytelen forrás."
 
 #: addressbook/libebook/e-book.c:1818
 #, c-format
@@ -127,7 +123,7 @@ msgstr ""
 
 #: addressbook/libebook/e-book.c:1830
 msgid "e_book_load_uri: Could not create EBookListener"
-msgstr ""
+msgstr "e_book_load_uri: Nem lehet létrehozni EBookListener-t"
 
 #: addressbook/libebook/e-book.c:1881
 #, c-format
@@ -140,13 +136,12 @@ msgstr ""
 
 #: addressbook/libebook/e-book.c:2147
 #, c-format
-msgid ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
-msgstr ""
+msgstr "Egyedi azonosító"
 
 #: addressbook/libebook/e-contact.c:101
 msgid "File As"
@@ -165,13 +160,12 @@ msgid "Name"
 msgstr "Név"
 
 #: addressbook/libebook/e-contact.c:109
-#, fuzzy
 msgid "Given Name"
-msgstr "Mezőnév"
+msgstr "Keresztnév"
 
 #: addressbook/libebook/e-contact.c:110
 msgid "Family Name"
-msgstr "Családi név"
+msgstr "Vezetéknév"
 
 #: addressbook/libebook/e-contact.c:111
 msgid "Nickname"
@@ -179,41 +173,36 @@ msgstr "Becenév"
 
 #: addressbook/libebook/e-contact.c:112
 msgid "Name or Org"
-msgstr ""
+msgstr "Név vagy szervezet"
 
 #. Address fields
 #: addressbook/libebook/e-contact.c:115
-#, fuzzy
 msgid "Address List"
-msgstr "Cím:"
+msgstr "Címlista"
 
 #: addressbook/libebook/e-contact.c:116
 msgid "Home Address"
 msgstr "Otthoni cím"
 
 #: addressbook/libebook/e-contact.c:117
-#, fuzzy
 msgid "Work Address"
-msgstr "Otthoni cím"
+msgstr "Munkahelyi cím"
 
 #: addressbook/libebook/e-contact.c:118
 msgid "Other Address"
 msgstr "Egyéb cím"
 
 #: addressbook/libebook/e-contact.c:120
-#, fuzzy
 msgid "Home Address Label"
-msgstr "Cím címke"
+msgstr "Otthoni cím címke"
 
 #: addressbook/libebook/e-contact.c:121
-#, fuzzy
 msgid "Work Address Label"
-msgstr "Cím címke"
+msgstr "Munkahelyi cím címke"
 
 #: addressbook/libebook/e-contact.c:122
-#, fuzzy
 msgid "Other Address Label"
-msgstr "Cím címke"
+msgstr "Egyéb cím címke"
 
 #: addressbook/libebook/e-contact.c:124
 msgid "Assistant Phone"
@@ -293,14 +282,12 @@ msgstr "TTY"
 
 #. Email fields
 #: addressbook/libebook/e-contact.c:145
-#, fuzzy
 msgid "Email List"
-msgstr "Email ="
+msgstr "E-mail lista"
 
 #: addressbook/libebook/e-contact.c:146
-#, fuzzy
 msgid "Email 1"
-msgstr "3. e-mail"
+msgstr "1. e-mail"
 
 #: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
@@ -311,18 +298,16 @@ msgid "Email 3"
 msgstr "3. e-mail"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "3. e-mail"
+msgstr "4. e-mail"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
 msgstr "Levelező"
 
 #: addressbook/libebook/e-contact.c:151
-#, fuzzy
 msgid "Wants HTML Mail"
-msgstr "HTML-t igényel"
+msgstr "HTML levelet igényel"
 
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:154
@@ -334,9 +319,8 @@ msgid "Groupwise Id List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "Jabber Id List"
-msgstr "Névtelen lista"
+msgstr "Jabber Id lista"
 
 #: addressbook/libebook/e-contact.c:157
 msgid "Yahoo! Screen Name List"
@@ -347,9 +331,8 @@ msgid "MSN Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "ICQ Id List"
-msgstr "Új lista"
+msgstr "ICQ Id lista"
 
 #: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
@@ -400,34 +383,28 @@ msgid "Groupwise Work Screen Name 3"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Névtelen lista"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Névtelen lista"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Névtelen lista"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Névtelen lista"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Névtelen lista"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Névtelen lista"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
@@ -482,9 +459,8 @@ msgid "ICQ Home Id 1"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:192
-#, fuzzy
 msgid "ICQ Home Id 2"
-msgstr "2. otthoni"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 3"
@@ -534,37 +510,34 @@ msgstr "Asszisztens"
 #. Web fields
 #: addressbook/libebook/e-contact.c:209
 msgid "Homepage URL"
-msgstr ""
+msgstr "Honlap URL"
 
 #: addressbook/libebook/e-contact.c:210
 msgid "Weblog URL"
-msgstr ""
+msgstr "Weblog URL"
 
 #: addressbook/libebook/e-contact.c:211
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr "Videokonferencia URL"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:214
-#, fuzzy
 msgid "Photo"
-msgstr "Porto"
+msgstr "Fotó"
 
 #: addressbook/libebook/e-contact.c:215
-#, fuzzy
 msgid "Logo"
-msgstr "Togo"
+msgstr "Logó"
 
 #. Security fields
 #: addressbook/libebook/e-contact.c:218
-#, fuzzy
 msgid "X.509 Certificate"
-msgstr "_Tanúsítványazonosító:"
+msgstr "X.509-tanúsítvány"
 
 #. Contact categories
 #: addressbook/libebook/e-contact.c:221
 msgid "Category List"
-msgstr "Kategóriák listája"
+msgstr "Kategórialista"
 
 #: addressbook/libebook/e-contact.c:222
 msgid "Categories"
@@ -581,13 +554,12 @@ msgstr "Szabad/foglalt URL"
 
 #: addressbook/libebook/e-contact.c:227
 msgid "ICS Calendar"
-msgstr "ICS Naptár"
+msgstr "ICS-naptár"
 
 #. Misc fields
 #: addressbook/libebook/e-contact.c:230
-#, fuzzy
 msgid "Spouse's Name"
-msgstr "Házastárs"
+msgstr "Házastárs neve"
 
 #: addressbook/libebook/e-contact.c:231
 msgid "Note"
@@ -615,28 +587,26 @@ msgstr "Névtelen lista"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:441
-#, fuzzy
 msgid "Birthday"
-msgstr "Születésna_p:"
+msgstr "Születésnap"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:465
-#, fuzzy, c-format
+#, c-format
 msgid "Birthday: %s"
-msgstr "Születésna_p:"
+msgstr "Születésnap: %s"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:486
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "É_vforduló:"
+msgstr "Évforduló: %s"
 
 #: calendar/backends/file/e-cal-backend-file.c:183
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nem lehet menteni a naptáradatokat: rosszul formázott URI."
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
-#, fuzzy
 msgid "Invalid server URI"
-msgstr "Érvénytelen cél"
+msgstr "Érvénytelen kiszolgáló URI"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
@@ -644,29 +614,25 @@ msgid "Calendar"
 msgstr "Naptár"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:277
-#: calendar/libecal/e-cal.c:4288
-#, fuzzy
+#: calendar/libecal/e-cal.c:4286
 msgid "Authentication failed"
 msgstr "Hitelesítés sikertelen"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
 msgid "Could not create cache file"
-msgstr "Nem lehet létrehozni a gyorsítótárfájlt"
+msgstr "Nem lehet létrehozni a gyorsítótár fájlt"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
-#, fuzzy
 msgid "Redirected to Invalid URI"
-msgstr "Érvénytelen URI"
+msgstr "Átirányítva érvénytelen URI-ra"
 
 #: calendar/backends/http/e-cal-backend-http.c:249
-#, fuzzy
 msgid "Bad file format."
-msgstr "Időformátum:"
+msgstr "Hibás fájlformátum."
 
 #: calendar/backends/http/e-cal-backend-http.c:255
-#, fuzzy
 msgid "Not a calendar."
-msgstr "Nincs %s mappa."
+msgstr "Nem naptár."
 
 #: calendar/libecal/e-cal-component.c:1218
 msgid "Untitled appointment"
@@ -814,83 +780,76 @@ msgid "Undefined"
 msgstr "Nem megadott"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
-#, fuzzy, c-format
+#: calendar/libecal/e-cal.c:1488
+#, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "%sÍrd be %s jelszavát (%s felhasználó)"
+msgstr "Adja meg %s jelszavát (%s felhasználó)"
+
+#: calendar/libecal/e-cal.c:4260
+msgid "Invalid argument"
+msgstr "Érvénytelen paraméter"
 
 #: calendar/libecal/e-cal.c:4262
-msgid "Invalid argument"
-msgstr "Érvénytelen argumentum"
+msgid "Backend is busy"
+msgstr "A háttér foglalt"
 
 #: calendar/libecal/e-cal.c:4264
-msgid "Backend is busy"
+msgid "Repository is offline"
 msgstr ""
 
 #: calendar/libecal/e-cal.c:4266
-#, fuzzy
-msgid "Repository is offline"
-msgstr "Kapcsolat nélküli tároló"
-
-#: calendar/libecal/e-cal.c:4268
-#, fuzzy
 msgid "No such calendar"
-msgstr "Nincs %s mappa."
+msgstr "Nincs ilyen naptár"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
-#, fuzzy
+#: calendar/libecal/e-cal.c:4268 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
-msgstr "Az elem nem található\n"
+msgstr "Az objektum nem található"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
-#, fuzzy
+#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
-msgstr "Érvénytelen cél"
+msgstr "Érvénytelen objektum"
+
+#: calendar/libecal/e-cal.c:4272
+msgid "URI not loaded"
+msgstr "URI nincs betöltve"
 
 #: calendar/libecal/e-cal.c:4274
-#, fuzzy
-msgid "URI not loaded"
-msgstr "Az EBook nincs betöltve\n"
+msgid "URI already loaded"
+msgstr "URI már be van töltve"
 
 #: calendar/libecal/e-cal.c:4276
-msgid "URI already loaded"
-msgstr ""
+msgid "Permission denied"
+msgstr "Hozzáférés megtagadva"
 
 #: calendar/libecal/e-cal.c:4278
-msgid "Permission denied"
-msgstr "Jogosultsági hiba"
+msgid "Object ID already exists"
+msgstr "Az objektumazonosító már létezik"
 
 #: calendar/libecal/e-cal.c:4280
-#, fuzzy
-msgid "Object ID already exists"
-msgstr "A kártyaazonosító már létezik"
-
-#: calendar/libecal/e-cal.c:4282
 msgid "Protocol not supported"
 msgstr "A protokoll nem támogatott"
 
-#: calendar/libecal/e-cal.c:4284
-#, fuzzy
+#: calendar/libecal/e-cal.c:4282
 msgid "Operation has been cancelled"
 msgstr "Művelet megszakítva"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4284
 msgid "Could not cancel operation"
 msgstr "Nem lehet megszakítani a műveletet"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4288
 msgid "Authentication required"
 msgstr "Hitelesítés szükséges"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4290
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4292 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4294
 msgid "No error"
 msgstr "Nincs hiba"
 
@@ -898,118 +857,107 @@ msgstr "Nincs hiba"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
 #: calendar/libedata-cal/e-cal-backend-sexp.c:661
 #: calendar/libedata-cal/e-cal-backend-sexp.c:688
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "a has-categories? legalább egy argumentumot vár"
+msgstr "a(z) \"%s\" nem vár paramétert"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:75
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
 #: calendar/libedata-cal/e-cal-backend-sexp.c:726
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects one argument"
-msgstr "a contains? 2 argumentumot vár"
+msgstr "a(z) \"%s\" egy paramétert vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
 #: calendar/libedata-cal/e-cal-backend-sexp.c:88
 #: calendar/libedata-cal/e-cal-backend-sexp.c:245
 #: calendar/libedata-cal/e-cal-backend-sexp.c:473
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "a contains? első argumentumaként karakterláncot vár"
+msgstr "a(z) \"%s\" első paraméterként karakterláncot vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr ""
-"a make-time első argumentumának ISO 8601 dátum/idő karakterláncnak kell "
-"lennie"
+msgstr "a(z) \"%s\" első paraméterként ISO 8601 dátum/idő karakterláncot vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects two arguments"
-msgstr "a contains? 2 argumentumot vár"
+msgstr "\"%s\" két paramétert vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:133
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
 #: calendar/libedata-cal/e-cal-backend-sexp.c:732
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "a time-day-end első argumentumaként time_t-t vár"
+msgstr "\"%s\" első paraméterként time_t-t vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:141
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "a time-add-day második argumentumaként egész számot vár"
+msgstr "\"%s\" második paraméterként egész számot vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "a time-day-add első argumentumaként time_t-t vár"
+msgstr "\"%s\" második paraméterként time_t-t vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:481
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the second argument to be a string"
-msgstr "a contains? második argumentumaként karakterláncot vár"
+msgstr "a(z) \"%s\" második paraméterként karakterláncot vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"a contains? első argumentumaként a következők egyikét várja: \"any\", "
-"\"summary\", \"description\""
+"\"%s\" első paraméterként a következők egyikét várja: \"any\", \"summary\", "
+"\"description\", vagy \"location\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:563
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects at least one argument"
-msgstr "a has-categories? legalább egy argumentumot vár"
+msgstr "\"%s\" legalább egy paramétert vár"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:577
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"a has-categories? minden argumentumaként karakterláncot vár, vagy csak "
-"egyetlen logikai hamis (#f) értéket"
+"a(z) \"%s\" elvárja, hogy minden paraméter karakterlánc legyen vagy, hogy egy "
+"és csak egy paraméter logikai hamis (#f) érték legyen"
 
 #: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
 msgid "Invalid connection"
-msgstr "Érvénytelen cél"
+msgstr "Érvénytelen kapcsolat"
 
 #: servers/groupwise/e-gw-connection.c:84
-#, fuzzy
 msgid "Invalid response from server"
-msgstr "Érvénytelen cél"
+msgstr "Érvénytelen válasz a kiszolgálótól"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "Hibás paraméter"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
-#, fuzzy
 msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Evolution Címjegyzék helyi/LDAP háttér"
+msgstr "Evolution címjegyzékfájl és LDAP-háttér"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
-#, fuzzy
 msgid "Evolution Calendar file and webcal backend"
-msgstr "Evolution Naptár helyi fájl háttér"
+msgstr "Evolution naptárfájl és webnaptár háttér"
 
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
-#, fuzzy
 msgid "Evolution Addressbook file backend"
-msgstr "Evolution Címjegyzék helyi fájl háttér"
-
-#, fuzzy
-#~ msgid "Checklist"
-#~ msgstr "Sűrű köd"
+msgstr "Evolution címjegyzékfájl-háttér"
