@@ -200,7 +200,7 @@ initialize_categories_config (void)
 						b = FALSE;
 				}
 
-				e_categories_add (name, color, icon, b ? "1" : "0");
+				e_categories_add (name, color, icon, b ? TRUE : FALSE);
 			}
 
 			xmlFreeDoc (doc);

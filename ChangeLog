@@ -1,3 +1,8 @@
+2005-01-28  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-categories.c (initialize_categories_config): pass
+	a correct boolean value as the 'searchable' flag.
+
 2005-01-26  JP Rosevear  <jpr@novell.com>
 
 	Fixes #69909
