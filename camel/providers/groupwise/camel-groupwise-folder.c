@@ -737,6 +737,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		camel_groupwise_journal_append ((CamelGroupwiseJournal *) ((CamelGroupwiseFolder *)folder)->journal, message, info, appended_uid, ex);
 		return;
 	}
+	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock) ;
 	/*Get the container id*/
 	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->name) ;
 	/* FIXME Separate To/CC/BCC? */
@@ -765,7 +766,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 		if (appended_uid)
 			*appended_uid = NULL;
-
+		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock) ;
 		return ;
 	}
 
@@ -778,12 +779,14 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		if (appended_uid)
 			*appended_uid = NULL;
 
+		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock) ;
 		return ;
 	}
 
 	if (appended_uid)
 		*appended_uid = g_strdup (id);	
 	g_free (id);
+	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock) ;
 }
 
 static int
@@ -863,6 +866,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 								CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
 		}
 
+		CAMEL_SERVICE_UNLOCK (source->parent_store, connect_lock);
 		return;
 	}
 	

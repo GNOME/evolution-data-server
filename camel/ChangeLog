@@ -2,7 +2,13 @@
 	
 	* providers/groupwise/camel-groupwise-folder.c
 	  (groupwise_folder_get_message): fixed a crash
-	  while getting message
+	  while getting message. also applied lock 
+	  when getting message
+	* providers/groupwise/camel-groupwise-store.c
+	  (gropuwise_get_folder_info),
+	  (groupwise_create_folder),
+	  (groupwise_delete_folder): applied locks which
+	  were missed out previously
 
 2005-01-31  Hans Petter Jansson  <hpj@novell.com>
 
