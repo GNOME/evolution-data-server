@@ -1,3 +1,11 @@
+2004-04-06  Harish K <kharish@novell.com>
+	
+	Fixes #55169
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_gw_connection_get_freebusy_info) : Use icalproperty
+	to add free/busy data to ECalComponent.
+	
 2004-04-05  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c

@@ -521,7 +521,11 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "user")) {
 		SoupSoapParameter *param_blocks, *subparam_block, *tmp;
 		const char *uuid = NULL, *email = NULL, *name = NULL;
-
+		ECalComponent *comp;
+		ECalComponentAttendee attendee;
+		GSList *attendee_list = NULL;
+		icalcomponent *icalcomp = NULL;
+		
 		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
 		if (tmp)
 			email = soup_soap_parameter_get_string_value (tmp);
@@ -532,6 +536,29 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		if (tmp)
 			name = soup_soap_parameter_get_string_value (tmp);
 
+		comp = e_cal_component_new ();
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
+		e_cal_component_commit_sequence (comp);
+		icalcomp = e_cal_component_get_icalcomponent (comp);
+		
+		memset (&attendee, 0, sizeof (ECalComponentAttendee));
+		if (name)
+			attendee.cn = name;
+		if (email)
+			attendee.value = email;
+		
+		attendee.cutype = ICAL_CUTYPE_INDIVIDUAL;
+		attendee.role = ICAL_ROLE_REQPARTICIPANT;
+		attendee.status = ICAL_PARTSTAT_NEEDSACTION;
+
+		/* XXX the uuid is not currently used. hence it is
+		 * discarded */
+
+		attendee_list = g_slist_append (attendee_list, &attendee);	
+
+		e_cal_component_set_attendee_list (comp, attendee_list);
+
+		
 		param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
 		if (!param_blocks) {
 			g_object_unref (response);
@@ -545,58 +572,49 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 
 			/* process each block and create ECal free/busy components.*/ 
 			SoupSoapParameter *tmp;
-			ECalComponent *comp;
-			ECalComponentAttendee attendee;
-			ECalComponentDateTime dt;
+			struct icalperiodtype ipt;
+			icalproperty *icalprop;
 			icaltimetype itt;
 			time_t t;
-			const char *start, *end;
-			GSList *attendee_list = NULL;
-
-			comp = e_cal_component_new ();
-			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
-			/* FIXME  verify the mappings b/w response and ECalComponent */
-			memset (&attendee, 0, sizeof (ECalComponentAttendee));
-			if (name)
-				attendee.cn = name;
-			if (email)
-				attendee.value = email;
+			const char *start, *end, *accept_level;
 			
-			attendee.cutype = ICAL_CUTYPE_INDIVIDUAL;
-			attendee.role = ICAL_ROLE_REQPARTICIPANT;
-			attendee.status = ICAL_PARTSTAT_NEEDSACTION;
-
-			/* XXX the uuid is not currently used. hence it is
-			 * discarded */
-
-			attendee_list = g_slist_append (attendee_list, &attendee);	
-
-			e_cal_component_set_attendee_list (comp, attendee_list);
-
+			memset (&ipt, 0, sizeof (struct icalperiodtype));
 			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
 			if (tmp) {
 				start = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (start);
 				itt = icaltime_from_timet (t, 0);
-				dt.value = &itt;
-				dt.tzid = "UTC"; 
-				e_cal_component_set_dtstart (comp, &dt);
+				ipt.start = itt;
 			}        
 
-			tmp = soup_soap_parameter_get_first_child_by_name (subparam, "endDate");
+			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "endDate");
 			if (tmp) {
 				end = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (end);
 				itt = icaltime_from_timet (t, 0);
-				dt.value = &itt;
-				dt.tzid = "UTC"; 
-				e_cal_component_set_dtend (comp, &dt);
+				ipt.end = itt;
 			}
+			icalprop = icalproperty_new_freebusy (ipt);
 
-			e_cal_component_commit_sequence (comp);
-			*freebusy = g_list_append (*freebusy, g_strdup (e_cal_component_get_as_string (comp)));
-			g_object_unref (comp);
+			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "acceptLevel");
+			if (tmp) {
+				accept_level = soup_soap_parameter_get_string_value (tmp);
+				if (!strcmp (accept_level, "Busy"))
+					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSY");
+				else if (!strcmp (accept_level, "Tentative"))
+					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSYTENTATIVE");
+				else if (!strcmp (accept_level, "OutOfOffice"))
+					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSYUNAVAILABLE");
+				else if (!strcmp (accept_level, "Free"))
+					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "FREE");
+							}
+			icalcomponent_add_property(icalcomp, icalprop);
+
 		}
+
+		e_cal_component_commit_sequence (comp);
+		*freebusy = g_list_append (*freebusy, g_strdup (e_cal_component_get_as_string (comp)));
+		g_object_unref (comp);
 	}
 
         g_object_unref (msg);
