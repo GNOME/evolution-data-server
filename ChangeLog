@@ -1,3 +1,8 @@
+2004-10-14  JP Rosevear  <jpr@novell.com>
+
+	* libedataserverui/libedataserverui.pc.in: link to the right lib
+	and require libedataserver 1.2
+
 2004-10-13  JP Rosevear  <jpr@novell.com>
 
 	* libedataserver/e-data-server-marshal.list: add missing
