@@ -34,6 +34,8 @@ libecalbackendgroupwise_la_SOURCES =		\
 	e-cal-backend-groupwise.h		\
 	e-gw-connection.c			\
 	e-gw-connection.h			\
+	e-gw-container.c			\
+	e-gw-container.h			\
 	e-gw-item.c				\
 	e-gw-item.h				\
 	e-gw-message.c				\

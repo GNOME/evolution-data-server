@@ -636,10 +636,15 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
 }
 
 EGwConnectionStatus
-e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **response)
+e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
 {
 	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
         EGwConnectionStatus status;
+	SoupSoapParameter *param;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_return_val_if_fail (container_list != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getContainerListRequest");
         if (!msg) {
@@ -652,59 +657,79 @@ e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **respo
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        *response = e_gw_connection_send_message (cnc, msg);
-        if (!*response) {
+	response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 
-        status = parse_response_status (*response);
+        status = parse_response_status (response);
         g_object_unref (msg);
+
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+                g_object_unref (response);
+                return status;
+        }
+
+	/* if status is OK - parse result. return the list */	
+	param = soup_soap_response_get_first_parameter_by_name (response, "folders");	
+        if (!param) {
+                g_object_unref (response);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        } else {
+		SoupSoapParameter *subparam;
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "folder");
+		     subparam != NULL;
+		     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "folder")) {
+			EGwContainer *container;
+
+			container = e_gw_container_new_from_soap_parameter (subparam);
+			if (container)
+				*container_list = g_list_append (*container_list, container);
+		}
+	}
+
+	g_object_unref (response);
+
         return status;
+}
+
+void
+e_gw_connection_free_container_list (GList *container_list)
+{
+	g_return_if_fail (container_list != NULL);
+
+	g_list_foreach (container_list, (GFunc) g_object_unref, NULL);
+	g_list_free (container_list);
 }
 
 char *
 e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 {
-	SoupSoapResponse *response;
         EGwConnectionStatus status;
-        SoupSoapParameter *param;
-	char *container_id;
+	GList *container_list, *l;
+	char *container_id = NULL;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-        status = e_gw_connection_get_container_list (cnc, &response);
+        status = e_gw_connection_get_container_list (cnc, &container_list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
-                g_object_unref (response);
+		e_gw_connection_free_container_list (container_list);
                 return NULL;
         }
 
-	/* if status is OK - parse result. return the list */	
-	param = soup_soap_response_get_first_parameter_by_name (response, "folders");
-	
-        if (!param) {
-                g_object_unref (response);
-                return NULL;
-        } else {
-		SoupSoapParameter *subparam, *name_param, *id;
-		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "folder");
-		     subparam != NULL;
-		     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "folder")) {
-			name_param = soup_soap_parameter_get_first_child_by_name (subparam, "name");
-			if (name_param && (!strcmp (soup_soap_parameter_get_string_value (name_param), name))) {
-				id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
-				if (id) {
-					container_id = g_strdup (soup_soap_parameter_get_string_value (id));
-					break;
-                                }
-			}
-		}
-		if (!subparam) {
-			g_object_unref (response);
-			return NULL;
+	/* search the container in the list */
+	for (l = container_list; l != NULL; l = l->next) {
+		EGwContainer *container = E_GW_CONTAINER (l->data);
+
+		if (strcmp (e_gw_container_get_name (container), name) == 0) {
+			container_id = g_strdup (e_gw_container_get_id (container));
+			break;
 		}
 	}
+
+	e_gw_connection_free_container_list (container_list);
 
 	return container_id;
 }
@@ -1079,7 +1104,7 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_GW_ITEM (item), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
-	/* FIXME: compose message */
+	/* compose SOAP message */
 
 	return status;
 }

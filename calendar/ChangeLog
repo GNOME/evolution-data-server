@@ -1,3 +1,15 @@
+2004-01-28  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-container.[ch]: new class to contain all
+	information about containers in the server.
+
+	* backends/groupwise/e-gw-connection.[ch]
+	(e_ge_connection_free_container_list): new function.
+	(e_gw_connection_get_container_list): changed to return a list of
+	EGwContainer's.
+	(e_gw_connection_get_container_id): adapted to changes made in
+	e_gw_connection_get_container_list().
+
 2004-01-27  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.h: update proto

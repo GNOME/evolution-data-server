@@ -27,6 +27,7 @@
 #include <glib-object.h>
 #include <libsoup/soup-soap-message.h>
 #include <libedata-cal/e-cal-backend-cache.h>
+#include "e-gw-container.h"
 #include "e-gw-item.h"
 
 G_BEGIN_DECLS
@@ -66,7 +67,8 @@ typedef enum {
 SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
-EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **response);
+EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list);
+void                e_gw_connection_free_container_list (GList *container_list);
 char               *e_gw_connection_get_container_id (EGwConnection *cnc, const char *name);
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
 					       const char *filter, GList **list);
