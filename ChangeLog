@@ -1,3 +1,8 @@
+2004-04-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* libedataserver/e-dbhash.c (e_dbhash_foreach_key): Call func with
+	3 arguments (key, data, user_data).
+
 2004-04-26  Adam Weinberger  <adamw@gnome.org>
 
 	* configure.in: Added en_CA to ALL_LINGUAS.

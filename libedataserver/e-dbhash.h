@@ -27,7 +27,7 @@ struct _EDbHash
 	EDbHashPrivate *priv;
 };
 
-typedef void (*EDbHashFunc) (const char *key, gpointer user_data);
+typedef void (*EDbHashFunc) (const char *key, const char *data, gpointer user_data);
 
 EDbHash *e_dbhash_new (const char *filename);
 
