@@ -193,7 +193,7 @@
 				<xs:sequence>
 					<xs:element ref="tns:startDate" minOccurs="0"/>
 					<xs:element name="rdate" type="tns:RecurrenceDateType" minOccurs="0"/>
-					<xs:element name="isRecurring" ref="tns:recurrenceKey" minOccurs="0"/>
+					<xs:element ref="tns:recurrenceKey" minOccurs="0"/>
 					<xs:element name="iCalId" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -362,7 +362,6 @@
 			<xs:element name="from" type="tns:From" minOccurs="0"/>
 			<xs:element name="to" type="xs:string" minOccurs="0"/>
 			<xs:element name="cc" type="xs:string" minOccurs="0"/>
-			<xs:element name="bc" type="xs:string" minOccurs="0"/>
 			<xs:element name="recipients" type="tns:RecipientList"/>
 			<xs:element name="sendoptions" type="tns:SendOptions" minOccurs="0"/>
 		</xs:sequence>
@@ -473,7 +472,6 @@
 					<xs:element ref="tns:sequence" minOccurs="0"/>
 					<xs:element name="settings" type="tns:uid" minOccurs="0"/>
 					<xs:element name="hasSubfolders" type="xs:boolean" minOccurs="0"/>
-					<xs:element name="notification" type="tns:SharedFolderNotification" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -638,6 +636,13 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="Host">
+		<xs:sequence>
+			<xs:element name="ipAddress" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="port" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:simpleType name="Hour">
 		<xs:restriction base="xs:unsignedByte">
 			<xs:maxInclusive value="23"/>
@@ -791,8 +796,8 @@
 	<xs:complexType name="MessagePart">
 		<xs:simpleContent>
 			<xs:extension base="xs:base64Binary">
-				<xs:attribute name="contentId" type="xs:string" minOccurs="0"/>
-				<xs:attribute name="contentType" type="xs:string" minOccurs="0"/>
+				<xs:attribute name="contentId" type="xs:string"/>
+				<xs:attribute name="contentType" type="xs:string"/>
 				<xs:attribute name="length" type="xs:int"/>
 			</xs:extension>
 		</xs:simpleContent>
@@ -839,6 +844,13 @@
 			<xs:extension base="tns:CalendarItem"/>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:simpleType name="NotificationType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SharedAddressBook"/>
+			<xs:enumeration value="SharedFolder"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:simpleType name="OccurrenceType">
 		<xs:restriction base="xs:string">
@@ -915,10 +927,20 @@
 	<xs:complexType name="PhoneNumber">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
-				<xs:attribute name="type" type="xs:string" use="required"/>
+				<xs:attribute name="type" type="tns:PhoneNumberType" use="required"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+
+	<xs:simpleType name="PhoneNumberType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Fax" /> 
+			<xs:enumeration value="Home" /> 
+			<xs:enumeration value="Mobile" /> 
+			<xs:enumeration value="Office" /> 
+			<xs:enumeration value="Pager" /> 
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="PlainText">
 		<xs:complexContent>
@@ -1059,6 +1081,7 @@
 	<xs:simpleType name="RecipientType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="User"/>
+			<xs:enumeration value="Resource"/>
 			<xs:enumeration value="PersonalGroup"/>
 			<xs:enumeration value="SystemGroup"/>
 			<xs:enumeration value="PersonalGroupMember"/>
@@ -1128,6 +1151,7 @@
 			<xs:element name="mimeEncoding" type="xs:string" minOccurs="0"/>
 			<xs:element name="statusTracking" type="tns:StatusTracking" minOccurs="0"/>
 			<xs:element name="notification" type="tns:ReturnNotification" minOccurs="0"/>
+			<xs:element name="updateFrequentContacts" type="xs:boolean" minOccurs="0" default="true"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -1165,12 +1189,15 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="SharedFolderNotification">
-		<xs:sequence>
-			<xs:element ref="tns:subject" minOccurs="0"/>
-			<xs:element name="message" type="xs:string" minOccurs="0"/>
-			<xs:element ref="tns:description" minOccurs="0"/>
-		</xs:sequence>
+	<xs:complexType name="SharedNotification">
+		<xs:complexContent>
+			<xs:extension base="tns:Mail">
+				<xs:sequence>
+					<xs:element name="notification" type ="tns:NotificationType" minOccurs="1"/>
+					<xs:element ref="tns:rights" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="Status">

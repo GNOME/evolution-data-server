@@ -507,6 +507,7 @@
 			<xs:sequence>
 				<xs:element name="session" type="xs:string"/>
 				<xs:element name="userinfo" type="types:UserInfo"/>
+				<xs:element name="redirectToHost" type="types:Host" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>

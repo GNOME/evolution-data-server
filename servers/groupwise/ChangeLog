@@ -1,3 +1,11 @@
+2004-11-21  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* doc/gw-soap-methods.xsd 
+	* doc/gw-soap-types.xsd : checked in new schema files
+	which has shared folder notifacaton changes and updateFrequentContacts
+	send option 
+ 
+	 
 2004-11-18  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-connection.c (e_gw_connection_new) : change 
