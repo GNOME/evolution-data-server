@@ -61,7 +61,6 @@ ESource *e_source_new_from_xml_node  (xmlNodePtr    node);
 
 gboolean  e_source_update_from_xml_node  (ESource    *source,
 					  xmlNodePtr  node,
-					  gboolean    emit_signals,
 					  gboolean   *changed_return);
 
 char *e_source_name_from_xml_node  (xmlNodePtr node);

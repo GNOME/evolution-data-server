@@ -66,11 +66,9 @@ ESourceGroup *e_source_group_new_from_xmldoc  (xmlDocPtr   doc);
 
 gboolean  e_source_group_update_from_xml     (ESourceGroup *group,
 					      const char   *xml,
-					      gboolean      emit_signals,
 					      gboolean     *changed_return);
 gboolean  e_source_group_update_from_xmldoc  (ESourceGroup *group,
 					      xmlDocPtr     doc,
-					      gboolean      emit_signals,
 					      gboolean     *changed_return);
 
 char *e_source_group_name_from_xmldoc  (xmlDocPtr doc);

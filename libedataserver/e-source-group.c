@@ -41,6 +41,8 @@ struct _ESourceGroupPrivate {
 	char *base_uri;
 
 	GSList *sources;
+
+	gboolean ignore_source_changed;
 };
 
 
@@ -61,7 +63,8 @@ static void
 source_changed_callback (ESource *source,
 			 ESourceGroup *group)
 {
-	g_signal_emit (group, signals[CHANGED], 0);
+	if (! group->priv->ignore_source_changed)
+		g_signal_emit (group, signals[CHANGED], 0);
 }
 
 
@@ -227,7 +230,6 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 gboolean
 e_source_group_update_from_xml (ESourceGroup *group,
 				const char *xml,
-				gboolean emit_signals,
 				gboolean *changed_return)
 {
 	xmlDocPtr xmldoc;
@@ -238,7 +240,7 @@ e_source_group_update_from_xml (ESourceGroup *group,
 
 	xmldoc = xmlParseDoc ((char *) xml);
 
-	success = e_source_group_update_from_xmldoc (group, xmldoc, emit_signals, changed_return);
+	success = e_source_group_update_from_xmldoc (group, xmldoc, changed_return);
 
 	xmlFreeDoc (xmldoc);
 
@@ -248,7 +250,6 @@ e_source_group_update_from_xml (ESourceGroup *group,
 gboolean
 e_source_group_update_from_xmldoc (ESourceGroup *group,
 				   xmlDocPtr doc,
-				   gboolean emit_signals,
 				   gboolean *changed_return)
 {
 	GHashTable *new_sources_hash;
@@ -280,14 +281,14 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	if (strcmp (group->priv->name, name) != 0) {
 		g_free (group->priv->name);
 		group->priv->name = g_strdup (name);
-		*changed_return = TRUE;
+		changed = TRUE;
 	}
 	xmlFree (name);
 
 	if (strcmp (group->priv->base_uri, base_uri) != 0) {
 		g_free (group->priv->base_uri);
 		group->priv->base_uri = g_strdup (base_uri);
-		*changed_return = TRUE;
+		changed = TRUE;
 	}
 	xmlFree (base_uri);
 
@@ -314,14 +315,15 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 
 				g_hash_table_insert (new_sources_hash, new_source, new_source);
 
-				if (emit_signals)
-					g_signal_emit (group, signals[SOURCE_ADDED], 0, new_source);
+				g_signal_emit (group, signals[SOURCE_ADDED], 0, new_source);
 				changed = TRUE;
 			}
 		} else {
 			gboolean source_changed;
 
-			if (e_source_update_from_xml_node (existing_source, nodep, FALSE, &source_changed)) {
+			group->priv->ignore_source_changed ++;
+
+			if (e_source_update_from_xml_node (existing_source, nodep, &source_changed)) {
 				new_sources_list = g_slist_prepend (new_sources_list, existing_source);
 				g_object_ref (existing_source);
 				g_hash_table_insert (new_sources_hash, existing_source, existing_source);
@@ -329,6 +331,8 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 				if (source_changed)
 					changed = TRUE;
 			}
+
+			group->priv->ignore_source_changed --;
 		}
 
 		g_free (source_name);
@@ -345,8 +349,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 		if (g_hash_table_lookup (new_sources_hash, source) == NULL) {
 			changed = TRUE;
 
-			if (emit_signals)
-				g_signal_emit (group, signals[SOURCE_REMOVED], 0, source);
+			g_signal_emit (group, signals[SOURCE_REMOVED], 0, source);
 			g_signal_handlers_disconnect_by_func (source, source_changed_callback, group);
 		}
 
@@ -368,8 +371,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	/* FIXME if the order changes, the function doesn't notice.  */
 
 	if (changed) {
-		if (emit_signals)
-			g_signal_emit (group, signals[CHANGED], 0);
+		g_signal_emit (group, signals[CHANGED], 0);
 		*changed_return = TRUE;
 	}
 

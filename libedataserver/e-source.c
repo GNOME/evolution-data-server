@@ -171,9 +171,6 @@ e_source_new_from_xml_node (xmlNodePtr node)
  * e_source_update_from_xml_node:
  * @source: An ESource.
  * @node: A pointer to the node to parse.
- * @emit_signals: Whether to emit the signals when the source has changed.
- * @changed_return: Pointer to a flag indicating whether the properties of the
- * source have changed.
  * 
  * Update the ESource properties from @node.
  * 
@@ -183,7 +180,6 @@ e_source_new_from_xml_node (xmlNodePtr node)
 gboolean
 e_source_update_from_xml_node (ESource *source,
 			       xmlNodePtr node,
-			       gboolean emit_signals,
 			       gboolean *changed_return)
 {
 	xmlChar *name;
@@ -207,9 +203,7 @@ e_source_update_from_xml_node (ESource *source,
 		g_free (source->priv->relative_uri);
 		source->priv->relative_uri = g_strdup (relative_uri);
 
-		if (emit_signals)
-			g_signal_emit (source, signals[CHANGED], 0);
-
+		g_signal_emit (source, signals[CHANGED], 0);
 		*changed_return = TRUE;
 	} else {
 		retval = TRUE;

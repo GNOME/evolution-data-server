@@ -38,10 +38,11 @@ struct _ESourceListPrivate {
 	char *gconf_path;
 
 	int gconf_notify_id;
-	
+
 	GSList *groups;
 
-	gboolean sync_idle_id;
+	gboolean ignore_group_changed;
+	int sync_idle_id;
 };
 
 
@@ -112,7 +113,9 @@ load_from_gconf (ESourceList *list)
 		} else {
 			gboolean group_changed;
 
-			if (e_source_group_update_from_xmldoc (existing_group, xmldoc, FALSE, &group_changed)) {
+			list->priv->ignore_group_changed ++;
+
+			if (e_source_group_update_from_xmldoc (existing_group, xmldoc, &group_changed)) {
 				new_groups_list = g_slist_prepend (new_groups_list, existing_group);
 				g_object_ref (existing_group);
 				g_hash_table_insert (new_groups_hash, existing_group, existing_group);
@@ -120,6 +123,8 @@ load_from_gconf (ESourceList *list)
 				if (group_changed)
 					changed = TRUE;
 			}
+
+			list->priv->ignore_group_changed --;
 		}
 
 		g_free (group_name);
@@ -197,7 +202,8 @@ static void
 group_changed_callback (ESourceGroup *group,
 			ESourceList *list)
 {
-	g_signal_emit (list, signals[CHANGED], 0);
+	if (! list->priv->ignore_group_changed)
+		g_signal_emit (list, signals[CHANGED], 0);
 
 	if (list->priv->sync_idle_id == 0)
 		list->priv->sync_idle_id = g_idle_add ((GSourceFunc) sync_idle_callback, list);
