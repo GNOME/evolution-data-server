@@ -1,3 +1,10 @@
+2005-02-23  Sankar P <psankar@novell.com>
+
+       * camel-groupwise-folder.c: (groupwise_folder_get_message):
+         Changed handling of addresses by using _camel_header_address
+         to enable display of gwpoa generated messages.
+   	Fix for #72285 
+
 2005-02-23  Sivaiah Nallagatla <snallagatla@novell.com.
 
        * camel-groupwise-folder.c (groupwise_folder_get_message) :

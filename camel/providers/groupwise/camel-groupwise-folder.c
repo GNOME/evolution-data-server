@@ -87,7 +87,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelGroupwiseMessageInfo *mi = NULL ;
 	char *temp_name, *folder_name, *container_id, *body , *temp_str = NULL ;
-	CamelInternetAddress *from_addr, *to_addr, *cc_addr, *bcc_addr ;
 	GSList *recipient_list, *attach_list ;
 	EGwItemOrganizer *org ;
 	EGwItemType type ;
@@ -100,6 +99,9 @@ groupwise_folder_get_message( CamelFolder *folder,
 	int errno;
 	GList *read_items = NULL ;
 	guint32 item_status ;
+	struct _camel_header_address *ha;
+	char *subs_email;
+	struct _camel_header_address *to_list = NULL, *cc_list = NULL, *bcc_list=NULL;
 	/* see if it is there in cache */
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 
@@ -191,12 +193,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 	org = e_gw_item_get_organizer (item) ;
 	recipient_list = e_gw_item_get_recipient_list (item) ;
 
-	/*Addresses*/
-	from_addr = camel_internet_address_new () ;
-	to_addr = camel_internet_address_new () ;
-	cc_addr = camel_internet_address_new () ;
-	bcc_addr = camel_internet_address_new () ;
-
 	if (recipient_list) {
 		GSList *rl ;
 		char *status_opt = NULL;
@@ -206,21 +202,27 @@ groupwise_folder_get_message( CamelFolder *folder,
 			EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 			enabled = recp->status_enabled ;
 
+			if (!recp->email) {
+				ha=camel_header_address_new_group(recp->display_name);
+			} else {
+				ha=camel_header_address_new_name(recp->display_name,recp->email);
+			}
+			
 			if (recp->type == E_GW_ITEM_RECIPIENT_TO) {
 				if (recp->status_enabled) 
 					status_opt = g_strconcat (status_opt ? status_opt : "" , "TO", ";",NULL) ;
-				camel_internet_address_add (to_addr, recp->display_name, recp->email ) ;
-				
+				camel_header_address_list_append(&to_list, ha);
 			} else if (recp->type == E_GW_ITEM_RECIPIENT_CC) {
 				if (recp->status_enabled) 
 					status_opt = g_strconcat (status_opt ? status_opt : "", "CC", ";",NULL) ;
-				camel_internet_address_add (cc_addr, recp->display_name, recp->email ) ;
+				camel_header_address_list_append(&cc_list,ha);
 				
 			} else if (recp->type == E_GW_ITEM_RECIPIENT_BC) {
 				if (recp->status_enabled) 
 					status_opt = g_strconcat (status_opt ? status_opt : "", "BCC", ";",NULL) ;
-				camel_internet_address_add (bcc_addr, recp->display_name, recp->email ) ;
-
+				camel_header_address_list_append(&bcc_list,ha);
+			} else {
+				camel_header_address_unref(ha);
 			}
 			if (recp->status_enabled) {
 				status_opt = g_strconcat (status_opt, 
@@ -241,14 +243,40 @@ groupwise_folder_get_message( CamelFolder *folder,
 			camel_medium_add_header ( CAMEL_MEDIUM (msg), "X-gw-status-opt", (const char *)status_opt) ;
 			g_free (status_opt) ;
 		}
-		
-		camel_mime_message_set_recipients (msg, CAMEL_RECIPIENT_TYPE_TO, to_addr) ;
-		camel_mime_message_set_recipients (msg, CAMEL_RECIPIENT_TYPE_CC, cc_addr) ;
-		camel_mime_message_set_recipients (msg, CAMEL_RECIPIENT_TYPE_BCC, bcc_addr) ;
 	}
-	if (org)
-		camel_internet_address_add (from_addr,org->display_name,org->email) ;
-	
+
+	if(to_list) { 
+		subs_email=camel_header_address_list_encode(to_list);
+		camel_medium_set_header( CAMEL_MEDIUM(msg), "To", subs_email);
+		g_free(subs_email);
+		camel_header_address_list_clear(&to_list);
+	}
+
+	if(cc_list) { 
+		subs_email=camel_header_address_list_encode(cc_list);
+		camel_medium_set_header( CAMEL_MEDIUM(msg), "Cc", subs_email);
+		g_free(subs_email);
+		camel_header_address_list_clear(&cc_list);
+	}
+
+	if(bcc_list) { 
+		subs_email=camel_header_address_list_encode(bcc_list);
+		camel_medium_set_header( CAMEL_MEDIUM(msg), "Bcc", subs_email);
+		g_free(subs_email);
+		camel_header_address_list_clear(&bcc_list);
+	}
+
+	if (org) {
+		if (org->display_name && org->email) {
+			ha=camel_header_address_new_name(org->display_name,org->email);
+		} else {
+			ha=camel_header_address_new_group(org->display_name);
+		}
+		subs_email=camel_header_address_list_encode(ha);	
+		camel_medium_set_header( CAMEL_MEDIUM(msg), "From", subs_email);
+		camel_header_address_unref(ha);
+		g_free(subs_email);
+	}
 	if (e_gw_item_get_reply_request (item)) {
 		char *reply_within; 
 		const char *mess = e_gw_item_get_message (item);
@@ -319,7 +347,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 		time_t actual_time = mktime (tm) ;
 		camel_mime_message_set_date (msg, actual_time, 0) ;
 	}
-	camel_mime_message_set_from (msg, from_addr) ;
 	
 
 	/* Attachments
