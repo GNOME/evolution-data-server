@@ -1266,7 +1266,7 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	
 	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
 		if (ic1 && ic1->status != CAMEL_IMAP4_COMMAND_COMPLETE)
-			camel_exception_xfer (ex, &ic0->ex);
+			camel_exception_xfer (ex, &ic1->ex);
 		else if (ic0 && ic0->status != CAMEL_IMAP4_COMMAND_COMPLETE)
 			camel_exception_xfer (ex, &ic0->ex);
 		else

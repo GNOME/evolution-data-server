@@ -1,3 +1,8 @@
+2005-01-28  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-store.c (imap4_get_folder_info): In the ic1 error
+	case, xfer the ic1 exception, not the ic0 exception (which might
+	not even exist). Fixes bug #71919.
 
 Refer to main changelog for earlier changes.
 
