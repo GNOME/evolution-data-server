@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-22 05:23+0100\n"
-"PO-Revision-Date: 2005-03-22 09:18+0100\n"
+"POT-Creation-Date: 2005-03-25 20:10+0100\n"
+"PO-Revision-Date: 2005-03-26 01:08+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -557,7 +557,7 @@ msgid "Category List"
 msgstr "Seznam kategorií"
 
 #: addressbook/libebook/e-contact.c:224
-#: libedataserverui/e-categories-dialog.c:371
+#: libedataserverui/e-categories-dialog.c:372
 msgid "Categories"
 msgstr "Kategorie"
 
@@ -642,27 +642,23 @@ msgstr "Požadována odpověď: Podle možností"
 msgid "Invalid server URI"
 msgstr "Neplatné URI serveru"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "Nemohu vytvořit thread pro získání změn"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "Nemohu vytvořit thread pro naplnění cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4528
 #: camel/providers/groupwise/camel-groupwise-folder.c:654
 #: camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -1024,7 +1020,7 @@ msgid "Undefined"
 msgstr "Nedefinováno"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1538
+#: calendar/libecal/e-cal.c:1538 libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
@@ -4691,18 +4687,26 @@ msgstr "%H:%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "Přistupuji k serveru LDAP anonymně"
+
+#: libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "Nemohu se autentizovat.\n"
+
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "Ikona kategorie"
 
-#: libedataserverui/e-categories-dialog.c:238
+#: libedataserverui/e-categories-dialog.c:239
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "Kategorie '%s' již v nastavení existuje. Použijte prosím jiný název"
 
-#: libedataserverui/e-categories-dialog.c:396
+#: libedataserverui/e-categories-dialog.c:397
 msgid "Category"
 msgstr "Kategorie"
 
@@ -4825,6 +4829,9 @@ msgstr "Backend souborů a webcal pro kalendář Evolution"
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Došlo k několika chybám segmentace; nemohu zobrazit dialog o chybě\n"
 
+#~ msgid "Could not create thread for getting deltas"
+#~ msgstr "Nemohu vytvořit thread pro získání změn"
+
 #~ msgid "Address Book and Calendar"
 #~ msgstr "Adresář a kalendář"
 
@@ -4836,9 +4843,6 @@ msgstr "Došlo k několika chybám segmentace; nemohu zobrazit dialog o chybě\n
 
 #~ msgid "%sEnter password for %s (user %s)"
 #~ msgstr "%sZadejte heslo pro %s (uživatel %s)"
-
-#~ msgid "Failed to authenticate.\n"
-#~ msgstr "Nemohu se autentizovat.\n"
 
 #~ msgid "Server rejected username"
 #~ msgstr "Server odmítl jméno uživatele"
