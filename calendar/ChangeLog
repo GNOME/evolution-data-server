@@ -1,3 +1,13 @@
+2003-11-10  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.h: add proto
+
+	* libecal/e-cal.c (e_cal_free_change_list): this belongs here
+
+	* libecal/e-cal-types.h: remove proto
+
+	* libecal/Makefile.am: don't build dead file
+
 2003-11-07  Dan Winship  <danw@ximian.com>
 
 	* libecal/Makefile.am (libecal_la_LDFLAGS): Remove -no-undefined

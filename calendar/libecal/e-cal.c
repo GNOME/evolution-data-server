@@ -2296,6 +2296,24 @@ e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **
 	E_CALENDAR_CHECK_STATUS (status, error);
 }
 
+void
+e_cal_free_change_list (GList *list)
+{
+	ECalChange *c;
+	GList *l;
+
+	for (l = list; l; l = l->next) {
+		c = l->data;
+
+		g_assert (c != NULL);
+		g_assert (c->comp != NULL);
+
+		g_object_unref (G_OBJECT (c->comp));
+		g_free (c);
+	}
+
+	g_list_free (list);
+}
 
 /**
  * e_cal_get_object_list:

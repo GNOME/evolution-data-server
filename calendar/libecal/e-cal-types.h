@@ -20,8 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef CAL_CLIENT_TYPES_H
-#define CAL_CLIENT_TYPES_H
+#ifndef E_CAL_TYPES_H
+#define E_CAL_TYPES_H
 
 #include <libecal/e-cal-component.h>
 
@@ -66,8 +66,6 @@ typedef enum {
 	E_CALENDAR_STATUS_CORBA_EXCEPTION,
 	E_CALENDAR_STATUS_OTHER_ERROR
 } ECalendarStatus;
-
-void cal_client_change_list_free (GList *list);
 
 G_END_DECLS
 

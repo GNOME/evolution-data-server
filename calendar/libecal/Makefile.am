@@ -47,7 +47,6 @@ libecal_la_SOURCES =		\
 	e-cal-listener.c	\
 	e-cal-recur.c		\
 	e-cal-time-util.c	\
-	e-cal-types.c		\
 	e-cal-util.c		\
 	e-cal-view.c		\
 	e-cal-view-listener.c
