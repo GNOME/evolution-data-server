@@ -275,10 +275,10 @@ do_create(EBookBackendVCF  *bvcf,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_vcf_process_create_contact (EBookBackendSync *backend,
-					EDataBook *book,
-					const char *vcard,
-					EContact **contact)
+e_book_backend_vcf_create_contact (EBookBackendSync *backend,
+				   EDataBook *book,
+				   const char *vcard,
+				   EContact **contact)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 
@@ -294,10 +294,10 @@ e_book_backend_vcf_process_create_contact (EBookBackendSync *backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_vcf_process_remove_contacts (EBookBackendSync *backend,
-					 EDataBook    *book,
-					 GList *id_list,
-					 GList **ids)
+e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
+				    EDataBook    *book,
+				    GList *id_list,
+				    GList **ids)
 {
 	/* FIXME: make this handle bulk deletes like the file backend does */
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
@@ -325,10 +325,10 @@ e_book_backend_vcf_process_remove_contacts (EBookBackendSync *backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_vcf_process_modify_contact (EBookBackendSync *backend,
-					EDataBook *book,
-					const char *vcard,
-					EContact **contact)
+e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
+				   EDataBook *book,
+				   const char *vcard,
+				   EContact **contact)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	char *old_id, *old_vcard_string;
@@ -361,10 +361,10 @@ e_book_backend_vcf_process_modify_contact (EBookBackendSync *backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_vcf_process_get_contact (EBookBackendSync *backend,
-				     EDataBook    *book,
-				     const char *id,
-				     char **vcard)
+e_book_backend_vcf_get_contact (EBookBackendSync *backend,
+				EDataBook    *book,
+				const char *id,
+				char **vcard)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	char *v;
@@ -397,10 +397,10 @@ foreach_get_contact_compare (char *id, char *vcard_string, GetContactListClosure
 }
 
 static EBookBackendSyncStatus
-e_book_backend_vcf_process_get_contact_list (EBookBackendSync *backend,
-				       EDataBook    *book,
-				       const char *query,
-				       GList **contacts)
+e_book_backend_vcf_get_contact_list (EBookBackendSync *backend,
+				     EDataBook    *book,
+				     const char *query,
+				     GList **contacts)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	const char *search = query;
@@ -442,19 +442,19 @@ e_book_backend_vcf_extract_path_from_uri (const char *uri)
 }
 
 static EBookBackendSyncStatus
-e_book_backend_vcf_process_authenticate_user (EBookBackendSync *backend,
-					   EDataBook    *book,
-					   const char *user,
-					   const char *passwd,
-					   const char *auth_method)
+e_book_backend_vcf_authenticate_user (EBookBackendSync *backend,
+				      EDataBook    *book,
+				      const char *user,
+				      const char *passwd,
+				      const char *auth_method)
 {
 	return GNOME_Evolution_Addressbook_Success;
 }
 
 static EBookBackendSyncStatus
-e_book_backend_vcf_process_get_supported_fields (EBookBackendSync *backend,
-					      EDataBook    *book,
-					      GList **fields_out)
+e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
+					 EDataBook    *book,
+					 GList **fields_out)
 {
 	GList *fields = NULL;
 	int i;
@@ -624,13 +624,13 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	backend_class->stop_book_view          = e_book_backend_vcf_stop_book_view;
 	backend_class->cancel_operation        = e_book_backend_vcf_cancel_operation;
 
-	sync_class->create_contact_sync        = e_book_backend_vcf_process_create_contact;
-	sync_class->remove_contacts_sync       = e_book_backend_vcf_process_remove_contacts;
-	sync_class->modify_contact_sync        = e_book_backend_vcf_process_modify_contact;
-	sync_class->get_contact_sync           = e_book_backend_vcf_process_get_contact;
-	sync_class->get_contact_list_sync      = e_book_backend_vcf_process_get_contact_list;
-	sync_class->authenticate_user_sync     = e_book_backend_vcf_process_authenticate_user;
-	sync_class->get_supported_fields_sync  = e_book_backend_vcf_process_get_supported_fields;
+	sync_class->create_contact_sync        = e_book_backend_vcf_create_contact;
+	sync_class->remove_contacts_sync       = e_book_backend_vcf_remove_contacts;
+	sync_class->modify_contact_sync        = e_book_backend_vcf_modify_contact;
+	sync_class->get_contact_sync           = e_book_backend_vcf_get_contact;
+	sync_class->get_contact_list_sync      = e_book_backend_vcf_get_contact_list;
+	sync_class->authenticate_user_sync     = e_book_backend_vcf_authenticate_user;
+	sync_class->get_supported_fields_sync  = e_book_backend_vcf_get_supported_fields;
 
 	object_class->dispose = e_book_backend_vcf_dispose;
 }

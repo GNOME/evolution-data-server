@@ -1157,9 +1157,9 @@ create_contact_dtor (LDAPOp *op)
 }
 
 static void
-e_book_backend_ldap_process_create_contact (EBookBackend *backend,
-					 EDataBook    *book,
-					 const char *vcard)
+e_book_backend_ldap_create_contact (EBookBackend *backend,
+				    EDataBook    *book,
+				    const char   *vcard)
 {
 	LDAPCreateOp *create_op = g_new (LDAPCreateOp, 1);
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
@@ -1316,9 +1316,9 @@ remove_contact_dtor (LDAPOp *op)
 }
 
 static void
-e_book_backend_ldap_process_remove_contacts (EBookBackend *backend,
-					  EDataBook    *book,
-					  GList      *ids)
+e_book_backend_ldap_remove_contacts (EBookBackend *backend,
+				     EDataBook    *book,
+				     GList        *ids)
 {
 	LDAPRemoveOp *remove_op = g_new (LDAPRemoveOp, 1);
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
@@ -1518,9 +1518,9 @@ modify_contact_dtor (LDAPOp *op)
 }
 
 static void
-e_book_backend_ldap_process_modify_contact (EBookBackend *backend,
-					 EDataBook    *book,
-					 const char *vcard)
+e_book_backend_ldap_modify_contact (EBookBackend *backend,
+				    EDataBook    *book,
+				    const char   *vcard)
 {
 	LDAPModifyOp *modify_op = g_new0 (LDAPModifyOp, 1);
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
@@ -1627,9 +1627,9 @@ get_contact_dtor (LDAPOp *op)
 }
 
 static void
-e_book_backend_ldap_process_get_contact (EBookBackend *backend,
-				      EDataBook *book,
-				      const char *id)
+e_book_backend_ldap_get_contact (EBookBackend *backend,
+				 EDataBook    *book,
+				 const char   *id)
 {
 	LDAPGetContactOp *get_contact_op = g_new0 (LDAPGetContactOp, 1);
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
@@ -2813,8 +2813,8 @@ e_book_backend_ldap_search (EBookBackendLDAP  	*bl,
 }
 
 static void
-e_book_backend_ldap_process_start_book_view (EBookBackend  *backend,
-					  EDataBookView *view)
+e_book_backend_ldap_start_book_view (EBookBackend  *backend,
+				     EDataBookView *view)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 
@@ -2822,16 +2822,16 @@ e_book_backend_ldap_process_start_book_view (EBookBackend  *backend,
 }
 
 static void
-e_book_backend_ldap_process_stop_book_view (EBookBackend *backend,
-					 EDataBookView *view)
+e_book_backend_ldap_stop_book_view (EBookBackend  *backend,
+				    EDataBookView *view)
 {
 	/* FIXME we don't stop them... */
 }
 
 static void
-e_book_backend_ldap_process_get_changes (EBookBackend *backend,
-				      EDataBook    *book,
-				      const char *change_id)
+e_book_backend_ldap_get_changes (EBookBackend *backend,
+				 EDataBook    *book,
+				 const char   *change_id)
 {
 	/* FIXME: implement */
 }
@@ -2840,11 +2840,11 @@ e_book_backend_ldap_process_get_changes (EBookBackend *backend,
 #define SASL_PREFIX "sasl/"
 
 static void
-e_book_backend_ldap_process_authenticate_user (EBookBackend *backend,
-					    EDataBook    *book,
-					    const char *user,
-					    const char *passwd,
-					    const char *auth_method)
+e_book_backend_ldap_authenticate_user (EBookBackend *backend,
+				       EDataBook    *book,
+				       const char   *user,
+				       const char   *passwd,
+				       const char   *auth_method)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	int ldap_error;
@@ -2945,8 +2945,8 @@ e_book_backend_ldap_process_authenticate_user (EBookBackend *backend,
 }
 
 static void
-e_book_backend_ldap_process_get_supported_fields (EBookBackend *backend,
-					       EDataBook    *book)
+e_book_backend_ldap_get_supported_fields (EBookBackend *backend,
+					  EDataBook    *book)
 
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
@@ -2957,8 +2957,8 @@ e_book_backend_ldap_process_get_supported_fields (EBookBackend *backend,
 }
 
 static void
-e_book_backend_ldap_process_get_supported_auth_methods (EBookBackend *backend,
-						     EDataBook    *book)
+e_book_backend_ldap_get_supported_auth_methods (EBookBackend *backend,
+						EDataBook    *book)
 
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
@@ -3150,16 +3150,16 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->load_uri                = e_book_backend_ldap_load_uri;
 	parent_class->get_static_capabilities = e_book_backend_ldap_get_static_capabilities;
 
-	parent_class->create_contact          = e_book_backend_ldap_process_create_contact;
-	parent_class->remove_contacts         = e_book_backend_ldap_process_remove_contacts;
-	parent_class->modify_contact          = e_book_backend_ldap_process_modify_contact;
-	parent_class->get_contact             = e_book_backend_ldap_process_get_contact;
-	parent_class->start_book_view         = e_book_backend_ldap_process_start_book_view;
-	parent_class->stop_book_view          = e_book_backend_ldap_process_stop_book_view;
-	parent_class->get_changes             = e_book_backend_ldap_process_get_changes;
-	parent_class->authenticate_user       = e_book_backend_ldap_process_authenticate_user;
-	parent_class->get_supported_fields    = e_book_backend_ldap_process_get_supported_fields;
-	parent_class->get_supported_auth_methods = e_book_backend_ldap_process_get_supported_auth_methods;
+	parent_class->create_contact          = e_book_backend_ldap_create_contact;
+	parent_class->remove_contacts         = e_book_backend_ldap_remove_contacts;
+	parent_class->modify_contact          = e_book_backend_ldap_modify_contact;
+	parent_class->get_contact             = e_book_backend_ldap_get_contact;
+	parent_class->start_book_view         = e_book_backend_ldap_start_book_view;
+	parent_class->stop_book_view          = e_book_backend_ldap_stop_book_view;
+	parent_class->get_changes             = e_book_backend_ldap_get_changes;
+	parent_class->authenticate_user       = e_book_backend_ldap_authenticate_user;
+	parent_class->get_supported_fields    = e_book_backend_ldap_get_supported_fields;
+	parent_class->get_supported_auth_methods = e_book_backend_ldap_get_supported_auth_methods;
 
 	object_class->dispose = e_book_backend_ldap_dispose;
 }
