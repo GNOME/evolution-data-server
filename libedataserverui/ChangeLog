@@ -1,3 +1,10 @@
+2005-02-21  Harry Lu <harry.lu@sun.com>
+
+	Fix for 9605.
+	* e-name-selector-dialog.c: (add_section),(destination_key_press):
+	add key-press-event handler to delete contact from the list if user
+	press Delete key.
+
 2005-02-07  Ross Burton  <ross@openedhand.com>
 
 	* test-source-option-menu.c:

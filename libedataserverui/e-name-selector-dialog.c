@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkentry.h>
@@ -53,6 +54,7 @@ static void     setup_name_selector_model     (ENameSelectorDialog *name_selecto
 static void     contact_activated             (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path);
 static void     destination_activated         (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path,
 					       GtkTreeViewColumn *column, GtkTreeView *tree_view);
+static gboolean destination_key_press         (ENameSelectorDialog *name_selector_dialog, GdkEventKey *event, GtkTreeView *tree_view);
 static void     remove_books                  (ENameSelectorDialog *name_selector_dialog);
 static void     contact_column_formatter      (GtkTreeViewColumn *column, GtkCellRenderer *cell,
 					       GtkTreeModel *model, GtkTreeIter *iter,
@@ -448,6 +450,8 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_box_pack_start (section.section_box, widget, TRUE, TRUE, 0);
 	g_signal_connect_swapped (section.destination_view, "row-activated",
 				  G_CALLBACK (destination_activated), name_selector_dialog);
+	g_signal_connect_swapped (section.destination_view, "key-press-event",
+				  G_CALLBACK (destination_key_press), name_selector_dialog);
 
 	gtk_widget_show_all (GTK_WIDGET (section.section_box));
 
@@ -660,6 +664,44 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 	g_assert (destination);
 
 	e_destination_store_remove_destination (destination_store, destination);
+}
+
+static gboolean 
+destination_key_press (ENameSelectorDialog *name_selector_dialog, 
+		       GdkEventKey *event, GtkTreeView *tree_view)
+{
+	gint               section_index;
+	EDestinationStore *destination_store;
+	EDestination      *destination;
+	Section           *section;
+	GtkTreeIter        iter;
+
+	/* we only care about DEL key */
+	if (event->keyval != GDK_Delete)
+		return FALSE;
+
+	section_index = find_section_by_tree_view (name_selector_dialog, tree_view);
+	if (section_index < 0) {
+		g_warning ("ENameSelectorDialog got key press from unknown view!");
+		return FALSE;
+	}
+
+	section = &g_array_index (name_selector_dialog->sections, Section, section_index);
+	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
+						 section->name, NULL, &destination_store)) {
+		g_warning ("ENameSelectorDialog has a section unknown to the model!");
+		return FALSE;
+	}
+
+	if (!gtk_tree_selection_get_selected (gtk_tree_view_get_selection (tree_view), NULL, &iter))
+		return FALSE;
+
+	destination = e_destination_store_get_destination (destination_store, &iter);
+	g_assert (destination);
+
+	e_destination_store_remove_destination (destination_store, destination);
+
+	return TRUE;
 }
 
 static void
