@@ -1,3 +1,285 @@
+2003-09-03  David Woodhouse  <dwmw2@infradead.org>
+
+	* camel-stream-process.[ch]: New stream implementation for running
+	commands.
+	* Makefile.am: Compile the above
+
+2003-08-20  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47765.
+
+	* camel-folder-search.h: Removed match1 member.
+
+	* camel-folder-search.c (camel_folder_search_match_expression):
+	use current directly rather than match1.  This method isn't used
+	anywhere anyway.
+	(search_not): remove match1 stuff.
+	(search_match_all): properly handle the match-all against 1
+	message as a scalar result, not an array result.
+
+2003-09-03  Not Zed  <NotZed@Ximian.com>
+
+	* camel-http-stream.c (camel_http_stream_set_proxy): handle NULL
+	proxy_url - unset the proxy.
+
+2003-08-29  Not Zed  <NotZed@Ximian.com>
+
+	* camel-object.c (camel_object_state_write): 
+	(cobject_getv):
+	(cobject_setv, cobject_state_read, cobject_state_read) 
+	(cobject_state_write): removed debug printfs.
+
+	* providers/local/camel-local-folder.c (local_getv): Need to copy
+	the local properties list before passing it out, since it's freed.
+
+2003-08-27  Not Zed  <NotZed@Ximian.com>
+
+	* providers/local/camel-local-folder.c (local_getv): implement
+	PERSISTENT_PROPERTIES, for index mode.
+
+	* camel-object.c (cobject_state_read): Also add property reading,
+	and bump version to 1.
+	(cobject_state_write): add persistent property writing.
+
+2003-08-26  Not Zed  <NotZed@Ximian.com>
+
+	* camel-folder.c (folder_getv): chain up properly.
+
+	* camel-file-utils.c (camel_file_util_savename): helper to create
+	a .#filename filename.
+
+	* providers/local/camel-local-folder.c
+	(camel_local_folder_construct): init meta-data for local folders.
+	(local_getv): chain up properly, if args are not processed, rather
+	than don't if they aren't.
+
+2003-08-23  Not Zed  <NotZed@Ximian.com>
+
+	* camel-object.c (cobject_class_init): added a new event,
+	meta_changed.
+	(camel_object_meta_set, camel_object_meta_get): meta-data api.
+	(camel_object_free_hooks): Free meta-data if it is set on the
+	object.
+
+	* providers/local/camel-local-folder.c
+	(camel_local_folder_get_type): setup a property list for local
+	folders, just 'index_body' at present.
+
+2003-08-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-filter-driver.c (pipe_to_system): Added some more error
+	checking for reading/writing to the pipes. Fixes bug #47880.
+
+2003-08-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-data-wrapper.c (decode_to_stream): Don't poke
+	wrapper->stream directly, use camel_data_wrapper_write_to_stream()
+	instead as this simplifies things and makes the imap data wrapper
+	implementation Just Work (tm).
+
+	* providers/imap/camel-imap-wrapper.c: changed prototype of
+	write_to_stream() to return ssize_t.
+
+2003-08-20  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-wrapper.c (imap_wrapper_hydrate): Make
+	sure to ref the stream. Fixes bug #47749.
+
+2003-08-18  Not Zed  <NotZed@Ximian.com>
+
+	* camel-http-stream.c: Various fixes to make it work.
+
+	* tests/smime/pgp-mime.c (main): added missing 'ret' variable.
+
+	* providers/smtp/camel-smtp-transport.c (connect_to_server): 
+	* providers/imapp/camel-imapp-store.c (connect_to_server:
+	* providers/imap/camel-imap-store.c (connect_to_server):
+	* providers/pop3/camel-pop3-store.c (connect_to_server):
+	* camel-http-stream.c (http_connect): change service->session for
+	tcp_stream_ssl_new.
+
+	* camel-tcp-stream-ssl.c: Changed service to session, and fix some
+	refcounting of it.
+	include camel-operation.h
+
+2003-08-15  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47634.
+
+	* tests/lib/messages.c (test_message_compare): check
+	write_to_stream returns.
+	(message_dump_rec): helper to dump message structure.
+
+	* camel-mime-part-utils.c
+	(simple_data_wrapper_construct_from_parser): dont set content
+	encoding here.
+	(camel_mime_part_construct_content_from_parser): set it here
+	instead, on every part.  basically same as setting the
+	mime_type_field always.
+
+	* camel-multipart-signed.c (camel_multipart_signed_class_init): 
+	* camel-mime-message.c (camel_mime_message_class_init): 
+	* camel-multipart.c (camel_multipart_class_init): override
+	decode_to_stream to always do the same as write_to_stream, since
+	we can never be encoded.
+
+2003-08-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-wrapper.c (imap_wrapper_hydrate):
+	Don't attach any filters to decode base64/qp/etc.
+
+2003-08-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-part.c (write_to_stream): Save errno when
+	flushing/unreffing the filter stream.
+
+2003-08-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-part.c (write_to_stream): If the content is
+	base64/qp/uu/etc encoded but the part is 7bit/8bit/(or otherwise
+	non-encoded), set reencode to TRUE so that we decode the original
+	content stream. Fixes a bug noticed on
+	evolution-patches@ximian.com where a patch had a
+	Content-Transfer-Encoding of 7bit but was base64 encoded.
+
+2003-08-13  Not Zed  <NotZed@Ximian.com>
+
+	* camel-folder-summary.c (camel_folder_summary_remove_range): Fix
+	the range check, we were stopping removal of 1 or 2 removals, for
+	some odd and completely uncomprehensible reason.  Perhaps debug
+	left in?
+
+2003-08-13  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47517.
+
+	* camel-vee-folder.c (vee_sync): Always rebuild folder on any
+	sync, not just expunge ones.
+
+2003-08-11  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imapp/camel-imapp-store.c (imap_get_folder_info):
+	force connect manually so basics work.
+
+	** See bug #45505.
+
+	* camel-service.c (camel_gethostbyname): duh, pthread_create
+	returns the error code directly, not via errno.
+	(camel_gethostbyaddr): Same, also properly handle the failure
+	case.
+
+2003-08-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47208.
+
+	* camel-filter-search.c (match_all): match-all with no arguments	
+	should always return TRUE.
+
+	* camel-folder-search.c (camel_folder_search_execute_expression):
+	print a warning when we get an invalid result type & fixed a leak
+	for that case.
+
+2003-08-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* tests/message/test4.c: New test suite for the mime parser (which
+	is where the below 2 fixes were noticed).
+
+	* camel-mime-parser.c (folder_boundary_check): Calculate 'len' by
+	subtracting the boundary start from inend rather than 'atleast'.
+	(folder_scan_content): Calculate 'inend' differently depending on
+	the EOF state.
+
+2003-08-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-filter-tohtml.c (html_convert): Rather than checking
+	*inptr == '\n', check inptr >= inend - this gets rid of an Invalid
+	Read report from valgrind.
+
+	* camel-mime-part.c (write_to_stream): Don't necessarily re-encode
+	just because the encodings differ. Need to look into making it so
+	that message/rfc822 and multipart parts ignore the
+	Content-Transfer-Encoding header and just keep their 'encoding'
+	bits set to DEFAULT.
+
+2003-08-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-folder.c (get_content): Updated.
+
+	* camel-mime-message.c (camel_mime_message_init): Don't override
+	the mime_type here.
+	(process_header): Updated to use CamelDataWrapper's mime_type
+	field.
+	(find_best_encoding): Same.
+	(best_encoding): Here too.
+
+	* camel-digest-folder.c (camel_digest_folder_new): Updated for
+	CamelMimePart::content_type change.
+
+	* camel-mime-part.c (camel_mime_part_init): Override our parent
+	class's default mime_type.
+	(camel_mime_part_finalize): Don't need to unref the content_type
+	anymore.
+M	(process_header): Updated to use CamelDataWrapper's mime_type
+	field.
+	(camel_mime_part_set_filename): Same.
+	(camel_mime_part_get_filename): Same.
+	(camel_mime_part_get_content_type): Same.
+	(set_content_object): Here too.
+	(write_to_stream): Updated.
+	(construct_from_parser): Updated.
+
+	* camel-mime-part.h: Remove the content_type field.
+
+2003-07-31  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* tests/lib/messages.c (test_message_compare_content): If the
+	chunks differ, perform a hexdump on the data being compared so
+	that we may analyse it easier.
+
+	* camel-multipart-signed.c (write_to_stream): Return ssize_t.
+
+	* camel-mime-utils.h: Added the CamelMimePartEncodingType enum
+	here.
+
+	* camel-mime-part.h: Removed the CamelMimePartEncodingType enum
+	from here.
+
+	* camel-mime-part.c (write_to_stream): Updated to return
+	ssize_t. Also minor changes to only re-encode the content stream
+	if the charset or encoding changed (this way we write it out in
+	the original raw form if nothing changed).
+
+	* camel-mime-part-utils.c
+	(simple_data_wrapper_construct_from_parser): Drastically
+	simplify. We no longer scan html content to try and find the
+	charset, nor do we care about converting the content to UTF-8 and
+	handling broken windows charsets.
+
+	* camel-mime-message.c (find_best_encoding): Use
+	decode_to_stream() here. Also updated to not assume the content
+	charset is UTF-8 since it is very likely not the case anymore
+	since data-wrappers no longer are converted to UTF-8 at parse
+	time.
+
+	* camel-folder-summary.c (summary_build_content_info_message): Use
+	decode_to_stream instead here too.
+
+	* camel-folder-search.c (match_words_1message): Use
+	decode_to_stream instead of write_to_stream so we can search the
+	contents.
+
+	* camel-data-wrapper.c (camel_data_wrapper_init): Set the default
+	encoding to DEFAULT.
+	(write_to_stream): Updated to return ssize_t
+	(camel_data_wrapper_decode_to_stream): New virtual function to
+	decode a data wrapper to a stream (results in nearly identical
+	behaviour to the old write_to_stream method).
+	(decode_to_stream): Default implementation of above virtual
+	method. Decodes base64/qp/etc streams.
+
+	* camel-data-wrapper.h: Removed the rawtext bit and added an
+	encoding member.
+
 2003-08-01  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* tests/smime/pgp-mime.c: Same.

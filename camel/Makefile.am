@@ -63,6 +63,7 @@ libcamel_la_SOURCES = 				\
 	camel-mime-filter-index.c		\
 	camel-mime-filter-linewrap.c		\
 	camel-mime-filter-save.c		\
+	camel-mime-filter-windows.c		\
 	camel-mime-filter.c			\
 	camel-mime-message.c			\
 	camel-mime-parser.c			\
@@ -99,6 +100,7 @@ libcamel_la_SOURCES = 				\
 	camel-stream-fs.c			\
 	camel-stream-mem.c			\
 	camel-stream-null.c			\
+	camel-stream-process.c			\
 	camel-stream.c				\
 	camel-string-utils.c			\
 	camel-text-index.c			\
@@ -161,6 +163,7 @@ libcamelinclude_HEADERS =			\
 	camel-mime-filter-index.h		\
 	camel-mime-filter-linewrap.h		\
 	camel-mime-filter-save.h		\
+	camel-mime-filter-windows.h		\
 	camel-mime-filter.h			\
 	camel-mime-message.h			\
 	camel-mime-parser.h			\
@@ -196,6 +199,7 @@ libcamelinclude_HEADERS =			\
 	camel-stream-fs.h			\
 	camel-stream-mem.h			\
 	camel-stream-null.h			\
+	camel-stream-process.h			\
 	camel-stream.h				\
 	camel-string-utils.h			\
 	camel-text-index.h			\

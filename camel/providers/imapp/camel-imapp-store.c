@@ -214,10 +214,10 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls)
 #ifdef HAVE_SSL	
 		if (camel_url_get_param (service->url, "use_ssl")) {
 			if (try_starttls)
-				tcp_stream = camel_tcp_stream_ssl_new_raw (service, service->url->host, STARTTLS_FLAGS);
+				tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
 			else {
 				port = service->url->port ? service->url->port : 995;
-				tcp_stream = camel_tcp_stream_ssl_new (service, service->url->host, SSL_PORT_FLAGS);
+				tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
 			}
 		} else {
 			tcp_stream = camel_tcp_stream_raw_new ();
@@ -861,10 +861,10 @@ imap_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 	CamelFolderInfo * fi= NULL;
 	char *name;
 
-	if (istore->driver == NULL) {
-		camel_exception_setv(ex, 1, "Not connected");
+	/* FIXME: temporary, since this is not a disco store */
+	if (istore->driver == NULL
+	    && !camel_service_connect((CamelService *)store, ex))
 		return NULL;
-	}
 
 	name = (char *)top;
 	if (name == NULL || name[0] == 0) {

@@ -131,7 +131,8 @@ int main (int argc, char **argv)
 	CamelMultipartSigned *mps;
 	CamelMultipartEncrypted *mpe;
 	GPtrArray *recipients;
-	
+	int ret;
+
 	camel_test_init (argc, argv);
 	
 	/* clear out any camel-test data */
@@ -143,10 +144,10 @@ int main (int argc, char **argv)
 	if ((ret = system ("gpg > /dev/null 2>&1")) == -1)
 		return 77;
 	else if (WEXITSTATUS (ret) == 127)
-		return 127;
+		return 77;
 	
-	system ("gpg --import camel-test.gpg.pub > /dev/null 2>&1");
-	system ("gpg --import camel-test.gpg.sec > /dev/null 2>&1");
+	system ("gpg --import ../data/camel-test.gpg.pub > /dev/null 2>&1");
+	system ("gpg --import ../data/camel-test.gpg.sec > /dev/null 2>&1");
 	
 	session = camel_pgp_session_new ("/tmp/camel-test");
 	

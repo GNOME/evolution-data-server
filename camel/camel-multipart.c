@@ -95,6 +95,7 @@ camel_multipart_class_init (CamelMultipartClass *camel_multipart_class)
 
 	/* virtual method overload */
 	camel_data_wrapper_class->write_to_stream = write_to_stream;
+	camel_data_wrapper_class->decode_to_stream = write_to_stream;
 	camel_data_wrapper_class->is_offline = is_offline;
 }
 
@@ -549,9 +550,9 @@ construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 	CamelMimePart *bodypart;
 	char *buf;
 	size_t len;
-
+	
 	g_assert(camel_mime_parser_state(mp) == HSCAN_MULTIPART);
-		
+	
 	/* FIXME: we should use a came-mime-mutlipart, not jsut a camel-multipart, but who cares */
 	d(printf("Creating multi-part\n"));
 		

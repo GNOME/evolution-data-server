@@ -361,8 +361,7 @@ camel_folder_search_execute_expression(CamelFolderSearch *search, const char *ex
 	matches = g_ptr_array_new();
 
 	/* now create a folder summary to return?? */
-	if (r
-	    && r->type == ESEXP_RES_ARRAY_PTR) {
+	if (r->type == ESEXP_RES_ARRAY_PTR) {
 		d(printf("got result ...\n"));
 		/* we use a mempool to store the strings, packed in tight as possible, and freed together */
 		/* because the strings are often short (like <8 bytes long), we would be wasting appx 50%
@@ -390,14 +389,15 @@ camel_folder_search_execute_expression(CamelFolderSearch *search, const char *ex
 				g_ptr_array_add(matches, e_mempool_strdup(pool, g_ptr_array_index(r->value.ptrarray, i)));
 			}
 		}
-		e_sexp_result_free(search->sexp, r);
 		/* instead of putting the mempool_hash in the structure, we keep the api clean by
 		   putting a reference to it in a hashtable.  Lets us do some debugging and catch
 		   unfree'd results as well. */
 		g_hash_table_insert(p->mempool_hash, matches, pool);
 	} else {
-		d(printf("no result!\n"));
+		g_warning("Search returned an invalid result type");
 	}
+
+	e_sexp_result_free(search->sexp, r);
 
 	search->folder = NULL;
 	search->summary = NULL;
@@ -426,7 +426,7 @@ camel_folder_search_match_expression(CamelFolderSearch *search, const char *expr
 	GPtrArray *uids;
 	int ret = FALSE;
 
-	search->match1 = (CamelMessageInfo *)info;
+	search->current = (CamelMessageInfo *)info;
 
 	uids = camel_folder_search_execute_expression(search, expr, ex);
 	if (uids) {
@@ -434,7 +434,7 @@ camel_folder_search_match_expression(CamelFolderSearch *search, const char *expr
 			ret = TRUE;
 		camel_folder_search_free_result(search, uids);
 	}
-	search->match1 = NULL;
+	search->current = NULL;
 
 	return ret;
 }
@@ -492,14 +492,10 @@ search_not(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSe
 			r->value.ptrarray = g_ptr_array_new();
 
 			/* not against a single message?*/
-			if (search->match1 || search->current) {
+			if (search->current) {
 				int found = FALSE;
 
-				if (search->match1)
-					uid = camel_message_info_uid(search->match1);
-				else
-					uid = camel_message_info_uid(search->current);
-
+				uid = camel_message_info_uid(search->current);
 				for (i=0;!found && i<v->len;i++) {
 					if (strcmp(uid, v->pdata[i]) == 0)
 						found = TRUE;
@@ -555,32 +551,31 @@ search_match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, CamelFold
 	if (argc>1) {
 		g_warning("match-all only takes a single argument, other arguments ignored");
 	}
-	r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-	r->value.ptrarray = g_ptr_array_new();
 
-	/* we are only matching a single message? */
-	if (search->match1) {
-		search->current = search->match1;
-
+	/* we are only matching a single message?  or already inside a match-all? */
+	if (search->current) {
 		d(printf("matching against 1 message: %s\n", camel_message_info_subject(search->current)));
+
+		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r->value.bool = FALSE;
 
 		if (argc>0) {
 			r1 = e_sexp_term_eval(f, argv[0]);
 			if (r1->type == ESEXP_RES_BOOL) {
-				if (r1->value.bool)
-					g_ptr_array_add(r->value.ptrarray, (char *)camel_message_info_uid(search->current));
+				r->value.bool = r1->value.bool;
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
 				e_sexp_fatal_error(f, _("(match-all) requires a single bool result"));
 			}
 			e_sexp_result_free(f, r1);
 		} else {
-			g_ptr_array_add(r->value.ptrarray, (char *)camel_message_info_uid(search->current));
+			r->value.bool = TRUE;
 		}
-		search->current = NULL;
-
 		return r;
 	}
+
+	r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+	r->value.ptrarray = g_ptr_array_new();
 
 	if (search->summary == NULL) {
 		/* TODO: make it work - e.g. use the folder and so forth for a slower search */
@@ -860,7 +855,7 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		CamelStreamMem *mem = (CamelStreamMem *)camel_stream_mem_new ();
 
 		/* FIXME: The match should be part of a stream op */
-		camel_data_wrapper_write_to_stream (containee, CAMEL_STREAM (mem));
+		camel_data_wrapper_decode_to_stream (containee, CAMEL_STREAM (mem));
 		camel_stream_write (CAMEL_STREAM (mem), "", 1);
 		for (i=0;i<words->len;i++) {
 			/* FIXME: This is horridly slow, and should use a real search algorithm */
