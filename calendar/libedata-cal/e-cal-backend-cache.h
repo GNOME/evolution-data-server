@@ -56,12 +56,15 @@ gboolean            e_cal_backend_cache_remove_component (ECalBackendCache *cach
 							  const char *rid);
 GList              *e_cal_backend_cache_get_components (ECalBackendCache *cache);
 
+
 const icaltimezone *e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid);
 gboolean            e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone);
 gboolean            e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid);
 
 gboolean            e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone);
 icaltimezone       *e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache);
+
+GSList             *e_cal_backend_cache_get_keys (ECalBackendCache *cache);
 
 
 G_END_DECLS

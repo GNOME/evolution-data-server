@@ -1,3 +1,11 @@
+2004-09-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #61865	
+	* e-gw-connection.[ch]: 
+	(e_gw_connection_get_quick_messages): implements
+	sending a getQuickMessagesRequest to the server and
+	parsing the response.
+
 2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes #64062

@@ -366,6 +366,24 @@ e_file_cache_get_objects (EFileCache *cache)
 }
 
 /**
+ * e_file_cache_get_keys:
+ */
+GSList *
+e_file_cache_get_keys (EFileCache *cache)
+{
+	EFileCachePrivate *priv;
+	GSList *list = NULL;
+
+	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
+
+	priv = cache->priv;
+
+	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_list, &list);
+
+	return list;
+}
+
+/**
  * e_file_cache_add_object:
  */
 gboolean

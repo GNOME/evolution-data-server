@@ -1701,3 +1701,96 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
 	g_object_unref (msg);
         return E_GW_CONNECTION_STATUS_OK;
 }
+
+EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const char *container, const char *view, const char *start_date, const char *message_list, const char *item_types, const char *item_sources, int count, GSList **item_list)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+        EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_return_val_if_fail (message_list != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
+
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getQuickMessagesRequest");
+	e_gw_message_write_string_parameter (msg, "list", NULL, message_list);
+	if (start_date)
+		e_gw_message_write_string_parameter (msg, "startDate", NULL, start_date);
+	if (container)
+		e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	if (item_types) 
+		e_gw_message_write_string_parameter (msg, "types", NULL, item_types);
+	if (item_sources)
+		e_gw_message_write_string_parameter (msg, "source", NULL, item_sources);
+	if (view)
+		e_gw_message_write_string_parameter (msg, "view", NULL, view);
+	if (count > 0)
+		e_gw_message_write_int_parameter (msg, "count", NULL, count);
+	
+	e_gw_message_write_footer (msg);
+
+	response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+	
+	status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	}
+
+	/* if status is OK - parse result. return the list */	
+	*item_list = NULL;
+	param = soup_soap_response_get_first_parameter_by_name (response, "items");
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+	if (!strcmp (message_list, "All")) { 
+		/* We are  interested only in getting the ids */
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
+	     	     subparam != NULL;
+	             subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
+			SoupSoapParameter *param_id;
+		     	char *id;
+			
+			param_id = soup_soap_parameter_get_first_child_by_name (subparam, "iCalId");
+			if (!param_id) {
+				g_object_unref (response);
+		                g_object_unref (msg);
+                		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+			}
+		     
+			id = g_strdup (soup_soap_parameter_get_string_value (param_id));
+			if (id)
+				*item_list = g_slist_append (*item_list, id);
+		}
+		
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_OK;
+
+	}
+
+	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
+	     subparam != NULL;
+	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
+		EGwItem *item;
+
+		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
+		if (item)
+			*item_list = g_slist_append (*item_list, item);
+        }
+               
+	/* free memory */
+        g_object_unref (response);
+	g_object_unref (msg);
+        return E_GW_CONNECTION_STATUS_OK;
+	
+
+}

@@ -382,7 +382,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	ECalComponent *comp;
 	ECalComponentText text;
 	ECalComponentDateTime dt;
-	const char *description;
+	const char *description, *uid;
 	char *t, *name;
 	GList *category_ids, *categories;
 	GHashTable *categories_by_id;
@@ -427,8 +427,13 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	}
 
 	/* UID */
-	e_cal_component_set_uid (comp, e_gw_item_get_icalid (item));
-
+	uid = e_gw_item_get_icalid (item);
+	if (uid)
+		e_cal_component_set_uid (comp, e_gw_item_get_icalid (item));
+	else {
+		g_object_unref (comp);
+		return NULL;
+	}
 	/* summary */
 	text.value = e_gw_item_get_subject (item);
 	text.altrep = NULL;
@@ -670,13 +675,15 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, icalproperty_method method, gboolean *remove)
+e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *container, ECalComponent *comp, icalproperty_method method, gboolean *remove, ECalComponent **created_comp)
 {
+	EGwConnection *cnc;
 	EGwConnectionStatus status;
 	icalparameter_partstat partstat;
 	char *item_id;
 	
 
+	cnc = e_cal_backend_groupwise_get_connection (cbgw);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
@@ -764,8 +771,14 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 		*remove = TRUE;
 		break;
 	default:
-		status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
-	}	
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+	}
+	if (!*remove && status == E_GW_CONNECTION_STATUS_OK) {
+		EGwItem *item;
+
+		status = e_gw_connection_get_item (cnc, container, item_id, &item);
+		*created_comp = e_gw_item_to_cal_component (item, cbgw);
+	}
 
 	return status;
 }

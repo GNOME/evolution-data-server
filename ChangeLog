@@ -1,3 +1,10 @@
+2004-09-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libedataserver/e-file-cache.[ch]: 
+	(e_file_cache_get_keys): utility function that allows to get 
+	 a list of the keys of all the items in the cache. Used by 
+	 the fix for bug #61865	
+
 2004-09-21  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libdb/dbinc/mutex.h

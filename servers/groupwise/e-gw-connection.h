@@ -111,6 +111,8 @@ EGwConnectionStatus e_gw_connection_create_cursor (EGwConnection *cnc, const cha
 EGwConnectionStatus e_gw_connection_destroy_cursor (EGwConnection *cnc, const char *container,  int cursor);
 EGwConnectionStatus e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, int forward, int count, GList **item_list);
 
+EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const char *container, const char *view, const char *start_date, const char *message_list, const char *item_types, const char *item_sources, int count, GSList **item_list);
+
 G_END_DECLS
 
 #endif
