@@ -6,14 +6,18 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar/backends/file	\
 	-I$(top_srcdir)/calendar/libical/src		\
 	-I$(top_builddir)/calendar/libical/src		\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(GROUPWISE_CFLAGS)
 
 noinst_LTLIBRARIES = libecalbackendgroupwise.la
 
 libecalbackendgroupwise_la_SOURCES =		\
 	e-cal-backend-groupwise.c		\
-	e-cal-backend-groupwise.h
+	e-cal-backend-groupwise.h		\
+	e-gw-connection.c			\
+	e-gw-connection.h
 
 libecalbackendgroupwise_la_LIBADD =					\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
-	$(top_builddir)/calendar/backends/file/libecalbackendfile.la
+	$(top_builddir)/calendar/backends/file/libecalbackendfile.la	\
+	$(GROUPWISE_LIBS)

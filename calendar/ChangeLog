@@ -1,3 +1,11 @@
+2003-11-17  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/gw-connection.[ch]: new class for managing
+	connections to Groupwise servers.
+
+	* backends/groupwise/Makefile.am: added new files and needed
+	CFLAGS and LIBS.
+
 2003-11-17  Dan Winship  <danw@ximian.com>
 
 	* libecal/e-cal-util.c (e_cal_util_new_component): New
