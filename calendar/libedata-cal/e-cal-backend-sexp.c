@@ -427,7 +427,6 @@ func_has_alarms (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
-	gboolean has_to_have_alarms;
 
 	/* Check argument types */
 
@@ -436,7 +435,6 @@ func_has_alarms (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 		return NULL;
 	}
 
-	has_to_have_alarms = argv[0]->value.bool;
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = e_cal_component_has_alarms (ctx->comp);
 

@@ -1,3 +1,8 @@
+2003-12-22  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-cal-backend-sexp.c (func_has_alarms): removed useless
+	'has_to_have_alarms' variable.
+
 2003-12-22  JP Rosevear <jpr@ximian.com>
 
 	* backends/file/e-cal-backend-file.c
