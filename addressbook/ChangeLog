@@ -1,3 +1,30 @@
+2004-07-16  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes #61052 ]
+	
+	* libebook/e-book.c (e_book_op_remove): lock the book's mutex
+	around operations on the id_to_op hashtable, as is done in all
+	other e_book_* functions.
+	(emit_async_add_contact_response): lock the book's mutex around
+	operations on the pending_idle list.
+	(e_book_response_add_contact): same.
+	(emit_async_elist_response): same.
+	(e_book_response_get_supported_fields): same.
+	(e_book_response_get_supported_auth_methods): same.
+	(emit_async_get_contact_response): same.
+	(e_book_response_get_contact): same.
+	(emit_async_get_book_view_response): same.
+	(e_book_response_get_book_view): same.
+	(emit_async_get_contacts_response): same.
+	(e_book_response_get_contacts): same.
+	(emit_async_get_changes_response): same.
+	(e_book_response_get_changes): same.
+	(emit_async_generic_response): same.
+	(e_book_response_generic): same.
+	(emit_async_open_response): same.
+	(e_book_response_open): same.
+	(e_book_response_remove): same.
+	
 2004-07-14  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book.c (e_book_idle_writable): simplify this a bit,
