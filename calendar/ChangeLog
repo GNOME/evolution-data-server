@@ -1,5 +1,10 @@
 2003-11-08  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libedata-cal/e-cal-backend-cache.h: the class structure derives
+	from EFileCacheClass, not EFileCache.
+
+2003-11-08  Rodrigo Moya <rodrigo@ximian.com>
+
 	* libedata-cal/e-cal-backend-cache.[ch]: use EFileCache instead
 	of ECache.
 

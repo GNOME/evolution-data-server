@@ -41,7 +41,7 @@ typedef struct {
 } ECalBackendCache;
 
 typedef struct {
-	EFileCache parent_class;
+	EFileCacheClass parent_class;
 } ECalBackendCacheClass;
 
 GType             e_cal_backend_cache_get_type (void);
