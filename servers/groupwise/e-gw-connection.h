@@ -69,10 +69,12 @@ EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, Soup
 char               *e_gw_connection_get_container_id (EGwConnection *cnc, const char *name);
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
 					       const char *filter, GSList **list);
-EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, char * sequence_number, GSList **list);
+EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, GSList **list);
 EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item);
 EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp);
 EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
+EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GSList *users,
+                                                                        time_t start, time_t end, GSList **freebusy);
 
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
