@@ -1747,6 +1747,18 @@ e_cal_uri_list (ECal *ecal, CalMode mode)
 	return NULL;
 }
 
+ECalSourceType
+e_cal_get_source_type (ECal *ecal)
+{
+	ECalPrivate *priv;
+
+	g_return_val_if_fail (ecal != NULL, E_CAL_SOURCE_TYPE_LAST);
+	g_return_val_if_fail (E_IS_CAL (ecal), E_CAL_SOURCE_TYPE_LAST);
+
+	priv = ecal->priv;
+
+	return priv->type;
+}
 
 /**
  * e_cal_get_load_state:

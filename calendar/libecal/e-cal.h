@@ -113,6 +113,7 @@ gboolean e_cal_remove (ECal *ecal, GError **error);
 
 GList *e_cal_uri_list (ECal *ecal, CalMode mode);
 
+ECalSourceType e_cal_get_source_type (ECal *ecal);
 ECalLoadState e_cal_get_load_state (ECal *ecal);
 
 ESource *e_cal_get_source (ECal *ecal);
