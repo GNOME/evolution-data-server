@@ -329,7 +329,6 @@ _default_book_response_dtor (EBookMsg *msg)
 {
 	LoadSourceResponse *resp = (LoadSourceResponse*)msg;
 
-	g_object_unref (resp->book);
 	g_free (resp);
 }
 

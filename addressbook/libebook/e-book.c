@@ -2211,7 +2211,7 @@ e_book_get_default_addressbook (EBook **book, GError **error)
 	ESource *default_source = NULL;
 	gboolean rv = TRUE;
 
-	e_return_error_if_fail (*book, E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book, E_BOOK_ERROR_INVALID_ARG);
 
 	if (!e_book_get_addressbooks (&sources, &err)) {
 		g_propagate_error (error, err);

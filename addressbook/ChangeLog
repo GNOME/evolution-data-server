@@ -1,3 +1,12 @@
+2004-02-24  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-book-async.c (_default_book_response_dtor): Don't
+	unref the *new* book after returning it to user. This was causing
+	hard to trace crashes.
+
+	* libebook/e-book.c (e_book_get_default_addressbook): Correctly
+	assert the pointer-to-pointer, not the pointed-to pointer.
+
 2004-02-23  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-vcard.c (parse): wrap spew in "#define d(x)".
