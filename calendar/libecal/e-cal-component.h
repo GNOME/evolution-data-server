@@ -322,6 +322,13 @@ gboolean e_cal_component_has_attendees (ECalComponent *comp);
 void e_cal_component_get_location (ECalComponent *comp, const char **location);
 void e_cal_component_set_location (ECalComponent *comp, const char *location);
 
+/* Attachment handling */
+void e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_list);
+void e_cal_component_set_attachment_list (ECalComponent *comp, GSList *attachment_list);
+gboolean e_cal_component_has_attachments (ECalComponent *comp);
+int e_cal_component_get_num_attachments (ECalComponent *comp);
+
+
 gboolean e_cal_component_event_dates_match (ECalComponent *comp1, ECalComponent *comp2);
 
 

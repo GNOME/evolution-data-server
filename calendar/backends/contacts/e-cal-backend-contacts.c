@@ -903,6 +903,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 	cbc = E_CAL_BACKEND_CONTACTS (object);
 	priv = cbc->priv;
 
+	g_hash_table_destroy (priv->addressbooks);
         g_hash_table_destroy (priv->tracked_contacts);
         g_hash_table_destroy (priv->zones);
         

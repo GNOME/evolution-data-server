@@ -48,6 +48,11 @@ struct attendee {
 	icalparameter *language_param;
 };
 
+struct attachment {
+	icalproperty *prop;
+	icalattach *attach;
+};
+
 struct text {
 	icalproperty *prop;
 	icalparameter *altrep_param;
@@ -142,6 +147,8 @@ struct _ECalComponentPrivate {
 	icalproperty *transparency;
 	icalproperty *url;
 	icalproperty *location;
+
+	GSList *attachment_list;
 
 	/* Subcomponents */
 
@@ -294,6 +301,11 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 	priv->uid = NULL;
 
 	priv->status = NULL;
+
+	for (l = priv->attachment_list; l != NULL; l = l->next)
+		g_free (l->data);
+	g_slist_free (priv->attachment_list);
+	priv->attachment_list = NULL;
 
 	for (l = priv->attendee_list; l != NULL; l = l->next)
 		g_free (l->data);
@@ -501,6 +513,20 @@ e_cal_component_clone (ECalComponent *comp)
 	return new_comp;
 }
 
+/* Scans an attachment property */
+static void
+scan_attachment (GSList **attachment_list, icalproperty *prop) 
+{
+	struct attachment *attachment;
+	
+	attachment = g_new (struct attachment, 1);
+	attachment->prop = prop;
+
+	attachment->attach = icalproperty_get_attach (prop);
+
+	*attachment_list = g_slist_append (*attachment_list, attachment);
+}
+
 /* Scans an attendee property */
 static void
 scan_attendee (GSList **attendee_list, icalproperty *prop) 
@@ -632,6 +658,10 @@ scan_property (ECalComponent *comp, icalproperty *prop)
 	switch (kind) {
 	case ICAL_STATUS_PROPERTY:
 		priv->status = prop;
+		break;
+
+	case ICAL_ATTACH_PROPERTY:
+		scan_attachment (&priv->attachment_list, prop);
 		break;
 
 	case ICAL_ATTENDEE_PROPERTY:
@@ -1404,6 +1434,158 @@ e_cal_component_set_uid (ECalComponent *comp, const char *uid)
 	g_assert (priv->uid != NULL);
 
 	icalproperty_set_uid (priv->uid, (char *) uid);
+}
+
+/* Gets a text list value */
+static void
+get_attachment_list (GSList *attachment_list, GSList **al)
+{
+	GSList *l;
+
+	*al = NULL;
+
+	if (!attachment_list)
+		return;
+
+	for (l = attachment_list; l; l = l->next) {
+		struct attachment *attachment;
+		gchar *data;
+
+		attachment = l->data;
+		g_assert (attachment->attach != NULL);
+
+		if (icalattach_get_is_url (attachment->attach)) {
+			/* FIXME : this ref count is screwed up
+			 * These structures are being leaked.
+			 */   
+			icalattach_ref (attachment->attach);
+			data = icalattach_get_url (attachment->attach);
+		}
+		else
+			data = NULL;
+		*al = g_slist_prepend (*al, data);
+	}
+
+	*al = g_slist_reverse (*al);
+}
+
+
+static void
+set_attachment_list (icalcomponent *icalcomp,
+		   GSList **attachment_list,
+		   GSList *al)
+{
+	GSList *l;
+
+	/* Remove old attachments */
+
+	if (*attachment_list) {
+		for (l = *attachment_list; l; l = l->next) {
+			struct attachment *attachment;
+
+			attachment = l->data;
+			g_assert (attachment->prop != NULL);
+			g_assert (attachment->attach != NULL);
+
+			icalcomponent_remove_property (icalcomp, attachment->prop);
+			icalproperty_free (attachment->prop);
+			icalattach_unref (attachment->attach);
+			g_free (attachment);
+		}
+
+		g_slist_free (*attachment_list);
+		*attachment_list = NULL;
+	}
+	/* Add in new attachments */
+
+	for (l = al; l; l = l->next) {
+		struct attachment *attachment;
+
+		attachment = g_new0 (struct attachment, 1);
+		attachment->attach = icalattach_new_from_url ((char *) l->data); 	
+		attachment->prop = icalproperty_new_attach (attachment->attach);
+		icalcomponent_add_property (icalcomp, attachment->prop);
+
+		*attachment_list = g_slist_prepend (*attachment_list, attachment);
+	}
+
+	*attachment_list = g_slist_reverse (*attachment_list);
+}
+
+
+/**
+ * e_cal_component_get_attachment_list: 
+ * @comp: A calendar component object. 
+ * @attachment_list: Return list of URLS to attachments.
+ * 
+ * Queries the attachment properties of the calendar component object
+ **/
+void
+e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_list)
+{
+	ECalComponentPrivate *priv;
+	
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+	g_return_if_fail (attachment_list != NULL);
+
+	priv = comp->priv;
+	g_return_if_fail (priv->icalcomp != NULL);
+
+	get_attachment_list (priv->attachment_list, attachment_list);
+}
+
+/**
+ * e_cal_component_set_attachment_list:
+ * @comp: A calendar component object. 
+ * @attachment_list: list of urls to attachment pointers 
+ * This currently handles only attachments that are urls
+ * in the file system - not inline binaries.
+ * Sets the attachments of a calendar component object
+ **/
+void
+e_cal_component_set_attachment_list (ECalComponent *comp, GSList *attachment_list)
+{
+	ECalComponentPrivate *priv;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+
+	priv = comp->priv;
+	g_return_if_fail (priv->icalcomp != NULL);
+
+	set_attachment_list (priv->icalcomp, &priv->attachment_list, attachment_list);
+}
+
+gboolean
+e_cal_component_has_attachments (ECalComponent *comp)
+{
+	ECalComponentPrivate *priv;
+
+	g_return_val_if_fail (comp != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
+
+	priv = comp->priv;
+
+	if (g_slist_length (priv->attachment_list) > 0)
+		return TRUE;
+	
+	return FALSE;
+}
+
+
+int 
+e_cal_component_get_num_attachments (ECalComponent *comp)
+{
+	ECalComponentPrivate *priv;
+
+	g_return_val_if_fail (comp != NULL, 0);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), 0);
+
+	priv = comp->priv;
+
+	return g_slist_length (priv->attachment_list) > 0;
+	
 }
 
 /**
