@@ -1,3 +1,13 @@
+2005-04-05  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_refresh_info):
+	  The Trash folder in the groupwise server works well
+	  only with getItems request. So we compare the	folder
+	  full name (?) and if it is a trash folder, we use 
+	  getItems instead of getQuickMessages.
+	
+	  Fixes bugs **72310 and **73318
+
 2005-03-31  Sankar P <psankar@novell.com>
 
 	* camel-groupwise-folder.c: 

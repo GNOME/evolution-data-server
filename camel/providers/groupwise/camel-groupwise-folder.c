@@ -658,11 +658,23 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	if (camel_folder_is_frozen (folder) ) {
 		gw_folder->need_refresh = TRUE ;
 	}
+	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+	if (!g_ascii_strncasecmp (folder->full_name, "Trash", 5)) {
+		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution created attachments subject status", NULL, &list);
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+			g_free (container_id);
+			camel_operation_end (NULL);
+			return;
+		}
+		
+		gw_update_summary (folder, list, ex);
+		goto end;
+	}
 
 	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
 	t_str = g_strdup (time_string);
 
-	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 	/* FIXME send the time stamp which the server sends */
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
 					"peek recipient distribution created attachments subject status",
@@ -671,6 +683,8 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		g_free (time_string);
+		g_free (t_str);
 		g_free (container_id) ;
 		return ;
 	}
@@ -696,12 +710,19 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
-		g_free (container_id) ;
+		g_free (time_string);
+		g_free (container_id);
+		g_list_free (list);
+		g_slist_free (slist);
 		return ;
 	}
+
 	for ( sl = slist ; sl != NULL; sl = sl->next) {
 		list = g_list_append (list, sl->data) ;
 	}
+	
+	g_slist_free (slist);
+	slist = NULL;
 	
 	
 	if (gw_store->current_folder != folder) {
@@ -710,12 +731,11 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 
 	gw_update_summary (folder, list, ex) ;
 
+end:
 	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 
 	camel_folder_summary_save (folder->summary);
 	
-	g_slist_free (slist);
-	slist = NULL;
 	g_list_free (list);
 	list = NULL;
 	g_free (time_string);
