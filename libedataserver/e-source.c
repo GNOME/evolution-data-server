@@ -437,10 +437,10 @@ e_source_dump_to_xml_node (ESource *source,
 {
 	gboolean has_color;
 	guint32 color;
+	xmlNodePtr node = xmlNewChild (parent_node, NULL, "source", NULL);
 
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	xmlNodePtr node = xmlNewChild (parent_node, NULL, "source", NULL);
 
 	xmlSetProp (node, "uid", e_source_peek_uid (source));
 	xmlSetProp (node, "name", e_source_peek_name (source));
