@@ -74,7 +74,9 @@ objects_added_cb (ECalViewListener *listener, GList *objects, gpointer data)
 
 	view = E_CAL_VIEW (data);
 
+	g_object_ref (view);
 	g_signal_emit (G_OBJECT (view), signals[OBJECTS_ADDED], 0, objects);
+	g_object_unref (view);
 }
 
 static void
@@ -84,7 +86,9 @@ objects_modified_cb (ECalViewListener *listener, GList *objects, gpointer data)
 
 	view = E_CAL_VIEW (data);
 
+	g_object_ref (view);
 	g_signal_emit (G_OBJECT (view), signals[OBJECTS_MODIFIED], 0, objects);
+	g_object_unref (view);
 }
 
 static void
@@ -94,7 +98,9 @@ objects_removed_cb (ECalViewListener *listener, GList *uids, gpointer data)
 
 	view = E_CAL_VIEW (data);
 
+	g_object_ref (view);
 	g_signal_emit (G_OBJECT (view), signals[OBJECTS_REMOVED], 0, uids);
+	g_object_unref (view);
 }
 
 static void

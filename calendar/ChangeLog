@@ -1,3 +1,11 @@
+2005-02-11  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	Fixes #71545
+
+	* libecal/e-cal-view.c (objects_added_cb, objects_modified_cb,
+	objects_removed_cb): ref/unref the view before/after emitting the
+	signal.
+
 2005-02-11  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes a hang in offline
