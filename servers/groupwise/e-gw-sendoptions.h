@@ -89,5 +89,7 @@ GType e_gw_sendoptions_get_type (void);
 EGwSendOptions* e_gw_sendoptions_new_from_soap_parameter (SoupSoapParameter *param);
 EGwSendOptionsGeneral* e_gw_sendoptions_get_general_options (EGwSendOptions *opts);
 EGwSendOptionsStatusTracking* e_gw_sendoptions_get_status_tracking_options (EGwSendOptions *opts, char *type);
+gboolean e_gw_sendoptions_form_message_to_modify (SoupSoapMessage *msg, EGwSendOptions *n_opts, EGwSendOptions *o_opts);
+EGwSendOptions * e_gw_sendoptions_new (void);
 
 #endif

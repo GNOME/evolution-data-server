@@ -454,6 +454,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 
 	/* retrieve user information */
 	param = soup_soap_response_get_first_parameter_by_name (response, "userinfo");
+	
 	if (param) {
 		SoupSoapParameter *subparam;
 		const char *param_value;
@@ -1558,21 +1559,74 @@ e_gw_connection_get_address_book_id ( EGwConnection *cnc, char *book_name, char*
 }
 
 EGwConnectionStatus
+e_gw_connection_modify_settings (EGwConnection *cnc, EGwSendOptions *opts)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	EGwConnectionPrivate *priv;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (opts != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	priv = cnc->priv;
+
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "modifySettingsRequest");
+	if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	
+	if (!e_gw_sendoptions_form_message_to_modify (msg, opts, priv->opts)) {
+		g_warning (G_STRLOC ": Could not append changes to SOAP message");
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+	}
+
+       	e_gw_message_write_footer (msg);
+	
+        /* send message to server */
+        response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+	status = e_gw_connection_parse_response_status (response);
+       	if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	} else {
+		g_object_unref (priv->opts);
+		priv->opts = NULL;
+		priv->opts = opts;
+	}
+
+	g_object_unref (response);
+        g_object_unref (msg);
+
+	return status;
+}
+
+EGwConnectionStatus
 e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
 	EGwConnectionStatus status;
-	SoupSoapParameter *param, *subparam;
+	SoupSoapParameter *param;
 	EGwConnectionPrivate *priv;
 
-	priv = cnc->priv;
-	
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	priv = cnc->priv;
 
 	if (priv->opts) {
 		g_object_ref (priv->opts);
-		opts = &priv->opts;
+		*opts = priv->opts;
 		
 		return E_GW_CONNECTION_STATUS_OK;
 	}
@@ -1606,8 +1660,12 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         } else 
-		*opts =	e_gw_sendoptions_new_from_soap_parameter (param);
-		
+		priv->opts = e_gw_sendoptions_new_from_soap_parameter (param);
+
+	g_object_ref (priv->opts);
+	*opts = priv->opts;
+	g_object_unref (response);
+        g_object_unref (msg);
 	
 	return E_GW_CONNECTION_STATUS_OK;
 }

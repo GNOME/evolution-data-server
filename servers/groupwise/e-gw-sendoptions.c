@@ -27,6 +27,7 @@
 #include <string.h>
 #include "e-gw-connection.h"
 #include "e-gw-sendoptions.h"
+#include "e-gw-message.h"
 
 struct _EGwSendOptionsPrivate {
 	EGwSendOptionsGeneral *gopts;
@@ -181,9 +182,11 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
 		val_param = soup_soap_parameter_get_first_child_by_name (subparam, "value");
 		
-		if (field_param)
+		if (field_param) {
 			field = soup_soap_parameter_get_string_value (field_param);
-		else
+			if (!field)
+				continue;
+		} else
 			continue;
 
 		if (!g_ascii_strcasecmp (field + i, "StatusInfo")) {
@@ -196,13 +199,25 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 					sopts->track_when = E_GW_DELIVERED;
 				if (!strcmp (val, "DeliveredAndOpened"))
 					sopts->track_when = E_GW_DELIVERED_OPENED;
-				if (!strcmp (val, "All"))
+				if (!strcmp (val, "Full"))
 					sopts->track_when = E_GW_ALL;
 				if (!strcmp (val, "None"))
 					sopts->tracking_enabled = FALSE;
 			} else
 				sopts->tracking_enabled = FALSE;
-			
+
+		} else	if (!g_ascii_strcasecmp (field + i, "AutoDelete")) {
+			if (val_param)
+				val = soup_soap_parameter_get_string_value (val_param);
+
+			if (val) {
+				if (!strcmp (val, "1"))
+					sopts->autodelete = TRUE;
+				else
+					sopts->autodelete = FALSE;
+			} else
+				sopts->autodelete = FALSE;
+
 		} else if (!g_ascii_strcasecmp (field + i, "ReturnOpen")) {
 			val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
 			if (val_param)
@@ -270,9 +285,11 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
 		val_param = soup_soap_parameter_get_first_child_by_name (subparam, "value");
 		
-		if (field_param)
+		if (field_param) {
 			field = soup_soap_parameter_get_string_value (field_param);
-		else
+			if (!field)
+				continue;
+		} else
 			continue;
 
 		if (!g_ascii_strcasecmp (field, "mailPriority")) {
@@ -309,13 +326,18 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 					gopts->reply_enabled = TRUE;		
 				}
 			}
-		} else if (! g_ascii_strcasecmp (field, "mailExpireDays")) {
+		} else if (!g_ascii_strcasecmp (field, "mailExpireDays")) {
 			if (val_param)
 				val = soup_soap_parameter_get_string_value (val_param);
 
 			if (val) {
-				gopts->expiration_enabled = TRUE;
-				gopts->expire_after = atoi (val);
+				int i = atoi (val);
+				if (i != 0)
+					gopts->expiration_enabled = TRUE;
+				else 
+					gopts->expiration_enabled = FALSE;
+
+				gopts->expire_after = i;
 			} else
 				gopts->expiration_enabled = FALSE;
 		}
@@ -338,9 +360,11 @@ parse_advanced_settings (SoupSoapParameter *group_param, EGwSendOptionsGeneral *
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
 		val_param = soup_soap_parameter_get_first_child_by_name (subparam, "value");
 		
-		if (field_param)
+		if (field_param) {
 			field = soup_soap_parameter_get_string_value (field_param);
-		else
+			if (!field)
+				continue;
+		} else
 			continue;
 
 		if (!g_ascii_strcasecmp (field, "delayDelivery")) {
@@ -383,7 +407,6 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 			parse_general_options (group_param, priv->gopts);
 		}	
 	  	
-		temp = soup_soap_parameter_get_property (group_param, "AppointmentMessageSettings");
 	        if (!g_ascii_strcasecmp (temp, "AppointmentMessageSettings")) { 
 			parse_status_tracking_options (group_param, 11, priv->copts);
 		}
@@ -395,7 +418,209 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 
 		g_free (temp);
 	}
+	
 	return TRUE;
+}
+
+static void
+e_gw_sendoptions_write_settings (SoupSoapMessage *msg, char *field_name, char *value, char *value_name, gboolean value_direct)
+{
+	soup_soap_message_start_element (msg, "setting", NULL, NULL);
+	
+	soup_soap_message_start_element (msg, "field", NULL, NULL);
+	soup_soap_message_write_string (msg, field_name);
+	soup_soap_message_end_element (msg);
+
+	soup_soap_message_start_element (msg, "value", NULL, NULL);
+	
+	if (!value_direct)
+		e_gw_message_write_string_parameter (msg, value_name, NULL, value);
+	else
+		soup_soap_message_write_string (msg, value);
+
+	soup_soap_message_end_element (msg);
+	
+	soup_soap_message_end_element (msg);	
+}	
+
+static void
+set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking *n_sopts, EGwSendOptionsStatusTracking *o_sopts, char *comp)
+{
+	char *value, *comp_name = NULL;
+
+	if (n_sopts->tracking_enabled != o_sopts->tracking_enabled || n_sopts->track_when != o_sopts->track_when) {
+		if (n_sopts->tracking_enabled) {
+			if (n_sopts->track_when == E_GW_DELIVERED)
+				value = g_strdup ("Delivered");
+			else if (n_sopts->track_when == E_GW_DELIVERED_OPENED)
+				value = g_strdup ("DeliveredAndOpened");
+			else
+				value = g_strdup ("Full");
+		} else
+			value = g_strdup ("None");
+		comp_name = g_strconcat (comp, "StatusInfo", NULL);
+		e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
+		g_free (comp_name), comp_name = NULL;
+		
+	}
+		
+	if (!strcmp (comp, "mail")) {
+		if (n_sopts->autodelete != o_sopts->autodelete) {
+			if (n_sopts->autodelete)
+				value = g_strdup ("1");
+			else
+				value = g_strdup ("0");
+			comp_name = g_strconcat (comp, "AutoDelete", NULL);
+			e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
+			g_free (comp_name), comp_name = NULL;
+		}
+	}
+
+	if (n_sopts->opened != o_sopts->opened) {
+		comp_name = g_strconcat (comp, "ReturnOpen", NULL);
+		if (n_sopts->opened == E_GW_RETURN_NOTIFY_MAIL) {
+			value = g_strdup ("1");
+			e_gw_sendoptions_write_settings (msg, comp_name, value, "mail", FALSE);
+		} else {
+			value = g_strdup ("None");
+			e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
+		}
+
+		g_free (comp_name), comp_name = NULL;
+		g_free (value), value = NULL;
+	}
+	
+	if (n_sopts->declined != o_sopts->declined) {
+		comp_name = g_strconcat (comp, "ReturnDelete", NULL);
+		if (n_sopts->declined == E_GW_RETURN_NOTIFY_MAIL) {
+			value = g_strdup ("1");
+			e_gw_sendoptions_write_settings (msg, comp_name, value, "mail", FALSE);
+		} else {
+			value = g_strdup ("None");
+			e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
+		}
+
+		g_free (comp_name), comp_name = NULL;
+		g_free (value), value = NULL;
+	}
+	
+	if (!strcmp (comp, "appointment") || !strcmp (comp, "task")) {
+		if (n_sopts->accepted != o_sopts->accepted) {
+			comp_name = g_strconcat (comp, "ReturnAccept", NULL);
+			if (n_sopts->accepted == E_GW_RETURN_NOTIFY_MAIL) {
+				value = g_strdup ("1");
+				e_gw_sendoptions_write_settings (msg, comp_name, value, "mail", FALSE);
+			} else {
+				value = g_strdup ("None");
+				e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
+			}
+	
+			g_free (comp_name), comp_name = NULL;
+			g_free (value), value = NULL;
+		}
+	}
+	
+	if (!strcmp (comp, "task")) {
+		if (n_sopts->completed != o_sopts->completed) {
+			comp_name = g_strconcat (comp, "ReturnCompleted", NULL);
+			if (n_sopts->completed == E_GW_RETURN_NOTIFY_MAIL) {
+				value = g_strdup ("1");
+				e_gw_sendoptions_write_settings (msg, comp_name, value, "mail", FALSE);
+			} else {
+				value = g_strdup ("None");
+				e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
+			}
+	
+			g_free (comp_name), comp_name = NULL;
+			g_free (value), value = NULL;
+		}
+	}
+
+}
+
+static void
+set_general_options_changes (SoupSoapMessage *msg, EGwSendOptionsGeneral *n_gopts, EGwSendOptionsGeneral *o_gopts)
+{
+	char *value;
+
+	if (n_gopts->priority != o_gopts->priority) {
+		if (n_gopts->priority == E_GW_PRIORITY_HIGH)
+			value = g_strdup ("High");
+		else if (n_gopts->priority == E_GW_PRIORITY_STANDARD)
+			value = g_strdup ("Standard");
+		else if (n_gopts->priority == E_GW_PRIORITY_LOW)
+			value = g_strdup ("Low");
+		else 
+			value = NULL;
+		e_gw_sendoptions_write_settings (msg, "mailPriority", value, NULL, TRUE);
+		e_gw_sendoptions_write_settings (msg, "appointmentPriority", value, NULL, TRUE);
+		e_gw_sendoptions_write_settings (msg, "taskPriority", value, NULL, TRUE);
+		g_free (value), value = NULL;
+	}
+
+	if (n_gopts->reply_enabled != o_gopts->reply_enabled || n_gopts->reply_convenient != o_gopts->reply_convenient ||
+			n_gopts->reply_within != o_gopts->reply_within) {
+		
+		if (n_gopts->reply_enabled) {
+			if (n_gopts->reply_convenient)
+				value = g_strdup ("-1");
+			else 
+				value = g_strdup_printf ("%d", n_gopts->reply_within);	
+		} else 
+			value = g_strdup ("None");
+		
+		e_gw_sendoptions_write_settings (msg, "mailReplyRequested", value, NULL, TRUE);
+		g_free (value), value = NULL;
+	}
+
+	if (n_gopts->expiration_enabled != o_gopts->expiration_enabled || n_gopts->expire_after != o_gopts->expire_after) {
+		if (n_gopts->expiration_enabled) {
+			value = g_strdup_printf ("%d", n_gopts->expire_after);
+		} else
+			value = g_strdup ("0");
+		
+		e_gw_sendoptions_write_settings (msg, "mailExpireDays", value, NULL, TRUE);
+		g_free (value), value = NULL;
+	}
+
+	if (n_gopts->delay_enabled != o_gopts->delay_enabled || n_gopts->delay_until != o_gopts->delay_until) {
+		if (n_gopts->delay_enabled) {
+			value = g_strdup_printf ("%d", n_gopts->delay_until);
+		} else
+			value = g_strdup ("-1");
+		
+		e_gw_sendoptions_write_settings (msg, "delayDelivery", value, NULL, TRUE);
+		g_free (value), value = NULL;
+	}
+}
+
+/* n_opts has the new options, o_opts has the old options settings */
+gboolean 
+e_gw_sendoptions_form_message_to_modify (SoupSoapMessage *msg, EGwSendOptions *n_opts, EGwSendOptions *o_opts)
+{
+	g_return_val_if_fail (n_opts != NULL || o_opts != NULL, FALSE);
+	g_return_val_if_fail (E_IS_GW_SENDOPTIONS (n_opts) || E_IS_GW_SENDOPTIONS (o_opts), FALSE);
+
+	soup_soap_message_start_element (msg, "settings", NULL, NULL);
+
+	set_general_options_changes (msg, n_opts->priv->gopts, o_opts->priv->gopts);
+	set_status_tracking_changes (msg, n_opts->priv->mopts, o_opts->priv->mopts, "mail");
+	set_status_tracking_changes (msg, n_opts->priv->copts, o_opts->priv->copts, "appointment");
+	set_status_tracking_changes (msg, n_opts->priv->topts, o_opts->priv->topts, "task");
+	
+	soup_soap_message_end_element (msg);
+
+	return TRUE;
+}
+
+EGwSendOptions *
+e_gw_sendoptions_new ()
+{
+	EGwSendOptions *opts;
+
+	opts = g_object_new (E_TYPE_GW_SENDOPTIONS, NULL);
+
+	return opts;
 }
 
 EGwSendOptions *
