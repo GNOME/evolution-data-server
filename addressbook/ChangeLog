@@ -1,3 +1,10 @@
+2005-03-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #72878
+
+	* libebook/e-destination.c (e_destination_copy): copy the raw
+	address.
+
 2005-02-28  Sivaiah Nallagatla  <snallagatla@novell.com>
 
 	* backends/groupwise/e-bbok-backend-groupwise.c 
