@@ -2,7 +2,6 @@
 #include <config.h>
 #include <gconf/gconf-client.h>
 #include <glib/gmain.h>
-#include <libgnome/gnome-init.h>
 #include <libedataserver/e-source-list.h>
 
 static GConfClient *conf_client;
@@ -52,11 +51,7 @@ idle_cb (gpointer data)
 int
 main (int argc, char *argv[])
 {
-	gnome_program_init (PACKAGE, VERSION,
-			    LIBGNOME_MODULE,
-			    argc, argv,
-			    NULL);
-
+	g_type_init ();
 	if (argc != 3 && argc != 4) {
 		g_print ("Usage: %s hostname username [password]\n", argv[0]);
 		return -1;

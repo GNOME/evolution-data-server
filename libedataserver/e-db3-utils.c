@@ -10,7 +10,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <libgnome/gnome-util.h>
 
 static char *
 get_check_filename (const char *filename)
@@ -132,9 +131,9 @@ e_db3_utils_maybe_recover (const char *filename)
 	copy_filename = get_copy_filename (filename);
 	check_filename = get_check_filename (filename);
 
-	if (g_file_exists (check_filename)) {
+	if (g_file_test(check_filename, G_FILE_TEST_EXISTS)) {
 		ret_val = resume_upgrade(filename, copy_filename, check_filename);
-	} else if (g_file_exists (copy_filename)) {
+	} else if (g_file_test (copy_filename, G_FILE_TEST_EXISTS)) {
 		unlink (copy_filename);
 	}
 

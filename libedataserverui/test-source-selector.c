@@ -33,9 +33,6 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwindow.h>
 
-#include <libgnomeui/gnome-ui-init.h>
-
-
 static void
 dump_selection (ESourceSelector *selector)
 {
@@ -118,13 +115,9 @@ on_idle_create_widget (const char *gconf_path)
 int
 main (int argc, char **argv)
 {
-	GnomeProgram *program;
 	const char *gconf_path;
 
-	program = gnome_program_init ("test-source-selector", "0.0",
-				      LIBGNOMEUI_MODULE, argc, argv,
-				      NULL);
-
+	gtk_init (&argc, &argv);
 	if (argc < 2)
 		gconf_path = "/apps/evolution/calendar/sources";
 	else
