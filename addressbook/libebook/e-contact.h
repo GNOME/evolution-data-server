@@ -154,11 +154,12 @@ typedef enum {
 
 	/* Instant Messaging fields */
 	E_CONTACT_IM_AIM,     	 /* Multi-valued */
+	E_CONTACT_IM_GROUPWISE,   /* Multi-valued */
 	E_CONTACT_IM_JABBER,  	 /* Multi-valued */
 	E_CONTACT_IM_YAHOO,   	 /* Multi-valued */
 	E_CONTACT_IM_MSN,     	 /* Multi-valued */
 	E_CONTACT_IM_ICQ,     	 /* Multi-valued */
-
+       
 	E_CONTACT_WANTS_HTML,    /* boolean field */
 
 	/* fields used for describing contact lists.  a contact list

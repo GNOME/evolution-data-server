@@ -1,4 +1,9 @@
-2004-02-24  Hans Petter Jansson  <hpj@ximian.com>
+2004-02-25  Sivaiah Nallagatla  <snallagatla@novell.com>
+	* libebook/e-vcard.h : added EVC_X_GROUPWISE definition 
+	* libebook/e-contact.[ch] : added E_CONTACT_IM_GROUPWISE field to EContact 
+	to store groupwise im ids
+
+2dd E_004-02-24  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-book-async.c (_default_book_response_dtor): Don't
 	unref the *new* book after returning it to user. This was causing
