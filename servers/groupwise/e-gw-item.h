@@ -98,6 +98,11 @@ typedef struct {
 	char *name;
 } EGroupMember;
 
+typedef struct {
+	char *email;
+	char *display_name;
+} EGwItemOrganizer;
+
 GType       e_gw_item_get_type (void);
 EGwItem    *e_gw_item_new_empty (void);
 EGwItem    *e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param);
@@ -168,6 +173,10 @@ void        e_gw_item_set_priority (EGwItem *item, const char *new_priority);
 
 GSList *e_gw_item_get_recipient_list (EGwItem *item);
 void e_gw_item_set_recipient_list (EGwItem *item, GSList *new_recipient_list);
+
+EGwItemOrganizer *e_gw_item_get_organizer (EGwItem *item);
+void e_gw_item_set_organizer (EGwItem  *item, EGwItemOrganizer *organizer);
+
 
 GSList *e_gw_item_get_recurrence_dates (EGwItem *item);
 void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates);

@@ -1,3 +1,18 @@
+2004-06-15  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #59352
+	* e-gw-item.c: 
+	(e_gw_item_init), (e_gw_item_dispose),
+	(e_gw_item_new_from_soap_parameter), (e_gw_item_get_organizer),
+	(e_gw_item_set_organizer), (add_distribution_to_soap_message):
+	Convert EGwItemOrganizer to/from the <from> soap element.		
+
+	(e_gw_item_append_to_soap_message): Add the <from> element explicitly 
+	to <distribution> element, in addition to the <recipients> element.
+
+	* e-gw-item.h: Add EGwItemOrganizer structure and get/set functions
+	for the same.
+	
 2004-06-15 Sivaiah Nallagatla   <snallagatla@novell.com>
 
 	* e-gw-item.h : added "name" member ot EGroupMember structure

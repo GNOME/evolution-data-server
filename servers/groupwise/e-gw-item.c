@@ -52,6 +52,7 @@ struct _EGwItemPrivate {
 	GSList *recipient_list;
 	GSList *recurrence_dates;
 	int trigger; /* alarm */
+	EGwItemOrganizer *organizer;
 
 	/* properties for tasks/calendars */
 	char *icalid;
@@ -228,6 +229,10 @@ e_gw_item_dispose (GObject *object)
 			g_slist_free (priv->recipient_list);
 			priv->recipient_list = NULL;
 		}	
+		if (priv->organizer) {
+			g_free (priv->organizer);
+			priv->organizer = NULL;
+		}
 		if (priv->recurrence_dates) {
 			g_slist_foreach (priv->recurrence_dates, free_string, NULL);
 			g_slist_free (priv->recurrence_dates);
@@ -319,6 +324,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->due_date = NULL; 
 	priv->trigger = 0;
 	priv->recipient_list = NULL;
+	priv->organizer = NULL;
 	priv->recurrence_dates = NULL;
 	priv->completed = FALSE;
 	priv->im_list = NULL;
@@ -1338,6 +1344,19 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 				item->priv->recipient_list = NULL;
 				set_recipient_list_from_soap_parameter (&item->priv->recipient_list, tp);
 			}
+			tp = soup_soap_parameter_get_first_child_by_name (child, "from");
+			if (tp) {
+				SoupSoapParameter *subparam;
+				EGwItemOrganizer *organizer = g_new0 (EGwItemOrganizer, 1);
+
+				subparam = soup_soap_parameter_get_first_child_by_name (tp, "displayName");
+				if (subparam) 
+					organizer->display_name = soup_soap_parameter_get_string_value (subparam);
+				subparam = soup_soap_parameter_get_first_child_by_name (tp, "email");
+				if (subparam) 
+					organizer->email = soup_soap_parameter_get_string_value (subparam);
+				e_gw_item_set_organizer (item, organizer);
+			}
 
 		} else if (!g_ascii_strcasecmp (name, "dueDate")) {
 			char *formatted_date; 
@@ -1685,6 +1704,21 @@ e_gw_item_set_recipient_list (EGwItem  *item, GSList *new_recipient_list)
 	item->priv->recipient_list = new_recipient_list;
 }
 
+EGwItemOrganizer *
+e_gw_item_get_organizer (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	return item->priv->organizer;
+}
+
+void
+e_gw_item_set_organizer (EGwItem  *item, EGwItemOrganizer *organizer)
+{
+	/* free organizer */ 
+	g_free (item->priv->organizer);
+	item->priv->organizer = organizer;
+}
+
 GSList *
 e_gw_item_get_recurrence_dates (EGwItem *item)
 {
@@ -1719,13 +1753,21 @@ e_gw_item_set_trigger (EGwItem *item, int trigger)
 }
 
 static void
-add_distribution_to_soap_message (GSList *recipient_list, SoupSoapMessage *msg)
+add_distribution_to_soap_message (EGwItemOrganizer *organizer, GSList *recipient_list, SoupSoapMessage *msg)
 {
 	GSList *rl;
 	
 	/* start distribution element */
 	soup_soap_message_start_element (msg, "distribution", NULL, NULL);
-	/*FIXME  Add the from element to identify the organizer */
+	if (organizer) {
+		soup_soap_message_start_element (msg, "from", NULL, NULL);
+		e_gw_message_write_string_parameter (msg, "displayName", NULL,
+				organizer->display_name ? organizer->display_name : "");
+		e_gw_message_write_string_parameter (msg, "email", NULL, 
+				organizer->email ? organizer->email : "");
+		
+		soup_soap_message_end_element (msg);
+	}
 	/* start recipients */
 	soup_soap_message_start_element (msg, "recipients", NULL, NULL);
 	/* add each recipient */
@@ -1788,7 +1830,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			g_free (alarm);
 		}
 		if (priv->recipient_list != NULL)
-			add_distribution_to_soap_message (priv->recipient_list, msg);
+			add_distribution_to_soap_message (priv->organizer, priv->recipient_list, msg);
 		if (priv->end_date) {
 			e_gw_message_write_string_parameter (msg, "endDate", NULL, priv->end_date);
 		} else

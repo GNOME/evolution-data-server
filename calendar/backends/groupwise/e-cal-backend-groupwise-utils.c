@@ -264,10 +264,25 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, const ica
 				
 		e_gw_item_set_recipient_list (item, recipient_list);
 	}
+
+	if (e_cal_component_has_organizer (comp)) {
+		ECalComponentOrganizer *cal_organizer;
+		EGwItemOrganizer *organizer = NULL;
+
+		e_cal_component_get_organizer (comp, cal_organizer);
+		if (cal_organizer) {
+			organizer = g_new0 (EGwItemOrganizer, 1);
+			organizer->display_name = g_strdup (cal_organizer->cn);
+			organizer->email = g_strdup (cal_organizer->value + 7);
+			e_gw_item_set_organizer (item, organizer);
+		}
+	}
+
+	
 	/* check if recurrences exist and update the item */
 	if (e_cal_component_has_recurrences (comp)) {
 
-		GSList *recur_dates = NULL, *tmp;
+		GSList *recur_dates = NULL;
 		
 
 		e_cal_recur_generate_instances (comp, -1, -1,
@@ -307,6 +322,7 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	int percent;
 	int alarm_duration;
 	GSList *recipient_list, *rl, *attendee_list = NULL;
+	EGwItemOrganizer *organizer;
 	EGwItemType item_type;
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
@@ -442,6 +458,17 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 		}
 
 		e_cal_component_set_attendee_list (comp, attendee_list);
+	}
+
+	/* set organizer if it exists */
+	organizer = e_gw_item_get_organizer (item);
+	if (organizer) {
+		ECalComponentOrganizer *cal_organizer;
+		
+		cal_organizer = g_new0 (ECalComponentOrganizer, 1);
+		cal_organizer->cn = g_strdup (organizer->display_name);
+		cal_organizer->value = g_strconcat("MAILTO:", organizer->email, NULL);
+		e_cal_component_set_organizer (comp, cal_organizer);
 	}
 
 	/* set specific properties */

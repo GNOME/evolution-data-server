@@ -1,3 +1,11 @@
+2004-06-15  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #59352	
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component):
+	Handle the organizer property of ecal and allow storing to and 
+	from e-gw-item.
+
 2004-06-14  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #57088
