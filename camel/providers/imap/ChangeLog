@@ -1,3 +1,9 @@
+2005-02-15  Björn Torkelsson  <torkel@acc.umu.se>
+
+	* camel-imap-store.c (imap_build_folder_info): Rename inbox/INBOX to 
+	Inbox, so it is translatable.
+	(parse_list_response_as_folder_info): here too.
+
 2005-02-08  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-folder.c (do_copy): Don't always delete the original
