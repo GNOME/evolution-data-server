@@ -1,3 +1,12 @@
+2004-12-13  Harish Krishnaswamy <kharish@novell.com>
+
+	* libedata-cal/e-cal-backend.c 
+	(e_cal_backend_notify_object_removed, 
+	e_cal_backend_notify_object_modified,
+	e_cal_backend_notify_object_added ):
+	Remove the unrefs on queries as the get_queries
+	does not ref anymore while returning.
+	
 2004-12-09  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #70267
