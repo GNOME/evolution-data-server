@@ -1,3 +1,7 @@
+2004-02-08  Robert Sedak  <robert.sedak@sk.htnet.hr>
+ 
+         * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
 2004-02-06  Rodrigo Moya <rodrigo@ximian.com>
 
 	* configure.in:

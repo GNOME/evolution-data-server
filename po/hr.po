@@ -1,0 +1,879 @@
+# Translation of evolution-data-server to Croatiann
+# Copyright (C) Croatiann team
+# Translators: Automatski Prijevod <>,Denis Lackovic <delacko@fly.srk.fer.hr>,Sasa Poznanovic <sasa.poznanovic@vuka.hr>,
+msgid ""
+msgstr ""
+"Project-Id-Version: evolution-data-server 0\n"
+"POT-Creation-Date: 2004-02-08 00:08+0100\n"
+"PO-Revision-Date: 2004-02-08 00:08+CET\n"
+"Last-Translator: auto\n"
+"Language-Team: Croatian <lokalizacija@linux.hr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: TransDict server\n"
+
+#: addressbook/backends/file/e-book-backend-file.c:385
+#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+msgid "Loading..."
+msgstr "Učitavam..."
+
+#: addressbook/backends/file/e-book-backend-file.c:387
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
+#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+msgid "Searching..."
+msgstr "Tražim..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:601
+msgid "Using Distinguished Name (DN)"
+msgstr "Koristim poseban naziv (DN)"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:604
+msgid "Using Email Address"
+msgstr "Koristim  adresu elektronske pošte"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:748
+msgid "Reconnecting to LDAP server..."
+msgstr "Ponovo uspostavljam vezu sa LDAP poslužiteljem"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
+msgid "Adding contact to LDAP server..."
+msgstr "Dodajem kontakt u LDAP poslužitelj..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
+msgid "Removing contact from LDAP server..."
+msgstr "Uklanjam kontakt sa LDAP poslužitelja..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+msgid "Modifying contact from LDAP server..."
+msgstr "Promjena kontakta na LDAP poslužitelju..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
+msgid "Receiving LDAP search results..."
+msgstr "Primam rezultate pretrage sa LDAP poslužitelja"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
+msgid "Error performing search"
+msgstr "Greška kod izvršavanja pretrage"
+
+#. translators: the placeholders will be filled by
+#.  * function names, e.g.
+#.  * "e_book_add_contact" on book before
+#.  * "e_book_load_uri
+#: addressbook/libebook/e-book.c:216 addressbook/libebook/e-book.c:328
+#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:515
+#: addressbook/libebook/e-book.c:628 addressbook/libebook/e-book.c:712
+#: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
+#: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
+#: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
+#: addressbook/libebook/e-book.c:2042
+#, c-format
+msgid "\"%s\" on book before \"%s\""
+msgstr "\"%s\" na knjizi prije \"%s\""
+
+#: addressbook/libebook/e-book.c:224 addressbook/libebook/e-book.c:336
+#: addressbook/libebook/e-book.c:421 addressbook/libebook/e-book.c:524
+#: addressbook/libebook/e-book.c:636 addressbook/libebook/e-book.c:720
+#: addressbook/libebook/e-book.c:823 addressbook/libebook/e-book.c:877
+#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1110
+#: addressbook/libebook/e-book.c:1210 addressbook/libebook/e-book.c:1450
+msgid "book busy"
+msgstr "knjiga zaposlena"
+
+#: addressbook/libebook/e-book.c:251 addressbook/libebook/e-book.c:363
+#: addressbook/libebook/e-book.c:443 addressbook/libebook/e-book.c:547
+#: addressbook/libebook/e-book.c:662 addressbook/libebook/e-book.c:743
+#: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
+#: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
+#: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
+#: addressbook/libebook/e-book.c:2051
+#, c-format
+msgid "CORBA exception making \"%s\" call"
+msgstr "Došlo je do CORBA iznimke pri pozivu \"%s\""
+
+#: addressbook/libebook/e-book.c:1349
+msgid "e_book_cancel: there is no current operation"
+msgstr "e_book_cancel: trenutno ne postoji operacija"
+
+#: addressbook/libebook/e-book.c:1384
+msgid "e_book_cancel: couldn't cancel"
+msgstr "e_book_cancel: ne mogu prekinuti"
+
+#: addressbook/libebook/e-book.c:1743
+msgid "e_book_load_uri: Invalid source."
+msgstr "e_book_load_uri: Neispravni izvor."
+
+#: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr "e_book_load_uri: nema tvornica dostupnih za uri `%s'"
+
+#: addressbook/libebook/e-book.c:1765
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr "e_book_load_uri: Ne mogu stvoriti EBookListener"
+
+#: addressbook/libebook/e-book.c:1864
+msgid "e_book_load_uri: cancelled"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1901
+msgid "\"%s\" on book after \"%s\""
+msgstr ""
+
+#: addressbook/libebook/e-book.c:2137
+msgid "e_book_get_self: there was no self contact uid stored in gconf"
+msgstr "e_book_get_self: ne postoji kontaktni uid spremljen u gconf"
+
+#: addressbook/libebook/e-book.c:2314
+#, c-format
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:97
+msgid "Unique ID"
+msgstr "Jedinstveni ID"
+
+#: addressbook/libebook/e-contact.c:98
+msgid "File As"
+msgstr "Datoteka kao"
+
+#. Name fields
+#.  FN isn't really a structured field - we use a getter/setter
+#.  so we can set the N property (since evo 1.4 works fine with
+#.  vcards that don't even have a N attribute.  *sigh*)
+#: addressbook/libebook/e-contact.c:104
+msgid "Full Name"
+msgstr "Puno ime"
+
+#: addressbook/libebook/e-contact.c:105
+msgid "Name"
+msgstr "Ime"
+
+#: addressbook/libebook/e-contact.c:106
+msgid "Given Name"
+msgstr "Dano ime"
+
+#: addressbook/libebook/e-contact.c:107
+msgid "Family Name"
+msgstr "Obiteljsko ime"
+
+#: addressbook/libebook/e-contact.c:108
+msgid "Nickname"
+msgstr "Nadimak"
+
+#: addressbook/libebook/e-contact.c:109
+msgid "Name or Org"
+msgstr "Ime ili organizacija"
+
+#. Address fields
+#: addressbook/libebook/e-contact.c:112
+msgid "Address List"
+msgstr "Popis adresa"
+
+#: addressbook/libebook/e-contact.c:113
+msgid "Home Address"
+msgstr "Kućna adresa"
+
+#: addressbook/libebook/e-contact.c:114
+msgid "Work Address"
+msgstr "Poslovna adresa"
+
+#: addressbook/libebook/e-contact.c:115
+msgid "Other Address"
+msgstr "Druga adresa"
+
+#: addressbook/libebook/e-contact.c:117
+msgid "Home Address Label"
+msgstr "Kućna adresa"
+
+#: addressbook/libebook/e-contact.c:118
+msgid "Work Address Label"
+msgstr "Oznaka adrese na poslu"
+
+#: addressbook/libebook/e-contact.c:119
+msgid "Other Address Label"
+msgstr "Oznaka ostalih adresa"
+
+#: addressbook/libebook/e-contact.c:121
+msgid "Assistant Phone"
+msgstr "Telefon pomoćnika"
+
+#: addressbook/libebook/e-contact.c:122
+msgid "Business Phone"
+msgstr "Poslovni telefon"
+
+#: addressbook/libebook/e-contact.c:123
+msgid "Business Phone 2"
+msgstr "Poslovni telefon 2"
+
+#: addressbook/libebook/e-contact.c:124
+msgid "Business Fax"
+msgstr "Faks na poslu"
+
+#: addressbook/libebook/e-contact.c:125
+msgid "Callback Phone"
+msgstr "Telefon povratnog poziva"
+
+#: addressbook/libebook/e-contact.c:126
+msgid "Car Phone"
+msgstr "Telefon (u autu)"
+
+#: addressbook/libebook/e-contact.c:127
+msgid "Company Phone"
+msgstr "Telefon poduzeća"
+
+#: addressbook/libebook/e-contact.c:128
+msgid "Home Phone"
+msgstr "Telefon (kućni)"
+
+#: addressbook/libebook/e-contact.c:129
+msgid "Home Phone 2"
+msgstr "Kućni telefon 2"
+
+#: addressbook/libebook/e-contact.c:130
+msgid "Home Fax"
+msgstr "Faks kod kuće"
+
+#: addressbook/libebook/e-contact.c:131
+msgid "ISDN"
+msgstr "ISDN"
+
+#: addressbook/libebook/e-contact.c:132
+msgid "Mobile Phone"
+msgstr "Mobilni telefon"
+
+#: addressbook/libebook/e-contact.c:133
+msgid "Other Phone"
+msgstr "Drugi telefon"
+
+#: addressbook/libebook/e-contact.c:134
+msgid "Other Fax"
+msgstr "Drugi faks"
+
+#: addressbook/libebook/e-contact.c:135
+msgid "Pager"
+msgstr "Dojavljivač"
+
+#: addressbook/libebook/e-contact.c:136
+msgid "Primary Phone"
+msgstr "Primarni telefon"
+
+#: addressbook/libebook/e-contact.c:137
+msgid "Radio"
+msgstr "Radio"
+
+#: addressbook/libebook/e-contact.c:138
+msgid "Telex"
+msgstr "Telex"
+
+#: addressbook/libebook/e-contact.c:139
+msgid "TTY"
+msgstr "TTY"
+
+#. Email fields
+#: addressbook/libebook/e-contact.c:142
+msgid "Email List"
+msgstr "Popis e-pošte"
+
+#: addressbook/libebook/e-contact.c:143
+msgid "Email 1"
+msgstr "E-pošta 1"
+
+#: addressbook/libebook/e-contact.c:144
+msgid "Email 2"
+msgstr "Email 2"
+
+#: addressbook/libebook/e-contact.c:145
+msgid "Email 3"
+msgstr "Email 3"
+
+#: addressbook/libebook/e-contact.c:146
+msgid "Mailer"
+msgstr "Program e-pošte"
+
+#: addressbook/libebook/e-contact.c:147
+msgid "Wants HTML Mail"
+msgstr "Želi HTML poštu"
+
+#. Instant messaging fields
+#: addressbook/libebook/e-contact.c:150
+msgid "AIM Screen Name List"
+msgstr "AIM Lista Imena Ekrana"
+
+#: addressbook/libebook/e-contact.c:151
+msgid "Jabber Id List"
+msgstr "Jabber Id popis"
+
+#: addressbook/libebook/e-contact.c:152
+msgid "Yahoo! Screen Name List"
+msgstr "Yahoo! popis zaslonskih imena"
+
+#: addressbook/libebook/e-contact.c:153
+msgid "MSN Screen Name List"
+msgstr "MSN popis zaslonskih imena"
+
+#: addressbook/libebook/e-contact.c:154
+msgid "ICQ Id List"
+msgstr "ICQ Id popis"
+
+#: addressbook/libebook/e-contact.c:156
+msgid "AIM Home Screen Name 1"
+msgstr "AIM Home Ime Ekrana 1"
+
+#: addressbook/libebook/e-contact.c:157
+msgid "AIM Home Screen Name 2"
+msgstr "AIM Home Ime Ekrana 2"
+
+#: addressbook/libebook/e-contact.c:158
+msgid "AIM Home Screen Name 3"
+msgstr "AIM Doma Ime Ekrana 3"
+
+#: addressbook/libebook/e-contact.c:159
+msgid "AIM Work Screen Name 1"
+msgstr "AIM Posao Ime Ekrana 1"
+
+#: addressbook/libebook/e-contact.c:160
+msgid "AIM Work Screen Name 2"
+msgstr "AIM Posao Ime Ekrana 2"
+
+#: addressbook/libebook/e-contact.c:161
+msgid "AIM Work Screen Name 3"
+msgstr "AIM Posao Ime Ekrana 3"
+
+#: addressbook/libebook/e-contact.c:162
+msgid "Jabber Home Id 1"
+msgstr "Jabber kućni Id 1"
+
+#: addressbook/libebook/e-contact.c:163
+msgid "Jabber Home Id 2"
+msgstr "Jabber kućni Id 2"
+
+#: addressbook/libebook/e-contact.c:164
+msgid "Jabber Home Id 3"
+msgstr "Jabber kućni Id 3"
+
+#: addressbook/libebook/e-contact.c:165
+msgid "Jabber Work Id 1"
+msgstr "Jabber posao Id 1"
+
+#: addressbook/libebook/e-contact.c:166
+msgid "Jabber Work Id 2"
+msgstr "Jabber posao Id 2"
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Jabber Work Id 3"
+msgstr "Jabber posao Id 3"
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Yahoo! kućno zaslonsko ime 1"
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Yahoo! kućno zaslonsko ime 2"
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Yahoo! kućno zaslonsko ime 3"
+
+#: addressbook/libebook/e-contact.c:171
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Yahoo!  zaslonsko ime na poslu 1"
+
+#: addressbook/libebook/e-contact.c:172
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Yahoo!  zaslonsko ime na poslu 2"
+
+#: addressbook/libebook/e-contact.c:173
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Yahoo!  zaslonsko ime na poslu 3"
+
+#: addressbook/libebook/e-contact.c:174
+msgid "MSN Home Screen Name 1"
+msgstr "MSN kućni zaslonsko ime 1"
+
+#: addressbook/libebook/e-contact.c:175
+msgid "MSN Home Screen Name 2"
+msgstr "MSN kućni zaslonsko ime 2"
+
+#: addressbook/libebook/e-contact.c:176
+msgid "MSN Home Screen Name 3"
+msgstr "MSN kućni zaslonsko ime 3"
+
+#: addressbook/libebook/e-contact.c:177
+msgid "MSN Work Screen Name 1"
+msgstr "MSN  zaslonsko ime na poslu 1"
+
+#: addressbook/libebook/e-contact.c:178
+msgid "MSN Work Screen Name 2"
+msgstr "MSN  zaslonsko ime na poslu 2"
+
+#: addressbook/libebook/e-contact.c:179
+msgid "MSN Work Screen Name 3"
+msgstr "MSN  zaslonsko ime na poslu 3"
+
+#: addressbook/libebook/e-contact.c:180
+msgid "ICQ Home Id 1"
+msgstr "ICQ kućni Id 1"
+
+#: addressbook/libebook/e-contact.c:181
+msgid "ICQ Home Id 2"
+msgstr "ICQ kućni Id 2"
+
+#: addressbook/libebook/e-contact.c:182
+msgid "ICQ Home Id 3"
+msgstr "ICQ kućni Id 3"
+
+#: addressbook/libebook/e-contact.c:183
+msgid "ICQ Work Id 1"
+msgstr "ICQ posao Id 1"
+
+#: addressbook/libebook/e-contact.c:184
+msgid "ICQ Work Id 2"
+msgstr "ICQ posao Id 2"
+
+#: addressbook/libebook/e-contact.c:185
+msgid "ICQ Work Id 3"
+msgstr "ICQ posao Id 3"
+
+#. Organizational fields
+#: addressbook/libebook/e-contact.c:188
+msgid "Organization"
+msgstr "Organizacija"
+
+#: addressbook/libebook/e-contact.c:189
+msgid "Organizational Unit"
+msgstr "Organizacijska jedinica"
+
+#: addressbook/libebook/e-contact.c:190
+msgid "Office"
+msgstr "Ured"
+
+#: addressbook/libebook/e-contact.c:192
+msgid "Title"
+msgstr "Naslov"
+
+#: addressbook/libebook/e-contact.c:193
+msgid "Role"
+msgstr "Uloga"
+
+#: addressbook/libebook/e-contact.c:194
+msgid "Manager"
+msgstr "Upravitelj"
+
+#: addressbook/libebook/e-contact.c:195
+msgid "Assistant"
+msgstr "Pomoćnik"
+
+#. Web fields
+#: addressbook/libebook/e-contact.c:198
+msgid "Homepage URL"
+msgstr "Adresa početne stranice"
+
+#: addressbook/libebook/e-contact.c:199
+msgid "Weblog URL"
+msgstr "Weblog URL"
+
+#: addressbook/libebook/e-contact.c:200
+msgid "Video Conferencing URL"
+msgstr "Video Konferencijski URL"
+
+#. Photo/Logo
+#: addressbook/libebook/e-contact.c:203
+msgid "Photo"
+msgstr "Slika"
+
+#: addressbook/libebook/e-contact.c:204
+msgid "Logo"
+msgstr "Logotip"
+
+#. Security fields
+#: addressbook/libebook/e-contact.c:207
+msgid "X.509 Certificate"
+msgstr "X.509 certifikat"
+
+#. Contact categories
+#: addressbook/libebook/e-contact.c:210
+msgid "Category List"
+msgstr "Popis kategorija"
+
+#: addressbook/libebook/e-contact.c:211
+msgid "Categories"
+msgstr "Kategorije"
+
+#. Collaboration fields
+#: addressbook/libebook/e-contact.c:214
+msgid "Calendar URI"
+msgstr "Adresa kalendara"
+
+#: addressbook/libebook/e-contact.c:215
+msgid "Free/Busy URL"
+msgstr "Slobodna/zauzeta adresa"
+
+#: addressbook/libebook/e-contact.c:216
+msgid "ICS Calendar"
+msgstr "ICS Kalendar"
+
+#. Misc fields
+#: addressbook/libebook/e-contact.c:219
+msgid "Spouse's Name"
+msgstr "&Supružnik:"
+
+#: addressbook/libebook/e-contact.c:220
+msgid "Note"
+msgstr "Bilješka"
+
+#: addressbook/libebook/e-contact.c:222
+msgid "Birth Date"
+msgstr "Datum rođenja"
+
+#: addressbook/libebook/e-contact.c:223
+msgid "Anniversary"
+msgstr "Obljetnica"
+
+#: addressbook/libebook/e-contact.c:225
+msgid "List"
+msgstr "Popis"
+
+#: addressbook/libebook/e-contact.c:226
+msgid "List Show Addresses"
+msgstr "Lista prikazanih adresa"
+
+#: addressbook/libebook/e-contact.c:1218
+msgid "Unnamed List"
+msgstr "Lista bez imena"
+
+#. Set category and visibility
+#: calendar/backends/contacts/e-cal-backend-contacts.c:416
+msgid "Birthday"
+msgstr "Rođendan"
+
+#: calendar/backends/contacts/e-cal-backend-contacts.c:438
+#, c-format
+msgid "Birthday: %s"
+msgstr "Rođendan: %s"
+
+#: calendar/backends/contacts/e-cal-backend-contacts.c:457
+#, c-format
+msgid "Anniversary: %s"
+msgstr "Godišnjica: %s"
+
+#: calendar/backends/file/e-cal-backend-file.c:181
+msgid "Can't save calendar data: Malformed URI."
+msgstr "Ne mogu spremiti podatke kalendara: Neispravna adresa."
+
+#: calendar/backends/http/e-cal-backend-http.c:218
+msgid "Redirected to Invalid URI"
+msgstr ""
+
+#: calendar/backends/http/e-cal-backend-http.c:238
+msgid "Bad file format."
+msgstr "Neispravan format datoteke."
+
+#: calendar/backends/http/e-cal-backend-http.c:243
+msgid "Not a calendar."
+msgstr "Nije kalendar"
+
+#: calendar/libecal/e-cal-component.c:1218
+msgid "Untitled appointment"
+msgstr "Neimenovani sastanak"
+
+#: calendar/libecal/e-cal-recur.c:3989
+msgid "1st"
+msgstr "1."
+
+#: calendar/libecal/e-cal-recur.c:3990
+msgid "2nd"
+msgstr "2."
+
+#: calendar/libecal/e-cal-recur.c:3991
+msgid "3rd"
+msgstr "3."
+
+#: calendar/libecal/e-cal-recur.c:3992
+msgid "4th"
+msgstr "4."
+
+#: calendar/libecal/e-cal-recur.c:3993
+msgid "5th"
+msgstr "5."
+
+#: calendar/libecal/e-cal-recur.c:3994
+msgid "6th"
+msgstr "6."
+
+#: calendar/libecal/e-cal-recur.c:3995
+msgid "7th"
+msgstr "7."
+
+#: calendar/libecal/e-cal-recur.c:3996
+msgid "8th"
+msgstr "8."
+
+#: calendar/libecal/e-cal-recur.c:3997
+msgid "9th"
+msgstr "9."
+
+#: calendar/libecal/e-cal-recur.c:3998
+msgid "10th"
+msgstr "10."
+
+#: calendar/libecal/e-cal-recur.c:3999
+msgid "11th"
+msgstr "11."
+
+#: calendar/libecal/e-cal-recur.c:4000
+msgid "12th"
+msgstr "12."
+
+#: calendar/libecal/e-cal-recur.c:4001
+msgid "13th"
+msgstr "13."
+
+#: calendar/libecal/e-cal-recur.c:4002
+msgid "14th"
+msgstr "14og"
+
+#: calendar/libecal/e-cal-recur.c:4003
+msgid "15th"
+msgstr "15og"
+
+#: calendar/libecal/e-cal-recur.c:4004
+msgid "16th"
+msgstr "16."
+
+#: calendar/libecal/e-cal-recur.c:4005
+msgid "17th"
+msgstr "17."
+
+#: calendar/libecal/e-cal-recur.c:4006
+msgid "18th"
+msgstr "18."
+
+#: calendar/libecal/e-cal-recur.c:4007
+msgid "19th"
+msgstr "19."
+
+#: calendar/libecal/e-cal-recur.c:4008
+msgid "20th"
+msgstr "20og"
+
+#: calendar/libecal/e-cal-recur.c:4009
+msgid "21st"
+msgstr "21og"
+
+#: calendar/libecal/e-cal-recur.c:4010
+msgid "22nd"
+msgstr "22."
+
+#: calendar/libecal/e-cal-recur.c:4011
+msgid "23rd"
+msgstr "23."
+
+#: calendar/libecal/e-cal-recur.c:4012
+msgid "24th"
+msgstr "24."
+
+#: calendar/libecal/e-cal-recur.c:4013
+msgid "25th"
+msgstr "25."
+
+#: calendar/libecal/e-cal-recur.c:4014
+msgid "26th"
+msgstr "26."
+
+#: calendar/libecal/e-cal-recur.c:4015
+msgid "27th"
+msgstr "27."
+
+#: calendar/libecal/e-cal-recur.c:4016
+msgid "28th"
+msgstr "28."
+
+#: calendar/libecal/e-cal-recur.c:4017
+msgid "29th"
+msgstr "29."
+
+#: calendar/libecal/e-cal-recur.c:4018
+msgid "30th"
+msgstr "30."
+
+#: calendar/libecal/e-cal-recur.c:4019
+msgid "31st"
+msgstr "31."
+
+#: calendar/libecal/e-cal-util.c:569 calendar/libecal/e-cal-util.c:591
+msgid "High"
+msgstr "Visok"
+
+#: calendar/libecal/e-cal-util.c:571 calendar/libecal/e-cal-util.c:593
+msgid "Normal"
+msgstr "Obično"
+
+#: calendar/libecal/e-cal-util.c:573 calendar/libecal/e-cal-util.c:595
+msgid "Low"
+msgstr "Nisko"
+
+#. An empty string is the same as 'None'.
+#: calendar/libecal/e-cal-util.c:589
+msgid "Undefined"
+msgstr "Neodređeno"
+
+#. actually ask the client for authentication
+#: calendar/libecal/e-cal.c:1459
+msgid "Enter password for %s (user %s)"
+msgstr "Unesite lozinku za %s (korisnik %s)"
+
+#: calendar/libecal/e-cal.c:3922
+msgid "Invalid argument"
+msgstr "Nedozvoljeni argument"
+
+#: calendar/libecal/e-cal.c:3924
+msgid "Backend is busy"
+msgstr "Pozadinska aplikacija je zauzeta"
+
+#: calendar/libecal/e-cal.c:3926
+msgid "Repository is offline"
+msgstr "Repozitorij nije priključen na mrežu"
+
+#: calendar/libecal/e-cal.c:3928
+msgid "No such calendar"
+msgstr "Ne postoji takav kalendar"
+
+#: calendar/libecal/e-cal.c:3930
+msgid "Object not found"
+msgstr "Objekt nije nađen"
+
+#: calendar/libecal/e-cal.c:3932
+msgid "Invalid object"
+msgstr "Neispravni objekt"
+
+#: calendar/libecal/e-cal.c:3934
+msgid "URI not loaded"
+msgstr "URI nije učitan"
+
+#: calendar/libecal/e-cal.c:3936
+msgid "URI already loaded"
+msgstr "URI je već učitan"
+
+#: calendar/libecal/e-cal.c:3938
+msgid "Permission denied"
+msgstr "Pristup odbijen"
+
+#: calendar/libecal/e-cal.c:3940
+msgid "Object ID already exists"
+msgstr "ID objekta već postoji"
+
+#: calendar/libecal/e-cal.c:3942
+msgid "Protocol not supported"
+msgstr "Protokol nije podržan"
+
+#: calendar/libecal/e-cal.c:3944
+msgid "Operation has been cancelled"
+msgstr "Operacija je prekinuta"
+
+#: calendar/libecal/e-cal.c:3946
+msgid "Could not cancel operation"
+msgstr "Ne mogu otkazati operaciju"
+
+#: calendar/libecal/e-cal.c:3948
+msgid "Authentication failed"
+msgstr "Neuspješna identifikacija"
+
+#: calendar/libecal/e-cal.c:3950
+msgid "Authentication required"
+msgstr "Zahtijev za autentifikaciju obavezan"
+
+#: calendar/libecal/e-cal.c:3952
+msgid "A CORBA exception has occurred"
+msgstr ""
+
+#: calendar/libecal/e-cal.c:3954
+msgid "Unknown error"
+msgstr "Nepoznata greška"
+
+#: calendar/libecal/e-cal.c:3956
+msgid "No error"
+msgstr "Nema greške"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:49
+#: calendar/libedata-cal/e-cal-backend-sexp.c:503
+#: calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: calendar/libedata-cal/e-cal-backend-sexp.c:662
+msgid "\"%s\" expects no arguments"
+msgstr "\"%s\" ne očekuje argumente"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:74
+#: calendar/libedata-cal/e-cal-backend-sexp.c:162
+#: calendar/libedata-cal/e-cal-backend-sexp.c:196
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#: calendar/libedata-cal/e-cal-backend-sexp.c:700
+msgid "\"%s\" expects one argument"
+msgstr "\"%s\" očekuje jedan argument"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:80
+#: calendar/libedata-cal/e-cal-backend-sexp.c:238
+#: calendar/libedata-cal/e-cal-backend-sexp.c:449
+msgid "\"%s\" expects the first argument to be a string"
+msgstr "\"%s\" očekuje da prvi argument bude znakovni niz"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr "\"%s\" očekuje da prvi argument bude ISO 8601 vrijeme/datum niz"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:120
+#: calendar/libedata-cal/e-cal-backend-sexp.c:282
+#: calendar/libedata-cal/e-cal-backend-sexp.c:443
+msgid "\"%s\" expects two arguments"
+msgstr "\"%s\" očekuje dva argumenta"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:126
+#: calendar/libedata-cal/e-cal-backend-sexp.c:168
+#: calendar/libedata-cal/e-cal-backend-sexp.c:202
+#: calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: calendar/libedata-cal/e-cal-backend-sexp.c:706
+msgid "\"%s\" expects the first argument to be a time_t"
+msgstr "\"%s\" očekuje da prvi argument bude time_t"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+msgid "\"%s\" expects the second argument to be an integer"
+msgstr "\"%s\" očekuje da drugi argument bude cijeli broj"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:296
+msgid "\"%s\" expects the second argument to be a time_t"
+msgstr "\"%s\" očekuje da drugi argument bude time_t"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:457
+msgid "\"%s\" expects the second argument to be a string"
+msgstr "\"%s\" očekuje da drugi argument bude znakovni niz"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:475
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\""
+msgstr ""
+"\"%s\" očekuje da prvi argument bude  \"any\", \"summary\", ili"
+"\"description\""
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:537
+msgid "\"%s\" expects at least one argument"
+msgstr "\"%s\" očekuje barem jedan argument"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:551
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr "\"%s\" očekuje da svi argumenti budu znakovni nizovi, a da samo jedan argument  bude booleovo netočno (#f)"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
+msgid "Evolution Addressbook file and LDAP backend"
+msgstr "Pozadinski program za Evolution datoteku adresara i LDAP pozadinski poslužitelj"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
+msgid "Evolution Calendar file and webcal backend"
+msgstr "Evolution datoteka kalendara i webcal pozadina"
+
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
+msgid "Evolution Addressbook file backend"
+msgstr "Pozadinski program za Evolution datoteku adresara"
+
