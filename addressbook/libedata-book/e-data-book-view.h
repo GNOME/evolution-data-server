@@ -43,10 +43,12 @@ struct _EDataBookViewClass {
 EDataBookView *e_data_book_view_new                  (EBookBackend                 *backend,
 						      GNOME_Evolution_Addressbook_BookViewListener  listener,
 						      const char                   *card_query,
-						      EBookBackendSExp             *card_sexp);
+						      EBookBackendSExp             *card_sexp,
+						      int                           max_results);
 
 const char*       e_data_book_view_get_card_query    (EDataBookView                *book_view);
 EBookBackendSExp* e_data_book_view_get_card_sexp     (EDataBookView                *book_view);
+int               e_data_book_view_get_max_results   (EDataBookView                *book_view);
 EBookBackend*     e_data_book_view_get_backend       (EDataBookView                *book_view);
 GNOME_Evolution_Addressbook_BookViewListener e_data_book_view_get_listener (EDataBookView  *book_view);
 GMutex*           e_data_book_view_get_mutex         (EDataBookView                *book_view);
