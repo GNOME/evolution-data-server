@@ -1,3 +1,10 @@
+2004-06-01 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c (
+	(e_book_backend_groupwise_remove_contacts) : use
+	the new e_gw_connection_remove_items which removes all the
+	items form the server at once instead of sending one request for each item
+
 2004-05-28 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

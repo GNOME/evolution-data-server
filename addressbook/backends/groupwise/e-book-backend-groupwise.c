@@ -41,6 +41,8 @@ struct _EBookBackendGroupwisePrivate {
 	gboolean is_writable;
 	char *summary_file_name;
 	EBookBackendSummary *summary;
+	char *old_name;
+	gboolean to_be_renamed;
 };
 
 #define ELEMENT_TYPE_SIMPLE 0x01
@@ -63,7 +65,7 @@ static void set_address_changes (EGwItem *new_item, EGwItem *old_item);
 static void populate_ims (EContact *contact, gpointer data);
 static void set_ims_in_gw_item (EGwItem *item, gpointer data);
 static void set_im_changes (EGwItem *new_item, EGwItem *old_item);
-
+static void fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categories_by_ids);
 
 struct field_element_mapping {
 	EContactField field_id;
@@ -289,12 +291,15 @@ copy_postal_address_to_contact_address ( EContactAddress *contact_addr, PostalAd
 static void 
 copy_contact_address_to_postal_address (PostalAddress *address, EContactAddress *contact_addr)
 {
-	address->street_address = g_strdup (g_strchomp(contact_addr->street));
-	address->location = g_strdup (contact_addr->ext);
-	address->city = g_strdup (contact_addr->locality);
-	address->state = g_strdup (contact_addr->region);
-	address->postal_code = g_strdup (contact_addr->code);
-	address->country = g_strdup (contact_addr->country);
+	/* ugh, contact addr has null terminated strings instead of NULLs*/
+	address->street_address = (contact_addr->street && *contact_addr->street) ? g_strdup (contact_addr->street): NULL;
+	address->location = (contact_addr->ext && *contact_addr->ext) ? g_strdup (contact_addr->ext) : NULL;
+	address->city = (contact_addr->locality && *contact_addr->locality) ? g_strdup (contact_addr->locality) : NULL;
+	address->state = (contact_addr->region && *contact_addr->region) ?  g_strdup (contact_addr->region) : NULL;
+	address->postal_code = (contact_addr->code && *contact_addr->code ) ? g_strdup (contact_addr->code) : NULL;
+	address->country = (contact_addr->country && *(contact_addr->country)) ? g_strdup (contact_addr->country) : NULL;
+
+	
 }
 
 static void 
@@ -363,11 +368,12 @@ copy_postal_address (PostalAddress *address)
 
 	address_copy = g_new0(PostalAddress, 1);
 
-	address_copy->street_address = g_strdup (address_copy->street_address);
-	address_copy->location = g_strdup (address_copy->location);
-	address_copy->state = g_strdup (address_copy->state);
-	address_copy->postal_code = g_strdup (address_copy->postal_code);
-	address_copy->country = g_strdup (address_copy->country);
+	address_copy->street_address = g_strdup (address->street_address);
+	address_copy->location = g_strdup (address->location);
+	address_copy->city = g_strdup (address->city);
+	address_copy->state = g_strdup (address->state);
+	address_copy->postal_code = g_strdup (address->postal_code);
+	address_copy->country = g_strdup (address->country);
 	return address_copy;
 }
 
@@ -382,48 +388,47 @@ set_postal_address_change (EGwItem *new_item, EGwItem *old_item,  char *address_
 	delete_postal_address = g_new0 (PostalAddress, 1);
 	
 	new_postal_address = e_gw_item_get_address (new_item,  address_type);
-	old_postal_address = e_gw_item_get_address (new_item, address_type);
-	
-	if (new_postal_address && old_postal_address) {
+	old_postal_address = e_gw_item_get_address (old_item, address_type);
+    	if (new_postal_address && old_postal_address) {
 		s1 = new_postal_address->street_address;
 		s2 = old_postal_address->street_address;
 		if (!s1 && s2)
 			delete_postal_address->street_address = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_postal_address->street_address = g_strdup(s1);
 		
 		s1 =  new_postal_address->location;
 		s2 = old_postal_address->location;
 		if (!s1 && s2)
 			delete_postal_address->location = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_postal_address->location = g_strdup(s1);
 
 		s1 = new_postal_address->city;
 		s2 = old_postal_address->city;
 		if (!s1 && s2)
 			delete_postal_address->city = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_postal_address->city = g_strdup(s1);
 
 		s1 =  new_postal_address->state;
 		s2 = old_postal_address->state;
 		if (!s1 && s2)
 			delete_postal_address->state = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_postal_address->state = g_strdup(s1);
 		s1 =  new_postal_address->postal_code;
 		s2 = old_postal_address->postal_code;
 		if (!s1 && s2)
 			delete_postal_address->postal_code = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_postal_address->postal_code = g_strdup(s1);
 
 		s1 =  new_postal_address->country;
 		s2 =  old_postal_address->country;
 		if (!s1 && s2)
 			delete_postal_address->country = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_postal_address->country = g_strdup(s1);
 
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, address_type, update_postal_address);
@@ -636,10 +641,10 @@ set_full_name_in_gw_item (EGwItem *item, gpointer data)
 		contact_name = e_contact_name_from_string (name);
 		full_name = g_new0 (FullName, 1);
 		if (contact_name && full_name) {
-			full_name->name_prefix = g_strdup (contact_name->prefixes);
+			full_name->name_prefix =  g_strdup (contact_name->prefixes);
 			full_name->first_name =  g_strdup (contact_name->given);
-			full_name->middle_name = g_strdup (contact_name->additional);
-			full_name->last_name = g_strdup (contact_name->family);
+			full_name->middle_name =  g_strdup (contact_name->additional);
+			full_name->last_name =  g_strdup (contact_name->family);
 			full_name->name_suffix = g_strdup (contact_name->suffixes);
 			e_contact_name_free (contact_name);
 		}
@@ -660,6 +665,7 @@ copy_full_name (FullName *full_name)
 	return full_name_copy;
 }
 
+
 static void 
 set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 {
@@ -672,38 +678,39 @@ set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 	
 	old_full_name = e_gw_item_get_full_name (old_item);
 	new_full_name = e_gw_item_get_full_name (new_item);
+       
 	
 	if (old_full_name && new_full_name) {
 		s1 = new_full_name->name_prefix;
 		s2 = old_full_name->name_prefix;
 	        if(!s1 && s2)
 			delete_full_name->name_prefix = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_full_name->name_prefix = g_strdup(s1);
 		s1 = new_full_name->first_name;
 		s2  = old_full_name->first_name;
 		if(!s1 && s2)
 			delete_full_name->first_name = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_full_name->first_name = g_strdup(s1);
 		s1 = new_full_name->middle_name;
 		s2  = old_full_name->middle_name;
 		if(!s1 && s2)
 			delete_full_name->middle_name = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_full_name->middle_name = g_strdup(s1);
 		
 		s1 = new_full_name->last_name;
 		s2 = old_full_name->last_name;
 		if(!s1 && s2)
 			delete_full_name->last_name = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_full_name->last_name = g_strdup(s1);
 		s1 = new_full_name->name_suffix;
 		s2  = old_full_name->name_suffix;
 		if(!s1 && s2)
 			delete_full_name->name_suffix = g_strdup(s2);
-		else if (s1 && s2)
+		else if (s1)
 			update_full_name->name_suffix = g_strdup(s1);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE,"full_name",  update_full_name);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE,"full_name",  delete_full_name);
@@ -865,6 +872,14 @@ set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroup
 		e_gw_item_set_field_value (org_item, "name", organization_name);
 		e_gw_item_set_item_type (org_item, E_GW_ITEM_TYPE_ORGANISATION);
 		status = e_gw_connection_create_item (egwb->priv->cnc, org_item, &id);
+		if ((status == E_GW_CONNECTION_STATUS_OK) && id) {
+			EContact *contact = e_contact_new ();
+			fill_contact_from_gw_item (contact, org_item, egwb->priv->categories_by_id);
+			e_contact_set (contact, E_CONTACT_UID, id);
+			e_contact_set (contact, E_CONTACT_FULL_NAME, organization_name);
+			e_book_backend_summary_add_contact (egwb->priv->summary, contact);
+			g_object_unref (contact);
+		}
 		g_object_unref (org_item);
 		if (status != E_GW_CONNECTION_STATUS_OK)
 			return;
@@ -1019,9 +1034,10 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 						if (name)
 							category_names = g_list_append (category_names, name);
 					}
-					if (category_names) 
+					if (category_names) {
 						e_contact_set (contact, E_CONTACT_CATEGORY_LIST, category_names);
-					g_list_free (category_names);
+						g_list_free (category_names);
+					}
 				}
 				else      
 					mappings[i].populate_contact_func(contact, item);
@@ -1049,6 +1065,7 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 		e_data_book_respond_create(book, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 		return;
 	}
+       
 	contact = e_contact_new_from_vcard(vcard);
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_item_type (item, e_contact_get (contact, E_CONTACT_IS_LIST) ? E_GW_ITEM_TYPE_GROUP :E_GW_ITEM_TYPE_CONTACT);
@@ -1100,7 +1117,6 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 {
   
 	char *id;
- 
 	EBookBackendGroupwise *ebgw;
 	GList *deleted_ids = NULL;
 
@@ -1109,12 +1125,10 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 		e_data_book_respond_remove_contacts (book, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 		return;
 	}
-	/* FIXME use removeItems method so that all contacts can be deleted in a single SOAP interaction */
-	
+	e_gw_connection_remove_items (ebgw->priv->cnc, ebgw->priv->container_id, id_list);
 	for ( ; id_list != NULL; id_list = g_list_next (id_list)) {
 		id = (char*) id_list->data;
-		if (e_gw_connection_remove_item (ebgw->priv->cnc, ebgw->priv->container_id, id) == E_GW_CONNECTION_STATUS_OK) 
-			deleted_ids =  g_list_append (deleted_ids, id);
+		deleted_ids =  g_list_append (deleted_ids, id);
 		e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
 	}
 	e_data_book_respond_remove_contacts (book,
@@ -1187,7 +1201,7 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 		return;
 	}
 	contact = e_contact_new_from_vcard(vcard);
-	new_item = e_gw_item_new_empty ();
+      	new_item = e_gw_item_new_empty ();
 
 	for (i = 0; i < num_mappings; i++) {
 		element_type = mappings[i].element_type;
@@ -1828,8 +1842,7 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 				     EDataBookView *book_view)
 {
 	GroupwiseBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_GROUPWISE (backend));
-	printf ("in book view\n");
-	g_mutex_lock (closure->mutex);
+       	g_mutex_lock (closure->mutex);
 	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
 	g_cond_wait (closure->cond, closure->mutex);
 
@@ -1865,7 +1878,7 @@ e_book_backend_groupwise_get_changes (EBookBackend *backend,
        
 }
 
-static void
+static gboolean
 build_summary (EBookBackendGroupwise *ebgw)
 {
 	int status;
@@ -1873,7 +1886,7 @@ build_summary (EBookBackendGroupwise *ebgw)
 	EContact *contact;
 	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, NULL, NULL, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK)
-		return;
+		return FALSE;
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), ebgw->priv->categories_by_id);
@@ -1882,8 +1895,7 @@ build_summary (EBookBackendGroupwise *ebgw)
 		g_object_unref (gw_items->data);
 		
 	}
-		
-
+	return FALSE;
 }
 
 static void
@@ -1940,8 +1952,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	e_util_mkdir_hier (g_path_get_dirname (priv->summary_file_name), 0700);
 	priv->summary = e_book_backend_summary_new (priv->summary_file_name, 5000);
        	if (e_book_backend_summary_load (priv->summary) == FALSE)
-		build_summary (ebgw);
-  
+		g_idle_add ((GSourceFunc)build_summary ,ebgw);  
 }
 
 static void
@@ -2016,7 +2027,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 			uri[i] = '_';
 		}
 	}
-	priv->summary_file_name = g_build_filename (g_get_home_dir(), ".evolution/addressbook" , uri, priv->book_name, NULL);
+	priv->summary_file_name = g_build_filename (g_get_home_dir(), ".evolution/addressbook" , uri, priv->book_name, NULL);						 
 	g_free (uri);
 	e_uri_free (parsed_uri);
 	return GNOME_Evolution_Addressbook_Success;
@@ -2107,6 +2118,14 @@ e_book_backend_groupwise_dispose (GObject *object)
 		if (bgw->priv->categories_by_name) {
 			g_hash_table_destroy (bgw->priv->categories_by_name);
 			bgw->priv->categories_by_name = NULL;
+		}
+		if (bgw->priv->summary_file_name) {
+			g_free (bgw->priv->summary_file_name);
+			bgw->priv->summary_file_name = NULL;
+		}
+		if (bgw->priv->summary) {
+			g_object_unref (bgw->priv->summary);
+			bgw->priv->summary = NULL;
 		}
 		g_free (bgw->priv);
 		bgw->priv = NULL;
