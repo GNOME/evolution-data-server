@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-21 22:54+0100\n"
-"PO-Revision-Date: 2003-12-21 22:59+0100\n"
+"POT-Creation-Date: 2003-12-27 20:49+0100\n"
+"PO-Revision-Date: 2003-12-27 20:54+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,133 +26,133 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 
-#: addressbook/libebook/e-book.c:212
+#: addressbook/libebook/e-book.c:213
 msgid "e_book_add_contact called on book before e_book_load_uri"
 msgstr "e_book_add_contact llamado en el libro antes de e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:219 addressbook/libebook/e-book.c:328
-#: addressbook/libebook/e-book.c:410 addressbook/libebook/e-book.c:509
-#: addressbook/libebook/e-book.c:618 addressbook/libebook/e-book.c:699
-#: addressbook/libebook/e-book.c:799 addressbook/libebook/e-book.c:851
-#: addressbook/libebook/e-book.c:944 addressbook/libebook/e-book.c:1073
-#: addressbook/libebook/e-book.c:1171 addressbook/libebook/e-book.c:1395
+#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:330
+#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:513
+#: addressbook/libebook/e-book.c:623 addressbook/libebook/e-book.c:705
+#: addressbook/libebook/e-book.c:806 addressbook/libebook/e-book.c:859
+#: addressbook/libebook/e-book.c:956 addressbook/libebook/e-book.c:1088
+#: addressbook/libebook/e-book.c:1186 addressbook/libebook/e-book.c:1421
 msgid "book busy"
 msgstr "libreta ocupada"
 
-#: addressbook/libebook/e-book.c:246
+#: addressbook/libebook/e-book.c:247
 msgid "Corba exception making Book::addContact call"
-msgstr ""
+msgstr "Excepción Corba al hacer la llamada Book::addContact"
 
-#: addressbook/libebook/e-book.c:321
+#: addressbook/libebook/e-book.c:323
 msgid "e_book_commit_contact called on book before e_book_load_uri"
-msgstr ""
+msgstr "e_book_commit_contact llamado en el libro antes de e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:355
+#: addressbook/libebook/e-book.c:357
 msgid "Corba exception making Book::modifyContact call"
-msgstr ""
+msgstr "Excepción Corba al hacer la llamada Book::modifyContact"
 
-#: addressbook/libebook/e-book.c:403
+#: addressbook/libebook/e-book.c:406
 msgid "e_book_get_supported_fields on book before e_book_load_uri"
-msgstr ""
+msgstr "e_book_get_supported_fields en el libro antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:432
+#: addressbook/libebook/e-book.c:435
 msgid "Corba exception making Book::getSupportedFields call"
-msgstr ""
+msgstr "Excepción Corba al hacer la llamada Book::getSupportedFields"
 
-#: addressbook/libebook/e-book.c:502
+#: addressbook/libebook/e-book.c:506
 msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
-msgstr ""
+msgstr "e_book_get_supported_auth_methods en el libro antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:532
+#: addressbook/libebook/e-book.c:536
 msgid "Corba exception making Book::getSupportedAuthMethods call"
-msgstr ""
+msgstr "Excepción Corba al hacer la llamada Book::getSupportedAuthMethods"
 
-#: addressbook/libebook/e-book.c:611
+#: addressbook/libebook/e-book.c:616
 msgid "e_book_authenticate_user on book before e_book_load_uri"
-msgstr ""
+msgstr "e_book_authenticate_user en el libro antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:644
+#: addressbook/libebook/e-book.c:649
 msgid "Corba exception making Book::authenticateUser call"
-msgstr ""
+msgstr "Excepción Corba al hacer la llamada Book::authenticateUser"
 
-#: addressbook/libebook/e-book.c:692
+#: addressbook/libebook/e-book.c:698
 msgid "e_book_get_contact on book before e_book_load_uri"
-msgstr ""
+msgstr "e_book_get_contact en el libro antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:722
+#: addressbook/libebook/e-book.c:728
 msgid "Corba exception making Book::getContact call"
-msgstr ""
+msgstr "Excepción Corba al hacer la llamada Book::getContact"
 
-#: addressbook/libebook/e-book.c:792
+#: addressbook/libebook/e-book.c:799
 msgid "e_book_remove_contact on book before e_book_load_uri"
-msgstr ""
+msgstr "e_book_remove_contact en el libro antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:844
+#: addressbook/libebook/e-book.c:852
 msgid "e_book_remove_contacts on book before e_book_load_uri"
-msgstr ""
+msgstr "e_book_remove_contacts en el libro antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:883
+#: addressbook/libebook/e-book.c:891
 msgid "Corba exception making Book::removeContacts call"
 msgstr "Excepción Corba al hacer la llamada Book::removeContacts"
 
-#: addressbook/libebook/e-book.c:937
+#: addressbook/libebook/e-book.c:949
 msgid "e_book_get_book_view on book before e_book_load_uri"
 msgstr "e_book_get_book_view en el libro antes de e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:988
+#: addressbook/libebook/e-book.c:1000
 msgid "Corba exception making Book::getBookView call"
 msgstr "Excepción Corba al hacer la llamada Book::getBookView"
 
-#: addressbook/libebook/e-book.c:1066
+#: addressbook/libebook/e-book.c:1081
 msgid "e_book_get_contacts on book before e_book_load_uri"
 msgstr "e_book_get_contacts en libro antes de e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:1101
+#: addressbook/libebook/e-book.c:1116
 msgid "Corba exception making Book::getContactList call"
 msgstr "Excepción Corba al hacer la llamada Book::getContactList"
 
-#: addressbook/libebook/e-book.c:1164
+#: addressbook/libebook/e-book.c:1179
 msgid "e_book_get_changes on book before e_book_load_uri"
 msgstr "e_book_get_changes en libro antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:1195
+#: addressbook/libebook/e-book.c:1210
 msgid "Corba exception making Book::getChanges call"
 msgstr "Excepción Corba haciendo la llamada Book::getChanges"
 
-#: addressbook/libebook/e-book.c:1306
+#: addressbook/libebook/e-book.c:1322
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: no hay operación actual"
 
-#: addressbook/libebook/e-book.c:1325
+#: addressbook/libebook/e-book.c:1341
 msgid "Corba exception making Book::cancelOperation call"
 msgstr "Excepción Corba haciendo el libro:: llamada CancelOperation"
 
-#: addressbook/libebook/e-book.c:1340
+#: addressbook/libebook/e-book.c:1356
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: no se pudo cancelar"
 
-#: addressbook/libebook/e-book.c:1388
+#: addressbook/libebook/e-book.c:1414
 msgid "e_book_remove on book before e_book_load_uri"
 msgstr "e_book_remove en el libre antes que e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:1417
+#: addressbook/libebook/e-book.c:1443
 msgid "Corba exception making Book::remove call"
 msgstr "Excepción Corba haciendo la llamada Book::remove"
 
-#: addressbook/libebook/e-book.c:1637
+#: addressbook/libebook/e-book.c:1672
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Origen inválido"
 
-#: addressbook/libebook/e-book.c:1645 addressbook/libebook/e-book.c:1749
+#: addressbook/libebook/e-book.c:1680 addressbook/libebook/e-book.c:1784
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: no hay fábricas disponibles para uri «%s»"
 
-#: addressbook/libebook/e-book.c:1659
+#: addressbook/libebook/e-book.c:1694
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: No se pudo crear EBookListener"
 
-#: addressbook/libebook/e-book.c:1913
+#: addressbook/libebook/e-book.c:2023
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: no había uid de autocontacto almacenada en gconf"
 
@@ -788,15 +788,15 @@ msgid ""
 "\""
 msgstr "contains? espera que el argumento 1 sea «any», «summary» ó «description»"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:435
+#: calendar/libedata-cal/e-cal-backend-sexp.c:434
 msgid "has-alarms? expects no arguments"
 msgstr "has-alarms? no espera ningún argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:469
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
 msgid "has-categories? expects at least 1 argument"
 msgstr "has-categories? espera al menos 1 argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:481
+#: calendar/libedata-cal/e-cal-backend-sexp.c:479
 msgid ""
 "has-categories? expects all arguments to be strings or one and only one "
 "argument to be a boolean false (#f)"
@@ -804,19 +804,19 @@ msgstr ""
 "has-categories ? espera que todos los argumentos sean cadenas o que uno y "
 "sólo uno de los argumentos sea un booleano falso (#f)"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:560
+#: calendar/libedata-cal/e-cal-backend-sexp.c:558
 msgid "has-recurrences? expects no arguments"
 msgstr "has-recurrences? no espera ningún argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:586
+#: calendar/libedata-cal/e-cal-backend-sexp.c:584
 msgid "is-completed? expects 0 arguments"
 msgstr "is-completed? no espera ningún argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:623
+#: calendar/libedata-cal/e-cal-backend-sexp.c:621
 msgid "completed-before? expects 1 argument"
 msgstr "completed-before? espera 1 argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:628
+#: calendar/libedata-cal/e-cal-backend-sexp.c:626
 msgid "completed-before? expects argument 1 to be a time_t"
 msgstr "completed-before? espera que el argumento 1 sea un time_t"
 
