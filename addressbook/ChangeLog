@@ -1,3 +1,9 @@
+2004-04-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_changes_foreach_key): Revert yesterday's
+	changes.
+
 2004-04-26  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* backends/file/e-book-backend-file.c
@@ -13,8 +19,9 @@
 
 2004-04-22  Sivaiah Nallagatla <snallagatla@novell.com>
 	
-	* backends/groupwise/e-book-backend-groupwise.c	
-	(populate_contact_members) : set the emails using EVC_X_DEST_EMAIL parameter
+	* backends/groupwise/e-book-backend-groupwise.c
+	(populate_contact_members) : set the emails using EVC_X_DEST_EMAIL
+	parameter
 
 2004-04-21  Chris Toshok  <toshok@ximian.com>
 
