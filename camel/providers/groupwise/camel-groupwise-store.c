@@ -297,9 +297,9 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	/*soap port*/
 	property_value =  camel_url_get_param (url, "soap_port");
 	if (property_value == NULL)
-		priv->port = g_strdup ("7181");
+		priv->port = g_strdup ("7191");
 	else if(strlen(property_value) == 0)
-		priv->port = g_strdup ("7181");
+		priv->port = g_strdup ("7191");
 	else
 		priv->port = g_strdup (property_value);
 
@@ -309,7 +309,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	priv->parent_hash = g_hash_table_new (g_str_hash, g_str_equal) ;
 
 	/*ssl*/
-	priv->use_ssl = g_strdup (camel_url_get_param (url, "soap_ssl"));
+	priv->use_ssl = g_strdup (camel_url_get_param (url, "use_ssl"));
 	
 	store->flags = 0; //XXX: Shouldnt do this....
 	
