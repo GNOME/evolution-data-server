@@ -203,6 +203,8 @@ sync_idle_callback (ESourceList *list)
 		g_error_free (error);
 	}
 
+	list->priv->sync_idle_id= 0;
+
 	return FALSE;
 }
 
