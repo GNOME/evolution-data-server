@@ -499,7 +499,7 @@ e_source_list_peek_source_any (ESourceList *list)
 		GSList *sources;
 		
 		sources = e_source_group_peek_sources (group);
-		if (sources->data)
+		if (sources && sources->data)
 			return E_SOURCE (sources->data);
 	}
 

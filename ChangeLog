@@ -1,3 +1,8 @@
+2004-01-15  JP Rosevear <jpr@ximian.com>
+
+	* libedataserver/e-source-list.c (e_source_list_peek_source_any):
+	make sure we don't derefence a NULL pointer
+
 2004-01-15  Mark McLoughlin  <mark@skynet.ie>
 
 	* libedataserver/e-source-list.c: (load_from_gconf):
