@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-28 01:30+0100\n"
+"POT-Creation-Date: 2004-01-28 13:19+0100\n"
 "PO-Revision-Date: 2004-01-28 01:22+0100\n"
 "Last-Translator: Sébastien Bacher <seb128@debian.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -22,13 +22,13 @@ msgstr ""
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
 msgid "Loading..."
-msgstr "Chargement..."
+msgstr "Chargement en cours..."
 
 #: addressbook/backends/file/e-book-backend-file.c:394
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2860
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
-msgstr "Recherche..."
+msgstr "Recherche en cours..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:613
 msgid "Using Distinguished Name (DN)"
@@ -512,7 +512,7 @@ msgstr "Catégories"
 #. Collaboration fields
 #: addressbook/libebook/e-contact.c:214
 msgid "Calendar URI"
-msgstr "URI du Calendrier"
+msgstr "URI du calendrier"
 
 #: addressbook/libebook/e-contact.c:215
 msgid "Free/Busy URL"
@@ -731,7 +731,7 @@ msgstr "Saisissez le mot de passe pour %s (utilisateur %s)"
 
 #: calendar/libecal/e-cal.c:3868
 msgid "Invalid argument"
-msgstr "Argument invalide"
+msgstr "Argument non valide"
 
 #: calendar/libecal/e-cal.c:3870
 msgid "Backend is busy"
@@ -783,7 +783,7 @@ msgstr "Impossible d'annuler l'opération"
 
 #: calendar/libecal/e-cal.c:3894
 msgid "Authentication failed"
-msgstr " Échec d'authentification"
+msgstr "L'authentification a échoué"
 
 #: calendar/libecal/e-cal.c:3896
 msgid "Authentication required"
