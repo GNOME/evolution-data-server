@@ -1,3 +1,15 @@
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64398
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(ECalBackendGroupwisePrivate): added an variable to store 
+	the timeout ids.
+	(e_cal_backend_groupwise_init): intialize the variable.
+	(e_cal_backend_groupwise_finalize): remove the timeout_add
+	function so that it will not called when backend dies.
+	(get_deltas): It should not crash in any case if handle is
+	NULL.
+
 2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	* libecal/e-cal-utils.h:

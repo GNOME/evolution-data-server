@@ -50,6 +50,7 @@ struct _ECalBackendGroupwisePrivate {
 	char *username;
 	char *password;
 	char *container_id;
+	int timeout_id;
 	CalMode mode;
 	icaltimezone *default_zone;
 	GHashTable *categories_by_id;
@@ -179,6 +180,9 @@ get_deltas (gpointer handle)
         EGwConnectionStatus status; 
 	GSList *deletes = NULL, *updates = NULL, *adds = NULL, *l;
         
+	if (!handle)
+		return FALSE;
+	
 	cbgw = (ECalBackendGroupwise *) handle;
  	cnc = cbgw->priv->cnc; 
  	cache = cbgw->priv->cache; 
@@ -347,7 +351,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			} else {
 				g_object_ref (priv->cnc);
 				g_object_ref (priv->cache);
-				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
 				priv->mode = CAL_MODE_REMOTE;
 				return GNOME_Evolution_Calendar_Success;
 			}
@@ -433,6 +437,9 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		priv->user_email = NULL;
 	}
 
+	if (priv->timeout_id) 
+		g_source_remove (priv->timeout_id);
+	
 	g_free (priv);
 	cbgw->priv = NULL;
 
@@ -1509,6 +1516,7 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 
 	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->timeout_id = 0;
 
 	/* create the mutex for thread safety */
 	priv->mutex = g_mutex_new ();
