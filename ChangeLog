@@ -1,3 +1,16 @@
+2005-03-29  James Bowes  <bowes@cs.dal.ca>
+
+	* docs/reference/libedataserver/libedataserver-docs.sgml:
+	* docs/reference/libedataserver/libedataserver-sections.txt: Add
+	e-time-utils and e-xml-hash-utils.
+	* docs/reference/libedataserver/tmpl/e-time-utils.sgml:
+	* docs/reference/libedataserver/tmpl/e-xml-hash-utils.sgml: New API
+	template files.
+	* libedataserver/e-time-utils.c:
+	* libedataserver/e-time-utils.h:
+	* libedataserver/e-xml-hash-utils.c:
+	* libedataserver/e-xml-hash-utils.h: New API documentation.
+
 2005-03-27  Pawan Chitrakar  <pawan@nplinux.org>
 
 	* configure.in: Add ne in ALL_LINGUAS

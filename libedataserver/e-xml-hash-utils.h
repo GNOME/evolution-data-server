@@ -25,6 +25,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * EXmlHashType:
+ * @E_XML_HASH_TYPE_OBJECT_UID: Use the object UID as the hash key.
+ * @E_XML_HASH_TYPE_PROPERTY: Use the property name as the hash key.
+ **/
 typedef enum {
 	E_XML_HASH_TYPE_OBJECT_UID,
 	E_XML_HASH_TYPE_PROPERTY
@@ -40,6 +45,12 @@ void        e_xml_destroy_hash (GHashTable   *hash);
 
 
 
+/**
+ * EXmlHashStatus:
+ * @E_XMLHASH_STATUS_SAME: The compared values are the same.
+ * @E_XMLHASH_STATUS_DIFFERENT: The compared values are different.
+ * @E_XMLHASH_STATUS_NOT_FOUND: The key to compare against was not found.
+ **/
 typedef enum {
 	E_XMLHASH_STATUS_SAME,
 	E_XMLHASH_STATUS_DIFFERENT,

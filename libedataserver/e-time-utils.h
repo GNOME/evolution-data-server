@@ -14,6 +14,12 @@
 #include <time.h>
 #include <glib.h>
 
+/**
+ * ETimeParseStatus:
+ * @E_TIME_PARSE_OK: The time string was parsed successfully.
+ * @E_TIME_PARSE_NONE: The time string was empty.
+ * @E_TIME_PARSE_INVALID: The time string was not formatted correctly.
+ **/ 
 typedef enum {
 	E_TIME_PARSE_OK,
 	E_TIME_PARSE_NONE,
@@ -49,7 +55,7 @@ void e_time_format_time				(struct tm	*date_tm,
 
 
 /* Like mktime(3), but assumes UTC instead of local timezone. */
-time_t e_mktime_utc (struct tm *timeptr);
+time_t e_mktime_utc (struct tm *tm);
 
 /* Like localtime_r(3), but also returns an offset in minutes after UTC.
    (Calling gmtime with tt + offset would generate the same tm) */
