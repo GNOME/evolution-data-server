@@ -54,7 +54,7 @@ gboolean      e_gw_container_set_from_soap_parameter (EGwContainer *container,
 const char   *e_gw_container_get_name (EGwContainer *container);
 void          e_gw_container_set_name (EGwContainer *container, const char *new_name);
 const char   *e_gw_container_get_id (EGwContainer *container);
-void          e_ge_container_set_id (EGwContainer *container, const char *new_id);
+void          e_gw_container_set_id (EGwContainer *container, const char *new_id);
 
 G_END_DECLS
 

@@ -859,6 +859,8 @@ e_gw_item_to_cal_component (EGwItem *item)
 
 		/* FIXME: EGwItem's completed is a boolean */
 		break;
+	default :
+		return NULL;
 	}
 
 	return comp;
