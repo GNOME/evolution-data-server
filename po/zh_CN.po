@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"POT-Creation-Date: 2004-08-02 12:00-0400\n"
-"PO-Revision-Date: 2004-06-13 13:06+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-08 11:09+0200\n"
+"PO-Revision-Date: 2004-08-09 00:14+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
 #: addressbook/backends/vcf/e-book-backend-vcf.c:445
@@ -24,6 +24,7 @@ msgid "Loading..."
 msgstr "正在装入..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
 #: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
@@ -969,3 +970,9 @@ msgstr "Evolution 日历文件和 Webcal 后端"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution 地址簿文件后端"
+
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr "发生了多个段错误；无法显示错误对话框\n"
