@@ -1,0 +1,893 @@
+# Mongolian translation of evolution-data-server.
+# Copyright (C) 2004
+# This file is distributed under the same license as the PACKAGE package.
+# Sanlig Badral <badral@openmn.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evolution-data-server 0.0.5\n"
+"POT-Creation-Date: 2004-01-25 14:57+0100\n"
+"PO-Revision-Date: 2004-01-25 21:18+0100\n"
+"Last-Translator: Sanlig Badral <badral@openmn.org>\n"
+"Language-Team: Mongolian <openmn-gnome@lists.sf.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: addressbook/backends/file/e-book-backend-file.c:392
+#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+msgid "Loading..."
+msgstr "Ачаалж байна..."
+
+#: addressbook/backends/file/e-book-backend-file.c:394
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2860
+#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+msgid "Searching..."
+msgstr "Хайж байна..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:613
+msgid "Using Distinguished Name (DN)"
+msgstr "Ялгаатай нэр хэрэглэнэ (ЯН)"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:616
+msgid "Using Email Address"
+msgstr "Цахим шуудан хэрэглэх"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:760
+msgid "Reconnecting to LDAP server..."
+msgstr "LDAP сервер рүү дахин холбогдож байна..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1261
+msgid "Adding contact to LDAP server..."
+msgstr "LDAP сервер лүү контакт нэмж байна..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1350
+msgid "Removing contact from LDAP server..."
+msgstr "LDAP серверээс контакт устгаж байна..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1550
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1553
+msgid "Modifying contact from LDAP server..."
+msgstr "LDAP серверын контакт өөрчилж байна..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2783
+msgid "Receiving LDAP search results..."
+msgstr "LDAP серверээс үр дүнг хүлээн авч байна..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2880
+msgid "Error performing search"
+msgstr "Хайлт хийж байхал алдаа"
+
+#. translators: the placeholders will be filled by
+#. * function names, e.g.
+#. * "e_book_add_contact" on book before
+#. * "e_book_load_uri
+#: addressbook/libebook/e-book.c:217
+#: addressbook/libebook/e-book.c:329
+#: addressbook/libebook/e-book.c:414
+#: addressbook/libebook/e-book.c:516
+#: addressbook/libebook/e-book.c:629
+#: addressbook/libebook/e-book.c:713
+#: addressbook/libebook/e-book.c:816
+#: addressbook/libebook/e-book.c:870
+#: addressbook/libebook/e-book.c:969
+#: addressbook/libebook/e-book.c:1103
+#: addressbook/libebook/e-book.c:1203
+#: addressbook/libebook/e-book.c:1441
+#, c-format
+msgid "\"%s\" on book before \"%s\""
+msgstr "\"%s\" -г номон дээр \"%s\"-н өмнө дуудах"
+
+#: addressbook/libebook/e-book.c:225
+#: addressbook/libebook/e-book.c:337
+#: addressbook/libebook/e-book.c:422
+#: addressbook/libebook/e-book.c:525
+#: addressbook/libebook/e-book.c:637
+#: addressbook/libebook/e-book.c:721
+#: addressbook/libebook/e-book.c:824
+#: addressbook/libebook/e-book.c:878
+#: addressbook/libebook/e-book.c:977
+#: addressbook/libebook/e-book.c:1111
+#: addressbook/libebook/e-book.c:1211
+#: addressbook/libebook/e-book.c:1449
+msgid "book busy"
+msgstr "Ном сул биш"
+
+#: addressbook/libebook/e-book.c:252
+#: addressbook/libebook/e-book.c:364
+#: addressbook/libebook/e-book.c:444
+#: addressbook/libebook/e-book.c:548
+#: addressbook/libebook/e-book.c:663
+#: addressbook/libebook/e-book.c:744
+#: addressbook/libebook/e-book.c:910
+#: addressbook/libebook/e-book.c:1021
+#: addressbook/libebook/e-book.c:1139
+#: addressbook/libebook/e-book.c:1235
+#: addressbook/libebook/e-book.c:1367
+#: addressbook/libebook/e-book.c:1471
+#, c-format
+msgid "CORBA exception making \"%s\" call"
+msgstr "CORBA exception \"%s\" дуудалт хийж байна"
+
+#: addressbook/libebook/e-book.c:1348
+msgid "e_book_cancel: there is no current operation"
+msgstr "e_book_cancel: идэвхитэй үйлдэл алга"
+
+#: addressbook/libebook/e-book.c:1383
+msgid "e_book_cancel: couldn't cancel"
+msgstr "e_book_cancel: болих боломжгүй"
+
+#: addressbook/libebook/e-book.c:1731
+msgid "e_book_load_uri: Invalid source."
+msgstr "e_book_load_uri: Хүчингүй эх."
+
+#: addressbook/libebook/e-book.c:1739
+#: addressbook/libebook/e-book.c:1843
+#, c-format
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr "e_book_load_uri: `%s' URI хаягийн хувьд фактор алга"
+
+#: addressbook/libebook/e-book.c:1753
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr "e_book_load_uri: EBookListener үүсгэж чадсангүй"
+
+#: addressbook/libebook/e-book.c:2082
+msgid "e_book_get_self: there was no self contact uid stored in gconf"
+msgstr "e_book_get_self: gconf хадгалагдсан Self-Contact-хэрэглэгчийн таних тэмдэг алга"
+
+#: addressbook/libebook/e-contact.c:97
+msgid "Unique ID"
+msgstr "Цор ганц ТТ"
+
+#: addressbook/libebook/e-contact.c:98
+msgid "File As"
+msgstr "Файлаар"
+
+#. Name fields
+#. FN isn't really a structured field - we use a getter/setter
+#. so we can set the N property (since evo 1.4 works fine with
+#. vcards that don't even have a N attribute.  *sigh*)
+#: addressbook/libebook/e-contact.c:104
+msgid "Full Name"
+msgstr "Бүтэн нэр"
+
+#: addressbook/libebook/e-contact.c:105
+msgid "Name"
+msgstr "Нэр"
+
+#: addressbook/libebook/e-contact.c:106
+msgid "Given Name"
+msgstr "Нэр"
+
+#: addressbook/libebook/e-contact.c:107
+msgid "Family Name"
+msgstr "Овог"
+
+#: addressbook/libebook/e-contact.c:108
+msgid "Nickname"
+msgstr "Хоч нэр"
+
+#: addressbook/libebook/e-contact.c:109
+msgid "Name or Org"
+msgstr "Нэр буюу Байгууллага"
+
+#. Address fields
+#: addressbook/libebook/e-contact.c:112
+msgid "Address List"
+msgstr "Хаягийн жагсаалт"
+
+#: addressbook/libebook/e-contact.c:113
+msgid "Home Address"
+msgstr "Гэрийн хаяг"
+
+#: addressbook/libebook/e-contact.c:114
+msgid "Work Address"
+msgstr "Ажлын хаяг"
+
+#: addressbook/libebook/e-contact.c:115
+msgid "Other Address"
+msgstr "Бусад хаяг"
+
+#: addressbook/libebook/e-contact.c:117
+msgid "Home Address Label"
+msgstr "Гэрийн хаягийн бичээс"
+
+#: addressbook/libebook/e-contact.c:118
+msgid "Work Address Label"
+msgstr "Ажлын хаягийн бичээс"
+
+#: addressbook/libebook/e-contact.c:119
+msgid "Other Address Label"
+msgstr "Бусад хаягийн бичээс"
+
+#: addressbook/libebook/e-contact.c:121
+msgid "Assistant Phone"
+msgstr "Туслахын утас"
+
+#: addressbook/libebook/e-contact.c:122
+msgid "Business Phone"
+msgstr "Бизнес утас"
+
+#: addressbook/libebook/e-contact.c:123
+msgid "Business Phone 2"
+msgstr "Бизнес утас 2"
+
+#: addressbook/libebook/e-contact.c:124
+msgid "Business Fax"
+msgstr "Бизнес факс"
+
+#: addressbook/libebook/e-contact.c:125
+msgid "Callback Phone"
+msgstr "Эргэн залгах утас"
+
+#: addressbook/libebook/e-contact.c:126
+msgid "Car Phone"
+msgstr "Машины утас"
+
+#: addressbook/libebook/e-contact.c:127
+msgid "Company Phone"
+msgstr "Компаны утас"
+
+#: addressbook/libebook/e-contact.c:128
+msgid "Home Phone"
+msgstr "Гэрийн утас"
+
+#: addressbook/libebook/e-contact.c:129
+msgid "Home Phone 2"
+msgstr "Гэрийн утас 2"
+
+#: addressbook/libebook/e-contact.c:130
+msgid "Home Fax"
+msgstr "Гэрийн факс"
+
+#: addressbook/libebook/e-contact.c:131
+msgid "ISDN"
+msgstr "ISDN"
+
+#: addressbook/libebook/e-contact.c:132
+msgid "Mobile Phone"
+msgstr "Гар утас"
+
+#: addressbook/libebook/e-contact.c:133
+msgid "Other Phone"
+msgstr "Бусад утас"
+
+#: addressbook/libebook/e-contact.c:134
+msgid "Other Fax"
+msgstr "Бусад факс"
+
+#: addressbook/libebook/e-contact.c:135
+msgid "Pager"
+msgstr "Пейжир"
+
+#: addressbook/libebook/e-contact.c:136
+msgid "Primary Phone"
+msgstr "Үндсэн утас"
+
+#: addressbook/libebook/e-contact.c:137
+msgid "Radio"
+msgstr "Радио"
+
+#: addressbook/libebook/e-contact.c:138
+msgid "Telex"
+msgstr "Телекс"
+
+#: addressbook/libebook/e-contact.c:139
+msgid "TTY"
+msgstr "TTY"
+
+#. Email fields
+#: addressbook/libebook/e-contact.c:142
+msgid "Email List"
+msgstr "Цахим шуудангийн багц"
+
+#: addressbook/libebook/e-contact.c:143
+msgid "Email 1"
+msgstr "Цахим шуудан 1"
+
+#: addressbook/libebook/e-contact.c:144
+msgid "Email 2"
+msgstr "Цахим шуудан 2"
+
+#: addressbook/libebook/e-contact.c:145
+msgid "Email 3"
+msgstr "Цахим шуудан 3"
+
+#: addressbook/libebook/e-contact.c:146
+msgid "Mailer"
+msgstr "Илгээгч"
+
+#: addressbook/libebook/e-contact.c:147
+msgid "Wants HTML Mail"
+msgstr "HTML шуудан хүсэх"
+
+#. Instant messaging fields
+#: addressbook/libebook/e-contact.c:150
+msgid "AIM Screen Name List"
+msgstr "AIM харагдах нэрийн жагсаалт"
+
+#: addressbook/libebook/e-contact.c:151
+msgid "Jabber Id List"
+msgstr "Jabber Id жагсаалт"
+
+#: addressbook/libebook/e-contact.c:152
+msgid "Yahoo! Screen Name List"
+msgstr "Yahoo! Харагдах нэрийн жагсаалт"
+
+#: addressbook/libebook/e-contact.c:153
+msgid "MSN Screen Name List"
+msgstr "MSN Харагдах нэрийн жагсаалт"
+
+#: addressbook/libebook/e-contact.c:154
+msgid "ICQ Id List"
+msgstr "ICQ Id жагсаалт"
+
+#: addressbook/libebook/e-contact.c:156
+msgid "AIM Home Screen Name 1"
+msgstr "Харагдах AIM хувийн нэр 1"
+
+#: addressbook/libebook/e-contact.c:157
+msgid "AIM Home Screen Name 2"
+msgstr "Харагдах AIM хувийн нэр 2"
+
+#: addressbook/libebook/e-contact.c:158
+msgid "AIM Home Screen Name 3"
+msgstr "Харагдах AIM хувийн нэр 3"
+
+#: addressbook/libebook/e-contact.c:159
+msgid "AIM Work Screen Name 1"
+msgstr "Харагдах AIM албан нэр 1"
+
+#: addressbook/libebook/e-contact.c:160
+msgid "AIM Work Screen Name 2"
+msgstr "Харагдах AIM албан нэр 2"
+
+#: addressbook/libebook/e-contact.c:161
+msgid "AIM Work Screen Name 3"
+msgstr "Харагдах AIM албан нэр 3"
+
+#: addressbook/libebook/e-contact.c:162
+msgid "Jabber Home Id 1"
+msgstr "Jabber хувийн ТТ 1"
+
+#: addressbook/libebook/e-contact.c:163
+msgid "Jabber Home Id 2"
+msgstr "Jabber хувийн ТТ 2"
+
+#: addressbook/libebook/e-contact.c:164
+msgid "Jabber Home Id 3"
+msgstr "Jabber хувийн ТТ 3"
+
+#: addressbook/libebook/e-contact.c:165
+msgid "Jabber Work Id 1"
+msgstr "Jabber албан ТТ 1"
+
+#: addressbook/libebook/e-contact.c:166
+msgid "Jabber Work Id 2"
+msgstr "Jabber албан ТТ 2"
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Jabber Work Id 3"
+msgstr "Jabber албан ТТ 3"
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Харагдах Yahoo! хувийн нэр 1"
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Харагдах Yahoo! хувийн нэр 2"
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Харагдах Yahoo! хувийн нэр 3"
+
+#: addressbook/libebook/e-contact.c:171
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Харагдах Yahoo! албан нэр 1"
+
+#: addressbook/libebook/e-contact.c:172
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Харагдах Yahoo! албан нэр 2"
+
+#: addressbook/libebook/e-contact.c:173
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Харагдах Yahoo! албан нэр 3"
+
+#: addressbook/libebook/e-contact.c:174
+msgid "MSN Home Screen Name 1"
+msgstr "Харагдах MSN хувийн нэр 1"
+
+#: addressbook/libebook/e-contact.c:175
+msgid "MSN Home Screen Name 2"
+msgstr "Харагдах MSN хувийн нэр 2"
+
+#: addressbook/libebook/e-contact.c:176
+msgid "MSN Home Screen Name 3"
+msgstr "Харагдах MSN хувийн нэр 3"
+
+#: addressbook/libebook/e-contact.c:177
+msgid "MSN Work Screen Name 1"
+msgstr "Харагдах MSN албан нэр 1"
+
+#: addressbook/libebook/e-contact.c:178
+msgid "MSN Work Screen Name 2"
+msgstr "Харагдах MSN албан нэр 2"
+
+#: addressbook/libebook/e-contact.c:179
+msgid "MSN Work Screen Name 3"
+msgstr "Харагдах MSN албан нэр 3"
+
+#: addressbook/libebook/e-contact.c:180
+msgid "ICQ Home Id 1"
+msgstr "ICQ хувийн ТТ 1"
+
+#: addressbook/libebook/e-contact.c:181
+msgid "ICQ Home Id 2"
+msgstr "ICQ хувийн ТТ 2"
+
+#: addressbook/libebook/e-contact.c:182
+msgid "ICQ Home Id 3"
+msgstr "ICQ хувийн ТТ 3"
+
+#: addressbook/libebook/e-contact.c:183
+msgid "ICQ Work Id 1"
+msgstr "ICQ албан ТТ 1"
+
+#: addressbook/libebook/e-contact.c:184
+msgid "ICQ Work Id 2"
+msgstr "ICQ албан ТТ 2"
+
+#: addressbook/libebook/e-contact.c:185
+msgid "ICQ Work Id 3"
+msgstr "ICQ албан ТТ 3"
+
+#. Organizational fields
+#: addressbook/libebook/e-contact.c:188
+msgid "Organization"
+msgstr "Байгууллага"
+
+#: addressbook/libebook/e-contact.c:189
+msgid "Organizational Unit"
+msgstr "Байгууллагын нэгж"
+
+#: addressbook/libebook/e-contact.c:190
+msgid "Office"
+msgstr "Албан газар"
+
+#: addressbook/libebook/e-contact.c:192
+msgid "Title"
+msgstr "Хэргэм"
+
+#: addressbook/libebook/e-contact.c:193
+msgid "Role"
+msgstr "Үүрэг"
+
+#: addressbook/libebook/e-contact.c:194
+msgid "Manager"
+msgstr "Менежер"
+
+#: addressbook/libebook/e-contact.c:195
+msgid "Assistant"
+msgstr "Туслах"
+
+#. Web fields
+#: addressbook/libebook/e-contact.c:198
+msgid "Homepage URL"
+msgstr "Хувийн Вэб URL"
+
+#: addressbook/libebook/e-contact.c:199
+msgid "Weblog URL"
+msgstr "Вэбийн статистик URL"
+
+#: addressbook/libebook/e-contact.c:200
+msgid "Video Conferencing URL"
+msgstr "Видио конференц URL"
+
+#. Photo/Logo
+#: addressbook/libebook/e-contact.c:203
+msgid "Photo"
+msgstr "Фото"
+
+#: addressbook/libebook/e-contact.c:204
+msgid "Logo"
+msgstr "Эмблем"
+
+#. Security fields
+#: addressbook/libebook/e-contact.c:207
+msgid "X.509 Certificate"
+msgstr "X.509 Гэрчилгээ"
+
+#: addressbook/libebook/e-contact.c:211
+msgid "Category List"
+msgstr "Ангилалын жагсаалт"
+
+#: addressbook/libebook/e-contact.c:212
+#: addressbook/libebook/e-contact.c:214
+msgid "Categories"
+msgstr "Ангилал"
+
+#. Collaboration fields
+#: addressbook/libebook/e-contact.c:218
+msgid "Calendar URI"
+msgstr "Цагалбар URI"
+
+#: addressbook/libebook/e-contact.c:219
+msgid "Free/Busy URL"
+msgstr "Хүрэх боломжит URL"
+
+#: addressbook/libebook/e-contact.c:220
+msgid "ICS Calendar"
+msgstr "ICS Цагалбар"
+
+#. Misc fields
+#: addressbook/libebook/e-contact.c:223
+msgid "Spouse's Name"
+msgstr "Эхнэрийн нэр"
+
+#: addressbook/libebook/e-contact.c:224
+msgid "Note"
+msgstr "Тэмдэглэл"
+
+#: addressbook/libebook/e-contact.c:226
+msgid "Birth Date"
+msgstr "Төрсөн огноо"
+
+#: addressbook/libebook/e-contact.c:227
+msgid "Anniversary"
+msgstr "Жилийн өдөр"
+
+#: addressbook/libebook/e-contact.c:229
+msgid "List"
+msgstr "Жагсаалт"
+
+#: addressbook/libebook/e-contact.c:230
+msgid "List Show Addresses"
+msgstr "Харуулах хаягийн жагсаалт"
+
+#: addressbook/libebook/e-contact.c:1147
+msgid "Unnamed List"
+msgstr "Нэрлэгдээгүй жагсаалт"
+
+#. Set category and visibility
+#: calendar/backends/contacts/e-cal-backend-contacts.c:408
+msgid "Birthday"
+msgstr "Төрсөн өдөр"
+
+#: calendar/backends/contacts/e-cal-backend-contacts.c:430
+#, c-format
+msgid "Birthday: %s"
+msgstr "Төрсөн өдөр: %s"
+
+#: calendar/backends/contacts/e-cal-backend-contacts.c:449
+#, c-format
+msgid "Anniversary: %s"
+msgstr "Жилийн өдөр: %s"
+
+#: calendar/backends/file/e-cal-backend-file.c:177
+msgid "Can't save calendar data: Malformed URI."
+msgstr "Цагалбарын өгөгдлийг хадгалах боломжгүй: URI алдаатай форматлагжээ."
+
+#: calendar/backends/http/e-cal-backend-http.c:216
+msgid "Bad file format."
+msgstr "Файлын формат алдаатай. "
+
+#: calendar/backends/http/e-cal-backend-http.c:223
+msgid "Not a calendar."
+msgstr "Цагалбар биш."
+
+#: calendar/libecal/e-cal-component.c:1218
+msgid "Untitled appointment"
+msgstr "Нэргүй болзоо"
+
+#: calendar/libecal/e-cal-recur.c:3989
+msgid "1st"
+msgstr "1-р"
+
+#: calendar/libecal/e-cal-recur.c:3990
+msgid "2nd"
+msgstr "2-р"
+
+#: calendar/libecal/e-cal-recur.c:3991
+msgid "3rd"
+msgstr "3-р"
+
+#: calendar/libecal/e-cal-recur.c:3992
+msgid "4th"
+msgstr "4-р"
+
+#: calendar/libecal/e-cal-recur.c:3993
+msgid "5th"
+msgstr "5-р"
+
+#: calendar/libecal/e-cal-recur.c:3994
+msgid "6th"
+msgstr "6-р"
+
+#: calendar/libecal/e-cal-recur.c:3995
+msgid "7th"
+msgstr "7-р"
+
+#: calendar/libecal/e-cal-recur.c:3996
+msgid "8th"
+msgstr "8-р"
+
+#: calendar/libecal/e-cal-recur.c:3997
+msgid "9th"
+msgstr "9-р"
+
+#: calendar/libecal/e-cal-recur.c:3998
+msgid "10th"
+msgstr "10-р"
+
+#: calendar/libecal/e-cal-recur.c:3999
+msgid "11th"
+msgstr "11-р"
+
+#: calendar/libecal/e-cal-recur.c:4000
+msgid "12th"
+msgstr "12-р"
+
+#: calendar/libecal/e-cal-recur.c:4001
+msgid "13th"
+msgstr "13-р"
+
+#: calendar/libecal/e-cal-recur.c:4002
+msgid "14th"
+msgstr "14-р"
+
+#: calendar/libecal/e-cal-recur.c:4003
+msgid "15th"
+msgstr "15-р"
+
+#: calendar/libecal/e-cal-recur.c:4004
+msgid "16th"
+msgstr "16-р"
+
+#: calendar/libecal/e-cal-recur.c:4005
+msgid "17th"
+msgstr "17-р"
+
+#: calendar/libecal/e-cal-recur.c:4006
+msgid "18th"
+msgstr "18-р"
+
+#: calendar/libecal/e-cal-recur.c:4007
+msgid "19th"
+msgstr "19-р"
+
+#: calendar/libecal/e-cal-recur.c:4008
+msgid "20th"
+msgstr "20-р"
+
+#: calendar/libecal/e-cal-recur.c:4009
+msgid "21st"
+msgstr "21-р"
+
+#: calendar/libecal/e-cal-recur.c:4010
+msgid "22nd"
+msgstr "22-р"
+
+#: calendar/libecal/e-cal-recur.c:4011
+msgid "23rd"
+msgstr "23-р"
+
+#: calendar/libecal/e-cal-recur.c:4012
+msgid "24th"
+msgstr "24-р"
+
+#: calendar/libecal/e-cal-recur.c:4013
+msgid "25th"
+msgstr "25-р"
+
+#: calendar/libecal/e-cal-recur.c:4014
+msgid "26th"
+msgstr "26-р"
+
+#: calendar/libecal/e-cal-recur.c:4015
+msgid "27th"
+msgstr "27-р"
+
+#: calendar/libecal/e-cal-recur.c:4016
+msgid "28th"
+msgstr "28-р"
+
+#: calendar/libecal/e-cal-recur.c:4017
+msgid "29th"
+msgstr "29-р"
+
+#: calendar/libecal/e-cal-recur.c:4018
+msgid "30th"
+msgstr "30-р"
+
+#: calendar/libecal/e-cal-recur.c:4019
+msgid "31st"
+msgstr "31-р"
+
+#: calendar/libecal/e-cal-util.c:569
+#: calendar/libecal/e-cal-util.c:591
+msgid "High"
+msgstr "Өндөр"
+
+#: calendar/libecal/e-cal-util.c:571
+#: calendar/libecal/e-cal-util.c:593
+msgid "Normal"
+msgstr "Энгийн"
+
+#: calendar/libecal/e-cal-util.c:573
+#: calendar/libecal/e-cal-util.c:595
+msgid "Low"
+msgstr "Нам"
+
+#. An empty string is the same as 'None'.
+#: calendar/libecal/e-cal-util.c:589
+msgid "Undefined"
+msgstr "Тодорхойгүй"
+
+#. actually ask the client for authentication
+#: calendar/libecal/e-cal.c:1449
+#, c-format
+msgid "Enter password for %s (user %s)"
+msgstr "%s (хэрэглэгч %s) нууц үгийг оруулна уу"
+
+#: calendar/libecal/e-cal.c:3868
+msgid "Invalid argument"
+msgstr "Хүчингүй аргумент"
+
+#: calendar/libecal/e-cal.c:3870
+msgid "Backend is busy"
+msgstr "Backend чөлөөгүй"
+
+#: calendar/libecal/e-cal.c:3872
+msgid "Repository is offline"
+msgstr "Хадгалагч оффлайн"
+
+#: calendar/libecal/e-cal.c:3874
+msgid "No such calendar"
+msgstr "Ийм цагалбар алга"
+
+#: calendar/libecal/e-cal.c:3876
+#: calendar/libecal/e-cal.c:3886
+msgid "Object not found"
+msgstr "Объект олдсонгүй"
+
+#: calendar/libecal/e-cal.c:3878
+msgid "Invalid object"
+msgstr "Хүчингүй объект"
+
+#: calendar/libecal/e-cal.c:3880
+msgid "URI not loaded"
+msgstr "URI ачаалагдсангүй"
+
+#: calendar/libecal/e-cal.c:3882
+msgid "URI already loaded"
+msgstr "URI хэдийнэ ачаалагдсан"
+
+#: calendar/libecal/e-cal.c:3884
+msgid "Permission denied"
+msgstr "Хандалт хүчингүй"
+
+#: calendar/libecal/e-cal.c:3888
+msgid "Object ID already exists"
+msgstr "Объект ТТ хэдийнэ байна"
+
+#: calendar/libecal/e-cal.c:3890
+msgid "Protocol not supported"
+msgstr "Протокол дэмжигдээгүй"
+
+#: calendar/libecal/e-cal.c:3892
+msgid "Operation has been cancelled"
+msgstr "Үйлдлийг болиулав"
+
+#: calendar/libecal/e-cal.c:3894
+msgid "Could not cancel operation"
+msgstr "Үйлдлийг болиулах боломжгүй"
+
+#: calendar/libecal/e-cal.c:3896
+msgid "Authentication failed"
+msgstr "Гэрчилгээ хүчингүй"
+
+#: calendar/libecal/e-cal.c:3898
+msgid "Authentication required"
+msgstr "Гэрчилгээ шаардлагатай"
+
+#: calendar/libecal/e-cal.c:3900
+msgid "A CORBA esception has occurred"
+msgstr "A CORBA esception гарав"
+
+#: calendar/libecal/e-cal.c:3902
+msgid "Unknown error"
+msgstr "Мэдэгдэхгүй алдаа"
+
+#: calendar/libecal/e-cal.c:3904
+msgid "No error"
+msgstr "Алдаагүй"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:49
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
+#: calendar/libedata-cal/e-cal-backend-sexp.c:633
+#: calendar/libedata-cal/e-cal-backend-sexp.c:660
+#, c-format
+msgid "\"%s\" expects no arguments"
+msgstr "\"%s\" аргумент шаардахгүй"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:74
+#: calendar/libedata-cal/e-cal-backend-sexp.c:162
+#: calendar/libedata-cal/e-cal-backend-sexp.c:196
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#: calendar/libedata-cal/e-cal-backend-sexp.c:698
+#, c-format
+msgid "\"%s\" expects one argument"
+msgstr "\"%s\" нэг аргумент шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:80
+#: calendar/libedata-cal/e-cal-backend-sexp.c:238
+#: calendar/libedata-cal/e-cal-backend-sexp.c:447
+#, c-format
+msgid "\"%s\" expects the first argument to be a string"
+msgstr "\"%s\" эхний аргументдаа тэмдэгт мөр шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#, c-format
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr "\"%s\" эхний аргументдаа ISO 8601 date/time тэмдэгт мөр шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:120
+#: calendar/libedata-cal/e-cal-backend-sexp.c:280
+#: calendar/libedata-cal/e-cal-backend-sexp.c:441
+#, c-format
+msgid "\"%s\" expects two arguments"
+msgstr "\"%s\" хоёр аргумент шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:126
+#: calendar/libedata-cal/e-cal-backend-sexp.c:168
+#: calendar/libedata-cal/e-cal-backend-sexp.c:202
+#: calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: calendar/libedata-cal/e-cal-backend-sexp.c:704
+#, c-format
+msgid "\"%s\" expects the first argument to be a time_t"
+msgstr "\"%s\" эхний аргумент time_t байхыг шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#, c-format
+msgid "\"%s\" expects the second argument to be an integer"
+msgstr "\"%s\" эхний аргумент integer байхыг шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:294
+#, c-format
+msgid "\"%s\" expects the second argument to be a time_t"
+msgstr "\"%s\" хоёрдах аргумент time_t байхыг шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:455
+#, c-format
+msgid "\"%s\" expects the second argument to be a string"
+msgstr "\"%s\" хоёрдах аргумент тэмдэгт мөр байхыг шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
+#, c-format
+msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\""
+msgstr "\"%s\" эхний аргумент \"any\", \"summary\", эсвэл \"description\" байхыг шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:535
+#, c-format
+msgid "\"%s\" expects at least one argument"
+msgstr "\"%s\" ядаж нэг аргумент шаардаж байна"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:549
+#, c-format
+msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
+msgstr "\"%s\" бүх аргумент тэмдэгт мөр эсвэл зөвхөн ганц аргумент boolean false (#f) байхыг шаардаж байна"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
+msgid "Evolution Addressbook file and LDAP backend"
+msgstr "Эволюц-Хаягийн дэвтэр-файл ба LDAP-Backend"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
+msgid "Evolution Calendar file and webcal backend"
+msgstr "Эволюц-цагалбар-файл ба Webcal-Backend"
+
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
+msgid "Evolution Addressbook file backend"
+msgstr "Эволюц-Хаягийн дэвтэр-файл ба Backend"
+
