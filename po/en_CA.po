@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-15 19:22-0500\n"
-"PO-Revision-Date: 2005-03-15 13:04-0400\n"
+"POT-Creation-Date: 2005-03-22 13:28-0500\n"
+"PO-Revision-Date: 2005-03-22 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -556,7 +556,7 @@ msgid "Category List"
 msgstr "Category List"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:371
+#: ../libedataserverui/e-categories-dialog.c:407
 msgid "Categories"
 msgstr "Categories"
 
@@ -628,12 +628,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Can't save calendar data: Malformed URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:291
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:293
 msgid "Reply Requested: by "
 msgstr "Reply Requested: by "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:296
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:298
 msgid "Reply Requested: When convenient"
 msgstr "Reply Requested: When convenient"
 
@@ -663,8 +663,8 @@ msgstr "Could not create thread for populating cache"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
 #: ../calendar/libecal/e-cal.c:4528
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:654
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:678
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:667
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:691
 #: ../camel/providers/groupwise/camel-groupwise-store.c:528
 #: ../camel/providers/groupwise/camel-groupwise-store.c:628
 #: ../camel/providers/groupwise/camel-groupwise-store.c:790
@@ -1023,7 +1023,7 @@ msgid "Undefined"
 msgstr "Undefined"
 
 #. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1538
+#: ../calendar/libecal/e-cal.c:1538 ../libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
@@ -1486,7 +1486,7 @@ msgstr ""
 "user: \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1274
+#: ../camel/providers/nntp/camel-nntp-store.c:1275
 msgid "Cancelled."
 msgstr "Cancelled."
 
@@ -2502,7 +2502,7 @@ msgstr "Cannot copy messages to the Trash folder"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Cannot copy messages to the Junk folder"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:109
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2512,7 +2512,7 @@ msgstr ""
 "Cannot get message: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:109
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2520,7 +2520,7 @@ msgstr ""
 msgid "No such message"
 msgstr "No such message"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:124
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:126
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2532,7 +2532,7 @@ msgstr "No such message"
 msgid "User cancelled"
 msgstr "User cancelled"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2546,27 +2546,27 @@ msgstr "User cancelled"
 msgid "Cannot get message %s: %s"
 msgstr "Cannot get message %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:151
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "This message is not available in offline mode."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:177
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
 msgid "Could not get message"
 msgstr "Could not get message"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:581
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:594
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Could not load summary for %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:866
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:881
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Cannot create message: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:878
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:893
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Cannot append message to folder `%s': %s"
@@ -2734,7 +2734,7 @@ msgstr "Sending Message"
 
 #: ../camel/providers/imap/camel-imap-command.c:219
 #: ../camel/providers/imap/camel-imap-command.c:258
-#: ../camel/providers/imap/camel-imap-command.c:463
+#: ../camel/providers/imap/camel-imap-command.c:465
 #: ../camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "Operation cancelled"
@@ -2766,16 +2766,16 @@ msgstr "Unexpected response from IMAP server: %s"
 msgid "IMAP command failed: %s"
 msgstr "IMAP command failed: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:473
+#: ../camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "Server response ended too soon."
 
-#: ../camel/providers/imap/camel-imap-command.c:680
+#: ../camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP server response did not contain %s information"
 
-#: ../camel/providers/imap/camel-imap-command.c:716
+#: ../camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Unexpected OK response from IMAP server: %s"
@@ -3710,7 +3710,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "Cannot open temporary mailbox: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:619
-#: ../camel/providers/local/camel-mbox-summary.c:783
+#: ../camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Could not close source folder %s: %s"
@@ -3725,31 +3725,32 @@ msgstr "Could not close temp folder: %s"
 msgid "Could not rename folder: %s"
 msgstr "Could not rename folder: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:723
-#: ../camel/providers/local/camel-mbox-summary.c:731
-#: ../camel/providers/local/camel-mbox-summary.c:925
-#: ../camel/providers/local/camel-mbox-summary.c:933
+#: ../camel/providers/local/camel-mbox-summary.c:696
+#: ../camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "Could not store folder: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:935
+#: ../camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Summary and folder mismatch, even after a sync"
 
-#: ../camel/providers/local/camel-mbox-summary.c:859
+#: ../camel/providers/local/camel-mbox-summary.c:869
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Unknown error: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "Could not store folder: %s"
-
-#: ../camel/providers/local/camel-mbox-summary.c:988
-#: ../camel/providers/local/camel-mbox-summary.c:1014
+#: ../camel/providers/local/camel-mbox-summary.c:998
+#: ../camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Error writing to temp mailbox: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1005
+#: ../camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Writing to tmp mailbox failed: %s: %s"
@@ -3924,12 +3925,12 @@ msgstr "Could not read greeting from %s: %s"
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP server %s returned error code %d: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:422
+#: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
 msgid "USENET News via %s"
 msgstr "USENET News via %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:811
+#: ../camel/providers/nntp/camel-nntp-store.c:812
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3940,7 +3941,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:905
+#: ../camel/providers/nntp/camel-nntp-store.c:906
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -3950,7 +3951,7 @@ msgstr ""
 "\n"
 "No such newsgroup. The selected item is a probably a parent folder."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:937
+#: ../camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -3960,42 +3961,42 @@ msgstr ""
 "\n"
 "newsgroup does not exist!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:962
+#: ../camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "You cannot create a folder in a News store: subscribe instead."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:970
+#: ../camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot rename a folder in a News store."
 msgstr "You cannot rename a folder in a News store."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:978
+#: ../camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "You cannot remove a folder in a News store: unsubscribe instead."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1148
+#: ../camel/providers/nntp/camel-nntp-store.c:1149
 msgid "Authentication requested but no username provided"
 msgstr "Authentication requested but no username provided"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1156
+#: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Please enter the NNTP password for %s@%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1160
+#: ../camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Cannot authenticate to server: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1276
+#: ../camel/providers/nntp/camel-nntp-store.c:1277
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP Command failed: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1332
+#: ../camel/providers/nntp/camel-nntp-store.c:1333
 msgid "Not connected."
 msgstr "Not connected."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1385
+#: ../camel/providers/nntp/camel-nntp-store.c:1386
 #, c-format
 msgid "No such folder: %s"
 msgstr "No such folder: %s"
@@ -4688,11 +4689,19 @@ msgstr "%H:%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: ../libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "Accessing LDAP Server anonymously"
+
+#: ../libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "Failed to authenticate.\n"
+
 #: ../libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "Category Icon"
 
-#: ../libedataserverui/e-categories-dialog.c:238
+#: ../libedataserverui/e-categories-dialog.c:265
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4701,7 +4710,7 @@ msgstr ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 
-#: ../libedataserverui/e-categories-dialog.c:396
+#: ../libedataserverui/e-categories-dialog.c:432
 msgid "Category"
 msgstr "Category"
 
