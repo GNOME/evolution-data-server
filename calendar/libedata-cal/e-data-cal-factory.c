@@ -48,6 +48,9 @@ struct _EDataCalFactoryPrivate {
 
 	/* Whether we have been registered with OAF yet */
 	guint registered : 1;
+        
+        int mode;
+        
 };
 
 /* Signal IDs */
@@ -256,6 +259,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 
 	/* Let the backend know about its clients corba clients */
 	e_cal_backend_add_client (backend, cal);
+	e_cal_backend_set_mode (backend, priv->mode);
 	
  cleanup:
 	e_uri_free (uri);
@@ -345,6 +349,26 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *klass)
 	/* Epv methods */
 	epv->getCal = impl_CalFactory_getCal;
 }
+
+static void 
+set_backend_online_status (gpointer key, gpointer value, gpointer data)
+{
+  ECalBackend *backend = E_CAL_BACKEND (value);
+  
+  e_cal_backend_set_mode (backend,  GPOINTER_TO_INT (data));
+  
+}
+
+void 
+e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, int mode)
+{
+	EDataCalFactoryPrivate *priv = factory->priv;
+	
+	
+	priv->mode = mode;
+	g_hash_table_foreach (priv->backends, set_backend_online_status, GINT_TO_POINTER (priv->mode));
+}
+
 
 /* Object initialization function for the calendar factory */
 static void

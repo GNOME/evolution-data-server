@@ -119,6 +119,7 @@ module Calendar {
 		TLSNotAvailable,
 		NoSuchCal,
 		UnknownUser,
+		OfflineUnavailable,
 
 		/* These can be returned for successful searches, but
 		   indicate the result set was truncated */
@@ -258,6 +259,9 @@ module Calendar {
 
 		/* Called from a Calendar when there is an error not notified otherwise */
 		oneway void notifyErrorOccurred (in string message);
+	  
+	        oneway void notifyAuthRequired ();
+	  
 	};
 
 	/* A calendar factory, can load and create calendars */

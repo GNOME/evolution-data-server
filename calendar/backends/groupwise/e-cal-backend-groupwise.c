@@ -204,13 +204,15 @@ get_deltas (gpointer handle)
         
 	if (!handle)
 		return FALSE;
-	
 	cbgw = (ECalBackendGroupwise *) handle;
 	priv= cbgw->priv;
  	cnc = priv->cnc; 
  	cache = priv->cache; 
 	item_list = NULL;
 	
+	if (priv->mode == CAL_MODE_LOCAL)
+		return FALSE;
+
 	if (!mod_time) {
 		cache_file_name = e_file_cache_get_filename (E_FILE_CACHE (priv->cache));
 		printf ("%s %d\n", cache_file_name, stat (cache_file_name, &buf));
@@ -488,6 +490,17 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 		if (priv->cnc && priv->cache) {
 			priv->mode = CAL_MODE_REMOTE;
+			
+			if (!priv->timeout_id) {
+				if (get_deltas (cbgw)) {
+					priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+				} else {
+					g_warning (G_STRLOC ": Could not populate the cache");
+	ECalBackendSyncStatus status;
+					return GNOME_Evolution_Calendar_PermissionDenied;	
+				}
+			}	 
+
 			return GNOME_Evolution_Calendar_Success;
 		}
 
@@ -609,9 +622,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		priv->user_email = NULL;
 	}
 
-	if (priv->timeout_id) 
+	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
-	
+		priv->timeout_id = 0;
+	}
+
 	g_free (priv);
 	cbgw->priv = NULL;
 
@@ -693,6 +708,25 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 }
 
 
+static void
+in_offline (ECalBackendGroupwise *cbgw) {
+	ECalBackendGroupwisePrivate *priv;
+
+	priv= cbgw->priv;
+	priv->read_only = TRUE;
+
+	if (priv->timeout_id) { 
+		g_source_remove (priv->timeout_id);
+		priv->timeout_id =0;
+	}	
+	
+	if (priv->cnc) {
+		g_object_unref (priv->cnc);
+		priv->cnc = NULL;
+	}
+
+	
+}
 
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
@@ -709,7 +743,34 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	g_mutex_lock (priv->mutex);
 
 	cbgw->priv->read_only = FALSE;
-	priv->mode = CAL_MODE_LOCAL;
+
+	if (priv->mode == CAL_MODE_LOCAL) {
+		ESource *source;
+		const char *display_contents = NULL;
+			
+		cbgw->priv->read_only = TRUE;				
+		source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
+		display_contents = e_source_get_property (source, "offline_sync");
+		
+		if (!display_contents || !g_str_equal (display_contents, "1")) {
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Repository is Offline"));
+			return GNOME_Evolution_Calendar_RepositoryOffline;
+		}
+
+		if (!priv->cache) {
+			priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
+			if (!priv->cache) {
+				g_mutex_unlock (priv->mutex);
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
+				
+				return GNOME_Evolution_Calendar_OtherError;
+			}
+		}
+		
+		g_mutex_unlock (priv->mutex);	
+		return GNOME_Evolution_Calendar_Success;
+	}
+
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
 	
@@ -717,7 +778,6 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	status = connect_to_server (cbgw);
 
 	g_mutex_unlock (priv->mutex);
-
 	return status;
 }
 
@@ -771,7 +831,6 @@ e_cal_backend_groupwise_get_mode (ECalBackend *backend)
 static void
 e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 {
-	ECalBackendSyncStatus status;
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 
@@ -788,24 +847,21 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 
 	switch (mode) {
 	case CAL_MODE_REMOTE :/* go online */
-		status = connect_to_server (cbgw);
-		if (status == GNOME_Evolution_Calendar_Success)
-			e_cal_backend_notify_mode (backend,
-						   GNOME_Evolution_Calendar_CalListener_MODE_SET,
-						   GNOME_Evolution_Calendar_MODE_REMOTE);
-		else
-			e_cal_backend_notify_mode (backend,
-						   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
-						   GNOME_Evolution_Calendar_MODE_REMOTE);
+		priv->mode = CAL_MODE_REMOTE;
+		priv->read_only = FALSE;
+		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
+						    GNOME_Evolution_Calendar_MODE_REMOTE);
+		if(e_cal_backend_groupwise_is_loaded (backend))
+		              e_cal_backend_notify_auth_required(backend);	
 		break;
+
 	case CAL_MODE_LOCAL : /* go offline */
 		/* FIXME: make sure we update the cache before closing the connection */
-		g_object_unref (priv->cnc);
-		priv->cnc = NULL;
 		priv->mode = CAL_MODE_LOCAL;
-
+		in_offline (cbgw);
 		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
 					   GNOME_Evolution_Calendar_MODE_LOCAL);
+
 		break;
 	default :
 		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
@@ -1051,6 +1107,11 @@ e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, 
        cbgw = E_CAL_BACKEND_GROUPWISE (backend);
        cnc = cbgw->priv->cnc;
 
+       if (cbgw->priv->mode == CAL_MODE_LOCAL) {
+	       in_offline (cbgw);
+	       return GNOME_Evolution_Calendar_RepositoryOffline;
+       }
+
        status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy, cbgw->priv->default_zone);
        if (status != E_GW_CONNECTION_STATUS_OK)
                return GNOME_Evolution_Calendar_OtherError;
@@ -1242,6 +1303,11 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_InvalidObject);
 	g_return_val_if_fail (calobj != NULL && *calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
 
+	if (priv->mode == CAL_MODE_LOCAL) {
+		in_offline(cbgw);
+		return GNOME_Evolution_Calendar_RepositoryOffline;
+	}
+
 	/* check the component for validity */
 	icalcomp = icalparser_parse_string (*calobj);
 	if (!icalcomp)
@@ -1344,6 +1410,11 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_InvalidObject);
 	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
+
+	if (priv->mode == CAL_MODE_LOCAL) {
+		in_offline (cbgw);
+		return GNOME_Evolution_Calendar_RepositoryOffline;
+	}
 
 	/* check the component for validity */
 	icalcomp = icalparser_parse_string (calobj);
@@ -1481,6 +1552,9 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			g_free (calobj);
 			return GNOME_Evolution_Calendar_OtherError;
 		}
+	} else if (priv->mode == CAL_MODE_LOCAL) {
+		in_offline (cbgw);
+		return GNOME_Evolution_Calendar_RepositoryOffline;
 	}
 
 	/* remove the component from the cache */
@@ -1575,6 +1649,11 @@ e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
+	if (priv->mode == CAL_MODE_LOCAL) {
+		in_offline (cbgw);
+		return GNOME_Evolution_Calendar_RepositoryOffline;
+	}
+
 	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
@@ -1659,6 +1738,11 @@ e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, c
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
+	if (priv->mode == CAL_MODE_LOCAL) {
+		in_offline (cbgw);
+		return GNOME_Evolution_Calendar_RepositoryOffline;
+	}
+
 	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
@@ -1714,6 +1798,7 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->timeout_id = 0;
+	priv->cnc = NULL;
 
 	/* create the mutex for thread safety */
 	priv->mutex = g_mutex_new ();

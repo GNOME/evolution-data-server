@@ -441,8 +441,13 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	if (!priv->cache) {
 		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 
-		/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
-		priv->mode = CAL_MODE_REMOTE;
+		if (!priv->cache) {
+			e_cal_backend_notify_error (E_CAL_BACKEND(cbhttp), _("Could not create cache file"));
+			return GNOME_Evolution_Calendar_OtherError;	
+		}
+		if (priv->mode == CAL_MODE_LOCAL)
+			return GNOME_Evolution_Calendar_Success;
+
 		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 	}
 
@@ -501,17 +506,29 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	GNOME_Evolution_Calendar_CalMode set_mode;
-
+	gboolean loaded;
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
+	loaded = e_cal_backend_http_is_loaded (backend);
+				
 	switch (mode) {
 		case CAL_MODE_LOCAL:
-		case CAL_MODE_REMOTE:
 			priv->mode = mode;
 			set_mode = cal_mode_to_corba (mode);
+			if (loaded && priv->reload_timeout_id) {
+				g_source_remove (priv->reload_timeout_id);
+				priv->reload_timeout_id = 0;
+			}
 			break;
-		case CAL_MODE_ANY:
+		case CAL_MODE_REMOTE:
+		case CAL_MODE_ANY:	
+			priv->mode = mode;
+			set_mode = cal_mode_to_corba (mode);
+			if (loaded) 
+				g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
+			break;
+		
 			priv->mode = CAL_MODE_REMOTE;
 			set_mode = GNOME_Evolution_Calendar_MODE_REMOTE;
 			break;
@@ -520,14 +537,17 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 			break;
 	}
 
-	if (set_mode == GNOME_Evolution_Calendar_MODE_ANY)
-		e_cal_backend_notify_mode (backend,
-					   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
-					   cal_mode_to_corba (priv->mode));
-	else
-		e_cal_backend_notify_mode (backend,
-					   GNOME_Evolution_Calendar_CalListener_MODE_SET,
-					   set_mode);
+	if (loaded) {
+		
+		if (set_mode == GNOME_Evolution_Calendar_MODE_ANY)
+			e_cal_backend_notify_mode (backend,
+						   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
+						   cal_mode_to_corba (priv->mode));
+		else
+			e_cal_backend_notify_mode (backend,
+						   GNOME_Evolution_Calendar_CalListener_MODE_SET,
+						   set_mode);
+	}
 }
 
 static ECalBackendSyncStatus

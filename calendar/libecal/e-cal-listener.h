@@ -83,6 +83,7 @@ typedef struct {
 	void (*query) (ECalListener *listener, ECalendarStatus status, GNOME_Evolution_Calendar_CalView query);
 
 	void (*categories_changed) (ECalListener *listener, ECalendarStatus status, GPtrArray *categories);
+  void (*auth_required)      (ECalListener *listener);
 	void (*backend_error) (ECalListener *listener, ECalendarStatus status, const char *message);
 } ECalListenerClass;
 

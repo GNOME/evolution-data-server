@@ -1,3 +1,4 @@
+/*-*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Evolution calendar ecal
  *
  * Copyright (C) 2001 Ximian, Inc.
@@ -79,6 +80,8 @@ struct _ECalPrivate {
 
 	/* Scheduling info */
 	char *capabilities;
+	
+	int mode;
 	
 	/* The calendar factories we are contacting */
 	GList *factories;
@@ -882,6 +885,20 @@ cal_query_cb (ECalListener *listener, ECalendarStatus status, GNOME_Evolution_Ca
 	g_mutex_unlock (op->mutex);	
 }
 
+static gboolean  
+reopen_with_auth (gpointer data)
+{	
+	e_cal_open (E_CAL(data), TRUE, NULL);
+	return FALSE;
+}
+
+static void
+auth_required_cb (ECalListener *listener, gpointer data)
+{
+	g_idle_add (reopen_with_auth, data);	
+
+}
+
 /* Handle the cal_set_mode notification from the listener */
 static void
 cal_set_mode_cb (ECalListener *listener,
@@ -895,7 +912,7 @@ cal_set_mode_cb (ECalListener *listener,
 
 	ecal = E_CAL (data);
 	priv = ecal->priv;
-
+	priv->mode = mode;
 	ecal_status = E_CAL_SET_MODE_ERROR;
 
 	switch (status) {
@@ -1105,6 +1122,7 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 	g_signal_connect (G_OBJECT (priv->listener), "query", G_CALLBACK (cal_query_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "categories_changed", G_CALLBACK (categories_changed_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "backend_error", G_CALLBACK (backend_error_cb), ecal);
+	g_signal_connect (G_OBJECT (priv->listener), "auth_required", G_CALLBACK (auth_required_cb), ecal);
 }
 
 /* Finalize handler for the calendar ecal */
@@ -1493,7 +1511,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		*status = E_CALENDAR_STATUS_BUSY;
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
-
 	/* start the open operation */
 	our_op = e_calendar_new_op (ecal);
 	g_mutex_lock (our_op->mutex);
@@ -1501,7 +1518,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	g_mutex_unlock (priv->mutex);
 
 	/* see if the backend needs authentication */
-	if (e_source_get_property (priv->source, "auth")) {
+	if ( (priv->mode !=  CAL_MODE_LOCAL) && e_source_get_property (priv->source, "auth")) {
 		char *prompt, *key;
 
 		priv->load_state = E_CAL_LOAD_AUTHENTICATING;
@@ -1527,8 +1544,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
 					  e_source_peek_name (priv->source), username);
 		key = e_source_get_uri (priv->source);
-
 		password = priv->auth_func (ecal, prompt, key, priv->auth_user_data);
+
 		if (!password) {
 			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);

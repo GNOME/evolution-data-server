@@ -1,3 +1,106 @@
+2004-12-22 Chenthill Palanisamy <pchenthill@novell.com>
+
+	Part of merge from offline branch 
+	* backends/groupwise/e-cal-backend-groupwise.c :
+	(e_cal_backend_groupwise_open): Check for the property 
+	offline_sync in source and display the contents of the
+	calendar.
+
+2004-12-22 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from offline branch 
+	
+	* idl/Evolution-DataServer-Calendar.idl : added 
+	new error code OfflineUnavailable 
+
+2004-12-22 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	Part of merge from offline branch 
+	
+	* idl/Evolution-DataServer-Calendar.idl : added a new method 
+	notifyAuthRequired to cal listener interface 
+
+	* libedata-cal/e-cal-backend.[ch]
+	(e_cal_backend_notify_auth_required):
+	
+	* libedatacal/e-data-cal.[ch] 
+	(e_data_cal_notify_auth_required) : methods for backend 
+	to notify clients about auth when mode is changed to online
+	
+	* libecal/e-cal-listener.[ch] : implemented notifyAuthRequired
+	interface and  add AUTH_REQUIRED signal 
+	
+	* libecal/e-cal.c : connect to AUTH_REQUIRED signal of cal listener
+	and call e_cal_open in the singnal call back 
+	(open_calendar) : don't call e_password stuff in offline mode
+
+	* libecal/e-cal-marshal.list : added NONE:NONE to list 	
+
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(e_cal_backend_groupwise_set_mode) : send auth required notification
+	when mode changes to online
+ 
+	
+2004-12-22 Sivaiah Nallagatla   <snallagatla@novell.com>
+
+	Part of merge from offline branch 
+	
+	* backends/http/e-cal-backend-http.c 
+	(e_cal_backend_http_set_mode): When mode is switched 
+	from offline to online start time out handler to periodically
+	download the conetnets. Call e_cal_backend_notify only 
+	when backend is loaded 
+        (e_cal_backend_http_open) : cast the backend object using E_CAL_BACKEND
+	to avoid waring while passing it to e_cal_backend_notify_error 
+	
+2004-12-22 Chenthill Palanisamy <pchenthill@novell.com>
+
+	Part of merge from offline branch 
+	
+	* backends/http/e-cal-backend-http.c
+	(e_cal_backend_http_open): Do not connect to the url in 
+	offline, read only the contents from the cache.
+	(e_cal_backend_http_set_mode): If the calendar moves from
+	online to offline remove the timeout function.
+	
+2004-12-22 Chenthill Palanisamy <pchenthill@novell.com>
+
+	Part of merge from offline branch 
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(in_offline): If calendar is in offline remove the connection
+	and the remove the timeout function if they are active, Mark the 
+	calendar to be read only.
+	(connect_to_server): This will be called through open method when 
+	the calendar changes from offline to online. In that case invoke the 
+	timeout functions.
+	(e_cal_backend_groupwise_finalize): Assign zero to the timeout id.
+	(e_cal_backend_groupwise_open): If the calendar is opened in offline 
+	mode, show the contents from the cache and mark the calendar as offline.
+	(e_cal_backend_groupwise_set_mode): Removed the connect_to_server function
+	call, it should be called through the open method since password is needed to 
+	create a new connection.
+	(e_cal_backend_groupwise_get_freebusy):
+	(e_cal_backend_groupwise_create_object):
+	(e_cal_backend_groupwise_modify_object):
+	(e_cal_backend_groupwise_remove_object):
+	(e_cal_backend_groupwise_receive_objects):
+	(e_cal_backend_groupwise_send_objects): If the Calendar is in Offline mode
+	remove the timeout function and the connection and return an error message.
+	(e_cal_backend_groupwise_init): Initialize the connection to NULL.
+	(get_deltas): IF the calendar is in offline mode, return False.
+	
+2004-12-22  Sivaiah Nallagatla  <snallagatla@novell.com>
+
+	Part of merge from offline branch 
+	
+	* libedata-cal/e-data-cal-factory.[ch] : new fucntions
+	(e_data_cal_factory_set_backend_mode) : set online/offline mode on 
+	all the backends it has created. 
+	(set_backend_online_status) : function to set online/offline 
+	mode on a backend
+	(impl_CalFactory_getCal) : modified this function to 
+	set online/offline mode on the backend after creatng it
+ 
 2004-12-22  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/http/e-cal-backend-http.c (e_cal_backend_http_get_timezone):

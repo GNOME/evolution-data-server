@@ -1232,6 +1232,28 @@ e_data_cal_notify_mode (EDataCal *cal,
 	CORBA_exception_free (&ev);	
 }
 
+
+void 
+e_data_cal_notify_auth_required (EDataCal *cal)
+{
+       EDataCalPrivate *priv;
+       CORBA_Environment ev;
+       
+       g_return_if_fail (cal != NULL);
+       g_return_if_fail (E_IS_DATA_CAL (cal));
+       
+       priv = cal->priv;
+       g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
+       
+       CORBA_exception_init (&ev);
+       GNOME_Evolution_Calendar_CalListener_notifyAuthRequired (priv->listener,  &ev);
+       if (BONOBO_EX (&ev))
+		g_message ("e_data_cal_notify_auth_required: could not notify the listener "
+			   "about auth required");
+
+	CORBA_exception_free (&ev);
+}
+
 /**
  * e_data_cal_notify_error
  * @cal: A calendar client interface.

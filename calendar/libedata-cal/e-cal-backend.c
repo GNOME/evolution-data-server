@@ -1151,6 +1151,16 @@ e_cal_backend_notify_mode (ECalBackend *backend,
 		e_data_cal_notify_mode (l->data, status, mode);
 }
 
+void
+e_cal_backend_notify_auth_required (ECalBackend *backend)
+{
+        ECalBackendPrivate *priv = backend->priv;
+        GList *l;
+                                                                                                                             
+        for (l = priv->clients; l; l = l->next)
+                e_data_cal_notify_auth_required (l->data);
+}
+
 /**
  * e_cal_backend_notify_error:
  * @backend: A calendar backend.

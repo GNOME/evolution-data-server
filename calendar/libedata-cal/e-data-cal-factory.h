@@ -68,6 +68,7 @@ void	    e_data_cal_factory_register_backends    (EDataCalFactory    *factory);
 
 int         e_data_cal_factory_get_n_backends       (EDataCalFactory *factory);
 void        e_data_cal_factory_dump_active_backends (EDataCalFactory *factory);
+void        e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, int mode);
 
 G_END_DECLS
 

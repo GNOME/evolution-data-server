@@ -170,6 +170,7 @@ void e_cal_backend_notify_object_removed  (ECalBackend *backend, const char *uid
 void e_cal_backend_notify_mode      (ECalBackend *backend,
 				     GNOME_Evolution_Calendar_CalListener_SetModeStatus status, 
 				     GNOME_Evolution_Calendar_CalMode mode);
+void e_cal_backend_notify_auth_required (ECalBackend *backend);
 void e_cal_backend_notify_error     (ECalBackend *backend, const char *message);
 void e_cal_backend_ref_categories   (ECalBackend *backend, GSList *categories);
 void e_cal_backend_unref_categories (ECalBackend *backend, GSList *categories);

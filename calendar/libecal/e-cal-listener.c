@@ -1,3 +1,4 @@
+/*-*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Evolution calendar listener
  *
  * Copyright (C) 2001 Ximian, Inc.
@@ -61,6 +62,7 @@ enum {
 	GET_FREE_BUSY,
 	QUERY,
 	CATEGORIES_CHANGED,
+	AUTH_REQUIRED,
 	BACKEND_ERROR,
 	LAST_SIGNAL
 };
@@ -626,6 +628,21 @@ impl_notifyCalSetMode (PortableServer_Servant servant,
 	(* priv->cal_set_mode_fn) (listener, status, mode, priv->fn_data);
 }
 
+static void
+impl_notifyAuthRequired (PortableServer_Servant servant,
+			 CORBA_Environment *ev)
+{
+	ECalListener *listener;
+	ECalListenerPrivate *priv;
+
+	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
+	priv = listener->priv;
+
+	if (!priv->notify)
+		return;
+       
+	g_signal_emit (G_OBJECT (listener), signals[AUTH_REQUIRED], 0);
+}
 
 /* ::notifyErrorOccurred method */
 static void
@@ -736,7 +753,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 	klass->epv.notifyCalSetMode = impl_notifyCalSetMode;
 	klass->epv.notifyErrorOccurred = impl_notifyErrorOccurred;
 	klass->epv.notifyCategoriesChanged = impl_notifyCategoriesChanged;
-
+	klass->epv.notifyAuthRequired      = impl_notifyAuthRequired;
 	object_class->finalize = e_cal_listener_finalize;
 
 	signals[READ_ONLY] =
@@ -923,6 +940,14 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      NULL, NULL,
 			      e_cal_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals [AUTH_REQUIRED] =
+		g_signal_new ("auth_required",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ECalListenerClass, auth_required),
+			      NULL, NULL,
+			      e_cal_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 	signals[BACKEND_ERROR] =
 		g_signal_new ("backend_error",
 			      G_TYPE_FROM_CLASS (klass),
