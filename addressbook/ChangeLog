@@ -1,5 +1,15 @@
 2004-04-14  Chris Toshok  <toshok@ximian.com>
 
+	[ fixes part of bug #55776 ]
+	
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_remove): new method, we need this or else
+	e-d-s exits when you try to remove an LDAP addressbook.
+	(e_book_backend_ldap_class_init): hook up
+	EBookBackendClass::remove.
+
+2004-04-14  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.c (e_book_remove_contact): fix deadlock when
 	calling this function - there's no reason to lock the book's mutex
 	here, as all we do is build a list and call

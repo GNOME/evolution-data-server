@@ -3234,6 +3234,15 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		return GNOME_Evolution_Addressbook_OtherError;
 }
 
+static void
+e_book_backend_ldap_remove (EBookBackend *backend, EDataBook *book)
+{
+	/* if we ever add caching, we'll remove it here, but for now,
+	   just report back Success */
+
+	e_data_book_respond_remove (book, GNOME_Evolution_Addressbook_Success);
+}
+
 static char*
 e_book_backend_ldap_get_static_capabilities (EBookBackend *backend)
 {
@@ -3336,6 +3345,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 
 	/* Set the virtual methods. */
 	parent_class->load_source             = e_book_backend_ldap_load_source;
+	parent_class->remove                  = e_book_backend_ldap_remove;
 	parent_class->get_static_capabilities = e_book_backend_ldap_get_static_capabilities;
 
 	parent_class->create_contact          = e_book_backend_ldap_create_contact;
