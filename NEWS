@@ -1,3 +1,94 @@
+Evolution Data Server 1.1.5, 2005-02-07
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+    #1069  - Support REV field in VCard (Siva)
+    #67267 - Auto-complete misses contacts with 'Title' set (Siva)
+    #68172 - Don't include function names in e-d-s messages (Siva)
+    #70198 - Deleting emails too quickly crashes evolution (Siva)
+    #71116 - Wrong gettext initialization breaks translation (Christophe)
+    #71827 - Search after a contact with Name begins with, only searches
+               for first name (Siva)
+
+  * Calendar
+    #68541 - Invalid Response From Server Message (Chenthill)
+    #64682 - Moving a appts from one calendar to another sends update (Chenthill)
+    #72004 - Invalid connection error message (popup) - Suddenly (Chenthill)
+    #72117 - EDS crashed - Trying to create meeting appointments (Chenthill)
+
+  * Camel
+    #36142 - Don't use acronyms as verbs in messages (Michael)
+    #38671 - filtering on specific-headers needs to check each matching header
+             (Michael)
+    #38791 - GPG can make evo hang if keyserver unreachable (Michael)
+    #65329 - Regression in default folder name localisation (Michael)
+    #68741 - Evolution 2 hides Junk folder created in 1.4 (Michael)
+    #70303 - PGP signature invalid with very short emails (Michael)
+    #71847 - IMAP is broken (Jeff)
+    #72020 - Error parsing filter: Unknown identifier: adjust-score (Michael)
+
+  * All
+    #69909 - EDS logger doesn't restore logging when it shuts down (JP)
+    #72172 - Cannot delete a GW Shared folder (Partha)
+
+Other bugs
+
+  * Addressbook
+    - Changed default Groupwise port to 7191 (Siva)
+    - Online/offline fixes in LDAP backend (Siva)
+    - Build backends as modules (Hans Petter)
+    - Check Groupwise server version and notify user (Vivek)
+
+  * Calendar
+    - Changed default Groupwise port to 7191 (Siva)
+    - Fixed idle saving in file backend (Rodrigo)
+    - Fixed leak in e_cal_send_objects (JP)
+    - Removed categories-related methods in backends (Rodrigo)
+    - Improvements in communication with GW servers for tasks (Harish)
+    - Build backends as modules (Hans Petter)
+    - Fixed conflicts in IDL file (Hans Petter)
+    - Check Groupwise server version and notify user (Vivek)
+    - getQuickMessages support in GW backend (Chenthill)
+
+  * Camel
+    - Added old imap code back to build (Jeff)
+    - Improve moving between folders in GW provider (Partha)
+    - IMAP/IMAP4 compatibility work (Jeff)
+    - Updated tests to use IMAP4 (Jeff)
+    - getQuickMessages support in GW provider (Partha)
+    - Use GW SOAP mailer code to be the default (Siva)
+    - Changed default Groupwise port to 7191 (Siva)
+    - GW SOAP mailer code improvements (Partha)
+
+  * All
+    - Added 'searchable' flag for categories (Rodrigo)
+    - Fixed saving of categories config changes (Rodrigo)
+    - Use glib's i18n headers (Ross)
+    - Removed useless libgnome use (Ross)
+    - a11y improvements (Hao)
+
+Updated Translations:
+    - ca (Jordi Mallach)
+    - cs (Miloslav Trmac)
+    - de (Frank Arnold)
+    - el (Kostas Papadimas)
+    - en_CA (Adam Weinberger)
+    - en_GB (David Lodge)
+    - es (Francisco Javier F. Serrador)
+    - et (Priit Laes)
+    - ja (Takeshi AIHANA)
+    - ko (Changwoo Ryu)
+    - lt (Žygimantas Beručka)
+    - nb (Kjartan Maraas)
+    - nl (Vincent van Adrighem)
+    - no (Kjartan Maraas)
+    - pt (Duarte Loreto)
+    - pt_BR (Raphael Higino)
+    - sq (Laurent Dhima)
+    - sv (Christian Rose)
+
 Evolution Data Server 1.1.4, 2005-01-24
 ----------------------------------------
 
