@@ -1633,7 +1633,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 	/* check the object is not in our cache */
 	if (lookup_component (cbfile, comp_uid)) {
 		icalcomponent_free (icalcomp);
-		return GNOME_Evolution_Calendar_CardIdAlreadyExists;
+		return GNOME_Evolution_Calendar_ObjectIdAlreadyExists;
 	}
 
 	/* Create the cal component */

@@ -1552,7 +1552,7 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 }
 
 gboolean 
-e_cal_remove_calendar (ECal *ecal, GError **error)
+e_cal_remove (ECal *ecal, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -3882,9 +3882,7 @@ e_cal_get_error_message (ECalendarStatus status)
 		return _("URI already loaded");
 	case E_CALENDAR_STATUS_PERMISSION_DENIED :
 		return _("Permission denied");
-	case E_CALENDAR_STATUS_CARD_NOT_FOUND :
-		return _("Object not found");
-	case E_CALENDAR_STATUS_CARD_ID_ALREADY_EXISTS :
+	case E_CALENDAR_STATUS_OBJECT_ID_ALREADY_EXISTS :
 		return _("Object ID already exists");
 	case E_CALENDAR_STATUS_PROTOCOL_NOT_SUPPORTED :
 		return _("Protocol not supported");

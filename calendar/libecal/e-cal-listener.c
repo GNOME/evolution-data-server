@@ -83,8 +83,8 @@ convert_status (const GNOME_Evolution_Calendar_CallStatus status)
 		return E_CALENDAR_STATUS_OBJECT_NOT_FOUND;
 	case GNOME_Evolution_Calendar_InvalidObject:
 		return E_CALENDAR_STATUS_INVALID_OBJECT;
-	case GNOME_Evolution_Calendar_CardIdAlreadyExists:
-		return E_CALENDAR_STATUS_CARD_ID_ALREADY_EXISTS;
+	case GNOME_Evolution_Calendar_ObjectIdAlreadyExists:
+		return E_CALENDAR_STATUS_OBJECT_ID_ALREADY_EXISTS;
 	case GNOME_Evolution_Calendar_AuthenticationFailed:
 		return E_CALENDAR_STATUS_AUTHENTICATION_FAILED;
 	case GNOME_Evolution_Calendar_AuthenticationRequired:

@@ -110,7 +110,7 @@ module Calendar {
 		InvalidRange,
 		ObjectNotFound,
 		InvalidObject,
-		CardIdAlreadyExists,
+		ObjectIdAlreadyExists,
 		AuthenticationFailed,
 		AuthenticationRequired,
 		UnsupportedField,

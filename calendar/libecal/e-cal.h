@@ -107,7 +107,7 @@ void e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data);
 
 gboolean e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error);
 void e_cal_open_async (ECal *ecal, gboolean only_if_exists);
-gboolean e_cal_remove_calendar (ECal *ecal, GError **error);
+gboolean e_cal_remove (ECal *ecal, GError **error);
 
 GList *e_cal_uri_list (ECal *ecal, CalMode mode);
 
