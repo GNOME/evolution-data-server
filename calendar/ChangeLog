@@ -1,3 +1,8 @@
+2004-03-09  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal.c (e_cal_resolve_tzid): don't default to UTC timezone,
+	the default timezone is used by the timezone look up code.
+
 2004-03-09  Thomas Mirlacher <dent@cosy.sbg.ac.at>
 
 	Fixes #53885

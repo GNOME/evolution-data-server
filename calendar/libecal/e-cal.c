@@ -2374,8 +2374,6 @@ e_cal_resolve_tzid_cb (const char *tzid, gpointer data)
 
 	/* FIXME: Handle errors. */
 	e_cal_get_timezone (ecal, tzid, &zone, NULL);
-	if (!zone)
-		zone = icaltimezone_get_utc_timezone ();
 
 	return zone;
 }
