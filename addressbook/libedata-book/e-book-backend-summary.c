@@ -744,6 +744,12 @@ e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const char 
 	g_warning ("e_book_backend_summary_remove_contact: unable to locate id `%s'", id);
 }
 
+gboolean
+e_book_backend_summary_check_contact (EBookBackendSummary *summary, const char *id)
+{
+	return g_hash_table_lookup (summary->priv->id_to_item, id) != NULL;
+}
+
 static gboolean
 summary_flush_func (gpointer data)
 {

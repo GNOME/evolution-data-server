@@ -1,5 +1,18 @@
 2003-11-10  Dan Winship  <danw@ximian.com>
 
+	* libebook/e-contact.c (e_contact_date_equal): New utility
+	function to compare two (possibly NULL) EContactDates
+
+	* backends/ldap/e-book-backend-ldap.c (anniversary_compare,
+	birthday_compare): Use it
+
+	* libedata-book/e-book-backend-summary.c
+	(e_book_backend_summary_check_contact): New utility function to
+	check if an id is in the summary (without doing any additional
+	work beyond that).
+
+2003-11-10  Dan Winship  <danw@ximian.com>
+
 	* libedata-book/e-book-backend.h:
 	s/E_TYPE_BACKEND/E_TYPE_BOOK_BACKEND/
 	s/E_IS_BACKEND/E_IS_BOOK_BACKEND/

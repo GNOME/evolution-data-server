@@ -59,6 +59,7 @@ gboolean           e_book_backend_summary_save              (EBookBackendSummary
 
 void               e_book_backend_summary_add_contact       (EBookBackendSummary *summary, EContact *contact);
 void               e_book_backend_summary_remove_contact    (EBookBackendSummary *summary, const char *id);
+gboolean           e_book_backend_summary_check_contact     (EBookBackendSummary *summary, const char *id);
 
 void               e_book_backend_summary_touch             (EBookBackendSummary *summary);
 

@@ -1252,6 +1252,17 @@ e_contact_date_to_string (EContactDate *dt)
 		return NULL;
 }
 
+gboolean
+e_contact_date_equal (EContactDate *dt1, EContactDate *dt2)
+{
+	if (dt1 && dt2) {
+		return (dt1->year == dt2->year &&
+			dt1->month == dt2->month &&
+			dt1->day == dt2->day);
+	} else
+		return (!!dt1 == !!dt2);
+}
+
 void
 e_contact_date_free (EContactDate *dt)
 {

@@ -210,6 +210,8 @@ void                    e_contact_set              (EContact *contact, EContactF
 EContactDate           *e_contact_date_new         (void);
 EContactDate           *e_contact_date_from_string (const char *str);
 char                   *e_contact_date_to_string   (EContactDate *dt);
+gboolean                e_contact_date_equal       (EContactDate *dt1,
+						    EContactDate *dt2);
 
 EContactName           *e_contact_name_new         (void);
 char                   *e_contact_name_to_string   (const EContactName *name);

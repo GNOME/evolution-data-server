@@ -1910,29 +1910,16 @@ anniversary_ber (EContact *contact)
 static gboolean
 anniversary_compare (EContact *contact1, EContact *contact2)
 {
-	EContactDate *dt;
-	char *date1 = NULL, *date2 = NULL;
+	EContactDate *dt1, *dt2;
 	gboolean equal;
 
-	dt = e_contact_get (contact1, E_CONTACT_ANNIVERSARY);
-	if (dt) {
-		date1 = e_contact_date_to_string (dt);
-		e_contact_date_free (dt);
-	}
-	
-	dt = e_contact_get (contact2, E_CONTACT_ANNIVERSARY);
-	if (dt) {
-		date2 = e_contact_date_to_string (dt);
-		e_contact_date_free (dt);
-	}
+	dt1 = e_contact_get (contact1, E_CONTACT_ANNIVERSARY);
+	dt2 = e_contact_get (contact2, E_CONTACT_ANNIVERSARY);
 
-	if (date1 && date2)
-		equal = !strcmp (date1, date2);
-	else
-		equal = (!!date1 == !!date2);
+	equal = e_contact_date_equal (dt1, dt2);
 
-	g_free (date1);
-	g_free (date2);
+	e_contact_date_free (dt1);
+	e_contact_date_free (dt2);
 
 	return equal;
 }
@@ -1975,29 +1962,16 @@ birthday_ber (EContact *contact)
 static gboolean
 birthday_compare (EContact *contact1, EContact *contact2)
 {
-	EContactDate *dt;
-	char *date1 = NULL, *date2 = NULL;
+	EContactDate *dt1, *dt2;
 	gboolean equal;
 
-	dt = e_contact_get (contact1, E_CONTACT_BIRTH_DATE);
-	if (dt) {
-		date1 = e_contact_date_to_string (dt);
-		e_contact_date_free (dt);
-	}
+	dt1 = e_contact_get (contact1, E_CONTACT_BIRTH_DATE);
+	dt2 = e_contact_get (contact2, E_CONTACT_BIRTH_DATE);
 
-	dt = e_contact_get (contact2, E_CONTACT_BIRTH_DATE);
-	if (dt) {
-		date2 = e_contact_date_to_string (dt);
-		e_contact_date_free (dt);
-	}
+	equal = e_contact_date_equal (dt1, dt2);
 
-	if (date1 && date2)
-		equal = !strcmp (date1, date2);
-	else
-		equal = (!!date1 == !!date2);
-
-	g_free (date1);
-	g_free (date2);
+	e_contact_date_free (dt1);
+	e_contact_date_free (dt2);
 
 	return equal;
 }
