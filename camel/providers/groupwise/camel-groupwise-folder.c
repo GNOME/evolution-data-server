@@ -42,6 +42,7 @@
 #include "camel-private.h"
 #include "camel-groupwise-private.h"
 #include "camel-groupwise-journal.h"
+#include "camel-groupwise-utils.h"
 #include "camel-stream-mem.h"
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
@@ -477,12 +478,12 @@ static void
 groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store) ;
-	//CamelGroupwiseStorePrivate *priv = gw_store->priv ;
+	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
 	CamelMessageInfo *info ;
 	CamelGroupwiseMessageInfo *gw_info ;
 	GList *items = NULL ;
 	flags_diff_t diff ;
-	//EGwConnection *cnc = cnc_lookup (priv) ;
+	EGwConnection *cnc = cnc_lookup (priv) ;
 	int count, i ;
 	g_print ("groupwise sync\n") ;
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) 
@@ -512,6 +513,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 /*	if (items) 
 		e_gw_connection_mark_read (cnc, items) ;*/
+
+	if (expunge)
+		e_gw_connection_purge_deleted_items (cnc) ;
 	
 	camel_folder_summary_save (folder->summary);
 
@@ -729,10 +733,8 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			}
 
 			temp_date = e_gw_item_get_creation_date(item) ;
-			if (temp_date) {
-				date = e_gw_connection_format_date_string(temp_date) ;
-				mi->info.date_sent = mi->info.date_received = e_gw_connection_get_date_from_string (date) ;
-			}
+			if (temp_date) 
+				mi->info.date_sent = mi->info.date_received = e_gw_connection_get_date_from_string (temp_date) ;
 			mi->info.uid = g_strdup (e_gw_item_get_id (item)) ;
 			mi->info.subject = g_strdup (e_gw_item_get_subject(item)) ;
 
@@ -935,8 +937,8 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	EGwConnection *cnc;
 	EGwConnectionStatus status ;
 	CamelFolderChangeInfo *changes ;
-	GList *l, *n, *item_ids = NULL;
 	int i, max;
+	gboolean delete = FALSE ;
 	
 	CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
 	
@@ -944,30 +946,25 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 
 	cnc = cnc_lookup (priv) ;
 	
+	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->name)) ;
+
 	max = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < max; i++) {
 		info = camel_folder_summary_index (folder->summary, i);
 		ginfo = (CamelGroupwiseMessageInfo *) info;
 		if (ginfo->info.flags & CAMEL_MESSAGE_DELETED) {
-			item_ids = g_list_append (item_ids, g_strdup (camel_message_info_uid (info)));
-			camel_folder_change_info_remove_uid (changes, (char *) item_ids->data);
+			const char *uid = camel_message_info_uid (info) ;
+			status = e_gw_connection_remove_item (cnc, container_id, uid);
+			if (status == E_GW_CONNECTION_STATUS_OK) {
+				camel_folder_change_info_remove_uid (changes, (char *) uid);
+				delete = TRUE ;
+			}
 		}
 		camel_message_info_free (info);
 	}
-	
-	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->name)) ;
-	status = e_gw_connection_remove_items (cnc, container_id, item_ids);
-	if (status == E_GW_CONNECTION_STATUS_OK)
-		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
-	else
-		g_print ("ERROR!!! Could not delete items\n") ;
-	
-	l = item_ids;
-	while (l != NULL) {
-		n = l->next;
-		g_list_free_1 (l);
-		l = n;
-	}
+
+	if (delete)
+		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes) ;
 	
 	CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
 	

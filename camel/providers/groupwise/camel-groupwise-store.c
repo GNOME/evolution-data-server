@@ -487,7 +487,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	gboolean done = FALSE ;
 	int count = 0, cursor, summary_count = 0 ;
 	
-	
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
         folder_dir = e_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
@@ -619,9 +618,9 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			if (temp == count)
 				camel_operation_progress (NULL, 0) ;
 			if (temp < count)
-				camel_operation_progress (NULL, temp * 100/count) ;
+				camel_operation_progress (NULL, 100 - (temp * 100/count)) ;
 			if (temp >count)
-				camel_operation_progress (NULL, count * 100/temp) ;
+				camel_operation_progress (NULL, 100 - (count * 100/temp)) ;
 			if (!list  || temp == 0)
 				done = TRUE;
 			g_list_free (list);
@@ -752,7 +751,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	const char *url, *top_folder, *temp_url ;
 	char *temp_str = NULL, *folder_real = NULL ;
 	CamelFolderInfo *info = NULL ;
-	
+
 	CAMEL_SERVICE_LOCK (store, connect_lock) ;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
@@ -840,8 +839,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 
 		if (type == E_GW_CONTAINER_TYPE_INBOX)
 			fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
-		if (type == E_GW_CONTAINER_TYPE_TRASH)
-			fi->flags |= CAMEL_FOLDER_TYPE_TRASH ;
+/*		if (type == E_GW_CONTAINER_TYPE_TRASH)
+			fi->flags |= CAMEL_FOLDER_TYPE_TRASH ;*/
 
 		if ( (type == E_GW_CONTAINER_TYPE_INBOX) ||
 		     (type == E_GW_CONTAINER_TYPE_OUTBOX) ||

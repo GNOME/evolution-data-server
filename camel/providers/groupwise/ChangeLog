@@ -1,3 +1,12 @@
+2005-02-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c:
+	  (groupwise_get_folder): fixed the percentage display problem
+	  while fetching summary
+	* camel-groupwise-folder.c:
+	  (groupwise_expunge): fixed the problem with deleting mails
+	  using removeItemRequest instead of removeItemsrequest
+
 2005-02-09  Vivek Jain  <jvivek@novell.com>
 
 	* camel-groupwise-store.c:
