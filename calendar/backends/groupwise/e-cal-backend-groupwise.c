@@ -1004,14 +1004,14 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 	/* if online, remove the item from the server */
 	if (priv->mode == CAL_MODE_REMOTE) {
-		EGwConnectionStatus status;
+		ECalBackendSyncStatus status;
 		char *calobj, *id_to_remove = NULL;
 		icalproperty *icalprop;
 		icalcomponent *icalcomp;
 
 		status = e_cal_backend_groupwise_get_object (backend, cal, uid, rid, &calobj);
-		if (status != E_GW_CONNECTION_STATUS_OK)
-			return GNOME_Evolution_Calendar_ObjectNotFound;
+		if (status != GNOME_Evolution_Calendar_Success)
+			return status;
 
 		icalcomp = icalparser_parse_string (calobj);
 		g_free (calobj);
