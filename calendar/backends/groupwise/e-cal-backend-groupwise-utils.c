@@ -27,6 +27,7 @@
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-time-util.h>
 #include "e-cal-backend-groupwise-utils.h"
+#include <libedataserver/e-source-list.h>
 
 static gboolean 
 get_recur_instance (ECalComponent *comp, time_t instance_start, time_t instance_end, gpointer data)
@@ -124,6 +125,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 	icalcomponent *icalcomp;
 	icalproperty *icalprop;
 	struct icaltimetype temp;
+	gboolean sendoptions_set = FALSE;
 
 	icalcomp = e_cal_component_get_icalcomponent (comp);
 	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
@@ -133,6 +135,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 		x_name = icalproperty_get_x_name (icalprop);
 		
 		if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-PRIORITY")) {
+			sendoptions_set = TRUE;
 			x_val = icalproperty_get_x (icalprop);
 			switch (atoi (x_val)) {
 				case 1:  e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_HIGH);
@@ -171,6 +174,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 			g_free (delay);
 					
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-TRACKINFO")) {
+			sendoptions_set = TRUE;
 			x_val = icalproperty_get_x (icalprop);
 			switch (atoi (x_val)) {
 				case 1: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED);
@@ -225,6 +229,8 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 
 		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
 	}
+
+	e_gw_item_set_sendoptions (item, sendoptions_set);
 
 }
 
@@ -1334,4 +1340,126 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 		SET_DELTA(due_date);
 		SET_DELTA(task_priority);
 	}
+}
+
+
+static void 
+add_return_value (EGwSendOptionsReturnNotify track, ESource *source, char *notify)
+{
+	char *value;
+	
+	switch (track) {
+		case E_GW_RETURN_NOTIFY_MAIL:
+			value =  g_strdup ("mail");
+			break;
+		default:
+			value = g_strdup ("none");		
+	}
+	
+	e_source_set_property (source, notify, value);
+	g_free (value), value = NULL;
+}
+
+void
+e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwise *cbgw)
+{
+	ECalBackendGroupwisePrivate *priv = cbgw->priv;
+	EGwSendOptionsGeneral *gopts;
+	EGwSendOptionsStatusTracking *sopts;
+	icaltimetype tt;
+	icalcomponent_kind kind;
+	GConfClient *gconf = gconf_client_get_default ();
+	ESource *source;
+	ESourceList *source_list;
+	const char *uid;
+	char *value;
+
+	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)); 
+
+	gopts = e_gw_sendoptions_get_general_options (opts);
+	if (kind == ICAL_VEVENT_COMPONENT) {
+		sopts = e_gw_sendoptions_get_status_tracking_options (opts, "calendar");
+		source_list = e_source_list_new_for_gconf (gconf, "/apps/evolution/calendar/sources");
+	} else {
+		source_list = e_source_list_new_for_gconf (gconf, "/apps/evolution/tasks/sources");
+		sopts = e_gw_sendoptions_get_status_tracking_options (opts, "task");
+	}
+
+	uid = e_source_peek_uid (source);
+	source = e_source_list_peek_source_by_uid (source_list, uid);
+	if (gopts) {
+			/* priority */
+		switch (gopts->priority) {
+			case E_GW_PRIORITY_HIGH:
+				value = g_strdup ("high");
+				break;
+			case E_GW_PRIORITY_STANDARD:
+				value = g_strdup ("standard");
+				break;
+			case E_GW_PRIORITY_LOW:
+				value =  g_strdup ("low");
+				break;
+			default:
+				value = g_strdup ("undefined");
+		}
+		e_source_set_property (source, "priority", value);
+		g_free (value), value = NULL;
+
+			/* Reply Requested */
+		/*TODO Fill the value if it is not "convinient" */
+		if (gopts->reply_enabled) {
+			if (gopts->reply_convenient)
+				value = g_strdup ("convinient");
+			else 
+				value = g_strdup_printf ("%d",gopts->reply_within);
+		 } else
+			value = g_strdup ("none");
+		e_source_set_property (source, "reply-requested", value);
+		g_free (value), value = NULL;
+		
+			/* Delay delivery */
+		if (gopts->delay_enabled) {
+				tt = icaltime_today ();
+				icaltime_adjust (&tt, gopts->delay_until, 0, 0, 0);
+				value = icaltime_as_ical_string (tt);
+		} else
+			value = g_strdup ("none");
+		e_source_set_property (source, "delay-delivery", value);
+		g_free (value), value = NULL;
+		
+			/* Expiration date */
+		if (gopts->expiration_enabled)
+			value =  g_strdup_printf ("%d", gopts->expire_after);
+		else
+			value = g_strdup ("none");
+		e_source_set_property (source, "expiration", value);
+		g_free (value), value = NULL;
+	}
+		
+	if (sopts) {
+			/* status tracking */
+		if (sopts->tracking_enabled) {
+			switch (sopts->track_when) {
+				case E_GW_DELIVERED :
+					value = g_strdup ("delivered");
+					break;
+				case E_GW_DELIVERED_OPENED:
+					value = g_strdup ("delivered-opened");
+					break;
+				default:
+					value = g_strdup ("all");
+			}
+		} else
+			value = g_strdup ("none");
+		e_source_set_property (source, "status-tracking", value);
+		g_free (value), value = NULL;
+
+		add_return_value (sopts->opened, source, "return-open"); 
+		add_return_value (sopts->accepted, source, "return-accept"); 
+		add_return_value (sopts->declined, source, "return-decline"); 
+		add_return_value (sopts->completed, source, "return-complete"); 
+	}	
+
+	g_object_unref (gconf);
 }

@@ -1,3 +1,12 @@
+2005-01-06 Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* backends/groupwise/e-cal-backends-groupwise-utils.[ch]:
+	Added a new function to set the send options in e sources.
+	(add_send_options_data_to_item): Set the set_sendoptions variable
+	if there are some X-Properties for send options.
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(cache_init): get the send options settings.	
+
 2004-12-24  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file.c (remove_component): made it work

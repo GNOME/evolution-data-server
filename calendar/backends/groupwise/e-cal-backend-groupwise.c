@@ -379,13 +379,14 @@ form_uri (ESource *source)
 	return formed_uri;
 
 }
-
+				
 static ECalBackendSyncStatus
 cache_init (ECalBackendGroupwise *cbgw)
 {
 	ECalBackendGroupwisePrivate *priv = cbgw->priv;
 	EGwConnectionStatus cnc_status;
 	icalcomponent_kind kind;
+	EGwSendOptions *opts;
 	const char *time_interval_string;
 	int time_interval;
 
@@ -397,6 +398,11 @@ cache_init (ECalBackendGroupwise *cbgw)
 		time_interval = g_ascii_strtod (time_interval_string, NULL);
 		time_interval *= (60*1000); 
 		
+	}
+	cnc_status = e_gw_connection_get_settings (priv->cnc, &opts);	
+	if (cnc_status == E_GW_CONNECTION_STATUS_OK) {
+		e_cal_backend_groupwise_store_settings (opts, cbgw);
+		g_object_unref (opts);
 	}
 	
 	/* We poke the cache for a default timezone. Its
