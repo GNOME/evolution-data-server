@@ -363,9 +363,29 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 GSList *
 e_cal_backend_cache_get_components (ECalBackendCache *cache)
 {
+        char *comp_str;
+        GSList *l,*list = NULL;
+	icalcomponent *icalcomp;
+	ECalComponent *comp = NULL;
+        
         /* return null if cache is not a valid Backend Cache.  */
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
-        return e_file_cache_get_objects (E_FILE_CACHE (cache));
+        l = e_file_cache_get_objects (E_FILE_CACHE (cache));
+        if (!l)
+                return NULL;
+        for ( ; l != NULL; l = g_slist_next (l)) {
+                comp_str = l->data;
+                if (comp_str) {
+                        icalcomp = icalparser_parse_string (comp_str);
+                        if (icalcomp) {
+                                comp = e_cal_component_new ();
+                                e_cal_component_set_icalcomponent (comp, icalcomp);
+                                list = g_slist_append (list, comp);
+                        }
+                }
+                
+        }
+        return list;
 }
 
 
