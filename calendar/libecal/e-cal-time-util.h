@@ -16,6 +16,7 @@
 #include <libical/ical.h>
 #include <glib.h>
 
+G_BEGIN_DECLS
 
 /**************************************************************************
  * General time functions.
@@ -118,5 +119,7 @@ struct tm icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
 					icaltimezone *from_zone,
 					icaltimezone *to_zone);
 struct icaltimetype tm_to_icaltimetype (struct tm *tm, gboolean is_date);
+
+G_END_DECLS
 
 #endif
