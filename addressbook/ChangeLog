@@ -1,3 +1,21 @@
+2003-11-08  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-vcard.c (skip_until): implement.
+	(read_attribute_params): implement quoted parameter values, in our
+	trademark overly accepting way.  it'll accept "hi" as well as
+	"hi"and"bye" as parameter values (with the values being "hi" and
+	"hiandbye" respectively).
+	(e_vcard_to_string_vcard_30): hardcode VERSION:3.0 here, since
+	we're outputing a version 3.0 card.  also, ignore any VERSION
+	attributes that may be in the vcard we parsed in.  lastly, search
+	parameter values for whitespace before outputting them, and wrap
+	them in quotes if they have any.
+
+	* libebook/e-book-async.c (e_book_async_add_contact): use
+	e_contact_duplicate here so if the caller modifies the contact
+	after calling us we use the original copy.
+	(e_book_async_commit_contact): same.
+
 2003-11-07  Dan Winship  <danw@ximian.com>
 
 	* libebook/e-address-western.c: 

@@ -830,7 +830,7 @@ e_book_async_add_contact (EBook                 *book,
 	e_book_msg_init ((EBookMsg*)msg, _add_contact_handler, _add_contact_dtor);
 
 	msg->book = g_object_ref (book);
-	msg->contact = g_object_ref (contact); /* XXX maybe we should _duplicate it here instead */
+	msg->contact = e_contact_duplicate (contact);
 	msg->cb = cb;
 	msg->closure = closure;
 
@@ -924,7 +924,7 @@ e_book_async_commit_contact (EBook                 *book,
 	e_book_msg_init ((EBookMsg*)msg, _commit_contact_handler, _commit_contact_dtor);
 
 	msg->book = g_object_ref (book);
-	msg->contact = g_object_ref (contact); /* XXX maybe we should _duplicate it here instead */
+	msg->contact = e_contact_duplicate (contact);
 	msg->cb = cb;
 	msg->closure = closure;
 

@@ -186,12 +186,30 @@ skip_to_next_line (char **p)
 	*p = lp;
 }
 
-/* skip forward until we hit a character in @s, CRLF, or \0 */
+/* skip forward until we hit a character in @s, CRLF, or \0.  leave *p
+   pointing at the character that causes us to stop */
 static void
 skip_until (char **p, char *s)
 {
-	/* XXX write me plz k thx */
-	g_assert_not_reached();
+	char *lp;
+
+	lp = *p;
+
+	while (*lp != '\r' && *lp != '\0') {
+		gboolean s_matches = FALSE;
+		char *ls;
+		for (ls = s; *ls; ls = g_utf8_next_char (ls)) {
+			if (g_utf8_get_char (ls) == g_utf8_get_char (lp)) {
+				s_matches = TRUE;
+				break;
+			}
+		}
+
+		if (s_matches)
+			break;
+	}
+
+	*p = lp;
 }
 
 static void
@@ -280,16 +298,24 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 	char *lp = *p;
 	GString *str;
 	EVCardAttributeParam *param = NULL;
-
+	gboolean in_quote = FALSE;
 	str = g_string_new ("");
 	while (*lp != '\0') {
+		if (*lp == '"') {
+			in_quote = !in_quote;
+			lp = g_utf8_next_char (lp);
+		}
+		else if (in_quote || g_unichar_isalnum (g_utf8_get_char (lp)) || *lp == '-' || *lp == '_') {
+			str = g_string_append_unichar (str, g_utf8_get_char (lp));
+			lp = g_utf8_next_char (lp);
+		}
 		/* accumulate until we hit the '=' or ';'.  If we hit
 		 * a '=' the string contains the parameter name.  if
 		 * we hit a ';' the string contains the parameter
 		 * value and the name is either ENCODING (if value ==
 		 * QUOTED-PRINTABLE) or TYPE (in any other case.)
 		 */
-		if (*lp == '=') {
+		else if (*lp == '=') {
 			if (str->len > 0) {
 				param = e_vcard_attribute_param_new (str->str);
 				g_string_assign (str, "");
@@ -345,7 +371,7 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 					char *param_name;
 					if (!g_ascii_strcasecmp (str->str,
 								 "quoted-printable")) {
-						param_name = NULL;
+						param_name = "ENCODING";
 						*quoted_printable = TRUE;
 					}
 					else {
@@ -371,10 +397,6 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 			}
 			if (colon)
 				break;
-		}
-		else if (g_unichar_isalnum (g_utf8_get_char (lp)) || *lp == '-' || *lp == '_') {
-			str = g_string_append_unichar (str, g_utf8_get_char (lp));
-			lp = g_utf8_next_char (lp);
 		}
 		else {
 			g_warning ("invalid character found in parameter spec");
@@ -652,11 +674,22 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 	str = g_string_append (str, "BEGIN:vCard" CRLF);
 
+	/* we hardcode the version (since we're outputting to a
+	   specific version) and ignore any version attributes the
+	   vcard might contain */
+	str = g_string_append (str, "VERSION:3.0" CRLF);
+
 	for (l = evc->priv->attributes; l; l = l->next) {
 		GList *p;
 		EVCardAttribute *attr = l->data;
-		GString *attr_str = g_string_new ("");
+		GString *attr_str;
 		int l;
+
+		if (attr->group == NULL &&
+		    !g_ascii_strcasecmp (attr->name, "VERSION"))
+			continue;
+
+		attr_str = g_string_new ("");
 
 		/* From rfc2425, 5.8.2
 		 *
@@ -681,7 +714,20 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 				attr_str = g_string_append_c (attr_str, '=');
 				for (v = param->values; v; v = v->next) {
 					char *value = v->data;
+					char *p = value;
+					gboolean ws = FALSE;
+					while (*p) {
+						if (g_unichar_isspace (g_utf8_get_char (p))) {
+							ws = TRUE;
+							break;
+						}
+						p = g_utf8_next_char (p);
+					}
+					if (ws)
+						attr_str = g_string_append_c (attr_str, '"');
 					attr_str = g_string_append (attr_str, value);
+					if (ws)
+						attr_str = g_string_append_c (attr_str, '"');
 					if (v->next)
 						attr_str = g_string_append_c (attr_str, ',');
 				}
