@@ -1,3 +1,14 @@
+2005-02-02  Ross Burton  <ross@burtonini.com>
+
+	* backends/file/e-book-backend-file.c:
+	* backends/groupwise/e-book-backend-groupwise.c:
+	* backends/ldap/e-book-backend-ldap.c:
+	* backends/vcf/e-book-backend-vcf.c:
+	* libebook/e-book.c:
+	* libebook/e-contact.c:
+	* libebook/e-destination.c:
+	Use glib/gi18n.h.
+
 2005-01-31  Hans Petter Jansson  <hpj@novell.com>
 
 	* backends/vcf/Makefile.am:

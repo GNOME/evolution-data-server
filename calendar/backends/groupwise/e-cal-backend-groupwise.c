@@ -30,9 +30,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <glib/gi18n-lib.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <bonobo/bonobo-i18n.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libedataserver/e-url.h>
 #include <libedata-cal/e-cal-backend-cache.h>

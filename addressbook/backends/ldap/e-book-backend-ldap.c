@@ -55,7 +55,7 @@
 
 #include <sys/time.h>
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libedataserver/e-sexp.h>
 #include <libebook/e-contact.h>
 

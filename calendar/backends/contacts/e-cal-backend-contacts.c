@@ -27,10 +27,10 @@
 #endif
 
 #include <string.h>
-#include <bonobo/bonobo-i18n.h>
 
 #include "e-cal-backend-contacts.h"
 
+#include <glib/gi18n-lib.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>

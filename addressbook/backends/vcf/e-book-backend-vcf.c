@@ -33,7 +33,7 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libebook/e-contact.h>
 
 #include <libedataserver/e-util.h>

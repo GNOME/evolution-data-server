@@ -1,3 +1,19 @@
+2005-02-02  Ross Burton  <ross@burtonini.com>
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	* backends/file/e-cal-backend-file.c:
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	* backends/http/e-cal-backend-http.c:
+	* backends/weather/e-cal-backend-weather.c:
+	* backends/weather/e-weather-source-ccf.c:
+	* libecal/e-cal-component.c:
+	* libecal/e-cal-recur.c:
+	* libecal/e-cal-util.c:
+	* libecal/e-cal.c:
+	* libedata-cal/e-cal-backend-sexp.c:
+	* tests/ecal/test-ecal.c:
+	Use glib/gi18n.h
+
 2005-02-02  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #72004

@@ -24,8 +24,7 @@
 #include <string.h>
 #include <glib.h>
 #include <glib/gstrfuncs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-util.h>
+#include <glib/gi18n-lib.h>
 #include "e-cal-util.h"
 
 

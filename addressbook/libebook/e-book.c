@@ -15,7 +15,7 @@
 #include <bonobo/bonobo-main.h>
 #include <gconf/gconf-client.h>
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libedataserver/e-component-listener.h>
 
 #include "e-book-marshal.h"

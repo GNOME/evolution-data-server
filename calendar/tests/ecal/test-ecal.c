@@ -24,8 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <bonobo-activation/bonobo-activation.h>
-#include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-main.h>
 #include <libecal/e-cal.h>
 #include <libecal/e-cal-component.h>

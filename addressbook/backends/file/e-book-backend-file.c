@@ -37,7 +37,7 @@
 #include "db.h"
 #include <sys/stat.h>
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libedataserver/e-dbhash.h>
 #include <libedataserver/e-db3-utils.h>
 #include <libedataserver/e-util.h>

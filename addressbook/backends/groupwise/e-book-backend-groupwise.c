@@ -28,7 +28,7 @@
 
 
 #include <libebook/e-contact.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-util.h>
 #include <libedataserver/e-url.h> 
@@ -40,7 +40,6 @@
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
 #include <e-gw-filter.h>
-#include <libgnome/gnome-i18n.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>

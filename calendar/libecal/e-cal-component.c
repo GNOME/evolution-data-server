@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <glib.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include "e-cal-component.h"
 #include "e-cal-time-util.h"
 

@@ -18,8 +18,12 @@
  * 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libedataserver/e-util.h>
 #include <libecal/e-cal-time-util.h>
 

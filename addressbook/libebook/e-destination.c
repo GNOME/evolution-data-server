@@ -44,7 +44,7 @@
 
 #include <glib.h>
 #include <libxml/xmlmemory.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <camel/camel-internet-address.h>
 
 #define d(x)
