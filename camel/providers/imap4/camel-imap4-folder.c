@@ -366,6 +366,16 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 		imap4_folder->enable_mlist = TRUE;
 	}
 	
+	if (!g_ascii_strcasecmp (full_name, "INBOX")) {
+		if (camel_url_get_param (((CamelService *) store)->url, "filter"))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+		if (camel_url_get_param (((CamelService *) store)->url, "filter_junk"))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+	} else if (!camel_url_get_param (((CamelService *) store)->url, "filter_junk_inbox")) {
+		if (camel_url_get_param (((CamelService *) store)->url, "filter_junk"))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+	}
+	
 	imap4_folder->search = camel_imap4_search_new (((CamelIMAP4Store *) store)->engine, imap4_folder->cachedir);
 	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
