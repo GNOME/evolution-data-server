@@ -41,7 +41,6 @@ extern "C" {
 #include <camel/camel-data-cache.h>
 #include <camel/camel-multipart.h>
 
-#include "camel-groupwise-message-cache.h"
 #include "camel-groupwise-summary.h"
 
 #define CAMEL_GROUPWISE_FOLDER_TYPE     (camel_groupwise_folder_get_type ())
