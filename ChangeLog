@@ -1,5 +1,9 @@
 2003-11-14  Rodrigo Moya <rodrigo@ximian.com>
 
+	* src/server-interface-check.[ch]: fixed copyright comments.
+
+2003-11-14  Rodrigo Moya <rodrigo@ximian.com>
+
 	* src/server.c (setup_cals): register the Groupwise calendar backend.
 
 	* src/Makefile.am:
