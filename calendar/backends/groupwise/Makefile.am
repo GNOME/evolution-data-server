@@ -1,5 +1,5 @@
 INCLUDES =						\
-	-DG_LOG_DOMAIN=\"libecalbackendfile\"		\
+	-DG_LOG_DOMAIN=\"libecalbackendgroupwise\"	\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
 	-I$(top_srcdir)/calendar/backends/file		\
