@@ -1,3 +1,10 @@
+2004-08-13  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes bug #62655.
+
+	* backends/contacts/e-cal-backend-contacts.c (source_group_added_cb):
+	If source group's URI is NULL, do nothing, i.e. don't crash.
+
 2004-08-13  Chenthill Palanisamy <pchenthill@novell.com>
 
         * backends/groupwise/e-cal-backend-groupwise-utils.c:

@@ -273,12 +273,17 @@ static void
 source_group_added_cb (ESourceList *source_list, ESourceGroup *group, gpointer user_data)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
+        const gchar *base_uri;
         GSList *i;
         
         g_return_if_fail (cbc);
 
+        base_uri = e_source_group_peek_base_uri (group);
+        if (!base_uri)
+                return;
+
         /* Load all address books from this group */
-	if (!strncmp (e_source_group_peek_base_uri (group), "file", 4)) {
+	if (!strncmp (base_uri, "file", 4)) {
 		for (i = e_source_group_peek_sources (group); i; i = i->next) {
 			ESource *source = E_SOURCE (i->data);
 			add_source (cbc, source);
