@@ -1,3 +1,10 @@
+2005-02-10  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes a crash
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Check whether the creation 
+	date is present, before converting it to icaltimetype.
+
 2005-02-09  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal.c (open_calendar): use e_return_error_if_fail instead
