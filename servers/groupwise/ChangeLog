@@ -1,3 +1,8 @@
+2005-01-31  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-item.c: (e_gw_item_set_calendar_item_elements):
+	Add the source to the soap message, if it is set.
+
 2005-01-27  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	partially Fixes#68541
