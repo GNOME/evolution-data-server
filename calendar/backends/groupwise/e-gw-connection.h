@@ -26,6 +26,7 @@
 
 #include <glib-object.h>
 #include <libsoup/soup-soap-message.h>
+#include <libedata-cal/e-cal-backend-cache.h>
 #include "e-gw-item.h"
 
 G_BEGIN_DECLS
@@ -68,13 +69,13 @@ EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
 EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **response);
 char               *e_gw_connection_get_container_id (EGwConnection *cnc, const char *name);
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
-					       const char *filter, GSList **list);
-EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, GSList **list);
+					       const char *filter, GList **list);
+EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache);
 EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item);
 EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp);
 EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
-EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GSList *users,
-                                                                        time_t start, time_t end, GSList **freebusy);
+EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users,
+                                                                        time_t start, time_t end, GList **freebusy);
 
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
