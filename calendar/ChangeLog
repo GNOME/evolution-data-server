@@ -1,3 +1,10 @@
+2004-10-29  Sivaiah Nallagatla <snallagatla@novell.com>
+
+        * backends/groupwise/e-cal-backends-groupwise.c
+        (cache_init) : Read the getQm poll interval
+        from GETQM_TIME_INTERVAL. If not availbale
+        use default value.
+
 2004-10-28  Harish Krishnaswamy <kharish@novell.com>
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	Set the CACHE_REFRESH_INTERVAL to 10 mins.

@@ -374,9 +374,20 @@ cache_init (ECalBackendGroupwise *cbgw)
 	ECalBackendGroupwisePrivate *priv = cbgw->priv;
 	EGwConnectionStatus cnc_status;
 	icalcomponent_kind kind;
+	const char *time_interval_string;
+	int time_interval;
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
-
+	
+	time_interval = CACHE_REFRESH_INTERVAL;
+	e_cal_backend_cache_set_marker (priv->cache);
+	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
+	if (time_interval_string) {
+		time_interval = g_ascii_strtod (time_interval_string, NULL);
+		time_interval *= (60*1000); 
+		
+	}
+	
 	/* We poke the cache for a default timezone. Its
 	 * absence indicates that the cache file has not been
 	 * populated before. */
@@ -390,7 +401,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 			return GNOME_Evolution_Calendar_PermissionDenied;
 		} else {
 			e_cal_backend_cache_set_marker (priv->cache);
-			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
 			return GNOME_Evolution_Calendar_Success;
 		}
@@ -415,7 +426,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 		
 		/* get the deltas from the cache */
 		if (get_deltas (cbgw)) {
-			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
 			return GNOME_Evolution_Calendar_Success;
 		} else {
