@@ -1,3 +1,10 @@
+2004-01-17  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(from_uri) : use https always except
+        when use_ssl is "never". This change is part of the changes done to remove
+        separate settings for ssl for soap in account config
+
 2004-12-06  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #59904
