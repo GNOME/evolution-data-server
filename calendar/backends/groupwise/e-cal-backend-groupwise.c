@@ -136,12 +136,17 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	/* create connection to server */
 	priv->cnc = e_gw_connection_new ();
-	switch (e_gw_connection_login (priv->cnc, "uri", "username", "password")) {
+	switch (e_gw_connection_login (priv->cnc, e_cal_backend_get_uri (E_CAL_BACKEND (backend)),
+				       "username", "password")) {
 	case E_GW_CONNECTION_STATUS_OK :
 		return GNOME_Evolution_Calendar_Success;
 	}
 
-	return E_GW_CONNECTION_STATUS_OTHER;
+	/* free memory */
+	g_object_unref (priv->cnc);
+	priv->cnc = NULL;
+
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 static ECalBackendSyncStatus
@@ -163,6 +168,8 @@ e_cal_backend_groupwise_is_loaded (ECalBackend *backend)
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
+
+	return priv->cnc ? TRUE : FALSE;
 }
 
 /* is_remote handler for the file backend */

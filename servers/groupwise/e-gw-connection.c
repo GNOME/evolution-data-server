@@ -27,11 +27,14 @@
 #include <libsoup/soup-session.h>
 #include <libsoup/soup-soap-message.h>
 #include "e-gw-connection.h"
+#include "e-gw-message.h"
 
 static GObjectClass *parent_class = NULL;
 static SoupSession *soup_session = NULL;
 
 struct _EGwConnectionPrivate {
+	char *uri;
+	char *session_id;
 };
 
 static void
@@ -45,6 +48,15 @@ e_gw_connection_dispose (GObject *object)
 	priv = cnc->priv;
 
 	if (priv) {
+		if (priv->uri) {
+			g_free (priv->uri);
+			priv->uri = NULL;
+		}
+
+		if (priv->session_id) {
+			e_gw_connection_logout (cnc);
+			priv->session_id = NULL;
+		}
 	}
 
 	if (parent_class->dispose)
@@ -138,6 +150,26 @@ e_gw_connection_new (void)
 	return cnc;
 }
 
+SoupSoapResponse *
+e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
+{
+	SoupSoapResponse *response;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), NULL);
+
+	soup_soap_message_persist (msg);
+	soup_session_send_message (soup_session, SOUP_MESSAGE (msg));
+	if (SOUP_MESSAGE (msg)->status_code != SOUP_STATUS_OK) {
+		return NULL;
+	}
+
+	/* process response */
+	response = soup_soap_message_parse_response (msg);
+
+	return response;
+}
+
 EGwConnectionStatus
 e_gw_connection_login (EGwConnection *cnc,
 		       const char *uri,
@@ -145,44 +177,71 @@ e_gw_connection_login (EGwConnection *cnc,
 		       const char *password)
 {
 	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	SoupSoapParameter *param;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
-	msg = soup_soap_message_new (SOUP_METHOD_GET, uri, FALSE, NULL, NULL, NULL);
-	if (!msg) {
-		g_warning (G_STRLOC ": Could not build SOAP message");
-		return E_GW_CONNECTION_STATUS_OTHER;
-	}
-
-	soup_soap_message_start_envelope (msg);
-	soup_soap_message_start_body (msg);
-	soup_soap_message_start_element (msg, "loginRequest", NULL, NULL);
+	msg = e_gw_message_new_with_header (uri, "loginRequest");
 	soup_soap_message_start_element (msg, "auth", "types", "http://schemas.novell.com/2003/10/NCSP/types.xsd");
 	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
 					 "http://www.w3.org/2001/XMLSchema-instance");
-	soup_soap_message_start_element (msg, "username", "types", NULL);
-	soup_soap_message_write_string (msg, username);
-	soup_soap_message_end_element (msg);
+	e_gw_message_write_string_parameter (msg, "username", username);
 	if (password && *password) {
-		soup_soap_message_start_element (msg, "password", "types", NULL);
-		soup_soap_message_write_string (msg, password);
-		soup_soap_message_end_element (msg);
+		e_gw_message_write_string_parameter (msg, "password", password);
 	}
 	soup_soap_message_end_element (msg);
-	soup_soap_message_end_element (msg);
-	soup_soap_message_end_body (msg);
-	soup_soap_message_end_envelope (msg);
+	e_gw_message_write_footer (msg);
 
 	/* send message to server */
-	soup_soap_message_persist (msg);
-	soup_session_send_message (soup_session, SOUP_MESSAGE (msg));
-	if (SOUP_MESSAGE (msg)->status_code != SOUP_STATUS_OK) {
-		/* FIXME: map error codes */
-		return E_GW_CONNECTION_STATUS_OTHER;
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (response);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
 
-	/* FIXME: process response */
+	param = soup_soap_response_get_first_parameter_by_name (response, "username");
+	if (!param) {
+		g_object_unref (response);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	cnc->priv->uri = g_strdup (uri);
+	cnc->priv->session_id = g_strdup (soup_soap_parameter_get_string_value (param));
+
+	/* free memory */
+	g_object_unref (response);
+
+	return E_GW_CONNECTION_STATUS_OK;
+}
+
+EGwConnectionStatus
+e_gw_connection_logout (EGwConnection *cnc)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, "loginRequest");
+	soup_soap_message_start_element (msg, "auth", "types", "http://schemas.novell.com/2003/10/NCSP/types.xsd");
+	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
+					 "http://www.w3.org/2001/XMLSchema-instance");
+	e_gw_message_write_string_parameter (msg, "session", cnc->priv->session_id);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (response);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	/* free memory */
+	g_object_unref (response);
 
 	return E_GW_CONNECTION_STATUS_OK;
 }

@@ -15,7 +15,9 @@ libecalbackendgroupwise_la_SOURCES =		\
 	e-cal-backend-groupwise.c		\
 	e-cal-backend-groupwise.h		\
 	e-gw-connection.c			\
-	e-gw-connection.h
+	e-gw-connection.h			\
+	e-gw-message.c				\
+	e-gw-message.h
 
 libecalbackendgroupwise_la_LIBADD =					\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\

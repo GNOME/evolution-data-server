@@ -1,3 +1,20 @@
+2003-11-25  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-message.[ch]: new files to contain utility
+	functions for easily creating SOAP messages.
+
+	* backends/groupwise/e-gw-connection.[ch] (e_gw_connection_logout):
+	new function.
+	(e_gw_connection_finalize): if we're already connected, call
+	e_gw_connection_logout().
+	(e_gw_connection_login): implement response parsing.
+	(e_gw_connection_send_message): new function.
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_is_loaded): implemented.
+
+	* backends/groupwise/Makefile.am: added new files.
+
 2003-11-20  Harry Lu  <harry.lu@sun.com>
 
 	* backends/file/e-cal-backend-file.c:

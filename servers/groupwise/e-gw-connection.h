@@ -25,6 +25,7 @@
 #define E_GW_CONNECTION_H
 
 #include <glib-object.h>
+#include <libsoup/soup-soap-message.h>
 
 G_BEGIN_DECLS
 
@@ -53,14 +54,18 @@ EGwConnection *e_gw_connection_new (void);
 typedef enum {
 	E_GW_CONNECTION_STATUS_OK,
 	E_GW_CONNECTION_STATUS_INVALID_OBJECT,
+	E_GW_CONNECTION_STATUS_INVALID_RESPONSE,
 	E_GW_CONNECTION_STATUS_OTHER,
 	E_GW_CONNECTION_STATUS_UNKNOWN
 } EGwConnectionStatus;
+
+SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
 
 EGwConnectionStatus e_gw_connection_login (EGwConnection *cnc,
 					   const char *uri,
 					   const char *username,
 					   const char *password);
+EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
 
 G_END_DECLS
 
