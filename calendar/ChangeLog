@@ -1,3 +1,11 @@
+2003-12-16  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.c (e_cal_get_free_busy): the info is already in
+	ECalComponent form, no need to process it again, from Gary Ekker
+	<gekker@novell.com>
+
+	Fixes #52218
+	
 2003-12-16  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-connection.c (parse_response_status): map

@@ -2459,32 +2459,7 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-
-	*freebusy = NULL;
-	for (l = our_op->list; l; l = l->next) {
-		ECalComponent *comp;
-
-		icalcomponent *icalcomp;
-		icalcomponent_kind kind;
-
-		icalcomp = icalparser_parse_string (l->data);
-		if (!icalcomp)
-			continue;
-
-		kind = icalcomponent_isa (icalcomp);
-		if (kind == ICAL_VFREEBUSY_COMPONENT) {
-			comp = e_cal_component_new ();
-			if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
-				icalcomponent_free (icalcomp);
-				g_object_unref (G_OBJECT (comp));
-				continue;
-			}
-
-			*freebusy = g_list_append (*freebusy, comp);
-		}
-		else
-			icalcomponent_free (icalcomp);
-	}
+	*freebusy = our_op->list;
 
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
