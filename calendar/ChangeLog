@@ -1,6 +1,35 @@
+2005-03-12  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(connect_to_server): Run the get deltas in a thread to
+	avoid the inresponsiveness of the GUI when evolution
+	changes mode from offline to online.
+
+2005-03-12  Harish Krishnaswamy <kharish@novell.com>
+	
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas) :
+	use 'peek' while downloading new items so when the calendar gets 
+	the new item before the mailer has a chance to retrieve it, the item
+	is not flagged read.
+	
+2005-03-12  Harish Krishnaswamy <kharish@novell.com>
+	
+	Fixes a memory corruption issue in GW backend 
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas) :
+	strftime should be passed an array of sufficient length, not a
+	char *. Fetch t_str from cache - so you are always sure of having 
+	the correct value.Add some extra safety code checking empty strings.
+
 2005-03-11  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* libecal/e-cal.c : Set the local_attachment_store for exchange
+	
+2005-03-08  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #73141
+	* libecal/e-cal.c: (open_calendar): Check if the uri
+	is not NULL before getting the password from
+	e_passwords.
 
 2005-03-06  Rodrigo Moya <rodrigo@novell.com>
 
