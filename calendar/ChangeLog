@@ -1,8 +1,15 @@
+2005-02-28  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	store the time_string immediately after the 'New' call.
+	add missing view in the second getQM call - "attachments"
+
 2005-02-25  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/weather/e-cal-backend-weather.c
 	(e_cal_backend_weather_get_static_capabilities): 'capabilities' is not
 	an array, but an out char * argument.
+
 
 2005-02-25  Chenthill Palanisamy  <pchenthill@novell.com>
 

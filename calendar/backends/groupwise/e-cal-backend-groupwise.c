@@ -227,9 +227,8 @@ get_deltas (gpointer handle)
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
-	g_free (time_string), time_string = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_free (t_str), t_str = NULL;
 				
@@ -239,6 +238,9 @@ get_deltas (gpointer handle)
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
 	}
+	/* store the timestamp in the cache */	
+	e_cal_backend_cache_put_server_utc_time (cache, time_string);
+	g_free (time_string), time_string = NULL;
 
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	for (; item_list != NULL; item_list = g_slist_next(item_list)) {
@@ -277,7 +279,7 @@ get_deltas (gpointer handle)
 		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", &time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 
 		
-	g_free (t_str), t_str = NULL;
+	g_free (time_string);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
 			return TRUE;
@@ -286,11 +288,9 @@ get_deltas (gpointer handle)
 		return TRUE;
 	}
 
+
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	
-	e_cal_backend_cache_put_server_utc_time (cache, time_string);
-	t_str = time_string;
-
 	for (; item_list != NULL; item_list = g_slist_next(item_list)) {
 		EGwItem *item = E_GW_ITEM(item_list->data);
 		ECalComponent *modified_comp, *cache_comp;
