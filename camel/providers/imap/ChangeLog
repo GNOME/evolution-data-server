@@ -1,3 +1,9 @@
+2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-summary.c (summary_header_load): Bumped version to 3
+	and added code to handle evrsion 2 (for compat with imap4 ver 2
+	summary files).
+
 2005-02-01  Not Zed  <NotZed@Ximian.com>
 
 	* camel-imap-store.c (parse_list_response_as_folder_info): set the
