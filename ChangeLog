@@ -1,3 +1,7 @@
+2004-02-26  JP Rosevear <jpr@ximian.com>
+
+	* Makefile.am: dist the libdb stuff properly
+
 2004-02-26 Harish K <kharish@novell.com>
 
 	* servers/groupwise/e-gw-connection.c : the latest GW server
