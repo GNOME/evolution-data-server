@@ -108,7 +108,6 @@
 			<xs:extension base="tns:ContainerItem">
 				<xs:sequence>
 					<xs:element ref="tns:uuid" minOccurs="0"/>
-					<xs:element name="comment" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -142,6 +141,14 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:simpleType name="AppointmentConflict">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Yes"/>
+			<xs:enumeration value="No"/>
+			<xs:enumeration value="Ignore"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="AttachmentID">
 		<xs:simpleContent>
@@ -180,9 +187,16 @@
 					<xs:element name="thread" type="xs:string" minOccurs="0"/>
 					<xs:element name="msgid" type="xs:string" minOccurs="0"/>
 					<xs:element name="source" type="tns:ItemSource" minOccurs="0"/>
+               <xs:documentation>
+                  Return the sent items id if this returnSentItemsId is true.  The returnSentItemsId will be the first
+                  id returned in the list.  This is the id of the item that is created in the sent items 
+                  (a.k.a. outbox, itemSource=sent) folder.
+               </xs:documentation>
+					<xs:element name="returnSentItemsId" type="xs:boolean" minOccurs="0"/>
 					<xs:element name="delivered" type="xs:dateTime"/>
 					<xs:element name="class" type="tns:ItemClass" minOccurs="0"/>
 					<xs:element name="security" type="tns:ItemSecurity" minOccurs="0"/>
+					<xs:element name="comment" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -194,6 +208,8 @@
 				<xs:sequence>
 					<xs:element ref="tns:startDate" minOccurs="0"/>
 					<xs:element name="rdate" type="tns:RecurrenceDateType" minOccurs="0"/>
+					<xs:element name="rrule" type="tns:RecurrenceRule" minOccurs="0"/>
+					<xs:element name="exdate" type="tns:RecurrenceDateType" minOccurs="0"/>
 					<xs:element ref="tns:recurrenceKey" minOccurs="0"/>
 					<xs:element name="iCalId" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
@@ -327,12 +343,44 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:simpleType name="DayOfMonth">
+		<xs:restriction base="xs:Byte">
+			<xs:minInclusive value="-30"/>
+			<xs:maxInclusive value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="DayOfMonthList">
+		<xs:sequence>
+			<xs:element name="day" type="tns:DayOfMonth" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:complexType name="DayOfWeek">
 		<xs:simpleContent>
 			<xs:extension base="tns:WeekDay">
 				<xs:attribute name="occurrence" type="tns:OccurrenceType"/>
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DayOfWeekList">
+		<xs:sequence>
+			<xs:element name="day" type="tns:DayOfWeek" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="DayOfYear">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="-365"/>
+			<xs:maxInclusive value="365"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="DayOfYearList">
+		<xs:sequence>
+			<xs:element name="day" type="tns:DayOfYear" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="DelegatedStatus">
@@ -396,6 +444,19 @@
 		</xs:sequence>
 		<xs:attribute name="primary" type="xs:string"/>
 	</xs:complexType>
+
+
+	<xs:simpleType name="Execution">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Startup"/>
+			<xs:enumeration value="Exit"/>
+			<xs:enumeration value="New"/>
+			<xs:enumeration value="FolderOpen"/>
+			<xs:enumeration value="FolderClose"/>
+			<xs:enumeration value="FolderNew"/>
+			<xs:enumeration value="User"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="Filter">
 		<xs:sequence>
@@ -570,6 +631,15 @@
 			<xs:extension base="tns:NameAndEmail"/>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:simpleType name="Frequency">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Daily"/>
+			<xs:enumeration value="Weekly"/>
+			<xs:enumeration value="Monthy"/>
+			<xs:enumeration value="Yearly"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="From">
 		<xs:complexContent>
@@ -788,6 +858,7 @@
 				<xs:sequence>
 					<xs:element ref="tns:subject"/>
 					<xs:element name="originalSubject" type="xs:string" minOccurs="0"/>
+					<xs:element name="subjectPrefix" type="xs:string" minOccurs="0"/>
 					<xs:element name="distribution" type="tns:Distribution"/>
 					<xs:element name="message" type="tns:MessageBody" minOccurs="0"/>
 					<xs:element name="attachments" type="tns:AttachmentInfo" minOccurs="0"/>
@@ -798,11 +869,19 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:annotation>
+		<xs:documentation>
+			Currently there is only one MessageBody part. The MessageBody part is
+			the text plain message body. The HTML message body will be an
+			attachment with a name "text.htm". The HTML message body can have
+			related part attachments. They are related if they come immediatelly
+			after the "text.htm" attachment and they have a "contentId" element.
+		</xs:documentation>
+	</xs:annotation>
 	<xs:complexType name="MessageBody">
 		<xs:sequence>
 			<xs:element name="part" type="tns:MessagePart" maxOccurs="unbounded"/>
 		</xs:sequence>
-		<xs:attribute name="defaultPart" type="xs:string"/>
 	</xs:complexType>
 
 	 <xs:simpleType name="MessageList">
@@ -816,7 +895,7 @@
 	<xs:complexType name="MessagePart">
 		<xs:simpleContent>
 			<xs:extension base="xs:base64Binary">
-				<xs:attribute name="contentId" type="xs:string"/>
+				<xs:attribute name="contentId" type="xs:string" minOccurs="0"/>
 				<xs:attribute name="contentType" type="xs:string"/>
 				<xs:attribute name="length" type="xs:int"/>
 			</xs:extension>
@@ -845,11 +924,25 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:complexType name="ModifyItem">
+		<xs:sequence>
+			<xs:element name="id" type="types:uid"/>
+			<xs:element name="notification" type="types:SharedFolderNotification" minOccurs="0"/>
+			<xs:element name="updates" type="types:ItemChanges"/>
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:simpleType name="Month">
 		<xs:restriction base="xs:unsignedByte">
 			<xs:maxInclusive value="11"/>
 		</xs:restriction>
 	</xs:simpleType>
+
+	<xs:complexType name="MonthList">
+		<xs:sequence>
+			<xs:element name="month" type="tns:Month" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="NameAndEmail">
 		<xs:sequence>
@@ -878,6 +971,7 @@
 			<xs:enumeration value="Second"/>
 			<xs:enumeration value="Third"/>
 			<xs:enumeration value="Fourth"/>
+			<xs:enumeration value="Fifth"/>
 			<xs:enumeration value="Last"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -1112,8 +1206,30 @@
 
 	<xs:complexType name="RecurrenceDateType">
 	 <xs:sequence>
-	  <xs:element name="date" type="xs:date" maxOccurs="unbounded" />
+	  <xs:element name="date" type="xs:date" maxOccurs="unbounded"/>
 	 </xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RecurrenceRule">
+		<xs:annotation>
+			<xs:documentation>
+				This is the same logic as iCalander (RFC 2445).
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:sequence>
+				<xs:element name="frequency" type="tns:Frequency"/>
+				<xs:choice>
+					<xs:element name="count" type="xs:unsignedInt" minOccurs="0"/>
+					<xs:element name="until" type="xs:date" minOccurs="0"/>
+				</xs:choice>
+				<xs:element name="interval" type="xs:unsignedInt" minOccurs="0"/>
+				<xs:element name="byDay" type="tns:DayOfWeekList" minOccurs="0"/>
+				<xs:element name="byMonthDay" type="tns:DayOfMonthList" minOccurs="0"/>
+				<xs:element name="byYearDay" type="tns:DayOfYearList" minOccurs="0"/>
+				<xs:element name="byMonth" type="tns:MonthList" minOccurs="0"/>
+		 </xs:sequence>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="Resource">
@@ -1164,7 +1280,8 @@
 	</xs:complexType>
 
 	<xs:complexType name="SendOptionsRequestReply">
-		<xs:attribute name="withinNDays" type="xs:unsignedInt"/>
+      <xs:element name="whenConvenient" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="byDate" type="xs:dateTime" minOccurs="0"/>
 	</xs:complexType>
 
 	<xs:complexType name="SendOptions">
@@ -1176,6 +1293,57 @@
 			<xs:element name="updateFrequentContacts" type="xs:boolean" minOccurs="0" default="true"/>
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="Rule">
+		<xs:complexContent>
+			<xs:extension base="tns:ContainerItem">
+				<xs:sequence>
+					<xs:element name="execution" type="tns:Execution" minOccurs="0"/>
+					<xs:element ref="tns:sequence"/>
+					<xs:element name="types" type="tns:MessageTypeList" minOccurs="0"/>
+					<xs:element name="source" type="tns:ItemSourceList" minOccurs="0"/>
+					<xs:element name="conflict" type="tns:AppointmentConflict" minOccurs="0" default="Ignore"/>
+					<xs:element name="filter" type="tns:Filter" minOccurs="0"/>
+					<xs:element name="actions" type="tns:RuleActionList" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="enabled" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="RuleAction">
+		<xs:sequence>
+			<xs:element name="type" type="tns:RuleActionType"/>
+			<xs:element name="container" type="tns:uid" minOccurs="0"/>
+			<xs:element name="item" type="tns:Mail" minOccurs="0"/>
+			<xs:element name="message" type="xs:string" minOccurs="0"/>
+			<xs:element ref="tns:acceptLevel" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RuleActionList">
+		<xs:sequence>
+			<xs:element name="action" type="tns:RuleAction" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="RuleActionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Accept"/>
+			<xs:enumeration value="Delegate"/>
+			<xs:enumeration value="Delete"/>
+			<xs:enumeration value="Forward"/>
+			<xs:enumeration value="Link"/>
+			<xs:enumeration value="MarkPrivate"/>
+			<xs:enumeration value="MarkRead"/>
+			<xs:enumeration value="MarkUnread"/>
+			<xs:enumeration value="Move"/>
+			<xs:enumeration value="Purge"/>
+			<xs:enumeration value="Reply"/>
+			<xs:enumeration value="Send"/>
+			<xs:enumeration value="StopRules"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="Settings">
 		<xs:sequence>
@@ -1211,6 +1379,14 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="SharedFolderNotification">
+		<xs:sequence>
+			<xs:element ref="tns:subject" minOccurs="0"/>
+			<xs:element name="message" type="xs:string" minOccurs="0"/>
+			<xs:element ref="tns:description" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:complexType name="SharedNotification">
 		<xs:complexContent>
 			<xs:extension base="tns:Mail">
@@ -1222,6 +1398,43 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:complexType name="Signature">
+		<xs:sequence>
+			<xs:element name="id" type="tns:uid" minOccurs="0"/>
+			<xs:element ref="tns:name" minOccurs="0"/>
+			<xs:element name="type" type="tns:SignatureType" minOccurs="0"/>
+			<xs:element name="default" type="tns:SignatureDefault" minOccurs="0"/>
+			<xs:element name="part" type="tns:SignatureData" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Signatures">
+		<xs:sequence>
+			<xs:element name="signature" type="tns:Signature" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="SignatureDefault">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="system"/>
+			<xs:enumeration value="HTML"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="SignatureData">
+		<xs:sequence>
+			<xs:element name="size" type="xs:unsignedInt" minOccurs="0"/>
+			<xs:element name="data" type="xs:base64Binary" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="SignatureType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PlainText"/>
+			<xs:enumeration value="HTML"/>
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="Status">
 		<xs:sequence>

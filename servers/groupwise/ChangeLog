@@ -1,3 +1,9 @@
+2005-02-07  Harish Krishnaswamy  <kharish@novell.com>
+
+	* doc/gw-soap-methods.xsd:
+	* doc/gw-soap-types.xsd: Updated schema files.
+	
+
 2005-02-04  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-item.c: (set_sendoptions_from_soap_parameter),

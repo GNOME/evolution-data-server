@@ -190,6 +190,22 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="createSignatureRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="signature" type="tns:Signature" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="createSignatureResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="declineRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -518,6 +534,17 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="getSignaturesRequest" />
+
+	<xs:element name="getSignaturesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="signatures" type="types:Signatures"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="getTimezoneListRequest">
 	</xs:element>
 
@@ -545,6 +572,7 @@
 			<xs:sequence>
 				<xs:element name="session" type="xs:string"/>
 				<xs:element name="userinfo" type="types:UserInfo"/>
+				<xs:element name="gwVersion" type="xs:string"/>
 				<xs:element name="redirectToHost" type="types:Host" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
@@ -562,6 +590,22 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="markPrivateRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="items" type="types:ItemRefList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="markPrivateResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="markReadRequest">
 		<xs:complexType>
 			<xs:sequence>
@@ -571,6 +615,22 @@
 	</xs:element>
 
 	<xs:element name="markReadResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="markUnPrivateRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="items" type="types:ItemRefList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="markUnPrivateResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>
@@ -598,12 +658,48 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="id" type="types:uid"/>
+				<xs:element name="notification" type="types:SharedFolderNotification" minOccurs="0"/>
 				<xs:element name="updates" type="types:ItemChanges"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
 	<xs:element name="modifyItemResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="types:modified" minOccurs="0"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyItemsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="item" type="types:ModifyItem" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyItemsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="types:modified" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyPasswordRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="old" type="xs:string" minOccurs="0"/>
+				<xs:element name="new" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyPasswordResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>
@@ -637,6 +733,22 @@
 	</xs:element>
 
 	<xs:element name="modifySettingsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifySignaturesRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="updates" type="types:Signatures"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifySignaturesResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>
@@ -709,25 +821,15 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="purgeItemRequest">
-		<xs:annotation>
-			<xs:documentation>
-				If the container is not specified then all of the item
-				   links are removed and the item is permanently deleted.
-				If the container is specified then only the specific link
-				   to the container is deleted. If the last remaining link
-				   is deleted then the item will be deleted.
-			</xs:documentation>
-		</xs:annotation>
+	<xs:element name="purgeRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="container" type="types:uid"/>
-				<xs:element name="id" type="types:uid"/>
+				<xs:element name="items" type="types:ItemRefList"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="purgeItemResponse">
+	<xs:element name="purgeResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>
@@ -825,6 +927,32 @@
 	</xs:element>
 
 	<xs:element name="removeProxyAccessResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="removeSignatureRequest">
+		<xs:annotation>
+			<xs:documentation>
+				The signature will be purged when remove
+				request completed. The missing id node or id
+				length when it is not delete all signatures
+				indicates the removing of plain text signature
+				which resides in user's settings record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="tns:uid" minOccurs="0"/>
+				<xs:element name="all" type="xs:boolean" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="removeSignatureResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>
@@ -936,6 +1064,38 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="freeBusySessionId" type="xs:int"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="unacceptRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="items" type="types:ItemRefList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="unacceptResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="uncompleteRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="items" type="types:ItemRefList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="uncompleteResponse">
+		<xs:complexType>
+			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
