@@ -1,5 +1,10 @@
 2003-12-29  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-contact.c (e_contact_get_property): reset the GValue
+	if there's a problem getting it (will force it to NULL).
+
+2003-12-29  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-contact.c (e_contact_get): initialize value to NULL
 	so that if the field is unknown (meaning we haven't gotten around
 	to implementing it yet, like the category list stuff), we don't

@@ -932,6 +932,7 @@ e_contact_get_property (GObject *object,
 
 	if (prop_id < 1 || prop_id >= E_CONTACT_FIELD_LAST) {
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		g_value_reset (value);
 		return;
 	}
 
