@@ -1,32 +1,30 @@
 # Hungarian translation of evolution-data-server.
-# Copyright (C) 2001-2004 Free Software Foundation, Inc.
-# Szabolcs Ban <shooby@gnome.hu>, 2001.
-# Andras Timar <timar@gnome.hu>, 2001-2003.
-# Zsiraf <zsiraf@mylinux.hu>, 2003.
-# Gabor Kelemen <kg0021@stud.unideb.hu>, 2004.
-# Laszlo Dvornik <dvornik@invitel.hu>, 2004.
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the evolution-data-server package.
+# Gabor Kelemen <kelemeng@gnome.hu>, 2004.
+# Laszlo Dvornik <dvornik@gnome.hu>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-06-02 18:28+0200\n"
-"Last-Translator: Laszlo Dvornik <dvornik@invitel.hu>\n"
+"POT-Creation-Date: 2004-08-22 11:13+0200\n"
+"PO-Revision-Date: 2004-08-22 12:44+0200\n"
+"Last-Translator: Laszlo Dvornik <dvornik@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:440
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "Betöltés..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
+#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1853
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "Keresés..."
 
@@ -56,7 +54,7 @@ msgstr "Névjegy módosítása az LDAP-kiszolgálón..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3067
 msgid "Receiving LDAP search results..."
-msgstr "LDAP keresés eredményeinek letöltése..."
+msgstr "LDAP-keresés eredményeinek letöltése..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3175
 msgid "Error performing search"
@@ -79,7 +77,7 @@ msgstr "Hiba a keresés közben"
 #: addressbook/libebook/e-book.c:2984
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr ""
+msgstr "\"%s\" \"%s\" előtt van a könyvnél"
 
 #: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
 #: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
@@ -88,7 +86,7 @@ msgstr ""
 #: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
 #: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
 msgid "book busy"
-msgstr ""
+msgstr "a könyv foglalt"
 
 #: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
 #: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
@@ -105,7 +103,7 @@ msgstr ""
 #: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2993
 #, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr ""
+msgstr "CORBA-kivétel \"%s\" hívást hoz létre"
 
 #: addressbook/libebook/e-book.c:2221
 msgid "e_book_cancel: there is no current operation"
@@ -118,7 +116,7 @@ msgstr "e_book_cancel: nem lehet megszakítani"
 #: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
 #, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr ""
+msgstr "\"%s\" \"%s\" után van a könyvnél"
 
 #: addressbook/libebook/e-book.c:2355
 msgid "e_book_open: cancelled"
@@ -131,7 +129,7 @@ msgstr "e_book_load_uri: Érvénytelen forrás."
 #: addressbook/libebook/e-book.c:2859
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
-msgstr ""
+msgstr "e_book_load_uri: factory nem érhető el a(z) `%s' uri számára"
 
 #: addressbook/libebook/e-book.c:2871
 msgid "e_book_load_uri: Could not create EBookListener"
@@ -140,17 +138,19 @@ msgstr "e_book_load_uri: Nem lehet létrehozni EBookListener-t"
 #: addressbook/libebook/e-book.c:2922
 #, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr ""
+msgstr "e_book_new: factory nem érhető el a(z) `%s' uri számára"
 
 #: addressbook/libebook/e-book.c:3080
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr ""
+msgstr "e_book_get_self: saját névjegy uid nincs tárolva a gconf-ban"
 
 #: addressbook/libebook/e-book.c:3191
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
+"e_book_set_default_source: a(z) `%s' uid-nak nincs tárolva forrása a gconf-"
+"ban."
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -325,171 +325,171 @@ msgstr "HTML levelet igényel"
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:154
 msgid "AIM Screen Name List"
-msgstr ""
+msgstr "AIM-képernyőnévlista"
 
 #: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
-msgstr ""
+msgstr "Groupwise-azonosítólista"
 
 #: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
-msgstr "Jabber Id lista"
+msgstr "Jabber-azonosítólista"
 
 #: addressbook/libebook/e-contact.c:157
 msgid "Yahoo! Screen Name List"
-msgstr ""
+msgstr "Yahoo!-képernyőnévlista"
 
 #: addressbook/libebook/e-contact.c:158
 msgid "MSN Screen Name List"
-msgstr ""
+msgstr "MSN-képernyőnévlista"
 
 #: addressbook/libebook/e-contact.c:159
 msgid "ICQ Id List"
-msgstr "ICQ Id lista"
+msgstr "ICQ-azonosítólista"
 
 #: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
-msgstr ""
+msgstr "1. Otthoni AIM-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 2"
-msgstr ""
+msgstr "2. Otthoni AIM-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 3"
-msgstr ""
+msgstr "3. Otthoni AIM-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 1"
-msgstr ""
+msgstr "1. Munkahelyi AIM-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 2"
-msgstr ""
+msgstr "2. Munkahelyi AIM-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 3"
-msgstr ""
+msgstr "3. Munkahelyi AIM-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:167
 msgid "Groupwise Home Screen Name 1"
-msgstr ""
+msgstr "1. Otthoni Groupwise-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:168
 msgid "Groupwise Home Screen Name 2"
-msgstr ""
+msgstr "2. Otthoni Groupwise-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 3"
-msgstr ""
+msgstr "3. Otthoni Groupwise-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Work Screen Name 1"
-msgstr ""
+msgstr "1. Munkahelyi Groupwise-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Work Screen Name 2"
-msgstr ""
+msgstr "2. Munkahelyi Groupwise-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 3"
-msgstr ""
+msgstr "3. Munkahelyi Groupwise-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
-msgstr ""
+msgstr "1. Otthoni Jabber-azonosító"
 
 #: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 2"
-msgstr ""
+msgstr "2. Otthoni Jabber-azonosító"
 
 #: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 3"
-msgstr ""
+msgstr "3. Otthoni Jabber-azonosító"
 
 #: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 1"
-msgstr ""
+msgstr "1. Munkahelyi Jabber-azonosító"
 
 #: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 2"
-msgstr ""
+msgstr "2. Munkahelyi Jabber-azonosító"
 
 #: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 3"
-msgstr ""
+msgstr "3. Munkahelyi Jabber-azonosító"
 
 #: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
-msgstr ""
+msgstr "1. Otthoni Yahoo!-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 2"
-msgstr ""
+msgstr "2. Otthoni Yahoo!-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 3"
-msgstr ""
+msgstr "3. Otthoni Yahoo!-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 1"
-msgstr ""
+msgstr "1. Munkahelyi Yahoo!-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 2"
-msgstr ""
+msgstr "2. Munkahelyi Yahoo!-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 3"
-msgstr ""
+msgstr "3. Munkahelyi Yahoo!-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 1"
-msgstr ""
+msgstr "1. Otthoni MSN-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 2"
-msgstr ""
+msgstr "2. Otthoni MSN-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 3"
-msgstr ""
+msgstr "3. Otthoni MSN-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 1"
-msgstr ""
+msgstr "1. Munkahelyi MSN-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 2"
-msgstr ""
+msgstr "2. Munkahelyi MSN-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 3"
-msgstr ""
+msgstr "3. Munkahelyi MSN-képernyőnév"
 
 #: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "1. Otthoni ICQ-azonosító"
 
 #: addressbook/libebook/e-contact.c:192
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "2. Otthoni ICQ-azonosító"
 
 #: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "3. Otthoni ICQ-azonosító"
 
 #: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "1. Munkahelyi ICQ-azonosító"
 
 #: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "2. Munkahelyi ICQ-azonosító"
 
 #: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "3. Munkahelyi ICQ-azonosító"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:199
@@ -599,16 +599,16 @@ msgid "Unnamed List"
 msgstr "Névtelen lista"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "Születésnap"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "Születésnap: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Évforduló: %s"
@@ -621,17 +621,17 @@ msgstr "Nem lehet menteni a naptáradatokat: rosszul formázott URI."
 msgid "Invalid server URI"
 msgstr "Érvénytelen kiszolgáló URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:293
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:296
 msgid "Calendar"
 msgstr "Naptár"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:303
 msgid "Could not create cache file"
 msgstr "Nem lehet létrehozni a gyorsítótár fájlt"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:328
+#: calendar/libecal/e-cal.c:4298
 msgid "Authentication failed"
 msgstr "Hitelesítés sikertelen"
 
@@ -798,71 +798,71 @@ msgstr "Nem megadott"
 msgid "Enter password for %s (user %s)"
 msgstr "Adja meg %s jelszavát (%s felhasználó)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4272
 msgid "Invalid argument"
 msgstr "Érvénytelen paraméter"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4274
 msgid "Backend is busy"
 msgstr "A háttér foglalt"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4276
 msgid "Repository is offline"
-msgstr ""
+msgstr "Az adattár offline"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4278
 msgid "No such calendar"
 msgstr "Nincs ilyen naptár"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Az objektum nem található"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4282 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Érvénytelen objektum"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4284
 msgid "URI not loaded"
 msgstr "URI nincs betöltve"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4286
 msgid "URI already loaded"
 msgstr "URI már be van töltve"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4288
 msgid "Permission denied"
 msgstr "Hozzáférés megtagadva"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4290
 msgid "Object ID already exists"
 msgstr "Az objektumazonosító már létezik"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4292
 msgid "Protocol not supported"
 msgstr "A protokoll nem támogatott"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4294
 msgid "Operation has been cancelled"
 msgstr "Művelet megszakítva"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4296
 msgid "Could not cancel operation"
 msgstr "Nem lehet megszakítani a műveletet"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4300
 msgid "Authentication required"
 msgstr "Hitelesítés szükséges"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4302
 msgid "A CORBA exception has occurred"
-msgstr ""
+msgstr "CORBA-kivétel történt"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4304 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4306
 msgid "No error"
 msgstr "Nincs hiba"
 
@@ -980,3 +980,5 @@ msgstr "Evolution címjegyzékfájl-háttér"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
+"Több szegmentációs hiba történt; nem lehet megjeleníteni a hibára "
+"figyelmeztető párbeszédablakot\n"
