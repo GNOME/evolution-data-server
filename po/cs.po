@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-22 03:32+0100\n"
-"PO-Revision-Date: 2004-03-22 10:04+0100\n"
+"POT-Creation-Date: 2004-03-29 14:32+0200\n"
+"PO-Revision-Date: 2004-03-29 16:18+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -609,7 +609,7 @@ msgid "Checklist"
 msgstr "Seznam"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:3974
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
@@ -617,15 +617,15 @@ msgstr "Autentizace selhala"
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
 
-#: calendar/backends/http/e-cal-backend-http.c:218
+#: calendar/backends/http/e-cal-backend-http.c:219
 msgid "Redirected to Invalid URI"
 msgstr "Přesměrováno na neplatné URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:238
+#: calendar/backends/http/e-cal-backend-http.c:239
 msgid "Bad file format."
 msgstr "Špatný formát souboru."
 
-#: calendar/backends/http/e-cal-backend-http.c:243
+#: calendar/backends/http/e-cal-backend-http.c:244
 msgid "Not a calendar."
 msgstr "Není to kalendář."
 
@@ -780,71 +780,71 @@ msgstr "Nedefinováno"
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3948
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3950
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3952
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3954
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3956 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3958 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3960
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3962
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3964
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3966
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:3968
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:3970
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:3972
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:3976
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: calendar/libecal/e-cal.c:3966
+#: calendar/libecal/e-cal.c:3978
 msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: calendar/libecal/e-cal.c:3968
+#: calendar/libecal/e-cal.c:3980 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: calendar/libecal/e-cal.c:3970
+#: calendar/libecal/e-cal.c:3982
 msgid "No error"
 msgstr "Žádná chyba"
 
@@ -930,6 +930,18 @@ msgid ""
 msgstr ""
 "\"%s\" očekává jako všechny parametry řetězce nebo právě jeden parametr "
 "boolean false (#f)"
+
+#: servers/groupwise/e-gw-connection.c:80
+msgid "Invalid connection"
+msgstr "Neplatné spojení"
+
+#: servers/groupwise/e-gw-connection.c:84
+msgid "Invalid response from server"
+msgstr "Neplatná odpověď od serveru"
+
+#: servers/groupwise/e-gw-connection.c:88
+msgid "Bad parameter"
+msgstr "Špatný parametr"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
