@@ -1610,26 +1610,31 @@ e_book_unload_uri (EBook   *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->load_state != E_BOOK_URI_NOT_LOADED, E_BOOK_ERROR_URI_NOT_LOADED);
 
-	/* Release the remote GNOME_Evolution_Addressbook_Book in the PAS. */
-	CORBA_exception_init (&ev);
+	if (book->priv->load_state == E_BOOK_URI_LOADED) {
+		/* Release the remote GNOME_Evolution_Addressbook_Book in the PAS. */
+		CORBA_exception_init (&ev);
 
-	bonobo_object_release_unref  (book->priv->corba_book, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("e_book_unload_uri: Exception releasing "
-			   "remote book interface!\n");
+		bonobo_object_release_unref  (book->priv->corba_book, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_warning ("e_book_unload_uri: Exception releasing "
+				   "remote book interface!\n");
+		}
+
+		CORBA_exception_free (&ev);
+
+		e_book_listener_stop (book->priv->listener);
+		bonobo_object_unref (BONOBO_OBJECT (book->priv->listener));
+
+		book->priv->listener   = NULL;
+		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
+		g_free (book->priv->cap);
+		book->priv->cap = NULL;
+		book->priv->cap_queried = FALSE;
+		book->priv->writable = FALSE;
 	}
-
-	CORBA_exception_free (&ev);
-
-	e_book_listener_stop (book->priv->listener);
-	bonobo_object_unref (BONOBO_OBJECT (book->priv->listener));
-
-	book->priv->listener   = NULL;
-	book->priv->load_state = E_BOOK_URI_NOT_LOADED;
-	g_free (book->priv->cap);
-	book->priv->cap = NULL;
-	book->priv->cap_queried = FALSE;
-	book->priv->writable = FALSE;
+	else if (book->priv->load_state == E_BOOK_URI_LOADING) {
+		e_book_cancel (book, error);
+	}
 
 	return TRUE;
 }
@@ -1723,6 +1728,7 @@ fetch_corba_book (EBook       *book,
 	gchar *source_xml;
 	GList *factories;
 	GList *l;
+	EBookStatus status = E_BOOK_ERROR_OTHER_ERROR;
 	gboolean rv = FALSE;
 
 	uri = e_source_get_uri (source);
@@ -1770,7 +1776,6 @@ fetch_corba_book (EBook       *book,
 		GNOME_Evolution_Addressbook_BookFactory factory = l->data;
 		EBookOp *our_op;
 		CORBA_Environment ev;
-		EBookStatus status;
 
 		our_op = e_book_new_op (book);
 
@@ -1830,18 +1835,27 @@ fetch_corba_book (EBook       *book,
 		CORBA_Object_release ((CORBA_Object)l->data, NULL);
 
 	if (rv == TRUE) {
-		book->priv->corba_book = corba_book;
-		book->priv->load_state = E_BOOK_URI_LOADED;
-		book->priv->comp_listener = e_component_listener_new (book->priv->corba_book);
-		book->priv->died_signal = g_signal_connect (book->priv->comp_listener, "component_died",
-							    G_CALLBACK (backend_died_cb), book);
-		return TRUE;
+		if (status == E_BOOK_ERROR_OK) {
+			book->priv->corba_book = corba_book;
+			book->priv->load_state = E_BOOK_URI_LOADED;
+			book->priv->comp_listener = e_component_listener_new (book->priv->corba_book);
+			book->priv->died_signal = g_signal_connect (book->priv->comp_listener,
+								    "component_died",
+								    G_CALLBACK (backend_died_cb), book);
+		} else {
+			/* Cancelled */
+			book->priv->load_state = E_BOOK_URI_NOT_LOADED;
+			g_signal_handler_disconnect (book->priv->listener, book->priv->listener_signal);
+			bonobo_object_unref (book->priv->listener);
+			book->priv->listener = NULL;
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CANCELLED,
+				     _("e_book_load_uri: cancelled"));
+		}
 	}
 	else {
 		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
 			     _("e_book_load_uri: no factories available for uri `%s'"), uri);
-		return FALSE;
 	}
 		
 	return rv;

@@ -1,3 +1,10 @@
+2004-01-27  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-book.c (e_book_unload_uri): If the load_state is
+	E_BOOK_URI_LOADING, don't try to kill the book, just cancel the op
+	and let fetch_corba_book() take care of it.
+	(fetch_corba_book): Handle cancellation properly.
+
 2004-01-26  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/Makefile.am (noinst_PROGRAMS): add
