@@ -12,8 +12,7 @@ extension_LTLIBRARIES = libebookbackendgroupwise.la
 libebookbackendgroupwise_la_SOURCES =			\
 	e-book-backend-groupwise.c			\
 	e-book-backend-groupwise.h			\
-	e-book-backend-groupwise-factory.c		\
-	e-book-backend-groupwise-factory.h
+	e-book-backend-groupwise-factory.c
 
 libebookbackendgroupwise_la_LIBADD =						\
 	$(top_builddir)/servers/groupwise/libegroupwise-1.2.la

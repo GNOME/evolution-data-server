@@ -11,8 +11,7 @@ extension_LTLIBRARIES = libebookbackendvcf.la
 libebookbackendvcf_la_SOURCES =			\
 	e-book-backend-vcf.c			\
 	e-book-backend-vcf.h			\
-	e-book-backend-vcf-factory.c		\
-	e-book-backend-vcf-factory.h
+	e-book-backend-vcf-factory.c
 
 libebookbackendvcf_la_LIBADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\

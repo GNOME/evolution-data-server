@@ -53,6 +53,66 @@ GType                e_book_backend_factory_get_type             (void);
 const char*          e_book_backend_factory_get_protocol         (EBookBackendFactory *factory);
 EBookBackend*        e_book_backend_factory_new_backend          (EBookBackendFactory *factory);
 
+
+/* use this macro for simple, 1 factory modules */
+#define E_BOOK_BACKEND_FACTORY_SIMPLE(p,t,f) \
+typedef struct { \
+	EBookBackendFactory      parent_object; \
+} EBookBackend##t##Factory; \
+\
+typedef struct { \
+	EBookBackendFactoryClass parent_class; \
+} EBookBackend##t##FactoryClass; \
+\
+static void \
+_ ## p ##_factory_instance_init (EBookBackend## t ##Factory *factory) \
+{ \
+} \
+\
+static const char * \
+_ ## p ##_get_protocol (EBookBackendFactory *factory) \
+{ \
+	return #p; \
+} \
+\
+static EBookBackend* \
+_ ## p ##_new_backend (EBookBackendFactory *factory) \
+{ \
+	return (f) (); \
+} \
+\
+static void \
+_ ## p ##_factory_class_init (EBookBackend## t ##FactoryClass *klass) \
+{ \
+	E_BOOK_BACKEND_FACTORY_CLASS (klass)->get_protocol = _ ## p ##_get_protocol; \
+	E_BOOK_BACKEND_FACTORY_CLASS (klass)->new_backend = _ ## p ##_new_backend; \
+} \
+\
+static GType \
+_ ## p ##_factory_get_type (GTypeModule *module) \
+{ \
+	GType type; \
+\
+	GTypeInfo info = { \
+		sizeof (EBookBackend##t##FactoryClass), \
+		NULL, /* base_class_init */ \
+		NULL, /* base_class_finalize */ \
+		(GClassInitFunc)  _ ## p ##_factory_class_init, \
+		NULL, /* class_finalize */ \
+		NULL, /* class_data */ \
+		sizeof (EBookBackend##t##Factory), \
+		0,    /* n_preallocs */ \
+		(GInstanceInitFunc) _ ## p ##_factory_instance_init \
+	}; \
+\
+	type = g_type_module_register_type (module, \
+					    E_TYPE_BOOK_BACKEND_FACTORY, \
+					    "EBookBackend" #t "Factory", \
+					    &info, 0); \
+\
+	return type; \
+}
+
 G_END_DECLS
 
 #endif /* _E_BOOK_BACKEND_FACTORY_H_ */

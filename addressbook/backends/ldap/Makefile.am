@@ -12,8 +12,7 @@ extension_LTLIBRARIES = libebookbackendldap.la
 libebookbackendldap_la_SOURCES =			\
 	e-book-backend-ldap.c				\
 	e-book-backend-ldap.h				\
-	e-book-backend-ldap-factory.c			\
-	e-book-backend-ldap-factory.h
+	e-book-backend-ldap-factory.c
 
 libebookbackendldap_la_LIBADD =						\
 	$(LDAP_LIBS)							\

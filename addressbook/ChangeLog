@@ -1,3 +1,41 @@
+2004-10-04  Chris Toshok  <toshok@ximian.com>
+
+	* backends/groupwise/e-book-backend-groupwise-factory.c: use the new
+	E_BOOK_BACKEND_FACTORY_SIMPLE macro.
+
+	* backends/groupwise/e-book-backend-groupwise-factory.h: nuke
+	
+	* backends/groupwise/Makegroupwise.am (libebookbackendgroupwise_la_SOURCES):
+	remove e-book-backend-groupwise-factory.h.
+
+	* backends/ldap/e-book-backend-ldap-factory.c: use the new
+	E_BOOK_BACKEND_FACTORY_SIMPLE macro.
+
+	* backends/ldap/e-book-backend-ldap-factory.h: nuke
+	
+	* backends/ldap/Makeldap.am (libebookbackendldap_la_SOURCES):
+	remove e-book-backend-ldap-factory.h.
+	
+	* backends/vcf/e-book-backend-vcf-factory.c: use the new
+	E_BOOK_BACKEND_FACTORY_SIMPLE macro.
+
+	* backends/vcf/e-book-backend-vcf-factory.h: nuke
+	
+	* backends/vcf/Makevcf.am (libebookbackendvcf_la_SOURCES):
+	remove e-book-backend-vcf-factory.h.
+
+	
+	* backends/file/e-book-backend-file-factory.c: use the new
+	E_BOOK_BACKEND_FACTORY_SIMPLE macro.
+
+	* backends/file/e-book-backend-file-factory.h: nuke
+	
+	* backends/file/Makefile.am (libebookbackendfile_la_SOURCES):
+	remove e-book-backend-file-factory.h.
+
+	* libedata-book/e-book-backend-factory.h: add a macro for all the
+	factory boilerplate.
+
 2004-10-04  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise-ebook-backend-groupwise.c :
