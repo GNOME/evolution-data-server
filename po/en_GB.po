@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
+"POT-Creation-Date: 2004-09-07 06:43+0100\n"
 "PO-Revision-Date: 2004-05-25 19:24-0400\n"
 "Last-Translator: Gareth Owen <gowen72@yahoo.com>\n"
 "Language-Team: \n"
@@ -14,15 +14,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:440
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "Loading..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
+#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1855
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "Searching..."
 
@@ -596,16 +596,16 @@ msgid "Unnamed List"
 msgstr "Unnamed List"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "Birthday"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "Birthday: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Anniversary: %s"
@@ -614,21 +614,21 @@ msgstr "Anniversary: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Can't save calendar data: Malformed URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:283
 msgid "Invalid server URI"
 msgstr "Invalid server URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:322
 msgid "Calendar"
 msgstr "Calendar"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:329
 msgid "Could not create cache file"
 msgstr "Could not create cache file"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:354
+#: calendar/libecal/e-cal.c:4311
 msgid "Authentication failed"
 msgstr "Authentication failed"
 
@@ -795,78 +795,78 @@ msgstr "Undefined"
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4285
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4287
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4289
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4291
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4293 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Object not found"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4297
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4299
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4301
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4303
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4305
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4307
 msgid "Operation has been cancelled"
 msgstr "Operation has been cancelled"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4309
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4313
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: calendar/libecal/e-cal.c:4287
+#: calendar/libecal/e-cal.c:4315
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4317 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4319
 msgid "No error"
 msgstr "No error"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
-#: calendar/libedata-cal/e-cal-backend-sexp.c:661
-#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" expects no arguments"
@@ -875,7 +875,7 @@ msgstr "\"%s\" expects no arguments"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" expects one argument"
@@ -896,6 +896,7 @@ msgstr "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" expects two arguments"
@@ -904,7 +905,8 @@ msgstr "\"%s\" expects two arguments"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
-#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" expects the first argument to be a time_t"
@@ -915,6 +917,7 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" expects the second argument to be an integer"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" expects the second argument to be a time_t"
@@ -933,12 +936,12 @@ msgstr ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" expects at least one argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -976,7 +979,7 @@ msgstr "Evolution Addressbook file backend"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Multiple segmentation faults occurred; can't display error dialogue\n"
 
 #~ msgid "Checklist"
 #~ msgstr "Checklist"
