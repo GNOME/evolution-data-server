@@ -455,10 +455,10 @@ static void
 populate_birth_date (EContact *contact, gpointer data)
 {
 	EGwItem *item;
-  
-	item = E_GW_ITEM (data);
 	char *value ;
 	EContactDate *date;
+  
+	item = E_GW_ITEM (data);
 	value = e_gw_item_get_field_value (item, "birthday");
  	if (value) {
 		date =  e_contact_date_from_string (value);
@@ -539,9 +539,9 @@ set_emails_in_gw_item (EGwItem *item, gpointer data)
 	GList *email_list;
 	EContact *contact;
 	char *email;
-	contact = E_CONTACT (data);
 	int i;
 
+	contact = E_CONTACT (data);
 	email_list = NULL;
 	for (i =0 ; i < 3; i++) {
 		email = e_contact_get (contact, email_fields[i]);
@@ -609,10 +609,10 @@ static void
 populate_full_name (EContact *contact, gpointer data)
 {
 	EGwItem *item;
-	item = E_GW_ITEM(data);
 	FullName  *full_name ;
 	char *full_name_string;
 
+	item = E_GW_ITEM(data);
 	full_name = e_gw_item_get_full_name (item);
 	if (full_name) {
 		full_name_string = g_strconcat ( (full_name->name_prefix == NULL) ? "\0" : full_name->name_prefix, " ",

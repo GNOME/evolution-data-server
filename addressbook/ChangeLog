@@ -1,3 +1,11 @@
+2004-08-13  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(populate_birth_date), (populate_full_name),
+	(set_emails_in_gw_item) : patch
+	from Vincent Noel (vnoel@cox.net) to fix
+	#62597 
+	
 2004-08-12  Sivaiah Nallagatla <snallagatla@novell.com>
 
         * backends/ldap/e-book-backend-ldap.c
