@@ -73,7 +73,7 @@ setup_debug (SoupSoapMessage *msg)
 #endif
 
 SoupSoapMessage *
-e_gw_message_new_with_header (const char *uri, const char *method_name)
+e_gw_message_new_with_header (const char *uri, const char *session_id, const char *method_name)
 {
 	SoupSoapMessage *msg;
 
@@ -93,6 +93,15 @@ e_gw_message_new_with_header (const char *uri, const char *method_name)
 #endif
 
 	soup_soap_message_start_envelope (msg);
+	if (session_id && *session_id) {
+		soup_soap_message_start_element (msg, "Header","SOAP-ENV", NULL);
+		soup_soap_message_add_attribute (msg, "encodingStyle", "", "SOAP-ENV", NULL);
+		/* FIXME: cannot use e_gw_message_write_string_parameter as it sets prefix -types*/
+		soup_soap_message_start_element (msg, "session", NULL, NULL);
+		soup_soap_message_write_string (msg, session_id);
+		soup_soap_message_end_element (msg);
+		soup_soap_message_end_element (msg);
+	}
 	soup_soap_message_start_body (msg);
 	soup_soap_message_add_attribute (msg, "encodingStyle", "", "SOAP-ENV", NULL);
 	soup_soap_message_add_namespace (msg, "types", "http://schemas.novell.com/2003/10/NCSP/types.xsd");

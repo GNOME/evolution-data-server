@@ -174,6 +174,53 @@ convert_uri (const char *gw_uri)
 	return vuri;
 }
 
+/* Initialy populate the cache from the server */
+//static EGwConnectionStatus
+EGwConnectionStatus
+populate_cache (ECalBackendGroupwisePrivate *priv)
+{
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
+	const char *uid;
+	const char *rid;
+	const char *calobj;
+        GSList *list = NULL, *l;
+
+        /* get all the objects from the server */
+        status = e_gw_connection_get_items (priv->cnc, &list);
+        if (status != E_GW_CONNECTION_STATUS_OK)
+                return status;
+
+        /* update the cache */
+        g_mutex_lock (priv->mutex);
+
+        for (l = list; l; l = l->next) {
+		param = (SoupSoapParameter *) l->data;
+		uid = soup_soap_parameter_get_first_child_by_name (param, "iCalId");
+		rid = soup_soap_parameter_get_first_child_by_name (param, "recurrance");
+		calobj = soup_soap_parameter_get_string_value (param);
+		e_cal_backend_cache_add_component (priv->cache, uid, rid, calobj);
+        }
+
+	g_mutex_unlock (priv->mutex);
+
+	return E_GW_CONNECTION_STATUS_OK;        
+                                                                                                                    
+}
+
+static void
+update_cache (gpointer *data)
+{
+	EGwConnection *cnc;
+	GList *list;
+	EGwConnectionStatus status;
+
+        cnc = E_GW_CONNECTION (data);
+        /* FIXME: Get all changes from the server since last poll  */
+        /* FIXME: parse the response and update the cache*/
+        /*status =  e_gw_connection_get_items_with_Filter (cnc, &list);*/
+}
+
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
@@ -226,15 +273,25 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	cbgw->priv->read_only = FALSE;
 	
 	if (E_IS_GW_CONNECTION (priv->cnc)) {
+		/* Populate the cache for the first time.*/
+                /* start a timed polling thread set to 10 minutes*/
+                status = populate_cache (priv);
+                if (status != E_GW_CONNECTION_STATUS_OK) {
+			g_object_unref (priv->cnc);
+			priv->cnc = NULL;
+			g_mutex_unlock (priv->mutex);
+			g_warning (G_STRLOC ": Could not populate the cache");
+
+                        return GNOME_Evolution_Calendar_OtherError;
+                }
+
+                /* FIXME : add a symbolic constant for the time-out */
 		g_mutex_unlock (priv->mutex);
+                g_timeout_add (600000, (GSourceFunc) update_cache, (gpointer) cbgw);
+
 		return GNOME_Evolution_Calendar_Success;
 	}
 		
-	
-	/* free memory */
-	g_object_unref (priv->cnc);
-	priv->cnc = NULL;
-
 	g_mutex_unlock (priv->mutex);
 
 	return GNOME_Evolution_Calendar_AuthenticationFailed;
@@ -278,6 +335,30 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *cal, char **object)
 {
+	
+	ECalComponent *comp;
+	
+        comp = e_cal_component_new ();
+
+	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+	case ICAL_VEVENT_COMPONENT:
+        	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+		break;
+	case ICAL_VTODO_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
+		break;
+	default:
+		g_object_unref (comp);
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+	}
+
+	*object = e_cal_component_get_as_string (comp);
+	g_object_unref (comp);
+	
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Get_object_component handler for the file backend */
@@ -301,7 +382,7 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 		return GNOME_Evolution_Calendar_Success;
 	}
 
-	/* FIXME: get the object from the server */
+	/* callers will never have a uuid that is in server but not in cache */
 	return GNOME_Evolution_Calendar_ObjectNotFound;
 }
 
@@ -309,6 +390,31 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
 {
+	ECalBackendGroupwise *cbfile;
+        ECalBackendGroupwisePrivate *priv;
+        icaltimezone *zone;
+        icalcomponent *icalcomp;
+
+        cbfile = E_CAL_BACKEND_GROUPWISE (backend);
+        priv = cbfile->priv;
+
+        g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+
+        if (!strcmp (tzid, "UTC")) {
+                zone = icaltimezone_get_utc_timezone ();
+        } else {
+		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+		if (!zone)
+			return GNOME_Evolution_Calendar_ObjectNotFound;
+        }
+
+        icalcomp = icaltimezone_get_component (zone);
+        if (!icalcomp)
+                return GNOME_Evolution_Calendar_InvalidObject;
+                                                      
+        *object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+
+        return GNOME_Evolution_Calendar_Success;
 }
 
 /* Add_timezone handler for the file backend */
