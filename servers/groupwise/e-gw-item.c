@@ -1024,7 +1024,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			if (value && (!primary_email ||  !g_str_equal (primary_email, value)))
 				item->priv->email_list = g_list_append (item->priv->email_list, value);
 		}
-		g_free (value);
+		g_free (primary_email);
 	}
 	
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "imList");
