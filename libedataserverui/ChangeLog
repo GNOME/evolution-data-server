@@ -1,3 +1,22 @@
+2005-01-19  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-name-selector-entry.c (sanitize_string): Implement.
+	(get_range_at_position): Keep track of whether we're within quotes or
+	not, and act accordingly.
+	(get_index_at_position): Ditto.
+	(get_range_by_index): Ditto.
+	(is_quoted_at): Implement.
+	(build_textrep_for_contact): Remove ugly hack, no longer needed.
+	(contact_match_cue): Remove comment that no longer has any meaning.
+	(generate_attribute_list): Ditto.
+	(type_ahead_complete): Sanitize inserted string.
+	(sync_destination_at_position): Ditto.
+	(insert_unichar): Treat comma normally if we're within quotes. Update
+	attribute list if we're editing within the string and not appending.
+	(user_delete_text): Ditto, update attribute list if necessary.
+	(destination_row_changed): Sanitize inserted string.
+	(destination_row_inserted): Ditto.
+
 2005-01-18  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-name-selector-entry.c (find_destination_by_index): Tolerate

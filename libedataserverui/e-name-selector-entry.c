@@ -101,6 +101,33 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_c
 
 }
 
+/* Remove unquoted commas from string */
+static gchar *
+sanitize_string (const gchar *string)
+{
+	GString     *gstring;
+	gboolean     quoted = FALSE;
+	const gchar *p;
+
+	gstring = g_string_new ("");
+
+	if (!string)
+		return g_string_free (gstring, FALSE);
+
+	for (p = string; *p; p = g_utf8_next_char (p)) {
+		gunichar c = g_utf8_get_char (p);
+
+		if (c == '"')
+			quoted = ~quoted;
+		else if (c == ',' && !quoted)
+			continue;
+
+		g_string_append_unichar (gstring, c);
+	}
+
+	return g_string_free (gstring, FALSE);
+}
+
 /* Called for each list store entry whenever the user types (but not on cut/paste) */
 static gboolean
 completion_match_cb (GtkEntryCompletion *completion, const gchar *key,
@@ -149,6 +176,7 @@ static gboolean
 get_range_at_position (const gchar *string, gint pos, gint *start_pos, gint *end_pos)
 {
 	const gchar *p;
+	gboolean     quoted          = FALSE;
 	gint         local_start_pos = 0;
 	gint         local_end_pos   = 0;
 	gint         i;
@@ -156,7 +184,9 @@ get_range_at_position (const gchar *string, gint pos, gint *start_pos, gint *end
 	for (p = string, i = 0; *p; p = g_utf8_next_char (p), i++) {
 		gunichar c = g_utf8_get_char (p);
 
-		if (c == ',') {
+		if (c == '"') {
+			quoted = ~quoted;
+		} else if (c == ',' && !quoted) {
 			if (i < pos) {
 				/* Start right after comma */
 				local_start_pos = i + 1;
@@ -183,17 +213,37 @@ get_range_at_position (const gchar *string, gint pos, gint *start_pos, gint *end
 	return TRUE;
 }
 
-static gint
-get_index_at_position (const gchar *string, gint pos)
+static gboolean
+is_quoted_at (const gchar *string, gint pos)
 {
 	const gchar *p;
+	gboolean     quoted = FALSE;
 	gint         i;
-	gint         n = 0;
 
 	for (p = string, i = 0; *p && i < pos; p = g_utf8_next_char (p), i++) {
 		gunichar c = g_utf8_get_char (p);
 
-		if (c == ',')
+		if (c == '"')
+			quoted = ~quoted;
+	}
+
+	return quoted ? TRUE : FALSE;
+}
+
+static gint
+get_index_at_position (const gchar *string, gint pos)
+{
+	const gchar *p;
+	gboolean     quoted = FALSE;
+	gint         n      = 0;
+	gint         i;
+
+	for (p = string, i = 0; *p && i < pos; p = g_utf8_next_char (p), i++) {
+		gunichar c = g_utf8_get_char (p);
+
+		if (c == '"')
+			quoted = ~quoted;
+		else if (c == ',' && !quoted)
 			n++;
 	}
 
@@ -204,13 +254,16 @@ static gboolean
 get_range_by_index (const gchar *string, gint index, gint *start_pos, gint *end_pos)
 {
 	const gchar *p;
+	gboolean     quoted = FALSE;
 	gint         i;
 	gint         n = 0;
 
 	for (p = string, i = 0; *p && n < index; p = g_utf8_next_char (p), i++) {
 		gunichar c = g_utf8_get_char (p);
 
-		if (c == ',')
+		if (c == '"')
+			quoted = ~quoted;
+		if (c == ',' && !quoted)
 			n++;
 	}
 
@@ -464,10 +517,6 @@ build_textrep_for_contact (EContact *contact, EContactField cue_field)
 	else
 		textrep = g_strdup_printf ("%s", email);
 
-	/* HACK: We can't handle commas in names. Replace commas with spaces for the time being. */
-	while ((p0 = g_utf8_strchr (textrep, -1, ',')))
-		*p0 = ' ';
-
 	g_free (name);
 	g_free (email);
 	return textrep;
@@ -517,8 +566,6 @@ contact_match_cue (EContact *contact, const gchar *cue_str,
 		ENS_DEBUG (g_print ("Comparing '%s' to '%s'\n", value, cue_str));
 
 		if (!utf8_casefold_collate_len (value, cue_str, cue_len)) {
-			/* TODO: We have to check if the value needs quoting, and
-			 * if we're accepting a quoted match. */
 			if (matched_field)
 				*matched_field = fields [i];
 			if (matched_field_rank)
@@ -615,12 +662,8 @@ generate_attribute_list (ENameSelectorEntry *name_selector_entry)
 			break;
 
 		destination = find_destination_at_position (name_selector_entry, start_pos);
-		/* g_assert (destination);
-		 *
-		 * The above assertion is correct, but I'm disabling it temporarily as
-		 * users have reported crashes. The cause is somewhere else.
-		 */
 
+		/* Destination will be NULL if we have no entries */
 		if (!destination || !e_destination_get_contact (destination))
 			continue;
 
@@ -659,6 +702,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 	gint           range_len;
 	const gchar   *text;
 	gchar         *cue_str;
+	gchar         *temp_str;
 
 	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
 	if (cursor_pos < 0)
@@ -679,6 +723,10 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 		return;
 	}
 	g_free (cue_str);
+
+	temp_str = sanitize_string (textrep);
+	g_free (textrep);
+	textrep = temp_str;
 
 	textrep_len = g_utf8_strlen (textrep, -1);
 	pos         = range_start;
@@ -837,7 +885,7 @@ sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint rang
 {
 	EDestination *destination;
 	const gchar  *text;
-	const gchar  *address;
+	gchar        *address;
 	gint          address_len;
 	gint          range_start, range_end;
 
@@ -853,7 +901,7 @@ sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint rang
 		return;
 	}
 
-	address = e_destination_get_textrep (destination, FALSE);
+	address = sanitize_string (e_destination_get_textrep (destination, FALSE));
 	address_len = g_utf8_strlen (address, -1);
 
 	if (cursor_pos) {
@@ -874,6 +922,7 @@ sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint rang
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 
 	generate_attribute_list (name_selector_entry);
+	g_free (address);
 }
 
 static void
@@ -915,7 +964,7 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 	 * - After another comma.
 	 * - At start of string. */
 
-	if (c == ',') {
+	if (c == ',' && !is_quoted_at (text, *pos)) {
 		const gchar *p0;
 		gint         start_pos;
 		gint         end_pos;
@@ -970,7 +1019,9 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), buf, -1, pos);
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	len = g_utf8_strlen (text, -1);
 	text = g_utf8_next_char (text);
+
 	if (!*text) {
 		/* First and only character so far, create initial destination */
 		insert_destination_at_position (name_selector_entry, 0);
@@ -978,6 +1029,10 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 		/* Modified existing destination */
 		modify_destination_at_position (name_selector_entry, *pos);
 	}
+
+	/* If editing within the string, we need to regenerate attributes */
+	if (*pos < len)
+		generate_attribute_list (name_selector_entry);
 
 	return 1;
 }
@@ -1041,6 +1096,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		return;
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	len = g_utf8_strlen (text, -1);
 	get_utf8_string_context (text, start_pos, str_context, 2);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -1084,6 +1140,10 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	} else {
 		modify_destination_at_position (name_selector_entry, start_pos);
 	}
+
+	/* If editing within the string, we need to regenerate attributes */
+	if (end_pos < len)
+		generate_attribute_list (name_selector_entry);
 
 	/* Prevent type-ahead completion */
 	if (name_selector_entry->type_ahead_complete_cb_id) {
@@ -1207,7 +1267,8 @@ static void
 destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *path, GtkTreeIter *iter)
 {
 	EDestination *destination;
-	const gchar  *text;
+	const gchar  *entry_text;
+	gchar        *text;
 	gint          range_start, range_end;
 	gint          n;
 
@@ -1217,8 +1278,8 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	g_assert (n >= 0);
 	g_assert (destination != NULL);
 
-	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	if (!get_range_by_index (text, n, &range_start, &range_end)) {
+	entry_text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	if (!get_range_by_index (entry_text, n, &range_start, &range_end)) {
 		g_warning ("ENameSelectorEntry is out of sync with model!");
 		return;
 	}
@@ -1227,8 +1288,10 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
-	text = e_destination_get_textrep (destination, FALSE);
+
+	text = sanitize_string (e_destination_get_textrep (destination, FALSE));
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &range_start);
+	g_free (text);
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
@@ -1241,7 +1304,8 @@ static void
 destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *path, GtkTreeIter *iter)
 {
 	EDestination *destination;
-	const gchar  *text;
+	const gchar  *entry_text;
+	gchar        *text;
 	gboolean      comma_before = FALSE;
 	gboolean      comma_after  = FALSE;
 	gint          range_start, range_end;
@@ -1254,13 +1318,13 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 	g_assert (n >= 0);
 	g_assert (destination != NULL);
 
-	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	entry_text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 
-	if (get_range_by_index (text, n, &range_start, &range_end) && range_start != range_end) {
+	if (get_range_by_index (entry_text, n, &range_start, &range_end) && range_start != range_end) {
 		/* Another destination comes after us */
 		insert_pos = range_start;
 		comma_after = TRUE;
-	} else if (n > 0 && get_range_by_index (text, n - 1, &range_start, &range_end)) {
+	} else if (n > 0 && get_range_by_index (entry_text, n - 1, &range_start, &range_end)) {
 		/* Another destination comes before us */
 		insert_pos = range_end;
 		comma_before = TRUE;
@@ -1274,12 +1338,12 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 
-	text = e_destination_get_textrep (destination, FALSE);
-
 	if (comma_before)
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &insert_pos);
 
+	text = sanitize_string (e_destination_get_textrep (destination, FALSE));
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &insert_pos);
+	g_free (text);
 
 	if (comma_after)
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &insert_pos);
