@@ -18,8 +18,12 @@
  */
 
 #include <glib/gi18n.h>
+#include <gtk/gtkbox.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkcellrenderertoggle.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkliststore.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtktreeview.h>
 #include <glade/glade-xml.h>
 #include <libedataserver/e-categories.h>
@@ -43,6 +47,11 @@ static void
 e_categories_dialog_dispose (GObject *object)
 {
 	ECategoriesDialogPrivate *priv = E_CATEGORIES_DIALOG (object)->priv;
+
+	if (priv->gui) {
+		g_object_unref (priv->gui);
+		priv->gui = NULL;
+	}
 
 	if (priv->selected_categories) {
 		g_hash_table_destroy (priv->selected_categories);
@@ -82,20 +91,27 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkListStore *model;
+	GtkWidget *main_widget;
 
 	priv = g_new0 (ECategoriesDialogPrivate, 1);
 	priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	dialog->priv = priv;
 
 	/* load the UI from our Glade file */
-	priv->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", NULL, NULL);
+	priv->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "table-categories", NULL);
 	if (!priv->gui) {
 		g_warning (G_STRLOC ": can't load e-categories-dialog.glade file");
 		return;
 	}
 
+	main_widget = glade_xml_get_widget (priv->gui, "table-categories");
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), main_widget, TRUE, TRUE, 0);
+
 	priv->categories_entry = glade_xml_get_widget (priv->gui, "entry-categories");
 	priv->categories_list = glade_xml_get_widget (priv->gui, "categories-list");
+
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
 	/* set up the categories list */
 	model = gtk_list_store_new (2, G_TYPE_BOOLEAN, G_TYPE_STRING);
@@ -108,14 +124,15 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 
 		cat_list = g_list_remove (cat_list, cat_list->data);
 	}
-	gtk_tree_view_set_model (GTK_TREE_VIEW (priv->categories_list), model);
+	gtk_tree_view_set_model (GTK_TREE_VIEW (priv->categories_list), GTK_TREE_MODEL (model));
 
 	renderer = gtk_cell_renderer_toggle_new ();
 	column = gtk_tree_view_column_new_with_attributes ("?", renderer, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
 
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Category"), renderer, NULL);
+	column = gtk_tree_view_column_new_with_attributes (_("Category"), renderer,
+							   "text", 1, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
 
 	/* free memory */
@@ -175,6 +192,8 @@ e_categories_dialog_set_categories (ECategoriesDialog *dialog, const char *categ
 	ECategoriesDialogPrivate *priv;
 
 	g_return_if_fail (E_IS_CATEGORIES_DIALOG (dialog));
+
+	priv = dialog->priv;
 
 	/* FIXME: update model and hash table */
 	gtk_entry_set_text (GTK_ENTRY (priv->categories_entry), categories);

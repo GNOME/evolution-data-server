@@ -1,5 +1,16 @@
 2005-01-05  Rodrigo Moya <rodrigo@novell.com>
 
+	* e-categories-dialog.h: fixed class structure.
+
+	* e-categories-dialog.c (e_categories_dialog_set_categories): init
+	correctly the private pointer before using it.
+	(e_categories_dialog_dispose): unref the GladeXML object.
+	(e_categories_dialog_init): add the main widget and some buttons to
+	the dialog. Set the correct properties to the category column in the
+	treeview widget.
+
+2005-01-05  Rodrigo Moya <rodrigo@novell.com>
+
 	* e-categories-dialog.[ch]:
 	* e-categories-dialog.glade:
 	* Makefile.am: added categories dialog implementation, to replace
