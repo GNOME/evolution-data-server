@@ -1,4 +1,12 @@
 2003-11-03  JP Rosevear <jpr@ximian.com>
 
+	* configure.in: don't need EVO_DIR
+
+2003-11-03  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: remove trailing slash
+
+2003-11-03  JP Rosevear <jpr@ximian.com>
+
 	* configure.in: add the trailing slash to the config subdir
 
