@@ -408,21 +408,16 @@ e_cal_backend_weather_get_ldap_attribute (ECalBackendSync *backend, EDataCal *ca
 	return GNOME_Evolution_Calendar_Success;
 }
 
-static char *sc[] = {
-	CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT,
-	CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS,
-	CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS,
-	CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS,
-	CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT,
-	CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
-	CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
-	NULL
-};
-
 static ECalBackendSyncStatus
 e_cal_backend_weather_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
-	*capabilities = sc;
+	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT ","
+				  CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS  ","
+				  CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS  ","
+				  CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS  ","
+				  CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT  ","
+				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE  ","
+				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
 
 	return GNOME_Evolution_Calendar_Success;
 }
