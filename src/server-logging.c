@@ -30,17 +30,64 @@
 #define PARENT_TYPE bonobo_event_source_get_type ()
 static BonoboEventSourceClass *parent_class = NULL;
 
+typedef struct {
+	char *domain;
+	guint id;
+} ServerLoggingHandler;
+
+struct _ServerLoggingPrivate {
+	GSList *handlers;
+};
+
 
 static void
-server_logging_class_init (ServerLoggingClass *class)
+server_logging_dispose (GObject *object)
 {
-	parent_class = g_type_class_ref (PARENT_TYPE);
+	ServerLogging *logging = SERVER_LOGGING (object);
+	ServerLoggingPrivate *priv;
+	GSList *l;
+	
+	priv = logging->priv;
+	
+	for (l = priv->handlers; l; l = l->next) {
+		ServerLoggingHandler *handler = l->data;
+		
+		g_log_remove_handler (handler->domain, handler->id);
+		g_free (handler->domain);
+		g_free (handler);
+	}
+	g_slist_free (priv->handlers);
+	priv->handlers = NULL;
+}
+
+static void
+server_logging_finalize (GObject *object)
+{
+	ServerLogging *logging = SERVER_LOGGING (object);
+
+	g_free (logging->priv);
+}
+
+static void
+server_logging_class_init (ServerLoggingClass *klass)
+{
+	GObjectClass *object_class;
+
+	parent_class = g_type_class_peek_parent (klass);
+
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose = server_logging_dispose;
+	object_class->finalize = server_logging_finalize;
 }
 
 static void
 server_logging_init (ServerLogging *logging)
 {
-	/* (Nothing to initialize here.)  */
+	ServerLoggingPrivate *priv;
+	
+	priv = g_new0 (ServerLoggingPrivate, 1);
+
+	logging->priv = priv;
 }
 
 
@@ -103,7 +150,21 @@ void
 server_logging_register_domain (ServerLogging *logging,
 				const char *domain)
 {
-	g_log_set_handler(domain,
-			  G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
-			  server_log_handler, logging);
+	ServerLoggingPrivate *priv;
+	guint handler_id;
+
+	priv = logging->priv;
+	
+	handler_id = g_log_set_handler(domain, G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
+				       server_log_handler, logging);
+
+	if (handler_id) {
+		ServerLoggingHandler *handler;
+
+		handler = g_new0 (ServerLoggingHandler, 1);
+		handler->domain = g_strdup (domain);
+		handler->id = handler_id;
+		
+		priv->handlers = g_slist_prepend (priv->handlers, handler);
+	}
 }

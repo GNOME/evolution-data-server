@@ -45,6 +45,8 @@ typedef struct _ServerLoggingClass   ServerLoggingClass;
 
 struct _ServerLogging {
 	BonoboEventSource parent;
+
+	ServerLoggingPrivate *priv;
 };
 
 struct _ServerLoggingClass {

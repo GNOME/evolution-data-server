@@ -1,3 +1,16 @@
+2005-01-26  JP Rosevear  <jpr@novell.com>
+
+	Fixes #69909
+	
+	* src/server-logging.h: add private structure to instance
+
+	* src/server-logging.c (server_logging_register_domain): track the
+	information for the registration so we can later unregister it
+	(server_logging_dispose): unregister the log handlers and from the
+	information and list
+	(server_logging_finalize): free the private structure
+	(server_logging_class_init): set finalize/dispose methods
+
 2005-01-25  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.[ch] (e_categories_add): added a
