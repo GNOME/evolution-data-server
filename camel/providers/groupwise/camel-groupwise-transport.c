@@ -263,10 +263,10 @@ groupwise_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		type = camel_data_wrapper_get_mime_type_field(dw) ;
 		g_print ("Does not contain multiple parts : %s/%s\n",type->type,type->subtype) ;
 		
-		count = camel_data_wrapper_decode_to_stream(dw, (CamelStream *)content);
+		count = camel_data_wrapper_decode_to_stream(dw, (CamelStream *)part_content);
 		/*the actual message*/
-		buffer = g_malloc0 (content->buffer->len+1) ;
-		buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
+		buffer = g_malloc0 (part_content->buffer->len+1) ;
+		buffer = memcpy (buffer, part_content->buffer->data, part_content->buffer->len) ;
 		e_gw_item_set_message (item, buffer);
 		
 		g_free (buffer) ;
