@@ -134,11 +134,32 @@ e_gw_connection_dispose (GObject *object)
 {
 	EGwConnection *cnc = (EGwConnection *) object;
 	EGwConnectionPrivate *priv;
-
+	char *hash_key;
+	gpointer orig_key, orig_value;
+	
 	g_return_if_fail (E_IS_GW_CONNECTION (cnc));
 	
 	priv = cnc->priv;
 	printf ("gw connection dispose \n");
+	
+	/* removed the connection from the hash table */
+	if (loaded_connections != NULL) {
+		hash_key = g_strdup_printf ("%s:%s@%s",
+					    priv->username ? priv->username : "",
+					    priv->password ? priv->password : "",
+					    priv->uri);
+		if (g_hash_table_lookup_extended (loaded_connections, hash_key, &orig_key, &orig_value)) {
+			g_hash_table_remove (loaded_connections, hash_key);
+			if (g_hash_table_size (loaded_connections) == 0) {
+				g_hash_table_destroy (loaded_connections);
+				loaded_connections = NULL;
+			}
+
+			g_free (orig_key);
+		}
+		g_free (hash_key);
+	}
+	
 	if (priv) {
 		if (priv->session_id) {
 			logout (cnc);
@@ -188,8 +209,6 @@ e_gw_connection_dispose (GObject *object)
 static void
 e_gw_connection_finalize (GObject *object)
 {
-	char *hash_key;
-	gpointer orig_key, orig_value;
 	EGwConnection *cnc = (EGwConnection *) object;
 	EGwConnectionPrivate *priv;
 
@@ -200,24 +219,6 @@ e_gw_connection_finalize (GObject *object)
 	/* clean up */
 	g_free (priv);
 	cnc->priv = NULL;
-
-	/* removed the connection from the hash table */
-	if (loaded_connections != NULL) {
-		hash_key = g_strdup_printf ("%s:%s@%s",
-					    priv->username ? priv->username : "",
-					    priv->password ? priv->password : "",
-					    priv->uri);
-		if (g_hash_table_lookup_extended (loaded_connections, hash_key, &orig_key, &orig_value)) {
-			g_hash_table_remove (loaded_connections, hash_key);
-			if (g_hash_table_size (loaded_connections) == 0) {
-				g_hash_table_destroy (loaded_connections);
-				loaded_connections = NULL;
-			}
-
-			g_free (orig_key);
-		}
-		g_free (hash_key);
-	}
 
 	if (parent_class->finalize)
 		(* parent_class->finalize) (object);
