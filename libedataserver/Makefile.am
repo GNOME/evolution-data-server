@@ -2,7 +2,7 @@ INCLUDES =								\
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-DG_DISABLE_DEPRECATED						\
-	$(DB3_CFLAGS)							\
+	-I$(top_srcdir)/libdb/dist			\
 	$(E_DATA_SERVER_CFLAGS)
 
 # The marshallers
@@ -34,7 +34,7 @@ libedataserver_la_SOURCES =		\
 	md5-utils.c
 
 libedataserver_la_LIBADD = 				\
-	$(DB3_LDADD)
+	$(top_builddir)/libdb/dist/.libs/libdb-4.1.a
 
 libedataserver_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)

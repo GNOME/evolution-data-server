@@ -403,7 +403,8 @@ LIB_INSTALL_FILE_LIST=\
 ##################################################
 all: @BUILD_TARGET@
 
-install-strip install: all @INSTALL_TARGET@
+install-strip install:
+	@echo "installation of embedded libdb has been disabled"
 
 ##################################################
 # Library and standard utilities build.

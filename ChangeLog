@@ -1,3 +1,21 @@
+2003-11-25  Chris Toshok  <toshok@ximian.com>
+
+	* libedataserver/Makefile.am (INCLUDES): use the embedded db4.
+	(libedataserver_la_LIBADD): explicitly list the db4 .a since I
+	suck at getting libtool to do what I want.
+
+	* libdb/dist/Makefile.in (install-strip install): don't do
+	anything here.
+
+	* Makefile.am (SUBDIRS): add libdb
+	(DIST_SUBDIRS): new variable, list everything in SUBDIRS except
+	libdb.
+	(LIBDB_FILES): list all the db4 files.
+	(EXTRA_DIST): add the db4 files explicitly to this.
+
+	* configure.in: remove all the db3 stuff, and build the embedded
+	db4.
+
 2003-11-25 Aaron Weber <aaron@ximian.com>
 	* configure.in: Add 1.0 to GTK_DOC_CHECK: Rodney says "It won't
 	hurt to add it, and might helpsince GTK_DOC_CHECK is in
@@ -21,7 +39,6 @@
 	* docs/reference/calendar/libecal/tmpl/e-cal-view.sgml
 	* docs/reference/calendar/libecal/tmpl/e-cal.sgml
 
-	
 2003-11-22  Chris Toshok  <toshok@ximian.com>
 
 	* dist/NO-AUTO-GEN: don't autogen in here.
@@ -30,7 +47,6 @@
 
 	* libdb/Makefile.am: new file so we can integrate libdb into our
 	build.
-
 
 2003-11-20 Aaron Weber <aaron@ximian.com>
 	* docs/reference/calendar/libecal/libecal-sections.txt: moved private structs to private subsections
