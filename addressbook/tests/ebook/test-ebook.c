@@ -15,11 +15,9 @@ print_email (EContact *contact)
 	printf ("Email addresses:\n");
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		EVCardAttribute *attr = e->data;
-		GList *values = e_vcard_attribute_get_values (attr);
-		printf ("\t%s\n",  values && values->data ? (char*)values->data : "");
-		e_vcard_attribute_free (attr);
+		printf ("\t%s\n",  (char*)e->data);
 	}
+	g_list_foreach (emails, (GFunc)g_free, NULL);
 	g_list_free (emails);
 
 	g_free (file_as);

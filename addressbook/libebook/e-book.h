@@ -19,9 +19,7 @@
 #include <libebook/e-book-query.h>
 #include <libebook/e-book-view.h>
 #include <libebook/e-book-types.h>
-#if notyet
-#include <e-util/e-source-list.h>
-#endif
+#include <libedataserver/e-source-list.h>
 
 #define E_TYPE_BOOK        (e_book_get_type ())
 #define E_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK, EBook))
@@ -152,13 +150,12 @@ gboolean    e_book_cancel                  (EBook   *book,
 
 /* Identity */
 gboolean    e_book_get_self                (EContact **contact, EBook **book, GError **error);
-gboolean    e_book_set_self                (EBook   *book, const char *id, GError **error);
+gboolean    e_book_set_self                (EBook *book, EContact *contact, GError **error);
+gboolean    e_book_is_self                 (EContact *contact);
 
 /* Addressbook Discovery */
 gboolean    e_book_get_default_addressbook (EBook **book, GError **error);
-#if notyet
 gboolean    e_book_get_addressbooks        (ESourceList** addressbook_sources, GError **error);
-#endif
 
 GType        e_book_get_type                  (void);
 

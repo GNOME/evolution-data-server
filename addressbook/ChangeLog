@@ -1,3 +1,47 @@
+2003-11-25  Chris Toshok  <toshok@ximian.com>
+
+	* tests/ebook/test-self.c: new file/test, print out the current
+	self contact.
+
+	* tests/ebook/test-ebook.c (print_email): fix the email printing.
+
+	* libebook/e-vcard.c (parse): if the vcard doesn't begin with a
+	"begin" attribute, we still want to add the attribute to the
+	vcard.
+
+	* libebook/e-contact.c (field_info): add GETSET_FIELD for fields
+	that don't have a structured type associated with them (such as
+	FN) but that need getter/setter methods for some reason.  add a
+	GType getter function to STRUCT_FIELD, and fill in the getter
+	(e_contact_class_init): use boxed types for STRUCT fields.
+	(adr_setter): implement.
+	(e_contact_set_property): use g_value_get_boxed for STRUCT types.
+	(e_contact_get_property): implement GETSET getter.
+	(e_contact_name_get_type): implement.
+	(e_contact_date_copy): same.
+	(e_contact_date_get_type): same.
+	(e_contact_date_new): same.
+	(e_contact_photo_copy): same.
+	(e_contact_photo_get_type): same.
+	(e_contact_address_copy): same.
+	(e_contact_address_get_type): same.
+
+	* libebook/e-contact.h: add prototypes for
+	e_contact_{date,name,photo,address}_get_type.
+
+	* libebook/e-book-types.h: add E_BOOK_ERROR_NO_SELF_CONTACT.
+
+	* libebook/e-book.c (e_book_get_self): implement.
+	(e_book_set_self): same.
+	(e_book_is_self): same.
+	(e_book_get_default_addressbook): add more to the comment telling
+	how this *really* should be implemented.
+	(e_book_get_addressbooks): implement.
+
+	* libebook/e-book.h: add prototype for e_book_is_self, change
+	e_book_set_self to take an EContact instead of just the uid.
+	Also, unifdef the prototype for e_book_get_addressbooks.
+
 2003-11-23  Chris Toshok  <toshok@ximian.com>
 
 	* backends/file/e-book-backend-file.c

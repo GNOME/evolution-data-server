@@ -207,22 +207,26 @@ const gpointer          e_contact_get_const        (EContact *contact, EContactF
 void                    e_contact_set              (EContact *contact, EContactField field_id, gpointer value);
 
 /* misc functions for structured values */
+GType                   e_contact_date_get_type    (void);
 EContactDate           *e_contact_date_new         (void);
 EContactDate           *e_contact_date_from_string (const char *str);
 char                   *e_contact_date_to_string   (EContactDate *dt);
 gboolean                e_contact_date_equal       (EContactDate *dt1,
 						    EContactDate *dt2);
+void                    e_contact_date_free        (EContactDate *date);
 
+GType                   e_contact_name_get_type    (void);
 EContactName           *e_contact_name_new         (void);
 char                   *e_contact_name_to_string   (const EContactName *name);
 EContactName           *e_contact_name_from_string (const char *name_str);
 EContactName           *e_contact_name_copy        (EContactName *name);
-
-
-/* destructors for structured values */
-void                    e_contact_date_free        (EContactDate *date);
 void                    e_contact_name_free        (EContactName *name);
+
+
+GType                   e_contact_photo_get_type   (void);
 void                    e_contact_photo_free       (EContactPhoto *photo);
+
+GType                   e_contact_address_get_type (void);
 void                    e_contact_address_free     (EContactAddress *address);
 
 

@@ -13,6 +13,7 @@
 
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-main.h>
+#include <gconf/gconf-client.h>
 
 #include <libgnome/gnome-i18n.h>
 #include <libedataserver/e-component-listener.h>
@@ -1820,45 +1821,70 @@ e_book_is_writable (EBook *book)
 
 
 
+#define SELF_UID_KEY "/apps/evolution/addressbook/self/self_uid"
 gboolean
 e_book_get_self (EContact **contact, EBook **book, GError **error)
 {
 	GError *e = NULL;
+	GConfClient *gconf;
+	char *uid;
 
-	if (!e_book_get_default_addressbook (book, &e)) {
+	*book = e_book_new ();
+
+	if (!e_book_load_local_addressbook (*book, &e)) {
 		g_propagate_error (error, e);
 		return FALSE;
 	}
 
-#if notyet
-	EBook *b;
-	char *self_uri, *self_uid;
+	gconf = gconf_client_get_default();
+	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
+	g_object_unref (gconf);
 
-	/* XXX get the setting for the self book and self uid from gconf */
-
-	b = e_book_new();
-	if (! e_book_load_uri (b, self_uri, TRUE, error)) {
-		g_object_unref (b);
+	if (!uid) {
+		g_object_unref (*book);
+		*book = NULL;
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SELF_CONTACT,
+			     _("e_book_get_self: there was no self contact uid stored in gconf"));
 		return FALSE;
 	}
 
-	if (! e_book_get_contact (b, self_uid,
-				  contact, error)) {
-		g_object_unref (b);
+	if (!e_book_get_contact (*book, uid, contact, &e)) {
+		g_object_unref (*book);
+		*book = NULL;
+		g_propagate_error (error, e);
 		return FALSE;
 	}
 
-	if (book)
-		*book = b;
-	else
-		g_object_unref (b);
 	return TRUE;
-#endif
 }
 
 gboolean
-e_book_set_self (EBook *book, const char *id, GError **error)
+e_book_set_self (EBook *book, EContact *contact, GError **error)
 {
+	GConfClient *gconf = gconf_client_get_default();
+
+	gconf_client_set_string (gconf, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID), NULL);
+
+	g_object_unref (gconf);
+	return TRUE;
+}
+
+gboolean
+e_book_is_self (EContact *contact)
+{
+	GConfClient *gconf;
+	char *uid;
+	gboolean rv;
+
+	gconf = gconf_client_get_default();
+	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
+	g_object_unref (gconf);
+
+	rv = (uid && strcmp (uid, e_contact_get_const (contact, E_CONTACT_UID)));
+
+	g_free (uid);
+
+	return rv;
 }
 
 
@@ -1866,7 +1892,9 @@ e_book_set_self (EBook *book, const char *id, GError **error)
 gboolean
 e_book_get_default_addressbook (EBook **book, GError **error)
 {
-	/* XXX for now just load the local ~/evolution/local/Contacts */
+	/* XXX for now just load the local ~/evolution/local/Contacts,
+	   this should really use properties on the ESource's that
+	   represent the addressbooks we have available. */
 	char *path, *uri;
 	gboolean rv;
 
@@ -1888,22 +1916,18 @@ e_book_get_default_addressbook (EBook **book, GError **error)
 	}
 
 	return rv;
-#if notyet
-	EConfigListener *listener = e_config_listener_new ();
-	ESourceList *sources = ...;
-	ESource *default_source;
-
-	default_source = e_source_list_peek_source_by_uid (sources,
-							   "default_");
-#endif
 }
 
-#if notyet
-ESourceList*
-e_book_get_addressbooks (GError **error)
+gboolean
+e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 {
+	GConfClient *gconf = gconf_client_get_default();
+
+	*addressbook_sources = e_source_list_new_for_gconf (gconf, "/apps/evolution/addressbook/sources");
+	g_object_unref (gconf);
+
+	return TRUE;
 }
-#endif
 
 
 static void*

@@ -37,8 +37,9 @@ struct _EContactPrivate {
 /*E_CONTACT_FIELD_TYPE_FLOAT*/
 #define E_CONTACT_FIELD_TYPE_LIST         0x00000002   /* used for multivalued single attributes - the elements are of type char* */
 #define E_CONTACT_FIELD_TYPE_MULTI        0x00000004   /* used for multivalued attributes - the elements are of type EVCardAttribute */
-#define E_CONTACT_FIELD_TYPE_STRUCT       0x00000008   /* used for structured types (N and ADR properties, in particular) */
-#define E_CONTACT_FIELD_TYPE_BOOLEAN      0x00000010   /* used for boolean types (WANTS_HTML) */
+#define E_CONTACT_FIELD_TYPE_GETSET       0x00000008   /* used for attributes that need custom handling for getting/setting */
+#define E_CONTACT_FIELD_TYPE_STRUCT       0x00000010   /* used for structured types (N and ADR properties, in particular) */
+#define E_CONTACT_FIELD_TYPE_BOOLEAN      0x00000020   /* used for boolean types (WANTS_HTML) */
 
 #define E_CONTACT_FIELD_TYPE_SYNTHETIC    0x10000000   /* used when there isn't a corresponding vcard field (such as email_1) */
 #define E_CONTACT_FIELD_TYPE_LIST_ELEM    0x20000000   /* used when a synthetic attribute is a numbered list element */
@@ -62,6 +63,7 @@ typedef struct {
 	void* (*struct_getter)(EContact *contact, EVCardAttribute *attribute);
 	void (*struct_setter)(EContact *contact, EVCardAttribute *attribute, void *data);
 
+	GType (*boxed_type_getter) (void);
 } EContactFieldInfo;
 
 static void* photo_getter (EContact *contact, EVCardAttribute *attr);
@@ -79,12 +81,13 @@ static void date_setter (EContact *contact, EVCardAttribute *attr, void *data);
 #define BOOLEAN_FIELD(id,vc,n,pn,ro)  { E_CONTACT_FIELD_TYPE_BOOLEAN, (id), (vc), (n), (pn), (ro) }
 #define LIST_FIELD(id,vc,n,pn,ro)      { E_CONTACT_FIELD_TYPE_LIST, (id), (vc), (n), (pn), (ro) }
 #define MULTI_LIST_FIELD(id,vc,n,pn,ro) { E_CONTACT_FIELD_TYPE_MULTI, (id), (vc), (n), (pn), (ro) }
-#define STRUCT_FIELD(id,vc,n,pn,ro,get,set)    { E_CONTACT_FIELD_TYPE_STRUCT, (id), (vc), (n), (pn), (ro), -1, NULL, NULL, (get), (set) }
+#define GETSET_FIELD(id,vc,n,pn,ro,get,set)    { E_CONTACT_FIELD_TYPE_GETSET, (id), (vc), (n), (pn), (ro), -1, NULL, NULL, (get), (set) }
+#define STRUCT_FIELD(id,vc,n,pn,ro,get,set,ty)    { E_CONTACT_FIELD_TYPE_STRUCT | E_CONTACT_FIELD_TYPE_GETSET, (id), (vc), (n), (pn), (ro), -1, NULL, NULL, (get), (set), (ty) }
 #define LIST_ELEM_STR_FIELD(id,vc,n,pn,ro,nm) { E_CONTACT_FIELD_TYPE_LIST_ELEM | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nm) }
 #define MULTI_ELEM_STR_FIELD(id,vc,n,pn,ro,nm) { E_CONTACT_FIELD_TYPE_MULTI_ELEM | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nm) }
 #define ATTR_TYPE_STR_FIELD(id,vc,n,pn,ro,at1,nth) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nth), (at1), NULL }
 #define ATTR2_TYPE_STR_FIELD(id,vc,n,pn,ro,at1,at2,nth) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro), (nth), (at1), (at2) }
-#define ATTR_TYPE_STRUCT_FIELD(id,vc,n,pn,ro,at,get,set) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_STRUCT, (id), (vc), (n), (pn), (ro), 0, (at), NULL, (get), (set) }
+#define ATTR_TYPE_STRUCT_FIELD(id,vc,n,pn,ro,at,get,set,ty) { E_CONTACT_FIELD_TYPE_ATTR_TYPE | E_CONTACT_FIELD_TYPE_SYNTHETIC | E_CONTACT_FIELD_TYPE_GETSET | E_CONTACT_FIELD_TYPE_STRUCT, (id), (vc), (n), (pn), (ro), 0, (at), NULL, (get), (set), (ty) }
 
 static EContactFieldInfo field_info[] = {
  	STRING_FIELD (E_CONTACT_UID,        EVC_UID,       "id",         N_("Unique ID"),  FALSE),
@@ -94,17 +97,17 @@ static EContactFieldInfo field_info[] = {
 	/* FN isn't really a structured field - we use a getter/setter
 	   so we can set the N property (since evo 1.4 works fine with
 	   vcards that don't even have a N attribute.  *sigh*) */
-	STRUCT_FIELD        (E_CONTACT_FULL_NAME,   EVC_FN,       "full_name",   N_("Full Name"),   FALSE, fn_getter, fn_setter),
-	STRUCT_FIELD        (E_CONTACT_NAME,        EVC_N,        "name",        N_("Name"),        FALSE, n_getter, n_setter),
+	GETSET_FIELD        (E_CONTACT_FULL_NAME,   EVC_FN,       "full_name",   N_("Full Name"),   FALSE, fn_getter, fn_setter),
+	STRUCT_FIELD        (E_CONTACT_NAME,        EVC_N,        "name",        N_("Name"),        FALSE, n_getter, n_setter, e_contact_name_get_type),
 	LIST_ELEM_STR_FIELD (E_CONTACT_GIVEN_NAME,  EVC_N,        "given_name",  N_("Given Name"),  FALSE, 1),
 	LIST_ELEM_STR_FIELD (E_CONTACT_FAMILY_NAME, EVC_N,        "family_name", N_("Family Name"), FALSE, 0),
 	STRING_FIELD        (E_CONTACT_NICKNAME,    EVC_NICKNAME, "nickname",    N_("Nickname"),    FALSE),
 
 	/* Address fields */
 	MULTI_LIST_FIELD       (E_CONTACT_ADDRESS,       EVC_ADR, "address",       N_("Address List"),  FALSE),
-	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_HOME,  EVC_ADR, "address_home",  N_("Home Address"),  FALSE, "HOME",  adr_getter, adr_setter),
-	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_WORK,  EVC_ADR, "address_work",  N_("Work Address"),  FALSE, "WORK",  adr_getter, adr_setter),
-	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_OTHER, EVC_ADR, "address_other", N_("Other Address"), FALSE, "OTHER", adr_getter, adr_setter),
+	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_HOME,  EVC_ADR, "address_home",  N_("Home Address"),  FALSE, "HOME",  adr_getter, adr_setter, e_contact_address_get_type),
+	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_WORK,  EVC_ADR, "address_work",  N_("Work Address"),  FALSE, "WORK",  adr_getter, adr_setter, e_contact_address_get_type),
+	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_OTHER, EVC_ADR, "address_other", N_("Other Address"), FALSE, "OTHER", adr_getter, adr_setter, e_contact_address_get_type),
 
 	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_HOME,  EVC_LABEL, "address_label_home",  N_("Home Address Label"),  FALSE, "HOME", 0),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_WORK,  EVC_LABEL, "address_label_work",  N_("Work Address Label"),  FALSE, "WORK", 0),
@@ -157,11 +160,11 @@ static EContactFieldInfo field_info[] = {
 
 	/* Web fields */
 	STRING_FIELD (E_CONTACT_HOMEPAGE_URL, EVC_URL,        "homepage_url", N_("Homepage URL"), FALSE),
-	STRING_FIELD (E_CONTACT_BLOG_URL,     EVC_X_BLOG_URL, "blog_url", N_("Weblog URL"),       FALSE),
+	STRING_FIELD (E_CONTACT_BLOG_URL,     EVC_X_BLOG_URL, "blog_url",     N_("Weblog URL"),   FALSE),
 
 	/* Photo/Logo */
-	STRUCT_FIELD    (E_CONTACT_PHOTO, EVC_PHOTO, "photo", N_("Photo"), FALSE, photo_getter, photo_setter),
-	STRUCT_FIELD    (E_CONTACT_LOGO,  EVC_LOGO,  "logo",  N_("Logo"),  FALSE, photo_getter, photo_setter),
+	STRUCT_FIELD    (E_CONTACT_PHOTO, EVC_PHOTO, "photo", N_("Photo"), FALSE, photo_getter, photo_setter, e_contact_photo_get_type),
+	STRUCT_FIELD    (E_CONTACT_LOGO,  EVC_LOGO,  "logo",  N_("Logo"),  FALSE, photo_getter, photo_setter, e_contact_photo_get_type),
 
 	/* Contact categories */
 #if notyet
@@ -180,8 +183,8 @@ static EContactFieldInfo field_info[] = {
 	STRING_FIELD (E_CONTACT_SPOUSE, EVC_X_SPOUSE,    "spouse", N_("Spouse's Name"), FALSE),
 	STRING_FIELD (E_CONTACT_NOTE,   EVC_NOTE,        "note",   N_("Note"),          FALSE),
 
-	STRUCT_FIELD (E_CONTACT_BIRTH_DATE,  EVC_BDAY,    "birth_date",  N_("Birth Date"), FALSE, date_getter, date_setter),
-	STRUCT_FIELD (E_CONTACT_ANNIVERSARY, EVC_BDAY,    "anniversary", N_("Anniversary"), FALSE, date_getter, date_setter),
+	STRUCT_FIELD (E_CONTACT_BIRTH_DATE,  EVC_BDAY,    "birth_date",  N_("Birth Date"), FALSE, date_getter, date_setter, e_contact_date_get_type),
+	STRUCT_FIELD (E_CONTACT_ANNIVERSARY, EVC_BDAY,    "anniversary", N_("Anniversary"), FALSE, date_getter, date_setter, e_contact_date_get_type),
 	
 	BOOLEAN_FIELD (E_CONTACT_IS_LIST,             EVC_X_LIST, "list", N_("List"), FALSE),
 	BOOLEAN_FIELD (E_CONTACT_LIST_SHOW_ADDRESSES, EVC_X_LIST_SHOW_ADDRESSES, "list_show_addresses", N_("List Show Addresses"), FALSE)
@@ -191,7 +194,7 @@ static EContactFieldInfo field_info[] = {
 #undef STRING_FIELD
 #undef SYNTH_STR_FIELD
 #undef LIST_FIELD
-#undef STRUCT_FIELD
+#undef GETSET_FIELD
 
 static GObjectClass *parent_class;
 
@@ -243,6 +246,12 @@ e_contact_class_init (EContactClass *klass)
 						      "" /* XXX blurb */,
 						      FALSE,
 						      field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE);
+		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRUCT)
+			pspec = g_param_spec_boxed (field_info[i].field_name,
+						    _(field_info[i].pretty_name),
+						    "" /* XXX blurb */,
+						    field_info[i].boxed_type_getter(),
+						    field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE);
 		else
 			pspec = g_param_spec_pointer (field_info[i].field_name,
 						      _(field_info[i].pretty_name),
@@ -473,8 +482,15 @@ adr_getter (EContact *contact, EVCardAttribute *attr)
 static void
 adr_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
-	/* XXX */
-	g_assert_not_reached ();
+	EContactAddress *addr = data;
+
+	e_vcard_attribute_add_value (attr, addr->po);
+	e_vcard_attribute_add_value (attr, addr->ext);
+	e_vcard_attribute_add_value (attr, addr->street);
+	e_vcard_attribute_add_value (attr, addr->locality);
+	e_vcard_attribute_add_value (attr, addr->region);
+	e_vcard_attribute_add_value (attr, addr->code);
+	e_vcard_attribute_add_value (attr, addr->country);
 }
 
 
@@ -741,9 +757,9 @@ e_contact_set_property (GObject *object,
 							  g_value_get_string (value));
 		}
 	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
+	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
-		void *data = g_value_get_pointer (value);
+		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : g_value_get_pointer (value);
 
 		if (attr) {
 			printf ("overwriting existing %s\n", info->vcard_field_name);
@@ -969,6 +985,15 @@ e_contact_get_property (GObject *object,
 
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
+		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		void *rv = NULL;
+
+		if (attr)
+			rv = info->struct_getter (contact, attr);
+
+		g_value_set_boxed (value, rv);
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_GETSET) {
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
 		void *rv = NULL;
 
@@ -1213,10 +1238,16 @@ e_contact_name_free (EContactName *name)
 	g_free (name);
 }
 
-EContactDate*
-e_contact_date_new (void)
+GType
+e_contact_name_get_type (void)
 {
-	return g_new0 (EContactDate, 1);
+	static GType type_id = 0;
+
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("EContactName",
+							(GBoxedCopyFunc) e_contact_name_copy,
+							(GBoxedFreeFunc) e_contact_name_free);
+	return type_id;
 }
 
 EContactDate*
@@ -1263,12 +1294,40 @@ e_contact_date_equal (EContactDate *dt1, EContactDate *dt2)
 		return (!!dt1 == !!dt2);
 }
 
+static EContactDate *
+e_contact_date_copy (EContactDate *dt)
+{
+	EContactDate *dt2 = e_contact_date_new ();
+	dt2->year = dt->year;
+	dt2->month = dt->month;
+	dt2->day = dt->day;
+
+	return dt2;
+}
+
 void
 e_contact_date_free (EContactDate *dt)
 {
 	g_free (dt);
 }
 
+GType
+e_contact_date_get_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("EContactDate",
+							(GBoxedCopyFunc) e_contact_date_copy,
+							(GBoxedFreeFunc) e_contact_date_free);
+	return type_id;
+}
+
+EContactDate*
+e_contact_date_new (void)
+{
+	return g_new0 (EContactDate, 1);
+}
 
 void
 e_contact_photo_free (EContactPhoto *photo)
@@ -1278,6 +1337,29 @@ e_contact_photo_free (EContactPhoto *photo)
 
 	g_free (photo->data);
 	g_free (photo);
+}
+
+static EContactPhoto *
+e_contact_photo_copy (EContactPhoto *photo)
+{
+	EContactPhoto *photo2 = g_new (EContactPhoto, 1);
+	photo2->length = photo->length;
+	photo2->data = g_malloc (photo2->length);
+	memcpy (photo2->data, photo->data, photo->length);
+
+	return photo2;
+}
+
+GType
+e_contact_photo_get_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("EContactPhoto",
+							(GBoxedCopyFunc) e_contact_photo_copy,
+							(GBoxedFreeFunc) e_contact_photo_free);
+	return type_id;
 }
 
 void
@@ -1296,4 +1378,33 @@ e_contact_address_free (EContactAddress *address)
 	g_free (address->country);
 
 	g_free (address);
+}
+
+static EContactAddress *
+e_contact_address_copy (EContactAddress *address)
+{
+	EContactAddress *address2 = g_new (EContactAddress, 1);
+
+	address2->address_format = g_strdup (address->address_format);
+	address2->po = g_strdup (address->po);
+	address2->ext = g_strdup (address->ext);
+	address2->street = g_strdup (address->street);
+	address2->locality = g_strdup (address->locality);
+	address2->region = g_strdup (address->region);
+	address2->code = g_strdup (address->code);
+	address2->country = g_strdup (address->country);
+
+	return address2;
+}
+
+GType
+e_contact_address_get_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("EContactAddress",
+							(GBoxedCopyFunc) e_contact_address_copy,
+							(GBoxedFreeFunc) e_contact_address_free);
+	return type_id;
 }

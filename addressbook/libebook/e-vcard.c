@@ -538,8 +538,10 @@ parse (EVCard *evc, const char *str)
 	if (!attr || attr->group || g_ascii_strcasecmp (attr->name, "begin")) {
 		g_warning ("vcard began without a BEGIN:VCARD\n");
 	}
-	if (attr)
+	if (attr && !g_ascii_strcasecmp (attr->name, "begin"))
 		e_vcard_attribute_free (attr);
+	else
+		e_vcard_add_attribute (evc, attr);
 
 	while (*p) {
 		EVCardAttribute *next_attr = read_attribute (&p);
