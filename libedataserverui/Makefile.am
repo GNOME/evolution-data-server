@@ -19,6 +19,7 @@ noinst_PROGRAMS = 			\
 
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
+	e-categories-dialog.c		\
 	e-destination-store.c		\
 	e-contact-store.c		\
 	e-name-selector.c		\
@@ -39,6 +40,7 @@ libedataserverui_1_2_la_LDFLAGS = 										\
 libedataserveruiincludedir = $(privincludedir)/libedataserverui
 
 libedataserveruiinclude_HEADERS =	\
+	e-categories-dialog.h		\
 	e-destination-store.h		\
 	e-contact-store.h		\
 	e-name-selector.h		\
@@ -80,7 +82,7 @@ test_name_selector_LDADD =					\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedataserverui-$(BASE_VERSION).pc
 
-glade_DATA = e-name-selector-dialog.glade
+glade_DATA = e-categories-dialog.glade e-name-selector-dialog.glade
 
 EXTRA_DIST = 						\
 	$(glade_DATA)					\
