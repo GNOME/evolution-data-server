@@ -2771,19 +2771,10 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	CORBA_Environment ev;
 	Bonobo_ServerInfoList *info_list = NULL;
 	int i;
-	char *protocol, *query, *colon;
+	char *query;
 	GList *factories = NULL;
 
-	colon = strchr (uri, ':');
-	if (!colon) {
-		g_warning ("e_book_load_uri: Unable to determine protocol in the URI\n");
-		return FALSE;
-	}
-
-	protocol = g_strndup (uri, colon-uri);
-	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" BASE_VERSION "')"
-				 " AND addressbook:supported_protocols.has ('%s')", protocol
-				 );
+	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" BASE_VERSION "')";
 
 	CORBA_exception_init (&ev);
 	
@@ -2799,7 +2790,7 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	}
 
 	if (info_list->_length == 0) {
-		g_warning ("Can't find installed BookFactory that handles protocol '%s'.", protocol);
+		g_warning ("Can't find installed BookFactories");
 		CORBA_exception_free (&ev);
 		goto done;
 	}
@@ -2824,8 +2815,6 @@ activate_factories_for_uri (EBook *book, const char *uri)
  done:
 	if (info_list)
 		CORBA_free (info_list);
-	g_free (query);
-	g_free (protocol);
 
 	return factories;
 }

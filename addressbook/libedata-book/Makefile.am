@@ -34,6 +34,7 @@ lib_LTLIBRARIES = libedata-book-1.2.la
 libedata_book_1_2_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
 	$(CORBA_GENERATED_C)				\
+	e-book-backend-factory.c			\
 	e-book-backend-sexp.c				\
 	e-book-backend-summary.c			\
 	e-book-backend-sync.c				\
@@ -55,6 +56,7 @@ libedata_bookincludedir = $(privincludedir)/libedata-book
 
 libedata_bookinclude_HEADERS =				\
 	$(CORBA_GENERATED_H)				\
+	e-book-backend-factory.h			\
 	e-book-backend-sexp.h				\
 	e-book-backend-summary.h			\
 	e-book-backend-sync.h				\

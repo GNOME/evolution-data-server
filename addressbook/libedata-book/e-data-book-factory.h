@@ -5,6 +5,7 @@
 #include <bonobo/bonobo-object.h>
 #include <libedata-book/Evolution-DataServer-Addressbook.h>
 #include <libedata-book/e-book-backend.h>
+#include <libedata-book/e-book-backend-factory.h>
 
 #ifndef __E_DATA_BOOK_FACTORY_H__
 #define __E_DATA_BOOK_FACTORY_H__
@@ -31,23 +32,23 @@ typedef struct {
 	POA_GNOME_Evolution_Addressbook_BookFactory__epv epv;
 
 	/* Notification signals */
-
 	void (* last_book_gone) (EDataBookFactory *factory);
 } EDataBookFactoryClass;
 
-EDataBookFactory *e_data_book_factory_new              (void);
+EDataBookFactory *e_data_book_factory_new                  (void);
 
-void            e_data_book_factory_register_backend (EDataBookFactory               *factory,
-						   const char                   *proto,
-						   EBookBackendFactoryFn           backend_factory);
+void              e_data_book_factory_register_backend     (EDataBookFactory    *factory,
+							    EBookBackendFactory *backend_factory);
 
-int             e_data_book_factory_get_n_backends   (EDataBookFactory               *factory);
+int               e_data_book_factory_get_n_backends       (EDataBookFactory    *factory);
 
-void            e_data_book_factory_dump_active_backends (EDataBookFactory *factory);
+void		  e_data_book_factory_register_backends    (EDataBookFactory    *factory);
 
-gboolean        e_data_book_factory_activate         (EDataBookFactory               *factory, const char *iid);
+void              e_data_book_factory_dump_active_backends (EDataBookFactory    *factory);
 
-GType           e_data_book_factory_get_type (void);
+gboolean          e_data_book_factory_activate             (EDataBookFactory    *factory, const char *iid);
+
+GType             e_data_book_factory_get_type             (void);
 
 G_END_DECLS
 

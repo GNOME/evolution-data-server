@@ -1,3 +1,66 @@
+2004-09-30  Chris Toshok  <toshok@ximian.com>
+
+	* libedata-book/e-data-book-factory.c
+	(e_data_book_factory_register_backend): this function takes an
+	EBookBackendFactory* now, instead of an EBookBackendFactoryFn.
+	(e_data_book_factory_register_backends): new function.  Get the
+	extensions that implement E_TYPE_BOOK_BACKEND_FACTORY, and
+	register them.
+	(e_data_book_factory_lookup_backend_factory): use an
+	EBookBackendFactory instead of EBookBackendFactoryFn.
+	(impl_GNOME_Evolution_Addressbook_BookFactory_getBook): change to
+	match the EBookBackendFactoryFn -> EBookBackendFactory switch.
+
+	* libedata-book/e-book-backend.h: remove typedef for
+	EBookBackendFactoryFn.
+
+	* libedata-book/e-book-backend-sync.h: remove typedef for
+	EBookBackendSyncFactoryFn, since it wasn't ever used (and even the
+	non-sync version is obsolete now.)
+
+	* libedata-book/e-book-backend-factory.[ch]: new file, superclass
+	for all dynamically loaded addressbook factories.
+
+	* libedata-book/Makefile.am (libedata_book_la_SOURCES): add
+	e-book-backend-factory.c
+	(libedata_bookinclude_HEADERS): add e-book-backend-factory.h
+
+	* libebook/e-book.c (activate_factories_for_uri): don't look for
+	factories based on the supported_protocol property, since we can't
+	use those anymore with dynamically loaded backends.
+
+	* backends/file/e-book-backend-file-factory.[ch]: new files,
+	subclass EBookBackendFactory.
+
+	* backends/file/Makefile.am (extension_LTLIBRARIES):
+	libebookbackendfile.la is no longer noinst.
+	(libebookbackendfile_la_SOURCES): add
+	e-book-backend-file-factory.[ch].
+
+	* backends/groupwise/e-book-backend-groupwise-factory.[ch]: new
+	files, subclass EBookBackendFactory.
+	
+	* backends/groupwise/Makefile.am (extension_LTLIBRARIES):
+	libebookbackendgroupwise.la is no longer noinst.
+	(libebookbackendfile_la_SOURCES): add
+	e-book-backend-groupwise-factory.[ch].
+
+	* backends/ldap/e-book-backend-ldap-factory.[ch]: new files,
+	subclass EBookBackendFactory.
+	
+	* backends/ldap/Makefile.am (extension_LTLIBRARIES):
+	libebookbackendldap.la is no longer noinst.
+	(libebookbackendfile_la_SOURCES): add
+	e-book-backend-ldap-factory.[ch].
+
+	* backends/vcf/e-book-backend-vcf-factory.[ch]: new files,
+	subclass EBookBackendFactory.
+	
+	* backends/vcf/Makefile.am (extension_LTLIBRARIES):
+	libebookbackendvcf.la is no longer noinst.
+	(libebookbackendfile_la_SOURCES): add
+	e-book-backend-vcf-factory.[ch].
+	
 2004-09-23  Diego Gonzalez  <diego@pemas.net>
 
 	Fixes #66574.

@@ -17,8 +17,11 @@
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-arg.h>
+#include "libedataserver/e-data-server-module.h"
 #include "e-data-book-marshal.h"
 #include "e-data-book-factory.h"
+
+#include <backends/groupwise/e-book-backend-groupwise.h>
 
 #define DEFAULT_E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_BookFactory:" BASE_VERSION
 
@@ -83,22 +86,23 @@ e_data_book_factory_extract_proto_from_uri (const char *uri)
  * @backend:
  */
 void
-e_data_book_factory_register_backend (EDataBookFactory      *factory,
-				   const char          *proto,
-				   EBookBackendFactoryFn  backend)
+e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
+				      EBookBackendFactory   *backend_factory)
 {
-	g_return_if_fail (factory != NULL);
-	g_return_if_fail (E_IS_DATA_BOOK_FACTORY (factory));
-	g_return_if_fail (proto != NULL);
-	g_return_if_fail (backend != NULL);
+	const char *proto;
 
-	if (g_hash_table_lookup (factory->priv->backends, proto) != NULL) {
+	g_return_if_fail (E_IS_DATA_BOOK_FACTORY (book_factory));
+	g_return_if_fail (E_IS_BOOK_BACKEND_FACTORY (backend_factory));
+
+	proto = E_BOOK_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_protocol (backend_factory);
+
+	if (g_hash_table_lookup (book_factory->priv->backends, proto) != NULL) {
 		g_warning ("e_data_book_factory_register_backend: "
 			   "Proto \"%s\" already registered!\n", proto);
 	}
 
-	g_hash_table_insert (factory->priv->backends,
-			     g_strdup (proto), backend);
+	g_hash_table_insert (book_factory->priv->backends,
+			     g_strdup (proto), backend_factory);
 }
 
 /**
@@ -122,6 +126,21 @@ e_data_book_factory_get_n_backends (EDataBookFactory *factory)
 	g_mutex_unlock (factory->priv->map_mutex);
 
 	return n_backends;
+}
+
+void
+e_data_book_factory_register_backends (EDataBookFactory *book_factory)
+{
+	GList *factories, *f;
+
+	factories = e_data_server_get_extensions_for_type (E_TYPE_BOOK_BACKEND_FACTORY);
+	for (f = factories; f; f = f->next) {
+		EBookBackendFactory *backend_factory = f->data;
+
+		e_data_book_factory_register_backend (book_factory, g_object_ref (backend_factory));
+	}
+
+	e_data_server_extension_list_free (factories);
 }
 
 static void
@@ -197,11 +216,11 @@ backend_last_client_gone_cb (EBookBackend *backend, gpointer data)
 
 
 
-static EBookBackendFactoryFn
+static EBookBackendFactory*
 e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
-					 const char     *uri)
+					    const char     *uri)
 {
-	EBookBackendFactoryFn  backend_fn;
+	EBookBackendFactory *backend_factory;
 	char                *proto;
 	char                *canonical_uri;
 
@@ -219,33 +238,33 @@ e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
 		return NULL;
 	}
 
-	backend_fn = g_hash_table_lookup (factory->priv->backends, proto);
+	backend_factory = g_hash_table_lookup (factory->priv->backends, proto);
 
 	g_free (proto); 
 	g_free (canonical_uri);
 
-	return backend_fn;
+	return backend_factory;
 }
 
 static EBookBackend *
-e_data_book_factory_launch_backend (EDataBookFactory      *factory,
-				 EBookBackendFactoryFn  backend_factory,
-				 GNOME_Evolution_Addressbook_BookListener listener,
-				 const char          *uri)
+e_data_book_factory_launch_backend (EDataBookFactory      *book_factory,
+				    EBookBackendFactory   *backend_factory,
+				    GNOME_Evolution_Addressbook_BookListener listener,
+				    const char          *uri)
 {
 	EBookBackend          *backend;
 
-	backend = (* backend_factory) ();
+	backend = e_book_backend_factory_new_backend (backend_factory);
 	if (!backend)
 		return NULL;
 
-	g_hash_table_insert (factory->priv->active_server_map,
+	g_hash_table_insert (book_factory->priv->active_server_map,
 			     g_strdup (uri),
 			     backend);
 
 	g_signal_connect (backend, "last_client_gone",
 			  G_CALLBACK (backend_last_client_gone_cb),
-			  factory);
+			  book_factory);
 
 	return backend;
 }
@@ -259,7 +278,7 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 	EDataBookFactory      *factory = E_DATA_BOOK_FACTORY (bonobo_object (servant));
 	GNOME_Evolution_Addressbook_Book corba_book;
 	EBookBackend *backend;
-	EDataBook *book;
+	EDataBook *book = NULL;
 	ESource *source;
 	gchar *uri;
 
@@ -281,6 +300,7 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 				     NULL);
 		return CORBA_OBJECT_NIL;
 	}
+	printf (" + %s\n", uri);
 
 	/* Look up the backend and create one if needed */
 	g_mutex_lock (factory->priv->map_mutex);
@@ -288,7 +308,7 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 	backend = g_hash_table_lookup (factory->priv->active_server_map, uri);
 
 	if (!backend) {
-		EBookBackendFactoryFn  backend_factory;
+		EBookBackendFactory*  backend_factory;
 
 		backend_factory = e_data_book_factory_lookup_backend_factory (factory, uri);
 	
@@ -332,6 +352,8 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 	}
 
 	g_object_unref (source);
+	if (book)
+		printf (" => %p\n", book);
 	return corba_book;
 }
 

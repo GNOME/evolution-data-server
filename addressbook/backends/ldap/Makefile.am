@@ -7,11 +7,13 @@ INCLUDES =						\
 	$(LDAP_CFLAGS)					\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-noinst_LTLIBRARIES = libebookbackendldap.la
+extension_LTLIBRARIES = libebookbackendldap.la
 
 libebookbackendldap_la_SOURCES =			\
 	e-book-backend-ldap.c				\
-	e-book-backend-ldap.h
+	e-book-backend-ldap.h				\
+	e-book-backend-ldap-factory.c			\
+	e-book-backend-ldap-factory.h
 
 libebookbackendldap_la_LIBADD =						\
 	$(LDAP_LIBS)							\

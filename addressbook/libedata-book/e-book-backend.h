@@ -77,8 +77,6 @@ struct _EBookBackendClass {
 	void (*_pas_reserved4) (void);
 };
 
-typedef EBookBackend * (*EBookBackendFactoryFn) (void);
-
 gboolean    e_book_backend_construct                (EBookBackend             *backend);
 
 GNOME_Evolution_Addressbook_CallStatus

@@ -72,8 +72,6 @@ struct _EBookBackendSyncClass {
 
 };
 
-typedef EBookBackendSync * (*EBookBackendSyncFactoryFn) (void);
-
 gboolean    e_book_backend_sync_construct                (EBookBackendSync             *backend);
 
 GType       e_book_backend_sync_get_type                 (void);

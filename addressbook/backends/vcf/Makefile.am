@@ -6,11 +6,13 @@ INCLUDES =						\
 	-I$(top_builddir)/addressbook			\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-noinst_LTLIBRARIES = libebookbackendvcf.la
+extension_LTLIBRARIES = libebookbackendvcf.la
 
 libebookbackendvcf_la_SOURCES =			\
 	e-book-backend-vcf.c			\
-	e-book-backend-vcf.h
+	e-book-backend-vcf.h			\
+	e-book-backend-vcf-factory.c		\
+	e-book-backend-vcf-factory.h
 
 libebookbackendvcf_la_LIBADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\

@@ -7,11 +7,13 @@ INCLUDES =						\
 	-I$(top_srcdir)/libdb/dist			\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-noinst_LTLIBRARIES = libebookbackendfile.la
+extension_LTLIBRARIES = libebookbackendfile.la
 
 libebookbackendfile_la_SOURCES =			\
 	e-book-backend-file.c				\
-	e-book-backend-file.h
+	e-book-backend-file.h				\
+	e-book-backend-file-factory.c			\
+	e-book-backend-file-factory.h
 
 libebookbackendfile_la_LIBADD =						\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
