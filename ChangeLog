@@ -1,3 +1,7 @@
+2004-12-23  Rodrigo Moya <rodrigo@novell.com>
+
+	* Makefile.am: build servers/ dir before camel/.
+
 2004-12-20  David Mosberger-Tang  <David.Mosberger@acm.org>
 
         * libedataserver/e-memory.c (STRUCT_ALIGN): Replace with G_MEM_ALIGN.
