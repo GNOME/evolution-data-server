@@ -1,3 +1,7 @@
+2004-01-21  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: include calendar test stuff in AC_OUTPUT
+
 2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
 
 	Fixes nasty crash in e-d-s
