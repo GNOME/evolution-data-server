@@ -182,7 +182,7 @@ impl_notifyStaticCapabilities (PortableServer_Servant servant,
 	if (!priv->notify)
 		return;
 
-	g_signal_emit (G_OBJECT (listener), signals[STATIC_CAPABILITIES], 0, convert_status (status));
+	g_signal_emit (G_OBJECT (listener), signals[STATIC_CAPABILITIES], 0, convert_status (status), capabilities);
 }
 
 /* ::notifyCalOpened method */
