@@ -23,8 +23,8 @@ static BonoboObjectClass *e_data_book_view_parent_class;
 struct _EDataBookViewPrivate {
 	GNOME_Evolution_Addressbook_BookViewListener  listener;
 
-#define INITIAL_THRESHOLD 20
-#define THRESHOLD_MAX 3000
+#define DEFAULT_INITIAL_THRESHOLD 20
+#define DEFAULT_THRESHOLD_MAX 3000
 
 	GMutex *mutex;
 
@@ -33,6 +33,7 @@ struct _EDataBookViewPrivate {
 	CORBA_sequence_GNOME_Evolution_Addressbook_VCard adds;
 	int next_threshold;
 	int threshold_max;
+	int threshold_min;
 
 	CORBA_sequence_GNOME_Evolution_Addressbook_VCard changes;
 	CORBA_sequence_GNOME_Evolution_Addressbook_ContactId removes;
@@ -83,7 +84,7 @@ send_pending_adds (EDataBookView *book_view, gboolean reset)
 	adds->_length = 0;
 
 	if (reset)
-		book_view->priv->next_threshold = INITIAL_THRESHOLD;
+		book_view->priv->next_threshold = book_view->priv->threshold_min;
 }
 
 static void
@@ -441,6 +442,15 @@ e_data_book_view_get_listener (EDataBookView  *book_view)
 	return book_view->priv->listener;
 }
 
+void
+e_data_book_view_set_thresholds (EDataBookView *book_view,
+				 int minimum_grouping_threshold,
+				 int maximum_grouping_threshold)
+{
+	book_view->priv->threshold_min = minimum_grouping_threshold;
+	book_view->priv->threshold_max = maximum_grouping_threshold;
+}
+
 /**
  * e_data_book_view_new:
  */
@@ -521,8 +531,9 @@ e_data_book_view_init (EDataBookView *book_view)
 	book_view->priv->pending_mutex = g_mutex_new();
 	book_view->priv->mutex = g_mutex_new();
 
-	book_view->priv->next_threshold = INITIAL_THRESHOLD;
-	book_view->priv->threshold_max = THRESHOLD_MAX;
+	book_view->priv->threshold_min = DEFAULT_INITIAL_THRESHOLD;
+	book_view->priv->threshold_max = DEFAULT_THRESHOLD_MAX;
+	book_view->priv->next_threshold = book_view->priv->threshold_min;
 
 	book_view->priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal,
 						      g_free, NULL);

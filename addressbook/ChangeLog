@@ -1,3 +1,15 @@
+2004-06-22  Chris Toshok  <toshok@ximian.com>
+
+	* libedata-book/e-data-book-view.c
+	(e_data_book_view_set_thresholds): allow consumers of
+	EDataBookView to control the thresholds used in aggregating
+	contacts before sending them to the gui.  allows us to implement
+	the different thresholds that were used in the 1.4.x ldap and file
+	backends.
+
+	* libedata-book/e-data-book-view.h: add prototype for
+	e_data_book_view_set_thresholds.
+
 2004-06-21  Chris Toshok  <toshok@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c
