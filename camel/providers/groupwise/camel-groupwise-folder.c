@@ -1135,6 +1135,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	*str = g_strconcat ("BEGIN:VCALENDAR","\n", 
 			    "METHOD:REQUEST", "\n", 
 			    "BEGIN:VEVENT", "\n", 
+			    "UID:", e_gw_item_get_icalid (item), "\n",
 			    "X-GWITEM-TYPE:APPOINTMENT", "\n", 
 			    "DTSTART:", e_gw_item_get_start_date (item), "\n",
 			    "SUMMARY:", e_gw_item_get_subject (item), "\n",
