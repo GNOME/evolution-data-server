@@ -1,5 +1,11 @@
 2004-06-21  Chris Toshok  <toshok@ximian.com>
 
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_search): clamp the search result limit to the
+	ldap backend's limit.
+
+2004-06-21  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-contact.c (e_contact_get_const): reorder some stuff
 	so we only generate 1 free per string on object destruction.
 

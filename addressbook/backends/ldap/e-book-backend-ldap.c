@@ -3141,9 +3141,15 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 		LDAP *ldap = bl->priv->ldap;
 		int ldap_err;
 		int search_msgid;
-		
+		int limit;
+		int view_limit;
+
+		view_limit = e_data_book_view_get_max_results (view);
+		if (view_limit == -1 || view_limit > bl->priv->ldap_limit)
+			view_limit = bl->priv->ldap_limit;
+
 		printf ("searching server using filter: %s (expecting max %d results)\n", ldap_query,
-			e_data_book_view_get_max_results (view));
+			view_limit);
 
 		do {
 			book_view_notify_status (view, _("Searching..."));
@@ -3155,7 +3161,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 						    NULL, /* XXX */
 						    NULL, /* XXX */
 						    NULL, /* XXX timeout */
-						    e_data_book_view_get_max_results (view), &search_msgid);
+						    view_limit, &search_msgid);
 		} while (e_book_backend_ldap_reconnect (bl, view, ldap_err));
 
 		g_free (ldap_query);
@@ -3201,6 +3207,11 @@ e_book_backend_ldap_start_book_view (EBookBackend  *backend,
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 
 	d(printf ("start_book_view (%p)\n", view));
+
+	/* we start at 1 so the user sees stuff as it appears and we
+	   aren't left waiting for more cards to show up, if the
+	   connection is slow. */
+	e_data_book_view_set_thresholds (view, 1, 3000);
 
 	e_book_backend_ldap_search (bl, NULL /* XXX ugh */, view);
 }
