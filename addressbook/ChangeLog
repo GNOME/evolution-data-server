@@ -1,3 +1,9 @@
+2004-12-20  Hans Petter Jansson  <hpj@novell.com>
+
+	* libebook/e-book.c (e_book_is_opened): Implement a simple
+	accessor so we can see if a book has been successfully opened
+	previously.
+
 2004-12-19 Sivaiah Nallagatla    <snallagatla@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c 

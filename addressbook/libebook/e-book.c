@@ -3194,6 +3194,25 @@ e_book_check_static_capability (EBook *book,
 }
 
 /**
+ * e_book_is_opened:
+ * @book: and #EBook
+ *
+ * Check if this book has been opened.
+ *
+ * Return value: #TRUE if this book has been opened, otherwise #FALSE.
+ */
+gboolean
+e_book_is_opened (EBook *book)
+{
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	if (book->priv->load_state != E_BOOK_SOURCE_LOADED)
+		return FALSE;
+
+	return TRUE;
+}
+
+/**
  * e_book_is_writable:
  * @book: an #EBook
  * 

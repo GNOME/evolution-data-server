@@ -231,6 +231,7 @@ const char *e_book_get_static_capabilities (EBook    *book,
 					    GError  **error);
 gboolean    e_book_check_static_capability (EBook       *book,
 					    const char  *cap);
+gboolean    e_book_is_opened               (EBook       *book);
 gboolean    e_book_is_writable             (EBook       *book);
 
 /* Cancel a pending operation. */
