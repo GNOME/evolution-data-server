@@ -141,6 +141,10 @@ gboolean e_cal_get_object (ECal *ecal,
 			   const char *rid,
 			   icalcomponent **icalcomp,
 			   GError **error);
+gboolean e_cal_get_objects_for_uid (ECal *ecal,
+				    const char *uid,
+				    GList **objects,
+				    GError **error);
 
 gboolean e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **error);
 void e_cal_free_change_list (GList *list);

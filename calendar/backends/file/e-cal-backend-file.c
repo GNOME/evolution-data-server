@@ -997,6 +997,17 @@ e_cal_backend_file_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 	return GNOME_Evolution_Calendar_Success;
 }
 
+static void
+add_detached_recur_to_vcalendar (gpointer key, gpointer value, gpointer user_data)
+{
+	ECalComponent *recurrence = value;
+	icalcomponent *vcalendar = user_data;
+
+	icalcomponent_add_component (
+		vcalendar,
+		icalcomponent_new_clone (e_cal_component_get_icalcomponent (recurrence)));		     
+}
+
 /* Get_object_component handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
@@ -1004,8 +1015,6 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
-	ECalComponent *comp = NULL;
-	gboolean free_comp = FALSE;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -1019,8 +1028,12 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 
 	if (rid && *rid) {
+		ECalComponent *comp;
+
 		comp = g_hash_table_lookup (obj_data->recurrences, rid);
-		if (!comp) {
+		if (comp) {
+			*object = e_cal_component_get_as_string (comp);
+		} else {
 			icalcomponent *icalcomp;
 			struct icaltimetype itt;
 
@@ -1031,20 +1044,29 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 			if (!icalcomp)
 				return GNOME_Evolution_Calendar_ObjectNotFound;
 
-			comp = e_cal_component_new ();
-			free_comp = TRUE;
-			e_cal_component_set_icalcomponent (comp, icalcomp);
+			*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+
+			icalcomponent_free (icalcomp);
 		}
-	} else
-		comp = obj_data->full_object;
-	
-	if (!comp)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+	} else {
+		if (g_hash_table_size (obj_data->recurrences) > 0) {
+			icalcomponent *icalcomp;
 
-	*object = e_cal_component_get_as_string (comp);
+			/* if we have detached recurrences, return a VCALENDAR */
+			icalcomp = e_cal_util_new_top_level ();
+			icalcomponent_add_component (
+				icalcomp,
+				icalcomponent_new_clone (e_cal_component_get_icalcomponent (obj_data->full_object)));
 
-	if (free_comp)
-		g_object_unref (comp);
+			/* add all detached recurrences */
+			g_hash_table_foreach (obj_data->recurrences, (GHFunc) add_detached_recur_to_vcalendar, icalcomp);
+
+			*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+
+			icalcomponent_free (icalcomp);
+		} else
+			*object = e_cal_component_get_as_string (obj_data->full_object);
+	}
 
 	return GNOME_Evolution_Calendar_Success;
 }
