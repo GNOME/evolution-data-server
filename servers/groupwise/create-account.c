@@ -25,7 +25,7 @@ add_account (const char *conf_key, const char *hostname, const char *username, c
 
 	if (password && *password) {
 		g_free (group_name);
-		group_name = g_strdup_printf ("%s:%s@%s", username, password, hostname);
+		group_name = g_strdup_printf ("%s:%s@%s/soap/", username, password, hostname);
 	}
 	source = e_source_new ("Calendar", group_name);
 	e_source_group_add_source (group, source, -1);
