@@ -120,6 +120,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
         GList *list = NULL, *l;
 	gboolean done = FALSE;
 	int cursor = 0;
+	const char *position = E_GW_CURSOR_POSITION_END; 
 	icalcomponent_kind kind;
 	
 	priv = cbgw->priv;
@@ -149,7 +150,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
         }
 	while (!done) {
 		
-		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, &list);
+		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_cal_backend_groupwise_notify_error_code (cbgw, status);
 			g_mutex_unlock (mutex);
@@ -179,6 +180,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			done = TRUE;
 		g_list_free (list);
 		list = NULL;
+		position = E_GW_CURSOR_POSITION_CURRENT;
         }
 	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
 
