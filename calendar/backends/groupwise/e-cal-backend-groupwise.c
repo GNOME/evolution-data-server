@@ -871,6 +871,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	icalcomponent *icalcomp;
 	ECalComponent *comp;
 	EGwConnectionStatus status;
+	char *server_uid = NULL;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -896,14 +897,19 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
-		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp, uid);
+		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp, &server_uid);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);
 			return GNOME_Evolution_Calendar_OtherError;
 		}
 
-		if (*uid)
-			e_cal_component_set_uid (comp, *uid);
+		if (server_uid) {
+			icalproperty *icalprop;
+
+			icalprop = icalproperty_new_x (server_uid);
+			icalproperty_set_x_name (icalprop, "X-EVOLUTION-GROUPWISE-ID");
+			icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
+		}
 
 		/* if successful, update the cache */
 	case CAL_MODE_LOCAL :
