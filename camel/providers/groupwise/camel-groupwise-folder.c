@@ -483,11 +483,15 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CamelGroupwiseMessageInfo *gw_info ;
 	GList *items = NULL ;
 	flags_diff_t diff ;
+	const char *container_id;
+	EGwConnectionStatus status ;
 	EGwConnection *cnc = cnc_lookup (priv) ;
 	int count, i ;
-	g_print ("groupwise sync\n") ;
+
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) 
 		return ;
+	
+	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->name) ;
 	
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 
@@ -496,7 +500,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		info = camel_folder_summary_index (folder->summary, i) ;
 		gw_info = (CamelGroupwiseMessageInfo *) info ;
 
-		if (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) {
+		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags) ;
 			diff.changed &= folder->permanent_flags;
 
@@ -506,6 +510,12 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			else {
 				if (diff.changed & CAMEL_MESSAGE_SEEN)
 					items = g_list_append (items, (char *)camel_message_info_uid(info));
+				if (diff.changed & CAMEL_MESSAGE_DELETED) {
+					const char *uid = camel_message_info_uid (info) ;
+					status = e_gw_connection_remove_item (cnc, container_id, uid);
+					if (status == E_GW_CONNECTION_STATUS_OK) 
+						camel_folder_summary_remove_uid (folder->summary,uid) ;
+				}
 			}
 		}
 		
@@ -596,7 +606,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	GSList *slist = NULL, *sl ;
 	char *container_id = NULL ;
 	char *cache_file_name ;
-	static time_t mod_time = 0 ;
+	time_t mod_time = 0 ;
 	char time_string[100] = {0} ;
 	const struct tm *tm ;
 	struct stat buf ;
@@ -641,6 +651,23 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	for ( sl = slist ; sl != NULL; sl = sl->next) {
 		list = g_list_append (list, sl->data) ;
 	}
+	g_slist_free (slist);
+	slist = NULL;
+	status = e_gw_connection_get_quick_messages (cnc, container_id,
+				"distribution created attachments subject",
+				time_string, "Modified", "Mail", NULL, -1, &slist) ;
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		g_free (container_id) ;
+		return ;
+	}
+	for ( sl = slist ; sl != NULL; sl = sl->next) {
+		list = g_list_append (list, sl->data) ;
+	}
+
+	g_slist_free (slist);
+	slist = NULL;
 
 	if (gw_store->current_folder != folder) {
 		gw_store->current_folder = folder ;
@@ -687,10 +714,8 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		if (mi) {
 			/*Message exists*/
 			item_status = e_gw_item_get_item_status (item);
-			if (item_status & E_GW_ITEM_STAT_READ)
-				status_flags |= CAMEL_MESSAGE_SEEN;
-			if (item_status & E_GW_ITEM_STAT_DELETED)
-				status_flags |= CAMEL_MESSAGE_DELETED;
+			/*if (item_status & E_GW_ITEM_STAT_DELETED)
+				status_flags |= CAMEL_MESSAGE_DELETED;*/
 			if (item_status & E_GW_ITEM_STAT_REPLIED)
 				status_flags |= CAMEL_MESSAGE_ANSWERED;
 			mi->info.flags |= status_flags;
@@ -714,10 +739,10 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 
 			status_flags = 0;
 			item_status = e_gw_item_get_item_status (item);
-			if (item_status & E_GW_ITEM_STAT_READ)
+			/*if (item_status & E_GW_ITEM_STAT_READ)
 				status_flags |= CAMEL_MESSAGE_SEEN;
 			if (item_status & E_GW_ITEM_STAT_DELETED)
-				status_flags |= CAMEL_MESSAGE_DELETED;
+				status_flags |= CAMEL_MESSAGE_DELETED;*/
 			if (item_status & E_GW_ITEM_STAT_REPLIED)
 				status_flags |= CAMEL_MESSAGE_ANSWERED;
 			mi->info.flags |= status_flags;

@@ -1,9 +1,3 @@
-2005-02-16  Parthasarathi Susarla <sparthasarathi@novell.com>A
-	
-	* camel-groupwise-store.c  (groupwise_get_folder): 
-	* camel-groupwise-folder.c (groupwise_refresh_info):
-	  changing the modified time to the current time
-
 2005-02-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c:
