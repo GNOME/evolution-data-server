@@ -1,3 +1,8 @@
+2003-07-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* camel-provider.c (camel_provider_init): Print the provider
+	directory as well, for debugging.
+
 2003-07-23  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* camel-mime-message.c (find_best_encoding): Revert my previous
