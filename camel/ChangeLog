@@ -1,10 +1,15 @@
+2005-01-18  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-store.c:
+	  Removed debug statements and compiler warnings
+
 2005-01-17 Sivaiah Nallagatla <snallagatla@novell.com>
 
-	* camel-groupwise-proviuder.c : remove poa ip and 
+	* camel-groupwise-provider.c : remove poa ip and 
 	soap ssl settings. We no longer need them as we now use soap for mail 
 	
 	* camel-groupwise-store.c (groupwise_auth_loop) :
-	when use_sll is whenever possible try to login 
+	when use_ssl is whenever possible try to login 
 	using https and them if it fails using http 
 	
 2005-01-17  Not Zed  <NotZed@Ximian.com>

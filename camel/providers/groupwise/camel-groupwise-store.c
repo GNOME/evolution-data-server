@@ -49,7 +49,7 @@
 #include "camel-folder.h" 
 #include "camel-private.h"
 
-#define d(x) printf(x);
+#define d(x) 
 
 struct _CamelGroupwiseStorePrivate {
 	char *server_name;
@@ -471,7 +471,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	EGwConnectionStatus status ;
 	GList *list = NULL ;
 	
-	g_print ("||GW:Get folder\n") ;
 	
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
         folder_dir = e_path_to_physical (storage_path, folder_name);
@@ -640,7 +639,6 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return groupwise_get_folder_info_offline (store, top, flags, ex);
 	
-	g_print ("||GW:Get folder info online\n") ;
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
 		if (!groupwise_connect (CAMEL_SERVICE(store), ex)) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
@@ -666,12 +664,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		/*FIX ME set the camel exception id*/
 		return NULL;
 	}
-	status = e_gw_connection_get_container_list (priv->cnc, top_folder, &temp_list);
-	if (status != E_GW_CONNECTION_STATUS_OK ) {
-		/*FIX ME set the camel exception id*/
-		return NULL;
-	}
-	//	*temp_list = &folder_list ;
+	
+	temp_list = folder_list ;
 	
 	folders = g_ptr_array_new();
 	
@@ -1075,7 +1069,6 @@ update_folder_counts (CamelGroupwiseStore *gw_store, CamelFolderInfo *fi, CamelE
 					fi->total = camel_folder_get_message_count(gw_store->current_folder);
 				} else {
 					/*Update the counts for all the other folders*/
-					g_print ("|| GW:Other folder:%s||\n", fi->full_name) ;
 					/*TODO: We have to somehow get the folder counts*/
 					folder = camel_object_bag_peek(CAMEL_STORE(gw_store)->folders, fi->full_name);
 					if (folder) {
