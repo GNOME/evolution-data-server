@@ -413,7 +413,7 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 static char *
 imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 {
-	int fulllen, ldigits, nread, i, sexp = 0;
+	int fulllen, ldigits, nread, n, i, sexp = 0;
 	unsigned int length;
 	GPtrArray *data;
 	GString *str;
@@ -456,18 +456,24 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 		/* Read the literal */
 		str = g_string_sized_new (length + 2);
 		str->str[0] = '\n';
-		nread = camel_stream_read (store->istream, str->str + 1, length);
-		if (nread == -1) {
-			if (errno == EINTR)
-				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-						     _("Operation cancelled"));
-			else
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-						     g_strerror (errno));
-			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
-			g_string_free (str, TRUE);
-			goto lose;
-		}
+		nread = 0;
+		
+		do {
+			if ((n = camel_stream_read (store->istream, str->str + nread + 1, length - nread)) == -1) {
+				if (errno == EINTR)
+					camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+							     _("Operation cancelled"));
+				else
+					camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+							     g_strerror (errno));
+				camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+				g_string_free (str, TRUE);
+				goto lose;
+			}
+			
+			nread += n;
+		} while (n > 0 && nread < length);
+		
 		if (nread < length) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					     _("Server response ended too soon."));
