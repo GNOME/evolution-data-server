@@ -485,6 +485,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	GList *list = NULL ;
 	GSList *slist = NULL, *sl ;
 	gboolean done = FALSE ;
+	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0 ;
 	
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
@@ -623,7 +624,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			int temp = 0 ;
 			status = e_gw_connection_read_cursor (priv->cnc, container_id, 
 							      cursor, FALSE, 
-							      CURSOR_ITEM_LIMIT, &list) ;
+							      CURSOR_ITEM_LIMIT, position, &list) ;
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -648,6 +649,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				done = TRUE;
 			g_list_free (list);
 			list = NULL;
+			position = E_GW_CURSOR_POSITION_CURRENT;
 		}
 
 		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor) ;

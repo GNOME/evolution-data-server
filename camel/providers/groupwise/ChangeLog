@@ -1,3 +1,10 @@
+2005-02-25  Harish Krishnaswamy  <kharish@novell.com>
+
+	* camel-groupwise-store.c: (groupwise_get_folder):
+	update calls to read_cursor request to use the 
+	position argument. do not use the position cursor 
+	calls anymore.
+
 2005-02-23  Sankar P <psankar@novell.com>
 
        * camel-groupwise-folder.c: (groupwise_folder_get_message):
