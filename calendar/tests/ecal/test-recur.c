@@ -1,6 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <libgnome/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <libecal/e-cal.h>
@@ -10,8 +9,6 @@ main (int argc, char **argv)
 {
 	ECal *ecal;
 	GList *l, *objects;
-
-	gnome_program_init("test-search", "0.0", LIBGNOME_MODULE, argc, argv, NULL);
 
 	if (bonobo_init (&argc, argv) == FALSE)
 		g_error ("Could not initialize Bonobo");

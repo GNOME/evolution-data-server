@@ -1,5 +1,9 @@
 2005-02-04  Rodrigo Moya <rodrigo@novell.com>
 
+	* tests/ecal/test-recur.c: removed libgnome usage.
+
+2005-02-04  Rodrigo Moya <rodrigo@novell.com>
+
 	* libecal/e-cal.c (generate_instances): don't expand recurrences
 	for detached instances.
 
