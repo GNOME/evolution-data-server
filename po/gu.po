@@ -1,18 +1,16 @@
-# translation of evolution-data-server.HEAD.po to Punjabi
 # translation of evolution-data-server.HEAD.po to Gujarati
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # Ankit Patel <ankit@pune.redhat.com>, 2004.
-# Amanpreet Singh Alam <aalam@redhat.com>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-07-14 03:37+0200\n"
-"PO-Revision-Date: 2004-07-20 17:56+0530\n"
-"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
-"Language-Team: Punjabi <pa@li.org>\n"
+"PO-Revision-Date: 2004-07-14 14:44+0530\n"
+"Last-Translator: Ankit Patel <ankit@pune.redhat.com>\n"
+"Language-Team: Gujarati <gu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -968,4 +966,3 @@ msgstr "ઈવોલ્યુશન કેલેન્ડર ફાઈલ અન
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "ઈવોલ્યુશન સરનામાપોથી ફાઈલ પાશ્વ ભાગમાં છે"
-
