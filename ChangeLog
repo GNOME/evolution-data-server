@@ -1,3 +1,12 @@
+2003-11-22  Chris Toshok  <toshok@ximian.com>
+
+	* dist/NO-AUTO-GEN: don't autogen in here.
+	
+	* libdb/.cvsignore: new file, ignore the generated Makefile foo.
+
+	* libdb/Makefile.am: new file so we can integrate libdb into our
+	build.
+
 2003-11-20 Aaron Weber <aaron@ximian.com>
 	* docs/reference/calendar/libecal/libecal-sections.txt: moved private structs to private subsections
 	* docs/reference/addressbook/libebook/libebook-sections.txt: moved private structs to private subsections
