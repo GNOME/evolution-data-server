@@ -8,3 +8,4 @@
 -G_STRLOC for errors
 -remove remaining gal usage
 -figure out where to install libical
+-have backends link separately

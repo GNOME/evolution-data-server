@@ -1,3 +1,12 @@
+2003-11-04  JP Rosevear <jpr@ximian.com>
+
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: ditto
+
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in: update to point
+	to the right binary
+
+	* libedataserver/Makefile.am: install pkg-config file
+
 2003-11-04  Hans Petter Jansson  <hpj@ximian.com>
 
 	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in:

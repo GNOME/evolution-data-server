@@ -38,7 +38,7 @@
 
 <oaf_server iid="OAFIID:GNOME_Evolution_Wombat_InterfaceCheck"
             type="exe"
-            location="@LIBEXECDIR@/evolution-wombat">
+            location="@LIBEXECDIR@/evolution-data-server">
 
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/Evolution/WombatInterfaceCheck:1.0"/>

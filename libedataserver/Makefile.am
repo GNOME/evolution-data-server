@@ -57,3 +57,9 @@ libedataserverinclude_HEADERS =		\
 	e-url.h				\
 	e-xml-hash-utils.h		\
 	md5-utils.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libedataserver-1.0.pc
+
+EXTRA_DIST = 				\
+	$(pkgconfig_DATA:.pc=.pc.in)
