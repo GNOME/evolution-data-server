@@ -359,10 +359,9 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 		CamelDataWrapper *dw = camel_data_wrapper_new () ;
 		char *buffer = NULL ;
 			
-		dw = camel_medium_get_content_object (CAMEL_MEDIUM (mp)) ;
+		dw = camel_medium_get_content_object (CAMEL_MEDIUM (message)) ;
 		camel_data_wrapper_write_to_stream(dw, (CamelStream *)content) ;
 		buffer = g_malloc0 (content->buffer->len+1) ;
-		g_print (">>>>>> length:%d |||\n", content->buffer->len) ;
 		buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
 				
 		e_gw_item_set_message (item, buffer) ;
