@@ -44,6 +44,7 @@
 #include "camel-groupwise-journal.h"
 #include "camel-groupwise-utils.h"
 #include "camel-stream-mem.h"
+#include "camel-string-utils.h"
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
 

@@ -1,3 +1,8 @@
+2005-03-18  Gary Ekker  <gekker@novell.com>
+
+	* camel-groupwise-folder.c: Added #include "camel-string-utils.h"
+	to prevent warnings that break 64-bit build in SuSE build system
+
 2005-03-18  Vivek Jain <jvivek@novell.com>
 	
 	**Fixes bug #73458
