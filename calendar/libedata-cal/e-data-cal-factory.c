@@ -58,6 +58,7 @@ enum SIGNALS {
 static guint signals[LAST_SIGNAL];
 
 /* Opening calendars */
+
 static icalcomponent_kind
 calobjtype_to_icalkind (const GNOME_Evolution_Calendar_CalObjType type)
 {
@@ -122,6 +123,7 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 	EDataCalFactoryPrivate *priv;
 	ECalBackend *ret_backend;
 	const char *uristr;
+	char *uri;
 
 	fprintf (stderr, "backend_last_client_gone_cb() called!\n");
 
@@ -132,18 +134,19 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 
 	uristr = e_cal_backend_get_uri (backend);
 	g_assert (uristr != NULL);
+	uri = g_strdup_printf("%s:%d", uristr, (int)e_cal_backend_get_kind(backend));
 
-	ret_backend = lookup_backend (factory, uristr);
+	ret_backend = lookup_backend (factory, uri);
 	g_assert (ret_backend != NULL);
 	g_assert (ret_backend == backend);
 
-	g_hash_table_remove (priv->backends, uristr);
+	g_hash_table_remove (priv->backends, uri);
+	g_free(uri);
 
 	g_signal_handlers_disconnect_matched (backend, G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL, NULL, data);
 
 	/* Notify upstream if there are no more backends */
-
 	if (g_hash_table_size (priv->backends) == 0)
 		g_signal_emit (G_OBJECT (factory), signals[LAST_CALENDAR_GONE], 0);
 }
@@ -197,7 +200,9 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 
 		return CORBA_OBJECT_NIL;
 	}
-	uri_type_string = g_strdup_printf ("%s:%d", e_uri_to_string (uri, FALSE), type);	
+	str_uri = e_uri_to_string(uri, FALSE);
+	uri_type_string = g_strdup_printf ("%s:%d", str_uri, (int)calobjtype_to_icalkind (type));
+	g_free(str_uri);
 
 	/* Find the associated backend type (if any) */
 	backend_type = get_backend_type (priv->methods, uri->protocol, calobjtype_to_icalkind (type));

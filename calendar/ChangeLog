@@ -1,3 +1,12 @@
+2004-08-02  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #58642.
+
+	* libedata-cal/e-data-cal-factory.c (backend_last_client_gone_cb):
+	the table key includes the kidn for some reason.
+	(impl_CalFactory_getCal): store the icalkind in the uri, not the
+	calobjtype.  Fix a memory leak.
+
 2004-08-02  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes #57127
