@@ -3028,7 +3028,6 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	GList *instances = NULL;
 
 	g_return_if_fail (E_IS_CAL (ecal));
-	g_return_if_fail (start != -1 && end != -1);
 	g_return_if_fail (start <= end);
 	g_return_if_fail (cb != NULL);
 
