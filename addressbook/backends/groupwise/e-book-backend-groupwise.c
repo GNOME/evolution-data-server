@@ -2031,6 +2031,11 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
   
+	if (priv->cnc) { /*we have already authenticated to server */
+		e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_Success); 
+		return;
+	}
+
 	priv->cnc = e_gw_connection_new (priv->uri, user, passwd);
 	if (!E_IS_GW_CONNECTION(priv->cnc) && priv->use_ssl && g_str_equal (priv->use_ssl, "when-possible")) {
 		http_uri = g_strconcat ("http://", priv->uri + 8, NULL);
