@@ -1,3 +1,8 @@
+2005-02-08  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-folder.c (do_copy): Don't always delete the original
+	messages.
+
 2005-02-04  Not Zed  <NotZed@Ximian.com>
 
 	* camel-imap-store.c: Revert jeff's patch.
