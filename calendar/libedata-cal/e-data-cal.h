@@ -24,9 +24,9 @@
 #define E_DATA_CAL_H
 
 #include <bonobo/bonobo-object.h>
-#include <libedatacal/Evolution-DataServer-Calendar.h>
-#include <libedatacal/e-data-cal-common.h>
-#include <libedatacal/e-data-cal-view.h>
+#include <libedata-cal/Evolution-DataServer-Calendar.h>
+#include <libedata-cal/e-data-cal-common.h>
+#include <libedata-cal/e-data-cal-view.h>
 
 G_BEGIN_DECLS
 

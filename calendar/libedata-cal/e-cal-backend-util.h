@@ -23,7 +23,7 @@
 #ifndef E_CAL_BACKEND_UTIL_H
 #define E_CAL_BACKEND_UTIL_H
 
-#include <libedatacal/e-cal-backend.h>
+#include <libedata-cal/e-cal-backend.h>
 
 G_BEGIN_DECLS
 

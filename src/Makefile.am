@@ -45,7 +45,7 @@ evolution_data_server_SOURCES = \
 
 evolution_data_server_LDADD =						\
 	$(top_builddir)/addressbook/libedatabook/libedatabook.la	\
-	$(top_builddir)/calendar/libedatacal/libedatacal.la		\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
 	$(E_DATA_SERVER_LIBS)
 
 if ENABLE_LDAP

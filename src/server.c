@@ -34,10 +34,10 @@
 #include <libedatabook/e-book-backend-ldap.h>
 #endif
 
-#include <libedatacal/e-data-cal-factory.h>
-#include <libedatacal/e-cal-backend-file-events.h>
-#include <libedatacal/e-cal-backend-file-todos.h>
-#include <libedatacal/e-cal-backend-http.h>
+#include <libedata-cal/e-data-cal-factory.h>
+#include <libedata-cal/e-cal-backend-file-events.h>
+#include <libedata-cal/e-cal-backend-file-todos.h>
+#include <libedata-cal/e-cal-backend-http.h>
 
 #include "server-interface-check.h"
 

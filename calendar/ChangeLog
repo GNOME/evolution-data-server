@@ -1,3 +1,7 @@
+2003-11-05  JP Rosevear  <jpr@ximian.com>
+
+	* rename libedatacal to libedata-cal
+
 2003-11-05  JP Rosvear <jpr@ximian.com>
 
 	* libecal/Makefile.am: use privincludedir

@@ -22,7 +22,7 @@
 #ifndef E_CAL_BACKEND_FILE_H
 #define E_CAL_BACKEND_FILE_H
 
-#include <libedatacal/e-cal-backend-sync.h>
+#include <libedata-cal/e-cal-backend-sync.h>
 
 G_BEGIN_DECLS
 

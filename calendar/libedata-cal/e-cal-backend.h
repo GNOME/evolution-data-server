@@ -27,10 +27,10 @@
 #include <libedataserver/e-list.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-component.h>
-#include <libedatacal/Evolution-DataServer-Calendar.h>
-#include <libedatacal/e-data-cal-common.h>
-#include <libedatacal/e-data-cal.h>
-#include <libedatacal/e-data-cal-view.h>
+#include <libedata-cal/Evolution-DataServer-Calendar.h>
+#include <libedata-cal/e-data-cal-common.h>
+#include <libedata-cal/e-data-cal.h>
+#include <libedata-cal/e-data-cal-view.h>
 
 G_BEGIN_DECLS
 

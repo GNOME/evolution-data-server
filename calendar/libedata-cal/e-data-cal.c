@@ -27,7 +27,7 @@
 #include <libical/ical.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-exception.h>
-#include <libedatacal/e-cal-backend.h>
+#include <libedata-cal/e-cal-backend.h>
 #include "e-data-cal.h"
 
 #define PARENT_TYPE         BONOBO_TYPE_OBJECT
