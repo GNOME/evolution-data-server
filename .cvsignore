@@ -21,6 +21,7 @@ m4
 missing
 mkinstalldirs
 stamp-h
+stamp-h1
 stamp-h.in
 stamp.h
 xml-i18n-*
