@@ -266,6 +266,12 @@ impl_finalize (GObject *object)
 {
 	ESourceListPrivate *priv = E_SOURCE_LIST (object)->priv;
 
+	if (priv->gconf_notify_id != 0) {
+		gconf_client_notify_remove (priv->gconf_client,
+					    priv->gconf_notify_id);
+		priv->gconf_notify_id = 0;
+	}
+
 	g_free (priv->gconf_path);
 	g_free (priv);
 
@@ -506,7 +512,8 @@ e_source_list_sync (ESourceList *list,
 	g_slist_free (conf_list);
 
 	if (list->priv->gconf_notify_id != 0) {
-		g_source_remove (list->priv->gconf_notify_id);
+		gconf_client_notify_remove (list->priv->gconf_client,
+					    list->priv->gconf_notify_id);
 		list->priv->gconf_notify_id = 0;
 	}
 
