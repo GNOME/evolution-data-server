@@ -1,3 +1,18 @@
+2005-03-15  JP Rosevear  <jpr@novell.com>
+	
+	Fixes #68533 (hackily)
+	
+	* libedata-book/e-data-book-factory.c (out_of_proc_check): call
+	back to check for out of proc backends
+	(e_data_book_factory_get_n_backends): if no out of proc clients
+	are left, report no backends
+
+	* libedata-book/e-book-backend.h: new proto
+
+	* libedata-book/e-book-backend.c
+	(e_book_backend_has_out_of_proc_clients): see if the remaining
+	clients are all in proc
+
 2005-03-09  Not Zed  <NotZed@Ximian.com>
 
 	* backends/file/e-book-backend-file.c

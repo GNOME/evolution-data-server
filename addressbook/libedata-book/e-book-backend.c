@@ -412,10 +412,38 @@ e_book_backend_remove_client (EBookBackend *backend,
 	 */
 	if (!backend->priv->clients)
 		last_client_gone (backend);
-
+	
 	g_mutex_unlock (backend->priv->clients_mutex);
 
 	g_object_unref (backend);
+}
+
+gboolean
+e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
+{
+	GList *l;
+
+	g_mutex_lock (backend->priv->clients_mutex);
+
+	if (!backend->priv->clients) {
+		g_mutex_unlock (backend->priv->clients_mutex);
+		
+		return FALSE;
+	}
+	
+	for (l = backend->priv->clients; l; l = l->next) {
+		if (ORBit_small_get_connection_status (e_data_book_get_listener (l->data)) != ORBIT_CONNECTION_IN_PROC) {
+			g_mutex_unlock (backend->priv->clients_mutex);
+			
+			return TRUE;
+		}
+	}
+	
+	g_mutex_unlock (backend->priv->clients_mutex);
+
+	/* If we get here, all remaining clients are in proc */
+
+	return FALSE;
 }
 
 char *
