@@ -724,6 +724,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 
 	/* summary */
 	text.value = e_gw_item_get_subject (item);
+	text.altrep = NULL;
 	e_cal_component_set_summary (comp, &text);
 
 	/* description */
@@ -732,6 +733,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 		GSList l;
 
 		text.value = description;
+		text.altrep = NULL;
 		l.data = &text;
 		l.next = NULL;
 
