@@ -2181,6 +2181,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	int cursor;
 	gboolean done = FALSE;
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
+	const char *position = E_GW_CURSOR_POSITION_START;
 	
 	
 	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, NULL, NULL, &cursor);
@@ -2188,7 +2189,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 		return FALSE;
 	while (!done) {
 
-		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, &gw_items);
+		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &gw_items);
 
 		for (l = gw_items; l != NULL; l = g_list_next (l)) { 
 			contact = e_contact_new ();
@@ -2206,6 +2207,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	       	
 		g_list_free (gw_items);
 		gw_items = NULL;
+		position = E_GW_CURSOR_POSITION_CURRENT;
 	}
 	
 	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);

@@ -1,3 +1,9 @@
+2005-02-24  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c: (build_cache):
+	update the e_gw_connection_read_cursor to use the new prototype
+	that uses a position argument.
+
 2005-02-22 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 
