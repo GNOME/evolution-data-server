@@ -279,7 +279,10 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	SoupSoapParameter *param;
 	EGwConnectionStatus status;
 	char *hash_key;
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;	
 	
+	g_static_mutex_lock (&connecting);
+
 	/* search the connection in our hash table */
 	if (loaded_connections != NULL) {
 		hash_key = g_strdup_printf ("%s:%s@%s",
@@ -291,6 +294,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 
 		if (E_IS_GW_CONNECTION (cnc)) {
 			g_object_ref (cnc);
+			g_static_mutex_unlock (&connecting);
 			return cnc;
 		}
 	}
@@ -314,6 +318,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (cnc);
+		g_static_mutex_unlock (&connecting);
 		return NULL;
 	}
 
@@ -323,6 +328,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	if (!param) {
 		g_object_unref (response);
 		g_object_unref (cnc);
+		g_static_mutex_unlock (&connecting);
 		return NULL;
 	}
 	
@@ -367,6 +373,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 
 	/* free memory */
 	g_object_unref (response);
+	g_static_mutex_unlock (&connecting);
 
 	return cnc;
 }
