@@ -1,3 +1,10 @@
+2004-09-16 Sivaiah Nallagatla  <snallagatla@novell.com>
+
+	* backends/gropwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_get_contact_list) :
+	don't try to search over summary in case of system addr book
+	as we don't maintain one. 
+
 2004-09-13  Hans Petter Jansson  <hpj@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c: Revert the LDAP attribute names
