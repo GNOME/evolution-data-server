@@ -15,9 +15,6 @@ ECalView is a view of the ECal.
 #e-cal, #e-cal-view-listener
 </para>
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 <!-- ##### STRUCT ECal ##### -->
 <para>
 

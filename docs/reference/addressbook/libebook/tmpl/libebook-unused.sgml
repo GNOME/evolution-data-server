@@ -60,6 +60,12 @@ e-book-marshal
 </para>
 
 
+<!-- ##### TYPEDEF EBookQuery ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT EBookViewListenerPrivate ##### -->
 <para>
 
@@ -82,6 +88,10 @@ e-book-marshal
 <para>
 
 </para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
 
 
 <!-- ##### FUNCTION e_book_async_get_default_addressbook ##### -->

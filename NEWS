@@ -1,3 +1,99 @@
+Evolution Data Server 1.1.6, 2005-02-28
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+    #72806 - EDS is crashing while trying to add a contact to Groupwise book (Siva)
+    #70908 - Can't remove e-mail addresses assigned to types evolution doesn't know about (Siva)
+    #67541 - LDAP password not remembered (Siva)
+
+  * Calendar
+    #71490 - Events shows up multiple times (Chen)
+    #71545 - Crash At Startup of Evolution 2.1 (Rodrigo)
+    #72107 - Evolution is hanging if you go offline and then come online (Chen)
+    #73008 - Recipients in CC and BCC field gets added into the TO field and not in their intended place (Sankar)
+    #72965 - Unable to rename a groupwise folder (Partha)
+    #72285 - groupwise backend crashes on a GWPOA generated email (Sankar)
+    #72907 - Few mails are not available for offline in groupwise (Siva)
+
+  * Camel
+    #68459 - Answering to Usenet article doesn't consider the "Followup-To:" field (Michael)
+    #71747 - IMAP host lookup on 'hostname;noselect=yes' (Jeff)
+    #71752 - Make sure auth_domain is 'Groupwise' (Vivek)
+    #72106 - New mails are in "READ" state (Partha)
+    #61468 - From and Subject information is missing from Inbox mailbox (Michael)
+    #57185 - MH file mode changes and broken links (Michael)
+    #59507 - tries to write junk cmeta in local spool (Michael)
+    #71812 - folders are stored way too often (Michael)
+    #70590 - Filters mark mail as read when it really isn't (Michael)
+    #72609 - Crash everytime when read the article (Michael)
+
+  * All
+    #9605  - Let "Delete" remove selected contact from the name selector (Harry Lu)
+    #73011 - Evolution crashed when clicked on new category (Rodrigo)
+
+Other bugs
+
+  * Addressbook
+    - Make sure editors are always read-only in offline mode (Siva)
+    - Destroy groupwise connection hash tables correctly (Chen)
+    - Migration issue with non-ASCII quoted printable chars in contact notes (Siva)
+
+  * Calendar
+    - Return the weather calendar capabilities properly (Rodrigo)
+    - Fix getQM issues in groupwise backend so we don't miss events (Harish, Chen)
+    - Locking fixes to prevent races in backend (JP, Rodrigo)
+    - Download groupwise calendar attachments only if not already in cache (Harish)
+    - Destroy groupwise connection hash tables correctly (Chen)
+    - Make sure groupwise item creation date exists before using (Chen)
+    - Fix crash during migration if e-d-s is not available (Rodrigo)
+    - Set detached instance recurid and start/end properly (Rodrigo)
+
+  * Camel
+    - Make junk code use camel debug (Rodo)
+    - Use groupwise getQM call with correct timestamp to prevent missing messages (Harish)
+    - Fix deletion of groupwise mail (Chen)
+    - Fix server version display in warning (Vivek)
+    - Show correct time for mails (Partha)
+    - Rename inbox/INBOX to Inbox, so it is translatable (Björn Torkelsson)
+    - Use XGMOVE if possible in IMAP4 (Jeff)
+    - Flag IMAP4 inbox properly (Björn Torkelsson)
+    - Just search the cache if IMAP4 is in offline mode (Jeff)
+
+  * All
+    - PPC fixes (Hans)
+    - Allow name selector to auth books properly (Hans)
+    - Leak fix (Kjartan Maraas)
+	
+Updated Translations:
+	- el (Kostas Papadimas, Nikos Charonitakis)
+	- nl (Vincent van Adrighem)
+	- hu (Laszlo Dvornik)
+	- da (Martin Willemoes Hansen)
+	- gu (Ankit Patel) <ankit644@yahoo.com>
+	- pl (Artur Flinta)
+	- uk (Maxim Dziumanenko)
+	- fr (Thierry Moisan)
+	- pt (Duarte Loreto)
+	- it (Marco Ciampa)
+	- nb (Kjartan Maraas)
+	- no (Kjartan Maraas)
+	- bg (Vladimir Petkov)
+	- fi (Ilkka Tuohela)
+	- ru (Leonid Kanter)
+	- sq (Laurent Dhima)
+	- bg (Vladimir Petkov)
+	- lt (Zygimantas Berucka)
+	- en_GB (David Lodge)
+	- ja (Takeshi AIHANA)
+	- ko (Changwoo Ryu)
+	- sv (Christian Rose)
+	- en_CA (Adam Weinberger)
+	- es (Francisco Javier F. Serrador)
+	- de (Frank Arnold)
+	- cs (Miloslav Trmac)
+
 Evolution Data Server 1.1.5, 2005-02-07
 ---------------------------------------
 

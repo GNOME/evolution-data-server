@@ -417,6 +417,10 @@
 
 @klass: 
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+
 <!-- ##### FUNCTION e_cal_remove_calendar ##### -->
 <para>
 

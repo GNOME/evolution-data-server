@@ -14,9 +14,6 @@ Does the low-level parsing work for contact information. This data is more conve
 #e-contact
 </para>
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 <!-- ##### STRUCT EVCard ##### -->
 <para>
 
