@@ -1,3 +1,8 @@
+2003-12-16  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libedataserver/e-source.c (e_source_equal): Implement. Compares
+	two sources based on UID and full URI.
+
 2003-12-12  Rodrigo Moya <rodrigo@ximian.com>
 
 	* configure.in: added --enable-debug argument.

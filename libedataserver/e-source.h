@@ -62,6 +62,8 @@ ESource *e_source_new_from_standalone_xml (const char *xml);
 
 ESource *e_source_copy (ESource *source);
 
+gboolean e_source_equal (ESource *source_1, ESource *source_2);
+
 gboolean  e_source_update_from_xml_node  (ESource    *source,
 					  xmlNodePtr  node,
 					  gboolean   *changed_return);

@@ -206,6 +206,32 @@ e_source_new_from_xml_node (xmlNodePtr node)
 	return NULL;
 }
 
+gboolean
+e_source_equal (ESource *source_1, ESource *source_2)
+{
+	gboolean equal = FALSE;
+
+	g_return_val_if_fail (E_IS_SOURCE (source_1), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source_2), FALSE);
+
+	if (source_1->priv->uid && source_2->priv->uid &&
+	    !strcmp (source_1->priv->uid, source_2->priv->uid)) {
+		equal = TRUE;
+	} else {
+		gchar *uri_1, *uri_2;
+
+		uri_1 = e_source_get_uri (source_1);
+		uri_2 = e_source_get_uri (source_2);
+
+		if (uri_1 && uri_2 && !strcmp (uri_1, uri_2))
+			equal = TRUE;
+
+		g_free (uri_1);
+		g_free (uri_2);
+	}
+
+	return equal;
+}
 
 static void
 import_properties (ESource *source,
