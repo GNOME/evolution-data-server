@@ -20,6 +20,7 @@ libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
 	e-destination-store.c		\
 	e-contact-store.c		\
+	e-name-selector.c		\
 	e-name-selector-dialog.c	\
 	e-name-selector-entry.c		\
 	e-name-selector-model.c		\
@@ -39,6 +40,7 @@ libedataserveruiincludedir = $(privincludedir)/libedataserverui
 libedataserveruiinclude_HEADERS =	\
 	e-destination-store.h		\
 	e-contact-store.h		\
+	e-name-selector.h		\
 	e-name-selector-dialog.h	\
 	e-name-selector-entry.h		\
 	e-name-selector-model.h		\

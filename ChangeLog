@@ -1,3 +1,12 @@
+2004-12-21  Hans Petter Jansson  <hpj@novell.com>
+
+	* libedatasererui/e-name-selector.[ch]: Implement ENameSelector,
+	a convenience context that sets up and provides the shared model
+	and widgets for one name selection session.
+
+	* libedataserverui/Makefile.am (libedataserverui_1_2_la_SOURCES)
+	(libedataserveruiinclude_HEADERS): Add ENameSelector.
+
 2004-12-20  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: bump version, libtool numbers
