@@ -303,7 +303,7 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 	/*Egroupwise item*/
 	item = e_gw_item_new_empty () ;
 	
-	/*poulate recipient list*/
+	/*populate recipient list*/
 	camel_address_remove(recipients,-1);
 	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO)));
 	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_TO);
@@ -481,7 +481,19 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 			case 1: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_MAIL);
 		}
 	}	
-
+	
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_PRIORITY);
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case E_GW_PRIORITY_HIGH: e_gw_item_set_priority(item, "High");
+						 break;
+			case E_GW_PRIORITY_LOW:  e_gw_item_set_priority(item, "Low");
+						 break;
+			case E_GW_PRIORITY_STANDARD: e_gw_item_set_priority(item, "Standard");
+						     break;
+		}
+	}
+	
 	return item;
 }
 

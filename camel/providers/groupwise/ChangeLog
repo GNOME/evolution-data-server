@@ -1,3 +1,8 @@
+2005-03-09  Sankar P <psankar@novell.com>
+
+	* camel-groupwise-utils.c:(camel_groupwise_util_item_from_message)
+	Added code to fix the problem of Priority not set in outgoing mails
+	
 2005-03-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c:
