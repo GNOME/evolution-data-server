@@ -7,15 +7,15 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server 0.0.4\n"
-"POT-Creation-Date: 2004-01-12 21:29-0500\n"
-"PO-Revision-Date: 2004-01-06 14:31+0100\n"
+"Project-Id-Version: evolution-data-server 0.0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-14 22:03+0100\n"
+"PO-Revision-Date: 2004-01-14 22:03+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -311,148 +311,124 @@ msgid "ICQ Id List"
 msgstr "ICQ-Kennungsliste"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Liste angezeigter AIM-Namen"
+msgstr "Angezeigter AIM-Privatname 1"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "Liste angezeigter AIM-Namen"
+msgstr "Angezeigter AIM-Privatname 2"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "Liste angezeigter AIM-Namen"
+msgstr "Angezeigter AIM-Privatname 3"
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "Liste angezeigter AIM-Namen"
+msgstr "Angezeigter AIM-Geschäftsname 1"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "Liste angezeigter AIM-Namen"
+msgstr "Angezeigter AIM-Geschäftsname 2"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "Liste angezeigter AIM-Namen"
+msgstr "Angezeigter AIM-Geschäftsname 3"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Jabber-Kennungsliste"
+msgstr "Jabber-Privatkennung 1"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Jabber-Kennungsliste"
+msgstr "Jabber-Privatkennung 2"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Jabber-Kennungsliste"
+msgstr "Jabber-Privatkennung 3"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Jabber-Kennungsliste"
+msgstr "Jabber-Geschäftskennung 1"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Jabber-Kennungsliste"
+msgstr "Jabber-Geschäftskennung 2"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Jabber-Kennungsliste"
+msgstr "Jabber-Geschäftskennung 3"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Liste angezeigter Yahoo!-Namen"
+msgstr "Angezeigter Yahoo!-Privatname 1"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Liste angezeigter Yahoo!-Namen"
+msgstr "Angezeigter Yahoo!-Privatname 2"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Liste angezeigter Yahoo!-Namen"
+msgstr "Angezeigter Yahoo!-Privatname 3"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Liste angezeigter Yahoo!-Namen"
+msgstr "Angezeigter Yahoo!-Geschäftsname 1"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Liste angezeigter Yahoo!-Namen"
+msgstr "Angezeigter Yahoo!-Geschäftsname 2"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Liste angezeigter Yahoo!-Namen"
+msgstr "Angezeigter Yahoo!-Geschäftsname 3"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "Liste angezeigter MSN-Namen"
+msgstr "Angezeigter MSN-Privatname 1"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "Liste angezeigter MSN-Namen"
+msgstr "Angezeigter MSN-Privatname 2"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "Liste angezeigter MSN-Namen"
+msgstr "Angezeigter MSN-Privatname 3"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "Liste angezeigter MSN-Namen"
+msgstr "Angezeigter MSN-Geschäftsname 1"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "Liste angezeigter MSN-Namen"
+msgstr "Angezeigter MSN-Geschäftsname 2"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "Liste angezeigter MSN-Namen"
+msgstr "Angezeigter MSN-Geschäftsname 3"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "ICQ-Privatkennung 1"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "ICQ-Privatkennung 2"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "ICQ-Privatkennung 3"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "ICQ-Geschäftskennung 1"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "ICQ-Geschäftskennung 2"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "ICQ-Geschäftskennung 3"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:188
@@ -494,7 +470,7 @@ msgstr "Weblog-URL"
 
 #: addressbook/libebook/e-contact.c:200
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr "Videokonferenz-URL"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:203
@@ -563,19 +539,18 @@ msgstr "Namenlose Liste"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:408
-#, fuzzy
 msgid "Birthday"
-msgstr "Geburtsdatum"
+msgstr "Geburtstag"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:430
 #, c-format
 msgid "Birthday: %s"
-msgstr ""
+msgstr "Geburtstag: %s"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:449
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "Jahrestag"
+msgstr "Jahrestag: %s"
 
 #: calendar/backends/file/e-cal-backend-file.c:176
 msgid "Can't save calendar data: Malformed URI."
@@ -815,9 +790,9 @@ msgid "No error"
 msgstr "Kein Fehler"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:498
-#: calendar/libedata-cal/e-cal-backend-sexp.c:630
-#: calendar/libedata-cal/e-cal-backend-sexp.c:657
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
+#: calendar/libedata-cal/e-cal-backend-sexp.c:633
+#: calendar/libedata-cal/e-cal-backend-sexp.c:660
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "»%s« erwartet keine Argumente"
@@ -825,13 +800,15 @@ msgstr "»%s« erwartet keine Argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:695
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#: calendar/libedata-cal/e-cal-backend-sexp.c:698
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "»%s« erwartet ein Argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:444
+#: calendar/libedata-cal/e-cal-backend-sexp.c:238
+#: calendar/libedata-cal/e-cal-backend-sexp.c:447
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "»%s« erwartet als erstes Argument eine Zeichenkette"
@@ -843,8 +820,8 @@ msgstr ""
 "»%s« erwartet als erstes Argument eine Datum-/Zeit-Zeichenkette nach ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:277
-#: calendar/libedata-cal/e-cal-backend-sexp.c:438
+#: calendar/libedata-cal/e-cal-backend-sexp.c:280
+#: calendar/libedata-cal/e-cal-backend-sexp.c:441
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "»%s« erwartet zwei Argumente"
@@ -852,8 +829,8 @@ msgstr "»%s« erwartet zwei Argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:283
-#: calendar/libedata-cal/e-cal-backend-sexp.c:701
+#: calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: calendar/libedata-cal/e-cal-backend-sexp.c:704
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "»%s« erwartet als erstes Argument einen time_t-Wert"
@@ -863,27 +840,17 @@ msgstr "»%s« erwartet als erstes Argument einen time_t-Wert"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "»%s« erwartet als zweites Argument eine Ganzzahl"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#, fuzzy
-msgid "uid? expects 1 argument"
-msgstr "»%s« erwartet keine Argumente"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:237
-#, fuzzy
-msgid "uid? expects argument 1 to be a string"
-msgstr "»%s« erwartet als erstes Argument eine Zeichenkette"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:291
+#: calendar/libedata-cal/e-cal-backend-sexp.c:294
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "»%s« erwartet als zweites Argument einen time_t-Wert"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:452
+#: calendar/libedata-cal/e-cal-backend-sexp.c:455
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "»%s« erwartet als zweites Argument eine Zeichenkette"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -892,12 +859,12 @@ msgstr ""
 "»%s« erwartet als erstes Argument entweder »any«, »summary« oder "
 "»description«"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:532
+#: calendar/libedata-cal/e-cal-backend-sexp.c:535
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "»%s« erwartet mindestens ein Argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:546
+#: calendar/libedata-cal/e-cal-backend-sexp.c:549
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
