@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <libebook/e-vcard.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_CONTACT            (e_contact_get_type ())
 #define E_CONTACT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CONTACT, EContact))
 #define E_CONTACT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CONTACT, EContactClass))
@@ -297,5 +299,7 @@ const char*             e_contact_field_name       (EContactField field_id);
 const char*             e_contact_pretty_name      (EContactField field_id);
 const char*             e_contact_vcard_attribute  (EContactField field_id);
 EContactField           e_contact_field_id         (const char *field_name);
+
+G_END_DECLS
 
 #endif /* __E_CONTACT_H__ */

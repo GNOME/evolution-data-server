@@ -19,6 +19,8 @@
 #include <libedata-book/Evolution-DataServer-Addressbook.h>
 #include <libedata-book/e-data-book-types.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_DATA_BOOK_VIEW        (e_data_book_view_get_type ())
 #define E_DATA_BOOK_VIEW(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DATA_BOOK_VIEW, EDataBookView))
 #define E_DATA_BOOK_VIEW_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_DATA_BOOK_VIEW, EDataBookViewClass))
@@ -63,5 +65,7 @@ void         e_data_book_view_notify_status_message  (EDataBookView             
 						      const char                   *message);
 
 GType        e_data_book_view_get_type               (void);
+
+G_END_DECLS
 
 #endif /* ! __E_DATA_BOOK_VIEW_H__ */

@@ -1,6 +1,8 @@
 #ifndef __E_ADDRESS_WESTERN_H__
 #define __E_ADDRESS_WESTERN_H__
 
+G_BEGIN_DECLS
+
 typedef struct {
 	
 	/* Public */
@@ -15,6 +17,8 @@ typedef struct {
 
 EAddressWestern *e_address_western_parse (const char *address);
 void e_address_western_free (EAddressWestern *eaw);
+
+G_END_DECLS
 
 #endif  /* ! __E_ADDRESS_WESTERN_H__ */
 

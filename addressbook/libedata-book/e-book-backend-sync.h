@@ -10,6 +10,8 @@
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-book-backend.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_BOOK_BACKEND_SYNC         (e_book_backend_sync_get_type ())
 #define E_BOOK_BACKEND_SYNC(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_SYNC, EBookBackendSync))
 #define E_BOOK_BACKEND_SYNC_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_BACKEND_SYNC, EBookBackendSyncClass))
@@ -77,5 +79,7 @@ EBookBackendSyncStatus e_book_backend_sync_get_changes (EBookBackendSync *backen
 EBookBackendSyncStatus e_book_backend_sync_authenticate_user (EBookBackendSync *backend, EDataBook *book, const char *user, const char *passwd, const char *auth_method);
 EBookBackendSyncStatus e_book_backend_sync_get_supported_fields (EBookBackendSync *backend, EDataBook *book, GList **fields);
 EBookBackendSyncStatus e_book_backend_sync_get_supported_auth_methods (EBookBackendSync *backend, EDataBook *book, GList **methods);
+
+G_END_DECLS
 
 #endif /* ! __E_BOOK_BACKEND_SYNC_H__ */

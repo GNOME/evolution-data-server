@@ -1,6 +1,8 @@
 #ifndef __E_NAME_WESTERN_TABLES_H__
 #define __E_NAME_WESTERN_TABLES_H__
 
+G_BEGIN_DECLS
+
 char *e_name_western_pfx_table[] = {
 
 	/*
@@ -70,5 +72,7 @@ char *e_name_western_twopart_sfx_table[] = {
 	NULL};
 
 char *e_name_western_complex_last_table[] = {"van", "von", "de", "di", NULL};
+
+G_END_DECLS
 
 #endif /* ! __E_NAME_WESTERN_TABLES_H__ */

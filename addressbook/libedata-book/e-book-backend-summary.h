@@ -29,6 +29,8 @@
 #include <libedata-book/e-data-book-types.h>
 #include <libebook/e-contact.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_BACKEND_SUMMARY        (e_book_backend_summary_get_type ())
 #define E_BOOK_BACKEND_SUMMARY(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_SUMMARY, EBookBackendSummary))
 #define E_BOOK_BACKEND_SUMMARY_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_BOOK_BACKEND_TYPE, EBookBackendSummaryClass))
@@ -69,5 +71,7 @@ gboolean           e_book_backend_summary_is_up_to_date     (EBookBackendSummary
 gboolean           e_book_backend_summary_is_summary_query  (EBookBackendSummary *summary, const char *query);
 GPtrArray*         e_book_backend_summary_search            (EBookBackendSummary *summary, const char *query);
 char*              e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary, const char *id);
+
+G_END_DECLS
 
 #endif /* __E_BOOK_BACKEND_SUMMARY_H__ */

@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 #define EVC_ADR             "ADR"
 #define EVC_BDAY            "BDAY"
 #define EVC_CALURI          "CALURI"
@@ -186,5 +188,7 @@ gboolean         e_vcard_attribute_has_type         (EVCardAttribute *attr, cons
 /* Utility functions. */
 char*            e_vcard_escape_string (const char *str);
 char*            e_vcard_unescape_string (const char *str);
+
+G_END_DECLS
 
 #endif /* _EVCARD_H */

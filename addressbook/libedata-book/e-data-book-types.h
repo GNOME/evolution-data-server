@@ -11,6 +11,8 @@
 #ifndef __E_DATA_BOOK_TYPES_H__
 #define __E_DATA_BOOK_TYPES_H__
 
+G_BEGIN_DECLS
+
 typedef struct _EDataBookView        EDataBookView;
 typedef struct _EDataBookViewClass   EDataBookViewClass;
 
@@ -28,5 +30,7 @@ typedef struct _EBookBackendSyncClass   EBookBackendSyncClass;
 
 typedef struct _EDataBook        EDataBook;
 typedef struct _EDataBookClass   EDataBookClass;
+
+G_END_DECLS
 
 #endif /* __E_DATA_BOOK_TYPES_H__ */

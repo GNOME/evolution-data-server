@@ -1,3 +1,19 @@
+2004-05-03  William Jon McCann  <mccann@jhu.edu>
+
+	* addressbook/libebook/e-address-western.h:
+	* addressbook/libebook/e-contact.h:
+	* addressbook/libebook/e-name-western-tables.h:
+	* addressbook/libebook/e-name-western.h:
+	* addressbook/libebook/e-vcard.h:
+	* addressbook/libedata-book/e-book-backend-sexp.h:
+	* addressbook/libedata-book/e-book-backend-summary.h:
+	* addressbook/libedata-book/e-book-backend-sync.h:
+	* addressbook/libedata-book/e-book-backend.h:
+	* addressbook/libedata-book/e-data-book-types.h:
+	* addressbook/libedata-book/e-data-book-view.h:
+	* addressbook/libedata-book/e-data-book.h:
+	Add missing G_BEGIN_DECLS and G_END_DECLS
+
 2004-05-02  Chris Toshok  <toshok@ximian.com>
 
 	* libedata-book/e-book-backend-sexp.c (prop_info_table): add

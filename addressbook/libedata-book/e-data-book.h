@@ -18,6 +18,8 @@
 #include <libedata-book/Evolution-DataServer-Addressbook.h>
 #include <libedata-book/e-data-book-types.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_DATA_BOOK        (e_data_book_get_type ())
 #define E_DATA_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DATA_BOOK, EDataBook))
 #define E_DATA_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_DATA_BOOK_FACTORY_TYPE, EDataBookClass))
@@ -92,5 +94,7 @@ void                    e_data_book_report_writable        (EDataBook           
 							 gboolean                           writable);
 
 GType                   e_data_book_get_type               (void);
+
+G_END_DECLS
 
 #endif /* ! __E_DATA_BOOK_H__ */

@@ -29,6 +29,8 @@
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-data-book.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_BOOK_BACKEND         (e_book_backend_get_type ())
 #define E_BOOK_BACKEND(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND, EBookBackend))
 #define E_BOOK_BACKEND_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_BACKEND, EBookBackendClass))
@@ -167,6 +169,8 @@ void        e_book_backend_set_is_removed           (EBookBackend             *b
 GNOME_Evolution_Addressbook_BookChangeItem* e_book_backend_change_add_new     (const char *vcard);
 GNOME_Evolution_Addressbook_BookChangeItem* e_book_backend_change_modify_new  (const char *vcard);
 GNOME_Evolution_Addressbook_BookChangeItem* e_book_backend_change_delete_new  (const char *id);
+
+G_END_DECLS
 
 #endif /* ! __E_BOOK_BACKEND_H__ */
 

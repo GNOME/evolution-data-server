@@ -29,6 +29,8 @@
 #include <libebook/e-contact.h>
 #include <libedata-book/e-data-book-types.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_BACKEND_SEXP        (e_book_backend_sexp_get_type ())
 #define E_BOOK_BACKEND_SEXP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_SEXP, EBookBackendSExp))
 #define E_BOOK_BACKEND_SEXP_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_BOOK_BACKEND_TYPE, EBookBackendSExpClass))
@@ -52,5 +54,7 @@ GType               e_book_backend_sexp_get_type (void);
 
 gboolean            e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const char *vcard);
 gboolean            e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact);
+
+G_END_DECLS
 
 #endif /* __E_BOOK_BACKEND_SEXP_H__ */
