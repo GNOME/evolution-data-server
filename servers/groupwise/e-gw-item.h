@@ -125,6 +125,18 @@ typedef struct {
 	char *date ;
 } EGwItemAttachment ;
 
+typedef enum {
+	E_GW_ITEM_NOTIFY_NONE,
+	E_GW_ITEM_NOTIFY_MAIL
+} EGwItemReturnNotify;
+
+typedef enum {
+	E_GW_ITEM_NONE,
+	E_GW_ITEM_DELIVERED,
+	E_GW_ITEM_DELIVERED_OPENED,
+	E_GW_ITEM_ALL
+} EGwItemTrack;
+
 GType       e_gw_item_get_type (void);
 EGwItem    *e_gw_item_new_empty (void);
 EGwItem    *e_gw_item_new_from_soap_parameter (const char *email, const char *container, SoupSoapParameter *param);
@@ -179,6 +191,28 @@ void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *f
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
 char* e_gw_item_get_category_name (EGwItem *item);
+void e_gw_item_set_reply_request (EGwItem *item, gboolean set);
+gboolean e_gw_item_get_reply_request (EGwItem *item);
+void e_gw_item_set_reply_within (EGwItem *item, char *reply_within);
+char *e_gw_item_get_reply_within (EGwItem *item);
+void e_gw_item_set_track_info (EGwItem *item, EGwItemTrack track_info);
+EGwItemTrack e_gw_item_get_track_info (EGwItem *item);
+void e_gw_item_set_autodelete (EGwItem *item, gboolean set);
+gboolean e_gw_item_get_autodelete (EGwItem *item);
+void e_gw_item_set_notify_completed (EGwItem *item, EGwItemReturnNotify notify);
+EGwItemReturnNotify e_gw_item_get_notify_completed (EGwItem *item);
+void e_gw_item_set_notify_accepted (EGwItem *item, EGwItemReturnNotify notify);
+EGwItemReturnNotify e_gw_item_get_notify_accepted (EGwItem *item);
+void e_gw_item_set_notify_declined (EGwItem *item, EGwItemReturnNotify notify);
+EGwItemReturnNotify e_gw_item_get_notify_declined (EGwItem *item);
+void e_gw_item_set_notify_opened (EGwItem *item, EGwItemReturnNotify notify);
+EGwItemReturnNotify e_gw_item_get_notify_opened (EGwItem *item);
+void e_gw_item_set_notify_deleted (EGwItem *item, EGwItemReturnNotify notify);
+EGwItemReturnNotify e_gw_item_get_notify_deleted (EGwItem *item);
+void e_gw_item_set_expires (EGwItem *item, char *expires);
+char *e_gw_item_get_expires (EGwItem *item);
+void e_gw_item_set_delay_until (EGwItem *item, char *delay_until);
+char *e_gw_item_get_delay_until (EGwItem *item);
 
 
 #define E_GW_ITEM_CLASSIFICATION_PUBLIC       "Public"
@@ -201,6 +235,8 @@ void        e_gw_item_set_accept_level (EGwItem *item, const char *new_level);
 
 const char *e_gw_item_get_priority (EGwItem *item);
 void        e_gw_item_set_priority (EGwItem *item, const char *new_priority);
+const char *e_gw_item_get_task_priority (EGwItem *item);
+void        e_gw_item_set_task_priority (EGwItem *item, const char *new_priority);
 
 GSList *e_gw_item_get_recipient_list (EGwItem *item);
 void e_gw_item_set_recipient_list (EGwItem *item, GSList *new_recipient_list);

@@ -50,6 +50,7 @@ struct _EGwItemPrivate {
 	char *classification;
 	char *accept_level;
 	char *priority;
+	char *task_priority;
 	char *place;
 	GSList *recipient_list;
 	GSList *recurrence_dates;
@@ -81,6 +82,29 @@ struct _EGwItemPrivate {
 	GHashTable *simple_fields;
 	GList *member_list;
 	GHashTable *addresses;
+
+	/***** Send Options *****/
+	
+	/* Reply Request */
+	char *reply_within;
+	gboolean reply_request_set;
+	
+	/* Status Tracking through sent Item */
+	EGwItemTrack track_info;
+	gboolean autodelete;
+
+	/* Return Notification */
+	EGwItemReturnNotify notify_completed;
+	EGwItemReturnNotify notify_accepted;
+	EGwItemReturnNotify notify_declined;
+	EGwItemReturnNotify notify_opened;
+	EGwItemReturnNotify notify_deleted;
+
+	/* Expiration Date */
+	char *expires;
+
+	/* Delay delivery */
+	char *delay_until;
 
 	/* changes */
 	GHashTable *additions;
@@ -247,7 +271,12 @@ e_gw_item_dispose (GObject *object)
 			g_free (priv->priority);
 			priv->priority = NULL;
 		}
-
+			
+		if (priv->task_priority) {
+			g_free (priv->task_priority);
+			priv->task_priority = NULL;
+		}
+		
 		if (priv->place) {
 			g_free (priv->place);
 			priv->place = NULL;
@@ -271,6 +300,21 @@ e_gw_item_dispose (GObject *object)
 		if (priv->icalid) {
 			g_free (priv->icalid);
 			priv->icalid = NULL;
+		}
+
+		if (priv->reply_within) {
+			g_free (priv->reply_within);
+			priv->reply_within = NULL;
+		}
+
+		if (priv->expires) {
+			g_free (priv->expires);
+			priv->expires = NULL;
+		}
+
+		if (priv->delay_until) {
+			g_free (priv->delay_until);
+			priv->delay_until = NULL;
 		}
 
 		if (priv->recipient_list) {
@@ -387,6 +431,11 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->email_list = NULL;
 	priv->member_list = NULL;
 	priv->category_list = NULL;
+	priv->reply_within = NULL;
+	priv->reply_request_set = FALSE;
+	priv->autodelete = FALSE;
+	priv->expires = NULL;
+	priv->delay_until = NULL;
 	priv->attach_list = NULL ;
 	priv->simple_fields = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
 	priv->full_name = g_new0(FullName, 1);
@@ -1582,12 +1631,8 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		} else if (!g_ascii_strcasecmp (name, "place"))
 			item->priv->place = soup_soap_parameter_get_string_value (child);
 
-		else if (!g_ascii_strcasecmp (name, "options")) {
-			SoupSoapParameter *priority;
-
-			priority = soup_soap_parameter_get_first_child_by_name (child, "priority");
-			if (priority)
-				e_gw_item_set_priority (item, soup_soap_parameter_get_string_value (priority));
+		else if (!g_ascii_strcasecmp (name, "taskPriority")) {
+			e_gw_item_set_task_priority (item, soup_soap_parameter_get_string_value (child));
 		}
 
 		else if (!g_ascii_strcasecmp (name, "startDate")) {
@@ -1925,6 +1970,23 @@ e_gw_item_set_priority (EGwItem *item, const char *new_priority)
 	item->priv->priority = g_strdup (new_priority);
 }
 
+const char *
+e_gw_item_get_task_priority (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return (const char *) item->priv->task_priority;
+}
+
+void
+e_gw_item_set_task_priority (EGwItem *item, const char *new_priority)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->task_priority)
+		g_free (item->priv->task_priority);
+	item->priv->task_priority = g_strdup (new_priority);
+}
 GSList *
 e_gw_item_get_recipient_list (EGwItem *item)
 {
@@ -1996,6 +2058,7 @@ e_gw_item_set_trigger (EGwItem *item, int trigger)
 	item->priv->trigger = trigger;
 }
 
+
 void 
 e_gw_item_set_to (EGwItem *item, const char *to)
 {
@@ -2017,10 +2080,231 @@ e_gw_item_get_msg_content_type (EGwItem *item)
 	return item->priv->content_type ;
 }
 
+void
+e_gw_item_set_reply_request (EGwItem *item, gboolean set)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->reply_request_set = set;
+}
+
+gboolean
+e_gw_item_get_reply_request (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->reply_request_set;
+}
+
+void
+e_gw_item_set_reply_within (EGwItem *item, char *reply_within)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->reply_within = g_strdup (reply_within);
+}
+
+char *
+e_gw_item_get_reply_within (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->reply_within;
+}
+
+void
+e_gw_item_set_track_info (EGwItem *item, EGwItemTrack track_info)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->track_info = track_info;
+}
+
+EGwItemTrack
+e_gw_item_get_track_info (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), E_GW_ITEM_NONE);
+
+	return item->priv->track_info;
+}
+
+
+void
+e_gw_item_set_autodelete (EGwItem *item, gboolean set)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->autodelete = set;
+}
+
+gboolean
+e_gw_item_get_autodelete (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->autodelete;
+}
+
+void 
+e_gw_item_set_notify_completed (EGwItem *item, EGwItemReturnNotify notify)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->notify_completed = notify;
+}
+
+EGwItemReturnNotify 
+e_gw_item_get_notify_completed (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->notify_completed;
+}
+
+void 
+e_gw_item_set_notify_accepted (EGwItem *item, EGwItemReturnNotify notify)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->notify_accepted = notify;
+}
+
+EGwItemReturnNotify 
+e_gw_item_get_notify_accepted (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->notify_accepted;
+}
+
+void 
+e_gw_item_set_notify_declined (EGwItem *item, EGwItemReturnNotify notify)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->notify_declined = notify;
+}
+
+EGwItemReturnNotify 
+e_gw_item_get_notify_declined (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->notify_declined;
+}
+
+void 
+e_gw_item_set_notify_opened (EGwItem *item, EGwItemReturnNotify notify)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->notify_opened = notify;
+}
+
+EGwItemReturnNotify 
+e_gw_item_get_notify_opened (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->notify_opened;
+}
+
+void 
+e_gw_item_set_notify_deleted (EGwItem *item, EGwItemReturnNotify notify)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->notify_deleted = notify;
+}
+
+EGwItemReturnNotify 
+e_gw_item_get_notify_deleted (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->notify_deleted;
+}
+
+void
+e_gw_item_set_expires (EGwItem *item, char *expires)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->expires = g_strdup (expires);
+}
+
+char *
+e_gw_item_get_expires (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->expires;
+}
+
+void
+e_gw_item_set_delay_until (EGwItem *item, char *delay_until)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->delay_until = g_strdup (delay_until);
+}
+
+char *
+e_gw_item_get_delay_until (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->delay_until;
+}
+
 static void
-add_distribution_to_soap_message (EGwItemOrganizer *organizer, GSList *recipient_list, SoupSoapMessage *msg)
+add_return_notification (SoupSoapMessage *msg, char *option, EGwItemReturnNotify value)
+{
+	soup_soap_message_start_element (msg, option, NULL, NULL);
+
+	switch (value) {
+		case E_GW_ITEM_NOTIFY_MAIL:
+			e_gw_message_write_string_parameter (msg, "mail", NULL, "1");
+			break;
+		case E_GW_ITEM_NOTIFY_NONE:
+			e_gw_message_write_string_parameter (msg, "mail", NULL, "0");
+	}
+	
+	soup_soap_message_end_element (msg);	
+}
+
+static void 
+append_gw_item_options (SoupSoapMessage *msg, EGwItem *item) 
+{
+	EGwItemPrivate *priv;
+
+	priv = item->priv;
+	
+	soup_soap_message_start_element (msg, "options", NULL, NULL);
+	
+	/* Priority */
+	e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "");
+
+	/* Expiration date */
+	e_gw_message_write_string_parameter (msg, "expires", NULL, priv->expires ? priv->expires : "");
+	
+	/* Delay delivery */
+	e_gw_message_write_string_parameter (msg, "delayDeliveryUntil", NULL, priv->delay_until ? priv->delay_until : "");
+
+	soup_soap_message_end_element (msg);
+}
+
+static void
+add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 {
 	GSList *rl;
+	EGwItemPrivate *priv;
+	EGwItemOrganizer *organizer;
+	GSList *recipient_list;
+
+	priv = item->priv;
+	organizer = priv->organizer;
+	recipient_list = priv->recipient_list;
 	
 	/* start distribution element */
 	soup_soap_message_start_element (msg, "distribution", NULL, NULL);
@@ -2065,10 +2349,59 @@ add_distribution_to_soap_message (EGwItemOrganizer *organizer, GSList *recipient
 	}
 	
 	soup_soap_message_end_element (msg);
+	
+	soup_soap_message_start_element (msg, "sendoptions", NULL, NULL);
+	
+	if (priv->reply_request_set) {
+		
+		soup_soap_message_start_element (msg, "requestReply", NULL, NULL);
+		
+		if (priv->reply_within)
+			e_gw_message_write_string_parameter (msg, "withinNDays", NULL, priv->reply_within);
+		
+		soup_soap_message_end_element (msg);
+	}
+
+	soup_soap_message_start_element (msg, "statusTracking", NULL, NULL);
+	
+	soup_soap_message_add_attribute (msg, "autoDelete", priv->autodelete ? "1" : "0", NULL, NULL);
+
+	switch (priv->track_info) {
+		case E_GW_ITEM_DELIVERED : soup_soap_message_write_string (msg, "Delivered");
+			 break;
+		case E_GW_ITEM_DELIVERED_OPENED : soup_soap_message_write_string (msg, "DeliveredAndOpened");
+			 break;
+		case E_GW_ITEM_ALL : soup_soap_message_write_string (msg, "All");
+			 break;
+		default: soup_soap_message_write_string (msg, "None");
+	}
+	
+	soup_soap_message_end_element (msg);
+
+	soup_soap_message_start_element (msg, "notification", NULL, NULL);
+	switch (priv->item_type) {
+	
+	/* TODO Uncomment this after the completed element is available in shemas */
+	case E_GW_ITEM_TYPE_TASK :
+//		add_return_notification (msg, "completed", priv->notify_completed);
+		
+	case E_GW_ITEM_TYPE_APPOINTMENT:
+		add_return_notification (msg, "accepted", priv->notify_accepted);
+		add_return_notification (msg, "declined", priv->notify_declined);
+		add_return_notification (msg, "opened", priv->notify_opened);
+		break;
+		
+	default:
+		add_return_notification (msg, "opened", priv->notify_opened);
+		add_return_notification (msg, "deleted", priv->notify_deleted);
+	}
+	soup_soap_message_end_element (msg);
+
+	soup_soap_message_end_element (msg);
 	soup_soap_message_end_element (msg);
 }
 
-void 
+static void 
 e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv = item->priv;
@@ -2085,8 +2418,11 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		e_gw_message_write_string_parameter (msg, "class", NULL, "");
 
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
-	if (priv->recipient_list != NULL)
-		add_distribution_to_soap_message (priv->organizer, priv->recipient_list, msg);
+
+	if (priv->recipient_list != NULL) {
+		add_distribution_to_soap_message (item, msg);
+		append_gw_item_options (msg, item);
+	}
 
 	soup_soap_message_start_element (msg, "message", NULL, NULL);
 	if (priv->message) {
@@ -2160,7 +2496,10 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		if (priv->subject)
 			e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject) ;
 		/*distribution*/
-		add_distribution_to_soap_message(priv->organizer, priv->recipient_list, msg) ;
+		add_distribution_to_soap_message(item, msg) ;
+		
+		/* item options */
+		append_gw_item_options (msg, item);
 		
 		/*message*/
 		soup_soap_message_start_element (msg, "message", NULL, NULL);
@@ -2225,9 +2564,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		} else
 			e_gw_message_write_string_parameter (msg, "dueDate", NULL, "");
 
-		soup_soap_message_start_element (msg, "options", NULL, NULL);
-		e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "");
-		soup_soap_message_end_element (msg);
+		e_gw_message_write_string_parameter (msg, "taskPriority", NULL, priv->task_priority ? priv->task_priority : "");
 		if (priv->completed)
 			e_gw_message_write_string_parameter (msg, "completed", NULL, "1");
 		else
@@ -2400,10 +2737,8 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 	}
 	if (g_hash_table_lookup (changes, "classification"))
 		e_gw_message_write_string_parameter (msg, "class", NULL, priv->classification);
-	if (g_hash_table_lookup (changes, "priority")) {
-		soup_soap_message_start_element (msg, "options", NULL, NULL);
-		e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority);
-		soup_soap_message_end_element (msg);
+	if (g_hash_table_lookup (changes, "task_priority")) {
+		e_gw_message_write_string_parameter (msg, "taskPriority", NULL, priv->task_priority);
 	}
 	if (g_hash_table_lookup (changes, "accept_level"))
 		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
