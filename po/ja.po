@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server gnome-2-10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-16 14:40+0900\n"
-"PO-Revision-Date: 2005-03-16 14:39+0900\n"
+"POT-Creation-Date: 2005-04-06 09:22+0900\n"
+"PO-Revision-Date: 2005-04-06 09:18+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -557,7 +557,7 @@ msgid "Category List"
 msgstr "カテゴリの一覧"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:371
+#: ../libedataserverui/e-categories-dialog.c:372
 msgid "Categories"
 msgstr "カテゴリ"
 
@@ -642,27 +642,23 @@ msgstr "返信要求: When convenient"
 msgid "Invalid server URI"
 msgstr "サーバ URI が不正です"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "差分を取得するためのスレッドを生成できませんでした"
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "カレンダ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "キャッシュを生成するためのスレッドを生成できませんでした"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: ../calendar/libecal/e-cal.c:4528
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:654
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:678
@@ -1024,7 +1020,7 @@ msgid "Undefined"
 msgstr "未定義"
 
 #. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1538
+#: ../calendar/libecal/e-cal.c:1538 ../libedataserverui/e-book-auth-util.c:191
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s (ユーザ %s) のパスワードを入力して下さい"
@@ -1487,7 +1483,7 @@ msgstr ""
 " \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1274
+#: ../camel/providers/nntp/camel-nntp-store.c:1275
 msgid "Cancelled."
 msgstr "キャンセルしました"
 
@@ -1816,27 +1812,27 @@ msgstr ""
 "サーバがサポートしている場合、このオプションはセキュリティ保護された DIGEST-"
 "MD5 を使ってサーバへ接続します。"
 
-#: ../camel/camel-sasl-digest-md5.c:814
+#: ../camel/camel-sasl-digest-md5.c:819
 msgid "Server challenge too long (>2048 octets)\n"
 msgstr "長すぎます (2048バイト以上です)\n"
 
-#: ../camel/camel-sasl-digest-md5.c:823
+#: ../camel/camel-sasl-digest-md5.c:828
 msgid "Server challenge invalid\n"
 msgstr "無効です\n"
 
-#: ../camel/camel-sasl-digest-md5.c:829
+#: ../camel/camel-sasl-digest-md5.c:834
 msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
 msgstr "無効なトークン \"Quality of Protection\" があります\n"
 
-#: ../camel/camel-sasl-digest-md5.c:859
+#: ../camel/camel-sasl-digest-md5.c:864
 msgid "Server response did not contain authorization data\n"
 msgstr "サーバの応答に認証データがありません\n"
 
-#: ../camel/camel-sasl-digest-md5.c:877
+#: ../camel/camel-sasl-digest-md5.c:882
 msgid "Server response contained incomplete authorization data\n"
 msgstr "サーバの応答に不完全な認証データがあります\n"
 
-#: ../camel/camel-sasl-digest-md5.c:887
+#: ../camel/camel-sasl-digest-md5.c:892
 msgid "Server response does not match\n"
 msgstr "サーバの応答が一致しません\n"
 
@@ -2742,7 +2738,7 @@ msgstr "メッセージの送信"
 
 #: ../camel/providers/imap/camel-imap-command.c:219
 #: ../camel/providers/imap/camel-imap-command.c:258
-#: ../camel/providers/imap/camel-imap-command.c:463
+#: ../camel/providers/imap/camel-imap-command.c:465
 #: ../camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "処理がキャンセルされました"
@@ -2774,16 +2770,16 @@ msgstr "IMAP サーバから予期しない応答がありました: %s"
 msgid "IMAP command failed: %s"
 msgstr "IMAP コマンドが失敗しました: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:473
+#: ../camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "サーバレスポンスはあっけなく終わりました"
 
-#: ../camel/providers/imap/camel-imap-command.c:680
+#: ../camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP サーバの応答は %s 情報を含んでいません"
 
-#: ../camel/providers/imap/camel-imap-command.c:716
+#: ../camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "IMAP サーバから予期しない OK 応答がありました: %s"
@@ -3732,7 +3728,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "作業用の mailbox を開けませんでした: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:619
-#: ../camel/providers/local/camel-mbox-summary.c:783
+#: ../camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "元のフォルダ %s を閉じることができませんでした: %s"
@@ -3747,31 +3743,32 @@ msgstr "作業フォルダを閉じることができませんでした: %s"
 msgid "Could not rename folder: %s"
 msgstr "フォルダ名を変更できませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:723
-#: ../camel/providers/local/camel-mbox-summary.c:731
-#: ../camel/providers/local/camel-mbox-summary.c:925
-#: ../camel/providers/local/camel-mbox-summary.c:933
+#: ../camel/providers/local/camel-mbox-summary.c:696
+#: ../camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "フォルダを保存できませんでした: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:935
+#: ../camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "同期しましたが, サマリーとフォルダが不一致です"
 
-#: ../camel/providers/local/camel-mbox-summary.c:859
+#: ../camel/providers/local/camel-mbox-summary.c:869
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "特定できないエラー: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "フォルダを保存できませんでした: %s"
-
-#: ../camel/providers/local/camel-mbox-summary.c:988
-#: ../camel/providers/local/camel-mbox-summary.c:1014
+#: ../camel/providers/local/camel-mbox-summary.c:998
+#: ../camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "作業 mailbox へ書き出し中にエラー: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1005
+#: ../camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "作業 mailbox へ書き出し中にエラー: %s: %s"
@@ -3945,12 +3942,12 @@ msgstr "%s からの挨拶を読むことができませんでした: %s"
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP サーバ %s がエラーコード %d を返しました: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:422
+#: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
 msgid "USENET News via %s"
 msgstr "%s 経由の USENET ニュース"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:811
+#: ../camel/providers/nntp/camel-nntp-store.c:812
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3961,7 +3958,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:905
+#: ../camel/providers/nntp/camel-nntp-store.c:906
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -3972,7 +3969,7 @@ msgstr ""
 "そのようなニュースグループはありません。選択したアイテムは親フォルダのものか"
 "もしれません。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:937
+#: ../camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -3982,44 +3979,44 @@ msgstr ""
 "\n"
 "ニュースグループがありません！"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:962
+#: ../camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "ニュース・ストアにフォルダを生成できません: 代わりに購読を申請して下さい。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:970
+#: ../camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot rename a folder in a News store."
 msgstr "ニュース格納場所のフォルダ名を変更できません。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:978
+#: ../camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "ニュース格納場所のフォルダを削除できません: 代わりに購読を停止して下さい。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1148
+#: ../camel/providers/nntp/camel-nntp-store.c:1149
 msgid "Authentication requested but no username provided"
 msgstr "認証を必要としていますが、ユーザ名が指定されていません"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1156
+#: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "%s@%s の NNTP パスワードを入力して下さい"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1160
+#: ../camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "サーバの認証を行えません: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1276
+#: ../camel/providers/nntp/camel-nntp-store.c:1277
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP コマンドが失敗しました: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1332
+#: ../camel/providers/nntp/camel-nntp-store.c:1333
 msgid "Not connected."
 msgstr "接続していません"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1385
+#: ../camel/providers/nntp/camel-nntp-store.c:1386
 #, c-format
 msgid "No such folder: %s"
 msgstr "そのようなフォルダはありません: %s"
@@ -4593,7 +4590,7 @@ msgstr "給仕"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:173 ../libedataserver/e-time-utils.c:400
+#: ../libedataserver/e-time-utils.c:179 ../libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%Y/%m/%d (%a) %p %I:%M:%S"
 
@@ -4601,7 +4598,7 @@ msgstr "%Y/%m/%d (%a) %p %I:%M:%S"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:178 ../libedataserver/e-time-utils.c:391
+#: ../libedataserver/e-time-utils.c:184 ../libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%Y/%m/%d (%a) %H:%M:%S"
 
@@ -4609,7 +4606,7 @@ msgstr "%Y/%m/%d (%a) %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:183 ../libedataserver/e-time-utils.c:396
+#: ../libedataserver/e-time-utils.c:189 ../libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%Y/%m/%d (%a) %p %I:%M %p"
 
@@ -4617,78 +4614,78 @@ msgstr "%Y/%m/%d (%a) %p %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:188 ../libedataserver/e-time-utils.c:387
+#: ../libedataserver/e-time-utils.c:194 ../libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%Y/%m/%d (%a) %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:193
+#: ../libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%Y/%m/%d (%a) %p %I 時"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:198
+#: ../libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
 msgstr "%Y/%m/%d (%a) %H 時"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:201 ../libedataserver/e-time-utils.c:294
-#: ../libedataserver/e-time-utils.c:382
+#: ../libedataserver/e-time-utils.c:207 ../libedataserver/e-time-utils.c:300
+#: ../libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
 msgstr "%Y/%m/%d (%a)"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:209
+#: ../libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%Y/%m/%d %p %I:%M:%S"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:213
+#: ../libedataserver/e-time-utils.c:219
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%Y/%m/%d %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:218
+#: ../libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%Y/%m/%d %p %I:%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:223
+#: ../libedataserver/e-time-utils.c:229
 msgid "%m/%d/%Y %H:%M"
 msgstr "%Y/%m/%d %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:228
+#: ../libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
 msgstr "%Y/%m/%d %p %I 時"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:233
+#: ../libedataserver/e-time-utils.c:239
 msgid "%m/%d/%Y %H"
 msgstr "%Y/%m/%d %H 時"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:236 ../libedataserver/e-time-utils.c:297
+#: ../libedataserver/e-time-utils.c:242 ../libedataserver/e-time-utils.c:303
 msgid "%m/%d/%Y"
 msgstr "%Y/%m/%d"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:337 ../libedataserver/e-time-utils.c:436
+#: ../libedataserver/e-time-utils.c:348 ../libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
 msgstr "%p %I:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:341 ../libedataserver/e-time-utils.c:428
+#: ../libedataserver/e-time-utils.c:352 ../libedataserver/e-time-utils.c:459
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4696,34 +4693,42 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:346 ../libedataserver/e-time-utils.c:433
+#: ../libedataserver/e-time-utils.c:357 ../libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
 msgstr "%p %I:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:350 ../libedataserver/e-time-utils.c:425
+#: ../libedataserver/e-time-utils.c:361 ../libedataserver/e-time-utils.c:456
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:354
+#: ../libedataserver/e-time-utils.c:365
 msgid "%I %p"
 msgstr "%p %I 時"
+
+#: ../libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "匿名で LDAP サーバにアクセス中"
+
+#: ../libedataserverui/e-book-auth-util.c:184
+msgid "Failed to authenticate.\n"
+msgstr "認証に失敗しました。\n"
 
 #: ../libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "カテゴリのアイコン"
 
-#: ../libedataserverui/e-categories-dialog.c:238
+#: ../libedataserverui/e-categories-dialog.c:239
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "設定の中にカテゴリ '%s' が存在します。別の名前を指定して下さい。"
 
-#: ../libedataserverui/e-categories-dialog.c:396
+#: ../libedataserverui/e-categories-dialog.c:397
 msgid "Category"
 msgstr "カテゴリ"
 
