@@ -35,6 +35,12 @@ void   e_data_server_extension_list_free     (GList *list);
  * without putting them in separate shared libraries */
 void   e_data_server_module_add_type         (GType  type);
 
+/* The following three functions should exist in modules that are
+   written to be dynamically loaded */
+void                 eds_module_initialize (GTypeModule *module);
+void                 eds_module_shutdown   (void);
+void                 eds_module_list_types (const GType **types, int *num_types);
+
 G_END_DECLS
 
 #endif /* _E_DATA_SERVER_MODULE_H */

@@ -1,3 +1,10 @@
+2004-10-04  Chris Toshok  <toshok@ximian.com>
+
+	* libedataserver/e-data-server-module.h: add the prototype for the
+	eds_module_* functions here, so modules can include this file
+	instead of writing their own prototypes in module sepcific
+	headers.
+
 2004-09-30  Chris Toshok  <toshok@ximian.com>
 
 	* evolution-data-server.pc.in (extensiondir,privlibdir): add these
