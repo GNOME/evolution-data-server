@@ -242,7 +242,10 @@ groupwise_folder_get_message( CamelFolder *folder,
 		camel_multipart_set_boundary (multipart, NULL);
 		camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
 		if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
-			camel_mime_part_set_content(part, " ", strlen(" "),"text/calendar") ;
+			char *cal_buffer = NULL ;
+			int len ;
+			convert_to_calendar (item, &cal_buffer, &len) ;
+			camel_mime_part_set_content(part, cal_buffer, len,"text/calendar") ;
 		} else
 			camel_mime_part_set_content(part, " ", strlen(" "),"text/html") ;
 		camel_multipart_add_part (multipart, part) ;
@@ -271,8 +274,9 @@ groupwise_folder_get_message( CamelFolder *folder,
 
 			status = e_gw_connection_get_attachment (cnc, g_strdup(attach->id), 0, -1, (unsigned char **)&attachment, &len) ;
 			if (status != E_GW_CONNECTION_STATUS_OK) {
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
-				return NULL;
+				//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get attachment"));
+				g_message ("Could not get attachment\n") ;
+				continue ;
 			}
 			if (attach && (len !=0) ) {
 				part = camel_mime_part_new () ;

@@ -1,3 +1,16 @@
+2005-01-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* providers/groupwise/camel-groupwise-folder.c 
+	  (groupwise_folder_get_message):
+	  Show warning, but display message in case we cannot get
+	  attachments. 
+	  Display the itip control for appointments even if no 
+	  message body is present
+	* providers/groupwise/camel-groupwise-store.c 
+	  (groupwise_get_folder_info):
+	  Not displaying the Calendar and Contacts folders in the mail
+	  view.
+
 2005-01-20  Not Zed  <NotZed@Ximian.com>
 
 	* camel-lock-helper.c (main): since malloc(MAXINT+1) returns a

@@ -701,8 +701,12 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		CamelFolderInfo *fi;
 		const char *parent ;
 		gchar *par_name = NULL;
+		EGwContainer *container = E_GW_CONTAINER (folder_list->data) ;
+		EGwContainerType type = e_gw_container_get_container_type (container) ;
 		
-		if (e_gw_container_is_root (E_GW_CONTAINER(folder_list->data))) 
+		if (e_gw_container_is_root (container)) 
+			continue ;
+		if ( (type == E_GW_CONTAINER_TYPE_CALENDAR) || (type == E_GW_CONTAINER_TYPE_CONTACTS) )
 			continue ;
 
 		fi = g_new0 (CamelFolderInfo, 1);
@@ -713,14 +717,14 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		  NULL is found
 		*/
 
-		parent = e_gw_container_get_parent_id (E_GW_CONTAINER (folder_list->data)) ;
+		parent = e_gw_container_get_parent_id (container) ;
 		par_name = g_hash_table_lookup (priv->id_hash, parent) ;
 
 		if (par_name != NULL) {
 			gchar *temp_parent = NULL, *temp = NULL ;
-			gchar *str = g_strconcat (par_name,"/",e_gw_container_get_name (E_GW_CONTAINER (folder_list->data)), NULL) ;
+			gchar *str = g_strconcat (par_name,"/",e_gw_container_get_name (container), NULL) ;
 
-			fi->name = g_strdup (e_gw_container_get_name (E_GW_CONTAINER (folder_list->data)) ) ;
+			fi->name = g_strdup (e_gw_container_get_name (container) ) ;
 
 			temp_parent = g_hash_table_lookup (priv->parent_hash, parent) ;
 			while (temp_parent) {
@@ -738,20 +742,20 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 			g_free (str) ;
 		}
 		else {
-			fi->name =  fi->full_name = g_strdup (e_gw_container_get_name (E_GW_CONTAINER (folder_list->data)));
-			fi->uri = g_strconcat (url, "", e_gw_container_get_name(E_GW_CONTAINER(folder_list->data)), NULL) ;
+			fi->name =  fi->full_name = g_strdup (e_gw_container_get_name (container));
+			fi->uri = g_strconcat (url, "", e_gw_container_get_name(container), NULL) ;
 
 		}
 
-		if (e_gw_container_get_is_shared_to_me (E_GW_CONTAINER(folder_list->data)))
+		if (e_gw_container_get_is_shared_to_me (container))
                         fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
                                                                                                                              
-                if (e_gw_container_get_is_shared_by_me (E_GW_CONTAINER(folder_list->data)))
+                if (e_gw_container_get_is_shared_by_me (container))
                         fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
 
 		g_ptr_array_add (folders, fi);
-		fi->total = e_gw_container_get_total_count (E_GW_CONTAINER (folder_list->data)) ;
-		fi->unread = e_gw_container_get_unread_count (E_GW_CONTAINER (folder_list->data)) ;
+		fi->total = e_gw_container_get_total_count (container) ;
+		fi->unread = e_gw_container_get_unread_count (container) ;
 		
 	}
 	if ( (top != NULL) && (folders->len == 0)) {
