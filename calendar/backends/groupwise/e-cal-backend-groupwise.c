@@ -185,7 +185,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	GnomeVFSURI *vuri;
 	char *real_uri;
 	ECalBackendGroupwisePrivate *priv;
-	ECalBackendSyncStatus status;
+	EGwConnectionStatus cnc_status;
 
 	priv = cbgw->priv;
 
@@ -230,8 +230,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 			/* Populate the cache for the first time.*/
 			/* start a timed polling thread set to 10 minutes*/
-			status = populate_cache (cbgw);
-			if (status != E_GW_CONNECTION_STATUS_OK) {
+			cnc_status = populate_cache (cbgw);
+			if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
 				g_object_unref (priv->cnc);
 				priv->cnc = NULL;
 				g_warning (G_STRLOC ": Could not populate the cache");
@@ -241,9 +241,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				g_object_ref (priv->cache);
 				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
 				priv->mode = CAL_MODE_REMOTE;
+				return GNOME_Evolution_Calendar_Success;
 			}
-
-			return status;
 		} else {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
 			return GNOME_Evolution_Calendar_AuthenticationFailed;
@@ -485,7 +484,7 @@ e_cal_backend_groupwise_get_mode (ECalBackend *backend)
 static void
 e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 {
-	EGwConnectionStatus status;
+	ECalBackendSyncStatus status;
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 

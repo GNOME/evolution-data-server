@@ -1,3 +1,12 @@
+2004-04-02  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #55719
+
+	* backends/groupwise/e-cal-backend-groupwise.c (connect_to_server):
+	use correct type for populate_cache's return value.
+	(e_cal_backend_groupwise_set_mode): use correct type for
+	connect_to_server's return value.
+
 2004-03-30  JP Rosevear <jpr@ximian.com>
 
 	* backends/file/e-cal-backend-file.c: allow debugging code to be
