@@ -371,6 +371,7 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
         SoupSoapParameter *param;
         GList *l;
         icaltimetype icaltime;
+	icaltimezone *utc;
         const char *start_date, *end_date;
 
 	if (users == NULL)
@@ -383,7 +384,7 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
         /* FIXME users is just a buch of user names - associate it with uid,
          * email id apart from the name*/
         
-        soup_soap_message_start_element (msg, "users", "types", NULL); 
+        soup_soap_message_start_element (msg, "users", NULL, NULL); 
         for ( l = users; l != NULL; l = g_list_next (l)) {
 		soup_soap_message_start_element (msg, "user", NULL, NULL); 
                 e_gw_message_write_string_parameter (msg, "email", NULL, l->data);
@@ -396,14 +397,16 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
         /*FIXME  the following code converts time_t to String representation
          * through icaltime. Find if a direct conversion exists.  */ 
         /* Timezone in server is assumed to be UTC */
-        icaltime = icaltime_from_timet(start, FALSE );
-        start_date = icaltime_as_ical_string (icaltime);
-        
-        icaltime = icaltime_from_timet(end, FALSE);
-        end_date = icaltime_as_ical_string (icaltime);
+
+	utc = icaltimezone_get_utc_timezone ();
+	icaltime = icaltime_from_timet_with_zone (start, FALSE, utc);
+	start_date = icaltime_as_ical_string (icaltime);
+	
+	icaltime = icaltime_from_timet_with_zone (end, FALSE, utc);
+	end_date = icaltime_as_ical_string (icaltime);
         	
-        e_gw_message_write_string_parameter (msg, "startDate", "http://www.w3.org/2001/XMLSchema", start_date);
-        e_gw_message_write_string_parameter (msg, "endDate", "http://www.w3.org/2001/XMLSchema", end_date);
+        e_gw_message_write_string_parameter (msg, "startDate", NULL, start_date);
+        e_gw_message_write_string_parameter (msg, "endDate", NULL, end_date);
         
 	e_gw_message_write_footer (msg);
 
@@ -543,22 +546,32 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			/* process each block and create ECal free/busy components.*/ 
 			SoupSoapParameter *tmp;
 			ECalComponent *comp;
-			ECalComponentOrganizer organizer;
+			ECalComponentAttendee attendee;
 			ECalComponentDateTime dt;
 			icaltimetype itt;
 			time_t t;
 			const char *start, *end;
+			GSList *attendee_list = NULL;
 
 			comp = e_cal_component_new ();
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
 			/* FIXME  verify the mappings b/w response and ECalComponent */
+			memset (&attendee, 0, sizeof (ECalComponentAttendee));
 			if (name)
-				organizer.cn = name;
+				attendee.cn = name;
 			if (email)
-				organizer.sentby = email;
-			if (uuid)
-				organizer.value = uuid;
-			e_cal_component_set_organizer (comp, &organizer);
+				attendee.value = email;
+			
+			attendee.cutype = ICAL_CUTYPE_INDIVIDUAL;
+			attendee.role = ICAL_ROLE_REQPARTICIPANT;
+			attendee.status = ICAL_PARTSTAT_NEEDSACTION;
+
+			/* XXX the uuid is not currently used. hence it is
+			 * discarded */
+
+			attendee_list = g_slist_append (attendee_list, &attendee);	
+
+			e_cal_component_set_attendee_list (comp, attendee_list);
 
 			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
 			if (tmp) {
@@ -580,7 +593,9 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 				e_cal_component_set_dtend (comp, &dt);
 			}
 
-			*freebusy = g_list_append (*freebusy, comp);
+			e_cal_component_commit_sequence (comp);
+			*freebusy = g_list_append (*freebusy, g_strdup (e_cal_component_get_as_string (comp)));
+			g_object_unref (comp);
 		}
 	}
 
