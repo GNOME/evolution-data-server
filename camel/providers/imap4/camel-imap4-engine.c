@@ -613,8 +613,13 @@ engine_parse_namespace (CamelIMAP4Engine *engine, CamelException *ex)
 						node->sep = *token.v.qstring;
 						break;
 					} else {
-						/* invalid, fall thru */
+						/* check the last char in the path component of the namespace */
+						if (*node->path)
+							node->sep = node->path[strlen (node->path) - 1];
+						else
+							node->sep = '\0';
 					}
+					break;
 				default:
 					d(fprintf (stderr, "Expected to find a nil or a valid qstring token as second element in NAMESPACE pair\n"));
 					camel_imap4_utils_set_unexpected_token_error (ex, engine, &token);

@@ -1,3 +1,9 @@
+2005-01-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap4/camel-imap4-engine.c (engine_parse_namespace):
+	Fixed to handle "" as the delim portion of the NAMESPACE. Fixes
+	bug #71847.
+
 2005-01-26  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-summary.c (imap4_header_load): Check
