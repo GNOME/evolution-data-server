@@ -2484,7 +2484,6 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv = item->priv;
 	char *dtstring;
-	GSList *attach_list;
 
 	if (priv->id)
 		e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
@@ -2555,14 +2554,15 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 	}
 
 	/*attachments*/
-	soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
-	attach_list = e_gw_item_get_attach_id_list (item) ;
-	if (attach_list) {
+	if (priv->attach_list) {
+		soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
 		GSList *al ;
-		for (al = attach_list ; al != NULL ;  al = al->next) {
+		for (al = priv->attach_list ; al != NULL ;  al = al->next) {
 			EGwItemAttachment *attachment = (EGwItemAttachment *)al->data ;
 			add_attachment_to_soap_message (attachment, msg) ;
+		
 		}
+		soup_soap_message_end_element (msg) ;
 	}
 }
 
@@ -2571,7 +2571,6 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv;
 	char *alarm;
-	GSList *attach_list = NULL ;
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), FALSE);
@@ -2620,16 +2619,15 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		soup_soap_message_end_element (msg);
 
 		/*attachments*/
-		soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
-		attach_list = e_gw_item_get_attach_id_list (item) ;
-		if (attach_list) {
+		if (priv->attach_list) {
+			soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
 			GSList *al ;
-			for (al = attach_list ; al != NULL ;  al = al->next) {
+			for (al = priv->attach_list ; al != NULL ;  al = al->next) {
 				EGwItemAttachment *attachment = (EGwItemAttachment *)al->data ;
 				add_attachment_to_soap_message (attachment, msg) ;
 			}
+			soup_soap_message_end_element (msg) ;
 		}
-		soup_soap_message_end_element (msg) ;
 
 		break;
 
