@@ -1,5 +1,10 @@
 2004-12-16  Hans Petter Jansson  <hpj@novell.com>
 
+	* libedataserverui/libedataserverui.pc.in: Remove gladedir definition,
+	it's useless and breaks the evo build.
+
+2004-12-16  Hans Petter Jansson  <hpj@novell.com>
+
 	* libedataserverui/test-name-selector.c: Implement a test for
 	ENameSelectorDialog.
 
