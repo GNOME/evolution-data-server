@@ -916,6 +916,8 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam;
         const char *session;
+	gboolean resend_request = TRUE;
+	int request_iteration = 0;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
@@ -924,6 +926,9 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         /*FIXME log error messages  */
         if (status != E_GW_CONNECTION_STATUS_OK)
                 return status;
+
+	resend :
+	while (resend_request) {
 
         /* getFreeBusy */
         /* build the SOAP message */
@@ -954,6 +959,29 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
+
+	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "freeBusyStats");
+	     subparam != NULL;
+	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "freeBusyStats")) {
+		SoupSoapParameter *param_outstanding;
+		const char *outstanding;
+
+		param_outstanding = soup_soap_parameter_get_first_child_by_name (subparam, "outstanding");
+		if (param_outstanding)
+			outstanding = soup_soap_parameter_get_string_value (param_outstanding);
+		/* Try 12 times - this is approximately 2 minutes of time to
+		 * obtain the free/busy information from the server */
+		if (strcmp (outstanding, "0") && (request_iteration < 12)) {
+			request_iteration++;
+			g_object_unref (msg);
+		        g_object_unref (response);
+			g_usleep (10000000);
+			goto resend;
+		}
+
+	}
+
+	resend_request = FALSE;
 
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "user");
 	     subparam != NULL;
@@ -1058,6 +1086,8 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 
         g_object_unref (msg);
         g_object_unref (response);
+
+	} /* end of while loop */
 
         /* closeFreeBusySession*/
         return close_freebusy_session (cnc, session);

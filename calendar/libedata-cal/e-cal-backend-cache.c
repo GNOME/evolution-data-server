@@ -586,9 +586,23 @@ e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
 GSList *
 e_cal_backend_cache_get_keys (ECalBackendCache *cache)
 {
-	char *comp_str;
-        
         /* return null if cache is not a valid Backend Cache.  */
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
         return e_file_cache_get_keys (E_FILE_CACHE (cache));
+}
+
+void
+e_cal_backend_cache_set_marker (ECalBackendCache *cache)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND_CACHE (cache));
+	e_file_cache_add_object (E_FILE_CACHE (cache), "populated", "TRUE");
+}
+
+const char *
+e_cal_backend_cache_get_marker (ECalBackendCache *cache)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+	if (e_file_cache_get_object (E_FILE_CACHE (cache), "populated"))
+		return "";
+	return NULL;
 }

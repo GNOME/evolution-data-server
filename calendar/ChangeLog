@@ -1,3 +1,30 @@
+2004-10-12  Harish Krishnaswamy  <kharish@novell.com>
+	
+	Fixes #64673 and added some performance boosters.
+	
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_get_freebusy_info): Resend free/busy requests 
+	to server if there are outstanding users whose information is still
+	pending from the server. Keep trying for 2 minutes (average time
+	for obtaining the f/b information for users outside the POA).
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(populate_cache):  Obtain the calendar items from server Latest First.
+	Update evolution as soon as the items are processed, without waiting
+	for the entire cache to be populated.
+	(get_deltas): remove compiler warning.
+	(cache_init): Use a marker to test the status of cache and obtain all
+	items only for initial population.  All subsequent sessions would only 
+	fetch the deltas from the server since the last cache modification time.
+	(connect_to_server): Populating the cache moved to a separate thread
+	that does not block the open calls to backend anymore.
+	(e_cal_backend_groupwise_create_object): Fixed a leak.
+	* libedata-cal/e-cal-backend-cache.[ch]:
+	(e_cal_backend_cache_get_keys): Removed unused variable.
+	(e_cal_backend_cache_set_marker),
+	(e_cal_backend_cache_get_marker): Marker accessors to label the cache as
+	populated or not. This helps in determining if all the items are to be 
+	loaded from the server or if we should just fetch the deltas. 
+
 2004-10-07  JP Rosevear  <jpr@novell.com>
   
   	* libecal/e-cal.c (e_cal_new_system_tasks): load the correct type

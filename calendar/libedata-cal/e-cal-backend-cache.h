@@ -66,6 +66,8 @@ icaltimezone       *e_cal_backend_cache_get_default_timezone (ECalBackendCache *
 
 GSList             *e_cal_backend_cache_get_keys (ECalBackendCache *cache);
 
+const char         *e_cal_backend_cache_get_marker (ECalBackendCache *cache);
+void                e_cal_backend_cache_set_marker (ECalBackendCache *cache);
 
 G_END_DECLS
 

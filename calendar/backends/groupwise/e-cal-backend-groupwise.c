@@ -67,7 +67,7 @@ static void e_cal_backend_groupwise_finalize (GObject *object);
 static ECalBackendClass *parent_class = NULL;
 
 /* Time interval in milliseconds for obtaining changes from server and refresh the cache. */
-#define CACHE_REFRESH_INTERVAL 60000
+#define CACHE_REFRESH_INTERVAL 30000
 #define CURSOR_ITEM_LIMIT 100
 
 EGwConnection *
@@ -114,8 +114,10 @@ populate_cache (ECalBackendGroupwise *cbgw)
         GList *list = NULL, *l;
 	gboolean done = FALSE;
 	int cursor = 0;
+	icalcomponent_kind kind;
 	
 	priv = cbgw->priv;
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	
 	if (!mutex) {
 		mutex = g_mutex_new ();
@@ -137,9 +139,15 @@ populate_cache (ECalBackendGroupwise *cbgw)
                 return status;
         }
 	
+	status = e_gw_connection_position_cursor (priv->cnc, priv->container_id, cursor, "end", 1);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+		g_mutex_unlock (mutex);
+                return status;
+        }
 	while (!done) {
 		
-		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, 1, CURSOR_ITEM_LIMIT, &list);
+		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_cal_backend_groupwise_notify_error_code (cbgw, status);
 			g_mutex_unlock (mutex);
@@ -155,9 +163,11 @@ populate_cache (ECalBackendGroupwise *cbgw)
 				char *comp_str;
 				
 				e_cal_component_commit_sequence (comp);
-				comp_str = e_cal_component_get_as_string (comp);	
-				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), comp_str);
-				g_free (comp_str);
+				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
+					comp_str = e_cal_component_get_as_string (comp);	
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), (const char *) comp_str);
+					g_free (comp_str);
+				}
 				e_cal_backend_cache_put_component (priv->cache, comp);
 				g_object_unref (comp);
 			}
@@ -186,12 +196,13 @@ get_deltas (gpointer handle)
 	GSList *item_list, *cache_keys, *l;
 	const char *cache_file_name;
 	char *comp_str;
-	static time_t mod_time = NULL;
+	static time_t mod_time = 0;
 	GTimeVal time_val;
 	char time_string[100];
 	const struct tm *tm;
 	struct stat buf;
         
+	return TRUE;
 	if (!handle)
 		return FALSE;
 	
@@ -358,17 +369,80 @@ form_uri (ESource *source)
 
 }
 
+static ECalBackendSyncStatus
+cache_init (ECalBackendGroupwise *cbgw)
+{
+	ECalBackendGroupwisePrivate *priv = cbgw->priv;
+	EGwConnectionStatus cnc_status;
+	icalcomponent_kind kind;
 
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+
+	g_message ("Entered cache_init stage\n");
+
+	/* We poke the cache for a default timezone. Its
+	 * absence indicates that the cache file has not been
+	 * populated before. */
+	if (!e_cal_backend_cache_get_marker (priv->cache)) {
+		/* Populate the cache for the first time.*/
+		/* start a timed polling thread set to 1 minute*/
+		cnc_status = populate_cache (cbgw);
+		if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
+			g_warning (G_STRLOC ": Could not populate the cache");
+			/*FIXME  why dont we do a notify here */
+			return GNOME_Evolution_Calendar_PermissionDenied;
+		} else {
+			e_cal_backend_cache_set_marker (priv->cache);
+			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+			priv->mode = CAL_MODE_REMOTE;
+			return GNOME_Evolution_Calendar_Success;
+		}
+	} else {
+		GList *cache_items = NULL, *l;
+		/* notify the ecal about the objects already in cache */
+		g_message ("updating views from cache\n");
+		cache_items = e_cal_backend_cache_get_components (priv->cache);
+		
+		for (l = cache_items; l; l = g_list_next (l)) {
+			ECalComponent *comp = E_CAL_COMPONENT (l->data);
+			char *cal_string;
+
+			if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
+				cal_string = e_cal_component_get_as_string (comp);
+				g_message ("Adding \n%s\n", cal_string);
+				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), cal_string);
+				g_free (cal_string);
+			}
+			g_object_unref (comp);
+		}		
+		if (cache_items)
+			g_list_free (cache_items);
+		g_message ("updated views from cache\n");
+		
+		/* get the deltas from the cache */
+		if (get_deltas (cbgw)) {
+			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+			priv->mode = CAL_MODE_REMOTE;
+			return GNOME_Evolution_Calendar_Success;
+		} else {
+			g_warning (G_STRLOC ": Could not populate the cache");
+			/*FIXME  why dont we do a notify here */
+			return GNOME_Evolution_Calendar_PermissionDenied;	
+		}
+	}
+	
+}
 
 static ECalBackendSyncStatus
 connect_to_server (ECalBackendGroupwise *cbgw)
 {
 	char *real_uri;
 	ECalBackendGroupwisePrivate *priv;
-	EGwConnectionStatus cnc_status;
 	ESource *source;
 	const char *use_ssl;
 	char *http_uri;
+	GThread *thread;
+	GError *error = NULL;
 	priv = cbgw->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
@@ -427,38 +501,18 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
 				return GNOME_Evolution_Calendar_OtherError;
 			}
-			
-			/* read the default timezone*/
-			priv->default_zone = e_cal_backend_cache_get_default_timezone (priv->cache);
 
-			/* We poke the cache for a default timezone. Its
-			 * absence indicates that the cache file has not been
-			 * populated before. */
-			if (!priv->default_zone) {
-				/* Populate the cache for the first time.*/
-				/* start a timed polling thread set to 10 minutes*/
-				cnc_status = populate_cache (cbgw);
-				if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
-					g_warning (G_STRLOC ": Could not populate the cache");
-					/*FIXME  why dont we do a notify here */
-					return GNOME_Evolution_Calendar_PermissionDenied;
-				} else {
-					priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
-					priv->mode = CAL_MODE_REMOTE;
-					return GNOME_Evolution_Calendar_Success;
-				}
-			} else {
-				/* get the deltas from the cache */
-				if (get_deltas (cbgw)) {
-					priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
-					priv->mode = CAL_MODE_REMOTE;
-					return GNOME_Evolution_Calendar_Success;
-				} else {
-					g_warning (G_STRLOC ": Could not populate the cache");
-					/*FIXME  why dont we do a notify here */
-					return GNOME_Evolution_Calendar_PermissionDenied;	
-				}
+			/* spawn a new thread for opening the calendar */
+			thread = g_thread_create ((GThreadFunc) cache_init, cbgw, FALSE, &error);
+			if (!thread) {
+				g_warning (G_STRLOC ": %s", error->message);
+				g_error_free (error);
+
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for populating cache"));
+				return GNOME_Evolution_Calendar_OtherError;
 			}
+
+			
 		} else {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
 			return GNOME_Evolution_Calendar_AuthenticationFailed;
@@ -1240,7 +1294,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 				if (i != 0) {
 					char *temp;
 					temp = e_cal_component_get_as_string (e_cal_comp);
-					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), g_strdup(temp));
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), temp);
 					g_free (temp);
 				}
 

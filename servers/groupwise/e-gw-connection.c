@@ -422,7 +422,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
         }
 
         e_gw_message_write_string_parameter (msg, "parent", NULL, "folders");
-	e_gw_message_write_string_parameter (msg, "recursive", NULL, "true");
+	e_gw_message_write_string_parameter (msg, "recurse", NULL, "1");
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
@@ -1657,7 +1657,37 @@ e_gw_connection_destroy_cursor (EGwConnection *cnc, const char *container,  int 
 
 
 EGwConnectionStatus
-e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, int forward, int count, GList **item_list)
+e_gw_connection_position_cursor (EGwConnection *cnc, const char *container, int cursor, const char *seek, int offset)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+        EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_return_val_if_fail ((container != NULL), E_GW_CONNECTION_STATUS_UNKNOWN);
+
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "positionCursorRequest");
+	e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	e_gw_message_write_int_parameter (msg, "cursor", NULL, cursor);
+	e_gw_message_write_string_parameter (msg, "seek", NULL, seek);
+	e_gw_message_write_int_parameter (msg, "offset", NULL, offset);
+	
+	e_gw_message_write_footer (msg);
+
+	response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+	
+	status = e_gw_connection_parse_response_status (response);
+	g_object_unref (response);
+        g_object_unref (msg);
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, GList **item_list)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -1672,7 +1702,8 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
 	e_gw_message_write_int_parameter (msg, "cursor", NULL, cursor);
 	/* there is problem in read curosr if you set this, uncomment after the problem 
 	   is fixed in server */
-	//	e_gw_message_write_int_parameter (msg, "forward", NULL, forward);
+//	e_gw_message_write_int_parameter (msg, "forward", NULL, forward);
+	e_gw_message_write_string_parameter (msg, "forward", NULL, forward ? "true": "false");
 	e_gw_message_write_int_parameter (msg, "count", NULL, count);
 	
 	e_gw_message_write_footer (msg);

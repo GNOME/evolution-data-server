@@ -1,3 +1,12 @@
+2004-10-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-connection.[ch]: (e_gw_connection_get_container_list) : The
+	argument should be "recurse" not "recursive".
+	(e_gw_connection_position_cursor): Add a function to position the cursor
+	at the desired offset.
+	(e_gw_connection_read_cursor): Set the cursor at end and direction set
+	to reverse - so items can be fetched Latest First.
+
 2004-10-10  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_new): Add a static
