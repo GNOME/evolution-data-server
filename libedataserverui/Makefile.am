@@ -13,7 +13,8 @@ lib_LTLIBRARIES = libedataserverui-1.2.la
 noinst_PROGRAMS = 			\
 	test-source-selector		\
 	test-source-option-menu		\
-	test-contact-store
+	test-contact-store		\
+	test-name-selector
 
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
@@ -58,6 +59,12 @@ test_source_option_menu_LDADD = 				\
 
 test_contact_store_SOURCES = test-contact-store.c
 test_contact_store_LDADD =					\
+	libedataserverui-1.2.la 				\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(E_DATA_SERVER_UI_LIBS)
+
+test_name_selector_SOURCES = test-name-selector.c
+test_name_selector_LDADD =					\
 	libedataserverui-1.2.la 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)

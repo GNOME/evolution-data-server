@@ -1,5 +1,14 @@
 2004-12-16  Hans Petter Jansson  <hpj@novell.com>
 
+	* libedataserverui/test-name-selector.c: Implement a test for
+	ENameSelectorDialog.
+
+	* libedataserverui/Makefile.am (noinst_PROGRAMS): Build the test.
+	(test_name_selector_SOURCES)
+	(test_name_selector_LDADD): Build parameters for the test.
+
+2004-12-16  Hans Petter Jansson  <hpj@novell.com>
+
 	* libedataserver/e-data-server-marshal.list: Add NONE:STRING.
 
 	* libedataserverui/e-destination-store.[ch]: Implement
