@@ -299,7 +299,8 @@ e_data_book_respond_create (EDataBook                                *book,
 
 	GNOME_Evolution_Addressbook_BookListener_notifyContactCreated (
 		book->priv->listener, status,
-		e_contact_get_const (contact, E_CONTACT_UID), &ev);
+		status == GNOME_Evolution_Addressbook_Success ? e_contact_get_const (contact, E_CONTACT_UID) : "",
+		&ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_respond_create: Exception "

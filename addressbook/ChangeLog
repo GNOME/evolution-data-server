@@ -1,3 +1,9 @@
+2004-03-15  Chris Toshok  <toshok@ximian.com>
+
+	* libedata-book/e-data-book.c (e_data_book_respond_create): only
+	look up the contact's UID if status == Success.  otherwise, send
+	"".
+
 2004-03-15  Rodney Dawes  <dobey@ximian.com>
 
 	* libebook/libebook-1.0.pc.in:
