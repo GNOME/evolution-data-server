@@ -12,6 +12,10 @@
 	(groupwise_refresh_info):
 	(gw_update_summary): using getquickmessages instead of get items
 
+	*providers/groupwise/camel-groupwise-store.c
+	(groupwise_get_folder): using get quick messages instead of get
+	items
+
 2005-01-27  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* providers/imap4/camel-imap4-summary.c (untagged_fetch_all):

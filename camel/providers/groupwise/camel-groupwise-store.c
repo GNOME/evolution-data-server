@@ -34,7 +34,9 @@
 #include <string.h>
 #include <errno.h>
 #include <glib.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "camel-groupwise-store.h"
 #include "camel-groupwise-summary.h"
@@ -50,6 +52,7 @@
 #include "camel-private.h"
 
 #define d(x) 
+#define CURSOR_ITEM_LIMIT 300
 
 struct _CamelGroupwiseStorePrivate {
 	char *server_name;
@@ -458,8 +461,8 @@ groupwise_store_query_auth_types (CamelService *service, CamelException *ex)
 	return auth_types;
 }
 
+static GMutex *mutex = NULL ;
 
-/*****************/
 static CamelFolder * 
 groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
 {
@@ -470,23 +473,30 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	const char *temp_name;
 	EGwConnectionStatus status ;
 	GList *list = NULL ;
+	GSList *slist = NULL, *sl ;
+	gboolean done = FALSE ;
+	int count = 0, cursor, summary_count = 0 ;
 	
 	
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
         folder_dir = e_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
 	
+	CAMEL_SERVICE_LOCK (gw_store, connect_lock) ;
+	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		if (!folder_dir || access (folder_dir, F_OK) != 0) {
 			g_free (folder_dir);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 					      _("No such folder %s"), folder_name);
+			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
 			return NULL;
 		}
 		
 		folder = camel_gw_folder_new (store, folder_name, folder_dir, ex);
 		g_free (folder_dir);
-		
+			
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
 		return folder;
 	}
 	
@@ -500,33 +510,130 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		container_id = 	g_strdup (g_hash_table_lookup (priv->name_hash, g_strdup(temp_str))) ;
 	}
 
-	camel_operation_start (NULL, _("Fetching summary information for new messages"));
-
-	status = e_gw_connection_get_items (priv->cnc, container_id, "default attachments distribution created subject message notification", NULL, &list) ;
-	if (status != E_GW_CONNECTION_STATUS_OK) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+	folder = camel_gw_folder_new (store, folder_name, folder_dir, ex) ;
+	if (!folder) {
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed")) ;
+		g_free (folder_dir) ;
 		g_free (container_id) ;
-		camel_operation_end (NULL);
-		g_free (folder_dir);
-		return NULL;
+		return NULL ;
 	}
-	
-	folder = camel_gw_folder_new (store,folder_name, folder_dir, ex);
-	camel_operation_end (NULL);
-	g_free (folder_dir);
-	
-	if(folder) {
-		CamelException local_ex ;
 
-		gw_store->current_folder = folder ;
-		camel_object_ref (folder) ;
-		camel_exception_init (&local_ex) ;
+	if (!mutex)
+		mutex = g_mutex_new () ;
+
+	summary_count = camel_folder_summary_count (folder->summary) ;
+	if(summary_count) {
+		char *cache_file_name ;
+		static time_t mod_time = 0 ;
+		char time_string[100] = {0} ;
+		const struct tm *tm ;
+		struct stat buf;
 		
-		gw_update_summary (folder, list,  ex) ;
+		
+		if (!mod_time) {
+			cache_file_name = g_strdup (folder->summary->summary_path) ;
+			printf ("%s %d\n", cache_file_name, stat (cache_file_name, &buf));
+			mod_time = buf.st_mtime;
+		}
+		tm = gmtime (&mod_time);
+		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+		camel_operation_start (NULL, _("Fetching summary information for new messages"));
 
-		camel_folder_summary_save(folder->summary) ;
+		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
+				"default distribution attachments subject created",
+				time_string, "New", "Mail", NULL, -1, &slist) ;
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
+			camel_operation_end (NULL);
+			g_free (cache_file_name) ;
+			g_free (container_id) ;
+			gw_store->current_folder = folder ;
+			camel_object_ref (folder) ;
+			camel_folder_summary_save(folder->summary) ;
+			return folder ;
+			//return NULL ;
+		}
+
+		for ( sl = slist ; sl != NULL; sl = sl->next) {
+			list = g_list_append (list, sl->data) ;
+		}
+		gw_update_summary (folder, list,  ex) ;
+		camel_operation_end (NULL);
+
+	} else {
+		g_print ("\n\nNo summary as yet : get cursor request\n\n") ;
+		g_mutex_lock (mutex) ;
+
+		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
+				"default attachments distribution created subject",
+				NULL,
+				&cursor) ;
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			g_mutex_unlock (mutex) ;
+			return NULL ;
+		}
+
+		status = e_gw_connection_position_cursor (priv->cnc, container_id, cursor, "end", 1) ;
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			g_mutex_unlock (mutex) ;
+			return NULL ;
+		}
+
+
+		camel_operation_start (NULL, _("Fetching summary information for new messages"));
+		camel_folder_summary_clear (folder->summary) ;
+
+		while (!done) {
+			int temp = 0 ;
+			status = e_gw_connection_read_cursor (priv->cnc, container_id, 
+							      cursor, FALSE, 
+							      CURSOR_ITEM_LIMIT, &list) ;
+			if (status != E_GW_CONNECTION_STATUS_OK) {
+				CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+				camel_operation_end (NULL);
+				g_mutex_unlock (mutex) ;
+				g_free (container_id) ;
+				g_free (folder_dir);
+				return NULL ;
+			}
+
+			temp = g_list_length (list) ;
+			count += temp ;
+
+			gw_update_summary (folder, list,  ex) ;
+			if (temp == count)
+				camel_operation_progress (NULL, 0) ;
+			if (temp < count)
+				camel_operation_progress (NULL, temp * 100/count) ;
+			if (temp >count)
+				camel_operation_progress (NULL, count * 100/temp) ;
+			if (!list  || temp == 0)
+				done = TRUE;
+			g_list_free (list);
+			list = NULL;
+		}
+
+		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor) ;
+
+		camel_operation_end (NULL);
+		g_mutex_unlock (mutex) ;
 	}
+
+	gw_store->current_folder = folder ;
+	camel_object_ref (folder) ;
 	
+	camel_folder_summary_save(folder->summary) ;
+		
+	g_free (container_id) ;
+	g_free (folder_dir);
+
+	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+
 	return folder;
 }
 
@@ -696,7 +803,6 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	}
 
 	
-
 	for (; folder_list != NULL; folder_list = g_list_next(folder_list)) {
 		CamelFolderInfo *fi;
 		const char *parent ;
