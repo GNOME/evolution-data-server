@@ -6,14 +6,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
-"PO-Revision-Date: 2004-02-04 21:18+0200\n"
+"POT-Creation-Date: 2004-06-10 06:14+0300\n"
+"PO-Revision-Date: 2004-06-10 06:18+0200\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <laatu@gnome-fi.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -21,7 +20,7 @@ msgid "Loading..."
 msgstr "Ladataan..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3064
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Etsitään..."
@@ -50,11 +49,11 @@ msgstr "Poistetaan yhteystieto LDAP-palvelimelta..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Muokataan yhteystietoa LDAP-palvelimella..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "Vastaanotetaan LDAP-haun tuloksia..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3084
 msgid "Error performing search"
 msgstr "Virhe suoritettaessa hakua"
 
@@ -62,32 +61,50 @@ msgstr "Virhe suoritettaessa hakua"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
-#: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
-#: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
-#: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
-#: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
+#: addressbook/libebook/e-book.c:220
+#: addressbook/libebook/e-book.c:332
+#: addressbook/libebook/e-book.c:417
+#: addressbook/libebook/e-book.c:519
+#: addressbook/libebook/e-book.c:632
+#: addressbook/libebook/e-book.c:716
+#: addressbook/libebook/e-book.c:856
+#: addressbook/libebook/e-book.c:955
+#: addressbook/libebook/e-book.c:1089
+#: addressbook/libebook/e-book.c:1190
 #: addressbook/libebook/e-book.c:1943
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" on kirjassa ennen kuin \"%s\""
 
-#: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
-#: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
-#: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
-#: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
-#: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
-#: addressbook/libebook/e-book.c:1417 addressbook/libebook/e-book.c:1519
+#: addressbook/libebook/e-book.c:228
+#: addressbook/libebook/e-book.c:340
+#: addressbook/libebook/e-book.c:425
+#: addressbook/libebook/e-book.c:528
+#: addressbook/libebook/e-book.c:640
+#: addressbook/libebook/e-book.c:724
+#: addressbook/libebook/e-book.c:864
+#: addressbook/libebook/e-book.c:963
+#: addressbook/libebook/e-book.c:1097
+#: addressbook/libebook/e-book.c:1198
+#: addressbook/libebook/e-book.c:1417
+#: addressbook/libebook/e-book.c:1519
 msgid "book busy"
 msgstr "kirja käytössä"
 
-#: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
-#: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
-#: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
-#: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
-#: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
-#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1439
-#: addressbook/libebook/e-book.c:1541 addressbook/libebook/e-book.c:1952
+#: addressbook/libebook/e-book.c:255
+#: addressbook/libebook/e-book.c:367
+#: addressbook/libebook/e-book.c:447
+#: addressbook/libebook/e-book.c:551
+#: addressbook/libebook/e-book.c:666
+#: addressbook/libebook/e-book.c:747
+#: addressbook/libebook/e-book.c:896
+#: addressbook/libebook/e-book.c:1007
+#: addressbook/libebook/e-book.c:1125
+#: addressbook/libebook/e-book.c:1222
+#: addressbook/libebook/e-book.c:1356
+#: addressbook/libebook/e-book.c:1439
+#: addressbook/libebook/e-book.c:1541
+#: addressbook/libebook/e-book.c:1952
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-poikkeus kutsun \"%s\" aikana"
@@ -106,9 +123,8 @@ msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" on kirjassa \"%s\" jälkeen"
 
 #: addressbook/libebook/e-book.c:1458
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: keskeytetty"
+msgstr "e_book_open: keskeytetty"
 
 #: addressbook/libebook/e-book.c:1810
 msgid "e_book_load_uri: Invalid source."
@@ -124,9 +140,9 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListeneriä ei voitu luoda"
 
 #: addressbook/libebook/e-book.c:1881
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: urille '%s' ei ole käytettävissä tehtaita"
+msgstr "e_book_new: '%s':lle ei ole löydy tehdasta"
 
 #: addressbook/libebook/e-book.c:2038
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
@@ -134,8 +150,7 @@ msgstr "e_book_get_self: gconf ei sisältänyt oman kontaktin uidia"
 
 #: addressbook/libebook/e-book.c:2147
 #, c-format
-msgid ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr "e_book_set_default_source: gconf ei sisältänyt lähdettä uid:ille '%s'"
 
 #: addressbook/libebook/e-contact.c:100
@@ -297,9 +312,8 @@ msgid "Email 3"
 msgstr "Sähköposti 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "Sähköposti 3"
+msgstr "Sähköposti 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -316,7 +330,7 @@ msgstr "AIM näyttönimien lista"
 
 #: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
-msgstr ""
+msgstr "Groupwise ID-lista"
 
 #: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
@@ -359,34 +373,28 @@ msgid "AIM Work Screen Name 3"
 msgstr "AIM työnimi 3"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Groupwise Home Screen Name 1"
-msgstr "AIM kotinimi 1"
+msgstr "Groupwise kotinimi 1"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Groupwise Home Screen Name 2"
-msgstr "AIM kotinimi 2"
+msgstr "Groupwise kotinimi 2"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Groupwise Home Screen Name 3"
-msgstr "AIM kotinimi 3"
+msgstr "Groupwise kotinimi 3"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Groupwise Work Screen Name 1"
-msgstr "AIM työnimi 1"
+msgstr "Groupwise työnimi 1"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Groupwise Work Screen Name 2"
-msgstr "AIM työnimi 2"
+msgstr "Groupwise työnimi 2"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Groupwise Work Screen Name 3"
-msgstr "AIM työnimi 3"
+msgstr "Groupwise työnimi 3"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
@@ -612,7 +620,7 @@ msgstr "Kalenteritietoja ei voida tallentaa: virheellinen URI."
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
 msgid "Invalid server URI"
-msgstr ""
+msgstr "Virheellinen palvelimen URI"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
@@ -625,9 +633,8 @@ msgid "Authentication failed"
 msgstr "Todennus epäonnistui"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
-#, fuzzy
 msgid "Could not create cache file"
-msgstr "Toimenpidettä ei voitu perua"
+msgstr "Välimuistitiedostoa ei voitu luoda"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -769,15 +776,18 @@ msgstr "30."
 msgid "31st"
 msgstr "31."
 
-#: calendar/libecal/e-cal-util.c:569 calendar/libecal/e-cal-util.c:591
+#: calendar/libecal/e-cal-util.c:569
+#: calendar/libecal/e-cal-util.c:591
 msgid "High"
 msgstr "Korkea"
 
-#: calendar/libecal/e-cal-util.c:571 calendar/libecal/e-cal-util.c:593
+#: calendar/libecal/e-cal-util.c:571
+#: calendar/libecal/e-cal-util.c:593
 msgid "Normal"
 msgstr "Tavallinen"
 
-#: calendar/libecal/e-cal-util.c:573 calendar/libecal/e-cal-util.c:595
+#: calendar/libecal/e-cal-util.c:573
+#: calendar/libecal/e-cal-util.c:595
 msgid "Low"
 msgstr "Matala"
 
@@ -808,11 +818,13 @@ msgstr "Varasto on yhteydettömässä tilassa"
 msgid "No such calendar"
 msgstr "Kalenteria ei ole olemassa"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4270
+#: servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Kohdetta ei löydy"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4272
+#: servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Virheellinen kohde"
 
@@ -852,7 +864,8 @@ msgstr "Todennus vaaditaan"
 msgid "A CORBA exception has occurred"
 msgstr "Tapahtui CORBA-poikkeus"
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4294
+#: servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
@@ -888,8 +901,7 @@ msgstr "\"%s\" olettaa ensimmäisen argumentin olevan merkkijonon"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr ""
-"\"%s\" olettaa ensimmäisen argumentin olevan ISO-8601 muotoinen päiväys"
+msgstr "\"%s\" olettaa ensimmäisen argumentin olevan ISO-8601 muotoinen päiväys"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
@@ -923,13 +935,9 @@ msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" olettaa toisen argumentin olevan merkkijonon"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#, fuzzy, c-format
-msgid ""
-"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\""
-msgstr ""
-"\"%s\" olettaa ensimmäisen argumentin olevan joko \"any\", \"summary\" tai "
-"\"description\""
+#, c-format
+msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\""
+msgstr "\"%s\" olettaa ensimmäisen argumentin olevan joko \"any\", \"summary\" tai \"description\", tai \"sijainti\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
@@ -938,25 +946,20 @@ msgstr "\"%s\" tahtoo vähintään yhden argumentin"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:577
 #, c-format
-msgid ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
-msgstr ""
-"\"%s\" olettaa kaikkien argumenttien olevan merkkijonoja, tai yhden ja "
-"ainoastaan yhden olevan tottuusarvosen epätoden (#f)"
+msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
+msgstr "\"%s\" olettaa kaikkien argumenttien olevan merkkijonoja, tai yhden ja ainoastaan yhden olevan tottuusarvosen epätoden (#f)"
 
 #: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
 msgid "Invalid connection"
-msgstr "Virheellinen kohde"
+msgstr "Virheellinen yhteys"
 
 #: servers/groupwise/e-gw-connection.c:84
 msgid "Invalid response from server"
-msgstr ""
+msgstr "Virheellinen vastaus palvelimelta"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "Virheellinen parameteri"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
@@ -971,5 +974,3 @@ msgstr "Evolutionin kalenterin tiedosto- ja webcal-taustajärjestelmä"
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution osoitekirjan tiedostotaustajärjestelmä"
 
-#~ msgid "Checklist"
-#~ msgstr "Tarkistuslista"
