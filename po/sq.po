@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-18 03:12+0200\n"
+"POT-Creation-Date: 2004-08-19 11:13+0200\n"
 "PO-Revision-Date: 2004-08-08 23:59+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -227,9 +227,10 @@ msgstr "Telefoni në zyrë"
 msgid "Business Phone 2"
 msgstr "Telefoni në zyrë 2"
 
+#. GRUT modified this item
 #: addressbook/libebook/e-contact.c:127
 msgid "Business Fax"
-msgstr "Fax në zyrë"
+msgstr "Fax-i në zyrë"
 
 #: addressbook/libebook/e-contact.c:128
 msgid "Callback Phone"
@@ -251,9 +252,10 @@ msgstr "Telefoni në shtëpi"
 msgid "Home Phone 2"
 msgstr "Telefoni në shtëpi 2"
 
+#. GRUT modified this item
 #: addressbook/libebook/e-contact.c:133
 msgid "Home Fax"
-msgstr "Fax në shtëpi"
+msgstr "Fax-i në shtëpi"
 
 #: addressbook/libebook/e-contact.c:134
 msgid "ISDN"
@@ -596,10 +598,11 @@ msgstr "Lista shfaq adresat"
 msgid "Unnamed List"
 msgstr "Listë pa emër"
 
+#. GRUT modified this item
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
-msgstr "Ditlindja"
+msgstr "Ditëlindja"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
@@ -974,7 +977,6 @@ msgstr "Backend i file kalendar dhe webcal të Evolution"
 msgid "Evolution Addressbook file backend"
 msgstr "Backend i file rubrika i Evolution"
 
-#. GRUT modified this item
 #. dialog display isn't working out
 #: src/server.c:110
 #, c-format
