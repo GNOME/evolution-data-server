@@ -1001,6 +1001,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	EGwConnectionStatus status;
 	EGwItem *item, *cache_item;
 
+	*old_object = NULL;
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
@@ -1049,6 +1050,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	g_object_unref (comp);
 
+	*old_object = g_strdup (calobj);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -1060,6 +1062,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 {
 	ECalBackendGroupwise *cbgw;
         ECalBackendGroupwisePrivate *priv;
+	char *calobj = NULL;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -1067,7 +1070,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	/* if online, remove the item from the server */
 	if (priv->mode == CAL_MODE_REMOTE) {
 		ECalBackendSyncStatus status;
-		char *calobj, *id_to_remove = NULL;
+		char *id_to_remove = NULL;
 		icalproperty *icalprop;
 		icalcomponent *icalcomp;
 
@@ -1076,9 +1079,10 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			return status;
 
 		icalcomp = icalparser_parse_string (calobj);
-		g_free (calobj);
-		if (!icalcomp)
+		if (!icalcomp) {
+			g_free (calobj);
 			return GNOME_Evolution_Calendar_InvalidObject;
+		}
 
 		/* search the component for the X-EVOLUTION-GROUPWISE-ID property */
 		icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
@@ -1106,20 +1110,26 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		icalcomponent_free (icalcomp);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			/* remove the component from the cache */
-			if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid))
+			if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid)) {
+				g_free (calobj);
 				return GNOME_Evolution_Calendar_ObjectNotFound;
+			}
+			*object = g_strdup (calobj);
+			g_free (calobj);
 			return GNOME_Evolution_Calendar_Success;
-		} else
+		} else {
+			g_free (calobj);
 			return GNOME_Evolution_Calendar_OtherError;
-
-		/* if there was no X-EVOLUTION-GROUPWISE-ID property, return NOT_FOUND */
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		}
 	}
 
 	/* remove the component from the cache */
-	if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid))
+	if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid)) {
+		g_free (calobj);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
+	}
 
+	*object = g_strdup (calobj);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -1257,7 +1267,18 @@ e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, c
 		status = send_object (cbgw, cal, icalcomp);
 	} else
 		status = GNOME_Evolution_Calendar_InvalidObject;
+	
+	if (status == GNOME_Evolution_Calendar_Success) {
+		ECalComponent *comp;
 
+		comp = e_cal_component_new ();
+		
+		if (e_cal_component_set_icalcomponent (comp, icalcomp)) {
+			e_cal_component_get_attendee_list (comp, users);
+			g_object_unref (comp);	
+		}
+		*modified_calobj = g_strdup (calobj);
+	}
 	icalcomponent_free (icalcomp);
 
 	return status;

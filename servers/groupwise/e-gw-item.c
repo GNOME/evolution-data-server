@@ -1894,7 +1894,7 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 	if (g_hash_table_lookup (changes, "classification"))
 		e_gw_message_write_string_parameter (msg, "class", NULL, priv->classification);
 
-	if (g_hash_table_lookup (changes, "acceptLevel"))
+	if (g_hash_table_lookup (changes, "accept_level"))
 		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
 	if (g_hash_table_lookup (changes, "place"))
 		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");

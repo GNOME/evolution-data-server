@@ -1,3 +1,18 @@
+2004-05-25  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes GW portion of #57218 and #54280
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(start_freebusy_session): removed FIXME comments (the code had been 
+	fixed much earlier).
+	(e_gw_item_set_changes):use the SET_DELTA macro to get accept_level 
+	changes.
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_modify_object),
+	(e_cal_backend_groupwise_remove_object),
+	(e_cal_backend_groupwise_send_objects): set return arguments correctly.
+	and removed dead code in remove_object.
+
 2004-05-25  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c

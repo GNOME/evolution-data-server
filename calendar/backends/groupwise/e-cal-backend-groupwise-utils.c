@@ -525,10 +525,6 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 
         soup_soap_message_end_element (msg);
 
-        /*FIXME check if this needs to be formatted into GW form with separators*/
-        /*FIXME  the following code converts time_t to String representation
-         * through icaltime. Find if a direct conversion exists.  */ 
-        /* Timezone in server is assumed to be UTC */
 
 	utc = icaltimezone_get_utc_timezone ();
 	icaltime = icaltime_from_timet_with_zone (start, FALSE, utc);
@@ -793,17 +789,7 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 
 		if (strcmp (e_gw_item_get_end_date (item), e_gw_item_get_end_date (cache_item)))
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "endDate", e_gw_item_get_end_date (item));
-		accept_level = e_gw_item_get_accept_level (item);                                                       
-		cache_accept_level = e_gw_item_get_accept_level (cache_item);                                           
-		if ( cache_accept_level ) {                                                                            
-			if (!accept_level )                                                                               
-				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, "acceptLevel", cache_accept_level );
-			else if (strcmp ( accept_level, cache_accept_level ))                                               
-				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "acceptLevel", accept_level );
-		}                                                                                                 
-		else if ( accept_level )                                                                               
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "acceptLevel", accept_level ); 
-		
+		SET_DELTA(accept_level);
 		SET_DELTA(place);
 		trigger = e_gw_item_get_trigger (item);
 		cache_trigger = e_gw_item_get_trigger (cache_item);
