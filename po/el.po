@@ -26,7 +26,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution.el\n"
-"POT-Creation-Date: 2003-11-03 14:21-0500\n"
+"POT-Creation-Date: 2003-11-06 12:41-0500\n"
 "PO-Revision-Date: 2003-06-25 18:26-0200\n"
 "Last-Translator: Nikos Charonitakis <charosn@her.forthnet.gr>\n"
 "Language-Team: Greek <nls@hellug.gr>\n"
@@ -34,126 +34,126 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/libebook/e-book.c:214
+#: addressbook/libebook/e-book.c:211
 msgid "e_book_add_contact called on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:221 addressbook/libebook/e-book.c:330
-#: addressbook/libebook/e-book.c:412 addressbook/libebook/e-book.c:511
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:701
-#: addressbook/libebook/e-book.c:801 addressbook/libebook/e-book.c:853
-#: addressbook/libebook/e-book.c:946 addressbook/libebook/e-book.c:1075
-#: addressbook/libebook/e-book.c:1173 addressbook/libebook/e-book.c:1397
+#: addressbook/libebook/e-book.c:218 addressbook/libebook/e-book.c:327
+#: addressbook/libebook/e-book.c:409 addressbook/libebook/e-book.c:508
+#: addressbook/libebook/e-book.c:617 addressbook/libebook/e-book.c:698
+#: addressbook/libebook/e-book.c:798 addressbook/libebook/e-book.c:850
+#: addressbook/libebook/e-book.c:943 addressbook/libebook/e-book.c:1072
+#: addressbook/libebook/e-book.c:1170 addressbook/libebook/e-book.c:1394
 msgid "book busy"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:248
+#: addressbook/libebook/e-book.c:245
 msgid "Corba exception making Book::addContact call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:323
+#: addressbook/libebook/e-book.c:320
 msgid "e_book_commit_contact called on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:357
+#: addressbook/libebook/e-book.c:354
 msgid "Corba exception making Book::modifyContact call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:405
+#: addressbook/libebook/e-book.c:402
 msgid "e_book_get_supported_fields on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:434
+#: addressbook/libebook/e-book.c:431
 msgid "Corba exception making Book::getSupportedFields call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:504
+#: addressbook/libebook/e-book.c:501
 msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:534
+#: addressbook/libebook/e-book.c:531
 msgid "Corba exception making Book::getSupportedAuthMethods call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:613
+#: addressbook/libebook/e-book.c:610
 msgid "e_book_authenticate_user on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:646
+#: addressbook/libebook/e-book.c:643
 msgid "Corba exception making Book::authenticateUser call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:694
+#: addressbook/libebook/e-book.c:691
 msgid "e_book_get_contact on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:724
+#: addressbook/libebook/e-book.c:721
 msgid "Corba exception making Book::getContact call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:794
+#: addressbook/libebook/e-book.c:791
 msgid "e_book_remove_contact on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:846
+#: addressbook/libebook/e-book.c:843
 msgid "e_book_remove_contacts on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:885
+#: addressbook/libebook/e-book.c:882
 msgid "Corba exception making Book::removeContacts call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:939
+#: addressbook/libebook/e-book.c:936
 msgid "e_book_get_book_view on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:990
+#: addressbook/libebook/e-book.c:987
 msgid "Corba exception making Book::getBookView call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1068
+#: addressbook/libebook/e-book.c:1065
 msgid "e_book_get_contacts on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1103
+#: addressbook/libebook/e-book.c:1100
 msgid "Corba exception making Book::getContactList call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1166
+#: addressbook/libebook/e-book.c:1163
 msgid "e_book_get_changes on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1197
+#: addressbook/libebook/e-book.c:1194
 msgid "Corba exception making Book::getChanges call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1308
+#: addressbook/libebook/e-book.c:1305
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "Ακύρωση της τρέχουσας λειτουργίας ταχυδρομείου"
 
-#: addressbook/libebook/e-book.c:1327
+#: addressbook/libebook/e-book.c:1324
 msgid "Corba exception making Book::cancelOperation call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1342
+#: addressbook/libebook/e-book.c:1339
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1390
+#: addressbook/libebook/e-book.c:1387
 msgid "e_book_remove on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1419
+#: addressbook/libebook/e-book.c:1416
 msgid "Corba exception making Book::remove call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1642 addressbook/libebook/e-book.c:1736
+#: addressbook/libebook/e-book.c:1639 addressbook/libebook/e-book.c:1733
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1656
+#: addressbook/libebook/e-book.c:1653
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
@@ -449,50 +449,50 @@ msgstr "Λίστα"
 msgid "List Show Addresses"
 msgstr "Εμφάνιση λίστας διευθύνσεων"
 
-#: addressbook/libedatabook/e-book-backend-file.c:400
-#: addressbook/libedatabook/e-book-backend-vcf.c:104
+#: addressbook/backends/file/e-book-backend-file.c:397
+#: addressbook/backends/vcf/e-book-backend-vcf.c:102
 msgid "Loading..."
 msgstr "Γίνεται φόρτωση..."
 
-#: addressbook/libedatabook/e-book-backend-file.c:402
-#: addressbook/libedatabook/e-book-backend-ldap.c:2768
-#: addressbook/libedatabook/e-book-backend-vcf.c:106
+#: addressbook/backends/file/e-book-backend-file.c:399
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2768
+#: addressbook/backends/vcf/e-book-backend-vcf.c:104
 msgid "Searching..."
 msgstr "Γίνεται αναζήτηση..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:601
+#: addressbook/backends/ldap/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "Χρήση Διακεκριμένου ονόματος  (DN)"
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:604
+#: addressbook/backends/ldap/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "Χρήση διεύθυνσης  Email "
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:748
+#: addressbook/backends/ldap/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "Επανασύνδεση με τον διακομιστή LDAP..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:1250
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1250
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "Προσθήκη κάρτας στον διακομιστή LDAP..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:1339
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1339
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "Αφαίρεση κάρτας από τον διακομιστή LDAP..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:1539
-#: addressbook/libedatabook/e-book-backend-ldap.c:1542
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1542
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "Τροποποίηση κάρτας στον διακομιστή LDAP..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:2691
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2691
 msgid "Receiving LDAP search results..."
 msgstr "Λήψη αποτελεσμάτων αναζήτησης από LDAP..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:2788
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2788
 msgid "Error performing search"
 msgstr "Σφάλμα εκτέλεσης αναζήτησης"
 
@@ -722,90 +722,86 @@ msgstr "Άγνωστο Σφάλμα"
 msgid "No error"
 msgstr "Χωρίς σφάλμα"
 
-#: calendar/libedatacal/e-cal-backend-file.c:175
-msgid "Can't save calendar data: Malformed URI."
-msgstr ""
-
-#: calendar/libedatacal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:49
 msgid "time-now expects 0 arguments"
 msgstr "ο χρόνος περιμένει τώρα 0 παραμέτρους"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:74
+#: calendar/libedata-cal/e-cal-backend-sexp.c:73
 msgid "make-time expects 1 argument"
 msgstr "αναγκαστική αναμονή του χρόνου για μία παράμετρο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:79
+#: calendar/libedata-cal/e-cal-backend-sexp.c:78
 msgid "make-time expects argument 1 to be a string"
 msgstr "αναγκαστική αναμονή του χρόνου να είναι η παράμετρος 1 στοιχείο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:87
+#: calendar/libedata-cal/e-cal-backend-sexp.c:86
 msgid "make-time argument 1 must be an ISO 8601 date/time string"
 msgstr ""
 "αναγκαστικά η παράμετρος χρόνου 1 να είναι στοιχείο ημερομηνία/χρόνος ISO "
 "8601"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:116
+#: calendar/libedata-cal/e-cal-backend-sexp.c:115
 msgid "time-add-day expects 2 arguments"
 msgstr "η προσθήκη χρόνου ημέρας αναμένεται να έχει 2 παραμέτρους"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #, fuzzy
 msgid "time-add-day expects argument 1 to be a time_t"
 msgstr "time-add-day αναμένει argument 1 to be a time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:128
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
 msgid "time-add-day expects argument 2 to be an integer"
 msgstr ""
 "η προσθήκη χρόνου ημέρας αναμένεται να έχει ως παράμετρο 2 έναν ακέραιο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:155
+#: calendar/libedata-cal/e-cal-backend-sexp.c:154
 msgid "time-day-begin expects 1 argument"
 msgstr "η αρχή χρόνου ημέρας αναμένεται να έχει 1 παραμέτρο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:160
+#: calendar/libedata-cal/e-cal-backend-sexp.c:159
 #, fuzzy
 msgid "time-day-begin expects argument 1 to be a time_t"
 msgstr "time-day-begin αναμένει argument 1 to be a time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:187
+#: calendar/libedata-cal/e-cal-backend-sexp.c:186
 msgid "time-day-end expects 1 argument"
 msgstr "το τέλους χρόνου ημέρας αναμένεται να έχει 1 παραμέτρο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:192
+#: calendar/libedata-cal/e-cal-backend-sexp.c:191
 msgid "time-day-end expects argument 1 to be a time_t"
 msgstr "time-day-end αναμένει argument 1 to be a time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:220
+#: calendar/libedata-cal/e-cal-backend-sexp.c:219
 msgid "get-vtype expects 0 arguments"
 msgstr "Το get-vtype αναμένεται να έχει 0 παραμέτρους"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:280
+#: calendar/libedata-cal/e-cal-backend-sexp.c:279
 msgid "occur-in-time-range? expects 2 arguments"
 msgstr "occur-in-time-range? αναμένει 2 arguments"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:285
+#: calendar/libedata-cal/e-cal-backend-sexp.c:284
 #, fuzzy
 msgid "occur-in-time-range? expects argument 1 to be a time_t"
 msgstr "occur-in-time-range? αναμένει argument 1 to be a time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:292
+#: calendar/libedata-cal/e-cal-backend-sexp.c:291
 #, fuzzy
 msgid "occur-in-time-range? expects argument 2 to be a time_t"
 msgstr "occur-in-time-range? αναμένει argument 2 to be a time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:436
+#: calendar/libedata-cal/e-cal-backend-sexp.c:435
 msgid "contains? expects 2 arguments"
 msgstr "περιέχει? αναμένει 2 παραμέτρους"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:441
+#: calendar/libedata-cal/e-cal-backend-sexp.c:440
 msgid "contains? expects argument 1 to be a string"
 msgstr "περιέχει? αναμένει ότι η παράμετρος 1 είναι αλφαριθμητικό"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:448
+#: calendar/libedata-cal/e-cal-backend-sexp.c:447
 msgid "contains? expects argument 2 to be a string"
 msgstr "περιέχει? αναμένει ότι η παράμετρος 2 είναι αλφαριθμητικό"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:465
+#: calendar/libedata-cal/e-cal-backend-sexp.c:464
 msgid ""
 "contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
 "\""
@@ -813,21 +809,21 @@ msgstr ""
 "περιέχει? αναμένει ότι η παράμετρος 1 είναι ένα από \"any\", \"summary\", "
 "\"description\""
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:491
 #, fuzzy
 msgid "has-alarms? expects at least 1 argument"
 msgstr "έχει-κατηγορίες? αναμένει τουλάχιστον 1 παράμετρο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:497
+#: calendar/libedata-cal/e-cal-backend-sexp.c:496
 #, fuzzy
 msgid "has-alarms? excepts argument to be a boolean"
 msgstr "περιέχει? αναμένει ότι η παράμετρος 2 είναι αλφαριθμητικό"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:537
+#: calendar/libedata-cal/e-cal-backend-sexp.c:536
 msgid "has-categories? expects at least 1 argument"
 msgstr "έχει-κατηγορίες? αναμένει τουλάχιστον 1 παράμετρο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:549
+#: calendar/libedata-cal/e-cal-backend-sexp.c:548
 msgid ""
 "has-categories? expects all arguments to be strings or one and only one "
 "argument to be a boolean false (#f)"
@@ -835,35 +831,51 @@ msgstr ""
 "έχει-κατηγορίες? αναμένει ότι όλες οι παράμετροι θα είναι αλφαριθμητικά ή "
 "μια και μόνο μια παράμετρος θα είναι  boolean false (#f)"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:629
+#: calendar/libedata-cal/e-cal-backend-sexp.c:628
 msgid "is-completed? expects 0 arguments"
 msgstr "έχει-ολοκληρωθεί? αναμένει 0 παραμέτρους"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:666
+#: calendar/libedata-cal/e-cal-backend-sexp.c:665
 msgid "completed-before? expects 1 argument"
 msgstr "ολοκληρώθηκε-πρίν? αναμένει 1 παραμέτρο"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:671
+#: calendar/libedata-cal/e-cal-backend-sexp.c:670
 msgid "completed-before? expects argument 1 to be a time_t"
 msgstr "ολοκληρώθηκε-πρίν? αναμένει 1 παραμέτρο να είναι a time_t"
 
-#: src/GNOME_Evolution_Wombat.server.in.in.h:1
-#: src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
+#: calendar/backends/file/e-cal-backend-file.c:175
+msgid "Can't save calendar data: Malformed URI."
+msgstr ""
+
+#: calendar/backends/http/e-cal-backend-http.c:273
 #, fuzzy
-msgid "Evolution Addressbook local/LDAP backend"
+msgid "Bad file format."
+msgstr "Μορφή ώρας:"
+
+#: calendar/backends/http/e-cal-backend-http.c:278
+#, fuzzy
+msgid "Not a calendar."
+msgstr "Δεν υπάρχει τέτοιος φάκελος %s"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
+#, fuzzy
+msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Προβολή μίνι-κάρτας του Βιβλίου Διευθύνσεων του Evolution"
 
-#: src/GNOME_Evolution_Wombat.server.in.in.h:2
-#: src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
-#: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
 #, fuzzy
-msgid "Evolution Calendar local file backend"
+msgid "Evolution Calendar file and webcal backend"
 msgstr "Προβολή iTip/iMip ημερολογίου Evolution"
 
-#: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 #, fuzzy
-msgid "Evolution Addressbook local backend"
+msgid "Evolution Addressbook file backend"
 msgstr "Προβολή μίνι-κάρτας του Βιβλίου Διευθύνσεων του Evolution"
+
+#, fuzzy
+#~ msgid "Evolution Addressbook local backend"
+#~ msgstr "Προβολή μίνι-κάρτας του Βιβλίου Διευθύνσεων του Evolution"
 
 #~ msgid "Unnamed List"
 #~ msgstr "Λίστα Χωρίς Τίτλο"
@@ -3384,9 +3396,6 @@ msgstr "Προβολή μίνι-κάρτας του Βιβλίου Διευθύ�
 
 #~ msgid "Time _zone:"
 #~ msgstr "_Ζώνη αλλαγής ώρας:"
-
-#~ msgid "Time format:"
-#~ msgstr "Μορφή ώρας:"
 
 #~ msgid "Tuesday"
 #~ msgstr "Τρίτη"
@@ -18101,7 +18110,3 @@ msgstr "Προβολή μίνι-κάρτας του Βιβλίου Διευθύ�
 
 #~ msgid "Question"
 #~ msgstr "Ερώτηση"
-
-#, fuzzy
-#~ msgid "Evolution Addressbook local file backend"
-#~ msgstr "Προβολή μίνι-κάρτας του Βιβλίου Διευθύνσεων του Evolution"

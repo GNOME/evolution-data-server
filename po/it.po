@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
-"POT-Creation-Date: 2003-11-03 14:21-0500\n"
+"POT-Creation-Date: 2003-11-06 12:41-0500\n"
 "PO-Revision-Date: 2003-09-15 13:49+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <tp@lists.linux.it>,<it@li.org>\n"
@@ -16,126 +16,126 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/libebook/e-book.c:214
+#: addressbook/libebook/e-book.c:211
 msgid "e_book_add_contact called on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:221 addressbook/libebook/e-book.c:330
-#: addressbook/libebook/e-book.c:412 addressbook/libebook/e-book.c:511
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:701
-#: addressbook/libebook/e-book.c:801 addressbook/libebook/e-book.c:853
-#: addressbook/libebook/e-book.c:946 addressbook/libebook/e-book.c:1075
-#: addressbook/libebook/e-book.c:1173 addressbook/libebook/e-book.c:1397
+#: addressbook/libebook/e-book.c:218 addressbook/libebook/e-book.c:327
+#: addressbook/libebook/e-book.c:409 addressbook/libebook/e-book.c:508
+#: addressbook/libebook/e-book.c:617 addressbook/libebook/e-book.c:698
+#: addressbook/libebook/e-book.c:798 addressbook/libebook/e-book.c:850
+#: addressbook/libebook/e-book.c:943 addressbook/libebook/e-book.c:1072
+#: addressbook/libebook/e-book.c:1170 addressbook/libebook/e-book.c:1394
 msgid "book busy"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:248
+#: addressbook/libebook/e-book.c:245
 msgid "Corba exception making Book::addContact call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:323
+#: addressbook/libebook/e-book.c:320
 msgid "e_book_commit_contact called on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:357
+#: addressbook/libebook/e-book.c:354
 msgid "Corba exception making Book::modifyContact call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:405
+#: addressbook/libebook/e-book.c:402
 msgid "e_book_get_supported_fields on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:434
+#: addressbook/libebook/e-book.c:431
 msgid "Corba exception making Book::getSupportedFields call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:504
+#: addressbook/libebook/e-book.c:501
 msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:534
+#: addressbook/libebook/e-book.c:531
 msgid "Corba exception making Book::getSupportedAuthMethods call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:613
+#: addressbook/libebook/e-book.c:610
 msgid "e_book_authenticate_user on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:646
+#: addressbook/libebook/e-book.c:643
 msgid "Corba exception making Book::authenticateUser call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:694
+#: addressbook/libebook/e-book.c:691
 msgid "e_book_get_contact on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:724
+#: addressbook/libebook/e-book.c:721
 msgid "Corba exception making Book::getContact call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:794
+#: addressbook/libebook/e-book.c:791
 msgid "e_book_remove_contact on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:846
+#: addressbook/libebook/e-book.c:843
 msgid "e_book_remove_contacts on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:885
+#: addressbook/libebook/e-book.c:882
 msgid "Corba exception making Book::removeContacts call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:939
+#: addressbook/libebook/e-book.c:936
 msgid "e_book_get_book_view on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:990
+#: addressbook/libebook/e-book.c:987
 msgid "Corba exception making Book::getBookView call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1068
+#: addressbook/libebook/e-book.c:1065
 msgid "e_book_get_contacts on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1103
+#: addressbook/libebook/e-book.c:1100
 msgid "Corba exception making Book::getContactList call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1166
+#: addressbook/libebook/e-book.c:1163
 msgid "e_book_get_changes on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1197
+#: addressbook/libebook/e-book.c:1194
 msgid "Corba exception making Book::getChanges call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1308
+#: addressbook/libebook/e-book.c:1305
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "Annulla l'operazione corrente di posta"
 
-#: addressbook/libebook/e-book.c:1327
+#: addressbook/libebook/e-book.c:1324
 msgid "Corba exception making Book::cancelOperation call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1342
+#: addressbook/libebook/e-book.c:1339
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1390
+#: addressbook/libebook/e-book.c:1387
 msgid "e_book_remove on book before e_book_load_uri"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1419
+#: addressbook/libebook/e-book.c:1416
 msgid "Corba exception making Book::remove call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1642 addressbook/libebook/e-book.c:1736
+#: addressbook/libebook/e-book.c:1639 addressbook/libebook/e-book.c:1733
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1656
+#: addressbook/libebook/e-book.c:1653
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
@@ -431,50 +431,50 @@ msgstr "Elenco"
 msgid "List Show Addresses"
 msgstr "Elenco mostra indirizzi"
 
-#: addressbook/libedatabook/e-book-backend-file.c:400
-#: addressbook/libedatabook/e-book-backend-vcf.c:104
+#: addressbook/backends/file/e-book-backend-file.c:397
+#: addressbook/backends/vcf/e-book-backend-vcf.c:102
 msgid "Loading..."
 msgstr "Caricamento in corso..."
 
-#: addressbook/libedatabook/e-book-backend-file.c:402
-#: addressbook/libedatabook/e-book-backend-ldap.c:2768
-#: addressbook/libedatabook/e-book-backend-vcf.c:106
+#: addressbook/backends/file/e-book-backend-file.c:399
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2768
+#: addressbook/backends/vcf/e-book-backend-vcf.c:104
 msgid "Searching..."
 msgstr "Ricerca in corso..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:601
+#: addressbook/backends/ldap/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "Uso nome distintivo (DN)"
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:604
+#: addressbook/backends/ldap/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "Uso indirizzo Email"
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:748
+#: addressbook/backends/ldap/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "Riconnessione al server LDAP..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:1250
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1250
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "Aggiunta di una card al server LDAP in corso..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:1339
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1339
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "Rimozione di una card dal server LDAP in corso..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:1539
-#: addressbook/libedatabook/e-book-backend-ldap.c:1542
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1542
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "Modifica di una card nel server LDAP in corso..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:2691
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2691
 msgid "Receiving LDAP search results..."
 msgstr "Ricezione dei risultati della ricerca LDAP in corso..."
 
-#: addressbook/libedatabook/e-book-backend-ldap.c:2788
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2788
 msgid "Error performing search"
 msgstr "Errore nell'esecuzione della ricerca"
 
@@ -704,83 +704,79 @@ msgstr "Errore sconosciuto"
 msgid "No error"
 msgstr "Nessun errore"
 
-#: calendar/libedatacal/e-cal-backend-file.c:175
-msgid "Can't save calendar data: Malformed URI."
-msgstr "Impossibile salvare la data di calendario: URI malformulata."
-
-#: calendar/libedatacal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:49
 msgid "time-now expects 0 arguments"
 msgstr "time-now prevede 0 argomenti"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:74
+#: calendar/libedata-cal/e-cal-backend-sexp.c:73
 msgid "make-time expects 1 argument"
 msgstr "make-time prevede 1 argomento"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:79
+#: calendar/libedata-cal/e-cal-backend-sexp.c:78
 msgid "make-time expects argument 1 to be a string"
 msgstr "make-time prevede che l'argomento 1 sia una stringa"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:87
+#: calendar/libedata-cal/e-cal-backend-sexp.c:86
 msgid "make-time argument 1 must be an ISO 8601 date/time string"
 msgstr "make-time prevede che l'argomento 1 sia una stringa ISO 8601 data/ora"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:116
+#: calendar/libedata-cal/e-cal-backend-sexp.c:115
 msgid "time-add-day expects 2 arguments"
 msgstr "time-add-day prevede 2 argomenti"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:120
 msgid "time-add-day expects argument 1 to be a time_t"
 msgstr "time-add-day prevede che l'argomento 1 sia un time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:128
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
 msgid "time-add-day expects argument 2 to be an integer"
 msgstr "time-add-day prevede che l'argomento 1 sia un intero"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:155
+#: calendar/libedata-cal/e-cal-backend-sexp.c:154
 msgid "time-day-begin expects 1 argument"
 msgstr "time-day-begin prevede 1 argomento"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:160
+#: calendar/libedata-cal/e-cal-backend-sexp.c:159
 msgid "time-day-begin expects argument 1 to be a time_t"
 msgstr "time-day-begin prevede che l'argomento 1 sia un time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:187
+#: calendar/libedata-cal/e-cal-backend-sexp.c:186
 msgid "time-day-end expects 1 argument"
 msgstr "time-day-end prevede 1 argomento"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:192
+#: calendar/libedata-cal/e-cal-backend-sexp.c:191
 msgid "time-day-end expects argument 1 to be a time_t"
 msgstr "time-day-end prevede che l'argomento 1 sia un time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:220
+#: calendar/libedata-cal/e-cal-backend-sexp.c:219
 msgid "get-vtype expects 0 arguments"
 msgstr "get-vtype prevede 0 argomenti"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:280
+#: calendar/libedata-cal/e-cal-backend-sexp.c:279
 msgid "occur-in-time-range? expects 2 arguments"
 msgstr "occur-in-time-range? prevede 2 argomenti"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:285
+#: calendar/libedata-cal/e-cal-backend-sexp.c:284
 msgid "occur-in-time-range? expects argument 1 to be a time_t"
 msgstr "occur-in-time-range? prevede che l'argomento 1 sia un time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:292
+#: calendar/libedata-cal/e-cal-backend-sexp.c:291
 msgid "occur-in-time-range? expects argument 2 to be a time_t"
 msgstr "occur-in-time-range? prevede che l'argomento 2 sia un time_t"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:436
+#: calendar/libedata-cal/e-cal-backend-sexp.c:435
 msgid "contains? expects 2 arguments"
 msgstr "contiene? prevede 2 argomenti"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:441
+#: calendar/libedata-cal/e-cal-backend-sexp.c:440
 msgid "contains? expects argument 1 to be a string"
 msgstr "contiene? prevede che l'argomento 1 sia una stringa"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:448
+#: calendar/libedata-cal/e-cal-backend-sexp.c:447
 msgid "contains? expects argument 2 to be a string"
 msgstr "contiene? prevede che l'argomento 2 sia una stringa"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:465
+#: calendar/libedata-cal/e-cal-backend-sexp.c:464
 msgid ""
 "contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
 "\""
@@ -788,21 +784,21 @@ msgstr ""
 "contiene? prevede che l'argomento 1 sia \"qualsiasi\", \"sommario\", "
 "\"descrizione\""
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:491
 #, fuzzy
 msgid "has-alarms? expects at least 1 argument"
 msgstr "ha categorie? prevede almeno 1 argomento"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:497
+#: calendar/libedata-cal/e-cal-backend-sexp.c:496
 #, fuzzy
 msgid "has-alarms? excepts argument to be a boolean"
 msgstr "contiene? prevede che l'argomento 2 sia una stringa"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:537
+#: calendar/libedata-cal/e-cal-backend-sexp.c:536
 msgid "has-categories? expects at least 1 argument"
 msgstr "ha categorie? prevede almeno 1 argomento"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:549
+#: calendar/libedata-cal/e-cal-backend-sexp.c:548
 msgid ""
 "has-categories? expects all arguments to be strings or one and only one "
 "argument to be a boolean false (#f)"
@@ -810,33 +806,51 @@ msgstr ""
 "has-categories? prevede che tutti gli argomenti siano stringhe e che uno "
 "solo sia falso (#f)"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:629
+#: calendar/libedata-cal/e-cal-backend-sexp.c:628
 msgid "is-completed? expects 0 arguments"
 msgstr "is-completed? non vuole nessun argomento"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:666
+#: calendar/libedata-cal/e-cal-backend-sexp.c:665
 msgid "completed-before? expects 1 argument"
 msgstr "completed-before? vuole un solo argomento"
 
-#: calendar/libedatacal/e-cal-backend-sexp.c:671
+#: calendar/libedata-cal/e-cal-backend-sexp.c:670
 msgid "completed-before? expects argument 1 to be a time_t"
 msgstr "completed-before? richiede che il primo argomento sia di tipo time_t"
 
-#: src/GNOME_Evolution_Wombat.server.in.in.h:1
-#: src/GNOME_Evolution_WombatLDAP.server.in.in.h:1
-msgid "Evolution Addressbook local/LDAP backend"
+#: calendar/backends/file/e-cal-backend-file.c:175
+msgid "Can't save calendar data: Malformed URI."
+msgstr "Impossibile salvare la data di calendario: URI malformulata."
+
+#: calendar/backends/http/e-cal-backend-http.c:273
+#, fuzzy
+msgid "Bad file format."
+msgstr "Formato dell'ora:"
+
+#: calendar/backends/http/e-cal-backend-http.c:278
+#, fuzzy
+msgid "Not a calendar."
+msgstr "Non è presente la cartella %s"
+
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
+#, fuzzy
+msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Backend della rubrica locale/LDAP di Evolution"
 
-#: src/GNOME_Evolution_Wombat.server.in.in.h:2
-#: src/GNOME_Evolution_WombatLDAP.server.in.in.h:2
-#: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:2
-msgid "Evolution Calendar local file backend"
+#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
+#, fuzzy
+msgid "Evolution Calendar file and webcal backend"
 msgstr "Backend dei file del calendario locale di Evolution"
 
-#: src/GNOME_Evolution_WombatNOLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 #, fuzzy
-msgid "Evolution Addressbook local backend"
-msgstr "Backend della rubrica locale/LDAP di Evolution"
+msgid "Evolution Addressbook file backend"
+msgstr "Backend dei file locali della rubrica di Evolution"
+
+#, fuzzy
+#~ msgid "Evolution Addressbook local backend"
+#~ msgstr "Backend della rubrica locale/LDAP di Evolution"
 
 #~ msgid "Unnamed List"
 #~ msgstr "Elenco senza nome"
@@ -3344,9 +3358,6 @@ msgstr "Backend della rubrica locale/LDAP di Evolution"
 
 #~ msgid "Time _zone:"
 #~ msgstr "F_uso orario: "
-
-#~ msgid "Time format:"
-#~ msgstr "Formato dell'ora:"
 
 #~ msgid "Tuesday"
 #~ msgstr "Martedì"
@@ -21440,6 +21451,3 @@ msgstr "Backend della rubrica locale/LDAP di Evolution"
 
 #~ msgid "Question"
 #~ msgstr "Domanda"
-
-#~ msgid "Evolution Addressbook local file backend"
-#~ msgstr "Backend dei file locali della rubrica di Evolution"
