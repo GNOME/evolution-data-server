@@ -1884,7 +1884,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		priv->comp = g_list_remove (priv->comp, comp);
 
 		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (comp),
-					   icaltime_from_string (rid), mod);
+					     icaltime_from_string (rid), mod);
 
 		/* now remove all detached instances */
 		rrdata.cbfile = cbfile;

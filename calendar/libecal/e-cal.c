@@ -1364,7 +1364,8 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	const char *username = NULL, *password = NULL;
+	const char *username = NULL;
+	char *password = NULL;
 	
 	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
@@ -2686,22 +2687,17 @@ build_component_alarms_list (ECal *ecal, GList *object_list, time_t start, time_
 	for (l = object_list; l != NULL; l = l->next) {
 		ECalComponent *comp;
 		ECalComponentAlarms *alarms;
-		icalcomponent *icalcomp;
 		ECalComponentAlarmAction omit[] = {-1};
 
-		icalcomp = icalparser_parse_string (l->data);
-		if (!icalcomp)
-			continue;
-
 		comp = e_cal_component_new ();
-		if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
-			icalcomponent_free (icalcomp);
+		if (!e_cal_component_set_icalcomponent (comp, (icalcomponent *) l->data)) {
+			icalcomponent_free (l->data);
 			g_object_unref (G_OBJECT (comp));
 			continue;
 		}
 
 		alarms = e_cal_util_generate_alarms_for_comp (comp, start, end, omit, e_cal_resolve_tzid_cb,
-							    icalcomp, ecal->priv->default_zone);
+							      l->data, ecal->priv->default_zone);
 		if (alarms)
 			comp_alarms = g_slist_prepend (comp_alarms, alarms);
 	}

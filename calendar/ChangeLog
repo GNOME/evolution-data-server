@@ -1,3 +1,10 @@
+2004-01-06  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal.c (build_component_alarms_list): the list returned
+	by e_cal_get_object_list() contains icalcomponent's already,
+	so no need to parse them as strings.
+	(e_cal_open): fixed warning.
+
 2004-01-05  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-message.[ch]
