@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-10.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-15 21:41+0100\n"
-"PO-Revision-Date: 2005-03-16 09:16+0530\n"
+"POT-Creation-Date: 2005-03-16 21:37+0100\n"
+"PO-Revision-Date: 2005-03-17 09:39+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati <gu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -1492,7 +1493,7 @@ msgstr ""
 "જરુરી છે: \"%s\""
 
 #: camel/camel-gpg-context.c:803 camel/camel-gpg-context.c:1000
-#: camel/providers/nntp/camel-nntp-store.c:1274
+#: camel/providers/nntp/camel-nntp-store.c:1275
 msgid "Cancelled."
 msgstr "રદ થઈ ગયેલ."
 
@@ -3900,12 +3901,12 @@ msgstr "%s માંથી શુભેચ્છા વાંચી શક્ય
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP સર્વર %s એ ભૂલ કોડ %d આપ્યો: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:422
+#: camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
 msgid "USENET News via %s"
 msgstr "%s મારફતે USENET સમાચાર"
 
-#: camel/providers/nntp/camel-nntp-store.c:811
+#: camel/providers/nntp/camel-nntp-store.c:812
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3916,7 +3917,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: camel/providers/nntp/camel-nntp-store.c:905
+#: camel/providers/nntp/camel-nntp-store.c:906
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -3926,7 +3927,7 @@ msgstr ""
 "\n"
 "આવું કોઈ સમાચાર જૂથ નથી. પસંદ કરેલ વસ્તુ એ સંભવિત છે કે પિતૃ ફોલ્ડર છે."
 
-#: camel/providers/nntp/camel-nntp-store.c:937
+#: camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -3936,42 +3937,42 @@ msgstr ""
 "\n"
 "સમાચાર જૂથ અસ્તિત્વમાં નથી!"
 
-#: camel/providers/nntp/camel-nntp-store.c:962
+#: camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "તમે સમાચાર સ્ટોરમાં ફોલ્ડર બનાવી શકતા નથી: એની જગ્યાએ ઉમેદવારી કરો."
 
-#: camel/providers/nntp/camel-nntp-store.c:970
+#: camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot rename a folder in a News store."
 msgstr "સમાચાર સ્ટોરમાં તમે ફોલ્ડરોનું નામ બદલી શકતા નથી."
 
-#: camel/providers/nntp/camel-nntp-store.c:978
+#: camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "તમે સમાચાર સ્ટોરમાંથી ફોલ્ડર દૂર કરી શકતા નથી: એની જગ્યાએ ઉમેદવારી દૂર કરો."
 
-#: camel/providers/nntp/camel-nntp-store.c:1148
+#: camel/providers/nntp/camel-nntp-store.c:1149
 msgid "Authentication requested but no username provided"
 msgstr "સત્તાધિકરણની માંગણી થયેલ છે પરંતુ કોઈ વપરાશકર્તા નામ પૂરો પાડવામાં આવેલ નથી"
 
-#: camel/providers/nntp/camel-nntp-store.c:1156
+#: camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "મહેરબાની કરીને %s@%s માટે NNTP પાસવર્ડ દાખલ કરો"
 
-#: camel/providers/nntp/camel-nntp-store.c:1160
+#: camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "સર્વર સાથે સત્તાધિકરણ કરી શકતા નથી: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1276
+#: camel/providers/nntp/camel-nntp-store.c:1277
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP આદેશ નિષ્ફળ: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1332
+#: camel/providers/nntp/camel-nntp-store.c:1333
 msgid "Not connected."
 msgstr "જોડાયેલ નથી."
 
-#: camel/providers/nntp/camel-nntp-store.c:1385
+#: camel/providers/nntp/camel-nntp-store.c:1386
 #, c-format
 msgid "No such folder: %s"
 msgstr "આવું કોઈ ફોલ્ડર નથી: %s"
@@ -4745,6 +4746,14 @@ msgstr "શોધો"
 #: libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "_Search:"
 msgstr "શોધો (_S):"
+
+#: libedataserverui/e-passwords.c:471
+msgid "_Remember this password"
+msgstr "આ પાસવર્ડ યાદ રાખો (_R)"
+
+#: libedataserverui/e-passwords.c:472
+msgid "_Remember this password for the remainder of this session"
+msgstr "આ સત્રના યાદ અપાવનાર માટે આ પાસવર્ડ યાદ રાખો (_R)"
 
 #. prepare the dialog
 #: libedataserverui/e-source-selector-dialog.c:101
