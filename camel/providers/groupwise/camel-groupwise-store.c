@@ -185,8 +185,6 @@ camel_groupwise_store_finalize (CamelObject *object)
 			g_object_unref (priv->cnc);
 			priv->cnc = NULL;
 		}
-		g_free (groupwise_store->priv);
-		groupwise_store->priv = NULL;
 
 		if (priv->storage_path)
 			g_free(priv->storage_path) ;
@@ -206,6 +204,8 @@ camel_groupwise_store_finalize (CamelObject *object)
 			g_hash_table_foreach (priv->parent_hash, free_hash, NULL) ;
 			g_hash_table_destroy (priv->parent_hash) ;
 		}
+		g_free (groupwise_store->priv);
+		groupwise_store->priv = NULL;
 	}
 
 }
