@@ -303,8 +303,6 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	groupwise_store->summary = camel_groupwise_store_summary_new () ;
 	camel_store_summary_set_filename ((CamelStoreSummary *)groupwise_store->summary, path) ;
 	
-	if (path)
-		g_free (path) ;
 	camel_store_summary_load ((CamelStoreSummary *) groupwise_store->summary);
 	
 	/*host and user*/
