@@ -1,4 +1,13 @@
+2004-01-28  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-item.[ch]
+	(e_gw_item_append_to_soap_message): new function.
+
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_send_item):
+	finished implementation.
+
 2004-01-28 Harish K <kharish@novell.com>
+
 	* calendar/backends/groupwise/e-cal-backend-groupwise.c :
 	Pass the correct arguments to the callback function 
 	* calendar/backends/groupwise/e-gw-connection.c :

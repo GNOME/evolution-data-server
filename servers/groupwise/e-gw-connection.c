@@ -650,7 +650,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
                 g_warning (G_STRLOC ": Could not build SOAP message");
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
-        
+
         e_gw_message_write_string_parameter (msg, "parent", NULL, "folders");
 	e_gw_message_write_string_parameter (msg, "recursive", NULL, "true");
 	e_gw_message_write_footer (msg);
@@ -803,8 +803,8 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
         return E_GW_CONNECTION_STATUS_OK;        
 }
 
-static
-gboolean update_cache_item (ECalBackendCache *cache, SoupSoapParameter *param)
+static gboolean
+update_cache_item (ECalBackendCache *cache, SoupSoapParameter *param)
 {
         SoupSoapParameter *subparam;
         const char *uid, *item_type, *classification, *accept_level;
@@ -1130,12 +1130,39 @@ e_gw_connection_get_deltas (gpointer handle)
 EGwConnectionStatus
 e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 {
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
 	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_UNKNOWN;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_GW_ITEM (item), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* compose SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "sendItemRequest");
+	if (!msg) {
+		g_warning (G_STRLOC ": Could not build SOAP message");
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
+
+	if (!e_gw_item_append_to_soap_message (item, msg)) {
+		g_warning (G_STRLOC ": Could not append item to SOAP message");
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+	}
+
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = parse_response_status (response);
+
+	g_object_unref (msg);
+	g_object_unref (response);
 
 	return status;
 }

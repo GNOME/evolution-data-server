@@ -130,3 +130,45 @@ e_gw_item_new_appointment (const char *container, ECalComponent *comp)
 
 	return item;
 }
+
+static void
+append_appointment_properties (EGwItem *item, SoupSoapMessage *msg)
+{
+	ECalComponent *comp;
+	ECalComponentText text;
+	EGwItemPrivate *priv = item->priv;
+
+	comp = E_CAL_COMPONENT (priv->item_data);
+
+	/* subject property */
+	e_cal_component_get_summary (comp, &text);
+	if (text.value)
+		e_gw_message_write_string_parameter (msg, "subject", NULL, text.value);
+}
+
+gboolean
+e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
+{
+	EGwItemPrivate *priv;
+
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), FALSE);
+
+	priv = item->priv;
+
+	soup_soap_message_start_element (msg, "item", "types", NULL);
+
+	switch (priv->item_type) {
+	case E_GW_ITEM_TYPE_APPOINTMENT :
+		soup_soap_message_add_attribute (msg, "type", "Appointment", "xsi", NULL);
+		append_appointment_properties (item, msg);
+		break;
+	default :
+		g_warning (G_STRLOC ": Unknown type for item");
+		return FALSE;
+	}
+
+	soup_soap_message_end_element (msg);
+
+	return TRUE;
+}

@@ -24,6 +24,7 @@
 #ifndef E_GW_ITEM_H
 #define E_GW_ITEM_H
 
+#include <libsoup/soup-soap-message.h>
 #include <libecal/e-cal-component.h>
 
 G_BEGIN_DECLS
@@ -54,6 +55,7 @@ struct _EGwItemClass {
 
 GType    e_gw_item_get_type (void);
 EGwItem *e_gw_item_new_appointment (const char *container, ECalComponent *comp);
+gboolean e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 
 G_END_DECLS
 
