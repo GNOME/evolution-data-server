@@ -1,5 +1,8 @@
 2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/soap-test.c: added support for specifying a
+	password in the command line.
+
 	* backends/groupwise/e-gw-connection.c (e_gw_connection_new): dont
 	unref the response when we havent got one.
 
