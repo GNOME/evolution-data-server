@@ -22,6 +22,7 @@
 
 #include <glib.h>
 #include <camel/camel-mime-message.h>
+#include <camel/camel-string-utils.h>
 #include <e-gw-connection.h>
 #include <e-gw-container.h>
 #include <e-gw-item.h>
