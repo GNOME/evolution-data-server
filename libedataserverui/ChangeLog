@@ -1,5 +1,12 @@
 2005-01-07  Rodrigo Moya <rodrigo@novell.com>
 
+	* e-categories-config.c (e_categories_config_init): set the "active"
+	property on the GtkTreeViewColumn.
+	(e_categories_dialog_set_categories): process correctly the strings
+	array we get from g_strsplit.
+
+2005-01-07  Rodrigo Moya <rodrigo@novell.com>
+
 	* e-categories-dialog.c (e_categories_dialog_set_categories): added
 	missing code to set the widgets to the specificied categories list.
 	(e_categories_dialog_init): set dialog's title and connect to "toggled"

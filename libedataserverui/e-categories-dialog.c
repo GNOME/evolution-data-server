@@ -177,7 +177,8 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 
 	renderer = gtk_cell_renderer_toggle_new ();
 	g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (category_toggled_cb), dialog);
-	column = gtk_tree_view_column_new_with_attributes ("?", renderer, NULL);
+	column = gtk_tree_view_column_new_with_attributes ("?", renderer,
+							   "active", 0, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
 
 	renderer = gtk_cell_renderer_text_new ();
@@ -253,9 +254,11 @@ e_categories_dialog_set_categories (ECategoriesDialog *dialog, const char *categ
 
 	arr = g_strsplit (categories, ",", 0);
 	if (arr) {
-		int i;
-		for (i = 0; i < G_N_ELEMENTS (arr); i++)
+		int i = 0;
+		while (arr[i] != NULL) {
 			g_hash_table_insert (priv->selected_categories, g_strdup (arr[i]), g_strdup (arr[i]));
+			i++;
+		}
 
 		g_strfreev (arr);
 	}
