@@ -10,6 +10,14 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar/libical/src/libical	\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
+EXTRA_DIST =                          \
+	$(test_scripts)               \
+	testdata.ics                  
+	
+test_scripts =                         \
+	test-runner.sh                 \
+	cleanup.sh
+	
 # The test program
 noinst_PROGRAMS = test-ecal
 

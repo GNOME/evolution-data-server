@@ -1,3 +1,11 @@
+2004-02-26 Harish K <kharish@novell.com>
+
+	* tests/ecal/test-ecal.c : Added implementation of 
+	test cases.
+	* (tests/ecal/test-runner.sh, tests/ecal/cleanup.sh
+	   tests/ecal/testdata.ics) : Added test scripts and test data.
+	* tests/ecal/Makefile.am : Add scripts to EXTRA_DIST.
+
 2004-02-23  JP Rosevear <jpr@ximian.com>
 
 	* backends/groupwise/Makefile.am: Add includes for srcdir !=
