@@ -1,3 +1,12 @@
+2004-05-26  Rodney Dawes  <dobey@novell.com>
+
+	* configure.in: Make the ORBit >= 2.9.8 requirement more obvious to
+	work around a problem with the AM_PATH_ORBIT2() m4 function not failing
+	properly when < 2.9.8 is found
+
+	* libedataserver/libedataserver-1.0.pc.in (Requires): Add the ORBit
+	requirement here, so that dependents pick it up properly as well
+	
 2004-05-19  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: bump version, libtool numbers

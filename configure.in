@@ -130,8 +130,10 @@ no)
 esac
 
 LIBBONOBO_REQUIRED="2.4.0"
+ORBIT_REQUIRED="2.9.8"
 
 AC_SUBST(LIBBONOBO_REQUIRED)
+AC_SUBST(ORBIT_REQUIRED)
 
 dnl *******************
 dnl GObject marshalling
@@ -175,7 +177,7 @@ AC_DEFUN(EVO_SET_COMPILE_FLAGS, [
 
 dnl --- Flags to get all the GNOME stuff
 
-FULL_GNOME_DEPS="gnome-vfs-2.0 libgnome-2.0 libxml-2.0 gconf-2.0"
+FULL_GNOME_DEPS="gnome-vfs-2.0 libgnome-2.0 libxml-2.0 gconf-2.0 ORBit-2.0 >= $ORBIT_REQUIRED"
 
 EVO_SET_COMPILE_FLAGS(GNOME_FULL, $FULL_GNOME_DEPS)
 AC_SUBST(GNOME_FULL_CFLAGS)
