@@ -293,8 +293,16 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	while (subcomp) {
 		ECalComponent *comp;
 		icalcomponent_kind subcomp_kind;
+		icalproperty *prop = NULL;
 
 		subcomp_kind = icalcomponent_isa (subcomp);
+		prop = icalcomponent_get_first_property (subcomp, ICAL_UID_PROPERTY);
+		if (!prop) {
+			g_warning (" The component does not have the  mandatory property UID \n");
+			subcomp = icalcomponent_get_next_component (icalcomp, kind);
+			continue;
+		}
+
 		if (subcomp_kind == kind) {
 			comp = e_cal_component_new ();
 			if (e_cal_component_set_icalcomponent (comp, subcomp)) {

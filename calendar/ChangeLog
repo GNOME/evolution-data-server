@@ -1,3 +1,11 @@
+2005-02-22  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes 71490
+	* backends/http/e-cal-backend-http.c
+       	(retrieval_done):If the vcalendar component does not
+	have the UID property, do not add the component the
+	component into the cache.
+
 2005-02-21  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
