@@ -103,6 +103,7 @@ server_log_handler(const gchar *domain,
 
 	CORBA_free (log_event.domain);
 	CORBA_free (log_event.message);
+	bonobo_arg_release (value);
 
 	g_log_default_handler (domain, flags, msg, NULL);
 }
