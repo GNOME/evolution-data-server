@@ -1192,9 +1192,15 @@ camel_store_folder_uri_equal (CamelStore *store, const char *uri0, const char *u
 			name0 = url0->fragment;
 			name1 = url1->fragment;
 		} else {
-			name0 = url0->path[0] == '/' ? url0->path + 1 : url0->path;
-			name1 = url1->path[0] == '/' ? url1->path + 1 : url1->path;
+			name0 = url0->path && url0->path[0] == '/' ? url0->path + 1 : url0->path;
+			name1 = url1->path && url1->path[0] == '/' ? url1->path + 1 : url1->path;
 		}
+
+		if (name0 == NULL)
+			g_warning("URI is badly formed, missing folder name: %s", uri0);
+
+		if (name1 == NULL)
+			g_warning("URI is badly formed, missing folder name: %s", uri1);
 		
 		equal = name0 && name1 && CS_CLASS (store)->compare_folder_name (name0, name1);
 	}

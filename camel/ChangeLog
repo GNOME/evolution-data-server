@@ -1,3 +1,10 @@
+2005-02-01  Not Zed  <NotZed@Ximian.com>
+
+	* camel-store.c (camel_store_folder_uri_equal): check the path
+	isn't NULL before dereferencing it.  Could happen with badly
+	formed uris (since we're comparing folders, it MUST contain a path
+	or fragment).
+
 2005-01-31  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-folder.c
