@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-03 19:36+0000\n"
-"PO-Revision-Date: 2004-09-03 19:36+0000\n"
+"POT-Creation-Date: 2004-09-08 09:07+0000\n"
+"PO-Revision-Date: 2004-09-08 08:47+0000\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -235,7 +235,7 @@ msgstr "Firmafax"
 
 #: addressbook/libebook/e-contact.c:128
 msgid "Callback Phone"
-msgstr "Tilbakering telefon"
+msgstr "Tilbakering-telefon"
 
 #: addressbook/libebook/e-contact.c:129
 msgid "Car Phone"
@@ -267,11 +267,11 @@ msgstr "Mobiltelefon"
 
 #: addressbook/libebook/e-contact.c:136
 msgid "Other Phone"
-msgstr "Alternativ telefon"
+msgstr "Annan telefon"
 
 #: addressbook/libebook/e-contact.c:137
 msgid "Other Fax"
-msgstr "Alternativ faks"
+msgstr "Annan faks"
 
 #: addressbook/libebook/e-contact.c:138
 msgid "Pager"
@@ -279,7 +279,7 @@ msgstr "Personsøkjar"
 
 #: addressbook/libebook/e-contact.c:139
 msgid "Primary Phone"
-msgstr "Primær telefon"
+msgstr "Hovudtelefon"
 
 #: addressbook/libebook/e-contact.c:140
 msgid "Radio"
@@ -349,147 +349,147 @@ msgstr "ICQ-ID-liste"
 
 #: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
-msgstr "AIM Heime-skjermnamn 1"
+msgstr "AIM skjermnamn heime 1"
 
 #: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 2"
-msgstr "AIM Heime-skjermnamn 2"
+msgstr "AIM skjermnamn heime 2"
 
 #: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 3"
-msgstr "AIM Heime-skjermnamn 3"
+msgstr "AIM skjermnamn heime 3"
 
 #: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 1"
-msgstr "AIM Arbeid-skjermnamn 1"
+msgstr "AIM skjermnamn på arbeid 1"
 
 #: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 2"
-msgstr "AIM Arbeid-skjermnamn 2"
+msgstr "AIM skjermnamn på arbeid 2"
 
 #: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 3"
-msgstr "AIM Arbeid-skjermnamn 3"
+msgstr "AIM skjermnamn på arbeid 3"
 
 #: addressbook/libebook/e-contact.c:167
 msgid "Groupwise Home Screen Name 1"
-msgstr ""
+msgstr "Groupwise skjermnamn heime 1"
 
 #: addressbook/libebook/e-contact.c:168
 msgid "Groupwise Home Screen Name 2"
-msgstr ""
+msgstr "Groupwise skjermnamn heime 2"
 
 #: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 3"
-msgstr ""
+msgstr "Groupwise skjermnamn heime 3"
 
 #: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Work Screen Name 1"
-msgstr ""
+msgstr "Groupwise skjermnamn på arbeid 1"
 
 #: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Work Screen Name 2"
-msgstr ""
+msgstr "Groupwise skjermnamn på arbeid 2"
 
 #: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 3"
-msgstr ""
+msgstr "Groupwise skjermnamn på arbeid 3"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
-msgstr ""
+msgstr "Jabber heime-ID 1"
 
 #: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 2"
-msgstr ""
+msgstr "Jabber heime-ID 2"
 
 #: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 3"
-msgstr ""
+msgstr "Jabber heime-ID 3"
 
 #: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 1"
-msgstr ""
+msgstr "Jabber arbeids-ID 1"
 
 #: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 2"
-msgstr ""
+msgstr "Jabber arbeids-ID 2"
 
 #: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 3"
-msgstr ""
+msgstr "Jabber arbeids-ID 3"
 
 #: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
-msgstr ""
+msgstr "Yahoo! skjermnamn heime 1"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 2"
-msgstr ""
+msgstr "Yahoo! skjermnamn heime 2"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 3"
-msgstr ""
+msgstr "Yahoo! skjermnamn heime 3"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 1"
-msgstr ""
+msgstr "Yahoo! skjermnamn på arbeid 1"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 2"
-msgstr ""
+msgstr "Yahoo! skjermnamn på arbeid 2"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 3"
-msgstr ""
+msgstr "Yahoo! skjermnamn på arbeid 3"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 1"
-msgstr ""
+msgstr "MSN skjermnamn heime 1"
 
 #: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 2"
-msgstr ""
+msgstr "MSN skjermnamn heime 2"
 
 #: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 3"
-msgstr ""
+msgstr "MSN skjermnamn heime 3"
 
 #: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 1"
-msgstr ""
+msgstr "MSN skjermnamn på arbeid 1"
 
 #: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 2"
-msgstr ""
+msgstr "MSN skjermnamn på arbeid 2"
 
 #: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 3"
-msgstr ""
+msgstr "MSN skjermnamn på arbeid 3"
 
 #: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "ICQ heime-ID 1"
 
 #: addressbook/libebook/e-contact.c:192
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "ICQ heime-ID 2"
 
 #: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "ICQ heime-ID 3"
 
 #: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "ICQ arbeids-ID 1"
 
 #: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "ICQ arbeids-ID 2"
 
 #: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "ICQ arbeids-ID 3"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:199
@@ -965,7 +965,7 @@ msgstr "Ugyldig svar frå tenaren"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "Ugyldig parameter"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
@@ -984,4 +984,4 @@ msgstr "Evolution adressebokfilmotor"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Fleire segmenteringsfeil oppstod. Kan ikkje visa feildialog\n"
