@@ -78,9 +78,11 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *klass)
 	
 	parent_class = (CamelFolderClass *) camel_type_get_global_classfuncs (CAMEL_FOLDER_TYPE);
 	
-	for (i = 0; i < G_N_ELEMENTS (offline_prop_list); i++) {
-		offline_prop_list[i].description = _(offline_prop_list[i].description);
-		offline_folder_props = g_slist_prepend (offline_folder_props, &offline_prop_list[i]);
+	if (offline_folder_props == NULL) {
+		for (i = 0; i < G_N_ELEMENTS (offline_prop_list); i++) {
+			offline_prop_list[i].description = _(offline_prop_list[i].description);
+			offline_folder_props = g_slist_prepend (offline_folder_props, &offline_prop_list[i]);
+		}
 	}
 	
 	((CamelObjectClass *) klass)->getv = offline_folder_getv;

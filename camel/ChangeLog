@@ -1,5 +1,9 @@
 2005-01-19  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-offline-folder.c (camel_offline_folder_class_init): Only
+	init the perperties list once (class_init can be called multiple
+	times apparently).
+
 	* providers/imap4/camel-imap4-utils.c: disable debugging.
 
 	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
