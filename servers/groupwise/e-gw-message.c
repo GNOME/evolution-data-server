@@ -22,6 +22,7 @@
  */
 
 #include <config.h>
+#include <libsoup/soup-uri.h>
 #include "e-gw-message.h"
 
 #ifdef G_ENABLE_DEBUG
@@ -40,7 +41,7 @@ debug_handler (SoupMessage *msg, gpointer user_data)
                 msg, time (0));
 
 	/* print headers */
-	soup_message_foreach_header (msg, print_header, NULL);
+	soup_message_foreach_header (msg->request_headers, print_header, NULL);
 
 	/* print response */
 	if (msg->response.length) {
@@ -55,15 +56,15 @@ setup_debug (SoupSoapMessage *msg)
 {
 	const SoupUri *suri;
 
-	uri = soup_message_get_uri (SOUP_MESSAGE (msg));
+	suri = soup_message_get_uri (SOUP_MESSAGE (msg));
 	g_print ("%s %s%s%s HTTP/1.1\nSOAP-Debug: %p @ %lu\n",
-		 SOUP_MESSAGE (msg)->method, uri->path,
-		 uri->query ? "?" : "",
-		 uri->query ? uri->query : "",
+		 SOUP_MESSAGE (msg)->method, suri->path,
+		 suri->query ? "?" : "",
+		 suri->query ? suri->query : "",
 		 msg, (unsigned long) time (0));
 
 	/* print message headers */
-	print_header ("Host", uri->host, NULL);
+	print_header ("Host", suri->host, NULL);
 	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers, print_header, NULL);
 
 	/* print request's body */
@@ -71,7 +72,7 @@ setup_debug (SoupSoapMessage *msg)
 	fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
 	fputc ('\n', stdout);
 
-	soup_message_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
+	soup_message_add_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
 }
 
 #endif
