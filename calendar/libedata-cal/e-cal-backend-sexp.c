@@ -84,6 +84,12 @@ e_cal_backend_sexp_func_make_time (ESExp *esexp, int argc, ESExpResult **argv, v
 		return NULL;
 	}
 	str = argv[0]->value.string;
+	if (!str || !*str) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
+					     "argument to be a string"),
+				    "make-time");
+		return NULL;
+	}
 
 	t = time_from_isodate (str);
 	if (t == -1) {
