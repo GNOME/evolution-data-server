@@ -655,7 +655,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, icalproperty_method method)
+e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, icalproperty_method method, gboolean *remove)
 {
 	EGwConnectionStatus status;
 	icalparameter_partstat partstat;
@@ -669,7 +669,17 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 	/* When the icalcomponent is obtained through the itip message rather
 	 * than from the SOAP protocol, the container id has to be explicitly 
 	 * added to the xgwrecordid inorder to obtain the item id. */
-	item_id = g_strconcat (e_cal_component_get_gw_id (comp), ":", container, NULL);
+	
+	switch  (e_cal_component_get_vtype (comp)) {
+	case E_CAL_COMPONENT_EVENT: 
+		item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
+		break;
+	case E_CAL_COMPONENT_TODO:
+		item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_TODO_TYPE_ID, container, NULL);
+		break;
+	default:
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+	}
 	switch (method) {
 	case ICAL_METHOD_REQUEST:
 		/* get attendee here and add the list along. */
@@ -701,8 +711,6 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 			status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 			break;
 		}
-		
-		
 		switch (partstat) {
 		ECalComponentTransparency transp;
 			
@@ -715,6 +723,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 			break;
 		case ICAL_PARTSTAT_DECLINED:
 			status = e_gw_connection_decline_request (cnc, item_id);
+			*remove = TRUE;
 			break;
 		case ICAL_PARTSTAT_TENTATIVE:
 			status = e_gw_connection_accept_request (cnc, item_id, "Tentative");
@@ -731,6 +740,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 
 	case ICAL_METHOD_CANCEL:
 		status = e_gw_connection_retract_request (cnc, item_id, NULL, FALSE, FALSE);
+		*remove = TRUE;
 		break;
 	default:
 		status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;

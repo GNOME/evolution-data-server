@@ -1257,15 +1257,33 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	ECalComponent *comp;
 	ECalBackendGroupwisePrivate *priv;
 	icalproperty_method method;
+	EGwConnectionStatus status;
+	gboolean remove = FALSE;
 
 	priv = cbgw->priv;
 
-	/* search the object in the cache */
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 	method = icalcomponent_get_method (icalcomp);
 	
-	return e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp, method);
+	status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp, method, &remove);
+
+	/* update the cache */
+	if (status == E_GW_CONNECTION_STATUS_OK) {
+		if (remove) {
+			const char *uid;
+			
+			e_cal_component_get_uid (comp, (const char **) &uid);
+			e_cal_backend_cache_remove_component (priv->cache, uid, NULL);
+		}
+		else
+			e_cal_backend_cache_put_component (priv->cache, comp);	
+		return GNOME_Evolution_Calendar_Success;
+	}
+
+	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT)
+		return  GNOME_Evolution_Calendar_InvalidObject;
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* Update_objects handler for the file backend. */

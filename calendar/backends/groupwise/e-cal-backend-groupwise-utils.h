@@ -30,6 +30,9 @@
 
 G_BEGIN_DECLS
 
+#define GW_EVENT_TYPE_ID "@4:"
+#define GW_TODO_TYPE_ID "@3:"
+
 /*
  * Items management
  */
@@ -41,7 +44,7 @@ void          e_gw_item_set_changes (EGwItem *item, EGwItem *cached_item);
  * Connection-related utility functions
  */
 EGwConnectionStatus e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, ECalBackendGroupwise *cbgw, ECalComponent *comp, GSList **id_list);
-EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, icalproperty_method method);
+EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, icalproperty_method method, gboolean *remove);
 EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy, icaltimezone *default_zone);
 
 /*
