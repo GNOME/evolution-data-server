@@ -1532,6 +1532,7 @@ e_book_unload_uri (EBook   *book,
 	book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 	g_free (book->priv->cap);
 	book->priv->cap = NULL;
+	book->priv->cap_queried = FALSE;
 	book->priv->writable = FALSE;
 
 	return TRUE;

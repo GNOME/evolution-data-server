@@ -1,5 +1,10 @@
 2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
 
+	* libebook/e-book.c (e_book_unload_uri): When clearing the cached
+	capabilities, also clear the cap_queried flag.
+
+2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
+
 	* libebook/e-book.c (fetch_corba_book): If the book failed to load,
 	set load_state to E_BOOK_URI_NOT_LOADED, so _unload () won't crash.
 
