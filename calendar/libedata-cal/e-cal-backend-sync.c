@@ -108,19 +108,19 @@ ECalBackendSyncStatus
 e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync);
+	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync != NULL,
+			      GNOME_Evolution_Calendar_UnsupportedMethod);
 
 	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync) (backend, cal, calobj, uid);
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
-				CalObjModType mod, char **old_object)
+				  CalObjModType mod, char **old_object)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync);
+	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync != NULL,
+			      GNOME_Evolution_Calendar_UnsupportedMethod);
 
 	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync) (backend, cal, 
 									     calobj, mod, old_object);
@@ -128,11 +128,11 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 ECalBackendSyncStatus
 e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid,
-				CalObjModType mod, char **object)
+				  CalObjModType mod, char **object)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync);
+	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync != NULL,
+			      GNOME_Evolution_Calendar_UnsupportedMethod);
 
 	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync) (backend, cal, uid, rid, mod, object);
 }
@@ -141,8 +141,8 @@ ECalBackendSyncStatus
 e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->discard_alarm_sync);
+	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->discard_alarm_sync != NULL,
+			      GNOME_Evolution_Calendar_UnsupportedMethod);
 
 	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->discard_alarm_sync) (backend, cal, uid, auid);
 }
@@ -151,8 +151,8 @@ ECalBackendSyncStatus
 e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync);
+	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync != NULL,
+			      GNOME_Evolution_Calendar_UnsupportedMethod);
 
 	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync) (backend, cal, calobj);
 }
@@ -162,8 +162,8 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
 				 char **modified_calobj)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync);
+	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync != NULL,
+			      GNOME_Evolution_Calendar_UnsupportedMethod);
 	
 	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync) (backend, cal, calobj, users, modified_calobj);
 }
