@@ -3,6 +3,7 @@
 	* e-gw-connection.[ch]:
 	  Parse loginResponse for serverUTCTime and set it
 	  in the priv structure of the connection
+	  *** Patch Reviewed by Chenthill Palanisamy <pchenthill@novell.com>
 	  
 2005-02-08  Harish Krishnaswamy  <kharish@novell.com>
 
