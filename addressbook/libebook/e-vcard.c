@@ -269,7 +269,8 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 			}
 			lp = g_utf8_next_char(lp);
 		}
-		else if (*lp == ';') {
+		else if ((*lp == ';') ||
+			 (*lp == ',' && !strcmp (attr->name, "CATEGORIES"))) {
 			e_vcard_attribute_add_value (attr, str->str);
 			g_string_assign (str, "");
 			lp = g_utf8_next_char(lp);
@@ -743,8 +744,15 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			escaped_value = e_vcard_escape_string (value);
 
 			attr_str = g_string_append (attr_str, escaped_value);
-			if (v->next)
-				attr_str = g_string_append_c (attr_str, ';');
+			if (v->next) {
+				/* XXX toshok - i hate you, rfc 2426.
+				   why doesn't CATEGORIES use a ; like
+				   a normal list attribute? */
+				if (!strcmp (attr->name, "CATEGORIES"))
+					attr_str = g_string_append_c (attr_str, ',');
+				else
+					attr_str = g_string_append_c (attr_str, ';');
+			}
 
 			g_free (escaped_value);
 		}

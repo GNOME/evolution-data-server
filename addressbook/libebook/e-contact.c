@@ -195,9 +195,9 @@ static EContactFieldInfo field_info[] = {
 	STRING_FIELD    (E_CONTACT_ASSISTANT, EVC_X_ASSISTANT, "assistant", N_("Assistant"),       FALSE),
 
 	/* Web fields */
-	STRING_FIELD (E_CONTACT_HOMEPAGE_URL, EVC_URL,        "homepage_url", N_("Homepage URL"), FALSE),
-	STRING_FIELD (E_CONTACT_BLOG_URL,     EVC_X_BLOG_URL, "blog_url",     N_("Weblog URL"),   FALSE),
-	STRING_FIELD (E_CONTACT_VIDEO_URL,     EVC_X_VIDEO_URL, "video_url",     N_("Video Conferencing URL"),   FALSE),
+	STRING_FIELD (E_CONTACT_HOMEPAGE_URL, EVC_URL,         "homepage_url", N_("Homepage URL"), FALSE),
+	STRING_FIELD (E_CONTACT_BLOG_URL,     EVC_X_BLOG_URL,  "blog_url",     N_("Weblog URL"),   FALSE),
+	STRING_FIELD (E_CONTACT_VIDEO_URL,    EVC_X_VIDEO_URL, "video_url",    N_("Video Conferencing URL"),   FALSE),
 
 	/* Photo/Logo */
 	STRUCT_FIELD    (E_CONTACT_PHOTO, EVC_PHOTO, "photo", N_("Photo"), FALSE, photo_getter, photo_setter, e_contact_photo_get_type),
@@ -207,12 +207,8 @@ static EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_X509_CERT,  EVC_KEY, "x509Cert",  N_("X.509 Certificate"), FALSE, "X509", cert_getter, cert_setter, e_contact_cert_get_type),
 
 	/* Contact categories */
-#if notyet
 	LIST_FIELD      (E_CONTACT_CATEGORY_LIST, EVC_CATEGORIES, "category_list", N_("Category List"), FALSE),
 	SYNTH_STR_FIELD (E_CONTACT_CATEGORIES,                    "categories",    N_("Categories"),    FALSE),
-#else
-	STRING_FIELD    (E_CONTACT_CATEGORIES,    EVC_CATEGORIES, "categories",    N_("Categories"),    FALSE),
-#endif
 
 	/* Collaboration fields */
 	STRING_FIELD (E_CONTACT_CALENDAR_URI, EVC_CALURI,      "caluri",     N_("Calendar URI"),  FALSE),
@@ -817,6 +813,30 @@ e_contact_set_property (GObject *object,
 			}
 
 		}
+		else {
+			switch (info->field_id) {
+			case E_CONTACT_CATEGORIES: {
+				EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+				char **split, **s;
+
+				if (attr)
+					e_vcard_attribute_remove_values (attr);
+				else
+					/* we didn't find it - add a new attribute */
+					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
+
+				split = g_strsplit (g_value_get_string (value), ",", 0);
+				for (s = split; *s; s++) {
+					e_vcard_attribute_add_value (attr, g_strstrip (*s));
+				}
+				g_strfreev (split);
+				break;
+			}
+			default:
+				g_warning ("unhandled synthetic field 0x%02x", info->field_id);
+				break;
+			}
+		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
@@ -1152,8 +1172,30 @@ e_contact_get_property (GObject *object,
 			g_value_set_string (value, str);
 			break;
 		}
+		case E_CONTACT_CATEGORIES: {
+			EVCardAttribute *attr = e_contact_get_first_attr (contact, "CATEGORIES");
+			char *rv = NULL;
+
+			if (attr) {
+				GString *str = g_string_new ("");
+				GList *v = e_vcard_attribute_get_values (attr);
+				while (v) {
+					g_string_append (str, (char*)v->data);
+					v = v->next;
+					if (v)
+						g_string_append_c (str, ',');
+				}
+
+				rv = g_string_free (str, FALSE);
+			}
+
+			g_value_set_string (value, rv);
+			g_free (rv);
+			break;
+		}
 		default:
 			g_warning ("unhandled synthetic field 0x%02x", info->field_id);
+			break;
 		}
 	}
 	else {

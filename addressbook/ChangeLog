@@ -1,5 +1,25 @@
 2004-01-26  Chris Toshok  <toshok@ximian.com>
 
+	[ fixes bug #53228 ]
+	
+	* tests/ebook/test-categories.c: new test.
+
+	* tests/ebook/Makefile.am (noinst_PROGRAMS): add test-categories.
+
+	* libebook/e-vcard.c (e_vcard_to_string_vcard_30): this is really
+	gross.  We don't escape the ,'s if we're generating the value for
+	a CATEGORIES attribute.  I can't believe the RFC specifies commas
+	for use as a toplevel list separator for CATEGORIES.  That's what
+	;'s are for.
+	(read_attribute_value): split the CATEGORIES attribute up like a
+	normal list would be, only use ','s for it.
+
+	* libebook/e-contact.c (e_contact_set_property): implement the
+	setter portion of CATEGORIES support.
+	(e_contact_get_property): implement the CATEGORIES getter.
+
+2004-01-26  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.c (e_book_get_default_addressbook): implement
 	this the right way by searching for the "default" property over
 	all sources, and returning that source, or the local addressbook
