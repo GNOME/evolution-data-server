@@ -3131,7 +3131,7 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 {
 	ECalPrivate *priv;
 	GSList *alarms;
-	char *sexp, *iso_start, *iso_end;;
+	char *sexp, *iso_start, *iso_end;
 	GList *object_list = NULL;
 
 	g_return_val_if_fail (ecal != NULL, NULL);
