@@ -1,4 +1,38 @@
-2004-01-23 Harish K <kharish@novell.com>
+2004-01-24  Rodrigo Moya <rodrigo@ximian.com>
+
+	* calendar/backends/http/e-cal-backend-http.c: make it use
+	ECalBackendCache for its cache, and libsoup for the HTTP
+	retrieval.
+	(retrieval_progress_cb, uri_to_cache_dir, ensure_cache_dir): removed
+	unneeded functions.
+	(e_cal_backend_http_finalize): cancel Soup message here, if any, and
+	close Soup session.
+	(begin_retrieval_cb): use soup_session_queue_message() to send the
+	HTTP request to the server.
+	(retrieval_done): update the cache on success, and changed to be the
+	callback for the Soup async message.
+	(e_cal_backend_http_open): create a ECalBackendCache, not an
+	ECalBackendFile.
+	(e_cal_backend_http_remove): remove the cache.
+	(e_cal_backend_http_is_loaded, e_cal_backend_http_get_default_object,
+	e_cal_backend_http_get_object, e_cal_backend_http_get_timezone,
+	e_cal_backend_http_add_timezone,
+	e_cal_backend_http_set_default_timezone,
+	e_cal_backend_http_get_object_list, e_cal_backend_http_start_query,
+	e_cal_backend_http_get_default_timezone,
+	e_cal_backend_http_get_timezone):
+	dont proxy calls to the file backend, use the cache instead.
+	(e_cal_backend_http_create_object, e_cal_backend_http_modify_object,
+	e_cal_backend_http_remove_object, e_cal_backend_http_receive_objects,
+	e_cal_backend_http_send_objects):
+	the HTTP backend is read only, return permission denied error.
+
+	* backends/http/Makefile.am: added SOUP_CFLAGS|LIBS.
+
+	* backends/groupwise/Makefile.am: s/GROUPWISE/SOUP.
+
+2004-01-23  Harish K <kharish@novell.com>
+
 	* calendar/backends/groupwise/e-cal-backend-groupwise.c
 	  Removed update_cache function and refactored the call-back 
 	  to use e-gw-connection_get_deltas instead of update_cache.

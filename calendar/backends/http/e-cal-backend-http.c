@@ -26,13 +26,14 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
+#include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
-#include "e-cal-backend-file-events.h"
+#include <libsoup/soup-session-async.h>
+#include <libsoup/soup-uri.h>
 #include "e-cal-backend-http.h"
 
 
@@ -45,8 +46,8 @@ struct _ECalBackendHttpPrivate {
 	/* Local/remote mode */
 	CalMode mode;
 
-	/* Cached-file backend */
-	ECalBackendSync *file_backend;
+	/* The file cache */
+	ECalBackendCache *cache;
 
 	/* The calendar's default timezone, used for resolving DATE and
 	   floating DATE-TIME values. */
@@ -55,8 +56,9 @@ struct _ECalBackendHttpPrivate {
 	/* The list of live queries */
 	GList *queries;
 
-	/* GnomeVFS handle for remote retrieval */
-	GnomeVFSAsyncHandle *retrieval_handle;
+	/* Soup handles for remote file */
+	SoupSession *soup_session;
+	SoupMessage *soup_message;
 };
 
 
@@ -97,19 +99,25 @@ e_cal_backend_http_finalize (GObject *object)
 
 	/* Clean up */
 
-	if (priv->retrieval_handle) {
-		gnome_vfs_async_cancel (priv->retrieval_handle);
-		priv->retrieval_handle = NULL;
+	if (priv->soup_message) {
+		soup_session_cancel_message (priv->soup_session, priv->soup_message);
+		g_object_unref (priv->soup_message);
+		priv->soup_message = NULL;
 	}
 
-	if (priv->file_backend) {
-		g_object_unref (priv->file_backend);
-		e_cal_backend_set_notification_proxy (E_CAL_BACKEND (priv->file_backend), NULL);
+	if (priv->cache) {
+		g_object_unref (priv->cache);
+		priv->cache = NULL;
 	}
 
 	if (priv->uri) {
 	        g_free (priv->uri);
 		priv->uri = NULL;
+	}
+
+	if (priv->soup_session) {
+		g_object_unref (priv->soup_session);
+		priv->soup_session = NULL;
 	}
 
 	g_free (priv);
@@ -136,7 +144,7 @@ e_cal_backend_http_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboole
 static ECalBackendSyncStatus
 e_cal_backend_http_get_cal_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
-	/* A file backend has no particular email address associated
+	/* A HTTP backend has no particular email address associated
 	 * with it (although that would be a useful feature some day).
 	 */
 	*address = NULL;
@@ -155,7 +163,7 @@ e_cal_backend_http_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, 
 static ECalBackendSyncStatus
 e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
- 	/* A file backend has no particular email address associated
+ 	/* A HTTP backend has no particular email address associated
  	 * with it (although that would be a useful feature some day).
  	 */
 	*address = NULL;
@@ -167,7 +175,7 @@ static ECalBackendSyncStatus
 e_cal_backend_http_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
 	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
-	
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -180,148 +188,72 @@ webcal_to_http_method (const gchar *webcal_str)
 	return g_strconcat ("http://", webcal_str + sizeof ("webcal://") - 1, NULL);
 }
 
-static gchar *
-uri_to_cache_dir (const gchar *uri_str)
-{
-	gchar *http_uri_str, *dir_str, *escaped_dir_str, *retval;
-	GnomeVFSURI *uri;
-
-	http_uri_str = webcal_to_http_method (uri_str);
-	if (!http_uri_str)
-		http_uri_str = g_strdup (uri_str);
-
-	uri = gnome_vfs_uri_new (http_uri_str);
-	g_free (http_uri_str);
-
-	if (!uri) {
-		g_warning ("No GnomeVFSURI.");
-		return NULL;
-	}
-
-	dir_str = gnome_vfs_uri_to_string (uri,
-					   GNOME_VFS_URI_HIDE_PASSWORD |
-					   GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD);
-	gnome_vfs_uri_unref (uri);
-
-	if (!dir_str || !strlen (dir_str)) {
-		g_warning ("No dir_str.");
-		return NULL;
-	}
-
-	/* GnomeVFS unescapes paths. We need to escape twice. */
-	escaped_dir_str = gnome_vfs_escape_slashes (dir_str);
-	g_free (dir_str);
-	dir_str = gnome_vfs_escape_slashes (escaped_dir_str);
-	g_free (escaped_dir_str);
-	escaped_dir_str = dir_str;
-
-	if (!escaped_dir_str || !strlen (escaped_dir_str)) {
-		g_warning ("No escaped_dir_str.");
-		return NULL;
-	}
-
-	retval = g_build_filename (g_get_home_dir (),
-				   "/.evolution/calendar/webcal/",
-				   escaped_dir_str, NULL);
-	g_free (escaped_dir_str);
-
-	return retval;
-}
-
-static gboolean
-ensure_cache_dir (const gchar *cache_dir_str)
-{
-	GnomeVFSResult result;
-	gchar *webcal_dir;
-
-	/* Make sure we have the webcal base dir */
-	webcal_dir = g_build_filename (g_get_home_dir (),
-				       "/.evolution/calendar/webcal", NULL);
-	gnome_vfs_make_directory (webcal_dir, GNOME_VFS_PERM_USER_ALL);
-	g_free (webcal_dir);
-
-	/* Create cache subdirectory */
-	result = gnome_vfs_make_directory (cache_dir_str, GNOME_VFS_PERM_USER_ALL);
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS)
-		return FALSE;
-
-	return TRUE;
-}
-
 static void
-retrieval_done (ECalBackendHttp *cbhttp)
+retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
-	icalcomponent *icalcomp;
-	gchar *cache_dir;
-	gchar *temp_file, *cal_file;
-	gchar *temp_file_unescaped;
+	icalcomponent *icalcomp, *subcomp;
+	char *str;
 
 	priv = cbhttp->priv;
 
-	priv->retrieval_handle = NULL;
-
-	cache_dir = uri_to_cache_dir (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
-	if (!cache_dir)
+	/* check status code */
+	if (priv->soup_message->status_code != SOUP_STATUS_OK) {
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
+					    soup_status_get_phrase (priv->soup_message->status_code));
+		g_object_unref (priv->soup_message);
+		priv->soup_message = NULL;
 		return;
+	}
 
-	temp_file = g_build_filename (cache_dir, "/calendar.ics.tmp", NULL);
-	cal_file = g_build_filename (cache_dir, "/calendar.ics", NULL);
-
-	temp_file_unescaped = gnome_vfs_unescape_string (temp_file, "");
-	icalcomp = e_cal_util_parse_ics_file (temp_file_unescaped);
-	g_free (temp_file_unescaped);
+	/* get the calendar from the response */
+	str = g_malloc0 (priv->soup_message->response.length + 1);
+	strncpy (str, msg->response.body, priv->soup_message->response.length);
+	icalcomp = icalparser_parse_string (str);
+	g_free (str);
 
 	if (!icalcomp) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
-		goto out;
+		g_object_unref (priv->soup_message);
+		priv->soup_message = NULL;
+		return;
 	}
 
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
 		icalcomponent_free (icalcomp);
-		goto out;
+		g_object_unref (priv->soup_message);
+		priv->soup_message = NULL;
+		return;
 	}
 
-	/* Update calendar file and tell file backend to reload */
+	/* Update cache */
+	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	while (subcomp) {
+		ECalComponent *comp;
 
-	gnome_vfs_move (temp_file, cal_file, TRUE);
-	e_cal_backend_file_reload (E_CAL_BACKEND_FILE (priv->file_backend));
+		comp = e_cal_component_new ();
+		if (e_cal_component_set_icalcomponent (comp, subcomp)) {
+			e_cal_backend_cache_put_component (priv->cache, comp);
+			e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
+							     icalcomponent_as_ical_string (subcomp));
+		}
 
-out:
-	g_free (temp_file);
-	g_free (cal_file);
-}
+		g_object_unref (comp);
 
-static gint
-retrieval_progress_cb (GnomeVFSAsyncHandle *handle, GnomeVFSXferProgressInfo *info, gpointer data)
-{
-	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (data);
-	ECalBackendHttpPrivate *priv;
+		subcomp = icalcomponent_get_next_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	}
 
-	priv = cbhttp->priv;
-
-	/* TODO: Handle errors */
-	/* TODO: Report progress */
-
-	g_message ("GnomeVFS async progress: %s",
-		   info->status == GNOME_VFS_XFER_PROGRESS_STATUS_OK ? "ok" :
-		   info->status == GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR ? "error" : "other");
-
-	g_message ("(%d) %s -> %s", info->phase, info->source_name, info->target_name);
-
-	if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED)
-		retrieval_done (cbhttp);
-
-	return TRUE;
+	/* free memory */
+	icalcomponent_free (icalcomp);
+	g_object_unref (priv->soup_message);
+	priv->soup_message = NULL;
 }
 
 static gboolean
 begin_retrieval_cb (ECalBackendHttp *cbhttp)
 {
-	GnomeVFSURI *source_uri, *dest_uri;
-	gchar *source_uri_str, *cache_dir, *temp_file;
-	GList *source_uri_list = NULL, *dest_uri_list = NULL;
+	gchar *source_uri_str;
 	ECalBackendHttpPrivate *priv;
 
 	priv = cbhttp->priv;
@@ -329,43 +261,24 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	if (priv->mode != CAL_MODE_REMOTE)
 		return TRUE;
 
-	if (priv->retrieval_handle != NULL)
+	if (priv->soup_message != NULL)
 		return FALSE;
 
-	cache_dir = uri_to_cache_dir (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
-	if (!cache_dir)
-		return FALSE;
-
-	temp_file = g_build_filename (cache_dir, "/calendar.ics.tmp", NULL);
+	/* create the Soup session if not already created */
+	if (!priv->soup_session) {
+		priv->soup_session = soup_session_async_new ();
+	}
 
 	source_uri_str = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
 	if (!source_uri_str)
 		source_uri_str = g_strdup (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
 
-	source_uri = gnome_vfs_uri_new (source_uri_str);
-	dest_uri = gnome_vfs_uri_new (temp_file);
-
+	/* create message to be sent to server */
+	priv->soup_message = soup_message_new (SOUP_METHOD_GET, source_uri_str);
 	g_free (source_uri_str);
+	soup_session_queue_message (priv->soup_session, priv->soup_message,
+				    (SoupMessageCallbackFn) retrieval_done, cbhttp);
 
-	source_uri_list = g_list_append (source_uri_list, source_uri);
-	dest_uri_list   = g_list_append (dest_uri_list, dest_uri);
-
-	gnome_vfs_async_xfer (&priv->retrieval_handle,
-			      source_uri_list, dest_uri_list,
-			      GNOME_VFS_XFER_DEFAULT,
-			      GNOME_VFS_XFER_ERROR_MODE_QUERY,
-			      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-			      GNOME_VFS_PRIORITY_DEFAULT,
-			      retrieval_progress_cb, cbhttp,
-			      NULL, NULL);
-
-	g_list_free (source_uri_list);
-	g_list_free (dest_uri_list);
-
-	gnome_vfs_uri_unref (source_uri);
-	gnome_vfs_uri_unref (dest_uri);
-	g_free (temp_file);
-	g_free (cache_dir);
 	return FALSE;
 }
 
@@ -380,29 +293,14 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend) {
-		gchar *cache_dir;
-
-		cache_dir = uri_to_cache_dir (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
-		if (!cache_dir)
-			return GNOME_Evolution_Calendar_NoSuchCal;
-
-		if (!ensure_cache_dir (cache_dir)) {
-			g_free (cache_dir);
-			return GNOME_Evolution_Calendar_NoSuchCal;
-		}
-
-		priv->file_backend = g_object_new (E_TYPE_CAL_BACKEND_FILE_EVENTS, "uri", cache_dir, NULL);
-		e_cal_backend_set_notification_proxy (E_CAL_BACKEND (priv->file_backend),
-						      E_CAL_BACKEND (backend));
-		g_free (cache_dir);
+	if (!priv->cache) {
+		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 
 		/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 		priv->mode = CAL_MODE_REMOTE;
 		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 	}
 
-	e_cal_backend_sync_open (priv->file_backend, cal, FALSE, username, password);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -415,10 +313,11 @@ e_cal_backend_http_remove (ECalBackendSync *backend, EDataCal *cal)
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
+	if (!priv->cache)
 		return GNOME_Evolution_Calendar_OtherError;
 
-	return e_cal_backend_sync_remove (priv->file_backend, cal);
+	e_file_cache_remove (E_FILE_CACHE (priv->cache));
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* is_loaded handler for the file backend */
@@ -431,13 +330,13 @@ e_cal_backend_http_is_loaded (ECalBackend *backend)
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
+	if (!priv->cache)
 		return FALSE;
 
-	return e_cal_backend_is_loaded (E_CAL_BACKEND (priv->file_backend));
+	return TRUE;
 }
 
-/* is_remote handler for the file backend */
+/* is_remote handler for the http backend */
 static CalMode
 e_cal_backend_http_get_mode (ECalBackend *backend)
 {
@@ -450,7 +349,7 @@ e_cal_backend_http_get_mode (ECalBackend *backend)
 	return priv->mode;
 }
 
-/* Set_mode handler for the file backend */
+/* Set_mode handler for the http backend */
 static void
 e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 {
@@ -478,12 +377,12 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 
 	if (set_mode == GNOME_Evolution_Calendar_MODE_ANY)
 		e_cal_backend_notify_mode (backend,
-					 GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
-					 cal_mode_to_corba (priv->mode));
+					   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
+					   cal_mode_to_corba (priv->mode));
 	else
 		e_cal_backend_notify_mode (backend,
-					 GNOME_Evolution_Calendar_CalListener_MODE_SET,
-					 set_mode);
+					   GNOME_Evolution_Calendar_CalListener_MODE_SET,
+					   set_mode);
 }
 
 static ECalBackendSyncStatus
@@ -491,32 +390,42 @@ e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	icalcomponent *icalcomp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+	icalcomp = e_cal_util_new_component (ICAL_VEVENT_COMPONENT);
+	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	icalcomponent_free (icalcomp);
 
-	return e_cal_backend_sync_get_default_object (priv->file_backend, cal, object);
+	return GNOME_Evolution_Calendar_Success;
 }
 
-/* Get_object_component handler for the file backend */
+/* Get_object_component handler for the http backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	ECalComponent *comp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
 	g_return_val_if_fail (uid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	if (!priv->file_backend)
+	if (!priv->cache)
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 
-	return e_cal_backend_sync_get_object (priv->file_backend, cal, uid, rid, object);
+	comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+	if (!comp)
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+
+	*object = e_cal_component_get_as_string (comp);
+	g_free (comp);
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Get_timezone_object handler for the file backend */
@@ -525,29 +434,25 @@ e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	icaltimezone *zone;
+	icalcomponent *icalcomp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
 	g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	if (!priv->file_backend) {
-		icaltimezone *zone;
-		icalcomponent *icalcomp;
+	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	if (!zone)
+		return GNOME_Evolution_Calendar_ObjectNotFound;
 
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-		if (!zone)
-			return GNOME_Evolution_Calendar_ObjectNotFound;
+	icalcomp = icaltimezone_get_component (zone);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_InvalidObject;
 
-		icalcomp = icaltimezone_get_component (zone);
-		if (!icalcomp)
-			return GNOME_Evolution_Calendar_InvalidObject;
+	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
 
-		*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
-		return GNOME_Evolution_Calendar_Success;
-	}
-
-	return e_cal_backend_sync_get_timezone (priv->file_backend, cal, tzid, object);
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Add_timezone handler for the file backend */
@@ -564,10 +469,8 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_InvalidObject;
-
-	return e_cal_backend_sync_add_timezone (priv->file_backend, cal, tzobj);
+	/* FIXME: add the timezone to the cache */
+	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
@@ -578,11 +481,9 @@ e_cal_backend_http_set_default_timezone (ECalBackendSync *backend, EDataCal *cal
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
-
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_NoSuchCal;
-
-	return e_cal_backend_sync_set_default_timezone (priv->file_backend, cal, tzid);
+	
+	/* FIXME */
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Get_objects_in_range handler for the file backend */
@@ -591,14 +492,31 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	GList *components, *l;
+	ECalBackendSExp *cbsexp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
+	if (!priv->cache)
 		return GNOME_Evolution_Calendar_NoSuchCal;
 
-	return e_cal_backend_sync_get_object_list (priv->file_backend, cal, sexp, objects);
+	/* process all components in the cache */
+	cbsexp = e_cal_backend_sexp_new (sexp);
+
+	*objects = NULL;
+	components = e_cal_backend_cache_get_components (priv->cache);
+	for (l = components; l != NULL; l = l->next) {
+		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
+			*objects = g_list_append (*objects, e_cal_component_get_as_string (l->data));
+		}
+	}
+
+	g_list_foreach (components, (GFunc) g_object_unref, NULL);
+	g_list_free (components);
+	g_object_unref (cbsexp);
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* get_query handler for the file backend */
@@ -607,14 +525,39 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	GList *components, *l, *objects = NULL;
+	ECalBackendSExp *cbsexp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
-		return;
+	g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query));
 
-	e_cal_backend_start_query (E_CAL_BACKEND (priv->file_backend), query);
+	if (!priv->cache) {
+		e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_NoSuchCal);
+		return;
+	}
+
+	/* process all components in the cache */
+	cbsexp = e_cal_backend_sexp_new (e_data_cal_view_get_text (query));
+
+	objects = NULL;
+	components = e_cal_backend_cache_get_components (priv->cache);
+	for (l = components; l != NULL; l = l->next) {
+		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
+			objects = g_list_append (objects, e_cal_component_get_as_string (l->data));
+		}
+	}
+
+	e_data_cal_view_notify_objects_added (query, (const GList *) objects);
+
+	g_list_foreach (components, (GFunc) g_object_unref, NULL);
+	g_list_free (components);
+	g_list_foreach (objects, (GFunc) g_free, NULL);
+	g_list_free (objects);
+	g_object_unref (cbsexp);
+
+	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
 }
 
 /* Get_free_busy handler for the file backend */
@@ -631,16 +574,17 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	g_return_val_if_fail (start != -1 && end != -1, GNOME_Evolution_Calendar_InvalidRange);
 	g_return_val_if_fail (start <= end, GNOME_Evolution_Calendar_InvalidRange);
 
-	if (!priv->file_backend)
+	if (!priv->cache)
 		return GNOME_Evolution_Calendar_NoSuchCal;
 
-	return e_cal_backend_sync_get_free_busy (priv->file_backend, cal, users, start, end, freebusy);
+	/* FIXME */
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Get_changes handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id,
-			      GList **adds, GList **modifies, GList **deletes)
+				GList **adds, GList **modifies, GList **deletes)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -650,10 +594,8 @@ e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const c
 
 	g_return_val_if_fail (change_id != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
-
-	return e_cal_backend_sync_get_changes (priv->file_backend, cal, change_id, adds, modifies, deletes);
+	/* FIXME */
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Discard_alarm handler for the file backend */
@@ -666,10 +608,8 @@ e_cal_backend_http_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_Success;
-
-	return e_cal_backend_sync_discard_alarm (priv->file_backend, cal, uid, auid);
+	/* FIXME */
+	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
@@ -683,10 +623,7 @@ e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, const
 
 	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_NoSuchCal;
-
-	return e_cal_backend_sync_create_object (priv->file_backend, cal, calobj, uid);
+	return GNOME_Evolution_Calendar_PermissionDenied;
 }
 
 static ECalBackendSyncStatus
@@ -698,13 +635,10 @@ e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
-		
+
 	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_NoSuchCal;
-
-	return e_cal_backend_sync_modify_object (priv->file_backend, cal, calobj, mod, old_object);
+	return GNOME_Evolution_Calendar_PermissionDenied;
 }
 
 /* Remove_object handler for the file backend */
@@ -721,10 +655,7 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 	g_return_val_if_fail (uid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_NoSuchCal;
-
-	return e_cal_backend_sync_remove_object (priv->file_backend, cal, uid, rid, mod, object);
+	return GNOME_Evolution_Calendar_PermissionDenied;
 }
 
 /* Update_objects handler for the file backend. */
@@ -739,10 +670,7 @@ e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 
 	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_InvalidObject;
-
-	return e_cal_backend_sync_receive_objects (priv->file_backend, cal, calobj);
+	return GNOME_Evolution_Calendar_PermissionDenied;
 }
 
 static ECalBackendSyncStatus
@@ -754,10 +682,7 @@ e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
-		return GNOME_Evolution_Calendar_Success;
-
-	return e_cal_backend_sync_send_objects (priv->file_backend, cal, calobj);
+	return GNOME_Evolution_Calendar_PermissionDenied;
 }
 
 static icaltimezone *
@@ -769,10 +694,10 @@ e_cal_backend_http_internal_get_default_timezone (ECalBackend *backend)
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (!priv->file_backend)
+	if (!priv->cache)
 		return NULL;
 
-	return e_cal_backend_internal_get_default_timezone (E_CAL_BACKEND (priv->file_backend));
+	return NULL;
 }
 
 static icaltimezone *
@@ -785,9 +710,7 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const char *tzid
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	if (priv->file_backend)
-		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (priv->file_backend), tzid);
-	else if (!strcmp (tzid, "UTC"))
+	if (!strcmp (tzid, "UTC"))
 	        zone = icaltimezone_get_utc_timezone ();
 	else {
 		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);

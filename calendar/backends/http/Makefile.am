@@ -6,7 +6,8 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar/backends/file	\
 	-I$(top_srcdir)/calendar/libical/src		\
 	-I$(top_builddir)/calendar/libical/src		\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(SOUP_CFLAGS)
 
 noinst_LTLIBRARIES = libecalbackendhttp.la
 
@@ -16,4 +17,5 @@ libecalbackendhttp_la_SOURCES =		\
 
 libecalbackendhttp_la_LIBADD =						\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la		\
-	$(top_builddir)/calendar/backends/file/libecalbackendfile.la
+	$(top_builddir)/calendar/backends/file/libecalbackendfile.la	\
+	$(SOUP_LIBS)
