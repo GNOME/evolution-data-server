@@ -1,3 +1,10 @@
+2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/soap-test.c: new test program to test the
+	SOAP interface to the GW server.
+
+	* backends/groupwise/Makefile.am: compile new test program.
+
 2003-12-10  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.c (e_cal_get_default_object): don't preload the
