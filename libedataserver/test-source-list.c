@@ -24,11 +24,10 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
+#include <libgnome/gnome-program.h>
+#include <libgnome/gnome-init.h>
 #include "e-source-list.h"
-
-#include <libgnomeui/gnome-ui-init.h>
-#include <glib/gmain.h>
-
 
 /* Globals. */
 
@@ -504,7 +503,7 @@ main (int argc,
 	GnomeProgram *program;
 
 	program = gnome_program_init ("test-source-list", "0.0",
-				      LIBGNOMEUI_MODULE, argc, argv,
+				      LIBGNOME_MODULE, argc, argv,
 				      GNOME_PARAM_POPT_TABLE, options,
 				      NULL);
 

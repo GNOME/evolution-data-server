@@ -20,17 +20,14 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
-#include "e-source-list.h"
-
-#include "e-util-marshal.h"
+#endif
 
 #include <string.h>
-#include <gal/util/e-util.h>
+#include "e-data-server-marshal.h"
+#include "e-source-list.h"
 
-
-#define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
 
 struct _ESourceListPrivate {
@@ -297,7 +294,7 @@ class_init (ESourceListClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceListClass, changed),
 			      NULL, NULL,
-			      e_util_marshal_VOID__VOID,
+			      e_data_server_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	signals[GROUP_REMOVED] = 
@@ -306,7 +303,7 @@ class_init (ESourceListClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceListClass, group_removed),
 			      NULL, NULL,
-			      e_util_marshal_VOID__OBJECT,
+			      e_data_server_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 
@@ -316,7 +313,7 @@ class_init (ESourceListClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceListClass, group_added),
 			      NULL, NULL,
-			      e_util_marshal_VOID__OBJECT,
+			      e_data_server_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 }
@@ -331,6 +328,27 @@ init (ESourceList *source_list)
 	source_list->priv = priv;
 }
 
+GType
+e_source_list_get_type (void)
+{
+	static GType e_source_list_type = 0;
+
+	if (!e_source_list_type) {
+		static GTypeInfo info = {
+                        sizeof (ESourceListClass),
+                        (GBaseInitFunc) NULL,
+                        (GBaseFinalizeFunc) NULL,
+                        (GClassInitFunc) class_init,
+                        NULL, NULL,
+                        sizeof (ESourceList),
+                        0,
+                        (GInstanceInitFunc) init
+                };
+		e_source_list_type = g_type_register_static (G_TYPE_OBJECT, "ESourceList", &info, 0);
+	}
+
+	return e_source_list_type;
+}
 
 /* Public methods.  */
 
@@ -525,6 +543,3 @@ e_source_list_sync (ESourceList *list,
 
 	return retval;
 }
-
-
-E_MAKE_TYPE (e_source_list, "ESourceList", ESourceList, class_init, init, PARENT_TYPE)

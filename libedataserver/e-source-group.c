@@ -20,20 +20,16 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
-#include "e-source-group.h"
-
-#include "e-uid.h"
-#include "e-util-marshal.h"
-
-#include <gal/util/e-util.h>
+#endif
 
 #include <string.h>
+#include "e-data-server-marshal.h"
+#include "e-uid.h"
+#include "e-source-group.h"
 
-#define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
-
 
 /* Private members.  */
 
@@ -128,7 +124,7 @@ class_init (ESourceGroupClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceGroupClass, changed),
 			      NULL, NULL,
-			      e_util_marshal_VOID__VOID,
+			      e_data_server_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	signals[SOURCE_ADDED] = 
@@ -137,7 +133,7 @@ class_init (ESourceGroupClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceGroupClass, source_added),
 			      NULL, NULL,
-			      e_util_marshal_VOID__OBJECT,
+			      e_data_server_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_OBJECT);
 	signals[SOURCE_REMOVED] = 
@@ -146,7 +142,7 @@ class_init (ESourceGroupClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceGroupClass, source_removed),
 			      NULL, NULL,
-			      e_util_marshal_VOID__OBJECT,
+			      e_data_server_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_OBJECT);
 }
@@ -160,6 +156,27 @@ init (ESourceGroup *source_group)
 	source_group->priv = priv;
 }
 
+GType
+e_source_group_get_type (void)
+{
+	static GType e_source_group_type = 0;
+
+	if (!e_source_group_type) {
+		static GTypeInfo info = {
+                        sizeof (ESourceGroupClass),
+                        (GBaseInitFunc) NULL,
+                        (GBaseFinalizeFunc) NULL,
+                        (GClassInitFunc) class_init,
+                        NULL, NULL,
+                        sizeof (ESourceGroup),
+                        0,
+                        (GInstanceInitFunc) init
+                };
+		e_source_group_type = g_type_register_static (G_TYPE_OBJECT, "ESourceGroup", &info, 0);
+	}
+
+	return e_source_group_type;
+}
 
 /* Public methods.  */
 
@@ -600,6 +617,3 @@ e_source_group_to_xml (ESourceGroup *group)
 
 	return returned_buffer;
 }
-
-
-E_MAKE_TYPE (e_source_group, "ESourceGroup", ESourceGroup, class_init, init, PARENT_TYPE)

@@ -1,3 +1,17 @@
+2003-11-14  JP Rosevear <jpr@ximian.com>
+
+	* libedataserver/test-source-list.c: use only libgnome stuff (no
+	ui bits)
+
+	* libedataserver/e-source.c: ditto
+
+	* libedataserver/e-source-list.c: ditto
+
+	* libedataserver/e-source-group.c: remove use of gal bits, use
+	local marshallers
+
+	* libedataserver/Makefile.am: build and install e-source stuff
+
 2003-11-14  Rodrigo Moya <rodrigo@ximian.com>
 
 	* src/server-interface-check.[ch]: fixed copyright comments.

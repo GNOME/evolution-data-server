@@ -20,18 +20,15 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
-#include "e-source.h"
-
-#include "e-util-marshal.h"
-#include "e-uid.h"
+#endif
 
 #include <string.h>
-#include <gal/util/e-util.h>
+#include "e-data-server-marshal.h"
+#include "e-uid.h"
+#include "e-source.h"
 
-
-#define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
 
 #define ES_CLASS(obj)  E_SOURCE_CLASS (G_OBJECT_GET_CLASS (obj))
@@ -123,7 +120,7 @@ class_init (ESourceClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceClass, changed),
 			      NULL, NULL,
-			      e_util_marshal_VOID__VOID,
+			      e_data_server_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 }
 
@@ -136,6 +133,27 @@ init (ESource *source)
 	source->priv = priv;
 }
 
+GType
+e_source_get_type (void)
+{
+	static GType e_source_type = 0;
+
+	if (!e_source_type) {
+		static GTypeInfo info = {
+                        sizeof (ESourceClass),
+                        (GBaseInitFunc) NULL,
+                        (GBaseFinalizeFunc) NULL,
+                        (GClassInitFunc) class_init,
+                        NULL, NULL,
+                        sizeof (ESource),
+                        0,
+                        (GInstanceInitFunc) init
+                };
+		e_source_type = g_type_register_static (G_TYPE_OBJECT, "ESource", &info, 0);
+	}
+
+	return e_source_type;
+}
 
 /* Public methods.  */
 
@@ -465,6 +483,3 @@ e_source_dump_to_xml_node (ESource *source,
 		g_free (color_string);
 	}
 }
-
-
-E_MAKE_TYPE (e_source, "ESource", ESource, class_init, init, PARENT_TYPE)
