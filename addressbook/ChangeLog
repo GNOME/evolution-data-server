@@ -1,4 +1,11 @@
 2004-03-30  Chris Toshok  <toshok@ximian.com>
+ 
+	[ backend portion of fix for #54528 ]
+	* libebook/e-vcard.c (read_attribute_params): deal with vcards
+	that specify the encoding as "BASE64", even though this isn't the
+	proper encoding type for vcard 3.0 cards (that's 'b').
+	
+2004-03-30  Chris Toshok  <toshok@ximian.com>
 
 	[ backend portion of fix for #48665 ]
 	* libedata-book/e-data-book.c

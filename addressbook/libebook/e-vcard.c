@@ -377,6 +377,13 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 						param_name = "ENCODING";
 						*quoted_printable = TRUE;
 					}
+					/* apple's broken addressbook app outputs naked BASE64
+					   parameters, which aren't even vcard 3.0 compliant. */
+					else if (!g_ascii_strcasecmp (str->str,
+								      "base64")) {
+						param_name = "ENCODING";
+						g_string_assign (str, "b");
+					}
 					else {
 						param_name = "TYPE";
 					}
