@@ -1,5 +1,10 @@
 2005-02-03  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* e-gw-connection.c: (e_gw_connection_position_cursor),
+	(e_gw_connection_read_cursor): Added the container ids.
+
+2005-02-03  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	* e-gw-container.c: Included  the file e-gw-message.h
 	to remove the warning.
 	* e-gw-item.c: (get_notification_value),
