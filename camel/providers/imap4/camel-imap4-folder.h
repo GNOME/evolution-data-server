@@ -64,7 +64,6 @@ struct _CamelIMAP4Folder {
 	char *cachedir;
 	char *utf7_name;
 	
-	unsigned int read_only:1;
 	unsigned int enable_mlist:1;
 };
 

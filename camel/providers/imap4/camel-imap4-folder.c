@@ -485,6 +485,9 @@ imap4_sync_changes (CamelFolder *folder, GPtrArray *sync, CamelException *ex)
 	int retval = 0;
 	int i, j;
 	
+	if (folder->permanent_flags == 0)
+		return 0;
+	
 	on_set = g_ptr_array_new ();
 	off_set = g_ptr_array_new ();
 	
@@ -554,41 +557,39 @@ imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 	
 	/* gather a list of changes to sync to the server */
-	if (folder->permanent_flags) {
-		sync = g_ptr_array_new ();
-		max = camel_folder_summary_count (folder->summary);
-		for (i = 0; i < max; i++) {
-			iinfo = (CamelIMAP4MessageInfo *) (info = camel_folder_summary_index (folder->summary, i));
-			if (iinfo->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) {
-				camel_imap4_flags_diff (&diff, iinfo->server_flags, iinfo->info.flags);
-				diff.changed &= folder->permanent_flags;
-				
-				/* weed out flag changes that we can't sync to the server */
-				if (!diff.changed)
-					camel_message_info_free(info);
-				else
-					g_ptr_array_add (sync, info);
-			} else {
+	sync = g_ptr_array_new ();
+	max = camel_folder_summary_count (folder->summary);
+	for (i = 0; i < max; i++) {
+		iinfo = (CamelIMAP4MessageInfo *) (info = camel_folder_summary_index (folder->summary, i));
+		if (iinfo->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) {
+			camel_imap4_flags_diff (&diff, iinfo->server_flags, iinfo->info.flags);
+			diff.changed &= folder->permanent_flags;
+			
+			/* weed out flag changes that we can't sync to the server */
+			if (!diff.changed)
 				camel_message_info_free(info);
-			}
-		}
-		
-		if (sync->len > 0) {
-			retval = imap4_sync_changes (folder, sync, ex);
-			
-			for (i = 0; i < sync->len; i++)
-				camel_message_info_free(sync->pdata[i]);
-			
-			g_ptr_array_free (sync, TRUE);
-			
-			if (retval == -1)
-				goto done;
+			else
+				g_ptr_array_add (sync, info);
 		} else {
-			g_ptr_array_free (sync, TRUE);
+			camel_message_info_free(info);
 		}
 	}
 	
-	if (expunge && !((CamelIMAP4Folder *) folder)->read_only) {
+	if (sync->len > 0) {
+		retval = imap4_sync_changes (folder, sync, ex);
+		
+		for (i = 0; i < sync->len; i++)
+			camel_message_info_free(sync->pdata[i]);
+		
+		g_ptr_array_free (sync, TRUE);
+		
+		if (retval == -1)
+			goto done;
+	} else {
+		g_ptr_array_free (sync, TRUE);
+	}
+	
+	if (expunge) {
 		ic = camel_imap4_engine_queue (engine, folder, "EXPUNGE\r\n");
 		while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
 			;
@@ -907,13 +908,6 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	
 	if (appended_uid)
 		*appended_uid = NULL;
-	
-	if (((CamelIMAP4Folder *) folder)->read_only) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot append message to folder `%s': Folder is read-only"),
-				      folder->full_name);
-		return;
-	}
 	
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_imap4_journal_append ((CamelIMAP4Journal *) imap4_folder->journal, message, info, appended_uid, ex);
