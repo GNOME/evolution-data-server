@@ -141,27 +141,27 @@ initialize_categories_config (void)
 
 		conf_is_dirty = FALSE;
 	} else {
-		e_categories_add (N_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png");
-		e_categories_add (N_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png");
-		e_categories_add (N_("Competition"), NULL, NULL);
-		e_categories_add (N_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png");
-		e_categories_add (N_("Gifts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_gifts_16.png");
-		e_categories_add (N_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png");
-		e_categories_add (N_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png");
-		e_categories_add (N_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png");
-		e_categories_add (N_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png");
-		e_categories_add (N_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png");
-		e_categories_add (N_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png");
-		e_categories_add (N_("Key Customer"), NULL, E_DATA_SERVER_IMAGESDIR "/category_key-customer_16.png");
-		e_categories_add (N_("Miscellaneous"), NULL, E_DATA_SERVER_IMAGESDIR "/category_miscellaneous_16.png");
-		e_categories_add (N_("Personal"), NULL, E_DATA_SERVER_IMAGESDIR "/category_personal_16.png");
-		e_categories_add (N_("Phone Calls"), NULL, E_DATA_SERVER_IMAGESDIR "/category_phonecalls_16.png");
-		e_categories_add (N_("Status"), NULL, E_DATA_SERVER_IMAGESDIR "/category_status_16.png");
-		e_categories_add (N_("Strategies"), NULL, E_DATA_SERVER_IMAGESDIR "/category_strategies_16.png");
-		e_categories_add (N_("Suppliers"), NULL, E_DATA_SERVER_IMAGESDIR "/category_suppliers_16.png");
-		e_categories_add (N_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png");
-		e_categories_add (N_("VIP"), NULL, NULL);
-		e_categories_add (N_("Waiting"), NULL, NULL);
+		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png");
+		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png");
+		e_categories_add (_("Competition"), NULL, NULL);
+		e_categories_add (_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png");
+		e_categories_add (_("Gifts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_gifts_16.png");
+		e_categories_add (_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png");
+		e_categories_add (_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png");
+		e_categories_add (_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png");
+		e_categories_add (_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png");
+		e_categories_add (_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png");
+		e_categories_add (_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png");
+		e_categories_add (_("Key Customer"), NULL, E_DATA_SERVER_IMAGESDIR "/category_key-customer_16.png");
+		e_categories_add (_("Miscellaneous"), NULL, E_DATA_SERVER_IMAGESDIR "/category_miscellaneous_16.png");
+		e_categories_add (_("Personal"), NULL, E_DATA_SERVER_IMAGESDIR "/category_personal_16.png");
+		e_categories_add (_("Phone Calls"), NULL, E_DATA_SERVER_IMAGESDIR "/category_phonecalls_16.png");
+		e_categories_add (_("Status"), NULL, E_DATA_SERVER_IMAGESDIR "/category_status_16.png");
+		e_categories_add (_("Strategies"), NULL, E_DATA_SERVER_IMAGESDIR "/category_strategies_16.png");
+		e_categories_add (_("Suppliers"), NULL, E_DATA_SERVER_IMAGESDIR "/category_suppliers_16.png");
+		e_categories_add (_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png");
+		e_categories_add (_("VIP"), NULL, NULL);
+		e_categories_add (_("Waiting"), NULL, NULL);
 	}
 
 	/* install idle callback to save the file */

@@ -1,3 +1,8 @@
+2005-01-05  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-categories.c (initialize_categories_config): use _()
+	instead of N_() for translatable strings.
+
 2005-01-04  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.c (idle_saver_cb): new GSourceFunc to be
