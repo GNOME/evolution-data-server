@@ -1,4 +1,9 @@
-2004-11-23  Sivaiah Nallagatla <snallagatla@novell.com>
+2004-12-27  Rodrigo Moya <rodrigo@novell.com>
+
+	* src/server.c (gnome_segv_handler): use the correct binary name (ie,
+	include the BASE_VERSION and the full path).
+
+2004-12-23  Sivaiah Nallagatla <snallagatla@novell.com>
                                                                                                                              
         * src/offline-listener.[ch] :New class to listen for gconf
 	key and set online/offline modes on factories -> backends  
