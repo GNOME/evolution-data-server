@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-26 14:34+0100\n"
-"PO-Revision-Date: 2005-02-26 16:23+0100\n"
+"POT-Creation-Date: 2005-03-01 14:36+0100\n"
+"PO-Revision-Date: 2005-03-04 14:01+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:513
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2046
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Betöltés..."
 
 #: addressbook/backends/file/e-book-backend-file.c:515
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2044
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3401
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
@@ -161,7 +161,7 @@ msgstr "Egyedi azonosító"
 
 #: addressbook/libebook/e-contact.c:103
 msgid "File Under"
-msgstr ""
+msgstr "Mentés mint"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -600,7 +600,7 @@ msgstr "Listázás címek szerint"
 
 #: addressbook/libebook/e-contact.c:241
 msgid "Last Revision"
-msgstr ""
+msgstr "Utolsó módosítás"
 
 #: addressbook/libebook/e-contact.c:1210
 #: addressbook/libebook/e-destination.c:616
@@ -637,36 +637,36 @@ msgstr "Választ igényelt:"
 msgid "Reply Requested: When convenient"
 msgstr "Választ igényelt: Ha megfelelő"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:526
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:532
 msgid "Invalid server URI"
 msgstr "Érvénytelen kiszolgáló URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:574
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:577
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Naptár"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:820
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:591
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 #: calendar/backends/http/e-cal-backend-http.c:492
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Nem lehet létrehozni a gyorsítótár fájlt"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:594
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "Nem sikerült létrehozni szálat a gyorsítótárfájl megtöltéséhez"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:600
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:607
 #: calendar/libecal/e-cal.c:4516
-#: camel/providers/groupwise/camel-groupwise-folder.c:672
-#: camel/providers/groupwise/camel-groupwise-folder.c:690
-#: camel/providers/groupwise/camel-groupwise-store.c:526
-#: camel/providers/groupwise/camel-groupwise-store.c:628
-#: camel/providers/groupwise/camel-groupwise-store.c:787
-#: camel/providers/groupwise/camel-groupwise-store.c:985
+#: camel/providers/groupwise/camel-groupwise-folder.c:662
+#: camel/providers/groupwise/camel-groupwise-folder.c:680
+#: camel/providers/groupwise/camel-groupwise-store.c:528
+#: camel/providers/groupwise/camel-groupwise-store.c:629
+#: camel/providers/groupwise/camel-groupwise-store.c:791
+#: camel/providers/groupwise/camel-groupwise-store.c:989
 msgid "Authentication failed"
-msgstr "Hitelesítés sikertelen"
+msgstr "Azonosítás sikertelen"
 
 #: calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
@@ -1083,7 +1083,7 @@ msgstr "Nem lehet megszakítani a műveletet"
 #: calendar/libecal/e-cal.c:4518
 #: camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
-msgstr "Hitelesítés szükséges"
+msgstr "Azonosítás szükséges"
 
 #: calendar/libecal/e-cal.c:4520
 msgid "A CORBA exception has occurred"
@@ -1282,71 +1282,71 @@ msgstr "%s mappa előkészítése a kapcsolat nélküli módhoz"
 msgid "You must be working online to complete this operation"
 msgstr "A művelet befejezéséhez hálózati kapcsolattal kell rendelkezned"
 
-#: camel/camel-filter-driver.c:689 camel/camel-filter-search.c:523
+#: camel/camel-filter-driver.c:701 camel/camel-filter-search.c:523
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
 msgstr "Nem sikerült csővezetéket létrehozni: \"%s\": %s"
 
-#: camel/camel-filter-driver.c:733
+#: camel/camel-filter-driver.c:745
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Nem sikerült létrehozni a(z) \"%s\" gyermekfolyamatot: %s"
 
-#: camel/camel-filter-driver.c:776
+#: camel/camel-filter-driver.c:788
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Érvénytelen üzenetfolyam érkezett innen: %s: %s"
 
-#: camel/camel-filter-driver.c:965 camel/camel-filter-driver.c:974
+#: camel/camel-filter-driver.c:977 camel/camel-filter-driver.c:986
 msgid "Syncing folders"
 msgstr "Mappák szinkronizálása"
 
-#: camel/camel-filter-driver.c:1063 camel/camel-filter-driver.c:1440
+#: camel/camel-filter-driver.c:1075 camel/camel-filter-driver.c:1452
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Hiba a szűrő feldolgozása közben: %s: %s"
 
-#: camel/camel-filter-driver.c:1072 camel/camel-filter-driver.c:1449
+#: camel/camel-filter-driver.c:1084 camel/camel-filter-driver.c:1461
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Hiba a szűrő végrehajtása közben: %s: %s"
 
-#: camel/camel-filter-driver.c:1139
+#: camel/camel-filter-driver.c:1151
 msgid "Unable to open spool folder"
 msgstr "Nem sikerült megnyitni a spool mappát"
 
-#: camel/camel-filter-driver.c:1148
+#: camel/camel-filter-driver.c:1160
 msgid "Unable to process spool folder"
 msgstr "Nem sikerült feldolgozni a spool mappát"
 
-#: camel/camel-filter-driver.c:1163
+#: camel/camel-filter-driver.c:1175
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "%d. üzenet letöltése (%d%%)"
 
-#: camel/camel-filter-driver.c:1167
+#: camel/camel-filter-driver.c:1179
 msgid "Cannot open message"
 msgstr "Nem lehet megnyitni a levelet"
 
-#: camel/camel-filter-driver.c:1168 camel/camel-filter-driver.c:1180
+#: camel/camel-filter-driver.c:1180 camel/camel-filter-driver.c:1192
 #, c-format
 msgid "Failed on message %d"
 msgstr "%d. üzenet rossz"
 
-#: camel/camel-filter-driver.c:1194 camel/camel-filter-driver.c:1285
+#: camel/camel-filter-driver.c:1206 camel/camel-filter-driver.c:1297
 msgid "Syncing folder"
 msgstr "Mappa szinkronizálása"
 
-#: camel/camel-filter-driver.c:1198 camel/camel-filter-driver.c:1290
+#: camel/camel-filter-driver.c:1210 camel/camel-filter-driver.c:1302
 msgid "Complete"
 msgstr "Kész"
 
-#: camel/camel-filter-driver.c:1255
+#: camel/camel-filter-driver.c:1267
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Levelek letöltése: %d/%d"
 
-#: camel/camel-filter-driver.c:1270
+#: camel/camel-filter-driver.c:1282
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Hiba a %d / %d üzenetnél"
@@ -1755,7 +1755,7 @@ msgstr "Névtelen bejelentkezés használatával kapcsolódik a kiszolgálóhoz.
 
 #: camel/camel-sasl-anonymous.c:112 camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
-msgstr "Hitelesítés sikertelen."
+msgstr "Azonosítás sikertelen."
 
 #: camel/camel-sasl-anonymous.c:121
 #, c-format
@@ -1840,7 +1840,7 @@ msgstr "GSSAPI"
 
 #: camel/camel-sasl-gssapi.c:59
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "Kerberos 5 hitelesítés használatával kapcsolódik a kiszolgálóhoz."
+msgstr "Kerberos 5 azonosítás használatával kapcsolódik a kiszolgálóhoz."
 
 #: camel/camel-sasl-gssapi.c:157
 msgid ""
@@ -1909,7 +1909,7 @@ msgstr "A hivatkozott azonosító adatok lejártak."
 #: camel/camel-sasl-kerberos4.c:226
 #: camel/providers/imap/camel-imap-store.c:1243
 msgid "Bad authentication response from server."
-msgstr "Rossz hitelesítési válasz a kiszolgálótól."
+msgstr "Rossz azonosítási válasz a kiszolgálótól."
 
 #: camel/camel-sasl-gssapi.c:307
 msgid "Unsupported security layer."
@@ -1921,7 +1921,7 @@ msgstr "Kerberos 4"
 
 #: camel/camel-sasl-kerberos4.c:44
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "Kerberos 4 hitelesítés használatával kapcsolódik a kiszolgálóhoz."
+msgstr "Kerberos 4 azonosítás használatával kapcsolódik a kiszolgálóhoz."
 
 #: camel/camel-sasl-kerberos4.c:169
 #, c-format
@@ -1942,7 +1942,7 @@ msgstr "Egyszerű jelszó használatával kapcsolódik a kiszolgálóhoz."
 
 #: camel/camel-sasl-login.c:128
 msgid "Unknown authentication state."
-msgstr "Ismeretlen hitelesítési állapot."
+msgstr "Ismeretlen azonosítási állapot."
 
 #: camel/camel-sasl-ntlm.c:32
 msgid "NTLM / SPA"
@@ -1953,7 +1953,7 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"NTLM/SPA (biztonságos jelszóhitelesítés) használatával kapcsolódik a Windows "
+"NTLM/SPA (biztonságos jelszóazonosítás) használatával kapcsolódik a Windows "
 "alapú kiszolgálóhoz."
 
 #: camel/camel-sasl-plain.c:33
@@ -1975,11 +1975,11 @@ msgstr "POP forrás-URI"
 
 #: camel/camel-sasl-popb4smtp.c:107
 msgid "POP Before SMTP auth using an unknown transport"
-msgstr "POP az SMTP hitelesítés előtt ismeretlen átvitel használatával"
+msgstr "POP az SMTP azonosítás előtt ismeretlen átvitel használatával"
 
 #: camel/camel-sasl-popb4smtp.c:112
 msgid "POP Before SMTP auth using a non-pop source"
-msgstr "POP az SMTP hitelesítés előtt nem pop forrás használatával"
+msgstr "POP az SMTP azonosítás előtt nem pop forrás használatával"
 
 #: camel/camel-search-private.c:151
 #, c-format
@@ -2013,7 +2013,7 @@ msgstr ""
 #: camel/camel-smime-context.c:231
 #, c-format
 msgid "Cannot find certificate for '%s'"
-msgstr "Nem található hitelesítés a következőhöz: %s"
+msgstr "Nem található azonosítás a következőhöz: %s"
 
 #: camel/camel-smime-context.c:237
 msgid "Cannot create CMS message"
@@ -2037,7 +2037,7 @@ msgstr "Nem lehet létrehozni CMS aláíró-információt"
 
 #: camel/camel-smime-context.c:267
 msgid "Cannot find certificate chain"
-msgstr "Nem található hitelesítési karakterlánc"
+msgstr "Nem található azonosítási karakterlánc"
 
 #: camel/camel-smime-context.c:273
 msgid "Cannot add CMS Signing time"
@@ -2570,12 +2570,12 @@ msgstr "Nem sikerült az üzenetet letölteni"
 msgid "Could not load summary for %s"
 msgstr "Nem sikerült betölteni %s összefoglalóját"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:857
+#: camel/providers/groupwise/camel-groupwise-folder.c:850
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nem lehet létrehozni az üzenetet: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:869
+#: camel/providers/groupwise/camel-groupwise-folder.c:862
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nem lehet a levelet a(z) \"%s\" mappához fűzni: %s"
@@ -2685,48 +2685,49 @@ msgstr "Nem lehetséges az azonosítás a GroupWise-kiszolgálón."
 #: camel/providers/groupwise/camel-groupwise-store.c:430
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
+"Néhány funkció nem biztos, hogy megfelelően fog működni a kiszolgáló "
+"jelenlegi verziójával"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:501
+#: camel/providers/groupwise/camel-groupwise-store.c:503
 #: camel/providers/imap/camel-imap-store.c:1873
 #: camel/providers/imap/camel-imap-store.c:2063
 #, c-format
 msgid "No such folder %s"
 msgstr "Nincs %s nevű mappa"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:551
-#: camel/providers/groupwise/camel-groupwise-store.c:618
+#: camel/providers/groupwise/camel-groupwise-store.c:619
 #: camel/providers/imap/camel-imap-folder.c:2288
 #: camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Összefoglaló adatok letöltése az új levelekhez"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:753
+#: camel/providers/groupwise/camel-groupwise-store.c:757
 msgid "Cannot get folder info in offline mode."
 msgstr "Nem lehet megszerezni a mappainformációt kapcsolat nélküli módban."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:966
+#: camel/providers/groupwise/camel-groupwise-store.c:970
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nem lehet GroupWise mappákat létrehozni kapcsolat nélküli módban."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1017
+#: camel/providers/groupwise/camel-groupwise-store.c:1021
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Nem lehet GroupWise mappákat törölni kapcsolat nélküli módban."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1063
+#: camel/providers/groupwise/camel-groupwise-store.c:1067
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Nem lehet GroupWise mappákat átnevezni kapcsolat nélküli módban."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1081
+#: camel/providers/groupwise/camel-groupwise-store.c:1085
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Nem lehet átnevezni a(z) \"%s\" GroupWise mappát a következőre: \"%s\""
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1117
+#: camel/providers/groupwise/camel-groupwise-store.c:1121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "%s GroupWise kiszolgáló"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1119
+#: camel/providers/groupwise/camel-groupwise-store.c:1123
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Groupwise-szolgáltatás a következőnek %s, ezen a címen: %s"
@@ -3039,13 +3040,13 @@ msgstr "Beérkezett levelek"
 #: camel/providers/imap/camel-imap-store.c:1275
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr "%s IMAP-kiszolgáló nem támogatja a kért %s hitelesítési típust"
+msgstr "%s IMAP-kiszolgáló nem támogatja a kért %s azonosítási típust"
 
 #: camel/providers/imap/camel-imap-store.c:1285
 #: camel/providers/smtp/camel-smtp-transport.c:501
 #, c-format
 msgid "No support for authentication type %s"
-msgstr "%s hitelesítési típus nem támogatott"
+msgstr "%s azonosítási típus nem támogatott"
 
 #: camel/providers/imap/camel-imap-store.c:1308
 #: camel/providers/imapp/camel-imapp-store.c:364
@@ -3224,7 +3225,7 @@ msgstr ""
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr ""
-"Nem sikerült kapcsolódni a(z) %s IMAP kiszolgálóhoz a(z) %s hitelesítési "
+"Nem sikerült kapcsolódni a(z) %s IMAP kiszolgálóhoz a(z) %s azonosítási "
 "mechanizmussal"
 
 #: camel/providers/imap4/camel-imap4-store.c:522
@@ -3235,7 +3236,7 @@ msgstr "%sAdja meg %s IMAP jelszavát a(z) %s gépen"
 #: camel/providers/imap4/camel-imap4-store.c:592
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
-msgstr "Sikertelen hitelesítés a(z) %s IMAP kiszolgálón %s használatával"
+msgstr "Sikertelen azonosítás a(z) %s IMAP kiszolgálón %s használatával"
 
 #: camel/providers/imap4/camel-imap4-store.c:754
 #: camel/providers/imap4/camel-imap4-store.c:866
@@ -4003,7 +4004,7 @@ msgstr "Nem törölhet mappát a hírcsoportban, inkább iratkozzon le."
 
 #: camel/providers/nntp/camel-nntp-store.c:1148
 msgid "Authentication requested but no username provided"
-msgstr "Hitelesítés szükséges, de nem adott meg felhasználónevet"
+msgstr "Azonosítás szükséges, de nem adott meg felhasználónevet"
 
 #: camel/providers/nntp/camel-nntp-store.c:1156
 #, c-format
@@ -4013,7 +4014,7 @@ msgstr "Adja meg %s@%s NNTP-jelszavát"
 #: camel/providers/nntp/camel-nntp-store.c:1160
 #, c-format
 msgid "Cannot authenticate to server: %s"
-msgstr "Sikertelen hitelesítés a kiszolgálón: %s"
+msgstr "Sikertelen azonosítás a kiszolgálón: %s"
 
 #: camel/providers/nntp/camel-nntp-store.c:1276
 #, c-format
@@ -4153,7 +4154,7 @@ msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
-"Nem sikerült kapcsolódni a %s POP-kiszolgálóhoz. A kért hitelesítési "
+"Nem sikerült kapcsolódni a %s POP-kiszolgálóhoz. A kért azonosítási "
 "mechanizmus nem támogatott."
 
 #: camel/providers/pop3/camel-pop3-store.c:420
@@ -4170,7 +4171,7 @@ msgstr ""
 #: camel/providers/pop3/camel-pop3-store.c:451
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
-msgstr "Sikertelen hitelesítés a(z) %s POP-kiszolgálón: %s"
+msgstr "Sikertelen azonosítás a(z) %s POP-kiszolgálón: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:477
 #, c-format
@@ -4350,15 +4351,15 @@ msgstr "Jelszóátvitel szükséges"
 
 #: camel/providers/smtp/camel-smtp-transport.c:209
 msgid "Authentication mechanism is too weak"
-msgstr "A hitelesítési mechanizmus túl gyenge"
+msgstr "A azonosítási mechanizmus túl gyenge"
 
 #: camel/providers/smtp/camel-smtp-transport.c:211
 msgid "Encryption required for requested authentication mechanism"
-msgstr "A kért hitelesítési mechanizmushoz titkosítás szükséges"
+msgstr "A kért azonosítási mechanizmushoz titkosítás szükséges"
 
 #: camel/providers/smtp/camel-smtp-transport.c:213
 msgid "Temporary authentication failure"
-msgstr "Ideiglenes hitelesítési hiba"
+msgstr "Ideiglenes azonosítási hiba"
 
 #: camel/providers/smtp/camel-smtp-transport.c:294
 msgid "Welcome response error"
@@ -4383,7 +4384,7 @@ msgstr "A STARTTLS-parancs sikertelen"
 #: camel/providers/smtp/camel-smtp-transport.c:491
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr "%s SMTP-kiszolgáló nem támogatja a kért %s hitelesítési típust."
+msgstr "%s SMTP-kiszolgáló nem támogatja a kért %s azonosítási típust."
 
 #: camel/providers/smtp/camel-smtp-transport.c:529
 #, c-format
@@ -4446,11 +4447,11 @@ msgstr "A HELO-parancs sikertelen"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1006
 msgid "SMTP Authentication"
-msgstr "SMTP-hitelesítés"
+msgstr "SMTP-azonosítás"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1012
 msgid "Error creating SASL authentication object."
-msgstr "Hiba a SASL hitelesítési objektum létrehozásakor."
+msgstr "Hiba a SASL azonosítási objektum létrehozásakor."
 
 #: camel/providers/smtp/camel-smtp-transport.c:1029
 #: camel/providers/smtp/camel-smtp-transport.c:1040
@@ -4464,7 +4465,7 @@ msgstr "Az AUTH-parancs sikertelen"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1108
 msgid "Bad authentication response from server.\n"
-msgstr "Rossz hitelesítési válasz a kiszolgálótól.\n"
+msgstr "Rossz azonosítási válasz a kiszolgálótól.\n"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1133
 #, c-format
@@ -4604,7 +4605,7 @@ msgstr "Várakozás"
 #. time, in 12-hour format.
 #: libedataserver/e-time-utils.c:173 libedataserver/e-time-utils.c:400
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr "%Y.%m.%d. %a %I.%M.%S %p"
+msgstr "%Y.%m.%d. %a %l.%M.%S %P"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format.
@@ -4612,7 +4613,7 @@ msgstr "%Y.%m.%d. %a %I.%M.%S %p"
 #. time, in 24-hour format.
 #: libedataserver/e-time-utils.c:178 libedataserver/e-time-utils.c:391
 msgid "%a %m/%d/%Y %H:%M:%S"
-msgstr "%Y.%m.%d. %a %H.%M.%S"
+msgstr "%Y.%m.%d. %a %k.%M.%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without seconds.
@@ -4620,7 +4621,7 @@ msgstr "%Y.%m.%d. %a %H.%M.%S"
 #. time, in 12-hour format, without seconds.
 #: libedataserver/e-time-utils.c:183 libedataserver/e-time-utils.c:396
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr "%Y.%m.%d. %a %I.%M %p"
+msgstr "%Y.%m.%d. %a %l.%M %P"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without seconds.
@@ -4628,19 +4629,19 @@ msgstr "%Y.%m.%d. %a %I.%M %p"
 #. time, in 24-hour format, without seconds.
 #: libedataserver/e-time-utils.c:188 libedataserver/e-time-utils.c:387
 msgid "%a %m/%d/%Y %H:%M"
-msgstr "%Y.%m.%d. %a %H.%M"
+msgstr "%Y.%m.%d. %a %k.%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
 #: libedataserver/e-time-utils.c:193
 msgid "%a %m/%d/%Y %I %p"
-msgstr "%Y.%m.%d. %a %I %p"
+msgstr "%Y.%m.%d. %a %l %P"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
 #: libedataserver/e-time-utils.c:198
 msgid "%a %m/%d/%Y %H"
-msgstr "%Y.%m.%d. %a %H"
+msgstr "%Y.%m.%d. %a %k"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
@@ -4652,36 +4653,36 @@ msgstr "%Y.%m.%d., %a."
 #. strptime format of a date and a time, in 12-hour format.
 #: libedataserver/e-time-utils.c:209
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr "%Y.%m.%d. %I.%M.%S %p"
+msgstr "%Y.%m.%d. %l.%M.%S %P"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: libedataserver/e-time-utils.c:213
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr "%Y.%m.%d. %H.%M.%S"
+msgstr "%Y.%m.%d. %k.%M.%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
 #: libedataserver/e-time-utils.c:218
 msgid "%m/%d/%Y %I:%M %p"
-msgstr "%Y.%m.%d. %I.%M %p"
+msgstr "%Y.%m.%d. %l.%M %P"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
 #: libedataserver/e-time-utils.c:223
 msgid "%m/%d/%Y %H:%M"
-msgstr "%Y.%m.%d. %H.%M"
+msgstr "%Y.%m.%d. %k.%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
 #: libedataserver/e-time-utils.c:228
 msgid "%m/%d/%Y %I %p"
-msgstr "%Y.%m.%d. %I %p"
+msgstr "%Y.%m.%d. %l %P"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
 #: libedataserver/e-time-utils.c:233
 msgid "%m/%d/%Y %H"
-msgstr "%Y.%m.%d. %H"
+msgstr "%Y.%m.%d. %k"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
@@ -4693,13 +4694,13 @@ msgstr "%Y.%m.%d."
 #. strftime format of a time in 12-hour format.
 #: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
 msgid "%I:%M:%S %p"
-msgstr "%I.%M.%S %p"
+msgstr "%l.%M.%S %P"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
 #: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
 msgid "%H:%M:%S"
-msgstr "%H.%M.%S"
+msgstr "%k.%M.%S"
 
 #. strptime format for time of day, without seconds,
 #. in 12-hour format.
@@ -4707,19 +4708,19 @@ msgstr "%H.%M.%S"
 #. without seconds.
 #: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
 msgid "%I:%M %p"
-msgstr "%I.%M %p"
+msgstr "%l.%M %P"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
 #: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
 msgid "%H:%M"
-msgstr "%H.%M"
+msgstr "%k.%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: libedataserver/e-time-utils.c:354
 msgid "%I %p"
-msgstr "%I %p"
+msgstr "%l %P"
 
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
