@@ -1736,6 +1736,7 @@ fetch_corba_book (EBook       *book,
 		return TRUE;
 	}
 	else {
+		book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
 			     _("e_book_load_uri: no factories available for uri `%s'"), uri);
 		return FALSE;

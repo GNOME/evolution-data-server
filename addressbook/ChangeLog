@@ -1,5 +1,10 @@
 2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
 
+	* libebook/e-book.c (fetch_corba_book): If the book failed to load,
+	set load_state to E_BOOK_URI_NOT_LOADED, so _unload () won't crash.
+
+2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
+
 	* libebook/e-book-async.c (_load_uri_response_handler)
 	(_load_uri_response_dtor)
 	(_load_uri_handler)
