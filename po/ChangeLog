@@ -1,3 +1,9 @@
+2004-02-01  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation.
+
+	* POTFILES.in: Removed src/GNOME_Evolution_DataServer.server.in.in.
+
 2004-02-01  Christian Neumair  <chris@gnome-de.org>
 
 	* POTFILES.in: Added missing file.

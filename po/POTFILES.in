@@ -16,4 +16,4 @@ calendar/libedata-cal/e-cal-backend-sexp.c
 calendar/libical/src/python/Property.py
 src/GNOME_Evolution_DataServerLDAP.server.in.in
 src/GNOME_Evolution_DataServerNOLDAP.server.in.in
-src/GNOME_Evolution_DataServer.server.in.in
+
