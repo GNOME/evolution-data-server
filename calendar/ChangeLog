@@ -1,3 +1,10 @@
+2004-04-12  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	Fixes #56517
+                                                                                
+        * libecal/e-cal.c (e_cal_add_timezone): Added a check for icalcomponent
+        structure. Return FALSE if icalcomponent is NULL.
+
 2004-04-12  Harish K <kharish@novell.com>
 
 	Fixes #53926

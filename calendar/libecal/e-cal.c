@@ -3776,10 +3776,15 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 	const char *tzobj;
+	icalcomponent *icalcomp;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (izone, E_CALENDAR_STATUS_INVALID_ARG);
+	
+	icalcomp = icaltimezone_get_component (izone);
 
+	e_return_error_if_fail (icalcomp, FALSE);
+	
 	priv = ecal->priv;
 
 	g_mutex_lock (priv->mutex);
@@ -3801,7 +3806,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	g_mutex_unlock (priv->mutex);
 
 	/* convert icaltimezone into a string */
-	tzobj = icalcomponent_as_ical_string (icaltimezone_get_component (izone));
+	tzobj = icalcomponent_as_ical_string (icalcomp);
 
 	/* call the backend */
 	CORBA_exception_init (&ev);
