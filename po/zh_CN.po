@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-15 14:43+0200\n"
+"POT-Creation-Date: 2004-05-19 11:11-0400\n"
 "PO-Revision-Date: 2004-05-16 02:01+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -24,40 +24,40 @@ msgid "Loading..."
 msgstr "正在装入..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3061
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3069
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "正在搜索..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:611
+#: addressbook/backends/ldap/e-book-backend-ldap.c:614
 msgid "Using Distinguished Name (DN)"
 msgstr "使用已识别的姓名 (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:614
+#: addressbook/backends/ldap/e-book-backend-ldap.c:617
 msgid "Using Email Address"
 msgstr "使用电子邮件地址"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:780
+#: addressbook/backends/ldap/e-book-backend-ldap.c:783
 msgid "Reconnecting to LDAP server..."
 msgstr "正在重新连接 LDAP 服务器..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1295
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1298
 msgid "Adding contact to LDAP server..."
 msgstr "正在将联系人添加到 LDAP 服务器..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1391
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1394
 msgid "Removing contact from LDAP server..."
 msgstr "正在从 LDAP 服务器删除联系人..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1606
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1609
 msgid "Modifying contact from LDAP server..."
 msgstr "正在修改 LDAP 服务器上的联系人..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2974
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "正在接收 LDAP 的搜索结果..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3081
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3089
 msgid "Error performing search"
 msgstr "执行搜索错误"
 
@@ -576,7 +576,7 @@ msgstr "列表"
 msgid "List Show Addresses"
 msgstr "列表显示地址"
 
-#: addressbook/libebook/e-contact.c:1196
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "未命名的列表"
 
@@ -608,24 +608,24 @@ msgstr "无效的服务器 URI"
 msgid "Calendar"
 msgstr "日历"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4268
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/libecal/e-cal.c:4274
 msgid "Authentication failed"
 msgstr "认证失败"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:425
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
 msgid "Could not create cache file"
 msgstr "无法创建缓存文件"
 
-#: calendar/backends/http/e-cal-backend-http.c:221
+#: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
 msgstr "已重定向到无效 URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:241
+#: calendar/backends/http/e-cal-backend-http.c:249
 msgid "Bad file format."
 msgstr "无效的文件格式。"
 
-#: calendar/backends/http/e-cal-backend-http.c:246
+#: calendar/backends/http/e-cal-backend-http.c:255
 msgid "Not a calendar."
 msgstr "不是日历。"
 
@@ -633,127 +633,127 @@ msgstr "不是日历。"
 msgid "Untitled appointment"
 msgstr "无标题约会"
 
-#: calendar/libecal/e-cal-recur.c:3993
+#: calendar/libecal/e-cal-recur.c:3996
 msgid "1st"
 msgstr "1日"
 
-#: calendar/libecal/e-cal-recur.c:3994
+#: calendar/libecal/e-cal-recur.c:3997
 msgid "2nd"
 msgstr "2日"
 
-#: calendar/libecal/e-cal-recur.c:3995
+#: calendar/libecal/e-cal-recur.c:3998
 msgid "3rd"
 msgstr "3日"
 
-#: calendar/libecal/e-cal-recur.c:3996
+#: calendar/libecal/e-cal-recur.c:3999
 msgid "4th"
 msgstr "4日"
 
-#: calendar/libecal/e-cal-recur.c:3997
+#: calendar/libecal/e-cal-recur.c:4000
 msgid "5th"
 msgstr "5日"
 
-#: calendar/libecal/e-cal-recur.c:3998
+#: calendar/libecal/e-cal-recur.c:4001
 msgid "6th"
 msgstr "6日"
 
-#: calendar/libecal/e-cal-recur.c:3999
+#: calendar/libecal/e-cal-recur.c:4002
 msgid "7th"
 msgstr "7日"
 
-#: calendar/libecal/e-cal-recur.c:4000
+#: calendar/libecal/e-cal-recur.c:4003
 msgid "8th"
 msgstr "8日"
 
-#: calendar/libecal/e-cal-recur.c:4001
+#: calendar/libecal/e-cal-recur.c:4004
 msgid "9th"
 msgstr "9日"
 
-#: calendar/libecal/e-cal-recur.c:4002
+#: calendar/libecal/e-cal-recur.c:4005
 msgid "10th"
 msgstr "10日"
 
-#: calendar/libecal/e-cal-recur.c:4003
+#: calendar/libecal/e-cal-recur.c:4006
 msgid "11th"
 msgstr "11日"
 
-#: calendar/libecal/e-cal-recur.c:4004
+#: calendar/libecal/e-cal-recur.c:4007
 msgid "12th"
 msgstr "12日"
 
-#: calendar/libecal/e-cal-recur.c:4005
+#: calendar/libecal/e-cal-recur.c:4008
 msgid "13th"
 msgstr "13日"
 
-#: calendar/libecal/e-cal-recur.c:4006
+#: calendar/libecal/e-cal-recur.c:4009
 msgid "14th"
 msgstr "14日"
 
-#: calendar/libecal/e-cal-recur.c:4007
+#: calendar/libecal/e-cal-recur.c:4010
 msgid "15th"
 msgstr "15日"
 
-#: calendar/libecal/e-cal-recur.c:4008
+#: calendar/libecal/e-cal-recur.c:4011
 msgid "16th"
 msgstr "16日"
 
-#: calendar/libecal/e-cal-recur.c:4009
+#: calendar/libecal/e-cal-recur.c:4012
 msgid "17th"
 msgstr "17日"
 
-#: calendar/libecal/e-cal-recur.c:4010
+#: calendar/libecal/e-cal-recur.c:4013
 msgid "18th"
 msgstr "18八日"
 
-#: calendar/libecal/e-cal-recur.c:4011
+#: calendar/libecal/e-cal-recur.c:4014
 msgid "19th"
 msgstr "19日"
 
-#: calendar/libecal/e-cal-recur.c:4012
+#: calendar/libecal/e-cal-recur.c:4015
 msgid "20th"
 msgstr "20日"
 
-#: calendar/libecal/e-cal-recur.c:4013
+#: calendar/libecal/e-cal-recur.c:4016
 msgid "21st"
 msgstr "21日"
 
-#: calendar/libecal/e-cal-recur.c:4014
+#: calendar/libecal/e-cal-recur.c:4017
 msgid "22nd"
 msgstr "22日"
 
-#: calendar/libecal/e-cal-recur.c:4015
+#: calendar/libecal/e-cal-recur.c:4018
 msgid "23rd"
 msgstr "23日"
 
-#: calendar/libecal/e-cal-recur.c:4016
+#: calendar/libecal/e-cal-recur.c:4019
 msgid "24th"
 msgstr "24日"
 
-#: calendar/libecal/e-cal-recur.c:4017
+#: calendar/libecal/e-cal-recur.c:4020
 msgid "25th"
 msgstr "25日"
 
-#: calendar/libecal/e-cal-recur.c:4018
+#: calendar/libecal/e-cal-recur.c:4021
 msgid "26th"
 msgstr "26日"
 
-#: calendar/libecal/e-cal-recur.c:4019
+#: calendar/libecal/e-cal-recur.c:4022
 msgid "27th"
 msgstr "27日"
 
-#: calendar/libecal/e-cal-recur.c:4020
+#: calendar/libecal/e-cal-recur.c:4023
 msgid "28th"
 msgstr "28日"
 
-#: calendar/libecal/e-cal-recur.c:4021
+#: calendar/libecal/e-cal-recur.c:4024
 msgid "29th"
 msgstr "29日"
 
-#: calendar/libecal/e-cal-recur.c:4022
+#: calendar/libecal/e-cal-recur.c:4025
 msgid "30th"
 msgstr "30日"
 
-#: calendar/libecal/e-cal-recur.c:4023
+#: calendar/libecal/e-cal-recur.c:4026
 msgid "31st"
 msgstr "31日"
 
@@ -780,78 +780,78 @@ msgstr "未定义"
 msgid "Enter password for %s (user %s)"
 msgstr "为 %s 输入密码 (用户 %s)"
 
-#: calendar/libecal/e-cal.c:4242
+#: calendar/libecal/e-cal.c:4248
 msgid "Invalid argument"
 msgstr "无效参数"
 
-#: calendar/libecal/e-cal.c:4244
+#: calendar/libecal/e-cal.c:4250
 msgid "Backend is busy"
 msgstr "后台繁忙"
 
-#: calendar/libecal/e-cal.c:4246
+#: calendar/libecal/e-cal.c:4252
 msgid "Repository is offline"
 msgstr "仓库离线"
 
-#: calendar/libecal/e-cal.c:4248
+#: calendar/libecal/e-cal.c:4254
 msgid "No such calendar"
 msgstr "没有这样的日历"
 
-#: calendar/libecal/e-cal.c:4250 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4256 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "找不到对象"
 
-#: calendar/libecal/e-cal.c:4252 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4258 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "无效对象"
 
-#: calendar/libecal/e-cal.c:4254
+#: calendar/libecal/e-cal.c:4260
 msgid "URI not loaded"
 msgstr "URI 未装入"
 
-#: calendar/libecal/e-cal.c:4256
+#: calendar/libecal/e-cal.c:4262
 msgid "URI already loaded"
 msgstr "URI已经载入"
 
-#: calendar/libecal/e-cal.c:4258
+#: calendar/libecal/e-cal.c:4264
 msgid "Permission denied"
 msgstr "没有权限"
 
-#: calendar/libecal/e-cal.c:4260
+#: calendar/libecal/e-cal.c:4266
 msgid "Object ID already exists"
 msgstr "对象 ID 已经存在"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4268
 msgid "Protocol not supported"
 msgstr "不支持的协议"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4270
 msgid "Operation has been cancelled"
 msgstr "操作已取消"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4272
 msgid "Could not cancel operation"
 msgstr "无法取消操作"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4276
 msgid "Authentication required"
 msgstr "必须认证"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4278
 msgid "A CORBA exception has occurred"
 msgstr "发生了 CORBA 异常"
 
-#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "未知的错误"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4282
 msgid "No error"
 msgstr "无错误"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
-#: calendar/libedata-cal/e-cal-backend-sexp.c:524
-#: calendar/libedata-cal/e-cal-backend-sexp.c:656
-#: calendar/libedata-cal/e-cal-backend-sexp.c:683
+#: calendar/libedata-cal/e-cal-backend-sexp.c:529
+#: calendar/libedata-cal/e-cal-backend-sexp.c:661
+#: calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "“%s”不需要参数"
@@ -860,7 +860,7 @@ msgstr "“%s”不需要参数"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:721
+#: calendar/libedata-cal/e-cal-backend-sexp.c:726
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "“%s”需要一个参数"
@@ -868,9 +868,9 @@ msgstr "“%s”需要一个参数"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
 #: calendar/libedata-cal/e-cal-backend-sexp.c:88
 #: calendar/libedata-cal/e-cal-backend-sexp.c:245
-#: calendar/libedata-cal/e-cal-backend-sexp.c:468
-#, c-format
-msgid "expects the first argument to be a string"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
+#, fuzzy, c-format
+msgid "\"%s\" expects the first argument to be a string"
 msgstr "第一个参数应该是字符串"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
@@ -879,8 +879,8 @@ msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "“%s”的第一个参数必须是 ISO 8601 日期/时间字符串"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
-#: calendar/libedata-cal/e-cal-backend-sexp.c:311
-#: calendar/libedata-cal/e-cal-backend-sexp.c:462
+#: calendar/libedata-cal/e-cal-backend-sexp.c:312
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "“%s”需要两个参数"
@@ -888,8 +888,8 @@ msgstr "“%s”需要两个参数"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:133
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
-#: calendar/libedata-cal/e-cal-backend-sexp.c:317
-#: calendar/libedata-cal/e-cal-backend-sexp.c:727
+#: calendar/libedata-cal/e-cal-backend-sexp.c:318
+#: calendar/libedata-cal/e-cal-backend-sexp.c:732
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "“%s”的第一个参数应该是 time_t"
@@ -899,29 +899,29 @@ msgstr "“%s”的第一个参数应该是 time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "“%s”的第二个参数应该是整数"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:325
+#: calendar/libedata-cal/e-cal-backend-sexp.c:326
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "“%s”的第一个参数应该是 time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:476
+#: calendar/libedata-cal/e-cal-backend-sexp.c:481
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "“%s”的第二个参数应该是字符串"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:496
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr "“%s”的第一个参数必须是“任意”、“概要”、“描述”之一"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:558
+#: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "“%s”至少需要一个参数"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:572
+#: calendar/libedata-cal/e-cal-backend-sexp.c:577
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "

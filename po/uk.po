@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-07 18:26+0300\n"
+"POT-Creation-Date: 2004-05-19 11:11-0400\n"
 "PO-Revision-Date: 2004-05-07 11:35+0200\n"
 "Last-Translator: Maxim Dzіumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -23,40 +23,40 @@ msgid "Loading..."
 msgstr "Завантаження..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3061
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3069
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Пошук..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:611
+#: addressbook/backends/ldap/e-book-backend-ldap.c:614
 msgid "Using Distinguished Name (DN)"
 msgstr "Використовуючи відокремлене ім'я (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:614
+#: addressbook/backends/ldap/e-book-backend-ldap.c:617
 msgid "Using Email Address"
 msgstr "Електронна адреса"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:780
+#: addressbook/backends/ldap/e-book-backend-ldap.c:783
 msgid "Reconnecting to LDAP server..."
 msgstr "Повторне з'єднання із сервером LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1295
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1298
 msgid "Adding contact to LDAP server..."
 msgstr "Додавання контакту до сервера LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1391
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1394
 msgid "Removing contact from LDAP server..."
 msgstr "Видалення контакту із сервера LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1606
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1609
 msgid "Modifying contact from LDAP server..."
 msgstr "Зміна контакту на сервері LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2974
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "Отримання результатів пошуку з сервера LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3081
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3089
 msgid "Error performing search"
 msgstr "Помилка виконання пошуку"
 
@@ -574,7 +574,7 @@ msgstr "Список"
 msgid "List Show Addresses"
 msgstr "Адреса показу списку"
 
-#: addressbook/libebook/e-contact.c:1196
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "Неназваний список"
 
@@ -606,24 +606,24 @@ msgstr "Неправильний URI сервера"
 msgid "Calendar"
 msgstr "Календар"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4138
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/libecal/e-cal.c:4274
 msgid "Authentication failed"
 msgstr "Збій автентифікації"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:425
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
 msgid "Could not create cache file"
 msgstr "Не вдається створити файл кешу"
 
-#: calendar/backends/http/e-cal-backend-http.c:221
+#: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
 msgstr "Перенаправлено на неправильний URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:241
+#: calendar/backends/http/e-cal-backend-http.c:249
 msgid "Bad file format."
 msgstr "Неправильний формат файлу."
 
-#: calendar/backends/http/e-cal-backend-http.c:246
+#: calendar/backends/http/e-cal-backend-http.c:255
 msgid "Not a calendar."
 msgstr "Не є календарем."
 
@@ -631,127 +631,127 @@ msgstr "Не є календарем."
 msgid "Untitled appointment"
 msgstr "Неназвана зустріч"
 
-#: calendar/libecal/e-cal-recur.c:3989
+#: calendar/libecal/e-cal-recur.c:3996
 msgid "1st"
 msgstr "1-е"
 
-#: calendar/libecal/e-cal-recur.c:3990
+#: calendar/libecal/e-cal-recur.c:3997
 msgid "2nd"
 msgstr "2-е"
 
-#: calendar/libecal/e-cal-recur.c:3991
+#: calendar/libecal/e-cal-recur.c:3998
 msgid "3rd"
 msgstr "3-е"
 
-#: calendar/libecal/e-cal-recur.c:3992
+#: calendar/libecal/e-cal-recur.c:3999
 msgid "4th"
 msgstr "4-е"
 
-#: calendar/libecal/e-cal-recur.c:3993
+#: calendar/libecal/e-cal-recur.c:4000
 msgid "5th"
 msgstr "5-е"
 
-#: calendar/libecal/e-cal-recur.c:3994
+#: calendar/libecal/e-cal-recur.c:4001
 msgid "6th"
 msgstr "6-е"
 
-#: calendar/libecal/e-cal-recur.c:3995
+#: calendar/libecal/e-cal-recur.c:4002
 msgid "7th"
 msgstr "7-е"
 
-#: calendar/libecal/e-cal-recur.c:3996
+#: calendar/libecal/e-cal-recur.c:4003
 msgid "8th"
 msgstr "8-е"
 
-#: calendar/libecal/e-cal-recur.c:3997
+#: calendar/libecal/e-cal-recur.c:4004
 msgid "9th"
 msgstr "9-е"
 
-#: calendar/libecal/e-cal-recur.c:3998
+#: calendar/libecal/e-cal-recur.c:4005
 msgid "10th"
 msgstr "10-е"
 
-#: calendar/libecal/e-cal-recur.c:3999
+#: calendar/libecal/e-cal-recur.c:4006
 msgid "11th"
 msgstr "11-е"
 
-#: calendar/libecal/e-cal-recur.c:4000
+#: calendar/libecal/e-cal-recur.c:4007
 msgid "12th"
 msgstr "12-е"
 
-#: calendar/libecal/e-cal-recur.c:4001
+#: calendar/libecal/e-cal-recur.c:4008
 msgid "13th"
 msgstr "13-е"
 
-#: calendar/libecal/e-cal-recur.c:4002
+#: calendar/libecal/e-cal-recur.c:4009
 msgid "14th"
 msgstr "14-е"
 
-#: calendar/libecal/e-cal-recur.c:4003
+#: calendar/libecal/e-cal-recur.c:4010
 msgid "15th"
 msgstr "15-е"
 
-#: calendar/libecal/e-cal-recur.c:4004
+#: calendar/libecal/e-cal-recur.c:4011
 msgid "16th"
 msgstr "16-е"
 
-#: calendar/libecal/e-cal-recur.c:4005
+#: calendar/libecal/e-cal-recur.c:4012
 msgid "17th"
 msgstr "17-е"
 
-#: calendar/libecal/e-cal-recur.c:4006
+#: calendar/libecal/e-cal-recur.c:4013
 msgid "18th"
 msgstr "18-е"
 
-#: calendar/libecal/e-cal-recur.c:4007
+#: calendar/libecal/e-cal-recur.c:4014
 msgid "19th"
 msgstr "19-е"
 
-#: calendar/libecal/e-cal-recur.c:4008
+#: calendar/libecal/e-cal-recur.c:4015
 msgid "20th"
 msgstr "20-е"
 
-#: calendar/libecal/e-cal-recur.c:4009
+#: calendar/libecal/e-cal-recur.c:4016
 msgid "21st"
 msgstr "21-е"
 
-#: calendar/libecal/e-cal-recur.c:4010
+#: calendar/libecal/e-cal-recur.c:4017
 msgid "22nd"
 msgstr "22-е"
 
-#: calendar/libecal/e-cal-recur.c:4011
+#: calendar/libecal/e-cal-recur.c:4018
 msgid "23rd"
 msgstr "23-е"
 
-#: calendar/libecal/e-cal-recur.c:4012
+#: calendar/libecal/e-cal-recur.c:4019
 msgid "24th"
 msgstr "24."
 
-#: calendar/libecal/e-cal-recur.c:4013
+#: calendar/libecal/e-cal-recur.c:4020
 msgid "25th"
 msgstr "25-е"
 
-#: calendar/libecal/e-cal-recur.c:4014
+#: calendar/libecal/e-cal-recur.c:4021
 msgid "26th"
 msgstr "26-е"
 
-#: calendar/libecal/e-cal-recur.c:4015
+#: calendar/libecal/e-cal-recur.c:4022
 msgid "27th"
 msgstr "27-е"
 
-#: calendar/libecal/e-cal-recur.c:4016
+#: calendar/libecal/e-cal-recur.c:4023
 msgid "28th"
 msgstr "28-е"
 
-#: calendar/libecal/e-cal-recur.c:4017
+#: calendar/libecal/e-cal-recur.c:4024
 msgid "29th"
 msgstr "29-е"
 
-#: calendar/libecal/e-cal-recur.c:4018
+#: calendar/libecal/e-cal-recur.c:4025
 msgid "30th"
 msgstr "30-"
 
-#: calendar/libecal/e-cal-recur.c:4019
+#: calendar/libecal/e-cal-recur.c:4026
 msgid "31st"
 msgstr "31-е"
 
@@ -778,135 +778,136 @@ msgstr "Невизначено"
 msgid "Enter password for %s (user %s)"
 msgstr "Введіть пароль для %s (користувач %s)"
 
-#: calendar/libecal/e-cal.c:4112
+#: calendar/libecal/e-cal.c:4248
 msgid "Invalid argument"
 msgstr "Неправильний аргумент"
 
-#: calendar/libecal/e-cal.c:4114
+#: calendar/libecal/e-cal.c:4250
 msgid "Backend is busy"
 msgstr "База даних зайнята"
 
-#: calendar/libecal/e-cal.c:4116
+#: calendar/libecal/e-cal.c:4252
 msgid "Repository is offline"
 msgstr "Репозиторій поза мережею"
 
-#: calendar/libecal/e-cal.c:4118
+#: calendar/libecal/e-cal.c:4254
 msgid "No such calendar"
 msgstr "Немає такого календаря"
 
-#: calendar/libecal/e-cal.c:4120 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4256 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Об'єкт не існує"
 
-#: calendar/libecal/e-cal.c:4122 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4258 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Неправильний об'єкт"
 
-#: calendar/libecal/e-cal.c:4124
+#: calendar/libecal/e-cal.c:4260
 msgid "URI not loaded"
 msgstr "URI не завантажений"
 
-#: calendar/libecal/e-cal.c:4126
+#: calendar/libecal/e-cal.c:4262
 msgid "URI already loaded"
 msgstr "URI вже завантажений"
 
-#: calendar/libecal/e-cal.c:4128
+#: calendar/libecal/e-cal.c:4264
 msgid "Permission denied"
 msgstr "Доступ заборонено"
 
-#: calendar/libecal/e-cal.c:4130
+#: calendar/libecal/e-cal.c:4266
 msgid "Object ID already exists"
 msgstr "Ідентифікатор об'єкту вже існує"
 
-#: calendar/libecal/e-cal.c:4132
+#: calendar/libecal/e-cal.c:4268
 msgid "Protocol not supported"
 msgstr "Протокол не підтримується"
 
-#: calendar/libecal/e-cal.c:4134
+#: calendar/libecal/e-cal.c:4270
 msgid "Operation has been cancelled"
 msgstr "Операція була скасована"
 
-#: calendar/libecal/e-cal.c:4136
+#: calendar/libecal/e-cal.c:4272
 msgid "Could not cancel operation"
 msgstr "Не вдається скасувати операцію"
 
-#: calendar/libecal/e-cal.c:4140
+#: calendar/libecal/e-cal.c:4276
 msgid "Authentication required"
 msgstr "Вимагається автентифікація"
 
-#: calendar/libecal/e-cal.c:4142
+#: calendar/libecal/e-cal.c:4278
 msgid "A CORBA exception has occurred"
 msgstr "Виникла виключна ситуація системи CORBA"
 
-#: calendar/libecal/e-cal.c:4144 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Невідома помилка"
 
-#: calendar/libecal/e-cal.c:4146
+#: calendar/libecal/e-cal.c:4282
 msgid "No error"
 msgstr "Без помилок"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
-#: calendar/libedata-cal/e-cal-backend-sexp.c:518
-#: calendar/libedata-cal/e-cal-backend-sexp.c:650
-#: calendar/libedata-cal/e-cal-backend-sexp.c:677
+#: calendar/libedata-cal/e-cal-backend-sexp.c:529
+#: calendar/libedata-cal/e-cal-backend-sexp.c:661
+#: calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" повинен викликатись без аргументів"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:75
-#: calendar/libedata-cal/e-cal-backend-sexp.c:163
-#: calendar/libedata-cal/e-cal-backend-sexp.c:197
-#: calendar/libedata-cal/e-cal-backend-sexp.c:233
-#: calendar/libedata-cal/e-cal-backend-sexp.c:715
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:726
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" очікує один аргумент"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
-#: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:462
+#: calendar/libedata-cal/e-cal-backend-sexp.c:88
+#: calendar/libedata-cal/e-cal-backend-sexp.c:245
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" очікує, що перший аргумент буде символьного типу"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:90
+#: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "перший аргумент \"%s\" повинен бути датою у форматі ISO 8601"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:121
-#: calendar/libedata-cal/e-cal-backend-sexp.c:305
-#: calendar/libedata-cal/e-cal-backend-sexp.c:456
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:312
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" очікує два аргументи"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:127
-#: calendar/libedata-cal/e-cal-backend-sexp.c:169
-#: calendar/libedata-cal/e-cal-backend-sexp.c:203
-#: calendar/libedata-cal/e-cal-backend-sexp.c:311
-#: calendar/libedata-cal/e-cal-backend-sexp.c:721
+#: calendar/libedata-cal/e-cal-backend-sexp.c:133
+#: calendar/libedata-cal/e-cal-backend-sexp.c:175
+#: calendar/libedata-cal/e-cal-backend-sexp.c:209
+#: calendar/libedata-cal/e-cal-backend-sexp.c:318
+#: calendar/libedata-cal/e-cal-backend-sexp.c:732
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" очікує, що перший аргумент буде типу time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:135
+#: calendar/libedata-cal/e-cal-backend-sexp.c:141
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" очікує, що другий аргумент буде цілим числом"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:319
+#: calendar/libedata-cal/e-cal-backend-sexp.c:326
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" очікує, що другий аргумент буде типу time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:481
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" очікує, що другий аргумент буде символьного типу"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:490
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -915,12 +916,12 @@ msgstr ""
 "\"%s\" очікує, що перший аргумент буде одним з \"any\", \"summary\", "
 "\"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:552
+#: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" очікує принаймні один аргумент"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:566
+#: calendar/libedata-cal/e-cal-backend-sexp.c:577
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "

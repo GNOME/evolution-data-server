@@ -9,55 +9,55 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.0.6\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-16 18:44+0200\n"
+"POT-Creation-Date: 2004-05-19 11:11-0400\n"
 "PO-Revision-Date: 2004-04-09 00:40+0100\n"
 "Last-Translator: Xavier A. Conde Rueda <xaviconde@eresmas.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
-#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: addressbook/backends/file/e-book-backend-file.c:444
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
+#: addressbook/backends/file/e-book-backend-file.c:430
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3069
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "S'està cercant..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:599
+#: addressbook/backends/ldap/e-book-backend-ldap.c:614
 msgid "Using Distinguished Name (DN)"
 msgstr "S'està usant el nom distingit (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:602
+#: addressbook/backends/ldap/e-book-backend-ldap.c:617
 msgid "Using Email Address"
 msgstr "S'està usant l'adreça electrònica"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:768
+#: addressbook/backends/ldap/e-book-backend-ldap.c:783
 msgid "Reconnecting to LDAP server..."
 msgstr "S'està tornant a connectar amb el servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1298
 msgid "Adding contact to LDAP server..."
 msgstr "S'està afegint un contacte al servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1394
 msgid "Removing contact from LDAP server..."
 msgstr "S'està suprimint un contacte del servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1609
 msgid "Modifying contact from LDAP server..."
 msgstr "S'està modificant un contacte del servidor LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "S'estan rebent els resultats de la cerca LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3089
 msgid "Error performing search"
 msgstr "S'ha produït un error en realitzar la cerca"
 
@@ -139,11 +139,11 @@ msgstr ""
 "e_book_set_default_source: no hi ha cap font per a l'identificador d'usuari "
 "'%s' emmagatzemat al gconf."
 
-#: addressbook/libebook/e-contact.c:99
+#: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
 msgstr "ID únic"
 
-#: addressbook/libebook/e-contact.c:100
+#: addressbook/libebook/e-contact.c:101
 msgid "File As"
 msgstr "Fitxer com"
 
@@ -151,433 +151,433 @@ msgstr "Fitxer com"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:107
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:108
 msgid "Name"
 msgstr "Nom"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:109
 msgid "Given Name"
 msgstr "Nom de pila"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:110
 msgid "Family Name"
 msgstr "Cognom"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:111
 msgid "Nickname"
 msgstr "Sobrenom"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:112
 msgid "Name or Org"
 msgstr "Nom o organització"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:114
+#: addressbook/libebook/e-contact.c:115
 msgid "Address List"
 msgstr "Llista d'adreces"
 
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:116
 msgid "Home Address"
 msgstr "Adreça de casa"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:117
 msgid "Work Address"
 msgstr "Adreça del treball"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:118
 msgid "Other Address"
 msgstr "Altres adreces"
 
-#: addressbook/libebook/e-contact.c:119
+#: addressbook/libebook/e-contact.c:120
 msgid "Home Address Label"
 msgstr "Etiqueta de l'adreça de casa"
 
-#: addressbook/libebook/e-contact.c:120
+#: addressbook/libebook/e-contact.c:121
 msgid "Work Address Label"
 msgstr "Etiqueta de l'adreça del treball"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:122
 msgid "Other Address Label"
 msgstr "Etiqueta d'altra adreça"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:124
 msgid "Assistant Phone"
 msgstr "Telèfon de l'ajudant"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:125
 msgid "Business Phone"
 msgstr "Telèfon del negoci"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:126
 msgid "Business Phone 2"
 msgstr "Segon telèfon del negoci"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Fax"
 msgstr "Fax del negoci"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:128
 msgid "Callback Phone"
 msgstr "Telèfon per tornar a trucar"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:129
 msgid "Car Phone"
 msgstr "Telèfon del cotxe"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:130
 msgid "Company Phone"
 msgstr "Telèfon de l'empresa"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:131
 msgid "Home Phone"
 msgstr "Telèfon de casa"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:132
 msgid "Home Phone 2"
 msgstr "Segon telèfon de casa"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Fax"
 msgstr "Fax de casa"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:134
 msgid "ISDN"
 msgstr "XDSI"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:135
 msgid "Mobile Phone"
 msgstr "Telèfon mòbil"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:136
 msgid "Other Phone"
 msgstr "Altre telèfon"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:137
 msgid "Other Fax"
 msgstr "Un altre fax"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:138
 msgid "Pager"
 msgstr "Paginador"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:139
 msgid "Primary Phone"
 msgstr "Telèfon principal"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:140
 msgid "Radio"
 msgstr "Ràdio"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:141
 msgid "Telex"
 msgstr "Tèlex"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:142
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:145
 msgid "Email List"
 msgstr "Llista de correu electrònic"
 
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:146
 msgid "Email 1"
 msgstr "Primera adreça electrònica"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
 msgstr "Segona adreça electrònica"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:148
 msgid "Email 3"
 msgstr "Tercera adreça electrònica"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:149
 msgid "Mailer"
 msgstr "Gestor de correu"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:150
 msgid "Wants HTML Mail"
 msgstr "Accepta correu en format HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:152
+#: addressbook/libebook/e-contact.c:153
 msgid "AIM Screen Name List"
 msgstr "Llista de noms de pantalla AIM"
 
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:154
 msgid "Groupwise Id List"
 msgstr "Llista d'id. de Groupwise"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Jabber Id List"
 msgstr "Llista d'id. de Jabber"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 msgid "Yahoo! Screen Name List"
 msgstr "Llista de noms de pantalla de Yahoo!"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "MSN Screen Name List"
 msgstr "Llista de noms de pantalla de MSN"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:158
 msgid "ICQ Id List"
 msgstr "Llista d'id. d'ICQ"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:160
 msgid "AIM Home Screen Name 1"
 msgstr "Primer nom de pantalla de casa d'AIM"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 2"
 msgstr "Segon nom de pantalla de casa d'AIM"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 3"
 msgstr "Tercer nom de pantalla de casa d'AIM"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Work Screen Name 1"
 msgstr "Primer nom de pantalla del treball d'AIM"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 2"
 msgstr "Segon nom de pantalla del treball d'AIM"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 3"
 msgstr "Tercer nom de pantalla del treball d'AIM"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:166
 msgid "Groupwise Home Screen Name 1"
 msgstr "Primer nom de pantalla de casa de Groupwise"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:167
 msgid "Groupwise Home Screen Name 2"
 msgstr "Segon nom de pantalla de casa de Groupwise"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:168
 msgid "Groupwise Home Screen Name 3"
 msgstr "Tercer nom de pantalla de casa de Groupwise"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Work Screen Name 1"
 msgstr "Primer nom de pantalla del treball de Groupwise"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Work Screen Name 2"
 msgstr "Segon nom de pantalla del treball de Groupwise"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Work Screen Name 3"
 msgstr "Tercer nom de pantalla del treball de Groupwise"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:172
 msgid "Jabber Home Id 1"
 msgstr "Primer id. de casa del Jabber"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 2"
 msgstr "Segon id. de casa del Jabber"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 3"
 msgstr "Tercer id. de casa del Jabber"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Work Id 1"
 msgstr "Primer id. del treball del Jabber"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 2"
 msgstr "Segon id. del treball del Jabber"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 3"
 msgstr "Tercer id. del treball del Jabber"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:178
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Primer nom de pantalla de casa de Yahoo!"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Segon nom de pantalla de casa de Yahoo!"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Tercer nom de pantalla de casa de Yahoo!"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Primer nom de pantalla del treball de Yahoo!"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Segon nom de pantalla del treball de Yahoo!"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Tercer nom de pantalla del treball de Yahoo!"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:184
 msgid "MSN Home Screen Name 1"
 msgstr "Primer nom de pantalla de casa de MSN"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 2"
 msgstr "Segon nom de pantalla de casa de MSN"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 3"
 msgstr "Tercer nom de pantalla de casa de MSN"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Work Screen Name 1"
 msgstr "Primer nom de pantalla del treball de MSN"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 2"
 msgstr "Segon nom de pantalla del treball de MSN"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 3"
 msgstr "Tercer nom de pantalla del treball de MSN"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:190
 msgid "ICQ Home Id 1"
 msgstr "Primer id. de casa de l'ICQ"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 2"
 msgstr "Segon id. de casa de l'ICQ"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Home Id 3"
 msgstr "Tercer id. de casa de l'ICQ"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Work Id 1"
 msgstr "Primer id. del treball de l'ICQ"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 2"
 msgstr "Segon id. del treball de l'ICQ"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 3"
 msgstr "Tercer id. del treball de l'ICQ"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:198
 msgid "Organization"
 msgstr "Organització"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:199
 msgid "Organizational Unit"
 msgstr "Unitat organitzacional"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:200
 msgid "Office"
 msgstr "Oficina"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:202
 msgid "Title"
 msgstr "Títol"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:203
 msgid "Role"
 msgstr "Rol"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:204
 msgid "Manager"
 msgstr "Gestor"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:205
 msgid "Assistant"
 msgstr "Ajudant"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:208
 msgid "Homepage URL"
 msgstr "URL de la pàgina personal"
 
-#: addressbook/libebook/e-contact.c:208
+#: addressbook/libebook/e-contact.c:209
 msgid "Weblog URL"
 msgstr "URL de la bitàcola"
 
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:210
 msgid "Video Conferencing URL"
 msgstr "URL per a videoconferència"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:212
+#: addressbook/libebook/e-contact.c:213
 msgid "Photo"
 msgstr "Fotografia"
 
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:214
 msgid "Logo"
 msgstr "Logotipus"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:216
+#: addressbook/libebook/e-contact.c:217
 msgid "X.509 Certificate"
 msgstr "Certificat X.509"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:220
 msgid "Category List"
 msgstr "Llista de categories"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:221
 msgid "Categories"
 msgstr "Categories"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:224
 msgid "Calendar URI"
 msgstr "URI del calendari"
 
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:225
 msgid "Free/Busy URL"
 msgstr "URL lliure/ocupat"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:226
 msgid "ICS Calendar"
 msgstr "Calendari ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:228
+#: addressbook/libebook/e-contact.c:229
 msgid "Spouse's Name"
 msgstr "Nom del cònjuge"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:230
 msgid "Note"
 msgstr "Nota"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:232
 msgid "Birth Date"
 msgstr "Data de naixement"
 
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:233
 msgid "Anniversary"
 msgstr "Aniversari"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:235
 msgid "List"
 msgstr "Llista"
 
-#: addressbook/libebook/e-contact.c:235
+#: addressbook/libebook/e-contact.c:236
 msgid "List Show Addresses"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:1205
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "Llista sense nom"
 
@@ -605,31 +605,28 @@ msgid "Invalid server URI"
 msgstr "L'URI del servidor no és vàlid"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 msgid "Calendar"
 msgstr "Calendari"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
-msgid "Checklist"
-msgstr "Llista de comprovacions"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4121
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/libecal/e-cal.c:4274
 msgid "Authentication failed"
 msgstr "No s'ha pogut autenticar"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
 msgid "Could not create cache file"
 msgstr "No s'ha pogut crear el fitxer de memòria cau"
 
-#: calendar/backends/http/e-cal-backend-http.c:221
+#: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
 msgstr "S'ha redirigit a un URI invàlid"
 
-#: calendar/backends/http/e-cal-backend-http.c:241
+#: calendar/backends/http/e-cal-backend-http.c:249
 msgid "Bad file format."
 msgstr "El format de fitxer és erroni."
 
-#: calendar/backends/http/e-cal-backend-http.c:246
+#: calendar/backends/http/e-cal-backend-http.c:255
 msgid "Not a calendar."
 msgstr "No és un calendari."
 
@@ -637,127 +634,127 @@ msgstr "No és un calendari."
 msgid "Untitled appointment"
 msgstr "Cita sense nom"
 
-#: calendar/libecal/e-cal-recur.c:3989
+#: calendar/libecal/e-cal-recur.c:3996
 msgid "1st"
 msgstr "1"
 
-#: calendar/libecal/e-cal-recur.c:3990
+#: calendar/libecal/e-cal-recur.c:3997
 msgid "2nd"
 msgstr "2"
 
-#: calendar/libecal/e-cal-recur.c:3991
+#: calendar/libecal/e-cal-recur.c:3998
 msgid "3rd"
 msgstr "3"
 
-#: calendar/libecal/e-cal-recur.c:3992
+#: calendar/libecal/e-cal-recur.c:3999
 msgid "4th"
 msgstr "4"
 
-#: calendar/libecal/e-cal-recur.c:3993
+#: calendar/libecal/e-cal-recur.c:4000
 msgid "5th"
 msgstr "5"
 
-#: calendar/libecal/e-cal-recur.c:3994
+#: calendar/libecal/e-cal-recur.c:4001
 msgid "6th"
 msgstr "6"
 
-#: calendar/libecal/e-cal-recur.c:3995
+#: calendar/libecal/e-cal-recur.c:4002
 msgid "7th"
 msgstr "7"
 
-#: calendar/libecal/e-cal-recur.c:3996
+#: calendar/libecal/e-cal-recur.c:4003
 msgid "8th"
 msgstr "8"
 
-#: calendar/libecal/e-cal-recur.c:3997
+#: calendar/libecal/e-cal-recur.c:4004
 msgid "9th"
 msgstr "9"
 
-#: calendar/libecal/e-cal-recur.c:3998
+#: calendar/libecal/e-cal-recur.c:4005
 msgid "10th"
 msgstr "10"
 
-#: calendar/libecal/e-cal-recur.c:3999
+#: calendar/libecal/e-cal-recur.c:4006
 msgid "11th"
 msgstr "11"
 
-#: calendar/libecal/e-cal-recur.c:4000
+#: calendar/libecal/e-cal-recur.c:4007
 msgid "12th"
 msgstr "12"
 
-#: calendar/libecal/e-cal-recur.c:4001
+#: calendar/libecal/e-cal-recur.c:4008
 msgid "13th"
 msgstr "13"
 
-#: calendar/libecal/e-cal-recur.c:4002
+#: calendar/libecal/e-cal-recur.c:4009
 msgid "14th"
 msgstr "14"
 
-#: calendar/libecal/e-cal-recur.c:4003
+#: calendar/libecal/e-cal-recur.c:4010
 msgid "15th"
 msgstr "15"
 
-#: calendar/libecal/e-cal-recur.c:4004
+#: calendar/libecal/e-cal-recur.c:4011
 msgid "16th"
 msgstr "16"
 
-#: calendar/libecal/e-cal-recur.c:4005
+#: calendar/libecal/e-cal-recur.c:4012
 msgid "17th"
 msgstr "17"
 
-#: calendar/libecal/e-cal-recur.c:4006
+#: calendar/libecal/e-cal-recur.c:4013
 msgid "18th"
 msgstr "18"
 
-#: calendar/libecal/e-cal-recur.c:4007
+#: calendar/libecal/e-cal-recur.c:4014
 msgid "19th"
 msgstr "19"
 
-#: calendar/libecal/e-cal-recur.c:4008
+#: calendar/libecal/e-cal-recur.c:4015
 msgid "20th"
 msgstr "20"
 
-#: calendar/libecal/e-cal-recur.c:4009
+#: calendar/libecal/e-cal-recur.c:4016
 msgid "21st"
 msgstr "21"
 
-#: calendar/libecal/e-cal-recur.c:4010
+#: calendar/libecal/e-cal-recur.c:4017
 msgid "22nd"
 msgstr "22"
 
-#: calendar/libecal/e-cal-recur.c:4011
+#: calendar/libecal/e-cal-recur.c:4018
 msgid "23rd"
 msgstr "23"
 
-#: calendar/libecal/e-cal-recur.c:4012
+#: calendar/libecal/e-cal-recur.c:4019
 msgid "24th"
 msgstr "24"
 
-#: calendar/libecal/e-cal-recur.c:4013
+#: calendar/libecal/e-cal-recur.c:4020
 msgid "25th"
 msgstr "25"
 
-#: calendar/libecal/e-cal-recur.c:4014
+#: calendar/libecal/e-cal-recur.c:4021
 msgid "26th"
 msgstr "26"
 
-#: calendar/libecal/e-cal-recur.c:4015
+#: calendar/libecal/e-cal-recur.c:4022
 msgid "27th"
 msgstr "27"
 
-#: calendar/libecal/e-cal-recur.c:4016
+#: calendar/libecal/e-cal-recur.c:4023
 msgid "28th"
 msgstr "28"
 
-#: calendar/libecal/e-cal-recur.c:4017
+#: calendar/libecal/e-cal-recur.c:4024
 msgid "29th"
 msgstr "29"
 
-#: calendar/libecal/e-cal-recur.c:4018
+#: calendar/libecal/e-cal-recur.c:4025
 msgid "30th"
 msgstr "30"
 
-#: calendar/libecal/e-cal-recur.c:4019
+#: calendar/libecal/e-cal-recur.c:4026
 msgid "31st"
 msgstr "31"
 
@@ -779,141 +776,142 @@ msgid "Undefined"
 msgstr "Sense definir"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1492
+#: calendar/libecal/e-cal.c:1488
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduïu la contrasenya per a %s (usuari %s)"
 
-#: calendar/libecal/e-cal.c:4095
+#: calendar/libecal/e-cal.c:4248
 msgid "Invalid argument"
 msgstr "Argument invàlid"
 
-#: calendar/libecal/e-cal.c:4097
+#: calendar/libecal/e-cal.c:4250
 msgid "Backend is busy"
 msgstr "El suport està ocupat"
 
-#: calendar/libecal/e-cal.c:4099
+#: calendar/libecal/e-cal.c:4252
 msgid "Repository is offline"
 msgstr "El magatzem no està connectat"
 
-#: calendar/libecal/e-cal.c:4101
+#: calendar/libecal/e-cal.c:4254
 msgid "No such calendar"
 msgstr "No existeix aquest calendari"
 
-#: calendar/libecal/e-cal.c:4103 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4256 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "No s'ha trobat l'objecte"
 
-#: calendar/libecal/e-cal.c:4105 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4258 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objecte invàlid"
 
-#: calendar/libecal/e-cal.c:4107
+#: calendar/libecal/e-cal.c:4260
 msgid "URI not loaded"
 msgstr "No s'ha carregat l'URI"
 
-#: calendar/libecal/e-cal.c:4109
+#: calendar/libecal/e-cal.c:4262
 msgid "URI already loaded"
 msgstr "Ja s'ha carregat l'URI"
 
-#: calendar/libecal/e-cal.c:4111
+#: calendar/libecal/e-cal.c:4264
 msgid "Permission denied"
 msgstr "Permís denegat"
 
-#: calendar/libecal/e-cal.c:4113
+#: calendar/libecal/e-cal.c:4266
 msgid "Object ID already exists"
 msgstr "L'id. d'objecte ja existeix"
 
-#: calendar/libecal/e-cal.c:4115
+#: calendar/libecal/e-cal.c:4268
 msgid "Protocol not supported"
 msgstr "No se suporta el protocol"
 
-#: calendar/libecal/e-cal.c:4117
+#: calendar/libecal/e-cal.c:4270
 msgid "Operation has been cancelled"
 msgstr "S'ha cancel·lat l'operació"
 
-#: calendar/libecal/e-cal.c:4119
+#: calendar/libecal/e-cal.c:4272
 msgid "Could not cancel operation"
 msgstr "No s'ha pogut cancel·lar l'operació"
 
-#: calendar/libecal/e-cal.c:4123
+#: calendar/libecal/e-cal.c:4276
 msgid "Authentication required"
 msgstr "Cal autenticació"
 
-#: calendar/libecal/e-cal.c:4125
+#: calendar/libecal/e-cal.c:4278
 msgid "A CORBA exception has occurred"
 msgstr "S'ha produït una excepció CORBA"
 
-#: calendar/libecal/e-cal.c:4127 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Error desconegut"
 
-#: calendar/libecal/e-cal.c:4129
+#: calendar/libecal/e-cal.c:4282
 msgid "No error"
 msgstr "Cap error"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
-#: calendar/libedata-cal/e-cal-backend-sexp.c:518
-#: calendar/libedata-cal/e-cal-backend-sexp.c:650
-#: calendar/libedata-cal/e-cal-backend-sexp.c:677
+#: calendar/libedata-cal/e-cal-backend-sexp.c:529
+#: calendar/libedata-cal/e-cal-backend-sexp.c:661
+#: calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "'%s' no espera cap argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:75
-#: calendar/libedata-cal/e-cal-backend-sexp.c:163
-#: calendar/libedata-cal/e-cal-backend-sexp.c:197
-#: calendar/libedata-cal/e-cal-backend-sexp.c:233
-#: calendar/libedata-cal/e-cal-backend-sexp.c:715
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:726
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "'%s' espera un argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
-#: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:462
+#: calendar/libedata-cal/e-cal-backend-sexp.c:88
+#: calendar/libedata-cal/e-cal-backend-sexp.c:245
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "'%s' espera que el primer argument sigui una cadena"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:90
+#: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "'%s' espera que el primer argument sigui una cadena de data/hora ISO 8601"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:121
-#: calendar/libedata-cal/e-cal-backend-sexp.c:305
-#: calendar/libedata-cal/e-cal-backend-sexp.c:456
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:312
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "'%s' espera dos arguments"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:127
-#: calendar/libedata-cal/e-cal-backend-sexp.c:169
-#: calendar/libedata-cal/e-cal-backend-sexp.c:203
-#: calendar/libedata-cal/e-cal-backend-sexp.c:311
-#: calendar/libedata-cal/e-cal-backend-sexp.c:721
+#: calendar/libedata-cal/e-cal-backend-sexp.c:133
+#: calendar/libedata-cal/e-cal-backend-sexp.c:175
+#: calendar/libedata-cal/e-cal-backend-sexp.c:209
+#: calendar/libedata-cal/e-cal-backend-sexp.c:318
+#: calendar/libedata-cal/e-cal-backend-sexp.c:732
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "'%s' espera que el primer argument sigui un time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:135
+#: calendar/libedata-cal/e-cal-backend-sexp.c:141
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "'%s' espera que el segon argument sigui un enter"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:319
+#: calendar/libedata-cal/e-cal-backend-sexp.c:326
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "'%s' espera que el segon argument sigui un time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:481
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "'%s' espera que el segon argument sigui una cadena"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:490
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -922,12 +920,12 @@ msgstr ""
 "\"%s\" espera que el primer argument sigui \"any\", \"summary\", "
 "\"description\", o \"location\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:552
+#: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "'%s' espera almenys un argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:566
+#: calendar/libedata-cal/e-cal-backend-sexp.c:577
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -960,3 +958,6 @@ msgstr "Suport per al fitxer del calendari de l'Evolution i webcal"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Suport per al fitxer de la llibreta d'adreces de l'Evolution"
+
+#~ msgid "Checklist"
+#~ msgstr "Llista de comprovacions"

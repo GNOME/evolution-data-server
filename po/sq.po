@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"POT-Creation-Date: 2004-04-19 09:18-0400\n"
+"POT-Creation-Date: 2004-05-19 11:11-0400\n"
 "PO-Revision-Date: 2004-03-06 17:50+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -14,46 +14,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Report-Msgid-Bugs-To: \n"
 
-#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Duke ngarkuar..."
 
-#: addressbook/backends/file/e-book-backend-file.c:444
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2938
+#: addressbook/backends/file/e-book-backend-file.c:430
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3069
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Duke kërkuar..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:599
+#: addressbook/backends/ldap/e-book-backend-ldap.c:614
 msgid "Using Distinguished Name (DN)"
 msgstr "Duke përdorur emër të dallueshëm (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:602
+#: addressbook/backends/ldap/e-book-backend-ldap.c:617
 msgid "Using Email Address"
 msgstr "Duke përdorur adresën email"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:768
+#: addressbook/backends/ldap/e-book-backend-ldap.c:783
 msgid "Reconnecting to LDAP server..."
 msgstr "Duke u rilidhur me server-in LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1283
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1298
 msgid "Adding contact to LDAP server..."
 msgstr "Duke shtuar kontaktin tek serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1379
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1394
 msgid "Removing contact from LDAP server..."
 msgstr "Duke fshirë kontaktin nga serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1594
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1609
 msgid "Modifying contact from LDAP server..."
 msgstr "Duke ndryshuar kontaktin nga serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2851
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
 msgid "Receiving LDAP search results..."
 msgstr "Duke marrë rezultatet e kërkimit të LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2958
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3089
 msgid "Error performing search"
 msgstr "Gabim gjatë plotësimit të kërkimit"
 
@@ -64,10 +64,9 @@ msgstr "Gabim gjatë plotësimit të kërkimit"
 #: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
 #: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
 #: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
-#: addressbook/libebook/e-book.c:819 addressbook/libebook/e-book.c:873
-#: addressbook/libebook/e-book.c:972 addressbook/libebook/e-book.c:1106
-#: addressbook/libebook/e-book.c:1207 addressbook/libebook/e-book.c:1447
-#: addressbook/libebook/e-book.c:2047
+#: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
+#: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
+#: addressbook/libebook/e-book.c:1430 addressbook/libebook/e-book.c:2030
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" në rubrikë para \"%s\""
@@ -75,70 +74,70 @@ msgstr "\"%s\" në rubrikë para \"%s\""
 #: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
 #: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
 #: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
-#: addressbook/libebook/e-book.c:827 addressbook/libebook/e-book.c:881
-#: addressbook/libebook/e-book.c:980 addressbook/libebook/e-book.c:1114
-#: addressbook/libebook/e-book.c:1215 addressbook/libebook/e-book.c:1455
+#: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
+#: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
+#: addressbook/libebook/e-book.c:1438
 msgid "book busy"
 msgstr "rubrika jo në dispozicion për momentin"
 
 #: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
 #: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
 #: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
-#: addressbook/libebook/e-book.c:913 addressbook/libebook/e-book.c:1024
-#: addressbook/libebook/e-book.c:1142 addressbook/libebook/e-book.c:1239
-#: addressbook/libebook/e-book.c:1373 addressbook/libebook/e-book.c:1477
-#: addressbook/libebook/e-book.c:2056
+#: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
+#: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
+#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1460
+#: addressbook/libebook/e-book.c:2039
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Përjashtim Corba gjatë thirrjes \"%s\""
 
-#: addressbook/libebook/e-book.c:1354
+#: addressbook/libebook/e-book.c:1337
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: aktualisht nuk ka asnjë operacion"
 
-#: addressbook/libebook/e-book.c:1389
+#: addressbook/libebook/e-book.c:1372
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: i pamundur anullimi"
 
-#: addressbook/libebook/e-book.c:1748
+#: addressbook/libebook/e-book.c:1731
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Burim i pavlefshëm."
 
-#: addressbook/libebook/e-book.c:1757 addressbook/libebook/e-book.c:1875
+#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1858
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: asnjë factori në dispozicion për `%s'"
 
-#: addressbook/libebook/e-book.c:1770
+#: addressbook/libebook/e-book.c:1753
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: I pamundur krijimi i EBookListener"
 
-#: addressbook/libebook/e-book.c:1869
+#: addressbook/libebook/e-book.c:1852
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: u anullua"
 
-#: addressbook/libebook/e-book.c:1906
+#: addressbook/libebook/e-book.c:1889
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" në rubrikë mbas \"%s\""
 
-#: addressbook/libebook/e-book.c:2142
+#: addressbook/libebook/e-book.c:2125
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 "e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
 
-#: addressbook/libebook/e-book.c:2319
+#: addressbook/libebook/e-book.c:2302
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 "e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
 
-#: addressbook/libebook/e-contact.c:99
+#: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
 msgstr "ID e veçantë"
 
-#: addressbook/libebook/e-contact.c:100
+#: addressbook/libebook/e-contact.c:101
 msgid "File As"
 msgstr "File si"
 
@@ -146,433 +145,433 @@ msgstr "File si"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:106
+#: addressbook/libebook/e-contact.c:107
 msgid "Full Name"
 msgstr "Emri dhe Mbiemri"
 
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:108
 msgid "Name"
 msgstr "Emri"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:109
 msgid "Given Name"
 msgstr "Emri i dhënë"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:110
 msgid "Family Name"
 msgstr "Mbiemri"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:111
 msgid "Nickname"
 msgstr "Nickname"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:112
 msgid "Name or Org"
 msgstr "Emri ose Org"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:114
+#: addressbook/libebook/e-contact.c:115
 msgid "Address List"
 msgstr "Lista e adresave"
 
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:116
 msgid "Home Address"
 msgstr "Adresa e shtëpisë"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:117
 msgid "Work Address"
 msgstr "Adresa e punës"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:118
 msgid "Other Address"
 msgstr "Adresa të tjera"
 
-#: addressbook/libebook/e-contact.c:119
+#: addressbook/libebook/e-contact.c:120
 msgid "Home Address Label"
 msgstr "Etiketa e adresës së shtëpisë"
 
-#: addressbook/libebook/e-contact.c:120
+#: addressbook/libebook/e-contact.c:121
 msgid "Work Address Label"
 msgstr "Etketa e adresës së punës"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:122
 msgid "Other Address Label"
 msgstr "Etiketa e adresave të tjera"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:124
 msgid "Assistant Phone"
 msgstr "Telefoni asistentit"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:125
 msgid "Business Phone"
 msgstr "Telefoni në zyrë"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:126
 msgid "Business Phone 2"
 msgstr "Telefoni në zyrë 2"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Fax"
 msgstr "Fax në zyrë"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:128
 msgid "Callback Phone"
 msgstr "Telefoni ku të rithirret"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:129
 msgid "Car Phone"
 msgstr "Telefoni në makinë"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:130
 msgid "Company Phone"
 msgstr "Telefoni i ndërmarrjes"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:131
 msgid "Home Phone"
 msgstr "Telefoni në shtëpi"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:132
 msgid "Home Phone 2"
 msgstr "Telefoni në shtëpi 2"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Fax"
 msgstr "Fax në shtëpi"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:134
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:135
 msgid "Mobile Phone"
 msgstr "Celulari"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:136
 msgid "Other Phone"
 msgstr "Telefonë të tjerë"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:137
 msgid "Other Fax"
 msgstr "Fax tjetër"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:138
 msgid "Pager"
 msgstr "Faques"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:139
 msgid "Primary Phone"
 msgstr "Telefoni kryesor"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:140
 msgid "Radio"
 msgstr "Radio"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:141
 msgid "Telex"
 msgstr "Telex"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:142
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:145
 msgid "Email List"
 msgstr "Lista Email"
 
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:146
 msgid "Email 1"
 msgstr "Email 1"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
 msgstr "Email 2"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:148
 msgid "Email 3"
 msgstr "Email 3"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:149
 msgid "Mailer"
 msgstr "Manazhuesi i postës"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:150
 msgid "Wants HTML Mail"
 msgstr "Dëshiron Mail në HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:152
+#: addressbook/libebook/e-contact.c:153
 msgid "AIM Screen Name List"
 msgstr "Lista e emrave publikë AIM"
 
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:154
 msgid "Groupwise Id List"
 msgstr "Lista ID Groupwise"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Jabber Id List"
 msgstr "Lista ID Jabber"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 msgid "Yahoo! Screen Name List"
 msgstr "Lista e emrave publikë Yahoo!"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "MSN Screen Name List"
 msgstr "Lista e emrave publikë MSN"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:158
 msgid "ICQ Id List"
 msgstr "Lista e ID ICQ"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:160
 msgid "AIM Home Screen Name 1"
 msgstr "Emri 1 publik AIM për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 2"
 msgstr "Emri 2 publik AIM për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 3"
 msgstr "Emri 3 publik AIM për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Work Screen Name 1"
 msgstr "Emri 1 publik AIM për në punë"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 2"
 msgstr "Emri 2 publik AIM për në punë"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 3"
 msgstr "Emri 3 publik AIM për në punë"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:166
 msgid "Groupwise Home Screen Name 1"
 msgstr "Emri 1 publik Groupwise për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:167
 msgid "Groupwise Home Screen Name 2"
 msgstr "Emri 2 publik Groupwise për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:168
 msgid "Groupwise Home Screen Name 3"
 msgstr "Emri 3 publik Groupwise për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Work Screen Name 1"
 msgstr "Emri 1 publik Groupwise për në punë"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Work Screen Name 2"
 msgstr "Emri 2 publik Groupwise për në punë"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Work Screen Name 3"
 msgstr "Emri 3 publik Groupwise për në punë"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:172
 msgid "Jabber Home Id 1"
 msgstr "Jaber në shtëpi Id 1"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 2"
 msgstr "Jaber në shtëpi Id 2"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 3"
 msgstr "Jaber në shtëpi Id 3"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Work Id 1"
 msgstr "Jaber në punë Id 1"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 2"
 msgstr "Jaber në punë Id 2"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 3"
 msgstr "Jaber në punë Id 3"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:178
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Emri publik 1 Yahoo! për shtëpinë"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Emri publik 2 Yahoo! për shtëpinë"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Emri publik 3 Yahoo! për shtëpinë"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Emri publik 1 Yahoo! për në punë"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Emri publik 2 Yahoo! për në punë"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Emri publik 3 Yahoo! për në punë"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:184
 msgid "MSN Home Screen Name 1"
 msgstr "Emri publik 1 MSN për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 2"
 msgstr "Emri publik 2 MSN për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 3"
 msgstr "Emri publik 3 MSN për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Work Screen Name 1"
 msgstr "Emri publik 1 MSN për në punë"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 2"
 msgstr "Emri publik 2 MSN për në punë"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 3"
 msgstr "Emri publik 3 MSN për në punë"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:190
 msgid "ICQ Home Id 1"
 msgstr "Id 1 e ICQ për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 2"
 msgstr "Id 2 e ICQ për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Home Id 3"
 msgstr "Id 3 e ICQ për në shtëpi"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Work Id 1"
 msgstr "Id 1 e ICQ për në punë"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 2"
 msgstr "Id 2 e ICQ për në punë"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 3"
 msgstr "Id 3 e ICQ për në punë"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:198
 msgid "Organization"
 msgstr "Organizata"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:199
 msgid "Organizational Unit"
 msgstr "Njësia organizative"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:200
 msgid "Office"
 msgstr "Zyrë"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:202
 msgid "Title"
 msgstr "Titulli"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:203
 msgid "Role"
 msgstr "Roli"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:204
 msgid "Manager"
 msgstr "Manazhuesi"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:205
 msgid "Assistant"
 msgstr "Asistenti"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:208
 msgid "Homepage URL"
 msgstr "URL e faqes web"
 
-#: addressbook/libebook/e-contact.c:208
+#: addressbook/libebook/e-contact.c:209
 msgid "Weblog URL"
 msgstr "URL e weblog"
 
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:210
 msgid "Video Conferencing URL"
 msgstr "URL për video konferencimet"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:212
+#: addressbook/libebook/e-contact.c:213
 msgid "Photo"
 msgstr "Foto"
 
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:214
 msgid "Logo"
 msgstr "Stema"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:216
+#: addressbook/libebook/e-contact.c:217
 msgid "X.509 Certificate"
 msgstr "Çertifikata X.509"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:220
 msgid "Category List"
 msgstr "Lista kategorisë"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:221
 msgid "Categories"
 msgstr "Kategoritë"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:224
 msgid "Calendar URI"
 msgstr "URI i kalendarit"
 
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:225
 msgid "Free/Busy URL"
 msgstr "URL lirë/zënë"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:226
 msgid "ICS Calendar"
 msgstr "Kalendari ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:228
+#: addressbook/libebook/e-contact.c:229
 msgid "Spouse's Name"
 msgstr "Emri i gruas"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:230
 msgid "Note"
 msgstr "Shënim"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:232
 msgid "Birth Date"
 msgstr "Data e lindjes"
 
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:233
 msgid "Anniversary"
 msgstr "Përvjetori"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:235
 msgid "List"
 msgstr "Lista"
 
-#: addressbook/libebook/e-contact.c:235
+#: addressbook/libebook/e-contact.c:236
 msgid "List Show Addresses"
 msgstr "Lista shfaq adresat"
 
-#: addressbook/libebook/e-contact.c:1197
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "Listë pa emër"
 
@@ -600,32 +599,29 @@ msgid "Invalid server URI"
 msgstr ""
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 msgid "Calendar"
 msgstr "Kalendari"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
-msgid "Checklist"
-msgstr "Lista e kontrollit"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:247
-#: calendar/libecal/e-cal.c:4062
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/libecal/e-cal.c:4274
 msgid "Authentication failed"
 msgstr "Identifikimi dështoi"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
 #, fuzzy
 msgid "Could not create cache file"
 msgstr "I pamundur anullimi i operacionit"
 
-#: calendar/backends/http/e-cal-backend-http.c:221
+#: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
 msgstr "Ridrejtuar tek URI e pavlefshme"
 
-#: calendar/backends/http/e-cal-backend-http.c:241
+#: calendar/backends/http/e-cal-backend-http.c:249
 msgid "Bad file format."
 msgstr "Format i pavlefshëm file."
 
-#: calendar/backends/http/e-cal-backend-http.c:246
+#: calendar/backends/http/e-cal-backend-http.c:255
 msgid "Not a calendar."
 msgstr "Nuk është një kalendar."
 
@@ -633,127 +629,127 @@ msgstr "Nuk është një kalendar."
 msgid "Untitled appointment"
 msgstr "Takim pa emër"
 
-#: calendar/libecal/e-cal-recur.c:3989
+#: calendar/libecal/e-cal-recur.c:3996
 msgid "1st"
 msgstr "1-ri"
 
-#: calendar/libecal/e-cal-recur.c:3990
+#: calendar/libecal/e-cal-recur.c:3997
 msgid "2nd"
 msgstr "2-ti"
 
-#: calendar/libecal/e-cal-recur.c:3991
+#: calendar/libecal/e-cal-recur.c:3998
 msgid "3rd"
 msgstr "3-ti"
 
-#: calendar/libecal/e-cal-recur.c:3992
+#: calendar/libecal/e-cal-recur.c:3999
 msgid "4th"
 msgstr "4-ti"
 
-#: calendar/libecal/e-cal-recur.c:3993
+#: calendar/libecal/e-cal-recur.c:4000
 msgid "5th"
 msgstr "5-ti"
 
-#: calendar/libecal/e-cal-recur.c:3994
+#: calendar/libecal/e-cal-recur.c:4001
 msgid "6th"
 msgstr "6-ti"
 
-#: calendar/libecal/e-cal-recur.c:3995
+#: calendar/libecal/e-cal-recur.c:4002
 msgid "7th"
 msgstr "7-ti"
 
-#: calendar/libecal/e-cal-recur.c:3996
+#: calendar/libecal/e-cal-recur.c:4003
 msgid "8th"
 msgstr "8-ti"
 
-#: calendar/libecal/e-cal-recur.c:3997
+#: calendar/libecal/e-cal-recur.c:4004
 msgid "9th"
 msgstr "9-ti"
 
-#: calendar/libecal/e-cal-recur.c:3998
+#: calendar/libecal/e-cal-recur.c:4005
 msgid "10th"
 msgstr "10-ti"
 
-#: calendar/libecal/e-cal-recur.c:3999
+#: calendar/libecal/e-cal-recur.c:4006
 msgid "11th"
 msgstr "11-ti"
 
-#: calendar/libecal/e-cal-recur.c:4000
+#: calendar/libecal/e-cal-recur.c:4007
 msgid "12th"
 msgstr "12-ti"
 
-#: calendar/libecal/e-cal-recur.c:4001
+#: calendar/libecal/e-cal-recur.c:4008
 msgid "13th"
 msgstr "13-ti"
 
-#: calendar/libecal/e-cal-recur.c:4002
+#: calendar/libecal/e-cal-recur.c:4009
 msgid "14th"
 msgstr "14-ti"
 
-#: calendar/libecal/e-cal-recur.c:4003
+#: calendar/libecal/e-cal-recur.c:4010
 msgid "15th"
 msgstr "15-ti"
 
-#: calendar/libecal/e-cal-recur.c:4004
+#: calendar/libecal/e-cal-recur.c:4011
 msgid "16th"
 msgstr "16-ti"
 
-#: calendar/libecal/e-cal-recur.c:4005
+#: calendar/libecal/e-cal-recur.c:4012
 msgid "17th"
 msgstr "17-ti"
 
-#: calendar/libecal/e-cal-recur.c:4006
+#: calendar/libecal/e-cal-recur.c:4013
 msgid "18th"
 msgstr "18-ti"
 
-#: calendar/libecal/e-cal-recur.c:4007
+#: calendar/libecal/e-cal-recur.c:4014
 msgid "19th"
 msgstr "19-ti"
 
-#: calendar/libecal/e-cal-recur.c:4008
+#: calendar/libecal/e-cal-recur.c:4015
 msgid "20th"
 msgstr "20-ti"
 
-#: calendar/libecal/e-cal-recur.c:4009
+#: calendar/libecal/e-cal-recur.c:4016
 msgid "21st"
 msgstr "21-ti"
 
-#: calendar/libecal/e-cal-recur.c:4010
+#: calendar/libecal/e-cal-recur.c:4017
 msgid "22nd"
 msgstr "22-ti"
 
-#: calendar/libecal/e-cal-recur.c:4011
+#: calendar/libecal/e-cal-recur.c:4018
 msgid "23rd"
 msgstr "23-ti"
 
-#: calendar/libecal/e-cal-recur.c:4012
+#: calendar/libecal/e-cal-recur.c:4019
 msgid "24th"
 msgstr "24-ti"
 
-#: calendar/libecal/e-cal-recur.c:4013
+#: calendar/libecal/e-cal-recur.c:4020
 msgid "25th"
 msgstr "25-ti"
 
-#: calendar/libecal/e-cal-recur.c:4014
+#: calendar/libecal/e-cal-recur.c:4021
 msgid "26th"
 msgstr "26-ti"
 
-#: calendar/libecal/e-cal-recur.c:4015
+#: calendar/libecal/e-cal-recur.c:4022
 msgid "27th"
 msgstr "27-ti"
 
-#: calendar/libecal/e-cal-recur.c:4016
+#: calendar/libecal/e-cal-recur.c:4023
 msgid "28th"
 msgstr "28-ti"
 
-#: calendar/libecal/e-cal-recur.c:4017
+#: calendar/libecal/e-cal-recur.c:4024
 msgid "29th"
 msgstr "29-ti"
 
-#: calendar/libecal/e-cal-recur.c:4018
+#: calendar/libecal/e-cal-recur.c:4025
 msgid "30th"
 msgstr "30-ti"
 
-#: calendar/libecal/e-cal-recur.c:4019
+#: calendar/libecal/e-cal-recur.c:4026
 msgid "31st"
 msgstr "31-ti"
 
@@ -775,141 +771,142 @@ msgid "Undefined"
 msgstr "I/e papërcaktuar"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1486
+#: calendar/libecal/e-cal.c:1488
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Shkruaj fjalëkalimin për %s (përdoruesi %s)"
 
-#: calendar/libecal/e-cal.c:4036
+#: calendar/libecal/e-cal.c:4248
 msgid "Invalid argument"
 msgstr "Argument i pavlefshëm"
 
-#: calendar/libecal/e-cal.c:4038
+#: calendar/libecal/e-cal.c:4250
 msgid "Backend is busy"
 msgstr "Backend është i zënë"
 
-#: calendar/libecal/e-cal.c:4040
+#: calendar/libecal/e-cal.c:4252
 msgid "Repository is offline"
 msgstr "Vendruajtja është jashtë linjës"
 
-#: calendar/libecal/e-cal.c:4042
+#: calendar/libecal/e-cal.c:4254
 msgid "No such calendar"
 msgstr "Kalendari nuk ekziston"
 
-#: calendar/libecal/e-cal.c:4044 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4256 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objekti nuk u gjet"
 
-#: calendar/libecal/e-cal.c:4046 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4258 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objekt i pasaktë"
 
-#: calendar/libecal/e-cal.c:4048
+#: calendar/libecal/e-cal.c:4260
 msgid "URI not loaded"
 msgstr "URl nuk u ngarkua"
 
-#: calendar/libecal/e-cal.c:4050
+#: calendar/libecal/e-cal.c:4262
 msgid "URI already loaded"
 msgstr "URl është e ngarkuar"
 
-#: calendar/libecal/e-cal.c:4052
+#: calendar/libecal/e-cal.c:4264
 msgid "Permission denied"
 msgstr "Leja nuk u pranua"
 
-#: calendar/libecal/e-cal.c:4054
+#: calendar/libecal/e-cal.c:4266
 msgid "Object ID already exists"
 msgstr "ID e objektit ekziston"
 
-#: calendar/libecal/e-cal.c:4056
+#: calendar/libecal/e-cal.c:4268
 msgid "Protocol not supported"
 msgstr "Protokoll i pasuportuar"
 
-#: calendar/libecal/e-cal.c:4058
+#: calendar/libecal/e-cal.c:4270
 msgid "Operation has been cancelled"
 msgstr "Operacioni është anulluar"
 
-#: calendar/libecal/e-cal.c:4060
+#: calendar/libecal/e-cal.c:4272
 msgid "Could not cancel operation"
 msgstr "I pamundur anullimi i operacionit"
 
-#: calendar/libecal/e-cal.c:4064
+#: calendar/libecal/e-cal.c:4276
 msgid "Authentication required"
 msgstr "Kërkohet autentifikimi"
 
-#: calendar/libecal/e-cal.c:4066
+#: calendar/libecal/e-cal.c:4278
 msgid "A CORBA exception has occurred"
 msgstr "Ndodhi një përjashtim CORBA"
 
-#: calendar/libecal/e-cal.c:4068 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Gabim i panjohur"
 
-#: calendar/libecal/e-cal.c:4070
+#: calendar/libecal/e-cal.c:4282
 msgid "No error"
 msgstr "Asnjë gabim"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
-#: calendar/libedata-cal/e-cal-backend-sexp.c:518
-#: calendar/libedata-cal/e-cal-backend-sexp.c:650
-#: calendar/libedata-cal/e-cal-backend-sexp.c:677
+#: calendar/libedata-cal/e-cal-backend-sexp.c:529
+#: calendar/libedata-cal/e-cal-backend-sexp.c:661
+#: calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" nuk parashikon argumente"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:75
-#: calendar/libedata-cal/e-cal-backend-sexp.c:163
-#: calendar/libedata-cal/e-cal-backend-sexp.c:197
-#: calendar/libedata-cal/e-cal-backend-sexp.c:233
-#: calendar/libedata-cal/e-cal-backend-sexp.c:715
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:726
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" parashikon një argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:81
-#: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:462
+#: calendar/libedata-cal/e-cal-backend-sexp.c:88
+#: calendar/libedata-cal/e-cal-backend-sexp.c:245
+#: calendar/libedata-cal/e-cal-backend-sexp.c:473
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:90
+#: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:121
-#: calendar/libedata-cal/e-cal-backend-sexp.c:305
-#: calendar/libedata-cal/e-cal-backend-sexp.c:456
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:312
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" parashikon dy argumente"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:127
-#: calendar/libedata-cal/e-cal-backend-sexp.c:169
-#: calendar/libedata-cal/e-cal-backend-sexp.c:203
-#: calendar/libedata-cal/e-cal-backend-sexp.c:311
-#: calendar/libedata-cal/e-cal-backend-sexp.c:721
+#: calendar/libedata-cal/e-cal-backend-sexp.c:133
+#: calendar/libedata-cal/e-cal-backend-sexp.c:175
+#: calendar/libedata-cal/e-cal-backend-sexp.c:209
+#: calendar/libedata-cal/e-cal-backend-sexp.c:318
+#: calendar/libedata-cal/e-cal-backend-sexp.c:732
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" parashikon që argumenti i parë të jetë një time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:135
+#: calendar/libedata-cal/e-cal-backend-sexp.c:141
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" parashikon që argumenti i dytë të jetë një integrues"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:319
+#: calendar/libedata-cal/e-cal-backend-sexp.c:326
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" parashikon që argumenti i dytë të jetë një time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: calendar/libedata-cal/e-cal-backend-sexp.c:481
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" parashikon që argumenti i dytë të jetë një stringë"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:490
+#: calendar/libedata-cal/e-cal-backend-sexp.c:501
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -918,12 +915,12 @@ msgstr ""
 "\"%s\" parashikon që argumenti i parë të jetë secila nga \"any\", \"summary"
 "\", ose \"description\", ose \"location\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:552
+#: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" parashikon të paktën një argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:566
+#: calendar/libedata-cal/e-cal-backend-sexp.c:577
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -957,3 +954,6 @@ msgstr "Backend i file kalendar dhe webcal të Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend i file rubrika i Evolution"
+
+#~ msgid "Checklist"
+#~ msgstr "Lista e kontrollit"

@@ -1,3 +1,7 @@
+2004-05-19  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool numbers
+
 2004-05-17  Rodney Dawes  <dobey@ximian.com>
 
 	* libedataserver/Makefile.am (libedataserver_la_LIBADD):
