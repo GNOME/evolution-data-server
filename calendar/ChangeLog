@@ -1,5 +1,11 @@
 2005-01-31  Hans Petter Jansson  <hpj@novell.com>
 
+	* idl/Evolution-DataServer-Calendar.idl: Change the name of the
+	multiple inclusion protection define, so it doesn't conflict with
+	that in Evolution proper.
+
+2005-01-31  Hans Petter Jansson  <hpj@novell.com>
+
 	* backends/file/Makefile.am:
 	* backends/weather/Makefile.am:
 	* backends/http/Makefile.am:

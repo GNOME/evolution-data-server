@@ -8,8 +8,8 @@
  *          Federico Mena-Quintero <federico@ximian.com>
  */
 
-#ifndef _EVOLUTION_CALENDAR_IDL_
-#define _EVOLUTION_CALENDAR_IDL_
+#ifndef _EVOLUTION_DATASERVER_CALENDAR_IDL_
+#define _EVOLUTION_DATASERVER_CALENDAR_IDL_
 
 #include <Bonobo.idl>
 
