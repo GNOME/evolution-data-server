@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-30 17:33+0200\n"
-"PO-Revision-Date: 2005-03-10 17:13+0200\n"
+"POT-Creation-Date: 2005-04-01 10:00+0200\n"
+"PO-Revision-Date: 2005-03-30 21:26+0200\n"
 "Last-Translator: Canonical Ltd <translations@canonical.com>\n"
 "Language-Team: Xhosa <xh-translate@ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -668,8 +668,8 @@ msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
 #: ../calendar/libecal/e-cal.c:4537
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:667
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:691
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:670
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:695
 #: ../camel/providers/groupwise/camel-groupwise-store.c:528
 #: ../camel/providers/groupwise/camel-groupwise-store.c:628
 #: ../camel/providers/groupwise/camel-groupwise-store.c:790
@@ -677,11 +677,9 @@ msgstr ""
 msgid "Authentication failed"
 msgstr "Ubungqina abuphumelelanga"
 
-# Capitalisation
 #: ../calendar/backends/http/e-cal-backend-http.c:240
-#, fuzzy
 msgid "Redirected to Invalid URI"
-msgstr "Ukuyisa kwelinye icala akugunyaziswanga yi-URI"
+msgstr "Ukuyisa kwelinye icala Akugunyaziswanga yi-URI"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:264
 msgid "Bad file format."
@@ -1071,11 +1069,9 @@ msgstr "I-URI sele ifakiwe"
 msgid "Permission denied"
 msgstr "Imvume ayivunywanga"
 
-# Capitalisation
 #: ../calendar/libecal/e-cal.c:4527 ../servers/groupwise/e-gw-connection.c:167
-#, fuzzy
 msgid "Unknown User"
-msgstr "Akaziwa lo msebenzisi"
+msgstr "Akaziwa loMsebenzisi"
 
 #: ../calendar/libecal/e-cal.c:4529
 msgid "Object ID already exists"
@@ -1360,17 +1356,15 @@ msgstr "Ukwenza isiqulathi seefayili sisebenze ngaxeshanye"
 msgid "Complete"
 msgstr "Gqibezela"
 
-# Please translate "of"
 #: ../camel/camel-filter-driver.c:1267
-#, fuzzy, c-format
+#, c-format
 msgid "Getting message %d of %d"
-msgstr "Ukufumana umyalezo %d of %d"
+msgstr "Ukufumana umyalezo i-%d we-%d"
 
-# Please translate "of"
 #: ../camel/camel-filter-driver.c:1282
-#, fuzzy, c-format
+#, c-format
 msgid "Failed at message %d of %d"
-msgstr "Ayiphumelelanga kumyalezo %d of %d"
+msgstr "Ayiphumelelanga kumyalezo i-%d we-%d"
 
 #: ../camel/camel-filter-search.c:136
 msgid "Failed to retrieve message"
@@ -1417,11 +1411,9 @@ msgstr ""
 msgid "(match-all) requires a single bool result"
 msgstr "(match-all) kufuna isiphumo se-bool enye"
 
-# match-all must appear verbatim in translation
 #: ../camel/camel-folder-search.c:757
-#, fuzzy
 msgid "(match-threads) not allowed inside match-all"
-msgstr "(match-threads) ezingavunyelwayo kwinkqubo yokufanisa zonke"
+msgstr "(match-threads) ezingavunyelwayo kwinkqubo ye-match-all"
 
 #: ../camel/camel-folder-search.c:760 ../camel/camel-folder-search.c:764
 msgid "(match-threads) requires a match type string"
@@ -1607,13 +1599,12 @@ msgstr "Ayikwazi ukwakha umbhobho wokutshixa uncedo: %s"
 msgid "Cannot fork locking helper: %s"
 msgstr "Ayikwazi ukubuyisa umncedisi otshixayo: %s"
 
-# lock-helper should appear verbatim in translation
 #: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
-#, fuzzy, c-format
+#, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr ""
-"Ayikwazanga ukutshixa'%s': kwenzeke impazamo kumthetho wokusebenza "
-"nomncedisi wokutshixa"
+"Ayikwazanga ukutshixa'%s': kwenzeke impazamo kumthetho wokusebenza ne-lock-"
+"helper"
 
 #: ../camel/camel-lock-client.c:204
 #, c-format
@@ -1637,11 +1628,10 @@ msgstr ""
 msgid "Failed to get lock using fcntl(2): %s"
 msgstr "Ayiphumelelanga ukufumana isitshixo isebenzisa i-fcntl(2): %s"
 
-# flock(2) should appear verbatim in translation
 #: ../camel/camel-lock.c:272
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr "Ayiphumelelanga ukufumana isitshixo isebenzisa umhlambi(2): %s"
+msgstr "Ayiphumelelanga ukufumana isitshixo isebenzisa flock(2): %s"
 
 #: ../camel/camel-movemail.c:104
 #, c-format
@@ -1673,11 +1663,10 @@ msgstr "Ayikwazanga ukwenza umbhobho: %s"
 msgid "Could not fork: %s"
 msgstr "Ayikwazanga ukubuyisa: %s"
 
-# Movemail is the name of an application - should appear verbatim in translation
 #: ../camel/camel-movemail.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "Movemail program failed: %s"
-msgstr "Akuphumelelanga ukushenxisa inkqubo ye-imeyili: %s"
+msgstr "Inkqubo ye-Movemail ayiphumelelanga: %s"
 
 #: ../camel/camel-movemail.c:235
 msgid "(Unknown error)"
@@ -1890,40 +1879,32 @@ msgstr ""
 "Le ndlela ichaziweyo ayixhaswanga ngabaqinisekisi abanikiweyo okanye ayaziwa "
 "ngabazalisekisi."
 
-# target_name should appear verbatim in translation
 #: ../camel/camel-sasl-gssapi.c:162
-#, fuzzy
 msgid "The provided target_name parameter was ill-formed."
-msgstr "Awumiswanga kakuhle umda onikiweyo wegama_ekujoliswe kulo."
+msgstr "Awumiswanga kakuhle umda onikiweyo target_name kulo."
 
-# target_name should appear verbatim in translation
 #: ../camel/camel-sasl-gssapi.c:165
-#, fuzzy
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr ""
-"Umda onikiweyo wegama_ekujoliswe kulo uqulethe uhlobo lwegama "
-"olungaqinisekiswanga okanye olungaxhaswanga."
+"Umda onikiweyo target_name kulo uqulethe uhlobo lwegama olungaqinisekiswanga "
+"okanye olungaxhaswanga."
 
-# input_token and input_chan_bindings should appear verbatim in translation
 #: ../camel/camel-sasl-gssapi.c:169
-#, fuzzy
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
-"Lo mqondiso_wengeniso uqulethe amakhonkco ahlukeneyo ejelo kunalawo achazwe "
-"ngokudlula kumda wamakhonkco_engeniso_yejelo."
+"Le input_token uqulethe amakhonkco ahlukeneyo ejelo kunalawo achazwe "
+"ngokudlula kumda we-input_chan_bindings."
 
-# input_token should appear verbatim in translation
 #: ../camel/camel-sasl-gssapi.c:174
-#, fuzzy
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr ""
-"Lo mqondiso_wengeniso uqulethe usayino olungagunyaziswanga, okanye usayino "
+"Le input_token uqulethe usayino olungagunyaziswanga, okanye usayino "
 "olungakwazanga ukuqinisekiswa."
 
 #: ../camel/camel-sasl-gssapi.c:178
@@ -1938,11 +1919,9 @@ msgstr ""
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "Ukuphathwa kwale meko uyinikileyo akubhekisi kwimeko eqinisekisiweyo."
 
-# input_token should appear verbatim in translation
 #: ../camel/camel-sasl-gssapi.c:186
-#, fuzzy
 msgid "The consistency checks performed on the input_token failed."
-msgstr "Ukuhlola kokuvela ngokufanayo komqondiso_ongenayo akuphumelelanga."
+msgstr "Ukuhlola kokuvela ngokufanayo kwi-input_token akuphumelelanga."
 
 #: ../camel/camel-sasl-gssapi.c:189
 msgid "The consistency checks performed on the credential failed."
@@ -2298,21 +2277,19 @@ msgstr ""
 "Ayikwazi ukwenza esi siqulathi seefayili: %s: esi siqulathi seefayili sele "
 "sikho"
 
-# Capitalisation
 #: ../camel/camel-store.c:390 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr ""
-"Ayikwazi ukucima esi siqulathi seefayili: %s: oku kusebenza akuqinisekiswanga"
+"Ayikwazi ukucima esi siqulathi seefayili: %s: Oku kusebenza akuqinisekiswanga"
 
-# Capitalisation
 #: ../camel/camel-store.c:440 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr ""
-"Ayikwazi ukusinika igama kwakhona esi siqulathi seefayili:  %s: oku "
+"Ayikwazi ukusinika igama kwakhona esi siqulathi seefayili:  %s: Oku "
 "kusebenza akuqinisekiswanga"
 
 #. the name of the Trash folder, used for deleted messages
@@ -2599,7 +2576,7 @@ msgid "No such message"
 msgstr "Akukho myalezo unjalo"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:126
-#: ../camel/providers/imap4/camel-imap4-folder.c:788
+#: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
 #: ../camel/providers/nntp/camel-nntp-folder.c:372
@@ -2611,7 +2588,7 @@ msgid "User cancelled"
 msgstr "Umsebenzisi urhoxisiwe"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:131
-#: ../camel/providers/imap4/camel-imap4-folder.c:793
+#: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
 #: ../camel/providers/nntp/camel-nntp-folder.c:159
@@ -2625,7 +2602,7 @@ msgid "Cannot get message %s: %s"
 msgstr "Ayikwazi ukufumana umyalezo %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:151
-#: ../camel/providers/imap4/camel-imap4-folder.c:811
+#: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Lo myalezo awufumaneki xa ungekho kwi-intanethi."
 
@@ -2633,18 +2610,18 @@ msgstr "Lo myalezo awufumaneki xa ungekho kwi-intanethi."
 msgid "Could not get message"
 msgstr "Ayikwazanga ukufumana umyalezo"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:594
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:598
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Ayikwazi ukufaka isishwankathelo se %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:881
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:887
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Ayikwazi ukubhala umyalezo: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:893
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:899
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Ayikwazi ukuhlomela umyalezo kwisiqulathi seefayili `%s': %s"
@@ -2816,11 +2793,9 @@ msgstr "Iseva ye-GroupWise %s"
 msgid "Groupwise mail delivery via %s"
 msgstr "Ukuhanjiswa kwe-imeyili ye-Groupwise idlula %s"
 
-# Capitalisation
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:159
-#, fuzzy
 msgid "Sending Message"
-msgstr "Ukuthumela umyalezo"
+msgstr "Ukuthumela Umyalezo"
 
 #: ../camel/providers/imap/camel-imap-command.c:219
 #: ../camel/providers/imap/camel-imap-command.c:258
@@ -3000,13 +2975,11 @@ msgstr ""
 "Khangela kuphela imiya_lezo Engasebenziyo kwisiqulathi seefayili ekwiBHOKISI "
 "YENGENAYO"
 
-# is Ukusebenza_ngaxeshanye meant to be one word?
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
-#, fuzzy
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr ""
-"Ukusebenza_ngaxeshanye okuzenzekelayo kwe-imeyile yakude neyangaphakathi"
+"Ukusebenza _ngaxeshanye okuzenzekelayo kwe-imeyile yakude neyangaphakathi"
 
 #: ../camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -3240,66 +3213,71 @@ msgstr ""
 "Ayikwazi ukwenza ii-flags zisebenze ngaxeshanye kwesi siqulathi seefayili `%"
 "s': Umyalelo awulunganga"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:604
+#: ../camel/providers/imap4/camel-imap4-folder.c:603
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
 msgstr "Ayikwazi ukucima esi siqulathi seefayili `%s': Asaziwa"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:609
+#: ../camel/providers/imap4/camel-imap4-folder.c:608
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
 msgstr "Ayikwazi ukucima esi siqulathi seefayili `%s': Umyalelo awulunganga"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:865
+#: ../camel/providers/imap4/camel-imap4-folder.c:864
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr ""
 "Ayikwazi ukufumana lo myalezo %s uvela kwesi siqulathi seefayili`%s': Akukho "
 "myalezo unjalo"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:870
+#: ../camel/providers/imap4/camel-imap4-folder.c:869
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr ""
 "Ayikwazi ukufumana lo myalezo %s uvela kwesi siqulathi seefayili `%s': "
 "Umyalelo awulunganga"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1003
+#: ../camel/providers/imap4/camel-imap4-folder.c:913
+#, fuzzy, c-format
+msgid "Cannot append message to folder `%s': Folder is read-only"
+msgstr "Ayikwazi ukuhlomela umyalezo kwisiqulathi seefayili `%s': %s"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1009
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr ""
 "Ayikwazi ukuhlomela lo myalezo kwesi siqulathi seefayili `%s': Impazamo "
 "engaziwayo"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1032
+#: ../camel/providers/imap4/camel-imap4-folder.c:1038
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr ""
 "Ayikwazi ukuhlomela lo myalezo kwesi siqulathi seefayili `%s': Umyalelo "
 "awulunganga"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1144
+#: ../camel/providers/imap4/camel-imap4-folder.c:1150
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Ayikwazi ukushenxisa imiyalezo iyisuse kwesi siqulathi seefayili `%s' iyise "
 "kwesi siqulathi seefayili `%s': Ayaziwa"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1148
+#: ../camel/providers/imap4/camel-imap4-folder.c:1154
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Ayikwazi ukukopa imiyalezo iyisuse kwesi siqulathi seefayili `%s' iyise "
 "kwesi siqulathi seefayili `%s': Ayaziwa"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1156
+#: ../camel/providers/imap4/camel-imap4-folder.c:1162
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "Ayikwazi ukushenxisa imiyalezo iyisuse kwesi siqulathi seefayili `%s' iyise "
 "kwesi siqulathi seefayili `%s': Umyalelo awulunganga"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1160
+#: ../camel/providers/imap4/camel-imap4-folder.c:1166
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
@@ -3552,31 +3530,27 @@ msgstr ""
 msgid "Local delivery"
 msgstr "Ukuhambisa kwangaphakathi"
 
-# Evolution
 #: ../camel/providers/local/camel-local-provider.c:69
-#, fuzzy
 msgid ""
 "For retrieving (moving) local mail from standard mbox formated spools into "
 "folders managed by Evolution."
 msgstr ""
 "Ukufumana (ukushenxisa) i-imeyile yangaphakathi esuka kwiibhobhini zobume be-"
-"mbox eziqhelekileyo ukuya kwiziqulathi zeefayili ezilawulwa ngenkqubo "
-"yoPhuhliso."
+"mbox eziqhelekileyo ukuya kwiziqulathi zeefayili ezilawulwa ngenkqubo ye-"
+"Evolution."
 
 #: ../camel/providers/local/camel-local-provider.c:81
 #: ../camel/providers/local/camel-local-provider.c:100
 msgid "Apply filters to new messages in INBOX"
 msgstr "Sebenzisa izihluzi kwimiyalezo emitsha ekwiBHOKISI LENGENAYO"
 
-# "Maildir-format should remain verbatim in translation
 #: ../camel/providers/local/camel-local-provider.c:88
-#, fuzzy
 msgid "Maildir-format mail directories"
-msgstr "Oovimba beefayili ze-imeyile ezinobume be-Maildir"
+msgstr "Oovimba beefayili ze-Maildir-format"
 
 #: ../camel/providers/local/camel-local-provider.c:89
 msgid "For storing local mail in maildir directories."
-msgstr "Zokugcina i-imeyile yangaphakathi kuvimba weefayili okwi-Maildir."
+msgstr "Zokugcina i-imeyile yangaphakathi kuvimba weefayili okwi-maildir."
 
 #: ../camel/providers/local/camel-local-provider.c:101
 msgid "Store status headers in Elm/Pine/Mutt format"
@@ -4368,11 +4342,9 @@ msgstr ""
 msgid "No such folder `%s'."
 msgstr "Akukho siqulathi seefayili sinjalo `%s'."
 
-# Sendmail is the name of an application - should remain verbatim in translation
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:37
-#, fuzzy
 msgid "Sendmail"
-msgstr "Thumela i-imeyile"
+msgstr "I-Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:39
 msgid ""
@@ -4386,57 +4358,47 @@ msgstr ""
 msgid "Could not parse recipient list"
 msgstr "Ayikwazanga ukwahlula uluhlu lomamkeli ngezijungqu"
 
-# sendmail is the name of an application - should remain verbatim in translation
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:145
-#, fuzzy, c-format
+#, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
 msgstr ""
-"Ayikwazanga ukwenza umbhobho kwisithumeli-imeyile: %s: i-imeyile "
-"ayithunyelwanga"
+"Ayikwazanga ukwenza umbhobho kwi-sendmail: %s: i-imeyile ayithunyelwanga"
 
-# sendmail is the name of an application - should remain verbatim in translation
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:166
-#, fuzzy, c-format
+#, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr ""
-"Ayikwazanga ukwahlulahlula i-imeyile ethunyelwayo: %s: ayithunyelwanga le "
-"imeyile"
+msgstr "Ayikwazanga ukwahlula-hlula i-sendmail: %s: ayithunyelwanga le imeyile"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
 msgstr "Ayikwazanga ukuthumela umyalezo: %s"
 
-# sendmail is the name of an application - should remain verbatim in translation
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "sendmail exited with signal %s: mail not sent."
 msgstr ""
-"kuphunyiwe kwisithumeli-imeyile ngaphandle kokunika umqondiso %s: "
-"ayithunyelwanga i-imeyile."
+"iphumile kwi-sendmail ngaphandle kokunika umqondiso %s: ayithunyelwanga i-"
+"imeyile."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:241
 #, c-format
 msgid "Could not execute %s: mail not sent."
 msgstr "Ayikwazanga ukuphumeza %s: ayithunyelwanga i-imeyile."
 
-# sendmail is the name of an application - should remain verbatim in translation
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:246
-#, fuzzy, c-format
+#, c-format
 msgid "sendmail exited with status %d: mail not sent."
-msgstr "kuthunyelwe i-imeyile enobu bume %d: i-imeyile ayithunyelwanga."
+msgstr ""
+"iphumile kwi-sendmail ngaphandle enobume %d: i-imeyile ayithunyelwanga."
 
-# sendmail is the name of an application - should remain verbatim in translation
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:260
-#, fuzzy
 msgid "sendmail"
-msgstr "Thumela i-imeyile"
+msgstr "i-sendmail"
 
-# sendmail is the name of an application - should remain verbatim in translation
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:262
-#, fuzzy
 msgid "Mail delivery via the sendmail program"
-msgstr "Ukuhanjiswa kwe-imeyile kudlulwa kwinkqubo yokuthumela i-imeyile"
+msgstr "Ukuhanjiswa kwe-imeyile kudlulwa kwinkqubo ye-sendmail"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:38
 msgid "SMTP"
@@ -4622,17 +4584,14 @@ msgstr "Ayikwazi ukuthumela umyalezo: umamkeli omnye nangaphezulu"
 msgid "SMTP Greeting"
 msgstr "Isibuliso Se-SMTP"
 
-# HELO refers to the type of command, i.e. an adjective. Also needs to appear verbatim in translation
 #: ../camel/providers/smtp/camel-smtp-transport.c:923
-#, fuzzy, c-format
+#, c-format
 msgid "HELO command failed: %s"
-msgstr "Awuphumelelanga lo myalelo uthi, MOLO: %s"
+msgstr "Awuphumelelanga lo myalelo uthi, HELO: %s"
 
-# HELO refers to the type of command, i.e. an adjective. Also needs to appear verbatim in translation
 #: ../camel/providers/smtp/camel-smtp-transport.c:940
-#, fuzzy
 msgid "HELO command failed"
-msgstr "Awuphumelelanga lo myalelo uthi, MOLO"
+msgstr "Awuphumelelanga lo myalelo uthi, HELO"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1006
 msgid "SMTP Authentication"
@@ -4656,18 +4615,14 @@ msgstr "Umyalelo we-AUTH awuphumelelanga"
 msgid "Bad authentication response from server.\n"
 msgstr "Impendulo yobungqina obungalunganga ivela kwiseva.\n"
 
-# MAIL FROM must appear verbatim in translation
 #: ../camel/providers/smtp/camel-smtp-transport.c:1133
-#, fuzzy, c-format
+#, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
-msgstr ""
-"Umyalelo Othi I-IMEYILI EVELA awuphumelelanga: %s: i-imeyile ayithunyelwanga"
+msgstr "Umyalelo Othi MAIL FROM awuphumelelanga: %s: i-imeyile ayithunyelwanga"
 
-# MAIL FROM must appear verbatim in translation
 #: ../camel/providers/smtp/camel-smtp-transport.c:1150
-#, fuzzy
 msgid "MAIL FROM command failed"
-msgstr "Umyalelo Othi I-IMEYILI EVELA awuphumelelanga"
+msgstr "Umyalelo Othi MAIL FROM awuphumelelanga"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1174
 #, c-format
@@ -4703,17 +4658,14 @@ msgstr "Umyalelo we-RSET awuphumelelanga: %s"
 msgid "RSET command failed"
 msgstr "Umyalelo we-RSETi awuphumelelanga"
 
-# QUIT should appear verbatim in the translation
 #: ../camel/providers/smtp/camel-smtp-transport.c:1387
-#, fuzzy, c-format
+#, c-format
 msgid "QUIT command failed: %s"
-msgstr "Umyalelo othi PHUMA awuphumelelanga: %s"
+msgstr "Umyalelo othi QUIT awuphumelelanga: %s"
 
-# QUIT should appear verbatim in the translation
 #: ../camel/providers/smtp/camel-smtp-transport.c:1401
-#, fuzzy
 msgid "QUIT command failed"
-msgstr "Umyalelo othi PHUMA awuphumelelanga"
+msgstr "Umyalelo othi QUIT awuphumelelanga"
 
 #: ../libedataserver/e-categories.c:227
 msgid "Business"
@@ -4743,11 +4695,9 @@ msgstr "Iholide"
 msgid "Holiday Cards"
 msgstr "Iikhadi zeholide"
 
-# Capitalisation
 #: ../libedataserver/e-categories.c:234
-#, fuzzy
 msgid "Hot Contacts"
-msgstr "Oqhagamshelana rhoqo nabo"
+msgstr "Oqhagamshelana Nabo Rhoqo"
 
 #: ../libedataserver/e-categories.c:235
 msgid "Ideas"
@@ -4929,11 +4879,9 @@ msgstr ""
 msgid "Failed to authenticate.\n"
 msgstr "Ayiphumelelanga ukukhowuda i-data"
 
-# Capitalisation
 #: ../libedataserverui/e-categories-dialog.c:91
-#, fuzzy
 msgid "Category Icon"
-msgstr "Udidi lomfanekiso ongumqondiso"
+msgstr "Udidi Lomfanekiso Ongumqondiso"
 
 #: ../libedataserverui/e-categories-dialog.c:266
 #, c-format
@@ -4951,17 +4899,13 @@ msgstr "Udidi"
 msgid "Category Properties"
 msgstr "Iindidi Zophawu"
 
-# Capitalisation
 #: ../libedataserverui/e-categories-dialog.glade.h:2
-#, fuzzy
 msgid "Category _Color"
-msgstr "Udidi _lombala"
+msgstr "Udidi _Lombala"
 
-# Capitalisation
 #: ../libedataserverui/e-categories-dialog.glade.h:3
-#, fuzzy
 msgid "Category _Icon"
-msgstr "Udidi _lomfanekiso ongumqondiso"
+msgstr "Udidi _Lomfanekiso Ongumqondiso"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Name"
@@ -5060,11 +5004,9 @@ msgstr "Umda ongalunganga"
 msgid "Evolution Addressbook file backend"
 msgstr "Isiphumezi se-data yefayili yencwadi yedilesi yenkqubo yoPhuhliso"
 
-# Evolution
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
-#, fuzzy
 msgid "Evolution Calendar file and webcal backend"
-msgstr "Isiphumezi se-data yefayili yekhalenda ne-webca yoPhuhliso"
+msgstr "Isiphumezi se-data yefayili yekhalenda ne-webca ye-Evolution"
 
 #. dialog display isn't working out
 #: ../src/server.c:101
