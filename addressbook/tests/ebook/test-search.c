@@ -19,7 +19,7 @@ main (int argc, char **argv)
 		g_error ("Could not initialize Bonobo");
 
 	if (argc < 3) {
-		printf ("usage: test-search <uid> <query>\n");
+		printf ("usage: test-search <addressbook uri> <query>\n");
 		exit (0);
 	}
 
@@ -29,7 +29,7 @@ main (int argc, char **argv)
 		exit (0);
 	}
 
-	book = e_book_new_from_uri (argv[1], NULL);
+	book = e_book_new_system_addressbook (NULL);
 	if (!book) {
 		printf ("failed to create ebook\n");
 		exit(0);

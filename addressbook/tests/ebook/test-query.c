@@ -8,7 +8,7 @@
 
 static char* queries[] = {
 	"(exists \"full_name\")",
-	"(contains \"full_name\" \"hi\")"
+	"(contains \"full_name\" \"Miguel\")"
 
 	/* XXX come on, add more here */
 };
