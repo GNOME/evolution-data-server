@@ -89,14 +89,10 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		g_object_unref (item);
 		if (E_IS_CAL_COMPONENT (comp)) {
 			e_cal_component_commit_sequence (comp);
-			if (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) ==
-			    icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
-				e_cal_component_get_uid (comp, &uid);
-				rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
-				e_cal_backend_cache_put_component (priv->cache, comp);
-				g_free (rid);
-			}
-
+			e_cal_component_get_uid (comp, &uid);
+			rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
+			e_cal_backend_cache_put_component (priv->cache, comp);
+			g_free (rid);
 			g_object_unref (comp);
 		}
         }
@@ -503,10 +499,15 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 	comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
 	if (comp) {
 		g_mutex_unlock (priv->mutex);
-		*object = e_cal_component_get_as_string (comp);
+		if (e_cal_backend_get_kind (E_CAL_BACKEND (backend)) ==
+		    icalcomponent_isa (e_cal_component_get_icalcomponent (comp)))
+			*object = e_cal_component_get_as_string (comp);
+		else
+			*object = NULL;
+
 		g_object_unref (comp);
 
-		return GNOME_Evolution_Calendar_Success;
+		return *object ? GNOME_Evolution_Calendar_Success : GNOME_Evolution_Calendar_ObjectNotFound;
 	}
 
 	g_mutex_unlock (priv->mutex);
@@ -590,9 +591,12 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
         for (l = components; l != NULL; l = l->next) {
                 ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
-		if ((!search_needed) ||
-		    (e_cal_backend_sexp_match_comp (cbsexp, comp, E_CAL_BACKEND (backend)))) {
-			*objects = g_list_append (*objects, e_cal_component_get_as_string (comp));
+		if (e_cal_backend_get_kind (E_CAL_BACKEND (backend)) ==
+		    icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
+			if ((!search_needed) ||
+			    (e_cal_backend_sexp_match_comp (cbsexp, comp, E_CAL_BACKEND (backend)))) {
+				*objects = g_list_append (*objects, e_cal_component_get_as_string (comp));
+			}
 		}
         }
 
@@ -805,6 +809,11 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
+
+	if (e_cal_backend_get_kind (E_CAL_BACKEND (backend)) != icalcomponent_isa (icalcomp)) {
+		icalcomponent_free (icalcomp);
+		return GNOME_Evolution_Calendar_InvalidObject;
+	}
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);

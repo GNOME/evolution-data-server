@@ -1,5 +1,16 @@
 2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c (populate_cache):
+	add all retrieved items to the cache, since calendar and tasks
+	both use the same cache file.
+	(e_cal_backend_groupwise_get_object,
+	e_cal_backend_groupwise_get_object_list): only return items of the
+	same kind as the backend.
+	(e_cal_backend_groupwise_create_object): only allow storing of
+	items of the same kind as the backend.
+
+2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-item.c (e_gw_item_append_to_soap_message):
 	fixed argument ordering in call to e_gw_message_write_string_parameter.
 
