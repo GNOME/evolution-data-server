@@ -1,3 +1,9 @@
+2005-01-31  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-folder.c
+	  (groupwise_folder_get_message): fixed a crash
+	  while getting message
+
 2005-01-31  Hans Petter Jansson  <hpj@novell.com>
 
 	* camel-mime-utils.c (camel_mime_special_table): Remove this, it's
@@ -50,7 +56,7 @@
 	(groupwise_refresh_info):
 	(gw_update_summary): using getquickmessages instead of get items
 
-	*providers/groupwise/camel-groupwise-store.c
+	* providers/groupwise/camel-groupwise-store.c
 	(groupwise_get_folder): using get quick messages instead of get
 	items
 
