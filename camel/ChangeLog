@@ -1,3 +1,13 @@
+2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-folder.c
+	  (groupwise_sync): to sync back flags to the server. currently
+	  can sync only read messages.
+	  (groupwise_append_message): set source based on folder 
+	* providers/groupwise/camel-groupwise-utils.[ch]
+	  (do_flags_diff): finds the difference between flags. Based on the
+	  imap4 code by fejj
+
 2005-01-11  JP Rosevear  <jpr@novell.com>
 
 	* providers/groupwise/camel-groupwise-transport.h: remove defines

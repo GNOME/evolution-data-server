@@ -397,7 +397,47 @@ groupwise_folder_search_free (CamelFolder *folder, GPtrArray *uids)
 static void
 groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
+	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store) ;
+	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
+	CamelMessageInfo *info ;
+	CamelGroupwiseMessageInfo *gw_info ;
+	GList *items ;
+	flags_diff_t diff ;
+	EGwConnection *cnc  = cnc_lookup (priv) ;
+	int count, i ;
+
+	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) 
+		return ;
+	
+	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
+
+	count = camel_folder_summary_count (folder->summary) ;
+	for (i=0 ; i <count ; i++) {
+		info = camel_folder_summary_index (folder->summary, i) ;
+		gw_info = (CamelGroupwiseMessageInfo *) info ;
+
+		if (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) {
+			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags) ;
+			diff.changed &= folder->permanent_flags;
+
+			/* weed out flag changes that we can't sync to the server */
+			if (!diff.changed)
+				camel_message_info_free(info);
+			else {
+				if (diff.changed & CAMEL_MESSAGE_SEEN)
+					items = g_list_append (items, (char *)camel_message_info_uid(info));
+			}
+		}
+		
+	}
+
+	e_gw_connection_mark_unread (cnc, items) ;
+	
 	camel_folder_summary_save (folder->summary);
+
+done:
+	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+
 }
 
 
@@ -628,7 +668,18 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC)));
 
 	item = camel_groupwise_util_item_from_message (message, CAMEL_ADDRESS (message->from), recipients);
+	/*Set the source*/
+	if (!strcmp (folder->name, RECEIVED))
+			e_gw_item_set_source (item, "received") ;
+	if (!strcmp (folder->name, SENT))
+			e_gw_item_set_source (item, "sent") ;
+	if (!strcmp (folder->name, DRAFT))
+			e_gw_item_set_source (item, "draft") ;
+	if (!strcmp (folder->name, PERSONAL))
+			e_gw_item_set_source (item, "personal") ;
+	/*set container id*/
 	e_gw_item_set_container_id (item, container_id) ;
+
 	status = e_gw_connection_create_item (cnc, item, &id);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create message: %s"),

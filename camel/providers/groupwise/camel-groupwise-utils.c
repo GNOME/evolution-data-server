@@ -440,3 +440,11 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 
 	return item;
 }
+
+void
+do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new)
+{
+	diff->changed = old ^ _new;
+	diff->bits = _new & diff->changed;
+}
+

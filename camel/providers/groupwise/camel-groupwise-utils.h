@@ -41,6 +41,18 @@
 #define X_RETURN_NOTIFY_OPEN    "X-return-notify-open"
 #define X_RETURN_NOTIFY_DECLINE "X-return-notify-decline"
 
+/* Folder types for source */
+#define RECEIVED  "Mailbox"
+#define SENT	  "Sent Items"
+#define DRAFT	  ""
+#define PERSONAL  "Cabinet"
+
+/*for syncing flags back to server*/
+typedef struct {
+	guint32 changed;
+	guint32 bits;
+} flags_diff_t;
+
 
 /* FIXME: deprecated
    This is used exclusively for the legacy imap cache code.  DO NOT use this in any new code */
@@ -59,5 +71,5 @@ int      e_path_rmdir        (const char *prefix, const char *vpath);
 
 
 EGwItem *camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients);
-
+void do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new) ;
 #endif
