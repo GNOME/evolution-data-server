@@ -9,5 +9,6 @@ Makefile.in
 *.bbg
 *.da
 *.gcov
-camel-lock-helper
-camel-index-control
+camel-lock-helper*
+camel-index-control*
+camel*.pc
