@@ -54,6 +54,13 @@ e-book-marshal
 </para>
 
 
+<!-- ##### FUNCTION e_book_async_unload_uri ##### -->
+<para>
+
+</para>
+
+@book: 
+
 <!-- ##### MACRO e_book_marshal_NONE__BOOL ##### -->
 <para>
 
@@ -113,4 +120,13 @@ e-book-marshal
 
 </para>
 
+
+<!-- ##### FUNCTION e_book_unload_uri ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
 

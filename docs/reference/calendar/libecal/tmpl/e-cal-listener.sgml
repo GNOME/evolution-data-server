@@ -25,26 +25,6 @@ Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 @data: 
 
 
-<!-- ##### USER_FUNCTION ECalListenerErrorOccurredFn ##### -->
-<para>
-
-</para>
-
-@listener: 
-@message: 
-@data: 
-
-
-<!-- ##### USER_FUNCTION ECalListenerCategoriesChangedFn ##### -->
-<para>
-
-</para>
-
-@listener: 
-@categories: 
-@data: 
-
-
 <!-- ##### FUNCTION e_cal_listener_construct ##### -->
 <para>
 
@@ -52,10 +32,11 @@ Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 
 @listener: 
 @cal_set_mode_fn: 
-@error_occurred_fn: 
-@categories_changed_fn: 
 @fn_data: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@error_occurred_fn: 
+@categories_changed_fn: 
 
 
 <!-- ##### FUNCTION e_cal_listener_new ##### -->
@@ -64,10 +45,11 @@ Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 </para>
 
 @cal_set_mode_fn: 
-@error_occurred_fn: 
-@categories_changed_fn: 
 @fn_data: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@error_occurred_fn: 
+@categories_changed_fn: 
 
 
 <!-- ##### FUNCTION e_cal_listener_stop_notification ##### -->

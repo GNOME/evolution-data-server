@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-04 21:32+0200\n"
+"POT-Creation-Date: 2004-02-09 14:14-0500\n"
 "PO-Revision-Date: 2004-02-04 21:18+0200\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <laatu@gnome-fi.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:385
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -21,41 +21,40 @@ msgid "Loading..."
 msgstr "Ladataan..."
 
 #: addressbook/backends/file/e-book-backend-file.c:387
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2861
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "Etsitään..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:613
+#: addressbook/backends/ldap/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "Käytetään yksilöllöistä nimeä (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:616
+#: addressbook/backends/ldap/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "Käytetään sähköpostiosoitetta"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:760
+#: addressbook/backends/ldap/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "Odotetaan uudelleen yhteyttä LDAP-palvelimeen..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1261
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
 msgid "Adding contact to LDAP server..."
 msgstr "Lisätään yhteystieto LDAP-palvelimelle..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1350
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
 msgid "Removing contact from LDAP server..."
 msgstr "Poistetaan yhteystieto LDAP-palvelimelta..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1550
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1553
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
 msgid "Modifying contact from LDAP server..."
 msgstr "Muokataan yhteystietoa LDAP-palvelimella..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2784
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
 msgid "Receiving LDAP search results..."
 msgstr "Vastaanotetaan LDAP-haun tuloksia..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2881
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
 msgid "Error performing search"
 msgstr "Virhe suoritettaessa hakua"
 
@@ -69,7 +68,7 @@ msgstr "Virhe suoritettaessa hakua"
 #: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
 #: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
 #: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
-#: addressbook/libebook/e-book.c:2040
+#: addressbook/libebook/e-book.c:2042
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" on kirjassa ennen kuin \"%s\""
@@ -89,7 +88,7 @@ msgstr "kirja käytössä"
 #: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
 #: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
 #: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
-#: addressbook/libebook/e-book.c:2049
+#: addressbook/libebook/e-book.c:2051
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-poikkeus kutsun \"%s\" aikana"
@@ -102,33 +101,33 @@ msgstr "e_book_cancel: peruutettavaa toimintoa ei ole"
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: ei voitu keskeyttää"
 
-#: addressbook/libebook/e-book.c:1741
+#: addressbook/libebook/e-book.c:1743
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: virheellinen lähde."
 
-#: addressbook/libebook/e-book.c:1750 addressbook/libebook/e-book.c:1868
+#: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: urille '%s' ei ole käytettävissä tehtaita"
 
-#: addressbook/libebook/e-book.c:1763
+#: addressbook/libebook/e-book.c:1765
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListeneriä ei voitu luoda"
 
-#: addressbook/libebook/e-book.c:1862
+#: addressbook/libebook/e-book.c:1864
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: keskeytetty"
 
-#: addressbook/libebook/e-book.c:1899
+#: addressbook/libebook/e-book.c:1901
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" on kirjassa \"%s\" jälkeen"
 
-#: addressbook/libebook/e-book.c:2135
+#: addressbook/libebook/e-book.c:2137
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: gconf ei sisältänyt oman kontaktin uidia"
 
-#: addressbook/libebook/e-book.c:2312
+#: addressbook/libebook/e-book.c:2314
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -730,75 +729,75 @@ msgstr "Määrittelemätön"
 msgid "Enter password for %s (user %s)"
 msgstr "Syötä salasana tilille %s (käytäjä %s)"
 
-#: calendar/libecal/e-cal.c:3920
+#: calendar/libecal/e-cal.c:3922
 msgid "Invalid argument"
 msgstr "Virheellinen argumentti"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3924
 msgid "Backend is busy"
 msgstr "Taustajärjestelmä on käytössä"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3926
 msgid "Repository is offline"
 msgstr "Varasto on yhteydettömässä tilassa"
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3928
 msgid "No such calendar"
 msgstr "Kalenteria ei ole olemassa"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3930
 msgid "Object not found"
 msgstr "Kohdetta ei löydy"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3932
 msgid "Invalid object"
 msgstr "Virheellinen kohde"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3934
 msgid "URI not loaded"
 msgstr "URIa ei ole ladattu"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3936
 msgid "URI already loaded"
 msgstr "URI on jo ladattu"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3938
 msgid "Permission denied"
 msgstr "Lupa evätty"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3940
 msgid "Object ID already exists"
 msgstr "OID on jo olemassa"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3942
 msgid "Protocol not supported"
 msgstr "Protokolla ei ole tuettu"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3944
 msgid "Operation has been cancelled"
 msgstr "Toimenpide on peruttu"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3946
 msgid "Could not cancel operation"
 msgstr "Toimenpidettä ei voitu perua"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3948
 msgid "Authentication failed"
 msgstr "Todennus epäonnistui"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3950
 msgid "Authentication required"
 msgstr "Todennus vaaditaan"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3952
 msgid "A CORBA exception has occurred"
 msgstr "Tapahtui CORBA-poikkeus"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3954
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3956
 msgid "No error"
 msgstr "Ei virhettä"
 
@@ -886,6 +885,41 @@ msgstr ""
 "\"%s\" olettaa kaikkien argumenttien olevan merkkijonoja, tai yhden ja "
 "ainoastaan yhden olevan tottuusarvosen epätoden (#f)"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Evolution osoitekirjan tiedosto- ja LDAP-taustajärjestelmä"

@@ -133,14 +133,6 @@ Handles asynchronous interactions with the EBook.
 @closure: 
 
 
-<!-- ##### FUNCTION e_book_async_unload_uri ##### -->
-<para>
-
-</para>
-
-@book: 
-
-
 <!-- ##### FUNCTION e_book_async_get_supported_fields ##### -->
 <para>
 

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0\n"
-"POT-Creation-Date: 2004-02-08 00:08+0100\n"
+"POT-Creation-Date: 2004-02-09 14:14-0500\n"
 "PO-Revision-Date: 2004-02-08 00:08+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -57,9 +57,9 @@ msgid "Error performing search"
 msgstr "Greška kod izvršavanja pretrage"
 
 #. translators: the placeholders will be filled by
-#.  * function names, e.g.
-#.  * "e_book_add_contact" on book before
-#.  * "e_book_load_uri
+#. * function names, e.g.
+#. * "e_book_add_contact" on book before
+#. * "e_book_load_uri
 #: addressbook/libebook/e-book.c:216 addressbook/libebook/e-book.c:328
 #: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:515
 #: addressbook/libebook/e-book.c:628 addressbook/libebook/e-book.c:712
@@ -104,6 +104,7 @@ msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Neispravni izvor."
 
 #: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
+#, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: nema tvornica dostupnih za uri `%s'"
 
@@ -116,6 +117,7 @@ msgid "e_book_load_uri: cancelled"
 msgstr ""
 
 #: addressbook/libebook/e-book.c:1901
+#, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr ""
 
@@ -125,7 +127,8 @@ msgstr "e_book_get_self: ne postoji kontaktni uid spremljen u gconf"
 
 #: addressbook/libebook/e-book.c:2314
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:97
@@ -137,9 +140,9 @@ msgid "File As"
 msgstr "Datoteka kao"
 
 #. Name fields
-#.  FN isn't really a structured field - we use a getter/setter
-#.  so we can set the N property (since evo 1.4 works fine with
-#.  vcards that don't even have a N attribute.  *sigh*)
+#. FN isn't really a structured field - we use a getter/setter
+#. so we can set the N property (since evo 1.4 works fine with
+#. vcards that don't even have a N attribute.  *sigh*)
 #: addressbook/libebook/e-contact.c:104
 msgid "Full Name"
 msgstr "Puno ime"
@@ -720,6 +723,7 @@ msgstr "Neodređeno"
 
 #. actually ask the client for authentication
 #: calendar/libecal/e-cal.c:1459
+#, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Unesite lozinku za %s (korisnik %s)"
 
@@ -799,6 +803,7 @@ msgstr "Nema greške"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:503
 #: calendar/libedata-cal/e-cal-backend-sexp.c:635
 #: calendar/libedata-cal/e-cal-backend-sexp.c:662
+#, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" ne očekuje argumente"
 
@@ -807,22 +812,26 @@ msgstr "\"%s\" ne očekuje argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
 #: calendar/libedata-cal/e-cal-backend-sexp.c:232
 #: calendar/libedata-cal/e-cal-backend-sexp.c:700
+#, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" očekuje jedan argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
 #: calendar/libedata-cal/e-cal-backend-sexp.c:238
 #: calendar/libedata-cal/e-cal-backend-sexp.c:449
+#, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" očekuje da prvi argument bude znakovni niz"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "\"%s\" očekuje da prvi argument bude ISO 8601 vrijeme/datum niz"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:282
 #: calendar/libedata-cal/e-cal-backend-sexp.c:443
+#, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" očekuje dva argumenta"
 
@@ -831,42 +840,88 @@ msgstr "\"%s\" očekuje dva argumenta"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
 #: calendar/libedata-cal/e-cal-backend-sexp.c:288
 #: calendar/libedata-cal/e-cal-backend-sexp.c:706
+#, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" očekuje da prvi argument bude time_t"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" očekuje da drugi argument bude cijeli broj"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:296
+#, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" očekuje da drugi argument bude time_t"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:457
+#, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" očekuje da drugi argument bude znakovni niz"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:475
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\""
 msgstr ""
-"\"%s\" očekuje da prvi argument bude  \"any\", \"summary\", ili"
-"\"description\""
+"\"%s\" očekuje da prvi argument bude  \"any\", \"summary\", ili\"description"
+"\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:537
+#, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" očekuje barem jedan argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:551
+#, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr "\"%s\" očekuje da svi argumenti budu znakovni nizovi, a da samo jedan argument  bude booleovo netočno (#f)"
+msgstr ""
+"\"%s\" očekuje da svi argumenti budu znakovni nizovi, a da samo jedan "
+"argument  bude booleovo netočno (#f)"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Pozadinski program za Evolution datoteku adresara i LDAP pozadinski poslužitelj"
+msgstr ""
+"Pozadinski program za Evolution datoteku adresara i LDAP pozadinski "
+"poslužitelj"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
@@ -876,4 +931,3 @@ msgstr "Evolution datoteka kalendara i webcal pozadina"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Pozadinski program za Evolution datoteku adresara"
-

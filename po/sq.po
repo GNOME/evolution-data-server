@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.sq\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-05 11:31+0100\n"
+"POT-Creation-Date: 2004-02-09 14:14-0500\n"
 "PO-Revision-Date: 2004-02-05 11:35+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.3\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:385
@@ -21,41 +21,40 @@ msgid "Loading..."
 msgstr "Duke ngarkuar..."
 
 #: addressbook/backends/file/e-book-backend-file.c:387
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2861
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "Duke kërkuar..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:613
+#: addressbook/backends/ldap/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "Duke përdorur emër të dallueshëm (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:616
+#: addressbook/backends/ldap/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "Duke përdorur adresën email"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:760
+#: addressbook/backends/ldap/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "Duke u rilidhur me server-in LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1261
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
 msgid "Adding contact to LDAP server..."
 msgstr "Duke shtuar kontaktin tek serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1350
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
 msgid "Removing contact from LDAP server..."
 msgstr "Duke fshirë kontaktin nga serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1550
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1553
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
 msgid "Modifying contact from LDAP server..."
 msgstr "Duke ndryshuar kontaktin nga serveri LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2784
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
 msgid "Receiving LDAP search results..."
 msgstr "Duke marrë rezultatet e kërkimit të LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2881
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
 msgid "Error performing search"
 msgstr "Gabim gjatë plotësimit të kërkimit"
 
@@ -69,7 +68,7 @@ msgstr "Gabim gjatë plotësimit të kërkimit"
 #: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
 #: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
 #: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
-#: addressbook/libebook/e-book.c:2040
+#: addressbook/libebook/e-book.c:2042
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" në rubrikë para \"%s\""
@@ -89,7 +88,7 @@ msgstr "rubrika jo në dispozicion për momentin"
 #: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
 #: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
 #: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
-#: addressbook/libebook/e-book.c:2049
+#: addressbook/libebook/e-book.c:2051
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Përjashtim Corba gjatë thirrjes \"%s\""
@@ -102,36 +101,39 @@ msgstr "e_book_cancel: aktualisht nuk ka asnjë operacion"
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: i pamundur anullimi"
 
-#: addressbook/libebook/e-book.c:1741
+#: addressbook/libebook/e-book.c:1743
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Burim i pavlefshëm."
 
-#: addressbook/libebook/e-book.c:1750 addressbook/libebook/e-book.c:1868
+#: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: asnjë factori në dispozicion për `%s'"
 
-#: addressbook/libebook/e-book.c:1763
+#: addressbook/libebook/e-book.c:1765
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: I pamundur krijimi i EBookListener"
 
-#: addressbook/libebook/e-book.c:1862
+#: addressbook/libebook/e-book.c:1864
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: u anullua"
 
-#: addressbook/libebook/e-book.c:1899
+#: addressbook/libebook/e-book.c:1901
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" në rubrikë mbas \"%s\""
 
-#: addressbook/libebook/e-book.c:2135
+#: addressbook/libebook/e-book.c:2137
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr "e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
+msgstr ""
+"e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
 
-#: addressbook/libebook/e-book.c:2312
+#: addressbook/libebook/e-book.c:2314
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr ""
+"e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
 
 #: addressbook/libebook/e-contact.c:97
 msgid "Unique ID"
@@ -828,7 +830,8 @@ msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:89
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
+msgstr ""
+"\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:282
@@ -884,6 +887,41 @@ msgstr ""
 "\"%s\" parashikon që të gjithë argumentet të jenë stringa ose njëri dhe "
 "vetëm një të jetë fallso booleane (#f)"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Backend i file rubrika dhe LDAP të Evolution"
@@ -896,4 +934,3 @@ msgstr "Backend i file kalendar dhe webcal të Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend i file rubrika i Evolution"
-

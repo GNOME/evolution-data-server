@@ -219,6 +219,24 @@
 @arg1: 
 @arg2: 
 
+<!-- ##### USER_FUNCTION ECalListenerCategoriesChangedFn ##### -->
+<para>
+
+</para>
+
+@listener: 
+@categories: 
+@data: 
+
+<!-- ##### USER_FUNCTION ECalListenerErrorOccurredFn ##### -->
+<para>
+
+</para>
+
+@listener: 
+@message: 
+@data: 
+
 <!-- ##### ENUM ECalOpenStatus ##### -->
 <para>
 
@@ -390,6 +408,15 @@
 </para>
 
 @klass: 
+
+<!-- ##### FUNCTION e_cal_remove_calendar ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@error: 
+@Returns: 
 
 <!-- ##### FUNCTION e_cal_view_get_client ##### -->
 <para>

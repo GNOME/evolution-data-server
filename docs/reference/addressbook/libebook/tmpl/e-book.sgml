@@ -68,16 +68,6 @@ The backend for this address book has died.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_unload_uri ##### -->
-<para>
-
-</para>
-
-@book: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_remove ##### -->
 <para>
 

@@ -115,6 +115,11 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
+<!-- ##### ARG EContact:category-list ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:company-phone ##### -->
 <para>
 
@@ -563,13 +568,6 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_VIDEO_URL: 
 @E_CONTACT_SPOUSE: 
 @E_CONTACT_NOTE: 
-@E_CONTACT_IS_LIST: 
-@E_CONTACT_LIST_SHOW_ADDRESSES: 
-@E_CONTACT_IM_AIM: 
-@E_CONTACT_IM_JABBER: 
-@E_CONTACT_IM_YAHOO: 
-@E_CONTACT_IM_MSN: 
-@E_CONTACT_IM_ICQ: 
 @E_CONTACT_IM_AIM_HOME_1: 
 @E_CONTACT_IM_AIM_HOME_2: 
 @E_CONTACT_IM_AIM_HOME_3: 
@@ -600,6 +598,7 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_IM_ICQ_WORK_1: 
 @E_CONTACT_IM_ICQ_WORK_2: 
 @E_CONTACT_IM_ICQ_WORK_3: 
+@E_CONTACT_NAME_OR_ORG: 
 @E_CONTACT_ADDRESS: 
 @E_CONTACT_ADDRESS_HOME: 
 @E_CONTACT_ADDRESS_WORK: 
@@ -609,11 +608,17 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_LOGO: 
 @E_CONTACT_NAME: 
 @E_CONTACT_EMAIL: 
+@E_CONTACT_IM_AIM: 
+@E_CONTACT_IM_JABBER: 
+@E_CONTACT_IM_YAHOO: 
+@E_CONTACT_IM_MSN: 
+@E_CONTACT_IM_ICQ: 
 @E_CONTACT_WANTS_HTML: 
+@E_CONTACT_IS_LIST: 
+@E_CONTACT_LIST_SHOW_ADDRESSES: 
 @E_CONTACT_BIRTH_DATE: 
 @E_CONTACT_ANNIVERSARY: 
 @E_CONTACT_X509_CERT: 
-@E_CONTACT_NAME_OR_ORG: 
 @E_CONTACT_FIELD_LAST: 
 @E_CONTACT_LAST_SIMPLE_STRING: 
 @E_CONTACT_FIRST_PHONE_ID: 

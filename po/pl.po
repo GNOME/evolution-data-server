@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-05 15:45+0100\n"
+"POT-Creation-Date: 2004-02-09 14:14-0500\n"
 "PO-Revision-Date: 2002-09-24 01:06+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:385
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -24,41 +24,40 @@ msgid "Loading..."
 msgstr "Wczytywanie..."
 
 #: addressbook/backends/file/e-book-backend-file.c:387
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2861
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "Wyszukiwanie..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:613
+#: addressbook/backends/ldap/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "Użycie wyróżnionej nazwy (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:616
+#: addressbook/backends/ldap/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "Użycie adresu e-mail"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:760
+#: addressbook/backends/ldap/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "Ponowne nawiązywanie połączenia z serwerem LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1261
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
 msgid "Adding contact to LDAP server..."
 msgstr "Dodawanie kontaktu na serwerze LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1350
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
 msgid "Removing contact from LDAP server..."
 msgstr "Usuwanie kontaktu na serwerze LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1550
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1553
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
 msgid "Modifying contact from LDAP server..."
 msgstr "Modyfikowanie kontaktu na serwerze LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2784
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
 msgid "Receiving LDAP search results..."
 msgstr "Pobieranie wyników wyszukiwania na LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2881
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
 msgid "Error performing search"
 msgstr "Błąd przy wykonywaniu wyszukiwania"
 
@@ -73,7 +72,7 @@ msgstr "Błąd przy wykonywaniu wyszukiwania"
 #: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
 #: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
 #: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
-#: addressbook/libebook/e-book.c:2040
+#: addressbook/libebook/e-book.c:2042
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "Wykonanie \"%s\" na książce przed \"%s\""
@@ -93,7 +92,7 @@ msgstr "książka zajęta"
 #: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
 #: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
 #: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
-#: addressbook/libebook/e-book.c:2049
+#: addressbook/libebook/e-book.c:2051
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Wyjątek CORBA podczas wywołania \"%s\""
@@ -107,34 +106,34 @@ msgstr "e_book_cancel: brak bieżącej operacji"
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: nie można przerwać"
 
-#: addressbook/libebook/e-book.c:1741
+#: addressbook/libebook/e-book.c:1743
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Niepoprawne źródło."
 
-#: addressbook/libebook/e-book.c:1750 addressbook/libebook/e-book.c:1868
+#: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: brak dostępnych generatorów dla adresu URI \"%s\""
 
-#: addressbook/libebook/e-book.c:1763
+#: addressbook/libebook/e-book.c:1765
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Nie można utworzyć obiektu EBookListener"
 
-#: addressbook/libebook/e-book.c:1862
+#: addressbook/libebook/e-book.c:1864
 msgid "e_book_load_uri: cancelled"
 msgstr "e_book_load_uri: przerwane"
 
 # FIXME - nie wiem czy tak może być, ale nic innego mi nie przychodzi do głowy
-#: addressbook/libebook/e-book.c:1899
+#: addressbook/libebook/e-book.c:1901
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "Wykonanie \"%s\" na książce po \"%s\""
 
-#: addressbook/libebook/e-book.c:2135
+#: addressbook/libebook/e-book.c:2137
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: brak własnego UID kontaktu przechowywanego w gconf"
 
-#: addressbook/libebook/e-book.c:2312
+#: addressbook/libebook/e-book.c:2314
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -898,6 +897,41 @@ msgstr ""
 "\"%s\" wymaga, aby wszystkie argumenty były napisami, lub aby podany był "
 "dokładnie jeden argument, będący fałszem logicznym (#f)"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Wsparcie LDAP i plikowe książki adresowej Evolution"

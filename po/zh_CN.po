@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"POT-Creation-Date: 2004-01-29 16:26-0500\n"
+"POT-Creation-Date: 2004-02-09 14:14-0500\n"
 "PO-Revision-Date: 2003-09-07 11:09+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -17,50 +17,49 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Report-Msgid-Bugs-To: \n"
 
-#: addressbook/backends/file/e-book-backend-file.c:392
+#: addressbook/backends/file/e-book-backend-file.c:385
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
 msgid "Loading..."
 msgstr "装入..."
 
-#: addressbook/backends/file/e-book-backend-file.c:394
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2860
+#: addressbook/backends/file/e-book-backend-file.c:387
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2847
 #: addressbook/backends/vcf/e-book-backend-vcf.c:103
 msgid "Searching..."
 msgstr "搜索..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:613
+#: addressbook/backends/ldap/e-book-backend-ldap.c:601
 msgid "Using Distinguished Name (DN)"
 msgstr "使用已识别的姓名 (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:616
+#: addressbook/backends/ldap/e-book-backend-ldap.c:604
 msgid "Using Email Address"
 msgstr "使用电子邮件地址"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:760
+#: addressbook/backends/ldap/e-book-backend-ldap.c:748
 msgid "Reconnecting to LDAP server..."
 msgstr "正在重新连接 LDAP 服务器..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1261
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1249
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "正在将卡片添加到 LDAP 服务器..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1350
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1338
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "正在从 LDAP 服务器删除卡片..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1550
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1553
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1539
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "正在修改 LDAP 服务器上的卡片..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2783
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2770
 msgid "Receiving LDAP search results..."
 msgstr "正在接收 LDAP 的搜索结果..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2880
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2867
 msgid "Error performing search"
 msgstr "执行搜索错误"
 
@@ -68,68 +67,73 @@ msgstr "执行搜索错误"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_load_uri
-#: addressbook/libebook/e-book.c:217 addressbook/libebook/e-book.c:329
-#: addressbook/libebook/e-book.c:414 addressbook/libebook/e-book.c:516
-#: addressbook/libebook/e-book.c:629 addressbook/libebook/e-book.c:713
-#: addressbook/libebook/e-book.c:816 addressbook/libebook/e-book.c:870
-#: addressbook/libebook/e-book.c:969 addressbook/libebook/e-book.c:1103
-#: addressbook/libebook/e-book.c:1203 addressbook/libebook/e-book.c:1443
-#: addressbook/libebook/e-book.c:2020
+#: addressbook/libebook/e-book.c:216 addressbook/libebook/e-book.c:328
+#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:515
+#: addressbook/libebook/e-book.c:628 addressbook/libebook/e-book.c:712
+#: addressbook/libebook/e-book.c:815 addressbook/libebook/e-book.c:869
+#: addressbook/libebook/e-book.c:968 addressbook/libebook/e-book.c:1102
+#: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1442
+#: addressbook/libebook/e-book.c:2042
 #, fuzzy, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "“%2$s”中的“%1$s”"
 
-#: addressbook/libebook/e-book.c:225 addressbook/libebook/e-book.c:337
-#: addressbook/libebook/e-book.c:422 addressbook/libebook/e-book.c:525
-#: addressbook/libebook/e-book.c:637 addressbook/libebook/e-book.c:721
-#: addressbook/libebook/e-book.c:824 addressbook/libebook/e-book.c:878
-#: addressbook/libebook/e-book.c:977 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1211 addressbook/libebook/e-book.c:1451
+#: addressbook/libebook/e-book.c:224 addressbook/libebook/e-book.c:336
+#: addressbook/libebook/e-book.c:421 addressbook/libebook/e-book.c:524
+#: addressbook/libebook/e-book.c:636 addressbook/libebook/e-book.c:720
+#: addressbook/libebook/e-book.c:823 addressbook/libebook/e-book.c:877
+#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1110
+#: addressbook/libebook/e-book.c:1210 addressbook/libebook/e-book.c:1450
 msgid "book busy"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:252 addressbook/libebook/e-book.c:364
-#: addressbook/libebook/e-book.c:444 addressbook/libebook/e-book.c:548
-#: addressbook/libebook/e-book.c:663 addressbook/libebook/e-book.c:744
-#: addressbook/libebook/e-book.c:910 addressbook/libebook/e-book.c:1021
-#: addressbook/libebook/e-book.c:1139 addressbook/libebook/e-book.c:1235
-#: addressbook/libebook/e-book.c:1369 addressbook/libebook/e-book.c:1473
-#: addressbook/libebook/e-book.c:2029
+#: addressbook/libebook/e-book.c:251 addressbook/libebook/e-book.c:363
+#: addressbook/libebook/e-book.c:443 addressbook/libebook/e-book.c:547
+#: addressbook/libebook/e-book.c:662 addressbook/libebook/e-book.c:743
+#: addressbook/libebook/e-book.c:909 addressbook/libebook/e-book.c:1020
+#: addressbook/libebook/e-book.c:1138 addressbook/libebook/e-book.c:1234
+#: addressbook/libebook/e-book.c:1368 addressbook/libebook/e-book.c:1472
+#: addressbook/libebook/e-book.c:2051
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1350
+#: addressbook/libebook/e-book.c:1349
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "取消当前邮件操作"
 
-#: addressbook/libebook/e-book.c:1385
+#: addressbook/libebook/e-book.c:1384
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1739
+#: addressbook/libebook/e-book.c:1743
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1747 addressbook/libebook/e-book.c:1860
+#: addressbook/libebook/e-book.c:1752 addressbook/libebook/e-book.c:1870
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1761
+#: addressbook/libebook/e-book.c:1765
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1854
+#: addressbook/libebook/e-book.c:1864
 msgid "e_book_load_uri: cancelled"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2115
+#: addressbook/libebook/e-book.c:1901
+#, fuzzy, c-format
+msgid "\"%s\" on book after \"%s\""
+msgstr "“%2$s”中的“%1$s”"
+
+#: addressbook/libebook/e-book.c:2137
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2292
+#: addressbook/libebook/e-book.c:2314
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -567,36 +571,41 @@ msgstr "列表"
 msgid "List Show Addresses"
 msgstr "列表显示地址"
 
-#: addressbook/libebook/e-contact.c:1174
+#: addressbook/libebook/e-contact.c:1218
 msgid "Unnamed List"
 msgstr "未命名的列表"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:408
+#: calendar/backends/contacts/e-cal-backend-contacts.c:416
 #, fuzzy
 msgid "Birthday"
 msgstr "生日(_Y)："
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:430
+#: calendar/backends/contacts/e-cal-backend-contacts.c:438
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "生日(_Y)："
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:449
+#: calendar/backends/contacts/e-cal-backend-contacts.c:457
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "周年(_V)："
 
-#: calendar/backends/file/e-cal-backend-file.c:177
+#: calendar/backends/file/e-cal-backend-file.c:181
 msgid "Can't save calendar data: Malformed URI."
 msgstr "无法保存日历数据：URI 格式错误。"
 
-#: calendar/backends/http/e-cal-backend-http.c:216
+#: calendar/backends/http/e-cal-backend-http.c:218
+#, fuzzy
+msgid "Redirected to Invalid URI"
+msgstr "无效 URI"
+
+#: calendar/backends/http/e-cal-backend-http.c:238
 #, fuzzy
 msgid "Bad file format."
 msgstr "时间格式："
 
-#: calendar/backends/http/e-cal-backend-http.c:223
+#: calendar/backends/http/e-cal-backend-http.c:243
 #, fuzzy
 msgid "Not a calendar."
 msgstr "没有文件夹 %s"
@@ -747,89 +756,89 @@ msgid "Undefined"
 msgstr "未定义"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1475
+#: calendar/libecal/e-cal.c:1459
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s为 %s 输入口令 (用户 %s)"
 
-#: calendar/libecal/e-cal.c:3894
+#: calendar/libecal/e-cal.c:3922
 msgid "Invalid argument"
 msgstr "无效参数"
 
-#: calendar/libecal/e-cal.c:3896
+#: calendar/libecal/e-cal.c:3924
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3898
+#: calendar/libecal/e-cal.c:3926
 #, fuzzy
 msgid "Repository is offline"
 msgstr "仓库离线"
 
-#: calendar/libecal/e-cal.c:3900
+#: calendar/libecal/e-cal.c:3928
 #, fuzzy
 msgid "No such calendar"
 msgstr "没有文件夹 %s"
 
-#: calendar/libecal/e-cal.c:3902
+#: calendar/libecal/e-cal.c:3930
 #, fuzzy
 msgid "Object not found"
 msgstr "找不到对象\n"
 
-#: calendar/libecal/e-cal.c:3904
+#: calendar/libecal/e-cal.c:3932
 #, fuzzy
 msgid "Invalid object"
 msgstr "无效目的"
 
-#: calendar/libecal/e-cal.c:3906
+#: calendar/libecal/e-cal.c:3934
 #, fuzzy
 msgid "URI not loaded"
 msgstr "没有装入 EBook\n"
 
-#: calendar/libecal/e-cal.c:3908
+#: calendar/libecal/e-cal.c:3936
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3910
+#: calendar/libecal/e-cal.c:3938
 msgid "Permission denied"
 msgstr "没有权限"
 
-#: calendar/libecal/e-cal.c:3912
+#: calendar/libecal/e-cal.c:3940
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "卡片 ID 已经存在"
 
-#: calendar/libecal/e-cal.c:3914
+#: calendar/libecal/e-cal.c:3942
 msgid "Protocol not supported"
 msgstr "不支持的协议"
 
-#: calendar/libecal/e-cal.c:3916
+#: calendar/libecal/e-cal.c:3944
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "操作已取消"
 
-#: calendar/libecal/e-cal.c:3918
+#: calendar/libecal/e-cal.c:3946
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "取消操作"
 
-#: calendar/libecal/e-cal.c:3920
+#: calendar/libecal/e-cal.c:3948
 #, fuzzy
 msgid "Authentication failed"
 msgstr "认证失败。"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3950
 msgid "Authentication required"
 msgstr "必须认证"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3952
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3954
 msgid "Unknown error"
 msgstr "未知的错误"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3956
 msgid "No error"
 msgstr "无错误"
 
@@ -10767,9 +10776,6 @@ msgstr "Evolution 地址簿本地文件后端"
 
 #~ msgid "Exists"
 #~ msgstr "存在"
-
-#~ msgid "Invalid URI"
-#~ msgstr "无效 URI"
 
 #~ msgid "Has subfolders"
 #~ msgstr "含有子文件夹"
