@@ -1,3 +1,10 @@
+2004-05-14  Sivaiah Nallagatla  <snallagatla@novell.com>
+	
+	* e-gw-item.c (e_gw_item_new_from_soap_parameter) : set item type to 
+	E_GW_ITEM_TYPE_ORGANISATION when item type attribute is Organization
+	* e-gw-item.c (e_gw_item_append_to_soap_message) : add E_GW_ITEM_TYPE_ORGANISATION
+	case to create organization type items
+
 2004-05-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-item.c: (append_event_changes_to_soap_message) :

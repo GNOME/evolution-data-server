@@ -1260,10 +1260,13 @@ e_gw_connection_add_members (EGwConnection *cnc, const char *group_id, GList *me
         }
 	e_gw_message_write_string_parameter (msg, "container", NULL, group_id);
 	soup_soap_message_start_element (msg, "members", NULL, NULL);
-	soup_soap_message_start_element (msg, "member", NULL, NULL);
-	for (; member_ids != NULL; member_ids = member_ids = g_list_next (member_ids))
+
+	for (; member_ids != NULL; member_ids = member_ids = g_list_next (member_ids)) {
+		soup_soap_message_start_element (msg, "member", NULL, NULL);
 		e_gw_message_write_string_parameter (msg, "id", NULL, member_ids->data);
-	soup_soap_message_end_element(msg);
+		soup_soap_message_end_element(msg);
+	}
+	
 	soup_soap_message_end_element(msg);
 	e_gw_message_write_footer (msg);
 	response = e_gw_connection_send_message (cnc, msg);
@@ -1299,10 +1302,13 @@ e_gw_connection_remove_members (EGwConnection *cnc, const char *group_id, GList 
         }
 	e_gw_message_write_string_parameter (msg, "container", NULL, group_id);
 	soup_soap_message_start_element (msg, "members", NULL, NULL);
-	soup_soap_message_start_element (msg, "member", NULL, NULL);
-	for (; member_ids != NULL; member_ids = member_ids = g_list_next (member_ids))
+
+	for (; member_ids != NULL; member_ids = member_ids = g_list_next (member_ids)) {
+		soup_soap_message_start_element (msg, "member", NULL, NULL);
 		e_gw_message_write_string_parameter (msg, "id", NULL, member_ids->data);
-	soup_soap_message_end_element(msg);
+		soup_soap_message_end_element(msg);
+	}
+
 	soup_soap_message_end_element(msg);
 	e_gw_message_write_footer (msg);
 	response = e_gw_connection_send_message (cnc, msg);

@@ -723,7 +723,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	if(subparam) {
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp))
 			{
-				IMAddress *im_address = g_new(IMAddress, 1);
+				IMAddress *im_address = g_new0(IMAddress, 1);
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "service");
 				if (second_level_child)
 					value = soup_soap_parameter_get_string_value (second_level_child);
@@ -734,8 +734,10 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 					value = soup_soap_parameter_get_string_value (second_level_child);
 				if (value)
 					im_address->address = value;
-			
-				item->priv->im_list = g_list_append (item->priv->im_list, im_address);
+				if (im_address->service && im_address->address)
+					item->priv->im_list = g_list_append (item->priv->im_list, im_address);
+				else 
+					free_im_address(im_address, NULL);
 			}
 	}
 	
@@ -1037,10 +1039,16 @@ static void
 append_office_info_to_soap_message (GHashTable *simple_fields, SoupSoapMessage *msg)
 {
 	char *value;
-	
+	char *org_name;
 	g_return_if_fail (simple_fields != NULL);
 
 	soup_soap_message_start_element (msg, "officeInfo", NULL, NULL);
+	value = g_hash_table_lookup (simple_fields, "organization_id");
+	org_name = g_hash_table_lookup (simple_fields, "organization");
+
+	if (value && org_name) 
+		e_gw_message_write_string_parameter_with_attribute (msg, "organization", NULL, org_name, "uid", value);
+	
 	value = g_hash_table_lookup (simple_fields, "department");
 	if (value)
 		e_gw_message_write_string_parameter (msg, "department", NULL, value);
@@ -1173,7 +1181,7 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 	} 
 	else if (!g_ascii_strcasecmp (item_type, "Organization")) {
 
-		item->priv->item_type =  E_GW_ITEM_TYPE_CONTACT;
+		item->priv->item_type =  E_GW_ITEM_TYPE_ORGANISATION;
 		set_organization_fields_from_soap_parameter (item, param);
 		return item;
 	}
@@ -1695,6 +1703,11 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
         case E_GW_ITEM_TYPE_GROUP :
 		soup_soap_message_add_attribute (msg, "type", "Group", "xsi", NULL);
 		append_group_fields_to_soap_message (item, msg);
+		soup_soap_message_end_element(msg); 
+		return TRUE;
+	case E_GW_ITEM_TYPE_ORGANISATION :
+		soup_soap_message_add_attribute (msg, "type", "Organization", "xsi", NULL); 
+		append_contact_fields_to_soap_message (item, msg);
 		soup_soap_message_end_element(msg); 
 		return TRUE;
 	case E_GW_ITEM_TYPE_CATEGORY :
