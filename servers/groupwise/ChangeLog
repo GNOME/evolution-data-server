@@ -4,6 +4,9 @@
 	  Parse loginResponse for serverUTCTime and set it
 	  in the priv structure of the connection
 	  *** Patch Reviewed by Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* e-gw-item.[ch]:
+	  Set the content type for the message
 	  
 2005-02-08  Harish Krishnaswamy  <kharish@novell.com>
 

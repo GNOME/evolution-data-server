@@ -2457,6 +2457,24 @@ e_gw_item_set_source (EGwItem *item, char *source)
 	item->priv->source = g_strdup (source);
 }
 
+void
+e_gw_item_set_content_type (EGwItem *item, const char *content_type)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->content_type)
+		g_free (item->priv->content_type);
+	item->priv->content_type= g_strdup (content_type);
+}
+
+char *
+e_gw_item_get_content_type (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->content_type ;
+}
+
 static void
 add_return_notification (SoupSoapMessage *msg, char *option, EGwItemReturnNotify value)
 {
@@ -2762,7 +2780,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		if (item->priv->container)
 			e_gw_message_write_string_parameter (msg, "container", NULL, item->priv->container);
 		if (item->priv->source)
-			e_gw_message_write_string_parameter (msg, "source", NULL, item->priv->source );
+			e_gw_message_write_string_parameter (msg, "source", NULL, item->priv->source);
 		
 		/*message*/
 		soup_soap_message_start_element (msg, "message", NULL, NULL);
@@ -2773,6 +2791,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			str = soup_base64_encode (priv->message, strlen (priv->message));
 			str_len = g_strdup_printf ("%d", strlen (str));
 			soup_soap_message_add_attribute (msg, "length", str_len, NULL, NULL);
+			soup_soap_message_add_attribute (msg, "contentType", priv->content_type, NULL, NULL);
 			g_free (str_len);
 			soup_soap_message_write_string (msg, str);
 			g_free (str);

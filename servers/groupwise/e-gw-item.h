@@ -189,6 +189,8 @@ void 	    e_gw_item_set_to (EGwItem *item, const char *to) ;
 const char* e_gw_item_get_to (EGwItem *item) ;
 const char *e_gw_item_get_msg_content_type (EGwItem *item) ;
 guint32     e_gw_item_get_item_status (EGwItem *item);
+void	    e_gw_item_set_content_type (EGwItem *item, const char *content_type) ;
+char	    *e_gw_item_get_content_type (EGwItem *item) ;
 void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *field_name, gpointer field_value);
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
