@@ -1,5 +1,13 @@
 2005-02-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_send_appointment): Return the status as it is.
+	* backends/groupwise/e-cal-backend-groupwise.c
+       	(receive_object): Removed the check for modified item and ok status.
+	Instead checked for the status ALREADY_ACCEPTED directly.
+
+2005-02-22  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes 71490
 	* backends/http/e-cal-backend-http.c
        	(retrieval_done):If the vcalendar component does not
