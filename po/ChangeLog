@@ -1,3 +1,7 @@
+2004-02-16  JP Rosevear <jpr@ximian.com>
+
+	* POTFILES.in: add e-cal-backend-groupwise.c
+
 2004-02-11  Vincent van Adrighem  <adrighem@gnome.org>
 
 	* nl.po: Translation updated by Tino Meinen.
