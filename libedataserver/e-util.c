@@ -19,8 +19,13 @@
  * Authors: Rodrigo Moya <rodrigo@ximian.com>
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 #include <glib/gfileutils.h>
 #include <glib/gmem.h>
@@ -29,6 +34,7 @@
 #include <glib/gunicode.h>
 #include <glib/gutils.h>
 #include <glib/galloca.h>
+#include <glib/gconvert.h>
 #include "e-util.h"
 
 int
@@ -1542,4 +1548,68 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
         }
                                                                                 
         return NULL;
+}
+
+size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
+{
+#ifdef HAVE_LKSTRFTIME
+	return strftime(s, max, fmt, tm);
+#else
+	char *c, *ffmt, *ff;
+	size_t ret;
+
+	ffmt = g_strdup(fmt);
+	ff = ffmt;
+	while ((c = strstr(ff, "%l")) != NULL) {
+		c[1] = 'I';
+		ff = c;
+	}
+
+	ff = fmt;
+	while ((c = strstr(ff, "%k")) != NULL) {
+		c[1] = 'H';
+		ff = c;
+	}
+
+	ret = strftime(s, max, ffmt, tm);
+	g_free(ffmt);
+	return ret;
+#endif
+}
+
+size_t 
+e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
+{
+	size_t sz, ret;
+	char *locale_fmt, *buf;
+
+	locale_fmt = g_locale_from_utf8(fmt, -1, NULL, &sz, NULL);
+	if (!locale_fmt)
+		return 0;
+
+	ret = e_strftime(s, max, locale_fmt, tm);
+	if (!ret) {
+		g_free (locale_fmt);
+		return 0;
+	}
+
+	buf = g_locale_to_utf8(s, ret, NULL, &sz, NULL);
+	if (!buf) {
+		g_free (locale_fmt);
+		return 0;
+	}
+
+	if (sz >= max) {
+		char *tmp = buf + max - 1;
+		tmp = g_utf8_find_prev_char(buf, tmp);
+		if (tmp)
+			sz = tmp - buf;
+		else
+			sz = 0;
+	}
+	memcpy(s, buf, sz);
+	s[sz] = '\0';
+	g_free(locale_fmt);
+	g_free(buf);
+	return sz;
 }

@@ -21,17 +21,21 @@ libedataserver_1_2_la_SOURCES =		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
 	e-file-cache.c			\
+	e-iconv.c			\
 	e-iterator.c			\
 	e-list.c			\
 	e-list-iterator.c		\
 	e-memory.c			\
+	e-msgport.c			\
 	e-sexp.c			\
 	e-source-group.c		\
 	e-source-list.c			\
 	e-source.c			\
+	e-time-utils.c			\
 	e-uid.c				\
 	e-url.c				\
 	e-util.c			\
+	e-trie.c			\
 	e-xml-hash-utils.c		\
 	md5-utils.c
 
@@ -52,14 +56,18 @@ libedataserverinclude_HEADERS =		\
 	e-db3-utils.h			\
 	e-dbhash.h			\
 	e-file-cache.h			\
+	e-iconv.h			\
 	e-iterator.h			\
 	e-list.h			\
 	e-list-iterator.h		\
 	e-memory.h			\
+	e-msgport.h			\
 	e-sexp.h			\
 	e-source-group.h		\
 	e-source-list.h			\
 	e-source.h			\
+	e-time-utils.h			\
+	e-trie.h			\
 	e-uid.h				\
 	e-url.h				\
 	e-util.h			\
