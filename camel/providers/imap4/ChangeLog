@@ -1,5 +1,15 @@
 2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-imap4-summary.c (imap4_header_load): Changed to have the
+	'have_mlist' bit be a summary flag rather than a new value stored
+	in the summary header.
+	(imap4_header_save): No longer need to save the have_mlist value
+	ourselves.
+	(camel_imap4_summary_flush_updates): Updated to use summary flags
+	for have_mlist instead.
+
+2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
+
 	* camel-imap4-provider.c: Added command option.
 	Reset back to imap4:// uris.
 

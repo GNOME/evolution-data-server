@@ -52,7 +52,7 @@
 
 #define d(x) x
 
-#define CAMEL_IMAP4_SUMMARY_VERSION  2
+#define CAMEL_IMAP4_SUMMARY_VERSION  3
 
 static void camel_imap4_summary_class_init (CamelIMAP4SummaryClass *klass);
 static void camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *klass);
@@ -118,7 +118,7 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 	folder_summary->message_info_size = sizeof (CamelIMAP4MessageInfo);
 	folder_summary->content_info_size = sizeof (CamelIMAP4MessageContentInfo);
 	
-	summary->have_mlist = TRUE;
+	((CamelFolderSummary *) summary)->flags |= CAMEL_IMAP4_SUMMARY_HAVE_MLIST;
 	
 	summary->update_flags = TRUE;
 	summary->uidvalidity_changed = FALSE;
@@ -159,14 +159,17 @@ imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 		return -1;
 	}
 	
-	if (imap4_summary->version >= 2) {
+	if (imap4_summary->version == 2) {
 		/* check that we have Mailing-List info */
 		int have_mlist;
 		
 		if (camel_file_util_decode_fixed_int32 (fin, &have_mlist) == -1)
 			return -1;
 		
-		imap4_summary->have_mlist = have_mlist ? TRUE : FALSE;
+		if (have_mlist)
+			summary->flags |= CAMEL_IMAP4_SUMMARY_HAVE_MLIST;
+		else
+			summary->flags ^= CAMEL_IMAP4_SUMMARY_HAVE_MLIST;
 	}
 	
 	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->uidvalidity) == -1)
@@ -184,9 +187,6 @@ imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 		return -1;
 	
 	if (camel_file_util_encode_fixed_int32 (fout, CAMEL_IMAP4_SUMMARY_VERSION) == -1)
-		return -1;
-	
-	if (camel_file_util_encode_fixed_int32 (fout, imap4_summary->have_mlist) == -1)
 		return -1;
 	
 	if (camel_file_util_encode_fixed_int32 (fout, imap4_summary->uidvalidity) == -1)
@@ -1447,12 +1447,16 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	/* FIXME: what do we do if replaying the journal fails? */
 	camel_offline_journal_replay (journal, NULL);
 	
-	if (imap4_folder->enable_mlist && !imap4_summary->have_mlist) {
+	if (imap4_folder->enable_mlist && !(summary->flags & CAMEL_IMAP4_SUMMARY_HAVE_MLIST)) {
 		/* need to refetch all summary info to get info->mlist */
 		imap4_summary_clear (summary, FALSE);
 	}
 	
-	imap4_summary->have_mlist = imap4_folder->enable_mlist;
+	summary->flags = (summary->flags & ~CAMEL_IMAP4_SUMMARY_HAVE_MLIST);
+	if (imap4_folder->enable_mlist)
+		summary->flags |= CAMEL_IMAP4_SUMMARY_HAVE_MLIST;
+	else
+		summary->flags ^= CAMEL_IMAP4_SUMMARY_HAVE_MLIST;
 	
 	engine = ((CamelIMAP4Store *) summary->folder->parent_store)->engine;
 	scount = camel_folder_summary_count (summary);

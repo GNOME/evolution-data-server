@@ -46,6 +46,10 @@ typedef struct _CamelIMAP4SummaryClass CamelIMAP4SummaryClass;
 
 #define CAMEL_IMAP4_MESSAGE_RECENT (1 << 17)
 
+enum {
+	CAMEL_IMAP4_SUMMARY_HAVE_MLIST = (1 << 8)
+};
+
 struct _CamelIMAP4MessageInfo {
 	CamelMessageInfoBase info;
 	
@@ -67,8 +71,6 @@ struct _CamelIMAP4Summary {
 	guint32 unseen;
 	
 	guint32 uidvalidity;
-	
-	guint have_mlist:1;
 	
 	guint uidvalidity_changed:1;
 	guint update_flags:1;
