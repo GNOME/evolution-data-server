@@ -1,3 +1,7 @@
+2005-03-11  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* libecal/e-cal.c : Set the local_attachment_store for exchange
+
 2005-03-06  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #72454
