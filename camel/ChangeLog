@@ -1,3 +1,8 @@
+2005-01-12  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-provider.c: Use the same key
+	shortcuts as current imap code.
+
 2005-01-13  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #65178.
