@@ -1,3 +1,9 @@
+2004-02-26 Harish K <kharish@novell.com>
+
+	* servers/groupwise/e-gw-connection.c : the latest GW server
+	requires getFolderListRequest instead of the getContainerListRequest
+	message to get the ids of folders.
+
 2004-02-24  Chris Toshok  <toshok@ximian.com>
 
 	* libedataserver/e-source-group.c

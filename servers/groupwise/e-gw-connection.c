@@ -378,7 +378,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (container_list != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 
-	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getContainerListRequest");
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getFolderListRequest");
         if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
