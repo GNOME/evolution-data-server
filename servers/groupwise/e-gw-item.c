@@ -43,6 +43,7 @@ struct _EGwItemPrivate {
 	char *end_date;
 	char *due_date;
 	char *completed_date;
+	char *source;
 	gboolean completed;
 	gboolean is_allday_event;
 	char *subject;
@@ -277,7 +278,13 @@ e_gw_item_dispose (GObject *object)
 		if (priv->category_name) {
 			g_free (priv->category_name);
 			priv->category_name = NULL;
+		} 
+		
+		if (priv->source) {
+			g_free (priv->source);
+			priv->source = NULL;
 		}
+
 		free_changes (priv->additions);
 		free_changes (priv->deletions);
 		free_changes (priv->updates);
@@ -1881,6 +1888,13 @@ e_gw_item_set_trigger (EGwItem *item, int trigger)
 	item->priv->trigger = trigger;
 }
 
+void
+e_gw_item_set_source (EGwItem *item, char *source)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+	item->priv->source = g_strdup (source);
+}
+
 static void
 add_distribution_to_soap_message (EGwItemOrganizer *organizer, GSList *recipient_list, SoupSoapMessage *msg)
 {
@@ -1942,6 +1956,8 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
 	if (priv->container)
 		e_gw_message_write_string_parameter (msg, "container", NULL, priv->container);
+	if (item->priv->source)
+		e_gw_message_write_string_parameter (msg, "source", NULL, item->priv->source );
 
 	if (priv->classification)
 		e_gw_message_write_string_parameter (msg, "class", NULL, priv->classification);

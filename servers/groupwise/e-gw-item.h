@@ -153,7 +153,7 @@ void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *f
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
 char* e_gw_item_get_category_name (EGwItem *item);
-
+void e_gw_item_set_source (EGwItem *item, char *source);
 
 #define E_GW_ITEM_CLASSIFICATION_PUBLIC       "Public"
 #define E_GW_ITEM_CLASSIFICATION_PRIVATE      "Private"

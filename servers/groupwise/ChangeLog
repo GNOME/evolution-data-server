@@ -1,3 +1,9 @@
+2005-01-31  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* e-gw-item.c: (e_gw_item_dispose), (e_gw_item_set_source),
+	(e_gw_item_set_calendar_item_elements):
+	* e-gw-item.h: Added a function to set the source.
+
 2005-01-27  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* e-gw-item.c: (e_gw_item_init),
