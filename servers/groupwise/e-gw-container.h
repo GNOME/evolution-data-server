@@ -93,6 +93,7 @@ int           e_gw_container_get_sequence(EGwContainer *container);
 gboolean      e_gw_container_get_is_shared_by_me(EGwContainer *container);
 gboolean      e_gw_container_get_is_shared_to_me(EGwContainer *container);
 int 	      e_gw_container_get_rights(EGwContainer *container, gchar *email);
+EGwContainerType e_gw_container_get_container_type (EGwContainer *container) ;
 void 	      e_gw_container_get_user_list(EGwContainer *container, GList **user_list);
 void	      e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, const char *sub, const char *mesg, int flag);
 

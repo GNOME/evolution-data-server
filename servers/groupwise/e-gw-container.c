@@ -625,7 +625,7 @@ e_gw_container_is_root (EGwContainer *container)
 }
 
 EGwContainerType
-e_gw_container_get_type (EGwContainer *container)
+e_gw_container_get_container_type (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE) ;
 	return container->priv->type ;

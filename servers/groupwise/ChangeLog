@@ -1,3 +1,9 @@
+2005-01-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* e-gw-container.[ch] (e_gw_container_set_from_soap_parameter):
+	  sets the type of the container the in the container private
+	  structure.
+	
 2005-01-19  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-message.c (e_gw_message_write_footer):
