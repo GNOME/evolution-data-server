@@ -142,12 +142,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
                 return status;
         }
 	
-	status = e_gw_connection_position_cursor (priv->cnc, priv->container_id, cursor, "end", 1);
-	if (status != E_GW_CONNECTION_STATUS_OK) {
-		e_cal_backend_groupwise_notify_error_code (cbgw, status);
-		g_mutex_unlock (mutex);
-                return status;
-        }
 	while (!done) {
 		
 		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &list);
