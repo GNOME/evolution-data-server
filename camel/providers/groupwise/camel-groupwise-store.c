@@ -546,11 +546,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 	summary_count = camel_folder_summary_count (folder->summary) ;
 	if(summary_count) {
-		char *cache_file_name ;
-		time_t mod_time = time (0) ;
 		char  *t_str = NULL;
-		const struct tm *tm ;
-		struct stat buf;
 		
 		t_str = g_strdup (time_string);
 		/* FIXME send the time stamp which the server sends */

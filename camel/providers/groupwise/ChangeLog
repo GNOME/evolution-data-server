@@ -1,3 +1,10 @@
+2005-02-28  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (groupwise_refresh_info):
+	* camel-groupwise-store.c: (groupwise_get_folder):
+	  Removed unused variables which were causing compiler 
+	  warnings caused by the previous commit
+
 2005-02-28  Harish Krishnaswamy <kharish@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_refresh_info):

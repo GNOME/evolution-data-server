@@ -342,10 +342,10 @@ groupwise_folder_get_message( CamelFolder *folder,
 		camel_mime_message_set_subject (msg, temp_str) ;
 	dtstring = e_gw_item_get_creation_date (item) ;
 	if(dtstring) {
+		int offset = 0 ;
 		time_t time = e_gw_connection_get_date_from_string (dtstring) ;
-		struct tm *tm = localtime (&time) ;
-		time_t actual_time = mktime (tm) ;
-		camel_mime_message_set_date (msg, actual_time, 0) ;
+		time_t actual_time = camel_header_decode_date (ctime(&time), &offset) ;
+		camel_mime_message_set_date (msg, actual_time, offset) ;
 	}
 	
 
@@ -631,11 +631,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	GList *list = NULL;
 	GSList *slist = NULL, *sl ;
 	char *container_id = NULL ;
-	char *cache_file_name ;
-	time_t mod_time = time (0) ;
 	char *time_string = NULL, *t_str = NULL ;
-	const struct tm *tm ;
-	struct stat buf ;
 
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name)) ;
 	if (!container_id) {
@@ -696,9 +692,9 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	if (gw_store->current_folder != folder) {
 		gw_store->current_folder = folder ;
 	} else if(gw_folder->need_rescan) {
-		gw_update_summary (folder, list, ex) ;
 	}
-
+	
+	gw_update_summary (folder, list, ex) ;
 
 	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 
@@ -716,7 +712,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	GSList *attach_list = NULL ;
 	guint32 item_status, status_flags;
 	CamelFolderChangeInfo *changes = NULL ;
-	int scount, got = g_list_length (item_list) ;
+	int scount ;
 	
 //	CAMEL_SERVICE_ASSERT_LOCKED (gw_store, connect_lock);
 
@@ -782,8 +778,11 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			}
 
 			temp_date = e_gw_item_get_creation_date(item) ;
-			if (temp_date) 
-				mi->info.date_sent = mi->info.date_received = e_gw_connection_get_date_from_string (temp_date) ;
+			if (temp_date) {
+				time_t time = e_gw_connection_get_date_from_string (temp_date) ;
+				time_t actual_time = camel_header_decode_date (ctime(&time), NULL) ;
+				mi->info.date_sent = mi->info.date_received = actual_time ;
+			}
 			mi->info.uid = g_strdup (e_gw_item_get_id (item)) ;
 			mi->info.subject = g_strdup (e_gw_item_get_subject(item)) ;
 
@@ -1001,11 +1000,12 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	for (i = 0; i < max; i++) {
 		info = camel_folder_summary_index (folder->summary, i);
 		ginfo = (CamelGroupwiseMessageInfo *) info;
-		if (ginfo->info.flags & CAMEL_MESSAGE_DELETED) {
+		if (ginfo && (ginfo->info.flags & CAMEL_MESSAGE_DELETED)) {
 			const char *uid = camel_message_info_uid (info) ;
 			status = e_gw_connection_remove_item (cnc, container_id, uid);
 			if (status == E_GW_CONNECTION_STATUS_OK) {
 				camel_folder_change_info_remove_uid (changes, (char *) uid);
+				camel_folder_summary_remove_uid (folder->summary, uid) ;
 				delete = TRUE ;
 			}
 		}
