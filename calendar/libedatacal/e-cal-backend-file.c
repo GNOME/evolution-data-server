@@ -180,6 +180,34 @@ save (ECalBackendFile *cbfile)
 	return;
 }
 
+static void
+free_calendar_components (GHashTable *comp_uid_hash, icalcomponent *top_icomp)
+{
+	if (comp_uid_hash) {
+		g_hash_table_foreach (comp_uid_hash, (GHFunc) free_object, NULL);
+		g_hash_table_destroy (comp_uid_hash);
+	}
+
+	if (top_icomp) {
+		icalcomponent_free (top_icomp);
+	}
+}
+
+static void
+free_calendar_data (ECalBackendFile *cbfile)
+{
+	ECalBackendFilePrivate *priv;
+
+	priv = cbfile->priv;
+
+	free_calendar_components (priv->comp_uid_hash, priv->icalcomp);
+	priv->comp_uid_hash = NULL;
+	priv->icalcomp = NULL;
+
+	g_list_free (priv->comp);
+	priv->comp = NULL;
+}
+
 /* Dispose handler for the file backend */
 static void
 e_cal_backend_file_dispose (GObject *object)
@@ -192,19 +220,7 @@ e_cal_backend_file_dispose (GObject *object)
 
 	/* Save if necessary */
 
-	if (priv->comp_uid_hash) {
-		g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) free_object, NULL);
-		g_hash_table_destroy (priv->comp_uid_hash);
-		priv->comp_uid_hash = NULL;
-	}
-
-	g_list_free (priv->comp);
-	priv->comp = NULL;
-
-	if (priv->icalcomp) {
-		icalcomponent_free (priv->icalcomp);
-		priv->icalcomp = NULL;
-	}
+	free_calendar_data (cbfile);
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
@@ -558,61 +574,8 @@ scan_vcalendar (ECalBackendFile *cbfile)
 	}
 }
 
-/* Parses an open iCalendar file and loads it into the backend */
-static ECalBackendSyncStatus
-open_cal (ECalBackendFile *cbfile, const char *uristr)
-{
-	ECalBackendFilePrivate *priv;
-	icalcomponent *icalcomp;
-
-	priv = cbfile->priv;
-
-	icalcomp = e_cal_util_parse_ics_file (uristr);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_OtherError;
-
-	/* FIXME: should we try to demangle XROOT components and
-	 * individual components as well?
-	 */
-
-	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
-		icalcomponent_free (icalcomp);
-
-		return GNOME_Evolution_Calendar_OtherError;
-	}
-
-	priv->icalcomp = icalcomp;
-
-	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
-	scan_vcalendar (cbfile);
-
-	priv->uri = g_strdup (uristr);
-
-	return GNOME_Evolution_Calendar_Success;
-}
-
-static ECalBackendSyncStatus
-create_cal (ECalBackendFile *cbfile, const char *uristr)
-{
-	ECalBackendFilePrivate *priv;
-
-	priv = cbfile->priv;
-
-	/* Create the new calendar information */
-	priv->icalcomp = e_cal_util_new_top_level ();
-
-	/* Create our internal data */
-	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
-
-	priv->uri = g_strdup (uristr);
-
-	save (cbfile);
-
-	return GNOME_Evolution_Calendar_Success;
-}
-
 static char *
-get_uri_string (ECalBackend *backend)
+get_uri_string_for_gnome_vfs (ECalBackend *backend)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -624,7 +587,6 @@ get_uri_string (ECalBackend *backend)
 	priv = cbfile->priv;
 	
 	master_uri = e_cal_backend_get_uri (backend);
-	g_message (G_STRLOC ": Trying to open %s", master_uri);
 	
 	/* FIXME Check the error conditions a little more elegantly here */
 	if (g_strrstr ("tasks.ics", master_uri) || g_strrstr ("calendar.ics", master_uri)) {
@@ -655,6 +617,212 @@ get_uri_string (ECalBackend *backend)
 	}	
 
 	return str_uri;
+}
+
+/* Parses an open iCalendar file and loads it into the backend */
+static ECalBackendSyncStatus
+open_cal (ECalBackendFile *cbfile, const char *uristr)
+{
+	ECalBackendFilePrivate *priv;
+	icalcomponent *icalcomp;
+
+	priv = cbfile->priv;
+
+	icalcomp = e_cal_util_parse_ics_file (uristr);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_OtherError;
+
+	/* FIXME: should we try to demangle XROOT components and
+	 * individual components as well?
+	 */
+
+	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
+		icalcomponent_free (icalcomp);
+
+		return GNOME_Evolution_Calendar_OtherError;
+	}
+
+	priv->icalcomp = icalcomp;
+
+	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	scan_vcalendar (cbfile);
+
+	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
+typedef struct
+{
+	ECalBackend *backend;
+	GHashTable *old_uid_hash;
+	GHashTable *new_uid_hash;
+}
+BackendDeltaContext;
+
+static void
+notify_removals_cb (gpointer key, gpointer value, gpointer data)
+{
+	BackendDeltaContext *context = data;
+	const gchar *uid = key;
+	ECalBackendFileObject *old_obj_data = value;
+
+	if (!g_hash_table_lookup (context->new_uid_hash, uid)) {
+		icalcomponent *old_icomp;
+		gchar *old_obj_str;
+
+		/* Object was removed */
+
+		old_icomp = e_cal_component_get_icalcomponent (old_obj_data->full_object);
+		if (!old_icomp)
+			return;
+
+		old_obj_str = icalcomponent_as_ical_string (old_icomp);
+		if (!old_obj_str)
+			return;
+
+		e_cal_backend_notify_object_removed (context->backend, uid, old_obj_str);
+	}
+}
+
+static void
+notify_adds_modifies_cb (gpointer key, gpointer value, gpointer data)
+{
+	BackendDeltaContext *context = data;
+	const gchar *uid = key;
+	ECalBackendFileObject *new_obj_data = value;
+	ECalBackendFileObject *old_obj_data;
+	icalcomponent *old_icomp, *new_icomp;
+	gchar *old_obj_str, *new_obj_str;
+
+	old_obj_data = g_hash_table_lookup (context->old_uid_hash, uid);
+
+	if (!old_obj_data) {
+		/* Object was added */
+
+		new_icomp = e_cal_component_get_icalcomponent (new_obj_data->full_object);
+		if (!new_icomp)
+			return;
+
+		new_obj_str = icalcomponent_as_ical_string (new_icomp);
+		if (!new_obj_str)
+			return;
+
+		e_cal_backend_notify_object_created (context->backend, new_obj_str);
+	} else {
+		old_icomp = e_cal_component_get_icalcomponent (old_obj_data->full_object);
+		new_icomp = e_cal_component_get_icalcomponent (new_obj_data->full_object);
+		if (!old_icomp || !new_icomp)
+			return;
+
+		old_obj_str = icalcomponent_as_ical_string (old_icomp);
+		new_obj_str = icalcomponent_as_ical_string (new_icomp);
+		if (!old_obj_str || !new_obj_str)
+			return;
+
+		if (strcmp (old_obj_str, new_obj_str)) {
+			/* Object was modified */
+
+			e_cal_backend_notify_object_modified (context->backend, old_obj_str, new_obj_str);
+		}
+	}
+}
+
+static void
+notify_changes (ECalBackendFile *cbfile, GHashTable *old_uid_hash, GHashTable *new_uid_hash)
+{
+	BackendDeltaContext context;
+
+	context.backend = E_CAL_BACKEND (cbfile);
+	context.old_uid_hash = old_uid_hash;
+	context.new_uid_hash = new_uid_hash;
+
+	g_hash_table_foreach (old_uid_hash, (GHFunc) notify_removals_cb, &context);
+	g_hash_table_foreach (new_uid_hash, (GHFunc) notify_adds_modifies_cb, &context);
+}
+
+static ECalBackendSyncStatus
+reload_cal (ECalBackendFile *cbfile, const char *uristr)
+{
+	ECalBackendFilePrivate *priv;
+	icalcomponent *icalcomp, *icalcomp_old;
+	GHashTable *comp_uid_hash_old;
+
+	priv = cbfile->priv;
+
+	icalcomp = e_cal_util_parse_ics_file (uristr);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_OtherError;
+
+	/* FIXME: should we try to demangle XROOT components and
+	 * individual components as well?
+	 */
+
+	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
+		icalcomponent_free (icalcomp);
+
+		return GNOME_Evolution_Calendar_OtherError;
+	}
+
+	/* Keep old data for comparison - free later */
+
+	icalcomp_old = priv->icalcomp;
+	priv->icalcomp = NULL;
+
+	comp_uid_hash_old = priv->comp_uid_hash;
+	priv->comp_uid_hash = NULL;
+
+	/* Load new calendar */
+
+	free_calendar_data (cbfile);
+
+	priv->icalcomp = icalcomp;
+
+	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	scan_vcalendar (cbfile);
+
+	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
+
+	/* Compare old and new versions of calendar */
+
+	notify_changes (cbfile, comp_uid_hash_old, priv->comp_uid_hash);
+
+	/* Free old data */
+
+	free_calendar_components (comp_uid_hash_old, icalcomp_old);
+	return GNOME_Evolution_Calendar_Success;
+}
+
+static ECalBackendSyncStatus
+create_cal (ECalBackendFile *cbfile, const char *uristr)
+{
+	ECalBackendFilePrivate *priv;
+
+	priv = cbfile->priv;
+
+	/* Create the new calendar information */
+	priv->icalcomp = e_cal_util_new_top_level ();
+
+	/* Create our internal data */
+	priv->comp_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
+
+	save (cbfile);
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
+static char *
+get_uri_string (ECalBackend *backend)
+{
+	gchar *str_uri, *full_uri;
+
+	str_uri = get_uri_string_for_gnome_vfs (backend);
+	full_uri = gnome_vfs_unescape_string (str_uri, "");
+	g_free (str_uri);
+
+	return full_uri;
 }
 
 /* Open handler for the file backend */
@@ -1239,13 +1407,16 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 	EXmlHash *ehash;
 	ECalBackendFileComputeChangesData be_data;
 	GList *i;
+	gchar *unescaped_uri;
 
 	priv = cbfile->priv;
 
 	/* FIXME Will this always work? */
-	filename = g_strdup_printf ("%s/%s.db", priv->uri, change_id);
+	unescaped_uri = gnome_vfs_unescape_string (priv->uri, "");
+	filename = g_strdup_printf ("%s-%s.db", unescaped_uri, change_id);
 	ehash = e_xmlhash_new (filename);
 	g_free (filename);
+	g_free (unescaped_uri);
 	
 	/* Calculate adds and modifies */
 	for (i = priv->comp; i != NULL; i = i->next) {
@@ -1978,4 +2149,29 @@ e_cal_backend_file_get_file_name (ECalBackendFile *cbfile)
 	priv = cbfile->priv;	
 
 	return priv->file_name;
+}
+
+ECalBackendSyncStatus
+e_cal_backend_file_reload (ECalBackendFile *cbfile)
+{
+	ECalBackendFilePrivate *priv;
+	char *str_uri;
+	ECalBackendSyncStatus status;
+	
+	priv = cbfile->priv;
+
+	str_uri = get_uri_string (E_CAL_BACKEND (cbfile));
+	if (!str_uri)
+		return GNOME_Evolution_Calendar_OtherError;
+
+	if (access (str_uri, R_OK) == 0) {
+		status = reload_cal (cbfile, str_uri);
+		if (access (str_uri, W_OK) != 0)
+			priv->read_only = TRUE;
+	} else {
+		status = GNOME_Evolution_Calendar_NoSuchCal;
+	}
+
+	g_free (str_uri);
+	return status;
 }

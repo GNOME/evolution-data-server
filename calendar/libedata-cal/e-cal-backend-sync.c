@@ -13,14 +13,11 @@
 #include "e-cal-backend-sync.h"
 
 struct _ECalBackendSyncPrivate {
-  int mumble;
+	int mumble;
+	GMutex *sync_mutex;
 };
 
 static GObjectClass *parent_class;
-
-G_LOCK_DEFINE_STATIC (cal_sync_mutex);
-#define	SYNC_LOCK()		G_LOCK (cal_sync_mutex)
-#define	SYNC_UNLOCK()		G_UNLOCK (cal_sync_mutex)
 
 ECalBackendSyncStatus
 e_cal_backend_sync_is_read_only  (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only)
@@ -80,17 +77,18 @@ e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal 
 ECalBackendSyncStatus
 e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists)
 {
+	ECalBackendSyncPrivate *priv;
 	ECalBackendSyncStatus status;
 	
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
 	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->open_sync);
+	priv = backend->priv;
 
-	SYNC_LOCK ();
-	
+	g_mutex_lock (priv->sync_mutex);
+
 	status = (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->open_sync) (backend, cal, only_if_exists);
 
-	SYNC_UNLOCK ();
+	g_mutex_unlock (priv->sync_mutex);
 
 	return status;
 }
@@ -523,7 +521,8 @@ e_cal_backend_sync_init (ECalBackendSync *backend)
 {
 	ECalBackendSyncPrivate *priv;
 
-	priv          = g_new0 (ECalBackendSyncPrivate, 1);
+	priv             = g_new0 (ECalBackendSyncPrivate, 1);
+	priv->sync_mutex = g_mutex_new ();
 
 	backend->priv = priv;
 }
@@ -536,6 +535,7 @@ e_cal_backend_sync_dispose (GObject *object)
 	backend = E_CAL_BACKEND_SYNC (object);
 
 	if (backend->priv) {
+		g_mutex_free (backend->priv->sync_mutex);
 		g_free (backend->priv);
 
 		backend->priv = NULL;

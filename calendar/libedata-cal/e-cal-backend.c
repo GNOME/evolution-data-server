@@ -62,6 +62,9 @@ struct _ECalBackendPrivate {
 	GHashTable *categories;
 	GHashTable *changed_categories;
 	guint category_idle_id;
+
+	/* ECalBackend to pass notifications on to */
+	ECalBackend *notification_proxy;
 };
 
 /* Property IDs */
@@ -895,6 +898,18 @@ e_cal_backend_internal_get_timezone (ECalBackend *backend, const char *tzid)
 	return (* CLASS (backend)->internal_get_timezone) (backend, tzid);
 }
 
+void
+e_cal_backend_set_notification_proxy (ECalBackend *backend, ECalBackend *proxy)
+{
+	ECalBackendPrivate *priv;
+
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	priv = backend->priv;
+
+	priv->notification_proxy = proxy;
+}
+
 /**
  * e_cal_backend_notify_object_created:
  * @backend: A calendar backend.
@@ -909,9 +924,17 @@ e_cal_backend_internal_get_timezone (ECalBackend *backend, const char *tzid)
 void
 e_cal_backend_notify_object_created (ECalBackend *backend, const char *calobj)
 {
+	ECalBackendPrivate *priv;
 	EList *queries;
 	EIterator *iter;
 	EDataCalView *query;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_object_created (priv->notification_proxy, calobj);
+		return;
+	}
 
 	queries = e_cal_backend_get_queries (backend);
 	iter = e_list_get_iterator (queries);
@@ -946,10 +969,18 @@ void
 e_cal_backend_notify_object_modified (ECalBackend *backend, 
 				    const char *old_object, const char *object)
 {
+	ECalBackendPrivate *priv;
 	EList *queries;
 	EIterator *iter;
 	EDataCalView *query;
 	gboolean old_match, new_match;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_object_modified (priv->notification_proxy, old_object, object);
+		return;
+	}
 
 	queries = e_cal_backend_get_queries (backend);
 	iter = e_list_get_iterator (queries);
@@ -997,9 +1028,17 @@ void
 e_cal_backend_notify_object_removed (ECalBackend *backend, const char *uid,
 				   const char *old_object)
 {
+	ECalBackendPrivate *priv;
 	EList *queries;
 	EIterator *iter;
 	EDataCalView *query;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_object_removed (priv->notification_proxy, uid, old_object);
+		return;
+	}
 
 	queries = e_cal_backend_get_queries (backend);
 	iter = e_list_get_iterator (queries);
@@ -1035,6 +1074,11 @@ e_cal_backend_notify_mode (ECalBackend *backend,
 	ECalBackendPrivate *priv = backend->priv;
 	GList *l;
 
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_mode (priv->notification_proxy, status, mode);
+		return;
+	}
+
 	for (l = priv->clients; l; l = l->next)
 		e_data_cal_notify_mode (l->data, status, mode);
 }
@@ -1051,6 +1095,11 @@ e_cal_backend_notify_error (ECalBackend *backend, const char *message)
 {
 	ECalBackendPrivate *priv = backend->priv;
 	GList *l;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_error (priv->notification_proxy, message);
+		return;
+	}
 
 	for (l = priv->clients; l; l = l->next)
 		e_data_cal_notify_error (l->data, message);
