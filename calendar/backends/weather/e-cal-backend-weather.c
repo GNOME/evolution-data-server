@@ -57,6 +57,9 @@ struct _ECalBackendWeatherPrivate {
 	/* Flags */
 	gboolean opened;
 
+	/* City (for summary) */
+	gchar *city;
+
 	/* Weather source */
 	EWeatherSource *source;
 };
@@ -266,20 +269,23 @@ cmtoin (float cm)
 static ECalComponent*
 create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 {
-	ECalComponent         *cal_comp;
-	ECalComponentText      comp_summary;
-	icalcomponent         *ical_comp;
-	struct icaltimetype    itt;
-	ECalComponentDateTime  dt;
-	const char            *uid;
-	GSList                *text_list = NULL;
-	ECalComponentText     *description;
-	char                  *pop, *snow;
-	ESource               *source;
-	gboolean               fahrenheit, inches;
-	const char            *format;
+	ECalBackendWeatherPrivate *priv;
+	ECalComponent             *cal_comp;
+	ECalComponentText          comp_summary;
+	icalcomponent             *ical_comp;
+	struct icaltimetype        itt;
+	ECalComponentDateTime      dt;
+	const char                *uid;
+	GSList                    *text_list = NULL;
+	ECalComponentText         *description;
+	char                      *pop, *snow;
+	ESource                   *source;
+	gboolean                   fahrenheit, inches;
+	const char                *format;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
+
+	priv = cbw->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbw));
 	format = e_source_get_property (source, "temperature");
@@ -318,14 +324,14 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	/* The summary is the high or high/low temperatures */
 	if (report->high == report->low) {
 		if (fahrenheit)
-			comp_summary.value = g_strdup_printf (_("%.1f°F"), ctof (report->high));
+			comp_summary.value = g_strdup_printf (_("%.1f°F - %s"), ctof (report->high), priv->city);
 		else
-			comp_summary.value = g_strdup_printf (_("%.1f°C"), report->high);
+			comp_summary.value = g_strdup_printf (_("%.1f°C - %s"), report->high, priv->city);
 	} else {
 		if (fahrenheit)
-			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°F"), ctof (report->high), ctof (report->low));
+			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°F - %s"), ctof (report->high), ctof (report->low), priv->city);
 		else
-			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°C"), report->high, report->low);
+			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°C - %s"), report->high, report->low, priv->city);
 	}
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
@@ -426,12 +432,18 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
+	char *uri;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
+	uri = e_cal_backend_get_uri (E_CAL_BACKEND (backend));
+	if (priv->city)
+		g_free (priv->city);
+	priv->city = g_strdup (strrchr (uri, '/') + 1);
+
 	if (!priv->cache) {
-		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+		priv->cache = e_cal_backend_cache_new (uri);
 
 		if (!priv->cache) {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbw), _("Could not create cache file"));
@@ -787,6 +799,11 @@ e_cal_backend_weather_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->zones);
 
+	if (priv->city) {
+		g_free (priv->city);
+		priv->city = NULL;
+	}
+
 	g_free (priv);
 	cbw->priv = NULL;
 
@@ -809,6 +826,7 @@ e_cal_backend_weather_init (ECalBackendWeather *cbw, ECalBackendWeatherClass *cl
 	priv->opened = FALSE;
 	priv->source = NULL;
 	priv->cache = NULL;
+	priv->city = NULL;
 
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
 }
