@@ -1,3 +1,10 @@
+2003-12-29  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-contact.c (e_contact_get): initialize value to NULL
+	so that if the field is unknown (meaning we haven't gotten around
+	to implementing it yet, like the category list stuff), we don't
+	return an invalid pointer.
+
 2003-12-19  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-vcard.h: add lots more #defines, some EVC_X ones for
