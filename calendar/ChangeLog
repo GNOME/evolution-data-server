@@ -1,3 +1,9 @@
+2005-01-24  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_gw_connection_send_appointment) : The server now mandates
+	"default" to be included for views in get_item calls.
+
 2005-01-20  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
