@@ -46,6 +46,8 @@
 #include "camel-stream.h"
 #include "camel-seekable-stream.h"
 
+#include "libedataserver/e-memory.h"
+
 #define r(x) 
 #define h(x) 
 #define c(x) 
@@ -56,8 +58,6 @@
 /*#define PURIFY*/
 
 #define MEMPOOL
-
-#define STRUCT_ALIGN 4
 
 #ifdef PURIFY
 int inend_id = -1,
@@ -70,115 +70,6 @@ int inend_id = -1,
 /* a little hacky, but i couldn't be bothered renaming everything */
 #define _header_scan_state _CamelMimeParserPrivate
 #define _PRIVATE(o) (((CamelMimeParser *)(o))->priv)
-
-#ifdef MEMPOOL
-typedef struct _MemPoolNode {
-	struct _MemPoolNode *next;
-
-	int free;
-	char data[1];
-} MemPoolNode;
-
-typedef struct _MemPoolThresholdNode {
-	struct _MemPoolThresholdNode *next;
-	char data[1];
-} MemPoolThresholdNode;
-
-typedef struct _MemPool {
-	int blocksize;
-	int threshold;
-	struct _MemPoolNode *blocks;
-	struct _MemPoolThresholdNode *threshold_blocks;
-} MemPool;
-
-MemPool *mempool_new(int blocksize, int threshold);
-void *mempool_alloc(MemPool *pool, int size);
-void mempool_flush(MemPool *pool, int freeall);
-void mempool_free(MemPool *pool);
-
-MemPool *mempool_new(int blocksize, int threshold)
-{
-	MemPool *pool;
-
-	pool = g_malloc(sizeof(*pool));
-	if (threshold >= blocksize)
-		threshold = blocksize * 2 / 3;
-	pool->blocksize = blocksize;
-	pool->threshold = threshold;
-	pool->blocks = NULL;
-	pool->threshold_blocks = NULL;
-	return pool;
-}
-
-void *mempool_alloc(MemPool *pool, int size)
-{
-	size = (size + STRUCT_ALIGN) & (~(STRUCT_ALIGN-1));
-	if (size>=pool->threshold) {
-		MemPoolThresholdNode *n;
-
-		n = g_malloc(sizeof(*n) - sizeof(char) + size);
-		n->next = pool->threshold_blocks;
-		pool->threshold_blocks = n;
-		return &n->data[0];
-	} else {
-		MemPoolNode *n;
-
-		n = pool->blocks;
-		while (n) {
-			if (n->free >= size) {
-				n->free -= size;
-				return &n->data[n->free];
-			}
-			n = n->next;
-		}
-
-		n = g_malloc(sizeof(*n) - sizeof(char) + pool->blocksize);
-		n->next = pool->blocks;
-		pool->blocks = n;
-		n->free = pool->blocksize - size;
-		return &n->data[n->free];
-	}
-}
-
-void mempool_flush(MemPool *pool, int freeall)
-{
-	MemPoolThresholdNode *tn, *tw;
-	MemPoolNode *pw, *pn;
-
-	tw = pool->threshold_blocks;
-	while (tw) {
-		tn = tw->next;
-		g_free(tw);
-		tw = tn;
-	}
-	pool->threshold_blocks = NULL;
-
-	if (freeall) {
-		pw = pool->blocks;
-		while (pw) {
-			pn = pw->next;
-			g_free(pw);
-			pw = pn;
-		}
-		pool->blocks = NULL;
-	} else {
-		pw = pool->blocks;
-		while (pw) {
-			pw->free = pool->blocksize;
-			pw = pw->next;
-		}
-	}
-}
-
-void mempool_free(MemPool *pool)
-{
-	if (pool) {
-		mempool_flush(pool, 1);
-		g_free(pool);
-	}
-}
-
-#endif
 
 struct _header_scan_state {
 
@@ -232,7 +123,7 @@ struct _header_scan_stack {
 	enum _camel_mime_parser_state savestate; /* state at invocation of this part */
 
 #ifdef MEMPOOL
-	MemPool *pool;		/* memory pool to keep track of headers/etc at this level */
+	EMemPool *pool;		/* memory pool to keep track of headers/etc at this level */
 #endif
 	struct _camel_header_raw *headers;	/* headers for this part */
 
@@ -1067,7 +958,7 @@ folder_pull_part(struct _header_scan_state *s)
 		s->parts = h->parent;
 		g_free(h->boundary);
 #ifdef MEMPOOL
-		mempool_free(h->pool);
+		e_mempool_destroy(h->pool);
 #else
 		camel_header_raw_clear(&h->headers);
 #endif
@@ -1175,18 +1066,18 @@ header_append_mempool(struct _header_scan_state *s, struct _header_scan_stack *h
 	content = strchr(header, ':');
 	if (content) {
 		register int len;
-		n = mempool_alloc(h->pool, sizeof(*n));
+		n = e_mempool_alloc(h->pool, sizeof(*n));
 		n->next = NULL;
 		
 		len = content-header;
-		n->name = mempool_alloc(h->pool, len+1);
+		n->name = e_mempool_alloc(h->pool, len+1);
 		memcpy(n->name, header, len);
 		n->name[len] = 0;
 		
 		content++;
 		
 		len = s->outptr - content;
-		n->value = mempool_alloc(h->pool, len+1);
+		n->value = e_mempool_alloc(h->pool, len+1);
 		memcpy(n->value, content, len);
 		n->value[len] = 0;
 		
@@ -1246,7 +1137,7 @@ folder_scan_header(struct _header_scan_state *s, int *lastone)
 
 	h = g_malloc0(sizeof(*h));
 #ifdef MEMPOOL
-	h->pool = mempool_new(8192, 4096);
+	h->pool = e_mempool_new(8192, 4096, E_MEMPOOL_ALIGN_STRUCT);
 #endif
 
 	if (s->parts)

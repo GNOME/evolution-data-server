@@ -1,3 +1,23 @@
+2004-12-20  David Mosberger-Tang  <David.Mosberger@acm.org>
+
+        * camel-mime-parser.c: Include "libedataserver/e-memory.h".
+        (STRUCT_ALIGN): Remove.
+        (MemPoolNode): Likewise.
+        (MemPoolThresholdNode): Likewise.
+        (MemPool): Likewise.
+        (mempool_new): Likewise.
+        (mempool_alloc): Likewise.
+        (mempool_flush): Likewise.
+        (mempool_free): Likewise.
+        (struct _header_scan_stack): Change type of "pool" from MemPool to
+        EMemPool.
+        (folder_pull_part): Call e_mempool_destroy() instead of
+        mempool_free().
+        (header_append_mempool): Call e_mempool_alloc() instead of
+        mempool_alloc().
+        (folder_scan_header): Call e_mempool_new() instead of
+        mempool_new().
+
 2004-12-20  Not Zed  <NotZed@Ximian.com>
 
 	* camel-operation.c (camel_operation_init): remove
