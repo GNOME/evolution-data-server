@@ -1,3 +1,7 @@
+2004-03-14  Harish K <kharish@novell.com>
+	*  backends/groupwise/e-book-backend-groupwise.c :
+	Update calls to e_gw_connection_get_items with the new prototype.
+
 2004-03-12  Chris Toshok  <toshok@ximian.com>
 
 	* libedata-book/e-data-book-view.h: add prototype for

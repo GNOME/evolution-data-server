@@ -76,7 +76,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	priv = cbgw->priv;
 
         /* get all the objects from the server */
-        status = e_gw_connection_get_items (priv->cnc, priv->container_id, NULL, &list);
+        status = e_gw_connection_get_items (priv->cnc, priv->container_id, "recipients", NULL, &list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
                 g_list_free (list);
                 return status;

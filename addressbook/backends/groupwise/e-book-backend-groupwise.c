@@ -906,7 +906,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 						      vcard_list);
 	}
 
-	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, &gw_items);
+	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, NULL, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_data_book_respond_get_contact_list (book, GNOME_Evolution_Addressbook_OtherError,
 						      NULL);
@@ -944,7 +944,7 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 	}
 		
 	e_data_book_view_notify_status_message (book_view, "Searching...");
-	status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, NULL, &gw_items);
+	status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, NULL, NULL, &gw_items);
     
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_OtherError);

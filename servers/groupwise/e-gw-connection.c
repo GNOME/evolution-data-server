@@ -469,7 +469,7 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 }
 
 EGwConnectionStatus
-e_gw_connection_get_items (EGwConnection *cnc, const char *container, EGwFilter *filter, GList **list)
+e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char *view, EGwFilter *filter, GList **list)
 {
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
@@ -486,6 +486,8 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, EGwFilter 
         }
 
         e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	if (view)
+		e_gw_message_write_string_parameter (msg, "view", NULL, view);
 	if (filter) 
 		e_gw_filter_append_to_soap_message (filter, msg);
 	e_gw_message_write_footer (msg);
