@@ -131,7 +131,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		g_mutex_unlock (mutex);
                 return status;
         }
-	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "recipients message recipientStatus", NULL, &cursor);
+	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "recipients message recipientStatus default", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		g_mutex_unlock (mutex);
