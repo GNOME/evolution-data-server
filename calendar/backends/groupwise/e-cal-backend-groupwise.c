@@ -291,6 +291,8 @@ e_cal_backend_groupwise_remove (ECalBackendSync *backend, EDataCal *cal)
 	
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
+
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* is_loaded handler for the file backend */
@@ -326,7 +328,6 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 	GnomeVFSURI *vuri;
 	char *real_uri;
 	EGwConnectionStatus status;
-	ECalBackendSyncStatus result;
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 
@@ -384,9 +385,10 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 					e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
 								   GNOME_Evolution_Calendar_MODE_REMOTE);
 				}
-			} else
+			} else {
 				e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
 							   GNOME_Evolution_Calendar_MODE_REMOTE);
+			}
 		}
 		break;
 	case CAL_MODE_LOCAL : /* go offline */
@@ -491,17 +493,20 @@ e_cal_backend_groupwise_get_timezone (ECalBackendSync *backend, EDataCal *cal, c
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* Get_objects_in_range handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* get_query handler for the groupwise backend */
@@ -515,30 +520,62 @@ static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
 				time_t start, time_t end, GList **freebusy)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* Get_changes handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id,
-			      GList **adds, GList **modifies, GList **deletes)
+				     GList **adds, GList **modifies, GList **deletes)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* Discard_alarm handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, char **uid)
 {
+	ECalBackendGroupwise *cbgw;
+        ECalBackendGroupwisePrivate *priv;
+	icalcomponent *icalcomp;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_InvalidObject);
+	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
+
+	/* check the component for validity */
+	icalcomp = icalparser_parse_string (calobj);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	/* check if the object exists */
+	switch (priv->mode) {
+	case CAL_MODE_LOCAL :
+		/* in offline mode, we just update the cache */
+		break;
+	case CAL_MODE_ANY :
+	case CAL_MODE_REMOTE :
+		break;
+	default :
+		break;
+	}
+
+	return GNOME_Evolution_Calendar_InvalidObject;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
 				CalObjModType mod, char **old_object)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* Remove_object handler for the file backend */
@@ -547,17 +584,20 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				const char *uid, const char *rid,
 				CalObjModType mod, char **object)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 /* Update_objects handler for the file backend. */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
+	return GNOME_Evolution_Calendar_OtherError;
 }
 
 

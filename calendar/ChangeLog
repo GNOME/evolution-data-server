@@ -1,11 +1,31 @@
-2004-01-09 Harish K <kharish@novell.com>
-        * backends/groupwise/e-cal-backend-groupwise.c
+2004-01-10  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_get_timezone): fixed copy/paste typo.
+	(e_cal_backend_groupwise_remove, e_cal_backend_groupwise_add_timezone,
+	e_cal_backend_groupwise_set_default_timezone,
+	e_cal_backend_groupwise_get_object_list,
+	e_cal_backend_groupwise_get_free_busy,
+	e_cal_backend_groupwise_get_changes,
+	e_cal_backend_groupwise_discard_alarm,
+	e_cal_backend_groupwise_modify_object,
+	e_cal_backend_groupwise_remove_object,
+	e_cal_backend_groupwise_receive_objects,
+	e_cal_backend_groupwise_send_objects):
+	fixed compilation warnings.
+
+	* backends/groupwise/Makefile.am:
+	* backends/groupwise/groupwise-config-listener.c: removed unused file.
+
+2004-01-09  Harish K <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
         (populate_cache): implemented.
 
-        * backends/groupwise/e-gw-connection.h:
+	* backends/groupwise/e-gw-connection.h:
         added declaration for e_gw_connection_get_items.
-        
-        * backends/groupwise/e-gw-connection.c:
+
+	* backends/groupwise/e-gw-connection.c:
         (e-gw-connection-get-items) :implementation to obtain 
         calendar data from GW using SOAP.
 
