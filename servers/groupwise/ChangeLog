@@ -1,3 +1,16 @@
+2005-02-17  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-connection.c: 
+	(e_gw_connection_dispose),(e_gw_connection_init): Create
+	and destroy the new hash tables for storing categories.
+	(e_gw_connection_get_settings), (e_gw_connection_get_categories),
+	(e_gw_connection_get_address_book_list): Added mutex locks and stored the
+	category/container list information in cnc private to reduce 
+	the network calls.
+	(e_gw_connection_get_address_book_id): Use the new syntax for the 
+	get_addressbook_list and don free the list.
+	* e-gw-connection.h: Changed the declaration
+
 2005-02-16 Vivek Jain <jvivek@novell.com>
 	
 	* e_gw_item.c : (set_recipient_list_from_soap_parameter)

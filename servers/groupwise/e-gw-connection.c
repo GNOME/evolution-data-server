@@ -49,6 +49,9 @@ struct _EGwConnectionPrivate {
 	char *user_uuid;
 	char *version;
 	char *server_time ;
+	GHashTable *categories_by_name;
+	GHashTable *categories_by_id;
+	GList *book_list;
 	EGwSendOptions *opts;
 	GMutex *reauth_mutex;
 };
@@ -275,7 +278,23 @@ e_gw_connection_dispose (GObject *object)
 			g_mutex_free (priv->reauth_mutex);
 			priv->reauth_mutex = NULL;
 		}
-
+	
+		if (priv->categories_by_id) {
+			g_hash_table_destroy (priv->categories_by_id);
+			priv->categories_by_id = NULL;
+		}	
+		
+		if (priv->categories_by_name) {
+			g_hash_table_destroy (priv->categories_by_name);
+			priv->categories_by_name = NULL;
+		}
+	
+		if (priv->book_list) {
+			g_list_foreach (priv->book_list, (GFunc) g_object_unref, NULL);
+			g_list_free (priv->book_list);
+			priv->book_list = NULL;
+		}
+		
 		if (priv->opts) {
 			g_object_unref (priv->opts);
 			priv->opts = NULL;
@@ -337,6 +356,9 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 	/* create the SoupSession for this connection */
 	priv->soup_session = soup_session_sync_new ();
 	priv->reauth_mutex = g_mutex_new ();
+	priv->categories_by_id = NULL;
+	priv->categories_by_name = NULL;
+	priv->book_list = NULL;
 	priv->opts = NULL;
 }
 
@@ -1489,16 +1511,28 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
         EGwConnectionStatus status;
+	EGwConnectionPrivate *priv;
 	SoupSoapParameter *param;
 	SoupSoapParameter *type_param;
 	char *value;
-	
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
+
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (container_list != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
+
+	priv = cnc->priv;
+	g_static_mutex_lock (&connecting);
+
+	if (priv->book_list) {
+		*container_list = priv->book_list;
+		g_static_mutex_unlock (&connecting);
+		return E_GW_CONNECTION_STATUS_OK;
+	}
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getAddressBookListRequest");
         if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
 
@@ -1508,6 +1542,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
@@ -1518,6 +1553,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
                 g_object_unref (response);
+		g_static_mutex_unlock (&connecting);
                 return status;
         }
 	
@@ -1525,6 +1561,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	param = soup_soap_response_get_first_parameter_by_name (response, "books");	
         if (!param) {
                 g_object_unref (response);
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         } else {
 		SoupSoapParameter *subparam;
@@ -1535,7 +1572,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 				       
 			container = e_gw_container_new_from_soap_parameter (subparam);
 			if (container) {
-				*container_list = g_list_append (*container_list, container);
+				priv->book_list = g_list_append (priv->book_list, container);
 				type_param = soup_soap_parameter_get_first_child_by_name (subparam, "isPersonal");
 				value = NULL;
 				if (type_param)
@@ -1560,6 +1597,8 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	}
 
 	g_object_unref (response);
+	*container_list = priv->book_list;
+	g_static_mutex_unlock (&connecting);
 
         return status;
 }
@@ -1576,7 +1615,6 @@ e_gw_connection_get_address_book_id ( EGwConnection *cnc, char *book_name, char*
 
 	status = e_gw_connection_get_address_book_list (cnc, &container_list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
-		e_gw_connection_free_container_list (container_list);
                 return status;
         }
 
@@ -1590,8 +1628,6 @@ e_gw_connection_get_address_book_id ( EGwConnection *cnc, char *book_name, char*
 			break;
 		}
 	}
-
-	e_gw_connection_free_container_list (container_list);
 
 	return status;
 
@@ -1658,14 +1694,19 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
 	EGwConnectionStatus status;
 	SoupSoapParameter *param;
 	EGwConnectionPrivate *priv;
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;	
+
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	priv = cnc->priv;
 
+	g_static_mutex_lock (&connecting);
+
 	if (priv->opts) {
 		g_object_ref (priv->opts);
 		*opts = priv->opts;
+		g_static_mutex_unlock (&connecting);
 		
 		return E_GW_CONNECTION_STATUS_OK;
 	}
@@ -1673,6 +1714,7 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getSettingsRequest");
 	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
        	e_gw_message_write_footer (msg);
@@ -1681,6 +1723,7 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
@@ -1690,6 +1733,7 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
 			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
+		g_static_mutex_unlock (&connecting);
 		return status;
 	}
 	
@@ -1697,6 +1741,7 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
         if (!param) {
                 g_object_unref (response);
                 g_object_unref (msg);
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         } else 
 		priv->opts = e_gw_sendoptions_new_from_soap_parameter (param);
@@ -1705,24 +1750,38 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
 	*opts = priv->opts;
 	g_object_unref (response);
         g_object_unref (msg);
+	g_static_mutex_unlock (&connecting);
 	
 	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus 
-e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id, GHashTable *categories_by_name)
+e_gw_connection_get_categories (EGwConnection *cnc, GHashTable **categories_by_id, GHashTable **categories_by_name)
 {
 	SoupSoapMessage *msg;
         SoupSoapResponse *response;
         EGwConnectionStatus status;
+	EGwConnectionPrivate *priv;
         SoupSoapParameter *param, *subparam, *second_level_child;
 	char *id, *name;
         g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
-	
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
+
+	priv = cnc->priv;
+	g_static_mutex_lock (&connecting);
+
+	if (priv->categories_by_id && priv->categories_by_name) {
+		*categories_by_id = priv->categories_by_id;
+		*categories_by_name = priv->categories_by_name;
+		g_static_mutex_unlock (&connecting);
+		return E_GW_CONNECTION_STATUS_OK;
+	}
+
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getCategoryListRequest");
         if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
        	e_gw_message_write_footer (msg);
@@ -1731,6 +1790,7 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
@@ -1740,6 +1800,7 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
 			reauthenticate (cnc);
 		g_object_unref (response);
                 g_object_unref (msg);
+		g_static_mutex_unlock (&connecting);
 		return status;
 	}
 
@@ -1748,9 +1809,13 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
         if (!param) {
                 g_object_unref (response);
                 g_object_unref (msg);
+		g_static_mutex_unlock (&connecting);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 	
+	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
 	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "category");
 	     subparam != NULL;
 	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "category")) {
@@ -1766,9 +1831,9 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
 			g_free (id);
 			id = components[0];
 			if (categories_by_id) 
-				g_hash_table_insert (categories_by_id, g_strdup (id), g_strdup (name));
+				g_hash_table_insert (priv->categories_by_id, g_strdup (id), g_strdup (name));
 			if (categories_by_name) 
-				g_hash_table_insert (categories_by_name, g_strdup (name), g_strdup (id));
+				g_hash_table_insert (priv->categories_by_name, g_strdup (name), g_strdup (id));
 			g_strfreev (components);
 			g_free (name);
 		}
@@ -1778,10 +1843,11 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
 	/* free memory */
         g_object_unref (response);
 	g_object_unref (msg);
+	*categories_by_id = priv->categories_by_id;
+	*categories_by_name = priv->categories_by_name;
+	g_static_mutex_unlock (&connecting);
 
         return E_GW_CONNECTION_STATUS_OK;
-
-
 }
 
 EGwConnectionStatus 
