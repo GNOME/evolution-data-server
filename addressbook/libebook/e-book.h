@@ -143,6 +143,7 @@ gboolean e_book_get_changes                (EBook       *book,
 void     e_book_free_change_list           (GList       *change_list);
 
 const char *e_book_get_uri                 (EBook       *book);
+ESource    *e_book_get_source              (EBook       *book);
 
 const char *e_book_get_static_capabilities (EBook    *book,
 					    GError  **error);

@@ -102,7 +102,9 @@ struct _EBookPrivate {
 
 	GMutex *mutex;
 
+	/* Need to keep URI around, since the getter returns const */
 	gchar *uri;
+	ESource *source;
 
 	gulong listener_signal;
 	gulong died_signal;
@@ -1663,6 +1665,11 @@ fetch_corba_book (EBook       *book,
 	g_free (book->priv->uri);
 	book->priv->uri = uri;
 
+	g_object_ref (source);
+	if (book->priv->source)
+		g_object_unref (book->priv->source);
+	book->priv->source = source;
+
 	source_xml = e_source_to_standalone_xml (source);
 
 	for (l = factories; l; l = l->next) {
@@ -1815,6 +1822,12 @@ const char *
 e_book_get_uri (EBook *book)
 {
 	return book->priv->uri;
+}
+
+ESource *
+e_book_get_source (EBook *book)
+{
+	return book->priv->source;
 }
 
 const char *
@@ -2022,6 +2035,7 @@ e_book_init (EBook *book)
 	book->priv             = g_new0 (EBookPrivate, 1);
 	book->priv->load_state = E_BOOK_URI_NOT_LOADED;
 	book->priv->uri        = NULL;
+	book->priv->source     = NULL;
 	book->priv->mutex      = g_mutex_new ();
 }
 
@@ -2066,6 +2080,9 @@ e_book_dispose (GObject *object)
 		g_free (book->priv->cap);
 
 		g_free (book->priv->uri);
+
+		if (book->priv->source)
+			g_object_unref (book->priv->source);
 
 		g_free (book->priv);
 		book->priv = NULL;

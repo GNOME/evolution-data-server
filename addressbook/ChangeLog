@@ -1,3 +1,11 @@
+2003-12-16  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-book.c (fetch_corba_book): Ref and keep the loaded
+	ESource around. Unref old source if present.
+	(e_book_get_source): Implement.
+	(e_book_init): Init source pointer.
+	(e_book_dispose): Unref source, if any.
+
 2003-12-15  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-contact.c (adr_getter): Initialize the address_format
