@@ -53,6 +53,7 @@ struct _ECalBackendContactsPrivate {
         EBookView    *book_view;
         GHashTable   *tracked_contacts;   /* UID -> ContactRecord */
 
+	GHashTable *zones;	
 	icaltimezone *default_zone;
 };
 
@@ -729,6 +730,90 @@ e_cal_backend_contacts_is_loaded (ECalBackend *backend)
 }
 
 static ECalBackendSyncStatus
+e_cal_backend_contacts_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
+{
+	ECalBackendContacts *cbcontacts;
+	ECalBackendContactsPrivate *priv;
+	icaltimezone *zone;
+	icalcomponent *icalcomp;
+
+	cbcontacts = E_CAL_BACKEND_CONTACTS (backend);
+	priv = cbcontacts->priv;
+
+	g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+
+	zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (backend), tzid);
+	if (!zone)
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+
+	icalcomp = icaltimezone_get_component (zone);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
+/* Add_timezone handler for the file backend */
+static ECalBackendSyncStatus
+e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
+{
+	ECalBackendContacts *cbcontacts;
+	ECalBackendContactsPrivate *priv;
+	icalcomponent *tz_comp;
+	icaltimezone *zone;
+	char *tzid;	
+
+	cbcontacts = (ECalBackendContacts *) backend;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+
+	priv = cbcontacts->priv;
+	
+	tz_comp = icalparser_parse_string (tzobj);
+	if (!tz_comp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	if (icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT)
+		return GNOME_Evolution_Calendar_InvalidObject;
+	
+	zone = icaltimezone_new ();
+	icaltimezone_set_component (zone, tz_comp);
+	tzid = icaltimezone_get_tzid (zone);
+	
+	if (g_hash_table_lookup (priv->zones, tzid)) {
+		icaltimezone_free (zone, TRUE);
+		
+		return GNOME_Evolution_Calendar_Success;
+	}
+	
+	g_hash_table_insert (priv->zones, g_strdup (tzid), zone);
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
+static ECalBackendSyncStatus
+e_cal_backend_contacts_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
+{
+	ECalBackendContacts *cbcontacts;
+	ECalBackendContactsPrivate *priv;
+
+	cbcontacts = E_CAL_BACKEND_CONTACTS (backend);
+	priv = cbcontacts->priv;
+
+	priv->default_zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (backend), tzid);
+	if (priv->default_zone) {
+		priv->default_zone = icaltimezone_get_utc_timezone ();
+
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+	}
+	
+	return GNOME_Evolution_Calendar_Success;
+}
+
+static ECalBackendSyncStatus
 e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal,
 					const char *sexp_string, GList **objects)
 {
@@ -794,6 +879,12 @@ e_cal_backend_contacts_internal_get_timezone (ECalBackend *backend, const char *
 /***********************************************************************************
  */
 
+static void
+free_zone (gpointer data)
+{
+	icaltimezone_free (data, TRUE);
+}
+
 /* Finalize handler for the contacts backend */
 static void
 e_cal_backend_contacts_finalize (GObject *object)
@@ -808,6 +899,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 	priv = cbc->priv;
 
         g_hash_table_destroy (priv->tracked_contacts);
+        g_hash_table_destroy (priv->zones);
         
 	g_free (priv);
 	cbc->priv = NULL;
@@ -831,6 +923,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass 
         priv->tracked_contacts = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                         g_free, (GDestroyNotify)contact_record_free);
         
+	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
 	priv->default_zone = icaltimezone_get_utc_timezone ();
         
 	cbc->priv = priv;
@@ -865,6 +958,9 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
  	sync_class->get_default_object_sync = e_cal_backend_contacts_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_contacts_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_contacts_get_object_list;
+	sync_class->get_timezone_sync = e_cal_backend_contacts_get_timezone;
+	sync_class->add_timezone_sync = e_cal_backend_contacts_add_timezone;
+	sync_class->set_default_timezone_sync = e_cal_backend_contacts_set_default_timezone;
 	sync_class->get_freebusy_sync = e_cal_backend_contacts_get_free_busy;
 	sync_class->get_changes_sync = e_cal_backend_contacts_get_changes;
 	backend_class->is_loaded = e_cal_backend_contacts_is_loaded;

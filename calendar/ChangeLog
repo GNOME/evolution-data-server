@@ -1,3 +1,17 @@
+2004-04-03  JP Rosevear  <jpr@ximian.com>
+
+	Fixes #56416
+	
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_get_timezone): implement
+	(e_cal_backend_contacts_add_timezone): ditto
+	(e_cal_backend_contacts_set_default_timezone): ditto
+	(free_zone): free a timezone
+	(e_cal_backend_contacts_finalize): destroy the zones hash table
+	(e_cal_backend_contacts_class_init): add new method
+	implementations
+	(e_cal_backend_contacts_init): set up zones hash table
+
 2004-04-02  Rodrigo Moya <rodrigo@ximian.com>
 
 	Fixes #55719
