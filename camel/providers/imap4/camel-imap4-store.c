@@ -181,6 +181,9 @@ imap4_construct (CamelService *service, CamelSession *session, CamelProvider *pr
 	if (camel_exception_is_set (ex))
 		return;
 	
+	if (camel_url_get_param (url, "use_lsub"))
+		((CamelStore *) store)->flags |= CAMEL_STORE_SUBSCRIPTIONS;
+	
 	store->storage_path = camel_session_get_storage_path (session, service, ex);
 	store->engine = camel_imap4_engine_new (service, imap4_reconnect);
 	

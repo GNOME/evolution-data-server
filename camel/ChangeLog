@@ -1,3 +1,9 @@
+2005-01-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap4/camel-imap4-store.c (imap4_construct): Check if
+	we have the use_lsub url param and set the store->flags
+	appropriately.
+
 2005-01-24  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #71625, and bug #56110.
