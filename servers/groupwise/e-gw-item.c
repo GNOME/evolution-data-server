@@ -709,6 +709,15 @@ e_gw_item_to_cal_component (EGwItem *item)
 
 	comp = e_cal_component_new ();
 
+	if (item->priv->item_type == E_GW_ITEM_TYPE_APPOINTMENT)
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+	else if (item->priv->item_type == E_GW_ITEM_TYPE_TASK)
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+	else {
+		g_object_unref (comp);
+		return NULL;
+	}
+
 	/* set common properties */
 	/* UID */
 	e_cal_component_set_uid (comp, e_gw_item_get_id (item));
@@ -750,8 +759,6 @@ e_gw_item_to_cal_component (EGwItem *item)
 	/* set specific properties */
 	switch (item->priv->item_type) {
 	case E_GW_ITEM_TYPE_APPOINTMENT :
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
-
 		/* transparency */
 		description = e_gw_item_get_accept_level (item);
 		if (description &&
@@ -767,8 +774,6 @@ e_gw_item_to_cal_component (EGwItem *item)
 		/* FIXME: attendee list, get_distribution */
 		break;
 	case E_GW_ITEM_TYPE_TASK :
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
-
 		/* due date */
 		itt = e_gw_item_get_due_date (item);
 		dt.value = &itt;
@@ -790,9 +795,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 		e_cal_component_set_priority (comp, &priority);
 
 		/* FIXME: EGwItem's completed is a boolean */
-	default :
-		g_object_unref (comp);
-		return NULL;
+		break;
 	}
 
 	return comp;
