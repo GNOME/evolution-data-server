@@ -150,7 +150,8 @@ impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servan
 		return;
 	}
 
-	view = e_data_book_view_new (backend, listener, search, card_sexp);
+	/* XXX still need to add requested_fields here */
+	view = e_data_book_view_new (backend, listener, search, card_sexp, max_results);
 
 	if (!view) {
 		g_object_unref (card_sexp);

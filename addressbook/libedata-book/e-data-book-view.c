@@ -41,6 +41,8 @@ struct _EDataBookViewPrivate {
 	char *card_query;
 	EBookBackendSExp *card_sexp;
 	GHashTable *ids;
+
+	int max_results;
 };
 
 static void
@@ -321,8 +323,9 @@ static void
 e_data_book_view_construct (EDataBookView                *book_view,
 			    EBookBackend                 *backend,
 			    GNOME_Evolution_Addressbook_BookViewListener  listener,
-			    const char                 *card_query,
-			    EBookBackendSExp         *card_sexp)
+			    const char                   *card_query,
+			    EBookBackendSExp             *card_sexp,
+			    int                           max_results)
 {
 	EDataBookViewPrivate *priv;
 	CORBA_Environment ev;
@@ -346,6 +349,7 @@ e_data_book_view_construct (EDataBookView                *book_view,
 	priv->backend = backend;
 	priv->card_query = g_strdup (card_query);
 	priv->card_sexp = card_sexp;
+	priv->max_results = max_results;
 
 	ORBit_small_listen_for_broken (e_data_book_view_get_listener (book_view), G_CALLBACK (view_listener_died_cb), book_view);
 }
@@ -405,6 +409,14 @@ e_data_book_view_get_card_sexp (EDataBookView *book_view)
 	return book_view->priv->card_sexp;
 }
 
+int
+e_data_book_view_get_max_results (EDataBookView *book_view)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), 0);
+
+	return book_view->priv->max_results;
+}
+
 EBookBackend*
 e_data_book_view_get_backend (EDataBookView *book_view)
 {
@@ -434,9 +446,10 @@ e_data_book_view_get_listener (EDataBookView  *book_view)
  */
 EDataBookView *
 e_data_book_view_new (EBookBackend *backend,
-		   GNOME_Evolution_Addressbook_BookViewListener  listener,
-		   const char *card_query,
-		   EBookBackendSExp *card_sexp)
+		      GNOME_Evolution_Addressbook_BookViewListener  listener,
+		      const char *card_query,
+		      EBookBackendSExp *card_sexp,
+		      int max_results)
 {
 	EDataBookView *book_view;
 
@@ -444,7 +457,7 @@ e_data_book_view_new (EBookBackend *backend,
 				  "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 				  NULL);
 	
-	e_data_book_view_construct (book_view, backend, listener, card_query, card_sexp);
+	e_data_book_view_construct (book_view, backend, listener, card_query, card_sexp, max_results);
 
 	return book_view;
 }

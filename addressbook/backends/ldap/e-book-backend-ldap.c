@@ -2841,7 +2841,8 @@ e_book_backend_ldap_search (EBookBackendLDAP  	*bl,
 		int ldap_err;
 		int search_msgid;
 		
-		printf ("searching server using filter: %s\n", ldap_query);
+		printf ("searching server using filter: %s (expecting max %d results)\n", ldap_query,
+			e_data_book_view_get_max_results (view));
 
 		do {
 			book_view_notify_status (view, _("Searching..."));
@@ -2853,7 +2854,7 @@ e_book_backend_ldap_search (EBookBackendLDAP  	*bl,
 						    NULL, /* XXX */
 						    NULL, /* XXX */
 						    NULL, /* XXX timeout */
-						    0 /* XXX we need this back in view->limit*/, &search_msgid);
+						    e_data_book_view_get_max_results (view), &search_msgid);
 		} while (e_book_backend_ldap_reconnect (bl, view, ldap_err));
 
 		g_free (ldap_query);

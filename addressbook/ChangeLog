@@ -1,5 +1,24 @@
 2004-03-30  Chris Toshok  <toshok@ximian.com>
 
+	[ backend portion of fix for #48665 ]
+	* libedata-book/e-data-book.c
+	(impl_GNOME_Evolution_Addressbook_Book_getBookView): pass
+	max_results to e_data_book_view_new.
+
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_search): pass the book view's @max_results as
+	the ldap search limit.
+
+	* libedata-book/e-data-book-view.c (e_data_book_view_new): add
+	@max_results and pass it to ::construct.
+	(e_data_book_view_construct): add @max_results.
+	(e_data_book_view_get_max_results): new function.
+
+	* libedata-book/e-data-book-view.h: add max_results arg to ::new,
+	and add prototype for e_data_book_view_get_max_results.
+
+2004-03-30  Chris Toshok  <toshok@ximian.com>
+
 	[ looks like this fixes #55527 ]
 	* libedata-book/e-data-book-view.c (e_data_book_view_construct):
 	use bonobo_object_dup_ref instead of CORBA_Object_duplicate here.
