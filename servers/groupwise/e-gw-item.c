@@ -412,6 +412,8 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
                                 recipient->type = E_GW_ITEM_RECIPIENT_TO;
                         else if (!strcmp (dist_type, "CC"))
                                 recipient->type = E_GW_ITEM_RECIPIENT_CC;
+			else if (!strcmp (dist_type, "BC"))
+				recipient->type = E_GW_ITEM_RECIPIENT_BC;
                         else
 				recipient->type = E_GW_ITEM_RECIPIENT_NONE;
                 }

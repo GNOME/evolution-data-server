@@ -197,6 +197,7 @@ typedef struct {
 	enum {
 		E_GW_ITEM_RECIPIENT_TO,
 		E_GW_ITEM_RECIPIENT_CC,
+		E_GW_ITEM_RECIPIENT_BC,
 		E_GW_ITEM_RECIPIENT_NONE
 	} type;
 
