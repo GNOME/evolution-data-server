@@ -433,23 +433,20 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         struct icaltimetype t;
         int type = 0; /* type : stores enum value of ECalcomponentVType for local access*/ 
         GSList *attendee_list = NULL;
+
         /* FIXME: need to add some validation code*/
         comp = e_cal_component_new();        
         item_type = xmlGetProp (param, "type");
         if ( !g_ascii_strcasecmp (item_type, "Appointment")) {
                 e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
                 type = 1;
-        }
-        else if (!g_ascii_strcasecmp (item_type, "Task")) {
+        } else if (!g_ascii_strcasecmp (item_type, "Task")) {
                 type = 2;
                 e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
-        }
-        else if (!g_ascii_strcasecmp (item_type, "Note")) {
+        } else if (!g_ascii_strcasecmp (item_type, "Note")) {
                 type = 3;
                 e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
-        }
-        else { /* FIXME: Should this be an error. */
-                e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_NO_TYPE);
+        } else {
                 g_object_unref (comp);
                 return NULL;
         }
