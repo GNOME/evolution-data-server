@@ -2,15 +2,15 @@
 #
 # Clara Tattoni <clara.tattoni@libero.it>, 2000-2002
 # Ettore Perazzoli <ettore@ximian.com>, 2001
-# Marco Ciampa <ciampix@libero.it>, 2003
+# Marco Ciampa <ciampix@libero.it>, 2003, 2004
 # Alessio Dessi <alessio.dessi@libero.it>, 2003
 # Monica Badia <Monica.Badia@Sun.COM>, 2003
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.1\n"
-"POT-Creation-Date: 2004-02-09 14:14-0500\n"
-"PO-Revision-Date: 2004-01-07 17:16+0100\n"
-"Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
+"POT-Creation-Date: 2004-02-11 20:02+0100\n"
+"PO-Revision-Date: 2004-02-11 19:56+0100\n"
+"Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <tp@lists.linux.it>,<it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -116,12 +116,11 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: impossibile creare EBookListener"
 
 #: addressbook/libebook/e-book.c:1864
-#, fuzzy
 msgid "e_book_load_uri: cancelled"
-msgstr "e_book_load_uri: sorgente non valida."
+msgstr "e_book_load_uri: annullato"
 
 #: addressbook/libebook/e-book.c:1901
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" sul libro prima di \"%s\""
 
@@ -131,11 +130,12 @@ msgstr ""
 "e_book_get_self: non c'è un uid del proprio contatto memorizzato in gconf"
 
 #: addressbook/libebook/e-book.c:2314
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
-"e_book_get_self: non c'è un uid del proprio contatto memorizzato in gconf"
+"e_book_set_default_source: non c'è sorgente per l'uid `%s'  memorizzato in "
+"gconf."
 
 #: addressbook/libebook/e-contact.c:97
 msgid "Unique ID"
@@ -281,7 +281,7 @@ msgstr "TTY"
 #. Email fields
 #: addressbook/libebook/e-contact.c:142
 msgid "Email List"
-msgstr "Lista email"
+msgstr "Elenco email"
 
 #: addressbook/libebook/e-contact.c:143
 msgid "Email 1"
@@ -325,148 +325,124 @@ msgid "ICQ Id List"
 msgstr "Elenco Id ICQ"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Elenco nominativi pubblici AIM"
+msgstr "Nominativo pubblico di casa AIM 1"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "Elenco nominativi pubblici AIM"
+msgstr "Nominativo pubblico di casa AIM 2"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "Elenco nominativi pubblici AIM"
+msgstr "Nominativo pubblico di casa AIM 3"
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "Elenco nominativi pubblici AIM"
+msgstr "Nominativo pubblico di lavoro AIM 1"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "Elenco nominativi pubblici AIM"
+msgstr "Nominativo pubblico di lavoro AIM 2"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "Elenco nominativi pubblici AIM"
+msgstr "Nominativo pubblico di lavoro AIM 3"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Elenco Id Jabber"
+msgstr "Id di casa Jabber 1"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Elenco Id Jabber"
+msgstr "Id di casa Jabber 2"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Elenco Id Jabber"
+msgstr "Id di casa Jabber 3"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Elenco Id Jabber"
+msgstr "Id di lavoro Jabber 1"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Elenco Id Jabber"
+msgstr "Id di lavoro Jabber 2"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Elenco Id Jabber"
+msgstr "Id di lavoro Jabber 3"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Elenco nominativi pubblici Yahoo!"
+msgstr "Nominativo pubblico di casa Yahoo! 1"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Elenco nominativi pubblici Yahoo!"
+msgstr "Nominativo pubblico di casa Yahoo! 2"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Elenco nominativi pubblici Yahoo!"
+msgstr "Nominativo pubblico di casa Yahoo! 3"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Elenco nominativi pubblici Yahoo!"
+msgstr "Nominativo pubblico di lavoro Yahoo! 1"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Elenco nominativi pubblici Yahoo!"
+msgstr "Nominativo pubblico di lavoro Yahoo! 2"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Elenco nominativi pubblici Yahoo!"
+msgstr "Nominativo pubblico di lavoro Yahoo! 3"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "Elenco nominativi pubblici MSN"
+msgstr "Nominativo pubblico di casa MSN 1"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "Elenco nominativi pubblici MSN"
+msgstr "Nominativo pubblico di casa MSN 2"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "Elenco nominativi pubblici MSN"
+msgstr "Nominativo pubblico di casa MSN 3"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "Elenco nominativi pubblici MSN"
+msgstr "Nominativo pubblico di lavoro 1 MSN"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "Elenco nominativi pubblici MSN"
+msgstr "Nominativo pubblico di lavoro 2 MSN"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "Elenco nominativi pubblici MSN"
+msgstr "Nominativo pubblico di lavoro 3 MSN"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "Id ICQ di casa 1"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "Id ICQ di casa 2"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "Id ICQ di casa 3"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "Id ICQ di lavoro 1"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "Id ICQ di lavoro 2"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "Id ICQ di lavoro 3"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:188
@@ -508,7 +484,7 @@ msgstr "URL del weblog"
 
 #: addressbook/libebook/e-contact.c:200
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr "URL di video conferenza"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:203
@@ -577,19 +553,18 @@ msgstr "Elenco senza nome"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:416
-#, fuzzy
 msgid "Birthday"
 msgstr "Data di nascita"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:438
 #, c-format
 msgid "Birthday: %s"
-msgstr ""
+msgstr "Compleanno: %s"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:457
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "Anniversario"
+msgstr "Anniversario: %s"
 
 #: calendar/backends/file/e-cal-backend-file.c:181
 msgid "Can't save calendar data: Malformed URI."
@@ -597,7 +572,7 @@ msgstr "Impossibile salvare i dati del calendario: URI mal formulata."
 
 #: calendar/backends/http/e-cal-backend-http.c:218
 msgid "Redirected to Invalid URI"
-msgstr ""
+msgstr "Rediretto ad un URI non valido"
 
 #: calendar/backends/http/e-cal-backend-http.c:238
 msgid "Bad file format."
@@ -819,7 +794,6 @@ msgid "Authentication required"
 msgstr "Autenticazione richiesta"
 
 #: calendar/libecal/e-cal.c:3952
-#, fuzzy
 msgid "A CORBA exception has occurred"
 msgstr "È occorsa un'eccezione CORBA"
 
@@ -915,41 +889,6 @@ msgstr ""
 "\"%s\" prevede che tutti gli argomenti siano stringhe o uno e soltanto uno "
 "falso booleano (#f)"
 
-#. !/usr/bin/env python
-#. -*- Mode: python -*-
-#. ======================================================================
-#. FILE: Property.py
-#. CREATOR: eric
-#.
-#. DESCRIPTION:
-#.
-#.
-#. $Id$
-#. $Locker$
-#.
-#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
-#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
-#.
-#. This program is free software; you can redistribute it and/or modify
-#. it under the terms of either:
-#.
-#. The LGPL as published by the Free Software Foundation, version
-#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
-#.
-#. Or:
-#.
-#. The Mozilla Public License Version 1.0. You may obtain a copy of
-#. the License at http://www.mozilla.org/MPL/
-#. ======================================================================
-#. def icalerror_supress(arg):
-#. pass
-#. def icalerror_restore(a,b):
-#. pass
-#. Initialize all of the required keys
-#. Get the default kind of value for this property
-#. Use the kind of the existing value
-#. e1=icalerror_supress("MALFORMEDDATA")
-#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Backend del file rubrica e LDAP di Evolution"
@@ -962,9 +901,3 @@ msgstr "Backend del file calendario e webcal di Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend del file rubrica di Evolution"
-
-#~ msgid "uid? expects 1 argument"
-#~ msgstr "uid? prevede 1 argomento"
-
-#~ msgid "uid? expects argument 1 to be a string"
-#~ msgstr "uid? prevede che l'argomento 1 sia una stringa"
