@@ -550,7 +550,7 @@ success:				\n\
 })
 #endif
 #define	MUTEX_UNSET(tsl)	({					\
-		asm volatile("lwsync # MUTEX_UNSET ":::"memory");	\
+		asm volatile("lwsync":::"memory");	\
 		(*(tsl) = 0);						\
 	})
 #define	MUTEX_INIT(tsl)		MUTEX_UNSET(tsl)
