@@ -513,19 +513,9 @@ camel_vjunk_folder_new (CamelStore *parent_store, const char *name)
 }
 
 static void
-init_trash_or_junk (CamelStore *store, const gchar *name, int flag, void (*finalize) (CamelObject *o, gpointer event_data, gpointer user_data))
+init_trash_or_junk (CamelStore *store, CamelFolder *folder, void (*finalize) (CamelObject *o, gpointer event_data, gpointer user_data))
 {
 	CamelFolder *folder = NULL;
-
-	if ((store->flags & flag) == 0)
-		return;
-
-	if (flag == CAMEL_STORE_VTRASH)
-		folder = store->vtrash = camel_vtrash_folder_new (store, name);
-	else if (flag == CAMEL_STORE_VJUNK)
-		folder = store->vjunk = camel_vjunk_folder_new (store, name);
-	else
-		return;
 	
 	if (folder) {
 		/* FIXME: this should probably use the object bag or another one ? ... */
@@ -549,13 +539,21 @@ init_trash_or_junk (CamelStore *store, const gchar *name, int flag, void (*final
 static void
 init_trash (CamelStore *store)
 {
-	init_trash_or_junk (store, CAMEL_VTRASH_NAME, CAMEL_STORE_VTRASH, trash_finalize);
+	if ((store->flags & CAMEL_STORE_VTRASH) == 0)
+		return;
+
+	store->vtrash = camel_vtrash_folder_new (store, CAMEL_VTRASH_NAME);
+	init_trash_or_junk (store, store->vtrash, trash_finalize);
 }
 
 static void
 init_junk (CamelStore *store)
 {
-	init_trash_or_junk (store, CAMEL_VJUNK_NAME, CAMEL_STORE_VJUNK, junk_finalize);
+	if ((store->flags & CAMEL_STORE_VJUNK) == 0)
+		return;
+
+	store->vjunk = camel_vjunk_folder_new (store, CAMEL_VJUNK_NAME);
+	init_trash_or_junk (store, store->vjunk, junk_finalize);
 }
 
 static CamelFolder *
