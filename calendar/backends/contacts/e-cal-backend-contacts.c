@@ -360,7 +360,11 @@ cdate_to_icaltime (EContactDate *cdate)
 {
 	struct icaltimetype ret;
 
-	ret.year = cdate->year;
+/*FIXME: this is a really _ugly_ (temporary) hack
+ *	since several functions are still depending on the epoch,
+ *	let entries start (earliest) at 19700101
+ */
+	ret.year = cdate->year >= 1970 ? cdate->year : 1970;
 	ret.month = cdate->month;
 	ret.day = cdate->day;
 	ret.is_date = TRUE;
@@ -373,7 +377,7 @@ cdate_to_icaltime (EContactDate *cdate)
 
 /* Contact -> Event creator */
 static ECalComponent *
-create_component (ECalBackendContacts *cbc, EContactDate *cdate, char *summary)
+create_component (ECalBackendContacts *cbc, EContactDate *cdate, const char *summary)
 {
         ECalComponent             *cal_comp;
 	ECalComponentText          comp_summary;
@@ -401,6 +405,13 @@ create_component (ECalBackendContacts *cbc, EContactDate *cdate, char *summary)
         dt.tzid = 0;
         e_cal_component_set_dtstart (cal_comp, &dt);
         
+	itt = cdate_to_icaltime (cdate);
+	icaltime_adjust (&itt, 1, 0, 0, 0);
+	dt.value = &itt;
+	dt.tzid = 0;
+	/* We have to add 1 day to DTEND, as it is not inclusive. */
+	e_cal_component_set_dtend (cal_comp, &dt);
+ 
         /* Create yearly recurrence */
         icalrecurrencetype_clear (&r);
         r.freq = ICAL_YEARLY_RECURRENCE;
