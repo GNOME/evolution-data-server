@@ -59,7 +59,7 @@ EDataCal *e_data_cal_construct (EDataCal *cal,
 		    ECalBackend *backend,
 		    GNOME_Evolution_Calendar_CalListener listener);
 
-EDataCal *e_data_cal_new (ECalBackend *backend, const char *uri, GNOME_Evolution_Calendar_CalListener listener);
+EDataCal *e_data_cal_new (ECalBackend *backend, GNOME_Evolution_Calendar_CalListener listener);
 
 ECalBackend *e_data_cal_get_backend (EDataCal *cal);
 GNOME_Evolution_Calendar_CalListener e_data_cal_get_listener (EDataCal *cal);

@@ -1019,13 +1019,11 @@ get_factories (const char *str_uri, GList **factories)
 		return FALSE;
 	}
 
-	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/DataServer/CalFactory:" BASE_VERSION "')"
-				 " AND calendar:supported_protocols.has ('%s')", uri->protocol);
+	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/CalFactory:" BASE_VERSION "')";
 
 	
 	servers = bonobo_activation_query (query, NULL, NULL);
 
-	g_free (query);
 	e_uri_free (uri);
 
 	if (!servers) {

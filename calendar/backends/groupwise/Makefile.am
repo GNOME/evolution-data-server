@@ -16,9 +16,11 @@ INCLUDES =						\
 	$(SOUP_CFLAGS)					\
 	$(DEBUG_CFLAGS)
 
-noinst_LTLIBRARIES = libecalbackendgroupwise.la
+extension_LTLIBRARIES = libecalbackendgroupwise.la
 
 libecalbackendgroupwise_la_SOURCES =		\
+	e-cal-backend-groupwise-factory.c	\
+	e-cal-backend-groupwise-factory.h	\
 	e-cal-backend-groupwise.c		\
 	e-cal-backend-groupwise.h		\
 	e-cal-backend-groupwise-utils.c		\

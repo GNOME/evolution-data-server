@@ -10,9 +10,11 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar/libical/src/libical	\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-noinst_LTLIBRARIES = libecalbackendfile.la
+extension_LTLIBRARIES = libecalbackendfile.la
 
 libecalbackendfile_la_SOURCES =		\
+	e-cal-backend-file-factory.c\
+	e-cal-backend-file-factory.h\
 	e-cal-backend-file-events.c\
 	e-cal-backend-file-events.h\
 	e-cal-backend-file-todos.c\

@@ -24,6 +24,7 @@
 #include <bonobo/bonobo-object.h>
 #include <libical/ical.h>
 #include <libedata-cal/Evolution-DataServer-Calendar.h>
+#include <libedata-cal/e-cal-backend-factory.h>
 
 G_BEGIN_DECLS
 
@@ -31,8 +32,7 @@ G_BEGIN_DECLS
 
 #define E_TYPE_DATA_CAL_FACTORY            (e_data_cal_factory_get_type ())
 #define E_DATA_CAL_FACTORY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactory))
-#define E_DATA_CAL_FACTORY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_DATA_CAL_FACTORY,		\
-				     EDataCalFactoryClass))
+#define E_DATA_CAL_FACTORY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_DATA_CAL_FACTORY,  EDataCalFactoryClass))
 #define E_IS_DATA_CAL_FACTORY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_DATA_CAL_FACTORY))
 #define E_IS_DATA_CAL_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_DATA_CAL_FACTORY))
 
@@ -61,12 +61,13 @@ GType       e_data_cal_factory_get_type        (void);
 EDataCalFactory *e_data_cal_factory_new             (void);
 
 gboolean    e_data_cal_factory_register_storage (EDataCalFactory *factory, const char *iid);
-void        e_data_cal_factory_register_method  (EDataCalFactory *factory,
-					  const char *method,
-					  icalcomponent_kind kind,
-					  GType       backend_type);
-int         e_data_cal_factory_get_n_backends   (EDataCalFactory *factory);
-void        e_data_cal_factory_dump_active_backends   (EDataCalFactory *factory);
+void        e_data_cal_factory_register_backend  (EDataCalFactory *factory,
+						  ECalBackendFactory *backend_factory);
+
+void	    e_data_cal_factory_register_backends    (EDataCalFactory    *factory);
+
+int         e_data_cal_factory_get_n_backends       (EDataCalFactory *factory);
+void        e_data_cal_factory_dump_active_backends (EDataCalFactory *factory);
 
 G_END_DECLS
 

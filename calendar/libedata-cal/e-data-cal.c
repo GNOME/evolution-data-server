@@ -520,7 +520,7 @@ e_data_cal_construct (EDataCal *cal,
  * created.
  **/
 EDataCal *
-e_data_cal_new (ECalBackend *backend, const char *uri, GNOME_Evolution_Calendar_CalListener listener)
+e_data_cal_new (ECalBackend *backend, GNOME_Evolution_Calendar_CalListener listener)
 {
 	EDataCal *cal, *retval;
 

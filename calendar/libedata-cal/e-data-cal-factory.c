@@ -25,6 +25,7 @@
 #include <bonobo/bonobo-main.h>
 #include <libedataserver/e-url.h>
 #include <libedataserver/e-source.h>
+#include <libedataserver/e-data-server-module.h>
 #include "e-cal-backend.h"
 #include "e-data-cal.h"
 #include "e-data-cal-factory.h"
@@ -74,19 +75,19 @@ calobjtype_to_icalkind (const GNOME_Evolution_Calendar_CalObjType type)
 	return ICAL_NO_COMPONENT;
 }
 
-static GType
-get_backend_type (GHashTable *methods, const char *method, icalcomponent_kind kind)
+static ECalBackendFactory*
+get_backend_factory (GHashTable *methods, const char *method, icalcomponent_kind kind)
 {
 	GHashTable *kinds;
-	GType type;
+	ECalBackendFactory *factory;
 	
 	kinds = g_hash_table_lookup (methods, method);
 	if (!kinds)
 		return 0;
 
-	type = GPOINTER_TO_INT (g_hash_table_lookup (kinds, GINT_TO_POINTER (kind)));
+	factory = g_hash_table_lookup (kinds, GINT_TO_POINTER (kind));
 
-	return type;
+	return factory;
 }
 
 /* Looks up a calendar backend in a factory's hash table of uri->cal.  If
@@ -166,7 +167,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	ECalBackend *backend;
 	CORBA_Environment ev2;
 	GNOME_Evolution_Calendar_CalListener listener_copy;
-	GType backend_type;
+	ECalBackendFactory *backend_factory;
 	ESource *source;
 	char *str_uri;
 	EUri *uri;
@@ -204,9 +205,9 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	uri_type_string = g_strdup_printf ("%s:%d", str_uri, (int)calobjtype_to_icalkind (type));
 	g_free(str_uri);
 
-	/* Find the associated backend type (if any) */
-	backend_type = get_backend_type (priv->methods, uri->protocol, calobjtype_to_icalkind (type));
-	if (!backend_type) {
+	/* Find the associated backend factory (if any) */
+	backend_factory = get_backend_factory (priv->methods, uri->protocol, calobjtype_to_icalkind (type));
+	if (!backend_factory) {
 		/* FIXME Distinguish between method and kind failures? */
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
 		goto cleanup;
@@ -228,7 +229,8 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	backend = lookup_backend (factory, uri_type_string);
 	if (!backend) {
 		/* There was no existing backend, create a new one */
-		backend = g_object_new (backend_type, "source", source, "kind", calobjtype_to_icalkind (type), NULL);
+		backend = e_cal_backend_factory_new_backend (backend_factory, source);
+
 		if (!backend) {
 			g_warning (G_STRLOC ": could not instantiate backend");
 			bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
@@ -244,7 +246,8 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	}
 	
 	/* Create the corba calendar */
-	cal = e_data_cal_new (backend, uri_type_string, listener);
+	cal = e_data_cal_new (backend, listener);
+	printf ("cal = %p\n", cal);
 	if (!cal) {
 		g_warning (G_STRLOC ": could not create the corba calendar");
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
@@ -422,31 +425,32 @@ e_data_cal_factory_register_storage (EDataCalFactory *factory, const char *iid)
 }
 
 /**
- * e_data_cal_factory_register_method:
+ * e_data_cal_factory_register_backend:
  * @factory: A calendar factory.
- * @method: Method for the URI, i.e. "http", "file", etc.
- * @backend_type: Class type of the backend to create for this @method.
+ * @backend_factory: The object responsible for creating backends.
  * 
- * Registers the type of a #ECalBackend subclass that will be used to handle URIs
- * with a particular method.  When the factory is asked to open a particular
- * URI, it will look in its list of registered methods and create a backend of
- * the appropriate type.
+ * Registers an #ECalBackend subclass that will be used to handle URIs
+ * with a particular method.  When the factory is asked to open a
+ * particular URI, it will look in its list of registered methods and
+ * create a backend of the appropriate type.
  **/
 void
-e_data_cal_factory_register_method (EDataCalFactory *factory, const char *method, icalcomponent_kind kind, GType backend_type)
+e_data_cal_factory_register_backend (EDataCalFactory *factory, ECalBackendFactory *backend_factory)
 {
 	EDataCalFactoryPrivate *priv;
+	const char *method;
 	char *method_str;
 	GHashTable *kinds;
 	GType type;
-	
-	g_return_if_fail (factory != NULL);
-	g_return_if_fail (E_IS_DATA_CAL_FACTORY (factory));
-	g_return_if_fail (method != NULL);
-	g_return_if_fail (backend_type != 0);
-	g_return_if_fail (g_type_is_a (backend_type, E_TYPE_CAL_BACKEND));
+	icalcomponent_kind kind;
+
+	g_return_if_fail (factory && E_IS_DATA_CAL_FACTORY (factory));
+	g_return_if_fail (backend_factory && E_IS_CAL_BACKEND_FACTORY (backend_factory));
 
 	priv = factory->priv;
+
+	method = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_protocol (backend_factory);
+	kind = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_kind (backend_factory);
 
 	method_str = g_ascii_strdown (method, -1);
 
@@ -466,7 +470,22 @@ e_data_cal_factory_register_method (EDataCalFactory *factory, const char *method
 		g_hash_table_insert (priv->methods, method_str, kinds);
 	}
 	
-	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), GINT_TO_POINTER (backend_type));
+	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), backend_factory);
+}
+
+void
+e_data_cal_factory_register_backends (EDataCalFactory *cal_factory)
+{
+	GList *factories, *f;
+
+	factories = e_data_server_get_extensions_for_type (E_TYPE_CAL_BACKEND_FACTORY);
+	for (f = factories; f; f = f->next) {
+		ECalBackendFactory *backend_factory = f->data;
+
+		e_data_cal_factory_register_backend (cal_factory, g_object_ref (backend_factory));
+	}
+
+	e_data_server_extension_list_free (factories);
 }
 
 /**

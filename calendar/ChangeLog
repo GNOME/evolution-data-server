@@ -1,3 +1,65 @@
+2004-09-30  Chris Toshok  <toshok@ximian.com>
+
+	* libecal/e-cal.c (get_factories): don't look for factories based
+	on the supported_protocol property, since we can't use those
+	anymore with dynamically loaded backends.
+
+	* libedata-cal/e-data-cal-factory.c (get_backend_factory): rename
+	get_backend_type to this, and return an ECalBackendFactory*
+	instead of a GType.
+	(impl_CalFactory_getCal): change this code to use
+	ECalBackendFactory.
+	(e_data_cal_factory_register_backend): rename from
+	e_data_cal_factory_register_method and remove all the args, just
+	passing an ECalBackendFactory.
+	(e_data_cal_factory_register_backends): register all extensions
+	that subclass from E_TYPE_CAL_BACKEND_FACTORY.
+
+	* libedata-cal/e-data-cal-factor.h: change prototypes and function
+	names.
+	
+	* libedata-cal/e-data-cal.[ch] (e_data_cal_new): remove the @uri
+	arg, as it's unnecessary.
+
+	* libedata-cal/e-cal-backend-factory.[ch]: superclass the backend
+	factories must subclass from.
+
+	* libedata-cal/Makefile.am (libedata_cal_la_SOURCES): add
+	e-cal-backend-factory.c
+	(libedata_calinclude_HEADERS): add e-cal-backend-factory.h
+
+	* backends/contacts/Makefile.am (extension_LTLIBRARIES): change
+	from noinst_LTLIBRARIES.
+	(libecalbackendcontacts_la_SOURCES): add
+	e-cal-backend-contacts-factory.[ch].
+
+	* backends/contacts/e-cal-backend-contacts-factory.[ch]:
+	ECalBackendFactory for the contacts backend.
+
+	* backends/file/Makefile.am (extension_LTLIBRARIES): change
+	from noinst_LTLIBRARIES.
+	(libecalbackendfile_la_SOURCES): add
+	e-cal-backend-file-factory.[ch].
+
+	* backends/file/e-cal-backend-file-factory.[ch]:
+	ECalBackendFactory for the file backend.
+
+	* backends/groupwise/Makefile.am (extension_LTLIBRARIES): change
+	from noinst_LTLIBRARIES.
+	(libecalbackendgroupwise_la_SOURCES): add
+	e-cal-backend-groupwise-factory.[ch].
+
+	* backends/groupwise/e-cal-backend-groupwise-factory.[ch]:
+	ECalBackendFactory for the groupwise backend.
+
+	* backends/http/Makefile.am (extension_LTLIBRARIES): change
+	from noinst_LTLIBRARIES.
+	(libecalbackendhttp_la_SOURCES): add
+	e-cal-backend-http-factory.[ch].
+
+	* backends/http/e-cal-backend-http-factory.[ch]:
+	ECalBackendFactory for the http backend.
+	
 2004-09-28  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #66230

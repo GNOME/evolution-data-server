@@ -12,10 +12,12 @@ INCLUDES =						\
 	-I$(top_builddir)/addressbook			\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-noinst_LTLIBRARIES = libecalbackendcontacts.la
+extension_LTLIBRARIES = libecalbackendcontacts.la
 
-libecalbackendcontacts_la_SOURCES =	\
-	e-cal-backend-contacts.c	\
+libecalbackendcontacts_la_SOURCES =		\
+	e-cal-backend-contacts-factory.c	\
+	e-cal-backend-contacts-factory.h	\
+	e-cal-backend-contacts.c		\
 	e-cal-backend-contacts.h
 
 libecalbackendcontacts_la_LIBADD =	\
