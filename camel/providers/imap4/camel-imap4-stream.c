@@ -28,6 +28,8 @@
 #include <errno.h>
 #include <ctype.h>
 
+#include <camel/camel-debug.h>
+
 #include "camel-imap4-specials.h"
 
 #include "camel-imap4-stream.h"
