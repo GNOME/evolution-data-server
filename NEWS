@@ -1,0 +1,57 @@
+Evolution Data Server 0.0.99, 2004-08-27
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+
+    #63844 - avoid locking if authentication needed during auto completion (Siva)
+    #63255 - ignore name prefixes when completing (Siva)
+
+  * Calendar
+
+    #62857 - display recurring events upon creation for groupwise (Chen)
+    #61782 - handle importing objects with no UID (Rodrigo)
+    #62655 - don't crash with NULL uri (Hans)
+
+  * All
+
+    #63051 - solaris build fixes (notzed)
+
+Other bugs
+
+  * Calendar
+
+    - add has-alarms-in-range query type (Rodrigo)
+    - always set return value for e_cal_set_default_timezone (Frederic Crozat)
+    - don't set the same default timezone multiple times (JP)
+    - don't get all items from the groupwise server every time (Chen) 
+
+  * Addressbook
+
+    - and thread safety flag for libdb (Toshok)
+    - throw error when deleting system address book (Siva)
+    - avoid unfiltered system address book searchs (Siva)
+    - use cursors to populate the groupwise cache (Siva)
+    - prevent groupwise server crash by not doing to cursor requests at the same time (Chen)
+    - immediately show meeting status updates in GUI for groupwise (Chen)
+	
+  * All
+
+    - fix warnings (Frederic Crozat)
+    - set cache file name properly (Siva)
+
+  - pt_BR (Gustavo Maciel Dias Vieira)
+  - es (Francisco Javier F. Serrador)
+  - da (Martin Willemoes Hansen)
+  - de (Christian Neumair)
+  - hu (Laszlo Dvornik)
+  - nb (Kjartan Maraas)
+  - no (Kjartan Maraas)
+  - sq (Laurent Dhima)
+  - uk (Maxim Dziumanenko)
+  - az (Metin Amiroff)
+  - ja (Takeshi AIHANA)
+  - pt (Duarte Loreto)
+  - fi (Ilkka Tuohela, Tommi Vainikainen)
+
