@@ -68,6 +68,7 @@ static ECalBackendClass *parent_class = NULL;
 
 /* Time interval in milliseconds for obtaining changes from server and refresh the cache. */
 #define CACHE_REFRESH_INTERVAL 600000
+#define CURSOR_ITEM_LIMIT 100
 
 EGwConnection *
 e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw) {
@@ -109,16 +110,10 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	EGwConnectionStatus status;
         ECalComponent *comp;
         GList *list = NULL, *l;
-
+	gboolean done = FALSE;
+	int cursor = 0;
+	
 	priv = cbgw->priv;
-
-        /* get all the objects from the server */
-        status = e_gw_connection_get_items (priv->cnc, priv->container_id, "recipients message recipientStatus", NULL, &list);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
-                g_list_free (list);
-		e_cal_backend_groupwise_notify_error_code (cbgw, status);
-                return status;
-        }
 
 	/* get the list of category ids and corresponding names from the server */
 	status = e_gw_connection_get_categories (priv->cnc, priv->categories_by_id, priv->categories_by_name);
@@ -126,25 +121,41 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
                 return status;
         }
-
-        for (l = list; l != NULL; l = g_list_next(l)) {
-		EGwItem *item;
-
-		item = E_GW_ITEM (l->data);
-		comp = e_gw_item_to_cal_component (item, cbgw);
-		g_object_unref (item);
-		if (E_IS_CAL_COMPONENT (comp)) {
-			e_cal_component_commit_sequence (comp);
-			e_cal_backend_cache_put_component (priv->cache, comp);
-			g_object_unref (comp);
-		}
+	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "recipients message recipientStatus", NULL, &cursor);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+                return status;
         }
-        
-        g_list_free (list);
+	
+	while (!done) {
+		
+		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, 1, CURSOR_ITEM_LIMIT, &list);
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			e_cal_backend_groupwise_notify_error_code (cbgw, status);
+			return status;
+		}
+		for (l = list; l != NULL; l = g_list_next(l)) {
+			EGwItem *item;
+			
+			item = E_GW_ITEM (l->data);
+			comp = e_gw_item_to_cal_component (item, cbgw);
+			g_object_unref (item);
+			if (E_IS_CAL_COMPONENT (comp)) {
+				e_cal_component_commit_sequence (comp);
+				e_cal_backend_cache_put_component (priv->cache, comp);
+				g_object_unref (comp);
+			}
+		}
+		
+		if (!list  || g_list_length (list) == 0)
+			done = TRUE;
+		g_list_free (list);
+		list = NULL;
+        }
+	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
 
-        return E_GW_CONNECTION_STATUS_OK;        
+	return E_GW_CONNECTION_STATUS_OK;
 }
-
 
 static gboolean
 get_deltas (gpointer handle)

@@ -1,3 +1,9 @@
+2004-08-24  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(populate_cache) : use cursor methods to get items in chunks instead of 
+	getting all at once
+
 2004-08-24  Chenthill Palanisamy <pchenthill@novell.com>
          
 	* backends/groupwise/e-cal-backend-groupwise.c
