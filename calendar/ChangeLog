@@ -1,3 +1,10 @@
+2003-12-14    <jpr@ximian.com>
+
+	* libecal/e-cal-component.c (set_datetime): don't remove and then
+	free the param, lest we double free it
+
+	Fixes #51633
+
 2003-12-14  JP Rosevear <jpr@ximian.com>
 
 	* libedata-cal/e-data-cal.c (e_data_cal_notify_free_busy): call

@@ -2079,7 +2079,6 @@ set_datetime (ECalComponent *comp, struct datetime *datetime,
 		}
 	} else if (datetime->tzid_param) {
 		icalproperty_remove_parameter (datetime->prop, ICAL_TZID_PARAMETER);
-		icalparameter_free (datetime->tzid_param);
 		datetime->tzid_param = NULL;
 	}
 }
