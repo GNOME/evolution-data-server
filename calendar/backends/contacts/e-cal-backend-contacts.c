@@ -85,16 +85,18 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
         e_book_load_source (book, source, TRUE, NULL);
         
         /* Create book view */
-        fields = g_list_append (fields, e_contact_field_name (E_CONTACT_FILE_AS));
-        fields = g_list_append (fields, e_contact_field_name (E_CONTACT_BIRTH_DATE));
-        fields = g_list_append (fields, e_contact_field_name (E_CONTACT_ANNIVERSARY));
+        fields = g_list_append (fields, (char*)e_contact_field_name (E_CONTACT_FILE_AS));
+        fields = g_list_append (fields, (char*)e_contact_field_name (E_CONTACT_BIRTH_DATE));
+        fields = g_list_append (fields, (char*)e_contact_field_name (E_CONTACT_ANNIVERSARY));
         query = e_book_query_any_field_contains ("");
 
         if (!e_book_get_book_view (book, query, fields, -1, &book_view, NULL)) {
+		g_list_free (fields);
                 e_book_query_unref (query);
                 return NULL;
         }
         e_book_query_unref (query);
+	g_list_free (fields);
 
         g_signal_connect (book_view, "contacts_added", G_CALLBACK (contacts_added_cb), cbc);
         g_signal_connect (book_view, "contacts_removed", G_CALLBACK (contacts_removed_cb), cbc);
@@ -747,13 +749,10 @@ static void
 e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass *class)
 {
 	ECalBackendContactsPrivate *priv;
-        GConfClient *gconf_client;
 
 	priv = g_new0 (ECalBackendContactsPrivate, 1);
 
-        gconf_client = gconf_client_get_default ();
-        priv->addressbook_sources = e_source_list_new_for_gconf (
-                gconf_client, "/apps/evolution/addressbook/sources");
+	e_book_get_addressbooks (&priv->addressbook_sources, NULL);
 
         priv->addressbooks = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                     g_free, (GDestroyNotify)book_record_free);
