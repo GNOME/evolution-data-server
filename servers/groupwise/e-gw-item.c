@@ -96,6 +96,20 @@ free_postal_address (gpointer  postal_address)
 		g_free(address);
 	}
 }
+
+static void 
+free_full_name (gpointer full_name)
+{
+	FullName *name = (FullName *) full_name;
+	g_free (name->name_prefix);
+	g_free (name->first_name);
+	g_free (name->middle_name);
+	g_free (name->last_name);
+	g_free (name->name_suffix);
+	g_free (name);
+
+}
+
 static void 
 free_string (gpointer s, gpointer data)
 {
@@ -133,7 +147,7 @@ free_changes ( GHashTable *changes)
 		return;
 	value = g_hash_table_lookup (changes, "full_name");
 	if (value)
-		g_free (value);
+		free_full_name (value);
 	value = g_hash_table_lookup (changes, "email");
 	if (value)
 		g_list_free ((GList*) value);
@@ -142,10 +156,10 @@ free_changes ( GHashTable *changes)
 		g_list_free ((GList*) value);
 	value = g_hash_table_lookup (changes, "Home");
 	if (value)
-		g_free (value);
+		free_postal_address (value);
 	value = g_hash_table_lookup (changes, "Office");
 	if (value)
-		g_free (value);
+		free_postal_address (value);
 	g_hash_table_destroy (changes);
 }
 static void
@@ -207,15 +221,10 @@ e_gw_item_dispose (GObject *object)
 			g_slist_foreach (priv->recipient_list, (GFunc) free_recipient, NULL);
 			priv->recipient_list = NULL;
 		}	
-		/*if (priv->full_name) {
-			g_free (priv->full_name->name_prefix);
-			g_free (priv->full_name->first_name);
-			g_free (priv->full_name->first_name);
-			g_free (priv->full_name->last_name);
-			g_free (priv->full_name->name_suffix);
-			g_free (priv->full_name);
+		if (priv->full_name) {
+			free_full_name (priv->full_name);
 			priv->full_name = NULL;
-			}*/
+			}
 		if (priv->simple_fields)
 			g_hash_table_destroy (priv->simple_fields);
 		if (priv->addresses)
@@ -547,7 +556,7 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 	subparam = soup_soap_parameter_get_first_child_by_name(param, "id");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
-		g_hash_table_insert (simple_fields, "id", g_strdup (value));
+		g_hash_table_insert (simple_fields, "id", value);
 		item->priv->id = g_strdup (value);
 	}
 	value = NULL;
@@ -555,14 +564,14 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			g_hash_table_insert (simple_fields , "comment", g_strdup (value));
+			g_hash_table_insert (simple_fields , "comment", value);
 	}
 	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name(param, "name");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			g_hash_table_insert (simple_fields, "name", g_strdup (value));
+			g_hash_table_insert (simple_fields, "name", value);
 	}
 	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "categories");
@@ -574,6 +583,7 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 			value = soup_soap_parameter_get_string_value (category_param);
 			if (value) {
 				char **components = g_strsplit (value, "@", -1);
+				g_free (value);
 				value = components[0];
 				priv->category_list = g_list_append (priv->category_list, g_strdup (value));
 				g_strfreev(components);
@@ -596,7 +606,7 @@ set_postal_address_from_soap_parameter (PostalAddress *address, SoupSoapParamete
 	if (subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			address->street_address = g_strdup (value);
+			address->street_address = value;
 	}
 	
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "location");
@@ -604,35 +614,35 @@ set_postal_address_from_soap_parameter (PostalAddress *address, SoupSoapParamete
 		value = soup_soap_parameter_get_string_value (subparam);
 		
 		if (value)
-			address->location = g_strdup (value);
+			address->location = value;
 	}
 	
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "city");
 	if (subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			address->city = g_strdup (value);
+			address->city = value;
 	}
 	
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "state");
 	if (subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			address->state = g_strdup (value);
+			address->state = value;
 	}
 	
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "postalCode");
 	if (subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			address->postal_code = g_strdup (value);
+			address->postal_code = value;
 	}
 	
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "country");
 	if (subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			address->country = g_strdup (value);
+			address->country = value;
 	}
 	
 }
@@ -640,8 +650,8 @@ set_postal_address_from_soap_parameter (PostalAddress *address, SoupSoapParamete
 static void 
 set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 {
-	const char *value;
-	const char *type;
+	char *value;
+        char *type;
 	char *primary_email;
 	SoupSoapParameter *subparam;
 	SoupSoapParameter *temp;
@@ -665,30 +675,30 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			if (temp) {
 				value = soup_soap_parameter_get_string_value (temp);
 				if (value)
-					full_name->name_prefix = g_strdup (value);
+					full_name->name_prefix = value;
 			}
 			temp = soup_soap_parameter_get_first_child_by_name(subparam, "firstName"); 
 			if (temp) {
 				value = soup_soap_parameter_get_string_value (temp);
 				if (value)
-					full_name->first_name = g_strdup (value);
+					full_name->first_name = value;
 			}
 			temp = soup_soap_parameter_get_first_child_by_name(subparam, "middleName"); 
 			if (temp) {
 				value = soup_soap_parameter_get_string_value (temp);
 				if (value)
-					full_name->middle_name = g_strdup (value);
+					full_name->middle_name = value;
 			}
 			temp = soup_soap_parameter_get_first_child_by_name(subparam, "lastName"); 
 			if (temp) {
 				value = soup_soap_parameter_get_string_value (temp);
-				full_name->last_name = g_strdup (value);
+				full_name->last_name = value;
 			}
 			temp = soup_soap_parameter_get_first_child_by_name(subparam, "nameSuffix"); 
 			if (temp) {
 				value = soup_soap_parameter_get_string_value (temp);
 				if (value)
-					full_name->name_suffix = g_strdup (soup_soap_parameter_get_string_value (temp));
+					full_name->name_suffix = value;
 			}
 		}
 	}
@@ -697,13 +707,13 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		primary_email = NULL;
 		value = soup_soap_parameter_get_property(subparam, "primary");
 		if (value) {	 
-			primary_email = g_strdup (value);
+			primary_email = value;
 			item->priv->email_list = g_list_append (item->priv->email_list, g_strdup (primary_email));
 		}
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp)) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if (value && (!primary_email ||  !g_str_equal (primary_email, value)))
-				item->priv->email_list = g_list_append (item->priv->email_list, g_strdup(value));
+				item->priv->email_list = g_list_append (item->priv->email_list, value);
 		}		
 	}
 	
@@ -716,12 +726,12 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				if (second_level_child)
 					value = soup_soap_parameter_get_string_value (second_level_child);
 				if (value )
-					im_address->service = g_strdup (value);
+					im_address->service = value;
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "address");
 				if (second_level_child)
 					value = soup_soap_parameter_get_string_value (second_level_child);
 				if (value)
-					im_address->address = g_strdup (value);
+					im_address->address = value;
 			
 				item->priv->im_list = g_list_append (item->priv->im_list, im_address);
 			}
@@ -730,13 +740,13 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "phoneList");
 	if(subparam) {
-		g_hash_table_insert (simple_fields, "default_phone", g_strdup (soup_soap_parameter_get_property(subparam, "default")));
+		g_hash_table_insert (simple_fields, "default_phone", soup_soap_parameter_get_property(subparam, "default"));
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp))
 			{
 				type =  soup_soap_parameter_get_property (temp, "type");
 				value = soup_soap_parameter_get_string_value (temp);
-				g_hash_table_insert (item->priv->simple_fields, g_strconcat("phone_", type, NULL) , g_strdup (value));
-				
+				g_hash_table_insert (item->priv->simple_fields, g_strconcat("phone_", type, NULL) , value);
+				g_free (type);
 			}
 	}
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "personalInfo");
@@ -745,14 +755,14 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if (value)
-				g_hash_table_insert (simple_fields, "birthday", g_strdup (value));
+				g_hash_table_insert (simple_fields, "birthday", value);
 			
 		}
 		temp = soup_soap_parameter_get_first_child_by_name (subparam, "website");
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if (value)
-				g_hash_table_insert (simple_fields, "website", g_strdup (value));
+				g_hash_table_insert (simple_fields, "website", value);
 		}
 	}
 
@@ -762,20 +772,20 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if(value)
-				g_hash_table_insert (simple_fields, "organization", g_strdup(value));
+				g_hash_table_insert (simple_fields, "organization", value);
 			
 		}
 		temp = soup_soap_parameter_get_first_child_by_name (subparam, "department");
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if(value)
-				g_hash_table_insert (simple_fields, "department", g_strdup(value));
+				g_hash_table_insert (simple_fields, "department", value);
 		}
 		temp = soup_soap_parameter_get_first_child_by_name (subparam, "title");
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if(value)
-				g_hash_table_insert (simple_fields, "title", g_strdup(value));
+				g_hash_table_insert (simple_fields, "title", value);
 		}
 			
 	}
@@ -792,8 +802,8 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				id = soup_soap_parameter_get_string_value (second_level_child);
 			if (id&&email) {
 				EGroupMember *member = g_new0 (EGroupMember, 1);
-				member->id = g_strdup (id);
-				member->email = g_strdup (email);
+				member->id = id;
+				member->email = email;
 				item->priv->member_list = g_list_append (item->priv->member_list, member);
 			}
 					
@@ -808,7 +818,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			set_postal_address_from_soap_parameter (address, temp);
 			value = soup_soap_parameter_get_property(temp, "type");
 			if (value)
-				g_hash_table_insert (item->priv->addresses, g_strdup (value), address);
+				g_hash_table_insert (item->priv->addresses, value, address);
 			 			
 			
 		}
@@ -828,20 +838,20 @@ set_resource_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param
 		g_warning (G_STRLOC ": Invalid SOAP parameter %s", soup_soap_parameter_get_name (param));
 		return;
 	}
-	printf ("setting resource fields \n");
+
 	set_common_addressbook_item_fields_from_soap_parameter (item, param);
 	simple_fields = item->priv->simple_fields;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "phone");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "default_phone", g_strdup (value));
+			g_hash_table_insert (simple_fields, "default_phone", value);
 	}
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "email");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			item->priv->email_list = g_list_append (item->priv->email_list, g_strdup (value));
+			item->priv->email_list = g_list_append (item->priv->email_list, value);
 	}
 	
 }
@@ -865,14 +875,14 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "default_phone", g_strdup (value));
+			g_hash_table_insert (simple_fields, "default_phone", value);
 	}
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "fax");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "phone_Fax", g_strdup (value));
+			g_hash_table_insert (simple_fields, "phone_Fax", value);
 	}
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "address");
@@ -887,7 +897,7 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "website", g_strdup (value));
+			g_hash_table_insert (simple_fields, "website", value);
 	}
 
 

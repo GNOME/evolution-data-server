@@ -132,9 +132,9 @@ e_gw_connection_dispose (GObject *object)
 	EGwConnectionPrivate *priv;
 
 	g_return_if_fail (E_IS_GW_CONNECTION (cnc));
-
+	
 	priv = cnc->priv;
-
+	printf ("gw connection dispose \n");
 	if (priv) {
 		if (priv->session_id) {
 			logout (cnc);
@@ -192,7 +192,7 @@ e_gw_connection_finalize (GObject *object)
 	g_return_if_fail (E_IS_GW_CONNECTION (cnc));
 
 	priv = cnc->priv;
-
+	printf ("gw connection finalize\n");
 	/* clean up */
 	g_free (priv);
 	cnc->priv = NULL;
@@ -1050,7 +1050,7 @@ e_gw_connection_create_book (EGwConnection *cnc, char *book_name, char**id)
 	if (param)
 		value = soup_soap_parameter_get_string_value (param);
 	if (value)
-		*id = g_strdup (value);
+		*id = value;
 
 	status = E_GW_CONNECTION_STATUS_OK;	
 	return status;	
@@ -1115,6 +1115,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 					e_gw_container_set_is_writable (container, TRUE);
 				else 
 					e_gw_container_set_is_writable (container, FALSE);
+				g_free (value);
 					
 			}
 				     
@@ -1212,12 +1213,14 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
 			name = soup_soap_parameter_get_string_value (second_level_child);
 		if (id && name) {
 			char **components = g_strsplit (id, "@", -1);
+			g_free (id);
 			id = components[0];
 			if (categories_by_id) 
 				g_hash_table_insert (categories_by_id, g_strdup (id), g_strdup (name));
 			if (categories_by_name) 
 				g_hash_table_insert (categories_by_name, g_strdup (name), g_strdup (id));
 			g_strfreev (components);
+			g_free (name);
 		}
 		
         }
