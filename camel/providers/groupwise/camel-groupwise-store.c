@@ -418,7 +418,7 @@ groupwise_connect (CamelService *service, CamelException *ex)
 		CAMEL_SERVICE_UNLOCK (service, connect_lock);
 		return TRUE;
 	}
-	
+
 	if (!groupwise_auth_loop (service, ex)) {
 		CAMEL_SERVICE_UNLOCK (service, connect_lock);
 		camel_service_disconnect (service, TRUE, NULL);
@@ -426,10 +426,11 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	}
 
 	if (!e_gw_connection_get_version (priv->cnc)) {
-		char *warning;
-		warning = g_strdup_printf ("Some features may not work correctly with your current server version");
-		camel_session_alert_user(session, CAMEL_SESSION_ALERT_WARNING, warning, FALSE);
-		g_free (warning);
+		camel_session_alert_user(session, 
+				CAMEL_SESSION_ALERT_WARNING, 
+				_("Some features may not work correctly with your current server version"),
+				FALSE);
+
 	}
 
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);
