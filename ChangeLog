@@ -1,3 +1,9 @@
+2005-01-21  Jeffrey Stedfast  <fejj@novell.com>
+
+	* configure.in: Removed the enable checks for IMAP4, we just
+	always build it now. Also don't generate
+	camel/providers/imap/Makefile as we no longer build it.
+
 2005-01-21  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libedataserver/e-source.c 
