@@ -1,6 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/*  Camel
- *  Copyright (C) 1999-2004 Jeffrey Stedfast
+/*
+ *  Authors: Jeffrey Stedfast <fejj@novell.com>
+ *
+ *  Copyright 2005 Novell, Inc. (www.novell.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,6 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ *
  */
 
 
@@ -1242,6 +1245,9 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 		fi->unread = -1;
 		fi->total = -1;
 		
+		if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
+			fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
+		
 		/* SELECTED folder, just get it from the folder */
 		if (folder && !strcmp (folder->full_name, fi->full_name)) {
 			camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &fi->total, CAMEL_FOLDER_UNREAD, &fi->unread, 0);
@@ -1252,12 +1258,17 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 		if (!(fi->flags & CAMEL_FOLDER_SUBSCRIBED))
 			imap4_subscription_info (store, fi);
 		
-		g_free (list->name);
-		g_free (list);
-		
 		array->pdata[i] = fi;
 		
 		camel_imap4_store_summary_note_info (((CamelIMAP4Store *) store)->summary, fi);
+		
+		if (!g_ascii_strcasecmp (fi->full_name, "INBOX")) {
+			g_free (fi->name);
+			fi->name = g_strdup (_("Inbox"));
+		}
+		
+		g_free (list->name);
+		g_free (list);
 	}
 	
 	fi = camel_folder_info_build (array, top, '/', TRUE);

@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include <camel/camel-i18n.h>
 #include <camel/camel-store.h>
 #include <camel/camel-file-utils.h>
 
@@ -352,14 +353,22 @@ static CamelFolderInfo *
 store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
 {
 	CamelFolderInfo *fi;
+	const char *name;
 	
 	fi = g_malloc0 (sizeof (CamelFolderInfo));
 	fi->full_name = g_strdup (camel_store_info_path (s, si));
-	fi->name = g_strdup (camel_store_info_name (s, si));
 	fi->uri = g_strdup (camel_store_info_uri (s, si));
 	fi->flags = si->flags;
 	fi->unread = si->unread;
 	fi->total = si->total;
+	
+	name = camel_store_info_name (s, si);
+	if (!g_ascii_strcasecmp (fi->full_name, "INBOX")) {
+		fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
+		fi->name = g_strdup (_("Inbox"));
+	} else {
+		fi->name = g_strdup (name);
+	}
 	
 	return fi;
 }

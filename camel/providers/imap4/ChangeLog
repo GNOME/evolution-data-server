@@ -1,3 +1,17 @@
+2005-02-14  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-store-summary.c (store_info_to_folder_info):
+	Translate name of Inbox and also set flags as torkel's previous
+	fix.
+
+	* camel-imap4-store.c (imap4_build_folder_info): Translate the
+	name of Inbox.
+
+2005-02-13  Björn Torkelsson  <torkel@acc.umu.se>
+
+	* camel-imap4-store.c (imap4_build_folder_info): Add flags if it
+	is inbox.
+
 2005-02-10  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-search.c (imap4_body_contains): If we're in offline
