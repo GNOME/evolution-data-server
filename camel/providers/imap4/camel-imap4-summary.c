@@ -752,18 +752,21 @@ imap4_fetch_all_add (struct imap4_fetch_all_t *fetch)
 		
 		if (envelope->changed != IMAP4_FETCH_ALL) {
 			d(fprintf (stderr, "Hmmm, IMAP4 server didn't give us everything for message %d\n", i + 1));
-			camel_message_info_free(envelope->info);
+			camel_message_info_free (envelope->info);
 			g_free (envelope);
 			continue;
 		}
 		
 		if ((info = camel_folder_summary_uid (fetch->summary, camel_message_info_uid (envelope->info)))) {
-			camel_message_info_free(envelope->info);
+			camel_message_info_free (envelope->info);
 			g_free (envelope);
 			continue;
 		}
 		
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (envelope->info));
+		
+		if ((((CamelMessageInfoBase *) info)->flags & CAMEL_IMAP4_MESSAGE_RECENT))
+			camel_folder_change_info_recent_uid (changes, camel_message_info_uid (envelope->info));
 		
 		camel_folder_summary_add (fetch->summary, envelope->info);
 		g_free (envelope);

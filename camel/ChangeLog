@@ -6,6 +6,9 @@
 	(camel_imap4_summary_flush_updates): Modified to clear the summary
 	and do a complete refetch if enable_mlist has been newly enabled
 	and we don't already have mlist info in our summary info's.
+	(imap4_fetch_all_add): If the \Recent flag is set, also add it to
+	the "recent" changes structure so the filetr code knows to filter
+	it.
 
 2005-01-25  Jeffrey Stedfast  <fejj@novell.com>
 
