@@ -1,3 +1,14 @@
+2003-12-15  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-contact.c (adr_getter): Initialize the address_format
+	field. Absence of this was causing crashes.
+	(e_contact_set_property): For synthetic attr_type fields, add a
+	case for struct/get_set alongside strings. This makes addresses work.
+	(e_contact_get_property): For multi_elem strings, count the matching
+	attributes instead of trying to get a list from the first attribute
+	encountered (which is what list_elem does). This makes e-mail
+	addresses work.
+
 2003-12-10  Hans Petter Jansson  <hpj@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c

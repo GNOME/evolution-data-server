@@ -467,6 +467,7 @@ adr_getter (EContact *contact, EVCardAttribute *attr)
 		GList *p = e_vcard_attribute_get_values (attr);
 		EContactAddress *addr = g_new (EContactAddress, 1);
 
+		addr->address_format = g_strdup ("");
 		addr->po       = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		addr->ext      = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		addr->street   = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
@@ -619,7 +620,6 @@ e_contact_set_property (GObject *object,
 			int num_left = info->list_elem;
 			GList *attrs = e_vcard_get_attributes (E_VCARD (contact));
 			GList *l;
-			const char *sval = g_value_get_string (value);
 
 			for (l = attrs; l && !found; l = l->next) {
 				const char *name, *group;
@@ -683,10 +683,19 @@ e_contact_set_property (GObject *object,
 										info->attr_type2);
 			}
 
-			if (sval && *sval)
-				e_vcard_attribute_add_value (attr, sval);
-			else
-				e_vcard_remove_attribute (E_VCARD (contact), attr);
+			if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
+				void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : g_value_get_pointer (value);
+
+				info->struct_setter (contact, attr, data);
+			}
+			else {
+				const char *sval = g_value_get_string (value);
+
+				if (sval && *sval)
+					e_vcard_attribute_add_value (attr, sval);
+				else
+					e_vcard_remove_attribute (E_VCARD (contact), attr);
+			}
 		}
 		else if (info->t & E_CONTACT_FIELD_TYPE_LIST_ELEM) {
 			EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
@@ -723,6 +732,26 @@ e_contact_set_property (GObject *object,
 
 		}
 	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
+		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : g_value_get_pointer (value);
+
+		if (attr) {
+			printf ("overwriting existing %s\n", info->vcard_field_name);
+			/* remove all existing values and parameters.
+			   the setter will add the correct ones */
+			e_vcard_attribute_remove_values (attr);
+			e_vcard_attribute_remove_params (attr);
+		}
+		else {
+			printf ("adding new %s\n", info->vcard_field_name);
+			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
+
+			e_vcard_add_attribute (E_VCARD (contact), attr);
+		}
+
+		info->struct_setter (contact, attr, data);
+	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
 		EVCardAttribute *attr;
 
@@ -758,26 +787,6 @@ e_contact_set_property (GObject *object,
 							  e_vcard_attribute_new (NULL, info->vcard_field_name),
 							  g_value_get_string (value));
 		}
-	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
-		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : g_value_get_pointer (value);
-
-		if (attr) {
-			printf ("overwriting existing %s\n", info->vcard_field_name);
-			/* remove all existing values and parameters.
-			   the setter will add the correct ones */
-			e_vcard_attribute_remove_values (attr);
-			e_vcard_attribute_remove_params (attr);
-		}
-		else {
-			printf ("adding new %s\n", info->vcard_field_name);
-			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
-
-			e_vcard_add_attribute (E_VCARD (contact), attr);
-		}
-
-		info->struct_setter (contact, attr, data);
 	}
 	else {
 		g_warning ("unhandled attribute `%s'", info->vcard_field_name);
@@ -940,6 +949,7 @@ e_contact_get_property (GObject *object,
 	else if (info->t & E_CONTACT_FIELD_TYPE_MULTI_ELEM) {
 		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
 			GList *attrs, *l;
+			int num_left = info->list_elem;
 
 			attrs = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -952,15 +962,12 @@ e_contact_get_property (GObject *object,
 
 				/* all the attributes we care about should be in group "" */
 				if ((!group || !*group) && !strcasecmp (name, info->vcard_field_name)) {
-					GList *v;
-					int count;
+					if (num_left-- == 0) {
+						GList *v = e_vcard_attribute_get_values (attr);
 
-					v = e_vcard_attribute_get_values (attr);
-					count = info->list_elem;
-
-					v = g_list_nth (v, info->list_elem);
-
-					g_value_set_string (value, v ? v->data : NULL);
+						g_value_set_string (value, v ? v->data : NULL);
+						break;
+					}
 				}
 			}
 		}
