@@ -1035,7 +1035,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		}
 
 		if (!id_to_remove) {
-			/* use the iCalID to remove the object */
+			/* use the iCalId to remove the object */
 			id_to_remove = uid;
 		}
 
