@@ -1,3 +1,8 @@
+2004-01-30  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/http/e-cal-backend-http.c (reaload_cb): don't start a new
+	updload if we're already uploading.
+
 2004-01-29  Hans Petter Jansson  <hpj@ximian.com>
 
 	* backends/http/e-cal-backend-http.c (retrieval_done): Clear the

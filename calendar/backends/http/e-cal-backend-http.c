@@ -311,6 +311,9 @@ reload_cb (ECalBackendHttp *cbhttp)
 
 	priv = cbhttp->priv;
 
+	if (priv->is_loading)
+		return TRUE;
+
 	g_message ("Reload!\n");
 
 	priv->reload_timeout_id = 0;
