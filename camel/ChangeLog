@@ -1,3 +1,9 @@
+2005-01-11  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-store-summary.c
+	(camel_imap4_store_summary_get_folder_info): Fixed a possible
+	uninitialised condition.
+
 2005-01-12  Sushma Rai <rsushma@novell.com>
 
 	* camel-provider.[ch]: Removed camel_provider_validate_user()

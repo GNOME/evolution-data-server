@@ -382,7 +382,8 @@ camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const char
 		if (strncmp (si->path, top, toplen) != 0)
 			continue;
 		
-		if (toplen > 0 && (len = strlen (si->path)) > toplen && si->path[toplen] != '/')
+		len = strlen (si->path);
+		if (toplen > 0 && len > toplen && si->path[toplen] != '/')
 			continue;
 		
 		if (len == toplen) {
