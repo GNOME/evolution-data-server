@@ -59,6 +59,11 @@ typedef enum {
 	CAL_MODE_ANY     = 0x07
 } CalMode;
 
+#define cal_mode_to_corba(mode) \
+	(mode == CAL_MODE_LOCAL   ? GNOME_Evolution_Calendar_MODE_LOCAL  : \
+	 mode == CAL_MODE_REMOTE  ? GNOME_Evolution_Calendar_MODE_REMOTE : \
+	 GNOME_Evolution_Calendar_MODE_ANY)
+
 void cal_obj_uid_list_free (GList *list);
 
 icalcomponent *e_cal_util_new_top_level (void);

@@ -1,5 +1,23 @@
 2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_open): keep the username and password
+	passed from the client, and don't open the connection here.
+	(e_cal_backend_groupwise_set_mode): ...do it here, when we change
+	mode to 'online'.
+	(e_cal_backend_groupwise_get_mode): implemented.
+	(e_cal_backend_groupwise_is_loaded): check the cache, not the
+	connection, since we can be loaded without being online.
+	(populate_cache): made it static.
+
+	* backends/http/e-cal-backend-http.c (begin_retrieval_cb): only
+	begin the retrieval if we are online.
+
+	* libecal/e-cal-util.h: added cal_mode_to_corba macro from
+	e-cal-backend-http.c.
+
+2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
+
 	* libecal/e-cal.c (convert_type): removed g_assert_not_reached.
 
 2004-01-07  Rodrigo Moya <rodrigo@ximian.com>

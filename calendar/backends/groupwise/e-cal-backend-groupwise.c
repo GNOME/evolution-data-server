@@ -40,6 +40,9 @@ struct _ECalBackendGroupwisePrivate {
 	ECalBackendCache *cache;
 	gboolean read_only;
 	char *uri;
+	char *username;
+	char *password;
+	CalMode mode;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -89,6 +92,16 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->cache) {
 		g_object_unref (priv->cache);
 		priv->cache = NULL;
+	}
+
+	if (priv->username) {
+		g_free (priv->username);
+		priv->username = NULL;
+	}
+
+	if (priv->password) {
+		g_free (priv->password);
+		priv->password = NULL;
 	}
 
 	g_free (priv);
@@ -176,7 +189,7 @@ convert_uri (const char *gw_uri)
 
 /* Initialy populate the cache from the server */
 //static EGwConnectionStatus
-EGwConnectionStatus
+static EGwConnectionStatus
 populate_cache (ECalBackendGroupwisePrivate *priv)
 {
 	EGwConnectionStatus status;
@@ -212,8 +225,6 @@ static void
 update_cache (gpointer *data)
 {
 	EGwConnection *cnc;
-	GList *list;
-	EGwConnectionStatus status;
 
         cnc = E_GW_CONNECTION (data);
         /* FIXME: Get all changes from the server since last poll  */
@@ -228,10 +239,6 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
-	GnomeVFSURI *vuri;
-	char *real_uri;
-	EGwConnectionStatus status;
-	ECalBackendSyncStatus result;
 	
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -249,52 +256,14 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		return GNOME_Evolution_Calendar_OtherError;
 	}
 
-	/* convert the URI */
-	vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
-	if (!vuri) {
-		g_mutex_unlock (priv->mutex);
-		return GNOME_Evolution_Calendar_UnsupportedMethod;
-	}
-
-	/* FIXME: login to the server only if we're online */
-	/* create connection to server */
-	real_uri = gnome_vfs_uri_to_string ((const GnomeVFSURI *) vuri,
-					    GNOME_VFS_URI_HIDE_USER_NAME |
-		                            GNOME_VFS_URI_HIDE_PASSWORD);
-	priv->cnc = e_gw_connection_new (real_uri,
-					 username ? username : gnome_vfs_uri_get_user_name (vuri),
-					 password ? password : gnome_vfs_uri_get_password (vuri));
-
-	gnome_vfs_uri_unref (vuri);
-	g_free (real_uri);
-			
-	/* As of now we are assuming that logged in user has write rights to calender */
-	/* we need to read actual rights from server when we implement proxy user access */
 	cbgw->priv->read_only = FALSE;
-	
-	if (E_IS_GW_CONNECTION (priv->cnc)) {
-		/* Populate the cache for the first time.*/
-                /* start a timed polling thread set to 10 minutes*/
-                status = populate_cache (priv);
-                if (status != E_GW_CONNECTION_STATUS_OK) {
-			g_object_unref (priv->cnc);
-			priv->cnc = NULL;
-			g_mutex_unlock (priv->mutex);
-			g_warning (G_STRLOC ": Could not populate the cache");
+	priv->mode = CAL_MODE_LOCAL;
+	priv->username = g_strdup (username);
+	priv->password = g_strdup (password);
 
-                        return GNOME_Evolution_Calendar_OtherError;
-                }
-
-                /* FIXME : add a symbolic constant for the time-out */
-		g_mutex_unlock (priv->mutex);
-                g_timeout_add (600000, (GSourceFunc) update_cache, (gpointer) cbgw);
-
-		return GNOME_Evolution_Calendar_Success;
-	}
-		
 	g_mutex_unlock (priv->mutex);
 
-	return GNOME_Evolution_Calendar_AuthenticationFailed;
+	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
@@ -317,19 +286,107 @@ e_cal_backend_groupwise_is_loaded (ECalBackend *backend)
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	return priv->cnc ? TRUE : FALSE;
+	return priv->cache ? TRUE : FALSE;
 }
 
 /* is_remote handler for the file backend */
 static CalMode
 e_cal_backend_groupwise_get_mode (ECalBackend *backend)
 {
+	ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwisePrivate *priv;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	return priv->mode;
 }
 
 /* Set_mode handler for the file backend */
 static void
 e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 {
+	GnomeVFSURI *vuri;
+	char *real_uri;
+	EGwConnectionStatus status;
+	ECalBackendSyncStatus result;
+	ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwisePrivate *priv;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	if (priv->mode == mode) {
+		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
+					   cal_mode_to_corba (mode));
+		return;
+	}
+
+	g_mutex_lock (priv->mutex);
+
+	switch (mode) {
+	case CAL_MODE_REMOTE :/* go online */
+		/* convert the URI */
+		vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+		if (!vuri) {
+			e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
+						   GNOME_Evolution_Calendar_MODE_REMOTE);
+		} else {
+			/* create connection to server */
+			real_uri = gnome_vfs_uri_to_string ((const GnomeVFSURI *) vuri,
+							    GNOME_VFS_URI_HIDE_USER_NAME |
+							    GNOME_VFS_URI_HIDE_PASSWORD);
+			priv->cnc = e_gw_connection_new (
+				real_uri,
+				priv->username ? priv->username : gnome_vfs_uri_get_user_name (vuri),
+				priv->password ? priv->password : gnome_vfs_uri_get_password (vuri));
+
+			gnome_vfs_uri_unref (vuri);
+			g_free (real_uri);
+			
+			/* As of now we are assuming that logged in user has write rights to calender */
+			/* we need to read actual rights from server when we implement proxy user access */
+			cbgw->priv->read_only = FALSE;
+	
+			if (E_IS_GW_CONNECTION (priv->cnc)) {
+				/* Populate the cache for the first time.*/
+				/* start a timed polling thread set to 10 minutes*/
+				status = populate_cache (priv);
+				if (status != E_GW_CONNECTION_STATUS_OK) {
+					g_object_unref (priv->cnc);
+					priv->cnc = NULL;
+					g_warning (G_STRLOC ": Could not populate the cache");
+
+					e_cal_backend_notify_mode (backend,
+								   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
+								   GNOME_Evolution_Calendar_MODE_REMOTE);
+				} else {
+					/* FIXME : add a symbolic constant for the time-out */
+					g_timeout_add (600000, (GSourceFunc) update_cache, (gpointer) cbgw);
+
+					priv->mode = CAL_MODE_REMOTE;
+					e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
+								   GNOME_Evolution_Calendar_MODE_REMOTE);
+				}
+			} else
+				e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_NOT_SET,
+							   GNOME_Evolution_Calendar_MODE_REMOTE);
+		}
+		break;
+	case CAL_MODE_LOCAL : /* go offline */
+		g_object_unref (priv->cnc);
+		priv->cnc = NULL;
+		priv->mode = CAL_MODE_LOCAL;
+
+		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
+					   GNOME_Evolution_Calendar_MODE_LOCAL);
+		break;
+	default :
+		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
+					   cal_mode_to_corba (mode));
+	}
+
+	g_mutex_unlock (priv->mutex);
 }
 
 static ECalBackendSyncStatus

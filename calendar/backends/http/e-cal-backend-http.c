@@ -323,6 +323,9 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	priv = cbhttp->priv;
 
+	if (priv->mode != CAL_MODE_REMOTE)
+		return TRUE;
+
 	if (priv->retrieval_handle != NULL)
 		return FALSE;
 
@@ -441,11 +444,6 @@ e_cal_backend_http_get_mode (ECalBackend *backend)
 
 	return priv->mode;
 }
-
-#define cal_mode_to_corba(mode) \
-        (mode == CAL_MODE_LOCAL   ? GNOME_Evolution_Calendar_MODE_LOCAL  : \
-	 mode == CAL_MODE_REMOTE  ? GNOME_Evolution_Calendar_MODE_REMOTE : \
-	                            GNOME_Evolution_Calendar_MODE_ANY)
 
 /* Set_mode handler for the file backend */
 static void
