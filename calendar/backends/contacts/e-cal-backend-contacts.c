@@ -91,7 +91,7 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
         BookRecord *br;
         
 	book = e_book_new (source, NULL);
-        e_book_open (book, TRUE, NULL);
+        e_book_open (book, FALSE, NULL);
         
         /* Create book view */
         fields = g_list_append (fields, (char*)e_contact_field_name (E_CONTACT_FILE_AS));

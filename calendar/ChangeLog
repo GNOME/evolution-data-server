@@ -1,3 +1,8 @@
+2005-03-15  JP Rosevear  <jpr@novell.com>
+
+	* backends/contacts/e-cal-backend-contacts.c (book_record_new):
+	force book to open even if it doesn't exist
+
 2005-03-12  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:
