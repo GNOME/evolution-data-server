@@ -301,80 +301,6 @@ mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, Came
 	return 0;
 }
 
-static int
-mh_summary_sync_message(CamelLocalSummary *cls, CamelLocalMessageInfo *info, CamelException *ex)
-{
-	CamelMimeParser *mp;
-	const char *xev, *buffer;
-	int xevoffset;
-	int fd, outfd, len, outlen, ret=0;
-	char *name, *tmpname, *xevnew;
-
-	name = g_strdup_printf("%s/%s", cls->folder_path, camel_message_info_uid(info));
-	fd = open(name, O_RDWR);
-	if (fd == -1)
-		return -1;
-
-	mp = camel_mime_parser_new();
-	camel_mime_parser_init_with_fd(mp, fd);
-	if (camel_mime_parser_step(mp, 0, 0) != CAMEL_MIME_PARSER_STATE_EOF) {
-		xev = camel_mime_parser_header(mp, "X-Evolution", &xevoffset);
-		d(printf("xev = '%s'\n", xev));
-		xevnew = camel_local_summary_encode_x_evolution(cls, info);
-		if (xev == NULL
-		    || camel_local_summary_decode_x_evolution(cls, xev, NULL) == -1
-		    || strlen(xev)-1 != strlen(xevnew)) {
-
-			d(printf("camel local summary_decode_xev = %d\n", camel_local_summary_decode_x_evolution(cls, xev, NULL)));
-
-			/* need to write a new copy/unlink old */
-			tmpname = g_strdup_printf("%s/.tmp.%d.%s", cls->folder_path, getpid(), camel_message_info_uid(info));
-			d(printf("old xev was %d %s new xev is %d %s\n", strlen(xev), xev, strlen(xevnew), xevnew));
-			d(printf("creating new message %s\n", tmpname));
-			outfd = open(tmpname, O_CREAT|O_WRONLY|O_TRUNC, 0600);
-			if (outfd != -1) {
-				outlen = 0;
-				len = camel_local_summary_write_headers(outfd, camel_mime_parser_headers_raw(mp), xevnew, NULL, NULL);
-				if (len != -1) {
-					while (outlen != -1 && (len = camel_mime_parser_read(mp, &buffer, 10240)) > 0) {
-						d(printf("camel mime parser read, read %d bytes: %.*s\n", len, len, buffer));
-						do {
-							outlen = write(outfd, buffer, len);
-						} while (outlen == -1 && errno == EINTR);
-					}
-				}
-
-				d(printf("len = %d outlen = %d, renaming/finishing\n", len, outlen));
-				if (close(outfd) == -1
-				    || len == -1
-				    || outlen == -1
-				    || rename(tmpname, name) == -1) {
-					unlink(tmpname);
-					ret = -1;
-				}
-			} else {
-				g_warning("sync can't create tmp file: %s", strerror (errno));
-			}
-			g_free(tmpname);
-		} else {
-			d(printf("stamping in updated X-EV at %d\n", (int)xevoffset));
-			/* else, we can just update the flags field */
-			lseek(fd, xevoffset+strlen("X-Evolution: "), SEEK_SET);
-			do {
-				len = write(fd, xevnew, strlen(xevnew));
-			} while (len == -1 && errno == EINTR);
-			if (len == -1)
-				ret = -1;
-		}
-
-		g_free(xevnew);
-	}
-
-	camel_object_unref((CamelObject *)mp);
-	g_free(name);
-	return ret;
-}
-
 /* sync the summary file with the ondisk files */
 static int
 mh_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changes, CamelException *ex)
@@ -390,6 +316,8 @@ mh_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo 
 	   be doing any significant io already */
 	if (camel_local_summary_check(cls, changes, ex) == -1)
 		return -1;
+
+	/* FIXME: need to update/honour .mh_sequences or whatever it is */
 
 	count = camel_folder_summary_count((CamelFolderSummary *)cls);
 	for (i=count-1;i>=0;i--) {
@@ -410,11 +338,7 @@ mh_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo 
 			}
 			g_free(name);
 		} else if (info->info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED)) {
-			if (mh_summary_sync_message(cls, info, ex) != -1) {
-				info->info.flags &= 0xffff;
-			} else {
-				g_warning("Problem occured when trying to expunge, ignored");
-			}
+			info->info.flags &= 0xffff;
 		}
 		camel_message_info_free(info);
 	}

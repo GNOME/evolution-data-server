@@ -1,5 +1,13 @@
 2005-02-24  Not Zed  <NotZed@Ximian.com>
 
+	** See bug #57185
+
+	* camel-mh-summary.c (mh_summary_sync_message): removed.  dont
+	re-write people's mh mail just to add an xev header.  we should be
+	looking at .mh_sequences or something.  Partial fix for #57185.
+
+2005-02-24  Not Zed  <NotZed@Ximian.com>
+
 	** See bug #59507
 
 	* camel-spool-store.c (spool_get_full_path): handle mbox/elm cases
