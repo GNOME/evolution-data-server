@@ -1,5 +1,9 @@
 2004-06-18  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book.c (e_book_new_system_addressbook): "oops".
+
+2004-06-18  Chris Toshok  <toshok@ximian.com>
+
 	[ fixes #57628 ]
 	
 	* libebook/e-book.c (e_book_new_system_addressbook): use the

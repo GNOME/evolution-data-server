@@ -3252,7 +3252,6 @@ e_book_new_system_addressbook    (GError **error)
 	else {
 		char *filename;
 		char *uri;
-		book = e_book_new_system_addressbook (&err);
 
 		filename = g_build_filename (g_get_home_dir(),
 					     ".evolution/addressbook/local/system",
