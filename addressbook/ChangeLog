@@ -1,3 +1,15 @@
+2005-01-13  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libedatabook/e-book-backend-summary.c (do_compare):
+	compare full_name against string instead of given name
+	and surname.This fixes is full_name query on summary
+	
+	* backends/file/e-bbok-backend-file.c 
+	(e_book_backend_file_get_contact_list) : see if
+	query is a summary query and search over summary
+	to get matching contacts instead of iterating 
+	over all contacts in db. Improves Performance 
+	 
 2005-01-10  Hans Petter Jansson  <hpj@novell.com>
 
 	* backends/file/e-book-backend-file.c

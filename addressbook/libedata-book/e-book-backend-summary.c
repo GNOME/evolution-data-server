@@ -916,10 +916,8 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
 		for (i = 0; i < summary->priv->items->len; i ++) {
 			EBookBackendSummaryItem *item = g_ptr_array_index (summary->priv->items, i);
 			if (!strcmp (argv[0]->value.string, "full_name")) {
-				char *given = item->given_name;
-				char *surname = item->surname;
-				if ((given && compare (given, argv[1]->value.string))
-				    || (surname && compare (surname, argv[1]->value.string)))
+				char *full_name = item->full_name;
+				if (full_name && compare (full_name, argv[1]->value.string))
 					g_ptr_array_add (result, item->id);
 			}
 			else if (!strcmp (argv[0]->value.string, "email")) {

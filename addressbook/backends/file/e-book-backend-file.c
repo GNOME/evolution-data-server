@@ -349,50 +349,75 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	gboolean search_needed;
 	const char *search = query;
 	GList *contact_list = NULL;
-
+	EBookBackendSyncStatus status;
+	
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
+	status = GNOME_Evolution_Addressbook_Success;
+	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
+	
+		/* do a summary query */
+		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
+		int i;
 
-	search_needed = TRUE;
+		for (i = 0; i < ids->len; i ++) {
+			char *id = g_ptr_array_index (ids, i);
+			string_to_dbt (id, &id_dbt);
+			memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+			vcard_dbt.flags = DB_DBT_MALLOC;
 
-	if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
-		search_needed = FALSE;
-
-	card_sexp = e_book_backend_sexp_new (search);
-	if (!card_sexp) {
-		/* XXX this needs to be an invalid query error of some sort*/
-		return GNOME_Evolution_Addressbook_ContactNotFound;
-	}
-
-	db_error = db->cursor (db, NULL, &dbc, 0);
-
-	if (db_error != 0) {
-		/* XXX this needs to be some CouldNotOpen error */
-		return GNOME_Evolution_Addressbook_ContactNotFound;
-	}
-
-	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-	memset (&id_dbt, 0, sizeof (id_dbt));
-	db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
-
-	while (db_error == 0) {
-
-		/* don't include the version in the list of cards */
-		if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
-		    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-
-			if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
+			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
+			if (db_error == 0)
 				contact_list = g_list_append (contact_list, g_strdup (vcard_dbt.data));
+			else { 
+				status = GNOME_Evolution_Addressbook_OtherError ;
+				break;
 			}
 		}
+		g_ptr_array_free (ids, TRUE);
+		
+	} else {
+		search_needed = TRUE;
+		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
+			search_needed = FALSE;
 
-		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+		card_sexp = e_book_backend_sexp_new (search);
+		if (!card_sexp) {
+			/* XXX this needs to be an invalid query error of some sort*/
+			return GNOME_Evolution_Addressbook_ContactNotFound;
+		}
 
+		db_error = db->cursor (db, NULL, &dbc, 0);
+
+		if (db_error != 0) {
+			/* XXX this needs to be some CouldNotOpen error */
+			return GNOME_Evolution_Addressbook_ContactNotFound;
+		}
+
+		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+		memset (&id_dbt, 0, sizeof (id_dbt));
+		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+
+		while (db_error == 0) {
+
+			/* don't include the version in the list of cards */
+			if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+
+				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
+					contact_list = g_list_append (contact_list, g_strdup (vcard_dbt.data));
+				}
+			}
+
+			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+
+		}
+		status = db_error != DB_NOTFOUND
+			? GNOME_Evolution_Addressbook_OtherError
+			: GNOME_Evolution_Addressbook_Success;
 	}
 
 	*contacts = contact_list;
-	return db_error != DB_NOTFOUND
-		? GNOME_Evolution_Addressbook_OtherError
-		: GNOME_Evolution_Addressbook_Success;
+	return status;
 }
 
 typedef struct {
