@@ -1,3 +1,11 @@
+2004-04-10  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_load_source) : retrieve the book name form uri instead 
+	of e-source
+	(set_members_in_gw_item) : new function to set the ids of contact-list members into 
+	e-gw-item 
+
 2004-04-07  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-vcard.h: reorder the EVC_X #defines a bit, and add in
