@@ -118,7 +118,7 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 	folder_summary->message_info_size = sizeof (CamelIMAP4MessageInfo);
 	folder_summary->content_info_size = sizeof (CamelIMAP4MessageContentInfo);
 	
-	summary->have_mlist = FALSE;
+	summary->have_mlist = TRUE;
 	
 	summary->update_flags = TRUE;
 	summary->uidvalidity_changed = FALSE;

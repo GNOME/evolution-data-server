@@ -1,3 +1,9 @@
+2005-01-27  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-summary.c
+	(camel_imap4_summary_init): Default the have_mlist bit to TRUE so
+	that upgraders from 2.0 won't have their summaries rescanned.
+
 2005-01-27  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-folder.c
