@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-21 03:19+0200\n"
-"PO-Revision-Date: 2004-05-21 16:38+0200\n"
+"POT-Creation-Date: 2004-05-29 14:16+0200\n"
+"PO-Revision-Date: 2004-05-29 18:01+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -604,21 +604,21 @@ msgstr "Výročí: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
 msgid "Invalid server URI"
 msgstr "Neplatné URI serveru"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #: calendar/libecal/e-cal.c:4274
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
 
@@ -842,14 +842,18 @@ msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
 #: calendar/libecal/e-cal.c:4278
+msgid "Unable to book time"
+msgstr "Nemohu uložit čas"
+
+#: calendar/libecal/e-cal.c:4280
 msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4282 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4284
 msgid "No error"
 msgstr "Žádná chyba"
 
