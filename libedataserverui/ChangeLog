@@ -1,3 +1,15 @@
+2005-01-10  Rodrigo Moya <rodrigo@novell.com>
+
+	* e-categories-dialog.glade: replaced the 'Edit master ...' button
+	with buttons for adding, editing and removing categories.
+	Added the category properties dialog.
+
+	* e-categories-dialog.c (e_categories_dialog_init): load the buttons
+	from the Glade file.
+	(new_button_clicked_cb, edit_button_clicked_cb,
+	delete_button_clicked_cb): added callbacks for the new buttons in the
+	dialog.
+
 2005-01-10  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-contact-store.c (e_contact_store_find_contact): Implement.

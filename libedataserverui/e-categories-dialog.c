@@ -17,16 +17,23 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
 #include <glib/gi18n.h>
 #include <gtk/gtkbox.h>
+#include <gtk/gtkbutton.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrenderertoggle.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkliststore.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtktable.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktreeview.h>
+#include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade-xml.h>
 #include <libedataserver/e-categories.h>
 #include "e-categories-dialog.h"
@@ -35,11 +42,72 @@ struct _ECategoriesDialogPrivate {
 	GladeXML *gui;
 	GtkWidget *categories_entry;
 	GtkWidget *categories_list;
+	GtkWidget *new_button;
+	GtkWidget *edit_button;
+	GtkWidget *delete_button;
 
 	GHashTable *selected_categories;
 };
 
 static GObjectClass *parent_class = NULL;
+
+/* Category properties dialog */
+
+typedef struct {
+	ECategoriesDialog *parent;
+	GladeXML *gui;
+	GtkWidget *the_dialog;
+	GtkWidget *category_name;
+	GtkWidget *category_color;
+	GtkWidget *category_icon;
+} CategoryPropertiesDialog;
+
+static CategoryPropertiesDialog *
+load_properties_dialog (ECategoriesDialog *parent)
+{
+	CategoryPropertiesDialog *prop_dialog;
+	GtkWidget *table;
+
+	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
+
+	prop_dialog->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "properties-dialog", NULL);
+	if (!prop_dialog->gui) {
+		g_free (prop_dialog);
+		return NULL;
+	}
+
+	prop_dialog->parent = parent;
+
+	prop_dialog->the_dialog = glade_xml_get_widget (prop_dialog->gui, "properties-dialog");
+	gtk_window_set_transient_for (GTK_WINDOW (prop_dialog->the_dialog), GTK_WINDOW (parent));
+
+	prop_dialog->category_name = glade_xml_get_widget (prop_dialog->gui, "category-name");
+	prop_dialog->category_color = glade_xml_get_widget (prop_dialog->gui, "category-color");
+
+	/* create the icon file entry */
+	table = glade_xml_get_widget (prop_dialog->gui, "table-category-properties");
+	prop_dialog->category_icon = gnome_file_entry_new ("category-icon-history-id", _("Category Icon"));
+	gtk_table_attach (GTK_TABLE (table), prop_dialog->category_icon, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 3, 3);
+	gtk_widget_show (prop_dialog->category_icon);
+
+	return prop_dialog;
+}
+
+static void
+free_properties_dialog (CategoryPropertiesDialog *prop_dialog)
+{
+	if (prop_dialog->the_dialog) {
+		gtk_widget_destroy (prop_dialog->the_dialog);
+		prop_dialog->the_dialog = NULL;
+	}
+
+	if (prop_dialog->gui) {
+		g_object_unref (prop_dialog->gui);
+		prop_dialog->gui = NULL;
+	}
+
+	g_free (prop_dialog);
+}
 
 /* GObject methods */
 
@@ -142,6 +210,92 @@ entry_changed_cb (GtkEditable *editable, gpointer user_data)
 }
 
 static void
+new_button_clicked_cb (GtkButton *button, gpointer user_data)
+{
+	ECategoriesDialog *dialog;
+	CategoryPropertiesDialog *prop_dialog;
+
+	dialog = user_data;
+
+	prop_dialog = load_properties_dialog (dialog);
+	if (!prop_dialog)
+		return;
+
+	if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
+		const char *category_name, *category_icon;
+		GtkTreeIter iter;
+
+		category_name = gtk_entry_get_text (GTK_ENTRY (prop_dialog->category_name));
+		/* FIXME: get color */
+		category_icon = gtk_entry_get_text (
+			GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
+
+		e_categories_add (category_name, NULL, category_icon ? category_icon : NULL);
+
+		gtk_list_store_append (
+			GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
+			&iter);
+		gtk_list_store_set (
+			GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
+			0, FALSE, 1, category_name, -1);
+	}
+
+	free_properties_dialog (prop_dialog);
+}
+
+static void
+edit_button_clicked_cb (GtkButton *button, gpointer user_data)
+{
+	ECategoriesDialog *dialog;
+	ECategoriesDialogPrivate *priv;
+	CategoryPropertiesDialog *prop_dialog;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	char *category_name;
+
+	dialog = user_data;
+	priv = dialog->priv;
+
+	/* get the currently selected item */
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->categories_list));
+
+	if (!gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->categories_list)),
+					      NULL, &iter))
+		return;
+
+	/* load the properties dialog */
+	prop_dialog = load_properties_dialog (dialog);
+	if (!prop_dialog)
+		return;
+
+	gtk_tree_model_get (model, &iter, 1, &category_name, -1);
+	gtk_entry_set_text (GTK_ENTRY (prop_dialog->category_name), category_name);
+	gtk_widget_set_sensitive (prop_dialog->category_name, FALSE);
+	gtk_entry_set_text (
+		GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))),
+		e_categories_get_icon_file_for (category_name));
+
+	if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
+		const char *category_icon;
+
+		/* FIXME: get color */
+		category_icon = gtk_entry_get_text (
+			GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
+
+		if (category_icon)
+			e_categories_set_icon_file_for (category_name, category_icon);
+	}
+
+	g_free (category_name);
+	free_properties_dialog (prop_dialog);
+}
+
+static void
+delete_button_clicked_cb (GtkButton *button, gpointer user_data)
+{
+}
+
+static void
 e_categories_dialog_init (ECategoriesDialog *dialog)
 {
 	ECategoriesDialogPrivate *priv;
@@ -167,6 +321,13 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 
 	priv->categories_entry = glade_xml_get_widget (priv->gui, "entry-categories");
 	priv->categories_list = glade_xml_get_widget (priv->gui, "categories-list");
+
+	priv->new_button = glade_xml_get_widget (priv->gui, "button-new");
+	g_signal_connect (G_OBJECT (priv->new_button), "clicked", G_CALLBACK (new_button_clicked_cb), dialog);
+	priv->edit_button = glade_xml_get_widget (priv->gui, "button-edit");
+	g_signal_connect (G_OBJECT (priv->edit_button), "clicked", G_CALLBACK (edit_button_clicked_cb), dialog);
+	priv->delete_button = glade_xml_get_widget (priv->gui, "button-delete");
+	g_signal_connect (G_OBJECT (priv->delete_button), "clicked", G_CALLBACK (delete_button_clicked_cb), dialog);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
