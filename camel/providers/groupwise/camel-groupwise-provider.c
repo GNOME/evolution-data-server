@@ -29,23 +29,18 @@
 #endif
 
 #include <string.h>
-#include <gmodule.h>
 #include "camel-imap-store.h"
 #include "camel-provider.h"
 #include "camel-session.h"
-#include "camel-smtp-transport.h"
 #include "camel-url.h"
 #include "camel-sasl.h"
-#include "camel-gw-listener.h"
 #include "camel-i18n.h"
 
 static void add_hash (guint *hash, char *s);
 static guint groupwise_url_hash (gconstpointer key);
 static gint check_equal (char *s1, char *s2);
 static gint groupwise_url_equal (gconstpointer a, gconstpointer b);
-static void free_groupwise_listener ( void );
 
-static CamelGwListener *config_listener = NULL;
 
 CamelProviderConfEntry groupwise_conf_entries[] = {
 	/* override the labels/defaults of the standard settings */
@@ -147,16 +142,8 @@ camel_provider_module_init(void)
 		camel_exception_clear(&ex);
 	}
 
-	if (!config_listener) {
-		config_listener = camel_gw_listener_new ();	
-		g_atexit ( free_groupwise_listener );
-	}
 }
 
-void free_groupwise_listener ( void )
-{
-	g_object_unref (config_listener);
-}
 
 static void
 add_hash (guint *hash, char *s)

@@ -1,3 +1,13 @@
+2004-12-03  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* providers/groupwise/camel-groupwise-provider.c : Remove unnecessary 
+	includes . Remove camel-gw-listener stuff from here as we are going to 
+	make it a plugin 
+
+	* providers/groupwise/Makefile.am : Remove camel-gw-listner.c from SOURCES
+	
+	* providers/Makefile.am : add groupwise to SUBDIRS 
+		
 2004-12-02  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #69533.
