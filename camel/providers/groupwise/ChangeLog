@@ -1,5 +1,11 @@
 2005-02-08  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	* camel-groupwise-utils.c:
+	  (camel_groupwise_util_item_from_message):
+	  set the message type even if it is not a multipart
+
+2005-02-08  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	* camel-groupwise-store.c:
 	  (groupwise_get_folder)
 	* camel-groupwise-folder.c:

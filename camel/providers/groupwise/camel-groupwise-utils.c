@@ -357,16 +357,21 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 		/*only message*/
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new () ;
 		CamelDataWrapper *dw = camel_data_wrapper_new () ;
+		CamelContentType *type ;
 		char *buffer = NULL ;
+		char *content_type = NULL ;
 			
 		dw = camel_medium_get_content_object (CAMEL_MEDIUM (message)) ;
+		type = camel_mime_part_get_content_type((CamelMimePart *)message) ;
+		content_type = g_strdup_printf ("%s/%s", type->type, type->subtype) ;
 		camel_data_wrapper_write_to_stream(dw, (CamelStream *)content) ;
 		buffer = g_malloc0 (content->buffer->len+1) ;
 		buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
-				
+		e_gw_item_set_content_type (item, content_type) ;				
 		e_gw_item_set_message (item, buffer) ;
 		
 		g_free (buffer) ;
+		g_free (content_type) ;
 		camel_object_unref (content) ;
 	}
 	/*Populate EGwItem*/
