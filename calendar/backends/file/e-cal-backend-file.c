@@ -1652,6 +1652,20 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 
 	/* Get the UID */
 	comp_uid = icalcomponent_get_uid (icalcomp);
+	if (!comp_uid) {
+		char *new_uid;
+
+		new_uid = e_cal_component_gen_uid ();
+		if (!new_uid) {
+			icalcomponent_free (icalcomp);
+			return GNOME_Evolution_Calendar_InvalidObject;
+		}
+
+		icalcomponent_set_uid (icalcomp, new_uid);
+		comp_uid = icalcomponent_get_uid (icalcomp);
+
+		g_free (new_uid);
+	}
 
 	/* check the object is not in our cache */
 	if (lookup_component (cbfile, comp_uid)) {
