@@ -407,6 +407,23 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="getSettingsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:string" minOccurs="0" nillable="true"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="getSettingsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="settings" type="types:Settings"/>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="getTimezoneListRequest">
 	</xs:element>
 
@@ -509,6 +526,22 @@
 	</xs:element>
 
 	<xs:element name="modifyProxyAccessResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifySettingsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="settings" type="types:SettingsList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifySettingsResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>
@@ -669,6 +702,40 @@
 	</xs:element>
 
 	<xs:element name="removeProxyAccessResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="types:Status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="retractRequest">
+		<xs:annotation>
+			<xs:documentation>
+				If a recipient has opened or accepted a Calendar item, a notice
+				will be placed in the recipient's in-box when the item is
+				retracted.  The notice can be affected by the following options:
+				
+				"comment":  The comment will be included in the notice.
+				"retractCausedByResend": When TRUE, the notice will be suppressed
+				in lieu of the 'new' calendar item that will be delivered to 
+				the recipient.
+				"retractingAllInstances": When TRUE, a single notice will be 
+				placed in the recipient's in-box (instead of a notice for each
+				instance).  
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="items" type="types:ItemRefList"/>
+				<xs:element name="comment" type="xs:string" minOccurs="0"/>
+				<xs:element name="retractingAllInstances" type="xs:bool" minOccurs="0"/>
+				<xs:element name="retractCausedByResend" type="xs:bool" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="retractResponse">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="status" type="types:Status"/>

@@ -231,6 +231,14 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:complexType name="CommentStatus">
+		<xs:simpleContent>
+			<xs:extension base="xs:dateTime">
+				<xs:attribute name="comment" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
 	<xs:complexType name="Contact">
 		<xs:complexContent>
 			<xs:extension base="tns:AddressBookItem">
@@ -320,6 +328,22 @@
 				<xs:attribute name="occurrence" type="tns:OccurrenceType"/>
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DelegatedStatus">
+		<xs:simpleContent>
+			<xs:extension base="tns:CommentStatus">
+				<xs:attribute name="userid" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DelegateeStatus">
+		<xs:complexContent>
+			<xs:extension base="tns:RecipientStatus">
+				<xs:attribute name="userid" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="DeltaList">
@@ -597,7 +621,7 @@
 	<xs:complexType name="GroupMember">
 		<xs:sequence>
 			<xs:element ref="tns:id"/>
-			<xs:element ref="tns:name"/>
+			<xs:element ref="tns:name" minOccurs="0"/>
 			<xs:element ref="tns:email"/>
 			<xs:element name="distType" type="tns:DistributionType" default="TO"/>
 			<xs:element name="itemType" type="tns:ContactType" default="Contact"/>
@@ -639,13 +663,13 @@
 			<xs:element ref="tns:modified" minOccurs="0"/>
 			<xs:element name="changes" type="tns:ItemChanges" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
-		<xs:attribute name="type" type="xsi:type"/>
+		<xs:attribute name="type" type="xs:string"/>
 	</xs:complexType>
 
 	<xs:complexType name="ItemArg">
 		<xs:simpleContent>
 			<xs:extension base="tns:uid">
-				<xs:attribute name="type" type="xsi:type"/>
+				<xs:attribute name="type" type="xs:string"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -963,6 +987,7 @@
 				<xs:sequence>
 					<xs:element name="distType" type="tns:DistributionType"/>
 					<xs:element name="recipType" type="tns:RecipientType"/>
+					<xs:element name="recipientStatus" type="tns:RecipientStatus" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -971,6 +996,32 @@
 	<xs:complexType name="RecipientList">
 		<xs:sequence>
 			<xs:element name="recipient" type="tns:Recipient" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RecipientStatus">
+		<xs:sequence>
+			<xs:element name="delivered" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="undeliverable" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="transferred" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="transferDelayed" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="downloaded" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="retractRequested" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="retracted" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="opened" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="deleted" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="undeleted" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="purged" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="accepted" type="tns:CommentStatus" minOccurs="0"/>
+			<xs:element name="declined" type="tns:CommentStatus" minOccurs="0"/>
+			<xs:element name="replied" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="forwarded" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="shared" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="started" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="completed" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="incomplete" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="delegated" type="tns:DelegatedStatus" minOccurs="0"/>
+			<xs:element name="delegateeStatus" type="tns:DelegateeStatus" minOccurs="0"/> <!-- USERID property specifies delegatee -->
 		</xs:sequence>
 	</xs:complexType>
 
@@ -1040,6 +1091,26 @@
 			<xs:element name="mimeEncoding" type="xs:string" minOccurs="0"/>
 			<xs:element name="statusTracking" type="tns:StatusTracking" minOccurs="0"/>
 			<xs:element name="notification" type="tns:ReturnNotification" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Settings">
+		<xs:sequence>
+			<xs:element name="group" type="tns:SettingsGroup" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="setting" type="tns:Custom" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="SettingsGroup">
+		<xs:sequence>
+			<xs:element name="setting" type="tns:Custom" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string"/>
+	</xs:complexType>
+
+	<xs:complexType name="SettingsList">
+		<xs:sequence>
+			<xs:element name="setting" type="tns:Custom" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 
