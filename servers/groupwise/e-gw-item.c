@@ -549,7 +549,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 
 			recipient->status_enabled = TRUE;
        			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "deleted")) ) {
-				recipient->status = E_GW_ITEM_STAT_DECLINED;
+				recipient->status = E_GW_ITEM_STAT_DELETED;
 				value = soup_soap_parameter_get_string_value (temp_param);
 				formatted_date = e_gw_connection_format_date_string (value);
 				recipient->deleted_date = g_strdup (formatted_date);
@@ -1634,7 +1634,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 				else if (!strcmp (status_name, "declined"))
 					item->priv->self_status |= E_GW_ITEM_STAT_DECLINED;
 				else if (!strcmp (status_name, "deleted"))
-					item->priv->self_status |= E_GW_ITEM_STAT_DECLINED;
+					item->priv->self_status |= E_GW_ITEM_STAT_DELETED;
 				else if (!strcmp (status_name, "read")) 
 					item->priv->self_status |= E_GW_ITEM_STAT_READ;
 				else if (!strcmp (status_name, "opened"))

@@ -1,3 +1,9 @@
+2005-02-16 Vivek Jain <jvivek@novell.com>
+	
+	* e_gw_item.c : (set_recipient_list_from_soap_parameter)
+		      : (e_gw_item_new_from_soap_parameter)
+	set appropriate status for "deleted" items
+
 2005-02-09  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_new):
