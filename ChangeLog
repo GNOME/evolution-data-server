@@ -1,3 +1,7 @@
+2004-12-31  JP Rosevear  <jpr@novell.com>
+
+	* Makefile.am: clean iconv-detect.h
+
 2004-12-29  David Trowbridge <trowbrds@cs.colorado.edu>
 
 	* libedataserver/e-source.c: Add logic for emitting a "changed" signal

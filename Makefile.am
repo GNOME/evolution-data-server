@@ -29,7 +29,7 @@ EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in) 	\
 	$(LIBDB_FILES)
 
-DISTCLEANFILES = intltool-extract intltool-merge intltool-update $(pkgconfig_DATA)
+DISTCLEANFILES = intltool-extract intltool-merge intltool-update iconv-detect.h $(pkgconfig_DATA)
 distclean-local:
 	(cd libdb && $(MAKE) $(AM_MAKEFLAGS) distclean)
 
