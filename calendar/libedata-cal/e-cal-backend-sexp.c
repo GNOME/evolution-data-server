@@ -250,7 +250,9 @@ func_uid (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 		equal = FALSE;
 	else if (e_util_utf8_strstrcase (arg_uid, uid) != NULL && strlen (arg_uid) == strlen (uid))
 		equal = TRUE;
-
+	else
+		equal = FALSE;
+	
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = equal;
 

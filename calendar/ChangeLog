@@ -1,5 +1,18 @@
 2004-01-26  JP Rosevear <jpr@ximian.com>
 
+	* libedata-cal/e-cal-backend-cache.c (get_filename_from_uri): take
+	a const uri
+	(e_cal_backend_cache_set_property): pass a const value
+	(e_cal_backend_cache_constructor): uri is const
+	(e_cal_backend_cache_put_component): rid is const
+	(e_cal_backend_cache_get_components): distinguish between GList
+	and GSList
+
+	* libedata-cal/e-cal-backend-sexp.c (func_uid): make sure we
+	always set a return value
+
+2004-01-26  JP Rosevear <jpr@ximian.com>
+
 	* backends/groupwise/e-gw-connection.c
 	(get_e_cal_component_from_soap_parameter): description is not
 	const

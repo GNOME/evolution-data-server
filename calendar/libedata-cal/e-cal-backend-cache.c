@@ -40,7 +40,7 @@ enum {
 static GObjectClass *parent_class = NULL;
 
 static char *
-get_filename_from_uri (char *uri)
+get_filename_from_uri (const char *uri)
 {
 	char *mangled_uri, *filename;
 	int i;
@@ -77,7 +77,7 @@ e_cal_backend_cache_set_property (GObject *object, guint property_id, const GVal
 
 	switch (property_id) {
 	case PROP_URI :
-		cache_file = get_filename_from_uri ((char *) g_value_get_string (value));
+		cache_file = get_filename_from_uri (g_value_get_string (value));
 		if (!cache_file)
 			break;
 
@@ -139,7 +139,7 @@ e_cal_backend_cache_constructor (GType type,
                                  GObjectConstructParam *construct_properties)
 {
 	GObject *obj;
-	char *uri;
+	const char *uri;
 	ECalBackendCacheClass *klass;
 	GObjectClass *parent_class;
 
@@ -302,7 +302,8 @@ gboolean
 e_cal_backend_cache_put_component (ECalBackendCache *cache,
 				   ECalComponent *comp)
 {
-	char *real_key, *uid, *rid, *comp_str;
+	char *real_key, *uid, *comp_str;
+	const char *rid;
 	gboolean retval;
 	ECalBackendCachePrivate *priv;
 
@@ -364,7 +365,8 @@ GList *
 e_cal_backend_cache_get_components (ECalBackendCache *cache)
 {
         char *comp_str;
-        GList *l, *list = NULL;
+        GSList *l;
+	GList *list = NULL;
 	icalcomponent *icalcomp;
 	ECalComponent *comp = NULL;
         
@@ -373,7 +375,7 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
         l = e_file_cache_get_objects (E_FILE_CACHE (cache));
         if (!l)
                 return NULL;
-        for ( ; l != NULL; l = g_list_next (l)) {
+        for ( ; l != NULL; l = g_slist_next (l)) {
                 comp_str = l->data;
                 if (comp_str) {
                         icalcomp = icalparser_parse_string (comp_str);
