@@ -1,3 +1,11 @@
+2005-03-02  Vivek Jain <jvivek@novell.com>
+
+	***Fixes # 72373
+	* camel-groupwise-store.c :(groupwise_get_folder)
+	* camel-groupwise_folder.c :(groupwise_refresh_info)
+	pass types as NULL in the call of e_gw_connection_get_quick_messages
+	to retrieve all the items
+
 2005-02-28  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: (groupwise_refresh_info):

@@ -552,7 +552,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		/* FIXME send the time stamp which the server sends */
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
 				"distribution attachments subject created",
-				&t_str, "New", "Mail", NULL, -1, &slist) ;
+				&t_str, "New", NULL, NULL, -1, &slist) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
@@ -580,7 +580,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		/* FIXME send the time stamp which the server sends */
 		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
 					"distribution attachments subject created",
-					&t_str, "Modified", "Mail", NULL, -1, &slist) ; 
+					&t_str, "Modified", NULL, NULL, -1, &slist) ; 
 		g_free (t_str), t_str = NULL;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
