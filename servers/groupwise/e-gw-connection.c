@@ -2120,7 +2120,7 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
         return E_GW_CONNECTION_STATUS_OK;
 }
 
-EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const char *container, const char *view, const char *start_date, const char *message_list, const char *item_types, const char *item_sources, int count, GSList **item_list)
+EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const char *container, const char *view, char **start_date, const char *message_list, const char *item_types, const char *item_sources, int count, GSList **item_list)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -2133,7 +2133,7 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getQuickMessagesRequest");
 	e_gw_message_write_string_parameter (msg, "list", NULL, message_list);
 	if (start_date)
-		e_gw_message_write_string_parameter (msg, "startDate", NULL, start_date);
+		e_gw_message_write_string_parameter (msg, "startDate", NULL, *start_date);
 	if (container)
 		e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	if (item_types) 
@@ -2171,6 +2171,20 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 
+	if (start_date && *start_date) {
+		subparam = soup_soap_response_get_first_parameter_by_name (response, "startDate");
+		if (subparam) {
+			char *date;
+
+			date = soup_soap_parameter_get_string_value (subparam);
+			if (date)
+				g_free (*start_date), *start_date = date;
+			else 
+				return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		} else 
+			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+	
 	if (!strcmp (message_list, "All")) { 
 		/* We are  interested only in getting the ids */
 		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
