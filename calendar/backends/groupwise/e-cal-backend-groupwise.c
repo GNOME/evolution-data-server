@@ -250,9 +250,6 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	if (!only_if_exists)
-		return GNOME_Evolution_Calendar_NoSuchCal;
-
 	g_mutex_lock (priv->mutex);
 
 	/* create the local cache */
