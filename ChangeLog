@@ -1,3 +1,7 @@
+2004-06-02  Chris Toshok  <toshok@ximian.com>
+
+	* configure.in: bump to 0.0.93.1 so we can rev evo's dep.
+
 2004-06-01  Chris Toshok  <toshok@ximian.com>
 
 	* libedataserver/e-source.c (e_source_set_absolute_uri): permit
