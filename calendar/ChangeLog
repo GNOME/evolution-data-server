@@ -1,3 +1,9 @@
+2005-01-27  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Set the completed date
+	in the calendar component.
+
 2005-01-08  Not Zed  <NotZed@Ximian.com>
 
 	* backends/http/e-cal-backend-http.c (retrieval_done): cast away warning.
