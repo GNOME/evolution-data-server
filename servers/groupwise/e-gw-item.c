@@ -42,6 +42,7 @@ struct _EGwItemPrivate {
 	char *start_date;
 	char *end_date;
 	char *due_date;
+	char *completed_date;
 	gboolean completed;
 	gboolean is_allday_event;
 	char *subject;
@@ -328,6 +329,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->start_date = NULL;
 	priv->end_date = NULL; 
 	priv->due_date = NULL; 
+	priv->completed_date = NULL;
 	priv->trigger = 0;
 	priv->recipient_list = NULL;
 	priv->organizer = NULL;
@@ -427,6 +429,9 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		 to none. */
 		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientStatus");
                 if (subparam) {
+       			char *formatted_date, *value; 
+			SoupSoapParameter *temp_param ;
+
                         if (soup_soap_parameter_get_first_child_by_name (subparam, "deleted"))
 				recipient->status = E_GW_ITEM_STAT_DECLINED;
 			if (soup_soap_parameter_get_first_child_by_name (subparam, "declined"))
@@ -435,6 +440,15 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
 			else 	
 				recipient->status = E_GW_ITEM_STAT_NONE;
+			
+			temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "completed");
+			if (temp_param) {
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				e_gw_item_set_completed_date (item, formatted_date);
+				g_free (value);
+				g_free (formatted_date);
+			}
                 }
 		else {
 			/* if recipientStatus is not provided, use the
@@ -1645,6 +1659,24 @@ e_gw_item_set_due_date (EGwItem *item, const char *new_date)
 	item->priv->due_date = g_strdup (new_date);
 }
 
+char *
+e_gw_item_get_completed_date (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->completed_date;
+}
+
+void 
+e_gw_item_set_completed_date (EGwItem *item, const char *new_date)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->completed_date)
+		g_free (item->priv->completed_date);
+	item->priv->completed_date = g_strdup (new_date);
+}
+
 const char *
 e_gw_item_get_subject (EGwItem *item)
 {
@@ -1900,7 +1932,7 @@ add_distribution_to_soap_message (EGwItemOrganizer *organizer, GSList *recipient
 	soup_soap_message_end_element (msg);
 }
 
-void 
+static void 
 e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv = item->priv;
