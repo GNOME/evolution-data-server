@@ -67,7 +67,7 @@ static void e_cal_backend_groupwise_finalize (GObject *object);
 static ECalBackendClass *parent_class = NULL;
 
 /* Time interval in milliseconds for obtaining changes from server and refresh the cache. */
-#define CACHE_REFRESH_INTERVAL 30000
+#define CACHE_REFRESH_INTERVAL 600000
 #define CURSOR_ITEM_LIMIT 100
 
 EGwConnection *

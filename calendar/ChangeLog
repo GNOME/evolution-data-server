@@ -1,3 +1,7 @@
+2004-10-28  Harish Krishnaswamy <kharish@novell.com>
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	Set the CACHE_REFRESH_INTERVAL to 10 mins.
+	
 2004-10-28  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal.[ch] (e_cal_get_objects_for_uid): new function
