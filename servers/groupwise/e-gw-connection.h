@@ -62,7 +62,7 @@ typedef enum {
 SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
-EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, GSList **list);
+EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *filter, GSList **list);
 
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
 
