@@ -349,9 +349,6 @@ e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), NULL);
 
 	soup_session_send_message (cnc->priv->soup_session, SOUP_MESSAGE (msg));
-	if (SOUP_MESSAGE (msg)->status_code != SOUP_STATUS_OK) {
-		return NULL;
-	}
 
 	/* process response */
 	response = soup_soap_message_parse_response (msg);
