@@ -354,6 +354,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	item = e_gw_item_new_from_cal_component (container, comp);
+	e_gw_item_set_container_id (item, container);
 	status = e_gw_connection_send_item (cnc, item, id);
 	g_object_unref (item);
 
