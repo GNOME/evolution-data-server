@@ -81,7 +81,7 @@ e_cal_backend_cache_set_property (GObject *object, guint property_id, const GVal
 		if (!cache_file)
 			break;
 
-		g_object_set (G_OBJECT (cache), "filename", cache_file);
+		g_object_set (G_OBJECT (cache), "filename", cache_file, NULL);
 		g_free (cache_file);
 
 		if (priv->uri)
@@ -133,6 +133,34 @@ e_cal_backend_cache_finalize (GObject *object)
 	parent_class->finalize (object);
 }
 
+static GObject *
+e_cal_backend_cache_constructor (GType type,
+                                 guint n_construct_properties,
+                                 GObjectConstructParam *construct_properties)
+{
+  GObject *obj;
+  char *uri;
+        
+  {
+    /* Invoke parent constructor. */
+    ECalBackendCacheClass *klass;
+    GObjectClass *parent_class;  
+    klass = E_CAL_BACKEND_CACHE_CLASS (g_type_class_peek (E_TYPE_CAL_BACKEND_CACHE));
+    parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
+    obj = parent_class->constructor (type,
+                                     n_construct_properties,
+                                     construct_properties);
+  }
+  
+  /* extract uid */
+  if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri"))
+          uri = g_value_get_string (construct_properties->value);
+                  
+  g_object_set (obj, "filename", get_filename_from_uri (uri), NULL);
+  return obj;
+  
+}
+
 static void
 e_cal_backend_cache_class_init (ECalBackendCacheClass *klass)
 {
@@ -145,6 +173,7 @@ e_cal_backend_cache_class_init (ECalBackendCacheClass *klass)
 	object_class->set_property = e_cal_backend_cache_set_property;
 	object_class->get_property = e_cal_backend_cache_get_property;
 
+        object_class->constructor = e_cal_backend_cache_constructor;
 	g_object_class_install_property (object_class, PROP_URI,
 					 g_param_spec_string ("uri", NULL, NULL, "",
 							      G_PARAM_READABLE | G_PARAM_WRITABLE
@@ -204,10 +233,10 @@ ECalBackendCache *
 e_cal_backend_cache_new (const char *uri)
 {
 	ECalBackendCache *cache;
+        
+       	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "uri", uri, NULL);
 
-	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "uri", uri, NULL);
-
-	return cache;
+        return cache;
 }
 
 static char *
@@ -326,3 +355,13 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 
 	return retval;
 }
+
+GSList *
+e_cal_backend_cache_get_components (ECalBackendCache *cache)
+{
+        /* return null if cache is not a valid Backend Cache.  */
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+        return e_file_cache_get_objects (E_FILE_CACHE (cache));
+}
+
+
