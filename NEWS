@@ -7,7 +7,7 @@ Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
     #1069  - Support REV field in VCard (Siva)
     #67267 - Auto-complete misses contacts with 'Title' set (Siva)
     #68172 - Don't include function names in e-d-s messages (Siva)
-    #70198 - Deleting emails too quickly crashes evolution (Siva)
+    #70918 - Importing kontact vcard causes inifinite loop (Siva)
     #71116 - Wrong gettext initialization breaks translation (Christophe)
     #71827 - Search after a contact with Name begins with, only searches
                for first name (Siva)
