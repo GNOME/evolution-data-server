@@ -1685,7 +1685,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	uri =  e_source_get_uri (source);
 	if(uri == NULL)
 		return  GNOME_Evolution_Addressbook_OtherError;
-	tokens = g_strsplit (uri, ";", 2);
+	tokens = g_strsplit (uri, "?", 2);
 	if (tokens[0])
 		uri = g_strdup (tokens[0]);
 	
