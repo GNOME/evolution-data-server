@@ -1616,7 +1616,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 				EGwItemAttachment *attach = g_new0 (EGwItemAttachment, 1) ;
 				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "id") ;
 				if (temp)	
-					attach->id = soup_soap_parameter_get_string_value (temp), printf ("||| attach id:%s |||\n",attach->id) ;
+					attach->id = soup_soap_parameter_get_string_value (temp) ;
 				
 				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "name") ;
 				if (temp)
@@ -2451,7 +2451,6 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 	/*size*/
 	size = g_strdup_printf ("%d", attachment->size) ;
 	e_gw_message_write_string_parameter (msg, "size", NULL, size) ;
-	g_free (size) ;
 	/*date*/
 	if (attachment->date) 
 		e_gw_message_write_string_parameter (msg, "date", NULL, attachment->date) ;	
@@ -2467,6 +2466,7 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 	soup_soap_message_end_element (msg) ;
 	
 	soup_soap_message_end_element (msg) ;
+	g_free (size) ;
 }
 
 static void 

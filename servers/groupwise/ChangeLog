@@ -1,3 +1,9 @@
+2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* e-gw-item.c
+	  (add_attachment_to_soap_message): setting the proper 
+	  attachment size
+
 2005-01-10  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-connection.h : Add new status code
