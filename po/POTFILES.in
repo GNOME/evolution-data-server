@@ -1,15 +1,18 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetic order.
+[encoding: UTF-8]
 addressbook/backends/file/e-book-backend-file.c
 addressbook/backends/groupwise/e-book-backend-groupwise.c
 addressbook/backends/ldap/e-book-backend-ldap.c
 addressbook/backends/vcf/e-book-backend-vcf.c
 addressbook/libebook/e-book.c
 addressbook/libebook/e-contact.c
+addressbook/libebook/e-destination.c
 calendar/backends/contacts/e-cal-backend-contacts.c
 calendar/backends/file/e-cal-backend-file.c
 calendar/backends/groupwise/e-cal-backend-groupwise.c
 calendar/backends/http/e-cal-backend-http.c
+calendar/backends/weather/e-cal-backend-weather.c
 calendar/libecal/e-cal-component.c
 calendar/libecal/e-cal-recur.c
 calendar/libecal/e-cal-util.c
@@ -159,6 +162,8 @@ camel/providers/imap4/camel-imap4-store.c
 camel/providers/imap4/camel-imap4-stream.c
 camel/providers/imap4/camel-imap4-summary.c
 camel/providers/imap4/camel-imap4-utils.c
+camel/providers/imapp/camel-imapp-provider.c
+camel/providers/imapp/camel-imapp-store.c
 camel/providers/local/camel-local-folder.c
 camel/providers/local/camel-local-provider.c
 camel/providers/local/camel-local-store.c
@@ -195,6 +200,8 @@ camel/providers/sendmail/camel-sendmail-provider.c
 camel/providers/sendmail/camel-sendmail-transport.c
 camel/providers/smtp/camel-smtp-provider.c
 camel/providers/smtp/camel-smtp-transport.c
+libedataserver/e-categories.c
+libedataserver/e-time-utils.c
 libedataserverui/e-categories-dialog.c
 libedataserverui/e-categories-dialog.glade
 libedataserverui/e-name-selector-dialog.c
