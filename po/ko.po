@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
-"POT-Creation-Date: 2004-07-02 10:35-0400\n"
-"PO-Revision-Date: 2004-03-25 22:10+0900\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-09 10:25+0900\n"
+"PO-Revision-Date: 2004-07-10 00:35+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
@@ -118,9 +118,8 @@ msgid "\"%s\" on book after \"%s\""
 msgstr "북에서 \"%2$s\" 뒤에 \"%1$s\"이(가) 있습니다"
 
 #: addressbook/libebook/e-book.c:2250
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: 취소되었습니다"
+msgstr "e_book_open: 취소되었습니다"
 
 #: addressbook/libebook/e-book.c:2725
 msgid "e_book_load_uri: Invalid source."
@@ -136,9 +135,9 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListener를 만들 수 없습니다"
 
 #: addressbook/libebook/e-book.c:2796
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: `%s' URI에 대해 사용할 수 있는 팩토리가 없습니다"
+msgstr "e_book_new: `%s' URI에 사용할 수 있는 팩토리가 없습니다"
 
 #: addressbook/libebook/e-book.c:2953
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
@@ -310,9 +309,8 @@ msgid "Email 3"
 msgstr "전자메일 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "전자메일 3"
+msgstr "전자메일 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -951,18 +949,16 @@ msgstr ""
 "값이어야 합니다"
 
 #: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
 msgid "Invalid connection"
-msgstr "오브젝트가 잘못되었습니다"
+msgstr "연결이 잘못되었습니다"
 
 #: servers/groupwise/e-gw-connection.c:84
-#, fuzzy
 msgid "Invalid response from server"
-msgstr "서버 URI가 틀렸습니다"
+msgstr "서버의 응답이 잘못되었습니다"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "매개변수가 틀렸습니다"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
@@ -976,6 +972,3 @@ msgstr "Evolution 주소록 파일 및 webcal 백엔드"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution 주소록 파일 백엔드"
-
-#~ msgid "Checklist"
-#~ msgstr "검사 목록"
