@@ -2363,7 +2363,8 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 static void*
 startup_mainloop (void *arg)
 {
-	bonobo_main();
+	GMainLoop *loop = g_main_loop_new (NULL, FALSE);
+	g_main_loop_run (loop);
 	return NULL;
 }
 
