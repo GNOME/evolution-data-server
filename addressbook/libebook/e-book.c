@@ -3060,11 +3060,19 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 {
 	GError *e = NULL;
 	GConfClient *gconf;
+	gboolean status;
 	char *uid;
 
 	*book = e_book_new_system_addressbook (&e);
 
 	if (!*book) {
+		if (error)
+			g_propagate_error (error, e);
+		return FALSE;
+	}
+
+	status = e_book_open (*book, FALSE, &e);
+	if (status == FALSE) {
 		if (error)
 			g_propagate_error (error, e);
 		return FALSE;

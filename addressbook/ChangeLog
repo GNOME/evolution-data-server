@@ -1,3 +1,10 @@
+2004-09-23  Diego Gonzalez  <diego@pemas.net>
+
+	Fixes #66574.
+
+	* libebook/e-book.c (e_book_get_self): open the book before
+	getting the contact.
+
 2004-09-23  JP Rosevear  <jpr@novell.com>
 
 	* libebook/Makefile.am: build a versioned lib, don't hard
