@@ -46,8 +46,6 @@ void      e_book_async_load_source              (EBook                 *book,
 void      e_book_async_get_default_addressbook  (EBookCallback          open_response,
 						 gpointer               closure);
 
-void      e_book_async_unload_uri               (EBook                 *book);
-
 guint     e_book_async_get_supported_fields     (EBook                 *book,
 						 EBookFieldsCallback    cb,
 						 gpointer               closure);

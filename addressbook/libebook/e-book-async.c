@@ -181,15 +181,7 @@ e_book_async_load_uri (EBook                 *book,
 	g_object_unref (group);
 }
 
-
-void
-e_book_async_unload_uri (EBook                 *book)
-{
-	e_book_unload_uri (book, NULL);
-}
-
 
-
 
 typedef struct {
 	EBookMsg msg;

@@ -1,5 +1,12 @@
 2004-01-27  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book-async.h: nuke the prototype for
+	e_book_async_unload_uri.
+
+	* libebook/e-book-async.c (e_book_async_unload_uri): nuke.
+
+2004-01-27  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.h: remove the prototype for e_book_unload_uri.
 	If you want to unload the uri, unref the book and create a new
 	one.
