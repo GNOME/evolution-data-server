@@ -801,7 +801,6 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		display_contents = e_source_get_property (source, "offline_sync");
 		
 		if (!display_contents || !g_str_equal (display_contents, "1")) {
-			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Repository is Offline"));
 			return GNOME_Evolution_Calendar_RepositoryOffline;
 		}
 
@@ -1408,7 +1407,10 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 				return GNOME_Evolution_Calendar_OtherError;
 		}
 	
-		if (uid_list && (g_slist_length (uid_list) == 1)) {
+		if (!uid_list)
+			return GNOME_Evolution_Calendar_OtherError;
+		
+		if (g_slist_length (uid_list) == 1) {
 			server_uid = (char *) uid_list->data;
 			sanitize_component (backend, comp, server_uid);	
 			g_free (server_uid);

@@ -1,3 +1,16 @@
+2005-02-04  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Added a string for 
+	 reply requested in send options.
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_open): Removed the error
+	notify message for Repository offline since it would
+	be handled from frontend.
+	Fixes #72117
+	(e_cal_backend_groupwise_create_object): Check for
+	the UID, if not present send an error message.
+
 2005-02-04  Rodrigo Moya <rodrigo@novell.com>
 
 	* tests/ecal/test-recur.c: removed libgnome usage.
