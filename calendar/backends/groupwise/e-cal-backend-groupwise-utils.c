@@ -1212,7 +1212,7 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -1257,7 +1257,7 @@ close_freebusy_session (EGwConnection *cnc, const char *session)
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -1301,7 +1301,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);

@@ -1,3 +1,12 @@
+2005-01-27  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(start_freebusy_session), (close_freebusy_session),
+	(e_gw_connection_get_freebusy_info): Return the error
+	message as NO_RESPONSE if the server is not responding.
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas):
+	Handled the NO_RESPONSE error status.
+
 2005-01-27  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file.c: added a GMutex for the idle saving

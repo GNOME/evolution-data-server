@@ -231,6 +231,12 @@ get_deltas (gpointer handle)
 	
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+		
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
+			mod_time = 0;
+			return TRUE;
+		}
+
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
 	}
@@ -266,6 +272,9 @@ get_deltas (gpointer handle)
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE)
+			return TRUE;
+
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
 	}
@@ -303,6 +312,9 @@ get_deltas (gpointer handle)
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE)
+			return TRUE;
+
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
 	}
