@@ -1128,10 +1128,10 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 		fi->flags = list->flags;
 		fi->unread = -1;
 		fi->total = -1;
-
+		
 		/* SELECTED folder, just get it from the folder */
 		if (folder && !strcmp (folder->full_name, fi->full_name)) {
-			camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &fi->total, CAMEL_FOLDER_UNREAD, &fi->unread, 0);
+			camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &fi->total, CAMEL_FOLDER_UNREAD, &fi->unread, 0);
 		} else if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST)) {
 			imap4_status (store, fi);
 		}
@@ -1160,6 +1160,7 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelIMAP4Command *ic, *ic0 = NULL;
+	const char *base, *namespace;
 	CamelFolderInfo *fi = NULL;
 	camel_imap4_list_t *list;
 	GPtrArray *array;
@@ -1171,11 +1172,19 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	if (top == NULL)
 		top = "";
 	
+	if (!(namespace = camel_url_get_param (((CamelService *) store)->url, "namespace")))
+		namespace = "";
+	
+	if (!strcmp (top, ""))
+		base = namespace;
+	else
+		base = top;
+	
 	CAMEL_SERVICE_LOCK (store, connect_lock);
 	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL
 	    || engine->state == CAMEL_IMAP4_ENGINE_DISCONNECTED) {
-		fi = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, top, flags);
+		fi = camel_imap4_store_summary_get_folder_info (((CamelIMAP4Store *) store)->summary, base, flags);
 		if (fi == NULL && ((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
 			/* folder info hasn't yet been cached and the store hasn't been
 			 * connected yet, but the network is available so we can connect
@@ -1194,7 +1203,7 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 		cmd = "LIST";
 	
 	wildcard = (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) ? '*' : '%';
-	pattern = imap4_folder_utf7_name (store, top, wildcard);
+	pattern = imap4_folder_utf7_name (store, base, wildcard);
 	array = g_ptr_array_new ();
 	
 	if (*top != '\0') {
