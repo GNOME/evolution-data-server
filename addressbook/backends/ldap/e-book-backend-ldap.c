@@ -3043,64 +3043,36 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	LDAPURLDesc    *lud;
 	int ldap_error;
-	char **attributes;
-	int i;
 	int limit = 100;
 	int timeout = 60; /* 1 minute */
 	gchar *uri;
+	const char *str;
 
 	g_assert (bl->priv->connected == FALSE);
 
 	uri = e_source_get_uri (source);
 
-	attributes = g_strsplit (uri, ";", 0);
+	str = e_source_get_property (source, "limit");
+	if (str)
+		limit = atoi (str);
 
-	if (attributes[0] == NULL) {
-		g_free (uri);
-		return FALSE;
+	str = e_source_get_property (source, "ssl");
+	if (str) {
+		if (!strcmp (str, "always"))
+			bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_ALWAYS;
+		else if (!strcmp (str, "whenever_possible"))
+			bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE;
+		else if (strcmp (str, "never"))
+			g_warning ("Unhandled value for 'ssl', not using it.");
 	}
+	else
+		bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE;
 
-	for (i = 1; attributes[i]; i++) {
-		char *equals;
-		char *value;
-		int key_length;
-		equals = strchr (attributes[i], '=');
-		if (equals) {
-			key_length = equals - attributes[i];
-			value = equals + 1;
-		} else {
-			key_length = strlen (attributes[i]);
-			value = NULL;
-		}
-		
-		if (key_length == strlen("limit") && !strncmp (attributes[i], "limit", key_length)) {
-			if (value)
-				limit = atoi(value);
-		}
-		else if (key_length == strlen("ssl") && !strncmp (attributes[i], "ssl", key_length)) {
-			if (value) {
-				if (!strncmp (value, "always", 6)) {
-					bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_ALWAYS;
-				}
-				else if (!strncmp (value, "whenever_possible", 3)) {
-					bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE;
-				}
-				else if (strncmp (value, "never", 5)) {
-					g_warning ("unhandled value for use_tls, not using it");
-				}
-			}
-			else {
-				bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE;
-			}
-		}
-		else if (key_length == strlen("timeout") && !strncmp (attributes[i], "timeout", key_length)) {
-			if (value)
-				timeout = atoi (value);
-		}
-	}
+	str = e_source_get_property (source, "timeout");
+	if (str)
+		timeout = atoi (str);
 
-	ldap_error = ldap_url_parse ((char*)attributes[0], &lud);
-	g_strfreev (attributes);
+	ldap_error = ldap_url_parse ((char*) uri, &lud);
 
 	g_free (uri);
 
