@@ -58,6 +58,9 @@ e_book_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatus sta
 		return E_BOOK_ERROR_NO_SUCH_BOOK;
 	case GNOME_Evolution_Addressbook_OfflineUnavailable:
 		return E_BOOK_ERROR_OFFLINE_UNAVAILABLE;
+	case GNOME_Evolution_Addressbook_InvalidServerVersion:
+		return E_BOOK_ERROR_INVALID_SERVER_VERSION;
+
 	case GNOME_Evolution_Addressbook_OtherError:
 	default:
 		return E_BOOK_ERROR_OTHER_ERROR;

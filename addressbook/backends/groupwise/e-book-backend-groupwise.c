@@ -2317,7 +2317,10 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			e_book_backend_notify_connection_status (backend, TRUE); 
 			priv->is_writable = is_writable;
 			e_gw_connection_get_categories (priv->cnc, priv->categories_by_id, priv->categories_by_name);
-			e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_Success); 
+			if (!e_gw_connection_get_version(priv->cnc))  
+				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_InvalidServerVersion);
+			else
+				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_Success); 
 			
 			
 		} else {

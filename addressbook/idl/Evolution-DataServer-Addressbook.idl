@@ -55,8 +55,10 @@ module Addressbook {
 		QueryRefused,
 
 		CouldNotCancel,
-		
-		OtherError
+
+		OtherError,
+		InvalidServerVersion	
+
 	};
 
 	typedef long BookMode;

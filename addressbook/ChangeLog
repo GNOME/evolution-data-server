@@ -1,3 +1,18 @@
+2005-02-04  Vivek Jain  <jvivek@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c
+	e_book_backend_groupwise_authenticate_user: (included one 
+	condition to check for the server version)
+	* idl/Evolution-DataServer-Addressbook.idl
+	included InvalidServerVersion in enum callstatus
+	* libebook/e-book-tpes.h  added enum in callstatus
+	* libebook/e-book-listner.c
+	 (e_book_listner_conver_status): added conversion of InvalidServerVersion  
+	* libedata-book/e-book-backend.c 
+	  (e_book_backend_open)
+	  (e_book_backend_load_store) : added InvalidServerVersion as a
+	response to be accepted as success	
+
 2005-02-02  Ross Burton  <ross@burtonini.com>
 
 	* backends/file/e-book-backend-file.c:

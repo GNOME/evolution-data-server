@@ -56,7 +56,7 @@ e_book_backend_load_source (EBookBackend           *backend,
 
 	status = (* E_BOOK_BACKEND_GET_CLASS (backend)->load_source) (backend, source, only_if_exists);
 
-	if (status == GNOME_Evolution_Addressbook_Success) {
+	if (status == GNOME_Evolution_Addressbook_Success || status == GNOME_Evolution_Addressbook_InvalidServerVersion) {
 		g_object_ref (source);
 		backend->priv->source = source;
 	}
@@ -102,7 +102,7 @@ e_book_backend_open (EBookBackend *backend,
 
 		e_data_book_respond_open (book, opid, status);
 
-		if (status == GNOME_Evolution_Addressbook_Success)
+		if (status == GNOME_Evolution_Addressbook_Success || status == GNOME_Evolution_Addressbook_InvalidServerVersion)
 			e_data_book_report_writable (book, backend->priv->writable);
 	}
 
