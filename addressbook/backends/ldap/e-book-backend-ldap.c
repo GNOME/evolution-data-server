@@ -3551,7 +3551,7 @@ e_book_backend_ldap_dispose (GObject *object)
 
 		g_free (bl->priv->ldap_host);
 		g_free (bl->priv->ldap_rootdn);
-		
+		g_free (bl->priv->schema_dn);
 		g_free (bl->priv);
 		bl->priv = NULL;
 	}
