@@ -26,8 +26,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <glib.h>
-
 #include "camel-groupwise-utils.h"
+
+#include <camel/camel-service.h>
+#include <camel/camel-multipart.h>
+#include <camel/camel-stream-mem.h>
+#include <camel/camel-address.h>
 
 #define SUBFOLDER_DIR_NAME     "subfolders"
 #define SUBFOLDER_DIR_NAME_LEN 10
@@ -252,4 +256,188 @@ e_path_rmdir (const char *prefix, const char *vpath)
 	rmdir (physical_path);
 	g_free (physical_path);
 	return 0;
+}
+
+
+EGwItem *
+camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients)
+{
+	EGwItem *item ;
+	EGwItemRecipient *recipient ;
+	EGwItemOrganizer *org = g_new0 (EGwItemOrganizer, 1) ;
+
+	const char *display_name = NULL, *email = NULL ;
+	char *send_options = NULL ;
+
+	int total_add ;
+
+	CamelMultipart *mp ;
+
+	GSList *recipient_list = NULL, *attach_list = NULL ;
+	int i ;
+
+	/*Egroupwise item*/
+	item = e_gw_item_new_empty () ;
+
+	/*poulate recipient list*/
+	total_add = camel_address_length (recipients) ;
+	for (i=0 ; i<total_add ; i++) {
+		const char *name = NULL, *addr = NULL ;
+		if(camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
+
+			recipient = g_new0 (EGwItemRecipient, 1);
+
+			recipient->email = g_strdup (addr) ;
+			recipient->display_name = g_strdup (name) ;
+			recipient->type = E_GW_ITEM_RECIPIENT_TO;
+			recipient->status = E_GW_ITEM_STAT_NONE ;
+			recipient_list= g_slist_append (recipient_list, recipient) ;
+		}
+	}
+
+	/** Get the mime parts from CamelMimemessge **/
+	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
+	if(!mp) {
+		g_print ("ERROR: Could not get content object") ;
+		camel_operation_end (NULL) ;
+		return FALSE ;
+	}
+
+	if (CAMEL_IS_MULTIPART (mp)) {
+		/*contains multiple parts*/
+		guint part_count ;
+		
+		part_count = camel_multipart_get_number (mp) ;
+		for ( i=0 ; i<part_count ; i++) {
+			CamelContentType *type ;
+			CamelMimePart *part ;
+			CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new () ;
+			CamelDataWrapper *dw = camel_data_wrapper_new () ;
+			EGwItemAttachment *attachment = g_new0 (EGwItemAttachment, 1) ;
+			const char *disposition, *filename ;
+			char *buffer = NULL ;
+			char *mime_type = NULL ;
+			int len ;
+
+			part = camel_multipart_get_part (mp, i) ;
+			dw = camel_medium_get_content_object (CAMEL_MEDIUM (part)) ;
+			
+
+			camel_data_wrapper_write_to_stream(dw, (CamelStream *)content) ;
+			buffer = g_malloc0 (content->buffer->len+1) ;
+			g_print (">>>>>> length:%d |||\n", content->buffer->len) ;
+			buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
+			g_print (">>>>>> buffer: \n %s\n", buffer) ;
+			len = content->buffer->len ;
+
+			filename = camel_mime_part_get_filename (part) ;
+			if (!filename) {
+				/*the message*/
+				e_gw_item_set_message (item, buffer) ;
+			} else {
+				mime_type = camel_data_wrapper_get_mime_type (dw) ;
+				g_print (">>>>mime:%s |||\n", mime_type) ;
+				type = camel_mime_part_get_content_type(part) ;
+				disposition = camel_mime_part_get_disposition (part) ;
+				attachment->data = g_malloc0 (content->buffer->len+1) ;
+				attachment->data = memcpy (attachment->data, content->buffer->data, content->buffer->len) ;
+				attachment->name = g_strdup (filename) ;
+				attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype) ;
+				g_print (">>>>>> %s/%s <<<<<< \n", type->type, type->subtype) ;
+				attachment->size = content->buffer->len ;
+				
+				attach_list = g_slist_append (attach_list, attachment) ;
+				g_free (mime_type) ;
+			}
+			g_free (buffer) ;
+			camel_object_unref (content) ;
+
+		} /*end of for*/
+		
+	} else {
+		/*only message*/
+		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new () ;
+		CamelDataWrapper *dw = camel_data_wrapper_new () ;
+		char *buffer = NULL ;
+			
+		dw = camel_medium_get_content_object (CAMEL_MEDIUM (mp)) ;
+		camel_data_wrapper_write_to_stream(dw, (CamelStream *)content) ;
+		buffer = g_malloc0 (content->buffer->len+1) ;
+		g_print (">>>>>> length:%d |||\n", content->buffer->len) ;
+		buffer = memcpy (buffer, content->buffer->data, content->buffer->len) ;
+				
+		e_gw_item_set_message (item, buffer) ;
+		
+		g_free (buffer) ;
+		camel_object_unref (content) ;
+	}
+	/*Populate EGwItem*/
+	/*From Address*/
+	camel_internet_address_get ((CamelInternetAddress *)from, 0 , &display_name, &email) ;
+	g_print ("from : %s : %s\n", display_name,email) ;
+	org->display_name = g_strdup (display_name) ;
+	org->email = g_strdup (email) ;
+	e_gw_item_set_organizer (item, org) ;
+	/*recipient list*/
+	e_gw_item_set_recipient_list (item, recipient_list) ;
+	/*Item type is mail*/
+	e_gw_item_set_item_type (item, E_GW_ITEM_TYPE_MAIL) ;
+	/*subject*/
+	e_gw_item_set_subject (item, camel_mime_message_get_subject(message)) ;
+	/*attachmets*/
+	e_gw_item_set_attach_id_list (item, attach_list) ;
+	
+	/*send options*/
+	e_gw_item_set_sendoptions (item, TRUE) ;
+
+	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_CONVENIENT)) 
+		e_gw_item_set_reply_request (item, TRUE) ;
+	
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_WITHIN) ;
+	if (send_options) 
+		e_gw_item_set_reply_within (item, send_options) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message),X_EXPIRE_AFTER) ;
+	if (send_options)
+		e_gw_item_set_expires (item, send_options) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_DELAY_UNTIL) ;
+	if (send_options)
+		e_gw_item_set_delay_until (item, send_options) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_TRACK_WHEN) ;
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case 1: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED);
+				break;
+			case 2: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED_OPENED);
+				break;
+			case 3: e_gw_item_set_track_info (item, E_GW_ITEM_ALL);
+				break;
+			default: e_gw_item_set_track_info (item, E_GW_ITEM_NONE);
+				 break;
+		}
+	}
+
+	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_AUTODELETE))
+		e_gw_item_set_autodelete (item, TRUE) ;
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_OPEN) ;
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case 0: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_NONE);
+				break;
+			case 1: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_MAIL);
+		}
+	}
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_DECLINE) ;
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case 0: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_NONE);
+				break;
+			case 1: e_gw_item_set_notify_declined (item, E_GW_ITEM_NOTIFY_MAIL);
+		}
+	}	
+
+	return item;
 }

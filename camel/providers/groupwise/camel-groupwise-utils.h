@@ -17,10 +17,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __E_PATH__
-#define __E_PATH__
+#ifndef __CAMEL_GROUPWISE_UTILS__
+#define __CAMEL_GROUPWISE_UTILS__
 
 #include <glib.h>
+#include <camel/camel-mime-message.h>
+#include <e-gw-connection.h>
+#include <e-gw-container.h>
+#include <e-gw-item.h>
+
+/*Headers for send options*/
+#define X_SEND_OPTIONS        "X-gw-send-options"
+/*General Options*/
+#define X_SEND_OPT_PRIORITY   "X-gw-send-opt-priority"
+#define X_REPLY_CONVENIENT    "X-reply-convenient"
+#define X_REPLY_WITHIN        "X-reply-within"
+#define X_EXPIRE_AFTER        "X-expire-after"
+#define X_DELAY_UNTIL         "X-delay-until"
+
+/*Status Tracking Options*/
+#define X_TRACK_WHEN            "X-track-when"
+#define X_AUTODELETE            "X-auto-delete"
+#define X_RETURN_NOTIFY_OPEN    "X-return-notify-open"
+#define X_RETURN_NOTIFY_DECLINE "X-return-notify-decline"
+
 
 /* FIXME: deprecated
    This is used exclusively for the legacy imap cache code.  DO NOT use this in any new code */
@@ -36,4 +56,8 @@ gboolean e_path_find_folders (const char *prefix,
 			      gpointer data);
 
 int      e_path_rmdir        (const char *prefix, const char *vpath);
-#endif /* __E_PATH__ */
+
+
+EGwItem *camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients);
+
+#endif

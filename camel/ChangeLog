@@ -1,3 +1,12 @@
+2005-01-11 Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-folder.c
+	  (groupwise_append_message): support for append messages
+	  into groupwise folders.
+	* providers/groupwise/camel-groupwise-utils.[ch]
+	  (camel_groupwise_util_item_from_message): creates an groupwise
+	  item from CamelMimeMessage
+	
 2005-01-11 Vivek Jain  <jvivek@novell.com>
 	* camel-store.h : defined flags for shared folders
 

@@ -41,6 +41,7 @@
 #include "camel-i18n.h" 
 #include "camel-private.h"
 #include "camel-groupwise-private.h"
+#include "camel-groupwise-journal.h"
 #include "camel-stream-mem.h"
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
@@ -406,7 +407,7 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 {
 	CamelFolder *folder ;
 	CamelGroupwiseFolder *gw_folder ;
-	char *summary_file, *state_file ;
+	char *summary_file, *state_file, *journal_file ;
 	char *short_name;
 
 
@@ -444,6 +445,14 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 		camel_object_unref (folder) ;
 		return NULL ;
 	}
+
+	journal_file = g_strdup_printf ("%s/journal",folder_dir) ;
+	gw_folder->journal = camel_groupwise_journal_new (gw_folder, journal_file);
+	if (!gw_folder->journal) {
+		camel_object_unref (folder) ;
+		return NULL ;
+	}
+
 	gw_folder->search = camel_folder_search_new ();
 	if (!gw_folder->search) {
 		camel_object_unref (folder) ;
@@ -571,8 +580,6 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		if (temp_date) {
 			date = e_gw_connection_format_date_string(temp_date) ;
 			mi->info.date_sent = mi->info.date_received = e_gw_connection_get_date_from_string (date) ;
-			/*	mi->date_sent = camel_header_decode_date(date,NULL) ;
-				mi->date_received = camel_header_decode_date(date,NULL) ;*/
 		}
 		mi->info.uid = g_strdup (e_gw_item_get_id (item)) ;
 		mi->info.subject = g_strdup (e_gw_item_get_subject(item)) ;
@@ -598,7 +605,56 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		const CamelMessageInfo *info, char **appended_uid,
 		CamelException *ex)
 {
-	g_print ("||| Groupwise append online |||\n") ;
+	char *container_id = NULL;
+	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(folder->parent_store) ;
+	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
+	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
+	CamelAddress *recipients;
+	EGwConnectionStatus status ;
+	EGwConnection *cnc = cnc_lookup (priv) ;
+	EGwItem *item;
+	char *id;
+	
+	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		camel_groupwise_journal_append ((CamelGroupwiseJournal *) ((CamelGroupwiseFolder *)folder)->journal, message, info, appended_uid, ex);
+		return;
+	}
+	/*Get the container id*/
+	container_id = container_id_lookup (priv, folder->name) ;
+	/* FIXME Separate To/CC/BCC? */
+	recipients = CAMEL_ADDRESS (camel_internet_address_new ());
+	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO)));
+	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC)));
+	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC)));
+
+	item = camel_groupwise_util_item_from_message (message, CAMEL_ADDRESS (message->from), recipients);
+	e_gw_item_set_container_id (item, container_id) ;
+	status = e_gw_connection_create_item (cnc, item, &id);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create message: %s"),
+				      e_gw_connection_get_error_message (status));
+
+		if (appended_uid)
+			*appended_uid = NULL;
+
+		return ;
+	}
+
+	status = e_gw_connection_add_item (cnc, container_id, id);
+	g_message ("Adding %s to %s", id, container_id);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot append message to folder `%s': %s"),
+				      folder->full_name, e_gw_connection_get_error_message (status));
+
+		if (appended_uid)
+			*appended_uid = NULL;
+
+		return ;
+	}
+
+	if (appended_uid)
+		*appended_uid = g_strdup (id);	
+	g_free (id);
 }
 
 static int
@@ -750,8 +806,7 @@ camel_groupwise_folder_init (gpointer object, gpointer klass)
 	gw_folder->priv->cache_lock = e_mutex_new(E_MUTEX_REC);
 
 	gw_folder->need_rescan = TRUE;
-
-
+	
 }
 
 static void
