@@ -1,3 +1,11 @@
+2004-05-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-item.c: (append_event_changes_to_soap_message) :
+	check for added, modified and deleted fields and update
+	the soap message.
+	(e_gw_item_append_changes_to_soap_message):
+	Add handlers for Appointment and Task items
+
 2004-05-10  Sivaiah Nallagatla  <snallagatla@novell.com>
 	
 	* e-gw-container.[ch] (e_gw_container_get_is_frequent_contacts)

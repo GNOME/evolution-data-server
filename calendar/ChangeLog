@@ -1,3 +1,19 @@
+2004-05-12  Harish Krishnaswamy  <kharish@novell.com>
+
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_connection_get_freebusy_info), (e_gw_item_set_changes):
+	Add implementation for modification of objects.
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	Add declaration for e_gw_item_set_changes.	
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_set_default_timezone):
+	Allow evo to set the timezone in the groupwise backend.
+	(e_cal_backend_groupwise_modify_object):
+	Modify implementation to use modifyItemRequest rather than
+	a sendItem.
+
 2004-05-07  JP Rosevear  <jpr@ximian.com>
 
 	Fixes #57908

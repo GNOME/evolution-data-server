@@ -636,7 +636,16 @@ e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, c
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
 {
-	return GNOME_Evolution_Calendar_OtherError;
+	ECalBackendGroupwise *cbgw;
+        ECalBackendGroupwisePrivate *priv;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+        priv = cbgw->priv;
+	
+	/* Set the default timezone to it. */
+	priv->default_zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Get_objects_in_range handler for the groupwise backend */
@@ -955,8 +964,10 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	ECalBackendGroupwise *cbgw;
         ECalBackendGroupwisePrivate *priv;
 	icalcomponent *icalcomp;
-	ECalComponent *comp;
+	ECalComponent *comp, *cache_comp;
 	EGwConnectionStatus status;
+	EGwItem *item, *cache_item;
+	char *id;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -971,18 +982,30 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
+	item = e_gw_item_new_from_cal_component (priv->container_id, comp);
 
 	/* check if the object exists */
 	switch (priv->mode) {
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
-		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp, NULL);
+		cache_comp = e_cal_backend_cache_get_component (priv->cache, e_gw_item_get_icalid (item), NULL);
+		if (!cache_comp) {
+			g_message ("CRITICAL : Could not find the object in cache");
+			return GNOME_Evolution_Calendar_InvalidObject;
+		}
+
+		cache_item =  e_gw_item_new_from_cal_component (priv->container_id, cache_comp);
+		e_gw_item_set_changes (item, cache_item); 
+
+		// the second argument is redundant.	
+		status = e_gw_connection_modify_item (priv->cnc, e_gw_item_get_id (item), item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);
 			return GNOME_Evolution_Calendar_OtherError;
 		}
 		/* if successful, update the cache */
+
 	case CAL_MODE_LOCAL :
 		/* in offline mode, we just update the cache */
 		e_cal_backend_cache_put_component (priv->cache, comp);
@@ -992,6 +1015,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	}
 
 	g_object_unref (comp);
+	g_object_unref (cache_comp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

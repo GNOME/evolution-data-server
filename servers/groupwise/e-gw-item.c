@@ -506,11 +506,13 @@ e_gw_item_set_category_name (EGwItem *item, char *category_name)
 {
 	item->priv->category_name = category_name;
 }
+
 char*
 e_gw_item_get_category_name (EGwItem *item)
 {
 	return item->priv->category_name;
 }
+
 void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *field_name, gpointer field_value)
 {
 	GHashTable *hash_table;
@@ -1817,6 +1819,88 @@ append_contact_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int
 
 }
 
+static void
+append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int change_type)
+{
+	GHashTable *changes;
+	EGwItemPrivate *priv;
+	char *dtstring;
+
+	priv = item->priv;
+	changes = NULL;
+	switch (change_type) {
+	case E_GW_ITEM_CHANGE_TYPE_ADD :
+		changes = priv->additions;
+		soup_soap_message_start_element (msg, "add", NULL, NULL);
+		break;
+	case E_GW_ITEM_CHANGE_TYPE_UPDATE :
+		changes = priv->updates;
+		soup_soap_message_start_element (msg, "update", NULL, NULL);
+		break;
+	case E_GW_ITEM_CHANGE_TYPE_DELETE :
+		changes = priv->deletions;
+		soup_soap_message_start_element (msg, "delete", NULL, NULL);
+		break;
+	}
+	if (!changes)
+		return;
+
+	if (g_hash_table_lookup (changes, "subject"))
+		e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
+	if (g_hash_table_lookup (changes, "startDate")) {
+		if (priv->start_date != -1) {
+			dtstring = timet_to_string (priv->start_date);
+			e_gw_message_write_string_parameter (msg, "startDate", NULL, dtstring);
+			g_free (dtstring);
+		}
+	}
+	if (g_hash_table_lookup (changes, "endDate")) {
+		if (priv->end_date != -1) {
+			dtstring = timet_to_string (priv->end_date);
+			e_gw_message_write_string_parameter (msg, "endDate", NULL, dtstring);
+			g_free (dtstring);
+		}
+	}
+	if (g_hash_table_lookup (changes, "message")) {
+		soup_soap_message_start_element (msg, "message", NULL, NULL);
+		if (priv->message) {
+			char *str;
+
+			str = soup_base64_encode (priv->message, strlen (priv->message));
+			dtstring = g_strdup_printf ("%d", strlen (str));
+			soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
+			g_free (dtstring);
+			soup_soap_message_write_string (msg, str);
+			g_free (str);
+		} else {
+			soup_soap_message_add_attribute (msg, "length", "0", NULL, NULL);
+			soup_soap_message_write_string (msg, "");
+		}
+
+		soup_soap_message_end_element (msg);
+	}
+	if (g_hash_table_lookup (changes, "class"))
+		e_gw_message_write_string_parameter (msg, "class", NULL, priv->classification);
+
+	if (g_hash_table_lookup (changes, "acceptLevel"))
+		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
+	if (g_hash_table_lookup (changes, "place"))
+		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");
+	if (g_hash_table_lookup (changes, "alarm")) {
+		if (priv->trigger != 0) {
+			char *alarm = g_strdup_printf ("%d", priv->trigger);
+			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "true");
+			g_free (alarm);
+		}
+		else
+			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, "0", "enabled", "false");
+	}
+	if (g_hash_table_lookup (changes, "completed"))
+		e_gw_message_write_string_parameter (msg, "completed", NULL, priv->completed ? "1" : "0");
+	soup_soap_message_end_element (msg);
+
+}
+
 gboolean 
 e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 {
@@ -1843,6 +1927,12 @@ e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			e_gw_message_write_string_parameter (msg, "name", NULL, value);
 		soup_soap_message_end_element (msg);
 		soup_soap_message_end_element(msg); 
+		return TRUE;
+	case E_GW_ITEM_TYPE_APPOINTMENT:
+	case E_GW_ITEM_TYPE_TASK :
+		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_ADD);
+		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_UPDATE);
+		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_DELETE);
 		return TRUE;
 	default :
 		g_warning (G_STRLOC ": Unknown type for item");

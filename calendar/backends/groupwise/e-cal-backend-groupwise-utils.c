@@ -92,6 +92,12 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 			e_gw_item_set_recipient_list (item, recipient_list);
 		}
 
+		/* end date */
+		e_cal_component_get_dtend (comp, &dt);
+		if (dt.value)
+			e_gw_item_set_end_date (item, icaltime_as_timet_with_zone (*dt.value, 
+						icaltimezone_get_builtin_timezone_from_tzid (dt.tzid)));
+
 		break;
 
 	case E_CAL_COMPONENT_TODO :
@@ -182,22 +188,20 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 	/* start date */
 	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value) {
-		e_gw_item_set_start_date (item, icaltime_as_timet (*dt.value));
+		e_gw_item_set_start_date (item, 
+			icaltime_as_timet_with_zone (*dt.value, icaltimezone_get_builtin_timezone_from_tzid (dt.tzid)));
 	} else if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 		/* appointments need the start date property */
 		g_object_unref (item);
 		return NULL;
 	}
 
-	/* end date */
-	e_cal_component_get_dtend (comp, &dt);
-	if (dt.value)
-		e_gw_item_set_end_date (item, icaltime_as_timet (*dt.value));
 
 	/* creation date */
 	e_cal_component_get_created (comp, &dt.value);
 	if (dt.value) {
-		e_gw_item_set_creation_date (item, icaltime_as_timet (*dt.value));
+		e_gw_item_set_creation_date (item, 
+			icaltime_as_timet_with_zone (*dt.value, icaltimezone_get_builtin_timezone_from_tzid (dt.tzid)));
 		e_cal_component_free_datetime (&dt);
 	} else {
 		struct icaltimetype itt;
@@ -302,6 +306,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 	/* creation date */
 	t = e_gw_item_get_creation_date (item);
 	itt = icaltime_from_timet (t, 0);
+	
 	e_cal_component_set_created (comp, &itt);
 	e_cal_component_set_dtstamp (comp, &itt);
 
@@ -700,4 +705,74 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 
         /* closeFreeBusySession*/
         return close_freebusy_session (cnc, session);
+}
+
+#define SET_DELTA(fieldname) G_STMT_START{                                                                \
+	fieldname = e_gw_item_get_##fieldname (item);                                                       \
+	cache_##fieldname = e_gw_item_get_##fieldname (cache_item);                                           \
+	if ( cache_##fieldname ) {                                                                            \
+		if (!fieldname )                                                                               \
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, #fieldname, cache_##fieldname );\
+		else if (strcmp ( fieldname, cache_##fieldname ))                                               \
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, #fieldname, fieldname );\
+	}                                                                                                 \
+	else if ( fieldname )                                                                               \
+		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, #fieldname, fieldname );           \
+	}G_STMT_END
+
+void
+e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
+{
+	char *subject, *cache_subject;
+	char *message, *cache_message;
+	char *classification, *cache_classification;
+	char *accept_level, *cache_accept_level;
+	char *place, *cache_place;
+	char *priority, *cache_priority;
+		
+	/* TODO assert the types of the items are the same */
+
+	SET_DELTA(subject);
+	SET_DELTA(message);
+	SET_DELTA(classification);
+
+	if (difftime (e_gw_item_get_start_date (item), e_gw_item_get_start_date (cache_item)))
+		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "startDate", e_gw_item_get_start_date (item));
+	
+	if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
+
+		if (difftime (e_gw_item_get_end_date (item), e_gw_item_get_end_date (cache_item)))
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "endDate", e_gw_item_get_end_date (item));
+		accept_level = e_gw_item_get_accept_level (item);                                                       
+		cache_accept_level = e_gw_item_get_accept_level (cache_item);                                           
+		if ( cache_accept_level ) {                                                                            
+			if (!accept_level )                                                                               
+				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, "acceptLevel", cache_accept_level );
+			else if (strcmp ( accept_level, cache_accept_level ))                                               
+				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "acceptLevel", accept_level );
+		}                                                                                                 
+		else if ( accept_level )                                                                               
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "acceptLevel", accept_level ); 
+		
+		SET_DELTA(place);
+		if ( e_gw_item_get_trigger (cache_item) ) {                                                                            
+			if (!e_gw_item_get_trigger (item) )                                                                               
+				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, "alarm", e_gw_item_get_trigger (cache_item));
+			else if (e_gw_item_get_trigger (item) != e_gw_item_get_trigger (cache_item))                                               
+				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "alarm", e_gw_item_get_trigger (item));
+		}                                                                                                 
+		else if ( e_gw_item_get_trigger (item) )                                                                               
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "alarm", e_gw_item_get_trigger (item)); 
+	}
+	else if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
+		gboolean completed, cache_completed;
+		
+		if (difftime (e_gw_item_get_due_date (item), e_gw_item_get_due_date (cache_item)))
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "dueDate", e_gw_item_get_due_date (item));
+		completed = e_gw_item_get_completed (item);
+		cache_completed = e_gw_item_get_completed (cache_item);
+		if ((completed && !cache_completed) || (!completed && cache_completed))
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "completed", completed);
+		SET_DELTA (priority);
+	}
 }
