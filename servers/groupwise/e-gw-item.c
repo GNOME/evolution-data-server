@@ -697,7 +697,8 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			temp = soup_soap_parameter_get_first_child_by_name(subparam, "lastName"); 
 			if (temp) {
 				value = soup_soap_parameter_get_string_value (temp);
-				full_name->last_name = value;
+				if (value)
+					full_name->last_name = value;
 			}
 			temp = soup_soap_parameter_get_first_child_by_name(subparam, "nameSuffix"); 
 			if (temp) {
@@ -729,15 +730,17 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				IMAddress *im_address = g_new0(IMAddress, 1);
 				im_address->address = im_address->service = NULL;
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "service");
-				if (second_level_child)
+				if (second_level_child) {
 					value = soup_soap_parameter_get_string_value (second_level_child);
-				if (value )
-					im_address->service = value;
+					if (value )
+						im_address->service = value;
+				}
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "address");
-				if (second_level_child)
+				if (second_level_child) {
 					value = soup_soap_parameter_get_string_value (second_level_child);
-				if (value)
-					im_address->address = value;
+					if (value)
+						im_address->address = value;
+				}
 				if (im_address->service && im_address->address)
 					item->priv->im_list = g_list_append (item->priv->im_list, im_address);
 				else 
@@ -800,26 +803,6 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		}
 			
 	}
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "members");
-	if (subparam) {
-		char *id, *email;
-		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp)) {
-			id = email = NULL;
-			second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "email"); 
-			if (second_level_child)
-				email = soup_soap_parameter_get_string_value (second_level_child);
-			second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "id");
-			if (second_level_child)
-				id = soup_soap_parameter_get_string_value (second_level_child);
-			if (id&&email) {
-				EGroupMember *member = g_new0 (EGroupMember, 1);
-				member->id = id;
-				member->email = email;
-				item->priv->member_list = g_list_append (item->priv->member_list, member);
-			}
-					
-		}
-	}
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "addressList");
 	if (subparam) {
@@ -838,6 +821,51 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	
 }
 static void 
+set_group_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
+{
+
+	char *value;
+	SoupSoapParameter *subparam, *temp, *second_level_child;
+	GHashTable *simple_fields;
+	
+	if (strcmp (soup_soap_parameter_get_name (param), "item") != 0) {
+		g_warning (G_STRLOC ": Invalid SOAP parameter %s", soup_soap_parameter_get_name (param));
+		return;
+	}
+
+	set_common_addressbook_item_fields_from_soap_parameter (item, param);
+	simple_fields = item->priv->simple_fields;
+
+	/* set name as the ful name also , as it is needed for searching*/
+	value = g_hash_table_lookup (simple_fields, "name");
+	if (value) 
+		item->priv->full_name->first_name = g_strdup (value);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "members");
+	if (subparam) {
+		char *id, *email;
+		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp)) {
+			id = email = NULL;
+			second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "email"); 
+			if (second_level_child)
+				email = soup_soap_parameter_get_string_value (second_level_child);
+			second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "id");
+			if (second_level_child)
+				id = soup_soap_parameter_get_string_value (second_level_child);
+			if (id&&email) {
+				EGroupMember *member = g_new0 (EGroupMember, 1);
+				member->id = id;
+				member->email = email;
+				item->priv->member_list = g_list_append (item->priv->member_list, member);
+			}
+			
+		}
+	}
+	
+	
+}
+
+static void 
 set_resource_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 {
 
@@ -852,6 +880,12 @@ set_resource_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param
 
 	set_common_addressbook_item_fields_from_soap_parameter (item, param);
 	simple_fields = item->priv->simple_fields;
+
+	/* set name as the ful name also , as it is needed for searching*/
+	value = g_hash_table_lookup (simple_fields, "name");
+	if (value) 
+		item->priv->full_name->first_name = g_strdup (value);
+		
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "phone");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
@@ -882,6 +916,12 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 	}
 	set_common_addressbook_item_fields_from_soap_parameter (item, param);
 	simple_fields = item->priv->simple_fields;
+
+	/* set name as the ful name also , as it is needed for searching*/
+	value = g_hash_table_lookup (simple_fields, "name");
+	if (value) 
+		item->priv->full_name->first_name = g_strdup (value);
+
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "phone");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
@@ -1202,7 +1242,7 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 		 
 	else if (!g_ascii_strcasecmp (item_type, "Group")) {
 		item->priv->item_type = E_GW_ITEM_TYPE_GROUP;
-		set_contact_fields_from_soap_parameter (item, param);
+		set_group_fields_from_soap_parameter (item, param);
 		return item;
 	}
 	
