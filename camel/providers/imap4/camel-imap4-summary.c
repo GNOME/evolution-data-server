@@ -52,7 +52,7 @@
 
 #define d(x) x
 
-#define CAMEL_IMAP4_SUMMARY_VERSION  1
+#define CAMEL_IMAP4_SUMMARY_VERSION  2
 
 static void camel_imap4_summary_class_init (CamelIMAP4SummaryClass *klass);
 static void camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *klass);
@@ -118,6 +118,8 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 	folder_summary->message_info_size = sizeof (CamelIMAP4MessageInfo);
 	folder_summary->content_info_size = sizeof (CamelIMAP4MessageContentInfo);
 	
+	summary->have_mlist = FALSE;
+	
 	summary->update_flags = TRUE;
 	summary->uidvalidity_changed = FALSE;
 }
@@ -151,14 +153,24 @@ imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->version) == -1)
 		return -1;
 	
-	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->uidvalidity) == -1)
-		return -1;
-	
 	if (imap4_summary->version > CAMEL_IMAP4_SUMMARY_VERSION) {
 		g_warning ("Unknown IMAP4 summary version\n");
 		errno = EINVAL;
 		return -1;
 	}
+	
+	if (imap4_summary->version >= 2) {
+		/* check that we have Mailing-List info */
+		int have_mlist;
+		
+		if (camel_file_util_decode_fixed_int32 (fin, &have_mlist) == -1)
+			return -1;
+		
+		imap4_summary->have_mlist = have_mlist ? TRUE : FALSE;
+	}
+	
+	if (camel_file_util_decode_fixed_int32 (fin, &imap4_summary->uidvalidity) == -1)
+		return -1;
 	
 	return 0;
 }
@@ -172,6 +184,9 @@ imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 		return -1;
 	
 	if (camel_file_util_encode_fixed_int32 (fout, CAMEL_IMAP4_SUMMARY_VERSION) == -1)
+		return -1;
+	
+	if (camel_file_util_encode_fixed_int32 (fout, imap4_summary->have_mlist) == -1)
 		return -1;
 	
 	if (camel_file_util_encode_fixed_int32 (fout, imap4_summary->uidvalidity) == -1)
@@ -1294,18 +1309,12 @@ camel_imap4_summary_set_uidnext (CamelFolderSummary *summary, guint32 uidnext)
 	summary->nextuid = uidnext;
 }
 
-void
-camel_imap4_summary_set_uidvalidity (CamelFolderSummary *summary, guint32 uidvalidity)
+static void
+imap4_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 {
-	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
 	int i, count;
-	
-	g_return_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary));
-	
-	if (imap4_summary->uidvalidity == uidvalidity)
-		return;
 	
 	changes = camel_folder_change_info_new ();
 	count = camel_folder_summary_count (summary);
@@ -1318,11 +1327,26 @@ camel_imap4_summary_set_uidvalidity (CamelFolderSummary *summary, guint32 uidval
 	}
 	
 	camel_folder_summary_clear (summary);
-	camel_data_cache_clear (((CamelIMAP4Folder *) summary->folder)->cache, "cache", NULL);
+	
+	if (uncache)
+		camel_data_cache_clear (((CamelIMAP4Folder *) summary->folder)->cache, "cache", NULL);
 	
 	if (camel_folder_change_info_changed (changes))
 		camel_object_trigger_event (summary->folder, "folder_changed", changes);
 	camel_folder_change_info_free (changes);
+}
+
+void
+camel_imap4_summary_set_uidvalidity (CamelFolderSummary *summary, guint32 uidvalidity)
+{
+	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
+	
+	g_return_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary));
+	
+	if (imap4_summary->uidvalidity == uidvalidity)
+		return;
+	
+	imap4_summary_clear (summary, TRUE);
 	
 	imap4_summary->uidvalidity = uidvalidity;
 	
@@ -1377,8 +1401,9 @@ info_uid_sort (const CamelMessageInfo **info0, const CamelMessageInfo **info1)
 int
 camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *ex)
 {
-	CamelOfflineJournal *journal = ((CamelIMAP4Folder *) summary->folder)->journal;
+	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) summary->folder;
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
+	CamelOfflineJournal *journal = imap4_folder->journal;
 	CamelIMAP4Engine *engine;
 	CamelIMAP4Command *ic;
 	guint32 first = 0;
@@ -1388,6 +1413,12 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	
 	/* FIXME: what do we do if replaying the journal fails? */
 	camel_offline_journal_replay (journal, NULL);
+	
+	if (imap4_folder->enable_mlist && !imap4_summary->have_mlist) {
+		/* need to refetch all summary info to get info->mlist */
+		imap4_summary_clear (summary, FALSE);
+	} else
+		imap4_summary->have_mlist = imap4_folder->enable_mlist;
 	
 	engine = ((CamelIMAP4Store *) summary->folder->parent_store)->engine;
 	scount = camel_folder_summary_count (summary);
@@ -1441,14 +1472,6 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 		imap4_fetch_all_add (ic->user_data);
 		camel_imap4_command_unref (ic);
 		camel_operation_end (NULL);
-		
-#if 0
-		/* Note: this should not be needed - the code that adds envelopes to the summary
-		 * adds them in proper order */
-		
-		/* it's important for these to be sorted sequentially for EXPUNGE events to work */
-		g_ptr_array_sort (summary->messages, (GCompareFunc) info_uid_sort);
-#endif
 	}
 	
 	imap4_summary->update_flags = FALSE;

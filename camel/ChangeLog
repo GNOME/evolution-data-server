@@ -1,3 +1,12 @@
+2005-01-26  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-summary.c (imap4_header_load): Check
+	whether or not we have mlist info in our summary.
+	(imap4_header_save): Save have_mlist.
+	(camel_imap4_summary_flush_updates): Modified to clear the summary
+	and do a complete refetch if enable_mlist has been newly enabled
+	and we don't already have mlist info in our summary info's.
+
 2005-01-25  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
@@ -184,7 +193,8 @@
 	store == no inbox; maildir implements one now.
 
 	* camel-multipart-signed.c (skip_content): in the message state
-	skip a state, otherwise we go nowhere but down an overflowed stack drain.
+	skip a state, otherwise we go nowhere but down an overflowed stack
+	drain.
 
 2005-01-14  Not Zed  <NotZed@Ximian.com>
 
