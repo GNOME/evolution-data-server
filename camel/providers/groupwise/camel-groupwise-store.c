@@ -285,6 +285,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	CamelStore *store = CAMEL_STORE (service);
 	const char *property_value, *base_url ;
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv ;
+	char *path = NULL;
 	
 	d("in groupwise store constrcut\n");
 
@@ -297,12 +298,20 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 				     _("Host or user not availbale in url"));
 	}
 
-	/*store summary*/
 
 	/*storage path*/
 	priv->storage_path = camel_session_get_storage_path (session, service, ex) ;
 	if (!priv->storage_path)
 		return ;
+	
+	/*store summary*/
+	path = g_alloca (strlen (priv->storage_path) + 32) ;
+	sprintf (path, "%s/.summary", priv->storage_path) ;
+	groupwise_store->summary = camel_groupwise_store_summary_new () ;
+	camel_store_summary_set_filename ((CamelStoreSummary *)groupwise_store->summary, path) ;
+	
+	g_free (path) ;
+	camel_store_summary_load ((CamelStoreSummary *) groupwise_store->summary);
 	
 	/*host and user*/
 	priv->server_name = g_strdup (url->host);
@@ -782,17 +791,7 @@ groupwise_get_folder_info_online (CamelStore *store,
 		
 		g_ptr_array_add (folders, fi);
 		
-/*		if (par_name)
-			g_print ("parent: %s\n", par_name)  ;
-		g_print ("name: %s\n", fi->name)  ;
-		g_print ("full name: %s\n", fi->full_name)  ;
-		g_print ("full name: %s\n", fi->uri)  ;*/
 	
-		//g_free (parent) ;
-		//g_free (par_name) ;
-		//fi = parent = par_name = NULL ;
-		//fi = NULL ;
-		
 	}
 	if ( (top != NULL) && (folders->len == 0)) {
 		/*temp_str already contains the value if any*/
@@ -801,14 +800,14 @@ groupwise_get_folder_info_online (CamelStore *store,
 		else
 			return groupwise_build_folder_info (groupwise_store, NULL, top ) ;
 	}
-	info = camel_folder_info_build (folders, NULL, '/', FALSE) ;
+	info = camel_folder_info_build (folders, top, '/', TRUE) ;
 	g_ptr_array_free (folders, TRUE) ;
 
 	/*Now update the folder counts, the idea is taken from the imap provider implementation*/
-	if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST))
+	if (!(flags & CAMEL_STORE_FOLDER_INFO_FAST)) {
 		update_folder_counts (groupwise_store, info, ex) ;
-
-	//	camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary) ;
+	}
+	camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary) ;
 	return info ;
 }
 
@@ -946,17 +945,20 @@ groupwise_delete_folder(CamelStore *store,
 
 static void 
 groupwise_rename_folder(CamelStore *store,
-					  const char *old_name,
-					  const char *new_name,
-					  CamelException *ex)
+		        const char *old_name,
+			const char *new_name,
+			CamelException *ex)
 {
-	/*	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
-		char *oldpath, *newpath, *storepath, *newname ;*/
+/*	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
+	char *oldpath, *newpath, *storepath, *newname ;
+	CamelSession *session = ((CamelService *)store)->session ;
 
-	/*
-	  1. check if online(if online/offline modes are supported
-	  2. check if there are any subscriptions
-	*/
+
+	if (!camel_session_is_online (session)) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folders in offline mode.")) ;
+		return ;
+	}*/
+
 
 }
 
