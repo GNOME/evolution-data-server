@@ -25,6 +25,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
 #include <libxml/xmlmemory.h>
 #include <libxml/entities.h>
 
@@ -32,9 +34,9 @@ GHashTable *
 e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
 {
 	xmlNode *root, *node;
-	const char *key;
 	xmlChar *value;
 	GHashTable *hash;
+	char *key;
 
 	hash = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -47,7 +49,7 @@ e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
 		    !strcmp (node->name, "object"))
 			key = xmlGetProp (node, "uid");
 		else
-			key = node->name;
+			key = xmlStrdup (node->name);
 
 		if (!key) {
 			g_warning ("Key not found!!");
@@ -89,7 +91,7 @@ foreach_save_func (gpointer key, gpointer value, gpointer user_data)
 	} else
 		new_node = xmlNewNode (NULL, (const char *) key);
 
-	enc = xmlEncodeSpecialChars (sd->doc, value);
+	enc = xmlEncodeEntitiesReentrant (sd->doc, value);
 	xmlNodeSetContent (new_node, enc);
 	xmlFree (enc);
 
@@ -238,12 +240,25 @@ e_xmlhash_foreach_key (EXmlHash *hash, EXmlHashFunc func, gpointer user_data)
 void
 e_xmlhash_write (EXmlHash *hash)
 {
+	const char *slash;
+	char *filesave;
 	xmlDoc *doc;
 
 	g_return_if_fail (hash != NULL);
 
 	doc = e_xml_from_hash (hash->objects, E_XML_HASH_TYPE_OBJECT_UID, "xmlhash");
-	xmlSaveFile (hash->filename, doc);
+	
+	filesave = g_alloca (strlen (hash->filename) + 5);
+	if ((slash = strrchr (hash->filename, '/')))
+		sprintf (filesave, "%.*s.#%s", slash - hash->filename + 1, hash->filename, slash + 1);
+	else
+		sprintf (filesave, ".#%s", hash->filename);
+	
+	if (xmlSaveFile (filesave, doc) != -1)
+		rename (filesave, hash->filename);
+	else
+		unlink (filesave);
+	
 	xmlFreeDoc (doc);
 }
 

@@ -1,3 +1,14 @@
+2004-04-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* libedataserver/e-xml-hash-utils.c (e_xml_to_hash): Make sure
+	that 'key' always points to a malloc'd block of memory that we can
+	free.
+	(foreach_save_func): Use xmlEncodeEntitiesReentrant() rather than
+	xmlEncodeSpecialChars() since that latter doesn't encode 8bit
+	chars and the like.
+	(e_xmlhash_write): Save the doc to a tmp file first, only if
+	saving is successful rename() the file over the original.
+
 2004-04-21  Chris Toshok  <toshok@ximian.com>
 
 	* configure.in: bump version to 0.0.92.1.
@@ -11,17 +22,19 @@
 	* configure.in: bump version, libtool numbers
 
 2004-04-13  Sivaiah Nallagatla <snallagatla@novell.com>
-	
-	* configure.in : added LIBEGROUPWISE_* variables and corresponding AC_SUBST  for 
-         assinging libegroupwise version number. Defined a varible LIBSOUP_REQUIRED.
-	added servers/groupwise/libegroupwise-1.0.pc for AC_OUTPUT section
-	
-	* servers/groupwise/Makefile.am : added libegroupwiseinclude_HEADERS,
-	libegroupwise_la_LDFLAGS etc to make groupwise apis installable
-	
-	* servers/groupwise/libegroupwise-1.0.pc.in :new pc.in file
-	libegroupwise 
- 
+
+	* configure.in: added LIBEGROUPWISE_* variables and corresponding
+	AC_SUBST for assinging libegroupwise version number. Defined a
+	varible LIBSOUP_REQUIRED.  added
+	servers/groupwise/libegroupwise-1.0.pc for AC_OUTPUT section
+
+	* servers/groupwise/Makefile.am: added
+	libegroupwiseinclude_HEADERS, libegroupwise_la_LDFLAGS etc to make
+	groupwise apis installable
+
+	* servers/groupwise/libegroupwise-1.0.pc.in: new pc.in file
+	libegroupwise
+
 2004-04-02  JP Rosevear  <jpr@ximian.com>
 
 	* configure.in: bump version, libtool numbers
