@@ -2,6 +2,7 @@
 #include <libgnome/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
+#include <string.h>
 #include <libebook/e-book.h>
 
 const char *photo_data = "/9j/4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRo\
@@ -56,4 +57,6 @@ main (int argc, char **argv)
 	  g_error ("photo data differs");
 
 	printf ("photo test passed\n");
+	
+	return 0;
 }

@@ -2,6 +2,7 @@
 #include <libgnome/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
+#include <string.h>
 #include <libebook/e-book.h>
 
 #define TEST_ID "test-uid"
@@ -24,4 +25,6 @@ main (int argc, char **argv)
 	  printf ("passed\n");
 	else
 	  printf ("failed\n");
+	
+	return 0;
 }
