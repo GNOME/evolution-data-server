@@ -773,6 +773,10 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	default:
 		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 	}
+	
+	if (status == E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED)
+		return E_GW_CONNECTION_STATUS_OK;
+
 	if (!*remove && status == E_GW_CONNECTION_STATUS_OK) {
 		EGwItem *item;
 

@@ -1,3 +1,14 @@
+2004-10-01  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #62868
+	* e-cal-backend-groupwise-utils.c (e_gw_connection_send_appointment):
+	Send the Connection Status as Ok even if we get an error message from
+	the server for accepting the appointment more than once since it does
+	affect the functionality.
+	* e-cal-backend-groupwise.c (receive_objects):
+	Return the status immediately if the Item has not been modified. Now
+	the Permission Denied error message need not be sent.
+
 2004-09-30  Chris Toshok  <toshok@ximian.com>
 
 	* libecal/e-cal.c (get_factories): don't look for factories based
