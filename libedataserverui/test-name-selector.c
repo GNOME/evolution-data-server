@@ -29,6 +29,17 @@
 #include "e-name-selector-dialog.h"
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-ui-init.h>
+#include <bonobo/bonobo-main.h>
+#include <camel/camel.h>
+
+static void
+close_dialog (GtkWidget *widget, int response, gpointer data)
+{
+	GtkWidget *dialog = data;
+	
+	gtk_widget_destroy (dialog);
+	bonobo_main_quit ();
+}
 
 static gboolean
 start_test (const char *gconf_path)
@@ -43,6 +54,7 @@ start_test (const char *gconf_path)
 	e_name_selector_model_add_section (name_selector_model, "cc", "Cc", NULL);
 	e_name_selector_model_add_section (name_selector_model, "bcc", "Bcc", NULL);
 
+ 	g_signal_connect (name_selector_dialog, "response", G_CALLBACK (close_dialog), name_selector_dialog);
 	gtk_widget_show (GTK_WIDGET (name_selector_dialog));
 
 	return FALSE;

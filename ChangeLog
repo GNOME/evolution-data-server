@@ -1,3 +1,12 @@
+2004-12-17  JP Rosevear  <jpr@novell.com>
+
+	* libedataserverui/test-name-selector.c (close_dialog): destroy
+	the dialog and quit
+	(start_test): listen for any response so we can exit
+
+	* libedataserverui/e-name-selector-dialog.glade: don't make the
+	blank window visible
+
 2004-12-16  Hans Petter Jansson  <hpj@novell.com>
 
 	* libedataserverui/libedataserverui.pc.in: Remove gladedir definition,
