@@ -1496,6 +1496,8 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	/* add all properties */
 	if (priv->id)
 		e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
+	if (priv->container)
+		e_gw_message_write_string_parameter (msg, "container", NULL, priv->container);
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
 
 	soup_soap_message_start_element (msg, "message", NULL, NULL);
