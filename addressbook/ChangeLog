@@ -1,3 +1,8 @@
+2004-01-20  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libedata-book/e-data-book-view.c (e_data_book_view_new): Pass a
+	threaded POA policy to g_object_new (). Fixes deadlocks.
+
 2004-01-16  JP Rosevear <jpr@ximian.com>
 
 	* libebook/e-book.c (e_book_idle_writable): idle handler to emit

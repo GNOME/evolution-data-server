@@ -394,7 +394,9 @@ e_data_book_view_new (EBookBackend *backend,
 {
 	EDataBookView *book_view;
 
-	book_view = g_object_new (E_TYPE_DATA_BOOK_VIEW, NULL);
+	book_view = g_object_new (E_TYPE_DATA_BOOK_VIEW,
+				  "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
+				  NULL);
 	
 	e_data_book_view_construct (book_view, backend, listener, card_query, card_sexp);
 
