@@ -68,6 +68,8 @@ e_name_selector_model_init (ENameSelectorModel *name_selector_model)
 						(GtkTreeModelFilterVisibleFunc) filter_show_not_in_destinations,
 						name_selector_model, NULL);
 	g_object_unref (name_selector_model->contact_store);
+
+	name_selector_model->destination_uid_hash = NULL;
 }
 
 static void
@@ -164,10 +166,77 @@ filter_show_not_in_destinations (EContactStore *contact_store, GtkTreeIter *iter
  * Section helpers *
  * --------------- */
 
+typedef struct
+{
+	ENameSelectorModel *name_selector_model;
+	GHashTable         *other_hash;
+}
+HashCompare;
+
+static void
+emit_destination_uid_changes_cb (const gchar *uid, gpointer value, HashCompare *hash_compare)
+{
+	EContactStore *contact_store = hash_compare->name_selector_model->contact_store;
+
+	if (!hash_compare->other_hash || !g_hash_table_lookup (hash_compare->other_hash, uid)) {
+		GtkTreeIter  iter;
+		GtkTreePath *path;
+
+		if (e_contact_store_find_contact (contact_store, uid, &iter)) {
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (contact_store), &iter);
+			gtk_tree_model_row_changed (GTK_TREE_MODEL (contact_store), path, &iter);
+			gtk_tree_path_free (path);
+		}
+	}
+}
+
 static void
 destinations_changed (ENameSelectorModel *name_selector_model)
 {
-	gtk_tree_model_filter_refilter (name_selector_model->contact_filter);
+	GHashTable  *destination_uid_hash_new;
+	GHashTable  *destination_uid_hash_old;
+	HashCompare  hash_compare;
+	gint         i;
+
+	destination_uid_hash_new = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	for (i = 0; i < name_selector_model->sections->len; i++) {
+		Section *section = &g_array_index (name_selector_model->sections, Section, i);
+		GList   *destinations;
+		GList   *l;
+
+		destinations = e_destination_store_list_destinations (section->destination_store);
+
+		for (l = destinations; l; l = g_list_next (l)) {
+			EDestination *destination = l->data;
+			const gchar  *destination_uid;
+
+			destination_uid = e_destination_get_contact_uid (destination);
+			if (destination_uid)
+				g_hash_table_insert (destination_uid_hash_new,
+						     g_strdup (destination_uid),
+						     GINT_TO_POINTER (TRUE));
+		}
+
+		g_list_free (destinations);
+	}
+
+	destination_uid_hash_old = name_selector_model->destination_uid_hash;
+	name_selector_model->destination_uid_hash = destination_uid_hash_new;
+
+	hash_compare.name_selector_model = name_selector_model;
+
+	hash_compare.other_hash = destination_uid_hash_old;
+	g_hash_table_foreach (destination_uid_hash_new, (GHFunc) emit_destination_uid_changes_cb,
+			      &hash_compare);
+
+	if (destination_uid_hash_old) {
+		hash_compare.other_hash = destination_uid_hash_new;
+		g_hash_table_foreach (destination_uid_hash_old, (GHFunc) emit_destination_uid_changes_cb,
+				      &hash_compare);
+
+		g_hash_table_destroy (destination_uid_hash_old);
+	}
 }
 
 static void
@@ -280,7 +349,7 @@ e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
 
 	g_array_append_val (name_selector_model->sections, section);
 
-	gtk_tree_model_filter_refilter (name_selector_model->contact_filter);
+	destinations_changed (name_selector_model);
 	g_signal_emit (name_selector_model, signals [SECTION_ADDED], 0, name);
 }
 
@@ -302,7 +371,7 @@ e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model, c
 	free_section (name_selector_model, n);
 	g_array_remove_index_fast (name_selector_model->sections, n);  /* Order doesn't matter */
 
-	gtk_tree_model_filter_refilter (name_selector_model->contact_filter);
+	destinations_changed (name_selector_model);
 	g_signal_emit (name_selector_model, signals [SECTION_REMOVED], 0, name);
 }
 

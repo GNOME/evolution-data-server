@@ -55,19 +55,21 @@ struct EContactStore {
 	GArray     *contact_sources;
 };
 
-GtkType        e_contact_store_get_type    (void);
-EContactStore *e_contact_store_new         (void);
+GtkType        e_contact_store_get_type     (void);
+EContactStore *e_contact_store_new          (void);
 
-EContact      *e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter);
+EContact      *e_contact_store_get_contact  (EContactStore *contact_store, GtkTreeIter *iter);
+gboolean       e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
+					     GtkTreeIter *iter);
 
 /* Returns a shallow copy; free the list when done, but don't unref elements */
-GList         *e_contact_store_get_books   (EContactStore *contact_store);
+GList         *e_contact_store_get_books    (EContactStore *contact_store);
 
-void           e_contact_store_add_book    (EContactStore *contact_store, EBook *book);
-void           e_contact_store_remove_book (EContactStore *contact_store, EBook *book);
+void           e_contact_store_add_book     (EContactStore *contact_store, EBook *book);
+void           e_contact_store_remove_book  (EContactStore *contact_store, EBook *book);
 
-void           e_contact_store_set_query   (EContactStore *contact_store, EBookQuery *book_query);
-EBookQuery    *e_contact_store_peek_query  (EContactStore *contact_store);
+void           e_contact_store_set_query    (EContactStore *contact_store, EBookQuery *book_query);
+EBookQuery    *e_contact_store_peek_query   (EContactStore *contact_store);
 
 G_END_DECLS
 

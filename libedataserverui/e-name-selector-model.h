@@ -47,6 +47,8 @@ struct ENameSelectorModel {
 	GArray             *sections;
 	EContactStore      *contact_store;
 	GtkTreeModelFilter *contact_filter;
+
+	GHashTable         *destination_uid_hash;
 };
 
 struct ENameSelectorModelClass {

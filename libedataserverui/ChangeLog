@@ -1,3 +1,18 @@
+2005-01-10  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-contact-store.c (e_contact_store_find_contact): Implement.
+
+	* e-name-selector-model.c (e_name_selector_model_init): Set up UID hash
+	field.
+	(emit_destination_uid_changes_cb): Implement.
+	(destinations_changed): Instead of re-filtering everything, calculate
+	the differences between former and current destination UIDs, and
+	emit the change signal for the affected contacts, so they can be
+	re-filtered.
+	(e_name_selector_model_add_section): Call destinations_changed ()
+	instead of re-filtering.
+	(e_name_selector_model_remove_section): Ditto.
+
 2005-01-07  Rodrigo Moya <rodrigo@novell.com>
 
 	* e-categories-config.c (e_categories_dialog_init): set default response
