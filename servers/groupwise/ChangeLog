@@ -1,3 +1,10 @@
+2004-07-26  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-item.c: (e_gw_item_set_calendar_item_elements):
+	Do not set the icalid on the request while saving recurring calender 
+	events. The icalids for the created objects are obtained subsequently
+	from the server through a getItemsRequest call. 
+
 2004-07-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-connection.c: 

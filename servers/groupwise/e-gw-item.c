@@ -1869,8 +1869,11 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		}
 		soup_soap_message_end_element (msg);
 	}
-
-	e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
+	else {
+		/*the icalid is fed to the server only if we are not saving
+		 * recurring items */
+		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
+	}
 }
 
 gboolean

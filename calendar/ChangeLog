@@ -1,3 +1,31 @@
+2004-07-26  Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #57651, #58637 and #58643
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_send_appointment) : Append the container id to
+	the gwrecordid obtained via ITIP to match the representation 
+	in the SOAP interface.
+	(e_gw_item_set_changes): Updates to 'completed' field in the Task
+	is not sticky in the server, when using the modifyRequest. Using a 
+	separate completeRequest call to update the same.
+	* backends/groupwise/e-cal-backend-groupwise-utils.h: removed the
+	unused default_zone parameter from e_gw_connection_send_appointment.
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(get_deltas): return boolean values not the connection status as the 
+	caller is not expected to handle it anyway.
+	(sanitize_component): renamed set_container_id function, so it
+	correctly depicts what it does.
+	(e_cal_backend_groupwise_create_object): Make a getItemsRequest to the 
+	server to obtain the items while creating recurring events. The original
+	call returns only the item ids and the client requires the icalids too
+	to keep the cache valid.
+	(e_cal_backend_groupwise_modify_object) : Use the completeRequest method
+	to update task completion. 
+	(receive_object) : The call to e_gw_connection_send_appointment updated
+	to reflect the change in its signature. 
+	(e_cal_backend_groupwise_receive_objects): set the method on the subcomp
+	created before passing it over to receive_object.
+
 2004-07-23  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes #60463

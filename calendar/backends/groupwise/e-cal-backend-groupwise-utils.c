@@ -578,21 +578,25 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, icaltimezone *default_zone, ECalComponent *comp, icalproperty_method method)
+e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECalComponent *comp, icalproperty_method method)
 {
 	EGwConnectionStatus status;
 	icalparameter_partstat partstat;
+	char *item_id;
 	
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
-
+	e_cal_component_commit_sequence (comp);
+	/* When the icalcomponent is obtained through the itip message rather
+	 * than from the SOAP protocol, the container id has to be explicitly 
+	 * added to the xgwrecordid inorder to obtain the item id. */
+	item_id = g_strconcat (e_cal_component_get_gw_id (comp), container, NULL);
 	switch (method) {
-	case ICAL_METHOD_REPLY:
+	case ICAL_METHOD_REQUEST:
 		/* get attendee here and add the list along. */
-		if (e_cal_component_has_attendees (comp))
-		{
+		if (e_cal_component_has_attendees (comp)) {
 			GSList *attendee_list, *l;
 			ECalComponentAttendee  *attendee = NULL, *tmp;
 
@@ -628,18 +632,18 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ica
 		case ICAL_PARTSTAT_ACCEPTED: 
 			e_cal_component_get_transparency (comp, &transp);
 			if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE) 
-				status = e_gw_connection_accept_request (cnc, e_cal_component_get_gw_id (comp), "Busy");
+				status = e_gw_connection_accept_request (cnc, item_id, "Busy");
 			else 
-				status = e_gw_connection_accept_request (cnc, e_cal_component_get_gw_id (comp), "Free");
+				status = e_gw_connection_accept_request (cnc, item_id, "Free");
 			break;
 		case ICAL_PARTSTAT_DECLINED:
-			status = e_gw_connection_decline_request (cnc, e_cal_component_get_gw_id (comp));
+			status = e_gw_connection_decline_request (cnc, item_id);
 			break;
 		case ICAL_PARTSTAT_TENTATIVE:
-			status = e_gw_connection_accept_request (cnc, e_cal_component_get_gw_id (comp), "Tentative");
+			status = e_gw_connection_accept_request (cnc, item_id, "Tentative");
 			break;
 		case ICAL_PARTSTAT_COMPLETED:
-			status = e_gw_connection_complete_request (cnc, e_cal_component_get_gw_id (comp));
+			status = e_gw_connection_complete_request (cnc, item_id);
 
 		default :
 			status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
@@ -649,7 +653,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ica
 		break;
 
 	case ICAL_METHOD_CANCEL:
-		status = e_gw_connection_retract_request (cnc, e_cal_component_get_gw_id (comp), NULL, FALSE, FALSE);
+		status = e_gw_connection_retract_request (cnc, item_id, NULL, FALSE, FALSE);
 		break;
 	default:
 		status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
@@ -988,14 +992,7 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "alarm", &trigger);
 	}
 	else if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
-		gboolean completed, cache_completed;
-		
 		SET_DELTA(due_date);
-		
-		completed = e_gw_item_get_completed (item);
-		cache_completed = e_gw_item_get_completed (cache_item);
-		if ((completed && !cache_completed) || (!completed && cache_completed))
-			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "completed", &completed);
 		SET_DELTA (priority);
 	}
 }
