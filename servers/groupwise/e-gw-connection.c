@@ -425,7 +425,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 		port = soup_soap_parameter_get_string_value (subparam);
 		if (host && port) {
 			tokens = g_strsplit (uri, "://", 2);
-			redirected_uri = g_strconcat (tokens[0], "://", host, ":", port, "/soap");
+			redirected_uri = g_strconcat (tokens[0], "://", host, ":", port, "/soap", NULL);
 			g_object_unref (msg);
 			g_object_unref (response);
 			msg = form_login_request (redirected_uri, username, password);

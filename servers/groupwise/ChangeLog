@@ -1,3 +1,8 @@
+2005-01-25 Sivaiah Nallagtla  <snallagatla@novell.com>
+
+	* e-gw-connection.c (e_gw_connection_new) : append NULL 
+	to g_strconact args. Doh 
+
 2005-01-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* e-gw-container.[ch] (e_gw_container_set_from_soap_parameter):
