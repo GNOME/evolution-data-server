@@ -10,6 +10,7 @@
  */
 
 #include <config.h>
+#include <pthread.h>
 #include <bonobo/bonobo-main.h>
 #include "e-book-view-listener.h"
 #include "e-book-view.h"
@@ -70,8 +71,6 @@ main_thread_get_response (gpointer data)
 		g_signal_emit (listener, e_book_view_listener_signals [RESPONSE], 0, response);
 
 		free_response (response);
-
-		bonobo_object_unref (listener);
 	}
 
 	listener->priv->idle_id = -1;
@@ -94,8 +93,6 @@ e_book_view_listener_queue_response (EBookViewListener         *listener,
 		free_response (response);
 		return;
 	}
-
-	bonobo_object_ref (listener);
 
 	g_mutex_lock (listener->priv->idle_mutex);
 
@@ -318,6 +315,8 @@ static void
 e_book_view_listener_dispose (GObject *object)
 {
 	EBookViewListener *listener = E_BOOK_VIEW_LISTENER (object);
+
+	d(printf ("%p: in e_book_view_listener_dispose (%p)\n", pthread_self(), object));
 
 	if (listener->priv) {
 		if (listener->priv->idle_id != -1)

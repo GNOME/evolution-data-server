@@ -1,3 +1,11 @@
+2004-03-19  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book-view-listener.c (main_thread_get_response):
+	don't unref the listener in the loop.
+	(e_book_view_listener_queue_response): don't ref the listener for
+	every request.
+	(e_book_view_listener_dispose): add some debug spew.
+
 2004-03-18  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/Makefile.am (noinst_PROGRAMS): add test-stress-bookviews.
