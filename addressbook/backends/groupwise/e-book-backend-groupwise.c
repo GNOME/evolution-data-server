@@ -2159,9 +2159,9 @@ e_book_backend_groupwise_get_static_capabilities (EBookBackend *backend)
   
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	if (ebgw->priv->is_writable)
-		return g_strdup("net,bulk-removes,do-initial-query");
+		return g_strdup("net,bulk-removes,do-initial-query,contact-lists");
 	else 
-		return g_strdup("net,bulk-removes");
+		return g_strdup("net,bulk-removes,contact-lists");
 }
 static void 
 e_book_backend_groupwise_get_supported_auth_methods (EBookBackend *backend, EDataBook *book, guint32 opid)

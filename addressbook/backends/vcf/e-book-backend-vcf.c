@@ -622,7 +622,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 static char *
 e_book_backend_vcf_get_static_capabilities (EBookBackend *backend)
 {
-	return g_strdup("local,do-initial-query");
+	return g_strdup("local,do-initial-query,contact-lists");
 }
 
 static GNOME_Evolution_Addressbook_CallStatus

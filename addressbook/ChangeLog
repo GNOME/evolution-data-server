@@ -1,3 +1,18 @@
+2004-07-09  Chris Toshok  <toshok@ximian.com>
+
+	[ part of fix for #56520 ]
+	
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_get_static_capabilities): add
+	"contact-lists".
+
+	* backends/vcf/e-book-backend-vcf.c
+	(e_book_backend_vcf_get_static_capabilities): add "contact-lists".
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_get_static_capabilities): add
+	"contact-lists".
+
 2004-07-03  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 
@@ -8,8 +23,6 @@
 	(build_summary), (update_summary) : set priv->is_summary_ready 
 	to TRUE when summary loading is done  
 	 
-
-	
 2004-06-26  Chris Toshok  <toshok@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c (get_ldap_library_info): use
