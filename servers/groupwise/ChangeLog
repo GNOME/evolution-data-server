@@ -1,3 +1,9 @@
+2005-02-22  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-item.c (e_gw_item_append_to_soap_message): 
+	Adds a new elememt 'part' in a mail message in compliance
+	with the schema. 
+
 2005-02-17  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-connection.c: 
