@@ -1,11 +1,22 @@
  Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 0.0.99)
+AC_INIT(evolution-data-server, 1.1.0)
 AC_CONFIG_SRCDIR(README)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
 AM_CONFIG_HEADER(config.h)
+
+dnl *************************************************************************************************
+dnl Base Version
+dnl
+dnl This is for api/versioning tracking for things like bonobo .server files
+dnl
+dnl This should always be the major/minor of the stable version or stable version to be
+dnl *************************************************************************************************
+BASE_VERSION=1.2
+AC_SUBST(BASE_VERSION)
+AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 
 # Libtool versioning
 LIBEDATASERVER_CURRENT=5
@@ -226,11 +237,6 @@ dnl *******************
 dnl --- If you add something here, consider whether or not you also
 dnl --- need to add it to one or more .pc.in files (for Connector,
 dnl --- etc)
-
-dnl BASE_VERSION=`echo $VERSION | awk -F. '{print $1 "." $2;}'`
-BASE_VERSION=1.0
-AC_SUBST(BASE_VERSION)
-AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 
 privdatadir='${datadir}'/evolution-data-server-$BASE_VERSION
 AC_SUBST(privdatadir)

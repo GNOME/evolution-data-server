@@ -1,3 +1,7 @@
+2004-09-16  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: update version to 1.1.0 and BASE_VERSION to 1.2
+
 2004-09-14  Roozbeh Pournader  <roozbeh@farsiweb.info>
 
 	* configure.in: Added 'fa' (Persian) to ALL_LINGUAG.
