@@ -356,7 +356,9 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
         
         soup_soap_message_start_element (msg, "users", "types", NULL); 
         for ( l = users; l != NULL; l = g_list_next (l)) {
-                e_gw_message_write_string_parameter (msg, "user", NULL, l->data);
+		soup_soap_message_start_element (msg, "user", "types", NULL); 
+                e_gw_message_write_string_parameter (msg, "email", NULL, l->data);
+		soup_soap_message_end_element (msg);
         }
 
         soup_soap_message_end_element (msg);

@@ -1,3 +1,14 @@
+2004-03-18  JP Rosevear <jpr@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(start_freebusy_session): list the the addresses in the <email>
+	attribute
+
+2004-03-18  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.c: add e_return_error macro to fail more
+	gracefully as per ebook
+
 2004-03-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
@@ -14,6 +25,7 @@
 	modes.
 	(e_cal_backend_groupwise_finalize): free new private field.
 
+>>>>>>> 1.209
 2004-03-16 Harish K <kharish@novell.com>
 
 	* libecal/e-cal.c : Move open_calendar call into async_idle_cb

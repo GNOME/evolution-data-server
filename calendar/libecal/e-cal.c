@@ -119,6 +119,25 @@ static guint e_cal_signals[LAST_SIGNAL];
 
 static GObjectClass *parent_class;
 
+#define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
+     if G_LIKELY(expr) { } else						\
+       {								\
+	 g_log (G_LOG_DOMAIN,						\
+		G_LOG_LEVEL_CRITICAL,					\
+		"file %s: line %d (%s): assertion `%s' failed",		\
+		__FILE__,						\
+		__LINE__,						\
+		__PRETTY_FUNCTION__,					\
+		#expr);							\
+	 g_set_error (error, E_CALENDAR_ERROR, (error_code),                \
+		"file %s: line %d (%s): assertion `%s' failed",		\
+		__FILE__,						\
+		__LINE__,						\
+		__PRETTY_FUNCTION__,					\
+		#expr);							\
+	 return FALSE;							\
+       };				}G_STMT_END
+
 #define E_CALENDAR_CHECK_STATUS(status,error) G_STMT_START{		\
 	if ((status) == E_CALENDAR_STATUS_OK) {				\
 		return TRUE;						\
@@ -1022,7 +1041,9 @@ get_factories (const char *str_uri, GList **factories)
 
 		info = servers->_buffer + i;
 
+#if 0
 		g_message (G_STRLOC ": Activating calendar factory (%s)", info->iid);
+#endif
 		factory = bonobo_activation_activate_from_id (info->iid, 0, NULL, NULL);
 		
 		if (factory == CORBA_OBJECT_NIL)
@@ -1811,8 +1832,7 @@ e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 	
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 	
@@ -1885,9 +1905,8 @@ e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
 
 	priv = ecal->priv;
 	
@@ -1949,8 +1968,7 @@ e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
 
 	priv = ecal->priv;
 
@@ -2012,8 +2030,7 @@ e_cal_get_ldap_attribute (ECal *ecal, char **ldap_attribute, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
 
 	priv = ecal->priv;
 
@@ -2150,7 +2167,7 @@ gboolean
 e_cal_get_one_alarm_only (ECal *ecal)
 {
 	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	g_return_val_if_fail (ecal && E_IS_CAL (ecal), FALSE);
 
 	return check_capability (ecal, CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY);
 }
@@ -2226,8 +2243,7 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
 
 	priv = ecal->priv;
 
@@ -2306,8 +2322,7 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
 
 	priv = ecal->priv;
 
@@ -2352,6 +2367,7 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 
 	status = our_op->status;
 	*icalcomp = icalparser_parse_string (our_op->string);
+	/* FIXME if the parse fails its an error */
 	g_free (our_op->string);
 
 	e_calendar_remove_op (ecal, our_op);
@@ -2386,9 +2402,8 @@ e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **
 	ECalendarOp *our_op;
 	ECalendarStatus status;
 
-	g_return_val_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (change_id != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
+	e_return_error_if_fail (change_id, E_CALENDAR_STATUS_INVALID_ARG);
 
 	g_mutex_lock (ecal->priv->mutex);
 
@@ -2477,9 +2492,9 @@ e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **
 	ECalendarOp *our_op;
 	ECalendarStatus status;
 
-	g_return_val_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (query != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
+	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
 
 	g_mutex_lock (ecal->priv->mutex);
 
@@ -2536,11 +2551,10 @@ e_cal_get_object_list_as_comp (ECal *ecal, const char *query, GList **objects, G
 {
 	GList *ical_objects = NULL;
 	GList *l;
-	
-	g_return_val_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (query != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (objects != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
+	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);	
+	e_return_error_if_fail (objects, E_CALENDAR_STATUS_INVALID_ARG);	
 	
 	if (!e_cal_get_object_list (ecal, query, &ical_objects, error))
 		return FALSE;
@@ -2593,9 +2607,8 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	GNOME_Evolution_Calendar_UserList corba_users;
 	GList *l;
 	int i, len;
-	
-	g_return_val_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	g_mutex_lock (ecal->priv->mutex);
 
@@ -3208,8 +3221,7 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3271,9 +3283,8 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
-	g_return_val_if_fail (icalcomp != NULL, FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3334,8 +3345,8 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3405,8 +3416,8 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
 gboolean
 e_cal_remove_object (ECal *ecal, const char *uid, GError **error)
 {
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
 
 	return e_cal_remove_object_with_mod (ecal, uid, NULL, CALOBJ_MOD_ALL, error);
 }
@@ -3419,8 +3430,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3480,8 +3490,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3544,9 +3553,8 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	ECalendarOp *our_op;
 	icalcomponent *icalcomp;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
-	g_return_val_if_fail (zone != NULL, FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3674,8 +3682,8 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	ECalendarOp *our_op;
 	const char *tzobj;
 
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
-	g_return_val_if_fail (izone != NULL, FALSE);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (izone, E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3750,9 +3758,8 @@ e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
 	ECalendarOp *our_op;
 	ECalendarStatus status;
 
-	g_return_val_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-	g_return_val_if_fail (query != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
 
 	g_mutex_lock (ecal->priv->mutex);
 
@@ -3851,9 +3858,9 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 	const char *tzid;
-	
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
-	g_return_val_if_fail (zone != NULL, FALSE);
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
+	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);	
 
 	priv = ecal->priv;
 
@@ -4057,7 +4064,11 @@ e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointe
 gboolean
 e_cal_set_default (ECal *ecal, GError **error)
 {
-	ESource *source = e_cal_get_source (ecal);
+	ESource *source;
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
+
+	source = e_cal_get_source (ecal);
 	if (!source) {
 		/* XXX gerror */
 		return FALSE;
