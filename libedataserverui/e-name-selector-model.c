@@ -184,9 +184,14 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 		GList    *email_list;
 
 		contact = e_contact_store_get_contact (contact_store, iter);
-		email_list = e_contact_get (contact, E_CONTACT_EMAIL);
-		n_rows = g_list_length (email_list);
-		deep_free_list (email_list);
+
+		if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
+			n_rows = 1;
+		} else {
+			email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+			n_rows = g_list_length (email_list);
+			deep_free_list (email_list);
+		}
 	} else {
 		n_rows = 0;
 	}

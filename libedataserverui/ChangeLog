@@ -1,5 +1,20 @@
 2005-01-24  Hans Petter Jansson  <hpj@novell.com>
 
+	* e-name-selector-dialog.c (add_section): Set up a custom formatter for
+	destination column.
+	(contact_column_formatter): Format contact lists differently.
+	(destination_column_formatter): Implement, and make special cases for
+	contact lists.
+
+	* e-name-selector-entry.c (contact_layout_formatter): Format contact
+	lists differently.
+	(generate_contact_rows): Contact lists are always one row only.
+
+	* e-name-selector-model.c (generate_contact_rows): Contact lists are
+	always one row only.
+
+2005-01-24  Hans Petter Jansson  <hpj@novell.com>
+
 	* e-name-selector-entry.c (user_delete_text): If all destinations are
 	removed in one fell swoop, remember to rebuild the attribute list.
 	(user_focus_out): Implement. Completes the current entry (if possible)

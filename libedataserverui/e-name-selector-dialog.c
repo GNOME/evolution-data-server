@@ -44,19 +44,22 @@ typedef struct {
 }
 Section;
 
-static ESource *find_first_source         (ESourceList *source_list);
-static void     search_changed            (ENameSelectorDialog *name_selector_dialog);
-static void     source_selected           (ENameSelectorDialog *name_selector_dialog, ESource *source);
-static void     transfer_button_clicked   (ENameSelectorDialog *name_selector_dialog, GtkButton *transfer_button);
-static void     contact_selection_changed (ENameSelectorDialog *name_selector_dialog);
-static void     setup_name_selector_model (ENameSelectorDialog *name_selector_dialog);
-static void     contact_activated         (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path);
-static void     destination_activated     (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path,
-					   GtkTreeViewColumn *column, GtkTreeView *tree_view);
-static void     remove_books              (ENameSelectorDialog *name_selector_dialog);
-static void     contact_column_formatter  (GtkTreeViewColumn *column, GtkCellRenderer *cell,
-					   GtkTreeModel *model, GtkTreeIter *iter,
-					   ENameSelectorDialog *name_selector_dialog);
+static ESource *find_first_source             (ESourceList *source_list);
+static void     search_changed                (ENameSelectorDialog *name_selector_dialog);
+static void     source_selected               (ENameSelectorDialog *name_selector_dialog, ESource *source);
+static void     transfer_button_clicked       (ENameSelectorDialog *name_selector_dialog, GtkButton *transfer_button);
+static void     contact_selection_changed     (ENameSelectorDialog *name_selector_dialog);
+static void     setup_name_selector_model     (ENameSelectorDialog *name_selector_dialog);
+static void     contact_activated             (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path);
+static void     destination_activated         (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path,
+					       GtkTreeViewColumn *column, GtkTreeView *tree_view);
+static void     remove_books                  (ENameSelectorDialog *name_selector_dialog);
+static void     contact_column_formatter      (GtkTreeViewColumn *column, GtkCellRenderer *cell,
+					       GtkTreeModel *model, GtkTreeIter *iter,
+					       ENameSelectorDialog *name_selector_dialog);
+static void     destination_column_formatter  (GtkTreeViewColumn *column, GtkCellRenderer *cell,
+					       GtkTreeModel *model, GtkTreeIter *iter,
+					       ENameSelectorDialog *name_selector_dialog);
 
 /* ------------------ *
  * Class/object setup *
@@ -412,8 +415,9 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	column = gtk_tree_view_column_new ();
 	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
-	gtk_tree_view_column_add_attribute (column, cell_renderer,
-					    "text", E_DESTINATION_STORE_COLUMN_ADDRESS);
+	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
+						 (GtkTreeCellDataFunc) destination_column_formatter,
+						 name_selector_dialog, NULL);
 	gtk_tree_view_append_column (section.destination_view, column);
 	gtk_tree_view_set_headers_visible (section.destination_view, FALSE);
 	gtk_tree_view_set_model (section.destination_view, GTK_TREE_MODEL (destination_store));
@@ -800,11 +804,49 @@ contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkT
 	email_str = g_list_nth_data (email_list, email_n);
 	file_as_str = e_contact_get (contact, E_CONTACT_FILE_AS);
 
-	string = g_strdup_printf ("%s <%s>", file_as_str ? file_as_str : "",
-				  email_str ? email_str : "");
+	if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
+		string = g_strdup_printf ("%s", file_as_str ? file_as_str : "?");
+	} else {
+		string = g_strdup_printf ("%s%s<%s>", file_as_str ? file_as_str : "",
+					  file_as_str ? " " : "",
+					  email_str ? email_str : "");
+	}
 
 	g_free (file_as_str);
 	deep_free_list (email_list);
+
+	g_object_set (cell, "text", string, NULL);
+	g_free (string);
+}
+
+static void
+destination_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model,
+			      GtkTreeIter *iter, ENameSelectorDialog *name_selector_dialog)
+{
+	EDestinationStore *destination_store = E_DESTINATION_STORE (model);
+	EDestination      *destination;
+	gchar             *string;
+
+
+       	destination = e_destination_store_get_destination (destination_store, iter);
+	g_assert (destination);
+
+	if (e_destination_is_evolution_list (destination)) {
+		if (e_destination_list_show_addresses (destination)) {
+			const gchar *name;
+			const gchar *addresses;
+
+			name      = e_destination_get_name (destination);
+			addresses = e_destination_get_address (destination);
+
+			string = g_strdup_printf ("%s%s(%s)", name ? name : "",
+						  name ? " " : "", addresses ? addresses : "?");
+		} else {
+			string = g_strdup (e_destination_get_name (destination));
+		}
+	} else {
+		string = g_strdup (e_destination_get_address (destination));
+	}
 
 	g_object_set (cell, "text", string, NULL);
 	g_free (string);

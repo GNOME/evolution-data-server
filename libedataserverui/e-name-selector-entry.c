@@ -1262,8 +1262,13 @@ contact_layout_formatter (GtkCellLayout *cell_layout, GtkCellRenderer *cell, Gtk
 	email_str = g_list_nth_data (email_list, email_n);
 	file_as_str = e_contact_get (contact, E_CONTACT_FILE_AS);
 
-	string = g_strdup_printf ("%s <%s>", file_as_str ? file_as_str : "",
-				  email_str ? email_str : "");
+	if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
+		string = g_strdup_printf ("%s", file_as_str ? file_as_str : "?");
+	} else {
+		string = g_strdup_printf ("%s%s<%s>", file_as_str ? file_as_str : "",
+					  file_as_str ? " " : "",
+					  email_str ? email_str : "");
+	}
 
 	g_free (file_as_str);
 	deep_free_list (email_list);
@@ -1287,6 +1292,9 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 	contact_uid = e_contact_get_const (contact, E_CONTACT_UID);
 	if (!contact_uid)
 		return 0;  /* Can happen with broken databases */
+
+	if (e_contact_get (contact, E_CONTACT_IS_LIST))
+		return 1;
 
 	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
 	n_rows = g_list_length (email_list);
