@@ -534,8 +534,8 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "Folder");
 		     subparam != NULL;
 		     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "Folder")) {
-			name = soup_soap_parameter_get_first_child_by_name (subparam, "name");
-			if (name && (!strcmp (soup_soap_parameter_get_string_value (name_param), name))) {
+			name_param = soup_soap_parameter_get_first_child_by_name (subparam, "name");
+			if (name_param && (!strcmp (soup_soap_parameter_get_string_value (name_param), name))) {
 				id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
 				if (id) {
 					container_id = g_strdup (soup_soap_parameter_get_string_value (id));
