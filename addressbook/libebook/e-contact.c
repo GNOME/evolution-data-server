@@ -1404,10 +1404,10 @@ e_contact_get_const (EContact *contact, EContactField field_id)
 		value = e_contact_get (contact, field_id);
 		if (is_string && value)
 			contact->priv->cached_strings[field_id] = value;
-	}
 
-	if (value)
-		g_object_weak_ref (G_OBJECT (contact), free_const_data, value);
+		if (value)
+			g_object_weak_ref (G_OBJECT (contact), free_const_data, value);
+	}
 
 	return value;
 }

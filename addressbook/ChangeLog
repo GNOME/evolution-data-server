@@ -1,5 +1,10 @@
 2004-06-21  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-contact.c (e_contact_get_const): reorder some stuff
+	so we only generate 1 free per string on object destruction.
+
+2004-06-21  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-contact.c (e_contact_get_const): cache the most
 	recently fetched const pointer so we can hand it out more than
 	once (unless there's an intervening _set).  Should substantially
