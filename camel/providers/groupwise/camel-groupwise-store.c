@@ -534,17 +534,17 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	summary_count = camel_folder_summary_count (folder->summary) ;
 	if(summary_count) {
 		char *cache_file_name ;
-		time_t mod_time = 0 ;
+		time_t mod_time = time (0) ;
 		char time_string[100] = {0} ;
 		const struct tm *tm ;
 		struct stat buf;
 		
 		
-		if (!mod_time) {
-			cache_file_name = g_strdup (folder->summary->summary_path) ;
-			printf ("%s %d\n", cache_file_name, stat (cache_file_name, &buf));
-			mod_time = buf.st_mtime;
-		}
+		
+		cache_file_name = g_strdup (folder->summary->summary_path) ;
+		stat (cache_file_name, &buf) ;
+		g_free (cache_file_name) ;
+		mod_time = buf.st_mtime;
 		tm = gmtime (&mod_time);
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 		camel_operation_start (NULL, _("Fetching summary information for new messages"));
@@ -556,7 +556,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
 			camel_operation_end (NULL);
-			g_free (cache_file_name) ;
 			g_free (container_id) ;
 			gw_store->current_folder = folder ;
 			camel_object_ref (folder) ;
@@ -579,7 +578,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
 			camel_operation_end (NULL);
-			g_free (cache_file_name) ;
 			g_free (container_id) ;
 			gw_store->current_folder = folder ;
 			camel_object_ref (folder) ;

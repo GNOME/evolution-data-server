@@ -1,3 +1,10 @@
+2005-02-17  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: (groupwise_get_folder):
+	* camel-groupwise-folder.c: (groupwise_refresh_info):
+	  the variable which holds the UTC time is not static
+	  anymore. 
+	  
 2005-02-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c:
