@@ -50,6 +50,7 @@ struct _ESourceSelectorClass {
 	GtkTreeViewClass parent_class;
 
 	void (* selection_changed) (ESourceSelector *selector);
+	void (* primary_selection_changed) (ESourceSelector *selector);
 };
 
 
@@ -66,6 +67,10 @@ gboolean  e_source_selector_source_is_selected  (ESourceSelector *selector,
 
 GSList *e_source_selector_get_selection   (ESourceSelector *selector);
 void    e_source_selector_free_selection  (GSList          *list);
+
+ESource *e_source_selector_peek_primary_selection  (ESourceSelector *selector);
+void     e_source_selector_set_primary_selection   (ESourceSelector *selector,
+						    ESource         *source);
 
 
 #endif /* _E_SOURCE_SELECTOR_H_ */

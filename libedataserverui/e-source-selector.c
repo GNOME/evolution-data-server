@@ -47,12 +47,12 @@ struct _ESourceSelectorPrivate {
 	GHashTable *selected_sources;
 
 	int rebuild_model_idle_id;
-	int list_changed_callback_id;
 };
 
 
 enum {
 	SELECTION_CHANGED,
+	PRIMARY_SELECTION_CHANGED,
 	NUM_SIGNALS
 };
 static unsigned int signals[NUM_SIGNALS] = { 0 };
@@ -138,6 +138,11 @@ rebuild_model (ESourceSelector *selector)
 		}
 	}
 
+	/* Since new_selected_sources is a subset of selected_sources, we can tell whether the overall
+	   selection has changed just by comparing the sizes of the hash tables.  */
+	if (g_hash_table_size (selector->priv->selected_sources) != g_hash_table_size (new_selected_sources))
+		g_signal_emit (selector, signals[SELECTION_CHANGED], 0);
+
 	g_hash_table_destroy (selector->priv->selected_sources);
 	selector->priv->selected_sources = new_selected_sources;
 }
@@ -167,9 +172,7 @@ setup_model (ESourceSelector *selector)
 {
 	rebuild_model (selector);
 
-	selector->priv->list_changed_callback_id
-		= g_signal_connect (selector->priv->list, "changed",
-				    G_CALLBACK (list_changed_callback), selector);
+	g_signal_connect_object (selector->priv->list, "changed", G_CALLBACK (list_changed_callback), G_OBJECT (selector), 0);
 }
 
 
@@ -303,6 +306,13 @@ cell_toggled_callback (GtkCellRendererToggle *renderer,
 	gtk_tree_path_free (path);
 }
 
+static void
+selection_changed_callback (GtkTreeSelection *selection,
+			    ESourceSelector *selector)
+{
+	g_signal_emit (selector, signals[PRIMARY_SELECTION_CHANGED], 0);
+}
+
 
 /* GObject methods.  */
 
@@ -322,7 +332,6 @@ impl_dispose (GObject *object)
 	}
 
 	if (priv->list != NULL) {
-		g_signal_handler_disconnect (priv->list, priv->list_changed_callback_id);
 		g_object_unref (priv->list);
 		priv->list = NULL;
 	}
@@ -366,6 +375,15 @@ class_init (ESourceSelectorClass *class)
 			      NULL, NULL,
 			      e_util_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
+
+	signals[PRIMARY_SELECTION_CHANGED] = 
+		g_signal_new ("primary_selection_changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ESourceSelectorClass, primary_selection_changed),
+			      NULL, NULL,
+			      e_util_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 }
 
 static void
@@ -374,6 +392,7 @@ init (ESourceSelector *selector)
 	ESourceSelectorPrivate *priv;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *cell_renderer;
+	GtkTreeSelection *selection;
 
 	priv = g_new0 (ESourceSelectorPrivate, 1);
 	selector->priv = priv;
@@ -388,20 +407,18 @@ init (ESourceSelector *selector)
 
 	cell_renderer = gtk_cell_renderer_toggle_new ();
 	gtk_tree_view_column_pack_start (column, cell_renderer, FALSE);
-	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
-						 (GtkTreeCellDataFunc) toggle_cell_data_func, selector, NULL);
+	gtk_tree_view_column_set_cell_data_func (column, cell_renderer, (GtkTreeCellDataFunc) toggle_cell_data_func, selector, NULL);
 	g_signal_connect (cell_renderer, "toggled", G_CALLBACK (cell_toggled_callback), selector);
 
 	cell_renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
-						 (GtkTreeCellDataFunc) text_cell_data_func, selector, NULL);
+	gtk_tree_view_column_set_cell_data_func (column, cell_renderer, (GtkTreeCellDataFunc) text_cell_data_func, selector, NULL);
 
-	gtk_tree_selection_set_select_function (gtk_tree_view_get_selection (GTK_TREE_VIEW (selector)),
-						(GtkTreeSelectionFunc) selection_func, selector, NULL);
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (selector));
+	gtk_tree_selection_set_select_function (selection, (GtkTreeSelectionFunc) selection_func, selector, NULL);
+	g_signal_connect_object (selection, "changed", G_CALLBACK (selection_changed_callback), G_OBJECT (selector), 0);
 
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (selector), FALSE);
-
 }
 
 
@@ -549,6 +566,72 @@ e_source_selector_source_is_selected (ESourceSelector *selector,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	return source_is_selected (selector, source);
+}
+
+/**
+ * e_source_selector_peek_primary_selection:
+ * @selector: An ESourceSelector widget
+ * 
+ * Get the primary selected source.  The primary selection is the one that is
+ * highlighted through the normal GtkTreeView selection mechanism (as opposed
+ * to the "normal" selection, which is the set of source whose checkboxes are
+ * checked).
+ * 
+ * Return value: The selected source.
+ **/
+ESource *
+e_source_selector_peek_primary_selection (ESourceSelector *selector)
+{
+	GtkTreeModel *model = GTK_TREE_MODEL (selector->priv->tree_store);
+	GtkTreeIter iter;
+	void *data;
+
+	if (! gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (selector)), NULL, &iter))
+		return NULL;
+
+	gtk_tree_model_get (model, &iter, 0, &data, -1);
+	if (! E_IS_SOURCE (data))
+		return NULL;
+
+	return E_SOURCE (data);
+}
+
+/**
+ * e_source_selector_set_primary_selection:
+ * @selector: An ESourceSelector widget
+ * @source: Source to select
+ * 
+ * Set the primary selected source.
+ **/
+void
+e_source_selector_set_primary_selection (ESourceSelector *selector,
+					 ESource *source)
+{
+	GtkTreeModel *model = GTK_TREE_MODEL (selector->priv->tree_store);
+	GtkTreeIter iter;
+
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			GtkTreeIter children_iter;
+
+			if (gtk_tree_model_iter_children (model, &children_iter, &iter)) {
+				do {
+					void *data;
+
+					gtk_tree_model_get (model, &iter, 0, &data, -1);
+					g_assert (E_IS_SOURCE (data));
+
+					if (E_SOURCE (data) == source) {
+						GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (selection));
+						gtk_tree_selection_select_iter (selection, &children_iter);
+						return;
+					}
+				} while (gtk_tree_model_iter_next (model, &iter));
+			}
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+
+	g_warning (G_GNUC_FUNCTION ": Cannot find source %p (%s) in selector %p", source, e_source_peek_name (source), selector);
 }
 
 
