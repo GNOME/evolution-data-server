@@ -1,3 +1,12 @@
+2004-06-02  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal.c (e_cal_generate_instances,
+	e_cal_generate_instances_for_object, e_cal_get_alarms_in_range,
+	e_cal_get_alarms_for_object): only allow values from 0 to time_t's
+	maximum value.
+
+	* libecal/e-cal.h: added missing prototype.
+
 2004-06-01  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal.c (e_cal_generate_instances): moved all the logic...

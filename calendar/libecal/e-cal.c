@@ -1,8 +1,10 @@
 /* Evolution calendar ecal
  *
  * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 2004 Novell, Inc.
  *
- * Author: Federico Mena-Quintero <federico@ximian.com>
+ * Authors: Federico Mena-Quintero <federico@ximian.com>
+ *          Rodrigo Moya <rodrigo@novell.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -3008,8 +3010,8 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 	priv = ecal->priv;
 	g_return_if_fail (priv->load_state == E_CAL_LOAD_LOADED);
 
-	g_return_if_fail (start >= -1);
-	g_return_if_fail (end >= -1);
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
 	g_return_if_fail (cb != NULL);
 
 	generate_instances (ecal, start, end, NULL, cb, cb_data);
@@ -3043,8 +3045,8 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	GList *instances = NULL;
 
 	g_return_if_fail (E_IS_CAL (ecal));
-	g_return_if_fail (start >= -1);
-	g_return_if_fail (end >= -1);
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
 	g_return_if_fail (cb != NULL);
 
 	priv = ecal->priv;
@@ -3143,7 +3145,7 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 	priv = ecal->priv;
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, NULL);
 
-	g_return_val_if_fail (start != -1 && end != -1, NULL);
+	g_return_val_if_fail (start >= 0 && end >= 0, NULL);
 	g_return_val_if_fail (start <= end, NULL);
 
 	/* build the query string */
@@ -3220,7 +3222,7 @@ e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
 
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (start != -1 && end != -1, FALSE);
+	g_return_val_if_fail (start >= 0 && end >= 0, FALSE);
 	g_return_val_if_fail (start <= end, FALSE);
 	g_return_val_if_fail (alarms != NULL, FALSE);
 

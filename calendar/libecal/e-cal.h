@@ -1,8 +1,10 @@
 /* Evolution calendar ecal
  *
  * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 2004 Novell, Inc.
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
+ *          Rodrigo Moya <rodrigo@novell.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -152,6 +154,9 @@ gboolean e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end
 
 void e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 			       ECalRecurInstanceFn cb, gpointer cb_data);
+void e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
+					  time_t start, time_t end,
+					  ECalRecurInstanceFn cb, gpointer cb_data);
 
 GSList *e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end);
 
