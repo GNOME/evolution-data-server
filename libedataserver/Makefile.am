@@ -1,5 +1,3 @@
-SUBDIRS = ename
-
 INCLUDES =								\
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
@@ -32,12 +30,10 @@ libedataserver_la_SOURCES =		\
 	md5-utils.c
 
 libedataserver_la_LIBADD = 				\
-	$(DB3_LDADD)					\
-	$(top_builddir)/libedataserver/ename/libename.la
+	$(DB3_LDADD)
 
 libedataserver_la_LDFLAGS = 										\
-	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)	\
-	-no-undefined
+	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)
 
 libedataserverincludedir = $(privincludedir)/libedataserver
 
