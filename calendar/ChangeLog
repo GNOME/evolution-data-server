@@ -1,3 +1,8 @@
+2003-12-17  JP Rosevear <jpr@ximian.com>
+
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_init):
+	create a synchronous session
+
 2003-12-17  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libecal/e-cal.c (e_cal_finalize): Unref source.

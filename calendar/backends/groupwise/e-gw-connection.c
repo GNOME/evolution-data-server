@@ -24,7 +24,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <libsoup/soup-session.h>
+#include <libsoup/soup-session-sync.h>
 #include <libsoup/soup-soap-message.h>
 #include "e-gw-connection.h"
 #include "e-gw-message.h"
@@ -209,7 +209,7 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 	cnc->priv = priv;
 
 	/* create the SoupSession for this connection */
-	priv->soup_session = soup_session_new ();
+	priv->soup_session = soup_session_sync_new ();
 }
 
 GType
