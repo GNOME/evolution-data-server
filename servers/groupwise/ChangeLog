@@ -1,3 +1,28 @@
+2004-10-13 Sivaiah Nallagatla    <snallagatla@novell.com>
+                                                                                                    
+        * e-gw-connection.c (reauthenitcate) : new function to reautheicate
+        to server when the sessionid we have becomes invalid because of timeouts
+        server restarts etc.
+        (e_gw_connection_parse_response_status) : add the new soap error code
+        and corresponding E_GW_CONNECTION_*  status code.
+        (e_gw_connection_new) : no need to dup th session id got form soap
+        response.
+        (e_gw_connection_init) (e_gw_connection_dispose) : init and free the new
+          mutex added to take care of muliple calls to reauthenicate
+        (e_gw_connection_get_items) (e_gw_connection_get_items_from_ids)
+        (e_gw_connection_send_item) (e_gw_connection_create_item)
+        (e_gw_connection_modify_item) (e_gw_connection_get_item)
+        (e_gw_connection_remove_item) (e_gw_connection_remove_items)
+        (e_gw_connection_accept_request) (e_gw_connection_decline_request)
+        (e_gw_connection_retract_request) (e_gw_connection_complete_request)
+        (e_gw_connection_create_book) (e_gw_connection_get_address_book_list)
+        (e_gw_connection_add_members) (e_gw_connection_remove_members)
+        (e_gw_connection_destroy_cursor) (e_gw_connection_create_cursor)
+        (e_gw_connection_read_cursor) (e_gw_connection_get_categories)
+        (e_gw_connection_get_quick_messages) : if the status is invalid session
+        call reauthenticate
+        part of the fix for #64298
+
 2004-10-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-connection.[ch]: (e_gw_connection_get_container_list) : The
