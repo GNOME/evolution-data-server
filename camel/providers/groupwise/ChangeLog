@@ -1,3 +1,10 @@
+2005-03-15  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #73421
+	* camel-groupwise-folder.c: (groupwise_folder_get_message),
+	(convert_to_task): Converts the groupwise item to task ical
+	string checking for the type.
+
 2005-03-18  Gary Ekker  <gekker@novell.com>
 
 	* camel-groupwise-folder.c: Added #include "camel-string-utils.h"
