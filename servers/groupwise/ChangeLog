@@ -1,3 +1,9 @@
+2005-02-28  Sankar P <psankar@novell.com>
+
+       * e-gw-item.c: (add_distribution_to_soap_message):
+       Added code for handling BCC addresses in the recipient list.
+       Fixes #73008
+
 2005-02-25  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_get_quick_messages):

@@ -2553,6 +2553,8 @@ add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			dist_type = "TO";
 		else if (recipient->type == E_GW_ITEM_RECIPIENT_CC)
 			dist_type = "CC";
+		else if (recipient->type == E_GW_ITEM_RECIPIENT_BC)
+			dist_type = "BC";
 		else 
 			dist_type ="";
 		e_gw_message_write_string_parameter (msg, "distType", NULL, dist_type);
