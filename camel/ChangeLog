@@ -1,3 +1,9 @@
+2004-12-09  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-folder.c (imap4_append_message):
+	Don't bother sending UID APPEND if the caller doesn't care about
+	appended_uid.
+
 2004-12-13  Not Zed  <NotZed@Ximian.com>
 
 	* tests/lib/Makefile.am: put the test-provider stuff back in.

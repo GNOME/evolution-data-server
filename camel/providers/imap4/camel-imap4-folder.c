@@ -928,7 +928,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	
  retry:
 	
-	if (engine->capa & CAMEL_IMAP4_CAPABILITY_UIDPLUS)
+	if (appended_uid && engine->capa & CAMEL_IMAP4_CAPABILITY_UIDPLUS)
 		ic = camel_imap4_engine_queue (engine, NULL, "UID APPEND %F%s%s %L\r\n", folder, flags, date, message);
 	else
 		ic = camel_imap4_engine_queue (engine, NULL, "APPEND %F%s%s %L\r\n", folder, flags, date, message);
@@ -945,10 +945,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	
 	switch (ic->result) {
 	case CAMEL_IMAP4_RESULT_OK:
-		if (!(engine->capa & CAMEL_IMAP4_CAPABILITY_UIDPLUS))
-			break;
-		
-		if (!appended_uid)
+		if (!appended_uid || !(engine->capa & CAMEL_IMAP4_CAPABILITY_UIDPLUS))
 			break;
 		
 		for (i = 0; i < ic->resp_codes->len; i++) {
