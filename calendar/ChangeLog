@@ -1,5 +1,11 @@
 2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_finalize):
+	only try to remove the connection from the hash table if the hash
+	table has been created.
+
+2003-12-10  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/soap-test.c: new test program to test the
 	SOAP interface to the GW server.
 

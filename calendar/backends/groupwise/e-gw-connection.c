@@ -146,20 +146,22 @@ e_gw_connection_finalize (GObject *object)
 	g_object_unref (soup_session);
 
 	/* removed the connection from the hash table */
-	hash_key = g_strdup_printf ("%s:%s@%s",
-				    priv->username ? priv->username : "",
-				    priv->password ? priv->password : "",
-				    priv->uri);
-	if (g_hash_table_lookup_extended (loaded_connections, hash_key, &orig_key, &orig_value)) {
-		g_hash_table_remove (loaded_connections, hash_key);
-		if (g_hash_table_size (loaded_connections) == 0) {
-			g_hash_table_destroy (loaded_connections);
-			loaded_connections = NULL;
-		}
+	if (loaded_connections != NULL) {
+		hash_key = g_strdup_printf ("%s:%s@%s",
+					    priv->username ? priv->username : "",
+					    priv->password ? priv->password : "",
+					    priv->uri);
+		if (g_hash_table_lookup_extended (loaded_connections, hash_key, &orig_key, &orig_value)) {
+			g_hash_table_remove (loaded_connections, hash_key);
+			if (g_hash_table_size (loaded_connections) == 0) {
+				g_hash_table_destroy (loaded_connections);
+				loaded_connections = NULL;
+			}
 
-		g_free (orig_key);
+			g_free (orig_key);
+		}
+		g_free (hash_key);
 	}
-	g_free (hash_key);
 
 	if (parent_class->finalize)
 		(* parent_class->finalize) (object);
