@@ -1080,7 +1080,7 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
  **/
 void
 e_cal_backend_notify_object_removed (ECalBackend *backend, const char *uid,
-				   const char *old_object)
+				     const char *old_object)
 {
 	ECalBackendPrivate *priv;
 	EList *queries;

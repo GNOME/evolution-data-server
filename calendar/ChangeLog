@@ -1,3 +1,13 @@
+2004-06-11  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedata-cal/e-cal-backend-sync.c (_e_cal_backend_remove_object): if
+	the deletion is successful, check if the object still exists, in which
+	case it means we removed an instance of a recurring event. Fixed
+	memory leak also.
+
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_remove_object):
+	return the old_object output argument in all cases.
+
 2004-06-02  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal.c (e_cal_generate_instances,

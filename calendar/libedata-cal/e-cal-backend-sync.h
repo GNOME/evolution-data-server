@@ -114,27 +114,27 @@ ECalBackendSyncStatus e_cal_backend_sync_remove_object           (ECalBackendSyn
 ECalBackendSyncStatus e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid);
 
 ECalBackendSyncStatus e_cal_backend_sync_receive_objects         (ECalBackendSync  *backend,
-							       EDataCal             *cal,
-							       const char      *calobj);
+								  EDataCal         *cal,
+								  const char       *calobj);
 ECalBackendSyncStatus e_cal_backend_sync_send_objects            (ECalBackendSync  *backend,
-								  EDataCal             *cal,
-								  const char      *calobj,
+								  EDataCal         *cal,
+								  const char       *calobj,
 								  GList **users,
 								  char **modified_calobj);
 ECalBackendSyncStatus e_cal_backend_sync_get_default_object         (ECalBackendSync  *backend,
-								 EDataCal             *cal,
-								 char           **object);
+								     EDataCal         *cal,
+								     char            **object);
 
 ECalBackendSyncStatus e_cal_backend_sync_get_object         (ECalBackendSync  *backend,
-							  EDataCal             *cal,
-							  const char *uid,
-							  const char *rid,
-							  char           **object);
+							     EDataCal             *cal,
+							     const char *uid,
+							     const char *rid,
+							     char           **object);
 
 ECalBackendSyncStatus e_cal_backend_sync_get_object_list         (ECalBackendSync  *backend,
-							       EDataCal             *cal,
-							       const char      *sexp,
-							       GList          **objects);
+								  EDataCal             *cal,
+								  const char      *sexp,
+								  GList          **objects);
 
 ECalBackendSyncStatus e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object);
 ECalBackendSyncStatus e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);

@@ -366,7 +366,7 @@ _e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *c
 	char *old_object = NULL;
 	
 	status = e_cal_backend_sync_modify_object (E_CAL_BACKEND_SYNC (backend), cal, 
-						 calobj, mod, &old_object);
+						   calobj, mod, &old_object);
 
 	e_data_cal_notify_object_modified (cal, status, old_object, calobj);
 }
@@ -379,7 +379,19 @@ _e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *u
 	
 	status = e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, uid, rid, mod, &object);
 
-	e_data_cal_notify_object_removed (cal, status, uid, object);
+	if (status == GNOME_Evolution_Calendar_Success) {
+		char *calobj = NULL;
+
+		if (e_cal_backend_sync_get_object (E_CAL_BACKEND_SYNC (backend), cal, uid, NULL, &calobj)
+		    == GNOME_Evolution_Calendar_Success) {
+			e_data_cal_notify_object_modified (cal, status, object, calobj);
+			g_free (calobj);
+		} else
+			e_data_cal_notify_object_removed (cal, status, uid, object);
+	} else
+		e_data_cal_notify_object_removed (cal, status, uid, object);
+
+	g_free (object);
 }
 
 static void
