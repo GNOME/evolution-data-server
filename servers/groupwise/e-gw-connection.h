@@ -90,6 +90,7 @@ const char         *e_gw_connection_get_session_id (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_uuid (EGwConnection *cnc);
+const char 	   *e_gw_connection_get_version (EGwConnection *cnc);
 
 
 time_t              e_gw_connection_get_date_from_string (const char *dtstring);

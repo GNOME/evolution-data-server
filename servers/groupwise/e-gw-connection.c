@@ -47,6 +47,7 @@ struct _EGwConnectionPrivate {
 	char *user_name;
 	char *user_email;
 	char *user_uuid;
+	char *version;
 	EGwSendOptions *opts;
 	GMutex *reauth_mutex;
 };
@@ -479,6 +480,15 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 			cnc->priv->user_uuid = g_strdup (param_value);
 		}
 	}
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "gwVersion");
+	if (param) {
+		char *param_value;
+		param_value = soup_soap_parameter_get_string_value (param);
+		cnc->priv->version = param_value;
+	} else
+	       	cnc->priv->version = NULL;	
+
 
 	/* add the connection to the loaded_connections hash table */
 	hash_key = g_strdup_printf ("%s:%s@%s",
@@ -1282,6 +1292,14 @@ e_gw_connection_complete_request (EGwConnection *cnc, const char *id)
 	g_object_unref (response);
 	g_object_unref (msg);
 	return status;
+}
+
+const char *
+e_gw_connection_get_version (EGwConnection *cnc)
+{
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+
+	return (const char *) cnc->priv->version;
 }
 
 const char *
