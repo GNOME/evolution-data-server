@@ -22,7 +22,7 @@
 #ifndef E_CAL_BACKEND_CACHE_H
 #define E_CAL_BACKEND_CACHE_H
 
-#include <libedataserver/e-cache.h>
+#include <libedataserver/e-file-cache.h>
 #include <libecal/e-cal-component.h>
 
 G_BEGIN_DECLS
@@ -36,12 +36,12 @@ G_BEGIN_DECLS
 typedef struct _ECalBackendCachePrivate ECalBackendCachePrivate;
 
 typedef struct {
-	ECache parent;
+	EFileCache parent;
 	ECalBackendCachePrivate *priv;
 } ECalBackendCache;
 
 typedef struct {
-	ECache parent_class;
+	EFileCache parent_class;
 } ECalBackendCacheClass;
 
 GType             e_cal_backend_cache_get_type (void);

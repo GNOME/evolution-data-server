@@ -180,7 +180,7 @@ e_cal_backend_cache_get_type (void)
                         0,
                         (GInstanceInitFunc) e_cal_backend_cache_init,
                 };
-		type = g_type_register_static (E_TYPE_CACHE, "ECalBackendCache", &info, 0);
+		type = g_type_register_static (E_TYPE_FILE_CACHE, "ECalBackendCache", &info, 0);
 	}
 
 	return type;
@@ -248,7 +248,7 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const char *uid, con
 
 	real_key = get_key (uid, rid);
 
-	comp_str = e_cache_get_object (E_CACHE (cache), real_key);
+	comp_str = e_file_cache_get_object (E_FILE_CACHE (cache), real_key);
 	if (comp_str) {
 		icalcomp = icalparser_parse_string (comp_str);
 		if (icalcomp) {
@@ -283,12 +283,12 @@ e_cal_backend_cache_add_component (ECalBackendCache *cache,
 	priv = cache->priv;
 
 	real_key = get_key (uid, rid);
-	if (e_cache_get_object (E_CACHE (cache), real_key)) {
+	if (e_file_cache_get_object (E_FILE_CACHE (cache), real_key)) {
 		g_free (real_key);
 		return FALSE;
 	}
 
-	retval = e_cache_add_object (E_CACHE (cache), real_key, calobj);
+	retval = e_file_cache_add_object (E_FILE_CACHE (cache), real_key, calobj);
 	g_free (real_key);
 
 	return retval;
@@ -328,12 +328,12 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 	priv = cache->priv;
 
 	real_key = get_key (uid, rid);
-	if (!e_cache_get_object (E_CACHE (cache), real_key)) {
+	if (!e_file_cache_get_object (E_FILE_CACHE (cache), real_key)) {
 		g_free (real_key);
 		return FALSE;
 	}
 
-	retval = e_cache_remove_object (E_CACHE (cache), real_key);
+	retval = e_file_cache_remove_object (E_FILE_CACHE (cache), real_key);
 	g_free (real_key);
 
 	return retval;

@@ -1,3 +1,8 @@
+2003-11-08  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-cal-backend-cache.[ch]: use EFileCache instead
+	of ECache.
+
 2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c (convert_uri):
