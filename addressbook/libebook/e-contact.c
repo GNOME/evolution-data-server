@@ -33,7 +33,7 @@
 #define d(x)
 
 struct _EContactPrivate {
-	int padding;
+	char *cached_strings [E_CONTACT_FIELD_LAST];
 };
 
 #define E_CONTACT_FIELD_TYPE_STRING       0x00000001   /* used for simple single valued attributes */
@@ -254,9 +254,6 @@ e_contact_dispose (GObject *object)
 	EContact *ec = E_CONTACT (object);
 
 	if (ec->priv) {
-
-		/* XXX free instance specific stuff */
-
 		g_free (ec->priv);
 		ec->priv = NULL;
 	}
@@ -1391,14 +1388,26 @@ free_const_data (gpointer data, GObject *where_object_was)
 const gpointer
 e_contact_get_const (EContact *contact, EContactField field_id)
 {
-	gpointer value;
+	gboolean is_string = FALSE;
+	gpointer value = NULL;
 
 	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
 	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_LAST_SIMPLE_STRING, NULL);
 
-	value = e_contact_get (contact, field_id);
+	if (field_info [field_id].t & E_CONTACT_FIELD_TYPE_STRING)
+		is_string = TRUE;
 
-	g_object_weak_ref (G_OBJECT (contact), free_const_data, value);
+	if (is_string)
+		value = contact->priv->cached_strings[field_id];
+
+	if (!value) {
+		value = e_contact_get (contact, field_id);
+		if (is_string && value)
+			contact->priv->cached_strings[field_id] = value;
+	}
+
+	if (value)
+		g_object_weak_ref (G_OBJECT (contact), free_const_data, value);
 
 	return value;
 }
@@ -1410,6 +1419,10 @@ e_contact_set (EContact *contact, EContactField field_id, gpointer value)
 
 	g_return_if_fail (contact && E_IS_CONTACT (contact));
 	g_return_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST);
+
+	/* set the cached slot to NULL so we'll re-get the new string
+	   if e_contact_get_const is called again */
+	contact->priv->cached_strings[field_id] = NULL;
 
 	g_object_set (contact,
 		      e_contact_field_name (field_id), value,

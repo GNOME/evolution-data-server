@@ -1,3 +1,12 @@
+2004-06-21  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-contact.c (e_contact_get_const): cache the most
+	recently fetched const pointer so we can hand it out more than
+	once (unless there's an intervening _set).  Should substantially
+	lessen the number of allocations we do because of this function.
+	(e_contact_set): clear the cached slot for this field, so we'll
+	allocate/return a new const string from e_contact_get_const.
+
 2004-06-18  Chris Toshok  <toshok@ximian.com>
 
 	[ fixes #59978 ]
