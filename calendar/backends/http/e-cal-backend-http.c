@@ -105,7 +105,6 @@ e_cal_backend_http_finalize (GObject *object)
 
 	if (priv->soup_message) {
 		soup_session_cancel_message (priv->soup_session, priv->soup_message);
-		g_object_unref (priv->soup_message);
 		priv->soup_message = NULL;
 	}
 
@@ -208,7 +207,6 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	if (priv->soup_message->status_code != SOUP_STATUS_OK) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
 					    soup_status_get_phrase (priv->soup_message->status_code));
-		g_object_unref (priv->soup_message);
 		priv->soup_message = NULL;
 		return;
 	}
@@ -221,7 +219,6 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	if (!icalcomp) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
-		g_object_unref (priv->soup_message);
 		priv->soup_message = NULL;
 		return;
 	}
@@ -229,7 +226,6 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
 		icalcomponent_free (icalcomp);
-		g_object_unref (priv->soup_message);
 		priv->soup_message = NULL;
 		return;
 	}
@@ -253,7 +249,6 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	/* free memory */
 	icalcomponent_free (icalcomp);
-	g_object_unref (priv->soup_message);
 	priv->soup_message = NULL;
 
 	g_message ("Retrieval really done.\n");

@@ -1,3 +1,9 @@
+2004-02-03  Dan Winship  <danw@ximian.com>
+
+	* backends/http/e-cal-backend-http.c (e_cal_backend_http_finalize,
+	retrieval_done): Don't unref the soup message; that happens
+	automatically after the callback runs. #53645
+
 2004-02-03  Harish K <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c : 
