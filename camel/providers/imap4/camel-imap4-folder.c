@@ -284,6 +284,10 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	imap4_folder->journal = camel_imap4_journal_new (imap4_folder, path);
 	g_free (path);
 	
+	path = g_build_filename (imap4_folder->cachedir, "cmeta", NULL);
+	camel_object_set (folder, NULL, CAMEL_OBJECT_STATE_FILE, path, NULL);
+	g_free (path);
+	
 	imap4_folder->search = camel_imap4_search_new (((CamelIMAP4Store *) store)->engine, imap4_folder->cachedir);
 	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {

@@ -1,5 +1,8 @@
 2005-01-19  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
+	Set a cmeta file path.
+
 	* providers/imap4/camel-imap4-command.c: Disable debugging spew
 	unless imap4:command is enabled.
 
