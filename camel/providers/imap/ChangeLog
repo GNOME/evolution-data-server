@@ -1,3 +1,9 @@
+2005-03-18  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-command.c (imap_read_untagged): Continue reading data
+	until we've read all the data (camel_stream_read() makes no
+	guarantee that it will read n bytes in a single call).
+
 2005-03-10  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-folder.c (imap_sync_online): READ-ONLY doesn't mean
