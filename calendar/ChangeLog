@@ -1,5 +1,9 @@
 2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libecal/e-cal.c (convert_type): removed g_assert_not_reached.
+
+2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
+
 	* libecal/e-cal.c (e_cal_get_alarms_for_object): pass the correct
 	callback data for e_cal_resolve_tzid_cb().
 

@@ -192,8 +192,6 @@ convert_type (ECalSourceType type)
 		return GNOME_Evolution_Calendar_TYPE_TODO;
 	case E_CAL_SOURCE_TYPE_JOURNAL:
 		return GNOME_Evolution_Calendar_TYPE_JOURNAL;
-	default:
-		g_assert_not_reached ();
 	}
 	
 	return GNOME_Evolution_Calendar_TYPE_ANY;
