@@ -1,3 +1,10 @@
+2005-02-21  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(get_attach_data_from_server), (set_attachments_to_cal_component),
+	(e_gw_item_to_cal_component):  Download the attachments from the server
+	only if they are not already present in the cache.
+	
 2005-02-17  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: 

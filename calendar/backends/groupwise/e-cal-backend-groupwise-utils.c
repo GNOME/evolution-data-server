@@ -285,12 +285,10 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		 */
 		fd = open (attach_filename_full, O_RDONLY); 
 		if (fd == -1) {
-			/* TODO handle error conditions */
 			g_free (attach_item);
 			g_message ("DEBUG: could not open the file descriptor\n");
 		}
 		if (fstat (fd, &sb) == -1) {
-			/* TODO handle error conditions */
 			g_free (attach_item);
 			g_message ("DEBUG: could not fstat the attachment file\n");
 			continue;
@@ -318,7 +316,6 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		filename = g_strrstr (attach_filename_full, uid); 		
 
 		if (filename == NULL) {
-			/* TODO handle error conditions */
 			g_free (attach_item);
 			g_message ("DEBUG:\n This is an invalid attachment file\n");
 			continue;
@@ -328,7 +325,6 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		attach_item->name = g_strdup (filename + strlen(uid) + 1);
 		/* do a base64 encoding so it can be embedded in a soap
 		 * message */
-		/* TODO handle error conditions */
 		encoded_data = soup_base64_encode (file_contents, len_read);
 		attach_item->data = encoded_data;
 		attach_item->size = strlen (encoded_data); 
@@ -614,85 +610,73 @@ e_gw_item_new_from_cal_component (const char *container, ECalBackendGroupwise *c
  * and populate the attach_data
  */
 static gboolean
-get_attach_data_from_server (GSList *attach_item_list, ECalBackendGroupwise *cbgw)
+get_attach_data_from_server (EGwItemAttachment *attach_item, ECalBackendGroupwise *cbgw)
 {
-	GSList *l;
 	EGwConnection *cnc;
 	EGwConnectionStatus status;
+	char *data = NULL;
+	int len;
 
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
-	for (l = attach_item_list; l; l = l->next) {
-		EGwItemAttachment *attach_item = (EGwItemAttachment *) l->data;
-	
-		status = e_gw_connection_get_attachment (cnc, attach_item->id, 0, -1, 
-			(const char **)&(attach_item->data), &(attach_item->size)); 
+	status = e_gw_connection_get_attachment (cnc, attach_item->id, 0, -1, (const char **) &data, &len); 
 
-		if (status != E_GW_CONNECTION_STATUS_OK ) {
-			g_warning ("Failed to read the attachment from the server\n");
-			return FALSE;
-		}
+	if (status != E_GW_CONNECTION_STATUS_OK ) {
+		g_warning ("Failed to read the attachment from the server\n");
+		return FALSE;
 	}
+	attach_item->data = data;
+	attach_item->size = len;
+
 	return TRUE;
 }
 
 static void
 set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBackendGroupwise *cbgw)
 {
-	/*TODO if attach_list just has attach_ids - fetch the
-	 * attachments. For each, serialize them in the attach
-	 * store location and set the url in the cal component*/
-	GSList *attach_data = NULL, *attach_id_list, *l;
+	GSList *fetch_list = NULL, *l;
 	GSList *comp_attachment_list = NULL;
-
+	const char *uid;
+	char *attach_file_url;
 	
-	attach_id_list = e_gw_item_get_attach_id_list (item);
-	if (attach_id_list == NULL)
-		return;
-	
-	/* Download the data and populate the structure */
-	if (!get_attach_data_from_server (attach_id_list, cbgw))
-		return;
+	fetch_list = e_gw_item_get_attach_id_list (item);
+	if (fetch_list == NULL)
+		return; /* No attachments exist */
 
-	
-	/* FIXME the code below assumes the attach_data now contains
-	 * EGwItemAttachment structures and proceeds to serialize 
-	 * them. Check base64 encoding assumptions by mailer code*/
-
-	for (l = attach_data; l ; l = l->next) {
-		int fd, length;
-		char *attach_file_url, *attach_data;
-		const char *uid;
+	e_cal_component_get_uid (comp, &uid);
+	for (l = fetch_list; l ; l = l->next) {
+		int fd;
 		EGwItemAttachment *attach_item;
+		char *attach_data = NULL;
+		struct stat st;
 
 		attach_item = (EGwItemAttachment *) l->data;
-		/*TODO decode the encoded data on attachments */
-		if (attach_item->size > 0) {
-			attach_data = soup_base64_decode (attach_item->data, &length);
-		}
-		e_cal_component_get_uid (comp, &uid);
-		attach_file_url = g_strconcat
-			(e_cal_backend_groupwise_get_local_attachments_store (cbgw), 
+		attach_file_url = g_strconcat (e_cal_backend_groupwise_get_local_attachments_store (cbgw), 
 			 "/", uid, "-", attach_item->name, NULL);
-		fd = open (attach_file_url+7, O_RDWR|O_CREAT|O_TRUNC, 0600);
-		if (fd == -1) {
-			/* TODO handle error conditions */
-			g_message ("DEBUG: could not serialize attachments\n");
+
+		if (stat (attach_file_url + 7, &st) == -1) {
+			if (!get_attach_data_from_server (attach_item, cbgw))
+				return; /* Could not get the attachment from the server */	
+			fd = open (attach_file_url+7, O_RDWR|O_CREAT|O_TRUNC, 0600);
+			if (fd == -1) { 
+				/* skip gracefully */
+				g_warning ("DEBUG: could not serialize attachments\n");
+			}
+
+			if (write (fd, attach_item->data, attach_item->size) == -1) {
+				/* skip gracefully */
+				g_warning ("DEBUG: attachment write failed.\n");
+			}
+			g_free (attach_data);
+			close (fd);
 		}
 
-		if (write (fd, attach_data, length) == -1) {
-			/* TODO handle error condition */
-			g_message ("DEBUG: attachment write failed.\n");
-		}
-		
-		g_free (attach_data);
-		close (fd);
-
-		comp_attachment_list = g_slist_append
-			(comp_attachment_list, attach_file_url);
+		comp_attachment_list = g_slist_append (comp_attachment_list, attach_file_url);
 	}
-	
+
+	e_cal_component_set_attachment_list (comp, comp_attachment_list);
+
 }
 ECalComponent *
 e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
@@ -715,7 +699,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	GSList *recipient_list, *rl, *attendee_list = NULL;
 	EGwItemOrganizer *organizer;
 	EGwItemType item_type;
-	GSList *attach_list;
 
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
@@ -918,32 +901,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		e_cal_component_set_organizer (comp, cal_organizer);
 	}
 
-	/* set attachments */
-	attach_list = e_gw_item_get_attach_id_list (item);	
-	if (attach_list != NULL) {
-		/* Iterate thro the list and stuff it into ical*/
-		EGwItemAttachment *attach_data;
-		int attach_length;
-		unsigned char *attachment;
-		EGwConnectionStatus status;
-
-	 	/* First check if the item has attachments . if yes check if it 
-		 * exists on the filesystem or pull it from the server,
-		 * serialize it.
-		 */
-		/*  nice if we could just get it from the cache/item not
-		 * from a n/w call here */
-		attach_data = (EGwItemAttachment *) attach_list->data;
-		status  = e_gw_connection_get_attachment (e_cal_backend_groupwise_get_connection (cbgw), attach_data->id, 0, 0, 
-				(const char *)&attachment, &attach_length); 
-		if (status == E_GW_CONNECTION_STATUS_OK) 
-			g_message ("DEBUG : Spewing out the attachment\n%s\n", attachment);		
-		else 
-			g_message ("DEBUG:attachment call was a disaster\n");
-
-		set_attachments_to_cal_component (item, comp, cbgw);
-	
-	}
+	/* set attachments, if any */
+	set_attachments_to_cal_component (item, comp, cbgw);
 
 	/* set specific properties */
 	switch (item_type) {
