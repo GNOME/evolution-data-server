@@ -2,14 +2,14 @@
 # Please keep this list in alphabetic order.
 addressbook/libebook/e-book.c
 addressbook/libebook/e-contact.c
-addressbook/libedatabook/e-book-backend-file.c
-addressbook/libedatabook/e-book-backend-ldap.c
-addressbook/libedatabook/e-book-backend-vcf.c
+addressbook/libedata-book/e-book-backend-file.c
+addressbook/libedata-book/e-book-backend-ldap.c
+addressbook/libedata-book/e-book-backend-vcf.c
 calendar/libecal/e-cal-component.c
 calendar/libecal/e-cal-recur.c
 calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
-calendar/libedatacal/e-cal-backend-file.c
-calendar/libedatacal/e-cal-backend-sexp.c
+calendar/libedata-cal/e-cal-backend-file.c
+calendar/libedata-cal/e-cal-backend-sexp.c
 src/GNOME_Evolution_DataServerLDAP.server.in.in
 src/GNOME_Evolution_DataServerNOLDAP.server.in.in
