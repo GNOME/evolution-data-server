@@ -1,4 +1,10 @@
 2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_item_set_changes): Added the support for allday events.
+
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes #65167
 	* backends/groupwise/e-cal-backend-groupwise.c 

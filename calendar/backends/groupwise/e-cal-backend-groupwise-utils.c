@@ -265,7 +265,11 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		g_object_unref (item);
 		return NULL;
 	}
-
+	
+	/* all day event */
+	if (!dt.tzid && e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT)
+		e_gw_item_set_is_allday_event (item, TRUE);
+	
 	/* creation date */
 	e_cal_component_get_created (comp, &dt.value);
 	if (dt.value) {
@@ -346,10 +350,11 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 
 		GSList *recur_dates = NULL;
 		
+		if (dt.tzid)
+			e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, (icaltimezone *) default_zone);		
+		else 
+			e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, icaltimezone_get_utc_timezone());		
 
-		e_cal_recur_generate_instances (comp, -1, -1,
-				get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, 
-				(icaltimezone *) default_zone);		
 		recur_dates = g_slist_delete_link (recur_dates, recur_dates);
 		
 		e_gw_item_set_recurrence_dates (item, recur_dates);
@@ -381,6 +386,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	char *t, *name;
 	GList *category_ids, *categories;
 	GHashTable *categories_by_id;
+	gboolean is_allday;
 	icaltimezone *default_zone;
 
 	struct icaltimetype itt, itt_utc;
@@ -471,7 +477,10 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			e_cal_component_set_categories_list (comp,categories);
 			g_list_free (categories);
 		}
-	}	
+	}
+
+	/* all day event */
+	is_allday = e_gw_item_get_is_allday_event (item);	
 
 	/* start date */
 	/* should i duplicate here ? */
@@ -488,6 +497,10 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		} else {
 			dt.value = &itt_utc;
 			dt.tzid = g_strdup ("UTC");
+		}
+		if (is_allday) {
+			dt.value->is_date = 1;
+			dt.tzid = NULL;
 		}
 		e_cal_component_set_dtstart (comp, &dt);
 		g_free (t);
@@ -583,7 +596,10 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				dt.value = &itt_utc;
 				dt.tzid = g_strdup ("UTC");
 			}
-		
+			if (is_allday) {
+				dt.value->is_date = 1;
+				dt.tzid = NULL;
+			}	
 			e_cal_component_set_dtend (comp, &dt);
 		}
 		
@@ -1097,6 +1113,7 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	char *due_date, *cache_due_date;
 	char *start_date, *cache_start_date;
 	char *end_date, *cache_end_date;
+	gboolean is_allday, cache_is_allday;
 
 	/* TODO assert the types of the items are the same */
 
@@ -1124,6 +1141,11 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 		}                                                                                                 
 		else if (trigger)                                                                               
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "alarm", &trigger);
+		is_allday = e_gw_item_get_is_allday_event (item);
+		cache_is_allday = e_gw_item_get_is_allday_event (cache_item);
+
+		if ((is_allday && !cache_is_allday) || (!is_allday && cache_is_allday))
+			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "allDayEvent", &is_allday);
 	}
 	else if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
 		SET_DELTA(due_date);
