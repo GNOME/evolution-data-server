@@ -8,7 +8,7 @@ INCLUDES =						\
 	-I$(top_builddir)				\
 	$(E_NAME_CFLAGS)
 
-lib_LTLIBRARIES = libename.la
+noinst_LTLIBRARIES = libename.la
 
 libename_la_SOURCES =					\
 	e-address-western.c				\

@@ -688,6 +688,7 @@ AC_CONFIG_SUBDIRS(calendar/libical)
 
 AC_OUTPUT([
 Makefile
+evolution-data-server-1.0.pc
 addressbook/Makefile
 addressbook/idl/Makefile
 addressbook/libebook/Makefile

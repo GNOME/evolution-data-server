@@ -1,3 +1,7 @@
+2003-11-06    <jpr@ximian.com>
+
+	* libebook/Makefile.am: don't add libename
+
 2003-11-06  JP Rosevear <jpr@ximian.com>
 
 	* libebook/e-book.c: replace e_mutex stuff with gthread stuff

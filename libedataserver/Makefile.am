@@ -33,7 +33,7 @@ libedataserver_la_SOURCES =		\
 
 libedataserver_la_LIBADD = 				\
 	$(DB3_LDADD)					\
-	$(E_DATA_SERVER_LIBS)
+	$(top_builddir)/libedataserver/ename/libename.la
 
 libedataserver_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)	\

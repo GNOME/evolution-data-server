@@ -48,8 +48,7 @@ libebook_la_SOURCES =					\
 	e-vcard.c
 
 libebook_la_LIBADD =					\
-	$(top_builddir)/libedataserver/libedataserver.la\
-	$(top_builddir)/libedataserver/ename/libename.la
+	$(top_builddir)/libedataserver/libedataserver.la
 
 libebook_la_LDFLAGS = 							\
 	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE)	\

@@ -1,3 +1,11 @@
+2003-11-06    <jpr@ximian.com>
+
+	* evolution-data-server-1.0.pc.in: pkconfig for idl
+
+	* libedataserver/ename/Makefile.am: don't install
+
+	* libedataserver/Makefile.am: link in libename
+
 2003-11-06  Rodney Dawes  <dobey@ximian.com>
 
 	* configure.in: Remove dependencies for GUI libs that we don't need
