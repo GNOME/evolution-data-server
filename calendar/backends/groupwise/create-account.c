@@ -21,9 +21,9 @@ add_account (const char *conf_key, const char *hostname, const char *username)
 	g_free (str);
 
 	source = e_source_new ("Default", hostname);
-	e_source_set_group (source, group);
 
 	e_source_list_add_group (source_list, group, -1);
+	e_source_group_add_source (group, source, -1);
 }
 
 int
