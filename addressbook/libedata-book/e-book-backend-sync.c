@@ -276,8 +276,6 @@ _e_book_backend_get_changes (EBookBackend *backend,
 	status = e_book_backend_sync_get_changes (E_BOOK_BACKEND_SYNC (backend), book, change_id, &changes);
 
 	e_data_book_respond_get_changes (book, status, changes);
-
-	/* XXX free view? */
 }
 
 static void
