@@ -6,6 +6,15 @@
 static GMainLoop *main_loop;
 static char *arg_hostname, *arg_username, *arg_password;
 
+static void
+display_container (EGwContainer *container)
+{
+	g_print (" Container: %s\n", e_gw_container_get_name (container));
+	g_print ("\tID: %s\n", e_gw_container_get_id (container));
+
+	g_print ("\n");
+}
+
 static gboolean
 idle_cb (gpointer data)
 {
@@ -13,7 +22,20 @@ idle_cb (gpointer data)
 
 	cnc = e_gw_connection_new (arg_hostname, arg_username, arg_password);
 	if (E_IS_GW_CONNECTION (cnc)) {
+		GList *container_list = NULL;
+
 		g_print ("Connected to %s!\n", arg_hostname);
+
+		/* get list of containers */
+		g_print ("Getting list of containers...\n");
+		if (e_gw_connection_get_container_list (cnc, &container_list) == E_GW_CONNECTION_STATUS_OK) {
+			GList *container;
+
+			for (container = container_list; container != NULL; container = container->next)
+				display_container (E_GW_CONTAINER (container->data));
+
+			e_gw_connection_free_container_list (container_list);
+		}
 
 		g_object_unref (cnc);
 	} else
