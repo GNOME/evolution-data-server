@@ -110,7 +110,6 @@ enum {
 	CAL_SET_MODE,
 	BACKEND_ERROR,
 	CATEGORIES_CHANGED,
-	FORGET_PASSWORD,
 	BACKEND_DIED,
 	LAST_SIGNAL
 };
@@ -1141,15 +1140,6 @@ e_cal_class_init (ECalClass *klass)
 			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
-	e_cal_signals[FORGET_PASSWORD] =
-		g_signal_new ("forget_password",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClass, forget_password),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_STRING);
 	e_cal_signals[BACKEND_DIED] =
 		g_signal_new ("backend_died",
 			      G_TYPE_FROM_CLASS (klass),
@@ -1161,7 +1151,6 @@ e_cal_class_init (ECalClass *klass)
 
 	klass->cal_opened = NULL;
 	klass->categories_changed = NULL;
-	klass->forget_password = NULL;
 	klass->backend_died = NULL;
 
 	object_class->finalize = e_cal_finalize;

@@ -79,8 +79,6 @@ struct _ECalClass {
 
 	void (* categories_changed) (ECal *ecal, GPtrArray *categories);
 
-	void (* forget_password) (ECal *ecal, const char *key);
-
 	void (* backend_died) (ECal *ecal);
 };
 

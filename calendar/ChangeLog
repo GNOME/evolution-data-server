@@ -1,5 +1,10 @@
 2003-12-19  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libecal/e-cal.[ch] (e_cal_class_init):  removed 'forget_password'
+	signal, since it's not used anywhere.
+
+2003-12-19  Rodrigo Moya <rodrigo@ximian.com>
+
 	* idl/Evolution-DataServer-Calendar.idl: added 'username' and 'password'
 	arguments to Cal::open method, so that we can send authentication
 	from the clients.
