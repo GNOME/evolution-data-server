@@ -765,7 +765,7 @@ imap4_fetch_all_add (struct imap4_fetch_all_t *fetch)
 		
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (envelope->info));
 		
-		if ((((CamelMessageInfoBase *) info)->flags & CAMEL_IMAP4_MESSAGE_RECENT))
+		if ((((CamelMessageInfoBase *) envelope->info)->flags & CAMEL_IMAP4_MESSAGE_RECENT))
 			camel_folder_change_info_recent_uid (changes, camel_message_info_uid (envelope->info));
 		
 		camel_folder_summary_add (fetch->summary, envelope->info);
