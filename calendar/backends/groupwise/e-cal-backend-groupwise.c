@@ -385,7 +385,7 @@ form_uri (ESource *source)
 
        	port = e_source_get_property (source, "port");
 	if (port == NULL)
-		port = "7181";
+		port = "7191";
 	use_ssl = e_source_get_property (source, "use_ssl");
 
 	if (use_ssl && !g_str_equal (use_ssl, "never"))
