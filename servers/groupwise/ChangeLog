@@ -1,3 +1,10 @@
+2004-10-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Partially Fixes #67031
+	* e-gw-item.c (e_gw_item_new_from_soap_parameter):
+	Get the value of the completed element comparing with 
+	the string "1" instead of "TRUE".
+
 2004-10-04  Chenthill Palanisamy <pchenthill@novell.com>
 
 	Fixes #66484
