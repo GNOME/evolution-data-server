@@ -1,3 +1,11 @@
+2005-02-10  Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * backends/ldap/e-book-backend-ldap.c
+       (e_book_backend_ldap_authenticate_user) : reconnect to
+       ldap server if simple bind returns LDAP_SERVER_DOWN
+
+       Fixes #67541
+
 2005-02-06 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* libebook/e-contact.h  :  place the E_CONTACT_REV 
