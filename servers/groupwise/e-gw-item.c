@@ -1456,7 +1456,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		soup_soap_message_add_attribute (msg, "type", "Appointment", "xsi", NULL);
 
 		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
-		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
+		e_gw_message_write_string_parameter (msg, "iCalID", NULL, priv->icalid ? priv->icalid : "");
 		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");
 		/* FIXME: distribution */
 		break;
@@ -1475,7 +1475,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		else
 			e_gw_message_write_string_parameter (msg, "completed", NULL, "0");
 
-		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
+		e_gw_message_write_string_parameter (msg, "iCalID", NULL, priv->icalid ? priv->icalid : "");
 		e_gw_message_write_string_parameter (msg, "priority", NULL, priv->priority ? priv->priority : "");
 		break;
 	case E_GW_ITEM_TYPE_CONTACT :
@@ -1497,7 +1497,15 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	if (priv->id)
 		e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
-	e_gw_message_write_base64_parameter (msg, "message", NULL, priv->message ? priv->message : "");
+
+	soup_soap_message_start_element (msg, "message", NULL, NULL);
+	dtstring = g_strdup_printf ("%d", priv->message ? strlen (priv->message) : "");
+	soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
+	g_free (dtstring);
+	soup_soap_message_write_base64 (msg, priv->message ? priv->message : "",
+					priv->message ? strlen (priv->message) : 0);
+	soup_soap_message_end_element (msg);
+
 	if (priv->start_date != -1) {
 		dtstring = timet_to_string (priv->start_date);
 		e_gw_message_write_string_parameter (msg, "startDate", NULL, dtstring);

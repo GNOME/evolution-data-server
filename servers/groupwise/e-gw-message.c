@@ -124,7 +124,6 @@ e_gw_message_write_string_parameter_with_attribute (SoupSoapMessage *msg,
 						    const char *attribute_value)
 {
 	soup_soap_message_start_element (msg, name, prefix, NULL);
-	soup_soap_message_add_attribute (msg, attribute_name, attribute_value, NULL, NULL);
 	soup_soap_message_write_string (msg, value);
 	soup_soap_message_end_element (msg);
 }
