@@ -28,6 +28,9 @@
 #include "e-source-selector.h"
 
 #include <gtk/gtkmain.h>
+#include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkvbox.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwindow.h>
 
 #include <libgnomeui/gnome-ui-init.h>
@@ -64,28 +67,50 @@ selection_changed_callback (ESourceSelector *selector,
 	dump_selection (selector);
 }
 
+static void
+check_toggled_callback (GtkToggleButton *button,
+			ESourceSelector *selector)
+{
+	e_source_selector_show_selection (selector, gtk_toggle_button_get_active (button));
+}
 
 static int
 on_idle_create_widget (void *unused_data)
 {
 	GtkWidget *window;
+	GtkWidget *vbox;
 	GtkWidget *selector;
+	GtkWidget *scrolled_window;
+	GtkWidget *check;
 	ESourceList *list;
 	GConfClient *gconf_client;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_default_size (GTK_WINDOW (window), 200, 300);
+
+	vbox = gtk_vbox_new (FALSE, 3);
+	gtk_container_add (GTK_CONTAINER (window), vbox);
 
 	gconf_client = gconf_client_get_default ();
 	list = e_source_list_new_for_gconf (gconf_client, "/apps/evolution/test/source_list");
 	selector = e_source_selector_new (list);
-
 	g_signal_connect (selector, "selection_changed", G_CALLBACK (selection_changed_callback), NULL);
 
-	gtk_container_add (GTK_CONTAINER (window), selector);
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window), GTK_SHADOW_IN);
+	gtk_container_add (GTK_CONTAINER (scrolled_window), selector);
+	gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 3);
+
+	check = gtk_check_button_new_with_label ("Show checkboxes");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check),
+				      e_source_selector_selection_shown (E_SOURCE_SELECTOR (selector)));
+	g_signal_connect (check, "toggled", G_CALLBACK (check_toggled_callback), selector);
+	gtk_box_pack_start (GTK_BOX (vbox), check, FALSE, TRUE, 3);
+
 	gtk_widget_show_all (window);
 
 	g_object_unref (gconf_client);
-
 	return FALSE;
 }
 

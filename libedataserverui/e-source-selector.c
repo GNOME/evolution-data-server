@@ -47,6 +47,8 @@ struct _ESourceSelectorPrivate {
 	GHashTable *selected_sources;
 
 	int rebuild_model_idle_id;
+
+	gboolean checkboxes_shown;
 };
 
 
@@ -194,7 +196,7 @@ toggle_cell_data_func (GtkTreeViewColumn *column,
 	} else {
 		g_assert (E_IS_SOURCE (data));
 
-		g_object_set (renderer, "visible", TRUE, NULL);
+		g_object_set (renderer, "visible", selector->priv->checkboxes_shown, NULL);
 		if (source_is_selected (selector, E_SOURCE (data)))
 			g_object_set (renderer, "active", TRUE, NULL);
 		else
@@ -397,6 +399,8 @@ init (ESourceSelector *selector)
 	priv = g_new0 (ESourceSelectorPrivate, 1);
 	selector->priv = priv;
 
+	priv->checkboxes_shown = TRUE;
+
 	priv->selected_sources = create_selected_sources_hash ();
 
 	priv->tree_store = gtk_tree_store_new (1, G_TYPE_POINTER);
@@ -506,6 +510,42 @@ e_source_selector_free_selection (GSList *list)
 	g_slist_free (list);
 }
 
+
+/**
+ * e_source_selector_show_selection:
+ * @selector: An ESourceSelector widget
+ * 
+ * Specify whether the checkboxes in the ESourceSelector should be shown or
+ * not.
+ **/
+void
+e_source_selector_show_selection (ESourceSelector *selector,
+				  gboolean show)
+{
+	show = !! show;
+	if (show == selector->priv->checkboxes_shown)
+		return;
+
+	selector->priv->checkboxes_shown = show;
+
+	gtk_tree_model_foreach (GTK_TREE_MODEL (selector->priv->tree_store),
+				(GtkTreeModelForeachFunc) gtk_tree_model_row_changed,
+				NULL);
+}
+
+/**
+ * e_source_selector_selection_shown:
+ * @selector: 
+ * 
+ * Check whether the checkboxes in the ESourceSelector are being shown or not.
+ * 
+ * Return value: %TRUE if the checkboxes are shown, %FALSE otherwise.
+ **/
+gboolean
+e_source_selector_selection_shown (ESourceSelector *selector)
+{
+	return selector->priv->checkboxes_shown;
+}
 
 /**
  * e_source_selector_select_source:
