@@ -1,5 +1,7 @@
 2005-01-19  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/imap4/camel-imap4-utils.c: disable debugging.
+
 	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
 	Set a cmeta file path.
 

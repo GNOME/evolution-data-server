@@ -39,7 +39,7 @@
 
 #include "camel-imap4-utils.h"
 
-#define d(x) x
+#define d(x)
 
 
 void
@@ -296,7 +296,7 @@ uidset_add (struct _uidset *uidset, CamelMessageInfo *info)
 		return -1;
 	}
 	
-	fprintf (stderr, "added uid %s to uidset (summary index = %u)\n", iuid, index);
+	d(fprintf (stderr, "added uid %s to uidset (summary index = %u)\n", iuid, index));
 	
 	if (uidset->setlen < uidset->maxlen)
 		return 0;
@@ -462,11 +462,11 @@ camel_imap4_parse_flags_list (CamelIMAP4Engine *engine, guint32 *flags, CamelExc
 			}
 			
 			if (i == G_N_ELEMENTS (imap4_user_flags))
-				fprintf (stderr, "Encountered unknown flag: %s\n", token.v.atom);
+				d(fprintf (stderr, "Encountered unknown flag: %s\n", token.v.atom));
 		}
 #else
 		if (i == G_N_ELEMENTS (imap4_flags))
-			fprintf (stderr, "Encountered unknown flag: %s\n", token.v.atom);
+			d(fprintf (stderr, "Encountered unknown flag: %s\n", token.v.atom));
 #endif
 		
 		if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
