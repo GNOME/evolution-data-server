@@ -1,3 +1,9 @@
+2004-08-16  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server): Do not get the items from server every time 
+	the calendar is loaded, since the cache is already populated. 
+
 2004-08-13  Hans Petter Jansson  <hpj@ximian.com>
 
 	Fixes bug #62655.
