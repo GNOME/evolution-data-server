@@ -57,7 +57,7 @@ struct _CamelIMAP4Folder {
 };
 
 struct _CamelIMAP4FolderClass {
-	CamelFolderClass parent_class;
+	CamelOfflineFolderClass parent_class;
 	
 };
 
