@@ -1,3 +1,12 @@
+2004-12-02  Not Zed  <NotZed@Ximian.com>
+
+	* Makefile.am: version all the libraries with the base version of the
+	package.  move libcamel-1.2 into libdir, etc.
+
+	* camel.pc.in: remove the provider stuff from here.
+
+	* camel-provider.pc.in: create a camel-provider pc file.
+
 2004-11-16  Not Zed  <NotZed@Ximian.com>
 
 	* tests/lib/folders.c (test_folder_message_ops): updated counts for

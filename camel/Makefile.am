@@ -6,7 +6,7 @@ SUBDIRS = . providers tests
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = camel-$(BASE_VERSION).pc
+pkgconfig_DATA = camel-$(BASE_VERSION).pc camel-provider-$(BASE_VERSION).pc
 
 libcamelincludedir = $(privincludedir)/camel
 libcamel_providerincludedir = $(privincludedir)/camel
@@ -14,7 +14,7 @@ libcamel_providerincludedir = $(privincludedir)/camel
 camellibexecdir = $(libexecdir)
 camellibexec_PROGRAMS =	camel-lock-helper-1.2 camel-index-control-1.2
 
-privlib_LTLIBRARIES = libcamel.la libcamel-provider.la
+lib_LTLIBRARIES = libcamel-1.2.la libcamel-provider-1.2.la
 
 INCLUDES = -I.. -I$(srcdir)/.. 			 	\
 	-I$(top_srcdir)/intl			 	\
@@ -23,7 +23,7 @@ INCLUDES = -I.. -I$(srcdir)/.. 			 	\
 	-DG_LOG_DOMAIN=\"camel\"			\
 	$(CAMEL_CFLAGS)
 
-libcamel_provider_la_SOURCES = 			\
+libcamel_provider_1_2_la_SOURCES = 		\
 	camel-cipher-context.c			\
 	camel-digest-folder.c			\
 	camel-digest-store.c			\
@@ -111,14 +111,14 @@ libcamel_providerinclude_HEADERS =			\
 	camel-vee-summary.h			\
 	camel-vtrash-folder.h
 
-libcamel_provider_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE)
+libcamel_provider_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE)
 
-libcamel_provider_la_LIBADD =			\
+libcamel_provider_1_2_la_LIBADD =			\
 	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la 	\
-	libcamel.la				\
+	libcamel-1.2.la				\
 	$(CAMEL_LIBS)
 
-libcamel_la_SOURCES = 				\
+libcamel_1_2_la_SOURCES = 				\
 	broken-date-parser.c			\
 	camel-address.c				\
 	camel-arg.c				\
@@ -248,9 +248,9 @@ libcamelinclude_HEADERS =			\
 	camel-utf8.h				\
 	camel.h
 
-libcamel_la_LDFLAGS = -version-info 0:0:0
+libcamel_1_2_la_LDFLAGS = -version-info 0:0:0
 
-libcamel_la_LIBADD =				\
+libcamel_1_2_la_LIBADD =				\
 	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la 	\
 	$(CAMEL_LIBS)
 
@@ -262,14 +262,14 @@ camel_lock_helper_1_2_SOURCES = 		\
 # because it might be setuid.
 camel_lock_helper_1_2_LDADD =			\
 	camel-lock.o				\
-	$(libcamel_la_LIBADD)
+	$(libcamel_1_2_la_LIBADD)
 
 camel_index_control_1_2_SOURCES =		\
 	camel-index-control.c
 
 camel_index_control_1_2_LDADD =			\
-	libcamel.la				\
-	$(libcamel_la_LIBADD)
+	libcamel-1.2.la				\
+	$(libcamel_1_2_la_LIBADD)
 
 install-exec-hook:
 	@if test -n "$(CAMEL_LOCK_HELPER_USER)"; then \
