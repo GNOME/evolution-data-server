@@ -1,3 +1,11 @@
+2005-01-10  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/file/e-cal-backend-file.c: (fetch_attachments),
+	(e_cal_backend_file_receive_objects): Function to fetch
+	the attachments data into the file calendar store from the
+	camel cache.
+	
+
 2005-01-10 Chenthill Palanisamy <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backends-groupwise-utils.h:

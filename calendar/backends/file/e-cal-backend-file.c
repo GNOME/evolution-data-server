@@ -25,6 +25,9 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <libgnome/gnome-i18n.h>
@@ -2110,6 +2113,80 @@ check_tzids (icalparameter *param, void *data)
 		tzdata->found = FALSE;
 }
 
+static void
+fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
+{
+	GSList *attach_list = NULL, *new_attach_list = NULL;
+	GSList *l;
+	char  *attach_store, *filename, *file_contents;
+	char *dest_url, *dest_file;
+	int fd, len;
+	int len_read = 0;
+	char buf[1024];
+	struct stat sb;
+	const char *uid;
+
+
+	e_cal_component_get_attachment_list (comp, &attach_list);
+	e_cal_component_get_uid (comp, &uid);
+	/*FIXME  get the uri rather than computing the path */
+	attach_store = g_strconcat (g_get_home_dir (), "/",
+			".evolution/calendar/local/system", NULL);
+	
+	for (l = attach_list; l ; l = l->next) {
+		char *sfname = (char *)l->data;
+
+		filename = g_strrstr (sfname, "/") + 1;	
+
+		// open the file using the data
+		fd = open (sfname, O_RDONLY); 
+		if (fd == -1) {
+			/* TODO handle error conditions */
+			g_message ("DEBUG: could not open the file descriptor\n");
+			continue;
+		}
+		if (fstat (fd, &sb) == -1) {
+			/* TODO handle error conditions */
+			g_message ("DEBUG: could not fstat the attachment file\n");
+			continue;
+		}
+		len = sb.st_size;
+
+		file_contents = g_malloc (len + 1);
+	
+		while (len_read < len) {
+			int c = read (fd, buf, sizeof (buf));
+
+			if (c == -1)
+				break;
+
+			memcpy (&file_contents[len_read], buf, c);
+			len_read += c;
+		}
+		file_contents [len_read] = 0;
+
+		/* write*/
+		dest_file = g_strconcat (attach_store, "/", uid, "-",
+				filename, NULL);
+		fd = open (dest_file, O_RDWR|O_CREAT|O_TRUNC, 0600);
+		if (fd == -1) {
+			/* TODO handle error conditions */
+			g_message ("DEBUG: could not serialize attachments\n");
+		}
+
+		if (write (fd, file_contents, len_read) == -1) {
+			/* TODO handle error condition */
+			g_message ("DEBUG: attachment write failed.\n");
+		}
+
+		dest_url = g_strconcat ("file:///", dest_file, NULL);
+		new_attach_list = g_slist_append (new_attach_list, dest_url);
+		g_free (dest_file);
+	}
+	g_free (attach_store);
+	e_cal_component_set_attachment_list (comp, new_attach_list);
+}
+
 /* Update_objects handler for the file backend. */
 static ECalBackendSyncStatus
 e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
@@ -2219,6 +2296,9 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		case ICAL_METHOD_PUBLISH:
 		case ICAL_METHOD_REQUEST:
 		case ICAL_METHOD_REPLY:
+			/* handle attachments */
+			if (e_cal_component_has_attachments (comp))
+				fetch_attachments (backend, comp);
 			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 			if (obj_data) {
 				old_object = e_cal_component_get_as_string (obj_data->full_object);
