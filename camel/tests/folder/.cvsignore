@@ -1,0 +1,8 @@
+.deps
+Makefile
+Makefile.in
+.libs
+.deps
+*.lo
+*.la
+temp-test
