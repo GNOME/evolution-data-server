@@ -1,60 +1,62 @@
-# Lithuanian translation of Evolution
-# Copyright (C) 2000-2001 Free Software Foundation, Inc.
-# Gediminas Paulauskas <menesis@delfi.lt>, 2000-2001.
+# Lithuanian translation of Evolution-data-server.
+# Copyright (C) 2000-2004 Free Software Foundation, Inc.
+# Gediminas Paulauskas <menesis@delfi.lt>, 2000-2003.
+# Tomas Kuliavas <tokul@users.sourceforge.net>, 2003-2004.
+# Žygimantas Beručka <uid0@akl.lt>, 2004.
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution 1.0\n"
+"Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-01-14 21:44+0200\n"
-"Last-Translator: Tomas Kuliavas <tokul@users.sourceforge.net>\n"
-"Language-Team: Your language <komp_lt@konferencijos.lt>\n"
+"POT-Creation-Date: 2004-12-04 09:30+0200\n"
+"PO-Revision-Date: 2004-12-04 09:45+0200\n"
+"Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
+"Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:443
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "Įkeliama..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/file/e-book-backend-file.c:445
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1886
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3158
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "Ieškoma..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:618
+#: addressbook/backends/ldap/e-book-backend-ldap.c:620
 msgid "Using Distinguished Name (DN)"
-msgstr "Naudojamas Skirtinis Vardas (DN)"
+msgstr "Naudojamas skirtinis vardas (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:621
+#: addressbook/backends/ldap/e-book-backend-ldap.c:623
 msgid "Using Email Address"
-msgstr "Naudojamas Pašto Adresas"
+msgstr "Naudojamas el. pašto adresas"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:787
+#: addressbook/backends/ldap/e-book-backend-ldap.c:789
 msgid "Reconnecting to LDAP server..."
 msgstr "Atstatomas ryšys su LDAP serveriu..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1307
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1309
 msgid "Adding contact to LDAP server..."
 msgstr "Kontaktas išsaugomas LDAP serveryje"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1407
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1409
 msgid "Removing contact from LDAP server..."
 msgstr "Kontaktas pašalinamas iš LDAP serverio..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1630
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1632
 msgid "Modifying contact from LDAP server..."
 msgstr "Keičiamas kontaktas tarp LDAP serverio..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3067
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3070
 msgid "Receiving LDAP search results..."
 msgstr "Gaunami LDAP paieškos rezultatai..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3175
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3178
 msgid "Error performing search"
 msgstr "Klaida paieškos metu"
 
@@ -64,90 +66,93 @@ msgstr "Klaida paieškos metu"
 #. * "e_book_open
 #: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
 #: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
-#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
-#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
-#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
-#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
-#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
-#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
-#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
-#: addressbook/libebook/e-book.c:2984
+#: addressbook/libebook/e-book.c:575 addressbook/libebook/e-book.c:579
+#: addressbook/libebook/e-book.c:668 addressbook/libebook/e-book.c:672
+#: addressbook/libebook/e-book.c:948 addressbook/libebook/e-book.c:953
+#: addressbook/libebook/e-book.c:1128 addressbook/libebook/e-book.c:1132
+#: addressbook/libebook/e-book.c:1273 addressbook/libebook/e-book.c:1277
+#: addressbook/libebook/e-book.c:1475 addressbook/libebook/e-book.c:1479
+#: addressbook/libebook/e-book.c:1680 addressbook/libebook/e-book.c:1684
+#: addressbook/libebook/e-book.c:1907 addressbook/libebook/e-book.c:1911
+#: addressbook/libebook/e-book.c:2114 addressbook/libebook/e-book.c:2118
+#: addressbook/libebook/e-book.c:3143
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "„%s“ knygoje panaudotas prieš „%s“"
 
 #: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
-#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
-#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
-#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
+#: addressbook/libebook/e-book.c:588 addressbook/libebook/e-book.c:681
+#: addressbook/libebook/e-book.c:963 addressbook/libebook/e-book.c:1142
+#: addressbook/libebook/e-book.c:1287 addressbook/libebook/e-book.c:1488
+#: addressbook/libebook/e-book.c:1693 addressbook/libebook/e-book.c:1921
+#: addressbook/libebook/e-book.c:2127 addressbook/libebook/e-book.c:2465
+#: addressbook/libebook/e-book.c:2661
 msgid "book busy"
 msgstr "knyga apkrauta"
 
 #: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
 #: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
-#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
-#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
-#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
-#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
-#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
-#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
-#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
-#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
-#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2993
+#: addressbook/libebook/e-book.c:617 addressbook/libebook/e-book.c:621
+#: addressbook/libebook/e-book.c:710 addressbook/libebook/e-book.c:714
+#: addressbook/libebook/e-book.c:992 addressbook/libebook/e-book.c:995
+#: addressbook/libebook/e-book.c:1174 addressbook/libebook/e-book.c:1177
+#: addressbook/libebook/e-book.c:1316 addressbook/libebook/e-book.c:1320
+#: addressbook/libebook/e-book.c:1524 addressbook/libebook/e-book.c:1528
+#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1744
+#: addressbook/libebook/e-book.c:1953 addressbook/libebook/e-book.c:1957
+#: addressbook/libebook/e-book.c:2155 addressbook/libebook/e-book.c:2159
+#: addressbook/libebook/e-book.c:2406 addressbook/libebook/e-book.c:2493
+#: addressbook/libebook/e-book.c:2497 addressbook/libebook/e-book.c:2689
+#: addressbook/libebook/e-book.c:2693 addressbook/libebook/e-book.c:3152
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Įvyko CORBA klaida vykdant „%s“ kreipinį"
 
-#: addressbook/libebook/e-book.c:2221
+#: addressbook/libebook/e-book.c:2387
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: nevykdoma jokia operacija"
 
-#: addressbook/libebook/e-book.c:2256
+#: addressbook/libebook/e-book.c:2422
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: nepavyko atšaukti"
 
-#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:2451 addressbook/libebook/e-book.c:2455
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "„%s“ knygoje panaudotas prieš „%s“"
+msgstr "„%s“ knygoje panaudotas po „%s“"
 
-#: addressbook/libebook/e-book.c:2355
-#, fuzzy
+#: addressbook/libebook/e-book.c:2521
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: Blogas pradinis adresas."
+msgstr "e_book_open: atšaukta"
 
-#: addressbook/libebook/e-book.c:2851
+#: addressbook/libebook/e-book.c:3009
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Blogas pradinis adresas."
 
-#: addressbook/libebook/e-book.c:2859
+#: addressbook/libebook/e-book.c:3017
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: nėra uri „%s“ skirtų gamyklų"
 
-#: addressbook/libebook/e-book.c:2871
+#: addressbook/libebook/e-book.c:3029
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Nepavyko sukurti EBookListener"
 
-#: addressbook/libebook/e-book.c:2922
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:3081
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: nėra uri „%s“ skirtų gamyklų"
+msgstr "e_book_new: nėra uri „%s“ skirtų gamyklų"
 
-#: addressbook/libebook/e-book.c:3080
+#: addressbook/libebook/e-book.c:3247
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr "e_book_get_self: tarp gconf nėra išsaugota nuosavo kontakto uid"
+msgstr "e_book_get_self: gconf nėra išsaugota nuosavo kontakto uid"
 
-#: addressbook/libebook/e-book.c:3191
-#, fuzzy, c-format
+#: addressbook/libebook/e-book.c:3358
+#, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_get_self: tarp gconf nėra išsaugota nuosavo kontakto uid"
+msgstr ""
+"e_book_get_default_source: gconf nėra saugomo uid „%s“ šaltinio"
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -188,7 +193,7 @@ msgstr "Vardas ar Org"
 #. Address fields
 #: addressbook/libebook/e-contact.c:115
 msgid "Address List"
-msgstr "Adresų Sąrašas"
+msgstr "Adresų sąrašas"
 
 #: addressbook/libebook/e-contact.c:116
 msgid "Home Address"
@@ -196,7 +201,7 @@ msgstr "Namų adresas"
 
 #: addressbook/libebook/e-contact.c:117
 msgid "Work Address"
-msgstr "Darbo Adresas"
+msgstr "Darbo adresas"
 
 #: addressbook/libebook/e-contact.c:118
 msgid "Other Address"
@@ -204,15 +209,15 @@ msgstr "Kitas adresas"
 
 #: addressbook/libebook/e-contact.c:120
 msgid "Home Address Label"
-msgstr "Namų Adreso Žymė"
+msgstr "Namų adreso antraštė"
 
 #: addressbook/libebook/e-contact.c:121
 msgid "Work Address Label"
-msgstr "Darbo Adreso Žymė"
+msgstr "Darbo adreso antraštė"
 
 #: addressbook/libebook/e-contact.c:122
 msgid "Other Address Label"
-msgstr "Kito Adreso Žymė"
+msgstr "Kito adreso antraštė"
 
 #: addressbook/libebook/e-contact.c:124
 msgid "Assistant Phone"
@@ -272,7 +277,7 @@ msgstr "Kitas faksas"
 
 #: addressbook/libebook/e-contact.c:138
 msgid "Pager"
-msgstr "Ieškas"
+msgstr "Pranešimų gaviklis"
 
 #: addressbook/libebook/e-contact.c:139
 msgid "Primary Phone"
@@ -293,11 +298,11 @@ msgstr "TTY"
 #. Email fields
 #: addressbook/libebook/e-contact.c:145
 msgid "Email List"
-msgstr "El. pašto Sąrašas"
+msgstr "El. pašto sąrašas"
 
 #: addressbook/libebook/e-contact.c:146
 msgid "Email 1"
-msgstr "1-as el.paštas"
+msgstr "El. paštas 1"
 
 #: addressbook/libebook/e-contact.c:147
 msgid "Email 2"
@@ -308,9 +313,8 @@ msgid "Email 3"
 msgstr "El. paštas 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "El. paštas 3"
+msgstr "El. paštas 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -323,153 +327,147 @@ msgstr "Nori gauti HTML laiškus"
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:154
 msgid "AIM Screen Name List"
-msgstr "AIM Ekrano Vardų Sąrašas"
+msgstr "AIM ekrano vardų sąrašas"
 
 #: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
-msgstr ""
+msgstr "Groupwise Id sąrašas"
 
 #: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
-msgstr "Jabber Id Sąrašas"
+msgstr "Jabber Id sąrašas"
 
 #: addressbook/libebook/e-contact.c:157
 msgid "Yahoo! Screen Name List"
-msgstr "Yahoo! Ekrano Vardų Sąrašas"
+msgstr "Yahoo! ekrano vardų sąrašas"
 
 #: addressbook/libebook/e-contact.c:158
 msgid "MSN Screen Name List"
-msgstr "MSN Ekrano Vardų Sąrašas"
+msgstr "MSN ekrano vardų sąrašas"
 
 #: addressbook/libebook/e-contact.c:159
 msgid "ICQ Id List"
-msgstr "ICQ Id Sąrašas"
+msgstr "ICQ Id sąrašas"
 
 #: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
-msgstr "1-as AIM Namų Ekrano Vardas"
+msgstr "1-as AIM namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 2"
-msgstr "2-as AIM Namų Ekrano Vardas"
+msgstr "2-as AIM namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 3"
-msgstr "3-as AIM Namų Ekrano Vardas"
+msgstr "3-as AIM namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 1"
-msgstr "1-as AIM Darbo Ekrano Vardas"
+msgstr "1-as AIM darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 2"
-msgstr "2-as AIM Darbo Ekrano Vardas"
+msgstr "2-as AIM darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 3"
-msgstr "3-as AIM Darbo Ekrano Vardas"
+msgstr "3-as AIM darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Groupwise Home Screen Name 1"
-msgstr "1-as AIM Namų Ekrano Vardas"
+msgstr "1-as Groupwise namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Groupwise Home Screen Name 2"
-msgstr "2-as AIM Namų Ekrano Vardas"
+msgstr "2-as Groupwise namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Groupwise Home Screen Name 3"
-msgstr "3-as AIM Namų Ekrano Vardas"
+msgstr "3-as Groupwise namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Groupwise Work Screen Name 1"
-msgstr "1-as AIM Darbo Ekrano Vardas"
+msgstr "1-as Groupwise darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Groupwise Work Screen Name 2"
-msgstr "2-as AIM Darbo Ekrano Vardas"
+msgstr "2-as Groupwise darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Groupwise Work Screen Name 3"
-msgstr "3-as AIM Darbo Ekrano Vardas"
+msgstr "3-as Groupwise darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
-msgstr "1-as Jabber Namų Id"
+msgstr "1-as Jabber namų Id"
 
 #: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 2"
-msgstr "2-as Jabber Namų Id"
+msgstr "2-as Jabber namų Id"
 
 #: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 3"
-msgstr "3-as Jabber Namų Id"
+msgstr "3-as Jabber namų Id"
 
 #: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 1"
-msgstr "1-as Jabber Darbo Id"
+msgstr "1-as Jabber darbo Id"
 
 #: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 2"
-msgstr "2-as Jabber Darbo Id"
+msgstr "2-as Jabber darbo Id"
 
 #: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 3"
-msgstr "3-as Jabber Darbo Id"
+msgstr "3-as Jabber darbo Id"
 
 #: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
-msgstr "1-as Yahoo! Namų Ekrano Vardas"
+msgstr "1-as Yahoo! namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 2"
-msgstr "2-as Yahoo! Namų Ekrano Vardas"
+msgstr "2-as Yahoo! namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 3"
-msgstr "3-as Yahoo! Namų Ekrano Vardas"
+msgstr "3-as Yahoo! namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 1"
-msgstr "1-as Yahoo! Darbo Ekrano Vardas"
+msgstr "1-as Yahoo! darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 2"
-msgstr "2-as Yahoo! Darbo Ekrano Vardas"
+msgstr "2-as Yahoo! darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 3"
-msgstr "3-as Yahoo! Darbo Ekrano Vardas"
+msgstr "3-as Yahoo! darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 1"
-msgstr "1-as MSN Namų Ekrano Vardas"
+msgstr "1-as MSN namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 2"
-msgstr "2-as MSN Namų Ekrano Vardas"
+msgstr "2-as MSN namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 3"
-msgstr "3-as MSN Namų Ekrano Vardas"
+msgstr "3-as MSN namų ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 1"
-msgstr "1-as MSN Darbo Ekrano Vardas"
+msgstr "1-as MSN darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 2"
-msgstr "2-as MSN Darbo Ekrano Vardas"
+msgstr "2-as MSN darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 3"
-msgstr "3-as MSN Darbo Ekrano Vardas"
+msgstr "3-as MSN darbo ekrano vardas"
 
 #: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
@@ -502,7 +500,7 @@ msgstr "Organizacija"
 
 #: addressbook/libebook/e-contact.c:200
 msgid "Organizational Unit"
-msgstr "Organizacinis Vienetas"
+msgstr "Organizacinis vienetas"
 
 #: addressbook/libebook/e-contact.c:201
 msgid "Office"
@@ -535,7 +533,7 @@ msgstr "Tinklo žurnalo URL"
 
 #: addressbook/libebook/e-contact.c:211
 msgid "Video Conferencing URL"
-msgstr "Video Konferencinis URL"
+msgstr "Video konferencinis URL"
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:214
@@ -549,7 +547,7 @@ msgstr "Logo"
 #. Security fields
 #: addressbook/libebook/e-contact.c:218
 msgid "X.509 Certificate"
-msgstr "X.509 Sertifikatas"
+msgstr "X.509 sertifikatas"
 
 #. Contact categories
 #: addressbook/libebook/e-contact.c:221
@@ -571,12 +569,12 @@ msgstr "Laisvas/užimtas URL"
 
 #: addressbook/libebook/e-contact.c:227
 msgid "ICS Calendar"
-msgstr "ICS Kalendorius"
+msgstr "ICS kalendorius"
 
 #. Misc fields
 #: addressbook/libebook/e-contact.c:230
 msgid "Spouse's Name"
-msgstr "Sutuoktinio Vardas"
+msgstr "Sutuoktinio vardas"
 
 #: addressbook/libebook/e-contact.c:231
 msgid "Note"
@@ -596,23 +594,23 @@ msgstr "Sąrašas"
 
 #: addressbook/libebook/e-contact.c:237
 msgid "List Show Addresses"
-msgstr "Išvesti Rodomus Adresus"
+msgstr "Išvesti rodomus adresus"
 
 #: addressbook/libebook/e-contact.c:1206
 msgid "Unnamed List"
-msgstr "Bevardis Sąrašas"
+msgstr "Bevardis sąrašas"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "Gimtadienis"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "Gimtadienis: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Jubiliejus: %s"
@@ -621,39 +619,41 @@ msgstr "Jubiliejus: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nepavyko išsaugoti kalendoriaus duomenų: Blogas URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:459
 msgid "Invalid server URI"
-msgstr ""
+msgstr "Netinkamas serverio URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
-#, fuzzy
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:495
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:498
 msgid "Calendar"
-msgstr "Kalendoriaus URI"
+msgstr "Kalendorius"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
-#, fuzzy
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:505
 msgid "Could not create cache file"
-msgstr "Nepavyko atšaukti operacijos"
+msgstr "Nepavyko sukurti kešo bylos"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:515
+msgid "Could not create thread for populating cache"
+msgstr "Nepavyko sukurti gijos kešo užpildymui"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:521
+#: calendar/libecal/e-cal.c:4471
 msgid "Authentication failed"
 msgstr "Autentifikacija nepavyko"
 
-#: calendar/backends/http/e-cal-backend-http.c:225
+#: calendar/backends/http/e-cal-backend-http.c:239
 msgid "Redirected to Invalid URI"
-msgstr ""
+msgstr "Nukreipta neteisingu URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:249
+#: calendar/backends/http/e-cal-backend-http.c:263
 msgid "Bad file format."
 msgstr "Blogas bylos formatas."
 
-#: calendar/backends/http/e-cal-backend-http.c:255
+#: calendar/backends/http/e-cal-backend-http.c:269
 msgid "Not a calendar."
 msgstr "Ne kalendorius."
 
-#: calendar/libecal/e-cal-component.c:1237
+#: calendar/libecal/e-cal-component.c:1269
 msgid "Untitled appointment"
 msgstr "Bevardis paskyrimas"
 
@@ -799,84 +799,87 @@ msgid "Undefined"
 msgstr "Neapibrėžtas"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1521
+#: calendar/libecal/e-cal.c:1523
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Įveskite %s slaptažodį (vartotojo vardas %s)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4443
 msgid "Invalid argument"
 msgstr "Blogas argumentas"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4445
 msgid "Backend is busy"
 msgstr "Posistemė apkrauta"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4447
 msgid "Repository is offline"
 msgstr "Talpykla nepasiekiama"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4449
 msgid "No such calendar"
 msgstr "Nėra tokio kalendoriaus"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4451 servers/groupwise/e-gw-connection.c:155
 msgid "Object not found"
 msgstr "Objektas nerastas"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4453 servers/groupwise/e-gw-connection.c:151
 msgid "Invalid object"
 msgstr "Blogas objektas"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4455
 msgid "URI not loaded"
 msgstr "URI neįkeltas"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4457
 msgid "URI already loaded"
 msgstr "URI jau įkeltas"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4459
 msgid "Permission denied"
 msgstr "Priėjimas uždraustas"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4461 servers/groupwise/e-gw-connection.c:157
+msgid "Unknown User"
+msgstr "Nežinomas naudotojas"
+
+#: calendar/libecal/e-cal.c:4463
 msgid "Object ID already exists"
 msgstr "Toks objekto ID jau naudojamas"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4465
 msgid "Protocol not supported"
 msgstr "Protokolas nepalaikomas"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4467
 msgid "Operation has been cancelled"
 msgstr "Operacija atšaukta"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4469
 msgid "Could not cancel operation"
 msgstr "Nepavyko atšaukti operacijos"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4473
 msgid "Authentication required"
 msgstr "Autentikacija būtina"
 
-#: calendar/libecal/e-cal.c:4287
-#, fuzzy
+#: calendar/libecal/e-cal.c:4475
 msgid "A CORBA exception has occurred"
 msgstr "Įvyko CORBA klaida"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4477 servers/groupwise/e-gw-connection.c:163
 msgid "Unknown error"
 msgstr "Nežinoma klaida"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4479
 msgid "No error"
 msgstr "Nėra klaidų"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
-#: calendar/libedata-cal/e-cal-backend-sexp.c:661
-#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "„%s“ nereikia argumentų"
@@ -885,7 +888,7 @@ msgstr "„%s“ nereikia argumentų"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "„%s“ reikia vieno argumento"
@@ -907,6 +910,7 @@ msgstr ""
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "„%s“ reikia dviejų argumentų"
@@ -915,7 +919,8 @@ msgstr "„%s“ reikia dviejų argumentų"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
-#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "„%s“ reikia, kad pirmasis argumentas rodytų laiką"
@@ -926,6 +931,7 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "„%s“ reikia, kad antras argumentas būtų sveikas skaičius"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "„%s“ reikia, kad antras argumentas rodytų laiką"
@@ -936,19 +942,20 @@ msgid "\"%s\" expects the second argument to be a string"
 msgstr "„%s“ reikia, kad antras argumentas būtų sveikas seka"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"„%s“ reikia, kad pirmas argumentas būtų „any“, „summary“, arba „description“"
+"„%s“ reikia, kad pirmas argumentas būtų „any“, „summary“, „description“ arba "
+"„location“"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "„%s“ reikia bent vieno argumento"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -957,40 +964,29 @@ msgstr ""
 "„%s“ reikia, kad visi argumentai būtų simbolių sekos arba tik vienas iš jų "
 "būtų loginis neiginys (#f)"
 
-#: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
+#: servers/groupwise/e-gw-connection.c:149
 msgid "Invalid connection"
-msgstr "Blogas objektas"
+msgstr "Netinkamas ryšys"
 
-#: servers/groupwise/e-gw-connection.c:84
+#: servers/groupwise/e-gw-connection.c:153
 msgid "Invalid response from server"
-msgstr ""
+msgstr "Netinkamas atsakas iš serverio"
 
-#: servers/groupwise/e-gw-connection.c:88
+#: servers/groupwise/e-gw-connection.c:159
 msgid "Bad parameter"
-msgstr ""
+msgstr "Blogas parametras"
 
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
-msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Evolution Adresų Knygos bylų bei LDAP posistemė"
-
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
-msgid "Evolution Calendar file and webcal backend"
-msgstr "Evolution Kalendoriaus bylų bei webcal posistemė"
-
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr "Evolution Adresų Knygos bylų posistemė"
+msgstr "Evolution adresų knygos bylų posistemė"
+
+#: src/GNOME_Evolution_DataServer.server.in.in.h:2
+msgid "Evolution Calendar file and webcal backend"
+msgstr "Evolution kalendoriaus bylų bei webcal posistemė"
 
 #. dialog display isn't working out
-#: src/server.c:110
+#: src/server.c:99
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Įvyko keletas segmentacijos klaidų: negalima parodyti klaidų dialogo\n"
 
-#~ msgid "uid? expects 1 argument"
-#~ msgstr "uid? reikia 1-o argumento"
-
-#~ msgid "uid? expects argument 1 to be a string"
-#~ msgstr "uid? reikia, kad 1-as argumentas būtų seka"
