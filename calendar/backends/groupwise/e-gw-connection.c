@@ -84,7 +84,7 @@ logout (EGwConnection *cnc)
 	/* send message to server */
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
-		g_object_unref (response);
+		g_object_unref (msg);
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
 
@@ -92,6 +92,7 @@ logout (EGwConnection *cnc)
 
 	/* free memory */
 	g_object_unref (response);
+	g_object_unref (msg);
 
 	return status;
 }
@@ -638,6 +639,39 @@ e_gw_connection_send_appointment (EGwConnection *cnc, ECalComponent *comp)
 	item = e_gw_item_new_appointment (comp);
 	status = e_gw_connection_send_item (cnc, item);
 	g_object_unref (item);
+
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (id != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "removeItemRequest");
+	if (container && *container)
+		e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = parse_response_status (response);
+
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
 
 	return status;
 }

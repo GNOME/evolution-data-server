@@ -754,7 +754,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	}
 
 	/* remove the component from the cache */
-	if (!e_cal_backend_cache_remove_object (priv->cache, uid, rid))
+	if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid))
 		return E_GW_CONNECTION_STATUS_OBJECT_NOT_FOUND;
 
 	return GNOME_Evolution_Calendar_Success;
@@ -764,7 +764,6 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
-	return GNOME_Evolution_Calendar_OtherError;
 }
 
 static ECalBackendSyncStatus

@@ -57,6 +57,7 @@ typedef enum {
 	E_GW_CONNECTION_STATUS_INVALID_CONNECTION,
 	E_GW_CONNECTION_STATUS_INVALID_OBJECT,
 	E_GW_CONNECTION_STATUS_INVALID_RESPONSE,
+	E_GW_CONNECTION_STATUS_OBJECT_NOT_FOUND,
 	E_GW_CONNECTION_STATUS_OTHER,
 	E_GW_CONNECTION_STATUS_UNKNOWN
 } EGwConnectionStatus;
@@ -69,6 +70,7 @@ EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *f
 EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, char * sequence_number, GSList **list);
 EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item);
 EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, ECalComponent *comp);
+EGwConnectionStatus e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const char *id);
 
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
