@@ -400,18 +400,18 @@ get_attendee_list_from_soap_parameter (SoupSoapParameter *param)
 
                 SoupSoapParameter *subparam;
                 attendee = g_new0 (ECalComponentAttendee, 1);
-		
+
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "email");
                 if (subparam) {
                         email = soup_soap_parameter_get_string_value (subparam);
                         if (email)
-                                attendee->value = g_strdup (email);
+                                attendee->value = email;
                 }        
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "displayName");
                 if (subparam) {
                         cn = soup_soap_parameter_get_string_value (subparam);
                         if (cn)
-                                attendee->cn = g_strdup (cn);
+                                attendee->cn = cn;
                 }
                 
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "distType");
@@ -424,7 +424,8 @@ get_attendee_list_from_soap_parameter (SoupSoapParameter *param)
                                 attendee->role = ICAL_ROLE_OPTPARTICIPANT;
                         else
                                 attendee->role = ICAL_ROLE_NONPARTICIPANT;
-                }        
+                }
+
                 list = g_slist_append (list, attendee);
         }        
 
@@ -549,19 +550,11 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         /* Property - attendee-list*/ 
         subparam = soup_soap_parameter_get_first_child_by_name (param, "distribution");
         /* FIXME  what to do with 'from' data*/
-        
         subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients");
         if (subparam) 
                 attendee_list = get_attendee_list_from_soap_parameter (subparam);
         if (attendee_list) {
-                GSList *l;
                 e_cal_component_set_attendee_list (comp, attendee_list);
-                for (l = attendee_list; l != NULL; l = g_slist_next (l)) {
-                        ECalComponentAttendee *attendee;
-                        attendee = (ECalComponentAttendee*) l->data;
-                        g_free (attendee->cn);
-                        g_free (attendee->value);
-                }        
                 g_slist_foreach (attendee_list, (GFunc) g_free, NULL);
         }
         
@@ -1088,9 +1081,7 @@ e_gw_connection_get_deltas (EGwConnection *cnc, ECalBackendCache *cache)
 EGwConnectionStatus
 e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 {
-	SoupSoapMessage *msg;
-	SoupSoapResponse *response;
-	EGwConnectionStatus status;
+	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_UNKNOWN;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_GW_ITEM (item), E_GW_CONNECTION_STATUS_INVALID_OBJECT);

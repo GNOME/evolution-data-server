@@ -352,9 +352,13 @@ e_cal_backend_groupwise_remove (ECalBackendSync *backend, EDataCal *cal)
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
+	g_mutex_lock (priv->mutex);
+
 	/* remove the cache */
 	if (priv->cache)
 		e_file_cache_remove (E_FILE_CACHE (priv->cache));
+
+	g_mutex_unlock (priv->mutex);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -455,7 +459,7 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 
 	*object = e_cal_component_get_as_string (comp);
 	g_object_unref (comp);
-	
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -471,14 +475,19 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 
 	priv = cbgw->priv;
 
+	g_mutex_lock (priv->mutex);
+
 	/* search the object in the cache */
 	comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
 	if (comp) {
+		g_mutex_unlock (priv->mutex);
 		*object = e_cal_component_get_as_string (comp);
 		g_object_unref (comp);
 
 		return GNOME_Evolution_Calendar_Success;
 	}
+
+	g_mutex_unlock (priv->mutex);
 
 	/* callers will never have a uuid that is in server but not in cache */
 	return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -569,7 +578,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	g_list_free (components);
 
 	g_mutex_unlock (priv->mutex);
-	
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -614,7 +623,7 @@ e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, 
        EGwConnectionStatus status;
        ECalBackendGroupwise *cbgw;
        EGwConnection *cnc;
-       
+
        cbgw = E_CAL_BACKEND_GROUPWISE (backend);
        cnc = cbgw->priv->cnc;
 
@@ -637,7 +646,7 @@ e_cal_backend_groupwise_compute_changes_foreach_key (const char *key, gpointer d
 {
 	ECalBackendGroupwiseComputeChangesData *be_data = data;
                 
-                if (!e_cal_backend_cache_get_component (be_data->backend->priv->cache, key, NULL)) {
+	if (!e_cal_backend_cache_get_component (be_data->backend->priv->cache, key, NULL)) {
 		ECalComponent *comp;
 
 		comp = e_cal_component_new ();
