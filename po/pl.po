@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-28 07:57+0100\n"
+"POT-Creation-Date: 2004-01-29 08:24+0100\n"
 "PO-Revision-Date: 2002-09-24 01:06+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -725,81 +725,81 @@ msgid "Undefined"
 msgstr "Niezdefiniowany"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1449
+#: calendar/libecal/e-cal.c:1475
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Wprowadź hasło dla %s (użytkownik %s)"
 
-#: calendar/libecal/e-cal.c:3868
+#: calendar/libecal/e-cal.c:3894
 msgid "Invalid argument"
 msgstr "Niepoprawny argument"
 
 # FIXME - jakieś inne wersje?
-#: calendar/libecal/e-cal.c:3870
+#: calendar/libecal/e-cal.c:3896
 msgid "Backend is busy"
 msgstr "Wsparcie jest zajęte"
 
-#: calendar/libecal/e-cal.c:3872
+#: calendar/libecal/e-cal.c:3898
 msgid "Repository is offline"
 msgstr "Repozytorium jest rozłączone"
 
-#: calendar/libecal/e-cal.c:3874
+#: calendar/libecal/e-cal.c:3900
 msgid "No such calendar"
 msgstr "Nie ma takiego kalendarza"
 
-#: calendar/libecal/e-cal.c:3876
+#: calendar/libecal/e-cal.c:3902
 msgid "Object not found"
 msgstr "Nie można odnaleźć obiektu"
 
-#: calendar/libecal/e-cal.c:3878
+#: calendar/libecal/e-cal.c:3904
 msgid "Invalid object"
 msgstr "Błędny obiekt"
 
-#: calendar/libecal/e-cal.c:3880
+#: calendar/libecal/e-cal.c:3906
 msgid "URI not loaded"
 msgstr "Nie można wczytać adresu URI"
 
-#: calendar/libecal/e-cal.c:3882
+#: calendar/libecal/e-cal.c:3908
 msgid "URI already loaded"
 msgstr "Adres URI jest już wczytany"
 
-#: calendar/libecal/e-cal.c:3884
+#: calendar/libecal/e-cal.c:3910
 msgid "Permission denied"
 msgstr "Brak uprawnień"
 
-#: calendar/libecal/e-cal.c:3886
+#: calendar/libecal/e-cal.c:3912
 msgid "Object ID already exists"
 msgstr "ID obiektu już istnieje"
 
-#: calendar/libecal/e-cal.c:3888
+#: calendar/libecal/e-cal.c:3914
 msgid "Protocol not supported"
 msgstr "Protokół nie jest obsługiwany"
 
-#: calendar/libecal/e-cal.c:3890
+#: calendar/libecal/e-cal.c:3916
 msgid "Operation has been cancelled"
 msgstr "Operacja została anulowana"
 
-#: calendar/libecal/e-cal.c:3892
+#: calendar/libecal/e-cal.c:3918
 msgid "Could not cancel operation"
 msgstr "Nie można anulować operacji"
 
-#: calendar/libecal/e-cal.c:3894
+#: calendar/libecal/e-cal.c:3920
 msgid "Authentication failed"
 msgstr "Uwierzytelnienie nie powiodło się"
 
-#: calendar/libecal/e-cal.c:3896
+#: calendar/libecal/e-cal.c:3922
 msgid "Authentication required"
 msgstr "Wymagane uwierzytelnienie"
 
-#: calendar/libecal/e-cal.c:3898
-msgid "A CORBA esception has occurred"
+#: calendar/libecal/e-cal.c:3924
+msgid "A CORBA exception has occurred"
 msgstr "Wystąpił wyjątek CORBA"
 
-#: calendar/libecal/e-cal.c:3900
+#: calendar/libecal/e-cal.c:3926
 msgid "Unknown error"
 msgstr "Nieznany błąd"
 
-#: calendar/libecal/e-cal.c:3902
+#: calendar/libecal/e-cal.c:3928
 msgid "No error"
 msgstr "bez błędu"
 
