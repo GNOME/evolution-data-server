@@ -25,7 +25,6 @@
 	modes.
 	(e_cal_backend_groupwise_finalize): free new private field.
 
->>>>>>> 1.209
 2004-03-16 Harish K <kharish@novell.com>
 
 	* libecal/e-cal.c : Move open_calendar call into async_idle_cb
