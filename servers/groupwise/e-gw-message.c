@@ -95,6 +95,7 @@ e_gw_message_new_with_header (const char *uri, const char *method_name)
 	soup_soap_message_start_envelope (msg);
 	soup_soap_message_start_body (msg);
 	soup_soap_message_add_attribute (msg, "encodingStyle", "", "SOAP-ENV", NULL);
+	soup_soap_message_add_namespace (msg, "types", "http://schemas.novell.com/2003/10/NCSP/types.xsd");
 
 	soup_soap_message_start_element (msg, method_name, NULL, NULL);
 

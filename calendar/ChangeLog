@@ -1,5 +1,8 @@
 2003-12-16  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-message.c (e_gw_message_new_with_header):
+	added the namespace for the SOAP types.
+
 	* backends/groupwise/e-gw-connection.c (logout): fixed copy-paste typo.
 
 	* backends/groupwise/soap-test.c (idle_cb): unref the EGwConnection
