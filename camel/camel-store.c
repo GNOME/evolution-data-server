@@ -775,8 +775,10 @@ camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, C
 	
 	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
 		if (info->uri && (store->flags & CAMEL_STORE_VTRASH))
+			/* the name of the Trash folder, used for deleted messages */
 			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
 		if (info->uri && (store->flags & CAMEL_STORE_VJUNK))
+			/* the name of the Junk folder, used for spam messages */
 			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
 	}
 
