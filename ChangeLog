@@ -1,3 +1,7 @@
+2004-04-19  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: bump version, libtool numbers
+
 2004-04-13  Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* configure.in : added LIBEGROUPWISE_* variables and corresponding AC_SUBST  for 
