@@ -1,3 +1,8 @@
+2004-07-07  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-source.[ch] (e_source_build_absolute_uri): made
+	this function public.
+
 2004-07-07  Not Zed  <NotZed@Ximian.com>
 
 	* src/server.c (main): bind to the right charset (i.e. utf8).  See

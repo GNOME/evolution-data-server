@@ -405,8 +405,8 @@ e_source_uid_from_xml_node (xmlNodePtr node)
 	return retval;
 }
 
-static char *
-build_absolute_uri (ESource *source)
+char *
+e_source_build_absolute_uri (ESource *source)
 {
 	const gchar *base_uri_str;
 	gchar *uri_str;
@@ -639,7 +639,7 @@ e_source_get_uri (ESource *source)
 	else if (source->priv->absolute_uri != NULL) /* source->priv->group != NULL */
 		return g_strdup (source->priv->absolute_uri);
 	else
-		return build_absolute_uri (source);
+		return e_source_build_absolute_uri (source);
 }
 
 

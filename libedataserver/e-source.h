@@ -112,6 +112,8 @@ void         e_source_foreach_property (ESource *source,
 					GHFunc func,
 					gpointer data);
 
+char *e_source_build_absolute_uri (ESource *source);
+
 G_END_DECLS
 
 #endif /* _E_SOURCE_H_ */
