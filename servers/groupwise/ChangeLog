@@ -1,3 +1,8 @@
+2004-06-11  Rodrigo Moya <rodrigo@novell.com>
+
+	* doc/gw-soap-methods.xsd:
+	* doc/gw-soap-types.xsd: added new schemas from Tim.
+
 2004-06-01  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-connection.[ch]  (e_gw_connection_remove_items):

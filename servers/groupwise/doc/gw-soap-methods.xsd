@@ -12,6 +12,7 @@
 				<xs:element name="items" type="types:ItemRefList"/>
 				<xs:element name="comment" type="xs:string"/>
 				<xs:element name="acceptLevel" type="types:AcceptLevel"/>
+				<xs:element name="recurrenceAllInstances" type="xs:boolean" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -130,7 +131,7 @@
 	<xs:element name="createItemRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="item" type="types:ItemArg"/>
+				<xs:element name="item" type="types:Item"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -166,6 +167,7 @@
 			<xs:sequence>
 				<xs:element name="items" type="types:ItemRefList"/>
 				<xs:element name="comment" type="xs:string"/>
+				<xs:element name="recurrenceAllInstances" type="xs:boolean" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -185,6 +187,7 @@
 				<xs:element name="commentToOrganizer" type="xs:string"/>
 				<xs:element name="commentToDelegatee" type="xs:string"/>
 				<xs:element name="distribution" type="types:Distribution"/>
+				<xs:element name="recurrenceAllInstances" type="xs:boolean" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -747,7 +750,7 @@
 	<xs:element name="sendItemRequest">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="item" type="types:ItemArg"/>
+				<xs:element name="item" type="types:Item"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -755,7 +758,7 @@
 	<xs:element name="sendItemResponse">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="id" type="types:uid"/>
+				<xs:element name="id" type="types:ItemRefList"/>
 				<xs:element name="status" type="types:Status"/>
 			</xs:sequence>
 		</xs:complexType>
