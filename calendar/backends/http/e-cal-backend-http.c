@@ -166,7 +166,7 @@ e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *
 static ECalBackendSyncStatus
 e_cal_backend_http_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
-	*capabilities = CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS;
+	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
 	
 	return GNOME_Evolution_Calendar_Success;
 }
