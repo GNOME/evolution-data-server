@@ -1,3 +1,8 @@
+2004-05-28  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-connection.[ch] (e_gw_connection_get_items_from_ids) :
+	new function to retrive items when ids are given instead of filter
+	
 2004-05-25  Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* e-gw-item.c (free_im_address) : check for NULL
