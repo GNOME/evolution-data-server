@@ -302,7 +302,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 				e_cal_backend_cache_put_component (priv->cache, comp);
 
 				e_cal_component_get_uid (comp, &uid);
-				if (g_hash_table_lookup_extended (old_cache, uid, &orig_key, &orig_value)) {
+				if (g_hash_table_lookup_extended (old_cache, uid, (void **)&orig_key, (void **)&orig_value)) {
 					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp),
 									      orig_value,
 									      icalcomponent_as_ical_string (subcomp));
