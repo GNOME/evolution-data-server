@@ -39,6 +39,7 @@ struct _EGwConnectionPrivate {
 	char *username;
 	char *password;
 	char *session_id;
+	char *email;
 };
 
 static EGwConnectionStatus
@@ -226,7 +227,8 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	SoupSoapParameter *param;
 	EGwConnectionStatus status;
 	char *hash_key;
-
+	const char *param_value;
+	
 	/* search the connection in our hash table */
 	if (loaded_connections != NULL) {
 		hash_key = g_strdup_printf ("%s:%s@%s",
@@ -273,12 +275,15 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 		g_object_unref (cnc);
 		return NULL;
 	}
-
+	
 	cnc->priv->uri = g_strdup (uri);
 	cnc->priv->username = g_strdup (username);
 	cnc->priv->password = g_strdup (password);
 	cnc->priv->session_id = g_strdup (soup_soap_parameter_get_string_value (param));
-
+	param = soup_soap_response_get_first_parameter_by_name (response, "email");
+	param_value = soup_soap_parameter_get_string_value (param);
+	cnc->priv->email  = g_strdup (param_value);
+	
 	/* add the connection to the loaded_connections hash table */
 	hash_key = g_strdup_printf ("%s:%s@%s",
 				    cnc->priv->username ? cnc->priv->username : "",
@@ -321,4 +326,13 @@ e_gw_connection_logout (EGwConnection *cnc)
 	g_object_unref (cnc);
 
 	return E_GW_CONNECTION_STATUS_OK;
+}
+
+const char* 
+e_gw_connection_get_user_email (EGwConnection *cnc)
+{
+    g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+  
+    return (const char*) cnc->priv->email;
+	
 }

@@ -35,6 +35,8 @@
 struct _ECalBackendGroupwisePrivate {
 	EGwConnection *cnc;
 	ECalBackendCache *cache;
+	gboolean read_only;
+	char *uri;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -88,7 +90,6 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
-
 
 /* Calendar backend methods */
 
@@ -96,38 +97,55 @@ e_cal_backend_groupwise_finalize (GObject *object)
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only)
 {
-	/* FIXME */
-	*read_only = TRUE;
+	ECalBackendGroupwise *cbgw;
+	
+	cbgw = E_CAL_BACKEND_GROUPWISE(backend);
+	*read_only = cbgw->priv->read_only;
 	
 	return GNOME_Evolution_Calendar_Success;
 }
 
-/* Get_email_address handler for the file backend */
+/*return email address of the person who opened the calender */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_cal_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
-	/* FIXME */
+	ECalBackendGroupwise *cbgw;
+	
+	cbgw = E_CAL_BACKEND_GROUPWISE(backend);
+	*address = g_strdup (e_gw_connection_get_user_email (cbgw->priv->cnc));
+	
 	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, char **attribute)
 {
-	/* FIXME */
+	/* ldap attribute is specific to Sun ONE connector to get free busy information*/
+	/* retun NULL here as group wise backend know how to get free busy information */
+	
+	*attribute = NULL;
+	
 	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
-	/* FIXME */
+	/*group wise does not support email based alarms */
+	
+	*address = NULL;
+	
 	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
-	/* FIXME */
+	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS "," \
+				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","   \
+	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR "," \
+				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE);
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -157,6 +175,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	GnomeVFSURI *vuri;
 	char *real_uri;
 	EGwConnectionStatus status;
+	ECalBackendSyncStatus result;
 	
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -187,10 +206,15 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	gnome_vfs_uri_unref (vuri);
 	g_free (real_uri);
-
+			
+	/* As of now we are assuming that logged in user has write rights to calender */
+	/* we need to read actual rights from server when we implement proxy user access */
+	cbgw->priv->read_only = FALSE;
+	
 	if (E_IS_GW_CONNECTION (priv->cnc))
 		return GNOME_Evolution_Calendar_Success;
-
+		
+	
 	/* free memory */
 	g_object_unref (priv->cnc);
 	priv->cnc = NULL;

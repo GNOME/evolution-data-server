@@ -43,7 +43,7 @@ Step 2 - Basic functionality
 	    The server should have a list of available timezones, if not,
 	    we can use libical's built-in timezones.
 
- 2.3 Retrieve information about connection: when loging to the server, we get, in
+ 2.3 Retrieve information about connection -> done : when loging to the server, we get, in
      the loginResponse response, some information about the user being connected.
      From that we can retrieve some information needed to implement the following
      backend methods:

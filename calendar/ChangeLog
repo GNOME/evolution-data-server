@@ -1,3 +1,13 @@
+2003-12-16 Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* backends/groupwise/e-gw-connection.h
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_new,
+	e_gw_connection_get_user_email)
+	* backends/groupwise/e-cal-backend-groupwise.c (e_cal_backend_groupwise_get_ldap_attribute,
+	e_cal_backend_groupwise_get_cal_address, e_cal_backend_groupwise_is_read_only,
+	e_cal_backend_groupwise_get_alarm_email_address, e_cal_backend_groupwise_get_static_capabilities
+	e_cal_backend_groupwise_open ): added implementation for all the apis listed above
+
 2003-12-15  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal-listener.c (e_cal_listener_class_init): fix the

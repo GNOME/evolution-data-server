@@ -63,6 +63,8 @@ SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMe
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
 
+const char                *e_gw_connection_get_user_email (EGwConnection *cnc);
+
 G_END_DECLS
 
 #endif
