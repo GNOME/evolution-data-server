@@ -1,3 +1,12 @@
+2004-12-20  David Mosberger-Tang  <David.Mosberger@acm.org>
+
+        * libedataserver/e-memory.c (STRUCT_ALIGN): Replace with G_MEM_ALIGN.
+        (ALIGNED_SIZE): New macro.
+        (MemPoolNode): Remove "data" member.
+        (MemPoolThresholdNode): Likewise.
+        (e_mempool_alloc): Use (ALIGNED_SIZEOF(*n) + N) in lieu of
+        &n->data[N] to ensure proper alignment.
+
 2004-12-21  Hans Petter Jansson  <hpj@novell.com>
 
 	* libedatasererui/e-name-selector.[ch]: Implement ENameSelector,
