@@ -242,13 +242,17 @@ e_gw_item_to_cal_component (EGwItem *item)
 	t = e_gw_item_get_start_date (item);
 	itt = icaltime_from_timet (t, 0);
 	dt.value = &itt;
+	dt.tzid = g_strdup ("UTC");
 	e_cal_component_set_dtstart (comp, &dt);
+	g_free (dt.tzid);
 
 	/* end date */
 	t = e_gw_item_get_end_date (item);
 	itt = icaltime_from_timet (t, 0);
 	dt.value = &itt;
+	dt.tzid = g_strdup ("UTC");
 	e_cal_component_set_dtend (comp, &dt);
+	g_free (dt.tzid);
 
 	/* classification */
 	description = e_gw_item_get_classification (item);

@@ -1,3 +1,9 @@
+2004-03-05 Harish K <kharish@novell.com>
+	* e-gw-connection.c : (timet_from_string):
+	1900 should be subtracted from the year value and 1 from the 
+	month value in struct tm. Added include for ctype.h to remove
+	compiler warning.	
+
 2004-03-02 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* doc/gw-soap-types.xml :

@@ -25,6 +25,7 @@
 #include <config.h>
 #endif
 #include <string.h>
+#include <ctype.h>
 #include <libsoup/soup-session-sync.h>
 #include <libsoup/soup-soap-message.h>
 #include "e-gw-connection.h"
@@ -798,15 +799,15 @@ timet_from_string (const char *str)
 	date.tm_year = digit_at (str, 0) * 1000
                 + digit_at (str, 1) * 100
                 + digit_at (str, 2) * 10
-                + digit_at (str, 3);
-        date.tm_mon = digit_at (str, 4) * 10 + digit_at (str, 5);
+                + digit_at (str, 3) -1900;
+        date.tm_mon = digit_at (str, 4) * 10 + digit_at (str, 5) -1;
         date.tm_mday = digit_at (str, 6) * 10 + digit_at (str, 7);
         if (len > 8) {
                 date.tm_hour = digit_at (str, 9) * 10 + digit_at (str, 10);
                 date.tm_min  = digit_at (str, 11) * 10 + digit_at (str, 12);
                 date.tm_sec  = digit_at (str, 13) * 10 + digit_at (str, 14);
         } else
-		date.tm_hour = date.tm_min = date.tm_sec = 0;
+		date.tm_hour = date.tm_min = date.tm_sec = 0; 
 
 	return mktime (&date);
 }
