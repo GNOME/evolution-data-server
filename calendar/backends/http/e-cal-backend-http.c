@@ -773,7 +773,7 @@ e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 
 static ECalBackendSyncStatus
 e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
-				CalObjModType mod, char **old_object)
+				CalObjModType mod, char **old_object, char **new_object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;

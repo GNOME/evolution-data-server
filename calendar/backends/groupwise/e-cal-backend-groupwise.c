@@ -1329,7 +1329,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
-				       CalObjModType mod, char **old_object)
+				       CalObjModType mod, char **old_object, char **new_object)
 {
 	ECalBackendGroupwise *cbgw;
         ECalBackendGroupwisePrivate *priv;
@@ -1623,7 +1623,7 @@ send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp,
 		if (found_comp) {
 			char *comp_str;
 			status = e_cal_backend_groupwise_modify_object (E_CAL_BACKEND_SYNC (cbgw), cal, comp_str,
-									CALOBJ_MOD_THIS, &comp_str);
+									CALOBJ_MOD_THIS, &comp_str, NULL);
 			g_free (comp_str);
 		} else
 			status = e_cal_backend_groupwise_create_object (E_CAL_BACKEND_SYNC (cbgw), cal, &comp_str, NULL);

@@ -43,7 +43,7 @@ struct _ECalBackendSyncClass {
 	ECalBackendSyncStatus (*remove_sync)  (ECalBackendSync *backend, EDataCal *cal);
 
 	ECalBackendSyncStatus (*create_object_sync)  (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid);
-	ECalBackendSyncStatus (*modify_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj, CalObjModType mod, char **old_object);
+	ECalBackendSyncStatus (*modify_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj, CalObjModType mod, char **old_object, char **new_object);
 	ECalBackendSyncStatus (*remove_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, CalObjModType mod, char **old_object, char **object);
 
 	ECalBackendSyncStatus (*discard_alarm_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid);
@@ -104,7 +104,8 @@ ECalBackendSyncStatus e_cal_backend_sync_modify_object           (ECalBackendSyn
 							       EDataCal             *cal,
 							       const char      *calobj,
 							       CalObjModType    mod,
-							       char           **old_object);
+							       char           **old_object,
+							       char           **new_object);
 ECalBackendSyncStatus e_cal_backend_sync_remove_object           (ECalBackendSync  *backend,
 							       EDataCal             *cal,
 							       const char      *uid,

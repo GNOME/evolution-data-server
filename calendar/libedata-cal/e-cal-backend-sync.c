@@ -116,14 +116,14 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 
 ECalBackendSyncStatus
 e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
-				  CalObjModType mod, char **old_object)
+				  CalObjModType mod, char **old_object, char **new_object)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync != NULL,
 			      GNOME_Evolution_Calendar_UnsupportedMethod);
 
 	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync) (backend, cal, 
-									     calobj, mod, old_object);
+									     calobj, mod, old_object, new_object);
 }
 
 ECalBackendSyncStatus
@@ -365,11 +365,15 @@ _e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *c
 {
 	ECalBackendSyncStatus status;
 	char *old_object = NULL;
+	char *new_object = NULL;
 	
 	status = e_cal_backend_sync_modify_object (E_CAL_BACKEND_SYNC (backend), cal, 
-						   calobj, mod, &old_object);
+						   calobj, mod, &old_object, &new_object);
 
-	e_data_cal_notify_object_modified (cal, status, old_object, calobj);
+	if (new_object)
+		e_data_cal_notify_object_modified (cal, status, old_object, new_object);
+	else
+		e_data_cal_notify_object_modified (cal, status, old_object, calobj);
 }
 
 static void

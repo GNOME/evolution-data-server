@@ -1,3 +1,14 @@
+2004-12-20  Anders Carlsson  <andersca@gnome.org>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_modify_object), (send_object):
+	* backends/http/e-cal-backend-http.c:
+	(e_cal_backend_http_modify_object):
+	* libedata-cal/e-cal-backend-sync.c:
+	(e_cal_backend_sync_modify_object), (_e_cal_backend_modify_object):
+	* libedata-cal/e-cal-backend-sync.h:
+	Add support for passing a modified object from sync backends.
+	
 2004-12-18  JP Rosevear  <jpr@novell.com>
 
 	Fixes #70127
