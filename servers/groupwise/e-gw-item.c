@@ -2582,6 +2582,11 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			/* item options */
 			append_gw_item_options (msg, item);
 		}
+		/*container*/
+		if (item->priv->container)
+			e_gw_message_write_string_parameter (msg, "container", NULL, item->priv->container);
+		if (item->priv->container)
+			e_gw_message_write_string_parameter (msg, "source", NULL, "received");
 		
 		/*message*/
 		soup_soap_message_start_element (msg, "message", NULL, NULL);
