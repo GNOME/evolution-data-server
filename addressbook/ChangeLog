@@ -1,5 +1,12 @@
 2004-04-21  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-contact.c (E_CONTACT_COMPANY): make this an
+	ATTR_TYPE_STR field, using EVC_X_COMPANY as the TYPE.
+
+	* libebook/e-vcard.h (EVC_X_COMPANY): add new parameter type.
+
+2004-04-21  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-contact.c (photo_setter): setters aren't called with
 	NULL data anymore.
 	(fn_setter): same.
