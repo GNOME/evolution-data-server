@@ -1,3 +1,11 @@
+2005-01-27  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/file/e-cal-backend-file.c: added a GMutex for the idle saving
+	callback.
+	(save_file_when_idle, save): lock/unlock the mutex while setting values.
+	(e_cal_backend_file_finalize): unref the mutex.
+	(e_cal_backend_file_init): create the mutex.
+
 2005-01-26  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file.c (add_component): save the file

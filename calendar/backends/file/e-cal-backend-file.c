@@ -61,6 +61,8 @@ struct _ECalBackendFilePrivate {
 	gboolean is_dirty;
 	guint dirty_idle_id;
 
+	GMutex *idle_save_mutex;
+
 	/* Toplevel VCALENDAR component */
 	icalcomponent *icalcomp;
 
@@ -122,8 +124,12 @@ save_file_when_idle (gpointer user_data)
 	g_assert (priv->uri != NULL);
 	g_assert (priv->icalcomp != NULL);
 
-	if (!priv->is_dirty)
+	g_mutex_lock (priv->idle_save_mutex);
+	if (!priv->is_dirty) {
+		priv->dirty_idle_id = 0;
+		g_mutex_unlock (priv->idle_save_mutex);
 		return FALSE;
+	}
 
 	uri = gnome_vfs_uri_new (priv->uri);
 	if (!uri)
@@ -176,14 +182,18 @@ save_file_when_idle (gpointer user_data)
 	priv->is_dirty = FALSE;
 	priv->dirty_idle_id = 0;
 
+	g_mutex_unlock (priv->idle_save_mutex);
+
 	return FALSE;
 
  error_malformed_uri:
+	g_mutex_unlock (priv->idle_save_mutex);
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile),
 				  _("Can't save calendar data: Malformed URI."));
 	return TRUE;
 
  error:
+	g_mutex_unlock (priv->idle_save_mutex);
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), gnome_vfs_result_to_string (result));
 	return TRUE;
 }
@@ -195,11 +205,13 @@ save (ECalBackendFile *cbfile)
 
 	priv = cbfile->priv;
 
-	if (!priv->dirty_idle_id) {
-		priv->dirty_idle_id = g_idle_add ((GSourceFunc) save_file_when_idle, cbfile);
-	}
-
+	g_mutex_lock (priv->idle_save_mutex);
 	priv->is_dirty = TRUE;
+
+	if (!priv->dirty_idle_id)
+		priv->dirty_idle_id = g_idle_add ((GSourceFunc) save_file_when_idle, cbfile);
+
+	g_mutex_unlock (priv->idle_save_mutex);
 }
 
 static void
@@ -268,6 +280,11 @@ e_cal_backend_file_finalize (GObject *object)
 	if (priv->dirty_idle_id) {
 		g_source_remove (priv->dirty_idle_id);
 		priv->dirty_idle_id = 0;
+	}
+
+	if (priv->idle_save_mutex) {
+		g_mutex_free (priv->idle_save_mutex);
+		priv->idle_save_mutex = NULL;
 	}
 
 	if (priv->uri) {
@@ -2458,6 +2475,7 @@ e_cal_backend_file_init (ECalBackendFile *cbfile, ECalBackendFileClass *class)
 	priv->read_only = FALSE;
 	priv->is_dirty = FALSE;
 	priv->dirty_idle_id = 0;
+	priv->idle_save_mutex = g_mutex_new ();
 	priv->icalcomp = NULL;
 	priv->comp_uid_hash = NULL;
 	priv->comp = NULL;
