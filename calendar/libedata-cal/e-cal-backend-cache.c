@@ -25,8 +25,6 @@
 
 struct _ECalBackendCachePrivate {
 	char *uri;
-	char *cache_file;
-	icalcomponent *top_level;
 };
 
 /* Property IDs */
@@ -37,11 +35,10 @@ enum {
 
 static GObjectClass *parent_class = NULL;
 
-static icalcomponent *
-load_cache_from_uri (char *uri, char **filename)
+static char *
+get_filename_from_uri (char *uri)
 {
-	char *mangled_uri, *c;
-	icalcomponent *icalcomp = NULL;
+	char *mangled_uri, *c, *filename;
 
 	/* mangle the URI to not contain invalid characters */
 	mangled_uri = g_strdup (uri);
@@ -53,24 +50,14 @@ load_cache_from_uri (char *uri, char **filename)
 		}
 	}
 
-	/* open the file */
-	*filename = g_build_filename (g_get_home_dir (), ".evolution/calendar/cache",
-				      mangled_uri, "cache.ics", NULL);
-	icalcomp = e_cal_util_parse_ics_file ((const char *) *filename);
-	if (!icalcomp) {
-		icalcomp = e_cal_util_new_top_level ();
-	} else {
-		if (!icalcomponent_isa (icalcomp) == ICAL_VCALENDAR_COMPONENT) {
-			icalcomponent_free (icalcomp);
-			icalcomp = NULL;
-			g_free (*filename);
-		}
-	}
+	/* generate the file name */
+	filename = g_build_filename (g_get_home_dir (), ".evolution/calendar/cache",
+				     mangled_uri, "cache.xml", NULL);
 
 	/* free memory */
 	g_free (mangled_uri);
 
-	return icalcomp;
+	return filename;
 }
 
 static void
@@ -78,32 +65,23 @@ e_cal_backend_cache_set_property (GObject *object, guint property_id, const GVal
 {
 	ECalBackendCache *cache;
 	ECalBackendCachePrivate *priv;
+	char *cache_file;
 
 	cache = E_CAL_BACKEND_CACHE (object);
 	priv = cache->priv;
 
 	switch (property_id) {
 	case PROP_URI :
-		if (!priv->top_level) {
-			icalcomponent *icalcomp;
-			char *cache_file;
+		cache_file = get_filename_from_uri ((char *) g_value_get_string (value));
+		if (!cache_file)
+			break;
 
-			icalcomp = load_cache_from_uri ((char *) g_value_get_string (value), &cache_file);
-			if (!icalcomp)
-				break;
+		g_object_set (G_OBJECT (cache), "filename", cache_file);
+		g_free (cache_file);
 
-			if (priv->uri)
-				g_free (priv->uri);
-			priv->uri = g_value_dup_string (value);
-
-			if (priv->cache_file)
-				g_free (priv->cache_file);
-			priv->cache_file = cache_file;
-
-			if (priv->top_level)
-				icalcomponent_free (priv->top_level);
-			priv->top_level = icalcomp;
-		}
+		if (priv->uri)
+			g_free (priv->uri);
+		priv->uri = g_value_dup_string (value);
 		break;
 	default :
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -141,16 +119,6 @@ e_cal_backend_cache_finalize (GObject *object)
 		if (priv->uri) {
 			g_free (priv->uri);
 			priv->uri = NULL;
-		}
-
-		if (priv->cache_file) {
-			g_free (priv->cache_file);
-			priv->cache_file = NULL;
-		}
-
-		if (priv->top_level) {
-			icalcomponent_free (priv->top_level);
-			priv->top_level = NULL;
 		}
 
 		g_free (priv);
@@ -212,7 +180,7 @@ e_cal_backend_cache_get_type (void)
                         0,
                         (GInstanceInitFunc) e_cal_backend_cache_init,
                 };
-		type = g_type_register_static (G_TYPE_OBJECT, "ECalBackendCache", &info, 0);
+		type = g_type_register_static (E_TYPE_CACHE, "ECalBackendCache", &info, 0);
 	}
 
 	return type;
@@ -235,4 +203,138 @@ e_cal_backend_cache_new (const char *uri)
 	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "uri", uri, NULL);
 
 	return cache;
+}
+
+static char *
+get_key (const char *uid, const char *rid)
+{
+	GString *real_key;
+	char *retval;
+
+	real_key = g_string_new (uid);
+	if (rid && *rid) {
+		real_key = g_string_append (real_key, "@");
+		real_key = g_string_append (real_key, rid);
+	}
+
+	retval = real_key->str;
+	g_string_free (real_key, FALSE);
+
+	return retval;
+}
+
+/**
+ * e_cal_backend_cache_get_component:
+ * @cache: A %ECalBackendCache object.
+ * @uid: The UID of the component to retrieve.
+ * @rid: Recurrence ID of the specific detached recurrence to retrieve,
+ * or NULL if the whole object is to be retrieved.
+ *
+ * Gets a component from the %ECalBackendCache object.
+ *
+ * Return value: The %ECalComponent representing the component found,
+ * or %NULL if it was not found in the cache.
+ */
+ECalComponent *
+e_cal_backend_cache_get_component (ECalBackendCache *cache, const char *uid, const char *rid)
+{
+	char *real_key;
+	const char *comp_str;
+	icalcomponent *icalcomp;
+	ECalComponent *comp = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	real_key = get_key (uid, rid);
+
+	comp_str = e_cache_get_object (E_CACHE (cache), real_key);
+	if (comp_str) {
+		icalcomp = icalparser_parse_string (comp_str);
+		if (icalcomp) {
+			comp = e_cal_component_new ();
+			e_cal_component_set_icalcomponent (comp, icalcomp);
+		}
+	}
+
+	/* free memory */
+	g_free (real_key);
+
+	return comp;
+}
+
+/**
+ * e_cal_backend_cache_add_component:
+ */
+gboolean
+e_cal_backend_cache_add_component (ECalBackendCache *cache,
+				   const char *uid,
+				   const char *rid,
+				   const char *calobj)
+{
+	char *real_key;
+	gboolean retval;
+	ECalBackendCachePrivate *priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (calobj != NULL, FALSE);
+
+	priv = cache->priv;
+
+	real_key = get_key (uid, rid);
+	if (e_cache_get_object (E_CACHE (cache), real_key)) {
+		g_free (real_key);
+		return FALSE;
+	}
+
+	retval = e_cache_add_object (E_CACHE (cache), real_key, calobj);
+	g_free (real_key);
+
+	return retval;
+}
+
+/**
+ * e_cal_backend_cache_replace_component:
+ */
+gboolean
+e_cal_backend_cache_replace_component (ECalBackendCache *cache,
+				       const char *uid,
+				       const char *rid,
+				       const char *new_calobj)
+{
+	if (e_cal_backend_cache_remove_component (cache, uid, rid)) {
+		return e_cal_backend_cache_add_component (cache, uid, rid, new_calobj);
+	}
+
+	return FALSE;
+}
+
+/**
+ * e_cal_backend_cache_remove_component:
+ */
+gboolean
+e_cal_backend_cache_remove_component (ECalBackendCache *cache,
+				      const char *uid,
+				      const char *rid)
+{
+	char *real_key;
+	gboolean retval;
+	ECalBackendCachePrivate *priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	priv = cache->priv;
+
+	real_key = get_key (uid, rid);
+	if (!e_cache_get_object (E_CACHE (cache), real_key)) {
+		g_free (real_key);
+		return FALSE;
+	}
+
+	retval = e_cache_remove_object (E_CACHE (cache), real_key);
+	g_free (real_key);
+
+	return retval;
 }

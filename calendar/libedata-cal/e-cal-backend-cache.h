@@ -22,6 +22,7 @@
 #ifndef E_CAL_BACKEND_CACHE_H
 #define E_CAL_BACKEND_CACHE_H
 
+#include <libedataserver/e-cache.h>
 #include <libecal/e-cal-component.h>
 
 G_BEGIN_DECLS
@@ -35,17 +36,31 @@ G_BEGIN_DECLS
 typedef struct _ECalBackendCachePrivate ECalBackendCachePrivate;
 
 typedef struct {
-	GObject parent;
+	ECache parent;
 	ECalBackendCachePrivate *priv;
 } ECalBackendCache;
 
 typedef struct {
-	GObjectClass parent_class;
+	ECache parent_class;
 } ECalBackendCacheClass;
 
 GType             e_cal_backend_cache_get_type (void);
 
 ECalBackendCache *e_cal_backend_cache_new (const char *uri);
+ECalComponent    *e_cal_backend_cache_get_component (ECalBackendCache *cache,
+						     const char *uid,
+						     const char *rid);
+gboolean          e_cal_backend_cache_add_component (ECalBackendCache *cache,
+						     const char *uid,
+						     const char *rid,
+						     const char *calobj);
+gboolean          e_cal_backend_cache_replace_component (ECalBackendCache *cache,
+							 const char *uid,
+							 const char *rid,
+							 const char *new_calobj);
+gboolean          e_cal_backend_cache_remove_component (ECalBackendCache *cache,
+							const char *uid,
+							const char *rid);
 
 G_END_DECLS
 

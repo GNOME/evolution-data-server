@@ -1,3 +1,20 @@
+2003-12-01  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-cal-backend-cache.[ch]: changed to be based on the
+	new ECache class.
+	(get_filename_from_uri): new function to get a unique filename for a
+	calendar/tasks URI.
+	(e_cal_backend_cache_set_property): get the filename for the given URI
+	and set the "filename" property on the cache, which will load/create
+	the cache file.
+	(e_cal_backend_cache_finalize): dont free removed fields.
+	(e_cal_backend_cache_get_component, e_cal_backend_cache_add_component,
+	e_cal_backend_cache_replace_component, e_cal_backend_cache_remove_component):
+	new functions.
+
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_login): retrieve
+	the session from the response, not the username.
+
 2003-11-28  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-connection.c (parse_response_status): new

@@ -222,7 +222,7 @@ e_gw_connection_login (EGwConnection *cnc,
 
 	status = parse_response_status (response);
 
-	param = soup_soap_response_get_first_parameter_by_name (response, "username");
+	param = soup_soap_response_get_first_parameter_by_name (response, "session");
 	if (!param) {
 		g_object_unref (response);
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
