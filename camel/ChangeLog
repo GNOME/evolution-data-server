@@ -1,4 +1,11 @@
 2005-01-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* providers/groupwise/camel-groupwise-folder.c
+	  (groupwise_folder_get_message) : support for status
+	  for message tracking. 
+	  Removed compiler warnings.
+
+2005-01-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-folder.c 
 	  (groupwise_folder_get_message):
