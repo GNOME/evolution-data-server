@@ -2200,7 +2200,7 @@ load_static_capabilities (ECal *ecal, GError **error)
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-	cap = our_op->string;
+	priv->capabilities = our_op->string;
 	
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);

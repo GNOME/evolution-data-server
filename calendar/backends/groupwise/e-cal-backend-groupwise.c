@@ -79,7 +79,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	priv = cbgw->priv;
 
         /* get all the objects from the server */
-        status = e_gw_connection_get_items (priv->cnc, priv->container_id, "recipients", NULL, &list);
+        status = e_gw_connection_get_items (priv->cnc, priv->container_id, "recipients message", NULL, &list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
                 g_list_free (list);
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
@@ -223,8 +223,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Calendar");
 				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
 			} else if (kind == ICAL_VTODO_COMPONENT) {
-				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Checklist");
-				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Checklist"));
+				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Calendar");
+				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
 			} else
 				priv->container_id = NULL;
 
@@ -386,7 +386,8 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 				  CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY "," \
 				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","   \
 	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR "," \
-				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE);
+				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE "," \
+				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -411,6 +412,10 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
         /* FIXME: if the cache already exists - read it and get deltas. */
 	if (priv->cache) {
 		g_mutex_unlock (priv->mutex);
+		g_object_ref (priv->cnc);
+		g_object_ref (priv->cache);
+		g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+		priv->mode = CAL_MODE_REMOTE;
                 return GNOME_Evolution_Calendar_Success;
 	}
 

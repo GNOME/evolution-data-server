@@ -1,3 +1,15 @@
+2004-05-06  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libecal/e-cal.c: (load_static_capabilities): assign capabilities
+	to ecal->capabilities so that it need not be computed repeatedly.
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(populate_cache) : added message to view element to recieve 
+	message bodies as plain text (default).
+	(connect_to_server) : the Tasks folder is also Calendar and 
+	not Checklist in GW server.
+	(e_cal_backend_groupwise_get_static_capabilities) :
+	Added CAL_STATIC_CAPABILITY_SAVE_SCHEDULES.
+
 2004-05-04  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
