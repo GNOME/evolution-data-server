@@ -37,6 +37,7 @@ struct _EGwContainerPrivate {
 	char *owner;	
 	GList *user_list;	
 	const char *modified;
+	EGwContainerType type ;
 	gboolean is_root ;
 	gboolean is_writable;
 	gboolean is_frequent_contacts; /*indicates  whether this folder is frequent contacts or not */
@@ -198,13 +199,35 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	/* retrieve the parent container id */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "parent");
 	if (!subparam) {
-		g_warning (G_STRLOC ": found container with no parent");
 		e_gw_container_set_parent_id (container, "");
 		container->priv->is_root = TRUE ;
 	} else {
 
 		value = soup_soap_parameter_get_string_value (subparam);
 		e_gw_container_set_parent_id (container, (const char *) value);
+		g_free (value) ;
+	}
+
+	/*retrieve the folder type*/
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "type") ;
+	if (!subparam) 
+		container->priv->type = E_GW_CONTAINER_TYPE_FOLDER ;
+	else {
+		value = soup_soap_parameter_get_string_value (subparam);
+		if (!strcmp (value, "Root")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_ROOT ;
+		else if (!strcmp (value, "Inbox")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_INBOX ;
+		else if (!strcmp (value, "Outbox")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_OUTBOX ;
+		else if (!strcmp (value, "Calendar")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_CALENDAR ;
+		else if (!strcmp (value, "Contacts")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_CONTACTS ;
+		else if (!strcmp (value, "Draft")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_DRAFT ;
+		else if (!strcmp (value, "Trash")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_TRASH ;
 		g_free (value) ;
 	}
 	/* retrive the unread and total count */
