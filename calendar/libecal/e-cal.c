@@ -3131,7 +3131,7 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 {
 	ECalPrivate *priv;
 	GSList *alarms;
-	char *sexp;
+	char *sexp, *iso_start, *iso_end;;
 	GList *object_list = NULL;
 
 	g_return_val_if_fail (ecal != NULL, NULL);
@@ -3143,8 +3143,21 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 	g_return_val_if_fail (start >= 0 && end >= 0, NULL);
 	g_return_val_if_fail (start <= end, NULL);
 
+	iso_start = isodate_from_time_t (start);
+	if (!iso_start)
+		return;
+
+	iso_end = isodate_from_time_t (end);
+	if (!iso_end) {
+		g_free (iso_start);
+		return;
+	}
+
 	/* build the query string */
-	sexp = g_strdup ("(has-alarms?)");
+	sexp = g_strdup_printf ("(has-alarms-in-range? (make-time \"%s\") (make-time \"%s\"))",
+				iso_start, iso_end);
+	g_free (iso_start);
+	g_free (iso_end);
 
 	/* execute the query on the server */
 	if (!e_cal_get_object_list (ecal, sexp, &object_list, NULL)) {

@@ -1,3 +1,12 @@
+2004-08-27  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedata-cal/e-cal-backend-sexp.c (func_has_alarms_in_range): new
+	function for the regular expression language.
+	(e_cal_backend_sexp_new): added new function to the list of symbols.
+
+	* libecal/e-cal.c (e_cal_get_alarms_in_range): use the new
+	'has-alarms-in-range' function.
+
 2004-08-27  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c
