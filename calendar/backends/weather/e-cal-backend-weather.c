@@ -280,7 +280,7 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	ECalComponentText         *description;
 	char                      *pop, *snow;
 	ESource                   *source;
-	gboolean                   fahrenheit, inches;
+	gboolean                   metric;
 	const char                *format;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
@@ -288,16 +288,16 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	priv = cbw->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbw));
-	format = e_source_get_property (source, "temperature");
-	if (format == NULL)
-		fahrenheit = FALSE;
-	else
-		fahrenheit = (strcmp (format, "fahrenheit") == 0);
-	format = e_source_get_property (source, "snowfall");
-	if (format == NULL)
-		inches = FALSE;
-	else
-		inches = (strcmp (format, "inches") == 0);
+	format = e_source_get_property (source, "units");
+	if (format == NULL) {
+		format = e_source_get_property (source, "temperature");
+		if (format == NULL)
+			metric = FALSE;
+		else
+			metric = (strcmp (format, "fahrenheit") != 0);
+	} else {
+		metric = (strcmp (format, "metric") == 0);
+	}
 
 	/* create the component and event object */
 	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
@@ -323,15 +323,15 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 
 	/* The summary is the high or high/low temperatures */
 	if (report->high == report->low) {
-		if (fahrenheit)
-			comp_summary.value = g_strdup_printf (_("%.1f°F - %s"), ctof (report->high), priv->city);
-		else
+		if (metric)
 			comp_summary.value = g_strdup_printf (_("%.1f°C - %s"), report->high, priv->city);
-	} else {
-		if (fahrenheit)
-			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°F - %s"), ctof (report->high), ctof (report->low), priv->city);
 		else
+			comp_summary.value = g_strdup_printf (_("%.1f°F - %s"), ctof (report->high), priv->city);
+	} else {
+		if (metric)
 			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°C - %s"), report->high, report->low, priv->city);
+		else
+			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°F - %s"), ctof (report->high), ctof (report->low), priv->city);
 	}
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
@@ -343,15 +343,15 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	if (report->snowhigh == 0)
 		snow = g_strdup ("");
 	else if (report->snowhigh == report->snowlow) {
-		if (inches)
-			snow = g_strdup_printf (_("%.1fin snow\n"), cmtoin(report->snowhigh));
-		else
+		if (metric)
 			snow = g_strdup_printf (_("%.1fcm snow\n"), report->snowhigh);
-	} else {
-		if (inches)
-			snow = g_strdup_printf (_("%.1f-%.1fin snow\n"), cmtoin(report->snowlow), cmtoin(report->snowhigh));
 		else
+			snow = g_strdup_printf (_("%.1fin snow\n"), cmtoin(report->snowhigh));
+	} else {
+		if (metric)
 			snow = g_strdup_printf (_("%.1f-%.1fcm snow\n"), report->snowlow, report->snowhigh);
+		else
+			snow = g_strdup_printf (_("%.1f-%.1fin snow\n"), cmtoin(report->snowlow), cmtoin(report->snowhigh));
 	}
 	description = g_new0 (ECalComponentText, 1);
 	description->value = g_strdup_printf ("%s\n%s%s", getConditions (report), pop, snow);
