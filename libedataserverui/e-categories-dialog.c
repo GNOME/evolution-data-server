@@ -375,8 +375,11 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	while (cat_list != NULL) {
 		GtkTreeIter iter;
 
-		gtk_list_store_append (model, &iter);
-		gtk_list_store_set (model, &iter, 0, FALSE, 1, cat_list->data, -1);
+		/* only add categories that are user-visible */
+		if (e_categories_is_searchable ((const char *) cat_list->data)) {
+			gtk_list_store_append (model, &iter);
+			gtk_list_store_set (model, &iter, 0, FALSE, 1, cat_list->data, -1);
+		}
 
 		cat_list = g_list_remove (cat_list, cat_list->data);
 	}

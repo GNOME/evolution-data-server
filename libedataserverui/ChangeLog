@@ -1,3 +1,8 @@
+2005-01-26  Rodrigo Moya <rodrigo@novell.com>
+
+	* e-categories-dialog.c (e_categories_dialog_init): only show categories
+	that are searchable (ie, user visible).
+
 2005-01-25  Rodrigo Moya <rodrigo@novell.com>
 
 	* e-categories-dialog.c (new_button_clicked): set all new categories to
