@@ -1,0 +1,96 @@
+<!-- ##### SECTION Title ##### -->
+Utility Functions
+
+<!-- ##### SECTION Short_Description ##### -->
+Miscellaneous utility functions for evolution-data-server.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION e_util_mkdir_hier ##### -->
+<para>
+
+</para>
+
+@path: 
+@mode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_strstrcase ##### -->
+<para>
+
+</para>
+
+@haystack: 
+@needle: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_unicode_get_utf8 ##### -->
+<para>
+
+</para>
+
+@text: 
+@out: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_utf8_strstrcase ##### -->
+<para>
+
+</para>
+
+@haystack: 
+@needle: 
+@Returns: 
+<!-- # Unused Parameters # -->
+@s1: 
+@s2: 
+
+
+<!-- ##### FUNCTION e_util_utf8_strstrcasedecomp ##### -->
+<para>
+
+</para>
+
+@haystack: 
+@needle: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_strftime ##### -->
+<para>
+
+</para>
+
+@s: 
+@max: 
+@fmt: 
+@tm: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_utf8_strftime ##### -->
+<para>
+
+</para>
+
+@s: 
+@max: 
+@fmt: 
+@tm: 
+@Returns: 
+
+

@@ -1233,6 +1233,7 @@ docs/reference/addressbook/Makefile
 docs/reference/addressbook/libebook/Makefile
 docs/reference/calendar/Makefile
 docs/reference/calendar/libecal/Makefile
+docs/reference/libedataserver/Makefile
 po/Makefile.in
 ])
 

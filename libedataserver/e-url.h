@@ -35,6 +35,21 @@ G_BEGIN_DECLS
 char *e_url_shroud (const char *url);
 gboolean e_url_equal (const char *url1, const char *url2);
 
+/**
+ * EUri:
+ * @protocol: The protocol to use.
+ * @user: A user name.
+ * @authmech: The authentication mechanism.
+ * @passwd: The connection password.
+ * @host: The host name.
+ * @port: The port number.
+ * @path: The file path on the host.
+ * @params: Additional parameters.
+ * @query:
+ * @fragment:
+ *
+ * A structure representing a URI.
+ **/
 typedef struct {
 	char  *protocol;
 	char  *user;

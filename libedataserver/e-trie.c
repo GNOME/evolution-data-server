@@ -47,6 +47,11 @@ struct _trie_match {
 	gunichar c;
 };
 
+/**
+ * ETrie:
+ *
+ * A trie data structure.
+ **/
 struct _ETrie {
 	struct _trie_state root;
 	GPtrArray *fail_states;
@@ -100,7 +105,15 @@ trie_utf8_getc (const unsigned char **in, size_t inlen)
 	return u;
 }
 
-
+/**
+ * e_trie_new:
+ * @icase: Case sensitivity for the #ETrie.
+ *
+ * Creates a new #ETrie. If @icase is %TRUE, then pattern matching
+ * done by the ETrie will be case insensitive.
+ *
+ * Returns: The newly-created #ETrie.
+ **/
 ETrie *
 e_trie_new (gboolean icase)
 {
@@ -121,6 +134,12 @@ e_trie_new (gboolean icase)
 	return trie;
 }
 
+/**
+ * e_trie_free:
+ * @trie: The #ETrie to free.
+ *
+ * Frees the memory associated with the #ETrie @trie.
+ **/
 void
 e_trie_free (ETrie *trie)
 {
@@ -211,6 +230,14 @@ dump_trie (struct _trie_state *s, int depth)
  * ENDFOR
 */
 
+/**
+ * e_trie_add:
+ * @trie: The #ETrie to add a pattern to.
+ * @pattern: The pattern to add.
+ * @pattern_id: The id to use for the pattern.
+ *
+ * Add a new pattern to the #ETrie @trie.
+ **/
 void
 e_trie_add (ETrie *trie, const char *pattern, int pattern_id)
 {
@@ -296,6 +323,17 @@ e_trie_add (ETrie *trie, const char *pattern, int pattern_id)
  * RETURN FALSE
  */
 
+/**
+ * e_trie_search:
+ * @trie: The #ETrie to search in.
+ * @buffer: The string to match against a pattern in @trie.
+ * @buflen: The length of @buffer.
+ * @matched_id: An integer address to store the matched pattern id in.
+ *
+ * Try to match the string @buffer with a pattern in @trie.
+ *
+ * Returns: The matched pattern, or %NULL if no pattern is matched.
+ **/
 const char *
 e_trie_search (ETrie *trie, const char *buffer, size_t buflen, int *matched_id)
 {

@@ -1,0 +1,27 @@
+<!-- ##### SECTION Title ##### -->
+User ID Generation
+
+<!-- ##### SECTION Short_Description ##### -->
+Generate unique UIDs.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION e_uid_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

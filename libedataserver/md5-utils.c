@@ -79,7 +79,7 @@ md5_init (MD5Context *ctx)
 
 /**
  * md5_update: add a buffer to md5 hash computation
- * @ctx: conetxt object used for md5 computaion
+ * @ctx: context object used for md5 computaion
  * @buf: buffer to add
  * @len: buffer length
  * 

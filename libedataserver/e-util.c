@@ -37,6 +37,18 @@
 #include <glib/gconvert.h>
 #include "e-util.h"
 
+/**
+ * e_util_mkdir_hier:
+ * @path: The directory hierarchy to create.
+ * @mode: The permissions to use for the directories.
+ *
+ * Creates a directory hierarchy based on the string @path. If @path
+ * is prefixed by a '/', the directories will be created relative to
+ * the root of the file system; otherwise, the directories will be
+ * created relative to the current directory.
+ *
+ * Returns: 0 on success; -1 on failure.
+ **/
 int
 e_util_mkdir_hier (const char *path, mode_t mode)
 {
@@ -68,6 +80,16 @@ e_util_mkdir_hier (const char *path, mode_t mode)
         return 0;
 }
 
+/**
+ * e_util_strstrcase:
+ * @haystack: The string to search in.
+ * @needle: The string to search for.
+ *
+ * Find the first instance of @needle in @haystack, ignoring case.
+ *
+ * Returns: A pointer to the start of @needle in @haystack, or NULL if
+ *          @needle is not found.
+ **/
 gchar *
 e_util_strstrcase (const gchar *haystack, const gchar *needle)
 {
@@ -92,6 +114,15 @@ e_util_strstrcase (const gchar *haystack, const gchar *needle)
         return NULL;
 }
 
+/** 
+ * e_util_unicode_get_utf8:
+ * @text: The string to take the UTF-8 character from.
+ * @out: The location to store the UTF-8 character in.
+ * 
+ * Get a UTF-8 character from the beginning of @text.
+ *
+ * Returns: A pointer to the next character in @text after @out. 
+ **/
 gchar *
 e_util_unicode_get_utf8 (const gchar *text, gunichar *out)
 {
@@ -99,6 +130,17 @@ e_util_unicode_get_utf8 (const gchar *text, gunichar *out)
         return (*out == (gunichar)-1) ? NULL : g_utf8_next_char (text);
 }
 
+/** 
+ * e_util_utf8_strstrcase:
+ * @haystack: The string to search in.
+ * @needle: The string to search for.
+ * 
+ * Find the first instance of @needle in @haystack, ignoring
+ * case. Both @needle and @haystack are UTF-8 strings.
+ *
+ * Returns: A pointer to the first instance of @needle in @haystack, or
+ *          %NULL if either of the strings are not legal UTF-8 strings.
+ **/
 const gchar *
 e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
 {
@@ -1495,6 +1537,18 @@ stripped_char (gunichar ch)
         return 0;
 }
 
+/** 
+ * e_util_utf8_strstrcasedecomp:
+ * @haystack: The string to search in.
+ * @needle: The string to search for.
+ * 
+ * Find the first instance of @needle in @haystack, where both @needle
+ * and @haystack are UTF-8 strings. Both strings are stripped and
+ * decomposed for comparison, and case is ignored.
+ *
+ * Returns: A pointer to the first instance of @needle in @haystack, or
+ *          %NULL if either of the strings are not legal UTF-8 strings.
+ **/
 const gchar *
 e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
 {
@@ -1550,6 +1604,18 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
         return NULL;
 }
 
+/** 
+ * e_strftime:
+ * @s: The string array to store the result in.
+ * @max: The size of array @s.
+ * @fmt: The formatting to use on @tm.
+ * @tm: The time value to format.
+ *
+ * This function is a wrapper around the strftime(3) function, which
+ * converts the &percnt;l and &percnt;k (12h and 24h) format variables if necessary.
+ *
+ * Returns: The number of characters placed in @s.
+ **/
 size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 {
 #ifdef HAVE_LKSTRFTIME
@@ -1577,6 +1643,17 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 #endif
 }
 
+/** 
+ * e_utf8_strftime:
+ * @s: The string array to store the result in.
+ * @max: The size of array @s.
+ * @fmt: The formatting to use on @tm.
+ * @tm: The time value to format.
+ *
+ * The UTF-8 equivalent of e_strftime().
+ *
+ * Returns: The number of characters placed in @s.
+ **/
 size_t 
 e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 {

@@ -14,11 +14,11 @@ SCAN_OPTIONS =
 DOC_SOURCE_DIR = $(top_srcdir)/libedataserver
 HFILE_GLOB = $(top_srcdir)/libedataserver/*.h
 CFILE_GLOB = $(top_srcdir)/libedataserver/*.c
-IGNORE_HFILES = 			\
-	e-account-list.h		\
-	e-msgport.h			\
-	e-sexp.h			\
-	md5-utils.h
+#IGNORE_HFILES = 			\
+#	e-account-list.h		\
+#	e-msgport.h			\
+#	e-sexp.h			\
+#	md5-utils.h
 
 GTKDOC_CFLAGS  =					\
 	-I$(top_srcdir)/libedataserver			\

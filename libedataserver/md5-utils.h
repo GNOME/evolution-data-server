@@ -30,7 +30,13 @@
 
 G_BEGIN_DECLS
 
+/**
+ * MD5Context:
+ *
+ * A buffer structure used for md5 calculation.
+ **/
 typedef struct _MD5Context {
+	/*< private >*/
 	guint32 buf[4];
 	guint32 bits[2];
 	guchar in[64];

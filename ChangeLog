@@ -1,3 +1,30 @@
+2005-03-23  James Bowes  <bowes@cs.dal.ca>
+
+	* configure.in: Add docs/reference/libedataserver/Makefile 
+	as output.
+	* docs/reference/Makefile.am: Add libedataserver as subdir.
+	* docs/reference/libedataserver/Makefile.am: Remove ignored files
+	section.
+	* docs/reference/libedataserver/libedataserver-docs.sgml: Add
+	sections for new API docs.
+	* docs/reference/libedataserver/libedataserver-sections.txt: Make
+	nice formatting for the new documentation.
+	* libedataserver/e-trie.c:
+	* libedataserver/e-uid.c:
+	* libedataserver/e-url.c:
+	* libedataserver/e-url.h:
+	* libedataserver/e-util.c:
+	* libedataserver/e-util.h:
+	* libedataserver/md5-utils.c:
+	* libedataserver/md5-utils.h: Document public functions and data
+	structures.
+	* docs/reference/libedataserver/tmpl/e-trie.sgml:
+	* docs/reference/libedataserver/tmpl/e-uid.sgml:
+	* docs/reference/libedataserver/tmpl/e-url.sgml:
+	* docs/reference/libedataserver/tmpl/e-util.sgml:
+	* docs/reference/libedataserver/tmpl/md5-utils.sgml: New template
+	files for API documentation.
+
 2005-03-06  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: bump version, libtool numbers
