@@ -24,6 +24,7 @@
 
 #include <string.h> /* memset() */
 #include <stdlib.h> /* alloca() */
+#include <glib.h>
 
 #define s(x)			/* strv debug */
 #define p(x)   /* poolv debug */
@@ -282,7 +283,7 @@ e_memchunk_clean(MemChunk *m)
 	/* first, setup the tree/list so we can map free block addresses to block addresses */
 	tree = g_tree_new((GCompareFunc)tree_compare);
 	for (i=0;i<m->blocks->len;i++) {
-		ci = g_alloca(sizeof(*ci));
+		ci = alloca(sizeof(*ci));
 		ci->count = 0;
 		ci->base = m->blocks->pdata[i];
 		ci->size = m->blocksize * m->atomsize;
@@ -535,7 +536,13 @@ void e_mempool_destroy(MemPool *pool)
 {
 	if (pool) {
 		e_mempool_flush(pool, 1);
+#ifdef G_THREADS_ENABLED
+		g_static_mutex_lock(&mempool_mutex);
+#endif
 		e_memchunk_free(mempool_memchunk, pool);
+#ifdef G_THREADS_ENABLED
+		g_static_mutex_unlock(&mempool_mutex);
+#endif
 	}
 }
 
