@@ -1,5 +1,13 @@
 2004-06-18  Chris Toshok  <toshok@ximian.com>
 
+	[ fixes #59978 ]
+	
+	* backends/ldap/e-book-backend-ldap.c (photo_ber): implement
+	(photo_compare): same.
+	(prop_info): set add ber/compare functions for E_CONTACT_PHOTO.
+
+2004-06-18  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book.c (e_book_new_system_addressbook): "oops".
 
 2004-06-18  Chris Toshok  <toshok@ximian.com>

@@ -141,42 +141,44 @@ static gboolean poll_ldap (EBookBackendLDAP *bl);
 static EContact *build_contact_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectclasses);
 
 static void email_populate (EContact *contact, char **values);
-struct berval** email_ber (EContact *contact);
+static struct berval** email_ber (EContact *contact);
 static gboolean email_compare (EContact *contact1, EContact *contact2);
 
 static void homephone_populate (EContact *contact, char **values);
-struct berval** homephone_ber (EContact *contact);
+static struct berval** homephone_ber (EContact *contact);
 static gboolean homephone_compare (EContact *contact1, EContact *contact2);
 
 static void business_populate (EContact *contact, char **values);
-struct berval** business_ber (EContact *contact);
+static struct berval** business_ber (EContact *contact);
 static gboolean business_compare (EContact *contact1, EContact *contact2);
 
 static void anniversary_populate (EContact *contact, char **values);
-struct berval** anniversary_ber (EContact *contact);
+static struct berval** anniversary_ber (EContact *contact);
 static gboolean anniversary_compare (EContact *contact1, EContact *contact2);
 
 static void birthday_populate (EContact *contact, char **values);
-struct berval** birthday_ber (EContact *contact);
+static struct berval** birthday_ber (EContact *contact);
 static gboolean birthday_compare (EContact *contact1, EContact *contact2);
 
 static void category_populate (EContact *contact, char **values);
-struct berval** category_ber (EContact *contact);
+static struct berval** category_ber (EContact *contact);
 static gboolean category_compare (EContact *contact1, EContact *contact2);
 
 static void home_address_populate(EContact * card, char **values);
-struct berval **home_address_ber(EContact * card);
+static struct berval **home_address_ber(EContact * card);
 static gboolean home_address_compare(EContact * ecard1, EContact * ecard2);
 
 static void work_address_populate(EContact * card, char **values);
-struct berval **work_address_ber(EContact * card);
+static struct berval **work_address_ber(EContact * card);
 static gboolean work_address_compare(EContact * ecard1, EContact * ecard2);
 
 static void other_address_populate(EContact * card, char **values);
-struct berval **other_address_ber(EContact * card);
+static struct berval **other_address_ber(EContact * card);
 static gboolean other_address_compare(EContact * ecard1, EContact * ecard2);
 
 static void photo_populate (EContact *contact, struct berval **ber_values);
+static struct berval **photo_ber (EContact * contact);
+static gboolean photo_compare(EContact * ecard1, EContact * ecard2);
 
 static void cert_populate (EContact *contact, struct berval **ber_values);
 
@@ -253,7 +255,7 @@ struct prop_info {
 	E_COMPLEX_PROP(E_CONTACT_ADDRESS_LABEL_OTHER,    "otherPostalAddress", other_address_populate, other_address_ber, other_address_compare),
 
 	/* photos */
-	BINARY_PROP  (E_CONTACT_PHOTO,       "jpegPhoto", photo_populate, NULL/*XXX*/, NULL/*XXX*/),
+	BINARY_PROP  (E_CONTACT_PHOTO,       "jpegPhoto", photo_populate, photo_ber, photo_compare),
 
 	/* certificate foo. */
 	BINARY_PROP  (E_CONTACT_X509_CERT,   "userCertificate", cert_populate, NULL/*XXX*/, NULL/*XXX*/),
@@ -1920,7 +1922,7 @@ email_populate(EContact *contact, char **values)
 		e_contact_set (contact, email_ids[i], values[i]);
 }
 
-struct berval**
+static struct berval**
 email_ber(EContact *contact)
 {
 	struct berval** result;
@@ -1987,7 +1989,7 @@ homephone_populate(EContact *contact, char **values)
 	}
 }
 
-struct berval**
+static struct berval**
 homephone_ber(EContact *contact)
 {
 	struct berval** result;
@@ -2055,7 +2057,7 @@ business_populate(EContact *contact, char **values)
 	}
 }
 
-struct berval**
+static struct berval**
 business_ber(EContact *contact)
 {
 	struct berval** result;
@@ -2122,7 +2124,7 @@ anniversary_populate (EContact *contact, char **values)
 	}
 }
 
-struct berval**
+static struct berval**
 anniversary_ber (EContact *contact)
 {
 	EContactDate *dt;
@@ -2175,7 +2177,7 @@ birthday_populate (EContact *contact, char **values)
 	}
 }
 
-struct berval**
+static struct berval**
 birthday_ber (EContact *contact)
 {
 	EContactDate *dt;
@@ -2232,7 +2234,7 @@ category_populate (EContact *contact, char **values)
 	g_list_free (categories);
 }
 
-struct berval**
+static struct berval**
 category_ber (EContact *contact)
 {
 	struct berval** result = NULL;
@@ -2342,19 +2344,19 @@ address_ber(EContact * card, EContactField field)
 	return result;
 }
 
-struct berval **
+static struct berval **
 home_address_ber(EContact * card)
 {
 	return address_ber(card, E_CONTACT_ADDRESS_LABEL_HOME);
 }
 
-struct berval **
+static struct berval **
 work_address_ber(EContact * card)
 {
 	return address_ber(card, E_CONTACT_ADDRESS_LABEL_WORK);
 }
 
-struct berval **
+static struct berval **
 other_address_ber(EContact * card)
 {
 	return address_ber(card, E_CONTACT_ADDRESS_LABEL_OTHER);
@@ -2405,6 +2407,54 @@ photo_populate (EContact *contact, struct berval **ber_values)
 
                 e_contact_set (contact, E_CONTACT_PHOTO, &photo);
         }
+}
+
+static struct berval **
+photo_ber (EContact *contact)
+{
+	struct berval **result = NULL;
+	EContactPhoto *photo;
+
+	photo = e_contact_get(contact, E_CONTACT_PHOTO);
+	if (photo) {
+
+		result = g_new(struct berval *, 2);
+		result[0] = g_new(struct berval, 1);
+		result[0]->bv_len = photo->length;
+		result[0]->bv_val = g_malloc (photo->length);
+		memcpy (result[0]->bv_val, photo->data, photo->length);
+		e_contact_photo_free (photo);
+
+		result[1] = NULL;
+	}
+
+	return result;
+}
+
+static gboolean
+photo_compare(EContact * ecard1, EContact * ecard2)
+{
+	EContactPhoto *photo1, *photo2;
+	gboolean equal;
+
+	photo1 = e_contact_get(ecard1, E_CONTACT_PHOTO);
+	photo2 = e_contact_get(ecard2, E_CONTACT_PHOTO);
+
+
+	if (photo1 && photo2) {
+		equal = ((photo1->length == photo2->length)
+			 && !memcmp (photo1->data, photo2->data, photo1->length));
+	}
+	else {
+		equal = (!!photo1 == !!photo2);
+	}
+
+	if (photo1)
+		e_contact_photo_free (photo1);
+	if (photo2)
+		e_contact_photo_free (photo2);
+
+	return equal;
 }
 
 static void
