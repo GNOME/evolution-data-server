@@ -1,5 +1,12 @@
 2004-02-04  Chris Toshok  <toshok@ximian.com>
 
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_remove_contacts): there's no reason to search
+	for the card before removing it.  the error condition is the same
+	anyway, and it'll slow us down.
+
+2004-02-04  Chris Toshok  <toshok@ximian.com>
+
 	[ fixes bug #53130 ]
 	
 	* libedata-book/e-data-book-view.c (MAKE_REALLOC): this might end

@@ -170,7 +170,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
-	DBT            id_dbt, vcard_dbt;
+	DBT            id_dbt;
 	int            db_error;
 	char          *id;
 	GList         *l;
@@ -181,14 +181,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		id = l->data;
 
 		string_to_dbt (id, &id_dbt);
-		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 
-		db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-		if (0 != db_error) {
-			rv = GNOME_Evolution_Addressbook_ContactNotFound;
-			continue;
-		}
-	
 		db_error = db->del (db, NULL, &id_dbt, 0);
 		if (0 != db_error) {
 			rv = GNOME_Evolution_Addressbook_ContactNotFound;
