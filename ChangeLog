@@ -1,3 +1,13 @@
+2004-07-29  Rodney Dawes  <dobey@novell.com>
+
+	* configure.in: Check for libgnomeui_serverdir with pkgconfig, and
+	AC_DEFINE it so we know where to find gnome_segv2
+
+	* src/server.c (gnome_segv_handler): Use GNOMEUI_SERVERDIR that we
+	now define at configure time to find the path to gnome_segv2
+
+	Fixes #62021
+
 2004-07-19  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: bump version, libtool numbers, soup requirement

@@ -100,8 +100,7 @@ gnome_segv_handler (int signo)
                 _exit (1);
         }
 	
-	if (!(gnome_segv_path = g_find_program_in_path ("gnome_segv2")))
-		gnome_segv_path = PREFIX "/libexec/gnome_segv2";
+	gnome_segv_path = GNOMEUI_SERVERDIR "/gnome_segv2";
 	
 	exec = g_strdup_printf ("%s \"" PACKAGE "\" %d \"" VERSION "\"", gnome_segv_path, signo);
 	system (exec);
