@@ -1,3 +1,26 @@
+2004-04-21  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-contact.c (photo_setter): setters aren't called with
+	NULL data anymore.
+	(fn_setter): same.
+	(n_setter): same.
+	(adr_setter): same.
+	(date_setter): same.
+	(cert_setter): same.
+	(e_contact_set_property): only call struct_setter if the data is
+	non-NULL and non-empty.  otherwise remove the newly created
+	attribute.
+
+	* libebook/e-book-view-listener.h: doh, really add _start
+	prototype.
+
+	* libebook/e-book-query.c (func_exists): new function - we weren't
+	parsing the "exists" query before, so duplicating a query
+	containing one failed (duplication = unparse + parse).
+
+	* libebook/e-book-listener.c (impl_BookListener_respond_get_view):
+	don't rely on bonobo_object_dup_ref returning the same object.
+
 2004-04-21  Sivaiah Nallagatla <snallagatla@novell.com>
 	* backends/groupwise/e-book-backend-groupwise.c 
 	(e_book_backend_groupwise_load_source) : change the separtor used between uri

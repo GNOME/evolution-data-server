@@ -484,6 +484,27 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 	return r;
 }
 
+static ESExpResult *
+func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	GList **list = data;
+	ESExpResult *r;
+
+	if (argc == 1
+	    && argv[0]->type == ESEXP_RES_STRING) {
+		char *propname = argv[0]->value.string;
+		EContactField field = e_contact_field_id (propname);
+
+		if (field)
+			*list = g_list_prepend (*list, e_book_query_field_exists (field));
+	}
+
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+
 /* 'builtin' functions */
 static struct {
 	char *name;
@@ -498,6 +519,7 @@ static struct {
 	{ "is", func_is, 0 },
 	{ "beginswith", func_beginswith, 0 },
 	{ "endswith", func_endswith, 0 },
+	{ "exists", func_exists, 0 },
 };
 
 /**

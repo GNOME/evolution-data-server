@@ -173,7 +173,7 @@ impl_BookListener_respond_get_view (PortableServer_Servant servant,
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
 
-	bonobo_object_release_unref (book_view, ev);
+	bonobo_object_release_unref (response.book_view, ev);
 }
 
 static void

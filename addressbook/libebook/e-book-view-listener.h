@@ -84,6 +84,7 @@ struct _EBookViewListenerResponse {
 
 EBookViewListener         *e_book_view_listener_new            (void);
 GType                      e_book_view_listener_get_type       (void);
+void                       e_book_view_listener_start          (EBookViewListener *listener);
 void                       e_book_view_listener_stop           (EBookViewListener *listener);
 
 G_END_DECLS

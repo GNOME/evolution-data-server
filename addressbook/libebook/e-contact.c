@@ -393,9 +393,6 @@ photo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 	const char *mime_type;
 	char *image_type = "X-EVOLUTION-UNKNOWN";
 
-	if (!photo)
-		return;
-
 	g_return_if_fail (photo->length > 0);
 
 	e_vcard_attribute_add_param_with_value (attr,
@@ -442,10 +439,7 @@ fn_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	gchar *name_str = data;
 
-	if (!name_str)
-		return;
-
-	e_vcard_attribute_add_value (attr, (char*)data);
+	e_vcard_attribute_add_value (attr, name_str);
 
 	attr = e_contact_get_first_attr (contact, EVC_N);
 	if (!attr) {
@@ -484,9 +478,6 @@ static void
 n_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactName *name = data;
-
-	if (!name)
-		return;
 
 	e_vcard_attribute_add_value (attr, name->family);
 	e_vcard_attribute_add_value (attr, name->given);
@@ -545,9 +536,6 @@ adr_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactAddress *addr = data;
 
-	if (!addr)
-		return;
-
 	e_vcard_attribute_add_value (attr, addr->po);
 	e_vcard_attribute_add_value (attr, addr->ext);
 	e_vcard_attribute_add_value (attr, addr->street);
@@ -582,9 +570,6 @@ date_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactDate *date = data;
 	char *str;
-
-	if (!date)
-		return;
 
 	str = e_contact_date_to_string (date);
 
@@ -626,9 +611,6 @@ static void
 cert_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactCert *cert = data;
-
-	if (!cert)
-		return;
 
 	e_vcard_attribute_add_param_with_value (attr,
 						e_vcard_attribute_param_new (EVC_ENCODING),
@@ -695,7 +677,7 @@ e_contact_set_property (GObject *object,
 			int num_left = info->list_elem;
 			GList *attrs = e_vcard_get_attributes (E_VCARD (contact));
 			GList *l;
-			char *sval;
+			const char *sval;
 
 			for (l = attrs; l; l = l->next) {
 				const char *name;
@@ -813,7 +795,11 @@ e_contact_set_property (GObject *object,
 			if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
 				void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : (char*)g_value_get_string (value);
 
-				info->struct_setter (contact, attr, data);
+				if ((info->t & E_CONTACT_FIELD_TYPE_STRUCT && data)
+				    || (data && *(char*)data))
+					info->struct_setter (contact, attr, data);
+				else
+					e_vcard_remove_attribute (E_VCARD (contact), attr);
 			}
 			else {
 				const char *sval = g_value_get_string (value);
@@ -896,27 +882,31 @@ e_contact_set_property (GObject *object,
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
 		void *data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : (char*)g_value_get_string (value);
 
-		if (attr && data) {
-			d(printf ("overwriting existing %s\n", info->vcard_field_name));
-			/* remove all existing values and parameters.
-			   the setter will add the correct ones */
-			e_vcard_attribute_remove_values (attr);
-			e_vcard_attribute_remove_params (attr);
+		if (attr) {
+			if ((info->t & E_CONTACT_FIELD_TYPE_STRUCT && data)
+			    || (data && *(char*)data)) {
+				d(printf ("overwriting existing %s\n", info->vcard_field_name));
+				/* remove all existing values and parameters.
+				   the setter will add the correct ones */
+				e_vcard_attribute_remove_values (attr);
+				e_vcard_attribute_remove_params (attr);
 
-			info->struct_setter (contact, attr, data);
+				info->struct_setter (contact, attr, data);
+			}
+			else {
+				d(printf ("removing %s\n", info->vcard_field_name));
+
+				e_vcard_remove_attribute (E_VCARD (contact), attr);
+			}
 		}
-		else if (data) {
+		else if ((info->t & E_CONTACT_FIELD_TYPE_STRUCT && data)
+			 || (data && *(char*)data)) {
 			d(printf ("adding new %s\n", info->vcard_field_name));
 			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 
 			e_vcard_add_attribute (E_VCARD (contact), attr);
 
 			info->struct_setter (contact, attr, data);
-		}
-		else if (attr) {
-			d(printf ("removing %s\n", info->vcard_field_name));
-
-			e_vcard_remove_attribute (E_VCARD (contact), attr);
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
