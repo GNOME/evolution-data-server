@@ -1481,8 +1481,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	g_mutex_lock (our_op->mutex);
 
-	g_mutex_unlock (ecal->priv->mutex);
-
 	CORBA_exception_init (&ev);
 
 	priv->load_state = E_CAL_LOAD_LOADING;
@@ -1498,7 +1496,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		e_calendar_remove_op (ecal, our_op);
 		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
-
+		g_mutex_unlock (ecal->priv->mutex);
+		
 		CORBA_exception_free (&ev);
 
 		g_warning (G_STRLOC ": Unable to contact backend");
@@ -1523,6 +1522,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		priv->load_state = E_CAL_LOAD_LOADED;
 	else
 		priv->load_state = E_CAL_LOAD_NOT_LOADED;
+
+	g_mutex_unlock (ecal->priv->mutex);
 
 	E_CALENDAR_CHECK_STATUS (*status, error);
 }
@@ -1566,6 +1567,7 @@ async_idle_cb (gpointer data)
 {
 	ECalAsyncData *ccad = data;
 
+	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status);
 	g_signal_emit (G_OBJECT (ccad->ecal), e_cal_signals[CAL_OPENED], 0, ccad->status);
 
 	/* free memory */
@@ -1580,7 +1582,6 @@ open_async (gpointer data)
 {
 	ECalAsyncData *ccad = data;
 
-	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status);
 	g_idle_add ((GSourceFunc) async_idle_cb, ccad);
 
 	return GINT_TO_POINTER (ccad->result);
