@@ -6,24 +6,24 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
-"POT-Creation-Date: 2004-03-05 12:35-0500\n"
-"PO-Revision-Date: 2004-03-06 02:52+0900\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-03-25 22:10+0900\n"
+"PO-Revision-Date: 2004-03-25 22:10+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:385
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+#: addressbook/backends/file/e-book-backend-file.c:432
+#: addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
-#: addressbook/backends/file/e-book-backend-file.c:387
+#: addressbook/backends/file/e-book-backend-file.c:434
 #: addressbook/backends/ldap/e-book-backend-ldap.c:2847
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+#: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "찾는 중입니다..."
 
@@ -573,21 +573,21 @@ msgstr "목록"
 msgid "List Show Addresses"
 msgstr "목록의 주소 표시"
 
-#: addressbook/libebook/e-contact.c:1201
+#: addressbook/libebook/e-contact.c:1203
 msgid "Unnamed List"
 msgstr "이름 없는 목록"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:418
+#: calendar/backends/contacts/e-cal-backend-contacts.c:429
 msgid "Birthday"
 msgstr "생일"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:451
 #, c-format
 msgid "Birthday: %s"
 msgstr "생일: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:459
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Anniversary: %s"
 msgstr "기념일: %s"
@@ -596,13 +596,26 @@ msgstr "기념일: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "달력 데이터를 저장할 수 없습니다; URI 형식이 틀렸습니다."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:218
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+msgid "Invalid server URI"
+msgstr "서버 URI가 틀렸습니다"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 msgid "Calendar"
 msgstr "달력"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:221
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
 msgid "Checklist"
 msgstr "검사 목록"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/libecal/e-cal.c:3962
+msgid "Authentication failed"
+msgstr "인증이 실패했습니다"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:420
+msgid "Could not create cache file"
+msgstr "캐시 파일을 만들 수 없습니다"
 
 #: calendar/backends/http/e-cal-backend-http.c:218
 msgid "Redirected to Invalid URI"
@@ -762,144 +775,140 @@ msgid "Undefined"
 msgstr "정의안됨"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1465
+#: calendar/libecal/e-cal.c:1486
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s(사용자 %s)의 열쇠글을 입력하십시오"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3936
 msgid "Invalid argument"
 msgstr "인자가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3938
 msgid "Backend is busy"
 msgstr "백엔드가 사용중입니다"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3940
 msgid "Repository is offline"
 msgstr "저장고가 오프라인 상태입니다"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3942
 msgid "No such calendar"
 msgstr "그런 달력이 없습니다"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3944
 msgid "Object not found"
 msgstr "오브젝트를 찾을 수 없습니다"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3946
 msgid "Invalid object"
 msgstr "오브젝트가 잘못되었습니다"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3948
 msgid "URI not loaded"
 msgstr "URI를 읽어들이지 못했습니다"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3950
 msgid "URI already loaded"
 msgstr "URI를 이미 읽어들였습니다"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3952
 msgid "Permission denied"
 msgstr "권한이 거부되었습니다"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3954
 msgid "Object ID already exists"
 msgstr "오브젝트 ID가 이미 있습니다"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3956
 msgid "Protocol not supported"
 msgstr "프로토콜이 지원되지 않습니다"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3958
 msgid "Operation has been cancelled"
 msgstr "작업이 취소되었습니다"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3960
 msgid "Could not cancel operation"
 msgstr "작업을 취소할 수 없습니다"
 
-#: calendar/libecal/e-cal.c:3956
-msgid "Authentication failed"
-msgstr "인증이 실패했습니다"
-
-#: calendar/libecal/e-cal.c:3958
+#: calendar/libecal/e-cal.c:3964
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
-#: calendar/libecal/e-cal.c:3960
+#: calendar/libecal/e-cal.c:3966
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 예외가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:3962
+#: calendar/libecal/e-cal.c:3968
 msgid "Unknown error"
 msgstr "알 수 없는 오류가 발생했습니다"
 
-#: calendar/libecal/e-cal.c:3964
+#: calendar/libecal/e-cal.c:3970
 msgid "No error"
 msgstr "오류 없음"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:520
-#: calendar/libedata-cal/e-cal-backend-sexp.c:652
-#: calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: calendar/libedata-cal/e-cal-backend-sexp.c:50
+#: calendar/libedata-cal/e-cal-backend-sexp.c:518
+#: calendar/libedata-cal/e-cal-backend-sexp.c:650
+#: calendar/libedata-cal/e-cal-backend-sexp.c:677
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\"에는 인자가 필요 없습니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:74
-#: calendar/libedata-cal/e-cal-backend-sexp.c:162
-#: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:232
-#: calendar/libedata-cal/e-cal-backend-sexp.c:717
+#: calendar/libedata-cal/e-cal-backend-sexp.c:75
+#: calendar/libedata-cal/e-cal-backend-sexp.c:163
+#: calendar/libedata-cal/e-cal-backend-sexp.c:197
+#: calendar/libedata-cal/e-cal-backend-sexp.c:233
+#: calendar/libedata-cal/e-cal-backend-sexp.c:715
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\"에는 한 개의 인자가 필요합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:238
-#: calendar/libedata-cal/e-cal-backend-sexp.c:464
+#: calendar/libedata-cal/e-cal-backend-sexp.c:81
+#: calendar/libedata-cal/e-cal-backend-sexp.c:239
+#: calendar/libedata-cal/e-cal-backend-sexp.c:462
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\"의 첫번째 인자가 문자열이어야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#: calendar/libedata-cal/e-cal-backend-sexp.c:90
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "\"%s\"의 첫번째 인자가 ISO 8601 날짜/시각 문자열이어야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:282
-#: calendar/libedata-cal/e-cal-backend-sexp.c:458
+#: calendar/libedata-cal/e-cal-backend-sexp.c:121
+#: calendar/libedata-cal/e-cal-backend-sexp.c:305
+#: calendar/libedata-cal/e-cal-backend-sexp.c:456
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\"에는 두 개의 인자가 필요합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:126
-#: calendar/libedata-cal/e-cal-backend-sexp.c:168
-#: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:288
-#: calendar/libedata-cal/e-cal-backend-sexp.c:723
+#: calendar/libedata-cal/e-cal-backend-sexp.c:127
+#: calendar/libedata-cal/e-cal-backend-sexp.c:169
+#: calendar/libedata-cal/e-cal-backend-sexp.c:203
+#: calendar/libedata-cal/e-cal-backend-sexp.c:311
+#: calendar/libedata-cal/e-cal-backend-sexp.c:721
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\"의 첫번째 인자가 time_t 값이어야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#: calendar/libedata-cal/e-cal-backend-sexp.c:135
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\"의 두번째 인자가 정수 값이어야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:296
+#: calendar/libedata-cal/e-cal-backend-sexp.c:319
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\"의 두번째 인자가 time_t여야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:472
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\"의 두번째 인자가 문자열이어야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:492
+#: calendar/libedata-cal/e-cal-backend-sexp.c:490
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -908,12 +917,12 @@ msgstr ""
 "\"%s\"의 첫번째 인자가 \"any\", \"summary\", \"description\", \"location\" 중"
 "의 하나여야 합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:554
+#: calendar/libedata-cal/e-cal-backend-sexp.c:552
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\"에는 최소한 한 개의 인자가 필요합니다"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:568
+#: calendar/libedata-cal/e-cal-backend-sexp.c:566
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
