@@ -13,17 +13,12 @@
 
 #include <glib.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 int e_db3_utils_maybe_recover (const char *filename);
 int e_db3_utils_upgrade_format (const char *filename);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! __E_DB3_UTILS_H__ */
 

@@ -12,6 +12,8 @@
 #include <glib-object.h>
 #endif
 
+G_BEGIN_DECLS
+
 #ifdef E_SEXP_IS_G_OBJECT
 #define E_TYPE_SEXP            (e_sexp_get_type ())
 #define E_SEXP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SEXP, ESExp))
@@ -168,5 +170,7 @@ void		e_sexp_fatal_error	(struct _ESExp *f, char *why, ...);
 
 /* return the error string */
 const char     *e_sexp_error		(struct _ESExp *f);
+
+G_END_DECLS
 
 #endif /* _E_SEXP_H */

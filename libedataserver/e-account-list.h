@@ -24,6 +24,8 @@
 #include "e-account.h"
 #include <gconf/gconf-client.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_ACCOUNT_LIST            (e_account_list_get_type ())
 #define E_ACCOUNT_LIST(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_ACCOUNT_LIST, EAccountList))
 #define E_ACCOUNT_LIST_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_ACCOUNT_LIST, EAccountListClass))
@@ -71,5 +73,7 @@ void            e_account_list_remove    (EAccountList *, EAccount *);
 const EAccount *e_account_list_get_default(EAccountList *);
 void            e_account_list_set_default(EAccountList *, EAccount *);
 const EAccount *e_account_list_find       (EAccountList *, e_account_find_t type, const char *key);
+
+G_END_DECLS
 
 #endif /* __E_ACCOUNT_LIST__ */

@@ -22,6 +22,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_ACCOUNT            (e_account_get_type ())
 #define E_ACCOUNT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_ACCOUNT, EAccount))
 #define E_ACCOUNT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_ACCOUNT, EAccountClass))
@@ -102,5 +104,6 @@ char     *e_account_to_xml       (EAccount   *account);
 
 char     *e_account_uid_from_xml (const char *xml);
 
+G_END_DECLS
 
 #endif /* __E_ACCOUNT__ */

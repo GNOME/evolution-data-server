@@ -22,6 +22,8 @@
 #ifndef _E_MEMORY_H
 #define _E_MEMORY_H
 
+G_BEGIN_DECLS
+
 /* memchunks - allocate/free fixed-size blocks of memory */
 /* this is like gmemchunk, only faster and less overhead (only 4 bytes for every atomcount allocations) */
 typedef struct _EMemChunk EMemChunk;
@@ -70,5 +72,7 @@ EPoolv *e_poolv_cpy(EPoolv *dest, const EPoolv *src);
 EPoolv *e_poolv_set(EPoolv *poolv, int index, char *str, int freeit);
 const char *e_poolv_get(EPoolv *poolv, int index);
 void e_poolv_destroy(EPoolv *poolv);
+
+G_END_DECLS
 
 #endif /* ! _E_MEMORY_H */

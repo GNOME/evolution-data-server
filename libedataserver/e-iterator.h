@@ -14,6 +14,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_ITERATOR            (e_iterator_get_type ())
 #define E_ITERATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_ITERATOR, EIterator))
 #define E_ITERATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_ITERATOR, EIteratorClass))
@@ -66,5 +68,7 @@ void           e_iterator_invalidate (EIterator  *iterator);
 
 /* Standard Glib function */
 GType          e_iterator_get_type   (void);
+
+G_END_DECLS
 
 #endif /* ! __E_ITERATOR_H__ */

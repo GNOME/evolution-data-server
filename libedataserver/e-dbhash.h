@@ -13,6 +13,8 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 typedef enum {
 	E_DBHASH_STATUS_SAME,
 	E_DBHASH_STATUS_DIFFERENT,
@@ -40,6 +42,8 @@ void e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data);
 void e_dbhash_write (EDbHash *edbh);
 
 void e_dbhash_destroy (EDbHash *edbh);
+
+G_END_DECLS
 
 #endif /* ! __E_DBHASH_H__ */
 

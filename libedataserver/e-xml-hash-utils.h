@@ -23,6 +23,8 @@
 #include <glib.h>
 #include <libxml/parser.h>
 
+G_BEGIN_DECLS
+
 typedef enum {
 	E_XML_HASH_TYPE_OBJECT_UID,
 	E_XML_HASH_TYPE_PROPERTY
@@ -65,5 +67,7 @@ void           e_xmlhash_foreach_key (EXmlHash     *hash,
 
 void           e_xmlhash_write       (EXmlHash     *hash);
 void           e_xmlhash_destroy     (EXmlHash     *hash);
+
+G_END_DECLS
 
 #endif

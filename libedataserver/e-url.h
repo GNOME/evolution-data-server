@@ -30,6 +30,8 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 char *e_url_shroud (const char *url);
 gboolean e_url_equal (const char *url1, const char *url2);
 
@@ -51,6 +53,8 @@ void        e_uri_free      (EUri *uri);
 const char *e_uri_get_param (EUri *uri, const char *name);
 EUri       *e_uri_copy      (EUri *uri);
 char       *e_uri_to_string (EUri *uri, gboolean show_password);
+
+G_END_DECLS
 
 #endif /* __E_URL_H__ */
 

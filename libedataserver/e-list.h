@@ -18,6 +18,8 @@ typedef struct _EListClass EListClass;
 #include <glib-object.h>
 #include <libedataserver/e-list-iterator.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_LIST            (e_list_get_type ())
 #define E_LIST(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_LIST, EList))
 #define E_LIST_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_LIST, EListClass))
@@ -66,5 +68,7 @@ void       e_list_invalidate_iterators (EList         *list,
 
 /* Standard Glib function */
 GType      e_list_get_type             (void);
+
+G_END_DECLS
 
 #endif /* ! __E_LIST_H__ */

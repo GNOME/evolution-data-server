@@ -28,6 +28,7 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
 
 typedef struct _MD5Context {
 	guint32 buf[4];
@@ -48,5 +49,6 @@ void md5_init (MD5Context *ctx);
 void md5_update (MD5Context *ctx, const guchar *buf, guint32 len);
 void md5_final (MD5Context *ctx, guchar digest[16]);
 
+G_END_DECLS
 
 #endif	/* MD5_UTILS_H */

@@ -26,6 +26,8 @@
 #include <glib-object.h>
 #include <libxml/tree.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_SOURCE_GROUP			(e_source_group_get_type ())
 #define E_SOURCE_GROUP(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SOURCE_GROUP, ESourceGroup))
 #define E_SOURCE_GROUP_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SOURCE_GROUP, ESourceGroupClass))
@@ -102,5 +104,6 @@ gboolean  e_source_group_remove_source_by_uid  (ESourceGroup *group,
 
 char *e_source_group_to_xml (ESourceGroup *group);
 
+G_END_DECLS
 
 #endif /* _E_SOURCE_GROUP_H_ */

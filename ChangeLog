@@ -1,3 +1,23 @@
+2004-05-03  William Jon McCann  <mccann@jhu.edu>
+
+	* libedataserver/e-account-list.h: 
+	* libedataserver/e-account.h:
+	* libedataserver/e-db3-utils.h:
+	* libedataserver/e-dbhash.h:
+	* libedataserver/e-iterator.h:
+	* libedataserver/e-list-iterator.h:
+	* libedataserver/e-list.h:
+	* libedataserver/e-memory.h:
+	* libedataserver/e-sexp.h:
+	* libedataserver/e-source-group.h:
+	* libedataserver/e-source-list.h:
+	* libedataserver/e-source.h:
+	* libedataserver/e-uid.h:
+	* libedataserver/e-url.h:
+	* libedataserver/e-util.h:
+	* libedataserver/e-xml-hash-utils.h:
+	* libedataserver/md5-utils.h: Add missing G_BEGIN_DECLS and G_END_DECLS
+
 2004-04-27  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* libedataserver/e-dbhash.c (e_dbhash_foreach_key): Revert

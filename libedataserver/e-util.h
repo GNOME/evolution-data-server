@@ -26,11 +26,15 @@
 #include <glib/gmacros.h>
 #include <glib/gtypes.h>
 
+G_BEGIN_DECLS
+
 int          e_util_mkdir_hier (const char *path, mode_t mode);
 
 gchar       *e_util_strstrcase (const gchar *haystack, const gchar *needle);
 gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);
 const gchar *e_util_utf8_strstrcase (const gchar *s1, const gchar *s2);
 const gchar *e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle);
+
+G_END_DECLS
 
 #endif

@@ -28,6 +28,8 @@
 
 #include "e-source-group.h"
 
+G_BEGIN_DECLS
+
 #define E_TYPE_SOURCE_LIST			(e_source_list_get_type ())
 #define E_SOURCE_LIST(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SOURCE_LIST, ESourceList))
 #define E_SOURCE_LIST_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SOURCE_LIST, ESourceListClass))
@@ -85,5 +87,6 @@ gboolean  e_source_list_remove_source_by_uid  (ESourceList  *list,
 gboolean  e_source_list_sync  (ESourceList  *list,
 			       GError      **error);
 
+G_END_DECLS
 
 #endif /* _E_SOURCE_LIST_H_ */

@@ -26,6 +26,8 @@
 #include <glib-object.h>
 #include <libxml/tree.h>
 
+G_BEGIN_DECLS
+
 #define E_TYPE_SOURCE			(e_source_get_type ())
 #define E_SOURCE(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SOURCE, ESource))
 #define E_SOURCE_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SOURCE, ESourceClass))
@@ -104,5 +106,7 @@ void         e_source_set_property     (ESource *source,
 void         e_source_foreach_property (ESource *source,
 					GHFunc func,
 					gpointer data);
+
+G_END_DECLS
 
 #endif /* _E_SOURCE_H_ */

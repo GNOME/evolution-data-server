@@ -9,6 +9,8 @@
 #ifndef __E_LIST_ITERATOR_H__
 #define __E_LIST_ITERATOR_H__
 
+G_BEGIN_DECLS
+
 typedef struct _EListIterator EListIterator;
 typedef struct _EListIteratorClass EListIteratorClass;
 
@@ -41,5 +43,7 @@ EIterator *e_list_iterator_new      (EList *list);
 
 /* Standard Glib function */
 GType      e_list_iterator_get_type (void);
+
+G_END_DECLS
 
 #endif /* ! __E_LIST_ITERATOR_H__ */
