@@ -1,4 +1,4 @@
-SUBDIRS = libedataserver addressbook calendar src po
+SUBDIRS = libedataserver addressbook calendar src docs po
 
 ACLOCAL_AMFLAGS = -I m4
 

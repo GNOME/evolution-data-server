@@ -1,3 +1,9 @@
+2003-11-10  JP Rosevear <jpr@ximian.com>
+
+	* Makefile.am: build docs
+
+	* configure.in: check for gtk-doc
+
 2003-11-08  Hans Petter Jansson  <hpj@ximian.com>
 
 	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: Correct typo
