@@ -48,6 +48,7 @@
 #ifdef HAVE_LDAP
 #include <backends/ldap/e-book-backend-ldap.h>
 #endif
+#include <backends/groupwise/e-book-backend-groupwise.h>
 
 #include <libedata-cal/e-data-cal-factory.h>
 #include <backends/file/e-cal-backend-file-events.h>
@@ -142,6 +143,9 @@ setup_books (void)
 	e_data_book_factory_register_backend (
 		e_data_book_factory, "ldap", e_book_backend_ldap_new);
 #endif
+
+	e_data_book_factory_register_backend (
+		e_data_book_factory, "groupwise", e_book_backend_groupwise_new);
 
 	g_signal_connect (e_data_book_factory,
 			  "last_book_gone",

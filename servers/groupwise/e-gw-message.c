@@ -119,6 +119,17 @@ e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, con
 	soup_soap_message_end_element (msg);
 }
 
+void 
+e_gw_message_write_string_parameter_with_attribute (SoupSoapMessage *msg, const char *name, const char *prefix, const char *value, 
+						    char *attribute_name, char*attribute_value)
+{
+	soup_soap_message_start_element (msg, name, prefix, NULL);
+	soup_soap_message_add_attribute (msg, attribute_name, attribute_value, NULL, NULL);
+	soup_soap_message_write_string (msg, value);
+	soup_soap_message_end_element (msg);
+
+}
+
 void
 e_gw_message_write_footer (SoupSoapMessage *msg)
 {

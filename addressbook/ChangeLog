@@ -1,3 +1,9 @@
+2004-03-09 Sivaioah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.[ch] : added 
+	code to compare two e-gw-items and get the changes 
+	nd did some code formatting 
+
 2004-03-02  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book-query.h (EBookQueryTest): comment out the
@@ -130,6 +136,19 @@
 	* libebook/e-contact.h: add
 	E_TYPE_CONTACT_{DATE,NAME,PHOTO,CERT,ADDRESS}.
 
+
+2004-02-20 Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* backends/groupwise/create-account.c : new file to create an acoount
+   
+2004-02-20 Sivaiah Nallagatla  <snallagatla@novell.com>
+	
+	* backends/Makefile.am : added groupwise to SUBDIRs
+	* backends/groupwise/Makefile.am
+	* backends/groupwise/e-book-backend-groupwise.[ch] : new 
+	groupwise address book backend class
+
+
 2004-02-12  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book-listener.c
@@ -259,6 +278,8 @@
 	closure/mutex inside the loop, then access it again right after
 	the loop.  Should fix crashes when doing repeated searches (while
 	stopping them often), like when autocompleting.
+
+
 
 2004-02-06  Hans Petter Jansson  <hpj@ximian.com>
 

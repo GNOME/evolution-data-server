@@ -16,6 +16,7 @@
 		<item value="ldap"/>
 		<item value="file"/>
 		<item value="vcf"/>
+		<item value="groupwise"/>
         </oaf_attribute>
 </oaf_server>
 

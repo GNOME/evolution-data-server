@@ -31,7 +31,16 @@
 
 	* src/Makefile.am: add extra libical includes for srcdir !=
 	builddir
-
+	
+2004-02-20 Sivaiah Nallagatla <snallagatla@novell.com>
+                                                                                                                             
+        * configure.in : added addressbook/backends/groupwise/Makefile to AC_OUTPUT section
+        * src/Makefile.am : added libebookbackendgroupwise.la to LDADD
+        * src/server.c (setup_books) : register groupwise address book backend
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in : added groupwise to supported
+	address book protocols
+	
 2004-02-13  Chris Toshok  <toshok@ximian.com>
 
 	* libedataserver/Makefile.am (libedataserver_la_LIBADD): use
@@ -57,6 +66,7 @@
 2004-02-09  JP Rosevear  <jpr@ximian.com>
 
 	* configure.in: Bump version, libtool numbers
+
 
 2004-02-08  Robert Sedak  <robert.sedak@sk.htnet.hr>
  

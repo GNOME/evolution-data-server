@@ -57,6 +57,7 @@ evolution_data_server_LDADD =							\
 	$(top_builddir)/addressbook/libedata-book/libedata-book.la		\
 	$(top_builddir)/addressbook/backends/file/libebookbackendfile.la	\
 	$(top_builddir)/addressbook/backends/vcf/libebookbackendvcf.la		\
+	$(top_builddir)/addressbook/backends/groupwise/libebookbackendgroupwise.la \
 	$(LDAP_BACKEND_LIB)							\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la			\
 	$(top_builddir)/calendar/backends/file/libecalbackendfile.la		\

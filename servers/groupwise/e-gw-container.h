@@ -55,6 +55,8 @@ const char   *e_gw_container_get_name (EGwContainer *container);
 void          e_gw_container_set_name (EGwContainer *container, const char *new_name);
 const char   *e_gw_container_get_id (EGwContainer *container);
 void          e_gw_container_set_id (EGwContainer *container, const char *new_id);
+gboolean      e_gw_container_get_is_writable (EGwContainer *container);
+void          e_gw_container_set_is_writable (EGwContainer *container, gboolean writable);
 
 G_END_DECLS
 

@@ -30,7 +30,9 @@ libegroupwise_la_SOURCES =			\
 	e-gw-item.c				\
 	e-gw-item.h				\
 	e-gw-message.c				\
-	e-gw-message.h
+	e-gw-message.h                          \
+	e-gw-filter.c                           \
+	e-gw-filter.h                   
 
 libegroupwise_la_LIBADD =						\
 	$(SOUP_LIBS)
