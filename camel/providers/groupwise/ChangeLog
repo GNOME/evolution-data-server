@@ -1,3 +1,8 @@
+2005-03-17  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:(convert_to_calendar):
+	  using GString for all string operations.
+
 2005-03-11  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:
