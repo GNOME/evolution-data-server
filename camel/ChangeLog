@@ -1,5 +1,11 @@
 2005-01-13  Not Zed  <NotZed@Ximian.com>
 
+	** See bug #65178.
+
+	* providers/local/camel-maildir-store.c (get_folder_info)
+	(get_folder): if the incoming folder name starts with /, convert
+	it to implicit start with "./".
+
 	** See bug #69024.
 
 	* providers/nntp/camel-nntp-store.c

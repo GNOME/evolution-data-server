@@ -90,14 +90,23 @@ CamelType camel_maildir_store_get_type(void)
 }
 
 static CamelFolder *
-get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex)
+get_folder(CamelStore * store, const char *infolder_name, guint32 flags, CamelException * ex)
 {
-	char *name, *tmp, *cur, *new;
+	char *name, *tmp, *cur, *new, *folder_namea = NULL;
+	const char *folder_name;
 	struct stat st;
 	CamelFolder *folder = NULL;
 
-	if (!((CamelStoreClass *)parent_class)->get_folder(store, folder_name, flags, ex))
+	/* HACK: if we try to create a folder "/xxx", convert it to implicit "./xxx" as getfolderinfo will */
+	if (infolder_name[0] == '/')
+		folder_name = folder_namea = g_strdup_printf(".%s", infolder_name);
+	else
+		folder_name = infolder_name;
+
+	if (!((CamelStoreClass *)parent_class)->get_folder(store, folder_name, flags, ex)) {
+		g_free(folder_namea);
 		return NULL;
+	}
 
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	tmp = g_strdup_printf("%s/tmp", name);
@@ -147,6 +156,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 	g_free(tmp);
 	g_free(cur);
 	g_free(new);
+	g_free(folder_namea);
 
 	return folder;
 }
@@ -252,7 +262,7 @@ static CamelFolderInfo *camel_folder_info_new(CamelURL *url, const char *full, c
 	fi->unread = -1;
 	fi->total = -1;
 
-	d(printf("Adding maildir info: '%s' '%s' '%s' '%s'\n", fi->path, fi->name, fi->full_name, fi->url));
+	d(printf("Adding maildir info: '%s' '%s' '%s'\n", fi->name, fi->full_name, fi->uri));
 
 	return fi;
 }
@@ -424,22 +434,34 @@ static void inode_free(void *k, void *v, void *d)
 }
 
 static CamelFolderInfo *
-get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+get_folder_info (CamelStore *store, const char *topin, guint32 flags, CamelException *ex)
 {
 	CamelFolderInfo *fi = NULL;
 	CamelLocalStore *local_store = (CamelLocalStore *)store;
 	GHashTable *visited;
 	CamelURL *url;
+	const char *top;
+	char *topa = NULL;
 
 	visited = g_hash_table_new(inode_hash, inode_equal);
 
 	url = camel_url_new("maildir:", NULL);
 	camel_url_set_path(url, ((CamelService *)local_store)->url->path);
 
-	if (scan_dir(store, visited, url, top == NULL || top[0] == 0?".":top, flags, NULL, &fi, ex) == -1 && fi != NULL) {
+	/* HACK: if we try to get folderinfo from "/xxx", convert it to implicit "./xxx" as getfolderinfo will later */
+	if (topin == NULL || topin[0] == 0)
+		top = ".";
+	else if (topin[0] == '/')
+		top = topa = g_strdup_printf(".%s", topin);
+	else
+		top = topin;
+
+	if (scan_dir(store, visited, url, top, flags, NULL, &fi, ex) == -1 && fi != NULL) {
 		camel_store_free_folder_info_full(store, fi);
 		fi = NULL;
 	}
+
+	g_free(topa);
 
 	camel_url_free(url);
 	g_hash_table_foreach(visited, inode_free, NULL);
