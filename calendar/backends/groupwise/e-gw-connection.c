@@ -490,43 +490,55 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         /* Category - missing server implementation */
 
         /* Classification */
-        classification = soup_soap_parameter_get_string_value (soup_soap_parameter_get_first_child_by_name (param, "class"));
-        if ( !g_ascii_strcasecmp (classification, "Public"))
-                e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PUBLIC);
-        else if (!g_ascii_strcasecmp (classification, "Private"))
-                e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PRIVATE);
-        else if (!g_ascii_strcasecmp (classification, "Confidential"))
-                e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_CONFIDENTIAL);
-        else
-                e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_UNKNOWN);
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "class");
+	if (subparam) {
+		classification = soup_soap_parameter_get_string_value (subparam);
+		if ( !g_ascii_strcasecmp (classification, "Public"))
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PUBLIC);
+		else if (!g_ascii_strcasecmp (classification, "Private"))
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PRIVATE);
+		else if (!g_ascii_strcasecmp (classification, "Confidential"))
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_CONFIDENTIAL);
+		else
+			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_UNKNOWN);
+	}
 
         /* Transparency - Busy, OutOfOffice, Free, Tentative*/
         /*FIXME  possible loss of information */
-        accept_level = soup_soap_parameter_get_string_value (soup_soap_parameter_get_first_child_by_name (param, "acceptLevel"));
-        if ( !g_ascii_strcasecmp (accept_level, "Busy") || !g_ascii_strcasecmp (accept_level, "OutOfOffice"))
-                e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
-        else
-                e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "acceptLevel");
+	if (subparam) {
+		accept_level = soup_soap_parameter_get_string_value (subparam);
+		if ( !g_ascii_strcasecmp (accept_level, "Busy") || !g_ascii_strcasecmp (accept_level, "OutOfOffice"))
+			e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
+		else
+			e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
+	}
 
         /* Property - summary*/ 
-        summary.value = g_strdup (soup_soap_parameter_get_string_value ( soup_soap_parameter_get_first_child_by_name (param, "subject")));
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "subject");
+	if (!subparam) {
+		g_object_unref (comp);
+		return NULL;
+	}
+        summary.value = g_strdup (soup_soap_parameter_get_string_value (subparam));
         summary.altrep = NULL;
         e_cal_component_set_summary (comp, &summary);
 
         /* Property - attendee-list*/ 
         subparam = soup_soap_parameter_get_first_child_by_name (param, "distribution");
-        /* FIXME  what to do with 'from' data*/
-        
-        to_list = soup_soap_parameter_get_string_value ( soup_soap_parameter_get_first_child_by_name (subparam, "to"));
-        if (to_list)
-                attendee_list = get_attendee_list_from_string (to_list);
+	if (subparam) {
+		/* FIXME  what to do with 'from' data*/
 
-        if (!attendee_list) {
-                g_object_unref (comp);
-                return NULL;
-        }        
-        
-        /*e_cal_component_set_attendee_list (comp, attendee_list);*/
+		to_list = soup_soap_parameter_get_string_value ( soup_soap_parameter_get_first_child_by_name (subparam, "to"));
+		if (to_list)
+			attendee_list = get_attendee_list_from_string (to_list);
+
+		if (!attendee_list) {
+			g_object_unref (comp);
+			return NULL;
+		}
+		/*e_cal_component_set_attendee_list (comp, attendee_list);*/
+	}
                 
         /* FIXME  Property - status*/
         /* FIXME  Property priority */  
@@ -554,8 +566,6 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
                         i = -1;
                 e_cal_component_set_priority (comp, &i);
         }
-                        
-        
         
         /* EVENT -specific properties */
         if (type == 1) {
