@@ -81,7 +81,7 @@ main (int argc, char **argv)
 {
 	GnomeProgram *program;
 
-	program = gnome_program_init ("test-source-selector", "0.0",
+	program = gnome_program_init ("test-name-selector", "0.0",
 				      LIBGNOMEUI_MODULE, argc, argv,
 				      NULL);
 

@@ -1,5 +1,10 @@
 2004-12-20  Hans Petter Jansson  <hpj@novell.com>
 
+	* libedataserverui/test-name-selector.c (main): Don't lie to
+	gnome_program_init () about our name.
+
+2004-12-20  Hans Petter Jansson  <hpj@novell.com>
+
 	* libedataserverui/e-contact-store.c (clear_contact_ptrarray):
 	Implement.
 	(free_contact_ptrarray): Use clear_contact_ptrarray () to unref the
