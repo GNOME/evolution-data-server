@@ -1,30 +1,38 @@
+2004-06-07  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes bug #58606 ]
+	
+	* libebook/e-vcard.c (read_attribute_params): actually do what the
+	commend above this block says - if there aren't values, free the
+	parameter and skip past the character (unless it's a :).
+
 2004-06-03 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c
-	(update_summary) : new function to update the summary 
-	after getting the changes from server
+	(update_summary) : new function to update the summary after
+	getting the changes from server
 	
 2004-06-01 Sivaiah Nallagatla <snallagatla@novell.com>
 
-	* backends/groupwise/e-book-backend-groupwise.c (
-	(e_book_backend_groupwise_remove_contacts) : use
-	the new e_gw_connection_remove_items which removes all the
-	items form the server at once instead of sending one request for each item
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_remove_contacts) : use the new
+	e_gw_connection_remove_items which removes all the items form the
+	server at once instead of sending one request for each item
 
 2004-05-28 Sivaiah Nallagatla <snallagatla@novell.com>
 
-	* backends/groupwise/e-book-backend-groupwise.c 
+	* backends/groupwise/e-book-backend-groupwise.c
 	( e_book_backend_groupwise_authenicate_user) : form the summary
 	(e_book_backend_groupwise_start_book_view),
-	(e_book_backend_groupwise_get_contact_list) : search over 
-	the summary to get ids and retrieve those items from the summary
+	(e_book_backend_groupwise_get_contact_list) : search over the
+	summary to get ids and retrieve those items from the summary
 
 2004-05-25 Sivaiah Nallagatla <snallagatla@novell.com>
 
-	* backends/groupwise/e-book-backend-groupwise.c 
-	(e_book_backend_groupwise_load_source) : port
-	is no longer part of uri, read it from e-source
-	 (set_memebers_in_groupwise_item) : compare emails with ignore case
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_load_source) : port is no longer part of
+	uri, read it from e-source
+	(set_memebers_in_groupwise_item) : compare emails with ignore case
 	fixes #58888
 
 2004-05-25  Chris Toshok  <toshok@ximian.com>

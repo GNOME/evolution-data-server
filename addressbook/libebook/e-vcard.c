@@ -358,6 +358,8 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 					if (!param->values) {
 						e_vcard_attribute_param_free (param);
 						param = NULL;
+						if (!colon)
+							lp = g_utf8_next_char (lp);
 					}
 				}
 
