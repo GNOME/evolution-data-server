@@ -1,20 +1,21 @@
 # Czech translation of evolution-data-server.
 # Copyright (C) 2002,2003 Free Software Foundation, Inc.
+# Copyright (C) 2004 Miloslav Trmac <mitr@volny.cz>
 # Radka Doulíková <doulikova@centrum.cz>, 2002.
 # Michal Bukovjan <bukm@centrum.cz>, 2003
-# Miloslav Trmac <mitr@volny.cz>, 2003.
+# Miloslav Trmac <mitr@volny.cz>, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution VERSION\n"
-"POT-Creation-Date: 2003-12-29 10:50-0500\n"
-"PO-Revision-Date: 2003-12-21 14:53+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-06 14:36+0100\n"
+"PO-Revision-Date: 2004-01-06 16:54+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/libebook/e-book.c:213
 msgid "e_book_add_contact called on book before e_book_load_uri"
@@ -433,7 +434,7 @@ msgstr "Seznam"
 msgid "List Show Addresses"
 msgstr "Seznam zobrazených adres"
 
-#: addressbook/libebook/e-contact.c:1074
+#: addressbook/libebook/e-contact.c:1075
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
@@ -705,112 +706,81 @@ msgid "No error"
 msgstr "Žádná chyba"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-msgid "time-now expects 0 arguments"
-msgstr "time-now neočekává žádné parametry"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:454
+#: calendar/libedata-cal/e-cal-backend-sexp.c:586
+#: calendar/libedata-cal/e-cal-backend-sexp.c:613
+#, c-format
+msgid "\"%s\" expects no arguments"
+msgstr "\"%s\" neočekává žádné parametry"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:73
-msgid "make-time expects 1 argument"
-msgstr "make-time očekává 1 parametr"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:74
+#: calendar/libedata-cal/e-cal-backend-sexp.c:162
+#: calendar/libedata-cal/e-cal-backend-sexp.c:196
+#: calendar/libedata-cal/e-cal-backend-sexp.c:651
+#, c-format
+msgid "\"%s\" expects one argument"
+msgstr "\"%s\" očekává jeden parametr"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:78
-msgid "make-time expects argument 1 to be a string"
-msgstr "make-time očekává jako první parametr řetězec"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:80
+#: calendar/libedata-cal/e-cal-backend-sexp.c:400
+#, c-format
+msgid "\"%s\" expects the first argument to be a string"
+msgstr "\"%s\" očekává jako první parametr řetězec"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:86
-msgid "make-time argument 1 must be an ISO 8601 date/time string"
-msgstr "první parametr make-time musí být řetězec data/času podle ISO 8601"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:115
-msgid "time-add-day expects 2 arguments"
-msgstr "time-add-day očekává dva parametry"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:89
+#, c-format
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr "\"%s\" očekává jako první parametr řetězec data/času podle ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-msgid "time-add-day expects argument 1 to be a time_t"
-msgstr "time-add-day očekává jako první parametr time_t"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:127
-msgid "time-add-day expects argument 2 to be an integer"
-msgstr "time-add-day očekává jako druhý parametr celé číslo"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:154
-msgid "time-day-begin expects 1 argument"
-msgstr "time-day-begin očekává jeden parametr"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:159
-msgid "time-day-begin expects argument 1 to be a time_t"
-msgstr "time-day-begin očekává jako první parametr time_t"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:186
-msgid "time-day-end expects 1 argument"
-msgstr "time-day-end očekává jeden parametr"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:191
-msgid "time-day-end expects argument 1 to be a time_t"
-msgstr "time-day-end očekává jako první parametr time_t"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:223
-msgid "occur-in-time-range? expects 2 arguments"
-msgstr "occur-in-time-range? očekává dva parametry"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:228
-msgid "occur-in-time-range? expects argument 1 to be a time_t"
-msgstr "occur-in-time-range? očekává jako první parametr time_t"
-
 #: calendar/libedata-cal/e-cal-backend-sexp.c:235
-msgid "occur-in-time-range? expects argument 2 to be a time_t"
-msgstr "occur-in-time-range? očekává jako druhý parametr time_t"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:394
+#, c-format
+msgid "\"%s\" expects two arguments"
+msgstr "\"%s\" očekává dva parametry"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:379
-msgid "contains? expects 2 arguments"
-msgstr "contains? očekává dva parametry"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:126
+#: calendar/libedata-cal/e-cal-backend-sexp.c:168
+#: calendar/libedata-cal/e-cal-backend-sexp.c:202
+#: calendar/libedata-cal/e-cal-backend-sexp.c:241
+#: calendar/libedata-cal/e-cal-backend-sexp.c:657
+#, c-format
+msgid "\"%s\" expects the first argument to be a time_t"
+msgstr "\"%s\" očekává jako první parametr time_t"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:384
-msgid "contains? expects argument 1 to be a string"
-msgstr "contains? očekává jako první parametr řetězec"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:134
+#, c-format
+msgid "\"%s\" expects the second argument to be an integer"
+msgstr "\"%s\" očekává jako druhý parametr celé číslo"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:391
-msgid "contains? expects argument 2 to be a string"
-msgstr "contains? očekává jako druhý parametr řetězec"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:249
+#, c-format
+msgid "\"%s\" expects the second argument to be a time_t"
+msgstr "\"%s\" očekává jako druhý parametr time_t"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:408
+#, c-format
+msgid "\"%s\" expects the second argument to be a string"
+msgstr "\"%s\" očekává jako druhý parametr řetězec"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:426
+#, c-format
 msgid ""
-"contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
-"\""
-msgstr ""
-"contains? očekává jako první parametr jedno z \"any\", \"summary\", "
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\""
+msgstr "\"%s\" očekává jako první parametr jedno z \"any\", \"summary\", \"description\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:434
-msgid "has-alarms? expects no arguments"
-msgstr "has-alarms? neočekává žádné parametry"
+#: calendar/libedata-cal/e-cal-backend-sexp.c:488
+#, c-format
+msgid "\"%s\" expects at least one argument"
+msgstr "\"%s\" očekává alespoň jeden parametr"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:467
-msgid "has-categories? expects at least 1 argument"
-msgstr "has-categories? očekává alespoň jeden parametr"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:479
+#: calendar/libedata-cal/e-cal-backend-sexp.c:502
+#, c-format
 msgid ""
-"has-categories? expects all arguments to be strings or one and only one "
-"argument to be a boolean false (#f)"
-msgstr ""
-"has-categories? očekává jako všechny parametry řetězce nebo právě jeden "
-"parametr boolean false (#f)"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:558
-msgid "has-recurrences? expects no arguments"
-msgstr "has-recurrences? neočekává žádné parametry"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:584
-msgid "is-completed? expects 0 arguments"
-msgstr "is-completed? neočekává žádné parametry"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:621
-msgid "completed-before? expects 1 argument"
-msgstr "completed-before? očekává jeden parametr"
-
-#: calendar/libedata-cal/e-cal-backend-sexp.c:626
-msgid "completed-before? expects argument 1 to be a time_t"
-msgstr "completed-before? očekává jako první parametr time_t"
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr "\"%s\" očekává jako všechny parametry řetězce nebo právě jeden parametr boolean false (#f)"
 
 #: calendar/backends/file/e-cal-backend-file.c:176
 msgid "Can't save calendar data: Malformed URI."
