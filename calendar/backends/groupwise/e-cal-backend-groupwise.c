@@ -546,7 +546,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		/* we need to read actual rights from server when we implement proxy user access */
 		cbgw->priv->read_only = FALSE;
 
-		if (priv->cnc && priv->cache) {
+		if (priv->cnc && priv->cache && priv->container_id) {
 			priv->mode = CAL_MODE_REMOTE;
 			if (priv->mode_changed && !priv->timeout_id && (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) == ICAL_VEVENT_COMPONENT)) {
 				GThread *thread1;
