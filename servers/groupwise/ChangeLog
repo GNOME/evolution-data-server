@@ -1,3 +1,31 @@
+2005-01-27  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-connection.c: (reauthenticate),
+	(e_gw_connection_get_error_message), (logout),
+	(e_gw_connection_get_container_list), (e_gw_connection_get_items),
+	(e_gw_connection_get_items_from_ids), (e_gw_connection_get_deltas),
+	(e_gw_connection_send_item), (e_gw_connection_create_item),
+	(e_gw_connection_modify_item), (e_gw_connection_get_item),
+	(e_gw_connection_remove_item), (e_gw_connection_remove_items),
+	(e_gw_connection_accept_request),
+	(e_gw_connection_decline_request),
+	(e_gw_connection_retract_request), (e_gw_connection_create_book),
+	(e_gw_connection_get_address_book_list),
+	(e_gw_connection_modify_settings), (e_gw_connection_get_settings),
+	(e_gw_connection_get_categories), (e_gw_connection_add_members),
+	(e_gw_connection_remove_members), (e_gw_connection_create_cursor),
+	(e_gw_connection_destroy_cursor),
+	(e_gw_connection_position_cursor), (e_gw_connection_read_cursor),
+	(e_gw_connection_get_quick_messages),
+	(e_gw_connection_create_folder), (e_gw_connection_get_attachment),
+	(e_gw_connection_add_item), (e_gw_connection_add_items),
+	(e_gw_connection_rename_folder), (e_gw_connection_move_item),
+	(e_gw_connection_accept_shared_folder),
+	(e_gw_connection_purge_deleted_items), (e_gw_connection_mark_read),
+	(e_gw_connection_mark_unread):
+	* e-gw-connection.h: Added a new STATUS message NO_RESPONSE, and used
+	it in case if the server does not respond.
+
 2005-01-25 Sivaiah Nallagtla  <snallagatla@novell.com>
 
 	* e-gw-connection.c (e_gw_connection_new) : append NULL 

@@ -73,7 +73,7 @@ reauthenticate (EGwConnection *cnc)
         if (!response) {
                 g_object_unref (msg);
 		g_mutex_unlock (priv->reauth_mutex);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
         status = e_gw_connection_parse_response_status (response);
 	g_object_unref (response);
@@ -154,6 +154,8 @@ e_gw_connection_get_error_message (EGwConnectionStatus status)
 		return _("Invalid object");
 	case E_GW_CONNECTION_STATUS_INVALID_RESPONSE :
 		return _("Invalid response from server");
+	case E_GW_CONNECTION_STATUS_NO_RESPONSE:
+		return _("No response from the server");
 	case E_GW_CONNECTION_STATUS_OBJECT_NOT_FOUND :
 		return _("Object not found");
 	case E_GW_CONNECTION_STATUS_UNKNOWN_USER :
@@ -187,7 +189,7 @@ logout (EGwConnection *cnc)
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -546,7 +548,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const char *top, GList *
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -651,7 +653,7 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -722,7 +724,7 @@ e_gw_connection_get_items_from_ids (EGwConnection *cnc, const char *container, c
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -788,7 +790,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          if (!response) { 
                  g_object_unref (msg); 
 		 // g_object_unref (cnc); 
-                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; 
+                 return E_GW_CONNECTION_STATUS_NO_RESPONSE; 
          } 
 
          status = e_gw_connection_parse_response_status (response); 
@@ -924,7 +926,7 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item, GSList **id_list)
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -977,7 +979,7 @@ e_gw_connection_create_item (EGwConnection *cnc, EGwItem *item, char** id)
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -1024,7 +1026,7 @@ e_gw_connection_modify_item (EGwConnection *cnc, const char *id , EGwItem *item)
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -1066,7 +1068,7 @@ e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char 
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1122,7 +1124,7 @@ e_gw_connection_remove_item (EGwConnection *cnc, const char *container, const ch
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -1159,7 +1161,7 @@ e_gw_connection_remove_items (EGwConnection *cnc, const char *container, GList *
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -1189,7 +1191,7 @@ e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1216,7 +1218,7 @@ e_gw_connection_decline_request (EGwConnection *cnc, const char *id)
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1244,7 +1246,7 @@ e_gw_connection_retract_request (EGwConnection *cnc, const char *id, const char 
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1422,7 +1424,7 @@ e_gw_connection_create_book (EGwConnection *cnc, char *book_name, char**id)
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1469,7 +1471,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1589,7 +1591,7 @@ e_gw_connection_modify_settings (EGwConnection *cnc, EGwSendOptions *opts)
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
 	status = e_gw_connection_parse_response_status (response);
@@ -1642,7 +1644,7 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1692,7 +1694,7 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1775,7 +1777,7 @@ e_gw_connection_add_members (EGwConnection *cnc, const char *group_id, GList *me
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1819,7 +1821,7 @@ e_gw_connection_remove_members (EGwConnection *cnc, const char *group_id, GList 
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -1858,7 +1860,7 @@ e_gw_connection_create_cursor (EGwConnection *cnc, const char *container, const 
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 	
 	status = e_gw_connection_parse_response_status (response);
@@ -1910,7 +1912,7 @@ e_gw_connection_destroy_cursor (EGwConnection *cnc, const char *container,  int 
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 	
 	status = e_gw_connection_parse_response_status (response);
@@ -1945,7 +1947,7 @@ e_gw_connection_position_cursor (EGwConnection *cnc, const char *container, int 
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 	
 	status = e_gw_connection_parse_response_status (response);
@@ -1978,7 +1980,7 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 	
 	status = e_gw_connection_parse_response_status (response);
@@ -2044,7 +2046,7 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 	
 	status = e_gw_connection_parse_response_status (response);
@@ -2133,7 +2135,7 @@ e_gw_connection_create_folder(EGwConnection *cnc, const char *parent_name,const 
 	response =  e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 	status = e_gw_connection_parse_response_status (response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -2185,7 +2187,7 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, 
         response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
                 g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
         }
 
         status = e_gw_connection_parse_response_status (response);
@@ -2239,7 +2241,7 @@ e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char 
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -2279,7 +2281,7 @@ e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *ite
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -2322,7 +2324,7 @@ e_gw_connection_rename_folder (EGwConnection *cnc, const char *id ,const char *n
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -2387,7 +2389,7 @@ e_gw_connection_move_item (EGwConnection *cnc, const char *id, const char *dest_
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -2423,7 +2425,7 @@ e_gw_connection_accept_shared_folder (EGwConnection *cnc, gchar *name, gchar *co
 	response =  e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
@@ -2449,7 +2451,7 @@ e_gw_connection_purge_deleted_items (EGwConnection *cnc)
 	response =  e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
@@ -2484,7 +2486,7 @@ e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids)
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
@@ -2519,7 +2521,7 @@ e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids)
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
-		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
 	status = e_gw_connection_parse_response_status (response);
