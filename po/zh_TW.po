@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.3.1.99\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"POT-Creation-Date: 2004-07-02 10:35-0400\n"
 "PO-Revision-Date: 2003-03-23 11:33+0800\n"
 "Last-Translator: Chao-Hsiung Liao <pesder.liao@msa.hinet.net>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -17,59 +17,59 @@ msgstr ""
 
 # mail/mail-send-recv.c:287
 # mail/mail-send-recv.c:333
-#: addressbook/backends/file/e-book-backend-file.c:428
-#: addressbook/backends/vcf/e-book-backend-vcf.c:452
+#: addressbook/backends/file/e-book-backend-file.c:433
+#: addressbook/backends/vcf/e-book-backend-vcf.c:445
 msgid "Loading..."
 msgstr "載入中..."
 
 # addressbook/gui/search/e-addressbook-search-dialog.c:158
 # mail/mail-search.c:242
-#: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
-#: addressbook/backends/vcf/e-book-backend-vcf.c:454
+#: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3155
+#: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
 msgstr "搜尋..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:615
+#: addressbook/backends/ldap/e-book-backend-ldap.c:618
 msgid "Using Distinguished Name (DN)"
 msgstr "使用辨認的名稱 (DN)"
 
 # mail/mail-config.glade.h:29
-#: addressbook/backends/ldap/e-book-backend-ldap.c:618
+#: addressbook/backends/ldap/e-book-backend-ldap.c:621
 msgid "Using Email Address"
 msgstr "使用電子郵件地址"
 
 # mail/mail-config.c:1213
 # mail/mail-config.c:1216
-#: addressbook/backends/ldap/e-book-backend-ldap.c:784
+#: addressbook/backends/ldap/e-book-backend-ldap.c:787
 msgid "Reconnecting to LDAP server..."
 msgstr "正重新連線至 LDAP 伺服器..."
 
 # mail/mail-config.c:1213
 # mail/mail-config.c:1216
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1299
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1307
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "新增名片至 LDAP 伺服器..."
 
 # mail/mail-ops.c:1195
 # mail/mail-ops.c:1333
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1395
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1407
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "自 LDAP 伺服器移除名片..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1610
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1630
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "自 LDAP 伺服器編輯名片..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3067
 msgid "Receiving LDAP search results..."
 msgstr "接收 LDAP 搜尋結果..."
 
 # executive-summary/component/e-summary.c:940
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3175
 msgid "Error performing search"
 msgstr "進行搜尋時發生錯誤"
 
@@ -77,47 +77,58 @@ msgstr "進行搜尋時發生錯誤"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
-#: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
-#: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
-#: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
-#: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
-#: addressbook/libebook/e-book.c:1943
+#: addressbook/libebook/e-book.c:234 addressbook/libebook/e-book.c:238
+#: addressbook/libebook/e-book.c:428 addressbook/libebook/e-book.c:432
+#: addressbook/libebook/e-book.c:560 addressbook/libebook/e-book.c:564
+#: addressbook/libebook/e-book.c:751 addressbook/libebook/e-book.c:756
+#: addressbook/libebook/e-book.c:922 addressbook/libebook/e-book.c:926
+#: addressbook/libebook/e-book.c:1063 addressbook/libebook/e-book.c:1067
+#: addressbook/libebook/e-book.c:1253 addressbook/libebook/e-book.c:1257
+#: addressbook/libebook/e-book.c:1458 addressbook/libebook/e-book.c:1462
+#: addressbook/libebook/e-book.c:1677 addressbook/libebook/e-book.c:1681
+#: addressbook/libebook/e-book.c:1870 addressbook/libebook/e-book.c:1874
+#: addressbook/libebook/e-book.c:2858
 #, fuzzy, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "“%s”在“%s”"
 
-#: addressbook/libebook/e-book.c:228 addressbook/libebook/e-book.c:340
-#: addressbook/libebook/e-book.c:425 addressbook/libebook/e-book.c:528
-#: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
-#: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
-#: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
-#: addressbook/libebook/e-book.c:1417 addressbook/libebook/e-book.c:1519
+#: addressbook/libebook/e-book.c:247 addressbook/libebook/e-book.c:441
+#: addressbook/libebook/e-book.c:573 addressbook/libebook/e-book.c:766
+#: addressbook/libebook/e-book.c:936 addressbook/libebook/e-book.c:1077
+#: addressbook/libebook/e-book.c:1266 addressbook/libebook/e-book.c:1471
+#: addressbook/libebook/e-book.c:1691 addressbook/libebook/e-book.c:1883
+#: addressbook/libebook/e-book.c:2198 addressbook/libebook/e-book.c:2377
 msgid "book busy"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:255 addressbook/libebook/e-book.c:367
-#: addressbook/libebook/e-book.c:447 addressbook/libebook/e-book.c:551
-#: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
-#: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
-#: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
-#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1439
-#: addressbook/libebook/e-book.c:1541 addressbook/libebook/e-book.c:1952
+#: addressbook/libebook/e-book.c:278 addressbook/libebook/e-book.c:282
+#: addressbook/libebook/e-book.c:472 addressbook/libebook/e-book.c:476
+#: addressbook/libebook/e-book.c:599 addressbook/libebook/e-book.c:603
+#: addressbook/libebook/e-book.c:793 addressbook/libebook/e-book.c:796
+#: addressbook/libebook/e-book.c:966 addressbook/libebook/e-book.c:969
+#: addressbook/libebook/e-book.c:1104 addressbook/libebook/e-book.c:1108
+#: addressbook/libebook/e-book.c:1302 addressbook/libebook/e-book.c:1306
+#: addressbook/libebook/e-book.c:1518 addressbook/libebook/e-book.c:1522
+#: addressbook/libebook/e-book.c:1721 addressbook/libebook/e-book.c:1725
+#: addressbook/libebook/e-book.c:1909 addressbook/libebook/e-book.c:1913
+#: addressbook/libebook/e-book.c:2139 addressbook/libebook/e-book.c:2224
+#: addressbook/libebook/e-book.c:2228 addressbook/libebook/e-book.c:2403
+#: addressbook/libebook/e-book.c:2407 addressbook/libebook/e-book.c:2867
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr ""
 
 # ui/evolution-mail.xml.h:3
-#: addressbook/libebook/e-book.c:1337
+#: addressbook/libebook/e-book.c:2120
 #, fuzzy
 msgid "e_book_cancel: there is no current operation"
 msgstr "取消目前郵件所作的行動"
 
-#: addressbook/libebook/e-book.c:1372
+#: addressbook/libebook/e-book.c:2155
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1409
+#: addressbook/libebook/e-book.c:2184 addressbook/libebook/e-book.c:2188
 #, fuzzy, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "“%s”在“%s”"
@@ -126,36 +137,36 @@ msgstr "“%s”在“%s”"
 # camel/camel-remote-store.c:399
 # camel/camel-remote-store.c:470
 # camel/providers/imap/camel-imap-command.c:287
-#: addressbook/libebook/e-book.c:1458
+#: addressbook/libebook/e-book.c:2250
 #, fuzzy
 msgid "e_book_open: cancelled"
 msgstr "作業已取消"
 
-#: addressbook/libebook/e-book.c:1810
+#: addressbook/libebook/e-book.c:2725
 msgid "e_book_load_uri: Invalid source."
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1818
+#: addressbook/libebook/e-book.c:2733
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1830
+#: addressbook/libebook/e-book.c:2745
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr ""
 
 # camel/camel-session.c:295
 # camel/camel-session.c:364
-#: addressbook/libebook/e-book.c:1881
+#: addressbook/libebook/e-book.c:2796
 #, fuzzy, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr "沒有通訊協定“%s”的提供者"
 
-#: addressbook/libebook/e-book.c:2038
+#: addressbook/libebook/e-book.c:2953
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2147
+#: addressbook/libebook/e-book.c:3062
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -713,25 +724,25 @@ msgid "List Show Addresses"
 msgstr "清單顯示地址"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:1209
+#: addressbook/libebook/e-contact.c:1206
 msgid "Unnamed List"
 msgstr "未命名的清單"
 
 # addressbook/contact-editor/contact-editor.glade.h:20
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:440
 #, fuzzy
 msgid "Birthday"
 msgstr "生日(_Y):"
 
 # addressbook/contact-editor/contact-editor.glade.h:20
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:464
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "生日(_Y):"
 
 # addressbook/contact-editor/contact-editor.glade.h:2
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:485
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "週年紀念(_V):"

@@ -19,7 +19,7 @@ static void        e_list_iterator_invalidate (EIterator *iterator);
 static gboolean    e_list_iterator_is_valid   (EIterator *iterator);
 static void        e_list_iterator_set        (EIterator  *iterator,
 	           			       const void *object);
-static void        e_list_iterator_delete     (EIterator  *iterator);
+static void        e_list_iterator_remove     (EIterator  *iterator);
 static void        e_list_iterator_insert     (EIterator  *iterator,
 		   			       const void *object,
 		   			       gboolean    before);
@@ -86,7 +86,7 @@ e_list_iterator_class_init (EListIteratorClass *klass)
 	iterator_class->last       = e_list_iterator_last;
 	iterator_class->next       = e_list_iterator_next;
 	iterator_class->prev       = e_list_iterator_prev;
-	iterator_class->delete     = e_list_iterator_delete;
+	iterator_class->remove     = e_list_iterator_remove;
 	iterator_class->insert     = e_list_iterator_insert;
 	iterator_class->set        = e_list_iterator_set;
 	iterator_class->is_valid   = e_list_iterator_is_valid;
@@ -213,7 +213,7 @@ e_list_iterator_insert   (EIterator  *_iterator,
 }
 
 static void
-e_list_iterator_delete   (EIterator *_iterator)
+e_list_iterator_remove   (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR(_iterator);
 	if (iterator->iterator) {

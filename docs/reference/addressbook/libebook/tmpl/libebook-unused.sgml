@@ -18,6 +18,36 @@
 e-book-marshal
 
 
+<!-- ##### USER_FUNCTION EBookAuthMethodsCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@status: 
+@auth_methods: 
+@closure: 
+
+<!-- ##### USER_FUNCTION EBookContactsCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@status: 
+@contacts: 
+@closure: 
+
+<!-- ##### USER_FUNCTION EBookFieldsCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@status: 
+@fields: 
+@closure: 
+
 <!-- ##### STRUCT EBookListenerPrivate ##### -->
 <para>
 
