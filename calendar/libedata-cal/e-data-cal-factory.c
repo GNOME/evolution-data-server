@@ -164,7 +164,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	ESource *source;
 	char *str_uri;
 	EUri *uri;
-	char *uri_string;
+	char *uri_type_string;
 	
 	factory = E_DATA_CAL_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
@@ -194,7 +194,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 
 		return CORBA_OBJECT_NIL;
 	}
-	uri_string = e_uri_to_string (uri, FALSE);	
+	uri_type_string = g_strdup_printf ("%s:%d", e_uri_to_string (uri, FALSE), type);	
 
 	/* Find the associated backend type (if any) */
 	backend_type = get_backend_type (priv->methods, uri->protocol, calobjtype_to_icalkind (type));
@@ -217,7 +217,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	CORBA_exception_free (&ev2);
 
 	/* Look for an existing backend */
-	backend = lookup_backend (factory, uri_string);
+	backend = lookup_backend (factory, uri_type_string);
 	if (!backend) {
 		/* There was no existing backend, create a new one */
 		backend = g_object_new (backend_type, "source", source, "kind", calobjtype_to_icalkind (type), NULL);
@@ -228,7 +228,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 		}
 
 		/* Track the backend */
-		g_hash_table_insert (priv->backends, g_strdup (uri_string), backend);
+		g_hash_table_insert (priv->backends, g_strdup (uri_type_string), backend);
 
 		g_signal_connect (G_OBJECT (backend), "last_client_gone",
 				  G_CALLBACK (backend_last_client_gone_cb),
@@ -236,7 +236,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	}
 	
 	/* Create the corba calendar */
-	cal = e_data_cal_new (backend, uri_string, listener);
+	cal = e_data_cal_new (backend, uri_type_string, listener);
 	if (!cal) {
 		g_warning (G_STRLOC ": could not create the corba calendar");
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
@@ -248,7 +248,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	
  cleanup:
 	e_uri_free (uri);
-	g_free (uri_string);
+	g_free (uri_type_string);
 	g_object_unref (source);
 
 	return CORBA_Object_duplicate (BONOBO_OBJREF (cal), ev);
