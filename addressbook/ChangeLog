@@ -1,3 +1,7 @@
+2004-12-09  Hans Petter Jansson  <hpj@novell.com>
+
+	* libebook/e-destination.c: Remove antiquated comments.
+
 2004-12-08  Hans Petter Jansson  <hpj@novell.com>
 
 	* libebook/Makefile.am: Build e-destination.c, install e-destination.h.

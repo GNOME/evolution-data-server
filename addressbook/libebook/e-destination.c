@@ -26,23 +26,7 @@
  */
 
 /*
-  This file (and e-destination.h) should really be in
-  e-d-s/addressbook/libebook.  but there are at present (at least) 2
-  reasons why they can't be:
-
-  1) e_utf8_casefold_collate (in eab-book-util.c).  we could just copy
-  the implementation into this file, though.. we already have an
-  implementation in the select-names code as well, yuck.
-
-  and
-
-  2) camel-internet-address.  fejj mentioned writing a stripped down
-  version for our use here, which would work.  alternatively we can
-  just keep this file in evolution/ until/unless camel moves into
-  e-d-s.
-
-
-  we should probably make most of the functions in this file a little
+  We should probably make most of the functions in this file a little
   stupider..  all the work extracting useful info from the
   EContact/raw text/etc should happen in e_destination_set_contact
   (and the other setters), not in a bunch of if's in the respective
