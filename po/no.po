@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.0\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"POT-Creation-Date: 2004-08-02 12:00-0400\n"
 "PO-Revision-Date: 2004-06-28 15:51+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
@@ -612,23 +612,23 @@ msgstr "Bryllupsdag: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 msgid "Invalid server URI"
 msgstr "Ugyldig URI for tjener"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "Kalender"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-msgid "Authentication failed"
-msgstr "Autentisering feilet"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 msgid "Could not create cache file"
 msgstr "Kunne ikke opprette bufferfil"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4292
+msgid "Authentication failed"
+msgstr "Autentisering feilet"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -788,76 +788,76 @@ msgid "Undefined"
 msgstr "Udefinert"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1493
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Oppgi passord for %s (bruker %s)"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4266
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4268
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4270
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4272
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4278
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4280
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4282
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4284
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4286
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4288
 msgid "Operation has been cancelled"
 msgstr "Operasjonen ble avbrutt"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4290
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4294
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4296
 msgid "A CORBA exception has occurred"
 msgstr "Et CORBA-unntak har oppstått"
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4300
 msgid "No error"
 msgstr "Ingen feil"
 

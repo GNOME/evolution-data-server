@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"POT-Creation-Date: 2004-08-02 12:00-0400\n"
 "PO-Revision-Date: 2004-06-13 13:06+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -616,23 +616,23 @@ msgstr "周年：%s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "无法保存日历数据：URI 格式错误。"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 msgid "Invalid server URI"
 msgstr "无效的服务器 URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "日历"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-msgid "Authentication failed"
-msgstr "认证失败"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 msgid "Could not create cache file"
 msgstr "无法创建缓存文件"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4292
+msgid "Authentication failed"
+msgstr "认证失败"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -792,76 +792,76 @@ msgid "Undefined"
 msgstr "未定义"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1493
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "为 %s 输入密码 (用户 %s)"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4266
 msgid "Invalid argument"
 msgstr "无效参数"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4268
 msgid "Backend is busy"
 msgstr "后台繁忙"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4270
 msgid "Repository is offline"
 msgstr "仓库离线"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4272
 msgid "No such calendar"
 msgstr "没有这样的日历"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "找不到对象"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "无效对象"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4278
 msgid "URI not loaded"
 msgstr "URI 未装入"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4280
 msgid "URI already loaded"
 msgstr "URI已经载入"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4282
 msgid "Permission denied"
 msgstr "没有权限"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4284
 msgid "Object ID already exists"
 msgstr "对象 ID 已经存在"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4286
 msgid "Protocol not supported"
 msgstr "不支持的协议"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4288
 msgid "Operation has been cancelled"
 msgstr "操作已取消"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4290
 msgid "Could not cancel operation"
 msgstr "无法取消操作"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4294
 msgid "Authentication required"
 msgstr "必须认证"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4296
 msgid "A CORBA exception has occurred"
 msgstr "发生了 CORBA 异常"
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "未知的错误"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4300
 msgid "No error"
 msgstr "无错误"
 

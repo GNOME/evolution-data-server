@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.0\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"POT-Creation-Date: 2004-08-02 12:00-0400\n"
 "PO-Revision-Date: 2003-02-07 17:46+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
@@ -625,26 +625,26 @@ msgstr ""
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 msgid "Invalid server URI"
 msgstr ""
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "ቀን መቁጠሪያ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-msgid "Authentication failed"
-msgstr ""
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 #, fuzzy
 msgid "Could not create cache file"
 msgstr ""
 "ዶሴ `%s'ን ማስፈጠር አልተቻለም፦\n"
 "%s"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4292
+msgid "Authentication failed"
+msgstr ""
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 #, fuzzy
@@ -806,78 +806,78 @@ msgid "Undefined"
 msgstr ""
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1493
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4266
 msgid "Invalid argument"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4268
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4270
 msgid "Repository is offline"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4272
 msgid "No such calendar"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "አልተገኘም"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "የማይሰራ"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4278
 msgid "URI not loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4280
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4282
 msgid "Permission denied"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4284
 msgid "Object ID already exists"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4286
 msgid "Protocol not supported"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4288
 msgid "Operation has been cancelled"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4290
 msgid "Could not cancel operation"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4294
 msgid "Authentication required"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4296
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "ያልታወቀ ስህተት"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4300
 msgid "No error"
 msgstr "ስህተት የለም"
 

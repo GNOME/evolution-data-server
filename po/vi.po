@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution VERSION\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"POT-Creation-Date: 2004-08-02 12:00-0400\n"
 "PO-Revision-Date: 2003-02-23 08:29+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
@@ -641,28 +641,28 @@ msgstr "_Kỷ niệm"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Không thể lưu dữ liệu lịch: URI sai."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 #, fuzzy
 msgid "Invalid server URI"
 msgstr "Mục đích không hợp lệ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "Lịch"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-#, fuzzy
-msgid "Authentication failed"
-msgstr "xác thực thất bại."
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 #, fuzzy
 msgid "Could not create cache file"
 msgstr ""
 "Không thể tạp tập tin `%s':\n"
 "%s"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4292
+#, fuzzy
+msgid "Authentication failed"
+msgstr "xác thực thất bại."
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 #, fuzzy
@@ -825,84 +825,84 @@ msgid "Undefined"
 msgstr "Chưa biết"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1493
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%sNhập mật khẩu cho %s (người dùng %s)"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4266
 msgid "Invalid argument"
 msgstr "Đối số không hợp lệ"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4268
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4270
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Kho ngoại tuyến"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4272
 #, fuzzy
 msgid "No such calendar"
 msgstr "Không có thư mục %s"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "Không thể tìm thấy đối tượng\n"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "Mục đích không hợp lệ"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4278
 #, fuzzy
 msgid "URI not loaded"
 msgstr "Không nạp được EBook\n"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4280
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4282
 msgid "Permission denied"
 msgstr "Không đủ quyền truy cập"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4284
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "Card ID đã tồn tại"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4286
 msgid "Protocol not supported"
 msgstr "Chưa hỗ trợ giao thức này"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4288
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Thao tác bị hủy bỏ"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4290
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Hủy tác vụ"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4294
 msgid "Authentication required"
 msgstr "Yêu cầu xác thực"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4296
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Lỗi lại"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4300
 msgid "No error"
 msgstr "Không có lỗi"
 

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"POT-Creation-Date: 2004-08-02 12:00-0400\n"
 "PO-Revision-Date: 2004-05-29 18:01+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -615,23 +615,23 @@ msgstr "Výročí: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 msgid "Invalid server URI"
 msgstr "Neplatné URI serveru"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-msgid "Authentication failed"
-msgstr "Autentizace selhala"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4292
+msgid "Authentication failed"
+msgstr "Autentizace selhala"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -791,76 +791,76 @@ msgid "Undefined"
 msgstr "Nedefinováno"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1493
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4266
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4268
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4270
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4272
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4278
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4280
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4282
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4284
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4286
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4288
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4290
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4294
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4296
 msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4300
 msgid "No error"
 msgstr "Žádná chyba"
 

@@ -28,7 +28,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"POT-Creation-Date: 2004-08-02 12:00-0400\n"
 "PO-Revision-Date: 2004-01-25 13:43+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -644,25 +644,25 @@ msgstr "Επέτειος: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Αποτυχία αποθήκευσης δεδομένων ημερολογίου. Κακοδιατυπωμένο URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 msgid "Invalid server URI"
 msgstr ""
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 #, fuzzy
 msgid "Calendar"
 msgstr "URI Ημερολογίου"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-msgid "Authentication failed"
-msgstr "Η πιστοποίηση απέτυχε"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 #, fuzzy
 msgid "Could not create cache file"
 msgstr "Αδυναμία ακύρωσης λειτουργίας"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4292
+msgid "Authentication failed"
+msgstr "Η πιστοποίηση απέτυχε"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -822,77 +822,77 @@ msgid "Undefined"
 msgstr "Αόριστο"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1493
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Εισάγετε κωδικό πρόσβασης για %s (χρήστης %s)"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4266
 msgid "Invalid argument"
 msgstr "Μη έγκυρη παράμετρος"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4268
 msgid "Backend is busy"
 msgstr "Το Backend είναι απασχολημένο"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4270
 msgid "Repository is offline"
 msgstr "Το αρχείο φύλαξης είναι εκτός δικτύου"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4272
 msgid "No such calendar"
 msgstr "Δεν υπάρχει τέτοιο ημερολόγιο"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Το αντικείμενο δεν βρέθηκε"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Μή έγκυρο αντικείμενο"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4278
 msgid "URI not loaded"
 msgstr "To URI δεν φορτώθηκε"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4280
 msgid "URI already loaded"
 msgstr "Το URI έχει ήδη φορτωθεί"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4282
 msgid "Permission denied"
 msgstr "Δεν επιτρέπεται η πρόσβαση"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4284
 msgid "Object ID already exists"
 msgstr "Το αναγνωριστικό αντικειμένου  υπάρχει ήδη"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4286
 msgid "Protocol not supported"
 msgstr "Δεν υποστηρίζεται το πρωτόκολλο"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4288
 msgid "Operation has been cancelled"
 msgstr "Η λειτουργία ακυρώθηκε"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4290
 msgid "Could not cancel operation"
 msgstr "Αδυναμία ακύρωσης λειτουργίας"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4294
 msgid "Authentication required"
 msgstr "Απαιτείται πιστοποίηση"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4296
 #, fuzzy
 msgid "A CORBA exception has occurred"
 msgstr "Δημιουργήθηκε εξαίρεση CORBΑ"
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Άγνωστο Σφάλμα"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4300
 msgid "No error"
 msgstr "Χωρίς σφάλμα"
 

@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"POT-Creation-Date: 2004-08-02 12:00-0400\n"
 "PO-Revision-Date: 2001-09-17 15:10+0200\n"
 "Last-Translator: Manuel A. Fernández Montecelo <manuel@sindominio.net>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -670,28 +670,28 @@ msgstr "Ani_versario:"
 msgid "Can't save calendar data: Malformed URI."
 msgstr ""
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 #, fuzzy
 msgid "Invalid server URI"
 msgstr "Argumentos non válidos"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "Axenda"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-#, fuzzy
-msgid "Authentication failed"
-msgstr "A autenticación fallou."
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 #, fuzzy
 msgid "Could not create cache file"
 msgstr ""
 "Non foi posible crear o ficheiro `%s':\n"
 "%s"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4292
+#, fuzzy
+msgid "Authentication failed"
+msgstr "A autenticación fallou."
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 #, fuzzy
@@ -855,85 +855,85 @@ msgid "Undefined"
 msgstr "Indefinida"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1493
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza o seu contrasinal para %s"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4266
 #, fuzzy
 msgid "Invalid argument"
 msgstr "Argumentos non válidos"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4268
 msgid "Backend is busy"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4270
 #, fuzzy
 msgid "Repository is offline"
 msgstr "Repositorio desconectado"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4272
 #, fuzzy
 msgid "No such calendar"
 msgstr "Non existe o cartafol %s"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "¡Non se puido envia-lo elemento!\n"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "Argumentos non válidos"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4278
 #, fuzzy
 msgid "URI not loaded"
 msgstr "EBook non cargado\n"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4280
 msgid "URI already loaded"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4282
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4284
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "O ID da Tarxeta xa existe"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4286
 msgid "Protocol not supported"
 msgstr "Protocolo non soportado"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4288
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "Operación cancelada"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4290
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "Cancelar Operación"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4294
 msgid "Authentication required"
 msgstr "Autenticación requirida"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4296
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Erro descoñecido"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4300
 msgid "No error"
 msgstr "Sen erros"
 
