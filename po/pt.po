@@ -6,15 +6,15 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 2.6\n"
-"POT-Creation-Date: 2004-08-02 12:00-0400\n"
-"PO-Revision-Date: 2004-05-16 16:50+0000\n"
+"Project-Id-Version: 2.8\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-05 00:49+0100\n"
+"PO-Revision-Date: 2004-08-05 00:55+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
-"Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
 #: addressbook/backends/vcf/e-book-backend-vcf.c:445
@@ -118,9 +118,8 @@ msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" no livro após \"%s\""
 
 #: addressbook/libebook/e-book.c:2355
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: cancelado"
+msgstr "e_book_open: cancelado"
 
 #: addressbook/libebook/e-book.c:2851
 msgid "e_book_load_uri: Invalid source."
@@ -136,9 +135,9 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Incapaz de criar EBookListener"
 
 #: addressbook/libebook/e-book.c:2922
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: nenhuma fábrica disponível para uri `%s'"
+msgstr "e_book_new: nenhuma fábrica disponível para o uri `%s'"
 
 #: addressbook/libebook/e-book.c:3080
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
@@ -312,9 +311,8 @@ msgid "Email 3"
 msgstr "Email 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "Email 3"
+msgstr "Email 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
