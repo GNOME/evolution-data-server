@@ -404,6 +404,20 @@ matches_summary (ECalComponent *comp, const char *str)
 	return e_util_utf8_strstrcasedecomp (text.value, str) != NULL;
 }
 
+/* Returns whether the location in a component matches the specified string */
+static gboolean
+matches_location (ECalComponent *comp, const char *str)
+{
+	const char *location = NULL;
+
+	e_cal_component_get_location (comp, &location);
+
+	if (!location)
+		return FALSE;
+
+	return e_util_utf8_strstrcasedecomp (location, str) != NULL;
+}
+
 /* Returns whether any text field in a component matches the specified string */
 static gboolean
 matches_any (ECalComponent *comp, const char *str)
@@ -417,12 +431,13 @@ matches_any (ECalComponent *comp, const char *str)
 
 	return (matches_comment (comp, str)
 		|| matches_description (comp, str)
-		|| matches_summary (comp, str));
+		|| matches_summary (comp, str)
+		|| matches_location (comp, str));
 }
 
 /* (contains? FIELD STR)
  *
- * FIELD - string, name of field to match (any, comment, description, summary)
+ * FIELD - string, name of field to match (any, comment, description, summary, location)
  * STR - string, match string
  *
  * Returns a boolean indicating whether the specified field contains the
@@ -471,10 +486,12 @@ func_contains (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 		matches = matches_description (ctx->comp, str);
 	else if (strcmp (field, "summary") == 0)
 		matches = matches_summary (ctx->comp, str);
+	else if (strcmp (field, "location") == 0)
+		matches = matches_location (ctx->comp, str);
 	else {
 		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
 					     "argument to be either \"any\", "
-					     "\"summary\", or \"description\""),
+					     "\"summary\", or \"description\", or \"location\""),
 				    "contains");
 		return NULL;
 	}

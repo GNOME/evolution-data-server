@@ -1,5 +1,14 @@
 2004-03-01  Rodrigo Moya <rodrigo@ximian.com>
 
+	Fixes #33243
+
+	* libedata-cal/e-cal-backend-sexp.c (matches_location): new function
+	to check if a component's location matches a string.
+	(matches_any): call matches_location also.
+	(func_contains): added support for searching the location also.
+
+2004-03-01  Rodrigo Moya <rodrigo@ximian.com>
+
 	* idl/Evolution-DataServer-Calendar.idl: added new arguments to the
 	notifyObjectsSent method for backends to return the list of users and
 	events for which it operated.
