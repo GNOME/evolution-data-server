@@ -1,0 +1,5075 @@
+# Xhosa translation of evolution-data-server
+# Copyright (C) 2005 Canonical Ltd.
+# This file is distributed under the same license as the gnome-data-server package.
+# Translation by Canonical Ltd <translations@canonical.com> with thanks to
+# Translation World CC in South Africa, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evolution-data-server\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-03-30 17:33+0200\n"
+"PO-Revision-Date: 2005-03-10 17:13+0200\n"
+"Last-Translator: Canonical Ltd <translations@canonical.com>\n"
+"Language-Team: Xhosa <xh-translate@ubuntu.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:519
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:452
+msgid "Loading..."
+msgstr "Isafaka..."
+
+#: ../addressbook/backends/file/e-book-backend-file.c:521
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:454
+msgid "Searching..."
+msgstr "Isakhangela..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:647
+msgid "Using Distinguished Name (DN)"
+msgstr "Isebenzisa Igama Elibalulekileyo (DN)"
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:650
+msgid "Using Email Address"
+msgstr "Isebenzisa Idilesi Ye-imeyili"
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:820
+msgid "Reconnecting to LDAP server..."
+msgstr "Ukunxulumana kwakhona neseva i-LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1368
+msgid "Adding contact to LDAP server..."
+msgstr "Ukongeza oqhagamshelana naye kwiseva i-LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1493
+msgid "Removing contact from LDAP server..."
+msgstr "Ukususa oqhagamshelana naye kwiseva i-LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1750
+msgid "Modifying contact from LDAP server..."
+msgstr "Ukulungisa oqhagamshelana naye kwiseva i-LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3290
+msgid "Receiving LDAP search results..."
+msgstr "Ukufumana iziphumo zokukhangela kwi-LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3421
+msgid "Error performing search"
+msgstr "Kwenzeke impazamo ngelixa kukhangelwa"
+
+#. translators: the placeholders will be filled by
+#. * function names, e.g.
+#. * "e_book_add_contact" on book before
+#. * "e_book_open
+#: ../addressbook/libebook/e-book.c:240 ../addressbook/libebook/e-book.c:244
+#: ../addressbook/libebook/e-book.c:446 ../addressbook/libebook/e-book.c:450
+#: ../addressbook/libebook/e-book.c:579 ../addressbook/libebook/e-book.c:583
+#: ../addressbook/libebook/e-book.c:672 ../addressbook/libebook/e-book.c:676
+#: ../addressbook/libebook/e-book.c:952 ../addressbook/libebook/e-book.c:957
+#: ../addressbook/libebook/e-book.c:1132 ../addressbook/libebook/e-book.c:1136
+#: ../addressbook/libebook/e-book.c:1277 ../addressbook/libebook/e-book.c:1281
+#: ../addressbook/libebook/e-book.c:1479 ../addressbook/libebook/e-book.c:1483
+#: ../addressbook/libebook/e-book.c:1684 ../addressbook/libebook/e-book.c:1688
+#: ../addressbook/libebook/e-book.c:1910 ../addressbook/libebook/e-book.c:1914
+#: ../addressbook/libebook/e-book.c:2117 ../addressbook/libebook/e-book.c:2121
+#: ../addressbook/libebook/e-book.c:3200
+#, c-format
+msgid "\"%s\" on book before \"%s\""
+msgstr "\"%s\" yakha yasencwadini ngaphambili \"%s\""
+
+#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:459
+#: ../addressbook/libebook/e-book.c:592 ../addressbook/libebook/e-book.c:685
+#: ../addressbook/libebook/e-book.c:967 ../addressbook/libebook/e-book.c:1146
+#: ../addressbook/libebook/e-book.c:1291 ../addressbook/libebook/e-book.c:1492
+#: ../addressbook/libebook/e-book.c:1697 ../addressbook/libebook/e-book.c:1924
+#: ../addressbook/libebook/e-book.c:2130 ../addressbook/libebook/e-book.c:2468
+#: ../addressbook/libebook/e-book.c:2664
+msgid "book busy"
+msgstr "incwadi isaxakekile"
+
+#: ../addressbook/libebook/e-book.c:286 ../addressbook/libebook/e-book.c:290
+#: ../addressbook/libebook/e-book.c:492 ../addressbook/libebook/e-book.c:496
+#: ../addressbook/libebook/e-book.c:621 ../addressbook/libebook/e-book.c:625
+#: ../addressbook/libebook/e-book.c:714 ../addressbook/libebook/e-book.c:718
+#: ../addressbook/libebook/e-book.c:996 ../addressbook/libebook/e-book.c:999
+#: ../addressbook/libebook/e-book.c:1178 ../addressbook/libebook/e-book.c:1181
+#: ../addressbook/libebook/e-book.c:1320 ../addressbook/libebook/e-book.c:1324
+#: ../addressbook/libebook/e-book.c:1528 ../addressbook/libebook/e-book.c:1532
+#: ../addressbook/libebook/e-book.c:1744 ../addressbook/libebook/e-book.c:1748
+#: ../addressbook/libebook/e-book.c:1956 ../addressbook/libebook/e-book.c:1960
+#: ../addressbook/libebook/e-book.c:2158 ../addressbook/libebook/e-book.c:2162
+#: ../addressbook/libebook/e-book.c:2409 ../addressbook/libebook/e-book.c:2496
+#: ../addressbook/libebook/e-book.c:2500 ../addressbook/libebook/e-book.c:2692
+#: ../addressbook/libebook/e-book.c:2696 ../addressbook/libebook/e-book.c:3209
+#, c-format
+msgid "CORBA exception making \"%s\" call"
+msgstr "Ukutsala umnxeba onxaxhiselwe i-CORBA \"%s\""
+
+#: ../addressbook/libebook/e-book.c:2390
+#, c-format
+msgid "%s: there is no current operation"
+msgstr "%s: Akukho msebenzi wenziwayo ngokwangoku"
+
+#: ../addressbook/libebook/e-book.c:2425
+#, c-format
+msgid "%s: couldn't cancel"
+msgstr "%s: ayikwazanga ukurhoxisa"
+
+#: ../addressbook/libebook/e-book.c:2454 ../addressbook/libebook/e-book.c:2458
+#, c-format
+msgid "\"%s\" on book after \"%s\""
+msgstr "\"%s\" ibikhe yasencwadini emva \"%s\""
+
+#: ../addressbook/libebook/e-book.c:2524
+#, c-format
+msgid "%s: cancelled"
+msgstr "%s: irhoxisiwe"
+
+#: ../addressbook/libebook/e-book.c:3066
+#, c-format
+msgid "%s: Invalid source."
+msgstr "%s: Umthombo ongagunyaziswanga."
+
+#: ../addressbook/libebook/e-book.c:3074 ../addressbook/libebook/e-book.c:3138
+#, c-format
+msgid "%s: no factories available for uri `%s'"
+msgstr "%s: akukho zifektri zifumanekayo kwi-uri `%s'"
+
+#: ../addressbook/libebook/e-book.c:3086
+#, c-format
+msgid "%s: Could not create EBookListener"
+msgstr "%s: Ayikwazi ukwenza i-EBookListener"
+
+#: ../addressbook/libebook/e-book.c:3332
+#, c-format
+msgid "%s: there was no self contact uid stored in gconf"
+msgstr "%s: bekungekho luqhagamshelwano lwabuqu kwi-uid ekuvimba we-gconf"
+
+#: ../addressbook/libebook/e-book.c:3443
+#, c-format
+msgid "%s: there was no source for uid `%s' stored in gconf."
+msgstr "%s: bekungekho mthombo we-uid `%s' okuvimba we-gconf."
+
+#: ../addressbook/libebook/e-contact.c:102
+msgid "Unique ID"
+msgstr "I-ID eyodwa"
+
+#: ../addressbook/libebook/e-contact.c:103
+msgid "File Under"
+msgstr "Ifayili Ezantsi Kwe-"
+
+#. Name fields
+#. FN isn't really a structured field - we use a getter/setter
+#. so we can set the N property (since evo 1.4 works fine with
+#. vcards that don't even have a N attribute.  *sigh*)
+#: ../addressbook/libebook/e-contact.c:109
+msgid "Full Name"
+msgstr "Igama Ngokuzeleyo"
+
+#: ../addressbook/libebook/e-contact.c:110
+msgid "Name"
+msgstr "Igama"
+
+#: ../addressbook/libebook/e-contact.c:111
+msgid "Given Name"
+msgstr "Igama Elinikiweyo"
+
+#: ../addressbook/libebook/e-contact.c:112
+msgid "Family Name"
+msgstr "Igama Losapho"
+
+#: ../addressbook/libebook/e-contact.c:113
+msgid "Nickname"
+msgstr "Isiteketiso"
+
+#: ../addressbook/libebook/e-contact.c:114
+msgid "Name or Org"
+msgstr "Igama okanye Ulungiselelo"
+
+#. Address fields
+#: ../addressbook/libebook/e-contact.c:117
+msgid "Address List"
+msgstr "Uluhlu Lwedilesi"
+
+#: ../addressbook/libebook/e-contact.c:118
+msgid "Home Address"
+msgstr "Idilesi Yasekhaya"
+
+#: ../addressbook/libebook/e-contact.c:119
+msgid "Work Address"
+msgstr "Idilesi Yasemsebenzini"
+
+#: ../addressbook/libebook/e-contact.c:120
+msgid "Other Address"
+msgstr "Enye idilesi"
+
+#: ../addressbook/libebook/e-contact.c:122
+msgid "Home Address Label"
+msgstr "Ilebhile Yedilesi Yasekhaya"
+
+#: ../addressbook/libebook/e-contact.c:123
+msgid "Work Address Label"
+msgstr "Ilebhile Yedilesi Yasemsebenzini"
+
+#: ../addressbook/libebook/e-contact.c:124
+msgid "Other Address Label"
+msgstr "Ilebhile Yenye Idilesi"
+
+#: ../addressbook/libebook/e-contact.c:126
+msgid "Assistant Phone"
+msgstr "Umnxeba Oncedisayo"
+
+#: ../addressbook/libebook/e-contact.c:127
+msgid "Business Phone"
+msgstr "Umnxeba Weshishini"
+
+#: ../addressbook/libebook/e-contact.c:128
+msgid "Business Phone 2"
+msgstr "Umnxeba Weshishini 2"
+
+#: ../addressbook/libebook/e-contact.c:129
+msgid "Business Fax"
+msgstr "Ifeksi Yeshishini"
+
+#: ../addressbook/libebook/e-contact.c:130
+msgid "Callback Phone"
+msgstr "Umnxeba Wokubuyisa Impendulo"
+
+#: ../addressbook/libebook/e-contact.c:131
+msgid "Car Phone"
+msgstr "Umnxeba Osemotweni"
+
+#: ../addressbook/libebook/e-contact.c:132
+msgid "Company Phone"
+msgstr "Umnxeba Wenkampani"
+
+#: ../addressbook/libebook/e-contact.c:133
+msgid "Home Phone"
+msgstr "Umnxeba wasekhaya"
+
+#: ../addressbook/libebook/e-contact.c:134
+msgid "Home Phone 2"
+msgstr "Umnxeba wasekhaya 2"
+
+#: ../addressbook/libebook/e-contact.c:135
+msgid "Home Fax"
+msgstr "Ifeksi Yasekhaya"
+
+#: ../addressbook/libebook/e-contact.c:136
+msgid "ISDN"
+msgstr "ISDN"
+
+#: ../addressbook/libebook/e-contact.c:137
+msgid "Mobile Phone"
+msgstr "Iselula"
+
+#: ../addressbook/libebook/e-contact.c:138
+msgid "Other Phone"
+msgstr "Omnye umnxeba"
+
+#: ../addressbook/libebook/e-contact.c:139
+msgid "Other Fax"
+msgstr "Enye ifeksi"
+
+#: ../addressbook/libebook/e-contact.c:140
+msgid "Pager"
+msgstr "I-Pager"
+
+#: ../addressbook/libebook/e-contact.c:141
+msgid "Primary Phone"
+msgstr "Umnxeba Wokuqala"
+
+#: ../addressbook/libebook/e-contact.c:142
+msgid "Radio"
+msgstr "Unomathotholo"
+
+#: ../addressbook/libebook/e-contact.c:143
+msgid "Telex"
+msgstr "I-Telex"
+
+#: ../addressbook/libebook/e-contact.c:144
+msgid "TTY"
+msgstr "TTY"
+
+#. Email fields
+#: ../addressbook/libebook/e-contact.c:147
+msgid "Email List"
+msgstr "Uluhlu Lwe-imeyile"
+
+#: ../addressbook/libebook/e-contact.c:148
+msgid "Email 1"
+msgstr "I-imeyile 1"
+
+#: ../addressbook/libebook/e-contact.c:149
+msgid "Email 2"
+msgstr "I-imeyile 2"
+
+#: ../addressbook/libebook/e-contact.c:150
+msgid "Email 3"
+msgstr "I-imeyile 3"
+
+#: ../addressbook/libebook/e-contact.c:151
+msgid "Email 4"
+msgstr "I-imeyile 4"
+
+#: ../addressbook/libebook/e-contact.c:152
+msgid "Mailer"
+msgstr "Umthumeli"
+
+#: ../addressbook/libebook/e-contact.c:153
+msgid "Wants HTML Mail"
+msgstr "Ifuna I-imeyili Ye-HTML"
+
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:156
+msgid "AIM Screen Name List"
+msgstr "Uluhlu Lwegama Elikwiskrini Se-AIM"
+
+#: ../addressbook/libebook/e-contact.c:157
+msgid "Groupwise Id List"
+msgstr "Uluhlu Lwe-Id Ye-Groupwise"
+
+#: ../addressbook/libebook/e-contact.c:158
+msgid "Jabber Id List"
+msgstr "Uluhlu lwe-Id Ye-Jabber"
+
+#: ../addressbook/libebook/e-contact.c:159
+msgid "Yahoo! Screen Name List"
+msgstr "Uluhlu Lwegama Elikwiskrini Se-Yahoo!"
+
+#: ../addressbook/libebook/e-contact.c:160
+msgid "MSN Screen Name List"
+msgstr "Uluhlu Lwegama Elikwiskrini Se-MSN"
+
+#: ../addressbook/libebook/e-contact.c:161
+msgid "ICQ Id List"
+msgstr "Uluhlu Lwe-Id Ye-ICQ"
+
+#: ../addressbook/libebook/e-contact.c:163
+msgid "AIM Home Screen Name 1"
+msgstr "Uluhlu Lwegama Elikwiskrini Sasekhaya Se-AIM 1"
+
+#: ../addressbook/libebook/e-contact.c:164
+msgid "AIM Home Screen Name 2"
+msgstr "Uluhlu Lwegama Elikwiskrini Sasekhaya Se-AIM 2"
+
+#: ../addressbook/libebook/e-contact.c:165
+msgid "AIM Home Screen Name 3"
+msgstr "Uluhlu Lwegama Elikwiskrini Sasekhaya Se-AIM 3"
+
+#: ../addressbook/libebook/e-contact.c:166
+msgid "AIM Work Screen Name 1"
+msgstr "Uluhlu Lwegama Lomsebenzi Okwiskrini Se-AIM 1"
+
+#: ../addressbook/libebook/e-contact.c:167
+msgid "AIM Work Screen Name 2"
+msgstr "Uluhlu Lwegama Lomsebenzi Okwiskrini Se-AIM 2"
+
+#: ../addressbook/libebook/e-contact.c:168
+msgid "AIM Work Screen Name 3"
+msgstr "Uluhlu Lwegama Lomsebenzi Okwiskrini Se-AIM 3"
+
+#: ../addressbook/libebook/e-contact.c:169
+msgid "Groupwise Home Screen Name 1"
+msgstr "Uluhlu Lwegama Elikwiskrini Sasekhaya Se-Groupwise 1"
+
+#: ../addressbook/libebook/e-contact.c:170
+msgid "Groupwise Home Screen Name 2"
+msgstr "Uluhlu Lwegama Elikwiskrini Sasekhaya Se-Groupwise 2"
+
+#: ../addressbook/libebook/e-contact.c:171
+msgid "Groupwise Home Screen Name 3"
+msgstr "Uluhlu Lwegama Elikwiskrini Sasekhaya Se-Groupwise 3"
+
+#: ../addressbook/libebook/e-contact.c:172
+msgid "Groupwise Work Screen Name 1"
+msgstr "Uluhlu Lwegama Lomsebenzi Okwiskrini We-Groupwise 1"
+
+#: ../addressbook/libebook/e-contact.c:173
+msgid "Groupwise Work Screen Name 2"
+msgstr "Uluhlu Lwegama Lomsebenzi Okwiskrini We-Groupwise 2"
+
+#: ../addressbook/libebook/e-contact.c:174
+msgid "Groupwise Work Screen Name 3"
+msgstr "Uluhlu Lwegama Lomsebenzi Okwiskrini We-Groupwise 3"
+
+#: ../addressbook/libebook/e-contact.c:175
+msgid "Jabber Home Id 1"
+msgstr "I-Id YaseKhaya Ye-Jabber 1"
+
+#: ../addressbook/libebook/e-contact.c:176
+msgid "Jabber Home Id 2"
+msgstr "I-Id YaseKhaya Ye-Jabber 2"
+
+#: ../addressbook/libebook/e-contact.c:177
+msgid "Jabber Home Id 3"
+msgstr "I-Id YaseKhaya Ye-Jabber 3"
+
+#: ../addressbook/libebook/e-contact.c:178
+msgid "Jabber Work Id 1"
+msgstr "I-Id Yomsebenzi Ye-Jabber 1"
+
+#: ../addressbook/libebook/e-contact.c:179
+msgid "Jabber Work Id 2"
+msgstr "I-Id Yomsebenzi Ye-Jabber 2"
+
+#: ../addressbook/libebook/e-contact.c:180
+msgid "Jabber Work Id 3"
+msgstr "I-Id Yomsebenzi Ye-Jabber 3"
+
+#: ../addressbook/libebook/e-contact.c:181
+msgid "Yahoo! Home Screen Name 1"
+msgstr "I-Yahoo! Igama Leskrini SaseKhaya 1"
+
+#: ../addressbook/libebook/e-contact.c:182
+msgid "Yahoo! Home Screen Name 2"
+msgstr "I-Yahoo! Igama Leskrini SaseKhaya 2"
+
+#: ../addressbook/libebook/e-contact.c:183
+msgid "Yahoo! Home Screen Name 3"
+msgstr "I-Yahoo! Igama Leskrini SaseKhaya 3"
+
+#: ../addressbook/libebook/e-contact.c:184
+msgid "Yahoo! Work Screen Name 1"
+msgstr "I-Yahoo! Igama Leskrini Sokusebenza 1"
+
+#: ../addressbook/libebook/e-contact.c:185
+msgid "Yahoo! Work Screen Name 2"
+msgstr "I-Yahoo! Igama Leskrini Sokusebenza 2"
+
+#: ../addressbook/libebook/e-contact.c:186
+msgid "Yahoo! Work Screen Name 3"
+msgstr "I-Yahoo! Igama Leskrini Sokusebenza 3"
+
+#: ../addressbook/libebook/e-contact.c:187
+msgid "MSN Home Screen Name 1"
+msgstr "I-MSN Igama Leskrini SaseKhaya 1"
+
+#: ../addressbook/libebook/e-contact.c:188
+msgid "MSN Home Screen Name 2"
+msgstr "I-MSN Igama Leskrini SaseKhaya 2"
+
+#: ../addressbook/libebook/e-contact.c:189
+msgid "MSN Home Screen Name 3"
+msgstr "I-MSN Igama Leskrini SaseKhaya 3"
+
+#: ../addressbook/libebook/e-contact.c:190
+msgid "MSN Work Screen Name 1"
+msgstr "I-MSN Igama Leskrini Sokusebenza 1"
+
+#: ../addressbook/libebook/e-contact.c:191
+msgid "MSN Work Screen Name 2"
+msgstr "I-MSN Igama Leskrini Sokusebenza 2"
+
+#: ../addressbook/libebook/e-contact.c:192
+msgid "MSN Work Screen Name 3"
+msgstr "I-MSN Igama Leskrini Sokusebenza 3"
+
+#: ../addressbook/libebook/e-contact.c:193
+msgid "ICQ Home Id 1"
+msgstr "I-ICQ I-Id Yasekhaya 1"
+
+#: ../addressbook/libebook/e-contact.c:194
+msgid "ICQ Home Id 2"
+msgstr "I-ICQ I-Id Yasekhaya 2"
+
+#: ../addressbook/libebook/e-contact.c:195
+msgid "ICQ Home Id 3"
+msgstr "I-ICQ I-Id Yasekhaya 3"
+
+#: ../addressbook/libebook/e-contact.c:196
+msgid "ICQ Work Id 1"
+msgstr "I-ICQ I-Id Yokusebenza 1"
+
+#: ../addressbook/libebook/e-contact.c:197
+msgid "ICQ Work Id 2"
+msgstr "I-ICQ I-Id Yokusebenza 2"
+
+#: ../addressbook/libebook/e-contact.c:198
+msgid "ICQ Work Id 3"
+msgstr "I-ICQ I-Id Yokusebenza 3"
+
+#. Organizational fields
+#: ../addressbook/libebook/e-contact.c:201
+msgid "Organization"
+msgstr "Ulungiselelo"
+
+#: ../addressbook/libebook/e-contact.c:202
+msgid "Organizational Unit"
+msgstr "Iyunithi Yolungiselelo"
+
+#: ../addressbook/libebook/e-contact.c:203
+msgid "Office"
+msgstr "I-ofisi"
+
+#: ../addressbook/libebook/e-contact.c:205
+msgid "Title"
+msgstr "Isihloko"
+
+#: ../addressbook/libebook/e-contact.c:206
+msgid "Role"
+msgstr "Umsebenzi"
+
+#: ../addressbook/libebook/e-contact.c:207
+msgid "Manager"
+msgstr "Umphathi"
+
+#: ../addressbook/libebook/e-contact.c:208
+msgid "Assistant"
+msgstr "Umncedisi"
+
+#. Web fields
+#: ../addressbook/libebook/e-contact.c:211
+msgid "Homepage URL"
+msgstr "Iphepha lokuqala le-URL"
+
+#: ../addressbook/libebook/e-contact.c:212
+msgid "Weblog URL"
+msgstr "I-Weblog ye-URL"
+
+#: ../addressbook/libebook/e-contact.c:213
+msgid "Video Conferencing URL"
+msgstr "Inkomfa yeVidiyo ye-URL"
+
+#. Photo/Logo
+#: ../addressbook/libebook/e-contact.c:216
+msgid "Photo"
+msgstr "Umfanekiso"
+
+#: ../addressbook/libebook/e-contact.c:217
+msgid "Logo"
+msgstr "I-Logo"
+
+#. Security fields
+#: ../addressbook/libebook/e-contact.c:220
+msgid "X.509 Certificate"
+msgstr "Isatifiketi se-X.509"
+
+#. Contact categories
+#: ../addressbook/libebook/e-contact.c:223
+msgid "Category List"
+msgstr "Uluhlu Lweendidi"
+
+#: ../addressbook/libebook/e-contact.c:224
+#: ../libedataserverui/e-categories-dialog.c:408
+msgid "Categories"
+msgstr "Iindidi"
+
+#. Collaboration fields
+#: ../addressbook/libebook/e-contact.c:227
+msgid "Calendar URI"
+msgstr "Ikhalenda i-URI"
+
+#: ../addressbook/libebook/e-contact.c:228
+msgid "Free/Busy URL"
+msgstr "Engahlawulwayo/Exakekileyo i-URL"
+
+#: ../addressbook/libebook/e-contact.c:229
+msgid "ICS Calendar"
+msgstr "Ikhalenda i-ICS"
+
+#. Misc fields
+#: ../addressbook/libebook/e-contact.c:232
+msgid "Spouse's Name"
+msgstr "Igama Lomyeni/Lenkosikazi"
+
+#: ../addressbook/libebook/e-contact.c:233
+msgid "Note"
+msgstr "Qaphela"
+
+#: ../addressbook/libebook/e-contact.c:235
+msgid "Birth Date"
+msgstr "Umhla Wokuzalwa"
+
+#: ../addressbook/libebook/e-contact.c:236
+msgid "Anniversary"
+msgstr "Isikhumbuzo"
+
+#: ../addressbook/libebook/e-contact.c:238
+msgid "List"
+msgstr "Uluhlu"
+
+#: ../addressbook/libebook/e-contact.c:239
+msgid "List Show Addresses"
+msgstr "Olu Luhlu Lubonisa Iidilesi"
+
+#: ../addressbook/libebook/e-contact.c:241
+msgid "Last Revision"
+msgstr "Uphengululo Lokugqibela"
+
+#: ../addressbook/libebook/e-contact.c:1210
+#: ../addressbook/libebook/e-destination.c:617
+msgid "Unnamed List"
+msgstr "Uluhlu Olungenagama"
+
+#. Set category and visibility
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:446
+#: ../libedataserver/e-categories.c:226
+msgid "Birthday"
+msgstr "Umhla Wokuzalwa"
+
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:470
+#, c-format
+msgid "Birthday: %s"
+msgstr "Umhla Wokuzalwa: %s"
+
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#, c-format
+msgid "Anniversary: %s"
+msgstr "Isikhumbuzo: %s"
+
+#: ../calendar/backends/file/e-cal-backend-file.c:193
+msgid "Can't save calendar data: Malformed URI."
+msgstr "Ayikwazi ukugcina i-data yekhalenda: I-URI ayimanga kakuhle."
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:293
+msgid "Reply Requested: by "
+msgstr "Kucelwe Impendulo: ngu-"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:298
+msgid "Reply Requested: When convenient"
+msgstr "Kucelwa Impendulo: Xa unexesha"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:529
+msgid "Invalid server URI"
+msgstr "Iseva ye-URI engagunyaziswanga"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:560
+#, fuzzy
+msgid "Could not create thread for getting deltas"
+msgstr ""
+"Ayikwazanga ukwenza inkqubo enamacandelwana azimeleyo okubeka uvimba "
+"wethutyana"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+msgid "Calendar"
+msgstr "Ikhalenda"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:829
+#: ../calendar/backends/http/e-cal-backend-http.c:495
+#: ../calendar/backends/weather/e-cal-backend-weather.c:444
+msgid "Could not create cache file"
+msgstr "Ayikwazanga ukwenza ifayili yovimba wethutyana"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+msgid "Could not create thread for populating cache"
+msgstr ""
+"Ayikwazanga ukwenza inkqubo enamacandelwana azimeleyo okubeka uvimba "
+"wethutyana"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
+#: ../calendar/libecal/e-cal.c:4537
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:667
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:691
+#: ../camel/providers/groupwise/camel-groupwise-store.c:528
+#: ../camel/providers/groupwise/camel-groupwise-store.c:628
+#: ../camel/providers/groupwise/camel-groupwise-store.c:790
+#: ../camel/providers/groupwise/camel-groupwise-store.c:988
+msgid "Authentication failed"
+msgstr "Ubungqina abuphumelelanga"
+
+# Capitalisation
+#: ../calendar/backends/http/e-cal-backend-http.c:240
+#, fuzzy
+msgid "Redirected to Invalid URI"
+msgstr "Ukuyisa kwelinye icala akugunyaziswanga yi-URI"
+
+#: ../calendar/backends/http/e-cal-backend-http.c:264
+msgid "Bad file format."
+msgstr "Ubume befayili obungalunganga."
+
+#: ../calendar/backends/http/e-cal-backend-http.c:270
+msgid "Not a calendar."
+msgstr "Asiyokhalenda le."
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:140
+msgid "Could not retrieve weather data"
+msgstr "Ayikwazanga ukufumana i-data yemozulu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:194
+msgid "Fair"
+msgstr "Intle"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:195
+msgid "Snow showers"
+msgstr "Ikhephu eliwa okwethutyana"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:196
+msgid "Snow"
+msgstr "Ikhephu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:197
+msgid "Partly cloudy"
+msgstr "Gqaba-gqaba ngamafu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:198
+msgid "Smoke"
+msgstr "Umsi"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:199
+msgid "Thunderstorms"
+msgstr "Iimvula ezikhatshwa zindudumo"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:200
+msgid "Cloudy"
+msgstr "Lisibekele"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:201
+msgid "Drizzle"
+msgstr "Umkhwitsho"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:202
+msgid "Sunny"
+msgstr "Kukho ilanga"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:203
+msgid "Dust"
+msgstr "Uthuli"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:204
+msgid "Clear"
+msgstr "Lisile"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:205
+msgid "Mostly cloudy"
+msgstr "Limathumb'antaka"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:206
+msgid "Windy"
+msgstr "Linomoya"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:207
+msgid "Rain showers"
+msgstr "Imvula ena ithutyana elincinane"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:208
+msgid "Foggy"
+msgstr "Kunkungu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:209
+msgid "Rain/snow mixed"
+msgstr "Umxube wemvula/nekhephu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:210
+msgid "Sleet"
+msgstr "Liyakhithika"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:211
+msgid "Very hot/humid"
+msgstr "Lishushu kakhulu/lifumile"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:212
+msgid "Blizzard"
+msgstr "Uqhwithela olunekhephu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:213
+msgid "Freezing rain"
+msgstr "Imvula Ebanda kakhulu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:214
+msgid "Haze"
+msgstr "Inkungu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:215
+msgid "Blowing snow"
+msgstr "Ikhephu elinomoya"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:216
+msgid "Freezing drizzle"
+msgstr "Umkhwitsho Oqhaqhazelisa amazinyo"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:217
+msgid "Very cold/wind chill"
+msgstr "Kubanda gqitha/umoya obandayo"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:218
+msgid "Rain"
+msgstr "Imvula"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:228
+#: ../calendar/backends/weather/e-cal-backend-weather.c:236
+#: ../calendar/backends/weather/e-cal-backend-weather.c:238
+#: ../calendar/backends/weather/e-cal-backend-weather.c:245
+msgid "Weather: Sunny"
+msgstr "Imozulu: Kukho ilanga"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:229
+#: ../calendar/backends/weather/e-cal-backend-weather.c:230
+#: ../calendar/backends/weather/e-cal-backend-weather.c:246
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+msgid "Weather: Snow"
+msgstr "Imozulu: Ikhephu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:231
+msgid "Weather: Partly Cloudy"
+msgstr "Imozulu: Lithe gqaba-gqaba ngamafu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:232
+#: ../calendar/backends/weather/e-cal-backend-weather.c:237
+#: ../calendar/backends/weather/e-cal-backend-weather.c:242
+#: ../calendar/backends/weather/e-cal-backend-weather.c:248
+msgid "Weather: Fog"
+msgstr "Imozulu: Inkungu"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:233
+msgid "Weather: Thunderstorms"
+msgstr "Imozulu: Iimvula ezikhatshwa zindudumo"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:234
+#: ../calendar/backends/weather/e-cal-backend-weather.c:239
+msgid "Weather: Cloudy"
+msgstr "Imozulu: Lisibekele"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:235
+#: ../calendar/backends/weather/e-cal-backend-weather.c:241
+#: ../calendar/backends/weather/e-cal-backend-weather.c:243
+#: ../calendar/backends/weather/e-cal-backend-weather.c:244
+#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+msgid "Weather: Rain"
+msgstr "Imozulu: Imvula"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:327
+#, c-format
+msgid "%.1f°C - %s"
+msgstr "%.1f°C - %s"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:329
+#, c-format
+msgid "%.1f°F - %s"
+msgstr "%.1f°F - %s"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:332
+#, c-format
+msgid "%.1f/%.1f°C - %s"
+msgstr "%.1f/%.1f°C - %s"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:334
+#, c-format
+msgid "%.1f/%.1f°F - %s"
+msgstr "%.1f/%.1f°F - %s"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:340
+#, c-format
+msgid "%d%% chance of precipitation\n"
+msgstr "%d%% amathuba emvula\n"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:347
+#, c-format
+msgid "%.1fcm snow\n"
+msgstr "%.1fcm ikhephu\n"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:349
+#, c-format
+msgid "%.1fin snow\n"
+msgstr "%.1fin ikhephu\n"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:352
+#, c-format
+msgid "%.1f-%.1fcm snow\n"
+msgstr "%.1f-%.1fcm ikhephu\n"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:354
+#, c-format
+msgid "%.1f-%.1fin snow\n"
+msgstr "%.1f-%.1fin ikhephu\n"
+
+#: ../calendar/libecal/e-cal-component.c:1299
+msgid "Untitled appointment"
+msgstr "Idinga elingenasihloko"
+
+#: ../calendar/libecal/e-cal-recur.c:3996
+msgid "1st"
+msgstr "Loku-1"
+
+#: ../calendar/libecal/e-cal-recur.c:3997
+msgid "2nd"
+msgstr "Lesi-2"
+
+#: ../calendar/libecal/e-cal-recur.c:3998
+msgid "3rd"
+msgstr "Lesi-3"
+
+#: ../calendar/libecal/e-cal-recur.c:3999
+msgid "4th"
+msgstr "Lesi-4"
+
+#: ../calendar/libecal/e-cal-recur.c:4000
+msgid "5th"
+msgstr "Lesi-5"
+
+#: ../calendar/libecal/e-cal-recur.c:4001
+msgid "6th"
+msgstr "Lesi-6"
+
+#: ../calendar/libecal/e-cal-recur.c:4002
+msgid "7th"
+msgstr "Lesi-7"
+
+#: ../calendar/libecal/e-cal-recur.c:4003
+msgid "8th"
+msgstr "Lesi-8"
+
+#: ../calendar/libecal/e-cal-recur.c:4004
+msgid "9th"
+msgstr "Lesi-9"
+
+#: ../calendar/libecal/e-cal-recur.c:4005
+msgid "10th"
+msgstr "Le-10"
+
+#: ../calendar/libecal/e-cal-recur.c:4006
+msgid "11th"
+msgstr "Le-11"
+
+#: ../calendar/libecal/e-cal-recur.c:4007
+msgid "12th"
+msgstr "Le-12"
+
+#: ../calendar/libecal/e-cal-recur.c:4008
+msgid "13th"
+msgstr "Le-13"
+
+#: ../calendar/libecal/e-cal-recur.c:4009
+msgid "14th"
+msgstr "Le-14"
+
+#: ../calendar/libecal/e-cal-recur.c:4010
+msgid "15th"
+msgstr "Le-15"
+
+#: ../calendar/libecal/e-cal-recur.c:4011
+msgid "16th"
+msgstr "Le-16"
+
+#: ../calendar/libecal/e-cal-recur.c:4012
+msgid "17th"
+msgstr "Le-17"
+
+#: ../calendar/libecal/e-cal-recur.c:4013
+msgid "18th"
+msgstr "Le-18"
+
+#: ../calendar/libecal/e-cal-recur.c:4014
+msgid "19th"
+msgstr "Le-19"
+
+#: ../calendar/libecal/e-cal-recur.c:4015
+msgid "20th"
+msgstr "Lama-20"
+
+#: ../calendar/libecal/e-cal-recur.c:4016
+msgid "21st"
+msgstr "Lama-21"
+
+#: ../calendar/libecal/e-cal-recur.c:4017
+msgid "22nd"
+msgstr "Lama-22"
+
+#: ../calendar/libecal/e-cal-recur.c:4018
+msgid "23rd"
+msgstr "Lama-23"
+
+#: ../calendar/libecal/e-cal-recur.c:4019
+msgid "24th"
+msgstr "Lama-24"
+
+#: ../calendar/libecal/e-cal-recur.c:4020
+msgid "25th"
+msgstr "Lama-25"
+
+#: ../calendar/libecal/e-cal-recur.c:4021
+msgid "26th"
+msgstr "Lama-26"
+
+#: ../calendar/libecal/e-cal-recur.c:4022
+msgid "27th"
+msgstr "Lama-27"
+
+#: ../calendar/libecal/e-cal-recur.c:4023
+msgid "28th"
+msgstr "Lama-28"
+
+#: ../calendar/libecal/e-cal-recur.c:4024
+msgid "29th"
+msgstr "Lama-29"
+
+#: ../calendar/libecal/e-cal-recur.c:4025
+msgid "30th"
+msgstr "Lama-30"
+
+#: ../calendar/libecal/e-cal-recur.c:4026
+msgid "31st"
+msgstr "Lama-31"
+
+#: ../calendar/libecal/e-cal-util.c:568 ../calendar/libecal/e-cal-util.c:590
+msgid "High"
+msgstr "Iphakamile"
+
+#: ../calendar/libecal/e-cal-util.c:570 ../calendar/libecal/e-cal-util.c:592
+msgid "Normal"
+msgstr "Iqhelekile"
+
+#: ../calendar/libecal/e-cal-util.c:572 ../calendar/libecal/e-cal-util.c:594
+msgid "Low"
+msgstr "Iphantsi"
+
+#. An empty string is the same as 'None'.
+#: ../calendar/libecal/e-cal-util.c:588
+msgid "Undefined"
+msgstr "Ayichazwanga"
+
+#. actually ask the client for authentication
+#: ../calendar/libecal/e-cal.c:1538 ../libedataserverui/e-book-auth-util.c:191
+#, c-format
+msgid "Enter password for %s (user %s)"
+msgstr "Faka i-password kwi-%s (umsebenzisi %s)"
+
+#: ../calendar/libecal/e-cal.c:4509
+msgid "Invalid argument"
+msgstr "Isiphumezi-miyalelo esingagunyaziswanga"
+
+#: ../calendar/libecal/e-cal.c:4511
+msgid "Backend is busy"
+msgstr "Isiphumezi se-data sisaxakekile"
+
+#: ../calendar/libecal/e-cal.c:4513
+msgid "Repository is offline"
+msgstr "Isisele asikho kwi-intanethi"
+
+#: ../calendar/libecal/e-cal.c:4515
+msgid "No such calendar"
+msgstr "Akukho khalenda injalo"
+
+#: ../calendar/libecal/e-cal.c:4517 ../servers/groupwise/e-gw-connection.c:165
+msgid "Object not found"
+msgstr "Le nto ayifunyanwanga"
+
+#: ../calendar/libecal/e-cal.c:4519 ../servers/groupwise/e-gw-connection.c:159
+msgid "Invalid object"
+msgstr "Into engagunyaziswanga"
+
+#: ../calendar/libecal/e-cal.c:4521
+msgid "URI not loaded"
+msgstr "I-URI ayifakwanga"
+
+#: ../calendar/libecal/e-cal.c:4523
+msgid "URI already loaded"
+msgstr "I-URI sele ifakiwe"
+
+#: ../calendar/libecal/e-cal.c:4525
+msgid "Permission denied"
+msgstr "Imvume ayivunywanga"
+
+# Capitalisation
+#: ../calendar/libecal/e-cal.c:4527 ../servers/groupwise/e-gw-connection.c:167
+#, fuzzy
+msgid "Unknown User"
+msgstr "Akaziwa lo msebenzisi"
+
+#: ../calendar/libecal/e-cal.c:4529
+msgid "Object ID already exists"
+msgstr "Sele ikho i-ID yale nto"
+
+#: ../calendar/libecal/e-cal.c:4531
+msgid "Protocol not supported"
+msgstr "Lo mthetho wokusebenza awuxhaswanga"
+
+#: ../calendar/libecal/e-cal.c:4533
+msgid "Operation has been cancelled"
+msgstr "Lo msebenzi urhoxisiwe"
+
+#: ../calendar/libecal/e-cal.c:4535
+msgid "Could not cancel operation"
+msgstr "Ayikwazanga ukurhoxisa umsebenzi"
+
+#: ../calendar/libecal/e-cal.c:4539
+#: ../camel/providers/smtp/camel-smtp-transport.c:215
+msgid "Authentication required"
+msgstr "Kufuneka ubungqina"
+
+#: ../calendar/libecal/e-cal.c:4541
+msgid "A CORBA exception has occurred"
+msgstr "Kwenzeke isinxaxhi se-CORBA"
+
+#: ../calendar/libecal/e-cal.c:4543
+#: ../camel/providers/imap/camel-imap-command.c:304
+#: ../camel/providers/imap/camel-imap-command.c:404
+#: ../camel/providers/imap4/camel-imap4-store.c:376
+#: ../camel/providers/pop3/camel-pop3-store.c:535
+#: ../camel/providers/pop3/camel-pop3-store.c:542
+#: ../camel/providers/pop3/camel-pop3-store.c:548
+#: ../servers/groupwise/e-gw-connection.c:173
+msgid "Unknown error"
+msgstr "Impazamo engaziwayo"
+
+#: ../calendar/libecal/e-cal.c:4545
+msgid "No error"
+msgstr "Akukho mpazamo"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:54
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:533
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:753
+#, c-format
+msgid "\"%s\" expects no arguments"
+msgstr "\"%s\" ayilindelanga siphumezi-miyalelo"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:79
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:173
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:207
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:243
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:791
+#, c-format
+msgid "\"%s\" expects one argument"
+msgstr "\"%s\" ilindele isiphumezi-miyalezo esinye"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:85
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:92
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:249
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:477
+#, c-format
+msgid "\"%s\" expects the first argument to be a string"
+msgstr "\"%s\" ilindele ukuba isiphumezi-miyalelo sokuqala sibe libinzana"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:100
+#, c-format
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr ""
+"\"%s\" ilindele ukuba isiphumezi-miyalelo sokuqala sibe yi-ISO 8601 "
+"elibinzana lomhla/ixesha"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:131
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:316
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:471
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:565
+#, c-format
+msgid "\"%s\" expects two arguments"
+msgstr "\"%s\" ilindele iziphumezi-miyalelo ezimbini"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:137
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:179
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:213
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:322
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:571
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:797
+#, c-format
+msgid "\"%s\" expects the first argument to be a time_t"
+msgstr "\"%s\" ilindele ukuba isiphumezi-miyalelo sokuqala sibe time_t"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:145
+#, c-format
+msgid "\"%s\" expects the second argument to be an integer"
+msgstr "\"%s\" ilindele ukuba isiphumezi-miyalelo sesibini sibe linani"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:330
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#, c-format
+msgid "\"%s\" expects the second argument to be a time_t"
+msgstr "\"%s\" ilindele ukuba isiphumezi-miyalelo sesibini sibe time_t"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:485
+#, c-format
+msgid "\"%s\" expects the second argument to be a string"
+msgstr "\"%s\" ilindele ukuba isiphumezi-miyalelo sesibini sibe libinzana"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:505
+#, c-format
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\", or \"location\""
+msgstr ""
+"\"%s\" ilindele ukuba isiphumezi-miyalelo sokuqala sibe ngu \"any\", "
+"\"summary\", okanye \"description\", okanye \"location\""
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:628
+#, c-format
+msgid "\"%s\" expects at least one argument"
+msgstr "\"%s\" ilindele isiphumezi-miyalelo esinye ubuncinane"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:642
+#, c-format
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr ""
+"\"%s\" ilindele ukuba zonke iziphumezi-miyalelo zibe ngamabinzana okanye "
+"esinye kuphela isiphumezi-miyalelo sibe yi-boolean engeyonyaniso (#f)"
+
+#: ../camel/camel-cipher-context.c:103
+msgid "Signing is not supported by this cipher"
+msgstr "Ukusayina akuxhaswanga ngumbhalo ofihlakeleyo"
+
+#: ../camel/camel-cipher-context.c:129
+msgid "Signing message"
+msgstr "Ukusayina umyalezo"
+
+#: ../camel/camel-cipher-context.c:146
+msgid "Verifying is not supported by this cipher"
+msgstr "Ukuqinisekisa akuxhaswanga ngulo mbhalo ufihlakeleyo"
+
+#: ../camel/camel-cipher-context.c:172
+msgid "Verifying message"
+msgstr "Ukuqinisekisa umyalezo"
+
+#: ../camel/camel-cipher-context.c:190
+msgid "Encryption is not supported by this cipher"
+msgstr "Ukukhowuda akuxhaswanga ngulo mbhalo ufihlakeleyo"
+
+#: ../camel/camel-cipher-context.c:216
+msgid "Encrypting message"
+msgstr "Ukukhowuda umyalezo"
+
+#: ../camel/camel-cipher-context.c:233
+msgid "Decryption is not supported by this cipher"
+msgstr "Ukukhupha umyalezo kwikhowudi akuxhaswanga ngulo mbhalo ufihlakeleyo"
+
+#: ../camel/camel-cipher-context.c:255
+msgid "Decrypting message"
+msgstr "Ukukhupha umyalezo kwikhowudi"
+
+#: ../camel/camel-cipher-context.c:272
+msgid "You may not import keys with this cipher"
+msgstr "Awunako ukungenisa izitshixo ngalo mbhalo ufihlakeleyo"
+
+#: ../camel/camel-cipher-context.c:302
+msgid "You may not export keys with this cipher"
+msgstr "Awunako ukukhupha izitshixo ngalo mbhalo ufihlakeleyo"
+
+#: ../camel/camel-data-cache.c:134
+msgid "Unable to create cache path"
+msgstr "Ayinako ukwenza indlela yovimba wethutyana"
+
+#: ../camel/camel-data-cache.c:376
+#, c-format
+msgid "Could not remove cache entry: %s: %s"
+msgstr "Ayinako ukususa ingeniso yovimba wethutyana: %s: %s"
+
+#: ../camel/camel-disco-diary.c:195
+#, c-format
+msgid ""
+"Could not write log entry: %s\n"
+"Further operations on this server will not be replayed when you\n"
+"reconnect to the network."
+msgstr ""
+"Ayikwazi ukubhala isingeniso sengxelo yokwenzekileyo: %s\n"
+"Eminye imisebenzi ekule seva ayinakuboniswa ngelixa\n"
+"uphinda unxulumana kwi-intanethi."
+
+#: ../camel/camel-disco-diary.c:258
+#, c-format
+msgid ""
+"Could not open `%s':\n"
+"%s\n"
+"Changes made to this folder will not be resynchronized."
+msgstr ""
+"Ayikwazanga ukuvula `%s':\n"
+"%s\n"
+"Iinguqu ezenziwe kwesi siqulathi seefayili azinakuphinda zenziwe ngaxeshanye."
+
+#: ../camel/camel-disco-diary.c:294
+msgid "Resynchronizing with server"
+msgstr "Ukuphinda uzenze ngaxeshanye neseva"
+
+#: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:51
+msgid "Copy folder content locally for offline operation"
+msgstr ""
+"Kopela okuqulethwe sisiqulathi seefayili ukuze usebenze ungekho kwi-intanethi"
+
+#: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:110
+msgid "Downloading new messages for offline mode"
+msgstr "Ukukhuphela ulwazi lwemiyalezo emitsha ungekho kwi-intanethi"
+
+#: ../camel/camel-disco-folder.c:467
+#, c-format
+msgid "Preparing folder '%s' for offline"
+msgstr ""
+"Ukulungisa isiqulathi seefayili '%s' oza kusisebenzisa ungekho kwi-intanethi"
+
+#: ../camel/camel-disco-store.c:405
+msgid "You must be working online to complete this operation"
+msgstr ""
+"Kufuneka ube usebenza kwi-intanethi ukuze ubenako ukugqibezela lo msebenzi"
+
+#: ../camel/camel-filter-driver.c:701 ../camel/camel-filter-search.c:523
+#, c-format
+msgid "Failed to create pipe to '%s': %s"
+msgstr "Ayiphumelelanga ukwenza umbhobho kwi- '%s': %s"
+
+#: ../camel/camel-filter-driver.c:745
+#, c-format
+msgid "Failed to create child process '%s': %s"
+msgstr "Ayiphumelelanga ukwenza inkqubo engumntwana '%s': %s"
+
+#: ../camel/camel-filter-driver.c:788
+#, c-format
+msgid "Invalid message stream received from %s: %s"
+msgstr "Ijelo lomyalezo elingagunyaziswanga livela %s: %s"
+
+#: ../camel/camel-filter-driver.c:977 ../camel/camel-filter-driver.c:986
+msgid "Syncing folders"
+msgstr "Ukwenza iziqulathi zeefayili zisebenze ngaxeshanye"
+
+#: ../camel/camel-filter-driver.c:1075 ../camel/camel-filter-driver.c:1453
+#, c-format
+msgid "Error parsing filter: %s: %s"
+msgstr "Kwenzeke impazamo xa kusahlulwa isihluzi ngezijungqu: %s: %s"
+
+#: ../camel/camel-filter-driver.c:1084 ../camel/camel-filter-driver.c:1462
+#, c-format
+msgid "Error executing filter: %s: %s"
+msgstr "Kwenzeke impazamo za kuphunyezwa isihluzi: %s: %s"
+
+#: ../camel/camel-filter-driver.c:1151
+msgid "Unable to open spool folder"
+msgstr "Ayinako ukuvula ibhobhini yesiqulathi seefayili"
+
+#: ../camel/camel-filter-driver.c:1160
+msgid "Unable to process spool folder"
+msgstr "Ayinako ukuphumeza ibhobhini yesiqulathi seefayili"
+
+#: ../camel/camel-filter-driver.c:1175
+#, c-format
+msgid "Getting message %d (%d%%)"
+msgstr "Ukufumana umyalezo %d (%d%%)"
+
+#: ../camel/camel-filter-driver.c:1179
+msgid "Cannot open message"
+msgstr "Ayikwazi ukuvula umyalezo"
+
+#: ../camel/camel-filter-driver.c:1180 ../camel/camel-filter-driver.c:1192
+#, c-format
+msgid "Failed on message %d"
+msgstr "Ayiphumelelanga kumyalezo %d"
+
+#: ../camel/camel-filter-driver.c:1206 ../camel/camel-filter-driver.c:1297
+msgid "Syncing folder"
+msgstr "Ukwenza isiqulathi seefayili sisebenze ngaxeshanye"
+
+#: ../camel/camel-filter-driver.c:1210 ../camel/camel-filter-driver.c:1302
+msgid "Complete"
+msgstr "Gqibezela"
+
+# Please translate "of"
+#: ../camel/camel-filter-driver.c:1267
+#, fuzzy, c-format
+msgid "Getting message %d of %d"
+msgstr "Ukufumana umyalezo %d of %d"
+
+# Please translate "of"
+#: ../camel/camel-filter-driver.c:1282
+#, fuzzy, c-format
+msgid "Failed at message %d of %d"
+msgstr "Ayiphumelelanga kumyalezo %d of %d"
+
+#: ../camel/camel-filter-search.c:136
+msgid "Failed to retrieve message"
+msgstr "Ayiphumelelanga ukufumana umyalezo"
+
+#: ../camel/camel-filter-search.c:396
+msgid "Invalid arguments to (system-flag)"
+msgstr "Isiphumezi-miyalezo esingaqinisekiswanga esiya (system-flag)"
+
+#: ../camel/camel-filter-search.c:411
+msgid "Invalid arguments to (user-tag)"
+msgstr "Isiphumezi-miyalezo esingaqinisekiswanga esiya (user-tag)"
+
+#: ../camel/camel-filter-search.c:559
+#, c-format
+msgid "Failed to create create child process '%s': %s"
+msgstr "Ayiphumelelanga ukwenza inkqubo engumntwana '%s': %s"
+
+#. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
+#: ../camel/camel-filter-search.c:682 ../camel/camel-filter-search.c:690
+#, c-format
+msgid "Error executing filter search: %s: %s"
+msgstr "Kwenzeke impazamo xa bekuphunyezwa ukukhangela kwesi sihluzi: %s: %s"
+
+#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:478
+#, c-format
+msgid ""
+"Cannot parse search expression: %s:\n"
+"%s"
+msgstr ""
+"Ayikwazanga ukwahlula imbonakalo yokukhangela ngokwezijungqu: %s\n"
+"%s"
+
+#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:488
+#, c-format
+msgid ""
+"Error executing search expression: %s:\n"
+"%s"
+msgstr ""
+"Kwenzeke impazamo ekwahluleni imbonakalo yokukhangela ngokwezijungqu: %s\n"
+"%s"
+
+#: ../camel/camel-folder-search.c:674 ../camel/camel-folder-search.c:707
+msgid "(match-all) requires a single bool result"
+msgstr "(match-all) kufuna isiphumo se-bool enye"
+
+# match-all must appear verbatim in translation
+#: ../camel/camel-folder-search.c:757
+#, fuzzy
+msgid "(match-threads) not allowed inside match-all"
+msgstr "(match-threads) ezingavunyelwayo kwinkqubo yokufanisa zonke"
+
+#: ../camel/camel-folder-search.c:760 ../camel/camel-folder-search.c:764
+msgid "(match-threads) requires a match type string"
+msgstr "(match-threads) ezifunekayo ukufanisa uhlobo lwebinzana"
+
+#: ../camel/camel-folder-search.c:786
+msgid "(match-threads) expects an array result"
+msgstr "(match-threads) lindela isiphumo esimiswe ngezintlu"
+
+#: ../camel/camel-folder-search.c:792
+msgid "(match-threads) requires the folder set"
+msgstr "(match-threads) ifuna isethi yesiqulathi seefayili"
+
+#: ../camel/camel-folder-search.c:881
+#, c-format
+msgid "Performing query on unknown header: %s"
+msgstr "Ibuza umbuzo kwisihloko esingaziwayo: %s"
+
+#: ../camel/camel-folder.c:610
+#, c-format
+msgid "Unsupported operation: append message: for %s"
+msgstr "Awuxhaswanga lo msebenzi: isihlomelo somyalezo: we- %s"
+
+#: ../camel/camel-folder.c:1200
+#, c-format
+msgid "Unsupported operation: search by expression: for %s"
+msgstr "Awuxhaswanga lo msebenzi: khangela ngentetho: ye- %s"
+
+#: ../camel/camel-folder.c:1240
+#, c-format
+msgid "Unsupported operation: search by uids: for %s"
+msgstr "Umsebenzi ongaxhaswanga: ukukhangela nge-uid: ye- %s"
+
+#: ../camel/camel-folder.c:1352
+msgid "Moving messages"
+msgstr "Ukushenxisa imiyalezo"
+
+#: ../camel/camel-folder.c:1352
+msgid "Copying messages"
+msgstr "Ukukopa imiyalezo"
+
+#: ../camel/camel-folder.c:1601
+msgid "Learning junk"
+msgstr "Ukufunda okungasebenziyo"
+
+#: ../camel/camel-folder.c:1618
+msgid "Learning non-junk"
+msgstr "Ukufunda okusebenzayo"
+
+#: ../camel/camel-folder.c:1637
+msgid "Filtering new message(s)"
+msgstr "Ukuhluza um(imi)yalezo omtsha"
+
+#: ../camel/camel-gpg-context.c:734
+#, c-format
+msgid ""
+"Unexpected GnuPG status message encountered:\n"
+"\n"
+"%s"
+msgstr ""
+"Kufumaneke ubume obungalindelekanga bomyalezo we-GnuPG:\n"
+"\n"
+"%s"
+
+#: ../camel/camel-gpg-context.c:748
+msgid "Failed to parse gpg userid hint."
+msgstr "Ayiphumelelanga ukwahlula i-gpg userid hint ngezijungqu."
+
+#: ../camel/camel-gpg-context.c:772
+msgid "Failed to parse gpg passphrase request."
+msgstr ""
+"Ayiphumelelanga ukwahlula isicelo sebinzana lokudlulisa i-gpg ngezijungqu."
+
+#: ../camel/camel-gpg-context.c:786
+#, c-format
+msgid ""
+"You need a passphrase to unlock the key for\n"
+"user: \"%s\""
+msgstr ""
+"Kufuneka ibinzana lokudlula ukuvula esi sitshixo se\n"
+"umsebenzisi: \"%s\""
+
+#: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
+#: ../camel/providers/nntp/camel-nntp-store.c:1275
+msgid "Cancelled."
+msgstr "Irhoxisiwe."
+
+#: ../camel/camel-gpg-context.c:821
+msgid "Failed to unlock secret key: 3 bad passphrases given."
+msgstr ""
+"Ayiphumelelanga ukuvula isitshixo seqhosha lehlebo: Kunikwe amabinzana "
+"angalunganga okudlula ade ama-3."
+
+#: ../camel/camel-gpg-context.c:827
+#, c-format
+msgid "Unexpected response from GnuPG: %s"
+msgstr "Impendulo engalindelekanga evela kwi-GnuPG: %s"
+
+#: ../camel/camel-gpg-context.c:879
+msgid "Failed to encrypt: No valid recipients specified."
+msgstr "Ayiphumelelanga ukukhowuda: Akaqinisekiswanga lo mamkeli uchaziweyo."
+
+#. always called on an i/o error
+#: ../camel/camel-gpg-context.c:1138 ../camel/camel-gpg-context.c:1262
+#: ../camel/camel-gpg-context.c:1687 ../camel/camel-gpg-context.c:1732
+#, c-format
+msgid "Failed to execute gpg: %s"
+msgstr "Ayiphumelelanga ukuphumeza i-gpg: %s"
+
+#: ../camel/camel-gpg-context.c:1230 ../camel/camel-smime-context.c:389
+#, c-format
+msgid "Could not generate signing data: %s"
+msgstr "Ayikwazanga ukuvelisa i-data yokusayina: %s"
+
+#: ../camel/camel-gpg-context.c:1277 ../camel/camel-gpg-context.c:1437
+#: ../camel/camel-gpg-context.c:1519 ../camel/camel-gpg-context.c:1534
+#: ../camel/camel-gpg-context.c:1623 ../camel/camel-gpg-context.c:1638
+#: ../camel/camel-gpg-context.c:1703 ../camel/camel-gpg-context.c:1748
+msgid "Failed to execute gpg."
+msgstr "Ayiphumelelanga ukuphumeza i-gpg."
+
+#: ../camel/camel-gpg-context.c:1296
+msgid "This is a digitally signed message part"
+msgstr "Le yinxalenye yomyalezo osayinwe ngokulandelana kwamanani"
+
+#: ../camel/camel-gpg-context.c:1377 ../camel/camel-gpg-context.c:1383
+#: ../camel/camel-gpg-context.c:1389 ../camel/camel-smime-context.c:692
+#: ../camel/camel-smime-context.c:703 ../camel/camel-smime-context.c:710
+msgid "Cannot verify message signature: Incorrect message format"
+msgstr ""
+"Ayikwazi ukuqinisekisa usayino lomyalezo: Ubume bomyalezo abuchanekanga"
+
+#: ../camel/camel-gpg-context.c:1423
+#, c-format
+msgid "Cannot verify message signature: could not create temp file: %s"
+msgstr ""
+"Ayikwazi ukuqinisekisa usayino lomyalezo: ayikwazanga ukwenza ifayili "
+"yexeshana: %s"
+
+#: ../camel/camel-gpg-context.c:1502
+#, c-format
+msgid "Could not generate encrypting data: %s"
+msgstr "Ayikwazanga ukuvelisa i-data yokukhowuda: %s"
+
+#: ../camel/camel-gpg-context.c:1552
+msgid "This is a digitally encrypted message part"
+msgstr "Le yinxalenye yomyalezo ekhowudwe ngamanani"
+
+#: ../camel/camel-gpg-context.c:1603
+msgid "Failed to decrypt MIME part: protocol error"
+msgstr ""
+"Ayikwazanga ukukhupha icala le-MIME kwikhowudi: Impazamo kumthetho "
+"wokusebenza"
+
+#: ../camel/camel-gpg-context.c:1645 ../camel/camel-smime-context.c:966
+msgid "Encrypted content"
+msgstr "Isiqulatho esikhowudiweyo"
+
+#: ../camel/camel-gpg-context.c:1664
+msgid "Unable to parse message content"
+msgstr "Ayikwazanga ukwahlula umyalezo ngezijungqu"
+
+#: ../camel/camel-gpg-context.c:1688 ../camel/camel-gpg-context.c:1733
+#: ../camel/camel-tcp-stream-openssl.c:631
+#: ../camel/providers/imap4/camel-imap4-engine.c:1550
+#: ../camel/providers/imap4/camel-imap4-engine.c:1589
+#: ../camel/providers/imap4/camel-imap4-engine.c:1634
+#: ../camel/providers/imap4/camel-imap4-engine.c:1690
+#: ../camel/providers/imap4/camel-imap4-store.c:1434
+#: ../camel/providers/imap4/camel-imap4-utils.c:575
+#: ../camel/providers/smtp/camel-smtp-transport.c:163
+#: ../camel/providers/smtp/camel-smtp-transport.c:218
+msgid "Unknown"
+msgstr "Ayaziwa"
+
+#: ../camel/camel-lock-client.c:100
+#, c-format
+msgid "Cannot build locking helper pipe: %s"
+msgstr "Ayikwazi ukwakha umbhobho wokutshixa uncedo: %s"
+
+#: ../camel/camel-lock-client.c:113
+#, c-format
+msgid "Cannot fork locking helper: %s"
+msgstr "Ayikwazi ukubuyisa umncedisi otshixayo: %s"
+
+# lock-helper should appear verbatim in translation
+#: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
+#, fuzzy, c-format
+msgid "Could not lock '%s': protocol error with lock-helper"
+msgstr ""
+"Ayikwazanga ukutshixa'%s': kwenzeke impazamo kumthetho wokusebenza "
+"nomncedisi wokutshixa"
+
+#: ../camel/camel-lock-client.c:204
+#, c-format
+msgid "Could not lock '%s'"
+msgstr "Ayikwazanga ukutshixa '%s'"
+
+#: ../camel/camel-lock.c:92 ../camel/camel-lock.c:113
+#, c-format
+msgid "Could not create lock file for %s: %s"
+msgstr "Ayikwazanga ukwenza ifayili yokutshixa ye- %s: %s"
+
+#: ../camel/camel-lock.c:154
+#, c-format
+msgid "Timed out trying to get lock file on %s. Try again later."
+msgstr ""
+"Iphelelwe lixesha isazama ukufumana ifayili yokutshixa kwi- %s. Zama "
+"kwakhona."
+
+#: ../camel/camel-lock.c:209
+#, c-format
+msgid "Failed to get lock using fcntl(2): %s"
+msgstr "Ayiphumelelanga ukufumana isitshixo isebenzisa i-fcntl(2): %s"
+
+# flock(2) should appear verbatim in translation
+#: ../camel/camel-lock.c:272
+#, fuzzy, c-format
+msgid "Failed to get lock using flock(2): %s"
+msgstr "Ayiphumelelanga ukufumana isitshixo isebenzisa umhlambi(2): %s"
+
+#: ../camel/camel-movemail.c:104
+#, c-format
+msgid "Could not check mail file %s: %s"
+msgstr "Ayikwazi ukukhangela ifayili ye-imeyile %s: %s"
+
+#: ../camel/camel-movemail.c:117
+#, c-format
+msgid "Could not open mail file %s: %s"
+msgstr "Ayikwazi ukuvula ifayili ye-imeyile %s: %s"
+
+#: ../camel/camel-movemail.c:125
+#, c-format
+msgid "Could not open temporary mail file %s: %s"
+msgstr "Ayikwazi ukuvula ifayili ye-imeyile yexeshana %s: %s"
+
+#: ../camel/camel-movemail.c:154
+#, c-format
+msgid "Failed to store mail in temp file %s: %s"
+msgstr "Akuphumelelanga ukugcina i-imeyile kwifayili yexeshana %s: %s"
+
+#: ../camel/camel-movemail.c:184
+#, c-format
+msgid "Could not create pipe: %s"
+msgstr "Ayikwazanga ukwenza umbhobho: %s"
+
+#: ../camel/camel-movemail.c:196
+#, c-format
+msgid "Could not fork: %s"
+msgstr "Ayikwazanga ukubuyisa: %s"
+
+# Movemail is the name of an application - should appear verbatim in translation
+#: ../camel/camel-movemail.c:234
+#, fuzzy, c-format
+msgid "Movemail program failed: %s"
+msgstr "Akuphumelelanga ukushenxisa inkqubo ye-imeyili: %s"
+
+#: ../camel/camel-movemail.c:235
+msgid "(Unknown error)"
+msgstr "(Impazamo engaziwayo)"
+
+#: ../camel/camel-movemail.c:258
+#, c-format
+msgid "Error reading mail file: %s"
+msgstr "Kwenzeke impazamo ngelixa kufundwa ifayili ye-imeyile: %s"
+
+#: ../camel/camel-movemail.c:269
+#, c-format
+msgid "Error writing mail temp file: %s"
+msgstr "Kwenzeke impazamo ngelixa kubhalwa ifayili ye-imeyile yexeshana: %s"
+
+#: ../camel/camel-movemail.c:462 ../camel/camel-movemail.c:529
+#, c-format
+msgid "Error copying mail temp file: %s"
+msgstr "Kwenzeke impazamo ngelixa ikopa ifayili ye-imeyile yexeshana: %s"
+
+#: ../camel/camel-multipart-signed.c:587
+msgid "parse error"
+msgstr "Impazamo xa kusahlulwa ngezijungqu"
+
+#: ../camel/camel-net-utils.c:446 ../camel/camel-net-utils.c:608
+#: ../camel/camel-net-utils.c:739
+#: ../camel/providers/pop3/camel-pop3-store.c:448
+#: ../camel/providers/pop3/camel-pop3-store.c:529
+msgid "Cancelled"
+msgstr "Irhoxisiwe"
+
+#: ../camel/camel-net-utils.c:465
+msgid "cannot create thread"
+msgstr "ayikwazi ukwenza inkqubo enamacandelwana azimeleyo"
+
+#: ../camel/camel-net-utils.c:612
+#, c-format
+msgid "Resolving: %s"
+msgstr "Isasombulula: %s"
+
+#: ../camel/camel-net-utils.c:634
+msgid "Host lookup failed"
+msgstr "Akuphumelelanga ukukhangela umququzeleli"
+
+#: ../camel/camel-net-utils.c:636
+#, c-format
+msgid "Host lookup failed: %s: %s"
+msgstr "Akuphumelelanga ukukhangela umququzeleli: %s: %s"
+
+#: ../camel/camel-net-utils.c:743
+msgid "Resolving address"
+msgstr "Isasombulula idilesi"
+
+#: ../camel/camel-net-utils.c:763
+msgid "Name lookup failed"
+msgstr "Ukukhangela igama akuphumelelanga"
+
+#: ../camel/camel-net-utils.c:766
+#, c-format
+msgid "Name lookup failed: %s"
+msgstr "Ukukhangela igama akuphumelelanga: %s"
+
+#: ../camel/camel-offline-folder.c:253
+#, c-format
+msgid "Syncing messages in folder '%s' to disk"
+msgstr ""
+"Ukwenza imiyalezo ekwesi siqulathi seefayili '%s' isebenze ngaxeshanye "
+"kwidiski"
+
+#: ../camel/camel-offline-journal.c:141 ../camel/camel-offline-journal.c:164
+#, c-format
+msgid "Cannot write offline journal for folder `%s': %s"
+msgstr ""
+"Ayikwazi ukubhala ijenali yesiqulathi seefayili ingekho kwi-intanethi `%s': %"
+"s"
+
+#: ../camel/camel-provider.c:59
+msgid "Virtual folder email provider"
+msgstr "Isiqulathi seefayili yenyani yesinikezeli se-imeyili"
+
+#: ../camel/camel-provider.c:61
+msgid "For reading mail as a query of another set of folders"
+msgstr ""
+"Ngokufunda i-imeyili njengombuzo wezinye ii-sethi zeziqulathi zeefayili"
+
+#: ../camel/camel-provider.c:185
+#, c-format
+msgid "Could not load %s: Module loading not supported on this system."
+msgstr ""
+"Ayikwazanga ukufaka %s: Ukufaka le modyuli akuxhaswa kwesi sixokelelwano."
+
+#: ../camel/camel-provider.c:194
+#, c-format
+msgid "Could not load %s: %s"
+msgstr "Ayikwazanga ukufaka %s: %s"
+
+#: ../camel/camel-provider.c:202
+#, c-format
+msgid "Could not load %s: No initialization code in module."
+msgstr "Ayikwazanga ukufaka %s: Ayikho ikhowudi yokuyiqalisa kule modyuli."
+
+#: ../camel/camel-provider.c:374 ../camel/camel-session.c:161
+#, c-format
+msgid "No provider available for protocol `%s'"
+msgstr "Akakho umnikezeli ofumanekayo kulo mthetho wokusebenza `%s'"
+
+#: ../camel/camel-sasl-anonymous.c:35
+msgid "Anonymous"
+msgstr "Ayinagama"
+
+#: ../camel/camel-sasl-anonymous.c:37
+msgid "This option will connect to the server using an anonymous login."
+msgstr "Olu khetho luza kunxulumana kwiseva lusebenzisa ukungena okungenagama."
+
+#: ../camel/camel-sasl-anonymous.c:112 ../camel/camel-sasl-plain.c:88
+msgid "Authentication failed."
+msgstr "Abuphumelelanga ubungqina."
+
+#: ../camel/camel-sasl-anonymous.c:121
+#, c-format
+msgid ""
+"Invalid email address trace information:\n"
+"%s"
+msgstr ""
+"Ulwazi lokulandela idilesi ye-imeyili engaqinisekiswanga:\n"
+"%s"
+
+#: ../camel/camel-sasl-anonymous.c:133
+#, c-format
+msgid ""
+"Invalid opaque trace information:\n"
+"%s"
+msgstr ""
+"Ulwazi lokulandela into eluzizi engaqinisekiswanga::\n"
+"%s"
+
+#: ../camel/camel-sasl-anonymous.c:145
+#, c-format
+msgid ""
+"Invalid trace information:\n"
+"%s"
+msgstr ""
+"Ulwazi lokulandela aluqinisekiswanga:\n"
+"%s"
+
+#: ../camel/camel-sasl-cram-md5.c:36
+msgid "CRAM-MD5"
+msgstr "CRAM-MD5"
+
+#: ../camel/camel-sasl-cram-md5.c:38
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva lusebenzisa i-password elikhuselekileyo "
+"le-CRAM-MD5, ukuba liyaxhaswa yiseva."
+
+#: ../camel/camel-sasl-digest-md5.c:49
+msgid "DIGEST-MD5"
+msgstr "DIGEST-MD5"
+
+#: ../camel/camel-sasl-digest-md5.c:51
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva lusebenzisa i-password elikhuselekileyo "
+"leDIGEST-MD5, ukuba liyaxhaswa yiseva."
+
+#: ../camel/camel-sasl-digest-md5.c:814
+msgid "Server challenge too long (>2048 octets)\n"
+msgstr "Ukucela umngeni kwiseva kuthande ukolula kakhulu (>2048 octets)\n"
+
+#: ../camel/camel-sasl-digest-md5.c:823
+msgid "Server challenge invalid\n"
+msgstr "Akuqinisekiswanga ukucela umngeni\n"
+
+#: ../camel/camel-sasl-digest-md5.c:829
+msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
+msgstr ""
+"Ukucela umngeni okuqulathiweyo akuqinisekiswanga \"Quality of Protection\" "
+"umqondiso\n"
+
+#: ../camel/camel-sasl-digest-md5.c:859
+msgid "Server response did not contain authorization data\n"
+msgstr "Impendulo yeseva ayiqulathanga data igunyazisiweyo\n"
+
+#: ../camel/camel-sasl-digest-md5.c:877
+msgid "Server response contained incomplete authorization data\n"
+msgstr "Impendulo yeseva iqulethe isigunyaziso se-data esingaphelelanga\n"
+
+#: ../camel/camel-sasl-digest-md5.c:887
+msgid "Server response does not match\n"
+msgstr "Impendulo yeseva ayihambelani\n"
+
+#: ../camel/camel-sasl-gssapi.c:57
+msgid "GSSAPI"
+msgstr "GSSAPI"
+
+#: ../camel/camel-sasl-gssapi.c:59
+msgid "This option will connect to the server using Kerberos 5 authentication."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva lusebenzisa ubungqina be-Kerberos 5."
+
+#: ../camel/camel-sasl-gssapi.c:157
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
+msgstr ""
+"Le ndlela ichaziweyo ayixhaswanga ngabaqinisekisi abanikiweyo okanye ayaziwa "
+"ngabazalisekisi."
+
+# target_name should appear verbatim in translation
+#: ../camel/camel-sasl-gssapi.c:162
+#, fuzzy
+msgid "The provided target_name parameter was ill-formed."
+msgstr "Awumiswanga kakuhle umda onikiweyo wegama_ekujoliswe kulo."
+
+# target_name should appear verbatim in translation
+#: ../camel/camel-sasl-gssapi.c:165
+#, fuzzy
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
+msgstr ""
+"Umda onikiweyo wegama_ekujoliswe kulo uqulethe uhlobo lwegama "
+"olungaqinisekiswanga okanye olungaxhaswanga."
+
+# input_token and input_chan_bindings should appear verbatim in translation
+#: ../camel/camel-sasl-gssapi.c:169
+#, fuzzy
+msgid ""
+"The input_token contains different channel bindings to those specified via "
+"the input_chan_bindings parameter."
+msgstr ""
+"Lo mqondiso_wengeniso uqulethe amakhonkco ahlukeneyo ejelo kunalawo achazwe "
+"ngokudlula kumda wamakhonkco_engeniso_yejelo."
+
+# input_token should appear verbatim in translation
+#: ../camel/camel-sasl-gssapi.c:174
+#, fuzzy
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
+msgstr ""
+"Lo mqondiso_wengeniso uqulethe usayino olungagunyaziswanga, okanye usayino "
+"olungakwazanga ukuqinisekiswa."
+
+#: ../camel/camel-sasl-gssapi.c:178
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
+msgstr ""
+"Aba baqinisekisi ubanikileyo abaqinisekiswanga ukuba bungaqalisa le meko, "
+"okanye okuphethwe ngaba baqinisekisi akubonisanga ngqiniseko."
+
+#: ../camel/camel-sasl-gssapi.c:183
+msgid "The supplied context handle did not refer to a valid context."
+msgstr "Ukuphathwa kwale meko uyinikileyo akubhekisi kwimeko eqinisekisiweyo."
+
+# input_token should appear verbatim in translation
+#: ../camel/camel-sasl-gssapi.c:186
+#, fuzzy
+msgid "The consistency checks performed on the input_token failed."
+msgstr "Ukuhlola kokuvela ngokufanayo komqondiso_ongenayo akuphumelelanga."
+
+#: ../camel/camel-sasl-gssapi.c:189
+msgid "The consistency checks performed on the credential failed."
+msgstr "Ukuhlola ukungaguquguquki nokwenziwa kubaqinisekisi akuphumelelanga."
+
+#: ../camel/camel-sasl-gssapi.c:192
+msgid "The referenced credentials have expired."
+msgstr "Aba baqinisekisi baphelelwe lixesha."
+
+#: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
+#: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
+#: ../camel/camel-sasl-kerberos4.c:226
+#: ../camel/providers/imap/camel-imap-store.c:1245
+msgid "Bad authentication response from server."
+msgstr "Impendulo yobungqina obungalunganga ivela kwiseva."
+
+#: ../camel/camel-sasl-gssapi.c:307
+msgid "Unsupported security layer."
+msgstr "Eli nqanaba lokhuseleko alixhaswanga."
+
+#: ../camel/camel-sasl-kerberos4.c:42
+msgid "Kerberos 4"
+msgstr "I-Kerberos 4"
+
+#: ../camel/camel-sasl-kerberos4.c:44
+msgid "This option will connect to the server using Kerberos 4 authentication."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva kusetyenziswa ubungqina be-Kerberos 4."
+
+#: ../camel/camel-sasl-kerberos4.c:169
+#, c-format
+msgid ""
+"Could not get Kerberos ticket:\n"
+"%s"
+msgstr ""
+"Ayikwazanga ukufumana itikiti le-Kerberos:\n"
+"%s"
+
+#: ../camel/camel-sasl-login.c:33
+msgid "Login"
+msgstr "Ngena"
+
+#: ../camel/camel-sasl-login.c:35 ../camel/camel-sasl-plain.c:35
+msgid "This option will connect to the server using a simple password."
+msgstr "Olu khetho luza kunxulumana kwiseva lusebenzisa i-password elilula."
+
+#: ../camel/camel-sasl-login.c:128
+msgid "Unknown authentication state."
+msgstr "Imeko yobu bungqina ayaziwa."
+
+#: ../camel/camel-sasl-ntlm.c:32
+msgid "NTLM / SPA"
+msgstr "NTLM / SPA"
+
+#: ../camel/camel-sasl-ntlm.c:34
+msgid ""
+"This option will connect to a Windows-based server using NTLM / Secure "
+"Password Authentication."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva esekelwe kwi-Windows kusetyenziswa i-"
+"NTLM / Ubungqina Be-Password Elikhuselekileyo."
+
+#: ../camel/camel-sasl-plain.c:33
+msgid "PLAIN"
+msgstr "PLAIN"
+
+#: ../camel/camel-sasl-popb4smtp.c:37
+msgid "POP before SMTP"
+msgstr "I-POP phambi kwe-SMTP"
+
+#: ../camel/camel-sasl-popb4smtp.c:39
+msgid "This option will authorise a POP connection before attempting SMTP"
+msgstr "Olu khetho luza kugunyazisa unxulumano lwe-POP phambi kokuzama i-SMTP"
+
+#: ../camel/camel-sasl-popb4smtp.c:104
+msgid "POP Source URI"
+msgstr "I-POP Yomthombo We-URI"
+
+#: ../camel/camel-sasl-popb4smtp.c:107
+msgid "POP Before SMTP auth using an unknown transport"
+msgstr ""
+"Ukugunyaziswa kwe-POP Phambi Kwe-SMTP kusetyenziswa isithuthi esingaziwayo"
+
+#: ../camel/camel-sasl-popb4smtp.c:112
+msgid "POP Before SMTP auth using a non-pop source"
+msgstr ""
+"Ukugunyaziswa kwe-POP Phambi Kwe-SMTP kusetyenziswa umthombo ongeyiyo i-pop"
+
+#: ../camel/camel-search-private.c:151
+#, c-format
+msgid "Regular expression compilation failed: %s: %s"
+msgstr "Ukuqulunqa intetho okuqhelekileyo akuphumelelanga: %s: %s"
+
+#: ../camel/camel-service.c:272
+#, c-format
+msgid "URL '%s' needs a username component"
+msgstr "Le URL '%s' ifuna icandelwana legama lomsebenzisi"
+
+#: ../camel/camel-service.c:276
+#, c-format
+msgid "URL '%s' needs a host component"
+msgstr "Le URL '%s' ifuna icandelwana lomququzeleli"
+
+#: ../camel/camel-service.c:280
+#, c-format
+msgid "URL '%s' needs a path component"
+msgstr "Le URL '%s' ifuna icandelwana lendlela"
+
+#: ../camel/camel-session.c:283
+#, c-format
+msgid ""
+"Could not create directory %s:\n"
+"%s"
+msgstr ""
+"Ayikwazanga ukwenza uvimba weefayili %s:\n"
+"%s"
+
+#: ../camel/camel-smime-context.c:231
+#, c-format
+msgid "Cannot find certificate for '%s'"
+msgstr "Ayikwazi ukufumana isatifiketi se '%s'"
+
+#: ../camel/camel-smime-context.c:237
+msgid "Cannot create CMS message"
+msgstr "Ayikwazi ukwenza umyalezo we-CMS"
+
+#: ../camel/camel-smime-context.c:242
+msgid "Cannot create CMS signed data"
+msgstr "Ayikwazi ukwenza i-data esayiniweyo ye-CMS"
+
+#: ../camel/camel-smime-context.c:248
+msgid "Cannot attach CMS signed data"
+msgstr "Ayikwazi ukuqhoboshela i-data esayiniweyo ye-CMS"
+
+#: ../camel/camel-smime-context.c:255
+msgid "Cannot attach CMS data"
+msgstr "Ayikwazi ukuqhoboshela i-data ye-CMS"
+
+#: ../camel/camel-smime-context.c:261
+msgid "Cannot create CMS Signer information"
+msgstr "Ayikwazi ukwenza ulwazi lomsayini we-CMS"
+
+#: ../camel/camel-smime-context.c:267
+msgid "Cannot find certificate chain"
+msgstr "Ayikwazi ukufumana umxokelelwano wesatifiketi"
+
+#: ../camel/camel-smime-context.c:273
+msgid "Cannot add CMS Signing time"
+msgstr "Ayikwazi ukongeza ixesha le-CMS Lokusayina"
+
+#: ../camel/camel-smime-context.c:295 ../camel/camel-smime-context.c:307
+#, c-format
+msgid "Encryption certificate for '%s' does not exist"
+msgstr "Isatifiketi sokukhowuda se-'%s' asikho"
+
+#: ../camel/camel-smime-context.c:314
+msgid "Cannot add SMIMEEncKeyPrefs attribute"
+msgstr "Ayikwazi ukongeza uphawu lwe-SMIMEEncKeyPref"
+
+#: ../camel/camel-smime-context.c:319
+msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
+msgstr "Ayikwazi ukongeza uphawu lwe-MS SMIMEEncKeyPref"
+
+#: ../camel/camel-smime-context.c:324
+msgid "Cannot add encryption certificate"
+msgstr "Ayikwazi ukongeza isatifiketi sokukhowuda"
+
+#: ../camel/camel-smime-context.c:330
+msgid "Cannot add CMS Signer information"
+msgstr "Ayikwazi ukongeza ulwazi lwe-CMS Lokusayina"
+
+#: ../camel/camel-smime-context.c:400 ../camel/camel-smime-context.c:848
+msgid "Cannot create encoder context"
+msgstr "Ayikwazi ukwenza imeko yokukhowuda"
+
+#: ../camel/camel-smime-context.c:406
+msgid "Failed to add data to CMS encoder"
+msgstr "Ayiphumelelanga ukongeza i-data yokukhowuda kwe-CMS"
+
+#: ../camel/camel-smime-context.c:411 ../camel/camel-smime-context.c:865
+msgid "Failed to encode data"
+msgstr "Ayiphumelelanga ukukhowuda i-data"
+
+#: ../camel/camel-smime-context.c:484
+msgid "Unverified"
+msgstr "Ayiqinisekiswanga"
+
+#: ../camel/camel-smime-context.c:486
+msgid "Good signature"
+msgstr "Usayino olulungileyo"
+
+#: ../camel/camel-smime-context.c:488
+msgid "Bad signature"
+msgstr "Usayino olungalunganga"
+
+#: ../camel/camel-smime-context.c:490
+msgid "Content tampered with or altered in transit"
+msgstr "Okuqulethweyo kuphazanyisiwe okanye kuguqulwe ngelixa kuhanjiswayo"
+
+#: ../camel/camel-smime-context.c:492
+msgid "Signing certificate not found"
+msgstr "Ukusayina isatifiketi akufumanekanga"
+
+#: ../camel/camel-smime-context.c:494
+msgid "Signing certificate not trusted"
+msgstr "Ukusayina isatifiketi akuthembekanga"
+
+#: ../camel/camel-smime-context.c:496
+msgid "Signature algorithm unknown"
+msgstr "Alwaziwa olu sayino lwale mithetho yokubala"
+
+#: ../camel/camel-smime-context.c:498
+msgid "Signature algorithm unsupported"
+msgstr "Aluxhaswanga olu sayino lwale mithetho yokubala"
+
+#: ../camel/camel-smime-context.c:500
+msgid "Malformed signature"
+msgstr "Usayino olungenziwanga kakuhle"
+
+#: ../camel/camel-smime-context.c:502
+msgid "Processing error"
+msgstr "Kusalungiswa impazamo"
+
+#: ../camel/camel-smime-context.c:539
+msgid "No signed data in signature"
+msgstr "Akukho data isayiniweyo kolu sayino"
+
+#: ../camel/camel-smime-context.c:546
+msgid "Digests missing from enveloped data"
+msgstr "Izishwankathelo ezifutshane azifumaneki kwi-Data esongelweyo"
+
+#: ../camel/camel-smime-context.c:559 ../camel/camel-smime-context.c:569
+msgid "Cannot calculate digests"
+msgstr "Ayikwazi ukubala izishwankathelo ezifutshane"
+
+#: ../camel/camel-smime-context.c:574
+msgid "Cannot set message digests"
+msgstr "Ayikwazi ukumisela izishwankathelo ezifutshane zemiyalezo"
+
+#: ../camel/camel-smime-context.c:584 ../camel/camel-smime-context.c:589
+msgid "Certificate import failed"
+msgstr "Ukungenisa isatifiketi akuphumelelanga"
+
+#: ../camel/camel-smime-context.c:599
+msgid "Certificate is the only message, cannot verify certificates"
+msgstr ""
+"Isatifiketi siso sodwa esingumyalezo, ayikwazi ukuqinisekisa izatifiketi"
+
+#: ../camel/camel-smime-context.c:602
+msgid "Certificate is the only message, certificates imported and verified"
+msgstr ""
+"Isatifiketi siso sodwa esingumyalezo, izatifiketi zingenisiwe zaza "
+"zaqinisekiswa"
+
+#: ../camel/camel-smime-context.c:606
+msgid "Cannot find signature digests"
+msgstr "Ayikwazi ukufumana usayino lwezishwankathelo ezifutshane"
+
+#: ../camel/camel-smime-context.c:622
+#, c-format
+msgid "Signer: %s <%s>: %s\n"
+msgstr "Umsayini: %s <%s>: %s\n"
+
+#: ../camel/camel-smime-context.c:723
+msgid "Decoder failed"
+msgstr "Ukukhupha kwikhowudi akuphumelelanga"
+
+#: ../camel/camel-smime-context.c:775
+#, c-format
+msgid "Cannot find certificate for `%s'"
+msgstr "Ayikwazi ukufumana isatifiketi nge- `%s'"
+
+#: ../camel/camel-smime-context.c:782
+msgid "Cannot find common bulk encryption algorithm"
+msgstr ""
+"Ayikwazi ukufumana imithetho yokubala ekhowuda into enininzi neqhelekileyo"
+
+#. PORT_GetError(); ??
+#: ../camel/camel-smime-context.c:791
+msgid "Cannot allocate slot for encryption bulk key"
+msgstr "Ayikwazi ukunika indawo yesitshixo sokukhowuda into eninzi"
+
+#: ../camel/camel-smime-context.c:802
+msgid "Cannot create CMS Message"
+msgstr "Ayikwazi ukwenza Umyalezo we-CMS"
+
+#: ../camel/camel-smime-context.c:808
+msgid "Cannot create CMS Enveloped data"
+msgstr "Ayikwazi ukwenza i-data Esongelweyo ye-CMS"
+
+#: ../camel/camel-smime-context.c:814
+msgid "Cannot attach CMS Enveloped data"
+msgstr "Ayikwazi ukuqhoboshela i-data Esongelweyo ye-CMS"
+
+#: ../camel/camel-smime-context.c:820
+msgid "Cannot attach CMS data object"
+msgstr "Ayikwazi ukuqhoboshela ipakethi yemiyalelo ye-data ye-CMS"
+
+#: ../camel/camel-smime-context.c:829
+msgid "Cannot create CMS Recipient information"
+msgstr "Ayikwazi ukwenza ulwazi Lomamkeli we-CMS"
+
+#: ../camel/camel-smime-context.c:834
+msgid "Cannot add CMS Recipient information"
+msgstr "Ayikwazi ukongeza ulwazi Lomamkeli we-CMS"
+
+#: ../camel/camel-smime-context.c:859
+msgid "Failed to add data to encoder"
+msgstr "Ayikwazanga ukongeza i-data yokukhowuda"
+
+#: ../camel/camel-smime-context.c:946
+#, c-format
+msgid "Decoder failed, error %d"
+msgstr "Ayikwazanga ukukhupha kwikhowudi, kwenzeke impazamo %d"
+
+#: ../camel/camel-smime-context.c:953
+msgid "S/MIME Decrypt: No encrypted content found"
+msgstr ""
+"Ukukhupha kwikhowudi kwe-S/MIME: Akukho kukhowudwa kwesiqulathi "
+"kufumanekileyo"
+
+#: ../camel/camel-smime-context.c:980
+msgid "import keys: unimplemented"
+msgstr "amaqhosha okungeniswayo: akasetyenziswanga"
+
+#: ../camel/camel-smime-context.c:988
+msgid "export keys: unimplemented"
+msgstr "amaqhosha okukhutshwayo: akasetyenziswanga"
+
+#: ../camel/camel-store.c:214
+msgid "Cannot get folder: Invalid operation on this store"
+msgstr ""
+"Ayikwazi ukufumana isiqulathi seefayili: Akuqinisekiswanga ukusebenza kulo "
+"vimba"
+
+#: ../camel/camel-store.c:244
+#, c-format
+msgid "Cannot create folder `%s': folder exists"
+msgstr ""
+"Ayikwazi ukwenza esi siqulathi seefayili `%s': esi siqulathi seefayili sele "
+"sikho"
+
+#: ../camel/camel-store.c:298
+msgid "Cannot create folder: Invalid operation on this store"
+msgstr ""
+"Ayikwazi ukwenza esi siqulathi seefayili: Akuqinisekiswanga ukusebenza kulo "
+"vimba"
+
+#: ../camel/camel-store.c:326
+#, c-format
+msgid "Cannot create folder: %s: folder exists"
+msgstr ""
+"Ayikwazi ukwenza esi siqulathi seefayili: %s: esi siqulathi seefayili sele "
+"sikho"
+
+# Capitalisation
+#: ../camel/camel-store.c:390 ../camel/camel-vee-store.c:367
+#: ../camel/providers/local/camel-maildir-store.c:217
+#, fuzzy, c-format
+msgid "Cannot delete folder: %s: Invalid operation"
+msgstr ""
+"Ayikwazi ukucima esi siqulathi seefayili: %s: oku kusebenza akuqinisekiswanga"
+
+# Capitalisation
+#: ../camel/camel-store.c:440 ../camel/camel-vee-store.c:404
+#: ../camel/providers/local/camel-maildir-store.c:289
+#, fuzzy, c-format
+msgid "Cannot rename folder: %s: Invalid operation"
+msgstr ""
+"Ayikwazi ukusinika igama kwakhona esi siqulathi seefayili:  %s: oku "
+"kusebenza akuqinisekiswanga"
+
+#. the name of the Trash folder, used for deleted messages
+#: ../camel/camel-store.c:779 ../camel/camel-vtrash-folder.c:47
+msgid "Trash"
+msgstr "Umgqomo"
+
+#. the name of the Junk folder, used for spam messages
+#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:49
+msgid "Junk"
+msgstr "Engasebenziyo"
+
+#: ../camel/camel-tcp-stream-openssl.c:568
+msgid "Unable to get issuer's certificate"
+msgstr "Ayinako ukufumana isatifiketi somkhuphi wazo"
+
+#: ../camel/camel-tcp-stream-openssl.c:570
+msgid "Unable to get Certificate Revocation List"
+msgstr "Ayinako ukufumana Uluhlu lokuRhoxisa iSatifiketi"
+
+#: ../camel/camel-tcp-stream-openssl.c:572
+msgid "Unable to decrypt certificate signature"
+msgstr "Ayinako ukukhupha ikhowudi kusayino lwesatifiketi"
+
+#: ../camel/camel-tcp-stream-openssl.c:574
+msgid "Unable to decrypt Certificate Revocation List signature"
+msgstr "Ayinako ukukhupha ikhowudi kusayino Loluhlu lokuRhoxisa iSatifiketi"
+
+#: ../camel/camel-tcp-stream-openssl.c:576
+msgid "Unable to decode issuer's public key"
+msgstr "Ayinako ukukhupha ikhowudi yomkhuphi kwisitshixo sikawonkewonke"
+
+#: ../camel/camel-tcp-stream-openssl.c:578
+msgid "Certificate signature failure"
+msgstr "Ukungaphumeleli kosayino lweSatifiketi"
+
+#: ../camel/camel-tcp-stream-openssl.c:580
+msgid "Certificate Revocation List signature failure"
+msgstr "Ukungaphumeleli kosayino Loluhlu lokuRhoxisa iSatifiketi"
+
+#: ../camel/camel-tcp-stream-openssl.c:582
+msgid "Certificate not yet valid"
+msgstr "Esi satifiketi asikagunyaziswa"
+
+#: ../camel/camel-tcp-stream-openssl.c:584
+msgid "Certificate has expired"
+msgstr "Esi satifiketi sele siphelelwe lixesha"
+
+#: ../camel/camel-tcp-stream-openssl.c:586
+msgid "CRL not yet valid"
+msgstr "I-CRL ayikagunyaziswa"
+
+#: ../camel/camel-tcp-stream-openssl.c:588
+msgid "CRL has expired"
+msgstr "I-CRL iphelelwe lixesha"
+
+#: ../camel/camel-tcp-stream-openssl.c:593
+msgid "Error in CRL"
+msgstr "Kwenzeka impazamo kwi-CRL"
+
+#: ../camel/camel-tcp-stream-openssl.c:595
+msgid "Out of memory"
+msgstr "Iphelelwe nguvimba wolwazi"
+
+#: ../camel/camel-tcp-stream-openssl.c:597
+msgid "Zero-depth self-signed certificate"
+msgstr "Ububanzi obuli-0 besatifiketi ozisayinela sona"
+
+#: ../camel/camel-tcp-stream-openssl.c:599
+msgid "Self-signed certificate in chain"
+msgstr "Isatifiketi ozisayinela sona kumxokelelwano"
+
+#: ../camel/camel-tcp-stream-openssl.c:601
+msgid "Unable to get issuer's certificate locally"
+msgstr "Ayinako ukufumana umkhuphi wesatifiketi wangaphakathi"
+
+#: ../camel/camel-tcp-stream-openssl.c:603
+msgid "Unable to verify leaf signature"
+msgstr "Ayinako ukuqinisekisa usayino ngegqabi"
+
+#: ../camel/camel-tcp-stream-openssl.c:605
+msgid "Certificate chain too long"
+msgstr "Umxokelelwano wesatifiketi mde kakhulu"
+
+#: ../camel/camel-tcp-stream-openssl.c:607
+msgid "Certificate Revoked"
+msgstr "Isatifiketi Sirhoxisiwe"
+
+#: ../camel/camel-tcp-stream-openssl.c:609
+msgid "Invalid Certificate Authority (CA)"
+msgstr "Usomagunya wesatifiketi (CA) akagunyaziswanga"
+
+#: ../camel/camel-tcp-stream-openssl.c:611
+msgid "Path length exceeded"
+msgstr "Ubude bendlela budlulile"
+
+#: ../camel/camel-tcp-stream-openssl.c:613
+msgid "Invalid purpose"
+msgstr "Injongo engaqinisekiswanga"
+
+#: ../camel/camel-tcp-stream-openssl.c:615
+msgid "Certificate untrusted"
+msgstr "Isatifiketi asithembekanga"
+
+#: ../camel/camel-tcp-stream-openssl.c:617
+msgid "Certificate rejected"
+msgstr "Isatifiketi asivunywanga"
+
+#: ../camel/camel-tcp-stream-openssl.c:620
+msgid "Subject/Issuer mismatch"
+msgstr "Isihloko/Umkhuphi asihambelani"
+
+#: ../camel/camel-tcp-stream-openssl.c:622
+msgid "AKID/SKID mismatch"
+msgstr "I-AKID/SKID ayihambelani"
+
+#: ../camel/camel-tcp-stream-openssl.c:624
+msgid "AKID/Issuer serial mismatch"
+msgstr "Iinombolo ezilandelanayo ze-AKID/umkhuphi azihambelani"
+
+#: ../camel/camel-tcp-stream-openssl.c:626
+msgid "Key usage does not support certificate signing"
+msgstr "Ukusebenzisa okungundoqo akukuxhasi ukusayinwa kwesatifiketi"
+
+#: ../camel/camel-tcp-stream-openssl.c:629
+msgid "Error in application verification"
+msgstr "Kwenzeke impazamo ngelixa kuqinisekiswa inkqubo"
+
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:827
+#, c-format
+msgid ""
+"Issuer:            %s\n"
+"Subject:           %s\n"
+"Fingerprint:       %s\n"
+"Signature:         %s"
+msgstr ""
+"Umkhuphi:          %s\n"
+"Isihloko:          %s\n"
+"Uphawu lomnwe:     %s\n"
+"Usayino:           %s"
+
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+msgid "GOOD"
+msgstr "KULUNGILE"
+
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+msgid "BAD"
+msgstr "AKULUNGANGA"
+
+#: ../camel/camel-tcp-stream-openssl.c:704
+#, c-format
+msgid ""
+"Bad certificate from %s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept anyway?"
+msgstr ""
+"Isatifiketi esingalunganga sivela%s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Ingaba unqwenela ukusamkela nakuba sinjalo?"
+
+#. construct our user prompt
+#: ../camel/camel-tcp-stream-ssl.c:837
+#, c-format
+msgid ""
+"SSL Certificate check for %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept?"
+msgstr ""
+"Ukukhangela Isatifiketi se-SSL kwi-%s:\n"
+"\n"
+"%s\n"
+"\n"
+"Ingaba unqwenela ukusamkela?"
+
+#: ../camel/camel-tcp-stream-ssl.c:881
+#, c-format
+msgid ""
+"Certificate problem: %s\n"
+"Issuer: %s"
+msgstr ""
+"Ingxaki ngesatifiketi: %s\n"
+"Umkhuphi: %s"
+
+#: ../camel/camel-tcp-stream-ssl.c:933
+#, c-format
+msgid ""
+"Bad certificate domain: %s\n"
+"Issuer: %s"
+msgstr ""
+"Ummandla ongalunganga wesatifiketi: %s\n"
+"Umkhuphi: %s"
+
+#: ../camel/camel-tcp-stream-ssl.c:951
+#, c-format
+msgid ""
+"Certificate expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"Isatifiketi esiphelelwe lixesha: %s\n"
+"Umkhuphi: %s"
+
+#: ../camel/camel-tcp-stream-ssl.c:968
+#, c-format
+msgid ""
+"Certificate revocation list expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"Uluhlu lokurhoxisa isatifiketi luphelelwe lixesha: %s\n"
+"Umkhuphi: %s"
+
+#: ../camel/camel-url.c:293
+#, c-format
+msgid "Could not parse URL `%s'"
+msgstr "Ayikwazanga ukwahlula le URL `%s' ngezijungqu"
+
+#: ../camel/camel-vee-folder.c:476
+#, c-format
+msgid "Error storing `%s': %s"
+msgstr "Kwenzeke impazamo ngelixa kugcinwa i-`%s': %s"
+
+#: ../camel/camel-vee-folder.c:518
+#, c-format
+msgid "No such message %s in %s"
+msgstr "Akukho myalezo unje %s kwi-%s"
+
+#: ../camel/camel-vee-folder.c:643 ../camel/camel-vee-folder.c:649
+msgid "Cannot copy or move messages into a Virtual Folder"
+msgstr ""
+"Ayikwazi ukukopa okanye ukushenxisa imiyalezo iyise Kwisiqulathi Seefayili "
+"Esiyinyani"
+
+#: ../camel/camel-vee-store.c:100 ../camel/camel-vee-store.c:343
+msgid "Unmatched"
+msgstr "Ayihambelani"
+
+#: ../camel/camel-vee-store.c:390
+#, c-format
+msgid "Cannot delete folder: %s: No such folder"
+msgstr ""
+"Ayikwazi ukucima isiqulathi seefayili: %s: Akukho siqulathi seefayili sinjalo"
+
+#: ../camel/camel-vee-store.c:412
+#, c-format
+msgid "Cannot rename folder: %s: No such folder"
+msgstr ""
+"Ayikwazi ukunika isiqulathi seefayili elinye igama: %s: Akukho siqulathi "
+"seefayili sinjalo"
+
+#: ../camel/camel-vtrash-folder.c:48
+msgid "Cannot copy messages to the Trash folder"
+msgstr "Ayikwazi ukukopa imiyalezo iyise kwisiqulathi seefayili esinguMgqomo"
+
+#: ../camel/camel-vtrash-folder.c:50
+msgid "Cannot copy messages to the Junk folder"
+msgstr ""
+"Ayikwazi ukukopa imiyalezo iyise kwisiqulathi seefayili Ezingasebenziyo"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/imap/camel-imap-folder.c:1980
+#, c-format
+msgid ""
+"Cannot get message: %s\n"
+"  %s"
+msgstr ""
+"Ayikwazi ukufumana umyalezo: %s\n"
+"  %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/imap/camel-imap-folder.c:1980
+#: ../camel/providers/local/camel-maildir-folder.c:245
+#: ../camel/providers/local/camel-mbox-folder.c:340
+#: ../camel/providers/local/camel-mh-folder.c:203
+msgid "No such message"
+msgstr "Akukho myalezo unjalo"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:126
+#: ../camel/providers/imap4/camel-imap4-folder.c:788
+#: ../camel/providers/nntp/camel-nntp-folder.c:157
+#: ../camel/providers/nntp/camel-nntp-folder.c:233
+#: ../camel/providers/nntp/camel-nntp-folder.c:372
+#: ../camel/providers/pop3/camel-pop3-folder.c:263
+#: ../camel/providers/pop3/camel-pop3-folder.c:431
+#: ../camel/providers/pop3/camel-pop3-folder.c:492
+#: ../camel/providers/pop3/camel-pop3-folder.c:510
+msgid "User cancelled"
+msgstr "Umsebenzisi urhoxisiwe"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
+#: ../camel/providers/imap4/camel-imap4-folder.c:793
+#: ../camel/providers/nntp/camel-nntp-folder.c:148
+#: ../camel/providers/nntp/camel-nntp-folder.c:150
+#: ../camel/providers/nntp/camel-nntp-folder.c:159
+#: ../camel/providers/nntp/camel-nntp-folder.c:235
+#: ../camel/providers/pop3/camel-pop3-folder.c:434
+#: ../camel/providers/pop3/camel-pop3-folder.c:495
+#: ../camel/providers/pop3/camel-pop3-folder.c:502
+#: ../camel/providers/pop3/camel-pop3-folder.c:513
+#, c-format
+msgid "Cannot get message %s: %s"
+msgstr "Ayikwazi ukufumana umyalezo %s: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:151
+#: ../camel/providers/imap4/camel-imap4-folder.c:811
+msgid "This message is not available in offline mode."
+msgstr "Lo myalezo awufumaneki xa ungekho kwi-intanethi."
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
+msgid "Could not get message"
+msgstr "Ayikwazanga ukufumana umyalezo"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:594
+#: ../camel/providers/imap/camel-imap-folder.c:245
+#, c-format
+msgid "Could not load summary for %s"
+msgstr "Ayikwazi ukufaka isishwankathelo se %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:881
+#, c-format
+msgid "Cannot create message: %s"
+msgstr "Ayikwazi ukubhala umyalezo: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:893
+#, c-format
+msgid "Cannot append message to folder `%s': %s"
+msgstr "Ayikwazi ukuhlomela umyalezo kwisiqulathi seefayili `%s': %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:283
+#, c-format
+msgid "Cannot get folder container %s"
+msgstr "Ayikwazi ukufumana ibhokisi yesiqulathi seefayili %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:347
+#: ../camel/providers/imap4/camel-imap4-journal.c:320
+msgid "Cannot append message in offline mode: cache unavailable"
+msgstr ""
+"Ayikwazi ukuhlomela umyalezo xa ingasebenzi kwi-intanethi: uvimba wethutyana "
+"akafumaneki"
+
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:363
+#: ../camel/providers/imap4/camel-imap4-journal.c:336
+#, c-format
+msgid "Cannot append message in offline mode: %s"
+msgstr "Ayikwazi ukuhlomela umyalezo xa ingekho kwi-intanethi: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:51
+#: ../camel/providers/imap4/camel-imap4-provider.c:36
+msgid "Checking for new mail"
+msgstr "Ikhangela i-imeyile entsha"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:53
+msgid "Check for new messages in all folders"
+msgstr "Khangela imiyalezo emitsha kuzo zonke iziqulathi zeefayili"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:56
+#: ../camel/providers/imap/camel-imap-provider.c:64
+#: ../camel/providers/imap4/camel-imap4-provider.c:56
+#: ../camel/providers/local/camel-local-provider.c:43
+#: ../camel/providers/local/camel-local-provider.c:79
+#: ../camel/providers/local/camel-local-provider.c:99
+msgid "Options"
+msgstr "Ukhetho"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:58
+msgid "Apply filters to new messages in Inbox on this server"
+msgstr "Sebenzisa izihluzi kwimiyalezo emitsha ekwibhokisi leziNgena kwiseva"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:60
+msgid "Check new messages for Junk contents"
+msgstr "Khangela imiyalezo emitsha ukuba ayinaziqulatho zingasebenziyo na"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:62
+msgid "Only check for Junk messages in the INBOX folder"
+msgstr ""
+"Khangela imiyalezo engasebenziyo kuphela kwisiqulathi seefayili zemiyalezo "
+"EKWIBHOKISI YENGENAYO"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:64
+msgid "Automatically synchronize account locally"
+msgstr "Yenza i-akhawunti yangaphakathi isebenze ngaxeshanye ngokuzenzekelayo"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:69
+msgid "SOAP Settings"
+msgstr "Imimiselo Ye-SOAP"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:72
+msgid "Post Office Agent SOAP Port:"
+msgstr "I-arhente ye-Ofisi Yeposi Yesiqhagamsheli se-SOAP:"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:85
+msgid "Novell GroupWise"
+msgstr "I-Novell GroupWise"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:87
+msgid "For accessing Novell Groupwise servers"
+msgstr "Ukufikelela kwiiseva ze-Novell Groupwise"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:102
+#: ../camel/providers/imap/camel-imap-provider.c:96
+#: ../camel/providers/imap4/camel-imap4-provider.c:88
+#: ../camel/providers/imapp/camel-imapp-provider.c:66
+#: ../camel/providers/nntp/camel-nntp-provider.c:72
+#: ../camel/providers/pop3/camel-pop3-provider.c:72
+msgid "Password"
+msgstr "I-Password"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:104
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva ye-Groupwise lusebenzisa i-password "
+"kumbhalo oqhelekileyo."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:270
+msgid "Host or user not availbale in url"
+msgstr "Umququzeleli okanye umsebenzisi akafumaneki kwi-url"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:361
+#, c-format
+msgid "%sPlease enter the Groupwise password for %s@%s"
+msgstr "%sNceda ufake i-password ukungena ku-Groupwise we-%s@%s"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:375
+#: ../camel/providers/imap/camel-imap-store.c:1324
+msgid "You didn't enter a password."
+msgstr "Akuyifakanga i-password."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:389
+msgid "Unable to authenticate to GroupWise server."
+msgstr "Ayinako ukunika ubungqina kwiseva ye-GroupWise."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:430
+msgid "Some features may not work correctly with your current server version"
+msgstr ""
+"Ezinye izimo azisebenzi ngokuchanekileyo nohlobo lweseva olukhoyo ngoku"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:503
+#: ../camel/providers/imap/camel-imap-store.c:1875
+#: ../camel/providers/imap/camel-imap-store.c:2065
+#, c-format
+msgid "No such folder %s"
+msgstr "Akukho siqulathi seefayili sinjalo %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:618
+#: ../camel/providers/imap/camel-imap-folder.c:2288
+#: ../camel/providers/imap/camel-imap-folder.c:2358
+msgid "Fetching summary information for new messages"
+msgstr "Isaphuthuma ulwazi lwesishwankathelo semiyalezo emitsha"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:756
+msgid "Cannot get folder info in offline mode."
+msgstr ""
+"Ayikwazi ukufumana ulwazi ngesiqulathi seefayili ingekho kwi-intanethi."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:969
+msgid "Cannot create GroupWise folders in offline mode."
+msgstr ""
+"Ayikwazi ukwenza iziqulathi zeefayili ze-GroupWise ingekho kwi-intanethi."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1020
+msgid "Cannot delete GroupWise folders in offline mode."
+msgstr "Ayikwazi ukucima iziqulathi zeefayili ingekho kwi-intanethi."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1066
+msgid "Cannot rename GroupWise folders in offline mode."
+msgstr ""
+"Ayikwazi ukunika isiqulathi seefayili ye-GroupWise elinye igama ingekho kwi-"
+"intanethi."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1084
+#, c-format
+msgid "Cannot rename Groupwise folder `%s' to `%s'"
+msgstr "Ayikwazi ukunika isiqulathi seefayili se-GroupWise `%s' to `%s'"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1120
+#, c-format
+msgid "GroupWise server %s"
+msgstr "Iseva ye-GroupWise %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1122
+#, c-format
+msgid "GroupWise service for %s on %s"
+msgstr "Inkonzo ye-GroupWise ye- %s kwi- %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
+#, c-format
+msgid "Groupwise server %s"
+msgstr "Iseva ye-GroupWise %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:123
+#, c-format
+msgid "Groupwise mail delivery via %s"
+msgstr "Ukuhanjiswa kwe-imeyili ye-Groupwise idlula %s"
+
+# Capitalisation
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:159
+#, fuzzy
+msgid "Sending Message"
+msgstr "Ukuthumela umyalezo"
+
+#: ../camel/providers/imap/camel-imap-command.c:219
+#: ../camel/providers/imap/camel-imap-command.c:258
+#: ../camel/providers/imap/camel-imap-command.c:465
+#: ../camel/providers/imap/camel-imap-store.c:3240
+msgid "Operation cancelled"
+msgstr "Umsebenzi urhoxisiwe"
+
+#: ../camel/providers/imap/camel-imap-command.c:303
+#: ../camel/providers/imap/camel-imap-store.c:3243
+#, c-format
+msgid "Server unexpectedly disconnected: %s"
+msgstr "Le seva ikhutshwe kunxulumano ngokungalindelekanga: %s"
+
+#. for imap ALERT codes, account user@host
+#. we might get a ']' from a BAD response since we +12, but who cares?
+#: ../camel/providers/imap/camel-imap-command.c:324
+#, c-format
+msgid ""
+"Alert from IMAP server %s@%s:\n"
+"%s"
+msgstr ""
+"Isilumkiso esivela kwiseva ye-IMAP %s@%s:\n"
+"%s"
+
+#: ../camel/providers/imap/camel-imap-command.c:393
+#, c-format
+msgid "Unexpected response from IMAP server: %s"
+msgstr "Impendulo engalindelekanga ivela kwi-IMAP %s"
+
+#: ../camel/providers/imap/camel-imap-command.c:403
+#, c-format
+msgid "IMAP command failed: %s"
+msgstr "Umyalelo we-IMAP awuphumelelanga: %s"
+
+#: ../camel/providers/imap/camel-imap-command.c:479
+msgid "Server response ended too soon."
+msgstr "Impendulo yeseva iphele msinyane kakhulu."
+
+#: ../camel/providers/imap/camel-imap-command.c:686
+#, c-format
+msgid "IMAP server response did not contain %s information"
+msgstr "Impendulo yeseva ye-IMAP ibingaqulathanga lwazi lwe %s"
+
+#: ../camel/providers/imap/camel-imap-command.c:722
+#, c-format
+msgid "Unexpected OK response from IMAP server: %s"
+msgstr "Impendulo ethi OK engalindelekanga ivela kwiseva ye-IMAP: %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:226
+#, c-format
+msgid "Could not create directory %s: %s"
+msgstr "Ayikwazanga ukwenza uvimba weefayili %s: %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:330
+msgid "Folder was destroyed and recreated on server."
+msgstr "Isiqulathi seefayili sitshatyalisiwe saza senziwa ngokutsha kwiseva."
+
+#. Check UIDs and flags of all messages we already know of.
+#: ../camel/providers/imap/camel-imap-folder.c:573
+#: ../camel/providers/imap4/camel-imap4-summary.c:1472
+msgid "Scanning for changed messages"
+msgstr "Isaskena imiyalezo eguquliweyo"
+
+#: ../camel/providers/imap/camel-imap-folder.c:1940
+#, c-format
+msgid "Unable to retrieve message: %s"
+msgstr "Ayinako ukufumana umyalezo: %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2022
+#: ../camel/providers/imap/camel-imap-folder.c:2624
+#: ../camel/providers/nntp/camel-nntp-folder.c:221
+msgid "This message is not currently available"
+msgstr "Lo myalezo awufumaneki ngokwangoku"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2465
+#, c-format
+msgid "Incomplete server response: no information provided for message %d"
+msgstr ""
+"Impendulo yeseva ayiphelelanga: akukho lwazi lunikiweyo ngalo myalezo %d"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2473
+#, c-format
+msgid "Incomplete server response: no UID provided for message %d"
+msgstr "Impendulo yeseva ayiphelelanga: akukho UID inikiweyo ngalo myalezo %d"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2486
+#, c-format
+msgid ""
+"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgstr ""
+"Impendulo engalindelekanga evela kwiseva: Inike ii-UID ezifanayo ngale "
+"miyalezo %d no %d"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2662
+msgid "Could not find message body in FETCH response."
+msgstr "Ayikwazanga ukufumana umzimba womyalezo kwimpendulo ethi PHUTHUMA."
+
+#: ../camel/providers/imap/camel-imap-message-cache.c:156
+#, c-format
+msgid "Could not open cache directory: %s"
+msgstr "Ayikwazanga ukuvula uvimba weefayili zethutyana: %s"
+
+#: ../camel/providers/imap/camel-imap-message-cache.c:253
+#: ../camel/providers/imap/camel-imap-message-cache.c:310
+#: ../camel/providers/imap/camel-imap-message-cache.c:341
+#: ../camel/providers/imap/camel-imap-message-cache.c:373
+#, c-format
+msgid "Failed to cache message %s: %s"
+msgstr "Ayiphumelelanga ukwenza ifayili yemiyalezo yethutyana %s: %s"
+
+#: ../camel/providers/imap/camel-imap-message-cache.c:418
+#, c-format
+msgid "Failed to cache %s: %s"
+msgstr "Ayiphumelelanga ukwenza ifayili yemiyalezo yethutyana %s: %s"
+
+#: ../camel/providers/imap/camel-imap-provider.c:44
+msgid "Checking for New Mail"
+msgstr "Ukukhangela Imiyalezo Emitsha"
+
+#: ../camel/providers/imap/camel-imap-provider.c:46
+#: ../camel/providers/imap4/camel-imap4-provider.c:38
+msgid "C_heck for new messages in all folders"
+msgstr "Uk_ukhangela imiyalezo emitsha kuzo zonke iziqulathi zeefayili"
+
+#: ../camel/providers/imap/camel-imap-provider.c:49
+#: ../camel/providers/imap4/camel-imap4-provider.c:41
+msgid "Connection to Server"
+msgstr "Ukunxulumanisa kwiSeva"
+
+#: ../camel/providers/imap/camel-imap-provider.c:51
+#: ../camel/providers/imap4/camel-imap4-provider.c:43
+msgid "_Use custom command to connect to server"
+msgstr "_Sebenzisa umyalelo womthengi ukunxulumana kwiseva"
+
+#: ../camel/providers/imap/camel-imap-provider.c:53
+#: ../camel/providers/imap4/camel-imap4-provider.c:45
+msgid "Command:"
+msgstr "Umyalelo:"
+
+#: ../camel/providers/imap/camel-imap-provider.c:56
+#: ../camel/providers/imap4/camel-imap4-provider.c:48
+#: ../camel/providers/nntp/camel-nntp-provider.c:42
+msgid "Folders"
+msgstr "Iziqulathi zeefayili"
+
+#: ../camel/providers/imap/camel-imap-provider.c:58
+#: ../camel/providers/imap4/camel-imap4-provider.c:50
+msgid "_Show only subscribed folders"
+msgstr "_Bonisa kuphela iziqulathi zeefayili zabazibopheleleyo"
+
+#: ../camel/providers/imap/camel-imap-provider.c:60
+#: ../camel/providers/imap4/camel-imap4-provider.c:52
+msgid "O_verride server-supplied folder namespace"
+msgstr "U_kungananzi igama lendawo yesiqulati seefayili esinikwa yiseva"
+
+#: ../camel/providers/imap/camel-imap-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:54
+msgid "Namespace"
+msgstr "Igama lesithuba"
+
+#: ../camel/providers/imap/camel-imap-provider.c:66
+#: ../camel/providers/imap4/camel-imap4-provider.c:58
+msgid "_Apply filters to new messages in INBOX on this server"
+msgstr ""
+"_Sebenzisa izihluzi kwimiyalezo emitsha ekwiBHOKISI LENGENAYO kule seva"
+
+#: ../camel/providers/imap/camel-imap-provider.c:68
+#: ../camel/providers/imap4/camel-imap4-provider.c:60
+msgid "Check new messages for _Junk contents"
+msgstr "Khangela imiyalezo emitsha ukuba ayinaziqulathi Ezi_ngasebenziyo"
+
+#: ../camel/providers/imap/camel-imap-provider.c:70
+#: ../camel/providers/imap4/camel-imap4-provider.c:62
+msgid "Only check for Junk messa_ges in the INBOX folder"
+msgstr ""
+"Khangela kuphela imiya_lezo Engasebenziyo kwisiqulathi seefayili ekwiBHOKISI "
+"YENGENAYO"
+
+# is Ukusebenza_ngaxeshanye meant to be one word?
+#: ../camel/providers/imap/camel-imap-provider.c:72
+#: ../camel/providers/imap4/camel-imap4-provider.c:64
+#, fuzzy
+msgid "Automatically synchroni_ze remote mail locally"
+msgstr ""
+"Ukusebenza_ngaxeshanye okuzenzekelayo kwe-imeyile yakude neyangaphakathi"
+
+#: ../camel/providers/imap/camel-imap-provider.c:79
+msgid "IMAP"
+msgstr "IMAP"
+
+#: ../camel/providers/imap/camel-imap-provider.c:81
+msgid "For reading and storing mail on IMAP servers."
+msgstr "Yeyokufunda nokugcina i-imeyile kwiseva ye-IMAP."
+
+#: ../camel/providers/imap/camel-imap-provider.c:98
+#: ../camel/providers/imapp/camel-imapp-provider.c:68
+msgid "This option will connect to the IMAP server using a plaintext password."
+msgstr ""
+"Olu khetho luza kunxuluma neseva ye-IMAP lusebenzisa i-password yombhalo "
+"oqhelekileyo."
+
+#: ../camel/providers/imap/camel-imap-store.c:421
+#: ../camel/providers/imap4/camel-imap4-store.c:215
+#, c-format
+msgid "IMAP server %s"
+msgstr "Iseva i-IMAP %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:423
+#: ../camel/providers/imap4/camel-imap4-store.c:217
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "Inkonzo ye-IMAP ye-%s kwi- %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:553
+#: ../camel/providers/imap/camel-imap-store.c:568
+#: ../camel/providers/imap4/camel-imap4-store.c:322
+#: ../camel/providers/imap4/camel-imap4-store.c:337
+#: ../camel/providers/nntp/camel-nntp-store.c:200
+#: ../camel/providers/nntp/camel-nntp-store.c:215
+#: ../camel/providers/pop3/camel-pop3-store.c:169
+#: ../camel/providers/pop3/camel-pop3-store.c:184
+#: ../camel/providers/smtp/camel-smtp-transport.c:257
+#: ../camel/providers/smtp/camel-smtp-transport.c:272
+#, c-format
+msgid "Could not connect to %s: %s"
+msgstr "Ayikwazanga ukunxulumana kwi- %s: %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:554
+#: ../camel/providers/imap4/camel-imap4-store.c:323
+#: ../camel/providers/nntp/camel-nntp-store.c:201
+#: ../camel/providers/pop3/camel-pop3-store.c:170
+#: ../camel/providers/smtp/camel-smtp-transport.c:258
+msgid "SSL unavailable"
+msgstr "I-SSL ayifumaneki"
+
+#: ../camel/providers/imap/camel-imap-store.c:565
+#: ../camel/providers/imap/camel-imap-store.c:835
+#: ../camel/providers/imap4/camel-imap4-store.c:270
+#: ../camel/providers/imap4/camel-imap4-store.c:334
+#: ../camel/providers/imapp/camel-imapp-store.c:248
+#: ../camel/providers/nntp/camel-nntp-store.c:212
+#: ../camel/providers/nntp/camel-nntp-store.c:231
+#: ../camel/providers/pop3/camel-pop3-store.c:181
+#: ../camel/providers/smtp/camel-smtp-transport.c:269
+msgid "Connection cancelled"
+msgstr "Akuphumelelanga ukunxulumana"
+
+#: ../camel/providers/imap/camel-imap-store.c:673
+#: ../camel/providers/imap/camel-imap-store.c:695
+#: ../camel/providers/imap/camel-imap-store.c:701
+#: ../camel/providers/imap4/camel-imap4-store.c:362
+#: ../camel/providers/imap4/camel-imap4-store.c:375
+#: ../camel/providers/imap4/camel-imap4-store.c:391
+#, c-format
+msgid "Failed to connect to IMAP server %s in secure mode: %s"
+msgstr ""
+"Ayiphumelelanga ukunxulumana neseva i-IMAP%s kwindlela engakhuselekanga: %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:674
+#: ../camel/providers/smtp/camel-smtp-transport.c:326
+msgid "STARTTLS not supported"
+msgstr "I-STARTTLS asixhaswanga"
+
+#: ../camel/providers/imap/camel-imap-store.c:696
+#: ../camel/providers/imap4/camel-imap4-store.c:363
+#: ../camel/providers/pop3/camel-pop3-store.c:246
+msgid "SSL negotiations failed"
+msgstr "Uthethwathethwano lwe-SSL aluphumelelanga"
+
+#: ../camel/providers/imap/camel-imap-store.c:702
+#: ../camel/providers/imap4/camel-imap4-store.c:392
+#: ../camel/providers/pop3/camel-pop3-store.c:252
+#: ../camel/providers/smtp/camel-smtp-transport.c:365
+msgid "SSL is not available in this build"
+msgstr "I-SSL ayifumaneki kwesi sakhiwo"
+
+#: ../camel/providers/imap/camel-imap-store.c:838
+#: ../camel/providers/imap4/camel-imap4-store.c:273
+#, c-format
+msgid "Could not connect with command \"%s\": %s"
+msgstr "Ayikwazanga ukunxulumana nalo myalelo\"%s\": %s"
+
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
+#: ../camel/providers/imap/camel-imap-store.c:1021
+#: ../camel/providers/imap/camel-imap-store.c:2429
+#: ../camel/providers/imap4/camel-imap4-store-summary.c:368
+#: ../camel/providers/imap4/camel-imap4-store.c:1267
+#: ../camel/providers/local/camel-maildir-folder.c:75
+#: ../camel/providers/local/camel-maildir-store.c:217
+#: ../camel/providers/local/camel-maildir-store.c:289
+#: ../camel/providers/local/camel-maildir-store.c:511
+#: ../camel/providers/local/camel-maildir-store.c:524
+#: ../camel/providers/local/camel-spool-store.c:460
+msgid "Inbox"
+msgstr "Ibhokisi lengenayo"
+
+#: ../camel/providers/imap/camel-imap-store.c:1277
+#, c-format
+msgid "IMAP server %s does not support requested authentication type %s"
+msgstr "Iseva ye-IMAP %s ayisixhasanga isicelo solu hlobo lobungqina %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:1287
+#: ../camel/providers/smtp/camel-smtp-transport.c:501
+#, c-format
+msgid "No support for authentication type %s"
+msgstr "Ayikho inkxaso kolu hlobo lobungqina %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:1310
+#: ../camel/providers/imapp/camel-imapp-store.c:364
+#, c-format
+msgid "%sPlease enter the IMAP password for %s@%s"
+msgstr "%sNceda ufake i-password ye-IMAP kwi- %s@%s"
+
+#: ../camel/providers/imap/camel-imap-store.c:1353
+#, c-format
+msgid ""
+"Unable to authenticate to IMAP server.\n"
+"%s\n"
+"\n"
+msgstr ""
+"Ayinako ukungqinela iseva ye-IMAP.\n"
+"%s\n"
+"\n"
+
+#: ../camel/providers/imap/camel-imap-store.c:1893
+#: ../camel/providers/imap/camel-imap-store.c:2271
+#: ../camel/providers/imap4/camel-imap4-store.c:856
+#, c-format
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgstr ""
+"Igama lesi siqulathi seefayili \"%s\" aliqinisekiswanga kuba liqulethe olu "
+"phawu \"%c\""
+
+#: ../camel/providers/imap/camel-imap-store.c:1951
+#: ../camel/providers/imap/camel-imap-store.c:2333
+msgid "The parent folder is not allowed to contain subfolders"
+msgstr ""
+"Isiqulathi seefayili esingumzali asivunyelwanga ukuqulatha ezinye ifayili "
+"zangaphakathi"
+
+#: ../camel/providers/imap/camel-imap-store.c:2006
+#: ../camel/providers/local/camel-maildir-store.c:190
+#: ../camel/providers/local/camel-mbox-store.c:199
+#: ../camel/providers/local/camel-mh-store.c:237
+#, c-format
+msgid "Cannot create folder `%s': folder exists."
+msgstr ""
+"Ayikwazi ukwenza isiqulathi seefayili `%s': esi siqulathi seefayili sele "
+"sikho."
+
+#: ../camel/providers/imap/camel-imap-store.c:2282
+#, c-format
+msgid "Unknown parent folder: %s"
+msgstr "Asaziwa esi siqulathi seefayili singumzali: %s"
+
+#: ../camel/providers/imap4/camel-imap4-command.c:550
+#: ../camel/providers/imap4/camel-imap4-command.c:557
+#, c-format
+msgid "Failed sending command to IMAP server %s: %s"
+msgstr "Ayiphumelelanga ukuthumela umyalelo kwiseva ye-IMAP %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-command.c:660
+#, c-format
+msgid "Unexpected response from IMAP4 server %s: %s"
+msgstr "Impendulo engalindelekanga evela kwiseva ye-IMAP4 %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:222
+#, c-format
+msgid "Unexpected greeting from IMAP server %s."
+msgstr "Isibuliso esingalindelekanga esivela kwiseva ye-IMAP %s."
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:432
+#, c-format
+msgid "Cannot select folder `%s': Invalid mailbox name"
+msgstr ""
+"Ayikwazi ukukhetha isiqulathi seefayili `%s': Igama lebhokisi ye-imeyile "
+"aligunyaziswanga"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:438
+#, c-format
+msgid "Cannot select folder `%s': Bad command"
+msgstr "Ayikwazi ukukhetha isiqulathi seefayili `%s': Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:1549
+#: ../camel/providers/imap4/camel-imap4-engine.c:1588
+#: ../camel/providers/imap4/camel-imap4-engine.c:1633
+#: ../camel/providers/imap4/camel-imap4-engine.c:1689
+#, c-format
+msgid "IMAP4 server %s unexpectedly disconnected: %s"
+msgstr "Le seva ye-IMAP4 %s ikhutshwe kunxulumano ngokungalindelekanga: %s"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:85
+msgid ""
+"Enable Mailing-List detection required for some filter and vFolder rules"
+msgstr ""
+"Ukwenza kusebenze ukufumana uluhlu lwe-imeyile okufunekayo kweminye "
+"imithetho yesihluzi nevFolder"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:398
+#, c-format
+msgid "Cannot access folder `%s': %s"
+msgstr "Ayikwazi ukufikelela kwisiqulathi seefayili `%s': %s"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:457
+#, c-format
+msgid "Cannot sync flags to folder `%s': Unknown"
+msgstr ""
+"Ayikwazi ukwenza ii-flags zisebenze ngaxeshanye kwesi siqulathi seefayili `%"
+"s': Ayaziwa"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:463
+#, c-format
+msgid "Cannot sync flags to folder `%s': Bad command"
+msgstr ""
+"Ayikwazi ukwenza ii-flags zisebenze ngaxeshanye kwesi siqulathi seefayili `%"
+"s': Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:604
+#, c-format
+msgid "Cannot expunge folder `%s': Unknown"
+msgstr "Ayikwazi ukucima esi siqulathi seefayili `%s': Asaziwa"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:609
+#, c-format
+msgid "Cannot expunge folder `%s': Bad command"
+msgstr "Ayikwazi ukucima esi siqulathi seefayili `%s': Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:865
+#, c-format
+msgid "Cannot get message %s from folder `%s': No such message"
+msgstr ""
+"Ayikwazi ukufumana lo myalezo %s uvela kwesi siqulathi seefayili`%s': Akukho "
+"myalezo unjalo"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:870
+#, c-format
+msgid "Cannot get message %s from folder `%s': Bad command"
+msgstr ""
+"Ayikwazi ukufumana lo myalezo %s uvela kwesi siqulathi seefayili `%s': "
+"Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1003
+#, c-format
+msgid "Cannot append message to folder `%s': Unknown error"
+msgstr ""
+"Ayikwazi ukuhlomela lo myalezo kwesi siqulathi seefayili `%s': Impazamo "
+"engaziwayo"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1032
+#, c-format
+msgid "Cannot append message to folder `%s': Bad command"
+msgstr ""
+"Ayikwazi ukuhlomela lo myalezo kwesi siqulathi seefayili `%s': Umyalelo "
+"awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1144
+#, c-format
+msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
+msgstr ""
+"Ayikwazi ukushenxisa imiyalezo iyisuse kwesi siqulathi seefayili `%s' iyise "
+"kwesi siqulathi seefayili `%s': Ayaziwa"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1148
+#, c-format
+msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
+msgstr ""
+"Ayikwazi ukukopa imiyalezo iyisuse kwesi siqulathi seefayili `%s' iyise "
+"kwesi siqulathi seefayili `%s': Ayaziwa"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1156
+#, c-format
+msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
+msgstr ""
+"Ayikwazi ukushenxisa imiyalezo iyisuse kwesi siqulathi seefayili `%s' iyise "
+"kwesi siqulathi seefayili `%s': Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1160
+#, c-format
+msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
+msgstr ""
+"Ayikwazi ukukopa imiyalezo iyisuse kwesi siqulathi seefayili `%s' iyise "
+"kwesi siqulathi seefayili `%s': Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:71
+msgid "IMAP4rev1"
+msgstr "IMAP4rev1"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:73
+msgid "For reading and storing mail on IMAPv4rev1 servers."
+msgstr "Yeyokufunda nokugcina i-imeyile kwiiseva ze-IMAPv4rev1."
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:90
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva ye-IMAPv4rev1 lusebenzisa i-password "
+"yombhalo oqhelekileyo."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:477
+#, c-format
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr ""
+"Ayikwazi ukungqinela iseva ye-IMAP %s isebenzisa le %s ndlela yokungqina"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:522
+#, c-format
+msgid "%sPlease enter the IMAP password for %s on host %s"
+msgstr "%sNceda ufake i-password ye-IMAP uku %s kumququzeleli %s"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:592
+#, c-format
+msgid "Cannot authenticate to IMAP server %s using %s"
+msgstr "Ayikwazi ukungqinela le seva ye-IMAP %s isebenzisa %s"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:754
+#: ../camel/providers/imap4/camel-imap4-store.c:866
+msgid "Cannot create IMAP folders in offline mode."
+msgstr "Ayikwazi ukwenza iziqulathi zeefayili ze-IMAP ingekho kwi-intanethi."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:793
+#, c-format
+msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
+msgstr ""
+"Ayikwazi ukufumana esi siqulathi seefayili `%s' kwiseva ye-IMAP %s: Ayaziwa"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:914
+#, c-format
+msgid "Cannot create folder `%s': Invalid mailbox name"
+msgstr ""
+"Ayikwazi ukwenza esi siqulathi seefayili `%s': Igama lebhokisi ye-imeyile "
+"aliqinisekiswanga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:920
+#, c-format
+msgid "Cannot create folder `%s': Bad command"
+msgstr "Ayikwazi ukwenza esi siqulathi seefayili `%s': Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:951
+#, c-format
+msgid "Cannot delete folder `%s': Special folder"
+msgstr ""
+"Ayikwazi ukucima esi siqulathi seefayili `%s': Sisiqulathi seefayili "
+"esikhethekileyo"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:958
+msgid "Cannot delete IMAP folders in offline mode."
+msgstr ""
+"Ayikwazi ukucima isiqulathi seefayili se-IMAP xa ingekho kwi-intanethi."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1017
+#, c-format
+msgid "Cannot delete folder `%s': Invalid mailbox name"
+msgstr ""
+"Ayikwazi ukucima esi siqulathi seefayili `%s': Igama lebhokisi ye-imeyile "
+"aliqinisekiswanga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1022
+#, c-format
+msgid "Cannot delete folder `%s': Bad command"
+msgstr "Ayikwazi ukucima esi siqulathi seefayili `%s': Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1042
+#, c-format
+msgid "Cannot rename folder `%s' to `%s': Special folder"
+msgstr ""
+"Ayikwazi ukuthiya esi siqulathi seefayili ngokutsha isisuse `%s' isise `%s': "
+"Esi sisiqulathi seefayili esikhethekileyo"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1049
+msgid "Cannot rename IMAP folders in offline mode."
+msgstr ""
+"Ayikwazi ukuthiya esi siqulathi seefayili se-IMAP ngokutsha ingekho kwi-"
+"intanethi."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1080
+#, c-format
+msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
+msgstr ""
+"Ayikwazi ukuthiya esi siqulathi seefayili ngokutsha isisuse `%s' isise `%s': "
+"Igama lebhokisi ye-imeyile aliqinisekiswanga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1085
+#, c-format
+msgid "Cannot rename folder `%s' to `%s': Bad command"
+msgstr ""
+"Ayikwazi ukuthiya esi siqulathi seefayili ngokutsha isisuse `%s' isise `%s': "
+"Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1432
+#, c-format
+msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
+msgstr ""
+"Ayikwazi ukufumana olu lwazi %s lokwakhiwa kwe `%s' kule seva ye-IMAP %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1434
+msgid "Bad command"
+msgstr "Umyalelo ongalunganga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1472
+msgid "Cannot subscribe to IMAP folders in offline mode."
+msgstr ""
+"Ayikwazi ukukubophelela kwiziqulathi zeefayili ze-IMAP ungekho kwi-intanethi."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1517
+#, c-format
+msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
+msgstr ""
+"Ayikwazi ukukubophelela kwisiqulathi seefayili `%s': Igama lebhokisi ye-"
+"imeyile aliqinisekiswanga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1522
+#, c-format
+msgid "Cannot subscribe to folder `%s': Bad command"
+msgstr ""
+"Ayokwazi ukukubophelela kwesi siqulathi seefayili `%s': Umyalelo ongalunganga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1544
+msgid "Cannot unsubscribe from IMAP folders in offline mode."
+msgstr ""
+"Ayikwazi ukukukhupha ekuzibopheleleni kwiziqulathi zeefayili ze-IMAP ingekho "
+"kwi-intanethi."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1589
+#, c-format
+msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
+msgstr ""
+"Ayikwazi ukukukhupha ekuzibopheleleni kwezi ziqulathi zeefayili `%s': Igama "
+"lebhokisi le-imeyile aliqinisekiswanga"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1594
+#, c-format
+msgid "Cannot unsubscribe from folder `%s': Bad command"
+msgstr ""
+"Ayikwazi ukukukhupha ekuzibopheleleni kwezi ziqulathi zeefayili `%s': "
+"Umyalelo awulunganga"
+
+#: ../camel/providers/imap4/camel-imap4-summary.c:1497
+msgid "Fetching envelopes for new messages"
+msgstr "Isaphuthuma iimvulophu zemiyalezo emitsha"
+
+#: ../camel/providers/imap4/camel-imap4-utils.c:368
+#, c-format
+msgid "Unexpected token in response from IMAP server %s: "
+msgstr "Umqondiso ongalunganga oyimpendulo evela kwiseva i-IMAP %s: "
+
+#: ../camel/providers/imap4/camel-imap4-utils.c:391
+msgid "No data"
+msgstr "Akukho data"
+
+#: ../camel/providers/imap4/camel-imap4-utils.c:574
+#, c-format
+msgid "IMAP server %s unexpectedly disconnected: %s"
+msgstr "Le seva ye-IMAP %s iphume ngokungalindelekanga kolu nxulumano: %s"
+
+#: ../camel/providers/imapp/camel-imapp-provider.c:40
+#: ../camel/providers/pop3/camel-pop3-provider.c:39
+msgid "Message storage"
+msgstr "Uvimba womyalezo"
+
+#: ../camel/providers/imapp/camel-imapp-provider.c:48
+msgid "IMAP+"
+msgstr "IMAP+"
+
+#: ../camel/providers/imapp/camel-imapp-provider.c:50
+msgid ""
+"Experimental IMAP 4(.1) client\n"
+"This is untested and unsupported code, you want to use plain imap instead.\n"
+"\n"
+" !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
+msgstr ""
+"Ulingo lwe-IMAP 4(.1) umthengi\n"
+"Le yikhowudi engekavavanywa nengaxhaswanga, ingaba ufuna ukusebenzisa i-imap "
+"ecacileyo endaweni yayo.\n"
+"\n"
+" !!! MUSA UKUYISEBENZISA LE XA USAKHA I-IMEYILI  !!!\n"
+
+#: ../camel/providers/imapp/camel-imapp-store.c:251
+#, c-format
+msgid "Could not connect to %s (port %s): %s"
+msgstr "Ayikwazanga ukunxulumana ne- %s (isiqhagamsheli %s): %s"
+
+#: ../camel/providers/imapp/camel-imapp-store.c:348
+#, c-format
+msgid "Could not connect to POP server on %s"
+msgstr "Ayikwazanga ukunxulumana kwiseva ye-POP kwi- %s"
+
+#: ../camel/providers/local/camel-local-folder.c:173
+msgid "Index message body data"
+msgstr "I-data yomzimba womyalezo wesalathiso"
+
+#. $HOME relative path + protocol string
+#: ../camel/providers/local/camel-local-folder.c:378
+#, c-format
+msgid "~%s (%s)"
+msgstr "~%s (%s)"
+
+#. /var/spool/mail relative path + protocol
+#: ../camel/providers/local/camel-local-folder.c:382
+#: ../camel/providers/local/camel-local-folder.c:385
+#, c-format
+msgid "mailbox:%s (%s)"
+msgstr "ibhokisi ye-imeyile:%s (%s)"
+
+#. a full path + protocol
+#: ../camel/providers/local/camel-local-folder.c:389
+#, c-format
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#: ../camel/providers/local/camel-local-provider.c:45
+msgid "Use the `.folders' folder summary file (exmh)"
+msgstr ""
+"Sebenzisa ezi `.folders' eziyifayili yesishwankatho sesiqulathi seefayili "
+"(exmh)"
+
+#: ../camel/providers/local/camel-local-provider.c:52
+msgid "MH-format mail directories"
+msgstr "Ubume be-MH enguvimba weefayili ze-imeyile"
+
+#: ../camel/providers/local/camel-local-provider.c:53
+msgid "For storing local mail in MH-like mail directories."
+msgstr ""
+"Ukugcina i-imeyile yangaphakathi koovimba beefayili ze-imeyile ezifana ne-MH."
+
+#: ../camel/providers/local/camel-local-provider.c:68
+msgid "Local delivery"
+msgstr "Ukuhambisa kwangaphakathi"
+
+# Evolution
+#: ../camel/providers/local/camel-local-provider.c:69
+#, fuzzy
+msgid ""
+"For retrieving (moving) local mail from standard mbox formated spools into "
+"folders managed by Evolution."
+msgstr ""
+"Ukufumana (ukushenxisa) i-imeyile yangaphakathi esuka kwiibhobhini zobume be-"
+"mbox eziqhelekileyo ukuya kwiziqulathi zeefayili ezilawulwa ngenkqubo "
+"yoPhuhliso."
+
+#: ../camel/providers/local/camel-local-provider.c:81
+#: ../camel/providers/local/camel-local-provider.c:100
+msgid "Apply filters to new messages in INBOX"
+msgstr "Sebenzisa izihluzi kwimiyalezo emitsha ekwiBHOKISI LENGENAYO"
+
+# "Maildir-format should remain verbatim in translation
+#: ../camel/providers/local/camel-local-provider.c:88
+#, fuzzy
+msgid "Maildir-format mail directories"
+msgstr "Oovimba beefayili ze-imeyile ezinobume be-Maildir"
+
+#: ../camel/providers/local/camel-local-provider.c:89
+msgid "For storing local mail in maildir directories."
+msgstr "Zokugcina i-imeyile yangaphakathi kuvimba weefayili okwi-Maildir."
+
+#: ../camel/providers/local/camel-local-provider.c:101
+msgid "Store status headers in Elm/Pine/Mutt format"
+msgstr "Gcina ubume bezihloko kubume be-Elm/Pine/Mutt"
+
+#: ../camel/providers/local/camel-local-provider.c:108
+msgid "Standard Unix mbox spool or directory"
+msgstr "Ibhobhini okanye uvimba weefayili we-Standard Unix mbox"
+
+#: ../camel/providers/local/camel-local-provider.c:109
+msgid ""
+"For reading and storing local mail in external standard mbox spool files.\n"
+"May also be used to read a tree of Elm, Pine, or Mutt style folders."
+msgstr ""
+"Eyokufunda nokugcina i-imeyile yangaphakathi kwibhobhini yeefayili "
+"zangaphandle ezikumgangatho we-mbox.\n"
+"Ingaphinda isetyenziselwe ukufunda kumthi onesimo sesiqulathi seefayili se- "
+"Elm, Pine, okanye Mutt."
+
+#: ../camel/providers/local/camel-local-store.c:150
+#: ../camel/providers/local/camel-local-store.c:261
+#: ../camel/providers/local/camel-mbox-store.c:342
+#: ../camel/providers/local/camel-spool-store.c:125
+#, c-format
+msgid "Store root %s is not an absolute path"
+msgstr "Le ngcambu inguvimba %s asiyiyo kuphela indlela"
+
+#: ../camel/providers/local/camel-local-store.c:157
+#, c-format
+msgid "Store root %s is not a regular directory"
+msgstr "Le ngcambu inguvimba %s asingovimba weefayili"
+
+#: ../camel/providers/local/camel-local-store.c:166
+#: ../camel/providers/local/camel-local-store.c:174
+#: ../camel/providers/local/camel-local-store.c:272
+#, c-format
+msgid "Cannot get folder: %s: %s"
+msgstr "Ayikwazi ukufumana isiqulathi seefayili: %s: %s"
+
+#: ../camel/providers/local/camel-local-store.c:186
+msgid "Local stores do not have an inbox"
+msgstr "Oovimba bangaphakathi abanayo ibhokisi yezingenayo"
+
+#: ../camel/providers/local/camel-local-store.c:232
+#, c-format
+msgid "Local mail file %s"
+msgstr "Ifayili yangaphakathi ye-imeyile %s"
+
+#: ../camel/providers/local/camel-local-store.c:341
+#, c-format
+msgid "Could not rename folder %s to %s: %s"
+msgstr "Ayikwazanga ukunika isiqulathi seefayili elinye igama %s sibe %s: %s"
+
+#: ../camel/providers/local/camel-local-store.c:406
+#, c-format
+msgid "Could not rename '%s': %s"
+msgstr "Ayikwazanga ukuyinika elinye igama '%s': %s"
+
+#: ../camel/providers/local/camel-local-store.c:431
+#: ../camel/providers/local/camel-mbox-store.c:271
+#, c-format
+msgid "Could not delete folder summary file `%s': %s"
+msgstr ""
+"Ayikwazanga ukucima ifayili yesishwankathelo sesiqulathi seefayili '%s': %s"
+
+#: ../camel/providers/local/camel-local-store.c:441
+#: ../camel/providers/local/camel-mbox-store.c:283
+#, c-format
+msgid "Could not delete folder index file `%s': %s"
+msgstr "Ayikwazanga ukucima ifayili yesalathiso sesiqulathi seefayili '%s': %s"
+
+#: ../camel/providers/local/camel-local-store.c:464
+#: ../camel/providers/local/camel-mbox-store.c:307
+#, c-format
+msgid "Could not delete folder meta file `%s': %s"
+msgstr ""
+"Ayikwazanga ukucima ifayili equlethe ezinye kwisiqulathi seefayili '%s': %s"
+
+#: ../camel/providers/local/camel-local-summary.c:406
+#, c-format
+msgid "Could not save summary: %s: %s"
+msgstr "Ayikwazanga ukugcina isishwankathelo: %s: %s"
+
+#: ../camel/providers/local/camel-local-summary.c:464
+msgid "Unable to add message to summary: unknown reason"
+msgstr "Ayikwazanga ukongeza umyalezo kwisishwankathelo: isizathu asaziwa"
+
+#: ../camel/providers/local/camel-maildir-folder.c:215
+msgid "Maildir append message cancelled"
+msgstr "Ukuhlomela umyalezo ngoVimba weefayili ze-imeyili kurhoxisiwe"
+
+#: ../camel/providers/local/camel-maildir-folder.c:218
+#, c-format
+msgid "Cannot append message to maildir folder: %s: %s"
+msgstr ""
+"Ayikwazi ukuhlomela umyalezo kwisiqulathi seefayili sovimba weefayili ze-"
+"imeyile: %s: %s"
+
+#: ../camel/providers/local/camel-maildir-folder.c:244
+#: ../camel/providers/local/camel-maildir-folder.c:258
+#: ../camel/providers/local/camel-maildir-folder.c:267
+#: ../camel/providers/local/camel-mbox-folder.c:339
+#: ../camel/providers/local/camel-mbox-folder.c:358
+#: ../camel/providers/local/camel-mbox-folder.c:389
+#: ../camel/providers/local/camel-mbox-folder.c:397
+#: ../camel/providers/local/camel-mh-folder.c:202
+#: ../camel/providers/local/camel-mh-folder.c:213
+#: ../camel/providers/local/camel-mh-folder.c:222
+#, c-format
+msgid ""
+"Cannot get message: %s from folder %s\n"
+"  %s"
+msgstr ""
+"Ayikwazi ukufumana umyalezo: %s ovela kwisiqulathi seefayili %s\n"
+"  %s"
+
+#: ../camel/providers/local/camel-maildir-folder.c:268
+msgid "Invalid message contents"
+msgstr "Iziqulatho zomyalezo azigunyaziswanga"
+
+#: ../camel/providers/local/camel-maildir-store.c:146
+#: ../camel/providers/local/camel-maildir-store.c:171
+#: ../camel/providers/local/camel-mbox-store.c:171
+#: ../camel/providers/local/camel-mbox-store.c:183
+#, c-format
+msgid "Cannot create folder `%s': %s"
+msgstr "Ayikwazi ukwenza isiqulathi seefayili `%s': %s"
+
+#: ../camel/providers/local/camel-maildir-store.c:159
+#: ../camel/providers/local/camel-mbox-store.c:141
+#: ../camel/providers/local/camel-mh-store.c:205
+#, c-format
+msgid "Cannot get folder `%s': %s"
+msgstr "Ayikwazi ukufumana isiqulathi seefayili `%s': %s"
+
+#: ../camel/providers/local/camel-maildir-store.c:163
+#: ../camel/providers/local/camel-mbox-store.c:149
+#: ../camel/providers/local/camel-mh-store.c:212
+#, c-format
+msgid "Cannot get folder `%s': folder does not exist."
+msgstr ""
+"Ayikwazi ukufumana isiqulathi seefayili `%s': esi siqulathi seefayili asikho."
+
+#: ../camel/providers/local/camel-maildir-store.c:187
+#, c-format
+msgid "Cannot get folder `%s': not a maildir directory."
+msgstr ""
+"Ayikwazi ukufumana isiqulathi seefayili `%s': ayinguye uvimba weefayili ze-"
+"maildir."
+
+#: ../camel/providers/local/camel-maildir-store.c:232
+#: ../camel/providers/local/camel-maildir-store.c:270
+#: ../camel/providers/local/camel-mh-store.c:261
+#, c-format
+msgid "Could not delete folder `%s': %s"
+msgstr "Ayikwazanga ukucima isiqulathi seefayili `%s': %s"
+
+#: ../camel/providers/local/camel-maildir-store.c:234
+msgid "not a maildir directory"
+msgstr "ayinguye uvimba weefayili ze-maildir"
+
+#: ../camel/providers/local/camel-maildir-store.c:436
+#: ../camel/providers/local/camel-spool-store.c:327
+#: ../camel/providers/local/camel-spool-store.c:341
+#, c-format
+msgid "Could not scan folder `%s': %s"
+msgstr "Ayikwazanga ukuskena isiqulathi seefayili `%s': %s"
+
+#: ../camel/providers/local/camel-maildir-summary.c:425
+#: ../camel/providers/local/camel-maildir-summary.c:556
+#, c-format
+msgid "Cannot open maildir directory path: %s: %s"
+msgstr "Ayikwazi ukuvula indlela yovimba weefayili ye-maildir: %s: %s"
+
+#: ../camel/providers/local/camel-maildir-summary.c:549
+msgid "Checking folder consistency"
+msgstr "Ukukhangela ukungaguquguquki kwesiqulathi seefayili"
+
+#: ../camel/providers/local/camel-maildir-summary.c:652
+msgid "Checking for new messages"
+msgstr "Ukukhangela imiyalezo emitsha"
+
+#: ../camel/providers/local/camel-maildir-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:416
+#: ../camel/providers/local/camel-mbox-summary.c:589
+#: ../camel/providers/local/camel-mbox-summary.c:680
+#: ../camel/providers/local/camel-spool-summary.c:140
+msgid "Storing folder"
+msgstr "Ukugcina isiqulathi seefayili"
+
+#: ../camel/providers/local/camel-mbox-folder.c:147
+#: ../camel/providers/local/camel-spool-folder.c:148
+#, c-format
+msgid "Cannot create folder lock on %s: %s"
+msgstr "Ayikwazi ukwenza isitshixo sesiqulathi seefayili kwi- %s: %s"
+
+#: ../camel/providers/local/camel-mbox-folder.c:206
+#, c-format
+msgid "Cannot open mailbox: %s: %s\n"
+msgstr "Ayikwazi ukuvula ibhokisi ye-imeyile: %s: %s\n"
+
+#: ../camel/providers/local/camel-mbox-folder.c:266
+msgid "Mail append cancelled"
+msgstr "Ukuhlomela i-imeyili kurhoxisiwe"
+
+#: ../camel/providers/local/camel-mbox-folder.c:269
+#, c-format
+msgid "Cannot append message to mbox file: %s: %s"
+msgstr "Ayikwazi ukuhlomela umyalezo kwifayili ye-mbox: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-folder.c:390
+msgid "The folder appears to be irrecoverably corrupted."
+msgstr "Esi siqulathi seefayili sibonakala sonakele ngokungenakulungiseka."
+
+#: ../camel/providers/local/camel-mbox-folder.c:398
+#: ../camel/providers/local/camel-mh-folder.c:223
+msgid "Message construction failed."
+msgstr "Ukwakhiwa komyalezo akuphumelelanga."
+
+#: ../camel/providers/local/camel-mbox-store.c:163
+#: ../camel/providers/local/camel-mbox-store.c:348
+msgid "Cannot create a folder by this name."
+msgstr "Ayikwazi ukwenza isiqulathi seefayili esineli gama."
+
+#: ../camel/providers/local/camel-mbox-store.c:193
+#, c-format
+msgid "Cannot get folder `%s': not a regular file."
+msgstr ""
+"Ayikwazi ukufumana isiqulathi seefayili`%s': asiyofayili iqhelekileyo le."
+
+#: ../camel/providers/local/camel-mbox-store.c:223
+#: ../camel/providers/local/camel-mbox-store.c:234
+#: ../camel/providers/local/camel-mbox-store.c:257
+#, c-format
+msgid ""
+"Could not delete folder `%s':\n"
+"%s"
+msgstr ""
+"Ayikwazanga ukucima esi siqulathi seefayili `%s':\n"
+"%s"
+
+#: ../camel/providers/local/camel-mbox-store.c:242
+#, c-format
+msgid "`%s' is not a regular file."
+msgstr "I-`%s' asiyofayili iqhelekileyo."
+
+#: ../camel/providers/local/camel-mbox-store.c:249
+#, c-format
+msgid "Folder `%s' is not empty. Not deleted."
+msgstr "Esi siqulathi seefayili `%s' sinento. Ayicinywanga."
+
+#: ../camel/providers/local/camel-mbox-store.c:361
+#, c-format
+msgid "Cannot create directory `%s': %s."
+msgstr "Ayikwazi ukwenza uvimba weefayili `%s': %s."
+
+#: ../camel/providers/local/camel-mbox-store.c:375
+#, c-format
+msgid "Cannot create folder: %s: %s"
+msgstr "Ayikwazi ukwenza isiqulathi seefayili: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-store.c:377
+msgid "Folder already exists"
+msgstr "Esi siqulathi seefayili sele sikho"
+
+#: ../camel/providers/local/camel-mbox-store.c:459
+msgid "The new folder name is illegal."
+msgstr "Eli gama litsha lesi siqulathi seefayili alikho mthethweni."
+
+#: ../camel/providers/local/camel-mbox-store.c:472
+#, c-format
+msgid "Could not rename `%s': `%s': %s"
+msgstr "Ayikwazanga ukuphinda iyinike igama `%s': `%s': %s"
+
+#: ../camel/providers/local/camel-mbox-store.c:547
+#, c-format
+msgid "Could not rename '%s' to %s: %s"
+msgstr ""
+"Ayikwazanga ukuphinda iyinike igama ilisusa kwi- '%s' ilisa kwi- %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:422
+#, c-format
+msgid "Could not open folder: %s: %s"
+msgstr "Ayikwazanga ukuvula esi siqulathi seefayili: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:470
+#, c-format
+msgid "Fatal mail parser error near position %ld in folder %s"
+msgstr ""
+"Kwenzeke impazamo yokufa ngelixa kusahlulwa i-imeyili ngezijungqu kufuphi "
+"nale ndawo %ld ikwesi siqulathi seefayili %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:526
+#, c-format
+msgid "Cannot check folder: %s: %s"
+msgstr "Ayikwazi ukukhangela esi siqulathi seefayili: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:594
+#: ../camel/providers/local/camel-mbox-summary.c:685
+#: ../camel/providers/local/camel-spool-summary.c:145
+#, c-format
+msgid "Could not open file: %s: %s"
+msgstr "Ayikwazi ukuvula le fayili: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-spool-summary.c:165
+#, c-format
+msgid "Cannot open temporary mailbox: %s"
+msgstr "Ayikwazanga ukuvula ibhokisi ye-imeyile yexeshana: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:619
+#: ../camel/providers/local/camel-mbox-summary.c:793
+#, c-format
+msgid "Could not close source folder %s: %s"
+msgstr "Ayikwazanga ukuvala lo mthombo wesiqulathi seefayili %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:628
+#, c-format
+msgid "Could not close temp folder: %s"
+msgstr "Ayikwazanga ukuvala isiqulathi seefayili sexeshana: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:639
+#, c-format
+msgid "Could not rename folder: %s"
+msgstr "Ayikwazanga ukunika esi siqulathi seefayili igama kwakhona: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:696
+#: ../camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "Ayikwazanga ukugcina esi siqulathi seefayili: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:935
+#: ../camel/providers/local/camel-mbox-summary.c:943
+msgid "Summary and folder mismatch, even after a sync"
+msgstr ""
+"Ukungahambelani kwesishwankathelo nesiqulathi seefayili nasemva "
+"kokusetyenziswa ngaxeshanye"
+
+#: ../camel/providers/local/camel-mbox-summary.c:869
+#: ../camel/providers/local/camel-spool-summary.c:337
+#, c-format
+msgid "Unknown error: %s"
+msgstr "Impazamo engaziwayo: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:998
+#: ../camel/providers/local/camel-mbox-summary.c:1024
+#, c-format
+msgid "Error writing to temp mailbox: %s"
+msgstr "Kwenzeke impazamo xa kubhalwa ibhokisi ye-imeyile yexeshana: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:1015
+#, c-format
+msgid "Writing to tmp mailbox failed: %s: %s"
+msgstr "Akuphumelelanga ukubhala kwibhokisi ye-imeyile yexeshana: %s: %s"
+
+#: ../camel/providers/local/camel-mh-folder.c:175
+msgid "MH append message cancelled"
+msgstr "Isihlomelo somyalezo we-MH sirhoxisiwe"
+
+#: ../camel/providers/local/camel-mh-folder.c:178
+#, c-format
+msgid "Cannot append message to mh folder: %s: %s"
+msgstr ""
+"Ayikwazanga ukuhlomela umyalezo kwesi siqulathi seefayili se-mh: %s: %s"
+
+#: ../camel/providers/local/camel-mh-store.c:220
+#, c-format
+msgid "Could not create folder `%s': %s"
+msgstr "Ayikwazanga ukwenza esi siqulathi seefayili `%s': %s"
+
+#: ../camel/providers/local/camel-mh-store.c:232
+#, c-format
+msgid "Cannot get folder `%s': not a directory."
+msgstr ""
+"Ayikwazi ukufumana isiqulathi seefayili `%s': asingovimba weefayili lo."
+
+#: ../camel/providers/local/camel-mh-summary.c:247
+#, c-format
+msgid "Cannot open MH directory path: %s: %s"
+msgstr "Ayikwazanga ukuvula indlela yovimba weefayili we-MH: %s: %s"
+
+#: ../camel/providers/local/camel-spool-store.c:131
+#, c-format
+msgid "Spool `%s' cannot be opened: %s"
+msgstr "Le bhobhini `%s' ayivuleki: %s"
+
+#: ../camel/providers/local/camel-spool-store.c:143
+#, c-format
+msgid "Spool `%s' is not a regular file or directory"
+msgstr "Le bhobhini `%s' ayiyofayili okanye vimba uqhelekileyo"
+
+#: ../camel/providers/local/camel-spool-store.c:162
+#, c-format
+msgid "Folder `%s/%s' does not exist."
+msgstr "Esi siqulathi seefayili `%s/%s' asikho."
+
+#: ../camel/providers/local/camel-spool-store.c:172
+#, c-format
+msgid ""
+"Could not open folder `%s':\n"
+"%s"
+msgstr ""
+"Ayikwazi ukuvula esi siqulathi seefayili `%s':\n"
+"%s"
+
+#: ../camel/providers/local/camel-spool-store.c:176
+#, c-format
+msgid "Folder `%s' does not exist."
+msgstr "Esi siqulathi seefayili `%s' asikho."
+
+#: ../camel/providers/local/camel-spool-store.c:181
+#, c-format
+msgid ""
+"Could not create folder `%s':\n"
+"%s"
+msgstr ""
+"Ayikwazanga ukwenza esi siqulathi seefayili` %s':\n"
+"%s"
+
+#: ../camel/providers/local/camel-spool-store.c:189
+#, c-format
+msgid "`%s' is not a mailbox file."
+msgstr "Le `%s' asiyofayili yebhokisi ye-imeyile."
+
+#: ../camel/providers/local/camel-spool-store.c:206
+msgid "Store does not support an INBOX"
+msgstr "Lo vimba akayixhasi IBHOKISI YEZINGENAYO"
+
+#: ../camel/providers/local/camel-spool-store.c:218
+#, c-format
+msgid "Spool mail file %s"
+msgstr "Ibhobhini yefayili ye-imeyile %s"
+
+#: ../camel/providers/local/camel-spool-store.c:218
+#, c-format
+msgid "Spool folder tree %s"
+msgstr "Ibhobhini yomthi wesiqulathi seefayili %s"
+
+#: ../camel/providers/local/camel-spool-store.c:226
+msgid "Spool folders cannot be renamed"
+msgstr "Ibhobhini yeziqulathi zeefayili ayikwazi ukunikwa igama kwakhona"
+
+#: ../camel/providers/local/camel-spool-store.c:234
+msgid "Spool folders cannot be deleted"
+msgstr "Ibhobhini yeziqulathi zeefayili ayinakucinywa"
+
+#: ../camel/providers/local/camel-spool-summary.c:178
+#: ../camel/providers/local/camel-spool-summary.c:188
+#: ../camel/providers/local/camel-spool-summary.c:198
+#, c-format
+msgid "Could not sync temporary folder %s: %s"
+msgstr "Ayikwazanga ukwenza isiqulathi seefayili sisebenze ngaxeshanye %s: %s"
+
+#: ../camel/providers/local/camel-spool-summary.c:214
+#, c-format
+msgid "Could not sync spool folder %s: %s"
+msgstr ""
+"Ayikwazanga ukwenza ibhobhini yesiqulathi seefayili isebenze ngaxeshanye %s: "
+"%s"
+
+#: ../camel/providers/local/camel-spool-summary.c:245
+#: ../camel/providers/local/camel-spool-summary.c:264
+#: ../camel/providers/local/camel-spool-summary.c:277
+#, c-format
+msgid ""
+"Could not sync spool folder %s: %s\n"
+"Folder may be corrupt, copy saved in `%s'"
+msgstr ""
+"Ayikwazanga ukwenza le bhobhini yesiqulathi seefayili isebenze ngaxeshanye %"
+"s: %s\n"
+"Kunokwenzeka ukuba esi siqulathi seefayili sonakele, ikopi igcinwe kwi- `%s'"
+
+#: ../camel/providers/nntp/camel-nntp-folder.c:177
+#: ../camel/providers/nntp/camel-nntp-folder.c:209
+#, c-format
+msgid "Internal error: uid in invalid format: %s"
+msgstr "Kwenzeke impazamo ngaphakathi: abuqinisekiswanga ubume be-uid: %s"
+
+#: ../camel/providers/nntp/camel-nntp-folder.c:329
+#: ../camel/providers/nntp/camel-nntp-folder.c:332
+#: ../camel/providers/nntp/camel-nntp-folder.c:374
+#: ../camel/providers/nntp/camel-nntp-folder.c:376
+#, c-format
+msgid "Posting failed: %s"
+msgstr "Akuphumelelanga ukuthumela: %s"
+
+#: ../camel/providers/nntp/camel-nntp-folder.c:394
+msgid "You cannot post NNTP messages while working offline!"
+msgstr "Ayikwazi ukuthumela imiyalezo ye-NNTP ingekho kwi-intanethi!"
+
+#: ../camel/providers/nntp/camel-nntp-folder.c:405
+msgid "You cannot copy messages from a NNTP folder!"
+msgstr "Ayikwazi ukukopa imiyalezo evela kwisiqulathi seefayili i-NNTP!"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:44
+msgid ""
+"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr ""
+"Bonisa iziqulathi zeefayili ngokufutshanisiweyo (umz. c.c.linux kuno-comp.os."
+"linux)"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:46
+msgid "In the subscription dialog, show relative folder names"
+msgstr ""
+"Kwinkcazelo yesibonisi, bonisa amagama eziqulathi zeefayili ezinxulumene nayo"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:53
+msgid "USENET news"
+msgstr "Iindaba ze-USENET"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:55
+msgid "This is a provider for reading from and posting toUSENET newsgroups."
+msgstr ""
+"Esi sisinikezeli sokufunda okuvela nokuthumela kumaqela eendaba ze-USENET."
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:74
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
+msgstr ""
+"Olu khetho luza kungqina neseva yeNNTP lusebenzisa i-password yombhalo "
+"oqhelekileyo."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:234
+#, c-format
+msgid "Could not read greeting from %s: %s"
+msgstr "Ayikwazanga ukufunda isibuliso esivela %s: %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:246
+#, c-format
+msgid "NNTP server %s returned error code %d: %s"
+msgstr "Le seva ye-NNTP %s ibuyisele ikhowudi enempazamo i- %d: %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:423
+#, c-format
+msgid "USENET News via %s"
+msgstr "Iindaba ze-USENET zidlula kwi- %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:812
+#, c-format
+msgid ""
+"Error retrieving newsgroups:\n"
+"\n"
+"%s"
+msgstr ""
+"Kwenzeke impazamo xa bekufunwa amaqela eendaba:\n"
+"\n"
+"%s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:906
+msgid ""
+"You cannot subscribe to this newsgroup:\n"
+"\n"
+"No such newsgroup. The selected item is a probably a parent folder."
+msgstr ""
+"Awukwazi ukuzibophelela kweli qela leendaba:\n"
+"\n"
+"Akukho qela landaba linjalo. Le nto uyichongileyo kusenokwenzeka ukuba "
+"sisiqulathi seefayili esingumzali."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:938
+msgid ""
+"You cannot unsubscribe to this newsgroup:\n"
+"\n"
+"newsgroup does not exist!"
+msgstr ""
+"Awukwazi ukuzikhupha ekuzibopheleleni kweli qela leendaba:\n"
+"\n"
+"Alikho eli qela leendaba!"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:963
+msgid "You cannot create a folder in a News store: subscribe instead."
+msgstr ""
+"Awukwazi ukwenza isiqulathi seefayili kuvimba weeNdaba: zibophelele endaweni "
+"yoko."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:971
+msgid "You cannot rename a folder in a News store."
+msgstr ""
+"Awukwazi ukunika esi siqulathi seefayili igama kwakhona kulo vimba weeNdaba."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:979
+msgid "You cannot remove a folder in a News store: unsubscribe instead."
+msgstr ""
+"Awukwazi ukususa isiqulathi seefayili kuvimba weeNdaba: zikhuphe "
+"ekuzibopheleleni endaweni yoko."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1149
+msgid "Authentication requested but no username provided"
+msgstr "Ubungqina buceliwe kodwa alinikwanga lona igama lomsebenzisi"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1157
+#, c-format
+msgid "Please enter the NNTP password for %s@%s"
+msgstr "Nceda ufake i-password le-NNTP ye- %s@%s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1161
+#, c-format
+msgid "Cannot authenticate to server: %s"
+msgstr "Ayikwazanga ukunika ubungqina kwiseva: %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1277
+#, c-format
+msgid "NNTP Command failed: %s"
+msgstr "Umyalelo we-NNTP awuphumelelanga: %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1333
+msgid "Not connected."
+msgstr "Ayinxulumaniswanga."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1386
+#, c-format
+msgid "No such folder: %s"
+msgstr "Akukho siqulathi seefayili sinjalo: %s"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:221
+#: ../camel/providers/nntp/camel-nntp-summary.c:317
+#, c-format
+msgid "%s: Scanning new messages"
+msgstr "I-%s: Ukuskena imiyalezo emitsha"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:228
+#, c-format
+msgid "Unexpected server response from xover: %s"
+msgstr "Kufunyenwe impendulo engalindelekanga kwi-xover: %s"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:331
+#, c-format
+msgid "Unexpected server response from head: %s"
+msgstr "Kufunyenwe impendulo engalindelekanga kwintloko: %s"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:371
+msgid "Use cancel"
+msgstr "Sebenzisa iqhosha lokurhoxisa"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:373
+#, c-format
+msgid "Operation failed: %s"
+msgstr "Umsebenzi awuphumelelanga: %s"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:247
+msgid "Retrieving POP summary"
+msgstr "Ukufumana isishwankathelo se-POP"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:266
+#, c-format
+msgid "Cannot get POP summary: %s"
+msgstr "Ayikwazi ukufumana isishwankathelo se-POP: %s"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:309
+msgid "Expunging deleted messages"
+msgstr "Ukucima imiyalezo ecinyiweyo"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:405
+#, c-format
+msgid "No message with uid %s"
+msgstr "Akukho myalezo une-uid %s"
+
+#. Sigh, most of the crap in this function is so that the cancel button
+#. returns the proper exception code.  Sigh.
+#: ../camel/providers/pop3/camel-pop3-folder.c:412
+#, c-format
+msgid "Retrieving POP message %d"
+msgstr "Ukufumana umyalezo we-POP %d"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:502
+msgid "Unknown reason"
+msgstr "Isizathu esingaziwayo"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:41
+msgid "Leave messages on server"
+msgstr "Shiya umyalezo kwiseva"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:44
+#, c-format
+msgid "Delete after %s day(s)"
+msgstr "Yicime emva kosuku(kweentsuku) %s"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:47
+msgid "Disable support for all POP3 extensions"
+msgstr "Yenze ingasebenzi inkxaso yazo zonke izongezelelo ze-POP3"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:55
+msgid "POP"
+msgstr "POP"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:57
+msgid "For connecting to and downloading mail from POP servers."
+msgstr "Ukunxulumana kwi- nokufaka inkqubo ye-imeyile kwiseva ye-POP."
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:74
+msgid ""
+"This option will connect to the POP server using a plaintext password. This "
+"is the only option supported by many POP servers."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva ye-POP lusebenzisa i-password yombhalo "
+"oqhelekileyo. Olu khetho lulo lodwa oluxhaswa ziiseva ezininzi ze-POP."
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:84
+msgid ""
+"This option will connect to the POP server using an encrypted password via "
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
+msgstr ""
+"Olu khetho luza kunxulumana kwiseva ye-POP usebenzisa i-password "
+"ekhowudiweyo udlula kumthetho wokusebenza i-APOP. Oku kusenokungasebenzi "
+"kubo bonke abasebenzisi nakwiiseva eziphakamisa ukuyixhasa."
+
+#: ../camel/providers/pop3/camel-pop3-store.c:204
+#, c-format
+msgid "Failed to read a valid greeting from POP server %s"
+msgstr ""
+"Ayiphumelelanga ukufunda isibuliso esisemthethweni esivela kwiseva ye-POP %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:218
+#: ../camel/providers/pop3/camel-pop3-store.c:235
+#: ../camel/providers/pop3/camel-pop3-store.c:245
+#: ../camel/providers/pop3/camel-pop3-store.c:251
+#, c-format
+msgid "Failed to connect to POP server %s in secure mode: %s"
+msgstr ""
+"Ayiphumelelanga ukunxulumana kwiseva ye-POP %s ngendlela ekhuselekileyo: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:219
+msgid "STLS not supported"
+msgstr "I-STLS ayixhaswanga"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:363
+#, c-format
+msgid "Could not connect to POP server %s"
+msgstr "Ayikwazanga ukunxulumana neseva i-POP %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:404
+#: ../camel/providers/pop3/camel-pop3-store.c:518
+#, c-format
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
+msgstr ""
+"Ayikwazanga ukunxulumana neseva i-POP %s: Akukho nkxaso kwindlela yobungqina "
+"eceliweyo."
+
+#: ../camel/providers/pop3/camel-pop3-store.c:420
+#, c-format
+msgid "SASL `%s' Login failed for POP server %s: %s"
+msgstr "Ukungena kwe-SASL `%s' akuphumelelanga kwiseva ye-POP %s: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:432
+#, c-format
+msgid "Cannot login to POP server %s: SASL Protocol error"
+msgstr ""
+"Ayikwazi ukungena kwiseva ye-POP%s: Kwenzeke impazamo kumthetho wokusebenza "
+"we-SASL"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:451
+#, c-format
+msgid "Failed to authenticate on POP server %s: %s"
+msgstr "Ayiphumelelanga ukunika ubungqina beseva i-POP %s: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:477
+#, c-format
+msgid "%sPlease enter the POP password for %s on host %s"
+msgstr "%sNceda ufake i-password le-POP kwi- %s kumququzeleli u %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:545
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending password: %s"
+msgstr ""
+"Ayikwazi ukunxulumana kwiseva ye-POP %s.\n"
+"Kwenzeke impazamo xa kuthunyelwa i-password: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:539
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending username: %s"
+msgstr ""
+"Ayikwazi ukunxulumana kwiseva ye-POP %s.\n"
+"Kwenzeke impazamo xa kuthunyelwa igama lomsebenzisi: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:645
+#, c-format
+msgid "No such folder `%s'."
+msgstr "Akukho siqulathi seefayili sinjalo `%s'."
+
+# Sendmail is the name of an application - should remain verbatim in translation
+#: ../camel/providers/sendmail/camel-sendmail-provider.c:37
+#, fuzzy
+msgid "Sendmail"
+msgstr "Thumela i-imeyile"
+
+#: ../camel/providers/sendmail/camel-sendmail-provider.c:39
+msgid ""
+"For delivering mail by passing it to the \"sendmail\" program on the local "
+"system."
+msgstr ""
+"Ukuthumela i-imeyile ngokuyidlulisa kwinkqubo ye- \"sendmail\" "
+"kwisixokelelwano sangaphakathi."
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:114
+msgid "Could not parse recipient list"
+msgstr "Ayikwazanga ukwahlula uluhlu lomamkeli ngezijungqu"
+
+# sendmail is the name of an application - should remain verbatim in translation
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:145
+#, fuzzy, c-format
+msgid "Could not create pipe to sendmail: %s: mail not sent"
+msgstr ""
+"Ayikwazanga ukwenza umbhobho kwisithumeli-imeyile: %s: i-imeyile "
+"ayithunyelwanga"
+
+# sendmail is the name of an application - should remain verbatim in translation
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:166
+#, fuzzy, c-format
+msgid "Could not fork sendmail: %s: mail not sent"
+msgstr ""
+"Ayikwazanga ukwahlulahlula i-imeyile ethunyelwayo: %s: ayithunyelwanga le "
+"imeyile"
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:206
+#, c-format
+msgid "Could not send message: %s"
+msgstr "Ayikwazanga ukuthumela umyalezo: %s"
+
+# sendmail is the name of an application - should remain verbatim in translation
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
+#, fuzzy, c-format
+msgid "sendmail exited with signal %s: mail not sent."
+msgstr ""
+"kuphunyiwe kwisithumeli-imeyile ngaphandle kokunika umqondiso %s: "
+"ayithunyelwanga i-imeyile."
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:241
+#, c-format
+msgid "Could not execute %s: mail not sent."
+msgstr "Ayikwazanga ukuphumeza %s: ayithunyelwanga i-imeyile."
+
+# sendmail is the name of an application - should remain verbatim in translation
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:246
+#, fuzzy, c-format
+msgid "sendmail exited with status %d: mail not sent."
+msgstr "kuthunyelwe i-imeyile enobu bume %d: i-imeyile ayithunyelwanga."
+
+# sendmail is the name of an application - should remain verbatim in translation
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:260
+#, fuzzy
+msgid "sendmail"
+msgstr "Thumela i-imeyile"
+
+# sendmail is the name of an application - should remain verbatim in translation
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:262
+#, fuzzy
+msgid "Mail delivery via the sendmail program"
+msgstr "Ukuhanjiswa kwe-imeyile kudlulwa kwinkqubo yokuthumela i-imeyile"
+
+#: ../camel/providers/smtp/camel-smtp-provider.c:38
+msgid "SMTP"
+msgstr "I-SMTP"
+
+#: ../camel/providers/smtp/camel-smtp-provider.c:40
+msgid "For delivering mail by connecting to a remote mailhub using SMTP."
+msgstr ""
+"Ukuhambisa i-imeyile ngokunxulumana kwi-mailhub ekude kusetyenziswa i-SMTP."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:165
+msgid "Syntax error, command unrecognized"
+msgstr "Impazamo yegrama, yomyalelo ongaziwanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:167
+msgid "Syntax error in parameters or arguments"
+msgstr "Impazamo kwigrama kwimida okanye kwisiphumezi-miyalelo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:169
+msgid "Command not implemented"
+msgstr "Umyalelo awenziwanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:171
+msgid "Command parameter not implemented"
+msgstr "Umda womyalelo awenziwanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:173
+msgid "System status, or system help reply"
+msgstr "Ubume besixokelelwano, okanye impendulo yoncedo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:175
+msgid "Help message"
+msgstr "Umyalezo oluncedo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:177
+msgid "Service ready"
+msgstr "Le nkonzo sele ilungile"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:179
+msgid "Service closing transmission channel"
+msgstr "Le nkonzo ivala ukusasaza kwejelo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:181
+msgid "Service not available, closing transmission channel"
+msgstr "Ayifumaneki le nkonzo, ivala ukusasaza kwejelo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:183
+msgid "Requested mail action okay, completed"
+msgstr "Esi senzo se-imeyile silungile, sigqityiwe"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:185
+msgid "User not local; will forward to <forward-path>"
+msgstr "Lo msebenzisi akakho ngaphakathi iza kudluliselwa ku-<forward-path>"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:187
+msgid "Requested mail action not taken: mailbox unavailable"
+msgstr ""
+"Isenzo esiceliweyo se-imeyile asenziwanga: le bhokisi ye-imeyili ayifumaneki"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:189
+msgid "Requested action not taken: mailbox unavailable"
+msgstr "Isenzo esiceliweyo asenziwanga: le bhokisi ye-imeyile ayifumaneki"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:191
+msgid "Requested action aborted: error in processing"
+msgstr "Isenzo esiceliweyo siyekiwe: kwenzeke impazamo ngelixa siphunyezwayo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:193
+msgid "User not local; please try <forward-path>"
+msgstr "Lo msebenzisi akakho ngaphakathi; nceda uzame i-<forward-path>"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:195
+msgid "Requested action not taken: insufficient system storage"
+msgstr "Isenzo esiceliweyo asenziwanga: akonelanga uvimba wesi sixokelelwano"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:197
+msgid "Requested mail action aborted: exceeded storage allocation"
+msgstr ""
+"Isenzo esiceliweyo se-imeyili siyekiwe: sidlulile kumthamo onikwe lo vimba"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:199
+msgid "Requested action not taken: mailbox name not allowed"
+msgstr ""
+"Isenzo esiceliweyo asenziwanga: alivunyelwanga igama lebhokisi ye-imeyile"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:201
+msgid "Start mail input; end with <CRLF>.<CRLF>"
+msgstr "Qalisa ingeniso ye-imeyili; yigqibelise nge-<CRLF>.<CRLF>"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:203
+msgid "Transaction failed"
+msgstr "Intengiselwano ayiphumelelanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:207
+msgid "A password transition is needed"
+msgstr "Kufuneka kuguqulwe i-password"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:209
+msgid "Authentication mechanism is too weak"
+msgstr "Indlela yobungqina ibuthathaka kakhulu"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:211
+msgid "Encryption required for requested authentication mechanism"
+msgstr "Kufuneka ukukhowuda kule ndlela yobungqina iceliweyo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:213
+msgid "Temporary authentication failure"
+msgstr "Ubungqina bexeshana abuphumelelanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:294
+msgid "Welcome response error"
+msgstr "Kwenzeke impazamo kwimpendulo ethi, wamkelekile"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:325
+#: ../camel/providers/smtp/camel-smtp-transport.c:358
+#: ../camel/providers/smtp/camel-smtp-transport.c:364
+#, c-format
+msgid "Failed to connect to SMTP server %s in secure mode: %s"
+msgstr ""
+"Ayiphumelelanga ukunxulumana neseva ye-SMTP %s kwindlela ekhuselekileyo: %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:334
+#, c-format
+msgid "STARTTLS command failed: %s"
+msgstr "Umyalelo we-STARTTLS awuphumelelanga: %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:349
+msgid "STARTTLS command failed"
+msgstr "Umyalelo we-STARTTLS awuphumelelanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:491
+#, c-format
+msgid "SMTP server %s does not support requested authentication type %s."
+msgstr "Le seva ye-SMTP %s ayisixhasi isicelo solu hlobo lobungqina %s."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:529
+#, c-format
+msgid "%sPlease enter the SMTP password for %s on host %s"
+msgstr "%sNceda ufake i-password ye-SMTP ye- %s kumququzeleli %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:548
+#, c-format
+msgid ""
+"Unable to authenticate to SMTP server.\n"
+"%s\n"
+"\n"
+msgstr ""
+"Ayinako ukunika ubungqina kwiseva ye-SMTP.\n"
+"%s\n"
+"\n"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:672
+#, c-format
+msgid "SMTP server %s"
+msgstr "I-SMTP seva %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:674
+#, c-format
+msgid "SMTP mail delivery via %s"
+msgstr "Ukuhanjiswa kwe-imeyile ye-SMTP kudlulwa %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:692
+msgid "Cannot send message: service not connected."
+msgstr "Ayikwazi ukuthumela umyalezo: le nkonzo ayinxulumaniswanga."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:698
+msgid "Cannot send message: sender address not valid."
+msgstr "Ayikwazi ukuthumela umyalezo: lidilesi yomthumeli ayiqinisekiswanga."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:702
+msgid "Sending message"
+msgstr "Umyalezo othunyelwayo"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:717
+msgid "Cannot send message: no recipients defined."
+msgstr "Ayikwazi ukuthumela umyalezo: akukho bamkeli bachaziweyo."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:728
+msgid "Cannot send message: one or more invalid recipients"
+msgstr "Ayikwazi ukuthumela umyalezo: umamkeli omnye nangaphezulu"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:897
+msgid "SMTP Greeting"
+msgstr "Isibuliso Se-SMTP"
+
+# HELO refers to the type of command, i.e. an adjective. Also needs to appear verbatim in translation
+#: ../camel/providers/smtp/camel-smtp-transport.c:923
+#, fuzzy, c-format
+msgid "HELO command failed: %s"
+msgstr "Awuphumelelanga lo myalelo uthi, MOLO: %s"
+
+# HELO refers to the type of command, i.e. an adjective. Also needs to appear verbatim in translation
+#: ../camel/providers/smtp/camel-smtp-transport.c:940
+#, fuzzy
+msgid "HELO command failed"
+msgstr "Awuphumelelanga lo myalelo uthi, MOLO"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1006
+msgid "SMTP Authentication"
+msgstr "Ubungqina be-SMTP"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1012
+msgid "Error creating SASL authentication object."
+msgstr "Kwenzeke impazamo xa kusenziwa ubungqina be-SASL."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1029
+#: ../camel/providers/smtp/camel-smtp-transport.c:1040
+#, c-format
+msgid "AUTH command failed: %s"
+msgstr "Umyalelo we-AUTH awuphumelelanga: %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1046
+msgid "AUTH command failed"
+msgstr "Umyalelo we-AUTH awuphumelelanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1108
+msgid "Bad authentication response from server.\n"
+msgstr "Impendulo yobungqina obungalunganga ivela kwiseva.\n"
+
+# MAIL FROM must appear verbatim in translation
+#: ../camel/providers/smtp/camel-smtp-transport.c:1133
+#, fuzzy, c-format
+msgid "MAIL FROM command failed: %s: mail not sent"
+msgstr ""
+"Umyalelo Othi I-IMEYILI EVELA awuphumelelanga: %s: i-imeyile ayithunyelwanga"
+
+# MAIL FROM must appear verbatim in translation
+#: ../camel/providers/smtp/camel-smtp-transport.c:1150
+#, fuzzy
+msgid "MAIL FROM command failed"
+msgstr "Umyalelo Othi I-IMEYILI EVELA awuphumelelanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1174
+#, c-format
+msgid "RCPT TO command failed: %s: mail not sent"
+msgstr "Umyalelo Othi RCPT TO awuphumelelanga: %s: i-imeyile ayithunyelwanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1193
+#, c-format
+msgid "RCPT TO <%s> failed"
+msgstr "I-RCPT TO <%s> ayiphumelelanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1232
+#: ../camel/providers/smtp/camel-smtp-transport.c:1290
+#: ../camel/providers/smtp/camel-smtp-transport.c:1309
+#, c-format
+msgid "DATA command failed: %s: mail not sent"
+msgstr "Umyalelo we-DATA awuphumelelanga: %s: i-imeyili ayithunyelwanga"
+
+#. we should have gotten instructions on how to use the DATA command:
+#. * 354 Enter mail, end with "." on a line by itself
+#.
+#: ../camel/providers/smtp/camel-smtp-transport.c:1249
+#: ../camel/providers/smtp/camel-smtp-transport.c:1325
+msgid "DATA command failed"
+msgstr "Umyalelo we-DATA awuphumelelanga"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1348
+#, c-format
+msgid "RSET command failed: %s"
+msgstr "Umyalelo we-RSET awuphumelelanga: %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1364
+msgid "RSET command failed"
+msgstr "Umyalelo we-RSETi awuphumelelanga"
+
+# QUIT should appear verbatim in the translation
+#: ../camel/providers/smtp/camel-smtp-transport.c:1387
+#, fuzzy, c-format
+msgid "QUIT command failed: %s"
+msgstr "Umyalelo othi PHUMA awuphumelelanga: %s"
+
+# QUIT should appear verbatim in the translation
+#: ../camel/providers/smtp/camel-smtp-transport.c:1401
+#, fuzzy
+msgid "QUIT command failed"
+msgstr "Umyalelo othi PHUMA awuphumelelanga"
+
+#: ../libedataserver/e-categories.c:227
+msgid "Business"
+msgstr "Ishishini"
+
+#: ../libedataserver/e-categories.c:228
+msgid "Competition"
+msgstr "Ukhuphiswano"
+
+#: ../libedataserver/e-categories.c:229
+msgid "Favorites"
+msgstr "Ozithandayo"
+
+#: ../libedataserver/e-categories.c:230
+msgid "Gifts"
+msgstr "Izipho"
+
+#: ../libedataserver/e-categories.c:231
+msgid "Goals/Objectives"
+msgstr "Iinjongo"
+
+#: ../libedataserver/e-categories.c:232
+msgid "Holiday"
+msgstr "Iholide"
+
+#: ../libedataserver/e-categories.c:233
+msgid "Holiday Cards"
+msgstr "Iikhadi zeholide"
+
+# Capitalisation
+#: ../libedataserver/e-categories.c:234
+#, fuzzy
+msgid "Hot Contacts"
+msgstr "Oqhagamshelana rhoqo nabo"
+
+#: ../libedataserver/e-categories.c:235
+msgid "Ideas"
+msgstr "Izimvo"
+
+#: ../libedataserver/e-categories.c:236
+msgid "International"
+msgstr "Yamazwe ngamazwe"
+
+#: ../libedataserver/e-categories.c:237
+msgid "Key Customer"
+msgstr "Umthengi Oyintloko"
+
+#: ../libedataserver/e-categories.c:238
+msgid "Miscellaneous"
+msgstr "Ezixutyiweyo"
+
+#: ../libedataserver/e-categories.c:239
+msgid "Personal"
+msgstr "Ezakho Buqu"
+
+#: ../libedataserver/e-categories.c:240
+msgid "Phone Calls"
+msgstr "Iminxeba Engenayo"
+
+#: ../libedataserver/e-categories.c:241
+msgid "Status"
+msgstr "Ubume"
+
+#: ../libedataserver/e-categories.c:242
+msgid "Strategies"
+msgstr "Ubuchule bokwenza izinto"
+
+#: ../libedataserver/e-categories.c:243
+msgid "Suppliers"
+msgstr "Abanikezeli"
+
+#: ../libedataserver/e-categories.c:244
+msgid "Time & Expenses"
+msgstr "Ixesha neNkcitho"
+
+#: ../libedataserver/e-categories.c:245
+msgid "VIP"
+msgstr "VIP"
+
+#: ../libedataserver/e-categories.c:246
+msgid "Waiting"
+msgstr "Isalindile"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format.
+#: ../libedataserver/e-time-utils.c:179 ../libedataserver/e-time-utils.c:422
+msgid "%a %m/%d/%Y %I:%M:%S %p"
+msgstr "%a %m/%d/%Y %I:%M:%S %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format.
+#: ../libedataserver/e-time-utils.c:184 ../libedataserver/e-time-utils.c:413
+msgid "%a %m/%d/%Y %H:%M:%S"
+msgstr "%a %m/%d/%Y %H:%M:%S"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format, without seconds.
+#: ../libedataserver/e-time-utils.c:189 ../libedataserver/e-time-utils.c:418
+msgid "%a %m/%d/%Y %I:%M %p"
+msgstr "%a %m/%d/%Y %I:%M %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format, without seconds.
+#: ../libedataserver/e-time-utils.c:194 ../libedataserver/e-time-utils.c:409
+msgid "%a %m/%d/%Y %H:%M"
+msgstr "%a %m/%d/%Y %H:%M"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:199
+msgid "%a %m/%d/%Y %I %p"
+msgstr "%a %m/%d/%Y %I %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:204
+msgid "%a %m/%d/%Y %H"
+msgstr "%a %m/%d/%Y %H"
+
+#. strptime format of a weekday and a date.
+#. strftime format of a weekday and a date.
+#: ../libedataserver/e-time-utils.c:207 ../libedataserver/e-time-utils.c:300
+#: ../libedataserver/e-time-utils.c:404
+msgid "%a %m/%d/%Y"
+msgstr "%a %m/%d/%Y"
+
+#. strptime format of a date and a time, in 12-hour format.
+#: ../libedataserver/e-time-utils.c:215
+msgid "%m/%d/%Y %I:%M:%S %p"
+msgstr "%m/%d/%Y %I:%M:%S %p"
+
+#. strptime format of a date and a time, in 24-hour format.
+#: ../libedataserver/e-time-utils.c:219
+msgid "%m/%d/%Y %H:%M:%S"
+msgstr "%m/%d/%Y %H:%M:%S"
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:224
+msgid "%m/%d/%Y %I:%M %p"
+msgstr "%m/%d/%Y %I:%M %p"
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:229
+msgid "%m/%d/%Y %H:%M"
+msgstr "%m/%d/%Y %H:%M"
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:234
+msgid "%m/%d/%Y %I %p"
+msgstr "%m/%d/%Y %I %p"
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:239
+msgid "%m/%d/%Y %H"
+msgstr "%m/%d/%Y %H"
+
+#. strptime format of a weekday and a date.
+#. This is the preferred date format for the locale.
+#: ../libedataserver/e-time-utils.c:242 ../libedataserver/e-time-utils.c:303
+msgid "%m/%d/%Y"
+msgstr "%m/%d/%Y"
+
+#. strptime format for a time of day, in 12-hour format.
+#. strftime format of a time in 12-hour format.
+#: ../libedataserver/e-time-utils.c:348 ../libedataserver/e-time-utils.c:467
+msgid "%I:%M:%S %p"
+msgstr "%I:%M:%S %p"
+
+#. strptime format for a time of day, in 24-hour format.
+#. strftime format of a time in 24-hour format.
+#: ../libedataserver/e-time-utils.c:352 ../libedataserver/e-time-utils.c:459
+msgid "%H:%M:%S"
+msgstr "%H:%M:%S"
+
+#. strptime format for time of day, without seconds,
+#. in 12-hour format.
+#. strftime format of a time in 12-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:357 ../libedataserver/e-time-utils.c:464
+msgid "%I:%M %p"
+msgstr "%I:%M %p"
+
+#. strptime format for time of day, without seconds 24-hour format.
+#. strftime format of a time in 24-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:361 ../libedataserver/e-time-utils.c:456
+msgid "%H:%M"
+msgstr "%H:%M"
+
+#. strptime format for hour and AM/PM, 12-hour format.
+#: ../libedataserver/e-time-utils.c:365
+msgid "%I %p"
+msgstr "%I %p"
+
+#: ../libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr ""
+
+#: ../libedataserverui/e-book-auth-util.c:184
+#, fuzzy
+msgid "Failed to authenticate.\n"
+msgstr "Ayiphumelelanga ukukhowuda i-data"
+
+# Capitalisation
+#: ../libedataserverui/e-categories-dialog.c:91
+#, fuzzy
+msgid "Category Icon"
+msgstr "Udidi lomfanekiso ongumqondiso"
+
+#: ../libedataserverui/e-categories-dialog.c:266
+#, c-format
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
+msgstr ""
+"Sele lukho olu didi '%s' kummiselo wenkqubo. Nceda usebenzise elinye igama"
+
+#: ../libedataserverui/e-categories-dialog.c:433
+msgid "Category"
+msgstr "Udidi"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:1
+msgid "Category Properties"
+msgstr "Iindidi Zophawu"
+
+# Capitalisation
+#: ../libedataserverui/e-categories-dialog.glade.h:2
+#, fuzzy
+msgid "Category _Color"
+msgstr "Udidi _lombala"
+
+# Capitalisation
+#: ../libedataserverui/e-categories-dialog.glade.h:3
+#, fuzzy
+msgid "Category _Icon"
+msgstr "Udidi _lomfanekiso ongumqondiso"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:4
+msgid "Category _Name"
+msgstr "Igama _Lophawu"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:5
+msgid "Item(s) belong to these _categories:"
+msgstr "I(zi)nto zezi _ndidi:"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:6
+msgid "_Available Categories:"
+msgstr "_Iindidi Ezifumanekayo:"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:7
+msgid "_Edit"
+msgstr "_Hlela"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:8
+msgid "categories"
+msgstr "iindidi"
+
+#: ../libedataserverui/e-name-selector-dialog.c:200
+msgid "Select Contacts from Address Book"
+msgstr "Khetha Oqhagamshelana naye kule Ncwadi Yedilesi"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:1
+msgid "\t\t\t\t\t\t"
+msgstr "\t\t\t\t\t\t"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:3
+msgid "<b>Show Contacts</b>"
+msgstr "<b>Bonisa Oqhagamshelana Nabo</b>"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:4
+msgid "<b>_Contacts</b>"
+msgstr "<b>_Oqhagamshelana Nabo</b>"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:5
+msgid "Address Book"
+msgstr "Incwadi Yedilesi"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:6
+msgid "Address _Book:"
+msgstr "Incwadi _Yedilesi:"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:7
+msgid "Contacts"
+msgstr "Oqhagamshelana nabo"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:8
+msgid "Search"
+msgstr "Khangela"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:9
+msgid "_Search:"
+msgstr "_Khangela:"
+
+#: ../libedataserverui/e-passwords.c:471
+msgid "_Remember this password"
+msgstr ""
+
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password for the remainder of this session"
+msgstr ""
+
+#. prepare the dialog
+#: ../libedataserverui/e-source-selector-dialog.c:101
+msgid "Select destination"
+msgstr "Khetha indawo oya kuyo"
+
+#: ../libedataserverui/e-source-selector-dialog.c:154
+msgid "_Destination"
+msgstr "_Indawo Oya Kuyo"
+
+#: ../servers/groupwise/e-gw-connection.c:157
+msgid "Invalid connection"
+msgstr "Unxulumano olungagunyaziswanga"
+
+#: ../servers/groupwise/e-gw-connection.c:161
+msgid "Invalid response from server"
+msgstr "Ayigunyaziswanga impendulo evela kwiseva"
+
+#: ../servers/groupwise/e-gw-connection.c:163
+msgid "No response from the server"
+msgstr "Akukho mpendulo ivela kwiseva"
+
+#: ../servers/groupwise/e-gw-connection.c:169
+msgid "Bad parameter"
+msgstr "Umda ongalunganga"
+
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
+msgid "Evolution Addressbook file backend"
+msgstr "Isiphumezi se-data yefayili yencwadi yedilesi yenkqubo yoPhuhliso"
+
+# Evolution
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
+#, fuzzy
+msgid "Evolution Calendar file and webcal backend"
+msgstr "Isiphumezi se-data yefayili yekhalenda ne-webca yoPhuhliso"
+
+#. dialog display isn't working out
+#: ../src/server.c:101
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr ""
+"Kwenzeke iziphene xa kusahlulwahlulwa kaninzi; ayikwazi ukubonisa umboniso "
+"walo mpazamo\n"
