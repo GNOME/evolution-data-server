@@ -1,3 +1,17 @@
+2004-08-19  Chris Toshok  <toshok@ximian.com>
+
+	[ part of fix for #60889 ]
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_load_source): add DB_THREAD flag to all calls
+	to db->open.
+	(string_to_dbt): set dbt->flags to DB_DBT_USERMEM.
+	(e_book_backend_file_modify_contact): set dbt->flags to
+	DB_DBT_MALLOC and free the dbt's data when we're done.
+	(e_book_backend_file_get_contact): same.
+	(book_view_thread): same.
+	(e_book_backend_file_changes_foreach_key): same.
+	(e_book_backend_file_maybe_upgrade_db): same.
+	
 2004-08-17  Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* backends/groupwise/e-book-backend-groupwise.c (func_begins_with):
@@ -16,7 +30,6 @@
 	(e_book_backend_groupwise_remove) : return error when 
 	there is an attempt to remove System adddress book
 	(e_book_backend_groupwise_get_supported_auth_methods ) : return plain/password 
-	
 	
 2004-08-16  Chris Toshok  <toshok@ximian.com>
 

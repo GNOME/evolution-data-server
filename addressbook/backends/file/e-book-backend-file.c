@@ -49,6 +49,7 @@ struct _EBookBackendFilePrivate {
 	char     *filename;
 	char     *summary_filename;
 	DB       *file_db;
+	DB_ENV   *env;
 	EBookBackendSummary *summary;
 };
 
@@ -58,6 +59,7 @@ string_to_dbt(const char *str, DBT *dbt)
 	memset (dbt, 0, sizeof (*dbt));
 	dbt->data = (void*)str;
 	dbt->size = strlen (str) + 1;
+	dbt->flags = DB_DBT_USERMEM;
 }
 
 static EContact*
@@ -251,11 +253,14 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 
 	string_to_dbt (lookup_id, &id_dbt);	
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
 
 	/* get the old ecard - the one that's presently in the db */
 	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 	if (0 != db_error)
 		return GNOME_Evolution_Addressbook_ContactNotFound;
+
+	free (vcard_dbt.data);
 
 	string_to_dbt (vcard, &vcard_dbt);	
 
@@ -294,11 +299,13 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 	string_to_dbt (id, &id_dbt);
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
 
 	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 
 	if (db_error == 0) {
 		*vcard = g_strdup (vcard_dbt.data);
+		free (vcard_dbt.data);
 		return GNOME_Evolution_Addressbook_Success;
 	} else {
 		*vcard = g_strdup ("");
@@ -456,7 +463,8 @@ book_view_thread (gpointer data)
 
 			string_to_dbt (id, &id_dbt);
 			memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-				
+			vcard_dbt.flags = DB_DBT_MALLOC;
+
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 
 			if (db_error == 0) {
@@ -464,6 +472,11 @@ book_view_thread (gpointer data)
 				/* notify_update will check if it matches for us */
 				e_data_book_view_notify_update (book_view, contact);
 				g_object_unref (contact);
+
+				free (vcard_dbt.data);
+			}
+			else {
+				g_warning ("db->get returned %d", db_error);
 			}
 		}
 
@@ -574,6 +587,8 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 	
 	string_to_dbt (key, &id_dbt);
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
+
 	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 	
 	if (db_error != 0) {
@@ -592,6 +607,8 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 						vcard_string);
 
 		g_object_unref (contact);
+		
+		free (vcard_dbt.data);
 	}
 }
 
@@ -873,11 +890,13 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 
 	string_to_dbt (E_BOOK_BACKEND_FILE_VERSION_NAME, &version_name_dbt);
 	memset (&version_dbt, 0, sizeof (version_dbt));
+	version_dbt.flags = DB_DBT_MALLOC;
 
 	db_error = db->get (db, NULL, &version_name_dbt, &version_dbt, 0);
 	if (db_error == 0) {
 		/* success */
 		version = g_strdup (version_dbt.data);
+		free (version_dbt.data);
 	}
 	else {
 		/* key was not in file */
@@ -896,6 +915,12 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 # include <libedata-book/ximian-vcard.h>
 #endif
 
+static void
+file_errcall (const char *buf1, char *buf2)
+{
+	g_warning ("libdb error: %s", buf2);
+}
+
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_file_load_source (EBookBackend           *backend,
 				 ESource                *source,
@@ -906,6 +931,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	gboolean        writable = FALSE;
 	int             db_error;
 	DB *db;
+	DB_ENV *env;
 	time_t db_mtime;
 	struct stat sb;
 	gchar *uri;
@@ -922,13 +948,22 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
-	db_error = db_create (&db, NULL, 0);
+	db_error = db_env_create (&env, 0);
+	if (db_error != 0) {
+		g_warning ("db_env_create failed with %d", db_error);
+		return GNOME_Evolution_Addressbook_OtherError;
+	}
+	env->open (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+
+	env->set_errcall (env, file_errcall);
+
+	db_error = db_create (&db, env, 0);
 	if (db_error != 0) {
 		g_warning ("db_create failed with %d", db_error);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
-	db_error = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
+	db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
 
 	if (db_error == DB_OLD_VERSION) {
 		db_error = e_db3_utils_upgrade_format (filename);
@@ -938,7 +973,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			return GNOME_Evolution_Addressbook_OtherError;
 		}
 
-		db_error = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
+		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
 	}
 
 	bf->priv->file_db = db;
@@ -946,7 +981,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	if (db_error == 0) {
 		writable = TRUE;
 	} else {
-		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_RDONLY, 0666);
+		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
 
 		if (db_error != 0 && !only_if_exists) {
 			int rv;
@@ -962,7 +997,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 					return GNOME_Evolution_Addressbook_OtherError;
 			}
 
-			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
+			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
 			if (db_error != 0) {
 				g_warning ("db->open (... DB_CREATE ...) failed with %d", db_error);
 			}
@@ -1138,6 +1173,12 @@ e_book_backend_file_dispose (GObject *object)
 	bf = E_BOOK_BACKEND_FILE (object);
 
 	if (bf->priv) {
+		if (bf->priv->file_db)
+			bf->priv->file_db->close (bf->priv->file_db, 0);
+
+		if (bf->priv->env)
+			bf->priv->env->close (bf->priv->env, 0);
+
 		if (bf->priv->summary)
 			g_object_unref(bf->priv->summary);
 		g_free (bf->priv->filename);
