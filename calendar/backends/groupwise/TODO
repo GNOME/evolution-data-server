@@ -1,0 +1,59 @@
+Things to do and people working on it
+-------------------------------------
+
+ - Write an ECalBackendCache class to be used by backends to have a
+   cache of the objects, persistent between sessions (Rodrigo)
+
+ - Add a better parameters management API to SoupSoapResponse. Right
+   now it returns a GList of xmlNodePtr, which is a bad thing for a
+   public API. We should probably either create our specific types, or
+   just return the xmlNodePtr's themselves, but having them as gpointer's
+   in the public API, and provide accessor functions.
+
+ - Add missing SOAP methods to EGwConnection (Rodrigo)
+
+ - Implement e_cal_backend_groupwise_is_read_only
+
+ - Implement e_cal_backend_groupwise_get_cal_address
+
+ - Implement e_cal_backend_groupwise_get_ldap_attribute
+
+ - Implement e_cal_backend_groupwise_get_alarm_email_address
+
+ - Implement e_cal_backend_groupwise_get_static_capabilities
+
+ - Implement e_cal_backend_groupwise_remove
+
+ - Implement e_cal_backend_groupwise_get_mode
+
+ - Implement e_cal_backend_groupwise_set_mode
+
+ - Implement e_cal_backend_groupwise_get_default_object
+
+ - Implement e_cal_backend_groupwise_get_object
+
+ - Implement e_cal_backend_groupwise_get_timezone
+
+ - Implement e_cal_backend_groupwise_add_timezone
+
+ - Implement e_cal_backend_groupwise_set_default_timezone
+
+ - Implement e_cal_backend_groupwise_get_object_list
+
+ - Implement e_cal_backend_groupwise_start_query
+
+ - Implement e_cal_backend_groupwise_get_free_busy
+
+ - Implement e_cal_backend_groupwise_get_changes
+
+ - Implement e_cal_backend_groupwise_discard_alarm
+
+ - Implement e_cal_backend_groupwise_create_object
+
+ - Implement e_cal_backend_groupwise_modify_object
+
+ - Implement e_cal_backend_groupwise_remove_object
+
+ - Implement e_cal_backend_groupwise_receive_objects
+
+ - Implement e_cal_backend_groupwise_send_objects
