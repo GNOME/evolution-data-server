@@ -131,6 +131,8 @@ const char *e_gw_item_get_place (EGwItem *item);
 void        e_gw_item_set_place (EGwItem *item, const char *new_place);
 gboolean    e_gw_item_get_completed (EGwItem *item);
 void        e_gw_item_set_completed (EGwItem *item, gboolean new_completed);
+gboolean    e_gw_item_get_is_allday_event (EGwItem *item);
+void	    e_gw_item_set_is_allday_event (EGwItem *item, gboolean is_allday);	
 char*       e_gw_item_get_field_value (EGwItem *item, char *field_name);
 void        e_gw_item_set_field_value (EGwItem *item, char *field_name, char* field_value);
 GList*      e_gw_item_get_email_list (EGwItem *item);
