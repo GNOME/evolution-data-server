@@ -1346,7 +1346,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 		} else if (!g_ascii_strcasecmp (name, "completed")) {
 			value = soup_soap_parameter_get_string_value (child);
-			if (!g_ascii_strcasecmp (value, "true"))
+			if (!g_ascii_strcasecmp (value, "1"))
 				item->priv->completed = TRUE;
 			else
 				item->priv->completed = FALSE;
