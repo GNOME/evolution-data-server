@@ -2056,7 +2056,12 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 						  fields);
  
 }
-  
+
+static GNOME_Evolution_Addressbook_CallStatus
+e_book_backend_groupwise_cancel_operation (EBookBackend *backend, EDataBook *book)
+{
+	return GNOME_Evolution_Addressbook_CouldNotCancel;
+}
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_groupwise_load_source (EBookBackend           *backend,
@@ -2241,6 +2246,7 @@ e_book_backend_groupwise_class_init (EBookBackendGroupwiseClass *klass)
 	parent_class->authenticate_user       = e_book_backend_groupwise_authenticate_user;
 	parent_class->get_supported_fields    = e_book_backend_groupwise_get_supported_fields;
 	parent_class->get_supported_auth_methods = e_book_backend_groupwise_get_supported_auth_methods;
+	parent_class->cancel_operation        = e_book_backend_groupwise_cancel_operation;
 	parent_class->remove                  = e_book_backend_groupwise_remove;
 	object_class->dispose                 = e_book_backend_groupwise_dispose;
 }

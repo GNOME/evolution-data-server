@@ -1,3 +1,14 @@
+2004-06-16  Not Zed  <NotZed@Ximian.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_cancel_operation): implement, noop
+	currently.  Saves an assert exploding the server.
+
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_cancel_operation): implement.
+	(ldap_cancel_op): cancel each operation synchronously (?).
+	Related to #56479.
+
 2004-06-15 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

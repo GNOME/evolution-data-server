@@ -3273,6 +3273,28 @@ e_book_backend_ldap_get_supported_auth_methods (EBookBackend *backend,
 						     bl->priv->supported_auth_methods);
 }
 
+static void
+ldap_cancel_op(void *key, void *value, void *data)
+{
+	EBookBackendLDAP *bl = data;
+	LDAPOp *op = value;
+
+	/* ignore errors, its only best effort? */
+	ldap_abandon_ext (bl->priv->ldap, op->id, NULL, NULL);
+}
+
+static GNOME_Evolution_Addressbook_CallStatus
+e_book_backend_ldap_cancel_operation (EBookBackend *backend, EDataBook *book)
+{
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+
+	g_static_rec_mutex_lock (&bl->priv->op_hash_mutex);
+	g_hash_table_foreach (bl->priv->id_to_op, ldap_cancel_op, bl);
+	g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
+
+	return GNOME_Evolution_Addressbook_Success;
+}
+
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_ldap_load_source (EBookBackend             *backend,
 				 ESource                  *source,
@@ -3457,6 +3479,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->authenticate_user       = e_book_backend_ldap_authenticate_user;
 	parent_class->get_supported_fields    = e_book_backend_ldap_get_supported_fields;
 	parent_class->get_supported_auth_methods = e_book_backend_ldap_get_supported_auth_methods;
+	parent_class->cancel_operation	      = e_book_backend_ldap_cancel_operation;
 
 	object_class->dispose = e_book_backend_ldap_dispose;
 }
