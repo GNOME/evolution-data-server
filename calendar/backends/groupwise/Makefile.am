@@ -7,7 +7,8 @@ INCLUDES =						\
 	-I$(top_srcdir)/calendar/libical/src		\
 	-I$(top_builddir)/calendar/libical/src		\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
-	$(GROUPWISE_CFLAGS)
+	$(GROUPWISE_CFLAGS)				\
+	$(DEBUG_CFLAGS)
 
 noinst_PROGRAMS = create-account soap-test
 
