@@ -1,3 +1,7 @@
+2003-11-14  Rodney Dawes  <dobey@ximian.com>
+
+	* acinclude.m4: Add the GTK_DOC_CHECK m4 macro here, as we need it
+
 2003-11-11  Chris Toshok  <toshok@ximian.com>
 
 	* src/server.c (queue_termination): guard against multiple threads
