@@ -48,6 +48,7 @@ struct _EGwConnectionPrivate {
 	char *user_email;
 	char *user_uuid;
 	char *version;
+	char *server_time ;
 	EGwSendOptions *opts;
 	GMutex *reauth_mutex;
 };
@@ -279,6 +280,16 @@ e_gw_connection_dispose (GObject *object)
 			g_object_unref (priv->opts);
 			priv->opts = NULL;
 		}
+		
+		if (priv->version) {
+			g_free (priv->version) ;
+			priv->opts = NULL ;
+		}
+
+		if (priv->server_time) {
+			g_free (priv->server_time) ;
+			priv->server_time = NULL ;
+		}
 	}
 
 	if (parent_class->dispose)
@@ -489,6 +500,9 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	} else
 	       	cnc->priv->version = NULL;	
 
+	param = soup_soap_response_get_first_parameter_by_name (response, "serverUTCTime");
+	if (param) 
+		cnc->priv->server_time = soup_soap_parameter_get_string_value (param);
 
 	/* add the connection to the loaded_connections hash table */
 	hash_key = g_strdup_printf ("%s:%s@%s",
@@ -1340,6 +1354,14 @@ e_gw_connection_get_user_uuid (EGwConnection *cnc)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 
 	return (const char *) cnc->priv->user_uuid;
+}
+
+const char * 
+e_gw_connection_get_server_time (EGwConnection *cnc)
+{
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL) ;
+
+	return (const char *) cnc->priv->server_time ;
 }
 
 static time_t
