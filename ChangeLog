@@ -1,5 +1,11 @@
 2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
 
+	* libedataserver/e-source.c (e_source_to_standalone_xml): Allow
+	creating XML from already standalone source.
+	(e_source_copy): Return the new source, not the one passed in. Duh.
+
+2003-12-01  Hans Petter Jansson  <hpj@ximian.com>
+
 	* libedataserver/e-source.c (e_source_set_property): Emit changed
 	signal.
 	(copy_property): Implement.

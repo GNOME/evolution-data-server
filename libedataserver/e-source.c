@@ -508,6 +508,7 @@ e_source_get_uri (ESource *source)
 		if (source->priv->absolute_uri != NULL)
 			return g_strdup (source->priv->absolute_uri);
 
+		g_warning ("e_source_get_uri () called on source with no absolute URI!");
 		return NULL;
 	}
 
@@ -592,7 +593,6 @@ e_source_to_standalone_xml (ESource *source)
 	gchar *uri;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-	g_return_val_if_fail (source->priv->group != NULL, NULL);
 
 	doc = xmlNewDoc ("1.0");
 	node = dump_common_to_xml_node (source, NULL);
@@ -708,6 +708,6 @@ e_source_copy (ESource *source)
 
 	e_source_foreach_property (source, (GHFunc) copy_property, new_source);
 
-	return source;
+	return new_source;
 }
 
