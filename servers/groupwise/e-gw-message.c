@@ -84,7 +84,7 @@ e_gw_message_new_with_header (const char *uri, const char *session_id, const cha
 				 "Evolution/" VERSION);
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction", method_name);
 
-	if (g_getenv ("GROUWISE_DEBUG"))
+	if (g_getenv ("GROUPWISE_DEBUG"))
 		setup_debug (msg);
 
 	soup_soap_message_start_envelope (msg);
