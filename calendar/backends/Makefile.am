@@ -1,1 +1,1 @@
-SUBDIRS = file http
+SUBDIRS = file groupwise http

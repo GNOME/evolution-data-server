@@ -1,3 +1,11 @@
+2003-11-14  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/Makefile.am: added groupwise backend directory to build.
+
+	* backends/groupwise/Makefile.am:
+	* backends/groupwise/e-cal-backend-groupwise.[ch]: Groupwise backend
+	skeleton.
+
 2003-11-11  ChangeLog <jpr@ximian.com>
 
 	* libecal/e-cal.c (e_cal_class_init): emit the status
