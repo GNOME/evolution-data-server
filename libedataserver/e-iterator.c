@@ -4,7 +4,6 @@
  *   Christopher James Lahey <clahey@umich.edu>
  *
  * Copyright (C) 2000 Ximian, Inc.
- * Copyright (C) 1999 The Free Software Foundation
  */
 
 #include <config.h>

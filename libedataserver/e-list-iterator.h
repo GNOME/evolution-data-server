@@ -4,7 +4,6 @@
  *   Chris Lahey <clahey@ximian.com>
  *
  * Copyright (C) 2000 Ximian, Inc.
- * Copyright (C) 1999 The Free Software Foundation
  */
 
 #ifndef __E_LIST_ITERATOR_H__
