@@ -94,7 +94,7 @@ camel_stream_read (CamelStream *stream, char *buffer, size_t n)
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (n == 0 || buffer, -1);
 	
-	return CS_CLASS (stream)->read (stream, buffer, n);
+	return (CS_CLASS (stream)->read) (stream, buffer, n);
 }
 
 
