@@ -895,8 +895,10 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
 		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp);
-		if (status != E_GW_CONNECTION_STATUS_OK)
-			break;
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			g_object_unref (comp);
+			return GNOME_Evolution_Calendar_OtherError;
+		}
 		/* if successful, update the cache */
 	case CAL_MODE_LOCAL :
 		/* in offline mode, we just update the cache */
@@ -941,8 +943,10 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
 		status = e_gw_connection_send_appointment (priv->cnc, priv->container_id, comp);
-		if (status != E_GW_CONNECTION_STATUS_OK)
-			break;
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			g_object_unref (comp);
+			return GNOME_Evolution_Calendar_OtherError;
+		}
 		/* if successful, update the cache */
 	case CAL_MODE_LOCAL :
 		/* in offline mode, we just update the cache */

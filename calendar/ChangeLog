@@ -1,3 +1,10 @@
+2004-03-18  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_create_object,
+	e_cal_backend_groupwise_modify_object): don't update the cache when we
+	get an error from the server.
+
 2004-03-17  Rodrigo Moya <rodrigo@ximian.com>
 
 	Fixes #55719
