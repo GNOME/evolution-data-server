@@ -125,8 +125,8 @@ camel_provider_load (CamelSession *session, const char *path, CamelException *ex
 
 	if (!g_module_supported ()) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "Could not load %s: Module loading "
-				      "not supported on this system.",
+				      _("Could not load %s: Module loading "
+				      "not supported on this system."),
 				      path);
 		return;
 	}

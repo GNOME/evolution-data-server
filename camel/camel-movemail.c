@@ -582,8 +582,8 @@ camel_movemail_solaris (int sfd, int dfd, CamelException *ex)
 
 fail:
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      "Error copying "
-			      "mail temp file: %s",
+			      _("Error copying "
+			      "mail temp file: %s"),
 			      g_strerror (errno));
 
 

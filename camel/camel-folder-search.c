@@ -23,12 +23,17 @@
    It implements enough to do basic searches on folders that can provide
    an in-memory summary and a body index. */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <glib.h>
 #include <sys/types.h>
 #include <regex.h>
+
+#include <glib.h>
 
 #include "camel-folder-search.h"
 #include "string-utils.h"
