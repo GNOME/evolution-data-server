@@ -157,7 +157,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 			if (kind == ICAL_VEVENT_COMPONENT)
 				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Calendar");
-			/* FIXME: else if (kind == ICAL_VTODO_COMPONENT) */
+			else if (kind == ICAL_VTODO_COMPONENT)
+				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Checklist");
 			else
 				priv->container_id = NULL;
 
@@ -326,6 +327,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		g_mutex_unlock (priv->mutex);
                 return GNOME_Evolution_Calendar_Success;
 	}
+
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 	if (!priv->cache) {
 		g_mutex_unlock (priv->mutex);

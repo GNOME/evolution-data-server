@@ -1,6 +1,12 @@
 2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server): added code for retrieving the container ID
+	for tasks also.
+
+2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
 	(e_cal_backend_groupwise_open): added missing g_mutex_unlock
 	call.
 
