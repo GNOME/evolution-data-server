@@ -651,7 +651,6 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 					&t_str, "New", NULL, NULL, -1, &slist) ;
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_print ("IN refresh info for NEW\n") ;
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 		g_free (container_id) ;
@@ -676,7 +675,6 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 				&t_str, "Modified", NULL, NULL, -1, &slist) ;
 	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_print ("IN refresh info for Modified\n") ;
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 		g_free (container_id) ;

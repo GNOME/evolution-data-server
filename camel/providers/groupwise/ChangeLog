@@ -1,3 +1,9 @@
+2005-03-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	  (gw_update_summary): using GString. An efficient way
+	  for fixing bug #72145
+
 2005-03-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c:
