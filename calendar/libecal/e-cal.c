@@ -1595,7 +1595,7 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 	ccad->exists = only_if_exists;
 
 	/* spawn a new thread for opening the calendar */
-	thread = g_thread_create ((GThreadFunc) open_async, ccad, TRUE, &error);
+	thread = g_thread_create ((GThreadFunc) open_async, ccad, FALSE, &error);
 	if (!thread) {
 		g_warning (G_STRLOC ": %s", error->message);
 		g_error_free (error);
