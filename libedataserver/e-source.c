@@ -48,6 +48,8 @@ struct _ESourcePrivate {
 	char *relative_uri;
 	char *absolute_uri;
 
+	gboolean readonly;
+	
 	gboolean has_color;
 	guint32 color;
 
@@ -414,6 +416,9 @@ e_source_set_group (ESource *source,
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (group == NULL || E_IS_SOURCE_GROUP (group));
 
+	if (source->priv->readonly)
+		return;
+	
 	if (source->priv->group == group)
 		return;
 
@@ -439,6 +444,9 @@ e_source_set_name (ESource *source,
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
+	if (source->priv->readonly)
+		return;
+	
 	if (source->priv->name == name)
 		return;
 
@@ -454,6 +462,9 @@ e_source_set_relative_uri (ESource *source,
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
+	if (source->priv->readonly)
+		return;
+	
 	if (source->priv->relative_uri == relative_uri)
 		return;
 
@@ -464,11 +475,29 @@ e_source_set_relative_uri (ESource *source,
 }
 
 void
+e_source_set_readonly (ESource  *source,
+		       gboolean  readonly)
+{
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	if (source->priv->readonly == readonly)
+		return;
+
+	source->priv->readonly = readonly;
+
+	g_signal_emit (source, signals[CHANGED], 0);
+	
+}
+
+void
 e_source_set_color (ESource *source,
 		    guint32 color)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
+	if (source->priv->readonly)
+		return;
+	
 	if (source->priv->has_color && source->priv->color == color)
 		return;
 
@@ -522,6 +551,15 @@ e_source_peek_relative_uri (ESource *source)
 
 	return source->priv->relative_uri;
 }
+
+gboolean
+e_source_get_readonly (ESource *source)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	return source->priv->readonly;
+}
+
 
 /**
  * e_source_get_color:
@@ -596,7 +634,7 @@ dump_common_to_xml_node (ESource *source,
 	xmlSetProp (node, "uid", e_source_peek_uid (source));
 	xmlSetProp (node, "name", e_source_peek_name (source));
 	xmlSetProp (node, "relative_uri", e_source_peek_relative_uri (source));
-
+	
 	has_color = e_source_get_color (source, &color);
 	if (has_color) {
 		char *color_string = g_strdup_printf (COLOR_FORMAT_STRING, color);

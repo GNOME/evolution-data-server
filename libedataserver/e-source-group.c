@@ -41,6 +41,7 @@ struct _ESourceGroupPrivate {
 	GSList *sources;
 
 	gboolean ignore_source_changed;
+	gboolean readonly;
 };
 
 
@@ -221,6 +222,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	xmlChar *uid;
 	xmlChar *name;
 	xmlChar *base_uri;
+	xmlChar *readonly_str;
 	ESourceGroup *new = NULL;
 
 	g_return_val_if_fail (doc != NULL, NULL);
@@ -232,6 +234,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	uid = xmlGetProp (root, "uid");
 	name = xmlGetProp (root, "name");
 	base_uri = xmlGetProp (root, "base_uri");
+	readonly_str = xmlGetProp (root, "readonly");
 
 	if (uid == NULL || name == NULL || base_uri == NULL)
 		goto done;
@@ -241,17 +244,21 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 
 	e_source_group_set_name (new, name);
 	e_source_group_set_base_uri (new, base_uri);
-
+	
 	for (p = root->children; p != NULL; p = p->next) {
 		ESource *new_source = e_source_new_from_xml_node (p);
 		e_source_group_add_source (new, new_source, -1);
 	}
+
+	e_source_group_set_readonly (new, readonly_str && !strcmp (readonly_str, "yes"));
 
  done:
 	if (name != NULL)
 		xmlFree (name);
 	if (base_uri != NULL)
 		xmlFree (base_uri);
+	if (readonly_str != NULL)
+		xmlFree (readonly_str);
 	return new;
 }
 
@@ -283,7 +290,8 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	GHashTable *new_sources_hash;
 	GSList *new_sources_list = NULL;
 	xmlNodePtr root, nodep;
-	xmlChar *name, *base_uri;
+	xmlChar *name, *base_uri, *readonly_str;
+	gboolean readonly;
 	gboolean changed = FALSE;
 	GSList *p, *q;
 
@@ -320,6 +328,14 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	}
 	xmlFree (base_uri);
 
+	readonly_str = xmlGetProp (root, "readonly");
+	readonly = readonly_str && !strcmp (readonly_str, "yes");
+	if (readonly != group->priv->readonly) {
+		group->priv->readonly = readonly;
+		changed = TRUE;
+	}
+	xmlFree (readonly_str);
+	
 	new_sources_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (nodep = root->children; nodep != NULL; nodep = nodep->next) {
@@ -431,6 +447,9 @@ e_source_group_set_name (ESourceGroup *group,
 {
 	g_return_if_fail (E_IS_SOURCE_GROUP (group));
 	g_return_if_fail (name != NULL);
+
+	if (group->priv->readonly)
+		return;
 	
 	if (group->priv->name == name)
 		return;
@@ -447,6 +466,9 @@ void e_source_group_set_base_uri (ESourceGroup *group,
 	g_return_if_fail (E_IS_SOURCE_GROUP (group));
 	g_return_if_fail (base_uri != NULL);
 	
+	if (group->priv->readonly)
+		return;
+	
 	if (group->priv->base_uri == base_uri)
 		return;
 
@@ -456,6 +478,25 @@ void e_source_group_set_base_uri (ESourceGroup *group,
 	g_signal_emit (group, signals[CHANGED], 0);
 }
 
+void e_source_group_set_readonly (ESourceGroup *group,
+				  gboolean      readonly)
+{
+	GSList *i;
+	
+	g_return_if_fail (E_IS_SOURCE_GROUP (group));
+	
+	if (group->priv->readonly)
+		return;
+	
+	if (group->priv->readonly == readonly)
+		return;
+
+	group->priv->readonly = readonly;
+	for (i = group->priv->sources; i != NULL; i = i->next)
+		e_source_set_readonly (E_SOURCE (i->data), readonly);	
+
+	g_signal_emit (group, signals[CHANGED], 0);
+}
 
 const char *
 e_source_group_peek_uid (ESourceGroup *group)
@@ -481,6 +522,13 @@ e_source_group_peek_base_uri (ESourceGroup *group)
 	return group->priv->base_uri;
 }
 
+gboolean
+e_source_group_get_readonly (ESourceGroup *group)
+{
+	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
+
+	return group->priv->readonly;
+}
 
 GSList *
 e_source_group_peek_sources (ESourceGroup *group)
@@ -525,10 +573,14 @@ e_source_group_add_source (ESourceGroup *group,
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
+	if (group->priv->readonly)
+		return FALSE;
+	
 	if (e_source_group_peek_source_by_uid (group, e_source_peek_uid (source)) != NULL)
 		return FALSE;
 
 	e_source_set_group (source, group);
+	e_source_set_readonly (source, group->priv->readonly);
 	g_object_ref (source);
 
 	g_signal_connect (source, "changed", G_CALLBACK (source_changed_callback), group);
@@ -548,6 +600,9 @@ e_source_group_remove_source (ESourceGroup *group,
 
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	if (group->priv->readonly)
+		return FALSE;
 
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		if (E_SOURCE (p->data) == source) {
@@ -570,6 +625,9 @@ e_source_group_remove_source_by_uid (ESourceGroup *group,
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
+	if (group->priv->readonly)
+		return FALSE;
+	
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		ESource *source = E_SOURCE (p->data);
 
@@ -601,7 +659,8 @@ e_source_group_to_xml (ESourceGroup *group)
 	xmlSetProp (root, "uid", e_source_group_peek_uid (group));
 	xmlSetProp (root, "name", e_source_group_peek_name (group));
 	xmlSetProp (root, "base_uri", e_source_group_peek_base_uri (group));
-
+	xmlSetProp (root, "readonly", group->priv->readonly ? "yes" : "no");
+	
 	xmlDocSetRootElement (doc, root);
 
 	for (p = group->priv->sources; p != NULL; p = p->next)

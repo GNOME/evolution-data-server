@@ -11,6 +11,7 @@ calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
 calendar/libedata-cal/e-cal-backend-sexp.c
 calendar/backends/file/e-cal-backend-file.c
+calendar/backends/contacts/e-cal-backend-contacts.c
 calendar/backends/http/e-cal-backend-http.c
 src/GNOME_Evolution_DataServerLDAP.server.in.in
 src/GNOME_Evolution_DataServerNOLDAP.server.in.in

@@ -1,1 +1,1 @@
-SUBDIRS = file groupwise http
+SUBDIRS = file groupwise http contacts

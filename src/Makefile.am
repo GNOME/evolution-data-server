@@ -34,7 +34,7 @@ $(IDL_GENERATED_H): $(IDLS)
 $(IDL_GENERATED_C): $(IDL_GENERATED_H)
 
 
-noinst_PROGRAMS =	\
+noinst_PROGRAMS =			\
 	evolution-data-server
 
 evolution_data_server_SOURCES = \
@@ -60,13 +60,14 @@ evolution_data_server_LDADD =							\
 	$(top_builddir)/calendar/backends/file/libecalbackendfile.la		\
 	$(top_builddir)/calendar/backends/groupwise/libecalbackendgroupwise.la	\
 	$(top_builddir)/calendar/backends/http/libecalbackendhttp.la		\
+	$(top_builddir)/addressbook/libebook/libebook.la			\
+	$(top_builddir)/calendar/backends/contacts/libecalbackendcontacts.la	\
 	$(LDAP_LIBS)								\
 	$(E_DATA_SERVER_LIBS)
 
-install-evolution-data-server:
+install-evolution-data-servers:
 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
 	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)
-
 
 if ENABLE_LDAP
 SERVER_IN_FILE=GNOME_Evolution_DataServerLDAP.server.in.in
@@ -94,7 +95,7 @@ EXTRA_DIST = 						\
 BUILT_SOURCES = $(IDL_GENERATED) $(server_DATA)
 CLEANFILES = $(BUILT_SOURCES)
 
-install-exec-local: install-evolution-data-server
+install-exec-local: install-evolution-data-servers
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

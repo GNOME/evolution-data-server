@@ -62,6 +62,10 @@
 
 	*  it.po: updated italian translation
 
+2003-12-08  ERDI Gergo  <cactus@cactus.rulez.org>
+
+	* POTFILES.in: Added ContactDates backend source
+
 2003-11-19  Marco Ciampa <ciampix@libero.it>
 
 	*  it.po: updated italian translation

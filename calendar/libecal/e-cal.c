@@ -2157,7 +2157,10 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-	*icalcomp = icalparser_parse_string (our_op->string);
+        if (status)
+                *icalcomp = NULL;
+        else
+                *icalcomp = icalparser_parse_string (our_op->string);
 	g_free (our_op->string);
 
 	e_calendar_remove_op (ecal, our_op);

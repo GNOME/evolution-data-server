@@ -35,6 +35,7 @@
 		<item value="file"/>
 		<item value="webcal"/>
 		<item value="groupwise"/>
+		<item value="contacts"/>
         </oaf_attribute>
 </oaf_server>
 

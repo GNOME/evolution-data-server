@@ -1,3 +1,11 @@
+2004-01-09  ERDI Gergo  <cactus@cactus.rulez.org>
+
+	* libedataserver/e-source-group.h: added new read-only flag
+
+	* src/contactdates-server.c: new factory for ContactDates backend
+
+	* configure.in: Added new ContactDates calendar backend
+
 2004-01-09  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedataserver/e-source-list.[ch]

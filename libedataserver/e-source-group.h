@@ -78,9 +78,13 @@ void  e_source_group_set_name      (ESourceGroup *group,
 void  e_source_group_set_base_uri  (ESourceGroup *group,
 				    const char   *base_uri);
 
+void e_source_group_set_readonly (ESourceGroup *group,
+				  gboolean      readonly);
+
 const char *e_source_group_peek_uid       (ESourceGroup *group);
 const char *e_source_group_peek_name      (ESourceGroup *group);
 const char *e_source_group_peek_base_uri  (ESourceGroup *group);
+gboolean    e_source_group_get_readonly   (ESourceGroup *group);
 
 GSList  *e_source_group_peek_sources        (ESourceGroup *group);
 ESource *e_source_group_peek_source_by_uid  (ESourceGroup *group,
