@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-26 21:04+0100\n"
-"PO-Revision-Date: 2004-02-26 21:05+0100\n"
+"POT-Creation-Date: 2004-03-01 18:28+0100\n"
+"PO-Revision-Date: 2004-03-01 18:29+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -309,24 +309,24 @@ msgid "AIM Screen Name List"
 msgstr "Списак екранских имена за АИМ"
 
 #: addressbook/libebook/e-contact.c:153
+msgid "Groupwise Id List"
+msgstr "Списак Групвајз ИБ-ова"
+
+#: addressbook/libebook/e-contact.c:154
 msgid "Jabber Id List"
 msgstr "Списак Џабер налога"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Yahoo! Screen Name List"
 msgstr "Списак екранских имена за Јаху!"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 msgid "MSN Screen Name List"
 msgstr "Списак екранских имена за МСН"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "ICQ Id List"
 msgstr "Списак ICQ ИБ-ева"
-
-#: addressbook/libebook/e-contact.c:157
-msgid "Groupwise Id List"
-msgstr "Списак Групвајз ИБ-ова"
 
 #: addressbook/libebook/e-contact.c:159
 msgid "AIM Home Screen Name 1"
@@ -353,205 +353,229 @@ msgid "AIM Work Screen Name 3"
 msgstr "3. пословни надимак за АИМ"
 
 #: addressbook/libebook/e-contact.c:165
+msgid "Groupwise Home Screen Name 1"
+msgstr "1. кућни надимак за групвајз"
+
+#: addressbook/libebook/e-contact.c:166
+msgid "Groupwise Home Screen Name 2"
+msgstr "2. кућни надимак за групвајз"
+
+#: addressbook/libebook/e-contact.c:167
+msgid "Groupwise Home Screen Name 3"
+msgstr "3. кућни надимак за групвајз"
+
+#: addressbook/libebook/e-contact.c:168
+msgid "Groupwise Work Screen Name 1"
+msgstr "1. пословни надимак за групвајз"
+
+#: addressbook/libebook/e-contact.c:169
+msgid "Groupwise Work Screen Name 2"
+msgstr "2. пословни надимак за групвајз"
+
+#: addressbook/libebook/e-contact.c:170
+msgid "Groupwise Work Screen Name 3"
+msgstr "3. пословни надимак за групвајз"
+
+#: addressbook/libebook/e-contact.c:171
 msgid "Jabber Home Id 1"
 msgstr "1. кућни Џабер налог"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:172
 msgid "Jabber Home Id 2"
 msgstr "2. кућни Џабер налог"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 3"
 msgstr "3. кућни Џабер налог"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Work Id 1"
 msgstr "1. пословни Џабер налог"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Work Id 2"
 msgstr "2. пословни Џабер налог"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 3"
 msgstr "3. пословни Џабер налог"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:177
 msgid "Yahoo! Home Screen Name 1"
 msgstr "1. кућни Јаху! налог"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:178
 msgid "Yahoo! Home Screen Name 2"
 msgstr "2. кућни Јаху! налог"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 3"
 msgstr "3. кућни Јаху! налог"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Work Screen Name 1"
 msgstr "1. пословни Јаху! налог"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Work Screen Name 2"
 msgstr "2. пословни Јаху! налог"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 3"
 msgstr "3. пословни Јаху! налог"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:183
 msgid "MSN Home Screen Name 1"
 msgstr "1. кућни МСН налог"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:184
 msgid "MSN Home Screen Name 2"
 msgstr "2. кућни МСН налог"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 3"
 msgstr "3. кућни МСН налог"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Work Screen Name 1"
 msgstr "1. пословни МСН налог"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Work Screen Name 2"
 msgstr "2. пословни МСН налог"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 3"
 msgstr "3. пословни МСН налог"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:189
 msgid "ICQ Home Id 1"
 msgstr "1. кућни ICQ налог"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:190
 msgid "ICQ Home Id 2"
 msgstr "2. кућни ICQ налог"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 3"
 msgstr "3. кућни ICQ налог"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Work Id 1"
 msgstr "1. пословни ICQ налог"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Work Id 2"
 msgstr "2. пословни ICQ налог"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 3"
 msgstr "3. пословни ICQ налог"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:197
 msgid "Organization"
 msgstr "Организација"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:198
 msgid "Organizational Unit"
 msgstr "Организациона јединица"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:199
 msgid "Office"
 msgstr "Канцеларија"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:201
 msgid "Title"
 msgstr "Титула"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:202
 msgid "Role"
 msgstr "Улога"
 
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:203
 msgid "Manager"
 msgstr "Руководилац"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:204
 msgid "Assistant"
 msgstr "Помоћник"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:207
 msgid "Homepage URL"
 msgstr "Адреса личне стране"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:208
 msgid "Weblog URL"
 msgstr "Адреса веб дневника"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:209
 msgid "Video Conferencing URL"
 msgstr "Адреса видео конференције"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:212
 msgid "Photo"
 msgstr "Слика"
 
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:213
 msgid "Logo"
 msgstr "Логотип"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:216
 msgid "X.509 Certificate"
 msgstr "X.509 сертификат"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:219
 msgid "Category List"
 msgstr "Списак категорија"
 
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:220
 msgid "Categories"
 msgstr "Категорије"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:217
+#: addressbook/libebook/e-contact.c:223
 msgid "Calendar URI"
 msgstr "Адреса календара"
 
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:224
 msgid "Free/Busy URL"
 msgstr "Адреса за слободан/заузет"
 
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:225
 msgid "ICS Calendar"
 msgstr "ICS календар"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:228
 msgid "Spouse's Name"
 msgstr "Име супружника"
 
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:229
 msgid "Note"
 msgstr "Напомена"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:231
 msgid "Birth Date"
 msgstr "Рођендан"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:232
 msgid "Anniversary"
 msgstr "Годишњица"
 
-#: addressbook/libebook/e-contact.c:228
+#: addressbook/libebook/e-contact.c:234
 msgid "List"
 msgstr "Списак"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:235
 msgid "List Show Addresses"
 msgstr "Списак приказаних адреса"
 
-#: addressbook/libebook/e-contact.c:1195
+#: addressbook/libebook/e-contact.c:1201
 msgid "Unnamed List"
 msgstr "Листа без имена"
 
@@ -740,80 +764,80 @@ msgid "Undefined"
 msgstr "Недефинисано"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1459
+#: calendar/libecal/e-cal.c:1465
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Унесите лозинку за %s (корисник %s)"
 
-#: calendar/libecal/e-cal.c:3922
+#: calendar/libecal/e-cal.c:3930
 msgid "Invalid argument"
 msgstr "Неисправан аргумент"
 
-#: calendar/libecal/e-cal.c:3924
+#: calendar/libecal/e-cal.c:3932
 msgid "Backend is busy"
 msgstr "Подршка је заузета"
 
-#: calendar/libecal/e-cal.c:3926
+#: calendar/libecal/e-cal.c:3934
 msgid "Repository is offline"
 msgstr "Складиште није повезано"
 
-#: calendar/libecal/e-cal.c:3928
+#: calendar/libecal/e-cal.c:3936
 msgid "No such calendar"
 msgstr "Нема таквог календара"
 
-#: calendar/libecal/e-cal.c:3930
+#: calendar/libecal/e-cal.c:3938
 msgid "Object not found"
 msgstr "Објекат није нађен"
 
-#: calendar/libecal/e-cal.c:3932
+#: calendar/libecal/e-cal.c:3940
 msgid "Invalid object"
 msgstr "Неисправан предмет"
 
-#: calendar/libecal/e-cal.c:3934
+#: calendar/libecal/e-cal.c:3942
 msgid "URI not loaded"
 msgstr "Адреса није учитана"
 
-#: calendar/libecal/e-cal.c:3936
+#: calendar/libecal/e-cal.c:3944
 msgid "URI already loaded"
 msgstr "Адреса је већ учитана"
 
-#: calendar/libecal/e-cal.c:3938
+#: calendar/libecal/e-cal.c:3946
 msgid "Permission denied"
 msgstr "Забрањен приступ"
 
-#: calendar/libecal/e-cal.c:3940
+#: calendar/libecal/e-cal.c:3948
 msgid "Object ID already exists"
 msgstr "ИД објекта већ постоји"
 
-#: calendar/libecal/e-cal.c:3942
+#: calendar/libecal/e-cal.c:3950
 msgid "Protocol not supported"
 msgstr "Протокол није подржан"
 
-#: calendar/libecal/e-cal.c:3944
+#: calendar/libecal/e-cal.c:3952
 msgid "Operation has been cancelled"
 msgstr "Операција је обустављена"
 
-#: calendar/libecal/e-cal.c:3946
+#: calendar/libecal/e-cal.c:3954
 msgid "Could not cancel operation"
 msgstr "Не могу да откажем операцију"
 
-#: calendar/libecal/e-cal.c:3948
+#: calendar/libecal/e-cal.c:3956
 msgid "Authentication failed"
 msgstr "Неуспешна идентификација"
 
-#: calendar/libecal/e-cal.c:3950
+#: calendar/libecal/e-cal.c:3958
 msgid "Authentication required"
 msgstr "Неопходна идентификација"
 
-#: calendar/libecal/e-cal.c:3952
+#: calendar/libecal/e-cal.c:3960
 msgid "A CORBA exception has occurred"
 msgstr "Дошло је до CORBA изузетка"
 
-#: calendar/libecal/e-cal.c:3954
+#: calendar/libecal/e-cal.c:3962
 msgid "Unknown error"
 msgstr "Непозната грешка"
 
-#: calendar/libecal/e-cal.c:3956
+#: calendar/libecal/e-cal.c:3964
 msgid "No error"
 msgstr "Нема грешке"
 
@@ -899,41 +923,6 @@ msgstr ""
 "„%s“ очекује да сви аргументи буду ниске или један и само један аргумент да "
 "буде логички нетачан (#f)"
 
-#. !/usr/bin/env python
-#. -*- Mode: python -*-
-#. ======================================================================
-#. FILE: Property.py
-#. CREATOR: eric
-#.
-#. DESCRIPTION:
-#.
-#.
-#. $Id$
-#. $Locker$
-#.
-#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
-#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
-#.
-#. This program is free software; you can redistribute it and/or modify
-#. it under the terms of either:
-#.
-#. The LGPL as published by the Free Software Foundation, version
-#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
-#.
-#. Or:
-#.
-#. The Mozilla Public License Version 1.0. You may obtain a copy of
-#. the License at http://www.mozilla.org/MPL/
-#. ======================================================================
-#. def icalerror_supress(arg):
-#. pass
-#. def icalerror_restore(a,b):
-#. pass
-#. Initialize all of the required keys
-#. Get the default kind of value for this property
-#. Use the kind of the existing value
-#. e1=icalerror_supress("MALFORMEDDATA")
-#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Датотека адресара и LDAP подршка за Еволуцију"
