@@ -1,3 +1,4 @@
+# translation of el.po to 
 # translation of el.po to Greek
 # translation of evolution-data-server.HEAD.el.po to Greek
 # Greek translation of evolution.
@@ -29,24 +30,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 14:27-0400\n"
-"PO-Revision-Date: 2004-01-25 13:43+0200\n"
+"POT-Creation-Date: 2004-09-04 18:24+0300\n"
+"PO-Revision-Date: 2004-09-04 18:22+0300\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"Language-Team:  <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.2\n"
+"X-Generator: KBabel 1.3.1\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
-#: addressbook/backends/vcf/e-book-backend-vcf.c:445
+#: addressbook/backends/file/e-book-backend-file.c:440
+#: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "Γίνεται φόρτωση..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
+#: addressbook/backends/file/e-book-backend-file.c:442
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1855
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
-#: addressbook/backends/vcf/e-book-backend-vcf.c:447
+#: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "Γίνεται αναζήτηση..."
 
@@ -136,14 +137,13 @@ msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: couldn't cancel"
 
 #: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "\"%s\" στο βιβλίο πρίν \"%s\""
+msgstr "\"%s\" στο βιβλίο μετά \"%s\""
 
 #: addressbook/libebook/e-book.c:2355
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: Invalid source."
+msgstr "e_book_open: ακυρώθηκε"
 
 #: addressbook/libebook/e-book.c:2851
 msgid "e_book_load_uri: Invalid source."
@@ -159,19 +159,20 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Could not create EBookListener"
 
 #: addressbook/libebook/e-book.c:2922
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: no factories available for uri `%s'"
+msgstr "e_book_new: δεν υπάρχουν διαθέσιμα εργοστάσια uri `%s'"
 
 #: addressbook/libebook/e-book.c:3080
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: there was no self contact uid stored in gconf"
 
 #: addressbook/libebook/e-book.c:3191
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_get_self: there was no self contact uid stored in gconf"
+msgstr ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -332,9 +333,8 @@ msgid "Email 3"
 msgstr "Email 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "Email 3"
+msgstr "Email 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -351,7 +351,7 @@ msgstr "Λίστα AIM Screen Name"
 
 #: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
-msgstr ""
+msgstr "Groupwise Id List"
 
 #: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
@@ -394,34 +394,28 @@ msgid "AIM Work Screen Name 3"
 msgstr "AIM Work Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Groupwise Home Screen Name 1"
-msgstr "AIM Home Screen Name 1"
+msgstr "Groupwise Home Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Groupwise Home Screen Name 2"
-msgstr "AIM Home Screen Name 2"
+msgstr "Groupwise Home Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Groupwise Home Screen Name 3"
-msgstr "AIM Home Screen Name 3"
+msgstr "Groupwise Home Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Groupwise Work Screen Name 1"
-msgstr "AIM Work Screen Name 1"
+msgstr "Groupwise Work Screen Name 1"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Groupwise Work Screen Name 2"
-msgstr "AIM Work Screen Name 2"
+msgstr "Groupwise Work Screen Name 2"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Groupwise Work Screen Name 3"
-msgstr "AIM Work Screen Name 3"
+msgstr "Groupwise Work Screen Name 3"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
@@ -627,16 +621,16 @@ msgid "Unnamed List"
 msgstr "Λίστα Χωρίς Τίτλο"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:441
+#: calendar/backends/contacts/e-cal-backend-contacts.c:446
 msgid "Birthday"
 msgstr "Γενέθλια"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: calendar/backends/contacts/e-cal-backend-contacts.c:470
 #, c-format
 msgid "Birthday: %s"
 msgstr "Γενέθλια: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Επέτειος: %s"
@@ -645,29 +639,27 @@ msgstr "Επέτειος: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Αποτυχία αποθήκευσης δεδομένων ημερολογίου. Κακοδιατυπωμένο URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:283
 msgid "Invalid server URI"
-msgstr ""
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
-#, fuzzy
-msgid "Calendar"
-msgstr "URI Ημερολογίου"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
-#, fuzzy
-msgid "Could not create cache file"
-msgstr "Αδυναμία ακύρωσης λειτουργίας"
+msgstr "Μη έγκυρο  URI διακομιστή"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4283
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:322
+msgid "Calendar"
+msgstr "Ημερολόγιο"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:329
+msgid "Could not create cache file"
+msgstr "Αδυναμία δημιουργίας αρχείου cache"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:354
+#: calendar/libecal/e-cal.c:4311
 msgid "Authentication failed"
 msgstr "Η πιστοποίηση απέτυχε"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
-msgstr ""
+msgstr "Αναδρομολόγηση σε μη έγκυρο URI"
 
 #: calendar/backends/http/e-cal-backend-http.c:249
 msgid "Bad file format."
@@ -828,79 +820,78 @@ msgstr "Αόριστο"
 msgid "Enter password for %s (user %s)"
 msgstr "Εισάγετε κωδικό πρόσβασης για %s (χρήστης %s)"
 
-#: calendar/libecal/e-cal.c:4257
+#: calendar/libecal/e-cal.c:4285
 msgid "Invalid argument"
 msgstr "Μη έγκυρη παράμετρος"
 
-#: calendar/libecal/e-cal.c:4259
+#: calendar/libecal/e-cal.c:4287
 msgid "Backend is busy"
 msgstr "Το Backend είναι απασχολημένο"
 
-#: calendar/libecal/e-cal.c:4261
+#: calendar/libecal/e-cal.c:4289
 msgid "Repository is offline"
 msgstr "Το αρχείο φύλαξης είναι εκτός δικτύου"
 
-#: calendar/libecal/e-cal.c:4263
+#: calendar/libecal/e-cal.c:4291
 msgid "No such calendar"
 msgstr "Δεν υπάρχει τέτοιο ημερολόγιο"
 
-#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4293 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Το αντικείμενο δεν βρέθηκε"
 
-#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4295 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Μή έγκυρο αντικείμενο"
 
-#: calendar/libecal/e-cal.c:4269
+#: calendar/libecal/e-cal.c:4297
 msgid "URI not loaded"
 msgstr "To URI δεν φορτώθηκε"
 
-#: calendar/libecal/e-cal.c:4271
+#: calendar/libecal/e-cal.c:4299
 msgid "URI already loaded"
 msgstr "Το URI έχει ήδη φορτωθεί"
 
-#: calendar/libecal/e-cal.c:4273
+#: calendar/libecal/e-cal.c:4301
 msgid "Permission denied"
 msgstr "Δεν επιτρέπεται η πρόσβαση"
 
-#: calendar/libecal/e-cal.c:4275
+#: calendar/libecal/e-cal.c:4303
 msgid "Object ID already exists"
 msgstr "Το αναγνωριστικό αντικειμένου  υπάρχει ήδη"
 
-#: calendar/libecal/e-cal.c:4277
+#: calendar/libecal/e-cal.c:4305
 msgid "Protocol not supported"
 msgstr "Δεν υποστηρίζεται το πρωτόκολλο"
 
-#: calendar/libecal/e-cal.c:4279
+#: calendar/libecal/e-cal.c:4307
 msgid "Operation has been cancelled"
 msgstr "Η λειτουργία ακυρώθηκε"
 
-#: calendar/libecal/e-cal.c:4281
+#: calendar/libecal/e-cal.c:4309
 msgid "Could not cancel operation"
 msgstr "Αδυναμία ακύρωσης λειτουργίας"
 
-#: calendar/libecal/e-cal.c:4285
+#: calendar/libecal/e-cal.c:4313
 msgid "Authentication required"
 msgstr "Απαιτείται πιστοποίηση"
 
-#: calendar/libecal/e-cal.c:4287
-#, fuzzy
+#: calendar/libecal/e-cal.c:4315
 msgid "A CORBA exception has occurred"
 msgstr "Δημιουργήθηκε εξαίρεση CORBΑ"
 
-#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4317 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Άγνωστο Σφάλμα"
 
-#: calendar/libecal/e-cal.c:4291
+#: calendar/libecal/e-cal.c:4319
 msgid "No error"
 msgstr "Χωρίς σφάλμα"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
-#: calendar/libedata-cal/e-cal-backend-sexp.c:661
-#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "το \"%s\" δεν αναμένει παράμετρους"
@@ -909,7 +900,7 @@ msgstr "το \"%s\" δεν αναμένει παράμετρους"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "το \"%s\"  αναμένει 1 παράμετρο"
@@ -932,6 +923,7 @@ msgstr ""
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "το \"%s\" αναμένει 2 παραμέτρους"
@@ -940,7 +932,8 @@ msgstr "το \"%s\" αναμένει 2 παραμέτρους"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
-#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "το \"%s\"  αναμένει argument 1 to be a time_t"
@@ -951,6 +944,7 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "το \"%s\" αναμένει να έχει ως παράμετρο 2 έναν ακέραιο"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "το \"%s\" αναμένει η δεύτερη παράμετρος to be a time_t"
@@ -961,20 +955,20 @@ msgid "\"%s\" expects the second argument to be a string"
 msgstr "το \"%s\" αναμένει ότι η παράμετρος 2 είναι αλφαριθμητικό"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"το \"%s\"  αναμένει ότι η παράμετρος 1 είναι ένα από \"any\", \"summary\", "
-"\"description\""
+"το \"%s\"  αναμένει ότι η πρώτη παράμετρος  είναι ένα από \"any\", \"summary"
+"\", \"description\" ή \"location\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "το \"%s\"  αναμένει τουλάχιστον 1 παράμετρο"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -984,17 +978,16 @@ msgstr ""
 "μόνο μια παράμετρος θα είναι  boolean false (#f)"
 
 #: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
 msgid "Invalid connection"
-msgstr "Μή έγκυρο αντικείμενο"
+msgstr "Μη έγκυρη σύνδεση"
 
 #: servers/groupwise/e-gw-connection.c:84
 msgid "Invalid response from server"
-msgstr ""
+msgstr "Μη έγκυρη απάντηση από διακομιστή"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "Εσφαλμένη παράμετρος"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
@@ -1014,116 +1007,5 @@ msgstr "Backend αρχείου του Βιβλίου Διευθύνσεων το
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-
-#, fuzzy
-#~ msgid "uid? expects 1 argument"
-#~ msgstr "αναγκαστική αναμονή του χρόνου για μία παράμετρο"
-
-#, fuzzy
-#~ msgid "uid? expects argument 1 to be a string"
-#~ msgstr "αναγκαστική αναμονή του χρόνου να είναι η παράμετρος 1 στοιχείο"
-
-#~ msgid "e_book_add_contact called on book before e_book_load_uri"
-#~ msgstr "e_book_add_contact called on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::addContact call"
-#~ msgstr "Corba exception making Book::addContact call"
-
-#~ msgid "e_book_commit_contact called on book before e_book_load_uri"
-#~ msgstr "e_book_commit_contact called on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::modifyContact call"
-#~ msgstr "Corba exception making Book::modifyContact call"
-
-#~ msgid "e_book_get_supported_fields on book before e_book_load_uri"
-#~ msgstr "e_book_get_supported_fields on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getSupportedFields call"
-#~ msgstr "Corba exception making Book::getSupportedFields call"
-
-#~ msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
-#~ msgstr "e_book_get_supported_auth_methods on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getSupportedAuthMethods call"
-#~ msgstr "Corba exception making Book::getSupportedAuthMethods call"
-
-#~ msgid "e_book_authenticate_user on book before e_book_load_uri"
-#~ msgstr "e_book_authenticate_user on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::authenticateUser call"
-#~ msgstr "Corba exception making Book::authenticateUser call"
-
-#~ msgid "e_book_get_contact on book before e_book_load_uri"
-#~ msgstr "e_book_get_contact on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getContact call"
-#~ msgstr "Corba exception making Book::getContact call"
-
-#~ msgid "e_book_remove_contact on book before e_book_load_uri"
-#~ msgstr "e_book_remove_contact on book before e_book_load_uri"
-
-#~ msgid "e_book_remove_contacts on book before e_book_load_uri"
-#~ msgstr "e_book_remove_contacts on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::removeContacts call"
-#~ msgstr "Corba exception making Book::removeContacts call"
-
-#~ msgid "e_book_get_book_view on book before e_book_load_uri"
-#~ msgstr "e_book_get_book_view on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getBookView call"
-#~ msgstr "Corba exception making Book::getBookView call"
-
-#~ msgid "e_book_get_contacts on book before e_book_load_uri"
-#~ msgstr "e_book_get_contacts on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getContactList call"
-#~ msgstr "Corba exception making Book::getContactList call"
-
-#~ msgid "e_book_get_changes on book before e_book_load_uri"
-#~ msgstr "e_book_get_changes on book before e_book_load_uri"
-
-#~ msgid "Corba exception making Book::getChanges call"
-#~ msgstr "Corba exception making Book::getChanges call"
-
-#~ msgid "Corba exception making Book::cancelOperation call"
-#~ msgstr "Corba exception making Book::cancelOperation call"
-
-#~ msgid "e_book_remove on book before e_book_load_uri"
-#~ msgstr "e_book_remove on book before e_book_load_uri"
-
-#~ msgid "time-now expects 0 arguments"
-#~ msgstr "ο χρόνος περιμένει τώρα 0 παραμέτρους"
-
-#~ msgid "time-add-day expects 2 arguments"
-#~ msgstr "η προσθήκη χρόνου ημέρας αναμένεται να έχει 2 παραμέτρους"
-
-#~ msgid "time-day-begin expects 1 argument"
-#~ msgstr "η αρχή χρόνου ημέρας αναμένεται να έχει 1 παραμέτρο"
-
-#~ msgid "time-day-begin expects argument 1 to be a time_t"
-#~ msgstr "time-day-begin αναμένει argument 1 to be a time_t"
-
-#~ msgid "time-day-end expects 1 argument"
-#~ msgstr "το τέλους χρόνου ημέρας αναμένεται να έχει 1 παραμέτρο"
-
-#~ msgid "occur-in-time-range? expects 2 arguments"
-#~ msgstr "occur-in-time-range? αναμένει 2 arguments"
-
-#~ msgid "occur-in-time-range? expects argument 1 to be a time_t"
-#~ msgstr "occur-in-time-range? αναμένει argument 1 to be a time_t"
-
-#~ msgid "occur-in-time-range? expects argument 2 to be a time_t"
-#~ msgstr "occur-in-time-range? αναμένει argument 2 to be a time_t"
-
-#~ msgid "has-recurrences? expects no arguments"
-#~ msgstr "has-recurrences? δεν αναμένει παράμετρους"
-
-#~ msgid "is-completed? expects 0 arguments"
-#~ msgstr "έχει-ολοκληρωθεί? αναμένει 0 παραμέτρους"
-
-#~ msgid "completed-before? expects 1 argument"
-#~ msgstr "ολοκληρώθηκε-πρίν? αναμένει 1 παραμέτρο"
-
-#~ msgid "completed-before? expects argument 1 to be a time_t"
-#~ msgstr "ολοκληρώθηκε-πρίν? αναμένει 1 παραμέτρο να είναι a time_t"
+"Δημιουργήθηκαν πολλαπλά segmentation faults; δεν είναι δυνατή η προβολή "
+"διαλόγου σφάλματος\n"
