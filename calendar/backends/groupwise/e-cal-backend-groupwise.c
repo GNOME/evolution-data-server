@@ -194,24 +194,6 @@ convert_uri (const char *gw_uri)
 	return vuri;
 }
 
-/* FIXME: This method is also in the file backend. Can be moved to
- * ECalComponent. */
-static const char *
-get_rid_string (ECalComponent *comp)
-{
-        ECalComponentRange range;
-        struct icaltimetype tt;
-                                                                                   
-        e_cal_component_get_recurid (comp, &range);
-        if (!range.datetime.value)
-                return "0";
-        tt = *range.datetime.value;
-        e_cal_component_free_range (&range);
-                                                                                   
-        return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
-                icaltime_as_ical_string (tt) : "0";
-}
-
 /* Initialy populate the cache from the server */
 static EGwConnectionStatus
 populate_cache (ECalBackendGroupwisePrivate *priv)
@@ -232,10 +214,9 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
         for (l = list; l != NULL; l = g_slist_next(l)) {
                 comp = E_CAL_COMPONENT (l->data);
 		e_cal_component_get_uid (comp, &uid);
-                rid = g_strdup (get_rid_string (comp));
+                rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
                 e_cal_component_commit_sequence (comp);
-		e_cal_backend_cache_put_component (priv->cache, uid, rid, 
-                                e_cal_component_get_as_string (comp));
+		e_cal_backend_cache_put_component (priv->cache, comp);
                 g_free (rid);
                 g_free (comp);
         }
@@ -665,6 +646,8 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	ECalBackendGroupwise *cbgw;
         ECalBackendGroupwisePrivate *priv;
 	icalcomponent *icalcomp;
+	ECalComponent *comp;
+	EGwConnectionStatus status;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -677,26 +660,75 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomp);
+
 	/* check if the object exists */
 	switch (priv->mode) {
-	case CAL_MODE_LOCAL :
-		/* in offline mode, we just update the cache */
-		break;
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
+		/* when online, send the item to the server */
+		status = e_gw_connection_send_appointment (priv->cnc, comp);
+		if (status != E_GW_CONNECTION_STATUS_OK)
+			break;
+		/* if successful, update the cache */
+	case CAL_MODE_LOCAL :
+		/* in offline mode, we just update the cache */
+		e_cal_backend_cache_put_component (priv->cache, comp);
 		break;
 	default :
 		break;
 	}
 
-	return GNOME_Evolution_Calendar_InvalidObject;
+	g_object_unref (comp);
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
-				CalObjModType mod, char **old_object)
+				       CalObjModType mod, char **old_object)
 {
-	return GNOME_Evolution_Calendar_OtherError;
+	ECalBackendGroupwise *cbgw;
+        ECalBackendGroupwisePrivate *priv;
+	icalcomponent *icalcomp;
+	ECalComponent *comp;
+	EGwConnectionStatus status;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	priv = cbgw->priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_InvalidObject);
+	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
+
+	/* check the component for validity */
+	icalcomp = icalparser_parse_string (calobj);
+	if (!icalcomp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomp);
+
+	/* check if the object exists */
+	switch (priv->mode) {
+	case CAL_MODE_ANY :
+	case CAL_MODE_REMOTE :
+		/* when online, send the item to the server */
+		status = e_gw_connection_send_appointment (priv->cnc, comp);
+		if (status != E_GW_CONNECTION_STATUS_OK)
+			break;
+		/* if successful, update the cache */
+	case CAL_MODE_LOCAL :
+		/* in offline mode, we just update the cache */
+		e_cal_backend_cache_put_component (priv->cache, comp);
+		break;
+	default :
+		break;
+	}
+
+	g_object_unref (comp);
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Remove_object handler for the file backend */

@@ -282,6 +282,7 @@ void e_cal_component_get_priority (ECalComponent *comp, int **priority);
 void e_cal_component_set_priority (ECalComponent *comp, int *priority);
 
 void e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id);
+const char *e_cal_component_get_recurid_as_string (ECalComponent *comp);
 void e_cal_component_set_recurid (ECalComponent *comp, ECalComponentRange *recur_id);
 
 void e_cal_component_get_rdate_list (ECalComponent *comp, GSList **period_list);

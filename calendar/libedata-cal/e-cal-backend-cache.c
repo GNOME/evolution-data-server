@@ -138,27 +138,25 @@ e_cal_backend_cache_constructor (GType type,
                                  guint n_construct_properties,
                                  GObjectConstructParam *construct_properties)
 {
-  GObject *obj;
-  char *uri;
-        
-  {
-    /* Invoke parent constructor. */
-    ECalBackendCacheClass *klass;
-    GObjectClass *parent_class;  
-    klass = E_CAL_BACKEND_CACHE_CLASS (g_type_class_peek (E_TYPE_CAL_BACKEND_CACHE));
-    parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
-    obj = parent_class->constructor (type,
-                                     n_construct_properties,
-                                     construct_properties);
-  }
+	GObject *obj;
+	char *uri;
+	ECalBackendCacheClass *klass;
+	GObjectClass *parent_class;
+
+	/* Invoke parent constructor. */
+	klass = E_CAL_BACKEND_CACHE_CLASS (g_type_class_peek (E_TYPE_CAL_BACKEND_CACHE));
+	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
+	obj = parent_class->constructor (type,
+					 n_construct_properties,
+					 construct_properties);
   
-  /* extract uid */
-  if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri"))
-          uri = g_value_get_string (construct_properties->value);
-                  
-  g_object_set (obj, "filename", get_filename_from_uri (uri), NULL);
-  return obj;
-  
+	/* extract uid */
+	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri")) {
+		uri = g_value_get_string (construct_properties->value);
+		g_object_set (obj, "filename", get_filename_from_uri (uri), NULL);
+	}
+
+	return obj;
 }
 
 static void
@@ -302,27 +300,33 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const char *uid, con
  */
 gboolean
 e_cal_backend_cache_put_component (ECalBackendCache *cache,
-				   const char *uid,
-				   const char *rid,
-				   const char *calobj)
+				   ECalComponent *comp)
 {
-	char *real_key;
+	char *real_key, *uid, *rid, *comp_str;
 	gboolean retval;
 	ECalBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
-	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (calobj != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
 	priv = cache->priv;
 
+	e_cal_component_get_uid (comp, (const char **) &uid);
+	if (e_cal_component_is_instance (comp)) {
+		rid = e_cal_component_get_recurid_as_string (comp);
+	} else
+		rid = NULL;
+
+	comp_str = e_cal_component_get_as_string (comp);
 	real_key = get_key (uid, rid);
+
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), real_key))
-		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), real_key, calobj);
+		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), real_key, comp_str);
 	else
-		retval = e_file_cache_add_object (E_FILE_CACHE (cache), real_key, calobj);
+		retval = e_file_cache_add_object (E_FILE_CACHE (cache), real_key, comp_str);
 
 	g_free (real_key);
+	g_free (comp_str);
 
 	return retval;
 }

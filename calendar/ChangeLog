@@ -1,24 +1,57 @@
+2004-01-13  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libecal/e-cal-component.[ch] (e_cal_component_get_recurid_as_string):
+	new function, moved from the file and groupwise backends.
+
+	* libedata-cal/e-cal-backend-cache.[ch]
+	(e_cal_backend_cache_put_component): changed to get an ECalComponent.
+
+	* backends/groupwise/e-gw-item.[ch]: new class for managing items
+	to be sent to the server.
+
+	* backends/groupwise/e-gw-connection.[ch] (e_gw_connection_send_item,
+	e_gw_connection_send_appointment): new functions.
+	(e_gw_connection_get_container_list): made it public.
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_create_object): finished implementation.
+	(e_cal_backend_groupwise_modify_object): implemented.
+	(get_rid_string): removed.
+	(populate_cache): adapted to changes in ECalBackendCache, and use
+	e_cal_component_get_recurid_as_string instead of the local
+	get_rid_string().
+
+	* backends/groupwise/Makefile.am: added new files.
+
+	* backends/file/e-cal-backend-file.c (get_rid_string): removed.
+	(add_component, e_cal_backend_file_modify_object): use
+	e_cal_component_get_recurid_as_string instead of the local
+	get_rid_string().
+
 2004-01-13 Harish K <kharish@novell.com>
-        * calendar/backends/groupwise/e-cal-backend-groupwise.c
+
+	* calendar/backends/groupwise/e-cal-backend-groupwise.c
           (populate_cache): fixed memory leaks.
           (e_cal_backend_groupwise_open): return function with success when
           invoked again after the cache has been created already.
           (e_cal_backend_groupwise_get_object_list): implemented.
           (e_cal_backend_groupwise_start_query): implemented.
-          
-        * calendar/backends/groupwise/e-gw-connection.c
-          (get_e_cal_component_from_soap_parameter): modification to strip 
-          date and time separators in argument before calling 
+
+	* calendar/backends/groupwise/e-gw-connection.c
+          (get_e_cal_component_from_soap_parameter): modification to strip
+          date and time separators in argument before calling
           icaltime_from_string.
-        * calendar/backends/groupwise/e-gw-connection.h
+
+	* calendar/backends/groupwise/e-gw-connection.h
           (e_gw_connection_get_delta): - Added declaration.
-        * calendar/libedata-cal/e-cal-backend-cache.c
+
+	* calendar/libedata-cal/e-cal-backend-cache.c
           (e_cal_backend_cache_constructor): Added the function and updated
           class_init to use it.
           (e_cal_backend_cache_get_components): Added method to wrap 
           e_file_cache_get_objects for better abstraction.
           (e_cal_backend_cache_set_property): fixed NULL termination to argument
-          list.                
+          list.
 
 2004-01-12  Rodrigo Moya <rodrigo@ximian.com>
 

@@ -367,22 +367,6 @@ check_dup_uid (ECalBackendFile *cbfile, ECalComponent *comp)
 	save (cbfile);
 }
 
-static const char *
-get_rid_string (ECalComponent *comp)
-{
-        ECalComponentRange range;
-        struct icaltimetype tt;
-                                                                                   
-        e_cal_component_get_recurid (comp, &range);
-        if (!range.datetime.value)
-                return "0";
-        tt = *range.datetime.value;
-        e_cal_component_free_range (&range);
-                                                                                   
-        return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
-                icaltime_as_ical_string (tt) : "0";
-}
-
 static struct icaltimetype
 get_rid_icaltime (ECalComponent *comp)
 {
@@ -423,7 +407,7 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 			return;
 		}
 
-		rid = get_rid_string (comp);
+		rid = e_cal_component_get_recurid_as_string (comp);
 		if (g_hash_table_lookup (obj_data->recurrences, rid)) {
 			g_warning (G_STRLOC ": Tried to adding an already existing recurrence");
 			return;
@@ -1691,7 +1675,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	/* handle mod_type */
 	switch (mod) {
 	case CALOBJ_MOD_THIS :
-		rid = get_rid_string (comp);
+		rid = e_cal_component_get_recurid_as_string (comp);
 		if (!rid || !*rid) {
 			g_object_unref (comp);
 			return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -1726,7 +1710,9 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		}
 
 		/* add the detached instance */
-		g_hash_table_insert (obj_data->recurrences, g_strdup (get_rid_string (comp)), comp);
+		g_hash_table_insert (obj_data->recurrences, 
+				     g_strdup (e_cal_component_get_recurid_as_string (comp)),
+				     comp);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 		break;

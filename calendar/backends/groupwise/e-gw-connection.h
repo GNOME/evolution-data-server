@@ -26,12 +26,13 @@
 
 #include <glib-object.h>
 #include <libsoup/soup-soap-message.h>
+#include "e-gw-item.h"
 
 G_BEGIN_DECLS
 
 #define E_TYPE_GW_CONNECTION            (e_gw_connection_get_type ())
-#define E_GW_CONNECTION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_GW_CONNECTION,	EGwConnection))
-#define E_GW_CONNECTION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_GW_CONNECTION,	EGwConnectionClass))
+#define E_GW_CONNECTION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_GW_CONNECTION, EGwConnection))
+#define E_GW_CONNECTION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_GW_CONNECTION, EGwConnectionClass))
 #define E_IS_GW_CONNECTION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_GW_CONNECTION))
 #define E_IS_GW_CONNECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_GW_CONNECTION))
 
@@ -53,6 +54,7 @@ EGwConnection *e_gw_connection_new (const char *uri, const char *username, const
 
 typedef enum {
 	E_GW_CONNECTION_STATUS_OK,
+	E_GW_CONNECTION_STATUS_INVALID_CONNECTION,
 	E_GW_CONNECTION_STATUS_INVALID_OBJECT,
 	E_GW_CONNECTION_STATUS_INVALID_RESPONSE,
 	E_GW_CONNECTION_STATUS_OTHER,
@@ -62,9 +64,11 @@ typedef enum {
 SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
+EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **response);
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *filter, GSList **list);
 EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, char * sequence_number, GSList **list);
-
+EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item);
+EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, ECalComponent *comp);
 
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);

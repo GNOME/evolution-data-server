@@ -3226,6 +3226,31 @@ e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
 }
 
 /**
+ * e_cal_component_get_recurid_as_string:
+ * @comp: A calendar component object.
+ *
+ * Gets the recurrence ID property as a string.
+ */
+const char *
+e_cal_component_get_recurid_as_string (ECalComponent *comp)
+{
+        ECalComponentRange range;
+        struct icaltimetype tt;
+
+	if (!e_cal_component_is_instance (comp))
+		return NULL;
+
+        e_cal_component_get_recurid (comp, &range);
+        if (!range.datetime.value)
+                return "0";
+        tt = *range.datetime.value;
+        e_cal_component_free_range (&range);
+                                                                                   
+        return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
+                icaltime_as_ical_string (tt) : "0";
+}
+
+/**
  * e_cal_component_set_recurid:
  * @comp: A calendar component object.
  * @recur_id: Value for the recurrence id property.

@@ -476,7 +476,7 @@ get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
         return comp;                
 }
 
-static EGwConnectionStatus
+EGwConnectionStatus
 e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **response)
 {
 	SoupSoapMessage *msg;
@@ -609,6 +609,37 @@ EGwConnectionStatus
 e_gw_connection_get_deltas (EGwConnection *cnc, char * sequence_number, GSList **list)
 {
         return E_GW_CONNECTION_STATUS_OK;        
+}
+
+EGwConnectionStatus
+e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* FIXME: compose message */
+
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_send_appointment (EGwConnection *cnc, ECalComponent *comp)
+{
+	EGwItem *item;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	item = e_gw_item_new_appointment (comp);
+	status = e_gw_connection_send_item (cnc, item);
+	g_object_unref (item);
+
+	return status;
 }
 
 const char *

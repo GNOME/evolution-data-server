@@ -50,10 +50,7 @@ ECalBackendCache *e_cal_backend_cache_new (const char *uri);
 ECalComponent    *e_cal_backend_cache_get_component (ECalBackendCache *cache,
 						     const char *uid,
 						     const char *rid);
-gboolean          e_cal_backend_cache_put_component (ECalBackendCache *cache,
-						     const char *uid,
-						     const char *rid,
-						     const char *calobj);
+gboolean          e_cal_backend_cache_put_component (ECalBackendCache *cache, ECalComponent *comp);
 gboolean          e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 							const char *uid,
 							const char *rid);
