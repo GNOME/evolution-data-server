@@ -508,7 +508,7 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
 
-        e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	if (view)
 		e_gw_message_write_string_parameter (msg, "view", NULL, view);
 	if (filter) 
@@ -1231,3 +1231,80 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable *categories_by_id
 
 }
 
+EGwConnectionStatus 
+e_gw_connection_add_members (EGwConnection *cnc, const char *group_id, GList *member_ids)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+        EGwConnectionStatus status;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_return_val_if_fail (member_ids != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_return_val_if_fail (group_id != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
+	
+	 msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "addMembersRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	e_gw_message_write_string_parameter (msg, "container", NULL, group_id);
+	soup_soap_message_start_element (msg, "members", NULL, NULL);
+	soup_soap_message_start_element (msg, "member", NULL, NULL);
+	for (; member_ids != NULL; member_ids = member_ids = g_list_next (member_ids))
+		e_gw_message_write_string_parameter (msg, "id", NULL, member_ids->data);
+	soup_soap_message_end_element(msg);
+	soup_soap_message_end_element(msg);
+	e_gw_message_write_footer (msg);
+	response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+        status = e_gw_connection_parse_response_status (response);
+	g_object_unref (response);
+	g_object_unref (msg);
+	return status;
+	
+
+}
+
+EGwConnectionStatus 
+e_gw_connection_remove_members (EGwConnection *cnc, const char *group_id, GList *member_ids)
+{
+	
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+        EGwConnectionStatus status;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_return_val_if_fail (member_ids != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_return_val_if_fail (group_id != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
+	
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "removeMembersRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	e_gw_message_write_string_parameter (msg, "container", NULL, group_id);
+	soup_soap_message_start_element (msg, "members", NULL, NULL);
+	soup_soap_message_start_element (msg, "member", NULL, NULL);
+	for (; member_ids != NULL; member_ids = member_ids = g_list_next (member_ids))
+		e_gw_message_write_string_parameter (msg, "id", NULL, member_ids->data);
+	soup_soap_message_end_element(msg);
+	soup_soap_message_end_element(msg);
+	e_gw_message_write_footer (msg);
+	response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+        status = e_gw_connection_parse_response_status (response);
+	g_object_unref (response);
+	g_object_unref (msg);
+	return status;
+
+
+
+}

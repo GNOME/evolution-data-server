@@ -92,6 +92,10 @@ typedef struct {
 	char *address;
 }IMAddress;
 
+typedef struct {
+	char *id;
+	char *email;
+} EGroupMember;
 
 GType       e_gw_item_get_type (void);
 EGwItem    *e_gw_item_new_empty (void);
@@ -139,6 +143,7 @@ void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *f
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
 char* e_gw_item_get_category_name (EGwItem *item);
+
 
 #define E_GW_ITEM_CLASSIFICATION_PUBLIC       "Public"
 #define E_GW_ITEM_CLASSIFICATION_PRIVATE      "Private"

@@ -1,3 +1,11 @@
+2004-04-28  Sivaiah Nallagatla   <snallagatla@novell.com>
+
+	* e-gw-connection.[ch]  (e_gw_connection_add_members)
+	(e_gw_connection_remove_members) : new apis to modify a group item 
+	* e-gw-item.[ch] : defined a new struct EGRoupMember to have both id 
+	email of a member. Used the new Struct instead of just id 
+	(free_group_member) : function to free EGroupMember
+
 2004-04-27  Harish Krishnaswamy  <kharish@novell.com>
 
 	Fixes #56535.

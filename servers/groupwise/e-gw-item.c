@@ -102,6 +102,16 @@ free_string (gpointer s, gpointer data)
 	if (s)
 		free (s);
 }
+static void 
+free_member (gpointer member, gpointer data)
+{
+	EGroupMember *group_member = (EGroupMember *) member;
+	if (group_member->id)
+		g_free (group_member->id);
+	if (group_member->email)
+		g_free (group_member->email);
+	g_free (group_member);
+}
 
 static void 
 free_im_address ( gpointer address, gpointer data)
@@ -216,7 +226,7 @@ e_gw_item_dispose (GObject *object)
 			priv->email_list = NULL;
 		}
 		if (priv->member_list) {
-			g_list_foreach (priv->member_list,  free_string, NULL);
+			g_list_foreach (priv->member_list,  free_member, NULL);
 			g_list_free (priv->member_list);
 			priv->member_list = NULL;
 		}
@@ -768,13 +778,22 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	}
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "members");
 	if (subparam) {
+		char *id, *email;
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp)) {
+			id = email = NULL;
 			second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "email"); 
 			if (second_level_child)
-				value = soup_soap_parameter_get_string_value (second_level_child);
-			if (value) 
-				item->priv->member_list = g_list_append (item->priv->member_list, g_strdup (value));
-			
+				email = soup_soap_parameter_get_string_value (second_level_child);
+			second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "id");
+			if (second_level_child)
+				id = soup_soap_parameter_get_string_value (second_level_child);
+			if (id&&email) {
+				EGroupMember *member = g_new0 (EGroupMember, 1);
+				member->id = g_strdup (id);
+				member->email = g_strdup (email);
+				item->priv->member_list = g_list_append (item->priv->member_list, member);
+			}
+					
 		}
 	}
 
@@ -1100,9 +1119,9 @@ append_group_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	soup_soap_message_start_element (msg, "members", NULL, NULL);
 	members = g_list_copy (item->priv->member_list);
 	for (; members != NULL; members = g_list_next (members)) {
-		
+		EGroupMember *member = (EGroupMember *) members->data;
 		soup_soap_message_start_element (msg, "member", NULL, NULL);
-		e_gw_message_write_string_parameter (msg, "id", NULL, members->data);
+		e_gw_message_write_string_parameter (msg, "id", NULL, member->id);
 		e_gw_message_write_string_parameter (msg, "distType", NULL, "TO");
 		e_gw_message_write_string_parameter (msg, "itemType", NULL, "Contact");
 		soup_soap_message_end_element(msg);
@@ -1733,7 +1752,7 @@ gboolean
 e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv;
-
+	char *value;
 	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), FALSE);
 
@@ -1749,8 +1768,11 @@ e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		soup_soap_message_end_element(msg); 
 		return TRUE;
         case E_GW_ITEM_TYPE_GROUP :
-		soup_soap_message_add_attribute (msg, "type", "Group", "xsi", NULL);
-		append_group_fields_to_soap_message (item, msg);
+		soup_soap_message_start_element (msg, "update", NULL, NULL);
+		value = g_hash_table_lookup (item->priv->simple_fields, "name");
+		if (value)
+			e_gw_message_write_string_parameter (msg, "name", NULL, value);
+		soup_soap_message_end_element (msg);
 		soup_soap_message_end_element(msg); 
 		return TRUE;
 	default :

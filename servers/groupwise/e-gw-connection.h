@@ -96,6 +96,8 @@ EGwConnectionStatus e_gw_connection_remove_book (EGwConnection *cnc, char *book_
 EGwConnectionStatus e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_list);
 EGwConnectionStatus e_gw_connection_get_address_book_id ( EGwConnection *cnc, char *book_name, char**id , gboolean *is_writable);
 EGwConnectionStatus e_gw_connection_get_categories  (EGwConnection *cnc, GHashTable *categories_by_id, GHashTable *categoreis_by_name);
+EGwConnectionStatus e_gw_connection_add_members (EGwConnection *cnc, const char *group_id, GList *member_ids);
+EGwConnectionStatus e_gw_connection_remove_members (EGwConnection *cnc, const char *group_id, GList *member_ids);
 G_END_DECLS
 
 #endif
