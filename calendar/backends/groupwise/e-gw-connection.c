@@ -505,21 +505,21 @@ e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **respo
         return status;
 }
 
-EGwConnectionStatus
-e_gw_connection_get_items (EGwConnection *cnc, const char * filter, GSList **list)
+char *
+e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
+	SoupSoapResponse *response;
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam;
-	const char *calendar_uid;
+	char *container_id;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
-        
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
         status = e_gw_connection_get_container_list (cnc, &response);
         if (status != E_GW_CONNECTION_STATUS_OK) {
                 g_object_unref (response);
-                return status;
+                return NULL;
         }
 
 	/* if status is OK - parse result. return the list */	
@@ -527,32 +527,40 @@ e_gw_connection_get_items (EGwConnection *cnc, const char * filter, GSList **lis
 	
         if (!param) {
                 g_object_unref (response);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+                return NULL;
         } else {
 		SoupSoapParameter *subparam, *name, *id;
 		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "Folder");
 		     subparam != NULL;
 		     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "Folder")) {
 			name = soup_soap_parameter_get_first_child_by_name (subparam, "name");
-			if (name && (!strcmp (soup_soap_parameter_get_string_value (name), "Calendar"))) {
+			if (name && (!strcmp (soup_soap_parameter_get_string_value (name), name))) {
 				id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
-				if (id) 
-					calendar_uid = g_strdup (soup_soap_parameter_get_string_value (id));
-                                else
-                                        return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-                                                
-				break;
+				if (id) {
+					container_id = g_strdup (soup_soap_parameter_get_string_value (id));
+					break;
+                                }
 			}
-			
 		}
 		if (!subparam) {
 			g_object_unref (response);
-			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+			return NULL;
 		}
-			
-	}	
-			
-	
+	}
+
+	return container_id;
+}
+
+EGwConnectionStatus
+e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char * filter, GSList **list)
+{
+        SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        SoupSoapParameter *param, *subparam;
+
+        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getItemsRequest");
         if (!msg) {
@@ -560,7 +568,7 @@ e_gw_connection_get_items (EGwConnection *cnc, const char * filter, GSList **lis
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
         
-        e_gw_message_write_string_parameter (msg, "container", NULL, calendar_uid);
+        e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	if (filter)
 		e_gw_message_write_string_parameter (msg, "Filter", NULL, filter);
 	e_gw_message_write_footer (msg);

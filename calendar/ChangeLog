@@ -1,5 +1,18 @@
 2004-01-13  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.[ch]
+	(e_gw_connection_get_items): moved the folder retrieving code to...
+	(e_gw_connection_get_container_id): ...here, new function.
+
+	* backends/groupwise/e-cal-backend-groupwise.c: added 'container_id'
+	field to private structure.
+	(e_cal_backend_groupwise_finalize): free the container_id.
+	(populate_cache): pass the container_id to e_gw_connection_get_items.
+	(e_cal_backend_groupwise_set_mode): retrieve the container ID after
+	connecting to the server.
+
+2004-01-13  Rodrigo Moya <rodrigo@ximian.com>
+
 	* backends/groupwise/e-gw-connection.[ch] (logout): unref the message
 	if we dont get a response, not the response, which is NULL, and unref
 	it also before exiting the function.

@@ -46,6 +46,7 @@ struct _ECalBackendGroupwisePrivate {
 	char *uri;
 	char *username;
 	char *password;
+	char *container_id;
 	CalMode mode;
 	icaltimezone *default_zone;
 };
@@ -110,6 +111,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->password) {
 		g_free (priv->password);
 		priv->password = NULL;
+	}
+
+	if (priv->container_id) {
+		g_free (priv->container_id);
+		priv->container_id = NULL;
 	}
 
 	g_free (priv);
@@ -205,7 +211,7 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
         GSList *list = NULL, *l;
 
         /* get all the objects from the server */
-        status = e_gw_connection_get_items (priv->cnc, NULL, &list);
+        status = e_gw_connection_get_items (priv->cnc, priv->container_id, NULL, &list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
                 g_slist_free (list);
                 return status;
@@ -356,6 +362,19 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 			cbgw->priv->read_only = FALSE;
 	
 			if (E_IS_GW_CONNECTION (priv->cnc)) {
+				icalcomponent_kind kind;
+
+				/* get the ID for the container */
+				if (priv->container_id)
+					g_free (priv->container_id);
+
+				kind = e_cal_backend_get_kind (backend);
+				if (kind == ICAL_VEVENT_COMPONENT)
+					priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Calendar");
+				/* FIXME: else if (kind == ICAL_VTODO_COMPONENT) */
+				else
+					priv->container_id = NULL;
+
 				/* Populate the cache for the first time.*/
 				/* start a timed polling thread set to 10 minutes*/
 				status = populate_cache (priv);

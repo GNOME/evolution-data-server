@@ -66,7 +66,9 @@ SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMe
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
 EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, SoupSoapResponse **response);
-EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *filter, GSList **list);
+char               *e_gw_connection_get_container_id (EGwConnection *cnc, const char *name);
+EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
+					       const char *filter, GSList **list);
 EGwConnectionStatus e_gw_connection_get_deltas (EGwConnection *cnc, char * sequence_number, GSList **list);
 EGwConnectionStatus e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item);
 EGwConnectionStatus e_gw_connection_send_appointment (EGwConnection *cnc, ECalComponent *comp);
