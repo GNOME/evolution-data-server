@@ -40,6 +40,7 @@ typedef struct _EGwItemClass   EGwItemClass;
 typedef struct _EGwItemPrivate EGwItemPrivate;
 
 typedef enum {
+	E_GW_ITEM_TYPE_MAIL,
 	E_GW_ITEM_TYPE_APPOINTMENT,
 	E_GW_ITEM_TYPE_TASK,
 	E_GW_ITEM_TYPE_CONTACT,
@@ -58,6 +59,19 @@ typedef enum {
 	E_GW_ITEM_CHNAGE_TYPE_UNKNOWN
 
 } EGwItemChangeType;
+
+typedef enum {
+	E_GW_ITEM_STAT_ACCEPTED = 1<<0,
+	E_GW_ITEM_STAT_COMPLETED = 1<<1,
+	E_GW_ITEM_STAT_DELEGATED = 1<<2,
+	E_GW_ITEM_STAT_DELETED   = 1<<3,
+	E_GW_ITEM_STAT_FORWARDED = 1<<4,
+	E_GW_ITEM_STAT_OPENED    = 1<<5,
+	E_GW_ITEM_STAT_READ      = 1<<6,
+	E_GW_ITEM_STAT_REPLIED   = 1<<7,
+	E_GW_ITEM_STAT_DECLINED  = 1<<8,
+	E_GW_ITEM_STAT_NONE      = 1<<31
+} EGwItemStatus;
 
 struct _EGwItem {
 	GObject parent;
@@ -102,6 +116,14 @@ typedef struct {
 	char *email;
 	char *display_name;
 } EGwItemOrganizer;
+
+typedef struct {
+	char *id ;
+	char *name ;
+	char *contentType ;
+	int size ;
+	char *date ;
+} EGwItemAttachment ;
 
 GType       e_gw_item_get_type (void);
 EGwItem    *e_gw_item_new_empty (void);
@@ -149,6 +171,10 @@ GList*      e_gw_item_get_im_list (EGwItem *item);
 void        e_gw_item_set_im_list (EGwItem *item, GList *im_list);
 void        e_gw_item_set_categories (EGwItem *item, GList *category_list);
 GList*      e_gw_item_get_categories (EGwItem *item);
+void 	    e_gw_item_set_to (EGwItem *item, const char *to) ;
+const char* e_gw_item_get_to (EGwItem *item) ;
+const char *e_gw_item_get_msg_content_type (EGwItem *item) ;
+guint32     e_gw_item_get_item_status (EGwItem *item);
 void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *field_name, gpointer field_value);
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
@@ -182,6 +208,8 @@ void e_gw_item_set_recipient_list (EGwItem *item, GSList *new_recipient_list);
 EGwItemOrganizer *e_gw_item_get_organizer (EGwItem *item);
 void e_gw_item_set_organizer (EGwItem  *item, EGwItemOrganizer *organizer);
 
+GSList * e_gw_item_get_attach_id_list (EGwItem *item) ;
+
 
 GSList *e_gw_item_get_recurrence_dates (EGwItem *item);
 void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates);
@@ -190,11 +218,6 @@ void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_date
 int e_gw_item_get_trigger (EGwItem *item);
 void e_gw_item_set_trigger (EGwItem *item, int trigger);
 
-typedef enum {
-	E_GW_ITEM_STAT_ACCEPTED,
-	E_GW_ITEM_STAT_DECLINED,
-	E_GW_ITEM_STAT_NONE
-} ItemStatus; 
 
 typedef struct {
 	char *email;
@@ -206,7 +229,7 @@ typedef struct {
 		E_GW_ITEM_RECIPIENT_NONE
 	} type;
 
-	ItemStatus status;
+	EGwItemStatus status;
 } EGwItemRecipient;
 
 gboolean    e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg);

@@ -29,6 +29,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libsoup/soup-session-sync.h>
 #include <libsoup/soup-soap-message.h>
+#include <libsoup/soup-misc.h>
 #include "e-gw-connection.h"
 #include "e-gw-message.h"
 #include "e-gw-filter.h"
@@ -263,10 +264,7 @@ e_gw_connection_dispose (GObject *object)
 			priv->user_email = NULL;
 		}
 
-		if (priv->user_uuid) {
-			g_free (priv->user_uuid);
-			priv->user_uuid = NULL;
-		}
+	
 		if (priv->reauth_mutex) {
 			g_mutex_free (priv->reauth_mutex);
 			priv->reauth_mutex = NULL;
@@ -477,7 +475,7 @@ e_gw_connection_logout (EGwConnection *cnc)
 }
 
 EGwConnectionStatus
-e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
+e_gw_connection_get_container_list (EGwConnection *cnc, const char *top, GList **container_list)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -493,10 +491,8 @@ e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
                 return E_GW_CONNECTION_STATUS_UNKNOWN;
         }
 
-        e_gw_message_write_string_parameter (msg, "parent", NULL, "folders");
-
-	e_gw_message_write_string_parameter (msg, "recurse", NULL, "1");
-
+	e_gw_message_write_string_parameter (msg, "parent", NULL, top);
+	e_gw_message_write_string_parameter (msg, "recurse", NULL, "true");
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
@@ -529,7 +525,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list)
 			EGwContainer *container;
 
 			container = e_gw_container_new_from_soap_parameter (subparam);
-			if (container)
+			if (container) 
 				*container_list = g_list_append (*container_list, container);
 		}
 	}
@@ -558,8 +554,8 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-        status = e_gw_connection_get_container_list (cnc, &container_list);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+        status = e_gw_connection_get_container_list (cnc, "folders", &container_list);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_gw_connection_free_container_list (container_list);
                 return NULL;
         }
@@ -995,7 +991,7 @@ e_gw_connection_modify_item (EGwConnection *cnc, const char *id , EGwItem *item)
 }
 
 EGwConnectionStatus 
-e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char *id, EGwItem **item)
+e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char *id, const char *view, EGwItem **item)
 {
 
 	SoupSoapMessage *msg;
@@ -1014,6 +1010,9 @@ e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char 
       
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+
+	if (view)
+		e_gw_message_write_string_parameter (msg, "view", NULL, view) ;
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
@@ -1951,3 +1950,147 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 	
 
 }
+
+
+EGwConnectionStatus 
+e_gw_connection_create_folder(EGwConnection *cnc, const char *parent_name,const char *folder_name, char **container_id)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	SoupSoapParameter *param ;
+	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_UNKNOWN;
+
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc), e_gw_connection_get_session_id(cnc), "createItemRequest");
+
+	soup_soap_message_start_element (msg, "item", NULL, NULL);
+	soup_soap_message_add_attribute (msg, "type", "Folder", "xsi", NULL);
+
+	e_gw_message_write_string_parameter (msg, "name", NULL, folder_name);
+	e_gw_message_write_string_parameter (msg, "parent", NULL,parent_name );
+
+	soup_soap_message_end_element (msg);
+
+	e_gw_message_write_footer (msg);
+
+	response =  e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+	status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	} else {
+		param = soup_soap_response_get_first_parameter_by_name (response, "id") ;
+		*container_id = soup_soap_parameter_get_string_value(param) ;
+		printf ("CONTAINER ID %s \n", *container_id) ;
+	}
+
+	return status ;
+
+}
+
+/*
+ * 
+ */
+EGwConnectionStatus
+e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, int length, const char **attachment, int *attach_length)
+{
+
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+	SoupSoapParameter *param ;
+	char *buffer, *buf_length ;
+
+        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getAttachmentRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+      
+
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+	e_gw_message_write_int_parameter (msg, "offset", NULL, offset);
+	e_gw_message_write_int_parameter (msg, "length", NULL, length);
+
+	e_gw_message_write_footer (msg);
+
+        /* send message to server */
+        response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+        status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	}
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "part") ;
+	buf_length =  soup_soap_parameter_get_property (param, "length") ;
+	buffer = soup_soap_parameter_get_string_value (param) ;
+        
+	if (buffer && length) {
+		int len = atoi (buf_length) ;
+		*attachment = soup_base64_decode (buffer,&len) ;
+		*attach_length = len ;
+	}
+
+	/* free memory */
+	g_free (buffer) ;
+	g_free (buf_length) ;
+        g_object_unref (response);
+	g_object_unref (msg);
+
+        return E_GW_CONNECTION_STATUS_OK;
+}
+
+
+EGwConnectionStatus
+e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char *id)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (id != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "addItemRequest");
+
+	if (container && *container)
+		e_gw_message_write_string_parameter (msg, "container", NULL, container);
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
+

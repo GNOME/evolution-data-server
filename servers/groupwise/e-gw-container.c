@@ -30,6 +30,8 @@
 struct _EGwContainerPrivate {
 	char *name;
 	char *id;
+	char *parent ;
+	gboolean is_root ;
 	gboolean is_writable;
 	gboolean is_frequent_contacts; /*indicates  whether this folder is frequent contacts or not */
 };
@@ -172,6 +174,19 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	e_gw_container_set_id (container, (const char *) value);
 	g_free (value);
 
+	/* retrieve the parent container id */
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "parent");
+	if (!subparam) {
+		g_warning (G_STRLOC ": found container with no parent");
+		e_gw_container_set_parent_id (container, "");
+		container->priv->is_root = TRUE ;
+	} else {
+
+		value = soup_soap_parameter_get_string_value (subparam);
+		e_gw_container_set_parent_id (container, (const char *) value);
+		g_free (value) ;
+	}
+
 	return TRUE;
 }
 
@@ -221,6 +236,30 @@ e_gw_container_set_id (EGwContainer *container, const char *new_id)
 	priv->id = g_strdup (new_id);
 }
 
+const char *
+e_gw_container_get_parent_id (EGwContainer *container) 
+{
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), NULL);
+
+	return (const char *) container->priv->parent;
+}
+
+void
+e_gw_container_set_parent_id (EGwContainer *container, const char *parent_id)
+{
+	EGwContainerPrivate *priv ;
+	
+	g_return_if_fail (E_IS_GW_CONTAINER (container));
+	g_return_if_fail (parent_id != NULL);
+
+	priv = container->priv ;
+
+	if (priv->parent)
+		g_free (priv->parent) ;
+
+	priv->parent = g_strdup (parent_id) ;
+}
+
 gboolean 
 e_gw_container_get_is_writable (EGwContainer *container)
 {
@@ -255,3 +294,9 @@ e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_fr
         container->priv->is_frequent_contacts = is_frequent_contacts;
 }
 
+gboolean
+e_gw_container_is_root (EGwContainer *container)
+{
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE) ;
+	return container->priv->is_root ;
+}

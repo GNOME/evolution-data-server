@@ -72,7 +72,7 @@ EGwConnectionStatus e_gw_connection_parse_response_status (SoupSoapResponse *res
 const char         *e_gw_connection_get_error_message (EGwConnectionStatus status);
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
-EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, GList **container_list);
+EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, const char *top, GList **container_list);
 void                e_gw_connection_free_container_list (GList *container_list);
 char               *e_gw_connection_get_container_id (EGwConnection *cnc, const char *name);
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
@@ -94,7 +94,7 @@ char               *e_gw_connection_format_date_string (const char *dtstring);
 
 
 EGwConnectionStatus e_gw_connection_create_item (EGwConnection *cnc, EGwItem *item, char** id);
-EGwConnectionStatus e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char *id, EGwItem **item);
+EGwConnectionStatus e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char *id, const char *view, EGwItem **item);
 EGwConnectionStatus e_gw_connection_modify_item (EGwConnection *cnc, const char *id, EGwItem *item);
 EGwConnectionStatus e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *accept_level);
 EGwConnectionStatus e_gw_connection_decline_request (EGwConnection *cnc, const char *id);
@@ -115,6 +115,11 @@ EGwConnectionStatus e_gw_connection_read_cursor (EGwConnection *cnc, const char 
 EGwConnectionStatus e_gw_connection_position_cursor (EGwConnection *cnc, const char *container, int cursor, const char *seek, int offset);
 
 EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const char *container, const char *view, const char *start_date, const char *message_list, const char *item_types, const char *item_sources, int count, GSList **item_list);
+
+EGwConnectionStatus e_gw_connection_create_folder(EGwConnection *cnc, const char *parent_name,const char *folder_name, char **container_id) ;
+EGwConnectionStatus e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, int length, const char **attachment, int *attach_lenght) ;
+EGwConnectionStatus e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char *id) ;
+
 
 G_END_DECLS
 
