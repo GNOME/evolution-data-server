@@ -39,7 +39,7 @@ e_book_backend_factory_get_type (void)
 			(GClassInitFunc)  e_book_backend_factory_class_init,
 			NULL, /* class_finalize */
 			NULL, /* class_data */
-			sizeof (EBookBackend),
+			sizeof (EBookBackendFactory),
 			0,    /* n_preallocs */
 			(GInstanceInitFunc) e_book_backend_factory_instance_init
 		};
