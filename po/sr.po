@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
-"POT-Creation-Date: 2004-01-12 21:29-0500\n"
-"PO-Revision-Date: 2004-01-10 02:35+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-14 09:11+0100\n"
+"PO-Revision-Date: 2004-01-14 09:15+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
@@ -311,148 +311,124 @@ msgid "ICQ Id List"
 msgstr "Списак ICQ ИБ-ева"
 
 #: addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Списак екранских имена за АИМ"
+msgstr "1. кућни надимак за АИМ"
 
 #: addressbook/libebook/e-contact.c:157
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "Списак екранских имена за АИМ"
+msgstr "2. кућни надимак за АИМ"
 
 #: addressbook/libebook/e-contact.c:158
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "Списак екранских имена за АИМ"
+msgstr "3. кућни надимак за АИМ"
 
 #: addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "Списак екранских имена за АИМ"
+msgstr "1. пословни надимак за АИМ"
 
 #: addressbook/libebook/e-contact.c:160
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "Списак екранских имена за АИМ"
+msgstr "2. пословни надимак за АИМ"
 
 #: addressbook/libebook/e-contact.c:161
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "Списак екранских имена за АИМ"
+msgstr "3. пословни надимак за АИМ"
 
 #: addressbook/libebook/e-contact.c:162
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "Списак Џабер налога"
+msgstr "1. кућни Џабер налог"
 
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "Списак Џабер налога"
+msgstr "2. кућни Џабер налог"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "Списак Џабер налога"
+msgstr "3. кућни Џабер налог"
 
 #: addressbook/libebook/e-contact.c:165
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "Списак Џабер налога"
+msgstr "1. пословни Џабер налог"
 
 #: addressbook/libebook/e-contact.c:166
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "Списак Џабер налога"
+msgstr "2. пословни Џабер налог"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "Списак Џабер налога"
+msgstr "3. пословни Џабер налог"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Списак екранских имена за Јаху!"
+msgstr "1. кућни Јаху! налог"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Списак екранских имена за Јаху!"
+msgstr "2. кућни Јаху! налог"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Списак екранских имена за Јаху!"
+msgstr "3. кућни Јаху! налог"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Списак екранских имена за Јаху!"
+msgstr "1. пословни Јаху! налог"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Списак екранских имена за Јаху!"
+msgstr "2. пословни Јаху! налог"
 
 #: addressbook/libebook/e-contact.c:173
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Списак екранских имена за Јаху!"
+msgstr "3. пословни Јаху! налог"
 
 #: addressbook/libebook/e-contact.c:174
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "Списак екранских имена за МСН"
+msgstr "1. кућни МСН налог"
 
 #: addressbook/libebook/e-contact.c:175
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "Списак екранских имена за МСН"
+msgstr "2. кућни МСН налог"
 
 #: addressbook/libebook/e-contact.c:176
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "Списак екранских имена за МСН"
+msgstr "3. кућни МСН налог"
 
 #: addressbook/libebook/e-contact.c:177
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "Списак екранских имена за МСН"
+msgstr "1. пословни МСН налог"
 
 #: addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "Списак екранских имена за МСН"
+msgstr "2. пословни МСН налог"
 
 #: addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "Списак екранских имена за МСН"
+msgstr "3. пословни МСН налог"
 
 #: addressbook/libebook/e-contact.c:180
 msgid "ICQ Home Id 1"
-msgstr ""
+msgstr "1. кућни ICQ налог"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "ICQ Home Id 2"
-msgstr ""
+msgstr "2. кућни ICQ налог"
 
 #: addressbook/libebook/e-contact.c:182
 msgid "ICQ Home Id 3"
-msgstr ""
+msgstr "3. кућни ICQ налог"
 
 #: addressbook/libebook/e-contact.c:183
 msgid "ICQ Work Id 1"
-msgstr ""
+msgstr "1. пословни ICQ налог"
 
 #: addressbook/libebook/e-contact.c:184
 msgid "ICQ Work Id 2"
-msgstr ""
+msgstr "2. пословни ICQ налог"
 
 #: addressbook/libebook/e-contact.c:185
 msgid "ICQ Work Id 3"
-msgstr ""
+msgstr "3. пословни ICQ налог"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:188
