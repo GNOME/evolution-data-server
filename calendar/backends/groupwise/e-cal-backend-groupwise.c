@@ -806,6 +806,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		display_contents = e_source_get_property (source, "offline_sync");
 		
 		if (!display_contents || !g_str_equal (display_contents, "1")) {
+			g_mutex_unlock (priv->mutex);	
 			return GNOME_Evolution_Calendar_RepositoryOffline;
 		}
 
@@ -1654,6 +1655,9 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		g_free (calobj);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 	}
+
+	g_free (calobj);
+	return GNOME_Evolution_Calendar_Success;
 }
 
 static void
