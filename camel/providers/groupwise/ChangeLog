@@ -1,3 +1,10 @@
+2005-02-23  Sivaiah Nallagatla <snallagatla@novell.com.
+
+       * camel-groupwise-folder.c (groupwise_folder_get_message) :
+       cache message always irrespective of whehter receipent status
+       element is there or not.
+       Fix #72907
+
 2005-02-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-groupwise-folder.c: (convert_to_calendar): Append

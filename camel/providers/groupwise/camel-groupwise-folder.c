@@ -377,14 +377,13 @@ groupwise_folder_get_message( CamelFolder *folder,
 		g_free (body) ;
 	/* add to cache */
 	CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
-	if (!camel_medium_get_header ( CAMEL_MEDIUM (msg), "X-gw-status-opt") ) {
-		if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", uid, NULL))) {
+	if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", uid, NULL))) {
 			if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, cache_stream) == -1
 					|| camel_stream_flush (cache_stream) == -1)
 				camel_data_cache_remove (gw_folder->cache, "cache", uid, NULL);
 			camel_object_unref (cache_stream);
 		}
-	}
+	
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
 
