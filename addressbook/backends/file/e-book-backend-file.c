@@ -560,7 +560,7 @@ typedef struct {
 } EBookBackendFileChangeContext;
 
 static void
-e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
+e_book_backend_file_changes_foreach_key (const char *key, const char *data, gpointer user_data)
 {
 	EBookBackendFileChangeContext *ctx = user_data;
 	DB      *db = ctx->db;

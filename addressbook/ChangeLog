@@ -1,3 +1,9 @@
+2004-04-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_changes_foreach_key): Updated to take 3
+	arguments (change to e_dbhash_foreach_key).
+
 2004-04-23  Chris Toshok  <toshok@ximian.com>
 
 	* backends/ldap/e-book-backend-ldap.c
