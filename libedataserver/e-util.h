@@ -22,8 +22,11 @@
 #ifndef __E_UTIL_H__
 #define __E_UTIL_H__
 
+#include <sys/types.h>
 #include <glib/gmacros.h>
 #include <glib/gtypes.h>
+
+int          e_util_mkdir_hier (const char *path, mode_t mode);
 
 gchar       *e_util_strstrcase (const gchar *haystack, const gchar *needle);
 gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);

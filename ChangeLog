@@ -1,7 +1,10 @@
 2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
-
+	
 	* libedataserver/e-util.[ch] (e_util_mkdir_hier): added this
 	function from GAL, needed for the cache objects.
+
+	* libedataserver/e-cache.c (e_cache_set_property): make sure the
+	directory for the cache file exists by calling e_util_mkdir_hier.
 
 2003-12-08  Rodrigo Moya <rodrigo@ximian.com>
 

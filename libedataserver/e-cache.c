@@ -22,6 +22,7 @@
 #include <config.h>
 #include <string.h>
 #include "e-cache.h"
+#include "e-util.h"
 #include "e-xml-hash-utils.h"
 
 struct _ECachePrivate {
@@ -42,12 +43,18 @@ e_cache_set_property (GObject *object, guint property_id, const GValue *value, G
 {
 	ECache *cache;
 	ECachePrivate *priv;
+	char *dirname;
 
 	cache = E_CACHE (object);
 	priv = cache->priv;
 
 	switch (property_id) {
 	case PROP_FILENAME :
+		/* make sure the directory for the cache exists */
+		dirname = g_path_get_dirname ((const char *) g_value_get_string (value));
+		if (e_util_mkdir_hier (dirname, 0700) != 0)
+			break;
+
 		if (priv->xml_hash)
 			e_xmlhash_destroy (priv->xml_hash);
 		priv->xml_hash = e_xmlhash_new ((const char *) g_value_get_string (value));

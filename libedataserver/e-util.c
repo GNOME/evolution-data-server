@@ -20,10 +20,46 @@
  */
 
 #include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <glib/gfileutils.h>
+#include <glib/gmem.h>
 #include <glib/gmessages.h>
 #include <glib/gstrfuncs.h>
 #include <glib/gunicode.h>
+#include <glib/gutils.h>
 #include "e-util.h"
+
+int
+e_util_mkdir_hier (const char *path, mode_t mode)
+{
+        char *copy, *p;
+                                                                                
+        if (path[0] == '/') {
+                p = copy = g_strdup (path);
+        } else {
+                gchar *current_dir = g_get_current_dir();
+                p = copy = g_build_filename (current_dir, path, NULL);
+		g_free (current_dir);
+        }
+                                                                                
+        do {
+                p = strchr (p + 1, '/');
+                if (p)
+                        *p = '\0';
+                if (access (copy, F_OK) == -1) {
+                        if (mkdir (copy, mode) == -1) {
+                                g_free (copy);
+                                return -1;
+                        }
+               }
+                if (p)
+                        *p = '/';
+        } while (p);
+                                                                                
+        g_free (copy);
+        return 0;
+}
 
 gchar *
 e_util_strstrcase (const gchar *haystack, const gchar *needle)
