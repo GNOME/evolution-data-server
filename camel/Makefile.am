@@ -6,7 +6,8 @@ SUBDIRS = . providers tests
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = camel-$(BASE_VERSION).pc camel-provider-$(BASE_VERSION).pc
+pkgconfig_in_files = camel.pc.in camel-provider.pc.in
+pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=-$(BASE_VERSION).pc)
 
 libcamelincludedir = $(privincludedir)/camel
 libcamel_providerincludedir = $(privincludedir)/camel
@@ -311,6 +312,6 @@ noinst_HEADERS =				\
 	camel-html-parser.h
 
 EXTRA_DIST =					\
-	$(pkgconfig_DATA:.pc=.pc.in) 		\
+	$(pkgconfig_in_files)	 		\
 	ChangeLog.pre-1-4			\
 	README
