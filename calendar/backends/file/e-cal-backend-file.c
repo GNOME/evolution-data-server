@@ -2161,7 +2161,7 @@ e_cal_backend_file_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
 				 char **modified_calobj)
 {
 	*users = NULL;
-	*modified_calobj = NULL;
+	*modified_calobj = g_strdup (calobj);
 
 	return GNOME_Evolution_Calendar_Success;
 }

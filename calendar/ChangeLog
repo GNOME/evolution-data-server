@@ -1,3 +1,11 @@
+2004-03-09  JP Rosevear <jpr@ximian.com>
+
+	Fixes #55389
+	
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_send_objects): return the calendar object
+	properly
+
 2004-03-09  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libecal/e-cal.c (e_cal_resolve_tzid): don't default to UTC timezone,
