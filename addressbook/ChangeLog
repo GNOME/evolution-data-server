@@ -1,3 +1,9 @@
+2003-12-17  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book-async.c (_get_book_view_response_dtor): if
+	there's a crash in the wombat and we're left with an invalid
+	EBook, resp->book_view will be NULL here.  don't unref it.
+
 2003-12-16  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-book.c (fetch_corba_book): Ref and keep the loaded
