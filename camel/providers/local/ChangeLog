@@ -1,3 +1,10 @@
+2005-02-23  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #71812
+
+	* camel-mbox-summary.c (camel_mbox_summary_sync_mbox): clear the
+	working flags after we've successfully performed a full sync, they
+	are no longer needed.
 
 2005-02-01  Not Zed  <NotZed@Ximian.com>
 

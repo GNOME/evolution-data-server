@@ -1031,6 +1031,20 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 #endif
 
 	camel_object_unref((CamelObject *)mp);
+
+	/* clear working flags */
+	for (i=0; i<count; i++) {
+		info = (CamelMboxMessageInfo *)camel_folder_summary_index(s, i);
+		if (info) {
+			if (info->info.info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED|CAMEL_MESSAGE_FOLDER_XEVCHANGE)) {
+				info->info.info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV
+							   |CAMEL_MESSAGE_FOLDER_FLAGGED
+							   |CAMEL_MESSAGE_FOLDER_XEVCHANGE);
+				camel_folder_summary_touch(s);
+			}
+			camel_message_info_free((CamelMessageInfo *)info);
+		}
+	}
 		
 	return 0;
  error:
