@@ -1,3 +1,8 @@
+2003-11-08  Hans Petter Jansson  <hpj@ximian.com>
+
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: Correct typo
+	that broke GNOME_Evolution_DataServer_CalFactory.
+
 2003-11-07  Dan Winship  <danw@ximian.com>
 
 	* configure.in: Remove a bunch more checks that
