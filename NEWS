@@ -1,3 +1,147 @@
+Evolution Data Server 1.1.0, 2004-11-01
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Calendar
+
+    #64673 - Cannot view free/busy for GroupWise users for users outside POA (Harish)
+    #67031 - Groupwise task completion not showing (Chen)
+
+  * Address Book
+
+    #42165 - "search in any field" produces wrong results (Siva)
+    #64298 - G/W failure to authenticate (Siva)
+
+  * All
+
+    #65200 - GroupWise backend crash
+    #67031 - (Partial) show completed status properly for GroupWise tasks
+  
+Other bugs
+
+  * Address Book
+    - Fix e_book_commit_contact multiple usage crash (Diego Gonzalez)
+    - Make groupwise IM names searchable (Nat)
+
+  * Calendar
+    - Speed up free/busy gathering (Harish)
+    - Speed up getting detached instance information (Rodrigo)
+
+  * All
+    - loadable backend modules (Toshok)
+    - create libedataserverui (JP)
+
+Updated Translations:
+	- sr (Danilo Segan)
+	- sr@Latn (Danilo Segan)
+	- cs (Miloslav Trmac)
+	- sq (Laurent Dhima)
+	- en_CA (Adam Weinberger)
+	- en_GB (David Lodge)
+
+Evolution Data Server 1.0.2, 2004-10-11
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Calendar
+
+    #62868 - Permission denied accepting a GroupWise meeting a second time (Chen)
+    #67513 - Evolution corrupts memory if backend autobooks meeting attendees (JP)
+    #66230 - tasks from online iCal duplicate after auto-refresh (Rodrigo)
+
+  * Address Book
+
+    #66368 - VCard parser doesn't add "File under" (Hans)
+    #66574 - Make e_book_get_self work (Diego Gonzalez
+    #67600 - fix e-d-s issues on x86_64 machines (Hans)
+
+  * All
+
+    #65200 - GroupWise backend crash
+    #67031 - (Partial) show completed status properly for GroupWise tasks
+  
+Other bugs
+
+  * Address Book
+    - Restrict system address book queries to groupwise server for performance reasons (Siva)
+
+  * Calendar
+    - load system tasks backend correctly
+
+Updated Translations:
+	- fr (Craig Jeffares)
+	- zh_TW (Craig Jeffares)
+	- sk (Stanislav Visnovsky)
+	- fa (Roozbeh Pournader)
+	- id (Mohammad DAMT)
+	- ar (Arafat Medini)
+
+Evolution Data Server 1.0.1, 2004-09-24
+----------------------------------------
+                                                                                                                                                              
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+                                                                                                                                                              
+  * Calendar
+                                                                                                                                                              
+    #66383 - Warning fixes in calendar code (Dave Malcom)
+    #64955 - C99-ism in libecal (Vincent Noel)
+    #59904 - Calendar query caching (Rodrigo)
+    #65167 - Crash sending task to GroupWise (Chen)
+    #64685 - Appointment requests that have been replied to give "Invalid Object" error (Chen)
+    #63513 - G/W appointment acceptance fails ('invalid object') (Chen)
+    #64688 - mixing UTC and localtime in Appointment view (Chen)
+                                                                                                                                                              
+  * All
+                                                                                                                                                              
+    #66209 - only first source color change is saved to gconf (Michael)
+    #64062 - new all day recurring events do not show busy time or as all day appts (Chen)
+                                                                                                                                                              
+Other bugs
+                                                                                                                                                              
+  * Address Book
+    - disable debugging noise (William Jon McCann)
+    - don't search summary for groupwise system address book (Siva)
+                                                                                                                                                              
+  * Calendar
+    - support groupwise all day events
+                                                                                                                                                              
+  * All
+    - fix e-d-s issues on NPTL and AMD machines (Chris, Frederic Crozat, Hans, Dave Malcolm)
+                                                                                                                                                              
+Updated Translations:
+        - fr (Craig Jeffares)
+        - zh_TW (Craig Jeffares)
+        - sk (Stanislav Visnovsky)
+        - fa (Roozbeh Pournader)
+        - id (Mohammad DAMT)
+        - ar (Arafat Medini)
+
+Evolution Data Server 1.0.0, 2004-09-13
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+
+    #59582 - Contact incompletely updated to LDAP store, address information lost/not editable
+    #63385 - Evolution crash - Adding two email ids with same name 
+
+  * Calendar
+
+    #57443 - ics import crashes
+
+Updated Translations:
+	
+	- da (Martin Willemoes Hansen)
+	- ar (Arafat Medini)
+	- nn (Åsmund Skjæveland)
+	- en_GB (David Lodge)
+	- cy (Telsa Gwynne)
+	- el (Kostas Papadimas)
+	- tr (Baris Cicek)
+
 Evolution Data Server 0.0.99, 2004-08-27
 ----------------------------------------
 
@@ -40,6 +184,8 @@ Other bugs
 
     - fix warnings (Frederic Crozat)
     - set cache file name properly (Siva)
+
+Updated Translations:
 
   - pt_BR (Gustavo Maciel Dias Vieira)
   - es (Francisco Javier F. Serrador)
