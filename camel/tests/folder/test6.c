@@ -15,7 +15,7 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *imap_drivers[] = { "imap" };
+static const char *imap_drivers[] = { "imap4" };
 static char *remote_providers[] = {
 	"IMAP_TEST_URL",
 };
