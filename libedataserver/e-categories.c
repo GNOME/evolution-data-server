@@ -113,6 +113,8 @@ initialize_categories_config (void)
 	if (initialized)
 		return;
 
+	initialized = TRUE;
+
 	/* create all the internal data we need */
 	categories_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_category_info);
 
@@ -140,6 +142,8 @@ initialize_categories_config (void)
 		}
 
 		conf_is_dirty = FALSE;
+
+		g_free (str);
 	} else {
 		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png");
 		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png");
@@ -166,9 +170,6 @@ initialize_categories_config (void)
 
 	/* install idle callback to save the file */
 	idle_id = g_idle_add ((GSourceFunc) idle_saver_cb, NULL);
-
-	g_free (str);
-	initialized = TRUE;
 }
 
 static void
