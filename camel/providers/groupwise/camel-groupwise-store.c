@@ -586,12 +586,12 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			return NULL ;
 		}
 
-		status = e_gw_connection_position_cursor (priv->cnc, container_id, cursor, "end", 1) ;
+/*		status = e_gw_connection_position_cursor (priv->cnc, container_id, cursor, "end", 1) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 			g_mutex_unlock (mutex) ;
 			return NULL ;
-		}
+		}*/
 
 
 		camel_operation_start (NULL, _("Fetching summary information for new messages"));
@@ -835,7 +835,18 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 
 		if (type == E_GW_CONTAINER_TYPE_INBOX)
 			fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
+		if (type == E_GW_CONTAINER_TYPE_TRASH)
+			fi->flags |= CAMEL_FOLDER_TYPE_TRASH ;
 
+		if ( (type == E_GW_CONTAINER_TYPE_INBOX) ||
+		     (type == E_GW_CONTAINER_TYPE_OUTBOX) ||
+		     (type == E_GW_CONTAINER_TYPE_DOCUMENTS) ||
+		     (type == E_GW_CONTAINER_TYPE_QUERY) ||
+		     (type == E_GW_CONTAINER_TYPE_CHECKLIST) ||
+		     (type == E_GW_CONTAINER_TYPE_DRAFT) ||
+		     (type == E_GW_CONTAINER_TYPE_CABINET) ||
+		     (type == E_GW_CONTAINER_TYPE_TRASH) )
+			fi->flags |= CAMEL_FOLDER_SYSTEM ;
 		/*
 		  parent_hash contains the "parent id <-> container id" combination. So we form
 		  the path for the full name in camelfolder info by looking up the hash table until
@@ -878,9 +889,9 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
                 if (e_gw_container_get_is_shared_by_me (container))
                         fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
 
-		g_ptr_array_add (folders, fi);
 		fi->total = e_gw_container_get_total_count (container) ;
 		fi->unread = e_gw_container_get_unread_count (container) ;
+		g_ptr_array_add (folders, fi);
 		
 	}
 	if ( (top != NULL) && (folders->len == 0)) {
@@ -1010,6 +1021,7 @@ groupwise_rename_folder(CamelStore *store,
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
 	char *oldpath, *newpath, *storepath ;
 	const char *container_id ;
+	char *temp_old = NULL, *temp_new = NULL ;
 	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename GroupWise folders in offline mode."));
@@ -1017,7 +1029,19 @@ groupwise_rename_folder(CamelStore *store,
 	}
 	
 	CAMEL_SERVICE_LOCK (store, connect_lock) ;
-	container_id = camel_groupwise_store_container_id_lookup (groupwise_store, old_name) ;
+	temp_old = strrchr (old_name,'/') ;
+	if (temp_old) {
+		temp_old++ ;
+		container_id = camel_groupwise_store_container_id_lookup (groupwise_store, temp_old) ;
+	} else
+		container_id = camel_groupwise_store_container_id_lookup (groupwise_store, old_name) ;
+
+	temp_new = strrchr (new_name, '/') ;
+	if (temp_new) 
+		temp_new++ ;
+	else
+		temp_new = new_name ;
+		
 	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , new_name) != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
 				      old_name, new_name);
@@ -1025,11 +1049,14 @@ groupwise_rename_folder(CamelStore *store,
 		return ;
 	}
 
-	g_hash_table_replace (priv->id_hash, g_strdup(container_id), g_strdup(new_name)) ;
+	g_hash_table_replace (priv->id_hash, g_strdup(container_id), g_strdup(temp_new)) ;
 
-        g_hash_table_insert (priv->name_hash, g_strdup(new_name), g_strdup(container_id)) ;
-	g_hash_table_remove (priv->name_hash, g_strdup(old_name)) ;
+        g_hash_table_insert (priv->name_hash, g_strdup(temp_new), g_strdup(container_id)) ;
 	
+	if (temp_old)
+		g_hash_table_remove (priv->name_hash, g_strdup(temp_old)) ;
+	else
+		g_hash_table_remove (priv->name_hash, g_strdup(old_name)) ;
 	/*FIXME:Update all the id in the parent_hash*/
 
 	storepath = g_strdup_printf ("%s/folders", priv->storage_path) ;

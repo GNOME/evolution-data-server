@@ -1,4 +1,13 @@
+2005-02-01  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c
+	  (groupwise_get_folder): camel flag for folder type
+	  trash
+	  (groupwise_rename_folder): fixed issue with renaming
+	  subfolders. The summary was not being renamed.
+
 2005-02-02  Vivek Jain  <jvivek@novell.com>
+	
 	* /providers/groupwise/camel-groupwise-store.c 
 	(groupwise_connect): add an alert message if the server doesn't return
 	the version  
@@ -11,9 +20,10 @@
 	to the string.
 
 2005-02-01 Vivek Jain <jvivek@novell.com>
-  see bug #71758 
- * camel-groupwise-store.c 
- (groupwise_get_folder_info) : set the folder type of Inbox to Inbox using
- flag	
+	 
+	 ** see bug #71758 
+	 * camel-groupwise-store.c 
+	 (groupwise_get_folder_info) : set the folder type of Inbox to Inbox using
+	 flag	
 Refer to main changelog for earlier changes.
 
