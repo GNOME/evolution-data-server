@@ -1415,7 +1415,7 @@ typedef struct
 } ECalBackendFileComputeChangesData;
 
 static void
-e_cal_backend_file_compute_changes_foreach_key (const char *key, gpointer data)
+e_cal_backend_file_compute_changes_foreach_key (const char *key, gpointer value, gpointer data)
 {
 	ECalBackendFileComputeChangesData *be_data = data;
 	
@@ -1437,7 +1437,7 @@ e_cal_backend_file_compute_changes_foreach_key (const char *key, gpointer data)
 
 static ECalBackendSyncStatus
 e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_id,
-				  GList **adds, GList **modifies, GList **deletes)
+				    GList **adds, GList **modifies, GList **deletes)
 {
 	ECalBackendFilePrivate *priv;
 	char    *filename;
@@ -1451,9 +1451,13 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 	/* FIXME Will this always work? */
 	unescaped_uri = gnome_vfs_unescape_string (priv->uri, "");
 	filename = g_strdup_printf ("%s-%s.db", unescaped_uri, change_id);
-	ehash = e_xmlhash_new (filename);
-	g_free (filename);
 	g_free (unescaped_uri);
+	if (!(ehash = e_xmlhash_new (filename))) {
+		g_free (filename);
+		return GNOME_Evolution_Calendar_OtherError;
+	}
+	
+	g_free (filename);
 	
 	/* Calculate adds and modifies */
 	for (i = priv->comp; i != NULL; i = i->next) {
@@ -1487,8 +1491,9 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 	be_data.kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbfile));
 	be_data.deletes = NULL;
 	be_data.ehash = ehash;
-   	e_xmlhash_foreach_key (ehash, (EXmlHashFunc)e_cal_backend_file_compute_changes_foreach_key, &be_data);
-
+	
+	e_xmlhash_foreach_key (ehash, (EXmlHashFunc)e_cal_backend_file_compute_changes_foreach_key, &be_data);
+	
 	*deletes = be_data.deletes;
 
 	e_xmlhash_write (ehash);
@@ -1730,7 +1735,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		}
 
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
-						  &real_rid, &recurrence)) {
+						  (void **) &real_rid, (void **) &recurrence)) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (recurrence);
 
@@ -1803,7 +1808,7 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 	if (!rid || !*rid)
 		return;
 
-	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &hash_rid, &comp)) {
+	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (void **) &hash_rid, (void **) &comp)) {
 		/* remove the component from our data */
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
 						e_cal_component_get_icalcomponent (comp));
@@ -2111,7 +2116,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				char *returned_uid;
 
 				calobj = (char *) icalcomponent_as_ical_string (subcomp);
-				status = e_cal_backend_file_create_object (backend, cal, calobj, &returned_uid);
+				status = e_cal_backend_file_create_object (backend, cal, &calobj, &returned_uid);
 				if (status != GNOME_Evolution_Calendar_Success)
 					goto error;
 

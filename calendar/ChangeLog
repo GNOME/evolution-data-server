@@ -1,3 +1,11 @@
+2004-04-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_receive_objects): Pass the address of calobj
+	to file_create_object().
+	(e_cal_backend_file_compute_changes): "Gracefully" handle a NULL
+	return from e_xmlhash_new().
+
 2004-04-20  JP Rosevear  <jpr@ximian.com>
 
 	* libecal/e-cal.c (open_async): emit the open signal in an idle
