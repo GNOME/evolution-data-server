@@ -1,3 +1,13 @@
+2003-11-11  ChangeLog <jpr@ximian.com>
+
+	* libecal/e-cal.c (e_cal_class_init): emit the status
+
+	* libecal/e-cal.h: remove open status enums, use calendar status
+	instead
+
+	* libecal/client-test.c (create_client): just directly open the
+	calendar, no need to be async
+
 2003-11-11  Dan Winship  <danw@ximian.com>
 
 	* libedata-cal/e-cal-backend-sexp.c: Make the time-related sexp

@@ -146,27 +146,6 @@ e_calendar_error_quark (void)
 }
 
 GType
-e_cal_open_status_enum_get_type (void)
-{
-	static GType e_cal_open_status_enum_type = 0;
-
-	if (!e_cal_open_status_enum_type) {
-		static GEnumValue values [] = {
-		  { E_CAL_OPEN_SUCCESS,              "ECalOpenSuccess",            "success"     },
-		  { E_CAL_OPEN_ERROR,                "ECalOpenError",              "error"       },
-		  { E_CAL_OPEN_NOT_FOUND,            "ECalOpenNotFound",           "not-found"   },
-		  { E_CAL_OPEN_PERMISSION_DENIED,    "ECalOpenPermissionDenied",   "denied"      },
-		  { E_CAL_OPEN_METHOD_NOT_SUPPORTED, "ECalOpenMethodNotSupported", "unsupported" },
-		  { -1,                                   NULL,                              NULL          }
-		};
-
-		e_cal_open_status_enum_type = g_enum_register_static ("ECalOpenStatusEnum", values);
-	}
-
-	return e_cal_open_status_enum_type;
-}
-
-GType
 e_cal_set_mode_status_enum_get_type (void)
 {
 	static GType e_cal_set_mode_status_enum_type = 0;
@@ -875,7 +854,7 @@ cal_set_mode_cb (ECalListener *listener,
 	ecal = E_CAL (data);
 	priv = ecal->priv;
 
-	ecal_status = E_CAL_OPEN_ERROR;
+	ecal_status = E_CAL_SET_MODE_ERROR;
 
 	switch (status) {
 	case GNOME_Evolution_Calendar_CalListener_MODE_SET:
@@ -1129,9 +1108,8 @@ e_cal_class_init (ECalClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClass, cal_opened),
 			      NULL, NULL,
-			      g_cclosure_marshal_VOID__ENUM,
-			      G_TYPE_NONE, 1,
-			      E_CAL_OPEN_STATUS_ENUM_TYPE);
+			      g_cclosure_marshal_VOID__INT,
+			      G_TYPE_NONE, 1, G_TYPE_INT);
 	e_cal_signals[CAL_SET_MODE] =
 		g_signal_new ("cal_set_mode",
 			      G_TYPE_FROM_CLASS (klass),

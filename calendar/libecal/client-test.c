@@ -73,9 +73,9 @@ objects_removed_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-query_done_cb (GObject *object, ECalendarStatus status, gpointer data)
+view_done_cb (GObject *object, ECalendarStatus status, gpointer data)
 {
-	cl_printf (data, "Query done\n");
+	cl_printf (data, "View done\n");
 }
 
 /* Lists the UIDs of objects in a calendar, called as an idle handler */
@@ -121,40 +121,6 @@ list_uids (gpointer data)
 	return FALSE;
 }
 
-/* Callback used when a calendar is opened */
-static void
-cal_opened_cb (ECal *client, ECalOpenStatus status, gpointer data)
-{
-	ECalView *query;
-	
-	cl_printf (client, "Load/create %s\n",
-		   ((status == E_CAL_OPEN_SUCCESS) ? "success" :
-		    (status == E_CAL_OPEN_ERROR) ? "error" :
-		    (status == E_CAL_OPEN_NOT_FOUND) ? "not found" :
-		    (status == E_CAL_OPEN_METHOD_NOT_SUPPORTED) ? "method not supported" :
-		    "unknown status value"));
-
-	if (status == E_CAL_OPEN_SUCCESS) {
-		if (!e_cal_get_query (client, "(contains? \"any\" \"Test4\")", &query, NULL))
-			g_warning (G_STRLOC ": Unable to obtain query");
-
-		g_signal_connect (G_OBJECT (query), "objects_added", 
-				  G_CALLBACK (objects_added_cb), client);
-		g_signal_connect (G_OBJECT (query), "objects_modified", 
-				  G_CALLBACK (objects_modified_cb), client);
-		g_signal_connect (G_OBJECT (query), "objects_removed", 
-				  G_CALLBACK (objects_removed_cb), client);
-		g_signal_connect (G_OBJECT (query), "query_done",
-				  G_CALLBACK (query_done_cb), client);
-
-		e_cal_view_start (query);
-		
-		g_idle_add (list_uids, client);
-	}
-	else
-		g_object_unref (client);
-}
-
 /* Callback used when a client is destroyed */
 static void
 client_destroy_cb (gpointer data, GObject *object)
@@ -174,6 +140,9 @@ client_destroy_cb (gpointer data, GObject *object)
 static void
 create_client (ECal **client, const char *uri, CalObjType type, gboolean only_if_exists)
 {
+	ECalView *query;
+	GError *error = NULL;
+	
 	*client = e_cal_new (uri, type);
 	if (!*client) {
 		g_message (G_STRLOC ": could not create the client");
@@ -182,17 +151,30 @@ create_client (ECal **client, const char *uri, CalObjType type, gboolean only_if
 
 	g_object_weak_ref (G_OBJECT (*client), client_destroy_cb, NULL);
 
-	g_signal_connect (*client, "cal_opened",
-			  G_CALLBACK (cal_opened_cb),
-			  NULL);
-
-	printf ("Calendar loading `%s'...\n", uri);
-
-	if (!e_cal_open (*client, only_if_exists, NULL)) {
-		g_message (G_STRLOC ": failure when issuing calendar open request `%s'",
-			   uri);
+	cl_printf (*client, "Calendar loading `%s'...\n", uri);
+	if (!e_cal_open (*client, only_if_exists, &error)) {
+		cl_printf (*client, "Load/create %s\n", error->message);
 		exit (1);
 	}
+	g_clear_error (&error);
+	
+	if (!e_cal_get_query (*client, "(contains? \"any\" \"Test4\")", &query, NULL)) {
+		cl_printf (*client, G_STRLOC ": Unable to obtain query");
+		exit (1);		
+	}
+	
+	g_signal_connect (G_OBJECT (query), "objects_added", 
+			  G_CALLBACK (objects_added_cb), client);
+	g_signal_connect (G_OBJECT (query), "objects_modified", 
+			  G_CALLBACK (objects_modified_cb), client);
+	g_signal_connect (G_OBJECT (query), "objects_removed", 
+			  G_CALLBACK (objects_removed_cb), client);
+	g_signal_connect (G_OBJECT (query), "view_done",
+			  G_CALLBACK (view_done_cb), client);
+	
+	e_cal_view_start (query);
+	
+	g_idle_add (list_uids, *client);
 }
 
 int
