@@ -1,3 +1,11 @@
+2004-05-28 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	( e_book_backend_groupwise_authenicate_user) : form the summary
+	(e_book_backend_groupwise_start_book_view),
+	(e_book_backend_groupwise_get_contact_list) : search over 
+	the summary to get ids and retrieve those items from the summary
+
 2004-05-25 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 
