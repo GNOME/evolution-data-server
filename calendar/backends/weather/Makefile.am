@@ -31,7 +31,7 @@ libecalbackendweather_la_LIBADD =	\
 	$(SOUP_LIBS)
 
 libecalbackendweather_la_LDFLAGS =	\
-	-avoid-version
+	-module -avoid-version
 
 weatherdata_in_files = Locations.xml.in
 weatherdata_DATA = $(weatherdata_in_files:.xml.in=.xml)

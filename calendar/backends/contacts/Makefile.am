@@ -25,4 +25,4 @@ libecalbackendcontacts_la_LIBADD =	\
 
 
 libecalbackendcontacts_la_LDFLAGS =	\
-	-avoid-version
+	-module -avoid-version

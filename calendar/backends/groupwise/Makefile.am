@@ -33,4 +33,4 @@ libecalbackendgroupwise_la_LIBADD =					\
 	$(SOUP_LIBS)
 
 libecalbackendgroupwise_la_LDFLAGS =		\
-	-avoid-version
+	-module -avoid-version

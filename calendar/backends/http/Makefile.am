@@ -27,4 +27,4 @@ libecalbackendhttp_la_LIBADD =							\
 	$(SOUP_LIBS)
 
 libecalbackendhttp_la_LDFLAGS =		\
-	-avoid-version
+	-module -avoid-version

@@ -27,4 +27,4 @@ libecalbackendfile_la_LIBADD =					\
 
 
 libecalbackendfile_la_LDFLAGS =		\
-	-avoid-version
+	-module -avoid-version
