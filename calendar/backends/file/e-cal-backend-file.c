@@ -123,7 +123,7 @@ save_file_when_idle (gpointer user_data)
 	g_assert (priv->icalcomp != NULL);
 
 	if (!priv->is_dirty)
-		return TRUE;
+		return FALSE;
 
 	uri = gnome_vfs_uri_new (priv->uri);
 	if (!uri)
@@ -174,8 +174,9 @@ save_file_when_idle (gpointer user_data)
 		goto error;
 
 	priv->is_dirty = FALSE;
+	priv->dirty_idle_id = 0;
 
-	return TRUE;
+	return FALSE;
 
  error_malformed_uri:
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile),
