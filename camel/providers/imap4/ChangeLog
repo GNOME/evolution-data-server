@@ -1,6 +1,7 @@
 2005-02-01  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-provider.c: Added command option.
+	Reset back to imap4:// uris.
 
 	* camel-imap4-store.c (connect_to_server_process): Implemented.
 	(connect_to_server_wrapper): Call above when appropriate.
