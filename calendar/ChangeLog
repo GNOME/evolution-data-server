@@ -1,5 +1,7 @@
 2005-01-17  Rodrigo Moya <rodrigo@novell.com>
 
+	Fixes #57567
+
 	* backends/file/e-cal-backend-file.c (save_file_when_idle): new
 	function, to save the file to disk at application's idle times.
 	(save): changed to just set the idle callback the first time and then,
