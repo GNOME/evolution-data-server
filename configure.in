@@ -1052,7 +1052,7 @@ dnl ****************************************
 
 dnl --- libedataserver and libedataserverui flags
 
-E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0"
+E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)

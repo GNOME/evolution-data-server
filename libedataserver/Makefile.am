@@ -3,7 +3,6 @@ INCLUDES =								\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-I$(top_srcdir)/libdb/dist					\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
-	$(NSS_CFLAGS)							\
 	$(E_DATA_SERVER_CFLAGS)
 
 # The marshallers
@@ -41,7 +40,6 @@ libedataserver_1_2_la_SOURCES =		\
 	md5-utils.c
 
 libedataserver_1_2_la_LIBADD = 				\
-	$(NSS_LIBS)					\
 	$(E_DATA_SERVER_LIBS)				\
 	$(ICONV_LIBS)					\
 	$(top_builddir)/libdb/dist/libdb-4.1.la
