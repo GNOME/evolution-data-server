@@ -1,3 +1,10 @@
+2003-11-06    <jpr@ximian.com>
+
+	* libecal/e-cal-view-listener.h: match the signals better
+
+	* libecal/e-cal-view-listener.c (e_cal_view_listener_class_init):
+	ditto
+	
 2003-11-06  JP Rosevear  <jpr@ximian.com>
 
 	* libecal/e-cal.c: replace e_mutex stuff with gthread stuff

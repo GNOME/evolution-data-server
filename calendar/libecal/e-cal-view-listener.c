@@ -38,8 +38,8 @@ enum {
 	OBJECTS_ADDED,
 	OBJECTS_MODIFIED,
 	OBJECTS_REMOVED,
-	QUERY_PROGRESS,
-	QUERY_DONE,
+	VIEW_PROGRESS,
+	VIEW_DONE,
 	LAST_SIGNAL
 };
 
@@ -182,7 +182,7 @@ impl_notifyQueryProgress (PortableServer_Servant servant,
 	ql = E_CAL_VIEW_LISTENER (bonobo_object_from_servant (servant));
 	priv = ql->priv;
 	
-	g_signal_emit (G_OBJECT (ql), signals[QUERY_PROGRESS], 0, message, percent);
+	g_signal_emit (G_OBJECT (ql), signals[VIEW_PROGRESS], 0, message, percent);
 }
 
 static void
@@ -196,7 +196,7 @@ impl_notifyQueryDone (PortableServer_Servant servant,
 	ql = E_CAL_VIEW_LISTENER (bonobo_object_from_servant (servant));
 	priv = ql->priv;
 	
-	g_signal_emit (G_OBJECT (ql), signals[QUERY_DONE], 0, convert_status (status));
+	g_signal_emit (G_OBJECT (ql), signals[VIEW_DONE], 0, convert_status (status));
 }
 
 /* Object initialization function for the live search query listener */
@@ -270,19 +270,19 @@ e_cal_view_listener_class_init (ECalViewListenerClass *klass)
 			      NULL, NULL,
 			      e_cal_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
-	signals[QUERY_PROGRESS] =
-		g_signal_new ("query_progress",
+	signals[VIEW_PROGRESS] =
+		g_signal_new ("view_progress",
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewListenerClass, query_progress),
+			      G_STRUCT_OFFSET (ECalViewListenerClass, view_progress),
 			      NULL, NULL,
 			      e_cal_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_INT);
-	signals[QUERY_DONE] =
-		g_signal_new ("query_done",
+	signals[VIEW_DONE] =
+		g_signal_new ("view_done",
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewListenerClass, query_done),
+			      G_STRUCT_OFFSET (ECalViewListenerClass, view_done),
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);

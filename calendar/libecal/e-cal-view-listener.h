@@ -53,8 +53,8 @@ typedef struct {
 	void (*objects_added) (ECalViewListener *listener, GList *objects);
 	void (*objects_modified) (ECalViewListener *listener, GList *objects);
 	void (*objects_removed) (ECalViewListener *listener, GList *uids);
-	void (*query_progress) (ECalViewListener *listener, const char *message, int percent);
-	void (*query_done) (ECalViewListener *listener, ECalendarStatus status);
+	void (*view_progress) (ECalViewListener *listener, const char *message, int percent);
+	void (*view_done) (ECalViewListener *listener, ECalendarStatus status);
 } ECalViewListenerClass;
 
 GType e_cal_view_listener_get_type (void);
