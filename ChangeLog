@@ -1,3 +1,8 @@
+2004-12-29  David Trowbridge <trowbrds@cs.colorado.edu>
+
+	* libedataserver/e-source.c: Add logic for emitting a "changed" signal
+	if any of the properties change
+
 2004-12-27  Rodrigo Moya <rodrigo@novell.com>
 
 	* src/server.c (gnome_segv_handler): use the correct binary name (ie,

@@ -278,6 +278,33 @@ import_properties (ESource *source,
 	}
 }
 
+typedef struct
+{
+	gboolean equal;
+	GHashTable *table2;
+} hash_compare_data;
+
+static void
+compare_str_hash (gpointer key, gpointer value, hash_compare_data *cd)
+{
+	gpointer value2 = g_hash_table_lookup (cd->table2, key);
+	if (value2 == NULL || g_str_equal (value, value2) == FALSE)
+		cd->equal = FALSE;
+}
+
+static gboolean
+compare_str_hashes (GHashTable *table1, GHashTable *table2)
+{
+	hash_compare_data cd;
+
+	if (g_hash_table_size (table1) != g_hash_table_size (table2))
+		return FALSE;
+
+	cd.equal = TRUE;
+	cd.table2 = table2;
+	g_hash_table_foreach (table1, (GHFunc) compare_str_hash, &cd);
+	return cd.equal;
+}
 
 /**
  * e_source_update_from_xml_node:
@@ -352,10 +379,13 @@ e_source_update_from_xml_node (ESource *source,
 			continue;
 
 		if (!strcmp (node->name, "properties")) {
-			g_hash_table_destroy (source->priv->properties);
+			GHashTable *temp = source->priv->properties;
 			source->priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
 									  g_free, g_free);
 			import_properties (source, node);
+			if (!compare_str_hashes (temp, source->priv->properties))
+				changed = TRUE;
+			g_hash_table_destroy (temp);
 			break;
 		}
 	}
