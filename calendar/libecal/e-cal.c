@@ -936,7 +936,7 @@ get_factories (const char *str_uri, GList **factories)
 		return FALSE;
 	}
 
-	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/Calendar/CalFactory:" BASE_VERSION "')"
+	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/DataServer/CalFactory:" BASE_VERSION "')"
 				 " AND calendar:supported_protocols.has ('%s')", uri->protocol);
 
 	

@@ -30,7 +30,7 @@
 #include "e-data-cal-factory.h"
 
 #define PARENT_TYPE                BONOBO_TYPE_OBJECT
-#define DEFAULT_E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_CalFactory"
+#define DEFAULT_E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_CalFactory:" BASE_VERSION
 
 static BonoboObjectClass *parent_class;
 
