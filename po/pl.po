@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2004 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualną wersję tego pliku możesz odnaleźć w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste hasło)
@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"POT-Creation-Date: 2004-06-03 10:40-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-06-07 20:35+0200\n"
 "PO-Revision-Date: 2002-09-24 01:06+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:428
 #: addressbook/backends/vcf/e-book-backend-vcf.c:452
@@ -112,9 +112,8 @@ msgid "\"%s\" on book after \"%s\""
 msgstr "Wykonanie \"%s\" na książce po \"%s\""
 
 #: addressbook/libebook/e-book.c:1458
-#, fuzzy
 msgid "e_book_open: cancelled"
-msgstr "e_book_load_uri: przerwane"
+msgstr "e_book_open: przerwane"
 
 #: addressbook/libebook/e-book.c:1810
 msgid "e_book_load_uri: Invalid source."
@@ -130,9 +129,9 @@ msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: Nie można utworzyć obiektu EBookListener"
 
 #: addressbook/libebook/e-book.c:1881
-#, fuzzy, c-format
+#, c-format
 msgid "e_book_new: no factories available for uri `%s'"
-msgstr "e_book_load_uri: brak dostępnych generatorów dla adresu URI \"%s\""
+msgstr "e_book_new: brak dostępnych generatorów dla adresu URI \"%s\""
 
 #: addressbook/libebook/e-book.c:2038
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
@@ -234,7 +233,7 @@ msgstr "Telefon zwrotny"
 
 #: addressbook/libebook/e-contact.c:129
 msgid "Car Phone"
-msgstr "Telefon samochodowy"
+msgstr "Telefon w samochodzie"
 
 #: addressbook/libebook/e-contact.c:130
 msgid "Company Phone"
@@ -306,9 +305,8 @@ msgid "Email 3"
 msgstr "E-mail 3"
 
 #: addressbook/libebook/e-contact.c:149
-#, fuzzy
 msgid "Email 4"
-msgstr "E-mail 3"
+msgstr "E-mail 4"
 
 #: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
@@ -325,7 +323,7 @@ msgstr "Lista kontaktów AIM"
 
 #: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
-msgstr ""
+msgstr "Lista kontaktów Groupwise"
 
 #: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
@@ -368,34 +366,28 @@ msgid "AIM Work Screen Name 3"
 msgstr "3. kontakt AIM do pracy"
 
 #: addressbook/libebook/e-contact.c:167
-#, fuzzy
 msgid "Groupwise Home Screen Name 1"
-msgstr "1. kontakt domowy AIM"
+msgstr "1. kontakt domowy Groupwise"
 
 #: addressbook/libebook/e-contact.c:168
-#, fuzzy
 msgid "Groupwise Home Screen Name 2"
-msgstr "2. kontakt domowy AIM"
+msgstr "2. kontakt domowy Groupwise"
 
 #: addressbook/libebook/e-contact.c:169
-#, fuzzy
 msgid "Groupwise Home Screen Name 3"
-msgstr "3. kontakt domowy AIM"
+msgstr "3. kontakt domowy Groupwise"
 
 #: addressbook/libebook/e-contact.c:170
-#, fuzzy
 msgid "Groupwise Work Screen Name 1"
-msgstr "1. kontakt AIM do pracy"
+msgstr "1. kontakt Groupwise do pracy"
 
 #: addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Groupwise Work Screen Name 2"
-msgstr "2. kontakt AIM do pracy"
+msgstr "2. kontakt Groupwise do pracy"
 
 #: addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Groupwise Work Screen Name 3"
-msgstr "3. kontakt AIM do pracy"
+msgstr "3. kontakt Groupwise do pracy"
 
 #: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
@@ -622,23 +614,22 @@ msgstr "Nie można zapisać danych kalendarza: Błędny adres URI."
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
 msgid "Invalid server URI"
-msgstr ""
+msgstr "Niepoprawny adres URI serwera"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
-#, fuzzy
 msgid "Calendar"
-msgstr "Adres URI kalendarza"
+msgstr "Kalendarz"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #: calendar/libecal/e-cal.c:4288
 msgid "Authentication failed"
 msgstr "Uwierzytelnienie nie powiodło się"
 
+# FIXME bufora czy cache? 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
-#, fuzzy
 msgid "Could not create cache file"
-msgstr "Nie można anulować operacji"
+msgstr "Nie można utworzyć pliku bufora"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -936,13 +927,14 @@ msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" wymaga, aby drugi argument był napisem"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
 "\"%s\" wymaga, aby pierwszy argument miał jedną z wartości: \"any"
-"\" (dowolna), \"summary\" (zestawienie) lub \"description\" (opis)"
+"\" (dowolna), \"summary\" (zestawienie), \"description\" (opis) lub "
+"\"location\" (położenie)"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
@@ -959,17 +951,16 @@ msgstr ""
 "dokładnie jeden argument, będący fałszem logicznym (#f)"
 
 #: servers/groupwise/e-gw-connection.c:80
-#, fuzzy
 msgid "Invalid connection"
-msgstr "Błędny obiekt"
+msgstr "Błędne połączenie"
 
 #: servers/groupwise/e-gw-connection.c:84
 msgid "Invalid response from server"
-msgstr ""
+msgstr "Błędna odpowiedź z serwera"
 
 #: servers/groupwise/e-gw-connection.c:88
 msgid "Bad parameter"
-msgstr ""
+msgstr "Zły parametr"
 
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
