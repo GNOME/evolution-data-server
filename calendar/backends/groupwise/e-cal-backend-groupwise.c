@@ -230,11 +230,10 @@ get_deltas (gpointer handle)
 	tm = gmtime (&mod_time);
 	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
- 
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 				
@@ -273,7 +272,7 @@ get_deltas (gpointer handle)
 	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"attachments recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);

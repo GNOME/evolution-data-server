@@ -1,3 +1,9 @@
+2005-02-08  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas):
+	add attachments to the getQuickMessages view so they can listen
+	for changes in attachments.
+
 2005-02-08  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:
