@@ -1,6 +1,7 @@
 # English (Commonwealth) translation
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# Robert Brady <rwb197@zepler.org> 2000
+# Robert Brady <rwb197@zepler.org>, 2000.
+# Gareth Owen <gowen72@yahoo.com>, David Lodge <dave@cirt.net>, 2004.
 #
 msgid ""
 msgstr ""
@@ -62,43 +63,72 @@ msgstr "Error performing search"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
-#: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
-#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
-#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
-#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
-#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
-#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
-#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
-#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
+#: addressbook/libebook/e-book.c:236
+#: addressbook/libebook/e-book.c:240
+#: addressbook/libebook/e-book.c:442
+#: addressbook/libebook/e-book.c:446
+#: addressbook/libebook/e-book.c:578
+#: addressbook/libebook/e-book.c:582
+#: addressbook/libebook/e-book.c:782
+#: addressbook/libebook/e-book.c:787
+#: addressbook/libebook/e-book.c:962
+#: addressbook/libebook/e-book.c:966
+#: addressbook/libebook/e-book.c:1107
+#: addressbook/libebook/e-book.c:1111
+#: addressbook/libebook/e-book.c:1309
+#: addressbook/libebook/e-book.c:1313
+#: addressbook/libebook/e-book.c:1514
+#: addressbook/libebook/e-book.c:1518
+#: addressbook/libebook/e-book.c:1741
+#: addressbook/libebook/e-book.c:1745
+#: addressbook/libebook/e-book.c:1948
+#: addressbook/libebook/e-book.c:1952
 #: addressbook/libebook/e-book.c:2984
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" on book before \"%s\""
 
-#: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
-#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
-#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
-#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
+#: addressbook/libebook/e-book.c:249
+#: addressbook/libebook/e-book.c:455
+#: addressbook/libebook/e-book.c:591
+#: addressbook/libebook/e-book.c:797
+#: addressbook/libebook/e-book.c:976
+#: addressbook/libebook/e-book.c:1121
+#: addressbook/libebook/e-book.c:1322
+#: addressbook/libebook/e-book.c:1527
+#: addressbook/libebook/e-book.c:1755
+#: addressbook/libebook/e-book.c:1961
+#: addressbook/libebook/e-book.c:2299
+#: addressbook/libebook/e-book.c:2495
 msgid "book busy"
 msgstr "book busy"
 
-#: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
-#: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
-#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
-#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
-#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
-#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
-#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
-#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
-#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
-#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
-#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2993
+#: addressbook/libebook/e-book.c:282
+#: addressbook/libebook/e-book.c:286
+#: addressbook/libebook/e-book.c:488
+#: addressbook/libebook/e-book.c:492
+#: addressbook/libebook/e-book.c:620
+#: addressbook/libebook/e-book.c:624
+#: addressbook/libebook/e-book.c:826
+#: addressbook/libebook/e-book.c:829
+#: addressbook/libebook/e-book.c:1008
+#: addressbook/libebook/e-book.c:1011
+#: addressbook/libebook/e-book.c:1150
+#: addressbook/libebook/e-book.c:1154
+#: addressbook/libebook/e-book.c:1358
+#: addressbook/libebook/e-book.c:1362
+#: addressbook/libebook/e-book.c:1574
+#: addressbook/libebook/e-book.c:1578
+#: addressbook/libebook/e-book.c:1787
+#: addressbook/libebook/e-book.c:1791
+#: addressbook/libebook/e-book.c:1989
+#: addressbook/libebook/e-book.c:1993
+#: addressbook/libebook/e-book.c:2240
+#: addressbook/libebook/e-book.c:2327
+#: addressbook/libebook/e-book.c:2331
+#: addressbook/libebook/e-book.c:2523
+#: addressbook/libebook/e-book.c:2527
+#: addressbook/libebook/e-book.c:2993
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA exception making \"%s\" call"
@@ -111,7 +141,8 @@ msgstr "e_book_cancel: there is no current operation"
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: couldn't cancel"
 
-#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
+#: addressbook/libebook/e-book.c:2285
+#: addressbook/libebook/e-book.c:2289
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" on book after \"%s\""
@@ -144,10 +175,8 @@ msgstr "e_book_get_self: there was no self contact uid stored in gconf"
 
 #: addressbook/libebook/e-book.c:3191
 #, c-format
-msgid ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -772,15 +801,18 @@ msgstr "30th"
 msgid "31st"
 msgstr "31st"
 
-#: calendar/libecal/e-cal-util.c:569 calendar/libecal/e-cal-util.c:591
+#: calendar/libecal/e-cal-util.c:569
+#: calendar/libecal/e-cal-util.c:591
 msgid "High"
 msgstr "High"
 
-#: calendar/libecal/e-cal-util.c:571 calendar/libecal/e-cal-util.c:593
+#: calendar/libecal/e-cal-util.c:571
+#: calendar/libecal/e-cal-util.c:593
 msgid "Normal"
 msgstr "Normal"
 
-#: calendar/libecal/e-cal-util.c:573 calendar/libecal/e-cal-util.c:595
+#: calendar/libecal/e-cal-util.c:573
+#: calendar/libecal/e-cal-util.c:595
 msgid "Low"
 msgstr "Low"
 
@@ -929,12 +961,8 @@ msgstr "\"%s\" expects the second argument to be a string"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:501
 #, c-format
-msgid ""
-"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\""
-msgstr ""
-"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\""
+msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\""
+msgstr "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
@@ -943,12 +971,8 @@ msgstr "\"%s\" expects at least one argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
-msgid ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
-msgstr ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
+msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
+msgstr "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
 
 #: servers/groupwise/e-gw-connection.c:80
 msgid "Invalid connection"
@@ -975,7 +999,7 @@ msgstr "Evolution Calendar file and webcal backend"
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution Addressbook file backend"
 
-#. dialog display isn't working out
+#  dialog display isn't working out
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
@@ -2785,5 +2809,3 @@ msgstr "Multiple segmentation faults occurred; can't display error dialogue\n"
 #~ msgid "Querying authorization capabilities of \"%s\""
 #~ msgstr "Querying authorisation capabilities of \"%s\""
 
-#~ msgid "Query authorization at \"%s\""
-#~ msgstr "Query authorisation at \"%s\""

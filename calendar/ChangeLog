@@ -1,3 +1,74 @@
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_item_set_changes): Added the support for allday events.
+
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #65167
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(connect_to_server): Reload the default zone into
+	the cache after clearing it.
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(set_categories_for_gw_item), e_gw_item_to_cal_component),
+	(set_properties_from_cal_component): replaced the assert
+	statements with If conditions.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64685
+	* backends/groupwise/e-cal-backends-groupwise.c
+	(receive_object): Send the error message as 
+	Permission Denied when the attendee tries to accept the 
+	appointment more than once since we get the error message as
+	bad parameter from the server.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes 63513
+	* backends/groupwise/e-cal-backends-groupwise-utils.c
+	(e_gw_connection_send_appointment): Do a case insensitive
+	comparison between the email ids. This is a partial fix.
+
+2004-09-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64398
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(ECalBackendGroupwisePrivate): added an variable to store 
+	the timeout ids.
+	(e_cal_backend_groupwise_init): intialize the variable.
+	(e_cal_backend_groupwise_finalize): remove the timeout_add
+	function so that it will not called when backend dies.
+	(get_deltas): It should not crash in any case if handle is
+	NULL.
+
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes 63513
+	* backends/groupwise/e-cal-backends-groupwise-utils.c
+	(e_gw_connection_send_appointment): Do a case insensitive
+	comparison between the email ids.
+	
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	* libecal/e-cal-utils.h:
+       	defined two macros for the handling the static capabilities for 
+	backends which does not support the conversion of a non-recurring
+	appointment to a recurrence appointment and conversion of posted
+	task to group task.
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_get_static_capabilities): Added the 
+	two macros in this function.
+
+2004-09-05  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #64688
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server): store the default zone in
+	backend before populating the cache.
+	
 2004-08-27  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-cal-backend-sexp.c (func_has_alarms_in_range): new

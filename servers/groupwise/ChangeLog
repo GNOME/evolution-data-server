@@ -1,3 +1,14 @@
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #64062
+	* e-gw-item[ch]
+	(e_gw_item_set_is_allday_event), (e_gw_item_get_is_allday_event):
+	Added functions to handle the allday events for Appointments.
+	* e-gw-item.c 
+	(e_gw_item_append_to_soap_message),(append_event_changes_to_soap_message)
+	(e_gw_item_new_from_soap_parameter): Added the support for allDay events
+	in appointments.
+
 2004-08-27  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* e-gw-item.h:

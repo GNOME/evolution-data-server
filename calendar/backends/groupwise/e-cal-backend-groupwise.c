@@ -50,6 +50,7 @@ struct _ECalBackendGroupwisePrivate {
 	char *username;
 	char *password;
 	char *container_id;
+	int timeout_id;
 	CalMode mode;
 	icaltimezone *default_zone;
 	GHashTable *categories_by_id;
@@ -179,6 +180,9 @@ get_deltas (gpointer handle)
         EGwConnectionStatus status; 
 	GSList *deletes = NULL, *updates = NULL, *adds = NULL, *l;
         
+	if (!handle)
+		return FALSE;
+	
 	cbgw = (ECalBackendGroupwise *) handle;
  	cnc = cbgw->priv->cnc; 
  	cache = cbgw->priv->cache; 
@@ -329,25 +333,31 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
 					return GNOME_Evolution_Calendar_OtherError;
 				}
+			
+			/* read the default timezone*/
+			priv->default_zone = e_cal_backend_cache_get_default_timezone (priv->cache);
 
 			/* Clear the cache before populating it */
 			e_file_cache_clean (E_FILE_CACHE (priv->cache));
-				
+
+			if (priv->default_zone)
+				e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
+	
 			/* Populate the cache for the first time.*/
 			/* start a timed polling thread set to 10 minutes*/
 			cnc_status = populate_cache (cbgw);
 			if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
 				g_object_unref (priv->cnc);
+				g_object_unref (priv->cache);
 				priv->cnc = NULL;
+				priv->cache = NULL;
 				g_warning (G_STRLOC ": Could not populate the cache");
 				return GNOME_Evolution_Calendar_PermissionDenied;
 			} else {
 				g_object_ref (priv->cnc);
 				g_object_ref (priv->cache);
-				g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
 				priv->mode = CAL_MODE_REMOTE;
-				/* read the default timezone*/
-				priv->default_zone = e_cal_backend_cache_get_default_timezone (priv->cache);
 				return GNOME_Evolution_Calendar_Success;
 			}
 		} else {
@@ -432,6 +442,9 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		priv->user_email = NULL;
 	}
 
+	if (priv->timeout_id) 
+		g_source_remove (priv->timeout_id);
+	
 	g_free (priv);
 	cbgw->priv = NULL;
 
@@ -504,6 +517,8 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","   \
 	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR "," \
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE "," \
+				  CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK "," \
+				  CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR "," \ 
 				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -1352,6 +1367,11 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 
 	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT)
 		return  GNOME_Evolution_Calendar_InvalidObject;
+	/* We need not do this when evolution starts deleting the calendar items from mail component 
+	   as when they are handled. The BAD_PARAMETER is checked due to the absence of proper error
+	   code from the server */
+	else if (status == E_GW_CONNECTION_STATUS_BAD_PARAMETER)
+		return GNOME_Evolution_Calendar_PermissionDenied;
 	return GNOME_Evolution_Calendar_OtherError;
 }
 
@@ -1506,6 +1526,7 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 
 	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->timeout_id = 0;
 
 	/* create the mutex for thread safety */
 	priv->mutex = g_mutex_new ();

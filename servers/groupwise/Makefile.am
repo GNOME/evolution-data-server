@@ -15,9 +15,9 @@ create_account_LDADD = 						\
 	$(E_DATA_SERVER_LIBS)
 
 soap_test_SOURCES = soap-test.c
-soap_test_LDADD = 						\
-	$(SOUP_LIBS)						\
-	$(top_builddir)/servers/groupwise/libegroupwise.la	\
+soap_test_LDADD = 					\
+	$(SOUP_LIBS)					\
+	libegroupwise.la				\
 	$(E_DATA_SERVER_LIBS) 
 
 lib_LTLIBRARIES = libegroupwise.la
