@@ -8,12 +8,13 @@ INCLUDES =						\
 	$(E_DATA_SERVER_CFLAGS)				\
 	$(DEBUG_CFLAGS)
 
-#noinst_PROGRAMS = create-account soap-test
+noinst_PROGRAMS = create-account #soap-test
 
-#create_account_SOURCES = create-account.c
-#create_account_LDADD = \
-#	$(SOUP_LIBS)							\
-#	$(E_DATA_SERVER_LIBS)
+create_account_SOURCES = create-account.c
+create_account_LDADD = 						\
+	$(top_builddir)/libedataserver/libedataserver.la	\
+	$(SOUP_LIBS)						\
+	$(E_DATA_SERVER_LIBS)
 
 #soap_test_SOURCES = soap-test.c
 #soap_test_LDADD = 						\
