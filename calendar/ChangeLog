@@ -18,6 +18,11 @@
 	the caller to ensure they're thread-safe and serialised
 	appropriately.
 
+2004-08-12  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal.c (e_cal_remove_object, e_cal_receive_objects):
+	added missing gtk-doc comments.
+
 2004-08-09  Jeffrey Stedfast  <fejj@novell.com>
 
 	Fixes bug #58150

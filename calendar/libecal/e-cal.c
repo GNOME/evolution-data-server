@@ -3681,15 +3681,14 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
  * e_cal_remove_object:
  * @ecal:  A calendar ecal.
  * @uid: Unique identifier of the calendar component to remove.
- * @error: 
+ * @error: Error placeholder.
  * 
  * 
  * Asks a calendar to remove a component.  If the server is able to remove the
  * component, all ecals will be notified and they will emit the "obj_removed"
  * signal.
  * 
- * Return value: an #ECalResult value indicating the result of the
- * operation.
+ * Return value: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
 e_cal_remove_object (ECal *ecal, const char *uid, GError **error)
@@ -3700,6 +3699,18 @@ e_cal_remove_object (ECal *ecal, const char *uid, GError **error)
 	return e_cal_remove_object_with_mod (ecal, uid, NULL, CALOBJ_MOD_ALL, error);
 }
 
+/**
+ * e_cal_receive_objects:
+ * @ecal:  A calendar ecal.
+ * @icalcomp: An icalcomponent.
+ * @error: Error placeholder.
+ *
+ * Makes the backend receive the set of iCalendar objects specified in the
+ * @icalcomp argument. This is used for iTIP confirmation/cancellation
+ * messages for scheduled meetings.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise.
+ */
 gboolean
 e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 {
