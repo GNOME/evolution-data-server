@@ -738,10 +738,18 @@ populate_contact_members (EContact *contact, gpointer data)
 		EVCardAttribute *attr;
 		EGroupMember *member;
 		member = (EGroupMember *) member_list->data;
+
 		attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
+		e_vcard_attribute_add_param_with_value (attr,
+                                                        e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID),
+							member->id);
 		e_vcard_attribute_add_param_with_value (attr,
                                                         e_vcard_attribute_param_new (EVC_X_DEST_EMAIL),
 							member->email);
+		if (member->name)
+			e_vcard_attribute_add_param_with_value (attr,
+                                                        e_vcard_attribute_param_new (EVC_X_DEST_NAME),
+							member->name);
 		e_vcard_attribute_add_value (attr, member->email);
 		e_vcard_add_attribute (E_VCARD (contact), attr);
 	}
@@ -753,7 +761,7 @@ static void
 set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise *egwb)
 
 {
-  	GList*  members, *temp, *items;
+  	GList  *members, *temp, *items, *p, *emails_without_ids;
 	GList *group_members;
 	char *email;
 	EGwFilter *filter;
@@ -761,32 +769,51 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	char *id;
 	EGwItem *temp_item;
 	int count = 0;
+	EGroupMember *member;
 
-	members = e_contact_get (contact, E_CONTACT_EMAIL);
+	members = e_contact_get_attributes (contact, E_CONTACT_EMAIL);
 	temp = members;
 	filter = e_gw_filter_new ();
+	group_members = NULL;
+	emails_without_ids = NULL;
 	for ( ;temp != NULL; temp = g_list_next (temp)) {
-		email =  temp->data;
-		if (email) {
+		EVCardAttribute *attr = temp->data;
+		id = email = NULL;
+		for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
+			EVCardAttributeParam *param = p->data;
+			const char *param_name = e_vcard_attribute_param_get_name (param);
+			if (!g_ascii_strcasecmp (param_name,
+						 EVC_X_DEST_CONTACT_UID)) {
+				GList *v = e_vcard_attribute_param_get_values (param);
+				id = v ? v->data : NULL;
+			} else if (!g_ascii_strcasecmp (param_name,
+							EVC_X_DEST_EMAIL)) {
+				GList *v = e_vcard_attribute_param_get_values (param);
+				email = v ? v->data : NULL;
+			}
+		}
+		if (id) {
+			member = g_new0 (EGroupMember , 1);
+			member->id = g_strdup (id);
+			group_members = g_list_append (group_members, member);
+		} else if (email) {
 			e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "emailList/@primary", email);
+			emails_without_ids = g_list_append (emails_without_ids, g_strdup (email));
 			count++;
 		}
 	       
 	}
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, count);
 	items = NULL;
-	group_members = NULL;
-	temp = g_list_copy (members);
-	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &items);
+	if (count)
+		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &items);
 	for (; items != NULL; items = g_list_next (items )) {
-		EGroupMember *member;
 		GList *emails;
 		GList *ptr;
 		temp_item = E_GW_ITEM (items->data);
 		emails = e_gw_item_get_email_list (temp_item);
-		if (temp && (ptr = g_list_find_custom (temp, emails->data, (GCompareFunc)strcasecmp ))) {
-			
-			temp = g_list_remove_link (temp, ptr);
+		if (emails_without_ids && (ptr = g_list_find_custom (emails_without_ids, emails->data, (GCompareFunc)strcasecmp ))) {
+			emails_without_ids = g_list_remove_link (emails_without_ids, ptr);
 			g_list_free (ptr);
 			id = g_strdup (e_gw_item_get_id (temp_item));
 			member = g_new0 (EGroupMember , 1);
@@ -795,12 +822,11 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 		}
 		g_object_unref (temp_item);
 	}
-	if (temp)
-		g_list_free (temp);
-	temp = members;
-	for ( ;temp != NULL; temp = g_list_next (temp)) 
-		g_free (temp->data);
+       
+	g_list_foreach (members, (GFunc) e_vcard_attribute_free, NULL);
 	g_list_free (members);
+	g_list_foreach (emails_without_ids, (GFunc) g_free, NULL);
+	g_list_free (emails_without_ids);
 	g_list_free (items);
        	e_gw_item_set_member_list (item, group_members);
   
@@ -1016,8 +1042,13 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 	char* value;
 	int element_type;
 	int i;
+	gboolean is_contact_list;
+	
+	is_contact_list = e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_GROUP ? TRUE: FALSE;
+	e_contact_set (contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (is_contact_list));
+	if (is_contact_list)
+		e_contact_set (contact, E_CONTACT_LIST_SHOW_ADDRESSES, GINT_TO_POINTER (TRUE));
 
-	e_contact_set (contact, E_CONTACT_IS_LIST, e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_GROUP ? TRUE: FALSE);
 	for ( i = 0; i < num_mappings; i++) {
 		element_type = mappings[i].element_type;
 		if(element_type == ELEMENT_TYPE_SIMPLE)

@@ -1,3 +1,12 @@
+2004-06-15 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(populate_contact_members) : set EVC_X_DEST_CONTACT_UID
+	EVC_X_DEST_NAME parameters also
+	(set_members_in_gw_item) : read the uid's of contacts
+	and use them instead of searching based on email values
+	
+ 
 2004-06-09  Chris Toshok  <toshok@ximian.com>
 
 	[ probable fix for #58803 ]
