@@ -45,6 +45,7 @@
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-iconv.h>
 
+#include "camel-debug.h"
 #include "camel-mime-message.h"
 #include "camel-provider.h"
 #include "camel-session.h"
@@ -623,7 +624,8 @@ junk_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
 	if (fms->session->junk_plugin != NULL) {
 		retval = camel_junk_plugin_check_junk (fms->session->junk_plugin, camel_filter_search_get_message (fms, f));
 		
-		printf("junk filter => %s\n", retval ? "*JUNK*" : "clean");
+		if (camel_debug ("junk"))
+			printf("junk filter => %s\n", retval ? "*JUNK*" : "clean");
 	}
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);

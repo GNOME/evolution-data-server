@@ -1,3 +1,9 @@
+2005-02-11  Radek Doulik  <rodo@novell.com>
+
+	* camel-filter-search.c (junk_test): use camel debug
+
+	* camel-junk-plugin.c: use camel debug
+
 2005-02-09  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-store.c (camel_folder_info_build): Fix the FIXME about
