@@ -1174,7 +1174,8 @@ e_book_response_get_contacts (EBook       *book,
 	g_mutex_lock (op->mutex);
 
 	op->status = status;
-	op->list = contact_list;
+	op->list = g_list_copy (contact_list);
+	g_list_foreach (op->list, (GFunc)g_object_ref, NULL);
 
 	g_cond_signal (op->cond);
 

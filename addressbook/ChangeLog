@@ -1,5 +1,14 @@
 2004-02-12  Chris Toshok  <toshok@ximian.com>
 
+	* libebook/e-book-listener.c
+	(impl_BookListener_respond_get_contact_list): unref the contacts
+	and free the response.list.
+
+	* libebook/e-book.c (e_book_response_get_contacts): copy the GList
+	and ref the contacts in it.
+
+2004-02-12  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-book-listener.c (e_book_listener_new): use
 	ORBIT_THREAD_HINT_ON_CONTEXT, and specify _ebook_context.
 

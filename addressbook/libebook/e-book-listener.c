@@ -147,7 +147,8 @@ impl_BookListener_respond_get_contact_list (PortableServer_Servant servant,
 
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
 
-	/* XXX free response.list? */
+	g_list_foreach (response.list, (GFunc)g_object_unref, NULL);
+	g_list_free (response.list);
 }
 
 static void
