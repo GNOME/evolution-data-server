@@ -803,7 +803,7 @@ groupwise_create_folder(CamelStore *store,
 	}
 	status = e_gw_connection_create_folder(priv->cnc,parent_id,folder_name, &child_container_id) ;
 	if (status == E_GW_CONNECTION_STATUS_OK) {
-
+		root = groupwise_build_folder_info(groupwise_store, parent_name,folder_name) ;
 		camel_store_summary_save((CamelStoreSummary *)groupwise_store->summary);
 
 		g_hash_table_insert (priv->id_hash, g_strdup(child_container_id), g_strdup(folder_name)) ; 

@@ -1,4 +1,10 @@
 2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* providers/groupwise/camel-groupwise-store.c
+	  (groupwise_create_folder): fixed a crash when creating a folder.
+	  was not building the folder info
+
+2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* providers/groupwise/camel-groupwise-folder.c
 	  (groupwise_sync): to sync back flags to the server. currently
