@@ -401,10 +401,10 @@ camel_imap4_engine_select_folder (CamelIMAP4Engine *engine, CamelFolder *folder,
 				folder->permanent_flags = resp->v.flags;
 				break;
 			case CAMEL_IMAP4_RESP_CODE_READONLY:
-				((CamelIMAP4Folder *) folder)->read_only = TRUE;
+				/*folder->mode = CAMEL_FOLDER_MODE_READ_ONLY;*/
 				break;
 			case CAMEL_IMAP4_RESP_CODE_READWRITE:
-				((CamelIMAP4Folder *) folder)->read_only = FALSE;
+				/*folder->mode = CAMEL_FOLDER_MODE_READ_WRITE;*/
 				break;
 			case CAMEL_IMAP4_RESP_CODE_UIDNEXT:
 				camel_imap4_summary_set_uidnext (folder->summary, resp->v.uidnext);
