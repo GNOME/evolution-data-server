@@ -8,12 +8,14 @@
 
 module GNOME {
 module Evolution {
-
+module DataServer {
+		
 	interface Config {
 	};
 
-	interface ServerInterfaceCheck : Bonobo::Unknown {
+	interface InterfaceCheck : Bonobo::Unknown {
 		readonly attribute string interfaceVersion;
 	};
+};
 };
 };

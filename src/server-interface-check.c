@@ -65,6 +65,6 @@ server_interface_check_new (void)
 
 
 BONOBO_TYPE_FUNC_FULL (ServerInterfaceCheck,
-		       GNOME_Evolution_ServerInterfaceCheck,
+		       GNOME_Evolution_DataServer_InterfaceCheck,
 		       PARENT_TYPE,
 		       server_interface_check)

@@ -41,8 +41,10 @@
 
 #include "server-interface-check.h"
 
-#define E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_Wombat_CalendarFactory"
-#define E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_Wombat_ServerFactory"
+#define E_DATA_SERVER_INTERFACE_CHECK_OAF_ID "OAFIID:GNOME_Evolution_DataServer_InterfaceCheck"
+
+#define E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_CalFactory"
+#define E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_BookFactory"
 
 /* The and addressbook calendar factories */
 
@@ -175,7 +177,7 @@ setup_interface_check (void)
 	ServerInterfaceCheck *interface_check_iface = server_interface_check_new ();
 	int result;
 
-	result = bonobo_activation_active_server_register ("OAFIID:GNOME_Evolution_Server_InterfaceCheck",
+	result = bonobo_activation_active_server_register (E_DATA_SERVER_INTERFACE_CHECK_OAF_ID,
 							   BONOBO_OBJREF (interface_check_iface));
 
 	return result == Bonobo_ACTIVATION_REG_SUCCESS;

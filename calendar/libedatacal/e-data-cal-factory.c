@@ -29,7 +29,7 @@
 #include "e-data-cal-factory.h"
 
 #define PARENT_TYPE                BONOBO_TYPE_OBJECT
-#define DEFAULT_E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_Wombat_CalendarFactory"
+#define DEFAULT_E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_CalFactory"
 
 static BonoboObjectClass *parent_class;
 

@@ -1,3 +1,10 @@
+2003-11-04  JP Rosvear <jpr@ximian.com>
+
+	* libedatabook/e-data-book-factory.c: use properly name spaced
+	default id
+
+	* libebook/e-book.c: kill unneccesary define
+
 2003-11-04  JP Rosevear <jpr@ximian.com>
 
 	* libedatabook/e-data-book-factory.c: remove corbe header include

@@ -51,7 +51,7 @@ struct _ServerInterfaceCheck {
 struct _ServerInterfaceCheckClass {
 	BonoboObjectClass parent_class;
 
-	POA_GNOME_Evolution_ServerInterfaceCheck__epv epv;
+	POA_GNOME_Evolution_DataServer_InterfaceCheck__epv epv;
 };
 
 

@@ -1,6 +1,6 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Wombat_ServerFactory"
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_BookFactory"
             type="exe"
             location="@LIBEXECDIR@/evolution-data-server">
 
@@ -10,7 +10,7 @@
 	</oaf_attribute>
 
 	<oaf_attribute name="name" type="string"
-                       _value="Evolution Addressbook local/LDAP backend"/>
+                       _value="Evolution Addressbook file and LDAP backend"/>
 
         <oaf_attribute name="addressbook:supported_protocols" type="stringv">
 		<item value="ldap"/>
@@ -19,7 +19,7 @@
         </oaf_attribute>
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Wombat_CalendarFactory"
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_CalFactory"
             type="exe"
             location="@LIBEXECDIR@/evolution-data-server">
 
@@ -29,7 +29,7 @@
 	</oaf_attribute>
 
 	<oaf_attribute name="name" type="string"
-                       _value="Evolution Calendar local file backend"/>
+                       _value="Evolution Calendar file and webcal backend"/>
 
         <oaf_attribute name="calendar:supported_protocols" type="stringv">
 		<item value="file"/>
@@ -37,7 +37,7 @@
         </oaf_attribute>
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Server_InterfaceCheck"
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_InterfaceCheck"
             type="exe"
             location="@LIBEXECDIR@/evolution-data-server">
 

@@ -23,8 +23,6 @@
 
 static GObjectClass *parent_class;
 
-#define CARDSERVER_OAF_ID "OAFIID:GNOME_Evolution_Wombat_ServerFactory"
-
 #define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
      if G_LIKELY(expr) { } else						\
        {								\
@@ -1281,7 +1279,7 @@ e_book_response_generic (EBook       *book,
  * Used to cancel an already running operation on @book.  This
  * function makes a synchronous CORBA to the backend telling it to
  * cancel the operation.  If the operation wasn't cancellable (either
- * transiently or permanently) or had already comopleted on the wombat
+ * transiently or permanently) or had already comopleted on the server
  * side, this function will return E_BOOK_STATUS_COULD_NOT_CANCEL, and
  * the operation will continue uncancelled.  If the operation could be
  * cancelled, this function will return E_BOOK_ERROR_OK, and the
