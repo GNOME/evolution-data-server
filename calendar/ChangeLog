@@ -1,3 +1,16 @@
+2004-12-23  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/file/e-cal-backend-file.c: changed recurrence hash table
+	to use g_hash_table_new and automatic disposal of key/value pairs.
+	(free_recurrence): removed, not needed now.
+	(free_object): just destroy de recurrences hash table.
+	(add_component): create recurrences hash table with _new_full.
+	(remove_recurrence_cb): changed to a GHRFunc.
+	(remove_component): use g_hash_table_foreach_remove to clear the
+	recurrences hash table.
+	(remove_object_instance_cb, e_cal_backend_file_modify_object,
+	remove_instance): no need to free hash table data here.
+
 2004-12-22 Chenthill Palanisamy <pchenthill@novell.com>
 
 	Part of merge from offline branch 
@@ -100,7 +113,7 @@
 	mode on a backend
 	(impl_CalFactory_getCal) : modified this function to 
 	set online/offline mode on the backend after creatng it
- 
+
 2004-12-22  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/http/e-cal-backend-http.c (e_cal_backend_http_get_timezone):

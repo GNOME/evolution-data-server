@@ -87,17 +87,6 @@ static ECalBackendSyncClass *parent_class;
 
 
 
-/* g_hash_table_foreach() callback to destroy recurrences in the hash table */
-static void
-free_recurrence (gpointer key, gpointer value, gpointer data)
-{
-	char *rid = key;
-	ECalComponent *comp = value;
-
-	g_free (rid);
-	g_object_unref (comp);
-}
-
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
 free_object (gpointer key, gpointer value, gpointer data)
@@ -105,7 +94,6 @@ free_object (gpointer key, gpointer value, gpointer data)
 	ECalBackendFileObject *obj_data = value;
 
 	g_object_unref (obj_data->full_object);
-	g_hash_table_foreach (obj_data->recurrences, (GHFunc) free_recurrence, NULL);
 	g_hash_table_destroy (obj_data->recurrences);
 	g_list_free (obj_data->recurrences_list);
 
@@ -417,7 +405,7 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 		} else {
 			obj_data = g_new0 (ECalBackendFileObject, 1);
 			obj_data->full_object = NULL;
-			obj_data->recurrences = g_hash_table_new (g_str_hash, g_str_equal);
+			obj_data->recurrences = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 			g_hash_table_insert (priv->comp_uid_hash, (gpointer) uid, obj_data);
 		}
 
@@ -439,7 +427,7 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 		} else {
 			obj_data = g_new0 (ECalBackendFileObject, 1);
 			obj_data->full_object = comp;
-			obj_data->recurrences = g_hash_table_new (g_str_hash, g_str_equal);
+			obj_data->recurrences = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
 			g_hash_table_insert (priv->comp_uid_hash, (gpointer) uid, obj_data);
 		}
@@ -464,8 +452,8 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 	e_cal_component_free_categories_list (categories);
 }
 
-/* g_hash_table_foreach() callback to remove recurrences from the calendar */
-static void
+/* g_hash_table_foreach_remove() callback to remove recurrences from the calendar */
+static gboolean
 remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
 {
 	GList *l;
@@ -491,6 +479,8 @@ remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
 	e_cal_component_get_categories_list (comp, &categories);
 	e_cal_backend_unref_categories (E_CAL_BACKEND (cbfile), categories);
 	e_cal_component_free_categories_list (categories);
+
+	return TRUE;
 }
 
 /* Removes a component from the backend's hash and lists.  Does not perform
@@ -530,7 +520,7 @@ remove_component (ECalBackendFile *cbfile, ECalComponent *comp)
 	priv->comp = g_list_delete_link (priv->comp, l);
 
 	/* remove the recurrences also */
-	g_hash_table_foreach (obj_data->recurrences, (GHFunc) remove_recurrence_cb, cbfile);
+	g_hash_table_foreach_remove (obj_data->recurrences, (GHFunc) remove_recurrence_cb, cbfile);
 
 	/* Update the set of categories */
 	e_cal_component_get_categories_list (comp, &categories);
@@ -1755,10 +1745,6 @@ remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 			e_cal_backend_unref_categories (E_CAL_BACKEND (rrdata->cbfile), categories);
 			e_cal_component_free_categories_list (categories);
 
-			/* free memory */
-			g_free (rid);
-			g_object_unref (instance);
-
 			return TRUE;
 		}
 	}
@@ -1852,12 +1838,8 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			icalcomponent_remove_component (priv->icalcomp,
 							e_cal_component_get_icalcomponent (recurrence));
 			priv->comp = g_list_remove (priv->comp, recurrence);
-			g_hash_table_remove (obj_data->recurrences, rid);
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
-
-			/* free memory */
-			g_free (real_rid);
-			g_object_unref (recurrence);
+			g_hash_table_remove (obj_data->recurrences, rid);
 		} else {
 			char *old, *new;
 
@@ -1916,11 +1898,8 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			icalcomponent_remove_component (priv->icalcomp,
 							e_cal_component_get_icalcomponent (recurrence));
 			priv->comp = g_list_remove (priv->comp, recurrence);
-			g_hash_table_remove (obj_data->recurrences, rid);
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
-
-			/* free memory */
-			g_free (real_rid);
+			g_hash_table_remove (obj_data->recurrences, rid);
 		} else {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
@@ -1986,8 +1965,8 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
 						e_cal_component_get_icalcomponent (comp));
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
-		g_hash_table_remove (obj_data->recurrences, rid);
 		obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
+		g_hash_table_remove (obj_data->recurrences, rid);
 		
 		/* update the set of categories */
 		e_cal_component_get_categories_list (comp, &categories);
