@@ -72,6 +72,7 @@ typedef enum {
 #define EVOLUTIONPERSON      "evolutionPerson"
 
 static gchar *query_prop_to_ldap(gchar *query_prop);
+static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query);
 
 static EBookBackendClass *e_book_backend_ldap_parent_class;
 typedef struct _EBookBackendLDAPCursorPrivate EBookBackendLDAPCursorPrivate;
@@ -267,13 +268,12 @@ struct prop_info {
 	E_STRING_PROP  (E_CONTACT_MAILER,      "mailer"), 
 
 	E_STRING_PROP  (E_CONTACT_FILE_AS,     "fileAs"),
-#if notyet
-	E_COMPLEX_PROP (E_CONTACT_CATEGORIES,  "category", category_populate, category_ber, category_compare),
 
-	STRING_PROP (E_CONTACT_CALURI,         "calCalURI"),
-	STRING_PROP (E_CONTACT_FBURL,          "calFBURL"),
-	STRING_PROP (E_CONTACT_ICSCALENDAR,    "icsCalendar"),
-#endif
+	E_COMPLEX_PROP (E_CONTACT_CATEGORY_LIST,  "category", category_populate, category_ber, category_compare),
+
+	STRING_PROP (E_CONTACT_CALENDAR_URI,   "calCalURI"),
+	STRING_PROP (E_CONTACT_FREEBUSY_URL,   "calFBURL"),
+	STRING_PROP (E_CONTACT_ICS_CALENDAR,   "icsCalendar"),
 
 #undef E_STRING_PROP
 #undef STRING_PROP
@@ -1121,7 +1121,6 @@ create_contact_handler (LDAPOp *op, LDAPMessage *res)
 	LDAPCreateOp *create_op = (LDAPCreateOp*)op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	LDAP *ldap = bl->priv->ldap;
-	EContact *contact;
 	int ldap_error;
 	int response;
 
@@ -1663,6 +1662,130 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 }
 
 
+typedef struct {
+	LDAPOp op;
+	GList *contacts;
+} LDAPGetContactListOp;
+
+static void
+contact_list_handler (LDAPOp *op, LDAPMessage *res)
+{
+	LDAPGetContactListOp *contact_list_op = (LDAPGetContactListOp*)op;
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
+	LDAP *ldap = bl->priv->ldap;
+	LDAPMessage *e;
+	int msg_type;
+
+	msg_type = ldap_msgtype (res);
+	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
+		e = ldap_first_entry(ldap, res);
+
+		while (NULL != e) {
+			EContact *contact = build_contact_from_entry (ldap, e, NULL);
+			char *vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+
+			printf ("vcard = %s\n", vcard);
+ 
+			contact_list_op->contacts = g_list_append (contact_list_op->contacts,
+								   vcard);
+
+			g_object_unref (contact);
+			e = ldap_next_entry(ldap, e);
+		}
+	}
+	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+		int ldap_error;
+
+		ldap_parse_result (ldap, res, &ldap_error,
+				   NULL, NULL, NULL, NULL, 0);
+
+		g_warning ("search returned %d\n", ldap_error);
+
+		if (ldap_error == LDAP_TIMELIMIT_EXCEEDED)
+			e_data_book_respond_get_contact_list (op->book,
+							      GNOME_Evolution_Addressbook_SearchTimeLimitExceeded,
+							      contact_list_op->contacts);
+		else if (ldap_error == LDAP_SIZELIMIT_EXCEEDED)
+			e_data_book_respond_get_contact_list (op->book,
+							      GNOME_Evolution_Addressbook_SearchSizeLimitExceeded,
+							      contact_list_op->contacts);
+		else if (ldap_error == LDAP_SUCCESS)
+			e_data_book_respond_get_contact_list (op->book,
+							      GNOME_Evolution_Addressbook_Success,
+							      contact_list_op->contacts);
+		else
+			e_data_book_respond_get_contact_list (op->book,
+							      GNOME_Evolution_Addressbook_OtherError,
+							      contact_list_op->contacts);
+
+		ldap_op_finished (op);
+	}
+	else {
+		g_warning ("unhandled search result type %d returned", msg_type);
+		e_data_book_respond_get_contact_list (op->book,
+						      GNOME_Evolution_Addressbook_OtherError,
+						      NULL);
+		ldap_op_finished (op);
+	}
+
+}
+
+static void
+contact_list_dtor (LDAPOp *op)
+{
+	LDAPGetContactListOp *contact_list_op = (LDAPGetContactListOp*)op;
+
+	g_list_foreach (contact_list_op->contacts, (GFunc)g_object_unref, NULL);
+	g_list_free (contact_list_op->contacts);
+	g_free (contact_list_op);
+}
+
+
+static void
+e_book_backend_ldap_get_contact_list (EBookBackend *backend,
+				      EDataBook    *book,
+				      const char *query)
+{
+	LDAPGetContactListOp *contact_list_op = g_new0 (LDAPGetContactListOp, 1);
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	LDAP *ldap = bl->priv->ldap;
+	int contact_list_msgid;
+	EDataBookView *book_view;
+	int ldap_error;
+	char *ldap_query;
+
+	book_view = find_book_view (bl);
+
+	ldap_query = e_book_backend_ldap_build_query (bl, query);
+
+	printf ("getting contact list with filter: %s\n", ldap_query);
+
+	do {	
+		ldap_error = ldap_search_ext (ldap,
+					      bl->priv->ldap_rootdn,
+					      bl->priv->ldap_scope,
+					      ldap_query,
+					      NULL, 0, NULL, NULL,
+					      NULL, /* XXX timeout */
+					      LDAP_NO_LIMIT, &contact_list_msgid);
+	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+	g_free (ldap_query);
+
+	if (ldap_error == LDAP_SUCCESS) {
+		ldap_op_add ((LDAPOp*)contact_list_op, backend, book,
+			     book_view, contact_list_msgid,
+			     contact_list_handler, contact_list_dtor);
+	}
+	else {
+		e_data_book_respond_get_contact_list (book,
+						      ldap_error_to_response (ldap_error),
+						      NULL);
+		contact_list_dtor ((LDAPOp*)contact_list_op);
+	}
+}
+
+
 
 static EContactField email_ids[3] = {
 	E_CONTACT_EMAIL_1,
@@ -1979,81 +2102,53 @@ birthday_compare (EContact *contact1, EContact *contact2)
 static void
 category_populate (EContact *contact, char **values)
 {
-#if notyet
 	int i;
-	EContact *ecard;
-	EList *categories;
-
-	g_object_get (card,
-		      "card", &ecard,
-		      NULL);
-
-	categories = e_list_new((EListCopyFunc) g_strdup, 
-				(EListFreeFunc) g_free,
-				NULL);
+	GList *categories = NULL;
 
 	for (i = 0; values[i]; i++)
-		e_list_append (categories, values[i]);
+		categories = g_list_append (categories, g_strdup (values[i]));
 
-	g_object_set (ecard,
-		      "category_list", categories,
-		      NULL);
+	e_contact_set (contact, E_CONTACT_CATEGORY_LIST, categories);
 
-	g_object_unref (categories);
-
-	e_card_simple_sync_card (card);
-	g_object_unref (ecard);
-#endif
+	g_list_foreach (categories, (GFunc)g_free, NULL);
+	g_list_free (categories);
 }
 
 struct berval**
 category_ber (EContact *contact)
 {
-#if notyet
 	struct berval** result = NULL;
-	EList *categories;
-	EIterator *iterator;
-	EContact *ecard;
+	GList *categories;
 	int i;
 
-	g_object_get (card,
-		      "card", &ecard,
-		      NULL);
+	categories = e_contact_get (contact, E_CONTACT_CATEGORY_LIST);
 
-	g_object_get (ecard,
-		      "category_list", &categories,
-		      NULL);
+	if (g_list_length (categories) != 0) {
+		GList *iter;
+		result = g_new0 (struct berval*, g_list_length (categories) + 1);
 
-	if (e_list_length (categories) != 0) {
-		result = g_new0 (struct berval*, e_list_length (categories) + 1);
-
-		for (iterator = e_list_get_iterator(categories), i = 0; e_iterator_is_valid (iterator);
-		     e_iterator_next (iterator), i++) {
-			const char *category = e_iterator_get (iterator);
+		for (iter = categories, i = 0; iter; iter = iter->next, i++) {
+			char *category = iter->data;
 
 			result[i] = g_new (struct berval, 1);
 			result[i]->bv_val = g_strdup (category);
 			result[i]->bv_len = strlen (category);
 		}
-
-		g_object_unref (iterator);
 	}
 
-	g_object_unref (categories);
-	g_object_unref (ecard);
+	g_list_foreach (categories, (GFunc)g_free, NULL);
+	g_list_free (categories);
 	return result;
-#endif
 }
 
 static gboolean
 category_compare (EContact *contact1, EContact *contact2)
 {
-#if notyet
 	char *categories1, *categories2;
 	gboolean equal;
 
-	categories1 = e_card_simple_get (ecard1, E_CONTACT_CATEGORIES);
-	categories2 = e_card_simple_get (ecard2, E_CONTACT_CATEGORIES);
+	categories1 = e_contact_get_const (contact1, E_CONTACT_CATEGORIES);
+	categories2 = e_contact_get_const (contact2, E_CONTACT_CATEGORIES);
 
 	equal = !strcmp (categories1, categories2);
 
@@ -2061,7 +2156,6 @@ category_compare (EContact *contact1, EContact *contact2)
 	g_free (categories2);
 
 	return equal;
-#endif
 }
 
 static void
@@ -2724,8 +2818,8 @@ ldap_search_dtor (LDAPOp *op)
 
 static void
 e_book_backend_ldap_search (EBookBackendLDAP  	*bl,
-			 EDataBook         	*book,
-			 EDataBookView            *view)
+			    EDataBook         	*book,
+			    EDataBookView       *view)
 {
 	char *ldap_query;
 
@@ -3128,6 +3222,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->remove_contacts         = e_book_backend_ldap_remove_contacts;
 	parent_class->modify_contact          = e_book_backend_ldap_modify_contact;
 	parent_class->get_contact             = e_book_backend_ldap_get_contact;
+	parent_class->get_contact_list        = e_book_backend_ldap_get_contact_list;
 	parent_class->start_book_view         = e_book_backend_ldap_start_book_view;
 	parent_class->stop_book_view          = e_book_backend_ldap_stop_book_view;
 	parent_class->get_changes             = e_book_backend_ldap_get_changes;
