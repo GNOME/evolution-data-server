@@ -1944,13 +1944,13 @@ e_book_load_local_addressbook (EBook   *book,
 	gboolean rv;
 
 	filename = g_build_filename (g_get_home_dir(),
-				     ".evolution/addressbook/local/OnThisComputer/Personal",
+				     ".evolution/addressbook/local/system",
 				     NULL);
 	uri = g_strdup_printf ("file://%s", filename);
 
 	g_free (filename);
 	
-	rv = e_book_load_uri (book, uri, TRUE, error);
+	rv = e_book_load_uri (book, uri, FALSE, error);
 	
 	g_free (uri);
 

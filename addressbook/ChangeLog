@@ -1,3 +1,10 @@
+2004-01-27  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book.c (e_book_load_local_addressbook): change the
+	local addressbook path to .evolution/addressbook/local/system, and
+	pass FALSE for @only_if_exists, so it'll always be created if it's
+	not there already.
+
 2004-01-27  Hans Petter Jansson  <hpj@ximian.com>
 
 	* libebook/e-book.c (e_book_unload_uri): If the load_state is
