@@ -340,7 +340,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 
 	CAMEL_SERVICE_ASSERT_LOCKED (groupwise_store, connect_lock);
 	auth_domain = camel_url_get_param (service->url, "auth-domain");
-	if (priv->use_ssl) 
+	if (priv->use_ssl && !g_str_equal (priv->use_ssl, "never")) 
 		uri = g_strconcat ("https://", priv->server_name, ":", priv->port, "/soap", NULL);
 	else 
 		uri = g_strconcat ("http://", priv->server_name, ":", priv->port, "/soap", NULL);
@@ -378,7 +378,12 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 		
 				
 		priv->cnc = e_gw_connection_new (uri, priv->user, service->url->passwd);
-		if (!priv->cnc) {
+		if (!E_IS_GW_CONNECTION(priv->cnc) && priv->use_ssl && g_str_equal (priv->use_ssl, "when-possible")) {
+			char *http_uri = g_strconcat ("http://", uri + 8, NULL);
+			priv->cnc = e_gw_connection_new (http_uri, priv->user, service->url->passwd);
+			g_free (http_uri);
+		}
+		if (!E_IS_GW_CONNECTION(priv->cnc)) {
 			errbuf = g_strdup_printf (_("Unable to authenticate "
 					    "to GroupWise server."));
 						  
@@ -743,7 +748,13 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 			fi->uri = g_strconcat (url, "", e_gw_container_get_name(E_GW_CONTAINER(folder_list->data)), NULL) ;
 
 		}
-		
+
+		if (e_gw_container_get_is_shared_to_me (E_GW_CONTAINER(folder_list->data)))
+                        fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
+                                                                                                                             
+                if (e_gw_container_get_is_shared_by_me (E_GW_CONTAINER(folder_list->data)))
+                        fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
+
 		g_ptr_array_add (folders, fi);
 		fi->total = e_gw_container_get_total_count (E_GW_CONTAINER (folder_list->data)) ;
 		fi->unread = e_gw_container_get_unread_count (E_GW_CONTAINER (folder_list->data)) ;

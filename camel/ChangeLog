@@ -1,3 +1,12 @@
+2005-01-17 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* camel-groupwise-proviuder.c : remove poa ip and 
+	soap ssl settings. We no longer need them as we now use soap for mail 
+	
+	* camel-groupwise-store.c (groupwise_auth_loop) :
+	when use_sll is whenever possible try to login 
+	using https and them if it fails using http 
+	
 2005-01-17  Not Zed  <NotZed@Ximian.com>
 
 	* tests/lib/folders.c (test_folder_basic): dont enforce local

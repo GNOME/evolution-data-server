@@ -68,14 +68,8 @@ CamelProviderConfEntry groupwise_conf_entries[] = {
 	{CAMEL_PROVIDER_CONF_SECTION_START, "soapport", NULL,
 	  N_("Address Book and Calendar") },
 
-	{ CAMEL_PROVIDER_CONF_ENTRY , "poa", NULL,
-	 N_("Post Office Agent:"), NULL }, 
-	 
 	{ CAMEL_PROVIDER_CONF_ENTRY, "soap_port", NULL,
-	  N_("Post Office Agent SOAP Port:"), "7181" },
-	
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "soap_ssl", NULL,
-	  N_("Use Secure Connection (SSL)"), "0"},
+	  N_("Post Office Agent SOAP Port:"), "7191" },
 
 	{ CAMEL_PROVIDER_CONF_HIDDEN, "auth-domain", NULL,
 	  NULL, "Groupwise" },
