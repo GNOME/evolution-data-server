@@ -685,7 +685,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
 }
 
 EGwConnectionStatus
-e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
+e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item, char **id)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -693,6 +693,9 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_GW_ITEM (item), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	if (id)
+		*id = NULL;
 
 	/* compose SOAP message */
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "sendItemRequest");
@@ -717,6 +720,14 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item)
 	}
 
 	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_OK && id != NULL) {
+		SoupSoapParameter *param;
+
+		/* get the generated ID from the SOAP response */
+		param = soup_soap_response_get_first_parameter_by_name (response, "id");
+		if (param)
+			*id = soup_soap_parameter_get_string_value (param);
+	}
 
 	g_object_unref (msg);
 	g_object_unref (response);
