@@ -13,8 +13,8 @@ main (int argc, char **argv)
 	if (bonobo_init (&argc, argv) == FALSE)
 		g_error ("Could not initialize Bonobo");
 
-	if (argc < 3) {
-		printf ("usage: test-search <uid> <query>\n");
+	if (argc < 2) {
+		printf ("usage: test-recur <uid>\n");
 		exit (0);
 	}
 
@@ -24,25 +24,6 @@ main (int argc, char **argv)
 		printf ("failed to open calendar\n");
 		exit(0);
 	}
-
-	if (!e_cal_get_object_list_as_comp (ecal, argv[2], &objects, NULL)) {
-		printf ("failed to get objects\n");
-		exit(0);
-	}
-
-	printf ("Received %d objects\n", g_list_length (objects));
-	for (l = objects; l; l = l->next) {
-		ECalComponent *comp = E_CAL_COMPONENT (l->data);
-		char *str;
-		
-		str = e_cal_component_get_as_string (comp);
-		printf ("%s\n", str);
-
-		g_free (str);
-		g_object_unref (comp);
-	}
-
-	g_list_free (objects);
 
 	g_object_unref (ecal);
 

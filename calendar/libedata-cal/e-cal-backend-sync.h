@@ -74,6 +74,8 @@ struct _ECalBackendSyncClass {
 
 typedef ECalBackendSync * (*ECalBackendSyncFactoryFn) (void);
 GType                e_cal_backend_sync_get_type                (void);
+void e_cal_backend_sync_set_lock (ECalBackendSync  *backend, gboolean lock);
+
 ECalBackendSyncStatus e_cal_backend_sync_is_read_only            (ECalBackendSync  *backend,
 							       EDataCal             *cal,
 							       gboolean        *read_only);

@@ -968,6 +968,8 @@ e_cal_backend_http_init (ECalBackendHttp *cbhttp, ECalBackendHttpClass *class)
 	priv->uri = NULL;
 	priv->reload_timeout_id = 0;
 	priv->opened = FALSE;
+
+	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbhttp), TRUE);
 }
 
 /* Class initialization function for the file backend */

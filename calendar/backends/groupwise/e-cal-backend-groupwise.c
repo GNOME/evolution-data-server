@@ -1966,6 +1966,8 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 	priv->mutex = g_mutex_new ();
 
 	cbgw->priv = priv;
+
+	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbgw), TRUE);
 }
 
 /* Class initialization function for the gw backend */

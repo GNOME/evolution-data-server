@@ -829,6 +829,8 @@ e_cal_backend_weather_init (ECalBackendWeather *cbw, ECalBackendWeatherClass *cl
 	priv->city = NULL;
 
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
+
+	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbw), TRUE);
 }
 
 /* Class initialization function for the weather backend */

@@ -2430,7 +2430,7 @@ e_cal_backend_file_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
 
 /* Object initialization function for the file backend */
 static void
-e_cal_backend_file_init (ECalBackendFile *cbfile, ECalBackendFileClass *class)
+e_cal_backend_file_init (ECalBackendFile *cbfile)
 {
 	ECalBackendFilePrivate *priv;
 
@@ -2449,6 +2449,8 @@ e_cal_backend_file_init (ECalBackendFile *cbfile, ECalBackendFileClass *class)
 
 	/* The timezone defaults to UTC. */
 	priv->default_zone = icaltimezone_get_utc_timezone ();
+
+	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), TRUE);
 }
 
 /* Class initialization function for the file backend */

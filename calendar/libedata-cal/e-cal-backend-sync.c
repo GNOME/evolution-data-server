@@ -13,83 +13,104 @@
 #include "e-cal-backend-sync.h"
 
 struct _ECalBackendSyncPrivate {
-	int mumble;
 	GMutex *sync_mutex;
+
+	gboolean mutex_lock;
 };
 
+#define LOCK_WRAPPER(func, args) \
+  g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func); \
+  if (backend->priv->mutex_lock) \
+    g_mutex_lock (backend->priv->sync_mutex); \
+  status = (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func) args; \
+  if (backend->priv->mutex_lock) \
+    g_mutex_unlock (backend->priv->sync_mutex); \
+  return status;
+
 static GObjectClass *parent_class;
+
+void
+e_cal_backend_sync_set_lock (ECalBackendSync *backend, gboolean lock)
+{
+	g_return_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend));
+
+	backend->priv->mutex_lock = lock;
+}
 
 ECalBackendSyncStatus
 e_cal_backend_sync_is_read_only  (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only)
 {
+	ECalBackendSyncStatus status;
+
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (read_only, GNOME_Evolution_Calendar_OtherError);
 
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->is_read_only_sync);
+	LOCK_WRAPPER (is_read_only_sync, (backend, cal, read_only));
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->is_read_only_sync) (backend, cal, read_only);
+	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
+	ECalBackendSyncStatus status;
+
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (address, GNOME_Evolution_Calendar_OtherError);
 
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_cal_address_sync);
+	LOCK_WRAPPER (get_cal_address_sync, (backend, cal, address));
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_cal_address_sync) (backend, cal, address);
+	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
+	ECalBackendSyncStatus status;
+
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (address, GNOME_Evolution_Calendar_OtherError);
 
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_alarm_email_address_sync);
+	LOCK_WRAPPER (get_alarm_email_address_sync, (backend, cal, address));
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_alarm_email_address_sync) (backend, cal, address);
+	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal, char **attribute)
 {
+	ECalBackendSyncStatus status;
+
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (attribute, GNOME_Evolution_Calendar_OtherError);
 
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_ldap_attribute_sync);
+	LOCK_WRAPPER (get_ldap_attribute_sync, (backend, cal, attribute));
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_ldap_attribute_sync) (backend, cal, attribute);
+	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
+	ECalBackendSyncStatus status;
+
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (capabilities, GNOME_Evolution_Calendar_OtherError);
 
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_static_capabilities_sync);
+	LOCK_WRAPPER (get_static_capabilities_sync, (backend, cal, capabilities));
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_static_capabilities_sync) (backend, cal, capabilities);
+	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
 			  const char *username, const char *password)
 {
-	ECalBackendSyncPrivate *priv;
 	ECalBackendSyncStatus status;
 	
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->open_sync);
-	priv = backend->priv;
 
-	g_mutex_lock (priv->sync_mutex);
-
-	status = (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->open_sync) (backend, cal, only_if_exists, username, password);
-
-	g_mutex_unlock (priv->sync_mutex);
+	LOCK_WRAPPER (open_sync, (backend, cal, only_if_exists, username, password));
 
 	return status;
 }
@@ -97,139 +118,175 @@ e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only
 ECalBackendSyncStatus
 e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_sync);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_sync) (backend, cal);
+ 	ECalBackendSyncStatus status;
+  
+ 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (remove_sync, (backend, cal));
+ 	
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync != NULL,
-			      GNOME_Evolution_Calendar_UnsupportedMethod);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync) (backend, cal, calobj, uid);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync != NULL,
+  			      GNOME_Evolution_Calendar_UnsupportedMethod);
+  
+ 	LOCK_WRAPPER (create_object_sync, (backend, cal, calobj, uid));
+ 
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
 				  CalObjModType mod, char **old_object, char **new_object)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync != NULL,
-			      GNOME_Evolution_Calendar_UnsupportedMethod);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync) (backend, cal, 
-									     calobj, mod, old_object, new_object);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync != NULL,
+  			      GNOME_Evolution_Calendar_UnsupportedMethod);
+  
+ 	LOCK_WRAPPER (modify_object_sync, (backend, cal, calobj, mod, old_object, new_object));
+ 
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid,
 				  CalObjModType mod, char **old_object, char **object)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync != NULL,
-			      GNOME_Evolution_Calendar_UnsupportedMethod);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync) (backend, cal, uid, rid, mod,
-									       old_object, object);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync != NULL,
+  			      GNOME_Evolution_Calendar_UnsupportedMethod);
+  
+ 	LOCK_WRAPPER (remove_object_sync, (backend, cal, uid, rid, mod, old_object, object));
+ 
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->discard_alarm_sync != NULL,
-			      GNOME_Evolution_Calendar_UnsupportedMethod);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->discard_alarm_sync) (backend, cal, uid, auid);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->discard_alarm_sync != NULL,
+  			      GNOME_Evolution_Calendar_UnsupportedMethod);
+  
+ 	LOCK_WRAPPER (discard_alarm_sync, (backend, cal, uid, auid));
+ 
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync != NULL,
-			      GNOME_Evolution_Calendar_UnsupportedMethod);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync) (backend, cal, calobj);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync != NULL,
+  			      GNOME_Evolution_Calendar_UnsupportedMethod);
+  
+ 	LOCK_WRAPPER (receive_objects_sync, (backend, cal, calobj));
+ 
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
 				 char **modified_calobj)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync != NULL,
-			      GNOME_Evolution_Calendar_UnsupportedMethod);
-	
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync) (backend, cal, calobj, users, modified_calobj);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync != NULL,
+  			      GNOME_Evolution_Calendar_UnsupportedMethod);
+ 
+ 	LOCK_WRAPPER (send_objects_sync, (backend, cal, calobj, users, modified_calobj));
+ 
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, char **object)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (object, GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_default_object_sync);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_default_object_sync) (backend, cal, object);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (object, GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (get_default_object_sync, (backend, cal, object));
+  
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (object, GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_object_sync);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_object_sync) (backend, cal, uid, rid, object);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (object, GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (get_object_sync, (backend, cal, uid, rid, object));
+  
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
 {
-	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (objects, GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_object_list_sync);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_object_list_sync) (backend, cal, sexp, objects);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (objects, GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (get_object_list_sync, (backend, cal, sexp, objects));
+  
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
 {
-	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_timezone_sync != NULL);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_timezone_sync) (backend, cal, tzid, object);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (get_timezone_sync, (backend, cal, tzid, object));
+  
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
 {
-	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->add_timezone_sync != NULL);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->add_timezone_sync) (backend, cal, tzobj);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (add_timezone_sync, (backend, cal, tzobj));
+  
+ 	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
 {
-	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
-
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->set_default_timezone_sync != NULL);
-
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->set_default_timezone_sync) (backend, cal, tzid);
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (set_default_timezone_sync, (backend, cal, tzid));
+  
+ 	return status;
 }
 
 
@@ -237,24 +294,26 @@ ECalBackendSyncStatus
 e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id,
 			      GList **adds, GList **modifies, GList **deletes)
 {
+	ECalBackendSyncStatus status;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_changes_sync != NULL);
+	LOCK_WRAPPER (get_changes_sync, (backend, cal, change_id, adds, modifies, deletes));
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_changes_sync) (backend, cal, change_id, 
-									   adds, modifies, deletes);
+	return status;
 }
 
 ECalBackendSyncStatus
 e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users, 
 				time_t start, time_t end, GList **freebusy)
 {
+	ECalBackendSyncStatus status;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 
-	g_assert (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_freebusy_sync != NULL);
+	LOCK_WRAPPER (get_freebusy_sync, (backend, cal, users, start, end, freebusy));
 
-	return (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_freebusy_sync) (backend, cal, users, 
-									    start, end, freebusy);
+	return status;
 }
 
 

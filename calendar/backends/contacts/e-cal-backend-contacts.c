@@ -933,6 +933,8 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass 
 	priv->default_zone = icaltimezone_get_utc_timezone ();
         
 	cbc->priv = priv;
+
+	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbc), TRUE);
 }
 
 /* Class initialization function for the contacts backend */

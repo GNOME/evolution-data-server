@@ -1,3 +1,35 @@
+2005-02-22  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/http/e-cal-backend-http.c (e_cal_backend_http_init):
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_init):
+	* backends/weather/e-cal-backend-weather.c
+	(e_cal_backend_weather_init): set backend's lock to TRUE.
+
+2005-02-22  JP Rosevear  <jpr@novell.com>
+
+	* libedata-cal/e-cal-backend-sync.c: added a lock wrapper to make
+	calls be locked if backend is set so.
+	(e_cal_backend_sync_set_lock): new function.
+	(e_cal_backend_sync_is_read_only, e_cal_backend_sync_get_cal_address,
+	e_cal_backend_sync_get_alarm_email_address,
+	e_cal_backend_sync_get_ldap_attribute,
+	e_cal_backend_sync_get_static_capabilities, e_cal_backend_sync_open,
+	e_cal_backend_sync_remove, e_cal_backend_sync_create_object,
+	e_cal_backend_sync_modify_object, e_cal_backend_sync_remove_object,
+	e_cal_backend_sync_discard_alarm, e_cal_backend_sync_receive_objects,
+	e_cal_backend_sync_send_objects, e_cal_backend_sync_get_default_object,
+	e_cal_backend_sync_get_object, e_cal_backend_sync_get_object_list,
+	e_cal_backend_sync_get_timezone, e_cal_backend_sync_add_timezone,
+	e_cal_backend_sync_set_default_timezone, e_cal_backend_sync_get_changes,
+	e_cal_backend_sync_get_free_busy): wrap calls to backend methods in
+	our lock wrapper.
+
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_init):
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_init):
+	set backend's lock to TRUE.
+
 2005-02-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
