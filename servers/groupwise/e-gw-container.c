@@ -24,6 +24,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <string.h>
 #include "e-gw-container.h"
 
 struct _EGwContainerPrivate {
@@ -62,7 +63,7 @@ static void
 e_gw_container_finalize (GObject *object)
 {
 	EGwContainer *container = (EGwContainer *) object;
-	EGwContainer *priv;
+	EGwContainerPrivate *priv;
 
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
 

@@ -88,6 +88,7 @@ const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_uuid (EGwConnection *cnc);
 
+struct icaltimetype e_gw_connection_get_date_from_string (const char *dtstring);
 G_END_DECLS
 
 #endif

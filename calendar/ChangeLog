@@ -1,3 +1,37 @@
+2004-01-29  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-gw-item.[ch] (e_gw_item_new_from_soap_parameter,
+	e_gw_item_to_cal_component, e_gw_item_get_id, e_gw_item_set_id,
+	e_gw_item_get_creation_date, e_gw_item_set_creation_date,
+	e_gw_item_get_start_date, e_gw_item_set_start_date,
+	e_gw_item_get_classification, e_gw_item_set_classification,
+	e_gw_item_get_accept_level, e_gw_item_set_accept_level,
+	e_gw_item_get_subject, e_gw_item_set_subject,
+	e_gw_item_get_priority, e_gw_item_set_priority,
+	e_gw_item_get_message, e_gw_item_set_message,
+	e_gw_item_get_completed, e_gw_item_set_completed,
+	e_gw_item_get_due_date, e_gw_item_set_due_date,
+	e_gw_item_get_end_date, e_gw_item_set_end_date,
+	e_gw_item_get_place, e_gw_item_set_place): new functions.
+	(e_gw_item_new_from_cal_component): renamed. Don't keep the
+	ECalComponent, there's no need for it.
+	(append_appointment_properties): don't use the private ECalComponent,
+	it's not stored anymore.
+	(e_gw_item_dispose): free all properties.
+	(e_gw_item_append_to_soap_message): added support for tasks.
+
+	* backends/groupwise/e-gw-connection.c (e_gw_connection_get_items):
+	(e_gw_connection_send_appointment): use
+	e_gw_item_new_from_cal_component.
+	(get_e_cal_component_from_soap_parameter, get_evo_date_from_string):
+	removed.
+	(e_gw_item_get_deltas, update_cache_item): disabled until migrated to
+	use EGwItem's.
+	(e_gw_connection_get_date_from_string): new function.
+
+	* backends/groupwise/e-gw-container.c (e_gw_container_finalize): fixed
+	warnings.
+
 2004-01-28  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-item.c: added missing header.

@@ -24,13 +24,28 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <string.h>
 #include "e-gw-item.h"
+#include "e-gw-connection.h"
 #include "e-gw-message.h"
 
 struct _EGwItemPrivate {
 	EGwItemType item_type;
 	char *container;
-	gpointer item_data;
+
+	/* properties */
+	char *id;
+	struct icaltimetype creation_date;
+	struct icaltimetype start_date;
+	struct icaltimetype end_date;
+	struct icaltimetype due_date;
+	gboolean completed;
+	char *subject;
+	char *message;
+	ECalComponentClassification classification;
+	char *accept_level;
+	char *priority;
+	char *place;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -48,6 +63,36 @@ e_gw_item_dispose (GObject *object)
 		if (priv->container) {
 			g_free (priv->container);
 			priv->container = NULL;
+		}
+
+		if (priv->id) {
+			g_free (priv->id);
+			priv->id = NULL;
+		}
+
+		if (priv->subject) {
+			g_free (priv->subject);
+			priv->subject = NULL;
+		}
+
+		if (priv->message) {
+			g_free (priv->message);
+			priv->message = NULL;
+		}
+
+		if (priv->accept_level) {
+			g_free (priv->accept_level);
+			priv->accept_level = NULL;
+		}
+
+		if (priv->priority) {
+			g_free (priv->priority);
+			priv->priority = NULL;
+		}
+
+		if (priv->place) {
+			g_free (priv->place);
+			priv->place = NULL;
 		}
 	}
 
@@ -92,6 +137,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	/* allocate internal structure */
 	priv = g_new0 (EGwItemPrivate, 1);
 	priv->item_type = E_GW_ITEM_TYPE_UNKNOWN;
+
 	item->priv = priv;
 }
 
@@ -118,33 +164,462 @@ e_gw_item_get_type (void)
 }
 
 EGwItem *
-e_gw_item_new_appointment (const char *container, ECalComponent *comp)
+e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *param)
+{
+	EGwItem *item;
+	const char *item_type;
+	SoupSoapParameter *child;
+	
+	g_return_val_if_fail (param != NULL, NULL);
+
+	if (strcmp (soup_soap_parameter_get_name (param), "item") != 0) {
+		g_warning (G_STRLOC ": Invalid SOAP parameter %s", soup_soap_parameter_get_name (param));
+		return NULL;
+	}
+
+	item = g_object_new (E_TYPE_GW_ITEM, NULL);
+	item_type = soup_soap_parameter_get_property (param, "type");
+	if (!g_ascii_strcasecmp (item_type, "Appointment"))
+		item->priv->item_type = E_GW_ITEM_TYPE_APPOINTMENT;
+	else if (!g_ascii_strcasecmp (item_type, "Task"))
+		item->priv->item_type = E_GW_ITEM_TYPE_TASK;
+	else {
+		g_object_unref (item);
+		return NULL;
+	}
+
+	item->priv->container = g_strdup (container);
+
+	/* now add all properties to the private structure */
+	for (child = soup_soap_parameter_get_first_child (param);
+	     child != NULL;
+	     child = soup_soap_parameter_get_next_child (child)) {
+		const char *name;
+		char *value;
+
+		name = soup_soap_parameter_get_name (child);
+
+		if (!g_ascii_strcasecmp (name, "acceptLevel"))
+			item->priv->accept_level = soup_soap_parameter_get_string_value (child);
+
+		else if (!g_ascii_strcasecmp (name, "class")) {
+			value = soup_soap_parameter_get_string_value (child);
+
+			if (!g_ascii_strcasecmp (value, "Public"))
+				item->priv->classification = E_CAL_COMPONENT_CLASS_PUBLIC;
+			else if (!g_ascii_strcasecmp (value, "Private"))
+				item->priv->classification = E_CAL_COMPONENT_CLASS_PRIVATE;
+			else if (!g_ascii_strcasecmp (value, "Confidential"))
+				item->priv->classification = E_CAL_COMPONENT_CLASS_CONFIDENTIAL;
+			else
+				item->priv->classification = E_CAL_COMPONENT_CLASS_UNKNOWN;
+
+			g_free (value);
+
+		} else if (!g_ascii_strcasecmp (name, "completed")) {
+			value = soup_soap_parameter_get_string_value (child);
+			if (!g_ascii_strcasecmp (value, "true"))
+				item->priv->completed = TRUE;
+			else
+				item->priv->completed = FALSE;
+			g_free (value);
+
+		} else if (!g_ascii_strcasecmp (name, "created")) {
+			value = soup_soap_parameter_get_string_value (child);
+			item->priv->creation_date = e_gw_connection_get_date_from_string (value);
+			g_free (value);
+
+		} else if (!g_ascii_strcasecmp (name, "distribution")) {
+			SoupSoapParameter *tp;
+
+			tp = soup_soap_parameter_get_first_child_by_name (child, "recipients");
+			if (tp) {
+				/* FIXME: see set_attendee_list_from... in e-gw-connection.c */
+			}
+
+		} else if (!g_ascii_strcasecmp (name, "dueDate")) {
+			value = soup_soap_parameter_get_string_value (child);
+			item->priv->due_date = e_gw_connection_get_date_from_string (value);
+			g_free (value);
+
+		} else if (!g_ascii_strcasecmp (name, "endDate")) {
+			value = soup_soap_parameter_get_string_value (child);
+			item->priv->end_date = e_gw_connection_get_date_from_string (value);
+			g_free (value);
+
+		} else if (!g_ascii_strcasecmp (name, "id"))
+			item->priv->id = soup_soap_parameter_get_string_value (child);
+
+		else if (!g_ascii_strcasecmp (name, "message"))
+			item->priv->message = soup_soap_parameter_get_string_value (child);
+
+		else if (!g_ascii_strcasecmp (name, "place"))
+			item->priv->place = soup_soap_parameter_get_string_value (child);
+
+		else if (!g_ascii_strcasecmp (name, "priority"))
+			item->priv->priority = soup_soap_parameter_get_string_value (child);
+
+		else if (!g_ascii_strcasecmp (name, "startDate")) {
+			value = soup_soap_parameter_get_string_value (child);
+			item->priv->start_date = e_gw_connection_get_date_from_string (value);
+			g_free (value);
+
+		} else if (!g_ascii_strcasecmp (name, "subject"))
+			item->priv->subject = soup_soap_parameter_get_string_value (child);
+	}
+
+	return item;
+}
+
+static EGwItem *
+set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
+{
+	const char *uid, *location;
+	ECalComponentDateTime dt;
+	ECalComponentClassification classif;
+	ECalComponentTransparency transp;
+	ECalComponentText text;
+	int *priority;
+	GSList *slist, *sl;
+	EGwItemPrivate *priv = item->priv;
+
+	/* first set specific properties */
+	switch (e_cal_component_get_vtype (comp)) {
+	case E_CAL_COMPONENT_EVENT :
+		priv->item_type = E_GW_ITEM_TYPE_APPOINTMENT;
+
+		/* transparency */
+		e_cal_component_get_transparency (comp, &transp);
+		if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE)
+			e_gw_item_set_accept_level (item, E_GW_ITEM_ACCEPT_LEVEL_BUSY);
+		else
+			e_gw_item_set_accept_level (item, NULL);
+
+		/* location */
+		e_cal_component_get_location (comp, &location);
+		e_gw_item_set_place (item, location);
+
+		/* FIXME: attendee list, set_distribution */
+		break;
+
+	case E_CAL_COMPONENT_TODO :
+		priv->item_type = E_GW_ITEM_TYPE_TASK;
+
+		/* due date */
+		e_cal_component_get_due (comp, &dt);
+		if (dt.value) {
+			e_gw_item_set_due_date (item, *dt.value);
+			e_cal_component_free_datetime (&dt);
+		}
+
+		/* priority */
+		priority = NULL;
+		e_cal_component_get_priority (comp, &priority);
+		if (priority && *priority) {
+			if (*priority >= 7)
+				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_LOW);
+			else if (*priority >= 5)
+				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_STANDARD);
+			else if (*priority >= 3)
+				e_gw_item_set_priority (item, E_GW_ITEM_PRIORITY_HIGH);
+			else
+				e_gw_item_set_priority (item, NULL);
+
+			e_cal_component_free_priority (priority);
+		}
+
+		/* completed */
+		e_cal_component_get_completed (comp, &dt.value);
+		if (dt.value) {
+			e_gw_item_set_completed (item, TRUE);
+			e_cal_component_free_datetime (&dt);
+		} else
+			e_gw_item_set_completed (item, FALSE);
+
+		break;
+
+	default :
+		g_object_unref (item);
+		return NULL;
+	}
+
+	/* set common properties */
+	/* UID */
+	e_cal_component_get_uid (comp, &uid);
+	e_gw_item_set_id (item, uid);
+
+	/* subject */
+	e_cal_component_get_summary (comp, &text);
+	e_gw_item_set_subject (item, text.value);
+
+	/* description */
+	e_cal_component_get_description_list (comp, &slist);
+	if (slist) {
+		GString *str = g_string_new ("");
+
+		for (sl = slist; sl != NULL; sl = sl->next) {
+			ECalComponentText *pt = sl->data;
+
+			if (pt && pt->value)
+				str = g_string_append (str, pt->value);
+		}
+
+		e_gw_item_set_message (item, (const char *) str->str);
+
+		g_string_free (str, TRUE);
+		e_cal_component_free_text_list (slist);
+	}
+
+	/* start date */
+	e_cal_component_get_dtstart (comp, &dt);
+	if (dt.value) {
+		e_gw_item_set_start_date (item, *dt.value);
+	} else if (priv->item_type == E_GW_ITEM_TYPE_APPOINTMENT) {
+		/* appointments need the start date property */
+		g_object_unref (item);
+		return NULL;
+	}
+
+	/* end date */
+	e_cal_component_get_dtend (comp, &dt);
+	if (dt.value) {
+		e_gw_item_set_end_date (item, *dt.value);
+	}
+
+	/* creation date */
+	e_cal_component_get_created (comp, &dt.value);
+	if (dt.value) {
+		e_gw_item_set_creation_date (item, *dt.value);
+		e_cal_component_free_datetime (&dt);
+	} else {
+		struct icaltimetype itt;
+
+		e_cal_component_get_dtstamp (comp, &itt);
+		e_gw_item_set_creation_date (item, itt);
+	}
+
+	/* classification */
+	e_cal_component_get_classification (comp, &classif);
+	e_gw_item_set_classification (item, classif);
+	
+	return item;
+}
+
+EGwItem *
+e_gw_item_new_from_cal_component (const char *container, ECalComponent *comp)
 {
 	EGwItem *item;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	item = g_object_new (E_TYPE_GW_ITEM, NULL);
-	item->priv->item_type = E_GW_ITEM_TYPE_APPOINTMENT;
 	item->priv->container = g_strdup (container);
-	item->priv->item_data = comp;
 
-	return item;
+	return set_properties_from_cal_component (item, comp);
 }
 
-static void
-append_appointment_properties (EGwItem *item, SoupSoapMessage *msg)
+const char *
+e_gw_item_get_id (EGwItem *item)
 {
-	ECalComponent *comp;
-	ECalComponentText text;
-	EGwItemPrivate *priv = item->priv;
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
-	comp = E_CAL_COMPONENT (priv->item_data);
+	return (const char *) item->priv->id;
+}
 
-	/* subject property */
-	e_cal_component_get_summary (comp, &text);
-	if (text.value)
-		e_gw_message_write_string_parameter (msg, "subject", NULL, text.value);
+void
+e_gw_item_set_id (EGwItem *item, const char *new_id)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->id)
+		g_free (item->priv->id);
+	item->priv->id = g_strdup (new_id);
+}
+
+struct icaltimetype
+e_gw_item_get_creation_date (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+
+	return item->priv->creation_date;
+}
+
+void
+e_gw_item_set_creation_date (EGwItem *item, struct icaltimetype new_date)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->creation_date = new_date;
+}
+
+struct icaltimetype
+e_gw_item_get_start_date (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+
+	return item->priv->start_date;
+}
+
+void
+e_gw_item_set_start_date (EGwItem *item, struct icaltimetype new_date)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->start_date = new_date;
+}
+
+struct icaltimetype
+e_gw_item_get_end_date (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+
+	return item->priv->end_date;
+}
+
+void
+e_gw_item_set_end_date (EGwItem *item, struct icaltimetype new_date)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->end_date = new_date;
+}
+
+struct icaltimetype
+e_gw_item_get_due_date (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), icaltime_null_time ());
+
+	return item->priv->due_date;
+}
+
+void
+e_gw_item_set_due_date (EGwItem *item, struct icaltimetype new_date)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->due_date = new_date;
+}
+
+const char *
+e_gw_item_get_subject (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return (const char *) item->priv->subject;
+}
+
+void
+e_gw_item_set_subject (EGwItem *item, const char *new_subject)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->subject)
+		g_free (item->priv->subject);
+	item->priv->subject = g_strdup (new_subject);
+}
+
+const char *
+e_gw_item_get_message (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return (const char *) item->priv->message;
+}
+
+void
+e_gw_item_set_message (EGwItem *item, const char *new_message)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->message)
+		g_free (item->priv->message);
+	item->priv->message = g_strdup (new_message);
+}
+
+const char *
+e_gw_item_get_place (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->place;
+}
+
+void
+e_gw_item_set_place (EGwItem *item, const char *new_place)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->place)
+		g_free (item->priv->place);
+	item->priv->place = g_strdup (new_place);
+}
+
+ECalComponentClassification
+e_gw_item_get_classification (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), E_CAL_COMPONENT_CLASS_UNKNOWN);
+
+	return item->priv->classification;
+}
+
+void
+e_gw_item_set_classification (EGwItem *item, ECalComponentClassification new_class)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->classification = new_class;
+}
+
+gboolean
+e_gw_item_get_completed (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->completed;
+}
+
+void
+e_gw_item_set_completed (EGwItem *item, gboolean new_completed)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->completed = new_completed;
+}
+
+const char *
+e_gw_item_get_accept_level (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return (const char *) item->priv->accept_level;
+}
+
+void
+e_gw_item_set_accept_level (EGwItem *item, const char *new_level)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->accept_level)
+		g_free (item->priv->accept_level);
+	item->priv->accept_level = g_strdup (new_level);
+}
+
+const char *
+e_gw_item_get_priority (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return (const char *) item->priv->priority;
+}
+
+void
+e_gw_item_set_priority (EGwItem *item, const char *new_priority)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->priority)
+		g_free (item->priv->priority);
+	item->priv->priority = g_strdup (new_priority);
 }
 
 gboolean
@@ -162,7 +637,9 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	switch (priv->item_type) {
 	case E_GW_ITEM_TYPE_APPOINTMENT :
 		soup_soap_message_add_attribute (msg, "type", "Appointment", "xsi", NULL);
-		append_appointment_properties (item, msg);
+		break;
+	case E_GW_ITEM_TYPE_TASK :
+		soup_soap_message_add_attribute (msg, "type", "Task", "xsi", NULL);
 		break;
 	default :
 		g_warning (G_STRLOC ": Unknown type for item");
@@ -172,4 +649,107 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	soup_soap_message_end_element (msg);
 
 	return TRUE;
+}
+
+ECalComponent *
+e_gw_item_to_cal_component (EGwItem *item)
+{
+	ECalComponent *comp;
+	ECalComponentText text;
+	ECalComponentDateTime dt;
+	const char *description;
+	struct icaltimetype itt;
+	int priority;
+
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	comp = e_cal_component_new ();
+
+	/* set common properties */
+	/* UID */
+	e_cal_component_set_uid (comp, e_gw_item_get_id (item));
+
+	/* summary */
+	text.value = e_gw_item_get_subject (item);
+	e_cal_component_set_summary (comp, &text);
+
+	/* description */
+	description = e_gw_item_get_message (item);
+	if (description) {
+		GSList l;
+
+		text.value = description;
+		l.data = &text;
+		l.next = NULL;
+
+		e_cal_component_set_description_list (comp, &l);
+	}
+
+	/* creation date */
+	itt = e_gw_item_get_creation_date (item);
+	e_cal_component_set_created (comp, &itt);
+	e_cal_component_set_dtstamp (comp, &itt);
+
+	/* start date */
+	itt = e_gw_item_get_start_date (item);
+	dt.value = &itt;
+	e_cal_component_set_dtstart (comp, &dt);
+
+	/* end date */
+	itt = e_gw_item_get_end_date (item);
+	dt.value = &itt;
+	e_cal_component_set_dtend (comp, &dt);
+
+	/* classification */
+	e_cal_component_set_classification (comp, e_gw_item_get_classification (item));
+
+	/* set specific properties */
+	switch (item->priv->item_type) {
+	case E_GW_ITEM_TYPE_APPOINTMENT :
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+
+		/* transparency */
+		description = e_gw_item_get_accept_level (item);
+		if (description &&
+		    (!strcmp (description, E_GW_ITEM_ACCEPT_LEVEL_BUSY) ||
+		     !strcmp (description, E_GW_ITEM_ACCEPT_LEVEL_OUT_OF_OFFICE)))
+			e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
+		else
+			e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
+
+		/* location */
+		e_cal_component_set_location (comp, e_gw_item_get_place (item));
+
+		/* FIXME: attendee list, get_distribution */
+		break;
+	case E_GW_ITEM_TYPE_TASK :
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+
+		/* due date */
+		itt = e_gw_item_get_due_date (item);
+		dt.value = &itt;
+		e_cal_component_set_due (comp, &dt);
+		break;
+
+		/* priority */
+		description = e_gw_item_get_priority (item);
+		if (description) {
+			if (!strcmp (description, E_GW_ITEM_PRIORITY_STANDARD))
+				priority = 5;
+			else if (!strcmp (description, E_GW_ITEM_PRIORITY_HIGH))
+				priority = 3;
+			else
+				priority = 7;
+		} else
+			priority = 7;
+
+		e_cal_component_set_priority (comp, &priority);
+
+		/* FIXME: EGwItem's completed is a boolean */
+	default :
+		g_object_unref (comp);
+		return NULL;
+	}
+
+	return comp;
 }

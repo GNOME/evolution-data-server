@@ -78,16 +78,23 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
         }
 
         for (l = list; l != NULL; l = g_list_next(l)) {
-                comp = E_CAL_COMPONENT (l->data);
-		e_cal_component_get_uid (comp, &uid);
-                rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
-                e_cal_component_commit_sequence (comp);
-		e_cal_backend_cache_put_component (priv->cache, comp);
-                g_free (rid);
-                g_free (comp);
+		EGwItem *item;
+
+		item = E_GW_ITEM (l->data);
+		comp = e_gw_item_to_cal_component (item);
+		g_object_unref (item);
+		if (E_IS_CAL_COMPONENT (comp)) {
+			e_cal_component_get_uid (comp, &uid);
+			rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
+			e_cal_component_commit_sequence (comp);
+			e_cal_backend_cache_put_component (priv->cache, comp);
+			g_free (rid);
+			g_object_unref (comp);
+		}
         }
         
         g_list_free (list);
+
         return E_GW_CONNECTION_STATUS_OK;        
 }
 

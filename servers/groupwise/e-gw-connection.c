@@ -367,25 +367,6 @@ e_gw_connection_logout (EGwConnection *cnc)
 	return E_GW_CONNECTION_STATUS_OK;
 }
 
-static char *
-get_evo_date_from_string (const char * str1)
-{
-        /* Return a new string with the separators stripped. */
-        char *str2;
-        int i, j, len = strlen(str1);
-	
-        str2 = g_malloc0 (len);
-        for (i = 0,j = 0; i < len; i++) {
-                if ((str1[i] != '-') && (str1[i] != ':')) {
-                                str2[j] = str1[i];
-                                j++;
-                }                
-        }
-        
-	str2[j] = '\0';
-        return str2;
-}
-
 static void 
 set_attendee_list_from_soap_parameter (ECalComponent *comp, SoupSoapParameter *param)
 {
@@ -438,200 +419,6 @@ set_attendee_list_from_soap_parameter (ECalComponent *comp, SoupSoapParameter *p
 		}	
 		g_slist_foreach (list, (GFunc) g_free, NULL);
 	}
-}
-
-static ECalComponent* 
-get_e_cal_component_from_soap_parameter (SoupSoapParameter *param)
-{
-        SoupSoapParameter *subparam;
-        const char *item_type, *classification, *accept_level;
-        char *dtstring;
-        ECalComponent *comp;
-        ECalComponentDateTime dt;
-        ECalComponentText summary;
-        struct icaltimetype t;
-        int type = 0; /* type : stores enum value of ECalcomponentVType for local access*/ 
-
-        /* FIXME: need to add some validation code*/
-        comp = e_cal_component_new();        
-        item_type = xmlGetProp (param, "type");
-        if ( !g_ascii_strcasecmp (item_type, "Appointment")) {
-                e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
-                type = 1;
-        } else if (!g_ascii_strcasecmp (item_type, "Task")) {
-                type = 2;
-                e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
-        } else {
-                g_object_unref (comp);
-                return NULL;
-        }
-	
-        /* Property - uid */
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "id");
-        if (!subparam) {
-                g_object_unref (comp);
-                return NULL;
-        }
-        e_cal_component_set_uid (comp, soup_soap_parameter_get_string_value (subparam));
-
-        /* Property - created*/ 
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "created");
-        if (!subparam){
-                g_object_unref (comp);
-                return NULL;
-        }
-
-        dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-        t = icaltime_from_string (dtstring);
-        g_free (dtstring);
-        e_cal_component_set_created (comp, &t);
-        e_cal_component_set_dtstamp (comp, &t);
-                
-        /* Property - startDate*/ 
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "startDate");
-        if (!subparam) {
-                g_object_unref (comp);
-                return NULL;
-        }
-        
-        dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-        t = icaltime_from_string (dtstring);
-        g_free (dtstring);
-        dt.value = &t;
-        dt.tzid = "UTC"; 
-        e_cal_component_set_dtstart (comp, &dt); 
-       
-        /* Category - missing server implementation */
-	/* Message Body set to description */
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "message");
-	if (subparam) {
-		char *description; 
-		GSList *l = NULL;
-
-		description = g_strdup (soup_soap_parameter_get_string_value (subparam));
-		l = g_slist_append (l, g_strdup (description));
-		e_cal_component_set_description_list (comp, l);
-		g_object_unref (l);
-		g_free (description);
-	}	
-
-        /* Classification */
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "class");
-	if (subparam) {
-		classification = soup_soap_parameter_get_string_value (subparam);
-		if ( !g_ascii_strcasecmp (classification, "Public"))
-			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PUBLIC);
-		else if (!g_ascii_strcasecmp (classification, "Private"))
-			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PRIVATE);
-		else if (!g_ascii_strcasecmp (classification, "Confidential"))
-			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_CONFIDENTIAL);
-		else
-			e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_UNKNOWN);
-	}
-
-        /* Transparency - Busy, OutOfOffice, Free, Tentative*/
-        /*FIXME  possible loss of information */
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "acceptLevel");
-	if (subparam) {
-		accept_level = soup_soap_parameter_get_string_value (subparam);
-		if ( !g_ascii_strcasecmp (accept_level, "Busy") || !g_ascii_strcasecmp (accept_level, "OutOfOffice"))
-			e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
-		else
-			e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
-	}
-
-        /* Property - summary*/ 
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "subject");
-	if (!subparam) {
-		g_object_unref (comp);
-		return NULL;
-	}
-	
-        summary.value = soup_soap_parameter_get_string_value (subparam);
-        summary.altrep = NULL;
-        e_cal_component_set_summary (comp, &summary);
-
-        /* Property - attendee-list*/ 
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "distribution");
-        /* FIXME  what to do with 'from' data*/
-        subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients");
-        if (subparam) 
-		set_attendee_list_from_soap_parameter (comp, subparam);
-
-        /* FIXME  Property - status*/
-        /* FIXME  Property priority */  
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "options");
-        if (!subparam) {
-                g_object_unref (comp);
-                return NULL;
-        }
-	
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "priority");
-        if (subparam) {
-                const char *priority;
-                int i;
-                priority = soup_soap_parameter_get_string_value (subparam);
-                if (!g_ascii_strcasecmp ("High", priority )) 
-                        i = 3;
-                else if (!g_ascii_strcasecmp ("Standard", priority)) 
-                        i = 5;
-                else if (!g_ascii_strcasecmp ("Low", priority))
-                        i = 7;
-                else 
-                        i = -1;
-                e_cal_component_set_priority (comp, &i);
-        }
-        
-        /* EVENT -specific properties */
-        if (type == 1) {
-                /* Property - endDate*/ 
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "endDate");
-                if (!subparam) {
-                        g_object_unref (comp);
-                        return NULL;
-                }
-
-                dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-                t = icaltime_from_string (dtstring);
-                g_free (dtstring);
-                
-                dt.value = &t;
-                dt.tzid = "UTC"; 
-                e_cal_component_set_dtend (comp, &dt);
-
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "place");
-                if (subparam) 
-                        e_cal_component_set_location (comp, soup_soap_parameter_get_string_value (subparam));
-
-        } else if (type == 2) {
-                /* Property - dueDate*/ 
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "dueDate");
-                if (subparam) {
-			dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-			t = icaltime_from_string (dtstring);
-			g_free (dtstring);
-                
-			dt.value = &t;
-			dt.tzid = "UTC"; 
-			e_cal_component_set_due (comp, &dt);
-		}
-
-                /*FIXME  Property - completed - missing server implementation  */
-                /* Only 0 and 100 are legal values since server data is boolean */
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "completed");
-                if (subparam) {
-                        const char *completed = soup_soap_parameter_get_string_value (subparam);
-                        int i = 0;
-                        if (!g_ascii_strcasecmp (completed, "true")) {
-                                i = 100;
-                                e_cal_component_set_percent (comp, &i);
-                        } else
-                                e_cal_component_set_percent (comp, &i);
-                }
-
-        }
-
-        return comp;                
 }
 
 EGwConnectionStatus
@@ -780,349 +567,340 @@ e_gw_connection_get_items (EGwConnection *cnc, const char *container, const char
 	
         /* parse these parameters into ecalcomponents*/
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
-                subparam != NULL;
-                subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) { 
-                        char *item_type;
-			ECalComponent *comp = NULL;
-		       	item_type = xmlGetProp (subparam, "type");
-			if ((!g_ascii_strcasecmp (item_type, "Appointment")) || 
-					(!g_ascii_strcasecmp (item_type, "Task"))) {
-				comp = get_e_cal_component_from_soap_parameter (subparam);
-				if (comp)
-					*list = g_list_append (*list, comp);
-				else
-					continue; 
-			}	
-			/*Code for handling other types would go here */
+	     subparam != NULL;
+	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
+		EGwItem *item;
+
+		item = e_gw_item_new_from_soap_parameter (container, subparam);
+		if (item)
+			*list = g_list_append (*list, item);
         }
                
 	/* free memory */
         g_object_unref (response);
 	g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;        
+        return E_GW_CONNECTION_STATUS_OK;
 }
 
-static gboolean
-update_cache_item (ECalBackendCache *cache, SoupSoapParameter *param)
-{
-        SoupSoapParameter *subparam;
-        const char *uid, *item_type, *classification, *accept_level;
-        char *dtstring;
-        ECalComponent *comp;
-        ECalComponentDateTime dt;
-        ECalComponentText summary;
-        struct icaltimetype t;
-        int type = 0; /* type : stores enum value of ECalcomponentVType for local access*/ 
+/* static gboolean */
+/* update_cache_item (ECalBackendCache *cache, SoupSoapParameter *param) */
+/* { */
+/*         SoupSoapParameter *subparam; */
+/*         const char *uid, *item_type, *classification, *accept_level; */
+/*         char *dtstring; */
+/*         ECalComponent *comp; */
+/*         ECalComponentDateTime dt; */
+/*         ECalComponentText summary; */
+/*         struct icaltimetype t; */
+/*         int type = 0; /\* type : stores enum value of ECalcomponentVType for local access*\/  */
 
-        /* FIXME: need to add some validation code*/
+/*         /\* FIXME: need to add some validation code*\/ */
         
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "id");
-        if (!subparam) {
-                return FALSE;
-        }
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "id"); */
+/*         if (!subparam) { */
+/*                 return FALSE; */
+/*         } */
 
-        uid = soup_soap_parameter_get_string_value (subparam);
-        if (!uid)
-                return FALSE;
+/*         uid = soup_soap_parameter_get_string_value (subparam); */
+/*         if (!uid) */
+/*                 return FALSE; */
 
-        comp = e_cal_backend_cache_get_component (cache, uid, NULL );
-        if (!comp)
-                return FALSE;
+/*         comp = e_cal_backend_cache_get_component (cache, uid, NULL ); */
+/*         if (!comp) */
+/*                 return FALSE; */
 
-        /* Ensure that the component type matches response data */
-        item_type = xmlGetProp (param, "type");
-        if ( !g_ascii_strcasecmp (item_type, "Appointment")) {
-                if (e_cal_component_get_vtype (comp) != E_CAL_COMPONENT_EVENT)
-                        return FALSE;
-                type = 1;
-        }
-        else if (!g_ascii_strcasecmp (item_type, "Task")) {
-                if (e_cal_component_get_vtype (comp) != E_CAL_COMPONENT_TODO)
-                        return FALSE;
-                type = 2;
-        }
-        else 
-                return FALSE;
+/*         /\* Ensure that the component type matches response data *\/ */
+/*         item_type = xmlGetProp (param, "type"); */
+/*         if ( !g_ascii_strcasecmp (item_type, "Appointment")) { */
+/*                 if (e_cal_component_get_vtype (comp) != E_CAL_COMPONENT_EVENT) */
+/*                         return FALSE; */
+/*                 type = 1; */
+/*         } */
+/*         else if (!g_ascii_strcasecmp (item_type, "Task")) { */
+/*                 if (e_cal_component_get_vtype (comp) != E_CAL_COMPONENT_TODO) */
+/*                         return FALSE; */
+/*                 type = 2; */
+/*         } */
+/*         else  */
+/*                 return FALSE; */
         
-        /* Property - created*/ 
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "created");
-        if (subparam) {
-                dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-                t = icaltime_from_string (dtstring);
-                g_free (dtstring);
-                e_cal_component_set_created (comp, &t);
-                e_cal_component_set_dtstamp (comp, &t);
-        }
+/*         /\* Property - created*\/  */
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "created"); */
+/*         if (subparam) { */
+/*                 dtstring = e_gw_connection_get_date_from_string (soup_soap_parameter_get_string_value (subparam)); */
+/*                 t = icaltime_from_string (dtstring); */
+/*                 g_free (dtstring); */
+/*                 e_cal_component_set_created (comp, &t); */
+/*                 e_cal_component_set_dtstamp (comp, &t); */
+/*         } */
                 
-        /* Property - startDate*/ 
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "startDate");
+/*         /\* Property - startDate*\/  */
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "startDate"); */
         
-        if (subparam) {
-                dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-                t = icaltime_from_string (dtstring);
-                g_free (dtstring);
-                dt.value = &t;
-                dt.tzid = "UTC"; 
-                e_cal_component_set_dtstart (comp, &dt); 
-        }
+/*         if (subparam) { */
+/*                 dtstring = e_gw_connection_get_date_from_string (soup_soap_parameter_get_string_value (subparam)); */
+/*                 t = icaltime_from_string (dtstring); */
+/*                 g_free (dtstring); */
+/*                 dt.value = &t; */
+/*                 dt.tzid = "UTC";  */
+/*                 e_cal_component_set_dtstart (comp, &dt);  */
+/*         } */
        
-        /* Category - missing server implementation */
+/*         /\* Category - missing server implementation *\/ */
 
-        /* Classification */
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "class"); 
-        if (subparam) {
-                classification = soup_soap_parameter_get_string_value (subparam);
-                if ( !g_ascii_strcasecmp (classification, "Public"))
-                        e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PUBLIC);
-                else if (!g_ascii_strcasecmp (classification, "Private"))
-                        e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PRIVATE);
-                else if (!g_ascii_strcasecmp (classification, "Confidential"))
-                        e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_CONFIDENTIAL);
-                else
-                        e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_UNKNOWN);
-        }
+/*         /\* Classification *\/ */
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "class");  */
+/*         if (subparam) { */
+/*                 classification = soup_soap_parameter_get_string_value (subparam); */
+/*                 if ( !g_ascii_strcasecmp (classification, "Public")) */
+/*                         e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PUBLIC); */
+/*                 else if (!g_ascii_strcasecmp (classification, "Private")) */
+/*                         e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_PRIVATE); */
+/*                 else if (!g_ascii_strcasecmp (classification, "Confidential")) */
+/*                         e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_CONFIDENTIAL); */
+/*                 else */
+/*                         e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_UNKNOWN); */
+/*         } */
 
-        /* Transparency - Busy, OutOfOffice, Free, Tentative*/
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "acceptLevel"); 
-        if (subparam) {
-                accept_level = soup_soap_parameter_get_string_value (subparam);
-                if ( !g_ascii_strcasecmp (accept_level, "Busy") || !g_ascii_strcasecmp (accept_level, "OutOfOffice"))
-                        e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
-                else
-                        e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
-        }
+/*         /\* Transparency - Busy, OutOfOffice, Free, Tentative*\/ */
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "acceptLevel");  */
+/*         if (subparam) { */
+/*                 accept_level = soup_soap_parameter_get_string_value (subparam); */
+/*                 if ( !g_ascii_strcasecmp (accept_level, "Busy") || !g_ascii_strcasecmp (accept_level, "OutOfOffice")) */
+/*                         e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE); */
+/*                 else */
+/*                         e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT); */
+/*         } */
 
-        /* Property - summary*/ 
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "subject"); 
-        if (subparam) {
-                summary.value = soup_soap_parameter_get_string_value (subparam);
-                summary.altrep = NULL;
-                e_cal_component_set_summary (comp, &summary);
-        }
+/*         /\* Property - summary*\/  */
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "subject");  */
+/*         if (subparam) { */
+/*                 summary.value = soup_soap_parameter_get_string_value (subparam); */
+/*                 summary.altrep = NULL; */
+/*                 e_cal_component_set_summary (comp, &summary); */
+/*         } */
 
-        /* Property - attendee-list*/ 
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "distribution");
-        if (subparam) {
-                /* FIXME  what to do with 'from' data*/
+/*         /\* Property - attendee-list*\/  */
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "distribution"); */
+/*         if (subparam) { */
+/*                 /\* FIXME  what to do with 'from' data*\/ */
                 
-                subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients");
-                if (subparam) 
-			set_attendee_list_from_soap_parameter (comp, subparam);
-        }        
+/*                 subparam = soup_soap_parameter_get_first_child_by_name (subparam, "recipients"); */
+/*                 if (subparam)  */
+/* 			set_attendee_list_from_soap_parameter (comp, subparam); */
+/*         }         */
 
-        /* FIXME  Property - status*/
-        /* FIXME  Property priority */  
-        subparam = soup_soap_parameter_get_first_child_by_name (param, "options");
-        if (subparam) {
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "priority");
-                if (subparam) {
-                        const char *priority;
-                        int i;
-                        priority = soup_soap_parameter_get_string_value (subparam);
-                        if (!g_ascii_strcasecmp ("High", priority )) 
-                                i = 3;
-                        else if (!g_ascii_strcasecmp ("Standard", priority)) 
-                                i = 5;
-                        else if (!g_ascii_strcasecmp ("Low", priority))
-                                i = 7;
-                        else 
-                                i = -1;
-                        e_cal_component_set_priority (comp, &i);
-                }
-        }
+/*         /\* FIXME  Property - status*\/ */
+/*         /\* FIXME  Property priority *\/   */
+/*         subparam = soup_soap_parameter_get_first_child_by_name (param, "options"); */
+/*         if (subparam) { */
+/*                 subparam = soup_soap_parameter_get_first_child_by_name (param, "priority"); */
+/*                 if (subparam) { */
+/*                         const char *priority; */
+/*                         int i; */
+/*                         priority = soup_soap_parameter_get_string_value (subparam); */
+/*                         if (!g_ascii_strcasecmp ("High", priority ))  */
+/*                                 i = 3; */
+/*                         else if (!g_ascii_strcasecmp ("Standard", priority))  */
+/*                                 i = 5; */
+/*                         else if (!g_ascii_strcasecmp ("Low", priority)) */
+/*                                 i = 7; */
+/*                         else  */
+/*                                 i = -1; */
+/*                         e_cal_component_set_priority (comp, &i); */
+/*                 } */
+/*         } */
         
-        /* EVENT -specific properties */
-        if (type == 1) {
-                /* Property - endDate*/ 
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "endDate");
+/*         /\* EVENT -specific properties *\/ */
+/*         if (type == 1) { */
+/*                 /\* Property - endDate*\/  */
+/*                 subparam = soup_soap_parameter_get_first_child_by_name (param, "endDate"); */
 
-                if (subparam) {
-                        dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-                        t = icaltime_from_string (dtstring);
-                        g_free (dtstring);
+/*                 if (subparam) { */
+/*                         dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam)); */
+/*                         t = icaltime_from_string (dtstring); */
+/*                         g_free (dtstring); */
                         
-                        dt.value = &t;
-                        dt.tzid = "UTC"; 
-                        e_cal_component_set_dtend (comp, &dt);
-                }
+/*                         dt.value = &t; */
+/*                         dt.tzid = "UTC";  */
+/*                         e_cal_component_set_dtend (comp, &dt); */
+/*                 } */
 
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "place"); 
-                if (subparam) 
-                        e_cal_component_set_location (comp, soup_soap_parameter_get_string_value (subparam));
+/*                 subparam = soup_soap_parameter_get_first_child_by_name (param, "place");  */
+/*                 if (subparam)  */
+/*                         e_cal_component_set_location (comp, soup_soap_parameter_get_string_value (subparam)); */
 
-        } else if (type == 2) {
-                /* Property - dueDate*/ 
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "dueDate");
-                if (subparam) {
-                        dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam));
-                        t = icaltime_from_string (dtstring);
-                        g_free (dtstring);
+/*         } else if (type == 2) { */
+/*                 /\* Property - dueDate*\/  */
+/*                 subparam = soup_soap_parameter_get_first_child_by_name (param, "dueDate"); */
+/*                 if (subparam) { */
+/*                         dtstring = get_evo_date_from_string (soup_soap_parameter_get_string_value (subparam)); */
+/*                         t = icaltime_from_string (dtstring); */
+/*                         g_free (dtstring); */
                         
-                        dt.value = &t;
-                        dt.tzid = "UTC"; 
-                        e_cal_component_set_due (comp, &dt);
-                }        
+/*                         dt.value = &t; */
+/*                         dt.tzid = "UTC";  */
+/*                         e_cal_component_set_due (comp, &dt); */
+/*                 }         */
 
-                /*FIXME  Property - completed - missing server implementation  */
-                /* Only 0 and 100 are legal values since server data is boolean */
-                subparam = soup_soap_parameter_get_first_child_by_name (param, "completed");
-                if (subparam) {
-                        const char *completed = soup_soap_parameter_get_string_value (subparam);
-                        int i =0;
-                        if (!g_ascii_strcasecmp (completed, "true")) {
-                                i = 100;
-                                e_cal_component_set_percent (comp, &i);
-                        } else 
-                                e_cal_component_set_percent (comp, &i);
-                }        
-        } 
+/*                 /\*FIXME  Property - completed - missing server implementation  *\/ */
+/*                 /\* Only 0 and 100 are legal values since server data is boolean *\/ */
+/*                 subparam = soup_soap_parameter_get_first_child_by_name (param, "completed"); */
+/*                 if (subparam) { */
+/*                         const char *completed = soup_soap_parameter_get_string_value (subparam); */
+/*                         int i =0; */
+/*                         if (!g_ascii_strcasecmp (completed, "true")) { */
+/*                                 i = 100; */
+/*                                 e_cal_component_set_percent (comp, &i); */
+/*                         } else  */
+/*                                 e_cal_component_set_percent (comp, &i); */
+/*                 }         */
+/*         }  */
 
-        return TRUE;
-}
-
-
+/*         return TRUE; */
+/* } */
 
 EGwConnectionStatus
 e_gw_connection_get_deltas (gpointer handle)
 {
-	CacheUpdateHandle *update_handle;
-	EGwConnection *cnc;
-	ECalBackendCache *cache;
-	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
+/* 	CacheUpdateHandle *update_handle; */
+/* 	EGwConnection *cnc; */
+/* 	ECalBackendCache *cache; */
+/* 	SoupSoapMessage *msg; */
+/*         SoupSoapResponse *response; */
+/*         EGwConnectionStatus status; */
+/*         SoupSoapParameter *param, *subparam; */
 
         
-	update_handle = (CacheUpdateHandle *) handle;
-	cnc = update_handle->cnc;
-	cache = update_handle->cache;
-	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+/* 	update_handle = (CacheUpdateHandle *) handle; */
+/* 	cnc = update_handle->cnc; */
+/* 	cache = update_handle->cache; */
+/* 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT); */
 
-	/* build the SOAP message */
-        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltaRequest");
-        if (!msg) {
-                g_warning (G_STRLOC ": Could not build SOAP message");
-		g_object_unref (cnc);
-		g_object_unref (cache);
-		g_free (update_handle);
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+/* 	/\* build the SOAP message *\/ */
+/*         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltaRequest"); */
+/*         if (!msg) { */
+/*                 g_warning (G_STRLOC ": Could not build SOAP message"); */
+/* 		g_object_unref (cnc); */
+/* 		g_object_unref (cache); */
+/* 		g_free (update_handle); */
+/*                 return E_GW_CONNECTION_STATUS_UNKNOWN; */
+/*         } */
         
-        soup_soap_message_start_element (msg, "CalendarItem", NULL, NULL);
-        soup_soap_message_end_element (msg);
-        e_gw_message_write_footer (msg);
+/*         soup_soap_message_start_element (msg, "CalendarItem", NULL, NULL); */
+/*         soup_soap_message_end_element (msg); */
+/*         e_gw_message_write_footer (msg); */
 
-        /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-		g_object_unref (cnc);
-		g_object_unref (cache);
-		g_free (update_handle);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+/*         /\* send message to server *\/ */
+/*         response = e_gw_connection_send_message (cnc, msg); */
+/*         if (!response) { */
+/*                 g_object_unref (msg); */
+/* 		g_object_unref (cnc); */
+/* 		g_object_unref (cache); */
+/* 		g_free (update_handle); */
+/*                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; */
+/*         } */
 
-        status = parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_object_unref (response);
-                g_object_unref (msg);
-		g_object_unref (cnc);
-		g_object_unref (cache);
-		g_free (update_handle);
-		return status;
-	}
+/*         status = parse_response_status (response); */
+/*         if (status != E_GW_CONNECTION_STATUS_OK) { */
+/* 		g_object_unref (response); */
+/*                 g_object_unref (msg); */
+/* 		g_object_unref (cnc); */
+/* 		g_object_unref (cache); */
+/* 		g_free (update_handle); */
+/* 		return status; */
+/* 	} */
 
-	/* if status is OK - parse result. return the list */	
-	param = soup_soap_response_get_first_parameter_by_name (response, "changed");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-		g_object_unref (cnc);
-		g_object_unref (cache);
-		g_free (update_handle);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+/* 	/\* if status is OK - parse result. return the list *\/	 */
+/* 	param = soup_soap_response_get_first_parameter_by_name (response, "changed"); */
+/*         if (!param) { */
+/*                 g_object_unref (response); */
+/*                 g_object_unref (msg); */
+/* 		g_object_unref (cnc); */
+/* 		g_object_unref (cache); */
+/* 		g_free (update_handle); */
+/*                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; */
+/*         } */
 	
-        if (!g_ascii_strcasecmp ( soup_soap_parameter_get_string_value (param), "0")) {
-                g_message ("No deltas");
-		g_object_unref (cnc);
-		g_object_unref (cache);
-		g_free (update_handle);
-                return E_GW_CONNECTION_STATUS_OK;
-        }                
+/*         if (!g_ascii_strcasecmp ( soup_soap_parameter_get_string_value (param), "0")) { */
+/*                 g_message ("No deltas"); */
+/* 		g_object_unref (cnc); */
+/* 		g_object_unref (cache); */
+/* 		g_free (update_handle); */
+/*                 return E_GW_CONNECTION_STATUS_OK; */
+/*         }                 */
 
-        param = soup_soap_response_get_first_parameter_by_name (response, "deltas");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-		g_object_unref (cnc);
-		g_object_unref (cache);
-		g_free (update_handle);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+/*         param = soup_soap_response_get_first_parameter_by_name (response, "deltas"); */
+/*         if (!param) { */
+/*                 g_object_unref (response); */
+/*                 g_object_unref (msg); */
+/* 		g_object_unref (cnc); */
+/* 		g_object_unref (cache); */
+/* 		g_free (update_handle); */
+/*                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; */
+/*         } */
         
-        /* process all deletes first*/
-        param = soup_soap_parameter_get_first_child_by_name (param, "delete");
-        if (param) {
-                for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
-                        subparam != NULL;
-                        subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) { 
-                                /*process each item */ 
-                                const char *uid;
-                                SoupSoapParameter *param_id;
+/*         /\* process all deletes first*\/ */
+/*         param = soup_soap_parameter_get_first_child_by_name (param, "delete"); */
+/*         if (param) { */
+/*                 for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item"); */
+/*                         subparam != NULL; */
+/*                         subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {  */
+/*                                 /\*process each item *\/  */
+/*                                 const char *uid; */
+/*                                 SoupSoapParameter *param_id; */
 
-                                param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
-                                if (!param_id) {
-                                        g_object_unref (response);
-                                        g_object_unref (msg);
-                                        g_object_unref (cnc);
-					g_object_unref (cache);
-					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-                                }
-                                uid = soup_soap_parameter_get_string_value (param_id);
-                                if (!e_cal_backend_cache_remove_component (cache, uid, NULL))
-                                        g_message ("Could not remove %s", uid);
-                }
-        }
+/*                                 param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id"); */
+/*                                 if (!param_id) { */
+/*                                         g_object_unref (response); */
+/*                                         g_object_unref (msg); */
+/*                                         g_object_unref (cnc); */
+/* 					g_object_unref (cache); */
+/* 					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; */
+/*                                 } */
+/*                                 uid = soup_soap_parameter_get_string_value (param_id); */
+/*                                 if (!e_cal_backend_cache_remove_component (cache, uid, NULL)) */
+/*                                         g_message ("Could not remove %s", uid); */
+/*                 } */
+/*         } */
         
-        /* process adds*/
-        param = soup_soap_parameter_get_first_child_by_name (param, "add");
-        if (param) {
-                for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
-                        subparam != NULL;
-                        subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) { 
-                                /*process each item */ 
-                                ECalComponent *comp;
-                                comp = get_e_cal_component_from_soap_parameter (subparam);
-                                if (!comp) {
-                                        g_object_unref (response);
-                                        g_object_unref (msg);
-                                        g_object_unref (cnc);
-					g_object_unref (cache);
-					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-                                }
-                                if (!e_cal_backend_cache_put_component (cache, comp))
-                                        g_message ("Could not add the component");
-                }
-        }
+/*         /\* process adds*\/ */
+/*         param = soup_soap_parameter_get_first_child_by_name (param, "add"); */
+/*         if (param) { */
+/*                 for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item"); */
+/*                         subparam != NULL; */
+/*                         subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {  */
+/*                                 /\*process each item *\/  */
+/*                                 ECalComponent *comp; */
+/*                                 comp = get_e_cal_component_from_soap_parameter (subparam); */
+/*                                 if (!comp) { */
+/*                                         g_object_unref (response); */
+/*                                         g_object_unref (msg); */
+/*                                         g_object_unref (cnc); */
+/* 					g_object_unref (cache); */
+/* 					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; */
+/*                                 } */
+/*                                 if (!e_cal_backend_cache_put_component (cache, comp)) */
+/*                                         g_message ("Could not add the component"); */
+/*                 } */
+/*         } */
         
-        /* process updates*/
-        param = soup_soap_parameter_get_first_child_by_name (param, "update");
-        if (param) {
-                for (subparam = soup_soap_parameter_get_first_child_by_name(param, "item");
-                        subparam != NULL;
-                        subparam = soup_soap_parameter_get_next_child (subparam)) { 
-                                /*process each item */ 
-                                update_cache_item (cache, subparam);
-                }
-        }
+/*         /\* process updates*\/ */
+/*         param = soup_soap_parameter_get_first_child_by_name (param, "update"); */
+/*         if (param) { */
+/*                 for (subparam = soup_soap_parameter_get_first_child_by_name(param, "item"); */
+/* 		     subparam != NULL; */
+/* 		     subparam = soup_soap_parameter_get_next_child (subparam)) {  */
+/* 			/\*process each item *\/  */
+/* 			update_cache_item (cache, subparam); */
+/*                 } */
+/*         } */
                
-	/* free memory */
-        g_object_unref (response);
-	g_object_unref (msg);
-	g_free (update_handle);
+/* 	/\* free memory *\/ */
+/*         g_object_unref (response); */
+/* 	g_object_unref (msg); */
+/* 	g_free (update_handle); */
 
         return E_GW_CONNECTION_STATUS_OK;        
 }
@@ -1176,7 +954,7 @@ e_gw_connection_send_appointment (EGwConnection *cnc, const char *container, ECa
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
-	item = e_gw_item_new_appointment (container, comp);
+	item = e_gw_item_new_from_cal_component (container, comp);
 	status = e_gw_connection_send_item (cnc, item);
 	g_object_unref (item);
 
@@ -1362,79 +1140,77 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         }
 
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "user");
-                subparam != NULL;
-                subparam = soup_soap_parameter_get_next_child_by_name (subparam, "user")) {
-                        SoupSoapParameter *param_blocks, *subparam_block, *tmp;
-                        const char *uuid = NULL, *email = NULL, *name = NULL;
+	     subparam != NULL;
+	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "user")) {
+		SoupSoapParameter *param_blocks, *subparam_block, *tmp;
+		const char *uuid = NULL, *email = NULL, *name = NULL;
 
-                        tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
-                        if (tmp)
-                                email = soup_soap_parameter_get_string_value (tmp);
-                        tmp = soup_soap_parameter_get_first_child_by_name (subparam, "uuid");
-                        if (tmp)
-                                uuid = soup_soap_parameter_get_string_value (tmp);
-                        tmp = soup_soap_parameter_get_first_child_by_name (subparam, "displayName");
-                        if (tmp)
-                                name = soup_soap_parameter_get_string_value (tmp);
+		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
+		if (tmp)
+			email = soup_soap_parameter_get_string_value (tmp);
+		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "uuid");
+		if (tmp)
+			uuid = soup_soap_parameter_get_string_value (tmp);
+		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "displayName");
+		if (tmp)
+			name = soup_soap_parameter_get_string_value (tmp);
 
-                        param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
-                        if (!param_blocks) {
-                                g_object_unref (response);
-                                g_object_unref (msg);
-                                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-                        }
+		param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
+		if (!param_blocks) {
+			g_object_unref (response);
+			g_object_unref (msg);
+			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		}
         
-                        for (subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
-                                subparam_block != NULL;
-                                subparam_block = soup_soap_parameter_get_next_child_by_name (subparam_block, "block")) {
+		for (subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
+		     subparam_block != NULL;
+		     subparam_block = soup_soap_parameter_get_next_child_by_name (subparam_block, "block")) {
 
-                                /* process each block and create ECal free/busy components.*/ 
-                                SoupSoapParameter *tmp;
-                                ECalComponent *comp;
-                                ECalComponentOrganizer organizer;
-                                ECalComponentDateTime dt;
-                                icaltimetype t;
-                                const char *start, *end; 
-                                char *dtstring;
+			/* process each block and create ECal free/busy components.*/ 
+			SoupSoapParameter *tmp;
+			ECalComponent *comp;
+			ECalComponentOrganizer organizer;
+			ECalComponentDateTime dt;
+			icaltimetype t;
+			const char *start, *end; 
+			char *dtstring;
 
-                                comp = e_cal_component_new ();
-                                e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
-                                /* FIXME  verify the mappings b/w response and ECalComponent */
-                                if (name)
-                                        organizer.cn = name;
-                                if (email)
-                                        organizer.sentby = email;
-                                if (uuid)
-                                        organizer.value = uuid;
-                                e_cal_component_set_organizer (comp, &organizer);
+			comp = e_cal_component_new ();
+			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
+			/* FIXME  verify the mappings b/w response and ECalComponent */
+			if (name)
+				organizer.cn = name;
+			if (email)
+				organizer.sentby = email;
+			if (uuid)
+				organizer.value = uuid;
+			e_cal_component_set_organizer (comp, &organizer);
 
-                                tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
-                                if (tmp) {
-                                        start = soup_soap_parameter_get_string_value (tmp);
-                                        dtstring = get_evo_date_from_string (start);
-                                        t = icaltime_from_string (dtstring);
-                                        g_free (dtstring);
-                                        dt.value = &t;
-                                        dt.tzid = "UTC"; 
-                                        e_cal_component_set_dtstart (comp, &dt);
-                                }        
-                               
-                                tmp = soup_soap_parameter_get_first_child_by_name (subparam, "endDate");
-                                if (tmp) {
-                                        end = soup_soap_parameter_get_string_value (tmp);
-                                        dtstring = get_evo_date_from_string (end);
-                                        t = icaltime_from_string (dtstring);
-                                        g_free (dtstring);
-                                        dt.value = &t;
-                                        dt.tzid = "UTC"; 
-                                        e_cal_component_set_dtend (comp, &dt);
-                                }
+			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
+			if (tmp) {
+				start = soup_soap_parameter_get_string_value (tmp);
+				t = e_gw_connection_get_date_from_string (start);
+				dt.value = &t;
+				dt.tzid = "UTC"; 
+				e_cal_component_set_dtstart (comp, &dt);
+			}        
 
-                                *freebusy = g_list_append (*freebusy, comp);
-                        }
-                }
+			tmp = soup_soap_parameter_get_first_child_by_name (subparam, "endDate");
+			if (tmp) {
+				end = soup_soap_parameter_get_string_value (tmp);
+				t = e_gw_connection_get_date_from_string (end);
+				dt.value = &t;
+				dt.tzid = "UTC"; 
+				e_cal_component_set_dtend (comp, &dt);
+			}
+
+			*freebusy = g_list_append (*freebusy, comp);
+		}
+	}
+
         g_object_unref (msg);
         g_object_unref (response);
+
         /* closeFreeBusySession*/
         return close_freebusy_session (cnc, session);
 }
@@ -1463,4 +1239,26 @@ e_gw_connection_get_user_uuid (EGwConnection *cnc)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 
 	return (const char *) cnc->priv->user_uuid;
+}
+
+struct icaltimetype
+e_gw_connection_get_date_from_string (const char *dtstring)
+{
+	struct icaltimetype t;
+        char *str2;
+        int i, j, len = strlen (dtstring);
+	
+        str2 = g_malloc0 (len);
+        for (i = 0,j = 0; i < len; i++) {
+                if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
+			str2[j] = dtstring[i];
+			j++;
+                }
+        }
+
+	str2[j] = '\0';
+	t = icaltime_from_string (str2);
+	g_free (str2);
+
+        return t;
 }
