@@ -70,9 +70,9 @@ struct _EGwFilterClass {
 
 GType       e_gw_filter_get_type (void);
 EGwFilter*  e_gw_filter_new(void);
-void        e_gw_filter_group_type (EGwFilter *filter, int all_or_any);
 void        e_gw_filter_add_filter_component (EGwFilter *filter, EGwFilterOpType operation, const char *field_name, const char *field_value);
 void        e_gw_filter_append_to_soap_message (EGwFilter *filter, SoupSoapMessage *msg);
+void        e_gw_filter_group_conditions (EGwFilter *filter, EGwFilterOpType operation, int num_of_condtions);
 
 G_END_DECLS
 

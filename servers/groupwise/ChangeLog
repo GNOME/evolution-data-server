@@ -1,3 +1,8 @@
+2004-04-03  Sivaiah Nallagatla  <snallagatla@novell.com>
+
+	* e-gw-filter.[ch] : changed implementation to take care of nested filter 
+	condtions. added new e_gw_filter_group_condtions api 
+
 2004-04-02  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* e-gw-message.c (e_gw_message_write_string-parameter_with_attribute) :
