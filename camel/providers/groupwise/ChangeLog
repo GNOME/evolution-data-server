@@ -1,3 +1,7 @@
+2005-02-07  JP Rosevear  <jpr@novell.com>
+
+	* camel-gw-listener.[hc]: remove dead files
+
 2005-02-06  Sivaiah Nallagatla    <snallagatla@novell.com>
 
 	* camel-groupwise-provider.c : Change the "Address and Calendar"
