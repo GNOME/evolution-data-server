@@ -28,6 +28,7 @@
 #include <string.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <bonobo/bonobo-i18n.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-util.h>
@@ -154,11 +155,13 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				g_free (priv->container_id);
 
 			kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
-			if (kind == ICAL_VEVENT_COMPONENT)
+			if (kind == ICAL_VEVENT_COMPONENT) {
 				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Calendar");
-			else if (kind == ICAL_VTODO_COMPONENT)
+				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
+			} else if (kind == ICAL_VTODO_COMPONENT) {
 				priv->container_id = e_gw_connection_get_container_id (priv->cnc, "Checklist");
-			else
+				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Checklist"));
+			} else
 				priv->container_id = NULL;
 
 			/* Populate the cache for the first time.*/

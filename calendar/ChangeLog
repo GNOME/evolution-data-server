@@ -1,3 +1,8 @@
+2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c (connect_to_server):
+	set the ESource's name to the name of the folder.
+
 2004-02-01  JP Rosevear <jpr@ximian.com>
 
 	* libecal/e-cal.h: order the signals more sensibly
