@@ -1,3 +1,10 @@
+2005-02-09  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_new):
+	* e-gw-item.c: (set_sendoptions_from_soap_parameter),
+	(e_gw_item_new_from_soap_parameter): Fixed some memory
+	leaks.
+
 2005-02-08  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-connection.[ch]:

@@ -682,6 +682,7 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		       value = soup_soap_parameter_get_property (subparam, "autoDelete");
 		       if (value && !g_ascii_strcasecmp (value, "1"))
 		      		priv->autodelete = TRUE; 
+		       g_free (value), value = NULL;
 	       }	       
 	}
 
@@ -1828,7 +1829,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		}
 			
 		else if (!g_ascii_strcasecmp (name, "alarm")) {
-			const char *enabled;
+			char *enabled;
 			enabled = soup_soap_parameter_get_property (child, "enabled");
 			if (!g_ascii_strcasecmp (enabled, "true") ) {
 				char *value;
@@ -1836,6 +1837,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 				/* convert it into integer */
 				item->priv->trigger = atoi (value);
 				g_free (value);
+				g_free (enabled);
 			}
 		}
 		

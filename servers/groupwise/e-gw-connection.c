@@ -471,24 +471,24 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	
 	if (param) {
 		SoupSoapParameter *subparam;
-		const char *param_value;
+		char *param_value;
 
 		subparam = soup_soap_parameter_get_first_child_by_name (param, "email");
 		if (subparam) {
 			param_value = soup_soap_parameter_get_string_value (subparam);
-			cnc->priv->user_email  = g_strdup (param_value);
+			cnc->priv->user_email  = param_value;
 		}
 
 		subparam = soup_soap_parameter_get_first_child_by_name (param, "name");
 		if (subparam) {
 			param_value = soup_soap_parameter_get_string_value (subparam);
-			cnc->priv->user_name = g_strdup (param_value);
+			cnc->priv->user_name = param_value;
 		}
 
 		subparam = soup_soap_parameter_get_first_child_by_name (param, "uuid");
 		if (subparam) {
 			param_value = soup_soap_parameter_get_string_value (subparam);
-			cnc->priv->user_uuid = g_strdup (param_value);
+			cnc->priv->user_uuid = param_value;
 		}
 	}
 
