@@ -1,3 +1,9 @@
+2004-06-03 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c
+	(update_summary) : new function to update the summary 
+	after getting the changes from server
+	
 2004-06-01 Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c (

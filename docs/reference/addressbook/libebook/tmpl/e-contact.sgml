@@ -145,6 +145,11 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
+<!-- ##### ARG EContact:email-4 ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:family-name ##### -->
 <para>
 
@@ -564,6 +569,7 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_EMAIL_1: 
 @E_CONTACT_EMAIL_2: 
 @E_CONTACT_EMAIL_3: 
+@E_CONTACT_EMAIL_4: 
 @E_CONTACT_MAILER: 
 @E_CONTACT_ADDRESS_LABEL_HOME: 
 @E_CONTACT_ADDRESS_LABEL_WORK: 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.3.1.99\n"
-"POT-Creation-Date: 2004-05-19 11:11-0400\n"
+"POT-Creation-Date: 2004-06-03 10:40-0400\n"
 "PO-Revision-Date: 2003-03-23 11:33+0800\n"
 "Last-Translator: Chao-Hsiung Liao <pesder.liao@msa.hinet.net>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -25,64 +25,64 @@ msgstr "載入中..."
 # addressbook/gui/search/e-addressbook-search-dialog.c:158
 # mail/mail-search.c:242
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3069
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "搜尋..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:614
+#: addressbook/backends/ldap/e-book-backend-ldap.c:615
 msgid "Using Distinguished Name (DN)"
 msgstr "使用辨認的名稱 (DN)"
 
 # mail/mail-config.glade.h:29
-#: addressbook/backends/ldap/e-book-backend-ldap.c:617
+#: addressbook/backends/ldap/e-book-backend-ldap.c:618
 msgid "Using Email Address"
 msgstr "使用電子郵件地址"
 
 # mail/mail-config.c:1213
 # mail/mail-config.c:1216
-#: addressbook/backends/ldap/e-book-backend-ldap.c:783
+#: addressbook/backends/ldap/e-book-backend-ldap.c:784
 msgid "Reconnecting to LDAP server..."
 msgstr "正重新連線至 LDAP 伺服器..."
 
 # mail/mail-config.c:1213
 # mail/mail-config.c:1216
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1298
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1299
 #, fuzzy
 msgid "Adding contact to LDAP server..."
 msgstr "新增名片至 LDAP 伺服器..."
 
 # mail/mail-ops.c:1195
 # mail/mail-ops.c:1333
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1394
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1395
 #, fuzzy
 msgid "Removing contact from LDAP server..."
 msgstr "自 LDAP 伺服器移除名片..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1609
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1610
 #, fuzzy
 msgid "Modifying contact from LDAP server..."
 msgstr "自 LDAP 伺服器編輯名片..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
 msgid "Receiving LDAP search results..."
 msgstr "接收 LDAP 搜尋結果..."
 
 # executive-summary/component/e-summary.c:940
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3089
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
 msgid "Error performing search"
 msgstr "進行搜尋時發生錯誤"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
-#. * "e_book_load_uri
+#. * "e_book_open
 #: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
 #: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
 #: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
 #: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
 #: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
-#: addressbook/libebook/e-book.c:1430 addressbook/libebook/e-book.c:2030
+#: addressbook/libebook/e-book.c:1943
 #, fuzzy, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "“%s”在“%s”"
@@ -92,7 +92,7 @@ msgstr "“%s”在“%s”"
 #: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
 #: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
 #: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
-#: addressbook/libebook/e-book.c:1438
+#: addressbook/libebook/e-book.c:1417 addressbook/libebook/e-book.c:1519
 msgid "book busy"
 msgstr ""
 
@@ -101,8 +101,8 @@ msgstr ""
 #: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
 #: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
 #: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
-#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1460
-#: addressbook/libebook/e-book.c:2039
+#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1439
+#: addressbook/libebook/e-book.c:1541 addressbook/libebook/e-book.c:1952
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr ""
@@ -117,33 +117,45 @@ msgstr "取消目前郵件所作的行動"
 msgid "e_book_cancel: couldn't cancel"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:1731
-msgid "e_book_load_uri: Invalid source."
-msgstr ""
-
-#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1858
-#, c-format
-msgid "e_book_load_uri: no factories available for uri `%s'"
-msgstr ""
-
-#: addressbook/libebook/e-book.c:1753
-msgid "e_book_load_uri: Could not create EBookListener"
-msgstr ""
-
-#: addressbook/libebook/e-book.c:1852
-msgid "e_book_load_uri: cancelled"
-msgstr ""
-
-#: addressbook/libebook/e-book.c:1889
+#: addressbook/libebook/e-book.c:1409
 #, fuzzy, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "“%s”在“%s”"
 
-#: addressbook/libebook/e-book.c:2125
+# camel/camel-remote-store.c:337
+# camel/camel-remote-store.c:399
+# camel/camel-remote-store.c:470
+# camel/providers/imap/camel-imap-command.c:287
+#: addressbook/libebook/e-book.c:1458
+#, fuzzy
+msgid "e_book_open: cancelled"
+msgstr "作業已取消"
+
+#: addressbook/libebook/e-book.c:1810
+msgid "e_book_load_uri: Invalid source."
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1818
+#, c-format
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr ""
+
+#: addressbook/libebook/e-book.c:1830
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr ""
+
+# camel/camel-session.c:295
+# camel/camel-session.c:364
+#: addressbook/libebook/e-book.c:1881
+#, fuzzy, c-format
+msgid "e_book_new: no factories available for uri `%s'"
+msgstr "沒有通訊協定“%s”的提供者"
+
+#: addressbook/libebook/e-book.c:2038
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: addressbook/libebook/e-book.c:2302
+#: addressbook/libebook/e-book.c:2147
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -365,354 +377,361 @@ msgstr "電子郵件 2"
 msgid "Email 3"
 msgstr "電子郵件 3"
 
-# addressbook/backend/ebook/e-card.c:3428
+# addressbook/contact-editor/e-contact-editor.c:1286
+# addressbook/gui/widgets/e-addressbook-view.c:726
 #: addressbook/libebook/e-contact.c:149
+#, fuzzy
+msgid "Email 4"
+msgstr "電子郵件 3"
+
+# addressbook/backend/ebook/e-card.c:3428
+#: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
 msgstr "寄件者"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:151
 #, fuzzy
 msgid "Wants HTML Mail"
 msgstr "需要 HTML"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:154
 msgid "AIM Screen Name List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
 msgstr ""
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 #, fuzzy
 msgid "Jabber Id List"
 msgstr "未命名的清單"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "Yahoo! Screen Name List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:158
 msgid "MSN Screen Name List"
 msgstr ""
 
 # mail/mail-config.glade.h:45
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:159
 #, fuzzy
 msgid "ICQ Id List"
 msgstr "是新的清單"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:167
 msgid "Groupwise Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:168
 msgid "Groupwise Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 3"
 msgstr ""
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:173
 #, fuzzy
 msgid "Jabber Home Id 1"
 msgstr "未命名的清單"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:174
 #, fuzzy
 msgid "Jabber Home Id 2"
 msgstr "未命名的清單"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:175
 #, fuzzy
 msgid "Jabber Home Id 3"
 msgstr "未命名的清單"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:176
 #, fuzzy
 msgid "Jabber Work Id 1"
 msgstr "未命名的清單"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:177
 #, fuzzy
 msgid "Jabber Work Id 2"
 msgstr "未命名的清單"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:178
 #, fuzzy
 msgid "Jabber Work Id 3"
 msgstr "未命名的清單"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
 msgstr ""
 
 # addressbook/contact-editor/e-contact-editor.c:1250
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:192
 #, fuzzy
 msgid "ICQ Home Id 2"
 msgstr "住家電話 2"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 3"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 1"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 2"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 3"
 msgstr ""
 
 # addressbook/gui/widgets/e-addressbook-view.c:708
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:199
 msgid "Organization"
 msgstr "團體"
 
 # addressbook/gui/widgets/e-addressbook-view.c:708
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:200
 msgid "Organizational Unit"
 msgstr "團體單位"
 
 # addressbook/gui/widgets/e-addressbook-view.c:729
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:201
 msgid "Office"
 msgstr "辦公室"
 
 # addressbook/gui/widgets/e-addressbook-view.c:730
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:203
 msgid "Title"
 msgstr "頭銜"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:204
 msgid "Role"
 msgstr "角色"
 
 # addressbook/gui/widgets/e-addressbook-view.c:732
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:205
 msgid "Manager"
 msgstr "主管"
 
 # addressbook/contact-editor/e-contact-editor.c:1242
 # addressbook/gui/widgets/e-addressbook-view.c:733
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:206
 msgid "Assistant"
 msgstr "助理"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:208
+#: addressbook/libebook/e-contact.c:209
 msgid "Homepage URL"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:210
 msgid "Weblog URL"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:211
 msgid "Video Conferencing URL"
 msgstr ""
 
 # addressbook/gui/component/addressbook-config.c:409
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:214
 #, fuzzy
 msgid "Photo"
 msgstr "波土"
 
 # mail/mail-format.c:762
 # mail/message-list.c:1083
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:215
 #, fuzzy
 msgid "Logo"
 msgstr "多哥"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:217
+#: addressbook/libebook/e-contact.c:218
 #, fuzzy
 msgid "X.509 Certificate"
 msgstr "憑證 ID(_C):"
 
 # calendar/gui/e-calendar-table.c:150
 #. Contact categories
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:221
 msgid "Category List"
 msgstr "類別清單"
 
 # calendar/gui/e-calendar-table.c:150
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:222
 msgid "Categories"
 msgstr "類別"
 
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 # ui/evolution-calendar.xml.h:3
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:225
 msgid "Calendar URI"
 msgstr "行事曆 URI"
 
 # addressbook/gui/widgets/e-addressbook-view.c:737
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:226
 msgid "Free/Busy URL"
 msgstr "空閒/忙碌 URL"
 
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 # ui/evolution-calendar.xml.h:3
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:227
 #, fuzzy
 msgid "ICS Calendar"
 msgstr "行事曆"
 
 # addressbook/gui/widgets/e-addressbook-view.c:735
 #. Misc fields
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:230
 #, fuzzy
 msgid "Spouse's Name"
 msgstr "配偶"
 
 # addressbook/gui/widgets/e-addressbook-view.c:736
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:231
 msgid "Note"
 msgstr "備註"
 
 # addressbook/backend/ebook/e-card.c:3335
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:233
 msgid "Birth Date"
 msgstr "出生日期"
 
 # addressbook/contact-editor/contact-editor.glade.h:2
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:234
 msgid "Anniversary"
 msgstr "紀念日"
 
 # addressbook/contact-editor/fullname.glade.h:8
-#: addressbook/libebook/e-contact.c:235
+#: addressbook/libebook/e-contact.c:236
 msgid "List"
 msgstr "清單"
 
 # addressbook/gui/widgets/e-addressbook-view.c:724
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:237
 msgid "List Show Addresses"
 msgstr "清單顯示地址"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: addressbook/libebook/e-contact.c:1208
+#: addressbook/libebook/e-contact.c:1209
 msgid "Unnamed List"
 msgstr "未命名的清單"
 
 # addressbook/contact-editor/contact-editor.glade.h:20
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:441
 #, fuzzy
 msgid "Birthday"
 msgstr "生日(_Y):"
 
 # addressbook/contact-editor/contact-editor.glade.h:20
-#: calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: calendar/backends/contacts/e-cal-backend-contacts.c:465
 #, fuzzy, c-format
 msgid "Birthday: %s"
 msgstr "生日(_Y):"
 
 # addressbook/contact-editor/contact-editor.glade.h:2
-#: calendar/backends/contacts/e-cal-backend-contacts.c:485
+#: calendar/backends/contacts/e-cal-backend-contacts.c:486
 #, fuzzy, c-format
 msgid "Anniversary: %s"
 msgstr "週年紀念(_V):"
@@ -723,28 +742,28 @@ msgstr ""
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
 #, fuzzy
 msgid "Invalid server URI"
 msgstr "無效的目的"
 
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 # ui/evolution-calendar.xml.h:3
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
 msgid "Calendar"
 msgstr "行事曆"
 
 # camel/camel-sasl-anonymous.c:110
 # camel/camel-sasl-plain.c:87
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:4274
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:277
+#: calendar/libecal/e-cal.c:4288
 #, fuzzy
 msgid "Authentication failed"
 msgstr "驗証失敗。"
 
 # camel/providers/local/camel-mbox-store.c:110
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
 #, fuzzy
 msgid "Could not create cache file"
 msgstr ""
@@ -968,69 +987,69 @@ msgstr "未指定"
 
 # camel/camel-smime-context.c:194
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1488
+#: calendar/libecal/e-cal.c:1490
 #, fuzzy, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s請輸入 %s 所需的密碼(使用者 %s)"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: calendar/libecal/e-cal.c:4248
+#: calendar/libecal/e-cal.c:4262
 msgid "Invalid argument"
 msgstr "無效的參數"
 
-#: calendar/libecal/e-cal.c:4250
+#: calendar/libecal/e-cal.c:4264
 msgid "Backend is busy"
 msgstr ""
 
 # shell/e-shell-view-menu.c:602
 # shell/e-shell-view-menu.c:614
-#: calendar/libecal/e-cal.c:4252
+#: calendar/libecal/e-cal.c:4266
 #, fuzzy
 msgid "Repository is offline"
 msgstr "資料庫離線"
 
 # camel/providers/imap/camel-imap-store.c:803
 # mail/mail-local.c:334
-#: calendar/libecal/e-cal.c:4254
+#: calendar/libecal/e-cal.c:4268
 #, fuzzy
 msgid "No such calendar"
 msgstr "沒有這個資料夾 %s"
 
-#: calendar/libecal/e-cal.c:4256 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
 #, fuzzy
 msgid "Object not found"
 msgstr "找不到物件\n"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: calendar/libecal/e-cal.c:4258 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
 #, fuzzy
 msgid "Invalid object"
 msgstr "無效的目的"
 
 # addressbook/conduit/address-conduit.c:214
-#: calendar/libecal/e-cal.c:4260
+#: calendar/libecal/e-cal.c:4274
 #, fuzzy
 msgid "URI not loaded"
 msgstr "尚未載入 EBook\n"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4276
 msgid "URI already loaded"
 msgstr ""
 
 # shell/e-storage.c:475
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4278
 msgid "Permission denied"
 msgstr "權限不足"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4280
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "名片 ID 已經存在"
 
 # shell/e-storage.c:477
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4282
 msgid "Protocol not supported"
 msgstr "通訊協定不支援"
 
@@ -1038,34 +1057,34 @@ msgstr "通訊協定不支援"
 # camel/camel-remote-store.c:399
 # camel/camel-remote-store.c:470
 # camel/providers/imap/camel-imap-command.c:287
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4284
 #, fuzzy
 msgid "Operation has been cancelled"
 msgstr "作業已取消"
 
 # calendar/gui/e-itip-control.c:883
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4286
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "取消作業"
 
 # camel/providers/smtp/camel-smtp-transport.c:218
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4290
 msgid "Authentication required"
 msgstr "要求驗證"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4292
 msgid "A CORBA exception has occurred"
 msgstr ""
 
 # camel/providers/imap/camel-imap-command.c:241
 # shell/e-storage.c:481
-#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "不明的錯誤"
 
 # shell/e-storage.c:459
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4296
 msgid "No error"
 msgstr "沒有錯誤"
 
@@ -8273,11 +8292,6 @@ msgstr "Evolution 目錄服務迷你名片檢視"
 #~ msgid "For reading mail as a query of another set of folders"
 #~ msgstr "使讀取郵件如同查詢其他資料夾"
 
-# camel/camel-session.c:295
-# camel/camel-session.c:364
-#~ msgid "No provider available for protocol `%s'"
-#~ msgstr "沒有通訊協定“%s”的提供者"
-
 # camel/camel-session.c:479
 #~ msgid ""
 #~ "Could not create directory %s:\n"
@@ -8537,13 +8551,6 @@ msgstr "Evolution 目錄服務迷你名片檢視"
 # camel/providers/local/camel-local-store.c:237
 #~ msgid "Cannot rename folder: %s: No such folder"
 #~ msgstr "不能重新命名資料夾： %s ：沒有這個資料夾"
-
-# camel/camel-remote-store.c:337
-# camel/camel-remote-store.c:399
-# camel/camel-remote-store.c:470
-# camel/providers/imap/camel-imap-command.c:287
-#~ msgid "Operation cancelled"
-#~ msgstr "作業已取消"
 
 # camel/camel-remote-store.c:476
 #~ msgid "Server unexpectedly disconnected: %s"

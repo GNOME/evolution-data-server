@@ -911,6 +911,10 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalB
 	ESExpResult *r;
 	gboolean retval;
 
+	g_return_val_if_fail (E_IS_CAL_BACKEND_SEXP (sexp), FALSE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+
 	sexp->priv->search_context->comp = g_object_ref (comp);
 	sexp->priv->search_context->backend = g_object_ref (backend);
 

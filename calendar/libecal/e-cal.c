@@ -1,8 +1,10 @@
 /* Evolution calendar ecal
  *
  * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 2004 Novell, Inc.
  *
- * Author: Federico Mena-Quintero <federico@ximian.com>
+ * Authors: Federico Mena-Quintero <federico@ximian.com>
+ *          Rodrigo Moya <rodrigo@novell.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -2152,7 +2154,6 @@ load_static_capabilities (ECal *ecal, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	char *cap;
 	
 	priv = ecal->priv;
 
@@ -2752,7 +2753,7 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 {
 	GList **list;
 	struct comp_instance *ci;
-	struct icaltimetype itt, itt_start;
+	struct icaltimetype itt_start;
 	icalcomponent *icalcomp;
 
 	list = data;
@@ -2874,40 +2875,18 @@ process_detached_instances (GList *instances, GList *detached_instances)
 	return instances;
 }
 
-/**
- * e_cal_generate_instances:
- * @ecal: A calendar ecal.
- * @start: Start time for query.
- * @end: End time for query.
- * @cb: Callback for each generated instance.
- * @cb_data: Closure data for the callback.
- * 
- * Does a combination of e_cal_get_object_list () and
- * cal_recur_generate_instances().  
- *
- * The callback function should do a g_object_ref() of the calendar component
- * it gets passed if it intends to keep it around.
- **/
-void
-e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
-			  ECalRecurInstanceFn cb, gpointer cb_data)
+static void
+generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
+		    ECalRecurInstanceFn cb, gpointer cb_data)
 {
-	ECalPrivate *priv;
 	GList *objects;
 	GList *instances, *detached_instances = NULL;
 	GList *l;
 	char *query;
 	char *iso_start, *iso_end;
-	
-	g_return_if_fail (ecal != NULL);
-	g_return_if_fail (E_IS_CAL (ecal));
+	ECalPrivate *priv;
 
 	priv = ecal->priv;
-	g_return_if_fail (priv->load_state == E_CAL_LOAD_LOADED);
-
-	g_return_if_fail (start != -1 && end != -1);
-	g_return_if_fail (start <= end);
-	g_return_if_fail (cb != NULL);
 
 	iso_start = isodate_from_time_t (start);
 	if (!iso_start)
@@ -2920,8 +2899,12 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 	}
 
 	/* Generate objects */
-	query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
-				 iso_start, iso_end);
+	if (uid && *uid)
+		query = g_strdup_printf ("(and (occur-in-time-range? (make-time \"%s\") (make-time \"%s\")) (uid? \"%s\"))",
+					 iso_start, iso_end, uid);
+	else
+		query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
+					 iso_start, iso_end);
 	g_free (iso_start);
 	g_free (iso_end);
 	if (!e_cal_get_object_list_as_comp (ecal, query, &objects, NULL)) {
@@ -2998,6 +2981,40 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
 	}
 
 	g_list_free (detached_instances);
+
+}
+
+/**
+ * e_cal_generate_instances:
+ * @ecal: A calendar ecal.
+ * @start: Start time for query.
+ * @end: End time for query.
+ * @cb: Callback for each generated instance.
+ * @cb_data: Closure data for the callback.
+ * 
+ * Does a combination of e_cal_get_object_list () and
+ * cal_recur_generate_instances().  
+ *
+ * The callback function should do a g_object_ref() of the calendar component
+ * it gets passed if it intends to keep it around.
+ **/
+void
+e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
+			  ECalRecurInstanceFn cb, gpointer cb_data)
+{
+	ECalPrivate *priv;
+	
+	g_return_if_fail (ecal != NULL);
+	g_return_if_fail (E_IS_CAL (ecal));
+
+	priv = ecal->priv;
+	g_return_if_fail (priv->load_state == E_CAL_LOAD_LOADED);
+
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
+	g_return_if_fail (cb != NULL);
+
+	generate_instances (ecal, start, end, NULL, cb, cb_data);
 }
 
 /**
@@ -3028,8 +3045,8 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	GList *instances = NULL;
 
 	g_return_if_fail (E_IS_CAL (ecal));
-	g_return_if_fail (start != -1 && end != -1);
-	g_return_if_fail (start <= end);
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
 	g_return_if_fail (cb != NULL);
 
 	priv = ecal->priv;
@@ -3037,31 +3054,28 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 
-	/* generate all instances in the given time range */
-	e_cal_generate_instances (ecal, start, end, add_instance, &instances);
-
-	/* now only return back the instances for the given object */
 	e_cal_component_get_uid (comp, &uid);
 	rid = e_cal_component_get_recurid_as_string (comp);
 
+	/* generate all instances in the given time range */
+	generate_instances (ecal, start, end, uid, add_instance, &instances);
+
+	/* now only return back the instances for the given object */
 	result = TRUE;
 	while (instances != NULL) {
 		struct comp_instance *ci;
-		const char *instance_uid, *instance_rid;
+		const char *instance_rid;
 
 		ci = instances->data;
 
 		if (result) {
-			e_cal_component_get_uid (ci->comp, &instance_uid);
 			instance_rid = e_cal_component_get_recurid_as_string (ci->comp);
 
-			if (instance_uid && strcmp (uid, instance_uid) == 0) {
-				if (rid && *rid) {
-					if (instance_rid && *instance_rid && strcmp (rid, instance_rid) == 0)
-						result = (* cb) (ci->comp, ci->start, ci->end, cb_data);
-				} else
-					result = (* cb)  (ci->comp, ci->start, ci->end, cb_data);
-			}
+			if (rid && *rid) {
+				if (instance_rid && *instance_rid && strcmp (rid, instance_rid) == 0)
+					result = (* cb) (ci->comp, ci->start, ci->end, cb_data);
+			} else
+				result = (* cb)  (ci->comp, ci->start, ci->end, cb_data);
 		}
 
 		/* remove instance from list */
@@ -3131,7 +3145,7 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 	priv = ecal->priv;
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, NULL);
 
-	g_return_val_if_fail (start != -1 && end != -1, NULL);
+	g_return_val_if_fail (start >= 0 && end >= 0, NULL);
 	g_return_val_if_fail (start <= end, NULL);
 
 	/* build the query string */
@@ -3208,7 +3222,7 @@ e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
 
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (start != -1 && end != -1, FALSE);
+	g_return_val_if_fail (start >= 0 && end >= 0, FALSE);
 	g_return_val_if_fail (start <= end, FALSE);
 	g_return_val_if_fail (alarms != NULL, FALSE);
 

@@ -54,12 +54,80 @@ e-book-marshal
 </para>
 
 
+<!-- ##### FUNCTION e_book_async_get_default_addressbook ##### -->
+<para>
+
+</para>
+
+@open_response: 
+@closure: 
+
+<!-- ##### FUNCTION e_book_async_load_source ##### -->
+<para>
+
+</para>
+
+@book: 
+@source: 
+@open_response: 
+@closure: 
+
+<!-- ##### FUNCTION e_book_async_load_uri ##### -->
+<para>
+
+</para>
+
+@book: 
+@uri: 
+@open_response: 
+@closure: 
+
 <!-- ##### FUNCTION e_book_async_unload_uri ##### -->
 <para>
 
 </para>
 
 @book: 
+
+<!-- ##### FUNCTION e_book_get_default_addressbook ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_load_local_addressbook ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_load_source ##### -->
+<para>
+
+</para>
+
+@book: 
+@source: 
+@only_if_exists: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_load_uri ##### -->
+<para>
+
+</para>
+
+@book: 
+@uri: 
+@only_if_exists: 
+@error: 
+@Returns: 
 
 <!-- ##### MACRO e_book_marshal_NONE__BOOL ##### -->
 <para>

@@ -41,44 +41,12 @@ The backend for this address book has died.
 
 </para>
 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_load_source ##### -->
-<para>
-
-</para>
-
-@book: 
 @source: 
-@only_if_exists: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_load_uri ##### -->
-<para>
-
-</para>
-
-@book: 
-@uri: 
-@only_if_exists: 
 @error: 
 @Returns: 
 
 
 <!-- ##### FUNCTION e_book_remove ##### -->
-<para>
-
-</para>
-
-@book: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_load_local_addressbook ##### -->
 <para>
 
 </para>
@@ -303,16 +271,6 @@ The backend for this address book has died.
 </para>
 
 @contact: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_get_default_addressbook ##### -->
-<para>
-
-</para>
-
-@book: 
-@error: 
 @Returns: 
 
 

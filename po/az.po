@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"POT-Creation-Date: 2004-05-19 11:11-0400\n"
+"POT-Creation-Date: 2004-06-03 10:40-0400\n"
 "PO-Revision-Date: 2004-01-30 13:43+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani Turkish <gnome@azitt.com>\n"
@@ -23,53 +23,53 @@ msgid "Loading..."
 msgstr "Yüklənir..."
 
 #: addressbook/backends/file/e-book-backend-file.c:430
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3069
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3071
 #: addressbook/backends/vcf/e-book-backend-vcf.c:454
 msgid "Searching..."
 msgstr "Axtarılır..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:614
+#: addressbook/backends/ldap/e-book-backend-ldap.c:615
 msgid "Using Distinguished Name (DN)"
 msgstr "Distinguished Name (DN) İşlədilir"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:617
+#: addressbook/backends/ldap/e-book-backend-ldap.c:618
 msgid "Using Email Address"
 msgstr "Epoçt Ünvanı İşlədilir"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:783
+#: addressbook/backends/ldap/e-book-backend-ldap.c:784
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP vericisinə yenidən bağlantı qurulur..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1298
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1299
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP vericiyə əlaqə əlavə edilir..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1394
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1395
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP vericidən əlaqə silinir..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1609
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1610
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP vericidəki əlaqə təkmilləşdirilir..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2982
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2984
 msgid "Receiving LDAP search results..."
 msgstr "LDAP axtarış nəticələri alınır..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3089
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3091
 msgid "Error performing search"
 msgstr "Axtarış xətası"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
-#. * "e_book_load_uri
+#. * "e_book_open
 #: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:332
 #: addressbook/libebook/e-book.c:417 addressbook/libebook/e-book.c:519
 #: addressbook/libebook/e-book.c:632 addressbook/libebook/e-book.c:716
 #: addressbook/libebook/e-book.c:856 addressbook/libebook/e-book.c:955
 #: addressbook/libebook/e-book.c:1089 addressbook/libebook/e-book.c:1190
-#: addressbook/libebook/e-book.c:1430 addressbook/libebook/e-book.c:2030
+#: addressbook/libebook/e-book.c:1943
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" kitabçada \"%s\"-dan əvvəldədir"
@@ -79,7 +79,7 @@ msgstr "\"%s\" kitabçada \"%s\"-dan əvvəldədir"
 #: addressbook/libebook/e-book.c:640 addressbook/libebook/e-book.c:724
 #: addressbook/libebook/e-book.c:864 addressbook/libebook/e-book.c:963
 #: addressbook/libebook/e-book.c:1097 addressbook/libebook/e-book.c:1198
-#: addressbook/libebook/e-book.c:1438
+#: addressbook/libebook/e-book.c:1417 addressbook/libebook/e-book.c:1519
 msgid "book busy"
 msgstr "kitabça məşğuldur"
 
@@ -88,8 +88,8 @@ msgstr "kitabça məşğuldur"
 #: addressbook/libebook/e-book.c:666 addressbook/libebook/e-book.c:747
 #: addressbook/libebook/e-book.c:896 addressbook/libebook/e-book.c:1007
 #: addressbook/libebook/e-book.c:1125 addressbook/libebook/e-book.c:1222
-#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1460
-#: addressbook/libebook/e-book.c:2039
+#: addressbook/libebook/e-book.c:1356 addressbook/libebook/e-book.c:1439
+#: addressbook/libebook/e-book.c:1541 addressbook/libebook/e-book.c:1952
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "\"%s\" çağırışı edən CORBA istisnası"
@@ -102,33 +102,39 @@ msgstr "e_book_cancel: hazırda əməliyat yoxdur"
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: ləğv edilə bilmədi"
 
-#: addressbook/libebook/e-book.c:1731
-msgid "e_book_load_uri: Invalid source."
-msgstr "e_book_load_uri: Hökmsüz mənbə."
-
-#: addressbook/libebook/e-book.c:1740 addressbook/libebook/e-book.c:1858
-#, c-format
-msgid "e_book_load_uri: no factories available for uri `%s'"
-msgstr "e_book_load_uri: `%s' üçün heç bir e'malatxana mövcud deyil"
-
-#: addressbook/libebook/e-book.c:1753
-msgid "e_book_load_uri: Could not create EBookListener"
-msgstr "e_book_load_uri: EBookListener yaradıla bilmədi"
-
-#: addressbook/libebook/e-book.c:1852
-msgid "e_book_load_uri: cancelled"
-msgstr "e_book_load_uri: ləğv edildi"
-
-#: addressbook/libebook/e-book.c:1889
+#: addressbook/libebook/e-book.c:1409
 #, fuzzy, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" kitabçada \"%s\"-dan əvvəldədir"
 
-#: addressbook/libebook/e-book.c:2125
+#: addressbook/libebook/e-book.c:1458
+#, fuzzy
+msgid "e_book_open: cancelled"
+msgstr "e_book_load_uri: ləğv edildi"
+
+#: addressbook/libebook/e-book.c:1810
+msgid "e_book_load_uri: Invalid source."
+msgstr "e_book_load_uri: Hökmsüz mənbə."
+
+#: addressbook/libebook/e-book.c:1818
+#, c-format
+msgid "e_book_load_uri: no factories available for uri `%s'"
+msgstr "e_book_load_uri: `%s' üçün heç bir e'malatxana mövcud deyil"
+
+#: addressbook/libebook/e-book.c:1830
+msgid "e_book_load_uri: Could not create EBookListener"
+msgstr "e_book_load_uri: EBookListener yaradıla bilmədi"
+
+#: addressbook/libebook/e-book.c:1881
+#, fuzzy, c-format
+msgid "e_book_new: no factories available for uri `%s'"
+msgstr "e_book_load_uri: `%s' üçün heç bir e'malatxana mövcud deyil"
+
+#: addressbook/libebook/e-book.c:2038
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: there was no self contact uid stored in gconf"
 
-#: addressbook/libebook/e-book.c:2302
+#: addressbook/libebook/e-book.c:2147
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
@@ -294,306 +300,311 @@ msgid "Email 3"
 msgstr "Epoçt 3"
 
 #: addressbook/libebook/e-contact.c:149
+#, fuzzy
+msgid "Email 4"
+msgstr "Epoçt 3"
+
+#: addressbook/libebook/e-contact.c:150
 msgid "Mailer"
 msgstr "Poçt proqramı"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:151
 msgid "Wants HTML Mail"
 msgstr "HTML Məktubu Qəbul Edilir"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:154
 msgid "AIM Screen Name List"
 msgstr "AIM Əlaqə Adları Siyahısı"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:155
 msgid "Groupwise Id List"
 msgstr ""
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:156
 msgid "Jabber Id List"
 msgstr "Jabber Id Siyahısı"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:157
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! Əlaqə Adları Siyahısı"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:158
 msgid "MSN Screen Name List"
 msgstr "MSN Əlaqə Adları Siyahısı"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:159
 msgid "ICQ Id List"
 msgstr "ICQ Id Siyahısı"
 
-#: addressbook/libebook/e-contact.c:160
+#: addressbook/libebook/e-contact.c:161
 msgid "AIM Home Screen Name 1"
 msgstr "AIM Ev Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:162
 msgid "AIM Home Screen Name 2"
 msgstr "AIM Ev Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 3"
 msgstr "AIM Ev Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Work Screen Name 1"
 msgstr "AIM İş Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Work Screen Name 2"
 msgstr "AIM İş Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 3"
 msgstr "AIM İş Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:167
 #, fuzzy
 msgid "Groupwise Home Screen Name 1"
 msgstr "AIM Ev Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:168
 #, fuzzy
 msgid "Groupwise Home Screen Name 2"
 msgstr "AIM Ev Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:169
 #, fuzzy
 msgid "Groupwise Home Screen Name 3"
 msgstr "AIM Ev Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:170
 #, fuzzy
 msgid "Groupwise Work Screen Name 1"
 msgstr "AIM İş Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:171
 #, fuzzy
 msgid "Groupwise Work Screen Name 2"
 msgstr "AIM İş Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:172
 #, fuzzy
 msgid "Groupwise Work Screen Name 3"
 msgstr "AIM İş Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:173
 msgid "Jabber Home Id 1"
 msgstr "Jabber Ev Id-si 1"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:174
 msgid "Jabber Home Id 2"
 msgstr "Jabber Ev Id-si 2"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 3"
 msgstr "Jabber Ev Id-si 3"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Work Id 1"
 msgstr "Jabber İş Id-si 1"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Work Id 2"
 msgstr "Jabber İş Id-si 2"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 3"
 msgstr "Jabber İş Id-si 3"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:179
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! Ev Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:180
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! Ev Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! Ev Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! İş Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! İş Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! İş Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:185
 msgid "MSN Home Screen Name 1"
 msgstr "MSN Ev Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:186
 msgid "MSN Home Screen Name 2"
 msgstr "MSN Ev Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 3"
 msgstr "MSN Ev Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Work Screen Name 1"
 msgstr "MSN İş Əlaqə Adı 1"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Work Screen Name 2"
 msgstr "MSN İş Əlaqə Adı 2"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 3"
 msgstr "MSN İş Əlaqə Adı 3"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:191
 msgid "ICQ Home Id 1"
 msgstr "ICQ Ev Id-si 1"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:192
 msgid "ICQ Home Id 2"
 msgstr "ICQ Ev Id-si 2"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 3"
 msgstr "ICQ Ev Id-si 3"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Work Id 1"
 msgstr "ICQ İş Id-si 1"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Work Id 2"
 msgstr "ICQ İş Id-si 2"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 3"
 msgstr "ICQ İş Id-si 3"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:199
 msgid "Organization"
 msgstr "Quruluş"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:200
 msgid "Organizational Unit"
 msgstr "Quruluş Bölməsi"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:201
 msgid "Office"
 msgstr "İdarə"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:203
 msgid "Title"
 msgstr "Vəzifə"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:204
 msgid "Role"
 msgstr "Rol"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:205
 msgid "Manager"
 msgstr "İdarəçi"
 
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:206
 msgid "Assistant"
 msgstr "Köməkçi"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:208
+#: addressbook/libebook/e-contact.c:209
 msgid "Homepage URL"
 msgstr "Veb Səhifəsi Ünvanı"
 
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:210
 msgid "Weblog URL"
 msgstr "Vebloq Ünvanı"
 
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:211
 msgid "Video Conferencing URL"
 msgstr "Video Görüşmə Ünvanı"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:214
 msgid "Photo"
 msgstr "Foto"
 
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:215
 msgid "Logo"
 msgstr "Loqo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:217
+#: addressbook/libebook/e-contact.c:218
 msgid "X.509 Certificate"
 msgstr "X.509 Vəsiqəsi"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:221
 msgid "Category List"
 msgstr "Kateqoriya Siyahısı"
 
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:222
 msgid "Categories"
 msgstr "Kateqoriyalar"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:225
 msgid "Calendar URI"
 msgstr "Təqvim Ünvanı"
 
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:226
 msgid "Free/Busy URL"
 msgstr "Sərbəst/Məşğul Ünvanı"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:227
 msgid "ICS Calendar"
 msgstr "ICS Təqvimi"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:230
 msgid "Spouse's Name"
 msgstr "Yoldaşının Adı"
 
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:231
 msgid "Note"
 msgstr "Qeyd"
 
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:233
 msgid "Birth Date"
 msgstr "Ad Günü"
 
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:234
 msgid "Anniversary"
 msgstr "İldönümü"
 
-#: addressbook/libebook/e-contact.c:235
+#: addressbook/libebook/e-contact.c:236
 msgid "List"
 msgstr "Siyahı"
 
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:237
 msgid "List Show Addresses"
 msgstr "Ünvanları Göstər"
 
-#: addressbook/libebook/e-contact.c:1208
+#: addressbook/libebook/e-contact.c:1209
 msgid "Unnamed List"
 msgstr "Adsız Siyahı"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:441
 msgid "Birthday"
 msgstr "Ad Günü"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: calendar/backends/contacts/e-cal-backend-contacts.c:465
 #, c-format
 msgid "Birthday: %s"
 msgstr "Ad Günü: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:485
+#: calendar/backends/contacts/e-cal-backend-contacts.c:486
 #, c-format
 msgid "Anniversary: %s"
 msgstr "İl dönümü: %s"
@@ -602,22 +613,22 @@ msgstr "İl dönümü: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Təqvim mə'lumatı qeyd edilə bilmir: Pozulmuş URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:195
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:228
 msgid "Invalid server URI"
 msgstr ""
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:224
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:227
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:256
 #, fuzzy
 msgid "Calendar"
 msgstr "Təqvim Ünvanı"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
-#: calendar/libecal/e-cal.c:4274
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:277
+#: calendar/libecal/e-cal.c:4288
 msgid "Authentication failed"
 msgstr "Tanıtma bacarılmadı"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:427
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:456
 #, fuzzy
 msgid "Could not create cache file"
 msgstr "Əməliyyat ləğv edilə bilmədi"
@@ -780,76 +791,76 @@ msgid "Undefined"
 msgstr "Təsvirsiz"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1488
+#: calendar/libecal/e-cal.c:1490
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s üçün şifrəni bildirin (istifadəçi %s)"
 
-#: calendar/libecal/e-cal.c:4248
+#: calendar/libecal/e-cal.c:4262
 msgid "Invalid argument"
 msgstr "Səhv arqument"
 
-#: calendar/libecal/e-cal.c:4250
+#: calendar/libecal/e-cal.c:4264
 msgid "Backend is busy"
 msgstr "Backend məşğuldur"
 
-#: calendar/libecal/e-cal.c:4252
+#: calendar/libecal/e-cal.c:4266
 msgid "Repository is offline"
 msgstr "Ambar xətdə deyil"
 
-#: calendar/libecal/e-cal.c:4254
+#: calendar/libecal/e-cal.c:4268
 msgid "No such calendar"
 msgstr "Belə təqvim yoxdur"
 
-#: calendar/libecal/e-cal.c:4256 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Üzv tapıla bilmədi"
 
-#: calendar/libecal/e-cal.c:4258 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Hökmsüz üzv"
 
-#: calendar/libecal/e-cal.c:4260
+#: calendar/libecal/e-cal.c:4274
 msgid "URI not loaded"
 msgstr "URI yüklü deyil"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4276
 msgid "URI already loaded"
 msgstr "URI onsuz da yüklüdür"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4278
 msgid "Permission denied"
 msgstr "Səlahiyyət rədd edildi"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4280
 msgid "Object ID already exists"
 msgstr "Üzv ID-si onsuz da mövcuddur"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4282
 msgid "Protocol not supported"
 msgstr "Protokol dəstəklənmir"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4284
 msgid "Operation has been cancelled"
 msgstr "Əməliyyat ləğv edildi"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4286
 msgid "Could not cancel operation"
 msgstr "Əməliyyat ləğv edilə bilmədi"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4290
 msgid "Authentication required"
 msgstr "Tanıtma lazımdır"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4292
 msgid "A CORBA exception has occurred"
 msgstr "CORBA istisnası baş verdi"
 
-#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Namə'lum xəta"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4296
 msgid "No error"
 msgstr "Xətasız"
 
