@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.5\n"
-"POT-Creation-Date: 2004-01-26 12:42-0500\n"
+"POT-Creation-Date: 2004-01-29 16:26-0500\n"
 "PO-Revision-Date: 2004-01-14 22:03+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -70,7 +70,8 @@ msgstr "Fehler beim Ausführen der Suche"
 #: addressbook/libebook/e-book.c:629 addressbook/libebook/e-book.c:713
 #: addressbook/libebook/e-book.c:816 addressbook/libebook/e-book.c:870
 #: addressbook/libebook/e-book.c:969 addressbook/libebook/e-book.c:1103
-#: addressbook/libebook/e-book.c:1203 addressbook/libebook/e-book.c:1441
+#: addressbook/libebook/e-book.c:1203 addressbook/libebook/e-book.c:1443
+#: addressbook/libebook/e-book.c:2020
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "»%s« vor »%s« auf Buch aufgerufen"
@@ -80,7 +81,7 @@ msgstr "»%s« vor »%s« auf Buch aufgerufen"
 #: addressbook/libebook/e-book.c:637 addressbook/libebook/e-book.c:721
 #: addressbook/libebook/e-book.c:824 addressbook/libebook/e-book.c:878
 #: addressbook/libebook/e-book.c:977 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1211 addressbook/libebook/e-book.c:1449
+#: addressbook/libebook/e-book.c:1211 addressbook/libebook/e-book.c:1451
 msgid "book busy"
 msgstr "Buch belegt"
 
@@ -89,34 +90,48 @@ msgstr "Buch belegt"
 #: addressbook/libebook/e-book.c:663 addressbook/libebook/e-book.c:744
 #: addressbook/libebook/e-book.c:910 addressbook/libebook/e-book.c:1021
 #: addressbook/libebook/e-book.c:1139 addressbook/libebook/e-book.c:1235
-#: addressbook/libebook/e-book.c:1367 addressbook/libebook/e-book.c:1471
+#: addressbook/libebook/e-book.c:1369 addressbook/libebook/e-book.c:1473
+#: addressbook/libebook/e-book.c:2029
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-Exception führt »%s«-Aufruf durch"
 
-#: addressbook/libebook/e-book.c:1348
+#: addressbook/libebook/e-book.c:1350
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: momentan existiert keine Aktion"
 
-#: addressbook/libebook/e-book.c:1383
+#: addressbook/libebook/e-book.c:1385
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: Abbrechen gescheitert"
 
-#: addressbook/libebook/e-book.c:1731
+#: addressbook/libebook/e-book.c:1739
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: Ungültige Quelle"
 
-#: addressbook/libebook/e-book.c:1739 addressbook/libebook/e-book.c:1843
+#: addressbook/libebook/e-book.c:1747 addressbook/libebook/e-book.c:1860
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: keine Fabriken für URI »%s« verfügbar"
 
-#: addressbook/libebook/e-book.c:1753
+#: addressbook/libebook/e-book.c:1761
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListener konnte nicht angelegt werden"
 
-#: addressbook/libebook/e-book.c:2082
+#: addressbook/libebook/e-book.c:1854
+#, fuzzy
+msgid "e_book_load_uri: cancelled"
+msgstr "e_book_load_uri: Ungültige Quelle"
+
+#: addressbook/libebook/e-book.c:2115
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
+msgstr ""
+"e_book_get_self: Es gab keine in GConf gespeicherte Self-Contact-"
+"Benutzerkennung"
+
+#: addressbook/libebook/e-book.c:2292
+#, fuzzy, c-format
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 "e_book_get_self: Es gab keine in GConf gespeicherte Self-Contact-"
 "Benutzerkennung"
@@ -484,54 +499,55 @@ msgstr "Logo"
 msgid "X.509 Certificate"
 msgstr "X.509-Zertifikat"
 
-#: addressbook/libebook/e-contact.c:211
+#. Contact categories
+#: addressbook/libebook/e-contact.c:210
 msgid "Category List"
 msgstr "Kategorieliste"
 
-#: addressbook/libebook/e-contact.c:212 addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:211
 msgid "Categories"
 msgstr "Kategorien"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:214
 msgid "Calendar URI"
 msgstr "Kalender-URI"
 
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:215
 msgid "Free/Busy URL"
 msgstr "Verfügbarkeits-URL"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:216
 msgid "ICS Calendar"
 msgstr "ICS-Kalender"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:219
 msgid "Spouse's Name"
 msgstr "Ehepartner"
 
-#: addressbook/libebook/e-contact.c:224
+#: addressbook/libebook/e-contact.c:220
 msgid "Note"
 msgstr "Notiz"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:222
 msgid "Birth Date"
 msgstr "Geburtsdatum"
 
-#: addressbook/libebook/e-contact.c:227
+#: addressbook/libebook/e-contact.c:223
 msgid "Anniversary"
 msgstr "Jahrestag"
 
-#: addressbook/libebook/e-contact.c:229
+#: addressbook/libebook/e-contact.c:225
 msgid "List"
 msgstr "Liste"
 
 # CHECK
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:226
 msgid "List Show Addresses"
 msgstr "Liste der Anzeigeadressen"
 
-#: addressbook/libebook/e-contact.c:1147
+#: addressbook/libebook/e-contact.c:1174
 msgid "Unnamed List"
 msgstr "Namenlose Liste"
 
@@ -709,81 +725,82 @@ msgid "Undefined"
 msgstr "Undefiniert"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1449
+#: calendar/libecal/e-cal.c:1475
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Passwort für %s eingeben (Benutzer %s)"
 
-#: calendar/libecal/e-cal.c:3868
+#: calendar/libecal/e-cal.c:3894
 msgid "Invalid argument"
 msgstr "Argument ungültig"
 
-#: calendar/libecal/e-cal.c:3870
+#: calendar/libecal/e-cal.c:3896
 msgid "Backend is busy"
 msgstr "Backend belegt"
 
-#: calendar/libecal/e-cal.c:3872
+#: calendar/libecal/e-cal.c:3898
 msgid "Repository is offline"
 msgstr "Repository offline"
 
 # CHECK
-#: calendar/libecal/e-cal.c:3874
+#: calendar/libecal/e-cal.c:3900
 msgid "No such calendar"
 msgstr "Kein derartiger Kalender"
 
-#: calendar/libecal/e-cal.c:3876 calendar/libecal/e-cal.c:3886
+#: calendar/libecal/e-cal.c:3902
 msgid "Object not found"
 msgstr "Objekt nicht gefunden"
 
-#: calendar/libecal/e-cal.c:3878
+#: calendar/libecal/e-cal.c:3904
 msgid "Invalid object"
 msgstr "Objekt ungültig"
 
-#: calendar/libecal/e-cal.c:3880
+#: calendar/libecal/e-cal.c:3906
 msgid "URI not loaded"
 msgstr "URI nicht geladen"
 
-#: calendar/libecal/e-cal.c:3882
+#: calendar/libecal/e-cal.c:3908
 msgid "URI already loaded"
 msgstr "URI bereits geladen"
 
-#: calendar/libecal/e-cal.c:3884
+#: calendar/libecal/e-cal.c:3910
 msgid "Permission denied"
 msgstr "Erlaubnis verweigert"
 
-#: calendar/libecal/e-cal.c:3888
+#: calendar/libecal/e-cal.c:3912
 msgid "Object ID already exists"
 msgstr "Objektkennung existiert bereits"
 
-#: calendar/libecal/e-cal.c:3890
+#: calendar/libecal/e-cal.c:3914
 msgid "Protocol not supported"
 msgstr "Protokoll nicht unterstützt"
 
-#: calendar/libecal/e-cal.c:3892
+#: calendar/libecal/e-cal.c:3916
 msgid "Operation has been cancelled"
 msgstr "Aktion wurde abgebrochen"
 
-#: calendar/libecal/e-cal.c:3894
+#: calendar/libecal/e-cal.c:3918
 msgid "Could not cancel operation"
 msgstr "Aktion konnte nicht abgebrochen werden"
 
-#: calendar/libecal/e-cal.c:3896
+#: calendar/libecal/e-cal.c:3920
 msgid "Authentication failed"
 msgstr "Legitimation gescheitert"
 
-#: calendar/libecal/e-cal.c:3898
+#: calendar/libecal/e-cal.c:3922
 msgid "Authentication required"
 msgstr "Legitimation erforderlich"
 
-#: calendar/libecal/e-cal.c:3900
-msgid "A CORBA esception has occurred"
+#: calendar/libecal/e-cal.c:3924
+#, fuzzy
+msgid "A CORBA exception has occurred"
 msgstr "Es ist eine CORBA-Exception aufgetreten"
 
-#: calendar/libecal/e-cal.c:3902
+#: calendar/libecal/e-cal.c:3926
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: calendar/libecal/e-cal.c:3904
+#: calendar/libecal/e-cal.c:3928
 msgid "No error"
 msgstr "Kein Fehler"
 

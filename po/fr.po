@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.6\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-28 13:19+0100\n"
+"POT-Creation-Date: 2004-01-29 16:26-0500\n"
 "PO-Revision-Date: 2004-01-28 01:22+0100\n"
 "Last-Translator: Sébastien Bacher <seb128@debian.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -547,7 +547,7 @@ msgstr "Liste"
 msgid "List Show Addresses"
 msgstr "Autre adresse"
 
-#: addressbook/libebook/e-contact.c:1167
+#: addressbook/libebook/e-contact.c:1174
 msgid "Unnamed List"
 msgstr "Liste de contacts sans nom"
 
@@ -724,80 +724,81 @@ msgid "Undefined"
 msgstr "Indéfinie"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1449
+#: calendar/libecal/e-cal.c:1475
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Saisissez le mot de passe pour %s (utilisateur %s)"
 
-#: calendar/libecal/e-cal.c:3868
+#: calendar/libecal/e-cal.c:3894
 msgid "Invalid argument"
 msgstr "Argument non valide"
 
-#: calendar/libecal/e-cal.c:3870
+#: calendar/libecal/e-cal.c:3896
 msgid "Backend is busy"
 msgstr "Le moteur est occupé"
 
-#: calendar/libecal/e-cal.c:3872
+#: calendar/libecal/e-cal.c:3898
 msgid "Repository is offline"
 msgstr "Le dépôt est hors ligne"
 
-#: calendar/libecal/e-cal.c:3874
+#: calendar/libecal/e-cal.c:3900
 msgid "No such calendar"
 msgstr "Calendrier inexistant"
 
-#: calendar/libecal/e-cal.c:3876
+#: calendar/libecal/e-cal.c:3902
 msgid "Object not found"
 msgstr "Objet non trouvé"
 
-#: calendar/libecal/e-cal.c:3878
+#: calendar/libecal/e-cal.c:3904
 msgid "Invalid object"
 msgstr "Objet non valide"
 
-#: calendar/libecal/e-cal.c:3880
+#: calendar/libecal/e-cal.c:3906
 msgid "URI not loaded"
 msgstr "URI non chargée"
 
-#: calendar/libecal/e-cal.c:3882
+#: calendar/libecal/e-cal.c:3908
 msgid "URI already loaded"
 msgstr "URI déjà chargée"
 
-#: calendar/libecal/e-cal.c:3884
+#: calendar/libecal/e-cal.c:3910
 msgid "Permission denied"
 msgstr "Permission refusée"
 
-#: calendar/libecal/e-cal.c:3886
+#: calendar/libecal/e-cal.c:3912
 msgid "Object ID already exists"
 msgstr "L'ID de l'objet existe déjà"
 
-#: calendar/libecal/e-cal.c:3888
+#: calendar/libecal/e-cal.c:3914
 msgid "Protocol not supported"
 msgstr "Protocole non supporté"
 
-#: calendar/libecal/e-cal.c:3890
+#: calendar/libecal/e-cal.c:3916
 msgid "Operation has been cancelled"
 msgstr "L'opération a été annulée"
 
-#: calendar/libecal/e-cal.c:3892
+#: calendar/libecal/e-cal.c:3918
 msgid "Could not cancel operation"
 msgstr "Impossible d'annuler l'opération"
 
-#: calendar/libecal/e-cal.c:3894
+#: calendar/libecal/e-cal.c:3920
 msgid "Authentication failed"
 msgstr "L'authentification a échoué"
 
-#: calendar/libecal/e-cal.c:3896
+#: calendar/libecal/e-cal.c:3922
 msgid "Authentication required"
 msgstr "Authentification requise"
 
-#: calendar/libecal/e-cal.c:3898
-msgid "A CORBA esception has occurred"
+#: calendar/libecal/e-cal.c:3924
+#, fuzzy
+msgid "A CORBA exception has occurred"
 msgstr "Un exception CORBA est survenue"
 
-#: calendar/libecal/e-cal.c:3900
+#: calendar/libecal/e-cal.c:3926
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
-#: calendar/libecal/e-cal.c:3902
+#: calendar/libecal/e-cal.c:3928
 msgid "No error"
 msgstr "Aucune erreur"
 
@@ -883,6 +884,41 @@ msgstr ""
 "« %s » attend tous les arguments comme chaîne ou seulement 1 argument comme "
 "booléen faux (#f)"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Fichier et moteur LDAP pour le carnet d'adresses d'Evolution"
