@@ -1,5 +1,6 @@
 2005-01-27  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	partially Fixes#68541
 	* e-gw-connection.c: (reauthenticate),
 	(e_gw_connection_get_error_message), (logout),
 	(e_gw_connection_get_container_list), (e_gw_connection_get_items),
