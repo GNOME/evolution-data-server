@@ -22,41 +22,6 @@ addressbook itself.
 </para>
 
 
-<!-- ##### FUNCTION e_book_view_new ##### -->
-<para>
-
-</para>
-
-@corba_book_view: 
-@listener: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_view_set_book ##### -->
-<para>
-
-</para>
-
-@book_view: 
-@book: 
-
-
-<!-- ##### FUNCTION e_book_view_start ##### -->
-<para>
-
-</para>
-
-@book_view: 
-
-
-<!-- ##### FUNCTION e_book_view_stop ##### -->
-<para>
-
-</para>
-
-@book_view: 
-
-
 <!-- ##### SIGNAL EBookView::contacts-added ##### -->
 <para>
 Fired when more contacts are found.  Each contact in the list will be unref'd
@@ -98,4 +63,39 @@ keep.
 
 @ebookview: the object which received the signal.
 @arg1: 
+
+<!-- ##### FUNCTION e_book_view_new ##### -->
+<para>
+
+</para>
+
+@corba_book_view: 
+@listener: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_view_set_book ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@book: 
+
+
+<!-- ##### FUNCTION e_book_view_start ##### -->
+<para>
+
+</para>
+
+@book_view: 
+
+
+<!-- ##### FUNCTION e_book_view_stop ##### -->
+<para>
+
+</para>
+
+@book_view: 
+
 

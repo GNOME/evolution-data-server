@@ -8,144 +8,144 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-20 06:59+0100\n"
+"POT-Creation-Date: 2003-12-29 10:50-0500\n"
 "PO-Revision-Date: 2003-12-20 06:59+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: addressbook/libebook/e-book.c:212
+#: addressbook/libebook/e-book.c:213
 msgid "e_book_add_contact called on book before e_book_load_uri"
 msgstr "позван је e_book_add_contact на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:219 addressbook/libebook/e-book.c:328
-#: addressbook/libebook/e-book.c:410 addressbook/libebook/e-book.c:509
-#: addressbook/libebook/e-book.c:618 addressbook/libebook/e-book.c:699
-#: addressbook/libebook/e-book.c:799 addressbook/libebook/e-book.c:851
-#: addressbook/libebook/e-book.c:944 addressbook/libebook/e-book.c:1073
-#: addressbook/libebook/e-book.c:1171 addressbook/libebook/e-book.c:1395
+#: addressbook/libebook/e-book.c:220 addressbook/libebook/e-book.c:330
+#: addressbook/libebook/e-book.c:413 addressbook/libebook/e-book.c:513
+#: addressbook/libebook/e-book.c:623 addressbook/libebook/e-book.c:705
+#: addressbook/libebook/e-book.c:806 addressbook/libebook/e-book.c:859
+#: addressbook/libebook/e-book.c:956 addressbook/libebook/e-book.c:1088
+#: addressbook/libebook/e-book.c:1186 addressbook/libebook/e-book.c:1421
 msgid "book busy"
 msgstr "именик заузет"
 
-#: addressbook/libebook/e-book.c:246
+#: addressbook/libebook/e-book.c:247
 msgid "Corba exception making Book::addContact call"
 msgstr "Corba изузетак позива Book::addContact"
 
-#: addressbook/libebook/e-book.c:321
+#: addressbook/libebook/e-book.c:323
 msgid "e_book_commit_contact called on book before e_book_load_uri"
 msgstr "позван је e_book_commit_contact на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:355
+#: addressbook/libebook/e-book.c:357
 msgid "Corba exception making Book::modifyContact call"
 msgstr "Corba изузетак позива Book::modifyContact"
 
-#: addressbook/libebook/e-book.c:403
+#: addressbook/libebook/e-book.c:406
 msgid "e_book_get_supported_fields on book before e_book_load_uri"
 msgstr "e_book_get_supported_fields на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:432
+#: addressbook/libebook/e-book.c:435
 msgid "Corba exception making Book::getSupportedFields call"
 msgstr "Corba изузетак позива Book::getSupportedFields"
 
-#: addressbook/libebook/e-book.c:502
+#: addressbook/libebook/e-book.c:506
 msgid "e_book_get_supported_auth_methods on book before e_book_load_uri"
 msgstr "e_book_get_supported_auth_methods на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:532
+#: addressbook/libebook/e-book.c:536
 msgid "Corba exception making Book::getSupportedAuthMethods call"
 msgstr "Corba изузетак позива Book::getSupportedAuthMethods"
 
-#: addressbook/libebook/e-book.c:611
+#: addressbook/libebook/e-book.c:616
 msgid "e_book_authenticate_user on book before e_book_load_uri"
 msgstr "e_book_authenticate_user на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:644
+#: addressbook/libebook/e-book.c:649
 msgid "Corba exception making Book::authenticateUser call"
 msgstr "Corba изузетак позива Book::authenticateUser"
 
-#: addressbook/libebook/e-book.c:692
+#: addressbook/libebook/e-book.c:698
 msgid "e_book_get_contact on book before e_book_load_uri"
 msgstr "e_book_get_contact на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:722
+#: addressbook/libebook/e-book.c:728
 msgid "Corba exception making Book::getContact call"
 msgstr "Corba изузетак позива Book::getContact"
 
-#: addressbook/libebook/e-book.c:792
+#: addressbook/libebook/e-book.c:799
 msgid "e_book_remove_contact on book before e_book_load_uri"
 msgstr "e_book_remove_contact на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:844
+#: addressbook/libebook/e-book.c:852
 msgid "e_book_remove_contacts on book before e_book_load_uri"
 msgstr "e_book_remove_contacts на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:883
+#: addressbook/libebook/e-book.c:891
 msgid "Corba exception making Book::removeContacts call"
 msgstr "Corba изузетак позива Book::removeContacts"
 
-#: addressbook/libebook/e-book.c:937
+#: addressbook/libebook/e-book.c:949
 msgid "e_book_get_book_view on book before e_book_load_uri"
 msgstr "e_book_get_book_view на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:988
+#: addressbook/libebook/e-book.c:1000
 msgid "Corba exception making Book::getBookView call"
 msgstr "Corba изузетак позива Book::getBookView"
 
-#: addressbook/libebook/e-book.c:1066
+#: addressbook/libebook/e-book.c:1081
 msgid "e_book_get_contacts on book before e_book_load_uri"
 msgstr "e_book_get_contacts на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:1101
+#: addressbook/libebook/e-book.c:1116
 msgid "Corba exception making Book::getContactList call"
 msgstr "Corba изузетак позива Book::getContactList"
 
-#: addressbook/libebook/e-book.c:1164
+#: addressbook/libebook/e-book.c:1179
 msgid "e_book_get_changes on book before e_book_load_uri"
 msgstr "e_book_get_changes на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:1195
+#: addressbook/libebook/e-book.c:1210
 msgid "Corba exception making Book::getChanges call"
 msgstr "Corba изузетак позива Book::getChanges"
 
-#: addressbook/libebook/e-book.c:1306
+#: addressbook/libebook/e-book.c:1322
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: нема текуће операције"
 
-#: addressbook/libebook/e-book.c:1325
+#: addressbook/libebook/e-book.c:1341
 msgid "Corba exception making Book::cancelOperation call"
 msgstr "Corba изузетак позива Book::cancelOperation"
 
-#: addressbook/libebook/e-book.c:1340
+#: addressbook/libebook/e-book.c:1356
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: не могу да откажем"
 
-#: addressbook/libebook/e-book.c:1388
+#: addressbook/libebook/e-book.c:1414
 msgid "e_book_remove on book before e_book_load_uri"
 msgstr "e_book_remove на именику пре e_book_load_uri"
 
-#: addressbook/libebook/e-book.c:1417
+#: addressbook/libebook/e-book.c:1443
 msgid "Corba exception making Book::remove call"
 msgstr "Corba изузетак позива Book::remove"
 
-#: addressbook/libebook/e-book.c:1637
+#: addressbook/libebook/e-book.c:1672
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: неисправан извор."
 
-#: addressbook/libebook/e-book.c:1645 addressbook/libebook/e-book.c:1749
+#: addressbook/libebook/e-book.c:1680 addressbook/libebook/e-book.c:1784
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: нема доступних творница за адресу „%s“"
 
-#: addressbook/libebook/e-book.c:1659
+#: addressbook/libebook/e-book.c:1694
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: не могу да направим EBookListener"
 
-#: addressbook/libebook/e-book.c:1913
+#: addressbook/libebook/e-book.c:2023
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: нема свог ЈИБ-а контакта у ГКонфу"
 
@@ -630,81 +630,81 @@ msgid "Undefined"
 msgstr "Недефинисано"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1382
+#: calendar/libecal/e-cal.c:1399
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Унесите лозинку за %s (корисник %s)"
 
-#: calendar/libecal/e-cal.c:3796
+#: calendar/libecal/e-cal.c:3812
 msgid "Invalid argument"
 msgstr "Неисправан аргумент"
 
-#: calendar/libecal/e-cal.c:3798
+#: calendar/libecal/e-cal.c:3814
 msgid "Backend is busy"
 msgstr "Подршка је заузета"
 
-#: calendar/libecal/e-cal.c:3800
+#: calendar/libecal/e-cal.c:3816
 msgid "Repository is offline"
 msgstr "Складиште није повезано"
 
-#: calendar/libecal/e-cal.c:3802
+#: calendar/libecal/e-cal.c:3818
 msgid "No such calendar"
 msgstr "Нема таквог календара"
 
-#: calendar/libecal/e-cal.c:3804 calendar/libecal/e-cal.c:3814
+#: calendar/libecal/e-cal.c:3820 calendar/libecal/e-cal.c:3830
 msgid "Object not found"
 msgstr "Објекат није нађен"
 
-#: calendar/libecal/e-cal.c:3806
+#: calendar/libecal/e-cal.c:3822
 msgid "Invalid object"
 msgstr "Неисправан предмет"
 
-#: calendar/libecal/e-cal.c:3808
+#: calendar/libecal/e-cal.c:3824
 msgid "URI not loaded"
 msgstr "Адреса није учитана"
 
-#: calendar/libecal/e-cal.c:3810
+#: calendar/libecal/e-cal.c:3826
 msgid "URI already loaded"
 msgstr "Адреса је већ учитана"
 
-#: calendar/libecal/e-cal.c:3812
+#: calendar/libecal/e-cal.c:3828
 msgid "Permission denied"
 msgstr "Забрањен приступ"
 
-#: calendar/libecal/e-cal.c:3816
+#: calendar/libecal/e-cal.c:3832
 msgid "Object ID already exists"
 msgstr "ИД објекта већ постоји"
 
-#: calendar/libecal/e-cal.c:3818
+#: calendar/libecal/e-cal.c:3834
 msgid "Protocol not supported"
 msgstr "Протокол није подржан"
 
-#: calendar/libecal/e-cal.c:3820
+#: calendar/libecal/e-cal.c:3836
 msgid "Operation has been cancelled"
 msgstr "Операција је обустављена"
 
-#: calendar/libecal/e-cal.c:3822
+#: calendar/libecal/e-cal.c:3838
 msgid "Could not cancel operation"
 msgstr "Не могу да откажем операцију"
 
-#: calendar/libecal/e-cal.c:3824
+#: calendar/libecal/e-cal.c:3840
 msgid "Authentication failed"
 msgstr "Неуспешна идентификација"
 
-#: calendar/libecal/e-cal.c:3826
+#: calendar/libecal/e-cal.c:3842
 msgid "Authentication required"
 msgstr "Неопходна идентификација"
 
 # bug: s/esception/exception/
-#: calendar/libecal/e-cal.c:3828
+#: calendar/libecal/e-cal.c:3844
 msgid "A CORBA esception has occurred"
 msgstr "Дошло је до CORBA изузетка"
 
-#: calendar/libecal/e-cal.c:3830
+#: calendar/libecal/e-cal.c:3846
 msgid "Unknown error"
 msgstr "Непозната грешка"
 
-#: calendar/libecal/e-cal.c:3832
+#: calendar/libecal/e-cal.c:3848
 msgid "No error"
 msgstr "Нема грешке"
 
@@ -783,15 +783,15 @@ msgid ""
 msgstr ""
 "садржи? очекује да аргумент 1 буде један од \"сваки\", \"сажетак\", \"опис\""
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:435
+#: calendar/libedata-cal/e-cal-backend-sexp.c:434
 msgid "has-alarms? expects no arguments"
 msgstr "има-аларме? не очекује аргументе"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:469
+#: calendar/libedata-cal/e-cal-backend-sexp.c:467
 msgid "has-categories? expects at least 1 argument"
 msgstr "има-категорије? очекује најмање 1 аргумент"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:481
+#: calendar/libedata-cal/e-cal-backend-sexp.c:479
 msgid ""
 "has-categories? expects all arguments to be strings or one and only one "
 "argument to be a boolean false (#f)"
@@ -799,19 +799,19 @@ msgstr ""
 "има-категорије? очекује да сви аргументи буду низови или један једини "
 "аргумент да буде логички нетачан (#f)"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:560
+#: calendar/libedata-cal/e-cal-backend-sexp.c:558
 msgid "has-recurrences? expects no arguments"
 msgstr "понавља-се? не очекује аргументе"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:586
+#: calendar/libedata-cal/e-cal-backend-sexp.c:584
 msgid "is-completed? expects 0 arguments"
 msgstr "је-готов? очекује 0 аргумената"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:623
+#: calendar/libedata-cal/e-cal-backend-sexp.c:621
 msgid "completed-before? expects 1 argument"
 msgstr "готов-пре? очекује 1 аргумент"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:628
+#: calendar/libedata-cal/e-cal-backend-sexp.c:626
 msgid "completed-before? expects argument 1 to be a time_t"
 msgstr "готов-пре? очекује да аргумент 1 буде time_t"
 

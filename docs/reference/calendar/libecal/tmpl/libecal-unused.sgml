@@ -1,3 +1,21 @@
+<!-- ##### ENUM CalObjType ##### -->
+<para>
+
+</para>
+
+@CALOBJ_TYPE_EVENT: 
+@CALOBJ_TYPE_TODO: 
+@CALOBJ_TYPE_JOURNAL: 
+@CALOBJ_TYPE_ANY: 
+
+<!-- ##### SIGNAL ECal::forget-password ##### -->
+<para>
+
+</para>
+
+@ecal: the object which received the signal.
+@arg1: 
+
 <!-- ##### STRUCT ECalComponentPrivate ##### -->
 <para>
 

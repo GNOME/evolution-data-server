@@ -21,6 +21,21 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 </para>
 
 
+<!-- ##### SIGNAL EBook::backend-died ##### -->
+<para>
+The backend for this address book has died.
+</para>
+
+@ebook: the object which received the signal.
+
+<!-- ##### SIGNAL EBook::writable-status ##### -->
+<para>
+
+</para>
+
+@ebook: the object which received the signal.
+@arg1: 
+
 <!-- ##### FUNCTION e_book_new ##### -->
 <para>
 
@@ -320,19 +335,4 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 @error: 
 @Returns: 
 
-
-<!-- ##### SIGNAL EBook::backend-died ##### -->
-<para>
-The backend for this address book has died.
-</para>
-
-@ebook: the object which received the signal.
-
-<!-- ##### SIGNAL EBook::writable-status ##### -->
-<para>
-
-</para>
-
-@ebook: the object which received the signal.
-@arg1: 
 

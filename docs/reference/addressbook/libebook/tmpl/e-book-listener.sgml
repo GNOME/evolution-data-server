@@ -21,6 +21,14 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 </para>
 
 
+<!-- ##### SIGNAL EBookListener::response ##### -->
+<para>
+
+</para>
+
+@ebooklistener: the object which received the signal.
+@arg1: 
+
 <!-- ##### STRUCT EBookListenerResponse ##### -->
 <para>
 
@@ -73,12 +81,4 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 
 @listener: 
 
-
-<!-- ##### SIGNAL EBookListener::response ##### -->
-<para>
-
-</para>
-
-@ebooklistener: the object which received the signal.
-@arg1: 
 

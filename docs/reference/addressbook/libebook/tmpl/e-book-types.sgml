@@ -77,9 +77,11 @@ Evolution:BookListener interface.
 @E_BOOK_CHANGE_CARD_DELETED: 
 @E_BOOK_CHANGE_CARD_MODIFIED: 
 
-<!-- ##### TYPEDEF EBookChange ##### -->
+<!-- ##### STRUCT EBookChange ##### -->
 <para>
 
 </para>
 
+@change_type: 
+@contact: 
 

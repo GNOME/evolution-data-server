@@ -61,14 +61,6 @@ ECalView is a view of the ECal.
 @: 
 @: 
 
-<!-- ##### SIGNAL ECal::forget-password ##### -->
-<para>
-
-</para>
-
-@: 
-@: 
-
 <!-- ##### MACRO E_CAL_VIEW ##### -->
 <para>
 

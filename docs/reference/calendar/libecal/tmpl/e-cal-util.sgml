@@ -31,16 +31,6 @@ e-cal-util
 @list: 
 
 
-<!-- ##### ENUM CalObjType ##### -->
-<para>
-
-</para>
-
-@CALOBJ_TYPE_EVENT: 
-@CALOBJ_TYPE_TODO: 
-@CALOBJ_TYPE_JOURNAL: 
-@CALOBJ_TYPE_ANY: 
-
 <!-- ##### ENUM CalObjModType ##### -->
 <para>
 

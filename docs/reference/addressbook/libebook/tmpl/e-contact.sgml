@@ -20,301 +20,6 @@ A convenient way of accessing the contact information in EVCard objects.
 </para>
 
 
-<!-- ##### ENUM EContactField ##### -->
-<para>
-
-</para>
-
-@E_CONTACT_UID: 
-@E_CONTACT_FILE_AS: 
-@E_CONTACT_FULL_NAME: 
-@E_CONTACT_GIVEN_NAME: 
-@E_CONTACT_FAMILY_NAME: 
-@E_CONTACT_NICKNAME: 
-@E_CONTACT_EMAIL_1: 
-@E_CONTACT_EMAIL_2: 
-@E_CONTACT_EMAIL_3: 
-@E_CONTACT_MAILER: 
-@E_CONTACT_ADDRESS_LABEL_HOME: 
-@E_CONTACT_ADDRESS_LABEL_WORK: 
-@E_CONTACT_ADDRESS_LABEL_OTHER: 
-@E_CONTACT_PHONE_ASSISTANT: 
-@E_CONTACT_PHONE_BUSINESS: 
-@E_CONTACT_PHONE_BUSINESS_2: 
-@E_CONTACT_PHONE_BUSINESS_FAX: 
-@E_CONTACT_PHONE_CALLBACK: 
-@E_CONTACT_PHONE_CAR: 
-@E_CONTACT_PHONE_COMPANY: 
-@E_CONTACT_PHONE_HOME: 
-@E_CONTACT_PHONE_HOME_2: 
-@E_CONTACT_PHONE_HOME_FAX: 
-@E_CONTACT_PHONE_ISDN: 
-@E_CONTACT_PHONE_MOBILE: 
-@E_CONTACT_PHONE_OTHER: 
-@E_CONTACT_PHONE_OTHER_FAX: 
-@E_CONTACT_PHONE_PAGER: 
-@E_CONTACT_PHONE_PRIMARY: 
-@E_CONTACT_PHONE_RADIO: 
-@E_CONTACT_PHONE_TELEX: 
-@E_CONTACT_PHONE_TTYTDD: 
-@E_CONTACT_ORG: 
-@E_CONTACT_ORG_UNIT: 
-@E_CONTACT_OFFICE: 
-@E_CONTACT_TITLE: 
-@E_CONTACT_ROLE: 
-@E_CONTACT_MANAGER: 
-@E_CONTACT_ASSISTANT: 
-@E_CONTACT_HOMEPAGE_URL: 
-@E_CONTACT_BLOG_URL: 
-@E_CONTACT_CATEGORIES: 
-@E_CONTACT_CALENDAR_URI: 
-@E_CONTACT_FREEBUSY_URL: 
-@E_CONTACT_ICS_CALENDAR: 
-@E_CONTACT_VIDEO_URL: 
-@E_CONTACT_SPOUSE: 
-@E_CONTACT_NOTE: 
-@E_CONTACT_IS_LIST: 
-@E_CONTACT_LIST_SHOW_ADDRESSES: 
-@E_CONTACT_IM_AIM: 
-@E_CONTACT_IM_JABBER: 
-@E_CONTACT_IM_YAHOO: 
-@E_CONTACT_IM_MSN: 
-@E_CONTACT_IM_ICQ: 
-@E_CONTACT_ADDRESS: 
-@E_CONTACT_ADDRESS_HOME: 
-@E_CONTACT_ADDRESS_WORK: 
-@E_CONTACT_ADDRESS_OTHER: 
-@E_CONTACT_CATEGORY_LIST: 
-@E_CONTACT_PHOTO: 
-@E_CONTACT_LOGO: 
-@E_CONTACT_NAME: 
-@E_CONTACT_EMAIL: 
-@E_CONTACT_WANTS_HTML: 
-@E_CONTACT_BIRTH_DATE: 
-@E_CONTACT_ANNIVERSARY: 
-@E_CONTACT_X509_CERT: 
-@E_CONTACT_NAME_OR_ORG: 
-@E_CONTACT_FIELD_LAST: 
-@E_CONTACT_LAST_SIMPLE_STRING: 
-@E_CONTACT_FIRST_PHONE_ID: 
-@E_CONTACT_LAST_PHONE_ID: 
-@E_CONTACT_FIRST_EMAIL_ID: 
-@E_CONTACT_LAST_EMAIL_ID: 
-@E_CONTACT_FIRST_ADDRESS_ID: 
-@E_CONTACT_LAST_ADDRESS_ID: 
-@E_CONTACT_FIRST_LABEL_ID: 
-@E_CONTACT_LAST_LABEL_ID: 
-
-<!-- ##### TYPEDEF EContactName ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF EContactPhoto ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF EContactAddress ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF EContactDate ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### FUNCTION e_contact_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_new_from_vcard ##### -->
-<para>
-
-</para>
-
-@vcard: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_duplicate ##### -->
-<para>
-
-</para>
-
-@contact: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_get ##### -->
-<para>
-
-</para>
-
-@contact: 
-@field_id: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_get_const ##### -->
-<para>
-
-</para>
-
-@contact: 
-@field_id: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_set ##### -->
-<para>
-
-</para>
-
-@contact: 
-@field_id: 
-@value: 
-
-
-<!-- ##### FUNCTION e_contact_date_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_date_from_string ##### -->
-<para>
-
-</para>
-
-@str: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_date_to_string ##### -->
-<para>
-
-</para>
-
-@dt: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_date_equal ##### -->
-<para>
-
-</para>
-
-@dt1: 
-@dt2: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_name_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_name_to_string ##### -->
-<para>
-
-</para>
-
-@name: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_name_from_string ##### -->
-<para>
-
-</para>
-
-@name_str: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_name_copy ##### -->
-<para>
-
-</para>
-
-@name: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_date_free ##### -->
-<para>
-
-</para>
-
-@date: 
-
-
-<!-- ##### FUNCTION e_contact_name_free ##### -->
-<para>
-
-</para>
-
-@name: 
-
-
-<!-- ##### FUNCTION e_contact_photo_free ##### -->
-<para>
-
-</para>
-
-@photo: 
-
-
-<!-- ##### FUNCTION e_contact_address_free ##### -->
-<para>
-
-</para>
-
-@address: 
-
-
-<!-- ##### FUNCTION e_contact_field_name ##### -->
-<para>
-
-</para>
-
-@field_id: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_pretty_name ##### -->
-<para>
-
-</para>
-
-@field_id: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_contact_field_id ##### -->
-<para>
-
-</para>
-
-@field_name: 
-@Returns: 
-
-
 <!-- ##### ARG EContact:address ##### -->
 <para>
 
@@ -640,11 +345,6 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
-<!-- ##### ARG EContact:video-url ##### -->
-<para>
-
-</para>
-
 <!-- ##### ARG EContact:wants-html ##### -->
 <para>
 
@@ -654,4 +354,316 @@ A convenient way of accessing the contact information in EVCard objects.
 <para>
 
 </para>
+
+<!-- ##### ENUM EContactField ##### -->
+<para>
+
+</para>
+
+@E_CONTACT_UID: 
+@E_CONTACT_FILE_AS: 
+@E_CONTACT_FULL_NAME: 
+@E_CONTACT_GIVEN_NAME: 
+@E_CONTACT_FAMILY_NAME: 
+@E_CONTACT_NICKNAME: 
+@E_CONTACT_EMAIL_1: 
+@E_CONTACT_EMAIL_2: 
+@E_CONTACT_EMAIL_3: 
+@E_CONTACT_MAILER: 
+@E_CONTACT_ADDRESS_LABEL_HOME: 
+@E_CONTACT_ADDRESS_LABEL_WORK: 
+@E_CONTACT_ADDRESS_LABEL_OTHER: 
+@E_CONTACT_PHONE_ASSISTANT: 
+@E_CONTACT_PHONE_BUSINESS: 
+@E_CONTACT_PHONE_BUSINESS_2: 
+@E_CONTACT_PHONE_BUSINESS_FAX: 
+@E_CONTACT_PHONE_CALLBACK: 
+@E_CONTACT_PHONE_CAR: 
+@E_CONTACT_PHONE_COMPANY: 
+@E_CONTACT_PHONE_HOME: 
+@E_CONTACT_PHONE_HOME_2: 
+@E_CONTACT_PHONE_HOME_FAX: 
+@E_CONTACT_PHONE_ISDN: 
+@E_CONTACT_PHONE_MOBILE: 
+@E_CONTACT_PHONE_OTHER: 
+@E_CONTACT_PHONE_OTHER_FAX: 
+@E_CONTACT_PHONE_PAGER: 
+@E_CONTACT_PHONE_PRIMARY: 
+@E_CONTACT_PHONE_RADIO: 
+@E_CONTACT_PHONE_TELEX: 
+@E_CONTACT_PHONE_TTYTDD: 
+@E_CONTACT_ORG: 
+@E_CONTACT_ORG_UNIT: 
+@E_CONTACT_OFFICE: 
+@E_CONTACT_TITLE: 
+@E_CONTACT_ROLE: 
+@E_CONTACT_MANAGER: 
+@E_CONTACT_ASSISTANT: 
+@E_CONTACT_HOMEPAGE_URL: 
+@E_CONTACT_BLOG_URL: 
+@E_CONTACT_CATEGORIES: 
+@E_CONTACT_CALENDAR_URI: 
+@E_CONTACT_FREEBUSY_URL: 
+@E_CONTACT_ICS_CALENDAR: 
+@E_CONTACT_SPOUSE: 
+@E_CONTACT_NOTE: 
+@E_CONTACT_IS_LIST: 
+@E_CONTACT_LIST_SHOW_ADDRESSES: 
+@E_CONTACT_IM_AIM: 
+@E_CONTACT_IM_JABBER: 
+@E_CONTACT_IM_YAHOO: 
+@E_CONTACT_IM_MSN: 
+@E_CONTACT_IM_ICQ: 
+@E_CONTACT_ADDRESS: 
+@E_CONTACT_ADDRESS_HOME: 
+@E_CONTACT_ADDRESS_WORK: 
+@E_CONTACT_ADDRESS_OTHER: 
+@E_CONTACT_CATEGORY_LIST: 
+@E_CONTACT_PHOTO: 
+@E_CONTACT_LOGO: 
+@E_CONTACT_NAME: 
+@E_CONTACT_EMAIL: 
+@E_CONTACT_WANTS_HTML: 
+@E_CONTACT_BIRTH_DATE: 
+@E_CONTACT_ANNIVERSARY: 
+@E_CONTACT_X509_CERT: 
+@E_CONTACT_NAME_OR_ORG: 
+@E_CONTACT_FIELD_LAST: 
+@E_CONTACT_LAST_SIMPLE_STRING: 
+@E_CONTACT_FIRST_PHONE_ID: 
+@E_CONTACT_LAST_PHONE_ID: 
+@E_CONTACT_FIRST_EMAIL_ID: 
+@E_CONTACT_LAST_EMAIL_ID: 
+@E_CONTACT_FIRST_ADDRESS_ID: 
+@E_CONTACT_LAST_ADDRESS_ID: 
+@E_CONTACT_FIRST_LABEL_ID: 
+@E_CONTACT_LAST_LABEL_ID: 
+
+<!-- ##### STRUCT EContactName ##### -->
+<para>
+
+</para>
+
+@family: 
+@given: 
+@additional: 
+@prefixes: 
+@suffixes: 
+
+<!-- ##### STRUCT EContactPhoto ##### -->
+<para>
+
+</para>
+
+@length: 
+@data: 
+
+<!-- ##### STRUCT EContactAddress ##### -->
+<para>
+
+</para>
+
+@address_format: 
+@po: 
+@ext: 
+@street: 
+@locality: 
+@region: 
+@code: 
+@country: 
+
+<!-- ##### STRUCT EContactDate ##### -->
+<para>
+
+</para>
+
+@year: 
+@month: 
+@day: 
+
+<!-- ##### FUNCTION e_contact_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_new_from_vcard ##### -->
+<para>
+
+</para>
+
+@vcard: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_duplicate ##### -->
+<para>
+
+</para>
+
+@contact: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_get ##### -->
+<para>
+
+</para>
+
+@contact: 
+@field_id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_get_const ##### -->
+<para>
+
+</para>
+
+@contact: 
+@field_id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_set ##### -->
+<para>
+
+</para>
+
+@contact: 
+@field_id: 
+@value: 
+
+
+<!-- ##### FUNCTION e_contact_date_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_date_from_string ##### -->
+<para>
+
+</para>
+
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_date_to_string ##### -->
+<para>
+
+</para>
+
+@dt: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_date_equal ##### -->
+<para>
+
+</para>
+
+@dt1: 
+@dt2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_name_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_name_to_string ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_name_from_string ##### -->
+<para>
+
+</para>
+
+@name_str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_name_copy ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_date_free ##### -->
+<para>
+
+</para>
+
+@date: 
+
+
+<!-- ##### FUNCTION e_contact_name_free ##### -->
+<para>
+
+</para>
+
+@name: 
+
+
+<!-- ##### FUNCTION e_contact_photo_free ##### -->
+<para>
+
+</para>
+
+@photo: 
+
+
+<!-- ##### FUNCTION e_contact_address_free ##### -->
+<para>
+
+</para>
+
+@address: 
+
+
+<!-- ##### FUNCTION e_contact_field_name ##### -->
+<para>
+
+</para>
+
+@field_id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_pretty_name ##### -->
+<para>
+
+</para>
+
+@field_id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_field_id ##### -->
+<para>
+
+</para>
+
+@field_name: 
+@Returns: 
+
 

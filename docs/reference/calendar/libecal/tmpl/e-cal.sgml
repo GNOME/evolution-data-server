@@ -60,14 +60,6 @@ Represents an entire calendar or task list, not individual items within them.2
 @ecal: the object which received the signal.
 @arg1: 
 
-<!-- ##### SIGNAL ECal::forget-password ##### -->
-<para>
-
-</para>
-
-@ecal: the object which received the signal.
-@arg1: 
-
 <!-- ##### MACRO E_CAL_SET_MODE_STATUS_ENUM_TYPE ##### -->
 <para>
 
@@ -97,6 +89,7 @@ Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 @E_CAL_LOAD_NOT_LOADED: 
+@E_CAL_LOAD_AUTHENTICATING: 
 @E_CAL_LOAD_LOADING: 
 @E_CAL_LOAD_LOADED: 
 
@@ -403,11 +396,12 @@ Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 @ecal: 
-@type: 
 @start: 
 @end: 
 @cb: 
 @cb_data: 
+<!-- # Unused Parameters # -->
+@type: 
 
 
 <!-- ##### FUNCTION e_cal_get_alarms_in_range ##### -->
