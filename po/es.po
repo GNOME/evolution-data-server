@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-05 15:59+0100\n"
-"PO-Revision-Date: 2005-02-05 16:13+0100\n"
+"POT-Creation-Date: 2005-02-06 14:23+0100\n"
+"PO-Revision-Date: 2005-02-06 14:29+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,13 +27,13 @@ msgstr ""
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:485
+#: ../addressbook/backends/file/e-book-backend-file.c:513
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2032
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:487
+#: ../addressbook/backends/file/e-book-backend-file.c:515
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2016
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
@@ -164,17 +164,15 @@ msgstr "%s: no había uid de contacto para sí mismo almacenada en gconf"
 #: ../addressbook/libebook/e-book.c:3443
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr ""
-"%s: no había origen para el uid «%s» almacenado en "
-"gconf."
+msgstr "%s: no había origen para el uid «%s» almacenado en gconf."
 
 #: ../addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
 msgstr "ID único"
 
 #: ../addressbook/libebook/e-contact.c:103
-msgid "File As"
-msgstr "Archivar como"
+msgid "File Under"
+msgstr "Archivar en"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -611,7 +609,11 @@ msgstr "Lista"
 msgid "List Show Addresses"
 msgstr "Mostrar direcciones de la lista"
 
-#: ../addressbook/libebook/e-contact.c:1208
+#: ../addressbook/libebook/e-contact.c:241
+msgid "Last Revision"
+msgstr "Última revisión"
+
+#: ../addressbook/libebook/e-contact.c:1210
 #: ../addressbook/libebook/e-destination.c:616
 msgid "Unnamed List"
 msgstr "Lista de anónimos"
@@ -686,7 +688,7 @@ msgstr "No se pudieron obtener los datos meteorológicos"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:194
 msgid "Fair"
-msgstr ""
+msgstr "Buen tiempo"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:195
 msgid "Snow showers"
@@ -746,11 +748,11 @@ msgstr "Nieblina"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Rain/snow mixed"
-msgstr "Aguanieve"
+msgstr "Lluvia/nieve mezclados"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Sleet"
-msgstr ""
+msgstr "Aguanieve"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Very hot/humid"
@@ -758,7 +760,7 @@ msgstr "Muy caliente/húmedo"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Blizzard"
-msgstr ""
+msgstr "Ventisca"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Freezing rain"
@@ -3124,7 +3126,9 @@ msgstr "El servidor IMAP4 %s se desconectó inesperadamente: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:85
 msgid "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr "Activar la detección de lista de correo requerida para algunos filtros y reglas de carpetas virtuales"
+msgstr ""
+"Activar la detección de lista de correo requerida para algunos filtros y "
+"reglas de carpetas virtuales"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:398
 #, c-format
@@ -3362,7 +3366,8 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "Cliente experimental IMAP 4(.1) \n"
-"Este código no está probado y no está soportado, quizá desee usar imap simple en su lugar.\n"
+"Este código no está probado y no está soportado, quizá desee usar imap "
+"simple en su lugar.\n"
 "\n"
 " !!! NO USAR ESTO PARA CORREO EN PRODUCCIÓN  !!!\n"
 
@@ -4878,6 +4883,9 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Han ocurrido fallos de segmentación múltiples; no se puede mostrar el "
 "diálogo de error\n"
+
+#~ msgid "File As"
+#~ msgstr "Archivar como"
 
 #~ msgid "e_book_open: cancelled"
 #~ msgstr "e_book_open: cancelado"
