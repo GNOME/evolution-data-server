@@ -368,6 +368,7 @@
 				<xs:element name="container" type="types:uid"/>
 				<xs:element name="view" type="types:View"/>
 				<xs:element name="filter" type="types:Filter"/>
+				<xs:element name="items" type="types:ItemRefList" minOccurs="0" maxOccurs="1"/>
 <!--				<xs:element name="sort" type="types:Sort"/> -->
 				<xs:element name="count" type="xs:int" default="-1"/>
 			</xs:sequence>
