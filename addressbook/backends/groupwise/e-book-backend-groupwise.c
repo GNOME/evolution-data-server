@@ -13,14 +13,17 @@
 
 
 #include <libebook/e-contact.h>
-                                                                                                                             
+#include <libgnome/gnome-i18n.h>
+#include <libedataserver/e-sexp.h>                                                                                                                             
 #include <libedata-book/e-book-backend-sexp.h>
 #include <libedata-book/e-book-backend-summary.h>
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-data-book-view.h>
 #include "e-book-backend-groupwise.h"
-#include  <e-gw-connection.h>
+#include <e-gw-connection.h>
 #include <e-gw-item.h>
+#include <e-gw-filter.h>
+#include <libgnome/gnome-i18n.h>
 
 static EBookBackendClass *e_book_backend_groupwise_parent_class;
                                                                                                                              
@@ -985,7 +988,348 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 	
 }
 
+typedef struct {
+	EGwFilter *filter;
+	gboolean is_filter_valid;
+	gboolean is_personal_book;
+} EBookBackendGroupwiseSExpData;
 
+static ESExpResult *
+func_and(ESExp *f, int argc, ESExpResult **argv, void *data)
+{
+	ESExpResult *r;
+	EGwFilter *filter;
+	EBookBackendGroupwiseSExpData *sexp_data;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	filter = E_GW_FILTER (sexp_data->filter);
+	if (argc > 0)
+		e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_AND, argc);
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+
+static ESExpResult *
+func_or(ESExp *f, int argc, ESExpResult **argv, void *data)
+{
+	ESExpResult *r;
+	EGwFilter *filter;
+	EBookBackendGroupwiseSExpData *sexp_data;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	filter = E_GW_FILTER (sexp_data->filter);
+	if (argc > 0)
+		 e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, argc);
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+
+static ESExpResult *
+func_not(ESExp *f, int argc, ESExpResult **argv, void *data)
+{
+	ESExpResult *r;
+	EGwFilter *filter;	
+	EBookBackendGroupwiseSExpData *sexp_data;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	filter = E_GW_FILTER (sexp_data->filter);
+	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_NOT, 1);
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+
+static ESExpResult *
+func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	ESExpResult *r;
+	EGwFilter *filter;
+	EBookBackendGroupwiseSExpData *sexp_data;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	filter = E_GW_FILTER (sexp_data->filter);
+
+	if (argc == 2
+	    && argv[0]->type == ESEXP_RES_STRING
+	    && argv[1]->type == ESEXP_RES_STRING) {
+		char *propname = argv[0]->value.string;
+		char *str = argv[1]->value.string;
+		char *gw_field_name;
+		
+		gw_field_name = NULL;
+		if (g_str_equal (propname, "full_name"))
+			gw_field_name = "fullName";
+		else if (g_str_equal (propname, "email"))
+			gw_field_name = "emailList/email";
+		else if (g_str_equal (propname, "file_as") || g_str_equal (propname, "nickname"))
+			 gw_field_name = "fullName/displayName";
+		
+
+		if (gw_field_name) {
+			if (g_str_equal (gw_field_name, "fullName")) {
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, "fullName/firstName", str);	
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, "fullName/lastName", str);
+				if (sexp_data->is_personal_book) {
+					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, "fullName/displayName", str);
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
+				}
+				else 
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+			}
+			else if (sexp_data->is_personal_book)
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, gw_field_name, str);
+			else 
+				sexp_data->is_filter_valid = FALSE;
+		}
+		else 
+		     sexp_data->is_filter_valid = FALSE; 
+	}
+
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+
+static ESExpResult *
+func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	ESExpResult *r;
+	EGwFilter *filter;
+	EBookBackendGroupwiseSExpData *sexp_data;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	filter = E_GW_FILTER (sexp_data->filter);
+
+	if (argc == 2
+	    && argv[0]->type == ESEXP_RES_STRING
+	    && argv[1]->type == ESEXP_RES_STRING) {
+		char *propname = argv[0]->value.string;
+		char *str = argv[1]->value.string;
+		char *gw_field_name;
+	
+		gw_field_name = NULL;
+		if (g_str_equal (propname, "full_name"))
+			gw_field_name = "FullName";
+		else if (g_str_equal (propname, "email"))
+			gw_field_name = "emailList/email";
+		else if (g_str_equal (propname, "file_as") || g_str_equal (propname, "nickname"))
+			 gw_field_name = "fullName/displayName";
+
+		if (gw_field_name) {
+			if (g_str_equal (gw_field_name, "fullName")) {
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "fullName/firstName", str);	
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "fullName/lastName", str);
+				if (sexp_data->is_personal_book) {
+					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "fullName/displayName", str);
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
+				}
+				else 
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+			}
+			else if (sexp_data->is_personal_book)
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, gw_field_name, str);
+			else 
+				sexp_data->is_filter_valid = FALSE;
+		}
+		else 
+		     sexp_data->is_filter_valid = FALSE;
+		
+	}
+
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+
+static ESExpResult *
+func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+
+	ESExpResult *r;
+	EGwFilter *filter;
+	EBookBackendGroupwiseSExpData *sexp_data;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	filter = E_GW_FILTER (sexp_data->filter);
+
+	if (argc == 2
+	    && argv[0]->type == ESEXP_RES_STRING
+	    && argv[1]->type == ESEXP_RES_STRING) {
+		char *propname = argv[0]->value.string;
+		char *str = argv[1]->value.string;
+		char *gw_field_name;
+	
+		gw_field_name = NULL;
+		if (g_str_equal (propname, "full_name"))
+			gw_field_name = "fullName";
+		else if (g_str_equal (propname, "email"))
+			gw_field_name = "emailList/email";
+		else if (g_str_equal (propname, "file_as") || g_str_equal (propname, "nickname"))
+			 gw_field_name = "fullName/displayName";
+		if (gw_field_name) {
+			
+			if (g_str_equal (gw_field_name, "fullName")) {
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/firstName", str);	
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/lastName", str);
+				if (sexp_data->is_personal_book) {
+					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/displayName", str);
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
+				}
+				else 
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+			}
+			else if (sexp_data->is_personal_book)
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, gw_field_name, str);
+			else 
+				sexp_data->is_filter_valid = FALSE;
+		}
+		else 
+			sexp_data->is_filter_valid = FALSE;
+	
+
+	
+	}
+
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+
+static ESExpResult *
+func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	EBookBackendGroupwiseSExpData *sexp_data;
+	ESExpResult *r;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	sexp_data->is_filter_valid = FALSE;
+	
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	
+	r->value.bool = FALSE; 
+
+	return r;
+}
+
+static ESExpResult *
+func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	ESExpResult *r;
+	EGwFilter *filter;
+	EBookBackendGroupwiseSExpData *sexp_data;
+
+	sexp_data = (EBookBackendGroupwiseSExpData *) data;
+	filter = E_GW_FILTER (sexp_data->filter);
+
+	if (argc == 1
+	    && argv[0]->type == ESEXP_RES_STRING) {
+		char *propname = argv[0]->value.string;
+		char *str = argv[1]->value.string;
+		char *gw_field_name;
+	
+		gw_field_name = NULL;
+		if (g_str_equal (propname, "full_name"))
+			gw_field_name = "fullName";
+		else if (g_str_equal (propname, "email"))
+			gw_field_name = "emailList/email";
+		else if (g_str_equal (propname, "file_as") || g_str_equal (propname, "nickname"))
+			 gw_field_name = "fullName/displayName";
+
+		if (gw_field_name) {
+			
+			if (g_str_equal (gw_field_name, "fullName")) {
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, "fullName/firstName", str);	
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, "fullName/lastName", str);
+				if (sexp_data->is_personal_book) {
+					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, "fullName/displayName", str);
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
+				}
+				else 
+					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+			}
+			else if (sexp_data->is_personal_book)
+				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, gw_field_name, str);
+			else 
+				sexp_data->is_filter_valid = FALSE;
+		}
+		else 
+			sexp_data->is_filter_valid = FALSE;
+	
+	}
+
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = FALSE;
+
+	return r;
+}
+/* 'builtin' functions */
+static struct {
+	char *name;
+	ESExpFunc *func;
+	int type;		/* set to 1 if a function can perform shortcut evaluation, or
+				   doesn't execute everything, 0 otherwise */
+} symbols[] = {
+	{ "and", func_and, 0 },
+	{ "or", func_or, 0 },
+	{ "not", func_not, 0 },
+	{ "contains", func_contains, 0 },
+	{ "is", func_is, 0 },
+	{ "beginswith", func_beginswith, 0 },
+	{ "endswith", func_endswith, 0 },
+	{ "exists", func_exists, 0 },
+};
+
+
+static EGwFilter*
+e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const char *query )
+{
+	ESExp *sexp;
+	ESExpResult *r;
+	EBookBackendGroupwiseSExpData *sexp_data;
+	EGwFilter *filter;
+	int i;
+
+
+	sexp = e_sexp_new();
+	filter = e_gw_filter_new ();
+	
+	sexp_data = g_new0 (EBookBackendGroupwiseSExpData, 1);
+	sexp_data->filter = filter;
+	sexp_data->is_filter_valid = TRUE;
+	sexp_data->is_personal_book =  e_book_backend_is_writable ( E_BOOK_BACKEND (ebgw));
+
+	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+		if (symbols[i].type == 1) {
+			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
+					     (ESExpIFunc *)symbols[i].func, sexp_data);
+		} else {
+			e_sexp_add_function(sexp, 0, symbols[i].name,
+					    symbols[i].func, sexp_data);
+		}
+	}
+
+	e_sexp_input_text(sexp, query, strlen(query));
+	e_sexp_parse(sexp);
+	r = e_sexp_eval(sexp);
+	e_sexp_result_free(sexp, r);
+	e_sexp_unref (sexp);
+	if (sexp_data->is_filter_valid)
+		return filter;
+	else {
+		g_object_unref (filter);
+		return NULL;
+	}
+	g_free (sexp_data);
+
+}
 
 
 static void
@@ -999,8 +1343,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	GList *gw_items;
 	EContact *contact;
 	EBookBackendGroupwise *egwb;
-	gboolean search_needed;
+	gboolean match_needed;
 	EBookBackendSExp *card_sexp = NULL;
+	EGwFilter *filter;
 
 	egwb = E_BOOK_BACKEND_GROUPWISE (backend);
 	vcard_list = NULL;
@@ -1011,21 +1356,18 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		e_data_book_respond_get_contact_list (book, GNOME_Evolution_Addressbook_OtherError, NULL);
 		return;
 	}
-	/* FIXME currently contacts received form Gw Server are checked for match against the query.
-	   Instead of this Groupwise filter should be formed frm the query and given as input to get items calls
-	   to make things more efficient */
-
-	search_needed = TRUE;
-	if ( g_str_equal(query, "(contains \"x-evolution-any-field\" \"\")"))
-		search_needed = FALSE;
-	printf ("query is %s\n", query);
+	
+	match_needed = TRUE;
+	filter = e_book_backend_groupwise_build_gw_filter (egwb, query);
+	if (filter)
+		match_needed = FALSE; 
 	card_sexp = e_book_backend_sexp_new (query);
 	if (!card_sexp) {
 		e_data_book_respond_get_contact_list (book, GNOME_Evolution_Addressbook_ContactNotFound,
 						      vcard_list);
 	}
 
-	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, NULL, &gw_items);
+	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_data_book_respond_get_contact_list (book, GNOME_Evolution_Addressbook_OtherError,
 						      NULL);
@@ -1034,7 +1376,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), egwb->priv->categories_by_id);
-		if ( (!search_needed) || e_book_backend_sexp_match_contact (card_sexp, contact))
+		if ( match_needed &&  e_book_backend_sexp_match_contact (card_sexp, contact))
+			vcard_list = g_list_append (vcard_list, e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30));
+		else 
 			vcard_list = g_list_append (vcard_list, e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30));
 		g_object_unref (contact);
 		g_object_unref (gw_items->data);
@@ -1042,7 +1386,8 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
   
 	e_data_book_respond_get_contact_list (book, GNOME_Evolution_Addressbook_Success,
 					      vcard_list);
-  
+	if (filter)
+		g_object_unref (filter);
 }
 
  
@@ -1055,7 +1400,9 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 	GList *gw_items;
 	EContact *contact;
 	EBookBackendGroupwise *gwb;
-       
+	const char *query;
+	EGwFilter *filter;
+
 	gwb  = E_BOOK_BACKEND_GROUPWISE (backend);
 	gw_items = NULL;
     
@@ -1063,9 +1410,11 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_OtherError);
 		return;
 	}
-	e_data_book_view_notify_status_message (book_view, "Searching...");
-	status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, NULL, NULL, &gw_items);
-    
+	e_data_book_view_notify_status_message (book_view, _("Searching..."));
+	query = e_data_book_view_get_card_query (book_view);
+	filter = e_book_backend_groupwise_build_gw_filter (gwb, query);
+	status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, NULL, filter, &gw_items);
+
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_OtherError);
 		return;
@@ -1073,7 +1422,6 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), gwb->priv->categories_by_id);
-		printf ("contact = %s\n", e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30)); 
 		e_data_book_view_notify_update (book_view, contact);
 		g_object_unref(contact);
 		g_object_unref (gw_items->data);
@@ -1081,7 +1429,8 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 	}
     
 	e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
-    
+	if (filter)
+		g_object_unref (filter);
 }     
   
 static void
@@ -1124,13 +1473,11 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		e_data_book_respond_authenticate_user (book,  GNOME_Evolution_Addressbook_OtherError);
 		return;
 	}
-	printf ("authenitcating user\n");
 	id = NULL;
 	is_writable = FALSE;
 	status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		if ( (id == NULL) && !priv->only_if_exists ) {
-			printf ("creating address book %s\n", priv->book_name);
 			status = e_gw_connection_create_book (priv->cnc, priv->book_name,  &id);
 			if (status != E_GW_CONNECTION_STATUS_OK ) {
 				e_data_book_respond_authenticate_user (book,  GNOME_Evolution_Addressbook_OtherError);
@@ -1201,7 +1548,6 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	if(book_name == NULL)
 		return  GNOME_Evolution_Addressbook_OtherError;
 	priv->book_name = g_strdup (book_name);
-	printf ("is already existing %d\n", priv->only_if_exists);
 	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_set_is_writable (E_BOOK_BACKEND(backend), FALSE);  
 	return GNOME_Evolution_Addressbook_Success;

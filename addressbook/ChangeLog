@@ -1,3 +1,11 @@
+2004-04-05  Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* e-book-backend-groupwise.c : added code to build groupwise filter from 
+	the query passed to get_contact_list and start_book_view functions
+	modified e_book_backend_groupwise_start_book_view and 
+	e_book_backend_groupwise_get_contact_list to make use of filter
+	Also included gnome-i8n.h 
+	
 2004-04-02  Dan Winship  <danw@ximian.com>
 
 	* libedata-book/e-book-backend-sync.c
