@@ -51,6 +51,9 @@ struct _ECalBackendGroupwisePrivate {
 	char *container_id;
 	CalMode mode;
 	icaltimezone *default_zone;
+
+	/* fields for storing info while offline */
+	char *user_email;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -158,6 +161,7 @@ get_deltas (gpointer handle)
 				g_message ("Could not add the component");
 		}
 	}	
+
 	if (updates) {
 		for (l = updates; l != NULL; l = g_slist_next (l)) {
 			EGwItem *item = (EGwItem *) l->data;
@@ -171,6 +175,7 @@ get_deltas (gpointer handle)
 				
 		}
 	}
+
         return E_GW_CONNECTION_STATUS_OK;        
 }
 
@@ -303,6 +308,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		priv->container_id = NULL;
 	}
 
+	if (priv->user_email) {
+		g_free (priv->user_email);
+		priv->user_email = NULL;
+	}
+
 	g_free (priv);
 	cbgw->priv = NULL;
 
@@ -329,9 +339,19 @@ static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_cal_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
 	ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwisePrivate *priv;
 	
 	cbgw = E_CAL_BACKEND_GROUPWISE(backend);
-	*address = g_strdup (e_gw_connection_get_user_email (cbgw->priv->cnc));
+	priv = cbgw->priv;
+
+	if (priv->mode == CAL_MODE_REMOTE) {
+		if (priv->user_email)
+			g_free (priv->user_email);
+
+		priv->user_email = g_strdup (e_gw_connection_get_user_email (cbgw->priv->cnc));
+	}
+
+	*address = g_strdup (priv->user_email);
 	
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -696,7 +716,7 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 /* Get_free_busy handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
-				time_t start, time_t end, GList **freebusy)
+				       time_t start, time_t end, GList **freebusy)
 {
        EGwConnectionStatus status;
        ECalBackendGroupwise *cbgw;
@@ -711,8 +731,7 @@ e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, 
        return GNOME_Evolution_Calendar_Success; 
 }
 
-typedef struct 
-{
+typedef struct {
 	ECalBackendGroupwise *backend;
 	icalcomponent_kind kind;
 	GList *deletes;
@@ -742,7 +761,7 @@ e_cal_backend_groupwise_compute_changes_foreach_key (const char *key, gpointer d
 
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const char *change_id,
-				  GList **adds, GList **modifies, GList **deletes)
+					 GList **adds, GList **modifies, GList **deletes)
 {
         ECalBackendSyncStatus status;
 	ECalBackendCache *cache;
