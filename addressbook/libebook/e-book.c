@@ -1680,7 +1680,9 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	info_list = bonobo_activation_query (query, NULL, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Eeek!  Cannot perform bonobo-activation query for book factories.");
+		char *exc_text = bonobo_exception_get_text (&ev);
+		g_warning ("Cannot perform bonobo-activation query for book factories: %s", exc_text);
+		g_free (exc_text);
 		CORBA_exception_free (&ev);
 		goto done;
 		return NULL;
@@ -2379,6 +2381,10 @@ e_book_activate()
 	if (!activated) {
 		pthread_t ebook_mainloop_thread;
 		activated = TRUE;
+
+		if (!bonobo_is_initialized ())
+			bonobo_init (NULL, NULL);
+
 		pthread_create(&ebook_mainloop_thread, NULL, startup_mainloop, NULL);
 	}
 	g_static_mutex_unlock (&e_book_lock);

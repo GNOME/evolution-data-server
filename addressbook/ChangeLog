@@ -1,3 +1,11 @@
+2004-02-06  Chris Toshok  <toshok@ximian.com>
+
+	* libebook/e-book.c (e_book_activate): if bonobo hasn't been
+	initialized, do it here.  This should be enough to get
+	evolution-sharp based programs up and running.
+	(activate_factories_for_uri): include the bonobo exception text in
+	the console spew.
+	
 2004-02-05  Chris Toshok  <toshok@ximian.com>
 
 	[ along with previous fixes, this fixes #53129 ]
