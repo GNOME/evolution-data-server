@@ -33,7 +33,7 @@ extern "C" {
 #include <camel/camel-vee-folder.h>
 
 #define CAMEL_VTRASH_NAME "Trash"
-#define CAMEL_VSPAM_NAME "Spam"
+#define CAMEL_VSPAM_NAME "Junk"
 
 #define CAMEL_VTRASH_FOLDER(obj)         CAMEL_CHECK_CAST (obj, camel_vtrash_folder_get_type (), CamelVTrashFolder)
 #define CAMEL_VTRASH_FOLDER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_vtrash_folder_get_type (), CamelVTrashFolderClass)
