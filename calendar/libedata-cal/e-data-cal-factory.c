@@ -84,7 +84,7 @@ get_backend_type (GHashTable *methods, const char *method, icalcomponent_kind ki
 	if (!kinds)
 		return 0;
 
-	type = GPOINTER_TO_INT (g_hash_table_lookup (kinds, GINT_TO_POINTER (kind)));
+	type = (GType) (g_hash_table_lookup (kinds, GINT_TO_POINTER (kind)));
 
 	return type;
 }
@@ -452,7 +452,7 @@ e_data_cal_factory_register_method (EDataCalFactory *factory, const char *method
 
 	kinds = g_hash_table_lookup (priv->methods, method_str);
 	if (kinds) {
-		type = GPOINTER_TO_INT (g_hash_table_lookup (kinds, GINT_TO_POINTER (kind)));
+		type = (GType) (g_hash_table_lookup (kinds, GINT_TO_POINTER (kind)));
 		if (type) {
 			g_warning (G_STRLOC ": method `%s' already registered", method_str);
 			g_free (method_str);
@@ -466,7 +466,7 @@ e_data_cal_factory_register_method (EDataCalFactory *factory, const char *method
 		g_hash_table_insert (priv->methods, method_str, kinds);
 	}
 	
-	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), GINT_TO_POINTER (backend_type));
+	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), (gpointer) backend_type);
 }
 
 /**
