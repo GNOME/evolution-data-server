@@ -41,6 +41,8 @@ void             e_gw_message_write_base64_parameter (SoupSoapMessage *msg,
 						      const char *name,
 						      const char *prefix,
 						      const char *value);
+void e_gw_message_write_int_parameter (SoupSoapMessage *msg, const char *name, const char *prefix, long value);
+
 
 void             e_gw_message_write_footer (SoupSoapMessage *msg);
 

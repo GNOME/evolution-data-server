@@ -138,6 +138,14 @@ e_gw_message_write_base64_parameter (SoupSoapMessage *msg, const char *name, con
 }
 
 void
+e_gw_message_write_int_parameter (SoupSoapMessage *msg, const char *name, const char *prefix, long value)
+{
+	soup_soap_message_start_element (msg, name, prefix, NULL);
+	soup_soap_message_write_int (msg, value);
+	soup_soap_message_end_element (msg);
+}
+
+void
 e_gw_message_write_footer (SoupSoapMessage *msg)
 {
 	soup_soap_message_end_element (msg);

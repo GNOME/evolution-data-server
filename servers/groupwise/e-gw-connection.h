@@ -106,6 +106,11 @@ EGwConnectionStatus e_gw_connection_get_categories  (EGwConnection *cnc, GHashTa
 EGwConnectionStatus e_gw_connection_add_members (EGwConnection *cnc, const char *group_id, GList *member_ids);
 EGwConnectionStatus e_gw_connection_remove_members (EGwConnection *cnc, const char *group_id, GList *member_ids);
 EGwConnectionStatus e_gw_connection_get_items_from_ids (EGwConnection *cnc, const char *container, const char *view, GPtrArray *item_ids, GList **list);
+
+EGwConnectionStatus e_gw_connection_create_cursor (EGwConnection *cnc, const char *container, const char *view, EGwFilter *filter, int *cursor);
+EGwConnectionStatus e_gw_connection_destroy_cursor (EGwConnection *cnc, const char *container,  int cursor);
+EGwConnectionStatus e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int cursor, int forward, int count, GList **item_list);
+
 G_END_DECLS
 
 #endif

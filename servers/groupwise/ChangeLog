@@ -1,3 +1,13 @@
+2004-08-24 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-gw-connection.[ch]
+	(e_gw_connection_create_cursor)
+	(e_gw_connection_destroy_cursor)
+	(e_gw_connection_read_cursor) : new functions to read items
+	in chunks using curosrs insted of all at once
+	* e-gw-message.[ch]  (e_gw_message_write_int_parameter) :
+	new function to set int parameter 
+
 2004-08-19  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes #62065
