@@ -10,12 +10,12 @@
 
 #include <libedata-book/e-book-backend-sync.h>
 
-#define E_TYPE_BACKEND_VCF        (e_book_backend_vcf_get_type ())
-#define E_BOOK_BACKEND_VCF(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_VCF, EBookBackendVCF))
-#define E_BOOK_BACKEND_VCF_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_BOOK_BACKEND_TYPE, EBookBackendVCFClass))
-#define E_IS_BACKEND_VCF(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BACKEND_VCF))
-#define E_IS_BACKEND_VCF_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BACKEND_VCF))
-#define E_BOOK_BACKEND_VCF_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BACKEND_VCF, EBookBackendVCFClass))
+#define E_TYPE_BOOK_BACKEND_VCF         (e_book_backend_vcf_get_type ())
+#define E_BOOK_BACKEND_VCF(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_VCF, EBookBackendVCF))
+#define E_BOOK_BACKEND_VCF_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_BACKEND_VCF, EBookBackendVCFClass))
+#define E_IS_BOOK_BACKEND_VCF(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK_BACKEND_VCF))
+#define E_IS_BOOK_BACKEND_VCF_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_BACKEND_VCF))
+#define E_BOOK_BACKEND_VCF_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_BACKEND_VCF, EBookBackendVCFClass))
 
 typedef struct _EBookBackendVCFPrivate EBookBackendVCFPrivate;
 

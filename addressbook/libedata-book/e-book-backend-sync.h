@@ -10,12 +10,12 @@
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-book-backend.h>
 
-#define E_TYPE_BACKEND_SYNC         (e_book_backend_sync_get_type ())
-#define E_BOOK_BACKEND_SYNC(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_SYNC, EBookBackendSync))
-#define E_BOOK_BACKEND_SYNC_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BACKEND_SYNC, EBookBackendSyncClass))
-#define E_IS_BACKEND_SYNC(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BACKEND_SYNC))
-#define E_IS_BACKEND_SYNC_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BACKEND_SYNC))
-#define E_BOOK_BACKEND_SYNC_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((k), E_TYPE_BACKEND_SYNC, EBookBackendSyncClass))
+#define E_TYPE_BOOK_BACKEND_SYNC         (e_book_backend_sync_get_type ())
+#define E_BOOK_BACKEND_SYNC(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_SYNC, EBookBackendSync))
+#define E_BOOK_BACKEND_SYNC_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_BACKEND_SYNC, EBookBackendSyncClass))
+#define E_IS_BOOK_BACKEND_SYNC(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK_BACKEND_SYNC))
+#define E_IS_BOOK_BACKEND_SYNC_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_BACKEND_SYNC))
+#define E_BOOK_BACKEND_SYNC_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((k), E_TYPE_BOOK_BACKEND_SYNC, EBookBackendSyncClass))
 
 typedef struct _EBookBackendSyncPrivate EBookBackendSyncPrivate;
 

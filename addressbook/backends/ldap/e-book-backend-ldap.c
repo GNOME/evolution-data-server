@@ -3060,7 +3060,7 @@ static gboolean
 e_book_backend_ldap_construct (EBookBackendLDAP *backend)
 {
 	g_assert (backend != NULL);
-	g_assert (E_IS_BACKEND_LDAP (backend));
+	g_assert (E_IS_BOOK_BACKEND_LDAP (backend));
 
 	if (! e_book_backend_construct (E_BOOK_BACKEND (backend)))
 		return FALSE;
@@ -3076,7 +3076,7 @@ e_book_backend_ldap_new (void)
 {
 	EBookBackendLDAP *backend;
 
-	backend = g_object_new (E_TYPE_BACKEND_LDAP, NULL);
+	backend = g_object_new (E_TYPE_BOOK_BACKEND_LDAP, NULL);
 
 	if (! e_book_backend_ldap_construct (backend)) {
 		g_object_unref (backend);
@@ -3201,7 +3201,7 @@ e_book_backend_ldap_get_type (void)
 			(GInstanceInitFunc) e_book_backend_ldap_init
 		};
 
-		type = g_type_register_static (E_TYPE_BACKEND, "EBookBackendLDAP", &info, 0);
+		type = g_type_register_static (E_TYPE_BOOK_BACKEND, "EBookBackendLDAP", &info, 0);
 	}
 
 	return type;

@@ -93,7 +93,7 @@ e_book_backend_vcf_search_timeout (gpointer data)
 
 static void
 e_book_backend_vcf_search (EBookBackendVCF  	      *bvcf,
-			EDataBookView           *book_view)
+			   EDataBookView           *book_view)
 {
 	const char *query = e_data_book_view_get_card_query (book_view);
 	VCFBackendSearchClosure *closure = g_new0 (VCFBackendSearchClosure, 1);
@@ -543,7 +543,7 @@ static gboolean
 e_book_backend_vcf_construct (EBookBackendVCF *backend)
 {
 	g_assert (backend != NULL);
-	g_assert (E_IS_BACKEND_VCF (backend));
+	g_assert (E_IS_BOOK_BACKEND_VCF (backend));
 
 	if (! e_book_backend_construct (E_BOOK_BACKEND (backend)))
 		return FALSE;
@@ -559,7 +559,7 @@ e_book_backend_vcf_new (void)
 {
 	EBookBackendVCF *backend;
 
-	backend = g_object_new (E_TYPE_BACKEND_VCF, NULL);
+	backend = g_object_new (E_TYPE_BOOK_BACKEND_VCF, NULL);
 
 	if (! e_book_backend_vcf_construct (backend)) {
 		g_object_unref (backend);
@@ -668,7 +668,7 @@ e_book_backend_vcf_get_type (void)
 			(GInstanceInitFunc) e_book_backend_vcf_init
 		};
 
-		type = g_type_register_static (E_TYPE_BACKEND_SYNC, "EBookBackendVCF", &info, 0);
+		type = g_type_register_static (E_TYPE_BOOK_BACKEND_SYNC, "EBookBackendVCF", &info, 0);
 	}
 
 	return type;

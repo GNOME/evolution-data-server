@@ -11,6 +11,7 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -149,9 +150,9 @@ do_create(EBookBackendFile  *bf,
 
 static EBookBackendSyncStatus
 e_book_backend_file_create_contact (EBookBackendSync *backend,
-				 EDataBook *book,
-				 const char *vcard,
-				 EContact **contact)
+				    EDataBook *book,
+				    const char *vcard,
+				    EContact **contact)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
@@ -169,9 +170,9 @@ e_book_backend_file_create_contact (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_remove_contacts (EBookBackendSync *backend,
-				  EDataBook    *book,
-				  GList *id_list,
-				  GList **ids)
+				     EDataBook    *book,
+				     GList *id_list,
+				     GList **ids)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -222,9 +223,9 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_modify_contact (EBookBackendSync *backend,
-				 EDataBook    *book,
-				 const char *vcard,
-				 EContact **contact)
+				    EDataBook    *book,
+				    const char *vcard,
+				    EContact **contact)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -276,9 +277,9 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_contact (EBookBackendSync *backend,
-			      EDataBook    *book,
-			      const char *id,
-			      char **vcard)
+				 EDataBook    *book,
+				 const char *id,
+				 char **vcard)
 {
 	EBookBackendFile *bf;
 	DB             *db;
@@ -304,9 +305,9 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_contact_list (EBookBackendSync *backend,
-				   EDataBook    *book,
-				   const char *query,
-				   GList **contacts)
+				      EDataBook    *book,
+				      const char *query,
+				      GList **contacts)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -370,7 +371,7 @@ typedef struct {
 
 static void
 e_book_backend_file_start_book_view (EBookBackend  *backend,
-				  EDataBookView *book_view)
+				     EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = g_new0 (FileBackendSearchClosure, 1);
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
@@ -491,7 +492,7 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 
 static void
 e_book_backend_file_stop_book_view (EBookBackend  *backend,
-				 EDataBookView *book_view)
+				    EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = g_object_get_data (G_OBJECT (book_view), "EBookBackendFile.BookView::closure");
 	if (!closure) {
@@ -549,9 +550,9 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_changes (EBookBackendSync *backend,
-			      EDataBook    *book,
-			      const char *change_id,
-			      GList **changes_out)
+				 EDataBook    *book,
+				 const char *change_id,
+				 GList **changes_out)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	int     db_error = 0;
@@ -689,18 +690,18 @@ e_book_backend_file_extract_path_from_uri (const char *uri)
 
 static EBookBackendSyncStatus
 e_book_backend_file_authenticate_user (EBookBackendSync *backend,
-				    EDataBook    *book,
-				    const char *user,
-				    const char *passwd,
-				    const char *auth_method)
+				       EDataBook    *book,
+				       const char *user,
+				       const char *passwd,
+				       const char *auth_method)
 {
 	return GNOME_Evolution_Addressbook_Success;
 }
 
 static EBookBackendSyncStatus
 e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
-				       EDataBook    *book,
-				       GList **fields_out)
+					  EDataBook    *book,
+					  GList **fields_out)
 {
 	GList *fields = NULL;
 	int i;
@@ -843,9 +844,9 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 #include <libedata-book/ximian-vcard.h>
 
 static GNOME_Evolution_Addressbook_CallStatus
-e_book_backend_file_load_uri (EBookBackend             *backend,
-			   const char             *uri,
-			   gboolean                only_if_exists)
+e_book_backend_file_load_uri (EBookBackend           *backend,
+			      const char             *uri,
+			      gboolean                only_if_exists)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	char           *dirname, *filename;
@@ -983,7 +984,7 @@ select_changes (const struct dirent *d)
 
 static EBookBackendSyncStatus
 e_book_backend_file_remove (EBookBackendSync *backend,
-			 EDataBook        *book)
+			    EDataBook        *book)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	struct dirent **namelist;
@@ -1047,7 +1048,7 @@ static gboolean
 e_book_backend_file_construct (EBookBackendFile *backend)
 {
 	g_assert (backend != NULL);
-	g_assert (E_IS_BACKEND_FILE (backend));
+	g_assert (E_IS_BOOK_BACKEND_FILE (backend));
 
 	if (! e_book_backend_construct (E_BOOK_BACKEND (backend)))
 		return FALSE;
@@ -1063,7 +1064,7 @@ e_book_backend_file_new (void)
 {
 	EBookBackendFile *backend;
 
-	backend = g_object_new (E_TYPE_BACKEND_FILE, NULL);
+	backend = g_object_new (E_TYPE_BOOK_BACKEND_FILE, NULL);
 
 	if (! e_book_backend_file_construct (backend)) {
 		g_object_unref (backend);
@@ -1160,7 +1161,7 @@ e_book_backend_file_get_type (void)
 			(GInstanceInitFunc) e_book_backend_file_init
 		};
 
-		type = g_type_register_static (E_TYPE_BACKEND_SYNC, "EBookBackendFile", &info, 0);
+		type = g_type_register_static (E_TYPE_BOOK_BACKEND_SYNC, "EBookBackendFile", &info, 0);
 	}
 
 	return type;

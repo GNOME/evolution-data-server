@@ -42,13 +42,13 @@ e_book_backend_construct (EBookBackend *backend)
 }
 
 GNOME_Evolution_Addressbook_CallStatus
-e_book_backend_load_uri (EBookBackend             *backend,
-		      const char             *uri,
-		      gboolean                only_if_exists)
+e_book_backend_load_uri (EBookBackend           *backend,
+			 const char             *uri,
+			 gboolean                only_if_exists)
 {
 	GNOME_Evolution_Addressbook_CallStatus status;
 
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 	g_return_val_if_fail (uri, FALSE);
 	g_return_val_if_fail (backend->priv->loaded == FALSE, FALSE);
 
@@ -73,18 +73,18 @@ e_book_backend_load_uri (EBookBackend             *backend,
 const char *
 e_book_backend_get_uri (EBookBackend *backend)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), NULL);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
 	return backend->priv->uri;
 }
 
 void
 e_book_backend_open (EBookBackend *backend,
-		  EDataBook    *book,
-		  gboolean    only_if_exists)
+		     EDataBook    *book,
+		     gboolean      only_if_exists)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	g_mutex_lock (backend->priv->open_mutex);
 
@@ -110,8 +110,8 @@ void
 e_book_backend_remove (EBookBackend *backend,
 		    EDataBook    *book)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->remove);
 
@@ -120,11 +120,11 @@ e_book_backend_remove (EBookBackend *backend,
 
 void
 e_book_backend_create_contact (EBookBackend *backend,
-			    EDataBook    *book,
-			    const char *vcard)
+			       EDataBook    *book,
+			       const char   *vcard)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (vcard);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->create_contact);
@@ -134,11 +134,11 @@ e_book_backend_create_contact (EBookBackend *backend,
 
 void
 e_book_backend_remove_contacts (EBookBackend *backend,
-			     EDataBook *book,
-			     GList *id_list)
+				EDataBook    *book,
+				GList        *id_list)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (id_list);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts);
@@ -148,11 +148,11 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 
 void
 e_book_backend_modify_contact (EBookBackend *backend,
-			    EDataBook *book,
-			    const char *vcard)
+			       EDataBook    *book,
+			       const char   *vcard)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (vcard);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact);
@@ -162,11 +162,11 @@ e_book_backend_modify_contact (EBookBackend *backend,
 
 void
 e_book_backend_get_contact (EBookBackend *backend,
-			 EDataBook *book,
-			 const char *id)
+			    EDataBook    *book,
+			    const char   *id)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (id);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact);
@@ -176,11 +176,11 @@ e_book_backend_get_contact (EBookBackend *backend,
 
 void
 e_book_backend_get_contact_list (EBookBackend *backend,
-			      EDataBook *book,
-			      const char *query)
+				 EDataBook    *book,
+				 const char   *query)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (query);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list);
@@ -189,11 +189,11 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 }
 
 void
-e_book_backend_start_book_view (EBookBackend *backend,
-			     EDataBookView *book_view)
+e_book_backend_start_book_view (EBookBackend  *backend,
+				EDataBookView *book_view)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book_view && E_IS_DATA_BOOK_VIEW (book_view));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view);
 
@@ -201,11 +201,11 @@ e_book_backend_start_book_view (EBookBackend *backend,
 }
 
 void
-e_book_backend_stop_book_view (EBookBackend             *backend,
-			    EDataBookView            *book_view)
+e_book_backend_stop_book_view (EBookBackend  *backend,
+			       EDataBookView *book_view)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book_view && E_IS_DATA_BOOK_VIEW (book_view));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view);
 
@@ -214,11 +214,11 @@ e_book_backend_stop_book_view (EBookBackend             *backend,
 
 void
 e_book_backend_get_changes (EBookBackend *backend,
-			 EDataBook *book,
-			 const char *change_id)
+			    EDataBook    *book,
+			    const char   *change_id)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (change_id);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_changes);
@@ -228,13 +228,13 @@ e_book_backend_get_changes (EBookBackend *backend,
 
 void
 e_book_backend_authenticate_user (EBookBackend *backend,
-			       EDataBook *book,
-			       const char *user,
-			       const char *passwd,
-			       const char *auth_method)
+				  EDataBook    *book,
+				  const char   *user,
+				  const char   *passwd,
+				  const char   *auth_method)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (user && passwd && auth_method);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user);
@@ -244,11 +244,11 @@ e_book_backend_authenticate_user (EBookBackend *backend,
 
 void
 e_book_backend_get_supported_fields (EBookBackend *backend,
-				  EDataBook *book)
+				     EDataBook    *book)
 
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_fields);
 
@@ -257,10 +257,10 @@ e_book_backend_get_supported_fields (EBookBackend *backend,
 
 void
 e_book_backend_get_supported_auth_methods (EBookBackend *backend,
-					EDataBook *book)
+					   EDataBook    *book)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_auth_methods);
 
@@ -269,10 +269,10 @@ e_book_backend_get_supported_auth_methods (EBookBackend *backend,
 
 GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_cancel_operation (EBookBackend *backend,
-			      EDataBook *book)
+				 EDataBook    *book)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), GNOME_Evolution_Addressbook_OtherError);
-	g_return_val_if_fail (book && E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), GNOME_Evolution_Addressbook_OtherError);
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->cancel_operation);
 
@@ -304,14 +304,14 @@ last_client_gone (EBookBackend *backend)
 EList*
 e_book_backend_get_book_views (EBookBackend *backend)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
 	return g_object_ref (backend->priv->views);
 }
 
 void
 e_book_backend_add_book_view (EBookBackend *backend,
-			   EDataBookView *view)
+			      EDataBookView *view)
 {
 	g_mutex_lock (backend->priv->views_mutex);
 
@@ -322,7 +322,7 @@ e_book_backend_add_book_view (EBookBackend *backend,
 
 void
 e_book_backend_remove_book_view (EBookBackend *backend,
-			      EDataBookView *view)
+				 EDataBookView *view)
 {
 	g_mutex_lock (backend->priv->views_mutex);
 
@@ -342,10 +342,10 @@ e_book_backend_remove_book_view (EBookBackend *backend,
  */
 gboolean
 e_book_backend_add_client (EBookBackend      *backend,
-			EDataBook         *book)
+			   EDataBook         *book)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), FALSE);
-	g_return_val_if_fail (book && E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
 	bonobo_object_set_immortal (BONOBO_OBJECT (book), TRUE);
 
@@ -362,14 +362,14 @@ e_book_backend_add_client (EBookBackend      *backend,
 
 void
 e_book_backend_remove_client (EBookBackend *backend,
-			   EDataBook    *book)
+			      EDataBook    *book)
 {
 	/* XXX this needs a bit more thinking wrt the mutex - we
 	   should be holding it when we check to see if clients is
 	   NULL */
 
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
-	g_return_if_fail (book && E_IS_DATA_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	/* Disconnect */
 	g_mutex_lock (backend->priv->clients_mutex);
@@ -386,7 +386,7 @@ e_book_backend_remove_client (EBookBackend *backend,
 char *
 e_book_backend_get_static_capabilities (EBookBackend *backend)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), NULL);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 	
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_static_capabilities);
 
@@ -396,7 +396,7 @@ e_book_backend_get_static_capabilities (EBookBackend *backend)
 gboolean
 e_book_backend_is_loaded (EBookBackend *backend)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
 	return backend->priv->loaded;
 }
@@ -404,7 +404,7 @@ e_book_backend_is_loaded (EBookBackend *backend)
 void
 e_book_backend_set_is_loaded (EBookBackend *backend, gboolean is_loaded)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
 	backend->priv->loaded = is_loaded;
 }
@@ -412,7 +412,7 @@ e_book_backend_set_is_loaded (EBookBackend *backend, gboolean is_loaded)
 gboolean
 e_book_backend_is_writable (EBookBackend *backend)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 	
 	return backend->priv->writable;
 }
@@ -420,7 +420,7 @@ e_book_backend_is_writable (EBookBackend *backend)
 void
 e_book_backend_set_is_writable (EBookBackend *backend, gboolean is_writable)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	
 	backend->priv->writable = is_writable;
 }
@@ -428,7 +428,7 @@ e_book_backend_set_is_writable (EBookBackend *backend, gboolean is_writable)
 gboolean
 e_book_backend_is_removed (EBookBackend *backend)
 {
-	g_return_val_if_fail (backend && E_IS_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 	
 	return backend->priv->removed;
 }
@@ -436,7 +436,7 @@ e_book_backend_is_removed (EBookBackend *backend)
 void
 e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
 {
-	g_return_if_fail (backend && E_IS_BACKEND (backend));
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	
 	backend->priv->removed = is_removed;
 }
@@ -480,8 +480,8 @@ e_book_backend_change_delete_new  (const char *vcard)
 
 static void
 e_book_backend_foreach_view (EBookBackend *backend,
-			  void (*callback) (EDataBookView *, gpointer),
-			  gpointer user_data)
+			     void (*callback) (EDataBookView *, gpointer),
+			     gpointer user_data)
 {
 	EList *views;
 	EDataBookView *view;
