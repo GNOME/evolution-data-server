@@ -9,9 +9,17 @@ INCLUDES =						\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(GROUPWISE_CFLAGS)
 
-noinst_PROGRAMS = create-account
+noinst_PROGRAMS = create-account soap-test
+
 create_account_SOURCES = create-account.c
 create_account_LDADD = \
+	$(top_builddir)/calendar/libedata-cal/libedata-cal.la           \
+	$(top_builddir)/calendar/backends/file/libecalbackendfile.la    \
+	$(GROUPWISE_LIBS)						\
+	$(E_DATA_SERVER_LIBS)
+
+soap_test_SOURCES = soap-test.c
+soap_test_LDADD = \
 	$(top_builddir)/calendar/libedata-cal/libedata-cal.la           \
 	$(top_builddir)/calendar/backends/file/libecalbackendfile.la    \
 	$(GROUPWISE_LIBS)						\
