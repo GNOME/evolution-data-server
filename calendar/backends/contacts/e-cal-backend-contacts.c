@@ -278,15 +278,16 @@ source_group_added_cb (ESourceList *source_list, ESourceGroup *group, gpointer u
         g_return_if_fail (cbc);
 
         /* Load all address books from this group */
-        for (i = e_source_group_peek_sources (group); i; i = i->next)
-        {
-                ESource *source = E_SOURCE (i->data);
-                add_source (cbc, source);
-        }
+	if (!strncmp (e_source_group_peek_base_uri (group), "file", 4)) {
+		for (i = e_source_group_peek_sources (group); i; i = i->next) {
+			ESource *source = E_SOURCE (i->data);
+			add_source (cbc, source);
+		}
 
-        /* Watch for future changes */
-        g_signal_connect (group, "source_added", G_CALLBACK (source_added_cb), cbc);
-        g_signal_connect (group, "source_removed", G_CALLBACK (source_removed_cb), cbc);
+		/* Watch for future changes */
+		g_signal_connect (group, "source_added", G_CALLBACK (source_added_cb), cbc);
+		g_signal_connect (group, "source_removed", G_CALLBACK (source_removed_cb), cbc);
+	}
 }
 
 static void
@@ -298,8 +299,7 @@ source_group_removed_cb (ESourceList *source_list, ESourceGroup *group, gpointer
         g_return_if_fail (cbc);
         
         /* Unload all address books from this group */
-        for (i = e_source_group_peek_sources (group); i; i = i->next)
-        {
+        for (i = e_source_group_peek_sources (group); i; i = i->next) {
                 ESource *source = E_SOURCE (i->data);
                 const char *uid = e_source_peek_uid (source);
                 
@@ -315,8 +315,7 @@ contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
         const GList *i;
 
-        for (i = contacts; i; i = i->next)
-        {
+        for (i = contacts; i; i = i->next) {
                 EContact *contact = E_CONTACT (i->data);
                 char *uid = e_contact_get_const (contact, E_CONTACT_UID);
                 
@@ -706,10 +705,9 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
                 return GNOME_Evolution_Calendar_Success;
 
         /* Create address books for existing sources */
-        for (i = e_source_list_peek_groups (priv->addressbook_sources); i; i = i->next)
-        {
+        for (i = e_source_list_peek_groups (priv->addressbook_sources); i; i = i->next) {
                 ESourceGroup *source_group = E_SOURCE_GROUP (i->data);
-                        
+
                 source_group_added_cb (priv->addressbook_sources, source_group, cbc);
         }
 

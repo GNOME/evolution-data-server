@@ -1,3 +1,10 @@
+2004-06-14  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #57088
+
+	* backends/contacts/e-cal-backend-contacts.c (source_group_added_cb):
+	only add sources from local addressbook backends.
+
 2004-06-14  Harish Krishnaswamy  <kharish@novell.com>
 
 
