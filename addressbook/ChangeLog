@@ -1,9 +1,15 @@
+2004-04-23  Chris Toshok  <toshok@ximian.com>
+
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_connect): always set the protocol level to 3
+	first (even if we're not doing TLS/SSL) so we can attempt a v3
+	bind before falling back to the v2 bind.
+
 2004-04-22  Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* backends/groupwise/e-book-backend-groupwise.c	
 	(populate_contact_members) : set the emails using EVC_X_DEST_EMAIL parameter
 
- 
 2004-04-21  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-contact.c (E_CONTACT_COMPANY): make this an

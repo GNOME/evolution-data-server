@@ -652,16 +652,16 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 	if (NULL != blpriv->ldap) {
 		int ldap_error;
 
+		ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_PROTOCOL_VERSION, &protocol_version);
+		if (LDAP_OPT_SUCCESS != ldap_error) {
+			g_warning ("failed to set protocol version to LDAPv3");
+			bl->priv->ldap_v3 = FALSE;
+		}
+		else
+			bl->priv->ldap_v3 = TRUE;
+
 		if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
 			int tls_level;
-
-			ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_PROTOCOL_VERSION, &protocol_version);
-			if (LDAP_OPT_SUCCESS != ldap_error) {
-				g_warning ("failed to set protocol version to LDAPv3");
-				bl->priv->ldap_v3 = FALSE;
-			}
-			else
-				bl->priv->ldap_v3 = TRUE;
 
 			if (!bl->priv->ldap_v3 && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 				g_message ("TLS not available (fatal version), v3 protocol could not be established (ldap_error 0x%02x)", ldap_error);
