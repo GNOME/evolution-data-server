@@ -1,6 +1,22 @@
 2005-01-10  Hans Petter Jansson  <hpj@novell.com>
 
-	* backens/ldap/e-book-backend-ldap.c
+	* backends/file/e-book-backend-file.c
+	* backends/file/e-book-backend-file.h
+	* backends/file/e-book-backend-file-factory.c
+	* backends/vcf/e-book-backend-vcf.c
+	* backends/vcf/e-book-backend-vcf.h
+	* backends/vcf/e-book-backend-vcf-factory.c
+	* backends/ldap/e-book-backend-ldap.c
+	* backends/ldap/e-book-backend-ldap.h
+	* backends/ldap/e-book-backend-ldap-factory.c
+	* backends/groupwise/e-book-backend-groupwise.c
+	* backends/groupwise/e-book-backend-groupwise.h
+	* backends/groupwise/e-book-backend-groupwise-factory.c: Update
+	copyright and license notices.
+
+2005-01-10  Hans Petter Jansson  <hpj@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c
 	(check_schema_support): Add robustness against not being connected.
 	(query_ldap_root_dse): Ditto.
 	(e_book_backend_ldap_reconnect): Ditto, and against not having a
