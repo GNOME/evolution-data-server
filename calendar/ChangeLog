@@ -1,3 +1,23 @@
+2004-01-28  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.h: add protos
+
+	* libecal/e-cal.c (e_cal_new_system_calendar): return a pointer to
+	the system calendar
+	(e_cal_new_system_tasks): ditto for tasks
+	(get_default): gets the default calendar/tasks
+	(e_cal_get_default_calendar): gets the default calendar
+	(e_cal_get_default_tasks): ditto for tasks
+	(e_cal_set_default_calendar): sets the default calendar
+	(e_cal_set_default_tasks): ditto for tasks
+	(set_default_source): set the default calendar/tasks source
+	(e_cal_set_default_calendar_source): set the default calendar
+	source
+	(e_cal_set_default_tasks_source): ditto for tasks
+	(get_sources): get a source list given a gconf key
+	(e_cal_get_calendars): get the calendar source list
+	(e_cal_get_tasks): get the tasks source list
+
 2004-01-28  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-gw-container.[ch]: new class to contain all

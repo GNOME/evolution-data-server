@@ -1363,6 +1363,32 @@ e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 	return cal;
 }
 
+ECal *
+e_cal_new_system_calendar (void)
+{
+	ECal *ecal;
+	char *uri;
+
+	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "calendar", "local", "system");
+	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
+	g_free (uri);
+	
+	return ecal;
+}
+
+ECal *
+e_cal_new_system_tasks (void)
+{
+	ECal *ecal;
+	char *uri;
+
+	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "tasks", "local", "system");
+	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
+	g_free (uri);
+	
+	return ecal;
+}
+
 /**
  * e_cal_set_auth_func
  * @ecal: A calendar ecal.
@@ -3903,4 +3929,219 @@ e_cal_get_error_message (ECalendarStatus status)
 	}
 
 	return NULL;
+}
+
+static gboolean
+get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, GError **error)
+{
+	GSList *g;
+	GError *err = NULL;
+	ESource *default_source = NULL;
+	gboolean rv = TRUE;
+
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (g->data);
+		GSList *s;
+		for (s = e_source_group_peek_sources (group); s; s = s->next) {
+			ESource *source = E_SOURCE (s->data);
+
+			if (e_source_get_property (source, "default")) {
+				default_source = source;
+				break;
+			}
+		}
+
+		if (default_source)
+			break;
+	}
+
+	if (default_source) {
+		*ecal = e_cal_new (default_source, type);
+		if (!*ecal) {			
+			g_propagate_error (error, err);
+			rv = FALSE;
+			goto done;
+		}
+
+		if (!e_cal_open (*ecal, TRUE, &err)) {
+			g_propagate_error (error, err);
+			rv = FALSE;
+			goto done;		
+		}
+	} else {
+		switch (type) {
+		case E_CAL_SOURCE_TYPE_EVENT:
+			*ecal = e_cal_new_system_calendar ();
+			break;
+		case E_CAL_SOURCE_TYPE_TODO:
+			*ecal = e_cal_new_system_tasks ();
+			break;
+		default:
+			break;
+		}
+		
+		if (!*ecal) {			
+			g_propagate_error (error, err);
+			rv = FALSE;
+			goto done;
+		}
+
+		if (!e_cal_open (*ecal, TRUE, &err)) {
+			g_propagate_error (error, err);
+			rv = FALSE;
+			goto done;		
+		}
+	}
+
+ done:
+	if (!rv && *ecal) {
+		g_object_unref (*ecal);
+		*ecal = NULL;
+	}
+	g_object_unref (sources);
+
+	return rv;
+}
+
+gboolean
+e_cal_get_default_calendar (ECal **ecal, GError **error)
+{
+	ESourceList *sources;
+	GError *err = NULL;
+
+	if (!e_cal_get_calendars (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	return get_default (ecal, sources, E_CAL_SOURCE_TYPE_EVENT, error);
+}
+
+gboolean
+e_cal_get_default_tasks (ECal **ecal, GError **error)
+{
+	ESourceList *sources;
+	GError *err = NULL;
+
+	if (!e_cal_get_tasks (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	return get_default (ecal, sources, E_CAL_SOURCE_TYPE_TODO, error);
+}	
+
+gboolean
+e_cal_set_default_calendar (ECal *ecal, GError **error)
+{
+	ESource *source = e_cal_get_source (ecal);
+	if (!source) {
+		/* XXX gerror */
+		return FALSE;
+	}
+
+	return e_cal_set_default_calendar_source (source, error);
+}
+
+
+gboolean
+e_cal_set_default_tasks (ECal *ecal, GError **error)
+{
+	ESource *source = e_cal_get_source (ecal);
+	if (!source) {
+		/* XXX gerror */
+		return FALSE;
+	}
+
+	return e_cal_set_default_tasks_source (source, error);
+}
+
+static gboolean
+set_default_source (ESourceList *sources, ESource *source, GError **error)
+{
+	const char *uid;
+	GError *err = NULL;
+	GSList *g;
+
+	uid = e_source_peek_uid (source);
+
+	/* make sure the source is actually in the ESourceList.  if
+	   it's not we don't bother adding it, just return an error */
+	source = e_source_list_peek_source_by_uid (sources, uid);
+	if (!source) {
+		/* XXX gerror */
+		g_object_unref (sources);
+		return FALSE;
+	}
+
+	/* loop over all the sources clearing out any "default"
+	   properties we find */
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		GSList *s;
+		for (s = e_source_group_peek_sources (E_SOURCE_GROUP (g->data));
+		     s; s = s->next) {
+			e_source_set_property (E_SOURCE (s->data), "default", NULL);
+		}
+	}
+
+	/* set the "default" property on the source */
+	e_source_set_property (source, "default", "true");
+
+	if (!e_source_list_sync (sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+gboolean
+e_cal_set_default_calendar_source (ESource *source, GError **error)
+{
+	ESourceList *sources;
+	GError *err = NULL;
+
+	if (!e_cal_get_calendars (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	return set_default_source (sources, source, error);
+}
+
+gboolean
+e_cal_set_default_tasks_source (ESource *source, GError **error)
+{
+	ESourceList *sources;
+	GError *err = NULL;
+
+	if (!e_cal_get_tasks (&sources, &err)) {
+		g_propagate_error (error, err);
+		return FALSE;
+	}
+
+	return set_default_source (sources, source, error);
+}
+
+static gboolean
+get_sources (ESourceList **sources, const char *key, GError **error)
+{
+	GConfClient *gconf = gconf_client_get_default();
+
+	*sources = e_source_list_new_for_gconf (gconf, key);
+	g_object_unref (gconf);
+
+	return TRUE;
+}
+
+gboolean
+e_cal_get_calendars (ESourceList **calendar_sources, GError **error)
+{
+	return get_sources (calendar_sources, "/apps/evolution/calendar/sources", error);
+}
+
+gboolean
+e_cal_get_tasks (ESourceList **task_sources, GError **error)
+{
+	return get_sources (task_sources, "/apps/evolution/tasks/sources", error);
 }

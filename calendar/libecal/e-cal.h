@@ -22,6 +22,7 @@
 #define E_CAL_H
 
 #include <glib-object.h>
+#include <libedataserver/e-source-list.h>
 #include <libedataserver/e-source.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
@@ -102,6 +103,8 @@ GType cal_mode_enum_get_type (void);
 
 ECal *e_cal_new (ESource *source, ECalSourceType type);
 ECal *e_cal_new_from_uri (const gchar *uri, ECalSourceType type);
+ECal *e_cal_new_system_calendar (void);
+ECal *e_cal_new_system_tasks (void);
 
 void e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data);
 
@@ -186,6 +189,16 @@ icaltimezone *e_cal_resolve_tzid_cb (const char *tzid, gpointer data);
 char* e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp);
 
 const char * e_cal_get_error_message (ECalendarStatus status);
+
+/* Calendar/Tasks Discovery */
+gboolean    e_cal_get_default_calendar (ECal **ecal, GError **error);
+gboolean    e_cal_get_default_tasks (ECal **ecal, GError **error);
+gboolean    e_cal_set_default_calendar (ECal  *ecal, GError **error);
+gboolean    e_cal_set_default_tasks (ECal  *ecal, GError **error);
+gboolean    e_cal_set_default_calendar_source      (ESource *source, GError **error);
+gboolean    e_cal_set_default_tasks_source      (ESource *source, GError **error);
+gboolean    e_cal_get_calendars        (ESourceList **calendar_sources, GError **error);
+gboolean    e_cal_get_tasks        (ESourceList **task_sources, GError **error);
 
 G_END_DECLS
 
