@@ -31,6 +31,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libecal/e-cal-recur.h>
+#include <libecal/e-cal-time-util.h>
 #include <libecal/e-cal-util.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
@@ -1259,7 +1260,7 @@ create_user_free_busy (ECalBackendFile *cbfile, const char *address, const char 
 	icalcomponent *vfb;
 	icaltimezone *utc_zone;
 	ECalBackendSExp *obj_sexp;
-	char *query;
+	char *query, *iso_start, *iso_end;
 	
 	priv = cbfile->priv;
 
@@ -1282,9 +1283,14 @@ create_user_free_busy (ECalBackendFile *cbfile, const char *address, const char 
 	icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
 
 	/* add all objects in the given interval */
-	query = g_strdup_printf ("occur-in-time-range? %lu %lu", start, end);
+	iso_start = isodate_from_time_t (start);
+	iso_end = isodate_from_time_t (end);
+	query = g_strdup_printf ("occur-in-time-range? (make-time \"%s\") (make-time \"%s\")",
+				 iso_start, iso_end);
 	obj_sexp = e_cal_backend_sexp_new (query);
 	g_free (query);
+	g_free (iso_start);
+	g_free (iso_end);
 
 	if (!obj_sexp)
 		return vfb;
