@@ -1,3 +1,4 @@
+# traducción de es.po al Spanish
 # translation of es.po to Spanish
 # Evolution's Spanish translation.
 # Copyright © 2000-2002 Free Software Foundation, Inc.
@@ -15,7 +16,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-08-19 21:46+0200\n"
-"PO-Revision-Date: 2004-08-19 21:47+0200\n"
+"PO-Revision-Date: 2004-08-24 22:51+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -85,7 +86,7 @@ msgstr "Error efectuando búsqueda"
 #: addressbook/libebook/e-book.c:2984
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "«%s» en la libreta antes que «%s»..."
+msgstr "«%s» en la libreta antes que «%s»"
 
 #: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
 #: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
@@ -132,7 +133,7 @@ msgstr "e_book_open: cancelado"
 
 #: addressbook/libebook/e-book.c:2851
 msgid "e_book_load_uri: Invalid source."
-msgstr "e_book_load_uri: Origen inválido"
+msgstr "e_book_load_uri: Origen inválido."
 
 #: addressbook/libebook/e-book.c:2859
 #, c-format
@@ -154,8 +155,7 @@ msgstr "e_book_get_self: no había uid de autocontacto almacenada en gconf"
 
 #: addressbook/libebook/e-book.c:3191
 #, c-format
-msgid ""
-"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr ""
 "e_book_set_default_source: no había origen para el uid «%s» almacenado en "
 "gconf."
@@ -531,7 +531,7 @@ msgstr "Secretario"
 #. Web fields
 #: addressbook/libebook/e-contact.c:209
 msgid "Homepage URL"
-msgstr "Direción de página inicial"
+msgstr "Dirección de página inicial"
 
 #: addressbook/libebook/e-contact.c:210
 msgid "Weblog URL"
@@ -571,7 +571,7 @@ msgstr "URI de agenda"
 
 #: addressbook/libebook/e-contact.c:226
 msgid "Free/Busy URL"
-msgstr "URL de disponibilidad:"
+msgstr "URL de disponibilidad"
 
 #: addressbook/libebook/e-contact.c:227
 msgid "ICS Calendar"
@@ -993,3 +993,4 @@ msgstr "Han ocurrido fallos de segmentación múltiples; no se puede mostrar el 
 
 #~ msgid "Checklist"
 #~ msgstr "Lista de comprobación"
+
