@@ -1,5 +1,10 @@
 2004-06-01  Chris Toshok  <toshok@ximian.com>
 
+	* libedataserver/e-source.c (e_source_set_absolute_uri): permit
+	NULL absolute_uri, so we can clear it.
+
+2004-06-01  Chris Toshok  <toshok@ximian.com>
+
 	* libedataserver/e-source.c (e_source_set_group): back out the
 	change that causes this function to always add an absolute_uri to
 	the ESource, as this uri is always used instead of the

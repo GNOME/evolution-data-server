@@ -492,9 +492,9 @@ e_source_set_absolute_uri (ESource *source,
 			   const char *absolute_uri)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
-	g_return_if_fail (absolute_uri);
 
-	if (!strcmp (source->priv->absolute_uri, absolute_uri))
+	if (!!absolute_uri == !!source->priv->absolute_uri
+	    || (absolute_uri && source->priv->absolute_uri && !strcmp (source->priv->absolute_uri, absolute_uri)))
 		return;
 
 	g_free (source->priv->absolute_uri);
