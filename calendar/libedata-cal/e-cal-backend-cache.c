@@ -265,10 +265,10 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const char *uid, con
 }
 
 /**
- * e_cal_backend_cache_add_component:
+ * e_cal_backend_cache_put_component:
  */
 gboolean
-e_cal_backend_cache_add_component (ECalBackendCache *cache,
+e_cal_backend_cache_put_component (ECalBackendCache *cache,
 				   const char *uid,
 				   const char *rid,
 				   const char *calobj)
@@ -284,31 +284,14 @@ e_cal_backend_cache_add_component (ECalBackendCache *cache,
 	priv = cache->priv;
 
 	real_key = get_key (uid, rid);
-	if (e_file_cache_get_object (E_FILE_CACHE (cache), real_key)) {
-		g_free (real_key);
-		return FALSE;
-	}
+	if (e_file_cache_get_object (E_FILE_CACHE (cache), real_key))
+		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), real_key, calobj);
+	else
+		retval = e_file_cache_add_object (E_FILE_CACHE (cache), real_key, calobj);
 
-	retval = e_file_cache_add_object (E_FILE_CACHE (cache), real_key, calobj);
 	g_free (real_key);
 
 	return retval;
-}
-
-/**
- * e_cal_backend_cache_replace_component:
- */
-gboolean
-e_cal_backend_cache_replace_component (ECalBackendCache *cache,
-				       const char *uid,
-				       const char *rid,
-				       const char *new_calobj)
-{
-	if (e_cal_backend_cache_remove_component (cache, uid, rid)) {
-		return e_cal_backend_cache_add_component (cache, uid, rid, new_calobj);
-	}
-
-	return FALSE;
 }
 
 /**

@@ -199,7 +199,7 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
 		uid = soup_soap_parameter_get_first_child_by_name (param, "iCalId");
 		rid = soup_soap_parameter_get_first_child_by_name (param, "recurrance");
 		calobj = soup_soap_parameter_get_string_value (param);
-		e_cal_backend_cache_add_component (priv->cache, uid, rid, calobj);
+		e_cal_backend_cache_put_component (priv->cache, uid, rid, calobj);
         }
 
 	g_mutex_unlock (priv->mutex);
