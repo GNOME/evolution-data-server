@@ -1,3 +1,18 @@
+2004-02-23  JP Rosevear <jpr@ximian.com>
+
+	* backends/groupwise/Makefile.am: Add includes for srcdir !=
+	builddir
+
+	* backends/file/Makefile.am: ditto
+
+	* backends/contacts/Makefile.am: ditto
+
+	* libedata-cal/Makefile.am: ditto
+
+	* libecal/Makefile.am: ditto
+
+	* tests/ecal/Makefile.am: ditto
+
 2004-02-17 Harish K <kharish@novell.com>
 	* libecal/e-cal.c : 
 	(e_cal_new_system_calendar, e_cal_new_system_tasks) : arguments

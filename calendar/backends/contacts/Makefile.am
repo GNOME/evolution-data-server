@@ -1,9 +1,13 @@
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"libecalbackendcontact\"	\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
 	-I$(top_srcdir)/calendar/libical/src		\
 	-I$(top_builddir)/calendar/libical/src		\
+	-I$(top_srcdir)/calendar/libical/src/libical	\
+	-I$(top_builddir)/calendar/libical/src/libical	\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(EVOLUTION_CALENDAR_CFLAGS)
