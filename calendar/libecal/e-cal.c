@@ -1369,7 +1369,7 @@ e_cal_new_system_calendar (void)
 	ECal *ecal;
 	char *uri;
 
-	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "calendar", "local", "system");
+	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "calendar", "local", "system", NULL);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
 	g_free (uri);
 	
@@ -1382,7 +1382,7 @@ e_cal_new_system_tasks (void)
 	ECal *ecal;
 	char *uri;
 
-	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "tasks", "local", "system");
+	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "tasks", "local", "system", NULL);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
 	g_free (uri);
 	

@@ -1,3 +1,8 @@
+2004-02-17 Harish K <kharish@novell.com>
+	* libecal/e-cal.c : 
+	(e_cal_new_system_calendar, e_cal_new_system_tasks) : arguments
+	to g_build_filename should be NULL terminated.
+
 2004-02-12  Chris Toshok  <toshok@ximian.com>
 
 	* backends/contacts/e-cal-backend-contacts.c (book_record_new):
