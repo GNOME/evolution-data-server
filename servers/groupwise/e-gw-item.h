@@ -165,6 +165,9 @@ void        e_gw_item_set_accept_level (EGwItem *item, const char *new_level);
 const char *e_gw_item_get_priority (EGwItem *item);
 void        e_gw_item_set_priority (EGwItem *item, const char *new_priority);
 
+GSList *e_gw_item_get_recipient_list (EGwItem *item);
+void e_gw_item_set_recipient_list (EGwItem *item, GSList *new_recipient_list);
+
 int e_gw_item_get_trigger (EGwItem *item);
 void e_gw_item_set_trigger (EGwItem *item, int trigger);
 

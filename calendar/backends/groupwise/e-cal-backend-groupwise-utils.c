@@ -67,7 +67,31 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp)
 			e_gw_item_set_trigger (item, duration);
 		}
 		
-		/* FIXME: attendee list, set_distribution */
+		/* get_attendee_list from cal comp and convert into
+		 * egwitemrecipient and set it on recipient_list*/
+		if (e_cal_component_has_attendees (comp)) {
+			GSList *attendee_list, *recipient_list = NULL, *al;
+
+		 	e_cal_component_get_attendee_list (comp, &attendee_list);	
+			for (al = attendee_list; al != NULL; al = al->next) {
+				ECalComponentAttendee *attendee = (ECalComponentAttendee *) al->data;
+				EGwItemRecipient *recipient = g_new0 (EGwItemRecipient, 1);
+				
+				/* len (MAILTO:) + 1 = 7 */
+				recipient->email = g_strdup (attendee->value + 7);
+				if (attendee->cn != NULL)
+					recipient->display_name = g_strdup (attendee->cn);
+				if (attendee->role == ICAL_ROLE_REQPARTICIPANT) 
+					recipient->type = E_GW_ITEM_RECIPIENT_TO;
+				else if (attendee->role == ICAL_ROLE_OPTPARTICIPANT)
+					recipient->type = E_GW_ITEM_RECIPIENT_CC;
+				else recipient->type = E_GW_ITEM_RECIPIENT_NONE;
+
+				recipient_list = g_slist_append (recipient_list, recipient);
+			}
+			e_gw_item_set_recipient_list (item, recipient_list);
+		}
+
 		break;
 
 	case E_CAL_COMPONENT_TODO :
@@ -210,7 +234,7 @@ e_gw_item_new_from_cal_component (const char *container, ECalComponent *comp)
 
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_container_id (item, container);
-
+	
 	return set_properties_from_cal_component (item, comp);
 }
 
@@ -225,6 +249,7 @@ e_gw_item_to_cal_component (EGwItem *item)
 	struct icaltimetype itt;
 	int priority;
 	int alarm_duration;
+	GSList *recipient_list, *rl, *attendee_list = NULL;
 	EGwItemType item_type;
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
@@ -340,7 +365,30 @@ e_gw_item_to_cal_component (EGwItem *item)
 			e_cal_component_add_alarm (comp, alarm);
 		}
 
-		/* FIXME: attendee list, get_distribution */
+		recipient_list = e_gw_item_get_recipient_list (item);
+		if (recipient_list != NULL) {
+			for (rl = recipient_list; rl != NULL; rl = rl->next) {
+				EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
+				ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
+
+				attendee->cn = g_strdup (recipient->display_name);
+				attendee->value = g_strconcat("MAILTO:", recipient->email, NULL);
+				if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
+					attendee->role = ICAL_ROLE_REQPARTICIPANT;
+				else if (recipient->type == E_GW_ITEM_RECIPIENT_CC)
+					attendee->role = ICAL_ROLE_OPTPARTICIPANT;
+				else 
+					attendee->role = ICAL_ROLE_NONE;
+				/* FIXME  needs a server fix on the interface 
+				 * for getting cutype and the status */
+				attendee->cutype = ICAL_CUTYPE_INDIVIDUAL;
+				attendee->status = ICAL_PARTSTAT_NEEDSACTION; 
+				attendee_list = g_slist_append (attendee_list, attendee);				
+			}
+
+			e_cal_component_set_attendee_list (comp, attendee_list);
+		}
+
 		break;
 	case E_GW_ITEM_TYPE_TASK :
 		/* due date */

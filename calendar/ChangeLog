@@ -1,3 +1,12 @@
+2004-05-04  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component),
+	(e_gw_item_new_from_cal_component), (e_gw_item_to_cal_component):
+	Patch the FIXMEs in the code handling recipient_list and message bodies
+	in events. This also resolves #57204 and 57883.
+	
+	
 2004-05-03  William Jon McCann  <mccann@jhu.edu>
 
 	* libecal/e-cal-time-util.h: Add missing G_BEGIN_DECLS and G_END_DECLS

@@ -297,6 +297,8 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->end_date = -1;
 	priv->due_date = -1;
 	priv->trigger = 0;
+	priv->recipient_list = NULL;
+	priv->completed = FALSE;
 	priv->im_list = NULL;
 	priv->email_list = NULL;
 	priv->member_list = NULL;
@@ -341,7 +343,7 @@ e_gw_item_new_empty (void)
 }
 
 static void 
-set_recipient_list_from_soap_parameter (GSList *list, SoupSoapParameter *param)
+set_recipient_list_from_soap_parameter (GSList **list, SoupSoapParameter *param)
 {
         SoupSoapParameter *param_recipient;
         char *email, *cn;
@@ -349,7 +351,7 @@ set_recipient_list_from_soap_parameter (GSList *list, SoupSoapParameter *param)
 
         for (param_recipient = soup_soap_parameter_get_first_child_by_name (param, "recipient");
 	     param_recipient != NULL;
-	     param_recipient = soup_soap_parameter_get_next_child_by_name (param, "recipient")) {
+	     param_recipient = soup_soap_parameter_get_next_child_by_name (param_recipient, "recipient")) {
                 SoupSoapParameter *subparam;
 
 		recipient = g_new0 (EGwItemRecipient, 1);	
@@ -377,8 +379,9 @@ set_recipient_list_from_soap_parameter (GSList *list, SoupSoapParameter *param)
                         else
 				recipient->type = E_GW_ITEM_RECIPIENT_NONE;
                 }
+		/*FIXME  gw recipientTypes need to be added after the server is fixed. */
 
-                list = g_slist_append (list, recipient);
+                *list = g_slist_append (*list, recipient);
         }        
 }
 
@@ -1233,7 +1236,7 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			if (tp) {
 				g_slist_foreach (item->priv->recipient_list, (GFunc) free_recipient, NULL);
 				item->priv->recipient_list = NULL;
-				set_recipient_list_from_soap_parameter (item->priv->recipient_list, tp);
+				set_recipient_list_from_soap_parameter (&item->priv->recipient_list, tp);
 			}
 
 		} else if (!g_ascii_strcasecmp (name, "dueDate")) {
@@ -1251,8 +1254,16 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 		else if (!g_ascii_strcasecmp (name, "id"))
 			item->priv->id = soup_soap_parameter_get_string_value (child);
 
-		else if (!g_ascii_strcasecmp (name, "message"))
-			item->priv->message = soup_soap_parameter_get_string_value (child);
+		else if (!g_ascii_strcasecmp (name, "message")) {
+			SoupSoapParameter *part;
+			int len;
+			char *msg;
+			
+			part = soup_soap_parameter_get_first_child_by_name (child, "part");
+			msg = soup_soap_parameter_get_string_value (part);
+			len = atoi (soup_soap_parameter_get_property (part, "length"));
+			item->priv->message = soup_base64_decode  (msg, &len);
+		}
 
 		else if (!g_ascii_strcasecmp (name, "place"))
 			item->priv->place = soup_soap_parameter_get_string_value (child);
@@ -1271,7 +1282,7 @@ e_gw_item_new_from_soap_parameter (const char *container, SoupSoapParameter *par
 			const char *enabled;
 			enabled = soup_soap_parameter_get_property (child, "enabled");
 			if (!g_ascii_strcasecmp (enabled, "true") ) {
-				const char *value;
+				char *value;
 				value = soup_soap_parameter_get_string_value (child);
 				/* convert it into integer */
 				item->priv->trigger = atoi (value);
@@ -1542,10 +1553,25 @@ e_gw_item_set_priority (EGwItem *item, const char *new_priority)
 	item->priv->priority = g_strdup (new_priority);
 }
 
+GSList *
+e_gw_item_get_recipient_list (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	return item->priv->recipient_list;
+}
+
+void
+e_gw_item_set_recipient_list (EGwItem  *item, GSList *new_recipient_list)
+{
+	/* free old list and set a new one*/
+	g_slist_foreach (item->priv->recipient_list, (GFunc) free_recipient, NULL);
+	item->priv->recipient_list = new_recipient_list;
+}
+
 int
 e_gw_item_get_trigger (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), 0);
 
 	return item->priv->trigger;
 }
@@ -1567,6 +1593,37 @@ timet_to_string (time_t t)
 	strftime (ret, 17, "%Y%m%dT%H%M%SZ", gmtime (&t));
 
 	return ret;
+}
+
+static void
+add_distribution_to_soap_message (GSList *recipient_list, SoupSoapMessage *msg)
+{
+	GSList *rl;
+	
+	// start distribution element
+	soup_soap_message_start_element (msg, "distribution", NULL, NULL);
+	// start recipients
+	soup_soap_message_start_element (msg, "recipients", NULL, NULL);
+	// add each recipient
+	for (rl = recipient_list; rl != NULL; rl = rl->next) {
+		char *dist_type;
+		EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
+		
+		soup_soap_message_start_element (msg, "recipient", NULL, NULL);
+		e_gw_message_write_string_parameter (msg, "displayName", NULL, recipient->display_name ? recipient->display_name : "");
+		e_gw_message_write_string_parameter (msg, "email", NULL, recipient->email ? recipient->email : "");
+		if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
+			dist_type = "TO";
+		else if (recipient->type == E_GW_ITEM_RECIPIENT_CC)
+			dist_type = "CC";
+		else 
+			dist_type ="";
+		e_gw_message_write_string_parameter (msg, "distType", NULL, dist_type);
+		soup_soap_message_end_element (msg);		
+	}
+	
+	soup_soap_message_end_element (msg);
+	soup_soap_message_end_element (msg);
 }
 
 gboolean
@@ -1595,7 +1652,9 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "true");
 			g_free (alarm);
 		}
-		/* FIXME: distribution */
+		if (priv->recipient_list != NULL)
+			add_distribution_to_soap_message (priv->recipient_list, msg);
+		
 		break;
 
 	case E_GW_ITEM_TYPE_TASK :

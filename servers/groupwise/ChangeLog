@@ -1,3 +1,14 @@
+2004-05-04  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-item.c: (e_gw_item_init),
+	(set_recipient_list_from_soap_parameter),
+	(e_gw_item_new_from_soap_parameter),
+	(e_gw_item_get_recipient_list), (e_gw_item_set_recipient_list),
+	(e_gw_item_get_trigger), (add_distribution_to_soap_message),
+	(e_gw_item_append_to_soap_message): Patch the FIXMEs in the code 
+	handling recipient_list and message bodies in events.
+	* e-gw-item.h: Added get/set functions for recipient_list.
+
 2004-04-28  Sivaiah Nallagatla   <snallagatla@novell.com>
 
 	* e-gw-connection.[ch]  (e_gw_connection_add_members)
