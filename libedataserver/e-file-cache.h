@@ -56,6 +56,8 @@ gboolean    e_file_cache_add_object (EFileCache *cache, const char *key, const c
 gboolean    e_file_cache_replace_object (EFileCache *cache, const char *key, const char *new_value);
 gboolean    e_file_cache_remove_object (EFileCache *cache, const char *key);
 
+void        e_file_cache_freeze_changes (EFileCache *cache);
+void        e_file_cache_thaw_changes (EFileCache *cache);
 const char *e_file_cache_get_filename (EFileCache *cache);
 
 G_END_DECLS

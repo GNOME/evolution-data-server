@@ -1,3 +1,14 @@
+2004-12-07  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #70267
+
+	* libedataserver/e-file-cache.[ch] (e_file_cache_freeze_changes,
+	e_file_cache_thaw_changes): new functions to disable temporarily
+	writes to disk.
+	(e_file_cache_init): initialize new private members.
+	(e_file_cache_add_object, e_file_cache_remove_object): mark the
+	cache file as dirty when we are frozen.
+
 2004-12-06  Rodney Dawes  <dobey@novell.com>
 
 	* Makefile.am (EXTRA_DIST): Add iconv-detect.c

@@ -29,6 +29,8 @@
 struct _EFileCachePrivate {
 	char *filename;
 	EXmlHash *xml_hash;
+	gboolean dirty;
+	gboolean frozen;
 };
 
 /* Property IDs */
@@ -148,6 +150,8 @@ e_file_cache_init (EFileCache *cache)
 	EFileCachePrivate *priv;
 
 	priv = g_new0 (EFileCachePrivate, 1);
+	priv->dirty = FALSE;
+	priv->frozen = FALSE;
 	cache->priv = priv;
 }
 
@@ -400,7 +404,12 @@ e_file_cache_add_object (EFileCache *cache, const char *key, const char *value)
 		return FALSE;
 
 	e_xmlhash_add (priv->xml_hash, key, value);
-	e_xmlhash_write (priv->xml_hash);
+	if (priv->frozen)
+		priv->dirty = TRUE;
+	else {
+		e_xmlhash_write (priv->xml_hash);
+		priv->dirty = FALSE;
+	}
 
 	return TRUE;
 }
@@ -444,9 +453,54 @@ e_file_cache_remove_object (EFileCache *cache, const char *key)
 		return FALSE;
 
 	e_xmlhash_remove (priv->xml_hash, key);
-	e_xmlhash_write (priv->xml_hash);
+	if (priv->frozen)
+		priv->dirty = TRUE;
+	else {
+		e_xmlhash_write (priv->xml_hash);
+		priv->dirty = FALSE;
+	}
 
 	return TRUE;
+}
+
+/**
+ * e_file_cache_freeze_changes:
+ * @cache: An #EFileCache object.
+ *
+ * Disables temporarily all writes to disk for the given cache object.
+ */
+void
+e_file_cache_freeze_changes (EFileCache *cache)
+{
+	EFileCachePrivate *priv;
+
+	g_return_if_fail (E_IS_FILE_CACHE (cache));
+
+	priv = cache->priv;
+
+	priv->frozen = TRUE;
+}
+
+/**
+ * e_file_cache_thaw_changes:
+ * @cache: An #EFileCache object.
+ *
+ * Enables again writes to disk on every change.
+ */
+void
+e_file_cache_thaw_changes (EFileCache *cache)
+{
+	EFileCachePrivate *priv;
+
+	g_return_if_fail (E_IS_FILE_CACHE (cache));
+
+	priv = cache->priv;
+
+	priv->frozen = FALSE;
+	if (priv->dirty) {
+		e_xmlhash_write (priv->xml_hash);
+		priv->dirty = FALSE;
+	}
 }
 
 /**
