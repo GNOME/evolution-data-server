@@ -66,6 +66,7 @@ struct _CamelIMAP4JournalEntry {
 struct _CamelIMAP4Journal {
 	CamelOfflineJournal parent_object;
 	
+	GPtrArray *failed;
 };
 
 struct _CamelIMAP4JournalClass {
@@ -77,6 +78,8 @@ struct _CamelIMAP4JournalClass {
 CamelType camel_imap4_journal_get_type (void);
 
 CamelOfflineJournal *camel_imap4_journal_new (struct _CamelIMAP4Folder *folder, const char *filename);
+
+void camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal);
 
 /* interfaces for adding a journal entry */
 void camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi,

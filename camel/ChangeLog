@@ -1,3 +1,22 @@
+2005-01-14  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-journal.c (imap4_entry_play_append):
+	Get the appended_uid from camel_folder_append_message() so that we
+	can copy all user flags/tags over from the journal info over to
+	the real summary info once the append has completed (assuming of
+	course that the server supports UIDPLUS).
+	(camel_imap4_journal_readd_failed): New function to readd
+	message-info's from failed journal appends to the folder summary
+	so that they aren't lost from the user's message-list (they have
+	to temporarily be removed while the summary updates itself from
+	the server or Bad Things (tm) would happen).
+
+	* providers/imap4/camel-imap4-summary.c
+	(camel_imap4_summary_flush_updates): Readd the failed journal
+	replay info's to the summary so even if messages fail to be
+	appended to the folder, the user will still see them in his/her
+	message-list.
+
 2005-01-12  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-provider.c: Use the same key

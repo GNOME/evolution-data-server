@@ -95,13 +95,20 @@ camel_imap4_journal_class_init (CamelIMAP4JournalClass *klass)
 static void
 camel_imap4_journal_init (CamelIMAP4Journal *journal, CamelIMAP4JournalClass *klass)
 {
-	
+	journal->failed = g_ptr_array_new ();
 }
 
 static void
 camel_imap4_journal_finalize (CamelObject *object)
 {
+	CamelIMAP4Journal *journal = (CamelIMAP4Journal *) object;
+	int i;
 	
+	if (journal->failed) {
+		for (i = 0; i < journal->failed->len; i++)
+			camel_message_info_free (journal->failed->pdata[i]);
+		g_ptr_array_free (journal->failed, TRUE);
+	}
 }
 
 static void
@@ -171,15 +178,27 @@ imap4_entry_write (CamelOfflineJournal *journal, EDListNode *entry, FILE *out)
 	return 0;
 }
 
+static void
+imap4_message_info_dup_to (CamelMessageInfoBase *dest, CamelMessageInfoBase *src)
+{
+	camel_flag_list_copy (&dest->user_flags, &src->user_flags);
+	camel_tag_list_copy (&dest->user_tags, &src->user_tags);
+	dest->date_received = src->date_received;
+	dest->date_sent = src->date_sent;
+	dest->flags = src->flags;
+	dest->size = src->size;
+}
+
 static int
 imap4_entry_play_append (CamelOfflineJournal *journal, CamelIMAP4JournalEntry *entry, CamelException *ex)
 {
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) journal->folder;
 	CamelFolder *folder = journal->folder;
+	CamelMessageInfo *info, *real;
 	CamelMimeMessage *message;
-	CamelMessageInfo *info;
 	CamelStream *stream;
 	CamelException lex;
+	char *uid = NULL;
 	
 	/* if the message isn't in the cache, the user went behind our backs so "not our problem" */
 	if (!imap4_folder->cache || !(stream = camel_data_cache_get (imap4_folder->cache, "cache", entry->v.append_uid, ex)))
@@ -202,22 +221,35 @@ imap4_entry_play_append (CamelOfflineJournal *journal, CamelIMAP4JournalEntry *e
 	}
 	
 	camel_exception_init (&lex);
-	camel_folder_append_message (folder, message, info, NULL, &lex);
-	camel_message_info_free (info);
+	camel_folder_append_message (folder, message, info, &uid, &lex);
 	camel_object_unref (message);
 	
 	if (camel_exception_is_set (&lex)) {
-		/* [1] remove the summary even if we fail or the next
-		 * summary downsync will break because info indexes
-		 * will be wrong
-		 *
-		 * FIXME: we really need to save these info's to a
-		 * temp location and then restore them after the
-		 * summary downsync finishes. */
-		camel_folder_summary_remove_uid (folder->summary, entry->v.append_uid);
+		/* Remove the message-info from the summary even if we fail or the next
+		 * summary downsync will break because info indexes will be wrong */
+		if (info->summary == folder->summary) {
+			camel_folder_summary_remove (folder->summary, info);
+			g_ptr_array_add (((CamelIMAP4Journal *) journal)->failed, info);
+		} else {
+			/* info wasn't in the summary to begin with */
+			camel_folder_summary_remove_uid (folder->summary, entry->v.append_uid);
+			camel_message_info_free (info);
+		}
+		
 		camel_exception_xfer (ex, &lex);
+		
 		return -1;
 	}
+	
+	if (uid != NULL && (real = camel_folder_summary_uid (folder->summary, uid))) {
+		/* Copy the system flags and user flags/tags over to the real
+		   message-info now stored in the summary to prevent the user
+		   from losing any of this meta-data */
+		imap4_message_info_dup_to ((CamelMessageInfoBase *) real, (CamelMessageInfoBase *) info);
+	}
+	
+	camel_message_info_free (info);
+	g_free (uid);
 	
  done:
 	
@@ -258,6 +290,19 @@ camel_imap4_journal_new (CamelIMAP4Folder *folder, const char *filename)
 
 
 void
+camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal)
+{
+	CamelFolderSummary *summary = ((CamelOfflineJournal *) journal)->folder->summary;
+	int i;
+	
+	for (i = 0; i < journal->failed->len; i++)
+		camel_folder_summary_add (summary, journal->failed->pdata[i]);
+	
+	g_ptr_array_set_size (journal->failed, 0);
+}
+
+
+void
 camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *message,
 			    const CamelMessageInfo *mi, char **appended_uid, CamelException *ex)
 {
@@ -265,7 +310,6 @@ camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) journal->folder;
 	CamelFolder *folder = (CamelFolder *) journal->folder;
 	CamelIMAP4JournalEntry *entry;
-	CamelMessageInfoBase *a, *b;
 	CamelMessageInfo *info;
 	CamelStream *cache;
 	guint32 nextuid;
@@ -309,15 +353,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *
 	info = camel_folder_summary_info_new_from_message (folder->summary, message);
 	info->uid = g_strdup (uid);
 	
-	a = (CamelMessageInfoBase *) info;
-	b = (CamelMessageInfoBase *) mi;
-	
-	camel_flag_list_copy (&a->user_flags, &b->user_flags);
-	camel_tag_list_copy (&a->user_tags, &b->user_tags);
-	a->date_received = b->date_received;
-	a->date_sent = b->date_sent;
-	a->flags = b->flags;
-	a->size = b->size;
+	imap4_message_info_dup_to ((CamelMessageInfoBase *) info, (CamelMessageInfoBase *) mi);
 	
 	camel_folder_summary_add (folder->summary, info);
 	

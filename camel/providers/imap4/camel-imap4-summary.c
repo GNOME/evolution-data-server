@@ -45,6 +45,7 @@
 #include "camel-imap4-folder.h"
 #include "camel-imap4-stream.h"
 #include "camel-imap4-command.h"
+#include "camel-imap4-journal.h"
 #include "camel-imap4-utils.h"
 
 #include "camel-imap4-summary.h"
@@ -1245,6 +1246,7 @@ info_uid_sort (const CamelMessageInfo **info0, const CamelMessageInfo **info1)
 int
 camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *ex)
 {
+	CamelOfflineJournal *journal = ((CamelIMAP4Folder *) summary->folder)->journal;
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
 	CamelIMAP4Engine *engine;
 	CamelIMAP4Command *ic;
@@ -1254,7 +1256,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	g_return_val_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary), -1);
 	
 	/* FIXME: what do we do if replaying the journal fails? */
-	camel_offline_journal_replay (((CamelIMAP4Folder *) summary->folder)->journal, NULL);
+	camel_offline_journal_replay (journal, NULL);
 	
 	engine = ((CamelIMAP4Store *) summary->folder->parent_store)->engine;
 	scount = camel_folder_summary_count (summary);
@@ -1272,6 +1274,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 			;
 		
 		if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
+			camel_imap4_journal_readd_failed ((CamelIMAP4Journal *) journal);
 			imap4_fetch_all_free (ic->user_data);
 			camel_exception_xfer (ex, &ic->ex);
 			camel_imap4_command_unref (ic);
@@ -1296,6 +1299,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 			;
 		
 		if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
+			camel_imap4_journal_readd_failed ((CamelIMAP4Journal *) journal);
 			imap4_fetch_all_free (ic->user_data);
 			camel_exception_xfer (ex, &ic->ex);
 			camel_imap4_command_unref (ic);
@@ -1318,6 +1322,8 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	
 	imap4_summary->update_flags = FALSE;
 	imap4_summary->uidvalidity_changed = FALSE;
+	
+	camel_imap4_journal_readd_failed ((CamelIMAP4Journal *) journal);
 	
 	return 0;
 }
