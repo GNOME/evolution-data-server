@@ -1,3 +1,9 @@
+2004-03-18  JP Rosevear <jpr@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(start_freebusy_session): put the xml prefixes back in, they
+	weren't the issue
+
 2004-03-18  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c
