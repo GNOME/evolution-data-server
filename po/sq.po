@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"POT-Creation-Date: 2004-07-19 17:03-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-28 03:11+0200\n"
 "PO-Revision-Date: 2004-06-05 18:32+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
 #: addressbook/backends/vcf/e-book-backend-vcf.c:445
@@ -177,9 +177,10 @@ msgstr "Emri i dhënë"
 msgid "Family Name"
 msgstr "Mbiemri"
 
+#. GRUT modified this item
 #: addressbook/libebook/e-contact.c:111
 msgid "Nickname"
-msgstr "Nickname"
+msgstr "Pseudonimi"
 
 #: addressbook/libebook/e-contact.c:112
 msgid "Name or Org"
@@ -972,3 +973,4 @@ msgstr "Backend i file kalendar dhe webcal të Evolution"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Backend i file rubrika i Evolution"
+
