@@ -126,7 +126,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 				
 				if (CAMEL_CHECK_TYPE (folder, CAMEL_OFFLINE_FOLDER_TYPE)
 				    && (sync || ((CamelOfflineFolder *) folder)->sync_offline)) {
-					camel_offline_folder_downsync ((CamelOfflineFolder *) folder, "(match-all)", &lex);
+					camel_offline_folder_downsync ((CamelOfflineFolder *) folder, NULL, &lex);
 					camel_exception_clear (&lex);
 				}
 				

@@ -1,3 +1,37 @@
+2005-01-19  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-offline-folder.c (camel_offline_folder_downsync): Documented.
+
+	* camel-offline-store.c (camel_offline_store_set_network_state):
+	Use NULL as the search expression which forces all messages to be
+	synced.
+
+2005-01-18  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-summary.c (imap4_header_load): Load
+	the IMAP4 summary version.
+	(imap4_header_save): Save the IMAP4 summary version.
+
+2005-01-13  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/groupwise/camel-groupwise-journal.c
+	(groupwise_entry_load): Simplified the exception case. Also, in
+	the exception case don't abort() if entry->type is an unknown type
+	(keeps us from "crashing" on invalid/corrupted journal data).
+	(camel_groupwise_journal_append): Don't free the uid here.
+	(camel_groupwise_journal_transfer): Same.
+	(groupwise_entry_write): Save the original_uid for TRANSFER types
+	as we need it when we later replay the journal.
+	(groupwise_entry_load): Load the original_uid here for TRANSFER
+	entries.
+	(groupwise_entry_free): Free the original_uid too.
+	(groupwise_entry_play_transfer): Untangled from the APPEND entry
+	replay because the code has very little to nothing in
+	common. Also, after transfer we need to get the new message info
+	structure and copy user tags/flags and system flags over or we
+	lose that information.
+	(play_update): Removed.
+
 2005-01-19  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-folder.c

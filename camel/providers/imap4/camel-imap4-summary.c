@@ -52,7 +52,7 @@
 
 #define d(x) x
 
-#define IMAP4_SUMMARY_VERSION  1
+#define CAMEL_IMAP4_SUMMARY_VERSION  1
 
 static void camel_imap4_summary_class_init (CamelIMAP4SummaryClass *klass);
 static void camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *klass);
@@ -107,7 +107,6 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 {
 	CamelFolderSummary *folder_summary = (CamelFolderSummary *) summary;
 	
-	folder_summary->version += IMAP4_SUMMARY_VERSION;
 	folder_summary->flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
 	
@@ -143,8 +142,17 @@ imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 	if (CAMEL_FOLDER_SUMMARY_CLASS (parent_class)->summary_header_load (summary, fin) == -1)
 		return -1;
 	
+	if (camel_file_util_decode_uint32 (fin, &imap4_summary->version) == -1)
+		return -1;
+	
 	if (camel_file_util_decode_uint32 (fin, &imap4_summary->uidvalidity) == -1)
 		return -1;
+	
+	if (imap4_summary->version > CAMEL_IMAP4_SUMMARY_VERSION) {
+		g_warning ("Unknown IMAP4 summary version\n");
+		errno = EINVAL;
+		return -1;
+	}
 	
 	return 0;
 }
@@ -155,6 +163,9 @@ imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
 	
 	if (CAMEL_FOLDER_SUMMARY_CLASS (parent_class)->summary_header_save (summary, fout) == -1)
+		return -1;
+	
+	if (camel_file_util_encode_uint32 (fout, CAMEL_IMAP4_SUMMARY_VERSION) == -1)
 		return -1;
 	
 	if (camel_file_util_encode_uint32 (fout, imap4_summary->uidvalidity) == -1)

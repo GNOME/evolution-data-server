@@ -53,6 +53,8 @@ struct _CamelIMAP4MessageInfo {
 struct _CamelIMAP4Summary {
 	CamelFolderSummary parent_object;
 	
+	guint32 version;
+	
 	guint32 exists;
 	guint32 recent;
 	guint32 unseen;
