@@ -135,11 +135,11 @@ static GObjectClass *parent_class;
 GQuark
 e_calendar_error_quark (void)
 {
-  static GQuark q = 0;
-  if (q == 0)
-    q = g_quark_from_static_string ("e-calendar-error-quark");
+	static GQuark q = 0;
+	if (q == 0)
+		q = g_quark_from_static_string ("e-calendar-error-quark");
 
-  return q;
+	return q;
 }
 
 GType

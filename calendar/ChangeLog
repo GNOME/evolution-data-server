@@ -1,5 +1,30 @@
 2004-02-04  Rodrigo Moya <rodrigo@ximian.com>
 
+	* libecal/e-cal.c (open_calendar): new function created from
+	e_cal_open, without signal emissions.
+	(e_cal_open): call open_calendar() and emit signals.
+	(e_cal_open_async): changed to use a thread instead
+	of an idle callback.
+	(open_async): converted to a GThreadFunc, call open_calendar and
+	setup idle callback to emit the "cal_opened" signal.
+	(async_idle_cb): idle callback, notify listeners with the
+	"cal_opened" signal and free ECalAsyncData.
+
+	* backends/file/e-cal-backend-file.c: store an ordered list of all
+	detached recurrences, as well as the hash table, for each object.
+	(free_object): free the recurrences list, and the object's data.
+	(add_component, remove_instance): add the recurrences to the
+	recurrences list also.
+	(e_cal_backend_file_modify_object): remove the recurrence from the
+	list also, and it to the list when adding it to the hash table.
+	(remove_object_instance_cb): remove the recurrences from the list
+	also.
+	(e_cal_backend_file_receive_objects): remove cancelled meetings from the
+	received toplevel component before merging it. Add/Update received
+	objects approppriately for PUBLISH/REQUEST/REPLY.
+
+2004-02-04  Rodrigo Moya <rodrigo@ximian.com>
+
 	* libecal/e-cal.c (open_async): g_object_unref the ECal, not the
 	ECalAsyncData structure.
 

@@ -44,6 +44,7 @@
 typedef struct {
 	ECalComponent *full_object;
 	GHashTable *recurrences;
+	GList *recurrences_list;
 } ECalBackendFileObject;
 
 /* Private part of the ECalBackendFile structure */
@@ -104,6 +105,9 @@ free_object (gpointer key, gpointer value, gpointer data)
 	g_object_unref (obj_data->full_object);
 	g_hash_table_foreach (obj_data->recurrences, (GHFunc) free_recurrence, NULL);
 	g_hash_table_destroy (obj_data->recurrences);
+	g_list_free (obj_data->recurrences_list);
+
+	g_free (obj_data);
 }
 
 /* Saves the calendar data */
@@ -415,6 +419,8 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 		}
 
 		g_hash_table_insert (obj_data->recurrences, g_strdup (rid), comp);
+		/* FIXME: sort the recurrences */
+		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
 	} else {
 		/* Ensure that the UID is unique; some broken implementations spit
 		 * components with duplicated UIDs.
@@ -1730,6 +1736,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 							e_cal_component_get_icalcomponent (recurrence));
 			priv->comp = g_list_remove (priv->comp, recurrence);
 			g_hash_table_remove (obj_data->recurrences, rid);
+			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
 
 			/* free memory */
 			g_free (real_rid);
@@ -1758,6 +1765,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		g_hash_table_insert (obj_data->recurrences, 
 				     g_strdup (e_cal_component_get_recurid_as_string (comp)),
 				     comp);
+		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 		break;
@@ -1798,6 +1806,7 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 						e_cal_component_get_icalcomponent (comp));
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
 		g_hash_table_remove (obj_data->recurrences, rid);
+		obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
 
 		/* update the set of categories */
 		e_cal_component_get_categories_list (comp, &categories);
@@ -1851,6 +1860,8 @@ remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 			icalcomponent_remove_component (rrdata->cbfile->priv->icalcomp,
 							e_cal_component_get_icalcomponent (instance));
 			rrdata->cbfile->priv->comp = g_list_remove (rrdata->cbfile->priv->comp, instance);
+
+			rrdata->obj_data->recurrences_list = g_list_remove (rrdata->obj_data->recurrences_list, instance);
 
 			/* update the set of categories */
 			e_cal_component_get_categories_list (instance, &categories);
@@ -2034,7 +2045,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		case ICAL_VJOURNAL_COMPONENT:
 			tzdata.found = TRUE;
 			icalcomponent_foreach_tzid (subcomp, check_tzids, &tzdata);
-			
+
 			if (!tzdata.found) {
 				status = GNOME_Evolution_Calendar_InvalidObject;
 				goto error;
@@ -2057,6 +2068,9 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 
 	/* Now we manipulate the components we care about */
 	for (l = comps; l; l = l->next) {
+		const char *uid, *rid;
+		char *calobj;
+
 		subcomp = l->data;
 	
 		/* Create the cal component */
@@ -2071,13 +2085,35 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		/* sanitize the component*/
 		sanitize_component (cbfile, comp); 
 
+		e_cal_component_get_uid (comp, &uid);
+		rid = e_cal_component_get_recurid_as_string (comp);
+
 		switch (method) {
 		case ICAL_METHOD_PUBLISH:
 		case ICAL_METHOD_REQUEST:
-			/* FIXME Need to see the new create/modify stuff before we set this up */
-			break;			
 		case ICAL_METHOD_REPLY:
-			/* FIXME Update the status of the user, if we are the organizer */
+			if (e_cal_backend_file_get_object (backend, cal, uid, rid, &calobj)
+			    == GNOME_Evolution_Calendar_Success) {
+				char *returned_uid;
+
+				calobj = (char *) icalcomponent_as_ical_string (subcomp);
+				status = e_cal_backend_file_create_object (backend, cal, calobj, &returned_uid);
+				if (status != GNOME_Evolution_Calendar_Success)
+					goto error;
+
+				e_cal_backend_notify_object_created (E_CAL_BACKEND (backend), calobj);
+			} else {
+				char *old_object;
+
+				calobj = (char *) icalcomponent_as_ical_string (subcomp);
+				status = e_cal_backend_file_modify_object (backend, cal, calobj, CALOBJ_MOD_THIS, &old_object);
+				if (status != GNOME_Evolution_Calendar_Success)
+					goto error;
+
+				e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old_object, calobj);
+
+				g_free (old_object);
+			}
 			break;
 		case ICAL_METHOD_ADD:
 			/* FIXME This should be doable once all the recurid stuff is done */
@@ -2091,10 +2127,13 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 			goto error;
 			break;
 		case ICAL_METHOD_CANCEL:
-			/* FIXME Do we need to remove the subcomp so it isn't merged? */
 			if (cancel_received_object (cbfile, subcomp)) {
-				const char *calobj = icalcomponent_as_ical_string (subcomp);
+				calobj = (char *) icalcomponent_as_ical_string (subcomp);
 				e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), icalcomponent_get_uid (subcomp), calobj);
+
+				/* remove the component from the toplevel VCALENDAR */
+				icalcomponent_remove_component (toplevel_comp, subcomp);
+				icalcomponent_free (subcomp);
 			}
 			break;
 		default:
@@ -2102,6 +2141,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 			goto error;
 		}
 	}
+
 	g_list_free (comps);
 	
 	/* Merge the iCalendar components with our existing VCALENDAR,
