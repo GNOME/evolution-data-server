@@ -76,6 +76,7 @@
 #define EVC_X_TTYTDD        "X-EVOLUTION-TTYTDD"
 #define EVC_X_WANTS_HTML    "X-MOZILLA-HTML"
 #define EVC_X_YAHOO         "X-YAHOO"
+#define EVC_X_GROUPWISE     "X-GROUPWISE"
 
 typedef enum {
 	EVC_FORMAT_VCARD_21,
