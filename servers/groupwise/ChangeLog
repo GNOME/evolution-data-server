@@ -1,3 +1,10 @@
+2005-02-28  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_get_quick_messages):
+	Look for the timestring only in the New getQM responses.
+	The server does not send it during the modified call and
+	hence do not flag an error.
+
 2005-02-28  Sankar P <psankar@novell.com>
 
        * e-gw-item.c: (add_distribution_to_soap_message):
