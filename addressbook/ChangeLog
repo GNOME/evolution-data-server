@@ -1,5 +1,29 @@
 2004-03-12  Chris Toshok  <toshok@ximian.com>
 
+	* libedata-book/e-data-book-view.h: add prototype for
+	e_data_book_view_get_mutex.
+
+	* libedata-book/e-data-book-view.c (e_data_book_view_get_mutex):
+	new function, return the book view's mutex.
+	(e_data_book_view_dispose): free priv->mutex.
+	(e_data_book_view_init): init priv->mutex.
+
+	* backends/file/e-book-backend-file.c (closure_destroy):
+	GDestroyNotify to clear up the search closure.
+	(init_closure): initialize the object data we use to store search
+	information (just a "stopped" flag at the moment)
+	(get_closure): return the object data.
+	(e_book_backend_file_start_book_view): add code to deal with the
+	race between start and stop, locking the book_view's mutex around
+	the initial get/set of the closure.  also, switch from using
+	g_object_ref to bonobo_object_ref on the book_view, and don't do
+	any freeing of the search closure here.  it's handled
+	automatically for us by virtue of the GDestroyNotify.
+	(e_book_backend_file_stop_book_view): flesh this out to fix the
+	race between start/stop.
+
+2004-03-12  Chris Toshok  <toshok@ximian.com>
+
 	* libebook/e-contact.c (e_contact_set_property): in the CATEGORIES
 	case when we're adding a new attribute to the vcard, make sure to
 	call e_vcard_add_attribute after creating it.  also, use

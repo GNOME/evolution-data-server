@@ -16,6 +16,8 @@
 #include "e-book-backend-sexp.h"
 #include "e-data-book-view.h"
 
+#define d(x)
+
 static BonoboObjectClass *e_data_book_view_parent_class;
 
 struct _EDataBookViewPrivate {
@@ -23,6 +25,8 @@ struct _EDataBookViewPrivate {
 
 #define INITIAL_THRESHOLD 20
 #define THRESHOLD_MAX 3000
+
+	GMutex *mutex;
 
 	GMutex *pending_mutex;
 
@@ -373,6 +377,7 @@ impl_GNOME_Evolution_Addressbook_BookView_dispose (PortableServer_Servant servan
 {
 	EDataBookView *view = E_DATA_BOOK_VIEW (bonobo_object (servant));
 
+	d(printf("in impl_GNOME_Evolution_Addressbook_BookView_dispose\n"));
 	ORBit_small_unlisten_for_broken (e_data_book_view_get_listener (view), G_CALLBACK (view_listener_died_cb));
 
 	bonobo_object_unref (view);
@@ -408,6 +413,14 @@ e_data_book_view_get_backend (EDataBookView *book_view)
 	return book_view->priv->backend;
 }
 
+GMutex*
+e_data_book_view_get_mutex (EDataBookView *book_view)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);
+
+	return book_view->priv->mutex;
+}
+
 GNOME_Evolution_Addressbook_BookViewListener
 e_data_book_view_get_listener (EDataBookView  *book_view)
 {
@@ -441,6 +454,7 @@ e_data_book_view_dispose (GObject *object)
 {
 	EDataBookView *book_view = E_DATA_BOOK_VIEW (object);
 
+	d(printf ("disposing of EDataBookView\n"));
 	if (book_view->priv) {
 		bonobo_object_release_unref (book_view->priv->listener, NULL);
 
@@ -456,6 +470,9 @@ e_data_book_view_dispose (GObject *object)
 
 		g_mutex_free (book_view->priv->pending_mutex);
 		book_view->priv->pending_mutex = NULL;
+
+		g_mutex_free (book_view->priv->mutex);
+		book_view->priv->mutex = NULL;
 
 		g_free (book_view->priv);
 		book_view->priv = NULL;
@@ -489,6 +506,7 @@ e_data_book_view_init (EDataBookView *book_view)
 	book_view->priv = g_new0 (EDataBookViewPrivate, 1);
 
 	book_view->priv->pending_mutex = g_mutex_new();
+	book_view->priv->mutex = g_mutex_new();
 
 	book_view->priv->next_threshold = INITIAL_THRESHOLD;
 	book_view->priv->threshold_max = THRESHOLD_MAX;
