@@ -1,6 +1,6 @@
 2004-01-21  Rodrigo Moya <rodrigo@ximian.com>
 
-	* backends/groupwise/e-cal-backend-groupwise.c
+	* backends/groupwise/e-gw-connection.c
 	(get_e_cal_component_from_soap_parameter): return error when
 	the type of the component does not match the supported ones.
 
