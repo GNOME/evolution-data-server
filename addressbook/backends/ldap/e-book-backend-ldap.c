@@ -2854,6 +2854,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 	gchar *retval;
 	EBookBackendLDAPSExpData data;
 	int i;
+	char **strings;
 
 	data.list = NULL;
 	data.bl = bl;
@@ -2885,7 +2886,15 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 			g_list_foreach (data.list, (GFunc)g_free, NULL);
 		}
 		else {
-			retval = data.list->data;
+			strings = g_new0(char*, 5);
+			strings[0] = g_strdup ("(&");
+			strings[1] = g_strdup ("(objectclass=person)");
+			strings[2] = data.list->data;
+			strings[3] = g_strdup (")");
+			retval =  g_strjoinv (" ", strings);
+			for (i = 0 ; i < 4; i ++)
+				g_free (strings[i]);
+			g_free (strings);
 		}
 	}
 	else {

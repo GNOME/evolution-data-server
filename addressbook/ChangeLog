@@ -1,3 +1,12 @@
+2004-12-19 Sivaiah Nallagatla    <snallagatla@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c 
+	(e_book_backend_ldap_build_query) : add  filter 
+        objectclass=person so that we don't get objects O, OU and other unwanted
+	objects in search results.
+
+	Fixes #68454 	
+
 2004-12-11  Hans Petter Jansson  <hpj@novell.com>
 
 	* libebook/e-destination.h: Add "changed" signal.
