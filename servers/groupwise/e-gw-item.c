@@ -326,7 +326,8 @@ e_gw_item_dispose (GObject *object)
 			priv->recipient_list = NULL;
 		}	
 		if (priv->organizer) {
-			g_free (priv->organizer);
+			g_free (priv->organizer->display_name);
+			g_free (priv->organizer->email);
 			priv->organizer = NULL;
 		}
 		if (priv->recurrence_dates) {
@@ -2458,7 +2459,12 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 		e_gw_message_write_string_parameter (msg, "date", NULL, "") ;	
 
 	/*data*/
-	e_gw_message_write_string_parameter (msg, "data", NULL, attachment->data) ;
+	soup_soap_message_start_element (msg, "data", NULL, NULL) ;
+	soup_soap_message_add_attribute (msg, "contentId", attachment->id, NULL, NULL);
+	soup_soap_message_add_attribute (msg, "contentType", attachment->contentType, NULL, NULL) ;
+	soup_soap_message_add_attribute (msg, "length", attachment->size, NULL, NULL) ;
+	soup_soap_message_write_string (msg, attachment->data) ;
+	soup_soap_message_end_element (msg) ;
 	
 	soup_soap_message_end_element (msg) ;
 }
