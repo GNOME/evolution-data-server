@@ -1,3 +1,9 @@
+2005-02-09  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-store.c (camel_folder_info_build): Fix the FIXME about
+	using fragment instead of path for those urls which use fragment
+	instead. Also fixes bug #71747.
+
 2005-02-07  JP Rosevear  <jpr@novell.com>
 
 	* camel-iconv.c: remove dead file

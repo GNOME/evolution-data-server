@@ -945,6 +945,7 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 			} else {
 				/* we are missing a folder in the heirarchy so
 				   create a fake folder node */
+				const char *path;
 				CamelURL *url;
 				char *sep;
 
@@ -957,17 +958,21 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 						pfi->name = g_strdup (pname);
 				} else
 					pfi->name = g_strdup (pname);
-
-				/* FIXME: url's with fragments should have the fragment truncated, not path */
+				
 				url = camel_url_new (fi->uri, NULL);
-				sep = strrchr (url->path, separator);
+				if (url->fragment)
+					path = url->fragment;
+				else
+					path = url->path + 1;
+				
+				sep = strrchr (path, separator);
 				if (sep)
 					*sep = '\0';
 				else
 					d(g_warning ("huh, no \"%c\" in \"%s\"?", separator, fi->url));
 				
-				pfi->full_name = g_strdup(url->path+1);
-
+				pfi->full_name = g_strdup (path);
+				
 				/* since this is a "fake" folder node, it is not selectable */
 				camel_url_set_param (url, "noselect", "yes");
 				pfi->uri = camel_url_to_string (url, 0);
