@@ -1,3 +1,12 @@
+2004-12-13  Not Zed  <NotZed@Ximian.com>
+
+	* tests/lib/Makefile.am: put the test-provider stuff back in.
+
+	* tests/*/Makefile.am: version libcamel*.
+
+	* tests/lib/camel-test-provider.[ch]: duh, re-implement, it got
+	lost somehow.
+
 2004-12-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-folder.c (imap4_append_message):
