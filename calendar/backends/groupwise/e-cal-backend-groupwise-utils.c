@@ -332,21 +332,24 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	/* start date */
 	/* should i duplicate here ? */
 	t = e_gw_item_get_start_date (item);
-	itt_utc = icaltime_from_string (t);
-	if (!icaltime_get_timezone (itt_utc))
-		icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-	if (default_zone) {
-		itt = icaltime_convert_to_zone (itt_utc, default_zone); 
-		icaltime_set_timezone (&itt, default_zone);
-		dt.value = &itt;
-		dt.tzid = icaltimezone_get_tzid (default_zone);
-	} else {
-		dt.value = &itt_utc;
-		dt.tzid = g_strdup ("UTC");
+	if (t) {
+		itt_utc = icaltime_from_string (t);
+		if (!icaltime_get_timezone (itt_utc))
+			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+		if (default_zone) {
+			itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+			icaltime_set_timezone (&itt, default_zone);
+			dt.value = &itt;
+			dt.tzid = icaltimezone_get_tzid (default_zone);
+		} else {
+			dt.value = &itt_utc;
+			dt.tzid = g_strdup ("UTC");
+		}
+		e_cal_component_set_dtstart (comp, &dt);
+		g_free (t);
 	}
-	e_cal_component_set_dtstart (comp, &dt);
-	g_free (t);
-
+	else 
+		return NULL;
 	
 
 	/* classification */
@@ -380,20 +383,23 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 
 		/* end date */
 		t = e_gw_item_get_end_date (item);
-		itt_utc = icaltime_from_string (t);
-		if (!icaltime_get_timezone (itt_utc))
-			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-		if (default_zone) {
-			itt = icaltime_convert_to_zone (itt_utc, default_zone); 
-			icaltime_set_timezone (&itt, default_zone);
-			dt.value = &itt;
-			dt.tzid = icaltimezone_get_tzid (default_zone);
-		} else {
-			dt.value = &itt_utc;
-			dt.tzid = g_strdup ("UTC");
+		if (t) {
+			itt_utc = icaltime_from_string (t);
+			if (!icaltime_get_timezone (itt_utc))
+				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+			if (default_zone) {
+				itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+				icaltime_set_timezone (&itt, default_zone);
+				dt.value = &itt;
+				dt.tzid = icaltimezone_get_tzid (default_zone);
+			} else {
+				dt.value = &itt_utc;
+				dt.tzid = g_strdup ("UTC");
+			}
+		
+			e_cal_component_set_dtend (comp, &dt);
 		}
 		
-		e_cal_component_set_dtend (comp, &dt);
 
 		/* alarms*/
 		/* we negate the value as GW supports only "before" the start of event alarms */
@@ -438,6 +444,8 @@ e_gw_item_to_cal_component (EGwItem *item, icaltimezone *default_zone)
 	case E_GW_ITEM_TYPE_TASK :
 		/* due date */
 		t = e_gw_item_get_due_date (item);
+		if (!t)
+			break;
 		itt_utc = icaltime_from_string (t);
 		if (!icaltime_get_timezone (itt_utc))
 			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());

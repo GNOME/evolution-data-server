@@ -1,3 +1,12 @@
+2004-05-28  Harish Krishnaswamy  <kharish@novell.com>
+
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Throw in null checks on 
+	mandatory fields to bypass crashes in e-d-s while the server 
+	gets fixed.
+
+
 2004-05-27  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/http/e-cal-backend-http.c (retrieval_done): make sure
