@@ -4,14 +4,12 @@
 # Adam Weinberger <adamw@gnome.org>, 2004, 2005.
 # 
 #
-#: calendar/backends/weather/e-cal-backend-weather.c:240
-#: calendar/backends/weather/e-cal-backend-weather.c:251
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-06 17:54-0500\n"
-"PO-Revision-Date: 2005-02-06 13:04-0400\n"
+"POT-Creation-Date: 2005-02-08 21:40-0500\n"
+"PO-Revision-Date: 2005-02-08 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -625,39 +623,37 @@ msgstr "Birthday: %s"
 msgid "Anniversary: %s"
 msgstr "Anniversary: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:192
+#: calendar/backends/file/e-cal-backend-file.c:193
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Can't save calendar data: Malformed URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:509
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:513
 msgid "Invalid server URI"
 msgstr "Invalid server URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:556
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:559
-#: camel/providers/groupwise/camel-gw-listener.c:405
-#: camel/providers/groupwise/camel-gw-listener.c:435
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:561
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:564
 msgid "Calendar"
 msgstr "Calendar"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:566
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:811
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:571
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:816
 #: calendar/backends/http/e-cal-backend-http.c:484
 #: calendar/backends/weather/e-cal-backend-weather.c:449
 msgid "Could not create cache file"
 msgstr "Could not create cache file"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:576
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
 msgid "Could not create thread for populating cache"
 msgstr "Could not create thread for populating cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: calendar/libecal/e-cal.c:4528
-#: camel/providers/groupwise/camel-groupwise-folder.c:623
-#: camel/providers/groupwise/camel-groupwise-store.c:526
-#: camel/providers/groupwise/camel-groupwise-store.c:607
-#: camel/providers/groupwise/camel-groupwise-store.c:765
-#: camel/providers/groupwise/camel-groupwise-store.c:961
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:587
+#: calendar/libecal/e-cal.c:4516
+#: camel/providers/groupwise/camel-groupwise-folder.c:631
+#: camel/providers/groupwise/camel-groupwise-store.c:527
+#: camel/providers/groupwise/camel-groupwise-store.c:608
+#: camel/providers/groupwise/camel-groupwise-store.c:766
+#: camel/providers/groupwise/camel-groupwise-store.c:962
 msgid "Authentication failed"
 msgstr "Authentication failed"
 
@@ -1017,82 +1013,82 @@ msgstr "Undefined"
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: calendar/libecal/e-cal.c:4500
+#: calendar/libecal/e-cal.c:4488
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: calendar/libecal/e-cal.c:4502
+#: calendar/libecal/e-cal.c:4490
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: calendar/libecal/e-cal.c:4504
+#: calendar/libecal/e-cal.c:4492
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: calendar/libecal/e-cal.c:4506
+#: calendar/libecal/e-cal.c:4494
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: calendar/libecal/e-cal.c:4508 servers/groupwise/e-gw-connection.c:161
+#: calendar/libecal/e-cal.c:4496 servers/groupwise/e-gw-connection.c:162
 msgid "Object not found"
 msgstr "Object not found"
 
-#: calendar/libecal/e-cal.c:4510 servers/groupwise/e-gw-connection.c:155
+#: calendar/libecal/e-cal.c:4498 servers/groupwise/e-gw-connection.c:156
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: calendar/libecal/e-cal.c:4512
+#: calendar/libecal/e-cal.c:4500
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: calendar/libecal/e-cal.c:4514
+#: calendar/libecal/e-cal.c:4502
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: calendar/libecal/e-cal.c:4516
+#: calendar/libecal/e-cal.c:4504
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: calendar/libecal/e-cal.c:4518 servers/groupwise/e-gw-connection.c:163
+#: calendar/libecal/e-cal.c:4506 servers/groupwise/e-gw-connection.c:164
 msgid "Unknown User"
 msgstr "Unknown User"
 
-#: calendar/libecal/e-cal.c:4520
+#: calendar/libecal/e-cal.c:4508
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: calendar/libecal/e-cal.c:4522
+#: calendar/libecal/e-cal.c:4510
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: calendar/libecal/e-cal.c:4524
+#: calendar/libecal/e-cal.c:4512
 msgid "Operation has been cancelled"
 msgstr "Operation has been canceled"
 
-#: calendar/libecal/e-cal.c:4526
+#: calendar/libecal/e-cal.c:4514
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: calendar/libecal/e-cal.c:4530
+#: calendar/libecal/e-cal.c:4518
 #: camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: calendar/libecal/e-cal.c:4532
+#: calendar/libecal/e-cal.c:4520
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: calendar/libecal/e-cal.c:4534 camel/providers/imap/camel-imap-command.c:304
+#: calendar/libecal/e-cal.c:4522 camel/providers/imap/camel-imap-command.c:304
 #: camel/providers/imap/camel-imap-command.c:404
 #: camel/providers/imap4/camel-imap4-store.c:373
 #: camel/providers/pop3/camel-pop3-store.c:535
 #: camel/providers/pop3/camel-pop3-store.c:542
 #: camel/providers/pop3/camel-pop3-store.c:548
-#: servers/groupwise/e-gw-connection.c:169
+#: servers/groupwise/e-gw-connection.c:170
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: calendar/libecal/e-cal.c:4536
+#: calendar/libecal/e-cal.c:4524
 msgid "No error"
 msgstr "No error"
 
@@ -1276,12 +1272,11 @@ msgid "You must be working online to complete this operation"
 msgstr "You must be working online to complete this operation"
 
 #: camel/camel-filter-driver.c:689 camel/camel-filter-search.c:522
-#: camel/camel-process.c:48
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
 msgstr "Failed to create pipe to '%s': %s"
 
-#: camel/camel-filter-driver.c:733 camel/camel-process.c:90
+#: camel/camel-filter-driver.c:733
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Failed to create child process '%s': %s"
@@ -2551,18 +2546,18 @@ msgstr "Reply Requested: by "
 msgid "Reply Requested: When convenient"
 msgstr "Reply Requested: When convenient"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:541
+#: camel/providers/groupwise/camel-groupwise-folder.c:549
 #: camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Could not load summary for %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:791
+#: camel/providers/groupwise/camel-groupwise-folder.c:800
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Cannot create message: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:803
+#: camel/providers/groupwise/camel-groupwise-folder.c:812
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Cannot append message to folder `%s': %s"
@@ -2666,47 +2661,51 @@ msgstr "You didn't enter a password."
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Unable to authenticate to GroupWise server."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:501
+#: camel/providers/groupwise/camel-groupwise-store.c:431
+msgid "Some features may not work correctly with your current server version"
+msgstr "Some features may not work correctly with your current server version"
+
+#: camel/providers/groupwise/camel-groupwise-store.c:502
 #: camel/providers/imap/camel-imap-store.c:1870
 #: camel/providers/imap/camel-imap-store.c:2060
 #, c-format
 msgid "No such folder %s"
 msgstr "No such folder %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:551
-#: camel/providers/groupwise/camel-groupwise-store.c:597
+#: camel/providers/groupwise/camel-groupwise-store.c:552
+#: camel/providers/groupwise/camel-groupwise-store.c:598
 #: camel/providers/imap/camel-imap-folder.c:2288
 #: camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Fetching summary information for new messages"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:731
+#: camel/providers/groupwise/camel-groupwise-store.c:732
 msgid "Cannot get folder info in offline mode."
 msgstr "Cannot get folder info in offline mode."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:942
+#: camel/providers/groupwise/camel-groupwise-store.c:943
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Cannot create GroupWise folders in offline mode."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:993
+#: camel/providers/groupwise/camel-groupwise-store.c:994
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Cannot delete GroupWise folders in offline mode."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1039
+#: camel/providers/groupwise/camel-groupwise-store.c:1040
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Cannot rename GroupWise folders in offline mode."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1058
+#: camel/providers/groupwise/camel-groupwise-store.c:1059
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Cannot rename Groupwise folder `%s' to `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1094
+#: camel/providers/groupwise/camel-groupwise-store.c:1095
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise server %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1096
+#: camel/providers/groupwise/camel-groupwise-store.c:1097
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise service for %s on %s"
@@ -2724,23 +2723,6 @@ msgstr "Groupwise mail delivery via %s"
 #: camel/providers/groupwise/camel-groupwise-transport.c:159
 msgid "Sending Message"
 msgstr "Sending Message"
-
-#: camel/providers/groupwise/camel-gw-listener.c:406
-msgid "Tasks"
-msgstr "Tasks"
-
-#: camel/providers/groupwise/camel-gw-listener.c:436
-msgid "Checklist"
-msgstr "Checklist"
-
-#: camel/providers/groupwise/camel-gw-listener.c:483
-#, c-format
-msgid "%sEnter password for %s (user %s)"
-msgstr "%sEnter password for %s (user %s)"
-
-#: camel/providers/groupwise/camel-gw-listener.c:494
-msgid "Failed to authenticate.\n"
-msgstr "Failed to authenticate.\n"
 
 #: camel/providers/imap/camel-imap-command.c:219
 #: camel/providers/imap/camel-imap-command.c:258
@@ -3872,24 +3854,6 @@ msgstr ""
 "Could not sync spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in `%s'"
 
-#: camel/providers/nntp/camel-nntp-auth.c:44
-#: camel/providers/nntp/camel-nntp-store.c:1156
-#, c-format
-msgid "Please enter the NNTP password for %s@%s"
-msgstr "Please enter the NNTP password for %s@%s"
-
-#: camel/providers/nntp/camel-nntp-auth.c:64
-msgid "Server rejected username"
-msgstr "Server rejected username"
-
-#: camel/providers/nntp/camel-nntp-auth.c:70
-msgid "Failed to send username to server"
-msgstr "Failed to send username to server"
-
-#: camel/providers/nntp/camel-nntp-auth.c:79
-msgid "Server rejected username/password"
-msgstr "Server rejected username/password"
-
 #: camel/providers/nntp/camel-nntp-folder.c:177
 #: camel/providers/nntp/camel-nntp-folder.c:209
 #, c-format
@@ -3911,21 +3875,6 @@ msgstr "You cannot post NNTP messages while working offline!"
 #: camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "You cannot copy messages from a NNTP folder!"
-
-#: camel/providers/nntp/camel-nntp-grouplist.c:44
-msgid "Could not get group list from server."
-msgstr "Could not get group list from server."
-
-#: camel/providers/nntp/camel-nntp-grouplist.c:97
-#: camel/providers/nntp/camel-nntp-grouplist.c:106
-#, c-format
-msgid "Unable to load grouplist file for %s: %s"
-msgstr "Unable to load grouplist file for %s: %s"
-
-#: camel/providers/nntp/camel-nntp-grouplist.c:157
-#, c-format
-msgid "Unable to save grouplist file for %s: %s"
-msgstr "Unable to save grouplist file for %s: %s"
 
 #: camel/providers/nntp/camel-nntp-provider.c:44
 msgid ""
@@ -4014,6 +3963,11 @@ msgstr "You cannot remove a folder in a News store: unsubscribe instead."
 #: camel/providers/nntp/camel-nntp-store.c:1148
 msgid "Authentication requested but no username provided"
 msgstr "Authentication requested but no username provided"
+
+#: camel/providers/nntp/camel-nntp-store.c:1156
+#, c-format
+msgid "Please enter the NNTP password for %s@%s"
+msgstr "Please enter the NNTP password for %s@%s"
 
 #: camel/providers/nntp/camel-nntp-store.c:1160
 #, c-format
@@ -4820,19 +4774,19 @@ msgstr "Select destination"
 msgid "_Destination"
 msgstr "_Destination"
 
-#: servers/groupwise/e-gw-connection.c:153
+#: servers/groupwise/e-gw-connection.c:154
 msgid "Invalid connection"
 msgstr "Invalid connection"
 
-#: servers/groupwise/e-gw-connection.c:157
+#: servers/groupwise/e-gw-connection.c:158
 msgid "Invalid response from server"
 msgstr "Invalid response from server"
 
-#: servers/groupwise/e-gw-connection.c:159
+#: servers/groupwise/e-gw-connection.c:160
 msgid "No response from the server"
 msgstr "No response from the server"
 
-#: servers/groupwise/e-gw-connection.c:165
+#: servers/groupwise/e-gw-connection.c:166
 msgid "Bad parameter"
 msgstr "Bad parameter"
 
