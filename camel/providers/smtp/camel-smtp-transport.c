@@ -248,7 +248,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL
 		if (ssl_mode == MODE_TLS) {
-			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, STARTTLS_FLAGS);
+			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
 		} else {
 			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
 		}
@@ -291,7 +291,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		g_free (respbuf);
 		respbuf = camel_stream_buffer_read_line (CAMEL_STREAM_BUFFER (transport->istream));
 		if (!respbuf || strncmp (respbuf, "220", 3)) {
-			smtp_set_exception (transport, FALSE, respbuf,  _("Welcome response error"), ex);
+			smtp_set_exception (transport, FALSE, respbuf, _("Welcome response error"), ex);
 			g_free (respbuf);
 			return FALSE;
 		}
@@ -436,11 +436,14 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 	}
 	if (ai == NULL)
 		return FALSE;
-
-	if (!(ret = connect_to_server (service, ai, mode, ex)) && mode == MODE_SSL)
+	
+	if (!(ret = connect_to_server (service, ai, mode, ex)) && mode == MODE_SSL) {
+		camel_exception_clear (ex);
 		ret = connect_to_server (service, ai, MODE_TLS, ex);
-	else if (!ret && mode == MODE_TLS)
+	} else if (!ret && mode == MODE_TLS) {
+		camel_exception_clear (ex);
 		ret = connect_to_server (service, ai, MODE_CLEAR, ex);
+	}
 	
 	camel_freeaddrinfo (ai);
 	

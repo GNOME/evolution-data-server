@@ -1,5 +1,13 @@
 2005-01-14  Jeffrey Stedfast  <fejj@novell.com>
 
+	* providers/smtp/camel-smtp-transport.c
+	(connect_to_server_wrapper): if the first connection fails, clear
+	the exception before trying again.
+	(connect_to_server): Use ssl_new_raw() for STARTTLS mode
+	conenctions. Fixes bug #71082.
+
+2005-01-14  Jeffrey Stedfast  <fejj@novell.com>
+
 	* providers/imap4/camel-imap4-journal.c (imap4_entry_play_append):
 	Get the appended_uid from camel_folder_append_message() so that we
 	can copy all user flags/tags over from the journal info over to
