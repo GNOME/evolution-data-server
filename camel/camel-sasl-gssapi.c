@@ -28,6 +28,9 @@
 #ifdef HAVE_KRB5
 
 #include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #ifdef HAVE_ET_COM_ERR_H
 #include <et/com_err.h>
 #else
@@ -47,6 +50,7 @@
 #endif
 
 #include "camel-i18n.h"
+#include "camel-net-utils.h"
 #include "camel-sasl-gssapi.h"
 
 CamelServiceAuthType camel_sasl_gssapi_authtype = {

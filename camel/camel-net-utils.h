@@ -28,6 +28,8 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <netdb.h>
 
 struct _CamelException;
@@ -75,7 +77,7 @@ struct addrinfo {
 #define NI_MAXSERV      32
 
 #define NI_NUMERICHOST	1	/* Don't try to look up hostname.  */
-#define NI_NUMERICSERV 2	/* Don't convert port number to name.  */
+#define NI_NUMERICSERV	2	/* Don't convert port number to name.  */
 #define NI_NOFQDN	4	/* Only return nodename portion.  */
 #define NI_NAMEREQD	8	/* Don't return numeric addresses.  */
 #define NI_DGRAM	16	/* Look up UDP service rather than TCP.  */
