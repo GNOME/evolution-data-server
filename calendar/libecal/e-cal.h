@@ -42,8 +42,8 @@ G_BEGIN_DECLS
 #define E_CAL_SET_MODE_STATUS_ENUM_TYPE (e_cal_set_mode_status_enum_get_type ())
 #define CAL_MODE_ENUM_TYPE                   (cal_mode_enum_get_type ())
 
+typedef struct _ECal ECal;
 typedef struct _ECalClass ECalClass;
-
 typedef struct _ECalPrivate ECalPrivate;
 
 /* Open status for the cal_opened signal */
@@ -88,7 +88,7 @@ typedef enum {
 struct _ECal {
 	GObject object;
 
-	/* Private data */
+	/*< private >*/
 	ECalPrivate *priv;
 };
 

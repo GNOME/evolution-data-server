@@ -28,26 +28,25 @@
 
 G_BEGIN_DECLS
 
-typedef struct _ECal ECal;
+#define E_TYPE_CAL_VIEW            (e_cal_view_get_type ())
+#define E_CAL_VIEW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_VIEW, ECalView))
+#define E_CAL_VIEW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_VIEW, ECalViewClass))
+#define E_IS_CAL_VIEW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_VIEW))
+#define E_IS_CAL_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_VIEW))
 
-
-
-#define E_CAL_VIEW_TYPE            (e_cal_view_get_type ())
-#define E_CAL_VIEW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_CAL_VIEW_TYPE, ECalView))
-#define E_CAL_VIEW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_CAL_VIEW_TYPE, ECalViewClass))
-#define IS_E_CAL_VIEW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_CAL_VIEW_TYPE))
-#define IS_E_CAL_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_CAL_VIEW_TYPE))
-
+typedef struct _ECalView ECalView;
+typedef struct _ECalViewClass ECalViewClass;
 typedef struct _ECalViewPrivate ECalViewPrivate;
+struct _ECal;
 
-typedef struct {
-	GObject object;
+struct _ECalView {
+ 	GObject object;
 
-	/* Private data */
+	/*< private >*/
 	ECalViewPrivate *priv;
-} ECalView;
+};
 
-typedef struct {
+struct _ECalViewClass {
 	GObjectClass parent_class;
 
 	/* Notification signals */
@@ -56,12 +55,12 @@ typedef struct {
 	void (* objects_removed) (ECalView *view, GList *uids);
 	void (* view_progress) (ECalView *view, char *message, int percent);
 	void (* view_done) (ECalView *view, ECalendarStatus status);
-} ECalViewClass;
+};
 
 GType      e_cal_view_get_type (void);
 
-ECalView *e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *listener, ECal *client);
-ECal *e_cal_view_get_client (ECalView *view);
+ECalView *e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *listener, struct _ECal *client);
+struct _ECal *e_cal_view_get_client (ECalView *view);
 void e_cal_view_start (ECalView *view);
 
 G_END_DECLS

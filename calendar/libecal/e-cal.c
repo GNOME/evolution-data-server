@@ -1256,6 +1256,8 @@ fetch_corba_cal (ECal *ecal, const char *str_uri, CalObjType type)
 
 /**
  * e_cal_new:
+ * @uri: 
+ * @type: 
  *
  * Creates a new calendar ecal.  It should be initialized by calling
  * e_cal_open().
@@ -1310,11 +1312,11 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 /**
  * e_cal_open
  * @ecal: A calendar ecal.
- * @str_uri: URI of calendar to open.
  * @only_if_exists: FALSE if the calendar should be opened even if there
  * was no storage for it, i.e. to create a new calendar or load an existing
  * one if it already exists.  TRUE if it should only try to load calendars
  * that already exist.
+ * @error: 
  *
  * Makes a calendar ecal initiate a request to open a calendar.  The calendar
  * ecal will emit the "cal_opened" signal when the response from the server is
@@ -1498,14 +1500,6 @@ build_uri_list (GNOME_Evolution_Calendar_StringSeq *seq)
 }
 #endif
 
-/**
- * e_cal_uri_list:
- * @ecal: A calendar ecal
- * @type: type of uri's to get
- * 
- * 
- * Return value: A list of URI's open on the server
- **/
 GList *
 e_cal_uri_list (ECal *ecal, CalMode mode)
 {
@@ -1595,6 +1589,8 @@ e_cal_get_uri (ECal *ecal)
 /**
  * e_cal_is_read_only:
  * @ecal: A calendar ecal.
+ * @read_only: 
+ * @error: 
  *
  * Queries whether the calendar ecal can perform modifications
  * on the calendar or not. Whether the backend is read only or not
@@ -1668,7 +1664,9 @@ e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
 /**
  * e_cal_get_cal_address:
  * @ecal: A calendar ecal.
- * 
+  * @cal_address: 
+ * @error: 
+ *
  * Queries the calendar address associated with a calendar ecal.
  * 
  * Return value: The calendar address associated with the calendar that
@@ -2103,7 +2101,9 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
  * e_cal_get_object:
  * @ecal: A calendar ecal.
  * @uid: Unique identifier for a calendar component.
+ * @rid: 
  * @icalcomp: Return value for the calendar component object.
+ * @error: 
  *
  * Queries a calendar for a calendar component object based on its unique
  * identifier.
@@ -2319,6 +2319,8 @@ e_cal_free_change_list (GList *list)
  * e_cal_get_object_list:
  * @ecal: 
  * @query: 
+ * @objects: 
+ * @error: 
  * 
  * 
  * 
@@ -2426,10 +2428,12 @@ e_cal_free_object_list (GList *objects)
 
 /**
  * e_cal_get_free_busy
- * @ecal:: A calendar ecal.
+ * @ecal: A calendar ecal.
  * @users: List of users to retrieve free/busy information for.
  * @start: Start time for query.
  * @end: End time for query.
+ * @freebusy: 
+ * @error: 
  *
  * Gets free/busy information from the calendar server.
  *
@@ -2833,6 +2837,7 @@ e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
  * @ecal: A calendar ecal.
  * @comp: The component to discard the alarm from.
  * @auid: Unique identifier of the alarm to be discarded.
+ * @error: 
  *
  * Tells the calendar backend to get rid of the alarm identified by the
  * @auid argument in @comp. Some backends might remove the alarm or
@@ -3267,14 +3272,16 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
 
 /**
  * e_cal_remove_object:
- * @ecal: A calendar ecal.
+ * @ecal:  A calendar ecal.
  * @uid: Unique identifier of the calendar component to remove.
+ * @error: 
+ * 
  * 
  * Asks a calendar to remove a component.  If the server is able to remove the
  * component, all ecals will be notified and they will emit the "obj_removed"
  * signal.
  * 
- * Return value: a #ECalResult value indicating the result of the
+ * Return value: an #ECalResult value indicating the result of the
  * operation.
  **/
 gboolean
@@ -3605,6 +3612,8 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
  * e_cal_get_query:
  * @ecal: A calendar ecal.
  * @sexp: S-expression representing the query.
+ * @query: 
+ * @error: 
  * 
  * Creates a live query object from a loaded calendar.
  * 

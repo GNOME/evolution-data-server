@@ -923,24 +923,6 @@ BONOBO_TYPE_FUNC_FULL (ECalListener,
 		       BONOBO_TYPE_OBJECT,
 		       e_cal_listener);
 
-/**
- * e_cal_listener_construct:
- * @listener: A calendar listener.
- * @cal_opened_fn: Function that will be called to notify that a calendar was
- * opened.
- * @cal_removed_fn: Function that will be called to notify that a calendar was
- * removed
- * @error_occurred_fn: Function that will be called to notify errors.
- * @categories_changed_fn: Function that will be called to notify that the list
- * of categories that are present in the calendar's objects has changed.
- * @fn_data: Closure data pointer that will be passed to the notification
- * functions.
- *
- * Constructs a calendar listener by setting the callbacks that it will use for
- * notification from the calendar server.
- *
- * Return value: the same object as the @listener argument.
- **/
 ECalListener *
 e_cal_listener_construct (ECalListener *listener,
 			ECalListenerCalSetModeFn cal_set_mode_fn,
@@ -968,14 +950,14 @@ e_cal_listener_construct (ECalListener *listener,
 
 /**
  * e_cal_listener_new:
- * @cal_opened_fn: Function that will be called to notify that a calendar was
- * opened.
- * @error_occurred_fn: Function that will be called to notify errors.
+ * @cal_set_mode_fn: Function callback for notification that a
+ * calendar changed modes
+ * @error_occurred_fn:  Function that will be called to notify errors.
  * @categories_changed_fn: Function that will be called to notify that the list
  * of categories that are present in the calendar's objects has changed.
- * @fn_data: Closure data pointer that will be passed to the notification
+ * @fn_data: losure data pointer that will be passed to the notification
  * functions.
- *
+ * 
  * Creates a new #ECalListener object.
  *
  * Return value: A newly-created #ECalListener object.
@@ -996,10 +978,10 @@ e_cal_listener_new (ECalListenerCalSetModeFn cal_set_mode_fn,
 				 NULL);
 
 	return e_cal_listener_construct (listener,
-				       cal_set_mode_fn,
-				       error_occurred_fn,
-				       categories_changed_fn,
-				       fn_data);
+					 cal_set_mode_fn,
+					 error_occurred_fn,
+					 categories_changed_fn,
+					 fn_data);
 }
 
 /**

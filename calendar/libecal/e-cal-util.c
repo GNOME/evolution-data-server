@@ -433,6 +433,7 @@ compare_alarm_instance (gconstpointer a, gconstpointer b)
  * @comp: the ECalComponent to generate alarms from
  * @start: start time
  * @end: end time
+ * @omit: 
  * @resolve_tzid: callback for resolving timezones
  * @user_data: data to be passed to the resolve_tzid callback
  * @default_timezone: the timezone used to resolve DATE and floating DATE-TIME
@@ -441,6 +442,8 @@ compare_alarm_instance (gconstpointer a, gconstpointer b)
  * Generates alarm instances for a calendar component.  Returns the instances
  * structure, or NULL if no alarm instances occurred in the specified time
  * range.
+ *
+ * Returns:
  */
 ECalComponentAlarms *
 e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
@@ -495,6 +498,7 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  * @comps: list of ECalComponent's
  * @start: start time
  * @end: end time
+ * @omit: 
  * @comp_alarms: list to be returned
  * @resolve_tzid: callback for resolving timezones
  * @user_data: data to be passed to the resolve_tzid callback

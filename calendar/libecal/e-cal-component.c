@@ -4197,9 +4197,9 @@ e_cal_component_has_attendees (ECalComponent *comp)
 
 /**
  * e_cal_component_get_location:
- * @comp: A calendar component object.
- * @url: Return value for the location.
- *
+ * @comp: A calendar component object
+ * @location: Return value for the location.
+ * 
  * Queries the location property of a calendar component object.
  **/
 void
@@ -4223,8 +4223,8 @@ e_cal_component_get_location (ECalComponent *comp, const char **location)
 /**
  * e_cal_component_set_location:
  * @comp: A calendar component object.
- * @url: Location value.
- *
+ * @location: Location value.
+ * 
  * Sets the location property of a calendar component object.
  **/
 void

@@ -41,7 +41,7 @@ typedef struct ECalListenerPrivate ECalListenerPrivate;
 typedef struct {
 	BonoboObject xobject;
 
-	/* Private data */
+	/*< private >*/
 	ECalListenerPrivate *priv;
 } ECalListener;
 

@@ -78,9 +78,7 @@ typedef enum {
 	E_CAL_COMPONENT_FIELD_COLOR,		/* not a real field */
 	E_CAL_COMPONENT_FIELD_STATUS,
 	E_CAL_COMPONENT_FIELD_COMPONENT,		/* not a real field */
-#if 0
 	E_CAL_COMPONENT_FIELD_LOCATION,
-#endif
 	E_CAL_COMPONENT_FIELD_NUM_FIELDS
 } ECalComponentField;
 
@@ -126,7 +124,7 @@ typedef struct {
 typedef enum {
 	E_CAL_COMPONENT_RANGE_SINGLE,
 	E_CAL_COMPONENT_RANGE_THISPRIOR,
-	E_CAL_COMPONENT_RANGE_THISFUTURE,
+	E_CAL_COMPONENT_RANGE_THISFUTURE
 } ECalComponentRangeType;
 
 typedef struct {
@@ -186,7 +184,7 @@ typedef struct _ECalComponentPrivate ECalComponentPrivate;
 struct _ECalComponent {
 	GObject object;
 
-	/* Private data */
+	/*< private >*/
 	ECalComponentPrivate *priv;
 };
 

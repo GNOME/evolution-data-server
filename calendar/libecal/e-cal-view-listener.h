@@ -27,25 +27,25 @@
 
 G_BEGIN_DECLS
 
-
-
 #define E_TYPE_CAL_VIEW_LISTENER            (e_cal_view_listener_get_type ())
 #define E_CAL_VIEW_LISTENER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_VIEW_LISTENER, ECalViewListener))
-#define E_CAL_VIEW_LISTENER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_VIEW_LISTENER,	\
-					ECalViewListenerClass))
+#define E_CAL_VIEW_LISTENER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_VIEW_LISTENER, ECalViewListenerClass))
 #define E_IS_CAL_VIEW_LISTENER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_VIEW_LISTENER))
 #define E_IS_CAL_VIEW_LISTENER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_VIEW_LISTENER))
+#define E_CAL_VIEW_LISTENER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CAL_VIEW_LISTENER, ECalViewListenerClass))
 
+typedef struct _ECalViewListener ECalViewListener;
+typedef struct _ECalViewListenerClass ECalViewListenerClass;
 typedef struct _ECalViewListenerPrivate ECalViewListenerPrivate;
 
-typedef struct {
+struct _ECalViewListener {
 	BonoboObject xobject;
 
-	/* Private data */
+	/*< private >*/
 	ECalViewListenerPrivate *priv;
-} ECalViewListener;
+};
 
-typedef struct {
+struct _ECalViewListenerClass {
 	BonoboObjectClass parent_class;
 
 	POA_GNOME_Evolution_Calendar_CalViewListener__epv epv;
@@ -55,12 +55,10 @@ typedef struct {
 	void (*objects_removed) (ECalViewListener *listener, GList *uids);
 	void (*view_progress) (ECalViewListener *listener, const char *message, int percent);
 	void (*view_done) (ECalViewListener *listener, ECalendarStatus status);
-} ECalViewListenerClass;
+};
 
-GType e_cal_view_listener_get_type (void);
-ECalViewListener *e_cal_view_listener_new (void);
-
-
+GType             e_cal_view_listener_get_type (void);
+ECalViewListener *e_cal_view_listener_new      (void);
 
 G_END_DECLS
 

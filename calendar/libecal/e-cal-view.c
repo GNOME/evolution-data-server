@@ -200,7 +200,7 @@ e_cal_view_finalize (GObject *object)
 	ECalViewPrivate *priv;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (IS_E_CAL_VIEW (object));
+	g_return_if_fail (E_IS_CAL_VIEW (object));
 
 	view = E_CAL_VIEW (object);
 	priv = view->priv;
@@ -233,13 +233,14 @@ e_cal_view_class_init (ECalViewClass *klass)
 	object_class->get_property = e_cal_view_get_property;
 	object_class->finalize = e_cal_view_finalize;
 
-	param =  g_param_spec_pointer ("view", NULL, NULL,
+	param =  g_param_spec_pointer ("view", "The corba view object", NULL,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
 	g_object_class_install_property (object_class, PROP_VIEW, param);
-	param =  g_param_spec_pointer ("listener", NULL, NULL,
+	/* FIXME type this property as object? */
+	param =  g_param_spec_pointer ("listener", "The view listener object to use", NULL,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
 	g_object_class_install_property (object_class, PROP_LISTENER, param);
-	param =  g_param_spec_object ("client", NULL, NULL, E_TYPE_CAL,
+	param =  g_param_spec_object ("client", "The e-cal for the view", NULL, E_TYPE_CAL,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
 	g_object_class_install_property (object_class, PROP_CLIENT, param);
 	
@@ -317,9 +318,9 @@ e_cal_view_get_type (void)
 
 /**
  * e_cal_view_new:
- * @client: Client from which the view is being created.
- * @cal: Handle to an open calendar.
- * @sexp: S-expression that defines the view.
+ * @corba_view: 
+ * @listener: 
+ * @client: 
  * 
  * Creates a new view object by issuing the view creation request to the
  * calendar server.
@@ -331,7 +332,7 @@ e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *l
 {
 	ECalView *view;
 
-	view = g_object_new (E_CAL_VIEW_TYPE, "view", corba_view, "listener", 
+	view = g_object_new (E_TYPE_CAL_VIEW, "view", corba_view, "listener", 
 			      listener, "client", client, NULL);
 
 	return view;
@@ -348,7 +349,7 @@ e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *l
 ECal *
 e_cal_view_get_client (ECalView *view)
 {
-	g_return_val_if_fail (IS_E_CAL_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_CAL_VIEW (view), NULL);
 
 	return view->priv->client;
 }
@@ -360,7 +361,7 @@ e_cal_view_start (ECalView *view)
 	CORBA_Environment ev;
 
 	g_return_if_fail (view != NULL);
-	g_return_if_fail (IS_E_CAL_VIEW (view));
+	g_return_if_fail (E_IS_CAL_VIEW (view));
 	
 	priv = view->priv;
 	

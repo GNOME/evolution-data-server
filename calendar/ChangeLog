@@ -1,3 +1,29 @@
+2003-11-10  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.h: mark struct as private
+
+	* libecal/e-cal.c: fix documentation headers
+
+	* libecal/e-cal-view.h: fix cast macros and typedef the structs
+	separately
+
+	* libecal/e-cal-view.c: use correct type check macro, fix some
+	documentation headers
+
+	* libecal/e-cal-view-listener.h: typedef the structs separately
+	and tidy up class macros
+
+	* libecal/e-cal-util.c: fix a documentation header
+
+	* libecal/e-cal-listener.h: mark parts of the struct as private
+
+	* libecal/e-cal-listener.c: fix a few documentation headers
+
+	* libecal/e-cal-component.h: remove extraneous comma and mark
+	parts of struct as private
+
+	* libecal/e-cal-component.c: fix a couple of documentation headers
+
 2003-11-10  Dan Winship  <danw@ximian.com>
 
 	* libedata-cal/e-cal-backend-sexp.c: Remove get-vtype from the
