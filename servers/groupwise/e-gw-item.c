@@ -1050,7 +1050,7 @@ append_contact_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	simple_fields = item->priv->simple_fields;
 	value = g_hash_table_lookup (simple_fields, "id");
 	if (value)
-	  e_gw_message_write_string_parameter (msg, "id", NULL, value);
+		e_gw_message_write_string_parameter (msg, "id", NULL, value);
 	
 	if (item->priv->container)
 		e_gw_message_write_string_parameter (msg, "container", NULL, item->priv->container);
@@ -1093,17 +1093,16 @@ append_group_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 
 	simple_fields = item->priv->simple_fields;
 	append_common_addressbook_item_fields_to_soap_message (simple_fields, item->priv->category_list, msg);
-	
+	if (item->priv->container)
+                e_gw_message_write_string_parameter (msg, "container", NULL, item->priv->container);
 	soup_soap_message_start_element (msg, "members", NULL, NULL);
 	members = g_list_copy (item->priv->member_list);
 	for (; members != NULL; members = g_list_next (members)) {
 		
 		soup_soap_message_start_element (msg, "member", NULL, NULL);
-		//	e_gw_message_write_string_parameter (msg, "id", NULL, "a@b.com");
-		e_gw_message_write_string_parameter (msg, "email", NULL, "a@b.com");
-		//e_gw_message_write_string_parameter (msg, "distType", NULL, "TO");
-		//	e_gw_message_write_string_parameter (msg, "itemType", NULL, "Contact");
-		
+		e_gw_message_write_string_parameter (msg, "id", NULL, members->data);
+		e_gw_message_write_string_parameter (msg, "distType", NULL, "TO");
+		e_gw_message_write_string_parameter (msg, "itemType", NULL, "Contact");
 		soup_soap_message_end_element(msg);
 
 	}

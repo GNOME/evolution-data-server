@@ -1,3 +1,8 @@
+2004-04-23 Sivaiah Nallagatla   <snallagatla@novell.com>
+	
+	* e_gw_item.c ( append_group_fields_to_soap_message) : add id, distType
+	itemType in the request 
+	 
 2004-04-15 Sivaiah nallagatla   <snallagatla@novell.com>
 	
 	* e-gw-connection.c (e_gw_connection_get_categories)
