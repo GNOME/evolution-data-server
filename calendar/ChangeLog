@@ -1,5 +1,7 @@
 2003-12-12  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-message.c (setup_debug): fixed typo.
+
 	* backends/groupwise/Makefile.am: use $DEBUG_CFLAGS.
 
 2003-12-12  Rodrigo Moya <rodrigo@ximian.com>

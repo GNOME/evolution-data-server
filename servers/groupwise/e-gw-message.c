@@ -67,11 +67,6 @@ setup_debug (SoupSoapMessage *msg)
 	print_header ("Host", suri->host, NULL);
 	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers, print_header, NULL);
 
-	/* print request's body */
-	fputc ('\n', stdout);
-	fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
-	fputc ('\n', stdout);
-
 	soup_message_add_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
 }
 
@@ -88,12 +83,12 @@ e_gw_message_new_with_header (const char *uri, const char *method_name)
 		return NULL;
 	}
 
+	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
+				 "Evolution/" VERSION);
+
 #ifdef G_ENABLE_DEBUG
 	setup_debug (msg);
 #endif
-
-	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
-				 "Evolution/" VERSION);
 
 	soup_soap_message_start_envelope (msg);
 	soup_soap_message_start_body (msg);
@@ -118,4 +113,12 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 	soup_soap_message_end_element (msg);
 	soup_soap_message_end_body (msg);
 	soup_soap_message_end_envelope (msg);
+
+#ifdef G_ENABLE_DEBUG
+	/* print request's body */
+	fputc ('\n', stdout);
+	fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
+	fputc ('\n', stdout);
+#endif
+
 }
