@@ -1,3 +1,8 @@
+2004-02-14  Sivaiah Nallagatla   <snallagatla@novell.com>
+
+	* e-gw-connection.h : place _INVALID_CONNECTION
+	at the end of enum 
+
 2004-02-14 Sivaiah Nallagatla    <snallagatla@novell.com>
                                                                                                                              
         * e-gw-connection.c (reauthenitcate) : new function to reautheicate
