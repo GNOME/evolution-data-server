@@ -1,3 +1,16 @@
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* camel-sasl-ntlm.c: convert all the unsigned long/long stuff to
+	guint32 since it seems to need 32 bit integers.
+
+	* camel-url.c (camel_url_new_with_base): cast length to int.
+
+	* providers/imap/camel-imap-command.c
+	(imap_command_strdup_vprintf): cast strlen to int.
+
+	* camel-mime-utils.c (append_quoted_pair, header_decode_text): use
+	gssize for length to match dumb g-api.
+
 2005-01-11  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.c
