@@ -1,3 +1,11 @@
+2004-07-16  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libedataserver/e-source-group.c (e_source_group_remove_source)
+	(e_source_group_remove_source) : disconnet the signal 
+	handler registered on source object for CHANGED singal
+	as we may not be interested in the changes in source once
+	it is removed form the group
+
 2004-07-12  Chris Toshok  <toshok@ximian.com>
 
 	[ most likely fixes #57999 ]

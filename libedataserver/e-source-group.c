@@ -615,6 +615,9 @@ e_source_group_remove_source (ESourceGroup *group,
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		if (E_SOURCE (p->data) == source) {
 			group->priv->sources = g_slist_remove_link (group->priv->sources, p);
+			g_signal_handlers_disconnect_by_func (source,
+							      G_CALLBACK (source_changed_callback),
+							      group);
 			g_signal_emit (group, signals[SOURCE_REMOVED], 0, source);
 			g_signal_emit (group, signals[CHANGED], 0);
 			return TRUE;
@@ -641,6 +644,9 @@ e_source_group_remove_source_by_uid (ESourceGroup *group,
 
 		if (strcmp (e_source_peek_uid (source), uid) == 0) {
 			group->priv->sources = g_slist_remove_link (group->priv->sources, p);
+			g_signal_handlers_disconnect_by_func (source,
+							      G_CALLBACK (source_changed_callback),
+							      group);
 			g_signal_emit (group, signals[SOURCE_REMOVED], 0, source);
 			g_signal_emit (group, signals[CHANGED], 0);
 			return TRUE;
