@@ -1,3 +1,16 @@
+2005-02-06 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* libebook/e-contact.[ch] : Added 
+	new field E_CONTACT_REV which reprsnets
+	the revision (last updated time of the contact)
+	Also Changed File As to File Under to match with ui
+
+	* backends/file/e-book-backend-file.c (do_create)
+	(e_book_backend_file_modify_contact) : set/update
+	the revsion field of the contact with current UTC time
+
+	Fixes #1069
+
 2005-02-04  Ross Burton  <ross@burtonini.com>
 
 	* backends/groupwise/create-account.c:

@@ -184,11 +184,14 @@ typedef enum {
 	/* Security Fields */
 	E_CONTACT_X509_CERT,     /* structured field (EContactCert) */
 
+	E_CONTACT_REV,     /* string field to hold  time of last update to this vcard*/
+	
+
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
 
 	/* useful constants */
-	E_CONTACT_LAST_SIMPLE_STRING = E_CONTACT_NAME_OR_ORG,
+	E_CONTACT_LAST_SIMPLE_STRING = E_CONTACT_REV,
 	E_CONTACT_FIRST_PHONE_ID     = E_CONTACT_PHONE_ASSISTANT,
 	E_CONTACT_LAST_PHONE_ID      = E_CONTACT_PHONE_TTYTDD,
 	E_CONTACT_FIRST_EMAIL_ID     = E_CONTACT_EMAIL_1,
@@ -204,7 +207,7 @@ typedef struct {
 	char *family;
 	char *given;
 	char *additional;
-	char *prefixes;
+ 	char *prefixes;
 	char *suffixes;
 } EContactName;
 

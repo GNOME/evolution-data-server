@@ -36,6 +36,7 @@
 #include <errno.h>
 #include "db.h"
 #include <sys/stat.h>
+#include <sys/time.h>
 
 #include <glib/gi18n-lib.h>
 #include <libedataserver/e-dbhash.h>
@@ -133,6 +134,21 @@ e_book_backend_file_create_unique_id (void)
 	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time(NULL), c++);
 }
 
+static void 
+set_revision (EContact *contact)
+{
+	char time_string[25] = {0};
+	const struct tm *tm = NULL;
+	struct timeval tv;
+
+	if (!gettimeofday (&tv, NULL))
+		tm = gmtime (&tv.tv_sec);
+	if (tm)
+		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+	e_contact_set (contact, E_CONTACT_REV, time_string);
+	
+}
+
 static EContact *
 do_create(EBookBackendFile  *bf,
 	  const char      *vcard_req)
@@ -143,13 +159,18 @@ do_create(EBookBackendFile  *bf,
 	char           *id;
 	EContact       *contact;
 	char           *vcard;
-
+	const char *rev;
+	
 	id = e_book_backend_file_create_unique_id ();
 
 	string_to_dbt (id, &id_dbt);
 
 	contact = e_contact_new_from_vcard (vcard_req);
-	e_contact_set(contact, E_CONTACT_UID, id);
+	e_contact_set (contact, E_CONTACT_UID, id);
+	rev = e_contact_get_const (contact,  E_CONTACT_REV);
+	if (!(rev && *rev))
+		set_revision (contact);
+
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
 	string_to_dbt (vcard, &vcard_dbt);
@@ -253,6 +274,7 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	DBT            id_dbt, vcard_dbt;
 	int            db_error;
 	char          *id, *lookup_id;
+	char          *vcard_with_rev;
 
 	*contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get(*contact, E_CONTACT_UID);
@@ -282,7 +304,11 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 
 	free (vcard_dbt.data);
 
-	string_to_dbt (vcard, &vcard_dbt);	
+	/* update the revisio (modified time of contact) */
+	set_revision (*contact);
+	vcard_with_rev = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
+	
+	string_to_dbt (vcard_with_rev, &vcard_dbt);	
 
 	db_error = db->put (db, NULL, &id_dbt, &vcard_dbt, 0);
 
@@ -295,6 +321,7 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 		e_book_backend_summary_add_contact (bf->priv->summary, *contact);
 	}
 	g_free (id);
+	g_free (vcard_with_rev);
 
 	if (0 == db_error)
 		return GNOME_Evolution_Addressbook_Success;
@@ -325,6 +352,7 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 	if (db_error == 0) {
 		*vcard = g_strdup (vcard_dbt.data);
+		printf ("backend %s\n", *vcard);
 		free (vcard_dbt.data);
 		return GNOME_Evolution_Addressbook_Success;
 	} else {
@@ -498,7 +526,7 @@ book_view_thread (gpointer data)
 
 		for (i = 0; i < ids->len; i ++) {
 			char *id = g_ptr_array_index (ids, i);
-
+			printf ("**** id %s\n", id);
 			g_mutex_lock (closure->mutex);
 			stopped = closure->stopped;
 			g_mutex_unlock (closure->mutex);
@@ -516,6 +544,7 @@ book_view_thread (gpointer data)
 				EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 				/* notify_update will check if it matches for us */
 				e_data_book_view_notify_update (book_view, contact);
+				
 				g_object_unref (contact);
 
 				free (vcard_dbt.data);
@@ -817,8 +846,7 @@ e_book_backend_file_get_required_fields (EBookBackendSync *backend,
 					  GList **fields_out)
 {
 	GList *fields = NULL;
-	int i;
-
+	
 	fields = g_list_append (fields , g_strdup(e_contact_field_name (E_CONTACT_FILE_AS)));
 	*fields_out = fields;
 	return GNOME_Evolution_Addressbook_Success;
