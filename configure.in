@@ -109,7 +109,7 @@ AC_PROG_INTLTOOL
 ALL_LINGUAS="am az be bg bn bs ca cs da de el en_AU en_CA en_GB es et eu fa fi fr ga gl gu hr hu id it ja ko lt lv mn ms nb nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv tr uk vi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
-GETTEXT_PACKAGE=evolution-data-server-1.5
+GETTEXT_PACKAGE=evolution-data-server-1.2
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
 

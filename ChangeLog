@@ -1,3 +1,9 @@
+2004-11-03  Ryan Skadberg  <skadz@stigmata.org>
+
+	Fixes #69056
+	
+	* configure.in: Fix GETTEXT_PACKAGE to be 1.2 to match EDS version.
+
 2004-11-02  JP Rosevear  <jpr@novell.com>
 
 	Fixes #68737
