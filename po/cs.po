@@ -1,16 +1,16 @@
 # Czech translation of evolution-data-server.
 # Copyright (C) 2002,2003 Free Software Foundation, Inc.
-# Copyright (C) 2004 Miloslav Trmac <mitr@volny.cz>
+# Copyright (C) 2004, 2005 Miloslav Trmac <mitr@volny.cz>
 # Radka Doulíková <doulikova@centrum.cz>, 2002.
 # Michal Bukovjan <bukm@centrum.cz>, 2003
-# Miloslav Trmac <mitr@volny.cz>, 2003, 2004.
+# Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-14 15:54+0800\n"
-"PO-Revision-Date: 2004-10-14 14:18+0200\n"
+"PO-Revision-Date: 2005-01-20 19:42+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -653,7 +653,6 @@ msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:776
-#, fuzzy
 msgid "Repository is Offline"
 msgstr "Sklad je odpojen"
 
@@ -1497,9 +1496,9 @@ msgid "Host lookup failed"
 msgstr "Nemohu najít počítač"
 
 #: camel/camel-net-utils.c:636
-#, fuzzy, c-format
+#, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr "Nemohu najít počítač"
+msgstr "Nemohu najít počítač: %s: %s"
 
 #: camel/camel-net-utils.c:743
 msgid "Resolving address"
@@ -1515,14 +1514,14 @@ msgid "Name lookup failed: %s"
 msgstr "Vyhledávání jména selhalo: %s"
 
 #: camel/camel-offline-folder.c:250
-#, fuzzy, c-format
+#, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "Kopíruji zprávy do složky %s"
+msgstr "Synchronizuji zprávy ve složce '%s' na disk"
 
 #: camel/camel-offline-journal.c:140 camel/camel-offline-journal.c:163
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
-msgstr "Nemohu vytvořit složku `%s': %s"
+msgstr "Nemohu zapsat offline záznam o složce `%s': %s"
 
 #: camel/camel-provider.c:59
 msgid "Virtual folder email provider"
@@ -1820,36 +1819,31 @@ msgid "Cannot create CMS message"
 msgstr "Nemohu vytvořit zprávu CMS"
 
 #: camel/camel-smime-context.c:242
-#, fuzzy
 msgid "Cannot create CMS signed data"
-msgstr "Nemohu vytvořit CMS signedData"
+msgstr "Nemohu vytvořit podepsaná data CMS"
 
 #: camel/camel-smime-context.c:248
-#, fuzzy
 msgid "Cannot attach CMS signed data"
-msgstr "Nemohu přiložit CMS signedData"
+msgstr "Nemohu přiložit podepsaná data CMS"
 
 #: camel/camel-smime-context.c:255
 msgid "Cannot attach CMS data"
 msgstr "Nemohu přiložit data CMS"
 
 #: camel/camel-smime-context.c:261
-#, fuzzy
 msgid "Cannot create CMS Signer information"
-msgstr "Nemohu vytvořit CMS SignerInfo"
+msgstr "Nemohu vytvořit informace o podepisovateli CMS"
 
 #: camel/camel-smime-context.c:267
-#, fuzzy
 msgid "Cannot find certificate chain"
 msgstr "Nemohu najít řetězec certifikátů"
 
 #: camel/camel-smime-context.c:273
-#, fuzzy
 msgid "Cannot add CMS Signing time"
-msgstr "Nemohu přidat CMS SigningTime"
+msgstr "Nemohu přidat čas podpisu CMS"
 
 #: camel/camel-smime-context.c:295 camel/camel-smime-context.c:307
-#, fuzzy, c-format
+#, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "Šifrovací certifikát pro '%s' neexistuje"
 
@@ -1866,9 +1860,8 @@ msgid "Cannot add encryption certificate"
 msgstr "Nemohu přidat šifrovací certifikát"
 
 #: camel/camel-smime-context.c:330
-#, fuzzy
 msgid "Cannot add CMS Signer information"
-msgstr "Nemohu přidat CMS SignerInfo"
+msgstr "Nemohu přidat informace o podepisovateli CMS"
 
 #: camel/camel-smime-context.c:400 camel/camel-smime-context.c:848
 msgid "Cannot create encoder context"
@@ -1923,9 +1916,8 @@ msgid "Processing error"
 msgstr "Chyba při zpracování"
 
 #: camel/camel-smime-context.c:539
-#, fuzzy
 msgid "No signed data in signature"
-msgstr "V podpisu nejsou signedData"
+msgstr "V podpisu nejsou podepsaná data"
 
 #: camel/camel-smime-context.c:546
 msgid "Digests missing from enveloped data"
@@ -1944,14 +1936,12 @@ msgid "Certificate import failed"
 msgstr "Import certifikátu selhal"
 
 #: camel/camel-smime-context.c:599
-#, fuzzy
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr "Zpráva jen s certifikátem, nemohu ověřit certifikáty"
+msgstr "Certifikát je jediná zpráva, nemohu ověřit certifikáty"
 
 #: camel/camel-smime-context.c:602
-#, fuzzy
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "Zpráva jen s certifikátem, certifikáty importovány a ověřeny"
+msgstr "Certifikát je jediná zpráva, certifikáty importovány a ověřeny"
 
 #: camel/camel-smime-context.c:606
 msgid "Cannot find signature digests"
@@ -1985,28 +1975,24 @@ msgid "Cannot create CMS Message"
 msgstr "Nemohu vytvořit CMS Message"
 
 #: camel/camel-smime-context.c:808
-#, fuzzy
 msgid "Cannot create CMS Enveloped data"
-msgstr "Nemohu vytvořit CMS EnvelopedData"
+msgstr "Nemohu vytvořit zabalená data CMS"
 
 #: camel/camel-smime-context.c:814
-#, fuzzy
 msgid "Cannot attach CMS Enveloped data"
-msgstr "Nemohu připojit CMS EnvelopedData"
+msgstr "Nemohu připojit zabalená data CMS"
 
 #: camel/camel-smime-context.c:820
 msgid "Cannot attach CMS data object"
 msgstr "Nemohu připojit objekt dat CMS"
 
 #: camel/camel-smime-context.c:829
-#, fuzzy
 msgid "Cannot create CMS Recipient information"
-msgstr "Nemohu vytvořit CMS RecipientInfo"
+msgstr "Nemohu vytvořit informace o příjemci CMS"
 
 #: camel/camel-smime-context.c:834
-#, fuzzy
 msgid "Cannot add CMS Recipient information"
-msgstr "Nemohu přidat CMS RecipientInfo"
+msgstr "Nemohu přidat informace o příjemci CMS"
 
 #: camel/camel-smime-context.c:859
 msgid "Failed to add data to encoder"
@@ -2362,15 +2348,13 @@ msgstr "Nemohu získat zprávu %s: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:145
 #: camel/providers/imap4/camel-imap4-folder.c:719
-#, fuzzy
 msgid "This message is not available in offline mode."
-msgstr "Tato zpráva není právě dostupná"
+msgstr "Tato zpráva není dostupná v režimu offline."
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:171
 #: camel/providers/groupwise/camel-groupwise-folder.c:272
-#, fuzzy
 msgid "Could not get message"
-msgstr "Nemohu vytvořit zprávu."
+msgstr "Nemohu získat zprávu"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:471
 #: camel/providers/imap/camel-imap-folder.c:245
@@ -2379,31 +2363,30 @@ msgid "Could not load summary for %s"
 msgstr "Nemohu načíst souhrn pro %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:685
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create message: %s"
-msgstr "Nemohu vytvořit zprávu CMS"
+msgstr "Nemohu vytvořit zprávu: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:697
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message to folder `%s': %s"
-msgstr "Nemohu přidat zprávu do adresáře mh: %s: %s"
+msgstr "Nemohu přidat zprávu do složky `%s': %s"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get folder container %s"
-msgstr "Nemohu získat složku: %s: %s"
+msgstr "Nemohu získat úložiště složky %s"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:328
 #: camel/providers/imap4/camel-imap4-journal.c:276
-#, fuzzy
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Nemohu přidat zprávu do adresáře mh: %s: %s"
+msgstr "Nemohu přidat v režimu offline: cache není k dispozici"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:344
 #: camel/providers/imap4/camel-imap4-journal.c:292
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr "Nemohu přidat zprávu do souboru mbox: %s: %s"
+msgstr "Nemohu přidat zprávu v režimu offline: %s"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:36
@@ -2436,9 +2419,8 @@ msgid "Only check for Junk messages in the INBOX folder"
 msgstr "Hledat smetí jen v nových příchozích zprávách"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:64
-#, fuzzy
 msgid "Automatically synchronize account locally"
-msgstr "Automaticky synchronizovat vzdálenou poštu s místní"
+msgstr "Automaticky synchronizovat místní účet"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:69
 msgid "Address Book and Calendar"
@@ -2473,21 +2455,19 @@ msgid "Password"
 msgstr "Heslo"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:110
-#, fuzzy
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
-msgstr ""
-"Tato volba připojí na IMAP server pomocí hesel přenášených jako čistý text."
+msgstr "Tato volba připojí k serveru GroupWise pomocí hesla přenášeného jako čistý text."
 
+# FIXME: s/availbale/available/
 #: camel/providers/groupwise/camel-groupwise-store.c:267
-#, fuzzy
 msgid "Host or user not availbale in url"
-msgstr "Editor kategorie není dostupný"
+msgstr "Počítač nebo uživatel není dostupný v url"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:359
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the Groupwise password for %s@%s"
-msgstr "%sUveďte IMAP heslo pro %s@%s"
+msgstr "%sZadejte prosím heslo GroupWise heslo pro %s@%s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:373
 #: camel/providers/imap/camel-imap-store.c:1301
@@ -2495,12 +2475,8 @@ msgid "You didn't enter a password."
 msgstr "Neuvedli jste heslo."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:382
-#, fuzzy
 msgid "Unable to authenticate to GroupWise server."
-msgstr ""
-"Nemohu se autentizovat u serveru IMAP.\n"
-"%s\n"
-"\n"
+msgstr "Nemohu se autentizovat u serveru GroupWise."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:479
 #: camel/providers/imap/camel-imap-store.c:1852
@@ -2516,52 +2492,47 @@ msgid "Fetching summary information for new messages"
 msgstr "Stahuji souhrnné informace pro nové zprávy"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:610
-#, fuzzy
 msgid "Cannot get folder info in offline mode."
-msgstr "Nemohu přesunout složku do jedné z jejich podsložek."
+msgstr "Nemohu získat informace o složce v režimu offline."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:781
-#, fuzzy
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr "Nemohu vytvořit složku s tímto názvem."
+msgstr "Nemohu vytvářet složky GroupWise v režimu offline."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:830
-#, fuzzy
 msgid "Cannot delete GroupWise folders in offline mode."
-msgstr "Nemohu odstranit složku `%s': Speciální složka"
+msgstr "Nemohu odstraňovat složky GroupWise v režimu offline."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:873
-#, fuzzy
 msgid "Cannot rename GroupWise folders in offline mode."
-msgstr "Nemůžete přejmenovat složku v úložišti News."
+msgstr "Nemohu přejmenovávat složky GroupWise v režimu offline."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:879
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "Nemohu přejmenovat složku `%s' na `%s': Špatný příkaz"
+msgstr "Nemohu přejmenovat složku GroupWise `%s' na `%s'"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:911
-#, fuzzy, c-format
+#, c-format
 msgid "GroupWise server %s"
-msgstr "GroupWise"
+msgstr "Server GroupWise %s"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:913
-#, fuzzy, c-format
+#, c-format
 msgid "GroupWise service for %s on %s"
-msgstr "IMAP služba pro %s na %s"
+msgstr "Služba GroupWise pro %s na %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise server %s"
-msgstr "Seznam Id Groupwise"
+msgstr "Server Groupwise %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:123
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise mail delivery via %s"
-msgstr "Doručení pošty SMTP pomocí %s"
+msgstr "Doručení pošty Groupwise pomocí %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:159
-#, fuzzy
 msgid "Sending Message"
 msgstr "Posílám zprávu"
 
@@ -2702,18 +2673,16 @@ msgstr "Kontrola nové pošty"
 
 #: camel/providers/imap/camel-imap-provider.c:46
 #: camel/providers/imap4/camel-imap4-provider.c:38
-#, fuzzy
 msgid "C_heck for new messages in all folders"
-msgstr "Hledat novou poštu ve všech složkách"
+msgstr "_Hledat novou poštu ve všech složkách"
 
 #: camel/providers/imap/camel-imap-provider.c:49
 msgid "Connection to Server"
 msgstr "Přepojení k serveru"
 
 #: camel/providers/imap/camel-imap-provider.c:51
-#, fuzzy
 msgid "_Use custom command to connect to server"
-msgstr "Používat pro připojení k serveru vlastní příkaz"
+msgstr "_Používat pro připojení k serveru vlastní příkaz"
 
 #: camel/providers/imap/camel-imap-provider.c:53
 msgid "Command:"
@@ -2727,15 +2696,13 @@ msgstr "Složky"
 
 #: camel/providers/imap/camel-imap-provider.c:58
 #: camel/providers/imap4/camel-imap4-provider.c:43
-#, fuzzy
 msgid "_Show only subscribed folders"
-msgstr "Zobrazit pouze přihlášené složky"
+msgstr "_Zobrazovat pouze přihlášené složky"
 
 #: camel/providers/imap/camel-imap-provider.c:60
 #: camel/providers/imap4/camel-imap4-provider.c:45
-#, fuzzy
 msgid "O_verride server-supplied folder namespace"
-msgstr "Předefinovat jmenný prostor složek ze serveru"
+msgstr "_Předefinovat jmenný prostor složek ze serveru"
 
 #: camel/providers/imap/camel-imap-provider.c:62
 #: camel/providers/imap4/camel-imap4-provider.c:47
@@ -2744,27 +2711,23 @@ msgstr "Jmenný prostor"
 
 #: camel/providers/imap/camel-imap-provider.c:66
 #: camel/providers/imap4/camel-imap4-provider.c:51
-#, fuzzy
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "Použít filtry na nové příchozí zprávy na tomto serveru"
+msgstr "_Použít filtry na nové příchozí zprávy na tomto serveru"
 
 #: camel/providers/imap/camel-imap-provider.c:68
 #: camel/providers/imap4/camel-imap4-provider.c:53
-#, fuzzy
 msgid "Check new messages for _Junk contents"
-msgstr "Hledat smetí v nových zprávách"
+msgstr "Hledat _smetí v nových zprávách"
 
 #: camel/providers/imap/camel-imap-provider.c:70
 #: camel/providers/imap4/camel-imap4-provider.c:55
-#, fuzzy
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Hledat smetí jen v nových příchozích zprávách"
+msgstr "Hledat smetí _jen v nových příchozích zprávách"
 
 #: camel/providers/imap/camel-imap-provider.c:72
 #: camel/providers/imap4/camel-imap4-provider.c:57
-#, fuzzy
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "Automaticky synchronizovat vzdálenou poštu s místní"
+msgstr "Automaticky _synchronizovat vzdálenou poštu s místní"
 
 #: camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -2835,9 +2798,8 @@ msgstr "Nemohu se připojit k serveru IMAP %s v zabezpečeném režimu: %s"
 
 #: camel/providers/imap/camel-imap-store.c:656
 #: camel/providers/smtp/camel-smtp-transport.c:326
-#, fuzzy
 msgid "STARTTLS not supported"
-msgstr "SSL/TLS rozšíření není podporováno."
+msgstr "STARTTLS není podporováno"
 
 #: camel/providers/imap/camel-imap-store.c:678
 #: camel/providers/imap4/camel-imap4-store.c:281
@@ -2850,7 +2812,7 @@ msgstr "Vyjednávání SSL selhalo"
 #: camel/providers/pop3/camel-pop3-store.c:252
 #: camel/providers/smtp/camel-smtp-transport.c:365
 msgid "SSL is not available in this build"
-msgstr ""
+msgstr "SSL v tomto sestavení není k dispozici"
 
 #: camel/providers/imap/camel-imap-store.c:820
 #, c-format
@@ -2871,7 +2833,7 @@ msgstr "Typ autentizace %s není podporován"
 #: camel/providers/imap/camel-imap-store.c:1287
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
-msgstr "%sUveďte IMAP heslo pro %s@%s"
+msgstr "%sZadejte prosím heslo IMAP pro %s@%s"
 
 #: camel/providers/imap/camel-imap-store.c:1330
 #, c-format
@@ -2945,9 +2907,9 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "IMAP4 server %s se neočekávaně odpojil: %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:306
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot access folder `%s': %s"
-msgstr "Nemohu získat složku `%s': %s"
+msgstr "Nemohu přistupovat ke složce `%s': %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:365
 #, c-format
@@ -3014,9 +2976,8 @@ msgid "IMAPv4rev1"
 msgstr "IMAPv4rev1"
 
 #: camel/providers/imap4/camel-imap4-provider.c:66
-#, fuzzy
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "Pro čtení a ukládání pošty na IMAP serverech."
+msgstr "Pro čtení a ukládání pošty na serverech IMAPv4rev1."
 
 #: camel/providers/imap4/camel-imap4-provider.c:83
 msgid ""
@@ -3044,9 +3005,8 @@ msgstr "Nemohu se autentizovat u IMAP serveru %s pomocí %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:668
 #: camel/providers/imap4/camel-imap4-store.c:780
-#, fuzzy
 msgid "Cannot create IMAP folders in offline mode."
-msgstr "Nemohu vytvořit složku s tímto názvem."
+msgstr "Nemohu vytvářet složky IMAP v režimu offline."
 
 #: camel/providers/imap4/camel-imap4-store.c:707
 #, c-format
@@ -3069,9 +3029,8 @@ msgid "Cannot delete folder `%s': Special folder"
 msgstr "Nemohu odstranit složku `%s': Speciální složka"
 
 #: camel/providers/imap4/camel-imap4-store.c:872
-#, fuzzy
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "Nemohu odstranit složku `%s': Speciální složka"
+msgstr "Nemohu odstraňovat složky IMAP v režimu offline."
 
 #: camel/providers/imap4/camel-imap4-store.c:931
 #, c-format
@@ -3089,9 +3048,8 @@ msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "Nemohu přejmenovat složku `%s' na `%s': Speciální složka"
 
 #: camel/providers/imap4/camel-imap4-store.c:963
-#, fuzzy
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr "Nemůžete přejmenovat složku v úložišti News."
+msgstr "Nemohu přejmenovávat složky IMAP v režimu offline."
 
 #: camel/providers/imap4/camel-imap4-store.c:994
 #, c-format
@@ -3113,9 +3071,8 @@ msgid "Bad command"
 msgstr "Špatný příkaz"
 
 #: camel/providers/imap4/camel-imap4-store.c:1288
-#, fuzzy
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "Nemohu se přihlásit ke složce `%s': Špatný příkaz"
+msgstr "Nemohu se přihlašovat ke složkám IMAP v režimu offline."
 
 #: camel/providers/imap4/camel-imap4-store.c:1333
 #, c-format
@@ -3128,9 +3085,8 @@ msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "Nemohu se přihlásit ke složce `%s': Špatný příkaz"
 
 #: camel/providers/imap4/camel-imap4-store.c:1360
-#, fuzzy
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr "Nemohu se odhlásit od složky `%s': Špatný příkaz"
+msgstr "Nemohu se odhlásit od složek IMAP v režimu offline."
 
 #: camel/providers/imap4/camel-imap4-store.c:1405
 #, c-format
@@ -3143,9 +3099,8 @@ msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Nemohu se odhlásit od složky `%s': Špatný příkaz"
 
 #: camel/providers/imap4/camel-imap4-summary.c:1294
-#, fuzzy
 msgid "Fetching envelopes for new messages"
-msgstr "Hledám nové zprávy"
+msgstr "Stahuji obálky nových zpráv"
 
 #: camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
@@ -3826,7 +3781,6 @@ msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Nemůžete odstranit složku z úložiště News: místo toho se odhlaste."
 
 #: camel/providers/nntp/camel-nntp-store.c:1148
-#, fuzzy
 msgid "Authentication requested but no username provided"
 msgstr "Je požadována autentizace, ale nebylo poskytnuto jméno uživatele"
 
@@ -3947,9 +3901,9 @@ msgstr ""
 "tento protokol podporují."
 
 #: camel/providers/pop3/camel-pop3-store.c:204
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "Nemohu přečíst platný pozdrav od POP serveru %s (port %d)"
+msgstr "Nemohu přečíst platný pozdrav od POP serveru %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:218
 #: camel/providers/pop3/camel-pop3-store.c:235
@@ -3960,9 +3914,8 @@ msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Nemohu se připojit k POP serveru %s v zabezpečeném režimu: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:219
-#, fuzzy
 msgid "STLS not supported"
-msgstr "SSL/TLS rozšíření není podporováno."
+msgstr "STLS není podporováno"
 
 #: camel/providers/pop3/camel-pop3-store.c:363
 #, c-format
@@ -4339,60 +4292,51 @@ msgid "QUIT command failed"
 msgstr "Příkaz QUIT selhal"
 
 #: libedataserverui/e-categories-dialog.c:90
-#, fuzzy
 msgid "Category Icon"
-msgstr "Kategorie je"
+msgstr "Ikona kategorie"
 
 #: libedataserverui/e-categories-dialog.c:236
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr ""
+msgstr "Kategorie '%s' již v nastavení existuje. Použijte prosím jiný název"
 
 #: libedataserverui/e-categories-dialog.c:391
-#, fuzzy
 msgid "Category"
-msgstr "_Kategorie:"
+msgstr "Kategorie"
 
 #: libedataserverui/e-categories-dialog.glade.h:1
-#, fuzzy
 msgid "Category Properties"
-msgstr "Vlastnosti kalendáře"
+msgstr "Vlastnosti kategorie"
 
 #: libedataserverui/e-categories-dialog.glade.h:2
-#, fuzzy
 msgid "Category _Color"
-msgstr "Kategorie je"
+msgstr "_Barva kategorie"
 
 #: libedataserverui/e-categories-dialog.glade.h:3
-#, fuzzy
 msgid "Category _Icon"
-msgstr "Kategorie je"
+msgstr "_Ikona kategorie"
 
 #: libedataserverui/e-categories-dialog.glade.h:4
-#, fuzzy
 msgid "Category _Name"
-msgstr "Kategorie je"
+msgstr "_Název kategorie"
 
 #: libedataserverui/e-categories-dialog.glade.h:5
-#, fuzzy
 msgid "Item(s) belong to these _categories:"
-msgstr "Tento kontakt patří do těchto kategorií"
+msgstr "Položky patří do těchto _kategorií:"
 
 #: libedataserverui/e-categories-dialog.glade.h:6
-#, fuzzy
 msgid "_Available Categories:"
-msgstr "_Kategorie"
+msgstr "_Dostupné kategorie:"
 
 #: libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Edit"
 msgstr "_Upravit"
 
 #: libedataserverui/e-categories-dialog.glade.h:8
-#, fuzzy
 msgid "categories"
-msgstr "Kategorie"
+msgstr "kategorie"
 
 #: libedataserverui/e-name-selector-dialog.c:184
 msgid "Select Contacts from Address Book"
