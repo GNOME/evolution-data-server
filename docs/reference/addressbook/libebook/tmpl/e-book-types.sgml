@@ -3,6 +3,8 @@ e-book-types
 
 <!-- ##### SECTION Short_Description ##### -->
 
+Client-side GOBject which exposes the
+Evolution:BookListener interface. 
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>

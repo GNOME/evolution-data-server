@@ -2,16 +2,16 @@
 EBookViewListener
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Listens for responses from the e-book backend. Exposes the Evolution:BookViewListener interface.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+When an e-book-query is performed, the e-book backend will send the response to the listener.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+EBookTypes
 </para>
 
 <!-- ##### STRUCT EBookViewListenerPrivate ##### -->
@@ -22,7 +22,7 @@ EBookViewListener
 
 <!-- ##### STRUCT EBookViewListenerResponse ##### -->
 <para>
-
+Data sent back to the e-book object.
 </para>
 
 @op: 
@@ -33,7 +33,7 @@ EBookViewListener
 
 <!-- ##### ENUM EBookViewListenerOperation ##### -->
 <para>
-
+Asynchronous events that are listened for.
 </para>
 
 @ContactsAddedEvent: 
@@ -44,7 +44,7 @@ EBookViewListener
 
 <!-- ##### FUNCTION e_book_view_listener_new ##### -->
 <para>
-
+Creation function.
 </para>
 
 @Returns: 
@@ -52,7 +52,7 @@ EBookViewListener
 
 <!-- ##### FUNCTION e_book_view_listener_stop ##### -->
 <para>
-
+Stops the listener.
 </para>
 
 @listener: 

@@ -13,7 +13,6 @@ ECalComponentText
 ECalComponentTransparency
 ECalComponentAttendee
 ECalComponentOrganizer
-ECalComponentPrivate
 <TITLE>ECalComponent</TITLE>
 e_cal_component_gen_uid
 e_cal_component_new
@@ -152,6 +151,8 @@ E_TYPE_CAL_COMPONENT
 e_cal_component_get_type
 E_CAL_COMPONENT_CLASS
 E_IS_CAL_COMPONENT_CLASS
+<SUBSECTION Private>
+ECalComponentPrivate
 </SECTION>
 
 <SECTION>
@@ -174,7 +175,6 @@ E_IS_CAL_LISTENER_CLASS
 
 <SECTION>
 <FILE>e-cal-view-listener</FILE>
-ECalViewListenerPrivate
 <TITLE>ECalViewListener</TITLE>
 e_cal_view_listener_new
 <SUBSECTION Standard>
@@ -185,6 +185,8 @@ e_cal_view_listener_get_type
 E_CAL_VIEW_LISTENER_CLASS
 E_IS_CAL_VIEW_LISTENER_CLASS
 E_CAL_VIEW_LISTENER_GET_CLASS
+<SUBSECTION Private>
+ECalViewListenerPrivate
 </SECTION>
 
 <SECTION>
@@ -194,7 +196,6 @@ E_CAL_OPEN_STATUS_ENUM_TYPE
 E_CAL_REMOVE_STATUS_ENUM_TYPE
 E_CAL_SET_MODE_STATUS_ENUM_TYPE
 CAL_MODE_ENUM_TYPE
-ECalPrivate
 ECalOpenStatus
 ECalSetModeStatus
 ECalGetStatus
@@ -255,6 +256,8 @@ E_TYPE_CAL
 e_cal_get_type
 E_CAL_CLASS
 E_IS_CAL_CLASS
+<SUBSECTION Private>
+ECalPrivate
 </SECTION>
 
 <SECTION>
@@ -346,11 +349,12 @@ E_CAL_VIEW
 E_CAL_VIEW_CLASS
 IS_E_CAL_VIEW
 IS_E_CAL_VIEW_CLASS
-ECalViewPrivate
 <TITLE>ECalView</TITLE>
 e_cal_view_get_type
 e_cal_view_new
 e_cal_view_get_client
 e_cal_view_start
+<SUBSECTION Private>
+ECalViewPrivate
 </SECTION>
 

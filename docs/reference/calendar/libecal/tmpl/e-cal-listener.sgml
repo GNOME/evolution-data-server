@@ -2,7 +2,7 @@
 ECalListener
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Listens for calendar events.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -11,7 +11,7 @@ ECalListener
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+e-cal-types, e-book-listener
 </para>
 
 <!-- ##### USER_FUNCTION ECalListenerCalSetModeFn ##### -->

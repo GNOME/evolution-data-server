@@ -1,6 +1,5 @@
 <SECTION>
 <FILE>e-book-listener</FILE>
-EBookListenerPrivate
 EBookListenerResponse
 <TITLE>EBookListener</TITLE>
 EBookListenerOperation
@@ -14,11 +13,12 @@ e_book_listener_get_type
 E_BOOK_LISTENER_CLASS
 E_IS_BOOK_LISTENER_CLASS
 E_BOOK_LISTENER_GET_CLASS
+<SUBSECTION Private>
+EBookListenerPrivate
 </SECTION>
 
 <SECTION>
 <FILE>e-book-view-listener</FILE>
-EBookViewListenerPrivate
 EBookViewListenerResponse
 <TITLE>EBookViewListener</TITLE>
 EBookViewListenerOperation
@@ -32,11 +32,12 @@ e_book_view_listener_get_type
 E_BOOK_VIEW_LISTENER_CLASS
 E_IS_BOOK_VIEW_LISTENER_CLASS
 E_BOOK_VIEW_LISTENER_GET_CLASS
+<SUBSECTION Private>
+EBookViewListenerPrivate
 </SECTION>
 
 <SECTION>
 <FILE>e-book-view</FILE>
-EBookViewPrivate
 <TITLE>EBookView</TITLE>
 e_book_view_new
 e_book_view_set_book
@@ -50,11 +51,12 @@ e_book_view_get_type
 E_BOOK_VIEW_CLASS
 E_IS_BOOK_VIEW_CLASS
 E_BOOK_VIEW_GET_CLASS
+<SUBSECTION Private>
+EBookViewPrivate
 </SECTION>
 
 <SECTION>
 <FILE>e-book</FILE>
-EBookPrivate
 <TITLE>EBook</TITLE>
 e_book_new
 e_book_load_uri
@@ -90,11 +92,12 @@ e_book_get_type
 E_BOOK_CLASS
 E_IS_BOOK_CLASS
 E_BOOK_GET_CLASS
+<SUBSECTION Private>
+EBookPrivate
 </SECTION>
 
 <SECTION>
 <FILE>e-contact</FILE>
-EContactPrivate
 EContactField
 EContactName
 EContactPhoto
@@ -129,6 +132,8 @@ e_contact_get_type
 E_CONTACT_CLASS
 E_IS_CONTACT_CLASS
 E_CONTACT_GET_CLASS
+<SUBSECTION Private>
+EContactPrivate
 </SECTION>
 
 <SECTION>
@@ -177,7 +182,6 @@ EVC_X_SPOUSE
 EVC_X_WANTS_HTML
 EVC_X_YAHOO
 EVCardFormat
-EVCardPrivate
 EVCardAttribute
 EVCardAttributeParam
 <TITLE>EVCard</TITLE>
@@ -224,6 +228,8 @@ e_vcard_get_type
 E_VCARD_CLASS
 E_IS_VCARD_CLASS
 E_VCARD_GET_CLASS
+<SUBSECTION Private>
+EVCardPrivate
 </SECTION>
 
 <SECTION>

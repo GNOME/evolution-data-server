@@ -62,7 +62,7 @@ ECalComponent
 
 <!-- ##### ENUM ECalComponentClassification ##### -->
 <para>
-
+These values determine the privacy classification of the event.
 </para>
 
 @E_CAL_COMPONENT_CLASS_NONE: 

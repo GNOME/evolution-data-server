@@ -2,7 +2,7 @@
 ECal
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Primary Evolution calendar object.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -11,7 +11,7 @@ ECal
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#e-cal-listener, #e-cal-view
 </para>
 
 <!-- ##### STRUCT ECal ##### -->

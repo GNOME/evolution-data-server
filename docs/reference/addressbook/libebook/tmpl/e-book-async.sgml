@@ -3,6 +3,7 @@ e-book-async
 
 <!-- ##### SECTION Short_Description ##### -->
 
+Handles asynchronous interactions with the e-book object.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>

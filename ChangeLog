@@ -1,3 +1,15 @@
+2003-11-20 Aaron Weber <aaron@ximian.com>
+	* docs/reference/calendar/libecal/libecal-sections.txt: moved private structs to private subsections
+	* docs/reference/addressbook/libebook/libebook-sections.txt: moved private structs to private subsections
+	* docs/reference/libebook/tmpl/e-book-async.sgml: made tentative stabs at some description (same for sgml files below).
+	* docs/reference/addressbook/libebook/tmpl/e-book-types.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-book-view-listener.sgml
+	* docs/reference/addressbook/libebook/tmpl/e-book.sgml
+	* docs/reference/calendar/libecal/libecal-sections.txt
+	* docs/reference/calendar/libecal/tmpl/e-cal-component.sgml
+	* docs/reference/calendar/libecal/tmpl/e-cal-listener.sgml
+	* docs/reference/calendar/libecal/tmpl/e-cal.sgml
+
 2003-11-20  Rodney Dawes  <dobey@ximian.com>
 
 	* autogen.sh: Remove extra #!/bin/sh line

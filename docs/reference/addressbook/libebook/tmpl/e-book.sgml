@@ -2,7 +2,7 @@
 EBook
 
 <!-- ##### SECTION Short_Description ##### -->
-
+The primary Evolution addressbook client object. 
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -257,7 +257,7 @@ EBook
 
 <!-- ##### FUNCTION e_book_get_self ##### -->
 <para>
-
+Gets the address information for the current Evolution user.
 </para>
 
 @contact: 
