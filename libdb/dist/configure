@@ -1030,6 +1030,8 @@ Optional Features:
   --enable-diagnostic     Build a version with run-time diagnostics.
   --enable-dump185        Build db_dump185(1) to dump 1.85 databases.
   --enable-java           Build Java API.
+  --enable-pthreadsmutexes
+                          Use POSIX pthreads mutexes.
   --enable-posixmutexes   Force use of POSIX standard mutexes.
   --enable-rpc            Build RPC client/server.
   --enable-tcl            Build Tcl API.
@@ -1686,7 +1688,7 @@ DB_VERSION_PATCH=25
 
 DB_VERSION_UNIQUE_NAME=_4001
 
-DB_VERSION_STRING="\"Sleepycat Software: Berkeley DB 4.1.25: (July 12, 2004)\""
+DB_VERSION_STRING="\"Sleepycat Software: Berkeley DB 4.1.25: (September 17, 2004)\""
 
 
 # Set the default installation location.
@@ -1800,6 +1802,23 @@ else
 fi;
 echo "$as_me:$LINENO: result: $db_cv_java" >&5
 echo "${ECHO_T}$db_cv_java" >&6
+
+echo "$as_me:$LINENO: checking if --enable-pthreadsmutexes option specified" >&5
+echo $ECHO_N "checking if --enable-pthreadsmutexes option specified... $ECHO_C" >&6
+# Check whether --enable-pthreadsmutexes or --disable-pthreadsmutexes was given.
+if test "${enable_pthreadsmutexes+set}" = set; then
+  enableval="$enable_pthreadsmutexes"
+
+else
+  enableval="no"
+fi;
+db_cv_pthreadsmutexes="$enableval"
+case "$enableval" in
+ no) echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6;;
+yes) echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6;;
+esac
 
 echo "$as_me:$LINENO: checking if --enable-posixmutexes option specified" >&5
 echo $ECHO_N "checking if --enable-posixmutexes option specified... $ECHO_C" >&6
@@ -6634,7 +6653,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6637 "configure"' > conftest.$ac_ext
+  echo '#line 6656 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7210,7 +7229,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:7213: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:7232: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -9211,7 +9230,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9214 "configure"
+#line 9233 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9309,7 +9328,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9312 "configure"
+#line 9331 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10281,7 +10300,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 10284 "configure" */
+/* #line 10303 "configure" */
 public class Test {
 }
 EOF
@@ -17948,7 +17967,8 @@ fi
 # Try with and without the -lpthread library.  If the user specified we use
 # POSIX pthreads mutexes, and we fail to find the full interface, try and
 # configure for just intra-process support.
-if test "$db_cv_mutex" = no -o "$db_cv_mutex" = "posix_only"; then
+if test "$db_cv_pthreadsmutexes" = yes; then
+	if test "$db_cv_mutex" = no -o "$db_cv_mutex" = "posix_only"; then
 
 if test "$cross_compiling" = yes; then
   db_cv_mutex="no"
@@ -18001,10 +18021,11 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
-fi
-if test "$db_cv_mutex" = no -o \
-    "$db_cv_mutex" = "posix_only" -o "$db_cv_mutex" = "posix_library_only"; then
-	LIBS="$LIBS -lpthread"
+	fi
+	if test "$db_cv_mutex" = no -o \
+	    "$db_cv_mutex" = "posix_only" -o \
+	    "$db_cv_mutex" = "posix_library_only"; then
+		LIBS="$LIBS -lpthread"
 
 if test "$cross_compiling" = yes; then
   db_cv_mutex="no"
@@ -18057,9 +18078,9 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
-	LIBS="$orig_libs"
-fi
-if test "$db_cv_mutex" = "posix_only"; then
+		LIBS="$orig_libs"
+	fi
+	if test "$db_cv_mutex" = "posix_only"; then
 
 if test "$cross_compiling" = yes; then
   cat >conftest.$ac_ext <<_ACEOF
@@ -18171,10 +18192,10 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
-fi
-if test "$db_cv_mutex" = "posix_only" -o \
-    "$db_cv_mutex" = "posix_library_only"; then
-	LIBS="$LIBS -lpthread"
+	fi
+	if test "$db_cv_mutex" = "posix_only" -o \
+	    "$db_cv_mutex" = "posix_library_only"; then
+		LIBS="$LIBS -lpthread"
 
 if test "$cross_compiling" = yes; then
   cat >conftest.$ac_ext <<_ACEOF
@@ -18286,14 +18307,15 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
-	LIBS="$orig_libs"
-fi
+		LIBS="$orig_libs"
+	fi
 
-if test "$db_cv_mutex" = "posix_only" -o \
-    "$db_cv_mutex" = "posix_library_only"; then
-	{ { echo "$as_me:$LINENO: error: unable to find POSIX 1003.1 mutex interfaces" >&5
+	if test "$db_cv_mutex" = "posix_only" -o \
+	    "$db_cv_mutex" = "posix_library_only"; then
+		{ { echo "$as_me:$LINENO: error: unable to find POSIX 1003.1 mutex interfaces" >&5
 echo "$as_me: error: unable to find POSIX 1003.1 mutex interfaces" >&2;}
    { (exit 1); exit 1; }; }
+	fi
 fi
 
 # msemaphore: HPPA only

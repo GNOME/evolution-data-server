@@ -67,6 +67,16 @@ AC_ARG_ENABLE(java,
 	[db_cv_java="$enable_java"], [db_cv_java="no"])
 AC_MSG_RESULT($db_cv_java)
 
+AC_MSG_CHECKING(if --enable-pthreadsmutexes option specified)
+AC_ARG_ENABLE(pthreadsmutexes,
+	AC_HELP_STRING([--enable-pthreadsmutexes],
+	    [Use POSIX pthreads mutexes.]),, enableval="no")
+db_cv_pthreadsmutexes="$enableval"
+case "$enableval" in
+ no) AC_MSG_RESULT(yes);;
+yes) AC_MSG_RESULT(no);;
+esac
+
 AC_MSG_CHECKING(if --enable-posixmutexes option specified)
 AC_ARG_ENABLE(posixmutexes,
 	[AC_HELP_STRING([--enable-posixmutexes],
