@@ -1,3 +1,8 @@
+2005-01-12  Sushma Rai <rsushma@novell.com>
+
+	* camel-provider.[ch]: Removed camel_provider_validate_user()
+	and added a void pointer to CamelProvider structure. 
+
 2005-01-12  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #70095.

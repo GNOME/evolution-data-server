@@ -414,30 +414,3 @@ camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
 		return 0;
 	}
 }
-
-/**
- * camel_provider_validate_user:
- *
- * @provider: camel provider
- * @camel_url: camel URL
- * @ex: exception
- * @url: Input url string, which provider uses.
- *
- * If url is read insted of hostname, the provider can authenticate
- * user, based on url and user name entered.
- *
- * If the provider does not support this, this just returns a TRUE.
- *
- * Returns TRUE on success or not supported, and  FALSE on fail.
- **/
-gboolean
-camel_provider_validate_user (CamelProvider *provider, CamelURL *camel_url, 
-			      char *url, CamelException *ex)
-{
-	g_return_val_if_fail (provider != NULL, -1);
-
-	if (provider->validate_user)
-		return provider->validate_user (camel_url, url, ex);
-	else 
-		return TRUE; /* FIXME */
-}
