@@ -1172,8 +1172,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			ECalComponentOrganizer organizer;
 			ECalComponentDateTime dt;
 			icaltimetype t;
-			const char *start, *end; 
-			char *dtstring;
+			const char *start, *end;
 
 			comp = e_cal_component_new ();
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 

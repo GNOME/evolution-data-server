@@ -1,5 +1,8 @@
 2004-02-02  Rodrigo Moya <rodrigo@ximian.com>
 
+	* backends/groupwise/e-gw-connection.c
+	(e_gw_connection_get_freebusy_info): fixed warning.
+
 	* backends/groupwise/e-cal-backend-groupwise.c
 	(e_cal_backend_groupwise_remove_object): pass the container_id to
 	e_gw_connection_remove_item.
