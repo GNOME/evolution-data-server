@@ -1,3 +1,13 @@
+2003-10-10  Not Zed  <NotZed@Ximian.com>
+
+	* providers/local/camel-local-provider.c: set the url fragment
+	flag for local providers.
+
+	* camel-provider.h: Move the URL_PART_NEED bits to the high 16
+	bits, to allow for easier changes in the future.  Added a
+	URL_PART_FRAGMENT flag for providers that use fragment = folder
+	path.
+
 2003-09-25  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* providers/smtp/camel-smtp-transport.c (smtp_helo): If the
