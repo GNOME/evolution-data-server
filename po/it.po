@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-10 10:40+0200\n"
+"POT-Creation-Date: 2004-08-13 14:27-0400\n"
 "PO-Revision-Date: 2004-08-10 10:43+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <tp@lists.linux.it>,<it@li.org>\n"
@@ -633,7 +633,7 @@ msgid "Could not create cache file"
 msgstr "Impossibila creare il file cache"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4283
 msgid "Authentication failed"
 msgstr "Autenticazione fallita"
 
@@ -795,76 +795,76 @@ msgid "Undefined"
 msgstr "Non definita"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1493
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Inserire password per %s (utente %s)"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4257
 msgid "Invalid argument"
 msgstr "Argomento non valido"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4259
 msgid "Backend is busy"
 msgstr "Il backend è occupato"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4261
 msgid "Repository is offline"
 msgstr "Il repository non è in linea"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4263
 msgid "No such calendar"
 msgstr "Non è presente alcun calendario"
 
-#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Oggetto non trovato"
 
-#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Oggetto non valido"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4269
 msgid "URI not loaded"
 msgstr "URI non caricato"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4271
 msgid "URI already loaded"
 msgstr "URI già caricato"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4273
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4275
 msgid "Object ID already exists"
 msgstr "ID dell'oggetto esiste già"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4277
 msgid "Protocol not supported"
 msgstr "Protocollo non supportato"
 
-#: calendar/libecal/e-cal.c:4288
+#: calendar/libecal/e-cal.c:4279
 msgid "Operation has been cancelled"
 msgstr "L'operazione è stata annullata"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4281
 msgid "Could not cancel operation"
 msgstr "Impossibila annullare l'operazione"
 
-#: calendar/libecal/e-cal.c:4294
+#: calendar/libecal/e-cal.c:4285
 msgid "Authentication required"
 msgstr "Autenticazione richiesta"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4287
 msgid "A CORBA exception has occurred"
 msgstr "È occorsa un'eccezione CORBA"
 
-#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
-#: calendar/libecal/e-cal.c:4300
+#: calendar/libecal/e-cal.c:4291
 msgid "No error"
 msgstr "Nessun errore"
 
@@ -982,4 +982,6 @@ msgstr "Backend del file rubrica di Evolution"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr "Più di un errore di tipo segmentation fault: impossibile mostrare una finestra di errore\n"
+msgstr ""
+"Più di un errore di tipo segmentation fault: impossibile mostrare una "
+"finestra di errore\n"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 03:35+0200\n"
+"POT-Creation-Date: 2004-08-13 14:27-0400\n"
 "PO-Revision-Date: 2004-08-05 12:46+0530\n"
 "Last-Translator: Runa Bhattacharjee <runa@bengalinux.org>\n"
 "Language-Team: bangla <gnome-translation@bengalinux.org>\n"
@@ -22,6 +22,7 @@ msgid "Loading..."
 msgstr "লোড করা হচ্ছে ..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
 #: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
@@ -63,90 +64,92 @@ msgstr "অনুসন্ধানের সময় সমস্যা হয়ে
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:234 addressbook/libebook/e-book.c:238
-#: addressbook/libebook/e-book.c:428 addressbook/libebook/e-book.c:432
-#: addressbook/libebook/e-book.c:560 addressbook/libebook/e-book.c:564
-#: addressbook/libebook/e-book.c:751 addressbook/libebook/e-book.c:756
-#: addressbook/libebook/e-book.c:922 addressbook/libebook/e-book.c:926
-#: addressbook/libebook/e-book.c:1063 addressbook/libebook/e-book.c:1067
-#: addressbook/libebook/e-book.c:1253 addressbook/libebook/e-book.c:1257
-#: addressbook/libebook/e-book.c:1458 addressbook/libebook/e-book.c:1462
-#: addressbook/libebook/e-book.c:1677 addressbook/libebook/e-book.c:1681
-#: addressbook/libebook/e-book.c:1870 addressbook/libebook/e-book.c:1874
-#: addressbook/libebook/e-book.c:2858
+#: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
+#: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
+#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
+#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
+#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
+#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
+#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
+#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
+#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
+#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
+#: addressbook/libebook/e-book.c:2984
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" \"%s\" -এর পূর্বের বই-এ"
 
-#: addressbook/libebook/e-book.c:247 addressbook/libebook/e-book.c:441
-#: addressbook/libebook/e-book.c:573 addressbook/libebook/e-book.c:766
-#: addressbook/libebook/e-book.c:936 addressbook/libebook/e-book.c:1077
-#: addressbook/libebook/e-book.c:1266 addressbook/libebook/e-book.c:1471
-#: addressbook/libebook/e-book.c:1691 addressbook/libebook/e-book.c:1883
-#: addressbook/libebook/e-book.c:2198 addressbook/libebook/e-book.c:2377
+#: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
+#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
+#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
+#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
+#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
+#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
 msgid "book busy"
 msgstr "বই বর্তমানে ব্যস্ত"
 
-#: addressbook/libebook/e-book.c:278 addressbook/libebook/e-book.c:282
-#: addressbook/libebook/e-book.c:472 addressbook/libebook/e-book.c:476
-#: addressbook/libebook/e-book.c:599 addressbook/libebook/e-book.c:603
-#: addressbook/libebook/e-book.c:793 addressbook/libebook/e-book.c:796
-#: addressbook/libebook/e-book.c:966 addressbook/libebook/e-book.c:969
-#: addressbook/libebook/e-book.c:1104 addressbook/libebook/e-book.c:1108
-#: addressbook/libebook/e-book.c:1302 addressbook/libebook/e-book.c:1306
-#: addressbook/libebook/e-book.c:1518 addressbook/libebook/e-book.c:1522
-#: addressbook/libebook/e-book.c:1721 addressbook/libebook/e-book.c:1725
-#: addressbook/libebook/e-book.c:1909 addressbook/libebook/e-book.c:1913
-#: addressbook/libebook/e-book.c:2139 addressbook/libebook/e-book.c:2224
-#: addressbook/libebook/e-book.c:2228 addressbook/libebook/e-book.c:2403
-#: addressbook/libebook/e-book.c:2407 addressbook/libebook/e-book.c:2867
+#: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
+#: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
+#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
+#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
+#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
+#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
+#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
+#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
+#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
+#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
+#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
+#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
+#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2993
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA এক্সেপশন \"%s\" -কে কল করছে"
 
-#: addressbook/libebook/e-book.c:2120
+#: addressbook/libebook/e-book.c:2221
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: বর্তমানে কোনো কর্ম উপস্থিত নেই"
 
-#: addressbook/libebook/e-book.c:2155
+#: addressbook/libebook/e-book.c:2256
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: বাতিল করা সম্ভব হয় নি"
 
-#: addressbook/libebook/e-book.c:2184 addressbook/libebook/e-book.c:2188
+#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" \"%s\" -এর পরের বই-এ"
 
-#: addressbook/libebook/e-book.c:2250
+#: addressbook/libebook/e-book.c:2355
 msgid "e_book_open: cancelled"
 msgstr "e_book_open: বাতিল করা হয়েছে"
 
-#: addressbook/libebook/e-book.c:2725
+#: addressbook/libebook/e-book.c:2851
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: অবৈধ উত্স।"
 
-#: addressbook/libebook/e-book.c:2733
+#: addressbook/libebook/e-book.c:2859
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: uri `%s' -এর জন্য কোনো ফ্যাক্টরি উপস্থিত নেই"
 
-#: addressbook/libebook/e-book.c:2745
+#: addressbook/libebook/e-book.c:2871
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListener তৈরি করা সম্ভব হয় নি"
 
-#: addressbook/libebook/e-book.c:2796
+#: addressbook/libebook/e-book.c:2922
 #, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr "e_book_new: uri `%s' -এর জন্য কোনো ফ্যাক্টরি উপস্থিত নেই"
 
-#: addressbook/libebook/e-book.c:2953
+#: addressbook/libebook/e-book.c:3080
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: gconf-এ কোনো নিজস্ব যোগাযোগের uid উপস্থিত নেই"
 
-#: addressbook/libebook/e-book.c:3062
+#: addressbook/libebook/e-book.c:3191
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_set_default_source: uid `%s' -এর জন্য কোনো উত্স gconf-এ সংরক্ষিত নেই।"
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr ""
+"e_book_set_default_source: uid `%s' -এর জন্য কোনো উত্স gconf-এ সংরক্ষিত নেই।"
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -537,9 +540,8 @@ msgstr "ছবি"
 #: addressbook/libebook/e-contact.c:215
 msgid "Logo"
 msgstr "লোগো"
+
 # নাকী প্রতীক ??
-
-
 #. Security fields
 #: addressbook/libebook/e-contact.c:218
 msgid "X.509 Certificate"
@@ -597,16 +599,16 @@ msgid "Unnamed List"
 msgstr "নামহীন তালিকা"
 
 #. Set category and visibility
-#: calendar/backends/contacts/e-cal-backend-contacts.c:440
+#: calendar/backends/contacts/e-cal-backend-contacts.c:441
 msgid "Birthday"
 msgstr "জন্মদিন"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: calendar/backends/contacts/e-cal-backend-contacts.c:465
 #, c-format
 msgid "Birthday: %s"
 msgstr "জন্মদিন: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:485
+#: calendar/backends/contacts/e-cal-backend-contacts.c:486
 #, c-format
 msgid "Anniversary: %s"
 msgstr "বাত্সরিক: %s"
@@ -615,23 +617,23 @@ msgstr "বাত্সরিক: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "ক্যালেন্ডার সংক্রান্ত ডাটা সংরক্ষণ করা সম্ভব হয় নি: বিকৃত URI।"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:220
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 msgid "Invalid server URI"
 msgstr "সার্ভার-এর অবৈধ URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:250
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:253
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "ক্যালেন্ডার"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:274
-#: calendar/libecal/e-cal.c:4288
-msgid "Authentication failed"
-msgstr "অনমোদন প্রক্রিয়া বিফল হয়েছে"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:453
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 msgid "Could not create cache file"
 msgstr "ক্যাশে ফাইল তৈরি করা সম্ভব হয় নি"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4283
+msgid "Authentication failed"
+msgstr "অনমোদন প্রক্রিয়া বিফল হয়েছে"
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -645,15 +647,15 @@ msgstr "ফাইলের অবৈধ ফরমা।"
 msgid "Not a calendar."
 msgstr "ক্যালেন্ডার নয়।"
 
-#: calendar/libecal/e-cal-component.c:1218
+#: calendar/libecal/e-cal-component.c:1237
 msgid "Untitled appointment"
 msgstr "শিরোনামহীন সাক্ষাত্কার"
 
 #: calendar/libecal/e-cal-recur.c:3996
 msgid "1st"
 msgstr "১-লা"
-#প্রথম, দ্বিতীয়, তৃতীয় বললেই হবে
 
+# প্রথম, দ্বিতীয়, তৃতীয় বললেই হবে
 #: calendar/libecal/e-cal-recur.c:3997
 msgid "2nd"
 msgstr "২-তীয়"
@@ -792,76 +794,76 @@ msgid "Undefined"
 msgstr "অনুল্লেখিত"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s -র জন্য পাসওয়ার্ড লিখুন (ব্যবহারকারী %s)"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4257
 msgid "Invalid argument"
 msgstr "অবৈধ আর্গুমেন্ট"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4259
 msgid "Backend is busy"
 msgstr "ব্যাক-এন্ড বর্তমানে ব্যস্ত রয়েছে"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4261
 msgid "Repository is offline"
 msgstr "সংরক্ষণস্থল বর্তমানে অফলাইন আছে"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4263
 msgid "No such calendar"
 msgstr "এই ধরনের কোনো ক্যালেন্ডার উপস্থিত নেই"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "অবজেক্ট পাওয়া যায় নি"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "অবৈধ অবজেক্ট"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4269
 msgid "URI not loaded"
 msgstr "URI বর্তমানে লোড করা নয়"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4271
 msgid "URI already loaded"
 msgstr "URI পূর্বেই লোড করা হয়েছে"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4273
 msgid "Permission denied"
 msgstr "অনুমতি প্রদান করা হয় নি"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4275
 msgid "Object ID already exists"
 msgstr "অবজেক্ট ID বর্তমানে উপস্থিত আছে"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4277
 msgid "Protocol not supported"
 msgstr "প্রোটোকল সমর্থিত নয়"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4279
 msgid "Operation has been cancelled"
 msgstr "কর্ম বাতিল করা হয়েছে"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4281
 msgid "Could not cancel operation"
 msgstr "কর্ম বাতিল করা সম্ভব হয় নি"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4285
 msgid "Authentication required"
 msgstr "অনুমোদন প্রয়োজন"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4287
 msgid "A CORBA exception has occurred"
 msgstr "একটি CORBA এক্সেপশন ঘটেছে"
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "অজানা সমস্যা"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4291
 msgid "No error"
 msgstr "কোনো ত্রুটি নেই"
 
@@ -893,7 +895,9 @@ msgstr "\"%s\" -এ প্রথম আর্গুমেন্টটি এক�
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" -এ প্রথম আর্গুমেন্টটি একটি ISO 8601 date/time পংক্তি (string) হিসাবে প্রত্যাশিত"
+msgstr ""
+"\"%s\" -এ প্রথম আর্গুমেন্টটি একটি ISO 8601 date/time পংক্তি (string) হিসাবে "
+"প্রত্যাশিত"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
@@ -932,8 +936,8 @@ msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"\"%s\"-র জন্য প্রত্যাশিত প্রথম আর্গুমেন্ট হলো \"যে কোনো\", \"সংক্ষিপ্ত\", অথবা "
-"\"বিবরণ\", অথবা \"অবস্থান\""
+"\"%s\"-র জন্য প্রত্যাশিত প্রথম আর্গুমেন্ট হলো \"যে কোনো\", \"সংক্ষিপ্ত\", অথবা \"বিবরণ"
+"\", অথবা \"অবস্থান\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
@@ -945,7 +949,9 @@ msgstr "\"%s\" -এ অন্তত একটি আর্গুমেন্ট 
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr "\"%s\" -র সকল আর্গুমেন্ট পংক্তি (string) হিসাবে অথবা শুধুমাত্র একটি আর্গুমেন্ট বুলিয়েন ফল্স (#f) হিসাবে প্রত্যাশিত"
+msgstr ""
+"\"%s\" -র সকল আর্গুমেন্ট পংক্তি (string) হিসাবে অথবা শুধুমাত্র একটি আর্গুমেন্ট বুলিয়েন "
+"ফল্স (#f) হিসাবে প্রত্যাশিত"
 
 #: servers/groupwise/e-gw-connection.c:80
 msgid "Invalid connection"
@@ -972,3 +978,8 @@ msgstr "ইভোলিউশন ক্যালেন্ডার ফাইল 
 msgid "Evolution Addressbook file backend"
 msgstr "ইভোলিউশন ঠিকানা-তালিকা ফাইল-এর ব্যাক-এন্ড"
 
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr ""

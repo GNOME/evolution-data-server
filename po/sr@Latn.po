@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-07 16:00+0200\n"
+"POT-Creation-Date: 2004-08-13 14:27-0400\n"
 "PO-Revision-Date: 2004-08-07 16:01+0200\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
@@ -632,7 +632,7 @@ msgid "Could not create cache file"
 msgstr "Ne mogu da napravim datoteku za ostavu"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4283
 msgid "Authentication failed"
 msgstr "Neuspešna identifikacija"
 
@@ -794,76 +794,76 @@ msgid "Undefined"
 msgstr "Nedefinisano"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1493
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Unesite lozinku za %s (korisnik %s)"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4257
 msgid "Invalid argument"
 msgstr "Neispravan argument"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4259
 msgid "Backend is busy"
 msgstr "Podrška je zauzeta"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4261
 msgid "Repository is offline"
 msgstr "Skladište nije povezano"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4263
 msgid "No such calendar"
 msgstr "Nema takvog kalendara"
 
-#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objekat nije nađen"
 
-#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Neispravan predmet"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4269
 msgid "URI not loaded"
 msgstr "Adresa nije učitana"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4271
 msgid "URI already loaded"
 msgstr "Adresa je već učitana"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4273
 msgid "Permission denied"
 msgstr "Zabranjen pristup"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4275
 msgid "Object ID already exists"
 msgstr "ID objekta već postoji"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4277
 msgid "Protocol not supported"
 msgstr "Protokol nije podržan"
 
-#: calendar/libecal/e-cal.c:4288
+#: calendar/libecal/e-cal.c:4279
 msgid "Operation has been cancelled"
 msgstr "Operacija je obustavljena"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4281
 msgid "Could not cancel operation"
 msgstr "Ne mogu da otkažem operaciju"
 
-#: calendar/libecal/e-cal.c:4294
+#: calendar/libecal/e-cal.c:4285
 msgid "Authentication required"
 msgstr "Neophodna identifikacija"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4287
 msgid "A CORBA exception has occurred"
 msgstr "Došlo je do CORBA izuzetka"
 
-#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Nepoznata greška"
 
-#: calendar/libecal/e-cal.c:4300
+#: calendar/libecal/e-cal.c:4291
 msgid "No error"
 msgstr "Nema greške"
 
@@ -981,7 +981,9 @@ msgstr "Podrška datoteke adresara za Evoluciju"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr "Došlo je do višestrukih prekoračenja segmenta; ne mogu da prikažem prozorče za greške\n"
+msgstr ""
+"Došlo je do višestrukih prekoračenja segmenta; ne mogu da prikažem prozorče "
+"za greške\n"
 
 #~ msgid "Checklist"
 #~ msgstr "Spisak za overu"

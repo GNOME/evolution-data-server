@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-08 19:09+0200\n"
+"POT-Creation-Date: 2004-08-13 14:27-0400\n"
 "PO-Revision-Date: 2004-08-08 23:59+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -140,12 +140,15 @@ msgstr "e_book_new: asnjë factori në dispozicion për uri `%s'"
 
 #: addressbook/libebook/e-book.c:3080
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
-msgstr "e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
+msgstr ""
+"e_book_get_self: nuk ekziston një uid e kontaktit e regjistruar në gconf"
 
 #: addressbook/libebook/e-book.c:3191
 #, c-format
-msgid "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
-msgstr "e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
+msgid ""
+"e_book_set_default_source: there was no source for uid `%s' stored in gconf."
+msgstr ""
+"e_book_set_default_source: asnjë burim për uid `%s' i regjistruar në gconf."
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Unique ID"
@@ -626,7 +629,7 @@ msgid "Could not create cache file"
 msgstr "I pamundur krijimi i file cache"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4283
 msgid "Authentication failed"
 msgstr "Identifikimi dështoi"
 
@@ -788,76 +791,76 @@ msgid "Undefined"
 msgstr "E papërcaktuar"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1493
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Shkruaj fjalëkalimin për %s (përdoruesi %s)"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4257
 msgid "Invalid argument"
 msgstr "Argument i pavlefshëm"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4259
 msgid "Backend is busy"
 msgstr "Backend është i zënë"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4261
 msgid "Repository is offline"
 msgstr "Vendruajtja është jashtë linjës"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4263
 msgid "No such calendar"
 msgstr "Kalendari nuk ekziston"
 
-#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Objekti nuk u gjet"
 
-#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objekt i pasaktë"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4269
 msgid "URI not loaded"
 msgstr "URl nuk u ngarkua"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4271
 msgid "URI already loaded"
 msgstr "URl është e ngarkuar"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4273
 msgid "Permission denied"
 msgstr "Ndalohet hyrja"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4275
 msgid "Object ID already exists"
 msgstr "ID e objektit ekziston"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4277
 msgid "Protocol not supported"
 msgstr "Protokoll i pasuportuar"
 
-#: calendar/libecal/e-cal.c:4288
+#: calendar/libecal/e-cal.c:4279
 msgid "Operation has been cancelled"
 msgstr "Operacioni është anulluar"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4281
 msgid "Could not cancel operation"
 msgstr "I pamundur anullimi i operacionit"
 
-#: calendar/libecal/e-cal.c:4294
+#: calendar/libecal/e-cal.c:4285
 msgid "Authentication required"
 msgstr "Kërkohet autentikimi"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4287
 msgid "A CORBA exception has occurred"
 msgstr "Ndodhi një përjashtim CORBA"
 
-#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Gabim i panjohur"
 
-#: calendar/libecal/e-cal.c:4300
+#: calendar/libecal/e-cal.c:4291
 msgid "No error"
 msgstr "Asnjë gabim"
 
@@ -889,7 +892,8 @@ msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:96
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
+msgstr ""
+"\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
@@ -974,5 +978,6 @@ msgstr "Backend i file rubrika i Evolution"
 #: src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr "Ndeshëm në disa gabime të njëpasnjëshme, dritarja e dialogut të gabimit nuk mund të shfaqet\n"
-
+msgstr ""
+"Ndeshëm në disa gabime të njëpasnjëshme, dritarja e dialogut të gabimit nuk "
+"mund të shfaqet\n"

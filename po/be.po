@@ -5,13 +5,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution.HEAD.be\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-27 03:13+0200\n"
+"POT-Creation-Date: 2004-08-13 14:27-0400\n"
 "PO-Revision-Date: 2004-08-12 11:42+0300\n"
 "Last-Translator: Vital Khilko <dojlid@mova.org>\n"
 "Language-Team: belarusian <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
 #: addressbook/backends/vcf/e-book-backend-vcf.c:445
@@ -19,6 +19,7 @@ msgid "Loading..."
 msgstr "Загрузка..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
 #: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
@@ -611,23 +612,23 @@ msgstr "Юбілей:·%s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Немагчыма захаваць даньні календару: Памылковы URI."
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:215
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
 msgid "Invalid server URI"
 msgstr "Памылковы URI паслужніку"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:245
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:248
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:287
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:290
 msgid "Calendar"
 msgstr "Каляндар"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:269
-#: calendar/libecal/e-cal.c:4288
-msgid "Authentication failed"
-msgstr "Збой аўтарызацыі."
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:297
 msgid "Could not create cache file"
 msgstr "Не атрымалася стварыць файл кэшу"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
+#: calendar/libecal/e-cal.c:4283
+msgid "Authentication failed"
+msgstr "Збой аўтарызацыі."
 
 #: calendar/backends/http/e-cal-backend-http.c:225
 msgid "Redirected to Invalid URI"
@@ -787,76 +788,76 @@ msgid "Undefined"
 msgstr "Нявызначаны"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1490
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Увядзіце пароль для %s (карыстальнік %s)"
 
-#: calendar/libecal/e-cal.c:4262
+#: calendar/libecal/e-cal.c:4257
 msgid "Invalid argument"
 msgstr "Недапушчальны аргумэнт"
 
-#: calendar/libecal/e-cal.c:4264
+#: calendar/libecal/e-cal.c:4259
 msgid "Backend is busy"
 msgstr "Праграма занятая"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4261
 msgid "Repository is offline"
 msgstr "Сховішча знаходзіцца ў адлучаным стане"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4263
 msgid "No such calendar"
 msgstr "Няма календару"
 
-#: calendar/libecal/e-cal.c:4270 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "Аб'ект адсутнічае"
 
-#: calendar/libecal/e-cal.c:4272 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Нерэчаісны аб'ект"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4269
 msgid "URI not loaded"
 msgstr "EBook не загружана"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4271
 msgid "URI already loaded"
 msgstr "URI ужо загружаны"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4273
 msgid "Permission denied"
 msgstr "Адмоўлена ў доступе"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4275
 msgid "Object ID already exists"
 msgstr "Ід аб'екту ўжо існуе"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4277
 msgid "Protocol not supported"
 msgstr "Пратакол не падтрымліваецца"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4279
 msgid "Operation has been cancelled"
 msgstr "Апэрацыя будзе скасаваная"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4281
 msgid "Could not cancel operation"
 msgstr "Немагчыма скасаваць апэрацыю"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4285
 msgid "Authentication required"
 msgstr "Аўтарызацыя патрабуецца"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4287
 msgid "A CORBA exception has occurred"
 msgstr "Адбылося выключэньне CORBA"
 
-#: calendar/libecal/e-cal.c:4294 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Невядомая памылка"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4291
 msgid "No error"
 msgstr "Няма памылкі"
 
@@ -927,7 +928,8 @@ msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"\"%s\" патрабуе першы аргумэнт адным з \"любы\", \"агулам\", \"апісаньне\", ці \"разьмяшчэньне\""
+"\"%s\" патрабуе першы аргумэнт адным з \"любы\", \"агулам\", \"апісаньне\", "
+"ці \"разьмяшчэньне\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:563
 #, c-format
@@ -940,8 +942,8 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"\"%s\" патрабуе усе аргумэнты як радкі ці адзін і толькі адзін "
-"аргумэнт як булева мана (#f)"
+"\"%s\" патрабуе усе аргумэнты як радкі ці адзін і толькі адзін аргумэнт як "
+"булева мана (#f)"
 
 #: servers/groupwise/e-gw-connection.c:80
 msgid "Invalid connection"
@@ -967,6 +969,12 @@ msgstr "Праграма лякальнага календару \"Эвалюц�
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Праграма лякальнай кнігі адрасоў \"Эвалюцыі\""
+
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr ""
 
 #, fuzzy
 #~ msgid "Checklist"

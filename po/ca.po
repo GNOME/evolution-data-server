@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution \n"
-"POT-Creation-Date: 2004-08-02 12:00-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-13 14:27-0400\n"
 "PO-Revision-Date: 2004-04-22 00:40+0100\n"
 "Last-Translator: Xavier A. Conde Rueda <xaviconde@eresmas.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:433
@@ -25,6 +25,7 @@ msgid "Loading..."
 msgstr "S'està carregant..."
 
 #: addressbook/backends/file/e-book-backend-file.c:435
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1827
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3155
 #: addressbook/backends/vcf/e-book-backend-vcf.c:447
 msgid "Searching..."
@@ -637,7 +638,7 @@ msgid "Could not create cache file"
 msgstr "No s'ha pogut crear el fitxer de memòria cau"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:319
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4283
 msgid "Authentication failed"
 msgstr "No s'ha pogut autenticar"
 
@@ -799,76 +800,76 @@ msgid "Undefined"
 msgstr "Sense definir"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1493
+#: calendar/libecal/e-cal.c:1521
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduïu la contrasenya per a %s (usuari %s)"
 
-#: calendar/libecal/e-cal.c:4266
+#: calendar/libecal/e-cal.c:4257
 msgid "Invalid argument"
 msgstr "Argument invàlid"
 
-#: calendar/libecal/e-cal.c:4268
+#: calendar/libecal/e-cal.c:4259
 msgid "Backend is busy"
 msgstr "El suport està ocupat"
 
-#: calendar/libecal/e-cal.c:4270
+#: calendar/libecal/e-cal.c:4261
 msgid "Repository is offline"
 msgstr "El magatzem no està connectat"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4263
 msgid "No such calendar"
 msgstr "No existeix aquest calendari"
 
-#: calendar/libecal/e-cal.c:4274 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4265 servers/groupwise/e-gw-connection.c:86
 msgid "Object not found"
 msgstr "No s'ha trobat l'objecte"
 
-#: calendar/libecal/e-cal.c:4276 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4267 servers/groupwise/e-gw-connection.c:82
 msgid "Invalid object"
 msgstr "Objecte invàlid"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4269
 msgid "URI not loaded"
 msgstr "No s'ha carregat l'URI"
 
-#: calendar/libecal/e-cal.c:4280
+#: calendar/libecal/e-cal.c:4271
 msgid "URI already loaded"
 msgstr "Ja s'ha carregat l'URI"
 
-#: calendar/libecal/e-cal.c:4282
+#: calendar/libecal/e-cal.c:4273
 msgid "Permission denied"
 msgstr "Permís denegat"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4275
 msgid "Object ID already exists"
 msgstr "L'id. d'objecte ja existeix"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4277
 msgid "Protocol not supported"
 msgstr "No se suporta el protocol"
 
-#: calendar/libecal/e-cal.c:4288
+#: calendar/libecal/e-cal.c:4279
 msgid "Operation has been cancelled"
 msgstr "S'ha cancel·lat l'operació"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4281
 msgid "Could not cancel operation"
 msgstr "No s'ha pogut cancel·lar l'operació"
 
-#: calendar/libecal/e-cal.c:4294
+#: calendar/libecal/e-cal.c:4285
 msgid "Authentication required"
 msgstr "Cal autenticació"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4287
 msgid "A CORBA exception has occurred"
 msgstr "S'ha produït una excepció CORBA"
 
-#: calendar/libecal/e-cal.c:4298 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4289 servers/groupwise/e-gw-connection.c:92
 msgid "Unknown error"
 msgstr "Error desconegut"
 
-#: calendar/libecal/e-cal.c:4300
+#: calendar/libecal/e-cal.c:4291
 msgid "No error"
 msgstr "Cap error"
 
@@ -981,6 +982,12 @@ msgstr "Suport per al fitxer del calendari de l'Evolution i webcal"
 #: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Suport per al fitxer de la llibreta d'adreces de l'Evolution"
+
+#. dialog display isn't working out
+#: src/server.c:110
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr ""
 
 #~ msgid "Checklist"
 #~ msgstr "Llista de comprovacions"
