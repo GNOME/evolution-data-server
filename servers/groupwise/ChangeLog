@@ -1,3 +1,9 @@
+2005-02-08  Harish Krishnaswamy  <kharish@novell.com>
+
+	* soap-test.c: (main): The previous commit removing 
+	the use of libgnome failed to do a g_thread_init.
+	Added the same.
+
 2005-02-07  Sivaiah Nallagatla    <snallagatla@novell.com>
                                                                                                                              
         * e-gw-item.c (set_contact_fields_from_soap_parameter)

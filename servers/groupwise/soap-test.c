@@ -49,6 +49,7 @@ int
 main (int argc, char *argv[])
 {
 	g_type_init ();
+	g_thread_init (NULL);
 
 	if (argc != 3 && argc != 4) {
 		g_print ("Usage: %s hostname username [password]\n", argv[0]);
