@@ -1,3 +1,8 @@
+2003-12-01  William Jon McCann  <mccann@jhu.edu>
+ 
+        * libecal/e-cal.c (e_cal_generate_instances): Fix query and
+        get object list as components.
+ 
 2003-12-01  Rodrigo Moya <rodrigo@ximian.com>
 
 	* libedata-cal/e-cal-backend-cache.[ch]: changed to be based on the

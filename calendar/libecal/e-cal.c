@@ -2627,6 +2627,7 @@ e_cal_generate_instances (ECal *ecal, CalObjType type,
 	GList *instances;
 	GList *l;
 	char *query;
+	char *iso_start, *iso_end;
 	
 	g_return_if_fail (ecal != NULL);
 	g_return_if_fail (E_IS_CAL (ecal));
@@ -2638,9 +2639,14 @@ e_cal_generate_instances (ECal *ecal, CalObjType type,
 	g_return_if_fail (start <= end);
 	g_return_if_fail (cb != NULL);
 
+	iso_start = isodate_from_time_t (start);
+	iso_end   = isodate_from_time_t (end);
 	/* Generate objects */
-	query = g_strdup_printf ("(occur-in-time-range? (%lu) (%lu))", start, end);
-	if (!e_cal_get_object_list (ecal, query, &objects, NULL)) {
+	query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
+				 iso_start, iso_end);
+	g_free (iso_start);
+	g_free (iso_end);
+	if (!e_cal_get_object_list_as_comp (ecal, query, &objects, NULL)) {
 		g_free (query);
 		return;
 	}	
@@ -2655,7 +2661,7 @@ e_cal_generate_instances (ECal *ecal, CalObjType type,
 		e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,
 					      e_cal_resolve_tzid_cb, ecal,
 					      priv->default_zone);
-		g_object_unref (G_OBJECT (comp));
+		g_object_unref (comp);
 	}
 
 	g_list_free (objects);
