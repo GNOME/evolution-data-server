@@ -7,6 +7,10 @@
 	(e_book_backend_file_load_source): don't use mkdir here, use
 	e_util_mkdir_hier.
 
+2004-01-05  Christian Neumair  <chris@gnome-de.org>
+
+	* libebook/e-book.c: Generalize some strings.
+
 2003-12-29  Chris Toshok  <toshok@ximian.com>
 
 	* tests/ebook/test-undefinedfield.c: new test - make sure we
