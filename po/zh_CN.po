@@ -6,11 +6,13 @@
 # Neo Willis <willis@linux.net>, 2003.
 # Partly comes from Sun_l10n group, 2003
 #
+#: calendar/backends/weather/e-cal-backend-weather.c:240
+#: calendar/backends/weather/e-cal-backend-weather.c:251
 msgid ""
 msgstr ""
 "Project-Id-Version: Evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-30 22:30+0800\n"
+"POT-Creation-Date: 2005-02-05 06:57+0800\n"
 "PO-Revision-Date: 2005-01-30 22:34+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -606,11 +608,13 @@ msgid "List Show Addresses"
 msgstr "列表显示地址"
 
 #: addressbook/libebook/e-contact.c:1208
+#: addressbook/libebook/e-destination.c:616
 msgid "Unnamed List"
 msgstr "未命名的列表"
 
 #. Set category and visibility
 #: calendar/backends/contacts/e-cal-backend-contacts.c:446
+#: libedataserver/e-categories.c:213
 msgid "Birthday"
 msgstr "生日"
 
@@ -642,6 +646,7 @@ msgstr "日历"
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:553
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:796
 #: calendar/backends/http/e-cal-backend-http.c:484
+#: calendar/backends/weather/e-cal-backend-weather.c:449
 msgid "Could not create cache file"
 msgstr "无法创建缓存文件"
 
@@ -674,6 +679,201 @@ msgstr "无效的文件格式。"
 #: calendar/backends/http/e-cal-backend-http.c:270
 msgid "Not a calendar."
 msgstr "不是日历。"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:140
+msgid "Could not retrieve weather data"
+msgstr "无法获取天气数据"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:194
+msgid "Fair"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:195
+msgid "Snow showers"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:196
+msgid "Snow"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:197
+msgid "Partly cloudy"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:198
+msgid "Smoke"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:199
+msgid "Thunderstorms"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:200
+msgid "Cloudy"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:201
+msgid "Drizzle"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:202
+msgid "Sunny"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:203
+msgid "Dust"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:204
+#, fuzzy
+msgid "Clear"
+msgstr "日历"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:205
+msgid "Mostly cloudy"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:206
+msgid "Windy"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:207
+msgid "Rain showers"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:208
+msgid "Foggy"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:209
+msgid "Rain/snow mixed"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:210
+msgid "Sleet"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:211
+msgid "Very hot/humid"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:212
+msgid "Blizzard"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:213
+msgid "Freezing rain"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:214
+msgid "Haze"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:215
+msgid "Blowing snow"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:216
+msgid "Freezing drizzle"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:217
+msgid "Very cold/wind chill"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:218
+#, fuzzy
+msgid "Rain"
+msgstr "收音机"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:228
+#: calendar/backends/weather/e-cal-backend-weather.c:236
+#: calendar/backends/weather/e-cal-backend-weather.c:238
+#: calendar/backends/weather/e-cal-backend-weather.c:245
+msgid "Weather: Sunny"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:229
+#: calendar/backends/weather/e-cal-backend-weather.c:230
+#: calendar/backends/weather/e-cal-backend-weather.c:246
+#: calendar/backends/weather/e-cal-backend-weather.c:249
+msgid "Weather: Snow"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:231
+msgid "Weather: Partly Cloudy"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:232
+#: calendar/backends/weather/e-cal-backend-weather.c:237
+#: calendar/backends/weather/e-cal-backend-weather.c:242
+#: calendar/backends/weather/e-cal-backend-weather.c:248
+msgid "Weather: Fog"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:233
+msgid "Weather: Thunderstorms"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:234
+#: calendar/backends/weather/e-cal-backend-weather.c:239
+msgid "Weather: Cloudy"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:235
+#: calendar/backends/weather/e-cal-backend-weather.c:241
+#: calendar/backends/weather/e-cal-backend-weather.c:243
+#: calendar/backends/weather/e-cal-backend-weather.c:244
+#: calendar/backends/weather/e-cal-backend-weather.c:247
+#: calendar/backends/weather/e-cal-backend-weather.c:250
+#: calendar/backends/weather/e-cal-backend-weather.c:252
+msgid "Weather: Rain"
+msgstr "天气：雨"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:327
+#, c-format
+msgid "%.1f°C - %s"
+msgstr "%.1f°C - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:329
+#, c-format
+msgid "%.1f°F - %s"
+msgstr "%.1f°F - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:332
+#, c-format
+msgid "%.1f/%.1f°C - %s"
+msgstr "%.1f/%.1f°C - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:334
+#, c-format
+msgid "%.1f/%.1f°F - %s"
+msgstr "%.1f/%.1f°F - %s"
+
+#: calendar/backends/weather/e-cal-backend-weather.c:340
+#, c-format
+msgid "%d%% chance of precipitation\n"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:347
+#, c-format
+msgid "%.1fcm snow\n"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:349
+#, c-format
+msgid "%.1fin snow\n"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:352
+#, c-format
+msgid "%.1f-%.1fcm snow\n"
+msgstr ""
+
+#: calendar/backends/weather/e-cal-backend-weather.c:354
+#, c-format
+msgid "%.1f-%.1fin snow\n"
+msgstr ""
 
 #: calendar/libecal/e-cal-component.c:1299
 msgid "Untitled appointment"
@@ -2430,6 +2630,7 @@ msgstr "访问 Novell GroupWise 服务器"
 #: camel/providers/groupwise/camel-groupwise-provider.c:102
 #: camel/providers/imap/camel-imap-provider.c:96
 #: camel/providers/imap4/camel-imap4-provider.c:81
+#: camel/providers/imapp/camel-imapp-provider.c:66
 #: camel/providers/nntp/camel-nntp-provider.c:72
 #: camel/providers/pop3/camel-pop3-provider.c:72
 msgid "Password"
@@ -2718,6 +2919,7 @@ msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP 服务器上的邮件的读写。"
 
 #: camel/providers/imap/camel-imap-provider.c:98
+#: camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "该选项将使用普通文本密码连接到 IMAP 服务器。"
 
@@ -2758,6 +2960,7 @@ msgstr "SSL 不可用"
 #: camel/providers/imap/camel-imap-store.c:547
 #: camel/providers/imap/camel-imap-store.c:817
 #: camel/providers/imap4/camel-imap4-store.c:255
+#: camel/providers/imapp/camel-imapp-store.c:248
 #: camel/providers/nntp/camel-nntp-store.c:212
 #: camel/providers/nntp/camel-nntp-store.c:231
 #: camel/providers/pop3/camel-pop3-store.c:181
@@ -2810,6 +3013,7 @@ msgid "No support for authentication type %s"
 msgstr "不支持验证类型 %s"
 
 #: camel/providers/imap/camel-imap-store.c:1287
+#: camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%s请为 %s@%s 输入 IMAP 密码"
@@ -3092,6 +3296,33 @@ msgstr "无数据"
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "IMAP4 服务器 %s 意外断开连接：%s"
+
+#: camel/providers/imapp/camel-imapp-provider.c:40
+#: camel/providers/pop3/camel-pop3-provider.c:39
+msgid "Message storage"
+msgstr "信件存储"
+
+#: camel/providers/imapp/camel-imapp-provider.c:48
+msgid "IMAP+"
+msgstr "IMAP+"
+
+#: camel/providers/imapp/camel-imapp-provider.c:50
+msgid ""
+"Experimental IMAP 4(.1) client\n"
+"This is untested and unsupported code, you want to use plain imap instead.\n"
+"\n"
+" !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
+msgstr ""
+
+#: camel/providers/imapp/camel-imapp-store.c:251
+#, c-format
+msgid "Could not connect to %s (port %s): %s"
+msgstr "无法连接到 %s(端口 %s)：%s"
+
+#: camel/providers/imapp/camel-imapp-store.c:348
+#, c-format
+msgid "Could not connect to POP server on %s"
+msgstr "无法连接到 %s 上的 POP 服务器"
 
 #: camel/providers/local/camel-local-folder.c:179
 msgid "Index message body data"
@@ -3829,10 +4060,6 @@ msgstr "正在获取 POP 信件 %d"
 msgid "Unknown reason"
 msgstr "未知原因"
 
-#: camel/providers/pop3/camel-pop3-provider.c:39
-msgid "Message storage"
-msgstr "信件存储"
-
 #: camel/providers/pop3/camel-pop3-provider.c:41
 msgid "Leave messages on server"
 msgstr "在服务器上保留信件"
@@ -4259,6 +4486,210 @@ msgstr "QUIT 命令失败：%s"
 msgid "QUIT command failed"
 msgstr "QUIT 命令失败"
 
+#: libedataserver/e-categories.c:214
+msgid "Business"
+msgstr "商务"
+
+#: libedataserver/e-categories.c:215
+msgid "Competition"
+msgstr "完成"
+
+#: libedataserver/e-categories.c:216
+msgid "Favorites"
+msgstr "最爱"
+
+#: libedataserver/e-categories.c:217
+msgid "Gifts"
+msgstr "礼物"
+
+#: libedataserver/e-categories.c:218
+msgid "Goals/Objectives"
+msgstr "目标"
+
+#: libedataserver/e-categories.c:219
+msgid "Holiday"
+msgstr "假日"
+
+#: libedataserver/e-categories.c:220
+msgid "Holiday Cards"
+msgstr "假日卡"
+
+#: libedataserver/e-categories.c:221
+msgid "Hot Contacts"
+msgstr "亲密联系人"
+
+#: libedataserver/e-categories.c:222
+msgid "Ideas"
+msgstr "想法"
+
+#: libedataserver/e-categories.c:223
+msgid "International"
+msgstr "国际"
+
+#: libedataserver/e-categories.c:224
+msgid "Key Customer"
+msgstr "关键客户"
+
+#: libedataserver/e-categories.c:225
+msgid "Miscellaneous"
+msgstr "杂类"
+
+#: libedataserver/e-categories.c:226
+msgid "Personal"
+msgstr "个人"
+
+#: libedataserver/e-categories.c:227
+msgid "Phone Calls"
+msgstr "通电话"
+
+#: libedataserver/e-categories.c:228
+msgid "Status"
+msgstr "状态"
+
+#: libedataserver/e-categories.c:229
+#, fuzzy
+msgid "Strategies"
+msgstr "类别"
+
+#: libedataserver/e-categories.c:230
+msgid "Suppliers"
+msgstr ""
+
+#: libedataserver/e-categories.c:231
+msgid "Time & Expenses"
+msgstr ""
+
+#: libedataserver/e-categories.c:232
+msgid "VIP"
+msgstr ""
+
+#: libedataserver/e-categories.c:233
+msgid "Waiting"
+msgstr ""
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format.
+#: libedataserver/e-time-utils.c:173 libedataserver/e-time-utils.c:400
+msgid "%a %m/%d/%Y %I:%M:%S %p"
+msgstr ""
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format.
+#: libedataserver/e-time-utils.c:178 libedataserver/e-time-utils.c:391
+msgid "%a %m/%d/%Y %H:%M:%S"
+msgstr ""
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format, without seconds.
+#: libedataserver/e-time-utils.c:183 libedataserver/e-time-utils.c:396
+msgid "%a %m/%d/%Y %I:%M %p"
+msgstr ""
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format, without seconds.
+#: libedataserver/e-time-utils.c:188 libedataserver/e-time-utils.c:387
+msgid "%a %m/%d/%Y %H:%M"
+msgstr ""
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without minutes or seconds.
+#: libedataserver/e-time-utils.c:193
+msgid "%a %m/%d/%Y %I %p"
+msgstr ""
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without minutes or seconds.
+#: libedataserver/e-time-utils.c:198
+msgid "%a %m/%d/%Y %H"
+msgstr ""
+
+#. strptime format of a weekday and a date.
+#. strftime format of a weekday and a date.
+#: libedataserver/e-time-utils.c:201 libedataserver/e-time-utils.c:294
+#: libedataserver/e-time-utils.c:382
+msgid "%a %m/%d/%Y"
+msgstr ""
+
+#. strptime format of a date and a time, in 12-hour format.
+#: libedataserver/e-time-utils.c:209
+msgid "%m/%d/%Y %I:%M:%S %p"
+msgstr ""
+
+#. strptime format of a date and a time, in 24-hour format.
+#: libedataserver/e-time-utils.c:213
+msgid "%m/%d/%Y %H:%M:%S"
+msgstr ""
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:218
+msgid "%m/%d/%Y %I:%M %p"
+msgstr ""
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:223
+msgid "%m/%d/%Y %H:%M"
+msgstr ""
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without minutes or seconds.
+#: libedataserver/e-time-utils.c:228
+msgid "%m/%d/%Y %I %p"
+msgstr ""
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without minutes or seconds.
+#: libedataserver/e-time-utils.c:233
+msgid "%m/%d/%Y %H"
+msgstr ""
+
+#. strptime format of a weekday and a date.
+#. This is the preferred date format for the locale.
+#: libedataserver/e-time-utils.c:236 libedataserver/e-time-utils.c:297
+msgid "%m/%d/%Y"
+msgstr ""
+
+#. strptime format for a time of day, in 12-hour format.
+#. strftime format of a time in 12-hour format.
+#: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
+msgid "%I:%M:%S %p"
+msgstr ""
+
+#. strptime format for a time of day, in 24-hour format.
+#. strftime format of a time in 24-hour format.
+#: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
+msgid "%H:%M:%S"
+msgstr ""
+
+#. strptime format for time of day, without seconds,
+#. in 12-hour format.
+#. strftime format of a time in 12-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
+msgid "%I:%M %p"
+msgstr ""
+
+#. strptime format for time of day, without seconds 24-hour format.
+#. strftime format of a time in 24-hour format,
+#. without seconds.
+#: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
+msgid "%H:%M"
+msgstr ""
+
+#. strptime format for hour and AM/PM, 12-hour format.
+#: libedataserver/e-time-utils.c:354
+msgid "%I %p"
+msgstr ""
+
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "类别图标"
@@ -4384,4 +4815,3 @@ msgstr "Evolution 日历文件和 Webcal 后端"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "发生了多个段错误；无法显示错误对话框\n"
-
