@@ -1603,6 +1603,25 @@ async_auth_idle_cb (gpointer data)
 	return FALSE;
 }
 
+static gboolean
+async_signal_idle_cb (gpointer data)
+{
+	ECalAsyncData *ccad = data;
+
+	g_signal_emit (G_OBJECT (ccad->ecal), e_cal_signals[CAL_OPENED], 0, ccad->status);
+
+	ccad->ecal->priv->auth_func = ccad->real_auth_func;
+	ccad->ecal->priv->auth_user_data = ccad->real_auth_user_data;
+	g_mutex_free (ccad->mutex);
+	g_cond_free (ccad->cond);
+
+	/* free memory */
+	g_object_unref (ccad->ecal);
+	g_free (ccad);
+	
+	return FALSE;
+}
+
 static char *
 async_auth_func_cb (ECal *ecal, const char *prompt, const char *key, gpointer user_data)
 {
@@ -1638,17 +1657,7 @@ open_async (gpointer data)
 	ccad->ecal->priv->auth_user_data = ccad;
 
 	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status);
-	g_signal_emit (G_OBJECT (ccad->ecal), e_cal_signals[CAL_OPENED], 0, ccad->status);
-
-	ccad->ecal->priv->auth_func = ccad->real_auth_func;
-	ccad->ecal->priv->auth_user_data = ccad->real_auth_user_data;
-	g_mutex_free (ccad->mutex);
-	g_cond_free (ccad->cond);
-
-	/* free memory */
-	g_object_unref (ccad->ecal);
-	g_free (ccad);
-
+	g_idle_add ((GSourceFunc) async_signal_idle_cb, ccad);
 
 	return GINT_TO_POINTER (ccad->result);
 }

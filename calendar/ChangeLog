@@ -1,3 +1,9 @@
+2004-04-20  JP Rosevear  <jpr@ximian.com>
+
+	* libecal/e-cal.c (open_async): emit the open signal in an idle
+	loop
+	(async_signal_idle_cb): emit the signal and free the data
+
 2004-04-16  Harish Krishnaswamy  <kharish@novell.com>
 	
 	Fixes #55802
