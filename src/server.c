@@ -1,4 +1,4 @@
-/* Wombat personal information server - main file
+/* Server personal information server - main file
  *
  * Author: Nat Friedman <nat@ximian.com>
  *
@@ -9,7 +9,7 @@
 #include <config.h>
 #endif
 
-/* define this if you need/want to be able to send USR2 to wombat and
+/* define this if you need/want to be able to send USR2 to server and
    get a list of the active backends */
 /*#define DEBUG_BACKENDS*/
 
@@ -68,7 +68,7 @@ termination_handler (gpointer data)
 {
 	if (e_data_cal_factory_get_n_backends (e_data_cal_factory) == 0 &&
 	    e_data_book_factory_get_n_backends (e_data_book_factory) == 0) {
-		fprintf (stderr, "termination_handler(): Terminating the Wombat.  Have a nice day.\n");
+		fprintf (stderr, "termination_handler(): Terminating the Server.  Have a nice day.\n");
 		bonobo_main_quit ();
 	}
 
@@ -76,7 +76,7 @@ termination_handler (gpointer data)
 	return FALSE;
 }
 
-/* Queues a timeout for handling termination of Wombat */
+/* Queues a timeout for handling termination of Server */
 static void
 queue_termination (void)
 {
@@ -172,10 +172,10 @@ setup_pcs (void)
 static gboolean
 setup_interface_check (void)
 {
-	WombatInterfaceCheck *interface_check_iface = wombat_interface_check_new ();
+	ServerInterfaceCheck *interface_check_iface = server_interface_check_new ();
 	int result;
 
-	result = bonobo_activation_active_server_register ("OAFIID:GNOME_Evolution_Wombat_InterfaceCheck",
+	result = bonobo_activation_active_server_register ("OAFIID:GNOME_Evolution_Server_InterfaceCheck",
 							   BONOBO_OBJREF (interface_check_iface));
 
 	return result == Bonobo_ACTIVATION_REG_SUCCESS;
@@ -200,7 +200,7 @@ main (int argc, char **argv)
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 
-	g_message ("Starting wombat");
+	g_message ("Starting server");
 
 #ifdef DEBUG_BACKENDS
 	signal (SIGUSR2, dump_backends);
@@ -227,7 +227,7 @@ main (int argc, char **argv)
 		else if (!did_pcs)
 			failed = "PCS";
 
-		g_message ("main(): could not initialize Wombat service \"%s\"; terminating", failed);
+		g_message ("main(): could not initialize Server service \"%s\"; terminating", failed);
 
 		if (e_data_book_factory) {
 			bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
@@ -242,11 +242,11 @@ main (int argc, char **argv)
 	}
 
 	if (! setup_interface_check ()) {
-		g_message ("Cannot register Wombat::InterfaceCheck object");
+		g_message ("Cannot register Server::InterfaceCheck object");
 		exit (EXIT_FAILURE);
 	}
 
-	g_print ("Wombat up and running\n");
+	g_print ("Server up and running\n");
 
 	bonobo_main ();
 

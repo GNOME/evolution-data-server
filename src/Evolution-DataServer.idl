@@ -1,5 +1,5 @@
 /*
- * Wombat interfaces.
+ * Server interfaces.
  *
  * Copyright (C) 2000, 2001, 2002, Ximian, Inc.
  */
@@ -12,7 +12,7 @@ module Evolution {
 	interface Config {
 	};
 
-	interface WombatInterfaceCheck : Bonobo::Unknown {
+	interface ServerInterfaceCheck : Bonobo::Unknown {
 		readonly attribute string interfaceVersion;
 	};
 };

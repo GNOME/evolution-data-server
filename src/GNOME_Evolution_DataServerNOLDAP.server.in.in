@@ -36,12 +36,12 @@
         </oaf_attribute>
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Wombat_InterfaceCheck"
+<oaf_server iid="OAFIID:GNOME_Evolution_Server_InterfaceCheck"
             type="exe"
             location="@LIBEXECDIR@/evolution-data-server">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/WombatInterfaceCheck:1.0"/>
+		<item value="IDL:GNOME/Evolution/ServerInterfaceCheck:1.0"/>
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 

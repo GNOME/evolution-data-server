@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* wombat-interface-check.h
+/* server-interface-check.h
  *
  * Copyright (C) 2002  Ximian, Inc.
  *
@@ -33,31 +33,31 @@
 
 G_BEGIN_DECLS
 
-#define WOMBAT_TYPE_INTERFACE_CHECK		(wombat_interface_check_get_type ())
-#define WOMBAT_INTERFACE_CHECK(obj)		(GTK_CHECK_CAST ((obj), WOMBAT_TYPE_INTERFACE_CHECK, WombatInterfaceCheck))
-#define WOMBAT_INTERFACE_CHECK_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), WOMBAT_TYPE_INTERFACE_CHECK, WombatInterfaceCheckClass))
-#define WOMBAT_IS_INTERFACE_CHECK(obj)		(GTK_CHECK_TYPE ((obj), WOMBAT_TYPE_INTERFACE_CHECK))
-#define WOMBAT_IS_INTERFACE_CHECK_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), WOMBAT_TYPE_INTERFACE_CHECK))
+#define SERVER_TYPE_INTERFACE_CHECK		(server_interface_check_get_type ())
+#define SERVER_INTERFACE_CHECK(obj)		(GTK_CHECK_CAST ((obj), SERVER_TYPE_INTERFACE_CHECK, ServerInterfaceCheck))
+#define SERVER_INTERFACE_CHECK_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), SERVER_TYPE_INTERFACE_CHECK, ServerInterfaceCheckClass))
+#define SERVER_IS_INTERFACE_CHECK(obj)		(GTK_CHECK_TYPE ((obj), SERVER_TYPE_INTERFACE_CHECK))
+#define SERVER_IS_INTERFACE_CHECK_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), SERVER_TYPE_INTERFACE_CHECK))
 
 
-typedef struct _WombatInterfaceCheck        WombatInterfaceCheck;
-typedef struct _WombatInterfaceCheckPrivate WombatInterfaceCheckPrivate;
-typedef struct _WombatInterfaceCheckClass   WombatInterfaceCheckClass;
+typedef struct _ServerInterfaceCheck        ServerInterfaceCheck;
+typedef struct _ServerInterfaceCheckPrivate ServerInterfaceCheckPrivate;
+typedef struct _ServerInterfaceCheckClass   ServerInterfaceCheckClass;
 
-struct _WombatInterfaceCheck {
+struct _ServerInterfaceCheck {
 	BonoboObject parent;
 };
 
-struct _WombatInterfaceCheckClass {
+struct _ServerInterfaceCheckClass {
 	BonoboObjectClass parent_class;
 
-	POA_GNOME_Evolution_WombatInterfaceCheck__epv epv;
+	POA_GNOME_Evolution_ServerInterfaceCheck__epv epv;
 };
 
 
-GType wombat_interface_check_get_type  (void);
-WombatInterfaceCheck *wombat_interface_check_new (void);
+GType server_interface_check_get_type  (void);
+ServerInterfaceCheck *server_interface_check_new (void);
 
 G_END_DECLS
 
-#endif /* _WOMBAT_INTERFACE_CHECK_H_ */
+#endif /* _SERVER_INTERFACE_CHECK_H_ */

@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* wombat-interface-check.c
+/* server-interface-check.c
  *
  * Copyright (C) 2002  Ximian, Inc.
  *
@@ -43,7 +43,7 @@ impl__get_interfaceVersion (PortableServer_Servant servant,
 
 
 static void
-wombat_interface_check_class_init (WombatInterfaceCheckClass *class)
+server_interface_check_class_init (ServerInterfaceCheckClass *class)
 {
 	parent_class = g_type_class_ref (PARENT_TYPE);
 
@@ -51,20 +51,20 @@ wombat_interface_check_class_init (WombatInterfaceCheckClass *class)
 }
 
 static void
-wombat_interface_check_init (WombatInterfaceCheck *interface_check)
+server_interface_check_init (ServerInterfaceCheck *interface_check)
 {
 	/* (Nothing to initialize here.)  */
 }
 
 
-WombatInterfaceCheck *
-wombat_interface_check_new (void)
+ServerInterfaceCheck *
+server_interface_check_new (void)
 {
-	return g_object_new (WOMBAT_TYPE_INTERFACE_CHECK, NULL);
+	return g_object_new (SERVER_TYPE_INTERFACE_CHECK, NULL);
 }
 
 
-BONOBO_TYPE_FUNC_FULL (WombatInterfaceCheck,
-		       GNOME_Evolution_WombatInterfaceCheck,
+BONOBO_TYPE_FUNC_FULL (ServerInterfaceCheck,
+		       GNOME_Evolution_ServerInterfaceCheck,
 		       PARENT_TYPE,
-		       wombat_interface_check)
+		       server_interface_check)

@@ -1,3 +1,17 @@
+2003-11-04  JP Rosevear  <jpr@ximian.com>
+
+	* src/Evolution-DataServer.idl: server interface check instead of
+	wombat interface check
+
+	* src/GNOME_Evolution_DataServerLDAP.server.in.in: ditto
+
+	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: ditto
+	
+	* src/server.c: adjust to interface check renaming
+
+	* src/server-interface-check.[hc]: finish renaming so wombat
+	disappears
+
 2003-11-04  JP Rosevear <jpr@ximian.com>
 
 	* src/GNOME_Evolution_DataServerNOLDAP.server.in.in: ditto

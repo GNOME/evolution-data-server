@@ -1505,7 +1505,7 @@ build_uri_list (GNOME_Evolution_Calendar_StringSeq *seq)
  * @type: type of uri's to get
  * 
  * 
- * Return value: A list of URI's open on the wombat
+ * Return value: A list of URI's open on the server
  **/
 GList *
 e_cal_uri_list (ECal *ecal, CalMode mode)
