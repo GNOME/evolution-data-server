@@ -1,3 +1,8 @@
+2005-02-10  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-search.c (imap4_body_contains): If we're in offline
+	mode, let the parent implementation perform the search.
+
 2005-02-04  Not Zed  <NotZed@Ximian.com>
 
 	* camel-imap4-store.c (imap4_build_folder_info): always get the

@@ -29,6 +29,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <camel/camel-offline-store.h>
+
 #include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"
 #include "camel-imap4-stream.h"
@@ -123,7 +125,7 @@ untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
 		sprintf (uid, "%u", token->v.number);
 		if ((info = camel_folder_summary_uid (summary, uid))) {
 			g_ptr_array_add (matches, (char *) camel_message_info_uid (info));
-			camel_message_info_free(info);
+			camel_message_info_free (info);
 		}
 	}
 	
@@ -152,6 +154,9 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 	int id, i, n;
 	size_t used;
 	char *set;
+	
+	if (((CamelOfflineStore *) engine->service)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+		return parent_class->body_contains (f, argc, argv, search);
 	
 	summary_set = search->summary_set ? search->summary_set : search->summary;
 	

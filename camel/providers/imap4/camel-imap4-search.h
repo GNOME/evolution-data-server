@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Authors: Jeffrey Stedfast <fejj@novell.com>
+ *           Michael Zucchi <notzed@novell.com>
  *
  *  Copyright 2004 Novell, Inc. (www.novell.com)
  *
@@ -24,6 +25,9 @@
 #ifndef __CAMEL_IMAP4_SEARCH_H__
 #define __CAMEL_IMAP4_SEARCH_H__
 
+#include <libedataserver/e-msgport.h>
+
+#include <camel/camel-data-cache.h>
 #include <camel/camel-folder-search.h>
 
 #ifdef __cplusplus
@@ -45,6 +49,16 @@ struct _CamelIMAP4Search {
 	CamelFolderSearch parent_object;
 	
 	struct _CamelIMAP4Engine *engine;
+	
+	guint32 lastuid;	/* current 'last uid' for the folder */
+	guint32 validity;	/* validity of the current folder */
+	
+	CamelDataCache *cache;	/* disk-cache for searches */
+	
+	/* cache of body search matches */
+	EDList matches;
+	GHashTable *matches_hash;
+	unsigned int matches_count;
 };
 
 struct _CamelIMAP4SearchClass {
