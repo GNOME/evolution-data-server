@@ -1,3 +1,21 @@
+2004-12-31  JP Rosevear  <jpr@novell.com>
+
+	* providers/groupwise/Makefile.am: dist the private header, fix
+	includes
+
+	* tests/smime/pgp.c (main): use define for data location
+
+	* tests/smime/Makefile.am: define for the data dir
+
+	* tests/mime-filter/test-charset.c (main): load and output to the
+	correct dir
+
+	* tests/message/Makefile.am: clean up generated files
+
+	* Makefile.am: clean up the package config data
+
+	* tests/Makefile.am: dist the data dir
+
 2004-12-23  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* providers/groupwise/camel-groupwise-provider.c : changed the

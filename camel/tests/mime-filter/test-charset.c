@@ -38,7 +38,7 @@ main (int argc, char **argv)
 	dir = opendir (SOURCEDIR);
 	
 	while ((dent = readdir (dir))) {
-		char *outfile, *charset, *work;
+		char *infile, *outfile, *charset, *work;
 		const char *ext;
 		
 		ext = strrchr (dent->d_name, '.');
@@ -49,12 +49,15 @@ main (int argc, char **argv)
 		camel_test_start (work);
 		g_free (work);
 		
-		if (!(source = camel_stream_fs_new_with_name (dent->d_name, 0, O_RDONLY))) {
-			camel_test_fail ("Failed to open input case in \"%s\"", dent->d_name);
+		infile = g_strdup_printf ("%s/%s", SOURCEDIR, dent->d_name);
+		if (!(source = camel_stream_fs_new_with_name (infile, 0, O_RDONLY))) {
+			camel_test_fail ("Failed to open input case in \"%s\"", infile);
+			g_free (outfile);
 			continue;
 		}
+		g_free (infile);
 		
-		outfile = g_strdup_printf ("%.*s.out", ext - dent->d_name, dent->d_name);
+		outfile = g_strdup_printf ("%s/%.*s.out", SOURCEDIR, ext - dent->d_name, dent->d_name);
 		
 		if (!(correct = camel_stream_fs_new_with_name (outfile, 0, O_RDONLY))) {
 			camel_test_fail ("Failed to open correct output in \"%s\"", outfile);

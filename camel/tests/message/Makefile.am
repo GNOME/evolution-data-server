@@ -20,4 +20,6 @@ check_PROGRAMS =  	\
 	test3		\
 	test4
 
+CLEANFILES = test3.msg test3-2.msg test3-3.msg
+
 TESTS = test1 test2 test3 test4

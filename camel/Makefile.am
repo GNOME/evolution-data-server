@@ -320,3 +320,5 @@ EXTRA_DIST =					\
 	gentables.pl				\
 	ChangeLog.pre-1-4			\
 	README
+
+DISTCLEANFILES = $(pkgconfig_DATA)

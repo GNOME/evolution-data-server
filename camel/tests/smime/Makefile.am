@@ -6,6 +6,7 @@ INCLUDES =						\
 	-I$(top_srcdir)/camel				\
 	-I$(top_srcdir)/camel/tests/lib 		\
 	-DG_LOG_DOMAIN=\"evolution-tests\"		\
+	-DTEST_DATA_DIR=\"$(top_srcdir)/camel/tests/data\"\
 	$(CAMEL_CFLAGS)
 
 LDADD = \

@@ -4,6 +4,7 @@ camel_provider_LTLIBRARIES = libcamelgroupwise.la
 camel_provider_DATA = libcamelgroupwise.urls
 
 INCLUDES = -I.. \
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/camel/providers/imap    \
         -I$(top_srcdir)/libedataserver          \
@@ -24,12 +25,13 @@ libcamelgroupwise_la_SOURCES = 			\
 
 noinst_HEADERS =         			\
 	camel-groupwise-folder.h		\
+	camel-groupwise-private.h		\
 	camel-groupwise-store.h			\
 	camel-groupwise-summary.h		\
 	camel-groupwise-store-summary.h		\
 	camel-groupwise-utils.h			\
 	camel-groupwise-transport.h		
-					
+
 
 libcamelgroupwise_la_LDFLAGS = -avoid-version -module
 libcamelgroupwise_la_LIBADD =                                            \

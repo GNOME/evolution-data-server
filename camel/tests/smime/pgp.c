@@ -140,10 +140,12 @@ int main (int argc, char **argv)
 		return 77;
 	else if (WEXITSTATUS (ret) == 127)
 		return 77;
-	
-	system ("gpg --import ../data/camel-test.gpg.pub > /dev/null 2>&1");
-	system ("gpg --import ../data/camel-test.gpg.sec > /dev/null 2>&1");
-	
+
+	g_message ("gpg --import " TEST_DATA_DIR "/camel-test.gpg.pub > /dev/null 2>&1");
+	system ("gpg --import " TEST_DATA_DIR "/camel-test.gpg.pub > /dev/null 2>&1");
+	g_message ("gpg --import " TEST_DATA_DIR "/camel-test.gpg.sec > /dev/null 2>&1");
+	system ("gpg --import " TEST_DATA_DIR "/camel-test.gpg.sec > /dev/null 2>&1");
+
 	session = camel_pgp_session_new ("/tmp/camel-test");
 	
 	ex = camel_exception_new ();
@@ -152,7 +154,7 @@ int main (int argc, char **argv)
 	camel_gpg_context_set_always_trust (CAMEL_GPG_CONTEXT (ctx), TRUE);
 	
 	camel_test_start ("Test of PGP functions");
-	
+
 	stream1 = camel_stream_mem_new ();
 	camel_stream_write (stream1, "Hello, I am a test stream.\n", 27);
 	camel_stream_reset (stream1);
