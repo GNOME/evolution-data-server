@@ -39,4 +39,6 @@ Test   : Description
 10.vcf : A vCard with an attribute with more than 1 group specified.  Also
          has an attributed with a quoted parameter value.
 
+11.vcf : A vCard with invalid attribute parameter specs.
+
 ----------------------
