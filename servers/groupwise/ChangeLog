@@ -1,4 +1,10 @@
+2004-03-11  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-gw-connection.c (e_gw_connection_get_address_book_id): return
+	correct types in g_return_val_if_fail macros.
+
 2004-03-05 Harish K <kharish@novell.com>
+
 	* e-gw-connection.c : (timet_from_string):
 	1900 should be subtracted from the year value and 1 from the 
 	month value in struct tm. Added include for ctype.h to remove

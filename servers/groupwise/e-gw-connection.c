@@ -1094,8 +1094,8 @@ e_gw_connection_get_address_book_id ( EGwConnection *cnc, char *book_name, char*
 	EGwConnectionStatus status;
 	GList *container_list = NULL, *l;
 
-	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
-	g_return_val_if_fail (book_name != NULL, NULL);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (book_name != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	status = e_gw_connection_get_address_book_list (cnc, &container_list);
         if (status != E_GW_CONNECTION_STATUS_OK) {
