@@ -361,6 +361,11 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	camel_object_set (folder, NULL, CAMEL_OBJECT_STATE_FILE, path, NULL);
 	g_free (path);
 	
+	if (camel_object_state_read (folder) == -1) {
+		/* set our defaults */
+		imap4_folder->enable_mlist = TRUE;
+	}
+	
 	imap4_folder->search = camel_imap4_search_new (((CamelIMAP4Store *) store)->engine, imap4_folder->cachedir);
 	
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
