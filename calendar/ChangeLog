@@ -2,6 +2,7 @@
 
 	* libecal/e-cal.c (e_cal_generate_instances_for_object,
 	e_cal_generate_instances): allow -1 for the start and end times.
+	(load_static_capabilities, add_instance): fixed warnings.
 
 2004-06-01  JP Rosevear  <jpr@novell.com>
 

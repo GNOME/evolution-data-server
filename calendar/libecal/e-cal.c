@@ -2152,7 +2152,6 @@ load_static_capabilities (ECal *ecal, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	char *cap;
 	
 	priv = ecal->priv;
 
@@ -2752,7 +2751,7 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 {
 	GList **list;
 	struct comp_instance *ci;
-	struct icaltimetype itt, itt_start;
+	struct icaltimetype itt_start;
 	icalcomponent *icalcomp;
 
 	list = data;
