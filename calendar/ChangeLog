@@ -1,5 +1,13 @@
+2004-01-14  Rodrigo Moya <rodrigo@ximian.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_open): if trying to create a new calendar,
+	return an error, since we don't support that.
+	(e_cal_backend_groupwise_remove): return "Permission Denied".
+
 2004-01-14  Harish K <kharish@novell.com>
-        * libedata-cal/e-cal-backend-cache.c
+
+	* libedata-cal/e-cal-backend-cache.c
         (e_cal_backend_cache_get_components): return a list of e-cal-components
         rather than e-cal-component strings.
 

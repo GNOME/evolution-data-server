@@ -3,31 +3,31 @@ Things to do and people working on it
 
 Step 1 - Infrastructure
 
- 1.1 Create SOAP management API in libsoup -> done, in soup-soap-message.[ch]
+ 1.1 DONE - Create SOAP management API in libsoup, in soup-soap-message.[ch]
      to manage messages, and soup-soap-response.[ch] to manage responses
      from the server.
 
- 1.2 Implement interface to Groupwise server -> done, in
+ 1.2 DONE - Implement interface to Groupwise server, in
      e-d-s/calendar/backends/groupwise/e-gw-connection.[ch], to manage
      the connections to the server, and e-gw-message.[ch] for utility
      functions to easily create SOAP messages to be sent to the server.
 
- 1.3 Implement login/logout to server -> done, e_gw_connection_login and
+ 1.3 DONE - Implement login/logout to server, e_gw_connection_login and
      e_gw_connection_logout, being called from e_cal_backend_groupwise_open
 
  1.4  Map error codes returned in the "status" SOAP type to our
       EGwConnectionStatus. This is in e-gw-connection.c#parse_response_status.
       We need the list of status codes returned by the server from the GW team.
 
- 1.5 Write script/program to easily add an account until we have the configuration
-     GUI -> done
+ 1.5 DONE - Write script/program to easily add an account until we have the configuration
+     GUI
 
 Step 2 - Basic functionality
 
- 2.1 Make the ECalBackendGroupwise class use ECalBackendCache, so that after
-     first connecting to a server we can keep the calendar in the cache -> done
+ 2.1 DONE - Make the ECalBackendGroupwise class use ECalBackendCache, so that after
+     first connecting to a server we can keep the calendar in the cache
 
- 2.2 Implement retrieval of objects, that will be saved to the cache. This is
+ 2.2 DONE - Implement retrieval of objects, that will be saved to the cache. This is
      probably best done by listening to modifications on the server, and updating
      the cache whenever a change is made on the server. On the first connection,
      we should probably retrieve all objects, or at least their UIDs.
@@ -43,7 +43,7 @@ Step 2 - Basic functionality
 	    The server should have a list of available timezones, if not,
 	    we can use libical's built-in timezones.
 
- 2.3 Retrieve information about connection -> done : when loging to the server, we get, in
+ 2.3 DONE - Retrieve information about connection : when loging to the server, we get, in
      the loginResponse response, some information about the user being connected.
      From that we can retrieve some information needed to implement the following
      backend methods:
@@ -93,7 +93,7 @@ Step 2 - Basic functionality
      and get the deltas out of that. When a successful update is made to the
      server, the cache must be updated.
 
- 2.5 Implement queries to the server. This involves implementing the following
+ 2.5 DONE - Implement queries to the server. This involves implementing the following
      backend methods:
             - Implement e_cal_backend_groupwise_get_object_list, which returns
 	      a list of objects that match a given regular expression.
@@ -111,7 +111,7 @@ Step 2 - Basic functionality
  2.6 Free/Busy. This is the implementation of the e_cal_backend_groupwise_get_free_busy
      method on the backend.
 
- 2.7 Addition/removal of calendars. The backend should be able to create new calendars
+ 2.7 DONE - Addition/removal of calendars. The backend should be able to create new calendars
      when the _open method is called with 'only_if_exists' set to FALSE. In that case,
      it should create the new calendar, and add the new source to the calendar sources
      tree. Make sure the new-calendar dialog should call that method (e_cal_open) to tell the
@@ -123,7 +123,7 @@ Step 2 - Basic functionality
 
 Step 3 - Extra
 
- 3.1 Offline/Online mode: -> Done
+ 3.1 DONE - Offline/Online mode:
             - Implement e_cal_backend_groupwise_get_mode, which returns the current
 	      online/offline mode of the backend.
 	    - Implement e_cal_backend_groupwise_set_mode, used by clients to
