@@ -1,3 +1,7 @@
+2003-11-20  Rodney Dawes  <dobey@ximian.com>
+
+	* autogen.sh: Remove extra #!/bin/sh line
+
 2003-11-19  JP Rosevear <jpr@ximian.com>
 
 	* MAINTAINERS: Update
