@@ -1,3 +1,10 @@
+2005-03-02  JP Rosevear  <jpr@novell.com>
+
+	* libebook/e-destination.c (e_destination_list_get_dests): get a
+	list of destination addresses
+
+	* libebook/e-destination.h: add proto
+
 2005-02-28  Sivaiah Nallagatla  <snallagatla@novell.com>
 
 	* backends/groupwise/e-bbok-backend-groupwise.c 
