@@ -63,13 +63,16 @@ static ECalBackendClass *parent_class = NULL;
 
 /* Initialy populate the cache from the server */
 static EGwConnectionStatus
-populate_cache (ECalBackendGroupwisePrivate *priv)
+populate_cache (ECalBackendGroupwise *cbgw)
 {
+	ECalBackendGroupwisePrivate *priv;
 	EGwConnectionStatus status;
         ECalComponent *comp;
 	const char *uid;
 	char *rid;
         GList *list = NULL, *l;
+
+	priv = cbgw->priv;
 
         /* get all the objects from the server */
         status = e_gw_connection_get_items (priv->cnc, priv->container_id, NULL, &list);
@@ -85,11 +88,15 @@ populate_cache (ECalBackendGroupwisePrivate *priv)
 		comp = e_gw_item_to_cal_component (item);
 		g_object_unref (item);
 		if (E_IS_CAL_COMPONENT (comp)) {
-			e_cal_component_get_uid (comp, &uid);
-			rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
-			e_cal_component_commit_sequence (comp);
-			e_cal_backend_cache_put_component (priv->cache, comp);
-			g_free (rid);
+			if (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) ==
+			    icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
+				e_cal_component_get_uid (comp, &uid);
+				rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
+				e_cal_component_commit_sequence (comp);
+				e_cal_backend_cache_put_component (priv->cache, comp);
+				g_free (rid);
+			}
+
 			g_object_unref (comp);
 		}
         }
@@ -166,7 +173,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 			/* Populate the cache for the first time.*/
 			/* start a timed polling thread set to 10 minutes*/
-			status = populate_cache (priv);
+			status = populate_cache (cbgw);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				g_object_unref (priv->cnc);
 				priv->cnc = NULL;
