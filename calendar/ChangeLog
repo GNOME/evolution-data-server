@@ -1,3 +1,18 @@
+2004-03-25  Rodrigo Moya <rodrigo@ximian.com>
+
+	* libedata-cal/e-cal-backend-sync.[ch]
+	(e_cal_backend_sync_create_object): made the 'calobj' argument to
+	be inout, so that the caller gets the modified component, not the
+	original one sent to the backend.
+	(_e_cal_backend_sync_create_object): ditto, and notify listeners with
+	the modified calobj.
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_create_object):
+	* backends/file/e-cal-backend-file.c (e_cal_backend_file_create_object):
+	adapted to changes in ECalBackendSync, and return the modified object
+	to the caller.
+
 2004-03-22  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.[ch]

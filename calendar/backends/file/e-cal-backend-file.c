@@ -1607,7 +1607,7 @@ sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
 
 
 static ECalBackendSyncStatus
-e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, char **uid)
+e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1620,10 +1620,10 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 	priv = cbfile->priv;
 
 	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+	g_return_val_if_fail (*calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
 	/* Parse the icalendar text */
-	icalcomp = icalparser_parse_string ((char *) calobj);
+	icalcomp = icalparser_parse_string (*calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
@@ -1660,9 +1660,10 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, const
 	/* Save the file */
 	save (cbfile);
 
-	/* Return the UID */
+	/* Return the UID and the modified component */
 	if (uid)
 		*uid = g_strdup (comp_uid);
+	*calobj = e_cal_component_get_as_string (comp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

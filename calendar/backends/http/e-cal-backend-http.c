@@ -684,15 +684,13 @@ e_cal_backend_http_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, char **uid)
+e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
-
-	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
 	return GNOME_Evolution_Calendar_PermissionDenied;
 }

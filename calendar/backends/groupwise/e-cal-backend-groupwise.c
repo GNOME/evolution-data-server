@@ -864,7 +864,7 @@ e_cal_backend_groupwise_internal_get_timezone (ECalBackend *backend, const char 
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, char **uid)
+e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
 	ECalBackendGroupwise *cbgw;
         ECalBackendGroupwisePrivate *priv;
@@ -876,10 +876,10 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	priv = cbgw->priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_InvalidObject);
-	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
+	g_return_val_if_fail (calobj != NULL && *calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
 
 	/* check the component for validity */
-	icalcomp = icalparser_parse_string (calobj);
+	icalcomp = icalparser_parse_string (*calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
@@ -909,6 +909,8 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	default :
 		break;
 	}
+
+	*calobj = e_cal_component_get_as_string (comp);
 
 	g_object_unref (comp);
 

@@ -105,7 +105,7 @@ e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
 }
 
 ECalBackendSyncStatus
-e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, char **uid)
+e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
 	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
 
@@ -345,14 +345,18 @@ static void
 _e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const char *calobj)
 {
 	ECalBackendSyncStatus status;
-	char *uid = NULL;
+	char *uid = NULL, *modified_calobj = (char *) calobj;
 	
-	status = e_cal_backend_sync_create_object (E_CAL_BACKEND_SYNC (backend), cal, calobj, &uid);
+	status = e_cal_backend_sync_create_object (E_CAL_BACKEND_SYNC (backend), cal, &modified_calobj, &uid);
 
-	e_data_cal_notify_object_created (cal, status, uid, calobj);
+	e_data_cal_notify_object_created (cal, status, uid, modified_calobj);
 
+	/* free memory */
 	if (uid)
 		g_free (uid);
+
+	if (modified_calobj != calobj)
+		g_free (modified_calobj);
 }
 
 static void
