@@ -122,6 +122,9 @@ save_file_when_idle (gpointer user_data)
 	g_assert (priv->uri != NULL);
 	g_assert (priv->icalcomp != NULL);
 
+	if (!priv->is_dirty)
+		return TRUE;
+
 	uri = gnome_vfs_uri_new (priv->uri);
 	if (!uri)
 		goto error_malformed_uri;
