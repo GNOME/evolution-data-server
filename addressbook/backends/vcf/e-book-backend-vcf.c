@@ -541,7 +541,9 @@ e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
 	return GNOME_Evolution_Addressbook_Success;
 }
 
-#include <libedata-book/ximian-vcard.h>
+#ifdef CREATE_DEFAULT_VCARD
+# include <libedata-book/ximian-vcard.h>
+#endif
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_vcf_load_source (EBookBackend             *backend,
@@ -586,6 +588,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 			fd = open (bvcf->priv->filename, O_CREAT, 0666);
 
 			if (fd != -1) {
+#ifdef CREATE_DEFAULT_VCARD
 				EContact *contact;
 
 				contact = do_create(bvcf, XIMIAN_VCARD, FALSE);
@@ -593,6 +596,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 
 				/* XXX check errors here */
 				g_object_unref (contact);
+#endif
 
 				writable = TRUE;
 			}

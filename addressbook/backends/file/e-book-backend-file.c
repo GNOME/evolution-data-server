@@ -892,7 +892,9 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 	return ret_val;
 }
 
-#include <libedata-book/ximian-vcard.h>
+#ifdef CREATE_DEFAULT_VCARD
+# include <libedata-book/ximian-vcard.h>
+#endif
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_file_load_source (EBookBackend           *backend,
@@ -965,11 +967,13 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 				g_warning ("db->open (... DB_CREATE ...) failed with %d", db_error);
 			}
 			else {
+#ifdef CREATE_DEFAULT_VCARD
 				EContact *contact;
 
 				contact = do_create(bf, XIMIAN_VCARD);
 				/* XXX check errors here */
 				g_object_unref (contact);
+#endif
 
 				writable = TRUE;
 			}

@@ -1,3 +1,14 @@
+2004-06-24  Hans Petter Jansson  <hpj@ximian.com>
+
+	See bug #51127.
+
+	* backends/vcf/e-book-backend-vcf.c (e_book_backend_vcf_load_source):
+	Don't add a default vcard to new books.
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_load_source): Don't add default vcard to new
+	books.
+
 2004-06-23  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book.c (e_book_response_add_contact): ref in the
