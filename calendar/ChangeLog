@@ -8,7 +8,7 @@
 
 2005-02-11  Chenthill Palanisamy  <pchenthill@novell.com>
 
-	Fixes a hang in offline
+	Fixes #72107
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	(e_cal_backend_groupwise_open): insert a g_mutex_unlock.
 
