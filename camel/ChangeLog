@@ -1,3 +1,8 @@
+2005-01-25  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
+	Setup filtering and junk filtering stuff.
+
 2005-01-24  JP Rosevear  <jpr@novell.com>
 
 	* tests/folder/test6.c: get imap4 not imap
