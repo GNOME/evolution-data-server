@@ -25,6 +25,7 @@ EV8bq1hvbWW1uY1khlUo6MMhgeor7UoAje18FtmLe9eeQT3EXPcglkJRPbv71EWu7Dajp2o3MG\
 mlRCkjKQ30jPUe1WlrlNW0RptTleNB84DnjkD0P9VlxT4Nqck9pmn8JuFp2zo0cgCWFi2e7555\
 /NSHXLadso2m3sU0NxlV65HM+VdTW3rgwvsUpSvAFKUoAUxSlAClKUAKUpQB//2Q==";
 
+size_t _evc_base64_decode_simple (char *data, size_t len);
 
 int
 main (int argc, char **argv)
