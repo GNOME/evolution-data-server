@@ -1,3 +1,11 @@
+2004-11-18 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c 
+	(populate_cache) (get_deltas) : added "default" to 
+	the view wherever we want to get complete item along 
+	with iCalId
+	part of fix for #69624
+	 
 2004-10-29  Sivaiah Nallagatla <snallagatla@novell.com>
 
 	* backends/groupwise/e-ca-backend-groupwise.c 

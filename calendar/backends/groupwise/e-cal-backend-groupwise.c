@@ -132,7 +132,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		g_mutex_unlock (mutex);
                 return status;
         }
-	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "recipients message recipientStatus", NULL, &cursor);
+	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "recipients message recipientStatus default", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		g_mutex_unlock (mutex);
@@ -220,7 +220,7 @@ get_deltas (gpointer handle)
 	tm = gmtime (&mod_time);
 	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "recipients message recipientStatus default", time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		return TRUE;
@@ -250,7 +250,7 @@ get_deltas (gpointer handle)
 		g_slist_free (item_list);
 		item_list = NULL;
 	}
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus iCalId", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
+	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
