@@ -165,6 +165,11 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	if (priv->cache)
 		g_object_unref (priv->cache);
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+	if (!priv->cache) {
+		g_warning (G_STRLOC ": Could not create cache file for %s",
+			   e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+		return GNOME_Evolution_Calendar_OtherError;
+	}
 
 	/* convert the URI */
 	vuri = convert_uri (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
@@ -173,22 +178,18 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	/* FIXME: login to the server only if we're online */
 	/* create connection to server */
-	priv->cnc = e_gw_connection_new ();
 	real_uri = gnome_vfs_uri_to_string ((const GnomeVFSURI *) vuri,
 					    GNOME_VFS_URI_HIDE_USER_NAME |
 		                            GNOME_VFS_URI_HIDE_PASSWORD);
-	status =e_gw_connection_login (priv->cnc, real_uri,
-				       gnome_vfs_uri_get_user_name (vuri),
-				       gnome_vfs_uri_get_password (vuri));
+	priv->cnc = e_gw_connection_new (real_uri,
+					 gnome_vfs_uri_get_user_name (vuri),
+					 gnome_vfs_uri_get_password (vuri));
 
 	gnome_vfs_uri_unref (vuri);
 	g_free (real_uri);
 
-	switch (status) {
-	case E_GW_CONNECTION_STATUS_OK :
+	if (E_IS_GW_CONNECTION (priv->cnc))
 		return GNOME_Evolution_Calendar_Success;
-	default :
-	}
 
 	/* free memory */
 	g_object_unref (priv->cnc);

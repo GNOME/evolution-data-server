@@ -49,7 +49,7 @@ struct _EGwConnectionClass {
 };
 
 GType          e_gw_connection_get_type (void);
-EGwConnection *e_gw_connection_new (void);
+EGwConnection *e_gw_connection_new (const char *uri, const char *username, const char *password);
 
 typedef enum {
 	E_GW_CONNECTION_STATUS_OK,
@@ -61,10 +61,6 @@ typedef enum {
 
 SoupSoapResponse   *e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg);
 
-EGwConnectionStatus e_gw_connection_login (EGwConnection *cnc,
-					   const char *uri,
-					   const char *username,
-					   const char *password);
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
 
 G_END_DECLS
