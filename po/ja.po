@@ -1,63 +1,65 @@
 # evolution-data-server ja.po.
-# Copyright (C) 2000-2004 Free Software Foundation, Inc.
+# Copyright (C) 2000-2005 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
 # Takuo KITAME <kitame@debian.org>, 2001.
-# Takeshi AIHANA <aihana@gnome.gr.jp>, 2001-2004.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2001-2005.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-18 23:35+0900\n"
-"PO-Revision-Date: 2004-08-18 23:33+0900\n"
+"POT-Creation-Date: 2005-01-10 16:49+0900\n"
+"PO-Revision-Date: 2005-01-10 16:48+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:433
+#: addressbook/backends/file/e-book-backend-file.c:443
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2018
 #: addressbook/backends/vcf/e-book-backend-vcf.c:437
 msgid "Loading..."
 msgstr "読み込み中..."
 
-#: addressbook/backends/file/e-book-backend-file.c:435
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1854
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3155
+#: addressbook/backends/file/e-book-backend-file.c:445
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2002
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2016
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3221
 #: addressbook/backends/vcf/e-book-backend-vcf.c:439
 msgid "Searching..."
 msgstr "検索中..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:618
+#: addressbook/backends/ldap/e-book-backend-ldap.c:622
 msgid "Using Distinguished Name (DN)"
 msgstr "識別名 (DN) を使用する"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:621
+#: addressbook/backends/ldap/e-book-backend-ldap.c:625
 msgid "Using Email Address"
 msgstr "E-メール・アドレスを使用する"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:787
+#: addressbook/backends/ldap/e-book-backend-ldap.c:791
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP サーバへ再接続中..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1307
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1319
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP サーバへ連絡先の追加中..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1407
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1426
 msgid "Removing contact from LDAP server..."
 msgstr "LDP サーバから連絡先の削除中..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1630
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1658
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP サーバにある連絡先の修正中..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3067
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3124
 msgid "Receiving LDAP search results..."
 msgstr "LDAP サーバ検索結果の取得中..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3175
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3241
 msgid "Error performing search"
 msgstr "検索中にエラーが発生しました"
 
@@ -65,97 +67,100 @@ msgstr "検索中にエラーが発生しました"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:236 addressbook/libebook/e-book.c:240
-#: addressbook/libebook/e-book.c:442 addressbook/libebook/e-book.c:446
-#: addressbook/libebook/e-book.c:578 addressbook/libebook/e-book.c:582
-#: addressbook/libebook/e-book.c:782 addressbook/libebook/e-book.c:787
-#: addressbook/libebook/e-book.c:962 addressbook/libebook/e-book.c:966
-#: addressbook/libebook/e-book.c:1107 addressbook/libebook/e-book.c:1111
-#: addressbook/libebook/e-book.c:1309 addressbook/libebook/e-book.c:1313
-#: addressbook/libebook/e-book.c:1514 addressbook/libebook/e-book.c:1518
-#: addressbook/libebook/e-book.c:1741 addressbook/libebook/e-book.c:1745
-#: addressbook/libebook/e-book.c:1948 addressbook/libebook/e-book.c:1952
-#: addressbook/libebook/e-book.c:2984
+#: addressbook/libebook/e-book.c:240 addressbook/libebook/e-book.c:244
+#: addressbook/libebook/e-book.c:446 addressbook/libebook/e-book.c:450
+#: addressbook/libebook/e-book.c:579 addressbook/libebook/e-book.c:583
+#: addressbook/libebook/e-book.c:672 addressbook/libebook/e-book.c:676
+#: addressbook/libebook/e-book.c:952 addressbook/libebook/e-book.c:957
+#: addressbook/libebook/e-book.c:1132 addressbook/libebook/e-book.c:1136
+#: addressbook/libebook/e-book.c:1277 addressbook/libebook/e-book.c:1281
+#: addressbook/libebook/e-book.c:1479 addressbook/libebook/e-book.c:1483
+#: addressbook/libebook/e-book.c:1684 addressbook/libebook/e-book.c:1688
+#: addressbook/libebook/e-book.c:1910 addressbook/libebook/e-book.c:1914
+#: addressbook/libebook/e-book.c:2117 addressbook/libebook/e-book.c:2121
+#: addressbook/libebook/e-book.c:3200
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%2$s\" の前にあるブックの \"%1$s\""
 
-#: addressbook/libebook/e-book.c:249 addressbook/libebook/e-book.c:455
-#: addressbook/libebook/e-book.c:591 addressbook/libebook/e-book.c:797
-#: addressbook/libebook/e-book.c:976 addressbook/libebook/e-book.c:1121
-#: addressbook/libebook/e-book.c:1322 addressbook/libebook/e-book.c:1527
-#: addressbook/libebook/e-book.c:1755 addressbook/libebook/e-book.c:1961
-#: addressbook/libebook/e-book.c:2299 addressbook/libebook/e-book.c:2495
+#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:459
+#: addressbook/libebook/e-book.c:592 addressbook/libebook/e-book.c:685
+#: addressbook/libebook/e-book.c:967 addressbook/libebook/e-book.c:1146
+#: addressbook/libebook/e-book.c:1291 addressbook/libebook/e-book.c:1492
+#: addressbook/libebook/e-book.c:1697 addressbook/libebook/e-book.c:1924
+#: addressbook/libebook/e-book.c:2130 addressbook/libebook/e-book.c:2468
+#: addressbook/libebook/e-book.c:2664
 msgid "book busy"
 msgstr "ブックは処理中です"
 
-#: addressbook/libebook/e-book.c:282 addressbook/libebook/e-book.c:286
-#: addressbook/libebook/e-book.c:488 addressbook/libebook/e-book.c:492
-#: addressbook/libebook/e-book.c:620 addressbook/libebook/e-book.c:624
-#: addressbook/libebook/e-book.c:826 addressbook/libebook/e-book.c:829
-#: addressbook/libebook/e-book.c:1008 addressbook/libebook/e-book.c:1011
-#: addressbook/libebook/e-book.c:1150 addressbook/libebook/e-book.c:1154
-#: addressbook/libebook/e-book.c:1358 addressbook/libebook/e-book.c:1362
-#: addressbook/libebook/e-book.c:1574 addressbook/libebook/e-book.c:1578
-#: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
-#: addressbook/libebook/e-book.c:1989 addressbook/libebook/e-book.c:1993
-#: addressbook/libebook/e-book.c:2240 addressbook/libebook/e-book.c:2327
-#: addressbook/libebook/e-book.c:2331 addressbook/libebook/e-book.c:2523
-#: addressbook/libebook/e-book.c:2527 addressbook/libebook/e-book.c:2993
+#: addressbook/libebook/e-book.c:286 addressbook/libebook/e-book.c:290
+#: addressbook/libebook/e-book.c:492 addressbook/libebook/e-book.c:496
+#: addressbook/libebook/e-book.c:621 addressbook/libebook/e-book.c:625
+#: addressbook/libebook/e-book.c:714 addressbook/libebook/e-book.c:718
+#: addressbook/libebook/e-book.c:996 addressbook/libebook/e-book.c:999
+#: addressbook/libebook/e-book.c:1178 addressbook/libebook/e-book.c:1181
+#: addressbook/libebook/e-book.c:1320 addressbook/libebook/e-book.c:1324
+#: addressbook/libebook/e-book.c:1528 addressbook/libebook/e-book.c:1532
+#: addressbook/libebook/e-book.c:1744 addressbook/libebook/e-book.c:1748
+#: addressbook/libebook/e-book.c:1956 addressbook/libebook/e-book.c:1960
+#: addressbook/libebook/e-book.c:2158 addressbook/libebook/e-book.c:2162
+#: addressbook/libebook/e-book.c:2409 addressbook/libebook/e-book.c:2496
+#: addressbook/libebook/e-book.c:2500 addressbook/libebook/e-book.c:2692
+#: addressbook/libebook/e-book.c:2696 addressbook/libebook/e-book.c:3209
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "\"%s\" 呼び出しを作成する際に CORBA 例外"
 
-#: addressbook/libebook/e-book.c:2221
+#: addressbook/libebook/e-book.c:2390
 msgid "e_book_cancel: there is no current operation"
 msgstr "e_book_cancel: 現在実行中の操作はありません"
 
-#: addressbook/libebook/e-book.c:2256
+#: addressbook/libebook/e-book.c:2425
 msgid "e_book_cancel: couldn't cancel"
 msgstr "e_book_cancel: キャンセルできませんでした"
 
-#: addressbook/libebook/e-book.c:2285 addressbook/libebook/e-book.c:2289
+#: addressbook/libebook/e-book.c:2454 addressbook/libebook/e-book.c:2458
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%2$s\" の次にあるブックの \"%1$s\""
 
-#: addressbook/libebook/e-book.c:2355
+#: addressbook/libebook/e-book.c:2524
 msgid "e_book_open: cancelled"
 msgstr "e_book_open: キャンセルしました"
 
-#: addressbook/libebook/e-book.c:2851
+#: addressbook/libebook/e-book.c:3066
 msgid "e_book_load_uri: Invalid source."
 msgstr "e_book_load_uri: ソースが正しくありません"
 
-#: addressbook/libebook/e-book.c:2859
+#: addressbook/libebook/e-book.c:3074
 #, c-format
 msgid "e_book_load_uri: no factories available for uri `%s'"
 msgstr "e_book_load_uri: URI '%s' に対するファクトリは利用不可です"
 
-#: addressbook/libebook/e-book.c:2871
+#: addressbook/libebook/e-book.c:3086
 msgid "e_book_load_uri: Could not create EBookListener"
 msgstr "e_book_load_uri: EBookListener を生成できませんでした"
 
-#: addressbook/libebook/e-book.c:2922
+#: addressbook/libebook/e-book.c:3138
 #, c-format
 msgid "e_book_new: no factories available for uri `%s'"
 msgstr "e_book_new: URI '%s' に対するファクトリは利用不可です"
 
-#: addressbook/libebook/e-book.c:3080
+#: addressbook/libebook/e-book.c:3332
 msgid "e_book_get_self: there was no self contact uid stored in gconf"
 msgstr "e_book_get_self: GConf にセルフ連絡先 UID がありません。"
 
-#: addressbook/libebook/e-book.c:3191
+#: addressbook/libebook/e-book.c:3443
 #, c-format
 msgid ""
 "e_book_set_default_source: there was no source for uid `%s' stored in gconf."
 msgstr "e_book_set_default_source: GConf に UID '%s' のソースがありません。"
 
-#: addressbook/libebook/e-contact.c:100
+#: addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
 msgstr "重複しない ID"
 
-#: addressbook/libebook/e-contact.c:101
+#: addressbook/libebook/e-contact.c:103
 msgid "File As"
 msgstr "別名"
 
@@ -163,437 +168,437 @@ msgstr "別名"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:107
+#: addressbook/libebook/e-contact.c:109
 msgid "Full Name"
 msgstr "氏名"
 
-#: addressbook/libebook/e-contact.c:108
+#: addressbook/libebook/e-contact.c:110
 msgid "Name"
 msgstr "名前"
 
-#: addressbook/libebook/e-contact.c:109
+#: addressbook/libebook/e-contact.c:111
 msgid "Given Name"
 msgstr "ファーストネーム"
 
-#: addressbook/libebook/e-contact.c:110
+#: addressbook/libebook/e-contact.c:112
 msgid "Family Name"
 msgstr "名字"
 
-#: addressbook/libebook/e-contact.c:111
+#: addressbook/libebook/e-contact.c:113
 msgid "Nickname"
 msgstr "あだ名"
 
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 msgid "Name or Org"
 msgstr "名前または組織"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:117
 msgid "Address List"
 msgstr "住所の一覧"
 
-#: addressbook/libebook/e-contact.c:116
+#: addressbook/libebook/e-contact.c:118
 msgid "Home Address"
 msgstr "自宅の住所"
 
-#: addressbook/libebook/e-contact.c:117
+#: addressbook/libebook/e-contact.c:119
 msgid "Work Address"
 msgstr "勤務先の住所"
 
-#: addressbook/libebook/e-contact.c:118
+#: addressbook/libebook/e-contact.c:120
 msgid "Other Address"
 msgstr "その他の住所"
 
-#: addressbook/libebook/e-contact.c:120
+#: addressbook/libebook/e-contact.c:122
 msgid "Home Address Label"
 msgstr "自宅の住所ラベル"
 
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:123
 msgid "Work Address Label"
 msgstr "勤務先の住所ラベル"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:124
 msgid "Other Address Label"
 msgstr "その他の住所ラベル"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:126
 msgid "Assistant Phone"
 msgstr "アシスタントの電話番号"
 
-#: addressbook/libebook/e-contact.c:125
+#: addressbook/libebook/e-contact.c:127
 msgid "Business Phone"
 msgstr "仕事の電話番号"
 
-#: addressbook/libebook/e-contact.c:126
+#: addressbook/libebook/e-contact.c:128
 msgid "Business Phone 2"
 msgstr "仕事の電話番号２"
 
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Business Fax"
 msgstr "仕事の FAX 番号"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Callback Phone"
 msgstr "得意先の電話番号"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Car Phone"
 msgstr "車載電話の番号"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Company Phone"
 msgstr "会社の電話番号"
 
-#: addressbook/libebook/e-contact.c:131
+#: addressbook/libebook/e-contact.c:133
 msgid "Home Phone"
 msgstr "自宅の電話番号"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Home Phone 2"
 msgstr "自宅の電話番号２"
 
-#: addressbook/libebook/e-contact.c:133
+#: addressbook/libebook/e-contact.c:135
 msgid "Home Fax"
 msgstr "自宅の FAX 番号"
 
-#: addressbook/libebook/e-contact.c:134
+#: addressbook/libebook/e-contact.c:136
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Mobile Phone"
 msgstr "携帯電話の番号"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Other Phone"
 msgstr "その他の電話番号"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Other Fax"
 msgstr "その他の FAX 番号"
 
-#: addressbook/libebook/e-contact.c:138
+#: addressbook/libebook/e-contact.c:140
 msgid "Pager"
 msgstr "ポケベルの番号"
 
-#: addressbook/libebook/e-contact.c:139
+#: addressbook/libebook/e-contact.c:141
 msgid "Primary Phone"
 msgstr "電話番号"
 
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:142
 msgid "Radio"
 msgstr "ラジオ"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:143
 msgid "Telex"
 msgstr "テレックス"
 
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:147
 msgid "Email List"
 msgstr "E-メール一覧"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:148
 msgid "Email 1"
 msgstr "E-メ−ル１"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:149
 msgid "Email 2"
 msgstr "E-メ−ル２"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:150
 msgid "Email 3"
 msgstr "E-メ−ル３"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:151
 msgid "Email 4"
 msgstr "E-メ−ル４"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "Mailer"
 msgstr "メール・クライアント"
 
-#: addressbook/libebook/e-contact.c:151
+#: addressbook/libebook/e-contact.c:153
 msgid "Wants HTML Mail"
 msgstr "HTML 形式のメ−ルを希望する"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:156
 msgid "AIM Screen Name List"
 msgstr "AIM スクリーン名の一覧"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:157
 msgid "Groupwise Id List"
 msgstr "Groupwise の ID 一覧"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:158
 msgid "Jabber Id List"
 msgstr "Jabber の ID 一覧"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:159
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! スクリーン名の一覧"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:160
 msgid "MSN Screen Name List"
 msgstr "MSN スクリーン名の一覧"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:161
 msgid "ICQ Id List"
 msgstr "ICQ の ID 一覧です"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 1"
 msgstr "自宅の AIM スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:164
 msgid "AIM Home Screen Name 2"
 msgstr "自宅の AIM スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:165
 msgid "AIM Home Screen Name 3"
 msgstr "自宅の AIM スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 1"
 msgstr "勤務先の AIM スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:167
 msgid "AIM Work Screen Name 2"
 msgstr "勤務先の AIM スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:168
 msgid "AIM Work Screen Name 3"
 msgstr "勤務先の AIM スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:169
 msgid "Groupwise Home Screen Name 1"
 msgstr "自宅の Groupwise スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:170
 msgid "Groupwise Home Screen Name 2"
 msgstr "自宅の Groupwise スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:171
 msgid "Groupwise Home Screen Name 3"
 msgstr "自宅の Groupwise スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:170
+#: addressbook/libebook/e-contact.c:172
 msgid "Groupwise Work Screen Name 1"
 msgstr "勤務先の Groupwise スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:173
 msgid "Groupwise Work Screen Name 2"
 msgstr "勤務先の Groupwise スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:174
 msgid "Groupwise Work Screen Name 3"
 msgstr "勤務先の Groupwise スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 1"
 msgstr "自宅の Jabber ID １"
 
-#: addressbook/libebook/e-contact.c:174
+#: addressbook/libebook/e-contact.c:176
 msgid "Jabber Home Id 2"
 msgstr "自宅の Jabber ID ２"
 
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:177
 msgid "Jabber Home Id 3"
 msgstr "自宅の Jabber ID ３"
 
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 1"
 msgstr "勤務先の Jabber ID １"
 
-#: addressbook/libebook/e-contact.c:177
+#: addressbook/libebook/e-contact.c:179
 msgid "Jabber Work Id 2"
 msgstr "勤務先の Jabber ID ２"
 
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:180
 msgid "Jabber Work Id 3"
 msgstr "勤務先の Jabber ID ３"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 1"
 msgstr "自宅の Yahoo! スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Home Screen Name 2"
 msgstr "自宅の Yahoo! スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Home Screen Name 3"
 msgstr "自宅の Yahoo! スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 1"
 msgstr "勤務先の Yahoo! スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:185
 msgid "Yahoo! Work Screen Name 2"
 msgstr "勤務先の Yahoo! スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:186
 msgid "Yahoo! Work Screen Name 3"
 msgstr "勤務先の Yahoo! スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 1"
 msgstr "自宅の MSN スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:188
 msgid "MSN Home Screen Name 2"
 msgstr "自宅の MSN スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:189
 msgid "MSN Home Screen Name 3"
 msgstr "自宅の MSN スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 1"
 msgstr "勤務先の MSN スクリーン名１"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:191
 msgid "MSN Work Screen Name 2"
 msgstr "勤務先の MSN スクリーン名２"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:192
 msgid "MSN Work Screen Name 3"
 msgstr "勤務先の MSN スクリーン名３"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 1"
 msgstr "自宅の ICQ ID １"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:194
 msgid "ICQ Home Id 2"
 msgstr "自宅の ICQ ID ２"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:195
 msgid "ICQ Home Id 3"
 msgstr "自宅の ICQ ID ３"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 1"
 msgstr "勤務先の ICQ ID １"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:197
 msgid "ICQ Work Id 2"
 msgstr "勤務先の ICQ ID ２"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:198
 msgid "ICQ Work Id 3"
 msgstr "勤務先の ICQ ID ３"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:201
 msgid "Organization"
 msgstr "組織"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:202
 msgid "Organizational Unit"
 msgstr "組織"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:203
 msgid "Office"
 msgstr "事務所"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:205
 msgid "Title"
 msgstr "敬称 (前つけ)"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:206
 msgid "Role"
 msgstr "役割"
 
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:207
 msgid "Manager"
 msgstr "マネージャ"
 
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:208
 msgid "Assistant"
 msgstr "アシスタント"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:211
 msgid "Homepage URL"
 msgstr "ホームページの URL"
 
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:212
 msgid "Weblog URL"
 msgstr "Weblog の URL"
 
-#: addressbook/libebook/e-contact.c:211
+#: addressbook/libebook/e-contact.c:213
 msgid "Video Conferencing URL"
 msgstr "ビデオ会議用の URL"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:216
 msgid "Photo"
 msgstr "写真"
 
-#: addressbook/libebook/e-contact.c:215
+#: addressbook/libebook/e-contact.c:217
 msgid "Logo"
 msgstr "ロゴ"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:220
 msgid "X.509 Certificate"
 msgstr "X.509 認証"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:223
 msgid "Category List"
 msgstr "カテゴリの一覧"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:224
 msgid "Categories"
 msgstr "カテゴリ"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:225
+#: addressbook/libebook/e-contact.c:227
 msgid "Calendar URI"
 msgstr "カレンダの URI"
 
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:228
 msgid "Free/Busy URL"
 msgstr "予定の有無の URL(_R):"
 
-#: addressbook/libebook/e-contact.c:227
+#: addressbook/libebook/e-contact.c:229
 msgid "ICS Calendar"
 msgstr "ICS カレンダ"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:232
 msgid "Spouse's Name"
 msgstr "配偶者の名前"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:233
 msgid "Note"
 msgstr "ノート"
 
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:235
 msgid "Birth Date"
 msgstr "誕生日"
 
-#: addressbook/libebook/e-contact.c:234
+#: addressbook/libebook/e-contact.c:236
 msgid "Anniversary"
 msgstr "記念日"
 
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:238
 msgid "List"
 msgstr "一覧"
 
-#: addressbook/libebook/e-contact.c:237
+#: addressbook/libebook/e-contact.c:239
 msgid "List Show Addresses"
 msgstr "住所を表示する一覧です"
 
-#: addressbook/libebook/e-contact.c:1206
+#: addressbook/libebook/e-contact.c:1208
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
 
@@ -612,41 +617,51 @@ msgstr "誕生日: %s"
 msgid "Anniversary: %s"
 msgstr "記念日: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:183
+#: calendar/backends/file/e-cal-backend-file.c:171
 msgid "Can't save calendar data: Malformed URI."
 msgstr "カレンダのデータを保存できません: URI が間違っています。"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:257
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:477
 msgid "Invalid server URI"
 msgstr "サーバ URI が不正です"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:293
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:296
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:524
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:527
 msgid "Calendar"
 msgstr "カレンダ"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:303
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:534
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:770
+#: calendar/backends/http/e-cal-backend-http.c:445
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:328
-#: calendar/libecal/e-cal.c:4298
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:544
+msgid "Could not create thread for populating cache"
+msgstr "キャッシュを生成するためのスレッドを生成できませんでした"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:550
+#: calendar/libecal/e-cal.c:4490
 msgid "Authentication failed"
 msgstr "認証に失敗しました"
 
-#: calendar/backends/http/e-cal-backend-http.c:225
-msgid "Redirected to Invalid URI"
-msgstr "不正な URI へのリダイレクト"
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:762
+msgid "Repository is Offline"
+msgstr "リポジトリはオフラインです"
 
-#: calendar/backends/http/e-cal-backend-http.c:249
+#: calendar/backends/http/e-cal-backend-http.c:239
+msgid "Redirected to Invalid URI"
+msgstr "不正な URI へのリダイレクトです"
+
+#: calendar/backends/http/e-cal-backend-http.c:263
 msgid "Bad file format."
 msgstr "ファイルのフォ−マットが間違っています。"
 
-#: calendar/backends/http/e-cal-backend-http.c:255
+#: calendar/backends/http/e-cal-backend-http.c:269
 msgid "Not a calendar."
 msgstr "カレンダではありません。"
 
-#: calendar/libecal/e-cal-component.c:1237
+#: calendar/libecal/e-cal-component.c:1299
 msgid "Untitled appointment"
 msgstr "タイトルなしの予定"
 
@@ -792,83 +807,87 @@ msgid "Undefined"
 msgstr "未定義"
 
 #. actually ask the client for authentication
-#: calendar/libecal/e-cal.c:1521
+#: calendar/libecal/e-cal.c:1544
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s (ユーザ %s) のパスワードを入力して下さい"
 
-#: calendar/libecal/e-cal.c:4272
+#: calendar/libecal/e-cal.c:4462
 msgid "Invalid argument"
 msgstr "不正な引数"
 
-#: calendar/libecal/e-cal.c:4274
+#: calendar/libecal/e-cal.c:4464
 msgid "Backend is busy"
 msgstr "バックエンドが処理中です"
 
-#: calendar/libecal/e-cal.c:4276
+#: calendar/libecal/e-cal.c:4466
 msgid "Repository is offline"
 msgstr "リポジトリはオフラインです"
 
-#: calendar/libecal/e-cal.c:4278
+#: calendar/libecal/e-cal.c:4468
 msgid "No such calendar"
 msgstr "そのようなカレンダはありません"
 
-#: calendar/libecal/e-cal.c:4280 servers/groupwise/e-gw-connection.c:86
+#: calendar/libecal/e-cal.c:4470 servers/groupwise/e-gw-connection.c:157
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: calendar/libecal/e-cal.c:4282 servers/groupwise/e-gw-connection.c:82
+#: calendar/libecal/e-cal.c:4472 servers/groupwise/e-gw-connection.c:153
 msgid "Invalid object"
 msgstr "オブジェクトが不正です"
 
-#: calendar/libecal/e-cal.c:4284
+#: calendar/libecal/e-cal.c:4474
 msgid "URI not loaded"
 msgstr "URI を読み込んでいません"
 
-#: calendar/libecal/e-cal.c:4286
+#: calendar/libecal/e-cal.c:4476
 msgid "URI already loaded"
 msgstr "URL は既に読み込み済みです"
 
-#: calendar/libecal/e-cal.c:4288
+#: calendar/libecal/e-cal.c:4478
 msgid "Permission denied"
 msgstr "権限がありません"
 
-#: calendar/libecal/e-cal.c:4290
+#: calendar/libecal/e-cal.c:4480 servers/groupwise/e-gw-connection.c:159
+msgid "Unknown User"
+msgstr "ユーザを特定できません"
+
+#: calendar/libecal/e-cal.c:4482
 msgid "Object ID already exists"
 msgstr "既にオブジェクト ID が存在しています"
 
-#: calendar/libecal/e-cal.c:4292
+#: calendar/libecal/e-cal.c:4484
 msgid "Protocol not supported"
 msgstr "プロトコルはサポートされていません"
 
-#: calendar/libecal/e-cal.c:4294
+#: calendar/libecal/e-cal.c:4486
 msgid "Operation has been cancelled"
 msgstr "操作をキャンセルしました"
 
-#: calendar/libecal/e-cal.c:4296
+#: calendar/libecal/e-cal.c:4488
 msgid "Could not cancel operation"
 msgstr "操作をキャンセルできませんでした"
 
-#: calendar/libecal/e-cal.c:4300
+#: calendar/libecal/e-cal.c:4492
 msgid "Authentication required"
 msgstr "認証を必要としています"
 
-#: calendar/libecal/e-cal.c:4302
+#: calendar/libecal/e-cal.c:4494
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 例外が発生しました"
 
-#: calendar/libecal/e-cal.c:4304 servers/groupwise/e-gw-connection.c:92
+#: calendar/libecal/e-cal.c:4496 servers/groupwise/e-gw-connection.c:165
 msgid "Unknown error"
-msgstr "不明なエラーです"
+msgstr "エラーを特定できません"
 
-#: calendar/libecal/e-cal.c:4306
+#: calendar/libecal/e-cal.c:4498
 msgid "No error"
 msgstr "エラーはありません"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:50
 #: calendar/libedata-cal/e-cal-backend-sexp.c:529
-#: calendar/libedata-cal/e-cal-backend-sexp.c:661
-#: calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: calendar/libedata-cal/e-cal-backend-sexp.c:722
+#: calendar/libedata-cal/e-cal-backend-sexp.c:749
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" は引数を必要としません"
@@ -877,7 +896,7 @@ msgstr "\"%s\" は引数を必要としません"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:169
 #: calendar/libedata-cal/e-cal-backend-sexp.c:203
 #: calendar/libedata-cal/e-cal-backend-sexp.c:239
-#: calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: calendar/libedata-cal/e-cal-backend-sexp.c:787
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" は引数を一つ必要とします"
@@ -899,6 +918,7 @@ msgstr ""
 #: calendar/libedata-cal/e-cal-backend-sexp.c:127
 #: calendar/libedata-cal/e-cal-backend-sexp.c:312
 #: calendar/libedata-cal/e-cal-backend-sexp.c:467
+#: calendar/libedata-cal/e-cal-backend-sexp.c:561
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" は引数を二つ必要とします"
@@ -907,7 +927,8 @@ msgstr "\"%s\" は引数を二つ必要とします"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:175
 #: calendar/libedata-cal/e-cal-backend-sexp.c:209
 #: calendar/libedata-cal/e-cal-backend-sexp.c:318
-#: calendar/libedata-cal/e-cal-backend-sexp.c:732
+#: calendar/libedata-cal/e-cal-backend-sexp.c:567
+#: calendar/libedata-cal/e-cal-backend-sexp.c:793
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" は最初の引数として time_t 型の値を必要とします"
@@ -918,6 +939,7 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" は二番目の引数として整数値を必要とします"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:326
+#: calendar/libedata-cal/e-cal-backend-sexp.c:575
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" は二番目の引数として time_t 型の値を必要とします"
@@ -936,12 +958,12 @@ msgstr ""
 "\"%s\" は最初の引数として \"any\", \"summary\" または \"description\"、"
 "\"location\" のいずれか一つ引数を必要とします"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:563
+#: calendar/libedata-cal/e-cal-backend-sexp.c:624
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" は少なくとも引数を一つ必要とします"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:577
+#: calendar/libedata-cal/e-cal-backend-sexp.c:638
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -949,33 +971,28 @@ msgid ""
 msgstr ""
 "\"%s\" は全てまたは一つが文字列で、論理値 FAULSE (#f) を一つだけ必要とします"
 
-#: servers/groupwise/e-gw-connection.c:80
+#: servers/groupwise/e-gw-connection.c:151
 msgid "Invalid connection"
 msgstr "接続が不正です"
 
-#: servers/groupwise/e-gw-connection.c:84
+#: servers/groupwise/e-gw-connection.c:155
 msgid "Invalid response from server"
 msgstr "サーバから不正な応答です"
 
-#: servers/groupwise/e-gw-connection.c:88
+#: servers/groupwise/e-gw-connection.c:161
 msgid "Bad parameter"
 msgstr "パラメータが無効です"
 
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
-msgid "Evolution Addressbook file and LDAP backend"
-msgstr "Evolution アドレス帳ファイルと LDAP のバックエンド"
-
-#: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:2
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:2
-msgid "Evolution Calendar file and webcal backend"
-msgstr "Evolution カレンダ・ファイルと webcal のバックエンド"
-
-#: src/GNOME_Evolution_DataServerNOLDAP.server.in.in.h:1
+#: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Evolution アドレス帳ファイルのバックエンド"
 
+#: src/GNOME_Evolution_DataServer.server.in.in.h:2
+msgid "Evolution Calendar file and webcal backend"
+msgstr "Evolution カレンダ・ファイルと webcal のバックエンド"
+
 #. dialog display isn't working out
-#: src/server.c:110
+#: src/server.c:101
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
