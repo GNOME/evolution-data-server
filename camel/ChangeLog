@@ -1,4 +1,11 @@
-2005-02-04  Parthasarathi Susarla <sparthasarathi@novell.com>
+2005-01-04  Sivaiah Nallagatla     <snallagatla@novell.com>
+
+	* providers/groupwise/camel-groupwise-store.c
+	(groupwise_creaete_folder) (groupwise_delete_folder) 
+	(groupwise_rename_folder) : prevent these operations in 
+	offline mode 
+
+2005-01-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.c
 	  (groupwise_store_construct): initialise the store summary.
