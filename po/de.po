@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-19 01:14+0100\n"
+"POT-Creation-Date: 2005-01-23 22:15+0100\n"
 "PO-Revision-Date: 2005-01-19 01:12+0100\n"
 "Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -651,10 +651,10 @@ msgstr "Thread zum Belegen des Zwischenspeichers konnte nicht angelegt werden"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:557
 #: calendar/libecal/e-cal.c:4560
-#: camel/providers/groupwise/camel-groupwise-folder.c:533
+#: camel/providers/groupwise/camel-groupwise-folder.c:571
 #: camel/providers/groupwise/camel-groupwise-store.c:507
 #: camel/providers/groupwise/camel-groupwise-store.c:644
-#: camel/providers/groupwise/camel-groupwise-store.c:805
+#: camel/providers/groupwise/camel-groupwise-store.c:809
 msgid "Authentication failed"
 msgstr "Legitimation gescheitert"
 
@@ -1068,11 +1068,11 @@ msgstr ""
 msgid "Resynchronizing with server"
 msgstr "Resynchronisieren mit dem Server"
 
-#: camel/camel-disco-folder.c:42 camel/camel-offline-folder.c:50
+#: camel/camel-disco-folder.c:42 camel/camel-offline-folder.c:51
 msgid "Copy folder content locally for offline operation"
 msgstr "Den Ordnerinhalt lokal zum Arbeiten im Offline-Modus kopieren"
 
-#: camel/camel-disco-folder.c:104 camel/camel-offline-folder.c:107
+#: camel/camel-disco-folder.c:104 camel/camel-offline-folder.c:110
 msgid "Downloading new messages for offline mode"
 msgstr "Neue Nachrichten werden für Offline-Modus abgerufen"
 
@@ -1535,12 +1535,12 @@ msgstr "Namenssuche fehlgeschlagen"
 msgid "Name lookup failed: %s"
 msgstr "Namenssuche fehlgeschlagen: %s"
 
-#: camel/camel-offline-folder.c:250
+#: camel/camel-offline-folder.c:253
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Nachrichten im Ordner »%s« werden auf Festplatte abgeglichen"
 
-#: camel/camel-offline-journal.c:140 camel/camel-offline-journal.c:163
+#: camel/camel-offline-journal.c:141 camel/camel-offline-journal.c:164
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr "Offline-Journal für Ordner »%s« konnte nicht geschrieben werden: %s"
@@ -2382,7 +2382,7 @@ msgid "No such message"
 msgstr "Nachricht existiert nicht"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:120
-#: camel/providers/imap4/camel-imap4-folder.c:696
+#: camel/providers/imap4/camel-imap4-folder.c:773
 #: camel/providers/nntp/camel-nntp-folder.c:157
 #: camel/providers/nntp/camel-nntp-folder.c:233
 #: camel/providers/nntp/camel-nntp-folder.c:372
@@ -2394,7 +2394,7 @@ msgid "User cancelled"
 msgstr "Benutzer hat abgebrochen"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:125
-#: camel/providers/imap4/camel-imap4-folder.c:701
+#: camel/providers/imap4/camel-imap4-folder.c:778
 #: camel/providers/nntp/camel-nntp-folder.c:148
 #: camel/providers/nntp/camel-nntp-folder.c:150
 #: camel/providers/nntp/camel-nntp-folder.c:159
@@ -2408,44 +2408,43 @@ msgid "Cannot get message %s: %s"
 msgstr "Nachricht %s konnte nicht abgerufen werden: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:145
-#: camel/providers/imap4/camel-imap4-folder.c:719
+#: camel/providers/imap4/camel-imap4-folder.c:796
 msgid "This message is not available in offline mode."
 msgstr "Diese Nachricht ist im Offline-Modus nicht verfügbar"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:171
-#: camel/providers/groupwise/camel-groupwise-folder.c:272
+#: camel/providers/groupwise/camel-groupwise-folder.c:173
 msgid "Could not get message"
 msgstr "Abrufen der Nachricht gescheitert"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:471
+#: camel/providers/groupwise/camel-groupwise-folder.c:509
 #: camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Zusammenfassung für %s konnte nicht geladen werden"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:685
+#: camel/providers/groupwise/camel-groupwise-folder.c:722
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nachricht konnte nicht angelegt werden: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:697
+#: camel/providers/groupwise/camel-groupwise-folder.c:734
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nachricht konnte nicht an Ordner »%s« angehängt werden: %s"
 
-#: camel/providers/groupwise/camel-groupwise-journal.c:240
+#: camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
 msgid "Cannot get folder container %s"
 msgstr "Ordnerbehälter »%s« konnte nicht abgerufen werden"
 
-#: camel/providers/groupwise/camel-groupwise-journal.c:328
+#: camel/providers/groupwise/camel-groupwise-journal.c:347
 #: camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
 msgstr ""
 "Nachricht konnte im Offline-Modus nicht angehängt werden: Zwischenspeicher "
 "nicht verfügbar"
 
-#: camel/providers/groupwise/camel-groupwise-journal.c:344
+#: camel/providers/groupwise/camel-groupwise-journal.c:363
 #: camel/providers/imap4/camel-imap4-journal.c:336
 #, c-format
 msgid "Cannot append message in offline mode: %s"
@@ -2552,29 +2551,29 @@ msgstr "Zusammenfassungsinformationen für neue Nachrichten werden abgerufen"
 msgid "Cannot get folder info in offline mode."
 msgstr "Ordnerinformationen können im Offline-Modus nicht abgerufen werden."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:786
+#: camel/providers/groupwise/camel-groupwise-store.c:790
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht angelegt werden."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:835
+#: camel/providers/groupwise/camel-groupwise-store.c:839
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht gelöscht werden."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:878
+#: camel/providers/groupwise/camel-groupwise-store.c:882
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht umbenannt werden."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:884
+#: camel/providers/groupwise/camel-groupwise-store.c:888
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "GroupWise-Ordner »%s« konnte nicht in »%s« umbenannt werden"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:916
+#: camel/providers/groupwise/camel-groupwise-store.c:920
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-Server %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:918
+#: camel/providers/groupwise/camel-groupwise-store.c:922
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise-Dienst für %s auf %s"
@@ -2668,7 +2667,7 @@ msgstr "Der Ordner wurde zerstört und auf dem Serverneu angelegt."
 
 #. Check UIDs and flags of all messages we already know of.
 #: camel/providers/imap/camel-imap-folder.c:573
-#: camel/providers/imap4/camel-imap4-summary.c:1272
+#: camel/providers/imap4/camel-imap4-summary.c:1403
 msgid "Scanning for changed messages"
 msgstr "Nach geänderten Nachrichten suchen"
 
@@ -2787,6 +2786,7 @@ msgid "Automatically synchroni_ze remote mail locally"
 msgstr "Entfernte E-Mails automatisch lokal s_ynchronisieren"
 
 #: camel/providers/imap/camel-imap-provider.c:79
+#: camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP"
 msgstr "IMAP"
 
@@ -2930,13 +2930,13 @@ msgstr "Ordner »%s« konnte nicht angelegt werden: Ordner existiert."
 msgid "Unknown parent folder: %s"
 msgstr "Unbekannter Elternerdner: %s"
 
-#: camel/providers/imap4/camel-imap4-command.c:551
-#: camel/providers/imap4/camel-imap4-command.c:558
+#: camel/providers/imap4/camel-imap4-command.c:550
+#: camel/providers/imap4/camel-imap4-command.c:557
 #, c-format
 msgid "Failed sending command to IMAP server %s: %s"
 msgstr "Schicken eines Befehls an IMAP-Server %s gescheitert: %s"
 
-#: camel/providers/imap4/camel-imap4-command.c:661
+#: camel/providers/imap4/camel-imap4-command.c:660
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
 msgstr "Unerwartete Antwort von IMAP4-Server %s: %s"
@@ -2964,89 +2964,92 @@ msgstr "Ordner »%s« konnte nicht gewählt werden: Ungültiger Befehl"
 msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "Verbindung mit IMAP4-Server %s unerwartet getrennt: %s"
 
-#: camel/providers/imap4/camel-imap4-folder.c:306
+#: camel/providers/imap4/camel-imap4-folder.c:85
+msgid ""
+"Enable Mailing-List detection required for some filter and vFolder rules"
+msgstr ""
+"Erkennung von Mailinglisten aktivieren. Wird für einige Filter und VOrdner-"
+"Regeln benötigt."
+
+#: camel/providers/imap4/camel-imap4-folder.c:383
 #, c-format
 msgid "Cannot access folder `%s': %s"
 msgstr "Auf den Ordner »%s« konnte nicht zugegriffen werden: %s"
 
-#: camel/providers/imap4/camel-imap4-folder.c:365
+#: camel/providers/imap4/camel-imap4-folder.c:442
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
 msgstr "Flags konnten nicht mit Ordner »%s« synchronisiert werden: Unbekannt"
 
-#: camel/providers/imap4/camel-imap4-folder.c:371
+#: camel/providers/imap4/camel-imap4-folder.c:448
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
 msgstr ""
 "Flags konnten nicht mit Ordner »%s« synchronisiert werden: Ungültiger Befehl"
 
-#: camel/providers/imap4/camel-imap4-folder.c:512
+#: camel/providers/imap4/camel-imap4-folder.c:589
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
 msgstr "Ordner »%s« konnte nicht gesäubert werden: Unbekannt"
 
-#: camel/providers/imap4/camel-imap4-folder.c:517
+#: camel/providers/imap4/camel-imap4-folder.c:594
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
 msgstr "Ordner »%s« konnte nicht gesäubert werden: Ungültiger Befehl"
 
-#: camel/providers/imap4/camel-imap4-folder.c:773
+#: camel/providers/imap4/camel-imap4-folder.c:850
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr ""
 "Nachricht %s konnte nicht aus Ordner %s abgerufen werden: Keine derartige "
 "Nachricht"
 
-#: camel/providers/imap4/camel-imap4-folder.c:778
+#: camel/providers/imap4/camel-imap4-folder.c:855
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr ""
 "Nachricht %s konnte nicht aus Ordner »%s« abgerufen werden: Fehlerhafter "
 "Befehl"
 
-#: camel/providers/imap4/camel-imap4-folder.c:911
+#: camel/providers/imap4/camel-imap4-folder.c:988
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr ""
 "Nachricht konnte nicht an Ordner »%s« angehängt werden: Unbekannter Fehler"
 
-#: camel/providers/imap4/camel-imap4-folder.c:940
+#: camel/providers/imap4/camel-imap4-folder.c:1017
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr ""
 "Nachricht konnte nicht an Ordner »%s« angehängt werden: Ungültiger Befehl"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1048
+#: camel/providers/imap4/camel-imap4-folder.c:1125
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Nachrichten aus Ordner »%s« konnten nicht in Ordner »%s« verschoben werden: "
 "Unbekannt"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1052
+#: camel/providers/imap4/camel-imap4-folder.c:1129
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Nachrichten aus Ordner »%s« konnten nicht in Ordner »%s« kopiert werden: "
 "Unbekannt"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1060
+#: camel/providers/imap4/camel-imap4-folder.c:1137
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "Nachrichten aus Ordner »%s« konnten nicht in Ordner »%s« verschoben werden: "
 "Ungültiger Befehl"
 
-#: camel/providers/imap4/camel-imap4-folder.c:1064
+#: camel/providers/imap4/camel-imap4-folder.c:1141
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "Nachrichten aus Ordner »%s« konnten nicht in Ordner »%s« kopiert werden: "
 "Ungültiger Befehl"
-
-#: camel/providers/imap4/camel-imap4-provider.c:64
-msgid "IMAPv4rev1"
-msgstr "IMAPv4rev1"
 
 #: camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
@@ -3178,7 +3181,7 @@ msgstr "Abbestellen des Ordners »%s« gescheitert: Ungültiger Postfachname"
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Abbestellen des Ordners »%s« gescheitert: Ungültiger Befehl"
 
-#: camel/providers/imap4/camel-imap4-summary.c:1297
+#: camel/providers/imap4/camel-imap4-summary.c:1428
 msgid "Fetching envelopes for new messages"
 msgstr "Umschläge für neue Nachrichten werden abgerufen"
 
@@ -4441,7 +4444,7 @@ msgstr "_Bearbeiten"
 msgid "categories"
 msgstr "Kategorien"
 
-#: libedataserverui/e-name-selector-dialog.c:184
+#: libedataserverui/e-name-selector-dialog.c:189
 msgid "Select Contacts from Address Book"
 msgstr "Kontakte aus dem Adressbuch wählen"
 
@@ -4502,6 +4505,9 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Mehrere Speicherzugriffsfehler aufgetreten; Fehlerdialog kann nicht "
 "angezeigt werden\n"
+
+#~ msgid "IMAPv4rev1"
+#~ msgstr "IMAPv4rev1"
 
 # CHECK
 #~ msgid "Post Office Agent:"
