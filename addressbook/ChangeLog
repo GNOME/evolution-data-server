@@ -1,3 +1,10 @@
+2004-02-06  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libebook/e-address-western.c (e_address_western_extract_region):
+	Don't allow end index to go below start index when extracting the
+	region. Also handle the case where there is no whitespace after comma
+	more gracefully.
+
 2004-02-06  Chris Toshok  <toshok@ximian.com>
 
 	* libebook/e-book.c (e_book_activate): if bonobo hasn't been

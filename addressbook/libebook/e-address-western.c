@@ -223,7 +223,7 @@ e_address_western_extract_locality (gchar *line)
 static gchar *
 e_address_western_extract_region (gchar *line)
 {
-	gint start, end;
+	gint start, end, alt_end;
 
 	start = strcspn (line, ",");
 	start++;
@@ -234,12 +234,19 @@ e_address_western_extract_region (gchar *line)
 	while (isspace (line[end]))
 		end--;
 
+	alt_end = end;
+
 	while (!isspace (line[end]))
 		end--;
 
 	while (isspace (line[end]))
 		end--;
 	end++;
+
+	if (end <= start)
+		end = alt_end;
+	if (end <= start)
+		return g_strdup ("");
 
 	/* Between start and end lie the string. */
 	return g_strndup ( (line+start), end-start);
