@@ -200,7 +200,67 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
+<!-- ##### ARG EContact:im-aim-home-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-aim-home-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-aim-home-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-aim-work-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-aim-work-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-aim-work-3 ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:im-icq ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-icq-home-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-icq-home-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-icq-home-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-icq-work-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-icq-work-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-icq-work-3 ##### -->
 <para>
 
 </para>
@@ -210,12 +270,102 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
+<!-- ##### ARG EContact:im-jabber-home-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-jabber-home-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-jabber-home-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-jabber-work-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-jabber-work-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-jabber-work-3 ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:im-msn ##### -->
 <para>
 
 </para>
 
+<!-- ##### ARG EContact:im-msn-home-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-msn-home-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-msn-home-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-msn-work-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-msn-work-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-msn-work-3 ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:im-yahoo ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-yahoo-home-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-yahoo-home-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-yahoo-home-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-yahoo-work-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-yahoo-work-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-yahoo-work-3 ##### -->
 <para>
 
 </para>
@@ -345,6 +495,11 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
+<!-- ##### ARG EContact:video-url ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:wants-html ##### -->
 <para>
 
@@ -405,6 +560,7 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_CALENDAR_URI: 
 @E_CONTACT_FREEBUSY_URL: 
 @E_CONTACT_ICS_CALENDAR: 
+@E_CONTACT_VIDEO_URL: 
 @E_CONTACT_SPOUSE: 
 @E_CONTACT_NOTE: 
 @E_CONTACT_IS_LIST: 
@@ -414,6 +570,36 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_IM_YAHOO: 
 @E_CONTACT_IM_MSN: 
 @E_CONTACT_IM_ICQ: 
+@E_CONTACT_IM_AIM_HOME_1: 
+@E_CONTACT_IM_AIM_HOME_2: 
+@E_CONTACT_IM_AIM_HOME_3: 
+@E_CONTACT_IM_AIM_WORK_1: 
+@E_CONTACT_IM_AIM_WORK_2: 
+@E_CONTACT_IM_AIM_WORK_3: 
+@E_CONTACT_IM_JABBER_HOME_1: 
+@E_CONTACT_IM_JABBER_HOME_2: 
+@E_CONTACT_IM_JABBER_HOME_3: 
+@E_CONTACT_IM_JABBER_WORK_1: 
+@E_CONTACT_IM_JABBER_WORK_2: 
+@E_CONTACT_IM_JABBER_WORK_3: 
+@E_CONTACT_IM_YAHOO_HOME_1: 
+@E_CONTACT_IM_YAHOO_HOME_2: 
+@E_CONTACT_IM_YAHOO_HOME_3: 
+@E_CONTACT_IM_YAHOO_WORK_1: 
+@E_CONTACT_IM_YAHOO_WORK_2: 
+@E_CONTACT_IM_YAHOO_WORK_3: 
+@E_CONTACT_IM_MSN_HOME_1: 
+@E_CONTACT_IM_MSN_HOME_2: 
+@E_CONTACT_IM_MSN_HOME_3: 
+@E_CONTACT_IM_MSN_WORK_1: 
+@E_CONTACT_IM_MSN_WORK_2: 
+@E_CONTACT_IM_MSN_WORK_3: 
+@E_CONTACT_IM_ICQ_HOME_1: 
+@E_CONTACT_IM_ICQ_HOME_2: 
+@E_CONTACT_IM_ICQ_HOME_3: 
+@E_CONTACT_IM_ICQ_WORK_1: 
+@E_CONTACT_IM_ICQ_WORK_2: 
+@E_CONTACT_IM_ICQ_WORK_3: 
 @E_CONTACT_ADDRESS: 
 @E_CONTACT_ADDRESS_HOME: 
 @E_CONTACT_ADDRESS_WORK: 

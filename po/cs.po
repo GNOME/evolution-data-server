@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-12 03:36+0100\n"
+"POT-Creation-Date: 2004-01-12 21:29-0500\n"
 "PO-Revision-Date: 2004-01-12 09:46+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -308,109 +308,253 @@ msgstr "Seznam přezdívek MSN"
 msgid "ICQ Id List"
 msgstr "Seznam ICQ Id"
 
-#. Organizational fields
+#: addressbook/libebook/e-contact.c:156
+#, fuzzy
+msgid "AIM Home Screen Name 1"
+msgstr "Seznam přezdívek AIM"
+
 #: addressbook/libebook/e-contact.c:157
+#, fuzzy
+msgid "AIM Home Screen Name 2"
+msgstr "Seznam přezdívek AIM"
+
+#: addressbook/libebook/e-contact.c:158
+#, fuzzy
+msgid "AIM Home Screen Name 3"
+msgstr "Seznam přezdívek AIM"
+
+#: addressbook/libebook/e-contact.c:159
+#, fuzzy
+msgid "AIM Work Screen Name 1"
+msgstr "Seznam přezdívek AIM"
+
+#: addressbook/libebook/e-contact.c:160
+#, fuzzy
+msgid "AIM Work Screen Name 2"
+msgstr "Seznam přezdívek AIM"
+
+#: addressbook/libebook/e-contact.c:161
+#, fuzzy
+msgid "AIM Work Screen Name 3"
+msgstr "Seznam přezdívek AIM"
+
+#: addressbook/libebook/e-contact.c:162
+#, fuzzy
+msgid "Jabber Home Id 1"
+msgstr "Seznam Id Jabberu"
+
+#: addressbook/libebook/e-contact.c:163
+#, fuzzy
+msgid "Jabber Home Id 2"
+msgstr "Seznam Id Jabberu"
+
+#: addressbook/libebook/e-contact.c:164
+#, fuzzy
+msgid "Jabber Home Id 3"
+msgstr "Seznam Id Jabberu"
+
+#: addressbook/libebook/e-contact.c:165
+#, fuzzy
+msgid "Jabber Work Id 1"
+msgstr "Seznam Id Jabberu"
+
+#: addressbook/libebook/e-contact.c:166
+#, fuzzy
+msgid "Jabber Work Id 2"
+msgstr "Seznam Id Jabberu"
+
+#: addressbook/libebook/e-contact.c:167
+#, fuzzy
+msgid "Jabber Work Id 3"
+msgstr "Seznam Id Jabberu"
+
+#: addressbook/libebook/e-contact.c:168
+#, fuzzy
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Seznam přezdívek Yahoo!"
+
+#: addressbook/libebook/e-contact.c:169
+#, fuzzy
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Seznam přezdívek Yahoo!"
+
+#: addressbook/libebook/e-contact.c:170
+#, fuzzy
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Seznam přezdívek Yahoo!"
+
+#: addressbook/libebook/e-contact.c:171
+#, fuzzy
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Seznam přezdívek Yahoo!"
+
+#: addressbook/libebook/e-contact.c:172
+#, fuzzy
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Seznam přezdívek Yahoo!"
+
+#: addressbook/libebook/e-contact.c:173
+#, fuzzy
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Seznam přezdívek Yahoo!"
+
+#: addressbook/libebook/e-contact.c:174
+#, fuzzy
+msgid "MSN Home Screen Name 1"
+msgstr "Seznam přezdívek MSN"
+
+#: addressbook/libebook/e-contact.c:175
+#, fuzzy
+msgid "MSN Home Screen Name 2"
+msgstr "Seznam přezdívek MSN"
+
+#: addressbook/libebook/e-contact.c:176
+#, fuzzy
+msgid "MSN Home Screen Name 3"
+msgstr "Seznam přezdívek MSN"
+
+#: addressbook/libebook/e-contact.c:177
+#, fuzzy
+msgid "MSN Work Screen Name 1"
+msgstr "Seznam přezdívek MSN"
+
+#: addressbook/libebook/e-contact.c:178
+#, fuzzy
+msgid "MSN Work Screen Name 2"
+msgstr "Seznam přezdívek MSN"
+
+#: addressbook/libebook/e-contact.c:179
+#, fuzzy
+msgid "MSN Work Screen Name 3"
+msgstr "Seznam přezdívek MSN"
+
+#: addressbook/libebook/e-contact.c:180
+msgid "ICQ Home Id 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:181
+msgid "ICQ Home Id 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:182
+msgid "ICQ Home Id 3"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:183
+msgid "ICQ Work Id 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:184
+msgid "ICQ Work Id 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:185
+msgid "ICQ Work Id 3"
+msgstr ""
+
+#. Organizational fields
+#: addressbook/libebook/e-contact.c:188
 msgid "Organization"
 msgstr "Organizace"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:189
 msgid "Organizational Unit"
 msgstr "Organizační jednotka"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:190
 msgid "Office"
 msgstr "Kancelář"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:192
 msgid "Title"
 msgstr "Titul"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:193
 msgid "Role"
 msgstr "Funkce"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:194
 msgid "Manager"
 msgstr "Vedoucí"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:195
 msgid "Assistant"
 msgstr "Asistent"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:198
 msgid "Homepage URL"
 msgstr "URL domovské stránky"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:199
 msgid "Weblog URL"
 msgstr "URL weblogu"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:200
 msgid "Video Conferencing URL"
 msgstr "URL pro videokonference"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:203
 msgid "Photo"
 msgstr "Fotografie"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:204
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:207
 msgid "X.509 Certificate"
 msgstr "Certifikát X.509"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:211
 msgid "Category List"
 msgstr "Seznam kategorií"
 
-#: addressbook/libebook/e-contact.c:181 addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:212 addressbook/libebook/e-contact.c:214
 msgid "Categories"
 msgstr "Kategorie"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:218
 msgid "Calendar URI"
 msgstr "URI Kalendáře"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:219
 msgid "Free/Busy URL"
 msgstr "URL volno/zaneprázdněn"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:220
 msgid "ICS Calendar"
 msgstr "Kalendář ICS"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:223
 msgid "Spouse's Name"
 msgstr "Partner/-ka"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:224
 msgid "Note"
 msgstr "Poznámka"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:226
 msgid "Birth Date"
 msgstr "Narozeniny"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:227
 msgid "Anniversary"
 msgstr "Výročí"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:229
 msgid "List"
 msgstr "Seznam"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:230
 msgid "List Show Addresses"
 msgstr "Seznam zobrazených adres"
 
-#: addressbook/libebook/e-contact.c:1078
+#: addressbook/libebook/e-contact.c:1131
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
@@ -433,11 +577,11 @@ msgstr "Výročí: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
-#: calendar/backends/http/e-cal-backend-http.c:273
+#: calendar/backends/http/e-cal-backend-http.c:276
 msgid "Bad file format."
 msgstr "Špatný formát souboru."
 
-#: calendar/backends/http/e-cal-backend-http.c:278
+#: calendar/backends/http/e-cal-backend-http.c:281
 msgid "Not a calendar."
 msgstr "Není to kalendář."
 
@@ -753,6 +897,41 @@ msgstr ""
 "\"%s\" očekává jako všechny parametry řetězce nebo právě jeden parametr "
 "boolean false (#f)"
 
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Backend souborů a LDAP pro adresář Evolution"

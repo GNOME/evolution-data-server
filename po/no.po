@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-11 12:57+0100\n"
+"POT-Creation-Date: 2004-01-12 21:29-0500\n"
 "PO-Revision-Date: 2004-01-11 13:15+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: addressbook/backends/file/e-book-backend-file.c:392
 #: addressbook/backends/vcf/e-book-backend-vcf.c:101
@@ -305,109 +305,253 @@ msgstr "Liste med skjermnavn for MSN"
 msgid "ICQ Id List"
 msgstr "Liste med ICQ-IDer"
 
-#. Organizational fields
+#: addressbook/libebook/e-contact.c:156
+#, fuzzy
+msgid "AIM Home Screen Name 1"
+msgstr "Liste over skjermnavn for AIM"
+
 #: addressbook/libebook/e-contact.c:157
+#, fuzzy
+msgid "AIM Home Screen Name 2"
+msgstr "Liste over skjermnavn for AIM"
+
+#: addressbook/libebook/e-contact.c:158
+#, fuzzy
+msgid "AIM Home Screen Name 3"
+msgstr "Liste over skjermnavn for AIM"
+
+#: addressbook/libebook/e-contact.c:159
+#, fuzzy
+msgid "AIM Work Screen Name 1"
+msgstr "Liste over skjermnavn for AIM"
+
+#: addressbook/libebook/e-contact.c:160
+#, fuzzy
+msgid "AIM Work Screen Name 2"
+msgstr "Liste over skjermnavn for AIM"
+
+#: addressbook/libebook/e-contact.c:161
+#, fuzzy
+msgid "AIM Work Screen Name 3"
+msgstr "Liste over skjermnavn for AIM"
+
+#: addressbook/libebook/e-contact.c:162
+#, fuzzy
+msgid "Jabber Home Id 1"
+msgstr "Liste med Jabber-IDer"
+
+#: addressbook/libebook/e-contact.c:163
+#, fuzzy
+msgid "Jabber Home Id 2"
+msgstr "Liste med Jabber-IDer"
+
+#: addressbook/libebook/e-contact.c:164
+#, fuzzy
+msgid "Jabber Home Id 3"
+msgstr "Liste med Jabber-IDer"
+
+#: addressbook/libebook/e-contact.c:165
+#, fuzzy
+msgid "Jabber Work Id 1"
+msgstr "Liste med Jabber-IDer"
+
+#: addressbook/libebook/e-contact.c:166
+#, fuzzy
+msgid "Jabber Work Id 2"
+msgstr "Liste med Jabber-IDer"
+
+#: addressbook/libebook/e-contact.c:167
+#, fuzzy
+msgid "Jabber Work Id 3"
+msgstr "Liste med Jabber-IDer"
+
+#: addressbook/libebook/e-contact.c:168
+#, fuzzy
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Liste med skjermnavn for Yahoo!"
+
+#: addressbook/libebook/e-contact.c:169
+#, fuzzy
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Liste med skjermnavn for Yahoo!"
+
+#: addressbook/libebook/e-contact.c:170
+#, fuzzy
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Liste med skjermnavn for Yahoo!"
+
+#: addressbook/libebook/e-contact.c:171
+#, fuzzy
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Liste med skjermnavn for Yahoo!"
+
+#: addressbook/libebook/e-contact.c:172
+#, fuzzy
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Liste med skjermnavn for Yahoo!"
+
+#: addressbook/libebook/e-contact.c:173
+#, fuzzy
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Liste med skjermnavn for Yahoo!"
+
+#: addressbook/libebook/e-contact.c:174
+#, fuzzy
+msgid "MSN Home Screen Name 1"
+msgstr "Liste med skjermnavn for MSN"
+
+#: addressbook/libebook/e-contact.c:175
+#, fuzzy
+msgid "MSN Home Screen Name 2"
+msgstr "Liste med skjermnavn for MSN"
+
+#: addressbook/libebook/e-contact.c:176
+#, fuzzy
+msgid "MSN Home Screen Name 3"
+msgstr "Liste med skjermnavn for MSN"
+
+#: addressbook/libebook/e-contact.c:177
+#, fuzzy
+msgid "MSN Work Screen Name 1"
+msgstr "Liste med skjermnavn for MSN"
+
+#: addressbook/libebook/e-contact.c:178
+#, fuzzy
+msgid "MSN Work Screen Name 2"
+msgstr "Liste med skjermnavn for MSN"
+
+#: addressbook/libebook/e-contact.c:179
+#, fuzzy
+msgid "MSN Work Screen Name 3"
+msgstr "Liste med skjermnavn for MSN"
+
+#: addressbook/libebook/e-contact.c:180
+msgid "ICQ Home Id 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:181
+msgid "ICQ Home Id 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:182
+msgid "ICQ Home Id 3"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:183
+msgid "ICQ Work Id 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:184
+msgid "ICQ Work Id 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:185
+msgid "ICQ Work Id 3"
+msgstr ""
+
+#. Organizational fields
+#: addressbook/libebook/e-contact.c:188
 msgid "Organization"
 msgstr "Organisasjon"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:189
 msgid "Organizational Unit"
 msgstr "Organisasjonsenhet"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:190
 msgid "Office"
 msgstr "Kontor"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:192
 msgid "Title"
 msgstr "Tittel"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:193
 msgid "Role"
 msgstr "Rolle"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:194
 msgid "Manager"
 msgstr "Leder"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:195
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:198
 msgid "Homepage URL"
 msgstr "URL til hjemmeside"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:199
 msgid "Weblog URL"
 msgstr "URL til weblog"
 
-#: addressbook/libebook/e-contact.c:169
+#: addressbook/libebook/e-contact.c:200
 msgid "Video Conferencing URL"
 msgstr "Videokonferanse-URL"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:203
 msgid "Photo"
 msgstr "Fotografi"
 
-#: addressbook/libebook/e-contact.c:173
+#: addressbook/libebook/e-contact.c:204
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:176
+#: addressbook/libebook/e-contact.c:207
 msgid "X.509 Certificate"
 msgstr "X.509-sertifikat"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:211
 msgid "Category List"
 msgstr "Kategoriliste"
 
-#: addressbook/libebook/e-contact.c:181 addressbook/libebook/e-contact.c:183
+#: addressbook/libebook/e-contact.c:212 addressbook/libebook/e-contact.c:214
 msgid "Categories"
 msgstr "Kategorier"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:218
 msgid "Calendar URI"
 msgstr "Kalender URI"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:219
 msgid "Free/Busy URL"
 msgstr "Ledig/opptatt URL"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:220
 msgid "ICS Calendar"
 msgstr "ICS-kalender"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:223
 msgid "Spouse's Name"
 msgstr "Ektefelles navn"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:224
 msgid "Note"
 msgstr "Kommentar"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:226
 msgid "Birth Date"
 msgstr "Fødselsdato"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:227
 msgid "Anniversary"
 msgstr "Jubileum"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:229
 msgid "List"
 msgstr "Liste"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:230
 msgid "List Show Addresses"
 msgstr "Vis adresse som liste"
 
-#: addressbook/libebook/e-contact.c:1078
+#: addressbook/libebook/e-contact.c:1131
 msgid "Unnamed List"
 msgstr "Liste uten navn"
 
@@ -430,11 +574,11 @@ msgstr "Bryllupsdag: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
-#: calendar/backends/http/e-cal-backend-http.c:273
+#: calendar/backends/http/e-cal-backend-http.c:276
 msgid "Bad file format."
 msgstr "Ugyldig filformat."
 
-#: calendar/backends/http/e-cal-backend-http.c:278
+#: calendar/backends/http/e-cal-backend-http.c:281
 msgid "Not a calendar."
 msgstr "Ikke en kalender."
 
@@ -686,7 +830,8 @@ msgstr "«%s» forventer at første argument er en streng"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:89
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "«%s» forventer at første argument er en dato/tid-streng i ISO 8601 format"
+msgstr ""
+"«%s» forventer at første argument er en dato/tid-streng i ISO 8601 format"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
 #: calendar/libedata-cal/e-cal-backend-sexp.c:277
@@ -732,7 +877,8 @@ msgstr "«%s» forventer at andre argument er en streng"
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\""
-msgstr "«%s» forventer at første argument er en av «any», «summary», «description»"
+msgstr ""
+"«%s» forventer at første argument er en av «any», «summary», «description»"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:532
 #, c-format
@@ -744,7 +890,9 @@ msgstr "«%s» forventer minst ett argument"
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr "«%s» forventer at alle argumenter er strenger eller ett, og kun ett, argument er den bolske verdien falsk (#f)"
+msgstr ""
+"«%s» forventer at alle argumenter er strenger eller ett, og kun ett, "
+"argument er den bolske verdien falsk (#f)"
 
 #. !/usr/bin/env python
 #. -*- Mode: python -*-

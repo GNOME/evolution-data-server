@@ -8,14 +8,58 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0.0.4\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-06 14:35+0100\n"
+"POT-Creation-Date: 2004-01-12 21:29-0500\n"
 "PO-Revision-Date: 2004-01-06 14:31+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: addressbook/backends/file/e-book-backend-file.c:392
+#: addressbook/backends/vcf/e-book-backend-vcf.c:101
+msgid "Loading..."
+msgstr "Ladevorgang..."
+
+#: addressbook/backends/file/e-book-backend-file.c:394
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2860
+#: addressbook/backends/vcf/e-book-backend-vcf.c:103
+msgid "Searching..."
+msgstr "Suchvorgang..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:613
+msgid "Using Distinguished Name (DN)"
+msgstr "Eindeutiger Name (EN) wird verwendet"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:616
+msgid "Using Email Address"
+msgstr "E-Mail-Adresse wird verwendet"
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:760
+msgid "Reconnecting to LDAP server..."
+msgstr "LDAP-Server-Verbindung wird erneut hergestellt..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1261
+msgid "Adding contact to LDAP server..."
+msgstr "Kontakt wird zu LDAP-Server hinzugefügt..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1350
+msgid "Removing contact from LDAP server..."
+msgstr "Kontakt wird von LDAP-Server entfernt..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1550
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1553
+msgid "Modifying contact from LDAP server..."
+msgstr "Kontakt auf LDAP-Server wird verändert..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2783
+msgid "Receiving LDAP search results..."
+msgstr "LDAP-Suchergebnisse werden abgerufen..."
+
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2880
+msgid "Error performing search"
+msgstr "Fehler beim Ausführen der Suche"
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
@@ -266,152 +310,285 @@ msgstr "Liste angezeigter MSN-Namen"
 msgid "ICQ Id List"
 msgstr "ICQ-Kennungsliste"
 
-#. Organizational fields
+#: addressbook/libebook/e-contact.c:156
+#, fuzzy
+msgid "AIM Home Screen Name 1"
+msgstr "Liste angezeigter AIM-Namen"
+
 #: addressbook/libebook/e-contact.c:157
+#, fuzzy
+msgid "AIM Home Screen Name 2"
+msgstr "Liste angezeigter AIM-Namen"
+
+#: addressbook/libebook/e-contact.c:158
+#, fuzzy
+msgid "AIM Home Screen Name 3"
+msgstr "Liste angezeigter AIM-Namen"
+
+#: addressbook/libebook/e-contact.c:159
+#, fuzzy
+msgid "AIM Work Screen Name 1"
+msgstr "Liste angezeigter AIM-Namen"
+
+#: addressbook/libebook/e-contact.c:160
+#, fuzzy
+msgid "AIM Work Screen Name 2"
+msgstr "Liste angezeigter AIM-Namen"
+
+#: addressbook/libebook/e-contact.c:161
+#, fuzzy
+msgid "AIM Work Screen Name 3"
+msgstr "Liste angezeigter AIM-Namen"
+
+#: addressbook/libebook/e-contact.c:162
+#, fuzzy
+msgid "Jabber Home Id 1"
+msgstr "Jabber-Kennungsliste"
+
+#: addressbook/libebook/e-contact.c:163
+#, fuzzy
+msgid "Jabber Home Id 2"
+msgstr "Jabber-Kennungsliste"
+
+#: addressbook/libebook/e-contact.c:164
+#, fuzzy
+msgid "Jabber Home Id 3"
+msgstr "Jabber-Kennungsliste"
+
+#: addressbook/libebook/e-contact.c:165
+#, fuzzy
+msgid "Jabber Work Id 1"
+msgstr "Jabber-Kennungsliste"
+
+#: addressbook/libebook/e-contact.c:166
+#, fuzzy
+msgid "Jabber Work Id 2"
+msgstr "Jabber-Kennungsliste"
+
+#: addressbook/libebook/e-contact.c:167
+#, fuzzy
+msgid "Jabber Work Id 3"
+msgstr "Jabber-Kennungsliste"
+
+#: addressbook/libebook/e-contact.c:168
+#, fuzzy
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Liste angezeigter Yahoo!-Namen"
+
+#: addressbook/libebook/e-contact.c:169
+#, fuzzy
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Liste angezeigter Yahoo!-Namen"
+
+#: addressbook/libebook/e-contact.c:170
+#, fuzzy
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Liste angezeigter Yahoo!-Namen"
+
+#: addressbook/libebook/e-contact.c:171
+#, fuzzy
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Liste angezeigter Yahoo!-Namen"
+
+#: addressbook/libebook/e-contact.c:172
+#, fuzzy
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Liste angezeigter Yahoo!-Namen"
+
+#: addressbook/libebook/e-contact.c:173
+#, fuzzy
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Liste angezeigter Yahoo!-Namen"
+
+#: addressbook/libebook/e-contact.c:174
+#, fuzzy
+msgid "MSN Home Screen Name 1"
+msgstr "Liste angezeigter MSN-Namen"
+
+#: addressbook/libebook/e-contact.c:175
+#, fuzzy
+msgid "MSN Home Screen Name 2"
+msgstr "Liste angezeigter MSN-Namen"
+
+#: addressbook/libebook/e-contact.c:176
+#, fuzzy
+msgid "MSN Home Screen Name 3"
+msgstr "Liste angezeigter MSN-Namen"
+
+#: addressbook/libebook/e-contact.c:177
+#, fuzzy
+msgid "MSN Work Screen Name 1"
+msgstr "Liste angezeigter MSN-Namen"
+
+#: addressbook/libebook/e-contact.c:178
+#, fuzzy
+msgid "MSN Work Screen Name 2"
+msgstr "Liste angezeigter MSN-Namen"
+
+#: addressbook/libebook/e-contact.c:179
+#, fuzzy
+msgid "MSN Work Screen Name 3"
+msgstr "Liste angezeigter MSN-Namen"
+
+#: addressbook/libebook/e-contact.c:180
+msgid "ICQ Home Id 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:181
+msgid "ICQ Home Id 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:182
+msgid "ICQ Home Id 3"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:183
+msgid "ICQ Work Id 1"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:184
+msgid "ICQ Work Id 2"
+msgstr ""
+
+#: addressbook/libebook/e-contact.c:185
+msgid "ICQ Work Id 3"
+msgstr ""
+
+#. Organizational fields
+#: addressbook/libebook/e-contact.c:188
 msgid "Organization"
 msgstr "Organisation"
 
-#: addressbook/libebook/e-contact.c:158
+#: addressbook/libebook/e-contact.c:189
 msgid "Organizational Unit"
 msgstr "Organisationseinheit"
 
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:190
 msgid "Office"
 msgstr "Büro"
 
-#: addressbook/libebook/e-contact.c:161
+#: addressbook/libebook/e-contact.c:192
 msgid "Title"
 msgstr "Titel"
 
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:193
 msgid "Role"
 msgstr "Position"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:194
 msgid "Manager"
 msgstr "Vorgesetzter"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:195
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:198
 msgid "Homepage URL"
 msgstr "Homepage-URL"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:199
 msgid "Weblog URL"
 msgstr "Weblog-URL"
 
+#: addressbook/libebook/e-contact.c:200
+msgid "Video Conferencing URL"
+msgstr ""
+
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:203
 msgid "Photo"
 msgstr "Foto"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:204
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:175
+#: addressbook/libebook/e-contact.c:207
 msgid "X.509 Certificate"
 msgstr "X.509-Zertifikat"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:211
 msgid "Category List"
 msgstr "Kategorieliste"
 
-#: addressbook/libebook/e-contact.c:180 addressbook/libebook/e-contact.c:182
+#: addressbook/libebook/e-contact.c:212 addressbook/libebook/e-contact.c:214
 msgid "Categories"
 msgstr "Kategorien"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:186
+#: addressbook/libebook/e-contact.c:218
 msgid "Calendar URI"
 msgstr "Kalender-URI"
 
-#: addressbook/libebook/e-contact.c:187
+#: addressbook/libebook/e-contact.c:219
 msgid "Free/Busy URL"
 msgstr "Verfügbarkeits-URL"
 
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:220
 msgid "ICS Calendar"
 msgstr "ICS-Kalender"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:223
 msgid "Spouse's Name"
 msgstr "Ehepartner"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:224
 msgid "Note"
 msgstr "Notiz"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:226
 msgid "Birth Date"
 msgstr "Geburtsdatum"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:227
 msgid "Anniversary"
 msgstr "Jahrestag"
 
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:229
 msgid "List"
 msgstr "Liste"
 
 # CHECK
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:230
 msgid "List Show Addresses"
 msgstr "Liste der Anzeigeadressen"
 
-#: addressbook/libebook/e-contact.c:1075
+#: addressbook/libebook/e-contact.c:1131
 msgid "Unnamed List"
 msgstr "Namenlose Liste"
 
-#: addressbook/backends/file/e-book-backend-file.c:390
-#: addressbook/backends/vcf/e-book-backend-vcf.c:101
-msgid "Loading..."
-msgstr "Ladevorgang..."
+#. Set category and visibility
+#: calendar/backends/contacts/e-cal-backend-contacts.c:408
+#, fuzzy
+msgid "Birthday"
+msgstr "Geburtsdatum"
 
-#: addressbook/backends/file/e-book-backend-file.c:392
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2858
-#: addressbook/backends/vcf/e-book-backend-vcf.c:103
-msgid "Searching..."
-msgstr "Suchvorgang..."
+#: calendar/backends/contacts/e-cal-backend-contacts.c:430
+#, c-format
+msgid "Birthday: %s"
+msgstr ""
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:611
-msgid "Using Distinguished Name (DN)"
-msgstr "Eindeutiger Name (EN) wird verwendet"
+#: calendar/backends/contacts/e-cal-backend-contacts.c:449
+#, fuzzy, c-format
+msgid "Anniversary: %s"
+msgstr "Jahrestag"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:614
-msgid "Using Email Address"
-msgstr "E-Mail-Adresse wird verwendet"
+#: calendar/backends/file/e-cal-backend-file.c:176
+msgid "Can't save calendar data: Malformed URI."
+msgstr ""
+"Kalenderdaten konnten nicht gespeichert werden: URI fehlerhaft formatiert."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:758
-msgid "Reconnecting to LDAP server..."
-msgstr "LDAP-Server-Verbindung wird erneut hergestellt..."
+#: calendar/backends/http/e-cal-backend-http.c:276
+msgid "Bad file format."
+msgstr "Dateiformat fehlerhaft."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1259
-msgid "Adding contact to LDAP server..."
-msgstr "Kontakt wird zu LDAP-Server hinzugefügt..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1348
-msgid "Removing contact from LDAP server..."
-msgstr "Kontakt wird von LDAP-Server entfernt..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1548
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1551
-msgid "Modifying contact from LDAP server..."
-msgstr "Kontakt auf LDAP-Server wird verändert..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2781
-msgid "Receiving LDAP search results..."
-msgstr "LDAP-Suchergebnisse werden abgerufen..."
-
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2878
-msgid "Error performing search"
-msgstr "Fehler beim Ausführen der Suche"
+#: calendar/backends/http/e-cal-backend-http.c:281
+msgid "Not a calendar."
+msgstr "Kein Kalender."
 
 #: calendar/libecal/e-cal-component.c:1218
 msgid "Untitled appointment"
@@ -564,83 +741,83 @@ msgstr "Undefiniert"
 msgid "Enter password for %s (user %s)"
 msgstr "Passwort für %s eingeben (Benutzer %s)"
 
-#: calendar/libecal/e-cal.c:3808
+#: calendar/libecal/e-cal.c:3813
 msgid "Invalid argument"
 msgstr "Argument ungültig"
 
-#: calendar/libecal/e-cal.c:3810
+#: calendar/libecal/e-cal.c:3815
 msgid "Backend is busy"
 msgstr "Backend belegt"
 
-#: calendar/libecal/e-cal.c:3812
+#: calendar/libecal/e-cal.c:3817
 msgid "Repository is offline"
 msgstr "Repository offline"
 
 # CHECK
-#: calendar/libecal/e-cal.c:3814
+#: calendar/libecal/e-cal.c:3819
 msgid "No such calendar"
 msgstr "Kein derartiger Kalender"
 
-#: calendar/libecal/e-cal.c:3816 calendar/libecal/e-cal.c:3826
+#: calendar/libecal/e-cal.c:3821 calendar/libecal/e-cal.c:3831
 msgid "Object not found"
 msgstr "Objekt nicht gefunden"
 
-#: calendar/libecal/e-cal.c:3818
+#: calendar/libecal/e-cal.c:3823
 msgid "Invalid object"
 msgstr "Objekt ungültig"
 
-#: calendar/libecal/e-cal.c:3820
+#: calendar/libecal/e-cal.c:3825
 msgid "URI not loaded"
 msgstr "URI nicht geladen"
 
-#: calendar/libecal/e-cal.c:3822
+#: calendar/libecal/e-cal.c:3827
 msgid "URI already loaded"
 msgstr "URI bereits geladen"
 
-#: calendar/libecal/e-cal.c:3824
+#: calendar/libecal/e-cal.c:3829
 msgid "Permission denied"
 msgstr "Erlaubnis verweigert"
 
-#: calendar/libecal/e-cal.c:3828
+#: calendar/libecal/e-cal.c:3833
 msgid "Object ID already exists"
 msgstr "Objektkennung existiert bereits"
 
-#: calendar/libecal/e-cal.c:3830
+#: calendar/libecal/e-cal.c:3835
 msgid "Protocol not supported"
 msgstr "Protokoll nicht unterstützt"
 
-#: calendar/libecal/e-cal.c:3832
+#: calendar/libecal/e-cal.c:3837
 msgid "Operation has been cancelled"
 msgstr "Aktion wurde abgebrochen"
 
-#: calendar/libecal/e-cal.c:3834
+#: calendar/libecal/e-cal.c:3839
 msgid "Could not cancel operation"
 msgstr "Aktion konnte nicht abgebrochen werden"
 
-#: calendar/libecal/e-cal.c:3836
+#: calendar/libecal/e-cal.c:3841
 msgid "Authentication failed"
 msgstr "Legitimation gescheitert"
 
-#: calendar/libecal/e-cal.c:3838
+#: calendar/libecal/e-cal.c:3843
 msgid "Authentication required"
 msgstr "Legitimation erforderlich"
 
-#: calendar/libecal/e-cal.c:3840
+#: calendar/libecal/e-cal.c:3845
 msgid "A CORBA esception has occurred"
 msgstr "Es ist eine CORBA-Exception aufgetreten"
 
-#: calendar/libecal/e-cal.c:3842
+#: calendar/libecal/e-cal.c:3847
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: calendar/libecal/e-cal.c:3844
+#: calendar/libecal/e-cal.c:3849
 msgid "No error"
 msgstr "Kein Fehler"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:49
-#: calendar/libedata-cal/e-cal-backend-sexp.c:454
-#: calendar/libedata-cal/e-cal-backend-sexp.c:586
-#: calendar/libedata-cal/e-cal-backend-sexp.c:613
+#: calendar/libedata-cal/e-cal-backend-sexp.c:498
+#: calendar/libedata-cal/e-cal-backend-sexp.c:630
+#: calendar/libedata-cal/e-cal-backend-sexp.c:657
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "»%s« erwartet keine Argumente"
@@ -648,13 +825,13 @@ msgstr "»%s« erwartet keine Argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:74
 #: calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: calendar/libedata-cal/e-cal-backend-sexp.c:196
-#: calendar/libedata-cal/e-cal-backend-sexp.c:651
+#: calendar/libedata-cal/e-cal-backend-sexp.c:695
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "»%s« erwartet ein Argument"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:80
-#: calendar/libedata-cal/e-cal-backend-sexp.c:400
+#: calendar/libedata-cal/e-cal-backend-sexp.c:444
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "»%s« erwartet als erstes Argument eine Zeichenkette"
@@ -666,8 +843,8 @@ msgstr ""
 "»%s« erwartet als erstes Argument eine Datum-/Zeit-Zeichenkette nach ISO 8601"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:120
-#: calendar/libedata-cal/e-cal-backend-sexp.c:235
-#: calendar/libedata-cal/e-cal-backend-sexp.c:394
+#: calendar/libedata-cal/e-cal-backend-sexp.c:277
+#: calendar/libedata-cal/e-cal-backend-sexp.c:438
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "»%s« erwartet zwei Argumente"
@@ -675,8 +852,8 @@ msgstr "»%s« erwartet zwei Argumente"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:126
 #: calendar/libedata-cal/e-cal-backend-sexp.c:168
 #: calendar/libedata-cal/e-cal-backend-sexp.c:202
-#: calendar/libedata-cal/e-cal-backend-sexp.c:241
-#: calendar/libedata-cal/e-cal-backend-sexp.c:657
+#: calendar/libedata-cal/e-cal-backend-sexp.c:283
+#: calendar/libedata-cal/e-cal-backend-sexp.c:701
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "»%s« erwartet als erstes Argument einen time_t-Wert"
@@ -686,17 +863,27 @@ msgstr "»%s« erwartet als erstes Argument einen time_t-Wert"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "»%s« erwartet als zweites Argument eine Ganzzahl"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:249
+#: calendar/libedata-cal/e-cal-backend-sexp.c:232
+#, fuzzy
+msgid "uid? expects 1 argument"
+msgstr "»%s« erwartet keine Argumente"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:237
+#, fuzzy
+msgid "uid? expects argument 1 to be a string"
+msgstr "»%s« erwartet als erstes Argument eine Zeichenkette"
+
+#: calendar/libedata-cal/e-cal-backend-sexp.c:291
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "»%s« erwartet als zweites Argument einen time_t-Wert"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:408
+#: calendar/libedata-cal/e-cal-backend-sexp.c:452
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "»%s« erwartet als zweites Argument eine Zeichenkette"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:426
+#: calendar/libedata-cal/e-cal-backend-sexp.c:470
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -705,12 +892,12 @@ msgstr ""
 "»%s« erwartet als erstes Argument entweder »any«, »summary« oder "
 "»description«"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:488
+#: calendar/libedata-cal/e-cal-backend-sexp.c:532
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "»%s« erwartet mindestens ein Argument"
 
-#: calendar/libedata-cal/e-cal-backend-sexp.c:502
+#: calendar/libedata-cal/e-cal-backend-sexp.c:546
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -719,19 +906,41 @@ msgstr ""
 "»%s« erwartet als Argumente Zeichenketten, oder aber ein einziges Argument "
 "mit dem Wahrheitswert »falsch« (#f)"
 
-#: calendar/backends/file/e-cal-backend-file.c:176
-msgid "Can't save calendar data: Malformed URI."
-msgstr ""
-"Kalenderdaten konnten nicht gespeichert werden: URI fehlerhaft formatiert."
-
-#: calendar/backends/http/e-cal-backend-http.c:273
-msgid "Bad file format."
-msgstr "Dateiformat fehlerhaft."
-
-#: calendar/backends/http/e-cal-backend-http.c:278
-msgid "Not a calendar."
-msgstr "Kein Kalender."
-
+#. !/usr/bin/env python
+#. -*- Mode: python -*-
+#. ======================================================================
+#. FILE: Property.py
+#. CREATOR: eric
+#.
+#. DESCRIPTION:
+#.
+#.
+#. $Id$
+#. $Locker$
+#.
+#. (C) COPYRIGHT 2001, Eric Busboom <eric@softwarestudio.org>
+#. (C) COPYRIGHT 2001, Patrick Lewis <plewis@inetarena.com>
+#.
+#. This program is free software; you can redistribute it and/or modify
+#. it under the terms of either:
+#.
+#. The LGPL as published by the Free Software Foundation, version
+#. 2.1, available at: http://www.fsf.org/copyleft/lesser.html
+#.
+#. Or:
+#.
+#. The Mozilla Public License Version 1.0. You may obtain a copy of
+#. the License at http://www.mozilla.org/MPL/
+#. ======================================================================
+#. def icalerror_supress(arg):
+#. pass
+#. def icalerror_restore(a,b):
+#. pass
+#. Initialize all of the required keys
+#. Get the default kind of value for this property
+#. Use the kind of the existing value
+#. e1=icalerror_supress("MALFORMEDDATA")
+#. icalerror_restore("MALFORMEDDATA",e1)
 #: src/GNOME_Evolution_DataServerLDAP.server.in.in.h:1
 msgid "Evolution Addressbook file and LDAP backend"
 msgstr "Evolution-Adressbuch-Datei- und -LDAP-Backend"

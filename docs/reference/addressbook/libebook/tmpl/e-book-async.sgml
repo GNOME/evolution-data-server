@@ -267,11 +267,10 @@ Handles asynchronous interactions with the EBook.
 
 @book: 
 @query: 
+@requested_fields: 
+@max_results: 
 @cb: 
 @closure: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@requested_fields: 
-@max_results: 
 
 
