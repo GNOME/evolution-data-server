@@ -192,6 +192,8 @@ convert_type (ECalSourceType type)
 		return GNOME_Evolution_Calendar_TYPE_TODO;
 	case E_CAL_SOURCE_TYPE_JOURNAL:
 		return GNOME_Evolution_Calendar_TYPE_JOURNAL;
+	default:
+		return GNOME_Evolution_Calendar_TYPE_ANY;
 	}
 	
 	return GNOME_Evolution_Calendar_TYPE_ANY;
@@ -3423,8 +3425,9 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	ECalendarOp *our_op;
 	icalcomponent *icalcomp;
 
+	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
-	g_return_val_if_fail (tzid != NULL, FALSE);
+	g_return_val_if_fail (zone != NULL, FALSE);
 
 	priv = ecal->priv;
 
@@ -3455,6 +3458,8 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
+		*zone = NULL;
+		
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);		
 	}
 

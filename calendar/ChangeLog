@@ -1,3 +1,9 @@
+2004-01-08  JP Rosevear <jpr@ximian.com>
+
+	* libecal/e-cal.c (convert_type): kill warning
+	(e_cal_get_timezone): fix preconditions, tzid being NULL is valid,
+	set *zone to NULL if we short circuit on a local time
+
 2004-01-07  Rodrigo Moya <rodrigo@ximian.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c
