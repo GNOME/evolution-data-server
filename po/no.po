@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.0\n"
 "POT-Creation-Date: 2003-11-03 14:21-0500\n"
-"PO-Revision-Date: 2003-05-22 14:38+0200\n"
+"PO-Revision-Date: 2003-11-04 18:02+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -138,7 +138,7 @@ msgstr ""
 
 #: addressbook/libebook/e-contact.c:90
 msgid "Unique ID"
-msgstr ""
+msgstr "Unik ID"
 
 #: addressbook/libebook/e-contact.c:91
 msgid "File As"
@@ -157,9 +157,8 @@ msgid "Name"
 msgstr "Navn"
 
 #: addressbook/libebook/e-contact.c:99
-#, fuzzy
 msgid "Given Name"
-msgstr "Feltnavn"
+msgstr ""
 
 #: addressbook/libebook/e-contact.c:100
 msgid "Family Name"
@@ -171,18 +170,16 @@ msgstr "Kallenavn"
 
 #. Address fields
 #: addressbook/libebook/e-contact.c:104
-#, fuzzy
 msgid "Address List"
-msgstr "Adresse"
+msgstr "Adresseliste"
 
 #: addressbook/libebook/e-contact.c:105
 msgid "Home Address"
 msgstr "Hjemmeadresse"
 
 #: addressbook/libebook/e-contact.c:106
-#, fuzzy
 msgid "Work Address"
-msgstr "Hjemmeadresse"
+msgstr "Jobbadresse"
 
 #: addressbook/libebook/e-contact.c:107
 msgid "Other Address"
@@ -283,14 +280,12 @@ msgstr "TTY"
 
 #. Email fields
 #: addressbook/libebook/e-contact.c:134
-#, fuzzy
 msgid "Email List"
-msgstr "E-post 2"
+msgstr "E-postliste"
 
 #: addressbook/libebook/e-contact.c:135
-#, fuzzy
 msgid "Email 1"
-msgstr "E-post 3"
+msgstr "E-post 1"
 
 #: addressbook/libebook/e-contact.c:136
 msgid "Email 2"
@@ -305,9 +300,8 @@ msgid "Mailer"
 msgstr "Postprogram"
 
 #: addressbook/libebook/e-contact.c:139
-#, fuzzy
 msgid "Wants HTML Mail"
-msgstr "Vil ha HTML"
+msgstr "Vil ha meldinger som HTML"
 
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:142
@@ -315,22 +309,20 @@ msgid "AIM Screen Name List"
 msgstr ""
 
 #: addressbook/libebook/e-contact.c:143
-#, fuzzy
 msgid "Jabber Id List"
-msgstr "Liste uten navn"
+msgstr "Liste med Jabber-IDer"
 
 #: addressbook/libebook/e-contact.c:144
 msgid "Yahoo! Screen Name List"
-msgstr ""
+msgstr "Liste med skjermnavn for Yahoo!"
 
 #: addressbook/libebook/e-contact.c:145
 msgid "MSN Screen Name List"
-msgstr ""
+msgstr "Liste med skjermnavn for MSN"
 
 #: addressbook/libebook/e-contact.c:146
-#, fuzzy
 msgid "ICQ Id List"
-msgstr "Er ny liste"
+msgstr "Liste med ICQ-IDer"
 
 #. Organizational fields
 #: addressbook/libebook/e-contact.c:149
@@ -372,14 +364,12 @@ msgstr ""
 
 #. Photo/Logo
 #: addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Photo"
-msgstr "Porto"
+msgstr "Fotografi"
 
 #: addressbook/libebook/e-contact.c:164
-#, fuzzy
 msgid "Logo"
-msgstr "Togo"
+msgstr "Logo"
 
 #: addressbook/libebook/e-contact.c:168
 msgid "Category List"
@@ -404,9 +394,8 @@ msgstr "ICS-kalender"
 
 #. Misc fields
 #: addressbook/libebook/e-contact.c:180
-#, fuzzy
 msgid "Spouse's Name"
-msgstr "Ektefelle"
+msgstr "Ektefelles navn"
 
 #: addressbook/libebook/e-contact.c:181
 msgid "Note"
@@ -453,20 +442,17 @@ msgid "Reconnecting to LDAP server..."
 msgstr "Kobler til LDAP-tjener på nytt..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1250
-#, fuzzy
 msgid "Adding contact to LDAP server..."
-msgstr "Legger til kort på LDAP-tjener..."
+msgstr "Legger til kontakt på LDAP-tjener..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1339
-#, fuzzy
 msgid "Removing contact from LDAP server..."
-msgstr "Fjerner kort fra LDAP-tjener..."
+msgstr "Fjerner kontakt fra LDAP-tjener..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:1539
 #: addressbook/libedatabook/e-book-backend-ldap.c:1542
-#, fuzzy
 msgid "Modifying contact from LDAP server..."
-msgstr "Endrer kort fra LDAP-tjener..."
+msgstr "Endrer kontakt fra LDAP-tjener..."
 
 #: addressbook/libedatabook/e-book-backend-ldap.c:2691
 msgid "Receiving LDAP search results..."
@@ -627,64 +613,55 @@ msgstr "Ugyldig argument"
 
 #: calendar/libecal/e-cal.c:3782
 msgid "Backend is busy"
-msgstr ""
+msgstr "Motoren er opptatt"
 
 #: calendar/libecal/e-cal.c:3784
-#, fuzzy
 msgid "Repository is offline"
-msgstr "Frakoblet lager"
+msgstr "Lageret er frakoblet"
 
 #: calendar/libecal/e-cal.c:3786
-#, fuzzy
 msgid "No such calendar"
-msgstr "Mappen %s eksisterer ikke"
+msgstr "Ingen slik kalender"
 
 #: calendar/libecal/e-cal.c:3788 calendar/libecal/e-cal.c:3798
-#, fuzzy
 msgid "Object not found"
-msgstr "Objektet kunne ikke finnes\n"
+msgstr "Objektet ble ikke funnet"
 
 #: calendar/libecal/e-cal.c:3790
-#, fuzzy
 msgid "Invalid object"
-msgstr "Ugyldig hensikt"
+msgstr "Ugyldig objekt"
 
 #: calendar/libecal/e-cal.c:3792
-#, fuzzy
 msgid "URI not loaded"
-msgstr "EBook ikke lastet\n"
+msgstr "URI ble ikke lastet"
 
 #: calendar/libecal/e-cal.c:3794
 msgid "URI already loaded"
-msgstr ""
+msgstr "URI allerede lastet"
 
 #: calendar/libecal/e-cal.c:3796
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
 #: calendar/libecal/e-cal.c:3800
-#, fuzzy
 msgid "Object ID already exists"
-msgstr "Kort-ID eksisterer allerede"
+msgstr "Objekt-ID eksisterer allerede"
 
 #: calendar/libecal/e-cal.c:3802
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
 #: calendar/libecal/e-cal.c:3804
-#, fuzzy
 msgid "Operation has been cancelled"
-msgstr "Operasjon avbrutt"
+msgstr "Operasjonen ble avbrutt"
 
 #: calendar/libecal/e-cal.c:3806
-#, fuzzy
 msgid "Could not cancel operation"
-msgstr "Avlys operasjon"
+msgstr "Kunne ikke avbryte operasjon"
 
 #: calendar/libecal/e-cal.c:3808
-#, fuzzy
 msgid "Authentication failed"
-msgstr "Autentisering feilet."
+msgstr "Autentisering feilet"
 
 #: calendar/libecal/e-cal.c:3810
 msgid "Authentication required"
@@ -843,13 +820,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Evolution LDIF importer"
 #~ msgstr "LDIF-import for Evolution"
 
-#, fuzzy
-#~ msgid "Evolution LDIF importer factory"
-#~ msgstr "LDIF-import for Evolution"
-
-#~ msgid "LDAP Data Interchange Format (.ldif)"
-#~ msgstr "LDAP data interchange format (.ldif)"
-
 #~ msgid "Evolution VCard Importer"
 #~ msgstr "VCard-import for Evolution"
 
@@ -861,10 +831,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Default Sync Address:"
 #~ msgstr "Forvalgt synkroniseringsadresse:"
-
-#, fuzzy
-#~ msgid "Could not load addressbook"
-#~ msgstr "Kunne ikke laste %s: %s"
 
 #~ msgid "Could not read pilot's Address application block"
 #~ msgstr "Kunne ikke lese pilotens adresseapplikasjonsblokk"
@@ -977,14 +943,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Any Category"
 #~ msgstr "Enhver kategori"
 
-#, fuzzy
-#~ msgid "URI of the contacts that the control will display"
-#~ msgstr "URIen som kalenderen skal vise"
-
-#, fuzzy
-#~ msgid "Certificates"
-#~ msgstr "_Sertifikat-ID:"
-
 #~ msgid "Configure access to LDAP directory servers here"
 #~ msgstr "Konfigurer tilgang til LDAP-katalogtjenere her"
 
@@ -1014,10 +972,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Evolution Addressbook folder viewer"
 #~ msgstr "Evolution adressebok mappevisning"
-
-#, fuzzy
-#~ msgid "Evolution S/Mime Certificate Management Control"
-#~ msgstr "Brukervalg-kontroll for Evolution e-post"
 
 #~ msgid "\n"
 #~ msgstr "\n"
@@ -1221,36 +1175,6 @@ msgstr "Evolution adressebok-komponent"
 #~ "vil starte.\n"
 #~ "Hvis du lar denne stå tom vil søk starte ved roten av katalogtreet."
 
-#, fuzzy
-#~ msgid ""
-#~ "The search scope defines how deep you would like the search to extend "
-#~ "down the \n"
-#~ "directory tree. A search scope of \"sub\" will include all entries below "
-#~ "your search base.\n"
-#~ "A search scope of \"one\" will only include the entries one level beneath "
-#~ "your base.\n"
-#~ msgstr ""
-#~ "Søkeområdet definerer hvor dypt du ønsker at søket skal gå ned i "
-#~ "katalogtreet.\n"
-#~ "Et søkeområde som «sub» vil ta med alle oppføringer under din søkebase.\n"
-#~ "Et søkeområde som «one» vil kun ta med oppføringer ett nivå under basen."
-
-#, fuzzy
-#~ msgid ""
-#~ "This assistant will help you to access online directory services\n"
-#~ "using LDAP (Lightweight Directory Access Protocol) servers. \n"
-#~ "\n"
-#~ "Adding a new LDAP server requires some specialized information about the "
-#~ "server. Please contact your system administrator if you need help finding "
-#~ "this information."
-#~ msgstr ""
-#~ "Denne veiviseren vil hjelpe deg å aksessere katalogtjenester på nettet\n"
-#~ "ved bruk av LDAP-tjenere (Lightweight Directory Access Protocol).\n"
-#~ "\n"
-#~ "For å legge til en LDAP-tjener må du ha spesifikk informasjon\n"
-#~ "om tjeneren. Vennligst kontakt din systemadministrator hvis du trenger\n"
-#~ "hjelp med å finne denne informasjonen."
-
 #~ msgid ""
 #~ "This is the full name of your ldap server. For example, \"ldap.mycompany."
 #~ "com\"."
@@ -1408,10 +1332,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Birthda_y:"
 #~ msgstr "F_ødselsdag:"
-
-#, fuzzy
-#~ msgid "Blog address:"
-#~ msgstr "E-postadresse:"
 
 #~ msgid "Business fa_x:"
 #~ msgstr "Fa_ks på arbeid:"
@@ -2217,10 +2137,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Contact"
 #~ msgstr "Kontakt"
 
-#, fuzzy
-#~ msgid "Is New Contact"
-#~ msgstr "Ny kontakt"
-
 #~ msgid "Writable Fields"
 #~ msgstr "Skrivbare felter"
 
@@ -2402,18 +2318,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Advanced Search"
 #~ msgstr "Avansert søk"
 
-#, fuzzy
-#~ msgid "No contacts"
-#~ msgstr "Vis kontakter"
-
-#, fuzzy
-#~ msgid "1 contact"
-#~ msgstr "Kontakt"
-
-#, fuzzy
-#~ msgid "%d contacts"
-#~ msgstr "Kontakter"
-
 #~ msgid "Query"
 #~ msgstr "Spør"
 
@@ -2568,39 +2472,11 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Has Cursor"
 #~ msgstr "Har markør"
 
-#, fuzzy
-#~ msgid "Map It"
-#~ msgstr "Mayport"
-
-#, fuzzy
-#~ msgid "List Members"
-#~ msgstr "Medlemmer"
-
-#, fuzzy
-#~ msgid "Job Title"
-#~ msgstr "_Jobbtittel:"
-
-#, fuzzy
-#~ msgid "Home page"
-#~ msgstr "Faks hjemme"
-
-#, fuzzy
-#~ msgid "Blog"
-#~ msgstr "Bologna"
-
 #~ msgid "Success"
 #~ msgstr "Suksess"
 
 #~ msgid "Repository offline"
 #~ msgstr "Frakoblet lager"
-
-#, fuzzy
-#~ msgid "Contact not found"
-#~ msgstr "Kort ikke funnet"
-
-#, fuzzy
-#~ msgid "Contact ID already exists"
-#~ msgstr "Kort-ID eksisterer allerede"
 
 #~ msgid "Cancelled"
 #~ msgstr "Avbrutt"
@@ -2629,31 +2505,11 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Error adding list"
 #~ msgstr "Feil under tillegg av liste"
 
-#, fuzzy
-#~ msgid "Error adding contact"
-#~ msgstr "Feil ved tillegg av kort"
-
 #~ msgid "Error modifying list"
 #~ msgstr "Feil ved endring av liste"
 
-#, fuzzy
-#~ msgid "Error modifying contact"
-#~ msgstr "Feil ved endring av kort"
-
 #~ msgid "Error removing list"
 #~ msgstr "Feil ved fjerning av liste"
-
-#, fuzzy
-#~ msgid "Error removing contact"
-#~ msgstr "Feil ved fjerning av kort"
-
-#, fuzzy
-#~ msgid ""
-#~ "Opening %d contacts will open %d new windows as well.\n"
-#~ "Do you really want to display all of these contacts?"
-#~ msgstr ""
-#~ "Åpning av %d kort vil medføre at %d nye vinduer vil\n"
-#~ "vises på skjermen. Vil du virkelig vise alle disse kortene?"
 
 #~ msgid ""
 #~ "%s already exists\n"
@@ -2673,22 +2529,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "list"
 #~ msgstr "liste"
-
-#, fuzzy
-#~ msgid "Move contact to"
-#~ msgstr "Flytt kort til"
-
-#, fuzzy
-#~ msgid "Copy contact to"
-#~ msgstr "Kopier kort til"
-
-#, fuzzy
-#~ msgid "Move contacts to"
-#~ msgstr "Flytt kort til"
-
-#, fuzzy
-#~ msgid "Copy contacts to"
-#~ msgstr "Kopier kort til"
 
 #~ msgid "Multiple VCards"
 #~ msgstr "Flere VCard"
@@ -2720,22 +2560,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Merge E-Mail Address"
 #~ msgstr "Flett E-postadresse"
 
-#, fuzzy
-#~ msgid "and %d other contacts."
-#~ msgstr "og %d andre kort."
-
-#, fuzzy
-#~ msgid "and one other contact."
-#~ msgstr "og et annet kort."
-
-#, fuzzy
-#~ msgid "Show Full VCard"
-#~ msgstr "Vis fulle _headere"
-
-#, fuzzy
-#~ msgid "Show Compact VCard"
-#~ msgstr "Lagre kontakt som VCard"
-
 #~ msgid "Save in addressbook"
 #~ msgstr "Lagre i adressebok"
 
@@ -2747,14 +2571,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Print envelope"
 #~ msgstr "Skriv ut konvolutt"
-
-#, fuzzy
-#~ msgid "Print contacts"
-#~ msgstr "Skriv ut valgte kontakter"
-
-#, fuzzy
-#~ msgid "Print contact"
-#~ msgstr "Skriv ut valgte kontakter"
 
 #~ msgid "10 pt. Tahoma"
 #~ msgstr "10 pkt. Tahoma"
@@ -2882,34 +2698,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "_Font..."
 #~ msgstr "Skri_fttype..."
 
-#, fuzzy
-#~ msgid "Contact Print Style Editor Test"
-#~ msgstr "Kontaktlisteredigering"
-
-#, fuzzy
-#~ msgid "Contact Print Test"
-#~ msgstr "Kontakt_liste"
-
-#, fuzzy
-#~ msgid "Can not open file"
-#~ msgstr "Kan ikke åpne melding"
-
-#, fuzzy
-#~ msgid "Can not load URI"
-#~ msgstr "Kort ikke funnet"
-
-#, fuzzy
-#~ msgid "List local addressbook folders"
-#~ msgstr "med alle lokale og aktive eksterne mapper"
-
-#, fuzzy
-#~ msgid "[vcard|csv]"
-#~ msgstr "kort"
-
-#, fuzzy
-#~ msgid "Impossible internal error."
-#~ msgstr "Intern feil"
-
 #~ msgid "Error loading default addressbook."
 #~ msgstr "Feil under lasting av standard adressebok."
 
@@ -2996,10 +2784,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Do not ask me about this program again."
 #~ msgstr "Ikke spør meg om dette programmet igjen."
 
-#, fuzzy
-#~ msgid "Evolution Calendar alarm notification service"
-#~ msgstr "Factory for alarm-tjenesten"
-
 #~ msgid "Could not initialize Bonobo"
 #~ msgstr "Kunne ikke initiere Bonobo"
 
@@ -3024,21 +2808,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Unmatched"
 #~ msgstr "Ingen treff"
 
-#, fuzzy
-#~ msgid ""
-#~ "This operation will permanently erase all events older than the selected "
-#~ "amount of time. If you continue, you will not be able to recover these "
-#~ "events."
-#~ msgstr ""
-#~ "Denne operasjonen vil fjerne alle oppgaver merket som slettet permanent. "
-#~ "Hvis du fortsetter vil du ikke kunne gjenopprette disse oppgavene. \n"
-#~ "\n"
-#~ "Vil du virkelig slette disse oppgavene?"
-
-#, fuzzy
-#~ msgid "Purge events older than"
-#~ msgstr "returnerer mindre enn"
-
 #~ msgid "days"
 #~ msgstr "dager"
 
@@ -3057,10 +2826,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "%d %B"
 #~ msgstr "%d %B"
 
-#, fuzzy
-#~ msgid "New Calendar"
-#~ msgstr "Ny-Caledonia"
-
 #~ msgid "Personal"
 #~ msgstr "Personlig"
 
@@ -3078,10 +2843,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Month View"
 #~ msgstr "Månedsvisning"
-
-#, fuzzy
-#~ msgid "List View"
-#~ msgstr "Egendefinert visning"
 
 #~ msgid "Error while opening the calendar"
 #~ msgstr "Feil under åpning av kalenderen"
@@ -3512,22 +3273,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "The item could not be deleted because permission was denied"
 #~ msgstr "Oppføringen kunne ikke slettes fordi tilgang ble nektet"
 
-#, fuzzy
-#~ msgid "The event could not be deleted due to an error"
-#~ msgstr "Hendelsen kunne ikke slettes pga en CORBA-feil"
-
-#, fuzzy
-#~ msgid "The task could not be deleted due to an error"
-#~ msgstr "Oppgaven kunne ikke slettes pga en CORBA-feil"
-
-#, fuzzy
-#~ msgid "The journal entry could not be deleted due to an error"
-#~ msgstr "Journaloppføringen kunne ikke slette pga en CORBA-feil"
-
-#, fuzzy
-#~ msgid "The item could not be deleted due to an error"
-#~ msgstr "Oppføringen kunne ikke slettes pga en CORBA-feil"
-
 #~ msgid "Addressbook..."
 #~ msgstr "Adressebok..."
 
@@ -3575,10 +3320,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Classification"
 #~ msgstr "Klassifisering"
-
-#, fuzzy
-#~ msgid "Co_nfidential"
-#~ msgstr "Konfidensiell"
 
 #~ msgid "Date & Time"
 #~ msgstr "Dato & klokke"
@@ -3657,30 +3398,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "_Invite Others..."
 #~ msgstr "_Inviter andre..."
-
-#, fuzzy
-#~ msgid "Could not create directory for new calendar"
-#~ msgstr "Kan ikke opprette katalog %s: %s"
-
-#, fuzzy
-#~ msgid "A group must be selected"
-#~ msgstr "En organisator må oppgis."
-
-#, fuzzy
-#~ msgid "<b>Calendar options</b>"
-#~ msgstr "Kalenderinformasjon"
-
-#, fuzzy
-#~ msgid "Add New Calendar"
-#~ msgstr "Ny-Caledonia"
-
-#, fuzzy
-#~ msgid "Calendar Group"
-#~ msgstr "iCalender-feil"
-
-#, fuzzy
-#~ msgid "Calendar Name"
-#~ msgstr "Kalender"
 
 #~ msgid "You are modifying a recurring event, what would you like to modify?"
 #~ msgstr "Du endrer en gjeninntreffende hendelse. Hva ønsker du å endre?"
@@ -3817,10 +3534,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Completed date is wrong"
 #~ msgstr "Dato for ferdigstilling er feil"
 
-#, fuzzy
-#~ msgid "% _Complete"
-#~ msgstr "% ferdig"
-
 #~ msgid "Completed"
 #~ msgstr "Fullført"
 
@@ -3833,19 +3546,11 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Progress"
 #~ msgstr "Fremdrift"
 
-#, fuzzy
-#~ msgid "_Date Completed:"
-#~ msgstr "Fullført dato:"
-
 #~ msgid "_Priority:"
 #~ msgstr "_Prioritet:"
 
 #~ msgid "_Status:"
 #~ msgstr "_Status:"
-
-#, fuzzy
-#~ msgid "_Web Page:"
-#~ msgstr "_Hjemmeside-adresse:"
 
 #~ msgid "Basic"
 #~ msgstr "Grunnleggende"
@@ -3937,10 +3642,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Confidential"
 #~ msgstr "Konfidensiell"
 
-#, fuzzy
-#~ msgid "Description"
-#~ msgstr "Beskrivelse:"
-
 #~ msgid "Start Date"
 #~ msgstr "Startdato"
 
@@ -3949,10 +3650,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "color"
 #~ msgstr "farge"
-
-#, fuzzy
-#~ msgid "component"
-#~ msgstr "Avtale"
 
 #~ msgid "Free"
 #~ msgstr "Ledig"
@@ -4088,10 +3785,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "100%"
 #~ msgstr "100%"
-
-#, fuzzy
-#~ msgid "Open _Web Page"
-#~ msgstr "_Åpne melding"
 
 #~ msgid "_Assign Task"
 #~ msgstr "Tildel oppg_ave"
@@ -4592,22 +4285,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Meeting _end time:"
 #~ msgstr "Tid for møtets slutt:"
 
-#, fuzzy
-#~ msgid "Start Date:"
-#~ msgstr "Sta_rt dato:"
-
-#, fuzzy
-#~ msgid "Due Date:"
-#~ msgstr "Fer_dig-dato:"
-
-#, fuzzy
-#~ msgid "Priority:"
-#~ msgstr "_Prioritet:"
-
-#, fuzzy
-#~ msgid "Web Page:"
-#~ msgstr "Side"
-
 #~ msgid "Opening tasks at %s"
 #~ msgstr "Åpner oppgaver på %s"
 
@@ -4651,17 +4328,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Adding alarms for %s"
 #~ msgstr "Legger til alarmer for %s"
 
-#, fuzzy
-#~ msgid "Purging"
-#~ msgstr "Turin"
-
-#~ msgid "Calendar and Tasks"
-#~ msgstr "Kalender og oppgaver"
-
-#, fuzzy
-#~ msgid "Calendars"
-#~ msgstr "Kalender"
-
 #~ msgid "Configure your timezone, Calendar and Task List here "
 #~ msgstr "Konfigurer din tidssone, kalender og oppgaveliste her "
 
@@ -4670,30 +4336,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Evolution Calendar configuration control"
 #~ msgstr "Konfigurasjonskontroll for Evolution kalender"
-
-#, fuzzy
-#~ msgid "Evolution Calendar scheduling message viewer"
-#~ msgstr "Evolution kalender iTip/iMip-visning"
-
-#, fuzzy
-#~ msgid "Evolution Calendar viewer"
-#~ msgstr "Evolution kalender iTip/iMip-visning"
-
-#, fuzzy
-#~ msgid "Evolution Calendar/Task editor"
-#~ msgstr "Evolution kalender-komponent"
-
-#, fuzzy
-#~ msgid "Evolution Tasks viewer"
-#~ msgstr "Evolution nyhetsredigerer"
-
-#, fuzzy
-#~ msgid "Evolution's Calendar component"
-#~ msgstr "Evolution kalender- og oppgavekomponent"
-
-#, fuzzy
-#~ msgid "Evolution's Tasks component"
-#~ msgstr "Testkomponent for Evolution"
 
 #~ msgid "April"
 #~ msgstr "April"
@@ -6185,10 +5827,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Copying messages"
 #~ msgstr "Kopierer meldinger"
 
-#, fuzzy
-#~ msgid "Filtering new message(s)"
-#~ msgstr "Henter %d melding(er)"
-
 #~ msgid ""
 #~ "Unexpected GnuPG status message encountered:\n"
 #~ "\n"
@@ -6251,10 +5889,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgstr ""
 #~ "Kunne ikke verifisere meldingens signatur: kunne ikke opprette "
 #~ "midlertidig fil: %s"
-
-#, fuzzy
-#~ msgid "Unable to parse message content"
-#~ msgstr "Kunne ikke hente melding fra editor"
 
 #~ msgid "Cannot build locking helper pipe: %s"
 #~ msgstr "Kunne ikke rør for låshjelper: %s"
@@ -6491,10 +6125,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Failure in name lookup: %s"
 #~ msgstr "Feil i navneoppslag: %s"
 
-#, fuzzy
-#~ msgid "Host lookup failed: cannot create thread: %s"
-#~ msgstr "Vertsoppslag feilet: ukjent årsak"
-
 #~ msgid "Host lookup failed: %s: host not found"
 #~ msgstr "Vertsoppslag feilet: %s: vert ikke funnet"
 
@@ -6525,42 +6155,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgstr ""
 #~ "Kan ikke opprette katalog %s:\n"
 #~ "%s"
-
-#, fuzzy
-#~ msgid "Enter security pass-phrase for `%s'"
-#~ msgstr "Skriv inn passord for %s"
-
-#, fuzzy
-#~ msgid "Unverified"
-#~ msgstr "Udefinert"
-
-#, fuzzy
-#~ msgid "Good signature"
-#~ msgstr "Rediger signatur"
-
-#, fuzzy
-#~ msgid "Bad signature"
-#~ msgstr "Rediger signatur"
-
-#, fuzzy
-#~ msgid "Signing certificate not found"
-#~ msgstr "Selv-signert sertifikat i kjeden"
-
-#, fuzzy
-#~ msgid "Signing certificate not trusted"
-#~ msgstr "Ikke-betrodd sertifikat"
-
-#, fuzzy
-#~ msgid "Malformed signature"
-#~ msgstr "Lagre signatur"
-
-#, fuzzy
-#~ msgid "Processing error"
-#~ msgstr "Lesefeil"
-
-#, fuzzy
-#~ msgid "Signer: %s <%s>: %s\n"
-#~ msgstr "Tjener: %s, Type: %s"
 
 #~ msgid "Cannot get folder: Invalid operation on this store"
 #~ msgstr "Kan ikke finne mappe: Ugyldig operasjon på dette lageret"
@@ -6618,13 +6212,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Unable to get issuer's certificate locally"
 #~ msgstr "Kan ikke finne utsteders sertifikat lokalt"
-
-#, fuzzy
-#~ msgid "Unable to verify leaf signature"
-#~ msgstr "Feil under verifisering av sertifikater."
-
-#~ msgid "Certificate chain too long"
-#~ msgstr "Sertifikatkjeden er for lang"
 
 #~ msgid "Certificate Revoked"
 #~ msgstr "Sertifikat trukket tilbake"
@@ -6850,10 +6437,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Apply filters to new messages in INBOX on this server"
 #~ msgstr "Bruk filtre for nye meldinger i INNBOKS på denne tjeneren"
 
-#, fuzzy
-#~ msgid "Automatically synchronize remote mail locally"
-#~ msgstr "Sjekk etter nye meldinger _automatisk hvert"
-
 #~ msgid "IMAP"
 #~ msgstr "IMAP"
 
@@ -6878,10 +6461,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Could not connect to %s (port %d): %s"
 #~ msgstr "Kunne ikke koble til %s (port %d): %s"
 
-#, fuzzy
-#~ msgid "SSL unavailable"
-#~ msgstr "TLS er ikke tilgjengelig"
-
 #~ msgid "Connection cancelled"
 #~ msgstr "Tilkobling avbrutt"
 
@@ -6893,10 +6472,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "SSL negotiations failed"
 #~ msgstr "SSL-forhandling feilet"
-
-#, fuzzy
-#~ msgid "Could not connect with command \"%s\": %s"
-#~ msgstr "Kunne ikke koble til %s (port %d): %s"
 
 #~ msgid "IMAP server %s does not support requested authentication type %s"
 #~ msgstr "IMAP-tjener %s støtter ikke etterspurt autentiseringstype %s"
@@ -6935,18 +6510,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Message storage"
 #~ msgstr "Meldingslager"
-
-#, fuzzy
-#~ msgid "IMAP+"
-#~ msgstr "IMAP"
-
-#, fuzzy
-#~ msgid "Could not connect to POP server on %s"
-#~ msgstr "Kunne ikke koble til POP-tjener %s"
-
-#, fuzzy
-#~ msgid "Index message body data"
-#~ msgstr "Send melding til kontakt"
 
 #~ msgid "~%s (%s)"
 #~ msgstr "~%s (%s)"
@@ -7114,14 +6677,6 @@ msgstr "Evolution adressebok-komponent"
 #~ "Kunne ikke åpne fil «%s»:\n"
 #~ "%s"
 
-#, fuzzy
-#~ msgid ""
-#~ "Could not create directory `%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Kan ikke opprette katalog %s:\n"
-#~ "%s"
-
 #~ msgid ""
 #~ "Could not create file `%s':\n"
 #~ "%s"
@@ -7141,29 +6696,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Folder `%s' is not empty. Not deleted."
 #~ msgstr "Mappen «%s» er ikke tom. Ikke slettet."
-
-#, fuzzy
-#~ msgid "Cannot create a folder by this name."
-#~ msgstr "Kunne ikke opprette en mappe med det navnet"
-
-#, fuzzy
-#~ msgid "Cannot create directory `%s': %s."
-#~ msgstr "Kan ikke opprette katalog %s: %s"
-
-#, fuzzy
-#~ msgid "Cannot create folder: %s: %s"
-#~ msgstr "Finner ikke mappe: %s: %s"
-
-#, fuzzy
-#~ msgid "Could not rename %s to %s: %s"
-#~ msgstr "Kunne ikke endre navn på mappe %s til %s: %s"
-
-#, fuzzy
-#~ msgid "The new folder name is illegal."
-#~ msgstr "Spesifisert mappenavn er ikke gyldig: %s"
-
-#~ msgid "Could not open folder: %s: %s"
-#~ msgstr "Kunne ikke åpne mappe %s: %s"
 
 #~ msgid "Fatal mail parser error near position %ld in folder %s"
 #~ msgstr "Fatal feil i lesing av postboksen nær posisjon %ld i mappe %s"
@@ -7252,36 +6784,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgstr ""
 #~ "Kunne ikke synkronisere spool-mappe %s: %s\n"
 #~ "Mappen kan være korrupt, kopi lagret i «%s»"
-
-#, fuzzy
-#~ msgid "Please enter the NNTP password for %s@%s"
-#~ msgstr "%sVennligst skriv inn SMTP-passord for %s@%s"
-
-#, fuzzy
-#~ msgid "Failed to send username to server"
-#~ msgstr "Kunne ikke koble til LDAP-tjener"
-
-#~ msgid "Cannot get message %s: %s"
-#~ msgstr "Kan ikke hente melding %s: %s"
-
-#~ msgid "User cancelled"
-#~ msgstr "Bruker avbrøt"
-
-#, fuzzy
-#~ msgid "Could not get group list from server."
-#~ msgstr "Kunne ikke hente gruppe: %s"
-
-#, fuzzy
-#~ msgid "Unable to load grouplist file for %s: %s"
-#~ msgstr ""
-#~ "Kunne ikke opprette utdatafil: %s\n"
-#~ " %s"
-
-#, fuzzy
-#~ msgid "Unable to save grouplist file for %s: %s"
-#~ msgstr ""
-#~ "Kunne ikke opprette utdatafil: %s\n"
-#~ " %s"
 
 #~ msgid "USENET news"
 #~ msgstr "USENET news"
@@ -7676,12 +7178,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Suggest automatic display of attachment"
 #~ msgstr "Foreslå automatisk visning av vedlegg"
-
-#, fuzzy
-#~ msgid "You need to configure an account before you can compose mail."
-#~ msgstr ""
-#~ "Du må konfigurere en konto\n"
-#~ "før du kan skrive meldinger."
 
 #~ msgid "Click here for the address book"
 #~ msgstr "Klikk her for å få opp adresseboken"
@@ -8511,10 +8007,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "\"%s\" in \"%s\""
 #~ msgstr "«%s» i «%s»"
 
-#, fuzzy
-#~ msgid "Folder _name"
-#~ msgstr "Mappe_navn:"
-
 #~ msgid "Select folder"
 #~ msgstr "Velg mappe"
 
@@ -8605,34 +8097,14 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Print Message"
 #~ msgstr "Skriv ut melding"
 
-#, fuzzy
-#~ msgid "_Copy Link Location"
-#~ msgstr "Kopier lokasjon for lenke"
-
-#, fuzzy
-#~ msgid "Matches: %d"
-#~ msgstr "Treff:"
-
 #~ msgid ""
 #~ "This message is digitally signed. Click the lock icon for more "
 #~ "information."
 #~ msgstr ""
 #~ "Denne meldingen er digitalt signert. Klikk låsikonet for mer informasjon."
 
-#, fuzzy
-#~ msgid "_View Inline"
-#~ msgstr "Vis «inline»"
-
-#, fuzzy
-#~ msgid "_Hide"
-#~ msgstr "Skjul"
-
 #~ msgid "Page %d of %d"
 #~ msgstr "Side %d av %d"
-
-#, fuzzy
-#~ msgid "Retrieving `%s'"
-#~ msgstr "Henter melding %s"
 
 #~ msgid "Malformed external-body part."
 #~ msgstr "Feilutformet del for ekstern kropp."
@@ -8659,24 +8131,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "This message is digitally signed and has been found to be authentic."
 #~ msgstr "Denne meldingen er digitalt signert og er funnet autentisk."
 
-#, fuzzy
-#~ msgid "Session not initialised"
-#~ msgstr "Kunne ikke initiere Bonobo"
-
-#, fuzzy
-#~ msgid "Unsupported signature format"
-#~ msgstr "Ustøttet schema"
-
-#~ msgid "Could not parse MIME message. Displaying as source."
-#~ msgstr "Kunne ikke lese MIME-melding. Viser ren meldingstekst."
-
-#, fuzzy
-#~ msgid "Formatting message"
-#~ msgstr "Flytter meldinger"
-
-#~ msgid "From"
-#~ msgstr "Fra"
-
 #~ msgid "Reply-To"
 #~ msgstr "Svar-til"
 
@@ -8695,39 +8149,8 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "%s attachment"
 #~ msgstr "%s-vedlegg"
 
-#, fuzzy
-#~ msgid "Could not parse S/MIME message: Unknown error"
-#~ msgstr "Kunne ikke lese MIME-melding. Viser ren meldingstekst."
-
 #~ msgid "Save As..."
 #~ msgstr "Lagre som..."
-
-#, fuzzy
-#~ msgid "_Reply to sender"
-#~ msgstr "Sva_r til sender"
-
-#, fuzzy
-#~ msgid "_Open Link in Browser"
-#~ msgstr "Åpne lenke i nettleser"
-
-#, fuzzy
-#~ msgid "Se_nd message to..."
-#~ msgstr "Send _melding til liste..."
-
-#, fuzzy
-#~ msgid "_Add to Addressbook"
-#~ msgstr "Legg til sender i adressebok"
-
-#~ msgid "Open in %s..."
-#~ msgstr "Åpne i %s..."
-
-#, fuzzy
-#~ msgid "This store does not support subscriptions, or the are not enabled."
-#~ msgstr "Denne tjeneren støtter ikke LDAPv3 schema-informasjon"
-
-#, fuzzy
-#~ msgid "Subscribed"
-#~ msgstr "Abonner"
 
 #~ msgid "Folder"
 #~ msgstr "Mappe"
@@ -8751,16 +8174,8 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Filters"
 #~ msgstr "Filtre"
 
-#, fuzzy
-#~ msgid "-------- Forwarded Message --------"
-#~ msgstr "Videresendt melding"
-
 #~ msgid "an unknown sender"
 #~ msgstr "en ukjent avsender"
-
-#, fuzzy
-#~ msgid "On %a, %Y-%m-%d at %H:%M %%+05d, %%s wrote:"
-#~ msgstr "%a, %d.%m.%Y kl. %H.%M skrev %%s:"
 
 #~ msgid ""
 #~ "Cannot save to `%s'\n"
@@ -8775,14 +8190,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgstr ""
 #~ "«%s» eksisterer allerede\n"
 #~ "Vil du overskrive den?"
-
-#, fuzzy
-#~ msgid "message"
-#~ msgstr "Melding"
-
-#, fuzzy
-#~ msgid "Save Message..."
-#~ msgstr "Lagre melding som..."
 
 #~ msgid "Could not create temporary directory: %s"
 #~ msgstr "Kunne ikke opprette midlertidig katalog: %s"
@@ -9010,22 +8417,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "This folder cannot contain messages."
 #~ msgstr "Denne mappen kan ikke inneholde meldinger."
 
-#, fuzzy
-#~ msgid "Could not open source folder: %s"
-#~ msgstr "Kunne ikke åpne delt mappe: %s"
-
-#, fuzzy
-#~ msgid "Could not create temporary mbox store: %s"
-#~ msgstr "Kunne ikke opprette midlertidig katalog: %s"
-
-#, fuzzy
-#~ msgid "Could not create temporary mbox folder: %s"
-#~ msgstr "Kunne ikke opprette midlertidig fil «%s»: %s"
-
-#, fuzzy
-#~ msgid "Could not copy messages to temporary mbox folder: %s"
-#~ msgstr "Kunne ikke lukke midlertidig mappe: %s"
-
 #~ msgid ""
 #~ "Some of your mail settings seem corrupt, please check that everything is "
 #~ "in order."
@@ -9033,28 +8424,8 @@ msgstr "Evolution adressebok-komponent"
 #~ "Noen av dine innstillinger for e-post ser ut til å være korrupt. "
 #~ "Vennligst sjekk at alt er i orden."
 
-#, fuzzy
-#~ msgid "Select destination to copy folder into"
-#~ msgstr "Velg en målmappe for å importere data"
-
-#, fuzzy
-#~ msgid "Select destination to move folder into"
-#~ msgstr "Velg en målmappe for å importere data"
-
-#, fuzzy
-#~ msgid "Create folder"
-#~ msgstr "Opprett en ny mappe"
-
 #~ msgid "Specify where to create the folder:"
 #~ msgstr "Spesifiser hvor mappen skal opprettes:"
-
-#, fuzzy
-#~ msgid "Could not delete folder: %s"
-#~ msgstr "Kunne ikke slette mappe «%s»: %s"
-
-#, fuzzy
-#~ msgid "Really delete folder \"%s\" and all of its subfolders?"
-#~ msgstr "Vild du virkelig slette mappe «%s»?"
 
 #~ msgid "Delete \"%s\""
 #~ msgstr "Slett «%s»"
@@ -9068,27 +8439,11 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "The specified folder name is not valid: %s"
 #~ msgstr "Spesifisert mappenavn er ikke gyldig: %s"
 
-#, fuzzy
-#~ msgid "Folder properties"
-#~ msgstr "Egenskaper for skrift"
-
 #~ msgid "Properties"
 #~ msgstr "Egenskaper"
 
-#, fuzzy
-#~ msgid "Folder Name"
-#~ msgstr "_Mappenavn:"
-
 #~ msgid "_View"
 #~ msgstr "_Vis"
-
-#, fuzzy
-#~ msgid "Open in _New Window"
-#~ msgstr "Åpne i nytt vindu"
-
-#, fuzzy
-#~ msgid "_Move"
-#~ msgstr "Flytt"
 
 #~ msgid "_New Folder..."
 #~ msgstr "_Ny mappe..."
@@ -9621,14 +8976,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Fetching Mail"
 #~ msgstr "Henter e-post"
-
-#, fuzzy
-#~ msgid "Failed to apply outgoing filters: %s"
-#~ msgstr "Kunne ikke lagre post i midlertidig fil %s: %s"
-
-#, fuzzy
-#~ msgid "Failed to append to local `Sent' folder: %s"
-#~ msgstr "Kunne ikke lagre post i midlertidig fil %s: %s"
 
 #~ msgid "Sending \"%s\""
 #~ msgstr "Sender «%s»"
@@ -10181,24 +9528,8 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Automatic"
 #~ msgstr "Automatisk"
 
-#, fuzzy
-#~ msgid "_Filename:"
-#~ msgstr "Filnavn:"
-
 #~ msgid "Select a file"
 #~ msgstr "Velg en fil"
-
-#, fuzzy
-#~ msgid "File _type:"
-#~ msgstr "Filtype:"
-
-#, fuzzy
-#~ msgid "Import data and settings from _older programs"
-#~ msgstr "Importer data og innstillinger fra andre programmer"
-
-#, fuzzy
-#~ msgid "Import a _single file"
-#~ msgstr "Importer en enkelt fil"
 
 #~ msgid ""
 #~ "Please wait...\n"
@@ -10215,10 +9546,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Select a destination folder for importing this data"
 #~ msgstr "Velg en målmappe for å importere data"
-
-#, fuzzy
-#~ msgid "_Import"
-#~ msgstr "Importer"
 
 #~ msgid "Closing connections..."
 #~ msgstr "Lukker forbindelser..."
@@ -10256,10 +9583,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Cannot find the specified shared folder."
 #~ msgstr "Kan ikke finne spesifisert delt mappe."
-
-#, fuzzy
-#~ msgid "Quit Assistant"
-#~ msgstr "Assistent"
 
 #~ msgid "New"
 #~ msgstr "Ny"
@@ -10775,94 +10098,6 @@ msgstr "Evolution adressebok-komponent"
 #~ "%s: --online og --offline kan ikke brukes samtidig.\n"
 #~ "  Bruk %s --help for mer informasjon.\n"
 
-#, fuzzy
-#~ msgid "Certificate Name"
-#~ msgstr "_Sertifikat-ID:"
-
-#, fuzzy
-#~ msgid "Purposes"
-#~ msgstr "Fremdrift"
-
-#, fuzzy
-#~ msgid "Expires"
-#~ msgstr "Uttrykk"
-
-#, fuzzy
-#~ msgid "E-Mail Address"
-#~ msgstr "Flett E-postadresse"
-
-#, fuzzy
-#~ msgid "<b>Certificate Fields</b>"
-#~ msgstr "Sertifikat trukket tilbake"
-
-#, fuzzy
-#~ msgid "<b>Field Value</b>"
-#~ msgstr "<b>Utgående e-post:</b>"
-
-#, fuzzy
-#~ msgid "<b>Issued By</b>"
-#~ msgstr "<b>Ferdig:</b> "
-
-#, fuzzy
-#~ msgid "<b>Issued To</b>"
-#~ msgstr "<b>Ferdig:</b> "
-
-#, fuzzy
-#~ msgid "<b>Validity</b>"
-#~ msgstr "<b>Status:</b> "
-
-#, fuzzy
-#~ msgid "Authorities"
-#~ msgstr "Poitiers"
-
-#, fuzzy
-#~ msgid "Backup"
-#~ msgstr "Blackpool"
-
-#, fuzzy
-#~ msgid "Backup All"
-#~ msgstr "Blackpool"
-
-#, fuzzy
-#~ msgid "Common Name (CN)"
-#~ msgstr "Vanlig navn"
-
-#, fuzzy
-#~ msgid "Contact Certificates"
-#~ msgstr "_Sertifikat-ID:"
-
-#, fuzzy
-#~ msgid "Edit"
-#~ msgstr "R_ediger"
-
-#, fuzzy
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Feil under verifisering av sertifikater."
-
-#, fuzzy
-#~ msgid "Expires On"
-#~ msgstr "Uttrykk"
-
-#, fuzzy
-#~ msgid "Organization (O)"
-#~ msgstr "Organisasjon"
-
-#, fuzzy
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Organisasjonsenhet"
-
-#, fuzzy
-#~ msgid "View"
-#~ msgstr "_Vis"
-
-#, fuzzy
-#~ msgid "Your Certificates"
-#~ msgstr "_Sertifikat-ID:"
-
-#, fuzzy
-#~ msgid "import"
-#~ msgstr "Importer"
-
 #~ msgid "An attachment to add."
 #~ msgstr "Et vedlegg som skal legges til."
 
@@ -10968,21 +10203,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "_Send Message to Contact..."
 #~ msgstr "_Send melding til kontakt..."
 
-#, fuzzy
-#~ msgid "Create a new all-day event"
-#~ msgstr "Opprett en ny avtale for hele dagen"
-
-#~ msgid "Create a new appointment"
-#~ msgstr "Opprett en ny avtale"
-
-#, fuzzy
-#~ msgid "Create a new calendar"
-#~ msgstr "Opprett en ny mappe"
-
-#, fuzzy
-#~ msgid "Create a new meeting"
-#~ msgstr "Dette er en møteforespørsel"
-
 #~ msgid "Create a new task"
 #~ msgstr "Opprett en ny oppgave"
 
@@ -11025,18 +10245,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "New _Appointment"
 #~ msgstr "Ny _avtale"
 
-#, fuzzy
-#~ msgid "New _Calendar"
-#~ msgstr "Ny-Caledonia"
-
-#, fuzzy
-#~ msgid "New _Meeting"
-#~ msgstr "Nytt møte"
-
-#, fuzzy
-#~ msgid "New _Task"
-#~ msgstr "Ny oppgave"
-
 #~ msgid "Previews the calendar to be printed"
 #~ msgstr "Forhåndsviser av kalenderen som skal skrives ut"
 
@@ -11045,21 +10253,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Publish Free/Busy information for this calendar"
 #~ msgstr "Publiser ledig/opptatt informasjon for denne kalenderen"
-
-#, fuzzy
-#~ msgid "Purg_e"
-#~ msgstr "Bourges"
-
-#, fuzzy
-#~ msgid "Purge old appointments and meetings"
-#~ msgstr "Offentlig mappe som inneholder avtaler og hendelser"
-
-#, fuzzy
-#~ msgid "Show as list"
-#~ msgstr "Vis detaljer"
-
-#~ msgid "Show one day"
-#~ msgstr "Vis en dag"
 
 #~ msgid "Show one month"
 #~ msgstr "Vis en måned"
@@ -11095,10 +10288,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgstr "L_agre som..."
 
 #~ msgid "Save and Close"
-#~ msgstr "Lagre og lukk"
-
-#, fuzzy
-#~ msgid "Save and _Close"
 #~ msgstr "Lagre og lukk"
 
 #~ msgid "Save the item and close the dialog box"
@@ -11152,13 +10341,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Send _message to list..."
 #~ msgstr "Send _melding til liste..."
 
-#, fuzzy
-#~ msgid "_Delete..."
-#~ msgstr "Slett..."
-
-#~ msgid "Cancel Mee_ting"
-#~ msgstr "Avlys mø_te"
-
 #~ msgid "Cancel the meeting for this item"
 #~ msgstr "Avlys møte for denne oppføringen"
 
@@ -11210,10 +10392,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Permanently remove all deleted messages from all folders"
 #~ msgstr "Fjern alle slettede meldinger fra alle mapper permanent"
 
-#, fuzzy
-#~ msgid "Post Ne_w Message"
-#~ msgstr "Post ny melding"
-
 #~ msgid "Post a message to a Public folder"
 #~ msgstr "Post en melding til en ny offentlig mappe"
 
@@ -11244,10 +10422,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Cut selected message(s) to the clipboard"
 #~ msgstr "Klipp ut valgt(e) melding(er) til utklippstavlen"
 
-#, fuzzy
-#~ msgid "E_xpunge"
-#~ msgstr "_Tøm"
-
 #~ msgid "Hide S_elected Messages"
 #~ msgstr "Skjul valgt_e meldinger"
 
@@ -11260,10 +10434,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid ""
 #~ "Hide deleted messages rather than displaying them with a line through them"
 #~ msgstr "Skjul slettede meldinger heller enn å vise dem gjennomstreket"
-
-#, fuzzy
-#~ msgid "Mark All as _Read"
-#~ msgstr "Merk alle som l_est"
 
 #~ msgid "Mark all visible messages as read"
 #~ msgstr "Merk alle synlige meldinger som lest"
@@ -11327,10 +10497,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Apply filter rules to the selected messages"
 #~ msgstr "Aktiver filterregler på de valgte meldingene"
-
-#, fuzzy
-#~ msgid "Caret _Mode"
-#~ msgstr "Tekstmodell"
 
 #~ msgid "Compose a reply to all of the recipients of the selected message"
 #~ msgstr "Skriv et svar til alle mottakere av den valgte meldingen"
@@ -11491,10 +10657,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "P_revious Unread Message"
 #~ msgstr "Fo_rrige uleste melding"
 
-#, fuzzy
-#~ msgid "Post a Repl_y"
-#~ msgstr "Post et svar"
-
 #~ msgid "Post a reply to a message in a Public folder"
 #~ msgstr "Post et svar på en melding i en offentlig mappe"
 
@@ -11519,10 +10681,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Reset the text to its original size"
 #~ msgstr "Ta teksten tilbake til sin opprinnelige størrelse"
 
-#, fuzzy
-#~ msgid "S_earch in Message..."
-#~ msgstr "Søk i m_elding..."
-
 #~ msgid "S_maller"
 #~ msgstr "_Mindre"
 
@@ -11540,10 +10698,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Show Full _Headers"
 #~ msgstr "Vis fulle _headere"
-
-#, fuzzy
-#~ msgid "Show a blinking cursor in the body of displayed messages"
-#~ msgstr "Søk etter tekst i kroppen av vist melding"
 
 #~ msgid "Show message in the normal style"
 #~ msgstr "Vis melding i normal stil"
@@ -11809,10 +10963,6 @@ msgstr "Evolution adressebok-komponent"
 #~ msgid "Mar_k as Complete"
 #~ msgstr "Mer_k som fullført"
 
-#, fuzzy
-#~ msgid "Mark selected tasks as complete"
-#~ msgstr "_Merk valgte oppgaver som fullført"
-
 #~ msgid "Paste task from the clipboard"
 #~ msgstr "Lim inn oppgave fra utklippstavlen"
 
@@ -11839,10 +10989,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Import data from other programs"
 #~ msgstr "Importer data fra andre programmer"
-
-#, fuzzy
-#~ msgid "Open a new Evolution window"
-#~ msgstr "Evolution vindu"
 
 #~ msgid "Pi_lot Settings..."
 #~ msgstr "Innstillinger for pi_lot..."
@@ -11915,33 +11061,6 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "_Work Week View"
 #~ msgstr "Ar_beidsukevisning"
-
-#, fuzzy
-#~ msgid "As _Sent Folder"
-#~ msgstr "Som Sendt-mappe"
-
-#, fuzzy
-#~ msgid "By S_tatus"
-#~ msgstr "Etter status"
-
-#, fuzzy
-#~ msgid "By Se_nder"
-#~ msgstr "Etter avsender"
-
-#, fuzzy
-#~ msgid "By Su_bject"
-#~ msgstr "Etter emne"
-
-#, fuzzy
-#~ msgid "By _Follow Up Flag"
-#~ msgstr "Etter oppfølgingsflagg"
-
-#, fuzzy
-#~ msgid "_Messages"
-#~ msgstr "Meldinger"
-
-#~ msgid "With _Category"
-#~ msgstr "Med _kategori"
 
 #~ msgid "_Tasks"
 #~ msgstr "_Oppgaver"
@@ -21131,10 +20250,3 @@ msgstr "Evolution adressebok-komponent"
 
 #~ msgid "Error"
 #~ msgstr "Feil"
-
-#~ msgid "Question"
-#~ msgstr "Spørsmål"
-
-#, fuzzy
-#~ msgid "Evolution Addressbook local file backend"
-#~ msgstr "Evolution adressebok minikort visning"
