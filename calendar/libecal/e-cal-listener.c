@@ -92,6 +92,9 @@ convert_status (const GNOME_Evolution_Calendar_CallStatus status)
 		return E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
 	case GNOME_Evolution_Calendar_UnknownUser:
 		return E_CALENDAR_STATUS_UNKNOWN_USER;
+	case GNOME_Evolution_Calendar_InvalidServerVersion:
+		return E_CALENDAR_STATUS_INVALID_SERVER_VERSION;
+	
 	case GNOME_Evolution_Calendar_OtherError:
 	default:
 		return E_CALENDAR_STATUS_OTHER_ERROR;

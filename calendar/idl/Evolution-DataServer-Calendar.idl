@@ -131,7 +131,9 @@ module Calendar {
 
 		CouldNotCancel,
 		
-		OtherError
+		OtherError,
+		InvalidServerVersion
+
 	};
 
 	/* Handle to a live query on a calendar */

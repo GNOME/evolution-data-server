@@ -1,3 +1,13 @@
+2005-01-03 Vivek Jain <jvivek@novell.com>
+	* idl/Evolution-DataServer-Calendar.idl 
+	  added InvalidServerVersion in the callstatus
+	* libecal/e-cal-types.h (added INVALID_SEVER_VERSION)
+	* libecal/e-cal-listener.c (convert_status) added
+	  INVALID_SERVER_VERSION
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(connect_to_server) return the different callstatus if server doesn't return the
+	version
+
 2005-02-02  Ross Burton  <ross@burtonini.com>
 
 	* backends/contacts/e-cal-backend-contacts.c:

@@ -577,12 +577,15 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				return GNOME_Evolution_Calendar_OtherError;
 			}
 
-			
+
 		} else {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
 			return GNOME_Evolution_Calendar_AuthenticationFailed;
 		}
 	}
+
+	if (!e_gw_connection_get_version (priv->cnc)) 
+		return GNOME_Evolution_Calendar_InvalidServerVersion;
 
 	return GNOME_Evolution_Calendar_Success;
 }
