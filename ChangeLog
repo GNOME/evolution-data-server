@@ -1,3 +1,11 @@
+2003-11-04  JP Rosevear <jpr@ximian.com>
+
+	* src/server-interface-check.h: use G_*_DECLS and include the data
+	server stub
+	
+	* src/Makefile.am: compile Evolution-DataServer.idl and manipulate
+	the DataServer .server files
+
 2003-11-03  JP Rosevear <jpr@ximian.com>
 
 	* configure.in: don't need EVO_DIR

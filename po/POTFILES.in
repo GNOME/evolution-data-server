@@ -11,6 +11,5 @@ calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
 calendar/libedatacal/e-cal-backend-file.c
 calendar/libedatacal/e-cal-backend-sexp.c
-src/GNOME_Evolution_Wombat.server.in.in
-src/GNOME_Evolution_WombatLDAP.server.in.in
-src/GNOME_Evolution_WombatNOLDAP.server.in.in
+src/GNOME_Evolution_DataServerLDAP.server.in.in
+src/GNOME_Evolution_DataServerNOLDAP.server.in.in

@@ -21,20 +21,17 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
-#ifndef _WOMBAT_INTERFACE_CHECK_H_
-#define _WOMBAT_INTERFACE_CHECK_H_
+#ifndef _SERVER_INTERFACE_CHECK_H_
+#define _SERVER_INTERFACE_CHECK_H_
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include <bonobo/bonobo-object.h>
-#include "Evolution-Wombat.h"
+#include "Evolution-DataServer.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define WOMBAT_TYPE_INTERFACE_CHECK		(wombat_interface_check_get_type ())
 #define WOMBAT_INTERFACE_CHECK(obj)		(GTK_CHECK_CAST ((obj), WOMBAT_TYPE_INTERFACE_CHECK, WombatInterfaceCheck))
@@ -61,8 +58,6 @@ struct _WombatInterfaceCheckClass {
 GType wombat_interface_check_get_type  (void);
 WombatInterfaceCheck *wombat_interface_check_new (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* _WOMBAT_INTERFACE_CHECK_H_ */

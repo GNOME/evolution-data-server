@@ -16,20 +16,20 @@ INCLUDES =						\
 	$(E_DATA_SERVER_CFLAGS)
 
 IDLS = \
-	Evolution-Wombat.idl
+	Evolution-DataServer.idl
 
 IDL_GENERATED_H = \
-	Evolution-Wombat.h
+	Evolution-DataServer.h
 
 IDL_GENERATED_C =				\
-	Evolution-Wombat-common.c		\
-	Evolution-Wombat-skels.c		\
-	Evolution-Wombat-stubs.c
+	Evolution-DataServer-common.c		\
+	Evolution-DataServer-skels.c		\
+	Evolution-DataServer-stubs.c
 
 IDL_GENERATED = $(IDL_GENERATED_H) $(IDL_GENERATED_C)
 
 $(IDL_GENERATED_H): $(IDLS)
-	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(srcdir)/Evolution-Wombat.idl
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(srcdir)/Evolution-DataServer.idl
 
 $(IDL_GENERATED_C): $(IDL_GENERATED_H)
 
@@ -49,15 +49,15 @@ evolution_data_server_LDADD =						\
 	$(E_DATA_SERVER_LIBS)
 
 if ENABLE_LDAP
-SERVER_IN_FILE=GNOME_Evolution_WombatLDAP.server.in.in
+SERVER_IN_FILE=GNOME_Evolution_DataServerLDAP.server.in.in
 else
-SERVER_IN_FILE=GNOME_Evolution_WombatNOLDAP.server.in.in
+SERVER_IN_FILE=GNOME_Evolution_DataServerNOLDAP.server.in.in
 endif
 
-GNOME_Evolution_Wombat.server.in.in: $(SERVER_IN_FILE) Makefile
+GNOME_Evolution_DataServer.server.in.in: $(SERVER_IN_FILE) Makefile
 	cp $< $@
 
-server_in_files = GNOME_Evolution_Wombat.server.in.in
+server_in_files = GNOME_Evolution_DataServer.server.in.in
 server_DATA = $(server_in_files:.server.in.in=_$(BASE_VERSION).server)
 @EVO_SUBST_SERVER_RULE@
 @EVO_NAME_SERVER_RULE@
@@ -68,8 +68,8 @@ idl_DATA = $(IDLS)
 EXTRA_DIST = 						\
 	$(server_in_files)				\
 	$(idl_DATA)					\
-	GNOME_Evolution_WombatLDAP.server.in.in		\
-	GNOME_Evolution_WombatNOLDAP.server.in.in
+	GNOME_Evolution_DataServerLDAP.server.in.in	\
+	GNOME_Evolution_DataServerNOLDAP.server.in.in
 
 BUILT_SOURCES = $(IDL_GENERATED) $(server_DATA)
 CLEANFILES = $(BUILT_SOURCES)
@@ -80,10 +80,10 @@ dist-hook:
 if ENABLE_PURIFY
 PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 
-all-local: evolution-wombat.pure
+all-local: evolution-data-server.pure
 
-evolution-wombat.pure: evolution-wombat
-	@rm -f evolution-wombat.pure
-	$(PLINK) $(evolution_wombat_LDFLAGS) $(evolution_wombat_OBJECTS) $(evolution_wombat_LDADD) $(LIBS)
+evolution-data-server.pure: evolution-data-server
+	@rm -f evolution-data-server.pure
+	$(PLINK) $(evolution_data_server_LDFLAGS) $(evolution_data_server_OBJECTS) $(evolution_data_server_LDADD) $(LIBS)
 
 endif
