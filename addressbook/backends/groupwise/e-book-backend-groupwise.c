@@ -1524,7 +1524,7 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 		}
 		else if (g_str_equal (propname, "email")) {
 			gw_field_name = "emailList/email";
-			sexp_data->auto_completion= BEGINS_WITH_EMAIL;
+			sexp_data->auto_completion |= BEGINS_WITH_EMAIL;
 		}
 		else if (g_str_equal (propname, "file_as")) { 
 			 gw_field_name = "name";

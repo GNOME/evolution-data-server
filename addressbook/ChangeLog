@@ -1,5 +1,10 @@
 2004-08-17  Sivaiah Nallagatla <snallagatla@novell.com>
 	
+	* backends/groupwise/e-book-backend-groupwise.c (func_begins_with):
+	do a OR operation insted of assinging BEGINS_WITH_FILE_AS
+
+2004-08-17  Sivaiah Nallagatla <snallagatla@novell.com>
+	
 	* backends/groupwise/e-book-backend-groupwise.c (book_view_thread) :
 	don't update the view with contact when id is not present. Send the 
 	"name email" view to server when the query is for auto-completion
