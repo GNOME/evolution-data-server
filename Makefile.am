@@ -22,6 +22,7 @@ EXTRA_DIST = 						\
 	TODO						\
 	NEWS						\
 	marshal.mk					\
+	iconv-detect.c					\
 	intltool-merge.in				\
 	intltool-update.in				\
 	intltool-extract.in				\
