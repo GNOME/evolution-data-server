@@ -816,7 +816,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	case STATE_AUTH:
 		if (token->len > 2048) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("Server challenge too long (>2048 octets)\n"));
+					      _("Server challenge too long (>2048 octets)"));
 			return NULL;
 		}
 		
@@ -832,7 +832,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		if (priv->challenge->qop == QOP_INVALID) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 					      _("Server challenge contained invalid "
-						"\"Quality of Protection\" token\n"));
+						"\"Quality of Protection\" token"));
 			return NULL;
 		}
 
@@ -861,7 +861,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		if (!tokens || !*tokens) {
 			g_free (tokens);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("Server response did not contain authorization data\n"));
+					      _("Server response did not contain authorization data"));
 			return NULL;
 		}
 		
@@ -879,7 +879,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			g_free (rspauth->name);
 			g_free (rspauth);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("Server response contained incomplete authorization data\n"));
+					      _("Server response contained incomplete authorization data"));
 			return NULL;
 		}
 		
@@ -889,7 +889,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			g_free (rspauth->value);
 			g_free (rspauth);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("Server response does not match\n"));
+					      _("Server response does not match"));
 			sasl->authenticated = TRUE;
 			
 			return NULL;
