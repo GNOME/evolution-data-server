@@ -1,5 +1,12 @@
 2005-04-07  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	* e-gw-connection.c: (e_gw_connection_get_quick_messages):
+	 Responds with a list of all item ids if "id" is the view
+	 for the filter "All". 
+	 This fixes **72302.
+
+2005-04-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	* e-gw-item.h: add a new element in the EGwItemAttachment
 	  structure for storing the itemRefernce value for an
 	  attachment
