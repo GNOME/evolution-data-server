@@ -887,8 +887,10 @@ cal_query_cb (ECalListener *listener, ECalendarStatus status, GNOME_Evolution_Ca
 
 static gboolean  
 reopen_with_auth (gpointer data)
-{	
-	e_cal_open (E_CAL(data), TRUE, NULL);
+{
+	ECalendarStatus status;
+	
+	open_calendar (E_CAL (data), TRUE, NULL, &status, TRUE);
 	return FALSE;
 }
 
@@ -1489,7 +1491,7 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 }
 
 static gboolean
-open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarStatus *status)
+open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarStatus *status, gboolean needs_auth)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -1502,8 +1504,14 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	priv = ecal->priv;
 	
+
 	g_mutex_lock (ecal->priv->mutex);
 
+	if (!needs_auth && priv->load_state == E_CAL_LOAD_LOADED) {
+		g_mutex_unlock (ecal->priv->mutex);
+		return TRUE;
+	}
+	
 	if (ecal->priv->current_op != NULL) {
 		g_mutex_unlock (ecal->priv->mutex);
 		*status = E_CALENDAR_STATUS_BUSY;
@@ -1525,6 +1533,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
+			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
@@ -1534,6 +1543,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
+			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
@@ -1546,6 +1556,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
+			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_URI_NOT_LOADED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
@@ -1556,6 +1567,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
+			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED; 
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
@@ -1587,6 +1599,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		g_warning (G_STRLOC ": Unable to contact backend");
 
 		*status = E_CALENDAR_STATUS_CORBA_EXCEPTION;
+		priv->load_state = E_CAL_LOAD_NOT_LOADED;
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
@@ -1602,7 +1615,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
-	if (*status == E_CALENDAR_STATUS_OK)
+	if (*status == E_CALENDAR_STATUS_OK) 
 		priv->load_state = E_CAL_LOAD_LOADED;
 	else
 		priv->load_state = E_CAL_LOAD_NOT_LOADED;
@@ -1631,7 +1644,7 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 	ECalendarStatus status;
 	gboolean result;
 
-	result = open_calendar (ecal, only_if_exists, error, &status);
+	result = open_calendar (ecal, only_if_exists, error, &status, FALSE);
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, status);
 
 	return result;
@@ -1666,9 +1679,9 @@ open_async (gpointer data)
 {
 	ECalAsyncData *ccad = data;
 
-	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status);
+	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status, FALSE);
 	g_idle_add ((GSourceFunc) async_signal_idle_cb, ccad);
-
+	
 	return GINT_TO_POINTER (ccad->result);
 }
 
@@ -1694,6 +1707,16 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 	GError *error = NULL;
 	g_return_if_fail (ecal != NULL);
 	g_return_if_fail (E_IS_CAL (ecal));
+
+	switch (ecal->priv->load_state) {
+	case E_CAL_LOAD_AUTHENTICATING :
+	case E_CAL_LOAD_LOADING :
+		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, E_CALENDAR_STATUS_BUSY);
+		return;
+	case E_CAL_LOAD_LOADED :
+		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, E_CALENDAR_STATUS_OK);
+		return;
+	}
 
 	ccad = g_new0 (ECalAsyncData, 1);
 	ccad->ecal = g_object_ref (ecal);

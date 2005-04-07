@@ -1,4 +1,20 @@
+2004-04-06  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal.c (e_cal_open_async): check load state and if in
+	progress or already loaded, notify caller and return.
+
+2005-04-06  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libecal/e-cal.c
+       	(open_calendar): Added a boolean variable in open_calendar
+	to ensure authentication when the mode is switched.If the calendar is
+	loaded  return TRUE. Set the load_state to not loaded if the loading
+	fails.
+	(open_async), (e_cal_open), (reopen_with_auth): Added additional
+	argument for the open_calendar call.
+
 2005-04-06  Christian Kellner  <gicmo@gnome.org>
+
 	* libecal/e-cal.c (set_local_attachment_store): 
 	Add support for scalix provider. Also plug a 
 	small mem leak.
