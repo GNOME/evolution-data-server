@@ -75,6 +75,7 @@ static void groupwise_transfer_messages_to (CamelFolder *source,
 static int gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args) ;
 void convert_to_calendar (EGwItem *item, char **str, int *len) ;
 static void convert_to_task (EGwItem *item, char **str, int *len);
+static void gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex);
 
 #define d(x) x
 
@@ -629,122 +630,135 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 	return folder ;
 }
 
-static void 
+static void
 groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 {
-	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store) ;
-	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder) ;
-	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
+	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
+	CamelGroupwiseStorePrivate *priv = gw_store->priv;
 	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *)folder->summary;
-	EGwConnection *cnc = cnc_lookup (priv) ;
-	int status ;
+	EGwConnection *cnc = cnc_lookup (priv);
+	int status;
 	GList *list = NULL;
-	GSList *slist = NULL, *sl ;
-	char *container_id = NULL ;
-	char *time_string = NULL, *t_str = NULL ;
+	GSList *slist = NULL, *sl;
+	char *container_id = NULL;
+	char *time_string = NULL, *t_str = NULL;
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		g_warning ("In offline mode. Cannot refresh!!!\n");
-		return ;
+		return;
 	}
 
-	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name)) ;
+	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name));
 	if (!container_id) {
-		g_print ("\nERROR - Container id not present. Cannot refresh info\n") ;
-		return ;
+		g_error ("\nERROR - Container id not present. Cannot refresh info\n");
+		return;
 	}
 
-	
 	if (camel_folder_is_frozen (folder) ) {
-		gw_folder->need_refresh = TRUE ;
+		gw_folder->need_refresh = TRUE;
 	}
+	
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+
 	if (!g_ascii_strncasecmp (folder->full_name, "Trash", 5)) {
 		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution created attachments subject status", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-			g_free (container_id);
-			camel_operation_end (NULL);
-			return;
+			goto end1;
 		}
-		
 		gw_update_summary (folder, list, ex);
-		goto end;
+		g_list_foreach (list, (GFunc) g_object_unref, NULL);
+		g_list_free (list);
+		list = NULL;
+		goto end1;
 	}
 
 	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
 	t_str = g_strdup (time_string);
 
-	/* FIXME send the time stamp which the server sends */
+	/*Get the New Items*/
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-					"peek recipient distribution created attachments subject status",
-					&t_str, "New", NULL, NULL, -1, &slist) ;
-	
+			"peek recipient distribution created attachments subject status",
+			&t_str, "New", NULL, NULL, -1, &slist) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
-		g_free (time_string);
-		g_free (t_str);
-		g_free (container_id) ;
-		return ;
+		goto end2;
 	}
-	
-	/* store t_str into the summary */
+
+	/*
+	 * The value in t_str is the one that has to be used for the next set of calls. 
+	 * so store this value in the summary.
+	 */
 	if (summary->time_string)
 		g_free (summary->time_string);
-	summary->time_string = NULL;
 	summary->time_string = g_strdup (t_str);
-	g_free (t_str), t_str = NULL;
+	g_free (t_str);	t_str = NULL;
 
-	for ( sl = slist ; sl != NULL; sl = sl->next) {
+	for ( sl = slist ; sl != NULL; sl = sl->next) 
 		list = g_list_append (list, sl->data) ;
-	}
+
 	g_slist_free (slist);
 	slist = NULL;
+
 	t_str = g_strdup (time_string);
-	/* FIXME send the time stamp which the server sends */
+
+	/*Get those items which have been modifed*/
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-				"peek recipient distribution created attachments subject status",
-				&t_str, "Modified", NULL, NULL, -1, &slist) ;
+			"peek recipient distribution created attachments subject status",
+			&t_str, "Modified", NULL, NULL, -1, &slist) ;
 	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
-		g_free (time_string);
-		g_free (container_id);
-		g_list_free (list);
-		g_slist_free (slist);
-		return ;
-	}
-
-	for ( sl = slist ; sl != NULL; sl = sl->next) {
-		list = g_list_append (list, sl->data) ;
+		goto end3;
 	}
 	
+	for ( sl = slist ; sl != NULL; sl = sl->next) 
+		list = g_list_append (list, sl->data) ;
+
 	g_slist_free (slist);
 	slist = NULL;
-	
-	
+
 	if (gw_store->current_folder != folder) {
 		gw_store->current_folder = folder ;
-	} 	
+	}
 
-	gw_update_summary (folder, list, ex) ;
-
-end:
-	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
-
-	camel_folder_summary_save (folder->summary);
+	gw_update_summary (folder, list, ex);
 	
+
+	/*
+	 * The New and Modified items in the server have been updated in the summary. 
+	 * Now we have to make sure that all the delted items in the server are deleted
+	 * from Evolution as well. So we get the id's of all the items on the sever in 
+	 * this folder, and update the summary.
+	 */
+	t_str = g_strdup (time_string);
+	status = e_gw_connection_get_quick_messages (cnc, container_id, "id",
+			&t_str, "All", NULL, NULL, -1, &slist) ;
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+		goto end2;
+	}
+
+	gw_update_all_items (folder, slist, ex);
+
+	g_slist_foreach (slist, (GFunc) g_free, NULL);
+	g_slist_free (slist);
+	slist = NULL;
+
+end3: 
+	g_list_foreach (list, (GFunc) g_object_unref, NULL);
 	g_list_free (list);
 	list = NULL;
+end2:
+	g_free (t_str);
 	g_free (time_string);
 	g_free (container_id);
+end1:
+	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 
-	return ;
+	return;
 }
-
-
 
 void
 gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) 
@@ -861,6 +875,40 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		} */
 	camel_folder_change_info_free (changes) ;
 	g_ptr_array_free (msg, TRUE) ;
+}
+
+static void
+gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex) 
+{
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
+	GPtrArray *summary = camel_folder_get_summary (folder);
+	int index = 0;
+	GSList *item_ids = NULL, *l = NULL;
+	CamelFolderChangeInfo *changes = NULL ;
+
+	changes = camel_folder_change_info_new () ;
+	/*item_ids : List of ids from the summary*/
+	while (index < summary->len) {
+		CamelMessageInfo *info = g_ptr_array_index (summary, index);
+		item_ids = g_slist_append (item_ids, info->uid);
+		index ++;
+	}
+	l = item_ids;
+	camel_folder_free_summary (folder, summary);
+
+	/*item_list : List of ids from the server*/
+	for (; item_ids != NULL ; item_ids = g_slist_next (item_ids)) {
+		GSList *temp = NULL;
+		temp = g_slist_find_custom (item_list, (const char *)item_ids->data, (GCompareFunc) strcmp);
+		if (!temp) {
+			camel_folder_summary_remove_uid (folder->summary, (const char *)item_ids->data) ;
+			camel_data_cache_remove(gw_folder->cache, "cache", (const char *)item_ids->data, ex);
+			camel_folder_change_info_remove_uid(changes, (const char *)item_ids->data);
+		}
+	}
+	camel_object_trigger_event (folder, "folder_changed", changes) ;
+
+	g_slist_free (l);
 }
 
 static void

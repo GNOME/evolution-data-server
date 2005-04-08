@@ -1,3 +1,12 @@
+2005-04-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: 
+	  (groupwise_refresh_info): get the ids of all items
+	  in a folder from the server. 
+	  (gw_update_all_items): update summary with items
+	  that have been deleted from the server.
+	  Fixes bug **72302 **74381 **72303
+	
 2005-04-05  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_refresh_info):
