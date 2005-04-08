@@ -69,6 +69,7 @@ void cal_obj_uid_list_free (GList *list);
 icalcomponent *e_cal_util_new_top_level (void);
 icalcomponent *e_cal_util_new_component (icalcomponent_kind kind);
 
+icalcomponent *e_cal_util_parse_ics_string (const char *string);
 icalcomponent *e_cal_util_parse_ics_file (const char *filename);
 
 ECalComponentAlarms *e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
