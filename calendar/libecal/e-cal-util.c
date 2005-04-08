@@ -117,6 +117,73 @@ e_cal_util_new_component (icalcomponent_kind kind)
 }
 
 static char *
+read_line (const char *string)
+{
+	char *line;
+	GString *line_str = NULL;
+
+	for (; *string; string++) {
+		if (!line_str)
+			line_str = g_string_new ("");
+
+		line_str = g_string_append_c (line_str, *string);
+		if (*string == '\n')
+			break;
+	}
+
+	line = line_str->str;
+	g_string_free (line_str, FALSE);
+
+	return line;
+}
+
+icalcomponent *
+e_cal_util_parse_ics_string (const char *string)
+{
+	char *s;
+	icalcomponent *icalcomp = NULL;
+
+	g_return_val_if_fail (string != NULL, NULL);
+
+	/* Split string into separated VCALENDAR's, if more than one */
+	if ((s = g_strstr_len (string, strlen (string), "BEGIN:VCALENDAR"))) {
+		GString *comp_str = NULL;
+
+		while (*s) {
+			char *line = read_line (s);
+			if (line) {
+				if (!comp_str)
+					comp_str = g_string_new (line);
+				else
+					comp_str = g_string_append (comp_str, line);
+
+				if (!strncmp (line, "END:VCALENDAR", 13)) {
+					icalcomponent *tmp;
+
+					tmp = icalparser_parse_string (comp_str->str);
+					if (tmp) {
+						if (icalcomp)
+							icalcomponent_merge_component (icalcomp, tmp);
+						else
+							icalcomp = tmp;
+					}
+
+					g_string_free (comp_str, TRUE);
+					comp_str = NULL;
+				}
+
+				s += strlen (line);
+
+				g_free (line);
+			}
+		}
+	} else
+		icalcomp = icalparser_parse_string (string);
+
+	return icalcomp;
+}
+
+static char *
 get_line_fn (char *buf, size_t size, void *file)
 {
 	return fgets (buf, size, file);

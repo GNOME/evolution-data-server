@@ -1,3 +1,13 @@
+2005-04-08  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #70035
+
+	* libecal/e-cal-util.c (e_cal_util_parse_ics_string): new function that
+	supports strings with multiple VCALENDAR's.
+
+	* backends/http/e-cal-backend-http.c (retrieval_done): use the new
+	function instead of icalparser_parse_string.
+
 2004-04-06  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal.c (e_cal_open_async): check load state and if in
