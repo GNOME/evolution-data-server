@@ -256,7 +256,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	/* get the calendar from the response */
 	str = g_malloc0 (msg->response.length + 1);
 	strncpy (str, msg->response.body, msg->response.length);
-	icalcomp = icalparser_parse_string (str);
+	icalcomp = e_cal_util_parse_ics_string (str);
 	g_free (str);
 
 	if (!icalcomp) {
