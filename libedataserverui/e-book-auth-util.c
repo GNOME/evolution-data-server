@@ -33,7 +33,7 @@
 
 static void addressbook_authenticate (EBook *book, gboolean previous_failure,
 				      ESource *source, EBookCallback cb, gpointer closure);
-
+static void auth_required_cb (EBook *book, gpointer data);
 typedef struct {
 	ESource       *source;
 	EBook         *book;
@@ -47,13 +47,15 @@ free_load_source_data (LoadSourceData *data)
 {
 	if (data->source)
 		g_object_unref (data->source);
-	if (data->book)
+	if (data->book) {
+		g_signal_handlers_disconnect_by_func (data->book, auth_required_cb, NULL);
 		g_object_unref (data->book);
+	}
 	g_free (data);
 }
 
 static gchar *
-remove_parameters_from_uri (gchar *uri)
+remove_parameters_from_uri (const gchar *uri)
 {
   gchar **components;
   gchar *new_uri = NULL;
@@ -102,7 +104,7 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 			free_load_source_data (data);
 			return;
 		} else {
-			gchar *uri = e_source_get_uri (data->source);
+			const gchar *uri = e_book_get_uri (book);
 			gchar *stripped_uri = remove_parameters_from_uri (uri);
 			const gchar *auth_domain = e_source_get_property (data->source, "auth-domain");
 			const gchar *component_name;
@@ -113,7 +115,7 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 			addressbook_authenticate (book, TRUE, data->source, load_source_auth_cb, closure);
 
 			g_free (stripped_uri);
-			g_free (uri);
+		       
 			return;
 		}
 	}
@@ -152,12 +154,11 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 	const gchar *component_name;
 	const char *password     = NULL;
 	char *pass_dup           = NULL;
-	gchar *uri               = e_source_get_uri (source);
+	const gchar *uri               = e_book_get_uri (book);
         gchar *stripped_uri      = remove_parameters_from_uri (uri);
 	const gchar *auth_domain = e_source_get_property (source, "auth-domain");
 			
 	component_name = auth_domain ? auth_domain : "Addressbook";
-	g_free (uri);
 	uri = stripped_uri;
 
 	password = e_passwords_get_password (component_name, uri);

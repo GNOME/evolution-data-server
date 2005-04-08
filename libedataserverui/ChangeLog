@@ -1,3 +1,36 @@
+2005-04-04  Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * e-book-auth-util.c (load_source_auth_cb)
+        (addressbook_authenticate) : get the uri from Ebook
+       instead of Esource. e_source_get_uri returns NULL when
+       it does not have a reference to source group with it
+       which happens when the source list from which this source
+       was taken is destroyed but Ebook has reference to that source.
+       e_book_get_uri returns the same uri and it will be always present
+       Fixes #73330
+
+2005-03-31  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-name-selector.c (source_books_destroy): Implement.
+	(e_name_selector_init): Create a list of completion books, and open
+	them with interactive authentication.
+	(e_name_selector_peek_section_entry): Re-use the list of opened books
+	for each entry.
+
+	* e-name-selector-entry.c (e_name_selector_entry_realize): If the user
+	didn't set a contact store, create the default one here.
+	(e_name_selector_entry_class_init): Set up our realize method.
+	(e_name_selector_entry_init): Don't set up the default contact store
+	here.
+	(setup_default_contact_store): Also create the contact store itself.
+	(set_completion_query)
+	(find_existing_completion)
+	(completion_match_selected)
+	(contact_layout_formatter)
+	(popup_activate_contact)
+	(setup_contact_store)
+	(e_name_selector_entry_set_contact_store): Tolerate NULL contact store.
+
 2005-03-23  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #73472
