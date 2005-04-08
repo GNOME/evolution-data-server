@@ -1,5 +1,9 @@
 2005-04-08  Rodrigo Moya <rodrigo@novell.com>
 
+	* libecal/e-cal-util.h: added new function's prototype.
+
+2005-04-08  Rodrigo Moya <rodrigo@novell.com>
+
 	Fixes #70035
 
 	* libecal/e-cal-util.c (e_cal_util_parse_ics_string): new function that
