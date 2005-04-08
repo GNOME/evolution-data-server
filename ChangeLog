@@ -1,3 +1,7 @@
+2005-04-07  Gareth Owen  <gowen72@yahoo.com>
+
+	* po/en_GB.po: Updated British English translations
+
 2005-03-31  Steve Murphy  <murf@e-tools.com>
 
         * configure.in: Added "rw" to ALL_LINGUAS.
