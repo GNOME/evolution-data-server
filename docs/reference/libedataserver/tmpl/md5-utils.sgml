@@ -14,9 +14,6 @@ Functions for manipulating MD5 checksums.
 
 </para>
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 <!-- ##### STRUCT MD5Context ##### -->
 <para>
 

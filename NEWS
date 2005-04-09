@@ -1,3 +1,63 @@
+Evolution Data Server 1.2.2, 2005-04-07
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Camel
+    #73015 - groupwise message threading workaround (Michael)
+    #70195 - Incorrect parsing of locale encoded From: header causes mess on statusbar (Michael)
+    #70590 - Don't fall through to the default folder if we move (Michael)
+    #72876 - Message with blank reply-to cannot be replied to (Michael)
+    #73112 - imap fails errors after checking authentication type (Michael)
+    #72145 - All gw sent mail has a blank "To" field (Partha)
+    #73308 - gw mail getting marked as read when it shouldn't (Partha)
+    #72373 - new meeting invitations not showing up in Mailbox (Vivek)
+    #72455 - Messages are disappearing in the inbox of GW accounts (Vivek)
+
+  * Calendar
+    #73508 - Status of meeting organizer getting changed in groupwise (Chen)
+    #73964 - Crash when switching to calendar with exchange support (Chen, Rodrigo)
+    #70035 - calendar .ics incompatibility (ics created with older mozillas) (Rodrigo)
+
+  * All
+    #73472 - New Gtk File selector dialog not used for category icon (Rodrigo)
+
+Other bugs
+
+  * Camel
+    - Don't try to convert boundary param values into UTF-8 even if they contain binary text (Pavel Fedin, Jeff)
+    - Make sure all untagged response data is read (Jeff)
+    - Prevent race closing the same fd twice (Michael)
+    - Prevent mailbox from storing each time a user tag is changed (Michael)
+
+  * Calendar
+    - fixes for local attachment store (Christian Kellner)
+
+  * All
+    - Don't try to convert boundary param values into UTF-8 even if they contain binary text (James Bowes)
+		
+Updated Translations:
+	-zh_CN (Funda Wang)
+	-pt_BR (Raphael Higino)
+	-xh (Adi Attar)
+	-rw (Steve Murphy)
+	-sq (Laurent Dhima)
+	-cs (Miloslav Trmac)
+	-gu (Ankit Patel)
+	-en_CA (Adam Weinberger)
+	-et (Priit Laes)
+	-hu (Gabor Kelemen)
+	-ca (Josep Puigdemont)
+	-el (Nikos Charonitakis)
+	-es (Francisco Javier F. Serrador)
+	-de (Frank Arnold)
+	-pt (Duarte Loreto)
+	-en_CA (Adam Weinberger)
+	-sv (Christian Rose)
+	-lt (Zygimantas Berucka)
+	-ja (Takeshi AIHANA)
+	-en_GB (Gareth Owen)
+
 Evolution Data Server 1.2.1, 2005-03-15
 ---------------------------------------
 
