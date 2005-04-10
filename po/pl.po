@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-15 09:28+0100\n"
+"POT-Creation-Date: 2005-04-10 21:04+0200\n"
 "PO-Revision-Date: 2002-09-24 01:06+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnomepl.org>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -561,7 +561,7 @@ msgid "Category List"
 msgstr "Lista kategorii"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:371
+#: ../libedataserverui/e-categories-dialog.c:372
 msgid "Categories"
 msgstr "Kategorie"
 
@@ -648,29 +648,25 @@ msgstr "Wymagana odpowiedź: Kiedy wygodnie"
 msgid "Invalid server URI"
 msgstr "Niepoprawny adres URI serwera"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-msgid "Could not create thread for getting deltas"
-msgstr "Nie można utworzyć wątku pobierającego zmiany"
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:581
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Kalendarz"
 
 # FIXME bufora czy cache? 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:591
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Nie można utworzyć pliku bufora"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:601
 msgid "Could not create thread for populating cache"
 msgstr "Nie można utworzyć wątka wypełniającego bufor"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
-#: ../calendar/libecal/e-cal.c:4528
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:607
+#: ../calendar/libecal/e-cal.c:4564
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:654
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:678
 #: ../camel/providers/groupwise/camel-groupwise-store.c:528
@@ -1013,96 +1009,96 @@ msgstr "30."
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:568 ../calendar/libecal/e-cal-util.c:590
+#: ../calendar/libecal/e-cal-util.c:635 ../calendar/libecal/e-cal-util.c:657
 msgid "High"
 msgstr "Wysoki"
 
-#: ../calendar/libecal/e-cal-util.c:570 ../calendar/libecal/e-cal-util.c:592
+#: ../calendar/libecal/e-cal-util.c:637 ../calendar/libecal/e-cal-util.c:659
 msgid "Normal"
 msgstr "Zwykły"
 
-#: ../calendar/libecal/e-cal-util.c:572 ../calendar/libecal/e-cal-util.c:594
+#: ../calendar/libecal/e-cal-util.c:639 ../calendar/libecal/e-cal-util.c:661
 msgid "Low"
 msgstr "Niski"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:588
+#: ../calendar/libecal/e-cal-util.c:655
 msgid "Undefined"
 msgstr "Niezdefiniowany"
 
 #. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1538
+#: ../calendar/libecal/e-cal.c:1552 ../libedataserverui/e-book-auth-util.c:190
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Wprowadź hasło dla %s (użytkownik %s)"
 
-#: ../calendar/libecal/e-cal.c:4500
+#: ../calendar/libecal/e-cal.c:4536
 msgid "Invalid argument"
 msgstr "Niepoprawny argument"
 
 # FIXME - jakieś inne wersje?
-#: ../calendar/libecal/e-cal.c:4502
+#: ../calendar/libecal/e-cal.c:4538
 msgid "Backend is busy"
 msgstr "Wsparcie jest zajęte"
 
-#: ../calendar/libecal/e-cal.c:4504
+#: ../calendar/libecal/e-cal.c:4540
 msgid "Repository is offline"
 msgstr "Repozytorium jest rozłączone"
 
-#: ../calendar/libecal/e-cal.c:4506
+#: ../calendar/libecal/e-cal.c:4542
 msgid "No such calendar"
 msgstr "Nie ma takiego kalendarza"
 
-#: ../calendar/libecal/e-cal.c:4508 ../servers/groupwise/e-gw-connection.c:165
+#: ../calendar/libecal/e-cal.c:4544 ../servers/groupwise/e-gw-connection.c:165
 msgid "Object not found"
 msgstr "Nie można odnaleźć obiektu"
 
-#: ../calendar/libecal/e-cal.c:4510 ../servers/groupwise/e-gw-connection.c:159
+#: ../calendar/libecal/e-cal.c:4546 ../servers/groupwise/e-gw-connection.c:159
 msgid "Invalid object"
 msgstr "Błędny obiekt"
 
-#: ../calendar/libecal/e-cal.c:4512
+#: ../calendar/libecal/e-cal.c:4548
 msgid "URI not loaded"
 msgstr "Nie można wczytać adresu URI"
 
-#: ../calendar/libecal/e-cal.c:4514
+#: ../calendar/libecal/e-cal.c:4550
 msgid "URI already loaded"
 msgstr "Adres URI jest już wczytany"
 
-#: ../calendar/libecal/e-cal.c:4516
+#: ../calendar/libecal/e-cal.c:4552
 msgid "Permission denied"
 msgstr "Brak uprawnień"
 
-#: ../calendar/libecal/e-cal.c:4518 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:4554 ../servers/groupwise/e-gw-connection.c:167
 msgid "Unknown User"
 msgstr "Nieznany użytkownik"
 
-#: ../calendar/libecal/e-cal.c:4520
+#: ../calendar/libecal/e-cal.c:4556
 msgid "Object ID already exists"
 msgstr "ID obiektu już istnieje"
 
-#: ../calendar/libecal/e-cal.c:4522
+#: ../calendar/libecal/e-cal.c:4558
 msgid "Protocol not supported"
 msgstr "Protokół nie jest obsługiwany"
 
-#: ../calendar/libecal/e-cal.c:4524
+#: ../calendar/libecal/e-cal.c:4560
 msgid "Operation has been cancelled"
 msgstr "Operacja została anulowana"
 
-#: ../calendar/libecal/e-cal.c:4526
+#: ../calendar/libecal/e-cal.c:4562
 msgid "Could not cancel operation"
 msgstr "Nie można anulować operacji"
 
-#: ../calendar/libecal/e-cal.c:4530
+#: ../calendar/libecal/e-cal.c:4566
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Wymagane uwierzytelnienie"
 
-#: ../calendar/libecal/e-cal.c:4532
+#: ../calendar/libecal/e-cal.c:4568
 msgid "A CORBA exception has occurred"
 msgstr "Wystąpił wyjątek CORBA"
 
-#: ../calendar/libecal/e-cal.c:4534
+#: ../calendar/libecal/e-cal.c:4570
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1113,7 +1109,7 @@ msgstr "Wystąpił wyjątek CORBA"
 msgid "Unknown error"
 msgstr "Nieznany błąd"
 
-#: ../calendar/libecal/e-cal.c:4536
+#: ../calendar/libecal/e-cal.c:4572
 msgid "No error"
 msgstr "bez błędu"
 
@@ -1498,7 +1494,7 @@ msgstr ""
 "użytkownika: \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1274
+#: ../camel/providers/nntp/camel-nntp-store.c:1275
 msgid "Cancelled."
 msgstr "Anulowano."
 
@@ -1827,29 +1823,29 @@ msgstr ""
 "Przy tej opcji połączenie z serwerem nastąpi przy użyciu hasła DIGEST-MD5, o "
 "ile będzie ono obsługiwane przez serwer."
 
-#: ../camel/camel-sasl-digest-md5.c:814
+#: ../camel/camel-sasl-digest-md5.c:819
 msgid "Server challenge too long (>2048 octets)\n"
 msgstr "Zbyt długie wezwanie serwera (>2048 oktetów)\n"
 
-#: ../camel/camel-sasl-digest-md5.c:823
+#: ../camel/camel-sasl-digest-md5.c:828
 msgid "Server challenge invalid\n"
 msgstr "Niepoprawne wezwanie serwera\n"
 
-#: ../camel/camel-sasl-digest-md5.c:829
+#: ../camel/camel-sasl-digest-md5.c:834
 msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
 msgstr ""
 "Wezwanie serwera zawierało niepoprawny token \"Quality of Protection"
 "\" (jakość ochrony)\n"
 
-#: ../camel/camel-sasl-digest-md5.c:859
+#: ../camel/camel-sasl-digest-md5.c:864
 msgid "Server response did not contain authorization data\n"
 msgstr "Odpowiedź serwera nie zawiera danych o autoryzacji\n"
 
-#: ../camel/camel-sasl-digest-md5.c:877
+#: ../camel/camel-sasl-digest-md5.c:882
 msgid "Server response contained incomplete authorization data\n"
 msgstr "Odpowiedź serwera zawiera niekompletne dane o autoryzacji\n"
 
-#: ../camel/camel-sasl-digest-md5.c:887
+#: ../camel/camel-sasl-digest-md5.c:892
 msgid "Server response does not match\n"
 msgstr "Niepotwierdzona odpowiedź serwera\n"
 
@@ -2771,7 +2767,7 @@ msgstr "Wysyłanie listu"
 
 #: ../camel/providers/imap/camel-imap-command.c:219
 #: ../camel/providers/imap/camel-imap-command.c:258
-#: ../camel/providers/imap/camel-imap-command.c:463
+#: ../camel/providers/imap/camel-imap-command.c:465
 #: ../camel/providers/imap/camel-imap-store.c:3240
 msgid "Operation cancelled"
 msgstr "Operacja anulowana"
@@ -2803,16 +2799,16 @@ msgstr "Nieoczekiwana odpowiedź od serwera IMAP: %s"
 msgid "IMAP command failed: %s"
 msgstr "Nie powiodło się polecenie IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:473
+#: ../camel/providers/imap/camel-imap-command.c:479
 msgid "Server response ended too soon."
 msgstr "Odpowiedź serwera zakończyła się zbyt wcześnie."
 
-#: ../camel/providers/imap/camel-imap-command.c:680
+#: ../camel/providers/imap/camel-imap-command.c:686
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "Odpowiedź serwera IMAP nie zawiera informacji %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:716
+#: ../camel/providers/imap/camel-imap-command.c:722
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Nieoczekiwana odpowiedź OK od serwera IMAP: %s"
@@ -3763,7 +3759,7 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "Nie można otworzyć tymczasowej skrzynki: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:619
-#: ../camel/providers/local/camel-mbox-summary.c:783
+#: ../camel/providers/local/camel-mbox-summary.c:793
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Nie można zamknąć folderu źródłowego %s: %s"
@@ -3778,31 +3774,32 @@ msgstr "Nie można zamknąć folderu tymczasowego: %s"
 msgid "Could not rename folder: %s"
 msgstr "Nie można zmienić nazwy folderu: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:723
-#: ../camel/providers/local/camel-mbox-summary.c:731
-#: ../camel/providers/local/camel-mbox-summary.c:925
-#: ../camel/providers/local/camel-mbox-summary.c:933
+#: ../camel/providers/local/camel-mbox-summary.c:696
+#: ../camel/providers/local/camel-mbox-summary.c:904
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "Nie można zapisać folderu: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:935
+#: ../camel/providers/local/camel-mbox-summary.c:943
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Niezgodność folderu z zestawieniem, nawet po synchronizacji"
 
-#: ../camel/providers/local/camel-mbox-summary.c:859
+#: ../camel/providers/local/camel-mbox-summary.c:869
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Nieznany błąd: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:894
-#, c-format
-msgid "Could not store folder: %s"
-msgstr "Nie można zapisać folderu: %s"
-
-#: ../camel/providers/local/camel-mbox-summary.c:988
-#: ../camel/providers/local/camel-mbox-summary.c:1014
+#: ../camel/providers/local/camel-mbox-summary.c:998
+#: ../camel/providers/local/camel-mbox-summary.c:1024
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Błąd przy zapisie do tymczasowej skrzynki: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1005
+#: ../camel/providers/local/camel-mbox-summary.c:1015
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Nie powiódł się zapis do tymczasowej skrzynki: %s: %s"
@@ -3981,12 +3978,12 @@ msgstr "Nie można odczytać powitania z %s: %s"
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Serwer NNTP %s zwrócił kod błędu %d: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:422
+#: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
 msgid "USENET News via %s"
 msgstr "Nowiny USENET za pośrednictwem %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:811
+#: ../camel/providers/nntp/camel-nntp-store.c:812
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3997,7 +3994,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:905
+#: ../camel/providers/nntp/camel-nntp-store.c:906
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4007,7 +4004,7 @@ msgstr ""
 "\n"
 "Nie ma takiej grupy. Wybrany element jest prawdopodobnie folderem nadrzędnym."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:937
+#: ../camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4017,45 +4014,45 @@ msgstr ""
 "\n"
 "Grupa nie istnieje!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:962
+#: ../camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Nie można utworzyć folderu w magazynie nowin: zamiast tego zasubskrybuj "
 "grupę."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:970
+#: ../camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot rename a folder in a News store."
 msgstr "Nie można usunąć folderu z magazynie nowin."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:978
+#: ../camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Nie można usunąć folderu w magazynie nowin: zamiast tego odsubskrybuj grupę."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1148
+#: ../camel/providers/nntp/camel-nntp-store.c:1149
 msgid "Authentication requested but no username provided"
 msgstr "Wymagane uwierzytelnienie ale nie podano nazwy użytkownika"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1156
+#: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Podaj hasło NNTP dla %s@%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1160
+#: ../camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Nie można uwierzytelnić na serwerze: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1276
+#: ../camel/providers/nntp/camel-nntp-store.c:1277
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "Nie powiodło się polecenie NNTP: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1332
+#: ../camel/providers/nntp/camel-nntp-store.c:1333
 msgid "Not connected."
 msgstr "Brak połączenia."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1385
+#: ../camel/providers/nntp/camel-nntp-store.c:1386
 #, c-format
 msgid "No such folder: %s"
 msgstr "Folder nie istnieje: %s"
@@ -4640,7 +4637,7 @@ msgstr "Oczekiwanie"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:173 ../libedataserver/e-time-utils.c:400
+#: ../libedataserver/e-time-utils.c:179 ../libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S %p"
 
@@ -4648,7 +4645,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:178 ../libedataserver/e-time-utils.c:391
+#: ../libedataserver/e-time-utils.c:184 ../libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -4656,7 +4653,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:183 ../libedataserver/e-time-utils.c:396
+#: ../libedataserver/e-time-utils.c:189 ../libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M %p"
 
@@ -4664,78 +4661,78 @@ msgstr "%a %d/%m/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:188 ../libedataserver/e-time-utils.c:387
+#: ../libedataserver/e-time-utils.c:194 ../libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:193
+#: ../libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %d/%m/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:198
+#: ../libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:201 ../libedataserver/e-time-utils.c:294
-#: ../libedataserver/e-time-utils.c:382
+#: ../libedataserver/e-time-utils.c:207 ../libedataserver/e-time-utils.c:300
+#: ../libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:209
+#: ../libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d/%m/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:213
+#: ../libedataserver/e-time-utils.c:219
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:218
+#: ../libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d/%m/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:223
+#: ../libedataserver/e-time-utils.c:229
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d/%m/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:228
+#: ../libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
 msgstr "%d/%m/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:233
+#: ../libedataserver/e-time-utils.c:239
 msgid "%m/%d/%Y %H"
 msgstr "%d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:236 ../libedataserver/e-time-utils.c:297
+#: ../libedataserver/e-time-utils.c:242 ../libedataserver/e-time-utils.c:303
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:337 ../libedataserver/e-time-utils.c:436
+#: ../libedataserver/e-time-utils.c:348 ../libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:341 ../libedataserver/e-time-utils.c:428
+#: ../libedataserver/e-time-utils.c:352 ../libedataserver/e-time-utils.c:459
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4743,34 +4740,42 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:346 ../libedataserver/e-time-utils.c:433
+#: ../libedataserver/e-time-utils.c:357 ../libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:350 ../libedataserver/e-time-utils.c:425
+#: ../libedataserver/e-time-utils.c:361 ../libedataserver/e-time-utils.c:456
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:354
+#: ../libedataserver/e-time-utils.c:365
 msgid "%I %p"
 msgstr "%I %p"
+
+#: ../libedataserverui/e-book-auth-util.c:87
+msgid "Accessing LDAP Server anonymously"
+msgstr "Anonimowy dostęp do serwera LDAP"
+
+#: ../libedataserverui/e-book-auth-util.c:183
+msgid "Failed to authenticate.\n"
+msgstr "Nie można dokonać uwierzytelnienia.\n"
 
 #: ../libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
 msgstr "Ikona kategorii"
 
-#: ../libedataserverui/e-categories-dialog.c:238
+#: ../libedataserverui/e-categories-dialog.c:239
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "Istnieje już kategoria \"%s\" w konfiguracji. Użyj innej nazwy"
 
-#: ../libedataserverui/e-categories-dialog.c:396
+#: ../libedataserverui/e-categories-dialog.c:397
 msgid "Category"
 msgstr "Kategoria"
 
@@ -4846,6 +4851,14 @@ msgstr "Wyszukiwnie"
 msgid "_Search:"
 msgstr "_Wyszukiwnie:"
 
+#: ../libedataserverui/e-passwords.c:471
+msgid "_Remember this password"
+msgstr "_Zapamiętanie hasła"
+
+#: ../libedataserverui/e-passwords.c:472
+msgid "_Remember this password for the remainder of this session"
+msgstr "_Zapamiętanie tego hasła na czas bieżącej sesji"
+
 # FIXME - A może Wybór miejsca docelowego?
 #. prepare the dialog
 #: ../libedataserverui/e-source-selector-dialog.c:101
@@ -4855,14 +4868,6 @@ msgstr "Wybierz miejsce docelowe"
 #: ../libedataserverui/e-source-selector-dialog.c:154
 msgid "_Destination"
 msgstr "Miejsce _docelowe"
-
-#: ../libedataserverui/e-passwords.c:472
-msgid "_Remember this password"
-msgstr "_Zapamiętanie hasła"
-
-#: ../libedataserverui/e-passwords.c:473
-msgid "_Remember this password for the remainder of this session"
-msgstr "_Zapamiętanie tego hasła na czas bieżącej sesji"
 
 #: ../servers/groupwise/e-gw-connection.c:157
 msgid "Invalid connection"
@@ -4895,6 +4900,9 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Wystąpiło wielokrotne naruszenie ochrony pamięci; nie można wyświetlić "
 "komunikatu błędu\n"
+
+#~ msgid "Could not create thread for getting deltas"
+#~ msgstr "Nie można utworzyć wątku pobierającego zmiany"
 
 #~ msgid "e_book_load_uri: no factories available for uri `%s'"
 #~ msgstr "e_book_load_uri: brak dostępnych generatorów dla adresu URI \"%s\""
@@ -4942,9 +4950,6 @@ msgstr ""
 
 #~ msgid "%sEnter password for %s (user %s)"
 #~ msgstr "%sWprowadź hasło dla %s (użytkownik %s)"
-
-#~ msgid "Failed to authenticate.\n"
-#~ msgstr "Nie można dokonać uwierzytelnienia.\n"
 
 #~ msgid "Server rejected username"
 #~ msgstr "Serwer odrzucił nazwę użytkownika"
