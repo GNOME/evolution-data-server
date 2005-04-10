@@ -738,7 +738,7 @@ msgstr "Wypogodzenia"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:205
 msgid "Mostly cloudy"
-msgstr "Głownie zachmurzenia"
+msgstr "Głównie zachmurzenia"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Windy"
