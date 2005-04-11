@@ -1,3 +1,10 @@
+2005-04-08  Sankar P <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_folder_get_message)
+	Added code to handle the item type NOTIFICATION so as to 
+        enable viewing notification mails such as Shared Folder Notification.
+	Fixes #74369
+	
 2005-04-07  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: 

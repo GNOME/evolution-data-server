@@ -302,51 +302,39 @@ groupwise_folder_get_message( CamelFolder *folder,
 	}
 	
 	/*Content and content-type*/
+
 	body = g_strdup(e_gw_item_get_message(item));
-	if (body) {
-		CamelMimePart *part ;
-		part = camel_mime_part_new () ;
+	CamelMimePart *part ;
+	part = camel_mime_part_new () ;
+	camel_multipart_set_boundary (multipart, NULL);
+	camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
+	switch(type)
+	{
+		case E_GW_ITEM_TYPE_APPOINTMENT: 
+		case E_GW_ITEM_TYPE_TASK: 
+			{
+				char *cal_buffer = NULL ;
+				int len = 0 ;
+				if (type==E_GW_ITEM_TYPE_APPOINTMENT)
+					convert_to_calendar (item, &cal_buffer, &len);
+				else
+					convert_to_task (item, &cal_buffer, &len);
+				camel_mime_part_set_content(part, cal_buffer, len, "text/calendar") ;
+				g_free (cal_buffer) ;
+				break;
+			}
+		case E_GW_ITEM_TYPE_MAIL:
+		case E_GW_ITEM_TYPE_NOTIFICATION:
+			if (body)
+				camel_mime_part_set_content(part, body, strlen(body), e_gw_item_get_msg_content_type (item)) ;
+			else
+				camel_mime_part_set_content(part, " ", strlen(" "),"text/html") ;
+		default:
+			break;
+	}	
+	camel_multipart_add_part (multipart, part) ;
+	camel_object_unref (part) ;
 
-		camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
-		camel_multipart_set_boundary (multipart, NULL);
-		if (type != E_GW_ITEM_TYPE_MAIL) {
-			char *cal_buffer = NULL ;
-			int len = 0 ;
-			
-			if (type == E_GW_ITEM_TYPE_APPOINTMENT)
-				convert_to_calendar (item, &cal_buffer, &len) ;
-			else if (type == E_GW_ITEM_TYPE_TASK)
-				convert_to_task (item, &cal_buffer, &len);
-
-			camel_mime_part_set_content(part, cal_buffer, len, "text/calendar") ;
-			g_free (cal_buffer) ;
-		} else
-			camel_mime_part_set_content(part, body, strlen(body), e_gw_item_get_msg_content_type (item)) ;
-		camel_multipart_add_part (multipart, part) ;
-		camel_object_unref (part) ;
-
-	} else {
-		CamelMimePart *part ;
-		part = camel_mime_part_new () ;
-		camel_multipart_set_boundary (multipart, NULL);
-		camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
-		if (type != E_GW_ITEM_TYPE_MAIL) {
-			char *cal_buffer = NULL ;
-			int len = 0 ;
-			
-			if (type == E_GW_ITEM_TYPE_APPOINTMENT)
-				convert_to_calendar (item, &cal_buffer, &len) ;
-			else if (type == E_GW_ITEM_TYPE_TASK)
-				convert_to_task (item, &cal_buffer, &len);
-			
-			camel_mime_part_set_content(part, cal_buffer, len,"text/calendar") ;
-			g_free (cal_buffer) ;
-		} else
-			camel_mime_part_set_content(part, " ", strlen(" "),"text/html") ;
-		camel_multipart_add_part (multipart, part) ;
-		camel_object_unref (part) ;
-	}
-	
 	temp_str = (char *)e_gw_item_get_subject(item) ;
 	if(temp_str) 
 		camel_mime_message_set_subject (msg, temp_str) ;
