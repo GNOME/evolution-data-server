@@ -655,6 +655,8 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end1;
 		}
+		if (!list)
+			camel_folder_summary_clear (folder->summary);
 		gw_update_summary (folder, list, ex);
 		g_list_foreach (list, (GFunc) g_object_unref, NULL);
 		g_list_free (list);
@@ -756,7 +758,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	GSList *attach_list = NULL ;
 	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL ;
-	int scount ;
+	int scount;
 	gboolean exists = FALSE ;
 	GString *str = g_string_new (NULL);
 	
