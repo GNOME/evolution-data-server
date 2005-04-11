@@ -1,3 +1,10 @@
+2005-04-11  Vivek Jain <jvivek@novell.com>
+	
+	* backends/groupwise/e-cal-backend-groupwise.c :
+	(e_cal_backend_groupwise_compute_changes_foreach_key):
+	callback function should take (key, value)pair as first two arguments
+	and then the user data  	
+	
 2005-04-08  Rodrigo Moya <rodrigo@novell.com>
 
 	* libecal/e-cal-util.h: added new function's prototype.

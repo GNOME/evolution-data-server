@@ -1212,7 +1212,7 @@ typedef struct {
 } ECalBackendGroupwiseComputeChangesData;
 
 static void
-e_cal_backend_groupwise_compute_changes_foreach_key (const char *key, gpointer data)
+e_cal_backend_groupwise_compute_changes_foreach_key (const char *key, const char *value, gpointer data)
 {
 	ECalBackendGroupwiseComputeChangesData *be_data = data;
                 
