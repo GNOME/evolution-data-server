@@ -2,12 +2,12 @@
 
 SUBDIRS = . providers tests
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_in_files = camel.pc.in camel-provider.pc.in
-pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=-$(BASE_VERSION).pc)
+pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=-$(API_VERSION).pc)
 
 libcamelincludedir = $(privincludedir)/camel
 libcamel_providerincludedir = $(privincludedir)/camel
@@ -121,7 +121,7 @@ libcamel_providerinclude_HEADERS =			\
 libcamel_provider_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE)
 
 libcamel_provider_1_2_la_LIBADD =			\
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la 	\
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la 	\
 	libcamel-1.2.la				\
 	$(CAMEL_LIBS)
 
@@ -262,7 +262,7 @@ libcamelinclude_HEADERS =			\
 libcamel_1_2_la_LDFLAGS = -version-info 0:0:0
 
 libcamel_1_2_la_LIBADD =				\
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la 	\
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la 	\
 	$(CAMEL_LIBS)
 
 camel_lock_helper_1_2_SOURCES = 		\
@@ -288,8 +288,8 @@ camel-mime-tables.c: gentables.pl
 install-exec-hook:
 	@if test -n "$(CAMEL_LOCK_HELPER_USER)"; then \
 	    if test `whoami` = root ; then \
-	 	chown $(CAMEL_LOCK_HELPER_USER) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
-		chmod u+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
+	 	chown $(CAMEL_LOCK_HELPER_USER) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(API_VERSION) ; \
+		chmod u+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(API_VERSION) ; \
 	    else \
 	    	echo '*** WARNING ***' ; \
 		    echo "Camel will not be able to open mbox files until you perform the following steps:" ; \
@@ -303,14 +303,14 @@ install-exec-hook:
 	fi
 	@if test -n "$(CAMEL_LOCK_HELPER_GROUP)"; then \
 	    if test `whoami` = root ; then \
-	    	chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
-		    chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION) ; \
+	    	chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(API_VERSION) ; \
+		    chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(API_VERSION) ; \
 	    else \
 	    	echo '*** WARNING ***' ; \
 		    echo "Camel will not be able to open mbox files until you perform the following steps:" ; \
 		    echo "    1. Become root" ; \
-		    echo "    2. chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION)" ; \
-		    echo "    3. chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(BASE_VERSION)" ; \
+		    echo "    2. chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(API_VERSION)" ; \
+		    echo "    3. chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper-$(API_VERSION)" ; \
 		    echo '*** WARNING ***' ; \
 	    fi \
 	else \

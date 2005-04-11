@@ -1,7 +1,7 @@
  Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 1.2.0)
+AC_INIT(evolution-data-server, 1.3.0)
 AC_CONFIG_SRCDIR(README)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
@@ -14,8 +14,10 @@ dnl This is for api/versioning tracking for things like bonobo .server files
 dnl
 dnl This should always be the major/minor of the stable version or stable version to be
 dnl *************************************************************************************************
-BASE_VERSION=1.2
+BASE_VERSION=1.4
+API_VERSION=1.2
 AC_SUBST(BASE_VERSION)
+AC_SUBST(API_VERSION)
 AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 
 # Libtool versioning
@@ -1109,7 +1111,7 @@ AC_SUBST(privincludedir)
 privlibdir='${libdir}'/evolution-data-server-$BASE_VERSION
 AC_SUBST(privlibdir)
 
-idldir="$datadir/idl/evolution-data-server-$BASE_VERSION"
+idldir="$datadir/idl/evolution-data-server-$API_VERSION"
 AC_SUBST(idldir)
 
 imagesdir="$datadir/pixmaps/evolution-data-server-$BASE_VERSION"
@@ -1118,7 +1120,7 @@ AC_SUBST(imagesdir)
 serverdir="$libdir/bonobo/servers"
 AC_SUBST(serverdir)
 
-extensiondir='${privlibdir}'/extensions
+extensiondir='${libdir}'/evolution-data-server-$API_VERSION/extensions
 AC_SUBST(extensiondir)
 
 gladedir="$privdatadir/glade"
@@ -1140,7 +1142,7 @@ AC_SUBST(INTERFACE_VERSION)
 AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "$INTERFACE_VERSION", [IDL interface version (Major.Minor)])
 
 EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
-EVO_NAME_SERVER_RULE='%_$(BASE_VERSION).server: %.server ; mv $< $@'
+EVO_NAME_SERVER_RULE='%_$(API_VERSION).server: %.server ; mv $< $@'
 AC_SUBST(EVO_SUBST_SERVER_RULE)
 AC_SUBST(EVO_NAME_SERVER_RULE)
 

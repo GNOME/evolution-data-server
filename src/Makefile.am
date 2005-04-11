@@ -63,7 +63,7 @@ install-evolution-data-servers:
 SERVER_IN_FILE=GNOME_Evolution_DataServer.server.in.in
 
 server_in_files = GNOME_Evolution_DataServer.server.in.in
-server_DATA = $(server_in_files:.server.in.in=_$(BASE_VERSION).server)
+server_DATA = $(server_in_files:.server.in.in=_$(API_VERSION).server)
 @EVO_SUBST_SERVER_RULE@
 @EVO_NAME_SERVER_RULE@
 @INTLTOOL_SERVER_RULE@

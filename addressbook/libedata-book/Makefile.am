@@ -68,11 +68,11 @@ libedata_bookinclude_HEADERS =				\
 	e-data-book.h                                   \
 	e-book-backend-cache.h 								
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedata-book-$(BASE_VERSION).pc
+pkgconfig_DATA = libedata-book-$(API_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
@@ -80,7 +80,7 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	e-data-book-marshal.list			\
-	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

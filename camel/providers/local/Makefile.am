@@ -49,6 +49,6 @@ noinst_HEADERS =				\
 libcamellocal_la_LDFLAGS = -avoid-version -module
 
 libcamellocal_la_LIBADD = \
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la
 
 EXTRA_DIST = libcamellocal.urls

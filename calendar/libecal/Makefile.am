@@ -74,11 +74,11 @@ libecalinclude_HEADERS =	\
 	e-cal-view.h		\
 	e-cal-view-listener.h
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libecal-$(BASE_VERSION).pc
+pkgconfig_DATA = libecal-$(API_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
@@ -86,7 +86,7 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	e-cal-marshal.list				\
-	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

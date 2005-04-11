@@ -26,6 +26,6 @@ noinst_HEADERS =			\
 libcamelpop3_la_LDFLAGS = -avoid-version -module
 
 libcamelpop3_la_LIBADD = \
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la
 
 EXTRA_DIST = libcamelpop3.urls

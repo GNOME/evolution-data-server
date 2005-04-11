@@ -23,10 +23,10 @@ libcameltest_provider_a_SOURCES = \
 	camel-test-provider.c camel-test-provider.h
 
 libcameltest_a_LIBADD =				\
-	$(top_builddir)/camel/libcamel-${BASE_VERSION}.la		\
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la		\
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la
 
 libcameltest_provider_a_LIBADD =				\
-	$(top_builddir)/camel/libcamel-provider-${BASE_VERSION}.la \
-	$(top_builddir)/camel/libcamel-${BASE_VERSION}.la		\
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la
+	$(top_builddir)/camel/libcamel-provider-${API_VERSION}.la \
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la		\
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la

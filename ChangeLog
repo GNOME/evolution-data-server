@@ -1,3 +1,13 @@
+2005-04-11  Harish Krishnaswamy  <kharish@novell.com>
+
+	* Makefile.am: use API_VERSION instead of BASE_VERSION in 
+	pc files.
+	* configure.in: bump version, leave extensiondir, idldir,
+	bonobo server and libtool numbers untouched (use API_VERSION
+	instead).
+	* evolution-data-server.pc.in, libedataserver/Makefile.am, 
+	servers/groupwise/Makefile.am, src/Makefile.am: use API_VERSION.
+
 2005-04-07  Gareth Owen  <gowen72@yahoo.com>
 
 	* po/en_GB.po: Updated British English translations

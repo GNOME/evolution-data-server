@@ -82,16 +82,16 @@ test_name_selector_LDADD =					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedataserverui-$(BASE_VERSION).pc
+pkgconfig_DATA = libedataserverui-$(API_VERSION).pc
 
 glade_DATA = e-categories-dialog.glade e-name-selector-dialog.glade
 
 EXTRA_DIST = 						\
 	$(glade_DATA)					\
-	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)

@@ -7,11 +7,11 @@ DIST_SUBDIRS= libedataserver servers camel addressbook calendar libedataserverui
 changelogs =			\
 	ChangeLog
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = evolution-data-server-$(BASE_VERSION).pc
+pkgconfig_DATA = evolution-data-server-$(API_VERSION).pc
 
 EXTRA_DIST = 						\
 	AUTHORS						\
@@ -26,7 +26,7 @@ EXTRA_DIST = 						\
 	intltool-merge.in				\
 	intltool-update.in				\
 	intltool-extract.in				\
-	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in) 	\
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) 	\
 	$(LIBDB_FILES)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update iconv-detect.h $(pkgconfig_DATA)

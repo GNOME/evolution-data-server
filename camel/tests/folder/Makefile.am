@@ -11,9 +11,9 @@ INCLUDES =						\
 LDADD = \
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\
 	$(top_builddir)/camel/tests/lib/libcameltest-provider.a	\
-	$(top_builddir)/camel/libcamel-${BASE_VERSION}.la 		\
-	$(top_builddir)/camel/libcamel-provider-${BASE_VERSION}.la 	\
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la \
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la 		\
+	$(top_builddir)/camel/libcamel-provider-${API_VERSION}.la 	\
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
 	$(INTLLIBS)
 
 check_PROGRAMS =  	\

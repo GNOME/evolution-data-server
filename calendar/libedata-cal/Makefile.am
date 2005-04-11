@@ -68,18 +68,18 @@ libedata_calinclude_HEADERS = 		\
 	e-data-cal-factory.h		\
 	e-data-cal-view.h
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedata-cal-$(BASE_VERSION).pc
+pkgconfig_DATA = libedata-cal-$(API_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
-	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

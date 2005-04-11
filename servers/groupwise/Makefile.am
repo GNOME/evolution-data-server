@@ -53,12 +53,12 @@ libegroupwiseinclude_HEADERS =                  \
 	e-gw-sendoptions.h			\
 	e-gw-filter.h                        
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libegroupwise-$(BASE_VERSION).pc
+pkgconfig_DATA = libegroupwise-$(API_VERSION).pc
 
-EXTRA_DIST = $(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
+EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)

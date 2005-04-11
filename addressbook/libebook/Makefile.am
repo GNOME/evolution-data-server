@@ -72,11 +72,11 @@ libebookinclude_HEADERS =				\
 	e-name-western-tables.h				\
 	e-vcard.h
 
-%-$(BASE_VERSION).pc: %.pc
+%-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libebook-$(BASE_VERSION).pc
+pkgconfig_DATA = libebook-$(API_VERSION).pc
 
 BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
@@ -84,7 +84,7 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	e-book-marshal.list				\
-	$(pkgconfig_DATA:-$(BASE_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

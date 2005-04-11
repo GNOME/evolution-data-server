@@ -10,8 +10,8 @@ INCLUDES =						\
 	$(CAMEL_CFLAGS)
 
 LDADD = \
-	$(top_builddir)/camel/libcamel-${BASE_VERSION}.la 		\
-	$(top_builddir)/libedataserver/libedataserver-${BASE_VERSION}.la \
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la 		\
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\
 	$(INTLLIBS)
 
