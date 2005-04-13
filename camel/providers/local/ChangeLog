@@ -1,3 +1,8 @@
+2005-04-12  Not Zed  <NotZed@Ximian.com>
+
+	* camel-local-provider.c (check_equal): make "" equal NULL for
+	comparative purposes.
+
 2005-03-18  Not Zed  <NotZed@Ximian.com>
 
 	* camel-mbox-summary.c (mbox_summary_sync_quick): use a different
