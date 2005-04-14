@@ -1272,6 +1272,7 @@ camel_header_encode_string (const unsigned char *in)
 	const unsigned char *inptr = in, *start, *word;
 	gboolean last_was_encoded = FALSE;
 	gboolean last_was_space = FALSE;
+	const char *charset;
 	int encoding;
 	GString *out;
 	char *outstr;
@@ -1335,8 +1336,9 @@ camel_header_encode_string (const unsigned char *in)
 				if (last_was_encoded)
 					g_string_append_c (out, ' ');
 				
-				rfc2047_encode_word (out, start, inptr - start,
-						     camel_charset_best (start, inptr - start), CAMEL_MIME_IS_ESAFE);
+				if (!(charset = camel_charset_best (start, inptr - start)))
+					charset = "UTF-8";
+				rfc2047_encode_word (out, start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 				last_was_encoded = TRUE;
 				break;
 			}
@@ -1381,8 +1383,9 @@ camel_header_encode_string (const unsigned char *in)
 			if (last_was_encoded)
 				g_string_append_c (out, ' ');
 			
-			rfc2047_encode_word (out, start, inptr - start,
-					     camel_charset_best (start, inptr - start - 1), CAMEL_MIME_IS_ESAFE);
+			if (!(charset = camel_charset_best (start, inptr - start)))
+				charset = "UTF-8";
+			rfc2047_encode_word (out, start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 			break;
 		}
 	}
@@ -1570,6 +1573,7 @@ camel_header_encode_phrase (const unsigned char *in)
 {
 	struct _phrase_word *word = NULL, *last_word = NULL;
 	GList *words, *wordl;
+	const char *charset;
 	GString *out;
 	char *outstr;
 	
@@ -1621,11 +1625,13 @@ camel_header_encode_phrase (const unsigned char *in)
 				start = word->start;
 			}
 			
-			if (word->encoding == 1)
+			if (word->encoding == 1) {
 				rfc2047_encode_word (out, start, len, "ISO-8859-1", CAMEL_MIME_IS_PSAFE);
-			else
-				rfc2047_encode_word (out, start, len,
-						     camel_charset_best (start, len), CAMEL_MIME_IS_PSAFE);
+			} else {
+				if (!(charset = camel_charset_best (start, len)))
+					charset = "UTF-8";
+				rfc2047_encode_word (out, start, len, charset, CAMEL_MIME_IS_PSAFE);
+			}
 			break;
 		}
 		

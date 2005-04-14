@@ -1,3 +1,11 @@
+2005-04-07  Jeffrey Stedfast  <fejj@novell.com>
+
+	Fix for bug #273945
+
+	* camel-mime-utils.c (camel_header_encode_string): If
+	camel_charset_best() returns NULL, default to UTF-8.
+	(camel_header_encode_phrase): Same as above.
+
 2005-04-11  Harish Krishnaswamy  <kharish@novell.com>
 
 	* Makefile.am:
