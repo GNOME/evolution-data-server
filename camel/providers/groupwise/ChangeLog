@@ -1,3 +1,8 @@
+2005-04-18  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: (groupwise_get_folder)
+	  Remove redundant getQuickMessageRequest
+
 2005-04-08  Sankar P <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_folder_get_message)
