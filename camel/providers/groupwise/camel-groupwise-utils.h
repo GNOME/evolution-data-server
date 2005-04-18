@@ -22,6 +22,7 @@
 
 #include <glib.h>
 #include <camel/camel-mime-message.h>
+#include <camel/camel-string-utils.h>
 #include <e-gw-connection.h>
 #include <e-gw-container.h>
 #include <e-gw-item.h>
@@ -39,7 +40,7 @@
 #define X_TRACK_WHEN            "X-track-when"
 #define X_AUTODELETE            "X-auto-delete"
 #define X_RETURN_NOTIFY_OPEN    "X-return-notify-open"
-#define X_RETURN_NOTIFY_DECLINE "X-return-notify-decline"
+#define X_RETURN_NOTIFY_DELETE  "X-return-notify-delete"
 
 /* Folder types for source */
 #define RECEIVED  "Mailbox"

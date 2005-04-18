@@ -4,7 +4,7 @@
 /* 
  * Authors:
  *   Sivaiah Nallagatla <snallagatla@novell.com>
- *   parthasarathi susarla <sparthasarathi@novell.com>OP
+ *   parthasarathi susarla <sparthasarathi@novell.com>
  *  
  *
  * Copyright (C) 2004, Novell, Inc.
