@@ -2074,8 +2074,8 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const char *container, int curs
 	e_gw_message_write_int_parameter (msg, "cursor", NULL, cursor);
 	/* there is problem in read curosr if you set this, uncomment after the problem 
 	   is fixed in server */
-	e_gw_message_write_string_parameter (msg, "forward", NULL, forward ? "true": "false");
 	e_gw_message_write_string_parameter (msg, "position", NULL, cursor_seek);
+	e_gw_message_write_string_parameter (msg, "forward", NULL, forward ? "true": "false");
 	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	e_gw_message_write_int_parameter (msg, "count", NULL, count);
 	
@@ -2170,7 +2170,6 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
-
 	if (start_date && *start_date && !strcmp (message_list, "New")) {
 		subparam = soup_soap_response_get_first_parameter_by_name (response, "startDate");
 		if (subparam) {
@@ -2178,7 +2177,7 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 
 			date = soup_soap_parameter_get_string_value (subparam);
 			if (date)
-				g_free (*start_date), *start_date = date;
+				g_free (*start_date), *start_date = NULL, *start_date = date;
 			else 
 				return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 		} else 
@@ -2195,9 +2194,12 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 			
 			param_id = soup_soap_parameter_get_first_child_by_name (subparam, "iCalId");
 			if (!param_id) {
-				g_object_unref (response);
-		                g_object_unref (msg);
-                		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+				param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
+				if (!param_id) {
+					g_object_unref (response);
+					g_object_unref (msg);
+					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+				}
 			}
 		     
 			id = g_strdup (soup_soap_parameter_get_string_value (param_id));

@@ -50,8 +50,9 @@ typedef enum {
 	E_GW_ITEM_TYPE_CATEGORY,
 	E_GW_ITEM_TYPE_NOTIFICATION, 
 	E_GW_ITEM_TYPE_UNKNOWN
-	
+
 } EGwItemType;
+
 
 typedef enum {
 	E_GW_ITEM_CHANGE_TYPE_ADD,
@@ -120,6 +121,7 @@ typedef struct {
 
 typedef struct {
 	char *id ;
+	int reference;
 	char *name ;
 	char *contentType ;
 	int size ;
