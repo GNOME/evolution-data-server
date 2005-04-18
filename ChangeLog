@@ -1,3 +1,10 @@
+2005-04-14  Sushma Rai  <rsushma@novell.com>
+
+	* libedataserver/e-source.c (e_source_set_relative_uri): Resetting the
+	absolute uri, when relative uri is changed if source is having absolute
+	uri. 
+	Fixes #274308
+	 
 2005-04-11  Harish Krishnaswamy  <kharish@novell.com>
 
 	* Makefile.am: use API_VERSION instead of BASE_VERSION in 

@@ -509,6 +509,8 @@ void
 e_source_set_relative_uri (ESource *source,
 			   const char *relative_uri)
 {
+	char *absolute_uri;
+
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	if (source->priv->readonly)
@@ -519,6 +521,13 @@ e_source_set_relative_uri (ESource *source,
 
 	g_free (source->priv->relative_uri);
 	source->priv->relative_uri = g_strdup (relative_uri);
+
+	/* reset the absolute uri */
+	if (source->priv->absolute_uri && 
+	    (absolute_uri = e_source_build_absolute_uri (source))) {
+		g_free (source->priv->absolute_uri);
+		source->priv->absolute_uri = absolute_uri;
+	}
 
 	g_signal_emit (source, signals[CHANGED], 0);
 }
