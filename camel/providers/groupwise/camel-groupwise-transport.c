@@ -172,8 +172,10 @@ groupwise_send_to (CamelTransport *transport,
 	if (!cnc) {
 		g_print ("||| Eh!!! Failure |||\n") ;
 		camel_operation_end (NULL) ;
-		return FALSE ;
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
+		return FALSE;
 	}
+
 
 	item = camel_groupwise_util_item_from_message (message, from, recipients);
 	
