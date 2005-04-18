@@ -197,6 +197,7 @@ get_deltas (gpointer handle)
 	char *time_string = NULL;
 	char t_str [100]; 
 	struct stat buf;
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
         
 	if (!handle)
 		return FALSE;
@@ -209,6 +210,8 @@ get_deltas (gpointer handle)
 	
 	if (priv->mode == CAL_MODE_LOCAL)
 		return FALSE;
+
+	g_static_mutex_lock (&connecting);
 
 	g_strlcpy (t_str, e_cal_backend_cache_get_server_utc_time (cache), 100);
 	if (!*t_str || !strcmp (t_str, "")) {
@@ -231,10 +234,13 @@ get_deltas (gpointer handle)
 	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 				
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
+			g_static_mutex_unlock (&connecting);
 			return TRUE;
+		}
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+		g_static_mutex_unlock (&connecting);
 		return TRUE;
 	}
 	/* store the timestamp in the cache */	
@@ -282,10 +288,13 @@ get_deltas (gpointer handle)
 		
 	g_free (time_string);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) { 
+			g_static_mutex_unlock (&connecting);
 			return TRUE;
+		}
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+		g_static_mutex_unlock (&connecting);
 		return TRUE;
 	}
 
@@ -328,10 +337,13 @@ get_deltas (gpointer handle)
 		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) 
+		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
+			g_static_mutex_unlock (&connecting);
 			return TRUE;
+		}
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+		g_static_mutex_unlock (&connecting);
 		return TRUE;
 	}
 
@@ -378,9 +390,30 @@ get_deltas (gpointer handle)
 		g_slist_free (cache_keys);
 		item_list = NULL;
 	}
+	
+	g_static_mutex_unlock (&connecting);
 		
         return TRUE;        
 }
+
+static gboolean
+get_deltas_timeout (gpointer cbgw)
+{
+	GThread *thread;
+	GError *error = NULL;
+
+	if (!cbgw)
+		return FALSE;
+
+	thread = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
+	if (!thread) {
+		g_warning (G_STRLOC ": %s", error->message);
+		g_error_free (error);
+	}
+
+	return TRUE;
+}
+
 
 static char* 
 form_uri (ESource *source)
@@ -468,7 +501,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 
 			/*  Set up deltas only if it is a Calendar backend */
 			if (kind == ICAL_VEVENT_COMPONENT)
-				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
+				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
 			return GNOME_Evolution_Calendar_Success;
 		}
@@ -495,7 +528,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 		/* get the deltas from the cache */
 		if (get_deltas (cbgw)) {
 			if (kind == ICAL_VEVENT_COMPONENT)
-				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas, (gpointer) cbgw);
+				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
 			return GNOME_Evolution_Calendar_Success;
 		} else {
@@ -560,7 +593,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
 					return GNOME_Evolution_Calendar_OtherError;
 				}
-				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas, (gpointer) cbgw);
+				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas_timeout, (gpointer)cbgw);
 
 			}
 	

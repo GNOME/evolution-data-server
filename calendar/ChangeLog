@@ -1,3 +1,12 @@
+2005-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #274409
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(get_deltas_timeout), (cache_init), (connect_to_server):
+	Run the get_deltas in a seperate thread instead of the main
+	loop.
+	(get_deltas): Added a static mutex lock.
+
 2005-04-11  Vivek Jain <jvivek@novell.com>
 	
 	* backends/groupwise/e-cal-backend-groupwise.c :
