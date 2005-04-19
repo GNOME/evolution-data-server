@@ -1,3 +1,7 @@
+2005-04-19  Philip Van Hoof  <pvanhoof@gnome.org>
+
+	* libecal/e-cal.c: Function prototype (compiler fix)
+	
 2005-04-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #274409
