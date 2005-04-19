@@ -427,7 +427,7 @@ camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_
 			/* we have a '/' so there could be a path - fall through */
 		case '/': /* we've detected a path component to our url */
 			inptr++;
-			
+		case '?':
 			while (inptr < inend && is_urlsafe (*inptr) && *inptr != close_brace)
 				inptr++;
 			

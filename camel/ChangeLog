@@ -1,3 +1,9 @@
+2005-04-18  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-url-scanner.c (camel_url_web_end): Handle the case where
+	the path doesn't exist in the url. See bug #301037 for more
+	details.
+
 2005-04-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	Fix for bug #273945
