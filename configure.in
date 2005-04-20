@@ -1018,13 +1018,11 @@ AC_MSG_RESULT($GNOMEUI_SERVERDIR)
 AC_DEFINE_UNQUOTED(GNOMEUI_SERVERDIR, "$GNOMEUI_SERVERDIR", [Path where we can find gnome_segv2])
 
 dnl Utility macro to set compiler flags for a specific lib.
-AC_DEFUN(EVO_SET_COMPILE_FLAGS, [
-	deps="$2"
-	extra_cflags="$3"
-	extra_libs="$4"
-	PKG_CHECK_MODULES(EVOLUTION, $deps)
-	$1_CFLAGS="$EVOLUTION_CFLAGS \$(WERROR) $extra_cflags"
-	$1_LIBS="$EVOLUTION_LIBS $extra_libs"
+dnl  EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
+AC_DEFUN([EVO_SET_COMPILE_FLAGS], [
+	PKG_CHECK_MODULES([$1], [$2])
+	$1_CFLAGS="[$]$1_CFLAGS \$(WERROR) $3"
+	$1_LIBS="[$]$1_LIBS $4"
 ])
 
 dnl --- Flags to get all the GNOME stuff

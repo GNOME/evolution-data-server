@@ -1,3 +1,9 @@
+2005-04-20  James Henstridge  <james@jamesh.id.au>
+
+	* configure.in (EVO_SET_COMPILE_FLAGS): fix up macro so that it
+	doesn't trigger configure failures with newer versions of
+	pkg-config.  Fixes bug #300435.
+
 2005-04-14  Sushma Rai  <rsushma@novell.com>
 
 	* libedataserver/e-source.c (e_source_set_relative_uri): Resetting the
