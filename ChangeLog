@@ -1,3 +1,7 @@
+2005-04-20  Ross Burton  <ross@burtonini.com>
+
+	* src/offline-listener.c: Don't leak a GConfValue.
+
 2005-04-20  James Henstridge  <james@jamesh.id.au>
 
 	* configure.in (EVO_SET_COMPILE_FLAGS): fix up macro so that it
@@ -977,7 +981,7 @@
 
 	* configure.in: bump version to 0.0.92.1.
 
-2004-04-21  Tomasz KÅoczko <kloczek@pld.org.pl>
+2004-04-21  Tomasz KÅ?oczko <kloczek@pld.org.pl>
 
 	* acinclude.m4: minor fixes (added missing [] quotation).
 
