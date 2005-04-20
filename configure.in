@@ -976,9 +976,11 @@ no)
 	esac
 esac
 
+GLIB_REQUIRED="2.4.0"
 LIBBONOBO_REQUIRED="2.4.2"
 ORBIT_REQUIRED="2.9.8"
 
+AC_SUBST(GLIB_REQUIRED)
 AC_SUBST(LIBBONOBO_REQUIRED)
 AC_SUBST(ORBIT_REQUIRED)
 
@@ -1039,7 +1041,7 @@ dnl ****************************************
 
 dnl --- libedataserver and libedataserverui flags
 
-E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="libxml-2.0 glib-2.0 >= $GLIB_REQUIRED libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)

@@ -1,5 +1,17 @@
 2005-04-20  Ross Burton  <ross@burtonini.com>
 
+	* configure.in: Depend on GLib 2.4.
+
+	* libedataserver/e-data-server-module.c:
+	* libedataserver/e-data-server-module.h:
+	Use G_DEFINE_TYPE over GNOME_CLASS_BOILERPLATE, and rename
+	e_data_server_module_init to _initialize.
+
+	* src/server.c:
+	Update for change to e-data-server-module.h.
+
+2005-04-20  Ross Burton  <ross@burtonini.com>
+
 	* src/offline-listener.c: Don't leak a GConfValue.
 
 2005-04-20  James Henstridge  <james@jamesh.id.au>

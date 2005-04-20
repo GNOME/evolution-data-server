@@ -27,7 +27,7 @@
 
 G_BEGIN_DECLS
 
-void   e_data_server_module_init             (void);
+void   e_data_server_module_initialize             (void);
 GList *e_data_server_get_extensions_for_type (GType type);
 void   e_data_server_extension_list_free     (GList *list);
 

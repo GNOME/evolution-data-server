@@ -27,7 +27,6 @@
 #include "e-data-server-module.h"
 
 #include <gmodule.h>
-#include <libgnome/gnome-macros.h>
 
 #define E_DATA_SERVER_TYPE_MODULE    	        (e_data_server_module_get_type ())
 #define E_DATA_SERVER_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
@@ -61,10 +60,7 @@ static GType e_data_server_module_get_type (void);
 
 static GList *module_objects = NULL;
 
-GNOME_CLASS_BOILERPLATE (EDataServerModule,
-			 e_data_server_module,
-			 GTypeModule,
-			 G_TYPE_TYPE_MODULE);
+G_DEFINE_TYPE (EDataServerModule, e_data_server_module, G_TYPE_TYPE_MODULE)
 
 static gboolean
 e_data_server_module_load (GTypeModule *gmodule)
@@ -126,12 +122,12 @@ e_data_server_module_finalize (GObject *object)
 
 	g_free (module->path);
 
-        if (G_OBJECT_CLASS (parent_class)->finalize)
-		(*G_OBJECT_CLASS (parent_class)->finalize) (object);
+        if (G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize)
+		(*G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize) (object);
 }
 
 static void
-e_data_server_module_instance_init (EDataServerModule *module)
+e_data_server_module_init (EDataServerModule *module)
 {
 }
 
@@ -208,7 +204,7 @@ load_module_dir (const char *dirname)
 }
 
 void
-e_data_server_module_init (void)
+e_data_server_module_initialize (void)
 {
 	static gboolean initialized = FALSE;
 
