@@ -310,7 +310,7 @@ main (int argc, char **argv)
 	
 	setup_segv_handler ();
 
-	e_data_server_module_initialize ();
+	e_data_server_module_init ();
 
 	if (!( (did_books = setup_books ())
 	       && (did_cals = setup_cals ())

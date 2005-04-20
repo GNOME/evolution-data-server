@@ -60,7 +60,10 @@ static GType e_data_server_module_get_type (void);
 
 static GList *module_objects = NULL;
 
+/* FIXME: hack to keep _init as the public API */
+#define e_data_server_module_init e_data_server_module_instance_init
 G_DEFINE_TYPE (EDataServerModule, e_data_server_module, G_TYPE_TYPE_MODULE)
+#undef e_data_server_module_init
 
 static gboolean
 e_data_server_module_load (GTypeModule *gmodule)
@@ -127,7 +130,7 @@ e_data_server_module_finalize (GObject *object)
 }
 
 static void
-e_data_server_module_init (EDataServerModule *module)
+e_data_server_module_instance_init (EDataServerModule *module)
 {
 }
 
@@ -204,7 +207,7 @@ load_module_dir (const char *dirname)
 }
 
 void
-e_data_server_module_initialize (void)
+e_data_server_module_init (void)
 {
 	static gboolean initialized = FALSE;
 

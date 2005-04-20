@@ -1,5 +1,12 @@
 2005-04-20  Ross Burton  <ross@burtonini.com>
 
+	* libedataserver/e-data-server-module.c:
+	* libedataserver/e-data-server-module.h:
+	* src/server.c:
+	Use a #define hack to revert API change to EDataServerModule.
+	
+2005-04-20  Ross Burton  <ross@burtonini.com>
+
 	* configure.in: Depend on GLib 2.4.
 
 	* libedataserver/e-data-server-module.c:
