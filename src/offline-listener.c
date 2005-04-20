@@ -94,11 +94,8 @@ setup_offline_listener (OfflineListener *offline_listener)
 	priv->default_client = gconf_client_get_default ();
 	gconf_client_add_dir (priv->default_client, "/apps/evolution/shell", GCONF_CLIENT_PRELOAD_RECURSIVE,NULL);
 	gconf_client_notify_add (priv->default_client, "/apps/evolution/shell/start_offline", (GConfClientNotifyFunc)online_status_changed, offline_listener, NULL, NULL);
-	value = gconf_client_get (priv->default_client, "/apps/evolution/shell/start_offline", NULL);
-	priv->is_offline_now =  gconf_value_get_bool (value);
+	priv->is_offline_now = gconf_client_get_bool (priv->default_client, "/apps/evolution/shell/start_offline", NULL);
 	set_online_status (offline_listener, priv->is_offline_now); 
-	
-
 }
 
 OfflineListener*
