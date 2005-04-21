@@ -1,5 +1,10 @@
 2005-04-20  Ross Burton  <ross@burtonini.com>
 
+	* src/offline-listener.c:
+	Remove an usused variable.
+
+2005-04-20  Ross Burton  <ross@burtonini.com>
+
 	* libedataserver/e-data-server-module.c:
 	* libedataserver/e-data-server-module.h:
 	* src/server.c:

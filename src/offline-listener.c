@@ -89,7 +89,6 @@ static void
 setup_offline_listener (OfflineListener *offline_listener)
 {
 	OfflineListenerPrivate *priv = offline_listener->priv;
-	GConfValue *value;
 	
 	priv->default_client = gconf_client_get_default ();
 	gconf_client_add_dir (priv->default_client, "/apps/evolution/shell", GCONF_CLIENT_PRELOAD_RECURSIVE,NULL);
