@@ -779,9 +779,10 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const char *top, guin
 			date[6] = ' ';
 			memcpy(date + 7, summary->last_newslist + 8, 6); /* HHMMSS */
 			date[13] = '\0';
-			
-			if (!nntp_get_date (nntp_store, ex))
-				goto error;
+
+			/* Some servers don't support date (!), so fallback if they dont */
+			if (!nntp_get_date (nntp_store, NULL))
+				goto do_complete_list_nodate;
 			
 			ret = camel_nntp_command (nntp_store, ex, NULL, (char **) &line, "newgroups %s", date);
 			if (ret == -1)
@@ -801,9 +802,8 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const char *top, guin
 		do_complete_list:
 			/* seems we do need a complete list */
 			/* at first, we do a DATE to find out the last load occasion */
-			if (!nntp_get_date (nntp_store, ex))
-				goto error;
-			
+			nntp_get_date (nntp_store, NULL);
+		do_complete_list_nodate:
 			ret = camel_nntp_command (nntp_store, ex, NULL, (char **)&line, "list");
 			if (ret == -1)
 				goto error;

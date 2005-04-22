@@ -1,3 +1,13 @@
+2005-04-22  Not Zed  <NotZed@Ximian.com>
+
+	* camel-nntp-store.c (nntp_store_get_folder_info_all): don't set
+	exceptions for failed date commands from last patch.
+
+2005-04-22  Alessandro Decina <alessandro@nnva.org>
+
+	* camel-nntp-store.c (nntp_store_get_folder_info_all): If we fail
+	to get the date, just abort.
+
 2005-03-16  Not Zed  <NotZed@Ximian.com>
 
 	* modified patch below to make it a bit simpler.
