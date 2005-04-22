@@ -1,3 +1,8 @@
+2005-04-15  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-groupwise-provider.c: s/offline_sync/sync_offline/. Fixes
+	bug #274257
+
 2005-04-08  Sankar P <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_folder_get_message)

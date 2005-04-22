@@ -60,7 +60,7 @@ CamelProviderConfEntry groupwise_conf_entries[] = {
 	  N_("Check new messages for Junk contents"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk_inbox", "filter_junk",
 	  N_("Only check for Junk messages in the INBOX folder"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "offline_sync", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "sync_offline", NULL,
 	  N_("Automatically synchronize account locally"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 
