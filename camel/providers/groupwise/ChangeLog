@@ -1,7 +1,12 @@
+2005-04-15  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-groupwise-provider.c: s/offline_sync/sync_offline/. Fixes
+	bug #274257
+
 2005-04-18  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	* camel-groupwise-store.c: (groupwise_get_folder)
-	  Remove redundant getQuickMessageRequest
+	* camel-groupwise-store.c (groupwise_get_folder): Remove redundant
+	  getQuickMessageRequest
 
 2005-04-08  Sankar P <psankar@novell.com>
 
