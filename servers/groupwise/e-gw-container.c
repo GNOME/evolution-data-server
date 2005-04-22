@@ -37,7 +37,7 @@ struct _EGwContainerPrivate {
 	int sequence;
 	char *owner;	
 	GList *user_list;	
-	const char *modified;
+	char *modified;
 	EGwContainerType type ;
 	gboolean is_root ;
 	gboolean is_writable;
@@ -56,7 +56,29 @@ static void e_gw_container_set_is_shared_by_me (EGwContainer *container, gboolea
 static void e_gw_container_set_is_shared_to_me (EGwContainer *container, gboolean is_shared_to_me);
 
 static void
+free_node(EShUsers *user)
+{
+	if(user){
+		g_free(user->email);
+		user->email = NULL;
+	}
+	return ;
+}
+
+static void
 e_gw_container_dispose (GObject *object)
+{
+	EGwContainer *container = (EGwContainer *) object;
+	EGwContainerPrivate *priv;
+
+	g_return_if_fail (E_IS_GW_CONTAINER (container));
+
+	if (parent_class->dispose)
+		(* parent_class->dispose) (object);
+}
+
+static void
+e_gw_container_finalize (GObject *object)
 {
 	EGwContainer *container = (EGwContainer *) object;
 	EGwContainerPrivate *priv;
@@ -74,22 +96,28 @@ e_gw_container_dispose (GObject *object)
 			g_free (priv->id);
 			priv->id = NULL;
 		}
-	}
 
-	if (parent_class->dispose)
-		(* parent_class->dispose) (object);
-}
+		if (priv->parent) {
+			g_free (priv->parent);
+			priv->parent = NULL;
+		}
 
-static void
-e_gw_container_finalize (GObject *object)
-{
-	EGwContainer *container = (EGwContainer *) object;
-	EGwContainerPrivate *priv;
+		if (priv->owner) {
+			g_free (priv->owner);
+			priv->owner = NULL;
+		}
 
-	g_return_if_fail (E_IS_GW_CONTAINER (container));
+		if (priv->modified) {
+			g_free (priv->modified);
+			priv->modified = NULL;
+		}
 
-	priv = container->priv;
-	if (priv) {
+		if(priv->user_list) {
+			g_list_foreach (priv->user_list,(GFunc) free_node, NULL);
+			g_list_free (priv->user_list);
+			priv->user_list = NULL;
+		}
+
 		g_free (priv);
 		container->priv = NULL;
 	}

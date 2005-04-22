@@ -1,3 +1,11 @@
+2005-04-22 Vivek Jain <jvivek@novell.com>
+
+	* e-gw-cotainer.c: 	
+	EGwContainerPrivate:
+	changed the type of "modified" to char *	
+	(e_gw_container_finalize) :freeing the members of priv
+	added a function free_node to free each of the node of user_list
+
 2005-04-07  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-connection.c: (e_gw_connection_get_quick_messages):
