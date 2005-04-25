@@ -1,3 +1,8 @@
+2005-04-25  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in: Modify camelproviderdir to use API_VERSION.
+	* evolution-data-server.pc.in: use VERSION instead of API_VERSION.
+
 2005-04-20  Ross Burton  <ross@burtonini.com>
 
 	* src/offline-listener.c:

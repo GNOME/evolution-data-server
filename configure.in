@@ -1130,7 +1130,7 @@ weatherdatadir="$privdatadir/weather"
 AC_SUBST(weatherdatadir)
 
 dnl separate camel from e-d-s?  or should it be under the same spot?  same for now.
-camel_providerdir="${privlibdir}/camel-providers"
+camel_providerdir='${libdir}'/evolution-data-server-$API_VERSION/camel-providers
 AC_SUBST(camel_providerdir)
 
 dnl ************************
