@@ -348,10 +348,6 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 	g_free (uri);
 
 	if (backend) {
-		GNOME_Evolution_Addressbook_BookListener listener_copy;
-
-		listener_copy = bonobo_object_dup_ref (listener, NULL);
-
 		g_mutex_unlock (factory->priv->map_mutex);
 
 		book = e_data_book_new (backend, source, listener);

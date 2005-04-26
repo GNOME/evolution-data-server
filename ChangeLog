@@ -1,3 +1,11 @@
+2005-04-26  Ross Burton  <ross@burtonini.com>
+
+	* addressbook/libedata-book/e-data-book-factory.c:
+	Don't leak a BookListener.
+
+	* addressbook/backends/file/e-book-backend-file.c:
+	Don't leak a sexp.
+
 2005-04-25  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: Modify camelproviderdir to use API_VERSION.

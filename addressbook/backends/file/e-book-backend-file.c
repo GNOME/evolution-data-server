@@ -445,6 +445,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 		}
+		g_object_unref (card_sexp);
+		
 		status = db_error != DB_NOTFOUND
 			? GNOME_Evolution_Addressbook_OtherError
 			: GNOME_Evolution_Addressbook_Success;
