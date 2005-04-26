@@ -1,3 +1,7 @@
+2005-04-26  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* e-gw-item.[ch]: Reverting patch adding itemReference 
+	  in the EGwItemAttachment structure.
+
 2005-04-22 Vivek Jain <jvivek@novell.com>
 
 	* e-gw-cotainer.c: 	

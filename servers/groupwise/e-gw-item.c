@@ -1784,8 +1784,10 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 					char *ref = NULL;
 					attach->id = soup_soap_parameter_get_string_value (temp) ;
 					ref =  soup_soap_parameter_get_property (temp, "itemReference");
-					if (ref) 
-						attach->reference = atoi(ref), g_free (ref);
+					if (ref) {
+						attach->contentType = g_strdup_printf ("gw:%s",ref);
+						g_free (ref);
+					}
 				}
 				
 				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "name") ;
