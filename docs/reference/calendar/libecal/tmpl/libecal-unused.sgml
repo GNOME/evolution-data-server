@@ -1,3 +1,7 @@
+<!-- ##### SECTION ./tmpl/libecal-unused.sgml:Stability_Level ##### -->
+
+
+
 <!-- ##### ENUM CalObjType ##### -->
 <para>
 
@@ -416,10 +420,6 @@
 </para>
 
 @klass: 
-
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 
 <!-- ##### FUNCTION e_cal_remove_calendar ##### -->
 <para>

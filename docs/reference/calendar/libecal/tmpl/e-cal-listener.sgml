@@ -14,6 +14,9 @@ Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 #e-cal, #e-cal-view-listener
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### USER_FUNCTION ECalListenerCalSetModeFn ##### -->
 <para>
 
