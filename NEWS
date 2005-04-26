@@ -1,3 +1,55 @@
+Evolution Data Server 1.3.1, 2005-04-26
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+* Camel
+
+  #301037 - Handle case where the path doesn't exist in the url (Jeff)
+  #273945 - If camel_charset_best() returns NULL, default to UTF-8 (Jeff)
+ 
+* Groupwise Provider
+
+ #274257  - Automatically synchronize account locally option does not work (Jeff)
+ #74369   - enable viewing shared folder notifications (Sankar)
+ #72032   - update summary with items that have been deleted from the server (Partha)
+ #72310   - deleted mail is not visible in Trash Folder (Partha)
+ #74183   - Expunge does not expunge all (Sankar)
+ #274409  - hang while reading Email (Chenthill)
+
+* Calendar
+ 
+ #270035 - incompatible calendar.ics created with mozilla (Rodrigo)
+	
+* Addressbook
+
+ #268533 - evolution-alarm-notify appears to cause a leak in e-d-s  (JP)
+ #273330 - Crash  adding attendee under gw calendar - (Siva) 
+ 
+
+Other Bugs 
+
+* Camel 
+	- Fix for systems where read is a macro (David Malcolm)
+	- don't set exceptions for failed date commands in NNTP (Michael)
+	- abort if we fail to get the date in NNTP (Alessandro Decina) 
+	- Don't try to EXPUNGE in READ-ONLY mode (Jeff)
+	
+* Groupwise Provider
+
+	- Remove redundant getQuickMessageRequest (Partha)
+
+* Address Book 
+	- multiple authentication prompts for addressbook (Hans)
+
+
+Updated Translations:
+	* et (Ivar Smolin)
+ 	* fa (Meelad Zakaria)
+	* it (Marco Ciampa) 
+	* cs (Miloslav Trmac)
+	* en_CA (Adam Weinberger)
+
 Evolution Data Server 1.2.0, 2005-03-07
 ---------------------------------------
 
