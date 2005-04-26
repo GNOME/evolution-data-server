@@ -810,7 +810,7 @@ static pthread_mutex_t key_file_lock = PTHREAD_MUTEX_INITIALIZER;
 static EDList key_file_list = E_DLIST_INITIALISER(key_file_list);
 static EDList key_file_active_list = E_DLIST_INITIALISER(key_file_active_list);
 static int key_file_count = 0;
-static int key_file_threshhold = 10;
+static const int key_file_threshhold = 10;
 
 static void
 camel_key_file_class_init(CamelKeyFileClass *klass)

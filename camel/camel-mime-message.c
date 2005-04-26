@@ -904,12 +904,12 @@ camel_mime_message_get_part_by_content_id (CamelMimeMessage *message, const char
 	return check.part;
 }
 
-static char *tz_months[] = {
+static const char tz_months[][4] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-static char *tz_days[] = {
+static const char tz_days[][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 

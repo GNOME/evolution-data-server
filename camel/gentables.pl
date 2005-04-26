@@ -90,7 +90,7 @@ add_bits('CAMEL_MIME_IS_PSAFE', "!*+-/");
 #header_init_bits(CAMEL_MIME_IS_PSAFE, 0, 0, CHARS_PSPECIAL);
 
 # output
-print "unsigned short camel_mime_special_table[256] = {\n\t";
+print "const unsigned short camel_mime_special_table[256] = {\n\t";
 foreach $i (0..255) {
     printf "0x%04x,", $table[$i];
     if (($i & 0x7) == 0x7) {

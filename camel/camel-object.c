@@ -105,18 +105,18 @@ struct _CamelObjectBag {
 };
 
 /* used to tag a bag hookpair */
-static const char *bag_name = "object:bag";
+static const char bag_name[] = "object:bag";
 
 /* meta-data stuff */
 static void co_metadata_free(CamelObject *obj, CamelObjectMeta *meta);
 static CamelObjectMeta *co_metadata_get(CamelObject *obj);
 static CamelHookPair *co_metadata_pair(CamelObject *obj, int create);
 
-static const char *meta_name = "object:meta";
+static const char meta_name[] = "object:meta";
 #define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
 
 /* interface stuff */
-static const char *interface_name = "object:interface";
+static const char interface_name[] = "object:interface";
 
 /* ********************************************************************** */
 

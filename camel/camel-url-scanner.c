@@ -149,9 +149,9 @@ enum {
 #define is_urlsafe(x) ((url_scanner_table[(unsigned char)(x)] & (IS_ALPHA|IS_DIGIT|IS_URLSAFE)) != 0)
 
 
-static struct {
-	char open;
-	char close;
+static const struct {
+	const char open;
+	const char close;
 } url_braces[] = {
 	{ '(', ')' },
 	{ '{', '}' },

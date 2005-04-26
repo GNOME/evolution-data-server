@@ -74,15 +74,15 @@ int free_count = 0;
 #define CAMEL_UUENCODE_CHAR(c)  ((c) ? (c) + ' ' : '`')
 #define	CAMEL_UUDECODE_CHAR(c)	(((c) - ' ') & 077)
 
-static char *base64_alphabet =
+static const char base64_alphabet[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static unsigned char tohex[16] = {
+static const unsigned char tohex[16] = {
 	'0', '1', '2', '3', '4', '5', '6', '7',
 	'8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 };
 
-static unsigned char camel_mime_base64_rank[256] = {
+static const unsigned char camel_mime_base64_rank[256] = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -3293,12 +3293,12 @@ static struct {
 	{ "Y", 1200 },
 };
 
-static char *tz_months [] = {
+static const char tz_months [][4] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-static char *tz_days [] = {
+static const char tz_days [][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 

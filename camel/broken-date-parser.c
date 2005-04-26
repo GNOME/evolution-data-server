@@ -54,7 +54,7 @@
 #define DATE_TOKEN_NON_TIMEZONE_NUMERIC (1 << 6)
 #define DATE_TOKEN_HAS_SIGN             (1 << 7)
 
-static unsigned char datetok_table[256] = {
+static const unsigned char datetok_table[256] = {
         128,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,
         111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,
         111,111,111,111,111,111,111,111, 79, 79,111,175,111,175,111,111,
@@ -95,12 +95,12 @@ static struct {
 	{ "Y", 1200 },
 };
 
-static char *tm_months[] = {
+static const char tm_months[][4] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-static char *tm_days[] = {
+static const char tm_days[][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 
@@ -506,7 +506,7 @@ table_init ()
 			datetok_table[i] |= DATE_TOKEN_HAS_SIGN;
 	}
 	
-	printf ("static unsigned int datetok_table[256] = {");
+	printf ("static const unsigned int datetok_table[256] = {");
 	for (i = 0; i < 256; i++) {
 		if (i % 16 == 0)
 			printf ("\n\t");
