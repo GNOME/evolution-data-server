@@ -1,3 +1,17 @@
+2005-04-27  Sushma Rai  <rsushma@novell.com>
+
+	* libebook/e-book.c (e_book_response_add_contact): Setting the status
+	for both synchronous and asynchronous operations.
+	(e_book_response_get_required_fields): Similar.
+	(e_book_response_get_supported_fields): Similar.
+	(e_book_response_get_supported_auth_method): Similar.
+	(e_book_response_get_contacts): Setting the status outside the
+	operation type condition check.
+	(e_book_response_generic): Similar.
+	(e_book_response_open): Similar.
+	(e_book_response_remove): Similar.
+	Fixes #273716
+
 2005-04-27  Ross Burton  <ross@burtonini.com>
 
 	* libebook/e-book-listener.c:
