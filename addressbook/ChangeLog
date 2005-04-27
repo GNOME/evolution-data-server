@@ -1,3 +1,12 @@
+2005-04-27  Ross Burton  <ross@burtonini.com>
+
+	* libebook/e-book-listener.c:
+	* libebook/e-book-view-listener.c:
+	* libedata-book/e-data-book-factory.c:
+	* libedata-book/e-data-book-view.c:
+	* libedata-book/e-data-book.c:
+	Use a static POA instead of creating a new one every time.
+
 2005-04-11  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libebook/Makefile.am, libedata-book/Makefile.am:

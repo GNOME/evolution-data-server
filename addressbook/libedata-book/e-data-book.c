@@ -788,16 +788,18 @@ e_data_book_new (EBookBackend                               *backend,
 		 ESource *source,
 		 GNOME_Evolution_Addressbook_BookListener  listener)
 {
+	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+	static PortableServer_POA poa = NULL;
 	EDataBook *book;
-	char *caps = e_book_backend_get_static_capabilities (backend);
 
-	book = g_object_new (E_TYPE_DATA_BOOK,
-			     "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
-			     NULL);
+	g_static_mutex_lock (&mutex);
+	if (poa == NULL)
+		poa = bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL);
+	g_static_mutex_unlock (&mutex);
+
+	book = g_object_new (E_TYPE_DATA_BOOK, "poa", poa, NULL);
 
 	e_data_book_construct (book, backend, source, listener);
-
-	g_free (caps);
 
 	return book;
 }

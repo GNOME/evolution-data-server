@@ -284,11 +284,16 @@ e_book_view_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatu
 EBookViewListener *
 e_book_view_listener_new ()
 {
+	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+	static PortableServer_POA poa = NULL;
 	EBookViewListener *listener;
 
-	listener = g_object_new (E_TYPE_BOOK_VIEW_LISTENER,
-				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_OBJECT, NULL),
-				 NULL);
+	g_static_mutex_lock (&mutex);
+	if (poa == NULL)
+		poa = bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_OBJECT, NULL);
+	g_static_mutex_unlock (&mutex);
+
+	listener = g_object_new (E_TYPE_BOOK_VIEW_LISTENER, "poa", poa, NULL);
 
 	listener->priv->queue = g_async_queue_new();
 	listener->priv->idle_mutex = g_mutex_new();

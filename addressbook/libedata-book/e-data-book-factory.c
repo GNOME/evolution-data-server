@@ -384,11 +384,16 @@ e_data_book_factory_construct (EDataBookFactory *factory)
 EDataBookFactory *
 e_data_book_factory_new (void)
 {
+	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+	static PortableServer_POA poa = NULL;
 	EDataBookFactory *factory;
 
-	factory = g_object_new (E_TYPE_DATA_BOOK_FACTORY, 
-				"poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
-				NULL);
+	g_static_mutex_lock (&mutex);
+	if (poa == NULL)
+		poa = bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL);
+	g_static_mutex_unlock (&mutex);
+
+	factory = g_object_new (E_TYPE_DATA_BOOK_FACTORY, "poa", poa, NULL);
 	
 	e_data_book_factory_construct (factory);
 

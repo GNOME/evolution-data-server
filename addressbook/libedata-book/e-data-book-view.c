@@ -461,11 +461,16 @@ e_data_book_view_new (EBookBackend *backend,
 		      EBookBackendSExp *card_sexp,
 		      int max_results)
 {
+	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+	static PortableServer_POA poa = NULL;
 	EDataBookView *book_view;
 
-	book_view = g_object_new (E_TYPE_DATA_BOOK_VIEW,
-				  "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_OBJECT, NULL),
-				  NULL);
+	g_static_mutex_lock (&mutex);
+	if (poa == NULL)
+		poa = bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_OBJECT, NULL);
+	g_static_mutex_unlock (&mutex);
+
+	book_view = g_object_new (E_TYPE_DATA_BOOK_VIEW, "poa", poa, NULL);
 	
 	e_data_book_view_construct (book_view, backend, listener, card_query, card_sexp, max_results);
 
