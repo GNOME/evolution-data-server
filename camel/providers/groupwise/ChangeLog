@@ -1,3 +1,17 @@
+2005-04-27  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: code formatting done.
+	  removed space between the statement and ';' as per
+	  the coding style
+
+2005-04-27  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (groupwise_folder_get_message):
+	  ** Fixes bug - 273246: the Mime.822 file would not be shown
+	  anymore
+	  ** Fixes bug - 273243: HTML mail would be displayed inline
+	  and not as an attachment
+
 2005-04-15  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-groupwise-provider.c: s/offline_sync/sync_offline/. Fixes
