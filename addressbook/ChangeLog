@@ -7,6 +7,14 @@
 	* libedata-book/e-data-book.c:
 	Use a static POA instead of creating a new one every time.
 
+2005-04-26  Ross Burton  <ross@burtonini.com>
+
+	* addressbook/libedata-book/e-data-book-factory.c:
+	Don't leak a BookListener.
+
+	* addressbook/backends/file/e-book-backend-file.c:
+	Don't leak a sexp.
+
 2005-04-11  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libebook/Makefile.am, libedata-book/Makefile.am:

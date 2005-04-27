@@ -1,3 +1,16 @@
+2005-04-26  Ross Burton  <ross@burtonini.com>
+
+	* camel/broken-date-parser.c:
+	* camel/camel-block-file.c:
+	* camel/camel-charset-map-private.h:
+	* camel/camel-mime-message.c:
+	* camel/camel-mime-utils.c:
+	* camel/camel-object.c:
+	* camel/camel-url-scanner.c:
+	* camel/camel-utf8.c:
+	* camel/gentables.pl:
+	Add the const keyword liberally.
+
 2005-04-18  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-url-scanner.c (camel_url_web_end): Handle the case where
