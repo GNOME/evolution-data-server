@@ -401,11 +401,10 @@ e_book_response_add_contact (EBook       *book,
 	}
 
 	op->id = g_strdup (id);
+	op->status = status;
 
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
-
-		op->status = status;
 
 		g_cond_signal (op->cond);
 
@@ -848,10 +847,10 @@ e_book_response_get_required_fields (EBook       *book,
 		return;
 	}
 
+	op->status = status;
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
 
-		op->status = status;
 		op->list = fields;
 
 		g_cond_signal (op->cond);
@@ -898,10 +897,10 @@ e_book_response_get_supported_fields (EBook       *book,
 		return;
 	}
 
+	op->status = status;
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
 
-		op->status = status;
 		op->list = fields;
 
 		g_cond_signal (op->cond);
@@ -1077,10 +1076,10 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 		return;
 	}
 
+	op->status = status;
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
 
-		op->status = status;
 		op->list = auth_methods;
 
 		g_cond_signal (op->cond);
@@ -2073,11 +2072,10 @@ e_book_response_get_contacts (EBook       *book,
 
 	op->list = g_list_copy (contact_list);
 	g_list_foreach (op->list, (GFunc)g_object_ref, NULL);
+	op->status = status;
 
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
-
-		op->status = status;
 
 		g_cond_signal (op->cond);
 
@@ -2085,7 +2083,6 @@ e_book_response_get_contacts (EBook       *book,
 	}
 	else {
 		op->book = g_object_ref (book);
-		op->status = status;
 		op->idle_id = g_idle_add (emit_async_get_contacts_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
@@ -2334,10 +2331,9 @@ e_book_response_generic (EBook       *book,
 		return;
 	}
 
+	op->status = status;
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
-
-		op->status = status;
 
 		g_cond_signal (op->cond);
 
@@ -2345,7 +2341,6 @@ e_book_response_generic (EBook       *book,
 	}
 	else {
 		op->book = g_object_ref (book);
-		op->status = status;
 		op->idle_id = g_idle_add (emit_async_generic_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
@@ -2624,10 +2619,9 @@ e_book_response_open (EBook       *book,
 		return;
 	}
 
+	op->status = status;
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
-
-		op->status = status;
 
 		g_cond_signal (op->cond);
 
@@ -2635,7 +2629,6 @@ e_book_response_open (EBook       *book,
 	}
 	else {
 		op->book = g_object_ref (book);
-		op->status = status;
 		op->idle_id = g_idle_add (emit_async_open_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
@@ -2774,10 +2767,9 @@ e_book_response_remove (EBook       *book,
 		return;
 	}
 
+	op->status = status;
 	if (op->synchronous) {
 		g_mutex_lock (op->mutex);
-
-		op->status = status;
 
 		g_cond_signal (op->cond);
 
@@ -2785,7 +2777,6 @@ e_book_response_remove (EBook       *book,
 	}
 	else {
 		op->book = g_object_ref (book);
-		op->status = status;
 		op->idle_id = g_idle_add (emit_async_generic_response, op);
 		book->priv->pending_idles = g_list_prepend (book->priv->pending_idles,
 							    GINT_TO_POINTER (op->idle_id));
