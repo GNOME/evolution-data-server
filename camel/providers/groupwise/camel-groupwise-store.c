@@ -302,6 +302,10 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 		priv->port = g_strdup ("7191");
 	else
 		priv->port = g_strdup (property_value);
+
+	/*filter*/
+	if (camel_url_get_param (url, "filter")) 
+		store->flags |= CAMEL_STORE_FILTER_INBOX;
 	
 	/*Hash Table*/	
 	priv->id_hash = g_hash_table_new (g_str_hash, g_str_equal) ;
@@ -559,7 +563,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		g_mutex_lock (mutex) ;
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"peek attachments distribution created subject status",
+				"peek attachments distribution created subject status options priority",
 				NULL,
 				&cursor) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
