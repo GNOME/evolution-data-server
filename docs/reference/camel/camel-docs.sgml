@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY CamelInit SYSTEM "xml/camel.xml">
+<!ENTITY CamelAddress SYSTEM "xml/address.xml">
+<!ENTITY CamelBlockFile SYSTEM "xml/block-file.xml">
+<!ENTITY CamelCertDB SYSTEM "xml/cert-db.xml">
+<!ENTITY CamelCharsetMap SYSTEM "xml/charset-map.xml">
+<!ENTITY CamelCipherContext SYSTEM "xml/cipher-context.xml">
+<!ENTITY CamelDataCache SYSTEM "xml/data-cache.xml">
+<!ENTITY CamelDataWrapper SYSTEM "xml/data-wrapper.xml">
+<!ENTITY CamelException SYSTEM "xml/exception.xml">
+<!ENTITY CamelFileUtils SYSTEM "xml/file-utils.xml">
+<!ENTITY CamelFilterDriver SYSTEM "xml/filter-driver.xml">
+<!ENTITY CamelFilterSearch SYSTEM "xml/filter-search.xml">
+<!ENTITY CamelFolder SYSTEM "xml/folder.xml">
+<!ENTITY CamelFolderSearch SYSTEM "xml/folder-search.xml">
+<!ENTITY CamelFolderSummary SYSTEM "xml/folder-summary.xml">
+<!ENTITY CamelFolderThread SYSTEM "xml/folder-thread.xml">
+<!ENTITY CamelGPGContext SYSTEM "xml/gpg-context.xml">
+<!ENTITY CamelHTMLParser SYSTEM "xml/html-parser.xml">
+<!ENTITY CamelHTTPStream SYSTEM "xml/http-stream.xml">
+<!ENTITY CamelIndex SYSTEM "xml/index.xml">
+<!ENTITY CamelInternetAddress SYSTEM "xml/internet-address.xml">
+<!ENTITY CamelListUtils SYSTEM "xml/list-utils.xml">
+<!ENTITY CamelLock SYSTEM "xml/lock.xml">
+<!ENTITY CamelLockClient SYSTEM "xml/lock-client.xml">
+<!ENTITY CamelMedium SYSTEM "xml/medium.xml">
+<!ENTITY CamelMIMEFilter SYSTEM "xml/mime-filter.xml">
+<!ENTITY CamelMIMEFilterBasic SYSTEM "xml/mime-filter-basic.xml">
+<!ENTITY CamelMIMEFilterBestenc SYSTEM "xml/mime-filter-bestenc.xml">
+<!ENTITY CamelMIMEFilterCanon SYSTEM "xml/mime-filter-canon.xml">
+<!ENTITY CamelMIMEFilterCharset SYSTEM "xml/mime-filter-charset.xml">
+<!ENTITY CamelMIMEFilterCRLF SYSTEM "xml/mime-filter-crlf.xml">
+<!ENTITY CamelMIMEFilterEnriched SYSTEM "xml/mime-filter-enriched.xml">
+<!ENTITY CamelMIMEFilterFrom SYSTEM "xml/mime-filter-from.xml">
+<!ENTITY CamelMIMEFilterHTML SYSTEM "xml/mime-filter-html.xml">
+<!ENTITY CamelMIMEFilterIndex SYSTEM "xml/mime-filter-index.xml">
+<!ENTITY CamelMIMEFilterSave SYSTEM "xml/mime-filter-save.xml">
+<!ENTITY CamelMIMEFilterToHTML SYSTEM "xml/mime-filter-to-html.xml">
+<!ENTITY CamelMIMEFilterWindows SYSTEM "xml/mime-filter-windows.xml">
+<!ENTITY CamelMIMEFilterYEnc SYSTEM "xml/mime-filter-yenc.xml">
+<!ENTITY CamelMIMEMessage SYSTEM "xml/mime-message.xml">
+<!ENTITY CamelMIMEParser SYSTEM "xml/mime-parser.xml">
+<!ENTITY CamelMIMEPart SYSTEM "xml/mime-part.xml">
+<!ENTITY CamelMIMEUtils SYSTEM "xml/mime-utils.xml">
+<!ENTITY CamelMultipart SYSTEM "xml/multipart.xml">
+<!ENTITY CamelMultipartEncrypted SYSTEM "xml/multipart-encrypted.xml">
+<!ENTITY CamelMultipartSigned SYSTEM "xml/multipart-signed.xml">
+<!ENTITY CamelNetUtils SYSTEM "xml/net-utils.xml">
+<!ENTITY CamelObject SYSTEM "xml/object.xml">
+<!ENTITY CamelOfflineFolder SYSTEM "xml/offline-folder.xml">
+<!ENTITY CamelOfflineJournal SYSTEM "xml/offline-journal.xml">
+<!ENTITY CamelOfflineStore SYSTEM "xml/offline-store.xml">
+<!ENTITY CamelOperation SYSTEM "xml/operation.xml">
+<!ENTITY CamelPartitionTable SYSTEM "xml/partition-table.xml">
+<!ENTITY CamelProcess SYSTEM "xml/process.xml">
+<!ENTITY CamelProvider SYSTEM "xml/provider.xml">
+<!ENTITY CamelSASL SYSTEM "xml/sasl.xml">
+<!ENTITY CamelSASLAnonymous SYSTEM "xml/sasl-anonymous.xml">
+<!ENTITY CamelSASLCRAMMD5 SYSTEM "xml/sasl-cram-md5.xml">
+<!ENTITY CamelSASLDigestMD5 SYSTEM "xml/sasl-digest-md5.xml">
+<!ENTITY CamelSASLGSSAPI SYSTEM "xml/sasl-gssapi.xml">
+<!ENTITY CamelSASLKerberos4 SYSTEM "xml/sasl-kerberos4.xml">
+<!ENTITY CamelSASLLogin SYSTEM "xml/sasl-login.xml">
+<!ENTITY CamelSASLNTLM SYSTEM "xml/sasl-ntlm.xml">
+<!ENTITY CamelSASLPlain SYSTEM "xml/sasl-plain.xml">
+<!ENTITY CamelSASLPOPb4SMTP SYSTEM "xml/sasl-popb4smtp.xml">
+<!ENTITY CamelService SYSTEM "xml/service.xml">
+<!ENTITY CamelSession SYSTEM "xml/session.xml">
+<!ENTITY CamelSMIMEContext SYSTEM "smime-context.xml">
+<!ENTITY CamelStore SYSTEM "xml/store.xml">
+<!ENTITY CamelStoreSummary SYSTEM "xml/store-summary.xml">
+<!ENTITY CamelStream SYSTEM "xml/stream.xml">
+<!ENTITY CamelSeekableStream SYSTEM xml/seekable-stream.xml">
+<!ENTITY CamelSeekableSubstream SYSTEM xml/seekable-substream.xml">
+<!ENTITY CamelStreamBuffer SYSTEM "xml/stream-buffer.xml">
+<!ENTITY CamelStreamFilter SYSTEM "xml/stream-filter.xml">
+<!ENTITY CamelStreamFs SYSTEM "xml/stream-fs.xml">
+<!ENTITY CamelStreamMem SYSTEM "xml/stream-mem.xml">
+<!ENTITY CamelStreamNull SYSTEM "xml/stream-null.xml">
+<!ENTITY CamelStringUtils SYSTEM "xml/string-utils.xml">
+<!ENTITY CamelTcpStream SYSTEM "xml/tcp-stream.xml">
+<!ENTITY CamelTcpStreamRaw SYSTEM "xml/tcp-stream-raw.xml">
+<!ENTITY CamelTcpStreamSSL SYSTEM "xml/tcp-stream-ssl.xml">
+<!ENTITY CamelTextIndex SYSTEM "xml/text-index.xml">
+<!ENTITY CamelTransport SYSTEM "xml/transport.xml">
+<!ENTITY CamelUIDCache SYSTEM "xml/uid-cache.xml">
+<!ENTITY CamelURL SYSTEM "xml/url.xml">
+<!ENTITY CamelURLScanner SYSTEM "xml/url-scanner.xml">
+<!ENTITY CamelUTF8 SYSTEM "xml/utf8.xml">
+<!ENTITY CamelVeeFolder SYSTEM "xml/vee-folder.xml">
+<!ENTITY CamelVeeStore SYSTEM "xml/vee-store.xml">
+<!ENTITY CamelVeeSummary SYSTEM "xml/vee-summary.xml">
+<!ENTITY CamelvTrashFolder SYSTEM "xml/vtrash-folder.xml">
+
+<!ENTITY index-Class-Tree SYSTEM "tree_index.sgml">
+]>
+
+<book id="index">
+  <bookinfo>
+    <title>Camel Reference Manual</title>
+    <authorgroup>
+      <author>
+        <firstname>Jeffrey</firstname>
+        <surname>Stedfast</surname>
+        <affiliation>
+          <address>
+            <email>fejj@novell.com</email>
+          </address>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>2000-2005</year>
+      <holder>Jeffrey Stedfast</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>Permission is granted to make and distribute verbatim
+      copies of this manual provided the copyright notice and this
+      permission notice are preserved on all copies.</para>
+      <para>Permission is granted to copy and distribute modified
+      versions of this manual under the conditions for verbatim
+      copying, provided also that the entire resulting derived work is
+      distributed under the terms of a permission notice identical to
+      this one.</para>
+      <para>Permission is granted to copy and distribute translations
+      of this manual into another language, under the above conditions
+      for modified versions.</para>
+    </legalnotice>
+
+    <abstract>
+      <para>This manual documents the interfaces of the Camel
+      library.</para>
+    </abstract>
+  </bookinfo>
+
+  <part id="classes">
+    <title>Camel Classes</title>
+    <chapter>
+      <title>Class hierarchy</title>
+      &index-Class-Tree;
+    </chapter>
+
+    <chapter id="Streams">
+      <title>Streams</title>
+      &CamelStream;
+      &CamelSeekableStream;
+      &CamelSeekableSubstream;
+      &CamelStreamBuffer;
+      &CamelStreamFilter;
+      &CamelStreamFs;
+      &CamelStreamMem;
+      &CamelStreamNull;
+    </chapter>
+
+    <chapter id="Filters">
+      <title>Stream Filters</title>
+      &CamelFilter;
+      &CamelFilterBasic;
+      &CamelFilterBestenc;
+      &CamelFilterCanon;
+      &CamelFilterCharset;
+      &CamelFilterCRLF;
+      &CamelFilterEnriched;
+      &CamelFilterFrom;
+      &CamelFilterHTML;
+      &CamelFilterIndex;
+      &CamelFilterSave;
+      &CamelFilterToHTML;
+      &CamelFilterWindows;
+      &CamelFilterYenc;
+    </chapter>
+  </part>
+</book>
