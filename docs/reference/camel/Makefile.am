@@ -18,7 +18,7 @@ HTML_IMAGES =
 #TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE_VERSIONED)
 
 # Extra options to supply to gtkdoc-scan
-SCAN_OPTIONS = --deprecated-guards="CAMEL_DISABLE_DEPRECATED"
+#SCAN_OPTIONS = --deprecated-guards=""
 
 # Extra options to pass to gtkdoc-scangobj
 SCANGOBJ_OPTIONS=--type-init-func="camel_init (\".\", 0)"
