@@ -43,11 +43,6 @@ GTKDOC_LIBS = 					\
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE)
 content_files = 			\
-	data-wrappers.sgml		\
-	filters.sgml			\
-	question_index.sgml		\
-	resources.sgml			\
-	streams.sgml			\
 	tree_index.sgml
 
 # Used for dependencies

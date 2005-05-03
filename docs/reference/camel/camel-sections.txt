@@ -832,7 +832,7 @@ CAMEL_MIME_MESSAGE_CLASS
 
 <SECTION>
 <FILE>camel-mime-parser</FILE>
-camel_mime_parser_state
+camel_mime_parser_state_t
 <TITLE>CamelMimeParser</TITLE>
 camel_mime_parser_new
 camel_mime_parser_errno
@@ -843,8 +843,10 @@ camel_mime_parser_fd
 camel_mime_parser_scan_from
 camel_mime_parser_scan_pre_from
 camel_mime_parser_set_header_regex
+camel_mime_parser_step
 camel_mime_parser_unstep
 camel_mime_parser_drop_step
+camel_mime_parser_state
 camel_mime_parser_push_state
 camel_mime_parser_read
 camel_mime_parser_content_type
@@ -3319,7 +3321,8 @@ camel_exception_throw
 
 <SECTION>
 <FILE>camel-imapp-utils</FILE>
-imap_id
+camel_imapp_id_t
+imap_tokenise
 imap_parse_flags
 fetch_info
 FETCH_BODY
