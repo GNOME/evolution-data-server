@@ -1,5 +1,13 @@
 2005-05-04  Rodrigo Moya <rodrigo@novell.com>
 
+	Fixes #300920
+
+	* libecal/libecal.pc.in:
+	* libedata-cal/libedata-cal.pc.in: fixed Name: and Description:
+	fields.
+
+2005-05-04  Rodrigo Moya <rodrigo@novell.com>
+
 	* libecal/e-cal-component.c:
 	* libecal/e-cal-listener.c:
 	* libecal/e-cal-recur.[ch]: improved API documentation.
