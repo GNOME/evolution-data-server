@@ -15,9 +15,6 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 #e-book-listener, #e-book-view
 </para>
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 <!-- ##### STRUCT EBook ##### -->
 <para>
 #EBook has no publicly available members.

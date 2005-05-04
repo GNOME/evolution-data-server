@@ -14,9 +14,6 @@ Generate unique UIDs.
 
 </para>
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 <!-- ##### FUNCTION e_uid_new ##### -->
 <para>
 

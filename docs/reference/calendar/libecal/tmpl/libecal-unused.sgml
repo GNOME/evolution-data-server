@@ -434,6 +434,15 @@
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION e_cal_util_expand_uri ##### -->
+<para>
+
+</para>
+
+@uri: 
+@tasks: 
+@Returns: 
+
 <!-- ##### FUNCTION e_cal_view_get_client ##### -->
 <para>
 

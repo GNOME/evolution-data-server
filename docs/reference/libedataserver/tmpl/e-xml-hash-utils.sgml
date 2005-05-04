@@ -14,9 +14,6 @@ Functions for manipulating xml as a hash table.
 
 </para>
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 <!-- ##### TYPEDEF EXmlHash ##### -->
 <para>
 

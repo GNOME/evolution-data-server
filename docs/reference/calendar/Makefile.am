@@ -1,1 +1,1 @@
-SUBDIRS = libecal
+SUBDIRS = libecal libedata-cal

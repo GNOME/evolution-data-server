@@ -14,9 +14,6 @@ A convenient way of accessing the contact information in EVCard objects.
 #e-vcard
 </para>
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
 <!-- ##### STRUCT EContact ##### -->
 <para>
 

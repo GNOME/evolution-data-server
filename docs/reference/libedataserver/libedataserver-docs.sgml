@@ -8,9 +8,27 @@
 
   <chapter>
     <title>Evolution API Reference: libedataserver, utility library</title>
-    <!--<xi:include href="xml/e-cal-view.xml"/>-->
+    <xi:include href="xml/e-account-list.xml"/>
+    <xi:include href="xml/e-account.xml"/>
+    <xi:include href="xml/e-categories.xml"/>
+    <xi:include href="xml/e-component-listener.xml"/>
+    <xi:include href="xml/e-data-server-module.xml"/>
+    <xi:include href="xml/e-db3-utils.xml"/>
+    <xi:include href="xml/e-dbhash.xml"/>
+    <xi:include href="xml/e-file-cache.xml"/>
+    <xi:include href="xml/e-iconv.xml"/>
+    <xi:include href="xml/e-iterator.xml"/>
+    <xi:include href="xml/e-list-iterator.xml"/>
+    <xi:include href="xml/e-list.xml"/>
+    <xi:include href="xml/e-memory.xml"/>
+    <xi:include href="xml/e-msgport.xml"/>
+    <xi:include href="xml/e-sexp.xml"/>
+    <xi:include href="xml/e-source-group.xml"/>
+    <xi:include href="xml/e-source-list.xml"/>
+    <xi:include href="xml/e-source.xml"/>
     <xi:include href="xml/e-time-utils.xml"/>
     <xi:include href="xml/e-trie.xml"/>
+    <xi:include href="xml/e-uid.xml"/>
     <xi:include href="xml/e-util.xml"/>
     <xi:include href="xml/e-url.xml"/>
     <xi:include href="xml/e-xml-hash-utils.xml"/>

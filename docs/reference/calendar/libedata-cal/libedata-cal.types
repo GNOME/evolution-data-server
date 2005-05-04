@@ -1,0 +1,9 @@
+#include <glib-object.h>
+e_cal_backend_cache_get_type
+e_cal_backend_factory_get_type
+e_cal_backend_sexp_get_type
+e_cal_backend_sync_get_type
+e_cal_backend_get_type
+e_data_cal_factory_get_type
+e_data_cal_view_get_type
+e_data_cal_get_type

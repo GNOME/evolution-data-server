@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<book id="index" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <bookinfo>
+    <title>Evolution API Reference: libedata-cal, the Calendar Backend Library</title>
+  </bookinfo>
+
+  <chapter>
+    <title>Evolution API Reference: libedata-cal, the Calendar Backend Library</title>
+    <xi:include href="xml/e-cal-backend-cache.xml"/>
+    <xi:include href="xml/e-cal-backend-factory.xml"/>
+    <xi:include href="xml/e-cal-backend-sexp.xml"/>
+    <xi:include href="xml/e-cal-backend-sync.xml"/>
+    <xi:include href="xml/e-cal-backend-util.xml"/>
+    <xi:include href="xml/e-cal-backend.xml"/>
+    <xi:include href="xml/e-data-cal-common.xml"/>
+    <xi:include href="xml/e-data-cal-factory.xml"/>
+    <xi:include href="xml/e-data-cal-view.xml"/>
+    <xi:include href="xml/e-data-cal.xml"/>
+  </chapter>
+</book>
