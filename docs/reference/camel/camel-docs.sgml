@@ -138,7 +138,7 @@
 
   <part id="classes">
     <title>Camel Classes</title>
-    <chapter>
+    <chapter id="ClassTree">
       <title>Class hierarchy</title>
       &index-Class-Tree;
     </chapter>
