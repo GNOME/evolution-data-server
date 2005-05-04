@@ -244,6 +244,13 @@ e_name_selector_dialog_class_init (ENameSelectorDialogClass *name_selector_dialo
 
 }
 
+/**
+ * e_name_selector_dialog_new:
+ *
+ * Creates a new #ENameSelectorDialog.
+ *
+ * Return value: A new #ENameSelectorDialog.
+ **/
 ENameSelectorDialog *
 e_name_selector_dialog_new (void)
 {
@@ -910,6 +917,14 @@ destination_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, 
  * ENameSelectorDialog API *
  * ----------------------- */
 
+/**
+ * e_name_selector_dialog_peek_model:
+ * @name_selector_dialog: an #ENameSelectorDialog
+ *
+ * Gets the #ENameSelectorModel used by @name_selector_model.
+ *
+ * Return value: The #ENameSelectorModel being used.
+ **/
 ENameSelectorModel *
 e_name_selector_dialog_peek_model (ENameSelectorDialog *name_selector_dialog)
 {
@@ -918,6 +933,13 @@ e_name_selector_dialog_peek_model (ENameSelectorDialog *name_selector_dialog)
 	return name_selector_dialog->name_selector_model;
 }
 
+/**
+ * e_name_selector_dialog_set_model:
+ * @name_selector_dialog: an #ENameSelectorDialog
+ * @model: an #ENameSelectorModel
+ *
+ * Sets the model being used by @name_selector_dialog to @model.
+ **/
 void
 e_name_selector_dialog_set_model (ENameSelectorDialog *name_selector_dialog,
 				  ENameSelectorModel  *model)

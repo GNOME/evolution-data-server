@@ -166,6 +166,13 @@ e_destination_store_finalize (GObject *object)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
+/**
+ * e_destination_store_new:
+ *
+ * Creates a new #EDestinationStore.
+ *
+ * Return value: A new #EDestinationStore.
+ **/
 EDestinationStore *
 e_destination_store_new (void)
 {
@@ -276,6 +283,15 @@ destination_changed (EDestinationStore *destination_store, EDestination *destina
  * EDestinationStore API *
  * --------------------- */
 
+/**
+ * e_destination_store_get_destination:
+ * @destination_store: an #EDestinationStore
+ * @iter: a #GtkTreeIter
+ *
+ * Gets the #EDestination from @destination_store at @iter.
+ *
+ * Return value: An #EDestination.
+ **/
 EDestination *
 e_destination_store_get_destination (EDestinationStore *destination_store, GtkTreeIter *iter)
 {
@@ -289,6 +305,15 @@ e_destination_store_get_destination (EDestinationStore *destination_store, GtkTr
 	return g_ptr_array_index (destination_store->destinations, index);
 }
 
+/**
+ * e_destination_store_list_destinations:
+ * @destination_store: an #EDestinationStore
+ *
+ * Gets a list of all the #EDestinations in @destination_store.
+ *
+ * Return value: A #GList of pointers to #EDestination. The list is owned
+ * by the caller, but the #EDestination elements aren't.
+ **/
 GList *
 e_destination_store_list_destinations (EDestinationStore *destination_store)
 {
@@ -305,6 +330,15 @@ e_destination_store_list_destinations (EDestinationStore *destination_store)
 	return destination_list;
 }
 
+/**
+ * e_destination_store_insert_destination:
+ * @destination_store: an #EDestinationStore
+ * @index: the index at which to insert
+ * @destination: an #EDestination to insert
+ *
+ * Inserts @destination into @destination_store at the position
+ * indicated by @index. @destination_store will ref @destination.
+ **/
 void
 e_destination_store_insert_destination (EDestinationStore *destination_store,
 					gint index, EDestination *destination)
@@ -335,6 +369,14 @@ e_destination_store_insert_destination (EDestinationStore *destination_store,
 	row_inserted (destination_store, index);
 }
 
+/**
+ * e_destination_store_append_destination:
+ * @destination_store: an #EDestinationStore
+ * @destination: an #EDestination
+ *
+ * Appends @destination to the list of destinations in @destination_store.
+ * @destination_store will ref @destination.
+ **/
 void
 e_destination_store_append_destination (EDestinationStore *destination_store, EDestination *destination)
 {
@@ -352,6 +394,14 @@ e_destination_store_append_destination (EDestinationStore *destination_store, ED
 	row_inserted (destination_store, destination_store->destinations->len - 1);
 }
 
+/**
+ * e_destination_store_remove_destination:
+ * @destination_store: an #EDestinationStore
+ * @destination: an #EDestination to remove
+ *
+ * Removes @destination from @destination_store. @destination_store will
+ * unref @destination.
+ **/
 void
 e_destination_store_remove_destination (EDestinationStore *destination_store, EDestination *destination)
 {

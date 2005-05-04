@@ -256,6 +256,22 @@ load_source_cb (EBook *book, EBookStatus status, gpointer closure)
 	free_load_source_data (load_source_data);
 }
 
+/**
+ * e_load_book_source:
+ * @source: an #ESource
+ * @open_func: a function to call when the operation finishes, or %NULL
+ * @user_data: data to pass to callback function
+ *
+ * Creates a new #EBook specified by @source, and starts a non-blocking
+ * open operation on it. If the book requires authorization, presents
+ * a window asking the user for such.
+ *
+ * When the operation finishes, calls the callback function indicating
+ * if it succeeded or not. If you don't care, you can pass %NULL for
+ * @open_func, and no action will be taken on completion.
+ *
+ * Return value: A new #EBook that is being opened.
+ **/
 EBook *
 e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data)
 {

@@ -442,10 +442,10 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
  * e_categories_dialog_new:
  * @initial_category_list: Comma-separated list of initial categories.
  *
- * Creates a new %ECategoriesDialog widget.
+ * Creates a new #ECategoriesDialog widget.
  *
- * Return value: A pointer to the newly created %ECategoriesDialog widget.
- */
+ * Return value: A pointer to the newly created #ECategoriesDialog widget.
+ **/
 GtkWidget *
 e_categories_dialog_new (const char *initial_category_list)
 {
@@ -467,7 +467,7 @@ e_categories_dialog_new (const char *initial_category_list)
  * Gets a comma-separated list of the categories currently selected on the dialog.
  *
  * Return value: comma-separated list of categories.
- */
+ **/
 const char *
 e_categories_dialog_get_categories (ECategoriesDialog *dialog)
 {
@@ -486,7 +486,7 @@ e_categories_dialog_get_categories (ECategoriesDialog *dialog)
  * @categories: Comma-separated list of categories.
  *
  * Sets the list of categories selected on the dialog.
- */
+ **/
 void
 e_categories_dialog_set_categories (ECategoriesDialog *dialog, const char *categories)
 {

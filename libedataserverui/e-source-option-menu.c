@@ -256,6 +256,15 @@ e_source_option_menu_init (ESourceOptionMenu *source_option_menu)
 
 /* Public methods.  */
 
+/**
+ * e_source_option_menu_new:
+ * @source_list: an #ESourceList to choose from
+ *
+ * Creates a new #ESourceOptionMenu widget that lets the user pick
+ * an #ESource from the provided #ESourceList.
+ *
+ * Return value: A new #ESourceOptionMenu.
+ **/
 GtkWidget *
 e_source_option_menu_new (ESourceList *source_list)
 {
@@ -274,7 +283,12 @@ e_source_option_menu_new (ESourceList *source_list)
 	return GTK_WIDGET (menu);
 }
 
-
+/**
+ * e_source_option_menu_peek_selected:
+ * @menu: an #ESourceOptionMenu
+ *
+ * Return value: The selected #ESource, or %NULL if none was selected.
+ **/
 ESource *
 e_source_option_menu_peek_selected  (ESourceOptionMenu *menu)
 {
@@ -283,7 +297,14 @@ e_source_option_menu_peek_selected  (ESourceOptionMenu *menu)
 	return menu->priv->selected_source;
 }
 
-
+/**
+ * e_source_option_menu_select:
+ * @menu: an #ESourceOptionMenu
+ * @source: an #ESource to select
+ *
+ * Programmatically selects a source in @menu. @source must be present
+ * in @menu's #ESourceList.
+ **/
 void
 e_source_option_menu_select (ESourceOptionMenu *menu,
 			     ESource *source)

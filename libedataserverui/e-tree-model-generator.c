@@ -724,6 +724,14 @@ child_row_deleted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
  * ETreeModelGenerator API *
  * ----------------------- */
 
+/**
+ * e_tree_model_generator_new:
+ * @child_model: a #GtkTreeModel
+ *
+ * Creates a new #ETreeModelGenerator wrapping @child_model.
+ *
+ * Return value: A new #ETreeModelGenerator.
+ **/
 ETreeModelGenerator *
 e_tree_model_generator_new (GtkTreeModel *child_model)
 {
@@ -733,6 +741,14 @@ e_tree_model_generator_new (GtkTreeModel *child_model)
 						     "child-model", child_model, NULL));
 }
 
+/**
+ * e_tree_model_generator_get_model:
+ * @tree_model_generator: an #ETreeModelGenerator
+ *
+ * Gets the child model being wrapped by @tree_model_generator.
+ *
+ * Return value: A #GtkTreeModel being wrapped.
+ **/
 GtkTreeModel *
 e_tree_model_generator_get_model (ETreeModelGenerator *tree_model_generator)
 {
@@ -741,6 +757,20 @@ e_tree_model_generator_get_model (ETreeModelGenerator *tree_model_generator)
 	return tree_model_generator->child_model;
 }
 
+/**
+ * e_tree_model_generator_set_generate_func:
+ * @tree_model_generator: an #ETreeModelGenerator
+ * @func: an #ETreeModelGeneratorGenerateFunc, or %NULL
+ * @data: user data to pass to @func
+ * @destroy:
+ *
+ * Sets the callback function used to filter or generate additional rows
+ * based on the child model's data. This function is called for each child
+ * row, and returns a value indicating the number of rows that will be
+ * used to represent the child row - 0 or more.
+ *
+ * If @func is %NULL, a filtering/generating function will not be applied.
+ **/
 void
 e_tree_model_generator_set_generate_func (ETreeModelGenerator *tree_model_generator,
 					  ETreeModelGeneratorGenerateFunc func,
@@ -752,6 +782,18 @@ e_tree_model_generator_set_generate_func (ETreeModelGenerator *tree_model_genera
 	tree_model_generator->generate_func_data = data;
 }
 
+/**
+ * e_tree_model_generator_set_modify_func:
+ * @tree_model_generator: an #ETreeModelGenerator
+ * @func: an @ETreeModelGeneratorModifyFunc, or %NULL
+ * @data: user data to pass to @func
+ * @destroy:
+ *
+ * Sets the callback function used to override values for the child row's
+ * columns and specify values for generated rows' columns.
+ *
+ * If @func is %NULL, the child model's values will always be used.
+ **/
 void
 e_tree_model_generator_set_modify_func (ETreeModelGenerator *tree_model_generator,
 					ETreeModelGeneratorModifyFunc func,
@@ -763,6 +805,15 @@ e_tree_model_generator_set_modify_func (ETreeModelGenerator *tree_model_generato
 	tree_model_generator->modify_func_data = data;
 }
 
+/**
+ * e_tree_model_generator_convert_child_path_to_path:
+ * @tree_model_generator: an #ETreeModelGenerator
+ * @child_path: a #GtkTreePath
+ *
+ * Convert a path to a child row to a path to a @tree_model_generator row.
+ *
+ * Return value: A new GtkTreePath, owned by the caller.
+ **/
 GtkTreePath *
 e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_model_generator,
 						   GtkTreePath *child_path)
@@ -799,6 +850,15 @@ e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_mod
 	return path;
 }
 
+/**
+ * e_tree_model_generator_convert_child_iter_to_iter:
+ * @tree_model_generator: an #ETreeModelGenerator
+ * @generator_iter: a #GtkTreeIter to set
+ * @child_iter: a #GtkTreeIter to convert
+ *
+ * Convert @child_iter to a corresponding #GtkTreeIter for @tree_model_generator,
+ * storing the result in @generator_iter.
+ **/
 void
 e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_model_generator,
 						   GtkTreeIter *generator_iter,
@@ -837,6 +897,15 @@ e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_mod
 	gtk_tree_path_free (path);
 }
 
+/**
+ * e_tree_model_generator_convert_path_to_child_path:
+ * @tree_model_generator: an #ETreeModelGenerator
+ * @generator_path: a #GtkTreePath to a @tree_model_generator row
+ *
+ * Converts @generator_path to a corresponding #GtkTreePath in the child model.
+ *
+ * Return value: A new #GtkTreePath, owned by the caller.
+ **/
 GtkTreePath *
 e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_model_generator,
 						   GtkTreePath *generator_path)
@@ -873,6 +942,17 @@ e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_mod
 	return path;
 }
 
+/**
+ * e_tree_model_generator_convert_iter_to_child_iter:
+ * @tree_model_generator: an #ETreeModelGenerator
+ * @child_iter: a #GtkTreeIter to set
+ * @permutation_n: a permutation index to set
+ * @generator_iter: a #GtkTreeIter indicating the row to convert
+ * 
+ * Converts a @tree_model_generator row into a child row and permutation index.
+ * The permutation index is the index of the generated row based on this
+ * child row, with the first generated row based on this child row being 0.
+ **/
 void
 e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_model_generator,
 						   GtkTreeIter *child_iter,

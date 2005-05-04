@@ -1,3 +1,17 @@
+2005-05-04  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-book-auth-util.c:
+	* e-categories-dialog.c:
+	* e-contact-store.c:
+	* e-destination-store.c:
+	* e-name-selector-dialog.c:
+	* e-name-selector-entry.c:
+	* e-name-selector-model.c:
+	* e-name-selector.c:
+	* e-source-option-menu.c:
+	* e-source-selector.c:
+	* e-tree-model-generator.c: Wrote API docs.
+
 2005-04-11  Harish Krishnaswamy  <kharish@novell.com>
 
 	* Makefile.am: use API_VERSION 

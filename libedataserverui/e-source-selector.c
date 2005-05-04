@@ -795,7 +795,7 @@ e_source_selector_new (ESourceList *list)
 
 /**
  * e_source_selector_get_selection:
- * @selector: 
+ * @selector: an #ESourceSelector
  * 
  * Get the list of selected sources, i.e. those that were enabled through the
  * corresponding checkboxes in the tree.
@@ -836,12 +836,13 @@ e_source_selector_get_selection (ESourceSelector *selector)
 }
 
 /**
- * e_source_selector_get_primary_source_group :
+ * e_source_selector_get_primary_source_group:
+ * @selector: an #ESourceSelector
  * 
- * Return the primary source group associated with the selector.
+ * Gets the primary source group associated with the selector.
+ *
  * Return value: primary_source_group if selector is valid, NULL otherwise.
- */
-
+ **/
 ESourceGroup *
 e_source_selector_get_primary_source_group (ESourceSelector *selector)
 {
@@ -891,7 +892,7 @@ e_source_selector_show_selection (ESourceSelector *selector,
 
 /**
  * e_source_selector_selection_shown:
- * @selector: 
+ * @selector: an #ESourceSelector
  * 
  * Check whether the checkboxes in the ESourceSelector are being shown or not.
  * 
@@ -907,7 +908,7 @@ e_source_selector_selection_shown (ESourceSelector *selector)
 
 /**
  * e_source_selector_set_select_new:
- * @selector: An ESourceSelector widget
+ * @selector: An #ESourceSelector widget
  * @state: A gboolean
  *
  * Set whether or not to select new sources added to @selector.
@@ -922,8 +923,8 @@ e_source_selector_set_select_new (ESourceSelector *selector, gboolean state)
 
 /**
  * e_source_selector_select_source:
- * @selector: An ESourceSelector widget
- * @source: An ESource.
+ * @selector: An #ESourceSelector widget
+ * @source: An #ESource.
  * 
  * Select @source in @selector.
  **/
@@ -955,8 +956,8 @@ e_source_selector_select_source (ESourceSelector *selector,
 
 /**
  * e_source_selector_unselect_source:
- * @selector: An ESourceSelector widget
- * @source: An ESource.
+ * @selector: An #ESourceSelector widget
+ * @source: An #ESource.
  * 
  * Unselect @source in @selector.
  **/
@@ -988,8 +989,8 @@ e_source_selector_unselect_source (ESourceSelector *selector,
 
 /**
  * e_source_selector_source_is_selected:
- * @selector: An ESourceSelector widget
- * @source: An ESource.
+ * @selector: An #ESourceSelector widget
+ * @source: An #ESource.
  * 
  * Check whether @source is selected in @selector.
  * 
@@ -1007,10 +1008,10 @@ e_source_selector_source_is_selected (ESourceSelector *selector,
 
 /**
  * e_source_selector_peek_primary_selection:
- * @selector: An ESourceSelector widget
+ * @selector: An #ESourceSelector widget
  * 
  * Get the primary selected source.  The primary selection is the one that is
- * highlighted through the normal GtkTreeView selection mechanism (as opposed
+ * highlighted through the normal #GtkTreeView selection mechanism (as opposed
  * to the "normal" selection, which is the set of source whose checkboxes are
  * checked).
  * 
@@ -1059,8 +1060,8 @@ e_source_selector_peek_primary_selection (ESourceSelector *selector)
 
 /**
  * e_source_selector_set_primary_selection:
- * @selector: An ESourceSelector widget
- * @source: Source to select
+ * @selector: an #ESourceSelector widget
+ * @source: an #ESource to select
  * 
  * Set the primary selected source.
  **/

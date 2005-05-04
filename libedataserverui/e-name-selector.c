@@ -151,6 +151,13 @@ e_name_selector_finalize (GObject *object)
 		G_OBJECT_CLASS (e_name_selector_parent_class)->finalize (object);
 }
 
+/**
+ * e_name_selector_new:
+ *
+ * Creates a new #ENameSelector.
+ *
+ * Return value: A new #ENameSelector.
+ **/
 ENameSelector *
 e_name_selector_new (void)
 {
@@ -211,6 +218,14 @@ find_section_by_name (ENameSelector *name_selector, const gchar *name)
  * ENameSelector API *
  * ----------------- */
 
+/**
+ * e_name_selector_peek_model:
+ * @name_selector: an #ENameSelector
+ *
+ * Gets the #ENameSelectorModel used by @name_selector.
+ *
+ * Return value: The #ENameSelectorModel used by @name_selector.
+ **/
 ENameSelectorModel *
 e_name_selector_peek_model (ENameSelector *name_selector)
 {
@@ -219,6 +234,14 @@ e_name_selector_peek_model (ENameSelector *name_selector)
 	return name_selector->model;
 }
 
+/**
+ * e_name_selector_peek_dialog:
+ * @name_selelctor: an #ENameSelector
+ *
+ * Gets the #ENameSelectorDialog used by @name_selector.
+ *
+ * Return value: The #ENameSelectorDialog used by @name_selector.
+ **/
 ENameSelectorDialog *
 e_name_selector_peek_dialog (ENameSelector *name_selector)
 {
@@ -234,6 +257,16 @@ e_name_selector_peek_dialog (ENameSelector *name_selector)
 	return name_selector->dialog;
 }
 
+/**
+ * e_name_selector_peek_section_entry:
+ * @name_selector: an #ENameSelector
+ * @name: the name of the section to peek
+ *
+ * Gets the #ENameSelectorEntry for the section specified by @name.
+ *
+ * Return value: The #ENameSelectorEntry for the named section, or %NULL if it
+ * doesn't exist in the #ENameSelectorModel.
+ **/
 ENameSelectorEntry *
 e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *name)
 {

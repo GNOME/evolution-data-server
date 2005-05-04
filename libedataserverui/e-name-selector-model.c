@@ -119,6 +119,13 @@ e_name_selector_model_class_init (ENameSelectorModelClass *name_selector_model_c
 			      G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
+/**
+ * e_name_selector_model_new:
+ *
+ * Creates a new #ENameSelectorModel.
+ *
+ * Return value: A new #ENameSelectorModel.
+ **/
 ENameSelectorModel *
 e_name_selector_model_new (void)
 {
@@ -335,6 +342,14 @@ find_section_by_name (ENameSelectorModel *name_selector_model, const gchar *name
  * ENameSelectorModel API *
  * ---------------------- */
 
+/**
+ * e_name_selector_model_peek_contact_store:
+ * @name_selector_model: an #ENameSelectorModel
+ * 
+ * Gets the #EContactStore associated with @name_selector_model.
+ *
+ * Return value: An #EContactStore.
+ **/
 EContactStore *
 e_name_selector_model_peek_contact_store (ENameSelectorModel *name_selector_model)
 {
@@ -343,6 +358,15 @@ e_name_selector_model_peek_contact_store (ENameSelectorModel *name_selector_mode
 	return name_selector_model->contact_store;
 }
 
+/**
+ * e_name_selector_model_peek_contact_filter:
+ * @name_selector_model: an #ENameSelectorModel
+ *
+ * Gets the #ETreeModelGenerator being used to filter and/or extend the
+ * list of contacts in @name_selector_model's #EContactStore.
+ *
+ * Return value: An #ETreeModelGenerator.
+ **/
 ETreeModelGenerator *
 e_name_selector_model_peek_contact_filter (ENameSelectorModel *name_selector_model)
 {
@@ -351,6 +375,15 @@ e_name_selector_model_peek_contact_filter (ENameSelectorModel *name_selector_mod
 	return name_selector_model->contact_filter;
 }
 
+/**
+ * e_name_selector_model_list_sections:
+ * @name_selector_model: an #ENameSelectorModel
+ *
+ * Gets a list of the destination sections in @name_selector_model.
+ *
+ * Return value: A #GList of pointers to strings. The #GList and the
+ * strings belong to the caller, and must be freed when no longer needed.
+ **/
 GList *
 e_name_selector_model_list_sections (ENameSelectorModel *name_selector_model)
 {
@@ -371,6 +404,16 @@ e_name_selector_model_list_sections (ENameSelectorModel *name_selector_model)
 	return section_names;
 }
 
+/**
+ * e_name_selector_model_add_section:
+ * @name_selector_model: an #ENameSelectorModel
+ * @name: internal name of this section
+ * @pretty_name: user-visible name of this section
+ * @destination_store: the #EDestinationStore to use to store the destinations for this
+ * section, or %NULL if @name_selector_model should create its own.
+ *
+ * Adds a destination section to @name_selector_model.
+ **/
 void
 e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
 				   const gchar *name, const gchar *pretty_name,
@@ -410,6 +453,13 @@ e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
 	g_signal_emit (name_selector_model, signals [SECTION_ADDED], 0, name);
 }
 
+/**
+ * e_name_selector_model_remove_section:
+ * @name_selector_model: an #ENameSelectorModel
+ * @name: internal name of the section to remove
+ *
+ * Removes a destination section from @name_selector_model.
+ **/
 void
 e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model, const gchar *name)
 {
@@ -432,6 +482,17 @@ e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model, c
 	g_signal_emit (name_selector_model, signals [SECTION_REMOVED], 0, name);
 }
 
+/**
+ * e_name_selector_model_peek_section:
+ * @name_selector_model: an #ENameSelectorModel
+ * @name: internal name of the section to peek
+ * @pretty_name: location in which to store a pointer to the user-visible name of the section,
+ * or %NULL if undesired.
+ * @destination_store: location in which to store a pointer to the #EDestinationStore being used
+ * by the section, or %NULL if undesired
+ *
+ * Gets the parameters for a destination section.
+ **/
 gboolean
 e_name_selector_model_peek_section (ENameSelectorModel *name_selector_model, const gchar *name,
 				    gchar **pretty_name, EDestinationStore **destination_store)

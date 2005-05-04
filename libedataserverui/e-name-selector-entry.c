@@ -1860,12 +1860,27 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
   setup_destination_store (name_selector_entry);
 }
 
+/**
+ * e_name_selector_entry_new:
+ *
+ * Creates a new #ENameSelectorEntry.
+ *
+ * Return value: A new #ENameSelectorEntry.
+ **/
 ENameSelectorEntry *
 e_name_selector_entry_new (void)
 {
 	  return g_object_new (e_name_selector_entry_get_type (), NULL);
 }
 
+/**
+ * e_name_selector_entry_peek_contact_store:
+ * @name_selector_entry: an #ENameSelectorEntry
+ *
+ * Gets the #EContactStore being used by @name_selector_entry.
+ *
+ * Return value: An #EContactStore.
+ **/
 EContactStore *
 e_name_selector_entry_peek_contact_store (ENameSelectorEntry *name_selector_entry)
 {
@@ -1874,6 +1889,13 @@ e_name_selector_entry_peek_contact_store (ENameSelectorEntry *name_selector_entr
 	return name_selector_entry->contact_store;
 }
 
+/**
+ * e_name_selector_entry_set_contact_store:
+ * @name_selector_entry: an #ENameSelectorEntry
+ * @contact_store: an #EContactStore to use
+ *
+ * Sets the #EContactStore being used by @name_selector_entry to @contact_store.
+ **/
 void
 e_name_selector_entry_set_contact_store (ENameSelectorEntry *name_selector_entry,
 					 EContactStore *contact_store)
@@ -1893,6 +1915,14 @@ e_name_selector_entry_set_contact_store (ENameSelectorEntry *name_selector_entry
 	setup_contact_store (name_selector_entry);
 }
 
+/**
+ * e_name_selector_entry_peek_destination_store:
+ * @name_selector_entry: an #ENameSelectorEntry
+ * 
+ * Gets the #EDestinationStore being used to store @name_selector_entry's destinations.
+ *
+ * Return value: An #EDestinationStore.
+ **/
 EDestinationStore *
 e_name_selector_entry_peek_destination_store (ENameSelectorEntry *name_selector_entry)
 {
@@ -1901,6 +1931,14 @@ e_name_selector_entry_peek_destination_store (ENameSelectorEntry *name_selector_
 	return name_selector_entry->destination_store;
 }
 
+/**
+ * e_name_selector_entry_set_destination_store:
+ * @name_selector_entry: an #ENameSelectorEntry
+ * @destination_store: an #EDestinationStore to use
+ *
+ * Sets @destination_store as the #EDestinationStore to be used to store
+ * destinations for @name_selector_entry.
+ **/
 void
 e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_entry,
 					      EDestinationStore *destination_store)
@@ -1917,12 +1955,22 @@ e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_
 	setup_destination_store (name_selector_entry);
 }
 
+/**
+ * e_name_selector_entry_set_contact_editor_func:
+ *
+ * DO NOT USE.
+ **/
 void
 e_name_selector_entry_set_contact_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
 {
 	name_selector_entry->contact_editor_func = func;
 }
 
+/**
+ * e_name_selector_entry_set_contact_list_editor_func:
+ *
+ * DO NOT USE.
+ **/
 void
 e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
 {

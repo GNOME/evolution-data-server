@@ -174,6 +174,13 @@ e_contact_store_finalize (GObject *object)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
+/**
+ * e_contact_store_new:
+ *
+ * Creates a new #EContactStore.
+ *
+ * Return value: A new #EContactStore.
+ **/
 EContactStore *
 e_contact_store_new (void)
 {
@@ -753,6 +760,15 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
  * EContactStore API *
  * ----------------- */
 
+/**
+ * e_contact_store_get_book:
+ * @contact_store: an #EContactStore
+ * @iter: a #GtkTreeIter from @contact_store
+ *
+ * Gets the #EBook that provided the contact at @iter.
+ *
+ * Return value: An #EBook.
+ **/
 EBook *
 e_contact_store_get_book (EContactStore *contact_store, GtkTreeIter *iter)
 {
@@ -766,6 +782,15 @@ e_contact_store_get_book (EContactStore *contact_store, GtkTreeIter *iter)
 	return get_book_at_row (contact_store, index);
 }
 
+/**
+ * e_contact_store_get_contact:
+ * @contact_store: an #EContactStore
+ * @iter: a #GtkTreeIter from @contact_store
+ *
+ * Gets the #EContact at @iter.
+ *
+ * Return value: An #EContact.
+ **/
 EContact *
 e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
 {
@@ -779,6 +804,16 @@ e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
 	return get_contact_at_row (contact_store, index);
 }
 
+/**
+ * e_contact_store_find_contact:
+ * @contact_store: an #EContactStore
+ * @uid: a unique contact identifier
+ * @iter: a destination #GtkTreeIter to set
+ *
+ * Sets @iter to point to the contact row matching @uid.
+ * 
+ * Return value: %TRUE if the contact was found, and @iter was set. %FALSE otherwise.
+ **/
 gboolean
 e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
 			      GtkTreeIter *iter)
@@ -796,6 +831,15 @@ e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
 	return TRUE;
 }
 
+/**
+ * e_contact_store_get_books:
+ * @contact_store: an #EContactStore
+ *
+ * Gets the list of books that provide contacts for @contact_store.
+ *
+ * Return value: A #GList of pointers to #EBook. The caller owns the list,
+ * but not the books.
+ **/
 GList *
 e_contact_store_get_books (EContactStore *contact_store)
 {
@@ -814,6 +858,13 @@ e_contact_store_get_books (EContactStore *contact_store)
 	return book_list;
 }
 
+/**
+ * e_contact_store_add_book:
+ * @contact_store: an #EContactStore
+ * @book: an #EBook
+ *
+ * Adds @book to the list of books that provide contacts for @contact_store.
+ **/
 void
 e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 {
@@ -840,6 +891,13 @@ e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 	query_contact_source (contact_store, indexed_source);
 }
 
+/**
+ * e_contact_store_remove_book:
+ * @contact_store: an #EContactStore
+ * @book: an #EBook
+ *
+ * Removes @book from the list of books that provide contacts for @contact_store.
+ **/
 void
 e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
 {
@@ -865,6 +923,14 @@ e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
 	g_array_remove_index (contact_store->contact_sources, source_index);  /* Preserve order */
 }
 
+/**
+ * e_contact_store_set_query:
+ * @contact_store: an #EContactStore
+ * @book_query: an #EBookQuery
+ *
+ * Sets @book_query to be the query used to fetch contacts from the books
+ * assigned to @contact_store.
+ **/
 void
 e_contact_store_set_query (EContactStore *contact_store, EBookQuery *book_query)
 {
@@ -891,6 +957,15 @@ e_contact_store_set_query (EContactStore *contact_store, EBookQuery *book_query)
 	}
 }
 
+/**
+ * e_contact_store_peek_query:
+ * @contact_store: an #EContactStore
+ *
+ * Gets the query that's being used to fetch contacts from the books
+ * assigned to @contact_store.
+ *
+ * Return value: The #EBookQuery being used.
+ **/
 EBookQuery *
 e_contact_store_peek_query (EContactStore *contact_store)
 {
