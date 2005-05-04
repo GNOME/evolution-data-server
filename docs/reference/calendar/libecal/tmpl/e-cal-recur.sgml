@@ -2,7 +2,7 @@
 e-cal-recur
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Functions to expand recurrences for recurrent appointments.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -13,9 +13,6 @@ e-cal-recur
 <para>
 
 </para>
-
-<!-- ##### SECTION Stability_Level ##### -->
-
 
 <!-- ##### USER_FUNCTION ECalRecurInstanceFn ##### -->
 <para>

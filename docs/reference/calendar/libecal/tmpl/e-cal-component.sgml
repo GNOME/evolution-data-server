@@ -2,19 +2,18 @@
 ECalComponent
 
 <!-- ##### SECTION Short_Description ##### -->
-Typically an appointment or task, part of the ECal object.
+
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
 
 </para>
 
+
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
-<!-- ##### SECTION Stability_Level ##### -->
 
 
 <!-- ##### STRUCT ECalComponent ##### -->
@@ -65,7 +64,7 @@ Typically an appointment or task, part of the ECal object.
 
 <!-- ##### ENUM ECalComponentClassification ##### -->
 <para>
-These values determine the privacy classification of the event.
+
 </para>
 
 @E_CAL_COMPONENT_CLASS_NONE: 
