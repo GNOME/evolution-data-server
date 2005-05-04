@@ -1272,12 +1272,27 @@ e_contact_get_property (GObject *object,
 
 
 
+/**
+ * e_contact_new:
+ *
+ * Creates a new, blank #EContact.
+ *
+ * Return value: A new #EContact.
+ **/
 EContact*
 e_contact_new (void)
 {
 	return e_contact_new_from_vcard ("");
 }
 
+/**
+ * e_contact_new_from_vcard:
+ * @vcard: a string representing a vcard
+ * 
+ * Creates a new #EContact based on a vcard.
+ *
+ * Return value: A new #EContact.
+ **/
 EContact*
 e_contact_new_from_vcard  (const char *vcard)
 {
@@ -1328,6 +1343,14 @@ e_contact_new_from_vcard  (const char *vcard)
 	return contact;
 }
 
+/**
+ * e_contact_duplicate:
+ * @contact: an #EContact
+ *
+ * Creates a copy of @contact.
+ *
+ * Return value: A new #EContact identical to @contact.
+ **/
 EContact*
 e_contact_duplicate (EContact *contact)
 {
@@ -1343,6 +1366,14 @@ e_contact_duplicate (EContact *contact)
 	return c;
 }
 
+/**
+ * e_contact_field_name:
+ * @field_id: an #EContactField
+ *
+ * Gets the string representation of @field_id.
+ *
+ * Return value: The string representation of @field_id, or %NULL if it doesn't exist.
+ **/
 const char *
 e_contact_field_name (EContactField field_id)
 {
@@ -1359,6 +1390,15 @@ e_contact_field_name (EContactField field_id)
 	return "";
 }
 
+/**
+ * e_contact_pretty_name:
+ * @field_id: an #EContactField
+ *
+ * Gets a human-readable, translated string representation
+ * of @field_id.
+ *
+ * Return value: The human-readable representation of @field_id, or %NULL if it doesn't exist.
+ **/
 const char *
 e_contact_pretty_name (EContactField field_id)
 {
@@ -1380,6 +1420,14 @@ e_contact_pretty_name (EContactField field_id)
 	return "";
 }
 
+/**
+ * e_contact_vcard_attribute:
+ * @field_id: an #EContactField
+ *
+ * Gets the vcard attribute corresponding to @field_id, as a string.
+ *
+ * Return value: The vcard attribute corresponding to @field_id, or %NULL if it doesn't exist.
+ **/
 const char*
 e_contact_vcard_attribute  (EContactField field_id)
 {
@@ -1396,6 +1444,14 @@ e_contact_vcard_attribute  (EContactField field_id)
 	return NULL;
 }
 
+/**
+ * e_contact_field_id:
+ * @field_name: a string representing a contact field
+ * 
+ * Gets the #EContactField corresponding to the @field_name.
+ *
+ * Return value: An #EContactField corresponding to @field_name, or %0 if it doesn't exist.
+ **/
 EContactField
 e_contact_field_id (const char *field_name)
 {
@@ -1410,6 +1466,15 @@ e_contact_field_id (const char *field_name)
 	return 0;
 }
 
+/**
+ * e_contact_get:
+ * @contact: an #EContact
+ * @field_id: an #EContactField
+ *
+ * Gets the value of @contact's field specified by @field_id.
+ *
+ * Return value: Depends on the field's type, owned by the caller.
+ **/
 gpointer
 e_contact_get (EContact *contact, EContactField field_id)
 {
@@ -1431,6 +1496,16 @@ free_const_data (gpointer data, GObject *where_object_was)
 	g_free (data);
 }
 
+/**
+ * e_contact_get_const:
+ * @contact: an #EContact
+ * @field_id: an #EContactField
+ *
+ * Gets the value of @contact's field specified by @field_id, caching
+ * the result so it can be freed later.
+ *
+ * Return value: Depends on the field's type, owned by the #EContact.
+ **/
 const gpointer
 e_contact_get_const (EContact *contact, EContactField field_id)
 {
@@ -1458,6 +1533,14 @@ e_contact_get_const (EContact *contact, EContactField field_id)
 	return value;
 }
 
+/**
+ * e_contact_set;
+ * @contact: an #EContact
+ * @field_id: an #EContactField
+ * @value: a value whose type depends on the @field_id
+ *
+ * Sets the value of @contact's field specified by @field_id to @value.
+ **/
 void
 e_contact_set (EContact *contact, EContactField field_id, gpointer value)
 {
@@ -1475,6 +1558,15 @@ e_contact_set (EContact *contact, EContactField field_id, gpointer value)
 		      NULL);
 }
 
+/**
+ * e_contact_get_attributes:
+ * @contact: an #EContact
+ * @field_id: an #EContactField
+ *
+ * Gets a list of the vcard attributes for @contact's @field_id.
+ *
+ * Return value: A #GList of pointers to #EVCardAttribute, owned by the caller.
+ **/
 GList*
 e_contact_get_attributes (EContact *contact, EContactField field_id)
 {
@@ -1514,6 +1606,14 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
 	return l;
 }
 
+/**
+ * e_contact_set_attributes:
+ * @contact: an #EContact
+ * @field_id: an #EContactField
+ * @attributes: a #GList of pointers to #EVCardAttribute
+ *
+ * Sets the vcard attributes for @contact's @field_id.
+ **/
 void
 e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attributes)
 {
@@ -1543,12 +1643,27 @@ e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attr
 				       e_vcard_attribute_copy ((EVCardAttribute*)l->data));
 }
 
+/**
+ * e_contact_name_new:
+ *
+ * Creates a new #EContactName struct.
+ *
+ * Return value: A new #EContactName struct.
+ **/
 EContactName*
 e_contact_name_new ()
 {
 	return g_new0 (EContactName, 1);
 }
 
+/**
+ * e_contact_name_to_string:
+ * @name: an #EContactName
+ *
+ * Generates a string representation of @name.
+ *
+ * Return value: The string representation of @name.
+ **/
 char *
 e_contact_name_to_string(const EContactName *name)
 {
@@ -1570,6 +1685,14 @@ e_contact_name_to_string(const EContactName *name)
 	return g_strjoinv(" ", strings);
 }
 
+/**
+ * e_contact_name_from_string:
+ * @name_str: a string representing a contact's full name
+ *
+ * Creates a new #EContactName based on the parsed @name_str.
+ *
+ * Return value: A new #EContactName struct.
+ **/
 EContactName*
 e_contact_name_from_string (const char *name_str)
 {
@@ -1591,6 +1714,14 @@ e_contact_name_from_string (const char *name_str)
 	return name;
 }
 
+/**
+ * e_contact_name_copy:
+ * @n: an #EContactName
+ *
+ * Creates a copy of @n.
+ *
+ * Return value: A new #EContactName identical to @n.
+ **/
 EContactName*
 e_contact_name_copy (EContactName *n)
 {
@@ -1609,6 +1740,12 @@ e_contact_name_copy (EContactName *n)
 	return name;
 }
 
+/**
+ * e_contact_name_free:
+ * @name: an #EContactName
+ *
+ * Frees @name and its contents.
+ **/
 void
 e_contact_name_free (EContactName *name)
 {
@@ -1636,6 +1773,14 @@ e_contact_name_get_type (void)
 	return type_id;
 }
 
+/**
+ * e_contact_date_from_string:
+ * @str: a date string in the format YYYY-MM-DD or YYYYMMDD
+ *
+ * Creates a new #EContactDate based on @str.
+ *
+ * Return value: A new #EContactDate struct.
+ **/
 EContactDate*
 e_contact_date_from_string (const char *str)
 {
@@ -1660,6 +1805,15 @@ e_contact_date_from_string (const char *str)
 	return date;
 }
 
+/**
+ * e_contact_date_to_string:
+ * @dt: an #EContactDate
+ *
+ * Generates a date string in the format YYYY-MM-DD based
+ * on the values of @dt.
+ *
+ * Return value: A date string, owned by the caller.
+ **/
 char *
 e_contact_date_to_string (EContactDate *dt)
 {
@@ -1672,6 +1826,15 @@ e_contact_date_to_string (EContactDate *dt)
 		return NULL;
 }
 
+/**
+ * e_contact_date_equal:
+ * @dt1: an #EContactDate
+ * @dt2: an #EContactDate
+ *
+ * Checks if @dt1 and @dt2 are the same date.
+ *
+ * Return value: %TRUE if @dt1 and @dt2 are equal, %FALSE otherwise.
+ **/
 gboolean
 e_contact_date_equal (EContactDate *dt1, EContactDate *dt2)
 {
@@ -1683,6 +1846,14 @@ e_contact_date_equal (EContactDate *dt1, EContactDate *dt2)
 		return (!!dt1 == !!dt2);
 }
 
+/**
+ * e_contact_date_copy:
+ * @dt: an #EContactDate
+ *
+ * Creates a copy of @dt.
+ *
+ * Return value: A new #EContactDate struct identical to @dt.
+ **/
 static EContactDate *
 e_contact_date_copy (EContactDate *dt)
 {
@@ -1694,6 +1865,12 @@ e_contact_date_copy (EContactDate *dt)
 	return dt2;
 }
 
+/**
+ * e_contact_date_free:
+ * @dt: an #EContactDate
+ *
+ * Frees the @dt struct and its contents.
+ **/
 void
 e_contact_date_free (EContactDate *dt)
 {
@@ -1712,12 +1889,25 @@ e_contact_date_get_type (void)
 	return type_id;
 }
 
+/**
+ * e_contact_date_new:
+ * 
+ * Creates a new #EContactDate struct.
+ *
+ * Return value: A new #EContactDate struct.
+ **/
 EContactDate*
 e_contact_date_new (void)
 {
 	return g_new0 (EContactDate, 1);
 }
 
+/**
+ * e_contact_photo_free:
+ * @photo: an #EContactPhoto struct
+ *
+ * Frees the @photo struct and its contents.
+ **/
 void
 e_contact_photo_free (EContactPhoto *photo)
 {
@@ -1728,6 +1918,14 @@ e_contact_photo_free (EContactPhoto *photo)
 	g_free (photo);
 }
 
+/**
+ * e_contact_photo_copy:
+ * @photo: an #EContactPhoto
+ *
+ * Creates a copy of @photo.
+ *
+ * Return value: A new #EContactPhoto struct identical to @photo.
+ **/
 static EContactPhoto *
 e_contact_photo_copy (EContactPhoto *photo)
 {
@@ -1751,6 +1949,12 @@ e_contact_photo_get_type (void)
 	return type_id;
 }
 
+/**
+ * e_contact_address_free:
+ * @address: an #EContactAddress
+ *
+ * Frees the @address struct and its contents.
+ **/
 void
 e_contact_address_free (EContactAddress *address)
 {
@@ -1798,6 +2002,12 @@ e_contact_address_get_type (void)
 	return type_id;
 }
 
+/**
+ * e_contact_cert_free:
+ * @cert: an #EContactCert
+ *
+ * Frees the @cert struct and its contents.
+ **/
 void
 e_contact_cert_free (EContactCert *cert)
 {

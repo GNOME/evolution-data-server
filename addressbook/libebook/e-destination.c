@@ -180,12 +180,27 @@ e_destination_get_type (void)
 	return dest_type;
 }
 
+/**
+ * e_destination_new:
+ *
+ * Creates a new #EDestination with blank values.
+ *
+ * Return value: A newly created #EDestination.
+ **/
 EDestination *
 e_destination_new (void)
 {
 	return g_object_new (E_TYPE_DESTINATION, NULL);
 }
 
+/**
+ * e_destination_copy:
+ * @dest: an #EDestination
+ *
+ * Creates a new #EDestination identical to @dest.
+ *
+ * Return value: A newly created #EDestination, identical to @dest.
+ **/
 EDestination *
 e_destination_copy (const EDestination *dest)
 {
@@ -271,6 +286,14 @@ nonempty (const char *s)
 	return FALSE;
 }
 
+/**
+ * e_destination_empty:
+ * @dest: an #EDestination
+ *
+ * Checks if @dest is blank.
+ *
+ * Return value: %TRUE if @dest is empty, %FALSE otherwise.
+ **/
 gboolean
 e_destination_empty (const EDestination *dest)
 
@@ -291,6 +314,15 @@ e_destination_empty (const EDestination *dest)
 		 || (p->list_dests != NULL));
 }
 
+/**
+ * e_destination_equal:
+ * @a: an #EDestination
+ * @b: an #EDestination
+ *
+ * Checks if @a and @b are equal.
+ *
+ * Return value: %TRUE if the destinations are equal, %FALSE otherwise.
+ **/
 gboolean
 e_destination_equal (const EDestination *a, const EDestination *b)
 {
@@ -330,6 +362,15 @@ e_destination_equal (const EDestination *a, const EDestination *b)
 		return FALSE;
 }
 
+/**
+ * e_destination_set_contact:
+ * @dest: an #EDestination
+ * @contact: an #EContact
+ * @email_num: an email index
+ *
+ * Sets @dest to point to one of @contact's e-mail addresses
+ * indicated by @email_num.
+ **/
 void
 e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num)
 {
@@ -415,6 +456,14 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 	}
 }
 
+/**
+ * e_destination_set_book:
+ * @dest: an #EDestination
+ * @book: an #EBook
+ *
+ * Specify the source @dest's contact comes from. This is useful
+ * if you need to update the contact later.
+ **/
 void
 e_destination_set_book (EDestination *dest, EBook *book)
 {
@@ -433,6 +482,15 @@ e_destination_set_book (EDestination *dest, EBook *book)
 	}
 }
 
+/**
+ * e_destination_set_contact_uid:
+ * @dest: an #EDestination
+ * @uid: a unique contact ID
+ * @email_num: an email index
+ *
+ * Sets @dest to point to one of the contact specified by @uid's e-mail
+ * addresses indicated by @email_num.
+ **/
 void
 e_destination_set_contact_uid (EDestination *dest, const char *uid, gint email_num)
 {
@@ -475,6 +533,13 @@ e_destination_set_source_uid (EDestination *dest, const char *uid)
 	}
 }
 
+/**
+ * e_destination_set_name:
+ * @dest: an #EDestination
+ * @name: the destination's full name
+ *
+ * Sets the full name of @dest's addressee.
+ **/
 void
 e_destination_set_name (EDestination *dest, const char *name)
 {
@@ -504,6 +569,13 @@ e_destination_set_name (EDestination *dest, const char *name)
 	}
 }
 
+/**
+ * e_destination_set_email:
+ * @dest: an #EDestination
+ * @email: the destination's e-mail address
+ *
+ * Sets the e-mail address of @dest's addressee.
+ **/
 void
 e_destination_set_email (EDestination *dest, const char *email)
 {
@@ -540,6 +612,16 @@ e_destination_from_contact (const EDestination *dest)
 	return dest->priv->contact != NULL || dest->priv->source_uid != NULL || dest->priv->contact_uid != NULL;
 }
 
+/**
+ * e_destination_is_auto_recipient:
+ * @dest: an #EDestination
+ *
+ * Checks if @dest is flagged as an automatic recipient, meaning
+ * it was not explicitly specified by the user. This can be used
+ * to hide it from some UI elements.
+ *
+ * Return value: %TRUE if destination is an auto recipient, %FALSE otherwise.
+ **/
 gboolean
 e_destination_is_auto_recipient (const EDestination *dest)
 {
@@ -548,6 +630,15 @@ e_destination_is_auto_recipient (const EDestination *dest)
 	return dest->priv->auto_recipient;
 }
 
+/**
+ * e_destination_set_auto_recipient:
+ * @dest: an #EDestination
+ * @value: the auto recipient flag
+ * 
+ * Sets the flag indicating if @dest is an automatic recipient, meaning
+ * it was not explicitly specified by the user. This can be used
+ * to hide it from some UI elements.
+ **/
 void
 e_destination_set_auto_recipient (EDestination *dest, gboolean value)
 {
@@ -558,6 +649,14 @@ e_destination_set_auto_recipient (EDestination *dest, gboolean value)
 	g_signal_emit (dest, signals [CHANGED], 0);
 }
 
+/**
+ * e_destination_get_contact:
+ * @dest: an #EDestination
+ *
+ * Gets the contact @dest is pointing to, if any.
+ *
+ * Return value: An #EContact, or %NULL if none was set.
+ **/
 EContact *
 e_destination_get_contact (const EDestination *dest)
 {
@@ -566,6 +665,14 @@ e_destination_get_contact (const EDestination *dest)
 	return dest->priv->contact;
 }
 
+/**
+ * e_destination_get_contact_uid:
+ * @dest: an #EDestination
+ *
+ * Gets the unique contact ID @dest is pointing to, if any.
+ *
+ * Return value: A unique contact ID, or %NULL if none was set.
+ **/
 const char *
 e_destination_get_contact_uid (const EDestination *dest)
 {
@@ -574,6 +681,15 @@ e_destination_get_contact_uid (const EDestination *dest)
 	return dest->priv->contact_uid;
 }
 
+/**
+ * e_destination_get_source_uid:
+ * @dest: an #EDestination
+ *
+ * Gets the unique source ID @dest is pointing to, if any. The source
+ * ID specifies which address book @dest's contact came from.
+ *
+ * Return value: A unique source ID, or %NULL if none was set.
+ **/
 const char *
 e_destination_get_source_uid (const EDestination *dest)
 {
@@ -582,6 +698,15 @@ e_destination_get_source_uid (const EDestination *dest)
 	return dest->priv->source_uid;
 }
 
+/**
+ * e_destination_get_email_num:
+ * @dest: an #EDestination
+ *
+ * Gets the index of the e-mail address of the contact that
+ * @dest is pointing to, if any.
+ *
+ * Return value: The e-mail index, or -1 if none was set.
+ **/
 gint
 e_destination_get_email_num (const EDestination *dest)
 {
@@ -593,6 +718,15 @@ e_destination_get_email_num (const EDestination *dest)
 	return dest->priv->email_num;
 }
 
+/**
+ * e_destination_get_name:
+ * @dest: an #EDestination
+ * 
+ * Gets the full name of @dest's addressee, or if the addressee is
+ * a contact list, the name the list was filed under.
+ *
+ * Return value: The full name of the addressee, or %NULL if none was set.
+ **/
 const char *
 e_destination_get_name (const EDestination *dest)
 {
@@ -636,6 +770,14 @@ e_destination_get_name (const EDestination *dest)
 	return priv->name;
 }
 
+/**
+ * e_destination_get_email:
+ * @dest: an #EDestination
+ *
+ * Gets the e-mail address of @dest's addressee.
+ *
+ * Return value: An e-mail address, or an empty string if none was set.
+ **/
 const char *
 e_destination_get_email (const EDestination *dest)
 {
@@ -681,6 +823,15 @@ e_destination_get_email (const EDestination *dest)
 	return priv->email;
 }
 
+/**
+ * e_destination_get_address:
+ * @dest: an #EDestination
+ *
+ * Gets the formatted name and e-mail address, or in the case of
+ * lists, the formatted list of e-mail addresses, from @dest.
+ *
+ * Return value: A formatted destination string, or %NULL if the destination was empty.
+ **/
 const char *
 e_destination_get_address (const EDestination *dest)
 {
@@ -743,6 +894,14 @@ e_destination_get_address (const EDestination *dest)
 	return priv->addr;
 }
 
+/**
+ * e_destination_set_raw:
+ * @dest: an #EDestination
+ * @raw: an unparsed string
+ *
+ * Sets @dest to point to the name and e-mail address resulting from
+ * parsing the supplied string. Useful for user input.
+ **/
 void
 e_destination_set_raw (EDestination *dest, const char *raw)
 {
@@ -758,6 +917,16 @@ e_destination_set_raw (EDestination *dest, const char *raw)
 	}
 }
 
+/**
+ * e_destination_get_textrep:
+ * @dest: an #EDestination
+ * @include_email: whether to include the e-mail address
+ *
+ * Generates a textual representation of @dest, suitable for referring
+ * to the destination during user interaction.
+ *
+ * Return value: A textual representation of the destination.
+ **/
 const char *
 e_destination_get_textrep (const EDestination *dest, gboolean include_email)
 {
@@ -793,6 +962,14 @@ e_destination_get_textrep (const EDestination *dest, gboolean include_email)
 	return "";
 }
 
+/**
+ * e_destination_is_evolution_list:
+ * @dest: an #EDestination
+ *
+ * Checks if @dest is a list of addresses.
+ *
+ * Return value: %TRUE if destination is a list, %FALSE if it is an individual.
+ **/
 gboolean
 e_destination_is_evolution_list (const EDestination *dest)
 {
@@ -801,6 +978,15 @@ e_destination_is_evolution_list (const EDestination *dest)
 	return dest->priv->list_dests != NULL;
 }
 
+/**
+ * e_destination_list_show_addresses:
+ * @dest: an #EDestination
+ *
+ * If @dest is a list, checks if the addresses in the list
+ * should be presented to the user during interaction.
+ *
+ * Return value: %TRUE if addresses should be shown, %FALSE otherwise.
+ **/
 gboolean
 e_destination_list_show_addresses (const EDestination *dest)
 {
@@ -812,6 +998,15 @@ e_destination_list_show_addresses (const EDestination *dest)
 	return dest->priv->show_addresses;
 }
 
+/**
+ * e_destination_list_get_dests:
+ * @dest: an #EDestination
+ *
+ * If @dest is a list, gets the list of destinations. The list
+ * and its elements belong to @dest, and should not be freed.
+ *
+ * Return value: A list of elements of type #EDestination, or %NULL.
+ **/
 const GList *
 e_destination_list_get_dests (const EDestination *dest)
 {
@@ -823,6 +1018,14 @@ e_destination_list_get_dests (const EDestination *dest)
 	return dest->priv->list_dests;
 }
 
+/**
+ * e_destination_get_html_mail_pref:
+ * @dest: an #EDestination
+ *
+ * Check if @dest wants to get mail formatted as HTML.
+ *
+ * Return value: %TRUE if destination wants HTML, %FALSE if not.
+ **/
 gboolean
 e_destination_get_html_mail_pref (const EDestination *dest)
 {
@@ -834,6 +1037,13 @@ e_destination_get_html_mail_pref (const EDestination *dest)
 	return e_contact_get (dest->priv->contact, E_CONTACT_WANTS_HTML) ? TRUE : FALSE;
 }
 
+/**
+ * e_destination_set_html_mail_pref:
+ * @dest: an #EDestination
+ * @x: whether the destination wants HTML mail
+ *
+ * Specifies whether @dest wants to get mail formatted as HTML.
+ **/
 void
 e_destination_set_html_mail_pref (EDestination *dest, gboolean x)
 {
@@ -851,6 +1061,15 @@ e_destination_set_html_mail_pref (EDestination *dest, gboolean x)
  * Destination import/export
  */
 
+/**
+ * e_destination_get_textrepv:
+ * @destv: %NULL-terminated array of pointers to #EDestination
+ *
+ * Generates a joint text representation of all the #EDestination
+ * elements in @destv.
+ *
+ * Return value: The text representation of @destv.
+ **/
 char *
 e_destination_get_textrepv (EDestination **destv)
 {
@@ -887,6 +1106,14 @@ e_destination_get_textrepv (EDestination **destv)
 	return str;
 }
 
+/**
+ * e_destination_xml_encode:
+ * @dest: an #EDestination
+ *
+ * Generates an XML tree from @dest.
+ *
+ * Return value: Pointer to the root node of the XML tree.
+ **/
 xmlNodePtr
 e_destination_xml_encode (const EDestination *dest)
 {
@@ -960,6 +1187,16 @@ e_destination_xml_encode (const EDestination *dest)
 	return dest_node;
 }
 
+/**
+ * e_destination_xml_decode:
+ * @dest: an #EDestination
+ * @node: the root node of an XML tree
+ *
+ * Initializes @dest based on the information encoded in the
+ * XML tree under @node.
+ *
+ * Return value: %TRUE if the XML tree was well-formed, %FALSE otherwise.
+ **/
 gboolean
 e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 {
@@ -1129,6 +1366,14 @@ null_terminate_and_remove_extra_whitespace (xmlChar *xml_in, gint size)
 	return xml;
 }
 
+/**
+ * e_destination_export:
+ * @dest: an #EDestination
+ *
+ * Exports a destination to an XML document.
+ *
+ * Return value: An XML string, allocated with g_malloc.
+ **/
 char *
 e_destination_export (const EDestination *dest)
 {
@@ -1156,6 +1401,14 @@ e_destination_export (const EDestination *dest)
 	return str;
 }
 
+/**
+ * e_destination_import
+ * @str: an XML string
+ *
+ * Creates an #EDestination from an XML document.
+ *
+ * Return value: An #EDestination, or %NULL if the document was not well-formed.
+ **/
 EDestination *
 e_destination_import (const char *str)
 {
@@ -1178,6 +1431,14 @@ e_destination_import (const char *str)
 	return dest;
 }
 
+/**
+ * e_destination_exportv:
+ * @destv: a %NULL-terminated array of pointers to #EDestination
+ *
+ * Exports multiple #EDestination elements to a single XML document.
+ *
+ * Return value: An XML string, allocated with g_malloc.
+ **/
 char *
 e_destination_exportv (EDestination **destv)
 {
@@ -1211,6 +1472,15 @@ e_destination_exportv (EDestination **destv)
 	return str;
 }
 
+/**
+ * e_destination_importv:
+ * @str: an XML string
+ *
+ * Creates an array of pointers to #EDestination elements
+ * from an XML document.
+ *
+ * Return value: A %NULL-terminated array of pointers to #EDestination elements.
+ **/
 EDestination **
 e_destination_importv (const char *str)
 {
@@ -1260,6 +1530,12 @@ e_destination_importv (const char *str)
 	return destv;
 }
 
+/**
+ * e_destination_freev:
+ * @destv: a %NULL-terminated array of pointers to #EDestination
+ *
+ * Unrefs the elements of @destv and frees @destv itself.
+ **/
 void
 e_destination_freev (EDestination **destv)
 {
@@ -1274,6 +1550,14 @@ e_destination_freev (EDestination **destv)
 
 }
 
+/**
+ * e_destination_export_to_vcard_attribute:
+ * @dest: an #EDestination
+ * @attr: an #EVCardAttribute
+ *
+ * Exports the contact information from @dest to parameters
+ * and values in @attr, suitable for an address book.
+ **/
 void
 e_destination_export_to_vcard_attribute (EDestination *dest, EVCardAttribute *attr)
 {

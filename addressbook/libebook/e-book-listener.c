@@ -422,6 +422,12 @@ e_book_listener_init (EBookListener *listener)
 	listener->priv = g_new0 (EBookListenerPrivate, 1);
 }
 
+/**
+ * e_book_listener_stop:
+ * @listener: an #EBookListener
+ *
+ * Stops @listener from generating events.
+ **/
 void
 e_book_listener_stop (EBookListener *listener)
 {

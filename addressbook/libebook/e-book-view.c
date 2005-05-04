@@ -144,6 +144,15 @@ e_book_view_construct (EBookView *book_view, GNOME_Evolution_Addressbook_BookVie
 	return TRUE;
 }
 
+/**
+ * e_book_view_new:
+ * @corba_book_view: a CORBA BookView object
+ * @listener: an #EBookViewListener
+ *
+ * Creates a new #EBookView based on @corba_book_view and listening to @listener.
+ *
+ * Return value: A new #EBookView.
+ **/
 EBookView *
 e_book_view_new (GNOME_Evolution_Addressbook_BookView corba_book_view, EBookViewListener *listener)
 {
@@ -159,6 +168,14 @@ e_book_view_new (GNOME_Evolution_Addressbook_BookView corba_book_view, EBookView
 	return book_view;
 }
 
+/**
+ * e_book_view_set_book:
+ * @book_view: an #EBookView
+ * @book: an #EBook
+ *
+ * Makes @book_view listen to changes in @book. This function apparently
+ * has no effect for the time being.
+ **/
 void
 e_book_view_set_book (EBookView *book_view, EBook *book)
 {
@@ -170,6 +187,12 @@ e_book_view_set_book (EBookView *book_view, EBook *book)
 	g_object_ref (book);
 }
 
+/**
+ * e_book_view_start:
+ * @book_view: an #EBookView
+ *
+ * Tells @book_view to start processing events.
+ **/
 void
 e_book_view_start (EBookView *book_view)
 {
@@ -188,6 +211,12 @@ e_book_view_start (EBookView *book_view)
 	}
 }
 
+/**
+ * e_book_view_stop:
+ * @book_view: an #EBookView
+ *
+ * Tells @book_view to stop processing events.
+ **/
 void
 e_book_view_stop (EBookView *book_view)
 {

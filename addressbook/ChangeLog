@@ -1,3 +1,16 @@
+2005-05-04  Hans Petter Jansson  <hpj@novell.com>
+
+	* libebook/e-address-western.c:
+	* libebook/e-book-listener.c:
+	* libebook/e-book-query.c:
+	* libebook/e-book-view-listener.c:
+	* libebook/e-book-view.c:
+	* libebook/e-book.c:
+	* libebook/e-contact.c:
+	* libebook/e-destination.c:
+	* libebook/e-name-western.c:
+	* libebook/e-vcard.c: Wrote API docs.
+
 2005-04-27  Sushma Rai  <rsushma@novell.com>
 
 	* libebook/e-book.c (e_book_response_add_contact): Setting the status

@@ -898,11 +898,13 @@ e_name_western_fixup (ENameWestern *name, ENameWesternIdxs *idxs)
 
 /**
  * e_name_western_western_parse_fullname:
- * @full_name: A string containing a Western name.
+ * @full_name: A string containing a western name.
  *
- * Parses @full_name and returns an #ENameWestern object filled with
+ * Parses @full_name and returns an #ENameWestern struct filled with
  * the component parts of the name.
- */
+ *
+ * Return value: A new #ENameWestern struct.
+ **/
 ENameWestern *
 e_name_western_parse (const char *full_name)
 {
@@ -961,10 +963,10 @@ e_name_western_parse (const char *full_name)
 
 /**
  * e_name_western_free:
- * @w: An ENameWestern object which needs to be freed.
+ * @w: an #ENameWestern struct
  *
- * Deep-frees @w
- */
+ * Frees the @w struct and its contents.
+ **/
 void
 e_name_western_free (ENameWestern *w)
 {

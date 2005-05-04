@@ -319,11 +319,11 @@ do_add_contact (gboolean          sync,
  * e_book_add_contact:
  * @book: an #EBook
  * @contact: an #EContact
- * @error: a #GError to set on failure.
+ * @error: a #GError to set on failure
  *
- * adds @contact to @book.
+ * Adds @contact to @book.
  *
- * Return value: #TRUE if successful, #FALSE otherwise.
+ * Return value: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
 e_book_add_contact (EBook           *book,
@@ -340,6 +340,17 @@ e_book_add_contact (EBook           *book,
 			       NULL, NULL);
 }
 
+/**
+ * e_book_async_add_contact:
+ * @book: an #EBook
+ * @contact: an #EContact
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Adds @contact to @book without blocking. 
+ *
+ * Return value: %TRUE if the operation was started, %FALSE otherwise.
+ **/
 gboolean
 e_book_async_add_contact (EBook                 *book,
 			  EContact              *contact,
@@ -527,10 +538,10 @@ do_commit_contact (gboolean        sync,
  * @contact: an #EContact
  * @error: a #GError to set on failure
  *
- * applies the changes made to @contact to the stored version in
+ * Applies the changes made to @contact to the stored version in
  * @book.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_commit_contact (EBook           *book,
@@ -546,6 +557,18 @@ e_book_commit_contact (EBook           *book,
 				  
 }
 
+/**
+ * e_book_async_commit_contact:
+ * @book: an #EBook
+ * @contact: an #EContact
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Applies the changes made to @contact to the stored version in
+ * @book without blocking.
+ *
+ * Return value: %TRUE if the operation was started, %FALSE otherwise.
+ **/
 guint
 e_book_async_commit_contact (EBook                 *book,
 			     EContact              *contact,
@@ -743,6 +766,19 @@ do_get_supported_fields (gboolean             sync,
 	}
 }
 
+/**
+ * e_book_get_required_fields:
+ * @book: an #EBook
+ * @fields: a #GList of fields to set on success
+ * @error: a #GError to set on failure
+ *
+ * Gets a list of fields that are required to be filled in for
+ * all contacts in this @book. The list will contain pointers
+ * to allocated strings, and both the #GList and the strings
+ * must be freed by the caller.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise.
+ **/
 gboolean
 e_book_get_required_fields  (EBook            *book,
 			      GList           **fields,
@@ -756,6 +792,17 @@ e_book_get_required_fields  (EBook            *book,
 					NULL, NULL);
 }
 
+/**
+ * e_book_async_get_required_fields:
+ * @book: an #EBook
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Gets a list of fields that are required to be filled in for
+ * all contacts in this @book. This function does not block.
+ *
+ * Return value: %TRUE if the operation was started, %FALSE otherwise.
+ **/
 guint
 e_book_async_get_required_fields (EBook              *book,
 				   EBookEListCallback  cb,
@@ -771,13 +818,15 @@ e_book_async_get_required_fields (EBook              *book,
 /**
  * e_book_get_supported_fields:
  * @book: an #EBook
- * @fields: a #GList
+ * @fields: a #GList of fields to set on success
  * @error: a #GError to set on failure
  *
- * Queries @book for the list of fields it supports. Mostly for use
- * by the contact editor so it knows what fields to sensitize.
+ * Gets a list of fields that can be stored for contacts
+ * in this @book. Other fields may be discarded. The list
+ * will contain pointers to allocated strings, and both the
+ * #GList and the strings must be freed by the caller.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_supported_fields  (EBook            *book,
@@ -792,6 +841,18 @@ e_book_get_supported_fields  (EBook            *book,
 					NULL, NULL);
 }
 
+/**
+ * e_book_async_get_supported_fields:
+ * @book: an #EBook
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Gets a list of fields that can be stored for contacts
+ * in this @book. Other fields may be discarded. This
+ * function does not block.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise.
+ **/
 guint
 e_book_async_get_supported_fields (EBook              *book,
 				   EBookEListCallback  cb,
@@ -1025,12 +1086,14 @@ do_get_supported_auth_methods (gboolean             sync,
 /**
  * e_book_get_supported_auth_methods:
  * @book: an #EBook
- * @auth_methods: a #GList
+ * @auth_methods: a #GList of auth methods to set on success
  * @error: a #GError to set on failure
  *
  * Queries @book for the list of authentication methods it supports.
+ * The list will contain pointers to allocated strings, and both the
+ * #GList and the strings must be freed by the caller.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_supported_auth_methods (EBook            *book,
@@ -1045,7 +1108,17 @@ e_book_get_supported_auth_methods (EBook            *book,
 					      NULL, NULL);
 }
 
-
+/**
+ * e_book_async_get_supported_auth_methods:
+ * @book: an #EBook
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Queries @book for the list of authentication methods it supports.
+ * This function does not block.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise.
+ **/
 guint
 e_book_async_get_supported_auth_methods (EBook              *book,
 					 EBookEListCallback  cb,
@@ -1215,7 +1288,7 @@ do_authenticate_user (gboolean        sync,
  * @auth_method.  @auth_method must be one of the authentication
  * methods returned using e_book_get_supported_auth_methods.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_authenticate_user (EBook         *book,
@@ -1234,6 +1307,22 @@ e_book_authenticate_user (EBook         *book,
 				     NULL, NULL);
 }
 
+/**
+ * e_book_async_authenticate_user:
+ * @book: an #EBook
+ * @user: user name
+ * @passwd: password
+ * @auth_method: string indicating authentication method
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Authenticate @user with @passwd, using the auth method
+ * @auth_method. @auth_method must be one of the authentication
+ * methods returned using e_book_get_supported_auth_methods.
+ * This function does not block.
+ *
+ * Return value: %FALSE if successful, %TRUE otherwise.
+ **/
 guint
 e_book_async_authenticate_user (EBook                 *book,
 				const char            *user,
@@ -1350,14 +1439,14 @@ do_get_contact (gboolean sync,
 /**
  * e_book_get_contact:
  * @book: an #EBook
- * @id: a string
+ * @id: a unique string ID specifying the contact
  * @contact: an #EContact
  * @error: a #GError to set on failure
  *
  * Fills in @contact with the contents of the vcard in @book
  * corresponding to @id.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_contact (EBook       *book,
@@ -1374,6 +1463,17 @@ e_book_get_contact (EBook       *book,
 			       NULL, NULL);
 }
 
+/**
+ * e_book_async_get_contact:
+ * @book: an #EBook
+ * @id: a unique string ID specifying the contact
+ * @cb: function to call when operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Retrieves a contact specified by @id from @book.
+ *
+ * Return value: %FALSE if successful, %TRUE otherwise
+ **/
 guint
 e_book_async_get_contact (EBook                 *book,
 			  const char            *id,
@@ -1560,7 +1660,7 @@ do_remove_contacts (gboolean sync,
  *
  * Removes the contact with id @id from @book.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_remove_contact (EBook       *book,
@@ -1593,7 +1693,7 @@ e_book_remove_contact (EBook       *book,
  * have more than one id to remove, as some backends can implement it
  * as a batch request.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_remove_contacts (EBook    *book,
@@ -1608,6 +1708,17 @@ e_book_remove_contacts (EBook    *book,
 				   NULL, NULL);
 }
 
+/**
+ * e_book_async_remove_contact:
+ * @book: an #EBook
+ * @contact: an #EContact
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Removes @contact from @book.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise
+ **/
 guint
 e_book_async_remove_contact (EBook                 *book,
 			     EContact              *contact,
@@ -1624,6 +1735,17 @@ e_book_async_remove_contact (EBook                 *book,
 	return e_book_async_remove_contact_by_id (book, id, cb, closure);
 }
 
+/**
+ * e_book_async_remove_contact_by_id:
+ * @book: an #EBook
+ * @id: a unique ID string specifying the contact
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Removes the contact with id @id from @book.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise
+ **/
 guint
 e_book_async_remove_contact_by_id (EBook                 *book,
 				   const char            *id,
@@ -1640,6 +1762,20 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 	return e_book_async_remove_contacts (book, list, cb, closure);
 }
 
+/**
+ * e_book_async_remove_contacts:
+ * @book: an #EBook
+ * @ids: an #GList of const char *id's
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Removes the contacts with ids from the list @ids from @book.  This is
+ * always more efficient than calling e_book_remove_contact_by_id if you
+ * have more than one id to remove, as some backends can implement it
+ * as a batch request.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise
+ **/
 guint
 e_book_async_remove_contacts (EBook                 *book,
 			      GList                 *ids,
@@ -1781,9 +1917,9 @@ do_get_book_view (gboolean sync,
  *
  * Query @book with @query, creating a #EBookView in @book_view with the fields
  * specified by @requested_fields and limited at @max_results records. On an
- * error, @error is set and #FALSE returned.
+ * error, @error is set and %FALSE returned.
  *
- * Return value: #TRUE if successful, #FALSE otherwise
+ * Return value: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_book_view (EBook       *book,
@@ -1802,6 +1938,20 @@ e_book_get_book_view (EBook       *book,
 				 NULL, NULL);
 }
 
+/**
+ * e_book_async_get_book_view:
+ * @book: an #EBook
+ * @query: an #EBookQuery
+ * @requested_fields: a #GList containing the names of fields to return, or NULL for all
+ * @max_results: the maximum number of contacts to show (or 0 for all)
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Query @book with @query, creating a #EBookView with the fields
+ * specified by @requested_fields and limited at @max_results records.
+ *
+ * Return value: %FALSE if successful, %TRUE otherwise
+ **/
 guint
 e_book_async_get_book_view (EBook                 *book,
 			    EBookQuery            *query,
@@ -1992,9 +2142,9 @@ do_get_contacts (gboolean sync,
  * @error: a #GError to set on failure
  *
  * Query @book with @query, setting @contacts to the list of contacts which
- * matched. On failed, @error will be set and #FALSE returned.
+ * matched. On failed, @error will be set and %FALSE returned.
  *
- * Return value: #TRUE on success, #FALSE otherwise
+ * Return value: %TRUE on success, %FALSE otherwise
  **/
 gboolean
 e_book_get_contacts (EBook       *book,
@@ -2011,6 +2161,17 @@ e_book_get_contacts (EBook       *book,
 				NULL, NULL);
 }
 
+/**
+ * e_book_async_get_contacts:
+ * @book: an #EBook
+ * @query: an #EBookQuery
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Query @book with @query.
+ *
+ * Return value: %FALSE on success, %TRUE otherwise
+ **/
 guint
 e_book_async_get_contacts (EBook             *book,
 			   EBookQuery        *query,
@@ -2364,7 +2525,7 @@ e_book_response_generic (EBook       *book,
  * blocked e_book function corresponding to current operation will
  * return with a status of E_BOOK_STATUS_CANCELLED.
  *
- * Return value: #TRUE on success, #FALSE otherwise
+ * Return value: %TRUE on success, %FALSE otherwise
  **/
 gboolean
 e_book_cancel (EBook   *book,
@@ -2535,12 +2696,12 @@ do_open (gboolean sync,
 /**
  * e_book_open:
  * @book: an #EBook
- * @only_if_exists: if #TRUE, fail if this book doesn't already exist otherwise create it first
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
  * @error: a #GError to set on failure
  *
  * Opens the addressbook, making it ready for queries and other operations.
  *
- * Return value: #TRUE if the book was successfully opened, #FALSE otherwise.
+ * Return value: %TRUE if the book was successfully opened, %FALSE otherwise.
  */
 gboolean
 e_book_open (EBook     *book,
@@ -2554,6 +2715,18 @@ e_book_open (EBook     *book,
 			NULL, NULL);
 }
 
+/**
+ * e_book_async_open:
+ * @book: an #EBook
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
+ * @open_response: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Opens the addressbook, making it ready for queries and other operations.
+ * This function does not block.
+ *
+ * Return value: %FALSE if successful, %TRUE otherwise.
+ **/
 guint
 e_book_async_open (EBook                 *book,
 		   gboolean               only_if_exists,
@@ -2718,10 +2891,10 @@ do_remove (gboolean sync,
  * @book: an #EBook
  * @error: a #GError to set on failure
  *
- * Remove the backing data for this #EBook. For example, with the file backend this
+ * Removes the backing data for this #EBook. For example, with the file backend this
  * deletes the database file. You cannot get it back!
  *
- * Return value: #TRUE on success, #FALSE on failure.
+ * Return value: %TRUE on success, %FALSE on failure.
  */
 gboolean
 e_book_remove (EBook   *book,
@@ -2735,6 +2908,17 @@ e_book_remove (EBook   *book,
 
 }
 
+/**
+ * e_book_async_remove:
+ * @book: an #EBook
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Remove the backing data for this #EBook. For example, with the file backend this
+ * deletes the database file. You cannot get it back!
+ *
+ * Return value: %FALSE if successful, %TRUE otherwise.
+ **/
 guint
 e_book_async_remove (EBook   *book,
 		     EBookCallback cb,
@@ -2927,7 +3111,7 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
  *
  * Unload the URI that this book had previously loaded.
  *
- * Return value: #TRUE on success, #FALSE otherwise.
+ * Return value: %TRUE on success, %FALSE otherwise.
  */
 static gboolean
 e_book_unload_uri (EBook   *book,
@@ -3222,7 +3406,7 @@ e_book_get_static_capabilities (EBook   *book,
  * Check to see if the backend for this address book supports the capability
  * @cap.
  *
- * Return value: #TRUE if the backend supports @cap, #FALSE otherwise.
+ * Return value: %TRUE if the backend supports @cap, %FALSE otherwise.
  */
 gboolean
 e_book_check_static_capability (EBook *book,
@@ -3247,7 +3431,7 @@ e_book_check_static_capability (EBook *book,
  *
  * Check if this book has been opened.
  *
- * Return value: #TRUE if this book has been opened, otherwise #FALSE.
+ * Return value: %TRUE if this book has been opened, otherwise %FALSE.
  */
 gboolean
 e_book_is_opened (EBook *book)
@@ -3266,7 +3450,7 @@ e_book_is_opened (EBook *book)
  * 
  * Check if this book is writable.
  * 
- * Return value: #TRUE if this book is writable, otherwise #FALSE.
+ * Return value: %TRUE if this book is writable, otherwise %FALSE.
  */
 gboolean
 e_book_is_writable (EBook *book)
@@ -3276,7 +3460,14 @@ e_book_is_writable (EBook *book)
 	return book->priv->writable;
 }
 
-
+/**
+ * e_book_is_online:
+ * @book: an #EBook
+ *
+ * Check if this book is connected.
+ *
+ * Return value: %TRUE if this book is connected, otherwise %FALSE.
+ **/
 gboolean 
 e_book_is_online (EBook *book)
 {
@@ -3286,9 +3477,19 @@ e_book_is_online (EBook *book)
 
 }
 
-
-
 #define SELF_UID_KEY "/apps/evolution/addressbook/self/self_uid"
+
+/**
+ * e_book_get_self:
+ * @contact: an #EContact pointer to set
+ * @book: an #EBook pointer to set
+ * @error: a #GError to set on failure
+ *
+ * Get the #EContact referring to the user of the address book
+ * and set it in @contact and @book.
+ *
+ * Return value: %TRUE if successful, otherwise %FALSE.
+ **/
 gboolean
 e_book_get_self (EContact **contact, EBook **book, GError **error)
 {
@@ -3335,6 +3536,17 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 	return TRUE;
 }
 
+/**
+ * e_book_set_self:
+ * @book: an #EBook
+ * @contact: an #EContact
+ * @error: a #GError to set on failure
+ *
+ * Specify that @contact residing in @book is the #EContact that
+ * refers to the user of the address book.
+ *
+ * Return value: %TRUE if successful, %FALSE otherwise.
+ **/
 gboolean
 e_book_set_self (EBook *book, EContact *contact, GError **error)
 {
@@ -3350,6 +3562,14 @@ e_book_set_self (EBook *book, EContact *contact, GError **error)
 	return TRUE;
 }
 
+/**
+ * e_book_is_self:
+ * @contact: an #EContact
+ *
+ * Check if @contact is the user of the address book.
+ *
+ * Return value: %TRUE if @contact is the user, %FALSE otherwise.
+ **/
 gboolean
 e_book_is_self (EContact *contact)
 {
@@ -3382,7 +3602,7 @@ e_book_is_self (EContact *contact)
  * sets the #ESource of the #EBook as the "default" addressbook.  This is the source
  * that will be loaded in the e_book_get_default_addressbook call.
  * 
- * Return value: #TRUE if the setting was stored in libebook's ESourceList, otherwise #FALSE.
+ * Return value: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
  */
 gboolean
 e_book_set_default_addressbook (EBook *book, GError **error)
@@ -3399,14 +3619,14 @@ e_book_set_default_addressbook (EBook *book, GError **error)
 
 
 /**
- * e_book_set_default_addressbook:
+ * e_book_set_default_source:
  * @source: An #ESource pointer
  * @error: A #GError pointer
  * 
  * sets @source as the "default" addressbook.  This is the source that
  * will be loaded in the e_book_get_default_addressbook call.
  * 
- * Return value: #TRUE if the setting was stored in libebook's ESourceList, otherwise #FALSE.
+ * Return value: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
  */
 gboolean
 e_book_set_default_source (ESource *source, GError **error)
@@ -3466,7 +3686,7 @@ e_book_set_default_source (ESource *source, GError **error)
  * Populate *addressbook_sources with the list of all sources which have been
  * added to Evolution.
  *
- * Return value: #TRUE if @addressbook_sources was set, otherwise #FALSE.
+ * Return value: %TRUE if @addressbook_sources was set, otherwise %FALSE.
  */
 gboolean
 e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)

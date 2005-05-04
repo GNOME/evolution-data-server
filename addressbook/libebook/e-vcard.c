@@ -597,6 +597,14 @@ parse (EVCard *evc, const char *str)
 	g_free (buf);
 }
 
+/**
+ * e_vcard_escape_string:
+ * @s: the string to escape
+ *
+ * Escapes a string according to RFC2426, section 5.
+ *
+ * Return value: A newly allocated, escaped string.
+ **/
 char*
 e_vcard_escape_string (const char *s)
 {
@@ -634,6 +642,14 @@ e_vcard_escape_string (const char *s)
 	return g_string_free (str, FALSE);
 }
 
+/**
+ * e_vcard_unescape_string:
+ * @s: the string to unescape
+ *
+ * Unescapes a string according to RFC2426, section 5.
+ *
+ * Return value: A newly allocated, unescaped string.
+ **/
 char*
 e_vcard_unescape_string (const char *s)
 {
@@ -680,12 +696,28 @@ e_vcard_construct (EVCard *evc, const char *str)
 		parse (evc, str);
 }
 
+/**
+ * e_vcard_new:
+ * 
+ * Creates a new, blank #EVCard.
+ *
+ * Return value: A new, blank #EVCard.
+ **/
 EVCard *
 e_vcard_new ()
 {
 	return e_vcard_new_from_string ("");
 }
 
+/**
+ * e_vcard_new_from_string:
+ * @str: a string representation of the vcard to create
+ *
+ * Creates a new #EVCard from the passed-in string
+ * representation.
+ *
+ * Return value: A new #EVCard.
+ **/
 EVCard *
 e_vcard_new_from_string (const char *str)
 {
@@ -828,6 +860,16 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 	return g_string_free (str, FALSE);
 }
 
+/**
+ * e_vcard_to_string:
+ * @evc: the #EVCard to export
+ * @format: the format to export to
+ *
+ * Exports @evc to a string representation, specified
+ * by the @format argument.
+ *
+ * Return value: A newly allocated string representing the vcard.
+ **/
 char*
 e_vcard_to_string (EVCard *evc, EVCardFormat format)
 {
@@ -844,6 +886,13 @@ e_vcard_to_string (EVCard *evc, EVCardFormat format)
 	}
 }
 
+/**
+ * e_vcard_dump_structure:
+ * @evc: the #EVCard to dump
+ *
+ * Prints a dump of @evc's structure to stdout. Used for
+ * debugging.
+ **/
 void
 e_vcard_dump_structure (EVCard *evc)
 {
@@ -883,7 +932,16 @@ e_vcard_dump_structure (EVCard *evc)
 	}
 }
 
-
+/**
+ * e_vcard_attribute_new:
+ * @attr_group: a group name
+ * @attr_name: an attribute name
+ *
+ * Creates a new #EVCardAttribute with the specified group and
+ * attribute names.
+ *
+ * Return value: A new #EVCardAttribute.
+ **/
 EVCardAttribute*
 e_vcard_attribute_new (const char *attr_group, const char *attr_name)
 {
@@ -897,6 +955,12 @@ e_vcard_attribute_new (const char *attr_group, const char *attr_name)
 	return attr;
 }
 
+/**
+ * e_vcard_attribute_free:
+ * @attr: attribute to free
+ *
+ * Frees an attribute, its values and its parameters.
+ **/
 void
 e_vcard_attribute_free (EVCardAttribute *attr)
 {
@@ -912,6 +976,14 @@ e_vcard_attribute_free (EVCardAttribute *attr)
 	g_free (attr);
 }
 
+/**
+ * e_vcard_attribute_copy:
+ * @attr: attribute to copy
+ *
+ * Makes a copy of @attr.
+ *
+ * Return value: A new #EVCardAttribute identical to @attr.
+ **/
 EVCardAttribute*
 e_vcard_attribute_copy (EVCardAttribute *attr)
 {
@@ -935,14 +1007,14 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
 /**
  * e_vcard_remove_attributes:
  * @evc: vcard object
- * @attr_group : group name of attributes to be removed
- * @attr_name  : name of the arributes to be removed
+ * @attr_group: group name of attributes to be removed
+ * @attr_name: name of the arributes to be removed
  *
  * Removes all the attributes with group name and attribute name equal to 
- * passed in values. If passed in group name is NULL or empty string, it removes all the attributes 
- * with passed in name irrespective of their group names
+ * passed in values. If @attr_group is %NULL or an empty string,
+ * it removes all the attributes with passed in name irrespective of
+ * their group names.
  **/
-
 void
 e_vcard_remove_attributes (EVCard *evc, const char *attr_group, const char *attr_name)
 {
@@ -972,6 +1044,13 @@ e_vcard_remove_attributes (EVCard *evc, const char *attr_group, const char *attr
 	}
 }
 
+/**
+ * e_vcard_remove_attribute:
+ * @evc: an #EVCard
+ * @attr: an #EVCardAttribute to remove
+ *
+ * Removes @attr from @evc and frees it.
+ **/
 void
 e_vcard_remove_attribute (EVCard *evc, EVCardAttribute *attr)
 {
@@ -982,6 +1061,13 @@ e_vcard_remove_attribute (EVCard *evc, EVCardAttribute *attr)
 	e_vcard_attribute_free (attr);
 }
 
+/**
+ * e_vcard_add_attribute:
+ * @evc: an #EVCard
+ * @attr: an #EVCardAttribute to add
+ *
+ * Adds @attr to @evc.
+ **/
 void
 e_vcard_add_attribute (EVCard *evc, EVCardAttribute *attr)
 {
@@ -991,6 +1077,14 @@ e_vcard_add_attribute (EVCard *evc, EVCardAttribute *attr)
 	evc->priv->attributes = g_list_append (evc->priv->attributes, attr);
 }
 
+/**
+ * e_vcard_add_attribute_with_value:
+ * @evcard: an #EVCard
+ * @attr: an #EVCardAttribute to add
+ * @value: a value to assign to the attribute
+ *
+ * Adds @attr to @evcard, setting it to @value.
+ **/
 void
 e_vcard_add_attribute_with_value (EVCard *evcard,
 				  EVCardAttribute *attr, const char *value)
@@ -1003,6 +1097,14 @@ e_vcard_add_attribute_with_value (EVCard *evcard,
 	e_vcard_add_attribute (evcard, attr);
 }
 
+/**
+ * e_vcard_add_attribute_with_values:
+ * @evcard: an @EVCard
+ * @attr: an #EVCardAttribute to add
+ * @...: a %NULL-terminated list of values to assign to the attribute
+ *
+ * Adds @attr to @evcard, assigning the list of values to it.
+ **/
 void
 e_vcard_add_attribute_with_values (EVCard *evcard, EVCardAttribute *attr, ...)
 {
@@ -1023,6 +1125,13 @@ e_vcard_add_attribute_with_values (EVCard *evcard, EVCardAttribute *attr, ...)
 	e_vcard_add_attribute (evcard, attr);
 }
 
+/**
+ * e_vcard_attribute_add_value:
+ * @attr: an #EVCardAttribute
+ * @value: a string value
+ *
+ * Adds @value to @attr's list of values.
+ **/
 void
 e_vcard_attribute_add_value (EVCardAttribute *attr, const char *value)
 {
@@ -1031,6 +1140,15 @@ e_vcard_attribute_add_value (EVCardAttribute *attr, const char *value)
 	attr->values = g_list_append (attr->values, g_strdup (value));
 }
 
+/**
+ * e_vcard_attribute_add_value_decoded:
+ * @attr: an #EVCardAttribute
+ * @value: an encoded value
+ * @len: the length of the encoded value, in bytes
+ *
+ * Decodes @value according to the encoding used for @attr, and
+ * adds it to @attr's list of values.
+ **/
 void
 e_vcard_attribute_add_value_decoded (EVCardAttribute *attr, const char *value, int len)
 {
@@ -1060,6 +1178,13 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr, const char *value, i
 	}
 }
 
+/**
+ * e_vcard_attribute_add_values:
+ * @attr: an #EVCardAttribute
+ * ...: a %NULL-terminated list of strings
+ *
+ * Adds a list of values to @attr.
+ **/
 void
 e_vcard_attribute_add_values (EVCardAttribute *attr,
 			      ...)
@@ -1084,6 +1209,12 @@ free_gstring (GString *str)
 	g_string_free (str, TRUE);
 }
 
+/**
+ * e_vcard_attribute_remove_values:
+ * @attr: an #EVCardAttribute
+ *
+ * Removes all values from @attr.
+ **/
 void
 e_vcard_attribute_remove_values (EVCardAttribute *attr)
 {
@@ -1098,6 +1229,12 @@ e_vcard_attribute_remove_values (EVCardAttribute *attr)
 	attr->decoded_values = NULL;
 }
 
+/**
+ * e_vcard_attribute_remove_params:
+ * @attr: an #EVCardAttribute
+ *
+ * Removes all parameters from @attr.
+ **/
 void
 e_vcard_attribute_remove_params (EVCardAttribute *attr)
 {
@@ -1112,6 +1249,14 @@ e_vcard_attribute_remove_params (EVCardAttribute *attr)
 	attr->encoding = EVC_ENCODING_RAW;
 }
 
+/**
+ * e_vcard_attribute_param_new:
+ * @name: the name of the new parameter
+ *
+ * Creates a new parameter named @name.
+ *
+ * Return value: A new #EVCardAttributeParam.
+ **/
 EVCardAttributeParam*
 e_vcard_attribute_param_new (const char *name)
 {
@@ -1121,6 +1266,12 @@ e_vcard_attribute_param_new (const char *name)
 	return param;
 }
 
+/**
+ * e_vcard_attribute_param_free:
+ * @param: an #EVCardAttributeParam
+ *
+ * Frees @param and its values.
+ **/
 void
 e_vcard_attribute_param_free (EVCardAttributeParam *param)
 {
@@ -1133,6 +1284,14 @@ e_vcard_attribute_param_free (EVCardAttributeParam *param)
 	g_free (param);
 }
 
+/**
+ * e_vcard_attribute_param_copy:
+ * @param: an #EVCardAttributeParam
+ *
+ * Makes a copy of @param.
+ *
+ * Return value: a new #EVCardAttributeParam identical to @param.
+ **/
 EVCardAttributeParam*
 e_vcard_attribute_param_copy (EVCardAttributeParam *param)
 {
@@ -1150,6 +1309,13 @@ e_vcard_attribute_param_copy (EVCardAttributeParam *param)
 	return p;
 }
 
+/**
+ * e_vcard_attribute_add_param:
+ * @attr: an #EVCardAttribute
+ * @param: an #EVCardAttributeParam to add
+ *
+ * Adds @param to @attr's list of parameters.
+ **/
 void
 e_vcard_attribute_add_param (EVCardAttribute *attr,
 			     EVCardAttributeParam *param)
@@ -1185,6 +1351,13 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 	}
 }
 
+/**
+ * e_vcard_attribute_param_add_value:
+ * @param: an #EVCardAttributeParam
+ * @value: a string value to add
+ *
+ * Adds @value to @param's list of values.
+ **/
 void
 e_vcard_attribute_param_add_value (EVCardAttributeParam *param,
 				   const char *value)
@@ -1194,6 +1367,13 @@ e_vcard_attribute_param_add_value (EVCardAttributeParam *param,
 	param->values = g_list_append (param->values, g_strdup (value));
 }
 
+/**
+ * e_vcard_attribute_param_add_values:
+ * @param: an #EVCardAttributeParam
+ * ...: a %NULL-terminated list of strings
+ *
+ * Adds a list of values to @param.
+ **/
 void
 e_vcard_attribute_param_add_values (EVCardAttributeParam *param,
 				    ...)
@@ -1212,6 +1392,14 @@ e_vcard_attribute_param_add_values (EVCardAttributeParam *param,
 	va_end (ap);
 }
 
+/**
+ * e_vcard_attribute_add_param_with_value:
+ * @attr: an #EVCardAttribute
+ * @param: an #EVCardAttributeParam
+ * @value: a string value
+ *
+ * Adds @value to @param, then adds @param to @attr.
+ **/
 void
 e_vcard_attribute_add_param_with_value (EVCardAttribute *attr,
 					EVCardAttributeParam *param, const char *value)
@@ -1224,6 +1412,15 @@ e_vcard_attribute_add_param_with_value (EVCardAttribute *attr,
 	e_vcard_attribute_add_param (attr, param);
 }
 
+/**
+ * e_vcard_attribute_add_param_with_values:
+ * @attr: an #EVCardAttribute
+ * @param: an #EVCardAttributeParam
+ * ...: a %NULL-terminated list of strings
+ *
+ * Adds the list of values to @param, then adds @param
+ * to @attr.
+ **/
 void
 e_vcard_attribute_add_param_with_values (EVCardAttribute *attr,
 					 EVCardAttributeParam *param, ...)
@@ -1245,6 +1442,12 @@ e_vcard_attribute_add_param_with_values (EVCardAttribute *attr,
 	e_vcard_attribute_add_param (attr, param);
 }
 
+/**
+ * e_vcard_attribute_param_remove_values:
+ * @param: an #EVCardAttributeParam
+ *
+ * Removes and frees all values from @param.
+ **/
 void
 e_vcard_attribute_param_remove_values (EVCardAttributeParam *param)
 {
@@ -1255,6 +1458,15 @@ e_vcard_attribute_param_remove_values (EVCardAttributeParam *param)
 	param->values = NULL;
 }
 
+/**
+ * e_vcard_get_attributes:
+ * @evcard: an #EVCard
+ *
+ * Gets the list of attributes from @evcard. The list and its
+ * contents are owned by @evcard, and must not be freed.
+ *
+ * Return value: A list of attributes of type #EVCardAttribute.
+ **/
 GList*
 e_vcard_get_attributes (EVCard *evcard)
 {
@@ -1263,6 +1475,14 @@ e_vcard_get_attributes (EVCard *evcard)
 	return evcard->priv->attributes;
 }
 
+/**
+ * e_vcard_attribute_get_group:
+ * @attr: an #EVCardAttribute
+ *
+ * Gets the group name of @attr.
+ *
+ * Return value: The attribute's group name.
+ **/
 const char*
 e_vcard_attribute_get_group (EVCardAttribute *attr)
 {
@@ -1271,6 +1491,14 @@ e_vcard_attribute_get_group (EVCardAttribute *attr)
 	return attr->group;
 }
 
+/**
+ * e_vcard_attribute_get_name:
+ * @attr: an #EVCardAttribute
+ *
+ * Gets the name of @attr.
+ *
+ * Return value: The attribute's name.
+ **/
 const char*
 e_vcard_attribute_get_name (EVCardAttribute *attr)
 {
@@ -1279,6 +1507,15 @@ e_vcard_attribute_get_name (EVCardAttribute *attr)
 	return attr->name;
 }
 
+/**
+ * e_vcard_attribute_get_values:
+ * @attr: an #EVCardAttribute
+ *
+ * Gets the list of values from @attr. The list and its
+ * contents are owned by @attr, and must not be freed.
+ * 
+ * Return value: A list of string values.
+ **/
 GList*
 e_vcard_attribute_get_values (EVCardAttribute *attr)
 {
@@ -1287,6 +1524,16 @@ e_vcard_attribute_get_values (EVCardAttribute *attr)
 	return attr->values;
 }
 
+/**
+ * e_vcard_attribute_get_values_decoded:
+ * @attr: an #EVCardAttribute
+ *
+ * Gets the list of values from @attr, decoding them if
+ * necessary. The list and its contents are owned by @attr,
+ * and must not be freed.
+ *
+ * Return value: A list of values of type #GString.
+ **/
 GList*
 e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 {
@@ -1316,6 +1563,14 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 	return attr->decoded_values;
 }
 
+/**
+ * e_vcard_attribute_is_single_valued:
+ * @attr: an #EVCardAttribute
+ *
+ * Checks if @attr has a single value.
+ *
+ * Return value: %TRUE if the attribute has exactly one value, %FALSE otherwise.
+ **/
 gboolean
 e_vcard_attribute_is_single_valued (EVCardAttribute *attr)
 {
@@ -1328,6 +1583,14 @@ e_vcard_attribute_is_single_valued (EVCardAttribute *attr)
 	return TRUE;
 }
 
+/**
+ * e_vcard_attribute_get_value:
+ * @attr: an #EVCardAttribute
+ *
+ * Gets the value of a single-valued #EVCardAttribute, @attr.
+ *
+ * Return value: A newly allocated string representing the value.
+ **/
 char*
 e_vcard_attribute_get_value (EVCardAttribute *attr)
 {
@@ -1343,6 +1606,15 @@ e_vcard_attribute_get_value (EVCardAttribute *attr)
 	return values ? g_strdup ((char*)values->data) : NULL;
 }
 
+/**
+ * e_vcard_attribute_get_value_decoded:
+ * @attr: an #EVCardAttribute
+ *
+ * Gets the value of a single-valued #EVCardAttribute, @attr, decoding
+ * it if necessary.
+ *
+ * Return value: A newly allocated #GString representing the value.
+ **/
 GString*
 e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
 {
@@ -1362,6 +1634,15 @@ e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
 	return str ? g_string_new_len (str->str, str->len) : NULL;
 }
 
+/**
+ * e_vcard_attribute_has_type:
+ * @attr: an #EVCardAttribute
+ * @typestr: a string representing the type
+ *
+ * Checks if @attr has an #EVCardAttributeParam of the specified type.
+ *
+ * Return value: %TRUE if such a parameter exists, %FALSE otherwise.
+ **/
 gboolean
 e_vcard_attribute_has_type (EVCardAttribute *attr, const char *typestr)
 {
@@ -1390,6 +1671,15 @@ e_vcard_attribute_has_type (EVCardAttribute *attr, const char *typestr)
 	return FALSE;
 }
 
+/**
+ * e_vcard_attribute_get_params:
+ * @attr: an #EVCardAttribute
+ * 
+ * Gets the list of parameters from @attr. The list and its
+ * contents are owned by @attr, and must not be freed.
+ *
+ * Return value: A list of elements of type #EVCardAttributeParam.
+ **/
 GList*
 e_vcard_attribute_get_params (EVCardAttribute *attr)
 {
@@ -1398,6 +1688,14 @@ e_vcard_attribute_get_params (EVCardAttribute *attr)
 	return attr->params;
 }
 
+/**
+ * e_vcard_attribute_param_get_name:
+ * @param: an #EVCardAttributeParam
+ *
+ * Gets the name of @param.
+ *
+ * Return value: The name of the parameter.
+ **/
 const char*
 e_vcard_attribute_param_get_name (EVCardAttributeParam *param)
 {
@@ -1406,6 +1704,15 @@ e_vcard_attribute_param_get_name (EVCardAttributeParam *param)
 	return param->name;
 }
 
+/**
+ * e_vcard_attribute_param_get_values:
+ * @param: an #EVCardAttributeParam
+ * 
+ * Gets the list of values from @param. The list and its
+ * contents are owned by @param, and must not be freed.
+ *
+ * Return value: A list of string elements representing the parameter's values.
+ **/
 GList*
 e_vcard_attribute_param_get_values (EVCardAttributeParam *param)
 {

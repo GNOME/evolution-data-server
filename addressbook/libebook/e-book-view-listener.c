@@ -279,7 +279,7 @@ e_book_view_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatu
  *
  * Creates and returns a new #EBookViewListener.
  *
- * Returns: a new #EBookViewListener
+ * Return value: a new #EBookViewListener
  */
 EBookViewListener *
 e_book_view_listener_new ()
@@ -309,6 +309,12 @@ e_book_view_listener_init (EBookViewListener *listener)
 	listener->priv->stopped        = TRUE;
 }
 
+/**
+ * e_book_view_listener_start:
+ * @listener: an #EBookViewListener
+ *
+ * Makes @listener start generating events.
+ **/
 void
 e_book_view_listener_start (EBookViewListener *listener)
 {
@@ -317,6 +323,12 @@ e_book_view_listener_start (EBookViewListener *listener)
 	listener->priv->stopped = FALSE;
 }
 
+/**
+ * e_book_view_listener_stop:
+ * @listener: an #EBookViewListener
+ *
+ * Makes @listener stop generating events.
+ **/
 void
 e_book_view_listener_stop (EBookViewListener *listener)
 {
