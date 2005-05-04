@@ -1,3 +1,9 @@
+2005-05-04  Rodrigo Moya <rodrigo@novell.com>
+
+	* libecal/e-cal-component.c:
+	* libecal/e-cal-listener.c:
+	* libecal/e-cal-recur.[ch]: improved API documentation.
+
 2005-04-19  Philip Van Hoof  <pvanhoof@gnome.org>
 
 	* libecal/e-cal.c: Function prototype (compiler fix)

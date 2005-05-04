@@ -938,6 +938,20 @@ BONOBO_TYPE_FUNC_FULL (ECalListener,
 		       BONOBO_TYPE_OBJECT,
 		       e_cal_listener);
 
+/**
+ * e_cal_listener_construct:
+ * @listener: A calendar listener.
+ * @cal_set_mode_fn: Function callback for notification that a
+ * calendar changed modes.
+ * @fn_data: Closure data pointer that will be passed to the notification
+ * functions.
+ *
+ * Constructs all internal information for a calendar listener. This function
+ * usually does not need to be called, unless creating a ECalListener-derived
+ * class.
+ *
+ * Return value: the calendar listener ready to be used.
+ */
 ECalListener *
 e_cal_listener_construct (ECalListener *listener,
 			  ECalListenerCalSetModeFn cal_set_mode_fn,
@@ -960,8 +974,8 @@ e_cal_listener_construct (ECalListener *listener,
 /**
  * e_cal_listener_new:
  * @cal_set_mode_fn: Function callback for notification that a
- * calendar changed modes
- * @fn_data: losure data pointer that will be passed to the notification
+ * calendar changed modes.
+ * @fn_data: Closure data pointer that will be passed to the notification
  * functions.
  * 
  * Creates a new #ECalListener object.

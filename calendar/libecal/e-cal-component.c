@@ -436,8 +436,8 @@ e_cal_component_gen_uid (void)
 /**
  * e_cal_component_new:
  *
- * Creates a new empty calendar component object.  You should set it from an
- * #icalcomponent structure by using e_cal_component_set_icalcomponent() or with a
+ * Creates a new empty calendar component object.  Once created, you should set it from an
+ * existing #icalcomponent structure by using e_cal_component_set_icalcomponent() or with a
  * new empty component type by using e_cal_component_set_new_vtype().
  *
  * Return value: A newly-created calendar component object.
@@ -452,7 +452,7 @@ e_cal_component_new (void)
  * e_cal_component_new_from_string:
  * @calobj: A string representation of an iCalendar component.
  *
- * Creates a new calendar component object from the given string.
+ * Creates a new calendar component object from the given iCalendar string.
  *
  * Return value: A calendar component representing the given iCalendar string on
  * success, NULL if there was an error.
@@ -1132,6 +1132,13 @@ e_cal_component_get_icalcomponent (ECalComponent *comp)
 	return priv->icalcomp;
 }
 
+/**
+ * e_cal_component_rescan:
+ * @comp: A calendar component object.
+ *
+ * Rescans the #icalcomponent being wrapped by the given calendar component. This
+ * would replace any value that was changed in the wrapped #icalcomponent.
+ */
 void
 e_cal_component_rescan (ECalComponent *comp)
 {
@@ -1150,6 +1157,14 @@ e_cal_component_rescan (ECalComponent *comp)
 	ensure_mandatory_properties (comp);
 }
 
+/**
+ * e_cal_component_strip_errors:
+ * @comp: A calendar component object.
+ *
+ * Strips all error messages from the calendar component. Those error messages are
+ * added to the iCalendar string representation whenever an invalid is used for
+ * one of its fields.
+ */
 void
 e_cal_component_strip_errors (ECalComponent *comp)
 {
@@ -1331,7 +1346,7 @@ ensure_alarm_properties (ECalComponent *comp)
 
 /**
  * e_cal_component_commit_sequence:
- * @comp:
+ * @comp: A calendar component object.
  *
  * Increments the sequence number property in a calendar component object if it
  * needs it.  This needs to be done when any of a number of properties listed in
@@ -1373,6 +1388,14 @@ e_cal_component_commit_sequence (ECalComponent *comp)
 	priv->need_sequence_inc = FALSE;
 }
 
+/**
+ * e_cal_component_abort_sequence:
+ * @comp: A calendar component object.
+ *
+ * Aborts the sequence change needed in the given calendar component, which
+ * means it will not require a sequence commit (via #e_cal_component_commit_sequence)
+ * even if the changes done require a sequence increment.
+ */
 void
 e_cal_component_abort_sequence (ECalComponent *comp)
 {
@@ -1518,7 +1541,8 @@ set_attachment_list (icalcomponent *icalcomp,
  * @comp: A calendar component object. 
  * @attachment_list: Return list of URLS to attachments.
  * 
- * Queries the attachment properties of the calendar component object
+ * Queries the attachment properties of the calendar component object. When done,
+ * the @attachment_list should be freed by calling #g_slist_free.
  **/
 void
 e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_list)
@@ -1538,9 +1562,11 @@ e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_li
 /**
  * e_cal_component_set_attachment_list:
  * @comp: A calendar component object. 
- * @attachment_list: list of urls to attachment pointers 
+ * @attachment_list: list of urls to attachment pointers.
+ *
  * This currently handles only attachments that are urls
  * in the file system - not inline binaries.
+ *
  * Sets the attachments of a calendar component object
  **/
 void
@@ -1557,6 +1583,14 @@ e_cal_component_set_attachment_list (ECalComponent *comp, GSList *attachment_lis
 	set_attachment_list (priv->icalcomp, &priv->attachment_list, attachment_list);
 }
 
+/**
+ * e_cal_component_has_attachments:
+ * @comp: A calendar component object.
+ *
+ * Queries the component to see if it has attachments.
+ *
+ * Return value: TRUE if there are attachments, FALSE otherwise.
+ */
 gboolean
 e_cal_component_has_attachments (ECalComponent *comp)
 {
@@ -1591,9 +1625,11 @@ e_cal_component_get_num_attachments (ECalComponent *comp)
 /**
  * e_cal_component_get_categories:
  * @comp: A calendar component object.
- * @categories:
+ * @categories: Return holder for the categories.
  *
- *
+ * Queries the categories of the given calendar component. The categories
+ * are returned in the @categories argument, which, on success, will contain
+ * a comma-separated list of all categories set in the component.
  **/
 void
 e_cal_component_get_categories (ECalComponent *comp, const char **categories)
@@ -1616,9 +1652,9 @@ e_cal_component_get_categories (ECalComponent *comp, const char **categories)
 /**
  * e_cal_component_set_categories:
  * @comp: A calendar component object.
- * @categories:
+ * @categories: Comma-separated list of categories.
  *
- *
+ * Sets the list of categories for a calendar component.
  **/
 void
 e_cal_component_set_categories (ECalComponent *comp, const char *categories)
@@ -1654,7 +1690,7 @@ e_cal_component_set_categories (ECalComponent *comp, const char *categories)
  * e_cal_component_get_categories_list:
  * @comp: A calendar component object.
  * @categ_list: Return value for the list of strings, where each string is a
- * category.  This should be freed using e_cal_component_free_categories_list().
+ * category. This should be freed using e_cal_component_free_categories_list().
  *
  * Queries the list of categories of a calendar component object.  Each element
  * in the returned categ_list is a string with the corresponding category.
@@ -1959,7 +1995,7 @@ set_text_list (ECalComponent *comp,
  * a list of #ECalComponentText structures.  This should be freed using the
  * e_cal_component_free_text_list() function.
  *
- * Queries the comment of a calendar component object.  The comment property can
+ * Queries the comments of a calendar component object.  The comment property can
  * appear several times inside a calendar component, and so a list of
  * #ECalComponentText is returned.
  **/
@@ -1983,7 +2019,7 @@ e_cal_component_get_comment_list (ECalComponent *comp, GSList **text_list)
  * @comp: A calendar component object.
  * @text_list: List of #ECalComponentText structures.
  *
- * Sets the comment of a calendar component object.  The comment property can
+ * Sets the comments of a calendar component object.  The comment property can
  * appear several times inside a calendar component, and so a list of
  * #ECalComponentText structures is used.
  **/
@@ -3043,7 +3079,7 @@ e_cal_component_has_exceptions (ECalComponent *comp)
  * @geo: Return value for the geographic position property.  This should be
  * freed using the e_cal_component_free_geo() function.
  *
- * Sets the geographic position property of a calendar component object.
+ * Gets the geographic position property of a calendar component object.
  **/
 void
 e_cal_component_get_geo (ECalComponent *comp, struct icalgeotype **geo)
@@ -3287,11 +3323,11 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 
 /**
  * e_cal_component_has_organizer:
- * @comp: 
+ * @comp: A calendar component object.
  * 
+ * Check whether a calendar component object has an organizer or not.
  * 
- * 
- * Return value: 
+ * Return value: TRUE if there is an organizer, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_organizer (ECalComponent *comp)
@@ -3441,7 +3477,7 @@ e_cal_component_set_priority (ECalComponent *comp, int *priority)
  * @comp: A calendar component object.
  * @recur_id: Return value for the recurrence id property
  * 
- * Queries the recurrence id property of a calendar component object
+ * Queries the recurrence id property of a calendar component object.
  **/
 void 
 e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
@@ -3465,6 +3501,8 @@ e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
  * @comp: A calendar component object.
  *
  * Gets the recurrence ID property as a string.
+ *
+ * Return value: the recurrence ID as a string.
  */
 const char *
 e_cal_component_get_recurid_as_string (ECalComponent *comp)
@@ -3701,6 +3739,15 @@ count_by_xxx (short *field, int max_elements)
 	return i;
 }
 
+/**
+ * e_cal_component_has_simple_recurrence:
+ * @comp: A calendar component object.
+ *
+ * Checks whether the given calendar component object has simple recurrence
+ * rules or more complicated ones.
+ *
+ + Return value: TRUE if it has a simple recurrence rule, FALSE otherwise.
+ */
 gboolean
 e_cal_component_has_simple_recurrence (ECalComponent *comp)
 {
@@ -3861,6 +3908,15 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 	return simple;
 }
 
+/**
+ * e_cal_component_is_instance:
+ * @comp: A calendar component object.
+ *
+ * Checks whether a calendar component object is an instance of a recurring
+ * event.
+ *
+ * Return value: TRUE if it is an instance, FALSE if not.
+ */
 gboolean 
 e_cal_component_is_instance (ECalComponent *comp)
 {
@@ -4499,6 +4555,14 @@ e_cal_component_set_attendee_list (ECalComponent *comp, GSList *attendee_list)
 	set_attendee_list (priv->icalcomp, &priv->attendee_list, attendee_list);
 }
 
+/**
+ * e_cal_component_has_attendees:
+ * @comp: A calendar component object.
+ *
+ * Queries a calendar component object for the existence of attendees.
+ *
+ * Return value: TRUE if there are attendees, FALSE if not.
+ */
 gboolean
 e_cal_component_has_attendees (ECalComponent *comp)
 {
@@ -4610,6 +4674,12 @@ e_cal_component_free_datetime (ECalComponentDateTime *dt)
 	g_free ((char*)dt->tzid);
 }
 
+/**
+ * e_cal_component_free_range:
+ * @range: A #ECalComponentRange.
+ *
+ * Frees an #ECalComponentRange structure.
+ */
 void 
 e_cal_component_free_range (ECalComponentRange *range)
 {
@@ -4794,8 +4864,9 @@ e_cal_component_free_text_list (GSList *text_list)
 
 /**
  * e_cal_component_free_attendee_list:
- * @attendee_list: 
+ * @attendee_list:  List of attendees.
  * 
+ * Frees a list of #ECalComponentAttendee structures.
  * 
  **/
 void
@@ -5139,7 +5210,7 @@ e_cal_component_alarms_free (ECalComponentAlarms *alarms)
 /**
  * e_cal_component_alarm_new:
  *
- *
+ * Create a new alarm object.
  *
  * Return value: a new alarm component
  **/
@@ -5688,6 +5759,13 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
 	}
 }
 
+/**
+ * e_cal_component_alarm_set_attendee_list:
+ * @alarm: An alarm.
+ * @attendee_list: Return value for the list of attendees.
+ *
+ * Gets the list of attendees associated with an alarm.
+ */
 void 
 e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm, GSList **attendee_list)
 {
@@ -5696,6 +5774,13 @@ e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm, GSList **att
 	get_attendee_list (alarm->attendee_list, attendee_list);
 }
 
+/**
+ * e_cal_component_alarm_set_attendee_list:
+ * @alarm: An alarm.
+ * @attendee_list: List of attendees.
+ *
+ * Sets the list of attendees for an alarm.
+ */
 void 
 e_cal_component_alarm_set_attendee_list (ECalComponentAlarm *alarm, GSList *attendee_list)
 {
@@ -5704,6 +5789,14 @@ e_cal_component_alarm_set_attendee_list (ECalComponentAlarm *alarm, GSList *atte
 	set_attendee_list (alarm->icalcomp, &alarm->attendee_list, attendee_list);
 }
 
+/**
+ * e_cal_component_alarm_has_attendees:
+ * @alarm: An alarm.
+ *
+ * Queries an alarm to see if it has attendees associated with it.
+ *
+ * Return value: TRUE if there are attendees in the alarm, FALSE if not.
+ */
 gboolean 
 e_cal_component_alarm_has_attendees (ECalComponentAlarm *alarm)
 {

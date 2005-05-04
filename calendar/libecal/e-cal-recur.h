@@ -36,24 +36,6 @@ typedef gboolean (* ECalRecurInstanceFn) (ECalComponent *comp,
 typedef icaltimezone* (* ECalRecurResolveTimezoneFn)	(const char   *tzid,
 							 gpointer      data);
 
-/*
- * Calls the given callback function for each occurrence of the event that
- * intersects the range between the given start and end times (the end time is
- * not included). Note that the occurrences may start before the given start
- * time.
- *
- * If the callback routine returns FALSE the occurrence generation stops.
- *
- * Both start and end can be -1, in which case we start at the events first
- * instance and continue until it ends, or forever if it has no enddate.
- *
- * The tz_cb is used to resolve references to timezones. It is passed a TZID
- * and should return the icaltimezone* corresponding to that TZID. We need to
- * do this as we access timezones in different ways on the client & server.
- *
- * The default_timezone argument is used for DTSTART or DTEND properties that
- * are DATE values or do not have a TZID (i.e. floating times).
- */
 void	e_cal_recur_generate_instances	(ECalComponent		*comp,
 					 time_t			 start,
 					 time_t			 end,
