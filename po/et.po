@@ -4733,9 +4733,8 @@ msgid "Category _Name"
 msgstr "Kategooria _nimi"
 
 #: libedataserverui/e-categories-dialog.glade.h:5
-#, fuzzy
 msgid "Item(s) belong to these _categories:"
-msgstr "Antud kontakt kuulub järgnevatesse kategooriatesse:"
+msgstr "Element(-id) kuulub(-vad) nendesse _kategooriatesse:"
 
 #: libedataserverui/e-categories-dialog.glade.h:6
 msgid "_Available Categories:"
@@ -4827,4 +4826,3 @@ msgstr ""
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-
