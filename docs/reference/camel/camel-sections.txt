@@ -1546,7 +1546,7 @@ CAMEL_STREAM_FS_CLASS
 
 <SECTION>
 <FILE>camel-stream-mem</FILE>
-CamelStremMem
+CamelStreamMem
 <TITLE>CamelStreamMem</TITLE>
 camel_stream_mem_new
 camel_stream_mem_new_with_byte_array
@@ -2318,8 +2318,7 @@ CAMEL_IMAPP_FOLDER_CLASS
 
 <SECTION>
 <FILE>camel-imapp-store-summary</FILE>
-CAMEL_IMAPP_STORE_SUMMARY
-CAMEL_IMAPP_STORE_SUMMARY_CLASS
+CamelIMAPPStoreSummary
 CamelIMAPPStoreInfo
 CamelIMAPPStoreNamespace
 <TITLE>CamelIMAPPStoreSummary</TITLE>
@@ -2335,26 +2334,28 @@ camel_imapp_store_summary_add_from_full
 camel_imapp_store_summary_full_from_path
 camel_imapp_store_info_full_name
 <SUBSECTION Standard>
+CAMEL_IMAPP_STORE_SUMMARY
 CAMEL_IS_IMAP_STORE_SUMMARY
 camel_imapp_store_summary_get_type
+CAMEL_IMAPP_STORE_SUMMARY_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-imapp-store</FILE>
-CAMEL_IMAPP_STORE_TYPE
-CAMEL_IMAPP_STORE
-CAMEL_IMAPP_STORE_CLASS
+CamelIMAPPStore
 pending_fetch
 <TITLE>CamelIMAPPStore</TITLE>
 <SUBSECTION Standard>
+CAMEL_IMAPP_STORE
 CAMEL_IS_IMAP_STORE
+CAMEL_IMAPP_STORE_TYPE
 camel_imapp_store_get_type
+CAMEL_IMAPP_STORE_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-imapp-stream</FILE>
-CAMEL_IMAPP_STREAM
-CAMEL_IMAPP_STREAM_CLASS
+CamelIMAPPStream
 camel_imapp_token_t
 <TITLE>CamelIMAPPStream</TITLE>
 camel_imapp_stream_new
@@ -2370,14 +2371,17 @@ camel_imapp_stream_nstring_stream
 camel_imapp_stream_text
 camel_imapp_stream_number
 <SUBSECTION Standard>
+CAMEL_IMAPP_STREAM
 CAMEL_IS_IMAP_STREAM
 camel_imapp_stream_get_type
+CAMEL_IMAPP_STREAM_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-imapp-summary</FILE>
 CAMEL_IMAPP_SERVER_FLAGS
 CAMEL_IMAPP_MESSAGE_RECENT
+CamelIMAPPSummary
 CamelIMAPPMessageInfo
 <TITLE>CamelIMAPPSummary</TITLE>
 camel_imapp_summary_new
@@ -2390,7 +2394,7 @@ CAMEL_IMAPP_SUMMARY_CLASS
 
 <SECTION>
 <FILE>camel-local-folder</FILE>
-CAMEL_LOCAL_FOLDER_TYPE
+CamelLocalFolder
 <TITLE>CamelLocalFolder</TITLE>
 camel_local_folder_construct
 camel_local_folder_lock
@@ -2398,13 +2402,14 @@ camel_local_folder_unlock
 <SUBSECTION Standard>
 CAMEL_LOCAL_FOLDER
 CAMEL_IS_LOCAL_FOLDER
+CAMEL_LOCAL_FOLDER_TYPE
 camel_local_folder_get_type
 CAMEL_LOCAL_FOLDER_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-local-store</FILE>
-CAMEL_LOCAL_STORE_TYPE
+CamelLocalStore
 <TITLE>CamelLocalStore</TITLE>
 camel_local_store_get_toplevel_dir
 camel_local_store_get_full_path
@@ -2412,12 +2417,14 @@ camel_local_store_get_meta_path
 <SUBSECTION Standard>
 CAMEL_LOCAL_STORE
 CAMEL_IS_LOCAL_STORE
+CAMEL_LOCAL_STORE_TYPE
 camel_local_store_get_type
 CAMEL_LOCAL_STORE_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-local-summary</FILE>
+CamelLocalSummary
 CamelLocalMessageInfo
 <TITLE>CamelLocalSummary</TITLE>
 camel_local_summary_construct
@@ -2438,29 +2445,32 @@ CAMEL_LOCAL_SUMMARY_CLASS
 
 <SECTION>
 <FILE>camel-maildir-folder</FILE>
-CAMEL_MAILDIR_FOLDER_TYPE
+CamelMaildirFolder
 <TITLE>CamelMaildirFolder</TITLE>
 camel_maildir_folder_new
 <SUBSECTION Standard>
 CAMEL_MAILDIR_FOLDER
 CAMEL_IS_MAILDIR_FOLDER
+CAMEL_MAILDIR_FOLDER_TYPE
 camel_maildir_folder_get_type
 CAMEL_MAILDIR_FOLDER_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-maildir-store</FILE>
-CAMEL_MAILDIR_STORE_TYPE
+CamelMaildirStore
 <TITLE>CamelMaildirStore</TITLE>
 <SUBSECTION Standard>
 CAMEL_MAILDIR_STORE
 CAMEL_IS_MAILDIR_STORE
+CAMEL_MAILDIR_STORE_TYPE
 camel_maildir_store_get_type
 CAMEL_MAILDIR_STORE_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-maildir-summary</FILE>
+CamelMaildirSummary
 CamelMaildirMessageContentInfo
 CamelMaildirMessageInfo
 <TITLE>CamelMaildirSummary</TITLE>
@@ -2478,23 +2488,25 @@ CAMEL_MAILDIR_SUMMARY_CLASS
 
 <SECTION>
 <FILE>camel-mbox-folder</FILE>
-CAMEL_MBOX_FOLDER_TYPE
+CamelMboxFolder
 <TITLE>CamelMboxFolder</TITLE>
 camel_mbox_folder_new
 <SUBSECTION Standard>
 CAMEL_MBOX_FOLDER
 CAMEL_IS_MBOX_FOLDER
+CAMEL_MBOX_FOLDER_TYPE
 camel_mbox_folder_get_type
 CAMEL_MBOX_FOLDER_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-mbox-store</FILE>
-CAMEL_MBOX_STORE_TYPE
+CamelMboxStore
 <TITLE>CamelMboxStore</TITLE>
 <SUBSECTION Standard>
 CAMEL_MBOX_STORE
 CAMEL_IS_MBOX_STORE
+CAMEL_MBOX_STORE_TYPE
 camel_mbox_store_get_type
 CAMEL_MBOX_STORE_CLASS
 </SECTION>
@@ -2502,6 +2514,7 @@ CAMEL_MBOX_STORE_CLASS
 <SECTION>
 <FILE>camel-mbox-summary</FILE>
 STATUS_PINE
+CamelMboxSummary
 CamelMboxMessageContentInfo
 CamelMboxMessageInfo
 <TITLE>CamelMboxSummary</TITLE>
@@ -2517,29 +2530,32 @@ CAMEL_MBOX_SUMMARY_CLASS
 
 <SECTION>
 <FILE>camel-mh-folder</FILE>
-CAMEL_MH_FOLDER_TYPE
+CamelMhFolder
 <TITLE>CamelMhFolder</TITLE>
 camel_mh_folder_new
 <SUBSECTION Standard>
 CAMEL_MH_FOLDER
 CAMEL_IS_MH_FOLDER
+CAMEL_MH_FOLDER_TYPE
 camel_mh_folder_get_type
 CAMEL_MH_FOLDER_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-mh-store</FILE>
-CAMEL_MH_STORE_TYPE
+CamelMhStore
 <TITLE>CamelMhStore</TITLE>
 <SUBSECTION Standard>
 CAMEL_MH_STORE
 CAMEL_IS_MH_STORE
+CAMEL_MH_STORE_TYPE
 camel_mh_store_get_type
 CAMEL_MH_STORE_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-mh-summary</FILE>
+CamelMhSummary
 <TITLE>CamelMhSummary</TITLE>
 camel_mh_summary_new
 <SUBSECTION Standard>
@@ -2551,30 +2567,33 @@ CAMEL_MH_SUMMARY_CLASS
 
 <SECTION>
 <FILE>camel-spool-folder</FILE>
-CAMEL_SPOOL_FOLDER_TYPE
+CamelSpoolFolder
 <TITLE>CamelSpoolFolder</TITLE>
 camel_spool_folder_new
 <SUBSECTION Standard>
 CAMEL_SPOOL_FOLDER
 CAMEL_IS_SPOOL_FOLDER
+CAMEL_SPOOL_FOLDER_TYPE
 camel_spool_folder_get_type
 CAMEL_SPOOL_FOLDER_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-spool-store</FILE>
-CAMEL_SPOOL_STORE_TYPE
+CamelSpoolStore
 camel_spool_store_t
 <TITLE>CamelSpoolStore</TITLE>
 <SUBSECTION Standard>
 CAMEL_SPOOL_STORE
 CAMEL_IS_SPOOL_STORE
+CAMEL_SPOOL_STORE_TYPE
 camel_spool_store_get_type
 CAMEL_SPOOL_STORE_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-spool-summary</FILE>
+CamelSpoolSummary
 <TITLE>CamelSpoolSummary</TITLE>
 camel_spool_summary_construct
 camel_spool_summary_new
@@ -2594,13 +2613,14 @@ CAMEL_SPOOL_SUMMARY_CLASS
 
 <SECTION>
 <FILE>camel-nntp-folder</FILE>
-CAMEL_NNTP_FOLDER_TYPE
+CamelNNTPFolder
 <TITLE>CamelNNTPFolder</TITLE>
 camel_nntp_folder_new
 camel_nntp_folder_selected
 <SUBSECTION Standard>
 CAMEL_NNTP_FOLDER
 CAMEL_IS_NNTP_FOLDER
+CAMEL_NNTP_FOLDER_TYPE
 camel_nntp_folder_get_type
 CAMEL_NNTP_FOLDER_CLASS
 </SECTION>
@@ -2608,6 +2628,7 @@ CAMEL_NNTP_FOLDER_CLASS
 <SECTION>
 <FILE>camel-nntp-store-summary</FILE>
 CamelNNTPStoreInfo
+CamelNNTPStoreSummary
 NNTP_DATE_SIZE
 <TITLE>CamelNNTPStoreSummary</TITLE>
 camel_nntp_store_summary_new
@@ -2627,7 +2648,7 @@ CAMEL_NNTP_STORE_SUMMARY_CLASS
 
 <SECTION>
 <FILE>camel-nntp-store</FILE>
-CAMEL_NNTP_STORE_TYPE
+CamelNNTPStore
 CAMEL_NNTP_EXT_SEARCH
 CAMEL_NNTP_EXT_SETGET
 CAMEL_NNTP_EXT_OVER
@@ -2646,12 +2667,14 @@ camel_nntp_command
 <SUBSECTION Standard>
 CAMEL_NNTP_STORE
 CAMEL_IS_NNTP_STORE
+CAMEL_NNTP_STORE_TYPE
 camel_nntp_store_get_type
 CAMEL_NNTP_STORE_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-nntp-stream</FILE>
+CamelNNTPStream
 camel_nntp_stream_mode_t
 <TITLE>CamelNNTPStream</TITLE>
 camel_nntp_stream_new
@@ -2668,18 +2691,20 @@ CAMEL_NNTP_STREAM_CLASS
 
 <SECTION>
 <FILE>camel-nntp-summary</FILE>
-CAMEL_NNTP_SUMMARY
-CAMEL_NNTP_SUMMARY_CLASS
+CamelNNTPSummary
 <TITLE>CamelNNTPSummary</TITLE>
 camel_nntp_summary_new
 camel_nntp_summary_check
 <SUBSECTION Standard>
+CAMEL_NNTP_SUMMARY
 CAMEL_IS_LOCAL_SUMMARY
 camel_nntp_summary_get_type
+CAMEL_NNTP_SUMMARY_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-pop3-engine</FILE>
+CamelPOP3Engine
 CamelPOP3Command
 camel_pop3_engine_t
 camel_pop3_command_t
@@ -2699,20 +2724,21 @@ CAMEL_POP3_ENGINE_CLASS
 
 <SECTION>
 <FILE>camel-pop3-folder</FILE>
-CAMEL_POP3_FOLDER_TYPE
+CamelPOP3Folder
 CamelPOP3FolderInfo
 <TITLE>CamelPOP3Folder</TITLE>
 camel_pop3_folder_new
 <SUBSECTION Standard>
 CAMEL_POP3_FOLDER
 CAMEL_IS_POP3_FOLDER
+CAMEL_POP3_FOLDER_TYPE
 camel_pop3_folder_get_type
 CAMEL_POP3_FOLDER_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-pop3-store</FILE>
-CAMEL_POP3_STORE_TYPE
+CamelPOP3Store
 <TITLE>CamelPOP3Store</TITLE>
 camel_pop3_store_expunge
 camel_pop3_command
@@ -2720,12 +2746,14 @@ camel_pop3_command_get_additional_data
 <SUBSECTION Standard>
 CAMEL_POP3_STORE
 CAMEL_IS_POP3_STORE
+CAMEL_POP3_STORE_TYPE
 camel_pop3_store_get_type
 CAMEL_POP3_STORE_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-pop3-stream</FILE>
+CamelPOP3Stream
 camel_pop3_stream_mode_t
 <TITLE>CamelPOP3Stream</TITLE>
 camel_pop3_stream_new
@@ -2742,18 +2770,19 @@ CAMEL_POP3_STREAM_CLASS
 
 <SECTION>
 <FILE>camel-sendmail-transport</FILE>
-CAMEL_SENDMAIL_TRANSPORT_TYPE
+CamelSendmailTransport
 <TITLE>CamelSendmailTransport</TITLE>
 <SUBSECTION Standard>
 CAMEL_SENDMAIL_TRANSPORT
 CAMEL_IS_SENDMAIL_TRANSPORT
+CAMEL_SENDMAIL_TRANSPORT_TYPE
 camel_sendmail_transport_get_type
 CAMEL_SENDMAIL_TRANSPORT_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>camel-smtp-transport</FILE>
-CAMEL_SMTP_TRANSPORT_TYPE
+CamelSmtpTransport
 CAMEL_SMTP_TRANSPORT_IS_ESMTP
 CAMEL_SMTP_TRANSPORT_8BITMIME
 CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES
@@ -2763,18 +2792,20 @@ CAMEL_SMTP_TRANSPORT_AUTH_EQUAL
 <SUBSECTION Standard>
 CAMEL_SMTP_TRANSPORT
 CAMEL_IS_SMTP_TRANSPORT
+CAMEL_SMTP_TRANSPORT_TYPE
 camel_smtp_transport_get_type
 CAMEL_SMTP_TRANSPORT_CLASS
 </SECTION>
 
 <SECTION>
 <FILE>session</FILE>
-CAMEL_TEST_SESSION_TYPE
+CamelTestSession
 <TITLE>CamelTestSession</TITLE>
 camel_test_session_new
 <SUBSECTION Standard>
 CAMEL_TEST_SESSION
 CAMEL_TEST_IS_SESSION
+CAMEL_TEST_SESSION_TYPE
 camel_test_session_get_type
 CAMEL_TEST_SESSION_CLASS
 </SECTION>
@@ -2805,6 +2836,7 @@ camel_block_t
 camel_key_t
 CamelBlockRoot
 CamelBlock
+CamelBlockFile
 CAMEL_BLOCK_FILE_SYNC
 CAMEL_BLOCK_SIZE
 CAMEL_BLOCK_SIZE_BITS
