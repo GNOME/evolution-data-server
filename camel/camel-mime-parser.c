@@ -75,7 +75,7 @@ struct _header_scan_state {
 
     /* global state */
 
-	enum _camel_mime_parser_state state;
+	camel_mime_parser_state_t state;
 
 	/* for building headers during scanning */
 	char *outbuf;
@@ -121,7 +121,7 @@ struct _header_scan_state {
 struct _header_scan_stack {
 	struct _header_scan_stack *parent;
 
-	enum _camel_mime_parser_state savestate; /* state at invocation of this part */
+	camel_mime_parser_state_t savestate; /* state at invocation of this part */
 
 #ifdef MEMPOOL
 	EMemPool *pool;		/* memory pool to keep track of headers/etc at this level */
@@ -608,7 +608,7 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
  * Return value: The current new state of the parser
  * is returned.
  **/
-enum _camel_mime_parser_state
+camel_mime_parser_state_t
 camel_mime_parser_step (CamelMimeParser *parser, char **databuffer, size_t *datalength)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
@@ -800,7 +800,7 @@ camel_mime_parser_seek(CamelMimeParser *parser, off_t offset, int whence)
  * 
  * Return value: The current parser state.
  **/
-enum _camel_mime_parser_state
+camel_mime_parser_state_t
 camel_mime_parser_state (CamelMimeParser *parser)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
@@ -818,7 +818,7 @@ camel_mime_parser_state (CamelMimeParser *parser)
  * without headers.
  **/
 void
-camel_mime_parser_push_state(CamelMimeParser *mp, enum _camel_mime_parser_state newstate, const char *boundary)
+camel_mime_parser_push_state(CamelMimeParser *mp, camel_mime_parser_state_t newstate, const char *boundary)
 {
 	struct _header_scan_stack *h;
 	struct _header_scan_state *s = _PRIVATE(mp);

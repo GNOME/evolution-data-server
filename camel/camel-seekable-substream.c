@@ -94,7 +94,7 @@ camel_seekable_substream_get_type (void)
 
 /**
  * camel_seekable_substream_new:
- * @parent_stream: a seekable parent stream
+ * @parent_stream: a #CamelSeekableStream object
  * @inf_bound: a lower bound
  * @sup_bound: an upper bound
  *

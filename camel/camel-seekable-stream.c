@@ -94,26 +94,26 @@ seek (CamelSeekableStream *stream, off_t offset,
 }
 
 /**
- * camel_stream_seek:
- * @stream: a CamelStream object.
+ * camel_seekable_stream_seek:
+ * @stream: a #CamelStream object
  * @offset: offset value
  * @policy: what to do with the offset
  *
  * Seek to the specified position in @stream.
  *
- * If @policy is CAMEL_STREAM_SET, seeks to @offset.
+ * If @policy is #CAMEL_STREAM_SET, seeks to @offset.
  *
- * If @policy is CAMEL_STREAM_CUR, seeks to the current position plus
+ * If @policy is #CAMEL_STREAM_CUR, seeks to the current position plus
  * @offset.
  *
- * If @policy is CAMEL_STREAM_END, seeks to the end of the stream plus
+ * If @policy is #CAMEL_STREAM_END, seeks to the end of the stream plus
  * @offset.
  *
  * Regardless of @policy, the stream's final position will be clamped
  * to the range specified by its lower and upper bounds, and the
  * stream's eos state will be updated.
  *
- * Return value: new position, -1 if operation failed.
+ * Return value: new position, %-1 if operation failed.
  **/
 off_t
 camel_seekable_stream_seek (CamelSeekableStream *stream, off_t offset,
@@ -133,11 +133,11 @@ stream_tell (CamelSeekableStream *stream)
 
 /**
  * camel_seekable_stream_tell:
- * @stream: seekable stream object
+ * @stream: a #CamelSeekableStream object
  *
  * Get the current position of a seekable stream.
  *
- * Return value: the position.
+ * Returns the current position of the stream.
  **/
 off_t
 camel_seekable_stream_tell (CamelSeekableStream *stream)
@@ -162,15 +162,15 @@ set_bounds (CamelSeekableStream *stream, off_t start, off_t end)
 
 /**
  * camel_seekable_stream_set_bounds:
- * @stream: a seekable stream
+ * @stream: a #CamelSeekableStream object
  * @start: the first valid position
- * @end: the first invalid position, or CAMEL_STREAM_UNBOUND
+ * @end: the first invalid position, or #CAMEL_STREAM_UNBOUND
  *
  * Set the range of valid data this stream is allowed to cover.  If
  * there is to be no @end value, then @end should be set to
  * #CAMEL_STREAM_UNBOUND.
  *
- * Return value: -1 on error.
+ * Returns %-1 on error.
  **/
 int
 camel_seekable_stream_set_bounds (CamelSeekableStream *stream,

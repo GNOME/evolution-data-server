@@ -33,10 +33,10 @@ typedef struct _CamelOperation CamelOperation;
 
 typedef void (*CamelOperationStatusFunc)(struct _CamelOperation *op, const char *what, int pc, void *data);
 
-enum _camel_operation_status_t {
+typedef enum _camel_operation_status_t {
 	CAMEL_OPERATION_START = -1,
 	CAMEL_OPERATION_END = -2,
-};
+} camel_operation_status_t;
 
 /* main thread functions */
 CamelOperation *camel_operation_new(CamelOperationStatusFunc status, void *status_data);

@@ -55,18 +55,18 @@ struct _CamelException;
 typedef struct _CamelNNTPStore CamelNNTPStore;
 typedef struct _CamelNNTPStoreClass CamelNNTPStoreClass;
 
-enum _xover_t {
+typedef enum _xover_t {
 	XOVER_STRING = 0,
 	XOVER_MSGID,
 	XOVER_SIZE,
-};
+} xover_t;
 
 struct _xover_header {
 	struct _xover_header *next;
 
 	const char *name;
 	unsigned int skip:8;
-	enum _xover_t type:8;
+	xover_t type:8;
 };
 
 struct _CamelNNTPStore {

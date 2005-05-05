@@ -58,19 +58,20 @@ gboolean camel_search_camel_header_soundex(const char *header, const char *match
 const char *camel_ustrstrcase(const char *haystack, const char *needle);
 
 /* Some crappy utility functions for handling multiple search words */
-enum _camel_search_word_t {
+typedef enum _camel_search_word_t {
 	CAMEL_SEARCH_WORD_SIMPLE = 1,
 	CAMEL_SEARCH_WORD_COMPLEX = 2,
 	CAMEL_SEARCH_WORD_8BIT = 4,
-};
+} camel_search_word_t;
+
 struct _camel_search_word {
-	enum _camel_search_word_t type;
+	camel_search_word_t type;
 	char *word;
 };
 
 struct _camel_search_words {
 	int len;
-	enum _camel_search_word_t type;	/* OR of all word types in list */
+	camel_search_word_t type;	/* OR of all word types in list */
 	struct _camel_search_word **words;
 };
 

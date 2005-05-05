@@ -157,17 +157,17 @@ init(CamelStreamBuffer *sbuf, CamelStream *s, CamelStreamBufferMode mode)
 
 /**
  * camel_stream_buffer_new:
- * @stream: Existing stream to buffer.
+ * @stream: a #CamelStream object to buffer
  * @mode: Operational mode of buffered stream.
  *
  * Create a new buffered stream of another stream.  A default
  * buffer size (1024 bytes), automatically managed will be used
  * for buffering.
  *
- * See camel_stream_buffer_new_with_vbuf() for details on the
+ * See #camel_stream_buffer_new_with_vbuf for details on the
  * @mode parameter.
  *
- * Return value: A newly created buffered stream.
+ * Returns a newly created buffered stream.
  **/
 CamelStream *
 camel_stream_buffer_new (CamelStream *stream, CamelStreamBufferMode mode)
@@ -191,18 +191,18 @@ camel_stream_buffer_new (CamelStream *stream, CamelStreamBufferMode mode)
  *
  * The following values are available for @mode:
  *
- * CAMEL_STREAM_BUFFER_BUFFER, Buffer the input/output in blocks.
- * CAMEL_STREAM_BUFFER_NEWLINE, Buffer on newlines (for output).
- * CAMEL_STREAM_BUFFER_NONE, Perform no buffering.
+ * #CAMEL_STREAM_BUFFER_BUFFER, Buffer the input/output in blocks.
+ * #CAMEL_STREAM_BUFFER_NEWLINE, Buffer on newlines (for output).
+ * #CAMEL_STREAM_BUFFER_NONE, Perform no buffering.
  *
- * Note that currently this is ignored and CAMEL_STREAM_BUFFER_BUFFER
+ * Note that currently this is ignored and #CAMEL_STREAM_BUFFER_BUFFER
  * is always used.
  *
  * In addition, one of the following mode options should be or'd
  * together with the buffering mode:
  *
- * CAMEL_STREAM_BUFFER_WRITE, Buffer in write mode.
- * CAMEL_STREAM_BUFFER_READ, Buffer in read mode.
+ * #CAMEL_STREAM_BUFFER_WRITE, Buffer in write mode.
+ * #CAMEL_STREAM_BUFFER_READ, Buffer in read mode.
  *
  * Buffering can only be done in one direction for any
  * buffer instance.
@@ -215,7 +215,8 @@ camel_stream_buffer_new (CamelStream *stream, CamelStreamBufferMode mode)
  *
  * Return value: A new stream with buffering applied.
  **/
-CamelStream *camel_stream_buffer_new_with_vbuf (CamelStream *stream, CamelStreamBufferMode mode, char *buf, guint32 size)
+CamelStream *
+camel_stream_buffer_new_with_vbuf (CamelStream *stream, CamelStreamBufferMode mode, char *buf, guint32 size)
 {
 	CamelStreamBuffer *sbf;
 	sbf = CAMEL_STREAM_BUFFER (camel_object_new (camel_stream_buffer_get_type ()));
@@ -369,7 +370,7 @@ stream_eos (CamelStream *stream)
 
 /**
  * camel_stream_buffer_gets:
- * @sbf: A CamelStreamBuffer.
+ * @sbf: a #CamelStreamBuffer object
  * @buf: Memory to write the string to.
  * @max: Maxmimum number of characters to store.
  *
@@ -379,10 +380,11 @@ stream_eos (CamelStream *stream)
  * If the newline character is encountered, then it will be
  * included in the buffer @buf.  The buffer will be #NUL terminated.
  *
- * Return value: The number of characters read, or 0 for end of file,
- * and -1 on error.
+ * Returns the number of characters read, or %0 for end of file,
+ * and %-1 on error.
  **/
-int camel_stream_buffer_gets(CamelStreamBuffer *sbf, char *buf, unsigned int max)
+int
+camel_stream_buffer_gets(CamelStreamBuffer *sbf, char *buf, unsigned int max)
 {
 	register char *outptr, *inptr, *inend, c, *outend;
 	int bytes_read;
@@ -424,14 +426,14 @@ int camel_stream_buffer_gets(CamelStreamBuffer *sbf, char *buf, unsigned int max
 
 /**
  * camel_stream_buffer_read_line: read a complete line from the stream
- * @sbf: A CamelStreamBuffer
+ * @sbf: a #CamelStreamBuffer object
  *
  * This function reads a complete newline-terminated line from the stream
  * and returns it in allocated memory. The trailing newline (and carriage
  * return if any) are not included in the returned string.
  *
- * Return value: the line read, which the caller must free when done with,
- * or NULL on eof. If an error occurs, @ex will be set.
+ * Returns the line read, which the caller must free when done with,
+ * or %NULL on eof. If an error occurs, @ex will be set.
  **/
 char *
 camel_stream_buffer_read_line (CamelStreamBuffer *sbf)
@@ -466,9 +468,3 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf)
 
 	return g_strdup(sbf->linebuf);
 }
-
-
-
-
-
-

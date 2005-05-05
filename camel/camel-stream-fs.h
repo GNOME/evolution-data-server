@@ -30,7 +30,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 /* for open flags */
 #include <sys/types.h>
@@ -44,8 +44,7 @@ extern "C" {
 #define CAMEL_STREAM_FS_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_FS_TYPE, CamelStreamFsClass))
 #define CAMEL_IS_STREAM_FS(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_FS_TYPE))
 
-struct _CamelStreamFs
-{
+struct _CamelStreamFs {
 	CamelSeekableStream parent_object;
 
 	int fd;             /* file descriptor on the underlying file */

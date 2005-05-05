@@ -251,12 +251,13 @@ donothing:
 	*outprespace = prespace;
 }
 
+
 /**
  * camel_mime_filter_basic_new:
  *
- * Create a new CamelMimeFilterBasic object.
+ * Create a new #CamelMimeFilterBasic object.
  * 
- * Return value: A new CamelMimeFilterBasic widget.
+ * Returns a new #CamelMimeFilterBasic object
  **/
 CamelMimeFilterBasic *
 camel_mime_filter_basic_new (void)
@@ -265,6 +266,15 @@ camel_mime_filter_basic_new (void)
 	return new;
 }
 
+
+/**
+ * camel_mime_filter_basic_new_type:
+ * @type: a #CamelMimeFilterBasicType type
+ *
+ * Create a new #CamelMimeFilterBasic object of type @type.
+ * 
+ * Returns a new #CamelMimeFilterBasic object
+ **/
 CamelMimeFilterBasic *
 camel_mime_filter_basic_new_type(CamelMimeFilterBasicType type)
 {

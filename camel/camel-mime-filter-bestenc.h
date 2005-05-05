@@ -37,7 +37,7 @@ extern "C" {
 
 typedef struct _CamelMimeFilterBestencClass CamelMimeFilterBestencClass;
 
-enum _CamelBestencRequired {
+typedef enum _CamelBestencRequired {
 	CAMEL_BESTENC_GET_ENCODING = 1<<0,
 	CAMEL_BESTENC_GET_CHARSET = 1<<1,
 
@@ -45,18 +45,16 @@ enum _CamelBestencRequired {
 	CAMEL_BESTENC_LF_IS_CRLF = 1<<8,
 	/* do we not allow "From " to appear at the start of a line in any part? */
 	CAMEL_BESTENC_NO_FROM = 1<<9,
-};
-typedef enum _CamelBestencRequired CamelBestencRequired;
+} CamelBestencRequired;
 
-enum _CamelBestencEncoding {
+typedef enum _CamelBestencEncoding {
 	CAMEL_BESTENC_7BIT,
 	CAMEL_BESTENC_8BIT,
 	CAMEL_BESTENC_BINARY,
 	
 	/* is the content stream to be treated as text? */
 	CAMEL_BESTENC_TEXT = 1<<8,
-};
-typedef enum _CamelBestencEncoding CamelBestencEncoding;
+} CamelBestencEncoding;
 
 struct _CamelMimeFilterBestenc {
 	CamelMimeFilter parent;
@@ -90,9 +88,9 @@ CamelType		camel_mime_filter_bestenc_get_type	(void);
 CamelMimeFilterBestenc      *camel_mime_filter_bestenc_new	(unsigned int flags);
 
 
-CamelTransferEncoding	camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *f, CamelBestencEncoding required);
-const char *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *f);
-void 			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *f, unsigned int flags);
+CamelTransferEncoding	camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required);
+const char *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *filter);
+void 			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, unsigned int flags);
 
 #ifdef __cplusplus
 }

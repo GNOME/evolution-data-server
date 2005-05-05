@@ -1120,7 +1120,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 						
 			if (w == -1)
 				goto exception;
-
+			
 			d(printf ("wrote %d (out of %d) bytes to gpg's stdin\n", nwritten, nread));
 		}
 		
@@ -1132,8 +1132,8 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	}
 	
 	return 0;
-
-exception:
+	
+ exception:
 	/* always called on an i/o error */
 	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to execute gpg: %s"), g_strerror(errno));
 	gpg_ctx_op_cancel(gpg);

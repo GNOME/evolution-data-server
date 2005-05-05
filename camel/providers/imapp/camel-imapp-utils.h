@@ -8,7 +8,7 @@
    can be done more accurately? */
 
 /* list of strings we know about that can be *quickly* tokenised */
-enum _imap_id {
+typedef enum _camel_imapp_id_t {
 	IMAP_UNKNOWN = 0,
 	IMAP_ALERT,
 	IMAP_BYE,
@@ -33,10 +33,10 @@ enum _imap_id {
 	IMAP_BODYSTRUCTURE,
 	IMAP_BODY,
 	IMAP_UID,
-};
+} camel_imapp_id_t;
 
 /* str MUST be in upper case, tokenised using gperf function */
-enum _imap_id imap_tokenise(register const char *str, register unsigned int len);
+camel_imapp_id_t imap_tokenise(register const char *str, register unsigned int len);
 
 /* this flag should be part of imapfoldersummary */
 enum {
@@ -94,8 +94,8 @@ void imap_dump_fetch(struct _fetch_info *finfo);
 /* ********************************************************************** */
 
 struct _status_info {
-	enum _imap_id result; /* ok/no/bad/preauth only */
-	enum _imap_id condition; /* read-only/read-write/alert/parse/trycreate/newname/permanentflags/uidvalidity/unseen */
+	camel_imapp_id_t result; /* ok/no/bad/preauth only */
+	camel_imapp_id_t condition; /* read-only/read-write/alert/parse/trycreate/newname/permanentflags/uidvalidity/unseen */
 
 	union {
 		struct {

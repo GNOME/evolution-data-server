@@ -30,7 +30,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -42,8 +42,7 @@ extern "C" {
 #define CAMEL_IS_SEEKABLE_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SEEKABLE_STREAM_TYPE))
 
 
-typedef enum
-{
+typedef enum {
 	CAMEL_STREAM_SET = SEEK_SET,
 	CAMEL_STREAM_CUR = SEEK_CUR,
 	CAMEL_STREAM_END = SEEK_END
@@ -51,8 +50,7 @@ typedef enum
 
 #define CAMEL_STREAM_UNBOUND (~0)
 
-struct _CamelSeekableStream
-{
+struct _CamelSeekableStream {
 	CamelStream parent_object;
 
 	off_t position;		/* current postion in the stream */
@@ -78,7 +76,7 @@ CamelType camel_seekable_stream_get_type (void);
 off_t    camel_seekable_stream_seek            (CamelSeekableStream *stream, off_t offset,
 						CamelStreamSeekPolicy policy);
 off_t	 camel_seekable_stream_tell    	       (CamelSeekableStream *stream);
-int	 camel_seekable_stream_set_bounds      (CamelSeekableStream *, off_t start, off_t end);
+int	 camel_seekable_stream_set_bounds      (CamelSeekableStream *stream, off_t start, off_t end);
 
 #ifdef __cplusplus
 }

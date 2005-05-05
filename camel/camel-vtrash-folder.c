@@ -90,7 +90,7 @@ camel_vtrash_folder_get_type (void)
  * Return value: A new CamelVeeFolder widget.
  **/
 CamelFolder *
-camel_vtrash_folder_new (CamelStore *parent_store, enum _camel_vtrash_folder_t type)
+camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 {
 	CamelVTrashFolder *vtrash;
 	

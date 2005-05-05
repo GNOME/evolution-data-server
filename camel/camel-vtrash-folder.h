@@ -42,11 +42,11 @@ typedef struct _CamelVTrashFolderClass CamelVTrashFolderClass;
 #define CAMEL_VTRASH_NAME ".#evolution/Trash"
 #define CAMEL_VJUNK_NAME ".#evolution/Junk"
 
-enum _camel_vtrash_folder_t {
+typedef enum _camel_vtrash_folder_t {
 	CAMEL_VTRASH_FOLDER_TRASH,
 	CAMEL_VTRASH_FOLDER_JUNK,
 	CAMEL_VTRASH_FOLDER_LAST
-};
+} camel_vtrash_folder_t;
 
 struct _CamelVTrashFolder {
 	CamelVeeFolder parent;
@@ -62,7 +62,7 @@ struct _CamelVTrashFolderClass {
 
 CamelType       camel_vtrash_folder_get_type    (void);
 
-CamelFolder    *camel_vtrash_folder_new		(CamelStore *parent_store, enum _camel_vtrash_folder_t type);
+CamelFolder    *camel_vtrash_folder_new		(CamelStore *parent_store, camel_vtrash_folder_t type);
 
 #ifdef __cplusplus
 }

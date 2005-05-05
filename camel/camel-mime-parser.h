@@ -43,7 +43,7 @@ typedef struct _CamelMimeParserClass CamelMimeParserClass;
 /* NOTE: if you add more states, you may need to bump the
    start of the END tags to 16 or 32, etc - so they are
    the same as the matching start tag, with a bit difference */
-enum _camel_mime_parser_state {
+typedef enum _camel_mime_parser_state_t {
 	CAMEL_MIME_PARSER_STATE_INITIAL,
 	CAMEL_MIME_PARSER_STATE_PRE_FROM,       /* data before a 'From' line */
 	CAMEL_MIME_PARSER_STATE_FROM,           /* got 'From' line */
@@ -63,7 +63,7 @@ enum _camel_mime_parser_state {
 	CAMEL_MIME_PARSER_STATE_BODY_END,       /* end of message */
 	CAMEL_MIME_PARSER_STATE_MULTIPART_END,  /* end of multipart  */
 	CAMEL_MIME_PARSER_STATE_MESSAGE_END,    /* end of message */
-};
+} camel_mime_parser_state_t;
 
 struct _CamelMimeParser {
 	CamelObject parent;
@@ -102,11 +102,11 @@ void camel_mime_parser_scan_pre_from (CamelMimeParser *parser, gboolean scan_pre
 int camel_mime_parser_set_header_regex (CamelMimeParser *parser, char *matchstr);
 
 /* normal interface */
-enum _camel_mime_parser_state camel_mime_parser_step (CamelMimeParser *parser, char **buf, size_t *buflen);
+camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, char **buf, size_t *buflen);
 void camel_mime_parser_unstep (CamelMimeParser *parser);
 void camel_mime_parser_drop_step (CamelMimeParser *parser);
-enum _camel_mime_parser_state camel_mime_parser_state (CamelMimeParser *parser);
-void camel_mime_parser_push_state(CamelMimeParser *mp, enum _camel_mime_parser_state newstate, const char *boundary);
+camel_mime_parser_state_t camel_mime_parser_state (CamelMimeParser *parser);
+void camel_mime_parser_push_state(CamelMimeParser *mp, camel_mime_parser_state_t newstate, const char *boundary);
 
 /* read through the parser */
 int camel_mime_parser_read (CamelMimeParser *parser, const char **databuffer, int len);

@@ -55,24 +55,24 @@ typedef enum {
 	CAMEL_CIPHER_HASH_HAVAL5160
 } CamelCipherHash;
 
-enum _camel_cipher_validity_sign_t {
+typedef enum _camel_cipher_validity_sign_t {
 	CAMEL_CIPHER_VALIDITY_SIGN_NONE,
 	CAMEL_CIPHER_VALIDITY_SIGN_GOOD,
 	CAMEL_CIPHER_VALIDITY_SIGN_BAD,
 	CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN,
-};
+} camel_cipher_validity_sign_t;
 
-enum _camel_cipher_validity_encrypt_t {
+typedef enum _camel_cipher_validity_encrypt_t {
 	CAMEL_CIPHER_VALIDITY_ENCRYPT_NONE,
 	CAMEL_CIPHER_VALIDITY_ENCRYPT_WEAK,
 	CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED, /* encrypted, unknown strenght */
 	CAMEL_CIPHER_VALIDITY_ENCRYPT_STRONG,
-};
+} camel_cipher_validity_encrypt_t;
 
-enum _camel_cipher_validity_mode_t {
+typedef enum _camel_cipher_validity_mode_t {
 	CAMEL_CIPHER_VALIDITY_SIGN,
 	CAMEL_CIPHER_VALIDITY_ENCRYPT,
-};
+} camel_cipher_validity_mode_t;
 
 struct _CamelCipherCertInfo {
 	struct _CamelCipherCertInfo *next;
@@ -177,7 +177,7 @@ char                *camel_cipher_validity_get_description (CamelCipherValidity 
 void                 camel_cipher_validity_set_description (CamelCipherValidity *validity, const char *description);
 void                 camel_cipher_validity_clear (CamelCipherValidity *validity);
 CamelCipherValidity *camel_cipher_validity_clone(CamelCipherValidity *vin);
-void		     camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_validity_mode_t mode, const char *name, const char *email);
+void		     camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const char *name, const char *email);
 void		     camel_cipher_validity_envelope(CamelCipherValidity *valid, CamelCipherValidity *outer);
 void                 camel_cipher_validity_free (CamelCipherValidity *validity);
 

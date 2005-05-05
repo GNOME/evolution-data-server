@@ -62,7 +62,7 @@ struct _CamelMessageContentInfo {
 };
 
 /* system flag bits */
-enum _CamelMessageFlags {
+typedef enum _CamelMessageFlags {
 	CAMEL_MESSAGE_ANSWERED = 1<<0,
 	CAMEL_MESSAGE_DELETED = 1<<1,
 	CAMEL_MESSAGE_DRAFT = 1<<2,
@@ -85,7 +85,8 @@ enum _CamelMessageFlags {
 					     to say that we request junk plugin
 					     to learn that message as junk/non junk */
 	CAMEL_MESSAGE_USER = 1<<31 /* supports user flags */
-};
+} CamelMessageFlags;
+
 /* Changes to system flags will NOT trigger a folder changed event */
 #define CAMEL_MESSAGE_SYSTEM_MASK (0xffff << 16)
 
@@ -189,9 +190,9 @@ struct _CamelChangeInfo {
 };
 */
 
-enum _CamelFolderSummaryFlags {
+typedef enum _CamelFolderSummaryFlags {
 	CAMEL_SUMMARY_DIRTY = 1<<0,
-};
+} CamelFolderSummaryFlags;
 
 struct _CamelFolderSummary {
 	CamelObject parent;

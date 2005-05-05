@@ -31,9 +31,7 @@ extern "C" {
 #include <camel/camel-folder.h>
 
 typedef struct _CamelFolderThreadNode {
-	struct _CamelFolderThreadNode *next,
-		*parent,
-		*child;
+	struct _CamelFolderThreadNode *next, *parent, *child;
 	const CamelMessageInfo *message;
 	char *root_subject;	/* cached root equivalent subject */
 	guint32 order:31;

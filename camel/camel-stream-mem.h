@@ -30,7 +30,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 #include <sys/types.h>
 #include <camel/camel-seekable-stream.h>
@@ -65,11 +65,11 @@ CamelStream *camel_stream_mem_new_with_byte_array(GByteArray *buffer);
 CamelStream *camel_stream_mem_new_with_buffer(const char *buffer, size_t len);
 
 /* 'secure' data, currently just clears memory on finalise */
-void camel_stream_mem_set_secure(CamelStreamMem *);
+void camel_stream_mem_set_secure(CamelStreamMem *mem);
 
 /* these are really only here for implementing classes */
-void camel_stream_mem_set_byte_array(CamelStreamMem *, GByteArray *buffer);
-void camel_stream_mem_set_buffer(CamelStreamMem *, const char *buffer, size_t len);
+void camel_stream_mem_set_byte_array(CamelStreamMem *mem, GByteArray *buffer);
+void camel_stream_mem_set_buffer(CamelStreamMem *mem, const char *buffer, size_t len);
 
 #ifdef __cplusplus
 }

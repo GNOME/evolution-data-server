@@ -22,7 +22,7 @@
 
 /* ANSI-C code produced by gperf version 2.7 */
 /* Command-line: gperf -H imap_hash -N imap_tokenise -L ANSI-C -o -t -k1,$ imap-tokens.txt  */
-struct _imap_keyword { char *name; enum _imap_id id; };
+struct _imap_keyword { char *name; camel_imapp_id_t id; };
 /*
  gperf input file
  best hash generated using: gperf -o -s-2 -k1,'$' -t -H imap_hash -N imap_tokenise -L ANSI-C 
@@ -76,7 +76,7 @@ imap_hash (register const char *str, register unsigned int len)
 #ifdef __GNUC__
 __inline
 #endif
-enum _imap_id
+camel_imapp_id_t
 imap_tokenise (register const char *str, register unsigned int len)
 {
   static struct _imap_keyword wordlist[] =

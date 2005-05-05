@@ -102,12 +102,13 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 	/* default - do nothing */
 }
 
+
 /**
  * camel_mime_filter_new:
  *
- * Create a new CamelMimeFilter object.
+ * Create a new #CamelMimeFilter object.
  * 
- * Return value: A new CamelMimeFilter widget.
+ * Returns a new #CamelMimeFilter
  **/
 CamelMimeFilter *
 camel_mime_filter_new (void)
@@ -193,64 +194,126 @@ static void filter_run(CamelMimeFilter *f,
 
 }
 
-void camel_mime_filter_filter(CamelMimeFilter *f,
-			      char *in, size_t len, size_t prespace,
-			      char **out, size_t *outlen, size_t *outprespace)
+
+/**
+ * camel_mime_filter_filter:
+ * @filter: a #CamelMimeFilter object
+ * @in: input buffer
+ * @len: length of @in
+ * @prespace: amount of prespace
+ * @out: pointer to the output buffer (to be set)
+ * @outlen: pointer to the length of the output buffer (to be set)
+ * @outprespace: pointer to the output prespace length (to be set)
+ *
+ * Passes the input buffer, @in, through @filter and generates an
+ * output buffer, @out.
+ **/
+void
+camel_mime_filter_filter (CamelMimeFilter *filter,
+			  char *in, size_t len, size_t prespace,
+			  char **out, size_t *outlen, size_t *outprespace)
 {
-	if (FCLASS(f)->filter)
-		filter_run(f, in, len, prespace, out, outlen, outprespace, FCLASS(f)->filter);
+	if (FCLASS(filter)->filter)
+		filter_run(filter, in, len, prespace, out, outlen, outprespace, FCLASS(filter)->filter);
 	else
 		g_error("Filter function unplmenented in class");
 }
 
-void camel_mime_filter_complete(CamelMimeFilter *f,
-				char *in, size_t len, size_t prespace,
-				char **out, size_t *outlen, size_t *outprespace)
+
+/**
+ * camel_mime_filter_complete:
+ * @filter: a #CamelMimeFilter object
+ * @in: input buffer
+ * @len: length of @in
+ * @prespace: amount of prespace
+ * @out: pointer to the output buffer (to be set)
+ * @outlen: pointer to the length of the output buffer (to be set)
+ * @outprespace: pointer to the output prespace length (to be set)
+ *
+ * Passes the input buffer, @in, through @filter and generates an
+ * output buffer, @out and makes sure that all data is flushed to the
+ * output buffer. This must be the last filtering call made, no
+ * further calls to #camel_mime_filter_filter may be called on @filter
+ * until @filter has been reset using #camel_mime_filter_reset.
+ **/
+void
+camel_mime_filter_complete (CamelMimeFilter *filter,
+			    char *in, size_t len, size_t prespace,
+			    char **out, size_t *outlen, size_t *outprespace)
 {
-	if (FCLASS(f)->complete)
-		filter_run(f, in, len, prespace, out, outlen, outprespace, FCLASS(f)->complete);
+	if (FCLASS(filter)->complete)
+		filter_run(filter, in, len, prespace, out, outlen, outprespace, FCLASS(filter)->complete);
 }
 
-void camel_mime_filter_reset(CamelMimeFilter *f)
+
+/**
+ * camel_mime_filter_reset:
+ * @filter: a #CamelMimeFilter object
+ *
+ * Resets the state on @filter so that it may be used again.
+ **/
+void
+camel_mime_filter_reset(CamelMimeFilter *filter)
 {
-	if (FCLASS(f)->reset) {
-		FCLASS(f)->reset(f);
+	if (FCLASS(filter)->reset) {
+		FCLASS(filter)->reset(filter);
 	}
 
 	/* could free some buffers, if they are really big? */
-	f->backlen = 0;
+	filter->backlen = 0;
 }
 
-/* sets number of bytes backed up on the input, new calls replace previous ones */
-void camel_mime_filter_backup(CamelMimeFilter *f, const char *data, size_t length)
+
+/**
+ * camel_mime_filter_backup:
+ * @filter: a #camelMimeFilter object
+ * @data: data buffer to backup
+ * @length: length of @data
+ *
+ * Saves @data to be used as prespace input data to the next call to
+ * #camel_mime_filter_filter or #camel_mime_filter_complete.
+ *
+ * Note: New calls replace old data.
+ **/
+void
+camel_mime_filter_backup(CamelMimeFilter *filter, const char *data, size_t length)
 {
-	if (f->backsize < length) {
+	if (filter->backsize < length) {
 		/* g_realloc copies data, unnecessary overhead */
-		g_free(f->backbuf);
-		f->backbuf = g_malloc(length+BACK_HEAD);
-		f->backsize = length+BACK_HEAD;
+		g_free(filter->backbuf);
+		filter->backbuf = g_malloc(length+BACK_HEAD);
+		filter->backsize = length+BACK_HEAD;
 	}
-	f->backlen = length;
-	memcpy(f->backbuf, data, length);
+	filter->backlen = length;
+	memcpy(filter->backbuf, data, length);
 }
 
-/* ensure this much size available for filter output (if required) */
-void camel_mime_filter_set_size(CamelMimeFilter *f, size_t size, int keep)
+
+/**
+ * camel_mime_filter_set_size:
+ * @filter: a #camelMimeFilter object
+ * @size: requested amount of storage space
+ * @keep: %TRUE to keep existing buffered data or %FALSE otherwise
+ *
+ * Ensure that @filter has enough storage space to store @size bytes
+ * for filter output.
+ **/
+void
+camel_mime_filter_set_size(CamelMimeFilter *filter, size_t size, int keep)
 {
-	if (f->outsize < size) {
-		int offset = f->outptr - f->outreal;
+	if (filter->outsize < size) {
+		int offset = filter->outptr - filter->outreal;
 		if (keep) {
-			f->outreal = g_realloc(f->outreal, size + PRE_HEAD*4);
+			filter->outreal = g_realloc(filter->outreal, size + PRE_HEAD*4);
 		} else {
-			g_free(f->outreal);
-			f->outreal = g_malloc(size + PRE_HEAD*4);
+			g_free(filter->outreal);
+			filter->outreal = g_malloc(size + PRE_HEAD*4);
 		}
-		f->outptr = f->outreal + offset;
-		f->outbuf = f->outreal + PRE_HEAD*4;
-		f->outsize = size;
+		filter->outptr = filter->outreal + offset;
+		filter->outbuf = filter->outreal + PRE_HEAD*4;
+		filter->outsize = size;
 		/* this could be offset from the end of the structure, but 
 		   this should be good enough */
-		f->outpre = PRE_HEAD*4;
+		filter->outpre = PRE_HEAD*4;
 	}
 }
-

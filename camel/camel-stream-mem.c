@@ -111,12 +111,33 @@ camel_stream_mem_get_type (void)
 }
 
 
+/**
+ * camel_stream_mem_new:
+ *
+ * Create a new #CamelStreamMem object.
+ *
+ * Returns a new #CamelStreamMem
+ **/
 CamelStream *
 camel_stream_mem_new (void)
 {
 	return camel_stream_mem_new_with_byte_array (g_byte_array_new ());
 }
 
+
+/**
+ * camel_stream_mem_new_with_buffer:
+ * @buffer: a memory buffer to use as the stream data
+ * @len: length of @buffer
+ *
+ * Create a new memory stream using @byte_array as the stream data.
+ *
+ * Note: @buffer will be copied into an internal #GByteArray structure
+ * for use as the stream backing. This may have resource implications
+ * you may wish to consider.
+ *
+ * Returns a new #CamelStreamMem
+ **/
 CamelStream *
 camel_stream_mem_new_with_buffer (const char *buffer, size_t len)
 {
@@ -127,53 +148,94 @@ camel_stream_mem_new_with_buffer (const char *buffer, size_t len)
 	return camel_stream_mem_new_with_byte_array (ba);
 }
 
+
+/**
+ * camel_stream_mem_new_with_byte_array:
+ * @buffer: a #GByteArray to use as the stream data
+ *
+ * Create a new #CamelStreamMem using @buffer as the stream data.
+ *
+ * Note: The newly created #CamelStreamMem will destroy @buffer
+ * when destroyed.
+ *
+ * Returns a new #CamelStreamMem
+ **/
 CamelStream *
-camel_stream_mem_new_with_byte_array (GByteArray *byte_array)
+camel_stream_mem_new_with_byte_array (GByteArray *buffer)
 {
 	CamelStreamMem *stream_mem;
 
-	stream_mem = CAMEL_STREAM_MEM( camel_object_new (CAMEL_STREAM_MEM_TYPE) );
-	stream_mem->buffer = byte_array;
+	stream_mem = CAMEL_STREAM_MEM (camel_object_new (CAMEL_STREAM_MEM_TYPE));
+	stream_mem->buffer = buffer;
 	stream_mem->owner = TRUE;
 
 	return CAMEL_STREAM (stream_mem);
 }
 
+
 /**
  * camel_stream_mem_set_secure:
- * @s: 
+ * @mem: a #CamelStreamMem object
  * 
  * Mark the memory stream as secure.  At the very least this means the
  * data in the buffer will be cleared when the buffer is finalised.
  * This only applies to buffers owned by the stream.
  **/
-void camel_stream_mem_set_secure(CamelStreamMem *s)
+void
+camel_stream_mem_set_secure(CamelStreamMem *mem)
 {
-	s->secure = 1;
+	mem->secure = 1;
 	/* setup a mem-locked buffer etc?  blah blah, well not yet anyway */
 }
 
+
 /* note: with these functions the caller is the 'owner' of the buffer */
-void camel_stream_mem_set_byte_array (CamelStreamMem *s, GByteArray *buffer)
+
+/**
+ * camel_stream_mem_set_byte_array:
+ * @mem: a #CamelStreamMem object
+ * @buffer: a #GByteArray
+ *
+ * Set @buffer to be the backing data to the existing #CamelStreamMem, @mem.
+ *
+ * Note: @mem will not take ownership of @buffer and so will need to
+ * be freed separately from @mem.
+ **/
+void
+camel_stream_mem_set_byte_array (CamelStreamMem *mem, GByteArray *buffer)
 {
-	if (s->buffer && s->owner) {
-		if (s->secure && s->buffer->len)
-			clear_mem(s->buffer->data, s->buffer->len);
-		g_byte_array_free(s->buffer, TRUE);
+	if (mem->buffer && mem->owner) {
+		if (mem->secure && mem->buffer->len)
+			clear_mem (mem->buffer->data, mem->buffer->len);
+		g_byte_array_free (mem->buffer, TRUE);
 	}
-	s->owner = FALSE;
-	s->buffer = buffer;
+	mem->owner = FALSE;
+	mem->buffer = buffer;
 }
 
-void camel_stream_mem_set_buffer (CamelStreamMem *s, const char *buffer, size_t len)
+
+/**
+ * camel_stream_mem_set_buffer:
+ * @mem: a #CamelStreamMem object
+ * @buffer: a memory buffer
+ * @len: length of @buffer
+ *
+ * Set @buffer to be the backing data to the existing #CamelStreamMem, @mem.
+ *
+ * Note: @bufer will eb copied into an internal #GByteArray structure
+ * and so may have resource implications to consider.
+ **/
+void
+camel_stream_mem_set_buffer (CamelStreamMem *mem, const char *buffer, size_t len)
 {
 	GByteArray *ba;
 
 	ba = g_byte_array_new ();
 	g_byte_array_append(ba, (const guint8 *)buffer, len);
-	camel_stream_mem_set_byte_array(s, ba);
-	s->owner = TRUE;
+	camel_stream_mem_set_byte_array(mem, ba);
+	mem->owner = TRUE;
 }
+
 
 static void
 camel_stream_mem_finalize (CamelObject *object)

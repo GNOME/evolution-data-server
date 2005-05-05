@@ -46,7 +46,7 @@ typedef struct _CamelStoreSummaryClass CamelStoreSummaryClass;
 typedef struct _CamelStoreInfo CamelStoreInfo;
 
 /* FIXME: this needs to track the CAMEL_FOLDER_* flags in camel-store.h */
-enum _CamelStoreInfoFlags {
+typedef enum _CamelStoreInfoFlags {
 	CAMEL_STORE_INFO_FOLDER_NOSELECT = 1<<0,
 	CAMEL_STORE_INFO_FOLDER_NOINFERIORS = 1<<1,
 	CAMEL_STORE_INFO_FOLDER_CHILDREN = 1<<2,
@@ -62,7 +62,7 @@ enum _CamelStoreInfoFlags {
 	CAMEL_STORE_INFO_FOLDER_READONLY = 1<<13,
 
 	CAMEL_STORE_INFO_FOLDER_FLAGGED = 1<<31
-};
+} CamelStoreInfoFlags;
 
 #define CAMEL_STORE_INFO_FOLDER_UNKNOWN (~0)
 
@@ -82,10 +82,10 @@ struct _CamelStoreInfo {
 	guint32 total;
 };
 
-enum _CamelStoreSummaryFlags {
+typedef enum _CamelStoreSummaryFlags {
 	CAMEL_STORE_SUMMARY_DIRTY = 1<<0,
 	CAMEL_STORE_SUMMARY_FRAGMENT = 1<<1, /* path name is stored in fragment rather than path */
-};
+} CamelStoreSummaryFlags;
 
 struct _CamelStoreSummary {
 	CamelObject parent;

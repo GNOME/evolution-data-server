@@ -279,7 +279,6 @@ camel_charset_best_name (CamelCharset *charset)
 		return camel_charset_best_mask (charset->mask);
 	else
 		return NULL;
-
 }
 
 /* finds the minimum charset for this string NULL means US-ASCII */

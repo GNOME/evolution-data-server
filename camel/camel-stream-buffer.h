@@ -85,9 +85,9 @@ CamelType camel_stream_buffer_get_type (void);
 
 
 /* public methods */
-CamelStream *camel_stream_buffer_new (CamelStream *s,
+CamelStream *camel_stream_buffer_new (CamelStream *stream,
 				      CamelStreamBufferMode mode);
-CamelStream *camel_stream_buffer_new_with_vbuf (CamelStream *s,
+CamelStream *camel_stream_buffer_new_with_vbuf (CamelStream *stream,
 						CamelStreamBufferMode mode,
 						char *buf, guint32 size);
 
@@ -95,7 +95,7 @@ CamelStream *camel_stream_buffer_new_with_vbuf (CamelStream *s,
    CamelStream *camel_stream_buffer_set_vbuf (CamelStreamBuffer *b, CamelStreamBufferMode mode, char *buf, guint32 size); */
 
 /* read a line of characters */
-int camel_stream_buffer_gets (CamelStreamBuffer *b, char *buf, unsigned int max);
+int camel_stream_buffer_gets (CamelStreamBuffer *sbf, char *buf, unsigned int max);
 
 char *camel_stream_buffer_read_line (CamelStreamBuffer *sbf);
 

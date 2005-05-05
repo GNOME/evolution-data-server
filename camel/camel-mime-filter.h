@@ -71,21 +71,21 @@ struct _CamelMimeFilterClass {
 CamelType	      camel_mime_filter_get_type	(void);
 CamelMimeFilter      *camel_mime_filter_new	(void);
 
-void camel_mime_filter_filter(CamelMimeFilter *f,
+void camel_mime_filter_filter(CamelMimeFilter *filter,
 			      char *in, size_t len, size_t prespace,
 			      char **out, size_t *outlen, size_t *outprespace);
 
-void camel_mime_filter_complete(CamelMimeFilter *f,
+void camel_mime_filter_complete(CamelMimeFilter *filter,
 				char *in, size_t len, size_t prespace,
 				char **out, size_t *outlen, size_t *outprespace);
 
-void camel_mime_filter_reset(CamelMimeFilter *f);
+void camel_mime_filter_reset(CamelMimeFilter *filter);
 
 /* sets/returns number of bytes backed up on the input */
-void camel_mime_filter_backup(CamelMimeFilter *f, const char *data, size_t length);
+void camel_mime_filter_backup(CamelMimeFilter *filter, const char *data, size_t length);
 
 /* ensure this much size available for filter output */
-void camel_mime_filter_set_size(CamelMimeFilter *f, size_t size, int keep);
+void camel_mime_filter_set_size(CamelMimeFilter *filter, size_t size, int keep);
 
 #ifdef __cplusplus
 }

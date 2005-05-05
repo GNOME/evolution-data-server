@@ -89,15 +89,15 @@ typedef struct _CamelContentDisposition {
 	unsigned int refcount;
 } CamelContentDisposition;
 
-enum _camel_header_address_t {
+typedef enum _camel_header_address_t {
 	CAMEL_HEADER_ADDRESS_NONE,	/* uninitialised */
 	CAMEL_HEADER_ADDRESS_NAME,
 	CAMEL_HEADER_ADDRESS_GROUP
-};
+} camel_header_address_t;
 
 struct _camel_header_address {
 	struct _camel_header_address *next;
-	enum _camel_header_address_t type;
+	camel_header_address_t type;
 	char *name;
 	union {
 		char *addr;

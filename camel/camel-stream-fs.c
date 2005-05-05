@@ -113,7 +113,7 @@ camel_stream_fs_get_type (void)
  * backing store. When the stream is destroyed, the file descriptor
  * will be closed.
  *
- * Returns a new fs stream.
+ * Returns a new #CamelStreamFs
  **/
 CamelStream *
 camel_stream_fs_new_with_fd (int fd)
@@ -138,12 +138,12 @@ camel_stream_fs_new_with_fd (int fd)
  * camel_stream_fs_new_with_fd_and_bounds:
  * @fd: a file descriptor
  * @start: the first valid position in the file
- * @end: the first invalid position in the file, or CAMEL_STREAM_UNBOUND
+ * @end: the first invalid position in the file, or #CAMEL_STREAM_UNBOUND
  *
- * Returns a stream associated with the given file descriptor and bounds.
+ * Gets a stream associated with the given file descriptor and bounds.
  * When the stream is destroyed, the file descriptor will be closed.
  *
- * Return value: the stream
+ * Returns the bound stream
  **/
 CamelStream *
 camel_stream_fs_new_with_fd_and_bounds (int fd, off_t start, off_t end)
@@ -162,10 +162,10 @@ camel_stream_fs_new_with_fd_and_bounds (int fd, off_t start, off_t end)
  * @flags: flags as in open(2)
  * @mode: a file mode
  *
- * Creates a new CamelStream corresponding to the named file, flags,
+ * Creates a new #CamelStreamFs corresponding to the named file, flags,
  * and mode.
  *
- * Return value: the stream, or #NULL on error.
+ * Returns the new stream, or %NULL on error.
  **/
 CamelStream *
 camel_stream_fs_new_with_name (const char *name, int flags, mode_t mode)
@@ -186,11 +186,11 @@ camel_stream_fs_new_with_name (const char *name, int flags, mode_t mode)
  * @flags: flags as in open(2)
  * @mode: a file mode
  * @start: the first valid position in the file
- * @end: the first invalid position in the file, or CAMEL_STREAM_UNBOUND
+ * @end: the first invalid position in the file, or #CAMEL_STREAM_UNBOUND
  *
  * Creates a new CamelStream corresponding to the given arguments.
  *
- * Return value: the stream, or NULL on error.
+ * Returns the stream, or %NULL on error.
  **/
 CamelStream *
 camel_stream_fs_new_with_name_and_bounds (const char *name, int flags,

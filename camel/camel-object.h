@@ -105,9 +105,9 @@ enum {
 	CAMEL_OBJECT_PERSISTENT_PROPERTIES = CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES | CAMEL_ARG_PTR,
 };
 
-enum _CamelObjectFlags {
+typedef enum _CamelObjectFlags {
 	CAMEL_OBJECT_DESTROY = (1<<0),
-};
+} CamelObjectFlags;
 
 /* returned by get::CAMEL_OBJECT_METADATA */
 struct _CamelObjectMeta {

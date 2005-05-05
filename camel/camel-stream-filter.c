@@ -139,9 +139,9 @@ camel_stream_filter_get_type (void)
 /**
  * camel_stream_filter_new:
  *
- * Create a new CamelStreamFilter object.
+ * Create a new #CamelStreamFilter object.
  * 
- * Return value: A new CamelStreamFilter object.
+ * Returns a new #CamelStreamFilter object.
  **/
 CamelStreamFilter *
 camel_stream_filter_new_with_stream(CamelStream *stream)
@@ -156,27 +156,27 @@ camel_stream_filter_new_with_stream(CamelStream *stream)
 
 /**
  * camel_stream_filter_add:
- * @filter: Initialised CamelStreamFilter.
- * @mf:  Filter to perform processing on stream.
+ * @stream: a #CamelStreamFilter object
+ * @filter: a #CamelMimeFilter object
  * 
- * Add a new CamelMimeFilter to execute during the processing of this
+ * Add a new #CamelMimeFilter to execute during the processing of this
  * stream.  Each filter added is processed after the previous one.
  *
  * Note that a filter should only be added to a single stream
  * at a time, otherwise unpredictable results may occur.
  * 
- * Return value: A filter id for this CamelStreamFilter.
+ * Returns a filter id for the added @filter.
  **/
 int
-camel_stream_filter_add(CamelStreamFilter *filter, CamelMimeFilter *mf)
+camel_stream_filter_add (CamelStreamFilter *stream, CamelMimeFilter *filter)
 {
-	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
+	struct _CamelStreamFilterPrivate *p = _PRIVATE(stream);
 	struct _filter *fn, *f;
 
 	fn = g_malloc(sizeof(*fn));
 	fn->id = p->filterid++;
-	fn->filter = mf;
-	camel_object_ref((CamelObject *)mf);
+	fn->filter = filter;
+	camel_object_ref (filter);
 
 	/* sure, we could use a GList, but we wouldn't save much */
 	f = (struct _filter *)&p->filters;
@@ -189,15 +189,15 @@ camel_stream_filter_add(CamelStreamFilter *filter, CamelMimeFilter *mf)
 
 /**
  * camel_stream_filter_remove:
- * @filter: Initialised CamelStreamFilter.
- * @id: Filter id, as returned from camel_stream_filter_add().
+ * @stream: a #CamelStreamFilter object
+ * @id: Filter id, as returned from #camel_stream_filter_add
  * 
- * Remove a processing filter from the stream, by id.
+ * Remove a processing filter from the stream by id.
  **/
 void
-camel_stream_filter_remove(CamelStreamFilter *filter, int id)
+camel_stream_filter_remove(CamelStreamFilter *stream, int id)
 {
-	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
+	struct _CamelStreamFilterPrivate *p = _PRIVATE(stream);
 	struct _filter *fn, *f;
 
 	f = (struct _filter *)&p->filters;
@@ -205,7 +205,7 @@ camel_stream_filter_remove(CamelStreamFilter *filter, int id)
 		fn = f->next;
 		if (fn->id == id) {
 			f->next = fn->next;
-			camel_object_unref((CamelObject *)fn->filter);
+			camel_object_unref(fn->filter);
 			g_free(fn);
 		}
 		f = f->next;

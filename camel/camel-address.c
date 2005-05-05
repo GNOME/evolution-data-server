@@ -67,9 +67,9 @@ camel_address_get_type (void)
 /**
  * camel_address_new:
  *
- * Create a new CamelAddress object.
+ * Create a new #CamelAddress object.
  * 
- * Return value: A new CamelAddress widget.
+ * Returns a new CamelAddress widget.
  **/
 CamelAddress *
 camel_address_new (void)
