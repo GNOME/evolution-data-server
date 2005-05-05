@@ -489,25 +489,19 @@ CAMEL_HTTP_STREAM_CLASS
 <SECTION>
 <FILE>camel-index</FILE>
 CamelIndex
-CAMEL_INDEX_NAME
-CAMEL_INDEX_NAME_CLASS
-CAMEL_IS_INDEX_NAME
-CAMEL_INDEX_CURSOR
-CAMEL_INDEX_CURSOR_CLASS
-CAMEL_IS_INDEX_CURSOR
 CamelIndexNorm
 <TITLE>CamelIndexCursor</TITLE>
 camel_index_cursor_new
 camel_index_cursor_next
 camel_index_cursor_reset
 <TITLE>CamelIndexName</TITLE>
+CamelIndexName
 camel_index_name_get_type
 camel_index_name_new
 camel_index_name_add_word
 camel_index_name_add_buffer
 <TITLE>CamelIndex</TITLE>
 CAMEL_INDEX_DELETED
-camel_index_get_type
 camel_index_new
 camel_index_construct
 camel_index_rename
@@ -526,8 +520,16 @@ camel_index_names
 <SUBSECTION Standard>
 CAMEL_INDEX
 CAMEL_IS_INDEX
-camel_index_cursor_get_type
+camel_index_get_type
 CAMEL_INDEX_CLASS
+CAMEL_INDEX_NAME
+CAMEL_IS_INDEX_NAME
+camel_index_name_get_type
+CAMEL_INDEX_NAME_CLASS
+CAMEL_INDEX_CURSOR
+CAMEL_IS_INDEX_CURSOR
+camel_index_cursor_get_type
+CAMEL_INDEX_CURSOR_CLASS
 </SECTION>
 
 <SECTION>
@@ -602,7 +604,7 @@ CAMEL_MIME_FILTER_BESTENC_CLASS
 
 <SECTION>
 <FILE>camel-mime-filter-canon</FILE>
-CamelMimeFiletrCanon
+CamelMimeFilterCanon
 <TITLE>CamelMimeFilterCanon</TITLE>
 camel_mime_filter_canon_new
 <SUBSECTION Standard>
@@ -698,7 +700,7 @@ CAMEL_MIME_FILTER_HTML_CLASS
 
 <SECTION>
 <FILE>camel-mime-filter-index</FILE>
-CamelMimeFilterHTML
+CamelMimeFilterIndex
 <TITLE>CamelMimeFilterIndex</TITLE>
 camel_mime_filter_index_new
 camel_mime_filter_index_new_index
