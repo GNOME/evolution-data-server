@@ -157,6 +157,16 @@ reset (CamelMimeFilter *f)
 	crlf->saw_dot = FALSE;
 }
 
+
+/**
+ * camel_mime_filter_crlf_new:
+ * @direction: encode vs decode
+ * @mode: whether or not to perform SMTP dot-escaping
+ *
+ * Create a new #CamelMimeFiletrCRLF object.
+ *
+ * Returns a new #CamelMimeFilterCRLF object
+ **/
 CamelMimeFilter *
 camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction, CamelMimeFilterCRLFMode mode)
 {

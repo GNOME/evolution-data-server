@@ -240,12 +240,13 @@ camel_mime_filter_charset_init (CamelMimeFilterCharset *obj)
 	obj->ic = (iconv_t)-1;
 }
 
+
 /**
  * camel_mime_filter_charset_new:
  *
- * Create a new CamelMimeFilterCharset object.
+ * Create a new #CamelMimeFilterCharset object.
  * 
- * Return value: A new CamelMimeFilterCharset widget.
+ * Returns a new #CamelMimeFilterCharset object
  **/
 CamelMimeFilterCharset *
 camel_mime_filter_charset_new (void)
@@ -253,6 +254,17 @@ camel_mime_filter_charset_new (void)
 	return CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
 }
 
+
+/**
+ * camel_mime_filter_charset_new_convert:
+ * @from_charset: charset to convert from
+ * @to_charset: charset to convert to
+ *
+ * Create a new #CamelMimeFiletrCharset object to convert text from
+ * @from_charset to @to_charset.
+ *
+ * Returns a new #CamelMimeFilterCharset object
+ **/
 CamelMimeFilterCharset *
 camel_mime_filter_charset_new_convert (const char *from_charset, const char *to_charset)
 {

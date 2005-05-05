@@ -185,12 +185,13 @@ camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *klass)
 	filter_class->complete = complete;
 }
 
+
 /**
  * camel_mime_filter_html_new:
  *
- * Create a new CamelMimeFilterHTML object.
+ * Create a new #CamelMimeFilterHTML object.
  * 
- * Return value: A new CamelMimeFilterHTML widget.
+ * Returns a new #CamelMimeFilterHTML object
  **/
 CamelMimeFilterHTML *
 camel_mime_filter_html_new (void)

@@ -105,9 +105,9 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *klass)
 /**
  * camel_mime_filter_index_new:
  *
- * Create a new CamelMimeFilterIndex object.
+ * Create a new #CamelMimeFilterIndex object
  * 
- * Return value: A new CamelMimeFilterIndex widget.
+ * Returns a new #CamelMimeFilterIndex object
  **/
 CamelMimeFilterIndex *
 camel_mime_filter_index_new (void)
@@ -116,42 +116,68 @@ camel_mime_filter_index_new (void)
 	return new;
 }
 
-CamelMimeFilterIndex      *camel_mime_filter_index_new_index (struct _CamelIndex *index)
+
+/**
+ * camel_mime_filter_index_new_index:
+ * @index: a #CamelIndex object
+ *
+ * Create a new #CamelMimeFilterIndex based on @index.
+ *
+ * Returns a new #CamelMimeFilterIndex object
+ **/
+CamelMimeFilterIndex *
+camel_mime_filter_index_new_index (CamelIndex *index)
 {
 	CamelMimeFilterIndex *new = camel_mime_filter_index_new();
 
 	if (new) {
 		new->index = index;
 		if (index)
-			camel_object_ref((CamelObject *)index);
+			camel_object_ref (index);
 	}
 	return new;
 }
 
 /* Set the match name for any indexed words */
-void camel_mime_filter_index_set_name (CamelMimeFilterIndex *mf, struct _CamelIndexName *name)
+
+
+/**
+ * camel_mime_filter_index_set_name:
+ * @filter: a #CamelMimeFilterIndex object
+ * @name: a #CamelIndexName object
+ *
+ * Set the match name for any indexed words.
+ **/
+void
+camel_mime_filter_index_set_name (CamelMimeFilterIndex *filter, CamelIndexName *name)
 {
-	if (mf->name)
-		camel_object_unref((CamelObject *)mf->name);
-	mf->name = name;
+	if (filter->name)
+		camel_object_unref (filter->name);
+	filter->name = name;
 	if (name)
-		camel_object_ref((CamelObject *)name);
+		camel_object_ref (name);
 }
 
-void camel_mime_filter_index_set_index (CamelMimeFilterIndex *mf, CamelIndex *index)
+
+/**
+ * camel_mime_filter_index_set_index:
+ * @filter: a #CamelMimeFilterIndex object
+ * @index: a #CamelIndex object
+ *
+ * Set @index on @filter.
+ **/
+void
+camel_mime_filter_index_set_index (CamelMimeFilterIndex *filter, CamelIndex *index)
 {
-	if (mf->index) {
+	if (filter->index) {
 		char *out;
 		size_t outlen, outspace;
 
-		camel_mime_filter_complete((CamelMimeFilter *)mf, "", 0, 0, &out, &outlen, &outspace);
-		camel_object_unref ((CamelObject *)index);
+		camel_mime_filter_complete((CamelMimeFilter *)filter, "", 0, 0, &out, &outlen, &outspace);
+		camel_object_unref (index);
 	}
 
-	mf->index = index;
+	filter->index = index;
 	if (index)
-		camel_object_ref((CamelObject *)index);
+		camel_object_ref (index);
 }
-
-
-

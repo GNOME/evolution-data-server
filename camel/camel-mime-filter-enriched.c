@@ -566,11 +566,12 @@ filter_reset (CamelMimeFilter *filter)
 
 /**
  * camel_mime_filter_enriched_new:
- * @flags:
+ * @flags: bitwise set of flags to specify filter behaviour
  *
- * Creates a new CamelMimeFilterEnriched object.
+ * Create a new #CamelMimeFilterEnriched object to convert input text
+ * streams from text/plain into text/enriched or text/richtext.
  *
- * Returns a new CamelMimeFilter object.
+ * Returns a new #CamelMimeFilterEnriched object
  **/
 CamelMimeFilter *
 camel_mime_filter_enriched_new (guint32 flags)
@@ -583,6 +584,18 @@ camel_mime_filter_enriched_new (guint32 flags)
 	return CAMEL_MIME_FILTER (new);
 }
 
+
+/**
+ * camel_enriched_to_html:
+ * @in: input textual string
+ * @flags: flags specifying filter behaviour
+ *
+ * Convert @in from text/plain into text/enriched or text/richtext
+ * based on @flags.
+ *
+ * Returns a newly allocated string containing the enriched or
+ * richtext version of @in.
+ **/
 char *
 camel_enriched_to_html(const char *in, guint32 flags)
 {

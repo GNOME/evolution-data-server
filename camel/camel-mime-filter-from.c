@@ -168,12 +168,13 @@ camel_mime_filter_from_init (CamelMimeFilterFrom *obj)
 	;
 }
 
+
 /**
  * camel_mime_filter_from_new:
  *
- * Create a new CamelMimeFilterFrom object.
+ * Create a new #CamelMimeFilterFrom object.
  * 
- * Return value: A new CamelMimeFilterFrom widget.
+ * Returns a new #CamelMimeFilterFrom object
  **/
 CamelMimeFilterFrom *
 camel_mime_filter_from_new (void)
