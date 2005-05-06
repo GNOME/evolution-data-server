@@ -1,5 +1,14 @@
 2005-05-06  Rodrigo Moya <rodrigo@novell.com>
 
+	* libecal/e-cal.c:
+	* libecal/e-cal-time-util.c:
+	* libecal/e-cal-view.c:
+	* libecal/e-cal-view-listener.c:
+	* libecal/e-cal-util.[ch]: improved API documentation.
+	(e_cal_util_expand_uri): removed unused function.
+
+2005-05-06  Rodrigo Moya <rodrigo@novell.com>
+
 	Fixes #273264
 
 	* libecal/e-cal.c (add_instance): set RECURRENCE-ID correctly.

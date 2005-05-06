@@ -36,13 +36,21 @@ static const int days_in_month[12] = {
  * icaltimetype values rather than time_t values wherever possible.
  **************************************************************************/
 
-/* Adds a day onto the time, using local time.
-   Note that if clocks go forward due to daylight savings time, there are
-   some non-existent local times, so the hour may be changed to make it a
-   valid time. This also means that it may not be wise to keep calling
-   time_add_day() to step through a certain period - if the hour gets changed
-   to make it valid time, any further calls to time_add_day() will also return
-   this hour, which may not be what you want. */
+/**
+ * time_add_day:
+ * @time: A time_t value.
+ * @days: Number of days to add.
+ *
+ * Adds a day onto the time, using local time.
+ * Note that if clocks go forward due to daylight savings time, there are
+ * some non-existent local times, so the hour may be changed to make it a
+ * valid time. This also means that it may not be wise to keep calling
+ * time_add_day() to step through a certain period - if the hour gets changed
+ * to make it valid time, any further calls to time_add_day() will also return
+ * this hour, which may not be what you want.
+ *
+ * Return value: a time_t value containing @time plus the days added.
+ */
 time_t
 time_add_day (time_t time, int days)
 {
@@ -55,13 +63,29 @@ time_add_day (time_t time, int days)
 	return mktime (tm);
 }
 
+/**
+ * time_add_week:
+ * @time: A time_t value.
+ * @weeks: Number of weeks to add.
+ *
+ * Adds the given number of weeks to a time value.
+ *
+ * Return value: a time_t value containing @time plus the weeks added.
+ */
 time_t
 time_add_week (time_t time, int weeks)
 {
 	return time_add_day (time, weeks * 7);
 }
 
-/* Returns the start of the day, according to the local time. */
+/**
+ * time_day_begin:
+ * @t: A time_t value.
+ *
+ * Returns the start of the day, according to the local time.
+ *
+ * Return value: the time corresponding to the beginning of the day.
+ */
 time_t
 time_day_begin (time_t t)
 {
@@ -74,7 +98,14 @@ time_day_begin (time_t t)
 	return mktime (&tm);
 }
 
-/* Returns the end of the day, according to the local time. */
+/**
+ * time_day_end:
+ * @t: A time_t value.
+ *
+ * Returns the end of the day, according to the local time.
+ *
+ * Return value: the time corresponding to the end of the day.
+ */
 time_t
 time_day_end (time_t t)
 {
@@ -98,11 +129,20 @@ time_day_end (time_t t)
  **************************************************************************/
 
 
-/* Adds or subtracts a number of days to/from the given time_t value, using
-   the given timezone.
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_add_day_with_zone:
+ * @time: A time_t value.
+ * @days: Number of days to add.
+ * @zone: Timezone to use.
+ *
+ * Adds or subtracts a number of days to/from the given time_t value, using
+ * the given timezone.
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: a time_t value containing @time plus the days added.
+ */
 time_t
 time_add_day_with_zone (time_t time, int days, icaltimezone *zone)
 {
@@ -119,11 +159,20 @@ time_add_day_with_zone (time_t time, int days, icaltimezone *zone)
 }
 
 
-/* Adds or subtracts a number of weeks to/from the given time_t value, using
-   the given timezone.
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_add_week_with_zone:
+ * @time: A time_t value.
+ * @weeks: Number of weeks to add.
+ * @zone: Timezone to use.
+ *
+ * Adds or subtracts a number of weeks to/from the given time_t value, using
+ * the given timezone.
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: a time_t value containing @time plus the weeks added.
+ */
 time_t
 time_add_week_with_zone (time_t time, int weeks, icaltimezone *zone)
 {
@@ -131,16 +180,25 @@ time_add_week_with_zone (time_t time, int weeks, icaltimezone *zone)
 }
 
 
-/* Adds or subtracts a number of months to/from the given time_t value, using
-   the given timezone.
-
-   If the day would be off the end of the month (e.g. adding 1 month to
-   30th January, would lead to an invalid day, 30th February), it moves it
-   down to the last day in the month, e.g. 28th Feb (or 29th in a leap year.)
-
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_add_month_with_zone:
+ * @time: A time_t value.
+ * @months: Number of months to add.
+ * @zone: Timezone to use.
+ *
+ * Adds or subtracts a number of months to/from the given time_t value, using
+ * the given timezone.
+ *
+ * If the day would be off the end of the month (e.g. adding 1 month to
+ * 30th January, would lead to an invalid day, 30th February), it moves it
+ * down to the last day in the month, e.g. 28th Feb (or 29th in a leap year.)
+ *
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: a time_t value containing @time plus the months added.
+ */
 time_t
 time_add_month_with_zone (time_t time, int months, icaltimezone *zone)
 {
@@ -173,11 +231,19 @@ time_add_month_with_zone (time_t time, int months, icaltimezone *zone)
 }
 
 
-/* Returns the start of the year containing the given time_t, using the given
-   timezone.
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_year_begin_with_zone:
+ * @time: A time_t value.
+ * @zone: Timezone to use.
+ *
+ * Returns the start of the year containing the given time_t, using the given
+ * timezone.
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: the beginning of the year.
+ */
 time_t
 time_year_begin_with_zone (time_t time, icaltimezone *zone)
 {
@@ -198,11 +264,19 @@ time_year_begin_with_zone (time_t time, icaltimezone *zone)
 }
 
 
-/* Returns the start of the month containing the given time_t, using the given
-   timezone.
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_month_begin_with_zone:
+ * @time: A time_t value.
+ * @zone: Timezone to use.
+ *
+ * Returns the start of the month containing the given time_t, using the given
+ * timezone.
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: the beginning of the month.
+ */
 time_t
 time_month_begin_with_zone (time_t time, icaltimezone *zone)
 {
@@ -222,12 +296,21 @@ time_month_begin_with_zone (time_t time, icaltimezone *zone)
 }
 
 
-/* Returns the start of the week containing the given time_t, using the given
-   timezone. week_start_day should use the same values as mktime(),
-   i.e. 0 (Sun) to 6 (Sat).
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_week_begin_with_zone:
+ * @time: A time_t value.
+ * @week_start_day: Day to use as the starting of the week.
+ * @zone: Timezone to use.
+ *
+ * Returns the start of the week containing the given time_t, using the given
+ * timezone. week_start_day should use the same values as mktime(),
+ * i.e. 0 (Sun) to 6 (Sat).
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: the beginning of the week.
+ */
 time_t
 time_week_begin_with_zone (time_t time, int week_start_day, icaltimezone *zone)
 {
@@ -257,11 +340,19 @@ time_week_begin_with_zone (time_t time, int week_start_day, icaltimezone *zone)
 }
 
 
-/* Returns the start of the day containing the given time_t, using the given
-   timezone.
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_day_begin_with_zone:
+ * @time: A time_t value.
+ * @zone: Timezone to use.
+ *
+ * Returns the start of the day containing the given time_t, using the given
+ * timezone.
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: the beginning of the day.
+ */
 time_t
 time_day_begin_with_zone (time_t time, icaltimezone *zone)
 {
@@ -280,11 +371,19 @@ time_day_begin_with_zone (time_t time, icaltimezone *zone)
 }
 
 
-/* Returns the end of the day containing the given time_t, using the given
-   timezone. (The end of the day is the start of the next day.)
-   NOTE: this function is only here to make the transition to the timezone
-   functions easier. New code should use icaltimetype values and
-   icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
+/**
+ * time_day_end_with_zone:
+ * @time: A time_t value.
+ * @zone: Timezone to use.
+ *
+ * Returns the end of the day containing the given time_t, using the given
+ * timezone. (The end of the day is the start of the next day.)
+ * NOTE: this function is only here to make the transition to the timezone
+ * functions easier. New code should use icaltimetype values and
+ * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ *
+ * Return value: the end of the day.
+ */
 time_t
 time_day_end_with_zone (time_t time, icaltimezone *zone)
 {
@@ -336,8 +435,16 @@ time_to_gdate_with_zone (GDate *date, time_t time, icaltimezone *zone)
  **************************************************************************/
 
 
-/* Returns the number of days in the month. Year is the normal year, e.g. 2001.
-   Month is 0 (Jan) to 11 (Dec). */
+/**
+ * time_days_in_month:
+ * @year: The year.
+ * @month: The month.
+ *
+ * Returns the number of days in the month. Year is the normal year, e.g. 2001.
+ * Month is 0 (Jan) to 11 (Dec).
+ *
+ * Return value: number of days in the given month/year.
+ */
 int
 time_days_in_month (int year, int month)
 {
@@ -354,8 +461,17 @@ time_days_in_month (int year, int month)
 }
 
 
-/* Returns the 1-based day number within the year of the specified date.
-   Year is the normal year, e.g. 2001. Month is 0 to 11. */
+/**
+ * time_day_of_year:
+ * @day: The day.
+ * @month: The month.
+ * @year: The year.
+ *
+ * Returns the 1-based day number within the year of the specified date.
+ * Year is the normal year, e.g. 2001. Month is 0 to 11.
+ *
+ * Return value: the day of the year.
+ */
 int
 time_day_of_year (int day, int month, int year)
 {
@@ -372,9 +488,18 @@ time_day_of_year (int day, int month, int year)
 }
 
 
-/* Returns the day of the week for the specified date, 0 (Sun) to 6 (Sat).
-   For the days that were removed on the Gregorian reformation, it returns
-   Thursday. Year is the normal year, e.g. 2001. Month is 0 to 11. */
+/**
+ * time_day_of_week:
+ * @day: The day.
+ * @month: The month.
+ * @year: The year.
+ *
+ * Returns the day of the week for the specified date, 0 (Sun) to 6 (Sat).
+ * For the days that were removed on the Gregorian reformation, it returns
+ * Thursday. Year is the normal year, e.g. 2001. Month is 0 to 11.
+ *
+ * Return value: the day of the week for the given date.
+ */
 int
 time_day_of_week (int day, int month, int year)
 {
@@ -393,8 +518,15 @@ time_day_of_week (int day, int month, int year)
 }
 
 
-/* Returns whether the specified year is a leap year. Year is the normal year,
-   e.g. 2001. */
+/**
+ * time_is_leap_year:
+ * @year: The year.
+ *
+ * Returns whether the specified year is a leap year. Year is the normal year,
+ * e.g. 2001.
+ *
+ * Return value: TRUE if the year is leap, FALSE if not.
+ */
 gboolean
 time_is_leap_year (int year)
 {
@@ -405,17 +537,24 @@ time_is_leap_year (int year)
 }
 
 
-/* Returns the number of leap years since year 1 up to (but not including) the
-   specified year. Year is the normal year, e.g. 2001. */
+/**
+ * time_leap_years_up_to:
+ * @year: The year.
+ *
+ * Returns the number of leap years since year 1 up to (but not including) the
+ * specified year. Year is the normal year, e.g. 2001.
+ *
+ * Return value: number of leap years.
+ */
 int
 time_leap_years_up_to (int year)
 {
-  /* There is normally a leap year every 4 years, except at the turn of
-     centuries since 1700. But there is a leap year on centuries since 1700
-     which are divisible by 400. */
-  return (year / 4
-	  - ((year > 1700) ? (year / 100 - 17) : 0)
-	  + ((year > 1600) ? ((year - 1600) / 400) : 0));
+	/* There is normally a leap year every 4 years, except at the turn of
+	   centuries since 1700. But there is a leap year on centuries since 1700
+	   which are divisible by 400. */
+	return (year / 4
+		- ((year > 1700) ? (year / 100 - 17) : 0)
+		+ ((year > 1600) ? ((year - 1600) / 400) : 0));
 }
 
 
@@ -496,6 +635,15 @@ time_from_isodate (const char *str)
 	return icaltime_as_timet_with_zone (tt, utc_zone);
 }
 
+/**
+ * icaltimetype_to_tm:
+ * @itt: An icaltimetype structure.
+ *
+ * Convers an icaltimetype structure into a GLibc's struct tm.
+ *
+ * Return value: The converted time as a struct tm. All fields will be
+ * set properly except for tm.tm_yday.
+ */
 struct tm
 icaltimetype_to_tm (struct icaltimetype *itt)
 {
@@ -527,7 +675,7 @@ icaltimetype_to_tm (struct icaltimetype *itt)
  * Converts a time value from one timezone to another, and returns a struct tm
  * representation of the time.
  * 
- * Return value: The converted time as a struct tm.  All fields will be
+ * Return value: The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
  **/
 struct tm
@@ -551,6 +699,15 @@ icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
 	return tm;
 }
 
+/**
+ * tm_to_icaltimetype:
+ * @tm: A struct tm.
+ * @is_date: Whether the given time is a date only or not.
+ *
+ * Converts a struct tm into an icaltimetype.
+ *
+ * Return value: The converted time as an icaltimetype.
+ */
 struct icaltimetype
 tm_to_icaltimetype (struct tm *tm, gboolean is_date)
 {

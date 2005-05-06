@@ -93,8 +93,6 @@ icaltimezone *e_cal_util_resolve_tzid (const char *tzid, gpointer data);
 char *e_cal_util_priority_to_string (int priority);
 int e_cal_util_priority_from_string (const char *string);
 
-char *e_cal_util_expand_uri (char *uri, gboolean tasks);
-
 void e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
 					    icalcomponent *icalcomp);
 

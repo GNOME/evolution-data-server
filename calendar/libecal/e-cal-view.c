@@ -205,7 +205,6 @@ e_cal_view_get_property (GObject *object, guint property_id, GValue *value, GPar
 	}
 }
 
-
 /* Finalize handler for the calendar view */
 static void
 e_cal_view_finalize (GObject *object)
@@ -332,9 +331,9 @@ e_cal_view_get_type (void)
 
 /**
  * e_cal_view_new:
- * @corba_view: 
- * @listener: 
- * @client: 
+ * @corba_view: The CORBA object for the view.
+ * @listener: An #ECalViewListener.
+ * @client: An #ECal object.
  * 
  * Creates a new view object by issuing the view creation request to the
  * calendar server.
@@ -358,7 +357,7 @@ e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *l
  *
  * Get the #ECal associated with this view.
  *
- * Returns: the associated client.
+ * Return value: the associated client.
  */
 ECal *
 e_cal_view_get_client (ECalView *view)
@@ -368,6 +367,12 @@ e_cal_view_get_client (ECalView *view)
 	return view->priv->client;
 }
 
+/**
+ * e_cal_view_start:
+ * @view: A #ECalView object.
+ *
+ * Starts a live query to the calendar/tasks backend.
+ */
 void
 e_cal_view_start (ECalView *view)
 {

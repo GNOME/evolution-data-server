@@ -295,6 +295,13 @@ BONOBO_TYPE_FUNC_FULL (ECalViewListener,
 		       BONOBO_TYPE_OBJECT,
 		       e_cal_view_listener);
 
+/**
+ * e_cal_view_listener_new:
+ *
+ * Creates a new ECalViewListener object.
+ *
+ * Return value: the newly created ECalViewListener.
+ */
 ECalViewListener *
 e_cal_view_listener_new (void)
 {

@@ -77,6 +77,13 @@ cal_obj_uid_list_free (GList *list)
 	g_list_free (list);
 }
 
+/**
+ * e_cal_util_new_top_level:
+ *
+ * Creates a new VCALENDAR component.
+ *
+ * Return value: the newly created top level component.
+ */
 icalcomponent *
 e_cal_util_new_top_level (void)
 {
@@ -102,6 +109,14 @@ e_cal_util_new_top_level (void)
 	return icalcomp;
 }
 
+/**
+ * e_cal_util_new_component:
+ * @kind: Kind of the component to create.
+ *
+ * Creates a new #icalcomponent of the specified kind.
+ *
+ * Return value: the newly created component.
+ */
 icalcomponent *
 e_cal_util_new_component (icalcomponent_kind kind)
 {
@@ -137,6 +152,17 @@ read_line (const char *string)
 	return line;
 }
 
+/**
+ * e_cal_util_parse_ics_string:
+ * @string: iCalendar string to be parsed.
+ *
+ * Parses an iCalendar stirng and returns an #icalcomponent representing that
+ * string. Note that this function deals with multiple VCALENDAR's in the
+ * string, something that Mozilla used to do and which libical does not
+ * support.
+ *
+ * Return value: an #icalcomponent.
+ */
 icalcomponent *
 e_cal_util_parse_ics_string (const char *string)
 {
@@ -189,6 +215,15 @@ get_line_fn (char *buf, size_t size, void *file)
 	return fgets (buf, size, file);
 }
 
+/**
+ * e_cal_util_parse_ics_file:
+ * @filename: Name of the file to be parsed.
+ *
+ * Parses the given file, and, if it contains a valid iCalendar object,
+ * parse it and return a corresponding #icalcomponent.
+ *
+ * Return value: an #icalcomponent.
+ */
 icalcomponent *
 e_cal_util_parse_ics_file (const char *filename)
 {
@@ -510,20 +545,22 @@ compare_alarm_instance (gconstpointer a, gconstpointer b)
 
 /**
  * e_cal_util_generate_alarms_for_comp
- * @comp: the ECalComponent to generate alarms from
- * @start: start time
- * @end: end time
+ * @comp: The #ECalComponent to generate alarms from.
+ * @start: Start time.
+ * @end: End time.
  * @omit: 
- * @resolve_tzid: callback for resolving timezones
- * @user_data: data to be passed to the resolve_tzid callback
- * @default_timezone: the timezone used to resolve DATE and floating DATE-TIME
+ * @resolve_tzid: Callback for resolving timezones
+ * @user_data: Data to be passed to the resolve_tzid callback
+ * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
  * values.
  *
  * Generates alarm instances for a calendar component.  Returns the instances
  * structure, or NULL if no alarm instances occurred in the specified time
  * range.
  *
- * Returns:
+ * Return value: a list of all the alarms found for the given component on
+ * the given time tange. The list of alarms should be freed by using the
+ * #e_cal_component_free_alarm_list function.
  */
 ECalComponentAlarms *
 e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
@@ -575,30 +612,30 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 
 /**
  * e_cal_util_generate_alarms_for_list
- * @comps: list of ECalComponent's
- * @start: start time
- * @end: end time
+ * @comps: List of #ECalComponent's.
+ * @start: Start time.
+ * @end: End time.
  * @omit: 
- * @comp_alarms: list to be returned
- * @resolve_tzid: callback for resolving timezones
- * @user_data: data to be passed to the resolve_tzid callback
- * @default_timezone: the timezone used to resolve DATE and floating DATE-TIME
+ * @comp_alarms: List to be returned
+ * @resolve_tzid: Callback for resolving timezones
+ * @user_data: Data to be passed to the resolve_tzid callback
+ * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
  * values.
  *
- * Iterates through all the components in the comps list and generates alarm
- * instances for them; putting them in the comp_alarms list.
+ * Iterates through all the components in the @comps list and generates alarm
+ * instances for them; putting them in the @comp_alarms list.
  *
- * Returns: the number of elements it added to that list.
+ * Return value: the number of elements it added to the list.
  */
 int
 e_cal_util_generate_alarms_for_list (GList *comps,
-				   time_t start,
-				   time_t end,
-				   ECalComponentAlarmAction *omit,
-				   GSList **comp_alarms,
-				   ECalRecurResolveTimezoneFn resolve_tzid,
-				   gpointer user_data,
-				   icaltimezone *default_timezone)
+				     time_t start,
+				     time_t end,
+				     ECalComponentAlarmAction *omit,
+				     GSList **comp_alarms,
+				     ECalRecurResolveTimezoneFn resolve_tzid,
+				     gpointer user_data,
+				     icaltimezone *default_timezone)
 {
 	GList *l;
 	int n;
@@ -622,8 +659,16 @@ e_cal_util_generate_alarms_for_list (GList *comps,
 }
 
 
-/* Converts an iCalendar PRIORITY value to a translated string. Any unknown
-   priority value (i.e. not 0-9) will be returned as "" (undefined). */
+/**
+ * e_cal_util_priority_to_string:
+ * @priority: Priority value.
+ *
+ * Converts an iCalendar PRIORITY value to a translated string. Any unknown
+ * priority value (i.e. not 0-9) will be returned as "" (undefined).
+ *
+ * Return value: a string representing the PRIORITY value. This value is a
+ * constant, so it should never be freed.
+ */
 char *
 e_cal_util_priority_to_string (int priority)
 {
@@ -644,8 +689,14 @@ e_cal_util_priority_to_string (int priority)
 }
 
 
-/* Converts a translated priority string to an iCalendar priority value.
-   Returns -1 if the priority string is not valid. */
+/**
+ * e_cal_util_priority_from_string:
+ * @string: A string representing the PRIORITY value.
+ *
+ * Converts a translated priority string to an iCalendar priority value.
+ *
+ * Return value: the priority (0-9) or -1 if the priority string is not valid.
+*/
 int
 e_cal_util_priority_from_string (const char *string)
 {
@@ -664,12 +715,6 @@ e_cal_util_priority_from_string (const char *string)
 		priority = -1;
 
 	return priority;
-}
-
-char *
-e_cal_util_expand_uri (char *uri, gboolean tasks)
-{
-	return g_strdup (uri);
 }
 
 /* callback for icalcomponent_foreach_tzid */
@@ -709,11 +754,17 @@ add_timezone_cb (icalparameter *param, void *data)
 				     icalcomponent_new_clone (vtz_comp));
 }
 
-/* Adds VTIMEZONE components to a VCALENDAR for all tzid's
- * in the given ECalComponent. */
+/**
+ * e_cal_util_add_timezones_from_component:
+ * @vcal_comp: A VCALENDAR component.
+ * @icalcomp: An iCalendar component, of any type.
+ *
+ * Adds VTIMEZONE components to a VCALENDAR for all tzid's
+ * in the given @icalcomp.
+ */
 void
 e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
-				       icalcomponent *icalcomp)
+					 icalcomponent *icalcomp)
 {
 	ForeachTzidData f_data;
 
@@ -725,6 +776,14 @@ e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
 	icalcomponent_foreach_tzid (icalcomp, add_timezone_cb, &f_data);
 }
 
+/**
+ * e_cal_util_component_is_instance:
+ * @icalcomp: An #icalcomponent.
+ *
+ * Checks whether an #icalcomponent is an instance of a recurring appointment or not.
+ *
+ * Return value: TRUE if it is an instance, FALSE if not.
+ */
 gboolean
 e_cal_util_component_is_instance (icalcomponent *icalcomp)
 {
@@ -736,6 +795,14 @@ e_cal_util_component_is_instance (icalcomponent *icalcomp)
 	return prop ? TRUE : FALSE;
 }
 
+/**
+ * e_cal_util_component_has_alarms:
+ * @icalcomp: An #icalcomponent.
+ *
+ * Checks whether an #icalcomponent has any alarm.
+ *
+ * Return value: TRUE if it has alarms, FALSE otherwise.
+ */
 gboolean
 e_cal_util_component_has_alarms (icalcomponent *icalcomp)
 {
@@ -747,6 +814,14 @@ e_cal_util_component_has_alarms (icalcomponent *icalcomp)
 	return alarm ? TRUE : FALSE;
 }
 
+/**
+ * e_cal_util_component_has_organizer:
+ * @icalcomp: An #icalcomponent.
+ *
+ * Checks whether an #icalcomponent has an organizer or not.
+ *
+ * Return value: TRUE if there is an organizer, FALSE if not.
+ */
 gboolean
 e_cal_util_component_has_organizer (icalcomponent *icalcomp)
 {
@@ -758,6 +833,14 @@ e_cal_util_component_has_organizer (icalcomponent *icalcomp)
 	return prop ? TRUE : FALSE;
 }
 
+/**
+ * e_cal_util_component_has_recurrences:
+ * @icalcomp: An #icalcomponent.
+ *
+ * Checks if an #icalcomponent has recurrence dates or rules.
+ *
+ * Return value: TRUE if there are recurrence dates/rules, FALSE if not.
+ */
 gboolean
 e_cal_util_component_has_recurrences (icalcomponent *icalcomp)
 {
@@ -766,6 +849,14 @@ e_cal_util_component_has_recurrences (icalcomponent *icalcomp)
 	return e_cal_util_component_has_rdates (icalcomp) || e_cal_util_component_has_rrules (icalcomp);
 }
 
+/**
+ * e_cal_util_component_has_rdates:
+ * @icalcomp: An #icalcomponent.
+ *
+ * Checks if an #icalcomponent has recurrence dates.
+ *
+ * Return value: TRUE if there are recurrence dates, FALSE if not.
+ */
 gboolean
 e_cal_util_component_has_rdates (icalcomponent *icalcomp)
 {
@@ -777,6 +868,14 @@ e_cal_util_component_has_rdates (icalcomponent *icalcomp)
 	return prop ? TRUE : FALSE;
 }
 
+/**
+ * e_cal_util_component_has_rrules:
+ * @icalcomp: An #icalcomponent.
+ *
+ * Checks if an #icalcomponent has recurrence rules.
+ *
+ * Return value: TRUE if there are recurrence rules, FALSE if not.
+ */
 gboolean
 e_cal_util_component_has_rrules (icalcomponent *icalcomp)
 {
@@ -788,6 +887,15 @@ e_cal_util_component_has_rrules (icalcomponent *icalcomp)
 	return prop ? TRUE : FALSE;
 }
 
+/**
+ * e_cal_util_event_dates_match:
+ * @icalcomp1: An #icalcomponent.
+ * @icalcomp2: An #icalcomponent.
+ *
+ * Compare the dates of two #icalcomponent's to check if they match.
+ *
+ * Return value: TRUE if the dates of both components match, FALSE otherwise.
+ */
 gboolean
 e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *icalcomp2)
 {
@@ -854,13 +962,13 @@ check_instance (icalcomponent *comp, struct icaltime_span *span, void *data)
 
 /**
  * e_cal_util_construct_instance:
- * @icalcomp: a recurring #icalcomponent
- * @rid: the RECURRENCE-ID to construct a component for
+ * @icalcomp: A recurring #icalcomponent
+ * @rid: The RECURRENCE-ID to construct a component for
  *
  * This checks that @rid indicates a valid recurrence of @icalcomp, and
  * if so, generates a copy of @comp containing a RECURRENCE-ID of @rid.
  *
- * Return value: the instance, or %NULL
+ * Return value: the instance, or %NULL.
  **/
 icalcomponent *
 e_cal_util_construct_instance (icalcomponent *icalcomp,
@@ -913,9 +1021,9 @@ time_matches_rid (struct icaltimetype itt, struct icaltimetype rid, CalObjModTyp
 
 /**
  * e_cal_util_remove_instances:
- * @icalcomp: a (recurring) #icalcomponent
- * @rid: the base RECURRENCE-ID to remove
- * @mod: how to interpret @rid
+ * @icalcomp: A (recurring) #icalcomponent
+ * @rid: The base RECURRENCE-ID to remove
+ * @mod: How to interpret @rid
  *
  * Removes one or more instances from @comp according to @rid and @mod.
  *
