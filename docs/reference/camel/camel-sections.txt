@@ -728,7 +728,7 @@ CAMEL_MIME_FILTER_LINEWRAP_CLASS
 
 <SECTION>
 <FILE>camel-mime-filter-save</FILE>
-CamelMimeFiletrSave
+CamelMimeFilterSave
 <TITLE>CamelMimeFilterSave</TITLE>
 camel_mime_filter_save_new
 camel_mime_filter_save_new_with_stream
