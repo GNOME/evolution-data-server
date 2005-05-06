@@ -93,6 +93,14 @@ reset (CamelMimeFilter *f)
 	/* no-op */
 }
 
+
+/**
+ * camel_mime_filter_save_new:
+ *
+ * Create a new #CamelMimeFilterSave filter object.
+ *
+ * Returns a new #CamelMimeFilterSave object
+ **/
 CamelMimeFilter *
 camel_mime_filter_save_new (void)
 {
@@ -103,6 +111,16 @@ camel_mime_filter_save_new (void)
 	return (CamelMimeFilter *) save;
 }
 
+
+/**
+ * camel_mime_filter_save_new_with_stream:
+ * @stream: a #CamelStream object
+ *
+ * Create a new #CamelMimeFilterSave filter object that will save a
+ * copy of all filtered data to @stream.
+ *
+ * Returns a new #CamelMimeFilterSave object
+ **/
 CamelMimeFilter *
 camel_mime_filter_save_new_with_stream (CamelStream *stream)
 {

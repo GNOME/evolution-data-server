@@ -420,12 +420,13 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass)
 
 /**
  * camel_mime_filter_tohtml_new:
- * @flags:
- * @colour:
+ * @flags: bitwise flags defining the behaviour
+ * @colour: colour to use when highlighting quoted text
  *
- * Creates a new CamelMimeFilterToHTML object.
+ * Create a new #CamelMimeFilterToHTML object to convert plain text
+ * into HTML.
  *
- * Returns a new CamelMimeFilter object.
+ * Returns a new #CamelMimeFilterToHTML object
  **/
 CamelMimeFilter *
 camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
@@ -447,6 +448,17 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
 }
 
 
+/**
+ * camel_text_to_html:
+ * @in: input text
+ * @flags: bitwise flags defining the html conversion behaviour
+ * @colour: colour to use when syntax highlighting
+ *
+ * Convert @in from plain text into HTML.
+ *
+ * Returns a newly allocated string containing the HTMLified version
+ * of @in
+ **/
 char *
 camel_text_to_html (const char *in, guint32 flags, guint32 colour)
 {

@@ -235,9 +235,9 @@ filter_reset (CamelMimeFilter *filter)
  * camel_mime_filter_yenc_new:
  * @direction: encode direction
  *
- * Creates a new yEnc filter.
+ * Create a new #CamelMimeFilterYenc filter object.
  *
- * Returns a new yEnc filter.
+ * Returns a new #CamelMimeFilterYenc object
  **/
 CamelMimeFilter *
 camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
@@ -264,7 +264,7 @@ camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
 
 /**
  * camel_mime_filter_yenc_set_state:
- * @yenc: yEnc filter
+ * @yenc: a #CamelMimeFilterYenc object
  * @state: encode/decode state
  *
  * Sets the current state of the yencoder/ydecoder
@@ -280,8 +280,8 @@ camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, int state)
 
 /**
  * camel_mime_filter_yenc_set_crc:
- * @yenc: yEnc filter
- * @crc: crc32
+ * @yenc: a #CamelMimeFilterYenc object
+ * @crc: crc32 value
  *
  * Sets the current crc32 value on the yEnc filter @yenc to @crc.
  **/
@@ -298,11 +298,11 @@ camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc)
 /* FIXME: once we parse out the yenc part id, we can re-enable this interface */
 /**
  * camel_mime_filter_yenc_get_part:
- * @yenc: yEnc filter
+ * @yenc: a #CamelMimeFilterYenc object
  *
- * Gets the part id of the current decoded yEnc stream or -1 on fail.
+ * Gets the part id of the current decoded yEnc stream or %-1 on fail.
  *
- * Returns the part id of the current decoded yEnc stream or -1 on
+ * Returns the part id of the current decoded yEnc stream or %-1 on
  * fail.
  **/
 int
@@ -319,11 +319,11 @@ camel_mime_filter_yenc_get_part (CamelMimeFilterYenc *yenc)
 
 /**
  * camel_mime_filter_yenc_get_pcrc:
- * @yenc: yEnc filter
+ * @yenc: a #CamelMimeFilterYenc object
  *
- * Get the computed part crc or (guint32) -1 on fail.
+ * Get the computed part crc or (#guint32) %-1 on fail.
  *
- * Returns the computed part crc or (guint32) -1 on fail.
+ * Returns the computed part crc or (#guint32) %-1 on fail.
  **/
 guint32
 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
@@ -336,7 +336,7 @@ camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
 
 /**
  * camel_mime_filter_yenc_get_crc:
- * @yenc: yEnc filter
+ * @yenc: a #CamelMimeFiletrYenc object
  *
  * Get the computed crc or (guint32) -1 on fail.
  *
@@ -404,13 +404,13 @@ static const int yenc_crc_table[256] = {
  * @inlen pointed to by @in and writes to @out. Assumes the =ybegin
  * and =ypart lines have already been stripped off.
  *
- * To get the crc32 value of the part, use CAMEL_MIME_YENCODE_CRC_FINAL
+ * To get the crc32 value of the part, use #CAMEL_MIME_YENCODE_CRC_FINAL
  * (@pcrc). If there are more parts, you should reuse @crc without
  * re-initializing. Once all parts have been decoded, you may get the
- * combined crc32 value of all the parts using CAMEL_MIME_YENCODE_CRC_FINAL
+ * combined crc32 value of all the parts using #CAMEL_MIME_YENCODE_CRC_FINAL
  * (@crc).
  *
- * Returns the number of bytes decoded.
+ * Returns the number of bytes decoded
  **/
 size_t
 camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
@@ -483,14 +483,14 @@ camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
  * Performs an yEncode 'encode step' on a chunk of raw data of length
  * @inlen pointed to by @in and writes to @out.
  *
- * @state should be initialized to CAMEL_MIME_YENCODE_STATE_INIT before
+ * @state should be initialized to #CAMEL_MIME_YENCODE_STATE_INIT before
  * beginning making the first call to this function. Subsequent calls
  * should reuse @state.
  *
  * Along the same lines, @pcrc and @crc should be initialized to
- * CAMEL_MIME_YENCODE_CRC_INIT before using.
+ * @CAMEL_MIME_YENCODE_CRC_INIT before using.
  *
- * Returns the number of bytes encoded.
+ * Returns the number of bytes encoded
  **/
 size_t
 camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
@@ -547,12 +547,12 @@ camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
  * @crc: crc state
  *
  * Call this function when finished encoding data with
- * camel_yencode_step to flush off the remaining state.
+ * #camel_yencode_step to flush off the remaining state.
  *
- * CAMEL_MIME_YENCODE_CRC_FINAL (@pcrc) will give you the crc32 of the
+ * #CAMEL_MIME_YENCODE_CRC_FINAL (@pcrc) will give you the crc32 of the
  * encoded "part". If there are more "parts" to encode, you should
  * re-use @crc when encoding the next "parts" and then use
- * CAMEL_MIME_YENCODE_CRC_FINAL (@crc) to get the combined crc32 value of
+ * #CAMEL_MIME_YENCODE_CRC_FINAL (@crc) to get the combined crc32 value of
  * all the parts.
  *
  * Returns the number of bytes encoded.
