@@ -318,6 +318,14 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const char *uid, con
 
 /**
  * e_cal_backend_cache_put_component:
+ * @cache: An #ECalBackendCache object.
+ * @comp: Component to put on the cache.
+ *
+ * Puts the given calendar component in the given cache. This will add
+ * the component if it does not exist or replace it if there was a
+ * previous version of it.
+ *
+ * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_put_component (ECalBackendCache *cache,
@@ -355,6 +363,14 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
 
 /**
  * e_cal_backend_cache_remove_component:
+ * @cache: An #ECalBackendCache object.
+ * @uid: UID of the component to remove.
+ * @rid: Recurrence-ID of the component to remove. This is used when removing
+ * detached instances of a recurring appointment.
+ *
+ * Removes a component from the cache.
+ *
+ * Return value: TRUE if the component was removed, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_remove_component (ECalBackendCache *cache,
@@ -382,6 +398,15 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 	return retval;
 }
 
+/**
+ * e_cal_backend_cache_get_components:
+ * @cache: An #ECalBackendCache object.
+ *
+ * Retrieves a list of all the components stored in the cache.
+ *
+ * Return value: A list of all the components. Each item in the list is
+ * an #ECalComponent, which should be freed when no longer needed.
+ */
 GList *
 e_cal_backend_cache_get_components (ECalBackendCache *cache)
 {
@@ -422,6 +447,15 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
         return list;
 }
 
+/**
+ * e_cal_backend_cache_get_timezone:
+ * @cache: An #ECalBackendCache object.
+ * @tzid: ID of the timezone to retrieve.
+ *
+ * Retrieves a timezone component from the cache.
+ *
+ * Return value: The timezone if found, or NULL otherwise.
+ */
 const icaltimezone *
 e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid)
 {
@@ -459,6 +493,16 @@ e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid)
 	return (const icaltimezone *) zone;
 }
 
+/**
+ * e_cal_backend_cache_put_timezone:
+ * @cache: An #ECalBackendCache object.
+ * @zone: The timezone to put on the cache.
+ *
+ * Puts the given timezone in the cache, adding it, if it did not exist, or
+ * replacing it, if there was an older version.
+ *
+ * Return value: TRUE if the timezone was put on the cache, FALSE otherwise.
+ */
 gboolean
 e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone)
 {
@@ -508,6 +552,15 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 	return TRUE;
 }
 
+/**
+ * e_cal_backend_cache_put_default_timezone:
+ * @cache: An #ECalBackendCache object.
+ * @default_zone: The default timezone.
+ *
+ * Sets the default timezone on the cache.
+ *
+ * Return value: TRUE if the operation was successful, FALSE otherwise.
+ */
 gboolean
 e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone)
 {
@@ -540,6 +593,15 @@ e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone 
 
 }
 
+/**
+ * e_cal_backend_cache_get_default_timezone:
+ * @cache: An #ECalBackendCache object.
+ *
+ * Retrieves the default timezone from the cache.
+ *
+ * Return value: The default timezone, or NULL if no default timezone
+ * has been set on the cache.
+ */
 icaltimezone *
 e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
 {
@@ -571,6 +633,15 @@ e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
 	return NULL;
 }
 
+/**
+ * e_cal_backend_cache_remove_timezone:
+ * @cache: An #ECalBackendCache object.
+ * @tzid: ID of the timezone to remove.
+ *
+ * Removes a timezone component from the cache.
+ *
+ * Return value: TRUE if the timezone was removed, FALSE otherwise.
+ */
 gboolean
 e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
 {
@@ -591,14 +662,29 @@ e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
 	return e_file_cache_remove_object (E_FILE_CACHE (cache), tzid);
 }
 
+/**
+ * e_cal_backend_cache_get_keys:
+ * @cache: An #ECalBackendCache object.
+ *
+ * Gets the list of unique keys in the cache file.
+ *
+ * Return value: A list of all the keys. The items in the list are pointers
+ * to internal data, so should not be freed, only the list should.
+ */
 GSList *
 e_cal_backend_cache_get_keys (ECalBackendCache *cache)
 {
-        /* return null if cache is not a valid Backend Cache.  */
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
         return e_file_cache_get_keys (E_FILE_CACHE (cache));
 }
 
+/**
+ * e_cal_backend_cache_set_marker:
+ * @cache: An #ECalBackendCache object.
+ *
+ * Marks the cache as populated, to discriminate between an empty calendar
+ * and an unpopulated one.
+ */
 void
 e_cal_backend_cache_set_marker (ECalBackendCache *cache)
 {
@@ -606,6 +692,15 @@ e_cal_backend_cache_set_marker (ECalBackendCache *cache)
 	e_file_cache_add_object (E_FILE_CACHE (cache), "populated", "TRUE");
 }
 
+/**
+ * e_cal_backend_cache_get_marker:
+ * @cache: An #ECalBackendCache object.
+ *
+ * Gets the marker of the cache. If this field is present, it means the
+ * cache has been populated.
+ *
+ * Return value: The value of the marker or NULL if the cache is still empty.
+ */
 const char *
 e_cal_backend_cache_get_marker (ECalBackendCache *cache)
 {
@@ -615,6 +710,13 @@ e_cal_backend_cache_get_marker (ECalBackendCache *cache)
 	return NULL;
 }
 
+/**
+ * e_cal_backend_cache_put_server_utc_time:
+ * @cache: An #ECalBackendCache object.
+ * @utc_str: UTC string.
+ *
+ * Return value: TRUE if the operation was successful, FALSE otherwise.
+ */
 gboolean
 e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, char *utc_str)
 {
@@ -628,9 +730,17 @@ e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, char *utc_str)
 	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), "server_utc_time", value)))
 		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), "server_utc_time", value);
 
+	g_free (value);
+
 	return ret_val;
 }
 
+/**
+ * e_cal_backend_cache_get_server_utc_time:
+ * @cache: An #ECalBackendCache object.
+ *
+ * Return value: The server's UTC string.
+ */
 const char *
 e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
 {

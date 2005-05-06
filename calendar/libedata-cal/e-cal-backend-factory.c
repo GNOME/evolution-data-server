@@ -50,6 +50,14 @@ e_cal_backend_factory_get_type (void)
 	return type;
 }
 
+/**
+ * e_cal_backend_factory_get_kind:
+ * @factory: An #ECalBackendFactory object.
+ *
+ * Gets the component type of the factory.
+ *
+ * Return value: The kind of factory.
+ */
 icalcomponent_kind
 e_cal_backend_factory_get_kind (ECalBackendFactory *factory)
 {
@@ -58,6 +66,14 @@ e_cal_backend_factory_get_kind (ECalBackendFactory *factory)
 	return E_CAL_BACKEND_FACTORY_GET_CLASS (factory)->get_kind (factory);
 }
 
+/**
+ * e_cal_backend_factory_get_protocol:
+ * @factory: An #ECalBackendFactory object.
+ *
+ * Gets the protocol used by the factory.
+ *
+ * Return value: The protocol.
+ */
 const char*
 e_cal_backend_factory_get_protocol (ECalBackendFactory *factory)
 {
@@ -66,6 +82,15 @@ e_cal_backend_factory_get_protocol (ECalBackendFactory *factory)
 	return E_CAL_BACKEND_FACTORY_GET_CLASS (factory)->get_protocol (factory);
 }
 
+/**
+ * e_cal_backend_factory_new_backend:
+ * @factory: An #ECalBackendFactory object.
+ * @source: An #ESource.
+ *
+ * Creates a new backend for the given @source.
+ *
+ * Return value: The newly created backend, or NULL if there was an error.
+ */
 ECalBackend*
 e_cal_backend_factory_new_backend (ECalBackendFactory *factory, ESource *source)
 {

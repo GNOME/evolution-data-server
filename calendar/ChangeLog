@@ -1,5 +1,12 @@
 2005-05-06  Rodrigo Moya <rodrigo@novell.com>
 
+	* libedata-cal/e-cal-backend-factory.c:
+	* libedata-cal/e-cal-backend-sexp.c:
+	* libedata-cal/e-cal-backend-cache.c: improved API documentation.
+	(e_cal_backend_cache_put_server_utc_time): fixed leak.
+
+2005-05-06  Rodrigo Moya <rodrigo@novell.com>
+
 	* libecal/e-cal.c:
 	* libecal/e-cal-time-util.c:
 	* libecal/e-cal-view.c:

@@ -45,6 +45,17 @@ struct _SearchContext {
 	gboolean occurs;
 };
 
+/**
+ * e_cal_backend_sexp_func_time_now:
+ * @esexp: An #ESExp object.
+ * @argc: Number of arguments.
+ * @argv: The arguments.
+ * @data: Closure data.
+ *
+ * Processes the (time-now) sexp expression.
+ *
+ * Return value: The result of the function.
+ */
 ESExpResult *
 e_cal_backend_sexp_func_time_now (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 {
@@ -62,11 +73,19 @@ e_cal_backend_sexp_func_time_now (ESExp *esexp, int argc, ESExpResult **argv, vo
 	return result;
 }
 
-/* (make-time ISODATE)
+/**
+ * e_cal_backend_sexp_func_make_time:
+ * @esexp: An #ESExp object.
+ * @argc: Number of arguments.
+ * @argv: The arguments.
+ * @data: Closure data.
  *
+ * (make-time ISODATE)
  * ISODATE - string, ISO 8601 date/time representation
  *
  * Constructs a time_t value for the specified date.
+ *
+ * Return value: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_make_time (ESExp *esexp, int argc, ESExpResult **argv, void *data)
@@ -110,8 +129,14 @@ e_cal_backend_sexp_func_make_time (ESExp *esexp, int argc, ESExpResult **argv, v
 	return result;
 }
 
-/* (time-add-day TIME N)
+/**
+ * e_cal_backend_sexp_func_time_add_day:
+ * @esexp: An #ESExp object.
+ * @argc: Number of arguments.
+ * @argv: The arguments.
+ * @data: Closure data.
  *
+ * (time-add-day TIME N)
  * TIME - time_t, base time
  * N - int, number of days to add
  *
@@ -119,6 +144,8 @@ e_cal_backend_sexp_func_make_time (ESExp *esexp, int argc, ESExpResult **argv, v
  *
  * FIXME: TIMEZONES - need to use a timezone or daylight saving changes will
  * make the result incorrect.
+ *
+ * Return value: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_time_add_day (ESExp *esexp, int argc, ESExpResult **argv, void *data)
@@ -155,13 +182,21 @@ e_cal_backend_sexp_func_time_add_day (ESExp *esexp, int argc, ESExpResult **argv
 	return result;
 }
 
-/* (time-day-begin TIME)
+/**
+ * e_cal_backend_sexp_func_time_day_begin:
+ * @esexp: An #ESExp object.
+ * @argc: Number of arguments.
+ * @argv: The arguments.
+ * @data: Closure data.
  *
+ * (time-day-begin TIME)
  * TIME - time_t, base time
  *
  * Returns the start of the day, according to the local time.
  *
  * FIXME: TIMEZONES - this uses the current Unix timezone.
+ *
+ * Return value: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, int argc, ESExpResult **argv, void *data)
@@ -189,13 +224,21 @@ e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, int argc, ESExpResult **ar
 	return result;
 }
 
-/* (time-day-end TIME)
+/**
+ * e_cal_backend_sexp_func_time_day_end:
+ * @esexp: An #ESExp object.
+ * @argc: Number of arguments.
+ * @argv: The arguments.
+ * @data: Closure data.
  *
+ * (time-day-end TIME)
  * TIME - time_t, base time
  *
  * Returns the end of the day, according to the local time.
  *
  * FIXME: TIMEZONES - this uses the current Unix timezone.
+ *
+ * Return value: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_time_day_end (ESExp *esexp, int argc, ESExpResult **argv, void *data)
@@ -971,6 +1014,16 @@ static struct {
 	{ "completed-before?", func_completed_before, 0 }
 };
 
+/**
+ * e_cal_backend_sexp_match_comp:
+ * @sexp: An #ESExp object.
+ * @comp: Component to match against the expression.
+ * @backend: Backend.
+ *
+ * Matches the given ECalComponent against the expression.
+ *
+ * Return value: TRUE if the component matched the expression, FALSE if not.
+ */
 gboolean
 e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalBackend *backend)
 {
@@ -1001,6 +1054,16 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalB
 	return retval;
 }
 
+/**
+ * e_cal_backend_sexp_match_object:
+ * @sexp: An #ESExp object.
+ * @object: An iCalendar string.
+ * @backend: A backend.
+ *
+ * Match an iCalendar expression against the expression.
+ *
+ * Return value: TRUE if the object matches the expression, FALSE if not.
+ */
 gboolean
 e_cal_backend_sexp_match_object (ECalBackendSExp *sexp, const char *object, ECalBackend *backend)
 {
@@ -1026,6 +1089,11 @@ e_cal_backend_sexp_match_object (ECalBackendSExp *sexp, const char *object, ECal
 
 /**
  * e_cal_backend_card_sexp_new:
+ * @text: The expression to use.
+ *
+ * Creates a new #EXCalBackendSExp object.
+ *
+ * Return value: The newly created ECalBackendSExp object.
  */
 ECalBackendSExp *
 e_cal_backend_sexp_new (const char *text)
@@ -1058,6 +1126,14 @@ e_cal_backend_sexp_new (const char *text)
 	return sexp;
 }
 
+/**
+ * e_cal_backend_sexp_text:
+ * @sexp: An #ECalBackendSExp object.
+ *
+ * Retrieve the text expression for the given ECalBackendSExp object.
+ *
+ * Return value: The text expression.
+ */
 const char *
 e_cal_backend_sexp_text (ECalBackendSExp *sexp)
 {
@@ -1115,6 +1191,10 @@ e_cal_backend_sexp_init (ECalBackendSExp *sexp)
 
 /**
  * e_cal_backend_sexp_get_type:
+ *
+ * Registers the #ECalBackendSExp class if needed.
+ *
+ * Return value: The unique identifier of the class.
  */
 GType
 e_cal_backend_sexp_get_type (void)
