@@ -1,3 +1,14 @@
+2005-05-06  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Check for Win32 (mingw), set Automake
+	conditional. Move the libtool stuff a bit earlier so that $host
+	gets set early and can be checked in a more logical place. Check
+	for some more headers and functions. Use gobject-2.0 instead of
+	glib-2.0 in E_DATA_SERVER_DEPS as the libs we build do depend on
+	gobject. Check for libsoup-2.4 first, as that is what HEAD libsoup
+	calls its .pc file. On Win32, copy the libtool generated here to
+	libdb/dist.
+	
 2005-05-05  Veerapuram Varadhan <vvaradhan@novell.com>
 
 	* configure.in: Added "docs/reference/calendar/libedata-cal".
