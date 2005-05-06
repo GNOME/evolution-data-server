@@ -1,3 +1,9 @@
+2005-05-06  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #272504
+	* camel-groupwise-store.c: (groupwise_auth_loop): GroupWise is
+	the right way to spell.
+
 2005-05-06  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* camel-groupwise-store.c : A typo. Fixes 272503. Patch submitted

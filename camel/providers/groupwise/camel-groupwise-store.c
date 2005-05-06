@@ -362,7 +362,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 		if (!service->url->passwd) {
 			char *prompt;
 			
-			prompt = g_strdup_printf (_("%sPlease enter the Groupwise "
+			prompt = g_strdup_printf (_("%sPlease enter the GroupWise "
 						    "password for %s@%s"),
 						  errbuf ? errbuf : "",
 						  service->url->user,
