@@ -1,3 +1,11 @@
+2005-05-06  Sushma Rai  <rsushma@novell.com>
+
+	* libedata-book/e-book-backend-cache.c
+	(e_book_backend_cache_get_contacts): Freeing the list of cache objects
+	and sexp.
+	(e_book_backend_cache_search): Freeing list of contacts matching the
+	query.
+
 2005-05-04  Hans Petter Jansson  <hpj@novell.com>
 
 	* libebook/e-address-western.c:

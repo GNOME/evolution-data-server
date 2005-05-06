@@ -332,6 +332,7 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
 	EContact *contact;
         EBookBackendSExp *sexp = NULL;
 	const char *uid;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), NULL);
 	if (query) {
 		sexp = e_book_backend_sexp_new (query);
@@ -341,8 +342,7 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
        
 
         l = e_file_cache_get_objects (E_FILE_CACHE (cache));
-        if (!l)
-                return NULL;
+
         for ( ; l != NULL; l = g_slist_next (l)) {
                 vcard_str = l->data;
                 if (vcard_str && !strncmp (vcard_str, "BEGIN:VCARD", 11)) {
@@ -353,6 +353,10 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
                 }
                 
         }
+	if (l)
+		g_slist_free (l);
+	if (sexp)
+		g_object_unref (sexp);
 
         return list;
 }
@@ -367,12 +371,13 @@ e_book_backend_cache_search (EBookBackendCache *cache, const char *query)
 	ptr_array = g_ptr_array_new ();
 	
 	temp = matching_contacts;
-	for (; matching_contacts != NULL; matching_contacts = g_list_next (matching_contacts))
+	for (; matching_contacts != NULL; matching_contacts = g_list_next (matching_contacts)) {
 		g_ptr_array_add (ptr_array, e_contact_get (matching_contacts->data, E_CONTACT_UID));
-		
-	return ptr_array;
+		g_object_unref (matching_contacts->data);
+	}
+	g_list_free (temp);
 	
-
+	return ptr_array;
 }
 
 gboolean 
