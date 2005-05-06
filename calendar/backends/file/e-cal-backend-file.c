@@ -361,7 +361,9 @@ e_cal_backend_file_get_alarm_email_address (ECalBackendSync *backend, EDataCal *
 static ECalBackendSyncStatus
 e_cal_backend_file_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
-	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
+	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
+				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
 	
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1861,9 +1863,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 			old = e_cal_component_get_as_string (obj_data->full_object);
 
-			e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object),
-						     get_rid_icaltime (comp),
-						     mod);
 			new = e_cal_component_get_as_string (comp);
 			e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old, new);
 
@@ -1920,10 +1919,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
 		}
-
-		/* remove all affected recurrences */
-		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object),
-					     icaltime_from_string (rid), mod);
 
 		rrdata.cbfile = cbfile;
 		rrdata.obj_data = obj_data;

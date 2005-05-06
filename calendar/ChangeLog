@@ -1,3 +1,17 @@
+2005-05-06  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #273264
+
+	* libecal/e-cal.c (add_instance): set RECURRENCE-ID correctly.
+	(generate_instances): use detached instances' start and end times, not
+	the RECURRENCE-ID.
+
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_modify_object): no need to add exceptions for
+	detached recurrences.
+	(e_cal_backend_file_get_static_capabilities): disable THISAND*, so that
+	the broken GUI does not try to use them.
+
 2005-05-04  Rodrigo Moya <rodrigo@novell.com>
 
 	Fixes #300920

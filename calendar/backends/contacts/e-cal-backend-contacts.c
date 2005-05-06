@@ -925,7 +925,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass 
 	e_book_get_addressbooks (&priv->addressbook_sources, NULL);
 
         priv->addressbooks = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                    g_free, (GDestroyNotify)book_record_free);
+                                                    g_free, (GDestroyNotify) book_record_free);
         priv->tracked_contacts = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                         g_free, (GDestroyNotify)contact_record_free);
         
