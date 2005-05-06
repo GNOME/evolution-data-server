@@ -1334,7 +1334,8 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 		}
 
 		if (param->values && param->values->data) {
-			if (!g_ascii_strcasecmp ((char*)param->values->data, "b"))
+			if (!g_ascii_strcasecmp ((char*)param->values->data, "b") ||
+			    !g_ascii_strcasecmp ((char*)param->values->data, "BASE64"))
 				attr->encoding = EVC_ENCODING_BASE64;
 			else if (!g_ascii_strcasecmp ((char*)param->values->data, EVC_QUOTEDPRINTABLE))
 				attr->encoding = EVC_ENCODING_QP;

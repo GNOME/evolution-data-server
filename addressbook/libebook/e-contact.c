@@ -463,6 +463,9 @@ static void*
 n_getter (EContact *contact, EVCardAttribute *attr)
 {
 	EContactName *name = g_new0 (EContactName, 1);
+	EVCardAttribute *new_attr;
+	char *name_str;
+
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
 
@@ -471,6 +474,15 @@ n_getter (EContact *contact, EVCardAttribute *attr)
 		name->additional = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		name->prefixes   = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		name->suffixes   = g_strdup (p && p->data ? p->data : "");
+	}
+
+	new_attr = e_contact_get_first_attr (contact, EVC_FN);
+	if (!new_attr) {
+		new_attr = e_vcard_attribute_new (NULL, EVC_FN);
+		e_vcard_add_attribute (E_VCARD (contact), new_attr);
+		name_str = e_contact_name_to_string (name);
+		e_vcard_attribute_add_value (new_attr, name_str);
+		g_free (name_str);
 	}
 
 	return name;

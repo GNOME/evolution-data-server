@@ -1,5 +1,14 @@
 2005-05-06  Sushma Rai  <rsushma@novell.com>
 
+	* libebook/e-vcard.c (e_vcard_attribute_add_param): Handling encoding
+	type BASE64.
+
+	* libebook/e-contact.c (n_getter): If FN attribute is not present, 
+	forming FN value from N and adding it to the vcard.
+	Fixes #268271
+
+2005-05-06  Sushma Rai  <rsushma@novell.com>
+
 	* libedata-book/e-book-backend-cache.c
 	(e_book_backend_cache_get_contacts): Freeing the list of cache objects
 	and sexp.
