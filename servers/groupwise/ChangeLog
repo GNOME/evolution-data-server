@@ -1,3 +1,8 @@
+2005-05-06  Ulrich Neumann <uli@myuli.com>
+
+	* e-gw-sendoptions.c (set_status_tracking_changes):
+	Fixed two memory leaks.
+
 2005-04-26  Parthasarathi Susarla <sparthasarathi@novell.com>
 	* e-gw-item.[ch]: Reverting patch adding itemReference 
 	  in the EGwItemAttachment structure.

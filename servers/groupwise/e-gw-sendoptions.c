@@ -468,7 +468,7 @@ set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking 
 		comp_name = g_strconcat (comp, "StatusInfo", NULL);
 		e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
 		g_free (comp_name), comp_name = NULL;
-		
+		g_free (value), value = NULL;
 	}
 		
 	if (!strcmp (comp, "mail")) {
@@ -480,6 +480,7 @@ set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking 
 			comp_name = g_strconcat (comp, "AutoDelete", NULL);
 			e_gw_sendoptions_write_settings (msg, comp_name, value, NULL, TRUE);
 			g_free (comp_name), comp_name = NULL;
+			g_free (value), value = NULL;
 		}
 	}
 
