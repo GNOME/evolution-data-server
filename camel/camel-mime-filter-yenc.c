@@ -338,9 +338,9 @@ camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
  * camel_mime_filter_yenc_get_crc:
  * @yenc: a #CamelMimeFiletrYenc object
  *
- * Get the computed crc or (guint32) -1 on fail.
+ * Get the computed crc or (#guint32) -1 on fail.
  *
- * Returns the computed crc or (guint32) -1 on fail.
+ * Returns the computed crc or (#guint32) -1 on fail.
  **/
 guint32
 camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc)
@@ -488,7 +488,7 @@ camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
  * should reuse @state.
  *
  * Along the same lines, @pcrc and @crc should be initialized to
- * @CAMEL_MIME_YENCODE_CRC_INIT before using.
+ * #CAMEL_MIME_YENCODE_CRC_INIT before using.
  *
  * Returns the number of bytes encoded
  **/
