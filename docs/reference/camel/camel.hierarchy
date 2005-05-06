@@ -10,7 +10,7 @@ CamelObject
       CamelMultipartSigned
   CamelCipherContext
     CamelGpgContext
-    CamelSMimeContext
+    CamelSMIMEContext
   CamelFolder
     CamelOfflineFolder
     CamelVeeFolder
@@ -24,6 +24,7 @@ CamelObject
     CamelMimeFilterCRLF
     CamelMimeFilterEnriched
     CamelMimeFilterFrom
+    CamelMimeFilterHTML
     CamelMimeFilterIndex
     CamelMimeFilterSave
     CamelMimeFilterToHTML
