@@ -267,7 +267,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	
 	if (!(url->host || url->user)) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID,
-				     _("Host or user not availbale in url"));
+				     _("Host or user not available in url"));
 	}
 
 

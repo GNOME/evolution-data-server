@@ -1,3 +1,8 @@
+2005-05-06  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* camel-groupwise-store.c : A typo. Fixes 272503. Patch submitted
+	by Thierry Moisan
+
 2005-04-27  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: 
