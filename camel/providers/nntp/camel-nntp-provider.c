@@ -52,7 +52,7 @@ static CamelProvider news_provider = {
 	"nntp",
 	N_("USENET news"),
 
-	N_("This is a provider for reading from and posting to"
+	N_("This is a provider for reading from and posting to "
 	   "USENET newsgroups."),
 
 	"news",
