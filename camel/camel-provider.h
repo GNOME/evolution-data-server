@@ -69,6 +69,7 @@ extern char *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_PROVIDER_IS_STORAGE	(1 << 4)
 #define CAMEL_PROVIDER_SUPPORTS_SSL	(1 << 5)
 #define CAMEL_PROVIDER_HAS_LICENSE      (1 << 6)
+#define CAMEL_PROVIDER_DISABLE_SENT_FOLDER (1 << 7)
 
 
 /* Flags for url_flags. "ALLOW" means the config dialog will let the
