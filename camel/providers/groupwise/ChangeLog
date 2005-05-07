@@ -1,3 +1,9 @@
+2005-04-07  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-provider.c 
+	Added code so as to disable sent items button and prevent
+	copying of sent items to any folder, for a GroupWise account.
+
 2005-05-06  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #272504
