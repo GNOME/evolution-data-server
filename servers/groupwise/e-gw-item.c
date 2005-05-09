@@ -1021,8 +1021,12 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		}
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp)) {
 			value = soup_soap_parameter_get_string_value (temp);
-			if (value && (!primary_email ||  !g_str_equal (primary_email, value)))
-				item->priv->email_list = g_list_append (item->priv->email_list, value);
+			if (value) {
+				if (!primary_email || !g_str_equal (primary_email, value))
+					item->priv->email_list = g_list_append (item->priv->email_list, value);
+				else
+					g_free (value);
+			}
 		}
 		g_free (primary_email);
 	}
@@ -1117,8 +1121,8 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			value = soup_soap_parameter_get_property(temp, "type");
 			if (value)
 				g_hash_table_insert (item->priv->addresses, value, address);
-			 			
-			
+			else
+				free_postal_address (address);
 		}
 		
 	}
@@ -1730,8 +1734,8 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		} else if (!g_ascii_strcasecmp (name, "to")) {
 			char *to ;
 			to = soup_soap_parameter_get_string_value (child) ;
-			e_gw_item_set_to (item,to) ;
-
+			e_gw_item_set_to (item, to);
+			g_free (to);
 		} else if (!g_ascii_strcasecmp (name, "iCalId"))
 			item->priv->icalid = soup_soap_parameter_get_string_value (child);
 
@@ -1814,7 +1818,11 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			item->priv->place = soup_soap_parameter_get_string_value (child);
 
 		else if (!g_ascii_strcasecmp (name, "taskPriority")) {
-			e_gw_item_set_task_priority (item, soup_soap_parameter_get_string_value (child));
+			char *priority;
+
+			priority = soup_soap_parameter_get_string_value (child);
+			e_gw_item_set_task_priority (item, priority);
+			g_free (priority);
 		}
 
 		else if (!g_ascii_strcasecmp (name, "startDate")) {

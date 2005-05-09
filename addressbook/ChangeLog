@@ -1,3 +1,8 @@
+2005-05-09  Sushma Rai	<rsushma@novell.com>
+
+	* libedata-book/e-book-backend-cache.c
+	(e_book_backend_cache_constructor): Freeing cache file name.
+
 2005-05-06  Sushma Rai  <rsushma@novell.com>
 
 	* libebook/e-vcard.c (e_vcard_attribute_add_param): Handling encoding

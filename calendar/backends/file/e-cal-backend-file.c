@@ -1254,6 +1254,8 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp, &match_data);
 
 	*objects = match_data.obj_list;
+
+	g_object_unref (match_data.obj_sexp);
 	
 	return GNOME_Evolution_Calendar_Success;	
 }
@@ -1297,6 +1299,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 		g_list_foreach (match_data.obj_list, (GFunc) g_free, NULL);
 		g_list_free (match_data.obj_list);
 	}
+	g_object_unref (match_data.obj_sexp);
 
 	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
 }
@@ -1405,6 +1408,7 @@ create_user_free_busy (ECalBackendFile *cbfile, const char *address, const char 
 						vcalendar_comp,
 						priv->default_zone);
 	}
+	g_object_unref (obj_sexp);
 
 	return vfb;	
 }

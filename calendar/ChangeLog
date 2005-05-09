@@ -1,3 +1,15 @@
+2005-05-09  Sushma Rai  <rsushma@novell.com>
+
+	* libedata-cal/e-cal-backend-cache.c (e_cal_backend_cache_constructor):
+	Freeing cache file name.
+	
+	* calendar/backends/groupwise/e-cal-backend-groupwise.c (get_deltas):
+	Checking for server time value, though typically this should never be NULL.
+	(e_cal_backend_groupwise_get_object_list): Unref cbsexp.
+
+	* calendar/backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_get_object_list)(create_user_free_busy): Unref sexp.
+
 2005-05-06  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-cal-backend-factory.c:

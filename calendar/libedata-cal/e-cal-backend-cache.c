@@ -166,8 +166,12 @@ e_cal_backend_cache_constructor (GType type,
   
 	/* extract uid */
 	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri")) {
+		char *cache_file;
+
 		uri = g_value_get_string (construct_properties->value);
-		g_object_set (obj, "filename", get_filename_from_uri (uri), NULL);
+		cache_file = get_filename_from_uri (uri);
+		g_object_set (obj, "filename", cache_file, NULL);
+		g_free (cache_file);
 	}
 
 	return obj;

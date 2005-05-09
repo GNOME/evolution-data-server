@@ -196,6 +196,7 @@ get_deltas (gpointer handle)
 	char *comp_str;
 	char *time_string = NULL;
 	char t_str [100]; 
+	const char *serv_time;
 	struct stat buf;
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
         
@@ -213,20 +214,23 @@ get_deltas (gpointer handle)
 
 	g_static_mutex_lock (&connecting);
 
-	g_strlcpy (t_str, e_cal_backend_cache_get_server_utc_time (cache), 100);
-	if (!*t_str || !strcmp (t_str, "")) {
-		icaltimetype temp;
-		time_t current_time;
-		const struct tm *tm;
+	serv_time = e_cal_backend_cache_get_server_utc_time (cache);
+	if (serv_time) {
+		g_strlcpy (t_str, e_cal_backend_cache_get_server_utc_time (cache), 100);
+		if (!*t_str || !strcmp (t_str, "")) {
+			icaltimetype temp;
+			time_t current_time;
+			const struct tm *tm;
 
-		g_warning (" Could not get the correct time stamp for using in getQuick Messages\n");
-		temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-		current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-		tm = gmtime (&current_time);
-		strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+			g_warning (" Could not get the correct time stamp for using in getQuick Messages\n");
+			temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+			current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
+			tm = gmtime (&current_time);
+			strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+		}
+		time_string = g_strdup (t_str);
 	}
 
-	time_string = g_strdup (t_str);
 	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
 	
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
@@ -1169,6 +1173,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 		}
         }
 
+	g_object_unref (cbsexp);
 	g_list_foreach (components, (GFunc) g_object_unref, NULL);
 	g_list_free (components);
 

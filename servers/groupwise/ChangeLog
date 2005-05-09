@@ -1,3 +1,12 @@
+2005-05-09  Sushma Rai  <rsushma@novell.com>
+
+	* e-gw-item.c (set_contact_fields_from_soap_parameter): Freeing value,
+	postal_address.
+	(e_gw_item_new_from_soap_parameter): Freeing "to", priority.
+
+	* servers/groupwise/e-gw-connection.c 
+	(e_gw_connection_get_quick_messages): Checking for NULL start date.
+
 2005-05-06  Ulrich Neumann <uli@myuli.com>
 
 	* e-gw-sendoptions.c (set_status_tracking_changes):

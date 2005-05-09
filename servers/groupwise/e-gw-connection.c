@@ -2132,7 +2132,7 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getQuickMessagesRequest");
 	e_gw_message_write_string_parameter (msg, "list", NULL, message_list);
-	if (start_date)
+	if (start_date && *start_date)
 		e_gw_message_write_string_parameter (msg, "startDate", NULL, *start_date);
 	if (container)
 		e_gw_message_write_string_parameter (msg, "container", NULL, container);
