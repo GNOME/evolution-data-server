@@ -1,5 +1,11 @@
 2005-05-09  Sushma Rai  <rsushma@novell.com>
 
+	* e-gw-item.c (set_common_addressbook_item_fields_from_soap_parameter):
+	Reading and saving modified time parameter value from the server 
+	response.
+
+2005-05-09  Sushma Rai  <rsushma@novell.com>
+
 	* e-gw-item.c (set_contact_fields_from_soap_parameter): Freeing value,
 	postal_address.
 	(e_gw_item_new_from_soap_parameter): Freeing "to", priority.

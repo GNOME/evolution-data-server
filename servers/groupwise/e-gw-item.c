@@ -868,6 +868,12 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 		item->priv->id = g_strdup (value);
 	}
 	value = NULL;
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "modified");
+	if (subparam) {
+		value = soup_soap_parameter_get_string_value (subparam);
+		g_hash_table_insert (simple_fields, "modified_time", value);
+	}
+	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "comment");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
