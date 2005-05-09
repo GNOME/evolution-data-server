@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Ximian Inc.
  *
@@ -59,18 +60,18 @@ struct _CamelAddressClass {
 
 CamelType	camel_address_get_type	(void);
 CamelAddress   *camel_address_new	(void);
-CamelAddress   *camel_address_new_clone	(const CamelAddress *);
-int		camel_address_length	(CamelAddress *);
+CamelAddress   *camel_address_new_clone	(const CamelAddress *addr);
+int		camel_address_length	(CamelAddress *addr);
 
-int	        camel_address_decode	(CamelAddress *, const char *);
-char	       *camel_address_encode	(CamelAddress *);
-int	        camel_address_unformat	(CamelAddress *, const char *);
-char	       *camel_address_format	(CamelAddress *);
+int	        camel_address_decode	(CamelAddress *addr, const char *raw);
+char	       *camel_address_encode	(CamelAddress *addr);
+int	        camel_address_unformat	(CamelAddress *addr, const char *raw);
+char	       *camel_address_format	(CamelAddress *addr);
 
-int		camel_address_cat	(CamelAddress *, const CamelAddress *);
-int		camel_address_copy	(CamelAddress *, const CamelAddress *);
+int		camel_address_cat	(CamelAddress *dest, const CamelAddress *source);
+int		camel_address_copy	(CamelAddress *dest, const CamelAddress *source);
 
-void		camel_address_remove	(CamelAddress *, int index);
+void		camel_address_remove	(CamelAddress *addr, int index);
 
 #ifdef __cplusplus
 }

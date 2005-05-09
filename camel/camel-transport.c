@@ -108,17 +108,17 @@ transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 /**
  * camel_transport_send_to:
- * @transport: the transport
- * @message: the message
- * @from: from address
- * @recipients: the recipients
- * @ex: a CamelException
+ * @transport: a #CamelTransport object
+ * @message: a #CamelMimeMessage to send
+ * @from: a #CamelAddress to send from
+ * @recipients: a #CamelAddress containing all recipients
+ * @ex: a #CamelException
  *
  * Sends the message to the given recipients, regardless of the contents
  * of @message. If the message contains a "Bcc" header, the transport
  * is responsible for stripping it.
  *
- * Return value: success or failure.
+ * Return %TRUE on success or %FALSE on fail
  **/
 gboolean
 camel_transport_send_to (CamelTransport *transport, CamelMimeMessage *message,

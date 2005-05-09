@@ -39,11 +39,9 @@ extern "C" {
 
 struct _CamelSession;
 
-enum {
-	CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 = (1 << 0),
-	CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 = (1 << 1),
-	CAMEL_TCP_STREAM_SSL_ENABLE_TLS  = (1 << 2),
-};
+#define CAMEL_TCP_STREAM_SSL_ENABLE_SSL2   (1 << 0)
+#define CAMEL_TCP_STREAM_SSL_ENABLE_SSL3   (1 << 1)
+#define CAMEL_TCP_STREAM_SSL_ENABLE_TLS    (1 << 2)
 
 struct _CamelTcpStreamSSL {
 	CamelTcpStream parent_object;

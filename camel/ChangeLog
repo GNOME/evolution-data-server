@@ -1,10 +1,10 @@
 2005-05-07  Sankar P  <psankar@novell.com>
 
-	* camel-provider.h
-	Added a new flag CAMEL_PROVIDER_DISABLE_SENT_FOLDER so as to facilitate
-	disabling sent button and prevent copying sent items. 
-	This flag is introduced for the GroupWise provider, but can be made use 
-	of by any other type of provider, if needed.
+	* camel-provider.h: Added a new flag
+	CAMEL_PROVIDER_DISABLE_SENT_FOLDER so as to facilitate disabling
+	sent button and prevent copying sent items.  This flag is
+	introduced for the GroupWise provider, but can be made use of by
+	any other type of provider, if needed.
 
 2005-04-26  Ross Burton  <ross@burtonini.com>
 

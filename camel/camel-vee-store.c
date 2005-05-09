@@ -119,9 +119,9 @@ camel_vee_store_finalise (CamelObject *obj)
 /**
  * camel_vee_store_new:
  *
- * Create a new CamelVeeStore object.
+ * Create a new #CamelVeeStore object.
  * 
- * Return value: A new CamelVeeStore widget.
+ * Returns new #CamelVeeStore object
  **/
 CamelVeeStore *
 camel_vee_store_new (void)

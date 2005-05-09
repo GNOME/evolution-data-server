@@ -298,13 +298,13 @@ fail:
 
 /**
  * camel_service_construct:
- * @service: the CamelService
- * @session: the session for the service
- * @provider: the service's provider
- * @url: the default URL for the service (may be NULL)
- * @ex: a CamelException
+ * @service: a #CamelService object
+ * @session: the #CamelSession for @service
+ * @provider: the #CamelProvider associated with @service
+ * @url: the default URL for the service (may be %NULL)
+ * @ex: a #CamelException
  *
- * Constructs a CamelService initialized with the given parameters.
+ * Constructs a #CamelService initialized with the given parameters.
  **/
 void
 camel_service_construct (CamelService *service, CamelSession *session,
@@ -327,17 +327,17 @@ service_connect (CamelService *service, CamelException *ex)
 	 return TRUE;
 }
 
+
 /**
  * camel_service_connect:
- * @service: CamelService object
- * @ex: a CamelException
+ * @service: a #CamelService object
+ * @ex: a #CamelException
  *
  * Connect to the service using the parameters it was initialized
  * with.
  *
- * Return value: whether or not the connection succeeded
+ * Returns %TRUE if the connection is made or %FALSE otherwise
  **/
-
 gboolean
 camel_service_connect (CamelService *service, CamelException *ex)
 {
@@ -398,17 +398,17 @@ service_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 	return TRUE;
 }
 
+
 /**
  * camel_service_disconnect:
- * @service: CamelService object
- * @clean: whether or not to try to disconnect cleanly.
- * @ex: a CamelException
+ * @service: a #CamelService object
+ * @clean: whether or not to try to disconnect cleanly
+ * @ex: a #CamelException
  *
  * Disconnect from the service. If @clean is %FALSE, it should not
  * try to do any synchronizing or other cleanup of the connection.
  *
- * Return value: whether or not the disconnection succeeded without
- * errors. (Consult @ex if %FALSE.)
+ * Returns %TRUE if the disconnect was successful or %FALSE otherwise
  **/
 gboolean
 camel_service_disconnect (CamelService *service, gboolean clean,
@@ -456,7 +456,7 @@ cancel_connect (CamelService *service)
 
 /**
  * camel_service_cancel_connect:
- * @service: a service
+ * @service: a #CamelService object
  *
  * If @service is currently attempting to connect to or disconnect
  * from a server, this causes it to stop and fail. Otherwise it is a
@@ -473,13 +473,13 @@ camel_service_cancel_connect (CamelService *service)
 
 /**
  * camel_service_get_url:
- * @service: a service
+ * @service: a #CamelService object
  *
- * Returns the URL representing a service. The returned URL must be
+ * Gets the URL representing @service. The returned URL must be
  * freed when it is no longer needed. For security reasons, this
  * routine does not return the password.
  *
- * Return value: the url name
+ * Returns the URL representing @service
  **/
 char *
 camel_service_get_url (CamelService *service)
@@ -496,9 +496,10 @@ get_name (CamelService *service, gboolean brief)
 	return g_strdup ("???");
 }		
 
+
 /**
  * camel_service_get_name:
- * @service: the service
+ * @service: a #CamelService object
  * @brief: whether or not to use a briefer form
  *
  * This gets the name of the service in a "friendly" (suitable for
@@ -506,7 +507,7 @@ get_name (CamelService *service, gboolean brief)
  * such as for use in the folder tree. If @brief is %FALSE, it should
  * be a more complete and mostly unambiguous description.
  *
- * Return value: the description, which the caller must free.
+ * Returns a description of the service which the caller must free
  **/
 char *
 camel_service_get_name (CamelService *service, gboolean brief)
@@ -561,17 +562,18 @@ get_path (CamelService *service)
 	return path;
 }		
 
+
 /**
  * camel_service_get_path:
- * @service: the service
+ * @service: a #CamelService object
  *
- * This gets a valid UNIX relative path describing the service, which
+ * This gets a valid UNIX relative path describing @service, which
  * is guaranteed to be different from the path returned for any
  * different service. This path MUST start with the name of the
  * provider, followed by a "/", but after that, it is up to the
  * provider.
  *
- * Return value: the path, which the caller must free.
+ * Returns the path, which the caller must free
  **/
 char *
 camel_service_get_path (CamelService *service)
@@ -585,11 +587,11 @@ camel_service_get_path (CamelService *service)
 
 /**
  * camel_service_get_session:
- * @service: a service
+ * @service: a #CamelService object
  *
- * Returns the CamelSession associated with the service.
+ * Gets the #CamelSession associated with the service.
  *
- * Return value: the session
+ * Returns the session
  **/
 CamelSession *
 camel_service_get_session (CamelService *service)
@@ -597,13 +599,14 @@ camel_service_get_session (CamelService *service)
 	return service->session;
 }
 
+
 /**
  * camel_service_get_provider:
- * @service: a service
+ * @service: a #CamelService object
  *
- * Returns the CamelProvider associated with the service.
+ * Gets the #CamelProvider associated with the service.
  *
- * Return value: the provider
+ * Returns the provider
  **/
 CamelProvider *
 camel_service_get_provider (CamelService *service)
@@ -617,17 +620,18 @@ query_auth_types (CamelService *service, CamelException *ex)
 	return NULL;
 }
 
+
 /**
  * camel_service_query_auth_types:
- * @service: a CamelService
- * @ex: a CamelException
+ * @service: a #CamelService object
+ * @ex: a #CamelException
  *
  * This is used by the mail source wizard to get the list of
  * authentication types supported by the protocol, and information
  * about them.
  *
- * Return value: a list of CamelServiceAuthType records. The caller
- * must free the list with g_list_free() when it is done with it.
+ * Returns a list of #CamelServiceAuthType records. The caller
+ * must free the list with #g_list_free when it is done with it.
  **/
 GList *
 camel_service_query_auth_types (CamelService *service, CamelException *ex)

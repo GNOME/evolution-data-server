@@ -69,7 +69,7 @@ camel_address_get_type (void)
  *
  * Create a new #CamelAddress object.
  * 
- * Returns a new CamelAddress widget.
+ * Returns a new #CamelAddress object
  **/
 CamelAddress *
 camel_address_new (void)
@@ -78,121 +78,123 @@ camel_address_new (void)
 	return new;
 }
 
+
 /**
  * camel_address_new_clone:
- * @in: 
+ * @addr: a #CamelAddress object
  * 
  * Clone an existing address type.
  * 
- * Return value: 
+ * Returns the cloned address
  **/
 CamelAddress *
-camel_address_new_clone(const CamelAddress *in)
+camel_address_new_clone (const CamelAddress *addr)
 {
-	CamelAddress *new = CAMEL_ADDRESS(camel_object_new(CAMEL_OBJECT_GET_TYPE(in)));
+	CamelAddress *new = CAMEL_ADDRESS(camel_object_new(CAMEL_OBJECT_GET_TYPE(addr)));
 
-	camel_address_cat(new, in);
+	camel_address_cat(new, addr);
 	return new;
 }
 
+
 /**
  * camel_address_length:
- * @a: 
+ * @addr: a #CamelAddress object
  * 
- * Return the number of addresses stored in the address @a.
+ * Get the number of addresses stored in the address @addr.
  * 
- * Return value: 
+ * Returns the number of addresses contained in @addr
  **/
 int
-camel_address_length(CamelAddress *a)
+camel_address_length (CamelAddress *addr)
 {
-	return a->addresses->len;
+	return addr->addresses->len;
 }
+
 
 /**
  * camel_address_decode:
- * @a: An address.
- * @raw: Raw address description.
- * 
+ * @addr: a #CamelAddress object
+ * @raw: raw address description
+ *
  * Construct a new address from a raw address field.
- * 
- * Return value: Returns the number of addresses found,
- * or -1 if the addresses could not be parsed fully.
+ *
+ * Returns the number of addresses parsed or %-1 on fail
  **/
 int
-camel_address_decode	(CamelAddress *a, const char *raw)
+camel_address_decode (CamelAddress *addr, const char *raw)
 {
-	g_return_val_if_fail(CAMEL_IS_ADDRESS(a), -1);
+	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), -1);
 
-	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (a))->decode(a, raw);
+	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->decode(addr, raw);
 }
+
 
 /**
  * camel_address_encode:
- * @a: 
+ * @addr: a #CamelAddress object
  * 
  * Encode an address in a format suitable for a raw header.
  * 
- * Return value: The encoded address.
+ * Returns the encoded address
  **/
 char *
-camel_address_encode	(CamelAddress *a)
+camel_address_encode (CamelAddress *addr)
 {
-	g_return_val_if_fail(CAMEL_IS_ADDRESS(a), NULL);
+	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), NULL);
 
-	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (a))->encode(a);
+	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->encode(addr);
 }
+
 
 /**
  * camel_address_unformat:
- * @a: 
- * @raw: 
+ * @addr: a #CamelAddress object
+ * @raw: raw address description
  * 
  * Attempt to convert a previously formatted and/or edited
  * address back into internal form.
  * 
- * Return value: -1 if it could not be parsed, or the number
- * of valid addresses found.
+ * Returns the number of addresses parsed or %-1 on fail
  **/
 int
-camel_address_unformat(CamelAddress *a, const char *raw)
+camel_address_unformat(CamelAddress *addr, const char *raw)
 {
-	g_return_val_if_fail(CAMEL_IS_ADDRESS(a), -1);
+	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), -1);
 
-	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (a))->unformat(a, raw);
+	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->unformat(addr, raw);
 }
+
 
 /**
  * camel_address_format:
- * @a: 
+ * @addr: a #CamelAddress object
  * 
  * Format an address in a format suitable for display.
  * 
- * Return value: The formatted address.
+ * Returns a newly allocated string containing the formatted addresses
  **/
 char *
-camel_address_format	(CamelAddress *a)
+camel_address_format (CamelAddress *addr)
 {
-	if (a == NULL)
-		return NULL;
+	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), NULL);
 
-	g_return_val_if_fail(CAMEL_IS_ADDRESS(a), NULL);
-
-	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (a))->format(a);
+	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->format(addr);
 }
+
 
 /**
  * camel_address_cat:
- * @dest: 
- * @source: 
+ * @dest: destination #CamelAddress object
+ * @source: source #CamelAddress object
  * 
- * Concatenate one address onto another.  The addresses must
+ * Concatenate one address onto another. The addresses must
  * be of the same type.
  * 
- * Return value: 
+ * Returns the number of addresses concatenated
  **/
 int
-camel_address_cat	(CamelAddress *dest, const CamelAddress *source)
+camel_address_cat (CamelAddress *dest, const CamelAddress *source)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(dest), -1);
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(source), -1);
@@ -200,17 +202,18 @@ camel_address_cat	(CamelAddress *dest, const CamelAddress *source)
 	return CAMEL_ADDRESS_CLASS(CAMEL_OBJECT_GET_CLASS(dest))->cat(dest, source);
 }
 
+
 /**
  * camel_address_copy:
- * @dest: 
- * @source: 
+ * @dest: destination #CamelAddress object
+ * @source: source #CamelAddress object
  * 
- * Copy an address contents.
+ * Copy the contents of one address into another.
  * 
- * Return value: 
+ * Returns the number of addresses copied
  **/
 int
-camel_address_copy	(CamelAddress *dest, const CamelAddress *source)
+camel_address_copy (CamelAddress *dest, const CamelAddress *source)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(dest), -1);
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(source), -1);
@@ -219,22 +222,23 @@ camel_address_copy	(CamelAddress *dest, const CamelAddress *source)
 	return camel_address_cat(dest, source);
 }
 
+
 /**
  * camel_address_remove:
- * @a: 
- * @index: The address to remove, use -1 to remove all address.
+ * @addr: a #CamelAddress object
+ * @index: The address to remove, use %-1 to remove all address.
  * 
  * Remove an address by index, or all addresses.
  **/
 void
-camel_address_remove	(CamelAddress *a, int index)
+camel_address_remove (CamelAddress *addr, int index)
 {
-	g_return_if_fail(CAMEL_IS_ADDRESS(a));
+	g_return_if_fail(CAMEL_IS_ADDRESS(addr));
 
 	if (index == -1) {
-		for (index=a->addresses->len; index>-1; index--)
-			CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (a))->remove(a, index);
+		for (index = addr->addresses->len; index>-1; index--)
+			CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->remove(addr, index);
 	} else {
-		CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (a))->remove(a, index);
+		CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->remove(addr, index);
 	}
 }

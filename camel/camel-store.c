@@ -217,13 +217,15 @@ get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelExce
 }
 
 /** 
- * camel_store_get_folder: Return the folder corresponding to a path.
- * @store: a CamelStore
+ * camel_store_get_folder:
+ * @store: a #CamelStore object
  * @folder_name: name of the folder to get
  * @flags: folder flags (create, save body index, etc)
- * @ex: a CamelException
+ * @ex: a #CamelException
+ *
+ * Get a specific folder object from the store by name.
  * 
- * Return value: the folder corresponding to the path @folder_name.
+ * Returns the folder corresponding to the path @folder_name.
  **/
 CamelFolder *
 camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
@@ -302,16 +304,16 @@ create_folder (CamelStore *store, const char *parent_name,
 
 /** 
  * camel_store_create_folder:
- * @store: a CamelStore
+ * @store: a #CamelStore object
  * @parent_name: name of the new folder's parent, or %NULL
  * @folder_name: name of the folder to create
- * @ex: a CamelException
+ * @ex: a #CamelException
  * 
  * Creates a new folder as a child of an existing folder.
  * @parent_name can be %NULL to create a new top-level folder.
  *
- * Return value: info about the created folder, which the caller must
- * free with camel_store_free_folder_info().
+ * Returns info about the created folder, which the caller must
+ * free with #camel_store_free_folder_info
  **/
 CamelFolderInfo *
 camel_store_create_folder (CamelStore *store, const char *parent_name,
@@ -371,10 +373,10 @@ delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
 }
 
 /** 
- * camel_store_delete_folder: Delete the folder corresponding to a path.
- * @store: a CamelStore
+ * camel_store_delete_folder:
+ * @store: a #CamelStore object
  * @folder_name: name of the folder to delete
- * @ex: a CamelException
+ * @ex: a #CamelException
  * 
  * Deletes the named folder. The folder must be empty.
  **/
@@ -414,10 +416,10 @@ rename_folder (CamelStore *store, const char *old_name, const char *new_name, Ca
 
 /**
  * camel_store_rename_folder:
- * @store: a CamelStore
- * @old_name: the current name of the folder
+ * @store: a #CamelStore object
+ * @old_namein: the current name of the folder
  * @new_name: the new name of the folder
- * @ex: a CamelException
+ * @ex: a #CamelException
  * 
  * Rename a named folder to a new name.
  **/
@@ -528,11 +530,11 @@ get_inbox (CamelStore *store, CamelException *ex)
 
 /** 
  * camel_store_get_inbox:
- * @store: a CamelStore
- * @ex: a CamelException
+ * @store: a #CamelStore object
+ * @ex: a #CamelException
  *
- * Return value: the folder in the store into which new mail is
- * delivered, or %NULL if no such folder exists.
+ * Returns the folder in the store into which new mail is delivered,
+ * or %NULL if no such folder exists.
  **/
 CamelFolder *
 camel_store_get_inbox (CamelStore *store, CamelException *ex)
@@ -579,11 +581,11 @@ get_junk(CamelStore *store, CamelException *ex)
 
 /** 
  * camel_store_get_trash:
- * @store: a CamelStore
- * @ex: a CamelException
+ * @store: a #CamelStore object
+ * @ex: a #CamelException
  *
- * Return value: the folder in the store into which trash is
- * delivered, or %NULL if no such folder exists.
+ * Returns the folder in the store into which trash is delivered, or
+ * %NULL if no such folder exists.
  **/
 CamelFolder *
 camel_store_get_trash (CamelStore *store, CamelException *ex)
@@ -596,11 +598,11 @@ camel_store_get_trash (CamelStore *store, CamelException *ex)
 
 /** 
  * camel_store_get_junk:
- * @store: a CamelStore
- * @ex: a CamelException
+ * @store: a #CamelStore object
+ * @ex: a #CamelException
  *
- * Return value: the folder in the store into which junk is
- * delivered, or %NULL if no such folder exists.
+ * Returns the folder in the store into which junk is delivered, or
+ * %NULL if no such folder exists.
  **/
 CamelFolder *
 camel_store_get_junk (CamelStore *store, CamelException *ex)
@@ -638,9 +640,9 @@ store_sync (CamelStore *store, int expunge, CamelException *ex)
 
 /**
  * camel_store_sync:
- * @store: a CamelStore
- * @expunge: do we expunge deleted messages too?
- * @ex: a CamelException
+ * @store: a #CamelStore object
+ * @expunge: %TRUE if an expunge should be done after sync or %FALSE otherwise
+ * @ex: a #CamelException
  *
  * Syncs any changes that have been made to the store object and its
  * folders with the real store.
@@ -739,27 +741,27 @@ dump_fi(CamelFolderInfo *fi, int depth)
 
 /**
  * camel_store_get_folder_info:
- * @store: a CamelStore
+ * @store: a #CamelStore object
  * @top: the name of the folder to start from
  * @flags: various CAMEL_STORE_FOLDER_INFO_* flags to control behavior
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
  * This fetches information about the folder structure of @store,
  * starting with @top, and returns a tree of CamelFolderInfo
- * structures. If @flags includes %CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
+ * structures. If @flags includes #CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
  * only subscribed folders will be listed. (This flag can only be used
  * for stores that support subscriptions.) If @flags includes
- * %CAMEL_STORE_FOLDER_INFO_RECURSIVE, the returned tree will include
+ * #CAMEL_STORE_FOLDER_INFO_RECURSIVE, the returned tree will include
  * all levels of hierarchy below @top. If not, it will only include
  * the immediate subfolders of @top. If @flags includes
- * %CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
- * some or all of the structures may be set to -1, if the store cannot
+ * #CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
+ * some or all of the structures may be set to %-1, if the store cannot
  * determine that information quickly. If @flags includes
- * %CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
+ * #CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
  * folders (such as vTrash or vJunk).
  * 
- * Return value: a CamelFolderInfo tree, which must be freed with
- * camel_store_free_folder_info.
+ * Returns a #CamelFolderInfo tree, which must be freed with
+ * #camel_store_free_folder_info
  **/
 CamelFolderInfo *
 camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelException *ex)
@@ -802,10 +804,10 @@ free_folder_info (CamelStore *store, CamelFolderInfo *fi)
 
 /**
  * camel_store_free_folder_info:
- * @store: a CamelStore
- * @tree: the tree returned by camel_store_get_folder_info()
+ * @store: a #CamelStore object
+ * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
  *
- * Frees the data returned by camel_store_get_folder_info().
+ * Frees the data returned by #camel_store_get_folder_info
  **/
 void
 camel_store_free_folder_info (CamelStore *store, CamelFolderInfo *fi)
@@ -817,10 +819,10 @@ camel_store_free_folder_info (CamelStore *store, CamelFolderInfo *fi)
 
 /**
  * camel_store_free_folder_info_full:
- * @store: a CamelStore
- * @tree: the tree returned by camel_store_get_folder_info()
+ * @store: a #CamelStore object
+ * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
  *
- * An implementation for CamelStore::free_folder_info. Frees all
+ * An implementation for #CamelStore::free_folder_info. Frees all
  * of the data.
  **/
 void
@@ -831,10 +833,10 @@ camel_store_free_folder_info_full (CamelStore *store, CamelFolderInfo *fi)
 
 /**
  * camel_store_free_folder_info_nop:
- * @store: a CamelStore
- * @tree: the tree returned by camel_store_get_folder_info()
+ * @store: a #CamelStore object
+ * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
  *
- * An implementation for CamelStore::free_folder_info. Does nothing.
+ * An implementation for #CamelStore::free_folder_info. Does nothing.
  **/
 void
 camel_store_free_folder_info_nop (CamelStore *store, CamelFolderInfo *fi)
@@ -844,7 +846,7 @@ camel_store_free_folder_info_nop (CamelStore *store, CamelFolderInfo *fi)
 
 /**
  * camel_folder_info_free:
- * @fi: the CamelFolderInfo
+ * @fi: a #CamelFolderInfo
  *
  * Frees @fi.
  **/
@@ -878,7 +880,7 @@ free_name(void *key, void *data, void *user)
 
 /**
  * camel_folder_info_build:
- * @folders: an array of CamelFolderInfo
+ * @folders: an array of #CamelFolderInfo
  * @namespace: an ignorable prefix on the folder names
  * @separator: the hieararchy separator character
  * @short_names: %TRUE if the (short) name of a folder is the part after
@@ -888,14 +890,14 @@ free_name(void *key, void *data, void *user)
  * to the hierarchy described by their full_names and @separator. If
  * @namespace is non-%NULL, then it will be ignored as a full_name
  * prefix, for purposes of comparison. If necessary,
- * camel_folder_info_build will create additional CamelFolderInfo with
+ * #camel_folder_info_build will create additional #CamelFolderInfo with
  * %NULL urls to fill in gaps in the tree. The value of @short_names
  * is used in constructing the names of these intermediate folders.
  *
  * NOTE: This is deprected, do not use this.
  * FIXME: remove this/move it to imap, which is the only user of it now.
  *
- * Return value: the top level of the tree of linked folder info.
+ * Returns the top level of the tree of linked folder info.
  **/
 CamelFolderInfo *
 camel_folder_info_build (GPtrArray *folders, const char *namespace,
@@ -1010,7 +1012,8 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 	return top;
 }
 
-static CamelFolderInfo *folder_info_clone_rec(CamelFolderInfo *fi, CamelFolderInfo *parent)
+static CamelFolderInfo *
+folder_info_clone_rec(CamelFolderInfo *fi, CamelFolderInfo *parent)
 {
 	CamelFolderInfo *info;
 
@@ -1035,6 +1038,15 @@ static CamelFolderInfo *folder_info_clone_rec(CamelFolderInfo *fi, CamelFolderIn
 	return info;
 }
 
+
+/**
+ * camel_folder_info_clone:
+ * @fi: a #CamelFolderInfo
+ *
+ * Clones @fi recursively.
+ *
+ * Returns the cloned #CamelFolderInfo tree.
+ **/
 CamelFolderInfo *
 camel_folder_info_clone(CamelFolderInfo *fi)
 {
@@ -1044,6 +1056,15 @@ camel_folder_info_clone(CamelFolderInfo *fi)
 	return folder_info_clone_rec(fi, NULL);
 }
 
+
+/**
+ * camel_store_supports_subscriptions:
+ * @store: a #CamelStore object
+ *
+ * Get whether or not @store supports subscriptions to folders.
+ *
+ * Returns %TRUE if folder subscriptions are supported or %FALSE otherwise
+ **/
 gboolean
 camel_store_supports_subscriptions (CamelStore *store)
 {
@@ -1060,10 +1081,13 @@ folder_subscribed(CamelStore *store, const char *folder_name)
 }
 
 /**
- * camel_store_folder_subscribed: Tell whether or not a folder has been subscribed to.
- * @store: a CamelStore
- * @folder_name: the folder on which we're querying subscribed status.
- * Return value: TRUE if folder is subscribed, FALSE if not.
+ * camel_store_folder_subscribed:
+ * @store: a #CamelStore object
+ * @folder_name: full path of the folder
+ *
+ * Find out if a folder has been subscribed to.
+ *
+ * Returns %TRUE if the folder has been subscribed to or %FALSE otherwise
  **/
 gboolean
 camel_store_folder_subscribed(CamelStore *store, const char *folder_name)
@@ -1090,9 +1114,12 @@ subscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 }
 
 /**
- * camel_store_subscribe_folder: marks a folder as subscribed.
- * @store: a CamelStore
- * @folder_name: the folder to subscribe to.
+ * camel_store_subscribe_folder:
+ * @store: a #CamelStore object
+ * @folder_name: full path of the folder
+ * @ex: a #CamelException
+ *
+ * Subscribe to the folder described by @folder_name.
  **/
 void
 camel_store_subscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
@@ -1114,10 +1141,14 @@ unsubscribe_folder(CamelStore *store, const char *folder_name, CamelException *e
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 }
 
+
 /**
- * camel_store_unsubscribe_folder: marks a folder as unsubscribed.
- * @store: a CamelStore
- * @folder_name: the folder to unsubscribe from.
+ * camel_store_unsubscribe_folder:
+ * @store: a #CamelStore object
+ * @folder_name: full path of the folder
+ * @ex: a #CamelException
+ *
+ * Unsubscribe from the folder described by @folder_name.
  **/
 void
 camel_store_unsubscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
@@ -1150,8 +1181,8 @@ noop (CamelStore *store, CamelException *ex)
 
 /**
  * camel_store_noop:
- * @store: CamelStore
- * @ex: exception
+ * @store: a #CamelStore object
+ * @ex: a #CamelException
  *
  * Pings @store so that its connection doesn't timeout.
  **/
@@ -1164,13 +1195,13 @@ camel_store_noop (CamelStore *store, CamelException *ex)
 
 /**
  * camel_store_folder_uri_equal:
- * @store: CamelStore
- * @uri0: a uri
- * @uri1: another uri
+ * @store: a #CamelStore object
+ * @uri0: a folder uri
+ * @uri1: another folder uri
  *
  * Compares 2 folder uris to check that they are equal.
  *
- * Returns %TRUE if they are equal or %FALSE otherwise.
+ * Returns %TRUE if they are equal or %FALSE otherwise
  **/
 int
 camel_store_folder_uri_equal (CamelStore *store, const char *uri0, const char *uri1)
@@ -1271,4 +1302,3 @@ void camel_isubscribe_unsubscribe(CamelStore *store, const char *folder_name, Ca
 
 	g_warning("Trying to invoke unimplemented unsubscribe method on a store");
 }
-

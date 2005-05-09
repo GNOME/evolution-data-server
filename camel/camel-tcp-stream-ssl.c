@@ -166,15 +166,18 @@ camel_tcp_stream_ssl_get_type (void)
 
 /**
  * camel_tcp_stream_ssl_new:
- * @session: active session
- * @expected_host: host that the stream is expected to connect with.
- * @flags: ENABLE_SSL2, ENABLE_SSL3 and/or ENABLE_TLS
+ * @session: an active #CamelSession object
+ * @expected_host: host that the stream is expected to connect with
+ * @flags: a bitwise combination of any of
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
  *
  * Since the SSL certificate authenticator may need to prompt the
- * user, a CamelSession is needed. @expected_host is needed as a
+ * user, a #CamelSession is needed. @expected_host is needed as a
  * protection against an MITM attack.
  *
- * Return value: a ssl stream (in ssl mode)
+ * Returns a new #CamelTcpStreamSSL stream preset in SSL mode
  **/
 CamelStream *
 camel_tcp_stream_ssl_new (CamelSession *session, const char *expected_host, guint32 flags)
@@ -197,15 +200,18 @@ camel_tcp_stream_ssl_new (CamelSession *session, const char *expected_host, guin
 
 /**
  * camel_tcp_stream_ssl_new_raw:
- * @session: active session
- * @expected_host: host that the stream is expected to connect with.
- * @flags: ENABLE_SSL2, ENABLE_SSL3 and/or ENABLE_TLS
+ * @session: an active #CamelSession object
+ * @expected_host: host that the stream is expected to connect with
+ * @flags: a bitwise combination of any of
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
  *
  * Since the SSL certificate authenticator may need to prompt the
  * user, a CamelSession is needed. @expected_host is needed as a
  * protection against an MITM attack.
  *
- * Return value: a ssl-capable stream (in non ssl mode)
+ * Returns a new #CamelTcpStreamSSL stream not yet toggled into SSL mode
  **/
 CamelStream *
 camel_tcp_stream_ssl_new_raw (CamelSession *session, const char *expected_host, guint32 flags)
@@ -275,11 +281,11 @@ set_errno (int code)
 
 /**
  * camel_tcp_stream_ssl_enable_ssl:
- * @ssl: ssl stream
+ * @ssl: a #CamelTcpStreamSSL object
  *
  * Toggles an ssl-capable stream into ssl mode (if it isn't already).
  *
- * Returns 0 on success or -1 on fail.
+ * Returns %0 on success or %-1 on fail
  **/
 int
 camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)

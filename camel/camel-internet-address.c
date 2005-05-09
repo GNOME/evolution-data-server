@@ -268,12 +268,13 @@ internet_remove	(CamelAddress *a, int index)
 	g_ptr_array_remove_index(a->addresses, index);
 }
 
+
 /**
  * camel_internet_address_new:
  *
- * Create a new CamelInternetAddress object.
+ * Create a new #CamelInternetAddress object.
  * 
- * Return value: A new CamelInternetAddress object.
+ * Returns a new #CamelInternetAddress object
  **/
 CamelInternetAddress *
 camel_internet_address_new (void)
@@ -282,117 +283,121 @@ camel_internet_address_new (void)
 	return new;
 }
 
+
 /**
  * camel_internet_address_add:
- * @a: internet address object
- * @name: 
- * @address: 
+ * @addr: a #CamelInternetAddress object
+ * @name: name associated with the new address
+ * @address: routing address associated with the new address
  * 
- * Add a new internet address to the address object.
+ * Add a new internet address to @addr.
  * 
- * Return value: Index of added entry.
+ * Returns the index of added entry
  **/
 int
-camel_internet_address_add (CamelInternetAddress *a, const char *name, const char *address)
+camel_internet_address_add (CamelInternetAddress *addr, const char *name, const char *address)
 {
 	struct _address *new;
 	int index;
 
-	g_assert(CAMEL_IS_INTERNET_ADDRESS(a));
+	g_assert(CAMEL_IS_INTERNET_ADDRESS(addr));
 
 	new = g_malloc(sizeof(*new));
 	new->name = g_strdup(name);
 	new->address = g_strdup(address);
-	index = ((CamelAddress *)a)->addresses->len;
-	g_ptr_array_add(((CamelAddress *)a)->addresses, new);
+	index = ((CamelAddress *)addr)->addresses->len;
+	g_ptr_array_add(((CamelAddress *)addr)->addresses, new);
 
 	return index;
 }
 
+
 /**
  * camel_internet_address_get:
- * @a: internet address object
+ * @addr: a #CamelInternetAddress object
  * @index: address's array index
- * @namep: Holder for the returned name, or NULL, if not required.
- * @addressp: Holder for the returned address, or NULL, if not required.
+ * @namep: holder for the returned name, or %NULL, if not required.
+ * @addressp: holder for the returned address, or %NULL, if not required.
  * 
  * Get the address at @index.
  * 
- * Return value: TRUE if such an address exists, or FALSE otherwise.
+ * Returns %TRUE if such an address exists, or %FALSE otherwise
  **/
 gboolean
-camel_internet_address_get (const CamelInternetAddress *a, int index, const char **namep, const char **addressp)
+camel_internet_address_get (const CamelInternetAddress *addr, int index, const char **namep, const char **addressp)
 {
-	struct _address *addr;
+	struct _address *a;
 
-	g_assert(CAMEL_IS_INTERNET_ADDRESS(a));
+	g_assert(CAMEL_IS_INTERNET_ADDRESS(addr));
 
-	if (index < 0 || index >= ((CamelAddress *)a)->addresses->len)
+	if (index < 0 || index >= ((CamelAddress *)addr)->addresses->len)
 		return FALSE;
 
-	addr = g_ptr_array_index( ((CamelAddress *)a)->addresses, index);
+	a = g_ptr_array_index (((CamelAddress *)addr)->addresses, index);
 	if (namep)
-		*namep = addr->name;
+		*namep = a->name;
 	if (addressp)
-		*addressp = addr->address;
+		*addressp = a->address;
 	return TRUE;
 }
 
+
 /**
  * camel_internet_address_find_name:
- * @a: 
- * @name: 
- * @addressp: Holder for address part, or NULL, if not required.
+ * @addr: a #CamelInternetAddress object
+ * @name: name to lookup
+ * @addressp: holder for address part, or %NULL, if not required.
  * 
  * Find address by real name.
  * 
- * Return value: The index of the address matching the name, or -1
- * if no match was found.
+ * Returns the index of the address matching the name, or %-1 if no
+ * match was found
  **/
 int
-camel_internet_address_find_name(CamelInternetAddress *a, const char *name, const char **addressp)
+camel_internet_address_find_name(CamelInternetAddress *addr, const char *name, const char **addressp)
 {
-	struct _address *addr;
+	struct _address *a;
 	int i, len;
 
-	g_assert(CAMEL_IS_INTERNET_ADDRESS(a));
+	g_assert(CAMEL_IS_INTERNET_ADDRESS(addr));
 
-	len = ((CamelAddress *)a)->addresses->len;
+	len = ((CamelAddress *)addr)->addresses->len;
 	for (i=0;i<len;i++) {
-		addr = g_ptr_array_index( ((CamelAddress *)a)->addresses, i );
-		if (!strcmp(addr->name, name)) {
+		a = g_ptr_array_index (((CamelAddress *)addr)->addresses, i);
+		if (a->name && !strcmp(a->name, name)) {
 			if (addressp)
-				*addressp = addr->address;
+				*addressp = a->address;
 			return i;
 		}
 	}
 	return -1;
 }
 
+
 /**
  * camel_internet_address_find_address:
- * @a: 
- * @address: 
- * @namep: Return for the matching name, or NULL, if not required.
+ * @addr: a #CamelInternetAddress object
+ * @address: address to lookup
+ * @namep: holder for the matching name, or %NULL, if not required.
  * 
  * Find an address by address.
  * 
- * Return value: The index of the address, or -1 if not found.
+ * Returns the index of the address, or %-1 if not found
  **/
 int
-camel_internet_address_find_address(CamelInternetAddress *a, const char *address, const char **namep)
+camel_internet_address_find_address(CamelInternetAddress *addr, const char *address, const char **namep)
 {
-	struct _address *addr;
+	struct _address *a;
 	int i, len;
 
-	g_assert(CAMEL_IS_INTERNET_ADDRESS(a));
+	g_assert(CAMEL_IS_INTERNET_ADDRESS(addr));
 
-	len = ((CamelAddress *)a)->addresses->len;
+	len = ((CamelAddress *)addr)->addresses->len;
 	for (i=0;i<len;i++) {
-		addr = g_ptr_array_index( ((CamelAddress *)a)->addresses, i );
-		if (!strcmp(addr->address, address)) {
+		a = g_ptr_array_index (((CamelAddress *)addr)->addresses, i);
+		if (!strcmp(a->address, address)) {
 			if (namep)
-				*namep = addr->name;
+				*namep = a->name;
 			return i;
 		}
 	}
@@ -436,17 +441,20 @@ append:
 	g_string_append(out, addr);
 }
 
+
 /**
  * camel_internet_address_encode_address:
- * @len: The encoded length so far, of this line
- * @name: 
- * @addr: 
+ * @len: the length of the line the address is being appended to
+ * @name: the unencoded real name associated with the address
+ * @addr: the routing address
  * 
  * Encode a single address ready for internet usage.  Header folding
- * as per rfc 822 is also performed, based on the length *@inlen.  If @inlen
- * is NULL, then no folding will occur.
+ * as per rfc822 is also performed, based on the length *@len.  If @len
+ * is %NULL, then no folding will occur.
+ *
+ * Note: The value at *@in will be updated based on any linewrapping done
  * 
- * Return value: The encoded address.
+ * Returns the encoded address
  **/
 char *
 camel_internet_address_encode_address(int *inlen, const char *real, const char *addr)
@@ -509,14 +517,15 @@ camel_internet_address_encode_address(int *inlen, const char *real, const char *
 	return ret;
 }
 
+
 /**
  * camel_internet_address_format_address:
- * @name: A name, quotes may be stripped from it.
- * @addr: Assumes a valid rfc822 email address.
+ * @name: a name, quotes may be stripped from it
+ * @addr: an rfc822 routing address
  * 
  * Function to format a single address, suitable for display.
  * 
- * Return value: 
+ * Returns a nicely formatted string containing the rfc822 address
  **/
 char *
 camel_internet_address_format_address(const char *name, const char *addr)

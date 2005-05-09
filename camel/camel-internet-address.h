@@ -48,11 +48,11 @@ struct _CamelInternetAddressClass {
 CamelType		camel_internet_address_get_type	(void);
 CamelInternetAddress   *camel_internet_address_new	(void);
 
-int			camel_internet_address_add	(CamelInternetAddress *, const char *, const char *);
-gboolean		camel_internet_address_get	(const CamelInternetAddress *, int, const char **, const char **);
+int			camel_internet_address_add	(CamelInternetAddress *addr, const char *name, const char *address);
+gboolean		camel_internet_address_get	(const CamelInternetAddress *addr, int index, const char **namep, const char **addressp);
 
-int			camel_internet_address_find_name(CamelInternetAddress *, const char *, const char **);
-int			camel_internet_address_find_address(CamelInternetAddress *, const char *, const char **);
+int			camel_internet_address_find_name(CamelInternetAddress *addr, const char *name, const char **addressp);
+int			camel_internet_address_find_address(CamelInternetAddress *addr, const char *address, const char **namep);
 
 /* utility functions, for network/display formatting */
 char *			camel_internet_address_encode_address(int *len, const char *name, const char *addr);

@@ -91,13 +91,13 @@ tcp_connect (CamelTcpStream *stream, struct addrinfo *host)
 
 /**
  * camel_tcp_stream_connect:
- * @stream: a CamelTcpStream object.
- * @host: A linked list of addrinfo structures to try to connect, in
+ * @stream: a #CamelTcpStream object
+ * @host: a linked list of addrinfo structures to try to connect, in
  * the order of most likely to least likely to work.
  *
  * Create a socket and connect based upon the data provided.
  *
- * Return value: zero on success or -1 on fail.
+ * Returns %0 on success or %-1 on fail
  **/
 int
 camel_tcp_stream_connect (CamelTcpStream *stream, struct addrinfo *host)
@@ -116,12 +116,12 @@ tcp_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 
 /**
  * camel_tcp_stream_getsockopt:
- * @stream: tcp stream object
+ * @stream: a #CamelTcpStream object
  * @data: socket option data
  *
- * Get the socket options set on the stream and populate #data.
+ * Get the socket options set on the stream and populate @data.
  *
- * Return value: zero on success or -1 on fail.
+ * Returns %0 on success or %-1 on fail
  **/
 int
 camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
@@ -140,12 +140,12 @@ tcp_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 
 /**
  * camel_tcp_stream_setsockopt:
- * @stream: tcp stream object
+ * @stream: a #CamelTcpStream object
  * @data: socket option data
  *
- * Set the socket options contained in #data on the stream.
+ * Set the socket options contained in @data on the stream.
  *
- * Return value: zero on success or -1 on fail.
+ * Returns %0 on success or %-1 on fail
  **/
 int
 camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
@@ -164,13 +164,13 @@ tcp_get_local_address (CamelTcpStream *stream, socklen_t *len)
 
 /**
  * camel_tcp_stream_get_local_address:
- * @stream: tcp stream object
- * @len: Pointer to address length which must be supplied.
+ * @stream: a #CamelTcpStream object
+ * @len: pointer to address length which must be supplied
  *
  * Get the local address of @stream.
  *
- * Return value: the stream's local address (which must be freed with
- * g_free()) if the stream is connected, or %NULL if not.
+ * Returns the stream's local address (which must be freed with
+ * #g_free) if the stream is connected, or %NULL if not
  **/
 struct sockaddr *
 camel_tcp_stream_get_local_address (CamelTcpStream *stream, socklen_t *len)
@@ -190,13 +190,13 @@ tcp_get_remote_address (CamelTcpStream *stream, socklen_t *len)
 
 /**
  * camel_tcp_stream_get_remote_address:
- * @stream: tcp stream object
- * @len: Pointer to address length, which must be supplied.
+ * @stream: a #CamelTcpStream object
+ * @len: pointer to address length, which must be supplied
  *
  * Get the remote address of @stream.
  *
- * Return value: the stream's remote address (which must be freed with
- * g_free()) if the stream is connected, or %NULL if not.
+ * Returns the stream's remote address (which must be freed with
+ * #g_free) if the stream is connected, or %NULL if not.
  **/
 struct sockaddr *
 camel_tcp_stream_get_remote_address (CamelTcpStream *stream, socklen_t *len)

@@ -113,8 +113,7 @@ typedef struct _CamelRenameInfo {
 #define CAMEL_STORE_FILTER_INBOX	(1 << 2)
 #define CAMEL_STORE_VJUNK		(1 << 3)
 
-struct _CamelStore
-{
+struct _CamelStore {
 	CamelService parent_object;
 	struct _CamelStorePrivate *priv;
 	
