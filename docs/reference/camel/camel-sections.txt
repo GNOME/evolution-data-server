@@ -1628,6 +1628,9 @@ CAMEL_TCP_STREAM_RAW_CLASS
 <SECTION>
 <FILE>camel-tcp-stream-ssl</FILE>
 CamelTcpStreamSSL
+CAMEL_TCP_STREAM_SSL_ENABLE_SSL2
+CAMEL_TCP_STREAM_SSL_ENABLE_SSL3
+CAMEL_TCP_STREAM_SSL_ENABLE_TLS
 <TITLE>CamelTcpStreamSSL</TITLE>
 camel_tcp_stream_ssl_new
 camel_tcp_stream_ssl_new_raw

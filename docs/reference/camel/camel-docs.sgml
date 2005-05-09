@@ -92,7 +92,7 @@
 <!ENTITY CamelVeeFolder SYSTEM "xml/camel-vee-folder.xml">
 <!ENTITY CamelVeeStore SYSTEM "xml/camel-vee-store.xml">
 <!ENTITY CamelVeeSummary SYSTEM "xml/camel-vee-summary.xml">
-<!ENTITY CamelvTrashFolder SYSTEM "xml/camel-vtrash-folder.xml">
+<!ENTITY CamelVTrashFolder SYSTEM "xml/camel-vtrash-folder.xml">
 
 <!ENTITY index-Class-Tree SYSTEM "tree_index.sgml">
 ]>
@@ -113,7 +113,7 @@
     </authorgroup>
     <copyright>
       <year>2000-2005</year>
-      <holder>Jeffrey Stedfast</holder>
+      <holder>Novell, Inc.</holder>
     </copyright>
 
     <legalnotice>
@@ -143,6 +143,13 @@
       &index-Class-Tree;
     </chapter>
 
+    <chapter id="Fundamentals">
+      <title>Fundamentals</title>
+      &CamelException;
+      &CamelObject;
+      &CamelOperation;
+    </chapter>
+
     <chapter id="Streams">
       <title>Streams</title>
       &CamelStream;
@@ -153,6 +160,9 @@
       &CamelStreamFs;
       &CamelStreamMem;
       &CamelStreamNull;
+      &CamelTcpStream;
+      &CamelTcpStreamRaw;
+      &CamelTcpStreamSSL;
     </chapter>
 
     <chapter id="Filters">
@@ -171,6 +181,46 @@
       &CamelMIMEFilterToHTML;
       &CamelMIMEFilterWindows;
       &CamelMIMEFilterYEnc;
+    </chapter>
+
+    <chapter id="Services">
+      <title>Services</title>
+      &CamelProvider;
+      &CamelService;
+      &CamelStore;
+      &CamelStoreSummary;
+      &CamelOfflineStore;
+      &CamelTransport;
+
+      &CamelVeeStore;
+    </chapter>
+
+    <chapter id="Folders">
+      <title>Folders</title>
+      &CamelFolder;
+      &CamelFolderSummary;
+      &CamelOfflineFolder;
+
+      &CamelVeeFolder;
+      &CamelVTrashFolder;
+    </chapter>
+
+    <chapter id="Addresses">
+      <title>Addresses</title>
+      &CamelAddress;
+      &CamelInternetAddress;
+    </chapter>
+
+    <chapter id="MIME">
+      <title>MIME Objects</title>
+      &CamelDataWrapper;
+      &CamelMedium;
+      &CamelMIMEPart;
+      &CamelMultipart;
+      &CamelMultipartSigned;
+      &CamelMultipartEncrypted;
+      &CamelMIMEMessage;
+      &CamelMIMEParser;
     </chapter>
   </part>
 </book>

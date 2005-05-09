@@ -1,4 +1,5 @@
 <screen>
+    <link linkend="CamelException">CamelException</link>
     <link linkend="CamelObject">CamelObject</link>
         <link linkend="CamelAddress">CamelAddress</link>
             <link linkend="CamelInternetAddress">CamelInternetAddress</link>
@@ -15,6 +16,7 @@
         <link linkend="CamelFolder">CamelFolder</link>
             <link linkend="CamelOfflineFolder">CamelOfflineFolder</link>
             <link linkend="CamelVeeFolder">CamelVeeFolder</link>
+            <link linkend="CamelVTrashFolder">CamelVTrashFolder</link>
         <link linkend="CamelFolderSummary">CamelFolderSummary</link>
             <link linkend="CamelVeeSummary">CamelVeeSummary</link>
         <link linkend="CamelMimeFilter">CamelMimeFilter</link>
@@ -31,6 +33,7 @@
             <link linkend="CamelMimeFilterToHTML">CamelMimeFilterToHTML</link>
             <link linkend="CamelMimeFilterWindows">CamelMimeFilterWindows</link>
             <link linkend="CamelMimeFilterYenc">CamelMimeFilterYenc</link>
+        <link linkend="CamelMimeParser">CamelMimeParser</link>
         <link linkend="CamelOfflineJournal">CamelOfflineJournal</link>
         <link linkend="CamelSasl">CamelSasl</link>
             <link linkend="CamelSaslAnonymous">CamelSaslAnonymous</link>
@@ -41,11 +44,13 @@
             <link linkend="CamelSaslLogin">CamelSaslLogin</link>
             <link linkend="CamelSaslNTLM">CamelSaslNTLM</link>
             <link linkend="CamelSaslPlain">CamelSaslPlain</link>
-            <link linkend="CamelSDaslPOPB4SMTP">CamelSDaslPOPB4SMTP</link>
+            <link linkend="CamelSaslPOPB4SMTP">CamelSaslPOPB4SMTP</link>
+        <link linkend="CamelService">CamelService</link>
+          <link linkend="CamelStore">CamelStore</link>
+              <link linkend="CamelOfflineStore">CamelOfflineStore</link>
+              <link linkend="CamelVeeStore">CamelVeeStore</link>
+          <link linkend="CamelTransport">CamelTransport</link>
         <link linkend="CamelSession">CamelSession</link>
-        <link linkend="CamelStore">CamelStore</link>
-            <link linkend="CamelOfflineStore">CamelOfflineStore</link>
-            <link linkend="CamelVeeStore">CamelVeeStore</link>
         <link linkend="CamelStoreSummary">CamelStoreSummary</link>
         <link linkend="CamelStream">CamelStream</link>
             <link linkend="CamelHttpStream">CamelHttpStream</link>
@@ -60,5 +65,4 @@
             <link linkend="CamelTcpStream">CamelTcpStream</link>
                 <link linkend="CamelTcpStreamRaw">CamelTcpStreamRaw</link>
                 <link linkend="CamelTcpStreamSSL">CamelTcpStreamSSL</link>
-        <link linkend="CamelTransport">CamelTransport</link>
 </screen>
