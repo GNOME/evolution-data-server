@@ -1,5 +1,14 @@
 2005-05-09  Sushma Rai	<rsushma@novell.com>
 
+	* backends/vcf/e-book-backend-vcf.c 
+	(e_book_backend_vcf_get_required_fields): Removed unused variable i.
+	(do_create): Checking if last revision time (E_CONTACT_REV) is set on
+	contact, if not setting it.
+	(set_revision): Reading the system time and setting it as last revision 
+	time for a contact.
+
+2005-05-09  Sushma Rai	<rsushma@novell.com>
+
 	* backends/groupwise/e-book-backend-groupwise.c: Added E_CONTACT_REV
 	field.
 

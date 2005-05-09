@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 #include <glib/gi18n-lib.h>
 #include <libebook/e-contact.h>
@@ -198,6 +199,20 @@ vcf_flush_file (gpointer data)
 	return FALSE;
 }
 
+static void
+set_revision (EContact *contact)
+{
+	char time_string[25] = {0};
+	const struct tm *tm = NULL;
+	struct timeval tv;
+
+	if (!gettimeofday (&tv, NULL))
+		tm = gmtime (&tv.tv_sec);
+	if (tm)
+		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+	e_contact_set (contact, E_CONTACT_REV, time_string);
+}
+
 static EContact *
 do_create(EBookBackendVCF  *bvcf,
 	  const char     *vcard_req,
@@ -206,6 +221,7 @@ do_create(EBookBackendVCF  *bvcf,
 	char           *id;
 	EContact       *contact;
 	char           *vcard;
+	const char     *rev;
 
 	/* at the very least we need the unique_id generation to be
 	   protected by the lock, even if the actual vcard parsing
@@ -216,6 +232,11 @@ do_create(EBookBackendVCF  *bvcf,
 	contact = e_contact_new_from_vcard (vcard_req);
 	e_contact_set(contact, E_CONTACT_UID, id);
 	g_free (id);
+
+	rev = e_contact_get_const (contact,  E_CONTACT_REV);
+	if (!(rev && *rev))
+		set_revision (contact);
+
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
 	insert_contact (bvcf, vcard);
@@ -543,7 +564,6 @@ e_book_backend_vcf_get_required_fields (EBookBackendSync *backend,
 					 GList **fields_out)
 {
 	GList *fields = NULL;
-	int i;
 
 	fields = g_list_append (fields , g_strdup(e_contact_field_name (E_CONTACT_FILE_AS)));
        	*fields_out = fields;
