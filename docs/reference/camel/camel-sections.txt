@@ -407,8 +407,6 @@ camel_folder_rename
 camel_folder_freeze
 camel_folder_thaw
 camel_folder_is_frozen
-camel_folder_lock
-camel_folder_unlock
 camel_folder_free_nop
 camel_folder_free_shallow
 camel_folder_free_deep
