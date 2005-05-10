@@ -102,6 +102,15 @@ offline_store_construct (CamelService *service, CamelSession *session,
 }
 
 
+/**
+ * camel_offline_store_set_network_state:
+ * @store: a #CamelOfflineStore object
+ * @state: the network state
+ * @ex: a #CamelException
+ *
+ * Set the network state to either #CAMEL_OFFLINE_STORE_NETWORK_AVAIL
+ * or #CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL.
+ **/
 void
 camel_offline_store_set_network_state (CamelOfflineStore *store, int state, CamelException *ex)
 {

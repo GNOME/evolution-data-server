@@ -221,8 +221,8 @@ camel_folder_get_type (void)
 
 /**
  * camel_folder_construct:
- * @folder: folder object to construct
- * @parent_store: parent store object of the folder
+ * @folder: a #CamelFolder object to construct
+ * @parent_store: parent #CamelStore object of the folder
  * @full_name: full name of the folder
  * @name: short name of the folder
  *
@@ -253,14 +253,15 @@ folder_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 }
 
+
 /**
  * camel_folder_sync:
- * @folder: The folder object
+ * @folder: a #CamelFolder object
  * @expunge: whether or not to expunge deleted messages
- * @ex: exception object
+ * @ex: a #CamelException
  *
- * Sync changes made to a folder to its backing store, possibly expunging
- * deleted messages as well.
+ * Sync changes made to a folder to its backing store, possibly
+ * expunging deleted messages as well.
  **/
 void
 camel_folder_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
@@ -282,10 +283,11 @@ refresh_info (CamelFolder *folder, CamelException *ex)
 	/* No op */
 }
 
+
 /**
  * camel_folder_refresh_info:
- * @folder: The folder object
- * @ex: exception object
+ * @folder: a #CamelFolder object
+ * @ex: a #CamelException
  *
  * Updates a folder's summary to be in sync with its backing store.
  **/
@@ -447,17 +449,18 @@ get_name (CamelFolder *folder)
 	return folder->name;
 }
 
+
 /**
  * camel_folder_get_name:
- * @folder: a folder
+ * @folder: a #CamelFolder object
  *
  * Get the (short) name of the folder. The fully qualified name
- * can be obtained with the get_full_name method.
+ * can be obtained with the #camel_folder_get_full_name method.
  *
- * Return value: name of the folder
+ * Returns the short name of the folder
  **/
 const char *
-camel_folder_get_name (CamelFolder * folder)
+camel_folder_get_name (CamelFolder *folder)
 {
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
@@ -471,13 +474,14 @@ get_full_name (CamelFolder *folder)
 	return folder->full_name;
 }
 
+
 /**
  * camel_folder_get_full_name:
- * @folder: a folder
+ * @folder: a #CamelFolder object
  *
- * Get the (full) name of the folder.
+ * Get the full name of the folder.
  *
- * Return value: full name of the folder
+ * Returns the full name of the folder
  **/
 const char *
 camel_folder_get_full_name (CamelFolder *folder)
@@ -494,11 +498,12 @@ get_parent_store (CamelFolder * folder)
 	return folder->parent_store;
 }
 
+
 /**
  * camel_folder_get_parent_store:
- * @folder: folder to get the parent of
+ * @folder: a #CamelFolder object
  *
- * Return value: the parent store of the folder.
+ * Returns the parent #CamelStore of the folder
  **/
 CamelStore *
 camel_folder_get_parent_store (CamelFolder *folder)
@@ -519,8 +524,8 @@ expunge (CamelFolder *folder, CamelException *ex)
 
 /**
  * camel_folder_expunge:
- * @folder: the folder
- * @ex: a CamelException
+ * @folder: a #CamelFolder object
+ * @ex: a #CamelException
  *
  * Delete messages which have been marked as "DELETED"
  **/
@@ -545,11 +550,12 @@ get_message_count (CamelFolder *folder)
 	return camel_folder_summary_count(folder->summary);
 }
 
+
 /**
  * camel_folder_get_message_count:
- * @folder: A CamelFolder object
+ * @folder: a #CamelFolder object
  *
- * Return value: the number of messages in the folder, or -1 if unknown.
+ * Returns the number of messages in the folder, or %-1 if unknown
  **/
 int
 camel_folder_get_message_count (CamelFolder *folder)
@@ -563,13 +569,15 @@ camel_folder_get_message_count (CamelFolder *folder)
 	return ret;
 }
 
+
 /**
  * camel_folder_unread_get_message_count:
- * @folder: A CamelFolder object
+ * @folder: a #CamelFolder object
  *
  * DEPRECATED, use camel_object_get instead.
  *
- * Return value: the number of unread messages in the folder, or -1 if unknown.
+ * Returns the number of unread messages in the folder, or %-1 if
+ * unknown
  **/
 int
 camel_folder_get_unread_message_count (CamelFolder *folder)
@@ -583,11 +591,13 @@ camel_folder_get_unread_message_count (CamelFolder *folder)
 	return count;
 }
 
+
 /**
  * camel_folder_deleted_get_message_count:
- * @folder: A CamelFolder object
+ * @folder: a #CamelFolder object
  *
- * Return value: the number of deleetd messages in the folder, or -1 if unknown.
+ * Returns the number of deleted messages in the folder, or %-1 if
+ * unknown
  **/
 int
 camel_folder_get_deleted_message_count (CamelFolder *folder)
@@ -617,18 +627,19 @@ append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 }
 
+
 /**
- * camel_folder_append_message: add a message to a folder
- * @folder: folder object to add the message to
- * @message: message object
- * @info: message info with additional flags/etc to set on
+ * camel_folder_append_message:
+ * @folder: a #CamelFolder object
+ * @message: a #CamelMimeMessage object
+ * @info: a #CamelMessageInfo with additional flags/etc to set on
  * new message, or %NULL
  * @appended_uid: if non-%NULL, the UID of the appended message will
  * be returned here, if it is known.
- * @ex: exception object
+ * @ex: a #CamelException
  *
- * Add a message to a folder. Only the flag and tag data from @info
- * is used. If @info is %NULL, no flags or tags will be set.
+ * Append @message to @folder. Only the flag and tag data from @info
+ * are used. If @info is %NULL, no flags or tags will be set.
  **/
 void
 camel_folder_append_message (CamelFolder *folder, CamelMimeMessage *message,
@@ -651,13 +662,14 @@ get_permanent_flags (CamelFolder *folder)
 	return folder->permanent_flags;
 }
 
+
 /**
  * camel_folder_get_permanent_flags:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  *
- * Return value: the set of CamelMessageFlags that can be permanently
- * stored on a message between sessions. If it includes %CAMEL_FLAG_USER,
- * then user-defined flags will be remembered.
+ * Returns the set of #CamelMessageFlags that can be permanently
+ * stored on a message between sessions. If it includes
+ * #CAMEL_FLAG_USER, then user-defined flags will be remembered.
  **/
 guint32
 camel_folder_get_permanent_flags (CamelFolder *folder)
@@ -685,14 +697,15 @@ get_message_flags(CamelFolder *folder, const char *uid)
 	return flags;
 }
 
+
 /**
  * camel_folder_get_message_flags:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  * @uid: the UID of a message in @folder
  *
- * Deprecated: Use camel_folder_get_message_info instead.
+ * Deprecated: Use #camel_folder_get_message_info instead.
  *
- * Return value: the CamelMessageFlags that are set on the indicated
+ * Returns the #CamelMessageFlags that are set on the indicated
  * message.
  **/
 guint32
@@ -725,24 +738,25 @@ set_message_flags(CamelFolder *folder, const char *uid, guint32 flags, guint32 s
 	return res;
 }
 
+
 /**
  * camel_folder_set_message_flags:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  * @uid: the UID of a message in @folder
- * @flags: a set of CamelMessageFlag values to set
+ * @flags: a set of #CamelMessageFlag values to set
  * @set: the mask of values in @flags to use.
  *
  * Sets those flags specified by @flags to the values specified by @set
  * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See camel_folder_get_permanent_flags().)
+ * folder or store is closed. See #camel_folder_get_permanent_flags)
  *
  * E.g. to set the deleted flag and clear the draft flag, use
- * set_message_flags(folder, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_DRAFT, CAMEL_MESSAGE_DELETED);
+ * #camel_folder_set_message_flags(folder, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_DRAFT, CAMEL_MESSAGE_DELETED);
  *
- * DEPRECATED: Use camel_message_info_set_flags on the message info directly
+ * DEPRECATED: Use #camel_message_info_set_flags on the message info directly
  * (when it works)
  *
- * Return Value: TRUE if the flags were changed, false otherwise.
+ * Returns %TRUE if the flags were changed or %FALSE otherwise
  **/
 gboolean
 camel_folder_set_message_flags(CamelFolder *folder, const char *uid, guint32 flags, guint32 set)
@@ -775,15 +789,18 @@ get_message_user_flag(CamelFolder *folder, const char *uid, const char *name)
 	return ret;
 }
 
+
 /**
  * camel_folder_get_message_user_flag:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  * @uid: the UID of a message in @folder
  * @name: the name of a user flag
  *
- * DEPRECATED: Use camel_message_info_get_user_flag on the message info directly
+ * DEPRECATED: Use #camel_message_info_get_user_flag on the message
+ * info directly
  *
- * * Return value: whether or not the given user flag is set on the message.
+ * Returns %TRUE if the given user flag is set on the message or
+ * %FALSE otherwise
  **/
 gboolean
 camel_folder_get_message_user_flag (CamelFolder *folder, const char *uid,
@@ -813,18 +830,20 @@ set_message_user_flag(CamelFolder *folder, const char *uid, const char *name, gb
 	camel_message_info_free(info);
 }
 
+
 /**
  * camel_folder_set_message_user_flag:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  * @uid: the UID of a message in @folder
  * @name: the name of the user flag to set
  * @value: the value to set it to
  *
- * DEPRECATED: Use camel_message_info_set_user_flag on the message info directly (when it works)
+ * DEPRECATED: Use #camel_message_info_set_user_flag on the
+ * #CamelMessageInfo directly (when it works)
  *
  * Sets the user flag specified by @name to the value specified by @value
  * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See camel_folder_get_permanent_flags().)
+ * folder or store is closed. See #camel_folder_get_permanent_flags)
  **/
 void
 camel_folder_set_message_user_flag (CamelFolder *folder, const char *uid,
@@ -853,15 +872,17 @@ get_message_user_tag(CamelFolder *folder, const char *uid, const char *name)
 	return ret;
 }
 
+
 /**
  * camel_folder_get_message_user_tag:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  * @uid: the UID of a message in @folder
  * @name: the name of a user tag
  *
- * DEPRECATED: Use camel_message_info_get_user_tag on the messageinfo directly.
+ * DEPRECATED: Use #camel_message_info_get_user_tag on the
+ * #CamelMessageInfo directly.
  *
- * Return value: Returns the value of the user tag.
+ * Returns the value of the user tag
  **/
 const char *
 camel_folder_get_message_user_tag (CamelFolder *folder, const char *uid,  const char *name)
@@ -891,18 +912,20 @@ set_message_user_tag(CamelFolder *folder, const char *uid, const char *name, con
 	camel_message_info_free(info);
 }
 
+
 /**
  * camel_folder_set_message_user_tag:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  * @uid: the UID of a message in @folder
  * @name: the name of the user tag to set
  * @value: the value to set it to
  *
- * DEPRECATED: Use camel_message_info_set_user_tag on the messageinfo directly (when it works).
+ * DEPRECATED: Use #camel_message_info_set_user_tag on the
+ * #CamelMessageInfo directly (when it works).
  *
  * Sets the user tag specified by @name to the value specified by @value
  * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See camel_folder_get_permanent_flags().)
+ * folder or store is closed. See #camel_folder_get_permanent_flags)
  **/
 void
 camel_folder_set_message_user_tag (CamelFolder *folder, const char *uid, const char *name, const char *value)
@@ -920,16 +943,17 @@ get_message_info (CamelFolder *folder, const char *uid)
 	return camel_folder_summary_uid(folder->summary, uid);
 }
 
+
 /**
  * camel_folder_get_message_info:
- * @folder: a CamelFolder
+ * @folder: a #CamelFolder object
  * @uid: the uid of a message
  *
- * Retrieve the CamelMessageInfo for the specified @uid.  This return
- * must be freed using free_message_info().
+ * Retrieve the #CamelMessageInfo for the specified @uid.  This return
+ * must be freed using #camel_folder_free_message_info.
  *
- * Return value: the summary information for the indicated message, or NULL
- * if the uid does not exist.
+ * Returns the summary information for the indicated message, or %NULL
+ * if the uid does not exist
  **/
 CamelMessageInfo *
 camel_folder_get_message_info (CamelFolder *folder, const char *uid)
@@ -952,12 +976,14 @@ free_message_info (CamelFolder *folder, CamelMessageInfo *info)
 	camel_message_info_free(info);
 }
 
+
 /**
  * camel_folder_free_message_info:
- * @folder: 
- * @info: 
+ * @folder: a #CamelFolder object
+ * @info: a #CamelMessageInfo
  * 
- * Free (unref) a CamelMessageInfo, previously obtained with get_message_info().
+ * Free (unref) a #CamelMessageInfo, previously obtained with
+ * #camel_folder_get_message_info.
  **/
 void
 camel_folder_free_message_info(CamelFolder *folder, CamelMessageInfo *info)
@@ -976,14 +1002,16 @@ ref_message_info (CamelFolder *folder, CamelMessageInfo *info)
 	camel_message_info_ref(info);
 }
 
+
 /**
  * camel_folder_ref_message_info:
- * @folder: 
- * @info: 
+ * @folder: a #CamelFolder object
+ * @info: a #CamelMessageInfo
  * 
- * DEPRECATED: Use camel_message_info_ref directly.
+ * DEPRECATED: Use #camel_message_info_ref directly.
  *
- * Ref a CamelMessageInfo, previously obtained with get_message_info().
+ * Ref a #CamelMessageInfo, previously obtained with
+ * #camel_folder_get_message_info.
  **/
 void
 camel_folder_ref_message_info(CamelFolder *folder, CamelMessageInfo *info)
@@ -994,7 +1022,16 @@ camel_folder_ref_message_info(CamelFolder *folder, CamelMessageInfo *info)
 	CF_CLASS (folder)->ref_message_info(folder, info);
 }
 
+
 /* TODO: is this function required anyway? */
+/**
+ * camel_folder_has_summary_capability:
+ * @folder: a #CamelFolder object
+ *
+ * Get whether or not the folder has a summary.
+ *
+ * Returns %TRUE if a summary is available or %FALSE otherwise
+ **/
 gboolean
 camel_folder_has_summary_capability (CamelFolder *folder)
 {
@@ -1007,7 +1044,7 @@ camel_folder_has_summary_capability (CamelFolder *folder)
 /* UIDs stuff */
 
 static CamelMimeMessage *
-get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
+get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 {
 	w(g_warning ("CamelFolder::get_message not implemented for `%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
@@ -1015,20 +1052,19 @@ get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	return NULL;
 }
 
+
 /**
  * camel_folder_get_message:
- * @folder: the folder object
+ * @folder: a #CamelFolder object
  * @uid: the UID
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
- * Get a message from its UID in the folder. Messages are cached
- * within a folder, that is, asking twice for the same UID returns the
- * same message object. (FIXME: is this true?)
+ * Get a message from its UID in the folder.
  *
- * Return value: Message corresponding to the UID
+ * Returns a #CamelMimeMessage corresponding to @uid
  **/
 CamelMimeMessage *
-camel_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
+camel_folder_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 {
 	CamelMimeMessage *ret;
 
@@ -1075,17 +1111,18 @@ get_uids(CamelFolder *folder)
 	return array;
 }
 
+
 /**
  * camel_folder_get_uids:
- * @folder: folder object
+ * @folder: a #CamelFolder object
  *
  * Get the list of UIDs available in a folder. This routine is useful
  * for finding what messages are available when the folder does not
- * support summaries. The returned array shoudl not be modified, and
- * must be freed by passing it to camel_folder_free_uids().
+ * support summaries. The returned array should not be modified, and
+ * must be freed by passing it to #camel_folder_free_uids.
  *
- * Return value: GPtrArray of UIDs corresponding to the messages
- * available in the folder.
+ * Returns a GPtrArray of UIDs corresponding to the messages available
+ * in the folder
  **/
 GPtrArray *
 camel_folder_get_uids (CamelFolder *folder)
@@ -1109,12 +1146,13 @@ free_uids (CamelFolder *folder, GPtrArray *array)
 	g_ptr_array_free(array, TRUE);
 }
 
+
 /**
  * camel_folder_free_uids:
- * @folder: folder object
+ * @folder: a #CamelFolder object
  * @array: the array of uids to free
  *
- * Frees the array of UIDs returned by camel_folder_get_uids().
+ * Frees the array of UIDs returned by #camel_folder_get_uids.
  **/
 void
 camel_folder_free_uids (CamelFolder *folder, GPtrArray *array)
@@ -1132,15 +1170,16 @@ get_summary(CamelFolder *folder)
 	return camel_folder_summary_array(folder->summary);
 }
 
+
 /**
  * camel_folder_get_summary:
- * @folder: a folder object
+ * @folder: a #CamelFolder object
  *
  * This returns the summary information for the folder. This array
  * should not be modified, and must be freed with
- * camel_folder_free_summary().
+ * #camel_folder_free_summary.
  *
- * Return value: an array of CamelMessageInfo
+ * Returns an array of #CamelMessageInfo
  **/
 GPtrArray *
 camel_folder_get_summary (CamelFolder *folder)
@@ -1162,27 +1201,30 @@ free_summary(CamelFolder *folder, GPtrArray *summary)
 	camel_folder_summary_array_free(folder->summary, summary);
 }
 
+
 /**
  * camel_folder_free_summary:
- * @folder: folder object
+ * @folder: a #CamelFolder object
  * @array: the summary array to free
  *
- * Frees the summary array returned by camel_folder_get_summary().
+ * Frees the summary array returned by #camel_folder_get_summary.
  **/
-void camel_folder_free_summary(CamelFolder * folder, GPtrArray * array)
+void
+camel_folder_free_summary(CamelFolder *folder, GPtrArray *array)
 {
 	g_return_if_fail(CAMEL_IS_FOLDER(folder));
 
 	CF_CLASS(folder)->free_summary(folder, array);
 }
 
+
 /**
  * camel_folder_has_search_capability:
- * @folder: Folder object
+ * @folder: a #CamelFolder object
  *
  * Checks if a folder supports searching.
  *
- * Return value: %TRUE if the folder supports searching
+ * Returns %TRUE if the folder supports searching or %FALSE otherwise
  **/
 gboolean
 camel_folder_has_search_capability (CamelFolder *folder)
@@ -1206,15 +1248,16 @@ search_by_expression (CamelFolder *folder, const char *expression,
 	return NULL;
 }
 
+
 /**
  * camel_folder_search_by_expression:
- * @folder: Folder object
+ * @folder: a #CamelFolder object
  * @expression: a search expression
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
  * Searches the folder for messages matching the given search expression.
  *
- * Return value: a list of uids of matching messages. The caller must
+ * Returns a #GPtrArray of uids of matching messages. The caller must
  * free the list and each of the elements when it is done.
  **/
 GPtrArray *
@@ -1246,16 +1289,18 @@ search_by_uids(CamelFolder *folder, const char *exp, GPtrArray *uids, CamelExcep
 	return NULL;
 }
 
+
 /**
  * camel_folder_search_by_uids:
- * @folder: 
- * @expr: 
+ * @folder: a #CamelFolder object
+ * @expr: search expression
  * @uids: array of uid's to match against.
- * @ex: 
- * 
+ * @ex: a #CamelException
+ *
  * Search a subset of uid's for an expression match.
- * 
- * Return value: 
+ *
+ * Returns a #GPtrArray of uids of matching messages. The caller must
+ * free the list and each of the elements when it is done.
  **/
 GPtrArray *
 camel_folder_search_by_uids(CamelFolder *folder, const char *expr, GPtrArray *uids, CamelException *ex)
@@ -1282,12 +1327,14 @@ search_free (CamelFolder *folder, GPtrArray *result)
 	g_ptr_array_free (result, TRUE);
 }
 
+
 /**
  * camel_folder_search_free:
- * @folder: 
- * @result: 
+ * @folder: a #CamelFolder object
+ * @result: search results to free
  * 
- * Free the result of a search.
+ * Free the result of a search as gotten by #camel_folder_search or
+ * #camel_folder_search_by_uids.
  **/
 void 
 camel_folder_search_free (CamelFolder *folder, GPtrArray *result)
@@ -1372,19 +1419,20 @@ transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest, G
 	camel_exception_clear(&local);
 }
 
+
 /**
  * camel_folder_transfer_messages_to:
- * @source: source folder
+ * @source: the source #CamelFolder object
  * @uids: message UIDs in @source
- * @dest: destination folder
+ * @dest: the destination #CamelFolder object
  * @transferred_uids: if non-%NULL, the UIDs of the resulting messages
  * in @dest will be stored here, if known.
  * @delete_originals: whether or not to delete the original messages
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
  * This copies or moves messages from one folder to another. If the
  * @source and @dest folders have the same parent_store, this may be
- * more efficient than using camel_folder_append_message().
+ * more efficient than using #camel_folder_append_message.
  **/
 void
 camel_folder_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
@@ -1419,9 +1467,10 @@ delete (CamelFolder *folder)
 		camel_folder_summary_clear (folder->summary);
 }
 
+
 /**
  * camel_folder_delete:
- * @folder: folder
+ * @folder: a #CamelFolder object
  *
  * Marks a folder object as deleted and performs any required cleanup.
  **/
@@ -1450,7 +1499,7 @@ folder_rename (CamelFolder *folder, const char *new)
 {
 	char *tmp;
 
-	printf("CamelFolder:rename('%s')\n", new);
+	d(printf("CamelFolder:rename('%s')\n", new));
 
 	g_free(folder->full_name);
 	folder->full_name = g_strdup(new);
@@ -1459,10 +1508,11 @@ folder_rename (CamelFolder *folder, const char *new)
 	folder->name = g_strdup(tmp?tmp+1:new);
 }
 
+
 /**
  * camel_folder_rename:
- * @folder: 
- * @new: 
+ * @folder: a #CamelFolder object
+ * @new: new name for the folder
  * 
  * Mark an active folder object as renamed.
  *
@@ -1495,14 +1545,15 @@ freeze (CamelFolder *folder)
 	CAMEL_FOLDER_UNLOCK(folder, change_lock);
 }
 
+
 /**
  * camel_folder_freeze:
- * @folder: a folder
+ * @folder: a #CamelFolder
  *
  * Freezes the folder so that a series of operation can be performed
- * without "folder_changed" signals being emitted.
- * When the folder is later thawed with camel_folder_thaw(), the
- * suppressed signals will be emitted.
+ * without "folder_changed" signals being emitted.  When the folder is
+ * later thawed with #camel_folder_thaw, the suppressed signals will
+ * be emitted.
  **/
 void
 camel_folder_freeze (CamelFolder * folder)
@@ -1541,7 +1592,7 @@ thaw (CamelFolder * folder)
 
 /**
  * camel_folder_thaw:
- * @folder: a folder
+ * @folder: a #CamelFolder object
  *
  * Thaws the folder and emits any pending folder_changed
  * signals.
@@ -1561,11 +1612,12 @@ is_frozen (CamelFolder *folder)
 	return folder->priv->frozen != 0;
 }
 
+
 /**
  * camel_folder_is_frozen:
- * @folder: a folder
+ * @folder: a #CamelFolder object
  *
- * Return value: whether or not the folder is frozen.
+ * Returns whether or not the folder is frozen
  **/
 gboolean
 camel_folder_is_frozen (CamelFolder *folder)
@@ -1787,12 +1839,13 @@ folder_changed (CamelObject *obj, gpointer event_data)
 	return TRUE;
 }
 
+
 /**
  * camel_folder_free_nop:
- * @folder: a folder
- * @array: an array of uids or CamelMessageInfo
+ * @folder: a #CamelFolder object
+ * @array: an array of uids or #CamelMessageInfo
  *
- * "Frees" the provided array by doing nothing. Used by CamelFolder
+ * "Frees" the provided array by doing nothing. Used by #CamelFolder
  * subclasses as an implementation for free_uids, or free_summary when
  * the returned array is "static" information and should not be freed.
  **/
@@ -1802,12 +1855,13 @@ camel_folder_free_nop (CamelFolder *folder, GPtrArray *array)
 	;
 }
 
+
 /**
  * camel_folder_free_shallow:
- * @folder: a folder
- * @array: an array of uids or CamelMessageInfo
+ * @folder: a #CamelFolder object
+ * @array: an array of uids or #CamelMessageInfo
  *
- * Frees the provided array but not its contents. Used by CamelFolder
+ * Frees the provided array but not its contents. Used by #CamelFolder
  * subclasses as an implementation for free_uids or free_summary when
  * the returned array needs to be freed but its contents come from
  * "static" information.
@@ -1818,12 +1872,13 @@ camel_folder_free_shallow (CamelFolder *folder, GPtrArray *array)
 	g_ptr_array_free (array, TRUE);
 }
 
+
 /**
  * camel_folder_free_deep:
- * @folder: a folder
+ * @folder: a #CamelFolder object
  * @array: an array of uids
  *
- * Frees the provided array and its contents. Used by CamelFolder
+ * Frees the provided array and its contents. Used by #CamelFolder
  * subclasses as an implementation for free_uids when the provided
  * information was created explicitly by the corresponding get_ call.
  **/
@@ -1843,16 +1898,16 @@ struct _CamelFolderChangeInfoPrivate {
 	struct _EMemPool *uid_pool;	/* pool used to store copies of uid strings */
 };
 
+
 /**
  * camel_folder_change_info_new:
- * @void: 
  * 
  * Create a new folder change info structure.
  *
  * Change info structures are not MT-SAFE and must be
  * locked for exclusive access externally.
- * 
- * Return value: 
+ *
+ * Returns a new #CamelFolderChangeInfo
  **/
 CamelFolderChangeInfo *
 camel_folder_change_info_new(void)
@@ -1872,10 +1927,11 @@ camel_folder_change_info_new(void)
 	return info;
 }
 
+
 /**
  * camel_folder_change_info_add_source:
- * @info: 
- * @uid: 
+ * @info: a #CamelFolderChangeInfo
+ * @uid: a uid
  * 
  * Add a source uid for generating a changeset.
  **/
@@ -1895,10 +1951,11 @@ camel_folder_change_info_add_source(CamelFolderChangeInfo *info, const char *uid
 		g_hash_table_insert(p->uid_source, e_mempool_strdup(p->uid_pool, uid), GINT_TO_POINTER (1));
 }
 
+
 /**
  * camel_folder_change_info_add_source_list:
- * @info: 
- * @list: 
+ * @info: a #CamelFolderChangeInfo
+ * @list: a list of uids
  * 
  * Add a list of source uid's for generating a changeset.
  **/
@@ -1924,10 +1981,11 @@ camel_folder_change_info_add_source_list(CamelFolderChangeInfo *info, const GPtr
 	}
 }
 
+
 /**
  * camel_folder_change_info_add_update:
- * @info: 
- * @uid: 
+ * @info: a #CamelFolderChangeInfo
+ * @uid: a uid
  * 
  * Add a uid from the updated list, used to generate a changeset diff.
  **/
@@ -1954,10 +2012,11 @@ camel_folder_change_info_add_update(CamelFolderChangeInfo *info, const char *uid
 	}
 }
 
+
 /**
  * camel_folder_change_info_add_update_list:
- * @info: 
- * @list: 
+ * @info: a #CamelFolderChangeInfo
+ * @list: a list of uids
  * 
  * Add a list of uid's from the updated list.
  **/
@@ -1995,12 +2054,13 @@ change_info_remove(char *key, void *value, CamelFolderChangeInfo *info)
 	g_hash_table_insert(p->uid_stored, key, info->uid_removed);
 }
 
+
 /**
  * camel_folder_change_info_build_diff:
- * @info: 
+ * @info: a #CamelFolderChangeInfo
  * 
- * Compare the source uid set to the updated uid set and generate the differences
- * into the added and removed lists.
+ * Compare the source uid set to the updated uid set and generate the
+ * differences into the added and removed lists.
  **/
 void
 camel_folder_change_info_build_diff(CamelFolderChangeInfo *info)
@@ -2027,13 +2087,14 @@ change_info_cat(CamelFolderChangeInfo *info, GPtrArray *source, void (*add)(Came
 		add(info, source->pdata[i]);
 }
 
+
 /**
  * camel_folder_change_info_cat:
- * @info: 
- * @source: 
+ * @info: a #CamelFolderChangeInfo to append to
+ * @src: a #CamelFolderChangeInfo to append from
  * 
- * Concatenate one change info onto antoher.  Can be used to copy
- * them too.
+ * Concatenate one change info onto antoher.  Can be used to copy them
+ * too.
  **/
 void
 camel_folder_change_info_cat(CamelFolderChangeInfo *info, CamelFolderChangeInfo *source)
@@ -2049,8 +2110,8 @@ camel_folder_change_info_cat(CamelFolderChangeInfo *info, CamelFolderChangeInfo 
 
 /**
  * camel_folder_change_info_add_uid:
- * @info: 
- * @uid: 
+ * @info: a #CamelFolderChangeInfo
+ * @uid: a uid
  * 
  * Add a new uid to the changeinfo.
  **/
@@ -2081,10 +2142,11 @@ camel_folder_change_info_add_uid(CamelFolderChangeInfo *info, const char *uid)
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_added);
 }
 
+
 /**
  * camel_folder_change_info_remove_uid:
- * @info: 
- * @uid: 
+ * @info: a #CamelFolderChangeInfo
+ * @uid: a uid
  * 
  * Add a uid to the removed uid list.
  **/
@@ -2114,10 +2176,11 @@ camel_folder_change_info_remove_uid(CamelFolderChangeInfo *info, const char *uid
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_removed);
 }
 
+
 /**
  * camel_folder_change_info_change_uid:
- * @info: 
- * @uid: 
+ * @info: a #CamelFolderChangeInfo
+ * @uid: a uid
  * 
  * Add a uid to the changed uid list.
  **/
@@ -2142,6 +2205,14 @@ camel_folder_change_info_change_uid(CamelFolderChangeInfo *info, const char *uid
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_changed);
 }
 
+
+/**
+ * camel_folder_change_info_recent_uid:
+ * @info: a #CamelFolderChangeInfo
+ * @uid: a uid
+ *
+ * Add a recent uid to the changedinfo.
+ **/
 void
 camel_folder_change_info_recent_uid(CamelFolderChangeInfo *info, const char *uid)
 {
@@ -2162,11 +2233,12 @@ camel_folder_change_info_recent_uid(CamelFolderChangeInfo *info, const char *uid
 
 /**
  * camel_folder_change_info_changed:
- * @info: 
- * 
- * Return true if the changeset contains any changes.
+ * @info: a #CamelFolderChangeInfo
  *
- * Return Value:
+ * Gets whether or not there have been any changes.
+ *
+ * Returns %TRUE if the changeset contains any changes or %FALSE
+ * otherwise
  **/
 gboolean
 camel_folder_change_info_changed(CamelFolderChangeInfo *info)
@@ -2176,11 +2248,13 @@ camel_folder_change_info_changed(CamelFolderChangeInfo *info)
 	return (info->uid_added->len || info->uid_removed->len || info->uid_changed->len || info->uid_recent->len);
 }
 
+
 /**
  * camel_folder_change_info_clear:
- * @info: 
+ * @info: a #CamelFolderChangeInfo
  * 
- * Empty out the change info; called after changes have been processed.
+ * Empty out the change info; called after changes have been
+ * processed.
  **/
 void
 camel_folder_change_info_clear(CamelFolderChangeInfo *info)
@@ -2204,9 +2278,10 @@ camel_folder_change_info_clear(CamelFolderChangeInfo *info)
 	e_mempool_flush(p->uid_pool, TRUE);
 }
 
+
 /**
  * camel_folder_change_info_free:
- * @info: 
+ * @info: a #CamelFolderChangeInfo
  * 
  * Free memory associated with the folder change info lists.
  **/

@@ -86,8 +86,7 @@ struct _CamelFolderChangeInfo {
 	struct _CamelFolderChangeInfoPrivate *priv;
 };
 
-struct _CamelFolder
-{
+struct _CamelFolder {
 	CamelObject parent_object;
 
 	struct _CamelFolderPrivate *priv;
@@ -208,8 +207,8 @@ void               camel_folder_construct              (CamelFolder *folder,
 							const char *full_name,
 							const char *name);
 
-void               camel_folder_refresh_info           (CamelFolder * folder, 
-							CamelException * ex);
+void               camel_folder_refresh_info           (CamelFolder *folder, 
+							CamelException *ex);
 void               camel_folder_sync                   (CamelFolder *folder, 
 							gboolean expunge, 
 							CamelException *ex);
@@ -341,7 +340,7 @@ void			camel_folder_change_info_add_update_list(CamelFolderChangeInfo *info, con
 void			camel_folder_change_info_build_diff	(CamelFolderChangeInfo *info);
 
 /* for manipulating diff's directly */
-void			camel_folder_change_info_cat		(CamelFolderChangeInfo *info, CamelFolderChangeInfo *s);
+void			camel_folder_change_info_cat		(CamelFolderChangeInfo *info, CamelFolderChangeInfo *src);
 void			camel_folder_change_info_add_uid	(CamelFolderChangeInfo *info, const char *uid);
 void			camel_folder_change_info_remove_uid	(CamelFolderChangeInfo *info, const char *uid);
 void			camel_folder_change_info_change_uid	(CamelFolderChangeInfo *info, const char *uid);
@@ -352,4 +351,3 @@ void			camel_folder_change_info_recent_uid	(CamelFolderChangeInfo *info, const c
 #endif /* __cplusplus */
 
 #endif /* CAMEL_FOLDER_H */
-

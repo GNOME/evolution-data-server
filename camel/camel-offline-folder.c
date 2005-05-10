@@ -284,11 +284,12 @@ offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, Ca
 
 /**
  * camel_offline_fodler_downsync:
- * @offline: Offline Folder object
+ * @offline: a #CamelOfflineFolder object
  * @expression: search expression describing which set of messages to downsync (%NULL for all)
- * @ex: exception
+ * @ex: a #CamelException
  *
- * Downsyncs messages in @offline described by the search @expression.
+ * Syncs messages in @offline described by the search @expression to
+ * the local machine for offline availability.
  **/
 void
 camel_offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, CamelException *ex)

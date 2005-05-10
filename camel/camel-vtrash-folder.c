@@ -81,13 +81,13 @@ camel_vtrash_folder_get_type (void)
 
 /**
  * camel_vtrash_folder_new:
- * @parent_store: the parent CamelVeeStore
- * @type: type of vfolder, CAMEL_VTRASH_FOLDER_TRASH or CAMEL_VTRASH_FOLDER_JUNK currently.
- * @ex: a CamelException
+ * @parent_store: the parent #CamelVeeStore object
+ * @type: type of vfolder, #CAMEL_VTRASH_FOLDER_TRASH or #CAMEL_VTRASH_FOLDER_JUNK currently.
+ * @ex: a #CamelException
  *
- * Create a new CamelVeeFolder object.
+ * Create a new CamelVTrashFolder object.
  *
- * Return value: A new CamelVeeFolder widget.
+ * Returns a new #CamelVTrashFolder object
  **/
 CamelFolder *
 camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
