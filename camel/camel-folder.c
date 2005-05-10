@@ -571,10 +571,10 @@ camel_folder_get_message_count (CamelFolder *folder)
 
 
 /**
- * camel_folder_unread_get_message_count:
+ * camel_folder_get_unread_message_count:
  * @folder: a #CamelFolder object
  *
- * DEPRECATED, use camel_object_get instead.
+ * DEPRECATED: use #camel_object_get instead.
  *
  * Returns the number of unread messages in the folder, or %-1 if
  * unknown
@@ -593,7 +593,7 @@ camel_folder_get_unread_message_count (CamelFolder *folder)
 
 
 /**
- * camel_folder_deleted_get_message_count:
+ * camel_folder_get_deleted_message_count:
  * @folder: a #CamelFolder object
  *
  * Returns the number of deleted messages in the folder, or %-1 if
@@ -1252,7 +1252,7 @@ search_by_expression (CamelFolder *folder, const char *expression,
 /**
  * camel_folder_search_by_expression:
  * @folder: a #CamelFolder object
- * @expression: a search expression
+ * @expr: a search expression
  * @ex: a #CamelException
  *
  * Searches the folder for messages matching the given search expression.

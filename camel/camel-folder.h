@@ -293,7 +293,7 @@ void               camel_folder_free_uids             (CamelFolder *folder,
 gboolean           camel_folder_has_search_capability (CamelFolder *folder);
 GPtrArray *	   camel_folder_search_by_expression  (CamelFolder *folder, const char *expr, CamelException *ex);
 GPtrArray *	   camel_folder_search_by_uids	      (CamelFolder *folder, const char *expr, GPtrArray *uids, CamelException *ex);
-void		   camel_folder_search_free	      (CamelFolder *folder, GPtrArray *);
+void		   camel_folder_search_free	      (CamelFolder *folder, GPtrArray *result);
 
 /* summary info */
 CamelMessageInfo *camel_folder_get_message_info		(CamelFolder *folder, const char *uid);
@@ -314,12 +314,6 @@ void               camel_folder_rename                 (CamelFolder *folder, con
 void               camel_folder_freeze                (CamelFolder *folder);
 void               camel_folder_thaw                  (CamelFolder *folder);
 gboolean           camel_folder_is_frozen             (CamelFolder *folder);
-
-#if 0
-/* lock/unlock at the thread level, NOTE: only used internally */
-void		   camel_folder_lock		      (CamelFolder *folder);
-void		   camel_folder_unlock		      (CamelFolder *folder);
-#endif
 
 /* For use by subclasses (for free_{uids,summary,subfolder_names}) */
 void camel_folder_free_nop     (CamelFolder *folder, GPtrArray *array);
