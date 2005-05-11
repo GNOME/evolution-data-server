@@ -327,10 +327,6 @@ CamelMessageInfo *camel_folder_summary_uid(CamelFolderSummary *summary, const ch
 GPtrArray *camel_folder_summary_array(CamelFolderSummary *summary);
 void camel_folder_summary_array_free(CamelFolderSummary *summary, GPtrArray *array);
 
-/* summary formatting utils */
-char *camel_folder_summary_format_address(struct _camel_header_raw *h, const char *name);
-char *camel_folder_summary_format_string(struct _camel_header_raw *h, const char *name);
-
 /* basically like strings, but certain keywords can be compressed and de-cased */
 int camel_folder_summary_encode_token(FILE *out, const char *str);
 int camel_folder_summary_decode_token(FILE *in, char **str);
