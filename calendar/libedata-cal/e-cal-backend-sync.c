@@ -29,6 +29,16 @@ struct _ECalBackendSyncPrivate {
 
 static GObjectClass *parent_class;
 
+/**
+ * e_cal_backend_sync_set_lock:
+ * @backend: An ECalBackendSync object.
+ * @lock: Lock mode.
+ *
+ * Sets the lock mode on the ECalBackendSync object. If TRUE, the backend
+ * will create a locking mutex for every operation, so that only one can
+ * happen at a time. If FALSE, no lock would be done and many operations
+ * can happen at the same time.
+ */
 void
 e_cal_backend_sync_set_lock (ECalBackendSync *backend, gboolean lock)
 {
@@ -37,6 +47,16 @@ e_cal_backend_sync_set_lock (ECalBackendSync *backend, gboolean lock)
 	backend->priv->mutex_lock = lock;
 }
 
+/**
+ * e_cal_backend_sync_is_read_only:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @read_only: Return value for read-only status.
+ *
+ * Calls the is_read_only method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_is_read_only  (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only)
 {
@@ -50,6 +70,16 @@ e_cal_backend_sync_is_read_only  (ECalBackendSync *backend, EDataCal *cal, gbool
 	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_cal_address:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @address: Return value for the address.
+ *
+ * Calls the get_cal_address method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
@@ -63,6 +93,16 @@ e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, ch
 	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_alarm_email_address:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @address: Return value for the address.
+ *
+ * Calls the get_alarm_email_address method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
@@ -76,6 +116,16 @@ e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal 
 	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_ldap_attribute:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @attribute: Return value for LDAP attribute.
+ *
+ * Calls the get_ldap_attribute method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal, char **attribute)
 {
@@ -89,6 +139,16 @@ e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal,
 	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_static_capabilities:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @capabilities: Return value for capabilities.
+ *
+ * Calls the get_capabilities method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
@@ -102,6 +162,19 @@ e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal 
 	return status;
 }
 
+/**
+ * e_cal_backend_sync_open:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @only_if_exists: Whether to open the calendar if and only if it already exists
+ * or just create it when it does not exist.
+ * @username: User name to use for authentication.
+ * @password: Password to use for authentication.
+ *
+ * Calls the open method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
 			  const char *username, const char *password)
@@ -115,6 +188,15 @@ e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only
 	return status;
 }
 
+/**
+ * e_cal_backend_sync_remove:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ *
+ * Calls the remove method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
 {
@@ -127,6 +209,17 @@ e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_create_object:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @calobj: The object to be added.
+ * @uid: Placeholder for server-generated UID.
+ *
+ * Calls the create_object method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
@@ -141,6 +234,21 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char 
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_modify_object:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @calobj: Object to be modified.
+ * @mod: Type of modification to be done.
+ * @old_object: Placeholder for returning the old object as it was stored on the
+ * backend.
+ * @new_object: Placeholder for returning the new object as it has been stored
+ * on the backend.
+ *
+ * Calls the modify_object method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
 				  CalObjModType mod, char **old_object, char **new_object)
@@ -156,6 +264,24 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_remove_object:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @uid: UID of the object to remove.
+ * @rid: Recurrence ID of the instance to remove, or NULL if removing the
+ * whole object.
+ * @mod: Type of removal.
+ * @old_object: Placeholder for returning the old object as it was stored on the
+ * backend.
+ * @object: Placeholder for returning the object after it has been modified (when
+ * removing individual instances). If removing the whole object, this will be
+ * NULL.
+ *
+ * Calls the remove_object method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid,
 				  CalObjModType mod, char **old_object, char **object)
@@ -171,6 +297,17 @@ e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_discard_alarm:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @uid: UID of the object to discard the alarm from.
+ * @auid: UID of the alarm to be discarded.
+ *
+ * Calls the discard_alarm method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
 {
@@ -185,6 +322,16 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_receive_objects:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @calobj: iCalendar object to receive.
+ *
+ * Calls the receive_objects method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
 {
@@ -199,6 +346,18 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_send_objects:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @calobj: The iCalendar object to send.
+ * @users: List of users to send notifications to.
+ * @modified_calobj: Placeholder for the iCalendar object after being modified.
+ *
+ * Calls the send_objects method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
 				 char **modified_calobj)
@@ -214,6 +373,16 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_default_object:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @object: Placeholder for returned object.
+ *
+ * Calls the get_default_object method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, char **object)
 {
@@ -227,6 +396,19 @@ e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_object:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @uid: UID of the object to get.
+ * @rid: Recurrence ID of the specific instance to get, or NULL if getting the
+ * master object.
+ * @object: Placeholder for returned object.
+ *
+ * Calls the get_object method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
 {
@@ -240,6 +422,17 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_object_list:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @sexp: Search query.
+ * @objects: Placeholder for list of returned objects.
+ *
+ * Calls the get_object_list method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
 {
@@ -253,6 +446,17 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_timezone:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @tzid: ID of the timezone to retrieve.
+ * @object: Placeholder for the returned timezone.
+ *
+ * Calls the get_timezone method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
 {
@@ -265,6 +469,16 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_add_timezone:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @tzobj: VTIMEZONE object to be added.
+ *
+ * Calls the add_timezone method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
 {
@@ -277,6 +491,16 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
  	return status;
 }
 
+/**
+ * e_cal_backend_sync_set_default_timezone:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @tzid: ID of the timezone to be set as default.
+ *
+ * Calls the set_default_timezone method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
 {
@@ -289,10 +513,22 @@ e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal
  	return status;
 }
 
-
+/**
+ * e_cal_backend_sync_get_changes:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @change_id: ID of the change to use as base.
+ * @adds: Placeholder for list of additions.
+ * @modifies: Placeholder for list of modifications.
+ * @deletes: Placeholder for list of deletions.
+ *
+ * Calls the get_changes method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id,
-			      GList **adds, GList **modifies, GList **deletes)
+				GList **adds, GList **modifies, GList **deletes)
 {
 	ECalBackendSyncStatus status;
 
@@ -303,9 +539,22 @@ e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const c
 	return status;
 }
 
+/**
+ * e_cal_backend_sync_get_free_busy:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @users: List of users to get F/B info from.
+ * @start: Time range start.
+ * @end: Time range end.
+ * @freebusy: Placeholder for F/B information.
+ *
+ * Calls the get_free_busy method on the given backend.
+ *
+ * Return value: Status code.
+ */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users, 
-				time_t start, time_t end, GList **freebusy)
+				  time_t start, time_t end, GList **freebusy)
 {
 	ECalBackendSyncStatus status;
 
@@ -315,7 +564,6 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 
 	return status;
 }
-
 
 static void
 _e_cal_backend_is_read_only (ECalBackend *backend, EDataCal *cal)
@@ -671,6 +919,10 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 
 /**
  * e_cal_backend_get_type:
+ *
+ * Registers the ECalBackendSync class if needed.
+ *
+ * Return value: The ID of the ECalBackendSync class.
  */
 GType
 e_cal_backend_sync_get_type (void)

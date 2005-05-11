@@ -464,9 +464,8 @@ impl_Cal_setDefaultTimezone (PortableServer_Servant servant,
 }
 
 /**
- * cal_construct:
+ * e_data_cal_construct:
  * @cal: A calendar client interface.
- * @corba_cal: CORBA object for the calendar.
  * @backend: Calendar backend that this @cal presents an interface to.
  * @listener: Calendar listener for notification.
  *
@@ -508,7 +507,7 @@ e_data_cal_construct (EDataCal *cal,
 }
 
 /**
- * cal_new:
+ * e_data_cal_new:
  * @backend: A calendar backend.
  * @listener: A calendar listener.
  *
@@ -541,6 +540,14 @@ e_data_cal_new (ECalBackend *backend, GNOME_Evolution_Calendar_CalListener liste
 	return retval;
 }
 
+/**
+ * e_data_cal_get_backend:
+ * @cal: A calendar client interface.
+ *
+ * Gets the associated backend.
+ *
+ * Return value: An #ECalBackend.
+ */
 ECalBackend *
 e_data_cal_get_backend (EDataCal *cal)
 {
@@ -550,6 +557,14 @@ e_data_cal_get_backend (EDataCal *cal)
 	return cal->priv->backend;
 }
 
+/**
+ * e_data_cal_get_listener:
+ * @cal: A calendar client interface.
+ *
+ * Gets the listener associated with a calendar client interface.
+ *
+ * Return value: The listener.
+ */
 GNOME_Evolution_Calendar_CalListener
 e_data_cal_get_listener (EDataCal *cal)
 {
@@ -651,6 +666,14 @@ e_data_cal_init (EDataCal *cal, EDataCalClass *klass)
 
 BONOBO_TYPE_FUNC_FULL (EDataCal, GNOME_Evolution_Calendar_Cal, PARENT_TYPE, e_data_cal);
 
+/**
+ * e_data_cal_notify_read_only:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @read_only: Read only value.
+ *
+ * Notifies listeners of the completion of the is_read_only method call.
+ */
 void 
 e_data_cal_notify_read_only (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, gboolean read_only)
 {
@@ -672,6 +695,14 @@ e_data_cal_notify_read_only (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
 	CORBA_exception_free (&ev);	
 }
 
+/**
+ * e_data_cal_notify_cal_address:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @address: Calendar address.
+ *
+ * Notifies listeners of the completion of the get_cal_address method call.
+ */
 void 
 e_data_cal_notify_cal_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *address)
 {
@@ -693,6 +724,14 @@ e_data_cal_notify_cal_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 	CORBA_exception_free (&ev);	
 }
 
+/**
+ * e_data_cal_notify_alarm_email_address:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @address: Alarm email address.
+ *
+ * Notifies listeners of the completion of the get_alarm_email_address method call.
+ */
 void
 e_data_cal_notify_alarm_email_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *address)
 {
@@ -714,6 +753,14 @@ e_data_cal_notify_alarm_email_address (EDataCal *cal, GNOME_Evolution_Calendar_C
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_ldap_attribute:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @attibute: LDAP attribute.
+ *
+ * Notifies listeners of the completion of the get_ldap_attribute method call.
+ */
 void
 e_data_cal_notify_ldap_attribute (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *attribute)
 {
@@ -735,6 +782,14 @@ e_data_cal_notify_ldap_attribute (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_static_capabilities:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @capabilities: Static capabilities from the backend.
+ *
+ * Notifies listeners of the completion of the get_static_capabilities method call.
+ */
 void
 e_data_cal_notify_static_capabilities (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *capabilities)
 {
@@ -757,6 +812,13 @@ e_data_cal_notify_static_capabilities (EDataCal *cal, GNOME_Evolution_Calendar_C
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_open:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ *
+ * Notifies listeners of the completion of the open method call.
+ */
 void 
 e_data_cal_notify_open (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status)
 {
@@ -778,6 +840,13 @@ e_data_cal_notify_open (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus statu
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_remove:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ *
+ * Notifies listeners of the completion of the remove method call.
+ */
 void
 e_data_cal_notify_remove (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status)
 {
@@ -799,6 +868,15 @@ e_data_cal_notify_remove (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus sta
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_object_created:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @uid: UID of the object created.
+ * @object: The object created as an iCalendar string.
+ *
+ * Notifies listeners of the completion of the create_object method call.
+ */
 void
 e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 				  const char *uid, const char *object)
@@ -824,6 +902,15 @@ e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_object_modified:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @old_object: The old object as an iCalendar string.
+ * @object: The modified object as an iCalendar string.
+ *
+ * Notifies listeners of the completion of the modify_object method call.
+ */
 void
 e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
 				   const char *old_object, const char *object)
@@ -849,6 +936,17 @@ e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallS
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_object_removed:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @uid: UID of the removed object.
+ * @old_object: The old object as an iCalendar string.
+ * @object: The new object as an iCalendar string. This will not be NULL only
+ * when removing instances of a recurring appointment.
+ *
+ * Notifies listeners of the completion of the remove_object method call.
+ */
 void
 e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
 				  const char *uid, const char *old_object, const char *object)
@@ -874,6 +972,13 @@ e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_objects_received:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ *
+ * Notifies listeners of the completion of the receive_objects method call.
+ */
 void
 e_data_cal_notify_objects_received (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status)
 {
@@ -895,6 +1000,13 @@ e_data_cal_notify_objects_received (EDataCal *cal, GNOME_Evolution_Calendar_Call
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_alarm_discarded:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ *
+ * Notifies listeners of the completion of the discard_alarm method call.
+ */
 void
 e_data_cal_notify_alarm_discarded (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status)
 {
@@ -916,6 +1028,15 @@ e_data_cal_notify_alarm_discarded (EDataCal *cal, GNOME_Evolution_Calendar_CallS
 	CORBA_exception_free (&ev);	
 }
 
+/**
+ * e_data_cal_notify_objects_sent:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @users: List of users.
+ * @calobj: An iCalendar string representing the object sent.
+ *
+ * Notifies listeners of the completion of the send_objects method call.
+ */
 void
 e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GList *users, const char *calobj)
 {
@@ -951,6 +1072,14 @@ e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStat
 	CORBA_free (corba_users);
 }
 
+/**
+ * e_data_cal_notify_default_object:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @object: The default object as an iCalendar string.
+ *
+ * Notifies listeners of the completion of the get_default_object method call.
+ */
 void
 e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
 {
@@ -974,6 +1103,14 @@ e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_object:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @object: The object retrieved as an iCalendar string.
+ *
+ * Notifies listeners of the completion of the get_object method call.
+ */
 void
 e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
 {
@@ -997,6 +1134,14 @@ e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus sta
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_object_list:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @objects: List of retrieved objects.
+ *
+ * Notifies listeners of the completion of the get_object_list method call.
+ */
 void
 e_data_cal_notify_object_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GList *objects)
 {
@@ -1033,6 +1178,14 @@ e_data_cal_notify_object_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 	CORBA_free(seq._buffer);
 }
 
+/**
+ * e_data_cal_notify_query:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @query: The new live query.
+ *
+ * Notifies listeners of the completion of the get_query method call.
+ */
 void
 e_data_cal_notify_query (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, EDataCalView *query)
 {
@@ -1054,6 +1207,14 @@ e_data_cal_notify_query (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus stat
 	CORBA_exception_free (&ev);	
 }
 
+/**
+ * e_data_cal_notify_timezone_requested:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @object: The requested timezone as an iCalendar string.
+ *
+ * Notifies listeners of the completion of the get_timezone method call.
+ */
 void
 e_data_cal_notify_timezone_requested (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
 {
@@ -1074,6 +1235,14 @@ e_data_cal_notify_timezone_requested (EDataCal *cal, GNOME_Evolution_Calendar_Ca
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_timezone_added:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @tzid: ID of the added timezone.
+ *
+ * Notifies listeners of the completion of the add_timezone method call.
+ */
 void
 e_data_cal_notify_timezone_added (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *tzid)
 {
@@ -1094,6 +1263,13 @@ e_data_cal_notify_timezone_added (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_default_timezone_set:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ *
+ * Notifies listeners of the completion of the set_default_timezone method call.
+ */
 void
 e_data_cal_notify_default_timezone_set (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status)
 {
@@ -1114,6 +1290,16 @@ e_data_cal_notify_default_timezone_set (EDataCal *cal, GNOME_Evolution_Calendar_
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_changes:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @adds: List of additions.
+ * @modifies: List of modifications.
+ * @deletes: List of removals.
+ *
+ * Notifies listeners of the completion of the get_changes method call.
+ */
 void
 e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
 			   GList *adds, GList *modifies, GList *deletes)
@@ -1167,6 +1353,14 @@ e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus st
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_cal_notify_free_busy:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @freebusy: List of free/busy objects.
+ *
+ * Notifies listeners of the completion of the get_free_busy method call.
+ */
 void
 e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GList *freebusy)
 {
@@ -1206,7 +1400,7 @@ e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
  * @status: Status of the mode set.
  * @mode: The current mode.
  * 
- * Notifys the listener of the results of a setMode call.
+ * Notifies the listener of the results of a set_mode call.
  **/
 void
 e_data_cal_notify_mode (EDataCal *cal,
@@ -1232,7 +1426,12 @@ e_data_cal_notify_mode (EDataCal *cal,
 	CORBA_exception_free (&ev);	
 }
 
-
+/**
+ * e_data_cal_notify_auth_required:
+ * @cal: A calendar client interface.
+ *
+ * Notifies listeners that authorization is required to open the calendar.
+ */
 void 
 e_data_cal_notify_auth_required (EDataCal *cal)
 {

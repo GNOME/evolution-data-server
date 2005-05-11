@@ -26,6 +26,15 @@
 
 static EAccountList *accounts;
 
+/**
+ * e_cal_backend_mail_account_get_default:
+ * @address: Placeholder for default address.
+ * @name: Placeholder for name.
+ *
+ * Retrieve the default mail account as stored in Evolution configuration.
+ *
+ * Return value: TRUE if there is a default account, FALSE otherwise.
+ */
 gboolean
 e_cal_backend_mail_account_get_default (char **address, char **name)
 {
@@ -44,6 +53,15 @@ e_cal_backend_mail_account_get_default (char **address, char **name)
 	return account != NULL;
 }
 
+/**
+ * e_cal_backend_mail_account_is_valid:
+ * @user: User name for the account to check.
+ * @name: Placeholder for the account name.
+ *
+ * Checks that a mail account is valid, and returns its name.
+ *
+ * Return value: TRUE if the account is valid, FALSE if not.
+ */
 gboolean
 e_cal_backend_mail_account_is_valid (char *user, char **name)
 {

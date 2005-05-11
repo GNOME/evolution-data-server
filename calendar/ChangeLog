@@ -1,3 +1,12 @@
+2005-05-11  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedata-cal/e-cal-backend-sync.c:
+	* libedata-cal/e-cal-backend-util.c:
+	* libedata-cal/e-cal-backend.c:
+	* libedata-cal/e-data-cal-factory.c:
+	* libedata-cal/e-data-cal-view.c:
+	* libedata-cal/e-data-cal.c: improved API documentation.
+
 2005-05-09  Sushma Rai  <rsushma@novell.com>
 
 	* libedata-cal/e-cal-backend-cache.c (e_cal_backend_cache_constructor):

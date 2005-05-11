@@ -459,7 +459,7 @@ e_data_cal_view_add_listener (EDataCalView *query, GNOME_Evolution_Calendar_CalV
  *
  * Get the expression used for the given query.
  *
- * Returns: the query expression used to search.
+ * Return value: the query expression used to search.
  */
 const char *
 e_data_cal_view_get_text (EDataCalView *query)
@@ -469,6 +469,14 @@ e_data_cal_view_get_text (EDataCalView *query)
 	return e_cal_backend_sexp_text (query->priv->sexp);
 }
 
+/**
+ * e_data_cal_view_get_object_sexp:
+ * @query: A query object.
+ *
+ * Get the #ECalBackendSExp object used for the given query.
+ *
+ * Return value: The expression object used to search.
+ */
 ECalBackendSExp *
 e_data_cal_view_get_object_sexp (EDataCalView *query)
 {
@@ -477,6 +485,16 @@ e_data_cal_view_get_object_sexp (EDataCalView *query)
 	return query->priv->sexp;
 }
 
+/**
+ * e_data_cal_view_object_matches:
+ * @query: A query object.
+ * @object: Object to match.
+ *
+ * Compares the given @object to the regular expression used for the
+ * given query.
+ *
+ * Return value: TRUE if the object matches the expression, FALSE if not.
+ */
 gboolean
 e_data_cal_view_object_matches (EDataCalView *query, const char *object)
 {
@@ -499,6 +517,14 @@ add_object_to_list (gpointer key, gpointer value, gpointer user_data)
 	*list = g_list_append (*list, value);
 }
 
+/**
+ * e_data_cal_view_get_matched_objects:
+ * @query: A query object.
+ *
+ * Gets the list of objects already matched for the given query.
+ *
+ * Return value: A list of matched objects.
+ */
 GList *
 e_data_cal_view_get_matched_objects (EDataCalView *query)
 {
@@ -514,6 +540,14 @@ e_data_cal_view_get_matched_objects (EDataCalView *query)
 	return list;
 }
 
+/**
+ * e_data_cal_view_is_started:
+ * @query: A query object.
+ *
+ * Checks whether the given query has already been started.
+ *
+ * Return value: TRUE if the query has already been started, FALSE otherwise.
+ */
 gboolean
 e_data_cal_view_is_started (EDataCalView *query)
 {
@@ -526,6 +560,17 @@ e_data_cal_view_is_started (EDataCalView *query)
 	return priv->started;
 }
 
+/**
+ * e_data_cal_view_is_done:
+ * @query: A query object.
+ *
+ * Checks whether the given query is already done. Being done means the initial
+ * matching of objects have been finished, not that no more notifications about
+ * changes will be sent. In fact, even after done, notifications will still be sent
+ * if there are changes in the objects matching the query search expression.
+ *
+ * Return value: TRUE if the query is done, FALSE if still in progress.
+ */
 gboolean
 e_data_cal_view_is_done (EDataCalView *query)
 {
@@ -538,6 +583,15 @@ e_data_cal_view_is_done (EDataCalView *query)
 	return priv->done;
 }
 
+/**
+ * e_data_cal_view_get_done_status:
+ * @query: A query object.
+ *
+ * Gets the status code obtained when the initial matching of objects was done
+ * for the given query.
+ *
+ * Return value: The query status.
+ */
 GNOME_Evolution_Calendar_CallStatus
 e_data_cal_view_get_done_status (EDataCalView *query)
 {
@@ -553,6 +607,13 @@ e_data_cal_view_get_done_status (EDataCalView *query)
 	return GNOME_Evolution_Calendar_Success;
 }
 
+/**
+ * e_data_cal_view_notify_objects_added:
+ * @query: A query object.
+ * @objects: List of objects that have been added.
+ *
+ * Notifies all query listeners of the addition of a list of objects.
+ */
 void
 e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
 {
@@ -598,6 +659,13 @@ e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
 	CORBA_free (obj_list._buffer);
 }
 
+/**
+ * e_data_cal_view_notify_objects_added_1:
+ * @query: A query object.
+ * @object: The object that has been added.
+ *
+ * Notifies all the query listeners of the addition of a single object.
+ */
 void
 e_data_cal_view_notify_objects_added_1 (EDataCalView *query, const char *object)
 {
@@ -617,6 +685,13 @@ e_data_cal_view_notify_objects_added_1 (EDataCalView *query, const char *object)
 	e_data_cal_view_notify_objects_added (query, &objects);
 }
 
+/**
+ * e_data_cal_view_notify_objects_modified:
+ * @query: A query object.
+ * @objects: List of modified objects.
+ *
+ * Notifies all query listeners of the modification of a list of objects.
+ */
 void
 e_data_cal_view_notify_objects_modified (EDataCalView *query, const GList *objects)
 {
@@ -662,6 +737,13 @@ e_data_cal_view_notify_objects_modified (EDataCalView *query, const GList *objec
 	CORBA_free (obj_list._buffer);
 }
 
+/**
+ * e_data_cal_view_notify_objects_modified_1:
+ * @query: A query object.
+ * @object: The modified object.
+ *
+ * Notifies all query listeners of the modification of a single object.
+ */
 void
 e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const char *object)
 {
@@ -681,6 +763,13 @@ e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const char *obje
 	e_data_cal_view_notify_objects_modified (query, &objects);
 }
 
+/**
+ * e_data_cal_view_notify_objects_removed:
+ * @query: A query object.
+ * @uids: List of UIDs for the objects that have been removed.
+ *
+ * Notifies all query listener of the removal of a list of objects.
+ */
 void
 e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *uids)
 {
@@ -726,6 +815,13 @@ e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *uids)
 	CORBA_free (uid_list._buffer);
 }
 
+/**
+ * e_data_cal_view_notify_objects_removed:
+ * @query: A query object.
+ * @uid: UID of the removed object.
+ *
+ * Notifies all query listener of the removal of a single object.
+ */
 void
 e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const char *uid)
 {
@@ -745,6 +841,14 @@ e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const char *uid)
 	e_data_cal_view_notify_objects_removed (query, &uids);
 }
 
+/**
+ * e_data_cal_view_notify_progress:
+ * @query: A query object.
+ * @message: Progress message to send to listeners.
+ * @percent: Percentage completed.
+ *
+ * Notifies all query listeners of progress messages.
+ */
 void
 e_data_cal_view_notify_progress (EDataCalView *query, const char *message, int percent)
 {
@@ -771,6 +875,14 @@ e_data_cal_view_notify_progress (EDataCalView *query, const char *message, int p
 	}
 }
 
+/**
+ * e_data_cal_view_notify_done:
+ * @query: A query object.
+ * @status: Query completion status code.
+ *
+ * Notifies all query listeners of the completion of the query, including a
+ * status code.
+ */
 void
 e_data_cal_view_notify_done (EDataCalView *query, GNOME_Evolution_Calendar_CallStatus status)
 {

@@ -353,12 +353,18 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *klass)
 static void 
 set_backend_online_status (gpointer key, gpointer value, gpointer data)
 {
-  ECalBackend *backend = E_CAL_BACKEND (value);
-  
-  e_cal_backend_set_mode (backend,  GPOINTER_TO_INT (data));
-  
+	ECalBackend *backend = E_CAL_BACKEND (value);
+
+	e_cal_backend_set_mode (backend,  GPOINTER_TO_INT (data));
 }
 
+/**
+ * e_data_cal_factory_set_backend_mode:
+ * @factory: A calendar factory.
+ * @mode: Online mode to set.
+ *
+ * Sets the online mode for all backends created by the given factory.
+ */
 void 
 e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, int mode)
 {
@@ -497,6 +503,12 @@ e_data_cal_factory_register_backend (EDataCalFactory *factory, ECalBackendFactor
 	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), backend_factory);
 }
 
+/**
+ * e_data_cal_factory_register_backends:
+ * @cal_factory: A calendar factory.
+ *
+ * Register all backends for the given factory.
+ */
 void
 e_data_cal_factory_register_backends (EDataCalFactory *cal_factory)
 {
@@ -544,8 +556,15 @@ dump_backend (gpointer key, gpointer value, gpointer data)
 	g_message ("  %s: %p", uri, backend);
 }
 
+/**
+ * e_data_cal_factory_dump_active_backends:
+ * @factory: A calendar factory.
+ *
+ * Dumps to standard output a list of all active backends for the given
+ * factory.
+ */
 void
-e_data_cal_factory_dump_active_backends   (EDataCalFactory *factory)
+e_data_cal_factory_dump_active_backends (EDataCalFactory *factory)
 {
 	EDataCalFactoryPrivate *priv;
 
