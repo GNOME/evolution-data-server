@@ -1,3 +1,12 @@
+2005-05-09  Mengjie Yu  <meng-jie.yu@sun.com>
+
+	* e-source-selector.c: (selector_popup_menu),
+	(e_source_selector_class_init):
+	We need to implement the popup_menu function to make
+	'F10 + Shift Key' pressing work.
+
+	Fixes #303540
+
 2005-05-04  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-book-auth-util.c:

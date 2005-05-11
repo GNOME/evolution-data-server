@@ -68,6 +68,8 @@ enum {
 };
 static unsigned int signals[NUM_SIGNALS] = { 0 };
 
+static gboolean selector_popup_menu (GtkWidget *widget);
+
 G_DEFINE_TYPE (ESourceSelector, e_source_selector, GTK_TYPE_TREE_VIEW)
 
 /* Selection management.  */
@@ -573,6 +575,18 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
 }
 
 static gboolean
+selector_popup_menu (GtkWidget *widget)
+{
+	ESourceSelector *selector = E_SOURCE_SELECTOR (widget);
+	ESource *source;
+	gboolean res = FALSE;
+
+	source = e_source_selector_peek_primary_selection (selector);	
+	g_signal_emit (selector, signals[POPUP_EVENT], 0, source, NULL, &res);
+	return res;
+}
+
+static gboolean
 selector_button_press_event (GtkWidget *widget, GdkEventButton *event, ESourceSelector *selector)
 {
 	ESourceSelectorPrivate *priv = selector->priv;
@@ -679,9 +693,12 @@ static void
 e_source_selector_class_init (ESourceSelectorClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class);
 
 	object_class->dispose  = e_source_selector_dispose;
 	object_class->finalize = e_source_selector_finalize;
+	widget_class->popup_menu = selector_popup_menu;
+
 
 	signals[SELECTION_CHANGED] = 
 		g_signal_new ("selection_changed",
