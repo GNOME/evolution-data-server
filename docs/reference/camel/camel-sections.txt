@@ -347,8 +347,6 @@ camel_message_info_user_tag
 camel_message_info_set_flags
 camel_message_info_set_user_flag
 camel_message_info_set_user_tag
-camel_content_info_dump
-camel_message_info_dump
 <SUBSECTION Standard>
 CAMEL_FOLDER_SUMMARY
 CAMEL_IS_FOLDER_SUMMARY
