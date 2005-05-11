@@ -64,19 +64,19 @@ msgstr "Χρήση Διεύθυνσης Email "
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:820
 msgid "Reconnecting to LDAP server..."
-msgstr "Επανασύνδεση με τον διακομιστή LDAP..."
+msgstr "Επανασύνδεση με το διακομιστή LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1368
 msgid "Adding contact to LDAP server..."
-msgstr "Προσθήκη επαφής στον διακομιστή LDAP..."
+msgstr "Προσθήκη επαφής στο διακομιστή LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1493
 msgid "Removing contact from LDAP server..."
-msgstr "Αφαίρεση επαφής από τον διακομιστή LDAP..."
+msgstr "Αφαίρεση επαφής από το διακομιστή LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:1750
 msgid "Modifying contact from LDAP server..."
-msgstr "Τροποποίηση επαφής στον διακομιστή LDAP..."
+msgstr "Τροποποίηση επαφής στο διακομιστή LDAP..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3290
 msgid "Receiving LDAP search results..."
@@ -1273,7 +1273,7 @@ msgid ""
 "reconnect to the network."
 msgstr ""
 "Δεν ήταν δυνατή η εγγραφή ημερολογίου: %s\n"
-"Οι περαιτέρω εργασίες σ' αυτόν τον διακομιστή δε θα επαναληφθούν\n"
+"Οι περαιτέρω εργασίες σ' αυτόν το διακομιστή δε θα επαναληφθούν\n"
 "όταν ξανασυνδεθείτε στο δίκτυο."
 
 #: camel/camel-disco-diary.c:258
@@ -1285,11 +1285,11 @@ msgid ""
 msgstr ""
 "Δεν ήταν δυνατό το άνοιγμα του`%s':\n"
 "%s\n"
-"Οι αλλαγές σε αυτόν τον φάκελο δε θα ξανασυγχρονιστούν."
+"Οι αλλαγές σε αυτόν το φάκελο δε θα ξανασυγχρονιστούν."
 
 #: camel/camel-disco-diary.c:294
 msgid "Resynchronizing with server"
-msgstr "Ξανασυγχρονισμός με τον διακομιστή"
+msgstr "Ξανασυγχρονισμός με το διακομιστή"
 
 #: camel/camel-disco-folder.c:42 camel/camel-offline-folder.c:51
 msgid "Copy folder content locally for offline operation"
@@ -1624,7 +1624,7 @@ msgstr "Δεν ήταν δυνατή η δημιουργία αρχείου κλ
 #: camel/camel-lock.c:154
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
-msgstr "Εκτός χρόνου για την λήψη αρχείου κλειδώματος στο %s. Προσπαθήστε αργότερα."
+msgstr "Εκτός χρόνου για τη λήψη αρχείου κλειδώματος στο %s. Προσπαθήστε αργότερα."
 
 #: camel/camel-lock.c:209
 #, c-format
@@ -1734,7 +1734,7 @@ msgstr "Name lookup απέτυχε: %s"
 #: camel/camel-offline-folder.c:253
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "Συγχρονισμός  μηνυμάτων σε φάκελο  '%s' στον δίσκο"
+msgstr "Συγχρονισμός  μηνυμάτων σε φάκελο  '%s' στο δίσκο"
 
 #: camel/camel-offline-journal.c:141 camel/camel-offline-journal.c:164
 #, c-format
@@ -1867,7 +1867,7 @@ msgstr "GSSAPI"
 #: camel/camel-sasl-gssapi.c:59
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
-"Με την επιλογή αυτή θα συνδεθεθείτε στον διακομιστή με την πιστοποίηση "
+"Με την επιλογή αυτή θα συνδεθεθείτε στο διακομιστή με την πιστοποίηση "
 "Kerberos 5."
 
 #: camel/camel-sasl-gssapi.c:157
@@ -1935,7 +1935,7 @@ msgstr "Τα αναφερόμενα διαπιστευτήρια έχουν λή
 #: camel/camel-sasl-kerberos4.c:226
 #: camel/providers/imap/camel-imap-store.c:1243
 msgid "Bad authentication response from server."
-msgstr "Εσφαλμένη απάντηση πιστοποίησης από τον διακομιστή."
+msgstr "Εσφαλμένη απάντηση πιστοποίησης από το διακομιστή."
 
 #: camel/camel-sasl-gssapi.c:307
 msgid "Unsupported security layer."
@@ -1979,7 +1979,7 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Με την επιλογή αυτή θα συνδεθεί σε έναν Windows-based με την χρήση NTLM / "
+"Με την επιλογή αυτή θα συνδεθεί σε έναν Windows-based με τη χρήση NTLM / "
 "Secure Password Authentication."
 
 #: camel/camel-sasl-plain.c:33
@@ -2117,7 +2117,7 @@ msgstr "Κακή υπογραφή"
 
 #: camel/camel-smime-context.c:490
 msgid "Content tampered with or altered in transit"
-msgstr "Το περιεχόμενο αλλοιώθηκε ή πλαστογραφήθηκε κατά την μεταφορά"
+msgstr "Το περιεχόμενο αλλοιώθηκε ή πλαστογραφήθηκε κατά τη μεταφορά"
 
 #: camel/camel-smime-context.c:492
 msgid "Signing certificate not found"
@@ -2285,7 +2285,7 @@ msgstr "Ανεπιθύμητη αλληλογραφία"
 
 #: camel/camel-tcp-stream-openssl.c:568
 msgid "Unable to get issuer's certificate"
-msgstr "Αποτυχία κατά την λήψη πιστοποιητικού εκδότη"
+msgstr "Αποτυχία κατά τη λήψη πιστοποιητικού εκδότη"
 
 #: camel/camel-tcp-stream-openssl.c:570
 msgid "Unable to get Certificate Revocation List"
@@ -2530,7 +2530,7 @@ msgstr "Δεν ήταν δυνατή η αντιγραφή μηνυμάτων σ
 
 #: camel/camel-vtrash-folder.c:50
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Δεν ήταν δυνατή η αντιγραφή μηνυμάτων στον φάκελο ανεπιθύμητης αλληλογραφίας"
+msgstr "Δεν ήταν δυνατή η αντιγραφή μηνυμάτων στο φάκελο ανεπιθύμητης αλληλογραφίας"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:111
 #: camel/providers/imap/camel-imap-folder.c:1980
@@ -2560,7 +2560,7 @@ msgstr "Δεν υπάρχει τέτοιο μήνυμα"
 #: camel/providers/pop3/camel-pop3-folder.c:492
 #: camel/providers/pop3/camel-pop3-folder.c:510
 msgid "User cancelled"
-msgstr "Ακυρώθηκε από τον χρήστη"
+msgstr "Ακυρώθηκε από το χρήστη"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:131
 #: camel/providers/imap4/camel-imap4-folder.c:793
@@ -2599,7 +2599,7 @@ msgstr "Δεν ήταν δυνατή η δημιουργία μηνύματος 
 #: camel/providers/groupwise/camel-groupwise-folder.c:869
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
-msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στον φάκελο `%s': %s"
+msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο `%s': %s"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
@@ -2647,7 +2647,7 @@ msgstr "Έλεγχος νέων μηνυμάτων για ανεπιθύμητη
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "Only check for Junk messages in the INBOX folder"
-msgstr "Έλεγχος για ανεπιθύμητα μηνύματα μόνο στον φάκελο εισερχομένων"
+msgstr "Έλεγχος για ανεπιθύμητα μηνύματα μόνο στο φάκελο εισερχομένων"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Automatically synchronize account locally"
@@ -2788,13 +2788,13 @@ msgid ""
 "Alert from IMAP server %s@%s:\n"
 "%s"
 msgstr ""
-"Ειδοποίηση από τον διακομιστή IMAP %s@%s:\n"
+"Ειδοποίηση από το διακομιστή IMAP %s@%s:\n"
 "%s"
 
 #: camel/providers/imap/camel-imap-command.c:393
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
-msgstr "Απροσδόκητη απάντηση από τον διακομιστή IMAP: %s"
+msgstr "Απροσδόκητη απάντηση από το διακομιστή IMAP: %s"
 
 #: camel/providers/imap/camel-imap-command.c:403
 #, c-format
@@ -2803,7 +2803,7 @@ msgstr "Η εντολή IMAP απέτυχε: %s"
 
 #: camel/providers/imap/camel-imap-command.c:473
 msgid "Server response ended too soon."
-msgstr "Η ανταπόκριση από τον διακομιστή τερματίστηκε πιο νωρίς."
+msgstr "Η ανταπόκριση από το διακομιστή τερματίστηκε πιο νωρίς."
 
 #: camel/providers/imap/camel-imap-command.c:680
 #, c-format
@@ -2813,7 +2813,7 @@ msgstr "Η απάντηση του διακομιστή ΙΜΑΡ δεν περι
 #: camel/providers/imap/camel-imap-command.c:716
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
-msgstr "Απροσδόκητη απάντηση ΟΚ από τον διακομιστή IMAP: %s"
+msgstr "Απροσδόκητη απάντηση ΟΚ από το διακομιστή IMAP: %s"
 
 #: camel/providers/imap/camel-imap-folder.c:226
 #, c-format
@@ -2839,7 +2839,7 @@ msgstr "Αδυναμία ανάκτησης μηνύματος: %s "
 #: camel/providers/imap/camel-imap-folder.c:2624
 #: camel/providers/nntp/camel-nntp-folder.c:221
 msgid "This message is not currently available"
-msgstr "Το μήνυμα δεν είναι διαθέσιμο αύτη την στιγμή"
+msgstr "Το μήνυμα δεν είναι διαθέσιμο αυτήν τη στιγμή"
 
 #: camel/providers/imap/camel-imap-folder.c:2465
 #, c-format
@@ -2895,7 +2895,7 @@ msgstr "Σύνδεση στο διακομιστή"
 #: camel/providers/imap/camel-imap-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Use custom command to connect to server"
-msgstr "Χ_ρήση προσαρμοσμένης εντολής για την σύνδεση με τον διακομιστή"
+msgstr "Χ_ρήση προσαρμοσμένης εντολής για τη σύνδεση με το διακομιστή"
 
 #: camel/providers/imap/camel-imap-provider.c:53
 #: camel/providers/imap4/camel-imap4-provider.c:45
@@ -2916,7 +2916,7 @@ msgstr "Εμ_φάνιση μόνο των φακέλων με συνδρομή"
 #: camel/providers/imap/camel-imap-provider.c:60
 #: camel/providers/imap4/camel-imap4-provider.c:52
 msgid "O_verride server-supplied folder namespace"
-msgstr "Παρά_καμψη φακέλου namespace που παρέχεται από τον διακομιστή"
+msgstr "Παρά_καμψη φακέλου namespace που παρέχεται από το διακομιστή"
 
 #: camel/providers/imap/camel-imap-provider.c:62
 #: camel/providers/imap4/camel-imap4-provider.c:54
@@ -2926,7 +2926,7 @@ msgstr "Namespace"
 #: camel/providers/imap/camel-imap-provider.c:66
 #: camel/providers/imap4/camel-imap4-provider.c:58
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "Εφαρμογή _φίλτρων στα νέα μηνύματα στα ΕΙΣΕΡΧΟΜΕΝΑ σ' αυτόν τον διακομιστή"
+msgstr "Εφαρμογή _φίλτρων στα νέα μηνύματα στα ΕΙΣΕΡΧΟΜΕΝΑ σ' αυτόν το διακομιστή"
 
 #: camel/providers/imap/camel-imap-provider.c:68
 #: camel/providers/imap4/camel-imap4-provider.c:60
@@ -3012,7 +3012,7 @@ msgstr "Η σύνδεση ακυρώθηκε"
 #: camel/providers/imap4/camel-imap4-store.c:391
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
-msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή IMAP %s σε ασφαλή λειτουργία: %s"
+msgstr "Δεν ήταν δυνατή η σύνδεση με το διακομιστή IMAP %s σε ασφαλή λειτουργία: %s"
 
 #: camel/providers/imap/camel-imap-store.c:674
 #: camel/providers/smtp/camel-smtp-transport.c:326
@@ -3086,7 +3086,7 @@ msgstr ""
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
-"Το όνομα φακέλου \"%s\" δεν είναι έγκυρο δε μπορεί να περιέχει τον χαρακτήρα "
+"Το όνομα φακέλου \"%s\" δεν είναι έγκυρο δε μπορεί να περιέχει το χαρακτήρα "
 "\"%c\""
 
 #: camel/providers/imap/camel-imap-store.c:1949
@@ -3116,12 +3116,12 @@ msgstr "Απέτυχε η εντολή αποστολής στο διακομι�
 #: camel/providers/imap4/camel-imap4-command.c:660
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
-msgstr "Απροσδόκητη απάντηση από τον διακομιστή IMAP4 %s: %s"
+msgstr "Απροσδόκητη απάντηση από το διακομιστή IMAP4 %s: %s"
 
 #: camel/providers/imap4/camel-imap4-engine.c:222
 #, c-format
 msgid "Unexpected greeting from IMAP server %s."
-msgstr "Απροσδόκητος χαιρετισμός από τον διακομιστή IMAP: %s."
+msgstr "Απροσδόκητος χαιρετισμός από το διακομιστή IMAP: %s."
 
 #: camel/providers/imap4/camel-imap4-engine.c:432
 #, c-format
@@ -3155,12 +3155,12 @@ msgstr "Δεν είναι δυνατή η πρόσβαση στο φάκελο: 
 #: camel/providers/imap4/camel-imap4-folder.c:457
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαιών στον φάκελο `%s': Άγνωστο"
+msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαιών στο φάκελο `%s': Άγνωστο"
 
 #: camel/providers/imap4/camel-imap4-folder.c:463
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαιών στον φάκελο `%s': Εσφαλμένη εντολή"
+msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαιών στο φάκελο `%s': Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-folder.c:604
 #, c-format
@@ -3176,52 +3176,52 @@ msgstr "Δεν είναι δυνατή η εξάλειψη του φακέλου
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr ""
-"Δεν είναι δυνατή η λήψη του μηνύματος %s από τον φάκελο `%s': Δεν υπάρχει "
+"Δεν είναι δυνατή η λήψη του μηνύματος %s από το φάκελο `%s': Δεν υπάρχει "
 "τέτοιο μήνυμα"
 
 #: camel/providers/imap4/camel-imap4-folder.c:870
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr ""
-"Δεν είναι δυνατή η λήψη του μηνύματος %s από τον φάκελο `%s': Εσφαλμένη "
+"Δεν είναι δυνατή η λήψη του μηνύματος %s από το φάκελο `%s': Εσφαλμένη "
 "εντολή"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1003
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
-msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στον φάκελο`%s': Άγνωστο σφάλμα"
+msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο`%s': Άγνωστο σφάλμα"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1032
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
-msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στον φάκελο`%s': Εσφαλμένη εντολή"
+msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο`%s': Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1144
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
-"Δεν είναι δυνατή η μετακίνηση μηνυμάτων από τον φάκελο `%s' στον φάκελο `%"
+"Δεν είναι δυνατή η μετακίνηση μηνυμάτων από το φάκελο `%s' στο φάκελο `%"
 "s': Άγνωστο"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1148
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
-"Δεν είναι δυνατή η αντιγραφή μηνυμάτων από τον φάκελο `%s' στον φάκελο `%s': "
+"Δεν είναι δυνατή η αντιγραφή μηνυμάτων από το φάκελο `%s' στο φάκελο `%s': "
 "Άγνωστο"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1156
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
-"Δεν είναι δυνατή η μετακίνηση μηνυμάτων από τον φάκελο `%s' στον φάκελο `%"
+"Δεν είναι δυνατή η μετακίνηση μηνυμάτων από το φάκελο `%s' στο φάκελο `%"
 "s': Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1160
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
-"Δεν είναι δυνατή η αντιγραφή μηνυμάτων από τον φάκελο `%s' στον φάκελο `%s': "
+"Δεν είναι δυνατή η αντιγραφή μηνυμάτων από το φάκελο `%s' στο φάκελο `%s': "
 "Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-provider.c:71
@@ -3263,7 +3263,7 @@ msgstr "Δεν ήταν δυνατή η δημιουργία φακέλων IMAP
 #: camel/providers/imap4/camel-imap4-store.c:793
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
-msgstr "Δεν είναι δυνατή η λήψη του φακέλου: `%s' στον διακομιστή IMAP %s: Άγνωστο"
+msgstr "Δεν είναι δυνατή η λήψη του φακέλου: `%s' στο διακομιστή IMAP %s: Άγνωστο"
 
 #: camel/providers/imap4/camel-imap4-store.c:914
 #, c-format
@@ -3318,7 +3318,7 @@ msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλ
 #: camel/providers/imap4/camel-imap4-store.c:1432
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr "Αδυναμία λήψης %s πληροφοριών για το pattern `%s' στον διακομιστή IMAP %s: %s"
+msgstr "Αδυναμία λήψης %s πληροφοριών για το pattern `%s' στο διακομιστή IMAP %s: %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:1434
 msgid "Bad command"
@@ -3331,12 +3331,12 @@ msgstr "Δεν ήταν δυνατή η εγγραφή σε φάκελους IMA
 #: camel/providers/imap4/camel-imap4-store.c:1517
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
-msgstr "Δεν ήταν δυνατή η εγγραφή στον φάκελο %s: Μη έγκυρο όνομα mailbox"
+msgstr "Δεν ήταν δυνατή η εγγραφή στο φάκελο %s: Μη έγκυρο όνομα mailbox"
 
 #: camel/providers/imap4/camel-imap4-store.c:1522
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
-msgstr "Δεν ήταν δυνατή η εγγραφή στον φάκελο %s: Εσφαλμένη εντολή"
+msgstr "Δεν ήταν δυνατή η εγγραφή στο φάκελο %s: Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-store.c:1544
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
@@ -3352,7 +3352,7 @@ msgstr ""
 #: camel/providers/imap4/camel-imap4-store.c:1594
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
-msgstr "Δεν είναι δυνατή η αποχώρηση απο τον φάκελο`%s': Εσφαλμένη εντολή"
+msgstr "Δεν είναι δυνατή η αποχώρηση απο το φάκελο`%s': Εσφαλμένη εντολή"
 
 #: camel/providers/imap4/camel-imap4-summary.c:1497
 msgid "Fetching envelopes for new messages"
@@ -3361,7 +3361,7 @@ msgstr "Έλεγχος φακέλων για νέα μηνύματα"
 #: camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
 msgid "Unexpected token in response from IMAP server %s: "
-msgstr "Απροσδόκητη απάντηση από τον διακομιστή IMAP: %s"
+msgstr "Απροσδόκητη απάντηση από το διακομιστή IMAP: %s"
 
 #: camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
@@ -3401,7 +3401,7 @@ msgstr "Αδυναμία σύνδεσης στο %s (θύρα %s): %s"
 #: camel/providers/imapp/camel-imapp-store.c:348
 #, c-format
 msgid "Could not connect to POP server on %s"
-msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP σε %s "
+msgstr "Δεν ήταν δυνατή η σύνδεση με το διακομιστή POP σε %s "
 
 #: camel/providers/local/camel-local-folder.c:173
 msgid "Index message body data"
@@ -3570,7 +3570,7 @@ msgid ""
 "Cannot get message: %s from folder %s\n"
 "  %s"
 msgstr ""
-"Δεν είναι δυνατή η λήψη του μηνύματος: %s από τον φάκελο %s\n"
+"Δεν είναι δυνατή η λήψη του μηνύματος: %s από το φάκελο %s\n"
 "  %s"
 
 #: camel/providers/local/camel-maildir-folder.c:268
@@ -3945,7 +3945,7 @@ msgstr "Εμφάνιση φακέλων σε σύντμηση (π.χ l.g.linux �
 
 #: camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
-msgstr "Στον διάλογο εγγραφής να εμφανίζονται σχετικά ονόματα φακέλων"
+msgstr "Στο διάλογο εγγραφής να εμφανίζονται σχετικά ονόματα φακέλων"
 
 #: camel/providers/nntp/camel-nntp-provider.c:53
 msgid "USENET news"
@@ -3962,7 +3962,7 @@ msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
 msgstr ""
-"Με την επιλογή αυτή θα γίνει πιστοποίηση με τον διακομιστή NNTP με την χρήση "
+"Με την επιλογή αυτή θα γίνει πιστοποίηση με το διακομιστή NNTP με τη χρήση "
 "κωδικού πρόσβασης σε μορφή απλού κειμένου."
 
 #: camel/providers/nntp/camel-nntp-store.c:234
@@ -3987,7 +3987,7 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Σφάλμα κατά την λήψη ομάδων συζήτησης:\n"
+"Σφάλμα κατά τη λήψη ομάδων συζήτησης:\n"
 "\n"
 "%s"
 
@@ -4129,7 +4129,7 @@ msgstr "POP"
 
 #: camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "Για την σύνδεση και λήψη μηνυμάτων από διακομιστές POP."
+msgstr "Για τη σύνδεση και λήψη μηνυμάτων από διακομιστές POP."
 
 #: camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
@@ -4146,14 +4146,14 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
-"Με την επιλογή αυτή θα γίνει σύνδεση στο διακομιστή ΡΟΡ με την χρήση "
+"Με την επιλογή αυτή θα γίνει σύνδεση στο διακομιστή ΡΟΡ με τη χρήση "
 "κρυπτογραφημένου κωδικού πρόσβασης. Αυτό μπορεί να μη λειτουργεί για όλους "
 "τους χρήστες, ακόμα και αν οι διακομιστές υποστηρίζουν το αντίθετο."
 
 #: camel/providers/pop3/camel-pop3-store.c:204
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "Δεν είναι δυνατή η ανάγνωση έγκυρου χαιρετισμού από τον διακομιστή POP %s "
+msgstr "Δεν είναι δυνατή η ανάγνωση έγκυρου χαιρετισμού από το διακομιστή POP %s "
 
 #: camel/providers/pop3/camel-pop3-store.c:218
 #: camel/providers/pop3/camel-pop3-store.c:235
@@ -4161,7 +4161,7 @@ msgstr "Δεν είναι δυνατή η ανάγνωση έγκυρου χαι
 #: camel/providers/pop3/camel-pop3-store.c:251
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s σε ασφαλή λειτουργία: %s"
+msgstr "Δεν ήταν δυνατή η σύνδεση με το διακομιστή POP %s σε ασφαλή λειτουργία: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:219
 msgid "STLS not supported"
@@ -4170,7 +4170,7 @@ msgstr "Η επέκταση SSL/TLS δεν υποστηρίζεται"
 #: camel/providers/pop3/camel-pop3-store.c:363
 #, c-format
 msgid "Could not connect to POP server %s"
-msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s"
+msgstr "Δεν ήταν δυνατή η σύνδεση με το διακομιστή POP %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:404
 #: camel/providers/pop3/camel-pop3-store.c:518
@@ -4185,7 +4185,7 @@ msgstr ""
 #: camel/providers/pop3/camel-pop3-store.c:420
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
-msgstr "SASL `%s' Είσοδος απέτυχε για τον διακομιστή POP %s: %s"
+msgstr "SASL `%s' Είσοδος απέτυχε για το διακομιστή POP %s: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:432
 #, c-format
@@ -4209,7 +4209,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password: %s"
 msgstr ""
-"Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s.\n"
+"Δεν ήταν δυνατή η σύνδεση με το διακομιστή POP %s.\n"
 "Σφάλμα κατά την αποστολή κωδικού πρόσβασης %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:539
@@ -4218,7 +4218,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username: %s"
 msgstr ""
-"Δεν ήταν δυνατή η σύνδεση με τον διακομιστή POP %s.\n"
+"Δεν ήταν δυνατή η σύνδεση με το διακομιστή POP %s.\n"
 "Σφάλμα κατά την αποστολή κωδικού πρόσβασης %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:645
@@ -4289,7 +4289,7 @@ msgstr "SMTP"
 #: camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
-"Για τη παράδοση μηνυμάτων με την σύνδεση σε απομακρυσμένο mailhub με χρήση "
+"Για τη παράδοση μηνυμάτων με τη σύνδεση σε απομακρυσμένο mailhub με χρήση "
 "SMTP."
 
 #: camel/providers/smtp/camel-smtp-transport.c:165
@@ -4386,7 +4386,7 @@ msgstr "Ο μηχανισμός πιστοποίησης είναι αδύναμ
 
 #: camel/providers/smtp/camel-smtp-transport.c:211
 msgid "Encryption required for requested authentication mechanism"
-msgstr "Απαιτείται Κρυπτογράφηση για τον μηχανισμό πιστοποίησης που ζητήθηκε"
+msgstr "Απαιτείται Κρυπτογράφηση για το μηχανισμό πιστοποίησης που ζητήθηκε"
 
 #: camel/providers/smtp/camel-smtp-transport.c:213
 msgid "Temporary authentication failure"
@@ -4401,7 +4401,7 @@ msgstr "Σφάλμα απάντησης Welcome"
 #: camel/providers/smtp/camel-smtp-transport.c:364
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή SMTP %s σε ασφαλή λειτουργία: %s"
+msgstr "Δεν ήταν δυνατή η σύνδεση με το διακομιστή SMTP %s σε ασφαλή λειτουργία: %s"
 
 #: camel/providers/smtp/camel-smtp-transport.c:334
 #, c-format
@@ -4486,7 +4486,7 @@ msgstr "Πιστοποίηση SMTP"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1012
 msgid "Error creating SASL authentication object."
-msgstr "Σφάλμα κατά την δημιουργία του αντικειμένου πιστοποίησης SASL."
+msgstr "Σφάλμα κατά τη δημιουργία του αντικειμένου πιστοποίησης SASL."
 
 #: camel/providers/smtp/camel-smtp-transport.c:1029
 #: camel/providers/smtp/camel-smtp-transport.c:1040
@@ -4500,7 +4500,7 @@ msgstr "Η εντολή AUTH απέτυχε"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1108
 msgid "Bad authentication response from server.\n"
-msgstr "Εσφαλμένη απάντηση πιστοποίησης από τον διακομιστής.\n"
+msgstr "Εσφαλμένη απάντηση πιστοποίησης από το διακομιστή.\n"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1133
 #, c-format
@@ -4865,7 +4865,7 @@ msgstr "Μη έγκυρη απάντηση από διακομιστή"
 
 #: servers/groupwise/e-gw-connection.c:163
 msgid "No response from the server"
-msgstr "Δεν υπήρχε απάντηση από τον διακομιστή"
+msgstr "Δεν υπήρχε απάντηση από το διακομιστή"
 
 #: servers/groupwise/e-gw-connection.c:169
 msgid "Bad parameter"
