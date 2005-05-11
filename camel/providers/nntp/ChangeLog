@@ -1,3 +1,8 @@
+2005-04-30  Alessandro Decina  <alessandro@nnnva.org>
+
+	* camel-nntp-store.c (nntp_folder_info_from_store_info): Copy the
+	flags field when converting from CamelStoreInfo to CamelFolderInfo.
+
 2005-04-22  rganesan <rganesan@novell.com>
 
         *camel-nntp-provide.c:  Patch for bug #301460 give space at the end of line.

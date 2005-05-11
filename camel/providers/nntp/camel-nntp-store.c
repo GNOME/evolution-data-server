@@ -498,6 +498,7 @@ nntp_folder_info_from_store_info (CamelNNTPStore *store, gboolean short_notation
 	
 	fi->unread = si->unread;
 	fi->total = si->total;
+	fi->flags = si->flags;
 	path = alloca(strlen(fi->full_name)+2);
 	sprintf(path, "/%s", fi->full_name);
 	url = camel_url_new_with_base (base_url, path);
