@@ -116,6 +116,13 @@ camel_data_wrapper_get_type (void)
 }
 
 
+/**
+ * camel_data_wrapper_new:
+ *
+ * Create a new #CamelDataWrapper object.
+ *
+ * Returns a new #CamelDataWrapper object
+ **/
 CamelDataWrapper *
 camel_data_wrapper_new (void)
 {
@@ -144,19 +151,19 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return ret;
 }
 
+
 /**
  * camel_data_wrapper_write_to_stream:
- * @data_wrapper: a data wrapper
- * @stream: stream for data to be written to
- * @ex: a CamelException
+ * @data_wrapper: a #CamelDataWrapper object
+ * @stream: a #CamelStream for output
+ * @ex: a #CamelException
  *
- * Writes the data content to @stream in a machine-independent format
+ * Writes the content of @data_wrapper to @stream in a machine-independent format
  * appropriate for the data. It should be possible to construct an
  * equivalent data wrapper object later by passing this stream to
- * camel_data_wrapper_construct_from_stream().
+ * #camel_data_wrapper_construct_from_stream.
  *
- * Return value: the number of bytes written, or -1 if an error
- * occurs.
+ * Returns the number of bytes written, or %-1 on fail
  **/
 ssize_t
 camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
@@ -212,16 +219,16 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return ret;
 }
 
+
 /**
  * camel_data_wrapper_decode_to_stream:
- * @data_wrapper: a data wrapper
- * @stream: stream for decoded data to be written to
- * @ex: a CamelException
+ * @data_wrapper: a #CamelDataWrapper object
+ * @stream: a #CamelStream for decoded data to be written to
+ * @ex: a #CamelException
  *
  * Writes the decoded data content to @stream.
  *
- * Return value: the number of bytes written, or -1 if an error
- * occurs.
+ * Returns the number of bytes written, or %-1 on fail
  **/
 ssize_t
 camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
@@ -245,15 +252,15 @@ construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return 0;
 }
 
+
 /**
  * camel_data_wrapper_construct_from_stream:
- * @data_wrapper: a data wrapper
- * @stream: A stream that can be read from.
+ * @data_wrapper: a #CamelDataWrapper object
+ * @stream: an input #CamelStream
  *
- * Constructs the content of the data wrapper from the
- * supplied @stream.
+ * Constructs the content of @data_wrapper from the supplied @stream.
  *
- * Return value: -1 on error.
+ * Returns %0 on success or %-1 on fail
  **/
 int
 camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
@@ -274,12 +281,14 @@ set_mime_type (CamelDataWrapper *data_wrapper, const char *mime_type)
 	data_wrapper->mime_type = camel_content_type_decode (mime_type);
 }
 
+
 /**
  * camel_data_wrapper_set_mime_type:
- * @data_wrapper: a data wrapper
- * @mime_type: the text representation of a MIME type
+ * @data_wrapper: a #CamelDataWrapper object
+ * @mime_type: a MIME type
  *
  * This sets the data wrapper's MIME type.
+ *
  * It might fail, but you won't know. It will allow you to set
  * Content-Type parameters on the data wrapper, which are meaningless.
  * You should not be allowed to change the MIME type of a data wrapper
@@ -302,12 +311,12 @@ get_mime_type (CamelDataWrapper *data_wrapper)
 	return camel_content_type_simple (data_wrapper->mime_type);
 }
 
+
 /**
  * camel_data_wrapper_get_mime_type:
- * @data_wrapper: a data wrapper
+ * @data_wrapper: a #CamelDataWrapper object
  *
- * Return value: the text form of the data wrapper's MIME type,
- * which the caller must free.
+ * Returns the MIME type which must be freed by the caller
  **/
 char *
 camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
@@ -324,11 +333,12 @@ get_mime_type_field (CamelDataWrapper *data_wrapper)
 	return data_wrapper->mime_type;
 }
 
+
 /**
  * camel_data_wrapper_get_mime_type_field:
- * @data_wrapper: a data wrapper
+ * @data_wrapper: a #CamelDataWrapper object
  *
- * Return value: the parsed form of the data wrapper's MIME type
+ * Returns the parsed form of the data wrapper's MIME type
  **/
 CamelContentType *
 camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
@@ -338,14 +348,6 @@ camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
 	return CDW_CLASS (data_wrapper)->get_mime_type_field (data_wrapper);
 }
 
-/**
- * camel_data_wrapper_set_mime_type_field:
- * @data_wrapper: a data wrapper
- * @mime_type: the parsed representation of a MIME type
- *
- * This sets the data wrapper's MIME type. It suffers from the same
- * flaws as camel_data_wrapper_set_mime_type.
- **/
 static void
 set_mime_type_field (CamelDataWrapper *data_wrapper,
 		     CamelContentType *mime_type)
@@ -357,6 +359,15 @@ set_mime_type_field (CamelDataWrapper *data_wrapper,
 	data_wrapper->mime_type = mime_type;
 }
 
+
+/**
+ * camel_data_wrapper_set_mime_type_field:
+ * @data_wrapper: a #CamelDataWrapper object
+ * @mime_type: a #CamelContentType
+ *
+ * This sets the data wrapper's MIME type. It suffers from the same
+ * flaws as #camel_data_wrapper_set_mime_type.
+ **/
 void
 camel_data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 					CamelContentType *mime_type)
@@ -374,11 +385,12 @@ is_offline (CamelDataWrapper *data_wrapper)
 	return data_wrapper->offline;
 }
 
+
 /**
  * camel_data_wrapper_is_offline:
- * @data_wrapper: a data wrapper
+ * @data_wrapper: a #CamelDataWrapper object
  *
- * Return value: whether @data_wrapper is "offline" (data stored
+ * Returns whether @data_wrapper is "offline" (data stored
  * remotely) or not. Some optional code paths may choose to not
  * operate on offline data.
  **/

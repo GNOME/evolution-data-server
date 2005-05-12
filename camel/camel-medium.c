@@ -126,17 +126,14 @@ add_header (CamelMedium *medium, const char *name, const void *value)
 	g_warning("No %s::add_header implemented, adding %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
 
+
 /**
  * camel_medium_add_header:
- * @medium: a CamelMedium
+ * @medium: a #CamelMedium object
  * @name: name of the header
  * @value: value of the header
  *
- * Adds a header to a medium.
- *
- * FIXME: Where does it add it? We need to be able to prepend and
- * append headers, and also be able to insert them relative to other
- * headers.   No we dont, order isn't important! Z
+ * Adds a header to a #CamelMedium.
  **/
 void
 camel_medium_add_header (CamelMedium *medium, const char *name, const void *value)
@@ -154,9 +151,10 @@ set_header (CamelMedium *medium, const char *name, const void *value)
 	g_warning("No %s::set_header implemented, setting %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
 
+
 /**
  * camel_medium_set_header:
- * @medium: a CamelMedium
+ * @medium: a #CamelMedium object
  * @name: name of the header
  * @value: value of the header
  *
@@ -182,9 +180,10 @@ remove_header(CamelMedium *medium, const char *name)
 	g_warning("No %s::remove_header implemented, removing %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
 
+
 /**
  * camel_medium_remove_header:
- * @medium: a medium
+ * @medium: a #CamelMedium
  * @name: the name of the header
  *
  * Removes the named header from the medium.  All occurances of the
@@ -207,19 +206,20 @@ get_header(CamelMedium *medium, const char *name)
 	return NULL;
 }
 
+
 /**
  * camel_medium_get_header:
- * @medium: a medium
+ * @medium: a #CamelMedium object
  * @name: the name of the header
  *
- * Returns the value of the named header in the medium, or %NULL if
+ * Gets the value of the named header in the medium, or %NULL if
  * it is unset. The caller should not modify or free the data.
  *
  * If the header occurs more than once, only retrieve the first
  * instance of the header.  For multi-occuring headers, use
  * :get_headers().
  *
- * Return value: the value of the named header, or %NULL
+ * Returns the value of the named header, or %NULL
  **/
 const void *
 camel_medium_get_header(CamelMedium *medium, const char *name)
@@ -240,15 +240,15 @@ get_headers(CamelMedium *medium)
 
 /**
  * camel_medium_get_headers:
- * @medium: a medium
+ * @medium: a #CamelMedium object
  *
- * Returns an array of all header name/value pairs (as
+ * Gets an array of all header name/value pairs (as
  * CamelMediumHeader structures). The values will be decoded
  * to UTF-8 for any headers that are recognized by Camel. The
  * caller should not modify the returned data.
  *
- * Return value: the array of headers, which must be freed with
- * camel_medium_free_headers().
+ * Returns the array of headers, which must be freed with
+ * #camel_medium_free_headers.
  **/
 GArray *
 camel_medium_get_headers(CamelMedium *medium)
@@ -266,10 +266,10 @@ free_headers (CamelMedium *medium, GArray *headers)
 
 /**
  * camel_medium_free_headers:
- * @medium: a medium
- * @headers: an array of headers returned from camel_medium_get_headers()
+ * @medium: a #CamelMedium object
+ * @headers: an array of headers returned from #camel_medium_get_headers
  *
- * Frees @headers
+ * Frees @headers.
  **/
 void
 camel_medium_free_headers (CamelMedium *medium, GArray *headers)
@@ -287,14 +287,15 @@ get_content_object(CamelMedium *medium)
 	return medium->content;
 }
 
+
 /**
  * camel_medium_get_content_object:
- * @medium: a medium
+ * @medium: a #CamelMedium object
  *
- * Returns a data wrapper that represents the content of the medium,
+ * Getss a data wrapper that represents the content of the medium,
  * without its headers.
  *
- * Return value: the medium's content object.
+ * Returns a #CamelDataWrapper containing @medium's content
  **/
 CamelDataWrapper *
 camel_medium_get_content_object (CamelMedium *medium)
@@ -314,10 +315,11 @@ set_content_object (CamelMedium *medium, CamelDataWrapper *content)
 	medium->content = content;
 }
 
+
 /**
  * camel_medium_set_content_object:
- * @medium: a medium
- * @content: a data wrapper representing the medium's content
+ * @medium: a #CamelMedium object
+ * @content: a #CamelDataWrapper object
  *
  * Sets the content of @medium to be @content.
  **/
