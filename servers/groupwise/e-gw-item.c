@@ -628,8 +628,11 @@ get_notification_value (SoupSoapParameter *param, const char *param_name)
 		subparam = soup_soap_parameter_get_first_child_by_name (subparam, "mail");
 		if (subparam)
 			value = soup_soap_parameter_get_string_value (subparam);
-		if (value && !g_ascii_strcasecmp (value, "1"))
-			return E_GW_ITEM_NOTIFY_MAIL;
+		if (value && !g_ascii_strcasecmp (value, "1")) {
+			g_free (value), value = NULL;
+	 		return E_GW_ITEM_NOTIFY_MAIL;
+		}
+		g_free (value), value = NULL;
 	}
 	return E_GW_ITEM_NOTIFY_NONE;
 }
