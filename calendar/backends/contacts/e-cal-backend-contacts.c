@@ -583,14 +583,14 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal,
 	if (!record)
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 
-        if (record->comp_birthday) {
+        if (record->comp_birthday && g_str_has_suffix (uid, BIRTHDAY_UID_EXT)) {
                 *object = e_cal_component_get_as_string (record->comp_birthday);
 		
 		d(g_message ("Return birthday: %s", *object));
 		return GNOME_Evolution_Calendar_Success;
 	}
 	
-        if (record->comp_anniversary) {
+        if (record->comp_anniversary && g_str_has_suffix (uid, ANNIVERSARY_UID_EXT)) {
                 *object = e_cal_component_get_as_string (record->comp_anniversary);
 
 		d(g_message ("Return anniversary: %s", *object));

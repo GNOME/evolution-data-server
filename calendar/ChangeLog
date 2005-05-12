@@ -1,3 +1,11 @@
+2005-05-12  Vivek Jain <jvivek@novell.com>
+	
+	 Fixes #271592
+	 * backends/contacts/e-cal-backend-contacts.c:
+	 (e_cal_backend_contacts_get_object):
+	 check the uid to return the object corresponding to
+	 birthday/anniversary
+
 2005-05-11  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-cal-backend-sync.c:
