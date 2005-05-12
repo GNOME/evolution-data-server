@@ -330,6 +330,14 @@ free_headers (CamelMedium *medium, GArray *gheaders)
 }
 
 /* **** Content-Description */
+
+/**
+ * camel_mime_part_set_description:
+ * @mime_part: a #CamelMimePart object
+ * @description: description of the MIME part
+ *
+ * Set a description on the MIME part.
+ **/
 void
 camel_mime_part_set_description (CamelMimePart *mime_part, const char *description)
 {
@@ -340,6 +348,15 @@ camel_mime_part_set_description (CamelMimePart *mime_part, const char *descripti
 	g_free (text);
 }
 
+
+/**
+ * camel_mime_part_get_description:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the description of the MIME part.
+ *
+ * Returns the description
+ **/
 const char *
 camel_mime_part_get_description (CamelMimePart *mime_part)
 {
@@ -359,6 +376,13 @@ set_disposition (CamelMimePart *mime_part, const char *disposition)
 }
 
 
+/**
+ * camel_mime_part_set_disposition:
+ * @mime_part: a #CamelMimePart object
+ * @disposition: disposition of the MIME part
+ *
+ * Set a disposition on the MIME part.
+ **/
 void
 camel_mime_part_set_disposition (CamelMimePart *mime_part, const char *disposition)
 {
@@ -380,11 +404,20 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part, const char *dispositi
 	g_free(text);
 }
 
+
+/**
+ * camel_mime_part_get_disposition:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the disposition of the MIME part.
+ *
+ * Returns the dispisition
+ **/
 const char *
 camel_mime_part_get_disposition (CamelMimePart *mime_part)
 {
 	if (mime_part->disposition)
-		return (mime_part->disposition)->disposition;
+		return mime_part->disposition->disposition;
 	else
 		return NULL;
 }
@@ -392,6 +425,13 @@ camel_mime_part_get_disposition (CamelMimePart *mime_part)
 
 /* **** Content-Disposition: filename="xxx" */
 
+/**
+ * camel_mime_part_set_filename:
+ * @mime_part: a #CamelMimePart object
+ * @filename: filename given to the MIME part
+ *
+ * Set the filename on a MIME part.
+ **/
 void
 camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
 {
@@ -413,6 +453,15 @@ camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
 	g_free (str);
 }
 
+
+/**
+ * camel_mime_part_get_filename:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the filename of a MIME part.
+ *
+ * Returns the filename of the MIME part
+ **/
 const char *
 camel_mime_part_get_filename (CamelMimePart *mime_part)
 {
@@ -428,6 +477,13 @@ camel_mime_part_get_filename (CamelMimePart *mime_part)
 
 /* **** Content-ID: */
 
+/**
+ * camel_mime_part_set_content_id:
+ * @mime_part: a #CamelMimePart object
+ * @contentid: content id
+ *
+ * Set the content-id field on a MIME part.
+ **/
 void
 camel_mime_part_set_content_id (CamelMimePart *mime_part, const char *contentid)
 {
@@ -444,6 +500,15 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part, const char *contentid)
 	g_free (cid);
 }
 
+
+/**
+ * camel_mime_part_get_content_id:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the content-id field of a MIME part.
+ *
+ * Returns the content-id field of the MIME part
+ **/
 const char *
 camel_mime_part_get_content_id (CamelMimePart *mime_part)
 {
@@ -452,20 +517,44 @@ camel_mime_part_get_content_id (CamelMimePart *mime_part)
 
 /* **** Content-MD5: */
 
+/**
+ * camel_mime_part_set_content_MD5:
+ * @mime_part: a #CamelMimePart object
+ * @md5sum: the md5sum of the MIME part
+ *
+ * Set the content-md5 field of the MIME part.
+ **/
 void
 camel_mime_part_set_content_MD5 (CamelMimePart *mime_part, const char *md5)
 {
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-MD5", md5);
 }
 
+
+/**
+ * camel_mime_part_get_content_MD5:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the content-md5 field of the MIME part.
+ *
+ * Returns the content-md5 field of the MIME part
+ **/
 const char *
 camel_mime_part_get_content_MD5 (CamelMimePart *mime_part)
 {
 	return mime_part->content_MD5;
 }
 
-/* **** Content-MD5: */
+/* **** Content-Location: */
 
+
+/**
+ * camel_mime_part_set_content_location:
+ * @mime_part: a #CamelMimePart object
+ * @location: the content-location value of the MIME part
+ *
+ * Set the content-location field of the MIME part.
+ **/
 void
 camel_mime_part_set_content_location (CamelMimePart *mime_part, const char *location)
 {
@@ -473,6 +562,15 @@ camel_mime_part_set_content_location (CamelMimePart *mime_part, const char *loca
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-Location", location);
 }
 
+
+/**
+ * camel_mime_part_get_content_location:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the content-location field of a MIME part.
+ *
+ * Returns the content-location field of a MIME part
+ **/
 const char *
 camel_mime_part_get_content_location (CamelMimePart *mime_part)
 {

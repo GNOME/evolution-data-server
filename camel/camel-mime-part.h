@@ -84,10 +84,10 @@ const	  char  *camel_mime_part_get_filename		(CamelMimePart *mime_part);
 void             camel_mime_part_set_content_id		(CamelMimePart *mime_part, const char *contentid);
 const	  char  *camel_mime_part_get_content_id		(CamelMimePart *mime_part);
 
-void		 camel_mime_part_set_content_MD5	(CamelMimePart *mime_part, const char *);
+void		 camel_mime_part_set_content_MD5	(CamelMimePart *mime_part, const char *md5sum);
 const	  char  *camel_mime_part_get_content_MD5	(CamelMimePart *mime_part);
 
-void		 camel_mime_part_set_content_location	(CamelMimePart *mime_part, const char *);
+void		 camel_mime_part_set_content_location	(CamelMimePart *mime_part, const char *location);
 const	  char  *camel_mime_part_get_content_location	(CamelMimePart *mime_part);
 
 void	         camel_mime_part_set_encoding		(CamelMimePart *mime_part, CamelTransferEncoding type);
@@ -101,7 +101,7 @@ void               camel_mime_part_set_content_type 	(CamelMimePart *mime_part, 
 CamelContentType  *camel_mime_part_get_content_type	(CamelMimePart *mime_part);
 
 /* construction */
-int		camel_mime_part_construct_from_parser  (CamelMimePart *, CamelMimeParser *);
+int		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMimeParser *parser);
 
 /* utility functions */
 void      	camel_mime_part_set_content 	       (CamelMimePart *camel_mime_part,
