@@ -11,6 +11,6 @@ privincludedir=@privincludedir@
 Name: libegroupwise
 Description: Client library for accessing groupwise POA through SOAP interface
 Version: @VERSION@
-Requires: libsoup-2.2 >= @LIBSOUP_REQUIRED@ 
+Requires: @LIBSOUP@ >= @LIBSOUP_REQUIRED@ 
 Libs: -L${libdir} -legroupwise-1.2
 Cflags: -I${privincludedir}/groupwise

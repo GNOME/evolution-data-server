@@ -1,3 +1,8 @@
+2005-05-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libegroupwise.pc.in: Remove hardcoded value.
+	Use LIBSOUP from configure instead.
+
 2005-05-12  Ulrich Neumann <uli@myuli.com>
 
 	* e-gw-item.c (get_notification_value): Fix a memory leak.
