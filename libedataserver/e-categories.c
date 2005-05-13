@@ -224,6 +224,7 @@ initialize_categories_config (void)
 		conf_is_dirty = FALSE;
 	} else {
 		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png", TRUE);
+		e_categories_add (_("Anniversary"), NULL, NULL, TRUE);
 		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png", TRUE);
 		e_categories_add (_("Competition"), NULL, NULL, TRUE);
 		e_categories_add (_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png", TRUE);

@@ -1,3 +1,8 @@
+2005-05-13  Shreyas Srinivasan  <sshreyas@novell.com>
+
+	* libedataserver/e-categories.c: Add new Anniversary category, 
+	Fixes #256874
+	
 2005-05-13  Harish Krishnaswamy  <kharish@novell.com>
 	
 	* configure.in: export LIBSOUP for use elsewhere.
