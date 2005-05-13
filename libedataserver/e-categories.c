@@ -173,6 +173,13 @@ cleanup_at_exit (void)
 }
 
 static void
+add_category_if_not_present (const char *name, const char *color, const char *icon_file, gboolean searchable)
+{
+	if (!e_categories_exist (name))
+		e_categories_add (name, color, icon_file, searchable);
+}
+
+static void
 initialize_categories_config (void)
 {
 	char *str;
@@ -222,32 +229,33 @@ initialize_categories_config (void)
 		g_free (str);
 
 		conf_is_dirty = FALSE;
-	} else {
-		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png", TRUE);
-		e_categories_add (_("Anniversary"), NULL, NULL, TRUE);
-		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png", TRUE);
-		e_categories_add (_("Competition"), NULL, NULL, TRUE);
-		e_categories_add (_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png", TRUE);
-		e_categories_add (_("Gifts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_gifts_16.png", TRUE);
-		e_categories_add (_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png", TRUE);
-		e_categories_add (_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png", TRUE);
-		e_categories_add (_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png", TRUE);
-		e_categories_add (_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png", TRUE);
-		e_categories_add (_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png", TRUE);
-		e_categories_add (_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png", TRUE);
-		e_categories_add (_("Key Customer"), NULL, E_DATA_SERVER_IMAGESDIR "/category_key-customer_16.png", TRUE);
-		e_categories_add (_("Miscellaneous"), NULL, E_DATA_SERVER_IMAGESDIR "/category_miscellaneous_16.png", TRUE);
-		e_categories_add (_("Personal"), NULL, E_DATA_SERVER_IMAGESDIR "/category_personal_16.png", TRUE);
-		e_categories_add (_("Phone Calls"), NULL, E_DATA_SERVER_IMAGESDIR "/category_phonecalls_16.png", TRUE);
-		e_categories_add (_("Status"), NULL, E_DATA_SERVER_IMAGESDIR "/category_status_16.png", TRUE);
-		e_categories_add (_("Strategies"), NULL, E_DATA_SERVER_IMAGESDIR "/category_strategies_16.png", TRUE);
-		e_categories_add (_("Suppliers"), NULL, E_DATA_SERVER_IMAGESDIR "/category_suppliers_16.png", TRUE);
-		e_categories_add (_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png", TRUE);
-		e_categories_add (_("VIP"), NULL, NULL, TRUE);
-		e_categories_add (_("Waiting"), NULL, NULL, TRUE);
-
-		save_config ();
 	}
+
+	/* Make sure we have all categories */
+	add_category_if_not_present (_("Anniversary"), NULL, NULL, TRUE);
+	add_category_if_not_present (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png", TRUE);
+	add_category_if_not_present (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png", TRUE);
+	add_category_if_not_present (_("Competition"), NULL, NULL, TRUE);
+	add_category_if_not_present (_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png", TRUE);
+	add_category_if_not_present (_("Gifts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_gifts_16.png", TRUE);
+	add_category_if_not_present (_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png", TRUE);
+	add_category_if_not_present (_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png", TRUE);
+	add_category_if_not_present (_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png", TRUE);
+	add_category_if_not_present (_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png", TRUE);
+	add_category_if_not_present (_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png", TRUE);
+	add_category_if_not_present (_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png", TRUE);
+	add_category_if_not_present (_("Key Customer"), NULL, E_DATA_SERVER_IMAGESDIR "/category_key-customer_16.png", TRUE);
+	add_category_if_not_present (_("Miscellaneous"), NULL, E_DATA_SERVER_IMAGESDIR "/category_miscellaneous_16.png", TRUE);
+	add_category_if_not_present (_("Personal"), NULL, E_DATA_SERVER_IMAGESDIR "/category_personal_16.png", TRUE);
+	add_category_if_not_present (_("Phone Calls"), NULL, E_DATA_SERVER_IMAGESDIR "/category_phonecalls_16.png", TRUE);
+	add_category_if_not_present (_("Status"), NULL, E_DATA_SERVER_IMAGESDIR "/category_status_16.png", TRUE);
+	add_category_if_not_present (_("Strategies"), NULL, E_DATA_SERVER_IMAGESDIR "/category_strategies_16.png", TRUE);
+	add_category_if_not_present (_("Suppliers"), NULL, E_DATA_SERVER_IMAGESDIR "/category_suppliers_16.png", TRUE);
+	add_category_if_not_present (_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png", TRUE);
+	add_category_if_not_present (_("VIP"), NULL, NULL, TRUE);
+        add_category_if_not_present (_("Waiting"), NULL, NULL, TRUE);
+
+	save_config ();
 }
 
 static void

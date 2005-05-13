@@ -1,3 +1,10 @@
+2005-05-13  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedataserver/e-categories.c (add_category_if_present): new private
+	function to create standard categories if they don't exist.
+	(initialize_categories_config): make sure, in all cases, that our
+	standard categories are available.
+
 2005-05-13  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	* libedataserver/e-categories.c: Add new Anniversary category, 
