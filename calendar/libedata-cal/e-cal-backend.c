@@ -758,7 +758,7 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_object_list != NULL);
-	return (* CLASS (backend)->get_object_list) (backend, cal, sexp);
+	(* CLASS (backend)->get_object_list) (backend, cal, sexp);
 }
 
 /**

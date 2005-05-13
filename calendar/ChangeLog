@@ -1,3 +1,10 @@
+2005-05-13  The Written Word <bugzilla-novell@thewrittenword.com>
+
+	Fixes 271838
+
+	* libedata-cal/e-cal-backend.c (e_cal_backend_get_object_list):
+	don't return value from void function.
+
 2005-05-13  Shreyas Srinivasan	<sshreyas@novell.com>
 
 	* backends/contacts/e-cal-backend-contacts.c: Fix #256874
