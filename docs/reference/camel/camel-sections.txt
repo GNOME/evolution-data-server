@@ -847,14 +847,11 @@ camel_mime_message_set_from
 camel_mime_message_get_from
 camel_mime_message_get_recipients
 camel_mime_message_set_recipients
-camel_mime_message_set_source
-camel_mime_message_get_source
 camel_mime_message_has_8bit_parts
 camel_mime_message_set_best_encoding
 camel_mime_message_encode_8bit_parts
 camel_mime_message_get_part_by_content_id
 camel_mime_message_build_mbox_from
-camel_mime_message_dump
 <SUBSECTION Standard>
 CAMEL_MIME_MESSAGE
 CAMEL_IS_MIME_MESSAGE
@@ -3031,11 +3028,6 @@ camel_unlock_fcntl
 camel_unlock_flock
 camel_lock_folder
 camel_unlock_folder
-</SECTION>
-
-<SECTION>
-<FILE>camel-mime-part-utils</FILE>
-camel_mime_part_construct_content_from_parser
 </SECTION>
 
 <SECTION>

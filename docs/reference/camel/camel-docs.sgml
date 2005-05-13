@@ -68,7 +68,7 @@
 <!ENTITY CamelSASLPOPb4SMTP SYSTEM "xml/camel-sasl-popb4smtp.xml">
 <!ENTITY CamelService SYSTEM "xml/camel-service.xml">
 <!ENTITY CamelSession SYSTEM "xml/camel-session.xml">
-<!ENTITY CamelSMIMEContext SYSTEM "smime-context.xml">
+<!ENTITY CamelSMIMEContext SYSTEM "camel-smime-context.xml">
 <!ENTITY CamelStore SYSTEM "xml/camel-store.xml">
 <!ENTITY CamelStoreSummary SYSTEM "xml/camel-store-summary.xml">
 <!ENTITY CamelStream SYSTEM "xml/camel-stream.xml">
@@ -148,6 +148,7 @@
       &CamelException;
       &CamelObject;
       &CamelOperation;
+      &CamelURL;
     </chapter>
 
     <chapter id="Streams">
@@ -185,14 +186,13 @@
 
     <chapter id="Services">
       <title>Services</title>
+      &CamelSession;
       &CamelProvider;
       &CamelService;
       &CamelStore;
       &CamelStoreSummary;
       &CamelOfflineStore;
       &CamelTransport;
-
-      &CamelVeeStore;
     </chapter>
 
     <chapter id="Folders">
@@ -209,6 +209,22 @@
       <title>Addresses</title>
       &CamelAddress;
       &CamelInternetAddress;
+    </chapter>
+
+    <chapter id="Crypto">
+      <title>Crypto Contexts</title>
+      &CamelCipherContext;
+      &CamelGPGContext;
+      
+      &CamelSASL;
+      &CamelSASLAnonymous;
+      &CamelSASLCRAMMD5;
+      &CamelSASLDigestMD5;
+      &CamelSASLGSSAPI;
+      &CamelSASLKerberos4;
+      &CamelSASLLogin;
+      &CamelSASLNTLM;
+      &CamelSASLPlain;
     </chapter>
 
     <chapter id="MIME">
