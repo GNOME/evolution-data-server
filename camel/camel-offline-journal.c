@@ -101,6 +101,14 @@ camel_offline_journal_finalize (CamelObject *object)
 }
 
 
+/**
+ * camel_offline_journal_construct:
+ * @journal: a #CamelOfflineJournal object
+ * @folder: a #CamelFolder object
+ * @filename: a filename to save/load the journal
+ *
+ * Constructs a journal object.
+ **/
 void
 camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *folder, const char *filename)
 {
@@ -119,6 +127,13 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
 }
 
 
+/**
+ * camel_offline_journal_set_filename:
+ * @journal: a #CamelOfflineJournal object
+ * @filename: a filename to load/save the journal to
+ *
+ * Set the filename where the journal should load/save from.
+ **/
 void
 camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *filename)
 {
@@ -129,6 +144,15 @@ camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *fi
 }
 
 
+/**
+ * camel_offline_journal_write:
+ * @journal: a #CamelOfflineJournal object
+ * @ex: a #CamelException
+ *
+ * Save the journal to disk.
+ *
+ * Returns %0 on success or %-1 on fail
+ **/
 int
 camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 {
@@ -170,6 +194,15 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 }
 
 
+/**
+ * camel_offline_journal_replay:
+ * @journal: a #CamelOfflineJournal object
+ * @ex: a #CamelException
+ *
+ * Replay all entries in the journal.
+ *
+ * Returns %0 on success (no entry failed to replay) or %-1 on fail
+ **/
 int
 camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
 {
