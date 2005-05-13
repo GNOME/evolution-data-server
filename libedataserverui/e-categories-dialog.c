@@ -72,7 +72,7 @@ load_properties_dialog (ECategoriesDialog *parent)
 
 	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
 
-	prop_dialog->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "properties-dialog", NULL);
+	prop_dialog->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "properties-dialog", GETTEXT_PACKAGE);
 	if (!prop_dialog->gui) {
 		g_free (prop_dialog);
 		return NULL;
@@ -382,7 +382,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	dialog->priv = priv;
 
 	/* load the UI from our Glade file */
-	priv->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "table-categories", NULL);
+	priv->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "table-categories", GETTEXT_PACKAGE);
 	if (!priv->gui) {
 		g_warning (G_STRLOC ": can't load e-categories-dialog.glade file");
 		return;

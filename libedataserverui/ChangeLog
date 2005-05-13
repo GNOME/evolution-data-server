@@ -1,3 +1,10 @@
+2005-05-13  Changwoo Ryu  <cwryu@debian.org>
+
+	Fixes #301116
+	
+	* e-categories-dialog.c (e_categories_dialog_init): specify the
+	translation domain on glade_xml_new().
+
 2005-05-09  Mengjie Yu  <meng-jie.yu@sun.com>
 
 	* e-source-selector.c: (selector_popup_menu),
