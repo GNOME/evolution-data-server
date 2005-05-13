@@ -1,3 +1,8 @@
+2005-05-11  Sushma Rai	<rsushma@novell.com>
+
+	* libedata-book/e-book-backend-sexp.c (compare_name): Considering 
+	nickname also in full name query. Fixes #255756
+
 2005-05-09  Sushma Rai	<rsushma@novell.com>
 
 	* backends/vcf/e-book-backend-vcf.c 

@@ -153,7 +153,10 @@ compare_name (EContact *contact, const char *str,
 	name = e_contact_get_const (contact, E_CONTACT_GIVEN_NAME);
 	if (name && compare (name, str))
 		return TRUE;
-	
+
+	name = e_contact_get_const (contact, E_CONTACT_NICKNAME);
+	if (name && compare (name, str))
+		return TRUE;
 
 	return FALSE;
 }
