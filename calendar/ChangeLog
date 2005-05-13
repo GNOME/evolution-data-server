@@ -1,3 +1,7 @@
+2005-05-13  Shreyas Srinivasan	<sshreyas@novell.com>
+
+	* backends/contacts/e-cal-backend-contacts.c: Fix #256874
+	
 2005-05-12  Vivek Jain <jvivek@novell.com>
 	
 	 Fixes #271592

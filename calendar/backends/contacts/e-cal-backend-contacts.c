@@ -400,12 +400,12 @@ create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate
         ECalComponentDateTime      dt;
 	struct icalrecurrencetype  r;
         GSList recur_list;
-	
+
         g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbc), 0);
 
         if (!cdate)
                 return NULL;
-        
+
         ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
 	
         /* Create the event object */
@@ -443,7 +443,11 @@ create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate
         e_cal_component_set_summary (cal_comp, &comp_summary);
 	
 	/* Set category and visibility */
-	e_cal_component_set_categories (cal_comp, _("Birthday"));
+	if (g_str_has_suffix (uid, ANNIVERSARY_UID_EXT))
+		e_cal_component_set_categories (cal_comp, _("Anniversary"));
+	else if (g_str_has_suffix (uid, BIRTHDAY_UID_EXT))
+		e_cal_component_set_categories (cal_comp, _("Birthday"));
+	
 	e_cal_component_set_classification (cal_comp, E_CAL_COMPONENT_CLASS_PRIVATE);
 
 	/* Birthdays/anniversaries are shown as free time */
