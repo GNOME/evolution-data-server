@@ -267,7 +267,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	
 	if (!(url->host || url->user)) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID,
-				     _("Host or user not availbale in url"));
+				     _("Host or user not available in url"));
 	}
 
 
@@ -303,6 +303,10 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	else
 		priv->port = g_strdup (property_value);
 
+	/*filter*/
+	if (camel_url_get_param (url, "filter")) 
+		store->flags |= CAMEL_STORE_FILTER_INBOX;
+	
 	/*Hash Table*/	
 	priv->id_hash = g_hash_table_new (g_str_hash, g_str_equal) ;
 	priv->name_hash = g_hash_table_new (g_str_hash, g_str_equal) ;
@@ -439,8 +443,9 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);
 
 	CAMEL_SERVICE_UNLOCK (service, connect_lock);
-	if (E_IS_GW_CONNECTION (priv->cnc))
+	if (E_IS_GW_CONNECTION (priv->cnc)) {
 		return TRUE;
+	}
 	
 	return FALSE;
 
@@ -485,11 +490,10 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	const char *temp_name;
 	EGwConnectionStatus status ;
 	GList *list = NULL ;
-	GSList *slist = NULL, *sl ;
 	gboolean done = FALSE ;
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0 ;
-	
+
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
         folder_dir = e_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
@@ -510,6 +514,14 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
 		return folder;
+	}
+	
+	if (!E_IS_GW_CONNECTION( priv->cnc)) {
+		if (!groupwise_connect (CAMEL_SERVICE(store), ex)) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
+			CAMEL_SERVICE_UNLOCK (store, connect_lock);
+			return NULL;
+		}
 	}
 	
 	temp_name = folder_name ;
@@ -533,6 +545,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 	if (!mutex)
 		mutex = g_mutex_new () ;
+
 	summary = (CamelGroupwiseSummary *) folder->summary;
 	if (summary->time_string && *(summary->time_string))
 		time_string = summary->time_string;	
@@ -543,70 +556,14 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		tm = gmtime (&mod_time);
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	}
+
 	summary_count = camel_folder_summary_count (folder->summary) ;
-	if(summary_count) {
-		char  *t_str = NULL;
-		
-		t_str = g_strdup (time_string);
-		/* FIXME send the time stamp which the server sends */
-		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
-				"peek recipient distribution attachments subject created status",
-				&t_str, "New", NULL, NULL, -1, &slist) ;
-		if (status != E_GW_CONNECTION_STATUS_OK) {
-			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
-			camel_operation_end (NULL);
-			g_free (container_id) ;
-			gw_store->current_folder = folder ;
-			camel_object_ref (folder) ;
-			camel_folder_summary_save(folder->summary) ;
-			return folder ;
-			//return NULL ;
-		}
-
-		/* store t_str into the summary */	
-		if (summary->time_string)
-			g_free (summary->time_string);
-		summary->time_string = g_strdup (t_str);
-		g_free (t_str), t_str = NULL;
-		for ( sl = slist ; sl != NULL; sl = sl->next) {
-			list = g_list_append (list, sl->data) ;
-		}
-
-		g_slist_free (slist);
-		slist = NULL;
-		t_str = g_strdup (time_string);
-		/* FIXME send the time stamp which the server sends */
-		status = e_gw_connection_get_quick_messages (priv->cnc, container_id,
-					"peek recipient distribution attachments subject created status",
-					&t_str, "Modified", NULL, NULL, -1, &slist) ; 
-		g_free (t_str), t_str = NULL;
-		if (status != E_GW_CONNECTION_STATUS_OK) {
-			//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock) ;
-			camel_operation_end (NULL);
-			g_free (container_id) ;
-			gw_store->current_folder = folder ;
-			camel_object_ref (folder) ;
-			camel_folder_summary_save(folder->summary) ;
-			return folder ;
-			//return NULL ;
-		}
-
-		for ( sl = slist ; sl != NULL; sl = sl->next) {
-			list = g_list_append (list, sl->data) ;
-		}
-		g_slist_free (slist);
-		slist = NULL;
-		gw_update_summary (folder, list,  ex) ;
-		camel_operation_end (NULL);
-
-	} else {
+	if(!summary_count) {
 		g_print ("\n\nNo summary as yet : using get cursor request\n\n") ;
 		g_mutex_lock (mutex) ;
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"peek attachments distribution created subject status",
+				"peek attachments distribution created subject status options priority",
 				NULL,
 				&cursor) ;
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -659,14 +616,13 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		g_mutex_unlock (mutex) ;
 	}
 
+	camel_folder_summary_save (folder->summary);
+
 	gw_store->current_folder = folder ;
 	camel_object_ref (folder) ;
-	
-	camel_folder_summary_save(folder->summary) ;
-		
+
 	g_free (container_id) ;
 	g_free (folder_dir);
-
 	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 
 	return folder;
@@ -1079,8 +1035,9 @@ groupwise_rename_folder(CamelStore *store,
 		temp_new++ ;
 	else
 		temp_new = (char *)new_name ;
-		
-	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , temp_new) != E_GW_CONNECTION_STATUS_OK) {
+	
+	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , temp_new) != E_GW_CONNECTION_STATUS_OK)
+	{
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
 				      old_name, new_name);
 		CAMEL_SERVICE_UNLOCK (store, connect_lock) ;
