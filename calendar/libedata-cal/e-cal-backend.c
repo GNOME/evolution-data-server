@@ -502,8 +502,6 @@ e_cal_backend_get_queries (ECalBackend *backend)
  *
  * Queries the cal address associated with a calendar backend, which
  * must already have an open calendar.
- *
- * Return value: The cal address associated with the calendar.
  **/
 void
 e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal)

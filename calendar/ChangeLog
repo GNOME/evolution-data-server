@@ -1,3 +1,8 @@
+2005-05-13  Rodrigo Moya <rodrigo@novell.com>
+
+	* libedata-cal/e-cal-backend.c (e_cal_backend_get_cal_address):
+	fixed gtk-doc comments for functions without return value.
+
 2005-05-13  The Written Word <bugzilla-novell@thewrittenword.com>
 
 	Fixes 271838
