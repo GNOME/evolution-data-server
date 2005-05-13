@@ -51,12 +51,12 @@ struct _CamelException {
 
 /* creation and destruction functions */
 CamelException *          camel_exception_new           (void);
-void                      camel_exception_free          (CamelException *exception);
+void                      camel_exception_free          (CamelException *ex);
 void                      camel_exception_init          (CamelException *ex);
 
 
 /* exception content manipulation */
-void                      camel_exception_clear         (CamelException *exception);
+void                      camel_exception_clear         (CamelException *ex);
 void                      camel_exception_set           (CamelException *ex,
 							 ExceptionId id,
 							 const char *desc);

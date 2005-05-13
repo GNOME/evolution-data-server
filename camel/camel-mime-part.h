@@ -90,7 +90,7 @@ const	  char  *camel_mime_part_get_content_MD5	(CamelMimePart *mime_part);
 void		 camel_mime_part_set_content_location	(CamelMimePart *mime_part, const char *location);
 const	  char  *camel_mime_part_get_content_location	(CamelMimePart *mime_part);
 
-void	         camel_mime_part_set_encoding		(CamelMimePart *mime_part, CamelTransferEncoding type);
+void	         camel_mime_part_set_encoding		(CamelMimePart *mime_part, CamelTransferEncoding encoding);
 CamelTransferEncoding camel_mime_part_get_encoding	(CamelMimePart *mime_part);
 
 void	 	 camel_mime_part_set_content_languages	(CamelMimePart *mime_part, GList *content_languages);
@@ -104,7 +104,7 @@ CamelContentType  *camel_mime_part_get_content_type	(CamelMimePart *mime_part);
 int		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMimeParser *parser);
 
 /* utility functions */
-void      	camel_mime_part_set_content 	       (CamelMimePart *camel_mime_part,
+void      	camel_mime_part_set_content 	       (CamelMimePart *mime_part,
 							const char *content, int length, const char *type);
 
 #ifdef __cplusplus

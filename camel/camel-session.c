@@ -128,7 +128,7 @@ camel_session_get_type (void)
 
 /**
  * camel_session_construct:
- * @session: a session object to construct
+ * @session: a #CamelSession object to construct
  * @storage_path: path to a directory the session can use for
  * persistent storage. (This directory must already exist.)
  *
@@ -197,14 +197,14 @@ get_service (CamelSession *session, const char *url_string,
 
 /**
  * camel_session_get_service:
- * @session: the CamelSession
- * @url_string: a Camel URL describing the service to get
- * @type: the provider type (%CAMEL_PROVIDER_STORE or
- * %CAMEL_PROVIDER_TRANSPORT) to get, since some URLs may be able
+ * @session: a #CamelSession object
+ * @url_string: a #CamelURL describing the service to get
+ * @type: the provider type (#CAMEL_PROVIDER_STORE or
+ * #CAMEL_PROVIDER_TRANSPORT) to get, since some URLs may be able
  * to specify either type.
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
- * This resolves a CamelURL into a CamelService, including loading the
+ * This resolves a #CamelURL into a #CamelService, including loading the
  * provider library for that service if it has not already been loaded.
  *
  * Services are cached, and asking for "the same" @url_string multiple
@@ -212,7 +212,7 @@ get_service (CamelSession *session, const char *url_string,
  * incremented by one each time). What constitutes "the same" URL
  * depends in part on the provider.
  *
- * Return value: the requested CamelService, or %NULL
+ * Returns the requested #CamelService, or %NULL
  **/
 CamelService *
 camel_session_get_service (CamelSession *session, const char *url_string,
@@ -232,16 +232,16 @@ camel_session_get_service (CamelSession *session, const char *url_string,
 
 /**
  * camel_session_get_service_connected:
- * @session: the CamelSession
- * @url_string: a Camel URL describing the service to get
+ * @session: a #CamelSession object
+ * @url_string: a #CamelURL describing the service to get
  * @type: the provider type
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
- * This works like camel_session_get_service(), but also ensures that
+ * This works like #camel_session_get_service, but also ensures that
  * the returned service will have been successfully connected (via
- * camel_service_connect().)
+ * #camel_service_connect.)
  *
- * Return value: the requested CamelService, or %NULL
+ * Returns the requested #CamelService, or %NULL
  **/
 CamelService *
 camel_session_get_service_connected (CamelSession *session,
@@ -291,9 +291,9 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
 
 /**
  * camel_session_get_storage_path:
- * @session: session object
- * @service: a CamelService
- * @ex: a CamelException
+ * @session: a #CamelSession object
+ * @service: a #CamelService
+ * @ex: a #CamelException
  *
  * This returns the path to a directory which the service can use for
  * its own purposes. Data stored there will remain between Evolution
@@ -301,8 +301,8 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
  * files in this directory. If the directory does not exist, it will
  * be created.
  *
- * Return value: the path (which the caller must free), or %NULL if
- * an error occurs.
+ * Returns the path (which the caller must free), or %NULL if an error
+ * occurs.
  **/
 char *
 camel_session_get_storage_path (CamelSession *session, CamelService *service,
@@ -317,36 +317,35 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
 
 /**
  * camel_session_get_password:
- * @session: session object
- * @service: the service this query is being made by
+ * @session: a #CamelSession object
+ * @service: the #CamelService this query is being made by
  * @domain: domain of password request.  May be null to use the default.
  * @prompt: prompt to provide to user
  * @item: an identifier, unique within this service, for the information
- * @flags: CAMEL_SESSION_PASSWORD_REPROMPT, the prompt should force a reprompt
- * CAMEL_SESSION_PASSWORD_SECRET, whether the password is secret
- * CAMEL_SESSION_PASSWORD_STATIC, the password is remembered externally
- * @ex: a CamelException
+ * @flags: #CAMEL_SESSION_PASSWORD_REPROMPT, the prompt should force a reprompt
+ * #CAMEL_SESSION_PASSWORD_SECRET, whether the password is secret
+ * #CAMEL_SESSION_PASSWORD_STATIC, the password is remembered externally
+ * @ex: a #CamelException
  *
- * This function is used by a CamelService to ask the application and
+ * This function is used by a #CamelService to ask the application and
  * the user for a password or other authentication data.
  *
  * @service and @item together uniquely identify the piece of data the
  * caller is concerned with.
  *
  * @prompt is a question to ask the user (if the application doesn't
- * already have the answer cached). If CAMEL_SESSION_PASSWORD_SECRET
+ * already have the answer cached). If #CAMEL_SESSION_PASSWORD_SECRET
  * is set, the user's input will not be echoed back.
  *
- * If CAMEL_SESSION_PASSWORD_STATIC is set, it means the password returned
+ * If #CAMEL_SESSION_PASSWORD_STATIC is set, it means the password returned
  * will be stored statically by the caller automatically, for the current
  * session.
  * 
- * The authenticator
- * should set @ex to %CAMEL_EXCEPTION_USER_CANCEL if the user did not
- * provide the information. The caller must g_free() the information
- * returned when it is done with it.
+ * The authenticator should set @ex to #CAMEL_EXCEPTION_USER_CANCEL if
+ * the user did not provide the information. The caller must #g_free
+ * the information returned when it is done with it.
  *
- * Return value: the authentication information or %NULL.
+ * Returns the authentication information or %NULL
  **/
 char *
 camel_session_get_password (CamelSession *session, CamelService *service,
@@ -364,19 +363,19 @@ camel_session_get_password (CamelSession *session, CamelService *service,
 
 /**
  * camel_session_forget_password:
- * @session: session object
- * @service: the service rejecting the password
+ * @session: a #CamelSession object
+ * @service: the #CamelService rejecting the password
  * @item: an identifier, unique within this service, for the information
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
- * This function is used by a CamelService to tell the application
+ * This function is used by a #CamelService to tell the application
  * that the authentication information it provided via
- * camel_session_get_password was rejected by the service. If the
+ * #camel_session_get_password was rejected by the service. If the
  * application was caching this information, it should stop,
  * and if the service asks for it again, it should ask the user.
  *
  * @service and @item identify the rejected authentication information,
- * as with camel_session_get_password.
+ * as with #camel_session_get_password.
  **/
 void
 camel_session_forget_password (CamelSession *session, CamelService *service,
@@ -391,7 +390,7 @@ camel_session_forget_password (CamelSession *session, CamelService *service,
 
 /**
  * camel_session_alert_user:
- * @session: session object
+ * @session: a #CamelSession object
  * @type: the type of alert (info, warning, or error)
  * @prompt: the message for the user
  * @cancel: whether or not to provide a "Cancel" option in addition to
@@ -401,7 +400,7 @@ camel_session_forget_password (CamelSession *session, CamelService *service,
  * @type. If @cancel is %TRUE, the user will be able to accept or
  * cancel. Otherwise, the message is purely informational.
  *
- * Return value: %TRUE if the user accepts, %FALSE if they cancel.
+ * Returns %TRUE if the user accepts, %FALSE if they cancel.
  */
 gboolean
 camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
@@ -416,9 +415,9 @@ camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
 
 /**
  * camel_session_is_online:
- * @session: the session.
+ * @session: a #CamelSession object
  *
- * Return value: whether or not @session is online.
+ * Returns whether or not @session is online
  **/
 gboolean
 camel_session_is_online (CamelSession *session)
@@ -429,7 +428,7 @@ camel_session_is_online (CamelSession *session)
 
 /**
  * camel_session_set_online:
- * @session: the session
+ * @session: a #CamelSession object
  * @online: whether or not the session should be online
  *
  * Sets the online status of @session to @online.
@@ -443,11 +442,11 @@ camel_session_set_online (CamelSession *session, gboolean online)
 
 /**
  * camel_session_get_filter_driver:
- * @session: the session
+ * @session: a #CamelSession object
  * @type: the type of filter (eg, "incoming")
- * @ex: a CamelException
+ * @ex: a #CamelException
  *
- * Return value: a filter driver, loaded with applicable rules
+ * Returns a filter driver, loaded with applicable rules
  **/
 CamelFilterDriver *
 camel_session_get_filter_driver (CamelSession *session,
@@ -563,17 +562,20 @@ static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *
 
 /**
  * camel_session_thread_msg_new:
- * @session: 
- * @ops: 
- * @size: 
+ * @session: a #CamelSession object
+ * @ops: thread operations
+ * @size: number of bytes
  * 
  * Create a new thread message, using ops as the receive/reply/free
  * ops, of @size bytes.
  *
  * @ops points to the operations used to recieve/process and finally
  * free the message.
+ *
+ * Returns a new #CamelSessionThreadMsg
  **/
-void *camel_session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size)
+void *
+camel_session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size)
 {
 	g_assert(CAMEL_IS_SESSION(session));
 	g_assert(ops != NULL);
@@ -584,13 +586,14 @@ void *camel_session_thread_msg_new(CamelSession *session, CamelSessionThreadOps 
 
 /**
  * camel_session_thread_msg_free:
- * @session: 
- * @msg: 
+ * @session: a #CamelSession object
+ * @msg: a #CamelSessionThreadMsg
  * 
  * Free a @msg.  Note that the message must have been allocated using
  * msg_new, and must nto have been submitted to any queue function.
  **/
-void camel_session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg)
+void
+camel_session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	g_assert(CAMEL_IS_SESSION(session));
 	g_assert(msg != NULL);
@@ -601,17 +604,18 @@ void camel_session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg 
 
 /**
  * camel_session_thread_queue:
- * @session: 
- * @msg: 
+ * @session: a #CamelSession object
+ * @msg: a #CamelSessionThreadMsg
  * @flags: queue type flags, currently 0.
  * 
  * Queue a thread message in another thread for processing.
  * The operation should be (but needn't) run in a queued manner
  * with other operations queued in this manner.
  * 
- * Return value: The id of the operation queued.
+ * Returns the id of the operation queued
  **/
-int camel_session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags)
+int
+camel_session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags)
 {
 	g_assert(CAMEL_IS_SESSION(session));
 	g_assert(msg != NULL);
@@ -621,12 +625,13 @@ int camel_session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg
 
 /**
  * camel_session_thread_wait:
- * @session: 
- * @id: 
+ * @session: a #CamelSession object
+ * @id: id of the operation to wait on
  * 
  * Wait on an operation to complete (by id).
  **/
-void camel_session_thread_wait(CamelSession *session, int id)
+void
+camel_session_thread_wait(CamelSession *session, int id)
 {
 	g_assert(CAMEL_IS_SESSION(session));
 	
@@ -638,9 +643,11 @@ void camel_session_thread_wait(CamelSession *session, int id)
 
 /**
  * camel_session_check_junk:
- * @session: 
+ * @session: a #CamelSession object
  * 
  * Do we have to check incoming messages to be junk?
+ *
+ * Returns whether or not we are checking incoming messages for junk
  **/
 gboolean
 camel_session_check_junk (CamelSession *session)
@@ -652,8 +659,8 @@ camel_session_check_junk (CamelSession *session)
 
 /**
  * camel_session_set_check_junk:
- * @session: 
- * @check_junk: 
+ * @session: a #CamelSession object
+ * @check_junk: state
  * 
  * Set check_junk flag, if set, incoming mail will be checked for being junk.
  **/

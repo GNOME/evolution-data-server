@@ -86,6 +86,16 @@ camel_sasl_anonymous_get_type (void)
 	return type;
 }
 
+
+/**
+ * camel_sasl_anonymous_new:
+ * @type: trace type
+ * @trace_info: trace info
+ *
+ * Create a new #CamelSaslAnonymous object.
+ *
+ * Returns a new #CamelSasl object
+ **/
 CamelSasl *
 camel_sasl_anonymous_new (CamelSaslAnonTraceType type, const char *trace_info)
 {

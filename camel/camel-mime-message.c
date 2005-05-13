@@ -181,6 +181,14 @@ unref_recipient (gpointer key, gpointer value, gpointer user_data)
 	camel_object_unref (value);
 }
 
+
+/**
+ * camel_mime_message_new:
+ *
+ * Create a new #CamelMimeMessage object.
+ *
+ * Returns a new #CamelMimeMessage object
+ **/
 CamelMimeMessage *
 camel_mime_message_new (void) 
 {
@@ -192,6 +200,15 @@ camel_mime_message_new (void)
 
 /* **** Date: */
 
+
+/**
+ * camel_mime_message_set_date:
+ * @message: a #CamelMimeMessage object
+ * @date: a time_t date
+ * @offset: an offset from GMT
+ *
+ * Set the date on a message.
+ **/
 void
 camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, int offset)
 {
@@ -215,6 +232,16 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, int offset
 	g_free (datestr);
 }
 
+
+/**
+ * camel_mime_message_get_date:
+ * @message: a #CamelMimeMessage object
+ * @offset: output for the GMT offset
+ *
+ * Get the date and GMT offset of a message.
+ *
+ * Returns the date of the message
+ **/
 time_t
 camel_mime_message_get_date (CamelMimeMessage *msg, int *offset)
 {
@@ -224,6 +251,16 @@ camel_mime_message_get_date (CamelMimeMessage *msg, int *offset)
 	return msg->date;
 }
 
+
+/**
+ * camel_mime_message_get_date_received:
+ * @message: a #CamelMimeMessage object
+ * @offset: output for the GMT offset
+ *
+ * Get the received date and GMT offset of a message.
+ *
+ * Returns the received date of the message
+ **/
 time_t
 camel_mime_message_get_date_received (CamelMimeMessage *msg, int *offset)
 {
@@ -245,6 +282,13 @@ camel_mime_message_get_date_received (CamelMimeMessage *msg, int *offset)
 
 /* **** Message-Id: */
 
+/**
+ * camel_mime_message_set_message_id:
+ * @message: a #CamelMimeMessage object
+ * @message_id: id of the message
+ *
+ * Set the message-id on a message.
+ **/
 void
 camel_mime_message_set_message_id (CamelMimeMessage *mime_message, const char *message_id)
 {
@@ -266,6 +310,15 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message, const char *m
 	g_free (id);
 }
 
+
+/**
+ * camel_mime_message_get_message_id:
+ * @message: a #CamelMimeMessage object
+ *
+ * Get the message-id of a message.
+ *
+ * Returns the message-id of a message
+ **/
 const char *
 camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
 {
@@ -276,6 +329,14 @@ camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
 
 /* **** Reply-To: */
 
+
+/**
+ * camel_mime_message_set_reply_to:
+ * @message: a #CamelMimeMessage object
+ * @reply_to: a #CamelInternetAddress object
+ *
+ * Set the Reply-To of a message.
+ **/
 void
 camel_mime_message_set_reply_to (CamelMimeMessage *msg, const CamelInternetAddress *reply_to)
 {
@@ -299,6 +360,15 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, const CamelInternetAddre
 	g_free (addr);
 }
 
+
+/**
+ * camel_mime_message_get_reply_to:
+ * @message: a #CamelMimeMessage object
+ *
+ * Get the Reply-To of a message.
+ *
+ * Returns the Reply-Toa ddress of the message
+ **/
 const CamelInternetAddress *
 camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
 {
@@ -311,6 +381,13 @@ camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
 
 /* **** Subject: */
 
+/**
+ * camel_mime_message_set_subject:
+ * @message: a #CamelMimeMessage object
+ * @subject: UTF-8 message subject
+ *
+ * Set the subject text of a message.
+ **/
 void
 camel_mime_message_set_subject (CamelMimeMessage *mime_message, const char *subject)
 {
@@ -325,6 +402,15 @@ camel_mime_message_set_subject (CamelMimeMessage *mime_message, const char *subj
 	g_free (text);
 }
 
+
+/**
+ * camel_mime_message_get_subject:
+ * @message: a #CamelMimeMessage object
+ *
+ * Get the UTF-8 subject text of a message.
+ *
+ * Returns the message subject
+ **/
 const char *
 camel_mime_message_get_subject (CamelMimeMessage *mime_message)
 {
@@ -338,6 +424,14 @@ camel_mime_message_get_subject (CamelMimeMessage *mime_message)
 /* Thought: Since get_from/set_from are so rarely called, it is probably not useful
    to cache the from (and reply_to) addresses as InternetAddresses internally, we
    could just get it from the headers and reprocess every time. */
+
+/**
+ * camel_mime_message_set_from:
+ * @message: a #CamelMimeMessage object
+ * @from: a #CamelInternetAddress object
+ *
+ * Set the from address of a message.
+ **/
 void
 camel_mime_message_set_from (CamelMimeMessage *msg, const CamelInternetAddress *from)
 {
@@ -361,6 +455,15 @@ camel_mime_message_set_from (CamelMimeMessage *msg, const CamelInternetAddress *
 	g_free(addr);
 }
 
+
+/**
+ * camel_mime_message_get_from:
+ * @message: a #CamelMimeMessage object
+ *
+ * Get the from address of a message.
+ *
+ * Returns the from address of the message
+ **/
 const CamelInternetAddress *
 camel_mime_message_get_from (CamelMimeMessage *mime_message)
 {
@@ -373,6 +476,14 @@ camel_mime_message_get_from (CamelMimeMessage *mime_message)
 
 /*  **** To: Cc: Bcc: */
 
+/**
+ * camel_mime_message_set_recipients:
+ * @message: a #CamelMimeMessage object
+ * @type: recipient type (one of #CAMEL_RECIPIENT_TYPE_TO, #CAMEL_RECIPIENT_TYPE_CC, or #CAMEL_RECIPIENT_TYPE_BCC)
+ * @recipients: a #CamelInternetAddress with the recipient addresses set
+ *
+ * Set the recipients of a message.
+ **/
 void
 camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const char *type, const CamelInternetAddress *r)
 {
@@ -401,6 +512,25 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const char *ty
 	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (mime_message), type, text);
 	g_free(text);
 }
+
+
+/**
+ * camel_mime_message_get_recipients:
+ * @message: a #CamelMimeMessage object
+ * @type: recipient type
+ *
+ * Get the message recipients of a specified type.
+ *
+ * Returns the requested recipients
+ **/
+const CamelInternetAddress *
+camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const char *type)
+{
+	g_assert(mime_message);
+	
+	return g_hash_table_lookup (mime_message->recipients, type);
+}
+
 
 void
 camel_mime_message_set_source (CamelMimeMessage *mime_message, const char *src)
@@ -432,14 +562,6 @@ camel_mime_message_get_source (CamelMimeMessage *mime_message)
 			++src;
 	}
 	return src;
-}
-
-const CamelInternetAddress *
-camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const char *type)
-{
-	g_assert(mime_message);
-	
-	return g_hash_table_lookup (mime_message->recipients, type);
 }
 
 /* mime_message */
@@ -665,6 +787,15 @@ check_8bit (CamelMimeMessage *msg, CamelMimePart *part, void *data)
 	return !(*has8bit);
 }
 
+
+/**
+ * camel_mime_message_has_8bit_parts:
+ * @message: a #CamelMimeMessage object
+ *
+ * Find out if a message contains 8bit or binary encoded parts.
+ *
+ * Returns %TRUE if the message contains 8bit parts or %FALSE otherwise
+ **/
 gboolean
 camel_mime_message_has_8bit_parts (CamelMimeMessage *msg)
 {
@@ -842,6 +973,21 @@ best_encoding (CamelMimeMessage *msg, CamelMimePart *part, void *datap)
 	return TRUE;
 }
 
+
+/**
+ * camel_mime_message_set_best_encoding:
+ * @message: a #CamelMimeMessage object
+ * @required: a bitwise ORing of #CAMEL_BESTENC_GET_ENCODING and #CAMEL_BESTENC_GET_CHARSET
+ * @enctype: an encoding to enforce
+ *
+ * Re-encode all message parts to conform with the required encoding rules.
+ *
+ * If @enctype is #CAMEL_BESTENC_7BIT, then all parts will be re-encoded into
+ * one of the 7bit transfer encodings. If @enctype is #CAMEL_BESTENC_8bit, all
+ * parts will be re-encoded to either a 7bit encoding or, if the part is 8bit
+ * text, allowed to stay 8bit. If @enctype is #CAMEL_BESTENC_BINARY, then binary
+ * parts will be encoded as binary and 8bit textual parts will be encoded as 8bit.
+ **/
 void
 camel_mime_message_set_best_encoding (CamelMimeMessage *msg, CamelBestencRequired required, CamelBestencEncoding enctype)
 {
@@ -856,6 +1002,13 @@ camel_mime_message_set_best_encoding (CamelMimeMessage *msg, CamelBestencRequire
 	camel_mime_message_foreach_part (msg, best_encoding, &data);
 }
 
+
+/**
+ * camel_mime_message_encode_8bit_parts:
+ * @message: a #CamelMimeMessage object
+ *
+ * Encode all message parts to a suitable transfer encoding for transport (7bit clean).
+ **/
 void
 camel_mime_message_encode_8bit_parts (CamelMimeMessage *mime_message)
 {
@@ -886,6 +1039,16 @@ check_content_id (CamelMimeMessage *message, CamelMimePart *part, void *data)
 	return !found;
 }
 
+
+/**
+ * camel_mime_message_get_part_by_content_id:
+ * @message: a #CamelMimeMessage object
+ * @content_id: content-id to search for
+ *
+ * Get a MIME part by id from a message.
+ *
+ * Returns the MIME part with the requested id or %NULL if not found
+ **/
 CamelMimePart *
 camel_mime_message_get_part_by_content_id (CamelMimeMessage *message, const char *id)
 {
@@ -913,6 +1076,15 @@ static const char tz_days[][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 
+
+/**
+ * camel_mime_message_build_mbox_from:
+ * @message: a #CamelMimeMessage object
+ *
+ * Build an MBox from-line from @message.
+ *
+ * Returns an MBox from-line suitable for use in an mbox file
+ **/
 char *
 camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 {

@@ -147,7 +147,7 @@ camel_multipart_signed_get_type (void)
 /**
  * camel_multipart_signed_new:
  *
- * Create a new CamelMultipartSigned object.
+ * Create a new #CamelMultipartSigned object.
  *
  * A MultipartSigned should be used to store and create parts of
  * type "multipart/signed".  This is because multipart/signed is
@@ -160,7 +160,7 @@ camel_multipart_signed_get_type (void)
  * set the mime_type appropriately to match the data uses, so
  * that the multiple parts my be extracted.
  *
- * Use construct_from_parser.  The parser MUST be in the CAMEL_MIME_PARSER_STATE_HEADER
+ * Use construct_from_parser.  The parser MUST be in the #CAMEL_MIME_PARSER_STATE_HEADER
  * state, and the current content_type MUST be "multipart/signed" with
  * the appropriate boundary and it SHOULD include the appropriate protocol
  * and hash specifiers.
@@ -170,7 +170,7 @@ camel_multipart_signed_get_type (void)
  * create a 'transport-safe' version (as safe as can be expected with
  * such a broken specification).
  *
- * Return value: a new CamelMultipartSigned
+ * Returns a new #CamelMultipartSigned object
  **/
 CamelMultipartSigned *
 camel_multipart_signed_new (void)
@@ -569,6 +569,17 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return total;	
 }
 
+
+/**
+ * camel_multipart_signed_get_content_stream:
+ * @mps: a #CamlMultipartSigned object
+ * @ex: a #CamelException
+ *
+ * Get the raw signed content stream of the multipart/signed MIME part
+ * suitable for use with verification of the signature.
+ *
+ * Returns the signed content stream
+ **/
 CamelStream *
 camel_multipart_signed_get_content_stream(CamelMultipartSigned *mps, CamelException *ex)
 {

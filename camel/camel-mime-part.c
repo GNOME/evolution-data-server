@@ -579,6 +579,14 @@ camel_mime_part_get_content_location (CamelMimePart *mime_part)
 
 /* **** Content-Transfer-Encoding: */
 
+
+/**
+ * camel_mime_part_set_encoding:
+ * @mime_part: a #CamelMimePart object
+ * @encoding: a #CamelTransferEncoding
+ *
+ * Set the Content-Transfer-Encoding to use on a MIME part.
+ **/
 void
 camel_mime_part_set_encoding (CamelMimePart *mime_part,
 			      CamelTransferEncoding encoding)
@@ -590,6 +598,15 @@ camel_mime_part_set_encoding (CamelMimePart *mime_part,
 				 "Content-Transfer-Encoding", text);
 }
 
+
+/**
+ * camel_mime_part_get_encoding:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the Content-Transfer-Encoding of a MIME part.
+ *
+ * Returns a #CamelTransferEncoding
+ **/
 CamelTransferEncoding
 camel_mime_part_get_encoding (CamelMimePart *mime_part)
 {
@@ -598,6 +615,14 @@ camel_mime_part_get_encoding (CamelMimePart *mime_part)
 
 /* FIXME: do something with this stuff ... */
 
+
+/**
+ * camel_mime_part_set_content_languages:
+ * @mime_part: a #CamelMimePart object
+ * @content_languages: list of languages
+ *
+ * Set the Content-Languages field of a MIME part.
+ **/
 void
 camel_mime_part_set_content_languages (CamelMimePart *mime_part, GList *content_languages)
 {
@@ -609,6 +634,15 @@ camel_mime_part_set_content_languages (CamelMimePart *mime_part, GList *content_
 	/* FIXME: translate to a header and set it */
 }
 
+
+/**
+ * camel_mime_part_get_content_languages:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the Content-Languages set on the MIME part.
+ *
+ * Returns a #GList of languages
+ **/
 const GList *
 camel_mime_part_get_content_languages (CamelMimePart *mime_part)
 {
@@ -620,13 +654,29 @@ camel_mime_part_get_content_languages (CamelMimePart *mime_part)
 
 /* **** Content-Type: */
 
-void 
+/**
+ * camel_mime_part_set_content_type:
+ * @mime_part: a #CamelMimePart object
+ * @content_type: content-type string
+ *
+ * Set the content-type on a MIME part.
+ **/
+void
 camel_mime_part_set_content_type (CamelMimePart *mime_part, const char *content_type)
 {
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part),
 				 "Content-Type", content_type);
 }
 
+
+/**
+ * camel_mime_part_get_content_type:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the Content-Type of a MIME part.
+ *
+ * Returns the parsed #CamelContentType of the MIME part
+ **/
 CamelContentType *
 camel_mime_part_get_content_type (CamelMimePart *mime_part)
 {
@@ -926,12 +976,12 @@ construct_from_parser (CamelMimePart *mime_part, CamelMimeParser *mp)
 
 /**
  * camel_mime_part_construct_from_parser:
- * @mime_part: 
- * @mp: 
+ * @mime_part: a #CamelMimePart object
+ * @parser: a #CamelMimeParser object
+ *
+ * Constructs a MIME part from a parser.
  * 
- * 
- * 
- * Return value: 
+ * Returns %0 on success or %-1 on fail
  **/
 int
 camel_mime_part_construct_from_parser(CamelMimePart *mime_part, CamelMimeParser *mp)
@@ -964,7 +1014,9 @@ construct_from_stream(CamelDataWrapper *dw, CamelStream *s)
 /**
  * camel_mime_part_new:
  *
- * Return value: a new CamelMimePart
+ * Create a new MIME part.
+ *
+ * Returns a new #CamelMimePart object
  **/
 CamelMimePart *
 camel_mime_part_new (void)
@@ -974,7 +1026,7 @@ camel_mime_part_new (void)
 
 /**
  * camel_mime_part_set_content:
- * @camel_mime_part: Mime part
+ * @mime_part: a #CamelMimePart object
  * @data: data to put into the part
  * @length: length of @data
  * @type: Content-Type of the data
@@ -985,11 +1037,11 @@ camel_mime_part_new (void)
  * ignored and may be %NULL).
  **/
 void 
-camel_mime_part_set_content (CamelMimePart *camel_mime_part,
+camel_mime_part_set_content (CamelMimePart *mime_part,
 			     const char *data, int length,
 			     const char *type) /* why on earth is the type last? */
 {
-	CamelMedium *medium = CAMEL_MEDIUM (camel_mime_part);
+	CamelMedium *medium = CAMEL_MEDIUM (mime_part);
 
 	if (length) {
 		CamelDataWrapper *dw;

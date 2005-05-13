@@ -95,17 +95,17 @@ sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 
 /**
  * camel_sasl_challenge:
- * @sasl: a SASL object
+ * @sasl: a #CamelSasl object
  * @token: a token, or %NULL
- * @ex: exception
+ * @ex: a #CamelException
  *
  * If @token is %NULL, generate the initial SASL message to send to
  * the server. (This will be %NULL if the client doesn't initiate the
  * exchange.) Otherwise, @token is a challenge from the server, and
  * the return value is the response.
  *
- * Return value: The SASL response or %NULL. If an error occurred, @ex
- * will also be set.
+ * Returns the SASL response or %NULL. If an error occurred, @ex will
+ * also be set.
  **/
 GByteArray *
 camel_sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
@@ -117,14 +117,14 @@ camel_sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 
 /**
  * camel_sasl_challenge_base64:
- * @sasl: a SASL object
+ * @sasl: a #CamelSasl object
  * @token: a base64-encoded token
- * @ex: exception
+ * @ex: a #CamelException
  *
- * As with camel_sasl_challenge(), but the challenge @token and the
+ * As with #camel_sasl_challenge, but the challenge @token and the
  * response are both base64-encoded.
  *
- * Return value: As with camel_sasl_challenge(), but base64-encoded.
+ * Returns the base64 encoded challenge string
  **/
 char *
 camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException *ex)
@@ -157,12 +157,12 @@ camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException 
 
 /**
  * camel_sasl_authenticated:
- * @sasl: a SASL object
+ * @sasl: a #CamelSasl object
  *
- * Return value: whether or not @sasl has successfully authenticated
- * the user. This will be %TRUE after it returns the last needed response.
- * The caller must still pass that information on to the server and verify
- * that it has accepted it.
+ * Returns whether or not @sasl has successfully authenticated the
+ * user. This will be %TRUE after it returns the last needed response.
+ * The caller must still pass that information on to the server and
+ * verify that it has accepted it.
  **/
 gboolean
 camel_sasl_authenticated (CamelSasl *sasl)
@@ -177,7 +177,7 @@ camel_sasl_authenticated (CamelSasl *sasl)
  * @mechanism: the SASL mechanism
  * @service: the CamelService that will be using this SASL
  *
- * Return value: a new CamelSasl for the given @service_name,
+ * Returns a new #CamelSasl object for the given @service_name,
  * @mechanism, and @service, or %NULL if the mechanism is not
  * supported.
  **/
@@ -227,7 +227,7 @@ camel_sasl_new (const char *service_name, const char *mechanism, CamelService *s
  * camel_sasl_authtype_list:
  * @include_plain: whether or not to include the PLAIN mechanism
  *
- * Return value: a GList of SASL-supported authtypes. The caller must
+ * Returns a #GList of SASL-supported authtypes. The caller must
  * free the list, but not the contents.
  **/
 GList *
@@ -254,7 +254,7 @@ camel_sasl_authtype_list (gboolean include_plain)
  * camel_sasl_authtype:
  * @mechanism: the SASL mechanism to get an authtype for
  *
- * Return value: a CamelServiceAuthType for the given mechanism, if
+ * Returns a #CamelServiceAuthType for the given mechanism, if
  * it is supported.
  **/
 CamelServiceAuthType *

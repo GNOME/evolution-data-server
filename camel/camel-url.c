@@ -51,7 +51,7 @@ static void append_url_encoded (GString *str, const char *in, const char *extra_
  *
  * Parses @url_string relative to @base.
  *
- * Return value: a parsed CamelURL.
+ * Returns a parsed #CamelURL
  **/
 CamelURL *
 camel_url_new_with_base (CamelURL *base, const char *url_string)
@@ -275,12 +275,12 @@ copy_param (GQuark key_id, gpointer data, gpointer user_data)
 
 /**
  * camel_url_new:
- * @url_string: a URL
- * @ex: a CamelException
+ * @url_string: a URL string
+ * @ex: a #CamelException
  *
  * Parses an absolute URL.
  *
- * Return value: a CamelURL, or %NULL.
+ * Returns a #CamelURL if it can be parsed, or %NULL otherwise
  **/
 CamelURL *
 camel_url_new (const char *url_string, CamelException *ex)
@@ -299,10 +299,12 @@ camel_url_new (const char *url_string, CamelException *ex)
 
 /**
  * camel_url_to_string:
- * @url: a CamelURL
- * @flags: additional translation options.
+ * @url: a #CamelURL
+ * @flags: additional translation options
  *
- * Return value: a string representing @url, which the caller must free.
+ * Flatten a #CamelURL into a string.
+ *
+ * Returns a string representing @url, which the caller must free
  **/
 char *
 camel_url_to_string (CamelURL *url, guint32 flags)
@@ -374,9 +376,9 @@ output_param (GQuark key_id, gpointer data, gpointer user_data)
 
 /**
  * camel_url_free:
- * @url: a CamelURL
+ * @url: a #CamelURL
  *
- * Frees @url
+ * Frees @url.
  **/
 void
 camel_url_free (CamelURL *url)
@@ -411,21 +413,109 @@ camel_url_set_##part (CamelURL *url, const char *part)	\
 	url->part = g_strdup (part);			\
 }
 
+
+/**
+ * camel_url_set_protocol:
+ * @url: a #CamelURL
+ * @protocol: protocol schema
+ *
+ * Set the protocol of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (protocol)
+
+
+/**
+ * camel_url_set_user:
+ * @url: a #CamelURL
+ * @user: username
+ *
+ * Set the user of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (user)
+
+
+/**
+ * camel_url_set_authmech:
+ * @url: a #CamelURL
+ * @authmech: authentication mechanism
+ *
+ * Set the authmech of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (authmech)
+
+
+/**
+ * camel_url_set_passwd:
+ * @url: a #CamelURL
+ * @passwd: password
+ *
+ * Set the password of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (passwd)
+
+
+/**
+ * camel_url_set_host:
+ * @url: a #CamelURL
+ * @host: hostname
+ *
+ * Set the hostname of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (host)
+
+
+/**
+ * camel_url_set_path:
+ * @url: a #CamelURL
+ * @path: path
+ *
+ * Set the path component of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (path)
+
+
+/**
+ * camel_url_set_query:
+ * @url: a #CamelURL
+ * @query: url query
+ *
+ * Set the query of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (query)
+
+
+/**
+ * camel_url_set_fragment:
+ * @url: a #CamelURL
+ * @fragment: url fragment
+ *
+ * Set the fragment of a #CamelURL.
+ **/
 DEFINE_CAMEL_URL_SET (fragment)
 
+
+/**
+ * camel_url_set_port:
+ * @url: a #CamelURL
+ * @port: port
+ *
+ * Set the port on a #CamelURL.
+ **/
 void
 camel_url_set_port (CamelURL *url, int port)
 {
 	url->port = port;
 }
 
+
+/**
+ * camel_url_set_param:
+ * @url: a #CamelURL
+ * @name: name of the param to set
+ * @value: value of the param to set
+ *
+ * Set a param on the #CamelURL.
+ **/
 void
 camel_url_set_param (CamelURL *url, const char *name, const char *value)
 {
@@ -435,6 +525,16 @@ camel_url_set_param (CamelURL *url, const char *name, const char *value)
 		g_datalist_remove_data(&url->params, name);
 }
 
+
+/**
+ * camel_url_get_param:
+ * @a #CamelURL
+ * @name: name of the param
+ *
+ * Get the value of the specified param on the URL.
+ *
+ * Returns the value of a param if found or %NULL otherwise
+ **/
 const char *
 camel_url_get_param (CamelURL *url, const char *name)
 {
@@ -483,6 +583,8 @@ append_url_encoded (GString *str, const char *in, const char *extra_enc_chars)
  *
  * This %-encodes the given URL part and returns the escaped version
  * in allocated memory, which the caller must free when it is done.
+ *
+ * Returns the encoded string
  **/
 char *
 camel_url_encode (const char *part, const char *escape_extra)
@@ -573,6 +675,15 @@ camel_url_equal(const void *v, const void *v2)
 		&& u1->port == u2->port;
 }
 
+
+/**
+ * camel_url_copy:
+ * @in: a #CamelURL to copy
+ *
+ * Copy a #CamelURL.
+ *
+ * Returns a duplicate copy of @in
+ **/
 CamelURL *
 camel_url_copy(const CamelURL *in)
 {

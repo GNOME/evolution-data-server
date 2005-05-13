@@ -89,12 +89,12 @@ CamelMimePart *     camel_multipart_get_part       (CamelMultipart *multipart,
 guint               camel_multipart_get_number     (CamelMultipart *multipart);
 void                camel_multipart_set_boundary   (CamelMultipart *multipart,
 						    const char *boundary);
-const gchar *       camel_multipart_get_boundary   (CamelMultipart *multipart);
+const char *        camel_multipart_get_boundary   (CamelMultipart *multipart);
 
 void		    camel_multipart_set_preface	   (CamelMultipart *multipart, const char *preface);
 void		    camel_multipart_set_postface   (CamelMultipart *multipart, const char *postface);
 
-int		    camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp);
+int		    camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *parser);
 
 #ifdef __cplusplus
 }

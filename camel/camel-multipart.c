@@ -1,7 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-multipart.c : Abstract class for a multipart */
-
-
 /*
  *
  * Author :
@@ -155,9 +153,9 @@ unref_part (gpointer data, gpointer user_data)
 /**
  * camel_multipart_new:
  *
- * Create a new CamelMultipart object.
+ * Create a new #CamelMultipart object.
  *
- * Return value: a new CamelMultipart
+ * Returns a new #CamelMultipart object
  **/
 CamelMultipart *
 camel_multipart_new (void)
@@ -179,10 +177,11 @@ add_part (CamelMultipart *multipart, CamelMimePart *part)
 	camel_object_ref (part);
 }
 
+
 /**
  * camel_multipart_add_part:
- * @multipart: a CamelMultipart
- * @part: the part to add
+ * @multipart: a #CamelMultipart object
+ * @part: a #CamelMimePart to add
  *
  * Appends the part to the multipart object.
  **/
@@ -205,13 +204,13 @@ add_part_at (CamelMultipart *multipart, CamelMimePart *part, guint index)
 
 /**
  * camel_multipart_add_part_at:
- * @multipart: a CamelMultipart
- * @part: the part to add
+ * @multipart: a #CamelMultipart object
+ * @part: a #CamelMimePart to add
  * @index: index to add the multipart at
  *
  * Adds the part to the multipart object after the @index'th
  * element. If @index is greater than the number of parts, it is
- * equivalent to camel_multipart_add_part().
+ * equivalent to #camel_multipart_add_part.
  **/
 void
 camel_multipart_add_part_at (CamelMultipart *multipart,
@@ -235,8 +234,8 @@ remove_part (CamelMultipart *multipart, CamelMimePart *part)
 
 /**
  * camel_multipart_remove_part:
- * @multipart: a CamelMultipart
- * @part: the part to remove
+ * @multipart: a #CamelMultipart object
+ * @part: a #CamelMimePart to remove
  *
  * Removes @part from @multipart.
  **/
@@ -280,12 +279,12 @@ remove_part_at (CamelMultipart *multipart, guint index)
 
 /**
  * camel_multipart_remove_part_at:
- * @multipart: a CamelMultipart
+ * @multipart: a #CamelMultipart object
  * @index: a zero-based index indicating the part to remove
  *
  * Remove the indicated part from the multipart object.
  *
- * Return value: the removed part. Note that it is camel_object_unref()ed
+ * Returns the removed part. Note that it is #camel_object_unref'ed
  * before being returned, which may cause it to be destroyed.
  **/
 CamelMimePart *
@@ -314,10 +313,10 @@ get_part (CamelMultipart *multipart, guint index)
 
 /**
  * camel_multipart_get_part:
- * @multipart: a CamelMultipart
+ * @multipart: a #CamelMultipart object
  * @index: a zero-based index indicating the part to get
  *
- * Return value: the indicated subpart, or %NULL
+ * Returns the indicated subpart, or %NULL
  **/
 CamelMimePart *
 camel_multipart_get_part (CamelMultipart *multipart, guint index)
@@ -336,9 +335,9 @@ get_number (CamelMultipart *multipart)
 
 /**
  * camel_multipart_get_number:
- * @multipart: a CamelMultipart
+ * @multipart: a #CamelMultipart object
  *
- * Return value: the number of subparts in @multipart
+ * Returns the number of subparts in @multipart
  **/
 guint
 camel_multipart_get_number (CamelMultipart *multipart)
@@ -379,7 +378,7 @@ set_boundary (CamelMultipart *multipart, const char *boundary)
 
 /**
  * camel_multipart_set_boundary:
- * @multipart: a CamelMultipart
+ * @multipart: a #CamelMultipart object
  * @boundary: the message boundary, or %NULL
  *
  * Sets the message boundary for @multipart to @boundary. This should
@@ -407,11 +406,11 @@ get_boundary (CamelMultipart *multipart)
 
 /**
  * camel_multipart_get_boundary:
- * @multipart: a CamelMultipart
+ * @multipart: a #CamelMultipart object
  *
- * Return value: @multipart's message boundary
+ * Returns the boundary
  **/
-const gchar *
+const char *
 camel_multipart_get_boundary (CamelMultipart *multipart)
 {
 	return CMP_CLASS (multipart)->get_boundary (multipart);
@@ -500,8 +499,8 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 
 /**
  * camel_multipart_set_preface:
- * @multipart: 
- * @preface: 
+ * @multipart: a #CamelMultipart object
+ * @preface: the multipart preface
  * 
  * Set the preface text for this multipart.  Will be written out infront
  * of the multipart.  This text should only include US-ASCII strings, and
@@ -521,8 +520,8 @@ camel_multipart_set_preface(CamelMultipart *multipart, const char *preface)
 
 /**
  * camel_multipart_set_postface:
- * @multipart: 
- * @postface: 
+ * @multipart: a #CamelMultipart object
+ * @postface: multipat postface
  * 
  * Set the postfix text for this multipart.  Will be written out after
  * the last boundary of the multipart, and ignored by any MIME mail
@@ -580,6 +579,16 @@ construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 		return 0;
 }
 
+
+/**
+ * camel_multipart_construct_from_parser:
+ * @multipart: a #CamelMultipart object
+ * @parser: a #CamelMimeParser object
+ *
+ * Construct a multipart from a parser.
+ *
+ * Returns %0 on success or %-1 on fail
+ **/
 int
 camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 {
