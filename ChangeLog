@@ -1,3 +1,7 @@
+2005-05-13  Harish Krishnaswamy  <kharish@novell.com>
+	
+	* configure.in: export LIBSOUP for use elsewhere.
+
 2005-05-06  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Check for Win32 (mingw), set Automake
