@@ -139,6 +139,18 @@ clear_items (EBookBackendSummary *summary)
 	}
 }
 
+/**
+ * e_book_backend_summary_new:
+ * @summary_path: a local file system path
+ * @flush_timeout_millis: a flush interval, in milliseconds
+ *
+ * Creates an #EBookBackendSummary object without loading it
+ * or otherwise affecting the file. @flush_timeout_millis
+ * specifies how much time should elapse, at a minimum, from
+ * the summary is changed until it is flushed to disk.
+ *
+ * Return value: A new #EBookBackendSummary.
+ **/
 EBookBackendSummary*
 e_book_backend_summary_new (const char *summary_path, int flush_timeout_millis)
 {
@@ -498,6 +510,16 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
 	return TRUE;
 }
 
+/**
+ * e_book_backend_summary_load:
+ * @summary: an #EBookBackendSummary
+ *
+ * Attempts to load @summary from disk. The load is successful if
+ * the file was located, it was in the correct format, and it was
+ * not out of date.
+ *
+ * Return value: %TRUE if the load succeeded, %FALSE if it failed.
+ **/
 gboolean
 e_book_backend_summary_load (EBookBackendSummary *summary)
 {
@@ -639,6 +661,14 @@ e_book_backend_summary_save_item (EBookBackendSummary *summary, FILE *fp, EBookB
 	return TRUE;
 }
 
+/**
+ * e_book_backend_summary_save:
+ * @summary: an #EBookBackendSummary
+ *
+ * Attempts to save @summary to disk.
+ *
+ * Return value: %TRUE if the save succeeded, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_summary_save (EBookBackendSummary *summary)
 {
@@ -709,6 +739,14 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 	return FALSE;
 }
 
+/**
+ * e_book_backend_summary_add_contact:
+ * @summary: an #EBookBackendSummary
+ * @contact: an #EContact to add
+ *
+ * Adds a summary of @contact to @summary. Does not check if
+ * the contact already has a summary.
+ **/
 void
 e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *contact)
 {
@@ -749,6 +787,13 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
 	e_book_backend_summary_touch (summary);
 }
 
+/**
+ * e_book_backend_summary_remove_contact:
+ * @summary: an #EBookBackendSummary
+ * @id: a unique contact ID string
+ *
+ * Removes the summary of the contact identified by @id from @summary.
+ **/
 void
 e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const char *id)
 {
@@ -765,6 +810,16 @@ e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const char 
 	g_warning ("e_book_backend_summary_remove_contact: unable to locate id `%s'", id);
 }
 
+/**
+ * e_book_backend_summary_check_contact:
+ * @summary: an #EBookBackendSummary
+ * @id: a unique contact ID string
+ *
+ * Checks if a summary of the contact identified by @id
+ * exists in @summary.
+ *
+ * Return value: %TRUE if the summary exists, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_summary_check_contact (EBookBackendSummary *summary, const char *id)
 {
@@ -797,6 +852,12 @@ summary_flush_func (gpointer data)
 	return FALSE;
 }
 
+/**
+ * e_book_backend_summary_touch:
+ * @summary: an #EBookBackendSummary
+ *
+ * Indicates that @summary has changed and should be flushed to disk.
+ **/
 void
 e_book_backend_summary_touch (EBookBackendSummary *summary)
 {
@@ -807,6 +868,15 @@ e_book_backend_summary_touch (EBookBackendSummary *summary)
 							      summary_flush_func, summary);
 }
 
+/**
+ * e_book_backend_summary_is_up_to_date:
+ * @summary: an #EBookBackendSummary
+ * @t: the time to compare with
+ *
+ * Checks if @summary is more recent than @t.
+ *
+ * Return value: %TRUE if the summary is up to date, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_summary_is_up_to_date (EBookBackendSummary *summary, time_t t)
 {
@@ -858,6 +928,16 @@ static struct {
 	{ "exists", func_check, 0 }
 };
 
+/**
+ * e_book_backend_summary_is_summary_query:
+ * @summary: an #EBookBackendSummary
+ * @query: an s-expression to check
+ *
+ * Checks if @query can be satisfied by searching only the fields
+ * stored by @summary.
+ *
+ * Return value: %TRUE if the query can be satisfied, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const char *query)
 {
@@ -1031,6 +1111,15 @@ static struct {
 	{ "endswith", func_endswith, 0 },
 };
 
+/**
+ * e_book_backend_summary_search:
+ * @summary: an #EBookBackendSummary
+ * @query: an s-expression
+ *
+ * Searches @summary for contacts matching @query.
+ *
+ * Return value: A #GPtrArray of pointers to contact ID strings.
+ **/
 GPtrArray*
 e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
 {
@@ -1076,6 +1165,16 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
 	return retval;
 }
 
+/**
+ * e_book_backend_summary_get_summary_vcard:
+ * @summary: an #EBookBackendSummary
+ * @id: a unique contact ID
+ *
+ * Constructs and returns a VCard from the contact summary specified
+ * by @id.
+ *
+ * Return value: A new VCard, or %NULL if the contact summary didn't exist.
+ **/
 char*
 e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const char *id)
 {

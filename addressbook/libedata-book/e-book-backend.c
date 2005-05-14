@@ -35,12 +35,30 @@ static guint e_book_backend_signals[LAST_SIGNAL];
 
 static GObjectClass *parent_class;
 
+/**
+ * e_book_backend_construct:
+ * @backend: an #EBookBackend
+ *
+ * Does nothing.
+ *
+ * Return value: %TRUE.
+ **/
 gboolean
 e_book_backend_construct (EBookBackend *backend)
 {
 	return TRUE;
 }
 
+/**
+ * e_book_backend_load_source:
+ * @backend: an #EBookBackend
+ * @source: an #ESource to load
+ * @only_if_exists: %TRUE to prevent the creation of a new book
+ *
+ * Loads @source into @backend.
+ *
+ * Return value: A #GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
+ **/
 GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_load_source (EBookBackend           *backend,
 			    ESource                *source,
@@ -80,6 +98,16 @@ e_book_backend_get_source (EBookBackend *backend)
 	return backend->priv->source;
 }
 
+/**
+ * e_book_backend_open:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @only_if_exists: %TRUE to prevent the creation of a new book
+ *
+ * Executes an 'open' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_open (EBookBackend *backend,
 		     EDataBook    *book,
@@ -109,6 +137,15 @@ e_book_backend_open (EBookBackend *backend,
 	g_mutex_unlock (backend->priv->open_mutex);
 }
 
+/**
+ * e_book_backend_remove:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ *
+ * Executes a 'remove' request to remove all of @backend's data,
+ * specified by @opid on @book.
+ **/
 void
 e_book_backend_remove (EBookBackend *backend,
 		       EDataBook    *book,
@@ -122,6 +159,16 @@ e_book_backend_remove (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove) (backend, book, opid);
 }
 
+/**
+ * e_book_backend_create_contact:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @vcard: the VCard to add
+ *
+ * Executes a 'create contact' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_create_contact (EBookBackend *backend,
 			       EDataBook    *book,
@@ -137,6 +184,16 @@ e_book_backend_create_contact (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contact) (backend, book, opid, vcard);
 }
 
+/**
+ * e_book_backend_remove_contacts:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @id_list: list of string IDs to remove
+ *
+ * Executes a 'remove contacts' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_remove_contacts (EBookBackend *backend,
 				EDataBook    *book,
@@ -152,6 +209,16 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts) (backend, book, opid, id_list);
 }
 
+/**
+ * e_book_backend_modify_contact:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @vcard: the VCard to update
+ *
+ * Executes a 'modify contact' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_modify_contact (EBookBackend *backend,
 			       EDataBook    *book,
@@ -167,6 +234,16 @@ e_book_backend_modify_contact (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact) (backend, book, opid, vcard);
 }
 
+/**
+ * e_book_backend_get_contact:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @id: the ID of the contact to get
+ *
+ * Executes a 'get contact' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_get_contact (EBookBackend *backend,
 			    EDataBook    *book,
@@ -182,6 +259,16 @@ e_book_backend_get_contact (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact) (backend, book, opid, id);
 }
 
+/**
+ * e_book_backend_get_contact_list:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @query: the s-expression to match
+ *
+ * Executes a 'get contact list' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_get_contact_list (EBookBackend *backend,
 				 EDataBook    *book,
@@ -197,6 +284,14 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list) (backend, book, opid, query);
 }
 
+/**
+ * e_book_backend_start_book_view:
+ * @backend: an #EBookBackend
+ * @book_view: the #EDataBookView to start
+ *
+ * Starts running the query specified by @book_view, emitting
+ * signals for matching contacts.
+ **/
 void
 e_book_backend_start_book_view (EBookBackend  *backend,
 				EDataBookView *book_view)
@@ -209,6 +304,14 @@ e_book_backend_start_book_view (EBookBackend  *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view) (backend, book_view);
 }
 
+/**
+ * e_book_backend_stop_book_view:
+ * @backend: an #EBookBackend
+ * @book_view: the #EDataBookView to stop
+ *
+ * Stops running the query specified by @book_view, emitting
+ * no more signals.
+ **/
 void
 e_book_backend_stop_book_view (EBookBackend  *backend,
 			       EDataBookView *book_view)
@@ -221,6 +324,16 @@ e_book_backend_stop_book_view (EBookBackend  *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view) (backend, book_view);
 }
 
+/**
+ * e_book_backend_get_changes:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @change_id: the ID of the changeset
+ *
+ * Executes a 'get changes' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_get_changes (EBookBackend *backend,
 			    EDataBook    *book,
@@ -236,6 +349,18 @@ e_book_backend_get_changes (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_changes) (backend, book, opid, change_id);
 }
 
+/**
+ * e_book_backend_authenticate_user:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @user: the name of the user account
+ * @passwd: the user's password
+ * @auth_method: the authentication method to use
+ *
+ * Executes an 'authenticate' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_authenticate_user (EBookBackend *backend,
 				  EDataBook    *book,
@@ -253,6 +378,15 @@ e_book_backend_authenticate_user (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user) (backend, book, opid, user, passwd, auth_method);
 }
 
+/**
+ * e_book_backend_get_required_fields:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ *
+ * Executes a 'get required fields' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_get_required_fields (EBookBackend *backend,
 				     EDataBook    *book,
@@ -267,6 +401,15 @@ e_book_backend_get_required_fields (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_required_fields) (backend, book, opid);
 }
 
+/**
+ * e_book_backend_get_supported_fields:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ *
+ * Executes a 'get supported fields' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_get_supported_fields (EBookBackend *backend,
 				     EDataBook    *book,
@@ -281,6 +424,15 @@ e_book_backend_get_supported_fields (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_fields) (backend, book, opid);
 }
 
+/**
+ * e_book_backend_get_supported_auth_methods:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ *
+ * Executes a 'get supported auth methods' request specified by @opid on @book
+ * using @backend.
+ **/
 void
 e_book_backend_get_supported_auth_methods (EBookBackend *backend,
 					   EDataBook    *book,
@@ -294,6 +446,15 @@ e_book_backend_get_supported_auth_methods (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_auth_methods) (backend, book, opid);
 }
 
+/**
+ * e_book_backend_cancel_operation:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook whose operation should be cancelled
+ *
+ * Cancel @book's running operation on @backend.
+ *
+ * Return value: A GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
+ **/
 GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_cancel_operation (EBookBackend *backend,
 				 EDataBook    *book)
@@ -328,6 +489,14 @@ last_client_gone (EBookBackend *backend)
 	g_signal_emit (backend, e_book_backend_signals[LAST_CLIENT_GONE], 0);
 }
 
+/**
+ * e_book_backend_get_book_views:
+ * @backend: an #EBookBackend
+ *
+ * Gets the list of #EDataBookView views running on this backend.
+ *
+ * Return value: An #EList of #EDataBookView objects.
+ **/
 EList*
 e_book_backend_get_book_views (EBookBackend *backend)
 {
@@ -336,6 +505,13 @@ e_book_backend_get_book_views (EBookBackend *backend)
 	return g_object_ref (backend->priv->views);
 }
 
+/**
+ * e_book_backend_add_book_view:
+ * @backend: an #EBookBackend
+ * @view: an #EDataBookView
+ *
+ * Adds @view to @backend for querying.
+ **/
 void
 e_book_backend_add_book_view (EBookBackend *backend,
 			      EDataBookView *view)
@@ -349,6 +525,13 @@ e_book_backend_add_book_view (EBookBackend *backend,
 	g_mutex_unlock (backend->priv->views_mutex);
 }
 
+/**
+ * e_book_backend_remove_book_view:
+ * @backend: an #EBookBackend
+ * @view: an #EDataBookView
+ *
+ * Removes @view from @backend.
+ **/
 void
 e_book_backend_remove_book_view (EBookBackend *backend,
 				 EDataBookView *view)
@@ -391,6 +574,13 @@ e_book_backend_add_client (EBookBackend      *backend,
 	return TRUE;
 }
 
+/**
+ * e_book_backend_remove_client:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook to remove
+ *
+ * Removes @book from the list of @backend's clients.
+ **/
 void
 e_book_backend_remove_client (EBookBackend *backend,
 			      EDataBook    *book)
@@ -418,6 +608,14 @@ e_book_backend_remove_client (EBookBackend *backend,
 	g_object_unref (backend);
 }
 
+/**
+ * e_book_backend_has_out_of_proc_clients:
+ * @backend: an #EBookBackend
+ *
+ * Checks if @backend has clients running in other system processes.
+ *
+ * Return value: %TRUE if there are clients in other processes, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
 {
@@ -446,6 +644,14 @@ e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
 	return FALSE;
 }
 
+/**
+ * e_book_backend_get_static_capabilities:
+ * @backend: an #EBookBackend
+ *
+ * Gets the capabilities offered by this @backend.
+ *
+ * Return value: A string listing the capabilities.
+ **/
 char *
 e_book_backend_get_static_capabilities (EBookBackend *backend)
 {
@@ -456,6 +662,15 @@ e_book_backend_get_static_capabilities (EBookBackend *backend)
 	return E_BOOK_BACKEND_GET_CLASS (backend)->get_static_capabilities (backend);
 }
 
+/**
+ * e_book_backend_is_loaded:
+ * @backend: an #EBookBackend
+ *
+ * Checks if @backend's storage has been opened and the backend
+ * itself is ready for accessing.
+ *
+ * Return value: %TRUE if loaded, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_is_loaded (EBookBackend *backend)
 {
@@ -464,6 +679,14 @@ e_book_backend_is_loaded (EBookBackend *backend)
 	return backend->priv->loaded;
 }
 
+/**
+ * e_book_backend_set_is_loaded:
+ * @backend: an #EBookBackend
+ * @is_loaded: A flag indicating whether the backend is loaded
+ *
+ * Sets the flag indicating whether @backend is loaded to @is_loaded.
+ * Meant to be used by backend implementations.
+ **/
 void
 e_book_backend_set_is_loaded (EBookBackend *backend, gboolean is_loaded)
 {
@@ -472,6 +695,14 @@ e_book_backend_set_is_loaded (EBookBackend *backend, gboolean is_loaded)
 	backend->priv->loaded = is_loaded;
 }
 
+/**
+ * e_book_backend_is_writable:
+ * @backend: an #EBookBackend
+ *
+ * Checks if we can write to @backend.
+ *
+ * Return value: %TRUE if writeable, %FALSE if not.
+ **/
 gboolean
 e_book_backend_is_writable (EBookBackend *backend)
 {
@@ -480,6 +711,14 @@ e_book_backend_is_writable (EBookBackend *backend)
 	return backend->priv->writable;
 }
 
+/**
+ * e_book_backend_set_is_writable:
+ * @backend: an #EBookBackend
+ * @is_writable: A flag indicating whether the backend is writeable
+ *
+ * Sets the flag indicating whether @backend is writeable to @is_writeable.
+ * Meant to be used by backend implementations.
+ **/
 void
 e_book_backend_set_is_writable (EBookBackend *backend, gboolean is_writable)
 {
@@ -488,6 +727,14 @@ e_book_backend_set_is_writable (EBookBackend *backend, gboolean is_writable)
 	backend->priv->writable = is_writable;
 }
 
+/**
+ * e_book_backend_is_removed:
+ * @backend: an #EBookBackend
+ *
+ * Checks if @backend has been removed from its physical storage.
+ *
+ * Return value: %TRUE if @backend has been removed, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_is_removed (EBookBackend *backend)
 {
@@ -496,6 +743,14 @@ e_book_backend_is_removed (EBookBackend *backend)
 	return backend->priv->removed;
 }
 
+/**
+ * e_book_backend_set_is_removed:
+ * @backend: an #EBookBackend
+ * @is_removed: A flag indicating whether the backend's storage was removed
+ *
+ * Sets the flag indicating whether @backend was removed to @is_removed.
+ * Meant to be used by backend implementations.
+ **/
 void
 e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
 {
@@ -504,6 +759,14 @@ e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
 	backend->priv->removed = is_removed;
 }
 
+/**
+ * e_book_backend_set_mode:
+ * @backend: an #EBookbackend
+ * @mode: a mode indicating the online/offline status of the backend
+ *
+ * Sets @backend's online/offline mode to @mode. Mode can be 1 for offline
+ * or 2 indicating that it is connected and online.
+ **/
 void 
 e_book_backend_set_mode (EBookBackend *backend,
 			 GNOME_Evolution_Addressbook_BookMode  mode)
@@ -516,6 +779,15 @@ e_book_backend_set_mode (EBookBackend *backend,
 
 }
 
+/**
+ * e_book_backend_change_add_new:
+ * @vcard: a VCard string
+ *
+ * Creates a new change item indicating @vcard was added.
+ * Meant to be used by backend implementations.
+ *
+ * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ **/
 GNOME_Evolution_Addressbook_BookChangeItem*
 e_book_backend_change_add_new     (const char *vcard)
 {
@@ -527,6 +799,15 @@ e_book_backend_change_add_new     (const char *vcard)
 	return new_change;
 }
 
+/**
+ * e_book_backend_change_modify_new:
+ * @vcard: a VCard string
+ *
+ * Creates a new change item indicating @vcard was modified.
+ * Meant to be used by backend implementations.
+ *
+ * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ **/
 GNOME_Evolution_Addressbook_BookChangeItem*
 e_book_backend_change_modify_new  (const char *vcard)
 {
@@ -538,6 +819,15 @@ e_book_backend_change_modify_new  (const char *vcard)
 	return new_change;
 }
 
+/**
+ * e_book_backend_change_delete_new:
+ * @vcard: a VCard string
+ *
+ * Creates a new change item indicating @vcard was deleted.
+ * Meant to be used by backend implementations.
+ *
+ * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ **/
 GNOME_Evolution_Addressbook_BookChangeItem*
 e_book_backend_change_delete_new  (const char *vcard)
 {
@@ -586,7 +876,7 @@ view_notify_update (EDataBookView *view, gpointer contact)
 
 /**
  * e_book_backend_notify_update:
- * @backend: an addressbook backend
+ * @backend: an #EBookBackend
  * @contact: a new or modified contact
  *
  * Notifies all of @backend's book views about the new or modified
@@ -611,7 +901,7 @@ view_notify_remove (EDataBookView *view, gpointer id)
 
 /**
  * e_book_backend_notify_remove:
- * @backend: an addressbook backend
+ * @backend: an #EBookBackend
  * @id: a contact id
  *
  * Notifies all of @backend's book views that the contact with UID
@@ -636,7 +926,7 @@ view_notify_complete (EDataBookView *view, gpointer unused)
 
 /**
  * e_book_backend_notify_complete:
- * @backend: an addressbook backend
+ * @backend: an #EBookbackend
  *
  * Notifies all of @backend's book views that the current set of
  * notifications is complete; use this after a series of
@@ -649,11 +939,12 @@ e_book_backend_notify_complete (EBookBackend *backend)
 }
 
 
-/** e_book_backend_notify_writable
- * @backend: an addressbook backend
+/**
+ * e_book_backend_notify_writable:
+ * @backend: an #EBookBackend
  * @is_writable: flag indicating writable status
  *
- * Notifies all backends clients about the current writable state 
+ * Notifies all backends clients about the current writable state.
  **/
 void 
 e_book_backend_notify_writable (EBookBackend *backend, gboolean is_writable)
@@ -672,6 +963,14 @@ e_book_backend_notify_writable (EBookBackend *backend, gboolean is_writable)
 
 }
 
+/**
+ * e_book_backend_notify_connection_status:
+ * @backend: an #EBookBackend
+ * @is_online: flag indicating whether @backend is connected and online
+ *
+ * Notifies clients of @backend's connection status indicated by @is_online.
+ * Meant to be used by backend implementations.
+ **/
 void 
 e_book_backend_notify_connection_status (EBookBackend *backend, gboolean is_online)
 {
@@ -685,12 +984,15 @@ e_book_backend_notify_connection_status (EBookBackend *backend, gboolean is_onli
 		e_data_book_report_connection_status (E_DATA_BOOK (clients->data), is_online);
 
 	g_mutex_unlock (priv->clients_mutex);
-
-
-
-
 }
 
+/**
+ * e_book_backend_notify_auth_required:
+ * @backend: an #EBookBackend
+ *
+ * Notifies clients that @backend requires authentication in order to
+ * connect. Means to be used by backend implementations.
+ **/
 void
 e_book_backend_notify_auth_required (EBookBackend *backend)
 {
@@ -703,8 +1005,6 @@ e_book_backend_notify_auth_required (EBookBackend *backend)
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_auth_required (E_DATA_BOOK (clients->data));
 	g_mutex_unlock (priv->clients_mutex);
-
-
 }
 
 static void

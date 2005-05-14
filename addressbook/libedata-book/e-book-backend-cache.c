@@ -219,13 +219,13 @@ e_book_backend_cache_get_type (void)
 }
 
 /**
- * e_cal_backend_cache_new
+ * e_book_backend_cache_new
  * @uri: URI of the backend to be cached.
  *
- * Creates a new #EBookBackendCache object, which implements a cache of
- * calendar/tasks objects, very useful for remote backends.
+ * Creates a new #EBookBackendCache object, which implements a local
+ * cache of #EContact objects, useful for remote backends.
  *
- * Return value: The newly created object.
+ * Return value: A new #EBookBackendCache.
  */
 EBookBackendCache *
 e_book_backend_cache_new (const char *uri)
@@ -237,7 +237,17 @@ e_book_backend_cache_new (const char *uri)
         return cache;
 }
 
-
+/**
+ * e_book_backend_cache_get_contact:
+ * @cache: an #EBookBackendCache
+ * @uid: a unique contact ID
+ *
+ * Get a cached contact. Note that the returned #EContact will be
+ * newly created, and must be unreffed by the caller when no longer
+ * needed.
+ *
+ * Return value: A cached #EContact, or %NULL if @uid is not cached.
+ **/
 EContact *
 e_book_backend_cache_get_contact (EBookBackendCache *cache, const char *uid)
 {
@@ -257,7 +267,15 @@ e_book_backend_cache_get_contact (EBookBackendCache *cache, const char *uid)
 	return contact;
 }
 
-
+/**
+ * e_book_backend_cache_add_contact:
+ * @cache: an #EBookBackendCache
+ * @contact: an #EContact
+ *
+ * Adds @contact to @cache.
+ *
+ * Return value: %TRUE if the contact was cached successfully, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_cache_add_contact (EBookBackendCache *cache,
 				   EContact *contact)
@@ -285,7 +303,15 @@ e_book_backend_cache_add_contact (EBookBackendCache *cache,
 	return retval;
 }
 
-
+/**
+ * e_book_backend_cache_remove_contact:
+ * @cache: an #EBookBackendCache
+ * @uid: a unique contact ID
+ *
+ * Removes the contact identified by @uid from @cache.
+ *
+ * Return value: %TRUE if the contact was found and removed, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_cache_remove_contact (EBookBackendCache *cache,
 				    const char *uid)
@@ -309,6 +335,16 @@ e_book_backend_cache_remove_contact (EBookBackendCache *cache,
 
 	return retval;
 }
+
+/**
+ * e_book_backend_cache_check_contact:
+ * @cache: an #EBookBackendCache
+ * @uid: a unique contact ID
+ *
+ * Checks if the contact identified by @uid exists in @cache.
+ *
+ * Return value: %TRUE if the cache contains the contact, %FALSE otherwise.
+ **/
 gboolean 
 e_book_backend_cache_check_contact (EBookBackendCache *cache, const char *uid)
 {
@@ -327,6 +363,17 @@ e_book_backend_cache_check_contact (EBookBackendCache *cache, const char *uid)
 	return retval;
 }
 
+/**
+ * e_book_backend_cache_get_contacts:
+ * @cache: an #EBookBackendCache
+ * @query: an s-expression
+ *
+ * Returns a list of #EContact elements from @cache matching @query.
+ * When done with the list, the caller must unref the contacts and
+ * free the list.
+ *
+ * Return value: A #GList of pointers to #EContact.
+ **/
 GList *
 e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
 {
@@ -365,6 +412,17 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
         return list;
 }
 
+/**
+ * e_book_backend_cache_search:
+ * @cache: an #EBookBackendCache
+ * @query: an s-expression
+ *
+ * Returns an array of pointers to unique contact ID strings for contacts
+ * in @cache matching @query. When done with the array, the caller must
+ * free the ID strings and the array.
+ *
+ * Return value: A #GPtrArray of pointers to contact ID strings.
+ **/
 GPtrArray *
 e_book_backend_cache_search (EBookBackendCache *cache, const char *query)
 {
@@ -384,6 +442,14 @@ e_book_backend_cache_search (EBookBackendCache *cache, const char *query)
 	return ptr_array;
 }
 
+/**
+ * e_book_backend_cache_exists:
+ * @uri: URI for the cache
+ *
+ * Checks if an #EBookBackendCache exists at @uri.
+ *
+ * Return value: %TRUE if cache exists, %FALSE if not.
+ **/
 gboolean 
 e_book_backend_cache_exists (const char *uri)
 {
@@ -399,6 +465,13 @@ e_book_backend_cache_exists (const char *uri)
 	return exists;
 }
 
+/**
+ * e_book_backend_cache_set_populated:
+ * @cache: an #EBookBackendCache
+ *
+ * Flags @cache as being populated - that is, it is up-to-date on the 
+ * contents of the book it's caching.
+ **/
 void
 e_book_backend_cache_set_populated (EBookBackendCache *cache)
 {
@@ -407,6 +480,14 @@ e_book_backend_cache_set_populated (EBookBackendCache *cache)
 	
 }
 
+/**
+ * e_book_backend_cache_is_populated:
+ * @cache: an #EBookBackendCache
+ *
+ * Checks if @cache is populated.
+ *
+ * Return value: %TRUE if @cache is populated, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_cache_is_populated (EBookBackendCache *cache)
 {

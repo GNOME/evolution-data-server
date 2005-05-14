@@ -443,6 +443,15 @@ static struct {
 	{ "exists", func_exists, 0 },
 };
 
+/**
+ * e_book_backend_sexp_match_contact:
+ * @sexp: an #EBookBackendSExp
+ * @contact: an #EContact
+ *
+ * Checks if @contact matches @sexp.
+ *
+ * Return value: %TRUE if the contact matches, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact)
 {
@@ -467,6 +476,15 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact)
 	return retval;
 }
 
+/**
+ * e_book_backend_sexp_match_vcard:
+ * @sexp: an #EBookBackendSExp
+ * @vcard: a VCard string
+ *
+ * Checks if @vcard matches @sexp.
+ *
+ * Return value: %TRUE if the VCard matches, %FALSE otherwise.
+ **/
 gboolean
 e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const char *vcard)
 {
@@ -486,7 +504,12 @@ e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const char *vcard)
 
 /**
  * e_book_backend_sexp_new:
- */
+ * @text: an s-expression to parse
+ *
+ * Creates a new #EBookBackendSExp from @text.
+ *
+ * Return value: A new #EBookBackendSExp.
+ **/
 EBookBackendSExp *
 e_book_backend_sexp_new (const char *text)
 {

@@ -83,10 +83,11 @@ e_data_book_factory_extract_proto_from_uri (const char *uri)
 
 /**
  * e_data_book_factory_register_backend:
- * @factory:
- * @proto:
- * @backend:
- */
+ * @factory: an #EDataBookFactory
+ * @backend_factory: an #EBookBackendFactory
+ *
+ * Registers @backend_factory with @factory.
+ **/
 void
 e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
 				      EBookBackendFactory   *backend_factory)
@@ -147,6 +148,13 @@ e_data_book_factory_get_n_backends (EDataBookFactory *factory)
 	return n_backends;
 }
 
+/**
+ * e_data_book_factory_register_backends:
+ * @book_factory: an #EDataBookFactory
+ *
+ * Register the backends supported by the Evolution Data Server,
+ * with @book_factory.
+ **/
 void
 e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 {
@@ -174,6 +182,13 @@ dump_active_server_map_entry (gpointer key, gpointer value, gpointer data)
 	g_message ("  %s: %p", uri, backend);
 }
 
+/**
+ * e_data_book_factory_dump_active_backends:
+ * @factory: an #EDataBookFactory
+ *
+ * Dump the list of active backends registered with @factory
+ * to stdout. This is a debugging function.
+ **/
 void
 e_data_book_factory_dump_active_backends (EDataBookFactory *factory)
 {
@@ -380,7 +395,11 @@ e_data_book_factory_construct (EDataBookFactory *factory)
 
 /**
  * e_data_book_factory_new:
- */
+ *
+ * Create a new #EDataBookFactory.
+ *
+ * Return value: A new #EDataBookFactory.
+ **/
 EDataBookFactory *
 e_data_book_factory_new (void)
 {
@@ -402,7 +421,13 @@ e_data_book_factory_new (void)
 
 /**
  * e_data_book_factory_activate:
- */
+ * @factory: an #EDataBookFactory
+ * @iid: the OAF ID of the factory to activate
+ *
+ * Activates the factory specified by @iid, using Bonobo.
+ *
+ * Return value: %TRUE for success, %FALSE otherwise.
+ **/
 gboolean
 e_data_book_factory_activate (EDataBookFactory *factory, const char *iid)
 {
@@ -454,6 +479,15 @@ set_backend_online_status (gpointer key, gpointer value, gpointer data)
 	e_book_backend_set_mode (backend, GPOINTER_TO_INT (data));
 }
 
+/**
+ * e_data_book_factory_set_backend_mode:
+ * @factory: an #EDataBookFactory
+ * @mode: a connection status
+ *
+ * Sets all the backends associated with @factory to be either online
+ * or offline. @mode should be passed as 1 for offline, or 2 for
+ * online.
+ **/
 void
 e_data_book_factory_set_backend_mode (EDataBookFactory *factory, int mode)
 {

@@ -50,6 +50,14 @@ e_book_backend_factory_get_type (void)
 	return type;
 }
 
+/**
+ * e_book_backend_factory_get_protocol:
+ * @factory: an #EBookBackendFactory
+ *
+ * Gets the protocol that @factory creates backends for.
+ *
+ * Return value: A string representing a protocol.
+ **/
 const char*
 e_book_backend_factory_get_protocol (EBookBackendFactory *factory)
 {
@@ -58,6 +66,14 @@ e_book_backend_factory_get_protocol (EBookBackendFactory *factory)
 	return E_BOOK_BACKEND_FACTORY_GET_CLASS (factory)->get_protocol (factory);
 }
 
+/**
+ * e_book_backend_factory_new_backend:
+ * @factory: an #EBookBackendFactory
+ *
+ * Creates a new #EBookBackend with @factory's protocol.
+ *
+ * Return value: A new #EBookBackend.
+ **/
 EBookBackend*
 e_book_backend_factory_new_backend (EBookBackendFactory *factory)
 {

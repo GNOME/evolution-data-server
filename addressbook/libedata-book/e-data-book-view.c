@@ -226,7 +226,15 @@ notify_add (EDataBookView *book_view, const char *id, const char *vcard)
 
 /**
  * e_data_book_view_notify_update:
- */
+ * @book_view: an #EDataBookView
+ * @contact: an #EContact
+ *
+ * Notify listeners that @contact has changed. This can
+ * trigger an add, change or removal event depending on
+ * whether the change causes the contact to start matching,
+ * no longer match, or stay matching the query specified
+ * by @book_view.
+ **/
 void
 e_data_book_view_notify_update (EDataBookView *book_view,
 			     EContact    *contact)
@@ -265,7 +273,12 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 
 /**
  * e_data_book_view_notify_remove:
- */
+ * @book_view: an #EDataBookView
+ * @id: a unique contact ID
+ *
+ * Notify listeners that a contact specified by @id
+ * was removed from @book_view.
+ **/
 void
 e_data_book_view_notify_remove (EDataBookView *book_view,
 			     const char  *id)
@@ -275,7 +288,15 @@ e_data_book_view_notify_remove (EDataBookView *book_view,
 	g_mutex_unlock (book_view->priv->pending_mutex);
 }
 
-
+/**
+ * e_data_book_view_notify_complete:
+ * @book_view: an #EDataBookView
+ * @status: the status of the query
+ *
+ * Notifies listeners that all pending updates on @book_view
+ * have been sent. The listener's information should now be
+ * in sync with the backend's.
+ **/
 void
 e_data_book_view_notify_complete (EDataBookView *book_view,
 			       GNOME_Evolution_Addressbook_CallStatus status)
@@ -302,6 +323,15 @@ e_data_book_view_notify_complete (EDataBookView *book_view,
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_book_view_notify_status_message:
+ * @book_view: an #EDataBookView
+ * @message: a text message
+ *
+ * Provides listeners with a human-readable text describing the
+ * current backend operation. This can be used for progress
+ * reporting.
+ **/
 void
 e_data_book_view_notify_status_message (EDataBookView *book_view,
 				     const char  *message)
@@ -355,9 +385,6 @@ e_data_book_view_construct (EDataBookView                *book_view,
 	ORBit_small_listen_for_broken (e_data_book_view_get_listener (book_view), G_CALLBACK (view_listener_died_cb), book_view);
 }
 
-/**
- * e_data_book_view_new:
- */
 static void
 impl_GNOME_Evolution_Addressbook_BookView_start (PortableServer_Servant servant,
 						 CORBA_Environment *ev)
@@ -389,8 +416,14 @@ impl_GNOME_Evolution_Addressbook_BookView_dispose (PortableServer_Servant servan
 }
 
 /**
- * e_data_book_view_get_card_query
- */
+ * e_data_book_view_get_card_query:
+ * @book_view: an #EDataBookView
+ *
+ * Gets the text representation of the s-expression used
+ * for matching contacts to @book_view.
+ *
+ * Return value: The textual s-expression used.
+ **/
 const char*
 e_data_book_view_get_card_query (EDataBookView *book_view)
 {
@@ -400,8 +433,14 @@ e_data_book_view_get_card_query (EDataBookView *book_view)
 }
 
 /**
- * e_data_book_view_get_card_sexp
- */
+ * e_data_book_view_get_card_sexp:
+ * @book_view: an #EDataBookView
+ *
+ * Gets the s-expression used for matching contacts to
+ * @book_view.
+ *
+ * Return value: The #EBookBackendSExp used.
+ **/
 EBookBackendSExp*
 e_data_book_view_get_card_sexp (EDataBookView *book_view)
 {
@@ -410,6 +449,15 @@ e_data_book_view_get_card_sexp (EDataBookView *book_view)
 	return book_view->priv->card_sexp;
 }
 
+/**
+ * e_data_book_view_get_max_results:
+ * @book_view: an #EDataBookView
+ * 
+ * Gets the maximum number of results returned by
+ * @book_view's query.
+ *
+ * Return value: The maximum number of results returned.
+ **/
 int
 e_data_book_view_get_max_results (EDataBookView *book_view)
 {
@@ -418,6 +466,14 @@ e_data_book_view_get_max_results (EDataBookView *book_view)
 	return book_view->priv->max_results;
 }
 
+/**
+ * e_data_book_view_get_backend:
+ * @book_view: an #EDataBookView
+ *
+ * Gets the backend that @book_view is querying.
+ *
+ * Return value: The associated #EBookBackend.
+ **/
 EBookBackend*
 e_data_book_view_get_backend (EDataBookView *book_view)
 {
@@ -426,6 +482,14 @@ e_data_book_view_get_backend (EDataBookView *book_view)
 	return book_view->priv->backend;
 }
 
+/**
+ * e_data_book_view_get_mutex:
+ * @book_view: an #EDataBookView
+ *
+ * Gets the internal mutex of @book_view.
+ *
+ * Return value: The #GMutex for @book_view.
+ **/
 GMutex*
 e_data_book_view_get_mutex (EDataBookView *book_view)
 {
@@ -434,6 +498,15 @@ e_data_book_view_get_mutex (EDataBookView *book_view)
 	return book_view->priv->mutex;
 }
 
+/**
+ * e_data_book_view_get_listener:
+ * @book_view: an #EDataBookView
+ *
+ * Gets the CORBA listener that @book_view is dispatching
+ * events to.
+ *
+ * Return value: The CORBA book view listener.
+ **/
 GNOME_Evolution_Addressbook_BookViewListener
 e_data_book_view_get_listener (EDataBookView  *book_view)
 {
@@ -442,6 +515,18 @@ e_data_book_view_get_listener (EDataBookView  *book_view)
 	return book_view->priv->listener;
 }
 
+/**
+ * e_data_book_view_set_thresholds:
+ * @book_view: an #EDataBookView
+ * @minimum_grouping_threshold: the minimum threshold
+ * @maximum_grouping_threshold: the maximum threshold
+ *
+ * Sets the thresholds for grouping add events together
+ * for efficiency reasons. The minimum threshold specifies
+ * how many adds must be grouped (as long as there are
+ * pending adds), and the maximum threshold specifies
+ * the maximum number of adds that can be grouped.
+ **/
 void
 e_data_book_view_set_thresholds (EDataBookView *book_view,
 				 int minimum_grouping_threshold,
@@ -453,7 +538,14 @@ e_data_book_view_set_thresholds (EDataBookView *book_view,
 
 /**
  * e_data_book_view_new:
- */
+ * @backend: an #EBookBackend to view
+ * @listener: a CORBA listener to reveive notifications
+ * @card_query: an s-expression representing the query
+ * @card_sexp: 
+ * @max_results: the maximum number of results for the query
+ *
+ * Return value: A new #EDataBookView.
+ **/
 EDataBookView *
 e_data_book_view_new (EBookBackend *backend,
 		      GNOME_Evolution_Addressbook_BookViewListener  listener,

@@ -245,7 +245,12 @@ impl_GNOME_Evolution_Addressbook_Book_cancelOperation (PortableServer_Servant se
 
 /**
  * e_data_book_get_backend:
- */
+ * @book: an #EDataBook
+ *
+ * Gets the #EBookBackend being used to store data for @book.
+ *
+ * Return value: The #EBookBackend being used.
+ **/
 EBookBackend *
 e_data_book_get_backend (EDataBook *book)
 {
@@ -254,6 +259,14 @@ e_data_book_get_backend (EDataBook *book)
 	return book->priv->backend;
 }
 
+/**
+ * e_data_book_get_listener:
+ * @book: an #EDataBook
+ *
+ * Gets the CORBA listener associated with @book.
+ *
+ * Return value: A #GNOME_Evolution_Addressbook_BookListener.
+ **/
 GNOME_Evolution_Addressbook_BookListener
 e_data_book_get_listener (EDataBook *book)
 {
@@ -262,6 +275,14 @@ e_data_book_get_listener (EDataBook *book)
 	return book->priv->listener;
 }
 
+/**
+ * e_data_book_get_source:
+ * @book: an #EDataBook
+ *
+ * Gets the #ESource associated with @book.
+ *
+ * Return value: An #ESource.
+ **/
 ESource *
 e_data_book_get_source (EDataBook *book)
 {
@@ -270,7 +291,13 @@ e_data_book_get_source (EDataBook *book)
 
 /**
  * e_data_book_respond_open:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ *
+ * Respond to an 'open' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_open (EDataBook                              *book,
 			  guint32                                 opid,
@@ -291,7 +318,13 @@ e_data_book_respond_open (EDataBook                              *book,
 
 /**
  * e_data_book_respond_remove:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ *
+ * Respond to a 'remove' request to remove all of @book's data,
+ * specified by @opid, indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_remove (EDataBook                           *book,
 			    guint32                              opid,
@@ -312,7 +345,14 @@ e_data_book_respond_remove (EDataBook                           *book,
 
 /**
  * e_data_book_respond_create:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @contact: the contact created, or %NULL
+ *
+ * Respond to a 'create' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_create (EDataBook                              *book,
 			    guint32                                 opid,
@@ -343,7 +383,14 @@ e_data_book_respond_create (EDataBook                              *book,
 
 /**
  * e_data_book_respond_remove_contacts:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @ids: a list of contact IDs removed
+ *
+ * Respond to a 'remove contacts' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_remove_contacts (EDataBook                              *book,
 				     guint32                                 opid,
@@ -374,7 +421,14 @@ e_data_book_respond_remove_contacts (EDataBook                              *boo
 
 /**
  * e_data_book_respond_modify:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @contact: the modified #EContact
+ *
+ * Respond to a 'modify' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_modify (EDataBook                              *book,
 			    guint32                                 opid,
@@ -403,7 +457,13 @@ e_data_book_respond_modify (EDataBook                              *book,
 
 /**
  * e_data_book_respond_authenticate_user:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ *
+ * Respond to an 'authenticate' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_authenticate_user (EDataBook                              *book,
 				       guint32                                 opid,
@@ -424,6 +484,16 @@ e_data_book_respond_authenticate_user (EDataBook                              *b
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_book_respond_get_required_fields:
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @fields: a list of required field names
+ *
+ * Respond to a 'get required fields' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_get_required_fields (EDataBook                              *book,
 					  guint32                                 opid,
@@ -461,7 +531,16 @@ e_data_book_respond_get_required_fields (EDataBook                              
 	CORBA_free(stringlist._buffer);
 }
 
-
+/**
+ * e_data_book_respond_get_supported_fields:
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @fields: a list of supported field names
+ *
+ * Respond to a 'get supported fields' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_get_supported_fields (EDataBook                              *book,
 					  guint32                                 opid,
@@ -498,6 +577,16 @@ e_data_book_respond_get_supported_fields (EDataBook                             
 	CORBA_free(stringlist._buffer);
 }
 
+/**
+ * e_data_book_respond_get_supported_auth_methods:
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @auth_methods: a list of names for supported auth methods
+ *
+ * Respond to a 'get supported auth methods' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_get_supported_auth_methods (EDataBook                              *book,
 						guint32                                 opid,
@@ -541,7 +630,14 @@ view_destroy(gpointer data, GObject *where_object_was)
 
 /**
  * e_data_book_respond_get_book_view:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @book_view: the #EDataBookView created
+ *
+ * Respond to a 'get book view' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_get_book_view (EDataBook                              *book,
 				   guint32                                 opid,
@@ -574,7 +670,14 @@ e_data_book_respond_get_book_view (EDataBook                              *book,
 
 /**
  * e_data_book_respond_get_contact:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @vcard: the found VCard, or %NULL
+ *
+ * Respond to a 'get contact' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_get_contact (EDataBook                              *book,
 				 guint32                                 opid,
@@ -599,7 +702,14 @@ e_data_book_respond_get_contact (EDataBook                              *book,
 
 /**
  * e_data_book_respond_get_contact_list:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @card_list: a list of VCard strings
+ *
+ * Respond to a 'get contact list' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_get_contact_list (EDataBook                              *book,
 				      guint32                                 opid,
@@ -643,7 +753,14 @@ e_data_book_respond_get_contact_list (EDataBook                              *bo
 
 /**
  * e_data_book_respond_get_changes:
- */
+ * @book: an #EDataBook
+ * @opid: the operation ID that generated the response
+ * @status: the outcome of the operation
+ * @changes: a list of GNOME_Evolution_Addressbook_BookChangeItem items
+ *
+ * Respond to a 'get changes' request specified by @opid on @book,
+ * indicating @status as the outcome.
+ **/
 void
 e_data_book_respond_get_changes (EDataBook                              *book,
 				 guint32                                 opid,
@@ -689,7 +806,12 @@ e_data_book_respond_get_changes (EDataBook                              *book,
 
 /**
  * e_data_book_report_writable:
- */
+ * @book: an #EDataBook
+ * @writable: %TRUE if @book is writeable, %FALSE otherwise
+ *
+ * Notify listeners that @book's writeable status has changed
+ * to @writable.
+ **/
 void
 e_data_book_report_writable (EDataBook                           *book,
 			     gboolean                           writable)
@@ -709,6 +831,14 @@ e_data_book_report_writable (EDataBook                           *book,
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * e_data_book_report_connection_status:
+ * @book: an #EDataBook
+ * @is_online: %TRUE if the book is connected, %FALSE otherwise
+ *
+ * Notify listeners that @book's online status has changed
+ * to @is_online.
+ **/
 void 
 e_data_book_report_connection_status (EDataBook   *book,
 				      gboolean    is_online)
@@ -729,6 +859,12 @@ e_data_book_report_connection_status (EDataBook   *book,
 
 }
 
+/**
+ * e_data_book_report_connection_status:
+ * @book: an #EDataBook
+ *
+ * Notify listeners that @book requires authentication.
+ **/
 void 
 e_data_book_report_auth_required (EDataBook *book)
 {
@@ -782,7 +918,15 @@ e_data_book_construct (EDataBook                *book,
 
 /**
  * e_data_book_new:
- */
+ * @backend: an #EBookBackend
+ * @source: an #ESource
+ * @listener: a #GNOME_Evolution_Addressbook_BookListener CORBA object
+ *
+ * Create a new #EDataBook using @backend for storage, @source as the
+ * storage location and @listener for reporting status.
+ *
+ * Return value: A new #EDataBook.
+ **/
 EDataBook *
 e_data_book_new (EBookBackend                               *backend,
 		 ESource *source,

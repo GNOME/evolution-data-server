@@ -1,3 +1,15 @@
+2005-05-14  Hans Petter Jansson  <hpj@novell.com>
+
+	* libedata-book/e-book-backend-cache.c:
+	* libedata-book/e-book-backend-factory.c:
+	* libedata-book/e-book-backend-sexp.c:
+	* libedata-book/e-book-backend-summary.c:
+	* libedata-book/e-book-backend-sync.c:
+	* libedata-book/e-book-backend.c:
+	* libedata-book/e-data-book-factory.c:
+	* libedata-book/e-data-book-view.c:
+	* libedata-book/e-data-book.c: Wrote API docs.
+
 2005-05-11  Sushma Rai	<rsushma@novell.com>
 
 	* libedata-book/e-book-backend-sexp.c (compare_name): Considering 
