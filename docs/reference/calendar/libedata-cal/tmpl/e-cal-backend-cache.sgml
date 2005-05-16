@@ -1,0 +1,168 @@
+<!-- ##### SECTION Title ##### -->
+ECalBackendCache
+
+<!-- ##### SECTION Short_Description ##### -->
+Cache for calendar backends.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalBackendCachePrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_new ##### -->
+<para>
+
+</para>
+
+@uri: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_component ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+@rid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_put_component ##### -->
+<para>
+
+</para>
+
+@cache: 
+@comp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_remove_component ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+@rid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_components ##### -->
+<para>
+
+</para>
+
+@cache: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_timezone ##### -->
+<para>
+
+</para>
+
+@cache: 
+@tzid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_put_timezone ##### -->
+<para>
+
+</para>
+
+@cache: 
+@zone: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_remove_timezone ##### -->
+<para>
+
+</para>
+
+@cache: 
+@tzid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_put_default_timezone ##### -->
+<para>
+
+</para>
+
+@cache: 
+@default_zone: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_default_timezone ##### -->
+<para>
+
+</para>
+
+@cache: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_keys ##### -->
+<para>
+
+</para>
+
+@cache: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_marker ##### -->
+<para>
+
+</para>
+
+@cache: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_set_marker ##### -->
+<para>
+
+</para>
+
+@cache: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_put_server_utc_time ##### -->
+<para>
+
+</para>
+
+@cache: 
+@utc_str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_server_utc_time ##### -->
+<para>
+
+</para>
+
+@cache: 
+@Returns: 
+
+

@@ -1,0 +1,157 @@
+<!-- ##### SECTION Title ##### -->
+e-data-cal-common
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalBackend ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ECalBackend::last-client-gone ##### -->
+<para>
+
+</para>
+
+@ecalbackend: the object which received the signal.
+
+<!-- ##### SIGNAL ECalBackend::opened ##### -->
+<para>
+
+</para>
+
+@ecalbackend: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalBackend::removed ##### -->
+<para>
+
+</para>
+
+@ecalbackend: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG ECalBackend:kind ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalBackend:source ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalBackend:uri ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT ECalBackendClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@last_client_gone: 
+@cal_added: 
+@is_loaded: 
+@opened: 
+@removed: 
+@obj_updated: 
+@is_read_only: 
+@get_cal_address: 
+@get_alarm_email_address: 
+@get_ldap_attribute: 
+@get_static_capabilities: 
+@open: 
+@remove: 
+@create_object: 
+@modify_object: 
+@remove_object: 
+@discard_alarm: 
+@receive_objects: 
+@send_objects: 
+@get_default_object: 
+@get_object: 
+@get_object_list: 
+@get_timezone: 
+@add_timezone: 
+@set_default_timezone: 
+@start_query: 
+@get_mode: 
+@set_mode: 
+@get_free_busy: 
+@get_changes: 
+@internal_get_default_timezone: 
+@internal_get_timezone: 
+
+<!-- ##### STRUCT EDataCal ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EDataCalClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@epv: 
+
+<!-- ##### STRUCT EDataCalView ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG EDataCalView:backend ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EDataCalView:listener ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EDataCalView:sexp ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EDataCalViewClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@epv: 
+
+<!-- ##### STRUCT ECalBackendSExp ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalBackendSExpClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+

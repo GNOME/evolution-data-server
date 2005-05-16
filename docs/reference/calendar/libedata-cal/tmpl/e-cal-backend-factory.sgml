@@ -1,0 +1,52 @@
+<!-- ##### SECTION Title ##### -->
+ECalBackendFactory
+
+<!-- ##### SECTION Short_Description ##### -->
+Factory for creating backends.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalBackendFactoryPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_cal_backend_factory_get_kind ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_factory_get_protocol ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_factory_new_backend ##### -->
+<para>
+
+</para>
+
+@factory: 
+@source: 
+@Returns: 
+
+

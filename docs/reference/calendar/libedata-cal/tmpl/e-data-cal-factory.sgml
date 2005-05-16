@@ -1,0 +1,85 @@
+<!-- ##### SECTION Title ##### -->
+EDataCalFactory
+
+<!-- ##### SECTION Short_Description ##### -->
+Implementation of the calendar CORBA factory.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EDataCalFactoryPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_data_cal_factory_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_factory_register_storage ##### -->
+<para>
+
+</para>
+
+@factory: 
+@iid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_factory_register_backend ##### -->
+<para>
+
+</para>
+
+@factory: 
+@backend_factory: 
+
+
+<!-- ##### FUNCTION e_data_cal_factory_register_backends ##### -->
+<para>
+
+</para>
+
+@factory: 
+
+
+<!-- ##### FUNCTION e_data_cal_factory_get_n_backends ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_factory_dump_active_backends ##### -->
+<para>
+
+</para>
+
+@factory: 
+
+
+<!-- ##### FUNCTION e_data_cal_factory_set_backend_mode ##### -->
+<para>
+
+</para>
+
+@factory: 
+@mode: 
+
+

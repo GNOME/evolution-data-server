@@ -1,0 +1,312 @@
+<!-- ##### SECTION Title ##### -->
+EDataCal
+
+<!-- ##### SECTION Short_Description ##### -->
+Implementation of the calendar CORBA client interface.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EDataCalPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_data_cal_construct ##### -->
+<para>
+
+</para>
+
+@cal: 
+@backend: 
+@listener: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_new ##### -->
+<para>
+
+</para>
+
+@backend: 
+@listener: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_get_backend ##### -->
+<para>
+
+</para>
+
+@cal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_get_listener ##### -->
+<para>
+
+</para>
+
+@cal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_read_only ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@read_only: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_cal_address ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@address: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_alarm_email_address ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@address: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_ldap_attribute ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@attribute: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_static_capabilities ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@capabilities: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_open ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_remove ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_object_created ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@uid: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_object_modified ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@old_object: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_object_removed ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@uid: 
+@old_object: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_alarm_discarded ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_objects_received ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_objects_sent ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@users: 
+@calobj: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_default_object ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_object ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_object_list ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@objects: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_query ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@query: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_timezone_requested ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_timezone_added ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@tzid: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_default_timezone_set ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_changes ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@adds: 
+@modifies: 
+@deletes: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_free_busy ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@freebusy: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_mode ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@mode: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_auth_required ##### -->
+<para>
+
+</para>
+
+@cal: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_error ##### -->
+<para>
+
+</para>
+
+@cal: 
+@message: 
+
+

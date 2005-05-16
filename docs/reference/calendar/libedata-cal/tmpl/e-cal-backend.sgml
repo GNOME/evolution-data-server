@@ -1,0 +1,428 @@
+<!-- ##### SECTION Title ##### -->
+ECalBackend
+
+<!-- ##### SECTION Short_Description ##### -->
+Base class for calendar/tasks backend implementations.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalBackendPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_cal_backend_get_source ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_uri ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_kind ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_add_client ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_remove_client ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_add_query ##### -->
+<para>
+
+</para>
+
+@backend: 
+@query: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_queries ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_is_read_only ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_cal_address ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_alarm_email_address ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_ldap_attribute ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_static_capabilities ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_open ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@only_if_exists: 
+@username: 
+@password: 
+
+
+<!-- ##### FUNCTION e_cal_backend_remove ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_create_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+
+
+<!-- ##### FUNCTION e_cal_backend_modify_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+@mod: 
+
+
+<!-- ##### FUNCTION e_cal_backend_remove_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@rid: 
+@mod: 
+
+
+<!-- ##### FUNCTION e_cal_backend_discard_alarm ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@auid: 
+
+
+<!-- ##### FUNCTION e_cal_backend_receive_objects ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+
+
+<!-- ##### FUNCTION e_cal_backend_send_objects ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_default_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@rid: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_object_list ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@sexp: 
+
+
+<!-- ##### FUNCTION e_cal_backend_is_loaded ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_start_query ##### -->
+<para>
+
+</para>
+
+@backend: 
+@query: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_mode ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_set_mode ##### -->
+<para>
+
+</para>
+
+@backend: 
+@mode: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@tzid: 
+
+
+<!-- ##### FUNCTION e_cal_backend_add_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@object: 
+
+
+<!-- ##### FUNCTION e_cal_backend_set_default_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@tzid: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_changes ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@change_id: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_free_busy ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@users: 
+@start: 
+@end: 
+
+
+<!-- ##### FUNCTION e_cal_backend_internal_get_default_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_internal_get_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@tzid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_last_client_gone ##### -->
+<para>
+
+</para>
+
+@backend: 
+
+
+<!-- ##### FUNCTION e_cal_backend_set_notification_proxy ##### -->
+<para>
+
+</para>
+
+@backend: 
+@proxy: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_object_created ##### -->
+<para>
+
+</para>
+
+@backend: 
+@calobj: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_object_modified ##### -->
+<para>
+
+</para>
+
+@backend: 
+@old_object: 
+@object: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_object_removed ##### -->
+<para>
+
+</para>
+
+@backend: 
+@uid: 
+@old_object: 
+@object: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_mode ##### -->
+<para>
+
+</para>
+
+@backend: 
+@status: 
+@mode: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_auth_required ##### -->
+<para>
+
+</para>
+
+@backend: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_error ##### -->
+<para>
+
+</para>
+
+@backend: 
+@message: 
+
+

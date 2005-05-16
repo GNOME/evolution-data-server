@@ -1,0 +1,228 @@
+<!-- ##### SECTION Title ##### -->
+EDataCalView
+
+<!-- ##### SECTION Short_Description ##### -->
+Implementation of the calendar CORBA search interface.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_DATA_CAL_VIEW_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO QUERY ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO E_DATA_CAL_VIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### MACRO IS_QUERY ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO IS_E_DATA_CAL_VIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### STRUCT EDataCalViewPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_data_cal_view_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_new ##### -->
+<para>
+
+</para>
+
+@backend: 
+@ql: 
+@sexp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_add_listener ##### -->
+<para>
+
+</para>
+
+@query: 
+@ql: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_get_text ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_get_object_sexp ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_object_matches ##### -->
+<para>
+
+</para>
+
+@query: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_get_matched_objects ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_is_started ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_is_done ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_get_done_status ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_objects_added ##### -->
+<para>
+
+</para>
+
+@query: 
+@objects: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_objects_added_1 ##### -->
+<para>
+
+</para>
+
+@query: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_objects_modified ##### -->
+<para>
+
+</para>
+
+@query: 
+@objects: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_objects_modified_1 ##### -->
+<para>
+
+</para>
+
+@query: 
+@object: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_objects_removed ##### -->
+<para>
+
+</para>
+
+@query: 
+@uids: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_objects_removed_1 ##### -->
+<para>
+
+</para>
+
+@query: 
+@uid: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_progress ##### -->
+<para>
+
+</para>
+
+@query: 
+@message: 
+@percent: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_done ##### -->
+<para>
+
+</para>
+
+@query: 
+@status: 
+
+

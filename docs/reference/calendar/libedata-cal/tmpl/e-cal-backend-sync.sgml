@@ -1,0 +1,300 @@
+<!-- ##### SECTION Title ##### -->
+ECalBackendSync
+
+<!-- ##### SECTION Short_Description ##### -->
+Base class for synchronous backends.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalBackendSyncPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF ECalBackendSyncStatus ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION ECalBackendSyncFactoryFn ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_set_lock ##### -->
+<para>
+
+</para>
+
+@backend: 
+@lock: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_is_read_only ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@read_only: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_cal_address ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@address: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_alarm_email_address ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@address: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_ldap_attribute ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@attribute: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_static_capabilities ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@capabiliites: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_open ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@only_if_exists: 
+@username: 
+@password: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_remove ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_create_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+@uid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_modify_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+@mod: 
+@old_object: 
+@new_object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_remove_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@rid: 
+@mod: 
+@old_object: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_discard_alarm ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@auid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_receive_objects ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_send_objects ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@calobj: 
+@users: 
+@modified_calobj: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_default_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@rid: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_object_list ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@sexp: 
+@objects: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@tzid: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_add_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@tzobj: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_set_default_timezone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@tzid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_changes ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@change_id: 
+@adds: 
+@modifies: 
+@deletes: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_free_busy ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@users: 
+@start: 
+@end: 
+@freebusy: 
+@Returns: 
+
+
