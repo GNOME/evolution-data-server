@@ -454,7 +454,7 @@ e_data_cal_view_add_listener (EDataCalView *query, GNOME_Evolution_Calendar_CalV
 }
 
 /**
- * e_data_cal_view_get_sexp
+ * e_data_cal_view_get_text:
  * @query: A #EDataCalView object.
  *
  * Get the expression used for the given query.
