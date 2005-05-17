@@ -142,6 +142,7 @@ e_book_backend_cache_constructor (GType type,
 {
 	GObject *obj;
 	const char *uri;
+	char *cache_file;
 	EBookBackendCacheClass *klass;
 	GObjectClass *parent_class;
 
@@ -155,7 +156,10 @@ e_book_backend_cache_constructor (GType type,
 	/* extract uid */
 	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri")) {
 		uri = g_value_get_string (construct_properties->value);
-		g_object_set (obj, "filename", get_filename_from_uri (uri), NULL);
+		cache_file = get_filename_from_uri (uri);
+		if (cache_file)
+			g_object_set (obj, "filename", cache_file, NULL);
+		g_free (cache_file);
 	}
 
 	return obj;
