@@ -1,3 +1,9 @@
+2005-05-17  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* camel-groupwise-store.c : Reverting back the changes causing string
+	  freeze break. They were added unintentionally and should have never
+	  been applied to this branch.
+
 2005-04-27  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: 
