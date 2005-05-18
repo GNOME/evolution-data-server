@@ -1,3 +1,8 @@
+2005-05-18  Ross Burton  <ross@burtonini.com>
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	Fix various memory leaks.
+
 2005-05-18  Rodrigo Moya <rodrigo@novell.com>
 
 	* backends/file/e-cal-backend-file-journal.[ch]: new class to implement

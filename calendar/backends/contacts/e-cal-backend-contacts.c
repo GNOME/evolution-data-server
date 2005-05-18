@@ -345,14 +345,20 @@ contacts_added_cb (EBookView *book_view, const GList *contacts, gpointer user_da
         for (i = contacts; i; i = i->next)
         {
                 EContact *contact = E_CONTACT (i->data);
+                EContactDate *birthday, *anniversary;
                 
-                if (e_contact_get (contact, E_CONTACT_BIRTH_DATE) ||
-                    e_contact_get (contact, E_CONTACT_ANNIVERSARY)) {
+                birthday = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
+                anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
+                                             
+                if (birthday || anniversary) {
                         ContactRecord *cr = contact_record_new (cbc, contact);
                         const char    *uid = e_contact_get_const (contact, E_CONTACT_UID);
                         
                         g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);
                 }
+                
+                e_contact_date_free (birthday);
+                e_contact_date_free (anniversary);
         }
 }
 
@@ -465,16 +471,19 @@ create_birthday (ECalBackendContacts *cbc, EContact *contact)
         EContactDate  *cdate;
         ECalComponent *cal_comp;
 	char          *summary;
-        const char    *name, *uid;
+        const char    *name;
+        char *uid;
 
         cdate = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
         name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
 
-	uid = g_strdup_printf ("%s%s", (char *) e_contact_get (contact, E_CONTACT_UID), BIRTHDAY_UID_EXT);
+	uid = g_strdup_printf ("%s%s", (char *) e_contact_get_const (contact, E_CONTACT_UID), BIRTHDAY_UID_EXT);
         summary = g_strdup_printf (_("Birthday: %s"), name);
         
         cal_comp = create_component (cbc, uid, cdate, summary);
 
+        e_contact_date_free (cdate);
+        g_free (uid);
         g_free (summary);
         
         return cal_comp;
@@ -486,16 +495,19 @@ create_anniversary (ECalBackendContacts *cbc, EContact *contact)
         EContactDate  *cdate;
         ECalComponent *cal_comp;
 	char          *summary;
-        const char    *name, *uid;
+        const char    *name;
+        char *uid;
         
         cdate = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
         name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
 
-	uid = g_strdup_printf ("%s%s", (char *) e_contact_get (contact, E_CONTACT_UID), ANNIVERSARY_UID_EXT);
+	uid = g_strdup_printf ("%s%s", (char *) e_contact_get_const (contact, E_CONTACT_UID), ANNIVERSARY_UID_EXT);
         summary = g_strdup_printf (_("Anniversary: %s"), name);
         
         cal_comp = create_component (cbc, uid, cdate, summary);
 
+        e_contact_date_free (cdate);
+        g_free (uid);
         g_free (summary);
 
         return cal_comp;
