@@ -1,3 +1,8 @@
+2005-05-18  Harish Krishnaswamy <kharish@novell.com>
+
+	* docs/reference/Makefile.am : Do not build 
+	camel docs.  They are a bit flaky ATM.
+
 2005-05-13  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedataserver/e-categories.c (add_category_if_present): new private
