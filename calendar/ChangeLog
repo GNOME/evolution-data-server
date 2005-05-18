@@ -1,3 +1,8 @@
+2005-05-18  Ross Burton  <ross@burtonini.com>
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	Fix various memory leaks.
+
 2005-05-17  Sushma Rai  <rsushma@novell.com>
 
 	* libedata-cal/e-cal-backend-cache.c (e_cal_backend_cache_constructor):
