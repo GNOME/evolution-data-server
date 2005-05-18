@@ -116,50 +116,50 @@ struct _camel_header_newsgroup {
 struct _camel_header_address *camel_header_address_new (void);
 struct _camel_header_address *camel_header_address_new_name (const char *name, const char *addr);
 struct _camel_header_address *camel_header_address_new_group (const char *name);
-void camel_header_address_ref (struct _camel_header_address *);
-void camel_header_address_unref (struct _camel_header_address *);
-void camel_header_address_set_name (struct _camel_header_address *, const char *name);
-void camel_header_address_set_addr (struct _camel_header_address *, const char *addr);
-void camel_header_address_set_members (struct _camel_header_address *, struct _camel_header_address *group);
-void camel_header_address_add_member (struct _camel_header_address *, struct _camel_header_address *member);
-void camel_header_address_list_append_list (struct _camel_header_address **l, struct _camel_header_address **h);
-void camel_header_address_list_append (struct _camel_header_address **, struct _camel_header_address *);
-void camel_header_address_list_clear (struct _camel_header_address **);
+void camel_header_address_ref (struct _camel_header_address *addrlist);
+void camel_header_address_unref (struct _camel_header_address *addrlist);
+void camel_header_address_set_name (struct _camel_header_address *addrlist, const char *name);
+void camel_header_address_set_addr (struct _camel_header_address *addrlist, const char *addr);
+void camel_header_address_set_members (struct _camel_header_address *addrlist, struct _camel_header_address *group);
+void camel_header_address_add_member (struct _camel_header_address *addrlist, struct _camel_header_address *member);
+void camel_header_address_list_append_list (struct _camel_header_address **addrlistp, struct _camel_header_address **addrs);
+void camel_header_address_list_append (struct _camel_header_address **addrlistp, struct _camel_header_address *addr);
+void camel_header_address_list_clear (struct _camel_header_address **addrlistp);
 
 struct _camel_header_address *camel_header_address_decode (const char *in, const char *charset);
 struct _camel_header_address *camel_header_mailbox_decode (const char *in, const char *charset);
 /* for mailing */
-char *camel_header_address_list_encode (struct _camel_header_address *a);
+char *camel_header_address_list_encode (struct _camel_header_address *addrlist);
 /* for display */
-char *camel_header_address_list_format (struct _camel_header_address *a);
+char *camel_header_address_list_format (struct _camel_header_address *addrlist);
 
 /* structured header prameters */
 struct _camel_header_param *camel_header_param_list_decode (const char *in);
-char *camel_header_param (struct _camel_header_param *p, const char *name);
-struct _camel_header_param *camel_header_set_param (struct _camel_header_param **l, const char *name, const char *value);
-void camel_header_param_list_format_append (GString *out, struct _camel_header_param *p);
-char *camel_header_param_list_format (struct _camel_header_param *p);
-void camel_header_param_list_free (struct _camel_header_param *p);
+char *camel_header_param (struct _camel_header_param *params, const char *name);
+struct _camel_header_param *camel_header_set_param (struct _camel_header_param **paramsp, const char *name, const char *value);
+void camel_header_param_list_format_append (GString *out, struct _camel_header_param *params);
+char *camel_header_param_list_format (struct _camel_header_param *params);
+void camel_header_param_list_free (struct _camel_header_param *params);
 
 /* Content-Type header */
 CamelContentType *camel_content_type_new (const char *type, const char *subtype);
 CamelContentType *camel_content_type_decode (const char *in);
-void camel_content_type_unref (CamelContentType *ct);
-void camel_content_type_ref (CamelContentType *ct);
-const char *camel_content_type_param (CamelContentType *t, const char *name);
-void camel_content_type_set_param (CamelContentType *t, const char *name, const char *value);
-int camel_content_type_is (CamelContentType *ct, const char *type, const char *subtype);
-char *camel_content_type_format (CamelContentType *ct);
-char *camel_content_type_simple (CamelContentType *ct);
+void camel_content_type_unref (CamelContentType *content_type);
+void camel_content_type_ref (CamelContentType *content_type);
+const char *camel_content_type_param (CamelContentType *content_type, const char *name);
+void camel_content_type_set_param (CamelContentType *content_type, const char *name, const char *value);
+int camel_content_type_is (CamelContentType *content_type, const char *type, const char *subtype);
+char *camel_content_type_format (CamelContentType *content_type);
+char *camel_content_type_simple (CamelContentType *content_type);
 
 /* DEBUGGING function */
-void camel_content_type_dump (CamelContentType *ct);
+void camel_content_type_dump (CamelContentType *content_type);
 
 /* Content-Disposition header */
 CamelContentDisposition *camel_content_disposition_decode (const char *in);
-void camel_content_disposition_ref (CamelContentDisposition *);
-void camel_content_disposition_unref (CamelContentDisposition *);
-char *camel_content_disposition_format (CamelContentDisposition *d);
+void camel_content_disposition_ref (CamelContentDisposition *disposition);
+void camel_content_disposition_unref (CamelContentDisposition *disposition);
+char *camel_content_disposition_format (CamelContentDisposition *disposition);
 
 /* decode the contents of a content-encoding header */
 char *camel_content_transfer_encoding_decode (const char *in);
@@ -247,7 +247,7 @@ size_t camel_uuencode_close (unsigned char *in, size_t len, unsigned char *out, 
 size_t camel_quoted_decode_step (unsigned char *in, size_t len, unsigned char *out, int *savestate, int *saveme);
 
 size_t camel_quoted_encode_step (unsigned char *in, size_t len, unsigned char *out, int *state, int *save);
-size_t camel_quoted_decode_close (unsigned char *in, size_t len, unsigned char *out, int *state, int *save);
+size_t camel_quoted_encode_close (unsigned char *in, size_t len, unsigned char *out, int *state, int *save);
 
 char *camel_base64_encode_simple (const char *data, size_t len);
 size_t camel_base64_decode_simple (char *data, size_t len);

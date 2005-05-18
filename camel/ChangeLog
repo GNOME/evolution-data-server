@@ -1,3 +1,13 @@
+2005-05-16  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-filter-basic.c (complete): Call
+	camel_quoted_encode_close() instead of quoted_decode_close() when
+	encoding.
+
+	* camel-mime-utils.c (camel_quoted_decode_close): This function
+	was named incorrectly, it's really camel_quoted_encode_close
+	(camel_quoted_encode_close): New name.
+
 2005-05-07  Sankar P  <psankar@novell.com>
 
 	* camel-provider.h: Added a new flag

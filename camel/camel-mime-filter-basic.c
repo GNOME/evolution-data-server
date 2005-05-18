@@ -107,7 +107,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
 		/* *4 is definetly more than needed ... */
 		camel_mime_filter_set_size(mf, len*4+4, FALSE);
-		newlen = camel_quoted_decode_close(in, len, mf->outbuf, &f->state, &f->save);
+		newlen = camel_quoted_encode_close(in, len, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len*4+4);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
