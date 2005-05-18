@@ -1,3 +1,44 @@
+Evolution-Data-Server 1.3.2, 2005-05-18
+----------------------------------------
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+Groupwise 
+
+	#274194 Filters do not filter all messages  (Partha)
+	#273246 email is visible with mime.822 file attached (Partha)
+	#273243 external HTML mail is an attachment not viewed inline (Partha)
+
+	#256874 Anniversaries in B&A calendar have the Birthday category (Shreyas)
+	#301116 libedataserverui needs to specify the translation domain explicitly
+		(Changwoo Ryu) 
+
+	#303540 F10 + Shift Key' doesn't work in evolution contacts (Mengjie Yu)  
+	#272504 spell GW rightly (Chenthill)
+	#272503 Typo fix (Thierry Moisan)
+
+
+Other Features and Fixes:
+
+	API docs  (Hans Petter Jansson, Rodrigo Moya) 
+
+	Misc pc file, configure fixes   (Harish)
+	GW Backend Memory leaks (Ulrich Neumann)
+	const keyword additions to camel files (Ross Burton)  
+	Added a new flag CAMEL_PROVIDER_DISABLE_SENT_FOLDER   (Sankar)  
+	Memory leak fixes  (Sushma) 
+	Checks for Win32 (mingw) (Tor Lillqvist)  
+	Copy the flags field when converting from CamelStoreInfo to CamelFolderInfo.
+	 (Alessandro Decina)   
+	VJOURNAL backend (Rodrigo Moya) 
+
+
+Updated Translations:
+
+	- bg (Rostislav Raykov) 
+        - el (Kostas Papadimas) 
+        - da (Martin Willemoes Hansen) 
+  
+
 Evolution Data Server 1.3.1, 2005-04-26
 ---------------------------------------
 
