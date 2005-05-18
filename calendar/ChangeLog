@@ -1,3 +1,15 @@
+2005-05-18  Rodrigo Moya <rodrigo@novell.com>
+
+	* backends/file/e-cal-backend-file-journal.[ch]: new class to implement
+	VJOURNAL backend.
+
+	* backends/file/e-cal-backend-factory.c (_journal_new_backend,
+	_journal_get_kind, journal_backend_factory_class_init,
+	journal_backend_factory_get_type): new functions for the journal backend.
+	(eds_module_initialize, eds_module_list_types): add the new backend.
+
+	* backends/file/Makefile.am: added new files.
+
 2005-05-13  Rodrigo Moya <rodrigo@novell.com>
 
 	* libedata-cal/e-cal-backend.c (e_cal_backend_get_cal_address):

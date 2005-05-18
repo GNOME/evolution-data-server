@@ -17,6 +17,8 @@ libecalbackendfile_la_SOURCES =		\
 	e-cal-backend-file-factory.h\
 	e-cal-backend-file-events.c\
 	e-cal-backend-file-events.h\
+	e-cal-backend-file-journal.c\
+	e-cal-backend-file-journal.h\
 	e-cal-backend-file-todos.c\
 	e-cal-backend-file-todos.h\
 	e-cal-backend-file.c	\
