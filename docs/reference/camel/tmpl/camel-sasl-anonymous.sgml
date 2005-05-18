@@ -1,0 +1,47 @@
+<!-- ##### SECTION Title ##### -->
+CamelSaslAnonymous
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelSaslAnonymous ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM CamelSaslAnonTraceType ##### -->
+<para>
+
+</para>
+
+@CAMEL_SASL_ANON_TRACE_EMAIL: 
+@CAMEL_SASL_ANON_TRACE_OPAQUE: 
+@CAMEL_SASL_ANON_TRACE_EMPTY: 
+
+<!-- ##### FUNCTION camel_sasl_anonymous_new ##### -->
+<para>
+
+</para>
+
+@type: 
+@trace_info: 
+@Returns: 
+
+
+<!-- ##### VARIABLE camel_sasl_anonymous_authtype ##### -->
+<para>
+
+</para>
+
+

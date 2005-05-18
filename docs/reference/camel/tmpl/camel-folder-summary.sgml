@@ -1,0 +1,782 @@
+<!-- ##### SECTION Title ##### -->
+CamelFolderSummary
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelFolderSummary ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelMessageInfo ##### -->
+<para>
+
+</para>
+
+@summary: 
+@refcount: 
+@uid: 
+
+<!-- ##### STRUCT CamelMessageInfoBase ##### -->
+<para>
+
+</para>
+
+@summary: 
+@refcount: 
+@uid: 
+@subject: 
+@from: 
+@to: 
+@cc: 
+@mlist: 
+@flags: 
+@size: 
+@date_sent: 
+@date_received: 
+@message_id: 
+@references: 
+@user_flags: 
+@user_tags: 
+@content: 
+
+<!-- ##### STRUCT CamelMessageContentInfo ##### -->
+<para>
+
+</para>
+
+@next: 
+@childs: 
+@parent: 
+@type: 
+@id: 
+@description: 
+@encoding: 
+@size: 
+
+<!-- ##### ENUM CamelMessageFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_MESSAGE_ANSWERED: 
+@CAMEL_MESSAGE_DELETED: 
+@CAMEL_MESSAGE_DRAFT: 
+@CAMEL_MESSAGE_FLAGGED: 
+@CAMEL_MESSAGE_SEEN: 
+@CAMEL_MESSAGE_ATTACHMENTS: 
+@CAMEL_MESSAGE_ANSWERED_ALL: 
+@CAMEL_MESSAGE_JUNK: 
+@CAMEL_MESSAGE_SECURE: 
+@CAMEL_MESSAGE_FOLDER_FLAGGED: 
+@CAMEL_MESSAGE_JUNK_LEARN: 
+@CAMEL_MESSAGE_USER: 
+
+<!-- ##### MACRO CAMEL_MESSAGE_SYSTEM_MASK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT CamelFlag ##### -->
+<para>
+
+</para>
+
+@next: 
+@name: 
+
+<!-- ##### STRUCT CamelTag ##### -->
+<para>
+
+</para>
+
+@next: 
+@value: 
+@name: 
+
+<!-- ##### STRUCT CamelSummaryMessageID ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelSummaryReferences ##### -->
+<para>
+
+</para>
+
+@size: 
+@references: 
+
+<!-- ##### ENUM CamelFolderSummaryFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_SUMMARY_DIRTY: 
+
+<!-- ##### FUNCTION camel_folder_summary_new ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_set_filename ##### -->
+<para>
+
+</para>
+
+@summary: 
+@filename: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_set_index ##### -->
+<para>
+
+</para>
+
+@summary: 
+@index: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_set_build_content ##### -->
+<para>
+
+</para>
+
+@summary: 
+@state: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_next_uid ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_next_uid_string ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_set_uid ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_load ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_save ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_header_load ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_touch ##### -->
+<para>
+
+</para>
+
+@summary: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_add ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_add_from_header ##### -->
+<para>
+
+</para>
+
+@summary: 
+@headers: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_add_from_parser ##### -->
+<para>
+
+</para>
+
+@summary: 
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_add_from_message ##### -->
+<para>
+
+</para>
+
+@summary: 
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_info_new_from_header ##### -->
+<para>
+
+</para>
+
+@summary: 
+@headers: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_info_new_from_parser ##### -->
+<para>
+
+</para>
+
+@summary: 
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_info_new_from_message ##### -->
+<para>
+
+</para>
+
+@summary: 
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_content_info_new ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_content_info_free ##### -->
+<para>
+
+</para>
+
+@summary: 
+@ci: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_remove ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_remove_uid ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_remove_index ##### -->
+<para>
+
+</para>
+
+@summary: 
+@index: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_remove_range ##### -->
+<para>
+
+</para>
+
+@summary: 
+@start: 
+@end: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_clear ##### -->
+<para>
+
+</para>
+
+@summary: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_count ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_index ##### -->
+<para>
+
+</para>
+
+@summary: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_uid ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_array ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
+<para>
+
+</para>
+
+@summary: 
+@array: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_encode_token ##### -->
+<para>
+
+</para>
+
+@out: 
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_decode_token ##### -->
+<para>
+
+</para>
+
+@in: 
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_flag_get ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_flag_set ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_flag_list_copy ##### -->
+<para>
+
+</para>
+
+@to: 
+@from: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_flag_list_size ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_flag_list_free ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION camel_system_flag ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_system_flag_get ##### -->
+<para>
+
+</para>
+
+@flags: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tag_get ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tag_set ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tag_list_copy ##### -->
+<para>
+
+</para>
+
+@to: 
+@from: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tag_list_size ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tag_list_free ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION camel_message_info_new ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_ref ##### -->
+<para>
+
+</para>
+
+@info: 
+
+
+<!-- ##### FUNCTION camel_message_info_new_from_header ##### -->
+<para>
+
+</para>
+
+@summary: 
+@header: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_free ##### -->
+<para>
+
+</para>
+
+@info: 
+
+
+<!-- ##### FUNCTION camel_message_info_clone ##### -->
+<para>
+
+</para>
+
+@info: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_ptr ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_uint32 ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_time ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@Returns: 
+
+
+<!-- ##### MACRO camel_message_info_uid ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_subject ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_from ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_to ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_cc ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_mlist ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_flags ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_size ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_date_sent ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_date_received ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_message_id ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_references ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_user_flags ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### MACRO camel_message_info_user_tags ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
+<!-- ##### FUNCTION camel_message_info_user_flag ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_user_tag ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_set_flags ##### -->
+<para>
+
+</para>
+
+@mi: 
+@mask: 
+@set: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_set_user_flag ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_message_info_set_user_tag ##### -->
+<para>
+
+</para>
+
+@mi: 
+@id: 
+@val: 
+@Returns: 
+
+

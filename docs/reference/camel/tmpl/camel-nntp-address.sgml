@@ -1,0 +1,53 @@
+<!-- ##### SECTION Title ##### -->
+CamelNNTPAddress
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelNNTPAddress ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### FUNCTION camel_nntp_address_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_nntp_address_add ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_nntp_address_get ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Varargs: 
+@Param3: 
+@Returns: 
+
+

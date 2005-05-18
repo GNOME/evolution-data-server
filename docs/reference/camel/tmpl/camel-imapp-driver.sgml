@@ -1,0 +1,149 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAPPDriver
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAPPDriver ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@engine: 
+@folder: 
+@summary: 
+@uidvalidity: 
+@exists: 
+@recent: 
+@unseen: 
+@permanentflags: 
+@list_result: 
+@list_commands: 
+@list_flags: 
+@body_fetch: 
+@body_fetch_done: 
+@get_sasl: 
+@get_sasl_data: 
+@get_login: 
+@get_login_data: 
+
+<!-- ##### STRUCT CamelIMAPPFetch ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+@body: 
+@folder: 
+@uid: 
+@section: 
+@done: 
+@data: 
+
+<!-- ##### USER_FUNCTION CamelIMAPPDriverFunc ##### -->
+<para>
+
+</para>
+
+@driver: 
+@data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION CamelIMAPPLoginFunc ##### -->
+<para>
+
+</para>
+
+@driver: 
+@login: 
+@pass: 
+@data: 
+
+
+<!-- ##### USER_FUNCTION CamelIMAPPFetchFunc ##### -->
+<para>
+
+</para>
+
+@driver: 
+@Param2: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_new ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_set_sasl_factory ##### -->
+<para>
+
+</para>
+
+@id: 
+@get_sasl: 
+@sasl_data: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_set_login_query ##### -->
+<para>
+
+</para>
+
+@id: 
+@get_login: 
+@login_data: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_login ##### -->
+<para>
+
+</para>
+
+@id: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_select ##### -->
+<para>
+
+</para>
+
+@id: 
+@folder: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_update ##### -->
+<para>
+
+</para>
+
+@id: 
+@folder: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_sync ##### -->
+<para>
+
+</para>
+
+@id: 
+@expunge: 
+@folder: 
+
+

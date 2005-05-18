@@ -1,0 +1,50 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAP4Folder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAP4Folder ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@search: 
+@journal: 
+@cache: 
+@cachedir: 
+@utf7_name: 
+@read_only: 
+@enable_mlist: 
+
+<!-- ##### FUNCTION camel_imap4_folder_new ##### -->
+<para>
+
+</para>
+
+@store: 
+@full_name: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_folder_utf7_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+

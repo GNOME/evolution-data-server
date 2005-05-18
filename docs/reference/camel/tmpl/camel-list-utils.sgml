@@ -1,0 +1,210 @@
+<!-- ##### SECTION Title ##### -->
+camel-list-utils
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelDList ##### -->
+<para>
+
+</para>
+
+@head: 
+@tail: 
+@tailpred: 
+
+<!-- ##### STRUCT CamelDListNode ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+
+<!-- ##### MACRO CAMEL_DLIST_INITIALISER ##### -->
+<para>
+
+</para>
+
+@l: 
+
+
+<!-- ##### FUNCTION camel_dlist_init ##### -->
+<para>
+
+</para>
+
+@v: 
+
+
+<!-- ##### FUNCTION camel_dlist_addhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_dlist_addtail ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_dlist_remove ##### -->
+<para>
+
+</para>
+
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_dlist_remhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_dlist_remtail ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_dlist_empty ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_dlist_length ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### STRUCT CamelSListNode ##### -->
+<para>
+
+</para>
+
+@next: 
+
+<!-- ##### STRUCT CamelSList ##### -->
+<para>
+
+</para>
+
+@head: 
+
+<!-- ##### MACRO CAMEL_SLIST_INITIALISER ##### -->
+<para>
+
+</para>
+
+@l: 
+
+
+<!-- ##### FUNCTION camel_slist_init ##### -->
+<para>
+
+</para>
+
+@l: 
+
+
+<!-- ##### FUNCTION camel_slist_addhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_slist_addtail ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_slist_remove ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_slist_remhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_slist_remtail ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_slist_empty ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_slist_length ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+

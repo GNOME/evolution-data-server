@@ -1,0 +1,40 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAP4Search
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAP4Search ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@engine: 
+@lastuid: 
+@validity: 
+@cache: 
+@matches: 
+@matches_hash: 
+@matches_count: 
+
+<!-- ##### FUNCTION camel_imap4_search_new ##### -->
+<para>
+
+</para>
+
+@engine: 
+@cachedir: 
+@Returns: 
+
+

@@ -1,0 +1,44 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterGZip
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMimeFilterGZip ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@priv: 
+@mode: 
+@level: 
+
+<!-- ##### ENUM CamelMimeFilterGZipMode ##### -->
+<para>
+
+</para>
+
+@CAMEL_MIME_FILTER_GZIP_MODE_ZIP: 
+@CAMEL_MIME_FILTER_GZIP_MODE_UNZIP: 
+
+<!-- ##### FUNCTION camel_mime_filter_gzip_new ##### -->
+<para>
+
+</para>
+
+@mode: 
+@level: 
+@Returns: 
+
+

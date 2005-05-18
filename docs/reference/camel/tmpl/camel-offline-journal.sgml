@@ -1,0 +1,67 @@
+<!-- ##### SECTION Title ##### -->
+CamelOfflineJournal
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelOfflineJournal ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelOfflineJournalEntry ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_offline_journal_construct ##### -->
+<para>
+
+</para>
+
+@journal: 
+@folder: 
+@filename: 
+
+
+<!-- ##### FUNCTION camel_offline_journal_set_filename ##### -->
+<para>
+
+</para>
+
+@journal: 
+@filename: 
+
+
+<!-- ##### FUNCTION camel_offline_journal_write ##### -->
+<para>
+
+</para>
+
+@journal: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_offline_journal_replay ##### -->
+<para>
+
+</para>
+
+@journal: 
+@ex: 
+@Returns: 
+
+

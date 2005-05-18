@@ -1,0 +1,110 @@
+<!-- ##### SECTION Title ##### -->
+camel-imapp-exception
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelExceptionEnv ##### -->
+<para>
+
+</para>
+
+@parent: 
+@ex: 
+@env: 
+
+<!-- ##### MACRO CAMEL_TRY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_IGNORE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_CATCH ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO CAMEL_DONE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_DROP ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_exception_setup ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_exception_try ##### -->
+<para>
+
+</para>
+
+@env: 
+
+
+<!-- ##### FUNCTION camel_exception_done ##### -->
+<para>
+
+</para>
+
+@env: 
+
+
+<!-- ##### FUNCTION camel_exception_drop ##### -->
+<para>
+
+</para>
+
+@env: 
+
+
+<!-- ##### FUNCTION camel_exception_throw_ex ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+
+<!-- ##### FUNCTION camel_exception_throw ##### -->
+<para>
+
+</para>
+
+@id: 
+@fmt: 
+@Varargs: 
+
+

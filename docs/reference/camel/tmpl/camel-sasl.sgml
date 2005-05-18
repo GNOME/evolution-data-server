@@ -1,0 +1,82 @@
+<!-- ##### SECTION Title ##### -->
+CamelSasl
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelSasl ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_sasl_challenge ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@token: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_challenge_base64 ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@token: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_authenticated ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_new ##### -->
+<para>
+
+</para>
+
+@service_name: 
+@mechanism: 
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_authtype_list ##### -->
+<para>
+
+</para>
+
+@include_plain: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_authtype ##### -->
+<para>
+
+</para>
+
+@mechanism: 
+@Returns: 
+
+

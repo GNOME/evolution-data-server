@@ -1,0 +1,67 @@
+<!-- ##### SECTION Title ##### -->
+camel-nntp-private
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelNNTPStorePrivate ##### -->
+<para>
+
+</para>
+
+@dummy: 
+
+<!-- ##### MACRO CAMEL_NNTP_STORE_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+
+<!-- ##### MACRO CAMEL_NNTP_STORE_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+
+<!-- ##### STRUCT CamelNNTPFolderPrivate ##### -->
+<para>
+
+</para>
+
+@search_lock: 
+@cache_lock: 
+
+<!-- ##### MACRO CAMEL_NNTP_FOLDER_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+
+<!-- ##### MACRO CAMEL_NNTP_FOLDER_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+

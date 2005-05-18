@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterSave
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMimeFilterSave ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_mime_filter_save_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_filter_save_new_with_stream ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+

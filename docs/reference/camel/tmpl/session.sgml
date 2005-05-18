@@ -1,0 +1,32 @@
+<!-- ##### SECTION Title ##### -->
+CamelTestSession
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelTestSession ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+
+<!-- ##### FUNCTION camel_test_session_new ##### -->
+<para>
+
+</para>
+
+@path: 
+@Returns: 
+
+

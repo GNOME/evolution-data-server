@@ -1,0 +1,70 @@
+<!-- ##### SECTION Title ##### -->
+CamelGroupwiseJournal
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelGroupwiseJournal ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+
+<!-- ##### STRUCT CamelGroupwiseJournalEntry ##### -->
+<para>
+
+</para>
+
+@node: 
+@type: 
+@uid: 
+@original_uid: 
+@source_container: 
+
+<!-- ##### FUNCTION camel_groupwise_journal_new ##### -->
+<para>
+
+</para>
+
+@folder: 
+@filename: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_groupwise_journal_append ##### -->
+<para>
+
+</para>
+
+@journal: 
+@message: 
+@mi: 
+@appended_uid: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_groupwise_journal_transfer ##### -->
+<para>
+
+</para>
+
+@journal: 
+@source_folder: 
+@message: 
+@mi: 
+@orginal_uid: 
+@transferred_uid: 
+@ex: 
+
+

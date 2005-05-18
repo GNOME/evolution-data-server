@@ -1,0 +1,105 @@
+<!-- ##### SECTION Title ##### -->
+CamelDataWrapper
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelDataWrapper ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_data_wrapper_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_write_to_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_decode_to_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_set_mime_type ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@mime_type: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_get_mime_type ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_get_mime_type_field ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_set_mime_type_field ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@mime_type: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_construct_from_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_is_offline ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@Returns: 
+
+

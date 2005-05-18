@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+CamelImapWrapper
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelImapWrapperPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_imap_wrapper_new ##### -->
+<para>
+
+</para>
+
+@imap_folder: 
+@type: 
+@encoding: 
+@uid: 
+@part_spec: 
+@part: 
+@Returns: 
+
+

@@ -1,0 +1,30 @@
+<!-- ##### SECTION Title ##### -->
+CamelTcpStreamRaw
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelTcpStreamRaw ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_tcp_stream_raw_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

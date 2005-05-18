@@ -1,0 +1,315 @@
+<!-- ##### SECTION Title ##### -->
+CamelStoreSummary
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelStoreInfo ##### -->
+<para>
+
+</para>
+
+@refcount: 
+@uri: 
+@path: 
+@flags: 
+@unread: 
+@total: 
+
+<!-- ##### ENUM CamelStoreInfoFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_STORE_INFO_FOLDER_NOSELECT: 
+@CAMEL_STORE_INFO_FOLDER_NOINFERIORS: 
+@CAMEL_STORE_INFO_FOLDER_CHILDREN: 
+@CAMEL_STORE_INFO_FOLDER_NOCHILDREN: 
+@CAMEL_STORE_INFO_FOLDER_SUBSCRIBED: 
+@CAMEL_STORE_INFO_FOLDER_VIRTUAL: 
+@CAMEL_STORE_INFO_FOLDER_SYSTEM: 
+@CAMEL_STORE_INFO_FOLDER_VTRASH: 
+@CAMEL_STORE_INFO_FOLDER_SHARED_BY_ME: 
+@CAMEL_STORE_INFO_FOLDER_SHARED_TO_ME: 
+@CAMEL_STORE_INFO_FOLDER_READONLY: 
+@CAMEL_STORE_INFO_FOLDER_FLAGGED: 
+
+<!-- ##### STRUCT CamelStoreSummary ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_INFO_FOLDER_UNKNOWN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelStoreSummaryFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_STORE_SUMMARY_DIRTY: 
+@CAMEL_STORE_SUMMARY_FRAGMENT: 
+
+<!-- ##### FUNCTION camel_store_summary_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_set_filename ##### -->
+<para>
+
+</para>
+
+@summary: 
+@filename: 
+
+
+<!-- ##### FUNCTION camel_store_summary_set_uri_base ##### -->
+<para>
+
+</para>
+
+@summary: 
+@base: 
+
+
+<!-- ##### FUNCTION camel_store_summary_load ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_save ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_header_load ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_touch ##### -->
+<para>
+
+</para>
+
+@summary: 
+
+
+<!-- ##### FUNCTION camel_store_summary_add ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_summary_add_from_path ##### -->
+<para>
+
+</para>
+
+@summary: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_info_new ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_info_new_from_path ##### -->
+<para>
+
+</para>
+
+@summary: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_info_ref ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_summary_info_free ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_summary_remove ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_summary_remove_path ##### -->
+<para>
+
+</para>
+
+@summary: 
+@path: 
+
+
+<!-- ##### FUNCTION camel_store_summary_remove_index ##### -->
+<para>
+
+</para>
+
+@summary: 
+@index: 
+
+
+<!-- ##### FUNCTION camel_store_summary_clear ##### -->
+<para>
+
+</para>
+
+@summary: 
+
+
+<!-- ##### FUNCTION camel_store_summary_count ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_index ##### -->
+<para>
+
+</para>
+
+@summary: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_path ##### -->
+<para>
+
+</para>
+
+@summary: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_array ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_array_free ##### -->
+<para>
+
+</para>
+
+@summary: 
+@array: 
+
+
+<!-- ##### FUNCTION camel_store_info_string ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_info_set_string ##### -->
+<para>
+
+</para>
+
+@summary: 
+@info: 
+@type: 
+@value: 
+
+
+<!-- ##### MACRO camel_store_info_path ##### -->
+<para>
+
+</para>
+
+@s: 
+@i: 
+
+
+<!-- ##### MACRO camel_store_info_uri ##### -->
+<para>
+
+</para>
+
+@s: 
+@i: 
+
+
+<!-- ##### MACRO camel_store_info_name ##### -->
+<para>
+
+</para>
+
+@s: 
+@i: 
+
+

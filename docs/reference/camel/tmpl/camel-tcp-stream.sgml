@@ -1,0 +1,88 @@
+<!-- ##### SECTION Title ##### -->
+CamelTcpStream
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelTcpStream ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM CamelSockOpt ##### -->
+<para>
+
+</para>
+
+@CAMEL_SOCKOPT_NONBLOCKING: 
+@CAMEL_SOCKOPT_LINGER: 
+@CAMEL_SOCKOPT_REUSEADDR: 
+@CAMEL_SOCKOPT_KEEPALIVE: 
+@CAMEL_SOCKOPT_RECVBUFFERSIZE: 
+@CAMEL_SOCKOPT_SENDBUFFERSIZE: 
+@CAMEL_SOCKOPT_IPTIMETOLIVE: 
+@CAMEL_SOCKOPT_IPTYPEOFSERVICE: 
+@CAMEL_SOCKOPT_ADDMEMBER: 
+@CAMEL_SOCKOPT_DROPMEMBER: 
+@CAMEL_SOCKOPT_MCASTINTERFACE: 
+@CAMEL_SOCKOPT_MCASTTIMETOLIVE: 
+@CAMEL_SOCKOPT_MCASTLOOPBACK: 
+@CAMEL_SOCKOPT_NODELAY: 
+@CAMEL_SOCKOPT_MAXSEGMENT: 
+@CAMEL_SOCKOPT_BROADCAST: 
+@CAMEL_SOCKOPT_LAST: 
+
+<!-- ##### TYPEDEF CamelLinger ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelSockOptData ##### -->
+<para>
+
+</para>
+
+@option: 
+
+<!-- ##### FUNCTION camel_tcp_stream_connect ##### -->
+<para>
+
+</para>
+
+@stream: 
+@host: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tcp_stream_getsockopt ##### -->
+<para>
+
+</para>
+
+@stream: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tcp_stream_setsockopt ##### -->
+<para>
+
+</para>
+
+@stream: 
+@data: 
+@Returns: 
+
+

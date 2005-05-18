@@ -1,0 +1,205 @@
+<!-- ##### SECTION Title ##### -->
+CamelFilterDriver
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelFilterDriver ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### USER_FUNCTION CamelFilterGetFolderFunc ##### -->
+<para>
+
+</para>
+
+@driver: 
+@uri: 
+@data: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_new ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_set_logfile ##### -->
+<para>
+
+</para>
+
+@d: 
+@logfile: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_set_status_func ##### -->
+<para>
+
+</para>
+
+@d: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_set_shell_func ##### -->
+<para>
+
+</para>
+
+@d: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_set_play_sound_func ##### -->
+<para>
+
+</para>
+
+@d: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_set_system_beep_func ##### -->
+<para>
+
+</para>
+
+@d: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_set_folder_func ##### -->
+<para>
+
+</para>
+
+@d: 
+@fetcher: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_set_default_folder ##### -->
+<para>
+
+</para>
+
+@d: 
+@def: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_add_rule ##### -->
+<para>
+
+</para>
+
+@d: 
+@name: 
+@match: 
+@action: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_remove_rule_by_name ##### -->
+<para>
+
+</para>
+
+@d: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_flush ##### -->
+<para>
+
+</para>
+
+@driver: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_filter_message ##### -->
+<para>
+
+</para>
+
+@driver: 
+@message: 
+@info: 
+@uri: 
+@source: 
+@source_url: 
+@original_source_url: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_filter_mbox ##### -->
+<para>
+
+</para>
+
+@driver: 
+@mbox: 
+@original_source_url: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_filter_folder ##### -->
+<para>
+
+</para>
+
+@driver: 
+@folder: 
+@cache: 
+@uids: 
+@remove: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_expand_option ##### -->
+<para>
+
+</para>
+
+@d: 
+@s: 
+@action: 
+@op: 
+
+
+<!-- ##### FUNCTION camel_filter_driver_rule_count ##### -->
+<para>
+
+</para>
+
+@d: 
+@Returns: 
+
+

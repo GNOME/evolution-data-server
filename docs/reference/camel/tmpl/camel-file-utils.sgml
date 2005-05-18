@@ -1,0 +1,186 @@
+<!-- ##### SECTION Title ##### -->
+camel-file-utils
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION camel_file_util_encode_fixed_int32 ##### -->
+<para>
+
+</para>
+
+@out: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_fixed_int32 ##### -->
+<para>
+
+</para>
+
+@in: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_encode_uint32 ##### -->
+<para>
+
+</para>
+
+@out: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_uint32 ##### -->
+<para>
+
+</para>
+
+@in: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_encode_time_t ##### -->
+<para>
+
+</para>
+
+@out: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_time_t ##### -->
+<para>
+
+</para>
+
+@in: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_encode_off_t ##### -->
+<para>
+
+</para>
+
+@out: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_off_t ##### -->
+<para>
+
+</para>
+
+@in: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_encode_size_t ##### -->
+<para>
+
+</para>
+
+@out: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_size_t ##### -->
+<para>
+
+</para>
+
+@in: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_encode_string ##### -->
+<para>
+
+</para>
+
+@out: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_string ##### -->
+<para>
+
+</para>
+
+@in: 
+@Param2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mkdir ##### -->
+<para>
+
+</para>
+
+@path: 
+@mode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_safe_filename ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_read ##### -->
+<para>
+
+</para>
+
+@fd: 
+@buf: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_write ##### -->
+<para>
+
+</para>
+
+@fd: 
+@buf: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_savename ##### -->
+<para>
+
+</para>
+
+@filename: 
+@Returns: 
+
+

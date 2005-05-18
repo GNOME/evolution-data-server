@@ -1,0 +1,106 @@
+<!-- ##### SECTION Title ##### -->
+CamelDiscoDiary
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelDiscoDiary ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@store: 
+@file: 
+@folders: 
+@uidmap: 
+
+<!-- ##### ENUM CamelDiscoDiaryAction ##### -->
+<para>
+
+</para>
+
+@CAMEL_DISCO_DIARY_END: 
+@CAMEL_DISCO_DIARY_FOLDER_EXPUNGE: 
+@CAMEL_DISCO_DIARY_FOLDER_APPEND: 
+@CAMEL_DISCO_DIARY_FOLDER_TRANSFER: 
+
+<!-- ##### ENUM CamelDiscoDiaryArgType ##### -->
+<para>
+
+</para>
+
+@CAMEL_DISCO_DIARY_ARG_NONE: 
+@CAMEL_DISCO_DIARY_ARG_FOLDER: 
+@CAMEL_DISCO_DIARY_ARG_UID: 
+@CAMEL_DISCO_DIARY_ARG_UID_LIST: 
+
+<!-- ##### FUNCTION camel_disco_diary_new ##### -->
+<para>
+
+</para>
+
+@store: 
+@filename: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_disco_diary_empty ##### -->
+<para>
+
+</para>
+
+@diary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_disco_diary_log ##### -->
+<para>
+
+</para>
+
+@diary: 
+@action: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION camel_disco_diary_replay ##### -->
+<para>
+
+</para>
+
+@diary: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_disco_diary_uidmap_add ##### -->
+<para>
+
+</para>
+
+@diary: 
+@old_uid: 
+@new_uid: 
+
+
+<!-- ##### FUNCTION camel_disco_diary_uidmap_lookup ##### -->
+<para>
+
+</para>
+
+@diary: 
+@uid: 
+@Returns: 
+
+

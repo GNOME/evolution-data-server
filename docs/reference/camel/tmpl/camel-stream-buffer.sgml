@@ -1,0 +1,75 @@
+<!-- ##### SECTION Title ##### -->
+CamelStreamBuffer
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelStreamBuffer ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM CamelStreamBufferMode ##### -->
+<para>
+
+</para>
+
+@CAMEL_STREAM_BUFFER_BUFFER: 
+@CAMEL_STREAM_BUFFER_NONE: 
+@CAMEL_STREAM_BUFFER_READ: 
+@CAMEL_STREAM_BUFFER_WRITE: 
+@CAMEL_STREAM_BUFFER_MODE: 
+
+<!-- ##### FUNCTION camel_stream_buffer_new ##### -->
+<para>
+
+</para>
+
+@stream: 
+@mode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_buffer_new_with_vbuf ##### -->
+<para>
+
+</para>
+
+@stream: 
+@mode: 
+@buf: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_buffer_gets ##### -->
+<para>
+
+</para>
+
+@sbf: 
+@buf: 
+@max: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_buffer_read_line ##### -->
+<para>
+
+</para>
+
+@sbf: 
+@Returns: 
+
+

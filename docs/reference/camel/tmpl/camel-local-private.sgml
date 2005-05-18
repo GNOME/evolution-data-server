@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+camel-local-private
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelLocalFolderPrivate ##### -->
+<para>
+
+</para>
+
+@search_lock: 
+
+<!-- ##### MACRO CAMEL_LOCAL_FOLDER_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+
+<!-- ##### MACRO CAMEL_LOCAL_FOLDER_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+

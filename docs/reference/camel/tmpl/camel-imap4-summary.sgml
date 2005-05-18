@@ -1,0 +1,125 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAP4Summary
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAP4Summary ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@version: 
+@exists: 
+@recent: 
+@unseen: 
+@uidvalidity: 
+@uidvalidity_changed: 
+@update_flags: 
+
+<!-- ##### STRUCT CamelIMAP4MessageInfo ##### -->
+<para>
+
+</para>
+
+@info: 
+@server_flags: 
+
+<!-- ##### STRUCT CamelIMAP4MessageContentInfo ##### -->
+<para>
+
+</para>
+
+@info: 
+
+<!-- ##### MACRO CAMEL_IMAP4_MESSAGE_RECENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_imap4_summary_new ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_summary_set_exists ##### -->
+<para>
+
+</para>
+
+@summary: 
+@exists: 
+
+
+<!-- ##### FUNCTION camel_imap4_summary_set_recent ##### -->
+<para>
+
+</para>
+
+@summary: 
+@recent: 
+
+
+<!-- ##### FUNCTION camel_imap4_summary_set_unseen ##### -->
+<para>
+
+</para>
+
+@summary: 
+@unseen: 
+
+
+<!-- ##### FUNCTION camel_imap4_summary_set_uidnext ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uidnext: 
+
+
+<!-- ##### FUNCTION camel_imap4_summary_set_uidvalidity ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uidvalidity: 
+
+
+<!-- ##### FUNCTION camel_imap4_summary_expunge ##### -->
+<para>
+
+</para>
+
+@summary: 
+@seqid: 
+
+
+<!-- ##### FUNCTION camel_imap4_summary_flush_updates ##### -->
+<para>
+
+</para>
+
+@summary: 
+@ex: 
+@Returns: 
+
+

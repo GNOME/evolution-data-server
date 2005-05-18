@@ -1,0 +1,143 @@
+<!-- ##### SECTION Title ##### -->
+camel-arg
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelArg ##### -->
+<para>
+
+</para>
+
+@tag: 
+
+<!-- ##### STRUCT CamelArgV ##### -->
+<para>
+
+</para>
+
+@ap: 
+@argc: 
+@argv: 
+
+<!-- ##### STRUCT CamelArgGet ##### -->
+<para>
+
+</para>
+
+@tag: 
+
+<!-- ##### STRUCT CamelArgGetV ##### -->
+<para>
+
+</para>
+
+@ap: 
+@argc: 
+@argv: 
+
+<!-- ##### MACRO ca_object ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ca_int ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ca_double ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ca_str ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ca_ptr ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_ARGV_MAX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO camel_argv_start ##### -->
+<para>
+
+</para>
+
+@tv: 
+@last: 
+
+
+<!-- ##### MACRO camel_argv_end ##### -->
+<para>
+
+</para>
+
+@tv: 
+
+
+<!-- ##### FUNCTION camel_argv_build ##### -->
+<para>
+
+</para>
+
+@tv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_arggetv_build ##### -->
+<para>
+
+</para>
+
+@tv: 
+@Returns: 
+
+
+<!-- ##### MACRO camel_argv_ignore ##### -->
+<para>
+
+</para>
+
+@tv: 
+@i: 
+
+
+<!-- ##### STRUCT CamelProperty ##### -->
+<para>
+
+</para>
+
+@tag: 
+@name: 
+@description: 
+

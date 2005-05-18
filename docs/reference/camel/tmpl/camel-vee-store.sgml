@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+CamelVeeStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelVeeStore ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_VEE_FOLDER_AUTO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_vee_store_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

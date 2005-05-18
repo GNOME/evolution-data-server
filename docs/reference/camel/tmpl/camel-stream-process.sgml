@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+CamelStreamProcess
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelStreamProcess ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_stream_process_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_process_connect ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Param2: 
+@Param3: 
+@Returns: 
+
+

@@ -1,0 +1,35 @@
+<!-- ##### SECTION Title ##### -->
+CamelMhFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMhFolder ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+
+<!-- ##### FUNCTION camel_mh_folder_new ##### -->
+<para>
+
+</para>
+
+@parent_store: 
+@full_name: 
+@flags: 
+@ex: 
+@Returns: 
+
+

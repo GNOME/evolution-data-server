@@ -1,0 +1,296 @@
+<!-- ##### SECTION Title ##### -->
+CamelCertDB
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelCertDB ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@priv: 
+@filename: 
+@version: 
+@saved_certs: 
+@flags: 
+@cert_size: 
+@cert_chunks: 
+@certs: 
+@cert_hash: 
+
+<!-- ##### ENUM CamelCertTrust ##### -->
+<para>
+
+</para>
+
+@CAMEL_CERT_TRUST_UNKNOWN: 
+@CAMEL_CERT_TRUST_NEVER: 
+@CAMEL_CERT_TRUST_MARGINAL: 
+@CAMEL_CERT_TRUST_FULLY: 
+@CAMEL_CERT_TRUST_ULTIMATE: 
+
+<!-- ##### STRUCT CamelCert ##### -->
+<para>
+
+</para>
+
+@refcount: 
+@issuer: 
+@subject: 
+@hostname: 
+@fingerprint: 
+@trust: 
+@rawcert: 
+
+<!-- ##### FUNCTION camel_certdb_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_certdb_set_default ##### -->
+<para>
+
+</para>
+
+@certdb: 
+
+
+<!-- ##### FUNCTION camel_certdb_get_default ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_certdb_set_filename ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@filename: 
+
+
+<!-- ##### FUNCTION camel_certdb_load ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_certdb_save ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_certdb_touch ##### -->
+<para>
+
+</para>
+
+@certdb: 
+
+
+<!-- ##### FUNCTION camel_certdb_get_cert ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@fingerprint: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_certdb_add ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### FUNCTION camel_certdb_remove ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### FUNCTION camel_certdb_cert_new ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_certdb_cert_ref ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### FUNCTION camel_certdb_cert_unref ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### FUNCTION camel_certdb_clear ##### -->
+<para>
+
+</para>
+
+@certdb: 
+
+
+<!-- ##### FUNCTION camel_cert_get_string ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cert_set_string ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@string: 
+@value: 
+
+
+<!-- ##### MACRO camel_cert_get_issuer ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### MACRO camel_cert_get_subject ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### MACRO camel_cert_get_hostname ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### MACRO camel_cert_get_fingerprint ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+
+
+<!-- ##### MACRO camel_cert_set_issuer ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@issuer: 
+
+
+<!-- ##### MACRO camel_cert_set_subject ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@subject: 
+
+
+<!-- ##### MACRO camel_cert_set_hostname ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@hostname: 
+
+
+<!-- ##### MACRO camel_cert_set_fingerprint ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@fingerprint: 
+
+
+<!-- ##### FUNCTION camel_cert_get_trust ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cert_set_trust ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@cert: 
+@trust: 
+
+

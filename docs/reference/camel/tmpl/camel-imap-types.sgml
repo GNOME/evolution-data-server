@@ -1,0 +1,96 @@
+<!-- ##### SECTION Title ##### -->
+camel-imap-types
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelImapFolder ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@priv: 
+@search: 
+@cache: 
+@need_rescan: 
+@need_refresh: 
+@read_only: 
+
+<!-- ##### STRUCT CamelImapMessageCache ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@path: 
+@parts: 
+@cached: 
+@max_uid: 
+
+<!-- ##### STRUCT CamelImapResponse ##### -->
+<para>
+
+</para>
+
+@folder: 
+@untagged: 
+@status: 
+
+<!-- ##### STRUCT CamelImapSearch ##### -->
+<para>
+
+</para>
+
+@parent: 
+@lastuid: 
+@validity: 
+@cache: 
+@matches_count: 
+@matches: 
+@matches_hash: 
+
+<!-- ##### STRUCT CamelImapStore ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@istream: 
+@ostream: 
+@summary: 
+@connected: 
+@preauthed: 
+@tag_prefix: 
+@command: 
+@current_folder: 
+@server_level: 
+@capabilities: 
+@parameters: 
+@braindamaged: 
+@namespace: 
+@dir_sep: 
+@base_url: 
+@storage_path: 
+@authtypes: 
+@renaming: 
+
+<!-- ##### STRUCT CamelImapSummary ##### -->
+<para>
+
+</para>
+
+@parent: 
+@version: 
+@validity: 
+

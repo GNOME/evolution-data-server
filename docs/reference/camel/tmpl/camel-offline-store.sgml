@@ -1,0 +1,32 @@
+<!-- ##### SECTION Title ##### -->
+CamelOfflineStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelOfflineStore ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_offline_store_set_network_state ##### -->
+<para>
+
+</para>
+
+@store: 
+@state: 
+@ex: 
+
+

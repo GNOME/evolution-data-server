@@ -1,0 +1,142 @@
+<!-- ##### SECTION Title ##### -->
+camel-operation
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelOperation ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION CamelOperationStatusFunc ##### -->
+<para>
+
+</para>
+
+@op: 
+@what: 
+@pc: 
+@data: 
+
+
+<!-- ##### ENUM camel_operation_status_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_OPERATION_START: 
+@CAMEL_OPERATION_END: 
+
+<!-- ##### FUNCTION camel_operation_new ##### -->
+<para>
+
+</para>
+
+@status: 
+@status_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_operation_mute ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_ref ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_unref ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_cancel ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_uncancel ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_register ##### -->
+<para>
+
+</para>
+
+@cc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_operation_unregister ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_cancel_block ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_cancel_unblock ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+
+<!-- ##### FUNCTION camel_operation_cancel_check ##### -->
+<para>
+
+</para>
+
+@cc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_operation_cancel_fd ##### -->
+<para>
+
+</para>
+
+@cc: 
+@Returns: 
+
+

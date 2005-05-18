@@ -1,0 +1,51 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterBasic
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMimeFilterBasic ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM CamelMimeFilterBasicType ##### -->
+<para>
+
+</para>
+
+@CAMEL_MIME_FILTER_BASIC_BASE64_ENC: 
+@CAMEL_MIME_FILTER_BASIC_BASE64_DEC: 
+@CAMEL_MIME_FILTER_BASIC_QP_ENC: 
+@CAMEL_MIME_FILTER_BASIC_QP_DEC: 
+@CAMEL_MIME_FILTER_BASIC_UU_ENC: 
+@CAMEL_MIME_FILTER_BASIC_UU_DEC: 
+
+<!-- ##### FUNCTION camel_mime_filter_basic_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_filter_basic_new_type ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+

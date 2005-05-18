@@ -1,0 +1,169 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAPPStream
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAPPStream ##### -->
+<para>
+
+</para>
+
+@parent: 
+@source: 
+@buf: 
+@ptr: 
+@end: 
+@literal: 
+@unget: 
+@unget_tok: 
+@unget_token: 
+@unget_len: 
+@tokenbuf: 
+@tokenptr: 
+@tokenend: 
+
+<!-- ##### ENUM camel_imapp_token_t ##### -->
+<para>
+
+</para>
+
+@IMAP_TOK_PROTOCOL: 
+@IMAP_TOK_ERROR: 
+@IMAP_TOK_TOKEN: 
+@IMAP_TOK_STRING: 
+@IMAP_TOK_INT: 
+@IMAP_TOK_LITERAL: 
+
+<!-- ##### FUNCTION camel_imapp_stream_new ##### -->
+<para>
+
+</para>
+
+@source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_token ##### -->
+<para>
+
+</para>
+
+@is: 
+@start: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_ungettoken ##### -->
+<para>
+
+</para>
+
+@is: 
+@tok: 
+@token: 
+@len: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_set_literal ##### -->
+<para>
+
+</para>
+
+@is: 
+@literal: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_gets ##### -->
+<para>
+
+</para>
+
+@is: 
+@start: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_getl ##### -->
+<para>
+
+</para>
+
+@is: 
+@start: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_atom ##### -->
+<para>
+
+</para>
+
+@is: 
+@start: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_astring ##### -->
+<para>
+
+</para>
+
+@is: 
+@start: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_nstring ##### -->
+<para>
+
+</para>
+
+@is: 
+@start: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_nstring_stream ##### -->
+<para>
+
+</para>
+
+@is: 
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_text ##### -->
+<para>
+
+</para>
+
+@is: 
+@text: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_stream_number ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+

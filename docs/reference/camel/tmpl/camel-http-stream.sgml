@@ -1,0 +1,100 @@
+<!-- ##### SECTION Title ##### -->
+CamelHttpStream
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelHttpStream ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@parser: 
+@content_type: 
+@headers: 
+@method: 
+@session: 
+@url: 
+@user_agent: 
+@proxy: 
+@authrealm: 
+@authpass: 
+@statuscode: 
+@raw: 
+@read: 
+
+<!-- ##### ENUM CamelHttpMethod ##### -->
+<para>
+
+</para>
+
+@CAMEL_HTTP_METHOD_GET: 
+@CAMEL_HTTP_METHOD_HEAD: 
+
+<!-- ##### FUNCTION camel_http_stream_new ##### -->
+<para>
+
+</para>
+
+@method: 
+@session: 
+@url: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_http_stream_set_user_agent ##### -->
+<para>
+
+</para>
+
+@http_stream: 
+@user_agent: 
+
+
+<!-- ##### FUNCTION camel_http_stream_set_proxy ##### -->
+<para>
+
+</para>
+
+@http_stream: 
+@proxy_url: 
+
+
+<!-- ##### FUNCTION camel_http_stream_set_proxy_authrealm ##### -->
+<para>
+
+</para>
+
+@http_stream: 
+@proxy_authrealm: 
+
+
+<!-- ##### FUNCTION camel_http_stream_set_proxy_authpass ##### -->
+<para>
+
+</para>
+
+@http_stream: 
+@proxy_authpass: 
+
+
+<!-- ##### FUNCTION camel_http_stream_get_content_type ##### -->
+<para>
+
+</para>
+
+@http_stream: 
+@Returns: 
+
+

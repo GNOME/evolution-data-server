@@ -1,0 +1,206 @@
+<!-- ##### SECTION Title ##### -->
+camel-imapp-utils
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM camel_imapp_id_t ##### -->
+<para>
+
+</para>
+
+@IMAP_UNKNOWN: 
+@IMAP_ALERT: 
+@IMAP_BYE: 
+@IMAP_BAD: 
+@IMAP_NO: 
+@IMAP_OK: 
+@IMAP_PREAUTH: 
+@IMAP_NEWNAME: 
+@IMAP_PARSE: 
+@IMAP_PERMANENTFLAGS: 
+@IMAP_READ_ONLY: 
+@IMAP_READ_WRITE: 
+@IMAP_TRYCREATE: 
+@IMAP_UIDVALIDITY: 
+@IMAP_UNSEEN: 
+@IMAP_ENVELOPE: 
+@IMAP_FLAGS: 
+@IMAP_INTERNALDATE: 
+@IMAP_RFC822_HEADER: 
+@IMAP_RFC822_TEXT: 
+@IMAP_RFC822_SIZE: 
+@IMAP_BODYSTRUCTURE: 
+@IMAP_BODY: 
+@IMAP_UID: 
+
+<!-- ##### FUNCTION imap_tokenise ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_flags ##### -->
+<para>
+
+</para>
+
+@stream: 
+
+
+<!-- ##### STRUCT fetch_info ##### -->
+<para>
+
+</para>
+
+@got: 
+@body: 
+@text: 
+@header: 
+@minfo: 
+@cinfo: 
+@size: 
+@offset: 
+@flags: 
+@date: 
+@section: 
+@uid: 
+
+<!-- ##### MACRO FETCH_BODY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_TEXT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_HEADER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_MINFO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_CINFO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_SIZE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_OFFSET ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_FLAGS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_DATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_SECTION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO FETCH_UID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT status_info ##### -->
+<para>
+
+</para>
+
+@flags: 
+@separator: 
+@name: 
+
+<!-- ##### STRUCT list_info ##### -->
+<para>
+
+</para>
+
+@ie: 
+@len: 
+@start: 
+@last: 
+
+<!-- ##### FUNCTION imapp_uidset_init ##### -->
+<para>
+
+</para>
+
+@ss: 
+@ie: 
+
+
+<!-- ##### FUNCTION imapp_uidset_done ##### -->
+<para>
+
+</para>
+
+@ss: 
+@ic: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imapp_uidset_add ##### -->
+<para>
+
+</para>
+
+@ss: 
+@ic: 
+@uid: 
+@Returns: 
+
+

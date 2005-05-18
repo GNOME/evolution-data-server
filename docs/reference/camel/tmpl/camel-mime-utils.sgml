@@ -1,0 +1,242 @@
+<!-- ##### SECTION Title ##### -->
+camel-mime-utils
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO CAMEL_FOLD_SIZE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLD_MAX_SIZE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_UUDECODE_STATE_INIT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_UUDECODE_STATE_BEGIN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_UUDECODE_STATE_END ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_UUDECODE_STATE_MASK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelTransferEncoding ##### -->
+<para>
+
+</para>
+
+@CAMEL_TRANSFER_ENCODING_DEFAULT: 
+@CAMEL_TRANSFER_ENCODING_7BIT: 
+@CAMEL_TRANSFER_ENCODING_8BIT: 
+@CAMEL_TRANSFER_ENCODING_BASE64: 
+@CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE: 
+@CAMEL_TRANSFER_ENCODING_BINARY: 
+@CAMEL_TRANSFER_ENCODING_UUENCODE: 
+@CAMEL_TRANSFER_NUM_ENCODINGS: 
+
+<!-- ##### STRUCT camel_header_references ##### -->
+<para>
+
+</para>
+
+@next: 
+@id: 
+
+<!-- ##### STRUCT camel_header_param ##### -->
+<para>
+
+</para>
+
+@next: 
+@name: 
+@value: 
+
+<!-- ##### STRUCT CamelContentType ##### -->
+<para>
+
+</para>
+
+@type: 
+@subtype: 
+@params: 
+@refcount: 
+
+<!-- ##### STRUCT camel_header_raw ##### -->
+<para>
+
+</para>
+
+@next: 
+@name: 
+@value: 
+@offset: 
+
+<!-- ##### STRUCT CamelContentDisposition ##### -->
+<para>
+
+</para>
+
+@disposition: 
+@params: 
+@refcount: 
+
+<!-- ##### ENUM camel_header_address_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_HEADER_ADDRESS_NONE: 
+@CAMEL_HEADER_ADDRESS_NAME: 
+@CAMEL_HEADER_ADDRESS_GROUP: 
+
+<!-- ##### STRUCT camel_header_address ##### -->
+<para>
+
+</para>
+
+@next: 
+@type: 
+@name: 
+@refcount: 
+
+<!-- ##### STRUCT camel_header_newsgroup ##### -->
+<para>
+
+</para>
+
+@next: 
+@newsgroup: 
+
+<!-- ##### MACRO camel_mime_is_ctrl ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_lwsp ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_tspecial ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_type ##### -->
+<para>
+
+</para>
+
+@x: 
+@t: 
+
+
+<!-- ##### MACRO camel_mime_is_ttoken ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_atom ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_dtext ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_fieldname ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_qpsafe ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_especial ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_psafe ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO camel_mime_is_attrchar ##### -->
+<para>
+
+</para>
+
+@x: 
+
+

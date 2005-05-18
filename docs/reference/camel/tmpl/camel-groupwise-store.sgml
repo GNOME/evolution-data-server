@@ -1,0 +1,91 @@
+<!-- ##### SECTION Title ##### -->
+CamelGroupwiseStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelGroupwiseStore ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@summary: 
+@root_container: 
+@priv: 
+@current_folder: 
+
+<!-- ##### STRUCT CamelGroupwiseStorePrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION groupwise_get_name ##### -->
+<para>
+
+</para>
+
+@service: 
+@brief: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_groupwise_store_container_id_lookup ##### -->
+<para>
+
+</para>
+
+@gw_store: 
+@folder_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_groupwise_store_folder_lookup ##### -->
+<para>
+
+</para>
+
+@gw_store: 
+@container_id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION cnc_lookup ##### -->
+<para>
+
+</para>
+
+@priv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gw_get_path ##### -->
+<para>
+
+</para>
+
+@gw_store: 
+@folder_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION storage_path_lookup ##### -->
+<para>
+
+</para>
+
+@priv: 
+@Returns: 
+
+

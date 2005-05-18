@@ -1,0 +1,123 @@
+<!-- ##### SECTION Title ##### -->
+camel-exception
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM ExceptionId ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelException ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_EXCEPTION_INITIALISER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_exception_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_exception_free ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+
+<!-- ##### FUNCTION camel_exception_init ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+
+<!-- ##### FUNCTION camel_exception_clear ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+
+<!-- ##### FUNCTION camel_exception_set ##### -->
+<para>
+
+</para>
+
+@ex: 
+@id: 
+@desc: 
+
+
+<!-- ##### FUNCTION camel_exception_setv ##### -->
+<para>
+
+</para>
+
+@ex: 
+@id: 
+@format: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION camel_exception_xfer ##### -->
+<para>
+
+</para>
+
+@ex_dst: 
+@ex_src: 
+
+
+<!-- ##### FUNCTION camel_exception_get_id ##### -->
+<para>
+
+</para>
+
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_exception_get_description ##### -->
+<para>
+
+</para>
+
+@ex: 
+@Returns: 
+
+
+<!-- ##### MACRO camel_exception_is_set ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+

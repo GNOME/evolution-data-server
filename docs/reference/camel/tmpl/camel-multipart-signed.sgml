@@ -1,0 +1,40 @@
+<!-- ##### SECTION Title ##### -->
+CamelMultipartSigned
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMultipartSigned ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_multipart_signed_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_multipart_signed_get_content_stream ##### -->
+<para>
+
+</para>
+
+@mps: 
+@ex: 
+@Returns: 
+
+

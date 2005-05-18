@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterCanon
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMimeFilterCanon ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_mime_filter_canon_new ##### -->
+<para>
+
+</para>
+
+@flags: 
+@Returns: 
+
+

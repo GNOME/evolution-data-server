@@ -1,0 +1,35 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAPPFetchStream
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAPPFetchStream ##### -->
+<para>
+
+</para>
+
+@parent: 
+@engine: 
+
+<!-- ##### FUNCTION camel_imapp_fetch_stream_new ##### -->
+<para>
+
+</para>
+
+@src: 
+@uid: 
+@spec: 
+@Returns: 
+
+

@@ -1,0 +1,174 @@
+<!-- ##### SECTION Title ##### -->
+CamelService
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelService ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_SERVICE_USERNAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_SERVICE_AUTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_SERVICE_HOSTNAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_SERVICE_PORT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_SERVICE_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelServiceConnectionStatus ##### -->
+<para>
+
+</para>
+
+@CAMEL_SERVICE_DISCONNECTED: 
+@CAMEL_SERVICE_CONNECTING: 
+@CAMEL_SERVICE_CONNECTED: 
+@CAMEL_SERVICE_DISCONNECTING: 
+
+<!-- ##### STRUCT CamelServiceAuthType ##### -->
+<para>
+
+</para>
+
+@name: 
+@description: 
+@authproto: 
+@need_password: 
+
+<!-- ##### FUNCTION camel_service_construct ##### -->
+<para>
+
+</para>
+
+@service: 
+@session: 
+@provider: 
+@url: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_service_connect ##### -->
+<para>
+
+</para>
+
+@service: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_disconnect ##### -->
+<para>
+
+</para>
+
+@service: 
+@clean: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_cancel_connect ##### -->
+<para>
+
+</para>
+
+@service: 
+
+
+<!-- ##### FUNCTION camel_service_get_url ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_name ##### -->
+<para>
+
+</para>
+
+@service: 
+@brief: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_path ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_session ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_provider ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_query_auth_types ##### -->
+<para>
+
+</para>
+
+@service: 
+@ex: 
+@Returns: 
+
+

@@ -1,0 +1,69 @@
+<!-- ##### SECTION Title ##### -->
+CamelSeekableStream
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelSeekableStream ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM CamelStreamSeekPolicy ##### -->
+<para>
+
+</para>
+
+@CAMEL_STREAM_SET: 
+@CAMEL_STREAM_CUR: 
+@CAMEL_STREAM_END: 
+
+<!-- ##### MACRO CAMEL_STREAM_UNBOUND ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_seekable_stream_seek ##### -->
+<para>
+
+</para>
+
+@stream: 
+@offset: 
+@policy: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_seekable_stream_tell ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_seekable_stream_set_bounds ##### -->
+<para>
+
+</para>
+
+@stream: 
+@start: 
+@end: 
+@Returns: 
+
+

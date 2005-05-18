@@ -1,0 +1,269 @@
+<!-- ##### SECTION Title ##### -->
+CamelIndex
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIndex ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+@path: 
+@version: 
+@flags: 
+@state: 
+@normalise: 
+@normalise_data: 
+
+<!-- ##### USER_FUNCTION CamelIndexNorm ##### -->
+<para>
+
+</para>
+
+@idx: 
+@word: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_cursor_new ##### -->
+<para>
+
+</para>
+
+@idx: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_cursor_next ##### -->
+<para>
+
+</para>
+
+@idc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_cursor_reset ##### -->
+<para>
+
+</para>
+
+@idc: 
+
+
+<!-- ##### STRUCT CamelIndexName ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+@index: 
+@name: 
+@buffer: 
+@words: 
+
+<!-- ##### FUNCTION camel_index_name_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_name_new ##### -->
+<para>
+
+</para>
+
+@idx: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_name_add_word ##### -->
+<para>
+
+</para>
+
+@name: 
+@word: 
+
+
+<!-- ##### FUNCTION camel_index_name_add_buffer ##### -->
+<para>
+
+</para>
+
+@name: 
+@buffer: 
+@len: 
+@Returns: 
+
+
+<!-- ##### MACRO CAMEL_INDEX_DELETED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_index_new ##### -->
+<para>
+
+</para>
+
+@path: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_construct ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@path: 
+@flags: 
+
+
+<!-- ##### FUNCTION camel_index_rename ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_set_normalise ##### -->
+<para>
+
+</para>
+
+@idx: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_index_sync ##### -->
+<para>
+
+</para>
+
+@idx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_compress ##### -->
+<para>
+
+</para>
+
+@idx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_delete ##### -->
+<para>
+
+</para>
+
+@idx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_has_name ##### -->
+<para>
+
+</para>
+
+@idx: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_add_name ##### -->
+<para>
+
+</para>
+
+@idx: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_write_name ##### -->
+<para>
+
+</para>
+
+@idx: 
+@idn: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_find_name ##### -->
+<para>
+
+</para>
+
+@idx: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_delete_name ##### -->
+<para>
+
+</para>
+
+@idx: 
+@name: 
+
+
+<!-- ##### FUNCTION camel_index_find ##### -->
+<para>
+
+</para>
+
+@idx: 
+@word: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_words ##### -->
+<para>
+
+</para>
+
+@idx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_index_names ##### -->
+<para>
+
+</para>
+
+@idx: 
+@Returns: 
+
+

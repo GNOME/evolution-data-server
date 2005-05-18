@@ -1,0 +1,116 @@
+<!-- ##### SECTION Title ##### -->
+CamelDataCache
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelDataCache ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@priv: 
+@path: 
+@flags: 
+@expire_age: 
+@expire_access: 
+
+<!-- ##### FUNCTION camel_data_cache_new ##### -->
+<para>
+
+</para>
+
+@path: 
+@flags: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_cache_set_expire_age ##### -->
+<para>
+
+</para>
+
+@cache: 
+@when: 
+
+
+<!-- ##### FUNCTION camel_data_cache_set_expire_access ##### -->
+<para>
+
+</para>
+
+@cdc: 
+@when: 
+
+
+<!-- ##### FUNCTION camel_data_cache_rename ##### -->
+<para>
+
+</para>
+
+@cache: 
+@old: 
+@new: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_cache_add ##### -->
+<para>
+
+</para>
+
+@cache: 
+@path: 
+@key: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_cache_get ##### -->
+<para>
+
+</para>
+
+@cache: 
+@path: 
+@key: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_cache_remove ##### -->
+<para>
+
+</para>
+
+@cache: 
+@path: 
+@key: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_cache_clear ##### -->
+<para>
+
+</para>
+
+@cache: 
+@path: 
+@ex: 
+@Returns: 
+
+

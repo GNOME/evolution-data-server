@@ -1,0 +1,35 @@
+<!-- ##### SECTION Title ##### -->
+CamelMaildirFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMaildirFolder ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+
+<!-- ##### FUNCTION camel_maildir_folder_new ##### -->
+<para>
+
+</para>
+
+@parent_store: 
+@full_name: 
+@flags: 
+@ex: 
+@Returns: 
+
+

@@ -1,0 +1,291 @@
+<!-- ##### SECTION Title ##### -->
+CamelKeyFile
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF camel_block_t ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF camel_key_t ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelBlockRoot ##### -->
+<para>
+
+</para>
+
+@version: 
+@flags: 
+@block_size: 
+@free: 
+@last: 
+
+<!-- ##### STRUCT CamelBlock ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+@id: 
+@flags: 
+@refcount: 
+@align00: 
+@data: 
+
+<!-- ##### STRUCT CamelBlockFile ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+@version: 
+@path: 
+@flags: 
+@fd: 
+@block_size: 
+@root: 
+@root_block: 
+@block_cache_limit: 
+@block_cache_count: 
+@block_cache: 
+@blocks: 
+
+<!-- ##### MACRO CAMEL_BLOCK_FILE_SYNC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_BLOCK_SIZE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_BLOCK_SIZE_BITS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_BLOCK_DIRTY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_BLOCK_DETACHED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_block_file_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_new ##### -->
+<para>
+
+</para>
+
+@path: 
+@flags: 
+@version: 
+@block_size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_rename ##### -->
+<para>
+
+</para>
+
+@bs: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_delete ##### -->
+<para>
+
+</para>
+
+@kf: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_new_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_free_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_get_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_detach_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@bl: 
+
+
+<!-- ##### FUNCTION camel_block_file_attach_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@bl: 
+
+
+<!-- ##### FUNCTION camel_block_file_touch_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@bl: 
+
+
+<!-- ##### FUNCTION camel_block_file_unref_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@bl: 
+
+
+<!-- ##### FUNCTION camel_block_file_sync_block ##### -->
+<para>
+
+</para>
+
+@bs: 
+@bl: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_block_file_sync ##### -->
+<para>
+
+</para>
+
+@bs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_key_file_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_key_file_new ##### -->
+<para>
+
+</para>
+
+@path: 
+@flags: 
+@version: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_key_file_rename ##### -->
+<para>
+
+</para>
+
+@kf: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_key_file_delete ##### -->
+<para>
+
+</para>
+
+@kf: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_key_file_write ##### -->
+<para>
+
+</para>
+
+@kf: 
+@parent: 
+@len: 
+@records: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_key_file_read ##### -->
+<para>
+
+</para>
+
+@kf: 
+@start: 
+@len: 
+@records: 
+@Returns: 
+
+

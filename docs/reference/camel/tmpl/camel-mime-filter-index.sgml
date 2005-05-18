@@ -1,0 +1,57 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterIndex
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMimeFilterIndex ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_mime_filter_index_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_filter_index_new_index ##### -->
+<para>
+
+</para>
+
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_filter_index_set_name ##### -->
+<para>
+
+</para>
+
+@filter: 
+@name: 
+
+
+<!-- ##### FUNCTION camel_mime_filter_index_set_index ##### -->
+<para>
+
+</para>
+
+@filter: 
+@index: 
+
+

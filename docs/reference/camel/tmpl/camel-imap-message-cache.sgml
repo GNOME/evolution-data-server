@@ -1,0 +1,135 @@
+<!-- ##### SECTION Title ##### -->
+CamelImapMessageCache
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelImapMessageCache ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@path: 
+@parts: 
+@cached: 
+@max_uid: 
+
+<!-- ##### FUNCTION camel_imap_message_cache_new ##### -->
+<para>
+
+</para>
+
+@path: 
+@summ: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_set_path ##### -->
+<para>
+
+</para>
+
+@cache: 
+@path: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_max_uid ##### -->
+<para>
+
+</para>
+
+@cache: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_insert ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+@part_spec: 
+@data: 
+@len: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_insert_stream ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+@part_spec: 
+@data_stream: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_insert_wrapper ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+@part_spec: 
+@wrapper: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_get ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+@part_spec: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_remove ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_clear ##### -->
+<para>
+
+</para>
+
+@cache: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_copy ##### -->
+<para>
+
+</para>
+
+@source: 
+@source_uid: 
+@dest: 
+@dest_uid: 
+@ex: 
+
+

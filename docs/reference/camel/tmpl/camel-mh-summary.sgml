@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+CamelMhSummary
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMhSummary ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### FUNCTION camel_mh_summary_new ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@filename: 
+@mhdir: 
+@index: 
+@Returns: 
+
+

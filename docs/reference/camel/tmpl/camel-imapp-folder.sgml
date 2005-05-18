@@ -1,0 +1,40 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAPPFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAPPFolder ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@raw_name: 
+@changes: 
+@exists: 
+@recent: 
+@uidvalidity: 
+@unseen: 
+@permanentflags: 
+
+<!-- ##### FUNCTION camel_imapp_folder_new ##### -->
+<para>
+
+</para>
+
+@parent: 
+@path: 
+@Returns: 
+
+

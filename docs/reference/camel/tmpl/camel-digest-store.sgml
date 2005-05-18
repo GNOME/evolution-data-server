@@ -1,0 +1,32 @@
+<!-- ##### SECTION Title ##### -->
+CamelDigestStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelDigestStore ##### -->
+<para>
+
+</para>
+
+@parent: 
+
+<!-- ##### FUNCTION camel_digest_store_new ##### -->
+<para>
+
+</para>
+
+@url: 
+@Returns: 
+
+

@@ -1,0 +1,75 @@
+<!-- ##### SECTION Title ##### -->
+CamelImapFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelImapFolder ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@priv: 
+@search: 
+@cache: 
+@need_rescan: 
+@need_refresh: 
+@read_only: 
+
+<!-- ##### FUNCTION camel_imap_folder_new ##### -->
+<para>
+
+</para>
+
+@parent: 
+@folder_name: 
+@folder_dir: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap_folder_selected ##### -->
+<para>
+
+</para>
+
+@folder: 
+@response: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_imap_folder_changed ##### -->
+<para>
+
+</para>
+
+@folder: 
+@exists: 
+@expunged: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_imap_folder_fetch_data ##### -->
+<para>
+
+</para>
+
+@imap_folder: 
+@uid: 
+@section_text: 
+@cache_only: 
+@ex: 
+@Returns: 
+
+

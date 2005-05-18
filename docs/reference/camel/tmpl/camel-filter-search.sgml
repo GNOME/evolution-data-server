@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+camel-filter-search
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### USER_FUNCTION CamelFilterSearchGetMessageFunc ##### -->
+<para>
+
+</para>
+
+@data: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_filter_search_match ##### -->
+<para>
+
+</para>
+
+@session: 
+@get_message: 
+@data: 
+@info: 
+@source: 
+@expression: 
+@ex: 
+@Returns: 
+
+

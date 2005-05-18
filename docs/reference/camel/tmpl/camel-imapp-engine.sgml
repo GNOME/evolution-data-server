@@ -1,0 +1,262 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAPPEngine
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAPPEngine ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@port: 
+@stream: 
+@state: 
+@capa: 
+@handlers: 
+@tagprefix: 
+@tag: 
+@select: 
+@last_select: 
+@literal: 
+@active: 
+@queue: 
+@done: 
+@select_response: 
+
+<!-- ##### STRUCT CamelIMAPPCommandPart ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+@parent: 
+@data_size: 
+@data: 
+@type: 
+@ob_size: 
+@ob: 
+
+<!-- ##### STRUCT CamelIMAPPCommand ##### -->
+<para>
+
+</para>
+
+@msg: 
+@name: 
+@select: 
+@status: 
+@tag: 
+@mem: 
+@parts: 
+@current: 
+@complete: 
+@complete_data: 
+
+<!-- ##### ENUM camel_imapp_command_part_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_IMAPP_COMMAND_SIMPLE: 
+@CAMEL_IMAPP_COMMAND_DATAWRAPPER: 
+@CAMEL_IMAPP_COMMAND_STREAM: 
+@CAMEL_IMAPP_COMMAND_AUTH: 
+@CAMEL_IMAPP_COMMAND_MASK: 
+@CAMEL_IMAPP_COMMAND_CONTINUATION: 
+
+<!-- ##### USER_FUNCTION CamelIMAPPEngineFunc ##### -->
+<para>
+
+</para>
+
+@engine: 
+@id: 
+@data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION CamelIMAPPCommandFunc ##### -->
+<para>
+
+</para>
+
+@engine: 
+@Param2: 
+@data: 
+
+
+<!-- ##### STRUCT CamelIMAPPSelectResponse ##### -->
+<para>
+
+</para>
+
+@status: 
+@exists: 
+@recent: 
+@uidvalidity: 
+@unseen: 
+@permanentflags: 
+
+<!-- ##### ENUM camel_imapp_engine_state_t ##### -->
+<para>
+
+</para>
+
+@IMAP_ENGINE_DISCONNECT: 
+@IMAP_ENGINE_CONNECT: 
+@IMAP_ENGINE_AUTH: 
+@IMAP_ENGINE_SELECT: 
+
+<!-- ##### FUNCTION camel_imapp_engine_new ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_add_handler ##### -->
+<para>
+
+</para>
+
+@imap: 
+@response: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_iterate ##### -->
+<para>
+
+</para>
+
+@imap: 
+@wait: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_skip ##### -->
+<para>
+
+</para>
+
+@imap: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_capabilities ##### -->
+<para>
+
+</para>
+
+@imap: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_command_new ##### -->
+<para>
+
+</para>
+
+@imap: 
+@name: 
+@select: 
+@fmt: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_command_complete ##### -->
+<para>
+
+</para>
+
+@imap: 
+@Param2: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_command_add ##### -->
+<para>
+
+</para>
+
+@imap: 
+@ic: 
+@fmt: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_command_free ##### -->
+<para>
+
+</para>
+
+@imap: 
+@ic: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_command_queue ##### -->
+<para>
+
+</para>
+
+@imap: 
+@ic: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_command_find ##### -->
+<para>
+
+</para>
+
+@imap: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_command_find_tag ##### -->
+<para>
+
+</para>
+
+@imap: 
+@tag: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_select ##### -->
+<para>
+
+</para>
+
+@imap: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_engine_select_free ##### -->
+<para>
+
+</para>
+
+@imap: 
+@select: 
+
+

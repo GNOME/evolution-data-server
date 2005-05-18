@@ -1,0 +1,30 @@
+<!-- ##### SECTION Title ##### -->
+CamelMultipartEncrypted
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMultipartEncrypted ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_multipart_encrypted_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

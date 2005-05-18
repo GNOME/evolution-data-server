@@ -1,0 +1,515 @@
+<!-- ##### SECTION Title ##### -->
+CamelStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelStore ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelFolderInfo ##### -->
+<para>
+
+</para>
+
+@next: 
+@parent: 
+@child: 
+@uri: 
+@name: 
+@full_name: 
+@flags: 
+@unread: 
+@total: 
+
+<!-- ##### MACRO CAMEL_FOLDER_NOSELECT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_NOINFERIORS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_CHILDREN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_NOCHILDREN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SUBSCRIBED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_VIRTUAL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SYSTEM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_VTRASH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SHARED_TO_ME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SHARED_BY_ME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_MASK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_BIT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_NORMAL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_INBOX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_OUTBOX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_TRASH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_JUNK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT CamelRenameInfo ##### -->
+<para>
+
+</para>
+
+@old_base: 
+@new: 
+
+<!-- ##### MACRO CAMEL_STORE_SUBSCRIPTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_VTRASH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FILTER_INBOX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_VJUNK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_EXCL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_BODY_INDEX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_PRIVATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE_EXCL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_FAST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_RECURSIVE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_SUBSCRIBED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_store_get_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@flags: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_inbox ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_trash ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_junk ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_create_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@parent_name: 
+@folder_name: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_delete_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_store_rename_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@old_name: 
+@new_name: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_store_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@expunge: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_store_get_folder_info ##### -->
+<para>
+
+</para>
+
+@store: 
+@top: 
+@flags: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_free_folder_info ##### -->
+<para>
+
+</para>
+
+@store: 
+@fi: 
+
+
+<!-- ##### FUNCTION camel_store_free_folder_info_full ##### -->
+<para>
+
+</para>
+
+@store: 
+@fi: 
+
+
+<!-- ##### FUNCTION camel_store_free_folder_info_nop ##### -->
+<para>
+
+</para>
+
+@store: 
+@fi: 
+
+
+<!-- ##### FUNCTION camel_folder_info_free ##### -->
+<para>
+
+</para>
+
+@fi: 
+
+
+<!-- ##### FUNCTION camel_folder_info_build ##### -->
+<para>
+
+</para>
+
+@folders: 
+@namespace: 
+@separator: 
+@short_names: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_info_clone ##### -->
+<para>
+
+</para>
+
+@fi: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_supports_subscriptions ##### -->
+<para>
+
+</para>
+
+@store: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_folder_subscribed ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_subscribe_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_store_unsubscribe_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_store_noop ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_store_folder_uri_equal ##### -->
+<para>
+
+</para>
+
+@store: 
+@uri0: 
+@uri1: 
+@Returns: 
+
+
+<!-- ##### STRUCT CamelISubscribe ##### -->
+<para>
+
+</para>
+
+@iface: 
+@subscribed: 
+@subscribe: 
+@unsubscribe: 
+
+<!-- ##### FUNCTION camel_isubscribe_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_isubscribe_subscribed ##### -->
+<para>
+
+</para>
+
+@store: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_isubscribe_subscribe ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_isubscribe_unsubscribe ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@ex: 
+
+

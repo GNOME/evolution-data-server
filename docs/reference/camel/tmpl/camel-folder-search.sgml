@@ -1,0 +1,108 @@
+<!-- ##### SECTION Title ##### -->
+CamelFolderSearch
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelFolderSearch ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+@sexp: 
+@last_search: 
+@folder: 
+@summary: 
+@summary_set: 
+@summary_hash: 
+@current: 
+@current_message: 
+@body_index: 
+
+<!-- ##### FUNCTION camel_folder_search_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_search_construct ##### -->
+<para>
+
+</para>
+
+@search: 
+
+
+<!-- ##### FUNCTION camel_folder_search_set_folder ##### -->
+<para>
+
+</para>
+
+@search: 
+@folder: 
+
+
+<!-- ##### FUNCTION camel_folder_search_set_summary ##### -->
+<para>
+
+</para>
+
+@search: 
+@summary: 
+
+
+<!-- ##### FUNCTION camel_folder_search_set_body_index ##### -->
+<para>
+
+</para>
+
+@search: 
+@index: 
+
+
+<!-- ##### FUNCTION camel_folder_search_execute_expression ##### -->
+<para>
+
+</para>
+
+@search: 
+@expr: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_search_search ##### -->
+<para>
+
+</para>
+
+@search: 
+@expr: 
+@uids: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_search_free_result ##### -->
+<para>
+
+</para>
+
+@search: 
+@Param2: 
+
+

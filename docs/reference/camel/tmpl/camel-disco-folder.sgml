@@ -1,0 +1,54 @@
+<!-- ##### SECTION Title ##### -->
+CamelDiscoFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelDiscoFolder ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@offline_sync: 
+
+<!-- ##### FUNCTION camel_disco_folder_expunge_uids ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uids: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_disco_folder_cache_message ##### -->
+<para>
+
+</para>
+
+@disco_folder: 
+@uid: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_disco_folder_prepare_for_offline ##### -->
+<para>
+
+</para>
+
+@disco_folder: 
+@expression: 
+@ex: 
+
+

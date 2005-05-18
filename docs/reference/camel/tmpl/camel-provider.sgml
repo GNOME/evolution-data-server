@@ -1,0 +1,438 @@
+<!-- ##### SECTION Title ##### -->
+camel-provider
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelProvider ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM CamelProviderType ##### -->
+<para>
+
+</para>
+
+@CAMEL_PROVIDER_STORE: 
+@CAMEL_PROVIDER_TRANSPORT: 
+@CAMEL_NUM_PROVIDER_TYPES: 
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_LOCAL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_EXTERNAL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_SOURCE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_STORAGE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_SUPPORTS_SSL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_HAS_LICENSE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_USER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_AUTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_HOST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_PORT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_NEED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PART_HIDDEN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_ALLOWS ##### -->
+<para>
+
+</para>
+
+@prov: 
+@flags: 
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_NEEDS ##### -->
+<para>
+
+</para>
+
+@prov: 
+@flags: 
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_HIDDEN ##### -->
+<para>
+
+</para>
+
+@prov: 
+@flags: 
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_USER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_AUTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_HOST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_PORT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_USER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_AUTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_HOST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PORT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_USER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_AUTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_HOST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_PORT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_FRAGMENT_IS_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_PATH_IS_ABSOLUTE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT ##### -->
+<para>
+
+</para>
+
+@prov: 
+
+
+<!-- ##### ENUM CamelProviderConfType ##### -->
+<para>
+
+</para>
+
+@CAMEL_PROVIDER_CONF_END: 
+@CAMEL_PROVIDER_CONF_SECTION_START: 
+@CAMEL_PROVIDER_CONF_SECTION_END: 
+@CAMEL_PROVIDER_CONF_CHECKBOX: 
+@CAMEL_PROVIDER_CONF_CHECKSPIN: 
+@CAMEL_PROVIDER_CONF_ENTRY: 
+@CAMEL_PROVIDER_CONF_LABEL: 
+@CAMEL_PROVIDER_CONF_HIDDEN: 
+
+<!-- ##### STRUCT CamelProviderConfEntry ##### -->
+<para>
+
+</para>
+
+@type: 
+@name: 
+@depname: 
+@text: 
+@value: 
+
+<!-- ##### MACRO CAMEL_PROVIDER_CONF_DEFAULT_USERNAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_CONF_DEFAULT_HOSTNAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_CONF_DEFAULT_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### USER_FUNCTION CamelProviderAutoDetectFunc ##### -->
+<para>
+
+</para>
+
+@url: 
+@auto_detected: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### STRUCT CamelProvider ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelProviderModule ##### -->
+<para>
+
+</para>
+
+@path: 
+@types: 
+@loaded: 
+
+<!-- ##### FUNCTION camel_provider_init ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_provider_load ##### -->
+<para>
+
+</para>
+
+@path: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_provider_register ##### -->
+<para>
+
+</para>
+
+@provider: 
+
+
+<!-- ##### FUNCTION camel_provider_list ##### -->
+<para>
+
+</para>
+
+@load: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_provider_get ##### -->
+<para>
+
+</para>
+
+@url_string: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_provider_module_init ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_provider_auto_detect ##### -->
+<para>
+
+</para>
+
+@provider: 
+@url: 
+@auto_detected: 
+@ex: 
+@Returns: 
+
+

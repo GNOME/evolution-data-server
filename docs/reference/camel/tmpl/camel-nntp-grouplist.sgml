@@ -1,0 +1,47 @@
+<!-- ##### SECTION Title ##### -->
+camel-nntp-grouplist
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelNNTPGroupListEntry ##### -->
+<para>
+
+</para>
+
+@group_name: 
+@low: 
+@high: 
+@flags: 
+
+<!-- ##### STRUCT CamelNNTPGroupList ##### -->
+<para>
+
+</para>
+
+@store: 
+@time: 
+@group_list: 
+
+<!-- ##### TYPEDEF _CamelNNTPGroupList ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF _CamelNNTPGroupListEntry ##### -->
+<para>
+
+</para>
+
+

@@ -1,0 +1,147 @@
+<!-- ##### SECTION Title ##### -->
+camel-imap4-command
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAP4Command ##### -->
+<para>
+
+</para>
+
+@node: 
+@engine: 
+@ref_count: 
+@status: 
+@result: 
+@id: 
+@tag: 
+@resp_codes: 
+@folder: 
+@ex: 
+@parts: 
+@part: 
+@untagged: 
+@plus: 
+@user_data: 
+
+<!-- ##### STRUCT CamelIMAP4Literal ##### -->
+<para>
+
+</para>
+
+@type: 
+
+<!-- ##### USER_FUNCTION CamelIMAP4PlusCallback ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@linebuf: 
+@linelen: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION CamelIMAP4UntaggedCallback ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@index: 
+@token: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### STRUCT CamelIMAP4CommandPart ##### -->
+<para>
+
+</para>
+
+@next: 
+@buffer: 
+@buflen: 
+@literal: 
+
+<!-- ##### FUNCTION camel_imap4_command_new ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_command_newv ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@args: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_command_register_untagged ##### -->
+<para>
+
+</para>
+
+@ic: 
+@atom: 
+@untagged: 
+
+
+<!-- ##### FUNCTION camel_imap4_command_ref ##### -->
+<para>
+
+</para>
+
+@ic: 
+
+
+<!-- ##### FUNCTION camel_imap4_command_unref ##### -->
+<para>
+
+</para>
+
+@ic: 
+
+
+<!-- ##### FUNCTION camel_imap4_command_step ##### -->
+<para>
+
+</para>
+
+@ic: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_command_reset ##### -->
+<para>
+
+</para>
+
+@ic: 
+
+

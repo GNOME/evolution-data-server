@@ -1,0 +1,72 @@
+<!-- ##### SECTION Title ##### -->
+camel-imap4-specials
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO is_atom ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO is_ctrl ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO is_lwsp ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO is_type ##### -->
+<para>
+
+</para>
+
+@x: 
+@t: 
+
+
+<!-- ##### MACRO is_qsafe ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO is_wild ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### FUNCTION camel_imap4_specials_init ##### -->
+<para>
+
+</para>
+
+
+

@@ -1,0 +1,122 @@
+<!-- ##### SECTION Title ##### -->
+CamelStream
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelStream ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_stream_read ##### -->
+<para>
+
+</para>
+
+@stream: 
+@buffer: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_write ##### -->
+<para>
+
+</para>
+
+@stream: 
+@buffer: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_flush ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_close ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_eos ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_reset ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_write_string ##### -->
+<para>
+
+</para>
+
+@stream: 
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_printf ##### -->
+<para>
+
+</para>
+
+@stream: 
+@fmt: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_vprintf ##### -->
+<para>
+
+</para>
+
+@stream: 
+@fmt: 
+@ap: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_write_to_stream ##### -->
+<para>
+
+</para>
+
+@stream: 
+@output_stream: 
+@Returns: 
+
+

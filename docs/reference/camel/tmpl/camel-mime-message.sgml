@@ -1,0 +1,247 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeMessage
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMimeMessage ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_RECIPIENT_TYPE_TO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_RECIPIENT_TYPE_CC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_RECIPIENT_TYPE_BCC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_RECIPIENT_TYPE_RESENT_TO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_RECIPIENT_TYPE_RESENT_CC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_RECIPIENT_TYPE_RESENT_BCC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_MESSAGE_DATE_CURRENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_mime_message_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_set_date ##### -->
+<para>
+
+</para>
+
+@message: 
+@date: 
+@offset: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_date ##### -->
+<para>
+
+</para>
+
+@message: 
+@offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_date_received ##### -->
+<para>
+
+</para>
+
+@message: 
+@offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_set_message_id ##### -->
+<para>
+
+</para>
+
+@message: 
+@message_id: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_message_id ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_set_reply_to ##### -->
+<para>
+
+</para>
+
+@message: 
+@reply_to: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_reply_to ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_set_subject ##### -->
+<para>
+
+</para>
+
+@message: 
+@subject: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_subject ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_set_from ##### -->
+<para>
+
+</para>
+
+@message: 
+@from: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_from ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_recipients ##### -->
+<para>
+
+</para>
+
+@message: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_set_recipients ##### -->
+<para>
+
+</para>
+
+@message: 
+@type: 
+@recipients: 
+
+
+<!-- ##### FUNCTION camel_mime_message_has_8bit_parts ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_set_best_encoding ##### -->
+<para>
+
+</para>
+
+@message: 
+@required: 
+@enctype: 
+
+
+<!-- ##### FUNCTION camel_mime_message_encode_8bit_parts ##### -->
+<para>
+
+</para>
+
+@message: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_part_by_content_id ##### -->
+<para>
+
+</para>
+
+@message: 
+@content_id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_build_mbox_from ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+

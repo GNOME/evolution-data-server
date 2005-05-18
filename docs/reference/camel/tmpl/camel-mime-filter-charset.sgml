@@ -1,0 +1,40 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterCharset
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelMimeFilterCharset ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_mime_filter_charset_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_filter_charset_new_convert ##### -->
+<para>
+
+</para>
+
+@from_charset: 
+@to_charset: 
+@Returns: 
+
+

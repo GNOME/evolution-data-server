@@ -1,0 +1,245 @@
+<!-- ##### SECTION Title ##### -->
+camel-url
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelURL ##### -->
+<para>
+
+</para>
+
+@protocol: 
+@user: 
+@authmech: 
+@passwd: 
+@host: 
+@port: 
+@path: 
+@params: 
+@query: 
+@fragment: 
+
+<!-- ##### MACRO CAMEL_URL_HIDE_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDE_PARAMS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDE_AUTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_HIDE_ALL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_url_new_with_base ##### -->
+<para>
+
+</para>
+
+@base: 
+@url_string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_url_new ##### -->
+<para>
+
+</para>
+
+@url_string: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_url_to_string ##### -->
+<para>
+
+</para>
+
+@url: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_url_free ##### -->
+<para>
+
+</para>
+
+@url: 
+
+
+<!-- ##### FUNCTION camel_url_encode ##### -->
+<para>
+
+</para>
+
+@part: 
+@escape_extra: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_url_decode ##### -->
+<para>
+
+</para>
+
+@part: 
+
+
+<!-- ##### FUNCTION camel_url_set_protocol ##### -->
+<para>
+
+</para>
+
+@url: 
+@protocol: 
+
+
+<!-- ##### FUNCTION camel_url_set_user ##### -->
+<para>
+
+</para>
+
+@url: 
+@user: 
+
+
+<!-- ##### FUNCTION camel_url_set_authmech ##### -->
+<para>
+
+</para>
+
+@url: 
+@authmech: 
+
+
+<!-- ##### FUNCTION camel_url_set_passwd ##### -->
+<para>
+
+</para>
+
+@url: 
+@passwd: 
+
+
+<!-- ##### FUNCTION camel_url_set_host ##### -->
+<para>
+
+</para>
+
+@url: 
+@host: 
+
+
+<!-- ##### FUNCTION camel_url_set_port ##### -->
+<para>
+
+</para>
+
+@url: 
+@port: 
+
+
+<!-- ##### FUNCTION camel_url_set_path ##### -->
+<para>
+
+</para>
+
+@url: 
+@path: 
+
+
+<!-- ##### FUNCTION camel_url_set_param ##### -->
+<para>
+
+</para>
+
+@url: 
+@name: 
+@value: 
+
+
+<!-- ##### FUNCTION camel_url_set_query ##### -->
+<para>
+
+</para>
+
+@url: 
+@query: 
+
+
+<!-- ##### FUNCTION camel_url_set_fragment ##### -->
+<para>
+
+</para>
+
+@url: 
+@fragment: 
+
+
+<!-- ##### FUNCTION camel_url_get_param ##### -->
+<para>
+
+</para>
+
+@url: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_url_hash ##### -->
+<para>
+
+</para>
+
+@v: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_url_equal ##### -->
+<para>
+
+</para>
+
+@v: 
+@v2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_url_copy ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+

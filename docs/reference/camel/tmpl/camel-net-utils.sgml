@@ -1,0 +1,177 @@
+<!-- ##### SECTION Title ##### -->
+camel-net-utils
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT addrinfo ##### -->
+<para>
+
+</para>
+
+@ai_flags: 
+@ai_family: 
+@ai_socktype: 
+@ai_protocol: 
+@ai_addrlen: 
+@ai_addr: 
+@ai_canonname: 
+@ai_next: 
+
+<!-- ##### MACRO AI_CANONNAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO AI_NUMERICHOST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_BADFLAGS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_NONAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_AGAIN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_FAIL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_NODATA ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_FAMILY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_SOCKTYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_SERVICE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_ADDRFAMILY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_MEMORY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_SYSTEM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EAI_OVERFLOW ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO NI_MAXHOST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO NI_MAXSERV ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO NI_NUMERICHOST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO NI_NUMERICSERV ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO NI_NOFQDN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO NI_NAMEREQD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO NI_DGRAM ##### -->
+<para>
+
+</para>
+
+
+

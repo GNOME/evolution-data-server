@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+camel-process
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION camel_process_fork ##### -->
+<para>
+
+</para>
+
+@path: 
+@argv: 
+@infd: 
+@outfd: 
+@errfd: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_process_wait ##### -->
+<para>
+
+</para>
+
+@pid: 
+@Returns: 
+
+

@@ -1,0 +1,40 @@
+<!-- ##### SECTION Title ##### -->
+CamelGpgContext
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelGpgContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_gpg_context_new ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_gpg_context_set_always_trust ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@trust: 
+
+

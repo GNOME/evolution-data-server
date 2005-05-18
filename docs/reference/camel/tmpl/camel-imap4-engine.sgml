@@ -1,0 +1,171 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAP4Engine
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAP4Engine ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@reconnect: 
+@reconnecting: 
+@session: 
+@service: 
+@url: 
+@state: 
+@level: 
+@capa: 
+@maxlen: 
+@maxlentype: 
+@namespaces: 
+@authtypes: 
+@istream: 
+@ostream: 
+@tagprefix: 
+@tag: 
+@nextid: 
+@folder: 
+@queue: 
+@current: 
+
+<!-- ##### ENUM camel_imap4_engine_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_IMAP4_ENGINE_DISCONNECTED: 
+@CAMEL_IMAP4_ENGINE_CONNECTED: 
+@CAMEL_IMAP4_ENGINE_PREAUTH: 
+@CAMEL_IMAP4_ENGINE_AUTHENTICATED: 
+@CAMEL_IMAP4_ENGINE_SELECTED: 
+
+<!-- ##### ENUM camel_imap4_level_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_IMAP4_LEVEL_UNKNOWN: 
+@CAMEL_IMAP4_LEVEL_IMAP4: 
+@CAMEL_IMAP4_LEVEL_IMAP4REV1: 
+
+<!-- ##### ENUM camel_imap4_resp_code_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_IMAP4_RESP_CODE_ALERT: 
+@CAMEL_IMAP4_RESP_CODE_BADCHARSET: 
+@CAMEL_IMAP4_RESP_CODE_CAPABILITY: 
+@CAMEL_IMAP4_RESP_CODE_PARSE: 
+@CAMEL_IMAP4_RESP_CODE_PERM_FLAGS: 
+@CAMEL_IMAP4_RESP_CODE_READONLY: 
+@CAMEL_IMAP4_RESP_CODE_READWRITE: 
+@CAMEL_IMAP4_RESP_CODE_TRYCREATE: 
+@CAMEL_IMAP4_RESP_CODE_UIDNEXT: 
+@CAMEL_IMAP4_RESP_CODE_UIDVALIDITY: 
+@CAMEL_IMAP4_RESP_CODE_UNSEEN: 
+@CAMEL_IMAP4_RESP_CODE_NEWNAME: 
+@CAMEL_IMAP4_RESP_CODE_APPENDUID: 
+@CAMEL_IMAP4_RESP_CODE_COPYUID: 
+@CAMEL_IMAP4_RESP_CODE_UNKNOWN: 
+
+<!-- ##### STRUCT CamelIMAP4RespCode ##### -->
+<para>
+
+</para>
+
+@code: 
+
+<!-- ##### STRUCT CamelIMAP4Namespace ##### -->
+<para>
+
+</para>
+
+@next: 
+@path: 
+@sep: 
+
+<!-- ##### STRUCT CamelIMAP4NamespaceList ##### -->
+<para>
+
+</para>
+
+@personal: 
+@other: 
+@shared: 
+
+<!-- ##### USER_FUNCTION CamelIMAP4ReconnectFunc ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_new ##### -->
+<para>
+
+</para>
+
+@service: 
+@reconnect: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_take_stream ##### -->
+<para>
+
+</para>
+
+@engine: 
+@stream: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_capability ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_namespace ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_select_folder ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@ex: 
+@Returns: 
+
+

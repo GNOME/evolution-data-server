@@ -1,0 +1,56 @@
+<!-- ##### SECTION Title ##### -->
+streams
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION test_stream_seekable_writepart ##### -->
+<para>
+
+</para>
+
+@s: 
+
+
+<!-- ##### FUNCTION test_stream_seekable_readpart ##### -->
+<para>
+
+</para>
+
+@s: 
+
+
+<!-- ##### MACRO SEEKABLE_SUBSTREAM_WAYS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION test_seekable_substream_writepart ##### -->
+<para>
+
+</para>
+
+@s: 
+@type: 
+
+
+<!-- ##### FUNCTION test_seekable_substream_readpart ##### -->
+<para>
+
+</para>
+
+@s: 
+
+

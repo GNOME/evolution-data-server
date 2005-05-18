@@ -1,0 +1,72 @@
+<!-- ##### SECTION Title ##### -->
+CamelDiscoStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelDiscoStore ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@status: 
+@diary: 
+
+<!-- ##### ENUM CamelDiscoStoreStatus ##### -->
+<para>
+
+</para>
+
+@CAMEL_DISCO_STORE_ONLINE: 
+@CAMEL_DISCO_STORE_OFFLINE: 
+@CAMEL_DISCO_STORE_RESYNCING: 
+
+<!-- ##### FUNCTION camel_disco_store_status ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_disco_store_set_status ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Param2: 
+@Param3: 
+
+
+<!-- ##### FUNCTION camel_disco_store_can_work_offline ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_disco_store_check_online ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+

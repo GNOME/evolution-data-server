@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAPPStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAPPStore ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@summary: 
+@driver: 
+@cache: 
+@login_error: 
+@pending_list: 
+
+<!-- ##### STRUCT pending_fetch ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+@info: 
+

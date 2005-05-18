@@ -1,0 +1,302 @@
+<!-- ##### SECTION Title ##### -->
+CamelCipherContext
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelCipherContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelCipherValidity ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+@children: 
+
+<!-- ##### STRUCT CamelCipherCertInfo ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+@name: 
+@email: 
+
+<!-- ##### ENUM CamelCipherHash ##### -->
+<para>
+
+</para>
+
+@CAMEL_CIPHER_HASH_DEFAULT: 
+@CAMEL_CIPHER_HASH_MD2: 
+@CAMEL_CIPHER_HASH_MD5: 
+@CAMEL_CIPHER_HASH_SHA1: 
+@CAMEL_CIPHER_HASH_RIPEMD160: 
+@CAMEL_CIPHER_HASH_TIGER192: 
+@CAMEL_CIPHER_HASH_HAVAL5160: 
+
+<!-- ##### ENUM camel_cipher_validity_sign_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_CIPHER_VALIDITY_SIGN_NONE: 
+@CAMEL_CIPHER_VALIDITY_SIGN_GOOD: 
+@CAMEL_CIPHER_VALIDITY_SIGN_BAD: 
+@CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN: 
+
+<!-- ##### ENUM camel_cipher_validity_encrypt_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_CIPHER_VALIDITY_ENCRYPT_NONE: 
+@CAMEL_CIPHER_VALIDITY_ENCRYPT_WEAK: 
+@CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED: 
+@CAMEL_CIPHER_VALIDITY_ENCRYPT_STRONG: 
+
+<!-- ##### ENUM camel_cipher_validity_mode_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_CIPHER_VALIDITY_SIGN: 
+@CAMEL_CIPHER_VALIDITY_ENCRYPT: 
+
+<!-- ##### FUNCTION camel_cipher_context_new ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_construct ##### -->
+<para>
+
+</para>
+
+@context: 
+@session: 
+
+
+<!-- ##### FUNCTION camel_cipher_id_to_hash ##### -->
+<para>
+
+</para>
+
+@context: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_hash_to_id ##### -->
+<para>
+
+</para>
+
+@context: 
+@hash: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_sign ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@hash: 
+@ipart: 
+@opart: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_verify ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_encrypt ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@recipients: 
+@ipart: 
+@opart: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_decrypt ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@opart: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_import_keys ##### -->
+<para>
+
+</para>
+
+@context: 
+@istream: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_export_keys ##### -->
+<para>
+
+</para>
+
+@context: 
+@keys: 
+@ostream: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_init ##### -->
+<para>
+
+</para>
+
+@validity: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_get_valid ##### -->
+<para>
+
+</para>
+
+@validity: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_set_valid ##### -->
+<para>
+
+</para>
+
+@validity: 
+@valid: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_get_description ##### -->
+<para>
+
+</para>
+
+@validity: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_set_description ##### -->
+<para>
+
+</para>
+
+@validity: 
+@description: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_clear ##### -->
+<para>
+
+</para>
+
+@validity: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_clone ##### -->
+<para>
+
+</para>
+
+@vin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_add_certinfo ##### -->
+<para>
+
+</para>
+
+@vin: 
+@mode: 
+@name: 
+@email: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_envelope ##### -->
+<para>
+
+</para>
+
+@valid: 
+@outer: 
+
+
+<!-- ##### FUNCTION camel_cipher_validity_free ##### -->
+<para>
+
+</para>
+
+@validity: 
+
+
+<!-- ##### FUNCTION camel_cipher_canonical_to_stream ##### -->
+<para>
+
+</para>
+
+@part: 
+@flags: 
+@ostream: 
+@Returns: 
+
+

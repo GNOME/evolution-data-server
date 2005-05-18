@@ -1,0 +1,119 @@
+<!-- ##### SECTION Title ##### -->
+CamelVeeFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelVeeFolder ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_UNMATCHED_NAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_vee_folder_new ##### -->
+<para>
+
+</para>
+
+@parent_store: 
+@name: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_construct ##### -->
+<para>
+
+</para>
+
+@vf: 
+@parent_store: 
+@full: 
+@name: 
+@flags: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_get_location ##### -->
+<para>
+
+</para>
+
+@vf: 
+@vinfo: 
+@realuid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_add_folder ##### -->
+<para>
+
+</para>
+
+@vf: 
+@sub: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_remove_folder ##### -->
+<para>
+
+</para>
+
+@vf: 
+@sub: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_set_folders ##### -->
+<para>
+
+</para>
+
+@vf: 
+@folders: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_rebuild_folder ##### -->
+<para>
+
+</para>
+
+@vf: 
+@sub: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_set_expression ##### -->
+<para>
+
+</para>
+
+@vf: 
+@expr: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_hash_folder ##### -->
+<para>
+
+</para>
+
+@folder: 
+@buffer: 
+
+

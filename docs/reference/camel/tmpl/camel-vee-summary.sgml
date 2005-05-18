@@ -1,0 +1,50 @@
+<!-- ##### SECTION Title ##### -->
+CamelVeeSummary
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelVeeSummary ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelVeeMessageInfo ##### -->
+<para>
+
+</para>
+
+@info: 
+@real: 
+
+<!-- ##### FUNCTION camel_vee_summary_new ##### -->
+<para>
+
+</para>
+
+@parent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_vee_summary_add ##### -->
+<para>
+
+</para>
+
+@s: 
+@info: 
+@hash: 
+@Returns: 
+
+

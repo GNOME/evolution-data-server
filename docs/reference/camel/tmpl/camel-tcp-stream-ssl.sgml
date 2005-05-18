@@ -1,0 +1,74 @@
+<!-- ##### SECTION Title ##### -->
+CamelTcpStreamSSL
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelTcpStreamSSL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_TLS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_tcp_stream_ssl_new ##### -->
+<para>
+
+</para>
+
+@session: 
+@expected_host: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tcp_stream_ssl_new_raw ##### -->
+<para>
+
+</para>
+
+@session: 
+@expected_host: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tcp_stream_ssl_enable_ssl ##### -->
+<para>
+
+</para>
+
+@ssl: 
+@Returns: 
+
+

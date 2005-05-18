@@ -1,0 +1,32 @@
+<!-- ##### SECTION Title ##### -->
+CamelOfflineFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelOfflineFolder ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_offline_folder_downsync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expression: 
+@ex: 
+
+

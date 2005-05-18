@@ -1,0 +1,68 @@
+<!-- ##### SECTION Title ##### -->
+camel-nntp-types
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelNNTPGroupList ##### -->
+<para>
+
+</para>
+
+@store: 
+@time: 
+@group_list: 
+
+<!-- ##### STRUCT CamelNNTPGroupListEntry ##### -->
+<para>
+
+</para>
+
+@group_name: 
+@low: 
+@high: 
+@flags: 
+
+<!-- ##### TYPEDEF CamelNNTPOverField ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelNNTPStore ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@priv: 
+@extensions: 
+@posting_allowed: 
+@do_short_folder_notation: 
+@folder_hierarchy_relative: 
+@summary: 
+@stream: 
+@mem: 
+@cache: 
+@current_folder: 
+@storage_path: 
+@base_url: 
+@xover: 
+
+<!-- ##### STRUCT CamelNNTPStoreClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+

@@ -1,0 +1,123 @@
+<!-- ##### SECTION Title ##### -->
+camel-imap4-utils
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT flags_diff_t ##### -->
+<para>
+
+</para>
+
+@changed: 
+@bits: 
+
+<!-- ##### FUNCTION camel_imap4_flags_diff ##### -->
+<para>
+
+</para>
+
+@diff: 
+@old: 
+@new: 
+
+
+<!-- ##### FUNCTION camel_imap4_flags_merge ##### -->
+<para>
+
+</para>
+
+@diff: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_merge_flags ##### -->
+<para>
+
+</para>
+
+@original: 
+@local: 
+@server: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_namespace_clear ##### -->
+<para>
+
+</para>
+
+@ns: 
+
+
+<!-- ##### STRUCT CamelIMAP4NamespaceList ##### -->
+<para>
+
+</para>
+
+@personal: 
+@other: 
+@shared: 
+
+<!-- ##### FUNCTION camel_imap4_untagged_list ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@index: 
+@token: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### STRUCT camel_imap4_status_attr_t ##### -->
+<para>
+
+</para>
+
+@next: 
+@type: 
+@value: 
+
+<!-- ##### STRUCT camel_imap4_status_t ##### -->
+<para>
+
+</para>
+
+@attr_list: 
+@mailbox: 
+
+<!-- ##### FUNCTION camel_imap4_status_free ##### -->
+<para>
+
+</para>
+
+@status: 
+
+
+<!-- ##### FUNCTION camel_imap4_untagged_status ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@index: 
+@token: 
+@ex: 
+@Returns: 
+
+

@@ -1,0 +1,600 @@
+<!-- ##### SECTION Title ##### -->
+CamelFolder
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelFolder ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelFolderChangeInfo ##### -->
+<para>
+
+</para>
+
+@uid_added: 
+@uid_removed: 
+@uid_changed: 
+@uid_recent: 
+@priv: 
+
+<!-- ##### MACRO CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_HAS_SEARCH_CAPABILITY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_FILTER_RECENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_HAS_BEEN_DELETED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_IS_TRASH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_IS_JUNK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_FILTER_JUNK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION camel_folder_construct ##### -->
+<para>
+
+</para>
+
+@folder: 
+@parent_store: 
+@full_name: 
+@name: 
+
+
+<!-- ##### FUNCTION camel_folder_refresh_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_folder_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expunge: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_folder_get_parent_store ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_expunge ##### -->
+<para>
+
+</para>
+
+@folder: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_folder_get_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_full_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_permanent_flags ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message_flags ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_set_message_flags ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@flags: 
+@set: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message_user_flag ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_set_message_user_flag ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@name: 
+@value: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message_user_tag ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_set_message_user_tag ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@name: 
+@value: 
+
+
+<!-- ##### FUNCTION camel_folder_append_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@message: 
+@info: 
+@appended_uid: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_folder_has_summary_capability ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message_count ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_unread_message_count ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_deleted_message_count ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_summary ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_free_summary ##### -->
+<para>
+
+</para>
+
+@folder: 
+@array: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### MACRO camel_folder_delete_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_get_uids ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_free_uids ##### -->
+<para>
+
+</para>
+
+@folder: 
+@array: 
+
+
+<!-- ##### FUNCTION camel_folder_has_search_capability ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_search_by_expression ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expr: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_search_by_uids ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expr: 
+@uids: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_search_free ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_free_message_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_ref_message_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_transfer_messages_to ##### -->
+<para>
+
+</para>
+
+@source: 
+@uids: 
+@dest: 
+@transferred_uids: 
+@delete_originals: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_folder_delete ##### -->
+<para>
+
+</para>
+
+@folder: 
+
+
+<!-- ##### FUNCTION camel_folder_rename ##### -->
+<para>
+
+</para>
+
+@folder: 
+@new: 
+
+
+<!-- ##### FUNCTION camel_folder_freeze ##### -->
+<para>
+
+</para>
+
+@folder: 
+
+
+<!-- ##### FUNCTION camel_folder_thaw ##### -->
+<para>
+
+</para>
+
+@folder: 
+
+
+<!-- ##### FUNCTION camel_folder_is_frozen ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_free_nop ##### -->
+<para>
+
+</para>
+
+@folder: 
+@array: 
+
+
+<!-- ##### FUNCTION camel_folder_free_shallow ##### -->
+<para>
+
+</para>
+
+@folder: 
+@array: 
+
+
+<!-- ##### FUNCTION camel_folder_free_deep ##### -->
+<para>
+
+</para>
+
+@folder: 
+@array: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_clear ##### -->
+<para>
+
+</para>
+
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_free ##### -->
+<para>
+
+</para>
+
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_changed ##### -->
+<para>
+
+</para>
+
+@info: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_add_source ##### -->
+<para>
+
+</para>
+
+@info: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_add_source_list ##### -->
+<para>
+
+</para>
+
+@info: 
+@list: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_add_update ##### -->
+<para>
+
+</para>
+
+@info: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_add_update_list ##### -->
+<para>
+
+</para>
+
+@info: 
+@list: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_build_diff ##### -->
+<para>
+
+</para>
+
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_cat ##### -->
+<para>
+
+</para>
+
+@info: 
+@src: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_add_uid ##### -->
+<para>
+
+</para>
+
+@info: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_remove_uid ##### -->
+<para>
+
+</para>
+
+@info: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_change_uid ##### -->
+<para>
+
+</para>
+
+@info: 
+@uid: 
+
+
+<!-- ##### FUNCTION camel_folder_change_info_recent_uid ##### -->
+<para>
+
+</para>
+
+@info: 
+@uid: 
+
+

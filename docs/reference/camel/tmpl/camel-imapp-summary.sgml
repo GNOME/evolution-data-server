@@ -1,0 +1,55 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAPPSummary
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO CAMEL_IMAPP_SERVER_FLAGS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_IMAPP_MESSAGE_RECENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT CamelIMAPPSummary ##### -->
+<para>
+
+</para>
+
+@parent: 
+@version: 
+@uidvalidity: 
+
+<!-- ##### STRUCT CamelIMAPPMessageInfo ##### -->
+<para>
+
+</para>
+
+@info: 
+@server_flags: 
+
+<!-- ##### FUNCTION camel_imapp_summary_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

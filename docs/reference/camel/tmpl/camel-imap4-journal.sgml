@@ -1,0 +1,62 @@
+<!-- ##### SECTION Title ##### -->
+CamelIMAP4Journal
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT CamelIMAP4Journal ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+@failed: 
+
+<!-- ##### STRUCT CamelIMAP4JournalEntry ##### -->
+<para>
+
+</para>
+
+@node: 
+@type: 
+
+<!-- ##### FUNCTION camel_imap4_journal_new ##### -->
+<para>
+
+</para>
+
+@folder: 
+@filename: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_journal_readd_failed ##### -->
+<para>
+
+</para>
+
+@journal: 
+
+
+<!-- ##### FUNCTION camel_imap4_journal_append ##### -->
+<para>
+
+</para>
+
+@journal: 
+@message: 
+@mi: 
+@appended_uid: 
+@ex: 
+
+
