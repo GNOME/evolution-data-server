@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-10.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-15 20:31+0000\n"
-"PO-Revision-Date: 2005-05-16 11:06+0530\n"
+"POT-Creation-Date: 2005-05-18 04:29+0000\n"
+"PO-Revision-Date: 2005-05-18 10:32+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati <gu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -648,27 +649,27 @@ msgstr "પ્રત્યુત્તરની માંગણી થયેલ 
 msgid "Reply Requested: When convenient"
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: જ્યારે યોગ્ય હોય"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:562
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:566
 msgid "Invalid server URI"
 msgstr "અયોગ્ય સર્વર URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:614
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:617
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:618
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:621
 msgid "Calendar"
 msgstr "કેલેન્ડર"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:624
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:861
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:628
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:865
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:634
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:638
 msgid "Could not create thread for populating cache"
 msgstr "કેશ બનાવવા માટે થ્રેડ બનાવી શક્યા નથી"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:640
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:644
 #: ../calendar/libecal/e-cal.c:4564
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:742
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:762
@@ -2650,7 +2651,7 @@ msgid "This option will connect to the GroupWise server using a plaintext passwo
 msgstr "આ વિકલ્પ સાદા લખાણના પાસવર્ડની મદદથી જૂથપ્રમાણેના સર્વર સાથે જોડાશે."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:270
-msgid "Host or user not available in url"
+msgid "Host or user not availbale in url"
 msgstr "url માં યજમાન અથવા વપરાશકર્તા ઉપલબ્ધ નથી"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:365
