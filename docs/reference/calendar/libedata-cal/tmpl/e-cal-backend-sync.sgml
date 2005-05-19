@@ -9,12 +9,10 @@ Base class for synchronous backends.
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### STRUCT ECalBackendSyncPrivate ##### -->
 <para>
