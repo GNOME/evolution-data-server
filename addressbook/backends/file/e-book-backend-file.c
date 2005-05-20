@@ -128,6 +128,8 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 	}
+
+	dbc->c_close (dbc);
 }
 
 static char *
@@ -450,6 +452,11 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		status = db_error != DB_NOTFOUND
 			? GNOME_Evolution_Addressbook_OtherError
 			: GNOME_Evolution_Addressbook_Success;
+
+		db_error = dbc->c_close(dbc);
+		if (db_error != 0) {
+			g_warning("Could not close cursor: %d", db_error);
+		}
 	}
 
 	*contacts = contact_list;
