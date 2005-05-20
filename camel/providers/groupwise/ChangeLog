@@ -1,3 +1,8 @@
+2005-05-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-transport.c (groupwise_send_to):
+	  Call the replyRequest api before replying to a message
+
 2005-04-07  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-provider.c 

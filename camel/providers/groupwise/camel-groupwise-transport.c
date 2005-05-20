@@ -150,6 +150,7 @@ groupwise_send_to (CamelTransport *transport,
 	EGwConnectionStatus status ;
 	GSList *sent_item_list = NULL;
 	char *url = NULL ;
+	const char *reply_request = NULL;
 
 	url = camel_url_to_string (service->url,
 			           (CAMEL_URL_HIDE_PASSWORD |
@@ -178,6 +179,22 @@ groupwise_send_to (CamelTransport *transport,
 
 
 	item = camel_groupwise_util_item_from_message (message, from, recipients);
+	
+	reply_request = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), "In-Reply-To");
+	if (reply_request) {
+		EGwItem *temp_item;
+		char *id;
+		int len = strlen (reply_request);
+
+		id = (char *)g_malloc0 (len-1);
+		id = memcpy(id, reply_request+2, len-3);
+		status = e_gw_connection_reply_item (cnc, id, NULL, &temp_item);
+		if (status != E_GW_CONNECTION_STATUS_OK) 
+			g_warning ("Could not send a replyRequest...continuing without!!\n");
+
+		g_object_unref (temp_item);
+		g_free (id);
+	}
 	
 	/*Send item*/
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list) ;
