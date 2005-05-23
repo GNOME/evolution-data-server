@@ -1069,11 +1069,19 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 	int i, j, n, id, dest_namelen;
 	CamelMessageInfo *info;
 	CamelIMAP4Command *ic;
+	CamelException lex;
 	GPtrArray *infos;
 	char *set;
 	
 	if (transferred_uids)
 		*transferred_uids = NULL;
+	
+	camel_exception_init (&lex);
+	imap4_sync (src, FALSE, &lex);
+	if (camel_exception_is_set (&lex)) {
+		camel_exception_xfer (ex, &lex);
+		return;
+	}
 	
 	infos = g_ptr_array_new ();
 	for (i = 0; i < uids->len; i++) {

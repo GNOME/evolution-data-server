@@ -4,6 +4,8 @@
 	extension doesn't give a "UID APPEND" command, instead it just
 	provides the APPENDUID RESP-CODE, so no need to conditionalise the
 	command-creation code here. Simply always send "APPEND ..."
+	(imap4_transfer_messages_to): Sync the flags before performing a
+	COPY. Fixes bug #274407.
 
 2005-03-11  Jeffrey Stedfast  <fejj@novell.com>
 

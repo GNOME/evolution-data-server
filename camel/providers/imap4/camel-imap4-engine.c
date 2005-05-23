@@ -328,7 +328,7 @@ camel_imap4_engine_namespace (CamelIMAP4Engine *engine, CamelException *ex)
 		if (ic->result == CAMEL_IMAP4_RESULT_OK) {
 			CamelIMAP4Namespace *namespace;
 			
-			g_assert (array->len == 1);
+			g_assert (array->len >= 1);
 			list = array->pdata[0];
 			
 			namespace = g_new (CamelIMAP4Namespace, 1);
