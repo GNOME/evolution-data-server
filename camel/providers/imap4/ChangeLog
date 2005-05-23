@@ -1,3 +1,10 @@
+2005-05-23  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-folder.c (imap4_append_message): The UIDPLUS
+	extension doesn't give a "UID APPEND" command, instead it just
+	provides the APPENDUID RESP-CODE, so no need to conditionalise the
+	command-creation code here. Simply always send "APPEND ..."
+
 2005-03-11  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-folder.c (imap4_sync): Don't try to EXPUNGE in
