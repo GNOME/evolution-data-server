@@ -1,3 +1,11 @@
+2005-05-24  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Commiting for Daniel van Eeden <daniel_e@dds.nl>
+	* camel-groupwise-transport.c: 
+	(groupwise_transport_get_name): naming consistency for
+	GroupWise.
+	Fixes bug #271901
+
 2005-05-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-transport.c (groupwise_send_to):

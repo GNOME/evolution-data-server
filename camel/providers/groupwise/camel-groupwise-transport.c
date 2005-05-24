@@ -118,9 +118,9 @@ camel_groupwise_transport_get_type (void)
 static char *groupwise_transport_get_name (CamelService *service, gboolean brief)
 {
 	if (brief)
-		return g_strdup_printf (_("Groupwise server %s"), service->url->host);
+		return g_strdup_printf (_("GroupWise server %s"), service->url->host);
 	else {
-		return g_strdup_printf (_("Groupwise mail delivery via %s"),
+		return g_strdup_printf (_("GroupWise mail delivery via %s"),
 				service->url->host);
 	}
 }
