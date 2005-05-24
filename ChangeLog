@@ -1,3 +1,25 @@
+2005-05-24  Tor Lillqvist  <tml@novell.com>
+
+	Make libdb as included in e-d-s build on Win32 with mingw. (The
+	official build setup for libdb uses MSVC.)
+
+	* libdb/dist/Makefile.in: Use EXEEXT for Win32 portability. Use
+	the MAKEFILE_MAYBE_WIN32 variable (which configure.ac sets to
+	empty on Unix, "_win32" on Win32) to use those source files that
+	have an own copy in os_win32 from there.
+
+	* libdb/dist/config.hin: Add DB_WIN32 flag. Insert stuff from the
+	libdb/build_win32_db_config.h file.
+
+	* libdb/dist/configure.ac: Changes for mingw builds. AC_SUBST some
+	more variables.
+
+	* libdb/dist/configure: Manually make corresponding changes as in
+	configure.ac. (Yuck! But we don't run autogen in libdb/dost, so
+	what else to do?)
+
+	* libdb/os_win32/os_type.c: Include db_int_def.h here, too.
+
 2005-05-19  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Check for regexec in a separate -lregex. Add

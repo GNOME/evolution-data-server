@@ -6,6 +6,7 @@
  */
 
 #include "db_config.h"
+#include "db_int_def.h"
 
 #ifndef lint
 static const char revid[] = "$Id$";

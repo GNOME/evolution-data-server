@@ -364,8 +364,9 @@ RPC_JAVASRV_SRCS=\
 
 UTIL_PROGS=\
 	@ADDITIONAL_PROGS@ \
-	db_archive db_checkpoint db_deadlock \
-	db_dump db_load db_printlog db_recover db_stat db_upgrade db_verify
+	db_archive@EXEEXT@ db_checkpoint@EXEEXT@ db_deadlock@EXEEXT@ \
+	db_dump@EXEEXT@ db_load@EXEEXT@ db_printlog@EXEEXT@ \
+	db_recover@EXEEXT@ db_stat@EXEEXT@ db_upgrade@EXEEXT@ db_verify@EXEEXT@
 
 ##################################################
 # List of files installed into the library directory.
@@ -482,53 +483,53 @@ berkeley_db_javasvc: $(rpc_jarfile)
 	echo >> $@ exec java com.sleepycat.db.rpcserver.DbServer \$$@
 	chmod +x $@
 
-db_archive: db_archive@o@ util_sig@o@ $(DEF_LIB)
+db_archive@EXEEXT@: db_archive@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) \
 	    db_archive@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_checkpoint: db_checkpoint@o@ util_log@o@ util_sig@o@ $(DEF_LIB)
+db_checkpoint@EXEEXT@: db_checkpoint@o@ util_log@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) \
 	    db_checkpoint@o@ util_log@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_deadlock: db_deadlock@o@ util_log@o@ util_sig@o@ $(DEF_LIB)
+db_deadlock@EXEEXT@: db_deadlock@o@ util_log@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) \
 	    db_deadlock@o@ util_log@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_dump: db_dump@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
+db_dump@EXEEXT@: db_dump@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) db_dump@o@ util_cache@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_dump185: db_dump185@o@ @LTLIBOBJS@
+db_dump185@EXEEXT@: db_dump185@o@ @LTLIBOBJS@
 	$(CCLINK) -o $@ $(LDFLAGS) db_dump185@o@ @LTLIBOBJS@ $(DB185LIB)
 	$(POSTLINK) $@
 
-db_load: db_load@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
+db_load@EXEEXT@: db_load@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) db_load@o@ util_cache@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_printlog: db_printlog@o@ util_sig@o@ $(DEF_LIB)
+db_printlog@EXEEXT@: db_printlog@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) \
 	    db_printlog@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_recover: db_recover@o@ util_sig@o@ $(DEF_LIB)
+db_recover@EXEEXT@: db_recover@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) \
 	    db_recover@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_stat: db_stat@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
+db_stat@EXEEXT@: db_stat@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) db_stat@o@ util_cache@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_upgrade: db_upgrade@o@ util_sig@o@ $(DEF_LIB)
+db_upgrade@EXEEXT@: db_upgrade@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) \
 	    db_upgrade@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
 
-db_verify: db_verify@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
+db_verify@EXEEXT@: db_verify@o@ util_cache@o@ util_sig@o@ $(DEF_LIB)
 	$(CCLINK) -o $@ $(LDFLAGS) \
 	    db_verify@o@ util_cache@o@ util_sig@o@ $(DEF_LIB) $(LIBS)
 	$(POSTLINK) $@
@@ -1119,53 +1120,55 @@ mut_tas@o@: $(srcdir)/mutex/mut_tas.c
 	 $(CC) $(CFLAGS) $?
 mutex@o@: $(srcdir)/mutex/mutex.c
 	 $(CC) $(CFLAGS) $?
-os_abs@o@: $(srcdir)/os/os_abs.c
+os_abs@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_abs.c
 	 $(CC) $(CFLAGS) $?
 os_alloc@o@: $(srcdir)/os/os_alloc.c
 	 $(CC) $(CFLAGS) $?
-os_clock@o@: $(srcdir)/os/os_clock.c
+os_clock@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_clock.c
 	 $(CC) $(CFLAGS) $?
-os_config@o@: $(srcdir)/os/os_config.c
+os_config@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_config.c
 	 $(CC) $(CFLAGS) $?
-os_dir@o@: $(srcdir)/os/os_dir.c
+os_dir@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_dir.c
 	 $(CC) $(CFLAGS) $?
-os_errno@o@: $(srcdir)/os/os_errno.c
+os_errno@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_errno.c
 	 $(CC) $(CFLAGS) $?
-os_fid@o@: $(srcdir)/os/os_fid.c
+os_fid@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_fid.c
 	 $(CC) $(CFLAGS) $?
-os_fsync@o@: $(srcdir)/os/os_fsync.c
+os_fsync@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_fsync.c
 	 $(CC) $(CFLAGS) $?
 os_id@o@: $(srcdir)/os/os_id.c
 	 $(CC) $(CFLAGS) $?
-os_handle@o@: $(srcdir)/os/os_handle.c
+os_handle@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_handle.c
 	 $(CC) $(CFLAGS) $?
-os_map@o@: $(srcdir)/os/os_map.c
+os_map@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_map.c
 	 $(CC) $(CFLAGS) $?
 os_method@o@: $(srcdir)/os/os_method.c
 	 $(CC) $(CFLAGS) $?
 os_oflags@o@: $(srcdir)/os/os_oflags.c
 	 $(CC) $(CFLAGS) $?
-os_open@o@: $(srcdir)/os/os_open.c
+os_open@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_open.c
 	 $(CC) $(CFLAGS) $?
 os_region@o@: $(srcdir)/os/os_region.c
 	 $(CC) $(CFLAGS) $?
-os_rename@o@: $(srcdir)/os/os_rename.c
+os_rename@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_rename.c
 	 $(CC) $(CFLAGS) $?
 os_root@o@: $(srcdir)/os/os_root.c
 	 $(CC) $(CFLAGS) $?
 os_rpath@o@: $(srcdir)/os/os_rpath.c
 	 $(CC) $(CFLAGS) $?
-os_rw@o@: $(srcdir)/os/os_rw.c
+os_rw@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_rw.c
 	 $(CC) $(CFLAGS) $?
-os_seek@o@: $(srcdir)/os/os_seek.c
+os_seek@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_seek.c
 	 $(CC) $(CFLAGS) $?
-os_sleep@o@: $(srcdir)/os/os_sleep.c
+os_sleep@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_sleep.c
 	 $(CC) $(CFLAGS) $?
-os_spin@o@: $(srcdir)/os/os_spin.c
+os_spin@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_spin.c
 	 $(CC) $(CFLAGS) $?
-os_stat@o@: $(srcdir)/os/os_stat.c
+os_stat@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_stat.c
 	 $(CC) $(CFLAGS) $?
 os_tmpdir@o@: $(srcdir)/os/os_tmpdir.c
+	 $(CC) $(CFLAGS) $?
+os_type@o@: $(srcdir)/os@MAKEFILE_MAYBE_WIN32@/os_type.c
 	 $(CC) $(CFLAGS) $?
 os_unlink@o@: $(srcdir)/os/os_unlink.c
 	 $(CC) $(CFLAGS) $?

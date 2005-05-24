@@ -353,6 +353,9 @@
 /* Define to 1 to mask harmless unitialized memory read/writes. */
 #undef UMRW
 
+/* Define to 1 to if building for Win32. */
+#undef DB_WIN32
+
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
@@ -403,3 +406,54 @@
 #ifndef	HAVE_VSNPRINTF
 #define	vsnprintf	__db_Cvsnprintf
 #endif
+
+#ifdef DB_WIN32
+
+/* This part copied from build_win32/db_config.h */
+
+/*
+ * XXX
+ * The following is not part of the automatic configuration setup, but
+ * provides the information necessary to build Berkeley DB on Windows.
+ */
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#include <direct.h>
+#include <fcntl.h>
+#include <io.h>
+#include <limits.h>
+#include <memory.h>
+#include <process.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <errno.h>
+
+/*
+ * To build Tcl interface libraries, the include path must be configured to
+ * use the directory containing <tcl.h>, usually the include directory in
+ * the Tcl distribution.
+ */
+#ifdef DB_TCL_SUPPORT
+#include <tcl.h>
+#endif
+
+#define	WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+/*
+ * All of the necessary includes have been included, ignore the #includes
+ * in the Berkeley DB source files.
+ */
+#define	NO_SYSTEM_INCLUDES
+
+/*
+ * Win32 has getcwd, snprintf and vsnprintf, but under different names.
+ */
+#define	getcwd(buf, size)	_getcwd(buf, size)
+#define	snprintf		_snprintf
+#define	vsnprintf		_vsnprintf
+
+#endif /* DB_WIN32 */
