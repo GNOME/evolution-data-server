@@ -1,5 +1,12 @@
 2005-05-24  Tor Lillqvist  <tml@novell.com>
 
+	* configure.in: Define NO_UNDEFINED as -no-undefined and
+	SOCKET_LIBS as -lws2_32 (the WinSock2 library) on Win32. AC_SUBST
+	them. Check for strtok_r. Add gobject-2.0 to
+	EVOLUTION_ADDRESSBOOK_DEPS and EVOLUTION_CALENDAR_DEPS.
+	
+2005-05-24  Tor Lillqvist  <tml@novell.com>
+
 	Make libdb as included in e-d-s build on Win32 with mingw. (The
 	official build setup for libdb uses MSVC.)
 
