@@ -853,7 +853,7 @@ contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkT
 	GtkTreeIter    contact_store_iter;
 	GList         *email_list;
 	gchar         *string;
-	gchar         *file_as_str;
+	gchar         *full_name_str;
 	gchar         *email_str;
 	gint           email_n;
 
@@ -864,17 +864,17 @@ contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkT
 	contact = e_contact_store_get_contact (contact_store, &contact_store_iter);
 	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
 	email_str = g_list_nth_data (email_list, email_n);
-	file_as_str = e_contact_get (contact, E_CONTACT_FILE_AS);
+	full_name_str = e_contact_get (contact, E_CONTACT_FULL_NAME);
 
 	if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
-		string = g_strdup_printf ("%s", file_as_str ? file_as_str : "?");
+		string = g_strdup_printf ("%s", full_name_str ? full_name_str : "?");
 	} else {
-		string = g_strdup_printf ("%s%s<%s>", file_as_str ? file_as_str : "",
-					  file_as_str ? " " : "",
+		string = g_strdup_printf ("%s%s<%s>", full_name_str ? full_name_str : "",
+					  full_name_str ? " " : "",
 					  email_str ? email_str : "");
 	}
 
-	g_free (file_as_str);
+	g_free (full_name_str);
 	deep_free_list (email_list);
 
 	g_object_set (cell, "text", string, NULL);
