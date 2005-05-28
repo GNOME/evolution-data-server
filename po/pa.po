@@ -13,14 +13,16 @@
 # Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
 # Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
 # Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
+# Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
+# Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-13 12:30+0000\n"
-"PO-Revision-Date: 2005-05-13 20:07+0530\n"
+"POT-Creation-Date: 2005-05-28 12:36+0000\n"
+"PO-Revision-Date: 2005-05-28 18:34+0530\n"
 "Last-Translator: Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <punlinux-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -31,13 +33,13 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:519
+#: ../addressbook/backends/file/e-book-backend-file.c:526
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:452
 msgid "Loading..."
 msgstr "ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:521
+#: ../addressbook/backends/file/e-book-backend-file.c:528
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
@@ -623,17 +625,17 @@ msgid "Unnamed List"
 msgstr "ਬਿਨਾਂ ਨਾਂ ਸੂਚੀ"
 
 #. Set category and visibility
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:446
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:452
 #: ../libedataserver/e-categories.c:226
 msgid "Birthday"
 msgstr "ਜਨਮਦਿਨ"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:477
 #, c-format
 msgid "Birthday: %s"
 msgstr "ਜਨਮਦਿਨ: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:501
 #, c-format
 msgid "Anniversary: %s"
 msgstr "ਵਰੇਗੰਢ: %s"
@@ -652,27 +654,27 @@ msgstr "ਜਵਾਬ ਦੀ ਬੇਨਤੀ: ਵਲੋਂ"
 msgid "Reply Requested: When convenient"
 msgstr "ਜਵਾਬ ਲਈ ਬੇਨਤੀ: ਜਦੋਂ ਠੀਕ ਲੱਗੇ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:562
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:566
 msgid "Invalid server URI"
 msgstr "ਗਲਤ ਸਰਵਰ URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:614
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:617
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:618
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:621
 msgid "Calendar"
 msgstr "ਕੈਲੰਡਰ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:624
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:861
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:628
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:865
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "ਕੈਂਚੇ ਫਾਇਲ ਨੂੰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:634
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:638
 msgid "Could not create thread for populating cache"
 msgstr "ਕੈਂਚੇ ਥਰਿੱਡ ਨੂੰ ਵਿਕਸਤ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:640
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:644
 #: ../calendar/libecal/e-cal.c:4564
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:742
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:762
@@ -2652,8 +2654,8 @@ msgid "This option will connect to the GroupWise server using a plaintext passwo
 msgstr "ਇਸ ਚੋਣ ਨਾਲ GroupWise ਸਰਵਰ ਨਾਲ ਇੱਕ ਸਧਾਰਨ ਪਾਠ ਗੁਪਤ-ਕੋਡ ਰਾਹੀਂ ਜੁੜਿਆ ਜਾਵੇਗਾ।"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:270
-msgid "Host or user not available in url"
-msgstr "url ਵਿੱਚ ਮੇਜ਼ਬਾਨ ਨਾਂ ਜਾਂ ਉਪਭੋਗੀ ਉਪਲੱਬਧ ਨਹੀਂ"
+msgid "Host or user not availbale in url"
+msgstr "url ਵਿੱਚ ਮੇਜ਼ਬਾਨ ਜਾਂ ਉਪਭੋਗੀ ਉਪਲੱਬਧ ਨਹੀਂ"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:365
 #, c-format
