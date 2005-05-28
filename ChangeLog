@@ -1,3 +1,8 @@
+2005-05-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Disable the libedataserver api docs build
+	* docs/reference/Makefile.am: Here too. It doesn't build.
+
 2005-05-24  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Define NO_UNDEFINED as -no-undefined and
