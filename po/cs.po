@@ -9,25 +9,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-09 13:04+0000\n"
-"PO-Revision-Date: 2005-04-09 16:05+0200\n"
+"POT-Creation-Date: 2005-05-29 06:00+0000\n"
+"PO-Revision-Date: 2005-05-29 13:45+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:519
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:452
+#: ../addressbook/backends/file/e-book-backend-file.c:528
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2046
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Načítám..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:521
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
+#: ../addressbook/backends/file/e-book-backend-file.c:530
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2044
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:454
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Vyhledávám..."
 
@@ -68,90 +68,90 @@ msgstr "Chyba při hledání"
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
 #: ../addressbook/libebook/e-book.c:240 ../addressbook/libebook/e-book.c:244
-#: ../addressbook/libebook/e-book.c:446 ../addressbook/libebook/e-book.c:450
-#: ../addressbook/libebook/e-book.c:579 ../addressbook/libebook/e-book.c:583
-#: ../addressbook/libebook/e-book.c:672 ../addressbook/libebook/e-book.c:676
-#: ../addressbook/libebook/e-book.c:952 ../addressbook/libebook/e-book.c:957
-#: ../addressbook/libebook/e-book.c:1132 ../addressbook/libebook/e-book.c:1136
-#: ../addressbook/libebook/e-book.c:1277 ../addressbook/libebook/e-book.c:1281
-#: ../addressbook/libebook/e-book.c:1479 ../addressbook/libebook/e-book.c:1483
-#: ../addressbook/libebook/e-book.c:1684 ../addressbook/libebook/e-book.c:1688
-#: ../addressbook/libebook/e-book.c:1910 ../addressbook/libebook/e-book.c:1914
-#: ../addressbook/libebook/e-book.c:2117 ../addressbook/libebook/e-book.c:2121
-#: ../addressbook/libebook/e-book.c:3200
+#: ../addressbook/libebook/e-book.c:456 ../addressbook/libebook/e-book.c:460
+#: ../addressbook/libebook/e-book.c:601 ../addressbook/libebook/e-book.c:605
+#: ../addressbook/libebook/e-book.c:694 ../addressbook/libebook/e-book.c:698
+#: ../addressbook/libebook/e-book.c:1012 ../addressbook/libebook/e-book.c:1017
+#: ../addressbook/libebook/e-book.c:1204 ../addressbook/libebook/e-book.c:1208
+#: ../addressbook/libebook/e-book.c:1365 ../addressbook/libebook/e-book.c:1369
+#: ../addressbook/libebook/e-book.c:1578 ../addressbook/libebook/e-book.c:1582
+#: ../addressbook/libebook/e-book.c:1819 ../addressbook/libebook/e-book.c:1823
+#: ../addressbook/libebook/e-book.c:2059 ../addressbook/libebook/e-book.c:2063
+#: ../addressbook/libebook/e-book.c:2275 ../addressbook/libebook/e-book.c:2279
+#: ../addressbook/libebook/e-book.c:3375
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" na adresáři před \"%s\""
 
-#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:459
-#: ../addressbook/libebook/e-book.c:592 ../addressbook/libebook/e-book.c:685
-#: ../addressbook/libebook/e-book.c:967 ../addressbook/libebook/e-book.c:1146
-#: ../addressbook/libebook/e-book.c:1291 ../addressbook/libebook/e-book.c:1492
-#: ../addressbook/libebook/e-book.c:1697 ../addressbook/libebook/e-book.c:1924
-#: ../addressbook/libebook/e-book.c:2130 ../addressbook/libebook/e-book.c:2468
-#: ../addressbook/libebook/e-book.c:2664
+#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:469
+#: ../addressbook/libebook/e-book.c:614 ../addressbook/libebook/e-book.c:707
+#: ../addressbook/libebook/e-book.c:1027 ../addressbook/libebook/e-book.c:1218
+#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1591
+#: ../addressbook/libebook/e-book.c:1832 ../addressbook/libebook/e-book.c:2073
+#: ../addressbook/libebook/e-book.c:2288 ../addressbook/libebook/e-book.c:2624
+#: ../addressbook/libebook/e-book.c:2830
 msgid "book busy"
 msgstr "adresář se používá"
 
 #: ../addressbook/libebook/e-book.c:286 ../addressbook/libebook/e-book.c:290
-#: ../addressbook/libebook/e-book.c:492 ../addressbook/libebook/e-book.c:496
-#: ../addressbook/libebook/e-book.c:621 ../addressbook/libebook/e-book.c:625
-#: ../addressbook/libebook/e-book.c:714 ../addressbook/libebook/e-book.c:718
-#: ../addressbook/libebook/e-book.c:996 ../addressbook/libebook/e-book.c:999
-#: ../addressbook/libebook/e-book.c:1178 ../addressbook/libebook/e-book.c:1181
-#: ../addressbook/libebook/e-book.c:1320 ../addressbook/libebook/e-book.c:1324
-#: ../addressbook/libebook/e-book.c:1528 ../addressbook/libebook/e-book.c:1532
-#: ../addressbook/libebook/e-book.c:1744 ../addressbook/libebook/e-book.c:1748
-#: ../addressbook/libebook/e-book.c:1956 ../addressbook/libebook/e-book.c:1960
-#: ../addressbook/libebook/e-book.c:2158 ../addressbook/libebook/e-book.c:2162
-#: ../addressbook/libebook/e-book.c:2409 ../addressbook/libebook/e-book.c:2496
-#: ../addressbook/libebook/e-book.c:2500 ../addressbook/libebook/e-book.c:2692
-#: ../addressbook/libebook/e-book.c:2696 ../addressbook/libebook/e-book.c:3209
+#: ../addressbook/libebook/e-book.c:502 ../addressbook/libebook/e-book.c:506
+#: ../addressbook/libebook/e-book.c:643 ../addressbook/libebook/e-book.c:647
+#: ../addressbook/libebook/e-book.c:736 ../addressbook/libebook/e-book.c:740
+#: ../addressbook/libebook/e-book.c:1056 ../addressbook/libebook/e-book.c:1059
+#: ../addressbook/libebook/e-book.c:1250 ../addressbook/libebook/e-book.c:1253
+#: ../addressbook/libebook/e-book.c:1408 ../addressbook/libebook/e-book.c:1412
+#: ../addressbook/libebook/e-book.c:1627 ../addressbook/libebook/e-book.c:1631
+#: ../addressbook/libebook/e-book.c:1879 ../addressbook/libebook/e-book.c:1883
+#: ../addressbook/libebook/e-book.c:2105 ../addressbook/libebook/e-book.c:2109
+#: ../addressbook/libebook/e-book.c:2316 ../addressbook/libebook/e-book.c:2320
+#: ../addressbook/libebook/e-book.c:2565 ../addressbook/libebook/e-book.c:2652
+#: ../addressbook/libebook/e-book.c:2656 ../addressbook/libebook/e-book.c:2858
+#: ../addressbook/libebook/e-book.c:2862 ../addressbook/libebook/e-book.c:3384
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Výjimka CORBA při volání \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2390
+#: ../addressbook/libebook/e-book.c:2546
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: není žádná aktuální operace"
 
-#: ../addressbook/libebook/e-book.c:2425
+#: ../addressbook/libebook/e-book.c:2581
 #, c-format
 msgid "%s: couldn't cancel"
 msgstr "%s: nemohu zrušit"
 
-#: ../addressbook/libebook/e-book.c:2454 ../addressbook/libebook/e-book.c:2458
+#: ../addressbook/libebook/e-book.c:2610 ../addressbook/libebook/e-book.c:2614
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" na adresáři po \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2524
+#: ../addressbook/libebook/e-book.c:2680
 #, c-format
 msgid "%s: cancelled"
 msgstr "%s: zrušeno"
 
-#: ../addressbook/libebook/e-book.c:3066
+#: ../addressbook/libebook/e-book.c:3241
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Neplatný zdroj."
 
-#: ../addressbook/libebook/e-book.c:3074 ../addressbook/libebook/e-book.c:3138
+#: ../addressbook/libebook/e-book.c:3249 ../addressbook/libebook/e-book.c:3313
 #, c-format
 msgid "%s: no factories available for uri `%s'"
 msgstr "%s: pro uri `%s' nejsou dostupné generátory"
 
-#: ../addressbook/libebook/e-book.c:3086
+#: ../addressbook/libebook/e-book.c:3261
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: Nemohu vytvořit EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3332
+#: ../addressbook/libebook/e-book.c:3524
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
 msgstr "%s: v gconf nebylo uloženo uid kontaktu sama sebe"
 
-#: ../addressbook/libebook/e-book.c:3443
+#: ../addressbook/libebook/e-book.c:3654
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: v gconf nebyl uložen zdroj pro uid `%s'."
@@ -332,8 +332,8 @@ msgid "AIM Screen Name List"
 msgstr "Seznam přezdívek AIM"
 
 #: ../addressbook/libebook/e-contact.c:157
-msgid "Groupwise Id List"
-msgstr "Seznam Id Groupwise"
+msgid "GroupWise Id List"
+msgstr "Seznam Id GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:158
 msgid "Jabber Id List"
@@ -376,28 +376,28 @@ msgid "AIM Work Screen Name 3"
 msgstr "Přezdívka AIM v práci 3"
 
 #: ../addressbook/libebook/e-contact.c:169
-msgid "Groupwise Home Screen Name 1"
-msgstr "Přezdívka Groupwise doma 1"
+msgid "GroupWise Home Screen Name 1"
+msgstr "Přezdívka GroupWise doma 1"
 
 #: ../addressbook/libebook/e-contact.c:170
-msgid "Groupwise Home Screen Name 2"
-msgstr "Přezdívka Groupwise doma 2"
+msgid "GroupWise Home Screen Name 2"
+msgstr "Přezdívka GroupWise doma 2"
 
 #: ../addressbook/libebook/e-contact.c:171
-msgid "Groupwise Home Screen Name 3"
-msgstr "Přezdívka Groupwise doma 3"
+msgid "GroupWise Home Screen Name 3"
+msgstr "Přezdívka GroupWise doma 3"
 
 #: ../addressbook/libebook/e-contact.c:172
-msgid "Groupwise Work Screen Name 1"
-msgstr "Přezdívka Groupwise v práci 1"
+msgid "GroupWise Work Screen Name 1"
+msgstr "Přezdívka GroupWise v práci 1"
 
 #: ../addressbook/libebook/e-contact.c:173
-msgid "Groupwise Work Screen Name 2"
-msgstr "Přezdívka Groupwise v práci 2"
+msgid "GroupWise Work Screen Name 2"
+msgstr "Přezdívka GroupWise v práci 2"
 
 #: ../addressbook/libebook/e-contact.c:174
-msgid "Groupwise Work Screen Name 3"
-msgstr "Přezdívka Groupwise v práci 3"
+msgid "GroupWise Work Screen Name 3"
+msgstr "Přezdívka GroupWise v práci 3"
 
 #: ../addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 1"
@@ -587,7 +587,10 @@ msgstr "Poznámka"
 msgid "Birth Date"
 msgstr "Narozeniny"
 
+#. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
+#: ../libedataserver/e-categories.c:235
 msgid "Anniversary"
 msgstr "Výročí"
 
@@ -603,23 +606,22 @@ msgstr "Seznam zobrazených adres"
 msgid "Last Revision"
 msgstr "Poslední revize"
 
-#: ../addressbook/libebook/e-contact.c:1210
-#: ../addressbook/libebook/e-destination.c:617
+#: ../addressbook/libebook/e-contact.c:1222
+#: ../addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
-#. Set category and visibility
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:446
-#: ../libedataserver/e-categories.c:226
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
+#: ../libedataserver/e-categories.c:236
 msgid "Birthday"
 msgstr "Narozeniny"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:481
 #, c-format
 msgid "Birthday: %s"
 msgstr "Narozeniny: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:505
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Výročí: %s"
@@ -629,49 +631,51 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:293
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:237
 msgid "Reply Requested: by "
 msgstr "Požadována odpověď: do "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:298
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:242
 msgid "Reply Requested: When convenient"
 msgstr "Požadována odpověď: Podle možností"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:529
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:566
 msgid "Invalid server URI"
 msgstr "Neplatné URI serveru"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:560
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:597
 msgid "Could not create thread for getting deltas"
 msgstr "Nemohu vytvořit thread pro získání změn"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:619
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:622
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:829
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:629
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:866
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:639
 msgid "Could not create thread for populating cache"
 msgstr "Nemohu vytvořit thread pro naplnění cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
-#: ../calendar/libecal/e-cal.c:4564
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:667
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:685
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:712
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:739
-#: ../camel/providers/groupwise/camel-groupwise-store.c:528
-#: ../camel/providers/groupwise/camel-groupwise-store.c:628
-#: ../camel/providers/groupwise/camel-groupwise-store.c:790
-#: ../camel/providers/groupwise/camel-groupwise-store.c:988
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:645
+#: ../calendar/libecal/e-cal.c:4850
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:742
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:762
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:789
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:816
+#: ../camel/providers/groupwise/camel-groupwise-store.c:521
+#: ../camel/providers/groupwise/camel-groupwise-store.c:540
+#: ../camel/providers/groupwise/camel-groupwise-store.c:585
+#: ../camel/providers/groupwise/camel-groupwise-store.c:746
+#: ../camel/providers/groupwise/camel-groupwise-store.c:944
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:176
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
@@ -880,223 +884,223 @@ msgstr "%.1f-%.1fcm sněhu\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1f\" sněhu\n"
 
-#: ../calendar/libecal/e-cal-component.c:1299
+#: ../calendar/libecal/e-cal-component.c:1314
 msgid "Untitled appointment"
 msgstr "Nepojmenovaná událost"
 
-#: ../calendar/libecal/e-cal-recur.c:3996
+#: ../calendar/libecal/e-cal-recur.c:4014
 msgid "1st"
 msgstr "1."
 
-#: ../calendar/libecal/e-cal-recur.c:3997
+#: ../calendar/libecal/e-cal-recur.c:4015
 msgid "2nd"
 msgstr "2."
 
-#: ../calendar/libecal/e-cal-recur.c:3998
+#: ../calendar/libecal/e-cal-recur.c:4016
 msgid "3rd"
 msgstr "3."
 
-#: ../calendar/libecal/e-cal-recur.c:3999
+#: ../calendar/libecal/e-cal-recur.c:4017
 msgid "4th"
 msgstr "4."
 
-#: ../calendar/libecal/e-cal-recur.c:4000
+#: ../calendar/libecal/e-cal-recur.c:4018
 msgid "5th"
 msgstr "5."
 
-#: ../calendar/libecal/e-cal-recur.c:4001
+#: ../calendar/libecal/e-cal-recur.c:4019
 msgid "6th"
 msgstr "6."
 
-#: ../calendar/libecal/e-cal-recur.c:4002
+#: ../calendar/libecal/e-cal-recur.c:4020
 msgid "7th"
 msgstr "7."
 
-#: ../calendar/libecal/e-cal-recur.c:4003
+#: ../calendar/libecal/e-cal-recur.c:4021
 msgid "8th"
 msgstr "8."
 
-#: ../calendar/libecal/e-cal-recur.c:4004
+#: ../calendar/libecal/e-cal-recur.c:4022
 msgid "9th"
 msgstr "9."
 
-#: ../calendar/libecal/e-cal-recur.c:4005
+#: ../calendar/libecal/e-cal-recur.c:4023
 msgid "10th"
 msgstr "10."
 
-#: ../calendar/libecal/e-cal-recur.c:4006
+#: ../calendar/libecal/e-cal-recur.c:4024
 msgid "11th"
 msgstr "11."
 
-#: ../calendar/libecal/e-cal-recur.c:4007
+#: ../calendar/libecal/e-cal-recur.c:4025
 msgid "12th"
 msgstr "12."
 
-#: ../calendar/libecal/e-cal-recur.c:4008
+#: ../calendar/libecal/e-cal-recur.c:4026
 msgid "13th"
 msgstr "13."
 
-#: ../calendar/libecal/e-cal-recur.c:4009
+#: ../calendar/libecal/e-cal-recur.c:4027
 msgid "14th"
 msgstr "14."
 
-#: ../calendar/libecal/e-cal-recur.c:4010
+#: ../calendar/libecal/e-cal-recur.c:4028
 msgid "15th"
 msgstr "15."
 
-#: ../calendar/libecal/e-cal-recur.c:4011
+#: ../calendar/libecal/e-cal-recur.c:4029
 msgid "16th"
 msgstr "16."
 
-#: ../calendar/libecal/e-cal-recur.c:4012
+#: ../calendar/libecal/e-cal-recur.c:4030
 msgid "17th"
 msgstr "17."
 
-#: ../calendar/libecal/e-cal-recur.c:4013
+#: ../calendar/libecal/e-cal-recur.c:4031
 msgid "18th"
 msgstr "18."
 
-#: ../calendar/libecal/e-cal-recur.c:4014
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "19th"
 msgstr "19."
 
-#: ../calendar/libecal/e-cal-recur.c:4015
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "20th"
 msgstr "20."
 
-#: ../calendar/libecal/e-cal-recur.c:4016
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "21st"
 msgstr "21."
 
-#: ../calendar/libecal/e-cal-recur.c:4017
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "22nd"
 msgstr "22."
 
-#: ../calendar/libecal/e-cal-recur.c:4018
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "23rd"
 msgstr "23."
 
-#: ../calendar/libecal/e-cal-recur.c:4019
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "24th"
 msgstr "24."
 
-#: ../calendar/libecal/e-cal-recur.c:4020
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "25th"
 msgstr "25."
 
-#: ../calendar/libecal/e-cal-recur.c:4021
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "26th"
 msgstr "26."
 
-#: ../calendar/libecal/e-cal-recur.c:4022
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "27th"
 msgstr "27."
 
-#: ../calendar/libecal/e-cal-recur.c:4023
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "28th"
 msgstr "28."
 
-#: ../calendar/libecal/e-cal-recur.c:4024
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "29th"
 msgstr "29."
 
-#: ../calendar/libecal/e-cal-recur.c:4025
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "30th"
 msgstr "30."
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:635 ../calendar/libecal/e-cal-util.c:657
+#: ../calendar/libecal/e-cal-util.c:680 ../calendar/libecal/e-cal-util.c:708
 msgid "High"
 msgstr "Vysoká"
 
-#: ../calendar/libecal/e-cal-util.c:637 ../calendar/libecal/e-cal-util.c:659
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
 msgid "Normal"
 msgstr "Normální"
 
-#: ../calendar/libecal/e-cal-util.c:639 ../calendar/libecal/e-cal-util.c:661
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "Low"
 msgstr "Nízká"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:655
+#: ../calendar/libecal/e-cal-util.c:706
 msgid "Undefined"
 msgstr "Nedefinováno"
 
 #. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1552 ../libedataserverui/e-book-auth-util.c:192
+#: ../calendar/libecal/e-cal.c:1590 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: ../calendar/libecal/e-cal.c:4536
+#: ../calendar/libecal/e-cal.c:4822
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: ../calendar/libecal/e-cal.c:4538
+#: ../calendar/libecal/e-cal.c:4824
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: ../calendar/libecal/e-cal.c:4540
+#: ../calendar/libecal/e-cal.c:4826
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: ../calendar/libecal/e-cal.c:4542
+#: ../calendar/libecal/e-cal.c:4828
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: ../calendar/libecal/e-cal.c:4544 ../servers/groupwise/e-gw-connection.c:165
+#: ../calendar/libecal/e-cal.c:4830 ../servers/groupwise/e-gw-connection.c:165
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: ../calendar/libecal/e-cal.c:4546 ../servers/groupwise/e-gw-connection.c:159
+#: ../calendar/libecal/e-cal.c:4832 ../servers/groupwise/e-gw-connection.c:159
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: ../calendar/libecal/e-cal.c:4548
+#: ../calendar/libecal/e-cal.c:4834
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: ../calendar/libecal/e-cal.c:4550
+#: ../calendar/libecal/e-cal.c:4836
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: ../calendar/libecal/e-cal.c:4552
+#: ../calendar/libecal/e-cal.c:4838
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: ../calendar/libecal/e-cal.c:4554 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:4840 ../servers/groupwise/e-gw-connection.c:167
 msgid "Unknown User"
 msgstr "Neznámý uživatel"
 
-#: ../calendar/libecal/e-cal.c:4556
+#: ../calendar/libecal/e-cal.c:4842
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: ../calendar/libecal/e-cal.c:4558
+#: ../calendar/libecal/e-cal.c:4844
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: ../calendar/libecal/e-cal.c:4560
+#: ../calendar/libecal/e-cal.c:4846
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: ../calendar/libecal/e-cal.c:4562
+#: ../calendar/libecal/e-cal.c:4848
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: ../calendar/libecal/e-cal.c:4566
+#: ../calendar/libecal/e-cal.c:4852
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: ../calendar/libecal/e-cal.c:4568
+#: ../calendar/libecal/e-cal.c:4854
 msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: ../calendar/libecal/e-cal.c:4570
+#: ../calendar/libecal/e-cal.c:4856
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1107,75 +1111,75 @@ msgstr "Došlo k výjimce CORBA"
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: ../calendar/libecal/e-cal.c:4572
+#: ../calendar/libecal/e-cal.c:4858
 msgid "No error"
 msgstr "Žádná chyba"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:54
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:533
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:726
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:753
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" neočekává žádné parametry"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:79
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:173
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:207
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:243
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:791
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:98
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" očekává jeden parametr"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:85
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:92
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:249
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:477
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" očekává jako první parametr řetězec"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:100
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "\"%s\" očekává jako první parametr řetězec data/času podle ISO 8601"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:131
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:471
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:565
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" očekává dva parametry"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:137
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:179
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:213
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:322
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:571
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:797
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:164
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" očekává jako první parametr time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:145
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:172
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" očekává jako druhý parametr celé číslo"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:330
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" očekává jako druhý parametr time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:485
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" očekává jako druhý parametr řetězec"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:505
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1184,12 +1188,12 @@ msgstr ""
 "\"%s\" očekává jako první parametr jedno z \"any\", \"summary\", "
 "\"description\" nebo \"location\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:628
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" očekává alespoň jeden parametr"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:642
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1425,38 +1429,38 @@ msgstr "(match-threads) vyžaduje nastavenou složku"
 msgid "Performing query on unknown header: %s"
 msgstr "Vykonání otázky na neznámé hlavičce: %s"
 
-#: ../camel/camel-folder.c:610
+#: ../camel/camel-folder.c:620
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Nepodporovaná operace: přidat zprávu: pro %s"
 
-#: ../camel/camel-folder.c:1200
+#: ../camel/camel-folder.c:1242
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Nepodporovaná operace: hledání výrazem: %s"
 
-#: ../camel/camel-folder.c:1240
+#: ../camel/camel-folder.c:1283
 #, c-format
 msgid "Unsupported operation: search by uids: for %s"
 msgstr "Nepodporovaná operace: hledání pomocí uid: %s"
 
-#: ../camel/camel-folder.c:1352
+#: ../camel/camel-folder.c:1399
 msgid "Moving messages"
 msgstr "Přesunuji zprávy"
 
-#: ../camel/camel-folder.c:1352
+#: ../camel/camel-folder.c:1399
 msgid "Copying messages"
 msgstr "Kopíruji zprávy"
 
-#: ../camel/camel-folder.c:1601
+#: ../camel/camel-folder.c:1653
 msgid "Learning junk"
 msgstr "Učím se smetí"
 
-#: ../camel/camel-folder.c:1618
+#: ../camel/camel-folder.c:1670
 msgid "Learning non-junk"
 msgstr "Učím se, co není smetí"
 
-#: ../camel/camel-folder.c:1637
+#: ../camel/camel-folder.c:1689
 msgid "Filtering new message(s)"
 msgstr "Filtruji nové zprávy"
 
@@ -1489,7 +1493,7 @@ msgstr ""
 "uživatele: \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1275
+#: ../camel/providers/nntp/camel-nntp-store.c:1276
 msgid "Cancelled."
 msgstr "Zrušeno"
 
@@ -1668,7 +1672,7 @@ msgstr "Chyba při zápisu pošty do dočasného souboru: %s"
 msgid "Error copying mail temp file: %s"
 msgstr "Chyba při kopírovaní dočasného souboru pošty: %s"
 
-#: ../camel/camel-multipart-signed.c:587
+#: ../camel/camel-multipart-signed.c:598
 msgid "parse error"
 msgstr "chyba ve zpracování"
 
@@ -1715,7 +1719,7 @@ msgstr "Vyhledávání jména selhalo: %s"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Synchronizuji zprávy ve složce '%s' na disk"
 
-#: ../camel/camel-offline-journal.c:141 ../camel/camel-offline-journal.c:164
+#: ../camel/camel-offline-journal.c:165 ../camel/camel-offline-journal.c:188
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr "Nemohu zapsat offline záznam o složce `%s': %s"
@@ -1756,11 +1760,11 @@ msgstr "Anonymní"
 msgid "This option will connect to the server using an anonymous login."
 msgstr "Tato volba připojí k serveru pomocí anonymního přihlášení."
 
-#: ../camel/camel-sasl-anonymous.c:112 ../camel/camel-sasl-plain.c:88
+#: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
 msgstr "Autentizace selhala."
 
-#: ../camel/camel-sasl-anonymous.c:121
+#: ../camel/camel-sasl-anonymous.c:131
 #, c-format
 msgid ""
 "Invalid email address trace information:\n"
@@ -1769,7 +1773,7 @@ msgstr ""
 "Neplatná informace krokování e-mailové adresy:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:133
+#: ../camel/camel-sasl-anonymous.c:143
 #, c-format
 msgid ""
 "Invalid opaque trace information:\n"
@@ -1778,7 +1782,7 @@ msgstr ""
 "Neplatná informace nepřehledného krokování:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:145
+#: ../camel/camel-sasl-anonymous.c:155
 #, c-format
 msgid ""
 "Invalid trace information:\n"
@@ -2215,39 +2219,39 @@ msgstr "export klíčů: neimplementováno"
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Nemohu získat složku: Neplatná operace pro tento sklad"
 
-#: ../camel/camel-store.c:244
+#: ../camel/camel-store.c:246
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
 msgstr "Nemohu vytvořit složku `%s': složka existuje"
 
-#: ../camel/camel-store.c:298
+#: ../camel/camel-store.c:300
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Nemohu vytvořit složku: Neplatná operace pro tento sklad"
 
-#: ../camel/camel-store.c:326
+#: ../camel/camel-store.c:328
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nemohu vytvořit složku: %s: složka existuje"
 
-#: ../camel/camel-store.c:390 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:392 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nemohu odstranit složku: %s: Neplatná operace"
 
-#: ../camel/camel-store.c:440 ../camel/camel-vee-store.c:404
+#: ../camel/camel-store.c:442 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Nemohu přejmenovat složku: %s: Neplatná operace"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:779 ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-store.c:781 ../camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Koš"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:49
+#: ../camel/camel-store.c:784 ../camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Smetí"
 
@@ -2367,7 +2371,7 @@ msgstr "Použití klíče nepodporuje certifikovaný podpis"
 msgid "Error in application verification"
 msgstr "Chyba v ověření aplikace"
 
-#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:827
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:833
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2380,11 +2384,11 @@ msgstr ""
 "Otisk:             %s\n"
 "Podpis:            %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:839
 msgid "GOOD"
 msgstr "DOBŘE"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:839
 msgid "BAD"
 msgstr "ŠPATNĚ"
 
@@ -2408,7 +2412,7 @@ msgstr ""
 "Chcete ho přesto akceptovat?"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:837
+#: ../camel/camel-tcp-stream-ssl.c:843
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2423,7 +2427,7 @@ msgstr ""
 "\n"
 "Chcete ho akceptovat?"
 
-#: ../camel/camel-tcp-stream-ssl.c:881
+#: ../camel/camel-tcp-stream-ssl.c:887
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2432,7 +2436,7 @@ msgstr ""
 "Problém s certifikátem: %s\n"
 "Vystavitel: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:933
+#: ../camel/camel-tcp-stream-ssl.c:939
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2441,7 +2445,7 @@ msgstr ""
 "Chybná doména certifikátu: %s\n"
 "Vystavitel: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:951
+#: ../camel/camel-tcp-stream-ssl.c:957
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2450,7 +2454,7 @@ msgstr ""
 "Certifikát vypršel: %s\n"
 "Vystavitel: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:968
+#: ../camel/camel-tcp-stream-ssl.c:974
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2500,7 +2504,7 @@ msgstr "Nemohu kopírovat zprávy do složky Koš"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nemohu kopírovat zprávy do složky Smetí"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2510,7 +2514,7 @@ msgstr ""
 "Nemohu získat zprávu: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2518,7 +2522,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Taková zpráva neexistuje"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:127
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2530,7 +2534,7 @@ msgstr "Taková zpráva neexistuje"
 msgid "User cancelled"
 msgstr "Uživatel zrušen"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:132
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:134
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2549,22 +2553,23 @@ msgstr "Nemohu získat zprávu %s: %s"
 msgid "This message is not available in offline mode."
 msgstr "Tato zpráva není dostupná v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:198
 msgid "Could not get message"
 msgstr "Nemohu získat zprávu"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:600
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:670
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nemohu načíst souhrn pro %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:957
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1052
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nemohu vytvořit zprávu: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:969
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1064
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nemohu přidat zprávu do složky `%s': %s"
@@ -2651,84 +2656,79 @@ msgstr ""
 "Tato volba připojí k serveru GroupWise pomocí hesla přenášeného jako čistý "
 "text."
 
-# FIXME: s/availbale/available/
 #: ../camel/providers/groupwise/camel-groupwise-store.c:270
-msgid "Host or user not availbale in url"
+msgid "Host or user not available in url"
 msgstr "Počítač nebo uživatel není dostupný v url"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:361
+#: ../camel/providers/groupwise/camel-groupwise-store.c:365
 #, c-format
-msgid "%sPlease enter the Groupwise password for %s@%s"
+msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sZadejte prosím heslo GroupWise heslo pro %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:375
+#: ../camel/providers/groupwise/camel-groupwise-store.c:379
 #: ../camel/providers/imap/camel-imap-store.c:1324
 msgid "You didn't enter a password."
 msgstr "Neuvedli jste heslo."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:389
+#: ../camel/providers/groupwise/camel-groupwise-store.c:393
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Nemohu se autentizovat u serveru GroupWise."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:430
+#: ../camel/providers/groupwise/camel-groupwise-store.c:434
 msgid "Some features may not work correctly with your current server version"
 msgstr "Některé funkce možná s vaší verzí serveru nebudou fungovat správně"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:503
+#: ../camel/providers/groupwise/camel-groupwise-store.c:507
 #: ../camel/providers/imap/camel-imap-store.c:1875
 #: ../camel/providers/imap/camel-imap-store.c:2065
 #, c-format
 msgid "No such folder %s"
 msgstr "Složka %s neexistuje"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:618
+#: ../camel/providers/groupwise/camel-groupwise-store.c:575
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Stahuji souhrnné informace pro nové zprávy"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:756
+#: ../camel/providers/groupwise/camel-groupwise-store.c:712
 msgid "Cannot get folder info in offline mode."
 msgstr "Nemohu získat informace o složce v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:969
+#: ../camel/providers/groupwise/camel-groupwise-store.c:925
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nemohu vytvářet složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1020
+#: ../camel/providers/groupwise/camel-groupwise-store.c:976
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Nemohu odstraňovat složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1066
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1022
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Nemohu přejmenovávat složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1084
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1041
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Nemohu přejmenovat složku GroupWise `%s' na `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1120
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1077
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Server GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1122
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1079
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Služba GroupWise pro %s na %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
-#, c-format
-msgid "Groupwise server %s"
-msgstr "Server Groupwise %s"
-
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
-msgid "Groupwise mail delivery via %s"
-msgstr "Doručení pošty Groupwise pomocí %s"
+msgid "GroupWise mail delivery via %s"
+msgstr "Doručení pošty GroupWise pomocí %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:159
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
 msgid "Sending Message"
 msgstr "Posílám zprávu"
 
@@ -3155,32 +3155,32 @@ msgstr "Nemohu získat zprávu %s ze složky %s: Špatný příkaz"
 msgid "Cannot append message to folder `%s': Folder is read-only"
 msgstr "Nemohu přidat zprávu do složky `%s': Složka je jen pro čtení"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1009
+#: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "Nemohu přidat zprávu do složky `%s': Neznámá chyba"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1038
+#: ../camel/providers/imap4/camel-imap4-folder.c:1035
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "Nemohu přidat zprávu do složky `%s': Špatný příkaz"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1150
+#: ../camel/providers/imap4/camel-imap4-folder.c:1155
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "Nemohu přesunout zprávy ze složky `%s' do složky `%s': Neznámé"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1154
+#: ../camel/providers/imap4/camel-imap4-folder.c:1159
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr "Nemohu zkopírovat zprávy ze složky `%s' do složky `%s': Neznámé"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1162
+#: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr "Nemohu přesunout zprávy ze složky `%s' do složky `%s': Špatný příkaz"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1166
+#: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr "Nemohu zkopírovat zprávy ze složky `%s' do složky `%s': Špatný příkaz"
@@ -3914,7 +3914,7 @@ msgid "USENET news"
 msgstr "Diskusní skupiny USENET"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
-msgid "This is a provider for reading from and posting toUSENET newsgroups."
+msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "Toto je poskytovatel čtení a posílaní do diskusních skupin USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
@@ -3940,7 +3940,7 @@ msgstr "NNTP server %s vrátil chybový kód %d: %s"
 msgid "USENET News via %s"
 msgstr "Diskusní skupiny USENET pomocí %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:812
+#: ../camel/providers/nntp/camel-nntp-store.c:813
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3951,7 +3951,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:906
+#: ../camel/providers/nntp/camel-nntp-store.c:907
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -3962,7 +3962,7 @@ msgstr ""
 "Taková diskusní skupina neexistuje. Vybraná položka je pravděpodobně "
 "rodičovská složka."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:938
+#: ../camel/providers/nntp/camel-nntp-store.c:939
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -3972,42 +3972,42 @@ msgstr ""
 "\n"
 "Diskusní skupina neexistuje!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:963
+#: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Nemůžete vytvořit složku v úložišti News: místo toho se přihlaste."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:971
+#: ../camel/providers/nntp/camel-nntp-store.c:972
 msgid "You cannot rename a folder in a News store."
 msgstr "Nemůžete přejmenovat složku v úložišti News."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:979
+#: ../camel/providers/nntp/camel-nntp-store.c:980
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Nemůžete odstranit složku z úložiště News: místo toho se odhlaste."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1149
+#: ../camel/providers/nntp/camel-nntp-store.c:1150
 msgid "Authentication requested but no username provided"
 msgstr "Je požadována autentizace, ale nebylo poskytnuto jméno uživatele"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1157
+#: ../camel/providers/nntp/camel-nntp-store.c:1158
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Zadejte prosím heslo NNTP pro %s@%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1161
+#: ../camel/providers/nntp/camel-nntp-store.c:1162
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Nemohu se autentizovat u serveru: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1277
+#: ../camel/providers/nntp/camel-nntp-store.c:1278
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "Příkaz NNTP selhal: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1333
+#: ../camel/providers/nntp/camel-nntp-store.c:1334
 msgid "Not connected."
 msgstr "Nepřipojen."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1386
+#: ../camel/providers/nntp/camel-nntp-store.c:1387
 #, c-format
 msgid "No such folder: %s"
 msgstr "Taková složka neexistuje: %s"
@@ -4496,83 +4496,83 @@ msgstr "Příkaz QUIT selhal: %s"
 msgid "QUIT command failed"
 msgstr "Příkaz QUIT selhal"
 
-#: ../libedataserver/e-categories.c:227
+#: ../libedataserver/e-categories.c:237
 msgid "Business"
 msgstr "Práce"
 
-#: ../libedataserver/e-categories.c:228
+#: ../libedataserver/e-categories.c:238
 msgid "Competition"
 msgstr "Soutěž"
 
-#: ../libedataserver/e-categories.c:229
+#: ../libedataserver/e-categories.c:239
 msgid "Favorites"
 msgstr "Oblíbené"
 
-#: ../libedataserver/e-categories.c:230
+#: ../libedataserver/e-categories.c:240
 msgid "Gifts"
 msgstr "Dárky"
 
-#: ../libedataserver/e-categories.c:231
+#: ../libedataserver/e-categories.c:241
 msgid "Goals/Objectives"
 msgstr "Cíle"
 
-#: ../libedataserver/e-categories.c:232
+#: ../libedataserver/e-categories.c:242
 msgid "Holiday"
 msgstr "Dovolená"
 
-#: ../libedataserver/e-categories.c:233
+#: ../libedataserver/e-categories.c:243
 msgid "Holiday Cards"
 msgstr "Přání"
 
-#: ../libedataserver/e-categories.c:234
+#: ../libedataserver/e-categories.c:244
 msgid "Hot Contacts"
 msgstr "Důležité kontakty"
 
-#: ../libedataserver/e-categories.c:235
+#: ../libedataserver/e-categories.c:245
 msgid "Ideas"
 msgstr "Nápady"
 
-#: ../libedataserver/e-categories.c:236
+#: ../libedataserver/e-categories.c:246
 msgid "International"
 msgstr "Mezinárodní"
 
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:247
 msgid "Key Customer"
 msgstr "Klíčový zákazník"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:248
 msgid "Miscellaneous"
 msgstr "Různé"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:249
 msgid "Personal"
 msgstr "Osobní"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:250
 msgid "Phone Calls"
 msgstr "Telefonní hovory"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:251
 msgid "Status"
 msgstr "Stav"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:252
 msgid "Strategies"
 msgstr "Strategie"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:253
 msgid "Suppliers"
 msgstr "Dodavatelé"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:254
 msgid "Time & Expenses"
 msgstr "Čas a výdaje"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:255
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:256
 msgid "Waiting"
 msgstr "Čeká"
 
@@ -4840,6 +4840,9 @@ msgstr "Backend souborů a webcal pro kalendář Evolution"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Došlo k několika chybám segmentace; nemohu zobrazit dialog o chybě\n"
+
+#~ msgid "Groupwise server %s"
+#~ msgstr "Server Groupwise %s"
 
 #~ msgid "Address Book and Calendar"
 #~ msgstr "Adresář a kalendář"
