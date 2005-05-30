@@ -34,6 +34,7 @@
 #include "e-gw-message.h"
 #include "e-gw-filter.h"
 
+
 static GObjectClass *parent_class = NULL;
 static GHashTable *loaded_connections = NULL;
 
@@ -2709,4 +2710,306 @@ e_gw_connection_reply_item (EGwConnection *cnc, const char *id, const char *view
 	g_object_unref (msg);
 
         return E_GW_CONNECTION_STATUS_OK;
+}
+
+EGwConnectionStatus
+e_gw_connection_get_proxy_access_list (EGwConnection *cnc, GList **proxy_list)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
+	SoupSoapParameter *type_param;
+	SoupSoapParameter *individualRights;
+	char *value;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getProxyAccessListRequest");
+
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+
+	/* parse the response and create the individual proxy accounts */
+	*proxy_list = NULL;
+	param = soup_soap_response_get_first_parameter_by_name (response, "accessRights");	
+	if (!param) {
+		g_object_unref (response);
+		return status;
+	} else 	{
+		SoupSoapParameter *subparam;
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "entry");
+				subparam != NULL;
+				subparam = soup_soap_parameter_get_next_child_by_name (subparam, "entry")) 
+		{
+			proxyHandler *aclInstance;
+
+			aclInstance = (proxyHandler *) malloc(sizeof(proxyHandler));
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "email");
+			value = NULL;
+			if (type_param)	{
+				value = soup_soap_parameter_get_string_value (type_param);
+				aclInstance->proxy_email = g_strdup_printf("%s", value);
+			}
+
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "displayName");
+			value = NULL;
+			if (type_param)	{
+				value = soup_soap_parameter_get_string_value (type_param);
+				aclInstance->proxy_name = g_strdup_printf ("%s", value);
+			}
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "id");
+			value = NULL;
+			if (type_param)	{
+				value = soup_soap_parameter_get_string_value (type_param);
+				aclInstance->uniqueid = g_strdup_printf ("%s", value);
+			} else 
+				aclInstance->uniqueid = NULL;
+
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "mail");
+			value = NULL;
+			if (type_param)	{
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"read");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_MAIL_READ;
+				}
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"write");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_MAIL_WRITE;
+				}
+			}
+
+			g_free (value);
+
+			value = NULL;
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "appointment");
+			if (type_param) {
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"read");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_APPOINTMENT_READ;
+				}
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"write");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_APPOINTMENT_WRITE;
+				}
+			}
+
+			g_free (value);
+			value = NULL;
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "task");
+			if (type_param)	{
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"read");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_TASK_READ;
+				}
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"write");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_TASK_WRITE;
+				}
+			}
+			g_free (value);
+
+			value = NULL;
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "note");
+			if (type_param)	{
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"read");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_NOTES_READ;
+				}
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"write");				 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_NOTES_WRITE;
+				}
+			}
+			g_free (value);
+
+
+			type_param = soup_soap_parameter_get_first_child_by_name (subparam, "misc");
+			value = NULL;
+			if (type_param)	{
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"alarms");
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_GET_ALARMS;
+				}
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"notify");
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_GET_NOTIFICATIONS;
+				}
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"setup"); 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_MODIFY_FOLDERS;
+				}
+				individualRights= soup_soap_parameter_get_first_child_by_name (type_param,"readHidden"); 
+				if (individualRights) {
+					value = soup_soap_parameter_get_string_value (individualRights);
+					aclInstance->permissions |= CAMEL_PROXY_READ_PRIVATE;
+				}
+			}
+			g_free(value);
+			*proxy_list = g_list_append(*proxy_list, aclInstance);
+		}
+	}
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+	return status;
+}
+
+EGwConnectionStatus e_gw_proxy_add (EGwConnection *cnc, proxyHandler *new_proxy)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	gboolean added = FALSE;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	g_print("%s\n",new_proxy->proxy_name);
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc), e_gw_connection_get_session_id (cnc), "createProxyAccessRequest");
+	soup_soap_message_start_element (msg, "entry", NULL, NULL);
+	e_gw_message_write_string_parameter (msg, "email", NULL, new_proxy->proxy_email);
+	e_gw_message_write_string_parameter (msg, "displayName", NULL,new_proxy->proxy_email);
+
+	if (new_proxy->permissions & CAMEL_PROXY_MAIL_READ){
+		added = TRUE;
+		soup_soap_message_start_element (msg, "mail", NULL, NULL);
+		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
+		g_print("CAMEL_PROXY_MAIL_READ\n");
+	}
+	if (new_proxy->permissions & CAMEL_PROXY_MAIL_WRITE){
+		if (added == FALSE){
+			added=TRUE;
+			soup_soap_message_start_element (msg, "mail", NULL, NULL);
+		}
+		e_gw_message_write_int_parameter (msg, "write", NULL, 1);
+		g_print("CAMEL_PROXY_MAIL_WRITE\n");
+	}
+	if (added == TRUE)
+		soup_soap_message_end_element(msg);
+
+	added = FALSE;
+	if (new_proxy->permissions & CAMEL_PROXY_APPOINTMENT_READ){
+		added=TRUE;
+		soup_soap_message_start_element (msg, "appointment", NULL, NULL);
+		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
+		g_print("CAMEL_PROXY_APPOINTMENT_READ\n");
+	}
+	if (new_proxy->permissions & CAMEL_PROXY_APPOINTMENT_WRITE){
+		if(added == FALSE)
+		{
+			added=TRUE;
+			soup_soap_message_start_element (msg, "appointment", NULL, NULL);
+		}
+		e_gw_message_write_int_parameter (msg, "write", NULL, 1);
+		g_print("CAMEL_PROXY_APPOINTMENT_WRITE\n");
+	}
+	if (added == TRUE)
+		soup_soap_message_end_element(msg);
+
+	added = FALSE;
+	if (new_proxy->permissions & CAMEL_PROXY_TASK_READ){
+		g_print("CAMEL_PROXY_TASK_READ\n");
+		added=TRUE;
+		soup_soap_message_start_element (msg, "task", NULL, NULL);
+		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
+	}
+	if (new_proxy->permissions & CAMEL_PROXY_TASK_WRITE){
+		g_print("CAMEL_PROXY_TASK_WRITE\n");
+		if (added == FALSE)
+		{
+			added=TRUE;
+			soup_soap_message_start_element (msg, "task", NULL, NULL);
+		}
+		e_gw_message_write_int_parameter (msg, "write", NULL, 1);
+	}
+	if (added == TRUE)
+		soup_soap_message_end_element(msg);
+
+	added = FALSE;
+	if (new_proxy->permissions & CAMEL_PROXY_NOTES_READ){
+  		g_print("CAMEL_PROXY_NOTES_READ\n");
+		added=TRUE;
+		soup_soap_message_start_element (msg, "note", NULL, NULL);
+		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
+	}
+	if (new_proxy->permissions & CAMEL_PROXY_NOTES_WRITE){
+		g_print("CAMEL_PROXY_NOTES_WRITE\n");
+			if(added==FALSE)
+		{
+			added=TRUE;
+			soup_soap_message_start_element (msg, "note", NULL, NULL);
+		}
+		e_gw_message_write_int_parameter (msg, "write", NULL, 1);
+	}
+	if (added == TRUE)
+		soup_soap_message_end_element(msg);
+	
+	added = FALSE;
+	if (new_proxy->permissions & CAMEL_PROXY_GET_ALARMS){
+		added=TRUE;
+		soup_soap_message_start_element(msg,"misc",NULL,NULL);
+		e_gw_message_write_int_parameter (msg, "alarms", NULL, 1);
+		g_print("CAMEL_PROXY_GET_ALARMS\n");
+	}
+	if (new_proxy->permissions & CAMEL_PROXY_GET_NOTIFICATIONS){
+		g_print("CAMEL_PROXY_GET_NOTIFICATIONS\n");
+		if (added!=TRUE)
+		{
+			added=TRUE;
+			soup_soap_message_start_element(msg,"misc",NULL,NULL);
+		}
+		e_gw_message_write_int_parameter (msg, "notify", NULL, 1);
+	}
+	
+	if (new_proxy->permissions & CAMEL_PROXY_MODIFY_FOLDERS){
+		g_print("CAMEL_PROXY_MODIFY_FOLDERS\n");
+		if (added!=TRUE)
+		{
+			added=TRUE;
+			soup_soap_message_start_element(msg,"misc",NULL,NULL);
+		}
+		e_gw_message_write_int_parameter (msg, "setup", NULL, 1);
+	}
+	if (new_proxy->permissions & CAMEL_PROXY_READ_PRIVATE)
+		g_print("CAMEL_PROXY_READ_PRIVATE\n");
+		if (added!=TRUE)
+		{
+			added=TRUE;
+			soup_soap_message_start_element(msg,"misc",NULL,NULL);
+		}
+		e_gw_message_write_int_parameter (msg, "readHidden", NULL, 1);
+	}
+        g_print("\n%s\n",__FUNCTION__);
+
+}
+
+EGwConnectionStatus e_gw_proxy_remove (proxyHandler *newProxy)
+{
+	g_print("\n%s\n",__FUNCTION__);
+}
+
+EGwConnectionStatus e_gw_proxy_changed (proxyHandler *newProxy)
+{
+	g_print("\n%s\n",__FUNCTION__);
 }
