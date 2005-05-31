@@ -35,6 +35,7 @@
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 
+	<oaf_attribute name="name" type="string" _value="Evolution Data Server interface check service"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:GNOME_Evolution_DataServer_Logging"
@@ -46,6 +47,7 @@
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 
+	<oaf_attribute name="name" type="string" _value="Evolution Data Server logging service"/>
 </oaf_server>
 
 </oaf_info>

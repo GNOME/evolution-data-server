@@ -1,3 +1,8 @@
+2005-05-31  Rodrigo Moya <rodrigo@novell.com>
+
+	* src/GNOME_Evolution_DataServer.server.in.in: added missing
+	names for CORBA services.
+
 2005-05-28  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Disable the libedataserver api docs build
