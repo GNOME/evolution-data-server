@@ -1,7 +1,7 @@
 Evolution Data Server 1.2.3, 2005-06-04
 ---------------------------------------
 
-Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
 
  * Camel
    #273945 - Crash while composing an e-mail (Jeffery Stedfast) 
