@@ -1,3 +1,58 @@
+Evolution Data Server 1.2.3, 2005-06-04
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+ * Camel
+   #273945 - Crash while composing an e-mail (Jeffery Stedfast) 
+   #274194 - Filters do not filter all messages (Parthasarathi)
+   #273246 - all email is visible with mime.822 file attached (Parthasarathi)
+   #273243 - external HTML mail is an attachment not viewed inline (Parthasarathi)
+   #274257 - Automatically synchronize account locally' option does not work (Jeffrey Stedfast) 
+   #272302 - Messages deleted using IMAP are not shown as Deleted using GroupWise (Parthasarathi)
+   #74369  - Unable to view shared-folder notifications on the first time (Sankar)
+   #274381 - Evolution is not syncing mail items in Groupwise (Parthasarathi)
+   #272303 - Old meeting requests are shown in mailbox in Groupwise (Parthasarathi)
+   #272310 - Deleted mail is not visible in Trash Folder in Groupwise (Parthasarathi)
+   #273318 - Authentication failed - Always with Trash folder in Groupwise (Parthasarathi)
+   #274183 - Expunge does not expuge all in Groupwise (Sankar)
+   #273897 - Mails deleted  when a user moves them to a shared-to folder 
+             without 'Add' permission (Parthasarathi)
+   #273421 - no option to accept, decline tasks in assigned tasks (Chenthill) 
+   #273458 - Not able to track the delete status of a mail (Vivek)
+   #272302 - Messages deleted using IMAP are not shown as Deleted 
+             using GroupWise  (Parthasarathi)
+
+ * Calendar
+   #274409 - hang while reading E-mail ... (Chenthill)
+
+ * Addressbook 
+   #255756 - GAL lookups based on aliases fail to find entries (Sushma) 
+   #273716 - Try to move 'Contacts' to LDAP address book, contact gets deleted (Sushma)
+   #300290 - GALview does not show Complete name (Sushma)
+   #301116 - libedataserverui needs to specify the translation domain explicitly (Changwoo Ryu)
+   #273330 - crash trying to add attendee in meeting under gw calendar (Siva) 
+
+ * Other 
+   - make "" equal NULL for comparative purposes. (Michael)
+   - fix various memory leaks in addressbook (Sushma)
+   - fix various memory leaks in addressbook (Ross Burton)
+   - revert changes to EGwItem structure that break binary compatibility
+     (Harish) 
+   - name selector fixes (Hans Petter Jansson)
+   - remove warnings that break 64-bit SuSE build system (Gary Ekker)
+
+Updated Translations:
+	-zh_TW (Chao-Hsiung Liao)
+	-gu (Ankit Patel)
+	-xh (Adi Attar)
+	-ko (Changwoo Ryu)
+	-et (Priit Laes)
+	-da (Martin Willemoes Hansen)
+	-fa (Meelad Zakaria)
+	-vi (Clytie Siddall)
+	-pl (Artur Flinta)
+
 Evolution Data Server 1.2.2, 2005-04-07
 ---------------------------------------
 
