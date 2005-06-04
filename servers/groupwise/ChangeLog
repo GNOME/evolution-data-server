@@ -1,3 +1,8 @@
+2005-06-04  Harish Krishnaswamy <kharish@novell.com>
+	
+	* e-gw-item.[ch] : Revert Partha's changes that break
+	bin compatibility.
+
 2005-05-17  Sushma Rai  <rsushma@novell.com>
 
 	* e-gw-item.c (set_contact_fields_from_soap_parameter): Freeing value,

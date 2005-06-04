@@ -121,7 +121,6 @@ typedef struct {
 
 typedef struct {
 	char *id ;
-	int reference;
 	char *name ;
 	char *contentType ;
 	int size ;
