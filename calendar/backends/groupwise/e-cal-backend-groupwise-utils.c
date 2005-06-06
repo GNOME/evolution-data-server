@@ -336,6 +336,64 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 
 	e_gw_item_set_attach_id_list (item, attach_list);
 }
+	
+/* get_attendee_list from cal comp and convert into
+ * egwitemrecipient and set it on recipient_list*/
+static void
+set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default_zone, gboolean delegate, const char *user_email)
+{
+	if (e_cal_component_has_attendees (comp)) {
+		GSList *attendee_list, *recipient_list = NULL, *al;
+
+		e_cal_component_get_attendee_list (comp, &attendee_list);	
+		for (al = attendee_list; al != NULL; al = al->next) {
+			ECalComponentAttendee *attendee = (ECalComponentAttendee *) al->data;
+			EGwItemRecipient *recipient;
+				
+			if (delegate && (g_str_equal (attendee->value + 7, user_email) || !(attendee->delfrom && *attendee->delfrom)))
+				continue;		
+			
+			recipient = g_new0 (EGwItemRecipient, 1);
+
+			/* len (MAILTO:) + 1 = 7 */
+			recipient->email = g_strdup (attendee->value + 7);
+			if (attendee->cn != NULL)
+				recipient->display_name = g_strdup (attendee->cn);
+			if (attendee->role == ICAL_ROLE_REQPARTICIPANT) 
+				recipient->type = E_GW_ITEM_RECIPIENT_TO;
+			else if (attendee->role == ICAL_ROLE_OPTPARTICIPANT)
+				recipient->type = E_GW_ITEM_RECIPIENT_CC;
+			else recipient->type = E_GW_ITEM_RECIPIENT_NONE;
+
+			if (attendee->status == ICAL_PARTSTAT_ACCEPTED)
+				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
+			else if (attendee->status == ICAL_PARTSTAT_DECLINED)
+				recipient->status = E_GW_ITEM_STAT_DECLINED;
+			else 
+				recipient->status = E_GW_ITEM_STAT_NONE;
+
+			recipient_list = g_slist_append (recipient_list, recipient);
+		}
+
+		e_gw_item_set_recipient_list (item, recipient_list);
+
+		/* Send Options */
+		add_send_options_data_to_item (item, comp, default_zone);
+
+	}
+
+	if (!delegate && e_cal_component_has_organizer (comp)) {
+		ECalComponentOrganizer cal_organizer;
+		EGwItemOrganizer *organizer = NULL;
+
+		e_cal_component_get_organizer (comp, &cal_organizer);
+		organizer = g_new0 (EGwItemOrganizer, 1);
+		organizer->display_name = g_strdup (cal_organizer.cn);
+		organizer->email = g_strdup (cal_organizer.value + 7);
+		e_gw_item_set_organizer (item, organizer);
+	}
+
+}
 
 static EGwItem *
 set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBackendGroupwise *cbgw)
@@ -521,54 +579,8 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		e_gw_item_set_classification (item, NULL);
 	}
 
-	/* get_attendee_list from cal comp and convert into
-	 * egwitemrecipient and set it on recipient_list*/
-	if (e_cal_component_has_attendees (comp)) {
-		GSList *attendee_list, *recipient_list = NULL, *al;
 
-		e_cal_component_get_attendee_list (comp, &attendee_list);	
-		for (al = attendee_list; al != NULL; al = al->next) {
-			ECalComponentAttendee *attendee = (ECalComponentAttendee *) al->data;
-			EGwItemRecipient *recipient = g_new0 (EGwItemRecipient, 1);
-			
-			/* len (MAILTO:) + 1 = 7 */
-			recipient->email = g_strdup (attendee->value + 7);
-			if (attendee->cn != NULL)
-				recipient->display_name = g_strdup (attendee->cn);
-			if (attendee->role == ICAL_ROLE_REQPARTICIPANT) 
-				recipient->type = E_GW_ITEM_RECIPIENT_TO;
-			else if (attendee->role == ICAL_ROLE_OPTPARTICIPANT)
-				recipient->type = E_GW_ITEM_RECIPIENT_CC;
-			else recipient->type = E_GW_ITEM_RECIPIENT_NONE;
-
-			if (attendee->status == ICAL_PARTSTAT_ACCEPTED)
-				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
-			else if (attendee->status == ICAL_PARTSTAT_DECLINED)
-				recipient->status = E_GW_ITEM_STAT_DECLINED;
-			else 
-				recipient->status = E_GW_ITEM_STAT_NONE;
-
-			recipient_list = g_slist_append (recipient_list, recipient);
-		}
-				
-		e_gw_item_set_recipient_list (item, recipient_list);
-
-		/* Send Options */
-		add_send_options_data_to_item (item, comp, default_zone);
-
-	}
-
-	if (e_cal_component_has_organizer (comp)) {
-		ECalComponentOrganizer cal_organizer;
-		EGwItemOrganizer *organizer = NULL;
-
-		e_cal_component_get_organizer (comp, &cal_organizer);
-		organizer = g_new0 (EGwItemOrganizer, 1);
-		organizer->display_name = g_strdup (cal_organizer.cn);
-		organizer->email = g_strdup (cal_organizer.value + 7);
-		e_gw_item_set_organizer (item, organizer);
-	}
-
+	set_attendees_to_item (item, comp, default_zone, FALSE, NULL);
 	
 	/* check if recurrences exist and update the item */
 	if (e_cal_component_has_recurrences (comp)) {
@@ -604,6 +616,26 @@ e_gw_item_new_from_cal_component (const char *container, ECalBackendGroupwise *c
 	e_gw_item_set_container_id (item, container);
 	
 	return set_properties_from_cal_component (item, comp, cbgw);
+}
+
+/* Set the attendee list and send options to EGwItem */
+EGwItem *
+e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *comp)
+{
+	EGwItem *item;
+	icaltimezone *default_zone;
+	const char *user_email;
+   
+   	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
+	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
+	item = e_gw_item_new_empty ();
+	e_gw_item_set_id (item, e_cal_component_get_gw_id (comp));
+	user_email = e_gw_connection_get_user_email (e_cal_backend_groupwise_get_connection (cbgw));
+
+	set_attendees_to_item (item, comp, default_zone, TRUE, user_email);
+	add_send_options_data_to_item (item, comp, default_zone);
+
+	return item;
 }
 
 /* Fetch data from the server and unencode it to the actual data 
@@ -1701,5 +1733,25 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 	g_object_unref (gconf);
 }
 
+gboolean
+e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const char *email)
+{
+	GSList *attendee_list, *l;
+	ECalComponentAttendee  *attendee = NULL;
 
+
+	e_cal_component_get_attendee_list (comp, &attendee_list);
+	for (l = attendee_list; l ; l = g_slist_next (l)) {
+		attendee = l->data;
+
+		if (g_str_equal (attendee->value + 7, email)) {
+		       	if (attendee->status == ICAL_PARTSTAT_DELEGATED)
+				return TRUE;
+			else
+				return FALSE;
+		}
+	}
+
+	return FALSE;
+}
 

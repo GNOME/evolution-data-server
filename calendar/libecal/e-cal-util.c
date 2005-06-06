@@ -833,6 +833,18 @@ e_cal_util_component_has_organizer (icalcomponent *icalcomp)
 	return prop ? TRUE : FALSE;
 }
 
+gboolean
+e_cal_util_component_has_attendee (icalcomponent *icalcomp)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
+
+	prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
+
+	return prop ? TRUE : FALSE;
+}
+
 /**
  * e_cal_util_component_has_recurrences:
  * @icalcomp: An #icalcomponent.

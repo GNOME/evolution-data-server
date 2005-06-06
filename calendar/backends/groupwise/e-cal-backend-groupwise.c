@@ -76,6 +76,14 @@ static ECalBackendClass *parent_class = NULL;
 #define CACHE_REFRESH_INTERVAL 600000
 #define CURSOR_ITEM_LIMIT 100
 
+const char *
+e_cal_backend_groupwise_get_container_id (ECalBackendGroupwise *cbgw)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
+
+	return (const char *) cbgw->priv->container_id;
+}
+
 EGwConnection *
 e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw) {
 
@@ -802,6 +810,8 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 				  CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR "," \
 				  CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS "," \
 				  CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT "," \
+				  CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED "," \
+				  CAL_STATIC_CAPABILITY_NO_ORGANIZER "," \
 				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -1536,6 +1546,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	ECalComponent *comp, *cache_comp = NULL;
 	EGwConnectionStatus status;
 	EGwItem *item, *cache_item;
+	const char *uid = NULL;
 
 	*old_object = NULL;
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
@@ -1556,19 +1567,39 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
-	item = e_gw_item_new_from_cal_component (priv->container_id, cbgw, comp);
+	e_cal_component_get_uid (comp, &uid);
 
 	/* check if the object exists */
 	switch (priv->mode) {
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
-		cache_comp = e_cal_backend_cache_get_component (priv->cache, e_gw_item_get_icalid (item), NULL);
+		cache_comp = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
 		if (!cache_comp) {
 			g_message ("CRITICAL : Could not find the object in cache");
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 
+		if (e_cal_backend_groupwise_utils_check_delegate (comp, e_gw_connection_get_user_email (priv->cnc))) {
+			item = e_gw_item_new_for_delegate_from_cal (cbgw, comp);
+			status = e_gw_connection_delegate_request (priv->cnc, item, e_gw_item_get_id (item), NULL, NULL, NULL); 
+		
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+					status = e_gw_connection_delegate_request (priv->cnc, item, e_gw_item_get_id (item), NULL, NULL, NULL);
+				
+				if (status != E_GW_CONNECTION_STATUS_OK) {
+					g_object_unref (comp);
+					g_object_unref (cache_comp);
+					return GNOME_Evolution_Calendar_OtherError;
+				}
+			
+			
+			e_cal_backend_cache_put_component (priv->cache, comp);
+			*new_object = e_cal_component_get_as_string (comp);
+			break;
+		}
+
+		item = e_gw_item_new_from_cal_component (priv->container_id, cbgw, comp);
 		cache_item =  e_gw_item_new_from_cal_component (priv->container_id, cbgw, cache_comp);
 		if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
 			gboolean completed, cache_completed;
@@ -1591,6 +1622,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 				break;
 			}
 		}
+		
 		e_gw_item_set_changes (item, cache_item); 
 
 		/* the second argument is redundant */

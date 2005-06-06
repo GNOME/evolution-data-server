@@ -1,3 +1,29 @@
+2005-06-06  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_attendees_to_item): Add the delegatees only while
+	for sending delegate request.
+	(set_properties_from_cal_component): called the function 
+	set_attendees_to_item to set attendees to component.
+	(e_gw_item_new_for_delegate_from_cal): Create a new item for
+       	delegation.
+	(e_cal_backend_groupwise_utils_check_delegate): Checks if the 
+	meeting is delegated.
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_get_container_id): Gets the container
+	id from cbgw.
+	(e_cal_backend_groupwise_get_static_capabilities): Added
+	the static capability for Delegate.
+	(e_cal_backend_groupwise_modify_object): Check if the 
+	meeting is delegated and send a delegate request.
+	* backends/groupwise/e-cal-backend-groupwise.h: Added a function
+	to get the container id.
+	* libecal/e-cal-util.c: (e_cal_util_component_has_attendee):
+	To check if the component has an attendee.
+	* libecal/e-cal-util.h: Added the static capability for 
+	delegate and for a supporting backends which has no organizer.
+
 2005-05-18  Ross Burton  <ross@burtonini.com>
 
 	* backends/contacts/e-cal-backend-contacts.c:

@@ -102,9 +102,8 @@ gboolean e_cal_util_component_has_organizer (icalcomponent *icalcomp);
 gboolean e_cal_util_component_has_recurrences (icalcomponent *icalcomp);
 gboolean e_cal_util_component_has_rdates (icalcomponent *icalcomp);
 gboolean e_cal_util_component_has_rrules (icalcomponent *icalcomp);
-
+gboolean e_cal_util_component_has_attendee (icalcomponent *icalcomp);
 gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *icalcomp2);
-
 /* The static capabilities to be supported by backends */
 #define CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT             "no-alarm-repeat"
 #define CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS             "no-audio-alarms"
@@ -125,6 +124,8 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS		  "no-general-options"
 #define CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS		  "require-send-options"
 #define CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT      "organizer-must-accept"
+#define CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED	 "delegate-support"
+#define CAL_STATIC_CAPABILITY_NO_ORGANIZER		 "no-organizer"
 
 /* Recurrent events. Management for instances */
 icalcomponent *e_cal_util_construct_instance (icalcomponent *icalcomp,
