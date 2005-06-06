@@ -109,6 +109,7 @@ EGwConnectionStatus e_gw_connection_accept_request (EGwConnection *cnc, const ch
 EGwConnectionStatus e_gw_connection_decline_request (EGwConnection *cnc, const char *id);
 EGwConnectionStatus e_gw_connection_retract_request (EGwConnection *cnc, const char *id, const char *comment, gboolean retract_all, gboolean resend);
 EGwConnectionStatus e_gw_connection_complete_request (EGwConnection *cnc, const char *id);
+EGwConnectionStatus e_gw_connection_delegate_request (EGwConnection *cnc, EGwItem *item, const char *id, const char *comments_org, const char *comments_del, const char *recur_key);
 EGwConnectionStatus e_gw_connection_create_book (EGwConnection *cnc, char *book_name, char**id);
 EGwConnectionStatus e_gw_connection_remove_book (EGwConnection *cnc, char *book_uid);
 EGwConnectionStatus e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_list);

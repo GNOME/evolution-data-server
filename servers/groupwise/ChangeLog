@@ -1,3 +1,12 @@
+2005-06-06  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-connection.[ch] (e_gw_connection_delegate_request): Added 	a function for sending a delegate request.
+	* e-gw-item.h (add_distribution_to_soap_message): Changed the na
+	me and made it public.
+	* e-gw-item.c (e_gw_item_set_calendar_item_elements),
+	(e_gw_item_append_to_soap_message): Changed the name of the
+       	above mentioned	function.
+
 2005-05-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libegroupwise.pc.in: Remove hardcoded value.

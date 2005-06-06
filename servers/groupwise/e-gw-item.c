@@ -2538,8 +2538,8 @@ append_gw_item_options (SoupSoapMessage *msg, EGwItem *item)
 	soup_soap_message_end_element (msg);
 }
 
-static void
-add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
+void
+e_gw_item_add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 {
 	GSList *rl;
 	EGwItemPrivate *priv;
@@ -2566,7 +2566,7 @@ add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	/* add each recipient */
 	for (rl = recipient_list; rl != NULL; rl = rl->next) {
 		char *dist_type;
-		char *status;
+		char *status = NULL;
 
 		EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
 		
@@ -2589,7 +2589,8 @@ add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			status = "declined";
 		else
 			status = "";
-		e_gw_message_write_string_parameter (msg, "recipientStatus", NULL, status);
+		if (status && *status)
+			e_gw_message_write_string_parameter (msg, "recipientStatus", NULL, status);
 		
 		soup_soap_message_end_element (msg);		
 	}
@@ -2709,7 +2710,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 	e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject ? priv->subject : "");
 
 	if (priv->recipient_list != NULL) {
-		add_distribution_to_soap_message (item, msg);
+		e_gw_item_add_distribution_to_soap_message (item, msg);
 		if (priv->set_sendoptions)
 			append_gw_item_options (msg, item);
 	}
@@ -2798,7 +2799,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		if (priv->subject)
 			e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject) ;
 		/*distribution*/
-		add_distribution_to_soap_message(item, msg) ;
+		e_gw_item_add_distribution_to_soap_message(item, msg) ;
 		
 		if (priv->set_sendoptions) {
 			/* item options */

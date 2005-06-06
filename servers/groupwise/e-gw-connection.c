@@ -1328,6 +1328,44 @@ e_gw_connection_complete_request (EGwConnection *cnc, const char *id)
 	return status;
 }
 
+EGwConnectionStatus 
+e_gw_connection_delegate_request (EGwConnection *cnc, EGwItem *item, const char *id, const char *comments_org, const char *comments_del, const char *recur_key)
+{
+	SoupSoapMessage *msg;
+	int status;
+	SoupSoapResponse *response;
+
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "delegateRequest");
+	
+	if (id)
+		e_gw_message_write_string_parameter (msg, "id", NULL, id);
+
+	e_gw_item_add_distribution_to_soap_message (item, msg);
+	if (comments_org)
+		e_gw_message_write_string_parameter (msg, "commentToOrganizer", NULL, comments_org);
+	if (comments_del)
+		e_gw_message_write_string_parameter (msg, "commentToDelegatee", NULL, comments_del);
+	if (recur_key)
+		e_gw_message_write_string_parameter (msg, "recurrenceAllInstances", NULL, recur_key);
+	
+	e_gw_message_write_footer (msg);
+
+	response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+        status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	
+	g_object_unref (response);
+	g_object_unref (msg);
+	
+	return status;
+}
+
 const char *
 e_gw_connection_get_version (EGwConnection *cnc)
 {

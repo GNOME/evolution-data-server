@@ -285,7 +285,7 @@ typedef struct {
 } EGwItemRecipient;
 
 gboolean    e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
-
+void e_gw_item_add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 G_END_DECLS
 
 #endif
