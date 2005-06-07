@@ -1,3 +1,9 @@
+2005-06-07  Sushma Rai  <rsushma@novell.com>
+
+	* e-name-selector-dialog.c (e_name_selector_dialog_init): Making the
+	name selector dialog modal, useful when gets invoked from modal 
+	dialogs.
+
 2005-05-24  Sushma Rai  <rsushma@novell.com>
 
 	* e-name-selector-dialog.c (contact_column_formatter): Using 
