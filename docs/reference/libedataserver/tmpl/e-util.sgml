@@ -14,6 +14,9 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### FUNCTION e_util_mkdir_hier ##### -->
 <para>
 

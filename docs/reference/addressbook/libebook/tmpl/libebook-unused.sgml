@@ -88,10 +88,6 @@ e-book-marshal
 </para>
 
 
-<!-- ##### SECTION Stability_Level ##### -->
-
-
-
 <!-- ##### FUNCTION e_book_async_get_default_addressbook ##### -->
 <para>
 
