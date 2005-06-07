@@ -14,6 +14,9 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### MACRO E_DATA_CAL_VIEW_TYPE ##### -->
 <para>
 

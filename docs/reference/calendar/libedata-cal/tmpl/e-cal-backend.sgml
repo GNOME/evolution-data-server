@@ -14,6 +14,9 @@ Base class for calendar/tasks backend implementations.
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT ECalBackendPrivate ##### -->
 <para>
 
