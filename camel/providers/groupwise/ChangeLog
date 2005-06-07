@@ -1,6 +1,12 @@
 2005-06-07  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:
+	  (groupwise_transfer_messages_to): set the current_folder.
+	  ** Fixes bug #300599
+
+2005-06-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
 	 (groupwise_sync): use removeItemsRequest instead of
 	 removeItemRequest. This syncs up mailbox faster.
 

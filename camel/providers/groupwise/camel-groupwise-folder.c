@@ -675,7 +675,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	if (expunge) {
 		status = e_gw_connection_purge_deleted_items (cnc);
-		if (status = E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_OK) {
 		}
 	}
 	
@@ -829,6 +829,12 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 
+	/* Its a good idea to sync up first and then refresh...
+	 * XXX:But how long does this take??? Bad if its slow
+	 */
+	groupwise_sync (folder, FALSE, ex);
+	/*Done....should refresh now.....*/
+
 	if (!g_ascii_strncasecmp (folder->full_name, "Trash", 5)) {
 		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution created attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -924,7 +930,6 @@ end2:
 	g_free (container_id);
 end1:
 	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
-
 	return;
 }
 
@@ -1278,6 +1283,8 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	}
 	camel_folder_summary_touch (source->summary);
 	camel_folder_summary_touch (destination->summary);
+
+	gw_store->current_folder = source;
 
 	CAMEL_SERVICE_UNLOCK (source->parent_store, connect_lock);
 }
