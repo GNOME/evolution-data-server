@@ -1,3 +1,17 @@
+2005-06-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	 (groupwise_sync): use removeItemsRequest instead of
+	 removeItemRequest. This syncs up mailbox faster.
+
+2005-06-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	(groupwise_refresh_info): now updates all items on a 
+	camel session thread
+	(update_update): the thread update operation function
+	(update_free): the thread free operation function
+
 2005-05-24  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Commiting for Daniel van Eeden <daniel_e@dds.nl>
