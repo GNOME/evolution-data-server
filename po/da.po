@@ -6,7 +6,7 @@
 # Anna Jonna Armannsdottir <a@ingenioer.dk>, 2001.
 # Søren Boll Overgaard <boll@debian.org>, 2003
 # Kenneth Christiansen <Kenneth@gnu.org>, 2003
-# Martin Willemoes Hansen <mwh@sysrq.dk>, 2004, 05.
+# Martin Willemoes Hansen <mwh@sysrq.dk>, 2004-2005.
 #
 # Det er e-post-* og ikke e-post* iflg. DSN. fx e-post-adresse.
 #
@@ -18,25 +18,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-29 11:50+0200\n"
-"PO-Revision-Date: 2005-04-29 11:46+0200\n"
+"POT-Creation-Date: 2005-06-08 14:31+0200\n"
+"PO-Revision-Date: 2005-06-08 14:42+0200\n"
 "Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:521
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:452
+#: ../addressbook/backends/file/e-book-backend-file.c:528
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2046
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Indlæser ..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:523
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
+#: ../addressbook/backends/file/e-book-backend-file.c:530
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2044
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:454
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Søger ..."
 
@@ -77,90 +77,90 @@ msgstr "Fejl ved søgning"
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
 #: ../addressbook/libebook/e-book.c:240 ../addressbook/libebook/e-book.c:244
-#: ../addressbook/libebook/e-book.c:445 ../addressbook/libebook/e-book.c:449
-#: ../addressbook/libebook/e-book.c:578 ../addressbook/libebook/e-book.c:582
-#: ../addressbook/libebook/e-book.c:671 ../addressbook/libebook/e-book.c:675
-#: ../addressbook/libebook/e-book.c:951 ../addressbook/libebook/e-book.c:956
-#: ../addressbook/libebook/e-book.c:1131 ../addressbook/libebook/e-book.c:1135
-#: ../addressbook/libebook/e-book.c:1276 ../addressbook/libebook/e-book.c:1280
-#: ../addressbook/libebook/e-book.c:1478 ../addressbook/libebook/e-book.c:1482
-#: ../addressbook/libebook/e-book.c:1683 ../addressbook/libebook/e-book.c:1687
-#: ../addressbook/libebook/e-book.c:1909 ../addressbook/libebook/e-book.c:1913
-#: ../addressbook/libebook/e-book.c:2114 ../addressbook/libebook/e-book.c:2118
-#: ../addressbook/libebook/e-book.c:3191
+#: ../addressbook/libebook/e-book.c:456 ../addressbook/libebook/e-book.c:460
+#: ../addressbook/libebook/e-book.c:601 ../addressbook/libebook/e-book.c:605
+#: ../addressbook/libebook/e-book.c:694 ../addressbook/libebook/e-book.c:698
+#: ../addressbook/libebook/e-book.c:1012 ../addressbook/libebook/e-book.c:1017
+#: ../addressbook/libebook/e-book.c:1204 ../addressbook/libebook/e-book.c:1208
+#: ../addressbook/libebook/e-book.c:1365 ../addressbook/libebook/e-book.c:1369
+#: ../addressbook/libebook/e-book.c:1578 ../addressbook/libebook/e-book.c:1582
+#: ../addressbook/libebook/e-book.c:1819 ../addressbook/libebook/e-book.c:1823
+#: ../addressbook/libebook/e-book.c:2059 ../addressbook/libebook/e-book.c:2063
+#: ../addressbook/libebook/e-book.c:2275 ../addressbook/libebook/e-book.c:2279
+#: ../addressbook/libebook/e-book.c:3375
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" på bog før \"%s\""
 
-#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:458
-#: ../addressbook/libebook/e-book.c:591 ../addressbook/libebook/e-book.c:684
-#: ../addressbook/libebook/e-book.c:966 ../addressbook/libebook/e-book.c:1145
-#: ../addressbook/libebook/e-book.c:1290 ../addressbook/libebook/e-book.c:1491
-#: ../addressbook/libebook/e-book.c:1696 ../addressbook/libebook/e-book.c:1923
-#: ../addressbook/libebook/e-book.c:2127 ../addressbook/libebook/e-book.c:2463
-#: ../addressbook/libebook/e-book.c:2657
+#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:469
+#: ../addressbook/libebook/e-book.c:614 ../addressbook/libebook/e-book.c:707
+#: ../addressbook/libebook/e-book.c:1027 ../addressbook/libebook/e-book.c:1218
+#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1591
+#: ../addressbook/libebook/e-book.c:1832 ../addressbook/libebook/e-book.c:2073
+#: ../addressbook/libebook/e-book.c:2288 ../addressbook/libebook/e-book.c:2624
+#: ../addressbook/libebook/e-book.c:2830
 msgid "book busy"
 msgstr "bog optaget"
 
 #: ../addressbook/libebook/e-book.c:286 ../addressbook/libebook/e-book.c:290
-#: ../addressbook/libebook/e-book.c:491 ../addressbook/libebook/e-book.c:495
-#: ../addressbook/libebook/e-book.c:620 ../addressbook/libebook/e-book.c:624
-#: ../addressbook/libebook/e-book.c:713 ../addressbook/libebook/e-book.c:717
-#: ../addressbook/libebook/e-book.c:995 ../addressbook/libebook/e-book.c:998
-#: ../addressbook/libebook/e-book.c:1177 ../addressbook/libebook/e-book.c:1180
-#: ../addressbook/libebook/e-book.c:1319 ../addressbook/libebook/e-book.c:1323
-#: ../addressbook/libebook/e-book.c:1527 ../addressbook/libebook/e-book.c:1531
-#: ../addressbook/libebook/e-book.c:1743 ../addressbook/libebook/e-book.c:1747
-#: ../addressbook/libebook/e-book.c:1955 ../addressbook/libebook/e-book.c:1959
-#: ../addressbook/libebook/e-book.c:2155 ../addressbook/libebook/e-book.c:2159
-#: ../addressbook/libebook/e-book.c:2404 ../addressbook/libebook/e-book.c:2491
-#: ../addressbook/libebook/e-book.c:2495 ../addressbook/libebook/e-book.c:2685
-#: ../addressbook/libebook/e-book.c:2689 ../addressbook/libebook/e-book.c:3200
+#: ../addressbook/libebook/e-book.c:502 ../addressbook/libebook/e-book.c:506
+#: ../addressbook/libebook/e-book.c:643 ../addressbook/libebook/e-book.c:647
+#: ../addressbook/libebook/e-book.c:736 ../addressbook/libebook/e-book.c:740
+#: ../addressbook/libebook/e-book.c:1056 ../addressbook/libebook/e-book.c:1059
+#: ../addressbook/libebook/e-book.c:1250 ../addressbook/libebook/e-book.c:1253
+#: ../addressbook/libebook/e-book.c:1408 ../addressbook/libebook/e-book.c:1412
+#: ../addressbook/libebook/e-book.c:1627 ../addressbook/libebook/e-book.c:1631
+#: ../addressbook/libebook/e-book.c:1879 ../addressbook/libebook/e-book.c:1883
+#: ../addressbook/libebook/e-book.c:2105 ../addressbook/libebook/e-book.c:2109
+#: ../addressbook/libebook/e-book.c:2316 ../addressbook/libebook/e-book.c:2320
+#: ../addressbook/libebook/e-book.c:2565 ../addressbook/libebook/e-book.c:2652
+#: ../addressbook/libebook/e-book.c:2656 ../addressbook/libebook/e-book.c:2858
+#: ../addressbook/libebook/e-book.c:2862 ../addressbook/libebook/e-book.c:3384
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-undtagelse ved kald til \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2385
+#: ../addressbook/libebook/e-book.c:2546
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: der er ingen operation i øjeblikket"
 
-#: ../addressbook/libebook/e-book.c:2420
+#: ../addressbook/libebook/e-book.c:2581
 #, c-format
 msgid "%s: couldn't cancel"
 msgstr "%s: kunne ikke afbryde"
 
-#: ../addressbook/libebook/e-book.c:2449 ../addressbook/libebook/e-book.c:2453
+#: ../addressbook/libebook/e-book.c:2610 ../addressbook/libebook/e-book.c:2614
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" på bog efter \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2519
+#: ../addressbook/libebook/e-book.c:2680
 #, c-format
 msgid "%s: cancelled"
 msgstr "%s: annulleret"
 
-#: ../addressbook/libebook/e-book.c:3057
+#: ../addressbook/libebook/e-book.c:3241
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Ugyldig kilde."
 
-#: ../addressbook/libebook/e-book.c:3065 ../addressbook/libebook/e-book.c:3129
+#: ../addressbook/libebook/e-book.c:3249 ../addressbook/libebook/e-book.c:3313
 #, c-format
 msgid "%s: no factories available for uri `%s'"
 msgstr "%s: ingen fabrikker tilgængelig for uri \"%s\""
 
-#: ../addressbook/libebook/e-book.c:3077
+#: ../addressbook/libebook/e-book.c:3261
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: Kunne ikke oprette EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3323
+#: ../addressbook/libebook/e-book.c:3524
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
 msgstr "%s: ingen uid lagret i gconf for eget visitkort"
 
-#: ../addressbook/libebook/e-book.c:3434
+#: ../addressbook/libebook/e-book.c:3654
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: ingen kilde lagret i gconf for uid \"%s\"."
@@ -342,8 +342,8 @@ msgid "AIM Screen Name List"
 msgstr "Liste over skærmnavne for AIM"
 
 #: ../addressbook/libebook/e-contact.c:157
-msgid "Groupwise Id List"
-msgstr "Liste over Groupwise-identifikationer"
+msgid "GroupWise Id List"
+msgstr "Liste over GroupWise-identifikationer"
 
 #: ../addressbook/libebook/e-contact.c:158
 msgid "Jabber Id List"
@@ -386,28 +386,28 @@ msgid "AIM Work Screen Name 3"
 msgstr "AIM-skærmnavn 3 arbejde"
 
 #: ../addressbook/libebook/e-contact.c:169
-msgid "Groupwise Home Screen Name 1"
-msgstr "Groupwise-skærmnavn 1 hjemme"
+msgid "GroupWise Home Screen Name 1"
+msgstr "GroupWise-skærmnavn 1 hjemme"
 
 #: ../addressbook/libebook/e-contact.c:170
-msgid "Groupwise Home Screen Name 2"
-msgstr "Groupwise-skærmnavn 2 hjemme"
+msgid "GroupWise Home Screen Name 2"
+msgstr "GroupWise-skærmnavn 2 hjemme"
 
 #: ../addressbook/libebook/e-contact.c:171
-msgid "Groupwise Home Screen Name 3"
-msgstr "Groupwise-skærmnavn 3 hjemme"
+msgid "GroupWise Home Screen Name 3"
+msgstr "GroupWise-skærmnavn 3 hjemme"
 
 #: ../addressbook/libebook/e-contact.c:172
-msgid "Groupwise Work Screen Name 1"
-msgstr "Groupwise-skærmnavn 1 arbejde"
+msgid "GroupWise Work Screen Name 1"
+msgstr "GroupWise-skærmnavn 1 arbejde"
 
 #: ../addressbook/libebook/e-contact.c:173
-msgid "Groupwise Work Screen Name 2"
-msgstr "Groupwise-skærmnavn 2 arbejde"
+msgid "GroupWise Work Screen Name 2"
+msgstr "GroupWise-skærmnavn 2 arbejde"
 
 #: ../addressbook/libebook/e-contact.c:174
-msgid "Groupwise Work Screen Name 3"
-msgstr "Groupwise-skærmnavn 3 arbejde"
+msgid "GroupWise Work Screen Name 3"
+msgstr "GroupWise-skærmnavn 3 arbejde"
 
 #: ../addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 1"
@@ -597,7 +597,10 @@ msgstr "Kommentar"
 msgid "Birth Date"
 msgstr "Fødselsdato"
 
+#. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
+#: ../libedataserver/e-categories.c:235
 msgid "Anniversary"
 msgstr "Bryllupsdag"
 
@@ -613,23 +616,22 @@ msgstr "Vis visningsadresser"
 msgid "Last Revision"
 msgstr "Sidste version"
 
-#: ../addressbook/libebook/e-contact.c:1210
-#: ../addressbook/libebook/e-destination.c:617
+#: ../addressbook/libebook/e-contact.c:1222
+#: ../addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Navnløs liste"
 
-#. Set category and visibility
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:446
-#: ../libedataserver/e-categories.c:226
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
+#: ../libedataserver/e-categories.c:236
 msgid "Birthday"
 msgstr "Fødselsdag"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:481
 #, c-format
 msgid "Birthday: %s"
 msgstr "Fødselsdag: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:505
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Jubilæum: %s"
@@ -638,53 +640,52 @@ msgstr "Jubilæum: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikke gemme kalenderdata: Ugyldig URI."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:786
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:237
 msgid "Reply Requested: by "
 msgstr "Svar forespurgt: af "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:791
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:242
 msgid "Reply Requested: When convenient"
 msgstr "Svar forespurgt: Når det er belejligt"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:562
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:574
 msgid "Invalid server URI"
 msgstr "Ugyldig server-URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:593
-#, fuzzy
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:605
 msgid "Could not create thread for getting deltas"
 msgstr "Kunne ikke oprette tråd til at fylde mellemlager"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:615
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:618
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:627
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:630
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:625
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:637
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:876
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Kunne ikke oprette mellemlagerfil"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:635
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:647
 msgid "Could not create thread for populating cache"
 msgstr "Kunne ikke oprette tråd til at fylde mellemlager"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:641
-#: ../calendar/libecal/e-cal.c:4568
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:742
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:762
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:789
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:816
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:653
+#: ../calendar/libecal/e-cal.c:4850
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:772
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:841
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:861
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:888
 #: ../camel/providers/groupwise/camel-groupwise-store.c:521
 #: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/groupwise/camel-groupwise-store.c:585
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-store.c:944
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:175
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:176
 msgid "Authentication failed"
 msgstr "Godkendelse mislykkedes"
 
@@ -893,304 +894,304 @@ msgstr "%.1f-%.1fcm sne\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1ftommer sne\n"
 
-#: ../calendar/libecal/e-cal-component.c:1299
+#: ../calendar/libecal/e-cal-component.c:1314
 msgid "Untitled appointment"
 msgstr "Unavngivet aftale"
 
-#: ../calendar/libecal/e-cal-recur.c:3996
+#: ../calendar/libecal/e-cal-recur.c:4014
 msgid "1st"
 msgstr "1."
 
-#: ../calendar/libecal/e-cal-recur.c:3997
+#: ../calendar/libecal/e-cal-recur.c:4015
 msgid "2nd"
 msgstr "2."
 
-#: ../calendar/libecal/e-cal-recur.c:3998
+#: ../calendar/libecal/e-cal-recur.c:4016
 msgid "3rd"
 msgstr "3."
 
-#: ../calendar/libecal/e-cal-recur.c:3999
+#: ../calendar/libecal/e-cal-recur.c:4017
 msgid "4th"
 msgstr "4."
 
-#: ../calendar/libecal/e-cal-recur.c:4000
+#: ../calendar/libecal/e-cal-recur.c:4018
 msgid "5th"
 msgstr "5."
 
-#: ../calendar/libecal/e-cal-recur.c:4001
+#: ../calendar/libecal/e-cal-recur.c:4019
 msgid "6th"
 msgstr "6."
 
-#: ../calendar/libecal/e-cal-recur.c:4002
+#: ../calendar/libecal/e-cal-recur.c:4020
 msgid "7th"
 msgstr "7."
 
-#: ../calendar/libecal/e-cal-recur.c:4003
+#: ../calendar/libecal/e-cal-recur.c:4021
 msgid "8th"
 msgstr "8."
 
-#: ../calendar/libecal/e-cal-recur.c:4004
+#: ../calendar/libecal/e-cal-recur.c:4022
 msgid "9th"
 msgstr "9."
 
-#: ../calendar/libecal/e-cal-recur.c:4005
+#: ../calendar/libecal/e-cal-recur.c:4023
 msgid "10th"
 msgstr "10."
 
-#: ../calendar/libecal/e-cal-recur.c:4006
+#: ../calendar/libecal/e-cal-recur.c:4024
 msgid "11th"
 msgstr "11."
 
-#: ../calendar/libecal/e-cal-recur.c:4007
+#: ../calendar/libecal/e-cal-recur.c:4025
 msgid "12th"
 msgstr "12."
 
-#: ../calendar/libecal/e-cal-recur.c:4008
+#: ../calendar/libecal/e-cal-recur.c:4026
 msgid "13th"
 msgstr "13."
 
-#: ../calendar/libecal/e-cal-recur.c:4009
+#: ../calendar/libecal/e-cal-recur.c:4027
 msgid "14th"
 msgstr "14."
 
-#: ../calendar/libecal/e-cal-recur.c:4010
+#: ../calendar/libecal/e-cal-recur.c:4028
 msgid "15th"
 msgstr "15."
 
-#: ../calendar/libecal/e-cal-recur.c:4011
+#: ../calendar/libecal/e-cal-recur.c:4029
 msgid "16th"
 msgstr "16."
 
-#: ../calendar/libecal/e-cal-recur.c:4012
+#: ../calendar/libecal/e-cal-recur.c:4030
 msgid "17th"
 msgstr "17."
 
-#: ../calendar/libecal/e-cal-recur.c:4013
+#: ../calendar/libecal/e-cal-recur.c:4031
 msgid "18th"
 msgstr "18."
 
-#: ../calendar/libecal/e-cal-recur.c:4014
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "19th"
 msgstr "19."
 
-#: ../calendar/libecal/e-cal-recur.c:4015
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "20th"
 msgstr "20."
 
-#: ../calendar/libecal/e-cal-recur.c:4016
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "21st"
 msgstr "21."
 
-#: ../calendar/libecal/e-cal-recur.c:4017
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "22nd"
 msgstr "22."
 
-#: ../calendar/libecal/e-cal-recur.c:4018
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "23rd"
 msgstr "23."
 
-#: ../calendar/libecal/e-cal-recur.c:4019
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "24th"
 msgstr "24."
 
-#: ../calendar/libecal/e-cal-recur.c:4020
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "25th"
 msgstr "25."
 
-#: ../calendar/libecal/e-cal-recur.c:4021
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "26th"
 msgstr "26."
 
-#: ../calendar/libecal/e-cal-recur.c:4022
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "27th"
 msgstr "27."
 
-#: ../calendar/libecal/e-cal-recur.c:4023
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "28th"
 msgstr "28."
 
-#: ../calendar/libecal/e-cal-recur.c:4024
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "29th"
 msgstr "29."
 
-#: ../calendar/libecal/e-cal-recur.c:4025
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "30th"
 msgstr "30."
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:635 ../calendar/libecal/e-cal-util.c:657
+#: ../calendar/libecal/e-cal-util.c:680 ../calendar/libecal/e-cal-util.c:708
 msgid "High"
 msgstr "Høj"
 
-#: ../calendar/libecal/e-cal-util.c:637 ../calendar/libecal/e-cal-util.c:659
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
 msgid "Normal"
 msgstr "Normal"
 
-#: ../calendar/libecal/e-cal-util.c:639 ../calendar/libecal/e-cal-util.c:661
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "Low"
 msgstr "Lav"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:655
+#: ../calendar/libecal/e-cal-util.c:706
 msgid "Undefined"
 msgstr "Udefineret"
 
 #. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1556 ../libedataserverui/e-book-auth-util.c:192
+#: ../calendar/libecal/e-cal.c:1590 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Angiv adgangskode for %s (bruger %s)"
 
-#: ../calendar/libecal/e-cal.c:4540
+#: ../calendar/libecal/e-cal.c:4822
 msgid "Invalid argument"
 msgstr "Ugyldige argumenter"
 
-#: ../calendar/libecal/e-cal.c:4542
+#: ../calendar/libecal/e-cal.c:4824
 msgid "Backend is busy"
 msgstr "Bagenden er optaget"
 
-#: ../calendar/libecal/e-cal.c:4544
+#: ../calendar/libecal/e-cal.c:4826
 msgid "Repository is offline"
 msgstr "Arkiv er uden net"
 
-#: ../calendar/libecal/e-cal.c:4546
+#: ../calendar/libecal/e-cal.c:4828
 msgid "No such calendar"
 msgstr "Sådan en kalender findes ikke"
 
-#: ../calendar/libecal/e-cal.c:4548 ../servers/groupwise/e-gw-connection.c:165
+#: ../calendar/libecal/e-cal.c:4830 ../servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Objektet blev ikke fundet"
 
-#: ../calendar/libecal/e-cal.c:4550 ../servers/groupwise/e-gw-connection.c:159
+#: ../calendar/libecal/e-cal.c:4832 ../servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Ugyldigt objekt"
 
-#: ../calendar/libecal/e-cal.c:4552
+#: ../calendar/libecal/e-cal.c:4834
 msgid "URI not loaded"
 msgstr "URI er ikke indlæst"
 
-#: ../calendar/libecal/e-cal.c:4554
+#: ../calendar/libecal/e-cal.c:4836
 msgid "URI already loaded"
 msgstr "URI er allerede indlæst"
 
-#: ../calendar/libecal/e-cal.c:4556
+#: ../calendar/libecal/e-cal.c:4838
 msgid "Permission denied"
 msgstr "Tilgang nægtet"
 
-#: ../calendar/libecal/e-cal.c:4558 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:4840 ../servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Ukendt bruger"
 
-#: ../calendar/libecal/e-cal.c:4560
+#: ../calendar/libecal/e-cal.c:4842
 msgid "Object ID already exists"
 msgstr "Object-identifikationen eksisterer allerede"
 
-#: ../calendar/libecal/e-cal.c:4562
+#: ../calendar/libecal/e-cal.c:4844
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke understøttet"
 
-#: ../calendar/libecal/e-cal.c:4564
+#: ../calendar/libecal/e-cal.c:4846
 msgid "Operation has been cancelled"
 msgstr "Operationen er blevet annulleret"
 
-#: ../calendar/libecal/e-cal.c:4566
+#: ../calendar/libecal/e-cal.c:4848
 msgid "Could not cancel operation"
 msgstr "Kunne ikke annullere operationen"
 
-#: ../calendar/libecal/e-cal.c:4570
+#: ../calendar/libecal/e-cal.c:4852
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Autenticering kræves"
 
-#: ../calendar/libecal/e-cal.c:4572
+#: ../calendar/libecal/e-cal.c:4854
 msgid "A CORBA exception has occurred"
 msgstr "Der opstod en CORBA-undtagelse"
 
-#: ../calendar/libecal/e-cal.c:4574
+#: ../calendar/libecal/e-cal.c:4856
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
 #: ../camel/providers/pop3/camel-pop3-store.c:535
 #: ../camel/providers/pop3/camel-pop3-store.c:542
 #: ../camel/providers/pop3/camel-pop3-store.c:548
-#: ../servers/groupwise/e-gw-connection.c:173
+#: ../servers/groupwise/e-gw-connection.c:174
 msgid "Unknown error"
 msgstr "Ukendt fejl"
 
-#: ../calendar/libecal/e-cal.c:4576
+#: ../calendar/libecal/e-cal.c:4858
 msgid "No error"
 msgstr "Ingen fejl"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:54
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:533
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:726
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:753
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" forventer intet argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:79
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:173
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:207
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:243
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:791
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:98
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" forventer ét argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:85
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:92
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:249
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:477
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" forventer at det første argument er en streng"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:100
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "\"%s\" forventer at det første argument er en ISO-8601 formateret dato-/tids-"
 "streng"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:131
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:471
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:565
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" forventer to argumenter"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:137
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:179
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:213
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:322
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:571
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:797
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:164
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" forventer det første argument er af typen time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:145
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:172
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" forventer at det andet argument er et heltal"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:330
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" forventer at det andet argument er af typen time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:485
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" forventer at andet argument er en streng"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:505
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1199,12 +1200,12 @@ msgstr ""
 "\"%s\" forventer at første argument er en af \"any\", \"summary\", "
 "\"description\" eller \"location\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:628
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" forventer mindst ét argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:642
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1442,38 +1443,38 @@ msgstr "(match-threads) kræver mappesættet"
 msgid "Performing query on unknown header: %s"
 msgstr "Udfører forespørgsel på ukendt header: %s"
 
-#: ../camel/camel-folder.c:610
+#: ../camel/camel-folder.c:620
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Uunderstøttet operation: tillæg besked: for %s"
 
-#: ../camel/camel-folder.c:1200
+#: ../camel/camel-folder.c:1242
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Uunderstøttet operation: søg efter udtryk: efter %s"
 
-#: ../camel/camel-folder.c:1240
+#: ../camel/camel-folder.c:1283
 #, c-format
 msgid "Unsupported operation: search by uids: for %s"
 msgstr "Uunderstøttet operation: søg efter uid'er: efter %s"
 
-#: ../camel/camel-folder.c:1352
+#: ../camel/camel-folder.c:1399
 msgid "Moving messages"
 msgstr "Flytter beskeder"
 
-#: ../camel/camel-folder.c:1352
+#: ../camel/camel-folder.c:1399
 msgid "Copying messages"
 msgstr "Kopierer beskeder"
 
-#: ../camel/camel-folder.c:1601
+#: ../camel/camel-folder.c:1653
 msgid "Learning junk"
 msgstr "Lærer spam"
 
-#: ../camel/camel-folder.c:1618
+#: ../camel/camel-folder.c:1670
 msgid "Learning non-junk"
 msgstr "Lærer ikke-spam"
 
-#: ../camel/camel-folder.c:1637
+#: ../camel/camel-folder.c:1689
 msgid "Filtering new message(s)"
 msgstr "Filtrerer nye beskeder"
 
@@ -1506,7 +1507,7 @@ msgstr ""
 "for brugeren: \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1275
+#: ../camel/providers/nntp/camel-nntp-store.c:1276
 msgid "Cancelled."
 msgstr "Afbrudt."
 
@@ -1686,7 +1687,7 @@ msgstr "Fejl under skriving af midlertidig fil: %s"
 msgid "Error copying mail temp file: %s"
 msgstr "Fejl under kopiering midlertidig beskedsfil: %s"
 
-#: ../camel/camel-multipart-signed.c:587
+#: ../camel/camel-multipart-signed.c:598
 msgid "parse error"
 msgstr "tolkningsfejl"
 
@@ -1733,7 +1734,7 @@ msgstr "Opslag af værtsnavn mislykkedes: %s"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Synkroniserer beskeder i mappen \"%s\" til disken"
 
-#: ../camel/camel-offline-journal.c:141 ../camel/camel-offline-journal.c:164
+#: ../camel/camel-offline-journal.c:165 ../camel/camel-offline-journal.c:188
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr "Kan ikke skrive afkoblet journal for mappen \"%s\": %s"
@@ -1775,11 +1776,11 @@ msgstr "Anonym"
 msgid "This option will connect to the server using an anonymous login."
 msgstr "Dette valg vil koble til serveren med anonym indlogning."
 
-#: ../camel/camel-sasl-anonymous.c:112 ../camel/camel-sasl-plain.c:88
+#: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
 msgstr "Godkendelse mislykkedes."
 
-#: ../camel/camel-sasl-anonymous.c:121
+#: ../camel/camel-sasl-anonymous.c:131
 #, c-format
 msgid ""
 "Invalid email address trace information:\n"
@@ -1788,7 +1789,7 @@ msgstr ""
 "Ugyldig information til sporing af e-postadresse:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:133
+#: ../camel/camel-sasl-anonymous.c:143
 #, c-format
 msgid ""
 "Invalid opaque trace information:\n"
@@ -1797,7 +1798,7 @@ msgstr ""
 "Ugyldig ugennemsigtig sporingsinformation:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:145
+#: ../camel/camel-sasl-anonymous.c:155
 #, c-format
 msgid ""
 "Invalid trace information:\n"
@@ -1831,35 +1832,30 @@ msgstr ""
 "hvis serveren understøtter det."
 
 #: ../camel/camel-sasl-digest-md5.c:819
-#, fuzzy
 msgid "Server challenge too long (>2048 octets)"
-msgstr "Udfordring fra server for lang (>2048 oktetter)\n"
+msgstr "Udfordring fra server for lang (>2048 byte)"
 
 #: ../camel/camel-sasl-digest-md5.c:828
 msgid "Server challenge invalid\n"
 msgstr "Ugyldig udfordring fra server\n"
 
 #: ../camel/camel-sasl-digest-md5.c:834
-#, fuzzy
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"Udfordring fra server indeholdt ugyldig tegn for \"Kvalitet for beskyttelse"
-"\"\n"
+"Udfordring fra server indeholdt ugyldigt tegn for "
+"\"Kvalitet for beskyttelse\"-symbol"
 
 #: ../camel/camel-sasl-digest-md5.c:864
-#, fuzzy
 msgid "Server response did not contain authorization data"
-msgstr "Svar fra server indeholdt ikke godkendelsessdata\n"
+msgstr "Svar fra server indeholdt ikke godkendelsessdata"
 
 #: ../camel/camel-sasl-digest-md5.c:882
-#, fuzzy
 msgid "Server response contained incomplete authorization data"
-msgstr "Svar fra server indeholdt ufuldstændige godkendelsesdata\n"
+msgstr "Svar fra server indeholdt ufuldstændige godkendelsesdata"
 
 #: ../camel/camel-sasl-digest-md5.c:892
-#, fuzzy
 msgid "Server response does not match"
-msgstr "Svar fra server er ikke det samme\n"
+msgstr "Svar fra server matcher ikke"
 
 #: ../camel/camel-sasl-gssapi.c:57
 msgid "GSSAPI"
@@ -2248,39 +2244,39 @@ msgstr "eksport-nøgler: ikke implementeret"
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Kan ikke finde mappe: Ugyldig operation på dette lager"
 
-#: ../camel/camel-store.c:244
+#: ../camel/camel-store.c:246
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
 msgstr "Kan ikke oprette mappen \"%s\": mappen findes"
 
-#: ../camel/camel-store.c:298
+#: ../camel/camel-store.c:300
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Kan ikke oprette mappe: Ugyldig operation på dette lager"
 
-#: ../camel/camel-store.c:326
+#: ../camel/camel-store.c:328
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kan ikke oprette mappe: %s: mappen findes"
 
-#: ../camel/camel-store.c:390 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:392 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kan ikke slette mappe: %s: Ugyldig operation"
 
-#: ../camel/camel-store.c:440 ../camel/camel-vee-store.c:404
+#: ../camel/camel-store.c:442 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kan ikke ændre navn på mappe: %s: Ugyldig operation"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:779 ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-store.c:781 ../camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Affald"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:49
+#: ../camel/camel-store.c:784 ../camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Spam"
 
@@ -2400,7 +2396,7 @@ msgstr "Nøgleanvendelse understøtter ikke certifikatsignering"
 msgid "Error in application verification"
 msgstr "Fejl i programverifikation"
 
-#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:827
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:833
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2413,11 +2409,11 @@ msgstr ""
 "Fingeraftryk:      %s\n"
 "Signatur:          %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:839
 msgid "GOOD"
 msgstr "GOD"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:839
 msgid "BAD"
 msgstr "DÅRLIG"
 
@@ -2441,7 +2437,7 @@ msgstr ""
 "Vil du acceptere alligevel?"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:837
+#: ../camel/camel-tcp-stream-ssl.c:843
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2456,7 +2452,7 @@ msgstr ""
 "\n"
 "Vil du acceptere?"
 
-#: ../camel/camel-tcp-stream-ssl.c:881
+#: ../camel/camel-tcp-stream-ssl.c:887
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2465,7 +2461,7 @@ msgstr ""
 "Certifikatproblem: %s\n"
 "Udsteder: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:933
+#: ../camel/camel-tcp-stream-ssl.c:939
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2474,7 +2470,7 @@ msgstr ""
 "Fejlagtigt certifikatdomæne: %s\n"
 "Udsteder: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:951
+#: ../camel/camel-tcp-stream-ssl.c:957
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2483,7 +2479,7 @@ msgstr ""
 "Certifikatet er udløbet: %s\n"
 "Udsteder: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:968
+#: ../camel/camel-tcp-stream-ssl.c:974
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2533,7 +2529,7 @@ msgstr "Kan ikke kopiere beskeder til affaldsmappen"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Kan ikke kopiere beskeder til spammappen"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2543,7 +2539,7 @@ msgstr ""
 "Kan ikke hente besked: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2551,7 +2547,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Ingen sådan besked"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2563,7 +2559,7 @@ msgstr "Ingen sådan besked"
 msgid "User cancelled"
 msgstr "Brugeren afbrød"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:134
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2577,28 +2573,28 @@ msgstr "Brugeren afbrød"
 msgid "Cannot get message %s: %s"
 msgstr "Kan ikke hente besked %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:151
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:153
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Denne besked er ikke tilgængelig i afkoblet tilstand."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:198
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:176
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:199
 msgid "Could not get message"
 msgstr "Kunne ikke hente besked"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:670
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:714
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Kunne ikke indlæse sammendrag for %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1052
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1149
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan ikke oprette besked: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1064
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1161
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Kan ikke føje besked til mappen \"%s\": %s"
@@ -2668,7 +2664,7 @@ msgstr "Novell GroupWise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:87
 msgid "For accessing Novell Groupwise servers"
-msgstr "For at tilgå Novell Groupwise-servere"
+msgstr "For at tilgå Novell GroupWise-servere"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/imap/camel-imap-provider.c:96
@@ -2687,12 +2683,12 @@ msgstr ""
 "klartekst-adgangskode."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:270
-msgid "Host or user not availbale in url"
-msgstr "Vært eller bruger er ikke tilgængelig i adresse"
+msgid "Host or user not available in url"
+msgstr "Vært eller bruger er ikke tilgængelig i adressen"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:365
 #, c-format
-msgid "%sPlease enter the Groupwise password for %s@%s"
+msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sAngiv venligst GroupWise-adgangskoden for %s@%s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:379
@@ -2744,6 +2740,7 @@ msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Kan ikke omdøbe GroupWise-mappen \"%s\" til \"%s\""
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1077
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-server %s"
@@ -2753,17 +2750,12 @@ msgstr "GroupWise-server %s"
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise-tjeneste for %s på %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
-#, c-format
-msgid "Groupwise server %s"
-msgstr "Groupwise-server %s"
-
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
-msgid "Groupwise mail delivery via %s"
-msgstr "GroupWise e-postlevering via %s"
+msgid "GroupWise mail delivery via %s"
+msgstr "GroupWise e-post-levering via %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:159
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
 msgid "Sending Message"
 msgstr "Sender besked"
 
@@ -3184,39 +3176,39 @@ msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr "Kan ikke hente beskeden %s fra mappen \"%s\": Ugyldig handling"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:913
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr "Kan ikke føje besked til mappen \"%s\": %s"
+msgstr "Kan ikke føje besked til mappen \"%s\": Mappen er skrivebeskyttet"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1009
+#: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "Kan ikke føje beskeden til mappen \"%s\": Ukendt fejl"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1038
+#: ../camel/providers/imap4/camel-imap4-folder.c:1035
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "Kan ikke føje beskeden til mappen \"%s\": Ugyldig handling"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1150
+#: ../camel/providers/imap4/camel-imap4-folder.c:1155
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "Kan ikke flytte beskederne fra mappen \"%s\" til mappen \"%s\": Ukendt"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1154
+#: ../camel/providers/imap4/camel-imap4-folder.c:1159
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Kan ikke kopiere beskederne fra mappen \"%s\" til mappen \"%s\": Ukendt"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1162
+#: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "Kan ikke flytte beskederne fra mappen \"%s\" til mappen \"%s\": Ugyldig "
 "handling"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1166
+#: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
@@ -3951,10 +3943,10 @@ msgid "USENET news"
 msgstr "USENET nyheder"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
-msgid "This is a provider for reading from and posting toUSENET newsgroups."
+msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
-"Dette er en udbyder for læsning af og postning af indlæg til USENET "
-"nyhedsgrupper."
+"Dette er en udbyder for læsning og postning af indlæg til "
+"USENET-nyhedsgrupper."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -3979,7 +3971,7 @@ msgstr "NNTP-serveren %s returnerede fejlkoden %d: %s"
 msgid "USENET News via %s"
 msgstr "USENET Nyheder via %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:812
+#: ../camel/providers/nntp/camel-nntp-store.c:813
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3990,7 +3982,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:906
+#: ../camel/providers/nntp/camel-nntp-store.c:907
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4001,7 +3993,7 @@ msgstr ""
 "Nyhedsgruppen findes ikke. Det valgte element er sandsynligvis en "
 "forældremappe."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:938
+#: ../camel/providers/nntp/camel-nntp-store.c:939
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4011,44 +4003,44 @@ msgstr ""
 "\n"
 "nyhedsgruppen findes ikke!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:963
+#: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Du kan ikke oprette en mappe i et nyheds-lager: tegn et abonnement i stedet."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:971
+#: ../camel/providers/nntp/camel-nntp-store.c:972
 msgid "You cannot rename a folder in a News store."
 msgstr "Du kan ikke omdøbe en mappe i et nyhedsgruppelager"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:979
+#: ../camel/providers/nntp/camel-nntp-store.c:980
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Du kan ikke fjerne en mappe i et nyhedsgruppelager: opsig abonnement istedet."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1149
+#: ../camel/providers/nntp/camel-nntp-store.c:1150
 msgid "Authentication requested but no username provided"
 msgstr "Der blev spurgt om godkendelse men intet brugernavn var givet"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1157
+#: ../camel/providers/nntp/camel-nntp-store.c:1158
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Indtast venligst NNTP-adgangskoden for %s@%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1161
+#: ../camel/providers/nntp/camel-nntp-store.c:1162
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Godkendelse mislykkedes på serveren: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1277
+#: ../camel/providers/nntp/camel-nntp-store.c:1278
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP-kommandoen mislykkedes: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1333
+#: ../camel/providers/nntp/camel-nntp-store.c:1334
 msgid "Not connected."
 msgstr "Ingen forbindelse."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1386
+#: ../camel/providers/nntp/camel-nntp-store.c:1387
 #, c-format
 msgid "No such folder: %s"
 msgstr "Der findes ingen sådan mappe: %s"
@@ -4539,83 +4531,83 @@ msgstr "QUIT-kommandoen mislykkedes: %s"
 msgid "QUIT command failed"
 msgstr "QUIT-kommandoen mislykkedes"
 
-#: ../libedataserver/e-categories.c:227
+#: ../libedataserver/e-categories.c:237
 msgid "Business"
 msgstr "Arbejde"
 
-#: ../libedataserver/e-categories.c:228
+#: ../libedataserver/e-categories.c:238
 msgid "Competition"
 msgstr "Konkurrence"
 
-#: ../libedataserver/e-categories.c:229
+#: ../libedataserver/e-categories.c:239
 msgid "Favorites"
 msgstr "Favoritter"
 
-#: ../libedataserver/e-categories.c:230
+#: ../libedataserver/e-categories.c:240
 msgid "Gifts"
 msgstr "Gaver"
 
-#: ../libedataserver/e-categories.c:231
+#: ../libedataserver/e-categories.c:241
 msgid "Goals/Objectives"
 msgstr "Mål"
 
-#: ../libedataserver/e-categories.c:232
+#: ../libedataserver/e-categories.c:242
 msgid "Holiday"
 msgstr "Ferie"
 
-#: ../libedataserver/e-categories.c:233
+#: ../libedataserver/e-categories.c:243
 msgid "Holiday Cards"
 msgstr "Feriekort"
 
-#: ../libedataserver/e-categories.c:234
+#: ../libedataserver/e-categories.c:244
 msgid "Hot Contacts"
 msgstr "Hede kontakter"
 
-#: ../libedataserver/e-categories.c:235
+#: ../libedataserver/e-categories.c:245
 msgid "Ideas"
 msgstr "Idéer"
 
-#: ../libedataserver/e-categories.c:236
+#: ../libedataserver/e-categories.c:246
 msgid "International"
 msgstr "International"
 
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:247
 msgid "Key Customer"
 msgstr "Nøglekunde"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:248
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:249
 msgid "Personal"
 msgstr "Personligt"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:250
 msgid "Phone Calls"
 msgstr "Telefonopkald"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:251
 msgid "Status"
 msgstr "Status"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:252
 msgid "Strategies"
 msgstr "Strategier"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:253
 msgid "Suppliers"
 msgstr "Leverandører"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:254
 msgid "Time & Expenses"
 msgstr "Tid og udgifter"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:255
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:256
 msgid "Waiting"
 msgstr "Venter"
 
@@ -4856,19 +4848,19 @@ msgstr "Vælg en målmappe"
 msgid "_Destination"
 msgstr "_Målmappe"
 
-#: ../servers/groupwise/e-gw-connection.c:157
+#: ../servers/groupwise/e-gw-connection.c:158
 msgid "Invalid connection"
 msgstr "Ugyldig forbindelse"
 
-#: ../servers/groupwise/e-gw-connection.c:161
+#: ../servers/groupwise/e-gw-connection.c:162
 msgid "Invalid response from server"
 msgstr "Ugyldigt svar fra server"
 
-#: ../servers/groupwise/e-gw-connection.c:163
+#: ../servers/groupwise/e-gw-connection.c:164
 msgid "No response from the server"
 msgstr "Intet svar fra server"
 
-#: ../servers/groupwise/e-gw-connection.c:169
+#: ../servers/groupwise/e-gw-connection.c:170
 msgid "Bad parameter"
 msgstr "Ugyldig parameter"
 
@@ -4880,11 +4872,22 @@ msgstr "Evolution adressebogsfil-bagende"
 msgid "Evolution Calendar file and webcal backend"
 msgstr "Evolution kalenderfil og webcal-bagende"
 
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
+msgid "Evolution Data Server interface check service"
+msgstr "Evolution Data Server-grænseflade til kontroltjeneste"
+
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
+msgid "Evolution Data Server logging service"
+msgstr "Evolution Data Server-logtjeneste"
+
 #. dialog display isn't working out
 #: ../src/server.c:101
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Der opstod flere segmenteringsfejl; fejlvindue kan ikke vises\n"
+
+#~ msgid "Groupwise server %s"
+#~ msgstr "Groupwise-server %s"
 
 #~ msgid "e_book_open: cancelled"
 #~ msgstr "e_book_open: annulleret"
@@ -6907,9 +6910,6 @@ msgstr "Der opstod flere segmenteringsfejl; fejlvindue kan ikke vises\n"
 
 #~ msgid "Do not ask me about this program again."
 #~ msgstr "Spørg mig ikke om dette program igen."
-
-#~ msgid "Evolution Calendar alarm notification service"
-#~ msgstr "Evolution kalenderalarmbekendgørelsestjeneste"
 
 #~ msgid "Could not initialize Bonobo"
 #~ msgstr "Kunne ikke initialisere Bonobo"
