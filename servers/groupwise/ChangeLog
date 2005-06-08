@@ -1,3 +1,9 @@
+2005-06-08  Srinivasa Ragavan <sragavan@novell.com>
+
+	* e-gw-connection.[ch] :Added function to retrive deltainfo and delta
+	* e-gw-item.[ch] : Added a variable sync to EGwItem to know the type 
+	of change to the item while reading the deltas
+
 2005-06-06  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-connection.[ch] (e_gw_connection_delegate_request): Added 	a function for sending a delegate request.

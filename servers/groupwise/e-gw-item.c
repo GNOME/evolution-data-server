@@ -53,6 +53,7 @@ struct _EGwItemPrivate {
 	char *task_priority;
 	char *place;
 	char *source ;
+	EGwItemChangeType sync;
 	GSList *recipient_list;
 	GSList *recurrence_dates;
 	int trigger; /* alarm */
@@ -1039,6 +1040,18 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		}
 		g_free (primary_email);
 	}
+
+	subparam =  soup_soap_parameter_get_first_child_by_name(param, "sync");
+	if (subparam) {
+		value = soup_soap_parameter_get_string_value (subparam);
+		if (!strcmp (value, "add")) {
+			item->priv->sync = E_GW_ITEM_CHANGE_TYPE_ADD;
+		} else if (!strcmp (value, "delete")) {
+			item->priv->sync = E_GW_ITEM_CHANGE_TYPE_DELETE;
+		} else if (!strcmp (value, "update")) {
+			item->priv->sync = E_GW_ITEM_CHANGE_TYPE_UPDATE;
+		} 
+	}
 	
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "imList");
 	if(subparam) {
@@ -1520,6 +1533,12 @@ append_group_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	}
 	soup_soap_message_end_element (msg);
 	
+}
+
+EGwItemChangeType
+e_gw_item_get_sync_type (EGwItem *item)
+{
+	return item->priv->sync;
 }
 
 EGwItem *

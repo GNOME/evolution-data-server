@@ -1,3 +1,9 @@
+2005-06-08  Srinivasa Ragavan <sragavan@novell.com>
+
+	* e-gw-connection.[ch] :Added function to retrive deltainfo and delta
+	* e-gw-item.[ch] : Added a variable sync to EGwItem to know the type 
+	of change to the item while reading the deltas
+	
 2005-05-24  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Commiting for Daniel van Eeden <daniel_e@dds.nl>
