@@ -188,12 +188,7 @@ local_url_equal(const void *v, const void *v2)
 	p1 = get_can_path(u1->path);
 	p2 = get_can_path(u2->path);
 	return check_equal(p1, p2)
-		&& check_equal(u1->protocol, u2->protocol)
-		&& check_equal(u1->user, u2->user)
-		&& check_equal(u1->authmech, u2->authmech)
-		&& check_equal(u1->host, u2->host)
-		&& check_equal(u1->query, u2->query)
-		&& u1->port == u2->port;
+		&& check_equal(u1->protocol, u2->protocol);
 }
 
 void camel_provider_module_init(void)

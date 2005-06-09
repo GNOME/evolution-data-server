@@ -1,3 +1,10 @@
+2005-06-08  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #303225
+
+	* camel-local-provider.c (local_url_equal): remove the checks for
+	fields not used/appropriate for local resources.
+
 2005-04-12  Not Zed  <NotZed@Ximian.com>
 
 	* camel-local-provider.c (check_equal): make "" equal NULL for
