@@ -28,6 +28,7 @@
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrenderertoggle.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtkfilechooserbutton.h>
 #include <gtk/gtkliststore.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmessagedialog.h>
@@ -35,7 +36,6 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
-#include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade-xml.h>
 #include <libedataserver/e-categories.h>
 #include "e-categories-dialog.h"
@@ -85,14 +85,7 @@ load_properties_dialog (ECategoriesDialog *parent)
 
 	prop_dialog->category_name = glade_xml_get_widget (prop_dialog->gui, "category-name");
 	prop_dialog->category_color = glade_xml_get_widget (prop_dialog->gui, "category-color");
-
-	/* create the icon file entry */
-	table = glade_xml_get_widget (prop_dialog->gui, "table-category-properties");
-	prop_dialog->category_icon = gnome_file_entry_new ("category-icon-history-id", _("Category Icon"));
-	g_object_set (G_OBJECT (prop_dialog->category_icon), "use_filechooser", TRUE, NULL);
-	gtk_table_attach (GTK_TABLE (table), prop_dialog->category_icon, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 3, 3);
-	gtk_widget_show (prop_dialog->category_icon);
-	gnome_file_entry_set_modal ((GnomeFileEntry *)prop_dialog->category_icon, TRUE);
+	prop_dialog->category_icon = glade_xml_get_widget (prop_dialog->gui, "category-icon");
 
 	return prop_dialog;
 }
@@ -271,8 +264,7 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 				g_free (correct_category_name);
 			} else {
 				/* FIXME: get color */
-				category_icon = gtk_entry_get_text (
-					GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
+				category_icon = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon));
 
 				e_categories_add (correct_category_name, NULL, category_icon ? category_icon : NULL, TRUE);
 
@@ -324,16 +316,14 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	gtk_tree_model_get (model, &iter, 1, &category_name, -1);
 	gtk_entry_set_text (GTK_ENTRY (prop_dialog->category_name), category_name);
 	gtk_widget_set_sensitive (prop_dialog->category_name, FALSE);
-	gtk_entry_set_text (
-		GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))),
-		e_categories_get_icon_file_for (category_name));
+	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon), 
+				       e_categories_get_icon_file_for (category_name));
 
 	if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
 		const char *category_icon;
 
 		/* FIXME: get color */
-		category_icon = gtk_entry_get_text (
-			GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (prop_dialog->category_icon))));
+		category_icon = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon));
 
 		if (category_icon)
 			e_categories_set_icon_file_for (category_name, category_icon);

@@ -1,3 +1,9 @@
+2005-06-09  Ross Burton  <ross@burtonini.com>
+
+	* e-categories-dialog.c:
+	* e-categories-dialog.glade:
+	Use GtkFileChooserButton instead of a GnomeFileEntry.
+
 2005-05-24  Sushma Rai  <rsushma@novell.com>
 
 	* e-name-selector-dialog.c (contact_column_formatter): Using 
