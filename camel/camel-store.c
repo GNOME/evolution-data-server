@@ -971,7 +971,7 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 				if (sep)
 					*sep = '\0';
 				else
-					d(g_warning ("huh, no \"%c\" in \"%s\"?", separator, fi->url));
+					d(g_warning ("huh, no \"%c\" in \"%s\"?", separator, fi->uri));
 				
 				pfi->full_name = g_strdup (path);
 				

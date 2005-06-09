@@ -1,3 +1,7 @@
+2005-06-09  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* camel-store.c (camel_folder_info_build): Minor typo in debug message.
+
 2005-05-16  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mime-filter-basic.c (complete): Call
