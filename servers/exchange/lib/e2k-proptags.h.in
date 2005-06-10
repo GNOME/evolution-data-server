@@ -1,0 +1,9 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* Copyright (C) 2003-2004 Novell, Inc. */
+
+#ifndef __E2K_PROPTAGS_H__
+#define __E2K_PROPTAGS_H__
+
+@AUTOGENERATE@
+
+#endif /* __E2K_PROPTAGS_H__ */

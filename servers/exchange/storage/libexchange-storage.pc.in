@@ -1,0 +1,16 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+idldir=@idldir@
+IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
+
+privincludedir=@privincludedir@
+
+Name: libexchange
+Description: Client library for accessing Exchange server through webdav.
+Version: @VERSION@
+Requires: libsoup-2.4 >= @LIBSOUP_REQUIRED@ 
+Libs: -L${libdir} -lexchange-storage-1.2
+Cflags: -I${privincludedir}/exchange

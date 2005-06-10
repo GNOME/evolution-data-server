@@ -1,0 +1,48 @@
+2005-06-10  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	First movement of exchange server communication code into e-d-s HEAD.
+
+2005-06-07  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/Makefile.am : Removed references to config-listener and 
+	foreign-hierarchy 
+	* storage/e-folder-exchange.c : Removed references to e_source here.
+	* storage/e-storage.c : Removed from e-d-s and moved back to exchange.
+	* storage/exchange-account.c : Removed references to foreign hierarchy.
+	* storage/exchange-account.h : Added constants.h
+	* storage/exchange-constants.h : Avoided re-inclusion
+	* storage/exchange-hierarchy-favorites.c : Removed esource references.
+	* storage/exchange-hierarchy-gal.c : Removed esource references
+	* storage/exchange-hierarchy-webdav.c : Removed references to foreign 
+	hierarchy.
+	* storage/exchange-types.h : Similar
+
+2005-06-03  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/e-shell-marshal.list : New file
+
+2005-06-02  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* libexchange-storage.pc.in : Moved it from exchange to 
+	exchange/storage
+	* lib/Makefile.am : Added a few more header files that had to be 
+	installed.
+	* storage/Makefile.am : Similar
+	* storage/e-folder-exchange.c : Merged the changes from HEAD.
+	* storage/e-folder.c : Added marshalling code.
+	* storage/e-storage.c : Similar
+	* storage/exchange-account.c (exchange_account_get_username): Added new
+	* storage/exchange-account.h : Similar
+	* storage/exchange-component.[ch] : Removed from Makefile.am. Should be
+	removing these files from the repository.
+	* storage/exchange-config-listener.[ch] : Merged the changed from HEAD.
+	* storage/exchange-hierarchy-favorites.c : Similar
+	* storage/exchange-hierarchy-foreign.c : Similar
+	* storage/exchange-hierarchy-gal.c : Similar
+	* storage/exchange-hierarchy-webdav.c : Similar
+	* storage/exchange-constants.h : Added a new file.
+
+2005-05-21  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* lib/Makefile.am : Install e2k-global-catalog.h and e2k-utils.h
+	Also added this new ChangeLog file
