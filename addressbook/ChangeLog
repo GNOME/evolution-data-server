@@ -1,3 +1,12 @@
+2005-06-10  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(book_view_notify_status): Notifying status if view is not null.
+	(find_book_view): Getting the list of views and returning the first.
+	(build_cache): Notifying the cache build progress.
+	(update_cache): Notifying the cache update progress.
+	(update_address_book_deltas): Fixed compile time warnings.
+
 2005-06-08  Srinivasa Ragavan <sragavan@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c (update_cache):

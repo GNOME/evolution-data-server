@@ -25,8 +25,6 @@
 #include <config.h>
 #endif
 
-
-
 #include <libebook/e-contact.h>
 #include <glib/gi18n-lib.h>
 #include <libedataserver/e-sexp.h>
@@ -120,7 +118,6 @@ struct field_element_mapping {
 	{ E_CONTACT_REV, ELEMENT_TYPE_SIMPLE, "modified_time"}
 }; 
 
-
 static int num_mappings = sizeof(mappings) / sizeof(mappings [0]);
 
 static void
@@ -135,7 +132,6 @@ free_attr_list (GList *attr_list)
                                                                                                                              
         g_list_free (attr_list);
 }
-
 
 static void 
 populate_ims (EContact *contact, gpointer data)
@@ -212,7 +208,6 @@ populate_ims (EContact *contact, gpointer data)
 	free_attr_list (groupwise_list);
 }
 
-
 static void
 append_ims_to_list (GList **im_list, EContact *contact,  char *service_name, EContactField field_id)
 {
@@ -228,7 +223,6 @@ append_ims_to_list (GList **im_list, EContact *contact,  char *service_name, ECo
 	g_list_free (list);
 	
 }
-
 
 static void 
 set_ims_in_gw_item (EGwItem *item, gpointer data)
@@ -247,7 +241,6 @@ set_ims_in_gw_item (EGwItem *item, gpointer data)
 	if (im_list)
 		e_gw_item_set_im_list (item, im_list);
 }
-
 
 static void
 set_im_changes (EGwItem *new_item, EGwItem *old_item)
@@ -294,7 +287,6 @@ set_im_changes (EGwItem *new_item, EGwItem *old_item)
 	}
 	
 }
-
 
 static void 
 copy_postal_address_to_contact_address ( EContactAddress *contact_addr, PostalAddress *address)
@@ -352,8 +344,6 @@ populate_address (EContact *contact, gpointer data)
 
 }
 
-
-
 static void 
 set_address_in_gw_item (EGwItem *item, gpointer data)
 {
@@ -378,8 +368,6 @@ set_address_in_gw_item (EGwItem *item, gpointer data)
 		e_gw_item_set_address (item, "Office", address);
 		e_contact_address_free (contact_address);
 	}
-	
-
 }
 
 static PostalAddress *
@@ -521,9 +509,6 @@ set_birth_date_changes (EGwItem *new_item, EGwItem *old_item)
 	else if (new_birthday && !old_birthday) {
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "birthday", new_birthday);
 	}
-	
-
-		
 }
 
 static int email_fields [3] = {
@@ -547,7 +532,6 @@ populate_emails (EContact *contact, gpointer data)
 		if (email_list->data) 
 			e_contact_set (contact, email_fields[i], email_list->data);
 	}
-  
 } 
 
 
@@ -567,7 +551,6 @@ set_emails_in_gw_item (EGwItem *item, gpointer data)
 			email_list = g_list_append (email_list, g_strdup (email));
 	}
 	e_gw_item_set_email_list (item, email_list);
-
 }  
 
 static void 
@@ -591,11 +574,9 @@ compare_string_lists ( GList *old_list, GList *new_list, GList **additions, GLis
 					old_list_copy = g_list_remove (old_list_copy, string2);
 					break;
 				}
-				
 			}
 			if (!strings_matched)
 				*additions = g_list_append (*additions, string1);
-
 		}
 		*deletions = old_list_copy;
 	}
@@ -603,7 +584,6 @@ compare_string_lists ( GList *old_list, GList *new_list, GList **additions, GLis
 		*deletions = g_list_copy (old_list);
 	else if (new_list && !old_list)
 		*additions = g_list_copy (new_list);
-
 }
  
 static void 
@@ -620,7 +600,6 @@ set_emails_changes (EGwItem *new_item, EGwItem *old_item)
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "email", added_emails);
 	if (deleted_emails)
 		e_gw_item_set_change (new_item,  E_GW_ITEM_CHANGE_TYPE_DELETE, "email", deleted_emails);
-
 }
  
 static void 
@@ -642,7 +621,6 @@ populate_full_name (EContact *contact, gpointer data)
 			e_contact_set (contact, E_CONTACT_FULL_NAME, full_name_string);
 		g_free (full_name_string);
 	}
-
 }
 
 static void 
@@ -668,7 +646,6 @@ set_full_name_in_gw_item (EGwItem *item, gpointer data)
 			full_name->name_suffix = g_strdup (contact_name->suffixes);
 			e_contact_name_free (contact_name);
 		}
-		  
 		e_gw_item_set_full_name (item, full_name);
 	}
 }
@@ -685,7 +662,6 @@ copy_full_name (FullName *full_name)
 	return full_name_copy;
 }
 
-
 static void 
 set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 {
@@ -698,7 +674,6 @@ set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 	
 	old_full_name = e_gw_item_get_full_name (old_item);
 	new_full_name = e_gw_item_get_full_name (new_item);
-       
 	
 	if (old_full_name && new_full_name) {
 		s1 = new_full_name->name_prefix;
@@ -740,8 +715,6 @@ set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 	} else if (new_full_name && !old_full_name) {
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "full_name", copy_full_name(new_full_name));
 	}
-		
-
 }
 
 static void 
@@ -749,8 +722,10 @@ populate_contact_members (EContact *contact, gpointer data)
 {
 	EGwItem *item;
 	GList *member_list;
+
 	item = E_GW_ITEM(data);
 	member_list = e_gw_item_get_member_list (item);
+
 	for (; member_list != NULL; member_list = g_list_next (member_list)) {
 		EVCardAttribute *attr;
 		EGroupMember *member;
@@ -770,13 +745,10 @@ populate_contact_members (EContact *contact, gpointer data)
 		e_vcard_attribute_add_value (attr, member->email);
 		e_vcard_add_attribute (E_VCARD (contact), attr);
 	}
-		
 }
-
 
 static void
 set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise *egwb)
-
 {
   	GList  *members, *temp, *items, *p, *emails_without_ids;
 	GList *group_members;
@@ -793,12 +765,15 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	filter = e_gw_filter_new ();
 	group_members = NULL;
 	emails_without_ids = NULL;
+
 	for ( ;temp != NULL; temp = g_list_next (temp)) {
 		EVCardAttribute *attr = temp->data;
 		id = email = NULL;
+
 		for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
 			EVCardAttributeParam *param = p->data;
 			const char *param_name = e_vcard_attribute_param_get_name (param);
+
 			if (!g_ascii_strcasecmp (param_name,
 						 EVC_X_DEST_CONTACT_UID)) {
 				GList *v = e_vcard_attribute_param_get_values (param);
@@ -818,15 +793,17 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 			emails_without_ids = g_list_append (emails_without_ids, g_strdup (email));
 			count++;
 		}
-	       
 	}
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, count);
 	items = NULL;
+
 	if (count)
 		status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, "name email default members", filter, &items);
+
 	for (; items != NULL; items = g_list_next (items )) {
 		GList *emails;
 		GList *ptr;
+
 		temp_item = E_GW_ITEM (items->data);
 		emails = e_gw_item_get_email_list (temp_item);
 		if (emails_without_ids && (ptr = g_list_find_custom (emails_without_ids, emails->data, (GCompareFunc)strcasecmp ))) {
@@ -846,7 +823,6 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	g_list_free (emails_without_ids);
 	g_list_free (items);
        	e_gw_item_set_member_list (item, group_members);
-  
 }
 
 static void 
@@ -854,9 +830,11 @@ set_member_changes (EGwItem *new_item, EGwItem *old_item, EBookBackendGroupwise 
 {
 	GList *old_members, *new_members ;
 	GList *old_ids,  *new_ids,  *additions, *deletions;
+
        	old_ids = new_ids = additions = deletions = NULL;
 	old_members = e_gw_item_get_member_list (old_item);
 	new_members = e_gw_item_get_member_list (new_item);
+
 	for ( ;old_members != NULL; old_members = g_list_next (old_members)) {
 		EGroupMember *member;
 		member = (EGroupMember *)old_members->data;
@@ -873,12 +851,13 @@ set_member_changes (EGwItem *new_item, EGwItem *old_item, EBookBackendGroupwise 
 		e_gw_connection_add_members (egwb->priv->cnc, e_gw_item_get_id (old_item), additions);
 	if (deletions)
 		e_gw_connection_remove_members (egwb->priv->cnc, e_gw_item_get_id (old_item), deletions);
+
 	g_list_free (new_ids);
 	g_list_free (old_ids);
 	g_list_free (additions);
 	g_list_free (deletions);
-		
 }
+
 static void 
 set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroupwise *egwb)
 {
@@ -892,12 +871,14 @@ set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroup
 	organization_name = e_contact_get (contact, E_CONTACT_ORG);
 	if (organization_name == NULL || strlen (organization_name) == 0)
 		return;
+
 	filter = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "name", organization_name);
 	items = NULL;
 	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &items);
 	g_object_unref (filter);
 	id = NULL;
+
 	for (; items != NULL; items = g_list_next (items )) {
 		temp_item = E_GW_ITEM (items->data);
 		if (e_gw_item_get_item_type (temp_item) == E_GW_ITEM_TYPE_ORGANISATION) {
@@ -905,10 +886,8 @@ set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroup
 			for (;items != NULL; items = g_list_next (items))
 				g_object_unref (items->data);
 			break;
-			
 		}
 		g_object_unref (temp_item);
-		
 	}
 	g_list_free (items);
 
@@ -934,9 +913,8 @@ set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroup
 		return;
 	e_gw_item_set_field_value (item, "organization_id", id);
 	e_gw_item_set_field_value (item , "organization", organization_name);
-	
-	
 }
+
 static void
 set_organization_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 {
@@ -944,6 +922,7 @@ set_organization_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 	char *new_value;
 	char *old_org_id;
 	char *new_org_id;
+
 	old_value = e_gw_item_get_field_value (old_item, "organization");
 	new_value = e_gw_item_get_field_value (new_item, "organization");
 	old_org_id = e_gw_item_get_field_value (old_item, "organization_id");
@@ -953,7 +932,6 @@ set_organization_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 			e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "organization", new_value);
 			e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "organization_id", new_org_id);
 		}
-	
 	} else if (!new_value  && old_value) {
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE,"organization", old_value);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "organization_id", old_org_id);
@@ -961,8 +939,6 @@ set_organization_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "organization", new_value);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "organization_id", new_org_id);
 	}
-	
-
 }
 
 static void 
@@ -1001,14 +977,10 @@ set_categories_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroupwi
 				g_strfreev(components);
 			}
 			g_object_unref (category_item);
-			
 		}
 	}
 	e_gw_item_set_categories (item, category_ids);	
-
-
 }
-
 
 static void 
 set_categories_changes (EGwItem *new_item, EGwItem *old_item)
@@ -1018,15 +990,18 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 	GList *temp, *old_categories_copy, *added_categories = NULL;
 	gboolean categories_matched;
 	char *category1, *category2;
+
 	old_category_list = e_gw_item_get_categories (old_item);
 	new_category_list = e_gw_item_get_categories (new_item);
+
 	if (old_category_list && new_category_list) {
 		old_categories_copy = g_list_copy (old_category_list);
+
 		for ( ; new_category_list != NULL; new_category_list = g_list_next (new_category_list)) {
-			
 			category1  = new_category_list->data;
 			temp = old_category_list;
 			categories_matched  = FALSE;
+
 			for(; temp != NULL; temp = g_list_next (temp)) {
 				category2 = temp->data;
 				if ( g_str_equal (category1, category2)) {
@@ -1034,7 +1009,6 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 					old_categories_copy = g_list_remove (old_categories_copy, category2);
 					break;
 				}
-				
 			}
 			if (!categories_matched)
 				added_categories = g_list_append (added_categories, category1);
@@ -1042,20 +1016,16 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 		
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "categories", added_categories);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "categories", old_categories_copy);
-
 	} else if (!new_category_list && old_category_list) {
 		e_gw_item_set_change (new_item,  E_GW_ITEM_CHANGE_TYPE_DELETE, "categories", old_category_list);
 	} else if (new_category_list && !old_category_list) {
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "categories", new_category_list);
 	}
-
 }
-
 
 static void 
 fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categories_by_ids)
 {
-
 	char* value;
 	int element_type;
 	int i;
@@ -1068,16 +1038,16 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 
 	for ( i = 0; i < num_mappings; i++) {
 		element_type = mappings[i].element_type;
-		if(element_type == ELEMENT_TYPE_SIMPLE)
-			{
+
+		if(element_type == ELEMENT_TYPE_SIMPLE) {
 				value = e_gw_item_get_field_value (item, mappings[i].element_name);
 				if(value != NULL)
 					e_contact_set (contact, mappings[i].field_id, value);
-	
 			} else if (element_type == ELEMENT_TYPE_COMPLEX) {
 				if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
 					GList *category_ids, *category_names;
 					char *name;
+
 					category_names = NULL;
 					category_ids = e_gw_item_get_categories (item);
 					for (; category_ids; category_ids = g_list_next (category_ids)) {
@@ -1093,7 +1063,6 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 				else      
 					mappings[i].populate_contact_func(contact, item);
 			}
-    
 	}
 }
 
@@ -1113,7 +1082,6 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 	int i;
 
 	egwb = E_BOOK_BACKEND_GROUPWISE (backend);
-
 
 	switch (egwb->priv->mode) {
 
@@ -1147,17 +1115,17 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 				if (value != NULL)
 					e_gw_item_set_field_value (item, mappings[i].element_name, value);
 			} else if (element_type == ELEMENT_TYPE_COMPLEX) {
-				if (mappings[i].field_id == E_CONTACT_CATEGORIES) 
+				if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
 					set_categories_in_gw_item (item, contact, egwb);
+				}
 				else if (mappings[i].field_id == E_CONTACT_EMAIL) {
 					if (e_contact_get (contact, E_CONTACT_IS_LIST))
 						set_members_in_gw_item (item, contact, egwb);
 				}
-				else
+				else {
 					mappings[i].set_value_in_gw_item (item, contact);
+				}
 			}
-     
-    
 		}
 		id = NULL;
 		status = e_gw_connection_create_item (egwb->priv->cnc, item, &id);  
@@ -1181,13 +1149,13 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 		break;
 	}
 }
+
 static void
 e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 					  EDataBook    *book,
 					  guint32 opid,
 					  GList *id_list)
 {
-  
 	char *id;
 	EBookBackendGroupwise *ebgw;
 	GList *deleted_ids = NULL;
@@ -1199,8 +1167,8 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 	case GNOME_Evolution_Addressbook_MODE_LOCAL :
 		e_data_book_respond_remove_contacts (book, opid, GNOME_Evolution_Addressbook_RepositoryOffline, NULL);
 		return;
+
 	case GNOME_Evolution_Addressbook_MODE_REMOTE : 
-		
 		if (ebgw->priv->cnc == NULL) {
 			e_data_book_respond_remove_contacts (book, opid, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 			return;
@@ -1225,11 +1193,9 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 	}
 }
 
-
 static void 
 set_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 {
-
 	char* new_value;
 	char *old_value;
 	int element_type;
@@ -1237,36 +1203,31 @@ set_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 
 	g_return_if_fail (E_IS_GW_ITEM(new_item));
 	g_return_if_fail (E_IS_GW_ITEM(old_item));
-
 	
 	for ( i = 0; i < num_mappings; i++) {
 		element_type = mappings[i].element_type;
-		if(element_type == ELEMENT_TYPE_SIMPLE)
-			{
-				if (mappings[i].field_id == E_CONTACT_ORG) {
-					set_organization_changes_in_gw_item (new_item, old_item);
-					continue;
-				}
-					
-				new_value = e_gw_item_get_field_value (new_item, mappings[i].element_name);
-				old_value = e_gw_item_get_field_value (old_item, mappings[i].element_name);
-				if (new_value && old_value) {
-					if (!g_str_equal (new_value, old_value))
-						e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, mappings[i].element_name, new_value);
-				} else if (!new_value  && old_value) {
-					e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, mappings[i].element_name, old_value);
-				} else if (new_value && !old_value) {
-					e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, mappings[i].element_name, new_value);
-				}
-									
-			} else if (element_type == ELEMENT_TYPE_COMPLEX) {
-				if (mappings[i].field_id != E_CONTACT_EMAIL)
-					mappings[i].set_changes(new_item, old_item);
+		if (element_type == ELEMENT_TYPE_SIMPLE) {
+			if (mappings[i].field_id == E_CONTACT_ORG) {
+				set_organization_changes_in_gw_item (new_item, old_item);
+				continue;
 			}
-    
+		
+			new_value = e_gw_item_get_field_value (new_item, mappings[i].element_name);
+			old_value = e_gw_item_get_field_value (old_item, mappings[i].element_name);
+			if (new_value && old_value) {
+				if (!g_str_equal (new_value, old_value))
+					e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, mappings[i].element_name, new_value);
+			} else if (!new_value  && old_value) {
+				e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, mappings[i].element_name, old_value);
+			} else if (new_value && !old_value) {
+				e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, mappings[i].element_name, new_value);
+			}
+								
+		} else if (element_type == ELEMENT_TYPE_COMPLEX) {
+			if (mappings[i].field_id != E_CONTACT_EMAIL)
+				mappings[i].set_changes(new_item, old_item);
+		}
 	}
-
-
 }
 
 static void
@@ -1321,9 +1282,7 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 				}
 				else
 					mappings[i].set_value_in_gw_item (new_item, contact);
-
 			}
-   
 		}
 	
 		id = e_contact_get (contact, E_CONTACT_UID);
@@ -1367,9 +1326,7 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 		return;
 	default :
 		break;
-		
 	}
-
 }
 	
 static void
@@ -1386,7 +1343,6 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 
 	gwb =  E_BOOK_BACKEND_GROUPWISE (backend);
 
-
 	switch (gwb->priv->mode) {
 
 	case GNOME_Evolution_Addressbook_MODE_LOCAL :
@@ -1397,9 +1353,9 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 			g_free (vcard);
 			g_object_unref (contact);
 		}
-		else 
+		else {
 			e_data_book_respond_get_contact(book, opid, GNOME_Evolution_Addressbook_ContactNotFound, "");
-			
+		}
 		return;
 
 	case GNOME_Evolution_Addressbook_MODE_REMOTE : 	
@@ -1419,7 +1375,6 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 				g_object_unref (item);
 				return;
 			}
-    
 		}
 		e_data_book_respond_get_contact (book, opid, GNOME_Evolution_Addressbook_ContactNotFound, "");  
 		return;
@@ -1509,7 +1464,6 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 		else if (g_str_equal (propname, "file_as") || g_str_equal (propname, "nickname"))
 			 gw_field_name = "name";
 		
-
 		if (gw_field_name) {
 			if (g_str_equal (gw_field_name, "fullName")) {
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, "fullName/firstName", str);	
@@ -1518,14 +1472,17 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, "fullName/displayName", str);
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
 				}
-				else 
+				else { 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+				}
 			}
-			else 
+			else { 
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_CONTAINS, gw_field_name, str);
+			}
 		}
-		else 
-		     sexp_data->is_filter_valid = FALSE; 
+		else { 
+		     sexp_data->is_filter_valid = FALSE;
+		}
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
@@ -1567,16 +1524,17 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "fullName/displayName", str);
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
 				}
-				else 
+				else { 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+				}
 			}
-			else 
+			else {
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, gw_field_name, str);
-		
+			}
 		}
-		else 
+		else {
 		     sexp_data->is_filter_valid = FALSE;
-		
+		}
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
@@ -1594,7 +1552,6 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 static ESExpResult *
 func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-
 	ESExpResult *r;
 	EGwFilter *filter;
 	EBookBackendGroupwiseSExpData *sexp_data;
@@ -1636,18 +1593,17 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/displayName", str);
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
 				}
-				else 
+				else { 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+				}
 			}
-			else 
+			else {
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, gw_field_name, str);
-			
+			}
 		}
-		else 
+		else {
 			sexp_data->is_filter_valid = FALSE;
-	
-
-	
+		}
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
@@ -1705,15 +1661,17 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 					e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, "fullName/displayName", str);
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 3);
 				}
-				else 
+				else { 
 					e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
+				}
 			}
-			else 
+			else {
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EXISTS, gw_field_name, str);
+			}
 		}
-		else 
+		else { 
 			sexp_data->is_filter_valid = FALSE;
-	
+		}
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
@@ -1721,6 +1679,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 	return r;
 }
+
 /* 'builtin' functions */
 static struct {
 	char *name;
@@ -1738,7 +1697,6 @@ static struct {
 	{ "exists", func_exists, 0 },
 };
 
-
 static EGwFilter*
 e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const char *query, gpointer is_auto_completion, char ** search_string)
 {
@@ -1747,7 +1705,6 @@ e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const cha
 	EBookBackendGroupwiseSExpData *sexp_data;
 	EGwFilter *filter;
 	int i;
-
 
 	sexp = e_sexp_new();
 	filter = e_gw_filter_new ();
@@ -1775,7 +1732,6 @@ e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const cha
 	e_sexp_result_free(sexp, r);
 	e_sexp_unref (sexp);
 	
-	
 	if (sexp_data->is_filter_valid) {
 		if (sexp_data->auto_completion == AUTO_COMPLETION_QUERY)
 			*(gboolean *)is_auto_completion = TRUE;
@@ -1789,10 +1745,7 @@ e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const cha
 		g_free (sexp_data);
 		return NULL;
 	}
-
-
 }
-
 
 static void
 e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
@@ -1800,7 +1753,6 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 					   guint32       opid,
 					   const char   *query )
 {
-  
 	GList *vcard_list;
 	int status;
 	GList *gw_items, *contacts, *temp;
@@ -1856,8 +1808,6 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 			}
 			match_needed = FALSE;
 			g_ptr_array_free (ids, TRUE);
-			
-			
 		} else { 
 			if (strcmp (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
 				filter = e_book_backend_groupwise_build_gw_filter (egwb, query, &is_auto_completion, NULL);
@@ -2012,7 +1962,6 @@ book_view_thread (gpointer data)
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/firstName", search_string);
 				e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_OR, 2);
 				g_free (search_string);
-				
 			}
 		}
 		
@@ -2021,11 +1970,9 @@ book_view_thread (gpointer data)
 			bonobo_object_unref (book_view);
 			return NULL; 
 		}
-		
-		
-		
 		else 
-		status =  E_GW_CONNECTION_STATUS_OK;
+			status =  E_GW_CONNECTION_STATUS_OK;
+
 		if (gwb->priv->is_cache_ready ) {
 			e_data_book_view_notify_status_message (book_view, _("Searching..."));
 			ids = e_book_backend_cache_search (gwb->priv->cache, query);
@@ -2037,8 +1984,6 @@ book_view_thread (gpointer data)
 					status = e_gw_connection_get_items_from_ids (gwb->priv->cnc, gwb->priv->container_id, view, ids, &gw_items);
 			}
 			g_ptr_array_free (ids, TRUE);
-			
-		
 		} else { 
 			if (filter) 
 				e_data_book_view_notify_status_message (book_view, _("Searching..."));
@@ -2090,6 +2035,7 @@ book_view_thread (gpointer data)
 	}
 	return NULL;
 }
+
 static void
 e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 				     EDataBookView *book_view)
@@ -2110,12 +2056,10 @@ e_book_backend_groupwise_stop_book_view (EBookBackend  *backend,
 {
 	GroupwiseBackendSearchClosure *closure = get_closure (book_view);
 	
-
 	g_mutex_lock (closure->mutex);
 	if (!closure->stopped)
 		closure->stopped = TRUE;
 	g_mutex_unlock (closure->mutex);
-	
 }
 
 static void
@@ -2126,24 +2070,48 @@ e_book_backend_groupwise_get_changes (EBookBackend *backend,
 {
 
 	/* FIXME : provide implmentation */
-
        
 }
 
+static void
+book_view_notify_status (EDataBookView *view, const char *status)
+{
+	if (!view)
+		return;
+	e_data_book_view_notify_status_message (view, status);
+}
 
+static EDataBookView *
+find_book_view (EBookBackendGroupwise *ebgw)
+{
+	EList *views = e_book_backend_get_book_views (E_BOOK_BACKEND (ebgw));
+	EIterator *iter = e_list_get_iterator (views);
+	EDataBookView *rv = NULL;
+
+	if (e_iterator_is_valid (iter)) {
+		/* just always use the first book view */
+		EDataBookView *v = (EDataBookView*)e_iterator_get(iter);
+		if (v)
+			rv = v;
+	}
+
+	g_object_unref (iter);
+	g_object_unref (views);
+	
+	return rv;
+}
 
 #define CURSOR_ITEM_LIMIT 100
 /*
 static gpointer
 build_cache (EBookBackendGroupwise *ebgw)
 {
-	int status;
+	int status, contact_num = 0;
 	GList *gw_items = NULL;
 	EContact *contact;
-	
-	
+	EDataBookView *book_view;
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
-	
+	char *status_msg;
 	
 	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "name email default members", NULL, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK) 
@@ -2151,9 +2119,16 @@ build_cache (EBookBackendGroupwise *ebgw)
 	
 
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
+		contact_num++;
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), ebgw->priv->categories_by_id);
 		e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+		if (book_view) {
+			status_msg = g_strdup_printf (_("Downloading contacts (%d)... "),
+							 contact_num);
+			book_view_notify_status (book_view, status_msg);
+			g_free (status_msg);
+		}
 		g_object_unref(contact);
 		g_object_unref (gw_items->data);
 			
@@ -2163,8 +2138,6 @@ build_cache (EBookBackendGroupwise *ebgw)
 	priv->is_cache_ready=TRUE;
      	
 	g_list_free (gw_items);
-
-	
 	
 	return NULL;
 }*/
@@ -2178,28 +2151,57 @@ build_cache (EBookBackendGroupwise *ebgw)
 	int status;
 	GList *gw_items = NULL, *l;
 	EContact *contact;
-	int cursor;
+	int cursor, contact_num = 0;
 	gboolean done = FALSE;
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
 	EBookBackendCache *cache = priv->cache;
 	const char *position = E_GW_CURSOR_POSITION_START;
-	
+	EDataBookView *book_view;
+	GroupwiseBackendSearchClosure *closure;
+	char *status_msg;
+
 	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id, "name email default members", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) 
 		return FALSE;
+
+	book_view = find_book_view (ebgw);
+	if (book_view) {
+		closure = get_closure (book_view);
+		bonobo_object_ref (book_view);
+
+		g_mutex_lock (closure->mutex);
+		g_cond_signal (closure->cond);
+		g_mutex_unlock (closure->mutex);
+	}
+
 	while (!done) {
 
 		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, TRUE, CURSOR_ITEM_LIMIT, position, &gw_items);
 
 		for (l = gw_items; l != NULL; l = g_list_next (l)) { 
+			contact_num++;
+
 			contact = e_contact_new ();
 			fill_contact_from_gw_item (contact, E_GW_ITEM (l->data), ebgw->priv->categories_by_id);
 			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+
+			/* Since we get contacts incrementally, 100 at a time, we can not
+			 * calculate the percentage of cache update.
+			 * Also we should be using "percent" in notify_progress() instead of
+			 * forming the message like this.
+			 */
+			if (book_view) {
+				status_msg = g_strdup_printf (_("Downloading contacts (%d)... "),
+								 contact_num);
+				book_view_notify_status (book_view, status_msg);
+				g_free (status_msg);
+			}
+
 			g_object_unref(contact);
 			g_object_unref (l->data);
 			
 		}
-		if (!gw_items  || g_list_length (gw_items) == 0) {
+		if (!gw_items) {
 			e_book_backend_cache_set_populated (priv->cache);
 			done = TRUE;
 			priv->is_cache_ready=TRUE;
@@ -2208,10 +2210,19 @@ build_cache (EBookBackendGroupwise *ebgw)
 		g_list_free (gw_items);
 		gw_items = NULL;
 		position = E_GW_CURSOR_POSITION_CURRENT;
+		contact_num = contact_num + CURSOR_ITEM_LIMIT;
+	}
+
+	if (book_view) {
+		e_data_book_view_notify_complete (book_view,
+						  GNOME_Evolution_Addressbook_Success);
+		bonobo_object_unref (book_view);
 	}
 
 	if (!priv->is_writable)	{
-		/* This could be the system address book. Let try add the sequence to maintain deltas */
+		/* This is the system address book. Let try add the sequence to maintain deltas */
+		printf(" build_cache: non writable addressbook \n");
+
 		guint first_sequence = -1, last_sequence = -1, last_po_rebuild_time = -1;
 		gchar *tmp;
 		status = e_gw_connection_get_items_delta_info (priv->cnc, priv->container_id, &first_sequence,
@@ -2248,15 +2259,27 @@ build_cache (EBookBackendGroupwise *ebgw)
 static gboolean
 update_cache (EBookBackendGroupwise *ebgw)
 {
-	int status;
+	int status, contact_num = 0;
 	GList *gw_items = NULL;
 	EContact *contact;
 	EGwFilter *filter;
 	time_t mod_time;
-	char time_string[25];
+	char time_string[25], *status_msg;
 	const struct tm *tm;
 	struct stat buf;
 	const char *cache_file_name;
+	EDataBookView *book_view;
+	GroupwiseBackendSearchClosure *closure;
+
+	book_view = find_book_view (ebgw);
+	if (book_view) {
+		closure = get_closure (book_view);
+		bonobo_object_ref (book_view);
+		
+		g_mutex_lock (closure->mutex);
+		g_cond_signal (closure->cond);
+		g_mutex_unlock (closure->mutex);
+	}
 	
 	cache_file_name = e_file_cache_get_filename (E_FILE_CACHE(ebgw->priv->cache));
 	
@@ -2268,42 +2291,56 @@ update_cache (EBookBackendGroupwise *ebgw)
 	filter = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "modified", time_string);
 	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "name email default members", filter, &gw_items);
-	if (status != E_GW_CONNECTION_STATUS_OK)
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (book_view)
+			bonobo_object_unref (book_view);
 		return FALSE;
+	}
 	
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		const char *id;
+
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), ebgw->priv->categories_by_id);
 		id =  e_contact_get_const (contact, E_CONTACT_UID);
 		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+			contact_num++;
 			e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
 			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
-			
-		} else
+			if (book_view) {
+				status_msg = g_strdup_printf (_("Updating contacts cache (%d)... "),
+								 contact_num);
+				book_view_notify_status (book_view, status_msg);
+				g_free (status_msg);
+			}
+		} else {
 		    e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+		}
 		
 		g_object_unref(contact);
 		g_object_unref (gw_items->data);
-		
-		    
 	}
 	
 	ebgw->priv->is_cache_ready = TRUE;
+	if (book_view) {
+		e_data_book_view_notify_complete (book_view,
+						  GNOME_Evolution_Addressbook_Success);
+		bonobo_object_unref (book_view);
+	}
 	g_object_unref (filter);
 	g_list_free (gw_items);
-	return FALSE;
 
+	return FALSE;
 }
 
 static gboolean
-update_address_book_deltas(EBookBackendGroupwise *ebgw)
+update_address_book_deltas (EBookBackendGroupwise *ebgw)
 {
 	int status;
 	guint first_sequence = -1, last_sequence = -1, last_po_rebuild_time = -1;	
 	guint cache_last_sequence = -1, cache_last_po_rebuild_time = -1;
-	char *tmp;
-	char *count, *sequence;
+	const char *cache_obj;
+	char *tmp, *count, *sequence;
 	GList *add_list = NULL, *delete_list = NULL;
 	EContact *contact;
 
@@ -2319,13 +2356,13 @@ update_address_book_deltas(EBookBackendGroupwise *ebgw)
 	if (first_sequence <= 0 || last_sequence <= 0)
 		build_cache (ebgw); /* Rebuild the entire cache */
 	
-	tmp = e_file_cache_get_object (E_FILE_CACHE (cache), "lastSequence");
-	if (tmp)
-		cache_last_sequence = atoi (tmp);
+	cache_obj = e_file_cache_get_object (E_FILE_CACHE (cache), "lastSequence");
+	if (cache_obj)
+		cache_last_sequence = atoi (cache_obj);
 	
-	tmp = e_file_cache_get_object (E_FILE_CACHE (cache), "lastTimePORebuild");
-	if (tmp)
-		cache_last_po_rebuild_time = atoi (tmp);
+	cache_obj = e_file_cache_get_object (E_FILE_CACHE (cache), "lastTimePORebuild");
+	if (cache_obj)
+		cache_last_po_rebuild_time = atoi (cache_obj);
 
 	/* check whether the all the sequences are available and also whether the PO is rebuilt */
 	if (first_sequence > cache_last_sequence || cache_last_sequence == -1 || last_po_rebuild_time != cache_last_po_rebuild_time)
@@ -2337,36 +2374,35 @@ update_address_book_deltas(EBookBackendGroupwise *ebgw)
 
 	for (; add_list != NULL; add_list = g_list_next(add_list)) { 
 		const char *id;
+
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (add_list->data), ebgw->priv->categories_by_id);
 		id =  e_contact_get_const (contact, E_CONTACT_UID);
+
 		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
 			e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
 			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
 			
-		} else
+		} else {
 		    e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+		}
 		
 		g_object_unref(contact);
 		g_object_unref (add_list->data);
-		
-		    
 	}
 	
 	for (; delete_list != NULL; delete_list = g_list_next(delete_list)) { 
 		const char *id;
+
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (delete_list->data), ebgw->priv->categories_by_id);
 		id =  e_contact_get_const (contact, E_CONTACT_UID);
-		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+
+		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id))
 			e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
-			
-		}
 		
 		g_object_unref(contact);
 		g_object_unref (delete_list->data);
-		
-		    
 	}
 
 	/* We can safely assume these are there cache, otherwise it couldnt have come here*/
@@ -2388,7 +2424,6 @@ update_address_book_deltas(EBookBackendGroupwise *ebgw)
 
 	return FALSE;
 }
-
 
 static void
 e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
@@ -2477,7 +2512,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			else
 				g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, FALSE, NULL);
 		}
-		else if (priv->is_writable || priv->marked_for_offline){ /* for personal books we always cache*/
+		else if (priv->is_writable || priv->marked_for_offline) { /* for personal books we always cache*/
 			g_thread_create ((GThreadFunc) build_cache, ebgw, FALSE, NULL);
 		}
 		return;
@@ -2530,8 +2565,6 @@ e_book_backend_groupwise_cancel_operation (EBookBackend *backend, EDataBook *boo
 {
 	return GNOME_Evolution_Addressbook_CouldNotCancel;
 }
-
-
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_groupwise_load_source (EBookBackend           *backend,
@@ -2586,7 +2619,6 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	priv->use_ssl = g_strdup (use_ssl);
 	priv->only_if_exists = only_if_exists;
 	
-	
 	priv->book_name = book_name;
 	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_set_is_writable (E_BOOK_BACKEND(backend), FALSE);  
@@ -2613,8 +2645,8 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 			return GNOME_Evolution_Addressbook_OfflineUnavailable;
 	
 	priv->cache = e_book_backend_cache_new (priv->original_uri);
-	return GNOME_Evolution_Addressbook_Success;
 
+	return GNOME_Evolution_Addressbook_Success;
 }
 
 static void
@@ -2642,19 +2674,18 @@ e_book_backend_groupwise_remove (EBookBackend *backend,
 	unlink (e_file_cache_get_filename (E_FILE_CACHE (ebgw->priv->cache)));
 }
 
-
 static char *
 e_book_backend_groupwise_get_static_capabilities (EBookBackend *backend)
 {
 	EBookBackendGroupwise *ebgw;
 	
-  
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	if (ebgw->priv->is_writable)
 		return g_strdup("net,bulk-removes,do-initial-query,contact-lists");
 	else 
 		return g_strdup("net,bulk-removes,contact-lists");
 }
+
 static void 
 e_book_backend_groupwise_get_supported_auth_methods (EBookBackend *backend, EDataBook *book, guint32 opid)
 {
@@ -2669,7 +2700,6 @@ e_book_backend_groupwise_get_supported_auth_methods (EBookBackend *backend, EDat
 							auth_methods);  
 	g_free (auth_method);
 	g_list_free (auth_methods);
-	
 }
 
 static void 
@@ -2803,7 +2833,6 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->cache=NULL;
 	priv->original_uri = NULL;
        	backend->priv = priv;
-	
 }
 
 
@@ -2833,5 +2862,3 @@ e_book_backend_groupwise_get_type (void)
                                                                                                                              
 	return type;
 }
-
-	
