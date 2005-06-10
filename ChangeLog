@@ -1,3 +1,9 @@
+2005-06-10  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* configure.in : Added the Exchange server communication code to
+	servers directory. Also enabled a HAVE_KRB5 automake conditional.
+	* servers/Makefile.am : Now build exchange as well.
+
 2005-06-09  Harish Krishnaswamy <kharish@novell.com>
 
 	* configure.in : Do not build camel docs. They are borked now :(

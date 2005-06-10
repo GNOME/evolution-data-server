@@ -1,1 +1,1 @@
-SUBDIRS = groupwise
+SUBDIRS = groupwise exchange

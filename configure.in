@@ -922,6 +922,7 @@ else
 	AC_MSG_CHECKING(for Kerberos 5)
 	AC_MSG_RESULT($with_krb5)
 fi
+AM_CONDITIONAL(HAVE_KRB5, test x$with_krb5 != xno)
 
 AC_CHECK_HEADER([et/com_err.h],[AC_DEFINE([HAVE_ET_COM_ERR_H], 1, [Have et/comm_err.h])])
 AC_CHECK_HEADER([com_err.h],[AC_DEFINE([HAVE_COM_ERR_H], 1, [Have comm_err.h])])
@@ -1271,6 +1272,11 @@ libedataserverui/libedataserverui.pc
 servers/Makefile
 servers/groupwise/Makefile
 servers/groupwise/libegroupwise.pc 
+servers/exchange/Makefile
+servers/exchange/xntlm/Makefile
+servers/exchange/lib/Makefile
+servers/exchange/storage/Makefile
+servers/exchange/storage/libexchange-storage.pc 
 src/Makefile
 docs/Makefile
 docs/reference/Makefile
