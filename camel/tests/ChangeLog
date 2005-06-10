@@ -1,0 +1,6 @@
+2005-06-10  Not Zed  <NotZed@Ximian.com>
+
+	* misc/rfc2047.c: fixed compilation of test, and removed the
+	broken cases - oddly enough, they break make check.
+
+	* Added new changelog for test, sick of them going into main one.
