@@ -1,5 +1,22 @@
 2005-06-10  Sushma Rai  <rsushma@novell.com>
 
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(add_sequence_to_cache): Adds the sequence information to the system
+	address book cache. 
+	(build_cache): Moved out system address book cache sequence update from
+	here to add_sequence_to_cache().
+	(update_cache): Notifying status while, both replaing the cache item 
+	and adding a new item to the cache.
+	(update_address_book_deltas): If the sequnces are reset at the server,
+	not adding them to cache too.
+	If all the sequences are not available in the server or PO is rebuilt,
+	re-building the cache with the new sequence information.
+	Notifying status while updating the cache.
+	(e_book_backend_groupwise_authenticate_user): Building the system address
+	book cache if marked for offline usage. 
+
+2005-06-10  Sushma Rai  <rsushma@novell.com>
+
 	* backends/groupwise/e-book-backend-groupwise.c 
 	(book_view_notify_status): Notifying status if view is not null.
 	(find_book_view): Getting the list of views and returning the first.
