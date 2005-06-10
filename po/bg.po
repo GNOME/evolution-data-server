@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-14 18:39+0300\n"
-"PO-Revision-Date: 2005-05-14 18:39+0300\n"
+"POT-Creation-Date: 2005-06-10 11:03+0300\n"
+"PO-Revision-Date: 2005-06-10 09:43+0300\n"
 "Last-Translator: Vladimir \"Kaladan\" Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,13 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:521
+#: ../addressbook/backends/file/e-book-backend-file.c:528
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2046
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Зареждане..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:523
+#: ../addressbook/backends/file/e-book-backend-file.c:530
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2044
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
@@ -335,7 +335,7 @@ msgid "AIM Screen Name List"
 msgstr "Списък на абонаментите към AIM"
 
 #: ../addressbook/libebook/e-contact.c:157
-msgid "Groupwise Id List"
+msgid "GroupWise Id List"
 msgstr "Списък на абонаментите към Groupwise"
 
 #: ../addressbook/libebook/e-contact.c:158
@@ -379,27 +379,27 @@ msgid "AIM Work Screen Name 3"
 msgstr "Работен абонамент към AIM 3"
 
 #: ../addressbook/libebook/e-contact.c:169
-msgid "Groupwise Home Screen Name 1"
+msgid "GroupWise Home Screen Name 1"
 msgstr "Домашен абонамент към Groupwise 1"
 
 #: ../addressbook/libebook/e-contact.c:170
-msgid "Groupwise Home Screen Name 2"
+msgid "GroupWise Home Screen Name 2"
 msgstr "Домашен абонамент към Groupwise 2"
 
 #: ../addressbook/libebook/e-contact.c:171
-msgid "Groupwise Home Screen Name 3"
+msgid "GroupWise Home Screen Name 3"
 msgstr "Домашен абонамент към Groupwise 3"
 
 #: ../addressbook/libebook/e-contact.c:172
-msgid "Groupwise Work Screen Name 1"
+msgid "GroupWise Work Screen Name 1"
 msgstr "Работен абонамент към Groupwise 1"
 
 #: ../addressbook/libebook/e-contact.c:173
-msgid "Groupwise Work Screen Name 2"
+msgid "GroupWise Work Screen Name 2"
 msgstr "Работен абонамент към Groupwise 2"
 
 #: ../addressbook/libebook/e-contact.c:174
-msgid "Groupwise Work Screen Name 3"
+msgid "GroupWise Work Screen Name 3"
 msgstr "Работен абонамент към Groupwise 3"
 
 #: ../addressbook/libebook/e-contact.c:175
@@ -560,7 +560,7 @@ msgid "Category List"
 msgstr "Категория"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:408
+#: ../libedataserverui/e-categories-dialog.c:398
 msgid "Categories"
 msgstr "Категории"
 
@@ -592,7 +592,7 @@ msgstr "Дата на раждане"
 
 #. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:447
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
 #: ../libedataserver/e-categories.c:235
 msgid "Anniversary"
 msgstr "Годишнина"
@@ -614,17 +614,17 @@ msgstr "Последна редакция"
 msgid "Unnamed List"
 msgstr "Списък без име"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:449
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
 #: ../libedataserver/e-categories.c:236
 msgid "Birthday"
 msgstr "Дата на раждане"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:474
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:481
 #, c-format
 msgid "Birthday: %s"
 msgstr "Дата на раждане:%s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:495
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:505
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Годишнина: %s"
@@ -633,52 +633,52 @@ msgstr "Годишнина: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Данните за календара не могат да бъдат запазени. Адресът е развален."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:786
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:237
 msgid "Reply Requested: by "
 msgstr "Изисква се отговор: от "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:791
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:242
 msgid "Reply Requested: When convenient"
 msgstr "Изисква се отговор: Когато е удобно"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:566
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:574
 msgid "Invalid server URI"
 msgstr "Адресът на сървъра е невалиден"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:597
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:605
 msgid "Could not create thread for getting deltas"
 msgstr "Неуспех при създаване на нишка за получаване на разликите"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:619
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:622
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:627
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:630
 msgid "Calendar"
 msgstr "Календар"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:629
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:866
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:637
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:876
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Кеш файлът не може да бъде създаден"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:639
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:647
 msgid "Could not create thread for populating cache"
 msgstr "Неуспех при създаване на нишка за първоначално запълване на кеша"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:645
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:653
 #: ../calendar/libecal/e-cal.c:4850
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:742
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:762
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:789
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:816
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:772
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:841
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:861
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:888
 #: ../camel/providers/groupwise/camel-groupwise-store.c:521
 #: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/groupwise/camel-groupwise-store.c:585
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-store.c:944
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:175
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:176
 msgid "Authentication failed"
 msgstr "Идентификацията е неуспешна"
 
@@ -1054,11 +1054,11 @@ msgstr "Хранилището не е активно"
 msgid "No such calendar"
 msgstr "Няма такъв календар"
 
-#: ../calendar/libecal/e-cal.c:4830 ../servers/groupwise/e-gw-connection.c:165
+#: ../calendar/libecal/e-cal.c:4830 ../servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Обектът не може да бъде намерен"
 
-#: ../calendar/libecal/e-cal.c:4832 ../servers/groupwise/e-gw-connection.c:159
+#: ../calendar/libecal/e-cal.c:4832 ../servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Невалиден обект"
 
@@ -1074,7 +1074,7 @@ msgstr "Адресът вече е зареден"
 msgid "Permission denied"
 msgstr "Достъпът е отказан"
 
-#: ../calendar/libecal/e-cal.c:4840 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:4840 ../servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Неизвестен потребител"
 
@@ -1110,7 +1110,7 @@ msgstr "Случи се изключение на CORBA"
 #: ../camel/providers/pop3/camel-pop3-store.c:535
 #: ../camel/providers/pop3/camel-pop3-store.c:542
 #: ../camel/providers/pop3/camel-pop3-store.c:548
-#: ../servers/groupwise/e-gw-connection.c:173
+#: ../servers/groupwise/e-gw-connection.c:174
 msgid "Unknown error"
 msgstr "Неизвестна грешка"
 
@@ -2523,7 +2523,7 @@ msgstr "Не може да се копират съобщенията в кош�
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Не може да се копират съобщенията в папката за спам"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2533,7 +2533,7 @@ msgstr ""
 "Не може да се вземе писмо: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2541,7 +2541,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Няма такова писмо"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2553,7 +2553,7 @@ msgstr "Няма такова писмо"
 msgid "User cancelled"
 msgstr "Потребителят е отказан"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:134
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2567,28 +2567,28 @@ msgstr "Потребителят е отказан"
 msgid "Cannot get message %s: %s"
 msgstr "Не може да се вземе писмото %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:151
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:153
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Това писмо не е налично в режим \"Изключен\"."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:198
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:176
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:199
 msgid "Could not get message"
 msgstr "Писмото не може да бъде получено"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:670
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:714
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Не може да се зареди обобщение за %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1052
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1149
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Неуспех при създаването на писмо: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1064
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1161
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Не може да се добави писмото към папката \"%s\": %s"
@@ -2736,6 +2736,7 @@ msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Не може да преименувате Groupwise папката \"%s\" на \"%s\""
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1077
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Сървър GroupWise %s"
@@ -2745,17 +2746,12 @@ msgstr "Сървър GroupWise %s"
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise услуга за %s на %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
-#, c-format
-msgid "Groupwise server %s"
-msgstr "Сървър Groupwise %s"
-
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
-msgid "Groupwise mail delivery via %s"
+msgid "GroupWise mail delivery via %s"
 msgstr "Groupwise поща през %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:159
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
 msgid "Sending Message"
 msgstr "Изпращане на писмо"
 
@@ -3182,40 +3178,40 @@ msgstr ""
 "Неуспех при прикрепянето на писмо към папката \"%s\": папката е с права само "
 "за четене"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1009
+#: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr ""
 "Неуспех при прикрепянето на писмо към папката \"%s\": неизвестна грешка"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1038
+#: ../camel/providers/imap4/camel-imap4-folder.c:1035
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr ""
 "Неуспех при прикрепянето на писмото към папката \"%s\": неправилна команда"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1150
+#: ../camel/providers/imap4/camel-imap4-folder.c:1155
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Преместването на писма от папка \"%s\" в папка \"%s\" е неуспешно: "
 "неизвестна грешка"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1154
+#: ../camel/providers/imap4/camel-imap4-folder.c:1159
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Неуспех при копирането на писма от папка \"%s\" в папка \"%s\": не е ясно "
 "защо"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1162
+#: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "Неуспех при преместването на писма от папка \"%s\" в папка \"%s\": Лоша "
 "команда"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1166
+#: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
@@ -4760,50 +4756,50 @@ msgstr "Анонимен достъп до LDAP сървър"
 msgid "Failed to authenticate.\n"
 msgstr "Неуспех при идентификация.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:91
-msgid "Category Icon"
-msgstr "Икона на категорията"
-
-#: ../libedataserverui/e-categories-dialog.c:266
+#: ../libedataserverui/e-categories-dialog.c:259
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "В тази конфигурация вече има категория \"%s\". Изберете друго име"
 
-#: ../libedataserverui/e-categories-dialog.c:433
+#: ../libedataserverui/e-categories-dialog.c:423
 msgid "Category"
 msgstr "Категория"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:1
+msgid "Category Icon"
+msgstr "Икона на категорията"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:2
 msgid "Category Properties"
 msgstr "Настройки на категорията"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:2
+#: ../libedataserverui/e-categories-dialog.glade.h:3
 msgid "Category _Color"
 msgstr "_Цвят на категорията"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:3
+#: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Icon"
 msgstr "_Икона на категорията"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:4
+#: ../libedataserverui/e-categories-dialog.glade.h:5
 msgid "Category _Name"
 msgstr "И_ме на категорията"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:5
+#: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "Item(s) belong to these _categories:"
 msgstr "Записът(ите) принадлежат на следните _категории:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:6
+#: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Available Categories:"
 msgstr "_Налични категории:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:7
+#: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
 msgstr "_Редактиране"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:8
+#: ../libedataserverui/e-categories-dialog.glade.h:9
 msgid "categories"
 msgstr "категории"
 
@@ -4864,19 +4860,19 @@ msgstr "Избор на цел"
 msgid "_Destination"
 msgstr "_Цел"
 
-#: ../servers/groupwise/e-gw-connection.c:157
+#: ../servers/groupwise/e-gw-connection.c:158
 msgid "Invalid connection"
 msgstr "Невалидна връзка"
 
-#: ../servers/groupwise/e-gw-connection.c:161
+#: ../servers/groupwise/e-gw-connection.c:162
 msgid "Invalid response from server"
 msgstr "Сървърът отговори грешно"
 
-#: ../servers/groupwise/e-gw-connection.c:163
+#: ../servers/groupwise/e-gw-connection.c:164
 msgid "No response from the server"
 msgstr "Сървърът не отговаря"
 
-#: ../servers/groupwise/e-gw-connection.c:169
+#: ../servers/groupwise/e-gw-connection.c:170
 msgid "Bad parameter"
 msgstr "Лош параметър"
 
@@ -4888,6 +4884,14 @@ msgstr "Бек енд на адресника на Evolution"
 msgid "Evolution Calendar file and webcal backend"
 msgstr "Бек енд за календара и уеб календара на Evolution"
 
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
+msgid "Evolution Data Server interface check service"
+msgstr "Услуга за проверка на интерфейса на Evolution Data Server"
+
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
+msgid "Evolution Data Server logging service"
+msgstr "Услуга за създаване на дневник към Evolution Data Server"
+
 #. dialog display isn't working out
 #: ../src/server.c:101
 #, c-format
@@ -4895,3 +4899,6 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Получиха се много \"segmentation·faults\"; диалоговия прозорец за грешките "
 "не може да бъде показан\n"
+
+#~ msgid "Groupwise server %s"
+#~ msgstr "Сървър Groupwise %s"
