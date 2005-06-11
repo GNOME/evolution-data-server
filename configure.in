@@ -1271,7 +1271,7 @@ libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
 servers/Makefile
 servers/groupwise/Makefile
-servers/groupwise/libegroupwise.pc 
+servers/groupwise/libegroupwise.pc
 servers/exchange/Makefile
 servers/exchange/xntlm/Makefile
 servers/exchange/lib/Makefile

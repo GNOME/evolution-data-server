@@ -1,3 +1,7 @@
+2005-06-11  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* configure.in : Fixed a minor typo to fix make clean.
+
 2005-06-10  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* configure.in : Added the Exchange server communication code to
