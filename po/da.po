@@ -18,27 +18,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-08 14:31+0200\n"
-"PO-Revision-Date: 2005-06-08 14:42+0200\n"
+"POT-Creation-Date: 2005-06-11 10:46+0200\n"
+"PO-Revision-Date: 2005-06-11 10:47+0200\n"
 "Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
-"Language-Team: Danish <dansk@klid.dk>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:528
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2046
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1991
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Indlæser ..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:530
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2030
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2044
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1977
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1989
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Søger ..."
+
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2225
+#, c-format
+msgid "Downloading contacts (%d)... "
+msgstr "Overfører kontakter (%d) ..."
+
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2307
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2411
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2441
+#, c-format
+msgid "Updating contacts cache (%d)... "
+msgstr "Opdaterer kontaktmellemlager (%d) ..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:647
 msgid "Using Distinguished Name (DN)"
@@ -567,7 +579,7 @@ msgid "Category List"
 msgstr "Kategoriliste"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:408
+#: ../libedataserverui/e-categories-dialog.c:398
 msgid "Categories"
 msgstr "Kategorier"
 
@@ -1842,8 +1854,8 @@ msgstr "Ugyldig udfordring fra server\n"
 #: ../camel/camel-sasl-digest-md5.c:834
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"Udfordring fra server indeholdt ugyldigt tegn for "
-"\"Kvalitet for beskyttelse\"-symbol"
+"Udfordring fra server indeholdt ugyldigt tegn for \"Kvalitet for beskyttelse"
+"\"-symbol"
 
 #: ../camel/camel-sasl-digest-md5.c:864
 msgid "Server response did not contain authorization data"
@@ -3945,8 +3957,8 @@ msgstr "USENET nyheder"
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
-"Dette er en udbyder for læsning og postning af indlæg til "
-"USENET-nyhedsgrupper."
+"Dette er en udbyder for læsning og postning af indlæg til USENET-"
+"nyhedsgrupper."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -4742,11 +4754,7 @@ msgstr "Tilslutter LDAP-serveren anonymt"
 msgid "Failed to authenticate.\n"
 msgstr "Mislykkedes med godkendelse.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:91
-msgid "Category Icon"
-msgstr "Kategori-ikon"
-
-#: ../libedataserverui/e-categories-dialog.c:266
+#: ../libedataserverui/e-categories-dialog.c:259
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4755,39 +4763,43 @@ msgstr ""
 "Der findes allerede en kategori med navnet \"%s\" i konfigurationen. Brug "
 "venligst et andet navn"
 
-#: ../libedataserverui/e-categories-dialog.c:433
+#: ../libedataserverui/e-categories-dialog.c:423
 msgid "Category"
 msgstr "Kategori"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:1
+msgid "Category Icon"
+msgstr "Kategori-ikon"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:2
 msgid "Category Properties"
 msgstr "Egenskaber for kategori"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:2
+#: ../libedataserverui/e-categories-dialog.glade.h:3
 msgid "Category _Color"
 msgstr "Kategori-_farve"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:3
+#: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Icon"
 msgstr "Kategori-_ikon"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:4
+#: ../libedataserverui/e-categories-dialog.glade.h:5
 msgid "Category _Name"
 msgstr "Kategori-_navn"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:5
+#: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "Item(s) belong to these _categories:"
 msgstr "Elementerne tilhører disse _kategorier:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:6
+#: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Available Categories:"
 msgstr "_Tilgængelige kategorier:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:7
+#: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
 msgstr "_Redigér"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:8
+#: ../libedataserverui/e-categories-dialog.glade.h:9
 msgid "categories"
 msgstr "kategorier"
 
