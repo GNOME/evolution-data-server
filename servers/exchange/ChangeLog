@@ -1,5 +1,15 @@
 2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
 
+	* lib/Makefile.am : Include e2k-global-catalog-ldap.h. Install
+	e2k-global-catalog-ldap.h and e2k-validate.h
+	* lib/e2k-global-catalog.c : Use e2k-global-catalog-ldap.h
+	* lib/e2k-global-catalog.h : Remove the use of ldap.h from here.
+	* storage/Makefile.am : Use KRB5_LDFLAGS instead of KRB5_LIBS
+	* lib/e2k-global-catalog-ldap.h : Added new
+	* lib/e2k-validate.h : Added new
+
+2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
+
 	* lib/Makefile.am : Remove commented code and fix spacings
 	* storage/Makefile.am : Similar. Also added exchange-oof.[ch]
 	* lib/e2k-context.c : Use the proper VERSION definition name.
