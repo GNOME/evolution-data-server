@@ -1,4 +1,4 @@
-if HAVE_LDAP
+if ENABLE_LDAP
 EXCHANGE = exchange
 else
 EXCHANGE =
