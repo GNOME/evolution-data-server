@@ -1,5 +1,9 @@
 2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
 
+	* lib/Makefile.am : Use ENABLE_KRB5 instead of HAVE_KRB5
+
+2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
+
 	* lib/Makefile.am : Include e2k-global-catalog-ldap.h. Install
 	e2k-global-catalog-ldap.h and e2k-validate.h
 	* lib/e2k-global-catalog.c : Use e2k-global-catalog-ldap.h
