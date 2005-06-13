@@ -86,7 +86,7 @@ libexchange_la_SOURCES =					\
 	e2k-freebusy.c						\
 	e2k-freebusy.h						\
 	e2k-global-catalog.c					\
-	e2k-global-catalog.h					\
+	e2k-global-catalog-ldap.h				\
 	e2k-http-utils.c					\
 	e2k-http-utils.h					\
 	e2k-operation.c						\
@@ -125,6 +125,7 @@ libexchangeinclude_HEADERS = 					\
 	e2k-context.h						\
 	e2k-freebusy.h						\
 	e2k-global-catalog.h					\
+	e2k-global-catalog-ldap.h				\
 	e2k-http-utils.h					\
 	e2k-marshal.h						\
 	e2k-operation.h						\
@@ -136,6 +137,7 @@ libexchangeinclude_HEADERS = 					\
 	e2k-types.h						\
 	e2k-uri.h						\
 	e2k-utils.h						\
+	e2k-validate.h						\
 	e2k-xml-utils.h						\
 	mapi.h
 

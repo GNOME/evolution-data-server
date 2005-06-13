@@ -5,7 +5,6 @@
 #define __E2K_GLOBAL_CATALOG_H__
 
 #include <glib-object.h>
-#include <ldap.h>
 #include "e2k-types.h"
 #include "e2k-operation.h"
 
@@ -40,9 +39,6 @@ E2kGlobalCatalog *e2k_global_catalog_new             (const char *server,
 						      const char *user,
 						      const char *domain,
 						      const char *password);
-
-LDAP             *e2k_global_catalog_get_ldap        (E2kGlobalCatalog *gc,
-						      E2kOperation     *op);
 
 
 typedef enum {

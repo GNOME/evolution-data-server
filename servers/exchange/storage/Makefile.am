@@ -69,11 +69,11 @@ NODIST_FILES = $(MARSHAL_GENERATED)
 libexchange_storage_1_2_la_LIBADD =				\
 	$(E_DATA_SERVER_LIBS)					\
 	$(E_DATA_SERVER_UI_LIBS)				\
-	$(KRB5_LIBS)						\
 	$(LDAP_LIBS)						\
 	$(SOUP_LIBS)
 
 libexchange_storage_1_2_la_LDFLAGS =				\
+	$(KRB5_LDFLAGS)						\
 	$(top_builddir)/servers/exchange/lib/libexchange.la	\
 	$(top_builddir)/servers/exchange/xntlm/libxntlm.la			
 	-version-info 1:2:0

@@ -21,7 +21,7 @@
 #include "config.h"
 #endif
 
-#include "e2k-global-catalog.h"
+#include "e2k-global-catalog-ldap.h"
 #include "e2k-sid.h"
 #include "e2k-utils.h"
 
