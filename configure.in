@@ -1295,6 +1295,12 @@ case $host in
 	;;
 esac
 
+dnl You need to enable LDAP and Kerberos to enable Exchange support in e-d-s
+msg_exchange="no"
+if test "$msg_ldap" != "no"; then
+	msg_exchange="yes"
+fi
+
 echo "
 	evolution-data-server has been configured as follows:
 	LDAP support:     $msg_ldap"
@@ -1307,6 +1313,7 @@ echo "\
 	SSL support:      $msg_ssl
 	SMIME support:    $msg_smime
 	IPv6 support:     $msg_ipv6
+	Exchange support: $msg_exchange
 	Dot Locking:	  $msg_dot
 	File Locking:	  $msg_file
 	Gtk Doc:          $enable_gtk_doc

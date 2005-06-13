@@ -1,3 +1,8 @@
+2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* configure.in : Print the status for Exchange support being present.
+	* servers/Makefile.am : Build Exchange only if LDAP is enabled.
+
 2005-06-11  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* configure.in : Fixed a minor typo to fix make clean.
