@@ -1,16 +1,15 @@
+# Fix the code to not use E_DATA_SERVER_UI_CFLAGS
+
 INCLUDES =                                                      \
 	-DCONNECTOR_PREFIX=\""$(prefix)"\"			\
 	-DCONNECTOR_LOCALEDIR=\""$(localedir)"\"		\
-	-DCONNECTOR_DATADIR=\""$(CONNECTOR_DATADIR)"\"		\
-	-DEVOLUTION_VERSION=\"$(EVOLUTION_VERSION)\"		\
 	$(LDAP_CFLAGS)						\
 	$(KRB5_CFLAGS)						\
 	$(SOUP_CFLAGS)						\
 	$(E_DATA_SERVER_CFLAGS)					\
-	$(E_DATA_SERVER_UI_CFLAGS)					\
+	$(E_DATA_SERVER_UI_CFLAGS)				\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/servers/exchange/xntlm
-#$(LIBEXCHANGE_CFLAGS)				
 
 noinst_LTLIBRARIES =						\
 	libexchange.la
@@ -64,7 +63,7 @@ NODIST_FILES += $(MARSHAL_GENERATED)
 CLEANFILES += $(MARSHAL_GENERATED)
 
 if HAVE_KRB5
-KERBEROS_FILES = \
+KERBEROS_FILES = 	\
 	e2k-kerberos.c	\
 	e2k-kerberos.h
 else
@@ -119,14 +118,9 @@ libexchange_la_SOURCES =					\
 	$(KERBEROS_FILES)					\
 	mapi.h
 
-#libexchange_la_LDADD =					\
-	#$(E_DATA_SERVER_LIBS)					\
-	#$(E_DATA_SERVER_UI_LIBS)				\
-	#$(SOUP_LIBS)
-
 libexchangeincludedir = $(privincludedir)/exchange
 
-libexchangeinclude_HEADERS = \
+libexchangeinclude_HEADERS = 					\
 	e2k-autoconfig.h					\
 	e2k-context.h						\
 	e2k-freebusy.h						\

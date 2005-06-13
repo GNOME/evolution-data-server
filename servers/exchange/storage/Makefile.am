@@ -1,13 +1,13 @@
+# Fix the code to not use E_DATA_SERVER_UI_CFLAGS
+
 INCLUDES =							\
 	-DG_LOG_DOMAIN=\"evolution-exchange-storage\"		\
 	-DPREFIX=\"$(prefix)\"					\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DDATADIR=\""$(datadir)"\"	 			\
 	-DLIBDIR=\""$(datadir)"\"	 			\
-	-DCONNECTOR_GLADEDIR=\""$(gladedir)"\"			\
-	-DCONNECTOR_IMAGESDIR=\""$(imagesdir)"\"		\
-	-DCONNECTOR_UIDIR=\""$(uidir)"\"			\
 	-DCONNECTOR_LOCALEDIR=\""$(localedir)\""		\
+	-DCONNECTOR_GLADEDIR=\""$(gladedir)"\"			\
 	$(KRB5_CFLAGS)						\
 	$(LDAP_CFLAGS)						\
 	$(SOUP_CFLAGS)						\
@@ -17,7 +17,7 @@ INCLUDES =							\
 	-I$(top_srcdir)/servers/exchange/lib			\
 	-I$(top_srcdir)/servers/exchange/xntlm					
 
-lib_LTLIBRARIES =				\
+lib_LTLIBRARIES =						\
 	libexchange-storage-1.2.la
 
 libexchange_storage_1_2_la_SOURCES =				\
@@ -46,6 +46,8 @@ libexchange_storage_1_2_la_SOURCES =				\
 	exchange-hierarchy-webdav.h				\
 	exchange-hierarchy.c					\
 	exchange-hierarchy.h					\
+	exchange-oof.c						\
+	exchange-oof.h						\
 	exchange-types.h					
 
 e-shell-marshal.h: e-shell-marshal.list
@@ -78,7 +80,7 @@ libexchange_storage_1_2_la_LDFLAGS =				\
 
 libexchange_storageincludedir = $(privincludedir)/exchange
 
-libexchange_storageinclude_HEADERS = \
+libexchange_storageinclude_HEADERS = 				\
 	e-folder.h						\
 	e-folder-exchange.h					\
 	e-storage.h						\
@@ -86,30 +88,11 @@ libexchange_storageinclude_HEADERS = \
 	exchange-constants.h					\
 	exchange-folder-size.h					\
 	exchange-hierarchy.h					\
+	exchange-oof.h						\
 	exchange-types.h					
 
-#imagesdir = $(CONNECTOR_DATADIR)/images
-#images_DATA =				\
-#	connector.png			\
-#	connector-mini.png		\
-#	exchange-delegates-48.png	\
-#	exchange-oof-48.png
-
-#gladedir   = $(CONNECTOR_DATADIR)/glade
-#glade_DATA =					\
-	#exchange-autoconfig-wizard.glade	\
-	#exchange-change-password.glade		\
-	#exchange-delegates.glade		\
-	#exchange-oof.glade			\
-	#exchange-permissions-dialog.glade	\
-	#exchange-folder-tree.glade		\
-	#exchange-passwd-expiry.glade
-
-#uidir   = $(CONNECTOR_DATADIR)/ui
-#ui_DATA = ximian-connector.xml
-
 %-$(API_VERSION).pc: %.pc
-	 cp $< $@
+	cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libexchange-storage-$(API_VERSION).pc
@@ -117,6 +100,3 @@ pkgconfig_DATA = libexchange-storage-$(API_VERSION).pc
 EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)
-
-#EXTRA_DIST =				
-

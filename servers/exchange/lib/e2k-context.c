@@ -716,7 +716,7 @@ setup_message (SoupMessageFilter *filter, SoupMessage *msg)
 						      SOUP_HANDLER_PRE_BODY,
 						      fba_timeout_handler, ctx);
 		soup_message_add_header (msg->request_headers, "User-Agent",
-					 "Evolution/" EVOLUTION_VERSION);
+					 "Evolution/" VERSION);
 
 #ifdef E2K_DEBUG
 		e2k_debug_setup (msg);
@@ -880,7 +880,7 @@ get_msg (E2kContext *ctx, const char *uri, gboolean owa, gboolean claim_ie)
 		soup_message_remove_header (msg->request_headers, "User-Agent");
 		soup_message_add_header (msg->request_headers, "User-Agent",
 					 "MSIE 6.0b (Windows NT 5.0; compatible; "
-					 "Evolution/" EVOLUTION_VERSION ")");
+					 "Evolution/" VERSION ")");
 	}
 
 	return msg;

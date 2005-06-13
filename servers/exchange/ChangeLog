@@ -1,3 +1,8 @@
+2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* lib/Makefile.am : Remove commented code and fix spacings
+	* storage/Makefile.am : Similar
+
 2005-06-10  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	First movement of exchange server communication code into e-d-s HEAD.
