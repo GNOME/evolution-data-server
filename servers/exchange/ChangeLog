@@ -1,3 +1,8 @@
+2005-06-14  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/libexchange-storage.pc.in : Dont hardcode the libsoup
+	version.
+
 2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* lib/Makefile.am : Use ENABLE_KRB5 instead of HAVE_KRB5

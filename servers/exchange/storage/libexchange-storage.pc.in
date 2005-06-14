@@ -11,6 +11,6 @@ privincludedir=@privincludedir@
 Name: libexchange
 Description: Client library for accessing Exchange server through webdav.
 Version: @VERSION@
-Requires: libsoup-2.4 >= @LIBSOUP_REQUIRED@ 
+Requires: @LIBSOUP@ >= @LIBSOUP_REQUIRED@ 
 Libs: -L${libdir} -lexchange-storage-1.2
 Cflags: -I${privincludedir}/exchange
