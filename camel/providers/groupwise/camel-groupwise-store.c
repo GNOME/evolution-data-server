@@ -270,6 +270,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 				     _("Host or user not available in url"));
 	}
 
+	store->flags = 0; 
 
 	/*storage path*/
 	priv->storage_path = camel_session_get_storage_path (session, service, ex) ;
@@ -314,8 +315,6 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 
 	/*ssl*/
 	priv->use_ssl = g_strdup (camel_url_get_param (url, "use_ssl"));
-	
-	store->flags = 0; //XXX: Shouldnt do this....
 	
 }
 
@@ -735,7 +734,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	CamelFolderInfo *info = NULL ;
 
 	CAMEL_SERVICE_LOCK (store, connect_lock) ;
-
+	g_print ("groupwise_get_folder_info\n");
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		return groupwise_get_folder_info_offline (store, top, flags, ex);
