@@ -1,3 +1,8 @@
+2005-06-15  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/Makefile.am : Install exchange-hierarchy-webdav.h and
+	exchange-hierarchy-somedav.h
+
 2005-06-14  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/libexchange-storage.pc.in : Dont hardcode the libsoup

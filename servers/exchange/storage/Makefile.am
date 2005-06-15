@@ -88,6 +88,8 @@ libexchange_storageinclude_HEADERS = 				\
 	exchange-constants.h					\
 	exchange-folder-size.h					\
 	exchange-hierarchy.h					\
+	exchange-hierarchy-somedav.h				\
+	exchange-hierarchy-webdav.h				\
 	exchange-oof.h						\
 	exchange-types.h					
 
