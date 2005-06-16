@@ -1,3 +1,21 @@
+2005-06-16  Sushma Rai  <rsushma@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c (func_contains): Ignoring 
+	"any field contains" query with NULL value, so that we don't display 
+	all the contacts while loading or refreshing the LDAP address book.
+	(e_book_backend_ldap_get_static_capabilities): Added do-initial-query,
+	so that we get a view, for notifying cache update.
+	(e_book_backend_ldap_search): Ignoring NULL LDAP query. 
+	(ldap_search_handler): Using the error code 
+	GNOME_Evolution_Addressbook_InvalidQuery, so that proper error message
+	is displayed for not handled search results.
+	(generate_cache_handler): Notifying cache update progress.
+	(e_book_backend_ldap_get_required_fields): Fixed some compile time 
+	warnings.
+	(e_book_backend_ldap_search): Similar.
+	(e_book_backend_ldap_set_mode): Similar.
+	(query_ldap_root_dse): Similar.
+
 2005-06-10  Sushma Rai  <rsushma@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c:

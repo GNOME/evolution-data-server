@@ -588,13 +588,13 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 #define MAX_DSE_ATTRS 20
 	LDAP *ldap = bl->priv->ldap;
 	LDAPMessage *resp;
-	int ldap_error;
+	int ldap_error = LDAP_OTHER;
 	char *attrs[MAX_DSE_ATTRS], **values;
 	int i = 0;
 	struct timeval timeout;
 
 	if (!ldap)
-		return;
+		return ldap_error;
 
 	attrs[i++] = "supportedControl";
 	attrs[i++] = "supportedExtension";
@@ -2824,9 +2824,14 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 			int query_length;
 			char *big_query;
 			char *match_str;
+			if (one_star) {
+				/* ignore NULL query */
+				r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+				r->value.bool = FALSE;
+				return r;
+			}
 
-			match_str = g_strdup_printf("=*%s%s)",
-						    str, one_star ? "" : "*");
+			match_str = g_strdup_printf ("=*%s*)", str);
 
 			query_length = 3; /* strlen ("(|") + strlen (")") */
 
@@ -3329,9 +3334,9 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 	}
 	else {
 		g_warning ("unhandled search result type %d returned", msg_type);
-		e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_OtherError);
+		//e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_OtherError);
+		e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_InvalidQuery);
 		ldap_op_finished (op);
-
 	}
 }
 
@@ -3387,7 +3392,6 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 			LDAP *ldap = bl->priv->ldap;
 			int ldap_err;
 			int search_msgid;
-			int limit;
 			int view_limit;
 
 			view_limit = e_data_book_view_get_max_results (view);
@@ -3439,11 +3443,15 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 			return;
 		}
 		else {
+			/*
 			e_data_book_view_notify_complete (view,
 							  GNOME_Evolution_Addressbook_InvalidQuery);
+			*/
+			/* Ignore NULL query */
+			e_data_book_view_notify_complete (view,
+							  GNOME_Evolution_Addressbook_Success);
 			return;
 		}
-
 	}
 }
 
@@ -3496,11 +3504,14 @@ generate_cache_handler (LDAPOp *op, LDAPMessage *res)
 	LDAP *ldap = bl->priv->ldap;
 	LDAPMessage *e;
 	gint msg_type;
+	EDataBookView *book_view;
 
 	if (!ldap) {
 		ldap_op_finished (op);
 		return;
 	}
+
+	book_view = find_book_view (bl);
 
 	msg_type = ldap_msgtype (res);
 	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
@@ -3514,15 +3525,27 @@ generate_cache_handler (LDAPOp *op, LDAPMessage *res)
 		}
 	} else {
 		GList *l;
-
+		int contact_num = 0;
+		char *status_msg;
+		
 		e_file_cache_clean (E_FILE_CACHE (bl->priv->cache));
 
 		for (l = contact_list_op->contacts; l; l = g_list_next (l)) {
 			EContact *contact = l->data;
+
+			contact_num++;
+			if (book_view) {
+				status_msg = g_strdup_printf (_("Downloading contacts (%d)... "),
+								 contact_num);
+				e_data_book_view_notify_status_message (book_view, status_msg);
+				g_free (status_msg); 
+			}
 			e_book_backend_cache_add_contact (bl->priv->cache, contact);
 		}
-
 		e_book_backend_cache_set_populated (bl->priv->cache);
+		if (book_view)
+			e_data_book_view_notify_complete (book_view,
+							  GNOME_Evolution_Addressbook_Success);
 		ldap_op_finished (op);
 	}
 }
@@ -3737,9 +3760,9 @@ e_book_backend_ldap_get_required_fields (EBookBackend *backend,
 	
 	/*FIMEME we should look at mandatory attributs in the schema
 	  and return all those fields here */
-	fields = g_list_append (fields, e_contact_field_name (E_CONTACT_FILE_AS));
-	fields = g_list_append (fields, e_contact_field_name (E_CONTACT_FULL_NAME));
-	fields = g_list_append (fields, e_contact_field_name (E_CONTACT_FAMILY_NAME));
+	fields = g_list_append (fields, (char *)e_contact_field_name (E_CONTACT_FILE_AS));
+	fields = g_list_append (fields, (char *)e_contact_field_name (E_CONTACT_FULL_NAME));
+	fields = g_list_append (fields, (char *)e_contact_field_name (E_CONTACT_FAMILY_NAME));
 	
 	
 	e_data_book_respond_get_required_fields (book,
@@ -3915,7 +3938,7 @@ e_book_backend_ldap_remove (EBookBackend *backend, EDataBook *book, guint32 opid
 static char*
 e_book_backend_ldap_get_static_capabilities (EBookBackend *backend)
 {
-	return g_strdup("net,anon-access");
+	return g_strdup("net,anon-access,do-initial-query");
 }
 
 static void
@@ -3960,7 +3983,6 @@ static void
 e_book_backend_ldap_set_mode (EBookBackend *backend, int mode)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	gint              status = GNOME_Evolution_Addressbook_Success;
 
 	if (bl->priv->mode == mode)
 		return;
@@ -3971,7 +3993,7 @@ e_book_backend_ldap_set_mode (EBookBackend *backend, int mode)
 #endif
 
 	/* Cancel all running operations */
-	e_book_backend_ldap_cancel_operation (bl, NULL);
+	e_book_backend_ldap_cancel_operation (backend, NULL);
 
 	if (mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
 		/* Go offline */
@@ -4014,7 +4036,6 @@ e_book_backend_ldap_set_mode (EBookBackend *backend, int mode)
 		}
 	}
 }
-
 
 static gboolean
 e_book_backend_ldap_construct (EBookBackendLDAP *backend)
