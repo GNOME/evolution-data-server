@@ -1,3 +1,14 @@
+2005-06-16  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* came-groupwise-folder.c:
+	  (gw_update_summary): make appointments appear the 
+	  groupwise client way, which appear based on the
+	  date of the appointment and not the received time.
+
+2005-06-16  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* camel-groupwise-folder.c:
+	  (groupwise_sync): reverting back the removeItemsRequest
+	  patch since the server interface is not working as yet.
+
 2005-06-07  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:
