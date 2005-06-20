@@ -119,7 +119,7 @@ msgstr "%s: käimasolevat toimingut ei ole"
 #: addressbook/libebook/e-book.c:2425
 #, c-format
 msgid "%s: couldn't cancel"
-msgstr "%s: ei saa tühistada"
+msgstr "%s: pole võimalik tühistada"
 
 #: addressbook/libebook/e-book.c:2454 addressbook/libebook/e-book.c:2458
 #, c-format
@@ -144,7 +144,7 @@ msgstr ""
 #: addressbook/libebook/e-book.c:3086
 #, c-format
 msgid "%s: Could not create EBookListener"
-msgstr "%s: EBookListener'i ei saa luua"
+msgstr "%s: EBookListener'i pole võimalik luua"
 
 #: addressbook/libebook/e-book.c:3332
 #, c-format
@@ -626,7 +626,7 @@ msgstr "Aastapäev: %s"
 
 #: calendar/backends/file/e-cal-backend-file.c:193
 msgid "Can't save calendar data: Malformed URI."
-msgstr "Kalendri andmeid ei saa salvestada: Vigane URI."
+msgstr "Kalendri andmeid pole võimalik salvestada: Vigane URI."
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:513
 msgid "Invalid server URI"
@@ -642,7 +642,7 @@ msgstr "Kalender"
 #: calendar/backends/http/e-cal-backend-http.c:484
 #: calendar/backends/weather/e-cal-backend-weather.c:449
 msgid "Could not create cache file"
-msgstr "Puhverfaili ei saa luua"
+msgstr "Puhverfaili pole võimalik luua"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:581
 msgid "Could not create thread for populating cache"
@@ -672,7 +672,7 @@ msgstr "Ei ole kalender."
 
 #: calendar/backends/weather/e-cal-backend-weather.c:140
 msgid "Could not retrieve weather data"
-msgstr "Ilmajaama andmeid ei saa üles otsida"
+msgstr "Ilmajaama andmeid pole võimalik vastu võtta"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:194
 msgid "Fair"
@@ -1068,7 +1068,7 @@ msgstr "Tegevus on tühistatud"
 
 #: calendar/libecal/e-cal.c:4526
 msgid "Could not cancel operation"
-msgstr "Toimingut ei saa katkestada"
+msgstr "Toimingut pole võimalik katkestada"
 
 #: calendar/libecal/e-cal.c:4530
 #: camel/providers/smtp/camel-smtp-transport.c:215
@@ -1315,7 +1315,7 @@ msgstr "Võetakse vastu teadet %d (%d%%)"
 
 #: camel/camel-filter-driver.c:1167
 msgid "Cannot open message"
-msgstr "Sõnumit ei saa avada"
+msgstr "Sõnumit pole võimalik avada"
 
 #: camel/camel-filter-driver.c:1168 camel/camel-filter-driver.c:1180
 #, c-format
@@ -1493,7 +1493,7 @@ msgstr "Tõrge gpg käivitamisel: %s"
 #: camel/camel-gpg-context.c:1230 camel/camel-smime-context.c:389
 #, c-format
 msgid "Could not generate signing data: %s"
-msgstr "Signeerimisandmeid ei saa genereerida: %s"
+msgstr "Signeerimisandmeid pole võimalik genereerida: %s"
 
 #: camel/camel-gpg-context.c:1277 camel/camel-gpg-context.c:1437
 #: camel/camel-gpg-context.c:1519 camel/camel-gpg-context.c:1534
@@ -1510,17 +1510,17 @@ msgstr "See on sõnumi digitaalselt allkirjastatud osa"
 #: camel/camel-gpg-context.c:1389 camel/camel-smime-context.c:692
 #: camel/camel-smime-context.c:703 camel/camel-smime-context.c:710
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr "Sõnumi signatuuri ei saa kontrollida: Sõnumivorming on vigane"
+msgstr "Sõnumi signatuuri pole võimalik kontrollida: Sõnumivorming on vigane"
 
 #: camel/camel-gpg-context.c:1423
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "Sõnimi signatuuri ei saa kontrollida: ajutist faili ei saa luua: %s"
+msgstr "Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik luua: %s"
 
 #: camel/camel-gpg-context.c:1502
 #, c-format
 msgid "Could not generate encrypting data: %s"
-msgstr "Krüptimisandmeid ei saa luua: %s"
+msgstr "Krüptimisandmeid pole võimalik luua: %s"
 
 #: camel/camel-gpg-context.c:1552
 msgid "This is a digitally encrypted message part"
@@ -1536,7 +1536,7 @@ msgstr "Krüpteeritud sisu"
 
 #: camel/camel-gpg-context.c:1664
 msgid "Unable to parse message content"
-msgstr "Sõnumi sisu ei saa analüüsida"
+msgstr "Sõnumi sisu pole võimalik analüüsida"
 
 #: camel/camel-gpg-context.c:1688 camel/camel-gpg-context.c:1733
 #: camel/camel-tcp-stream-openssl.c:631
@@ -1554,22 +1554,22 @@ msgstr "Tundmatu"
 #: camel/camel-lock-client.c:100
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
-msgstr "Lukustamisabilise toru ei saa luua: %s"
+msgstr "Lukustamisabilise toru pole võimalik luua: %s"
 
 #: camel/camel-lock-client.c:113
 #, c-format
 msgid "Cannot fork locking helper: %s"
-msgstr "Lukustamisabilist ei saa forkida: %s"
+msgstr "Lukustamisabilist pole võimalik forkida: %s"
 
 #: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr "'%s' ei saa lukustada: lukustusabilise (lock-helper) protokolli viga"
+msgstr "'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
 
 #: camel/camel-lock-client.c:204
 #, c-format
 msgid "Could not lock '%s'"
-msgstr "'%s' ei saa lukustada"
+msgstr "'%s' pole võimalik lukustada"
 
 #: camel/camel-lock.c:92 camel/camel-lock.c:113
 #, c-format
@@ -1594,12 +1594,12 @@ msgstr "flock(2) abil lukustamine nurjus: %s"
 #: camel/camel-movemail.c:104
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr "Sõnumifaili %s ei saa kontrollida: %s"
+msgstr "Sõnumifaili %s pole võimalik kontrollida: %s"
 
 #: camel/camel-movemail.c:117
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr "Sõnumifaili %s ei saa avada: %s"
+msgstr "Sõnumifaili %s pole võimalik avada: %s"
 
 #: camel/camel-movemail.c:125
 #, c-format
@@ -1614,7 +1614,7 @@ msgstr "Tõrge sõnumi salvestamisel ajutisse faili %s: %s"
 #: camel/camel-movemail.c:184
 #, c-format
 msgid "Could not create pipe: %s"
-msgstr "Toru ei saa luua: %s"
+msgstr "Toru pole võimalik luua: %s"
 
 #: camel/camel-movemail.c:196
 #, c-format
@@ -1657,7 +1657,7 @@ msgstr "Katkestatud"
 
 #: camel/camel-net-utils.c:465
 msgid "cannot create thread"
-msgstr "lõime ei saa luua"
+msgstr "lõime pole võimalik luua"
 
 #: camel/camel-net-utils.c:612
 #, c-format
@@ -1712,12 +1712,12 @@ msgstr "Ei saa laadida %s: süsteem ei toeta moodulite laadimist."
 #: camel/camel-provider.c:194
 #, c-format
 msgid "Could not load %s: %s"
-msgstr "Ei saa laadida '%s': %s"
+msgstr "%s pole võimalik laadida : %s"
 
 #: camel/camel-provider.c:202
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr "Ei saa laadida %s: moodulis puudub initsialiseerimiskood."
+msgstr "%s pole võimalik laadida: moodulis puudub lähtestamiskood."
 
 #: camel/camel-provider.c:374 camel/camel-session.c:161
 #, c-format
@@ -1982,66 +1982,57 @@ msgid "Cannot create CMS message"
 msgstr "Ei suuda luua CMS sõnumit"
 
 #: camel/camel-smime-context.c:242
-#, fuzzy
 msgid "Cannot create CMS signed data"
-msgstr "CMS sõnumit ei saa luua"
+msgstr "CMS signeeritud andmeid pole võimalik luua"
 
 #: camel/camel-smime-context.c:248
-#, fuzzy
 msgid "Cannot attach CMS signed data"
-msgstr "CMS andmeid ei saa manustada"
+msgstr "CMS signeeritud andmeid pole võimalik manustada"
 
 #: camel/camel-smime-context.c:255
 msgid "Cannot attach CMS data"
-msgstr "CMS andmeid ei saa manustada"
+msgstr "CMS andmeid pole võimalik manustada"
 
 #: camel/camel-smime-context.c:261
-#, fuzzy
 msgid "Cannot create CMS Signer information"
-msgstr "CMS sõnumit ei saa luua"
+msgstr "CMS signeerija andmeid pole võimalik luua"
 
 #: camel/camel-smime-context.c:267
-#, fuzzy
 msgid "Cannot find certificate chain"
-msgstr "Ei suuda kindlaks teha Teie kasutajanime"
+msgstr "Sertifikaadiahelat pole võimalik leida"
 
 #: camel/camel-smime-context.c:273
-#, fuzzy
 msgid "Cannot add CMS Signing time"
-msgstr "CMS RecipientInfo-t ei saa lisada"
+msgstr "CMS signeerimisaega pole võimalik lisada"
 
 #: camel/camel-smime-context.c:295 camel/camel-smime-context.c:307
-#, fuzzy, c-format
+#, c-format
 msgid "Encryption certificate for '%s' does not exist"
-msgstr "Sertifikaati \"%s\" krüptimise jaoks ei ole olemas."
+msgstr "Krüptimissertifikaati pole \"%s\" jaoks olemas"
 
 #: camel/camel-smime-context.c:314
-#, fuzzy
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
-msgstr "Sama gruppi pole võimalik kaks korda lisada."
+msgstr "SMIMEEncKeyPrefs atribuuti pole võimalik lisada"
 
 #: camel/camel-smime-context.c:319
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
-msgstr ""
+msgstr "MS SMIMEEncKeyPrefs atribuuti pole võimalik lisada"
 
 #: camel/camel-smime-context.c:324
-#, fuzzy
 msgid "Cannot add encryption certificate"
-msgstr "Vali sertifikaat [%1] krüptimise jaoks"
+msgstr "Krüptimissertifikaati pole võimalik lisada"
 
 #: camel/camel-smime-context.c:330
-#, fuzzy
 msgid "Cannot add CMS Signer information"
-msgstr "CMS RecipientInfo-t ei saa lisada"
+msgstr "CMS signeerija andmeid pole võimalik lisada"
 
 #: camel/camel-smime-context.c:400 camel/camel-smime-context.c:848
-#, fuzzy
 msgid "Cannot create encoder context"
-msgstr "Ei saa luua andmebaasikataloogi!"
+msgstr "Kodeerija konteksti pole võimalik luua"
 
 #: camel/camel-smime-context.c:406
 msgid "Failed to add data to CMS encoder"
-msgstr ""
+msgstr "Tõrge andmete lisamisel CMS kodeerijale"
 
 #: camel/camel-smime-context.c:411 camel/camel-smime-context.c:865
 msgid "Failed to encode data"
@@ -2068,9 +2059,8 @@ msgid "Signing certificate not found"
 msgstr "Allkirjastamissertifikaati ei leitud"
 
 #: camel/camel-smime-context.c:494
-#, fuzzy
 msgid "Signing certificate not trusted"
-msgstr "Ära saada sertifikaati"
+msgstr "Signeerimissertifikaat pole usaldusväärne"
 
 #: camel/camel-smime-context.c:496
 msgid "Signature algorithm unknown"
@@ -2090,7 +2080,7 @@ msgstr "Vea töötlemine"
 
 #: camel/camel-smime-context.c:539
 msgid "No signed data in signature"
-msgstr ""
+msgstr "Signatuuris pole signeeritud andmeid"
 
 #: camel/camel-smime-context.c:546
 msgid "Digests missing from enveloped data"
@@ -2098,11 +2088,11 @@ msgstr ""
 
 #: camel/camel-smime-context.c:559 camel/camel-smime-context.c:569
 msgid "Cannot calculate digests"
-msgstr "Sõnumilühendit ei saa arvutada"
+msgstr "Sõnumilühendit pole võimalik arvutada"
 
 #: camel/camel-smime-context.c:574
 msgid "Cannot set message digests"
-msgstr "Sõnumilühendit ei saa seada"
+msgstr "Sõnumilühendit pole võimalik seada"
 
 #: camel/camel-smime-context.c:584 camel/camel-smime-context.c:589
 msgid "Certificate import failed"
@@ -2130,9 +2120,9 @@ msgid "Decoder failed"
 msgstr "Dekoodri tõrge"
 
 #: camel/camel-smime-context.c:775
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot find certificate for `%s'"
-msgstr "Ei leia \"%s\" programmifaili"
+msgstr "`%s' jaoks pole sertifikaati võimalik leida"
 
 #: camel/camel-smime-context.c:782
 msgid "Cannot find common bulk encryption algorithm"
@@ -2144,38 +2134,34 @@ msgid "Cannot allocate slot for encryption bulk key"
 msgstr ""
 
 #: camel/camel-smime-context.c:802
-#, fuzzy
 msgid "Cannot create CMS Message"
-msgstr "CMS sõnumit ei saa luua"
+msgstr "CMS sõnumit pole võimalik luua"
 
 #: camel/camel-smime-context.c:808
-#, fuzzy
 msgid "Cannot create CMS Enveloped data"
-msgstr "CMS EnvelopedData-t ei saa luua"
+msgstr ""
 
 #: camel/camel-smime-context.c:814
-#, fuzzy
 msgid "Cannot attach CMS Enveloped data"
-msgstr "CMS EnvelopedData-t ei saa manustada"
+msgstr ""
 
 #: camel/camel-smime-context.c:820
-#, fuzzy
 msgid "Cannot attach CMS data object"
-msgstr "CMS andmeobjekti ei saa manustada"
+msgstr "CMS andmeobjekti pole võimalik manustada"
 
 #: camel/camel-smime-context.c:829
 #, fuzzy
 msgid "Cannot create CMS Recipient information"
-msgstr "CMS RecipientInfo-t ei saa luua"
+msgstr "CMS RecipientInfo-t pole võimalik luua"
 
 #: camel/camel-smime-context.c:834
 #, fuzzy
 msgid "Cannot add CMS Recipient information"
-msgstr "CMS RecipientInfo-t ei saa lisada"
+msgstr "CMS RecipientInfo-t pole võimalik lisada"
 
 #: camel/camel-smime-context.c:859
 msgid "Failed to add data to encoder"
-msgstr ""
+msgstr "Tõrge andmete lisamisel kodeerijasse"
 
 #: camel/camel-smime-context.c:946
 #, c-format
@@ -2201,7 +2187,7 @@ msgstr ""
 #: camel/camel-store.c:244
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
-msgstr "Kausta `%s' ei saa luua: kaust on juba olemas"
+msgstr "Kausta `%s' pole võimalik luua: kaust on juba olemas"
 
 #: camel/camel-store.c:298
 msgid "Cannot create folder: Invalid operation on this store"
@@ -2210,7 +2196,7 @@ msgstr ""
 #: camel/camel-store.c:326
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr "Kausta ei saa luua: %s: kaust on juba olemas"
+msgstr "Kausta pole võimalik luua: %s: kaust on juba olemas"
 
 #: camel/camel-store.c:390 camel/camel-vee-store.c:367
 #: camel/providers/local/camel-maildir-store.c:217
@@ -2253,16 +2239,15 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
-msgstr "Väljaandja avalikku võtit ei saa dekodeerida"
+msgstr "Väljaandja avalikku võtit pole võimalik dekodeerida"
 
 #: camel/camel-tcp-stream-openssl.c:578
 msgid "Certificate signature failure"
 msgstr "Sertifikaadi signatuuri tõrge"
 
 #: camel/camel-tcp-stream-openssl.c:580
-#, fuzzy
 msgid "Certificate Revocation List signature failure"
-msgstr "Loon sellele allkirjale tühistamise sertifikaadi? (j/E) "
+msgstr "Tõrge Sertifikaatide tühistusnimekirja signatuuri kontrollimisel"
 
 #: camel/camel-tcp-stream-openssl.c:582
 msgid "Certificate not yet valid"
@@ -2447,7 +2432,7 @@ msgstr ""
 #: camel/camel-url.c:293
 #, c-format
 msgid "Could not parse URL `%s'"
-msgstr "URL'i `%s' ei saa töödelda"
+msgstr "URL'i `%s' pole võimalik töödelda"
 
 #: camel/camel-vee-folder.c:476
 #, c-format
@@ -2461,7 +2446,7 @@ msgstr "Sõnumit %s ei ole %s seas"
 
 #: camel/camel-vee-folder.c:643 camel/camel-vee-folder.c:649
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "Sõnumeid ei saa koppeerida või liigutaad Virtuaalkausta"
+msgstr "Sõnumeid pole võimalik virtuaalkausta kopeerida või liigutada"
 
 #: camel/camel-vee-store.c:100 camel/camel-vee-store.c:343
 msgid "Unmatched"
@@ -2475,15 +2460,15 @@ msgstr "Kausta kustutamine nurjus: %s: kausta ei ole olemas"
 #: camel/camel-vee-store.c:412
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr "Ei saa muuta kausta nime: %s: kausta ei ole olemas"
+msgstr "Kausta nime pole võimalik muuta: %s: kausta pole olemas"
 
 #: camel/camel-vtrash-folder.c:48
 msgid "Cannot copy messages to the Trash folder"
-msgstr "Sõnumeid ei saa kopeerida Prügi kausta"
+msgstr "Sõnumeid pole võimalik prügikausta kopeerida"
 
 #: camel/camel-vtrash-folder.c:50
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Sõnumeid ei saa kopeerida Rämpsu kausta"
+msgstr "Sõnumeid pole võimalik rämpsukausta kopeerida"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:108
 #: camel/providers/imap/camel-imap-folder.c:1980
@@ -2525,22 +2510,18 @@ msgstr "Kasutaja tühistas"
 #: camel/providers/pop3/camel-pop3-folder.c:495
 #: camel/providers/pop3/camel-pop3-folder.c:502
 #: camel/providers/pop3/camel-pop3-folder.c:513
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get message %s: %s"
-msgstr ""
-"Sõnumit %s ei saadud: \n"
-"  %s"
+msgstr "Sõnumit %s pole võimalik hankida: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:148
 #: camel/providers/imap4/camel-imap4-folder.c:811
-#, fuzzy
 msgid "This message is not available in offline mode."
-msgstr "See sõnum ei ole hetkel kättesaadav"
+msgstr "See sõnum pole autonoomses režiimis kättesaadav."
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:176
-#, fuzzy
 msgid "Could not get message"
-msgstr "Sõnumit ei saa luua."
+msgstr "Sõnumit pole võimalik hankida"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:264
 msgid "Reply Requested: by "
@@ -2554,12 +2535,12 @@ msgstr ""
 #: camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
-msgstr "%s kokkuvõtet ei saa laadida"
+msgstr "%s kokkuvõtet pole võimalik laadida"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:800
 #, c-format
 msgid "Cannot create message: %s"
-msgstr "Sõnumit ei saa luua: %s"
+msgstr "Sõnumit pole võimalik luua: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:812
 #, fuzzy, c-format
@@ -2569,19 +2550,19 @@ msgstr "Sõnumi lisamine mh vormingus kausta nurjus: %s: %s"
 #: camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
 msgid "Cannot get folder container %s"
-msgstr "Kausta konteinerit %s ei saadud"
+msgstr "Kausta konteinerit %s pole võimalik hankida"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:347
 #: camel/providers/imap4/camel-imap4-journal.c:320
-#, fuzzy
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Sõnumeid ei saa lisada `%s' kausta: Tundmatu viga"
+msgstr ""
+"Sõnumit pole autonoomses režiimis võimalik lisada: puhvrit pole saadaval"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:363
 #: camel/providers/imap4/camel-imap4-journal.c:336
 #, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr "Sõnumit ei saa autonoomses režiimis lisada: %s"
+msgstr "Sõnumit pole võimalik autonoomses režiimis lisada: %s"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:36
@@ -2622,13 +2603,12 @@ msgid "Automatically synchronize account locally"
 msgstr "Automaatne kohaliku posti sünkroniseerimine kaugpostiga"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:69
-#, fuzzy
 msgid "SOAP Settings"
-msgstr "SMTP Tervitus"
+msgstr "SOAP sätted"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:72
 msgid "Post Office Agent SOAP Port:"
-msgstr ""
+msgstr "POP SOAP port:"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:85
 msgid "Novell GroupWise"
@@ -2636,7 +2616,7 @@ msgstr "Novell Groupwise"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:87
 msgid "For accessing Novell Groupwise servers"
-msgstr ""
+msgstr "Novell Groupwise serveritele ligipääsemiseks"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:102
 #: camel/providers/imap/camel-imap-provider.c:96
@@ -2670,7 +2650,7 @@ msgstr "Sa ei sisestanud parooli."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:390
 msgid "Unable to authenticate to GroupWise server."
-msgstr "GroupWise serverisse ei saa autentida."
+msgstr "GroupWise serverisse pole võimalik autentida."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:431
 msgid "Some features may not work correctly with your current server version"
@@ -2691,29 +2671,25 @@ msgid "Fetching summary information for new messages"
 msgstr "Võtan kokkuvõtvat infot uute sõnumite kohta"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:732
-#, fuzzy
 msgid "Cannot get folder info in offline mode."
-msgstr "Sellise nimega kausta ei saa luua."
+msgstr "Kausta andmeid autonoomses režiimis võimalik hankida."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:943
-#, fuzzy
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr "Sellise nimega kausta ei saa luua."
+msgstr "GroupWise kaustu pole autonoomses režiimis võimalik luua."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:994
-#, fuzzy
 msgid "Cannot delete GroupWise folders in offline mode."
-msgstr "Kausta `%s' ei saa kustutada: Spetsiaalkaust"
+msgstr "GroupWise kaustu pole autonoomses režiimis võimalik kustutada."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:1040
-#, fuzzy
 msgid "Cannot rename GroupWise folders in offline mode."
-msgstr "Ei saa muuda kausta %s nime %s-ks: %s"
+msgstr "GroupWise kaustu pole autonoomses režiimis võimalik ümber nimetada."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:1059
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "Kausta `%s' ei saa ümber nimetada `%s'-ks: Puudulik käsk"
+msgstr "GroupWise kausta `%s' pole võimalik `%s'-ks ümber nimetada"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:1095
 #, c-format
@@ -2736,7 +2712,6 @@ msgid "Groupwise mail delivery via %s"
 msgstr "SMTP posti saatmine %s kaudu"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:159
-#, fuzzy
 msgid "Sending Message"
 msgstr "Sõnumi saatmine"
 
@@ -2791,7 +2766,7 @@ msgstr "Ootamatu OK vastus IMAP serverilt: %s"
 #: camel/providers/imap/camel-imap-folder.c:226
 #, c-format
 msgid "Could not create directory %s: %s"
-msgstr "Kataloogi %s ei saa luua: %s"
+msgstr "Kataloogi %s pole võimalik luua: %s"
 
 #: camel/providers/imap/camel-imap-folder.c:330
 msgid "Folder was destroyed and recreated on server."
@@ -2806,7 +2781,7 @@ msgstr "Kontrollin muudetud sõnumite olemasolu"
 #: camel/providers/imap/camel-imap-folder.c:1940
 #, c-format
 msgid "Unable to retrieve message: %s"
-msgstr "Sõnumite ei saa vastu võtta: %s"
+msgstr "Sõnumite pole võimalik vastu võtta: %s"
 
 #: camel/providers/imap/camel-imap-folder.c:2022
 #: camel/providers/imap/camel-imap-folder.c:2624
@@ -2837,7 +2812,7 @@ msgstr "Ei leia sõnumi sisu FETCH vastuses."
 #: camel/providers/imap/camel-imap-message-cache.c:156
 #, c-format
 msgid "Could not open cache directory: %s"
-msgstr "Puhvermälu kausta ei saa avada: %s "
+msgstr "Puhvermälu kausta pole võimalik avada: %s "
 
 #: camel/providers/imap/camel-imap-message-cache.c:253
 #: camel/providers/imap/camel-imap-message-cache.c:310
@@ -2858,9 +2833,8 @@ msgstr "Uute kirjade kontroll"
 
 #: camel/providers/imap/camel-imap-provider.c:46
 #: camel/providers/imap4/camel-imap4-provider.c:38
-#, fuzzy
 msgid "C_heck for new messages in all folders"
-msgstr "Kontrolli uusi sõnumeid kõikides kaustades"
+msgstr "_Kontrolli uusi sõnumeid kõikides kaustades"
 
 #: camel/providers/imap/camel-imap-provider.c:49
 #: camel/providers/imap4/camel-imap4-provider.c:41
@@ -2869,9 +2843,8 @@ msgstr "Ühendus serveriga"
 
 #: camel/providers/imap/camel-imap-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:43
-#, fuzzy
 msgid "_Use custom command to connect to server"
-msgstr "Parool proxyserveriga ühendumiseks."
+msgstr "_Kohandatud käsu kasutamine serveriga ühendumiseks"
 
 #: camel/providers/imap/camel-imap-provider.c:53
 #: camel/providers/imap4/camel-imap4-provider.c:45
@@ -2886,15 +2859,13 @@ msgstr "Kaustad"
 
 #: camel/providers/imap/camel-imap-provider.c:58
 #: camel/providers/imap4/camel-imap4-provider.c:50
-#, fuzzy
 msgid "_Show only subscribed folders"
-msgstr "Näita ainult tellitud kaustu"
+msgstr "_Näita ainult tellitud kaustu"
 
 #: camel/providers/imap/camel-imap-provider.c:60
 #: camel/providers/imap4/camel-imap4-provider.c:52
-#, fuzzy
 msgid "O_verride server-supplied folder namespace"
-msgstr "Kasuta serveri pakutava kaustade nimeruumi asemel enda oma"
+msgstr "Serveri pakutava kaustade nimeruumi asemel enda _oma kasutamine"
 
 #: camel/providers/imap/camel-imap-provider.c:62
 #: camel/providers/imap4/camel-imap4-provider.c:54
@@ -2962,7 +2933,7 @@ msgstr ""
 #: camel/providers/smtp/camel-smtp-transport.c:272
 #, c-format
 msgid "Could not connect to %s: %s"
-msgstr "Ei saa ühenduda hosti %s: %s"
+msgstr "Hostiga %s pole võimalik ühenduda: %s"
 
 #: camel/providers/imap/camel-imap-store.c:554
 #: camel/providers/imap4/camel-imap4-store.c:320
@@ -3042,7 +3013,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"Ei saa autentimida IMAP serverisse.\n"
+"IMAP serverisse pole võimalik autentida.\n"
 "%s\n"
 "\n"
 
@@ -3065,7 +3036,7 @@ msgstr ""
 #: camel/providers/local/camel-mh-store.c:237
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
-msgstr "Kausta `%s' ei saa luua: kaust on juba olemas"
+msgstr "Kausta `%s' pole võimalik luua: kaust on juba olemas"
 
 #: camel/providers/imap/camel-imap-store.c:2277
 #, c-format
@@ -3084,19 +3055,19 @@ msgid "Unexpected response from IMAP4 server %s: %s"
 msgstr "Ootamatu vastus IMAP serverilt %s: %s"
 
 #: camel/providers/imap4/camel-imap4-engine.c:216
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected greeting from IMAP server %s."
-msgstr "Ootamatu vastus IMAP serverilt: %s"
+msgstr "Ootamatu tervitus IMAP serverilt: %s."
 
 #: camel/providers/imap4/camel-imap4-engine.c:410
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
-msgstr "Kausta `%s' ei saa valida: Vigane kirjakasti nimi"
+msgstr "Kausta `%s' pole võimalik valida: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-engine.c:416
 #, c-format
 msgid "Cannot select folder `%s': Bad command"
-msgstr "Kausta `%s' ei saa valida: Puudulik käsk"
+msgstr "Kausta `%s' pole võimalik valida: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-engine.c:1484
 #: camel/providers/imap4/camel-imap4-engine.c:1523
@@ -3112,19 +3083,19 @@ msgid ""
 msgstr ""
 
 #: camel/providers/imap4/camel-imap4-folder.c:398
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot access folder `%s': %s"
-msgstr "Kausta `%s' ei saadud: %s"
+msgstr "Kaustale `%s' ei pääse ligi: %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:457
 #, fuzzy, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr "Sõnumeid ei saa lisada `%s' kausta: Tundmatu viga"
+msgstr "Sõnumeid pole võimalik lisada `%s' kausta: Tundmatu viga"
 
 #: camel/providers/imap4/camel-imap4-folder.c:463
 #, fuzzy, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr "Sõnumeid ei saa lisada `%s' kausta: Puudulik käsk"
+msgstr "Sõnumeid pole võimalik lisada `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:604
 #, fuzzy, c-format
@@ -3136,12 +3107,12 @@ msgstr ""
 #: camel/providers/imap4/camel-imap4-folder.c:609
 #, fuzzy, c-format
 msgid "Cannot expunge folder `%s': Bad command"
-msgstr "Kausta `%s' ei saa valida: Puudulik käsk"
+msgstr "Kausta `%s' pole võimalik valida: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:865
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
-msgstr "Ei saa võtta sõnumit %s kaustast `%s': sellist sõnumit ei ole"
+msgstr "Sõnumit %s pole võimalik kaustast `%s' võtta: sellist sõnumit ei ole"
 
 #: camel/providers/imap4/camel-imap4-folder.c:870
 #, c-format
@@ -3151,32 +3122,32 @@ msgstr "Ei saa võtta sõnumit %s kaustast `%s': Vigane käsk"
 #: camel/providers/imap4/camel-imap4-folder.c:1003
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
-msgstr "Sõnumeid ei saa lisada `%s' kausta: Tundmatu viga"
+msgstr "Sõnumeid pole võimalik lisada `%s' kausta: Tundmatu viga"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1032
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
-msgstr "Sõnumeid ei saa lisada `%s' kausta: Puudulik käsk"
+msgstr "Sõnumeid pole võimalik lisada `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1140
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
-msgstr "Sõnumeid ei saa liigutada kaustast `%s' `%s' kausta: Tundmatu"
+msgstr "Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Tundmatu"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1144
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
-msgstr "Sõnumeid ei saa kopeerida kaustast `%s' `%s' kausta: Tundmatu"
+msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Tundmatu"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1152
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid ei saa liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr "Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1156
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid ei saa kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-provider.c:71
 #, fuzzy
@@ -3214,7 +3185,7 @@ msgstr ""
 #: camel/providers/imap4/camel-imap4-store.c:863
 #, fuzzy
 msgid "Cannot create IMAP folders in offline mode."
-msgstr "Sellise nimega kausta ei saa luua."
+msgstr "Sellise nimega kausta pole võimalik luua."
 
 #: camel/providers/imap4/camel-imap4-store.c:790
 #, c-format
@@ -3224,37 +3195,37 @@ msgstr "Kausta `%s' ei saadud IMAP serverist %s: Tundmatu"
 #: camel/providers/imap4/camel-imap4-store.c:911
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
-msgstr "Kausta `%s' ei saa luua: Vigane kirjakasti nimi"
+msgstr "Kausta `%s' pole võimalik luua: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-store.c:917
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
-msgstr "Kausta `%s' ei saa luua: Puudulik käsk"
+msgstr "Kausta `%s' pole võimalik luua: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-store.c:948
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
-msgstr "Kausta `%s' ei saa kustutada: Spetsiaalkaust"
+msgstr "Kausta `%s' pole võimalik kustutada: Spetsiaalkaust"
 
 #: camel/providers/imap4/camel-imap4-store.c:955
 #, fuzzy
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "Kausta `%s' ei saa kustutada: Spetsiaalkaust"
+msgstr "Kausta `%s' pole võimalik kustutada: Spetsiaalkaust"
 
 #: camel/providers/imap4/camel-imap4-store.c:1014
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
-msgstr "Kausta `%s' ei saa kustutada: Vigane kirjakasti nimi"
+msgstr "Kausta `%s' pole võimalik kustutada: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-store.c:1019
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
-msgstr "Kausta `%s' ei saa kustutada: Puudulik käsk"
+msgstr "Kausta `%s' pole võimalik kustutada: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-store.c:1039
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr "Kausta `%s' ei saa ümber nimetada `%s'-ks: kaust on eritähenduslik"
+msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
 
 #: camel/providers/imap4/camel-imap4-store.c:1046
 #, fuzzy
@@ -3264,12 +3235,12 @@ msgstr "Ei saa muuda kausta %s nime %s-ks: %s"
 #: camel/providers/imap4/camel-imap4-store.c:1077
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr "Kausta `%s' ei saa ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
+msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-store.c:1082
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
-msgstr "Kausta `%s' ei saa ümber nimetada `%s'-ks: Puudulik käsk"
+msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-store.c:1421
 #, c-format
@@ -3283,17 +3254,17 @@ msgstr "Puudulik käsk"
 #: camel/providers/imap4/camel-imap4-store.c:1461
 #, fuzzy
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "Kausta `%s' ei saa tellida: Puudulik käsk"
+msgstr "Kausta `%s' pole võimalik tellida: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-store.c:1506
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
-msgstr "Kausta `%s' ei saa tellida: Vigane kirjakasti nimi name"
+msgstr "Kausta `%s' pole võimalik tellida: Vigane kirjakasti nimi name"
 
 #: camel/providers/imap4/camel-imap4-store.c:1511
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
-msgstr "Kausta `%s' ei saa tellida: Puudulik käsk"
+msgstr "Kausta `%s' pole võimalik tellida: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-store.c:1533
 #, fuzzy
@@ -3303,7 +3274,7 @@ msgstr "Ei saa loobuda kaustast `%s': Puudulik käsk"
 #: camel/providers/imap4/camel-imap4-store.c:1578
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
-msgstr "Kausta `%s' tellimisest ei saa loobuda: Vigane kirjakasti nimi"
+msgstr "Kausta `%s' tellimisest pole võimalik loobuda: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-store.c:1583
 #, fuzzy, c-format
@@ -3311,9 +3282,8 @@ msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Ei saa loobuda kaustast `%s': Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-summary.c:1497
-#, fuzzy
 msgid "Fetching envelopes for new messages"
-msgstr "Uute sõnumite kontroll"
+msgstr ""
 
 #: camel/providers/imap4/camel-imap4-utils.c:368
 #, fuzzy, c-format
@@ -3335,9 +3305,8 @@ msgid "Message storage"
 msgstr "Sõnumite säilitamine"
 
 #: camel/providers/imapp/camel-imapp-provider.c:48
-#, fuzzy
 msgid "IMAP+"
-msgstr "IMAP"
+msgstr "IMAP+"
 
 #: camel/providers/imapp/camel-imapp-provider.c:50
 msgid ""
@@ -3348,14 +3317,14 @@ msgid ""
 msgstr ""
 
 #: camel/providers/imapp/camel-imapp-store.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Could not connect to %s (port %s): %s"
-msgstr "Ei saa ühenduda hosti %s: %s"
+msgstr "Hostiga %s pole võimalik ühendust luua (port %s): %s"
 
 #: camel/providers/imapp/camel-imapp-store.c:348
-#, fuzzy, c-format
+#, c-format
 msgid "Could not connect to POP server on %s"
-msgstr "Ei saa luua ühendust POP serveriga %s"
+msgstr "POP serveriga %s pole võimalik ühenduda"
 
 #: camel/providers/local/camel-local-folder.c:179
 msgid "Index message body data"
@@ -3421,9 +3390,8 @@ msgid "Store status headers in Elm/Pine/Mutt format"
 msgstr "Salvesta olekupäised Elm/Pine/Mutt vormingus"
 
 #: camel/providers/local/camel-local-provider.c:108
-#, fuzzy
 msgid "Standard Unix mbox spool or directory"
-msgstr "Standardne Unix'i \"mbox\" puhver"
+msgstr "Standardne Unix'i mbox puhverkataloog"
 
 #: camel/providers/local/camel-local-provider.c:109
 #, fuzzy
@@ -3466,7 +3434,7 @@ msgstr "Kohaliku posti fail %s"
 #: camel/providers/local/camel-local-store.c:334
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
-msgstr "Kausta %s ei saa ümber nimetada %s-ks: %s"
+msgstr "Kausta %s pole võimalik ümber nimetada %s-ks: %s"
 
 #: camel/providers/local/camel-local-store.c:399
 #, c-format
@@ -3477,19 +3445,19 @@ msgstr "Ei saa ümber nimetada '%s': %s"
 #: camel/providers/local/camel-mbox-store.c:282
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
-msgstr "Kausta kokkuvõttefaili `%s' ei saa kustutada: %s"
+msgstr "Kausta kokkuvõttefaili `%s' pole võimalik kustutada: %s"
 
 #: camel/providers/local/camel-local-store.c:434
 #: camel/providers/local/camel-mbox-store.c:294
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
-msgstr "Kausta indeksfaili `%s' ei saa kustutada: %s"
+msgstr "Kausta indeksfaili `%s' pole võimalik kustutada: %s"
 
 #: camel/providers/local/camel-local-store.c:457
 #: camel/providers/local/camel-mbox-store.c:318
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
-msgstr "Kausta üldistusfaili `%s' ei saa kustutada: %s"
+msgstr "Kausta üldistusfaili `%s' pole võimalik kustutada: %s"
 
 #: camel/providers/local/camel-local-summary.c:406
 #, c-format
@@ -3498,7 +3466,7 @@ msgstr "Ei saa salvestada kokkuvõtet: %s: %s"
 
 #: camel/providers/local/camel-local-summary.c:464
 msgid "Unable to add message to summary: unknown reason"
-msgstr "Sõnumite ei saa lisada kokkuvõttesse: tundmatu põhjus"
+msgstr "Sõnumite pole võimalik lisada kokkuvõttesse: tundmatu põhjus"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: camel/providers/local/camel-maildir-folder.c:75
@@ -3548,7 +3516,7 @@ msgstr "Vigane sõnumi sisu"
 #: camel/providers/local/camel-mbox-store.c:194
 #, c-format
 msgid "Cannot create folder `%s': %s"
-msgstr "Kausta `%s' ei saa luua: %s"
+msgstr "Kausta `%s' pole võimalik luua: %s"
 
 #: camel/providers/local/camel-maildir-store.c:159
 #: camel/providers/local/camel-mbox-store.c:152
@@ -3574,7 +3542,7 @@ msgstr "Kausta `%s' ei saadud: see ei ole maildir kataloog."
 #: camel/providers/local/camel-mh-store.c:261
 #, c-format
 msgid "Could not delete folder `%s': %s"
-msgstr "Kausta `%s' ei saa kustutada: %s"
+msgstr "Kausta `%s' pole võimalik kustutada: %s"
 
 #: camel/providers/local/camel-maildir-store.c:234
 msgid "not a maildir directory"
@@ -3585,7 +3553,7 @@ msgstr "ei ole maildir vormingus kataloog"
 #: camel/providers/local/camel-spool-store.c:333
 #, c-format
 msgid "Could not scan folder `%s': %s"
-msgstr "Kausta `%s' ei saa läbi vaadata: %s"
+msgstr "Kausta `%s' pole võimalik läbi vaadata: %s"
 
 #: camel/providers/local/camel-maildir-summary.c:425
 #: camel/providers/local/camel-maildir-summary.c:556
@@ -3644,7 +3612,7 @@ msgstr "Tõrge sõnumi kokkupanekul."
 #: camel/providers/local/camel-mbox-store.c:174
 #: camel/providers/local/camel-mbox-store.c:359
 msgid "Cannot create a folder by this name."
-msgstr "Sellise nimega kausta ei saa luua."
+msgstr "Sellise nimega kausta pole võimalik luua."
 
 #: camel/providers/local/camel-mbox-store.c:204
 #, c-format
@@ -3659,7 +3627,7 @@ msgid ""
 "Could not delete folder `%s':\n"
 "%s"
 msgstr ""
-"Kataloogi `%s' ei saa kustutada:\n"
+"Kataloogi `%s' pole võimalik kustutada:\n"
 "%s"
 
 #: camel/providers/local/camel-mbox-store.c:253
@@ -3675,12 +3643,12 @@ msgstr "Kaust '%s' ei ole tühi, jätan kustutamata."
 #: camel/providers/local/camel-mbox-store.c:372
 #, c-format
 msgid "Cannot create directory `%s': %s."
-msgstr "Kataloogi %s ei saa luua: %s"
+msgstr "Kataloogi %s pole võimalik luua: %s"
 
 #: camel/providers/local/camel-mbox-store.c:386
 #, c-format
 msgid "Cannot create folder: %s: %s"
-msgstr "Kausta %s ei saa luua: %s"
+msgstr "Kausta %s pole võimalik luua: %s"
 
 #: camel/providers/local/camel-mbox-store.c:388
 msgid "Folder already exists"
@@ -3699,12 +3667,12 @@ msgstr "Ei saa ümber nimetada '%s': `%s': %s"
 #: camel/providers/local/camel-mbox-store.c:558
 #, fuzzy, c-format
 msgid "Could not rename '%s' to %s: %s"
-msgstr "Kausta %s ei saa ümber nimetada %s-ks: %s"
+msgstr "Kausta %s pole võimalik ümber nimetada %s-ks: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:422
 #, c-format
 msgid "Could not open folder: %s: %s"
-msgstr "Kausta %s ei saa avada: %s"
+msgstr "Kausta %s pole võimalik avada: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:470
 #, c-format
@@ -3721,7 +3689,7 @@ msgstr "Ei saa kontrollida kausta: %s: %s"
 #: camel/providers/local/camel-spool-summary.c:145
 #, c-format
 msgid "Could not open file: %s: %s"
-msgstr "Faili %s ei saa avada: %s"
+msgstr "Faili %s pole võimalik avada: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:606
 #: camel/providers/local/camel-spool-summary.c:165
@@ -3738,12 +3706,12 @@ msgstr "Ei saa sulgeda ajutist kausta %s: %s"
 #: camel/providers/local/camel-mbox-summary.c:628
 #, c-format
 msgid "Could not close temp folder: %s"
-msgstr "Ajutist kausta ei saa sulgeda: %s"
+msgstr "Ajutist kausta pole võimalik sulgeda: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:639
 #, c-format
 msgid "Could not rename folder: %s"
-msgstr "Kataloogi ei saa ümber nimetada : %s"
+msgstr "Kataloogi pole võimalik ümber nimetada : %s"
 
 #: camel/providers/local/camel-mbox-summary.c:723
 #: camel/providers/local/camel-mbox-summary.c:731
@@ -3761,7 +3729,7 @@ msgstr "Tundmatu viga: %s"
 #: camel/providers/local/camel-mbox-summary.c:894
 #, c-format
 msgid "Could not store folder: %s"
-msgstr "Kausta ei saa salvestada: %s"
+msgstr "Kausta pole võimalik salvestada: %s"
 
 #: camel/providers/local/camel-mbox-summary.c:988
 #: camel/providers/local/camel-mbox-summary.c:1014
@@ -3822,7 +3790,7 @@ msgid ""
 "Could not open folder `%s':\n"
 "%s"
 msgstr ""
-"Kausta %s ei saa avada:\n"
+"Kausta %s pole võimalik avada:\n"
 "%s"
 
 #: camel/providers/local/camel-spool-store.c:168
@@ -3836,7 +3804,7 @@ msgid ""
 "Could not create folder `%s':\n"
 "%s"
 msgstr ""
-"Kausta %s ei saa luua:\n"
+"Kausta %s pole võimalik luua:\n"
 "%s"
 
 #: camel/providers/local/camel-spool-store.c:181
@@ -3909,7 +3877,7 @@ msgstr ""
 
 #: camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr "Sõnumeid ei saa NNTP kaustast kopeerida!"
+msgstr "Sõnumeid pole võimalik NNTP kaustast kopeerida!"
 
 #: camel/providers/nntp/camel-nntp-provider.c:44
 msgid ""
@@ -4145,7 +4113,7 @@ msgstr "SASL `%s' Tõrge POP serverisse %s sisselogimisel: %s"
 #: camel/providers/pop3/camel-pop3-store.c:432
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr "POP serverisse %s ei saa sisse logida: SASL protokolli viga"
+msgstr "POP serverisse %s pole võimalik sisse logida: SASL protokolli viga"
 
 #: camel/providers/pop3/camel-pop3-store.c:451
 #, c-format
@@ -4210,7 +4178,7 @@ msgstr ""
 #: camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
-msgstr "Sõnumit ei saa saata: %s"
+msgstr "Sõnumit pole võimalik saata: %s"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
@@ -4393,7 +4361,7 @@ msgstr "SMTP posti saatmine %s kaudu"
 
 #: camel/providers/smtp/camel-smtp-transport.c:692
 msgid "Cannot send message: service not connected."
-msgstr "Sõnumit ei saa saata: teenus pole ühendatud."
+msgstr "Sõnumit pole võimalik saata: teenus pole ühendatud."
 
 #: camel/providers/smtp/camel-smtp-transport.c:698
 msgid "Cannot send message: sender address not valid."
@@ -4409,7 +4377,7 @@ msgstr "Ei saa saata sõnumit: saajate aadressid on määramata."
 
 #: camel/providers/smtp/camel-smtp-transport.c:728
 msgid "Cannot send message: one or more invalid recipients"
-msgstr "Sõnumit ei saa saata: üks või enam adressaate on vigased"
+msgstr "Sõnumit pole võimalik saata: üks või enam adressaate on vigased"
 
 #: camel/providers/smtp/camel-smtp-transport.c:897
 msgid "SMTP Greeting"
