@@ -126,6 +126,7 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT      "organizer-must-accept"
 #define CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED	 "delegate-support"
 #define CAL_STATIC_CAPABILITY_NO_ORGANIZER		 "no-organizer"
+#define CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY		 "delegate-to-many"
 
 /* Recurrent events. Management for instances */
 icalcomponent *e_cal_util_construct_instance (icalcomponent *icalcomp,

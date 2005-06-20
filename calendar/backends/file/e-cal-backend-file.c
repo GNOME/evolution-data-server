@@ -363,6 +363,7 @@ e_cal_backend_file_get_static_capabilities (ECalBackendSync *backend, EDataCal *
 {
 	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+				  CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
 	
 	return GNOME_Evolution_Calendar_Success;

@@ -1,3 +1,13 @@
+2005-06-20  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_get_static_capabilities): Added
+	the delegate support for file backend.
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_get_static_capabilities):
+	* libecal/e-cal-util.h: Added the static capability
+	to support delegation to multiple delegatees.
+
 2005-06-06  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
