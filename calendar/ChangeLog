@@ -1,3 +1,9 @@
+2005-06-21  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	Missed to commit the header file for delegate support
+	in groupwise.
+
 2005-06-20  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/file/e-cal-backend-file.c:
@@ -19,7 +25,6 @@
        	delegation.
 	(e_cal_backend_groupwise_utils_check_delegate): Checks if the 
 	meeting is delegated.
-	* backends/groupwise/e-cal-backend-groupwise-utils.h:
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	(e_cal_backend_groupwise_get_container_id): Gets the container
 	id from cbgw.

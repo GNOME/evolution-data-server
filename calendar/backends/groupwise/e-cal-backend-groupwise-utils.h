@@ -47,6 +47,9 @@ EGwConnectionStatus e_gw_connection_create_appointment (EGwConnection *cnc, cons
 EGwConnectionStatus e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *container, ECalComponent *comp, icalproperty_method method, gboolean *remove, ECalComponent **created_comp);
 EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy, icaltimezone *default_zone);
 void e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwise *cbgw);
+EGwItem * e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *comp);
+gboolean e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const char *email);
+
 
 /*
  * Component related utility functions
