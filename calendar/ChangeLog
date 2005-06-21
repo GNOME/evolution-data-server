@@ -1,8 +1,8 @@
 2005-06-21  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.h:
-	Missed to commit the header file for delegate support
-	in groupwise.
+	* backends/groupwise/e-cal-backend-groupwise.h:
+	Committing the changes made in the header file for delegate.
 
 2005-06-20  Chenthill Palanisamy  <pchenthill@novell.com>
 
