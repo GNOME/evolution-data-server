@@ -4,8 +4,6 @@ INCLUDES =						\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
-	-I$(top_srcdir)/calendar/backends/file		\
-	-I$(top_builddir)/calendar/backends/file	\
 	-I$(top_srcdir)/calendar/libical/src		\
 	-I$(top_builddir)/calendar/libical/src		\
 	-I$(top_srcdir)/calendar/libical/src/libical	\
@@ -28,7 +26,6 @@ libecalbackendgroupwise_la_SOURCES =		\
 
 libecalbackendgroupwise_la_LIBADD =					\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
-	$(top_builddir)/calendar/backends/file/libecalbackendfile.la\
 	$(top_builddir)/servers/groupwise/libegroupwise-1.2.la		\
 	$(SOUP_LIBS)
 

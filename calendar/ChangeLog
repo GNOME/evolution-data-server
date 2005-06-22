@@ -1,3 +1,8 @@
+2005-06-22  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/Makefile.am: Removed unnecessary
+	linking to file backend.
+
 2005-06-21  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.h:
