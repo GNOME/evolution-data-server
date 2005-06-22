@@ -1,3 +1,8 @@
+2005-06-22  Sarfraaz Ahmed <asarfraaz@novell.com>
+	
+	* storage/Makefile.am : e-shell-marshall.list should be disted.
+	* lib/Makefile.am : mapi-properties should also be disted.
+
 2005-06-15  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/Makefile.am : Install exchange-hierarchy-webdav.h and

@@ -99,6 +99,7 @@ libexchange_storageinclude_HEADERS = 				\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libexchange-storage-$(API_VERSION).pc
 
-EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) \
+		e-shell-marshal.list
 
 DISTCLEANFILES = $(pkgconfig_DATA)

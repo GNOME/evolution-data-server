@@ -143,6 +143,7 @@ libexchangeinclude_HEADERS = 					\
 
 EXTRA_DIST =							\
 	e2k-marshal.list					\
+	mapi-properties						\
 	$(e2k_propnames_h_in)					\
 	$(e2k_propnames_c_in)					\
 	$(e2k_proptags_h_in)
