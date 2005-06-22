@@ -1,3 +1,9 @@
+2005-06-22  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Don't check locking on Win32. Add gnome-vfs-2.0 o
+	E_DATA_SERVER_DEPS. Add gobject-2.0 to CAMEL deps. Substitute also
+	EXEEXT in EVO_SUBST_SERVER_RULE.
+
 2005-06-12  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* servers/Makefile.am : use ENABLE_LDAP instead of HAVE_LDAP
