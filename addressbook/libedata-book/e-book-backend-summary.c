@@ -31,8 +31,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include <netinet/in.h>
-
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-util.h>
 #include <libebook/e-contact.h>
@@ -283,7 +281,7 @@ e_book_backend_summary_load_header (EBookBackendSummary *summary, FILE *fp,
 	if (rv != 1)
 		return FALSE;
 
-	header->file_version = ntohl (header->file_version);
+	header->file_version = g_ntohl (header->file_version);
 
 	if (header->file_version < PAS_SUMMARY_FILE_VERSION) {
 		return FALSE; /* this will cause the entire summary to be rebuilt */
@@ -293,12 +291,12 @@ e_book_backend_summary_load_header (EBookBackendSummary *summary, FILE *fp,
 	if (rv != 1)
 		return FALSE;
 
-	header->num_items = ntohl (header->num_items);
+	header->num_items = g_ntohl (header->num_items);
 
 	rv = fread (&header->summary_mtime, sizeof (header->summary_mtime), 1, fp);
 	if (rv != 1)
 		return FALSE;
-	header->summary_mtime = ntohl (header->summary_mtime);
+	header->summary_mtime = g_ntohl (header->summary_mtime);
 
 	return TRUE;
 }
@@ -334,16 +332,16 @@ e_book_backend_summary_load_item (EBookBackendSummary *summary,
 		if (rv != 1)
 			return FALSE;
 
-		disk_item.id_len = ntohs (disk_item.id_len);
-		disk_item.nickname_len = ntohs (disk_item.nickname_len);
-		disk_item.full_name_len = ntohs (disk_item.full_name_len);
-		disk_item.given_name_len = ntohs (disk_item.given_name_len);
-		disk_item.surname_len = ntohs (disk_item.surname_len);
-		disk_item.file_as_len = ntohs (disk_item.file_as_len);
-		disk_item.email_1_len = ntohs (disk_item.email_1_len);
-		disk_item.email_2_len = ntohs (disk_item.email_2_len);
-		disk_item.email_3_len = ntohs (disk_item.email_3_len);
-		disk_item.email_4_len = ntohs (disk_item.email_4_len);
+		disk_item.id_len = g_ntohs (disk_item.id_len);
+		disk_item.nickname_len = g_ntohs (disk_item.nickname_len);
+		disk_item.full_name_len = g_ntohs (disk_item.full_name_len);
+		disk_item.given_name_len = g_ntohs (disk_item.given_name_len);
+		disk_item.surname_len = g_ntohs (disk_item.surname_len);
+		disk_item.file_as_len = g_ntohs (disk_item.file_as_len);
+		disk_item.email_1_len = g_ntohs (disk_item.email_1_len);
+		disk_item.email_2_len = g_ntohs (disk_item.email_2_len);
+		disk_item.email_3_len = g_ntohs (disk_item.email_3_len);
+		disk_item.email_4_len = g_ntohs (disk_item.email_4_len);
 
 		item = g_new0 (EBookBackendSummaryItem, 1);
 
@@ -568,9 +566,9 @@ e_book_backend_summary_save_header (EBookBackendSummary *summary, FILE *fp)
 	EBookBackendSummaryHeader header;
 	int rv;
 
-	header.file_version = htonl (PAS_SUMMARY_FILE_VERSION);
-	header.num_items = htonl (summary->priv->items->len);
-	header.summary_mtime = htonl (time (NULL));
+	header.file_version = g_htonl (PAS_SUMMARY_FILE_VERSION);
+	header.num_items = g_htonl (summary->priv->items->len);
+	header.summary_mtime = g_htonl (time (NULL));
 
 	rv = fwrite (&header, sizeof (header), 1, fp);
 	if (rv != 1)
@@ -599,34 +597,34 @@ e_book_backend_summary_save_item (EBookBackendSummary *summary, FILE *fp, EBookB
 	int rv;
 
 	len = item->id ? strlen (item->id) : 0;
-	disk_item.id_len = htons (len);
+	disk_item.id_len = g_htons (len);
 
 	len = item->nickname ? strlen (item->nickname) : 0;
-	disk_item.nickname_len = htons (len);
+	disk_item.nickname_len = g_htons (len);
 
 	len = item->given_name ? strlen (item->given_name) : 0;
-	disk_item.given_name_len = htons (len);
+	disk_item.given_name_len = g_htons (len);
 
 	len = item->full_name ? strlen (item->full_name) : 0;
-	disk_item.full_name_len = htons (len);
+	disk_item.full_name_len = g_htons (len);
 
 	len = item->surname ? strlen (item->surname) : 0;
-	disk_item.surname_len = htons (len);
+	disk_item.surname_len = g_htons (len);
 
 	len = item->file_as ? strlen (item->file_as) : 0;
-	disk_item.file_as_len = htons (len);
+	disk_item.file_as_len = g_htons (len);
 
 	len = item->email_1 ? strlen (item->email_1) : 0;
-	disk_item.email_1_len = htons (len);
+	disk_item.email_1_len = g_htons (len);
 
 	len = item->email_2 ? strlen (item->email_2) : 0;
-	disk_item.email_2_len = htons (len);
+	disk_item.email_2_len = g_htons (len);
 
 	len = item->email_3 ? strlen (item->email_3) : 0;
-	disk_item.email_3_len = htons (len);
+	disk_item.email_3_len = g_htons (len);
 
 	len = item->email_4 ? strlen (item->email_4) : 0;
-	disk_item.email_4_len = htons (len);
+	disk_item.email_4_len = g_htons (len);
 
 	disk_item.wants_html = item->wants_html;
 	disk_item.wants_html_set = item->wants_html_set;

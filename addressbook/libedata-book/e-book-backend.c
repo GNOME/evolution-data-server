@@ -7,7 +7,7 @@
  */
 
 #include <config.h>
-#include <pthread.h>
+
 #include "e-data-book-marshal.h"
 #include "e-data-book-view.h"
 #include "e-book-backend.h"

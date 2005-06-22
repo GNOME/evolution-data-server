@@ -25,7 +25,6 @@
 #include <config.h>
 #endif
 
-#include <pthread.h>
 #include <string.h>
 
 #include <libedataserver/e-data-server-module.h>

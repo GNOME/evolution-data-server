@@ -1,3 +1,34 @@
+2005-06-22  Tor Lillqvist  <tml@novell.com>
+
+	* backends/*/Makefile.am (*_LIBADD): Add libebook, libedata-book,
+	libedataserver, libdb and EVOLUTION_ADDRESSBOOK_LIBS as needed to
+	satisfy -no-undefined.
+	(*_LDFLAGS): Use NO_UNDEFINED (expands to -no-undefined on
+	Windows).
+	
+	* backends/file/e-book-backend-file-factory.c
+	* libedata-book/e-book-backend-factory.c
+	* libedata-book/e-book-backend.c
+	* libedata-book/e-data-book-factory.c: Drop superfluous inclusion
+	of <pthread.h>. No pthread API was used in these files.
+
+	* backends/file/e-book-backend-file.c (set_revision)
+	* backends/vcf/e-book-backend-vcf.c (set_revision): Use
+	g_get_current_time() instead of gettimeofday().
+	
+	* libebook/Makefile.am
+	* libedata-book/Makefile.am: Use NO_UNDEFINED.
+
+	* libebook/e-book-view-listener.c: Don't include <pthread.h>. In
+	the (normally not even compiled) debugging output print the value
+	of g_thread_self() instead of pthread_self().
+
+	* libebook/e-book.c: Use GThread API instead of pthreads to start
+	the mainloop thread.
+
+	* libedata-book/e-book-backend-summary.c: Drop inclusion of
+	<netinet/in.h>. Use g_ntoh*() and g_hton*().
+
 2005-06-16  Sushma Rai  <rsushma@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c (func_contains): Ignoring 

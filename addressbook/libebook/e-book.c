@@ -2,8 +2,6 @@
 
 #include <config.h>
 
-#include <pthread.h>
-
 #include <string.h>
 
 #include "e-book.h"
@@ -3720,7 +3718,7 @@ e_book_activate()
 
 	g_static_mutex_lock (&e_book_lock);
 	if (!activated) {
-		pthread_t ebook_mainloop_thread;
+		GThread *ebook_mainloop_thread;
 		activated = TRUE;
 
 		_ebook_context = g_main_context_new ();
@@ -3728,7 +3726,7 @@ e_book_activate()
 		if (!bonobo_is_initialized ())
 			bonobo_init (NULL, NULL);
 
-		pthread_create(&ebook_mainloop_thread, NULL, startup_mainloop, NULL);
+		ebook_mainloop_thread = g_thread_create(startup_mainloop, NULL, FALSE, NULL);
 	}
 	g_static_mutex_unlock (&e_book_lock);
 }

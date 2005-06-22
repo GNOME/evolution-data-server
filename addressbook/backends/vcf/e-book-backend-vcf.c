@@ -204,10 +204,10 @@ set_revision (EContact *contact)
 {
 	char time_string[25] = {0};
 	const struct tm *tm = NULL;
-	struct timeval tv;
+	GTimeVal tv;
 
-	if (!gettimeofday (&tv, NULL))
-		tm = gmtime (&tv.tv_sec);
+	g_get_current_time (&tv);
+	tm = gmtime (&tv.tv_sec);
 	if (tm)
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	e_contact_set (contact, E_CONTACT_REV, time_string);

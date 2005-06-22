@@ -11,7 +11,6 @@
 #include <config.h>
 #endif
 
-#include <pthread.h>
 #include <string.h>
 
 #include <bonobo-activation/bonobo-activation.h>
