@@ -716,6 +716,14 @@ e_contact_set_property (GObject *object,
 				else {
 					/* we didn't find it - add a new attribute */
 					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
+					if (!strcmp(info->vcard_field_name, "EMAIL") && 
+					    !info->attr_type1 && 
+					    !info->attr_type2) {
+						/* Add default type */
+						e_vcard_attribute_add_param_with_value ( attr,
+								e_vcard_attribute_param_new (EVC_TYPE),
+								"OTHER");
+					}
 					e_vcard_add_attribute (E_VCARD (contact), attr);
 				}
 
@@ -856,7 +864,6 @@ e_contact_set_property (GObject *object,
 
 				e_vcard_attribute_add_value (attr, g_value_get_string (value));
 			}
-
 		}
 		else {
 			switch (info->field_id) {

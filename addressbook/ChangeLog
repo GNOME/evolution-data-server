@@ -1,3 +1,8 @@
+2005-06-25  Sushma Rai  <rsushma@novell.com>
+
+	* libebook/e-contact.c (e_contact_set_property): Setting TYPE=OTHER
+	default parameter to email attribute. Fixes #240756
+
 2005-06-22  Tor Lillqvist  <tml@novell.com>
 
 	* backends/*/Makefile.am (*_LIBADD): Add libebook, libedata-book,
