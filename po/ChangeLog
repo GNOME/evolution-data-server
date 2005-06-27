@@ -1,3 +1,7 @@
+2005-06-27  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* POTFILES.in : Added missing exchange files.
+
 2005-06-22  Abel Cheung  <maddog@linuxhall.org>
 
 	* zh_TW.po: Fix language team reference.
