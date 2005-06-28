@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-20 13:52+0000\n"
+"POT-Creation-Date: 2005-06-28 05:18+0000\n"
 "PO-Revision-Date: 2005-06-20 22:07+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -84,91 +84,91 @@ msgstr "Viga otsingu teostamisel"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:240 ../addressbook/libebook/e-book.c:244
-#: ../addressbook/libebook/e-book.c:456 ../addressbook/libebook/e-book.c:460
-#: ../addressbook/libebook/e-book.c:601 ../addressbook/libebook/e-book.c:605
-#: ../addressbook/libebook/e-book.c:694 ../addressbook/libebook/e-book.c:698
-#: ../addressbook/libebook/e-book.c:1012 ../addressbook/libebook/e-book.c:1017
-#: ../addressbook/libebook/e-book.c:1204 ../addressbook/libebook/e-book.c:1208
-#: ../addressbook/libebook/e-book.c:1365 ../addressbook/libebook/e-book.c:1369
-#: ../addressbook/libebook/e-book.c:1578 ../addressbook/libebook/e-book.c:1582
-#: ../addressbook/libebook/e-book.c:1819 ../addressbook/libebook/e-book.c:1823
-#: ../addressbook/libebook/e-book.c:2059 ../addressbook/libebook/e-book.c:2063
-#: ../addressbook/libebook/e-book.c:2275 ../addressbook/libebook/e-book.c:2279
-#: ../addressbook/libebook/e-book.c:3375
+#: ../addressbook/libebook/e-book.c:238 ../addressbook/libebook/e-book.c:242
+#: ../addressbook/libebook/e-book.c:454 ../addressbook/libebook/e-book.c:458
+#: ../addressbook/libebook/e-book.c:599 ../addressbook/libebook/e-book.c:603
+#: ../addressbook/libebook/e-book.c:692 ../addressbook/libebook/e-book.c:696
+#: ../addressbook/libebook/e-book.c:1010 ../addressbook/libebook/e-book.c:1015
+#: ../addressbook/libebook/e-book.c:1202 ../addressbook/libebook/e-book.c:1206
+#: ../addressbook/libebook/e-book.c:1363 ../addressbook/libebook/e-book.c:1367
+#: ../addressbook/libebook/e-book.c:1576 ../addressbook/libebook/e-book.c:1580
+#: ../addressbook/libebook/e-book.c:1817 ../addressbook/libebook/e-book.c:1821
+#: ../addressbook/libebook/e-book.c:2057 ../addressbook/libebook/e-book.c:2061
+#: ../addressbook/libebook/e-book.c:2273 ../addressbook/libebook/e-book.c:2277
+#: ../addressbook/libebook/e-book.c:3373
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr ""
 
-#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:469
-#: ../addressbook/libebook/e-book.c:614 ../addressbook/libebook/e-book.c:707
-#: ../addressbook/libebook/e-book.c:1027 ../addressbook/libebook/e-book.c:1218
-#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1591
-#: ../addressbook/libebook/e-book.c:1832 ../addressbook/libebook/e-book.c:2073
-#: ../addressbook/libebook/e-book.c:2288 ../addressbook/libebook/e-book.c:2624
-#: ../addressbook/libebook/e-book.c:2830
+#: ../addressbook/libebook/e-book.c:251 ../addressbook/libebook/e-book.c:467
+#: ../addressbook/libebook/e-book.c:612 ../addressbook/libebook/e-book.c:705
+#: ../addressbook/libebook/e-book.c:1025 ../addressbook/libebook/e-book.c:1216
+#: ../addressbook/libebook/e-book.c:1377 ../addressbook/libebook/e-book.c:1589
+#: ../addressbook/libebook/e-book.c:1830 ../addressbook/libebook/e-book.c:2071
+#: ../addressbook/libebook/e-book.c:2286 ../addressbook/libebook/e-book.c:2622
+#: ../addressbook/libebook/e-book.c:2828
 msgid "book busy"
 msgstr ""
 
-#: ../addressbook/libebook/e-book.c:286 ../addressbook/libebook/e-book.c:290
-#: ../addressbook/libebook/e-book.c:502 ../addressbook/libebook/e-book.c:506
-#: ../addressbook/libebook/e-book.c:643 ../addressbook/libebook/e-book.c:647
-#: ../addressbook/libebook/e-book.c:736 ../addressbook/libebook/e-book.c:740
-#: ../addressbook/libebook/e-book.c:1056 ../addressbook/libebook/e-book.c:1059
-#: ../addressbook/libebook/e-book.c:1250 ../addressbook/libebook/e-book.c:1253
-#: ../addressbook/libebook/e-book.c:1408 ../addressbook/libebook/e-book.c:1412
-#: ../addressbook/libebook/e-book.c:1627 ../addressbook/libebook/e-book.c:1631
-#: ../addressbook/libebook/e-book.c:1879 ../addressbook/libebook/e-book.c:1883
-#: ../addressbook/libebook/e-book.c:2105 ../addressbook/libebook/e-book.c:2109
-#: ../addressbook/libebook/e-book.c:2316 ../addressbook/libebook/e-book.c:2320
-#: ../addressbook/libebook/e-book.c:2565 ../addressbook/libebook/e-book.c:2652
-#: ../addressbook/libebook/e-book.c:2656 ../addressbook/libebook/e-book.c:2858
-#: ../addressbook/libebook/e-book.c:2862 ../addressbook/libebook/e-book.c:3384
+#: ../addressbook/libebook/e-book.c:284 ../addressbook/libebook/e-book.c:288
+#: ../addressbook/libebook/e-book.c:500 ../addressbook/libebook/e-book.c:504
+#: ../addressbook/libebook/e-book.c:641 ../addressbook/libebook/e-book.c:645
+#: ../addressbook/libebook/e-book.c:734 ../addressbook/libebook/e-book.c:738
+#: ../addressbook/libebook/e-book.c:1054 ../addressbook/libebook/e-book.c:1057
+#: ../addressbook/libebook/e-book.c:1248 ../addressbook/libebook/e-book.c:1251
+#: ../addressbook/libebook/e-book.c:1406 ../addressbook/libebook/e-book.c:1410
+#: ../addressbook/libebook/e-book.c:1625 ../addressbook/libebook/e-book.c:1629
+#: ../addressbook/libebook/e-book.c:1877 ../addressbook/libebook/e-book.c:1881
+#: ../addressbook/libebook/e-book.c:2103 ../addressbook/libebook/e-book.c:2107
+#: ../addressbook/libebook/e-book.c:2314 ../addressbook/libebook/e-book.c:2318
+#: ../addressbook/libebook/e-book.c:2563 ../addressbook/libebook/e-book.c:2650
+#: ../addressbook/libebook/e-book.c:2654 ../addressbook/libebook/e-book.c:2856
+#: ../addressbook/libebook/e-book.c:2860 ../addressbook/libebook/e-book.c:3382
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA erandolukord \"%s\" käsu täitmisel"
 
-#: ../addressbook/libebook/e-book.c:2546
+#: ../addressbook/libebook/e-book.c:2544
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: käimasolevat toimingut ei ole"
 
-#: ../addressbook/libebook/e-book.c:2581
+#: ../addressbook/libebook/e-book.c:2579
 #, c-format
 msgid "%s: couldn't cancel"
 msgstr "%s: pole võimalik tühistada"
 
-#: ../addressbook/libebook/e-book.c:2610 ../addressbook/libebook/e-book.c:2614
+#: ../addressbook/libebook/e-book.c:2608 ../addressbook/libebook/e-book.c:2612
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr ""
 
-#: ../addressbook/libebook/e-book.c:2680
+#: ../addressbook/libebook/e-book.c:2678
 #, c-format
 msgid "%s: cancelled"
 msgstr "%s: tühistatud"
 
-#: ../addressbook/libebook/e-book.c:3241
+#: ../addressbook/libebook/e-book.c:3239
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Vigane allikas"
 
-#: ../addressbook/libebook/e-book.c:3249 ../addressbook/libebook/e-book.c:3313
+#: ../addressbook/libebook/e-book.c:3247 ../addressbook/libebook/e-book.c:3311
 #, c-format
 msgid "%s: no factories available for uri `%s'"
 msgstr ""
 
-#: ../addressbook/libebook/e-book.c:3261
+#: ../addressbook/libebook/e-book.c:3259
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListener'i pole võimalik luua"
 
-#: ../addressbook/libebook/e-book.c:3524
+#: ../addressbook/libebook/e-book.c:3522
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
 msgstr ""
 
-#: ../addressbook/libebook/e-book.c:3654
+#: ../addressbook/libebook/e-book.c:3652
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr ""
@@ -623,7 +623,7 @@ msgstr "Ekraaninimede loend"
 msgid "Last Revision"
 msgstr "Viimane ülevaatus"
 
-#: ../addressbook/libebook/e-contact.c:1222
+#: ../addressbook/libebook/e-contact.c:1229
 #: ../addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Nimetute nimekiri"
@@ -671,7 +671,7 @@ msgid "Calendar"
 msgstr "Kalender"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:637
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:876
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:877
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
@@ -1084,6 +1084,7 @@ msgid "URI already loaded"
 msgstr "URI on juba laetud"
 
 #: ../calendar/libecal/e-cal.c:4838
+#: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Juurdepääs keelatud"
 
@@ -1124,10 +1125,13 @@ msgstr "Tekkis CORBA viga"
 #: ../camel/providers/pop3/camel-pop3-store.c:542
 #: ../camel/providers/pop3/camel-pop3-store.c:548
 #: ../servers/groupwise/e-gw-connection.c:174
+#: ../servers/exchange/storage/e-storage.c:586
+#: ../servers/exchange/storage/exchange-account.c:1521
 msgid "Unknown error"
 msgstr "Tundmatu viga"
 
 #: ../calendar/libecal/e-cal.c:4858
+#: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Vigu ei tekkinud"
 
@@ -1553,7 +1557,9 @@ msgstr "Sõnumi signatuuri pole võimalik kontrollida: Sõnumivorming on vigane"
 #: ../camel/camel-gpg-context.c:1423
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik luua: %s"
+msgstr ""
+"Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik "
+"luua: %s"
 
 #: ../camel/camel-gpg-context.c:1502
 #, c-format
@@ -1602,7 +1608,8 @@ msgstr "Lukustamisabilist pole võimalik forkida: %s"
 #: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr "'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
+msgstr ""
+"'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
 
 #: ../camel/camel-lock-client.c:204
 #, c-format
@@ -3187,12 +3194,14 @@ msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Tundmatu"
 #: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:71
 #, fuzzy
@@ -3270,7 +3279,8 @@ msgstr "Kausta `%s' pole võimalik kustutada: Puudulik käsk"
 #: ../camel/providers/imap4/camel-imap4-store.c:1042
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1049
 #, fuzzy
@@ -3280,7 +3290,8 @@ msgstr "Ei saa muuda kausta %s nime %s-ks: %s"
 #: ../camel/providers/imap4/camel-imap4-store.c:1080
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1085
 #, c-format
@@ -4834,6 +4845,237 @@ msgstr "Serverilt ei saabunud vastust"
 msgid "Bad parameter"
 msgstr "Vigane parameeter"
 
+#. i18n: These are Outlook's words for the default roles in
+#. the folder permissions dialog.
+#: ../servers/exchange/lib/e2k-security-descriptor.c:847
+msgid "Owner"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:857
+msgid "Publishing Editor"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:865
+#, fuzzy
+msgid "Editor"
+msgstr "_Redaktor"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:872
+msgid "Publishing Author"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:878
+msgid "Author"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:883
+msgid "Non-editing Author"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:887
+msgid "Reviewer"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:889
+msgid "Contributor"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:891
+#, fuzzy
+msgid "None"
+msgstr "Märkus"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:906
+#, fuzzy
+msgid "Custom"
+msgstr "Võtmeklient"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:144
+msgid "Select User"
+msgstr ""
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:182
+#, fuzzy
+msgid "Addressbook..."
+msgstr "Aadressiraamat"
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#, fuzzy, c-format
+msgid "Enter password for %s"
+msgstr "Sisesta %s parool (kasutaja %s)"
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1575
+#: ../servers/exchange/storage/exchange-account.c:882
+#, fuzzy
+msgid "Enter password"
+msgstr "Parool"
+
+#: ../servers/exchange/storage/e-storage.c:556
+msgid "Generic error"
+msgstr ""
+
+#: ../servers/exchange/storage/e-storage.c:558
+#, fuzzy
+msgid "A folder with the same name already exists"
+msgstr "Kaust on juba olemas"
+
+#: ../servers/exchange/storage/e-storage.c:560
+msgid "The specified folder type is not valid"
+msgstr ""
+
+#: ../servers/exchange/storage/e-storage.c:562
+#, fuzzy
+msgid "I/O error"
+msgstr "Vigu ei tekkinud"
+
+#: ../servers/exchange/storage/e-storage.c:564
+msgid "Not enough space to create the folder"
+msgstr ""
+
+#: ../servers/exchange/storage/e-storage.c:566
+#, fuzzy
+msgid "The folder is not empty"
+msgstr "%1: kausta sobivuse kontroll"
+
+#: ../servers/exchange/storage/e-storage.c:568
+msgid "The specified folder was not found"
+msgstr ""
+
+#: ../servers/exchange/storage/e-storage.c:570
+msgid "Function not implemented in this storage"
+msgstr ""
+
+#: ../servers/exchange/storage/e-storage.c:574
+#, fuzzy
+msgid "Operation not supported"
+msgstr "Mitte toetatud protokoll"
+
+#: ../servers/exchange/storage/e-storage.c:576
+#, fuzzy
+msgid "The specified type is not supported in this storage"
+msgstr "See šiffer ei toeta kontrolli"
+
+#: ../servers/exchange/storage/e-storage.c:578
+msgid "The specified folder cannot be modified or removed"
+msgstr ""
+
+#: ../servers/exchange/storage/e-storage.c:580
+msgid "Cannot make a folder a child of one of its descendants"
+msgstr ""
+
+#: ../servers/exchange/storage/e-storage.c:582
+#, fuzzy
+msgid "Cannot create a folder with that name"
+msgstr "Sellise nimega kausta pole võimalik luua."
+
+#: ../servers/exchange/storage/e-storage.c:584
+#, fuzzy
+msgid "This operation cannot be performed in off-line mode"
+msgstr "See sõnum pole autonoomses režiimis kättesaadav."
+
+#. i18n: This is the title of an "other user's folders"
+#. hierarchy. Eg, "John Doe's Folders".
+#: ../servers/exchange/storage/exchange-account.c:585
+#, fuzzy, c-format
+msgid "%s's Folders"
+msgstr "Kaustad"
+
+#: ../servers/exchange/storage/exchange-account.c:877
+#, fuzzy, c-format
+msgid "%sEnter password for %s"
+msgstr "Sisesta %s parool (kasutaja %s)"
+
+#: ../servers/exchange/storage/exchange-account.c:1233
+#, fuzzy
+msgid "Personal Folders"
+msgstr "Isiklik"
+
+#: ../servers/exchange/storage/exchange-account.c:1248
+msgid "Favorite Public Folders"
+msgstr ""
+
+#. i18n: Outlookism
+#: ../servers/exchange/storage/exchange-account.c:1265
+msgid "All Public Folders"
+msgstr ""
+
+#. i18n: Outlookism
+#: ../servers/exchange/storage/exchange-account.c:1279
+#, fuzzy
+msgid "Global Address List"
+msgstr "Aadresside loend"
+
+#: ../servers/exchange/storage/exchange-account.c:1432
+#, fuzzy
+msgid ""
+"Could not authenticate to server. (Password incorrect?)\n"
+"\n"
+msgstr "Ei saa autentida serverisse: %s"
+
+#: ../servers/exchange/storage/exchange-account.c:1437
+msgid ""
+"Could not authenticate to server.\n"
+"\n"
+"This probably means that your server requires you\n"
+"to specify the Windows domain name as part of your\n"
+"username (eg, \"DOMAIN\\user\").\n"
+"\n"
+"Or you might have just typed your password wrong.\n"
+"\n"
+msgstr ""
+
+#: ../servers/exchange/storage/exchange-account.c:1479
+#, c-format
+msgid "Mailbox for %s is not on this server."
+msgstr ""
+
+#: ../servers/exchange/storage/exchange-account.c:1484
+#, c-format
+msgid ""
+"The server '%s' is running Exchange 5.5 and is\n"
+"therefore not compatible with Ximian Connector"
+msgstr ""
+
+#: ../servers/exchange/storage/exchange-account.c:1491
+#, c-format
+msgid ""
+"Could not find Exchange Web Storage System at %s.\n"
+"If OWA is running on a different path, you must specify that in the\n"
+"account configuration dialog."
+msgstr ""
+
+#: ../servers/exchange/storage/exchange-account.c:1499
+#, c-format
+msgid "No mailbox for user %s on %s.\n"
+msgstr ""
+
+#: ../servers/exchange/storage/exchange-account.c:1505
+#: ../servers/exchange/storage/exchange-account.c:1511
+#: ../servers/exchange/storage/exchange-account.c:1519
+#, fuzzy, c-format
+msgid "Could not connect to server %s: %s"
+msgstr "Hostiga %s pole võimalik ühenduda: %s"
+
+#: ../servers/exchange/storage/exchange-account.c:1507
+#, fuzzy
+msgid "Could not resolve hostname"
+msgstr "Kausta pole võimalik salvestada: %s"
+
+#: ../servers/exchange/storage/exchange-account.c:1513
+#, fuzzy
+msgid "Network error"
+msgstr "Vigu ei tekkinud"
+
+#: ../servers/exchange/storage/exchange-folder-size.c:322
+#, fuzzy
+msgid "Folder Name"
+msgstr "Täisnimi"
+
+#: ../servers/exchange/storage/exchange-folder-size.c:326
+#, fuzzy
+msgid "Folder Size"
+msgstr "Kaustad"
+
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr ""
@@ -4856,5 +5098,5 @@ msgstr "Evolution'i andmeserveri logimisteenus"
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
-msgid "Groupwise server %s"
-msgstr "Groupwise server %s"
+#~ msgid "Groupwise server %s"
+#~ msgstr "Groupwise server %s"
