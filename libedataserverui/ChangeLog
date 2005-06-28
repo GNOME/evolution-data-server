@@ -1,3 +1,9 @@
+2005-06-28  Sushma Rai  <rsushma@novell.com>
+
+	* e-name-selector-entry.c (setup_contact_store): Added 
+	ensure_type_ahead_complete_on_idle() call back.
+	Patch by "Hans Petter Jansson" to fix #302006.
+
 2005-06-09  Ross Burton  <ross@burtonini.com>
 
 	* e-categories-dialog.c:

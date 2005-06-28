@@ -1340,6 +1340,16 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 }
 
 static void
+ensure_type_ahead_complete_on_idle (ENameSelectorEntry *name_selector_entry)
+{
+	if (!name_selector_entry->type_ahead_complete_cb_id) {
+		name_selector_entry->type_ahead_complete_cb_id =
+			g_idle_add ((GSourceFunc) type_ahead_complete_on_idle_cb,
+				    name_selector_entry);
+	}
+}
+
+static void
 setup_contact_store (ENameSelectorEntry *name_selector_entry)
 {
 	if (name_selector_entry->email_generator) {
@@ -1359,6 +1369,10 @@ setup_contact_store (ENameSelectorEntry *name_selector_entry)
 
 		gtk_entry_completion_set_model (name_selector_entry->entry_completion,
 						GTK_TREE_MODEL (name_selector_entry->email_generator));
+
+		/* Set up callback for incoming matches */
+		g_signal_connect_swapped (name_selector_entry->contact_store, "row-inserted",
+					  G_CALLBACK (ensure_type_ahead_complete_on_idle), name_selector_entry);
 	} else {
 		/* Remove the store from the entry completion */
 
