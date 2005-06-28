@@ -137,6 +137,9 @@ ExchangeAccountFolderResult exchange_account_add_favorite            (ExchangeAc
 ExchangeAccountFolderResult exchange_account_remove_favorite         (ExchangeAccount *account,
 								      EFolder         *folder);
 
+gboolean exchange_account_is_favorite_folder         (ExchangeAccount *account,
+								      EFolder         *folder);
+
 char * exchange_account_get_username (ExchangeAccount *account);
 
 #ifdef __cplusplus

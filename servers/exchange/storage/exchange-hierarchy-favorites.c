@@ -143,6 +143,7 @@ get_hrefs (ExchangeHierarchySomeDAV *hsd)
 		source_key = e2k_properties_get_prop (result->props, PR_FAV_PUBLIC_SOURCE_KEY);
 		if (!source_key)
 			continue;
+
 		perm_url = e2k_entryid_to_permanenturl (source_key, hfav->priv->public_uri);
 
 		status = e2k_context_propfind (ctx, NULL, perm_url,
@@ -170,6 +171,28 @@ get_hrefs (ExchangeHierarchySomeDAV *hsd)
 
 	return hrefs;
 }	
+/**
+ * exchange_hierarchy_favorites_is_added:
+ * @hier: the hierarchy
+ * @folder: the Public Folder to check in the favorites tree
+ *
+ * Checks if @folder is present in the favorites hierarchy
+ *
+ * Return value: TRUE if @folder is already added as a favorite.
+ **/
+
+gboolean
+exchange_hierarchy_favorites_is_added (ExchangeHierarchy *hier, EFolder *folder)
+{
+	ExchangeHierarchyFavorites *hfav =
+		EXCHANGE_HIERARCHY_FAVORITES (hier);
+	const char *folder_uri, *shortcut_uri;
+
+	folder_uri = e_folder_exchange_get_internal_uri (folder);
+	shortcut_uri = g_hash_table_lookup (hfav->priv->shortcuts, folder_uri);
+	
+	return shortcut_uri ? TRUE : FALSE;
+}
 
 static ExchangeAccountFolderResult
 remove_folder (ExchangeHierarchy *hier, EFolder *folder)

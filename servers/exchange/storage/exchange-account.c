@@ -779,6 +779,18 @@ exchange_account_remove_favorite (ExchangeAccount *account,
 		folder);
 }
 
+gboolean
+exchange_account_is_favorite_folder (ExchangeAccount *account,
+					EFolder         *folder)
+{
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
+	g_return_val_if_fail (E_IS_FOLDER (folder), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
+
+	return exchange_hierarchy_favorites_is_added (
+		EXCHANGE_HIERARCHY (account->priv->favorites_hierarchy),
+		folder);
+}
+
 static void
 context_redirect (E2kContext *ctx, E2kHTTPStatus status,
 		  const char *old_uri, const char *new_uri,
@@ -1775,7 +1787,6 @@ exchange_account_get_folder (ExchangeAccount *account,
 			     const char *path_or_uri)
 {
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
-	printf ("path or uri : %s\n", path_or_uri);
 	
 	return g_hash_table_lookup (account->priv->folders, path_or_uri);
 }
@@ -1799,7 +1810,7 @@ add_folder (gpointer key, gpointer value, gpointer folders)
 	 * we only want to add it to the results array once. So
 	 * we only add when we see the "path" key.
 	 */
-	if (!strcmp (key, e_folder_exchange_get_path (folder)))
+	if (!strcmp (key, e_folder_exchange_get_path (folder))) 
 		g_ptr_array_add (folders, folder);
 }
 

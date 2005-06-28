@@ -42,6 +42,9 @@ ExchangeHierarchy *exchange_hierarchy_favorites_new (ExchangeAccount *account,
 ExchangeAccountFolderResult  exchange_hierarchy_favorites_add_folder (ExchangeHierarchy *hier,
 								      EFolder *folder);
 
+gboolean exchange_hierarchy_favorites_is_added (ExchangeHierarchy *hier,
+						EFolder *folder);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

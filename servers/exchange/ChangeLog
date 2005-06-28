@@ -1,3 +1,13 @@
+2005-06-28  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/exchange-account.c (exchange_account_is_favorite_folder) :
+	Added new to check for favorites folder.
+	* storage/exchange-account.h : Similar
+	* storage/exchange-hierarchy-favorites.c 
+	(exchange_hierarchy_favorites_is_added) : The main implementation.
+	Newly added.
+	* storage/exchange-hierarchy-favorites.h : Similar
+
 2005-06-22  Sarfraaz Ahmed <asarfraaz@novell.com>
 	
 	* storage/Makefile.am : e-shell-marshall.list should be disted.
