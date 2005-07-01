@@ -25,7 +25,6 @@
 
 #include <string.h>
 
-// SURF : #include <e-util/e-dialog-utils.h>
 #include <glade/glade-xml.h>
 #include <gtk/gtkbox.h>
 #include <gtk/gtkcellrenderertext.h>

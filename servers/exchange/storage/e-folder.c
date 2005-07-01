@@ -461,5 +461,4 @@ e_folder_accept_drop (EFolder *folder, GdkDragContext *context,
 							 selection_data);
 }
 
-// SURF : E_MAKE_TYPE (e_folder, "EFolder", EFolder, class_init, init, PARENT_TYPE)
 G_DEFINE_TYPE (EFolder, e_folder, G_TYPE_OBJECT)

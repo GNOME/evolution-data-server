@@ -43,7 +43,6 @@
 #include <resolv.h>
 
 #include "e2k-autoconfig.h"
-#include "e2k-validate.h"
 #include "e2k-encoding-utils.h"
 #include "e2k-context.h"
 #include "e2k-global-catalog.h"
@@ -1393,11 +1392,10 @@ e2k_autoconfig_lookup_option (const char *option)
 }
 
 static gboolean 
-validate (const char *owa_url, char *user, char *password, ExchangeParams *exchange_params)
+validate (const char *owa_url, char *user, char *password, ExchangeParams *exchange_params, E2kAutoconfigResult *result)
 {
 	E2kAutoconfig *ac;
 	E2kOperation op;        /* FIXME */
-	E2kAutoconfigResult result;
 	E2kUri *euri;
 	gboolean valid = FALSE;
 	const char *old, *new;
@@ -1409,9 +1407,9 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 	e2k_operation_init (&op);
 	// e2k_autoconfig_set_gc_server (ac, ad_server, gal_limit) FIXME
 	// e2k_autoconfig_set_gc_server (ac, NULL, -1);
-	result = e2k_autoconfig_check_exchange (ac, &op);
+	*result = e2k_autoconfig_check_exchange (ac, &op);
 
-	if (result == E2K_AUTOCONFIG_OK) {
+	if (*result == E2K_AUTOCONFIG_OK) {
 		/*
 		 * On error code 403 and SSL seen in server response 
 		 * e2k_autoconfig_get_context() tries to
@@ -1425,14 +1423,14 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		 */
 		if (g_str_has_prefix (ac->owa_uri, "http:")) {
 		    if (!g_str_has_prefix (owa_url, "http:"))
-			result = E2K_AUTOCONFIG_CANT_CONNECT;
+			*result = E2K_AUTOCONFIG_CANT_CONNECT;
 		}
 		else if (!g_str_has_prefix (owa_url, "https:"))
-			result = E2K_AUTOCONFIG_CANT_CONNECT;
+			*result = E2K_AUTOCONFIG_CANT_CONNECT;
 	}
 
-	if (result == E2K_AUTOCONFIG_OK) {
-		result = e2k_autoconfig_check_global_catalog (ac, &op);
+	if (*result == E2K_AUTOCONFIG_OK) {
+		*result = e2k_autoconfig_check_global_catalog (ac, &op);
 		e2k_operation_free (&op);
 		
 		/* find mailbox and owa_path values */	
@@ -1458,7 +1456,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		valid = TRUE;
 	}
 	else {
-		switch (result) {
+		switch (*result) {
 
 		case E2K_AUTOCONFIG_CANT_CONNECT:
 			if (!strncmp (ac->owa_uri, "http:", 5)) {
@@ -1563,7 +1561,8 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 
 gboolean
 e2k_validate_user (const char *owa_url, char *user,
-		   ExchangeParams *exchange_params, gboolean *remember_password)
+		   ExchangeParams *exchange_params, gboolean *remember_password,
+		   E2kAutoconfigResult *result)
 {
 	gboolean valid = FALSE, remember=FALSE;
 	char *key, *password, *prompt;
@@ -1577,7 +1576,7 @@ e2k_validate_user (const char *owa_url, char *user,
 					E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET,
 					&remember, NULL);
 		if (password) {
-			valid = validate (owa_url, user, password, exchange_params);
+			valid = validate (owa_url, user, password, exchange_params, result);
 			if (valid) {
 				/* generate the proper key once the host name 
 				 * is read and remember password temporarily, 

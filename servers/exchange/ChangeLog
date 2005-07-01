@@ -1,3 +1,19 @@
+2005-07-01  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* lib/e2k-autoconfig.c (validate) : This should only return the
+	exception type and not print anything. The plugin will now print the
+	proper error message.
+	(e2k_validate_user) : Similar
+	* lib/e2k-autoconfig.h : Move E2kAutoconfigResult to e2k-validate.h
+	so that the plugins can use it.
+	* lib/e2k-validate.h : Moved E2kAutoconfigResult here.
+	* storage/e-folder-exchange.c (e_mkdir_hier) : Make use of 
+	g_build_filename instead of the deprecated g_concat_dir_and_file
+	* storage/e-folder-type-registry.c : Remove unwanted code.
+	* storage/e-folder.c : Similar
+	* storage/e-storage.c : Similar
+	* storage/exchange-folder-size.c : Similar
+
 2005-06-28  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/exchange-account.c (exchange_account_is_favorite_folder) :

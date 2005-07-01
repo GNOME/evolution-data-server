@@ -26,10 +26,6 @@
 
 #include "e-folder-type-registry.h"
 
-// SURF : #include <gal/util/e-util.h>
-
-// SURF : #include <shell/e-shell-utils.h>
-
 #define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
 
@@ -409,5 +405,4 @@ e_folder_type_registry_get_accepted_dnd_types_for_type (EFolderTypeRegistry *fol
 
 	return folder_type->accepted_dnd_types;
 }
-// SURF : E_MAKE_TYPE (e_folder_type_registry, "EFolderTypeRegistry", EFolderTypeRegistry, class_init, init, PARENT_TYPE)
 G_DEFINE_TYPE (EFolderTypeRegistry, e_folder_type_registry, G_TYPE_OBJECT)

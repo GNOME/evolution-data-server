@@ -106,7 +106,7 @@ finalize (GObject *object)
 E2K_MAKE_TYPE (e_folder_exchange, EFolderExchange, class_init, init, PARENT_TYPE)
 
 /**
-// SURF : Added from gal/util/e-util.c
+ * Added from gal/util/e-util.c
  * e_mkdir_hier:
  * @path: a directory path
  * @mode: a mode, as for mkdir(2)
@@ -126,8 +126,7 @@ e_mkdir_hier(const char *path, mode_t mode)
 		p = copy = g_strdup (path);
 	} else {
 		gchar *current_dir = g_get_current_dir();
-		// SURF : p = copy = g_concat_dir_and_file (current_dir, path);
-		p = copy = g_strdup_printf ("%s/%s", current_dir, path);
+		p = copy = g_build_filename (current_dir, path, NULL);
 	}
 
 	do {

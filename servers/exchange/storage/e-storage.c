@@ -671,7 +671,6 @@ remove_subfolders_except (EStorage *storage, const char *path, const char *excep
 		if (!except || strcmp (folder_path, except) != 0)
 			e_storage_removed_folder (storage, folder_path);
 	}
-	// SURF : e_free_string_list (subfolders);
 	for (f = subfolders; f != NULL; f = f->next)
 		g_free (f->data);
 
@@ -827,5 +826,4 @@ e_storage_removed_folder (EStorage *storage,
 	return TRUE;
 }
 
-// SURF : E_MAKE_TYPE (e_storage, "EStorage", EStorage, class_init, init, PARENT_TYPE)
 G_DEFINE_TYPE (EStorage, e_storage, G_TYPE_OBJECT)
