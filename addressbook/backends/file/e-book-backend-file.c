@@ -579,32 +579,39 @@ book_view_thread (gpointer data)
 		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 
 		db_error = db->cursor (db, NULL, &dbc, 0);
+		if (db_error == 0) {
 
-		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
-		while (db_error == 0) {
+			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+			while (db_error == 0) {
 
-			g_mutex_lock (closure->mutex);
-			stopped = closure->stopped;
-			g_mutex_unlock (closure->mutex);
+				g_mutex_lock (closure->mutex);
+				stopped = closure->stopped;
+				g_mutex_unlock (closure->mutex);
 
-			if (stopped)
-				break;
+				if (stopped)
+					break;
 
-			/* don't include the version in the list of cards */
-			if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-				EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
-				/* notify_update will check if it matches for us */
-				e_data_book_view_notify_update (book_view, contact);
-				g_object_unref (contact);
+				/* don't include the version in the list of cards */
+				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+					EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
+					/* notify_update will check if it matches for us */
+					e_data_book_view_notify_update (book_view, contact);
+					g_object_unref (contact);
+				}
+
+				db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 			}
 
-			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+			dbc->c_close (dbc);
+			if (db_error != DB_NOTFOUND)
+				g_warning ("e_book_backend_file_search: error building list\n");
+		}
+		else if (db_error == DB_RUNRECOVERY) {
+			g_warning ("e_book_backend_file_search: error getting the cursor for %s\n",
+				   bf->priv->filename);
+			abort ();
 		}
 
-		dbc->c_close (dbc);
-
-		if (db_error != DB_NOTFOUND)
-			g_warning ("e_book_backend_file_search: error building list\n");
 
 	}
 
