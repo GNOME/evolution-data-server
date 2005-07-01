@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-28 05:18+0000\n"
-"PO-Revision-Date: 2005-06-20 22:07+0300\n"
+"PO-Revision-Date: 2005-06-28 14:59+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -3204,14 +3204,12 @@ msgstr ""
 "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:71
-#, fuzzy
 msgid "IMAP4rev1"
-msgstr "IMAPv4rev1"
+msgstr "IMAP4rev1"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:73
-#, fuzzy
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "E-posti loetakse ja hoitakse IMAP serveris."
+msgstr "E-posti loetakse ja hoitakse IMAPv4rev1 serveris."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:90
 #, fuzzy
