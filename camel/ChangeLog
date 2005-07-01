@@ -1,3 +1,12 @@
+2005-06-24	Matt Brown <matt@mattb.net.nz>
+
+	* camel-gpg-context.c:	Extend verify and decrypt functions to support
+	inline pgp signed messages via x-inlinepgp-signed/x-inlinepgp-encrypted
+	mime types.
+	* camel-mime-filter-pgp.h:
+	* camel-mime-filter-pgp.c:
+	New filter to strip dash encoding from inline pgp signed messages.
+
 2005-06-09  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* camel-store.c (camel_folder_info_build): Minor typo in debug message.

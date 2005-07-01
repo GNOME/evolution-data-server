@@ -1358,7 +1358,7 @@ static CamelCipherValidity *
 gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 {
 	CamelCipherValidity *validity;
-	const char *diagnostics = NULL, *tmp;
+	const char *diagnostics = NULL;
 	struct _GpgCtx *gpg = NULL;
 	char *sigfile = NULL;
 	CamelContentType *ct;
@@ -1368,29 +1368,52 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 
 	mps = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)ipart);
 	ct = ((CamelDataWrapper *)mps)->mime_type;
-	tmp = camel_content_type_param(ct, "protocol");
-	if (!camel_content_type_is(ct, "multipart", "signed")
-	    || !CAMEL_IS_MULTIPART_SIGNED(mps)
-	    || tmp == NULL
-	    || g_ascii_strcasecmp(tmp, context->sign_protocol) != 0) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot verify message signature: Incorrect message format"));
-		return NULL;
-	}
-
-	if (!(istream = camel_multipart_signed_get_content_stream ((CamelMultipartSigned *) mps, NULL))) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot verify message signature: Incorrect message format"));
-		return NULL;
-	}
 	
-	if (!(sigpart = camel_multipart_get_part (mps, CAMEL_MULTIPART_SIGNED_SIGNATURE))) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+	/* Inline signature (using our fake mime type) or PGP/Mime signature */
+	if (camel_content_type_is(ct, "multipart", "signed")) {
+		/* PGP/Mime Signature */
+		const char *tmp;
+
+		tmp = camel_content_type_param(ct, "protocol");
+		if (!CAMEL_IS_MULTIPART_SIGNED(mps)
+		    || tmp == NULL  
+		    || g_ascii_strcasecmp(tmp, context->sign_protocol) != 0) {
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot verify message signature: Incorrect message format"));
-		camel_object_unref (istream);
+			return NULL;
+		}
+	
+		if (!(istream = camel_multipart_signed_get_content_stream ((CamelMultipartSigned *) mps, NULL))) {
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot verify message signature: Incorrect message format"));
+			return NULL;
+		}
+	
+		if (!(sigpart = camel_multipart_get_part (mps, CAMEL_MULTIPART_SIGNED_SIGNATURE))) {
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot verify message signature: Incorrect message format"));
+			camel_object_unref (istream);
+			return NULL;
+		}
+
+	} else if (camel_content_type_is(ct, "application", "x-inlinepgp-signed")) {
+		/* Inline Signed */
+		CamelDataWrapper *content;
+		content = camel_medium_get_content_object ((CamelMedium *) ipart);
+		istream = camel_stream_mem_new();
+		camel_data_wrapper_decode_to_stream (content, istream);
+		camel_stream_reset(istream);
+		sigpart = NULL;
+			
+	} else {
+		/* Invalid Mimetype */
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+			      _("Cannot verify message signature: Incorrect message format"));
 		return NULL;
 	}
+    
 
+	/* Now start the real work of verifying the message */
 #ifdef GPG_LOG
 	if (camel_debug_start("gpg:sign")) {
 		char *name;
@@ -1405,31 +1428,35 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 			camel_object_unref(out);
 		}
 		g_free(name);
-		name = g_strdup_printf("camel-gpg.%d.verify.signature", logid++);
-		out = camel_stream_fs_new_with_name(name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
-		if (out) {
-			printf("Writing gpg verify signature to '%s'\n", name);
-			camel_data_wrapper_write_to_stream((CamelDataWrapper *)sigpart, out);
-			camel_object_unref(out);
+		if (sigpart) {
+			name = g_strdup_printf("camel-gpg.%d.verify.signature", logid++);
+			out = camel_stream_fs_new_with_name(name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
+			if (out) {
+				printf("Writing gpg verify signature to '%s'\n", name);
+				camel_data_wrapper_write_to_stream((CamelDataWrapper *)sigpart, out);
+				camel_object_unref(out);
+			}
+			g_free(name);
 		}
-		g_free(name);
 		camel_debug_end();
 	}
 #endif
-	
-	sigfile = swrite (sigpart);
-	if (sigfile == NULL) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+
+	if (sigpart) {
+		sigfile = swrite (sigpart);
+		if (sigfile == NULL) {
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot verify message signature: could not create temp file: %s"),
 				      g_strerror (errno));
-		goto exception;
+			goto exception;
+		}
 	}
 	
 	camel_stream_reset(istream);
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_VERIFY);
-	gpg_ctx_set_hash (gpg, camel_cipher_id_to_hash(context, camel_content_type_param(ct, "micalg")));
-	gpg_ctx_set_sigfile (gpg, sigfile);
+	if (sigfile)
+                gpg_ctx_set_sigfile (gpg, sigfile);
 	gpg_ctx_set_istream (gpg, istream);
 	
 	if (gpg_ctx_op_start (gpg) == -1) {
@@ -1464,6 +1491,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 		unlink (sigfile);
 		g_free (sigfile);
 	}
+	camel_object_unref(istream);
 	
 	return validity;
 	
@@ -1597,14 +1625,30 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	CamelDataWrapper *content;
 	CamelMimePart *encrypted;
 	CamelMultipart *mp;
+	CamelContentType *ct;
+	int rv;
 	
-	mp = (CamelMultipart *) camel_medium_get_content_object ((CamelMedium *) ipart);
-	if (!(encrypted = camel_multipart_get_part (mp, CAMEL_MULTIPART_ENCRYPTED_CONTENT))) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to decrypt MIME part: protocol error"));
+	ct = camel_mime_part_get_content_type(ipart);
+	/* Encrypted part (using our fake mime type) or PGP/Mime multipart */
+	if (camel_content_type_is(ct, "multipart", "encrypted")) {
+	
+		mp = (CamelMultipart *) camel_medium_get_content_object ((CamelMedium *) ipart);
+		if (!(encrypted = camel_multipart_get_part (mp, CAMEL_MULTIPART_ENCRYPTED_CONTENT))) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to decrypt MIME part: protocol error"));
+			return NULL;
+		}
+		
+		content = camel_medium_get_content_object ((CamelMedium *) encrypted);
+
+	} else if (camel_content_type_is(ct, "application", "x-inlinepgp-encrypted")) {
+		content = camel_medium_get_content_object ((CamelMedium *) ipart);
+
+	} else {
+		/* Invalid Mimetype */
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Cannot decrypt message: Incorrect message format"));
 		return NULL;
 	}
-	
-	content = camel_medium_get_content_object ((CamelMedium *) encrypted);
 	
 	istream = camel_stream_mem_new();
 	camel_data_wrapper_decode_to_stream (content, istream);
@@ -1640,7 +1684,21 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	}
 
 	camel_stream_reset(ostream);
-	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)opart, ostream) != -1) {
+	if (camel_content_type_is(ct, "multipart", "encrypted")) {
+		/* Multipart encrypted - parse a full mime part */
+		rv = camel_data_wrapper_construct_from_stream((CamelDataWrapper *)opart, ostream);
+	} else {
+		/* Inline signed - raw data (may not be a mime part) */
+		CamelDataWrapper *dw;
+		dw = camel_data_wrapper_new ();
+		rv = camel_data_wrapper_construct_from_stream(dw, ostream);
+		camel_data_wrapper_set_mime_type(dw, "application/octet-stream");
+		camel_medium_set_content_object((CamelMedium *)opart, dw);
+		camel_object_unref(dw);
+		/* Set mime/type of this new part to application/octet-stream to force type snooping */
+		camel_mime_part_set_content_type(opart, "application/octet-stream");
+	}
+	if (rv != -1) {	
 		valid = camel_cipher_validity_new();
 		valid->encrypt.description = g_strdup(_("Encrypted content"));
 		valid->encrypt.status = CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED;
