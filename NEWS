@@ -1,3 +1,57 @@
+Evolution-Data-Server 1.3.4, 2005-07-02
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+Camel
+	#303225 - Left pane is not updated with maildir (Michael Zucchi)
+
+Addressbook
+	#302006 - Autocompletion does not work properly (Hans Petter Jansson)
+
+Calendar
+	#309079 Memory leaks when syncing PDA on FC4 (Harish)
+
+
+Other fixes and changes:
+
+	- Inline PGP signature support (Matt Brown)	
+	- Add exchange as a supported backend to e-d-s
+	- remove checks for unused fields in camel local provider (Michael
+	  Zucchi)
+	- Display GW events based on date of appointment not on the received
+	  time. (Parthasarathi)
+	- Remove redundant linking of http backend to the file (Chen) 
+	- Define static capability for delegation to multiple recipients (Chen)
+	- Support --no-undefined option on windows while building evolution 
+	  and drop superfluous inclusion of pthread.h in Addressbook (Tor Lillqvist)
+	- Switch to GThread API instead of pthreads for the main loop in Addressbook
+	  (Tor Lillqvist)
+	- Ignore 'any field contains' query in LDAP address book refresh
+	  (Sushma)
+	- Build system addressbook cache if marked for offline usage (Sushma)
+	- Update addressbook cache with changes in GW System Address book
+	  (Srinivasa Ragavan)
+	- Use GtkFileChooserButton instead of GnomeFileEntry (Ross Burton)
+	- store the change type of a  Groupwise item while getting the changes
+	  (Chenthill)
+	- Miscellaneous compiler warning fixes (Harish)
+
+Updated Translations:
+	
+	- zh_TW (Chao-Hsiung Liao)
+	- et (Priit Laes)
+	- zh_CN (Funda Wang)
+	- et (Priit Laes)
+	- POTFILES (Sarfraaz Ahmed)
+	- zh_TW (Abel Cheung)
+	- et (Priit Laes)
+	- nb (Kjartan Maraas)
+	- en_CA (Adam Weinberger)
+	- cs (Miloslav Trmac)
+	- da (Martin Willemoes Hansen)
+	- bg (Alexander Shopov)
+
 Evolution-Data-Server 1.3.3, 2005-06-07
 ----------------------------------------
 Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
