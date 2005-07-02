@@ -39,18 +39,18 @@ Other fixes and changes:
 
 Updated Translations:
 	
-	- zh_TW (Chao-Hsiung Liao)
-	- et (Priit Laes)
-	- zh_CN (Funda Wang)
-	- et (Priit Laes)
-	- POTFILES (Sarfraaz Ahmed)
-	- zh_TW (Abel Cheung)
-	- et (Priit Laes)
-	- nb (Kjartan Maraas)
-	- en_CA (Adam Weinberger)
+	- bg (Vladimir Petkov)
 	- cs (Miloslav Trmac)
 	- da (Martin Willemoes Hansen)
-	- bg (Alexander Shopov)
+	- en_CA (Adam Weinberger)
+	- et (Ivar Smolin)
+	- et (Priit Laes)
+	- et (Priit Laes)
+	- nb, no (Kjartan Maraas)
+	- zh_CN (Funda Wang)
+	- zh_TW (Abel Cheung)
+	- zh_TW (Chao-Hsiung Liao)
+	- POTFILES.in (Sarfraaz Ahmed)
 
 Evolution-Data-Server 1.3.3, 2005-06-07
 ----------------------------------------
