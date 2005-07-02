@@ -749,7 +749,6 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const char *container, cons
         SoupSoapResponse *response;
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam;
-	EGwItemChangeType sync = E_GW_ITEM_CHNAGE_TYPE_UNKNOWN;
 	
         g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 	
@@ -801,14 +800,21 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const char *container, cons
 	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
 		EGwItem *item;
 
+	
 		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
-		if (item) 
-			sync = e_gw_item_get_sync_type (item);
+		
+		subparam =  soup_soap_parameter_get_first_child_by_name(param, "sync");
+		if (subparam) {
+			char *value;
 
-		if (sync == E_GW_ITEM_CHANGE_TYPE_ADD || sync == E_GW_ITEM_CHANGE_TYPE_UPDATE)
-			*add_list = g_list_append (*add_list, item);
-		else if (sync == E_GW_ITEM_CHANGE_TYPE_DELETE)
-			*delete_list = g_list_append (*delete_list, item);
+			value = soup_soap_parameter_get_string_value (subparam);
+			if (!strcmp (value, "add") || !strcmp (value, "update")) {
+				*add_list = g_list_append (*add_list, item);
+			} else if (!strcmp (value, "delete")) {
+				*delete_list = g_list_append (*delete_list, item);
+			} 
+			g_free (value);
+		}
         }
                
 	/* free memory */

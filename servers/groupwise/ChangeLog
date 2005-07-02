@@ -1,3 +1,13 @@
+2005-07-02  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_get_items_delta):
+	Parse the soap parameter of the item her itself to identify if the 
+	object is added/updated/removed one.
+	* e-gw-item.c (set_contact_fields_from_soap_parameter): Removed 
+	the variable EGwItemChangeType sync.
+	* e-gw-item.h: Removed the unnecessary function 
+	e_gw_item_get_sync_type.
+
 2005-06-08  Srinivasa Ragavan <sragavan@novell.com>
 
 	* e-gw-connection.[ch] :Added function to retrive deltainfo and delta

@@ -219,7 +219,6 @@ void e_gw_item_set_expires (EGwItem *item, char *expires);
 char *e_gw_item_get_expires (EGwItem *item);
 void e_gw_item_set_delay_until (EGwItem *item, char *delay_until);
 char *e_gw_item_get_delay_until (EGwItem *item);
-EGwItemChangeType e_gw_item_get_sync_type (EGwItem *item);
 
 
 #define E_GW_ITEM_CLASSIFICATION_PUBLIC       "Public"
