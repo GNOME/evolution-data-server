@@ -58,7 +58,6 @@ GHashTable* e_cal_backend_groupwise_get_categories_by_name (ECalBackendGroupwise
 icaltimezone* e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw);
 void    e_cal_backend_groupwise_notify_error_code (ECalBackendGroupwise *cbgw, EGwConnectionStatus status);
 const char * e_cal_backend_groupwise_get_local_attachments_store (ECalBackendGroupwise *cbgw);
-const char * e_cal_backend_groupwise_get_container_id (ECalBackendGroupwise *cbgw);
 G_END_DECLS
 
 #endif

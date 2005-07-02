@@ -76,14 +76,6 @@ static ECalBackendClass *parent_class = NULL;
 #define CACHE_REFRESH_INTERVAL 600000
 #define CURSOR_ITEM_LIMIT 100
 
-const char *
-e_cal_backend_groupwise_get_container_id (ECalBackendGroupwise *cbgw)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
-
-	return (const char *) cbgw->priv->container_id;
-}
-
 EGwConnection *
 e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw) {
 
