@@ -278,7 +278,7 @@ e_cal_view_listener_class_init (ECalViewListenerClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewListenerClass, view_progress),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__POINTER,
+			      e_cal_marshal_VOID__STRING_INT,
 			      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_INT);
 	signals[VIEW_DONE] =
 		g_signal_new ("view_done",

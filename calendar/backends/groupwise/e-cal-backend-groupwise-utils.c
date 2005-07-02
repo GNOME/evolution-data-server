@@ -1056,7 +1056,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	}
 
 	e_cal_component_commit_sequence (comp);
-	g_message ("DEBUG:\n %s\n", e_cal_component_get_as_string (comp));
 
 	return comp;
 }

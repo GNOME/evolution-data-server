@@ -61,6 +61,9 @@ struct _ECalBackendGroupwisePrivate {
 	GHashTable *categories_by_id;
 	GHashTable *categories_by_name;
 
+	/* number of calendar items in the folder */
+	guint32 total_count;
+	
 	/* fields for storing info while offline */
 	char *user_email;
 	char *local_attachments_store;
@@ -120,11 +123,15 @@ populate_cache (ECalBackendGroupwise *cbgw)
         GList *list = NULL, *l;
 	gboolean done = FALSE;
 	int cursor = 0;
+	guint32	total, num = 0;
+	int percent = 0;
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	icalcomponent_kind kind;
+	const char *type;
 	
 	priv = cbgw->priv;
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+	total = priv->total_count;
 	
 	if (!mutex) {
 		mutex = g_mutex_new ();
@@ -132,6 +139,10 @@ populate_cache (ECalBackendGroupwise *cbgw)
 
 	g_mutex_lock (mutex);
 
+	if (kind == ICAL_VEVENT_COMPONENT)
+		type = "Calendar";
+	else
+		type = "Task";
 	
 	status = e_gw_connection_create_cursor (priv->cnc,
 			priv->container_id, 
@@ -152,10 +163,18 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		}
 		for (l = list; l != NULL; l = g_list_next(l)) {
 			EGwItem *item;
+			char *progress_string = NULL;
 			
 			item = E_GW_ITEM (l->data);
 			comp = e_gw_item_to_cal_component (item, cbgw);
 			g_object_unref (item);
+			
+			/* Show the progress information */
+			num++;
+			percent = ((float) num/total) * 100;
+			progress_string = g_strdup_printf (_("Loading %s items"), type);
+			e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), progress_string, percent);
+			
 			if (E_IS_CAL_COMPONENT (comp)) {
 				char *comp_str;
 				
@@ -168,6 +187,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 				e_cal_backend_cache_put_component (priv->cache, comp);
 				g_object_unref (comp);
 			}
+			g_free (progress_string);
 		}
 		
 		if (!list  || g_list_length (list) == 0)
@@ -177,6 +197,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		position = E_GW_CURSOR_POSITION_CURRENT;
         }
 	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
+	e_cal_backend_notify_view_done (E_CAL_BACKEND (cbgw), GNOME_Evolution_Calendar_Success);
 
 	g_mutex_unlock (mutex);
 
@@ -545,6 +566,55 @@ cache_init (ECalBackendGroupwise *cbgw)
 }
 
 static ECalBackendSyncStatus
+set_container_id_with_count (ECalBackendGroupwise *cbgw) 
+{
+	ECalBackendGroupwisePrivate *priv;
+	EGwContainer *our_container;
+	GList *container_list = NULL, *l;
+	EGwConnectionStatus status;
+	icalcomponent_kind kind;
+
+	priv = cbgw->priv;
+
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+	
+	switch (kind) {
+	case ICAL_VEVENT_COMPONENT:
+	case ICAL_VTODO_COMPONENT:
+		e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
+		break;
+	default:
+		priv->container_id = NULL;
+		return GNOME_Evolution_Calendar_UnsupportedMethod;
+	}
+	
+	status = e_gw_connection_get_container_list (priv->cnc, "folders", &container_list);
+	
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_get_container_list (priv->cnc, "folders", &container_list);
+	
+	if (status != E_GW_CONNECTION_STATUS_OK)
+		return GNOME_Evolution_Calendar_OtherError;
+
+	for (l = container_list; l != NULL; l = l->next) {
+		EGwContainer *container = E_GW_CONTAINER (l->data);
+		const char *name = e_gw_container_get_name (container);
+		
+		if (name && strcmp (name, "Calendar") == 0) {
+			our_container = container;
+			break;
+		}
+	}
+
+	priv->container_id = g_strdup (e_gw_container_get_id (our_container));
+	priv->total_count = e_gw_container_get_total_count (our_container);
+
+	e_gw_connection_free_container_list (container_list);
+
+	return GNOME_Evolution_Calendar_Success;
+}
+	
+static ECalBackendSyncStatus
 connect_to_server (ECalBackendGroupwise *cbgw)
 {
 	char *real_uri;
@@ -606,23 +676,15 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		priv->mode_changed = FALSE;
 
 		if (E_IS_GW_CONNECTION (priv->cnc)) {
-			icalcomponent_kind kind;
-
+			ECalBackendSyncStatus status;
 			/* get the ID for the container */
 			if (priv->container_id)
 				g_free (priv->container_id);
 			
-			kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
-
-			if (kind == ICAL_VEVENT_COMPONENT) {
-				priv->container_id = g_strdup (e_gw_connection_get_container_id (priv->cnc, "Calendar"));
-				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
-			} else if (kind == ICAL_VTODO_COMPONENT) {
-				priv->container_id = g_strdup (e_gw_connection_get_container_id (priv->cnc, "Calendar"));
-				e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
-			} else
-				priv->container_id = NULL;
-
+			if ((status = set_container_id_with_count (cbgw)) != GNOME_Evolution_Calendar_Success) {
+				return status;
+			}
+		
 			priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
 			if (!priv->cache) {
 				g_mutex_unlock (priv->mutex);

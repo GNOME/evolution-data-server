@@ -1101,6 +1101,85 @@ match_query_and_notify (EDataCalView *query, const char *old_object, const char 
 }
 
 /**
+ * e_cal_backend_notify_view_progress:
+ * @backend: A calendar backend.
+ * @message: the UID of the removed object
+ * @percent: percentage of the objects loaded in the view
+ *
+ * Notifies each of the backend's listeners about the view_progress in downloading the items.
+ **/
+void
+e_cal_backend_notify_view_progress (ECalBackend *backend, const char *message, int percent)
+{
+	ECalBackendPrivate *priv;
+	EList *queries;
+	EIterator *iter;
+	EDataCalView *query;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_view_progress (priv->notification_proxy, message, percent);
+		return;
+	}
+
+	queries = e_cal_backend_get_queries (backend);
+	iter = e_list_get_iterator (queries);
+
+	while (e_iterator_is_valid (iter)) {
+		query = QUERY (e_iterator_get (iter));
+
+		bonobo_object_ref (query);
+
+		e_data_cal_view_notify_progress (query, message, percent);
+
+		bonobo_object_unref (query);
+
+		e_iterator_next (iter);
+	}
+	g_object_unref (iter);
+}
+
+/**
+ * e_cal_backend_notify_view_done:
+ * @backend: A calendar backend.
+ * @status: returns the status once the view is fully populated.
+ *
+ * Notifies each of the backend's listeners about the view_done in downloading the items.
+ **/
+void
+e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_CallStatus status)
+{
+	ECalBackendPrivate *priv;
+	EList *queries;
+	EIterator *iter;
+	EDataCalView *query;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_view_done (priv->notification_proxy, status);
+		return;
+	}
+
+	queries = e_cal_backend_get_queries (backend);
+	iter = e_list_get_iterator (queries);
+
+	while (e_iterator_is_valid (iter)) {
+		query = QUERY (e_iterator_get (iter));
+
+		bonobo_object_ref (query);
+
+		e_data_cal_view_notify_done (query, status);
+
+		bonobo_object_unref (query);
+
+		e_iterator_next (iter);
+	}
+	g_object_unref (iter);
+}
+
+/**
  * e_cal_backend_notify_object_modified:
  * @backend: A calendar backend.
  * @old_object: iCalendar representation of the original form of the object

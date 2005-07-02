@@ -1,5 +1,21 @@
 2005-07-02  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_gw_item_to_cal_component): Removed the debug messages.
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
+	(set_container_id_with_count), (connect_to_server): Get the number
+	of elements present in the calendar folder and use to calculate the 
+	percent.
+	* libecal/e-cal-view-listener.c: (e_cal_view_listener_class_init):
+	* libecal/e-cal-view.c: (e_cal_view_class_init): Marshal the elements
+	with string_int.
+	* libedata-cal/e-cal-backend.[ch]:
+	(e_cal_backend_notify_view_progress),
+	(e_cal_backend_notify_view_done): Added new functions to notify 
+	the view progress.
+
+2005-07-02  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.[ch]:
 	Removed the function for getting container_id.
 
