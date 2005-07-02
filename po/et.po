@@ -1515,7 +1515,9 @@ msgstr "Sõnumi signatuuri pole võimalik kontrollida: Sõnumivorming on vigane"
 #: camel/camel-gpg-context.c:1423
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik luua: %s"
+msgstr ""
+"Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik "
+"luua: %s"
 
 #: camel/camel-gpg-context.c:1502
 #, c-format
@@ -1564,7 +1566,8 @@ msgstr "Lukustamisabilist pole võimalik forkida: %s"
 #: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr "'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
+msgstr ""
+"'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
 
 #: camel/camel-lock-client.c:204
 #, c-format
@@ -3142,22 +3145,22 @@ msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Tundmatu"
 #: camel/providers/imap4/camel-imap4-folder.c:1152
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1156
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-provider.c:71
-#, fuzzy
 msgid "IMAP4rev1"
-msgstr "IMAPv4rev1"
+msgstr "IMAP4rev1"
 
 #: camel/providers/imap4/camel-imap4-provider.c:73
-#, fuzzy
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "E-posti loetakse ja hoitakse IMAP serveris."
+msgstr "E-posti loetakse ja hoitakse IMAPv4rev1 serveris."
 
 #: camel/providers/imap4/camel-imap4-provider.c:90
 #, fuzzy
@@ -3225,7 +3228,8 @@ msgstr "Kausta `%s' pole võimalik kustutada: Puudulik käsk"
 #: camel/providers/imap4/camel-imap4-store.c:1039
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
 
 #: camel/providers/imap4/camel-imap4-store.c:1046
 #, fuzzy
@@ -3235,7 +3239,8 @@ msgstr "Ei saa muuda kausta %s nime %s-ks: %s"
 #: camel/providers/imap4/camel-imap4-store.c:1077
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-store.c:1082
 #, c-format
