@@ -69,7 +69,6 @@ static void
 e_gw_container_dispose (GObject *object)
 {
 	EGwContainer *container = (EGwContainer *) object;
-	EGwContainerPrivate *priv;
 
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
 
