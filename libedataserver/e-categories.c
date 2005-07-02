@@ -21,6 +21,7 @@
 #include "config.h"
 #endif
 
+#include <string.h>
 #include <libxml/parser.h>
 #include <glib/ghash.h>
 #include <glib/gi18n-lib.h>
@@ -190,7 +191,7 @@ initialize_categories_config (void)
 	initialized = TRUE;
 
 	/* create all the internal data we need */
-	categories_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_category_info);
+	categories_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) free_category_info);
 
 	conf_client = gconf_client_get_default ();
 

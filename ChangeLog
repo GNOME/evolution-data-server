@@ -1,3 +1,8 @@
+2005-07-02  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libedataserver/e-categories.c: (initialize_categories_config):
+	Fix all the compiler warnings.
+
 2005-06-22  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Don't check locking on Win32. Add gnome-vfs-2.0 o
