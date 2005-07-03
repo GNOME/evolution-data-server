@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-17 01:29-0400\n"
-"PO-Revision-Date: 2005-06-17 13:04-0400\n"
+"POT-Creation-Date: 2005-07-03 18:15-0400\n"
+"PO-Revision-Date: 2005-07-03 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -79,91 +79,91 @@ msgstr "Error performing search"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: addressbook/libebook/e-book.c:240 addressbook/libebook/e-book.c:244
-#: addressbook/libebook/e-book.c:456 addressbook/libebook/e-book.c:460
-#: addressbook/libebook/e-book.c:601 addressbook/libebook/e-book.c:605
-#: addressbook/libebook/e-book.c:694 addressbook/libebook/e-book.c:698
-#: addressbook/libebook/e-book.c:1012 addressbook/libebook/e-book.c:1017
-#: addressbook/libebook/e-book.c:1204 addressbook/libebook/e-book.c:1208
-#: addressbook/libebook/e-book.c:1365 addressbook/libebook/e-book.c:1369
-#: addressbook/libebook/e-book.c:1578 addressbook/libebook/e-book.c:1582
-#: addressbook/libebook/e-book.c:1819 addressbook/libebook/e-book.c:1823
-#: addressbook/libebook/e-book.c:2059 addressbook/libebook/e-book.c:2063
-#: addressbook/libebook/e-book.c:2275 addressbook/libebook/e-book.c:2279
-#: addressbook/libebook/e-book.c:3375
+#: addressbook/libebook/e-book.c:238 addressbook/libebook/e-book.c:242
+#: addressbook/libebook/e-book.c:454 addressbook/libebook/e-book.c:458
+#: addressbook/libebook/e-book.c:599 addressbook/libebook/e-book.c:603
+#: addressbook/libebook/e-book.c:692 addressbook/libebook/e-book.c:696
+#: addressbook/libebook/e-book.c:1010 addressbook/libebook/e-book.c:1015
+#: addressbook/libebook/e-book.c:1202 addressbook/libebook/e-book.c:1206
+#: addressbook/libebook/e-book.c:1363 addressbook/libebook/e-book.c:1367
+#: addressbook/libebook/e-book.c:1576 addressbook/libebook/e-book.c:1580
+#: addressbook/libebook/e-book.c:1817 addressbook/libebook/e-book.c:1821
+#: addressbook/libebook/e-book.c:2057 addressbook/libebook/e-book.c:2061
+#: addressbook/libebook/e-book.c:2273 addressbook/libebook/e-book.c:2277
+#: addressbook/libebook/e-book.c:3373
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" on book before \"%s\""
 
-#: addressbook/libebook/e-book.c:253 addressbook/libebook/e-book.c:469
-#: addressbook/libebook/e-book.c:614 addressbook/libebook/e-book.c:707
-#: addressbook/libebook/e-book.c:1027 addressbook/libebook/e-book.c:1218
-#: addressbook/libebook/e-book.c:1379 addressbook/libebook/e-book.c:1591
-#: addressbook/libebook/e-book.c:1832 addressbook/libebook/e-book.c:2073
-#: addressbook/libebook/e-book.c:2288 addressbook/libebook/e-book.c:2624
-#: addressbook/libebook/e-book.c:2830
+#: addressbook/libebook/e-book.c:251 addressbook/libebook/e-book.c:467
+#: addressbook/libebook/e-book.c:612 addressbook/libebook/e-book.c:705
+#: addressbook/libebook/e-book.c:1025 addressbook/libebook/e-book.c:1216
+#: addressbook/libebook/e-book.c:1377 addressbook/libebook/e-book.c:1589
+#: addressbook/libebook/e-book.c:1830 addressbook/libebook/e-book.c:2071
+#: addressbook/libebook/e-book.c:2286 addressbook/libebook/e-book.c:2622
+#: addressbook/libebook/e-book.c:2828
 msgid "book busy"
 msgstr "book busy"
 
-#: addressbook/libebook/e-book.c:286 addressbook/libebook/e-book.c:290
-#: addressbook/libebook/e-book.c:502 addressbook/libebook/e-book.c:506
-#: addressbook/libebook/e-book.c:643 addressbook/libebook/e-book.c:647
-#: addressbook/libebook/e-book.c:736 addressbook/libebook/e-book.c:740
-#: addressbook/libebook/e-book.c:1056 addressbook/libebook/e-book.c:1059
-#: addressbook/libebook/e-book.c:1250 addressbook/libebook/e-book.c:1253
-#: addressbook/libebook/e-book.c:1408 addressbook/libebook/e-book.c:1412
-#: addressbook/libebook/e-book.c:1627 addressbook/libebook/e-book.c:1631
-#: addressbook/libebook/e-book.c:1879 addressbook/libebook/e-book.c:1883
-#: addressbook/libebook/e-book.c:2105 addressbook/libebook/e-book.c:2109
-#: addressbook/libebook/e-book.c:2316 addressbook/libebook/e-book.c:2320
-#: addressbook/libebook/e-book.c:2565 addressbook/libebook/e-book.c:2652
-#: addressbook/libebook/e-book.c:2656 addressbook/libebook/e-book.c:2858
-#: addressbook/libebook/e-book.c:2862 addressbook/libebook/e-book.c:3384
+#: addressbook/libebook/e-book.c:284 addressbook/libebook/e-book.c:288
+#: addressbook/libebook/e-book.c:500 addressbook/libebook/e-book.c:504
+#: addressbook/libebook/e-book.c:641 addressbook/libebook/e-book.c:645
+#: addressbook/libebook/e-book.c:734 addressbook/libebook/e-book.c:738
+#: addressbook/libebook/e-book.c:1054 addressbook/libebook/e-book.c:1057
+#: addressbook/libebook/e-book.c:1248 addressbook/libebook/e-book.c:1251
+#: addressbook/libebook/e-book.c:1406 addressbook/libebook/e-book.c:1410
+#: addressbook/libebook/e-book.c:1625 addressbook/libebook/e-book.c:1629
+#: addressbook/libebook/e-book.c:1877 addressbook/libebook/e-book.c:1881
+#: addressbook/libebook/e-book.c:2103 addressbook/libebook/e-book.c:2107
+#: addressbook/libebook/e-book.c:2314 addressbook/libebook/e-book.c:2318
+#: addressbook/libebook/e-book.c:2563 addressbook/libebook/e-book.c:2650
+#: addressbook/libebook/e-book.c:2654 addressbook/libebook/e-book.c:2856
+#: addressbook/libebook/e-book.c:2860 addressbook/libebook/e-book.c:3382
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA exception making \"%s\" call"
 
-#: addressbook/libebook/e-book.c:2546
+#: addressbook/libebook/e-book.c:2544
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: there is no current operation"
 
-#: addressbook/libebook/e-book.c:2581
+#: addressbook/libebook/e-book.c:2579
 #, c-format
 msgid "%s: couldn't cancel"
 msgstr "%s: could not cancel"
 
-#: addressbook/libebook/e-book.c:2610 addressbook/libebook/e-book.c:2614
+#: addressbook/libebook/e-book.c:2608 addressbook/libebook/e-book.c:2612
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" on book after \"%s\""
 
-#: addressbook/libebook/e-book.c:2680
+#: addressbook/libebook/e-book.c:2678
 #, c-format
 msgid "%s: cancelled"
 msgstr "%s: cancelled"
 
-#: addressbook/libebook/e-book.c:3241
+#: addressbook/libebook/e-book.c:3239
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Invalid source."
 
-#: addressbook/libebook/e-book.c:3249 addressbook/libebook/e-book.c:3313
+#: addressbook/libebook/e-book.c:3247 addressbook/libebook/e-book.c:3311
 #, c-format
 msgid "%s: no factories available for uri `%s'"
 msgstr "%s: no factories available for URI `%s'"
 
-#: addressbook/libebook/e-book.c:3261
+#: addressbook/libebook/e-book.c:3259
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: Could not create EBookListener"
 
-#: addressbook/libebook/e-book.c:3524
+#: addressbook/libebook/e-book.c:3522
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
 msgstr "%s: there was no self contact UID stored in gconf"
 
-#: addressbook/libebook/e-book.c:3654
+#: addressbook/libebook/e-book.c:3652
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: there was no source for UID `%s' stored in gconf."
@@ -602,7 +602,7 @@ msgstr "Birth Date"
 #. Make sure we have all categories
 #: addressbook/libebook/e-contact.c:236
 #: calendar/backends/contacts/e-cal-backend-contacts.c:453
-#: libedataserver/e-categories.c:235
+#: libedataserver/e-categories.c:236
 msgid "Anniversary"
 msgstr "Anniversary"
 
@@ -618,13 +618,13 @@ msgstr "List Show Addresses"
 msgid "Last Revision"
 msgstr "Last Revision"
 
-#: addressbook/libebook/e-contact.c:1222
+#: addressbook/libebook/e-contact.c:1229
 #: addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Unnamed List"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:455
-#: libedataserver/e-categories.c:236
+#: libedataserver/e-categories.c:237
 msgid "Birthday"
 msgstr "Birthday"
 
@@ -652,32 +652,36 @@ msgstr "Reply Requested: by "
 msgid "Reply Requested: When convenient"
 msgstr "Reply Requested: When convenient"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:574
-msgid "Invalid server URI"
-msgstr "Invalid server URI"
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:175
+#, c-format
+msgid "Loading %s items"
+msgstr "Loading %s items"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:605
-msgid "Could not create thread for getting deltas"
-msgstr "Could not create thread for getting deltas"
-
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:627
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:630
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Calendar"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:637
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:876
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:636
+msgid "Invalid server URI"
+msgstr "Invalid server URI"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:667
+msgid "Could not create thread for getting deltas"
+msgstr "Could not create thread for getting deltas"
+
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:691
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:931
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Could not create cache file"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:647
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:701
 msgid "Could not create thread for populating cache"
 msgstr "Could not create thread for populating cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:653
-#: calendar/libecal/e-cal.c:4850
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:707
+#: calendar/libecal/e-cal.c:4854
 #: camel/providers/groupwise/camel-groupwise-folder.c:841
 #: camel/providers/groupwise/camel-groupwise-folder.c:861
 #: camel/providers/groupwise/camel-groupwise-folder.c:888
@@ -1046,82 +1050,84 @@ msgstr "Undefined"
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: calendar/libecal/e-cal.c:4822
+#: calendar/libecal/e-cal.c:4826
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: calendar/libecal/e-cal.c:4824
+#: calendar/libecal/e-cal.c:4828
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: calendar/libecal/e-cal.c:4826
+#: calendar/libecal/e-cal.c:4830
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: calendar/libecal/e-cal.c:4828
+#: calendar/libecal/e-cal.c:4832
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: calendar/libecal/e-cal.c:4830 servers/groupwise/e-gw-connection.c:166
+#: calendar/libecal/e-cal.c:4834 servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Object not found"
 
-#: calendar/libecal/e-cal.c:4832 servers/groupwise/e-gw-connection.c:160
+#: calendar/libecal/e-cal.c:4836 servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: calendar/libecal/e-cal.c:4834
+#: calendar/libecal/e-cal.c:4838
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: calendar/libecal/e-cal.c:4836
+#: calendar/libecal/e-cal.c:4840
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: calendar/libecal/e-cal.c:4838
+#: calendar/libecal/e-cal.c:4842 servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: calendar/libecal/e-cal.c:4840 servers/groupwise/e-gw-connection.c:168
+#: calendar/libecal/e-cal.c:4844 servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Unknown User"
 
-#: calendar/libecal/e-cal.c:4842
+#: calendar/libecal/e-cal.c:4846
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: calendar/libecal/e-cal.c:4844
+#: calendar/libecal/e-cal.c:4848
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: calendar/libecal/e-cal.c:4846
+#: calendar/libecal/e-cal.c:4850
 msgid "Operation has been cancelled"
 msgstr "Operation has been canceled"
 
-#: calendar/libecal/e-cal.c:4848
+#: calendar/libecal/e-cal.c:4852
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: calendar/libecal/e-cal.c:4852
+#: calendar/libecal/e-cal.c:4856
 #: camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: calendar/libecal/e-cal.c:4854
+#: calendar/libecal/e-cal.c:4858
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: calendar/libecal/e-cal.c:4856 camel/providers/imap/camel-imap-command.c:304
+#: calendar/libecal/e-cal.c:4860 camel/providers/imap/camel-imap-command.c:304
 #: camel/providers/imap/camel-imap-command.c:404
 #: camel/providers/imap4/camel-imap4-store.c:376
 #: camel/providers/pop3/camel-pop3-store.c:535
 #: camel/providers/pop3/camel-pop3-store.c:542
 #: camel/providers/pop3/camel-pop3-store.c:548
 #: servers/groupwise/e-gw-connection.c:174
+#: servers/exchange/storage/e-storage.c:586
+#: servers/exchange/storage/exchange-account.c:1533
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: calendar/libecal/e-cal.c:4858
+#: calendar/libecal/e-cal.c:4862 servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "No error"
 
@@ -1522,7 +1528,7 @@ msgstr "Failed to encrypt: No valid recipients specified."
 
 #. always called on an i/o error
 #: camel/camel-gpg-context.c:1138 camel/camel-gpg-context.c:1262
-#: camel/camel-gpg-context.c:1687 camel/camel-gpg-context.c:1732
+#: camel/camel-gpg-context.c:1745 camel/camel-gpg-context.c:1790
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Failed to execute gpg: %s"
@@ -1532,10 +1538,10 @@ msgstr "Failed to execute gpg: %s"
 msgid "Could not generate signing data: %s"
 msgstr "Could not generate signing data: %s"
 
-#: camel/camel-gpg-context.c:1277 camel/camel-gpg-context.c:1437
-#: camel/camel-gpg-context.c:1519 camel/camel-gpg-context.c:1534
-#: camel/camel-gpg-context.c:1623 camel/camel-gpg-context.c:1638
-#: camel/camel-gpg-context.c:1703 camel/camel-gpg-context.c:1748
+#: camel/camel-gpg-context.c:1277 camel/camel-gpg-context.c:1464
+#: camel/camel-gpg-context.c:1547 camel/camel-gpg-context.c:1562
+#: camel/camel-gpg-context.c:1667 camel/camel-gpg-context.c:1682
+#: camel/camel-gpg-context.c:1761 camel/camel-gpg-context.c:1806
 msgid "Failed to execute gpg."
 msgstr "Failed to execute gpg."
 
@@ -1543,39 +1549,44 @@ msgstr "Failed to execute gpg."
 msgid "This is a digitally signed message part"
 msgstr "This is a digitally signed message part"
 
-#: camel/camel-gpg-context.c:1377 camel/camel-gpg-context.c:1383
-#: camel/camel-gpg-context.c:1389 camel/camel-smime-context.c:692
-#: camel/camel-smime-context.c:703 camel/camel-smime-context.c:710
+#: camel/camel-gpg-context.c:1382 camel/camel-gpg-context.c:1388
+#: camel/camel-gpg-context.c:1394 camel/camel-gpg-context.c:1411
+#: camel/camel-smime-context.c:692 camel/camel-smime-context.c:703
+#: camel/camel-smime-context.c:710
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Cannot verify message signature: Incorrect message format"
 
-#: camel/camel-gpg-context.c:1423
+#: camel/camel-gpg-context.c:1449
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "Cannot verify message signature: could not create temp file: %s"
 
-#: camel/camel-gpg-context.c:1502
+#: camel/camel-gpg-context.c:1530
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Could not generate encrypting data: %s"
 
-#: camel/camel-gpg-context.c:1552
+#: camel/camel-gpg-context.c:1580
 msgid "This is a digitally encrypted message part"
 msgstr "This is a digitally encrypted message part"
 
-#: camel/camel-gpg-context.c:1603
+#: camel/camel-gpg-context.c:1637
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Failed to decrypt MIME part: protocol error"
 
-#: camel/camel-gpg-context.c:1645 camel/camel-smime-context.c:966
+#: camel/camel-gpg-context.c:1649
+msgid "Cannot decrypt message: Incorrect message format"
+msgstr "Cannot decrypt message: Incorrect message format"
+
+#: camel/camel-gpg-context.c:1703 camel/camel-smime-context.c:966
 msgid "Encrypted content"
 msgstr "Encrypted content"
 
-#: camel/camel-gpg-context.c:1664
+#: camel/camel-gpg-context.c:1722
 msgid "Unable to parse message content"
 msgstr "Unable to parse message content"
 
-#: camel/camel-gpg-context.c:1688 camel/camel-gpg-context.c:1733
+#: camel/camel-gpg-context.c:1746 camel/camel-gpg-context.c:1791
 #: camel/camel-tcp-stream-openssl.c:631
 #: camel/providers/imap4/camel-imap4-engine.c:1550
 #: camel/providers/imap4/camel-imap4-engine.c:1589
@@ -2685,7 +2696,7 @@ msgstr "You didn't enter a password."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:392
 msgid "Unable to authenticate to GroupWise server."
-msgstr "Unable to authenticate to GroupWise server."
+msgstr "Unable to authenticate with GroupWise server."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:433
 msgid "Some features may not work correctly with your current server version"
@@ -3055,7 +3066,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"Unable to authenticate to IMAP server.\n"
+"Unable to authenticate with IMAP server.\n"
 "%s\n"
 "\n"
 
@@ -3215,7 +3226,7 @@ msgstr ""
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr ""
-"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+"Cannot authenticate with IMAP server %s using the %s authentication mechanism"
 
 #: camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
@@ -3225,7 +3236,7 @@ msgstr "%sPlease enter the IMAP password for %s on host %s"
 #: camel/providers/imap4/camel-imap4-store.c:592
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
-msgstr "Cannot authenticate to IMAP server %s using %s"
+msgstr "Cannot authenticate with IMAP server %s using %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:754
 #: camel/providers/imap4/camel-imap4-store.c:866
@@ -4003,7 +4014,7 @@ msgstr "Please enter the NNTP password for %s@%s"
 #: camel/providers/nntp/camel-nntp-store.c:1162
 #, c-format
 msgid "Cannot authenticate to server: %s"
-msgstr "Cannot authenticate to server: %s"
+msgstr "Cannot authenticate with server: %s"
 
 #: camel/providers/nntp/camel-nntp-store.c:1278
 #, c-format
@@ -4383,7 +4394,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"Unable to authenticate to SMTP server.\n"
+"Unable to authenticate with SMTP server.\n"
 "%s\n"
 "\n"
 
@@ -4504,83 +4515,83 @@ msgstr "QUIT command failed: %s"
 msgid "QUIT command failed"
 msgstr "QUIT command failed"
 
-#: libedataserver/e-categories.c:237
+#: libedataserver/e-categories.c:238
 msgid "Business"
 msgstr "Business"
 
-#: libedataserver/e-categories.c:238
+#: libedataserver/e-categories.c:239
 msgid "Competition"
 msgstr "Competition"
 
-#: libedataserver/e-categories.c:239
+#: libedataserver/e-categories.c:240
 msgid "Favorites"
 msgstr "Favourites"
 
-#: libedataserver/e-categories.c:240
+#: libedataserver/e-categories.c:241
 msgid "Gifts"
 msgstr "Gifts"
 
-#: libedataserver/e-categories.c:241
+#: libedataserver/e-categories.c:242
 msgid "Goals/Objectives"
 msgstr "Goals/Objectives"
 
-#: libedataserver/e-categories.c:242
+#: libedataserver/e-categories.c:243
 msgid "Holiday"
 msgstr "Holiday"
 
-#: libedataserver/e-categories.c:243
+#: libedataserver/e-categories.c:244
 msgid "Holiday Cards"
 msgstr "Holiday Cards"
 
-#: libedataserver/e-categories.c:244
+#: libedataserver/e-categories.c:245
 msgid "Hot Contacts"
 msgstr "Hot Contacts"
 
-#: libedataserver/e-categories.c:245
+#: libedataserver/e-categories.c:246
 msgid "Ideas"
 msgstr "Ideas"
 
-#: libedataserver/e-categories.c:246
+#: libedataserver/e-categories.c:247
 msgid "International"
 msgstr "International"
 
-#: libedataserver/e-categories.c:247
+#: libedataserver/e-categories.c:248
 msgid "Key Customer"
 msgstr "Key Customer"
 
-#: libedataserver/e-categories.c:248
+#: libedataserver/e-categories.c:249
 msgid "Miscellaneous"
 msgstr "Miscellaneous"
 
-#: libedataserver/e-categories.c:249
+#: libedataserver/e-categories.c:250
 msgid "Personal"
 msgstr "Personal"
 
-#: libedataserver/e-categories.c:250
+#: libedataserver/e-categories.c:251
 msgid "Phone Calls"
 msgstr "Phone Calls"
 
-#: libedataserver/e-categories.c:251
+#: libedataserver/e-categories.c:252
 msgid "Status"
 msgstr "Status"
 
-#: libedataserver/e-categories.c:252
+#: libedataserver/e-categories.c:253
 msgid "Strategies"
 msgstr "Strategies"
 
-#: libedataserver/e-categories.c:253
+#: libedataserver/e-categories.c:254
 msgid "Suppliers"
 msgstr "Suppliers"
 
-#: libedataserver/e-categories.c:254
+#: libedataserver/e-categories.c:255
 msgid "Time & Expenses"
 msgstr "Time & Expenses"
 
-#: libedataserver/e-categories.c:255
+#: libedataserver/e-categories.c:256
 msgid "VIP"
 msgstr "VIP"
 
-#: libedataserver/e-categories.c:256
+#: libedataserver/e-categories.c:257
 msgid "Waiting"
 msgstr "Waiting"
 
@@ -4836,6 +4847,233 @@ msgstr "No response from the server"
 #: servers/groupwise/e-gw-connection.c:170
 msgid "Bad parameter"
 msgstr "Bad parameter"
+
+#. i18n: These are Outlook's words for the default roles in
+#. the folder permissions dialog.
+#: servers/exchange/lib/e2k-security-descriptor.c:847
+msgid "Owner"
+msgstr "Owner"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:857
+msgid "Publishing Editor"
+msgstr "Publishing Editor"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:865
+msgid "Editor"
+msgstr "Editor"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:872
+msgid "Publishing Author"
+msgstr "Publishing Author"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:878
+msgid "Author"
+msgstr "Author"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:883
+msgid "Non-editing Author"
+msgstr "Non-editing Author"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:887
+msgid "Reviewer"
+msgstr "Reviewer"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:889
+msgid "Contributor"
+msgstr "Contributor"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:891
+msgid "None"
+msgstr "None"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:906
+msgid "Custom"
+msgstr "Custom"
+
+#: servers/exchange/lib/e2k-user-dialog.c:144
+msgid "Select User"
+msgstr "Select User"
+
+#: servers/exchange/lib/e2k-user-dialog.c:182
+msgid "Addressbook..."
+msgstr "Addressbook..."
+
+#: servers/exchange/lib/e2k-autoconfig.c:1573
+#, c-format
+msgid "Enter password for %s"
+msgstr "Enter password for %s"
+
+#: servers/exchange/lib/e2k-autoconfig.c:1574
+#: servers/exchange/storage/exchange-account.c:894
+msgid "Enter password"
+msgstr "Enter password"
+
+#: servers/exchange/storage/e-storage.c:556
+msgid "Generic error"
+msgstr "Generic error"
+
+#: servers/exchange/storage/e-storage.c:558
+msgid "A folder with the same name already exists"
+msgstr "A folder with the same name already exists"
+
+#: servers/exchange/storage/e-storage.c:560
+msgid "The specified folder type is not valid"
+msgstr "The specified folder type is not valid"
+
+#: servers/exchange/storage/e-storage.c:562
+msgid "I/O error"
+msgstr "I/O error"
+
+#: servers/exchange/storage/e-storage.c:564
+msgid "Not enough space to create the folder"
+msgstr "Not enough space to create the folder"
+
+#: servers/exchange/storage/e-storage.c:566
+msgid "The folder is not empty"
+msgstr "The folder is not empty"
+
+#: servers/exchange/storage/e-storage.c:568
+msgid "The specified folder was not found"
+msgstr "The specified folder was not found"
+
+#: servers/exchange/storage/e-storage.c:570
+msgid "Function not implemented in this storage"
+msgstr "Function not implemented in this storage"
+
+#: servers/exchange/storage/e-storage.c:574
+msgid "Operation not supported"
+msgstr "Operation not supported"
+
+#: servers/exchange/storage/e-storage.c:576
+msgid "The specified type is not supported in this storage"
+msgstr "The specified type is not supported in this storage"
+
+#: servers/exchange/storage/e-storage.c:578
+msgid "The specified folder cannot be modified or removed"
+msgstr "The specified folder cannot be modified or removed"
+
+#: servers/exchange/storage/e-storage.c:580
+msgid "Cannot make a folder a child of one of its descendants"
+msgstr "Cannot make a folder a child of one of its descendants"
+
+#: servers/exchange/storage/e-storage.c:582
+msgid "Cannot create a folder with that name"
+msgstr "Cannot create a folder with that name"
+
+#: servers/exchange/storage/e-storage.c:584
+msgid "This operation cannot be performed in off-line mode"
+msgstr "This operation cannot be performed in off-line mode"
+
+#. i18n: This is the title of an "other user's folders"
+#. hierarchy. Eg, "John Doe's Folders".
+#: servers/exchange/storage/exchange-account.c:585
+#, c-format
+msgid "%s's Folders"
+msgstr "%s's Folders"
+
+#: servers/exchange/storage/exchange-account.c:889
+#, c-format
+msgid "%sEnter password for %s"
+msgstr "%sEnter password for %s"
+
+#: servers/exchange/storage/exchange-account.c:1245
+msgid "Personal Folders"
+msgstr "Personal Folders"
+
+#: servers/exchange/storage/exchange-account.c:1260
+msgid "Favorite Public Folders"
+msgstr "Favourite Public Folders"
+
+#. i18n: Outlookism
+#: servers/exchange/storage/exchange-account.c:1277
+msgid "All Public Folders"
+msgstr "All Public Folders"
+
+#. i18n: Outlookism
+#: servers/exchange/storage/exchange-account.c:1291
+msgid "Global Address List"
+msgstr "Global Address List"
+
+#: servers/exchange/storage/exchange-account.c:1444
+msgid ""
+"Could not authenticate to server. (Password incorrect?)\n"
+"\n"
+msgstr ""
+"Could not authenticate with server. (Password incorrect?)\n"
+"\n"
+
+#: servers/exchange/storage/exchange-account.c:1449
+msgid ""
+"Could not authenticate to server.\n"
+"\n"
+"This probably means that your server requires you\n"
+"to specify the Windows domain name as part of your\n"
+"username (eg, \"DOMAIN\\user\").\n"
+"\n"
+"Or you might have just typed your password wrong.\n"
+"\n"
+msgstr ""
+"Could not authenticate with server.\n"
+"\n"
+"This probably means that your server requires you\n"
+"to specify the Windows domain name as part of your\n"
+"username (eg, \"DOMAIN\\user\").\n"
+"\n"
+"Or, you may have typed your password incorrectly.\n"
+"\n"
+
+#: servers/exchange/storage/exchange-account.c:1491
+#, c-format
+msgid "Mailbox for %s is not on this server."
+msgstr "Mailbox for %s is not on this server."
+
+#: servers/exchange/storage/exchange-account.c:1496
+#, c-format
+msgid ""
+"The server '%s' is running Exchange 5.5 and is\n"
+"therefore not compatible with Ximian Connector"
+msgstr ""
+"The server '%s' is running Exchange 5.5 and is\n"
+"therefore not compatible with Ximian Connector"
+
+#: servers/exchange/storage/exchange-account.c:1503
+#, c-format
+msgid ""
+"Could not find Exchange Web Storage System at %s.\n"
+"If OWA is running on a different path, you must specify that in the\n"
+"account configuration dialog."
+msgstr ""
+"Could not find Exchange Web Storage System at %s.\n"
+"If OWA is running on a different path, you must specify that in the\n"
+"account configuration dialogue."
+
+#: servers/exchange/storage/exchange-account.c:1511
+#, c-format
+msgid "No mailbox for user %s on %s.\n"
+msgstr "No mailbox for user %s on %s.\n"
+
+#: servers/exchange/storage/exchange-account.c:1517
+#: servers/exchange/storage/exchange-account.c:1523
+#: servers/exchange/storage/exchange-account.c:1531
+#, c-format
+msgid "Could not connect to server %s: %s"
+msgstr "Could not connect to server %s: %s"
+
+#: servers/exchange/storage/exchange-account.c:1519
+msgid "Could not resolve hostname"
+msgstr "Could not resolve hostname"
+
+#: servers/exchange/storage/exchange-account.c:1525
+msgid "Network error"
+msgstr "Network error"
+
+#: servers/exchange/storage/exchange-folder-size.c:321
+msgid "Folder Name"
+msgstr "Folder Name"
+
+#: servers/exchange/storage/exchange-folder-size.c:325
+msgid "Folder Size"
+msgstr "Folder Size"
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
