@@ -231,6 +231,7 @@ static struct prop_info {
 
 	/* query prop,   type,              list compare function */
 	NORMAL_PROP ( E_CONTACT_FILE_AS, "file_as" ),
+	NORMAL_PROP ( E_CONTACT_UID, "id" ),
 	LIST_PROP ( "full_name", compare_name), /* not really a list, but we need to compare both full and surname */
 	NORMAL_PROP ( E_CONTACT_HOMEPAGE_URL, "url"),
 	NORMAL_PROP ( E_CONTACT_BLOG_URL, "blog_url"),
@@ -286,8 +287,15 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
 				info = &prop_info_table[i];
-				
-				if (info->prop_type == PROP_TYPE_NORMAL) {
+		
+				if (any_field && info->field_id == E_CONTACT_UID) {
+					/* We need to skip UID from any field contains search
+					 * any-field search should be supported for the 
+					 * visible fields only.
+					 */
+					truth = FALSE;
+				}
+				else if (info->prop_type == PROP_TYPE_NORMAL) {
 					const char *prop = NULL;
 					/* straight string property matches */
 					

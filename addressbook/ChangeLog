@@ -1,3 +1,11 @@
+2005-07-04  Sushma Rai  <rsushma@novell.com>
+
+	* libedata-book/e-book-backend-sexp.c (prop_info_table[]): Added
+	E_CONTACT_UID. Fixes #309276.
+	(entry_compare): Skipping the any-field search for UID, so that we
+	we try not to  show contacts those match the query partially. 
+	Fixes #242165.
+
 2005-07-01  Sushma Rai  <rsushma@novell.com>
 
 	* backends/file/e-book-backend-file.c (book_view_thread): Checking for
