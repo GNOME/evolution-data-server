@@ -803,7 +803,7 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const char *container, cons
 	
 		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		
-		subparam =  soup_soap_parameter_get_first_child_by_name(param, "sync");
+		subparam =  soup_soap_parameter_get_first_child_by_name(subparam, "sync");
 		if (subparam) {
 			char *value;
 
