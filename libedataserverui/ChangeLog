@@ -1,3 +1,8 @@
+2005-07-04  Sushma Rai  <rsushma@novell.com>
+
+	* e-name-selector-entry.c: Setting COMPLETION_CUE_MIN_LEN to 3, to
+	start autocompletion from the 3rd character onwards.
+
 2005-06-28  Sushma Rai  <rsushma@novell.com>
 
 	* e-name-selector-entry.c (setup_contact_store): Added 

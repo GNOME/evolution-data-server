@@ -40,7 +40,7 @@
 
 #define ENS_DEBUG(x)
 
-#define COMPLETION_CUE_MIN_LEN 2
+#define COMPLETION_CUE_MIN_LEN 3
 
 G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY);
 
