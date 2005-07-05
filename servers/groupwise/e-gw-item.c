@@ -1855,7 +1855,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		else if (!g_ascii_strcasecmp (name, "alarm")) {
 			char *enabled;
 			enabled = soup_soap_parameter_get_property (child, "enabled");
-			if (!g_ascii_strcasecmp (enabled, "true") ) {
+			if (!g_ascii_strcasecmp (enabled, "1") ) {
 				char *value;
 				value = soup_soap_parameter_get_string_value (child);
 				/* convert it into integer */
@@ -2867,7 +2867,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 
 		if (priv->trigger != 0) {
 			alarm = g_strdup_printf ("%d", priv->trigger);
-			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "true");
+			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "1");
 			g_free (alarm);
 		}
 		e_gw_message_write_string_parameter (msg, "place", NULL, priv->place ? priv->place : "");
@@ -3069,11 +3069,11 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 	if (g_hash_table_lookup (changes, "alarm")) {
 		if (priv->trigger != 0) {
 			char *alarm = g_strdup_printf ("%d", priv->trigger);
-			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "true");
+			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "1");
 			g_free (alarm);
 		}
 		else
-			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, "0", "enabled", "false");
+			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, "0", "enabled", "0");
 	}
 	if (g_hash_table_lookup (changes, "completed"))
 		e_gw_message_write_string_parameter (msg, "completed", NULL, priv->completed ? "1" : "0");
