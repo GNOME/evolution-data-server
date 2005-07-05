@@ -1215,7 +1215,7 @@ e_contact_get_property (GObject *object,
 	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
 		switch (info->field_id) {
 		case E_CONTACT_NAME_OR_ORG: {
-			char *str;
+			const char *str;
 
 			str = e_contact_get_const (contact, E_CONTACT_FILE_AS);
 			if (!str)
@@ -1525,7 +1525,7 @@ free_const_data (gpointer data, GObject *where_object_was)
  *
  * Return value: Depends on the field's type, owned by the #EContact.
  **/
-const gpointer
+gconstpointer
 e_contact_get_const (EContact *contact, EContactField field_id)
 {
 	gboolean is_string = FALSE;

@@ -264,7 +264,7 @@ EContact*               e_contact_new_from_vcard   (const char *vcard);
 EContact*               e_contact_duplicate        (EContact *contact);
 
 gpointer                e_contact_get              (EContact *contact, EContactField field_id);
-const gpointer          e_contact_get_const        (EContact *contact, EContactField field_id);
+gconstpointer		e_contact_get_const        (EContact *contact, EContactField field_id);
 void                    e_contact_set              (EContact *contact, EContactField field_id, gpointer value);
 
 /* the following two calls return and take a GList of

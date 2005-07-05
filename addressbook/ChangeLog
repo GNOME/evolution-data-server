@@ -1,3 +1,8 @@
+2005-07-05  Sushma Rai  <rsushma@novell.com>
+
+	* libebook/e-contact.[ch]: Using gconstpointer instead of 
+	const gpointer for return value of e_contact_get_const(). Fixes #309175.
+
 2005-07-04  Sushma Rai  <rsushma@novell.com>
 
 	* libedata-book/e-book-backend-sexp.c (prop_info_table[]): Added
