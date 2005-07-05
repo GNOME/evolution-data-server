@@ -1,3 +1,20 @@
+2005-07-05  Vivek Jain <jvivek@novell.com>
+	
+	* e-gw-connection.h:
+	Added EGwJunkEntry structure
+	* e-gw-connection.[ch]: added functions
+	(e_gw_connection_modify_junk_mail_settings):to set/modify junk mail
+	settings, which uses new utility function (msg_add_settings)
+	(e_gw_connection_create_junk_entry): to create a junk entry 
+	(e_gw_connection_get_junk_entries) : to get junk entries stored at
+	server
+	uses two new helper functions
+	(get_junklist_from_soap_response)
+	(e_gw_junkentry_new_from_soap_parameter).
+	(e_gw_connection_remove_junk_entry): to remove a junk entry
+	(e_gw_connection_get_junk_settings): to get the junk settings
+	(parse_junk_settings): actually parses response and assigns values
+
 2005-07-04  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-connection.c (e_gw_connection_get_items_delta):

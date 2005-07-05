@@ -2907,3 +2907,376 @@ e_gw_connection_reply_item (EGwConnection *cnc, const char *id, const char *view
 
         return E_GW_CONNECTION_STATUS_OK;
 }
+
+/* e_gw_connection_create_junk_entry :creates a junk entry in the list
+ * @cnc
+ * @value : to be added in the list 
+ * @match_type : "email"/"domain" default: email
+ * @list_type : "junk"/"trust"/"block" default: junk
+ * */
+
+EGwConnectionStatus
+e_gw_connection_create_junk_entry (EGwConnection *cnc, const char *value, const char *match_type, const char *list_type) 
+{
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (value != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "createJunkEntryRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	soup_soap_message_start_element (msg, "entry", NULL, NULL);
+	e_gw_message_write_string_parameter (msg, "match", NULL, value);
+	e_gw_message_write_string_parameter (msg, "matchType", NULL, match_type);
+	e_gw_message_write_string_parameter (msg, "listType", NULL, list_type);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+	response =  e_gw_connection_send_message (cnc, msg);
+	
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
+
+/*TODO: move to different file*/
+static void
+parse_junk_settings (SoupSoapParameter *param, int *use_junk, int *use_block, int *use_pab, int *persistence)
+{
+	SoupSoapParameter *subparam, *field_param, *val_param;
+	
+	if (param == NULL)
+		return ;
+	else	{
+		/* parse these parameters into junk settings*/
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "setting");
+				subparam != NULL;
+				subparam = soup_soap_parameter_get_next_child_by_name (subparam, "setting")) {
+			char *field = NULL;
+			int val = 0;
+
+			field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
+			val_param = soup_soap_parameter_get_first_child_by_name (subparam, "value");
+
+			if (field_param) {
+				field = soup_soap_parameter_get_string_value (field_param);
+				if (!field)
+					continue;
+			} else
+				continue;
+
+			if (!g_ascii_strcasecmp (field, "useJunkList")) {
+				if (val_param)
+					val = soup_soap_parameter_get_int_value (val_param);
+				*use_junk = val;
+				g_free (field);
+			} else	if (!g_ascii_strcasecmp (field, "useBlockList")) {
+				if (val_param)
+					val = soup_soap_parameter_get_int_value (val_param);
+				*use_block = val;
+				g_free (field);
+			} else if (!g_ascii_strcasecmp (field, "usePAB")) {
+				if (val_param)
+					val = soup_soap_parameter_get_int_value (val_param);
+				*use_pab = val;
+				g_free (field);
+			} else if (!g_ascii_strcasecmp (field, "persistence")) { 
+				if (val_param)
+					val = soup_soap_parameter_get_int_value (val_param);
+				*persistence = val;
+				g_free (field);
+			}
+		}
+	}
+}
+
+/*
+ * e_gw_connection_get_junk_settings: gets the junk settings
+ * use_junk : returned value, whether junk list is being used
+ * use_block: use block list
+ * use_pab: returned value, whether personal addresbook is used
+ * persistence: 
+ * */
+EGwConnectionStatus
+e_gw_connection_get_junk_settings (EGwConnection *cnc, int *use_junk, int *use_block, int *use_pab, int *persistence)
+{
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+	SoupSoapParameter *param;
+        EGwConnectionStatus status;
+        
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getJunkMailSettingsRequest");
+
+	if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	e_gw_message_write_footer (msg);
+	response =  e_gw_connection_send_message (cnc, msg);
+	
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+
+	/* if status is OK - parse result. return the list */
+	if (status == E_GW_CONNECTION_STATUS_OK) {
+		param = soup_soap_response_get_first_parameter_by_name (response, "settings");
+		parse_junk_settings (param, use_junk, use_block, use_pab, persistence);
+	}
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+
+}
+
+static void 
+msg_add_settings (SoupSoapMessage *msg, char *field, int value)
+{
+	soup_soap_message_start_element (msg, "setting", NULL, NULL);
+	e_gw_message_write_string_parameter (msg, "field", NULL, field);
+	e_gw_message_write_int_parameter (msg, "value", NULL, value);
+	soup_soap_message_end_element (msg);
+}
+
+/* e_gw_connection_modify_junk_settings: creates/removes junk mail settings
+ * @cnc
+ * @use_junk 0 : disable spam learning from junk list 1: enable
+ * @use_block: same for block list
+ * use_pab 1: put messages except from personal add book in junk, 0 disable
+ * @persistence :delete after
+ * */
+ 
+EGwConnectionStatus
+e_gw_connection_modify_junk_settings (EGwConnection *cnc, int use_junk, int use_pab, int use_block, int persistence)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "modifyJunkMailSettingsRequest");
+	if (!msg) {
+		g_warning (G_STRLOC ": Could not build SOAP message");
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
+
+	soup_soap_message_start_element (msg, "settings", NULL, NULL);
+
+	msg_add_settings (msg, "useJunkList", use_junk);
+	msg_add_settings (msg, "usePAB", use_pab);
+	msg_add_settings (msg, "useBlockList", use_block);
+	msg_add_settings (msg, "persistence", persistence);
+
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+	response =  e_gw_connection_send_message (cnc, msg);
+
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+
+}
+
+/*TODO:Move this code to some other file and make this function public*/
+static EGwJunkEntry *
+e_gw_junkentry_new_from_soap_parameter (SoupSoapParameter *param)
+{
+	EGwJunkEntry *junk_entry;
+	SoupSoapParameter *subparam;
+
+	g_return_val_if_fail (param != NULL, NULL);
+
+	junk_entry = g_new0(EGwJunkEntry, 1);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "id");
+	if (!subparam) {
+		g_warning (G_STRLOC ": found junk entry with no name");
+		return NULL;
+	}
+	junk_entry->id = soup_soap_parameter_get_string_value (subparam);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "match");
+	if (!subparam) {
+		g_warning (G_STRLOC ": found junk entry with no Match");
+		return NULL;
+	}
+	junk_entry->match = soup_soap_parameter_get_string_value (subparam);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "matchType");
+	if (!subparam) {
+		g_warning (G_STRLOC ": found junk entry with no MatchType");
+		return NULL;
+	}
+	junk_entry->matchType = soup_soap_parameter_get_string_value (subparam);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "lastUsed");
+	if (subparam) 
+		junk_entry->lastUsed = soup_soap_parameter_get_string_value (subparam);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "version");
+	if (subparam) 
+		junk_entry->version = soup_soap_parameter_get_int_value (subparam);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "modified");
+	if (subparam) 
+		junk_entry->modified = soup_soap_parameter_get_string_value (subparam);
+
+	return junk_entry;
+
+}
+
+/*TODO:Move this code to some other file and make this function public*/
+static void
+get_junk_list_from_soap_response (SoupSoapResponse *response, GList **entries)
+{
+	SoupSoapParameter *param, *subparam;
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "junk");
+	if (param) {
+		/* parse these parameters into junk entries*/
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "entry");
+				subparam != NULL;
+				subparam = soup_soap_parameter_get_next_child_by_name (subparam, "entry")) {
+			EGwJunkEntry *junk_entry;
+
+			junk_entry = e_gw_junkentry_new_from_soap_parameter (subparam);
+			if (junk_entry)
+				*entries = g_list_append (*entries, junk_entry);
+		}
+	}	
+	param = soup_soap_response_get_first_parameter_by_name (response, "block");
+	if (param) {
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "entry");
+				subparam != NULL;
+				subparam = soup_soap_parameter_get_next_child_by_name (subparam, "entry")) {
+			EGwJunkEntry *junk_entry;
+			junk_entry = e_gw_junkentry_new_from_soap_parameter (subparam);
+			if (junk_entry)
+				*entries = g_list_append (*entries, junk_entry);
+		}
+	}
+	param = soup_soap_response_get_first_parameter_by_name (response, "trust");
+	if (param) {
+		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "entry");
+				subparam != NULL;
+				subparam = soup_soap_parameter_get_next_child_by_name (subparam, "entry")) {
+			EGwJunkEntry *junk_entry;
+			junk_entry = e_gw_junkentry_new_from_soap_parameter (subparam);
+			if (junk_entry)
+				*entries = g_list_append (*entries, junk_entry);
+		}
+	}
+ }
+
+/* Caller must free the entries*** TODO: have a function in the generic file to free these*/
+EGwConnectionStatus
+e_gw_connection_get_junk_entries (EGwConnection *cnc, GList **entries)
+{
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getJunkEntriesRequest");
+
+	if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	e_gw_message_write_footer (msg);
+	response =  e_gw_connection_send_message (cnc, msg);
+	
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+
+	/* if status is OK - parse result. return the list */
+	if (status == E_GW_CONNECTION_STATUS_OK)
+		get_junk_list_from_soap_response (response, entries);
+	
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_remove_junk_entry (EGwConnection *cnc, const char *id)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+	g_return_val_if_fail (id != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "removeJunkEntryRequest");
+
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+
+}
