@@ -1,3 +1,8 @@
+2005-07-06  Ross Burton  <ross@openedhand.com>
+
+	* libedataserver/e-util.c:
+	Remove a function and table which is in GLib.
+
 2005-07-06  Harish Krishnaswamy  <kharish@novell.com>
 	
 	* configure.in : align the name of the LIBEXCHANGE_STORAGE
