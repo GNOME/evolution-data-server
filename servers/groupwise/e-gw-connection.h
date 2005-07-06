@@ -157,6 +157,7 @@ EGwConnectionStatus e_gw_connection_purge_deleted_items (EGwConnection *cnc);
 EGwConnectionStatus e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids) ;
 EGwConnectionStatus e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids) ;
 EGwConnectionStatus e_gw_connection_reply_item (EGwConnection *cnc, const char *id, const char *view, EGwItem **item) ;
+EGwConnectionStatus e_gw_connection_forward_item (EGwConnection *cnc, const char *id, const char *view, gboolean embed, EGwItem **item);
 EGwConnectionStatus e_gw_connection_create_junk_entry (EGwConnection *cnc, const char *value, const char *match_type , const char *list_type);
 EGwConnectionStatus e_gw_connection_get_junk_settings (EGwConnection *cnc, int *use_junk, int *use_block, int *use_pab,  int *persistence);
 EGwConnectionStatus e_gw_connection_modify_junk_settings (EGwConnection *cnc, int use_junk, int use_block, int use_pab , int persistence);

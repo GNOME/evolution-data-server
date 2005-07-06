@@ -49,6 +49,7 @@ typedef enum {
 	E_GW_ITEM_TYPE_RESOURCE,
 	E_GW_ITEM_TYPE_CATEGORY,
 	E_GW_ITEM_TYPE_NOTIFICATION, 
+	E_GW_ITEM_TYPE_NOTE,
 	E_GW_ITEM_TYPE_UNKNOWN
 
 } EGwItemType;
@@ -122,6 +123,7 @@ typedef struct {
 typedef struct {
 	char *id ;
 	char *name ;
+	char *item_reference;
 	char *contentType ;
 	int size ;
 	char *date ;
@@ -139,6 +141,12 @@ typedef enum {
 	E_GW_ITEM_DELIVERED_OPENED,
 	E_GW_ITEM_ALL
 } EGwItemTrack;
+
+typedef struct {
+	char *id;
+	char *type;
+	char *thread;
+} EGwItemLinkInfo;
 
 GType       e_gw_item_get_type (void);
 EGwItem    *e_gw_item_new_empty (void);
@@ -191,7 +199,11 @@ const char* e_gw_item_get_to (EGwItem *item) ;
 const char *e_gw_item_get_msg_content_type (EGwItem *item) ;
 guint32     e_gw_item_get_item_status (EGwItem *item);
 void	    e_gw_item_set_content_type (EGwItem *item, const char *content_type) ;
+void	    e_gw_item_set_link_info (EGwItem *item, EGwItemLinkInfo *info);
+EGwItemLinkInfo *e_gw_item_get_link_info (EGwItem *item);
 char	    *e_gw_item_get_content_type (EGwItem *item) ;
+const char *e_gw_item_get_msg_body_id (EGwItem *item);
+int	    e_gw_item_get_mail_size (EGwItem *item);
 void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *field_name, gpointer field_value);
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
@@ -241,6 +253,7 @@ void        e_gw_item_set_accept_level (EGwItem *item, const char *new_level);
 
 const char *e_gw_item_get_priority (EGwItem *item);
 void        e_gw_item_set_priority (EGwItem *item, const char *new_priority);
+
 const char *e_gw_item_get_task_priority (EGwItem *item);
 void        e_gw_item_set_task_priority (EGwItem *item, const char *new_priority);
 
