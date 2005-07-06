@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkbutton.h>
@@ -35,6 +36,7 @@
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-book-auth-util.h>
+#include <libedataserver/e-sexp.h>
 #include "e-name-selector-dialog.h"
 
 typedef struct {
@@ -220,8 +222,6 @@ e_name_selector_dialog_dispose (GObject *object)
 static void
 e_name_selector_dialog_finalize (GObject *object)
 {
-	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
-
 	/* TODO: Free stuff */
 
 	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize)
@@ -425,7 +425,8 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 
 	if (pango_parse_markup (pretty_name, -1, '_', NULL,
 				&text, NULL, NULL))  {
-		atk_object_set_name (gtk_widget_get_accessible (section.destination_view), text);
+		atk_object_set_name (gtk_widget_get_accessible (
+					GTK_WIDGET (section.destination_view)), text);
 		g_free (text);
 	}
 
@@ -538,11 +539,6 @@ book_opened (EBook *book, EBookStatus status, gpointer data)
 static void
 source_selected (ENameSelectorDialog *name_selector_dialog, ESource *source)
 {
-	EContactStore *contact_store;
-	ESource       *last_source;
-	GList         *books;
-	GList         *l;
-
 	/* Remove any previous books being shown or loaded */
 	remove_books (name_selector_dialog);
 
@@ -722,7 +718,6 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 	EContact          *contact;
 	gint               section_index;
 	Section           *section;
-	EDestination      *destination;
 	gint               email_n;
 
 	/* Get the contact to be transferred */
@@ -770,8 +765,6 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 {
 	EContactStore       *contact_store;
 	ETreeModelGenerator *contact_filter;
-	GtkTreeSelection    *contact_selection;
-	EBookQuery          *book_query;
 	GList               *new_sections;
 	GList               *l;
 	gint                 i;

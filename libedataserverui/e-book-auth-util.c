@@ -216,7 +216,7 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 		cb (book, E_BOOK_ERROR_CANCELLED, closure);
 	}
 
-	g_free (uri);
+	g_free (stripped_uri);
 }
 
 static void

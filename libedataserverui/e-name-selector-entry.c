@@ -35,6 +35,7 @@
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
 #include <libedataserverui/e-book-auth-util.h>
+#include <libedataserver/e-sexp.h>
 
 #include "e-name-selector-entry.h"
 
@@ -86,8 +87,6 @@ e_name_selector_entry_realize (GtkWidget *widget)
 static void
 e_name_selector_entry_dispose (GObject *object)
 {
-	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (object);
-
 	if (G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose)
 		G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose (object);
 }
@@ -96,8 +95,6 @@ e_name_selector_entry_dispose (GObject *object)
 static void
 e_name_selector_entry_finalize (GObject *object)
 {
-	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (object);
-
 	if (G_OBJECT_CLASS (e_name_selector_entry_parent_class)->finalize)
 		G_OBJECT_CLASS (e_name_selector_entry_parent_class)->finalize (object);
 }
@@ -300,7 +297,6 @@ get_address_at_position (const gchar *string, gint pos)
 	gint         end_pos;
 	const gchar *start_p;
 	const gchar *end_p;
-	gchar       *address;
 
 	if (!get_range_at_position (string, pos, &start_pos, &end_pos))
 		return NULL;
@@ -352,7 +348,6 @@ build_destination_at_position (const gchar *string, gint pos)
 {
 	EDestination *destination;
 	gchar        *address;
-	gint          i;
 
 	address = get_address_at_position (string, pos);
 	if (!address)
@@ -373,7 +368,6 @@ name_style_query (const gchar *field, const gchar *value)
 	GString *out = g_string_new ("");
 	gchar  **strv;
 	gchar   *query;
-	gint     i;
 
 	spaced_str = sanitize_string (value);
 	g_strstrip (spaced_str);
@@ -474,7 +468,6 @@ get_entry_substring (ENameSelectorEntry *name_selector_entry, gint range_start, 
 {
 	const gchar *entry_text;
 	gchar       *p0, *p1;
-	gchar       *substr;
 
 	entry_text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 
@@ -511,7 +504,6 @@ build_textrep_for_contact (EContact *contact, EContactField cue_field)
 	gchar *name  = NULL;
 	gchar *email = NULL;
 	gchar *textrep;
-	gchar *p0;
 
 	switch (cue_field) {
 		case E_CONTACT_FULL_NAME:
@@ -851,7 +843,6 @@ insert_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	EDestination *destination;
 	const gchar  *text;
 	gint          index;
-	gint          range_start, range_end;
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	index = get_index_at_position (text, pos);
@@ -874,8 +865,6 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	EDestination *destination;
 	const gchar  *text;
 	gchar        *raw_address;
-	gint          index;
-	gint          range_start, range_end;
 	gboolean      rebuild_attributes = FALSE;
 
 	destination = find_destination_at_position (name_selector_entry, pos);
@@ -1001,7 +990,6 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 	 * - At start of string. */
 
 	if (c == ',' && !is_quoted_at (text, *pos)) {
-		const gchar *p0;
 		gint         start_pos;
 		gint         end_pos;
 		gboolean     at_start = FALSE;
@@ -1124,7 +1112,6 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	const gchar *text;
 	gint         index_start, index_end;
 	gunichar     str_context [2];
-	gchar        buf [7];
 	gint         len;
 	gint         i;
 
@@ -1195,13 +1182,9 @@ static gboolean
 completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel *model,
 			   GtkTreeIter *iter)
 {
-	EContactStore *contact_store;
 	EContact      *contact;
 	EDestination  *destination;
-	EContactField  matched_field = E_CONTACT_EMAIL_1;
 	gint           cursor_pos;
-	const gchar   *text;
-	gchar         *raw_address;
 	GtkTreeIter    generator_iter;
 	GtkTreeIter    contact_iter;
 	gint           email_n;
@@ -1583,7 +1566,6 @@ static void
 setup_destination_store (ENameSelectorEntry *name_selector_entry)
 {
 	GtkTreeIter  iter;
-	GtkTreePath *path;
 
 	g_signal_connect_swapped (name_selector_entry->destination_store, "row-changed",
 				  G_CALLBACK (destination_row_changed), name_selector_entry);
@@ -1684,7 +1666,6 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 	EDestination *destination;
 	EContact     *contact;
 	gchar        *contact_uid;
-	GtkTreeIter   iter;
 
 	destination = name_selector_entry->popup_destination;
 	if (!destination)

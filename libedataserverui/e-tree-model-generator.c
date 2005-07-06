@@ -456,7 +456,6 @@ get_node_by_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *
 
 	for (depth = 0; depth < gtk_tree_path_get_depth (path); depth++) {
 		gint  index;
-		gint  generated_index;
 
 		if (!group) {
 			g_warning ("ETreeModelGenerator got unknown child element!");
@@ -671,7 +670,6 @@ child_row_inserted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path
 	GtkTreePath *generated_path;
 	Node        *node;
 	gint         n_generated;
-	gint         i;
 
 	if (tree_model_generator->generate_func)
 		n_generated =
@@ -979,7 +977,6 @@ e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_mod
 
 	while (group) {
 		Node *node = &g_array_index (group, Node, index);
-		gint  generated_index;
 
 		group = node->parent_group;
 		index = node->parent_index;

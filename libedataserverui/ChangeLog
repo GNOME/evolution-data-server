@@ -1,3 +1,15 @@
+2005-07-06  Sushma Rai  <rsushma@novell.com>
+
+	* e-book-auth-util.c:
+	* e-name-selector-entry.c:
+	* e-name-selector-dialog.c:
+	* e-categories-dialog.c:
+	* e-destination-store.c:
+	* e-contact-store.c:
+	* e-name-selector.c:
+	* e-name-selector-model.c:
+	* e-tree-model-generator.c: Fixed compiler warnings.
+
 2005-07-04  Sushma Rai  <rsushma@novell.com>
 
 	* e-name-selector-entry.c: Setting COMPLETION_CUE_MIN_LEN to 3, to

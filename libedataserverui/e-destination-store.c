@@ -437,8 +437,6 @@ e_destination_store_get_flags (GtkTreeModel *tree_model)
 static gint
 e_destination_store_get_n_columns (GtkTreeModel *tree_model)
 {
-	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
-
 	g_return_val_if_fail (E_IS_DESTINATION_STORE (tree_model), 0);
 
 	return E_CONTACT_FIELD_LAST;
@@ -448,8 +446,6 @@ static GType
 e_destination_store_get_column_type (GtkTreeModel *tree_model,
 				     gint          index)
 {
-	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
-
 	g_return_val_if_fail (E_IS_DESTINATION_STORE (tree_model), G_TYPE_INVALID);
 	g_return_val_if_fail (index >= 0 && index < E_DESTINATION_STORE_NUM_COLUMNS, G_TYPE_INVALID);
 
@@ -536,8 +532,6 @@ static gboolean
 e_destination_store_iter_has_child (GtkTreeModel *tree_model,
 				    GtkTreeIter  *iter)
 {
-	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
-
 	g_return_val_if_fail (E_IS_DESTINATION_STORE (tree_model), FALSE);
 
 	if (iter == NULL)

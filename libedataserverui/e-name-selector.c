@@ -145,8 +145,6 @@ e_name_selector_init (ENameSelector *name_selector)
 static void
 e_name_selector_finalize (GObject *object)
 {
-	ENameSelector *name_selector = E_NAME_SELECTOR (object);
-
 	if (G_OBJECT_CLASS (e_name_selector_parent_class)->finalize)
 		G_OBJECT_CLASS (e_name_selector_parent_class)->finalize (object);
 }

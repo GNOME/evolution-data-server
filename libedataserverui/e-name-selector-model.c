@@ -463,7 +463,6 @@ e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
 void
 e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model, const gchar *name)
 {
-	Section *section;
 	gint     n;
 
 	g_return_if_fail (E_IS_NAME_SELECTOR_MODEL (name_selector_model));

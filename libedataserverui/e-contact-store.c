@@ -367,7 +367,7 @@ find_contact_by_view_and_uid (EContactStore *contact_store, EBookView *find_view
 static gint
 find_contact_by_uid (EContactStore *contact_store, const gchar *find_uid)
 {
-	gint i, j;
+	gint i;
 
 	for (i = 0; i < contact_store->contact_sources->len; i++) {
 		ContactSource *source = &g_array_index (contact_store->contact_sources, ContactSource, i);
@@ -390,7 +390,6 @@ get_book_at_row (EContactStore *contact_store, gint row)
 {
 	ContactSource *source;
 	gint           source_index;
-	gint           offset;
 
 	source_index = find_contact_source_by_offset (contact_store, row);
 	if (source_index < 0)
@@ -424,7 +423,6 @@ static gboolean
 find_contact_source_details_by_view (EContactStore *contact_store, EBookView *book_view,
 				     ContactSource **contact_source, gint *offset)
 {
-	ContactSource *source;
 	gint           source_index;
 
 	source_index = find_contact_source_by_view (contact_store, book_view);
@@ -870,7 +868,6 @@ e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 {
 	ContactSource  source;
 	ContactSource *indexed_source;
-	EBookView     *view;
 
 	g_return_if_fail (E_IS_CONTACT_STORE (contact_store));
 	g_return_if_fail (E_IS_BOOK (book));
@@ -903,8 +900,6 @@ e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
 {
 	ContactSource *source;
 	gint           source_index;
-	gint           offset;
-	gint           i;
 
 	g_return_if_fail (E_IS_CONTACT_STORE (contact_store));
 	g_return_if_fail (E_IS_BOOK (book));
@@ -989,8 +984,6 @@ e_contact_store_get_flags (GtkTreeModel *tree_model)
 static gint
 e_contact_store_get_n_columns (GtkTreeModel *tree_model)
 {
-	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
-
 	g_return_val_if_fail (E_IS_CONTACT_STORE (tree_model), 0);
 
 	return E_CONTACT_FIELD_LAST;
@@ -1113,8 +1106,6 @@ static gboolean
 e_contact_store_iter_has_child (GtkTreeModel *tree_model,
 				GtkTreeIter  *iter)
 {
-	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
-
 	g_return_val_if_fail (E_IS_CONTACT_STORE (tree_model), FALSE);
 
 	if (iter == NULL)

@@ -68,7 +68,6 @@ static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
 	CategoryPropertiesDialog *prop_dialog;
-	GtkWidget *table;
 
 	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
 
@@ -155,7 +154,7 @@ add_comma_sep_categories (gpointer key, gpointer value, gpointer user_data)
 {
 	GString **str = user_data;
 
-	if (strlen ((GString *) (*str)->str) > 0)
+	if (strlen ((*str)->str) > 0)
 		*str = g_string_append (*str, ",");
 
 	*str = g_string_append (*str, (const char *) key);
@@ -445,7 +444,8 @@ e_categories_dialog_new (const char *initial_category_list)
 	if (initial_category_list)
 		e_categories_dialog_set_categories (dialog, initial_category_list);
 
-	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed", entry_changed_cb, dialog);
+	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed", 
+			  G_CALLBACK (entry_changed_cb), dialog);
 
 	return GTK_WIDGET (dialog);
 }
