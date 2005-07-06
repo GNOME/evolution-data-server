@@ -1,3 +1,29 @@
+2005-07-06  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* camel-groupwise-folder.c:
+	  (groupwise_folder_item_to_msg): function to convert
+	   an item to a CamelMimeMessage
+	  (groupwise_refresh_folder): This calls get Item for
+	   each id that is being update in the summary. This
+	   operates in a new thread.
+	  (gw_update_all_items): Free summary after working on
+	   it
+	* camel-groupwise-store.c:
+	  (store_refresh_refresh): This method works in a
+	   thread. And refreshes the summary of all the 'open'
+	   folders.
+	  (folder_refresh_refresh): This method refreshes a
+	   folder the first time it is opened. This works in a
+	   new thread.
+	
+	* camel-groupwise-transport.c:
+	  (groupwise_send_to): set LinkInfo when a mail is 
+	   replied to.
+	
+	* camel-groupwise-utils.c:
+	  (camel_groupwise_util_item_from_message): set LinkInfo
+	  when a mail is forwarded.
+	  
+
 2005-06-16  Parthasarathi Susarla <sparthasarathi@novell.com>
 	* came-groupwise-folder.c:
 	  (gw_update_summary): make appointments appear the 

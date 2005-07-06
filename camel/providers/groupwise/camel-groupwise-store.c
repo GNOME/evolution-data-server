@@ -475,6 +475,35 @@ groupwise_store_query_auth_types (CamelService *service, CamelException *ex)
 	return auth_types;
 }
 
+/* folder refresh thread stuff begin*/
+struct _get_folder_refresh {
+	CamelSessionThreadMsg msg;
+	
+	CamelFolder *folder;
+};
+
+static void
+folder_refresh_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
+{
+	struct _get_folder_refresh *m = (struct _get_folder_refresh *)msg;
+	CamelException *ex = NULL;
+	groupwise_refresh_folder (m->folder, ex);
+}
+
+static void
+folder_refresh_free (CamelSession *session, CamelSessionThreadMsg *msg)
+{
+	 struct _get_folder_refresh *m = (struct _get_folder_refresh *)msg;
+	camel_object_unref (m->folder);
+	camel_folder_thaw (m->folder);
+}
+
+static CamelSessionThreadOps get_folder_refresh_ops = {
+	folder_refresh_refresh,
+	folder_refresh_free,
+};
+/* folder refresh thread stuff done*/
+
 static GMutex *mutex = NULL ;
 
 static CamelFolder * 
@@ -483,6 +512,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (store) ;
 	CamelGroupwiseStorePrivate *priv = gw_store->priv ;
 	CamelFolder *folder ;
+	CamelSession *session = camel_service_get_session (CAMEL_SERVICE (store));
 	CamelGroupwiseSummary *summary;
 	char *time_string = NULL;
 	char *storage_path, *folder_dir, *temp_str,*container_id ;
@@ -604,6 +634,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				camel_operation_progress (NULL, 100 - (count * 100/temp)) ;
 			if (!list  || temp == 0)
 				done = TRUE;
+			g_list_foreach (list, (GFunc)g_object_unref, NULL);
 			g_list_free (list);
 			list = NULL;
 			position = E_GW_CURSOR_POSITION_CURRENT;
@@ -613,6 +644,13 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 		camel_operation_end (NULL);
 		g_mutex_unlock (mutex) ;
+	} else{
+		struct _get_folder_refresh *msg;
+		msg = camel_session_thread_msg_new (session, &get_folder_refresh_ops, sizeof(*msg));
+		msg->folder = folder;
+		camel_object_ref (folder);
+		camel_folder_freeze (folder);
+		camel_session_thread_queue (session, &msg->msg, 0);
 	}
 
 	camel_folder_summary_save (folder->summary);
@@ -721,24 +759,66 @@ groupwise_get_folder_info_offline (CamelStore *store, const char *top, guint32 f
        
 }
 
+/*Thread operations begin*/
+struct _store_folder_refresh {
+	CamelSessionThreadMsg msg;
+	
+	CamelStore *store;
+};
+
+static void
+store_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
+{
+	GPtrArray *folders;
+	int i;
+	struct _store_folder_refresh *m = (struct _store_folder_refresh *)msg;
+	CamelException *ex = NULL;
+	folders = camel_object_bag_list (CAMEL_STORE (m->store)->folders);
+
+	for (i=0 ; i<folders->len ; i++) {
+		CamelFolder *folder = folders->pdata[i];
+		groupwise_refresh_folder (folder, ex);
+
+		if (camel_exception_is_set (ex)) {
+		} else
+			camel_object_unref (folder);
+	}
+	g_ptr_array_free (folders, TRUE);
+}
+
+static void
+store_refresh_free (CamelSession *session, CamelSessionThreadMsg *msg)
+{
+}
+
+static CamelSessionThreadOps refresh_ops = {
+	store_refresh,
+	store_refresh_free,
+};
+
+/*Thread operations End*/
 static CamelFolderInfo *
 groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
+	CamelSession *session;
 	int status;
 	GPtrArray *folders;
 	GList *folder_list = NULL, *temp_list = NULL ;
 	const char *url, *top_folder, *temp_url ;
 	char *temp_str = NULL, *folder_real = NULL ;
 	CamelFolderInfo *info = NULL ;
+	struct _store_folder_refresh *msg;
 
 	CAMEL_SERVICE_LOCK (store, connect_lock) ;
-	g_print ("groupwise_get_folder_info\n");
+
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		return groupwise_get_folder_info_offline (store, top, flags, ex);
 	}
+
+	session = camel_service_get_session (CAMEL_SERVICE (store));
 	
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
 		if (!groupwise_connect (CAMEL_SERVICE(store), ex)) {
@@ -766,6 +846,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	status = e_gw_connection_get_container_list (priv->cnc, top_folder, &folder_list);
 	if (status != E_GW_CONNECTION_STATUS_OK ) {
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+		g_warning ("Network Unavailable....\n");
 		/*FIX ME set the camel exception id*/
 		return NULL;
 	}
@@ -879,14 +960,20 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		fi->total = e_gw_container_get_total_count (container) ;
 		fi->unread = e_gw_container_get_unread_count (container) ;
 		/*refresh info*/
-		if (groupwise_store->current_folder &&
+/*		if (groupwise_store->current_folder &&
 		    strcmp (groupwise_store->current_folder->full_name, fi->full_name) == 0) {
 
 			CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->refresh_info(groupwise_store->current_folder, ex);
-		}
+		}*/
 		g_ptr_array_add (folders, fi);
 		name = NULL ;
 	}
+
+	/*Thread stuff starts*/
+	msg = camel_session_thread_msg_new (session, &refresh_ops, sizeof(*msg));
+	msg->store = store;
+	camel_session_thread_queue (session, &msg->msg, 0);
+	/*Thread stuff ends*/
 	g_free ((char *)url) ;
 	if ( (top != NULL) && (folders->len == 0)) {
 		/*temp_str already contains the value if any*/

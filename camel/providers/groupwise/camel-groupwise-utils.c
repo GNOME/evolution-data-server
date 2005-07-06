@@ -37,6 +37,7 @@
 
 #define SUBFOLDER_DIR_NAME     "subfolders"
 #define SUBFOLDER_DIR_NAME_LEN 10
+#define RFC_822	"message/rfc822"
 
 /**
  * e_path_to_physical:
@@ -284,16 +285,15 @@ add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_t
 }
 
 EGwItem *
-camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients)
+camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *message, CamelAddress *from, CamelAddress *recipients)
 {
-	EGwItem *item ;
-	EGwItemRecipient *recipient ;
+	EGwItem *item, *temp_item = NULL;
 	EGwItemOrganizer *org = g_new0 (EGwItemOrganizer, 1) ;
+	EGwItemLinkInfo *info = NULL;
+	EGwConnectionStatus status;
 
 	const char *display_name = NULL, *email = NULL ;
 	char *send_options = NULL ;
-
-	int total_add ;
 
 	CamelMultipart *mp ;
 
@@ -320,7 +320,7 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 	/** Get the mime parts from CamelMimemessge **/
 	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
 	if(!mp) {
-		g_print ("ERROR: Could not get content object") ;
+		g_error ("ERROR: Could not get content object") ;
 		camel_operation_end (NULL) ;
 		return FALSE ;
 	}
@@ -330,7 +330,6 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 		guint part_count ;
 		
 		part_count = camel_multipart_get_number (mp) ;
-		g_print ("Contains Multiple parts: %d\n", part_count) ;
 		for ( i=0 ; i<part_count ; i++) {
 			CamelContentType *type ;
 			CamelMimePart *part ;
@@ -382,6 +381,30 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 				}
 				attachment->name = g_strdup (filename ? filename : "") ;
 				attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype) ;
+				if (!g_ascii_strncasecmp (attachment->contentType, RFC_822, strlen (RFC_822))) {
+					char *temp_id = NULL, *id = NULL;
+					//id = (char *)camel_mime_message_get_message_id ((CamelMimeMessage *)dw);
+					temp_id = (char *)camel_medium_get_header (CAMEL_MEDIUM ((CamelMimeMessage *)dw), "Message-Id");
+					int len = strlen (temp_id);
+
+					id = (char *)g_malloc0 (len-1);
+					id = memcpy(id, temp_id+2, len-3);
+
+					status = e_gw_connection_forward_item (cnc, id, "message", TRUE, &temp_item);
+					if (status != E_GW_CONNECTION_STATUS_OK) 
+						g_warning ("Could not send a forwardRequest...continuing without!!\n");
+					else {
+						GSList *attach_list = e_gw_item_get_attach_id_list (temp_item);
+						EGwItemAttachment *temp_attach = (EGwItemAttachment *)attach_list->data;
+						attachment->id = g_strdup (temp_attach->id);
+						attachment->item_reference = g_strdup (temp_attach->item_reference);
+						g_free (attachment->name);
+						attachment->name = g_strdup (temp_attach->name);
+						info = e_gw_item_get_link_info (temp_item);
+						e_gw_item_set_link_info (item, info);
+					}
+					g_free (id);
+				}
 				
 				attach_list = g_slist_append (attach_list, attachment) ;
 			}
@@ -416,7 +439,6 @@ camel_groupwise_util_item_from_message (CamelMimeMessage *message, CamelAddress 
 	/*Populate EGwItem*/
 	/*From Address*/
 	camel_internet_address_get ((CamelInternetAddress *)from, 0 , &display_name, &email) ;
-	g_print ("from : %s : %s\n", display_name,email) ;
 	org->display_name = g_strdup (display_name) ;
 	org->email = g_strdup (email) ;
 	e_gw_item_set_organizer (item, org) ;

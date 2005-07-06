@@ -82,8 +82,8 @@ CamelType camel_groupwise_folder_get_type (void);
 /* implemented */
 CamelFolder * camel_gw_folder_new(CamelStore *store, const char *folder_dir, const char *folder_name, CamelException *ex) ;
 void gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) ;
+void groupwise_refresh_folder(CamelFolder *folder, CamelException *ex);
 
-//static void gw_rescan (CamelFolder *folder, int exists, CamelException *ex)  ;
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

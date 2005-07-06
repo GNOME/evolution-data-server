@@ -145,12 +145,13 @@ groupwise_send_to (CamelTransport *transport,
 	CamelStore *store =  NULL ;
 	CamelGroupwiseStore *groupwise_store = NULL;
 	CamelGroupwiseStorePrivate *priv = NULL;
-	EGwItem *item ;
+	EGwItem *item ,*temp_item;
 	EGwConnection *cnc = NULL;
 	EGwConnectionStatus status ;
 	GSList *sent_item_list = NULL;
 	char *url = NULL ;
 	const char *reply_request = NULL;
+	EGwItemLinkInfo *info = NULL;
 
 	url = camel_url_to_string (service->url,
 			           (CAMEL_URL_HIDE_PASSWORD |
@@ -162,7 +163,7 @@ groupwise_send_to (CamelTransport *transport,
 	/*camel groupwise store and cnc*/
 	store = camel_session_get_store (service->session, url, ex ) ;
 	if (!store) {
-		g_print ("ERROR: Could not get a pointer to the store") ;
+		g_error ("ERROR: Could not get a pointer to the store") ;
 		camel_operation_end (NULL) ;
 		return FALSE ;
 	}
@@ -171,18 +172,17 @@ groupwise_send_to (CamelTransport *transport,
 
 	cnc = cnc_lookup (priv) ;
 	if (!cnc) {
-		g_print ("||| Eh!!! Failure |||\n") ;
+		g_error ("||| Eh!!! Failure |||\n") ;
 		camel_operation_end (NULL) ;
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 		return FALSE;
 	}
 
 
-	item = camel_groupwise_util_item_from_message (message, from, recipients);
+	item = camel_groupwise_util_item_from_message (cnc, message, from, recipients);
 	
 	reply_request = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), "In-Reply-To");
 	if (reply_request) {
-		EGwItem *temp_item;
 		char *id;
 		int len = strlen (reply_request);
 
@@ -191,21 +191,29 @@ groupwise_send_to (CamelTransport *transport,
 		status = e_gw_connection_reply_item (cnc, id, NULL, &temp_item);
 		if (status != E_GW_CONNECTION_STATUS_OK) 
 			g_warning ("Could not send a replyRequest...continuing without!!\n");
+		else {
+			info = e_gw_item_get_link_info (temp_item);
+			e_gw_item_set_link_info (item, info);
+		}
 
-		g_object_unref (temp_item);
 		g_free (id);
 	}
+	
 	
 	/*Send item*/
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_print (" Error Sending mail") ;
+		g_error (" Error Sending mail") ;
 		camel_operation_end (NULL) ;
+		g_object_unref (item) ;
+		g_object_unref (temp_item);
 		return FALSE ;
 	}
+	e_gw_item_set_link_info (item, NULL);
 
 	e_gw_item_set_recipient_list (item, NULL) ;
 
+	g_object_unref (temp_item);
 	g_object_unref (item) ;
 
 	camel_operation_end (NULL) ;

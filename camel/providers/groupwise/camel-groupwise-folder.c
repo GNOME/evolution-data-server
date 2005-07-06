@@ -78,9 +78,9 @@ void convert_to_calendar (EGwItem *item, char **str, int *len);
 static void convert_to_task (EGwItem *item, char **str, int *len);
 static void gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex);
 static void groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item);
-static void groupwise_populate_msg_body_from_item (CamelMultipart *multipart, EGwItem *item, char *body);
+static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body);
 static void groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item);
-static CamelMimeMessage *convert_item_to_msg (EGwConnection *cnc, EGwItem *item);
+static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item,	CamelException *ex );
 
 
 #define d(x) x
@@ -96,15 +96,11 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelGroupwiseMessageInfo *mi = NULL;
 	char *temp_name, *folder_name, *container_id;
-	GSList *attach_list = NULL;
-	EGwItemType type;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	EGwItem *item;
 	CamelStream *stream, *cache_stream;
-	CamelMultipart *multipart;
 	int errno;
-	char *body = NULL;
 	
 	/* see if it is there in cache */
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
@@ -178,146 +174,13 @@ groupwise_folder_get_message( CamelFolder *folder,
 		return NULL;
 	}
 
-	attach_list = e_gw_item_get_attach_id_list (item);
-	if (attach_list) {
-		//int attach_count = g_slist_length (attach_list);
-		GSList *al = attach_list;
-		EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
-		char *attachment = NULL;
-		int len;
-
-		if (!g_ascii_strncasecmp (attach->name, "Mime.822", 8) ||
-		    !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) {
-
-			status = e_gw_connection_get_attachment (cnc,
-					g_strdup(attach->id), 0, -1,
-					(const char **)&attachment, &len);
-			if (status != E_GW_CONNECTION_STATUS_OK) {
-				g_warning ("Could not get attachment\n");
-				g_free (container_id);
-				g_object_unref (item);
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
-				CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
-				return NULL;
-			}
-			if (attachment && (len !=0) ) {
-				if (!g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) {
-					body = g_strdup (attachment);
-					g_free (attachment);
-				}
-			}//if attachment and len
-		} // if Mime.822 or TEXT.htm
-	}//if attach_list
-
-
-	msg = camel_mime_message_new ();
-	multipart = camel_multipart_new ();
-
-	camel_mime_message_set_message_id (msg, uid);
-	type = e_gw_item_get_item_type (item);
-	if (type == E_GW_ITEM_TYPE_NOTIFICATION)
-		camel_medium_add_header ( CAMEL_MEDIUM (msg), "X-Notification", "shared-folder");
-
-
-	/*If the reply-requested flag is set. Append the mail message with the
-	 *          * approprite detail*/
-	if (e_gw_item_get_reply_request (item)) {
-		char *reply_within;
-		const char *mess = e_gw_item_get_message (item);
-		char *value;
-
-		reply_within = e_gw_item_get_reply_within (item);
-		if (reply_within) {
-			time_t t;
-			char *temp;
-
-			t = e_gw_connection_get_date_from_string (reply_within);
-			temp = ctime (&t);
-			temp [strlen (temp)-1] = '\0';
-			value = g_strconcat (N_("Reply Requested: by "), temp, "\n\n", mess ? mess : "", NULL);
-			e_gw_item_set_message (item, (const char *) value);
-			g_free (value);
-
-		} else {
-			value = g_strconcat (N_("Reply Requested: When convenient"), "\n\n", mess ? mess : "", NULL);
-			e_gw_item_set_message (item, (const char *) value);
-			g_free (value);
-		}
+	msg = groupwise_folder_item_to_msg (folder, item, ex);
+	if (!msg) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
+		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+		return NULL;
 	}
 
-	groupwise_populate_msg_body_from_item (multipart, item, body);
-	
-	/*Set recipient details*/
-	groupwise_msg_set_recipient_list (msg, item);
-	groupwise_populate_details_from_item (msg, item);
-	/*Now set attachments*/
-	if (attach_list) {
-		GSList *al;
-
-		for (al = attach_list ; al != NULL ; al = al->next) {
-			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
-			char *attachment;
-			int len;
-			CamelMimePart *part;
-			EGwItem *temp_item;
-
-			if ( !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8) ||
-			     !g_ascii_strncasecmp (attach->name, "Mime.822", 8))
-				continue;
-			
-			if (!g_ascii_strncasecmp (attach->contentType, "gw:1", 3)) {
-				CamelMimeMessage *temp_msg = NULL;
-				status = e_gw_connection_get_item (cnc, container_id, attach->id, "default distribution recipient message attachments subject notification created recipientStatus status", &temp_item);
-				if (status != E_GW_CONNECTION_STATUS_OK) {
-					g_warning ("Could not get attachment\n");
-					camel_object_unref (part);
-					continue;
-				}
-				temp_msg = convert_item_to_msg (cnc, temp_item);
-				camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/mixed");
-				camel_multipart_set_boundary (multipart, NULL);
-				camel_mime_part_set_content_type ( (CamelMimePart *)temp_msg, "message/rfc822");
-				camel_multipart_add_part (multipart,(CamelMimePart *)temp_msg);
-				camel_object_unref (temp_msg);
-			} else {
-				status = e_gw_connection_get_attachment (cnc, 
-						g_strdup(attach->id), 0, -1, 
-						(const char **)&attachment, &len);
-				if (status != E_GW_CONNECTION_STATUS_OK) {
-					g_warning ("Could not get attachment\n");
-					continue;
-				}
-				if (attach && (len !=0) ) {
-					part = camel_mime_part_new ();
-
-					camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
-					camel_multipart_set_boundary(multipart, NULL);
-
-					camel_mime_part_set_filename(part, g_strdup(attach->name));
-					camel_mime_part_set_content(part, attachment, len, attach->contentType);
-					camel_mime_part_set_content_id (part, attach->id);
-
-					camel_multipart_add_part (multipart, part);
-
-					camel_object_unref (part);
-				}
-				g_free (attachment);
-			}
-		}
-
-
-	}
-	/********************/
-
-	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
-
-	camel_object_unref (multipart);
-
-	g_object_unref (item);
-
-
-	if (body)
-		g_free (body);
 	/* add to cache */
 	CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 	if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", uid, NULL))) {
@@ -329,29 +192,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
-
-	return msg;
-}
-
-static CamelMimeMessage *
-convert_item_to_msg (EGwConnection *cnc, EGwItem *item)
-{
-	CamelMimeMessage *msg;
-	CamelMultipart *multipart;
-	char *body = NULL;
-	
-	msg = camel_mime_message_new ();
-	multipart = camel_multipart_new ();
-	
-	groupwise_populate_msg_body_from_item (multipart, item, body);
-	
-	/*Set recipient details*/
-	groupwise_msg_set_recipient_list (msg, item);
-	groupwise_populate_details_from_item (msg, item);
-	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
-
-	camel_object_unref (multipart);
-
 	return msg;
 }
 
@@ -375,7 +215,7 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 
 
 static void
-groupwise_populate_msg_body_from_item (CamelMultipart *multipart, EGwItem *item, char *body)
+groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body)
 {
 	CamelMimePart *part;
 	EGwItemType type;
@@ -384,8 +224,19 @@ groupwise_populate_msg_body_from_item (CamelMultipart *multipart, EGwItem *item,
 	part = camel_mime_part_new ();
 	camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
 
-	if (!body)
+	if (!body) {
 		temp_body = e_gw_item_get_message (item);
+		if(!temp_body){
+			int len = 0;
+			EGwConnectionStatus status;
+			status = e_gw_connection_get_attachment (cnc, 
+					e_gw_item_get_msg_body_id (item), 0, -1, 
+					(const char **)&temp_body, &len);
+			if (status != E_GW_CONNECTION_STATUS_OK) {
+				g_warning ("Could not get Messagebody\n");
+			}
+		}
+	}
 
 	type = e_gw_item_get_item_type (item);
 	switch (type) {
@@ -405,6 +256,7 @@ groupwise_populate_msg_body_from_item (CamelMultipart *multipart, EGwItem *item,
 			}
 		case E_GW_ITEM_TYPE_NOTIFICATION:
 		case E_GW_ITEM_TYPE_MAIL:
+		case E_GW_ITEM_TYPE_NOTE:
 				if (body) 
 					camel_mime_part_set_content(part, body, strlen(body), "text/html");
 				 else if (temp_body)
@@ -617,7 +469,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	EGwConnectionStatus status;
 	EGwConnection *cnc = cnc_lookup (priv);
 	int count, i;
-	g_print ("groupwise_sync:%s\n", folder->name);
+
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) 
 		return;
 	
@@ -754,10 +606,11 @@ struct _folder_update_msg {
 
 	EGwConnection *cnc;
 	CamelFolder *folder;
-	const char *container_id;
+	char *container_id;
 	char *t_str;
 	GSList *slist;
 };
+
 
 static void
 update_update (CamelSession *session, CamelSessionThreadMsg *msg)
@@ -770,10 +623,9 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 			&(m->t_str), "All", NULL, NULL, -1, &(m->slist));
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-		g_print ("Returning ERROR update update\n");
+		g_error ("ERROR update update\n");
 	} else 
 		gw_update_all_items (m->folder, m->slist, ex);
-	
 }
 
 static void
@@ -795,9 +647,14 @@ static CamelSessionThreadOps update_ops = {
 	update_free,
 };
 
-
 static void
 groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
+{
+	g_print ("Refreshi_info\n");
+}
+
+void
+groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 {
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
@@ -811,7 +668,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	char *container_id = NULL;
 	char *time_string = NULL, *t_str = NULL;
 	struct _folder_update_msg *msg;
-	g_print ("groupwise_refresh_info:%s\n",folder->name);
+
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		g_warning ("In offline mode. Cannot refresh!!!\n");
 		return;
@@ -855,7 +712,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 
 	/*Get the New Items*/
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-			"peek recipient distribution created attachments subject status size priority options",
+			"peek id",
 			&t_str, "New", NULL, NULL, -1, &slist);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -881,7 +738,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 
 	/*Get those items which have been modifed*/
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
-			"peek recipient distribution created subject status priority",
+			"peek id",
 			&t_str, "Modified", NULL, NULL, -1, &slist);
 	g_free (t_str), t_str = NULL;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -937,30 +794,49 @@ void
 gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) 
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
+	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
+	CamelGroupwiseStorePrivate *priv = gw_store->priv;
+	EGwConnection *cnc = cnc_lookup (priv);
 	GPtrArray *msg;
 	GSList *attach_list = NULL;
 	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL;
-	int scount;
 	gboolean exists = FALSE;
 	GString *str = g_string_new (NULL);
-	//char *priority = NULL;
+	const char *priority = NULL;
+	char *container_id = NULL;
+	EGwItemStatus status;
 	
-	scount = camel_folder_summary_count (folder->summary);
 
 	msg = g_ptr_array_new ();
 	changes = camel_folder_change_info_new ();
+	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name));
+	if (!container_id) {
+		g_error ("\nERROR - Container id not present. Cannot refresh info\n");
+		return;
+	}
 
 	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
-		EGwItem *item = (EGwItem *)item_list->data;
+		EGwItem *temp_item = (EGwItem *)item_list->data;
+		EGwItem *item;
 		EGwItemType type;
 		EGwItemOrganizer *org;
-		char *date = NULL, *temp_date = NULL;
+		char *temp_date = NULL;
 		const char *id;
 		GSList *recp_list = NULL;
 		status_flags = 0;
+		CamelStream *cache_stream;
+		CamelMimeMessage *mail_msg = NULL;
 
-		id = e_gw_item_get_id (item);
+		id = e_gw_item_get_id (temp_item);
+
+		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status", &item);
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			continue;
+		}
+
+		/************************ First populate summary *************************/
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);
 		if (mi) 
 			exists = TRUE;
@@ -975,6 +851,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			type = e_gw_item_get_item_type (item);
 			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
 				exists = FALSE;
+				g_object_unref (item);
 				continue;
 			}
 
@@ -989,11 +866,10 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			status_flags |= CAMEL_MESSAGE_ANSWERED;
 		mi->info.flags |= status_flags;
 
-		/*priority = e_gw_item_get_priority (item);
-		if (! g_ascii_strncasecmp (priority,"High", 4)) {
-			g_print ("priority:%s\n", priority);
+		priority = e_gw_item_get_priority (item);
+		if (priority && !(g_ascii_strncasecmp (priority,"High", 4))) {
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
-		}*/
+		}
 
 		attach_list = e_gw_item_get_attach_id_list (item);
 		if (attach_list)  {
@@ -1049,8 +925,8 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		}
 
 		mi->info.uid = g_strdup(e_gw_item_get_id(item));
-		/*if (!exists)
-			mi->info.size = e_gw_item_get_mail_size (item);	*/
+		if (!exists)
+			mi->info.size = e_gw_item_get_mail_size (item);	
 		mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
 		
 		if (exists) 
@@ -1061,11 +937,27 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
 		}
 
+		/********************* Summary Stuff ends *************************/
 		g_ptr_array_add (msg, mi);
-		g_free(date);
 		exists = FALSE;
-		
+		/******************** Begine Caching ************************/
+		mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
+		/* add to cache if its a new message*/
+		if (!exists) {
+			CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
+			if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
+				if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg, 	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
+					camel_data_cache_remove (gw_folder->cache, "cache", id, NULL);
+				camel_object_unref (cache_stream);
+			}
+
+			camel_object_unref (mail_msg);
+			CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
+		}
+		/******************** Caching stuff ends *************************/
+		g_object_unref (item);
 	}
+	g_free (container_id);
 	g_string_free (str, TRUE);
 	camel_object_trigger_event (folder, "folder_changed", changes);
 	/*	for (seq=0 ; seq<msg->len ; seq++) {
@@ -1076,6 +968,170 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	camel_folder_change_info_free (changes);
 	g_ptr_array_free (msg, TRUE);
 }
+
+static CamelMimeMessage *
+groupwise_folder_item_to_msg( CamelFolder *folder,
+		EGwItem *item,
+		CamelException *ex )
+{
+	CamelMimeMessage *msg = NULL;
+	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store);
+	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
+	char *container_id;
+	GSList *attach_list = NULL;
+	EGwItemType type;
+	EGwConnectionStatus status;
+	EGwConnection *cnc;
+	CamelMultipart *multipart;
+	int errno;
+	char *body = NULL;
+	const char *uid = NULL;
+	
+
+	uid = e_gw_item_get_id(item);
+	cnc = cnc_lookup (priv);
+
+	attach_list = e_gw_item_get_attach_id_list (item);
+	if (attach_list) {
+		//int attach_count = g_slist_length (attach_list);
+		GSList *al = attach_list;
+		EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
+		char *attachment = NULL;
+		int len;
+
+		if (!g_ascii_strncasecmp (attach->name, "Mime.822", 8) ||
+		    !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) {
+			
+			status = e_gw_connection_get_attachment (cnc,
+					g_strdup(attach->id), 0, -1,
+					(const char **)&attachment, &len);
+			if (status != E_GW_CONNECTION_STATUS_OK) {
+				g_warning ("Could not get attachment\n");
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
+				return NULL;
+			}
+			if (attachment && (len !=0) ) {
+				if (!g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) {
+					body = g_strdup (attachment);
+					g_free (attachment);
+				} 
+			}//if attachment and len
+		} // if Mime.822 or TEXT.htm
+	}//if attach_list
+
+
+	msg = camel_mime_message_new ();
+	multipart = camel_multipart_new ();
+
+	camel_mime_message_set_message_id (msg, uid);
+	type = e_gw_item_get_item_type (item);
+	if (type == E_GW_ITEM_TYPE_NOTIFICATION)
+		camel_medium_add_header ( CAMEL_MEDIUM (msg), "X-Notification", "shared-folder");
+
+	/*If the reply-requested flag is set. Append the mail message with the
+	 *          * approprite detail*/
+	if (e_gw_item_get_reply_request (item)) {
+		char *reply_within;
+		const char *mess = e_gw_item_get_message (item);
+		char *value;
+
+		reply_within = e_gw_item_get_reply_within (item);
+		if (reply_within) {
+			time_t t;
+			char *temp;
+
+			t = e_gw_connection_get_date_from_string (reply_within);
+			temp = ctime (&t);
+			temp [strlen (temp)-1] = '\0';
+			value = g_strconcat (N_("Reply Requested: by "), temp, "\n\n", mess ? mess : "", NULL);
+			e_gw_item_set_message (item, (const char *) value);
+			g_free (value);
+
+		} else {
+			value = g_strconcat (N_("Reply Requested: When convenient"), "\n\n", mess ? mess : "", NULL);
+			e_gw_item_set_message (item, (const char *) value);
+			g_free (value);
+		}
+	}
+
+	groupwise_populate_msg_body_from_item (cnc, multipart, item, body);
+	
+	/*Set recipient details*/
+	groupwise_msg_set_recipient_list (msg, item);
+	groupwise_populate_details_from_item (msg, item);
+	/*Now set attachments*/
+	if (attach_list) {
+		GSList *al;
+
+		for (al = attach_list ; al != NULL ; al = al->next) {
+			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
+			char *attachment;
+			int len;
+			CamelMimePart *part;
+			EGwItem *temp_item;
+
+			if ( !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8) ||
+			     !g_ascii_strncasecmp (attach->name, "Mime.822", 8))
+				continue;
+			
+			if ( (attach->item_reference) && (!g_ascii_strncasecmp (attach->item_reference, "1", 1)) ) {
+				CamelMimeMessage *temp_msg = NULL;
+				status = e_gw_connection_get_item (cnc, container_id, attach->id, "default distribution recipient message attachments subject notification created recipientStatus status", &temp_item);
+				if (status != E_GW_CONNECTION_STATUS_OK) {
+					g_warning ("Could not get attachment\n");
+					camel_object_unref (part);
+					continue;
+				}
+				temp_msg = groupwise_folder_item_to_msg(folder, temp_item, ex);
+				if (temp_msg) {
+					//camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/mixed");
+					//camel_multipart_set_boundary (multipart, NULL);
+					camel_mime_part_set_content_type ( (CamelMimePart *)temp_msg, "message/rfc822");
+					camel_multipart_add_part (multipart,(CamelMimePart *)temp_msg);
+					camel_object_unref (temp_msg);
+				}
+				g_object_unref (temp_item);
+			} else {
+				status = e_gw_connection_get_attachment (cnc, 
+						g_strdup(attach->id), 0, -1, 
+						(const char **)&attachment, &len);
+				if (status != E_GW_CONNECTION_STATUS_OK) {
+					g_warning ("Could not get attachment\n");
+					continue;
+				}
+				if (attach && (len !=0) ) {
+					part = camel_mime_part_new ();
+
+					camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
+					camel_multipart_set_boundary(multipart, NULL);
+
+					camel_mime_part_set_filename(part, g_strdup(attach->name));
+					camel_mime_part_set_content(part, attachment, len, attach->contentType);
+					camel_mime_part_set_content_id (part, attach->id);
+
+					camel_multipart_add_part (multipart, part);
+
+					camel_object_unref (part);
+				}
+				g_free (attachment);
+			}
+		}
+
+
+	}
+	/********************/
+
+	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
+
+	camel_object_unref (multipart);
+
+
+	if (body)
+		g_free (body);
+
+	return msg;
+}
+
 
 static void
 gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex) 
@@ -1094,7 +1150,6 @@ gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex
 		index ++;
 	}
 	l = item_ids;
-	camel_folder_free_summary (folder, summary);
 
 	changes = camel_folder_change_info_new ();
 	/*item_list : List of ids from the server*/
@@ -1105,10 +1160,11 @@ gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex
 			camel_folder_summary_remove_uid (folder->summary, (const char *)item_ids->data);
 			camel_data_cache_remove(gw_folder->cache, "cache", (const char *)item_ids->data, ex);
 			camel_folder_change_info_remove_uid(changes, (const char *)item_ids->data);
-		}
+		} 
 	}
 	camel_object_trigger_event (folder, "folder_changed", changes);
 
+	camel_folder_free_summary (folder, summary);
 	g_slist_free (l);
 }
 
@@ -1140,7 +1196,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC)));
 	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC)));
 
-	item = camel_groupwise_util_item_from_message (message, CAMEL_ADDRESS (message->from), recipients);
+	item = camel_groupwise_util_item_from_message (cnc, message, CAMEL_ADDRESS (message->from), recipients);
 	/*Set the source*/
 	if (!strcmp (folder->name, RECEIVED))
 			e_gw_item_set_source (item, "received");
@@ -1611,3 +1667,4 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	g_string_free (gstr, TRUE);
 	g_strfreev (tmp);
 }
+
