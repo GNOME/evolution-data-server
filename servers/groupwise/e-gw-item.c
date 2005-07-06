@@ -1742,6 +1742,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 		} else if (!g_ascii_strcasecmp (name, "options")) {
 			SoupSoapParameter *subparam;
+			char *value = NULL;
 
 			subparam = soup_soap_parameter_get_first_child_by_name (child, "priority");
 			if (subparam) {
