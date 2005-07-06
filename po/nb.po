@@ -8,37 +8,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-20 22:19+0200\n"
-"PO-Revision-Date: 2005-06-20 22:19+0200\n"
+"POT-Creation-Date: 2005-07-06 16:21+0200\n"
+"PO-Revision-Date: 2005-07-06 16:21+0200\n"
 "Last-Translator: Terance Edward Sola <terance@lyse.net>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
+"X-Generator: KBabel 1.10\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:528
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1991
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1993
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Laster..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:530
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1977
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1989
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1979
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1991
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3405
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Søker..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2225
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3538
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Laster ned kontakter (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2307
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2411
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2441
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2414
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2444
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Oppdaterer buffer for kontakter (%d)..."
@@ -79,91 +80,91 @@ msgstr "Feil ved utføring av søk"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:240 ../addressbook/libebook/e-book.c:244
-#: ../addressbook/libebook/e-book.c:456 ../addressbook/libebook/e-book.c:460
-#: ../addressbook/libebook/e-book.c:601 ../addressbook/libebook/e-book.c:605
-#: ../addressbook/libebook/e-book.c:694 ../addressbook/libebook/e-book.c:698
-#: ../addressbook/libebook/e-book.c:1012 ../addressbook/libebook/e-book.c:1017
-#: ../addressbook/libebook/e-book.c:1204 ../addressbook/libebook/e-book.c:1208
-#: ../addressbook/libebook/e-book.c:1365 ../addressbook/libebook/e-book.c:1369
-#: ../addressbook/libebook/e-book.c:1578 ../addressbook/libebook/e-book.c:1582
-#: ../addressbook/libebook/e-book.c:1819 ../addressbook/libebook/e-book.c:1823
-#: ../addressbook/libebook/e-book.c:2059 ../addressbook/libebook/e-book.c:2063
-#: ../addressbook/libebook/e-book.c:2275 ../addressbook/libebook/e-book.c:2279
-#: ../addressbook/libebook/e-book.c:3375
+#: ../addressbook/libebook/e-book.c:238 ../addressbook/libebook/e-book.c:242
+#: ../addressbook/libebook/e-book.c:454 ../addressbook/libebook/e-book.c:458
+#: ../addressbook/libebook/e-book.c:599 ../addressbook/libebook/e-book.c:603
+#: ../addressbook/libebook/e-book.c:692 ../addressbook/libebook/e-book.c:696
+#: ../addressbook/libebook/e-book.c:1010 ../addressbook/libebook/e-book.c:1015
+#: ../addressbook/libebook/e-book.c:1202 ../addressbook/libebook/e-book.c:1206
+#: ../addressbook/libebook/e-book.c:1363 ../addressbook/libebook/e-book.c:1367
+#: ../addressbook/libebook/e-book.c:1576 ../addressbook/libebook/e-book.c:1580
+#: ../addressbook/libebook/e-book.c:1817 ../addressbook/libebook/e-book.c:1821
+#: ../addressbook/libebook/e-book.c:2057 ../addressbook/libebook/e-book.c:2061
+#: ../addressbook/libebook/e-book.c:2273 ../addressbook/libebook/e-book.c:2277
+#: ../addressbook/libebook/e-book.c:3373
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "«%s» i bok før «%s»"
 
-#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:469
-#: ../addressbook/libebook/e-book.c:614 ../addressbook/libebook/e-book.c:707
-#: ../addressbook/libebook/e-book.c:1027 ../addressbook/libebook/e-book.c:1218
-#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1591
-#: ../addressbook/libebook/e-book.c:1832 ../addressbook/libebook/e-book.c:2073
-#: ../addressbook/libebook/e-book.c:2288 ../addressbook/libebook/e-book.c:2624
-#: ../addressbook/libebook/e-book.c:2830
+#: ../addressbook/libebook/e-book.c:251 ../addressbook/libebook/e-book.c:467
+#: ../addressbook/libebook/e-book.c:612 ../addressbook/libebook/e-book.c:705
+#: ../addressbook/libebook/e-book.c:1025 ../addressbook/libebook/e-book.c:1216
+#: ../addressbook/libebook/e-book.c:1377 ../addressbook/libebook/e-book.c:1589
+#: ../addressbook/libebook/e-book.c:1830 ../addressbook/libebook/e-book.c:2071
+#: ../addressbook/libebook/e-book.c:2286 ../addressbook/libebook/e-book.c:2622
+#: ../addressbook/libebook/e-book.c:2828
 msgid "book busy"
 msgstr "opptatt bok"
 
-#: ../addressbook/libebook/e-book.c:286 ../addressbook/libebook/e-book.c:290
-#: ../addressbook/libebook/e-book.c:502 ../addressbook/libebook/e-book.c:506
-#: ../addressbook/libebook/e-book.c:643 ../addressbook/libebook/e-book.c:647
-#: ../addressbook/libebook/e-book.c:736 ../addressbook/libebook/e-book.c:740
-#: ../addressbook/libebook/e-book.c:1056 ../addressbook/libebook/e-book.c:1059
-#: ../addressbook/libebook/e-book.c:1250 ../addressbook/libebook/e-book.c:1253
-#: ../addressbook/libebook/e-book.c:1408 ../addressbook/libebook/e-book.c:1412
-#: ../addressbook/libebook/e-book.c:1627 ../addressbook/libebook/e-book.c:1631
-#: ../addressbook/libebook/e-book.c:1879 ../addressbook/libebook/e-book.c:1883
-#: ../addressbook/libebook/e-book.c:2105 ../addressbook/libebook/e-book.c:2109
-#: ../addressbook/libebook/e-book.c:2316 ../addressbook/libebook/e-book.c:2320
-#: ../addressbook/libebook/e-book.c:2565 ../addressbook/libebook/e-book.c:2652
-#: ../addressbook/libebook/e-book.c:2656 ../addressbook/libebook/e-book.c:2858
-#: ../addressbook/libebook/e-book.c:2862 ../addressbook/libebook/e-book.c:3384
+#: ../addressbook/libebook/e-book.c:284 ../addressbook/libebook/e-book.c:288
+#: ../addressbook/libebook/e-book.c:500 ../addressbook/libebook/e-book.c:504
+#: ../addressbook/libebook/e-book.c:641 ../addressbook/libebook/e-book.c:645
+#: ../addressbook/libebook/e-book.c:734 ../addressbook/libebook/e-book.c:738
+#: ../addressbook/libebook/e-book.c:1054 ../addressbook/libebook/e-book.c:1057
+#: ../addressbook/libebook/e-book.c:1248 ../addressbook/libebook/e-book.c:1251
+#: ../addressbook/libebook/e-book.c:1406 ../addressbook/libebook/e-book.c:1410
+#: ../addressbook/libebook/e-book.c:1625 ../addressbook/libebook/e-book.c:1629
+#: ../addressbook/libebook/e-book.c:1877 ../addressbook/libebook/e-book.c:1881
+#: ../addressbook/libebook/e-book.c:2103 ../addressbook/libebook/e-book.c:2107
+#: ../addressbook/libebook/e-book.c:2314 ../addressbook/libebook/e-book.c:2318
+#: ../addressbook/libebook/e-book.c:2563 ../addressbook/libebook/e-book.c:2650
+#: ../addressbook/libebook/e-book.c:2654 ../addressbook/libebook/e-book.c:2856
+#: ../addressbook/libebook/e-book.c:2860 ../addressbook/libebook/e-book.c:3382
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-unntak ved kall til «%s»"
 
-#: ../addressbook/libebook/e-book.c:2546
+#: ../addressbook/libebook/e-book.c:2544
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: ingen aktiv operasjon"
 
-#: ../addressbook/libebook/e-book.c:2581
+#: ../addressbook/libebook/e-book.c:2579
 #, c-format
 msgid "%s: couldn't cancel"
 msgstr "%s: kunne ikke avbryte"
 
-#: ../addressbook/libebook/e-book.c:2610 ../addressbook/libebook/e-book.c:2614
+#: ../addressbook/libebook/e-book.c:2608 ../addressbook/libebook/e-book.c:2612
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "«%s» i bok etter «%s»"
 
-#: ../addressbook/libebook/e-book.c:2680
+#: ../addressbook/libebook/e-book.c:2678
 #, c-format
 msgid "%s: cancelled"
 msgstr "%s: avbrutt"
 
-#: ../addressbook/libebook/e-book.c:3241
+#: ../addressbook/libebook/e-book.c:3239
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Ugyldig kilde."
 
-#: ../addressbook/libebook/e-book.c:3249 ../addressbook/libebook/e-book.c:3313
+#: ../addressbook/libebook/e-book.c:3247 ../addressbook/libebook/e-book.c:3311
 #, c-format
 msgid "%s: no factories available for uri `%s'"
 msgstr "%s: ingen fabrikker tilgjengelig for uri «%s»"
 
-#: ../addressbook/libebook/e-book.c:3261
+#: ../addressbook/libebook/e-book.c:3259
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: Kunne ikke opprette EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3524
+#: ../addressbook/libebook/e-book.c:3522
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
 msgstr "%s: ingen uid lagret i gconf for egen kontakt"
 
-#: ../addressbook/libebook/e-book.c:3654
+#: ../addressbook/libebook/e-book.c:3652
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: ingen kilde lagret i gconf for uid «%s»."
@@ -569,7 +570,7 @@ msgid "Category List"
 msgstr "Kategoriliste"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:398
+#: ../libedataserverui/e-categories-dialog.c:397
 msgid "Categories"
 msgstr "Kategorier"
 
@@ -602,7 +603,7 @@ msgstr "Fødselsdato"
 #. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
-#: ../libedataserver/e-categories.c:235
+#: ../libedataserver/e-categories.c:236
 msgid "Anniversary"
 msgstr "Jubileum"
 
@@ -618,13 +619,13 @@ msgstr "Vis adresse som liste"
 msgid "Last Revision"
 msgstr "Siste versjon"
 
-#: ../addressbook/libebook/e-contact.c:1222
+#: ../addressbook/libebook/e-contact.c:1229
 #: ../addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Liste uten navn"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
-#: ../libedataserver/e-categories.c:236
+#: ../libedataserver/e-categories.c:237
 msgid "Birthday"
 msgstr "Fødselsdag"
 
@@ -643,50 +644,54 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:786
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:237
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 msgid "Reply Requested: by "
 msgstr "Svar etterspurt: innen "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:791
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:242
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1051
 msgid "Reply Requested: When convenient"
 msgstr "Svar etterspurt: Når det passer"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:574
-msgid "Invalid server URI"
-msgstr "Ugyldig URI for tjener"
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:175
+#, c-format
+msgid "Loading %s items"
+msgstr "Laster %s elementer"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:605
-msgid "Could not create thread for getting deltas"
-msgstr "Kunne ikke opprette tråd for å få deltaer"
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:627
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:630
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:584
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:637
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:877
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:636
+msgid "Invalid server URI"
+msgstr "Ugyldig URI for tjener"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:667
+msgid "Could not create thread for getting deltas"
+msgstr "Kunne ikke opprette tråd for å få deltaer"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:691
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:931
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Kunne ikke opprette bufferfil"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:647
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:701
 msgid "Could not create thread for populating cache"
 msgstr "Kunne ikke opprette tråd for å populere buffer"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:653
-#: ../calendar/libecal/e-cal.c:4850
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:841
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:861
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:888
-#: ../camel/providers/groupwise/camel-groupwise-store.c:520
-#: ../camel/providers/groupwise/camel-groupwise-store.c:539
-#: ../camel/providers/groupwise/camel-groupwise-store.c:584
-#: ../camel/providers/groupwise/camel-groupwise-store.c:745
-#: ../camel/providers/groupwise/camel-groupwise-store.c:943
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:176
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:707
+#: ../calendar/libecal/e-cal.c:4854
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:698
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:718
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:745
+#: ../camel/providers/groupwise/camel-groupwise-store.c:550
+#: ../camel/providers/groupwise/camel-groupwise-store.c:569
+#: ../camel/providers/groupwise/camel-groupwise-store.c:614
+#: ../camel/providers/groupwise/camel-groupwise-store.c:825
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1030
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:177
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
@@ -1046,72 +1051,73 @@ msgstr "Udefinert"
 msgid "Enter password for %s (user %s)"
 msgstr "Oppgi passord for %s (bruker %s)"
 
-#: ../calendar/libecal/e-cal.c:4822
+#: ../calendar/libecal/e-cal.c:4826
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: ../calendar/libecal/e-cal.c:4824
+#: ../calendar/libecal/e-cal.c:4828
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
 
-#: ../calendar/libecal/e-cal.c:4826
+#: ../calendar/libecal/e-cal.c:4830
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: ../calendar/libecal/e-cal.c:4828
+#: ../calendar/libecal/e-cal.c:4832
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: ../calendar/libecal/e-cal.c:4830 ../servers/groupwise/e-gw-connection.c:166
+#: ../calendar/libecal/e-cal.c:4834 ../servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: ../calendar/libecal/e-cal.c:4832 ../servers/groupwise/e-gw-connection.c:160
+#: ../calendar/libecal/e-cal.c:4836 ../servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: ../calendar/libecal/e-cal.c:4834
+#: ../calendar/libecal/e-cal.c:4838
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: ../calendar/libecal/e-cal.c:4836
+#: ../calendar/libecal/e-cal.c:4840
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: ../calendar/libecal/e-cal.c:4838
+#: ../calendar/libecal/e-cal.c:4842
+#: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
-#: ../calendar/libecal/e-cal.c:4840 ../servers/groupwise/e-gw-connection.c:168
+#: ../calendar/libecal/e-cal.c:4844 ../servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Ukjent bruker"
 
-#: ../calendar/libecal/e-cal.c:4842
+#: ../calendar/libecal/e-cal.c:4846
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: ../calendar/libecal/e-cal.c:4844
+#: ../calendar/libecal/e-cal.c:4848
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: ../calendar/libecal/e-cal.c:4846
+#: ../calendar/libecal/e-cal.c:4850
 msgid "Operation has been cancelled"
 msgstr "Operasjonen ble avbrutt"
 
-#: ../calendar/libecal/e-cal.c:4848
+#: ../calendar/libecal/e-cal.c:4852
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: ../calendar/libecal/e-cal.c:4852
+#: ../calendar/libecal/e-cal.c:4856
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: ../calendar/libecal/e-cal.c:4854
+#: ../calendar/libecal/e-cal.c:4858
 msgid "A CORBA exception has occurred"
 msgstr "Et CORBA-unntak har oppstått"
 
-#: ../calendar/libecal/e-cal.c:4856
+#: ../calendar/libecal/e-cal.c:4860
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1119,10 +1125,13 @@ msgstr "Et CORBA-unntak har oppstått"
 #: ../camel/providers/pop3/camel-pop3-store.c:542
 #: ../camel/providers/pop3/camel-pop3-store.c:548
 #: ../servers/groupwise/e-gw-connection.c:174
+#: ../servers/exchange/storage/e-storage.c:586
+#: ../servers/exchange/storage/exchange-account.c:1533
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: ../calendar/libecal/e-cal.c:4858
+#: ../calendar/libecal/e-cal.c:4862
+#: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Ingen feil"
 
@@ -1524,7 +1533,7 @@ msgstr "Kan ikke kryptere: Ingen gyldige mottakere spesifisert."
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1138 ../camel/camel-gpg-context.c:1262
-#: ../camel/camel-gpg-context.c:1687 ../camel/camel-gpg-context.c:1732
+#: ../camel/camel-gpg-context.c:1745 ../camel/camel-gpg-context.c:1790
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Feil ved kjøring av gpg: %s"
@@ -1534,10 +1543,10 @@ msgstr "Feil ved kjøring av gpg: %s"
 msgid "Could not generate signing data: %s"
 msgstr "Kan ikke generere signeringsdata: %s"
 
-#: ../camel/camel-gpg-context.c:1277 ../camel/camel-gpg-context.c:1437
-#: ../camel/camel-gpg-context.c:1519 ../camel/camel-gpg-context.c:1534
-#: ../camel/camel-gpg-context.c:1623 ../camel/camel-gpg-context.c:1638
-#: ../camel/camel-gpg-context.c:1703 ../camel/camel-gpg-context.c:1748
+#: ../camel/camel-gpg-context.c:1277 ../camel/camel-gpg-context.c:1464
+#: ../camel/camel-gpg-context.c:1547 ../camel/camel-gpg-context.c:1562
+#: ../camel/camel-gpg-context.c:1667 ../camel/camel-gpg-context.c:1682
+#: ../camel/camel-gpg-context.c:1761 ../camel/camel-gpg-context.c:1806
 msgid "Failed to execute gpg."
 msgstr "Feil ved kjøring av gpg."
 
@@ -1545,41 +1554,46 @@ msgstr "Feil ved kjøring av gpg."
 msgid "This is a digitally signed message part"
 msgstr "Dette er en digitalt signert meldingsdel"
 
-#: ../camel/camel-gpg-context.c:1377 ../camel/camel-gpg-context.c:1383
-#: ../camel/camel-gpg-context.c:1389 ../camel/camel-smime-context.c:692
-#: ../camel/camel-smime-context.c:703 ../camel/camel-smime-context.c:710
+#: ../camel/camel-gpg-context.c:1382 ../camel/camel-gpg-context.c:1388
+#: ../camel/camel-gpg-context.c:1394 ../camel/camel-gpg-context.c:1411
+#: ../camel/camel-smime-context.c:692 ../camel/camel-smime-context.c:703
+#: ../camel/camel-smime-context.c:710
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Kunne ikke verifisere meldingens signatur: Ugyldig meldingsformat"
 
-#: ../camel/camel-gpg-context.c:1423
+#: ../camel/camel-gpg-context.c:1449
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr ""
 "Kunne ikke verifisere meldingens signatur: kunne ikke opprette midlertidig "
 "fil: %s"
 
-#: ../camel/camel-gpg-context.c:1502
+#: ../camel/camel-gpg-context.c:1530
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Kunne ikke generere krypteringsdata: %s"
 
-#: ../camel/camel-gpg-context.c:1552
+#: ../camel/camel-gpg-context.c:1580
 msgid "This is a digitally encrypted message part"
 msgstr "Dette er en digitalt kryptert meldingsdel"
 
-#: ../camel/camel-gpg-context.c:1603
+#: ../camel/camel-gpg-context.c:1637
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Feil under dekryptering av MIME-del: protokollfeil"
 
-#: ../camel/camel-gpg-context.c:1645 ../camel/camel-smime-context.c:966
+#: ../camel/camel-gpg-context.c:1649
+msgid "Cannot decrypt message: Incorrect message format"
+msgstr "Kan ikke dekryptere e-post: Ikke korrekt e-postformat"
+
+#: ../camel/camel-gpg-context.c:1703 ../camel/camel-smime-context.c:966
 msgid "Encrypted content"
 msgstr "Kryptert innhold"
 
-#: ../camel/camel-gpg-context.c:1664
+#: ../camel/camel-gpg-context.c:1722
 msgid "Unable to parse message content"
 msgstr "Kunne ikke lese meldingsinnhold"
 
-#: ../camel/camel-gpg-context.c:1688 ../camel/camel-gpg-context.c:1733
+#: ../camel/camel-gpg-context.c:1746 ../camel/camel-gpg-context.c:1791
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
@@ -2529,7 +2543,7 @@ msgstr "Kan ikke kopiere meldinger til papirkurvmappen"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Kan ikke kopiere meldinger til søppelmappen"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2539,7 +2553,7 @@ msgstr ""
 "Kan ikke hente melding: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2547,7 +2561,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Ingen slik melding"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2559,7 +2573,7 @@ msgstr "Ingen slik melding"
 msgid "User cancelled"
 msgstr "Bruker avbrøt"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2573,28 +2587,29 @@ msgstr "Bruker avbrøt"
 msgid "Cannot get message %s: %s"
 msgstr "Kan ikke hente melding %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:153
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Denne meldingen er ikke tilgjengelig i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:176
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:199
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1010
 msgid "Could not get message"
 msgstr "Kunne ikke hente melding"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:714
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:566
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Kunne ikke laste sammendrag for %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1158
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1214
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan ikke opprette melding: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1170
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1226
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Kan ikke legge til melding i mappe «%s»: %s"
@@ -2703,47 +2718,47 @@ msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Noen funksjoner vil ikke fungere korrekt med din nåværende tjenerversjon"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:506
+#: ../camel/providers/groupwise/camel-groupwise-store.c:536
 #: ../camel/providers/imap/camel-imap-store.c:1875
 #: ../camel/providers/imap/camel-imap-store.c:2065
 #, c-format
 msgid "No such folder %s"
 msgstr "Mappen %s eksisterer ikke"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:574
+#: ../camel/providers/groupwise/camel-groupwise-store.c:604
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Henter sammendragsinformasjon for nye meldinger"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:711
+#: ../camel/providers/groupwise/camel-groupwise-store.c:749
 msgid "Cannot get folder info in offline mode."
 msgstr "Kan ikke hente mappeinformasjon i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:924
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1011
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Kan ikke opprette GroupWise-mapper i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:975
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1062
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Kan ikke slette GroupWise-mapper i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1021
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1108
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Du kan ikke endre navn på GroupWise-mapper i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1040
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1127
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Kan ikke endre navn på GroupWise-mappe «%s» til «%s»"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1076
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1163
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-tjener %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1078
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1165
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise-tjeneste for %s på %s"
@@ -2753,7 +2768,7 @@ msgstr "GroupWise-tjeneste for %s på %s"
 msgid "GroupWise mail delivery via %s"
 msgstr "GroupWise e-postlevering via %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
 msgstr "Sender melding"
 
@@ -4525,83 +4540,83 @@ msgstr "QUIT-kommando feilet: %s"
 msgid "QUIT command failed"
 msgstr "QUIT-kommando feilet"
 
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:238
 msgid "Business"
 msgstr "Arbeid"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:239
 msgid "Competition"
 msgstr "Konkurranse"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:240
 msgid "Favorites"
 msgstr "Favoritter"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:241
 msgid "Gifts"
 msgstr "Gaver"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:242
 msgid "Goals/Objectives"
 msgstr "Mål"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:243
 msgid "Holiday"
 msgstr "Ferie"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:244
 msgid "Holiday Cards"
 msgstr "Postkort"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:245
 msgid "Hot Contacts"
 msgstr "Viktige kontakter"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:246
 msgid "Ideas"
 msgstr "Idéer"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:247
 msgid "International"
 msgstr "Internasjonalt"
 
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:248
 msgid "Key Customer"
 msgstr "Nøkkelkunde"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:249
 msgid "Miscellaneous"
 msgstr "Forskjellig"
 
-#: ../libedataserver/e-categories.c:249
+#: ../libedataserver/e-categories.c:250
 msgid "Personal"
 msgstr "Personlig"
 
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:251
 msgid "Phone Calls"
 msgstr "Telefonsamtaler"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:252
 msgid "Status"
 msgstr "Status"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:253
 msgid "Strategies"
 msgstr "Strategier"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:254
 msgid "Suppliers"
 msgstr "Leverandører"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:255
 msgid "Time & Expenses"
 msgstr "Tid og utgifter"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:256
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:257
 msgid "Waiting"
 msgstr "Venter"
 
@@ -4736,7 +4751,7 @@ msgstr "Kobler til LDAP-tjener anonymt"
 msgid "Failed to authenticate.\n"
 msgstr "Kunne ikke autentisere.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:259
+#: ../libedataserverui/e-categories-dialog.c:258
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4745,7 +4760,7 @@ msgstr ""
 "Det finnes allerede en kategori med navn «%s» i konfigurasjonen. Vennligst "
 "bruk et annet navn"
 
-#: ../libedataserverui/e-categories-dialog.c:423
+#: ../libedataserverui/e-categories-dialog.c:422
 msgid "Category"
 msgstr "Kategori"
 
@@ -4785,7 +4800,7 @@ msgstr "R_ediger"
 msgid "categories"
 msgstr "kategorier"
 
-#: ../libedataserverui/e-name-selector-dialog.c:200
+#: ../libedataserverui/e-name-selector-dialog.c:202
 msgid "Select Contacts from Address Book"
 msgstr "Velg kontakter fra adresseboken"
 
@@ -4857,6 +4872,233 @@ msgstr "Ingen svar fra tjener"
 #: ../servers/groupwise/e-gw-connection.c:170
 msgid "Bad parameter"
 msgstr "Ugyldig parameter"
+
+#. i18n: These are Outlook's words for the default roles in
+#. the folder permissions dialog.
+#: ../servers/exchange/lib/e2k-security-descriptor.c:847
+msgid "Owner"
+msgstr "Eier"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:857
+msgid "Publishing Editor"
+msgstr "Redaktør for offentliggjøring"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:865
+msgid "Editor"
+msgstr "Redaktør"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:872
+msgid "Publishing Author"
+msgstr "Forfatter for offentliggjøring"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:878
+msgid "Author"
+msgstr "Forfatter"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:883
+msgid "Non-editing Author"
+msgstr "Ikke-redigerendes forfatter"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:887
+msgid "Reviewer"
+msgstr "Anmelder"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:889
+msgid "Contributor"
+msgstr "Bidragsyter"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:891
+msgid "None"
+msgstr "Ingen"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:906
+msgid "Custom"
+msgstr "Tilpasset"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:144
+msgid "Select User"
+msgstr "Velg bruker"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:182
+msgid "Addressbook..."
+msgstr "Adressebok..."
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#, c-format
+msgid "Enter password for %s"
+msgstr "Oppgi passord for %s"
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:894
+msgid "Enter password"
+msgstr "Oppgi passord"
+
+#: ../servers/exchange/storage/e-storage.c:556
+msgid "Generic error"
+msgstr "Vanlig feil"
+
+#: ../servers/exchange/storage/e-storage.c:558
+msgid "A folder with the same name already exists"
+msgstr "En mappe med det navnet eksisterer allerede"
+
+#: ../servers/exchange/storage/e-storage.c:560
+msgid "The specified folder type is not valid"
+msgstr "Den valgte mappetypen er ikke gyldig"
+
+#: ../servers/exchange/storage/e-storage.c:562
+msgid "I/O error"
+msgstr "I/O feil"
+
+#: ../servers/exchange/storage/e-storage.c:564
+msgid "Not enough space to create the folder"
+msgstr "Ikke nok plass til å opprette mappen"
+
+#: ../servers/exchange/storage/e-storage.c:566
+msgid "The folder is not empty"
+msgstr "Mappen er ikke tom"
+
+#: ../servers/exchange/storage/e-storage.c:568
+msgid "The specified folder was not found"
+msgstr "Den valgte mappen ble ikke funnet"
+
+#: ../servers/exchange/storage/e-storage.c:570
+msgid "Function not implemented in this storage"
+msgstr "Funksjonen er ikke lagt til i dette lageret"
+
+#: ../servers/exchange/storage/e-storage.c:574
+msgid "Operation not supported"
+msgstr "Operasjon ikke støttet"
+
+#: ../servers/exchange/storage/e-storage.c:576
+msgid "The specified type is not supported in this storage"
+msgstr "Den valgte typen er ikke støttet i dette lageret"
+
+#: ../servers/exchange/storage/e-storage.c:578
+msgid "The specified folder cannot be modified or removed"
+msgstr "Den valgte mappen kan ikke bli endret eller fjernet"
+
+#: ../servers/exchange/storage/e-storage.c:580
+msgid "Cannot make a folder a child of one of its descendants"
+msgstr "Kan ikke gjøre en mappe til undermappe av egne undermapper"
+
+#: ../servers/exchange/storage/e-storage.c:582
+msgid "Cannot create a folder with that name"
+msgstr "Kan ikke opprette en mappe med det navnet"
+
+#: ../servers/exchange/storage/e-storage.c:584
+msgid "This operation cannot be performed in off-line mode"
+msgstr "Denne handlingen kan ikke bli utført i frakoblet modus."
+
+#. i18n: This is the title of an "other user's folders"
+#. hierarchy. Eg, "John Doe's Folders".
+#: ../servers/exchange/storage/exchange-account.c:585
+#, c-format
+msgid "%s's Folders"
+msgstr "%ss mapper"
+
+#: ../servers/exchange/storage/exchange-account.c:889
+#, c-format
+msgid "%sEnter password for %s"
+msgstr "%sOppgi passord for %s"
+
+#: ../servers/exchange/storage/exchange-account.c:1245
+msgid "Personal Folders"
+msgstr "Personlige mapper"
+
+#: ../servers/exchange/storage/exchange-account.c:1260
+msgid "Favorite Public Folders"
+msgstr "Favoritt offentlige mapper"
+
+#. i18n: Outlookism
+#: ../servers/exchange/storage/exchange-account.c:1277
+msgid "All Public Folders"
+msgstr "Alle offentlige mapper"
+
+#. i18n: Outlookism
+#: ../servers/exchange/storage/exchange-account.c:1291
+msgid "Global Address List"
+msgstr "Global adresseliste"
+
+#: ../servers/exchange/storage/exchange-account.c:1444
+msgid ""
+"Could not authenticate to server. (Password incorrect?)\n"
+"\n"
+msgstr ""
+"Kan ikke autentisere mot tjener. (Feil passord?)\n"
+"\n"
+
+#: ../servers/exchange/storage/exchange-account.c:1449
+msgid ""
+"Could not authenticate to server.\n"
+"\n"
+"This probably means that your server requires you\n"
+"to specify the Windows domain name as part of your\n"
+"username (eg, \"DOMAIN\\user\").\n"
+"\n"
+"Or you might have just typed your password wrong.\n"
+"\n"
+msgstr ""
+"Kunne ikke autentisere med tjeneren.\n"
+"\n"
+"Dette betyr sannsynligvis at tjeneren krever\n"
+"at du spesifiserer Windows-domenenavnet som en del av\n"
+"brukernavnet ditt (f.eks. \"DOMENE\\bruker\").\n"
+"\n"
+"Passordet kan også være feil.\n"
+"\n"
+
+#: ../servers/exchange/storage/exchange-account.c:1491
+#, c-format
+msgid "Mailbox for %s is not on this server."
+msgstr "E-postboks for %s er ikke på denne tjeneren."
+
+#: ../servers/exchange/storage/exchange-account.c:1496
+#, c-format
+msgid ""
+"The server '%s' is running Exchange 5.5 and is\n"
+"therefore not compatible with Ximian Connector"
+msgstr ""
+"Tjeneren «%s» kjører Exchange 5.5 og er\n"
+"passer derfor ikke med Ximian Connector"
+
+#: ../servers/exchange/storage/exchange-account.c:1503
+#, c-format
+msgid ""
+"Could not find Exchange Web Storage System at %s.\n"
+"If OWA is running on a different path, you must specify that in the\n"
+"account configuration dialog."
+msgstr ""
+"Fant ikke Exchange Storage System på %s.\n"
+"Hvis OWA kjører på en annen sti må du spesifisere det i\n"
+"konfigurasjonsdialogen til kontoen."
+
+#: ../servers/exchange/storage/exchange-account.c:1511
+#, c-format
+msgid "No mailbox for user %s on %s.\n"
+msgstr "Ingen e-postboks for bruker %s på %s.\n"
+
+#: ../servers/exchange/storage/exchange-account.c:1517
+#: ../servers/exchange/storage/exchange-account.c:1523
+#: ../servers/exchange/storage/exchange-account.c:1531
+#, c-format
+msgid "Could not connect to server %s: %s"
+msgstr "Kunne ikke koble til tjener %s: %s"
+
+#: ../servers/exchange/storage/exchange-account.c:1519
+msgid "Could not resolve hostname"
+msgstr "Kunne ikke slå opp vertsnavn"
+
+#: ../servers/exchange/storage/exchange-account.c:1525
+msgid "Network error"
+msgstr "Nettverksfeil"
+
+#: ../servers/exchange/storage/exchange-folder-size.c:321
+msgid "Folder Name"
+msgstr "Mappenavn"
+
+#: ../servers/exchange/storage/exchange-folder-size.c:325
+msgid "Folder Size"
+msgstr "Mappestørrelse"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
