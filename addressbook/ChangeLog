@@ -1,3 +1,9 @@
+2005-07-06  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_authenticate_user): Updating system address
+	book, only if marked for offline usage.
+
 2005-07-05  Sushma Rai  <rsushma@novell.com>
 
 	* libebook/e-contact.[ch]: Using gconstpointer instead of 

@@ -1040,29 +1040,29 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 		element_type = mappings[i].element_type;
 
 		if(element_type == ELEMENT_TYPE_SIMPLE) {
-				value = e_gw_item_get_field_value (item, mappings[i].element_name);
-				if(value != NULL)
-					e_contact_set (contact, mappings[i].field_id, value);
-			} else if (element_type == ELEMENT_TYPE_COMPLEX) {
-				if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
-					GList *category_ids, *category_names;
-					char *name;
+			value = e_gw_item_get_field_value (item, mappings[i].element_name);
+			if(value != NULL)
+				e_contact_set (contact, mappings[i].field_id, value);
+		} else if (element_type == ELEMENT_TYPE_COMPLEX) {
+			if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
+				GList *category_ids, *category_names;
+				char *name;
 
-					category_names = NULL;
-					category_ids = e_gw_item_get_categories (item);
-					for (; category_ids; category_ids = g_list_next (category_ids)) {
-						name = g_hash_table_lookup (categories_by_ids, category_ids->data);
-						if (name)
-							category_names = g_list_append (category_names, name);
-					}
-					if (category_names) {
-						e_contact_set (contact, E_CONTACT_CATEGORY_LIST, category_names);
-						g_list_free (category_names);
-					}
+				category_names = NULL;
+				category_ids = e_gw_item_get_categories (item);
+				for (; category_ids; category_ids = g_list_next (category_ids)) {
+					name = g_hash_table_lookup (categories_by_ids, category_ids->data);
+					if (name)
+						category_names = g_list_append (category_names, name);
 				}
-				else      
-					mappings[i].populate_contact_func(contact, item);
+				if (category_names) {
+					e_contact_set (contact, E_CONTACT_CATEGORY_LIST, category_names);
+					g_list_free (category_names);
+				}
 			}
+			else      
+				mappings[i].populate_contact_func(contact, item);
+		}
 	}
 }
 
@@ -1440,7 +1440,7 @@ func_not(ESExp *f, int argc, ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	ESExpResult *r;
 	EGwFilter *filter;
@@ -1953,10 +1953,12 @@ book_view_thread (gpointer data)
 		if (is_auto_completion) 
 			view = "name email";
 		if (is_auto_completion && !gwb->priv->is_writable) {
+			/* auto completion from system address book */
 			g_object_unref (filter);
 			filter = NULL;
 			
 			if (search_string) {
+				/* groupwise server supports only name, rebuild the filter */
 				filter = e_gw_filter_new ();
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/lastName", search_string);
 				e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS, "fullName/firstName", search_string);
@@ -1989,6 +1991,7 @@ book_view_thread (gpointer data)
 				e_data_book_view_notify_status_message (book_view, _("Searching..."));
 			else 
 				e_data_book_view_notify_status_message (book_view, _("Loading..."));
+
 			status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, view, filter, &gw_items);
 			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 				status = e_gw_connection_get_items (gwb->priv->cnc, gwb->priv->container_id, view, filter, &gw_items);
@@ -2558,7 +2561,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		if (e_book_backend_cache_is_populated (priv->cache)) {
 			if (priv->is_writable) 
 				g_thread_create ((GThreadFunc) update_cache, ebgw, FALSE, NULL);
-			else
+			else if (priv->marked_for_offline)
 				g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, FALSE, NULL);
 		}
 		else if (priv->is_writable) {  /* for personal books we always cache */
@@ -2583,7 +2586,7 @@ e_book_backend_groupwise_get_required_fields (EBookBackend *backend,
 {
 	GList *fields = NULL;
   
-	fields = g_list_append (fields , e_contact_field_name (E_CONTACT_FILE_AS));
+	fields = g_list_append (fields, (char *)e_contact_field_name (E_CONTACT_FILE_AS));
 	e_data_book_respond_get_supported_fields (book, opid,
 						  GNOME_Evolution_Addressbook_Success,
 						  fields);
