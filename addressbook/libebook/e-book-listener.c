@@ -437,6 +437,18 @@ e_book_listener_stop (EBookListener *listener)
 }
 
 static void
+e_book_listener_finalize (GObject *object)
+{
+	EBookListener *listener = E_BOOK_LISTENER (object);
+	if (listener->priv) {
+		g_free (listener->priv);
+		listener->priv = NULL;
+	}
+	if (G_OBJECT_CLASS (parent_class)->finalize)
+		G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 e_book_listener_class_init (EBookListenerClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -472,6 +484,8 @@ e_book_listener_class_init (EBookListenerClass *klass)
 	epv->notifyWritable             = impl_BookListener_report_writable;
 	epv->notifyConnectionStatus     = impl_BookListener_report_link_status;
 	epv->notifyAuthRequired         = impl_BookListener_report_auth_required;
+
+	object_class->finalize = e_book_listener_finalize;
 }
 
 BONOBO_TYPE_FUNC_FULL (
