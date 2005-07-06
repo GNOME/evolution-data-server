@@ -1,5 +1,10 @@
 2005-07-06  Sushma Rai  <rsushma@novell.com>
 
+	* libedata-book/e-book-backend-cache.c 
+	(e_book_backend_cache_is_populated): Returning FALSE on error.
+
+2005-07-06  Sushma Rai  <rsushma@novell.com>
+
 	* backends/groupwise/e-book-backend-groupwise.c 
 	(e_book_backend_groupwise_authenticate_user): Updating system address
 	book, only if marked for offline usage.

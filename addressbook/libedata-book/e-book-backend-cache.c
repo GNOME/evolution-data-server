@@ -491,7 +491,7 @@ e_book_backend_cache_set_populated (EBookBackendCache *cache)
 gboolean
 e_book_backend_cache_is_populated (EBookBackendCache *cache)
 {
-  	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), NULL);
+  	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), "populated"))
 		return TRUE;
 	return FALSE;	
