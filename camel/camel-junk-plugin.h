@@ -31,26 +31,26 @@ struct _CamelMimeMessage;
 struct _CamelJunkPlugin
 {
 	/* junk filter human readable name, translated */
-	const char * (*get_name) (void);
+	const char * (*get_name) (struct _CamelJunkPlugin *csp);
 
 	/* should be set to 1 */
 	int api_version;
 
 	/* when called, it should return TRUE if message is identified as junk,
 	   FALSE otherwise */
-	int (*check_junk) (struct _CamelMimeMessage *message);
+	int (*check_junk) (struct _CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 
 	/* called when user identified a message to be junk */
-	void (*report_junk) (struct _CamelMimeMessage *message);
+	void (*report_junk) (struct _CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 
 	/* called when user identified a message not to be junk */
-	void (*report_notjunk) (struct _CamelMimeMessage *message);
+	void (*report_notjunk) (struct _CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 
 	/* called after one or more junk/ham(s) reported */
-	void (*commit_reports) (void);
+	void (*commit_reports) (struct _CamelJunkPlugin *csp);
 
 	/* called before all other calls to junk plugin for initialization */
-	void (*init) (void);
+	void (*init) (struct _CamelJunkPlugin *csp);
 };
 
 const char * camel_junk_plugin_get_name (CamelJunkPlugin *csp);

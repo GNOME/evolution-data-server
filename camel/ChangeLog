@@ -1,3 +1,12 @@
+2005-07-06 Vivek Jain <jvivek@novell.com>
+
+	* camel-folder.c: (folder_changed) check if junk_plugin is
+	supplied before starting any junk specific operation
+	* camel-junk-plugin.[ch]: pass CamelJunkPlugin object in all the
+	 callbacks
+	* camel-junk-plugin.c: (camel_junk_plugin_init) use csp->init(csp)
+	style in place of (* csp->init)(csp) similar change in all other callbacks
+	
 2005-06-24	Matt Brown <matt@mattb.net.nz>
 
 	* camel-gpg-context.c:	Extend verify and decrypt functions to support

@@ -1785,7 +1785,7 @@ folder_changed (CamelObject *obj, gpointer event_data)
 	}
 	CAMEL_FOLDER_UNLOCK(folder, change_lock);
 
-	if (changed->uid_changed->len) {
+	if (session->junk_plugin && changed->uid_changed->len) {
 		guint32 flags;
 
 		for (i = 0; i < changed->uid_changed->len; i ++) {
@@ -1800,7 +1800,7 @@ folder_changed (CamelObject *obj, gpointer event_data)
 						notjunk = g_ptr_array_new();
 					g_ptr_array_add (notjunk, g_strdup (changed->uid_changed->pdata [i]));
 				}
-				/* reset junk learn flag so that we don't process it again */
+				/* reset junk learn flag so that we don't process it again*/ 
 				camel_folder_set_message_flags (folder, changed->uid_changed->pdata [i], CAMEL_MESSAGE_JUNK_LEARN, 0);
 			}
 		}
