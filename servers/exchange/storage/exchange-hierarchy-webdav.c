@@ -50,7 +50,6 @@ struct _ExchangeHierarchyWebDAVPrivate {
 	GHashTable *folders_by_internal_path;
 	gboolean deep_searchable;
 	char *trash_path;
-	ExchangeFolderSize *foldersize;
 	gdouble total_folder_size;
 };
 
@@ -112,7 +111,6 @@ init (GObject *object)
 
 	hwd->priv = g_new0 (ExchangeHierarchyWebDAVPrivate, 1);
 	hwd->priv->folders_by_internal_path = g_hash_table_new (g_str_hash, g_str_equal);
-	hwd->priv->foldersize = exchange_folder_size_new ();
 	hwd->priv->total_folder_size = 0;
 
 	g_signal_connect (object, "new_folder",
@@ -124,13 +122,6 @@ init (GObject *object)
 static void
 dispose (GObject *object)
 {
-	ExchangeHierarchyWebDAV *hwd = EXCHANGE_HIERARCHY_WEBDAV (object);
-
-	if (hwd->priv->foldersize) {
-		g_object_unref (hwd->priv->foldersize);
-		hwd->priv->foldersize = NULL;
-	}
-
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -342,9 +333,7 @@ create_folder (ExchangeHierarchy *hier, EFolder *parent,
 		g_object_unref (dest);
 
 		/* update the folder size table, new folder, initialize the size to 0 */ 
-		exchange_folder_size_update (
-				EXCHANGE_HIERARCHY_WEBDAV (hier)->priv->foldersize,
-				name, 0);
+		exchange_account_folder_size_add (hier->account, name, 0);
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	}
 
@@ -378,7 +367,7 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 		exchange_hierarchy_removed_folder (hier, folder);
 
 		/* update the folder size info */
-		exchange_folder_size_remove (EXCHANGE_HIERARCHY_WEBDAV (hier)->priv->foldersize,
+		exchange_account_folder_size_remove (hier->account, 
 					e_folder_get_name(folder));
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	} else
@@ -438,16 +427,8 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 			/* rename - remove folder entry from hash, and 
 			 * update the hash table with new name 
 			 */
-			f_size = exchange_folder_size_get (
-						EXCHANGE_HIERARCHY_WEBDAV (hier)->priv->foldersize,
-					   	source_folder_name+1);
-			exchange_folder_size_remove (
-						EXCHANGE_HIERARCHY_WEBDAV (hier)->priv->foldersize,
-						source_folder_name+1);
-			if (f_size >= 0)
-				exchange_folder_size_update (
-						EXCHANGE_HIERARCHY_WEBDAV (hier)->priv->foldersize,
-						dest_name, f_size);
+			exchange_account_folder_size_rename (hier->account, 
+				source_folder_name+1, dest_name);
 		}
 		g_free (source_parent);
 	} else {
@@ -571,8 +552,8 @@ rescan (ExchangeHierarchy *hier)
 		if (folder_size) {
 			folder_name = e_folder_get_name (folder);
 			fsize_d = g_ascii_strtod (folder_size, NULL)/1024;
-			exchange_folder_size_update (hwd->priv->foldersize, 
-						folder_name, fsize_d);
+			exchange_account_folder_size_add (hier->account, 
+							folder_name, fsize_d);
 			if (personal)
 				hwd->priv->total_folder_size = 
 					hwd->priv->total_folder_size + fsize_d;
@@ -601,14 +582,6 @@ exchange_hierarchy_webdav_get_total_folder_size (ExchangeHierarchyWebDAV *hwd)
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY_WEBDAV (hwd), -1);
 
 	return hwd->priv->total_folder_size;
-}
-
-ExchangeFolderSize *
-exchange_hierarchy_webdav_get_folder_size (ExchangeHierarchyWebDAV *hwd)
-{
-	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY_WEBDAV (hwd), NULL);
-
-	return hwd->priv->foldersize;
 }
 
 EFolder *
@@ -766,8 +739,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gboolean offline)
 
 		/* FIXME : Find a better way of doing this */
 		fsize_d = g_ascii_strtod (folder_size, NULL)/1024 ;
-		exchange_folder_size_update (hwd->priv->foldersize, 
-						name, fsize_d);
+		exchange_account_folder_size_add (hier->account, name, fsize_d);
 		if (personal) {
 			/* calculate mail box size only for personal folders */
 			hwd->priv->total_folder_size = 

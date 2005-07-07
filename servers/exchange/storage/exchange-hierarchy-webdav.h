@@ -65,8 +65,6 @@ void    exchange_hierarchy_webdav_offline_scan_subtree (ExchangeHierarchy *hier,
 							ExchangeHierarchyWebDAVScanCallback cb,
 							gpointer user_data);
 
-//ExchangeFolderSize * exchange_hierarchy_webdav_get_folder_size (ExchangeHierarchyWebDAV *hwd);
-
 gdouble exchange_hierarchy_webdav_get_total_folder_size (ExchangeHierarchyWebDAV *hwd);
 
 

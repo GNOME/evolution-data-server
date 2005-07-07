@@ -12,6 +12,7 @@
 #include "e2k-security-descriptor.h"
 #include "e-folder.h"
 #include <libedataserver/e-account-list.h>
+#include <gtk/gtkliststore.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,52 +52,46 @@ struct _ExchangeAccountClass {
 	void (*removed_folder) (ExchangeAccount *, EFolder *);
 };
 
-#if 0
-enum {
-	UNSUPPORTED_MODE = 0,
-        OFFLINE_MODE,
-        ONLINE_MODE
-};
-#endif
-
 GType                  exchange_account_get_type             (void);
-ExchangeAccount       *exchange_account_new                  (EAccountList                   *account_list,
-							      EAccount                       *adata);
-E2kContext            *exchange_account_get_context          (ExchangeAccount                *acct);
-E2kGlobalCatalog      *exchange_account_get_global_catalog   (ExchangeAccount                *acct);
+ExchangeAccount       *exchange_account_new                  (EAccountList *account_list,
+							      EAccount     *adata);
+E2kContext            *exchange_account_get_context          (ExchangeAccount  *acct);
+E2kGlobalCatalog      *exchange_account_get_global_catalog   (ExchangeAccount  *acct);
 
-const char            *exchange_account_get_standard_uri     (ExchangeAccount                *acct,
-							      const char                     *item);
+const char            *exchange_account_get_standard_uri     (ExchangeAccount  *acct,
+							      const char       *item);
 
-char                  *exchange_account_get_standard_uri_for (ExchangeAccount                *acct,
-							      const char                     *home_uri,
-							      const char                     *std_uri_prop);
-char                  *exchange_account_get_foreign_uri      (ExchangeAccount                *acct,
-							      E2kGlobalCatalogEntry          *entry,
-							      const char                     *std_uri_prop);
+char                  *exchange_account_get_standard_uri_for (ExchangeAccount  *acct,
+							      const char       *home_uri,
+							      const char       *std_uri_prop);
+char                  *exchange_account_get_foreign_uri      (ExchangeAccount  *acct,
+							      E2kGlobalCatalogEntry *entry,
+							      const char       *std_uri_prop);
 
-E2kContext            *exchange_account_connect              (ExchangeAccount                *acct);
+E2kContext            *exchange_account_connect              (ExchangeAccount  *acct);
 
-EFolder               *exchange_account_get_folder           (ExchangeAccount                *acct,
-							      const char                     *path_or_uri);
-GPtrArray             *exchange_account_get_folders          (ExchangeAccount                *acct);
+EFolder               *exchange_account_get_folder           (ExchangeAccount  *acct,
+							      const char       *path_or_uri);
+GPtrArray             *exchange_account_get_folders          (ExchangeAccount  *acct);
 
-void                   exchange_account_rescan_tree          (ExchangeAccount                *acct);
+void                   exchange_account_rescan_tree          (ExchangeAccount  *acct);
 
-char 		       *exchange_account_get_password (ExchangeAccount *acct);
+char 		      *exchange_account_get_password 	     (ExchangeAccount  *acct);
 
-void		       exchange_account_set_password (ExchangeAccount *acct,
-							char *old_password,
-							char *new_password);
-void 		      exchange_account_forget_password (ExchangeAccount *acct);
+void		       exchange_account_set_password 	     (ExchangeAccount  *acct,
+							      char             *old_password,
+							      char             *new_password);
+void 		       exchange_account_forget_password       (ExchangeAccount  *acct);
 
-gboolean		 exchange_account_set_offline (ExchangeAccount *account);
+gboolean	       exchange_account_set_offline          (ExchangeAccount  *account);
 
-gboolean		 exchange_account_set_online (ExchangeAccount *account);
+gboolean	       exchange_account_set_online           (ExchangeAccount  *account);
 
-void		 exchange_account_is_offline (ExchangeAccount *account, int *mode);
+void		       exchange_account_is_offline           (ExchangeAccount  *account,
+							      int              *mode);
 
-void		exchange_account_is_offline_sync_set (ExchangeAccount *account, int *mode);
+void		       exchange_account_is_offline_sync_set  (ExchangeAccount *account,
+							      int             *mode);
 
 
 typedef enum {
@@ -126,21 +121,32 @@ ExchangeAccountFolderResult exchange_account_discover_shared_folder  (ExchangeAc
 								      const char      *user,
 								      const char      *folder_name,
 								      EFolder        **folder);
-void                  exchange_account_cancel_discover_shared_folder (ExchangeAccount *account,
-								      const char      *user,
-								      const char      *folder);
+void       exchange_account_cancel_discover_shared_folder (ExchangeAccount *account,
+							      const char      *user,
+							      const char      *folder);
 ExchangeAccountFolderResult exchange_account_remove_shared_folder    (ExchangeAccount *account,
 								      const char      *path);
 
-ExchangeAccountFolderResult exchange_account_add_favorite            (ExchangeAccount *account,
-								      EFolder         *folder);
-ExchangeAccountFolderResult exchange_account_remove_favorite         (ExchangeAccount *account,
-								      EFolder         *folder);
+ExchangeAccountFolderResult exchange_account_add_favorite (ExchangeAccount *account,
+							   EFolder         *folder);
+ExchangeAccountFolderResult exchange_account_remove_favorite (ExchangeAccount *account,
+							      EFolder         *folder);
 
-gboolean exchange_account_is_favorite_folder         (ExchangeAccount *account,
-								      EFolder         *folder);
+gboolean exchange_account_is_favorite_folder              (ExchangeAccount *account,
+						           EFolder         *folder);
 
-char * exchange_account_get_username (ExchangeAccount *account);
+char * exchange_account_get_username 			  (ExchangeAccount *account);
+
+/* Folder Size methods */
+void 			exchange_account_folder_size_add   (ExchangeAccount *account,
+	 					     	     const char *folder_name,
+						     	     gdouble size);
+void 			exchange_account_folder_size_remove (ExchangeAccount *account,
+						     	     const char *folder_name);
+void 			exchange_account_folder_size_rename (ExchangeAccount *account,
+						     	     const char *old_name,
+						     	     const char *new_name);
+GtkListStore 	       *exchange_account_folder_size_get_model (ExchangeAccount *account);
 
 #ifdef __cplusplus
 }

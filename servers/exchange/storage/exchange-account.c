@@ -26,13 +26,10 @@
 #endif
 
 #include "exchange-account.h"
-//#include "exchange-change-password.h"
-//#include "exchange-component.h"
 #include "exchange-hierarchy-webdav.h"
 #include "exchange-hierarchy-favorites.h"
-// SURF :#include "exchange-hierarchy-foreign.h"
 #include "exchange-hierarchy-gal.h"
-//#include "exchange-constants.h"
+#include "exchange-folder-size.h"
 #include "e-folder-exchange.h"
 #include "e2k-autoconfig.h"
 #include "e2k-encoding-utils.h"
@@ -41,10 +38,8 @@
 #include "e2k-propnames.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
-//#include <libedataserverui/e-dialog-utils.h>
 #include <libedataserverui/e-passwords.h>
 
-//#include <gal/util/e-util.h>
 #include <libgnome/gnome-util.h>
 
 #include <glade/glade-xml.h>
@@ -67,6 +62,7 @@ struct _ExchangeAccountPrivate {
 	E2kContext *ctx;
 	E2kGlobalCatalog *gc;
 	GHashTable *standard_uris;
+	ExchangeFolderSize *fsize;
 
 	GMutex *connect_lock;
 	gboolean connecting, connected, account_online;
@@ -160,6 +156,7 @@ init (GObject *object)
 	account->priv->discover_data_lock = g_mutex_new ();
 	account->priv->account_online = TRUE;
 	account->priv->nt_domain = NULL;
+	account->priv->fsize = exchange_folder_size_new ();
 }
 
 static void
@@ -1845,10 +1842,93 @@ exchange_account_get_folders (ExchangeAccount *account)
 char *
 exchange_account_get_username (ExchangeAccount *account)
 {
-	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
-				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 	
 	return account->priv->username;
+}
+
+/**
+  * exchange_account_folder_size_add :
+  * @account : #ExchangeAccount
+  * @folder_name : 
+  * @size : Size of @folder_name
+  *
+  * Updates the #ExchangeFolderSize object with the @size of @folder_name
+  *
+  * Return value : void
+  **/
+void
+exchange_account_folder_size_add (ExchangeAccount *account,
+				     const char *folder_name,
+				     gdouble size)
+{
+	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
+
+	exchange_folder_size_update (account->priv->fsize, folder_name, size);
+}
+
+/**
+  * exchange_account_folder_size_remove :
+  * @account : #ExchangeAccount
+  * @folder_name : 
+  *
+  * Removes the entry for @folder_name in #ExchangeFolderSize object
+  *
+  * Return value : void
+  **/
+void
+exchange_account_folder_size_remove (ExchangeAccount *account,
+					const char *folder_name)
+{
+	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
+
+	exchange_folder_size_remove (account->priv->fsize, folder_name);
+}
+
+/**
+  * exchange_account_folder_size_rename :
+  * @account : #ExchangeAccount
+  * @old_name : Old name of the folder
+  * @new_name : New name of the folder
+  *
+  * Removes the entry for @old_name in #ExchangeFolderSize object and adds
+  * a new entry for @new_name with the same folder size
+  *
+  * Return value : void
+  **/
+void 
+exchange_account_folder_size_rename (ExchangeAccount *account,
+					const char *old_name,
+					const char *new_name)
+{
+	gdouble cached_size;
+
+	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
+
+	cached_size = exchange_folder_size_get (account->priv->fsize,
+					old_name);
+	if (cached_size >= 0) {
+		exchange_folder_size_remove (account->priv->fsize, old_name);
+		exchange_folder_size_update (account->priv->fsize,
+						new_name, cached_size);		
+	}
+
+}
+
+/**
+  * exchange_account_folder_size_get_model :
+  * @account : #ExchangeAccount
+  *
+  * Returns the model store of #ExchangeFolderSize object
+  *
+  * Return value : The model store. A GtkListStore
+  **/
+GtkListStore *
+exchange_account_folder_size_get_model (ExchangeAccount *account)
+{
+	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
+
+	return exchange_folder_size_get_model (account->priv->fsize);
 }
 
 /**

@@ -101,9 +101,12 @@ dispose (GObject *object)
 }
 
 static void
-class_init (GObjectClass *object_class)
+exchange_folder_size_class_init (ExchangeFolderSizeClass *class)
 {
+	GObjectClass *object_class;
 	parent_class = g_type_class_ref (PARENT_TYPE);
+
+	object_class = G_OBJECT_CLASS (class);
 
 	/* override virtual methods */
 	object_class->dispose = dispose;
@@ -112,21 +115,18 @@ class_init (GObjectClass *object_class)
 }
 
 static void
-init (GObject *object)
+exchange_folder_size_init (ExchangeFolderSize *fsize)
 {
-	ExchangeFolderSize *fsize = EXCHANGE_FOLDER_SIZE (object);
-
 	fsize->priv = g_new0 (ExchangeFolderSizePrivate, 1);
 	fsize->priv->table = g_hash_table_new (g_str_hash, g_str_equal);
         fsize->priv->model = gtk_list_store_new (NUM_COLUMNS, G_TYPE_STRING, G_TYPE_DOUBLE);
 	fsize->priv->row_refs = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
-E2K_MAKE_TYPE (exchange_folder_size, ExchangeFolderSize, class_init, init, PARENT_TYPE)
+G_DEFINE_TYPE (ExchangeFolderSize, exchange_folder_size, G_TYPE_OBJECT)
 
 /**
  * exchange_folder_size_new:
- * @display_name: the delegate's (UTF8) display name
  *
  * Return value: a foldersize object with the table initialized
  **/
@@ -244,99 +244,15 @@ exchange_folder_size_get (ExchangeFolderSize *fsize,
 	return -1;
 }
 
-static void
-format_size_func (GtkTreeViewColumn *col,
-                  GtkCellRenderer   *renderer,
-                  GtkTreeModel      *model,
-                  GtkTreeIter       *iter,
-                 gpointer           user_data)
-{
-	GtkCellRendererText *cell = (GtkCellRendererText *)renderer;
-	gdouble folder_size;
-	char * new_text;
-	
-	gtk_tree_model_get(model, iter, COLUMN_SIZE, &folder_size, -1);
-	
-	if (folder_size)
-		new_text = g_strdup_printf ("%.2f", folder_size);
-	else
-		new_text = g_strdup ("0");
-
-	g_object_set (cell, "text", new_text, NULL);
-	g_free (new_text);
-}
-
-static void
-parent_destroyed (gpointer dialog, GObject *ex_parent)
-{
-	gtk_dialog_response (dialog, GTK_RESPONSE_CANCEL);
-}
-
-void
-exchange_folder_size_display (EFolder *folder, GtkWidget *parent)
+GtkListStore *
+exchange_folder_size_get_model (ExchangeFolderSize *fsize)
 {
         ExchangeFolderSizePrivate *priv;
-	ExchangeFolderSize *fsize;
-        ExchangeHierarchy *hier;
-        GtkTreeViewColumn *column;
-	GtkTreeSortable *sortable;
-	GtkCellRenderer *cell;
-        GHashTable *folder_size_table;
-        GladeXML *xml;
-        GtkWidget *dialog, *table;
-	GList *l;
-	char *col_name;
-        int response;
 
-        g_return_if_fail (GTK_IS_WIDGET (parent));
-
-        hier = e_folder_exchange_get_hierarchy (folder);
-	if (!hier)
-		return;
-	/* FIXME: This should be a more generic query and not just 
-	specifically for webdav */
-        fsize = exchange_hierarchy_webdav_get_folder_size (EXCHANGE_HIERARCHY_WEBDAV (hier));
-	if (!fsize)
-		return;
 	priv = fsize->priv;
-	folder_size_table = priv->table;
 
-	if (!g_hash_table_size (folder_size_table))
-		return;
+	if (!g_hash_table_size (priv->table))
+		return NULL;
 
-        xml = glade_xml_new (CONNECTOR_GLADEDIR "/exchange-folder-tree.glade", NULL, NULL);
-        g_return_if_fail (xml != NULL);
-        dialog = glade_xml_get_widget (xml, "folder_tree");
-        table = glade_xml_get_widget (xml, "folder_treeview");
-
-        // SURF : e_dialog_set_transient_for (GTK_WINDOW (dialog), parent);
-	/* fsize->parent = parent; */
-        g_object_weak_ref (G_OBJECT (parent), parent_destroyed, dialog);
-
-        /* Set up the table */
-	sortable = GTK_TREE_SORTABLE (priv->model);
-	gtk_tree_sortable_set_sort_column_id (sortable, COLUMN_SIZE, GTK_SORT_DESCENDING);
-
-        column = gtk_tree_view_column_new_with_attributes (
-                _("Folder Name"), gtk_cell_renderer_text_new (), "text", COLUMN_NAME, NULL);
-        gtk_tree_view_append_column (GTK_TREE_VIEW (table),
-                                     column);
-
-	col_name = g_strdup_printf ("%s (KB)", _("Folder Size"));
-        column = gtk_tree_view_column_new_with_attributes (
-                col_name, gtk_cell_renderer_text_new (), "text", COLUMN_SIZE, NULL);
-	g_free (col_name);
-	
-	l = gtk_tree_view_column_get_cell_renderers (column);
-	cell = (GtkCellRenderer *)l->data;
-	gtk_tree_view_column_set_cell_data_func (column, cell, format_size_func, NULL, NULL );
-	g_list_free (l);
-
-        gtk_tree_view_append_column (GTK_TREE_VIEW (table),
-                                     column);
-        gtk_tree_view_set_model (GTK_TREE_VIEW (table),
-                                 GTK_TREE_MODEL (priv->model));
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
-        gtk_widget_destroy (dialog);
-        g_object_unref (xml);
+	return priv->model;
 }

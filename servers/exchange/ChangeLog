@@ -1,3 +1,23 @@
+2005-07-07  Sarfraaz Ahmed <asarfraaz@novell.com>
+	
+	* storage/e-folder-exchange.c : Remove dead code
+	* storage/exchange-account.c : Make ExchangeFolderSize a member of
+	ExchangeAccount. Also removed some dead codE
+	(exchange_account_folder_size_add) (exchange_account_folder_size_remove)
+	(exchange_account_folder_size_rename)
+	(exchange_account_folder_size_get_model) : Added new
+	* storage/exchange-account.h : Similar
+	* storage/exchange-folder-size.c : Replaced E2K_MAKE_TYPE with 
+	G_DEFINE_TYPE and made necessary changes to init and class_init members
+	(format_size_func)(parent_destroyed)(exchange_folder_size_display) :
+	All moved to plugins.
+	* storage/exchange-folder-size.h : Similar
+	* storage/exchange-hierarchy-somedav.c : Fixed a warning
+	* storage/exchange-hierarchy-webdav.c : Removed ExchangeFolderSize as 
+	its member and updated the methods used to access it. We should now
+	query the ExchangeAccount object for FolderSize information updation
+	* storage/exchange-hierarchy-webdav.h : Removed dead code
+
 2005-07-01  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* lib/e2k-autoconfig.c (validate) : This should only return the

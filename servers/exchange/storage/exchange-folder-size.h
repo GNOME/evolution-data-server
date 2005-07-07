@@ -7,6 +7,7 @@
 #include "exchange-types.h"
 #include "e2k-security-descriptor.h"
 #include <gtk/gtkwidget.h>
+#include <gtk/gtkliststore.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,7 +47,7 @@ void exchange_folder_size_remove (ExchangeFolderSize *fsize, const char *folder_
 
 gdouble exchange_folder_size_get (ExchangeFolderSize *fsize, const char *folder_name);
 
-void exchange_folder_size_display (EFolder *folder, GtkWidget *parent);
+GtkListStore *exchange_folder_size_get_model (ExchangeFolderSize *fsize);
 
 #ifdef __cplusplus
 }

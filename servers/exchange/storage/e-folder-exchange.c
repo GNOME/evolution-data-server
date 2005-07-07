@@ -26,7 +26,6 @@
 #include "exchange-hierarchy.h"
 #include "e2k-uri.h"
 #include "e2k-path.h"
-//#include "exchange-config-listener.h"
 
 #include <libedataserver/e-util.h>
 #include <libedataserver/e-xml-hash-utils.h>
