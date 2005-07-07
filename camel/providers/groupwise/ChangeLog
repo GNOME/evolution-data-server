@@ -1,3 +1,10 @@
+2005-07-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (gw_update_summary):
+	  do not insert ',' if there are no mail ids in 'TO'
+	  field.
+	  ** Fixes bug 302965 **
+
 2005-07-07 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-folder.c:(groupwise_sync)

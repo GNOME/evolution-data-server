@@ -1025,8 +1025,8 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 					if (i)
 						str = g_string_append (str, ", ");
 					g_string_append_printf (str,"%s <%s>", recp->display_name, recp->email);
+					i++;
 				}
-				i++;
 			}
 			mi->info.to = camel_pstring_strdup (str->str);
 			g_string_truncate (str, 0);
