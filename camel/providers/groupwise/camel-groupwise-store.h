@@ -74,6 +74,7 @@ const char *camel_groupwise_store_folder_lookup (CamelGroupwiseStore *gw_store, 
 EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv) ;
 const char *gw_get_path (CamelGroupwiseStore *gw_store, const char *folder_name) ;
 char *storage_path_lookup (CamelGroupwiseStorePrivate *priv) ;
+CamelFolderInfo * create_junk_folder (CamelStore *store);
 
 
 #ifdef __cplusplus

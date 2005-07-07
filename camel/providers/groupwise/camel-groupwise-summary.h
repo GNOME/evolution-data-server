@@ -36,6 +36,11 @@ typedef struct _CamelGroupwiseSummaryClass CamelGroupwiseSummaryClass ;
 typedef struct _CamelGroupwiseMessageInfo CamelGroupwiseMessageInfo ;
 typedef struct _CamelGroupwiseMessageContentInfo CamelGroupwiseMessageContentInfo ;
 
+/* extra summary flags*/
+enum {
+	CAMEL_GW_MESSAGE_JUNK = 1<<17,
+	CAMEL_GW_MESSAGE_NOJUNK = 1<<18,
+};
 
 struct _CamelGroupwiseMessageInfo {
 	CamelMessageInfoBase info;

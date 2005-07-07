@@ -36,6 +36,7 @@
 
 #include "camel-groupwise-summary.h"
 #include "camel-file-utils.h"
+#include <camel/camel-folder.h>
 
 #define CAMEL_GW_SUMMARY_VERSION (1)
 
@@ -48,7 +49,7 @@ static CamelMessageInfo *gw_message_info_load (CamelFolderSummary *s, FILE *in) 
 static int gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info) ;
 static CamelMessageContentInfo * gw_content_info_load (CamelFolderSummary *s, FILE *in) ;
 static int gw_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *info) ;
-		
+static gboolean gw_info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set);		
 
 static void camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass);
 static void camel_groupwise_summary_init       (CamelGroupwiseSummary *obj);
@@ -108,6 +109,7 @@ camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass)
 	cfs_class->message_info_save = gw_message_info_save;
 	cfs_class->content_info_load = gw_content_info_load;
 	cfs_class->content_info_save = gw_content_info_save;
+	cfs_class->info_set_flags = gw_info_set_flags;
 }
 
 
@@ -236,6 +238,48 @@ gw_content_info_save (CamelFolderSummary *s, FILE *out,
 		return fputc (0, out);
 }
 
+static gboolean
+gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
+{
+	guint32 old;
+	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
+
+	/* TODO: locking? */
+
+	old = mi->flags;
+	/* we don't set flags which aren't appropriate for the folder*/
+	if ((set == (CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN|CAMEL_MESSAGE_SEEN)) && (old & CAMEL_GW_MESSAGE_JUNK))
+		return ;
+	
+	mi->flags = (old & ~flags) | (set & flags);
+	if (old != mi->flags) {
+		mi->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+		if (mi->summary)
+			camel_folder_summary_touch(mi->summary);
+	}
+	/* This is a hack, we are using CAMEL_MESSAGE_JUNK justo to hide the item
+	 * we make sure this doesn't have any side effects*/
+	
+	if ((set == CAMEL_MESSAGE_JUNK_LEARN) && (old & CAMEL_GW_MESSAGE_JUNK)) {
+		mi->flags |= CAMEL_MESSAGE_JUNK;
+		if (mi->summary) {
+			camel_folder_summary_touch(mi->summary);
+		}
+
+	} else	if ((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK)) 
+		return FALSE;
+
+	if (mi->summary && mi->summary->folder && mi->uid) {
+		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
+
+		camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
+		camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+		camel_folder_change_info_free(changes);
+	}
+
+	return TRUE;
+
+}
 
 
 void

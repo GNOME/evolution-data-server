@@ -1,4 +1,20 @@
+2005-07-07 Vivek Jain <jvivek@novell.com>
+	
+	* camel-groupwise-folder.c:(groupwise_sync)
+	check for the junk flags
+	(move_to_junk), (move_to_mailbox), (update_junk_list)
+	(free_node): are new utility functions
+	(gw_update_summary): ensure messages in "Junk Mail" folder 
+	have JUNK flag set
+	* camel-groupwise-summary.c: implemented virtual function
+	(gw_info_set_flag): extends default (info_set_flag) to have
+	checks for junk flags
+	* came-groupwise-summary.h : added extra summary flags for junk
+	* camel-groupwise-store.[ch]: (create_junk_folder):creates a juk
+	folder by modifying the junk settings
+	
 2005-07-06  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	* camel-groupwise-folder.c:
 	  (groupwise_folder_item_to_msg): function to convert
 	   an item to a CamelMimeMessage
@@ -23,7 +39,6 @@
 	  (camel_groupwise_util_item_from_message): set LinkInfo
 	  when a mail is forwarded.
 	  
-
 2005-06-16  Parthasarathi Susarla <sparthasarathi@novell.com>
 	* came-groupwise-folder.c:
 	  (gw_update_summary): make appointments appear the 

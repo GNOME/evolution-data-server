@@ -53,6 +53,9 @@
 
 #define d(x) 
 #define CURSOR_ITEM_LIMIT 300
+#define JUNK_ENABLE 1
+#define JUNK_PERSISTENCE 14
+
 
 struct _CamelGroupwiseStorePrivate {
 	char *server_name;
@@ -993,6 +996,41 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary) ;
 	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 	return info ;
+}
+
+/* To create a junk mail folder in case  we want it and it isn't there*/
+CamelFolderInfo *
+create_junk_folder (CamelStore *store)
+{
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
+	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
+	CamelFolderInfo *root = NULL;
+	char *parent_name, *folder_name, *child_container_id, *parent_id;
+	int status;
+
+	parent_name = "" ;
+	folder_name = "Junk Mail";
+	parent_id = "";
+	/* TODO: check for offlining*/
+		
+	CAMEL_SERVICE_LOCK (store, connect_lock) ;
+	status = e_gw_connection_modify_junk_settings (priv->cnc, JUNK_ENABLE, 0, 0,  JUNK_PERSISTENCE);
+	if (status == E_GW_CONNECTION_STATUS_OK) {
+		root = groupwise_build_folder_info(groupwise_store, parent_name, folder_name) ;
+		camel_store_summary_save((CamelStoreSummary *)groupwise_store->summary);
+		
+		child_container_id = e_gw_connection_get_container_id (priv->cnc, "Junk Mail");
+		if (!child_container_id)
+			g_warning("failed to retrieve id for junk folder");
+		
+		g_hash_table_insert (priv->id_hash, g_strdup(child_container_id), g_strdup(folder_name)); 
+		g_hash_table_insert (priv->name_hash, g_strdup(folder_name), g_strdup(child_container_id));
+		g_hash_table_insert (priv->parent_hash, g_strdup(child_container_id), g_strdup(parent_id));
+		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
+	}
+	CAMEL_SERVICE_UNLOCK (store, connect_lock) ;
+
+	return root ;
 }
 
 static CamelFolderInfo*

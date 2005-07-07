@@ -54,6 +54,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define ADD_JUNK_ENTRY 1
+#define REMOVE_JUNK_ENTRY -1
+#define JUNK_FOLDER "Junk Mail"
+
 static CamelOfflineFolderClass *parent_class = NULL;
 
 struct _CamelGroupwiseFolderPrivate {
@@ -454,6 +458,108 @@ groupwise_folder_search_free (CamelFolder *folder, GPtrArray *uids)
 	
 }
 
+/******************* functions specific to Junk Mail Handling**************/
+static void 
+free_node (EGwJunkEntry *entry)
+{
+	if (entry) {
+		g_free (entry->id);
+		g_free (entry->match);
+		g_free (entry->matchType);
+		g_free (entry->lastUsed);
+		g_free (entry->modified);
+		g_free (entry);
+	}
+}
+
+static void
+update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
+{
+	GList *list = NULL;
+	EGwJunkEntry *entry;
+	gchar **email, *from;	
+	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(store);
+	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
+	EGwConnection *cnc = cnc_lookup (priv);
+
+	from = g_strdup (camel_message_info_from (info));
+	email = g_strsplit_set (from, "<>", -1);
+	
+	if (e_gw_connection_get_junk_entries (cnc, &list)== E_GW_CONNECTION_STATUS_OK){
+		while (list) {
+			entry = list->data;
+			if (!g_ascii_strcasecmp (entry->match, email[1])) { 
+				if (flag == ADD_JUNK_ENTRY) /*if already there then don't add*/
+					break;
+				else if (flag == REMOVE_JUNK_ENTRY){
+					e_gw_connection_remove_junk_entry (cnc, entry->id);
+					break;
+				}
+			}
+			list = list->next;
+		}
+		if (!list && flag == ADD_JUNK_ENTRY) /*no entry found just create a new entry if asked to*/
+			if (e_gw_connection_create_junk_entry (cnc, email[1], "email", "junk") == E_GW_CONNECTION_STATUS_OK);
+		g_list_foreach (list, (GFunc) free_node, NULL);
+	}
+	g_free (from);
+	g_strfreev (email);
+}
+
+static void 
+move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info)
+{
+	CamelFolder *dest;
+	GPtrArray *uids;
+	CamelException *ex;
+	const char *uid = camel_message_info_uid (info);
+	
+	uids = g_ptr_array_new ();
+	g_ptr_array_add (uids, (gpointer) uid);
+	
+	/* make the message as normal one*/
+	camel_folder_set_message_flags (folder, uid, CAMEL_GW_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN, 0);
+
+	dest = camel_store_get_folder (folder->parent_store, "Mailbox", 0, ex);
+	if (dest)
+		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
+	else
+		g_warning ("No MailBox folder found");
+
+	update_junk_list (folder->parent_store, info, REMOVE_JUNK_ENTRY);
+}
+
+static void 
+move_to_junk (CamelFolder *folder, CamelMessageInfo *info)
+{
+	CamelFolder *dest;
+	CamelFolderInfo *fi;
+	GPtrArray *uids;
+	CamelException *ex;
+	const char *uid = camel_message_info_uid (info);
+	
+	uids = g_ptr_array_new ();
+	g_ptr_array_add (uids, (gpointer) uid);
+ 	
+	camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
+
+	dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, ex);
+	if (dest)
+		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
+	else {
+		fi = create_junk_folder (folder->parent_store);
+		dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, ex);
+		if (!dest)
+			g_warning ("Could not get JunkFolder:Message not moved");
+		else
+			groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
+	}
+	
+	update_junk_list (folder->parent_store, info, ADD_JUNK_ENTRY);
+	
+}
+
+/********************* back to folder functions*************************/
 
 static void
 groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
@@ -479,8 +585,17 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	count = camel_folder_summary_count (folder->summary);
 	for (i=0 ; i <count ; i++) {
+		guint32 flags = 0;
 		info = camel_folder_summary_index (folder->summary, i);
 		gw_info = (CamelGroupwiseMessageInfo *) info;
+		
+		/**Junk Mail handling**/
+		flags = camel_message_info_flags (info);	
+
+		if ((flags & CAMEL_MESSAGE_JUNK) && !(flags & CAMEL_GW_MESSAGE_JUNK)) /*marked a message junk*/
+			move_to_junk (folder, info);
+		else if ((flags & CAMEL_MESSAGE_JUNK) && (flags & CAMEL_GW_MESSAGE_JUNK)) /*message was marked as junk, now unjunk*/ 
+			move_to_mailbox (folder, info);
 
 		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags);
@@ -806,6 +921,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	GString *str = g_string_new (NULL);
 	const char *priority = NULL;
 	char *container_id = NULL;
+	gboolean is_junk = FALSE;
 	EGwItemStatus status;
 	
 
@@ -815,6 +931,10 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	if (!container_id) {
 		g_error ("\nERROR - Container id not present. Cannot refresh info\n");
 		return;
+	}
+	
+	if (!g_ascii_strncasecmp (folder->full_name, JUNK_FOLDER, 9)) {
+		is_junk = TRUE;
 	}
 
 	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
@@ -856,6 +976,10 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			}
 
 		}
+
+		/*all items in the Junk Mail folder should have this flag set*/
+		if (is_junk)
+			mi->info.flags |= CAMEL_GW_MESSAGE_JUNK;
 
 		item_status = e_gw_item_get_item_status (item);
 		if (item_status & E_GW_ITEM_STAT_READ)
