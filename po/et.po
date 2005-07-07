@@ -4784,7 +4784,7 @@ msgstr "*"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>Show Contacts</b>"
-msgstr "<b>Kontakide näitamine</b>"
+msgstr "<b>Kontaktide näitamine</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
 msgid "<b>_Contacts</b>"
