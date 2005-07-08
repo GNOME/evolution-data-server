@@ -1,3 +1,7 @@
+2005-07-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* e-source-option-menu.c: (populate): Fix a small leak.
+
 2005-07-06  Sushma Rai  <rsushma@novell.com>
 
 	* e-book-auth-util.c:

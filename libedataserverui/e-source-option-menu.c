@@ -138,6 +138,7 @@ populate (ESourceOptionMenu *option_menu)
 			ESource *source = E_SOURCE (q->data);
 			char *label = g_strconcat ("    ", e_source_peek_name (source), NULL);
 			GtkWidget *item = gtk_menu_item_new_with_label (label);
+			g_free (label);
 
 			gtk_object_set_data_full (GTK_OBJECT (item), MENU_ITEM_SOURCE_DATA_ID, source,
 						  (GtkDestroyNotify) g_object_unref);
