@@ -560,8 +560,10 @@ view_sequence_complete (EContactStore *contact_store, EBookViewStatus status, EB
 	}
 
 	/* If current view finished, do nothing */
-	if (book_view == source->book_view)
+	if (book_view == source->book_view) {
+		stop_view (contact_store, source->book_view);
 		return;
+	}
 
 	g_assert (book_view == source->book_view_pending);
 
