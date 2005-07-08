@@ -395,6 +395,83 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 
 }
 
+static void
+set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *cbgw)
+{
+
+	EGwItemRecurrenceRule *item_rrule;
+	struct icalrecurrencetype *ical_recur;
+	GSList *rrule_list = NULL, *exdate_list;
+	int i;
+
+	item_rrule = g_new0 (EGwItemRecurrenceRule, 1);
+	e_cal_component_get_rrule_list (comp, &rrule_list);
+	if (rrule_list) {
+		/* assumes only one rrule is present  */
+		ical_recur = (struct icalrecurrencetype *) rrule_list->data;
+		
+		g_message ("DEBUG: Processing rule\n%s\n", icalrecurrencetype_as_string (ical_recur));
+		/*set the data */
+		switch (ical_recur->freq) {
+			case ICAL_DAILY_RECURRENCE :
+				item_rrule->frequency = E_GW_ITEM_RECURRENCE_FREQUENCY_DAILY;
+				break;
+			case ICAL_WEEKLY_RECURRENCE:
+				item_rrule->frequency = E_GW_ITEM_RECURRENCE_FREQUENCY_WEEKLY;
+				break;
+			case ICAL_MONTHLY_RECURRENCE:
+				item_rrule->frequency = E_GW_ITEM_RECURRENCE_FREQUENCY_MONTHLY;
+				break;
+			case ICAL_YEARLY_RECURRENCE:
+				item_rrule->frequency = E_GW_ITEM_RECURRENCE_FREQUENCY_YEARLY;
+				break;
+			default:
+				break;
+		}
+		if (ical_recur->count != 0)
+			item_rrule->count = ical_recur->count;
+		else
+			item_rrule->until =  g_strdup (icaltime_as_ical_string (ical_recur->until)); 
+
+		item_rrule->interval = ical_recur->interval;
+
+		/*xxx -byday, bymonthday and byyearday not handled FIXME*/
+		for (i = 0; i < ICAL_BY_DAY_SIZE; i++)
+			item_rrule->by_day[i] = ical_recur->by_day[i];
+		for (i = 0; i < ICAL_BY_MONTHDAY_SIZE; i++)
+			item_rrule->by_month_day[i] = ical_recur->by_month_day[i];
+		for (i = 0; i < ICAL_BY_YEARDAY_SIZE; i++)
+			item_rrule->by_year_day[i] = ical_recur->by_year_day[i];
+		for (i = 0; i < ICAL_BY_MONTH_SIZE; i++)
+			item_rrule->by_month[i] = ical_recur->by_month[i];
+
+		e_gw_item_set_rrule (item, item_rrule);
+
+		/* set exceptions */
+		if (e_cal_component_has_exdates (comp)) {
+			GSList *l, *item_exdate_list = NULL;
+			icaltimezone *default_zone, *utc;
+			struct icaltimetype itt_utc;
+			
+
+			e_cal_component_get_exdate_list (comp, &exdate_list);
+			default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
+			utc = icaltimezone_get_utc_timezone ();
+			for (l = exdate_list; l ; l = l->next) {
+				ECalComponentDateTime *dt = (ECalComponentDateTime *) l->data; 
+				if (dt->value) {
+					if (!icaltime_get_timezone (*(dt->value)))
+						icaltime_set_timezone (dt->value, default_zone ? default_zone : utc);
+					itt_utc = icaltime_convert_to_zone (*dt->value, utc);
+					item_exdate_list = g_slist_append (item_exdate_list, g_strdup (icaltime_as_ical_string (itt_utc)));
+				}
+			}			
+			e_gw_item_set_exdate_list (item, item_exdate_list);
+			e_cal_component_free_exdate_list (exdate_list);
+		}
+	} 
+}
+
 static EGwItem *
 set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBackendGroupwise *cbgw)
 {
@@ -584,18 +661,22 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	
 	/* check if recurrences exist and update the item */
 	if (e_cal_component_has_recurrences (comp)) {
+		if (e_cal_component_has_rrules (comp))
+			set_rrule_from_comp (comp, item, cbgw);
+		else {
 
-		GSList *recur_dates = NULL;
-		
-		if (dt.tzid)
-			e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, (icaltimezone *) default_zone);		
-		else 
-			e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, utc);		
+			GSList *recur_dates = NULL;
+			
+			if (dt.tzid)
+				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, (icaltimezone *) default_zone);		
+			else 
+				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, utc);		
 
-		recur_dates = g_slist_delete_link (recur_dates, recur_dates);
-		
-		e_gw_item_set_recurrence_dates (item, recur_dates);
-	    }
+			recur_dates = g_slist_delete_link (recur_dates, recur_dates);
+			
+			e_gw_item_set_recurrence_dates (item, recur_dates);
+		}
+	}
 	
 	/* attachments */
 	if (e_cal_component_has_attachments (comp)) {
@@ -710,6 +791,7 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 	e_cal_component_set_attachment_list (comp, comp_attachment_list);
 
 }
+
 ECalComponent *
 e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 {
@@ -761,15 +843,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
 	}
 
-	/* UID */
-	uid = e_gw_item_get_icalid (item);
-	if (uid)
-		e_cal_component_set_uid (comp, e_gw_item_get_icalid (item));
-	else {
-		g_object_unref (comp);
-		return NULL;
-	}
-
+	
 	if (e_gw_item_get_reply_request (item)) {
 		char *reply_within; 
 		const char *mess = e_gw_item_get_message (item);
@@ -875,6 +949,31 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	else 
 		return NULL;
 	
+	/* UID */
+	if (e_gw_item_get_recurrence_key (item) != 0) {
+
+		ECalComponentRange *recur_id;
+		char *recur_key = g_strdup_printf ("%d", e_gw_item_get_recurrence_key (item));
+
+		e_cal_component_set_uid (comp, (const char *) recur_key);
+		g_free (recur_key);
+
+		/* set the recurrence id and the X-GW-RECORDID  too */
+		recur_id = g_new0 (ECalComponentRange, 1);
+		recur_id->type = E_CAL_COMPONENT_RANGE_SINGLE;
+		recur_id->datetime = dt;
+		e_cal_component_set_recurid (comp, recur_id);
+
+	} else {
+
+		uid = e_gw_item_get_icalid (item);
+		if (uid)
+			e_cal_component_set_uid (comp, e_gw_item_get_icalid (item));
+		else {
+			g_object_unref (comp);
+			return NULL;
+		}
+	}
 
 	/* classification */
 	description = e_gw_item_get_classification (item);
@@ -1067,7 +1166,10 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	EGwConnectionStatus status;
 	icalparameter_partstat partstat;
 	char *item_id;
-	
+	gboolean all_instances = FALSE;
+	icalproperty *icalprop;
+	icalcomponent *icalcomp;
+	const char *recurrence_key = NULL;
 
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
@@ -1077,17 +1179,40 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	/* When the icalcomponent is obtained through the itip message rather
 	 * than from the SOAP protocol, the container id has to be explicitly 
 	 * added to the xgwrecordid inorder to obtain the item id. */
-	
-	switch  (e_cal_component_get_vtype (comp)) {
-	case E_CAL_COMPONENT_EVENT: 
-		item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
-		break;
-	case E_CAL_COMPONENT_TODO:
-		item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_TODO_TYPE_ID, container, NULL);
-		break;
-	default:
-		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+
+	/* handle recurrences - All */
+	icalcomp = e_cal_component_get_icalcomponent (comp);
+
+	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+	while (icalprop) {
+		const char *x_name;
+
+		x_name = icalproperty_get_x_name (icalprop);
+		if (!strcmp (x_name, "X-GW-RECUR-INSTANCE-MOD-TYPE")) {
+			if (!strcmp (icalproperty_get_x (icalprop), "All"))
+				all_instances = TRUE;
+			if (recurrence_key)
+				break;
+		}
+		if (!strcmp (x_name, "X-GW-RECURRENCE-KEY")) {
+			recurrence_key = icalproperty_get_x (icalprop);
+		}
+		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+	}	
+		
+	if (all_instances) {
+		switch  (e_cal_component_get_vtype (comp)) {
+		case E_CAL_COMPONENT_EVENT: 
+			item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
+			break;
+		case E_CAL_COMPONENT_TODO:
+			item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_TODO_TYPE_ID, container, NULL);
+			break;
+		default:
+			return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+		}
 	}
+	
 	switch (method) {
 	case ICAL_METHOD_REQUEST:
 		/* get attendee here and add the list along. */
@@ -1130,17 +1255,31 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			
 		case ICAL_PARTSTAT_ACCEPTED: 
 			e_cal_component_get_transparency (comp, &transp);
-			if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE) 
-				status = e_gw_connection_accept_request (cnc, item_id, "Busy");
-			else 
-				status = e_gw_connection_accept_request (cnc, item_id, "Free");
+			if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE)  {
+				if (all_instances)
+					status = e_gw_connection_accept_request_by_recurrence_key (cnc, recurrence_key, "Busy", NULL);
+				else
+					status = e_gw_connection_accept_request (cnc, item_id, "Busy");
+			}
+			else {
+				if (all_instances)
+					status = e_gw_connection_accept_request_by_recurrence_key (cnc, recurrence_key, "Free", NULL);
+				else
+					status = e_gw_connection_accept_request (cnc, item_id, "Free");
+			}
 			break;
 		case ICAL_PARTSTAT_DECLINED:
-			status = e_gw_connection_decline_request (cnc, item_id);
+			if (all_instances)
+				status = e_gw_connection_decline_request_by_recurrence_key (cnc, recurrence_key, NULL);
+			else
+				status = e_gw_connection_decline_request (cnc, item_id);
 			*remove = TRUE;
 			break;
 		case ICAL_PARTSTAT_TENTATIVE:
-			status = e_gw_connection_accept_request (cnc, item_id, "Tentative");
+			if (all_instances)
+				status = e_gw_connection_accept_request_by_recurrence_key (cnc, recurrence_key, "Tentative", NULL);
+			else
+				status = e_gw_connection_accept_request (cnc, item_id, "Tentative");
 			break;
 		case ICAL_PARTSTAT_COMPLETED:
 			status = e_gw_connection_complete_request (cnc, item_id);
@@ -1163,6 +1302,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	if (status == E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED)
 		return status;
 
+	/*FIXME - handling recurrence items */
 	if (!*remove && status == E_GW_CONNECTION_STATUS_OK) {
 		EGwItem *item;
 

@@ -2421,6 +2421,24 @@ e_cal_get_organizer_must_attend (ECal *ecal)
 }
 
 /**
+ * e_cal_get_recurrences_no_master:
+ * @ecal: A calendar client.
+ *
+ * Checks if the calendar has a master object for recurrences.
+ *
+ * Return value: TRUE if the calendar has a master object for recurrences,
+ * FALSE otherwise.
+ */
+gboolean 
+e_cal_get_recurrences_no_master (ECal *ecal)
+{
+	g_return_val_if_fail (ecal != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+
+	return check_capability (ecal, CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER);
+}
+
+/**
  * e_cal_get_static_capability:
  * @ecal: A calendar client.
  * @cap: Name of the static capability to check.
@@ -2506,7 +2524,6 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 
 	return retval;
 }
-
 
 /* This is used in the callback which fetches all the timezones needed for an
    object. */
@@ -3502,6 +3519,17 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 
+	/*If the backend stores it as individual instances and does not 
+	 * have a master object - do not expand*/
+	if (e_cal_get_static_capability (ecal, CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
+		time_t start, end;
+		/*return the same instance */
+		result = (* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), ecal->priv->default_zone),
+				icaltime_as_timet_with_zone (icalcomponent_get_dtend (icalcomp), ecal->priv->default_zone), cb_data);
+		g_object_unref (comp);
+		return;
+	}
+		
 	e_cal_component_get_uid (comp, &uid);
 	rid = e_cal_component_get_recurid_as_string (comp);
 
@@ -4213,7 +4241,7 @@ e_cal_remove_object (ECal *ecal, const char *uid, GError **error)
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
 
-	return e_cal_remove_object_with_mod (ecal, uid, NULL, CALOBJ_MOD_ALL, error);
+	return e_cal_remove_object_with_mod (ecal, uid, NULL, CALOBJ_MOD_THIS, error);
 }
 
 /**

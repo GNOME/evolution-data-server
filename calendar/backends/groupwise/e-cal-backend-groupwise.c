@@ -372,14 +372,18 @@ get_deltas (gpointer handle)
 		item = E_GW_ITEM(item_list->data);
 		ECalComponent *modified_comp = NULL, *cache_comp = NULL;
 		char *cache_comp_str = NULL;
-
+		const char *uid, *rid = NULL;
 
 		modified_comp = e_gw_item_to_cal_component (item, cbgw);
 		if (!modified_comp) {
 			g_message ("Invalid component returned in update");
 			continue;
 		}
-		cache_comp = e_cal_backend_cache_get_component (cache, e_gw_item_get_icalid (item), NULL);
+		if ((r_key = e_gw_item_get_recurrence_key (item)) != 0)
+			rid = e_cal_component_get_recurid_as_string (modified_comp) 
+		
+		e_cal_component_get_uid (modified_comp, &uid);		
+		cache_comp = e_cal_backend_cache_get_component (cache, uid, rid);
 		e_cal_component_commit_sequence (modified_comp);
 		e_cal_component_commit_sequence (cache_comp);
 
@@ -390,6 +394,7 @@ get_deltas (gpointer handle)
 			cache_comp_str = NULL;
 		}
 		e_cal_backend_cache_put_component (cache, modified_comp);
+
 		g_object_unref (item);
 		g_object_unref (modified_comp);
 	}
@@ -422,10 +427,15 @@ get_deltas (gpointer handle)
 		g_list_free (item_list);
 		item_list = NULL;
 	}
-
+	
+	/* TODO currently the read cursors response does not give us the recurrencKey, uncomment
+	   this once the  response gives the recurrenceKey */
+#if 0
+	/* handle deleted items here by going over the entire cache and
+	 * checking for deleted items.*/
 	position = E_GW_CURSOR_POSITION_END;
 	cursor = 0;
-	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "iCalId", NULL, &cursor);
+	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "iCalId recurrenceKey", NULL, &cursor);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
@@ -437,9 +447,6 @@ get_deltas (gpointer handle)
 		g_static_mutex_unlock (&connecting);
 		return TRUE;
 	}
-
-	/* handle deleted items here by going over the entire cache and
-	 * checking for deleted items.*/
 
 	cache_keys = e_cal_backend_cache_get_keys (cache);
 	done = FALSE;
@@ -507,6 +514,7 @@ get_deltas (gpointer handle)
 		g_slist_free (cache_keys);
 		item_list = NULL;
 	}
+#endif
 
 	g_static_mutex_unlock (&connecting);
 
@@ -957,10 +965,12 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 				  CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK "," \
 				  CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR "," \
 				  CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS "," \
+				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES "," \
 				  CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT "," \
 				  CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED "," \
 				  CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY "," \
 				  CAL_STATIC_CAPABILITY_NO_ORGANIZER "," \
+				  CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER "," \
 				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -1802,6 +1812,27 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	return GNOME_Evolution_Calendar_Success;
 }
 
+static const char *
+get_gw_item_id (icalcomponent *icalcomp) 
+{
+	icalproperty *icalprop;	
+
+	/* search the component for the X-GWRECORDID property */
+	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+	while (icalprop) {
+		const char *x_name, *x_val;
+
+		x_name = icalproperty_get_x_name (icalprop);
+		x_val = icalproperty_get_x (icalprop);
+		if (!strcmp (x_name, "X-GWRECORDID")) {
+			return x_val;
+		}
+
+		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+	}
+	return NULL;
+}
+
 /* Remove_object handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
@@ -1822,74 +1853,97 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	if (priv->mode == CAL_MODE_REMOTE) {
 		ECalBackendSyncStatus status;
 		const char *id_to_remove = NULL;
-		icalproperty *icalprop;
 		icalcomponent *icalcomp;
 
-		status = e_cal_backend_groupwise_get_object (backend, cal, uid, rid, &calobj);
-		if (status != GNOME_Evolution_Calendar_Success)
-			return status;
+		if (mod == CALOBJ_MOD_THIS) {
 
-		*old_object = strdup (calobj);
+			status = e_cal_backend_groupwise_get_object (backend, cal, uid, rid, &calobj);
+			if (status != GNOME_Evolution_Calendar_Success)
+				return status;
 
-		icalcomp = icalparser_parse_string (calobj);
-		if (!icalcomp) {
-			g_free (calobj);
-			return GNOME_Evolution_Calendar_InvalidObject;
-		}
+			*old_object = strdup (calobj);
 
-		/* search the component for the X-GWRECORDID property */
-		icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
-		while (icalprop) {
-			const char *x_name, *x_val;
-
-			x_name = icalproperty_get_x_name (icalprop);
-			x_val = icalproperty_get_x (icalprop);
-			if (!strcmp (x_name, "X-GWRECORDID")) {
-				id_to_remove = x_val;
-				break;
+			icalcomp = icalparser_parse_string (calobj);
+			if (!icalcomp) {
+				g_free (calobj);
+				return GNOME_Evolution_Calendar_InvalidObject;
+			}
+		
+			id_to_remove = get_gw_item_id (icalcomp); 
+			if (!id_to_remove) {
+				/* use the iCalId to remove the object */
+				id_to_remove = uid;
 			}
 
-			icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
-		}
-
-		if (!id_to_remove) {
-			/* use the iCalId to remove the object */
-			id_to_remove = uid;
-		}
-
-		/* remove the object */
-		status = e_gw_connection_remove_item (priv->cnc, priv->container_id, id_to_remove);
-
-		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			/* remove the object */
 			status = e_gw_connection_remove_item (priv->cnc, priv->container_id, id_to_remove);
 
-		icalcomponent_free (icalcomp);
-		if (status == E_GW_CONNECTION_STATUS_OK) {
-			/* remove the component from the cache */
-			if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid)) {
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_remove_item (priv->cnc, priv->container_id, id_to_remove);
+
+			icalcomponent_free (icalcomp);
+			if (status == E_GW_CONNECTION_STATUS_OK) {
+				/* remove the component from the cache */
+				if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid)) {
+					g_free (calobj);
+					return GNOME_Evolution_Calendar_ObjectNotFound;
+				}
+				*object = NULL;
 				g_free (calobj);
-				return GNOME_Evolution_Calendar_ObjectNotFound;
+				return GNOME_Evolution_Calendar_Success;
+			} else {
+				g_free (calobj);
+				return GNOME_Evolution_Calendar_OtherError;
 			}
-			*object = NULL;
-			g_free (calobj);
-			return GNOME_Evolution_Calendar_Success;
-		} else {
-			g_free (calobj);
-			return GNOME_Evolution_Calendar_OtherError;
-		}
+		} else if (mod == CALOBJ_MOD_ALL) {
+			GSList *l, *comp_list = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
+
+			if (e_cal_component_has_attendees (E_CAL_COMPONENT (comp_list->data))) {
+				/* get recurrence key and send it to
+				 * e_gw_connection_remove_recurrence_item */
+				status = e_gw_connection_decline_request_by_recurrence_key (priv->cnc, uid, NULL);
+				if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+					status = e_gw_connection_decline_request_by_recurrence_key (priv->cnc, uid, NULL);
+			} else {
+				GList *item_ids;	
+				for (l = comp_list; l; l = l->next) {
+					ECalComponent *comp = E_CAL_COMPONENT (l->data);
+
+					id_to_remove = get_gw_item_id (e_cal_component_get_icalcomponent (comp)); 
+					item_ids = g_list_append (item_ids, (char *) id_to_remove);
+				}
+				status = e_gw_connection_remove_items (priv->cnc, priv->container_id, item_ids);
+				
+				if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+					status = e_gw_connection_remove_items (priv->cnc, priv->container_id, item_ids);
+			}
+
+			if (status == E_GW_CONNECTION_STATUS_OK) {
+
+				for (l = comp_list; l; l = l->next) {
+					ECalComponent *comp = E_CAL_COMPONENT (l->data);
+					e_cal_backend_cache_remove_component (priv->cache, uid, 
+							e_cal_component_get_recurid_as_string (comp));
+					e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), 
+							     uid, e_cal_component_get_as_string (comp), NULL);
+					g_object_unref (comp);
+				
+				}
+				/* Setting NULL would trigger another signal.
+				 * We do not set the *object to NULL  */
+				g_slist_free (comp_list);
+				return GNOME_Evolution_Calendar_Success;
+			} else {
+				return GNOME_Evolution_Calendar_OtherError;
+			}
+		} else
+			return GNOME_Evolution_Calendar_UnsupportedMethod;
 	} else if (priv->mode == CAL_MODE_LOCAL) {
 		in_offline (cbgw);
 		return GNOME_Evolution_Calendar_RepositoryOffline;
-	}
-
-	/* remove the component from the cache */
-	if (!e_cal_backend_cache_remove_component (priv->cache, uid, rid)) {
-		g_free (calobj);
-		return GNOME_Evolution_Calendar_ObjectNotFound;
-	}
-
-	g_free (calobj);
-	return GNOME_Evolution_Calendar_Success;
+	} else
+		return GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED;
+	
 }
 
 static void
@@ -1985,6 +2039,7 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	if (e_cal_component_has_attachments (comp))
 		fetch_attachments (cbgw, comp);
 
+	modif_comp = comp;
 	status = e_gw_connection_send_appointment (cbgw, priv->container_id, comp, method, &remove, &modif_comp);
 
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)

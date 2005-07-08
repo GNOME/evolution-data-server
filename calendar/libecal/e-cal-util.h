@@ -123,6 +123,7 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR		  "no-conv-to-recur"
 #define CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS		  "no-general-options"
 #define CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS		  "require-send-options"
+#define CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER       "recurrences-no-master-object"
 #define CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT      "organizer-must-accept"
 #define CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED	 "delegate-support"
 #define CAL_STATIC_CAPABILITY_NO_ORGANIZER		 "no-organizer"

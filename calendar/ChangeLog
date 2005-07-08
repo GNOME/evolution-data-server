@@ -1,3 +1,41 @@
+2005-07-08  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c
+	(e_cal_backend_groupwise_remove_object): Use removeItemsRequest
+	for removing all the recurring posted appointments.
+	(get_gw_item_id): Get the item id from the component.
+	(get_deltas): Commented the read cursors request to get the icalids,
+	since we need recurrece keys as we use it as the uid for recurrence items.
+	Get the component from cache using uid and rid.
+	* e-cal.c (e_cal_remove_object): Used CALOBJ_MOD_THIS since we are just removing
+	one component.
+	
+2005-07-08  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_rrule_from_comp), (set_properties_from_cal_component),
+	(e_gw_item_to_cal_component), (e_gw_connection_send_appointment):
+	 add  support for creation of recurrence items by sending the 
+	recurrence formula to the server instead of generating the 
+	instances at the client end.
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(e_cal_backend_groupwise_get_static_capabilities):
+	 add capability	RECURRENCES_NO_MASTER.
+	(e_cal_backend_groupwise_remove_object): add support for 
+	removing all instances of a recurrence at one shot.
+	* libecal/e-cal-util.h: Add a static capability 
+	RECURRENCES_NO_MASTER. Backends that do not use master objects
+	to represent recurrence information and store them as individual
+	instances.
+	* libecal/e-cal.c: (e_cal_get_recurrences_no_master)
+	(e_cal_generate_instances_for_object): Do not expand instances for objects from 
+	backends that do not have master object to represent recurrences.
+	* libecal/e-cal.h:
+	* libedata-cal/e-cal-backend-cache.[ch]
+	(e_cal_backend_cache_get_components_by_uid):  Function to
+	fetch all items in the cache that have the same uid. (recurrence
+	items, detached instances etc.)
+
 2005-07-08  Sankar P  <psankar@novell.com>
 	
 	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas)
