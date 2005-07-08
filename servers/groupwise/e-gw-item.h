@@ -26,6 +26,7 @@
 
 #include <libsoup/soup-soap-message.h>
 #include <libsoup/soup-soap-response.h>
+#include "e-gw-recur-utils.h"
 
 G_BEGIN_DECLS
 
@@ -269,6 +270,18 @@ void e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list) ;
 
 GSList *e_gw_item_get_recurrence_dates (EGwItem *item);
 void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates);
+
+GSList *e_gw_item_get_exdate_list (EGwItem *item);
+void e_gw_item_set_exdate_list (EGwItem  *item, GSList *new_exdate_list);
+
+void e_gw_item_set_rrule (EGwItem *item, EGwItemRecurrenceRule *rrule);
+EGwItemRecurrenceRule *e_gw_item_get_rrule (EGwItem *item);
+		
+int e_gw_item_get_recurrence_key (EGwItem *item);
+void e_gw_item_set_recurrence_key (EGwItem *item, int recurrence_key);
+
+GSList * e_gw_item_get_attach_id_list (EGwItem *item) ;
+void e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list) ;
 
 void e_gw_item_set_source (EGwItem *item, char *source) ;
 

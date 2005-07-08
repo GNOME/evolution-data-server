@@ -55,6 +55,9 @@ struct _EGwItemPrivate {
 	char *source ;
 	GSList *recipient_list;
 	GSList *recurrence_dates;
+	GSList *exdate_list;
+	EGwItemRecurrenceRule *rrule;
+	int recurrence_key;
 	int trigger; /* alarm */
 	/*message size*/
 	int size;    
@@ -359,29 +362,47 @@ e_gw_item_dispose (GObject *object)
 			g_slist_free (priv->recipient_list);
 			priv->recipient_list = NULL;
 		}	
+		
 		if (priv->organizer) {
 			g_free (priv->organizer->display_name);
 			g_free (priv->organizer->email);
 			priv->organizer = NULL;
 		}
+		
 		if (priv->recurrence_dates) {
 			g_slist_foreach (priv->recurrence_dates, free_string, NULL);
 			g_slist_free (priv->recurrence_dates);
 			priv->recurrence_dates = NULL;
 		}
+
+		if (priv->exdate_list) {
+			g_slist_foreach (priv->exdate_list, free_string, NULL);
+			g_slist_free (priv->exdate_list);
+			priv->exdate_list = NULL;
+		}
+
+		if (priv->rrule) {
+			/*TODO free all the strings */
+			priv->rrule = NULL;
+		}
+
 		if (priv->full_name) {
 			free_full_name (priv->full_name);
 			priv->full_name = NULL;
 			}
+		
 		if (priv->simple_fields)
 			g_hash_table_destroy (priv->simple_fields);
+		
 		if (priv->addresses)
 			g_hash_table_destroy (priv->addresses);
+		
 		if (priv->email_list) {
 			g_list_foreach (priv->email_list,  free_string , NULL);
 			g_list_free (priv->email_list);
 			priv->email_list = NULL;
 		}
+		
 		if (priv->member_list) {
 			g_list_foreach (priv->member_list,  free_member, NULL);
 			g_list_free (priv->member_list);
@@ -1804,7 +1825,8 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 		} else if (!g_ascii_strcasecmp (name, "id")) 
 			item->priv->id = soup_soap_parameter_get_string_value (child);
-
+		else if (!g_ascii_strcasecmp (name, "recurrenceKey"))
+			item->priv->recurrence_key = soup_soap_parameter_get_int_value (child);
 		else if (!g_ascii_strcasecmp (name, "message")) {
 			SoupSoapParameter *part;
 			int len;
@@ -2312,6 +2334,52 @@ e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates)
 	/*free the list */
 	g_slist_free (item->priv->recurrence_dates);
 	item->priv->recurrence_dates = new_recurrence_dates;
+}
+
+GSList *
+e_gw_item_get_exdate_list (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	return item->priv->exdate_list;
+}
+
+void
+e_gw_item_set_exdate_list (EGwItem  *item, GSList *new_exdate_list)
+{
+	/* free old list and set a new one*/
+	g_slist_foreach (item->priv->exdate_list, free_string, NULL);
+	/*free the list */
+	g_slist_free (item->priv->exdate_list);
+	item->priv->exdate_list = new_exdate_list;
+}
+
+EGwItemRecurrenceRule *
+e_gw_item_get_rrule (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	return item->priv->rrule;
+}
+
+void
+e_gw_item_set_rrule (EGwItem  *item, EGwItemRecurrenceRule *new_rrule)
+{
+	if (item->priv->rrule) {
+	/* TODO free old list and set a new one*/
+	}
+	item->priv->rrule = new_rrule;
+}
+
+int
+e_gw_item_get_recurrence_key (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), 0);
+	return item->priv->recurrence_key;
+}
+
+void
+e_gw_item_set_recurrence_key (EGwItem *item, int recur_key)
+{
+	item->priv->recurrence_key = recur_key;
 }
 
 int
@@ -2836,7 +2904,77 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		}
 	
 	/* handle recurrences */
-	if (item->priv->recurrence_dates) {
+	 if (item->priv->rrule) {
+		EGwItemRecurrenceRule *rrule = item->priv->rrule;
+
+		soup_soap_message_start_element (msg, "rrule", NULL, NULL);
+		
+		e_gw_message_write_string_parameter (msg, "frequency", NULL, rrule->frequency); 
+		if (rrule->until)
+			e_gw_message_write_string_parameter (msg, "until", NULL, rrule->until);
+		else
+			e_gw_message_write_int_parameter (msg, "count", NULL, rrule->count);
+
+		/* byDay */
+		if (rrule->by_day[0]) {
+			int i, max_elements;
+			soup_soap_message_start_element (msg, "byDay", NULL, NULL);
+			max_elements = sizeof (rrule->by_day) / sizeof (rrule->by_day[0]);
+			/* expand into  a sequence of 'day' here  */
+			for (i = 0; i <= max_elements && rrule->by_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+				/*TODO occurence attribute */
+				e_gw_message_write_string_parameter (msg, "day", NULL, 
+						e_gw_recur_get_day_of_week (rrule->by_day [i]));
+			}
+			soup_soap_message_end_element (msg);
+		}
+		/* byMonthDay*/
+		if (rrule->by_month_day) {
+			int i, max_elements;
+			char month_day[3];
+			
+			soup_soap_message_start_element (msg, "byMonthDay", NULL, NULL);
+			max_elements = sizeof (rrule->by_month_day)  / sizeof (rrule->by_month_day [i]);
+			/* expand into  a sequence of 'day' here  */
+			for (i = 0; i <= max_elements && rrule->by_month_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+				/*TODO occurence attribute */
+				g_sprintf (month_day, "%s", rrule->by_month_day [i]);
+				e_gw_message_write_string_parameter (msg, "day", NULL, month_day);
+										
+			}
+			soup_soap_message_end_element (msg);
+		}
+		/* byYearDay */
+	if (rrule->by_year_day) {
+			int i, max_elements;
+			char year_day[4];
+			soup_soap_message_start_element (msg, "byYearDay", NULL, NULL);
+			/* expand into  a sequence of 'day' here  */
+			for (i = 0; i <= max_elements && rrule->by_year_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+				/*TODO occurence attribute */
+				g_sprintf (year_day, "%s", rrule->by_year_day [i]);
+				e_gw_message_write_string_parameter (msg, "day", NULL, year_day);
+										
+			}
+		soup_soap_message_end_element (msg);
+		}
+		/* byMonth */
+		if (rrule->by_month) {
+			int i, max_elements;
+			char month[3];
+			soup_soap_message_start_element (msg, "byMonth", NULL, NULL);
+			/* expand into  a sequence of 'month' here  */
+			for (i = 0; i <= max_elements && rrule->by_month [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+				/*TODO occurence attribute */
+				g_sprintf (month, "%s", rrule->by_month [i]);
+				e_gw_message_write_string_parameter (msg, "month", NULL, month);
+										
+			}
+			soup_soap_message_end_element (msg);
+		}
+		soup_soap_message_end_element (msg);
+		
+	} else if (item->priv->recurrence_dates) {
 		GSList *date;
 		soup_soap_message_start_element (msg, "rdate", NULL, NULL);
 		for (date = item->priv->recurrence_dates; date != NULL; date = g_slist_next (date)) {
@@ -2844,11 +2982,16 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		}
 		soup_soap_message_end_element (msg);
 	}
-	else {
-		/*the icalid is fed to the server only if we are not saving
-		 * recurring items */
-		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid ? priv->icalid : "");
+	
+	if (item->priv->exdate_list) {
+		GSList *date;
+		soup_soap_message_start_element (msg, "exdate", NULL, NULL);
+		for (date = item->priv->exdate_list; date != NULL; date = g_slist_next (date)) {
+			e_gw_message_write_string_parameter (msg, "date", NULL, (char *) date->data);
+		}
+		soup_soap_message_end_element (msg);
 	}
+	/*xxx - byday, bymonthday and byyearday not handled - FIXME */	
 
 	/*attachments*/
 	if (priv->attach_list) {
