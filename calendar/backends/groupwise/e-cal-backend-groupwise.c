@@ -373,6 +373,7 @@ get_deltas (gpointer handle)
 		ECalComponent *modified_comp = NULL, *cache_comp = NULL;
 		char *cache_comp_str = NULL;
 		const char *uid, *rid = NULL;
+		int r_key;
 
 		modified_comp = e_gw_item_to_cal_component (item, cbgw);
 		if (!modified_comp) {
@@ -380,7 +381,7 @@ get_deltas (gpointer handle)
 			continue;
 		}
 		if ((r_key = e_gw_item_get_recurrence_key (item)) != 0)
-			rid = e_cal_component_get_recurid_as_string (modified_comp) 
+			rid = e_cal_component_get_recurid_as_string (modified_comp);
 		
 		e_cal_component_get_uid (modified_comp, &uid);		
 		cache_comp = e_cal_backend_cache_get_component (cache, uid, rid);
