@@ -1,3 +1,9 @@
+2005-07-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* backends/file/e-book-backend-file.c:
+	(e_book_backend_file_load_source): Free filename and dirname
+	in the error cases.
+
 2005-07-06  Ross Burton  <ross@burtonini.com>
 
 	* libebook/e-book-listener.c:

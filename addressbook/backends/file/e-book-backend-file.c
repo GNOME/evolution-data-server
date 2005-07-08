@@ -1056,6 +1056,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	db_error = e_db3_utils_maybe_recover (filename);
 	if (db_error != 0) {
 		g_warning ("db recovery failed with %d", db_error);
+		g_free (dirname);
+		g_free (filename);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -1068,6 +1070,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		if (db_error != 0) {
 			g_warning ("db_env_create failed with %d", db_error);
 			g_static_mutex_unlock(&global_env_lock);
+			g_free (dirname);
+			g_free (filename);
 			return GNOME_Evolution_Addressbook_OtherError;
 		}
 
@@ -1076,6 +1080,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			env->close(env, 0);
 			g_warning ("db_env_open failed with %d", db_error);
 			g_static_mutex_unlock(&global_env_lock);
+			g_free (dirname);
+			g_free (filename);
 			return GNOME_Evolution_Addressbook_OtherError;
 		}
 
@@ -1091,6 +1097,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	db_error = db_create (&db, env, 0);
 	if (db_error != 0) {
 		g_warning ("db_create failed with %d", db_error);
+		g_free (dirname);
+		g_free (filename);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -1101,6 +1109,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 		if (db_error != 0) {
 			g_warning ("db format upgrade failed with %d", db_error);
+			g_free (dirname);
+			g_free (filename);
 			return GNOME_Evolution_Addressbook_OtherError;
 		}
 
@@ -1122,6 +1132,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			rv = e_util_mkdir_hier (dirname, 0777);
 			if (rv == -1 && errno != EEXIST) {
 				g_warning ("failed to make directory %s: %s", dirname, strerror (errno));
+				g_free (dirname);
+				g_free (filename);
 				if (errno == EACCES || errno == EPERM)
 					return GNOME_Evolution_Addressbook_PermissionDenied;
 				else
@@ -1148,6 +1160,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 	if (db_error != 0) {
 		bf->priv->file_db = NULL;
+		g_free (dirname);
+		g_free (filename);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -1155,6 +1169,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		db->close (db, 0);
 		bf->priv->file_db = NULL;
 		g_warning ("e_book_backend_file_maybe_upgrade_db failed");
+		g_free (dirname);
+		g_free (filename);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
