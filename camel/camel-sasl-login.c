@@ -110,6 +110,10 @@ login_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	CamelURL *url = sasl->service->url;
 	
 	g_return_val_if_fail (url->passwd != NULL, NULL);
+
+	/* Need to wait for the server */
+	if (!token)
+		return NULL;
 	
 	switch (priv->state) {
 	case LOGIN_USER:

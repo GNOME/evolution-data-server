@@ -1,3 +1,10 @@
+2005-07-08  Harish Krishnaswamy  <kharish@novell.com>
+
+	** Patch submitted by Greg Hudson <ghudson@mit.edu>
+	** See bug #308209
+	* camel-sasl-login.c: (login_challenge): Wait for the
+	server to initiate the challenge.
+
 2005-07-06 Vivek Jain <jvivek@novell.com>
 
 	* camel-folder.c: (folder_changed) check if junk_plugin is
