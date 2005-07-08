@@ -1,3 +1,8 @@
+2005-07-08  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/Makefile.am : We should be using the CURRENT, REVISION and
+	AGE variables for the version-info of the exchange library.
+
 2005-07-07  Sarfraaz Ahmed <asarfraaz@novell.com>
 	
 	* storage/e-folder-exchange.c : Remove dead code

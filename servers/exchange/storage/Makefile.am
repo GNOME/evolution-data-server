@@ -76,7 +76,7 @@ libexchange_storage_1_2_la_LDFLAGS =				\
 	$(KRB5_LDFLAGS)						\
 	$(top_builddir)/servers/exchange/lib/libexchange.la	\
 	$(top_builddir)/servers/exchange/xntlm/libxntlm.la			
-	-version-info 1:2:0
+	-version-info $(LIBEXCHANGE_STORAGE_CURRENT):$(LIBEXCHANGE_STORAGE_REVISION):$(LIBEXCHANGE_STORAGE_AGE)
 
 libexchange_storageincludedir = $(privincludedir)/exchange
 
