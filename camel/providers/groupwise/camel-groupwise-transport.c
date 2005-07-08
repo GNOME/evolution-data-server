@@ -145,7 +145,7 @@ groupwise_send_to (CamelTransport *transport,
 	CamelStore *store =  NULL ;
 	CamelGroupwiseStore *groupwise_store = NULL;
 	CamelGroupwiseStorePrivate *priv = NULL;
-	EGwItem *item ,*temp_item;
+	EGwItem *item ,*temp_item=NULL;
 	EGwConnection *cnc = NULL;
 	EGwConnectionStatus status ;
 	GSList *sent_item_list = NULL;
@@ -203,7 +203,7 @@ groupwise_send_to (CamelTransport *transport,
 	/*Send item*/
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list) ;
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_error (" Error Sending mail") ;
+		g_warning (" Error Sending mail") ;
 		camel_operation_end (NULL) ;
 		g_object_unref (item) ;
 		g_object_unref (temp_item);
@@ -213,7 +213,8 @@ groupwise_send_to (CamelTransport *transport,
 
 	e_gw_item_set_recipient_list (item, NULL) ;
 
-	g_object_unref (temp_item);
+	if (temp_item)
+		g_object_unref (temp_item);
 	g_object_unref (item) ;
 
 	camel_operation_end (NULL) ;
