@@ -134,6 +134,7 @@ libexchangeinclude_HEADERS = 					\
 	e2k-restriction.h					\
 	e2k-result.h						\
 	e2k-security-descriptor.h				\
+	e2k-sid.h						\
 	e2k-types.h						\
 	e2k-uri.h						\
 	e2k-utils.h						\

@@ -1,3 +1,8 @@
+2005-07-08  Praveen Kumar <kpraveen@novell.com>
+
+	* lib/Makefile.am : Added entry for ek-sid.h in the headers files to 
+	be installed
+	
 2005-07-08  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/Makefile.am : We should be using the CURRENT, REVISION and
