@@ -722,19 +722,14 @@ e_cal_backend_cache_get_marker (ECalBackendCache *cache)
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, char *utc_str)
+e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const char *utc_str)
 {
-	char *value;
 	gboolean ret_val = FALSE;
 	
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 
-	value = g_strdup (utc_str);
-
-	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), "server_utc_time", value)))
-		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), "server_utc_time", value);
-
-	g_free (value);
+	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), "server_utc_time", utc_str)))
+		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), "server_utc_time", utc_str);
 
 	return ret_val;
 }
@@ -752,4 +747,45 @@ e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
 	
        	return	e_file_cache_get_object (E_FILE_CACHE (cache), "server_utc_time");
+}
+
+/**
+ * e_cal_backend_cache_put_key_value:
+ * @cache: An #ECalBackendCache object.
+ * @keyp: The Key parameter to identify uniquely.
+ * @valuep: The value for the keyp parameter.
+ *
+ * Return value: TRUE if the operation was successful, FALSE otherwise.
+ */
+gboolean
+e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, const char *value)
+{
+	gboolean ret_val = FALSE;
+	
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
+
+	if (value) {
+		e_file_cache_remove_object (E_FILE_CACHE (cache), key);
+		return TRUE;
+	}
+	
+	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), key, value)))
+		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), key, value);
+
+	return ret_val;
+}
+
+/**
+ * e_cal_backend_cache_get_key_value:
+ * @cache: An #ECalBackendCache object.
+ *
+ * Return value: The value.
+ */
+const char *
+e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const char *key)
+{
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+	
+       	return	e_file_cache_get_object (E_FILE_CACHE (cache), key);
 }

@@ -163,6 +163,7 @@ EGwConnectionStatus e_gw_connection_get_junk_settings (EGwConnection *cnc, int *
 EGwConnectionStatus e_gw_connection_modify_junk_settings (EGwConnection *cnc, int use_junk, int use_block, int use_pab , int persistence);
 EGwConnectionStatus e_gw_connection_get_junk_entries (EGwConnection *cnc, GList **entries);
 EGwConnectionStatus  e_gw_connection_remove_junk_entry (EGwConnection *cnc, const char *id);
+EGwConnectionStatus e_gw_connection_read_ical_ids (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **list);
 G_END_DECLS
 
 #endif

@@ -69,8 +69,11 @@ GSList             *e_cal_backend_cache_get_keys (ECalBackendCache *cache);
 const char         *e_cal_backend_cache_get_marker (ECalBackendCache *cache);
 void                e_cal_backend_cache_set_marker (ECalBackendCache *cache);
 
-gboolean e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, char *utc_str);
+gboolean e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const char *utc_str);
 const char * e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache);
+
+gboolean e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, const char *value);
+const char * e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const char *key);
 
 G_END_DECLS
 

@@ -78,6 +78,7 @@ static ECalBackendClass *parent_class = NULL;
 /* Time interval in milliseconds for obtaining changes from server and refresh the cache. */
 #define CACHE_REFRESH_INTERVAL 600000
 #define CURSOR_ITEM_LIMIT 100
+#define CURSOR_ICALID_LIMIT 500
 
 EGwConnection *
 e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw) {
@@ -207,31 +208,46 @@ populate_cache (ECalBackendGroupwise *cbgw)
 static gboolean
 get_deltas (gpointer handle)
 {
- 	ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 	EGwConnection *cnc; 
- 	ECalBackendCache *cache; 
-        EGwConnectionStatus status; 
+	ECalBackendCache *cache; 
+	EGwConnectionStatus status; 
 	icalcomponent_kind kind;
-	GSList *item_list, *cache_keys, *l;
+	GSList  *cache_keys, *l;
+	GList *l1, *item_list;
 	char *comp_str;
+
 	char *time_string = NULL;
 	char t_str [100]; 
 	const char *serv_time;
-	struct stat buf;
+	const char *position; 
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
-        
+	const char *time_interval_string;
+	const char *key = "attempts";
+	const char *attempts;
+
+	EGwFilter *filter;
+	gboolean done = FALSE;
+	int time_interval;
+	int cursor = 0;
+	icaltimetype temp;
+	struct tm *tm;
+	time_t current_time;
+
 	if (!handle)
 		return FALSE;
 	cbgw = (ECalBackendGroupwise *) handle;
 	priv= cbgw->priv;
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
- 	cnc = priv->cnc; 
- 	cache = priv->cache; 
+	cnc = priv->cnc; 
+	cache = priv->cache; 
 	item_list = NULL;
-	
+
 	if (priv->mode == CAL_MODE_LOCAL)
 		return FALSE;
+
+	attempts = e_cal_backend_cache_get_key_value (cache, key);
 
 	g_static_mutex_lock (&connecting);
 
@@ -239,26 +255,42 @@ get_deltas (gpointer handle)
 	if (serv_time) {
 		g_strlcpy (t_str, e_cal_backend_cache_get_server_utc_time (cache), 100);
 		if (!*t_str || !strcmp (t_str, "")) {
-			icaltimetype temp;
-			time_t current_time;
-			const struct tm *tm;
-
-			g_warning (" Could not get the correct time stamp for using in getQuick Messages\n");
+			/* FIXME: When time-stamp is crashed, getting changes from current time */
+			g_warning ("\n\a Could not get the correct time stamp. \n\a");
 			temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 			current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
 			tm = gmtime (&current_time);
 			strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 		}
-		time_string = g_strdup (t_str);
+	} else {
+		/* FIXME: When time-stamp is crashed, getting changes from current time */
+		g_warning ("\n\a Could not get the correct time stamp. \n\a");
+		temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+		current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
+		tm = gmtime (&current_time);
+		strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	}
+	time_string = g_strdup (t_str);
+	filter = e_gw_filter_new ();
 
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
-	
+	/* Items created after the time-stamp */
+	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "created", time_string);
+
+	status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", &time_string, "New", "CalendarItem", NULL,  -1,  &item_list);
-	
+		status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+
+	g_object_unref (filter);	
+
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-				
+		if (!attempts) {
+			e_cal_backend_cache_put_key_value (cache, key, "2");
+		} else {
+			int failures;
+			failures = g_ascii_strtod(attempts, NULL) + 1;
+			e_cal_backend_cache_put_key_value (cache, key, GINT_TO_POINTER (failures));
+		}
+
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
 			g_static_mutex_unlock (&connecting);
 			return TRUE;
@@ -268,15 +300,14 @@ get_deltas (gpointer handle)
 		g_static_mutex_unlock (&connecting);
 		return TRUE;
 	}
-	/* store the timestamp in the cache */	
-	e_cal_backend_cache_put_server_utc_time (cache, time_string);
-	g_free (time_string), time_string = NULL;
-
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-	for (; item_list != NULL; item_list = g_slist_next(item_list)) {
-		EGwItem *item = E_GW_ITEM(item_list->data);
-		ECalComponent *comp = e_gw_item_to_cal_component (item, cbgw);
-		
+	for (; item_list != NULL; item_list = g_list_next(item_list)) {
+		EGwItem *item = NULL;
+		ECalComponent *comp = NULL;
+
+		item = E_GW_ITEM(item_list->data);
+		comp = e_gw_item_to_cal_component (item, cbgw);
+
 		e_cal_component_commit_sequence (comp);
 
 		if (comp) {
@@ -285,8 +316,11 @@ get_deltas (gpointer handle)
 			else  {
 				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
 					comp_str = e_cal_component_get_as_string (comp);	
-					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), comp_str);
-					g_free (comp_str);
+					if (comp_str) {
+						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), comp_str);
+						g_free (comp_str);
+						comp_str = NULL;
+					}
 				}
 			}
 		}
@@ -297,22 +331,30 @@ get_deltas (gpointer handle)
 		g_object_unref (item);
 	}
 	if (item_list) {
-		g_slist_free (item_list);
+		g_list_free (item_list);
 		item_list = NULL;
 	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
-	
-	/* We must use the same timestamp used for getQm call with message list New */ 
-	time_string = g_strdup (t_str);
 
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"attachments recipients message recipientStatus  default", &time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
-	
+	filter = e_gw_filter_new ();
+	/* Items modified after the time-stamp */
+	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "modified", time_string);
+
+	status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id,"recipients message recipientStatus  default", &time_string, "Modified", "CalendarItem", NULL,  -1,  &item_list);
+		status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+	g_object_unref (filter);
 
-		
-	g_free (time_string);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+
+		if (!attempts) {
+			e_cal_backend_cache_put_key_value (cache, key, "2");
+		} else {
+			int failures;
+			failures = g_ascii_strtod(attempts, NULL) + 1;
+			e_cal_backend_cache_put_key_value (cache, key, GINT_TO_POINTER (failures));
+		}
+
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) { 
 			g_static_mutex_unlock (&connecting);
 			return TRUE;
@@ -323,14 +365,15 @@ get_deltas (gpointer handle)
 		return TRUE;
 	}
 
-
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-	
-	for (; item_list != NULL; item_list = g_slist_next(item_list)) {
-		EGwItem *item = E_GW_ITEM(item_list->data);
-		ECalComponent *modified_comp, *cache_comp;
-		char *cache_comp_str;
-		
+
+	for (; item_list != NULL; item_list = g_list_next(item_list)) {
+		EGwItem *item = NULL;
+		item = E_GW_ITEM(item_list->data);
+		ECalComponent *modified_comp = NULL, *cache_comp = NULL;
+		char *cache_comp_str = NULL;
+
+
 		modified_comp = e_gw_item_to_cal_component (item, cbgw);
 		if (!modified_comp) {
 			g_message ("Invalid component returned in update");
@@ -344,6 +387,7 @@ get_deltas (gpointer handle)
 			cache_comp_str = e_cal_component_get_as_string (cache_comp);
 			e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, e_cal_component_get_as_string (modified_comp));
 			g_free (cache_comp_str);
+			cache_comp_str = NULL;
 		}
 		e_cal_backend_cache_put_component (cache, modified_comp);
 		g_object_unref (item);
@@ -351,15 +395,37 @@ get_deltas (gpointer handle)
 	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
+	temp = icaltime_from_string (time_string);
+	current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
+	tm = gmtime (&current_time);
+
+	time_interval = (CACHE_REFRESH_INTERVAL / 60000);
+	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
+	if (time_interval_string) {
+		time_interval = g_ascii_strtod (time_interval_string, NULL);
+	} 
+	if (attempts) {
+		tm->tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
+		e_cal_backend_cache_put_key_value (cache, key, NULL);
+	} else {
+		tm->tm_min += time_interval;
+	}
+	strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+	time_string = g_strdup (t_str);
+
+	e_cal_backend_cache_put_server_utc_time (cache, time_string);
+
+	g_free (time_string);
+	time_string = NULL;
+
 	if (item_list) {
-		g_slist_free (item_list);
+		g_list_free (item_list);
 		item_list = NULL;
 	}
-	
-	status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
 
-	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_quick_messages (cnc, cbgw->priv->container_id, "iCalId", NULL, "All", "CalendarItem", NULL,  -1,  &item_list);
+	position = E_GW_CURSOR_POSITION_END;
+	cursor = 0;
+	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "iCalId", NULL, &cursor);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
@@ -374,23 +440,49 @@ get_deltas (gpointer handle)
 
 	/* handle deleted items here by going over the entire cache and
 	 * checking for deleted items.*/
-	
-	cache_keys = e_cal_backend_cache_get_keys (cache);
-	for (l = item_list; l; l = g_slist_next (l)) {
-		/* this works assuming rid is null*/
-		cache_keys = g_slist_delete_link (cache_keys, 
-				g_slist_find_custom (cache_keys, l->data, (GCompareFunc) strcmp));
-		g_free (l->data);
-	}
 
+	cache_keys = e_cal_backend_cache_get_keys (cache);
+	done = FALSE;
+	while (!done) {
+		status = e_gw_connection_read_ical_ids (cnc, cbgw->priv->container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
+				g_static_mutex_unlock (&connecting);
+				return TRUE;
+			}
+			e_cal_backend_groupwise_notify_error_code (cbgw, status);
+			g_static_mutex_unlock (&connecting);
+			return TRUE;
+		}
+		/* handle deleted items here by going over the entire cache and
+		 * checking for deleted items.*/
+		for (l1 = item_list; l1; l1 = g_list_next (l1)) {
+			char *icalid;
+			icalid = (char *)(l1->data);
+			cache_keys = g_slist_delete_link (cache_keys, 
+					g_slist_find_custom (cache_keys, icalid, (GCompareFunc) strcmp));
+			if (l1->data)
+				g_free (l1->data);
+		}	
+		if (!item_list  || g_list_length (item_list) == 0)
+			done = TRUE;
+		if (item_list) {
+			g_list_free (item_list);
+			item_list = NULL;
+		}
+		position = E_GW_CURSOR_POSITION_CURRENT;
+
+	}
+	e_gw_connection_destroy_cursor (cnc, cbgw->priv->container_id, cursor);
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
+
 	for (l = cache_keys; l ; l = g_slist_next (l)) {
 		/* assumes rid is null - which works for now */
 		ECalComponent *comp = NULL;
 		ECalComponentVType vtype;
 
 		comp = e_cal_backend_cache_get_component (cache, (const char *) l->data, NULL);	
-		
+
 		if (!comp)
 			continue;
 
@@ -399,7 +491,7 @@ get_deltas (gpointer handle)
 				(vtype == E_CAL_COMPONENT_TODO)) {
 			comp_str = e_cal_component_get_as_string (comp);
 			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), 
-							     (char *) l->data, comp_str, NULL);
+					(char *) l->data, comp_str, NULL);
 			e_cal_backend_cache_remove_component (cache, (const char *) l->data, NULL);
 			g_free (comp_str);
 		}
@@ -408,17 +500,17 @@ get_deltas (gpointer handle)
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
 	if (item_list) {
-		g_slist_free (item_list);
+		g_list_free (item_list);
 		item_list = NULL;
 	}
 	if (cache_keys) {
 		g_slist_free (cache_keys);
 		item_list = NULL;
 	}
-	
+
 	g_static_mutex_unlock (&connecting);
-		
-        return TRUE;        
+
+	return TRUE;        
 }
 
 static gboolean
@@ -654,6 +746,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		cbgw->priv->read_only = FALSE;
 
 		if (priv->cnc && priv->cache && priv->container_id) {
+			char *utc_str;
 			priv->mode = CAL_MODE_REMOTE;
 			if (priv->mode_changed && !priv->timeout_id && (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) == ICAL_VEVENT_COMPONENT)) {
 				GThread *thread1;
@@ -668,9 +761,10 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 					return GNOME_Evolution_Calendar_OtherError;
 				}
 				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas_timeout, (gpointer)cbgw);
-
 			}
-	
+			utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
+			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
+
 			return GNOME_Evolution_Calendar_Success;
 		}
 		priv->mode_changed = FALSE;
