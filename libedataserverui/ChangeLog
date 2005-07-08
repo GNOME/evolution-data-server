@@ -1,3 +1,9 @@
+2005-07-06  Sushma Rai  <rsushma@novell.com>
+
+	* libedataserverui/e-contact-store.c (view_sequence_complete): If the
+	current view is finished, stop the view and return. Fixes #309684.
+	Patch submitted by "ross@burtonini.com (Ross Burton)"
+
 2005-07-06  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* e-source-option-menu.c: (populate): Fix a small leak.
