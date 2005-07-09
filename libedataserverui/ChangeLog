@@ -1,3 +1,7 @@
+2005-07-09  Philip Van Hoof  <pvanhoof@gnome.org>
+
+	* e-name-selector-entry.c: Making it more easy to remove destinations.
+
 2005-07-06  Sushma Rai  <rsushma@novell.com>
 
 	* e-contact-store.c (view_sequence_complete): If the

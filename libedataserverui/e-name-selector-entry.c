@@ -895,14 +895,14 @@ remove_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	EDestination *destination;
 
 	destination = find_destination_at_position (name_selector_entry, pos);
-	g_assert (destination);
-
-	g_signal_handlers_block_by_func (name_selector_entry->destination_store,
+	if (destination) {
+		g_signal_handlers_block_by_func (name_selector_entry->destination_store,
 					 destination_row_deleted, name_selector_entry);
-	e_destination_store_remove_destination (name_selector_entry->destination_store,
+		e_destination_store_remove_destination (name_selector_entry->destination_store,
 						destination);
-	g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
+		g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
 					   destination_row_deleted, name_selector_entry);
+	}
 }
 
 static void
@@ -956,14 +956,14 @@ remove_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index
 	EDestination *destination;
 
 	destination = find_destination_by_index (name_selector_entry, index);
-	g_assert (destination);
-
-	g_signal_handlers_block_by_func (name_selector_entry->destination_store,
+	if (destination) {
+		g_signal_handlers_block_by_func (name_selector_entry->destination_store,
 					 destination_row_deleted, name_selector_entry);
-	e_destination_store_remove_destination (name_selector_entry->destination_store,
+		e_destination_store_remove_destination (name_selector_entry->destination_store,
 						destination);
-	g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
+		g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
 					   destination_row_deleted, name_selector_entry);
+	}
 }
 
 /* Returns the number of characters inserted */
@@ -1111,7 +1111,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 {
 	const gchar *text;
 	gint         index_start, index_end;
-	gunichar     str_context [2];
+	gunichar     str_context [2], str_b_context [2];;
 	gint         len;
 	gint         i;
 
@@ -1121,6 +1121,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	len = g_utf8_strlen (text, -1);
 	get_utf8_string_context (text, start_pos, str_context, 2);
+	get_utf8_string_context (text, end_pos-1, str_b_context, 2);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
@@ -1133,14 +1134,40 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		}
 	}
 
-	if (str_context [0] == ',' && str_context [1] == ' ') {
-		/* If we're deleting the trailing space in ", ", delete the whole ", " sequence. */
-		start_pos--;
-	}
-
 	index_start = get_index_at_position (text, start_pos);
 	index_end   = get_index_at_position (text, end_pos);
+	
+	g_signal_stop_emission_by_name (name_selector_entry, "delete_text");
+	
+	/* If the user is trying to delete a ','-character, we assume the user 
+	 * wants to remove the entire destination.
+	 */
+	
+	if ((str_b_context [0] == ',' && str_b_context [1] == ' ') || str_b_context [1] == ',') {
+	
+		EDestination *dest = find_destination_at_position (name_selector_entry, end_pos-1);
+	  	const char *email = e_destination_get_email (dest);
+	  	if (email && (strcmp (email, "")!=0)) {
+	  
+			/* Therefore, in case it's a real destination, we select it. 
+		 	 * Deleting this selection afterwards will leave the destination
+		 	 * empty. */
+	 
+			gint t = (str_b_context [1]==',')?end_pos-1:end_pos-2, b=t;
+			do {
+				t--;
+			} while (t >= 1 && text[t-1] != ',');
+		
+			gtk_editable_select_region (GTK_EDITABLE(name_selector_entry), t, b);
 
+			/* Since this is a special-case, we don't want the rest of this method
+		 	 * to happen. However, we do need to reenable the signal which we
+		 	 * disabled above! */
+		
+			goto end_of_user_delete_text;
+	  	}
+	}
+	
 	/* If the deletion touches more than one destination, the first one is changed
 	 * and the rest are removed. If the last destination wasn't completely deleted,
 	 * it becomes part of the first one, since the separator between them was
@@ -1149,15 +1176,17 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	 * Here, we let the model know about removals. */
 	for (i = index_end; i > index_start; i--)
 		remove_destination_by_index (name_selector_entry, i);
-
+	
 	/* Do the actual deletion */
+	
+	
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry),
 				  start_pos, end_pos);
-	g_signal_stop_emission_by_name (name_selector_entry, "delete_text");
+	
 
 	/* Let model know about changes */
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	if (!*text) {
+	if (!*text || strlen(text) <= 0) {
 		/* If the entry was completely cleared, remove the initial destination too */
 		remove_destination_by_index (name_selector_entry, 0);
 		generate_attribute_list (name_selector_entry);
@@ -1174,7 +1203,8 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		g_source_remove (name_selector_entry->type_ahead_complete_cb_id);
 		name_selector_entry->type_ahead_complete_cb_id = 0;
 	}
-
+	
+end_of_user_delete_text:
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 }
 
@@ -1678,7 +1708,6 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 	contact_uid = e_contact_get (contact, E_CONTACT_UID);
 	if (!contact_uid)
 		return;
-
 	if (name_selector_entry->contact_store) {
 		books = e_contact_store_get_books (name_selector_entry->contact_store);
 		book = find_book_by_contact (books, contact_uid);
