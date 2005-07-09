@@ -26,6 +26,7 @@
 #endif
 #include <string.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <libsoup/soup-misc.h>
 #include "e-gw-item.h"
 #include "e-gw-connection.h"
@@ -2938,7 +2939,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			/* expand into  a sequence of 'day' here  */
 			for (i = 0; i <= max_elements && rrule->by_month_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
-				g_sprintf (month_day, "%s", rrule->by_month_day [i]);
+				g_sprintf (month_day, "%d", rrule->by_month_day [i]);
 				e_gw_message_write_string_parameter (msg, "day", NULL, month_day);
 										
 			}
@@ -2952,7 +2953,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			/* expand into  a sequence of 'day' here  */
 			for (i = 0; i <= max_elements && rrule->by_year_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
-				g_sprintf (year_day, "%s", rrule->by_year_day [i]);
+				g_sprintf (year_day, "%d", rrule->by_year_day [i]);
 				e_gw_message_write_string_parameter (msg, "day", NULL, year_day);
 										
 			}
@@ -2966,7 +2967,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			/* expand into  a sequence of 'month' here  */
 			for (i = 0; i <= max_elements && rrule->by_month [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
-				g_sprintf (month, "%s", rrule->by_month [i]);
+				g_sprintf (month, "%d", rrule->by_month [i]);
 				e_gw_message_write_string_parameter (msg, "month", NULL, month);
 										
 			}
