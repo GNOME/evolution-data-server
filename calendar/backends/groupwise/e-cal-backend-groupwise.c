@@ -214,23 +214,19 @@ get_deltas (gpointer handle)
 	ECalBackendCache *cache; 
 	EGwConnectionStatus status; 
 	icalcomponent_kind kind;
-	GSList  *cache_keys, *l;
-	GList *l1, *item_list;
+	GList *item_list;
 	char *comp_str;
 
 	char *time_string = NULL;
 	char t_str [100]; 
 	const char *serv_time;
-	const char *position; 
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
 	const char *time_interval_string;
 	const char *key = "attempts";
 	const char *attempts;
 
 	EGwFilter *filter;
-	gboolean done = FALSE;
 	int time_interval;
-	int cursor = 0;
 	icaltimetype temp;
 	struct tm *tm;
 	time_t current_time;
