@@ -1754,6 +1754,9 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 	case E_CAL_LOAD_LOADED :
 		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, E_CALENDAR_STATUS_OK);
 		return;
+	default:
+		/* ignore everything else */
+		break;
 	}
 
 	ccad = g_new0 (ECalAsyncData, 1);
@@ -2708,6 +2711,9 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 				case E_CAL_SOURCE_TYPE_JOURNAL :
 					subcomp = icalcomponent_get_first_component (tmp_icalcomp, ICAL_VJOURNAL_COMPONENT);
 					break;
+				default:
+					/* ignore everything else */
+					break;
 				}
 
 				/* we are only interested in the first component */
@@ -2825,6 +2831,9 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 					break;
 				case E_CAL_SOURCE_TYPE_JOURNAL :
 					kind_to_find = ICAL_VJOURNAL_COMPONENT;
+					break;
+				default:
+					/* ignore everything else */
 					break;
 				}
 
@@ -3522,7 +3531,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	/*If the backend stores it as individual instances and does not 
 	 * have a master object - do not expand*/
 	if (e_cal_get_static_capability (ecal, CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
-		time_t start, end;
+
 		/*return the same instance */
 		result = (* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), ecal->priv->default_zone),
 				icaltime_as_timet_with_zone (icalcomponent_get_dtend (icalcomp), ecal->priv->default_zone), cb_data);
@@ -4888,6 +4897,9 @@ e_cal_get_error_message (ECalendarStatus status)
 		return _("Unknown error");
 	case E_CALENDAR_STATUS_OK :
 		return _("No error");
+	default:
+		/* ignore everything else */
+		break;
 	}
 
 	return NULL;

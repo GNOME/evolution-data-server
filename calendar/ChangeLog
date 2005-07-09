@@ -1,5 +1,11 @@
 2005-07-09  Harish Krishnaswamy  <kharish@novell.com>
 
+	* libecal/e-cal.c: (e_cal_open_async), (e_cal_get_object),
+	(e_cal_get_objects_for_uid), (e_cal_generate_instances_for_object),
+	(e_cal_get_error_message): Fix some more compiler warnings.
+
+2005-07-09  Harish Krishnaswamy  <kharish@novell.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
 	Fix compiler warnings.
 
