@@ -719,8 +719,12 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	ESource *source;
 	const char *use_ssl;
 	char *http_uri;
+	int permissions, flag;
 	GThread *thread;
 	GError *error = NULL;
+	char *parent_user = NULL;
+	icalcomponent_kind kind;
+	
 	priv = cbgw->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
@@ -728,28 +732,62 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	if (source)
 		real_uri = form_uri (source);
 	use_ssl = e_source_get_property (source, "use_ssl");
- 
+
 	if (!real_uri) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Invalid server URI"));
 		return GNOME_Evolution_Calendar_NoSuchCal;
 	} else {
+		parent_user = (char *) e_source_get_property (source, "parent_id_name");
 		/* create connection to server */
-		priv->cnc = e_gw_connection_new (
-			real_uri,
-			priv->username,
-			priv->password);
+		if (parent_user) {
+			EGwConnection *cnc;
+			/* create connection to server */
+			cnc = e_gw_connection_new (real_uri, parent_user, priv->password);
+			if (!E_IS_GW_CONNECTION(cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
+				http_uri = g_strconcat ("http://", real_uri + 8, NULL);
+				cnc = e_gw_connection_new (http_uri, parent_user, priv->password);
+				g_free (http_uri);
+			}
 
-		if (!E_IS_GW_CONNECTION(priv->cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
-			http_uri = g_strconcat ("http://", real_uri + 8, NULL);
-			priv->cnc = e_gw_connection_new (http_uri, priv->username, priv->password);
-			g_free (http_uri);
+			if (!cnc) {
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
+				return GNOME_Evolution_Calendar_AuthenticationFailed;
+			}
+				
+			priv->cnc = e_gw_connection_get_proxy_connection (cnc, parent_user, priv->password, priv->username, &permissions);
+
+			g_object_unref(cnc);
+		
+			if (!priv->cnc) {
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
+				return GNOME_Evolution_Calendar_AuthenticationFailed;
+			}
+
+			kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+
+			cbgw->priv->read_only = TRUE;
+		
+			if (kind == ICAL_VEVENT_COMPONENT && (permissions & E_GW_PROXY_APPOINTMENT_WRITE) )
+				cbgw->priv->read_only = FALSE;
+			else if (kind == ICAL_VTODO_COMPONENT && (permissions & E_GW_PROXY_TASK_WRITE))
+				cbgw->priv->read_only = FALSE;
+
+		} else {
+
+			priv->cnc = e_gw_connection_new (
+					real_uri,
+					priv->username,
+					priv->password);
+
+			if (!E_IS_GW_CONNECTION(priv->cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
+				http_uri = g_strconcat ("http://", real_uri + 8, NULL);
+				priv->cnc = e_gw_connection_new (http_uri, priv->username, priv->password);
+				g_free (http_uri);
+			}
+			cbgw->priv->read_only = FALSE;
 		}
 		g_free (real_uri);
 			
-		/* As of now we are assuming that logged in user has write rights to calender */
-		/* we need to read actual rights from server when we implement proxy user access */
-		cbgw->priv->read_only = FALSE;
-
 		if (priv->cnc && priv->cache && priv->container_id) {
 			char *utc_str;
 			priv->mode = CAL_MODE_REMOTE;

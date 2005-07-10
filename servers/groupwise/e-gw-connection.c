@@ -36,7 +36,7 @@
 
 
 static GObjectClass *parent_class = NULL;
-static GHashTable *loaded_connections = NULL;
+static GHashTable *loaded_connections_permissions = NULL;
 
 struct _EGwConnectionPrivate {
 	SoupSession *soup_session;
@@ -221,16 +221,16 @@ e_gw_connection_dispose (GObject *object)
 	printf ("gw connection dispose \n");
 	
 	/* removed the connection from the hash table */
-	if (loaded_connections != NULL) {
+	if (loaded_connections_permissions != NULL) {
 		hash_key = g_strdup_printf ("%s:%s@%s",
 					    priv->username ? priv->username : "",
 					    priv->password ? priv->password : "",
 					    priv->uri);
-		if (g_hash_table_lookup_extended (loaded_connections, hash_key, &orig_key, &orig_value)) {
-			g_hash_table_remove (loaded_connections, hash_key);
-			if (g_hash_table_size (loaded_connections) == 0) {
-				g_hash_table_destroy (loaded_connections);
-				loaded_connections = NULL;
+		if (g_hash_table_lookup_extended (loaded_connections_permissions, hash_key, &orig_key, &orig_value)) {
+			g_hash_table_remove (loaded_connections_permissions, hash_key);
+			if (g_hash_table_size (loaded_connections_permissions) == 0) {
+				g_hash_table_destroy (loaded_connections_permissions);
+				loaded_connections_permissions = NULL;
 			}
 
 			g_free (orig_key);
@@ -418,12 +418,12 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	g_static_mutex_lock (&connecting);
 
 	/* search the connection in our hash table */
-	if (loaded_connections != NULL) {
+	if (loaded_connections_permissions != NULL) {
 		hash_key = g_strdup_printf ("%s:%s@%s",
 					    username ? username : "",
 					    password ? password : "",
 					    uri);
-		cnc = g_hash_table_lookup (loaded_connections, hash_key);
+		cnc = g_hash_table_lookup (loaded_connections_permissions, hash_key);
 		g_free (hash_key);
 
 		if (E_IS_GW_CONNECTION (cnc)) {
@@ -527,14 +527,14 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	if (param) 
 		cnc->priv->server_time = soup_soap_parameter_get_string_value (param);
 
-	/* add the connection to the loaded_connections hash table */
+	/* add the connection to the loaded_connections_permissions hash table */
 	hash_key = g_strdup_printf ("%s:%s@%s",
 				    cnc->priv->username ? cnc->priv->username : "",
 				    cnc->priv->password ? cnc->priv->password : "",
 				    cnc->priv->uri);
-	if (loaded_connections == NULL)
-		loaded_connections = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_insert (loaded_connections, hash_key, cnc);
+	if (loaded_connections_permissions == NULL)
+		loaded_connections_permissions = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_insert (loaded_connections_permissions, hash_key, cnc);
 
 	/* free memory */
 	g_object_unref (response);
@@ -3478,4 +3478,322 @@ e_gw_connection_read_ical_ids (EGwConnection *cnc, const char *container, int cu
 	return E_GW_CONNECTION_STATUS_OK;
 }
 
+EGwConnectionStatus
+e_gw_connection_get_proxy_access_list (EGwConnection *cnc, GList **proxy_list)
+{
+	SoupSoapMessage *msg = NULL;
+	SoupSoapResponse *response = NULL;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
 
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
+
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getProxyAccessListRequest");
+
+	e_gw_message_write_footer (msg);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "accessRights");	
+	if (!param) {
+		g_object_unref (response);
+		return status;
+	} else 	{
+		e_gw_proxy_construct_proxy_access_list (param, proxy_list);
+	}
+	/* free memory */
+	if (response)
+		g_object_unref (response);
+	if (msg)
+		g_object_unref (msg);
+	return status;
+}
+
+EGwConnectionStatus 
+e_gw_connection_add_proxy (EGwConnection *cnc, proxyHandler *new_proxy)
+{
+	SoupSoapMessage *msg = NULL;
+	SoupSoapResponse *response = NULL;
+	EGwConnectionStatus status;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc), e_gw_connection_get_session_id (cnc), "createProxyAccessRequest");
+
+	e_gw_proxy_form_proxy_add_msg (msg, new_proxy);
+			
+	e_gw_message_write_footer (msg);
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+	status = e_gw_connection_parse_response_status (response);
+
+	if (response)
+	g_object_unref (response);
+
+	if (msg)
+	g_object_unref (msg);
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_remove_proxy (EGwConnection *cnc, proxyHandler *removeProxy)
+{
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri(cnc), e_gw_connection_get_session_id(cnc), "removeProxyAccessRequest");
+
+	e_gw_proxy_form_proxy_remove_msg (msg, removeProxy);
+	
+	e_gw_message_write_footer (msg);
+
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+	status = e_gw_connection_parse_response_status (response);
+	g_object_unref (response);
+	g_object_unref (msg);
+	return E_GW_CONNECTION_STATUS_OK;
+
+}
+
+EGwConnectionStatus 
+e_gw_connection_modify_proxy (EGwConnection *cnc, proxyHandler *new_proxy)
+{
+	SoupSoapMessage *msg = NULL;
+	SoupSoapResponse *response = NULL;
+	EGwConnectionStatus status;
+	
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
+	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc), e_gw_connection_get_session_id (cnc), "modifyProxyAccessRequest");
+	e_gw_message_write_string_parameter (msg, "id", NULL, new_proxy->uniqueid);
+	
+	e_gw_proxy_form_modify_proxy_msg (msg, new_proxy);
+	
+	e_gw_message_write_footer (msg);
+	response = e_gw_connection_send_message (cnc, msg);
+	
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
+	status = e_gw_connection_parse_response_status (response);
+
+	if (response)
+	g_object_unref (response);
+
+	if (msg)
+	g_object_unref (msg);
+	return status;
+}
+
+EGwConnectionStatus
+e_gw_connection_get_proxy_list (EGwConnection *cnc, GList **proxy_info)
+{
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+        SoupSoapParameter *param;
+
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getProxyListRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+	
+	e_gw_message_write_footer (msg);
+        
+	/* send message to server */
+        response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+        }
+	status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	}
+	/* if status is OK - parse result. return the list */	
+	param = soup_soap_response_get_first_parameter_by_name (response, "proxies");
+        e_gw_proxy_construct_proxy_list (param, proxy_info);			
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+       	
+        g_object_unref (response);
+	g_object_unref (msg);
+
+        return E_GW_CONNECTION_STATUS_OK;
+}
+
+static SoupSoapMessage*
+form_proxy_login_request (EGwConnection *cnc, const char* username, const char* password, const char *proxy)
+{
+	SoupSoapMessage *msg;
+	/* build the SOAP message */
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "loginRequest");
+	soup_soap_message_start_element (msg, "auth", "types", NULL);
+	soup_soap_message_add_attribute (msg, "type", "types:Proxy", "xsi",
+					 "http://www.w3.org/2001/XMLSchema-instance");
+	e_gw_message_write_string_parameter (msg, "username", "types", username);
+	e_gw_message_write_string_parameter (msg, "password", "types", password);
+	e_gw_message_write_string_parameter (msg, "proxy", "types", proxy);
+	soup_soap_message_end_element (msg);
+	e_gw_message_write_footer (msg);
+	return msg;
+}
+
+EGwConnection *
+e_gw_connection_get_proxy_connection (EGwConnection *parent_cnc, char *username, const char *password, const char *proxy, int  *permissions)
+{
+	EGwConnection *cnc;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
+	SoupSoapParameter *subparam;
+	char *hash_key;
+	char *name = NULL;
+	int i;
+	char *permissions_key = NULL;
+
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;	
+
+	g_static_mutex_lock (&connecting);
+
+	for (i=0; proxy[i]!='\0' && proxy[i]!='@'; i++);
+	if (proxy[i]=='@')
+		name = g_strndup(proxy, i);
+	else 
+		name = g_strdup (proxy);
+	/* search the connection in our hash table */
+	if (loaded_connections_permissions != NULL) {
+		hash_key = g_strdup_printf ( "%s:%s@%s",
+				name,
+				"",
+				parent_cnc->priv->uri);
+		cnc = g_hash_table_lookup (loaded_connections_permissions, hash_key);
+		permissions_key = g_strdup_printf ("%s:permissions", hash_key);
+		g_free (hash_key);
+
+		if (E_IS_GW_CONNECTION (cnc)) {
+			*permissions = GPOINTER_TO_INT (g_hash_table_lookup (loaded_connections_permissions, permissions_key));
+			g_free (permissions_key);
+			g_object_ref (cnc);
+			g_static_mutex_unlock (&connecting);
+			return cnc;
+		}
+		g_free (permissions_key);
+	}
+
+	/* not found, so create a new connection */
+	cnc = g_object_new (E_TYPE_GW_CONNECTION, NULL);
+
+	msg = form_proxy_login_request (parent_cnc, username, password, proxy);
+
+	/* send message to server */
+	response = e_gw_connection_send_message (parent_cnc, msg);
+
+	if (!response) {
+		g_object_unref (cnc);
+		g_static_mutex_unlock (&connecting);
+		g_object_unref (msg);
+		return NULL;
+	}
+
+	status = e_gw_connection_parse_response_status (response);
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "session");
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		g_object_unref (cnc);
+		g_static_mutex_unlock (&connecting);
+		return NULL;
+	}
+
+	cnc->priv->uri = g_strdup (parent_cnc->priv->uri);
+	cnc->priv->username = g_strdup (proxy);
+	cnc->priv->password = NULL;
+	cnc->priv->session_id = soup_soap_parameter_get_string_value (param);
+
+	/* retrieve user information */
+	param = soup_soap_response_get_first_parameter_by_name (response, "entry");
+
+	if (param) {
+		char *param_value;
+
+		subparam = soup_soap_parameter_get_first_child_by_name (param, "email");
+		if (subparam) {
+			param_value = soup_soap_parameter_get_string_value (subparam);
+			cnc->priv->user_email  = param_value;
+		}
+
+		subparam = soup_soap_parameter_get_first_child_by_name (param, "name");
+		if (subparam) {
+			param_value = soup_soap_parameter_get_string_value (subparam);
+			cnc->priv->user_name = param_value;
+		}
+
+		subparam = soup_soap_parameter_get_first_child_by_name (param, "uuid");
+		if (subparam) {
+			param_value = soup_soap_parameter_get_string_value (subparam);
+			cnc->priv->user_uuid = param_value;
+		}
+
+		e_gw_proxy_parse_proxy_login_response (param, permissions);
+	}
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "gwVersion");
+	if (param) {
+		char *param_value;
+		param_value = soup_soap_parameter_get_string_value (param);
+		cnc->priv->version = param_value;
+	} else
+		cnc->priv->version = NULL;	
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "serverUTCTime");
+	if (param) 
+		cnc->priv->server_time = soup_soap_parameter_get_string_value (param);
+
+	/* add the connection to the loaded_connections_permissions hash table */
+	hash_key = g_strdup_printf ("%s:%s@%s",
+			name,
+			"",
+			cnc->priv->uri);
+
+	g_hash_table_insert (loaded_connections_permissions, hash_key, cnc);
+	permissions_key = g_strdup_printf ("%s:permissions", hash_key);
+	g_hash_table_insert (loaded_connections_permissions, permissions_key, GINT_TO_POINTER(*permissions));
+
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+	g_static_mutex_unlock (&connecting);
+	return cnc;
+}

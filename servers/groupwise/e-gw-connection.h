@@ -26,6 +26,7 @@
 
 #include <glib-object.h>
 #include <libsoup/soup-soap-message.h>
+#include "e-gw-proxy.h"
 #include "e-gw-container.h"
 #include "e-gw-item.h"
 #include "e-gw-filter.h"
@@ -166,6 +167,13 @@ EGwConnectionStatus e_gw_connection_modify_junk_settings (EGwConnection *cnc, in
 EGwConnectionStatus e_gw_connection_get_junk_entries (EGwConnection *cnc, GList **entries);
 EGwConnectionStatus  e_gw_connection_remove_junk_entry (EGwConnection *cnc, const char *id);
 EGwConnectionStatus e_gw_connection_read_ical_ids (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **list);
+EGwConnectionStatus e_gw_connection_get_proxy_access_list (EGwConnection *cnc, GList **proxy_list);
+EGwConnectionStatus e_gw_connection_add_proxy (EGwConnection *cnc, proxyHandler *new_proxy);
+EGwConnectionStatus e_gw_connection_remove_proxy (EGwConnection *cnc, proxyHandler *newProxy);
+EGwConnectionStatus e_gw_connection_modify_proxy (EGwConnection *cnc, proxyHandler *newProxy);
+EGwConnectionStatus e_gw_connection_get_proxy_list (EGwConnection *cnc, GList **proxy_info);
+EGwConnection *e_gw_connection_get_proxy_connection (EGwConnection *cnc1, char *username, const char *password, const char *proxy, int* permissions);
+
 G_END_DECLS
 
 #endif

@@ -36,7 +36,9 @@ libegroupwise_1_2_la_SOURCES =			\
 	e-gw-filter.c                           \
 	e-gw-filter.h                           \
 	e-gw-recur-utils.c                      \
-	e-gw-recur-utils.h
+	e-gw-recur-utils.h			\
+	e-gw-proxy.h				\
+	e-gw-proxy.c				
 
 libegroupwise_1_2_la_LIBADD =						\
 	$(E_DATA_SERVER_LIBS)						\
@@ -54,7 +56,8 @@ libegroupwiseinclude_HEADERS =                  \
 	e-gw-item.h                             \
 	e-gw-sendoptions.h			\
 	e-gw-filter.h                        	\
-	e-gw-recur-utils.h
+	e-gw-recur-utils.h			\
+	e-gw-proxy.h				
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

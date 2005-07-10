@@ -1563,7 +1563,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	/* see if the backend needs authentication */
 	if ( (priv->mode !=  CAL_MODE_LOCAL) && e_source_get_property (priv->source, "auth")) {
-		char *prompt, *key;
+		char *prompt, *key, *parent_source_url, *parent_user;
 
 		priv->load_state = E_CAL_LOAD_AUTHENTICATING;
 
@@ -1587,8 +1587,15 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		}
 
 		/* actually ask the client for authentication */
-		prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
-					  e_source_peek_name (priv->source), username);
+		parent_user = e_source_get_property (priv->source, "parent_id_name");
+		if (parent_user) {			
+			/* FIXME: Try to get the parent uri so that we dont have to ask the password again */
+			prompt = g_strdup_printf (_("Enter password for %s to enable proxy for user %s"), e_source_peek_name (priv->source), parent_user);
+
+		} else {
+			prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
+					e_source_peek_name (priv->source), username);
+		}
 		key = e_source_get_uri (priv->source);
 		if (!key) {
 			e_calendar_remove_op (ecal, our_op);
@@ -4060,10 +4067,6 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 	status = our_op->status;
 	if (uid)
 		*uid = our_op->uid;
-	else {
-		g_free (our_op->uid);
-		our_op->uid = NULL;
-	}
 	
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);

@@ -1,3 +1,11 @@
+2005-07-10  Sankar P  <psankar@novell.com>
+
+	* libecal/e-cal.c: (open_calendar)
+	Added a string which will be used for password prompt in case of a proxy account.
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (connect_to_server)
+	Added code to set the backend permission based on the proxy rights with which a proxy can act.
+
 2005-07-09  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libecal/e-cal.c: (e_cal_open_async), (e_cal_get_object),

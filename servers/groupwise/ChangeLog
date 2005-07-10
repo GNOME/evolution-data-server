@@ -1,3 +1,28 @@
+2005-07-10  Sankar P  <psankar@novell.com>
+
+	* e-gw-connection.c : 
+	Changed loaded_connections hashtable to loaded_connections_permissions, 
+	since the hash-table is used to hold not only connections but also permissions 
+	associated with a proxy login.
+	(form_proxy_login_request) : Added function to form a proxy login SOAP request.
+
+	* e-gw-connection.[ch] :
+	(e_gw_connection_get_proxy_connection) 
+	(e_gw_connection_get_proxy_access_list)
+	(e_gw_connection_get_proxy_list) : Added functions to implement the proxy feature.
+
+	* e-gw-proxy.[ch]:
+	Added new files for implementing the proxy feature.
+	* Makefile.am :
+	Updated to accomodate the new source and header files
+
+2005-07-10  Shreyas Srinivasan  <sshreyas@novell.com>
+
+	* e-gw-connection.[ch] :
+	(e_gw_connection_add_proxy)
+	(e_gw_connection_remove_proxy)
+	(e_gw_connection_modify_proxy) : Added functions to implement the proxy feature.
+
 2005-07-09  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-item.c: (e_gw_item_set_calendar_item_elements):
