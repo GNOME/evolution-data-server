@@ -341,6 +341,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
 	CamelSession *session = camel_service_get_session (service);
+	CamelStore *store = CAMEL_STORE (service);
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	char *errbuf = NULL;
 	gboolean authenticated = FALSE;
@@ -361,7 +362,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 			service->url->passwd = NULL;
 		}
 		
-		if (!service->url->passwd) {
+		if (!service->url->passwd && !(store->flags & CAMEL_STORE_PROXY)) {
 			char *prompt;
 			
 			prompt = g_strdup_printf (_("%sPlease enter the GroupWise "
@@ -525,7 +526,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	gboolean done = FALSE ;
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0 ;
-
+	
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
         folder_dir = e_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
@@ -621,10 +622,10 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				g_free (folder_dir);
 				return NULL ;
 			}
-
+			
 			temp = g_list_length (list) ;
 			count += temp ;
-			
+		
 			if (summary->time_string)
 				g_free (summary->time_string);
 			summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
@@ -641,7 +642,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			g_list_free (list);
 			list = NULL;
 			position = E_GW_CURSOR_POSITION_CURRENT;
-		}
+      		}
 
 		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor) ;
 

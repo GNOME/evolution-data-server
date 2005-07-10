@@ -777,6 +777,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *)folder->summary;
 	EGwConnection *cnc = cnc_lookup (priv);
 	CamelSession *session = ((CamelService *)folder->parent_store)->session;
+	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_PROXY;
 	int status;
 	GList *list = NULL;
 	GSList *slist = NULL, *sl;
@@ -807,7 +808,8 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	groupwise_sync (folder, FALSE, ex);
 	/*Done....should refresh now.....*/
 
-	if (!g_ascii_strncasecmp (folder->full_name, "Trash", 5)) {
+	if (!g_ascii_strncasecmp (folder->full_name, "Trash", 5) || is_proxy) {
+		g_print ("I am entering here ...\n");
 		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution created attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
