@@ -1,3 +1,8 @@
+2005-07-10  Shreyas Srinivasan <sshreyas@novell.com>
+
+	* camel-store.h: Add a new #define to identify proxy stores
+	and a new data member permissions to hold store specific permissions.
+	
 2005-07-08  Harish Krishnaswamy  <kharish@novell.com>
 
 	** Patch submitted by Greg Hudson <ghudson@mit.edu>

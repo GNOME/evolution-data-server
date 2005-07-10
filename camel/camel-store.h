@@ -92,8 +92,12 @@ typedef struct _CamelFolderInfo {
 #define CAMEL_FOLDER_TYPE_TRASH (3 << 10)
 /* a spam folder */
 #define CAMEL_FOLDER_TYPE_JUNK (4 << 10)
+/*a proxy store with mail read/write permissions*/
+#define CAMEL_PROXY_STORE_READ  (1 << 13)
+#define CAMEL_PROXY_STORE_WRITE (1 << 14)
 
-/* next bit is 1<<13 */
+
+/* next bit is 1<<15 */
 
 /* Structure of rename event's event_data */
 typedef struct _CamelRenameInfo {
@@ -112,6 +116,7 @@ typedef struct _CamelRenameInfo {
 #define CAMEL_STORE_VTRASH		(1 << 1)
 #define CAMEL_STORE_FILTER_INBOX	(1 << 2)
 #define CAMEL_STORE_VJUNK		(1 << 3)
+#define CAMEL_STORE_PROXY		(1 << 4)
 
 struct _CamelStore {
 	CamelService parent_object;
@@ -120,6 +125,7 @@ struct _CamelStore {
 	CamelObjectBag *folders;
 
 	int flags;
+	gint16 permissions;
 };
 
 /* open mode for folder */
