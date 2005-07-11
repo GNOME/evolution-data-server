@@ -90,6 +90,8 @@ struct _ECalBackendClass {
 	void (* get_object) (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);	
 	void (* get_object_list) (ECalBackend *backend, EDataCal *cal, const char *sexp);
 
+	void (* get_attachment_list) (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);	
+	
 	/* Timezone related virtual methods */
 	void (* get_timezone) (ECalBackend *backend, EDataCal *cal, const char *tzid);
 	void (* add_timezone) (ECalBackend *backend, EDataCal *cal, const char *object);
@@ -142,6 +144,8 @@ void e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const char
 void e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal);
 void e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);
 void e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *sexp);
+
+void e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);
 
 gboolean e_cal_backend_is_loaded (ECalBackend *backend);
 

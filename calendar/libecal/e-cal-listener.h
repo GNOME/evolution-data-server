@@ -73,6 +73,8 @@ typedef struct {
 	void (*object) (ECalListener *listener, ECalendarStatus status, const char *object);
 	void (*object_list) (ECalListener *listener, ECalendarStatus status, GList **objects);
 
+	void (*attachment_list) (ECalListener *listener, ECalendarStatus status, GSList **objects);
+	
 	void (*get_timezone) (ECalListener *listener, ECalendarStatus status, const char *object);
 	void (*add_timezone) (ECalListener *listener, ECalendarStatus status, const char *tzid);
 	void (*set_default_timezone) (ECalListener *listener, ECalendarStatus status, const char *tzid);

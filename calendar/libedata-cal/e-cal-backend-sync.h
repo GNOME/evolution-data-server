@@ -56,6 +56,9 @@ struct _ECalBackendSyncClass {
 	ECalBackendSyncStatus (*get_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object);
 	ECalBackendSyncStatus (*get_object_list_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects);
 
+	ECalBackendSyncStatus (*get_attachment_list_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, GSList **attachments);
+
+
 	ECalBackendSyncStatus (*get_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object);
 	ECalBackendSyncStatus (*add_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 	ECalBackendSyncStatus (*set_default_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzid);
@@ -115,6 +118,12 @@ ECalBackendSyncStatus e_cal_backend_sync_remove_object           (ECalBackendSyn
 							       CalObjModType    mod,
 							       char **old_object,
 							       char **object);
+ECalBackendSyncStatus	e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, 
+								EDataCal *cal, 
+								const char *uid, 
+								const char *rid, 
+								GSList **attachments);
+
 ECalBackendSyncStatus e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid);
 
 ECalBackendSyncStatus e_cal_backend_sync_receive_objects         (ECalBackendSync  *backend,

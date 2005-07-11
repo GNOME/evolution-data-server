@@ -205,6 +205,8 @@ gboolean    e_cal_set_default_source (ESource *source, ECalSourceType type, GErr
 gboolean    e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error);
 const char * e_cal_get_local_attachment_store (ECal *ecal);
 gboolean e_cal_get_recurrences_no_master (ECal *ecal);
+gboolean e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GSList **list, GError **error);
+
 G_END_DECLS
 
 #endif

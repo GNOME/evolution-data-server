@@ -447,6 +447,31 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 }
 
 /**
+ * e_cal_backend_sync_get_attachment_list:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @uid: Unique id of the calendar object.
+ * @rid: Recurrence id of the calendar object.
+ * @attachments: Placeholder for list of returned attachment uris.
+ *
+ * Calls the get_attachment_list method on the given backend.
+ *
+ * Return value: Status code.
+ */
+ECalBackendSyncStatus
+e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, GSList **attachments)
+{
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+  	g_return_val_if_fail (attachments, GNOME_Evolution_Calendar_OtherError);
+  
+ 	LOCK_WRAPPER (get_attachment_list_sync, (backend, cal, uid, rid, attachments));
+  
+ 	return status;
+}
+
+/**
  * e_cal_backend_sync_get_timezone:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
@@ -768,6 +793,20 @@ _e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const char *uid,
 }
 
 static void
+_e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid)
+{
+	ECalBackendSyncStatus status;
+	GSList *list = NULL;
+
+	status = e_cal_backend_sync_get_attachment_list (E_CAL_BACKEND_SYNC (backend), cal, uid, rid, &list);
+
+	e_data_cal_notify_attachment_list (cal, status, list);
+	
+	g_slist_foreach (list, (GFunc) g_free, NULL);
+	g_free (list);
+}
+
+static void
 _e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *sexp)
 {
 	ECalBackendSyncStatus status;
@@ -908,6 +947,7 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 	backend_class->get_default_object = _e_cal_backend_get_default_object;
 	backend_class->get_object = _e_cal_backend_get_object;
 	backend_class->get_object_list = _e_cal_backend_get_object_list;
+	backend_class->get_attachment_list = _e_cal_backend_get_attachment_list;
 	backend_class->get_timezone = _e_cal_backend_get_timezone;
 	backend_class->add_timezone = _e_cal_backend_add_timezone;
 	backend_class->set_default_timezone = _e_cal_backend_set_default_timezone;

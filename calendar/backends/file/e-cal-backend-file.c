@@ -1261,6 +1261,15 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	return GNOME_Evolution_Calendar_Success;	
 }
 
+/* Gets the list of attachments */
+static ECalBackendSyncStatus
+e_cal_backend_file_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, GSList **list) 
+{
+	 
+	/* TODO implement the function */
+	return GNOME_Evolution_Calendar_Success;
+}
+
 /* get_query handler for the file backend */
 static void
 e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
@@ -2486,6 +2495,7 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
  	sync_class->get_default_object_sync = e_cal_backend_file_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_file_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_file_get_object_list;
+	sync_class->get_attachment_list_sync = e_cal_backend_file_get_attachment_list;
 	sync_class->get_timezone_sync = e_cal_backend_file_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_file_add_timezone;
 	sync_class->set_default_timezone_sync = e_cal_backend_file_set_default_timezone;

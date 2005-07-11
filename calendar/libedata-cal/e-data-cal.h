@@ -119,6 +119,7 @@ void e_data_cal_notify_auth_required (EDataCal *cal);
 
 void e_data_cal_notify_error (EDataCal *cal, const char *message);
 
+void e_data_cal_notify_attachment_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GSList *objects);
 
 G_END_DECLS
 

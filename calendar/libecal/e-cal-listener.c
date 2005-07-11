@@ -55,6 +55,7 @@ enum {
 	DEFAULT_OBJECT,
 	OBJECT,
 	OBJECT_LIST,
+	ATTACHMENT_LIST,
 	GET_TIMEZONE,
 	ADD_TIMEZONE,
 	SET_DEFAULT_TIMEZONE,
@@ -420,6 +421,33 @@ impl_notifyObjectListRequested (PortableServer_Servant servant,
 	g_list_free (object_list);
 }
 
+static void 
+impl_notifyAttachmentListRequested (PortableServer_Servant servant,
+				const GNOME_Evolution_Calendar_CallStatus status,
+				const GNOME_Evolution_Calendar_stringlist *attachments,
+				CORBA_Environment *ev) 
+{
+	ECalListener *listener;
+	ECalListenerPrivate *priv;
+	GSList *a_list = NULL;
+	int i;
+	
+	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
+	priv = listener->priv;
+
+	if (!priv->notify)
+		return;
+
+	for (i = 0; i < attachments->_length; i++) {
+		a_list = g_slist_append (a_list, g_strdup (attachments->_buffer[i]));
+	}
+
+	g_signal_emit (G_OBJECT (listener), signals[ATTACHMENT_LIST], 0, convert_status (status), a_list);
+
+	g_slist_foreach (a_list, (GFunc) g_free, NULL);
+	g_slist_free (a_list);
+}
+
 static void
 impl_notifyTimezoneRequested (PortableServer_Servant servant,
 			      const GNOME_Evolution_Calendar_CallStatus status,
@@ -728,6 +756,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 	klass->epv.notifyDefaultObjectRequested = impl_notifyDefaultObjectRequested;
 	klass->epv.notifyObjectRequested = impl_notifyObjectRequested;
 	klass->epv.notifyObjectListRequested = impl_notifyObjectListRequested;
+	klass->epv.notifyAttachmentListRequested = impl_notifyAttachmentListRequested;
 	klass->epv.notifyTimezoneRequested = impl_notifyTimezoneRequested;
 	klass->epv.notifyTimezoneAdded = impl_notifyTimezoneAdded;
 	klass->epv.notifyDefaultTimezoneSet = impl_notifyDefaultTimezoneSet;
@@ -864,6 +893,14 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, object_list),
+			      NULL, NULL,
+			      e_cal_marshal_VOID__INT_POINTER,
+		      	      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
+	signals[ATTACHMENT_LIST] =
+		g_signal_new ("attachment_list",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ECalListenerClass, attachment_list),
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT_POINTER,
 			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);

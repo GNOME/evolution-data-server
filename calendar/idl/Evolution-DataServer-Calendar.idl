@@ -206,6 +206,9 @@ module Calendar {
 		oneway void modifyObject (in CalObj calobj, in CalObjModType mod);
 		oneway void removeObject (in CalObjUID uid, in CalRecurID rid, in CalObjModType mod);
 
+		/* get attachment list for an object */
+		oneway void getAttachmentList (in CalObjUID uid, in CalRecurID rid);		
+		
 		/* Methods for getting/sending iCalendar VCALENDARS via iTip/iMip */
 		oneway void receiveObjects (in CalObj calobj);
 		oneway void sendObjects (in CalObj calobj);
@@ -253,6 +256,8 @@ module Calendar {
 		oneway void notifyChanges (in CallStatus status, in CalObjChangeSeq changes);
 		oneway void notifyFreeBusy (in CallStatus status, in CalObjSeq freebusy);
 
+		oneway void notifyAttachmentListRequested (in CallStatus status, in stringlist attachments);
+		
                 /* Called from a Calendar when the mode is changed */
 		oneway void notifyCalSetMode (in SetModeStatus status, in CalMode mode);		
 

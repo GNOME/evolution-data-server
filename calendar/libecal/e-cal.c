@@ -53,6 +53,7 @@ typedef struct {
 
 	char *uid;
 	GList *list;
+	GSList *slist;
 	gboolean bool;
 	char *string;
 
@@ -750,6 +751,29 @@ cal_object_list_cb (ECalListener *listener, ECalendarStatus status, GList *objec
 }
 
 static void
+cal_attachment_list_cb (ECalListener *listener, ECalendarStatus status, GSList *attachments, gpointer data)
+{
+	ECal *ecal = data;
+	ECalendarOp *op;
+	
+	op = e_calendar_get_op (ecal);
+
+	if (op == NULL) {
+		g_warning (G_STRLOC ": Cannot find operation ");
+		return;
+	}
+
+	g_mutex_lock (op->mutex);
+
+	op->status = status;
+	op->slist = g_slist_copy (attachments);
+	
+	g_cond_signal (op->cond);
+
+	g_mutex_unlock (op->mutex);
+}
+
+static void
 cal_get_timezone_cb (ECalListener *listener, ECalendarStatus status, const char *object, gpointer data)
 {
 	ECal *ecal = data;
@@ -1092,6 +1116,7 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 	g_signal_connect (G_OBJECT (priv->listener), "default_object", G_CALLBACK (cal_default_object_requested_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "object", G_CALLBACK (cal_object_requested_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "object_list", G_CALLBACK (cal_object_list_cb), ecal);
+	g_signal_connect (G_OBJECT (priv->listener), "attachment_list", G_CALLBACK (cal_attachment_list_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "get_timezone", G_CALLBACK (cal_get_timezone_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "add_timezone", G_CALLBACK (cal_add_timezone_cb), ecal);
 	g_signal_connect (G_OBJECT (priv->listener), "set_default_timezone", G_CALLBACK (cal_set_default_timezone_cb), ecal);
@@ -2617,6 +2642,83 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 			status = E_CALENDAR_STATUS_INVALID_OBJECT;
 	}
 	g_free (our_op->string);
+
+	e_calendar_remove_op (ecal, our_op);
+	g_mutex_unlock (our_op->mutex);
+	e_calendar_free_op (our_op);
+
+	E_CALENDAR_CHECK_STATUS (status, error);
+}
+
+/**
+ * e_cal_get_attachments_for_comp:
+ * @ecal: A calendar client.
+ * @uid: Unique identifier for a calendar component.
+ * @rid: Recurrence identifier.
+ * @list: Return the list of attachment uris.
+ * @error: Placeholder for error information.
+ *
+ * Queries a calendar for a calendar component object based on its unique
+ * identifier and gets the attachments for the component.
+ *
+ * Return value: TRUE if the call was successful, FALSE otherwise.
+ **/
+gboolean
+e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GSList **list, GError **error)
+{
+	ECalPrivate *priv;
+	CORBA_Environment ev;
+	ECalendarStatus status;
+	ECalendarOp *our_op;
+
+	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
+
+	priv = ecal->priv;
+
+	g_mutex_lock (ecal->priv->mutex);
+
+	if (ecal->priv->load_state != E_CAL_LOAD_LOADED) {
+		g_mutex_unlock (ecal->priv->mutex);
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
+	}
+
+	if (ecal->priv->current_op != NULL) {
+		g_mutex_unlock (ecal->priv->mutex);
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
+	}
+
+	our_op = e_calendar_new_op (ecal);
+
+	g_mutex_lock (our_op->mutex);
+
+	g_mutex_unlock (ecal->priv->mutex);
+
+	CORBA_exception_init (&ev);
+	GNOME_Evolution_Calendar_Cal_getAttachmentList (priv->cal, uid, rid ? rid : "", &ev);
+	if (BONOBO_EX (&ev)) {
+		e_calendar_remove_op (ecal, our_op);
+		g_mutex_unlock (our_op->mutex);
+		e_calendar_free_op (our_op);
+
+		CORBA_exception_free (&ev);
+
+		g_warning (G_STRLOC ": Unable to contact backend");
+
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
+	}
+
+	CORBA_exception_free (&ev);
+
+	/* wait for something to happen (both cancellation and a
+	   successful response will notity us via our cv */
+	g_cond_wait (our_op->cond, our_op->mutex);
+
+	status = our_op->status;
+        if (status != E_CALENDAR_STATUS_OK){ 
+                *list = NULL;
+        } else {
+		*list = our_op->slist;
+	}
 
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);

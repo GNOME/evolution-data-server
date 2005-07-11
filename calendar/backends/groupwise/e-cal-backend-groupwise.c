@@ -1337,6 +1337,14 @@ e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal
 	return GNOME_Evolution_Calendar_Success;
 }
 
+/* Gets the list of attachments */
+static ECalBackendSyncStatus
+e_cal_backend_groupwise_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, GSList **list)
+{
+	/* TODO implement the function */
+	return GNOME_Evolution_Calendar_Success;
+}
+
 /* Get_objects_in_range handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
@@ -2334,6 +2342,7 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
  	sync_class->get_default_object_sync = e_cal_backend_groupwise_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_groupwise_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_groupwise_get_object_list;
+	sync_class->get_attachment_list_sync = e_cal_backend_groupwise_get_attachment_list;
 	sync_class->get_timezone_sync = e_cal_backend_groupwise_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_groupwise_add_timezone;
 	sync_class->set_default_timezone_sync = e_cal_backend_groupwise_set_default_timezone;

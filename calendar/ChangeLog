@@ -1,3 +1,33 @@
+2005-07-11  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* idl/Evolution-DataServer-Calendar.idl: Interface for sending a request
+	for an attachment and notifying the attachment list.
+	* libecal/e-cal-listener.[ch]: (impl_notifyAttachmentListRequested),
+	(e_cal_listener_class_init): listens to the backend and Notifies the client.
+	* libecal/e-cal.[ch]: (cal_attachment_list_cb), (e_cal_init),
+	(e_cal_get_attachments_for_comp): API to retrieve the attachment
+	list for a calendar item.
+	* libedata-cal/e-cal-backend-sync.[ch]:
+	(e_cal_backend_sync_get_attachment_list),
+	(_e_cal_backend_get_attachment_list),
+	(e_cal_backend_sync_class_init): Methods to send request to corresponding
+	backends and send notifications to the client.
+	* libedata-cal/e-cal-backend.c:
+	(e_cal_backend_get_attachment_list):
+	* libedata-cal/e-cal-backend.h: Calls the sync implemention.
+	* libedata-cal/e-data-cal.[ch]: (impl_Cal_getAttachmentList),
+	(e_data_cal_class_init), (e_data_cal_notify_object_list),
+	(e_data_cal_notify_attachment_list): Implements the request and the
+	sends notification to the listener.
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_get_attachment_list),
+	(e_cal_backend_file_class_init):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_get_attachment_list),
+	(e_cal_backend_groupwise_class_init): Virtual methods to get
+	the attachment for a calendar object.
+
+
 2005-07-10  Sankar P  <psankar@novell.com>
 
 	* libecal/e-cal.c: (open_calendar)

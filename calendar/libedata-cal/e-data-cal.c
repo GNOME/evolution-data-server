@@ -236,6 +236,22 @@ impl_Cal_getObjectList (PortableServer_Servant servant,
 		e_cal_backend_get_object_list (priv->backend, cal, sexp);
 }
 
+/* Cal::getAttachmentList method */
+static void
+impl_Cal_getAttachmentList (PortableServer_Servant servant,
+		    const CORBA_char *uid,
+		    const CORBA_char *rid,
+		    CORBA_Environment *ev)
+{
+	EDataCal *cal;
+	EDataCalPrivate *priv;
+
+	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
+	priv = cal->priv;
+
+	e_cal_backend_get_attachment_list (priv->backend, cal, uid, rid);
+}
+
 /* Cal::getChanges method */
 static void
 impl_Cal_getChanges (PortableServer_Servant servant,
@@ -637,6 +653,7 @@ e_data_cal_class_init (EDataCalClass *klass)
 	epv->addTimezone = impl_Cal_addTimezone;
 	epv->setDefaultTimezone = impl_Cal_setDefaultTimezone;
 	epv->getObjectList = impl_Cal_getObjectList;
+	epv->getAttachmentList = impl_Cal_getAttachmentList;
 	epv->getChanges = impl_Cal_getChanges;
 	epv->getFreeBusy = impl_Cal_getFreeBusy;
 	epv->discardAlarm = impl_Cal_discardAlarm;
@@ -1169,6 +1186,50 @@ e_data_cal_notify_object_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 	}
 
 	GNOME_Evolution_Calendar_CalListener_notifyObjectListRequested (priv->listener, status, &seq, &ev);
+
+	if (BONOBO_EX (&ev))
+		g_message (G_STRLOC ": could not notify the listener of object list");
+
+	CORBA_exception_free (&ev);
+
+	CORBA_free(seq._buffer);
+}
+
+/**
+ * e_data_cal_notify_attachment_list:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ * @attachments: List of retrieved attachment uri's.
+ *
+ * Notifies listeners of the completion of the get_attachment_list method call.
+ */
+void
+e_data_cal_notify_attachment_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GSList *attachments)
+{
+	EDataCalPrivate *priv;
+	CORBA_Environment ev;
+	GNOME_Evolution_Calendar_stringlist seq;
+	GSList *l;
+	int i;
+	
+	g_return_if_fail (cal != NULL);
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
+	priv = cal->priv;
+	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
+
+	CORBA_exception_init (&ev);
+
+	seq._maximum = g_slist_length (attachments);
+	seq._length = 0;
+	seq._buffer = GNOME_Evolution_Calendar_stringlist_allocbuf (seq._maximum);
+
+	for (l = attachments, i = 0; l; l = l->next, i++) {
+		seq._buffer[i] = CORBA_string_dup (l->data);
+		seq._length++;
+	}
+
+	GNOME_Evolution_Calendar_CalListener_notifyAttachmentListRequested (priv->listener, status, &seq, &ev);
 
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of object list");

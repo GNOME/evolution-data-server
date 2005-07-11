@@ -760,6 +760,27 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *
 }
 
 /**
+ * e_cal_backend_get_attachment_list:
+ * @backend: A calendar backend.
+ * @cal: An #EDataCal object.
+ * @uid: Unique identifier for a calendar object.
+ * @rid: ID for the object's recurrence to get.
+ *
+ * Queries a calendar backend for attachments present in a calendar object based 
+ * on its unique identifier and its recurrence ID (if a recurrent appointment).
+ */
+void
+e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid)
+{
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (uid != NULL);
+
+	g_assert (CLASS (backend)->get_object != NULL);
+	(* CLASS (backend)->get_attachment_list) (backend, cal, uid, rid);
+}
+
+/**
  * e_cal_backend_get_free_busy:
  * @backend: A calendar backend.
  * @cal: An #EDataCal object.
