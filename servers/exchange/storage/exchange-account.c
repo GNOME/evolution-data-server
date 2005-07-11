@@ -38,6 +38,7 @@
 #include "e2k-propnames.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
+#include "exchange-hierarchy-foreign.h"
 #include <libedataserverui/e-passwords.h>
 
 #include <libgnome/gnome-util.h>
@@ -589,14 +590,11 @@ get_hierarchy_for (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 	internal_uri_prefix = exchange_account_get_foreign_uri (account, entry,
 								NULL);
 
-#if 0
-SURF : This should move to plugins.
 	hier = exchange_hierarchy_foreign_new (account, hierarchy_name,
 					       physical_uri_prefix,
 					       internal_uri_prefix,
 					       entry->display_name,
 					       entry->email, source);
-#endif
 	g_free (hierarchy_name);
 	g_free (physical_uri_prefix);
 	g_free (internal_uri_prefix);
@@ -632,8 +630,7 @@ exchange_account_discover_shared_folder (ExchangeAccount *account,
 	hier = g_hash_table_lookup (account->priv->foreign_hierarchies, email);
 	if (hier) {
 		g_free (email);
-		// SURF : return exchange_hierarchy_foreign_add_folder (hier, folder_name, folder);
-		return EXCHANGE_ACCOUNT_FOLDER_OK;
+		return exchange_hierarchy_foreign_add_folder (hier, folder_name, folder);
 	}
 
 	dd.user = user;
@@ -666,8 +663,7 @@ exchange_account_discover_shared_folder (ExchangeAccount *account,
 	}
 
 	hier = get_hierarchy_for (account, entry);
-	// SURF : return exchange_hierarchy_foreign_add_folder (hier, folder_name, folder);
-	return EXCHANGE_ACCOUNT_FOLDER_OK;
+	return exchange_hierarchy_foreign_add_folder (hier, folder_name, folder);
 }
 
 void
@@ -716,11 +712,8 @@ exchange_account_remove_shared_folder (ExchangeAccount *account,
 
 	if (!get_folder (account, path, &folder, &hier))
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
-#if 0
-SURF :
 	if (!EXCHANGE_IS_HIERARCHY_FOREIGN (hier))
 		return EXCHANGE_ACCOUNT_FOLDER_UNSUPPORTED_OPERATION;
-#endif
 
 	return exchange_hierarchy_remove_folder (hier, folder);
 }
@@ -1291,8 +1284,6 @@ setup_account_hierarchies (ExchangeAccount *account)
 	g_free (phys_uri_prefix);
 
 	/* Other users' folders */
-#if 0
-SURF :
 	d = opendir (account->storage_dir);
 	if (d) {
 		while ((dent = readdir (d))) {
@@ -1309,7 +1300,6 @@ SURF :
 		}
 		closedir (d);
 	}
-#endif
 
 	/* Scan the personal and favorite folders so we can resolve references
 	 * to the Calendar, Contacts, etc even if the tree isn't

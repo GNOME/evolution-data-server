@@ -1,3 +1,11 @@
+2005-07-11  Shakti Sen <shprasad@novell.com>
+
+	* storage/Makefile.am: Included files exchange-hierarchy-foreign.c
+	and exchange-hierarchy-foreign.h
+	* storage/exchange-account.c: Added foreign hierarchy support.
+	* storage/exchange-hierarchy-foreign.[ch]: Added newly for foreign 
+	hierarchy support.
+
 2005-07-08  Praveen Kumar <kpraveen@novell.com>
 
 	* lib/Makefile.am : Added entry for ek-sid.h in the headers files to 

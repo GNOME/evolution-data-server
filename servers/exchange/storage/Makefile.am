@@ -38,6 +38,8 @@ libexchange_storage_1_2_la_SOURCES =				\
 	exchange-folder-size.h					\
 	exchange-hierarchy-favorites.c				\
 	exchange-hierarchy-favorites.h				\
+	exchange-hierarchy-foreign.c				\
+	exchange-hierarchy-foreign.h				\
 	exchange-hierarchy-gal.c				\
 	exchange-hierarchy-gal.h				\
 	exchange-hierarchy-somedav.c				\
@@ -90,6 +92,7 @@ libexchange_storageinclude_HEADERS = 				\
 	exchange-hierarchy.h					\
 	exchange-hierarchy-somedav.h				\
 	exchange-hierarchy-webdav.h				\
+	exchange-hierarchy-foreign.h				\
 	exchange-oof.h						\
 	exchange-types.h					
 
