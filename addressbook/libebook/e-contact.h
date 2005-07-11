@@ -37,6 +37,7 @@ typedef enum {
 
 	E_CONTACT_UID = 1,     	 /* string field */
 	E_CONTACT_FILE_AS,     	 /* string field */
+	E_CONTACT_BOOK_URI,      /* string field */
 
 	/* Name fields */
 	E_CONTACT_FULL_NAME,   	 /* string field */

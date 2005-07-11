@@ -115,7 +115,8 @@ struct field_element_mapping {
 	{ E_CONTACT_IM_AIM, ELEMENT_TYPE_COMPLEX, "ims", populate_ims, set_ims_in_gw_item, set_im_changes },
 	{ E_CONTACT_CATEGORIES, ELEMENT_TYPE_COMPLEX, "categories", NULL, NULL, set_categories_changes},
 	{ E_CONTACT_EMAIL_1, ELEMENT_TYPE_COMPLEX, "email", populate_emails, set_emails_in_gw_item, set_emails_changes },
-	{ E_CONTACT_REV, ELEMENT_TYPE_SIMPLE, "modified_time"}
+	{ E_CONTACT_REV, ELEMENT_TYPE_SIMPLE, "modified_time"},
+	{ E_CONTACT_BOOK_URI, ELEMENT_TYPE_SIMPLE, "book_uri"}
 }; 
 
 static int num_mappings = sizeof(mappings) / sizeof(mappings [0]);
@@ -902,6 +903,8 @@ set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroup
 			fill_contact_from_gw_item (contact, org_item, egwb->priv->categories_by_id);
 			e_contact_set (contact, E_CONTACT_UID, id);
 			e_contact_set (contact, E_CONTACT_FULL_NAME, organization_name);
+			/* book uri is always set outside fill_contact_from_gw_item() */
+			e_contact_set (contact, E_CONTACT_BOOK_URI, egwb->priv->original_uri);
 			e_book_backend_cache_add_contact (egwb->priv->cache, contact);
 			g_object_unref (contact);
 		}
@@ -1040,9 +1043,11 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 		element_type = mappings[i].element_type;
 
 		if(element_type == ELEMENT_TYPE_SIMPLE) {
-			value = e_gw_item_get_field_value (item, mappings[i].element_name);
-			if(value != NULL)
-				e_contact_set (contact, mappings[i].field_id, value);
+			if (mappings[i].field_id != E_CONTACT_BOOK_URI) {
+				value = e_gw_item_get_field_value (item, mappings[i].element_name);
+				if(value != NULL)
+					e_contact_set (contact, mappings[i].field_id, value);
+			}
 		} else if (element_type == ELEMENT_TYPE_COMPLEX) {
 			if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
 				GList *category_ids, *category_names;
@@ -1363,11 +1368,13 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 			e_data_book_respond_get_contact (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;
 		}
-		status = e_gw_connection_get_item (gwb->priv->cnc, gwb->priv->container_id, id,  NULL, &item);
+		status = e_gw_connection_get_item (gwb->priv->cnc, gwb->priv->container_id, id,
+						   "name email default members", &item);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			if (item) {
 				contact = e_contact_new ();
 				fill_contact_from_gw_item (contact, item, gwb->priv->categories_by_id);
+				e_contact_set (contact, E_CONTACT_BOOK_URI, gwb->priv->original_uri);
 				vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 				e_data_book_respond_get_contact (book, opid, GNOME_Evolution_Addressbook_Success, vcard);
 				g_free (vcard);
@@ -1827,6 +1834,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 			contact = e_contact_new ();
 			fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), egwb->priv->categories_by_id);
+			e_contact_set (contact, E_CONTACT_BOOK_URI, egwb->priv->original_uri);
 			if (match_needed &&  e_book_backend_sexp_match_contact (card_sexp, contact))
 				vcard_list = g_list_append (vcard_list, e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30));
 			else 
@@ -2016,6 +2024,7 @@ book_view_thread (gpointer data)
 			}
 			contact = e_contact_new ();
 			fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), gwb->priv->categories_by_id);
+			e_contact_set (contact, E_CONTACT_BOOK_URI, gwb->priv->original_uri);
 			if (e_contact_get_const (contact, E_CONTACT_UID)) 
 				e_data_book_view_notify_update (book_view, contact);
 			else 
@@ -2217,6 +2226,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 
 			contact = e_contact_new ();
 			fill_contact_from_gw_item (contact, E_GW_ITEM (l->data), ebgw->priv->categories_by_id);
+			e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
 			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
 
 			/* Since we get contacts incrementally, 100 at a time, we can not
@@ -2303,6 +2313,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), ebgw->priv->categories_by_id);
+		e_contact_set (contact, E_CONTACT_BOOK_URI, ebgw->priv->original_uri);
 		id =  e_contact_get_const (contact, E_CONTACT_UID);
 
 		contact_num++;
@@ -2362,6 +2373,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	/* Check whether the sequence has been reset or not */
 	if (first_sequence <= 0 || last_sequence <= 0) {
 		/* build the cache */
+		printf ("sequence is reset, rebuilding cache...\n");
 		build_cache (ebgw);
 		return FALSE;
 	}
@@ -2379,6 +2391,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	if (first_sequence > cache_last_sequence || cache_last_sequence == -1 || 
 	    last_po_rebuild_time != cache_last_po_rebuild_time) {
 		/* build the cache again and update the cache with the sequence information */
+		printf ("Either the sequences missing or PO is rebuilt...\n");
 		build_cache (ebgw);
 		add_sequence_to_cache (cache, first_sequence, last_sequence, last_po_rebuild_time);
 		return FALSE;
@@ -2407,6 +2420,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		/* newly added to server */
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (add_list->data), ebgw->priv->categories_by_id);
+		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
 		id =  e_contact_get_const (contact, E_CONTACT_UID);
 
 		contact_num++;
@@ -2435,6 +2449,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		/* deleted from the server */
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (delete_list->data), ebgw->priv->categories_by_id);
+		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
 		id =  e_contact_get_const (contact, E_CONTACT_UID);
 
 		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
