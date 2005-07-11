@@ -1,3 +1,9 @@
+2005-07-11  Sushma Rai  <rsushma@novell.com>
+
+	* e-name-selector-dialog.c (e_name_selector_dialog_init): Making the
+	name selector dialog modal, useful when gets invoked from modal
+	dialogs.
+
 2005-07-09  Philip Van Hoof  <pvanhoof@gnome.org>
 
 	* e-name-selector-entry.c: Making it more easy to remove destinations.

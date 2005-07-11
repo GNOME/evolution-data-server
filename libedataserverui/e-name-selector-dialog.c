@@ -194,7 +194,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 				NULL);
 
 	gtk_dialog_set_default_response (GTK_DIALOG (name_selector_dialog), GTK_RESPONSE_CLOSE);
-	gtk_window_set_modal            (GTK_WINDOW (name_selector_dialog), FALSE);
+	gtk_window_set_modal            (GTK_WINDOW (name_selector_dialog), TRUE);
 	gtk_window_set_default_size     (GTK_WINDOW (name_selector_dialog), 472, 512);
 	gtk_window_set_resizable        (GTK_WINDOW (name_selector_dialog), TRUE);
 	gtk_dialog_set_has_separator    (GTK_DIALOG (name_selector_dialog), FALSE);

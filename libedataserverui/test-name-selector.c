@@ -60,6 +60,7 @@ start_test (void)
 
 	name_selector_dialog = e_name_selector_dialog_new ();
 	e_name_selector_dialog_set_model (name_selector_dialog, name_selector_model);
+	gtk_window_set_modal(GTK_WINDOW (name_selector_dialog), FALSE);
 
 	name_selector_entry = e_name_selector_entry_new ();
 	e_name_selector_entry_set_destination_store (name_selector_entry, destination_store);
