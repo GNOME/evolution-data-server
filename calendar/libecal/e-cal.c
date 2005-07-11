@@ -44,6 +44,8 @@
 static gboolean
 open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarStatus *status, gboolean needs_auth);
 
+static gboolean
+get_read_only (ECal *ecal, gboolean *read_only, GError **error);
 
 
 typedef struct {
@@ -86,6 +88,8 @@ struct _ECalPrivate {
 	char *capabilities;
 	
 	int mode;
+	
+	gboolean read_only;
 	
 	/* The calendar factories we are contacting */
 	GList *factories;
@@ -388,7 +392,7 @@ cal_read_only_cb (ECalListener *listener, ECalendarStatus status, gboolean read_
 	op = e_calendar_get_op (ecal);
 
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
+		ecal->priv->read_only = read_only; 
 		return;
 	}
 
@@ -410,8 +414,14 @@ cal_cal_address_cb (ECalListener *listener, ECalendarStatus status, const char *
 
 	op = e_calendar_get_op (ecal);
 
+	if (ecal->priv->cal_address) {
+		g_free (ecal->priv->cal_address);
+		ecal->priv->cal_address = NULL;
+	}
+
+	ecal->priv->cal_address = g_strdup (address);
+
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
 		return;
 	}
 
@@ -1561,13 +1571,13 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	ECalendarOp *our_op;
 	const char *username = NULL;
 	char *password = NULL;
+	gboolean read_only;
 	
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 	
-
 	g_mutex_lock (ecal->priv->mutex);
 
 	if (!needs_auth && priv->load_state == E_CAL_LOAD_LOADED) {
@@ -1684,10 +1694,11 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
-
-	if (*status == E_CALENDAR_STATUS_OK) 
+	if (*status == E_CALENDAR_STATUS_OK) {
 		priv->load_state = E_CAL_LOAD_LOADED;
-	else
+		if (get_read_only (ecal, &read_only, NULL))
+			priv->read_only = read_only;
+	} else
 		priv->load_state = E_CAL_LOAD_NOT_LOADED;
 
 	E_CALENDAR_CHECK_STATUS (*status, error);
@@ -2065,14 +2076,25 @@ gboolean
 e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
 {
 	ECalPrivate *priv;
+	
+	if (!(ecal && E_IS_CAL (ecal)))
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_INVALID_ARG, error);
+	
+	priv = ecal->priv;
+	*read_only = priv->read_only;
+	
+	return TRUE;
+}
+
+static gboolean
+get_read_only (ECal *ecal, gboolean *read_only, GError **error)
+{
+	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 	
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
-	
 	g_mutex_lock (ecal->priv->mutex);
 
 	if (ecal->priv->load_state != E_CAL_LOAD_LOADED) {
@@ -2115,11 +2137,9 @@ e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
 
 	status = our_op->status;
 	*read_only = our_op->bool;
-	
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
-
 	E_CALENDAR_CHECK_STATUS (status, error);
 }
 
@@ -2142,58 +2162,63 @@ e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
 
+	if (!(ecal && E_IS_CAL (ecal)))
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_INVALID_ARG, error);
 	priv = ecal->priv;
-	
-	g_mutex_lock (ecal->priv->mutex);
+	if (priv->cal_address == NULL) { 
+		g_mutex_lock (ecal->priv->mutex);
 
-	if (ecal->priv->load_state != E_CAL_LOAD_LOADED) {
+		if (ecal->priv->load_state != E_CAL_LOAD_LOADED) {
+			g_mutex_unlock (ecal->priv->mutex);
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
+		}
+
+		if (ecal->priv->current_op != NULL) {
+			g_mutex_unlock (ecal->priv->mutex);
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
+		}
+
+		our_op = e_calendar_new_op (ecal);
+
+		g_mutex_lock (our_op->mutex);
+
 		g_mutex_unlock (ecal->priv->mutex);
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
-	}
-
-	if (ecal->priv->current_op != NULL) {
-		g_mutex_unlock (ecal->priv->mutex);
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
-	}
-
-	our_op = e_calendar_new_op (ecal);
-
-	g_mutex_lock (our_op->mutex);
-
-	g_mutex_unlock (ecal->priv->mutex);
 
 
-	CORBA_exception_init (&ev);
+		CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_Cal_getCalAddress (priv->cal, &ev);
-	if (BONOBO_EX (&ev)) {
+		GNOME_Evolution_Calendar_Cal_getCalAddress (priv->cal, &ev);
+		if (BONOBO_EX (&ev)) {
+			e_calendar_remove_op (ecal, our_op);
+			g_mutex_unlock (our_op->mutex);
+			e_calendar_free_op (our_op);
+
+			CORBA_exception_free (&ev);
+
+			g_warning (G_STRLOC ": Unable to contact backend");
+
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
+		}
+
+		CORBA_exception_free (&ev);
+
+		/* wait for something to happen (both cancellation and a
+		   successful response will notity us via our cv */
+		g_cond_wait (our_op->cond, our_op->mutex);
+
+		status = our_op->status;
+		*cal_address = our_op->string;
 		e_calendar_remove_op (ecal, our_op);
 		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
-		CORBA_exception_free (&ev);
+		E_CALENDAR_CHECK_STATUS (status, error);
+	} else {	
+		*cal_address = g_strdup (priv->cal_address);
 
-		g_warning (G_STRLOC ": Unable to contact backend");
-
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
-	}
-
-	CORBA_exception_free (&ev);
-
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
-
-	status = our_op->status;
-	*cal_address = our_op->string;
-	
-	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
-	e_calendar_free_op (our_op);
-
-	E_CALENDAR_CHECK_STATUS (status, error);
+		return TRUE;
+	}		
 }
 
 /**

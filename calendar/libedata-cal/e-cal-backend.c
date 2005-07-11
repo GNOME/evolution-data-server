@@ -513,6 +513,34 @@ e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal)
 	(* CLASS (backend)->get_cal_address) (backend, cal);
 }
 
+void
+e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only)
+{
+	ECalBackendPrivate *priv;
+	GList *l;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_readonly (priv->notification_proxy, read_only);
+		return;
+	}
+	for (l = priv->clients; l; l = l->next)
+		e_data_cal_notify_read_only (l->data, GNOME_Evolution_Calendar_Success, read_only);
+}
+
+void
+e_cal_backend_notify_cal_address (ECalBackend *backend, char *address)
+{
+	ECalBackendPrivate *priv;
+	GList *l;
+
+	priv = backend->priv;
+
+	for (l = priv->clients; l; l = l->next)
+		e_data_cal_notify_cal_address (l->data, GNOME_Evolution_Calendar_Success, address);
+}
+
 /**
  * e_cal_backend_get_alarm_email_address:
  * @backend: An #ECalBackend object.

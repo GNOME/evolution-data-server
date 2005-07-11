@@ -1,5 +1,21 @@
 2005-07-11  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_set_mode): Notify read_only to client(s).
+	* libecal/e-cal.c (cal_read_only_cb),(open_calendar), 
+	(e_cal_is_read_only), (get_read_only): Get the read only state
+       from the backend only while opening the calendar. The backend would
+       notify us if the state changes.
+	(e_cal_get_cal_address), (cal_cal_address_cb): Get the cal_address
+	only once from the backend.
+	* libedata-cal/e-cal-backend.[ch]: (e_cal_backend_notify_readonly),
+	(e_cal_backend_notify_cal_address): Methods to notify the changes
+	in the backend.
+	
+	Commiting for viren.l <viren@novell.com>
+
+2005-07-11  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	* idl/Evolution-DataServer-Calendar.idl: Interface for sending a request
 	for an attachment and notifying the attachment list.
 	* libecal/e-cal-listener.[ch]: (impl_notifyAttachmentListRequested),

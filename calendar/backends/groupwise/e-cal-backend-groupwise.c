@@ -1174,6 +1174,7 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 		priv->read_only = FALSE;
 		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
 						    GNOME_Evolution_Calendar_MODE_REMOTE);
+		e_cal_backend_notify_readonly (backend, priv->read_only);
 		if(e_cal_backend_groupwise_is_loaded (backend))
 		              e_cal_backend_notify_auth_required(backend);	
 		break;
@@ -1182,6 +1183,7 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 		/* FIXME: make sure we update the cache before closing the connection */
 		priv->mode = CAL_MODE_LOCAL;
 		in_offline (cbgw);
+		e_cal_backend_notify_readonly (backend, priv->read_only);
 		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
 					   GNOME_Evolution_Calendar_MODE_LOCAL);
 
