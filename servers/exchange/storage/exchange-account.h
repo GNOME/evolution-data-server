@@ -52,6 +52,28 @@ struct _ExchangeAccountClass {
 	void (*removed_folder) (ExchangeAccount *, EFolder *);
 };
 
+typedef enum {
+	EXCHANGE_ACCOUNT_CONFIG_ERROR,
+	EXCHANGE_ACCOUNT_PASSWORD_WEAK_ERROR,
+	EXCHANGE_ACCOUNT_PASSWORD_CHANGE_FAILED,
+	EXCHANGE_ACCOUNT_PASSWORD_CHANGE_SUCCESS,
+	EXCHANGE_ACCOUNT_OFFLINE,
+	EXCHANGE_ACCOUNT_PASSWORD_INCORRECT,
+	EXCHANGE_ACCOUNT_DOMAIN_ERROR,
+	EXCHANGE_ACCOUNT_MAILBOX_NA,
+	EXCHANGE_ACCOUNT_VERSION_ERROR,
+	EXCHANGE_ACCOUNT_WSS_ERROR,
+	EXCHANGE_ACCOUNT_NO_MAILBOX,
+	EXCHANGE_ACCOUNT_RESOLVE_ERROR,
+	EXCHANGE_ACCOUNT_CONNECT_ERROR,
+	EXCHANGE_ACCOUNT_PASSWORD_EXPIRED,
+	EXCHANGE_ACCOUNT_UNKNOWN_ERROR,
+	EXCHANGE_ACCOUNT_QUOTA_RECIEVE_ERROR,
+	EXCHANGE_ACCOUNT_QUOTA_SEND_ERROR,
+	EXCHANGE_ACCOUNT_QUOTA_WARN,
+	EXCHANGE_ACCOUNT_CONNECT_SUCCESS
+} ExchangeAccountResult;
+
 GType                  exchange_account_get_type             (void);
 ExchangeAccount       *exchange_account_new                  (EAccountList *account_list,
 							      EAccount     *adata);
@@ -68,7 +90,9 @@ char                  *exchange_account_get_foreign_uri      (ExchangeAccount  *
 							      E2kGlobalCatalogEntry *entry,
 							      const char       *std_uri_prop);
 
-E2kContext            *exchange_account_connect              (ExchangeAccount  *acct);
+E2kContext            *exchange_account_connect              (ExchangeAccount  *acct,
+							      const char *pword,
+							      ExchangeAccountResult *result);
 
 EFolder               *exchange_account_get_folder           (ExchangeAccount  *acct,
 							      const char       *path_or_uri);
@@ -78,7 +102,7 @@ void                   exchange_account_rescan_tree          (ExchangeAccount  *
 
 char 		      *exchange_account_get_password 	     (ExchangeAccount  *acct);
 
-void		       exchange_account_set_password 	     (ExchangeAccount  *acct,
+ExchangeAccountResult exchange_account_set_password 	     (ExchangeAccount  *acct,
 							      char             *old_password,
 							      char             *new_password);
 void 		       exchange_account_forget_password       (ExchangeAccount  *acct);
@@ -136,6 +160,10 @@ gboolean exchange_account_is_favorite_folder              (ExchangeAccount *acco
 						           EFolder         *folder);
 
 char * exchange_account_get_username 			  (ExchangeAccount *account);
+
+int exchange_account_get_quota_limit			  (ExchangeAccount *account);
+
+int exchange_account_check_password_expiry		  (ExchangeAccount *account);
 
 /* Folder Size methods */
 void 			exchange_account_folder_size_add   (ExchangeAccount *account,

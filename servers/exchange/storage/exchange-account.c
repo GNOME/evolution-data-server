@@ -79,7 +79,7 @@ struct _ExchangeAccountPrivate {
 	char *username, *password, *windows_domain, *nt_domain, *ad_server;
 	char *owa_url;
 	E2kAutoconfigAuthPref auth_pref;
-	int ad_limit, passwd_exp_warn_period;
+	int ad_limit, passwd_exp_warn_period, quota_limit;
 
 	EAccountList *account_list;
 	EAccount *account;
@@ -862,12 +862,12 @@ account_moved (ExchangeAccount *account, E2kAutoconfig *ac)
 }
 
 static gboolean
-get_password (ExchangeAccount *account, E2kAutoconfig *ac, const char *errmsg)
+get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult error)
 {
 	char *password;
 	gboolean remember, oldremember;
 
-	if (*errmsg)
+	if (error != EXCHANGE_ACCOUNT_CONNECT_SUCCESS)
 		e_passwords_forget_password ("Exchange", account->priv->password_key);
 
 	password = e_passwords_get_password ("Exchange", account->priv->password_key);
@@ -876,8 +876,8 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, const char *errmsg)
 		if (!password) {
 			char *prompt;
 
-			prompt = g_strdup_printf (_("%sEnter password for %s"),
-						  errmsg, account->account_name);
+			prompt = g_strdup_printf (_("Enter password for %s"),
+						  account->account_name);
 			oldremember = remember = 
 					account->priv->account->source->save_passwd;
 			password = e_passwords_ask_password (
@@ -905,6 +905,7 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, const char *errmsg)
 	if (password) {
 		e2k_autoconfig_set_password (ac, password);
 		memset (password, 0, strlen (password));
+		g_free (password);
 		return TRUE;
 	} else
 		return FALSE;
@@ -1062,15 +1063,15 @@ exchange_account_forget_password (ExchangeAccount *account)
 }
 
 #ifdef HAVE_KRB5
-void
+ExchangeAccountResult
 exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *new_pass)
 {
 	E2kKerberosResult result;
 	char *domain;
 
-	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
-	g_return_if_fail (old_pass != NULL);
-	g_return_if_fail (new_pass != NULL);
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), EXCHANGE_ACCOUNT_PASSWORD_CHANGE_FAILED);
+	g_return_val_if_fail (old_pass != NULL, EXCHANGE_ACCOUNT_PASSWORD_CHANGE_FAILED);
+	g_return_val_if_fail (new_pass != NULL, EXCHANGE_ACCOUNT_PASSWORD_CHANGE_FAILED);
 
 	domain = account->priv->gc ? account->priv->gc->domain : NULL;
 	if (!domain) {
@@ -1080,8 +1081,7 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 	}
 	if (!domain) {
 		/* email id is not proper, we return instead of trying nt_domain */
-		// SURF : e_notice (NULL, GTK_MESSAGE_ERROR, _("Cannot change password due to configuration problems"));
-		return;
+		return EXCHANGE_ACCOUNT_CONFIG_ERROR;
 	}
 
 	result = e2k_kerberos_change_password (account->priv->username, domain,
@@ -1103,14 +1103,14 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 		break;
 
 	case E2K_KERBEROS_PASSWORD_TOO_WEAK:
-		// SURF : e_notice (NULL, GTK_MESSAGE_ERROR, _("Server rejected password because it is too weak.\nTry again with a different password."));
-		break;
+		return EXCHANGE_ACCOUNT_PASSWORD_WEAK_ERROR;
 
 	case E2K_KERBEROS_FAILED:
 	default:
-		// SURF : e_notice (NULL, GTK_MESSAGE_ERROR, _("Could not change password"));
-		break;
+		return EXCHANGE_ACCOUNT_PASSWORD_CHANGE_FAILED;
 	}
+	
+	return EXCHANGE_ACCOUNT_PASSWORD_CHANGE_SUCCESS;
 }
 #endif
 
@@ -1155,10 +1155,11 @@ gboolean
 exchange_account_set_online (ExchangeAccount *account)
 {
 	E2kContext *ctx;
+	ExchangeAccountResult result;
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), FALSE);
 
 	if (!account->priv->account_online) {
-		ctx = exchange_account_connect (account);
+		ctx = exchange_account_connect (account, NULL, &result); /* error not handled. */
 		return ctx ? TRUE : FALSE;
 	} else {
 		return TRUE;
@@ -1341,12 +1342,12 @@ setup_account_hierarchies (ExchangeAccount *account)
  * failed.
  **/
 E2kContext *
-exchange_account_connect (ExchangeAccount *account)
+exchange_account_connect (ExchangeAccount *account, const char *pword, 
+			  ExchangeAccountResult *info_result)
 {
 	E2kAutoconfig *ac;
 	E2kAutoconfigResult result;
 	E2kHTTPStatus status;
-	char *errmsg = "";
 	gboolean redirected = FALSE;
 	E2kResult *results;
 	int nresults;
@@ -1356,11 +1357,12 @@ exchange_account_connect (ExchangeAccount *account)
 	E2kGlobalCatalogStatus gcstatus;
 	E2kGlobalCatalogEntry *entry;
 	E2kOperation gcop;
-	const char *quota_msg = NULL;
 	char *user_name = NULL;
 	int offline;
 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
+
+	*info_result = EXCHANGE_ACCOUNT_CONNECT_SUCCESS;
 
 	exchange_account_is_offline (account, &offline);
 	g_mutex_lock (account->priv->connect_lock);
@@ -1369,7 +1371,8 @@ exchange_account_connect (ExchangeAccount *account)
 		g_mutex_unlock (account->priv->connect_lock);
 		if (offline == OFFLINE_MODE) {
 			setup_account_hierarchies (account);
-			// SURF : e_notice (NULL, GTK_MESSAGE_ERROR, _("Exchange Account is offline. Cannot display folders\n"));
+
+			*info_result = EXCHANGE_ACCOUNT_OFFLINE;
 		}
 		return NULL;
 	} else if (account->priv->ctx) {
@@ -1395,9 +1398,11 @@ exchange_account_connect (ExchangeAccount *account)
 				      account->priv->ad_limit);
 
  try_password_again:
-	if (!get_password (account, ac, errmsg)) {
-		account->priv->connecting = FALSE;
-		return NULL;
+	if (!pword) {
+		if (!get_password (account, ac, *info_result)) {
+			account->priv->connecting = FALSE;
+			return NULL;
+		}
 	}
 
  try_connect_again:
@@ -1411,37 +1416,53 @@ exchange_account_connect (ExchangeAccount *account)
 	if (result != E2K_AUTOCONFIG_OK) {
 #ifdef HAVE_KRB5
 		if ( is_password_expired (account, ac)) {
+			*info_result = EXCHANGE_ACCOUNT_PASSWORD_EXPIRED;
+			account->priv->connecting = FALSE;
+			return NULL;
+/*
 			old_password = exchange_account_get_password (account);
 			//new_password = exchange_get_new_password (old_password, 0);
 
 			if (new_password) {
-				exchange_account_set_password (account, old_password, new_password);
-				e2k_autoconfig_set_password (ac, new_password);
+				ExchangeAccountResult res;
+				res = exchange_account_set_password (account, old_password, new_password);
+				if (res == EXCHANGE_ACCOUNT_PASSWORD_CHANGE_SUCCESS) {
+					e2k_autoconfig_set_password (ac, new_password);
+					goto try_connect_again;
+				}
+				else
+					*info_result = res;
+				
 				g_free (old_password);
 				g_free (new_password);
-				goto try_connect_again;
+			}
+			else {
+				*info_result = EXCHANGE_ACCOUNT_PASSWORD_EXPIRED;
+				g_free (old_password);
 			}
 
-			g_free (old_password);
 			result = E2K_AUTOCONFIG_CANCELLED;
+*/
 		}
 #endif
 		switch (result) {
 		case E2K_AUTOCONFIG_AUTH_ERROR:
-			errmsg = _("Could not authenticate to server. "
-				   "(Password incorrect?)\n\n");
-			goto try_password_again;
+			if (!pword)
+				goto try_password_again;
+
+			*info_result = EXCHANGE_ACCOUNT_PASSWORD_INCORRECT;
+			e2k_autoconfig_free (ac);
+			account->priv->connecting = FALSE;
+			return NULL;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_DOMAIN:
-			errmsg = _("Could not authenticate to server."
-				   "\n\nThis probably means that your "
-				   "server requires you\nto specify "
-				   "the Windows domain name as part "
-				   "of your\nusername (eg, "
-				   "\"DOMAIN\\user\").\n\nOr you "
-				   "might have just typed your "
-				   "password wrong.\n\n");
-			goto try_password_again;
+			if (!pword)
+				goto try_password_again;
+
+			*info_result = EXCHANGE_ACCOUNT_DOMAIN_ERROR;
+			e2k_autoconfig_free (ac);
+			account->priv->connecting = FALSE;
+			return NULL;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_NTLM:
 			ac->use_ntlm = 1;
@@ -1474,55 +1495,31 @@ exchange_account_connect (ExchangeAccount *account)
 		switch (result) {
 		case E2K_AUTOCONFIG_REDIRECT:
 		case E2K_AUTOCONFIG_TRY_SSL:
-			errmsg = g_strdup_printf (
-				_("Mailbox for %s is not on this server."),
-				account->priv->username);
+			*info_result = EXCHANGE_ACCOUNT_MAILBOX_NA;
 			break;
 		case E2K_AUTOCONFIG_EXCHANGE_5_5:
-			errmsg = g_strdup (
-				_("The server '%s' is running Exchange 5.5 "
-				  "and is\ntherefore not compatible with "
-				  "Ximian Connector"));
+			*info_result = EXCHANGE_ACCOUNT_VERSION_ERROR;
 			break;
 		case E2K_AUTOCONFIG_NOT_EXCHANGE:
 		case E2K_AUTOCONFIG_NO_OWA:
-			errmsg = g_strdup_printf (
-				_("Could not find Exchange Web Storage System "
-				  "at %s.\nIf OWA is running on a different "
-				  "path, you must specify that in the\n"
-				  "account configuration dialog."),
-				account->home_uri);
+			*info_result = EXCHANGE_ACCOUNT_WSS_ERROR;
 			break;
 		case E2K_AUTOCONFIG_NO_MAILBOX:
-			errmsg = g_strdup_printf (
-				_("No mailbox for user %s on %s.\n"),
-				account->priv->username,
-				account->exchange_server);
+			*info_result = EXCHANGE_ACCOUNT_NO_MAILBOX;
 			break;
 		case E2K_AUTOCONFIG_CANT_RESOLVE:
-			errmsg = g_strdup_printf (
-				_("Could not connect to server %s: %s"),
-				account->exchange_server,
-				_("Could not resolve hostname"));
+			*info_result = EXCHANGE_ACCOUNT_RESOLVE_ERROR;
 			break;
 		case E2K_AUTOCONFIG_CANT_CONNECT:
-			errmsg = g_strdup_printf (
-				_("Could not connect to server %s: %s"),
-				account->exchange_server,
-				_("Network error"));
+			*info_result = EXCHANGE_ACCOUNT_CONNECT_ERROR;
 			break;
 		case E2K_AUTOCONFIG_CANCELLED:
 			return NULL;
 		default:
-			errmsg = g_strdup_printf (
-				_("Could not connect to server %s: %s"),
-				account->exchange_server,
-				_("Unknown error"));
+			*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
 			break;
 		}
 
-		// SURF : e_notice (NULL, GTK_MESSAGE_ERROR, errmsg);
-		g_free (errmsg);
 		return NULL;
 	}
 
@@ -1537,7 +1534,8 @@ exchange_account_connect (ExchangeAccount *account)
 
 	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) {
 		account->priv->connecting = FALSE;
-		return NULL;
+		*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
+		return NULL; /* FIXME: what error has happened? */
 	}
 
 	if (nresults) {
@@ -1556,8 +1554,10 @@ exchange_account_connect (ExchangeAccount *account)
 			account->default_timezone = g_strdup (timezone);
 	}
 
-	if (!setup_account_hierarchies (account)) 
-		return NULL;
+	if (!setup_account_hierarchies (account)) {
+		*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
+		return NULL; /* FIXME: what error has happened? */
+	}
 
 	/* Find the password expiery peripod and display warning */
 	find_passwd_exp_period(account, entry);
@@ -1577,16 +1577,19 @@ exchange_account_connect (ExchangeAccount *account)
 	 */
 	if (gcstatus == E2K_GLOBAL_CATALOG_OK) {
 
-		if (entry->quota_norecv && account->mbox_size >= entry->quota_norecv) {
-			quota_msg = g_strdup_printf ("You have exceeded your quota for storing mails on this server. Your current usage is : %d . You will not be able to either send or recieve mails now\n", entry->quota_norecv);
-		} else if (entry->quota_nosend && account->mbox_size >= entry->quota_nosend) {
-			quota_msg = g_strdup_printf ("You are nearing your quota available for storing mails on this server. Your current usage is : %d . You will not be able to send mails till you clear up some space by deleting some mails.\n", entry->quota_nosend);
-		} else if (entry->quota_warn && account->mbox_size >= entry->quota_warn) {
-			quota_msg = g_strdup_printf ("You are nearing your quota available for storing mails on this server. Your current usage is : %d . Try to clear up some space by deleting some mails.\n", entry->quota_warn);
+		if (entry->quota_norecv && 
+			account->mbox_size >= entry->quota_norecv) {
+				*info_result = EXCHANGE_ACCOUNT_QUOTA_RECIEVE_ERROR;
+				account->priv->quota_limit = entry->quota_norecv;
+		} else if (entry->quota_nosend && 
+				account->mbox_size >= entry->quota_nosend) {
+					*info_result = EXCHANGE_ACCOUNT_QUOTA_SEND_ERROR;
+					account->priv->quota_limit = entry->quota_nosend;
+		} else if (entry->quota_warn && 
+				account->mbox_size >= entry->quota_warn) {
+					*info_result = EXCHANGE_ACCOUNT_QUOTA_WARN;
+					account->priv->quota_limit = entry->quota_warn;
 		}
-		
-	// SURF :	if (quota_msg)
-			// SURF : e_notice (NULL, GTK_MESSAGE_INFO, quota_msg);
 	}
 	
 	account->priv->connected = TRUE;
@@ -1828,6 +1831,29 @@ exchange_account_get_folders (ExchangeAccount *account)
 
 	return folders;
 }	
+
+/**
+ * exchange_account_get_quota_limit:
+ * @account: an #ExchangeAccount
+ *
+ * Return the value of the quota limit reached.
+ *
+ * Return value: an int
+ **/
+int
+exchange_account_get_quota_limit (ExchangeAccount *account)
+{
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 0);
+
+	return account->priv->quota_limit;
+}
+
+int
+exchange_account_check_password_expiry (ExchangeAccount *account)
+{
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 0);
+	return -1;
+}
 
 char *
 exchange_account_get_username (ExchangeAccount *account)

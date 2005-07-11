@@ -1,3 +1,20 @@
+2005-07-11  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	Initial patch submitted by Arun Prakash <arunp@novell.com>.
+	* storage/exchange-account.c : The private ExchangeAccount structure
+	now also stores the quota_limit which can be used by the plugins to
+	display.
+	(get_password) : Now returns the error status
+	(exchange_account_set_password) : Similar
+	(exchange_account_connect) : This now accepts a password for connecting
+	and also returns the appropriate error code so that the plugins can
+	print appropriate messages.
+	(exchange_account_get_quota_limit) : Newly added.
+	(exchange_account_check_password_expiry) : Newly added
+	* storage/exchange-account.h : Added a new ExchangeAccountResult enum
+	for returning the connection status. Also modified the appropriate
+	function declarations.
+
 2005-07-11  Shakti Sen <shprasad@novell.com>
 
 	* storage/Makefile.am: Included files exchange-hierarchy-foreign.c
