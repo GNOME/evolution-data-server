@@ -1,3 +1,50 @@
+Evolution-Data-Server 1.3.5, 2005-07-12
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+	#309175 - Error compiling e-d-s based applications with GCC4 (Sushma)
+	#309276 - "is" sexp queries not working with E_CONTACT_UID (Sushma)
+	#308209 - SASL LOGIN mechanism protocol violation (Greg Hudson)
+	#309684 - Contact text entry leaks threads (Ross Burton)
+	#242165 - "search in any field" produces wrong results (Sushma)
+	#302965 - Names begin with a comma in GW Sent Items folder (Partha)
+
+New features :
+	GroupWise Proxy support (Sankar, Shreyas)
+
+Other fixes and changes :
+
+	- Support for getting e-mail ids from a contact list for GW
+	  addressbooks (Sushma)
+	- Addressbook memory leak fixes (Kjartan Maraas, Ross Burton) 
+	- Update GW address book only if marked for offline usage (Sushma)
+	- Optimize e_cal_is_read_only calls (Viren)
+	- Handle GW recurrences in Evolution (This and All) as in GW clients
+	  (Harish)
+	- Optimize calendar attachment retrievals (Chenthill) 
+	- Fix miscellaneous compiler versions (Harish)
+	- Use read cursors request instead of getQM calls in GW backend (Chen)
+	- Improve Junk Mail Handling support (Vivek)
+	- Background folder refresh in GW store (Partha)
+	- Make name selector dialog modal (Sushma)
+	- Remove e-mail addresses more easily in name-selector (Philip Van Hoof)
+	- Fetch folder size in Exchange store (Sarfraaz)
+	- Exchange Foreign hierarchy support (Shakti Sen)
+	- Improved error handling in Exchange store (Arun Prakash)
+
+Updated Translations:
+
+	- bg (Rostislav Raykov)
+	- cs (Miloslav Trmac)
+	- de (Jens Seidel)
+	- en_CA (Adam Weinberger)
+	- es (Francisco Javier F. Serrador)
+	- et (Ivar Smolin)
+	- nb, no (Terance Sola)
+	- vi (Clytie Siddall)
+	- zh_TW (Chao Hsiung Liao) 
+
 Evolution-Data-Server 1.3.4, 2005-07-02
 ----------------------------------------
 
