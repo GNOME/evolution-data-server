@@ -1,3 +1,13 @@
+2005-07-13  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c (build_cache)
+	(update_cache)(update_address_book_deltas): Freezing the cache while
+	updating and writing to disk at once. Fixes the problem of high CPU
+	usage during huge cache updates.
+
+	* addressbook/backends/ldap/e-book-backend-ldap.c 
+	(generate_cache_handler): Similar. 
+
 2005-07-09  Sushma Rai  <rsushma@novell.com>
 
 	* libebook/e-vcard.h: Defined EVC_X_BOOK_URI.

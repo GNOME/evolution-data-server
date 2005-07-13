@@ -1964,7 +1964,7 @@ book_view_thread (gpointer data)
 			/* auto completion from system address book */
 			g_object_unref (filter);
 			filter = NULL;
-			
+
 			if (search_string) {
 				/* groupwise server supports only name, rebuild the filter */
 				filter = e_gw_filter_new ();
@@ -2137,7 +2137,7 @@ add_sequence_to_cache (EBookBackendCache *cache,
 		g_free (tmp);
 		
 		tmp = g_strdup_printf("%d", last_po_rebuild_time);
-		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "lastTimePORebuild"))	
+		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "lastTimePORebuild"))
 			e_file_cache_add_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
 		else
 			e_file_cache_replace_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
@@ -2217,6 +2217,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 		g_mutex_unlock (closure->mutex);
 	}
 
+	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	while (!done) {
 
 		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, TRUE, CURSOR_ITEM_LIMIT, position, &gw_items);
@@ -2256,6 +2257,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 		position = E_GW_CURSOR_POSITION_CURRENT;
 		contact_num = contact_num + CURSOR_ITEM_LIMIT;
 	}
+	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
@@ -2308,6 +2310,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 		return FALSE;
 	}
 	
+	e_file_cache_freeze_changes (E_FILE_CACHE (ebgw->priv->cache));
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		const char *id;
 
@@ -2336,6 +2339,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	}
 	
 	ebgw->priv->is_cache_ready = TRUE;
+	e_file_cache_thaw_changes (E_FILE_CACHE (ebgw->priv->cache));
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
 						  GNOME_Evolution_Addressbook_Success);
@@ -2391,7 +2395,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	if (first_sequence > cache_last_sequence || cache_last_sequence == -1 || 
 	    last_po_rebuild_time != cache_last_po_rebuild_time) {
 		/* build the cache again and update the cache with the sequence information */
-		printf ("Either the sequences missing or PO is rebuilt...\n");
+		printf ("either the sequences missing or PO is rebuilt...rebuilding the cache\n");
 		build_cache (ebgw);
 		add_sequence_to_cache (cache, first_sequence, last_sequence, last_po_rebuild_time);
 		return FALSE;
@@ -2414,6 +2418,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	g_free (count);
 	g_free (sequence);
 
+	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	for (; add_list != NULL; add_list = g_list_next(add_list)) { 
 		const char *id;
 
@@ -2483,6 +2488,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	g_free (tmp);
 	
 	ebgw->priv->is_cache_ready = TRUE;
+	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
