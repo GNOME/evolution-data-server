@@ -7,38 +7,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server GNOME 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-07 05:30+0000\n"
-"PO-Revision-Date: 2005-07-07 19:57+0930\n"
+"POT-Creation-Date: 2005-07-13 05:38+0000\n"
+"PO-Revision-Date: 2005-07-13 17:36+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: BBEdit 8.2.2\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:528
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1993
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2001
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Đang tải..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:530
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1979
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1991
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1987
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1999
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3405
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Đang tìm..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3538
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2239
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3539
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Đang tải về các liên hệ (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2414
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2444
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2433
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2464
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Đang cập nhật bộ nhớ tạm liên hệ (%d)..."
@@ -617,11 +618,17 @@ msgstr "Danh sách"
 msgid "List Show Addresses"
 msgstr "Danh sách hiển thị địa chỉ"
 
-#: ../addressbook/libebook/e-contact.c:241
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Last Revision"
 msgstr "Lần sửa đổi cuối cùng"
 
-#: ../addressbook/libebook/e-contact.c:1229
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:244
+msgid "Book URI"
+msgstr "Địa chỉ Mạng của quyển sách"
+
+#: ../addressbook/libebook/e-contact.c:1232
 #: ../addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Danh sách chưa tên"
@@ -645,57 +652,59 @@ msgstr "Kỷ niệm: «%s»"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Không lưu được dữ liệu lịch: địa chỉ Mạng dạng sai."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:786
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:860
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1172
 msgid "Reply Requested: by "
 msgstr "Trả lời được yêu cầu bởi:"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:791
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1051
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:865
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1177
 msgid "Reply Requested: When convenient"
 msgstr "Trả lời được yêu cầu: khi tiện"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:175
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:176
 #, c-format
 msgid "Loading %s items"
 msgstr "Đang tải %s mục"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:584
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:681
 msgid "Calendar"
 msgstr "Lịch"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:636
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:737
 msgid "Invalid server URI"
 msgstr "Địa chỉ Mạng máy chủ dạng sai."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:667
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:753
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:762
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
+#: ../calendar/libecal/e-cal.c:5021
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:815
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:835
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:862
+#: ../camel/providers/groupwise/camel-groupwise-store.c:554
+#: ../camel/providers/groupwise/camel-groupwise-store.c:573
+#: ../camel/providers/groupwise/camel-groupwise-store.c:618
+#: ../camel/providers/groupwise/camel-groupwise-store.c:829
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1069
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:177
+msgid "Authentication failed"
+msgstr "Xác thực thất bại."
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:803
 msgid "Could not create thread for getting deltas"
 msgstr "Không tạo được mạch để lấy delta."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:691
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:931
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1070
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Không tạo được tập tin nhớ tạm"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:701
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:838
 msgid "Could not create thread for populating cache"
 msgstr "Không tạo được mạch để tạo dữ liệu trong bộ nới tạm."
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:707
-#: ../calendar/libecal/e-cal.c:4854
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:698
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:718
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:745
-#: ../camel/providers/groupwise/camel-groupwise-store.c:550
-#: ../camel/providers/groupwise/camel-groupwise-store.c:569
-#: ../camel/providers/groupwise/camel-groupwise-store.c:614
-#: ../camel/providers/groupwise/camel-groupwise-store.c:825
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1030
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:177
-msgid "Authentication failed"
-msgstr "Xác thực thất bại."
 
 #: ../calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
@@ -1047,79 +1056,84 @@ msgstr "Thấp"
 msgid "Undefined"
 msgstr "Chưa định nghĩa"
 
-#. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1590 ../libedataserverui/e-book-auth-util.c:192
+#. FIXME: Try to get the parent uri so that we dont have to ask the password again
+#: ../calendar/libecal/e-cal.c:1628
+#, c-format
+msgid "Enter password for %s to enable proxy for user %s"
+msgstr "Hãy nhập mật khẩu cho «%s» để hiệu lực ủy nhiệm cho người dùng «%s»"
+
+#: ../calendar/libecal/e-cal.c:1631 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Hãy nhập mật khẩu cho «%s» (người dùng «%s»)"
 
-#: ../calendar/libecal/e-cal.c:4826
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Invalid argument"
 msgstr "Đối số không hợp lệ."
 
-#: ../calendar/libecal/e-cal.c:4828
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Backend is busy"
 msgstr "Hập phương đang bận."
 
-#: ../calendar/libecal/e-cal.c:4830
+#: ../calendar/libecal/e-cal.c:4997
 msgid "Repository is offline"
 msgstr "Kho ngoại tuyến"
 
-#: ../calendar/libecal/e-cal.c:4832
+#: ../calendar/libecal/e-cal.c:4999
 msgid "No such calendar"
 msgstr "Không có lịch như vậy."
 
-#: ../calendar/libecal/e-cal.c:4834 ../servers/groupwise/e-gw-connection.c:166
+#: ../calendar/libecal/e-cal.c:5001 ../servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Không tìm thấy đối tượng."
 
-#: ../calendar/libecal/e-cal.c:4836 ../servers/groupwise/e-gw-connection.c:160
+#: ../calendar/libecal/e-cal.c:5003 ../servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Đối tượng không hợp lệ."
 
-#: ../calendar/libecal/e-cal.c:4838
+#: ../calendar/libecal/e-cal.c:5005
 msgid "URI not loaded"
 msgstr "Chưa tải địa chỉ Mạng."
 
-#: ../calendar/libecal/e-cal.c:4840
+#: ../calendar/libecal/e-cal.c:5007
 msgid "URI already loaded"
 msgstr "Đã tải địa chỉ Mạng rồi."
 
-#: ../calendar/libecal/e-cal.c:4842
+#: ../calendar/libecal/e-cal.c:5009
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Không đủ quyền truy cập."
 
-#: ../calendar/libecal/e-cal.c:4844 ../servers/groupwise/e-gw-connection.c:168
+#: ../calendar/libecal/e-cal.c:5011 ../servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Không biết người dùng ấy."
 
-#: ../calendar/libecal/e-cal.c:4846
+#: ../calendar/libecal/e-cal.c:5013
 msgid "Object ID already exists"
 msgstr "Có mã nhận diện đối tượng ấy rồi."
 
-#: ../calendar/libecal/e-cal.c:4848
+#: ../calendar/libecal/e-cal.c:5015
 msgid "Protocol not supported"
 msgstr "Chưa hỗ trợ giao thức này."
 
-#: ../calendar/libecal/e-cal.c:4850
+#: ../calendar/libecal/e-cal.c:5017
 msgid "Operation has been cancelled"
 msgstr "Thao tác đã bị hủy bỏ."
 
-#: ../calendar/libecal/e-cal.c:4852
+#: ../calendar/libecal/e-cal.c:5019
 msgid "Could not cancel operation"
 msgstr "Không thể hủy bỏ tác vụ."
 
-#: ../calendar/libecal/e-cal.c:4856
+#: ../calendar/libecal/e-cal.c:5023
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Yêu cầu xác thực."
 
-#: ../calendar/libecal/e-cal.c:4858
+#: ../calendar/libecal/e-cal.c:5025
 msgid "A CORBA exception has occurred"
 msgstr "Gặp ngoại lệ loại CORBA."
 
-#: ../calendar/libecal/e-cal.c:4860
+#: ../calendar/libecal/e-cal.c:5027
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1128,11 +1142,10 @@ msgstr "Gặp ngoại lệ loại CORBA."
 #: ../camel/providers/pop3/camel-pop3-store.c:548
 #: ../servers/groupwise/e-gw-connection.c:174
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/exchange/storage/exchange-account.c:1533
 msgid "Unknown error"
 msgstr "Không biết lỗi ấy."
 
-#: ../calendar/libecal/e-cal.c:4862
+#: ../calendar/libecal/e-cal.c:5029
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Không có lỗi."
@@ -1985,7 +1998,7 @@ msgstr "Đăng nhập"
 msgid "This option will connect to the server using a simple password."
 msgstr "Tùy chọn này sẽ kết nối tới server bằng mật khẩu đơn giản."
 
-#: ../camel/camel-sasl-login.c:128
+#: ../camel/camel-sasl-login.c:132
 msgid "Unknown authentication state."
 msgstr "Trạng thái xác thực lạ."
 
@@ -2262,45 +2275,45 @@ msgstr "nhập khoá: chưa thực hiện"
 msgid "export keys: unimplemented"
 msgstr "xuất khoá: chưa thực hiện"
 
-#: ../camel/camel-store.c:214
+#: ../camel/camel-store.c:215
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr ""
 "Không thể lấy danh mục: thao tác không hợp lệ trên thiết bị lưu trữ này"
 
-#: ../camel/camel-store.c:246
+#: ../camel/camel-store.c:247
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
 msgstr "Không tạo được danh mục «%s»: danh mục đã có."
 
-#: ../camel/camel-store.c:300
+#: ../camel/camel-store.c:301
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr ""
 "Không tạo được danh mục: thao tác không hợp lệ trên thiết bị lưu trữ này."
 
-#: ../camel/camel-store.c:328
+#: ../camel/camel-store.c:329
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Không tạo được danh mục: %s: có danh mục ấy rồi."
 
-#: ../camel/camel-store.c:392 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:393 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Không thể xoá bỏ danh mục: %s: thao tác không hợp lệ."
 
-#: ../camel/camel-store.c:442 ../camel/camel-vee-store.c:404
+#: ../camel/camel-store.c:443 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Không đổi được tên danh mục: %s: thao tác không hợp lệ."
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:781 ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Sọt Rác"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:784 ../camel/camel-vtrash-folder.c:49
+#: ../camel/camel-store.c:785 ../camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Rác"
 
@@ -2553,7 +2566,7 @@ msgstr "Bạn không thể sao chép các thư vào danh mục Sọt rác."
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Không thể sao chép các thư vào danh mục Thư rác."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2563,7 +2576,7 @@ msgstr ""
 "Không gọi được thư: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2571,7 +2584,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Không có thư như vậy."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2583,7 +2596,7 @@ msgstr "Không có thư như vậy."
 msgid "User cancelled"
 msgstr "Người dùng đã hủy bỏ."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2597,29 +2610,29 @@ msgstr "Người dùng đã hủy bỏ."
 msgid "Cannot get message %s: %s"
 msgstr "Không gọi được thư %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:153
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Thư này hiện thời chưa sẵn sàng trong chế độ ngoại tuyến."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1010
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:176
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:183
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1136
 msgid "Could not get message"
 msgstr "Không gọi được thư."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:566
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:681
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Không tải được tóm tắt cho «%s»."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1214
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1340
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Không tạo được thư: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1226
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1352
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Không thể nối thêm thư vào danh mục «%s»: %s"
@@ -2709,71 +2722,71 @@ msgstr ""
 "Tùy chọn này sẽ kết nối tới máy phục vụ GroupWise bằng mật khẩu thô (không "
 "mã hóa)."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:270
+#: ../camel/providers/groupwise/camel-groupwise-store.c:273
 msgid "Host or user not available in url"
 msgstr "Máy hay người dùng không phải sẵn sàng trong địa chỉ Mạng."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:364
+#: ../camel/providers/groupwise/camel-groupwise-store.c:368
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sVui lòng nhập mật khẩu GroupWise cho «%s@%s»."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:378
+#: ../camel/providers/groupwise/camel-groupwise-store.c:382
 #: ../camel/providers/imap/camel-imap-store.c:1324
 msgid "You didn't enter a password."
 msgstr "Bạn chưa nhập mật khẩu."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:392
+#: ../camel/providers/groupwise/camel-groupwise-store.c:396
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Không thể xác thực tới máy phục vụ GroupWise."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:433
+#: ../camel/providers/groupwise/camel-groupwise-store.c:437
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Có lẽ một số tính năng sẽ không hoạt động với trình phục vụ phiên bản hiện "
 "thời của bạn."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:536
+#: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/imap/camel-imap-store.c:1875
 #: ../camel/providers/imap/camel-imap-store.c:2065
 #, c-format
 msgid "No such folder %s"
 msgstr "Không có danh mục «%s»."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:604
+#: ../camel/providers/groupwise/camel-groupwise-store.c:608
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Đang lấy thông tin tóm tắt của các thư mới."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:749
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
 msgid "Cannot get folder info in offline mode."
 msgstr "Không gọi được danh mục trong chế độ ngoại tuyến."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1011
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1050
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Không tạo được danh mục GroupWise trong chế độ ngoại tuyến."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1062
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1101
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Không thể xóa bỏ danh mục trong chế độ ngoại tuyến."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1108
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1147
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Không thể đổi tên của danh mục GroupWise trong chế độ ngoại tuyến."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1127
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1166
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Không thể đổi tên danh mục GroupWise «%s» thành «%s»."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1163
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1202
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Máy phục vụ GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1165
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1204
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Dịch vụ GroupWise cho «%s» trên «%s»."
@@ -4954,12 +4967,13 @@ msgid "Addressbook..."
 msgstr "Sổ địa chỉ..."
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#: ../servers/exchange/storage/exchange-account.c:879
 #, c-format
 msgid "Enter password for %s"
 msgstr "Hãy nhập mật khẩu cho %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
-#: ../servers/exchange/storage/exchange-account.c:894
+#: ../servers/exchange/storage/exchange-account.c:884
 msgid "Enter password"
 msgstr "Hãy nhập mật khẩu"
 
@@ -5021,112 +5035,28 @@ msgstr "Thao tác này không thể được thực hiện trong chế độ ngo
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:585
+#: ../servers/exchange/storage/exchange-account.c:583
 #, c-format
 msgid "%s's Folders"
 msgstr "Danh mục của «%s»"
 
-#: ../servers/exchange/storage/exchange-account.c:889
-#, c-format
-msgid "%sEnter password for %s"
-msgstr "%sHãy nhập mật khẩu cho «%s»"
-
-#: ../servers/exchange/storage/exchange-account.c:1245
+#: ../servers/exchange/storage/exchange-account.c:1236
 msgid "Personal Folders"
 msgstr "Danh mục cá nhân"
 
-#: ../servers/exchange/storage/exchange-account.c:1260
+#: ../servers/exchange/storage/exchange-account.c:1251
 msgid "Favorite Public Folders"
 msgstr "Danh mục công ưa thích"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1268
 msgid "All Public Folders"
 msgstr "Mọi danh mục công"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1282
 msgid "Global Address List"
 msgstr "Danh sách địa chỉ toàn cục"
-
-#: ../servers/exchange/storage/exchange-account.c:1444
-msgid ""
-"Could not authenticate to server. (Password incorrect?)\n"
-"\n"
-msgstr "Không thể xác thực với máy phục vụ. (Mật khẩu không đúng?)\n"
-"\n"
-
-#: ../servers/exchange/storage/exchange-account.c:1449
-msgid ""
-"Could not authenticate to server.\n"
-"\n"
-"This probably means that your server requires you\n"
-"to specify the Windows domain name as part of your\n"
-"username (eg, \"DOMAIN\\user\").\n"
-"\n"
-"Or you might have just typed your password wrong.\n"
-"\n"
-msgstr "Không thể xác thực tới máy phục vụ.\n"
-"\n"
-"Rất có thể vì máy phục vụ cần thiết bạn ghi rõ\n"
-"tên miền Windows là phần của tên người dùng\n"
-"(v.d. «MIỀN\\người_dùng»).\n"
-"\n"
-"Hoặc có lẽ bạn đã gõ sai mật khẩu.\n"
-"\n"
-
-#: ../servers/exchange/storage/exchange-account.c:1491
-#, c-format
-msgid "Mailbox for %s is not on this server."
-msgstr "Hộp thư cho «%s» không có trên máy phục vụ này."
-
-#: ../servers/exchange/storage/exchange-account.c:1496
-#, c-format
-msgid ""
-"The server '%s' is running Exchange 5.5 and is\n"
-"therefore not compatible with Ximian Connector"
-msgstr "Máy phục vụ «%s» đang chạy trình Exchange\n"
-"phiên bản 5.5 thì không tương thích\n"
-"với trình Ximian Connector."
-
-#: ../servers/exchange/storage/exchange-account.c:1503
-#, c-format
-msgid ""
-"Could not find Exchange Web Storage System at %s.\n"
-"If OWA is running on a different path, you must specify that in the\n"
-"account configuration dialog."
-msgstr "Không tìm thấy Hệ thống Lưu Mạng Exchange\n"
-"(Exchange Web Storage System) tại «%s».\n"
-"Nếu OWA có chạy trên một đường dẫn khác thì bạn\n"
-"cần phải ghi rõ nó vào hộp thoại cấu hình tài khoản."
-
-#: ../servers/exchange/storage/exchange-account.c:1511
-#, c-format
-msgid "No mailbox for user %s on %s.\n"
-msgstr "Không có hộp thư cho người dùng «%s» trên «%s».\n"
-
-#: ../servers/exchange/storage/exchange-account.c:1517
-#: ../servers/exchange/storage/exchange-account.c:1523
-#: ../servers/exchange/storage/exchange-account.c:1531
-#, c-format
-msgid "Could not connect to server %s: %s"
-msgstr "Không thể kết nối tới máy phục vụ %s: %s"
-
-#: ../servers/exchange/storage/exchange-account.c:1519
-msgid "Could not resolve hostname"
-msgstr "Không thể phân giải tên máy."
-
-#: ../servers/exchange/storage/exchange-account.c:1525
-msgid "Network error"
-msgstr "Gặp lỗi mạng."
-
-#: ../servers/exchange/storage/exchange-folder-size.c:321
-msgid "Folder Name"
-msgstr "Tên danh mục:"
-
-#: ../servers/exchange/storage/exchange-folder-size.c:325
-msgid "Folder Size"
-msgstr "Kích thước danh mục"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
@@ -5149,3 +5079,71 @@ msgstr "Dịch vụ ghi lưu trình phục vụ dữ liệu Evolution"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Gặp nhiều lỗi chia ra từng đoạn nên không hiển thị hộp thoại lỗi.\n"
+
+#~ msgid "%sEnter password for %s"
+#~ msgstr "%sHãy nhập mật khẩu cho «%s»"
+
+#~ msgid ""
+#~ "Could not authenticate to server. (Password incorrect?)\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Không thể xác thực với máy phục vụ. (Mật khẩu không đúng?)\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Could not authenticate to server.\n"
+#~ "\n"
+#~ "This probably means that your server requires you\n"
+#~ "to specify the Windows domain name as part of your\n"
+#~ "username (eg, \"DOMAIN\\user\").\n"
+#~ "\n"
+#~ "Or you might have just typed your password wrong.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Không thể xác thực tới máy phục vụ.\n"
+#~ "\n"
+#~ "Rất có thể vì máy phục vụ cần thiết bạn ghi rõ\n"
+#~ "tên miền Windows là phần của tên người dùng\n"
+#~ "(v.d. «MIỀN\\người_dùng»).\n"
+#~ "\n"
+#~ "Hoặc có lẽ bạn đã gõ sai mật khẩu.\n"
+#~ "\n"
+
+#~ msgid "Mailbox for %s is not on this server."
+#~ msgstr "Hộp thư cho «%s» không có trên máy phục vụ này."
+
+#~ msgid ""
+#~ "The server '%s' is running Exchange 5.5 and is\n"
+#~ "therefore not compatible with Ximian Connector"
+#~ msgstr ""
+#~ "Máy phục vụ «%s» đang chạy trình Exchange\n"
+#~ "phiên bản 5.5 thì không tương thích\n"
+#~ "với trình Ximian Connector."
+
+#~ msgid ""
+#~ "Could not find Exchange Web Storage System at %s.\n"
+#~ "If OWA is running on a different path, you must specify that in the\n"
+#~ "account configuration dialog."
+#~ msgstr ""
+#~ "Không tìm thấy Hệ thống Lưu Mạng Exchange\n"
+#~ "(Exchange Web Storage System) tại «%s».\n"
+#~ "Nếu OWA có chạy trên một đường dẫn khác thì bạn\n"
+#~ "cần phải ghi rõ nó vào hộp thoại cấu hình tài khoản."
+
+#~ msgid "No mailbox for user %s on %s.\n"
+#~ msgstr "Không có hộp thư cho người dùng «%s» trên «%s».\n"
+
+#~ msgid "Could not connect to server %s: %s"
+#~ msgstr "Không thể kết nối tới máy phục vụ %s: %s"
+
+#~ msgid "Could not resolve hostname"
+#~ msgstr "Không thể phân giải tên máy."
+
+#~ msgid "Network error"
+#~ msgstr "Gặp lỗi mạng."
+
+#~ msgid "Folder Name"
+#~ msgstr "Tên danh mục:"
+
+#~ msgid "Folder Size"
+#~ msgstr "Kích thước danh mục"
