@@ -1,3 +1,11 @@
+2005-07-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
+	(e_cal_backend_groupwise_create_object): Added "peek" in the view 
+	while getting the items back from the server.
+	(e_cal_backend_groupwise_remove_object): Intialize the list item_ids 
+	to NULL.
+
 2005-07-11  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:

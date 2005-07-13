@@ -147,7 +147,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	
 	status = e_gw_connection_create_cursor (priv->cnc,
 			priv->container_id, 
-			"recipients message recipientStatus attachments default", NULL, &cursor);
+			"recipients message recipientStatus attachments default peek", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
 		g_mutex_unlock (mutex);
@@ -1699,7 +1699,8 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			
 			/* convert uid_list to GPtrArray and get the items in a list */
 			e_gw_connection_get_items_from_ids (priv->cnc,
-					priv->container_id, "recipients message default",
+					priv->container_id, 
+					"attachments recipients message recipientStatus default peek",
 					uid_array, &list);
 			/* FIXME  check if list is null and status may have
 			 * failed. */
@@ -1950,7 +1951,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 					status = e_gw_connection_decline_request_by_recurrence_key (priv->cnc, uid, NULL);
 			} else {
-				GList *item_ids;	
+				GList *item_ids = NULL;	
 				for (l = comp_list; l; l = l->next) {
 					ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
