@@ -1,16 +1,20 @@
-# Evolution'i eesti keele tõlge.
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Evolution'i andmeserveri eesti keele tõlge.
+# Estonian translation of Evolution-data-server
+#
+# Copyright (C) 2001-2005 Free Software Foundation, Inc.
+# This file is distributed under the same license as the evolution package.
+# 
 # Ilmar Kerm <ikerm@hot.ee>, 2001.
 # Ivar Smolin <okul@linux.ee>, 2002, 2005.
 # Kaarel Jogi <kaarel@gg.ee>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution-data-server HEAD\n"
+"Project-Id-Version: Evolution-data-server GNOME 2.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-08 13:54+0100\n"
-"PO-Revision-Date: 2005-03-30 09:53+0300\n"
-"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
+"PO-Revision-Date: 2005-07-14 14:23+0300\n"
+"Last-Translator: Priit Laes <amd@store20.com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -676,11 +680,11 @@ msgstr "Ilmajaama andmeid pole võimalik vastu võtta"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:194
 msgid "Fair"
-msgstr ""
+msgstr "Selge"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:195
 msgid "Snow showers"
-msgstr ""
+msgstr "Lumesadu"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:196
 msgid "Snow"
@@ -704,7 +708,7 @@ msgstr "Pilvisus"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:201
 msgid "Drizzle"
-msgstr ""
+msgstr "Uduvihm"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:202
 msgid "Sunny"
@@ -712,7 +716,7 @@ msgstr "Päikseline"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:203
 msgid "Dust"
-msgstr ""
+msgstr "Tolm"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:204
 msgid "Clear"
@@ -720,7 +724,7 @@ msgstr "Selge"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:205
 msgid "Mostly cloudy"
-msgstr ""
+msgstr "Pilves"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Windy"
@@ -728,15 +732,15 @@ msgstr "Tuuline"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Rain showers"
-msgstr ""
+msgstr "Vihmavalingud"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:208
 msgid "Foggy"
-msgstr ""
+msgstr "Udune"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Rain/snow mixed"
-msgstr ""
+msgstr "Lõrts"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Sleet"
@@ -744,7 +748,7 @@ msgstr "Lörts"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Very hot/humid"
-msgstr ""
+msgstr "Väga kuum ja niiske"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Blizzard"
@@ -752,23 +756,23 @@ msgstr "Lumetorm"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Freezing rain"
-msgstr ""
+msgstr "Jäide"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Haze"
-msgstr ""
+msgstr "Uduvine"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Blowing snow"
-msgstr ""
+msgstr "Tuisk"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Freezing drizzle"
-msgstr ""
+msgstr "Külm uduvihm"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very cold/wind chill"
-msgstr ""
+msgstr "Väga külm ja tuuline"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Rain"
@@ -1121,8 +1125,7 @@ msgstr "\"%s\" esimene argument peaks olema string"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:100
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr ""
-"\"%s\" esimene argument peaks olema ISO 8601 vormingus kuupäeva/kella string"
+msgstr "\"%s\" esimene argument peaks olema ISO 8601 vormingus kuupäeva/kella string"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:131
 #: calendar/libedata-cal/e-cal-backend-sexp.c:316
@@ -1163,9 +1166,7 @@ msgstr "\"%s\" eeldab, et teine argument oleks string"
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr ""
-"\"%s\" eeldab, et argument on kas: \"any\", \"summary\", \"description\" või "
-"\"location\""
+msgstr "\"%s\" eeldab, et argument on kas: \"any\", \"summary\", \"description\" või \"location\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:628
 #, c-format
@@ -1515,9 +1516,7 @@ msgstr "Sõnumi signatuuri pole võimalik kontrollida: Sõnumivorming on vigane"
 #: camel/camel-gpg-context.c:1423
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr ""
-"Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik "
-"luua: %s"
+msgstr "Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik luua: %s"
 
 #: camel/camel-gpg-context.c:1502
 #, c-format
@@ -1566,8 +1565,7 @@ msgstr "Lukustamisabilist pole võimalik forkida: %s"
 #: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr ""
-"'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
+msgstr "'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
 
 #: camel/camel-lock-client.c:204
 #, c-format
@@ -1772,9 +1770,7 @@ msgstr "CRAM-MD5"
 msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
-msgstr ""
-"See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse "
-"kasutades turvalist CRAM-MD5 parooli."
+msgstr "See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse kasutades turvalist CRAM-MD5 parooli."
 
 #: camel/camel-sasl-digest-md5.c:49
 msgid "DIGEST-MD5"
@@ -1784,9 +1780,7 @@ msgstr "DIGEST-MD5"
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
-msgstr ""
-"See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse "
-"kasutades turvalist DIGEST-MD5 parooli."
+msgstr "See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse kasutades turvalist DIGEST-MD5 parooli."
 
 #: camel/camel-sasl-digest-md5.c:814
 msgid "Server challenge too long (>2048 octets)\n"
@@ -2558,8 +2552,7 @@ msgstr "Kausta konteinerit %s pole võimalik hankida"
 #: camel/providers/groupwise/camel-groupwise-journal.c:347
 #: camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr ""
-"Sõnumit pole autonoomses režiimis võimalik lisada: puhvrit pole saadaval"
+msgstr "Sõnumit pole autonoomses režiimis võimalik lisada: puhvrit pole saadaval"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:363
 #: camel/providers/imap4/camel-imap4-journal.c:336
@@ -2587,9 +2580,7 @@ msgstr "Valikud"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
-msgstr ""
-"Rakenda filtreid kõikidele selles serveris Sisendkastis asuvatele uutele "
-"sõnumitele "
+msgstr "Rakenda filtreid kõikidele selles serveris Sisendkastis asuvatele uutele sõnumitele "
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:60
 #, fuzzy
@@ -3145,14 +3136,12 @@ msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Tundmatu"
 #: camel/providers/imap4/camel-imap4-folder.c:1152
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr ""
-"Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr "Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1156
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr ""
-"Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-provider.c:71
 msgid "IMAP4rev1"
@@ -3228,8 +3217,7 @@ msgstr "Kausta `%s' pole võimalik kustutada: Puudulik käsk"
 #: camel/providers/imap4/camel-imap4-store.c:1039
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr ""
-"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
+msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
 
 #: camel/providers/imap4/camel-imap4-store.c:1046
 #, fuzzy
@@ -3239,8 +3227,7 @@ msgstr "Ei saa muuda kausta %s nime %s-ks: %s"
 #: camel/providers/imap4/camel-imap4-store.c:1077
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr ""
-"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
+msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-store.c:1082
 #, c-format
@@ -3403,9 +3390,7 @@ msgstr "Standardne Unix'i mbox puhverkataloog"
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
-msgstr ""
-"Kohalikku e-posti loetakse ja hoitakse standardsetes \"mbox\" vorminguga "
-"puhverfailides"
+msgstr "Kohalikku e-posti loetakse ja hoitakse standardsetes \"mbox\" vorminguga puhverfailides"
 
 #: camel/providers/local/camel-local-store.c:143
 #: camel/providers/local/camel-local-store.c:254
@@ -4068,9 +4053,7 @@ msgstr "E-posti laetakse alla POP serverist"
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
-msgstr ""
-"See valik ühendub POP serverisse kasutades lihttekstiparooli. See on ainus "
-"valik, mida toetavad paljud POP serverid."
+msgstr "See valik ühendub POP serverisse kasutades lihttekstiparooli. See on ainus valik, mida toetavad paljud POP serverid."
 
 #: camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
@@ -4093,9 +4076,8 @@ msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr ""
 
 #: camel/providers/pop3/camel-pop3-store.c:219
-#, fuzzy
 msgid "STLS not supported"
-msgstr "SSL/TLS laiend ei ole toetatud."
+msgstr "STLS laiend pole toetatud"
 
 #: camel/providers/pop3/camel-pop3-store.c:363
 #, c-format
@@ -4177,8 +4159,7 @@ msgstr "Ei saa luua toru sendmailiga: %s: sõnumit ei saadetud"
 #: camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr ""
-"Sendmail'i haruprotsessi pole võimalik tekitada: %s: e-kiri jäi saatmata"
+msgstr "Sendmail'i haruprotsessi pole võimalik tekitada: %s: e-kiri jäi saatmata"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
@@ -4541,7 +4522,7 @@ msgstr ""
 
 #: libedataserver/e-categories.c:244
 msgid "Time & Expenses"
-msgstr ""
+msgstr "Aeg ja kulutused"
 
 #: libedataserver/e-categories.c:245
 msgid "VIP"
@@ -4610,49 +4591,49 @@ msgstr ""
 #. strptime format of a date and a time, in 24-hour format.
 #: libedataserver/e-time-utils.c:213
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%d.%m.%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
 #: libedataserver/e-time-utils.c:218
 msgid "%m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%d.%m.%Y %l:%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
 #: libedataserver/e-time-utils.c:223
 msgid "%m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%d.%m.%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
 #: libedataserver/e-time-utils.c:228
 msgid "%m/%d/%Y %I %p"
-msgstr ""
+msgstr "%d.%m.%Y %l"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
 #: libedataserver/e-time-utils.c:233
 msgid "%m/%d/%Y %H"
-msgstr ""
+msgstr "%d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
 #: libedataserver/e-time-utils.c:236 libedataserver/e-time-utils.c:297
 msgid "%m/%d/%Y"
-msgstr ""
+msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
 #: libedataserver/e-time-utils.c:337 libedataserver/e-time-utils.c:436
 msgid "%I:%M:%S %p"
-msgstr ""
+msgstr "%l:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
 #: libedataserver/e-time-utils.c:341 libedataserver/e-time-utils.c:428
 msgid "%H:%M:%S"
-msgstr ""
+msgstr "%H:%M:%S"
 
 #. strptime format for time of day, without seconds,
 #. in 12-hour format.
@@ -4660,19 +4641,19 @@ msgstr ""
 #. without seconds.
 #: libedataserver/e-time-utils.c:346 libedataserver/e-time-utils.c:433
 msgid "%I:%M %p"
-msgstr ""
+msgstr "%l:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
 #: libedataserver/e-time-utils.c:350 libedataserver/e-time-utils.c:425
 msgid "%H:%M"
-msgstr ""
+msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: libedataserver/e-time-utils.c:354
 msgid "%I %p"
-msgstr ""
+msgstr "%l"
 
 #: libedataserverui/e-categories-dialog.c:91
 msgid "Category Icon"
