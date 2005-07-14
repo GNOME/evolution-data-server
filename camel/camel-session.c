@@ -105,6 +105,8 @@ camel_session_class_init (CamelSessionClass *camel_session_class)
 	camel_session_class->thread_queue = session_thread_queue;
 	camel_session_class->thread_wait = session_thread_wait;
 	camel_session_class->thread_status = session_thread_status;
+
+	camel_object_class_add_event((CamelObjectClass *)camel_session_class, "online", NULL);
 }
 
 CamelType
@@ -437,8 +439,9 @@ void
 camel_session_set_online (CamelSession *session, gboolean online)
 {
 	session->online = online;
-}
 
+	camel_object_trigger_event(session, "online", GINT_TO_POINTER(online));
+}
 
 /**
  * camel_session_get_filter_driver:

@@ -138,7 +138,7 @@ camel_store_init (void *o)
 	
 	/* set vtrash and vjunk on by default */
 	store->flags = CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK;
-	store->permissions = 0;
+	store->mode = CAMEL_STORE_READ|CAMEL_STORE_WRITE;
 
 	store->priv = g_malloc0 (sizeof (*store->priv));
 	store->priv->folder_lock = e_mutex_new (E_MUTEX_REC);
