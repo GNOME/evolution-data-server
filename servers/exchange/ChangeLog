@@ -1,5 +1,10 @@
 2005-07-14  Sarfraaz Ahmed <asarfraaz@novell.com>
 
+	* storage/Makefile.am : Use the version-info
+	* storage/exchange-account.c : Fix a warning
+
+2005-07-14  Sarfraaz Ahmed <asarfraaz@novell.com>
+
 	* storage/exchange-hierarchy-foreign.c (remove_folder) : The esource
 	removal should be moved to the eplugins code.
 

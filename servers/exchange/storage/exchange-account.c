@@ -1942,7 +1942,7 @@ exchange_account_folder_size_rename (ExchangeAccount *account,
 GtkListStore *
 exchange_account_folder_size_get_model (ExchangeAccount *account)
 {
-	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	return exchange_folder_size_get_model (account->priv->fsize);
 }
