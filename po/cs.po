@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-05 13:28+0000\n"
-"PO-Revision-Date: 2005-07-05 19:58+0200\n"
+"POT-Creation-Date: 2005-07-13 21:36+0000\n"
+"PO-Revision-Date: 2005-07-14 00:30+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,28 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:528
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1991
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2001
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Načítám..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:530
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1977
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1989
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1987
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1999
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3405
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Vyhledávám..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2225
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3538
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2239
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3539
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Stahuji kontakty (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2307
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2411
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2441
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2433
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2464
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Aktualizuji keš kontaktů (%d)... "
@@ -570,7 +570,7 @@ msgid "Category List"
 msgstr "Seznam kategorií"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:398
+#: ../libedataserverui/e-categories-dialog.c:397
 msgid "Categories"
 msgstr "Kategorie"
 
@@ -615,11 +615,17 @@ msgstr "Seznam"
 msgid "List Show Addresses"
 msgstr "Seznam zobrazených adres"
 
-#: ../addressbook/libebook/e-contact.c:241
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Last Revision"
 msgstr "Poslední revize"
 
-#: ../addressbook/libebook/e-contact.c:1229
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:244
+msgid "Book URI"
+msgstr "URI adresáře"
+
+#: ../addressbook/libebook/e-contact.c:1232
 #: ../addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
@@ -643,57 +649,59 @@ msgstr "Výročí: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:786
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:237
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:860
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1172
 msgid "Reply Requested: by "
 msgstr "Požadována odpověď: do "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:791
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:242
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:865
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1177
 msgid "Reply Requested: When convenient"
 msgstr "Požadována odpověď: Podle možností"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:175
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:176
 #, c-format
 msgid "Loading %s items"
 msgstr "Načítám %s položek"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:584
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:681
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:636
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:737
 msgid "Invalid server URI"
 msgstr "Neplatné URI serveru"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:667
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:753
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:762
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
+#: ../calendar/libecal/e-cal.c:5021
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:815
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:835
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:862
+#: ../camel/providers/groupwise/camel-groupwise-store.c:554
+#: ../camel/providers/groupwise/camel-groupwise-store.c:573
+#: ../camel/providers/groupwise/camel-groupwise-store.c:618
+#: ../camel/providers/groupwise/camel-groupwise-store.c:829
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1069
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:177
+msgid "Authentication failed"
+msgstr "Autentizace selhala"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:803
 msgid "Could not create thread for getting deltas"
 msgstr "Nemohu vytvořit thread pro získání změn"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:691
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:931
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1070
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:701
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:838
 msgid "Could not create thread for populating cache"
 msgstr "Nemohu vytvořit thread pro naplnění cache"
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:707
-#: ../calendar/libecal/e-cal.c:4854
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:841
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:861
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:888
-#: ../camel/providers/groupwise/camel-groupwise-store.c:520
-#: ../camel/providers/groupwise/camel-groupwise-store.c:539
-#: ../camel/providers/groupwise/camel-groupwise-store.c:584
-#: ../camel/providers/groupwise/camel-groupwise-store.c:745
-#: ../camel/providers/groupwise/camel-groupwise-store.c:943
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:176
-msgid "Authentication failed"
-msgstr "Autentizace selhala"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
@@ -1045,79 +1053,84 @@ msgstr "Nízká"
 msgid "Undefined"
 msgstr "Nedefinováno"
 
-#. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1590 ../libedataserverui/e-book-auth-util.c:192
+#. FIXME: Try to get the parent uri so that we dont have to ask the password again
+#: ../calendar/libecal/e-cal.c:1628
+#, c-format
+msgid "Enter password for %s to enable proxy for user %s"
+msgstr "Zadejte heslo pro %s pro povolit zástup za uživatele %s"
+
+#: ../calendar/libecal/e-cal.c:1631 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: ../calendar/libecal/e-cal.c:4826
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: ../calendar/libecal/e-cal.c:4828
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: ../calendar/libecal/e-cal.c:4830
+#: ../calendar/libecal/e-cal.c:4997
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: ../calendar/libecal/e-cal.c:4832
+#: ../calendar/libecal/e-cal.c:4999
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: ../calendar/libecal/e-cal.c:4834 ../servers/groupwise/e-gw-connection.c:166
+#: ../calendar/libecal/e-cal.c:5001 ../servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: ../calendar/libecal/e-cal.c:4836 ../servers/groupwise/e-gw-connection.c:160
+#: ../calendar/libecal/e-cal.c:5003 ../servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: ../calendar/libecal/e-cal.c:4838
+#: ../calendar/libecal/e-cal.c:5005
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: ../calendar/libecal/e-cal.c:4840
+#: ../calendar/libecal/e-cal.c:5007
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: ../calendar/libecal/e-cal.c:4842
+#: ../calendar/libecal/e-cal.c:5009
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: ../calendar/libecal/e-cal.c:4844 ../servers/groupwise/e-gw-connection.c:168
+#: ../calendar/libecal/e-cal.c:5011 ../servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Neznámý uživatel"
 
-#: ../calendar/libecal/e-cal.c:4846
+#: ../calendar/libecal/e-cal.c:5013
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: ../calendar/libecal/e-cal.c:4848
+#: ../calendar/libecal/e-cal.c:5015
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: ../calendar/libecal/e-cal.c:4850
+#: ../calendar/libecal/e-cal.c:5017
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: ../calendar/libecal/e-cal.c:4852
+#: ../calendar/libecal/e-cal.c:5019
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: ../calendar/libecal/e-cal.c:4856
+#: ../calendar/libecal/e-cal.c:5023
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: ../calendar/libecal/e-cal.c:4858
+#: ../calendar/libecal/e-cal.c:5025
 msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: ../calendar/libecal/e-cal.c:4860
+#: ../calendar/libecal/e-cal.c:5027
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1126,11 +1139,10 @@ msgstr "Došlo k výjimce CORBA"
 #: ../camel/providers/pop3/camel-pop3-store.c:548
 #: ../servers/groupwise/e-gw-connection.c:174
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/exchange/storage/exchange-account.c:1533
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: ../calendar/libecal/e-cal.c:4862
+#: ../calendar/libecal/e-cal.c:5029
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Žádná chyba"
@@ -1965,7 +1977,7 @@ msgstr "Přihlášení do systému"
 msgid "This option will connect to the server using a simple password."
 msgstr "Tato volba připojí k serveru pomocí jednoduchého hesla."
 
-#: ../camel/camel-sasl-login.c:128
+#: ../camel/camel-sasl-login.c:132
 msgid "Unknown authentication state."
 msgstr "Neznámý stav autentizace."
 
@@ -2240,43 +2252,43 @@ msgstr "import klíčů: neimplementováno"
 msgid "export keys: unimplemented"
 msgstr "export klíčů: neimplementováno"
 
-#: ../camel/camel-store.c:214
+#: ../camel/camel-store.c:215
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Nemohu získat složku: Neplatná operace pro tento sklad"
 
-#: ../camel/camel-store.c:246
+#: ../camel/camel-store.c:247
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
 msgstr "Nemohu vytvořit složku `%s': složka existuje"
 
-#: ../camel/camel-store.c:300
+#: ../camel/camel-store.c:301
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Nemohu vytvořit složku: Neplatná operace pro tento sklad"
 
-#: ../camel/camel-store.c:328
+#: ../camel/camel-store.c:329
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nemohu vytvořit složku: %s: složka existuje"
 
-#: ../camel/camel-store.c:392 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:393 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nemohu odstranit složku: %s: Neplatná operace"
 
-#: ../camel/camel-store.c:442 ../camel/camel-vee-store.c:404
+#: ../camel/camel-store.c:443 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Nemohu přejmenovat složku: %s: Neplatná operace"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:781 ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Koš"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:784 ../camel/camel-vtrash-folder.c:49
+#: ../camel/camel-store.c:785 ../camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Smetí"
 
@@ -2579,22 +2591,23 @@ msgid "This message is not available in offline mode."
 msgstr "Tato zpráva není dostupná v režimu offline."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:176
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:199
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:183
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1136
 msgid "Could not get message"
 msgstr "Nemohu získat zprávu"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:714
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:681
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nemohu načíst souhrn pro %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1158
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1340
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nemohu vytvořit zprávu: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1170
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1352
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nemohu přidat zprávu do složky `%s': %s"
@@ -2681,69 +2694,69 @@ msgstr ""
 "Tato volba připojí k serveru GroupWise pomocí hesla přenášeného jako čistý "
 "text."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:270
+#: ../camel/providers/groupwise/camel-groupwise-store.c:273
 msgid "Host or user not available in url"
 msgstr "Počítač nebo uživatel není dostupný v url"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:364
+#: ../camel/providers/groupwise/camel-groupwise-store.c:368
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sZadejte prosím heslo GroupWise heslo pro %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:378
+#: ../camel/providers/groupwise/camel-groupwise-store.c:382
 #: ../camel/providers/imap/camel-imap-store.c:1324
 msgid "You didn't enter a password."
 msgstr "Neuvedli jste heslo."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:392
+#: ../camel/providers/groupwise/camel-groupwise-store.c:396
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Nemohu se autentizovat u serveru GroupWise."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:433
+#: ../camel/providers/groupwise/camel-groupwise-store.c:437
 msgid "Some features may not work correctly with your current server version"
 msgstr "Některé funkce možná s vaší verzí serveru nebudou fungovat správně"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:506
+#: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/imap/camel-imap-store.c:1875
 #: ../camel/providers/imap/camel-imap-store.c:2065
 #, c-format
 msgid "No such folder %s"
 msgstr "Složka %s neexistuje"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:574
+#: ../camel/providers/groupwise/camel-groupwise-store.c:608
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Stahuji souhrnné informace pro nové zprávy"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:711
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
 msgid "Cannot get folder info in offline mode."
 msgstr "Nemohu získat informace o složce v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:924
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1050
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nemohu vytvářet složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:975
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1101
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Nemohu odstraňovat složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1021
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1147
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Nemohu přejmenovávat složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1040
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1166
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Nemohu přejmenovat složku GroupWise `%s' na `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1076
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1202
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Server GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1078
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1204
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Služba GroupWise pro %s na %s"
@@ -2753,7 +2766,7 @@ msgstr "Služba GroupWise pro %s na %s"
 msgid "GroupWise mail delivery via %s"
 msgstr "Doručení pošty GroupWise pomocí %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
 msgstr "Posílám zprávu"
 
@@ -4732,14 +4745,14 @@ msgstr "Přistupuji k serveru LDAP anonymně"
 msgid "Failed to authenticate.\n"
 msgstr "Nemohu se autentizovat.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:259
+#: ../libedataserverui/e-categories-dialog.c:258
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "Kategorie '%s' již v nastavení existuje. Použijte prosím jiný název"
 
-#: ../libedataserverui/e-categories-dialog.c:423
+#: ../libedataserverui/e-categories-dialog.c:422
 msgid "Category"
 msgstr "Kategorie"
 
@@ -4779,7 +4792,7 @@ msgstr "_Upravit"
 msgid "categories"
 msgstr "kategorie"
 
-#: ../libedataserverui/e-name-selector-dialog.c:200
+#: ../libedataserverui/e-name-selector-dialog.c:202
 msgid "Select Contacts from Address Book"
 msgstr "Vyberte kontakty z adresáře"
 
@@ -4903,12 +4916,13 @@ msgid "Addressbook..."
 msgstr "Adresář..."
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#: ../servers/exchange/storage/exchange-account.c:879
 #, c-format
 msgid "Enter password for %s"
 msgstr "Zadejte heslo pro %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
-#: ../servers/exchange/storage/exchange-account.c:894
+#: ../servers/exchange/storage/exchange-account.c:884
 msgid "Enter password"
 msgstr "Zadejte heslo"
 
@@ -4970,113 +4984,29 @@ msgstr "Tuto operaci nelze provést v režimu offline"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:585
+#: ../servers/exchange/storage/exchange-account.c:583
 #, c-format
 msgid "%s's Folders"
 msgstr "Složky uživatele %s"
 
-#: ../servers/exchange/storage/exchange-account.c:889
-#, c-format
-msgid "%sEnter password for %s"
-msgstr "%sZadejte heslo pro %s"
-
-#: ../servers/exchange/storage/exchange-account.c:1245
+#: ../servers/exchange/storage/exchange-account.c:1236
 msgid "Personal Folders"
 msgstr "Osobní složky"
 
-#: ../servers/exchange/storage/exchange-account.c:1260
+#: ../servers/exchange/storage/exchange-account.c:1251
 msgid "Favorite Public Folders"
 msgstr "Oblíbené veřejné složky"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1268
 msgid "All Public Folders"
 msgstr ""
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1282
 #, fuzzy
 msgid "Global Address List"
 msgstr "Seznam adres"
-
-#: ../servers/exchange/storage/exchange-account.c:1444
-msgid ""
-"Could not authenticate to server. (Password incorrect?)\n"
-"\n"
-msgstr "Nemohu se autentizovat u serveru. (Nesprávné heslo?)\n\n"
-
-#: ../servers/exchange/storage/exchange-account.c:1449
-msgid ""
-"Could not authenticate to server.\n"
-"\n"
-"This probably means that your server requires you\n"
-"to specify the Windows domain name as part of your\n"
-"username (eg, \"DOMAIN\\user\").\n"
-"\n"
-"Or you might have just typed your password wrong.\n"
-"\n"
-msgstr ""
-"Nemohu se autentizovat u serveru.\n"
-"\n"
-"To pravděpodobně znamená, že server vyžaduje, abyste\n"
-"jako součást vašeho jména uživatele zadali název domény\n"
-"Windows (např. \"DOMÉNA\\uživatel\").\n"
-"\n"
-"Nebo jste prostě napsali heslo špatně.\n"
-"\n"
-
-#: ../servers/exchange/storage/exchange-account.c:1491
-#, c-format
-msgid "Mailbox for %s is not on this server."
-msgstr "Schránka pro %s není na tomto serveru."
-
-#: ../servers/exchange/storage/exchange-account.c:1496
-#, c-format
-msgid ""
-"The server '%s' is running Exchange 5.5 and is\n"
-"therefore not compatible with Ximian Connector"
-msgstr ""
-"Na serveru '%s' běží Exchange 5.5, server tedy\n"
-"není kompatibilní s Ximian Connector"
-
-#: ../servers/exchange/storage/exchange-account.c:1503
-#, c-format
-msgid ""
-"Could not find Exchange Web Storage System at %s.\n"
-"If OWA is running on a different path, you must specify that in the\n"
-"account configuration dialog."
-msgstr ""
-"Nemohu najít Exchange Web Storage System na %s.\n"
-"Pokud OWA běží na jiné cestě, musíte ji zadat\n"
-"v dialogu nastavení účtu."
-
-#: ../servers/exchange/storage/exchange-account.c:1511
-#, c-format
-msgid "No mailbox for user %s on %s.\n"
-msgstr "Pro uživatele %s není na %s schránka.\n"
-
-#: ../servers/exchange/storage/exchange-account.c:1517
-#: ../servers/exchange/storage/exchange-account.c:1523
-#: ../servers/exchange/storage/exchange-account.c:1531
-#, c-format
-msgid "Could not connect to server %s: %s"
-msgstr "Nemohu se připojit k serveru %s: %s"
-
-#: ../servers/exchange/storage/exchange-account.c:1519
-msgid "Could not resolve hostname"
-msgstr "Nemohu vyhledat jméno počítače"
-
-#: ../servers/exchange/storage/exchange-account.c:1525
-msgid "Network error"
-msgstr "Chyba sítě"
-
-#: ../servers/exchange/storage/exchange-folder-size.c:321
-msgid "Folder Name"
-msgstr "Název složky"
-
-#: ../servers/exchange/storage/exchange-folder-size.c:325
-msgid "Folder Size"
-msgstr "Velikost složky"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
@@ -5099,6 +5029,72 @@ msgstr "Služba zaznamenávání Evolution Data Server"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Došlo k několika chybám segmentace; nemohu zobrazit dialog o chybě\n"
+
+#~ msgid "%sEnter password for %s"
+#~ msgstr "%sZadejte heslo pro %s"
+
+#~ msgid ""
+#~ "Could not authenticate to server. (Password incorrect?)\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Nemohu se autentizovat u serveru. (Nesprávné heslo?)\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Could not authenticate to server.\n"
+#~ "\n"
+#~ "This probably means that your server requires you\n"
+#~ "to specify the Windows domain name as part of your\n"
+#~ "username (eg, \"DOMAIN\\user\").\n"
+#~ "\n"
+#~ "Or you might have just typed your password wrong.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Nemohu se autentizovat u serveru.\n"
+#~ "\n"
+#~ "To pravděpodobně znamená, že server vyžaduje, abyste\n"
+#~ "jako součást vašeho jména uživatele zadali název domény\n"
+#~ "Windows (např. \"DOMÉNA\\uživatel\").\n"
+#~ "\n"
+#~ "Nebo jste prostě napsali heslo špatně.\n"
+#~ "\n"
+
+#~ msgid "Mailbox for %s is not on this server."
+#~ msgstr "Schránka pro %s není na tomto serveru."
+
+#~ msgid ""
+#~ "The server '%s' is running Exchange 5.5 and is\n"
+#~ "therefore not compatible with Ximian Connector"
+#~ msgstr ""
+#~ "Na serveru '%s' běží Exchange 5.5, server tedy\n"
+#~ "není kompatibilní s Ximian Connector"
+
+#~ msgid ""
+#~ "Could not find Exchange Web Storage System at %s.\n"
+#~ "If OWA is running on a different path, you must specify that in the\n"
+#~ "account configuration dialog."
+#~ msgstr ""
+#~ "Nemohu najít Exchange Web Storage System na %s.\n"
+#~ "Pokud OWA běží na jiné cestě, musíte ji zadat\n"
+#~ "v dialogu nastavení účtu."
+
+#~ msgid "No mailbox for user %s on %s.\n"
+#~ msgstr "Pro uživatele %s není na %s schránka.\n"
+
+#~ msgid "Could not connect to server %s: %s"
+#~ msgstr "Nemohu se připojit k serveru %s: %s"
+
+#~ msgid "Could not resolve hostname"
+#~ msgstr "Nemohu vyhledat jméno počítače"
+
+#~ msgid "Network error"
+#~ msgstr "Chyba sítě"
+
+#~ msgid "Folder Name"
+#~ msgstr "Název složky"
+
+#~ msgid "Folder Size"
+#~ msgstr "Velikost složky"
 
 #~ msgid "Groupwise server %s"
 #~ msgstr "Server Groupwise %s"
