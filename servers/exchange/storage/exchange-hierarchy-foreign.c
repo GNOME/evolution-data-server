@@ -341,6 +341,8 @@ create_folder (ExchangeHierarchy *hier, EFolder *parent,
 static ExchangeAccountFolderResult
 remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 {
+/* This should be moved to plugins */
+#if 0
 	const char *folder_type, *physical_uri;
 
 	/* Temp Fix for remove fav folders. see #59168 */
@@ -363,7 +365,7 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 				       EXCHANGE_CONTACTS_FOLDER,
 				       physical_uri);
 	}
-
+#endif
 	if (folder != hier->toplevel)
 		exchange_hierarchy_removed_folder (hier, folder);
 

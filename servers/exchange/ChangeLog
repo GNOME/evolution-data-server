@@ -1,3 +1,8 @@
+2005-07-14  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/exchange-hierarchy-foreign.c (remove_folder) : The esource
+	removal should be moved to the eplugins code.
+
 2005-07-11  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	Initial patch submitted by Arun Prakash <arunp@novell.com>.
