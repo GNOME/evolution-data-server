@@ -1,33 +1,47 @@
 # Brazilian Portuguese translation of Evolution Data Server.
 # Copyright (C) 2003,2004,2005 Free Software Foundation, Inc.
 # Gustavo Maciel Dias Vieira <gustavo@sagui.org>, 2003,2004.
-# Afonso Celso Medina <medina@maua.br>, 2005.
-#
+# Afonso Celso Medina <afmedina@uol.com.br>, 2005.
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-02 13:39-0300\n"
-"PO-Revision-Date: 2005-04-02 13:33-0300\n"
-"Last-Translator: Afonso Celso Medina <medina@maua.br>\n"
+"POT-Creation-Date: 2005-07-12 13:38+0000\n"
+"PO-Revision-Date: 2005-07-14 12:56-0300\n"
+"Last-Translator: Afonso Celso Medina <afmedina@uol.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:519
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2045
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:452
+#: ../addressbook/backends/file/e-book-backend-file.c:528
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2001
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Carregando..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:521
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2029
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2043
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3401
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:454
+#: ../addressbook/backends/file/e-book-backend-file.c:530
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1987
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1999
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3405
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Pesquisando..."
+
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2238
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3538
+#, c-format
+msgid "Downloading contacts (%d)... "
+msgstr "Baixando contatos (%d)... "
+
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2321
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2428
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2459
+#, c-format
+msgid "Updating contacts cache (%d)... "
+msgstr "Atualizando o cache de contatos (%d)... "
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:647
 msgid "Using Distinguished Name (DN)"
@@ -35,7 +49,7 @@ msgstr "Usando Distinguished Name (DN)"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:650
 msgid "Using Email Address"
-msgstr "Usando endereço eletrônico"
+msgstr "Usando Endereço de Email"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:820
 msgid "Reconnecting to LDAP server..."
@@ -53,11 +67,11 @@ msgstr "Removendo contato do servidor LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contato do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3290
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3295
 msgid "Receiving LDAP search results..."
 msgstr "Recebendo resultados da pesquisa LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3421
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3425
 msgid "Error performing search"
 msgstr "Erro ao executar pesquisa"
 
@@ -65,91 +79,91 @@ msgstr "Erro ao executar pesquisa"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:240 ../addressbook/libebook/e-book.c:244
-#: ../addressbook/libebook/e-book.c:446 ../addressbook/libebook/e-book.c:450
-#: ../addressbook/libebook/e-book.c:579 ../addressbook/libebook/e-book.c:583
-#: ../addressbook/libebook/e-book.c:672 ../addressbook/libebook/e-book.c:676
-#: ../addressbook/libebook/e-book.c:952 ../addressbook/libebook/e-book.c:957
-#: ../addressbook/libebook/e-book.c:1132 ../addressbook/libebook/e-book.c:1136
-#: ../addressbook/libebook/e-book.c:1277 ../addressbook/libebook/e-book.c:1281
-#: ../addressbook/libebook/e-book.c:1479 ../addressbook/libebook/e-book.c:1483
-#: ../addressbook/libebook/e-book.c:1684 ../addressbook/libebook/e-book.c:1688
-#: ../addressbook/libebook/e-book.c:1910 ../addressbook/libebook/e-book.c:1914
-#: ../addressbook/libebook/e-book.c:2117 ../addressbook/libebook/e-book.c:2121
-#: ../addressbook/libebook/e-book.c:3200
+#: ../addressbook/libebook/e-book.c:238 ../addressbook/libebook/e-book.c:242
+#: ../addressbook/libebook/e-book.c:454 ../addressbook/libebook/e-book.c:458
+#: ../addressbook/libebook/e-book.c:599 ../addressbook/libebook/e-book.c:603
+#: ../addressbook/libebook/e-book.c:692 ../addressbook/libebook/e-book.c:696
+#: ../addressbook/libebook/e-book.c:1010 ../addressbook/libebook/e-book.c:1015
+#: ../addressbook/libebook/e-book.c:1202 ../addressbook/libebook/e-book.c:1206
+#: ../addressbook/libebook/e-book.c:1363 ../addressbook/libebook/e-book.c:1367
+#: ../addressbook/libebook/e-book.c:1576 ../addressbook/libebook/e-book.c:1580
+#: ../addressbook/libebook/e-book.c:1817 ../addressbook/libebook/e-book.c:1821
+#: ../addressbook/libebook/e-book.c:2057 ../addressbook/libebook/e-book.c:2061
+#: ../addressbook/libebook/e-book.c:2273 ../addressbook/libebook/e-book.c:2277
+#: ../addressbook/libebook/e-book.c:3373
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "\"%s\" no livro antes de \"%s\""
+msgstr "\"%s\" no catálogo antes de \"%s\""
 
-#: ../addressbook/libebook/e-book.c:253 ../addressbook/libebook/e-book.c:459
-#: ../addressbook/libebook/e-book.c:592 ../addressbook/libebook/e-book.c:685
-#: ../addressbook/libebook/e-book.c:967 ../addressbook/libebook/e-book.c:1146
-#: ../addressbook/libebook/e-book.c:1291 ../addressbook/libebook/e-book.c:1492
-#: ../addressbook/libebook/e-book.c:1697 ../addressbook/libebook/e-book.c:1924
-#: ../addressbook/libebook/e-book.c:2130 ../addressbook/libebook/e-book.c:2468
-#: ../addressbook/libebook/e-book.c:2664
+#: ../addressbook/libebook/e-book.c:251 ../addressbook/libebook/e-book.c:467
+#: ../addressbook/libebook/e-book.c:612 ../addressbook/libebook/e-book.c:705
+#: ../addressbook/libebook/e-book.c:1025 ../addressbook/libebook/e-book.c:1216
+#: ../addressbook/libebook/e-book.c:1377 ../addressbook/libebook/e-book.c:1589
+#: ../addressbook/libebook/e-book.c:1830 ../addressbook/libebook/e-book.c:2071
+#: ../addressbook/libebook/e-book.c:2286 ../addressbook/libebook/e-book.c:2622
+#: ../addressbook/libebook/e-book.c:2828
 msgid "book busy"
-msgstr "livro ocupado"
+msgstr "catálogo ocupado"
 
-#: ../addressbook/libebook/e-book.c:286 ../addressbook/libebook/e-book.c:290
-#: ../addressbook/libebook/e-book.c:492 ../addressbook/libebook/e-book.c:496
-#: ../addressbook/libebook/e-book.c:621 ../addressbook/libebook/e-book.c:625
-#: ../addressbook/libebook/e-book.c:714 ../addressbook/libebook/e-book.c:718
-#: ../addressbook/libebook/e-book.c:996 ../addressbook/libebook/e-book.c:999
-#: ../addressbook/libebook/e-book.c:1178 ../addressbook/libebook/e-book.c:1181
-#: ../addressbook/libebook/e-book.c:1320 ../addressbook/libebook/e-book.c:1324
-#: ../addressbook/libebook/e-book.c:1528 ../addressbook/libebook/e-book.c:1532
-#: ../addressbook/libebook/e-book.c:1744 ../addressbook/libebook/e-book.c:1748
-#: ../addressbook/libebook/e-book.c:1956 ../addressbook/libebook/e-book.c:1960
-#: ../addressbook/libebook/e-book.c:2158 ../addressbook/libebook/e-book.c:2162
-#: ../addressbook/libebook/e-book.c:2409 ../addressbook/libebook/e-book.c:2496
-#: ../addressbook/libebook/e-book.c:2500 ../addressbook/libebook/e-book.c:2692
-#: ../addressbook/libebook/e-book.c:2696 ../addressbook/libebook/e-book.c:3209
+#: ../addressbook/libebook/e-book.c:284 ../addressbook/libebook/e-book.c:288
+#: ../addressbook/libebook/e-book.c:500 ../addressbook/libebook/e-book.c:504
+#: ../addressbook/libebook/e-book.c:641 ../addressbook/libebook/e-book.c:645
+#: ../addressbook/libebook/e-book.c:734 ../addressbook/libebook/e-book.c:738
+#: ../addressbook/libebook/e-book.c:1054 ../addressbook/libebook/e-book.c:1057
+#: ../addressbook/libebook/e-book.c:1248 ../addressbook/libebook/e-book.c:1251
+#: ../addressbook/libebook/e-book.c:1406 ../addressbook/libebook/e-book.c:1410
+#: ../addressbook/libebook/e-book.c:1625 ../addressbook/libebook/e-book.c:1629
+#: ../addressbook/libebook/e-book.c:1877 ../addressbook/libebook/e-book.c:1881
+#: ../addressbook/libebook/e-book.c:2103 ../addressbook/libebook/e-book.c:2107
+#: ../addressbook/libebook/e-book.c:2314 ../addressbook/libebook/e-book.c:2318
+#: ../addressbook/libebook/e-book.c:2563 ../addressbook/libebook/e-book.c:2650
+#: ../addressbook/libebook/e-book.c:2654 ../addressbook/libebook/e-book.c:2856
+#: ../addressbook/libebook/e-book.c:2860 ../addressbook/libebook/e-book.c:3382
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Exceção CORBA fazendo a chamada \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2390
+#: ../addressbook/libebook/e-book.c:2544
 #, c-format
 msgid "%s: there is no current operation"
-msgstr "%s: não há operação atual"
+msgstr "%s: não há operação em execução"
 
-#: ../addressbook/libebook/e-book.c:2425
+#: ../addressbook/libebook/e-book.c:2579
 #, c-format
 msgid "%s: couldn't cancel"
 msgstr "%s: não foi possível cancelar"
 
-#: ../addressbook/libebook/e-book.c:2454 ../addressbook/libebook/e-book.c:2458
+#: ../addressbook/libebook/e-book.c:2608 ../addressbook/libebook/e-book.c:2612
 #, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "\"%s\" no livro após \"%s\""
+msgstr "\"%s\" no catálogo após \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2524
+#: ../addressbook/libebook/e-book.c:2678
 #, c-format
 msgid "%s: cancelled"
 msgstr "%s: cancelado"
 
-#: ../addressbook/libebook/e-book.c:3066
+#: ../addressbook/libebook/e-book.c:3239
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Fonte inválida."
 
-#: ../addressbook/libebook/e-book.c:3074 ../addressbook/libebook/e-book.c:3138
+#: ../addressbook/libebook/e-book.c:3247 ../addressbook/libebook/e-book.c:3311
 #, c-format
 msgid "%s: no factories available for uri `%s'"
 msgstr "%s: não existem fábricas disponíveis para a URI `%s'"
 
-#: ../addressbook/libebook/e-book.c:3086
+#: ../addressbook/libebook/e-book.c:3259
 #, c-format
 msgid "%s: Could not create EBookListener"
-msgstr "%s: Não foi possível criar EBookListener"
+msgstr "%s: Impossível criar EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3332
+#: ../addressbook/libebook/e-book.c:3522
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
 msgstr "%s: não existia uid de auto contato no gconf"
 
-#: ../addressbook/libebook/e-book.c:3443
+#: ../addressbook/libebook/e-book.c:3652
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: não existia fonte para o uid `%s' armazenado no gconf."
@@ -168,7 +182,7 @@ msgstr "Armazenar Como"
 #. vcards that don't even have a N attribute.  *sigh*)
 #: ../addressbook/libebook/e-contact.c:109
 msgid "Full Name"
-msgstr "Nome completo"
+msgstr "Nome Completo"
 
 #: ../addressbook/libebook/e-contact.c:110
 msgid "Name"
@@ -176,7 +190,7 @@ msgstr "Nome"
 
 #: ../addressbook/libebook/e-contact.c:111
 msgid "Given Name"
-msgstr "Primeiro nome"
+msgstr "Primeiro Nome"
 
 #: ../addressbook/libebook/e-contact.c:112
 msgid "Family Name"
@@ -193,71 +207,71 @@ msgstr "Nome ou Org"
 #. Address fields
 #: ../addressbook/libebook/e-contact.c:117
 msgid "Address List"
-msgstr "Lista de endereços"
+msgstr "Lista de Endereços"
 
 #: ../addressbook/libebook/e-contact.c:118
 msgid "Home Address"
-msgstr "Endereço residencial"
+msgstr "Endereço Residencial"
 
 #: ../addressbook/libebook/e-contact.c:119
 msgid "Work Address"
-msgstr "Endereço comercial"
+msgstr "Endereço Comercial"
 
 #: ../addressbook/libebook/e-contact.c:120
 msgid "Other Address"
-msgstr "Outro endereço"
+msgstr "Outro Endereço"
 
 #: ../addressbook/libebook/e-contact.c:122
 msgid "Home Address Label"
-msgstr "Rótulo do endereço residencial"
+msgstr "Rótulo do Endereço Residencial"
 
 #: ../addressbook/libebook/e-contact.c:123
 msgid "Work Address Label"
-msgstr "Rótulo do endereço comercial"
+msgstr "Rótulo do Endereço Comercial"
 
 #: ../addressbook/libebook/e-contact.c:124
 msgid "Other Address Label"
-msgstr "Rótulo de outros endereços"
+msgstr "Rótulo de Outros Endereços"
 
 #: ../addressbook/libebook/e-contact.c:126
 msgid "Assistant Phone"
-msgstr "Telefone do assistente:"
+msgstr "Telefone do Participante"
 
 #: ../addressbook/libebook/e-contact.c:127
 msgid "Business Phone"
-msgstr "Telefone comercial"
+msgstr "Telefone Comercial"
 
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Business Phone 2"
-msgstr "Telefone comercial 2"
+msgstr "Telefone Comercial 2"
 
 #: ../addressbook/libebook/e-contact.c:129
 msgid "Business Fax"
-msgstr "Fax comercial"
+msgstr "Fax Comercial"
 
 #: ../addressbook/libebook/e-contact.c:130
 msgid "Callback Phone"
-msgstr "Telefone de retorno"
+msgstr "Telefone de Retorno"
 
 #: ../addressbook/libebook/e-contact.c:131
 msgid "Car Phone"
-msgstr "Telefone do carro"
+msgstr "Telefone do Carro"
 
 #: ../addressbook/libebook/e-contact.c:132
 msgid "Company Phone"
-msgstr "Telefone da empresa"
+msgstr "Telefone da Empresa"
 
 #: ../addressbook/libebook/e-contact.c:133
 msgid "Home Phone"
-msgstr "Telefone residencial"
+msgstr "Telefone Residencial"
 
 #: ../addressbook/libebook/e-contact.c:134
 msgid "Home Phone 2"
-msgstr "Telefone residencial 2"
+msgstr "Telefone Residencial 2"
 
 #: ../addressbook/libebook/e-contact.c:135
 msgid "Home Fax"
-msgstr "Fax residencial"
+msgstr "Fax Residencial"
 
 #: ../addressbook/libebook/e-contact.c:136
 msgid "ISDN"
@@ -265,15 +279,15 @@ msgstr "ISDN"
 
 #: ../addressbook/libebook/e-contact.c:137
 msgid "Mobile Phone"
-msgstr "Telefone celular"
+msgstr "Telefone Celular"
 
 #: ../addressbook/libebook/e-contact.c:138
 msgid "Other Phone"
-msgstr "Outro telefone"
+msgstr "Outro Telefone"
 
 #: ../addressbook/libebook/e-contact.c:139
 msgid "Other Fax"
-msgstr "Outro fax"
+msgstr "Outro Fax"
 
 #: ../addressbook/libebook/e-contact.c:140
 msgid "Pager"
@@ -281,7 +295,7 @@ msgstr "Pager"
 
 #: ../addressbook/libebook/e-contact.c:141
 msgid "Primary Phone"
-msgstr "Telefone principal"
+msgstr "Telefone Principal"
 
 #: ../addressbook/libebook/e-contact.c:142
 msgid "Radio"
@@ -298,40 +312,40 @@ msgstr "TTY"
 #. Email fields
 #: ../addressbook/libebook/e-contact.c:147
 msgid "Email List"
-msgstr "Lista de e-mails"
+msgstr "Lista de Emails"
 
 #: ../addressbook/libebook/e-contact.c:148
 msgid "Email 1"
-msgstr "E-mail 1"
+msgstr "Email 1"
 
 #: ../addressbook/libebook/e-contact.c:149
 msgid "Email 2"
-msgstr "E-mail 2"
+msgstr "Email 2"
 
 #: ../addressbook/libebook/e-contact.c:150
 msgid "Email 3"
-msgstr "E-mail 3"
+msgstr "Email 3"
 
 #: ../addressbook/libebook/e-contact.c:151
 msgid "Email 4"
-msgstr "E-mail 4"
+msgstr "Email 4"
 
 #: ../addressbook/libebook/e-contact.c:152
 msgid "Mailer"
-msgstr "Programa de correio"
+msgstr "Programa de Correio"
 
 #: ../addressbook/libebook/e-contact.c:153
 msgid "Wants HTML Mail"
-msgstr "Deseja correio HTML"
+msgstr "Deseja Correio HTML"
 
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:156
 msgid "AIM Screen Name List"
-msgstr "Lista de nomes de tela do AIM"
+msgstr "Lista de Nomes de Tela do AIM"
 
 #: ../addressbook/libebook/e-contact.c:157
-msgid "Groupwise Id List"
-msgstr "Lista de IDs do Groupwise"
+msgid "GroupWise Id List"
+msgstr "Lista de Id do Groupwise"
 
 #: ../addressbook/libebook/e-contact.c:158
 msgid "Jabber Id List"
@@ -339,11 +353,11 @@ msgstr "Lista de IDs do Jabber"
 
 #: ../addressbook/libebook/e-contact.c:159
 msgid "Yahoo! Screen Name List"
-msgstr "Lista de nomes de tela do Yahoo!"
+msgstr "Lista de Nomes de Tela do Yahoo!"
 
 #: ../addressbook/libebook/e-contact.c:160
 msgid "MSN Screen Name List"
-msgstr "Lista de nomes de tela do MSN"
+msgstr "Lista de Nomes de Tela do MSN"
 
 #: ../addressbook/libebook/e-contact.c:161
 msgid "ICQ Id List"
@@ -351,147 +365,147 @@ msgstr "Lista de IDs do ICQ"
 
 #: ../addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 1"
-msgstr "Nome de tela do AIM residencial 1"
+msgstr "Nome de Tela do AIM Residencial 1"
 
 #: ../addressbook/libebook/e-contact.c:164
 msgid "AIM Home Screen Name 2"
-msgstr "Nome de tela do AIM residencial 2"
+msgstr "Nome de Tela do AIM Residencial 2"
 
 #: ../addressbook/libebook/e-contact.c:165
 msgid "AIM Home Screen Name 3"
-msgstr "Nome de tela do AIM residencial 3"
+msgstr "Nome de Tela do AIM Residencial 3"
 
 #: ../addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 1"
-msgstr "Nome de tela do AIM comercial 1"
+msgstr "Nome de Tela do AIM Comercial 1"
 
 #: ../addressbook/libebook/e-contact.c:167
 msgid "AIM Work Screen Name 2"
-msgstr "Nome de tela do AIM comercial 2"
+msgstr "Nome de Tela do AIM Comercial 2"
 
 #: ../addressbook/libebook/e-contact.c:168
 msgid "AIM Work Screen Name 3"
-msgstr "Nome de tela do AIM comercial 3"
+msgstr "Nome de Tela do AIM Comercial 3"
 
 #: ../addressbook/libebook/e-contact.c:169
-msgid "Groupwise Home Screen Name 1"
-msgstr "Nome de tela do Groupwise residencial 1"
+msgid "GroupWise Home Screen Name 1"
+msgstr "Nome de Tela do Groupwise Residencial 1"
 
 #: ../addressbook/libebook/e-contact.c:170
-msgid "Groupwise Home Screen Name 2"
-msgstr "Nome de tela do Groupwise residencial 2"
+msgid "GroupWise Home Screen Name 2"
+msgstr "Nome de Tela do Groupwise Residencial 2"
 
 #: ../addressbook/libebook/e-contact.c:171
-msgid "Groupwise Home Screen Name 3"
-msgstr "Nome de tela do Groupwise residencial 3"
+msgid "GroupWise Home Screen Name 3"
+msgstr "Nome de Tela do Groupwise Residencial 3"
 
 #: ../addressbook/libebook/e-contact.c:172
-msgid "Groupwise Work Screen Name 1"
-msgstr "Nome de tela do Groupwise comercial 1"
+msgid "GroupWise Work Screen Name 1"
+msgstr "Nome de Tela do Groupwise Comercial 1"
 
 #: ../addressbook/libebook/e-contact.c:173
-msgid "Groupwise Work Screen Name 2"
-msgstr "Nome de tela do Groupwise comercial 2"
+msgid "GroupWise Work Screen Name 2"
+msgstr "Nome de Tela do Groupwise Comercial 2"
 
 #: ../addressbook/libebook/e-contact.c:174
-msgid "Groupwise Work Screen Name 3"
-msgstr "Nome de tela do Groupwise comercial 3"
+msgid "GroupWise Work Screen Name 3"
+msgstr "Nome de Tela do Groupwise Comercial 3"
 
 #: ../addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 1"
-msgstr "ID do Jabber residencial 1"
+msgstr "ID do Jabber Residencial 1"
 
 #: ../addressbook/libebook/e-contact.c:176
 msgid "Jabber Home Id 2"
-msgstr "ID do Jabber residencial 2"
+msgstr "ID do Jabber Residencial 2"
 
 #: ../addressbook/libebook/e-contact.c:177
 msgid "Jabber Home Id 3"
-msgstr "ID do Jabber residencial 3"
+msgstr "ID do Jabber Residencial 3"
 
 #: ../addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 1"
-msgstr "ID do Jabber comercial 1"
+msgstr "ID do Jabber Comercial 1"
 
 #: ../addressbook/libebook/e-contact.c:179
 msgid "Jabber Work Id 2"
-msgstr "ID do Jabber comercial 2"
+msgstr "ID do Jabber Comercial 2"
 
 #: ../addressbook/libebook/e-contact.c:180
 msgid "Jabber Work Id 3"
-msgstr "ID do Jabber comercial 3"
+msgstr "ID do Jabber Comercial 3"
 
 #: ../addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Nome de tela do Yahoo! residencial 1"
+msgstr "Nome de Tela do Yahoo! Residencial 1"
 
 #: ../addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Nome de tela do Yahoo! residencial 2"
+msgstr "Nome de Tela do Yahoo! Residencial 2"
 
 #: ../addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Nome de tela do Yahoo! residencial 3"
+msgstr "Nome de Tela do Yahoo! Residencial 3"
 
 #: ../addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Nome de tela do Yahoo! comercial 1"
+msgstr "Nome de Tela do Yahoo! Comercial 1"
 
 #: ../addressbook/libebook/e-contact.c:185
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Nome de tela do Yahoo! comercial 2"
+msgstr "Nome de Tela do Yahoo! Comercial 2"
 
 #: ../addressbook/libebook/e-contact.c:186
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Nome de tela do Yahoo! comercial 3"
+msgstr "Nome de Tela do Yahoo! Comercial 3"
 
 #: ../addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 1"
-msgstr "Nome de tela do MSN residencial 1"
+msgstr "Nome de Tela do MSN Residencial 1"
 
 #: ../addressbook/libebook/e-contact.c:188
 msgid "MSN Home Screen Name 2"
-msgstr "Nome de tela do MSN residencial 2"
+msgstr "Nome de Tela do MSN Residencial 2"
 
 #: ../addressbook/libebook/e-contact.c:189
 msgid "MSN Home Screen Name 3"
-msgstr "Nome de tela do MSN residencial 3"
+msgstr "Nome de Tela do MSN Residencial 3"
 
 #: ../addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 1"
-msgstr "Nome de tela do MSN comercial 1"
+msgstr "Nome de Tela do MSN Comercial 1"
 
 #: ../addressbook/libebook/e-contact.c:191
 msgid "MSN Work Screen Name 2"
-msgstr "Nome de tela do MSN comercial 2"
+msgstr "Nome de Tela do MSN Comercial 2"
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "MSN Work Screen Name 3"
-msgstr "Nome de tela do MSN comercial 3"
+msgstr "Nome de Tela do MSN Comercial 3"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 1"
-msgstr "ID do ICQ residencial 1"
+msgstr "ID do ICQ Residencial 1"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "ICQ Home Id 2"
-msgstr "ID do ICQ residencial 2"
+msgstr "ID do ICQ Residencial 2"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "ICQ Home Id 3"
-msgstr "ID do ICQ residencial 3"
+msgstr "ID do ICQ Residencial 3"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 1"
-msgstr "ID do ICQ comercial 1"
+msgstr "ID do ICQ Comercial 1"
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "ICQ Work Id 2"
-msgstr "ID do ICQ comercial 2"
+msgstr "ID do ICQ Comercial 2"
 
 #: ../addressbook/libebook/e-contact.c:198
 msgid "ICQ Work Id 3"
-msgstr "ID do ICQ comercial 3"
+msgstr "ID do ICQ Comercial 3"
 
 #. Organizational fields
 #: ../addressbook/libebook/e-contact.c:201
@@ -500,7 +514,7 @@ msgstr "Empresa"
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "Organizational Unit"
-msgstr "Unidade organizacional"
+msgstr "Unidade Organizacional"
 
 #: ../addressbook/libebook/e-contact.c:203
 msgid "Office"
@@ -525,15 +539,15 @@ msgstr "Assistente"
 #. Web fields
 #: ../addressbook/libebook/e-contact.c:211
 msgid "Homepage URL"
-msgstr "URL página web"
+msgstr "URL Página Web"
 
 #: ../addressbook/libebook/e-contact.c:212
 msgid "Weblog URL"
-msgstr "URL blog"
+msgstr "URL Blog"
 
 #: ../addressbook/libebook/e-contact.c:213
 msgid "Video Conferencing URL"
-msgstr "URL vídeo conferência"
+msgstr "URL Vídeo Conferência"
 
 #. Photo/Logo
 #: ../addressbook/libebook/e-contact.c:216
@@ -542,7 +556,7 @@ msgstr "Foto"
 
 #: ../addressbook/libebook/e-contact.c:217
 msgid "Logo"
-msgstr "Logotipo"
+msgstr "Logo"
 
 #. Security fields
 #: ../addressbook/libebook/e-contact.c:220
@@ -552,21 +566,21 @@ msgstr "Certificado X.509"
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:223
 msgid "Category List"
-msgstr "Lista de categorias"
+msgstr "Lista de Categorias"
 
 #: ../addressbook/libebook/e-contact.c:224
-#: ../libedataserverui/e-categories-dialog.c:408
+#: ../libedataserverui/e-categories-dialog.c:397
 msgid "Categories"
 msgstr "Categorias"
 
 #. Collaboration fields
 #: ../addressbook/libebook/e-contact.c:227
 msgid "Calendar URI"
-msgstr "URI de agenda"
+msgstr "URI de Agenda"
 
 #: ../addressbook/libebook/e-contact.c:228
 msgid "Free/Busy URL"
-msgstr "URL livre/ocupado"
+msgstr "URL Livre/Ocupado"
 
 #: ../addressbook/libebook/e-contact.c:229
 msgid "ICS Calendar"
@@ -575,7 +589,7 @@ msgstr "Agenda ICS"
 #. Misc fields
 #: ../addressbook/libebook/e-contact.c:232
 msgid "Spouse's Name"
-msgstr "Nome do cônjuge"
+msgstr "Nome do Cônjuge"
 
 #: ../addressbook/libebook/e-contact.c:233
 msgid "Note"
@@ -583,41 +597,49 @@ msgstr "Nota"
 
 #: ../addressbook/libebook/e-contact.c:235
 msgid "Birth Date"
-msgstr "Data de nascimento"
+msgstr "Data de Nascimento"
 
+#. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
+#: ../libedataserver/e-categories.c:236
 msgid "Anniversary"
 msgstr "Bodas"
 
 #: ../addressbook/libebook/e-contact.c:238
 msgid "List"
-msgstr "Lista"
+msgstr "Listar"
 
 #: ../addressbook/libebook/e-contact.c:239
 msgid "List Show Addresses"
-msgstr "Listar endereços de exibição"
+msgstr "Listar Endereços de Exibição"
 
-#: ../addressbook/libebook/e-contact.c:241
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Last Revision"
 msgstr "Última Revisão"
 
-#: ../addressbook/libebook/e-contact.c:1210
-#: ../addressbook/libebook/e-destination.c:617
-msgid "Unnamed List"
-msgstr "Lista sem nome"
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:244
+msgid "Book URI"
+msgstr "URI do Catálogo"
 
-#. Set category and visibility
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:446
-#: ../libedataserver/e-categories.c:226
+#: ../addressbook/libebook/e-contact.c:1232
+#: ../addressbook/libebook/e-destination.c:751
+msgid "Unnamed List"
+msgstr "Lista Sem Nome"
+
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
+#: ../libedataserver/e-categories.c:237
 msgid "Birthday"
 msgstr "Aniversário"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:470
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:481
 #, c-format
 msgid "Birthday: %s"
 msgstr "Aniversário: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:505
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Bodas: %s"
@@ -626,51 +648,59 @@ msgstr "Bodas: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Não é possível salvar dados da agenda: URI malformada."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:754
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:292
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:860
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1172
 msgid "Reply Requested: by "
 msgstr "Resposta Solicitada: por"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:759
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:297
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:865
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1177
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Solicitada: Quando conveniente"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:529
-msgid "Invalid server URI"
-msgstr "URI de servidor inválida"
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:176
+#, c-format
+msgid "Loading %s items"
+msgstr "Carregando %s itens"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:560
-#, fuzzy
-msgid "Could not create thread for getting deltas"
-msgstr "Impossível criar thread para ocupar o cache"
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:582
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:585
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:681
 msgid "Calendar"
 msgstr "Agenda"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:592
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:829
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:737
+msgid "Invalid server URI"
+msgstr "URI de servidor inválida"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:753
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:762
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
+#: ../calendar/libecal/e-cal.c:5021
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:815
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:835
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:862
+#: ../camel/providers/groupwise/camel-groupwise-store.c:554
+#: ../camel/providers/groupwise/camel-groupwise-store.c:573
+#: ../camel/providers/groupwise/camel-groupwise-store.c:618
+#: ../camel/providers/groupwise/camel-groupwise-store.c:829
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1069
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:177
+msgid "Authentication failed"
+msgstr "Falhou a autenticação"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:803
+msgid "Could not create thread for getting deltas"
+msgstr "Impossível criar thread para obter deltas"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1070
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Não foi possível criar arquivo de cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:602
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:838
 msgid "Could not create thread for populating cache"
 msgstr "Impossível criar thread para ocupar o cache"
-
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:608
-#: ../calendar/libecal/e-cal.c:4537
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:672
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:697
-#: ../camel/providers/groupwise/camel-groupwise-store.c:528
-#: ../camel/providers/groupwise/camel-groupwise-store.c:628
-#: ../camel/providers/groupwise/camel-groupwise-store.c:790
-#: ../camel/providers/groupwise/camel-groupwise-store.c:988
-msgid "Authentication failed"
-msgstr "Falhou a autenticação"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:240
 msgid "Redirected to Invalid URI"
@@ -694,7 +724,7 @@ msgstr "Agradável"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:195
 msgid "Snow showers"
-msgstr "Neve breve"
+msgstr "Pancadas de neve"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:196
 msgid "Snow"
@@ -738,7 +768,7 @@ msgstr "Nublado na maior parte do tempo"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Windy"
-msgstr "Ventania"
+msgstr "Ventando"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Rain showers"
@@ -877,303 +907,311 @@ msgstr "%.1f-%.1fcm neve\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fin neve\n"
 
-#: ../calendar/libecal/e-cal-component.c:1299
+#: ../calendar/libecal/e-cal-component.c:1314
 msgid "Untitled appointment"
 msgstr "Compromisso sem nome"
 
-#: ../calendar/libecal/e-cal-recur.c:3996
+#: ../calendar/libecal/e-cal-recur.c:4014
 msgid "1st"
 msgstr "1º de"
 
-#: ../calendar/libecal/e-cal-recur.c:3997
+#: ../calendar/libecal/e-cal-recur.c:4015
 msgid "2nd"
 msgstr "2 de"
 
-#: ../calendar/libecal/e-cal-recur.c:3998
+#: ../calendar/libecal/e-cal-recur.c:4016
 msgid "3rd"
 msgstr "3 de"
 
-#: ../calendar/libecal/e-cal-recur.c:3999
+#: ../calendar/libecal/e-cal-recur.c:4017
 msgid "4th"
 msgstr "4 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4000
+#: ../calendar/libecal/e-cal-recur.c:4018
 msgid "5th"
 msgstr "5 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4001
+#: ../calendar/libecal/e-cal-recur.c:4019
 msgid "6th"
 msgstr "6 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4002
+#: ../calendar/libecal/e-cal-recur.c:4020
 msgid "7th"
 msgstr "7 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4003
+#: ../calendar/libecal/e-cal-recur.c:4021
 msgid "8th"
 msgstr "8 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4004
+#: ../calendar/libecal/e-cal-recur.c:4022
 msgid "9th"
 msgstr "9 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4005
+#: ../calendar/libecal/e-cal-recur.c:4023
 msgid "10th"
 msgstr "10 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4006
+#: ../calendar/libecal/e-cal-recur.c:4024
 msgid "11th"
 msgstr "11 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4007
+#: ../calendar/libecal/e-cal-recur.c:4025
 msgid "12th"
 msgstr "12 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4008
+#: ../calendar/libecal/e-cal-recur.c:4026
 msgid "13th"
 msgstr "13 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4009
+#: ../calendar/libecal/e-cal-recur.c:4027
 msgid "14th"
 msgstr "14 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4010
+#: ../calendar/libecal/e-cal-recur.c:4028
 msgid "15th"
 msgstr "15 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4011
+#: ../calendar/libecal/e-cal-recur.c:4029
 msgid "16th"
 msgstr "16 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4012
+#: ../calendar/libecal/e-cal-recur.c:4030
 msgid "17th"
 msgstr "17 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4013
+#: ../calendar/libecal/e-cal-recur.c:4031
 msgid "18th"
 msgstr "18 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4014
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "19th"
 msgstr "19 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4015
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "20th"
 msgstr "20 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4016
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "21st"
 msgstr "21 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4017
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "22nd"
 msgstr "22 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4018
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "23rd"
 msgstr "23 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4019
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "24th"
 msgstr "24 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4020
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "25th"
 msgstr "25 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4021
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "26th"
 msgstr "26 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4022
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "27th"
 msgstr "27 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4023
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "28th"
 msgstr "28 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4024
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "29th"
 msgstr "29 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4025
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "30th"
 msgstr "30 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "31st"
 msgstr "31 de"
 
-#: ../calendar/libecal/e-cal-util.c:568 ../calendar/libecal/e-cal-util.c:590
+#: ../calendar/libecal/e-cal-util.c:680 ../calendar/libecal/e-cal-util.c:708
 msgid "High"
 msgstr "Alta"
 
-#: ../calendar/libecal/e-cal-util.c:570 ../calendar/libecal/e-cal-util.c:592
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
 msgid "Normal"
 msgstr "Normal"
 
-#: ../calendar/libecal/e-cal-util.c:572 ../calendar/libecal/e-cal-util.c:594
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "Low"
 msgstr "Baixa"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:588
+#: ../calendar/libecal/e-cal-util.c:706
 msgid "Undefined"
 msgstr "Indefinido"
 
-#. actually ask the client for authentication
-#: ../calendar/libecal/e-cal.c:1538 ../libedataserverui/e-book-auth-util.c:191
+#. FIXME: Try to get the parent uri so that we dont have to ask the password again
+#: ../calendar/libecal/e-cal.c:1628
+#, c-format
+msgid "Enter password for %s to enable proxy for user %s"
+msgstr "Entre com a senha de %s para habilitar o proxy para o usuário %s"
+
+#: ../calendar/libecal/e-cal.c:1631 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "Entre senha para %s (usuário %s)"
+msgstr "Entrar com a senha para %s (usuário %s)"
 
-#: ../calendar/libecal/e-cal.c:4509
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: ../calendar/libecal/e-cal.c:4511
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Backend is busy"
 msgstr "O backend está ocupado"
 
-#: ../calendar/libecal/e-cal.c:4513
+#: ../calendar/libecal/e-cal.c:4997
 msgid "Repository is offline"
 msgstr "O repositório está desconectado"
 
-#: ../calendar/libecal/e-cal.c:4515
+#: ../calendar/libecal/e-cal.c:4999
 msgid "No such calendar"
 msgstr "Não existe tal agenda"
 
-#: ../calendar/libecal/e-cal.c:4517 ../servers/groupwise/e-gw-connection.c:165
+#: ../calendar/libecal/e-cal.c:5001 ../servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Objeto não foi encontrado"
 
-#: ../calendar/libecal/e-cal.c:4519 ../servers/groupwise/e-gw-connection.c:159
+#: ../calendar/libecal/e-cal.c:5003 ../servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: ../calendar/libecal/e-cal.c:4521
+#: ../calendar/libecal/e-cal.c:5005
 msgid "URI not loaded"
 msgstr "URI não foi carregada"
 
-#: ../calendar/libecal/e-cal.c:4523
+#: ../calendar/libecal/e-cal.c:5007
 msgid "URI already loaded"
 msgstr "URI já foi carregada"
 
-#: ../calendar/libecal/e-cal.c:4525
+#: ../calendar/libecal/e-cal.c:5009
+#: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permissão negada"
 
-#: ../calendar/libecal/e-cal.c:4527 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5011 ../servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Usuário Desconhecido"
 
-#: ../calendar/libecal/e-cal.c:4529
+#: ../calendar/libecal/e-cal.c:5013
 msgid "Object ID already exists"
 msgstr "O ID do objeto já existe"
 
-#: ../calendar/libecal/e-cal.c:4531
+#: ../calendar/libecal/e-cal.c:5015
 msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
-#: ../calendar/libecal/e-cal.c:4533
+#: ../calendar/libecal/e-cal.c:5017
 msgid "Operation has been cancelled"
 msgstr "A operação foi cancelada"
 
-#: ../calendar/libecal/e-cal.c:4535
+#: ../calendar/libecal/e-cal.c:5019
 msgid "Could not cancel operation"
 msgstr "Não foi possível cancelar a operação"
 
-#: ../calendar/libecal/e-cal.c:4539
+#: ../calendar/libecal/e-cal.c:5023
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Autenticação exigida"
 
-#: ../calendar/libecal/e-cal.c:4541
+#: ../calendar/libecal/e-cal.c:5025
 msgid "A CORBA exception has occurred"
-msgstr "Ocorreu uma exceçao CORBA"
+msgstr "Ocorreu uma exceção CORBA"
 
-#: ../calendar/libecal/e-cal.c:4543
+#: ../calendar/libecal/e-cal.c:5027
 #: ../camel/providers/imap/camel-imap-command.c:304
 #: ../camel/providers/imap/camel-imap-command.c:404
 #: ../camel/providers/imap4/camel-imap4-store.c:376
 #: ../camel/providers/pop3/camel-pop3-store.c:535
 #: ../camel/providers/pop3/camel-pop3-store.c:542
 #: ../camel/providers/pop3/camel-pop3-store.c:548
-#: ../servers/groupwise/e-gw-connection.c:173
+#: ../servers/groupwise/e-gw-connection.c:174
+#: ../servers/exchange/storage/e-storage.c:586
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: ../calendar/libecal/e-cal.c:4545
+#: ../calendar/libecal/e-cal.c:5029
+#: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Sem erro"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:54
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:533
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:726
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:753
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" não espera argumentos"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:79
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:173
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:207
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:243
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:791
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:98
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" espera um argumento"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:85
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:92
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:249
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:477
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" espera que o primeiro argumento seja uma string"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:100
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "\"%s\" espera que o primeiro argumento seja uma string de data/hora ISO 8601"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:131
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:471
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:565
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" espera dois argumentos"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:137
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:179
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:213
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:322
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:571
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:797
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:164
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" espera que o primeiro argumento seja um time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:145
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:172
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" espera que o segundo argumento seja um inteiro"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:330
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" espera que o segundo argumento seja um time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:485
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" espera que o segundo argumento seja uma string"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:505
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1182,12 +1220,12 @@ msgstr ""
 "\"%s\" espera que o primeiro argumento seja um de \"any\", \"summary\", "
 "\"description\" ou \"location\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:628
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" espera pelo menos um argumento"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:642
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1206,7 +1244,7 @@ msgstr "Assinando mensagem"
 
 #: ../camel/camel-cipher-context.c:146
 msgid "Verifying is not supported by this cipher"
-msgstr "Verificação não é suportada por esta cifra"
+msgstr "A verificação não é suportada por esta cifra"
 
 #: ../camel/camel-cipher-context.c:172
 msgid "Verifying message"
@@ -1214,19 +1252,19 @@ msgstr "Verificando mensagem"
 
 #: ../camel/camel-cipher-context.c:190
 msgid "Encryption is not supported by this cipher"
-msgstr "Cifragem não é suportada por esta cifra"
+msgstr "A criptografia não é suportada por esta cifra"
 
 #: ../camel/camel-cipher-context.c:216
 msgid "Encrypting message"
-msgstr "Cifrando mensagem"
+msgstr "Criptografando a mensagem"
 
 #: ../camel/camel-cipher-context.c:233
 msgid "Decryption is not supported by this cipher"
-msgstr "Decifragem não é suportada por esta cifra"
+msgstr "A descriptografia não é suportada por esta cifra"
 
 #: ../camel/camel-cipher-context.c:255
 msgid "Decrypting message"
-msgstr "Decifrando mensagem"
+msgstr "Descriptogrando a mensagem"
 
 #: ../camel/camel-cipher-context.c:272
 msgid "You may not import keys with this cipher"
@@ -1423,38 +1461,38 @@ msgstr "(match-threads) requer um conjunto de pastas"
 msgid "Performing query on unknown header: %s"
 msgstr "Executando consulta em cabeçalho desconhecido: %s"
 
-#: ../camel/camel-folder.c:610
+#: ../camel/camel-folder.c:620
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Operação não suportada: anexar mensagem: para %s"
 
-#: ../camel/camel-folder.c:1200
+#: ../camel/camel-folder.c:1242
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Operação não suportada: pesquisa por expressão: para %s"
 
-#: ../camel/camel-folder.c:1240
+#: ../camel/camel-folder.c:1283
 #, c-format
 msgid "Unsupported operation: search by uids: for %s"
 msgstr "Operação não suportada: pesquisa por uids: para %s"
 
-#: ../camel/camel-folder.c:1352
+#: ../camel/camel-folder.c:1399
 msgid "Moving messages"
 msgstr "Movendo mensagens"
 
-#: ../camel/camel-folder.c:1352
+#: ../camel/camel-folder.c:1399
 msgid "Copying messages"
 msgstr "Copiando mensagens"
 
-#: ../camel/camel-folder.c:1601
+#: ../camel/camel-folder.c:1653
 msgid "Learning junk"
 msgstr "Aprendendo indesejada"
 
-#: ../camel/camel-folder.c:1618
+#: ../camel/camel-folder.c:1670
 msgid "Learning non-junk"
 msgstr "Aprendendo não-indesejada"
 
-#: ../camel/camel-folder.c:1637
+#: ../camel/camel-folder.c:1689
 msgid "Filtering new message(s)"
 msgstr "Filtrando novas mensagem(ns)"
 
@@ -1487,7 +1525,7 @@ msgstr ""
 "para o usuário: \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1275
+#: ../camel/providers/nntp/camel-nntp-store.c:1276
 msgid "Cancelled."
 msgstr "Cancelada."
 
@@ -1502,11 +1540,11 @@ msgstr "Resposta inesperada do GnuPG: %s"
 
 #: ../camel/camel-gpg-context.c:879
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "Falha ao cifrar: Não foram especificados destinatários válidos."
+msgstr "Falha ao criptografar: Não foram especificados destinatários válidos."
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1138 ../camel/camel-gpg-context.c:1262
-#: ../camel/camel-gpg-context.c:1687 ../camel/camel-gpg-context.c:1732
+#: ../camel/camel-gpg-context.c:1745 ../camel/camel-gpg-context.c:1790
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Falha ao executar gpg: %s"
@@ -1516,10 +1554,10 @@ msgstr "Falha ao executar gpg: %s"
 msgid "Could not generate signing data: %s"
 msgstr "Não foi possível gerar dados de assinatura: %s"
 
-#: ../camel/camel-gpg-context.c:1277 ../camel/camel-gpg-context.c:1437
-#: ../camel/camel-gpg-context.c:1519 ../camel/camel-gpg-context.c:1534
-#: ../camel/camel-gpg-context.c:1623 ../camel/camel-gpg-context.c:1638
-#: ../camel/camel-gpg-context.c:1703 ../camel/camel-gpg-context.c:1748
+#: ../camel/camel-gpg-context.c:1277 ../camel/camel-gpg-context.c:1464
+#: ../camel/camel-gpg-context.c:1547 ../camel/camel-gpg-context.c:1562
+#: ../camel/camel-gpg-context.c:1667 ../camel/camel-gpg-context.c:1682
+#: ../camel/camel-gpg-context.c:1761 ../camel/camel-gpg-context.c:1806
 msgid "Failed to execute gpg."
 msgstr "Falha ao executar gpg."
 
@@ -1527,43 +1565,49 @@ msgstr "Falha ao executar gpg."
 msgid "This is a digitally signed message part"
 msgstr "Esta é uma parte de mensagem assinada digitalmente"
 
-#: ../camel/camel-gpg-context.c:1377 ../camel/camel-gpg-context.c:1383
-#: ../camel/camel-gpg-context.c:1389 ../camel/camel-smime-context.c:692
-#: ../camel/camel-smime-context.c:703 ../camel/camel-smime-context.c:710
+#: ../camel/camel-gpg-context.c:1382 ../camel/camel-gpg-context.c:1388
+#: ../camel/camel-gpg-context.c:1394 ../camel/camel-gpg-context.c:1411
+#: ../camel/camel-smime-context.c:692 ../camel/camel-smime-context.c:703
+#: ../camel/camel-smime-context.c:710
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
 "Não é possível verificar assinatura da mensagem: Formato de mensagem "
 "incorreto"
 
-#: ../camel/camel-gpg-context.c:1423
+#: ../camel/camel-gpg-context.c:1449
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr ""
 "Não é possível verificar assinatura da mensagem: não foi possível criar "
 "arquivo temporário: %s"
 
-#: ../camel/camel-gpg-context.c:1502
+#: ../camel/camel-gpg-context.c:1530
 #, c-format
 msgid "Could not generate encrypting data: %s"
-msgstr "Não foi possível gerar dados de cifragem: %s"
+msgstr "Não foi possível gerar dados de criptografia: %s"
 
-#: ../camel/camel-gpg-context.c:1552
+#: ../camel/camel-gpg-context.c:1580
 msgid "This is a digitally encrypted message part"
-msgstr "Esta é uma parte de mensagem cifrada digitalmente"
+msgstr "Esta é uma parte de mensagem criptografada digitalmente"
 
-#: ../camel/camel-gpg-context.c:1603
+#: ../camel/camel-gpg-context.c:1637
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr "Falha ao decifrar parte MIME: erro de protocolo"
+msgstr "Falha ao descriptografar parte MIME: erro de protocolo"
 
-#: ../camel/camel-gpg-context.c:1645 ../camel/camel-smime-context.c:966
+#: ../camel/camel-gpg-context.c:1649
+msgid "Cannot decrypt message: Incorrect message format"
+msgstr "Impossível descriptografar a mensagem: Formato de mensagem "
+"incorreto"
+
+#: ../camel/camel-gpg-context.c:1703 ../camel/camel-smime-context.c:966
 msgid "Encrypted content"
-msgstr "Conteúdo cifrado"
+msgstr "Conteúdo criptografado"
 
-#: ../camel/camel-gpg-context.c:1664
+#: ../camel/camel-gpg-context.c:1722
 msgid "Unable to parse message content"
 msgstr "Não foi possível analisar conteúdo da mensagem"
 
-#: ../camel/camel-gpg-context.c:1688 ../camel/camel-gpg-context.c:1733
+#: ../camel/camel-gpg-context.c:1746 ../camel/camel-gpg-context.c:1791
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
@@ -1672,7 +1716,7 @@ msgstr "Erro ao escrever arquivo de correio temporário: %s"
 msgid "Error copying mail temp file: %s"
 msgstr "Erro ao copiar arquivo de correio temporário: %s"
 
-#: ../camel/camel-multipart-signed.c:587
+#: ../camel/camel-multipart-signed.c:598
 msgid "parse error"
 msgstr "erro de análise"
 
@@ -1719,7 +1763,7 @@ msgstr "A consulta de nome falhou: %s"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Sincronizando mensagens na pasta '%s' para o disco"
 
-#: ../camel/camel-offline-journal.c:141 ../camel/camel-offline-journal.c:164
+#: ../camel/camel-offline-journal.c:165 ../camel/camel-offline-journal.c:188
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr "Impossível escrever no journal desconectado para a pasta `%s': %s"
@@ -1763,11 +1807,11 @@ msgid "This option will connect to the server using an anonymous login."
 msgstr ""
 "Esta opção estabelelece conexão com o servidor usando um usuário anônimo."
 
-#: ../camel/camel-sasl-anonymous.c:112 ../camel/camel-sasl-plain.c:88
+#: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
 msgstr "A autenticação falhou."
 
-#: ../camel/camel-sasl-anonymous.c:121
+#: ../camel/camel-sasl-anonymous.c:131
 #, c-format
 msgid ""
 "Invalid email address trace information:\n"
@@ -1776,7 +1820,7 @@ msgstr ""
 "Informação de rastreio de endereço de e-mail inválida:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:133
+#: ../camel/camel-sasl-anonymous.c:143
 #, c-format
 msgid ""
 "Invalid opaque trace information:\n"
@@ -1785,13 +1829,13 @@ msgstr ""
 "Informação de rastreio opaca inválida:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:145
+#: ../camel/camel-sasl-anonymous.c:155
 #, c-format
 msgid ""
 "Invalid trace information:\n"
 "%s"
 msgstr ""
-"Informação de rastreio inválida:\n"
+"Informação de rastreamento inválida:\n"
 "%s"
 
 #: ../camel/camel-sasl-cram-md5.c:36
@@ -1818,30 +1862,29 @@ msgstr ""
 "Esta opção estabelece conexão com o servidor usando uma senha segura DIGEST-"
 "MD5 se o servidor a suportar."
 
-#: ../camel/camel-sasl-digest-md5.c:814
-msgid "Server challenge too long (>2048 octets)\n"
-msgstr "O desafio do servidor é longo demais (>2048 octetos)\n"
+#: ../camel/camel-sasl-digest-md5.c:819
+msgid "Server challenge too long (>2048 octets)"
+msgstr "O challenge do servidor é longo demais (>2048 octetos)"
 
-#: ../camel/camel-sasl-digest-md5.c:823
+#: ../camel/camel-sasl-digest-md5.c:828
 msgid "Server challenge invalid\n"
-msgstr "O desafio do servidor é inválido\n"
+msgstr "O challenge do servidor é inválido\n"
 
-#: ../camel/camel-sasl-digest-md5.c:829
-msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
-msgstr ""
-"O desafio do servidor continha token de \"Quality of Protection\" inválido\n"
+#: ../camel/camel-sasl-digest-md5.c:834
+msgid "Server challenge contained invalid \"Quality of Protection\" token"
+msgstr "O challenge do servidor continha token de \"Quality of Protection\" inválido"
 
-#: ../camel/camel-sasl-digest-md5.c:859
-msgid "Server response did not contain authorization data\n"
-msgstr "A resposta do servidor não continha dados de autorização\n"
+#: ../camel/camel-sasl-digest-md5.c:864
+msgid "Server response did not contain authorization data"
+msgstr "A resposta do servidor não continha dados de autorização"
 
-#: ../camel/camel-sasl-digest-md5.c:877
-msgid "Server response contained incomplete authorization data\n"
-msgstr "A resposta do servidor continha dados de autorização incompletos\n"
+#: ../camel/camel-sasl-digest-md5.c:882
+msgid "Server response contained incomplete authorization data"
+msgstr "A resposta do servidor continha dados de autorização incompletos"
 
-#: ../camel/camel-sasl-digest-md5.c:887
-msgid "Server response does not match\n"
-msgstr "A resposta do servidor não casa\n"
+#: ../camel/camel-sasl-digest-md5.c:892
+msgid "Server response does not match"
+msgstr "A resposta do servidor não casa"
 
 #: ../camel/camel-sasl-gssapi.c:57
 msgid "GSSAPI"
@@ -1952,7 +1995,7 @@ msgid "This option will connect to the server using a simple password."
 msgstr ""
 "Esta opção estabelelece conexão com o servidor usando uma senha simples."
 
-#: ../camel/camel-sasl-login.c:128
+#: ../camel/camel-sasl-login.c:132
 msgid "Unknown authentication state."
 msgstr "Estado de autenticação desconhecido."
 
@@ -2069,7 +2112,7 @@ msgstr "Não é possível adicionar atributo MS SMIMEEncKeyPrefs"
 
 #: ../camel/camel-smime-context.c:324
 msgid "Cannot add encryption certificate"
-msgstr "Não é possível adicionar certificado de cifragem"
+msgstr "Não é possível adicionar certificado de criptografia"
 
 #: ../camel/camel-smime-context.c:330
 msgid "Cannot add CMS Signer information"
@@ -2175,12 +2218,12 @@ msgstr "Não é possível localizar certificado para `%s'"
 
 #: ../camel/camel-smime-context.c:782
 msgid "Cannot find common bulk encryption algorithm"
-msgstr "Não é possível localizar algoritmo comum de cifragem em massa"
+msgstr "Não é possível localizar algoritmo comum de criptografia em massa"
 
 #. PORT_GetError(); ??
 #: ../camel/camel-smime-context.c:791
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr "Não é possível alocar espaço para chave de cifragem em massa"
+msgstr "Não é possível alocar espaço para chave de criptografia em massa"
 
 #: ../camel/camel-smime-context.c:802
 msgid "Cannot create CMS Message"
@@ -2217,7 +2260,7 @@ msgstr "O decodificador falhou, erro %d"
 
 #: ../camel/camel-smime-context.c:953
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr "Decifragem S/MIME: Não foi encontrado conteúdo cifrado"
+msgstr "Descriptografia S/MIME: Não foi encontrado conteúdo criptografado"
 
 #: ../camel/camel-smime-context.c:980
 msgid "import keys: unimplemented"
@@ -2227,43 +2270,43 @@ msgstr "importar chaves: não implementado"
 msgid "export keys: unimplemented"
 msgstr "exportar chaves: não implementado"
 
-#: ../camel/camel-store.c:214
+#: ../camel/camel-store.c:215
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Não é possível obter pasta: Operação inválida neste repositório"
 
-#: ../camel/camel-store.c:244
+#: ../camel/camel-store.c:247
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
 msgstr "Não é possível criar pasta `%s': pasta existe"
 
-#: ../camel/camel-store.c:298
+#: ../camel/camel-store.c:301
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Não é possível criar pasta: Operação inválida neste repositório"
 
-#: ../camel/camel-store.c:326
+#: ../camel/camel-store.c:329
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Não é possível criar pasta: %s: pasta existe"
 
-#: ../camel/camel-store.c:390 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:393 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Não é possível excluir pasta: %s: Operação inválida"
 
-#: ../camel/camel-store.c:440 ../camel/camel-vee-store.c:404
+#: ../camel/camel-store.c:443 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Não é possível renomear pasta: %s: Operação inválida"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:779 ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Lixeira"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:49
+#: ../camel/camel-store.c:785 ../camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Indesejada"
 
@@ -2277,12 +2320,11 @@ msgstr "Não é possível obter lista de revogação de certificado"
 
 #: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to decrypt certificate signature"
-msgstr "Não é possível decifrar assinatura do certificado"
+msgstr "Não é possível descriptografar assinatura do certificado"
 
 #: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr ""
-"Não é possível decifrar assinatura da lista de revogação de certificado"
+msgstr "Não é possível descriptografar assinatura da lista de revogação de certificado"
 
 #: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
@@ -2384,7 +2426,7 @@ msgstr "O uso da chave não suporta assinatura de certificados"
 msgid "Error in application verification"
 msgstr "Erro na verificação de aplicativo"
 
-#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:827
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:833
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2397,11 +2439,11 @@ msgstr ""
 "Impressão digital: %s\n"
 "Assinatura:        %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:839
 msgid "GOOD"
 msgstr "VÁLIDO"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:833
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:839
 msgid "BAD"
 msgstr "INVÁLIDO"
 
@@ -2425,7 +2467,7 @@ msgstr ""
 "Você deseja aceitá-lo mesmo assim?"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:837
+#: ../camel/camel-tcp-stream-ssl.c:843
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2440,7 +2482,7 @@ msgstr ""
 "\n"
 "Você deseja aceitá-lo?"
 
-#: ../camel/camel-tcp-stream-ssl.c:881
+#: ../camel/camel-tcp-stream-ssl.c:887
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2449,7 +2491,7 @@ msgstr ""
 "Problema do certificado: %s\n"
 "Emissor: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:933
+#: ../camel/camel-tcp-stream-ssl.c:939
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2458,7 +2500,7 @@ msgstr ""
 "Domínio do certificado inválido: %s\n"
 "Emissor: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:951
+#: ../camel/camel-tcp-stream-ssl.c:957
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2467,7 +2509,7 @@ msgstr ""
 "Certificado expirou: %s\n"
 "Emissor: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:968
+#: ../camel/camel-tcp-stream-ssl.c:974
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2517,7 +2559,7 @@ msgstr "Não é possível copiar mensagem para a lixeira"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Não é possível copiar mensagem para a pasta Indesejada"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
@@ -2527,7 +2569,7 @@ msgstr ""
 "Não é possível obter mensagem: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:1980
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2535,7 +2577,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Não existe tal mensagem"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:126
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2547,7 +2589,7 @@ msgstr "Não existe tal mensagem"
 msgid "User cancelled"
 msgstr "O usuário cancelou"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2561,27 +2603,29 @@ msgstr "O usuário cancelou"
 msgid "Cannot get message %s: %s"
 msgstr "Não é possível obter mensagem: %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:150
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:153
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Esta mensagem não está disponível no modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:176
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:183
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1136
 msgid "Could not get message"
 msgstr "Impossível obter mensagem"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:599
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:681
 #: ../camel/providers/imap/camel-imap-folder.c:245
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Não foi possível carregar resumo para %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:889
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1340
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Impossível criar mensagem: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:901
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1352
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Impossível acrescentar mensagem à pasta `%s': %s"
@@ -2668,85 +2712,81 @@ msgstr ""
 "Esta opção estabelelecerá uma conexão com o servidor GroupWise utilizando "
 "uma senha em formato texto."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:270
-msgid "Host or user not availbale in url"
+#: ../camel/providers/groupwise/camel-groupwise-store.c:273
+msgid "Host or user not available in url"
 msgstr "Usuário ou host não disponível na url"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:361
+#: ../camel/providers/groupwise/camel-groupwise-store.c:368
 #, c-format
-msgid "%sPlease enter the Groupwise password for %s@%s"
-msgstr "%sPor favor, entre a senha do Groupwise para %s@%s"
+msgid "%sPlease enter the GroupWise password for %s@%s"
+msgstr "%sPor favor, entre com a senha do Groupwise para %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:375
+#: ../camel/providers/groupwise/camel-groupwise-store.c:382
 #: ../camel/providers/imap/camel-imap-store.c:1324
 msgid "You didn't enter a password."
 msgstr "Você não entrou uma senha."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:389
+#: ../camel/providers/groupwise/camel-groupwise-store.c:396
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Impossível autenticar se ao servidor GroupWise."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:430
+#: ../camel/providers/groupwise/camel-groupwise-store.c:437
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Algumas características podem não funcionar corretamente com sua versão de "
 "servidor atual"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:503
+#: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/imap/camel-imap-store.c:1875
 #: ../camel/providers/imap/camel-imap-store.c:2065
 #, c-format
 msgid "No such folder %s"
 msgstr "Não existe a pasta %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:618
+#: ../camel/providers/groupwise/camel-groupwise-store.c:608
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "Pegando informação de resumo para novas mensagens"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:756
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
 msgid "Cannot get folder info in offline mode."
 msgstr "Impossível obter a informação da pasta no modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:969
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1050
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Impossível criar pastas do GroupWise no modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1020
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1101
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Não é possível excluir pastas do GroupWise no modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1066
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1147
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Impossível renomear pastas do GroupWise no modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1084
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1166
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Impossível renomear pastas do GroupWise `%s' para `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1120
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1202
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1122
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1204
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Serviço GroupWise para %s em %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:121
-#, c-format
-msgid "Groupwise server %s"
-msgstr "Servidor do GroupWise %s"
-
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
-msgid "Groupwise mail delivery via %s"
+msgid "GroupWise mail delivery via %s"
 msgstr "Entrega de correio GroupWise via %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:159
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
 msgstr "Enviando Mensagem"
 
@@ -3172,40 +3212,40 @@ msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr "Não é possível obter mensagem %s da pasta `%s': Comando inválido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:913
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr "Impossível acrescentar mensagem à pasta `%s': %s"
+msgstr "Impossível acrescentar mensagem à pasta `%s': A pasta é somente-leitura"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1009
+#: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "Não é possível acrescentar mensagem a pasta `%s': Erro desconhecido"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1038
+#: ../camel/providers/imap4/camel-imap4-folder.c:1035
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "Não é possível acrescentar mensagem a pasta `%s': Comando inválido"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1150
+#: ../camel/providers/imap4/camel-imap4-folder.c:1155
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Não é possível mover mensagens da pasta `%s' para a pasta `%s': Desconhecido"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1154
+#: ../camel/providers/imap4/camel-imap4-folder.c:1159
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
 "Não é possível copiar mensagens da pasta `%s' para a pasta `%s': Desconhecido"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1162
+#: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "Não é possível mover mensagens da pasta `%s' para a pasta `%s': Comando "
 "inválido"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1166
+#: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
@@ -3317,13 +3357,12 @@ msgstr "Comando inválido"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1472
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "Impossível se desinscrever de pastas IMPA no modo desconectado."
+msgstr "Impossível cancelar a inscrição de pastas IMPA no modo desconectado."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1517
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
-msgstr ""
-"Não é possível inscrever a pasta `%s': Nome de caixa de correio inválido"
+msgstr "Não é possível inscrever a pasta `%s': Nome de caixa de correio inválido"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1522
 #, c-format
@@ -3950,9 +3989,8 @@ msgid "USENET news"
 msgstr "Notícias USENET"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
-msgid "This is a provider for reading from and posting toUSENET newsgroups."
-msgstr ""
-"Este é um provedor para ler e publicar em grupos de notícias da USENET."
+msgid "This is a provider for reading from and posting to USENET newsgroups."
+msgstr "Este é um provedor para ler e publicar em grupos de notícias da USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -3976,7 +4014,7 @@ msgstr "Servidor NNTP %s retornou código de erro %d: %s"
 msgid "USENET News via %s"
 msgstr "Notícias USENET via %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:812
+#: ../camel/providers/nntp/camel-nntp-store.c:813
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3987,7 +4025,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:906
+#: ../camel/providers/nntp/camel-nntp-store.c:907
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -3997,7 +4035,7 @@ msgstr ""
 "\n"
 "Não existe tal grupo. O item selecionado provavelmente é uma pasta pai."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:938
+#: ../camel/providers/nntp/camel-nntp-store.c:939
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4007,46 +4045,45 @@ msgstr ""
 "\n"
 "Grupo de notícias não existe!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:963
+#: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Não é possível criar uma pasta num repositório de notícias: é possível se "
 "inscrever."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:971
+#: ../camel/providers/nntp/camel-nntp-store.c:972
 msgid "You cannot rename a folder in a News store."
 msgstr "Não é possível renomear uma pasta num repositório de notícias."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:979
+#: ../camel/providers/nntp/camel-nntp-store.c:980
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
-"Não é possível remover uma pasta de um repositório de notícias: é possível "
+msgstr "Não é possível remover uma pasta de um repositório de notícias: é possível "
 "cancelar a inscrição."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1149
+#: ../camel/providers/nntp/camel-nntp-store.c:1150
 msgid "Authentication requested but no username provided"
-msgstr "Foi pedida a autenticação mas não foi fornecido o nome do usuário"
+msgstr "Foi solicitada a autenticação mas não foi fornecido o nome do usuário"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1157
+#: ../camel/providers/nntp/camel-nntp-store.c:1158
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
-msgstr "Por favor, entre a senha NNTP para %s@%s"
+msgstr "Por favor, entre com a senha NNTP para %s@%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1161
+#: ../camel/providers/nntp/camel-nntp-store.c:1162
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Não é possível autenticar-se com o servidor: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1277
+#: ../camel/providers/nntp/camel-nntp-store.c:1278
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "O comando NNTP falhou: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1333
+#: ../camel/providers/nntp/camel-nntp-store.c:1334
 msgid "Not connected."
 msgstr "Não conectado."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1386
+#: ../camel/providers/nntp/camel-nntp-store.c:1387
 #, c-format
 msgid "No such folder: %s"
 msgstr "Não existe a pasta: %s"
@@ -4132,7 +4169,7 @@ msgid ""
 "is the only option supported by many POP servers."
 msgstr ""
 "Esta opção estabelelece conexão com o servidor POP usando uma senha em texto "
-"claro. Esta é a única opção suportada por vários servidores POP."
+"puro. Esta é a única opção suportada por vários servidores POP."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
@@ -4141,8 +4178,8 @@ msgid ""
 "claim to support it."
 msgstr ""
 "Esta opção estabelelece conexão com o servidor POP através do protocolo "
-"APOP, usando uma senha cifrada. Isto poderá não funcionar para todos os "
-"usuários mesmo em servidores que alegam suportar o protocolo."
+"APOP, usando uma senha criptografada. Isto poderá não funcionar para todos "
+"os usuários, mesmo em servidores que alegam suportar o protocolo."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:204
 #, c-format
@@ -4155,7 +4192,7 @@ msgstr "Falha ao ler uma saudação válida do servidor POP %s"
 #: ../camel/providers/pop3/camel-pop3-store.c:251
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr "Falha ao conectar ao servidor POP %s em modo seguro: %s"
+msgstr "Falha ao conectar-se ao servidor POP %s em modo seguro: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:219
 msgid "STLS not supported"
@@ -4234,7 +4271,7 @@ msgstr ""
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
-msgstr "Não foi possível analisar lista de destinatários"
+msgstr "Não foi possível analisar a lista de destinatários"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:145
 #, c-format
@@ -4375,7 +4412,7 @@ msgstr "O mecanismo de autenticação é fraco demais"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:211
 msgid "Encryption required for requested authentication mechanism"
-msgstr "Cifragem necessária para o mecanismo de autenticação pedido"
+msgstr "Criptografia necessária para o mecanismo de autenticação pedido"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:213
 msgid "Temporary authentication failure"
@@ -4539,83 +4576,83 @@ msgstr "O comando QUIT falhou: %s"
 msgid "QUIT command failed"
 msgstr "O comando QUIT falhou"
 
-#: ../libedataserver/e-categories.c:227
+#: ../libedataserver/e-categories.c:238
 msgid "Business"
 msgstr "Comercial"
 
-#: ../libedataserver/e-categories.c:228
+#: ../libedataserver/e-categories.c:239
 msgid "Competition"
 msgstr "Competição"
 
-#: ../libedataserver/e-categories.c:229
+#: ../libedataserver/e-categories.c:240
 msgid "Favorites"
 msgstr "Favoritos"
 
-#: ../libedataserver/e-categories.c:230
+#: ../libedataserver/e-categories.c:241
 msgid "Gifts"
 msgstr "Presentes"
 
-#: ../libedataserver/e-categories.c:231
+#: ../libedataserver/e-categories.c:242
 msgid "Goals/Objectives"
 msgstr "Metas/Objetivos"
 
-#: ../libedataserver/e-categories.c:232
+#: ../libedataserver/e-categories.c:243
 msgid "Holiday"
 msgstr "Feriado"
 
-#: ../libedataserver/e-categories.c:233
+#: ../libedataserver/e-categories.c:244
 msgid "Holiday Cards"
 msgstr "Cartões de Feriado"
 
-#: ../libedataserver/e-categories.c:234
+#: ../libedataserver/e-categories.c:245
 msgid "Hot Contacts"
 msgstr "Contatos Quentes"
 
-#: ../libedataserver/e-categories.c:235
+#: ../libedataserver/e-categories.c:246
 msgid "Ideas"
 msgstr "Idéias"
 
-#: ../libedataserver/e-categories.c:236
+#: ../libedataserver/e-categories.c:247
 msgid "International"
 msgstr "Internacional"
 
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:248
 msgid "Key Customer"
 msgstr "Cliente Chave"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:249
 msgid "Miscellaneous"
 msgstr "Miscelânea"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:250
 msgid "Personal"
 msgstr "Pessoal"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:251
 msgid "Phone Calls"
 msgstr "Chamadas Telefônicas"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:252
 msgid "Status"
 msgstr "Estado"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:253
 msgid "Strategies"
 msgstr "Estratégias"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:254
 msgid "Suppliers"
 msgstr "Fornecedores"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:255
 msgid "Time & Expenses"
 msgstr "Tempo e Despesas"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:256
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:257
 msgid "Waiting"
 msgstr "Esperando"
 
@@ -4742,19 +4779,15 @@ msgstr "%H:%M"
 msgid "%I %p"
 msgstr "%I"
 
-#: ../libedataserverui/e-book-auth-util.c:87
+#: ../libedataserverui/e-book-auth-util.c:89
 msgid "Accessing LDAP Server anonymously"
 msgstr "Acessando o servidor LDAP anonimamente"
 
-#: ../libedataserverui/e-book-auth-util.c:184
+#: ../libedataserverui/e-book-auth-util.c:185
 msgid "Failed to authenticate.\n"
 msgstr "Falha ao autenticar.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:91
-msgid "Category Icon"
-msgstr "Ícone da Categoria"
-
-#: ../libedataserverui/e-categories-dialog.c:266
+#: ../libedataserverui/e-categories-dialog.c:258
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4762,45 +4795,49 @@ msgid ""
 msgstr ""
 "Já existe uma categoria '%s' na configuração. Por favor, utilize outro nome"
 
-#: ../libedataserverui/e-categories-dialog.c:433
+#: ../libedataserverui/e-categories-dialog.c:422
 msgid "Category"
 msgstr "Categoria"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:1
+msgid "Category Icon"
+msgstr "Ícone da Categoria"
+
+#: ../libedataserverui/e-categories-dialog.glade.h:2
 msgid "Category Properties"
 msgstr "Propriedades da Categoria"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:2
+#: ../libedataserverui/e-categories-dialog.glade.h:3
 msgid "Category _Color"
 msgstr "_Cor da Categoria"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:3
+#: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Icon"
 msgstr "_Ícone da Categoria"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:4
+#: ../libedataserverui/e-categories-dialog.glade.h:5
 msgid "Category _Name"
 msgstr "_Nome da Categoria"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:5
+#: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "Item(s) belong to these _categories:"
 msgstr "Este(s) item(ns) pertence(m) a estas _categorias:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:6
+#: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Available Categories:"
 msgstr "C_ategorias Disponíveis:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:7
+#: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
 msgstr "E_ditar"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:8
+#: ../libedataserverui/e-categories-dialog.glade.h:9
 msgid "categories"
 msgstr "categorias"
 
-#: ../libedataserverui/e-name-selector-dialog.c:200
+#: ../libedataserverui/e-name-selector-dialog.c:202
 msgid "Select Contacts from Address Book"
-msgstr "Selecionar contatos do catálogo de endereços"
+msgstr "Selecionar Contatos do Catálogo de Endereços"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "\t\t\t\t\t\t"
@@ -4820,11 +4857,11 @@ msgstr "<b>_Contatos</b> "
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
-msgstr "Catálogo de Endereços:"
+msgstr "Catálogo de Endereços"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Address _Book:"
-msgstr "Catálogo de _endereços:"
+msgstr "Catálogo de _Endereços:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
 msgid "Contacts"
@@ -4840,11 +4877,11 @@ msgstr "_Pesquisar:"
 
 #: ../libedataserverui/e-passwords.c:471
 msgid "_Remember this password"
-msgstr "_Lembrar dessa senha"
+msgstr "_Lembrar essa senha"
 
 #: ../libedataserverui/e-passwords.c:472
 msgid "_Remember this password for the remainder of this session"
-msgstr "_Lembrar dessa senha pelo restante dessa sessão"
+msgstr "_Lembrar essa senha pelo restante dessa sessão"
 
 #. prepare the dialog
 #: ../libedataserverui/e-source-selector-dialog.c:101
@@ -4855,37 +4892,189 @@ msgstr "Selecionar destino"
 msgid "_Destination"
 msgstr "_Destino"
 
-#: ../servers/groupwise/e-gw-connection.c:157
+#: ../servers/groupwise/e-gw-connection.c:158
 msgid "Invalid connection"
 msgstr "Conexão inválida"
 
-#: ../servers/groupwise/e-gw-connection.c:161
+#: ../servers/groupwise/e-gw-connection.c:162
 msgid "Invalid response from server"
 msgstr "Resposta inválida do servidor"
 
-#: ../servers/groupwise/e-gw-connection.c:163
+#: ../servers/groupwise/e-gw-connection.c:164
 msgid "No response from the server"
 msgstr "Sem resposta do servidor"
 
-#: ../servers/groupwise/e-gw-connection.c:169
+#: ../servers/groupwise/e-gw-connection.c:170
 msgid "Bad parameter"
 msgstr "Parâmetro inválido"
 
+#. i18n: These are Outlook's words for the default roles in
+#. the folder permissions dialog.
+#: ../servers/exchange/lib/e2k-security-descriptor.c:847
+msgid "Owner"
+msgstr "Proprietário"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:857
+msgid "Publishing Editor"
+msgstr "Editor de Publicação"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:865
+msgid "Editor"
+msgstr "Editar"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:872
+msgid "Publishing Author"
+msgstr "Autor de Publicação"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:878
+msgid "Author"
+msgstr "Autor"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:883
+msgid "Non-editing Author"
+msgstr "Autor Não-editando"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:887
+msgid "Reviewer"
+msgstr "Revisor"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:889
+msgid "Contributor"
+msgstr "Contribuidor"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:891
+msgid "None"
+msgstr "Nenhum"
+
+#: ../servers/exchange/lib/e2k-security-descriptor.c:906
+msgid "Custom"
+msgstr "Personalizado"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:144
+msgid "Select User"
+msgstr "Usuário Selecionado"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:182
+msgid "Addressbook..."
+msgstr "Catálogo de Endereços..."
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#: ../servers/exchange/storage/exchange-account.c:879
+#, c-format
+msgid "Enter password for %s"
+msgstr "Entre com a senha para %s"
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:884
+msgid "Enter password"
+msgstr "Entre com a senha"
+
+#: ../servers/exchange/storage/e-storage.c:556
+msgid "Generic error"
+msgstr "Erro genérico"
+
+#: ../servers/exchange/storage/e-storage.c:558
+msgid "A folder with the same name already exists"
+msgstr "Uma pasta com este nome já existe"
+
+#: ../servers/exchange/storage/e-storage.c:560
+msgid "The specified folder type is not valid"
+msgstr "O tipo especificado da pasta não é válido"
+
+#: ../servers/exchange/storage/e-storage.c:562
+msgid "I/O error"
+msgstr "Erro de I/O"
+
+#: ../servers/exchange/storage/e-storage.c:564
+msgid "Not enough space to create the folder"
+msgstr "Sem espaço suficiente para criar a pasta"
+
+#: ../servers/exchange/storage/e-storage.c:566
+msgid "The folder is not empty"
+msgstr "A pasta não está vazia"
+
+#: ../servers/exchange/storage/e-storage.c:568
+msgid "The specified folder was not found"
+msgstr "A pasta especificada não foi encontrada"
+
+#: ../servers/exchange/storage/e-storage.c:570
+msgid "Function not implemented in this storage"
+msgstr "Função não implementada neste armazenamento"
+
+#: ../servers/exchange/storage/e-storage.c:574
+msgid "Operation not supported"
+msgstr "Operação não suportada"
+
+#: ../servers/exchange/storage/e-storage.c:576
+msgid "The specified type is not supported in this storage"
+msgstr "O tipo especificado não é suportado neste armazenamento"
+
+#: ../servers/exchange/storage/e-storage.c:578
+msgid "The specified folder cannot be modified or removed"
+msgstr "A pasta especificada não pode ser modificada ou removida"
+
+#: ../servers/exchange/storage/e-storage.c:580
+msgid "Cannot make a folder a child of one of its descendants"
+msgstr "Impossível tornar uma pasta filha de um de seus descendentes"
+
+#: ../servers/exchange/storage/e-storage.c:582
+msgid "Cannot create a folder with that name"
+msgstr "Impossível criar uma pasta com este nome."
+
+#: ../servers/exchange/storage/e-storage.c:584
+msgid "This operation cannot be performed in off-line mode"
+msgstr "Esta operação não pode ser realizada no modo desconectado."
+
+#. i18n: This is the title of an "other user's folders"
+#. hierarchy. Eg, "John Doe's Folders".
+#: ../servers/exchange/storage/exchange-account.c:583
+#, c-format
+msgid "%s's Folders"
+msgstr "Pastas de %s"
+
+#: ../servers/exchange/storage/exchange-account.c:1236
+msgid "Personal Folders"
+msgstr "Pastas Pessoais"
+
+#: ../servers/exchange/storage/exchange-account.c:1251
+msgid "Favorite Public Folders"
+msgstr "Pastas Públicas Favoritas"
+
+#. i18n: Outlookism
+#: ../servers/exchange/storage/exchange-account.c:1268
+msgid "All Public Folders"
+msgstr "Todas as Pastas Públicas"
+
+#. i18n: Outlookism
+#: ../servers/exchange/storage/exchange-account.c:1282
+msgid "Global Address List"
+msgstr "Lista Global de Endereços"
+
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr "Backend para arquivo do catálogo de endereços do Evolution"
+msgstr "Backend para arquivo do Catálogo de Endereços do Evolution"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
 msgstr "Backend para arquivo e webcal da agenda do Evolution"
 
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
+msgid "Evolution Data Server interface check service"
+msgstr "Serviço de verificação de interface do Evolution Data Server"
+
+#: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
+msgid "Evolution Data Server logging service"
+msgstr "Serviço de logging do Evolution Data Server"
+
 #. dialog display isn't working out
 #: ../src/server.c:101
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
-"Ocorreram várias falhas de segmentação; não é possível exibir diálogo de "
-"erro\n"
+msgstr "Ocorreram várias falhas de segmentação; não é possível exibir\n"
+"diálogo de erro\n"
+
+#~ msgid "Groupwise server %s"
+#~ msgstr "Servidor do GroupWise %s"
 
 #~ msgid "e_book_open: cancelled"
 #~ msgstr "e_book_open: cancelado"
@@ -4927,10 +5116,10 @@ msgstr ""
 #~ msgstr "Lista de tarefas"
 
 #~ msgid "%sEnter password for %s (user %s)"
-#~ msgstr "%sEntre senha para %s (usuário %s)"
+#~ msgstr "%sEntre com a senha para %s (usuário %s)"
 
 #~ msgid "Server rejected username"
-#~ msgstr "Servidor rejeitou o nome do usuário"
+#~ msgstr "O servidor rejeitou o nome do usuário"
 
 #~ msgid "Failed to send username to server"
 #~ msgstr "Falha ao enviar o nome do usuário ao servidor"
@@ -4939,10 +5128,10 @@ msgstr ""
 #~ msgstr "O servidor rejeitou o nome do usuário/senha"
 
 #~ msgid "Could not get group list from server."
-#~ msgstr "Não foi possível obter lista de grupos do servidor."
+#~ msgstr "Impossível obter lista de grupos do servidor."
 
 #~ msgid "Unable to load grouplist file for %s: %s"
-#~ msgstr "Não foi possível carregar arquivo de lista de grupos para %s: %s"
+#~ msgstr "Impossível carregar arquivo de lista de grupos para %s: %s"
 
 #~ msgid "Unable to save grouplist file for %s: %s"
-#~ msgstr "Não foi possível salvar arquivo de lista de grupos para %s: %s"
+#~ msgstr "Impossível salvar arquivo de lista de grupos para %s: %s"
