@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-14 08:22+0200\n"
-"PO-Revision-Date: 2005-07-13 22:56+0200\n"
+"POT-Creation-Date: 2005-07-16 12:31+0200\n"
+"PO-Revision-Date: 2005-07-16 12:32+0200\n"
 "Last-Translator: Игор Несторовић <jung@ekof.bg.ac.yu>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -626,7 +626,7 @@ msgstr "Последња ревизија"
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:244
 msgid "Book URI"
-msgstr ""
+msgstr "Адреса књиге"
 
 #: ../addressbook/libebook/e-contact.c:1232
 #: ../addressbook/libebook/e-destination.c:751
@@ -668,6 +668,7 @@ msgid "Loading %s items"
 msgstr "Учитавање %s предмета"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:681
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Календар"
 
@@ -1058,9 +1059,9 @@ msgstr "Недефинисано"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
 #: ../calendar/libecal/e-cal.c:1628
-#, fuzzy, c-format
+#, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "Унесите лозинку за %s (корисник %s)"
+msgstr "Унесите лозинку за %s како би мрежни посредник био омогућен за %s"
 
 #: ../calendar/libecal/e-cal.c:1631 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
@@ -3065,6 +3066,7 @@ msgstr "Није могуће повезивање командом „%s\": %s"
 #: ../camel/providers/local/camel-maildir-store.c:511
 #: ../camel/providers/local/camel-maildir-store.c:524
 #: ../camel/providers/local/camel-spool-store.c:460
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:258
 msgid "Inbox"
 msgstr "Сандуче"
 
@@ -4833,6 +4835,7 @@ msgid "Address _Book:"
 msgstr "_Адресар:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:255
 msgid "Contacts"
 msgstr "Контакти"
 
@@ -4877,6 +4880,17 @@ msgstr "Нема одговора сервера"
 msgid "Bad parameter"
 msgstr "Лош параметар"
 
+#: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#: ../servers/exchange/storage/exchange-account.c:879
+#, c-format
+msgid "Enter password for %s"
+msgstr "Унесите лозинку за %s"
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:884
+msgid "Enter password"
+msgstr "Унесите лозинку"
+
 #. i18n: These are Outlook's words for the default roles in
 #. the folder permissions dialog.
 #: ../servers/exchange/lib/e2k-security-descriptor.c:847
@@ -4918,25 +4932,6 @@ msgstr "Ништа"
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
 msgstr "Прилагођено"
-
-#: ../servers/exchange/lib/e2k-user-dialog.c:144
-msgid "Select User"
-msgstr "Изаберите корисника"
-
-#: ../servers/exchange/lib/e2k-user-dialog.c:182
-msgid "Addressbook..."
-msgstr "Адресар..."
-
-#: ../servers/exchange/lib/e2k-autoconfig.c:1573
-#: ../servers/exchange/storage/exchange-account.c:879
-#, c-format
-msgid "Enter password for %s"
-msgstr "Унесите лозинку за %s"
-
-#: ../servers/exchange/lib/e2k-autoconfig.c:1574
-#: ../servers/exchange/storage/exchange-account.c:884
-msgid "Enter password"
-msgstr "Унесите лозинку"
 
 #: ../servers/exchange/storage/e-storage.c:556
 msgid "Generic error"
@@ -5019,6 +5014,34 @@ msgstr "Све јавне фасцикле"
 msgid "Global Address List"
 msgstr "Глобална листа адреса"
 
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:256
+msgid "Deleted Items"
+msgstr "Обрисане ставке"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:257
+msgid "Drafts"
+msgstr "Недовршене"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:259
+msgid "Journal"
+msgstr "Дневник"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
+msgid "Notes"
+msgstr "Белешке"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
+msgid "Outbox"
+msgstr "Одлазна"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
+msgid "Sent Items"
+msgstr "Послате ставке"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
+msgid "Tasks"
+msgstr "Задужења"
+
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Подршка датотеке адресара за Еволуцију"
@@ -5042,6 +5065,12 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Дошло је до вишеструких прекорачења сегмената; није могуће приказати "
 "прозорче за грешке\n"
+
+#~ msgid "Select User"
+#~ msgstr "Изаберите корисника"
+
+#~ msgid "Addressbook..."
+#~ msgstr "Адресар..."
 
 #~ msgid "%sEnter password for %s"
 #~ msgstr "%sУнесите лозинку за %s"
@@ -5140,9 +5169,6 @@ msgstr ""
 
 #~ msgid "Use Secure Connection (SSL)"
 #~ msgstr "Користи безбедну везу (SSL)"
-
-#~ msgid "Tasks"
-#~ msgstr "Задужења"
 
 #~ msgid "Checklist"
 #~ msgstr "Списак за оверу"
