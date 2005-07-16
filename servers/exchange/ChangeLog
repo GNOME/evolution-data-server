@@ -1,3 +1,8 @@
+2005-07-15  Arunprakash <arunp@novell.com>
+
+	* storage/exchange-account.c (exchange_account_connect) :  Update the 
+	error value before looping. This fixes #310483.
+
 2005-07-14  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/Makefile.am : Use the version-info

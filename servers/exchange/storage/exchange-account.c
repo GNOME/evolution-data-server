@@ -1447,19 +1447,17 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 #endif
 		switch (result) {
 		case E2K_AUTOCONFIG_AUTH_ERROR:
+			*info_result = EXCHANGE_ACCOUNT_PASSWORD_INCORRECT;
 			if (!pword)
 				goto try_password_again;
-
-			*info_result = EXCHANGE_ACCOUNT_PASSWORD_INCORRECT;
 			e2k_autoconfig_free (ac);
 			account->priv->connecting = FALSE;
 			return NULL;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_DOMAIN:
+			*info_result = EXCHANGE_ACCOUNT_DOMAIN_ERROR;
 			if (!pword)
 				goto try_password_again;
-
-			*info_result = EXCHANGE_ACCOUNT_DOMAIN_ERROR;
 			e2k_autoconfig_free (ac);
 			account->priv->connecting = FALSE;
 			return NULL;
