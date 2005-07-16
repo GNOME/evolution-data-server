@@ -1,3 +1,8 @@
+2005-07-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nb.po: Updated Norwegian bokmål translation.
+	* no.po: Same
+
 2005-07-16  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* POTFILES.in : Added a missing exchange file. And removed the files
