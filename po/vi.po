@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server GNOME 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-13 05:38+0000\n"
-"PO-Revision-Date: 2005-07-13 17:36+0930\n"
+"POT-Creation-Date: 2005-07-16 21:46+0000\n"
+"PO-Revision-Date: 2005-07-17 17:26+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -668,6 +668,7 @@ msgid "Loading %s items"
 msgstr "Đang tải %s mục"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:681
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Lịch"
 
@@ -1791,7 +1792,7 @@ msgstr "Không tải được %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Không tải được %s: không có mã khởi động trong mô đun."
 
-#: ../camel/camel-provider.c:374 ../camel/camel-session.c:161
+#: ../camel/camel-provider.c:374 ../camel/camel-session.c:163
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "Không có bên nào cung cấp giao thức «%s»"
@@ -2059,7 +2060,7 @@ msgstr "Địa chỉ Mạng «%s» cần phần máy."
 msgid "URL '%s' needs a path component"
 msgstr "Địa chỉ Mạng «%s» cần phần đường dẫn."
 
-#: ../camel/camel-session.c:283
+#: ../camel/camel-session.c:285
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -3091,6 +3092,7 @@ msgstr "Không thể kết nối với lệnh «%s»: %s"
 #: ../camel/providers/local/camel-maildir-store.c:511
 #: ../camel/providers/local/camel-maildir-store.c:524
 #: ../camel/providers/local/camel-spool-store.c:460
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:258
 msgid "Inbox"
 msgstr "Hộp Đến"
 
@@ -4872,6 +4874,7 @@ msgid "Address _Book:"
 msgstr "_Sổ địa chỉ:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:255
 msgid "Contacts"
 msgstr "Liên lạc"
 
@@ -4916,6 +4919,17 @@ msgstr "Máy phục vụ chưa hồi đáp."
 msgid "Bad parameter"
 msgstr "Tham số sai"
 
+#: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#: ../servers/exchange/storage/exchange-account.c:879
+#, c-format
+msgid "Enter password for %s"
+msgstr "Hãy nhập mật khẩu cho %s"
+
+#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:884
+msgid "Enter password"
+msgstr "Hãy nhập mật khẩu"
+
 #. i18n: These are Outlook's words for the default roles in
 #. the folder permissions dialog.
 #: ../servers/exchange/lib/e2k-security-descriptor.c:847
@@ -4957,25 +4971,6 @@ msgstr "Không"
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
 msgstr "Tự chọn"
-
-#: ../servers/exchange/lib/e2k-user-dialog.c:144
-msgid "Select User"
-msgstr "Chọn người dùng"
-
-#: ../servers/exchange/lib/e2k-user-dialog.c:182
-msgid "Addressbook..."
-msgstr "Sổ địa chỉ..."
-
-#: ../servers/exchange/lib/e2k-autoconfig.c:1573
-#: ../servers/exchange/storage/exchange-account.c:879
-#, c-format
-msgid "Enter password for %s"
-msgstr "Hãy nhập mật khẩu cho %s"
-
-#: ../servers/exchange/lib/e2k-autoconfig.c:1574
-#: ../servers/exchange/storage/exchange-account.c:884
-msgid "Enter password"
-msgstr "Hãy nhập mật khẩu"
 
 #: ../servers/exchange/storage/e-storage.c:556
 msgid "Generic error"
@@ -5058,6 +5053,34 @@ msgstr "Mọi danh mục công"
 msgid "Global Address List"
 msgstr "Danh sách địa chỉ toàn cục"
 
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:256
+msgid "Deleted Items"
+msgstr "Mục bị xóa bỏ"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:257
+msgid "Drafts"
+msgstr "Nháp"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:259
+msgid "Journal"
+msgstr "Nhật ký"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
+msgid "Notes"
+msgstr "Ghi chú"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
+msgid "Outbox"
+msgstr "Hộp ra"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
+msgid "Sent Items"
+msgstr "Mục đã gởi"
+
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
+msgid "Tasks"
+msgstr "Công việc"
+
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
 msgstr "Hậu phương tập tin Sổ địa chỉ Evolution"
@@ -5079,6 +5102,12 @@ msgstr "Dịch vụ ghi lưu trình phục vụ dữ liệu Evolution"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Gặp nhiều lỗi chia ra từng đoạn nên không hiển thị hộp thoại lỗi.\n"
+
+#~ msgid "Select User"
+#~ msgstr "Chọn người dùng"
+
+#~ msgid "Addressbook..."
+#~ msgstr "Sổ địa chỉ..."
 
 #~ msgid "%sEnter password for %s"
 #~ msgstr "%sHãy nhập mật khẩu cho «%s»"
