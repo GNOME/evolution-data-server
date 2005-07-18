@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-10 17:55-0400\n"
-"PO-Revision-Date: 2005-07-10 13:04-0400\n"
+"POT-Creation-Date: 2005-07-18 04:27-0400\n"
+"PO-Revision-Date: 2005-07-18 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,28 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/backends/file/e-book-backend-file.c:528
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1993
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2001
 #: addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Loading..."
 
 #: addressbook/backends/file/e-book-backend-file.c:530
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1979
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1991
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1987
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:1999
 #: addressbook/backends/ldap/e-book-backend-ldap.c:3405
 #: addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Searching..."
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3538
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2239
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3539
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Downloading contacts (%d)... "
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2414
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2444
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2433
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2464
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Updating contacts cache (%d)... "
@@ -614,11 +614,17 @@ msgstr "List"
 msgid "List Show Addresses"
 msgstr "List Show Addresses"
 
-#: addressbook/libebook/e-contact.c:241
+#. Last modified time
+#: addressbook/libebook/e-contact.c:242
 msgid "Last Revision"
 msgstr "Last Revision"
 
-#: addressbook/libebook/e-contact.c:1229
+#. URI of the book to which the contact belongs to
+#: addressbook/libebook/e-contact.c:244
+msgid "Book URI"
+msgstr "Book URI"
+
+#: addressbook/libebook/e-contact.c:1232
 #: addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Unnamed List"
@@ -658,6 +664,7 @@ msgid "Loading %s items"
 msgstr "Loading %s items"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:681
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Calendar"
 
@@ -668,7 +675,7 @@ msgstr "Invalid server URI"
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:753
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:762
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:844
-#: calendar/libecal/e-cal.c:4894
+#: calendar/libecal/e-cal.c:5021
 #: camel/providers/groupwise/camel-groupwise-folder.c:815
 #: camel/providers/groupwise/camel-groupwise-folder.c:835
 #: camel/providers/groupwise/camel-groupwise-folder.c:862
@@ -1047,82 +1054,82 @@ msgid "Undefined"
 msgstr "Undefined"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: calendar/libecal/e-cal.c:1593
+#: calendar/libecal/e-cal.c:1628
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Enter password for %s to enable proxy for user %s"
 
-#: calendar/libecal/e-cal.c:1596 libedataserverui/e-book-auth-util.c:192
+#: calendar/libecal/e-cal.c:1631 libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: calendar/libecal/e-cal.c:4866
+#: calendar/libecal/e-cal.c:4993
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: calendar/libecal/e-cal.c:4868
+#: calendar/libecal/e-cal.c:4995
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: calendar/libecal/e-cal.c:4870
+#: calendar/libecal/e-cal.c:4997
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: calendar/libecal/e-cal.c:4872
+#: calendar/libecal/e-cal.c:4999
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: calendar/libecal/e-cal.c:4874 servers/groupwise/e-gw-connection.c:166
+#: calendar/libecal/e-cal.c:5001 servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Object not found"
 
-#: calendar/libecal/e-cal.c:4876 servers/groupwise/e-gw-connection.c:160
+#: calendar/libecal/e-cal.c:5003 servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: calendar/libecal/e-cal.c:4878
+#: calendar/libecal/e-cal.c:5005
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: calendar/libecal/e-cal.c:4880
+#: calendar/libecal/e-cal.c:5007
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: calendar/libecal/e-cal.c:4882 servers/exchange/storage/e-storage.c:572
+#: calendar/libecal/e-cal.c:5009 servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: calendar/libecal/e-cal.c:4884 servers/groupwise/e-gw-connection.c:168
+#: calendar/libecal/e-cal.c:5011 servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Unknown User"
 
-#: calendar/libecal/e-cal.c:4886
+#: calendar/libecal/e-cal.c:5013
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: calendar/libecal/e-cal.c:4888
+#: calendar/libecal/e-cal.c:5015
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: calendar/libecal/e-cal.c:4890
+#: calendar/libecal/e-cal.c:5017
 msgid "Operation has been cancelled"
 msgstr "Operation has been canceled"
 
-#: calendar/libecal/e-cal.c:4892
+#: calendar/libecal/e-cal.c:5019
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: calendar/libecal/e-cal.c:4896
+#: calendar/libecal/e-cal.c:5023
 #: camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: calendar/libecal/e-cal.c:4898
+#: calendar/libecal/e-cal.c:5025
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: calendar/libecal/e-cal.c:4900 camel/providers/imap/camel-imap-command.c:304
+#: calendar/libecal/e-cal.c:5027 camel/providers/imap/camel-imap-command.c:304
 #: camel/providers/imap/camel-imap-command.c:404
 #: camel/providers/imap4/camel-imap4-store.c:376
 #: camel/providers/pop3/camel-pop3-store.c:535
@@ -1130,11 +1137,10 @@ msgstr "A CORBA exception has occurred"
 #: camel/providers/pop3/camel-pop3-store.c:548
 #: servers/groupwise/e-gw-connection.c:174
 #: servers/exchange/storage/e-storage.c:586
-#: servers/exchange/storage/exchange-account.c:1530
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: calendar/libecal/e-cal.c:4902 servers/exchange/storage/e-storage.c:554
+#: calendar/libecal/e-cal.c:5029 servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "No error"
 
@@ -1774,7 +1780,7 @@ msgstr "Could not load %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Could not load %s: No initialization code in module."
 
-#: camel/camel-provider.c:374 camel/camel-session.c:161
+#: camel/camel-provider.c:374 camel/camel-session.c:163
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "No provider available for protocol `%s'"
@@ -2032,7 +2038,7 @@ msgstr "URL '%s' needs a host component"
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s' needs a path component"
 
-#: camel/camel-session.c:283
+#: camel/camel-session.c:285
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -3047,6 +3053,7 @@ msgstr "Could not connect with command \"%s\": %s"
 #: camel/providers/local/camel-maildir-store.c:511
 #: camel/providers/local/camel-maildir-store.c:524
 #: camel/providers/local/camel-spool-store.c:460
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:258
 msgid "Inbox"
 msgstr "Inbox"
 
@@ -4812,6 +4819,7 @@ msgid "Address _Book:"
 msgstr "Address _Book:"
 
 #: libedataserverui/e-name-selector-dialog.glade.h:7
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:255
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -4856,6 +4864,17 @@ msgstr "No response from the server"
 msgid "Bad parameter"
 msgstr "Bad parameter"
 
+#: servers/exchange/lib/e2k-autoconfig.c:1573
+#: servers/exchange/storage/exchange-account.c:879
+#, c-format
+msgid "Enter password for %s"
+msgstr "Enter password for %s"
+
+#: servers/exchange/lib/e2k-autoconfig.c:1574
+#: servers/exchange/storage/exchange-account.c:884
+msgid "Enter password"
+msgstr "Enter password"
+
 #. i18n: These are Outlook's words for the default roles in
 #. the folder permissions dialog.
 #: servers/exchange/lib/e2k-security-descriptor.c:847
@@ -4897,24 +4916,6 @@ msgstr "None"
 #: servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
 msgstr "Custom"
-
-#: servers/exchange/lib/e2k-user-dialog.c:144
-msgid "Select User"
-msgstr "Select User"
-
-#: servers/exchange/lib/e2k-user-dialog.c:182
-msgid "Addressbook..."
-msgstr "Addressbook..."
-
-#: servers/exchange/lib/e2k-autoconfig.c:1573
-#, c-format
-msgid "Enter password for %s"
-msgstr "Enter password for %s"
-
-#: servers/exchange/lib/e2k-autoconfig.c:1574
-#: servers/exchange/storage/exchange-account.c:891
-msgid "Enter password"
-msgstr "Enter password"
 
 #: servers/exchange/storage/e-storage.c:556
 msgid "Generic error"
@@ -4974,106 +4975,56 @@ msgstr "This operation cannot be performed in off-line mode"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: servers/exchange/storage/exchange-account.c:582
+#: servers/exchange/storage/exchange-account.c:583
 #, c-format
 msgid "%s's Folders"
 msgstr "%s's Folders"
 
-#: servers/exchange/storage/exchange-account.c:886
-#, c-format
-msgid "%sEnter password for %s"
-msgstr "%sEnter password for %s"
-
-#: servers/exchange/storage/exchange-account.c:1242
+#: servers/exchange/storage/exchange-account.c:1236
 msgid "Personal Folders"
 msgstr "Personal Folders"
 
-#: servers/exchange/storage/exchange-account.c:1257
+#: servers/exchange/storage/exchange-account.c:1251
 msgid "Favorite Public Folders"
 msgstr "Favourite Public Folders"
 
 #. i18n: Outlookism
-#: servers/exchange/storage/exchange-account.c:1274
+#: servers/exchange/storage/exchange-account.c:1268
 msgid "All Public Folders"
 msgstr "All Public Folders"
 
 #. i18n: Outlookism
-#: servers/exchange/storage/exchange-account.c:1288
+#: servers/exchange/storage/exchange-account.c:1282
 msgid "Global Address List"
 msgstr "Global Address List"
 
-#: servers/exchange/storage/exchange-account.c:1441
-msgid ""
-"Could not authenticate to server. (Password incorrect?)\n"
-"\n"
-msgstr ""
-"Could not authenticate with server. (Password incorrect?)\n"
-"\n"
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:256
+msgid "Deleted Items"
+msgstr "Deleted Items"
 
-#: servers/exchange/storage/exchange-account.c:1446
-msgid ""
-"Could not authenticate to server.\n"
-"\n"
-"This probably means that your server requires you\n"
-"to specify the Windows domain name as part of your\n"
-"username (eg, \"DOMAIN\\user\").\n"
-"\n"
-"Or you might have just typed your password wrong.\n"
-"\n"
-msgstr ""
-"Could not authenticate with server.\n"
-"\n"
-"This probably means that your server requires you\n"
-"to specify the Windows domain name as part of your\n"
-"username (eg, \"DOMAIN\\user\").\n"
-"\n"
-"Or, you may have typed your password incorrectly.\n"
-"\n"
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:257
+msgid "Drafts"
+msgstr "Drafts"
 
-#: servers/exchange/storage/exchange-account.c:1488
-#, c-format
-msgid "Mailbox for %s is not on this server."
-msgstr "Mailbox for %s is not on this server."
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:259
+msgid "Journal"
+msgstr "Journal"
 
-#: servers/exchange/storage/exchange-account.c:1493
-#, c-format
-msgid ""
-"The server '%s' is running Exchange 5.5 and is\n"
-"therefore not compatible with Ximian Connector"
-msgstr ""
-"The server '%s' is running Exchange 5.5 and is\n"
-"therefore not compatible with Ximian Connector"
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:260
+msgid "Notes"
+msgstr "Notes"
 
-#: servers/exchange/storage/exchange-account.c:1500
-#, c-format
-msgid ""
-"Could not find Exchange Web Storage System at %s.\n"
-"If OWA is running on a different path, you must specify that in the\n"
-"account configuration dialog."
-msgstr ""
-"Could not find Exchange Web Storage System at %s.\n"
-"If OWA is running on a different path, you must specify that in the\n"
-"account configuration dialogue."
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:261
+msgid "Outbox"
+msgstr "Outbox"
 
-#: servers/exchange/storage/exchange-account.c:1508
-#, c-format
-msgid "No mailbox for user %s on %s.\n"
-msgstr "No mailbox for user %s on %s.\n"
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:262
+msgid "Sent Items"
+msgstr "Sent Items"
 
-#: servers/exchange/storage/exchange-account.c:1514
-#: servers/exchange/storage/exchange-account.c:1520
-#: servers/exchange/storage/exchange-account.c:1528
-#, c-format
-msgid "Could not connect to server %s: %s"
-msgstr "Could not connect to server %s: %s"
-
-#: servers/exchange/storage/exchange-account.c:1516
-msgid "Could not resolve hostname"
-msgstr "Could not resolve hostname"
-
-#: servers/exchange/storage/exchange-account.c:1522
-msgid "Network error"
-msgstr "Network error"
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:263
+msgid "Tasks"
+msgstr "Tasks"
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
