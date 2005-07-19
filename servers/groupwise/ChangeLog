@@ -1,3 +1,11 @@
+2005-07-19  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_accept_request),
+	(e_gw_connection_decline_request): Added additional parameters
+	for passing the recurrence key.
+	* e-gw-connection.h: Removed two functions for accepting/declining
+	for recurrences.
+
 2005-07-10  Sankar P  <psankar@novell.com>
 
 	* e-gw-connection.c : 

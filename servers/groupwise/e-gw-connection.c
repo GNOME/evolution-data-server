@@ -1377,7 +1377,7 @@ e_gw_connection_remove_items (EGwConnection *cnc, const char *container, GList *
 }
 
 EGwConnectionStatus
-e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *accept_level)
+e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *accept_level, const char *accept_comment, const char *recurrence_key)
 {
 	SoupSoapMessage *msg;
 	int status;
@@ -1388,35 +1388,13 @@ e_gw_connection_accept_request (EGwConnection *cnc, const char *id, const char *
 	e_gw_message_write_string_parameter (msg, "item", NULL, id);
 	soup_soap_message_end_element (msg);
 	e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, accept_level);
-	e_gw_message_write_footer (msg);
+	
+	if (recurrence_key)
+		e_gw_message_write_string_parameter (msg, "recurrenceAllInstances", NULL, recurrence_key);
 
-	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
-
-        status = e_gw_connection_parse_response_status (response);
-	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		reauthenticate (cnc);
-	g_object_unref (response);
-	g_object_unref (msg);
-	return status;
-}
-
-EGwConnectionStatus
-e_gw_connection_accept_request_by_recurrence_key (EGwConnection *cnc, const char *recurrence_key, const char *accept_level, const char *accept_comment)
-{
-	SoupSoapMessage *msg;
-	int status;
-	SoupSoapResponse *response;
-
-	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "acceptRequest");
 	if (accept_comment)
 		e_gw_message_write_string_parameter (msg, "comment", NULL, accept_comment);
 
-	e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, accept_level);
-	e_gw_message_write_string_parameter (msg, "recurrenceAllInstances", NULL, recurrence_key);
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
@@ -1434,7 +1412,7 @@ e_gw_connection_accept_request_by_recurrence_key (EGwConnection *cnc, const char
 }
 
 EGwConnectionStatus
-e_gw_connection_decline_request (EGwConnection *cnc, const char *id)
+e_gw_connection_decline_request (EGwConnection *cnc, const char *id, const char *decline_comment, const char *recurrence_key)
 {
 	SoupSoapMessage *msg;
 	int status;
@@ -1444,33 +1422,13 @@ e_gw_connection_decline_request (EGwConnection *cnc, const char *id)
 	soup_soap_message_start_element (msg, "items", NULL, NULL);
 	e_gw_message_write_string_parameter (msg, "item", NULL, id);
 	soup_soap_message_end_element (msg);
-	e_gw_message_write_footer (msg);
-
-	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
-
-        status = e_gw_connection_parse_response_status (response);
-	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		reauthenticate (cnc);
-	g_object_unref (response);
-	g_object_unref (msg);
-	return status;
-}
-
-EGwConnectionStatus
-e_gw_connection_decline_request_by_recurrence_key (EGwConnection *cnc, const char *recurrence_key, const char *decline_comment)
-{
-	SoupSoapMessage *msg;
-	int status;
-	SoupSoapResponse *response;
-
-	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "declineRequest");
+	
 	if (decline_comment)
 		e_gw_message_write_string_parameter (msg, "comment", NULL, decline_comment);
-	e_gw_message_write_string_parameter (msg, "recurrenceAllInstances", NULL, recurrence_key);
+
+	if (recurrence_key)
+		e_gw_message_write_string_parameter (msg, "recurrenceAllInstances", NULL, recurrence_key);
+
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
