@@ -521,7 +521,7 @@ e_passwords_cancel(void)
 	UNLOCK();
 
 	if (password_dialog)
-		gtk_widget_destroy((GtkWidget *)password_dialog);
+		gtk_dialog_response(password_dialog,GTK_RESPONSE_CANCEL);
 }
 
 /**

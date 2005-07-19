@@ -1,3 +1,8 @@
+2005-07-15  Jedy Wang  <jedy.wang@sun.com>
+
+	* e-passwords.c: (e_passwords_cancel): To kill a e-password-dialog,
+	we shall send a cancel reply, but not just simply destroy the widget.
+
 2005-07-11  Sushma Rai  <rsushma@novell.com>
 
 	* e-name-selector-dialog.c (e_name_selector_dialog_init): Making the
