@@ -1641,6 +1641,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	GSList *recp_list = NULL;
 	GSList *attach_list = NULL;
 	GString *gstr = g_string_new (NULL);
+	int recur_key = 0;
 	char **tmp;
 	const char *temp = NULL;
 
@@ -1649,7 +1650,17 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	gstr = g_string_append (gstr, "BEGIN:VCALENDAR\n");
 	gstr = g_string_append (gstr, "METHOD:REQUEST\n");
 	gstr = g_string_append (gstr, "BEGIN:VEVENT\n");
-	g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
+	
+	if ((recur_key = e_gw_item_get_recurrence_key (item)) != 0) {
+		char *recur_k = g_strdup_printf ("%d", recur_key); 
+
+		g_string_append_printf (gstr, "UID:%s\n", recur_k);
+		g_string_append_printf (gstr, "X-GW-RECURRENCE-KEY:%s\n", recur_k);
+
+		g_free (recur_k);
+	} else
+		g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
+
 	g_string_append_printf (gstr, "X-GWITEM-TYPE:APPOINTMENT\n");
 	g_string_append_printf (gstr, "DTSTART:%s\n",e_gw_item_get_start_date (item));
 	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));

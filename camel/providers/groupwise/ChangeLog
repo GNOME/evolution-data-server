@@ -1,3 +1,8 @@
+2005-07-19  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel-groupwise-folder.c: (convert_to_calendar): Use the
+	recurrence key as the UID if it is non-zero.
+
 2005-07-19  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c: 
