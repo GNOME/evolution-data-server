@@ -326,6 +326,8 @@ e_destination_store_list_destinations (EDestinationStore *destination_store)
 		EDestination *destination = g_ptr_array_index (destination_store->destinations, i);
 		destination_list = g_list_prepend (destination_list, destination);
 	}
+	
+	destination_list = g_list_reverse(destination_list);
 
 	return destination_list;
 }

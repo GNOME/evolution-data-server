@@ -1,3 +1,13 @@
+2005-07-07  S.Antony Vincent Pandian <santony@gmail.com>
+
+       * e-destination-store.c (e_destination_store_list_destinations):
+       adding g_list_reverse(..) after the loop shows the
+       addresses in the same order as sent thus solving the bug.
+
+       Fixes #301922
+
+       ** committed on behalf of antony, since he does not have commit rights
+
 2005-07-15  Jedy Wang  <jedy.wang@sun.com>
 
 	* e-passwords.c: (e_passwords_cancel): To kill a e-password-dialog,
