@@ -1947,9 +1947,11 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			if (e_cal_component_has_attendees (E_CAL_COMPONENT (comp_list->data))) {
 				/* get recurrence key and send it to
 				 * e_gw_connection_remove_recurrence_item */
-				status = e_gw_connection_decline_request_by_recurrence_key (priv->cnc, uid, NULL);
+				
+				id_to_remove = get_gw_item_id (e_cal_component_get_icalcomponent (comp_list->data)); 
+				status = e_gw_connection_decline_request (priv->cnc, id_to_remove, NULL, uid);
 				if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-					status = e_gw_connection_decline_request_by_recurrence_key (priv->cnc, uid, NULL);
+					status = e_gw_connection_decline_request (priv->cnc, id_to_remove, NULL, uid);
 			} else {
 				GList *item_ids = NULL;	
 				for (l = comp_list; l; l = l->next) {

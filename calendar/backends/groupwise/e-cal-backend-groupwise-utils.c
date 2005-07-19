@@ -1165,7 +1165,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	EGwConnection *cnc;
 	EGwConnectionStatus status;
 	icalparameter_partstat partstat;
-	char *item_id;
+	char *item_id = NULL;
 	gboolean all_instances = FALSE;
 	icalproperty *icalprop;
 	icalcomponent *icalcomp;
@@ -1188,20 +1188,19 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 		const char *x_name;
 
 		x_name = icalproperty_get_x_name (icalprop);
-		if (!strcmp (x_name, "X-GW-RECUR-INSTANCE-MOD-TYPE")) {
+		if (!strcmp (x_name, "X-GW-RECUR-INSTANCES-MOD-TYPE")) {
 			if (!strcmp (icalproperty_get_x (icalprop), "All"))
 				all_instances = TRUE;
 			if (recurrence_key)
 				break;
 		}
 		if (!strcmp (x_name, "X-GW-RECURRENCE-KEY")) {
-			recurrence_key = icalproperty_get_x (icalprop);
+			e_cal_component_get_uid (comp, &recurrence_key);
 		}
 		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
 	}	
 		
-	if (all_instances) {
-		switch  (e_cal_component_get_vtype (comp)) {
+	switch  (e_cal_component_get_vtype (comp)) {
 		case E_CAL_COMPONENT_EVENT: 
 			item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
 			break;
@@ -1210,9 +1209,8 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			break;
 		default:
 			return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
-		}
 	}
-	
+
 	switch (method) {
 	case ICAL_METHOD_REQUEST:
 		/* get attendee here and add the list along. */
@@ -1257,29 +1255,30 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			e_cal_component_get_transparency (comp, &transp);
 			if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE)  {
 				if (all_instances)
-					status = e_gw_connection_accept_request_by_recurrence_key (cnc, recurrence_key, "Busy", NULL);
+					status = e_gw_connection_accept_request (cnc, item_id, "Busy",  NULL, recurrence_key);
 				else
-					status = e_gw_connection_accept_request (cnc, item_id, "Busy");
+					status = e_gw_connection_accept_request (cnc, item_id, "Busy", NULL, NULL);
 			}
 			else {
 				if (all_instances)
-					status = e_gw_connection_accept_request_by_recurrence_key (cnc, recurrence_key, "Free", NULL);
+					status = e_gw_connection_accept_request (cnc, item_id, "Free",  NULL, recurrence_key);
 				else
-					status = e_gw_connection_accept_request (cnc, item_id, "Free");
+					status = e_gw_connection_accept_request (cnc, item_id, "Free", NULL, NULL);
 			}
 			break;
 		case ICAL_PARTSTAT_DECLINED:
 			if (all_instances)
-				status = e_gw_connection_decline_request_by_recurrence_key (cnc, recurrence_key, NULL);
+				status = e_gw_connection_decline_request (cnc, item_id, NULL, recurrence_key);
 			else
-				status = e_gw_connection_decline_request (cnc, item_id);
+				status = e_gw_connection_decline_request (cnc, item_id, NULL, NULL);
+			
 			*remove = TRUE;
 			break;
 		case ICAL_PARTSTAT_TENTATIVE:
 			if (all_instances)
-				status = e_gw_connection_accept_request_by_recurrence_key (cnc, recurrence_key, "Tentative", NULL);
+				status = e_gw_connection_accept_request (cnc, item_id, "Tentative", NULL, recurrence_key);
 			else
-				status = e_gw_connection_accept_request (cnc, item_id, "Tentative");
+				status = e_gw_connection_accept_request (cnc, item_id, "Tentative", NULL, NULL);
 			break;
 		case ICAL_PARTSTAT_COMPLETED:
 			status = e_gw_connection_complete_request (cnc, item_id);
