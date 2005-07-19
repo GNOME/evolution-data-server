@@ -518,7 +518,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	CamelFolder *folder ;
 	CamelSession *session = camel_service_get_session (CAMEL_SERVICE (store));
 	CamelGroupwiseSummary *summary;
-	char *time_string = NULL;
 	char *storage_path, *folder_dir, *temp_str,*container_id ;
 	const char *temp_name;
 	EGwConnectionStatus status ;
@@ -580,15 +579,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		mutex = g_mutex_new () ;
 
 	summary = (CamelGroupwiseSummary *) folder->summary;
-	if (summary->time_string && *(summary->time_string))
-		time_string = summary->time_string;	
-	else {
-		time_t mod_time = time (0) ;
-		const struct tm *tm;
-		/*TODO get current time here */
-		tm = gmtime (&mod_time);
-		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
-	}
 
 	summary_count = camel_folder_summary_count (folder->summary) ;
 	if(!summary_count) {

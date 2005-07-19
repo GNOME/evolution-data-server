@@ -1,3 +1,8 @@
+2005-07-19  Shreyas Srinivasan <sshreyas@novell.com>
+
+	* camel-groupwise-store.c: Remove some redundant code in 
+	groupwise_get_folder which was crashing evolution on Mac. 
+	
 2005-07-10  Shreyas Srinivasan <sshreyas@novell.com>
 
 	* camel-groupwise-store.c: Add check that uses parents password
