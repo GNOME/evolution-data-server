@@ -156,7 +156,8 @@ camel_groupwise_store_finalize (CamelObject *object)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (object) ;
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv ;
-
+	
+	g_print ("camel_groupwise_store_finalize\n");
 	if (groupwise_store->summary) {
 		camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary) ;
 		camel_object_unref (groupwise_store->summary) ;
@@ -760,20 +761,44 @@ struct _store_folder_refresh {
 	CamelStore *store;
 };
 
+static gboolean
+does_folder_exist (CamelGroupwiseStorePrivate *priv, char *folder_name)
+{
+	char *name;
+	name = strrchr (folder_name, '/') ;
+	if (name) {
+		name++ ;
+		if (!g_hash_table_lookup (priv->name_hash, name))
+			return FALSE;
+		else 
+			return TRUE;
+	} else {
+		if (!g_hash_table_lookup (priv->name_hash, folder_name))
+			return FALSE;
+		else 
+			return TRUE;
+	}
+
+	return TRUE;
+}
+
 static void
 store_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	GPtrArray *folders;
 	int i;
 	struct _store_folder_refresh *m = (struct _store_folder_refresh *)msg;
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE ( (m->store));
 	CamelException *ex = NULL;
+
 	folders = camel_object_bag_list (CAMEL_STORE (m->store)->folders);
 
 	for (i=0 ; i<folders->len ; i++) {
 		CamelFolder *folder = folders->pdata[i];
-		groupwise_refresh_folder (folder, ex);
-
-		if (camel_exception_is_set (ex)) {
+		if (does_folder_exist (groupwise_store->priv, folder->name) == TRUE) {
+			groupwise_refresh_folder (folder, ex);
+			if (!camel_exception_is_set (ex)) 
+				camel_object_unref (folder);
 		} else
 			camel_object_unref (folder);
 	}
@@ -1104,6 +1129,9 @@ groupwise_delete_folder(CamelStore *store,
 	status = e_gw_connection_remove_item (priv->cnc, container, container) ;
 
 	if (status == E_GW_CONNECTION_STATUS_OK) {
+		if (groupwise_store->current_folder)
+			camel_object_unref (groupwise_store->current_folder);
+
 		groupwise_forget_folder(groupwise_store,folder_name,ex) ;
 		
 		g_hash_table_remove (priv->id_hash, container) ;

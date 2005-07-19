@@ -1,3 +1,9 @@
+2005-07-19  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: 
+	(does_folder_exist): checks if a folder exists or not
+	** Fixes bug 310716
+
 2005-07-19  Shreyas Srinivasan <sshreyas@novell.com>
 
 	* camel-groupwise-store.c: Remove some redundant code in 
