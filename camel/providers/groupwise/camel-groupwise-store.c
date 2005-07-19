@@ -747,21 +747,12 @@ struct _store_folder_refresh {
 static gboolean
 does_folder_exist (CamelGroupwiseStorePrivate *priv, char *folder_name)
 {
-	char *name;
-	name = strrchr (folder_name, '/') ;
-	if (name) {
-		name++ ;
-		if (!g_hash_table_lookup (priv->name_hash, name))
-			return FALSE;
-		else 
-			return TRUE;
-	} else {
-		if (!g_hash_table_lookup (priv->name_hash, folder_name))
-			return FALSE;
-		else 
-			return TRUE;
-	}
+	if (!g_hash_table_lookup (priv->name_hash, folder_name))
+		return FALSE;
+	else 
+		return TRUE;
 
+	/*Return True by default*/
 	return TRUE;
 }
 
@@ -778,7 +769,7 @@ store_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
 
 	for (i=0 ; i<folders->len ; i++) {
 		CamelFolder *folder = folders->pdata[i];
-		if (does_folder_exist (groupwise_store->priv, folder->name) == TRUE) {
+		if (does_folder_exist (groupwise_store->priv, folder->full_name) == TRUE) {
 			groupwise_refresh_folder (folder, ex);
 			if (!camel_exception_is_set (ex)) 
 				camel_object_unref (folder);
