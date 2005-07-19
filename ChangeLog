@@ -1,3 +1,8 @@
+2005-07-20  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Enable building with Mozilla nspr and nss on
+	Win32. No -ldl on Win32. No import library for softokn3.dll.
+
 2005-07-14  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* configure.in : Substituting the CURRENT:REVISION:AGE variables for 
