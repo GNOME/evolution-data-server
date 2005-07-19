@@ -99,7 +99,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelGroupwiseMessageInfo *mi = NULL;
-	char *temp_name, *folder_name, *container_id;
+	char *container_id;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	EGwItem *item;
@@ -155,20 +155,8 @@ groupwise_folder_get_message( CamelFolder *folder,
 		return NULL;
 	}
 
+	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name)) ;
 
-	folder_name = g_strdup(folder->name);
-	temp_name = strrchr (folder_name,'/');
-	if(temp_name == NULL) {
-		container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder_name));
-	}
-	else {
-		temp_name++;
-		container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, temp_name));
-	}
-
-	g_free (folder_name);
-	//XXX:free container_id
-	
 	cnc = cnc_lookup (priv);
 	status = e_gw_connection_get_item (cnc, container_id, uid, "peek default distribution recipient message attachments subject notification created recipientStatus status", &item);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -182,6 +170,8 @@ groupwise_folder_get_message( CamelFolder *folder,
 	if (!msg) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
 		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+		g_free (container_id);
+		
 		return NULL;
 	}
 
@@ -196,7 +186,10 @@ groupwise_folder_get_message( CamelFolder *folder,
 
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+	
+	g_free (container_id);
 	return msg;
+
 }
 
 static void
@@ -579,8 +572,8 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) 
 		return;
 	
-	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->name);
-	
+	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
+
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 
 	count = camel_folder_summary_count (folder->summary);
@@ -790,9 +783,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		return;
 	}
 
-	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name));
+	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name)) ;
+
 	if (!container_id) {
-		g_error ("\nERROR - Container id not present. Cannot refresh info\n");
+		g_error ("\nERROR - Container id not present. Cannot refresh info for %s\n", folder->full_name);
 		return;
 	}
 
@@ -809,7 +803,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	/*Done....should refresh now.....*/
 
 	if (!g_ascii_strncasecmp (folder->full_name, "Trash", 5) || is_proxy) {
-		g_print ("I am entering here ...\n");
 		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution created attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -825,8 +818,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	}
 
 	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
-	t_str = g_strdup (time_string);
-
+	t_str = g_strdup (time_string); 
 	/*Get the New Items*/
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
 			"peek id",
@@ -843,7 +835,8 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	if (summary->time_string)
 		g_free (summary->time_string);
 	summary->time_string = g_strdup (t_str);
-	g_free (t_str);	t_str = NULL;
+	g_free (t_str);	
+	t_str = NULL;
 
 	for ( sl = slist ; sl != NULL; sl = sl->next) 
 		list = g_list_append (list, sl->data);
@@ -929,7 +922,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 
 	msg = g_ptr_array_new ();
 	changes = camel_folder_change_info_new ();
-	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->name));
+	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
 		g_error ("\nERROR - Container id not present. Cannot refresh info\n");
 		return;
@@ -1129,7 +1122,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		    !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) {
 			
 			status = e_gw_connection_get_attachment (cnc,
-					g_strdup(attach->id), 0, -1,
+					attach->id, 0, -1,
 					(const char **)&attachment, &len);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				g_warning ("Could not get attachment\n");
@@ -1219,7 +1212,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				g_object_unref (temp_item);
 			} else {
 				status = e_gw_connection_get_attachment (cnc, 
-						g_strdup(attach->id), 0, -1, 
+						attach->id, 0, -1, 
 						(const char **)&attachment, &len);
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_warning ("Could not get attachment\n");
@@ -1250,7 +1243,6 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
 
 	camel_object_unref (multipart);
-
 
 	if (body)
 		g_free (body);
@@ -1315,7 +1307,8 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	}
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 	/*Get the container id*/
-	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->name);
+	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
+
 	/* FIXME Separate To/CC/BCC? */
 	recipients = CAMEL_ADDRESS (camel_internet_address_new ());
 	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO)));
@@ -1381,8 +1374,6 @@ uid_compar (const void *va, const void *vb)
 		return 1;
 }
 
-
-
 static void
 groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids, 
 				CamelFolder *destination, GPtrArray **transferred_uids, 
@@ -1409,11 +1400,11 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		*transferred_uids = NULL;
 
 	if (delete_originals) 
-		source_container_id = camel_groupwise_store_container_id_lookup (gw_store, source->name);
+		source_container_id = camel_groupwise_store_container_id_lookup (gw_store, source->full_name) ;
 	else
 		source_container_id = NULL;
-	dest_container_id = camel_groupwise_store_container_id_lookup (gw_store, destination->name);
-
+	dest_container_id = camel_groupwise_store_container_id_lookup (gw_store, destination->full_name) ;
+	
 	CAMEL_SERVICE_LOCK (source->parent_store, connect_lock);
 	/* check for offline operation */
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
@@ -1501,7 +1492,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 
 	cnc = cnc_lookup (priv);
 	
-	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->name));
+	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->full_name)) ;
 
 	max = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < max; i++) {
@@ -1606,7 +1597,6 @@ camel_groupwise_folder_get_type (void)
 	return camel_groupwise_folder_type;
 }
 
-
 static int
 gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
@@ -1641,7 +1631,6 @@ gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		return ((CamelObjectClass *)parent_class)->getv(object, ex, args);
 
 	return 0;
-
 		
 }
 
@@ -1654,8 +1643,6 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	GString *gstr = g_string_new (NULL);
 	char **tmp;
 	const char *temp = NULL;
-	
-	
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
@@ -1718,7 +1705,6 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	gstr = g_string_append (gstr, "END:VEVENT\n");
 	gstr = g_string_append (gstr, "END:VCALENDAR\n");
 	
-
 	*str = gstr->str;
 	*len = gstr->len;
 	
@@ -1735,8 +1721,6 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	char **tmp;
 	const char *temp = NULL;
 	
-	
-
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
 	gstr = g_string_append (gstr, "BEGIN:VCALENDAR\n");
