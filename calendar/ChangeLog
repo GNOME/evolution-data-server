@@ -3,7 +3,7 @@
 	Fixes #310767
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
 	(e_gw_connection_send_appointment): Set the item_id for
-	single instance also.
+	single instance also. Fixed typo error in X-GW-RECUR-INSTANCES-MOD-TYPE
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	(e_cal_backend_groupwise_remove_object): Pass the recurrence
 	key while accepting/declining all instances of a recurring
