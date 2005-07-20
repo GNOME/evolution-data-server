@@ -731,7 +731,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 			&(m->t_str), "All", NULL, NULL, -1, &(m->slist));
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-		g_error ("ERROR update update\n");
+		g_warning ("ERROR update update\n");
 	} else 
 		gw_update_all_items (m->folder, m->slist, ex);
 }
@@ -1203,8 +1203,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				}
 				temp_msg = groupwise_folder_item_to_msg(folder, temp_item, ex);
 				if (temp_msg) {
-					//camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/mixed");
-					//camel_multipart_set_boundary (multipart, NULL);
+					camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/mixed");
+					camel_multipart_set_boundary (multipart, NULL);
 					camel_mime_part_set_content_type ( (CamelMimePart *)temp_msg, "message/rfc822");
 					camel_multipart_add_part (multipart,(CamelMimePart *)temp_msg);
 					camel_object_unref (temp_msg);
@@ -1218,7 +1218,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					g_warning ("Could not get attachment\n");
 					continue;
 				}
-				if (attach && (len !=0) ) {
+				if (attachment && (len !=0) ) {
 					part = camel_mime_part_new ();
 
 					camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");

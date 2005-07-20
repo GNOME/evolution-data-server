@@ -1,3 +1,8 @@
+2005-07-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	  ** Fix for bug ** 310953
+
 2005-07-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-groupwise-folder.c: (convert_to_calendar): Use the
