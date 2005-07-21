@@ -34,6 +34,8 @@ libexchange_storage_1_2_la_SOURCES =				\
 	e-storage.h						\
 	exchange-account.c					\
 	exchange-account.h					\
+	exchange-esource.c					\
+	exchange-esource.h					\
 	exchange-folder-size.c					\
 	exchange-folder-size.h					\
 	exchange-hierarchy-favorites.c				\

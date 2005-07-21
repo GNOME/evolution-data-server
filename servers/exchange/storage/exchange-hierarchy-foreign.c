@@ -31,7 +31,7 @@
 #include "e2k-propnames.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
-//#include "exchange-config-listener.h"
+#include "exchange-esource.h"
 #include "exchange-types.h"
 #include "e2k-types.h"
 
@@ -341,8 +341,6 @@ create_folder (ExchangeHierarchy *hier, EFolder *parent,
 static ExchangeAccountFolderResult
 remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 {
-/* This should be moved to plugins */
-#if 0
 	const char *folder_type, *physical_uri;
 
 	/* Temp Fix for remove fav folders. see #59168 */
@@ -365,7 +363,6 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 				       EXCHANGE_CONTACTS_FOLDER,
 				       physical_uri);
 	}
-#endif
 	if (folder != hier->toplevel)
 		exchange_hierarchy_removed_folder (hier, folder);
 
@@ -429,9 +426,8 @@ exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
 	char *new_folder_name;
 
 	result =  create_internal (hier, hier->toplevel, folder_name, NULL, folder);
-#if 0
 	if (result == EXCHANGE_ACCOUNT_FOLDER_OK) {
-		// Add the esources
+		/* Add the esources */
 		folder_type = e_folder_get_type_string (*folder);
 		physical_uri = e_folder_get_physical_uri (*folder);
 		new_folder_name = g_strdup_printf("%s's %s", 
@@ -461,7 +457,6 @@ exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
 		}
 		g_free (new_folder_name);
 	}
-#endif
 	return result;
 }
 

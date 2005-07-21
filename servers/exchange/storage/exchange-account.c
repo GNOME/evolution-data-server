@@ -71,7 +71,7 @@ struct _ExchangeAccountPrivate {
 	GPtrArray *hierarchies;
 	GHashTable *hierarchies_by_folder, *foreign_hierarchies;
 	ExchangeHierarchy *favorites_hierarchy;
-	GHashTable *folders;
+	GHashTable *folders, *fresh_folders;
 	char *uri_authority, *http_uri_schema;
 	gboolean uris_use_email, offline_sync;
 
@@ -154,6 +154,7 @@ init (GObject *object)
 	account->priv->hierarchies_by_folder = g_hash_table_new (NULL, NULL);
 	account->priv->foreign_hierarchies = g_hash_table_new (g_str_hash, g_str_equal);
 	account->priv->folders = g_hash_table_new (g_str_hash, g_str_equal);
+	account->priv->fresh_folders = NULL;
 	account->priv->discover_data_lock = g_mutex_new ();
 	account->priv->account_online = TRUE;
 	account->priv->nt_domain = NULL;
@@ -220,6 +221,12 @@ dispose (GObject *object)
 		g_hash_table_foreach (account->priv->folders, free_folder, NULL);
 		g_hash_table_destroy (account->priv->folders);
 		account->priv->folders = NULL;
+	}
+
+	if (account->priv->fresh_folders) {
+		g_hash_table_foreach (account->priv->fresh_folders, free_folder, NULL);
+		g_hash_table_destroy (account->priv->fresh_folders);
+		account->priv->fresh_folders = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -313,8 +320,19 @@ exchange_account_rescan_tree (ExchangeAccount *account)
 
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
 
-	for (i = 0; i < account->priv->hierarchies->len; i++)
+	if (account->priv->fresh_folders) {
+		g_hash_table_foreach (account->priv->fresh_folders, free_folder, NULL);
+		g_hash_table_destroy (account->priv->fresh_folders);
+		account->priv->fresh_folders = NULL;
+	}
+	account->priv->fresh_folders = g_hash_table_new (g_str_hash, g_str_equal);
+
+	for (i = 0; i < account->priv->hierarchies->len; i++) {
+		exchange_hierarchy_scan_subtree (account->priv->hierarchies->pdata[i],
+						EXCHANGE_HIERARCHY (account->priv->hierarchies->pdata[i])->toplevel,
+						FALSE);
 		exchange_hierarchy_rescan (account->priv->hierarchies->pdata[i]);
+	}
 }
 
 /*
@@ -342,6 +360,14 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 				     folder);
 		table_updated = 1;
 	}
+
+	if (account->priv->fresh_folders) {
+		g_object_ref (folder);
+		g_hash_table_insert (account->priv->fresh_folders,
+				     (char *)e_folder_exchange_get_path (folder),
+				     folder);
+	}	
+	
 	if (!g_hash_table_lookup (account->priv->folders, 
 				e_folder_get_physical_uri (folder))) {
 		/* Avoid dupilcations since the user could add a folder as
@@ -1822,7 +1848,10 @@ exchange_account_get_folders (ExchangeAccount *account)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	folders = g_ptr_array_new ();
-	g_hash_table_foreach (account->priv->folders, add_folder, folders);
+	if (account->priv->fresh_folders)
+		g_hash_table_foreach (account->priv->fresh_folders, add_folder, folders);
+	else
+		g_hash_table_foreach (account->priv->folders, add_folder, folders);
 
 	qsort (folders->pdata, folders->len,
 	       sizeof (EFolder *), folder_comparator);

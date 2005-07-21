@@ -29,7 +29,7 @@
 #include "exchange-hierarchy-gal.h"
 #include "exchange-account.h"
 #include "e-folder-exchange.h"
-//#include "exchange-config-listener.h"
+#include "exchange-esource.h"
 
 #include <libedataserver/e-source-list.h>
 
@@ -59,12 +59,9 @@ exchange_hierarchy_gal_new (ExchangeAccount *account,
 	exchange_hierarchy_construct (hier, account,
 				      EXCHANGE_HIERARCHY_GAL, toplevel,
 				      NULL, NULL, NULL);
-#if 0
-SURF :
 	/* Add ESource */
 	add_folder_esource (hier->account, EXCHANGE_CONTACTS_FOLDER, 
 		     	    hierarchy_name, physical_uri_prefix);
-#endif
 	
 	g_object_unref (toplevel);
 

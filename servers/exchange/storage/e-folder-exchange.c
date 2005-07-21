@@ -23,6 +23,7 @@
 
 #include "e-folder-exchange.h"
 #include "exchange-account.h"
+#include "exchange-esource.h"
 #include "exchange-hierarchy.h"
 #include "e2k-uri.h"
 #include "e2k-path.h"
@@ -183,8 +184,6 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
 	efe->priv->path = e2k_uri_path (e_folder_get_physical_uri (ef));
 	efe->priv->outlook_class = g_strdup (outlook_class);
 
-#if 0
-SURF :
 	/* Add ESources */
 	if (hier->type == EXCHANGE_HIERARCHY_PERSONAL || 
 	    hier->type == EXCHANGE_HIERARCHY_FAVORITES) {
@@ -211,7 +210,6 @@ SURF :
 				     	    physical_uri);
 		}
 	}
-#endif	
 	return ef;
 }
 
@@ -932,8 +930,6 @@ e_folder_exchange_delete (EFolder *folder, E2kOperation *op)
 	const char *folder_type, *physical_uri;
 
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), E2K_HTTP_MALFORMED);
-#if 0
-SURF :
 	/* remove ESources */
 	hier = e_folder_exchange_get_hierarchy (folder); 
 
@@ -961,7 +957,7 @@ SURF :
 					       physical_uri);
 		}
 	}
-#endif
+
 	return e2k_context_delete (E_FOLDER_EXCHANGE_CONTEXT (folder), op,
 				   E_FOLDER_EXCHANGE_URI (folder));
 }

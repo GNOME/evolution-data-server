@@ -28,15 +28,14 @@
 
 #include "exchange-hierarchy-webdav.h"
 #include "exchange-account.h"
-//#include "exchange-constants.h"
 #include "e-folder-exchange.h"
 #include "e2k-context.h"
 #include "e2k-propnames.h"
 #include "e2k-restriction.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
-//#include "exchange-config-listener.h"
 #include "exchange-folder-size.h"
+#include "exchange-esource.h"
 
 #include <libedataserverui/e-passwords.h>
 #include "e2k-path.h"
@@ -385,7 +384,6 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 	const char *folder_type = NULL, *source_folder_name;
 	ExchangeAccountFolderResult ret_code;
 	int offline;
-	gdouble f_size;
 
 	exchange_account_is_offline (hier->account, &offline);
         if (offline != ONLINE_MODE)
@@ -444,8 +442,6 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 	}
 
 	/* Remove the ESource of the source folder, in case of rename/move */
-#if 0
-SURF :
 	if ((hier->type == EXCHANGE_HIERARCHY_PERSONAL || 
 	     hier->type == EXCHANGE_HIERARCHY_FAVORITES) && remove_source && 
 	     ret_code == EXCHANGE_ACCOUNT_FOLDER_OK) {
@@ -469,7 +465,6 @@ SURF :
 					       physical_uri);
 		}
 	}
-#endif
 	if (physical_uri)
 		g_free (physical_uri);
 	return ret_code;
@@ -642,7 +637,7 @@ exchange_hierarchy_webdav_parse_folder (ExchangeHierarchyWebDAV *hwd,
 	 */
 	permanenturl = e2k_properties_get_prop (result->props,
 						E2K_PR_EXCHANGE_PERMANENTURL);
-	// Check for errors
+	/* Check for errors */
 
 	folder = e_folder_webdav_new (EXCHANGE_HIERARCHY (hwd),
 				      result->href, parent,

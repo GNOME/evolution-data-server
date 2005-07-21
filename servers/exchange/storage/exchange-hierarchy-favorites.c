@@ -27,12 +27,11 @@
 
 #include "exchange-hierarchy-favorites.h"
 #include "exchange-account.h"
-//#include "exchange-constants.h"
 #include "e-folder-exchange.h"
 #include "e2k-propnames.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
-//#include "exchange-config-listener.h"
+#include "exchange-esource.h"
 
 #include <libedataserver/e-source-list.h>
 
@@ -217,8 +216,6 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 		exchange_hierarchy_removed_folder (hier, folder);
 	}
 
-#if 0
-SURF : Find a proper palce to fix this
 	/* Temp Fix for remove fav folders. see #59168 */
 	/* remove ESources */
 	folder_type = e_folder_get_type_string (folder);
@@ -240,7 +237,6 @@ SURF : Find a proper palce to fix this
 				       physical_uri);
 	}
 	
-#endif
 	return exchange_hierarchy_webdav_status_to_folder_result (status);
 }
 

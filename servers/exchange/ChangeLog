@@ -1,3 +1,21 @@
+2005-07-21  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/Makefile.am : Add the separated esource handling code files.
+	* storage/exchange-esource.[ch] : Added new
+	* storage/e-folder-exchange.c : Reinclude the esource creation code.
+	* storage/exchange-account.c : Add a new fresh_folder list. This has
+	the latest list of folders available for the account, excluding the
+	folders that were deleted in the current session.
+	(exchange_account_rescan_tree) : Add a scan for fetching any new
+	folders apart from scanning the existing folder properties.
+	(exchange_account_get_folders): First check for the fresh_folder list
+	if available and get the list from that.
+	* storage/exchange-hierarchy-favorites.c : Reinclude the esource
+	removal code.
+	* storage/exchange-hierarchy-foreign.c : Similar
+	* storage/exchange-hierarchy-gal.c : Similar
+	* storage/exchange-hierarchy-webdav.c : Similar
+
 2005-07-15  Arunprakash <arunp@novell.com>
 
 	* storage/exchange-account.c (exchange_account_connect) :  Update the 
