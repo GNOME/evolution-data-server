@@ -109,7 +109,6 @@ typedef struct _CamelRenameInfo {
 #define CAMEL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STORE_TYPE, CamelStoreClass))
 #define CAMEL_IS_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STORE_TYPE))
 
-
 /* Flags for store flags */
 #define CAMEL_STORE_SUBSCRIPTIONS	(1 << 0)
 #define CAMEL_STORE_VTRASH		(1 << 1)

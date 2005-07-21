@@ -1,3 +1,22 @@
+2005-07-20  Not Zed  <NotZed@Ximian.com>
+
+	* camel-store.c (camel_store_get_folder_info): Changed the
+	semantics slightly.  !FAST makes no guarantees about message
+	counts anymore.
+
+	* camel-disco-store.c: fix up some stupid hidden logic here.
+
+2005-07-19  Not Zed  <NotZed@Ximian.com>
+
+	* camel-folder.c (camel_folder_refresh_info): remove the folder
+	lock.
+
+	* camel-disco-store.c (disco_get_folder_info): dont force a
+	connect here, it doesn't belong here.
+
+	* camel-store.c (camel_store_get_folder_info): remove subscription
+	assert.
+
 2005-07-13  Not Zed  <NotZed@Ximian.com>
 
 	* camel-store.c (camel_store_init): initialise the mode to

@@ -562,7 +562,6 @@ get_path (CamelService *service)
 	return path;
 }		
 
-
 /**
  * camel_service_get_path:
  * @service: a #CamelService object

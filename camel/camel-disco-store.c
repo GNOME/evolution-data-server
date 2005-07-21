@@ -193,7 +193,6 @@ disco_cancel_connect (CamelService *service)
 
 	/* Fall back */
 	store->status = CAMEL_DISCO_STORE_OFFLINE;
-
 	CAMEL_SERVICE_CLASS (parent_class)->cancel_connect (service);
 }
 
@@ -246,16 +245,6 @@ disco_get_folder_info (CamelStore *store, const char *top,
 {
 	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (store);
 
-	/* Do this first so if we get forced offline, we'll switch to
-	 * the correct branch below. (FIXME: This only works because
-	 * we know that get_folder_info is the first call that the
-	 * mailer makes on a store.)
-	 */
-	if (CAMEL_SERVICE (store)->status == CAMEL_SERVICE_DISCONNECTED) {
-		if (!camel_service_connect (CAMEL_SERVICE (store), ex))
-			return NULL;
-	}
-
 	switch (camel_disco_store_status (disco_store)) {
 	case CAMEL_DISCO_STORE_ONLINE:
 		return CDS_CLASS (store)->get_folder_info_online (store, top, flags, ex);
@@ -292,14 +281,12 @@ camel_disco_store_status (CamelDiscoStore *store)
 
 	g_return_val_if_fail (CAMEL_IS_DISCO_STORE (store), CAMEL_DISCO_STORE_ONLINE);
 
-	if (service->status == CAMEL_SERVICE_CONNECTING &&
-	    store->status == CAMEL_DISCO_STORE_ONLINE &&
-	    !camel_session_is_online (service->session))
+	if (store->status != CAMEL_DISCO_STORE_OFFLINE
+	    && !camel_session_is_online (service->session))
 		store->status = CAMEL_DISCO_STORE_OFFLINE;
 
 	return store->status;
 }
-
 
 static void
 set_status(CamelDiscoStore *disco_store, CamelDiscoStoreStatus status, CamelException *ex)
@@ -362,7 +349,6 @@ camel_disco_store_set_status (CamelDiscoStore *store,
 
 	CDS_CLASS (store)->set_status (store, status, ex);
 }
-
 
 static gboolean
 can_work_offline (CamelDiscoStore *disco_store)

@@ -296,11 +296,7 @@ camel_folder_refresh_info (CamelFolder *folder, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	CAMEL_FOLDER_LOCK(folder, lock);
-
 	CF_CLASS (folder)->refresh_info (folder, ex);
-
-	CAMEL_FOLDER_UNLOCK(folder, lock);
 }
 
 static int

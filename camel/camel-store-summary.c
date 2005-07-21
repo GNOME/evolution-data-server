@@ -349,7 +349,6 @@ camel_store_summary_path(CamelStoreSummary *s, const char *path)
 	return info;
 }
 
-
 /**
  * camel_store_summary_load:
  * @summary: a #CamelStoreSummary object

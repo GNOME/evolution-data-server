@@ -750,17 +750,22 @@ dump_fi(CamelFolderInfo *fi, int depth)
  * This fetches information about the folder structure of @store,
  * starting with @top, and returns a tree of CamelFolderInfo
  * structures. If @flags includes #CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
- * only subscribed folders will be listed. (This flag can only be used
- * for stores that support subscriptions.) If @flags includes
+ * only subscribed folders will be listed.   If the store doesn't support
+ * subscriptions, then it will list all folders.  If @flags includes
  * #CAMEL_STORE_FOLDER_INFO_RECURSIVE, the returned tree will include
  * all levels of hierarchy below @top. If not, it will only include
  * the immediate subfolders of @top. If @flags includes
  * #CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
  * some or all of the structures may be set to %-1, if the store cannot
- * determine that information quickly. If @flags includes
+ * determine that information quickly.  If @flags includes
  * #CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
  * folders (such as vTrash or vJunk).
  * 
+ * The CAMEL_STORE_FOLDER_INFO_FAST flag should be considered
+ * deprecated; most backends will behave the same whether it is
+ * supplied or not.  The only guaranteed way to get updated folder
+ * counts is to both open the folder and invoke refresh_info() it.
+ *
  * Returns a #CamelFolderInfo tree, which must be freed with
  * #camel_store_free_folder_info
  **/
@@ -770,9 +775,6 @@ camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, C
 	CamelFolderInfo *info;
 	
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
-	g_return_val_if_fail ((store->flags & CAMEL_STORE_SUBSCRIPTIONS) ||
-			      !(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED),
-			      NULL);
 
 	info = CS_CLASS (store)->get_folder_info (store, top, flags, ex);
 	
