@@ -1,5 +1,5 @@
 # Evolution'i andmeserveri eesti keele tõlge.
-# Estonian translation of Evolution-data-server
+# Estonian translation of Evolution-data-server.
 #
 # Copyright (C) 2001-2005 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution package.
@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server GNOME 2.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-08 13:54+0100\n"
-"PO-Revision-Date: 2005-07-18 19:13+0300\n"
+"PO-Revision-Date: 2005-07-21 18:25+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1125,7 +1125,8 @@ msgstr "\"%s\" esimene argument peaks olema string"
 #: calendar/libedata-cal/e-cal-backend-sexp.c:100
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" esimene argument peaks olema ISO 8601 vormingus kuupäeva/kella string"
+msgstr ""
+"\"%s\" esimene argument peaks olema ISO 8601 vormingus kuupäeva/kella string"
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:131
 #: calendar/libedata-cal/e-cal-backend-sexp.c:316
@@ -1166,7 +1167,9 @@ msgstr "\"%s\" eeldab, et teine argument oleks string"
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr "\"%s\" eeldab, et argument on kas: \"any\", \"summary\", \"description\" või \"location\""
+msgstr ""
+"\"%s\" eeldab, et argument on kas: \"any\", \"summary\", \"description\" või "
+"\"location\""
 
 #: calendar/libedata-cal/e-cal-backend-sexp.c:628
 #, c-format
@@ -1520,7 +1523,9 @@ msgstr "Sõnumi signatuuri pole võimalik kontrollida: Sõnumivorming on vigane"
 #: camel/camel-gpg-context.c:1423
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik luua: %s"
+msgstr ""
+"Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik "
+"luua: %s"
 
 #: camel/camel-gpg-context.c:1502
 #, c-format
@@ -1569,7 +1574,8 @@ msgstr "Lukustamisabilist pole võimalik forkida: %s"
 #: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr "'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
+msgstr ""
+"'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
 
 #: camel/camel-lock-client.c:204
 #, c-format
@@ -1735,7 +1741,7 @@ msgstr "Anonüümne"
 
 #: camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr "See valik ühendub serveriga, kasutades anonüümset sisselogimist."
+msgstr "See valik ühendub serveriga kasutades anonüümset sisselogimist."
 
 #: camel/camel-sasl-anonymous.c:112 camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
@@ -1774,7 +1780,9 @@ msgstr "CRAM-MD5"
 msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
-msgstr "See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse kasutades turvalist CRAM-MD5 parooli."
+msgstr ""
+"See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse "
+"kasutades turvalist CRAM-MD5 parooli."
 
 #: camel/camel-sasl-digest-md5.c:49
 msgid "DIGEST-MD5"
@@ -1784,7 +1792,9 @@ msgstr "DIGEST-MD5"
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
-msgstr "See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse kasutades turvalist DIGEST-MD5 parooli."
+msgstr ""
+"See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse "
+"kasutades turvalist DIGEST-MD5 parooli."
 
 #: camel/camel-sasl-digest-md5.c:814
 msgid "Server challenge too long (>2048 octets)\n"
@@ -1816,7 +1826,7 @@ msgstr "GSSAPI"
 
 #: camel/camel-sasl-gssapi.c:59
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "See valik loob ühenduse serverisse kasutades Kerberos 5 autentimist."
+msgstr "See valik ühendub serverisse kasutades Kerberos 5 autentimist."
 
 #: camel/camel-sasl-gssapi.c:157
 msgid ""
@@ -1885,7 +1895,7 @@ msgstr "Kerberos 4"
 
 #: camel/camel-sasl-kerberos4.c:44
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "See valik loob ühenduse serverisse kasutades Kerberos 4 autentimist."
+msgstr "See valik ühendub serverisse kasutades Kerberos 4 autentimist."
 
 #: camel/camel-sasl-kerberos4.c:169
 #, c-format
@@ -1902,7 +1912,7 @@ msgstr "Kasutajanimi"
 
 #: camel/camel-sasl-login.c:35 camel/camel-sasl-plain.c:35
 msgid "This option will connect to the server using a simple password."
-msgstr "See valik loob ühenduse serveriga kasutades tavalist parooli."
+msgstr "See valik ühendub serveriga kasutades lihtsat parooli."
 
 #: camel/camel-sasl-login.c:128
 msgid "Unknown authentication state."
@@ -1913,16 +1923,16 @@ msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
 #: camel/camel-sasl-ntlm.c:34
-#, fuzzy
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr "See valik loob ühenduse serverisse kasutades Kerberos 4 autentimist."
+msgstr ""
+"See valik ühendub Windowsil põhinevasse serverisse kasutades NTLM / Secure "
+"Password Authentication autentimist."
 
 #: camel/camel-sasl-plain.c:33
-#, fuzzy
 msgid "PLAIN"
-msgstr "Lihtne"
+msgstr "AVATEKST"
 
 #: camel/camel-sasl-popb4smtp.c:37
 msgid "POP before SMTP"
@@ -2406,6 +2416,8 @@ msgid ""
 "Bad certificate domain: %s\n"
 "Issuer: %s"
 msgstr ""
+"Halb sertifikaadidimeen: %s\n"
+"Väljaandja: %s"
 
 #: camel/camel-tcp-stream-ssl.c:951
 #, c-format
@@ -2551,7 +2563,8 @@ msgstr "Kausta konteinerit %s pole võimalik hankida"
 #: camel/providers/groupwise/camel-groupwise-journal.c:347
 #: camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Sõnumit pole autonoomses režiimis võimalik lisada: puhvrit pole saadaval"
+msgstr ""
+"Sõnumit pole autonoomses režiimis võimalik lisada: puhvrit pole saadaval"
 
 #: camel/providers/groupwise/camel-groupwise-journal.c:363
 #: camel/providers/imap4/camel-imap4-journal.c:336
@@ -2579,21 +2592,21 @@ msgstr "Valikud"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
-msgstr "Rakenda filtreid kõikidele selles serveris Sisendkastis asuvatele uutele sõnumitele "
+msgstr ""
+"Rakenda filtreid kõikidele selles serveris Sisendkastis asuvatele uutele "
+"sõnumitele "
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:60
-#, fuzzy
 msgid "Check new messages for Junk contents"
-msgstr "Kontrolli uusi sõnumeid kõikides kaustades"
+msgstr "Uute sõnumite kontrollimine rämpsposti tuvastamiseks"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "Only check for Junk messages in the INBOX folder"
 msgstr "Rämpssõnumeid kontrollitakse ainult sisendkaustas"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:64
-#, fuzzy
 msgid "Automatically synchronize account locally"
-msgstr "Automaatne kohaliku posti sünkroniseerimine kaugpostiga"
+msgstr "Konto automaatne kohalik sünkroniseerimine"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:69
 msgid "SOAP Settings"
@@ -2621,20 +2634,19 @@ msgid "Password"
 msgstr "Parool"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:104
-#, fuzzy
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
-msgstr "See valik loob ühenduse serveriga kasutades tavalist parooli."
+msgstr ""
+"See valik loob ühenduse GroupWise serveriga kasutades avatekstilist parooli."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:270
-#, fuzzy
 msgid "Host or user not availbale in url"
-msgstr "Kirjeldus puudub."
+msgstr "URL-is pole hosti või kasutajat"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:362
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the Groupwise password for %s@%s"
-msgstr "%sPalun sisesta IMAP parool %s@%s jaoks"
+msgstr "%sPalun sisesta Groupwise parool %s@%s jaoks"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:376
 #: camel/providers/imap/camel-imap-store.c:1319
@@ -2648,6 +2660,7 @@ msgstr "GroupWise serverisse pole võimalik autentida."
 #: camel/providers/groupwise/camel-groupwise-store.c:431
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
+"Käesoleva serveriversiooniga võivad mõned võimalused käituda ebakorrektselt"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:502
 #: camel/providers/imap/camel-imap-store.c:1870
@@ -2700,9 +2713,9 @@ msgid "Groupwise server %s"
 msgstr "Groupwise server %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:123
-#, fuzzy, c-format
+#, c-format
 msgid "Groupwise mail delivery via %s"
-msgstr "SMTP posti saatmine %s kaudu"
+msgstr "Groupwise posti kättetoimetamine %s kaudu"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:159
 msgid "Sending Message"
@@ -2867,27 +2880,23 @@ msgstr "Nimeruum"
 
 #: camel/providers/imap/camel-imap-provider.c:66
 #: camel/providers/imap4/camel-imap4-provider.c:58
-#, fuzzy
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "Rakenda filtreid kõikidele Sisendkasti uutele sõnumitele"
+msgstr "_Rakenda filtreid Sisendkasti uutele sõnumitele"
 
 #: camel/providers/imap/camel-imap-provider.c:68
 #: camel/providers/imap4/camel-imap4-provider.c:60
-#, fuzzy
 msgid "Check new messages for _Junk contents"
-msgstr "Kontrolli uusi sõnumeid kõikides kaustades"
+msgstr "Kontrolli, kas uued sõnumid on _Rämpspost"
 
 #: camel/providers/imap/camel-imap-provider.c:70
 #: camel/providers/imap4/camel-imap4-provider.c:62
-#, fuzzy
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Rämpssõnumeid kontrollitakse ainult sisendkaustas"
+msgstr "Rämpssõnumeid kontrollitakse ainult _Sisendkaustas"
 
 #: camel/providers/imap/camel-imap-provider.c:72
 #: camel/providers/imap4/camel-imap4-provider.c:64
-#, fuzzy
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "Automaatne kohaliku posti sünkroniseerimine kaugpostiga"
+msgstr "Kohaliku posti automaatne _sünkroniseerimine kaugpostiga"
 
 #: camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -2901,6 +2910,7 @@ msgstr "E-posti loetakse ja hoitakse IMAP serveris."
 #: camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
+"See valik loob ühenduse IMAP serveriga kasutades avatekstilist parooli."
 
 #: camel/providers/imap/camel-imap-store.c:421
 #: camel/providers/imap4/camel-imap4-store.c:212
@@ -3081,14 +3091,14 @@ msgid "Cannot access folder `%s': %s"
 msgstr "Kaustale `%s' ei pääse ligi: %s"
 
 #: camel/providers/imap4/camel-imap4-folder.c:457
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr "Sõnumeid pole võimalik lisada `%s' kausta: Tundmatu viga"
+msgstr "Lippe pole võimalik `%s' kaustaga sünkroniseerida: Tundmatu"
 
 #: camel/providers/imap4/camel-imap4-folder.c:463
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik lisada `%s' kausta: Puudulik käsk"
+msgstr "Lippe pole võimalik `%s' kaustaga sünkroniseerida: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:604
 #, c-format
@@ -3133,12 +3143,14 @@ msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Tundmatu"
 #: camel/providers/imap4/camel-imap4-folder.c:1152
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-folder.c:1156
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: camel/providers/imap4/camel-imap4-provider.c:71
 msgid "IMAP4rev1"
@@ -3155,10 +3167,11 @@ msgstr ""
 "See valik loob ühenduse IMAPv4rev1 serveriga kasutades avatekstilist parooli."
 
 #: camel/providers/imap4/camel-imap4-store.c:474
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr "SMTP server %s ei toeta küsitud autentimistüüpi %s"
+msgstr ""
+"IMAP serverisse %s pole võimalik %s autentimismehhanismi abil autentida"
 
 #: camel/providers/imap4/camel-imap4-store.c:519
 #, c-format
@@ -3212,7 +3225,8 @@ msgstr "Kausta `%s' pole võimalik kustutada: Puudulik käsk"
 #: camel/providers/imap4/camel-imap4-store.c:1039
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
 
 #: camel/providers/imap4/camel-imap4-store.c:1046
 msgid "Cannot rename IMAP folders in offline mode."
@@ -3221,7 +3235,8 @@ msgstr "Autonoomses režiimis pole võimalik IMAP kaustu ümber nimetada."
 #: camel/providers/imap4/camel-imap4-store.c:1077
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
 
 #: camel/providers/imap4/camel-imap4-store.c:1082
 #, c-format
@@ -3270,9 +3285,9 @@ msgid "Fetching envelopes for new messages"
 msgstr ""
 
 #: camel/providers/imap4/camel-imap4-utils.c:368
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected token in response from IMAP server %s: "
-msgstr "IMAP serveri vastuses on ootamatu token: %s"
+msgstr "IMAP serveri %s vastuses on ootamatu token: "
 
 #: camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
@@ -3299,6 +3314,10 @@ msgid ""
 "\n"
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
+"Eksperimentaalne IMAP 4(.1) klient\n"
+"See on testimata ja toetamata kood, sa peaksid kasutama tavalist IMAP'i.\n"
+"\n"
+" !!! KASUTA SEDA AINULT E-POSTI TESTIMISEKS  !!!\n"
 
 #: camel/providers/imapp/camel-imapp-store.c:251
 #, c-format
@@ -3343,18 +3362,19 @@ msgstr "MH-vormingus postikataloogid"
 
 #: camel/providers/local/camel-local-provider.c:53
 msgid "For storing local mail in MH-like mail directories."
-msgstr ""
+msgstr "Kohaliku posti hoidmiseks MH-sarnastes postikataloogides."
 
 #: camel/providers/local/camel-local-provider.c:68
 msgid "Local delivery"
 msgstr "Kohalik postijagaja"
 
 #: camel/providers/local/camel-local-provider.c:69
-#, fuzzy
 msgid ""
 "For retrieving (moving) local mail from standard mbox formated spools into "
 "folders managed by Evolution."
-msgstr "Kohalikku e-posti võetakse standardsest \"mbox\" vorminguga puhvrist"
+msgstr ""
+"Kohalikku e-posti vastuvõtmine (tõstmine) standardsest \"mbox\" vorminguga "
+"puhvrist Evolution'i poolt hallatavatesse kaustadesse."
 
 #: camel/providers/local/camel-local-provider.c:81
 #: camel/providers/local/camel-local-provider.c:100
@@ -3378,11 +3398,13 @@ msgid "Standard Unix mbox spool or directory"
 msgstr "Standardne Unix'i mbox puhverkataloog"
 
 #: camel/providers/local/camel-local-provider.c:109
-#, fuzzy
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
-msgstr "Kohalikku e-posti loetakse ja hoitakse standardsetes \"mbox\" vorminguga puhverfailides"
+msgstr ""
+"Kohalikku e-posti loetakse ja hoitakse standardsetes \"mbox\" vorminguga "
+"puhverfailides. Seda võib kasutada ka programmide Elm, Pine ja Mutt kaustade "
+"lugemiseks."
 
 #: camel/providers/local/camel-local-store.c:143
 #: camel/providers/local/camel-local-store.c:254
@@ -3720,9 +3742,8 @@ msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Tõrge ajutisse kirjakasti kirjutamisel: %s: %s"
 
 #: camel/providers/local/camel-mh-folder.c:175
-#, fuzzy
 msgid "MH append message cancelled"
-msgstr "Sõnumi lisamine mh vormingus kausta nurjus: %s: %s"
+msgstr "Sõnumi lisamine MH vormingus kausta tühistati"
 
 #: camel/providers/local/camel-mh-folder.c:178
 #, c-format
@@ -3858,8 +3879,8 @@ msgstr "Sõnumeid pole võimalik NNTP kaustast kopeerida!"
 msgid ""
 "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"Kaustanimesid näidatakse lühendatult (näiteks ee.arvutid.linux asemel "
-"e.a.linux)"
+"Kaustanimesid näidatakse lühendatult (näiteks ee.arvutid.linux asemel e.a."
+"linux)"
 
 #: camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
@@ -3878,6 +3899,7 @@ msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
 msgstr ""
+"See valik loob ühenduse NNTP serveriga kasutades avatekstilist parooli."
 
 #: camel/providers/nntp/camel-nntp-store.c:234
 #, c-format
@@ -3966,14 +3988,14 @@ msgid "%s: Scanning new messages"
 msgstr "%s: uute kirjade skannimine"
 
 #: camel/providers/nntp/camel-nntp-summary.c:228
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr "Ootamatu vastus IMAP serverilt: %s"
+msgstr ""
 
 #: camel/providers/nntp/camel-nntp-summary.c:331
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected server response from head: %s"
-msgstr "Ootamatu vastus IMAP serverilt: %s"
+msgstr ""
 
 #: camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
@@ -4038,7 +4060,9 @@ msgstr "E-posti laetakse alla POP serverist"
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
-msgstr "See valik ühendub POP serverisse kasutades lihttekstiparooli. See on ainus valik, mida toetavad paljud POP serverid."
+msgstr ""
+"See valik loob ühenduse POP serveriga kasutades avatekstilist parooli. See "
+"on ainus valik, mida toetavad paljud POP serverid."
 
 #: camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
@@ -4143,7 +4167,8 @@ msgstr "Sendmaili toru pole võimalik luua: %s: sõnumit ei saadetud"
 #: camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Sendmail'i haruprotsessi pole võimalik tekitada: %s: e-kiri jäi saatmata"
+msgstr ""
+"Sendmail'i haruprotsessi pole võimalik tekitada: %s: e-kiri jäi saatmata"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
