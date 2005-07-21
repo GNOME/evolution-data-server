@@ -70,6 +70,7 @@
 #include "camel-file-utils.h"
 #include "camel-debug.h"
 #include "camel-i18n.h"
+#include "camel/camel-store-summary.h"
 
 #define d(x) 
 
@@ -496,6 +497,7 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (folder->parent_store);
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelImapResponse *response;
+	CamelStoreInfo *si;
 
 	if (camel_disco_store_status (CAMEL_DISCO_STORE (imap_store)) == CAMEL_DISCO_STORE_OFFLINE)
 		return;
@@ -511,6 +513,10 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	 * us with a NOOP of new messages, so force a reselect which
 	 * should do it.  */
 	CAMEL_SERVICE_LOCK (imap_store, connect_lock);
+
+	if (!camel_imap_store_connected(imap_store, ex))
+		goto done;
+
 	if (imap_store->current_folder != folder
 	    || g_ascii_strcasecmp(folder->full_name, "INBOX") == 0) {
 		response = camel_imap_command (imap_store, folder, ex, NULL);
@@ -537,7 +543,24 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 		camel_imap_response_free (imap_store, response);
 	}
 
+	si = camel_store_summary_path((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary, folder->full_name);
+	if (si) {
+		guint32 unread, total;
+
+		camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
+		if (si->total != total
+		    || si->unread != unread){
+			si->total = total;
+			si->unread = unread;
+			camel_store_summary_touch((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary);
+		}
+		camel_store_summary_info_free((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary, si);
+	}
+done:
 	CAMEL_SERVICE_UNLOCK (imap_store, connect_lock);
+
+	camel_folder_summary_save(folder->summary);
+	camel_store_summary_save((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary);
 }
 
 /* Called with the store's connect_lock locked */
@@ -751,6 +774,7 @@ static void
 imap_sync_offline (CamelFolder *folder, CamelException *ex)
 {
 	camel_folder_summary_save (folder->summary);
+	camel_store_summary_save((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary);
 }
 
 static void
@@ -1994,11 +2018,6 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		retry++;
 		camel_exception_clear(ex);
 
-		/* If we are online, make sure we're also connected */
-		if (camel_disco_store_status((CamelDiscoStore *)store) == CAMEL_DISCO_STORE_ONLINE
-		    &&  !camel_imap_store_connected(store, ex))
-			goto fail;
-	
 		/* If the message is small or only 1 part, or server doesn't do 4v1 (properly) fetch it in one piece. */
 		if (store->server_level < IMAP_LEVEL_IMAP4REV1
 		    || store->braindamaged
@@ -2017,7 +2036,7 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 				char *body, *found_uid;
 				int i;
 				
-				if (camel_disco_store_status (CAMEL_DISCO_STORE (store)) == CAMEL_DISCO_STORE_OFFLINE) {
+				if (!camel_imap_store_connected(store, ex)) {
 					camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 							     _("This message is not currently available"));
 					goto fail;
@@ -2038,9 +2057,11 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 						}
 					}
 					
-					if (body)
+					if (body) {
 						imap_parse_body ((const char **) &body, folder, mi->info.content);
-					
+						camel_folder_summary_touch (folder->summary);
+					}
+
 					if (fetch_data)
 						g_datalist_clear (&fetch_data);
 					
@@ -2600,26 +2621,29 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const char *uid,
 	
 	/* EXPUNGE responses have to modify the cache, which means
 	 * they have to grab the cache_lock while holding the
-	 * connect_lock. So we grab the connect_lock now, in case
-	 * we're going to need it below, since we can't grab it
-	 * after the cache_lock.
+	 * connect_lock.
+
+	 * Because getting the service lock may cause MUCH unecessary
+	 * delay when we already have the data locally, we do the
+	 * locking separately.  This could cause a race
+	 * getting the same data from the cache, but that is only
+	 * an inefficiency, and bad luck.
 	 */
-	CAMEL_SERVICE_LOCK (store, connect_lock);
-	
 	CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
 	stream = camel_imap_message_cache_get (imap_folder->cache, uid, section_text, ex);
 	if (!stream && (!strcmp (section_text, "HEADER") || !strcmp (section_text, "0"))) {
 		camel_exception_clear (ex);
 		stream = camel_imap_message_cache_get (imap_folder->cache, uid, "", ex);
 	}
+	CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 	
-	if (stream || cache_only) {
-		CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	if (stream || cache_only)
 		return stream;
-	}
-	
-	if (camel_disco_store_status (CAMEL_DISCO_STORE (store)) == CAMEL_DISCO_STORE_OFFLINE) {
+
+	CAMEL_SERVICE_LOCK (store, connect_lock);
+	CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
+
+	if (!camel_imap_store_connected(store, ex)) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("This message is not currently available"));
 		CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);

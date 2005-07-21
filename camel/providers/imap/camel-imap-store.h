@@ -33,6 +33,7 @@ extern "C" {
 
 #include "camel-imap-types.h"
 #include <camel/camel-disco-store.h>
+#include <sys/time.h>
 
 #ifdef ENABLE_THREADS
 #include <libedataserver/e-msgport.h>
@@ -102,6 +103,7 @@ typedef enum {
 #define IMAP_PARAM_FILTER_INBOX			(1 << 2)
 #define IMAP_PARAM_FILTER_JUNK			(1 << 3)
 #define IMAP_PARAM_FILTER_JUNK_INBOX		(1 << 4)
+#define IMAP_PARAM_SUBSCRIPTIONS		(1 << 5)
 
 struct _CamelImapStore {
 	CamelDiscoStore parent_object;	
@@ -114,6 +116,10 @@ struct _CamelImapStore {
 	/* Information about the command channel / connection status */
 	guint connected:1;
 	guint preauthed:1;
+
+	guint braindamaged:1;
+	guint renaming:1;
+
 	char tag_prefix;
 	guint32 command;
 	CamelFolder *current_folder;
@@ -121,14 +127,12 @@ struct _CamelImapStore {
 	/* Information about the server */
 	CamelImapServerLevel server_level;
 	guint32 capabilities, parameters;
-	guint braindamaged:1;
 	/* NB: namespace should be handled by summary->namespace */
 	char *namespace, dir_sep, *base_url, *storage_path;
 	GHashTable *authtypes;
 	
-	guint renaming:1;
+	time_t refresh_stamp;
 };
-
 
 typedef struct {
 	CamelDiscoStoreClass parent_class;

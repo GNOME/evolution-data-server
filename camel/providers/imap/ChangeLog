@@ -1,3 +1,75 @@
+2005-07-20  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-store.h: re-arrange some bitfields (this is not
+	public api), and add a refresh stamp so we know when to next
+	refresh the list of folders from the server.
+
+	* camel-imap-store.c (imap_build_folder_info): set unknown counts
+	-1, not 0.
+	(get_folder_online): if the folder is on disk, just get it
+	offline, only go to the server if we need to.
+	(fill_fi): dont refresh the folder here, let the client code do
+	it.
+
+	* camel-imap-command.c (imap_command_start): add some asserts,
+	time to fix those 'stream == NULL' warnings properly.
+	(camel_imap_command_continuation): same.
+
+	* camel-imap-store.c (get_folder_counts): remove this, we rely on
+	the client calling folder.refresh_info instead.
+	(get_one_folder_offline): removed, handled more directly from the
+	storesummary now.
+	(refresh_refresh): new async function to update the list of
+	folders (not the folder counts) from the server.  We now just use
+	"*" to get all the folders rather than frobbing around with
+	partial fetches.
+	(get_folder_info_online): changed radically, if we are getting
+	subscribed folders, always go to the local list, but update it
+	asynchronously if we need to.  if we're not, then always go to the
+	server, but use a simplified listing mechanism.
+	(camel_imap_store_connected): changed to hide some hidden logic,
+	we want not only connected, but online as well; so make it
+	actually do that.
+	(fill_fi): dont do anything slow here, dont honour the 'not fast'
+	flag anymore.
+
+2005-07-19  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-folder.c (imap_get_message): dont force a connect
+	until we need it.
+	(camel_imap_folder_fetch_data): force a connect if we need it.
+	(imap_refresh_info): force connect if we need to.
+	(imap_get_message): touch the summary if we changed the body
+	content info record.
+
+	* camel-imap-store.c (camel_imap_store_init): we always support
+	subscriptions, this is a backend property not a store instance
+	property.
+	(imap_connect_online, rename_folder, get_one_folder_offline) 
+	(get_folder_info_offline): fix for above.
+	(get_folder_offline): wtf is it connecting for???
+
+2005-07-13  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-folder.c (imap_refresh_info): copy over counts to the
+	store summary & save all summaries.
+
+2005-07-12  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-store.c (imap_connect_online): only get the folder
+	list if we dont have any yet.
+
+2005-07-11  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-store.c (get_folder_info_online): if we are fast,
+	then dont go to the server at all, if we have any folders
+	recorded.
+	(get_folder_counts): never request STATUS on unselected folders.
+	(get_folder_info_offline): build the list directly from the
+	summary, dont scan the filesystem.
+	(parse_list_response_as_folder_info): always initialise counts to
+	unknown (-1).
+
 2005-03-18  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-command.c (imap_read_untagged): Continue reading data
