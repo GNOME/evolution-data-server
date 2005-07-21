@@ -292,7 +292,7 @@ impl_finalize (GObject *object)
 /* Initialization.  */
 
 static void
-class_init (ESourceListClass *class)
+e_source_list_class_init (ESourceListClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
@@ -332,7 +332,7 @@ class_init (ESourceListClass *class)
 }
 
 static void
-init (ESourceList *source_list)
+e_source_list_init (ESourceList *source_list)
 {
 	ESourceListPrivate *priv;
 
@@ -351,11 +351,11 @@ e_source_list_get_type (void)
                         sizeof (ESourceListClass),
                         (GBaseInitFunc) NULL,
                         (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) class_init,
+                        (GClassInitFunc) e_source_list_class_init,
                         NULL, NULL,
                         sizeof (ESourceList),
                         0,
-                        (GInstanceInitFunc) init
+                        (GInstanceInitFunc) e_source_list_init
                 };
 		e_source_list_type = g_type_register_static (G_TYPE_OBJECT, "ESourceList", &info, 0);
 	}

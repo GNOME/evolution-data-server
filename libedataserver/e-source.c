@@ -114,7 +114,7 @@ impl_dispose (GObject *object)
 /* Initialization.  */
 
 static void
-class_init (ESourceClass *class)
+e_source_class_init (ESourceClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
@@ -134,7 +134,7 @@ class_init (ESourceClass *class)
 }
 
 static void
-init (ESource *source)
+e_source_init (ESource *source)
 {
 	ESourcePrivate *priv;
 
@@ -155,11 +155,11 @@ e_source_get_type (void)
                         sizeof (ESourceClass),
                         (GBaseInitFunc) NULL,
                         (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) class_init,
+                        (GClassInitFunc) e_source_class_init,
                         NULL, NULL,
                         sizeof (ESource),
                         0,
-                        (GInstanceInitFunc) init
+                        (GInstanceInitFunc) e_source_init
                 };
 		e_source_type = g_type_register_static (G_TYPE_OBJECT, "ESource", &info, 0);
 	}
