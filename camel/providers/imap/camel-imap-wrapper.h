@@ -37,8 +37,7 @@ extern "C" {
 #define CAMEL_IMAP_WRAPPER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAP_WRAPPER_TYPE, CamelImapWrapperClass))
 #define CAMEL_IS_IMAP_WRAPPER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_WRAPPER_TYPE))
 
-typedef struct
-{
+typedef struct {
 	CamelDataWrapper parent_object;
 
 	struct _CamelImapWrapperPrivate *priv;
