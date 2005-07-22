@@ -2853,6 +2853,9 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 	if (priv->container)
 		e_gw_message_write_string_parameter (msg, "container", NULL, priv->container);
 
+	if (priv->icalid)
+		e_gw_message_write_string_parameter (msg, "iCalId", NULL, priv->icalid);
+
 	if (item->priv->source)
 		e_gw_message_write_string_parameter (msg, "source", NULL, item->priv->source );
 
