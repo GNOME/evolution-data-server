@@ -1710,6 +1710,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 		return;
 	if (name_selector_entry->contact_store) {
 		books = e_contact_store_get_books (name_selector_entry->contact_store);
+		/*FIXME: read URI from contact and get the book ?*/
 		book = find_book_by_contact (books, contact_uid);
 		g_list_free (books);
 		g_free (contact_uid);
@@ -1769,6 +1770,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	GList        *email_list;
 	GList        *l;
 	gint          i;
+	char 	     *edit_label;
 
 	destination = name_selector_entry->popup_destination;
 	if (!destination)
@@ -1815,7 +1817,9 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 
 	/* Edit Contact item */
 
-	menu_item = gtk_menu_item_new_with_label (e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	edit_label = g_strdup_printf (_("_Edit %s"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS)); 
+	menu_item = gtk_menu_item_new_with_mnemonic (edit_label);
+	g_free (edit_label);
 	gtk_widget_show (menu_item);
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
 

@@ -1,3 +1,8 @@
+2005-07-20  Sushma Rai  <rsushma@novell.com>
+
+	* e-name-selector-entry.c (populate_popup): In the popup menu, changed
+	label to edit a contact. Fixes #260851
+
 2005-07-07  S.Antony Vincent Pandian <santony@gmail.com>
 
        * e-destination-store.c (e_destination_store_list_destinations):
