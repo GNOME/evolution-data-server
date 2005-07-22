@@ -1006,6 +1006,7 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 				  CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY "," \
 				  CAL_STATIC_CAPABILITY_NO_ORGANIZER "," \
 				  CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER "," \
+				  CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING "," \ 
 				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 
 	return GNOME_Evolution_Calendar_Success;

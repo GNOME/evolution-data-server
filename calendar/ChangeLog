@@ -1,3 +1,12 @@
+2005-07-21  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_get_static_capabilities):
+	* libecal/e-cal-util.h: Added a new static capability
+	CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING to identify
+	the backends which allow unaccepted meetings to appear in
+	calendar.
+
 2005-07-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #310767
