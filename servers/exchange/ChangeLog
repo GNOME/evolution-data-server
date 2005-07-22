@@ -1,3 +1,9 @@
+2005-07-22  Praveen Kumar <kpraveen@novell.com>
+
+	* storage/exchange-esource.c (add_folder_esource) : Modified the way
+	of Exchange addressbook ESource URI handling to be the same way as
+	calendar ESource URI handling except for "gal://" protocol
+
 2005-07-21  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/Makefile.am : Add the separated esource handling code files.
