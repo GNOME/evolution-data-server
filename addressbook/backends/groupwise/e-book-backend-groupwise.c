@@ -2355,7 +2355,7 @@ static gboolean
 update_address_book_deltas (EBookBackendGroupwise *ebgw)
 {
 	int status, contact_num = 0;
-	guint first_sequence = -1, last_sequence = -1, last_po_rebuild_time = -1;	
+	guint server_first_sequence = -1, server_last_sequence = -1, server_last_po_rebuild_time = -1;	
 	guint cache_last_sequence = -1, cache_last_po_rebuild_time = -1;
 	const char *cache_obj;
 	char *tmp, *count, *sequence, *status_msg;
@@ -2368,18 +2368,20 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	EBookBackendCache *cache = priv->cache;
 
 	/* builds or updates the cache for system address book */	
-	status = e_gw_connection_get_items_delta_info (priv->cnc, ebgw->priv->container_id, 
-						       &first_sequence, &last_sequence, 
-						       &last_po_rebuild_time);
+	status = e_gw_connection_get_items_delta_info (priv->cnc, 
+						       ebgw->priv->container_id, 
+						       &server_first_sequence, 
+					               &server_last_sequence, 
+						       &server_last_po_rebuild_time);
 	if (status != E_GW_CONNECTION_STATUS_OK)
 		return FALSE;
 
 	/* Check whether the sequence has been reset or not */
-	if (first_sequence <= 0 || last_sequence <= 0) {
+	if (server_first_sequence <= 0 || server_last_sequence <= 0) {
 		/* build the cache */
 		printf ("sequence is reset, rebuilding cache...\n");
 		build_cache (ebgw);
-		return FALSE;
+		return TRUE;
 	}
 
 	/* Read the last sequence and last poa rebuild time from cache */	
@@ -2392,13 +2394,14 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		cache_last_po_rebuild_time = atoi (cache_obj);
 
 	/* check whether the all the sequences are available and also whether the PO is rebuilt */
-	if (first_sequence > cache_last_sequence || cache_last_sequence == -1 || 
-	    last_po_rebuild_time != cache_last_po_rebuild_time) {
+	if (server_first_sequence > cache_last_sequence || cache_last_sequence == -1 || 
+	    server_last_po_rebuild_time != cache_last_po_rebuild_time) {
 		/* build the cache again and update the cache with the sequence information */
 		printf ("either the sequences missing or PO is rebuilt...rebuilding the cache\n");
 		build_cache (ebgw);
-		add_sequence_to_cache (cache, first_sequence, last_sequence, last_po_rebuild_time);
-		return FALSE;
+		add_sequence_to_cache (cache, server_first_sequence, 
+				       server_last_sequence, server_last_po_rebuild_time);
+		return TRUE;
 	}
 
 	book_view = find_book_view (ebgw);
@@ -2414,76 +2417,84 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	/* update the cache */
 	sequence = g_strdup_printf ("%d", cache_last_sequence +1);
 	count = g_strdup_printf ("%d", CURSOR_ITEM_LIMIT);
-	e_gw_connection_get_items_delta (priv->cnc, ebgw->priv->container_id, "name email sync", count, sequence, &add_list, &delete_list);
-	g_free (count);
-	g_free (sequence);
 
-	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-	for (; add_list != NULL; add_list = g_list_next(add_list)) { 
-		const char *id;
+	while (cache_last_sequence < server_last_sequence) {
+		e_gw_connection_get_items_delta (priv->cnc, ebgw->priv->container_id, 
+						 "name email sync", count, sequence, 
+						 &add_list, &delete_list);
 
-		/* newly added to server */
-		contact = e_contact_new ();
-		fill_contact_from_gw_item (contact, E_GW_ITEM (add_list->data), ebgw->priv->categories_by_id);
-		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
-		id =  e_contact_get_const (contact, E_CONTACT_UID);
-
-		contact_num++;
-		if (book_view) {
-			status_msg = g_strdup_printf (_("Updating contacts cache (%d)... "),
-							 contact_num);
-			book_view_notify_status (book_view, status_msg);
-			g_free (status_msg);
+		e_file_cache_freeze_changes (E_FILE_CACHE (cache));
+		if (add_list == NULL && delete_list == NULL) {
+			/* this should not happen ideally */
+			break;
 		}
-		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
-			e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
-			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
-			
-		} else {
-		    e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
-		}
+		for (; add_list != NULL; add_list = g_list_next(add_list)) { 
+			const char *id;
 
-		g_object_unref(contact);
-		g_object_unref (add_list->data);
-	}
+			/* newly added to server */
+			contact = e_contact_new ();
+			fill_contact_from_gw_item (contact, E_GW_ITEM (add_list->data), ebgw->priv->categories_by_id);
+			e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
+			id =  e_contact_get_const (contact, E_CONTACT_UID);
 
-	contact_num = 0;	
-	for (; delete_list != NULL; delete_list = g_list_next(delete_list)) { 
-		const char *id;
-
-		/* deleted from the server */
-		contact = e_contact_new ();
-		fill_contact_from_gw_item (contact, E_GW_ITEM (delete_list->data), ebgw->priv->categories_by_id);
-		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
-		id =  e_contact_get_const (contact, E_CONTACT_UID);
-
-		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
 			contact_num++;
-
 			if (book_view) {
 				status_msg = g_strdup_printf (_("Updating contacts cache (%d)... "),
-							 contact_num);
+								 contact_num);
 				book_view_notify_status (book_view, status_msg);
 				g_free (status_msg);
 			}
-			e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
+			if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+				e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
+				e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+			} else {
+		    		e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+			}
+
+			g_object_unref(contact);
+			g_object_unref (add_list->data);
 		}
+
+		for (; delete_list != NULL; delete_list = g_list_next(delete_list)) { 
+			const char *id;
+
+			/* deleted from the server */
+			contact = e_contact_new ();
+			fill_contact_from_gw_item (contact, E_GW_ITEM (delete_list->data), ebgw->priv->categories_by_id);
+			e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
+			id =  e_contact_get_const (contact, E_CONTACT_UID);
+
+			if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+				contact_num++;
+
+				if (book_view) {
+					status_msg = g_strdup_printf (_("Updating contacts cache (%d)... "),
+						 		      contact_num);
+					book_view_notify_status (book_view, status_msg);
+					g_free (status_msg);
+				}
+				e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
+			}
 		
-		g_object_unref(contact);
-		g_object_unref (delete_list->data);
+			g_object_unref(contact);
+			g_object_unref (delete_list->data);
+		}
+		cache_last_sequence += contact_num;
 	}
+	g_free (sequence);
+	g_free (count);
 
 	/* cache is updated, now adding the sequence information to the cache */
 
-	tmp = g_strdup_printf("%d", first_sequence);
+	tmp = g_strdup_printf("%d", server_first_sequence);
 	e_file_cache_replace_object (E_FILE_CACHE(cache), "firstSequence", tmp);		
 	g_free (tmp);
 	
-	tmp = g_strdup_printf("%d", last_sequence);
+	tmp = g_strdup_printf("%d", server_last_sequence);
 	e_file_cache_replace_object (E_FILE_CACHE(cache), "lastSequence", tmp);
 	g_free (tmp);
 	
-	tmp = g_strdup_printf("%d", last_po_rebuild_time);
+	tmp = g_strdup_printf("%d", server_last_po_rebuild_time);
 	e_file_cache_replace_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
 	g_free (tmp);
 	
@@ -2498,7 +2509,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	g_list_free (add_list);
 	g_list_free (delete_list);
 
-	return FALSE;
+	return TRUE;
 }
 
 static void

@@ -1,3 +1,10 @@
+2005-07-23  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(update_address_book_deltas): Updating the cache fully. Previously only
+	CURSOR_ITEM_LIMIT items were getting upddated.
+	Also using better variable names.
+
 2005-07-13  Sushma Rai  <rsushma@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c (build_cache)
