@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-23 01:34+0900\n"
-"PO-Revision-Date: 2005-07-23 01:34+0900\n"
+"POT-Creation-Date: 2005-07-23 16:25+0900\n"
+"PO-Revision-Date: 2005-07-23 16:24+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -175,7 +175,7 @@ msgstr "重複しない ID"
 
 #: ../addressbook/libebook/e-contact.c:103
 msgid "File Under"
-msgstr "基底ファイル"
+msgstr "FILE UNDER"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -191,11 +191,11 @@ msgstr "名前"
 
 #: ../addressbook/libebook/e-contact.c:111
 msgid "Given Name"
-msgstr "ファーストネーム"
+msgstr "名"
 
 #: ../addressbook/libebook/e-contact.c:112
 msgid "Family Name"
-msgstr "名字"
+msgstr "姓"
 
 #: ../addressbook/libebook/e-contact.c:113
 msgid "Nickname"
@@ -244,7 +244,7 @@ msgstr "仕事の電話番号"
 
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Business Phone 2"
-msgstr "仕事の電話番号２"
+msgstr "仕事の電話番号 2"
 
 #: ../addressbook/libebook/e-contact.c:129
 msgid "Business Fax"
@@ -268,7 +268,7 @@ msgstr "自宅の電話番号"
 
 #: ../addressbook/libebook/e-contact.c:134
 msgid "Home Phone 2"
-msgstr "自宅の電話番号２"
+msgstr "自宅の電話番号 2"
 
 #: ../addressbook/libebook/e-contact.c:135
 msgid "Home Fax"
@@ -317,19 +317,19 @@ msgstr "E-メール一覧"
 
 #: ../addressbook/libebook/e-contact.c:148
 msgid "Email 1"
-msgstr "E-メ−ル１"
+msgstr "E-メ−ル 1"
 
 #: ../addressbook/libebook/e-contact.c:149
 msgid "Email 2"
-msgstr "E-メ−ル２"
+msgstr "E-メ−ル 2"
 
 #: ../addressbook/libebook/e-contact.c:150
 msgid "Email 3"
-msgstr "E-メ−ル３"
+msgstr "E-メ−ル 3"
 
 #: ../addressbook/libebook/e-contact.c:151
 msgid "Email 4"
-msgstr "E-メ−ル４"
+msgstr "E-メ−ル 4"
 
 #: ../addressbook/libebook/e-contact.c:152
 msgid "Mailer"
@@ -366,147 +366,147 @@ msgstr "ICQ の ID 一覧です"
 
 #: ../addressbook/libebook/e-contact.c:163
 msgid "AIM Home Screen Name 1"
-msgstr "自宅の AIM スクリーン名１"
+msgstr "自宅の AIM スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:164
 msgid "AIM Home Screen Name 2"
-msgstr "自宅の AIM スクリーン名２"
+msgstr "自宅の AIM スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:165
 msgid "AIM Home Screen Name 3"
-msgstr "自宅の AIM スクリーン名３"
+msgstr "自宅の AIM スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:166
 msgid "AIM Work Screen Name 1"
-msgstr "勤務先の AIM スクリーン名１"
+msgstr "勤務先の AIM スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:167
 msgid "AIM Work Screen Name 2"
-msgstr "勤務先の AIM スクリーン名２"
+msgstr "勤務先の AIM スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:168
 msgid "AIM Work Screen Name 3"
-msgstr "勤務先の AIM スクリーン名３"
+msgstr "勤務先の AIM スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:169
 msgid "GroupWise Home Screen Name 1"
-msgstr "自宅の GroupWise スクリーン名１"
+msgstr "自宅の GroupWise スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:170
 msgid "GroupWise Home Screen Name 2"
-msgstr "自宅の GroupWise スクリーン名２"
+msgstr "自宅の GroupWise スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:171
 msgid "GroupWise Home Screen Name 3"
-msgstr "自宅の GroupWise スクリーン名３"
+msgstr "自宅の GroupWise スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:172
 msgid "GroupWise Work Screen Name 1"
-msgstr "勤務先の GroupWise スクリーン名１"
+msgstr "勤務先の GroupWise スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:173
 msgid "GroupWise Work Screen Name 2"
-msgstr "勤務先の GroupWise スクリーン名２"
+msgstr "勤務先の GroupWise スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:174
 msgid "GroupWise Work Screen Name 3"
-msgstr "勤務先の GroupWise スクリーン名３"
+msgstr "勤務先の GroupWise スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:175
 msgid "Jabber Home Id 1"
-msgstr "自宅の Jabber ID １"
+msgstr "自宅の Jabber ID 1"
 
 #: ../addressbook/libebook/e-contact.c:176
 msgid "Jabber Home Id 2"
-msgstr "自宅の Jabber ID ２"
+msgstr "自宅の Jabber ID 2"
 
 #: ../addressbook/libebook/e-contact.c:177
 msgid "Jabber Home Id 3"
-msgstr "自宅の Jabber ID ３"
+msgstr "自宅の Jabber ID 3"
 
 #: ../addressbook/libebook/e-contact.c:178
 msgid "Jabber Work Id 1"
-msgstr "勤務先の Jabber ID １"
+msgstr "勤務先の Jabber ID 1"
 
 #: ../addressbook/libebook/e-contact.c:179
 msgid "Jabber Work Id 2"
-msgstr "勤務先の Jabber ID ２"
+msgstr "勤務先の Jabber ID 2"
 
 #: ../addressbook/libebook/e-contact.c:180
 msgid "Jabber Work Id 3"
-msgstr "勤務先の Jabber ID ３"
+msgstr "勤務先の Jabber ID 3"
 
 #: ../addressbook/libebook/e-contact.c:181
 msgid "Yahoo! Home Screen Name 1"
-msgstr "自宅の Yahoo! スクリーン名１"
+msgstr "自宅の Yahoo! スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:182
 msgid "Yahoo! Home Screen Name 2"
-msgstr "自宅の Yahoo! スクリーン名２"
+msgstr "自宅の Yahoo! スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:183
 msgid "Yahoo! Home Screen Name 3"
-msgstr "自宅の Yahoo! スクリーン名３"
+msgstr "自宅の Yahoo! スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:184
 msgid "Yahoo! Work Screen Name 1"
-msgstr "勤務先の Yahoo! スクリーン名１"
+msgstr "勤務先の Yahoo! スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:185
 msgid "Yahoo! Work Screen Name 2"
-msgstr "勤務先の Yahoo! スクリーン名２"
+msgstr "勤務先の Yahoo! スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:186
 msgid "Yahoo! Work Screen Name 3"
-msgstr "勤務先の Yahoo! スクリーン名３"
+msgstr "勤務先の Yahoo! スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:187
 msgid "MSN Home Screen Name 1"
-msgstr "自宅の MSN スクリーン名１"
+msgstr "自宅の MSN スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:188
 msgid "MSN Home Screen Name 2"
-msgstr "自宅の MSN スクリーン名２"
+msgstr "自宅の MSN スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:189
 msgid "MSN Home Screen Name 3"
-msgstr "自宅の MSN スクリーン名３"
+msgstr "自宅の MSN スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:190
 msgid "MSN Work Screen Name 1"
-msgstr "勤務先の MSN スクリーン名１"
+msgstr "勤務先の MSN スクリーン名 1"
 
 #: ../addressbook/libebook/e-contact.c:191
 msgid "MSN Work Screen Name 2"
-msgstr "勤務先の MSN スクリーン名２"
+msgstr "勤務先の MSN スクリーン名 2"
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "MSN Work Screen Name 3"
-msgstr "勤務先の MSN スクリーン名３"
+msgstr "勤務先の MSN スクリーン名 3"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "ICQ Home Id 1"
-msgstr "自宅の ICQ ID １"
+msgstr "自宅の ICQ ID 1"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "ICQ Home Id 2"
-msgstr "自宅の ICQ ID ２"
+msgstr "自宅の ICQ ID 2"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "ICQ Home Id 3"
-msgstr "自宅の ICQ ID ３"
+msgstr "自宅の ICQ ID 3"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "ICQ Work Id 1"
-msgstr "勤務先の ICQ ID １"
+msgstr "勤務先の ICQ ID 1"
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "ICQ Work Id 2"
-msgstr "勤務先の ICQ ID ２"
+msgstr "勤務先の ICQ ID 2"
 
 #: ../addressbook/libebook/e-contact.c:198
 msgid "ICQ Work Id 3"
-msgstr "勤務先の ICQ ID ３"
+msgstr "勤務先の ICQ ID 3"
 
 #. Organizational fields
 #: ../addressbook/libebook/e-contact.c:201
@@ -618,7 +618,7 @@ msgstr "住所を表示する一覧です"
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:242
 msgid "Last Revision"
-msgstr "最終リビジョン"
+msgstr "最終更新日時"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:244
