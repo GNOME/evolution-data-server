@@ -1,6 +1,17 @@
 2005-07-23  Sushma Rai  <rsushma@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_authenticate_user): Added the support for 
+	refreshing the GW system address book cache at every 10 minutes or
+	at the interval specified by user using BOOK_CACHE_REFESH_INTERVAL.
+	(update_address_book_cache): spawns a thread to update the cache after 
+	specifed time interval.
+	(e_book_backend_groupwise_init): Initializing the time out to zero.
+	(e_book_backend_groupwise_dispose): Cleanup time out.
+
+2005-07-23  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
 	(update_address_book_deltas): Updating the cache fully. Previously only
 	CURSOR_ITEM_LIMIT items were getting upddated.
 	Also using better variable names.
