@@ -749,10 +749,21 @@ void
 e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *contact)
 {
 	EBookBackendSummaryItem *new_item;
+	char *id = NULL;
+
+	/* ID normally should not be NULL for a contact. */
+	/* Added this check as groupwise server sometimes returns
+	 * contacts with NULL id 
+	 */
+	id = e_contact_get (contact, E_CONTACT_UID);
+	if (!id) {
+		g_warning ("found a contact with NULL uid");
+		return;
+	}
 
 	new_item = g_new0 (EBookBackendSummaryItem, 1);
 
-	new_item->id         = e_contact_get (contact, E_CONTACT_UID);
+	new_item->id         = id;
 	new_item->nickname   = e_contact_get (contact, E_CONTACT_NICKNAME);
 	new_item->full_name  = e_contact_get (contact, E_CONTACT_FULL_NAME);
 	new_item->given_name = e_contact_get (contact, E_CONTACT_GIVEN_NAME);
