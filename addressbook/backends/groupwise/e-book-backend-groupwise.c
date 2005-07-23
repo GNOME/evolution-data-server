@@ -60,6 +60,7 @@ struct _EBookBackendGroupwisePrivate {
 	gboolean marked_for_offline;
 	char *use_ssl;
 	int mode;
+	int cache_timeout;
 	EBookBackendCache *cache;
 };
 
@@ -2512,6 +2513,28 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	return TRUE;
 }
 
+static gboolean
+update_address_book_cache (gpointer ebgw)
+{
+	GThread *thread;
+	GError *error = NULL;
+
+	if (!ebgw)
+		return FALSE;
+
+	/* spawn a thread to update the system address book cache
+	 * at given intervals
+	 */ 
+	thread = g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, FALSE, NULL);
+	if (!thread) {
+		g_warning (G_STRLOC ": %s", error->message);
+		g_error_free (error);
+	}
+	return TRUE;
+}
+
+#define CACHE_REFRESH_INTERVAL 600000
+
 static void
 e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 					    EDataBook    *book,
@@ -2526,6 +2549,8 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	int status;
 	char *http_uri;
 	gboolean is_writable;
+	const char *cache_refresh_interval_set;
+	int cache_refresh_interval = CACHE_REFRESH_INTERVAL;
 	
 	printf ("authenticate user ............\n");
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
@@ -2569,9 +2594,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 					e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_OtherError);
 					return;
 				}
-				
 			}
-			
 		}
 		if (id != NULL) {
 			priv->container_id = g_strdup (id);
@@ -2589,21 +2612,44 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			e_book_backend_set_is_loaded (backend, FALSE);
 			e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_NoSuchBook);
 		}
+
+		cache_refresh_interval_set = g_getenv ("BOOK_CACHE_REFESH_INTERVAL");
+		if (cache_refresh_interval_set) {
+			cache_refresh_interval = g_ascii_strtod (cache_refresh_interval_set,
+								 NULL); /* use this */
+			cache_refresh_interval *= (60*1000);
+		}
 		
 		if (e_book_backend_cache_is_populated (priv->cache)) {
 			if (priv->is_writable) 
 				g_thread_create ((GThreadFunc) update_cache, ebgw, FALSE, NULL);
-			else if (priv->marked_for_offline)
-				g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, FALSE, NULL);
+			else if (priv->marked_for_offline) {
+				GThread *t;
+
+				t = g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, TRUE, NULL);
+				g_thread_join (t);
+
+				/* set the cache refresh time */
+				priv->cache_timeout = g_timeout_add (cache_refresh_interval,
+								     (GSourceFunc) update_address_book_cache,
+								     (gpointer) ebgw);
+			}
 		}
 		else if (priv->is_writable) {  /* for personal books we always cache */
 			/* Personal address book and frequent contacts */
 			g_thread_create ((GThreadFunc) build_cache, ebgw, FALSE, NULL);
 		}
 		else if(priv->marked_for_offline) { 
+			GThread *t;
+
 			/* System address book */
-			/* cache is not populated and book is not writable and marked for offline usage */
-			g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, FALSE, NULL);
+			/* cache is not populated, book is not writable and marked for offline usage */
+			t = g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, TRUE, NULL);
+			g_thread_join (t);
+
+			priv->cache_timeout = g_timeout_add (cache_refresh_interval,
+							     (GSourceFunc) update_address_book_cache,
+							     (gpointer) ebgw);
 		}
 		return;
 	default :
@@ -2716,8 +2762,9 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 		e_book_backend_notify_writable (backend, FALSE);
 		e_book_backend_notify_connection_status (backend, FALSE); 
 	}
-	else 
-		e_book_backend_notify_connection_status (backend, TRUE); 	
+	else {
+		e_book_backend_notify_connection_status (backend, TRUE); 
+	}
 	
 	for (i = 0; i < strlen (uri); i++) {
 		switch (uri[i]) {
@@ -2868,6 +2915,10 @@ e_book_backend_groupwise_dispose (GObject *object)
 		if (bgw->priv->use_ssl) {
 			g_free (bgw->priv->use_ssl);
 		}
+		if (bgw->priv->cache_timeout) {
+			g_source_remove (bgw->priv->cache_timeout);
+			bgw->priv->cache_timeout = 0;
+		}
 		g_free (bgw->priv);
 		bgw->priv = NULL;
 	}
@@ -2922,6 +2973,7 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->use_ssl = NULL;
 	priv->cache=NULL;
 	priv->original_uri = NULL;
+	priv->cache_timeout = 0;
        	backend->priv = priv;
 }
 
