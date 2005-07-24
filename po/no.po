@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-16 11:30+0200\n"
-"PO-Revision-Date: 2005-07-16 11:31+0200\n"
+"POT-Creation-Date: 2005-07-24 17:18+0200\n"
+"PO-Revision-Date: 2005-07-24 17:18+0200\n"
 "Last-Translator: Terance Edward Sola <terance@lyse.net>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -18,28 +18,28 @@ msgstr ""
 "X-Generator: KBabel 1.10\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:528
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2001
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2002
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Laster..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:530
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1987
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1999
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1988
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2000
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3405
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Søker..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2239
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2240
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3539
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Laster ned kontakter (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2433
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2464
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2325
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2443
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2472
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Oppdaterer buffer for kontakter (%d)..."
@@ -650,12 +650,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:860
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1172
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1165
 msgid "Reply Requested: by "
 msgstr "Svar etterspurt: innen "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:865
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1177
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1170
 msgid "Reply Requested: When convenient"
 msgstr "Svar etterspurt: Når det passer"
 
@@ -677,14 +677,14 @@ msgstr "Ugyldig URI for tjener"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:762
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
 #: ../calendar/libecal/e-cal.c:5021
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:815
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:835
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:862
-#: ../camel/providers/groupwise/camel-groupwise-store.c:556
-#: ../camel/providers/groupwise/camel-groupwise-store.c:575
-#: ../camel/providers/groupwise/camel-groupwise-store.c:620
-#: ../camel/providers/groupwise/camel-groupwise-store.c:831
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1071
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:808
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:827
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:855
+#: ../camel/providers/groupwise/camel-groupwise-store.c:555
+#: ../camel/providers/groupwise/camel-groupwise-store.c:566
+#: ../camel/providers/groupwise/camel-groupwise-store.c:602
+#: ../camel/providers/groupwise/camel-groupwise-store.c:820
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1047
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:177
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
@@ -694,7 +694,7 @@ msgid "Could not create thread for getting deltas"
 msgstr "Kunne ikke opprette tråd for å få deltaer"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1070
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
@@ -1132,8 +1132,8 @@ msgid "A CORBA exception has occurred"
 msgstr "Et CORBA-unntak har oppstått"
 
 #: ../calendar/libecal/e-cal.c:5027
-#: ../camel/providers/imap/camel-imap-command.c:304
-#: ../camel/providers/imap/camel-imap-command.c:404
+#: ../camel/providers/imap/camel-imap-command.c:310
+#: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:376
 #: ../camel/providers/pop3/camel-pop3-store.c:535
 #: ../camel/providers/pop3/camel-pop3-store.c:542
@@ -1324,7 +1324,8 @@ msgstr "Laster ned nye meldinger for frakoblet modus"
 msgid "Preparing folder '%s' for offline"
 msgstr "Forbereder mappe «%s» på frakobling"
 
-#: ../camel/camel-disco-store.c:405
+#: ../camel/camel-disco-store.c:391
+#: ../camel/providers/imap/camel-imap-store.c:3249
 msgid "You must be working online to complete this operation"
 msgstr "Du må arbeide tilknyttet for å fullføre denne operasjonen"
 
@@ -1463,38 +1464,38 @@ msgstr "(treff-tråder) krever et mappesett"
 msgid "Performing query on unknown header: %s"
 msgstr "Utfører spørring på ukjent header: %s"
 
-#: ../camel/camel-folder.c:620
+#: ../camel/camel-folder.c:616
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Ustøttet operasjon: legg til melding: for %s"
 
-#: ../camel/camel-folder.c:1242
+#: ../camel/camel-folder.c:1238
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Ustøttet operasjon: søk etter uttrykk: etter %s"
 
-#: ../camel/camel-folder.c:1283
+#: ../camel/camel-folder.c:1279
 #, c-format
 msgid "Unsupported operation: search by uids: for %s"
 msgstr "Ustøttet operasjon: søk på uid: etter %s"
 
-#: ../camel/camel-folder.c:1399
+#: ../camel/camel-folder.c:1395
 msgid "Moving messages"
 msgstr "Flytter meldinger"
 
-#: ../camel/camel-folder.c:1399
+#: ../camel/camel-folder.c:1395
 msgid "Copying messages"
 msgstr "Kopierer meldinger"
 
-#: ../camel/camel-folder.c:1653
+#: ../camel/camel-folder.c:1649
 msgid "Learning junk"
 msgstr "Oppdaterer data om søppel"
 
-#: ../camel/camel-folder.c:1670
+#: ../camel/camel-folder.c:1666
 msgid "Learning non-junk"
 msgstr "Oppdaterer data om gyldige meldinger"
 
-#: ../camel/camel-folder.c:1689
+#: ../camel/camel-folder.c:1685
 msgid "Filtering new message(s)"
 msgstr "Filtrerer ny(e) melding(er)"
 
@@ -1952,7 +1953,7 @@ msgstr "Refererte akkreditiver har utløpt."
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:226
-#: ../camel/providers/imap/camel-imap-store.c:1245
+#: ../camel/providers/imap/camel-imap-store.c:1246
 msgid "Bad authentication response from server."
 msgstr "Ugyldig svar på autentisering fra tjener."
 
@@ -2295,12 +2296,12 @@ msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kan ikke endre navn på mappe: %s: Ugyldig operasjon"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:782 ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-store.c:784 ../camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Papirkurv"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:785 ../camel/camel-vtrash-folder.c:49
+#: ../camel/camel-store.c:787 ../camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Søppel"
 
@@ -2557,7 +2558,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "Kan ikke kopiere meldinger til søppelmappen"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:115
-#: ../camel/providers/imap/camel-imap-folder.c:1980
+#: ../camel/providers/imap/camel-imap-folder.c:2004
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2567,7 +2568,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:115
-#: ../camel/providers/imap/camel-imap-folder.c:1980
+#: ../camel/providers/imap/camel-imap-folder.c:2004
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
 #: ../camel/providers/local/camel-mh-folder.c:203
@@ -2605,24 +2606,24 @@ msgstr "Kan ikke hente melding %s: %s"
 msgid "This message is not available in offline mode."
 msgstr "Denne meldingen er ikke tilgjengelig i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:176
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:183
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1136
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:164
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:171
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1129
 msgid "Could not get message"
 msgstr "Kunne ikke hente melding"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:681
-#: ../camel/providers/imap/camel-imap-folder.c:245
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:674
+#: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Kunne ikke laste sammendrag for %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1341
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1334
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan ikke opprette melding: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1353
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1346
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Kan ikke legge til melding i mappe «%s»: %s"
@@ -2690,8 +2691,8 @@ msgid "Novell GroupWise"
 msgstr "Novell GroupWise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:87
-msgid "For accessing Novell Groupwise servers"
-msgstr "For å aksessere Novell Groupwise-tjenere"
+msgid "For accessing Novell GroupWise servers"
+msgstr "For tilgang til Novell GroupWise-tjenere"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/imap/camel-imap-provider.c:96
@@ -2708,70 +2709,70 @@ msgid ""
 msgstr ""
 "Dette valget vil la deg koble til en GroupWise-tjener med klartekst-passord."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:275
+#: ../camel/providers/groupwise/camel-groupwise-store.c:276
 msgid "Host or user not available in url"
 msgstr "Vert eller bruker ikke tilgjengelig i URL"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:370
+#: ../camel/providers/groupwise/camel-groupwise-store.c:371
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sSkriv inn GroupWise-passord for %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:384
-#: ../camel/providers/imap/camel-imap-store.c:1324
+#: ../camel/providers/groupwise/camel-groupwise-store.c:385
+#: ../camel/providers/imap/camel-imap-store.c:1325
 msgid "You didn't enter a password."
 msgstr "Du skrev ikke inn et passord."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:398
+#: ../camel/providers/groupwise/camel-groupwise-store.c:399
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Kunne ikke autentisere mot GroupWise-tjener."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:439
+#: ../camel/providers/groupwise/camel-groupwise-store.c:440
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Noen funksjoner vil ikke fungere korrekt med din nåværende tjenerversjon"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:542
-#: ../camel/providers/imap/camel-imap-store.c:1875
-#: ../camel/providers/imap/camel-imap-store.c:2065
+#: ../camel/providers/groupwise/camel-groupwise-store.c:541
+#: ../camel/providers/imap/camel-imap-store.c:1888
+#: ../camel/providers/imap/camel-imap-store.c:2074
 #, c-format
 msgid "No such folder %s"
 msgstr "Mappen %s eksisterer ikke"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:610
-#: ../camel/providers/imap/camel-imap-folder.c:2288
-#: ../camel/providers/imap/camel-imap-folder.c:2358
+#: ../camel/providers/groupwise/camel-groupwise-store.c:592
+#: ../camel/providers/imap/camel-imap-folder.c:2309
+#: ../camel/providers/imap/camel-imap-folder.c:2379
 msgid "Fetching summary information for new messages"
 msgstr "Henter sammendragsinformasjon for nye meldinger"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:755
+#: ../camel/providers/groupwise/camel-groupwise-store.c:729
 msgid "Cannot get folder info in offline mode."
 msgstr "Kan ikke hente mappeinformasjon i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1052
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1033
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Kan ikke opprette GroupWise-mapper i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1103
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1078
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Kan ikke slette GroupWise-mapper i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1149
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1118
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Du kan ikke endre navn på GroupWise-mapper i frakoblet modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1168
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1132
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Kan ikke endre navn på GroupWise-mappe «%s» til «%s»"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1204
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1164
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-tjener %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1206
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1166
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise-tjeneste for %s på %s"
@@ -2785,22 +2786,22 @@ msgstr "GroupWise e-postlevering via %s"
 msgid "Sending Message"
 msgstr "Sender melding"
 
-#: ../camel/providers/imap/camel-imap-command.c:219
-#: ../camel/providers/imap/camel-imap-command.c:258
-#: ../camel/providers/imap/camel-imap-command.c:465
-#: ../camel/providers/imap/camel-imap-store.c:3240
+#: ../camel/providers/imap/camel-imap-command.c:222
+#: ../camel/providers/imap/camel-imap-command.c:264
+#: ../camel/providers/imap/camel-imap-command.c:471
+#: ../camel/providers/imap/camel-imap-store.c:3289
 msgid "Operation cancelled"
 msgstr "Operasjon avbrutt"
 
-#: ../camel/providers/imap/camel-imap-command.c:303
-#: ../camel/providers/imap/camel-imap-store.c:3243
+#: ../camel/providers/imap/camel-imap-command.c:309
+#: ../camel/providers/imap/camel-imap-store.c:3292
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Tjener koblet fra uventet: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:324
+#: ../camel/providers/imap/camel-imap-command.c:330
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -2809,73 +2810,73 @@ msgstr ""
 "Melding fra IMAP-tjener %s@%s:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:393
+#: ../camel/providers/imap/camel-imap-command.c:399
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "Uventet svar fra IMAP-tjener: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:403
+#: ../camel/providers/imap/camel-imap-command.c:409
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "IMAP-kommando feilet: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:479
+#: ../camel/providers/imap/camel-imap-command.c:485
 msgid "Server response ended too soon."
 msgstr "Svar fra tjener ble avsluttet for tidlig."
 
-#: ../camel/providers/imap/camel-imap-command.c:686
+#: ../camel/providers/imap/camel-imap-command.c:692
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "Svar fra IMAP-tjener inneholdt ikke %s-informasjon"
 
-#: ../camel/providers/imap/camel-imap-command.c:722
+#: ../camel/providers/imap/camel-imap-command.c:728
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Uventet svar «OK» fra IMAP-tjener: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:226
+#: ../camel/providers/imap/camel-imap-folder.c:227
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "Kan ikke opprette katalog %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:330
+#: ../camel/providers/imap/camel-imap-folder.c:331
 msgid "Folder was destroyed and recreated on server."
 msgstr "Mappen ble ødelagt og laget på nytt på tjeneren."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:573
+#: ../camel/providers/imap/camel-imap-folder.c:596
 #: ../camel/providers/imap4/camel-imap4-summary.c:1472
 msgid "Scanning for changed messages"
 msgstr "Søker etter endrede meldinger"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1940
+#: ../camel/providers/imap/camel-imap-folder.c:1964
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Kan ikke hente melding: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2022
-#: ../camel/providers/imap/camel-imap-folder.c:2624
+#: ../camel/providers/imap/camel-imap-folder.c:2041
+#: ../camel/providers/imap/camel-imap-folder.c:2648
 #: ../camel/providers/nntp/camel-nntp-folder.c:221
 msgid "This message is not currently available"
 msgstr "Denne meldingen er ikke tilgjengelig"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2465
+#: ../camel/providers/imap/camel-imap-folder.c:2486
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Uferdig svar fra tjener: ingen informasjon gitt for melding %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2473
+#: ../camel/providers/imap/camel-imap-folder.c:2494
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Uferdig svar fra tjener: ingen UID oppgitt for melding %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2486
+#: ../camel/providers/imap/camel-imap-folder.c:2507
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "Uferdig svar fra tjener: identiske UIDer oppgitt for melding %d og %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2662
+#: ../camel/providers/imap/camel-imap-folder.c:2686
 msgid "Could not find message body in FETCH response."
 msgstr "Kunne ikke finne meldingskropp i FETCH-svar."
 
@@ -2977,20 +2978,20 @@ msgstr ""
 "Dette valget vil la deg koble til en IMAP-tjener ved å bruke et klartekst-"
 "passord."
 
-#: ../camel/providers/imap/camel-imap-store.c:421
+#: ../camel/providers/imap/camel-imap-store.c:422
 #: ../camel/providers/imap4/camel-imap4-store.c:215
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP-tjener %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:423
+#: ../camel/providers/imap/camel-imap-store.c:424
 #: ../camel/providers/imap4/camel-imap4-store.c:217
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP-tjeneste for %s på %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:553
-#: ../camel/providers/imap/camel-imap-store.c:568
+#: ../camel/providers/imap/camel-imap-store.c:554
+#: ../camel/providers/imap/camel-imap-store.c:569
 #: ../camel/providers/imap4/camel-imap4-store.c:322
 #: ../camel/providers/imap4/camel-imap4-store.c:337
 #: ../camel/providers/nntp/camel-nntp-store.c:200
@@ -3003,7 +3004,7 @@ msgstr "IMAP-tjeneste for %s på %s"
 msgid "Could not connect to %s: %s"
 msgstr "Kunne ikke koble til %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:554
+#: ../camel/providers/imap/camel-imap-store.c:555
 #: ../camel/providers/imap4/camel-imap4-store.c:323
 #: ../camel/providers/nntp/camel-nntp-store.c:201
 #: ../camel/providers/pop3/camel-pop3-store.c:170
@@ -3011,8 +3012,8 @@ msgstr "Kunne ikke koble til %s: %s"
 msgid "SSL unavailable"
 msgstr "SSL er ikke tilgjengelig"
 
-#: ../camel/providers/imap/camel-imap-store.c:565
-#: ../camel/providers/imap/camel-imap-store.c:835
+#: ../camel/providers/imap/camel-imap-store.c:566
+#: ../camel/providers/imap/camel-imap-store.c:836
 #: ../camel/providers/imap4/camel-imap4-store.c:270
 #: ../camel/providers/imap4/camel-imap4-store.c:334
 #: ../camel/providers/imapp/camel-imapp-store.c:248
@@ -3023,9 +3024,9 @@ msgstr "SSL er ikke tilgjengelig"
 msgid "Connection cancelled"
 msgstr "Tilkobling avbrutt"
 
-#: ../camel/providers/imap/camel-imap-store.c:673
-#: ../camel/providers/imap/camel-imap-store.c:695
-#: ../camel/providers/imap/camel-imap-store.c:701
+#: ../camel/providers/imap/camel-imap-store.c:674
+#: ../camel/providers/imap/camel-imap-store.c:696
+#: ../camel/providers/imap/camel-imap-store.c:702
 #: ../camel/providers/imap4/camel-imap4-store.c:362
 #: ../camel/providers/imap4/camel-imap4-store.c:375
 #: ../camel/providers/imap4/camel-imap4-store.c:391
@@ -3033,33 +3034,33 @@ msgstr "Tilkobling avbrutt"
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:674
+#: ../camel/providers/imap/camel-imap-store.c:675
 #: ../camel/providers/smtp/camel-smtp-transport.c:326
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
-#: ../camel/providers/imap/camel-imap-store.c:696
+#: ../camel/providers/imap/camel-imap-store.c:697
 #: ../camel/providers/imap4/camel-imap4-store.c:363
 #: ../camel/providers/pop3/camel-pop3-store.c:246
 msgid "SSL negotiations failed"
 msgstr "SSL-forhandling feilet"
 
-#: ../camel/providers/imap/camel-imap-store.c:702
+#: ../camel/providers/imap/camel-imap-store.c:703
 #: ../camel/providers/imap4/camel-imap4-store.c:392
 #: ../camel/providers/pop3/camel-pop3-store.c:252
 #: ../camel/providers/smtp/camel-smtp-transport.c:365
 msgid "SSL is not available in this build"
 msgstr "SSL er ikke støttet i denne versjonen"
 
-#: ../camel/providers/imap/camel-imap-store.c:838
+#: ../camel/providers/imap/camel-imap-store.c:839
 #: ../camel/providers/imap4/camel-imap4-store.c:273
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Kunne ikke koble til med kommando «%s»: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1021
-#: ../camel/providers/imap/camel-imap-store.c:2429
+#: ../camel/providers/imap/camel-imap-store.c:1022
+#: ../camel/providers/imap/camel-imap-store.c:2438
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1267
 #: ../camel/providers/local/camel-maildir-folder.c:75
@@ -3072,24 +3073,24 @@ msgstr "Kunne ikke koble til med kommando «%s»: %s"
 msgid "Inbox"
 msgstr "Innboks"
 
-#: ../camel/providers/imap/camel-imap-store.c:1277
+#: ../camel/providers/imap/camel-imap-store.c:1278
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP-tjener %s støtter ikke etterspurt autentiseringstype %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1287
+#: ../camel/providers/imap/camel-imap-store.c:1288
 #: ../camel/providers/smtp/camel-smtp-transport.c:501
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Ingen støtte for autentiseringstype %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1310
+#: ../camel/providers/imap/camel-imap-store.c:1311
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sVennligst skriv inn IMAP-passord for %s@%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1353
+#: ../camel/providers/imap/camel-imap-store.c:1354
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3100,20 +3101,20 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1893
-#: ../camel/providers/imap/camel-imap-store.c:2271
+#: ../camel/providers/imap/camel-imap-store.c:1906
+#: ../camel/providers/imap/camel-imap-store.c:2280
 #: ../camel/providers/imap4/camel-imap4-store.c:856
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Mappenavn «%s» er ugyldig fordi det inneholder tegnet «%c»"
 
-#: ../camel/providers/imap/camel-imap-store.c:1951
-#: ../camel/providers/imap/camel-imap-store.c:2333
+#: ../camel/providers/imap/camel-imap-store.c:1964
+#: ../camel/providers/imap/camel-imap-store.c:2342
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Opphavsmappen tillates ikke å ha undermapper"
 
-#: ../camel/providers/imap/camel-imap-store.c:2006
+#: ../camel/providers/imap/camel-imap-store.c:2019
 #: ../camel/providers/local/camel-maildir-store.c:190
 #: ../camel/providers/local/camel-mbox-store.c:199
 #: ../camel/providers/local/camel-mh-store.c:237
@@ -3121,7 +3122,7 @@ msgstr "Opphavsmappen tillates ikke å ha undermapper"
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Kan ikke opprette mappe «%s»: mappen eksisterer."
 
-#: ../camel/providers/imap/camel-imap-store.c:2282
+#: ../camel/providers/imap/camel-imap-store.c:2291
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Ukjent opphavsmappe: %s"
@@ -4889,13 +4890,13 @@ msgid "Bad parameter"
 msgstr "Ugyldig parameter"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1573
-#: ../servers/exchange/storage/exchange-account.c:879
+#: ../servers/exchange/storage/exchange-account.c:905
 #, c-format
 msgid "Enter password for %s"
 msgstr "Oppgi passord for %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
-#: ../servers/exchange/storage/exchange-account.c:884
+#: ../servers/exchange/storage/exchange-account.c:910
 msgid "Enter password"
 msgstr "Oppgi passord"
 
@@ -4999,26 +5000,26 @@ msgstr "Denne handlingen kan ikke bli utført i frakoblet modus."
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:583
+#: ../servers/exchange/storage/exchange-account.c:609
 #, c-format
 msgid "%s's Folders"
 msgstr "%ss mapper"
 
-#: ../servers/exchange/storage/exchange-account.c:1236
+#: ../servers/exchange/storage/exchange-account.c:1262
 msgid "Personal Folders"
 msgstr "Personlige mapper"
 
-#: ../servers/exchange/storage/exchange-account.c:1251
+#: ../servers/exchange/storage/exchange-account.c:1277
 msgid "Favorite Public Folders"
 msgstr "Favoritt offentlige mapper"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1268
+#: ../servers/exchange/storage/exchange-account.c:1294
 msgid "All Public Folders"
 msgstr "Alle offentlige mapper"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1282
+#: ../servers/exchange/storage/exchange-account.c:1308
 msgid "Global Address List"
 msgstr "Global adresseliste"
 
