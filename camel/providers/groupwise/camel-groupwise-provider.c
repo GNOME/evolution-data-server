@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* camel-groupwise-provider.c: Groupwise provider registration code */
+/* camel-groupwise-provider.c: GroupWise provider registration code */
 
 /*
  *  Authors: Jeffrey Stedfast <fejj@ximian.com>
@@ -64,7 +64,7 @@ CamelProviderConfEntry groupwise_conf_entries[] = {
 	  N_("Automatically synchronize account locally"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 
-	/* extra Groupwise  configuration settings */
+	/* extra GroupWise  configuration settings */
 	{CAMEL_PROVIDER_CONF_SECTION_START, "soapport", NULL,
 	  N_("SOAP Settings") },
 
@@ -84,7 +84,7 @@ static CamelProvider groupwise_provider = {
 	"groupwise",
 	N_("Novell GroupWise"),
 
-	N_("For accessing Novell Groupwise servers"),
+	N_("For accessing Novell GroupWise servers"),
 
 	"mail",
 
