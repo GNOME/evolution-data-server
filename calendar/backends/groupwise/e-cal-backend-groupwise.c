@@ -71,6 +71,7 @@ struct _ECalBackendGroupwisePrivate {
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
 static void e_cal_backend_groupwise_finalize (GObject *object);
+static void sanitize_component (ECalBackendSync *backend, ECalComponent *comp, char *server_uid);
 
 #define PARENT_TYPE E_TYPE_CAL_BACKEND_SYNC
 static ECalBackendClass *parent_class = NULL;
@@ -129,7 +130,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	icalcomponent_kind kind;
 	const char *type;
-	
+
 	priv = cbgw->priv;
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	total = priv->total_count;
@@ -214,9 +215,11 @@ get_deltas (gpointer handle)
 	ECalBackendCache *cache; 
 	EGwConnectionStatus status; 
 	icalcomponent_kind kind;
-	GList *item_list;
-	char *comp_str;
+	GList *item_list, *total_list = NULL, *l;
+	GSList *cache_keys = NULL;
+	GPtrArray *uid_array = g_ptr_array_new ();
 
+	char *comp_str;
 	char *time_string = NULL;
 	char t_str [100]; 
 	const char *serv_time;
@@ -224,12 +227,17 @@ get_deltas (gpointer handle)
 	const char *time_interval_string;
 	const char *key = "attempts";
 	const char *attempts;
+	const char *position ;
+	
 
 	EGwFilter *filter;
 	int time_interval;
 	icaltimetype temp;
+	gboolean done = FALSE;
+	int cursor = 0;
 	struct tm *tm;
 	time_t current_time;
+	gboolean needs_to_get = FALSE;
 
 	if (!handle)
 		return FALSE;
@@ -267,70 +275,6 @@ get_deltas (gpointer handle)
 		strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	}
 	time_string = g_strdup (t_str);
-	filter = e_gw_filter_new ();
-
-	/* Items created after the time-stamp */
-	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "created", time_string);
-
-	status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
-	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
-
-	g_object_unref (filter);	
-
-	if (status != E_GW_CONNECTION_STATUS_OK) {
-		if (!attempts) {
-			e_cal_backend_cache_put_key_value (cache, key, "2");
-		} else {
-			int failures;
-			failures = g_ascii_strtod(attempts, NULL) + 1;
-			e_cal_backend_cache_put_key_value (cache, key, GINT_TO_POINTER (failures));
-		}
-
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-			g_static_mutex_unlock (&connecting);
-			return TRUE;
-		}
-
-		e_cal_backend_groupwise_notify_error_code (cbgw, status);
-		g_static_mutex_unlock (&connecting);
-		return TRUE;
-	}
-	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-	for (; item_list != NULL; item_list = g_list_next(item_list)) {
-		EGwItem *item = NULL;
-		ECalComponent *comp = NULL;
-
-		item = E_GW_ITEM(item_list->data);
-		comp = e_gw_item_to_cal_component (item, cbgw);
-
-		e_cal_component_commit_sequence (comp);
-
-		if (comp) {
-			if (!e_cal_backend_cache_put_component (cache, comp)) 
-				g_message ("Could not add the component");
-			else  {
-				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
-					comp_str = e_cal_component_get_as_string (comp);	
-					if (comp_str) {
-						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), comp_str);
-						g_free (comp_str);
-						comp_str = NULL;
-					}
-				}
-			}
-		}
-		else 
-			g_message ("Invalid component returned");
-
-		g_object_unref (comp);
-		g_object_unref (item);
-	}
-	if (item_list) {
-		g_list_free (item_list);
-		item_list = NULL;
-	}
-	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
 	filter = e_gw_filter_new ();
 	/* Items modified after the time-stamp */
@@ -342,6 +286,8 @@ get_deltas (gpointer handle)
 	g_object_unref (filter);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+
+		const char *msg = NULL;
 
 		if (!attempts) {
 			e_cal_backend_cache_put_key_value (cache, key, "2");
@@ -356,7 +302,8 @@ get_deltas (gpointer handle)
 			return TRUE;
 		}
 
-		e_cal_backend_groupwise_notify_error_code (cbgw, status);
+		msg = e_gw_connection_get_error_message (status);
+
 		g_static_mutex_unlock (&connecting);
 		return TRUE;
 	}
@@ -427,12 +374,11 @@ get_deltas (gpointer handle)
 	
 	/* TODO currently the read cursors response does not give us the recurrencKey, uncomment
 	   this once the  response gives the recurrenceKey */
-#if 0
 	/* handle deleted items here by going over the entire cache and
 	 * checking for deleted items.*/
 	position = E_GW_CURSOR_POSITION_END;
 	cursor = 0;
-	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "iCalId recurrenceKey", NULL, &cursor);
+	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "id iCalId recurrenceKey", NULL, &cursor);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
@@ -446,9 +392,10 @@ get_deltas (gpointer handle)
 	}
 
 	cache_keys = e_cal_backend_cache_get_keys (cache);
+	
 	done = FALSE;
 	while (!done) {
-		status = e_gw_connection_read_ical_ids (cnc, cbgw->priv->container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
+		status = e_gw_connection_read_cal_ids (cnc, cbgw->priv->container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
 				g_static_mutex_unlock (&connecting);
@@ -458,8 +405,10 @@ get_deltas (gpointer handle)
 			g_static_mutex_unlock (&connecting);
 			return TRUE;
 		}
-		/* handle deleted items here by going over the entire cache and
+		
+		/* FIXME handle deleted items here by going over the entire cache and
 		 * checking for deleted items.*/
+#if 0
 		for (l1 = item_list; l1; l1 = g_list_next (l1)) {
 			char *icalid;
 			icalid = (char *)(l1->data);
@@ -468,21 +417,29 @@ get_deltas (gpointer handle)
 			if (l1->data)
 				g_free (l1->data);
 		}	
+#endif
 		if (!item_list  || g_list_length (item_list) == 0)
 			done = TRUE;
-		if (item_list) {
-			g_list_free (item_list);
-			item_list = NULL;
+		else {
+			if (!total_list)
+				total_list = item_list;
+			else
+				total_list = g_list_concat (total_list, item_list);
 		}
+
+		item_list = NULL;
+
 		position = E_GW_CURSOR_POSITION_CURRENT;
 
 	}
 	e_gw_connection_destroy_cursor (cnc, cbgw->priv->container_id, cursor);
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 
+#if 0
 	for (l = cache_keys; l ; l = g_slist_next (l)) {
 		/* assumes rid is null - which works for now */
 		ECalComponent *comp = NULL;
+		GSList *comp_list = NULL;
 		ECalComponentVType vtype;
 
 		comp = e_cal_backend_cache_get_component (cache, (const char *) l->data, NULL);	
@@ -501,18 +458,103 @@ get_deltas (gpointer handle)
 		}
 		g_object_unref (comp);
 	}
+#endif
+
+	for (l = total_list; l != NULL; l = l->next) {
+		EGwItemCalId *calid = (EGwItemCalId *)	l->data;
+
+
+		if (calid->ical_id) {
+			if (!g_slist_find_custom (cache_keys, calid->ical_id, (GCompareFunc) strcmp)) {
+				g_ptr_array_add (uid_array, g_strdup (calid->item_id));
+				needs_to_get = TRUE;
+			} else  {
+				continue;
+			}
+		}
+
+		if (calid->recur_key) {
+			GSList *comp_list = e_cal_backend_cache_get_components_by_uid (priv->cache, calid->recur_key);			
+			if (!comp_list) {
+				g_ptr_array_add (uid_array, g_strdup (calid->item_id));
+				needs_to_get = TRUE;
+			} else {
+				/* There may be one instance added to an existing recurring appointment */
+				GSList *l;
+				gboolean found = FALSE;
+
+				for (l = comp_list; l !=NULL; l = l->next) {
+					ECalComponent *comp = E_CAL_COMPONENT (l->data);	
+
+					if (g_str_equal (calid->item_id, e_cal_component_get_gw_id (comp))) {
+						found = TRUE;
+						break;
+					}
+				}
+
+				if (comp_list) {
+					g_slist_foreach (comp_list, (GFunc)g_object_unref, NULL);
+					comp_list = NULL;
+				}
+
+				if (!found) {
+					needs_to_get = TRUE;
+					g_ptr_array_add (uid_array, g_strdup (calid->item_id));
+				}
+			}
+		}
+
+	}	
+
+	if (needs_to_get) {
+		e_gw_connection_get_items_from_ids (priv->cnc,
+				priv->container_id, 
+				"attachments recipients message recipientStatus default peek",
+				uid_array, &item_list);
+
+		for (l = item_list; l != NULL; l = l->next) {
+			ECalComponent *comp = NULL;
+			EGwItem *item = NULL;
+			char *temp = NULL;
+
+			item = (EGwItem *) l->data;
+			comp = e_gw_item_to_cal_component (item, cbgw); 
+			if (comp) {
+				e_cal_component_commit_sequence (comp);
+				sanitize_component (E_CAL_BACKEND_SYNC (cbgw), comp, (char *) e_gw_item_get_id (item));
+				e_cal_backend_cache_put_component (priv->cache, comp);
+
+
+				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
+					temp = e_cal_component_get_as_string (comp);
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), temp);
+					g_free (temp);
+				}
+				g_object_unref (comp);
+			}
+
+			g_object_unref (item);
+		}
+	}
+
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
+	g_ptr_array_free (uid_array, TRUE);
+	
 	if (item_list) {
 		g_list_free (item_list);
 		item_list = NULL;
 	}
+
+	if (total_list) {
+		g_list_foreach (total_list, (GFunc) e_gw_item_free_cal_id, NULL);
+		g_list_free (total_list);
+	}
+	
 	if (cache_keys) {
 		g_slist_free (cache_keys);
-		item_list = NULL;
 	}
-#endif
-
+	
 	g_static_mutex_unlock (&connecting);
 
 	return TRUE;        

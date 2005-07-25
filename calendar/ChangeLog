@@ -1,3 +1,11 @@
+2005-07-25  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #303548
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
+	(get_deltas): Removed the getItems call for getting the new items,
+	instead check for new items with all ids returned in read cursors
+	request.
+
 2005-07-23  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:
