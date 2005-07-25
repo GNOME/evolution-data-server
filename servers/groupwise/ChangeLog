@@ -1,3 +1,18 @@
+2005-07-25  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #303548
+	* e-gw-connection.[ch]: 
+	(e_gw_connection_get_attachment): Get buffer and buffer_length
+	if soap response gets the param for "part".
+	(e_gw_connection_read_cal_ids): Renamed the old function
+	read_ical_ids.
+	* e-gw-item.c: 
+	(e_gw_item_free_cal_id): New function to free the structure
+	EGwItemCalId.
+	(e_gw_item_set_calendar_item_elements): Fixed a warning.
+	* e-gw-item.h: New structure to store the ids w.r.t calendar
+	items.
+
 2005-07-25  Sushma Rai  <rsushma@novell.com>
 
 	* e-gw-message.c (e_gw_message_new_with_header)

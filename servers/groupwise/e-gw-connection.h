@@ -31,6 +31,7 @@
 #include "e-gw-item.h"
 #include "e-gw-filter.h"
 #include "e-gw-sendoptions.h"
+#include "e-gw-recur-utils.h"
 
 G_BEGIN_DECLS
 
@@ -164,7 +165,7 @@ EGwConnectionStatus e_gw_connection_get_junk_settings (EGwConnection *cnc, int *
 EGwConnectionStatus e_gw_connection_modify_junk_settings (EGwConnection *cnc, int use_junk, int use_block, int use_pab , int persistence);
 EGwConnectionStatus e_gw_connection_get_junk_entries (EGwConnection *cnc, GList **entries);
 EGwConnectionStatus  e_gw_connection_remove_junk_entry (EGwConnection *cnc, const char *id);
-EGwConnectionStatus e_gw_connection_read_ical_ids (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **list);
+EGwConnectionStatus e_gw_connection_read_cal_ids (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **list);
 EGwConnectionStatus e_gw_connection_get_proxy_access_list (EGwConnection *cnc, GList **proxy_list);
 EGwConnectionStatus e_gw_connection_add_proxy (EGwConnection *cnc, proxyHandler *new_proxy);
 EGwConnectionStatus e_gw_connection_remove_proxy (EGwConnection *cnc, proxyHandler *newProxy);

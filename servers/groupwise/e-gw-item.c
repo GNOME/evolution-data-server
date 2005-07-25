@@ -548,6 +548,27 @@ e_gw_item_get_type (void)
 	return type;
 }
 
+void 
+e_gw_item_free_cal_id (EGwItemCalId *calid)
+{
+	if (calid->item_id) {
+		g_free (calid->item_id);
+		calid->item_id = NULL;
+	}
+	
+	if (calid->ical_id) {
+		g_free (calid->ical_id);
+		calid->ical_id = NULL;
+	}
+	
+	if (calid->recur_key) {
+		g_free (calid->recur_key);
+		calid->recur_key = NULL;
+	}
+
+	g_free (calid);
+}
+
 EGwItem *
 e_gw_item_new_empty (void)
 {
@@ -2953,6 +2974,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			int i, max_elements;
 			char year_day[4];
 			soup_soap_message_start_element (msg, "byYearDay", NULL, NULL);
+			max_elements = sizeof (rrule->by_year_day)  / sizeof (rrule->by_year_day [i]);
 			/* expand into  a sequence of 'day' here  */
 			for (i = 0; i <= max_elements && rrule->by_year_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
@@ -2967,6 +2989,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			int i, max_elements;
 			char month[3];
 			soup_soap_message_start_element (msg, "byMonth", NULL, NULL);
+			max_elements = sizeof (rrule->by_month)  / sizeof (rrule->by_month [i]);
 			/* expand into  a sequence of 'month' here  */
 			for (i = 0; i <= max_elements && rrule->by_month [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */

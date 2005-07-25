@@ -2506,7 +2506,7 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, 
         SoupSoapResponse *response;
         EGwConnectionStatus status;
 	SoupSoapParameter *param ;
-	char *buffer, *buf_length ;
+	char *buffer = NULL, *buf_length = NULL ;
 
         g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
@@ -2540,11 +2540,14 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, 
 		return status;
 	}
 
+	
 	param = soup_soap_response_get_first_parameter_by_name (response, "part") ;
-	buf_length =  soup_soap_parameter_get_property (param, "length") ;
-	buffer = soup_soap_parameter_get_string_value (param) ;
+	if (param) {
+		buf_length =  soup_soap_parameter_get_property (param, "length") ;
+		buffer = soup_soap_parameter_get_string_value (param) ;
+	}
         
-	if (buffer && length) {
+	if (buffer && buf_length) {
 		int len = atoi (buf_length) ;
 		*attachment = soup_base64_decode (buffer,&len) ;
 		*attach_length = len ;
@@ -3366,18 +3369,18 @@ e_gw_connection_remove_junk_entry (EGwConnection *cnc, const char *id)
 }
 
 EGwConnectionStatus
-e_gw_connection_read_ical_ids (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **list)
+e_gw_connection_read_cal_ids (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **list)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
 	EGwConnectionStatus status;
-	SoupSoapParameter *param, *subparam, *child;
-	const char *name, *value;
+	SoupSoapParameter *param, *subparam;
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail ((container != NULL), E_GW_CONNECTION_STATUS_UNKNOWN);
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "readCursorRequest");
 	e_gw_message_write_int_parameter (msg, "cursor", NULL, cursor);
+	*list = NULL;
 	/* there is problem in read curosr if you set this, uncomment after the problem 
 	   is fixed in server */
 	e_gw_message_write_string_parameter (msg, "position", NULL, cursor_seek);
@@ -3415,21 +3418,72 @@ e_gw_connection_read_ical_ids (EGwConnection *cnc, const char *container, int cu
 	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
 			subparam != NULL;
 			subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
-
-		for (child = soup_soap_parameter_get_first_child (subparam);
-				child != NULL;
-				child = soup_soap_parameter_get_next_child (child)) {
-
-			name = soup_soap_parameter_get_name (child);
-
-			if (!g_ascii_strcasecmp (name, "iCalId")) {
-				value = NULL;
-				value = soup_soap_parameter_get_string_value (child);
-				if (value)
-					*list = g_list_append (*list, g_strdup(value));
+		SoupSoapParameter *param_id;
+		EGwItemCalId *calid = g_new0 (EGwItemCalId, 1);
+		char *id = NULL;
+		
+		param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
+		if (!param_id) {
+			if (*list) {
+				g_list_foreach (*list, (GFunc) e_gw_item_free_cal_id, NULL);
+				g_list_free (*list);
+				*list = NULL;
 			}
+			e_gw_item_free_cal_id (calid);
+			g_object_unref (response);
+			g_object_unref (msg);
+			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 		}
+		
+		id = soup_soap_parameter_get_string_value (param_id);
+		if (id)
+			calid->item_id = id;
+		else {
+			if (*list) {
+				g_list_foreach (*list, (GFunc) e_gw_item_free_cal_id, NULL);
+				g_list_free (*list);
+				*list = NULL;
+			}
+			e_gw_item_free_cal_id (calid);
+			g_object_unref (response);
+			g_object_unref (msg);
+			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		}
+		
+		id = NULL;
+	
+		param_id = soup_soap_parameter_get_first_child_by_name (subparam, "recurrenceKey");
+		if (param_id) {
+			id = soup_soap_parameter_get_string_value (param_id);
+		}
+		
+		if (id && !g_str_equal (id, "0"))
+			calid->recur_key = id;
+		else {
+			g_free (id);
+			id = NULL;
+
+			param_id = soup_soap_parameter_get_first_child_by_name (subparam, "iCalId");
+			if (!param_id) {
+				if (*list) {
+					g_list_foreach (*list, (GFunc) e_gw_item_free_cal_id, NULL);
+					g_list_free (*list);
+					*list = NULL;
+				}
+
+				e_gw_item_free_cal_id (calid);
+				g_object_unref (response);
+				g_object_unref (msg);
+				return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+			}
+
+			id = soup_soap_parameter_get_string_value (param_id);
+			calid->ical_id = id;
+		}
+
+		*list = g_list_append (*list, calid);
 	}
+
 	/* free memory */
 	g_object_unref (response);
 	g_object_unref (msg);
