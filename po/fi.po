@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-24 15:47+0300\n"
-"PO-Revision-Date: 2005-07-24 15:50+0300\n"
+"PO-Revision-Date: 2005-07-25 07:58+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -4921,31 +4921,31 @@ msgstr "Omistaja"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:857
 msgid "Publishing Editor"
-msgstr ""
+msgstr "Julkaisun toimittaja"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
-msgstr "Muokkain"
+msgstr "Toimittaja"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
-msgstr ""
+msgstr "Julkaisun tekijä"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
 msgid "Author"
-msgstr "Kirjoittaja"
+msgstr "Tekijä"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
-msgstr ""
+msgstr "Ei-muokkaava tekijä"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
-msgstr ""
+msgstr "Tarkastaja"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
-msgstr ""
+msgstr "Avustaja"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:891
 msgid "None"
@@ -5024,12 +5024,12 @@ msgstr "Omat kansiot"
 
 #: ../servers/exchange/storage/exchange-account.c:1277
 msgid "Favorite Public Folders"
-msgstr ""
+msgstr "Julkisten kansioiden suosikit"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1294
 msgid "All Public Folders"
-msgstr ""
+msgstr "Kaikki julkiset kansiot"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1308
