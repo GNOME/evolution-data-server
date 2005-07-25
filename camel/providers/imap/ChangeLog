@@ -1,3 +1,8 @@
+2005-07-25  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-store.c (imap_noop): make sure we're connected before
+	trying to noop.
+
 2005-07-21  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	* camel-imap-wrapper.h: Fix camel-docs breakage by changing
