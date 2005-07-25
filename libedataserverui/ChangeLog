@@ -1,3 +1,16 @@
+2005-07-24  Vivek Jain  <jvivek@novell.com>
+	
+	* e-name-selector-dialog.c: "Section" structure has two new members
+	label and remove button
+	(add_section): set these new members properly
+	add a callback on the changed signal of gtktreeview in section
+	Have new structure SelData to give us the selection data in callback
+	(destination_key_press) : moved actual code to new local function
+	(remove_selection).
+	(selection_changed):
+	(remove_button clicked): new functions to get the entry back from the
+	destination store and making sure UI is consistent
+
 2005-07-20  Sushma Rai  <rsushma@novell.com>
 
 	* e-name-selector-entry.c (populate_popup): In the popup menu, changed

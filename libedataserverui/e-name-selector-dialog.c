@@ -43,10 +43,18 @@ typedef struct {
 	gchar        *name;
 
 	GtkBox       *section_box;
+	GtkLabel     *label;  
 	GtkButton    *transfer_button;
+	GtkButton    *remove_button;
 	GtkTreeView  *destination_view;
 }
 Section;
+
+typedef struct {
+	GtkTreeView *view;
+	GtkButton   *button;
+	ENameSelectorDialog *dlg_ptr;
+} SelData;
 
 static ESource *find_first_source             (ESourceList *source_list);
 static void     search_changed                (ENameSelectorDialog *name_selector_dialog);
@@ -58,6 +66,7 @@ static void     contact_activated             (ENameSelectorDialog *name_selecto
 static void     destination_activated         (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path,
 					       GtkTreeViewColumn *column, GtkTreeView *tree_view);
 static gboolean destination_key_press         (ENameSelectorDialog *name_selector_dialog, GdkEventKey *event, GtkTreeView *tree_view);
+static void remove_button_clicked (GtkButton *button, SelData *data);
 static void     remove_books                  (ENameSelectorDialog *name_selector_dialog);
 static void     contact_column_formatter      (GtkTreeViewColumn *column, GtkCellRenderer *cell,
 					       GtkTreeModel *model, GtkTreeIter *iter,
@@ -402,6 +411,17 @@ find_section_by_name (ENameSelectorDialog *name_selector_dialog, const gchar *na
 	return -1;
 }
 
+static void
+selection_changed (GtkTreeSelection *selection, SelData *data)
+{
+	GtkTreeSelection *contact_selection;
+	gboolean          have_selection;
+		
+	contact_selection = gtk_tree_view_get_selection (data->view);
+	have_selection = gtk_tree_selection_get_selected (contact_selection, NULL, NULL);
+	gtk_widget_set_sensitive (GTK_WIDGET (data->button), have_selection);
+}
+
 static gint
 add_section (ENameSelectorDialog *name_selector_dialog,
 	     const gchar *name, const gchar *pretty_name, EDestinationStore *destination_store)
@@ -409,8 +429,11 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	Section            section;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer   *cell_renderer;
-	GtkWidget         *widget;
-	gchar		  *text;
+	GtkWidget  	  *vbox, *hbox, *chbox;
+	GtkWidget 	  *widget, *image, *label;
+	SelData		  *data;
+	GtkTreeSelection  *selection;
+	gchar 		  *text;
 
 	g_assert (name != NULL);
 	g_assert (pretty_name != NULL);
@@ -420,7 +443,9 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 
 	section.name = g_strdup (name);
 	section.section_box      = GTK_BOX (gtk_hbox_new (FALSE, 12));
-	section.transfer_button  = GTK_BUTTON (gtk_button_new_with_mnemonic (pretty_name));
+	section.label = GTK_LABEL (gtk_label_new_with_mnemonic (pretty_name));
+	section.transfer_button  = GTK_BUTTON (gtk_button_new());
+	section.remove_button  = GTK_BUTTON (gtk_button_new());
 	section.destination_view = GTK_TREE_VIEW (gtk_tree_view_new ());
 
 	if (pango_parse_markup (pretty_name, -1, '_', NULL,
@@ -433,7 +458,18 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	/* Set up transfer button */
 	g_signal_connect_swapped (section.transfer_button, "clicked",
 				  G_CALLBACK (transfer_button_clicked), name_selector_dialog);
+	
+	/*data for the remove callback*/
+	data = g_malloc0(sizeof(SelData));
+	data->view = section.destination_view;
+	data->dlg_ptr = name_selector_dialog;
 
+	/*Associate to an object destroy so that it gets freed*/
+	g_object_set_data_full ((GObject *)section.destination_view, "sel-remove-data", data, g_free);
+	
+	g_signal_connect(section.remove_button, "clicked",
+				  G_CALLBACK (remove_button_clicked), data);
+	
 	/* Set up view */
 	column = gtk_tree_view_column_new ();
 	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
@@ -445,18 +481,77 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_tree_view_set_headers_visible (section.destination_view, FALSE);
 	gtk_tree_view_set_model (section.destination_view, GTK_TREE_MODEL (destination_store));
 
+	vbox = gtk_vbox_new (FALSE, 0);
+	chbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (chbox), vbox, FALSE, FALSE, 12);
+
 	/* Pack button (in an alignment) */
 	widget = gtk_alignment_new (0.5, 0.0, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.transfer_button));
-	gtk_box_pack_start (section.section_box, widget, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 6);
 	gtk_size_group_add_widget (name_selector_dialog->button_size_group, GTK_WIDGET (section.transfer_button));
+	
+	/*to get the image embedded in the button*/
+	widget = gtk_alignment_new (0.7, 0.5, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (section.transfer_button), GTK_WIDGET (widget));
+
+	hbox = gtk_hbox_new (FALSE, 2);
+	gtk_widget_show (GTK_WIDGET(hbox));
+	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET(hbox));
+
+	label = gtk_label_new_with_mnemonic (_("_Add"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	image = gtk_image_new_from_stock ("gtk-go-forward", GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (image);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	
+	widget = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.remove_button));
+	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 0);
+	gtk_size_group_add_widget (name_selector_dialog->button_size_group, GTK_WIDGET (section.remove_button));
+	gtk_widget_set_sensitive (GTK_WIDGET (section.remove_button), FALSE);
+
+	widget = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (section.remove_button), widget);
+
+	hbox = gtk_hbox_new (FALSE, 2);
+	gtk_widget_show (hbox);
+	gtk_container_add (GTK_CONTAINER (widget), hbox);
+
+	image = gtk_image_new_from_stock ("gtk-go-back", GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (image);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+
+	label = gtk_label_new_with_mnemonic (_("_Remove"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	
+	widget = gtk_alignment_new (0.5, 0.0, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.label));
+	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 0);
 
 	/* Pack view (in a scrolled window) */
 	widget = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.destination_view));
-	gtk_box_pack_start (section.section_box, widget, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (chbox), widget, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), chbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (section.section_box, vbox, TRUE, TRUE, 0);
+
+	/*data for 'changed' callback*/
+	data = g_malloc0(sizeof(SelData));
+	data->view = section.destination_view;
+	data->button = section.remove_button;
+	g_object_set_data_full ((GObject *)section.destination_view, "sel-change-data", data, g_free);
+	selection = gtk_tree_view_get_selection(section.destination_view);
+	g_signal_connect(selection, "changed",
+				  G_CALLBACK (selection_changed), data);
+
 	g_signal_connect_swapped (section.destination_view, "row-activated",
 				  G_CALLBACK (destination_activated), name_selector_dialog);
 	g_signal_connect_swapped (section.destination_view, "key-press-event",
@@ -671,18 +766,13 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 }
 
 static gboolean 
-destination_key_press (ENameSelectorDialog *name_selector_dialog, 
-		       GdkEventKey *event, GtkTreeView *tree_view)
+remove_selection (ENameSelectorDialog *name_selector_dialog, GtkTreeView *tree_view)
 {
 	gint               section_index;
 	EDestinationStore *destination_store;
 	EDestination      *destination;
 	Section           *section;
 	GtkTreeIter        iter;
-
-	/* we only care about DEL key */
-	if (event->keyval != GDK_Delete)
-		return FALSE;
 
 	section_index = find_section_by_tree_view (name_selector_dialog, tree_view);
 	if (section_index < 0) {
@@ -706,6 +796,29 @@ destination_key_press (ENameSelectorDialog *name_selector_dialog,
 	e_destination_store_remove_destination (destination_store, destination);
 
 	return TRUE;
+}
+
+static void
+remove_button_clicked (GtkButton *button, SelData *data)
+{
+	GtkTreeView *view;
+	ENameSelectorDialog *name_selector_dialog;
+	
+	view = data->view; 
+	name_selector_dialog = data->dlg_ptr;
+	remove_selection (name_selector_dialog, view);
+}
+	
+static gboolean 
+destination_key_press (ENameSelectorDialog *name_selector_dialog, 
+		       GdkEventKey *event, GtkTreeView *tree_view)
+{
+
+	/* we only care about DEL key */
+	if (event->keyval != GDK_Delete)
+		return FALSE;
+	return remove_selection (name_selector_dialog, tree_view);
+
 }
 
 static void
