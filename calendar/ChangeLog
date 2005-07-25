@@ -1,5 +1,13 @@
 2005-07-25  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes #271837
+	* libecal/e-cal.c: 
+	(e_cal_get_object): Fix for build break in sun
+	compiler.
+	Committing for bugzilla-novell@thewrittenword.com.
+
+2005-07-25  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #303548
 	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
 	(get_deltas): Removed the getItems call for getting the new items,
