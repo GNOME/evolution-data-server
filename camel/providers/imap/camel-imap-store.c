@@ -1869,8 +1869,6 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 	if (!g_ascii_strcasecmp (folder_name, "INBOX"))
 		folder_name = "INBOX";
 
-	/* Lock around the whole lot to check/create atomically */
-	CAMEL_SERVICE_LOCK (imap_store, connect_lock);
 	if (imap_store->current_folder) {
 		camel_object_unref (imap_store->current_folder);
 		imap_store->current_folder = NULL;

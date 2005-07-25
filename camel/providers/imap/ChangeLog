@@ -2,6 +2,7 @@
 
 	* camel-imap-store.c (imap_noop): make sure we're connected before
 	trying to noop.
+	(get_folder_online): remove duplicate lock.
 
 2005-07-21  Shreyas Srinivasan  <sshreyas@novell.com>
 
