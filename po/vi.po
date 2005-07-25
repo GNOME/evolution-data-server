@@ -7,39 +7,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server gnome 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-21 22:46+0000\n"
-"PO-Revision-Date: 2005-07-22 16:38+0930\n"
+"POT-Creation-Date: 2005-07-25 05:48+0000\n"
+"PO-Revision-Date: 2005-07-25 17:34+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: LocFactoryEditor 1.2.2\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:528
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2001
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2002
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
 msgid "Loading..."
 msgstr "Tải..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:530
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1987
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1999
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1988
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2000
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3405
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Searching..."
 msgstr "Tìm..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2239
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2240
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3539
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Đang tải về các liên hệ (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2433
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2464
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2325
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2443
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2472
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Đang cập nhật bộ nhớ tạm liên hệ (%d)..."
@@ -694,7 +694,7 @@ msgid "Could not create thread for getting deltas"
 msgstr "Không thể tạo mạch để lấy các delta"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1070
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
@@ -1058,7 +1058,8 @@ msgstr "Chưa định nghĩa"
 #: ../calendar/libecal/e-cal.c:1628
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "Hãy nhập mật khẩu cho « %s » để hiệu lực ủy nhiệm cho người dùng « %s »."
+msgstr ""
+"Hãy nhập mật khẩu cho « %s » để hiệu lực ủy nhiệm cho người dùng « %s »."
 
 #: ../calendar/libecal/e-cal.c:1631 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
@@ -1757,7 +1758,7 @@ msgstr "Lỗi tra cứu máy phục vụ tên"
 msgid "Name lookup failed: %s"
 msgstr "Lỗi tra cứu máy phục vụ tên: %s"
 
-#: ../camel/camel-offline-folder.c:253
+#: ../camel/camel-offline-folder.c:255
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Đang đồng bộ thông điệp trong danh mục `%s' vào đĩa"
@@ -1843,8 +1844,8 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
-"Tùy chọn này sẽ kết nối tới máy phục vụ dùng mật khẩu an toàn CRAM-MD5, nếu máy "
-"chủ có hỗ trợ."
+"Tùy chọn này sẽ kết nối tới máy phục vụ dùng mật khẩu an toàn CRAM-MD5, nếu "
+"máy chủ có hỗ trợ."
 
 #: ../camel/camel-sasl-digest-md5.c:49
 msgid "DIGEST-MD5"
@@ -1855,8 +1856,8 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
-"Tùy chọn này sẽ kết nối tới máy phục vụ bằng mật khẩu an toàn DIGEST-MD5, nếu "
-"máy phục vụ có hỗ trợ."
+"Tùy chọn này sẽ kết nối tới máy phục vụ bằng mật khẩu an toàn DIGEST-MD5, "
+"nếu máy phục vụ có hỗ trợ."
 
 #: ../camel/camel-sasl-digest-md5.c:819
 msgid "Server challenge too long (>2048 octets)"
@@ -1868,7 +1869,9 @@ msgstr "Lệnh thách thức máy phục vụ không hợp lệ.\n"
 
 #: ../camel/camel-sasl-digest-md5.c:834
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr "Lệnh thách thức máy phục vụ chứa hiệu bài « Quality of Protection » (mức bảo vệ) không hợp lệ."
+msgstr ""
+"Lệnh thách thức máy phục vụ chứa hiệu bài « Quality of Protection » (mức bảo "
+"vệ) không hợp lệ."
 
 #: ../camel/camel-sasl-digest-md5.c:864
 msgid "Server response did not contain authorization data"
@@ -1969,7 +1972,8 @@ msgstr "Kerberos 4"
 
 #: ../camel/camel-sasl-kerberos4.c:44
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "Tùy chọn này sẽ kết nối đến máy phục vụ bằng cơ chế xác minh Kerberos 4."
+msgstr ""
+"Tùy chọn này sẽ kết nối đến máy phục vụ bằng cơ chế xác minh Kerberos 4."
 
 #: ../camel/camel-sasl-kerberos4.c:169
 #, c-format
@@ -2000,7 +2004,8 @@ msgstr "NTLM / SPA"
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr "Tùy chọn này sẽ kết nối tới máy phục vụ đựa vào Windows dùng NTLM / SPA"
+msgstr ""
+"Tùy chọn này sẽ kết nối tới máy phục vụ đựa vào Windows dùng NTLM / SPA"
 
 #: ../camel/camel-sasl-plain.c:33
 msgid "PLAIN"
@@ -2692,7 +2697,7 @@ msgid "Novell GroupWise"
 msgstr "Novell GroupWise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:87
-msgid "For accessing Novell Groupwise servers"
+msgid "For accessing Novell GroupWise servers"
 msgstr "Để truy cập máy phục vụ Novell Groupwise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
@@ -2708,8 +2713,8 @@ msgstr "Mật khẩu"
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
-"Tùy chọn này sẽ kết nối tới máy phục vụ GroupWise bằng mật khẩu thô (không mã "
-"hóa)."
+"Tùy chọn này sẽ kết nối tới máy phục vụ GroupWise bằng mật khẩu thô (không "
+"mã hóa)."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:274
 msgid "Host or user not available in url"
@@ -2732,8 +2737,8 @@ msgstr "Không thể xác thực với máy phục vụ GroupWise."
 #: ../camel/providers/groupwise/camel-groupwise-store.c:438
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
-"Có lẽ một số tính năng không thao tác cho đúng với phiên bản máy phục vụ hiện "
-"thời của bạn"
+"Có lẽ một số tính năng không thao tác cho đúng với phiên bản máy phục vụ "
+"hiện thời của bạn"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:539
 #: ../camel/providers/imap/camel-imap-store.c:1888
@@ -2980,7 +2985,8 @@ msgstr "Để đọc và lưu thư trên máy phục vụ IMAP."
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
-"Tùy chọn này sẽ kết nối tới máy phục vụ IMAP bằng mật khẩu thô (không mã hóa)."
+"Tùy chọn này sẽ kết nối tới máy phục vụ IMAP bằng mật khẩu thô (không mã "
+"hóa)."
 
 #: ../camel/providers/imap/camel-imap-store.c:422
 #: ../camel/providers/imap4/camel-imap4-store.c:215
@@ -3211,7 +3217,8 @@ msgstr "Không thể lấy thông điệp « %s » từ danh mục « %s »: l�
 #: ../camel/providers/imap4/camel-imap4-folder.c:913
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr "Không thể phụ thêm thư vào danh mục « %s » vì danh mục chỉ cho phép đọc thôi."
+msgstr ""
+"Không thể phụ thêm thư vào danh mục « %s » vì danh mục chỉ cho phép đọc thôi."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
@@ -3227,24 +3234,29 @@ msgstr "Không thể phụ thêm thông điệp vào danh mục « %s »: lệnh
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
-"Không thể di chuyển thông điệp từ danh mục « %s » sang danh mục « %s »: không biết sao."
+"Không thể di chuyển thông điệp từ danh mục « %s » sang danh mục « %s »: "
+"không biết sao."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1159
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
-msgstr "Không thể sao chép thông điệp từ danh mục « %s » sang danh mục « %s »: không biết sao"
+msgstr ""
+"Không thể sao chép thông điệp từ danh mục « %s » sang danh mục « %s »: không "
+"biết sao"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
-"Không thể di chuyển thông điệp từ danh mục « %s » sang danh mục « %s »: lệnh sai."
+"Không thể di chuyển thông điệp từ danh mục « %s » sang danh mục « %s »: lệnh "
+"sai."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
-"Không thể sao chép thông điệp từ danh mục « %s » sang danh mục « %s »: lệnh sai."
+"Không thể sao chép thông điệp từ danh mục « %s » sang danh mục « %s »: lệnh "
+"sai."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:71
 msgid "IMAP4rev1"
@@ -3257,7 +3269,9 @@ msgstr "Để đọc và lưu thư trên may chủ loại  IMAPv4rev1."
 #: ../camel/providers/imap4/camel-imap4-provider.c:90
 msgid ""
 "This option will connect to the IMAPv4rev1 server using a plaintext password."
-msgstr "Tùy chọn này sẽ kết nối tới máy phục vụ IMAPv4rev1 bằng mật khẩu thô (không mã hóa)."
+msgstr ""
+"Tùy chọn này sẽ kết nối tới máy phục vụ IMAPv4rev1 bằng mật khẩu thô (không "
+"mã hóa)."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:477
 #, c-format
@@ -3377,7 +3391,8 @@ msgstr "Đang gọi bao cho thông điệp mới"
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
 msgid "Unexpected token in response from IMAP server %s: "
-msgstr "Hiệu bài không mong đợi trong tín hiệu trả lời từ máy phục vụ IMAP %s: "
+msgstr ""
+"Hiệu bài không mong đợi trong tín hiệu trả lời từ máy phục vụ IMAP %s: "
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
@@ -3978,7 +3993,9 @@ msgstr "Đây là bộ cung cấp đọc từ và gửi thư tới các nhóm ti
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
-msgstr "Tùy chọn này sẽ xác thực với máy phục vụ NNTP bằng mật khẩu thô (không mã hóa)"
+msgstr ""
+"Tùy chọn này sẽ xác thực với máy phục vụ NNTP bằng mật khẩu thô (không mã "
+"hóa)"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:234
 #, c-format
@@ -4146,8 +4163,8 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"Tùy chọn này sẽ kết nối tới máy phục vụ POP dùng mật khẩu thô (không mã hóa). "
-"Đây là tùy chọn duy nhất được hỗ trợ bởi nhiều máy phục vụ POP."
+"Tùy chọn này sẽ kết nối tới máy phục vụ POP dùng mật khẩu thô (không mã "
+"hóa). Đây là tùy chọn duy nhất được hỗ trợ bởi nhiều máy phục vụ POP."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
@@ -4155,9 +4172,9 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
-"Tùy chọn này sẽ kết nối tới máy phục vụ POP dùng mật khẩu đã mã hoá thông qua "
-"giao thức APOP. Có thể sẽ không hoạt động cho mọi người dùng, kể cả trên máy "
-"chủ tuyên bố có hỗ trợ."
+"Tùy chọn này sẽ kết nối tới máy phục vụ POP dùng mật khẩu đã mã hoá thông "
+"qua giao thức APOP. Có thể sẽ không hoạt động cho mọi người dùng, kể cả trên "
+"máy chủ tuyên bố có hỗ trợ."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:204
 #, c-format
@@ -4188,7 +4205,8 @@ msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
-"Không thể kết nối tới máy phục vụ POP %s: Không hỗ trợ cơ chế xác thực yêu cầu."
+"Không thể kết nối tới máy phục vụ POP %s: Không hỗ trợ cơ chế xác thực yêu "
+"cầu."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:420
 #, c-format
