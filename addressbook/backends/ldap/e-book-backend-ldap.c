@@ -63,6 +63,7 @@
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-data-book-view.h>
 #include <libedata-book/e-book-backend-cache.h>
+#include <libedata-book/e-book-backend-summary.h>
 #include "e-book-backend-ldap.h"
 
 /* this is broken currently, don't enable it */
@@ -138,6 +139,17 @@ struct _EBookBackendLDAPPrivate {
 	GHashTable *id_to_op;
 	int active_ops;
 	int poll_timeout;
+
+	/* summary file related */
+	char *summary_file_name;
+	gboolean is_summary_ready;
+	EBookBackendSummary *summary;
+
+	/* for future use */
+	void *reserved1;
+	void *reserved2;
+	void *reserved3;
+	void *reserved4;
 };
 
 typedef void (*LDAPOpHandler)(LDAPOp *op, LDAPMessage *res);
@@ -4115,6 +4127,15 @@ e_book_backend_ldap_dispose (GObject *object)
 			g_list_foreach (bl->priv->supported_auth_methods, (GFunc)g_free, NULL);
 			g_list_free (bl->priv->supported_auth_methods);
 		}
+		if (bl->priv->summary_file_name) {
+			g_free (bl->priv->summary_file_name);
+			bl->priv->summary_file_name = NULL;
+		}
+		if (bl->priv->summary) {
+			e_book_backend_summary_save (bl->priv->summary);
+			g_object_unref (bl->priv->summary);
+			bl->priv->summary = NULL;
+		}
 
 		g_free (bl->priv->ldap_host);
 		g_free (bl->priv->ldap_rootdn);
@@ -4177,6 +4198,11 @@ e_book_backend_ldap_init (EBookBackendLDAP *backend)
 	priv->poll_timeout     	     = -1;
 	priv->marked_for_offline     = FALSE;
 	priv->mode                   = GNOME_Evolution_Addressbook_MODE_REMOTE;
+	priv->is_summary_ready 	     = FALSE;
+	priv->reserved1 	     = NULL;
+	priv->reserved2 	     = NULL;
+	priv->reserved3 	     = NULL;
+	priv->reserved4 	     = NULL;
 	g_static_rec_mutex_init (&priv->op_hash_mutex);
 
 	backend->priv = priv;

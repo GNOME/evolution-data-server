@@ -69,6 +69,11 @@ struct _EBookBackendFilePrivate {
 	DB       *file_db;
 	DB_ENV   *env;
 	EBookBackendSummary *summary;
+	/* for future use */
+	void *reserved1;
+	void *reserved2;
+	void *reserved3;
+	void *reserved4;
 };
 
 static GStaticMutex global_env_lock = G_STATIC_MUTEX_INIT;
@@ -541,7 +546,6 @@ book_view_thread (gpointer data)
 
 		for (i = 0; i < ids->len; i ++) {
 			char *id = g_ptr_array_index (ids, i);
-			printf ("**** id %s\n", id);
 			g_mutex_lock (closure->mutex);
 			stopped = closure->stopped;
 			g_mutex_unlock (closure->mutex);
@@ -619,6 +623,7 @@ book_view_thread (gpointer data)
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 
 	/* unref the */
+	printf("book_view file uref \n");
 	bonobo_object_unref (book_view);
 
 	d(printf ("finished population of book view\n"));

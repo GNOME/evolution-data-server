@@ -34,6 +34,7 @@
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-data-book-view.h>
 #include <libedata-book/e-book-backend-cache.h>
+#include <libedata-book/e-book-backend-summary.h>
 #include "e-book-backend-groupwise.h"
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
@@ -52,20 +53,28 @@ struct _EBookBackendGroupwisePrivate {
 	char *container_id;
 	char *book_name;
 	char *original_uri;
+	char *summary_file_name;
 	gboolean only_if_exists;
 	GHashTable *categories_by_id;
 	GHashTable *categories_by_name;
 	gboolean is_writable;
 	gboolean is_cache_ready;
+	gboolean is_summary_ready;
 	gboolean marked_for_offline;
 	char *use_ssl;
 	int mode;
 	int cache_timeout;
 	EBookBackendCache *cache;
+	EBookBackendSummary *summary;
+	void *reserved1;
+	void *reserved2;
+	void *reserved3;
+	void *reserved4;
 };
 
 #define ELEMENT_TYPE_SIMPLE 0x01
 #define ELEMENT_TYPE_COMPLEX 0x02 /* fields which require explicit functions to set values into EContact and EGwItem */
+#define SUMMARY_FLUSH_TIMEOUT 5000
 
 gboolean  enable_debug = FALSE;
 
@@ -2911,8 +2920,17 @@ e_book_backend_groupwise_dispose (GObject *object)
 			g_free (bgw->priv->book_name);
 			bgw->priv->book_name = NULL;
 		}
+		if (bgw->priv->summary_file_name) {
+			g_free (bgw->priv->summary_file_name);
+			bgw->priv->summary_file_name = NULL;
+		}
 		if (bgw->priv->cache) {
 			g_object_unref (bgw->priv->cache);
+		}
+		if (bgw->priv->summary) {
+			e_book_backend_summary_save (bgw->priv->summary);
+			g_object_unref (bgw->priv->summary);
+			bgw->priv->summary = NULL;
 		}
 		if (bgw->priv->use_ssl) {
 			g_free (bgw->priv->use_ssl);
@@ -2971,11 +2989,16 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv= g_new0 (EBookBackendGroupwisePrivate, 1);
 	priv->is_writable = TRUE;
 	priv->is_cache_ready = FALSE;
+	priv->is_summary_ready = FALSE;
 	priv->marked_for_offline = FALSE;
 	priv->use_ssl = NULL;
 	priv->cache=NULL;
 	priv->original_uri = NULL;
 	priv->cache_timeout = 0;
+	priv->reserved1 = NULL;
+	priv->reserved2 = NULL;
+	priv->reserved3 = NULL;
+	priv->reserved4 = NULL;
        	backend->priv = priv;
 
 	if (g_getenv ("GROUPWISE_DEBUG")) {

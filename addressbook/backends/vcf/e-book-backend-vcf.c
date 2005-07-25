@@ -60,6 +60,11 @@ struct _EBookBackendVCFPrivate {
 	GList      *contact_list;
 	gboolean    dirty;
 	int         flush_timeout_tag;
+	/* for future use */
+	void *reserved1;
+	void *reserved2;
+	void *reserved3;
+	void *reserved4;
 };
 
 static char *
