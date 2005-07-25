@@ -2430,12 +2430,12 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	sequence = g_strdup_printf ("%d", cache_last_sequence +1);
 	count = g_strdup_printf ("%d", CURSOR_ITEM_LIMIT);
 
+	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	while (cache_last_sequence < server_last_sequence) {
 		e_gw_connection_get_items_delta (priv->cnc, ebgw->priv->container_id, 
 						 "name email sync", count, sequence, 
 						 &add_list, &delete_list);
 
-		e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 		if (add_list == NULL && delete_list == NULL) {
 			/* this should not happen ideally */
 			break;

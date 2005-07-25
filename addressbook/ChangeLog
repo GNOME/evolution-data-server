@@ -1,5 +1,11 @@
 2005-07-25  Sushma Rai  <rsushma@novell.com>
 
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(update_address_book_deltas): Freezing the file cache for 
+	GroupWise system address book at the proper place. 
+
+2005-07-25  Sushma Rai  <rsushma@novell.com>
+
 	* libebook/e-book.c: Handling gcc specific "__PRETTY_FUNCTION__" macro
 	for other compilers. Patch by 
 	"The Written Word <bugzilla-novell@thewrittenword.com>" for #271837
