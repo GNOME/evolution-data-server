@@ -1166,6 +1166,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	EGwConnectionStatus status;
 	icalparameter_partstat partstat;
 	char *item_id = NULL;
+	const char *gw_id;
 	gboolean all_instances = FALSE;
 	icalproperty *icalprop;
 	icalcomponent *icalcomp;
@@ -1200,12 +1201,21 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
 	}	
 		
+	gw_id = e_cal_component_get_gw_id (comp);
+
 	switch  (e_cal_component_get_vtype (comp)) {
+
 		case E_CAL_COMPONENT_EVENT: 
-			item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
+			if (!g_str_has_suffix (gw_id, container))
+				item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
+			else 
+				item_id = g_strdup (gw_id);
 			break;
 		case E_CAL_COMPONENT_TODO:
-			item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_TODO_TYPE_ID, container, NULL);
+			if (!g_str_has_suffix (gw_id, container))
+				item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_TODO_TYPE_ID, container, NULL);
+			else
+				item_id = g_strdup (gw_id);
 			break;
 		default:
 			return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
