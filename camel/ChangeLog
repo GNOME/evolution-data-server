@@ -1,3 +1,8 @@
+2005-07-25  Shreyas Srinivasan  <sshreyas@novell.com>
+
+	* camel-offline-folder.c (camel_offline_folder_init): Copy 
+	folder contents locally by default.
+	
 2005-07-20  Not Zed  <NotZed@Ximian.com>
 
 	* camel-store.c (camel_store_get_folder_info): Changed the
