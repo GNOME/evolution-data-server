@@ -1231,8 +1231,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					camel_multipart_add_part (multipart, part);
 
 					camel_object_unref (part);
+					g_free (attachment);
 				}
-				g_free (attachment);
 			}
 		}
 

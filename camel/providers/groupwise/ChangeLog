@@ -1,3 +1,8 @@
+2005-07-25  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg)
+	fix a crash freeing attachment buffer
+
 2005-07-24  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-provider.c:
