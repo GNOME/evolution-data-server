@@ -1,3 +1,6 @@
+2005-07-25  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* camel-pop3-store.c: (connect_to_server):
+	some initialisation. ** Fixes Bug 301871
 
 Refer to main changelog for earlier changes.
 

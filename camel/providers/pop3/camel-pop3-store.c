@@ -154,7 +154,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	CamelStream *tcp_stream;
 	CamelPOP3Command *pc;
 	guint32 flags = 0;
-	int clean_quit;
+	int clean_quit = TRUE;
 	int ret;
 	
 	if (ssl_mode != MODE_CLEAR) {
