@@ -1,3 +1,9 @@
+2005-07-25  Sushma Rai  <rsushma@novell.com>
+
+	* e-gw-message.c (e_gw_message_new_with_header)
+	(e_gw_message_write_footer): Checking for the GROUPWISE_DEBUG 
+	environment variable value set to 1.
+
 2005-07-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #310752

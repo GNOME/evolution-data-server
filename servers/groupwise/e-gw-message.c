@@ -86,8 +86,10 @@ e_gw_message_new_with_header (const char *uri, const char *session_id, const cha
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers,"Connection",  "Keep-Alive");
 	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction", method_name);
 
-	if (g_getenv ("GROUPWISE_DEBUG"))
-		setup_debug (msg);
+	if (g_getenv ("GROUPWISE_DEBUG")) {
+		if (atoi (g_getenv ("GROUPWISE_DEBUG")) == 1)
+			setup_debug (msg);
+	}
 
 	soup_soap_message_start_envelope (msg);
 	if (session_id && *session_id) {
@@ -155,7 +157,7 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 
 	soup_soap_message_persist (msg);
 
-	if (g_getenv ("GROUPWISE_DEBUG")) {
+	if (g_getenv ("GROUPWISE_DEBUG") && (atoi (g_getenv ("GROUPWISE_DEBUG")) == 1)) {
 		const char *header = soup_message_get_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction");
 		if (header && g_str_equal (header, "loginRequest")) {
 			gchar *body;

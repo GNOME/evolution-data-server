@@ -1,3 +1,10 @@
+2005-07-25  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_init): Checking for the environment variable
+	value for GROUPWISE_DEBUG and using value 2 for addressbook specific 
+	debug messages.
+
 2005-07-23  Sushma Rai  <rsushma@novell.com>
 
 	* libedata-book/e-book-backend-summary.c 

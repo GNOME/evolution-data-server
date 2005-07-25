@@ -67,6 +67,8 @@ struct _EBookBackendGroupwisePrivate {
 #define ELEMENT_TYPE_SIMPLE 0x01
 #define ELEMENT_TYPE_COMPLEX 0x02 /* fields which require explicit functions to set values into EContact and EGwItem */
 
+gboolean  enable_debug = FALSE;
+
 static void populate_emails (EContact *contact, gpointer data);
 static void set_emails_in_gw_item (EGwItem *item, gpointer data);
 static void set_emails_changes (EGwItem *new_item, EGwItem *old_item);
@@ -2975,6 +2977,13 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->original_uri = NULL;
 	priv->cache_timeout = 0;
        	backend->priv = priv;
+
+	if (g_getenv ("GROUPWISE_DEBUG")) {
+		if (atoi (g_getenv ("GROUPWISE_DEBUG")) == 2)
+			enable_debug = TRUE;
+		else
+			enable_debug = FALSE;
+	}
 }
 
 
