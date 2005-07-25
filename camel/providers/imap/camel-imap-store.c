@@ -539,7 +539,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	CamelStream *tcp_stream;
 	CamelSockOptData sockopt;
 	gboolean force_imap4 = FALSE;
-	int clean_quit, ret;
+	int clean_quit = TRUE, ret;
 	char *buf;
 	
 	if (ssl_mode != MODE_CLEAR) {

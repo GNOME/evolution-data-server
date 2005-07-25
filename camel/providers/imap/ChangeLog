@@ -1,3 +1,8 @@
+2005-07-25  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-imap-store.c (connect_to_server): initialization of a
+	variable. fixes Bug 301871.
+
 2005-07-25  Not Zed  <NotZed@Ximian.com>
 
 	* camel-imap-store.c (imap_noop): make sure we're connected before
