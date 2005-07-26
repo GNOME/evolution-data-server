@@ -1,3 +1,69 @@
+Evolution-Data-Server 1.3.6, 2005-07-26
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+Addressbook :
+	 #260851 - "Edit Contact" option in Contact name popup menu (Sushma)
+	 #301922 - Composer Section (To: CC: BCC:) Fields Flip Order Of Names (Antony)
+
+Calendar :
+	 #303548 - Missing Calendar Items in GW (Chenthill)
+	 #310752 - Multiple mails and multiple appointments created for a non recurring 
+	           appointment (Chenthill)
+	 #310767 - Cannot Accept GW Appointments Without Error (Chenthill)
+
+Mailer:
+	 #301871 - uninitialized variable in evo-data-server pop3 and imap backend
+	 (meissner@suse.de)
+	 #272505 - GroupWise" spelled inconsistently in evolution-data-server (Parthasarathi)
+	 #310953 - reproducible crash trying to "add signature" in preferences (Parthasarathi)
+	 #310716 - trying to delete a subfolder crashed evolution (Parthasarathi)
+
+Exchange :
+	 #310483 - Check Remember password option, and enter wrong password - Evolution unusable
+	 (Arunprakash)
+
+Others :
+	 #271837 - handle _PRETTY_FUNCTION_ for Sun compilers
+	 (The Written Word)
+	- Copy folder contents locally by default. (Shreyas)
+	- camel store/folder refactoring (Michael)
+	- camel docs breakage fix (Shreyas) 
+	- camel imap store - if the folder is on disk, just get it 
+	  offline, only go to the server if we need to. (Michael)
+	- align ESource uri handling in Exchange addressbook to the
+	  calendar uris (Praveen)
+	- remove esource removal to exchange plugins code (Sarfraaz)
+	- support for timed refresh of GW system addressbook (Sushma)
+	- freezing the cache while updating and writing to disk at once
+	  (Sushma)
+	- make Name selector dialog more intuitive (Vivek)
+	- send a cancel reply to kill a e-password dialog (Jedy Wang) 
+
+
+Updated Translations:
+
+	- cs (Miloslav Trmac)
+	- de (Frank Arnold)
+	- en_CA (Adam Weinberger)
+	- es (Francisco Javier F. Serrador)
+	- et (Ivar Smolin)
+	- et (Priit Laes)
+	- fi (Ilkka Tuohela)
+	- gu (Ankit Patel)
+	- hu (Gabor Kelemen)
+	- id (Imam Musthaqim)
+	- ja (Takeshi AIHANA)
+	- nb, no (Kjartan Maraas)
+	- nl (Vincent van Adrighem)
+	- POTFILES (Adam Weinberger)
+	- POTFILES (Sarfraaz Ahmed)
+	- pt_BR (Raphael Higino)
+	- sr, sr@Latn (Igor Nestorivia)
+	- vi (Clytie Siddall)
+	- zh_CN (Funda Wang)
+
 Evolution-Data-Server 1.3.5, 2005-07-12
 ---------------------------------------
 
