@@ -1,14 +1,14 @@
 # Vietnamese translation for evolution-data-server.
 # Copyright © 2005 Free Software Foundattion, Inc.
 # This file is distributed under the same license as the evolution-data-server package.
-# pclouds <pclouds@gmx.net>, 2002-2004.
+# Nguyễn Thái Ngọc Duy <pclouds@gmx.net>, 2002-2004.
 # Clytie Siddall <clytie@riverland.net.au>, 2005.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server gnome 2.12\n"
+"Project-Id-Version: evolution-data-server Gnome 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-25 05:48+0000\n"
-"PO-Revision-Date: 2005-07-25 17:34+0930\n"
+"POT-Creation-Date: 2005-07-26 05:51+0000\n"
+"PO-Revision-Date: 2005-07-26 17:15+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -17,62 +17,62 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: LocFactoryEditor 1.2.2\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:528
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2002
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:473
+#: ../addressbook/backends/file/e-book-backend-file.c:533
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2013
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:478
 msgid "Loading..."
 msgstr "Tải..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:530
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1988
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2000
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3405
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
+#: ../addressbook/backends/file/e-book-backend-file.c:535
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:1999
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2011
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3417
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Tìm..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2240
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3539
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2251
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3551
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Đang tải về các liên hệ (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2325
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2443
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2472
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2336
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2454
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2483
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Đang cập nhật bộ nhớ tạm liên hệ (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:647
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:659
 msgid "Using Distinguished Name (DN)"
 msgstr "Dùng tên phân biệt (TB)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:650
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:662
 msgid "Using Email Address"
 msgstr "Dùng địa chỉ thư điện tử"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:820
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:832
 msgid "Reconnecting to LDAP server..."
 msgstr "Đang tái kết nối tới máy phục vụ LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1368
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1380
 msgid "Adding contact to LDAP server..."
 msgstr "Đang thêm liên lạc vào máy phục vụ LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1493
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1505
 msgid "Removing contact from LDAP server..."
 msgstr "Đang loại bỏ liên lạc khỏi máy phục vụ LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1750
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1762
 msgid "Modifying contact from LDAP server..."
 msgstr "Đang hiệu chỉnh liên lạc trong máy phục vụ LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3295
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3307
 msgid "Receiving LDAP search results..."
 msgstr "Đang nhận kết quả tìm kiếm LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3425
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3437
 msgid "Error performing search"
 msgstr "Gặp lỗi khi tìm kiếm"
 
@@ -80,91 +80,91 @@ msgstr "Gặp lỗi khi tìm kiếm"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:238 ../addressbook/libebook/e-book.c:242
-#: ../addressbook/libebook/e-book.c:454 ../addressbook/libebook/e-book.c:458
-#: ../addressbook/libebook/e-book.c:599 ../addressbook/libebook/e-book.c:603
-#: ../addressbook/libebook/e-book.c:692 ../addressbook/libebook/e-book.c:696
-#: ../addressbook/libebook/e-book.c:1010 ../addressbook/libebook/e-book.c:1015
-#: ../addressbook/libebook/e-book.c:1202 ../addressbook/libebook/e-book.c:1206
-#: ../addressbook/libebook/e-book.c:1363 ../addressbook/libebook/e-book.c:1367
-#: ../addressbook/libebook/e-book.c:1576 ../addressbook/libebook/e-book.c:1580
-#: ../addressbook/libebook/e-book.c:1817 ../addressbook/libebook/e-book.c:1821
-#: ../addressbook/libebook/e-book.c:2057 ../addressbook/libebook/e-book.c:2061
-#: ../addressbook/libebook/e-book.c:2273 ../addressbook/libebook/e-book.c:2277
-#: ../addressbook/libebook/e-book.c:3373
+#: ../addressbook/libebook/e-book.c:257 ../addressbook/libebook/e-book.c:261
+#: ../addressbook/libebook/e-book.c:473 ../addressbook/libebook/e-book.c:477
+#: ../addressbook/libebook/e-book.c:618 ../addressbook/libebook/e-book.c:622
+#: ../addressbook/libebook/e-book.c:711 ../addressbook/libebook/e-book.c:715
+#: ../addressbook/libebook/e-book.c:1029 ../addressbook/libebook/e-book.c:1034
+#: ../addressbook/libebook/e-book.c:1221 ../addressbook/libebook/e-book.c:1225
+#: ../addressbook/libebook/e-book.c:1382 ../addressbook/libebook/e-book.c:1386
+#: ../addressbook/libebook/e-book.c:1595 ../addressbook/libebook/e-book.c:1599
+#: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
+#: ../addressbook/libebook/e-book.c:2076 ../addressbook/libebook/e-book.c:2080
+#: ../addressbook/libebook/e-book.c:2292 ../addressbook/libebook/e-book.c:2296
+#: ../addressbook/libebook/e-book.c:3392
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" trong sổ trước \"%s\""
 
-#: ../addressbook/libebook/e-book.c:251 ../addressbook/libebook/e-book.c:467
-#: ../addressbook/libebook/e-book.c:612 ../addressbook/libebook/e-book.c:705
-#: ../addressbook/libebook/e-book.c:1025 ../addressbook/libebook/e-book.c:1216
-#: ../addressbook/libebook/e-book.c:1377 ../addressbook/libebook/e-book.c:1589
-#: ../addressbook/libebook/e-book.c:1830 ../addressbook/libebook/e-book.c:2071
-#: ../addressbook/libebook/e-book.c:2286 ../addressbook/libebook/e-book.c:2622
-#: ../addressbook/libebook/e-book.c:2828
+#: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
+#: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
+#: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
+#: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
+#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2090
+#: ../addressbook/libebook/e-book.c:2305 ../addressbook/libebook/e-book.c:2641
+#: ../addressbook/libebook/e-book.c:2847
 msgid "book busy"
 msgstr "sổ quá bận"
 
-#: ../addressbook/libebook/e-book.c:284 ../addressbook/libebook/e-book.c:288
-#: ../addressbook/libebook/e-book.c:500 ../addressbook/libebook/e-book.c:504
-#: ../addressbook/libebook/e-book.c:641 ../addressbook/libebook/e-book.c:645
-#: ../addressbook/libebook/e-book.c:734 ../addressbook/libebook/e-book.c:738
-#: ../addressbook/libebook/e-book.c:1054 ../addressbook/libebook/e-book.c:1057
-#: ../addressbook/libebook/e-book.c:1248 ../addressbook/libebook/e-book.c:1251
-#: ../addressbook/libebook/e-book.c:1406 ../addressbook/libebook/e-book.c:1410
-#: ../addressbook/libebook/e-book.c:1625 ../addressbook/libebook/e-book.c:1629
-#: ../addressbook/libebook/e-book.c:1877 ../addressbook/libebook/e-book.c:1881
-#: ../addressbook/libebook/e-book.c:2103 ../addressbook/libebook/e-book.c:2107
-#: ../addressbook/libebook/e-book.c:2314 ../addressbook/libebook/e-book.c:2318
-#: ../addressbook/libebook/e-book.c:2563 ../addressbook/libebook/e-book.c:2650
-#: ../addressbook/libebook/e-book.c:2654 ../addressbook/libebook/e-book.c:2856
-#: ../addressbook/libebook/e-book.c:2860 ../addressbook/libebook/e-book.c:3382
+#: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
+#: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
+#: ../addressbook/libebook/e-book.c:660 ../addressbook/libebook/e-book.c:664
+#: ../addressbook/libebook/e-book.c:753 ../addressbook/libebook/e-book.c:757
+#: ../addressbook/libebook/e-book.c:1073 ../addressbook/libebook/e-book.c:1076
+#: ../addressbook/libebook/e-book.c:1267 ../addressbook/libebook/e-book.c:1270
+#: ../addressbook/libebook/e-book.c:1425 ../addressbook/libebook/e-book.c:1429
+#: ../addressbook/libebook/e-book.c:1644 ../addressbook/libebook/e-book.c:1648
+#: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
+#: ../addressbook/libebook/e-book.c:2122 ../addressbook/libebook/e-book.c:2126
+#: ../addressbook/libebook/e-book.c:2333 ../addressbook/libebook/e-book.c:2337
+#: ../addressbook/libebook/e-book.c:2582 ../addressbook/libebook/e-book.c:2669
+#: ../addressbook/libebook/e-book.c:2673 ../addressbook/libebook/e-book.c:2875
+#: ../addressbook/libebook/e-book.c:2879 ../addressbook/libebook/e-book.c:3401
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Gặp lỗi ngoại lệ CORBA khi làm việc gọi \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2544
+#: ../addressbook/libebook/e-book.c:2563
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: không có tác vụ hiện thời"
 
-#: ../addressbook/libebook/e-book.c:2579
+#: ../addressbook/libebook/e-book.c:2598
 #, c-format
 msgid "%s: couldn't cancel"
 msgstr "%s: không thể thôi"
 
-#: ../addressbook/libebook/e-book.c:2608 ../addressbook/libebook/e-book.c:2612
+#: ../addressbook/libebook/e-book.c:2627 ../addressbook/libebook/e-book.c:2631
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" trong sổ sau \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2678
+#: ../addressbook/libebook/e-book.c:2697
 #, c-format
 msgid "%s: cancelled"
 msgstr "%s: đã thôi rồì"
 
-#: ../addressbook/libebook/e-book.c:3239
+#: ../addressbook/libebook/e-book.c:3258
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: mục nguồn không hợp lệ"
 
-#: ../addressbook/libebook/e-book.c:3247 ../addressbook/libebook/e-book.c:3311
+#: ../addressbook/libebook/e-book.c:3266 ../addressbook/libebook/e-book.c:3330
 #, c-format
 msgid "%s: no factories available for uri `%s'"
 msgstr "%s: không có bộ xưởng sẵn sằng cho địa chỉ Mạng `%s'"
 
-#: ../addressbook/libebook/e-book.c:3259
+#: ../addressbook/libebook/e-book.c:3278
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: không thể tạo EBookListener (trình nghe cuốn sách điện)"
 
-#: ../addressbook/libebook/e-book.c:3522
+#: ../addressbook/libebook/e-book.c:3541
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
 msgstr "%s: không có UID liên lạc mình được lưu vào gconf"
 
-#: ../addressbook/libebook/e-book.c:3652
+#: ../addressbook/libebook/e-book.c:3671
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: không có nguồn UID `%s' được lưu vào gconf"
@@ -659,24 +659,24 @@ msgstr "Trả lời được yêu cầu: do"
 msgid "Reply Requested: When convenient"
 msgstr "Trả lời được yêu cầu: khi tiện"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:176
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:177
 #, c-format
 msgid "Loading %s items"
 msgstr "Đang tải %s mục"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:681
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:723
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Lịch"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:737
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:779
 msgid "Invalid server URI"
 msgstr "URI máy phục vụ không hợp lệ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:753
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:762
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
-#: ../calendar/libecal/e-cal.c:5021
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:795
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:804
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:886
+#: ../calendar/libecal/e-cal.c:5040
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:808
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:827
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:855
@@ -689,18 +689,18 @@ msgstr "URI máy phục vụ không hợp lệ"
 msgid "Authentication failed"
 msgstr "Xác thực thất bại"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:803
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:845
 msgid "Could not create thread for getting deltas"
 msgstr "Không thể tạo mạch để lấy các delta"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:828
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:870
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1113
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Không thể tạo tập tin nhớ tạm"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:838
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:880
 msgid "Could not create thread for populating cache"
 msgstr "Không thể tạo mạch để đồ án bộ nhớ tạm"
 
@@ -1055,84 +1055,84 @@ msgid "Undefined"
 msgstr "Chưa định nghĩa"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1628
+#: ../calendar/libecal/e-cal.c:1647
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Hãy nhập mật khẩu cho « %s » để hiệu lực ủy nhiệm cho người dùng « %s »."
 
-#: ../calendar/libecal/e-cal.c:1631 ../libedataserverui/e-book-auth-util.c:192
+#: ../calendar/libecal/e-cal.c:1650 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Hãy nhập mật khẩu cho %s (người dùng %s)"
 
-#: ../calendar/libecal/e-cal.c:4993
+#: ../calendar/libecal/e-cal.c:5012
 msgid "Invalid argument"
 msgstr "Đối số không hợp lệ"
 
-#: ../calendar/libecal/e-cal.c:4995
+#: ../calendar/libecal/e-cal.c:5014
 msgid "Backend is busy"
 msgstr "Hậu phương quá bận"
 
-#: ../calendar/libecal/e-cal.c:4997
+#: ../calendar/libecal/e-cal.c:5016
 msgid "Repository is offline"
 msgstr "Kho ngoại tuyến"
 
-#: ../calendar/libecal/e-cal.c:4999
+#: ../calendar/libecal/e-cal.c:5018
 msgid "No such calendar"
 msgstr "Không có lịch như vậy."
 
-#: ../calendar/libecal/e-cal.c:5001 ../servers/groupwise/e-gw-connection.c:166
+#: ../calendar/libecal/e-cal.c:5020 ../servers/groupwise/e-gw-connection.c:166
 msgid "Object not found"
 msgstr "Không tìm thấy đối tượng"
 
-#: ../calendar/libecal/e-cal.c:5003 ../servers/groupwise/e-gw-connection.c:160
+#: ../calendar/libecal/e-cal.c:5022 ../servers/groupwise/e-gw-connection.c:160
 msgid "Invalid object"
 msgstr "Đối tượng không hợp lệ"
 
-#: ../calendar/libecal/e-cal.c:5005
+#: ../calendar/libecal/e-cal.c:5024
 msgid "URI not loaded"
 msgstr "URI chưa được tải"
 
-#: ../calendar/libecal/e-cal.c:5007
+#: ../calendar/libecal/e-cal.c:5026
 msgid "URI already loaded"
 msgstr "URI đã tải rồi"
 
-#: ../calendar/libecal/e-cal.c:5009
+#: ../calendar/libecal/e-cal.c:5028
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Không đủ quyền truy cập"
 
-#: ../calendar/libecal/e-cal.c:5011 ../servers/groupwise/e-gw-connection.c:168
+#: ../calendar/libecal/e-cal.c:5030 ../servers/groupwise/e-gw-connection.c:168
 msgid "Unknown User"
 msgstr "Không biết người dùng"
 
-#: ../calendar/libecal/e-cal.c:5013
+#: ../calendar/libecal/e-cal.c:5032
 msgid "Object ID already exists"
 msgstr "ID đốí tượng đã tồn tại"
 
-#: ../calendar/libecal/e-cal.c:5015
+#: ../calendar/libecal/e-cal.c:5034
 msgid "Protocol not supported"
 msgstr "Chưa hỗ trợ giao thức này"
 
-#: ../calendar/libecal/e-cal.c:5017
+#: ../calendar/libecal/e-cal.c:5036
 msgid "Operation has been cancelled"
 msgstr "Thao tác đã bị hủy bỏ"
 
-#: ../calendar/libecal/e-cal.c:5019
+#: ../calendar/libecal/e-cal.c:5038
 msgid "Could not cancel operation"
 msgstr "Không thể hủy bỏ tác vụ"
 
-#: ../calendar/libecal/e-cal.c:5023
+#: ../calendar/libecal/e-cal.c:5042
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Authentication required"
 msgstr "Cần thiết xác thực"
 
-#: ../calendar/libecal/e-cal.c:5025
+#: ../calendar/libecal/e-cal.c:5044
 msgid "A CORBA exception has occurred"
 msgstr "Một lỗi ngoại lệ CORBA đã xảy ra"
 
-#: ../calendar/libecal/e-cal.c:5027
+#: ../calendar/libecal/e-cal.c:5046
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1144,7 +1144,7 @@ msgstr "Một lỗi ngoại lệ CORBA đã xảy ra"
 msgid "Unknown error"
 msgstr "Không biết lỗi"
 
-#: ../calendar/libecal/e-cal.c:5029
+#: ../calendar/libecal/e-cal.c:5048
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Không có lỗi"
@@ -1327,7 +1327,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Đang chuẩn bị danh mục '%s' để dùng ngoại tuyến"
 
 #: ../camel/camel-disco-store.c:391
-#: ../camel/providers/imap/camel-imap-store.c:3249
+#: ../camel/providers/imap/camel-imap-store.c:3252
 msgid "You must be working online to complete this operation"
 msgstr "Bạn phải đang hoạt động trực tuyến mới có thể hoàn tất thao tác này."
 
@@ -2741,8 +2741,8 @@ msgstr ""
 "hiện thời của bạn"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:539
-#: ../camel/providers/imap/camel-imap-store.c:1888
-#: ../camel/providers/imap/camel-imap-store.c:2074
+#: ../camel/providers/imap/camel-imap-store.c:1891
+#: ../camel/providers/imap/camel-imap-store.c:2077
 #, c-format
 msgid "No such folder %s"
 msgstr "Không có thư mục %s"
@@ -2797,12 +2797,12 @@ msgstr "Đang gửi thông điệp"
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
 #: ../camel/providers/imap/camel-imap-command.c:471
-#: ../camel/providers/imap/camel-imap-store.c:3289
+#: ../camel/providers/imap/camel-imap-store.c:3292
 msgid "Operation cancelled"
 msgstr "Thao tác bị hủy bỏ"
 
 #: ../camel/providers/imap/camel-imap-command.c:309
-#: ../camel/providers/imap/camel-imap-store.c:3292
+#: ../camel/providers/imap/camel-imap-store.c:3295
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Máy chỉ đã ngắt kết nối bất ngờ: %s"
@@ -3070,7 +3070,7 @@ msgstr "Không thể kết nối bằng lệnh \"%s\": %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1022
-#: ../camel/providers/imap/camel-imap-store.c:2438
+#: ../camel/providers/imap/camel-imap-store.c:2441
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1267
 #: ../camel/providers/local/camel-maildir-folder.c:75
@@ -3111,20 +3111,20 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1906
-#: ../camel/providers/imap/camel-imap-store.c:2280
+#: ../camel/providers/imap/camel-imap-store.c:1909
+#: ../camel/providers/imap/camel-imap-store.c:2283
 #: ../camel/providers/imap4/camel-imap4-store.c:856
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Tên thư mục \"%s\" không hợp lệ vì chứa ký tự \"%c\""
 
-#: ../camel/providers/imap/camel-imap-store.c:1964
-#: ../camel/providers/imap/camel-imap-store.c:2342
+#: ../camel/providers/imap/camel-imap-store.c:1967
+#: ../camel/providers/imap/camel-imap-store.c:2345
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Danh mục mẹ không được phép chứa các danh mục con"
 
-#: ../camel/providers/imap/camel-imap-store.c:2019
+#: ../camel/providers/imap/camel-imap-store.c:2022
 #: ../camel/providers/local/camel-maildir-store.c:190
 #: ../camel/providers/local/camel-mbox-store.c:199
 #: ../camel/providers/local/camel-mh-store.c:237
@@ -3132,7 +3132,7 @@ msgstr "Danh mục mẹ không được phép chứa các danh mục con"
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Không thể tạo danh mục `%s: danh mục đã có."
 
-#: ../camel/providers/imap/camel-imap-store.c:2291
+#: ../camel/providers/imap/camel-imap-store.c:2294
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Danh mục mẹ lạ: %s"
@@ -4827,9 +4827,17 @@ msgstr "_Sửa"
 msgid "categories"
 msgstr "loại"
 
-#: ../libedataserverui/e-name-selector-dialog.c:202
+#: ../libedataserverui/e-name-selector-dialog.c:211
 msgid "Select Contacts from Address Book"
 msgstr "Chọn liên lạc từ sổ địa chỉ"
+
+#: ../libedataserverui/e-name-selector-dialog.c:502
+msgid "_Add"
+msgstr "Th_êm"
+
+#: ../libedataserverui/e-name-selector-dialog.c:527
+msgid "_Remove"
+msgstr "_Loại bỏ"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "\t\t\t\t\t\t"
