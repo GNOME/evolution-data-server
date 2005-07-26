@@ -199,14 +199,16 @@ libedataserverui/e-categories-dialog.c
 libedataserverui/e-categories-dialog.glade
 libedataserverui/e-name-selector-dialog.c
 libedataserverui/e-name-selector-dialog.glade
+libedataserverui/e-name-selector-entry.c
 libedataserverui/e-passwords.c
 libedataserverui/e-source-selector-dialog.c
-servers/groupwise/e-gw-connection.c
 servers/exchange/lib/e2k-autoconfig.c
 servers/exchange/lib/e2k-security-descriptor.c
 servers/exchange/lib/e2k-sid.c
+servers/exchange/lib/e2k-user-dialog.c
 servers/exchange/storage/e-storage.c
 servers/exchange/storage/exchange-account.c
 servers/exchange/storage/exchange-hierarchy-foreign.c
+servers/groupwise/e-gw-connection.c
 src/GNOME_Evolution_DataServer.server.in.in
 src/server.c
