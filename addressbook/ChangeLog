@@ -1,3 +1,36 @@
+2005-07-26  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c: Added summary file
+	support, to make cache file access faster.
+	(set_organization_in_gw_item): updating the summary file.
+	(e_book_backend_groupwise_create_contact): Similar.
+	(e_book_backend_groupwise_remove_contacts): Similar.
+	(e_book_backend_groupwise_modify_contact): Similar.
+	(e_book_backend_groupwise_get_contact_list): If the summary file 
+	exists, reading uids from summary, otherwise reading theim from cache.
+	(get_contacts_from_cache): Given the uids, reading the contacts from
+	cache and updating the view.
+	(book_view_thread): If the summary file exists, reading the uids from 
+	summary. If the cache is up-to-date, for GroupWise system address book
+	reading the entries and replying from cache. For other GW address books,
+	reading the contacts from server, for the uids found in summary file.
+	If the cache is not sane, reading the entries from server.
+	(e_book_backend_groupwise_start_book_view): building summary file, along
+	with cache. 
+	(build_summary): Reading the cache file and build summary file with the
+	entries found in cache.
+	(update_cache): If the summary file is missing or not up-to-date, 
+	re-build summary file. Update the cache and summry files.
+	(update_addressbook_deltas): Update the GW system addressbook summary
+	along with cache. Update these files, only if the changes found in 
+	server.
+	(e_book_backend_groupwise_authenticate_user): Initialize and load the 
+	summary file.
+	(e_book_backend_groupwise_load_source): Forming the summary file name.
+	(e_book_backend_groupwise_dispose): Flush summary to disk and destroy
+	summary.
+	Fixes #303111.
+
 2005-07-25  Sushma Rai  <rsushma@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 
