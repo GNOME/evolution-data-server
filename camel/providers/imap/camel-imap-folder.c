@@ -810,7 +810,7 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 			camel_message_info_free((CamelMessageInfo *)info);
 			continue;
 		}
-		
+
 		/* Note: Cyrus is broken and will not accept an
 		   empty-set of flags so... if this is true then we
 		   want to unset the previously set flags.*/
@@ -827,6 +827,12 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 		if (matches == NULL)
 			continue;
 		
+		/* Make sure we're connected before issuing commands */
+		if (!camel_imap_store_connected(store, ex)) {
+			g_free(set);
+			break;
+		}
+
 		/* FIXME: since we don't know the previously set flags,
 		   if unset is TRUE then just unset all the flags? */
 		flaglist = imap_create_flag_list (unset ? folder->permanent_flags : info->info.flags & folder->permanent_flags);

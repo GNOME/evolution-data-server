@@ -38,6 +38,7 @@
 
 #include "camel-private.h"
 #include "camel-utf8.h"
+#include "camel-store.h"
 
 #define d(x)
 #define io(x)			/* io debug */
@@ -342,6 +343,9 @@ camel_imap_store_summary_add_from_full(CamelImapStoreSummary *s, const char *ful
 	} else
 		d(printf("  failed\n"));
 
+	if (g_ascii_strcasecmp(full_name, "inbox"))
+		info->info.flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
+
 	return info;
 }
 
@@ -553,6 +557,10 @@ store_info_load(CamelStoreSummary *s, FILE *in)
 		if (camel_file_util_decode_string(in, &mi->full_name) == -1) {
 			camel_store_summary_info_free(s, (CamelStoreInfo *)mi);
 			mi = NULL;
+		} else {
+			/* NB: this is done again for compatability */
+			if (g_ascii_strcasecmp(mi->full_name, "inbox") == 0)
+				mi->info.flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
 		}
 	}
 

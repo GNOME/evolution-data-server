@@ -913,8 +913,9 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 	char *serv;
 	const char *port;
 
-	if ((command = camel_url_get_param (service->url, "command")))
-		return connect_to_server_process (service, command, ex);
+	if (camel_url_get_param(service->url, "use_command")
+	    && (command = camel_url_get_param(service->url, "command")))
+		return connect_to_server_process(service, command, ex);
 	
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
@@ -3103,6 +3104,10 @@ get_folder_info_offline (CamelStore *store, const char *top,
 			   it.  See create folder */
 			if (fi->flags & CAMEL_FOLDER_NOINFERIORS)
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
+
+			/* blah, this gets lost somewhere, i can't be bothered finding out why */
+			if (!g_ascii_strcasecmp(fi->full_name, "inbox"))
+				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
 
 			if (si->flags & CAMEL_FOLDER_NOSELECT) {
 				CamelURL *url = camel_url_new(fi->uri, NULL);
