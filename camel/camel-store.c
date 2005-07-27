@@ -1290,8 +1290,10 @@ void camel_isubscribe_subscribe(CamelStore *store, const char *folder_name, Came
 {
 	CamelISubscribe *iface = camel_object_get_interface(store, camel_isubscribe_get_type());
 
-	if (iface && iface->subscribe)
-		return iface->subscribe(store, folder_name, ex);
+	if (iface && iface->subscribe) {
+		iface->subscribe(store, folder_name, ex);
+		return;
+	}
 
 	g_warning("Trying to invoke unimplemented subscribe method on a store");
 }
@@ -1300,8 +1302,10 @@ void camel_isubscribe_unsubscribe(CamelStore *store, const char *folder_name, Ca
 {
 	CamelISubscribe *iface = camel_object_get_interface(store, camel_isubscribe_get_type());
 
-	if (iface && iface->unsubscribe)
-		return iface->unsubscribe(store, folder_name, ex);
+	if (iface && iface->unsubscribe) {
+		iface->unsubscribe(store, folder_name, ex);
+		return;
+	}
 
 	g_warning("Trying to invoke unimplemented unsubscribe method on a store");
 }
