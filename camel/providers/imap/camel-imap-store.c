@@ -3024,11 +3024,15 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 
 		folders = g_ptr_array_new();
 		get_folders_online(imap_store, pattern, folders, flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED, ex);
+		if ((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0)
+			get_folders_online(imap_store, pattern, folders, TRUE, ex);
 		if (pattern[0] != '*' && imap_store->dir_sep) {
 			pattern[i] = imap_store->dir_sep;
 			pattern[i+1] = (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)?'*':'%';
 			pattern[i+2] = 0;
 			get_folders_online(imap_store, pattern, folders, flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED, ex);
+			if ((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0)
+				get_folders_online(imap_store, pattern, folders, TRUE, ex);
 		}
 
 		tree = camel_folder_info_build(folders, top, '/', TRUE);

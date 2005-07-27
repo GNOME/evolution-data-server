@@ -1,5 +1,9 @@
 2005-07-27  Not Zed  <NotZed@Ximian.com>
 
+	* camel-imap-store.c (get_folder_info_online): make sure we get
+	subscribed folders using lsub too, if we're getting a list of all
+	folders.  See bug #311658.
+
 	* camel-imap-folder.c (imap_sync_online): make sure we're
 	connected before issuing a command.
 
