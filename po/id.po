@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-26 12:00+0700\n"
-"PO-Revision-Date: 2005-07-26 10:15+0700\n"
+"POT-Creation-Date: 2005-07-27 11:32+0700\n"
+"PO-Revision-Date: 2005-07-26 13:03+0700\n"
 "Last-Translator: Imam Musthaqim <musthaqim@telkom.net>\n"
 "Language-Team: Indonesian <l10n@gnome.linux.or.id>\n"
 "MIME-Version: 1.0\n"
@@ -277,9 +277,8 @@ msgid "Mobile Phone"
 msgstr "Telepon Seluler"
 
 #: addressbook/libebook/e-contact.c:138
-#, fuzzy
 msgid "Other Phone"
-msgstr "Telepon Mobil"
+msgstr "Telepon Lain"
 
 #: addressbook/libebook/e-contact.c:139
 msgid "Other Fax"
@@ -618,7 +617,7 @@ msgstr "Revisi Terakhir"
 #. URI of the book to which the contact belongs to
 #: addressbook/libebook/e-contact.c:244
 msgid "Book URI"
-msgstr ""
+msgstr "Book URI"
 
 #: addressbook/libebook/e-contact.c:1232
 #: addressbook/libebook/e-destination.c:751
@@ -657,7 +656,7 @@ msgstr "Balasan Diminta: Bila sesuai"
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:177
 #, c-format
 msgid "Loading %s items"
-msgstr ""
+msgstr "Sedang membuka %s item"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:723
 #: servers/exchange/storage/exchange-hierarchy-foreign.c:254
@@ -860,22 +859,22 @@ msgid "Weather: Rain"
 msgstr "Cuaca: Hujan"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:327
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:329
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:332
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
 #: calendar/backends/weather/e-cal-backend-weather.c:334
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
@@ -1051,9 +1050,9 @@ msgstr "Belum didefinisikan"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
 #: calendar/libecal/e-cal.c:1647
-#, fuzzy, c-format
+#, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "Ketikkan kata sandi %s (user %s)"
+msgstr "Ketikkan kata sandi %s untuk mengaktifkan proxy bagi pengguna %s"
 
 #: calendar/libecal/e-cal.c:1650 libedataserverui/e-book-auth-util.c:192
 #, c-format
@@ -1131,8 +1130,8 @@ msgstr "Eksepsi CORBA terjadi"
 #: camel/providers/pop3/camel-pop3-store.c:535
 #: camel/providers/pop3/camel-pop3-store.c:542
 #: camel/providers/pop3/camel-pop3-store.c:548
-#: servers/groupwise/e-gw-connection.c:174
 #: servers/exchange/storage/e-storage.c:586
+#: servers/groupwise/e-gw-connection.c:174
 msgid "Unknown error"
 msgstr "Kesalahan tidak dikenal"
 
@@ -1448,9 +1447,8 @@ msgid "(match-threads) expects an array result"
 msgstr "(match-threads) memerlukan sebuah hasil array"
 
 #: camel/camel-folder-search.c:792
-#, fuzzy
 msgid "(match-threads) requires the folder set"
-msgstr "(match-threads) membutuhkan tipe string yang cocok"
+msgstr "(match-threads) membutuhkan set folder"
 
 #: camel/camel-folder-search.c:881
 #, c-format
@@ -1588,9 +1586,8 @@ msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Gagal mendekripsikan bagian MIME: kesalahan protokol"
 
 #: camel/camel-gpg-context.c:1649
-#, fuzzy
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "Tidak bisa memverifikasi tandatangan pesan: Format pesan salah"
+msgstr "Tidak bisa mendekripsi pesan: Format pesan salah"
 
 #: camel/camel-gpg-context.c:1703 camel/camel-smime-context.c:966
 msgid "Encrypted content"
@@ -1879,10 +1876,9 @@ msgid "GSSAPI"
 msgstr "GSSAPI"
 
 #: camel/camel-sasl-gssapi.c:59
-#, fuzzy
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
-"Opsi ini akan menyambung ke server menggunakan otentifikasi Kerberos 4."
+"Opsi ini akan menghubungkan ke server menggunakan otentifikasi Kerberos 5."
 
 #: camel/camel-sasl-gssapi.c:157
 msgid ""
@@ -2678,9 +2674,8 @@ msgid "Novell GroupWise"
 msgstr "Novell GroupWise"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:87
-#, fuzzy
 msgid "For accessing Novell GroupWise servers"
-msgstr "Untuk mengakses server-server Novell Groupwise"
+msgstr "Untuk mengakses server-server Novell GroupWise"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:102
 #: camel/providers/imap/camel-imap-provider.c:96
@@ -2709,7 +2704,7 @@ msgstr "%sHarap masukkan kata-sandi GroupWise untuk %s@%s"
 #: camel/providers/groupwise/camel-groupwise-store.c:383
 #: camel/providers/imap/camel-imap-store.c:1325
 msgid "You didn't enter a password."
-msgstr ""
+msgstr "Anda belum memasukkan kata-sandi."
 
 #: camel/providers/groupwise/camel-groupwise-store.c:397
 msgid "Unable to authenticate to GroupWise server."
@@ -4133,9 +4128,8 @@ msgid "POP"
 msgstr "POP"
 
 #: camel/providers/pop3/camel-pop3-provider.c:57
-#, fuzzy
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "Untuk membaca dan menyimpan surat pada server IMAP."
+msgstr "Untuk koneksi ke dan mendownload surat dari server POP."
 
 #: camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
@@ -4506,9 +4500,9 @@ msgid "MAIL FROM command failed"
 msgstr "Perintah MAIL FROM gagal"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1174
-#, fuzzy, c-format
+#, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
-msgstr "Perintah DATA gagal: %s: surat tidak terkirim"
+msgstr "Perintah RCPT TO gagal: %s: surat tidak terkirim"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1193
 #, c-format
@@ -4796,11 +4790,11 @@ msgstr "Pilih Kontak dari Buku Alamat"
 
 #: libedataserverui/e-name-selector-dialog.c:502
 msgid "_Add"
-msgstr ""
+msgstr "T_ambah"
 
 #: libedataserverui/e-name-selector-dialog.c:527
 msgid "_Remove"
-msgstr ""
+msgstr "Ha_pus"
 
 #: libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "\t\t\t\t\t\t"
@@ -4839,6 +4833,12 @@ msgstr "Cari"
 msgid "_Search:"
 msgstr "_Cari:"
 
+#. Edit Contact item
+#: libedataserverui/e-name-selector-entry.c:1820
+#, fuzzy, c-format
+msgid "_Edit %s"
+msgstr "_Edit"
+
 #: libedataserverui/e-passwords.c:471
 msgid "_Remember this password"
 msgstr "_Ingat kata-sandi ini"
@@ -4856,6 +4856,177 @@ msgstr "Pilih tujuan"
 msgid "_Destination"
 msgstr "T_ujuan"
 
+#: servers/exchange/lib/e2k-autoconfig.c:1573
+#: servers/exchange/storage/exchange-account.c:905
+#, c-format
+msgid "Enter password for %s"
+msgstr "Ketikkan kata sandi untuk %s"
+
+#: servers/exchange/lib/e2k-autoconfig.c:1574
+#: servers/exchange/storage/exchange-account.c:910
+msgid "Enter password"
+msgstr "Masukkan kata-sandi"
+
+#. i18n: These are Outlook's words for the default roles in
+#. the folder permissions dialog.
+#: servers/exchange/lib/e2k-security-descriptor.c:847
+msgid "Owner"
+msgstr "Pemilik"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:857
+msgid "Publishing Editor"
+msgstr "Editor Penerbitan"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:865
+msgid "Editor"
+msgstr "Editor"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:872
+msgid "Publishing Author"
+msgstr "Penulis Penerbitan"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:878
+msgid "Author"
+msgstr "Penulis"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:883
+msgid "Non-editing Author"
+msgstr "Penulis Non-editing"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:887
+msgid "Reviewer"
+msgstr "Reviewer"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:889
+msgid "Contributor"
+msgstr "Kontributor"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:891
+msgid "None"
+msgstr "Tidak ada"
+
+#: servers/exchange/lib/e2k-security-descriptor.c:906
+msgid "Custom"
+msgstr "Kustom"
+
+#: servers/exchange/lib/e2k-user-dialog.c:144
+msgid "Select User"
+msgstr ""
+
+#: servers/exchange/lib/e2k-user-dialog.c:182
+#, fuzzy
+msgid "Addressbook..."
+msgstr "Buku Alamat"
+
+#: servers/exchange/storage/e-storage.c:556
+msgid "Generic error"
+msgstr "Kesalahan generik"
+
+#: servers/exchange/storage/e-storage.c:558
+msgid "A folder with the same name already exists"
+msgstr "Folder dengan nama yang sama sudah ada"
+
+#: servers/exchange/storage/e-storage.c:560
+msgid "The specified folder type is not valid"
+msgstr "Tipe folder yang dipilih tidak valid"
+
+#: servers/exchange/storage/e-storage.c:562
+msgid "I/O error"
+msgstr "Kesalahan I/O"
+
+#: servers/exchange/storage/e-storage.c:564
+msgid "Not enough space to create the folder"
+msgstr "Tidak cukup tempat untuk membuat folder"
+
+#: servers/exchange/storage/e-storage.c:566
+msgid "The folder is not empty"
+msgstr "Folder tidak kosong"
+
+#: servers/exchange/storage/e-storage.c:568
+msgid "The specified folder was not found"
+msgstr "Folder yang disebutkan tidak ditemukan"
+
+#: servers/exchange/storage/e-storage.c:570
+msgid "Function not implemented in this storage"
+msgstr "Fungsi tidak diterapkan dalam penyimpanan ini"
+
+#: servers/exchange/storage/e-storage.c:574
+msgid "Operation not supported"
+msgstr "Operasi tidak didukung"
+
+#: servers/exchange/storage/e-storage.c:576
+msgid "The specified type is not supported in this storage"
+msgstr "Tipe yang disebutkan tidak didukung dalam penyimpanan ini"
+
+#: servers/exchange/storage/e-storage.c:578
+msgid "The specified folder cannot be modified or removed"
+msgstr "Folder yang disebutkan tidak bisa diubah atau dihapus"
+
+#: servers/exchange/storage/e-storage.c:580
+msgid "Cannot make a folder a child of one of its descendants"
+msgstr "Tidak bisa membuat folder dari anak salah satu turunannya"
+
+#: servers/exchange/storage/e-storage.c:582
+msgid "Cannot create a folder with that name"
+msgstr "Tidak bisa membuat folder dengan nama itu"
+
+#: servers/exchange/storage/e-storage.c:584
+msgid "This operation cannot be performed in off-line mode"
+msgstr "Operasi ini tidak bisa dilakukan dalam moda offline"
+
+#. i18n: This is the title of an "other user's folders"
+#. hierarchy. Eg, "John Doe's Folders".
+#: servers/exchange/storage/exchange-account.c:609
+#, c-format
+msgid "%s's Folders"
+msgstr "Folder %s's"
+
+#: servers/exchange/storage/exchange-account.c:1262
+msgid "Personal Folders"
+msgstr "Folder Personal"
+
+#: servers/exchange/storage/exchange-account.c:1277
+msgid "Favorite Public Folders"
+msgstr "Folder Publik Favorit"
+
+#. i18n: Outlookism
+#: servers/exchange/storage/exchange-account.c:1294
+msgid "All Public Folders"
+msgstr "Semua Folder Publik"
+
+#. i18n: Outlookism
+#: servers/exchange/storage/exchange-account.c:1308
+msgid "Global Address List"
+msgstr "Daftar Alamat Global"
+
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:256
+msgid "Deleted Items"
+msgstr "Item Yang Dihapus"
+
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:257
+msgid "Drafts"
+msgstr "Draft"
+
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:259
+msgid "Journal"
+msgstr "Jurnal"
+
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:260
+msgid "Notes"
+msgstr "Catatan"
+
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:261
+msgid "Outbox"
+msgstr "Outbox"
+
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:262
+msgid "Sent Items"
+msgstr "Item Terkirim"
+
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:263
+msgid "Tasks"
+msgstr "Tugas"
+
 #: servers/groupwise/e-gw-connection.c:158
 msgid "Invalid connection"
 msgstr "Koneksi salah"
@@ -4871,184 +5042,6 @@ msgstr "Tidak ada respon dari server"
 #: servers/groupwise/e-gw-connection.c:170
 msgid "Bad parameter"
 msgstr "Salah parameter"
-
-#: servers/exchange/lib/e2k-autoconfig.c:1573
-#: servers/exchange/storage/exchange-account.c:905
-#, fuzzy, c-format
-msgid "Enter password for %s"
-msgstr "Ketikkan kata sandi %s (user %s)"
-
-#: servers/exchange/lib/e2k-autoconfig.c:1574
-#: servers/exchange/storage/exchange-account.c:910
-#, fuzzy
-msgid "Enter password"
-msgstr "Kata sandi"
-
-#. i18n: These are Outlook's words for the default roles in
-#. the folder permissions dialog.
-#: servers/exchange/lib/e2k-security-descriptor.c:847
-msgid "Owner"
-msgstr ""
-
-#: servers/exchange/lib/e2k-security-descriptor.c:857
-msgid "Publishing Editor"
-msgstr ""
-
-#: servers/exchange/lib/e2k-security-descriptor.c:865
-#, fuzzy
-msgid "Editor"
-msgstr "_Edit"
-
-#: servers/exchange/lib/e2k-security-descriptor.c:872
-msgid "Publishing Author"
-msgstr ""
-
-#: servers/exchange/lib/e2k-security-descriptor.c:878
-msgid "Author"
-msgstr ""
-
-#: servers/exchange/lib/e2k-security-descriptor.c:883
-msgid "Non-editing Author"
-msgstr ""
-
-#: servers/exchange/lib/e2k-security-descriptor.c:887
-msgid "Reviewer"
-msgstr ""
-
-#: servers/exchange/lib/e2k-security-descriptor.c:889
-msgid "Contributor"
-msgstr ""
-
-#: servers/exchange/lib/e2k-security-descriptor.c:891
-#, fuzzy
-msgid "None"
-msgstr "Catatan"
-
-#: servers/exchange/lib/e2k-security-descriptor.c:906
-#, fuzzy
-msgid "Custom"
-msgstr "Nasabah Kunci"
-
-#: servers/exchange/storage/e-storage.c:556
-msgid "Generic error"
-msgstr ""
-
-#: servers/exchange/storage/e-storage.c:558
-#, fuzzy
-msgid "A folder with the same name already exists"
-msgstr "Folder sudah ada"
-
-#: servers/exchange/storage/e-storage.c:560
-msgid "The specified folder type is not valid"
-msgstr ""
-
-#: servers/exchange/storage/e-storage.c:562
-#, fuzzy
-msgid "I/O error"
-msgstr "Tidak ada kesalahan"
-
-#: servers/exchange/storage/e-storage.c:564
-msgid "Not enough space to create the folder"
-msgstr ""
-
-#: servers/exchange/storage/e-storage.c:566
-#, fuzzy
-msgid "The folder is not empty"
-msgstr "Mengecek konsistensi folder"
-
-#: servers/exchange/storage/e-storage.c:568
-msgid "The specified folder was not found"
-msgstr ""
-
-#: servers/exchange/storage/e-storage.c:570
-msgid "Function not implemented in this storage"
-msgstr ""
-
-#: servers/exchange/storage/e-storage.c:574
-#, fuzzy
-msgid "Operation not supported"
-msgstr "Protokol tidak didukung"
-
-#: servers/exchange/storage/e-storage.c:576
-#, fuzzy
-msgid "The specified type is not supported in this storage"
-msgstr "Verifikasi tidak didukung oleh cipher ini"
-
-#: servers/exchange/storage/e-storage.c:578
-msgid "The specified folder cannot be modified or removed"
-msgstr ""
-
-#: servers/exchange/storage/e-storage.c:580
-msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
-
-#: servers/exchange/storage/e-storage.c:582
-#, fuzzy
-msgid "Cannot create a folder with that name"
-msgstr "Tidak bisa membuat folder dengan nama ini."
-
-#: servers/exchange/storage/e-storage.c:584
-#, fuzzy
-msgid "This operation cannot be performed in off-line mode"
-msgstr "Pesan ini tidak ada dalam mode offline"
-
-#. i18n: This is the title of an "other user's folders"
-#. hierarchy. Eg, "John Doe's Folders".
-#: servers/exchange/storage/exchange-account.c:609
-#, fuzzy, c-format
-msgid "%s's Folders"
-msgstr "Folder"
-
-#: servers/exchange/storage/exchange-account.c:1262
-#, fuzzy
-msgid "Personal Folders"
-msgstr "Personal"
-
-#: servers/exchange/storage/exchange-account.c:1277
-msgid "Favorite Public Folders"
-msgstr ""
-
-#. i18n: Outlookism
-#: servers/exchange/storage/exchange-account.c:1294
-msgid "All Public Folders"
-msgstr ""
-
-#. i18n: Outlookism
-#: servers/exchange/storage/exchange-account.c:1308
-#, fuzzy
-msgid "Global Address List"
-msgstr "Daftar Alamat"
-
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:256
-msgid "Deleted Items"
-msgstr ""
-
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:257
-msgid "Drafts"
-msgstr ""
-
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:259
-#, fuzzy
-msgid "Journal"
-msgstr "Normal"
-
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:260
-#, fuzzy
-msgid "Notes"
-msgstr "Catatan"
-
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:261
-msgid "Outbox"
-msgstr ""
-
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:262
-msgid "Sent Items"
-msgstr ""
-
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:263
-#, fuzzy
-msgid "Tasks"
-msgstr "Trash"
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
