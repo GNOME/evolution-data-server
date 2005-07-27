@@ -165,6 +165,7 @@ groupwise_send_to (CamelTransport *transport,
 	if (!store) {
 		g_error ("ERROR: Could not get a pointer to the store") ;
 		camel_operation_end (NULL) ;
+		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("Cannot get folder: Invalid operation on this store"));
 		return FALSE ;
 	}
 	groupwise_store = CAMEL_GROUPWISE_STORE (store) ;
@@ -207,6 +208,7 @@ groupwise_send_to (CamelTransport *transport,
 		camel_operation_end (NULL) ;
 		g_object_unref (item) ;
 		g_object_unref (temp_item);
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("Unknown error"));
 		return FALSE ;
 	}
 	e_gw_item_set_link_info (item, NULL);

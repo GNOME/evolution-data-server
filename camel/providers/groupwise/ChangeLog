@@ -1,3 +1,10 @@
+2005-07-27  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-transport.c: (groupwise_send_to)
+	Setting an exception if delivery fails, so as to 
+	retain unsent items in Outbox.
+	Fixes #302968
+	
 2005-07-27  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c 
