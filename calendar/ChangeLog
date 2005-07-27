@@ -1,3 +1,19 @@
+2005-07-27  Mengjie Yu  <meng-jie.yu@sun.com>
+
+	* backends/file/e-cal-backend-file-events.c:
+	Add reserved field for an empty structure.
+	* backends/file/e-cal-backend-file-journal.c:
+	Add reserved field for an empty structure.
+	* backends/file/e-cal-backend-file-todos.c:
+	Add reserved field for an empty structure.
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component):
+	Convert a structure to the same type will fail under sun's compiler.
+	* backends/weather/e-weather-source.c: (e_weather_source_parse):
+	void function should not return value.
+
+	Fixes #310198
+
 2005-07-25  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #271837

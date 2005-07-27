@@ -1083,7 +1083,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			alarm = e_cal_component_alarm_new ();
 			e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
 			trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
-			trigger.u.rel_duration = (struct icaldurationtype) icaldurationtype_from_int (alarm_duration);
+			trigger.u.rel_duration = icaldurationtype_from_int (alarm_duration);
 			e_cal_component_alarm_set_trigger (alarm, trigger);
 			e_cal_component_add_alarm (comp, alarm);
 		}

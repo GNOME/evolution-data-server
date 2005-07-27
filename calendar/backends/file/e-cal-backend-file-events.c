@@ -30,6 +30,7 @@
 
 /* Private part of the CalBackendFileEvents structure */
 struct _ECalBackendFileEventsPrivate {
+	guint reserved;
 };
 
 

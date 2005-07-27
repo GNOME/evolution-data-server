@@ -21,6 +21,7 @@
 #include "e-cal-backend-file-journal.h"
 
 struct _ECalBackendFileJournalPrivate {
+	guint reserved;
 };
 
 static void e_cal_backend_file_journal_class_init (ECalBackendFileJournalClass *class);

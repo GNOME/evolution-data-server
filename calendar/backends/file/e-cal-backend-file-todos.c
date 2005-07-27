@@ -26,6 +26,7 @@
 
 /* Private part of the ECalBackendFileTodos structure */
 struct _ECalBackendFileTodosPrivate {
+	guint reserved;
 };
 
 

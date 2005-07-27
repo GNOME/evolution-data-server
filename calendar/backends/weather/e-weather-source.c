@@ -27,7 +27,7 @@ e_weather_source_parse (EWeatherSource *source, EWeatherSourceFinished done, gpo
 	EWeatherSourceClass *class;
 	g_return_if_fail (source != NULL);
 	class = (EWeatherSourceClass*) G_OBJECT_GET_CLASS (source);
-	return class->parse (source, done, data);
+	class->parse (source, done, data);
 }
 
 static void
