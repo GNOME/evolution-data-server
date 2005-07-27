@@ -2139,7 +2139,7 @@ static struct berval**
 email_ber(EContact *contact)
 {
 	struct berval** result;
-	const char *emails[3];
+	const char *emails[4];
 	int i, j, num = 0;
 
 	for (i = 0; i < 4; i ++) {

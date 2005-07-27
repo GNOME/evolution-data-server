@@ -1,5 +1,11 @@
 2005-07-26  Sushma Rai  <rsushma@novell.com>
 
+	* backends/ldap/e-book-backend-ldap.c (email_ber): Setting the proper
+	array lenght for emails. Patch submitted by 
+	"weo@weo1.de (Wolfgang Ocker)" fixes #311684.
+
+2005-07-26  Sushma Rai  <rsushma@novell.com>
+
 	* backends/groupwise/e-book-backend-groupwise.c: Added summary file
 	support, to make cache file access faster.
 	(set_organization_in_gw_item): updating the summary file.
