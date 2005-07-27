@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server GNOME 2.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-22 12:41+0000\n"
-"PO-Revision-Date: 2005-07-21 18:25+0300\n"
+"PO-Revision-Date: 2005-07-26 23:55+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1240,7 +1240,7 @@ msgstr "Sa ei tohi eksportida selle šifriga võtmeid"
 
 #: ../camel/camel-data-cache.c:134
 msgid "Unable to create cache path"
-msgstr ""
+msgstr "Puhvri rada pole võimalik luua"
 
 #: ../camel/camel-data-cache.c:376
 #, c-format
@@ -1293,7 +1293,7 @@ msgstr "Selle operatsiooni täitmiseks pead olema onlainis"
 #: ../camel/camel-filter-driver.c:701 ../camel/camel-filter-search.c:523
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
-msgstr ""
+msgstr "Tõrge '%s' toru loomisel: %s"
 
 #: ../camel/camel-filter-driver.c:745
 #, c-format
@@ -1450,11 +1450,11 @@ msgstr "Sõnumite kopeerimine"
 
 #: ../camel/camel-folder.c:1601
 msgid "Learning junk"
-msgstr ""
+msgstr "Rämpsposti õppimine"
 
 #: ../camel/camel-folder.c:1618
 msgid "Learning non-junk"
-msgstr ""
+msgstr "Mitte-rämpsposti õppimine"
 
 #: ../camel/camel-folder.c:1637
 msgid "Filtering new message(s)"
@@ -2682,7 +2682,7 @@ msgstr "Kausta %s ei leitud"
 #: ../camel/providers/imap/camel-imap-folder.c:2288
 #: ../camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
-msgstr "Võtan kokkuvõtvat infot uute sõnumite kohta"
+msgstr "Uutele sõnumitele kokkuvõtete võtmine"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:712
 msgid "Cannot get folder info in offline mode."
@@ -2998,7 +2998,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:273
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
-msgstr ""
+msgstr "Käsu \"%s\" abil pole võimalik ühenduda: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1021
@@ -3304,7 +3304,7 @@ msgstr "Kausta `%s' tellimisest pole võimalik loobuda: Puudulik käsk"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1497
 msgid "Fetching envelopes for new messages"
-msgstr ""
+msgstr "Uutele sõnumitele ümbrike võtmine"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
@@ -3946,6 +3946,9 @@ msgid ""
 "\n"
 "No such newsgroup. The selected item is a probably a parent folder."
 msgstr ""
+"Seda uudistegruppi pole sul võimalik tellida:\n"
+"\n"
+"Sellist uudistegruppi pole olemas. Valitud kirje on arvatavasti vanemkirje."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:938
 msgid ""
@@ -3953,6 +3956,9 @@ msgid ""
 "\n"
 "newsgroup does not exist!"
 msgstr ""
+"Selle uudistegrupi tellimusest pole sul võimalik loobuda:\n"
+"\n"
+"Uudistegruppi pole olemas!"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:963
 msgid "You cannot create a folder in a News store: subscribe instead."
@@ -4095,7 +4101,7 @@ msgstr "Tõrge korrektse tervituse lugemisel POP serverilt %s"
 #: ../camel/providers/pop3/camel-pop3-store.c:251
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr ""
+msgstr "Tõrge turvalisel ühendumisel POP serveriga %s: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:219
 msgid "STLS not supported"
@@ -4113,6 +4119,8 @@ msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
+"POP serveriga %s pole võimalik ühenduda: Puudub nõutud autentimismehhanismi "
+"tugi."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:420
 #, c-format
