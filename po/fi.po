@@ -886,7 +886,7 @@ msgstr "%.1f/%.1f°F - %s"
 #: ../calendar/backends/weather/e-cal-backend-weather.c:340
 #, c-format
 msgid "%d%% chance of precipitation\n"
-msgstr "%d%% todennäköisyys sateelle\n"
+msgstr "%d %% todennäköisyys sateelle\n"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:347
 #, c-format
@@ -1371,7 +1371,7 @@ msgstr "Saapuvien viestien kansiota ei voitu käsitellä"
 #: ../camel/camel-filter-driver.c:1175
 #, c-format
 msgid "Getting message %d (%d%%)"
-msgstr "Haetaan viestiä %d (%d%%)"
+msgstr "Haetaan viestiä %d (%d %%)"
 
 #: ../camel/camel-filter-driver.c:1179
 msgid "Cannot open message"
