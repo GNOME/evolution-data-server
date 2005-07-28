@@ -162,9 +162,7 @@ offline_folder_changed (CamelFolder *folder, CamelFolderChangeInfo *changes, voi
 
 static void
 camel_offline_folder_init (CamelOfflineFolder *folder, CamelOfflineFolderClass *klass)
-{
-	/*Copy folder contents locally by default*/
-	folder->sync_offline = 1;
+{       
 	camel_object_hook_event (folder, "folder_changed", (CamelObjectEventHookFunc) offline_folder_changed, NULL);
 }
 

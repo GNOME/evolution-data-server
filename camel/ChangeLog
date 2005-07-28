@@ -1,3 +1,8 @@
+2005-07-28  Shreyas Srinivasan  <sshreyas@novell.com>
+
+	* camel-offline-folder.c: (camel_offline_folder_init): Revert old
+	patch. Copy folder contents locally by default makes evolution crawl.
+	
 2005-07-27  Mengjie Yu  <meng-jie.yu@sun.com>
 
 	* camel-store.c: (camel_isubscribe_subscribe),
