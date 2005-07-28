@@ -941,6 +941,7 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
  * was due to the password getting expired. If the password has expired
  * this returns TRUE, else it returns FALSE.
  */
+#ifdef HAVE_KRB5
 static gboolean
 is_password_expired (ExchangeAccount *account, E2kAutoconfig *ac)
 {
@@ -973,7 +974,7 @@ is_password_expired (ExchangeAccount *account, E2kAutoconfig *ac)
 
 	return (result == E2K_KERBEROS_PASSWORD_EXPIRED);
 }
-
+#endif
 #if 0
 static void
 change_passwd_cb (GtkWidget *button, ExchangeAccount *account)

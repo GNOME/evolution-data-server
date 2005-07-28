@@ -1,3 +1,8 @@
+2005-07-28  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/exchange-account.c (is_password_expired) : This should be
+	included only if kerberos is enabled in the configure options.
+
 2005-07-22  Praveen Kumar <kpraveen@novell.com>
 
 	* storage/exchange-esource.c (add_folder_esource) : Modified the way
