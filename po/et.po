@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-26 13:52+0000\n"
-"PO-Revision-Date: 2005-07-26 23:55+0300\n"
+"PO-Revision-Date: 2005-07-28 00:25+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -4617,7 +4617,7 @@ msgstr "Ootamine"
 #. time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:179 ../libedataserver/e-time-utils.c:422
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%a, %d.%m.%Y %l:%M:%S %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format.
@@ -4625,7 +4625,7 @@ msgstr ""
 #. time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:184 ../libedataserver/e-time-utils.c:413
 msgid "%a %m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%a, %d.%m.%Y %H:%M:%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without seconds.
@@ -4633,7 +4633,7 @@ msgstr ""
 #. time, in 12-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:189 ../libedataserver/e-time-utils.c:418
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%a, %d.%m.%Y %l:%M %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without seconds.
@@ -4641,31 +4641,31 @@ msgstr ""
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:194 ../libedataserver/e-time-utils.c:409
 msgid "%a %m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%a, %d.%m.%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:199
 msgid "%a %m/%d/%Y %I %p"
-msgstr ""
+msgstr "%a, %d.%m.%Y %l %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:204
 msgid "%a %m/%d/%Y %H"
-msgstr ""
+msgstr "%a, %d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
 #: ../libedataserver/e-time-utils.c:207 ../libedataserver/e-time-utils.c:300
 #: ../libedataserver/e-time-utils.c:404
 msgid "%a %m/%d/%Y"
-msgstr ""
+msgstr "%a, %d.%m.%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:215
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%d.%m.%Y %l:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:219
@@ -4676,7 +4676,7 @@ msgstr "%d.%m.%Y %H:%M:%S"
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:224
 msgid "%m/%d/%Y %I:%M %p"
-msgstr "%d.%m.%Y %l:%M"
+msgstr "%d.%m.%Y %l:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
@@ -4688,7 +4688,7 @@ msgstr "%d.%m.%Y %H:%M"
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:234
 msgid "%m/%d/%Y %I %p"
-msgstr "%d.%m.%Y %l"
+msgstr "%d.%m.%Y %l %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
@@ -4706,7 +4706,7 @@ msgstr "%d.%m.%Y"
 #. strftime format of a time in 12-hour format.
 #: ../libedataserver/e-time-utils.c:348 ../libedataserver/e-time-utils.c:467
 msgid "%I:%M:%S %p"
-msgstr "%l:%M:%S"
+msgstr "%l:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
@@ -4720,7 +4720,7 @@ msgstr "%H:%M:%S"
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:357 ../libedataserver/e-time-utils.c:464
 msgid "%I:%M %p"
-msgstr "%l:%M"
+msgstr "%l:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
@@ -4732,11 +4732,11 @@ msgstr "%H:%M"
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:365
 msgid "%I %p"
-msgstr "%l"
+msgstr "%l %p"
 
 #: ../libedataserverui/e-book-auth-util.c:89
 msgid "Accessing LDAP Server anonymously"
-msgstr ""
+msgstr "Anonüümne ligipääs LDAP serverile"
 
 #: ../libedataserverui/e-book-auth-util.c:185
 msgid "Failed to authenticate.\n"
@@ -4941,7 +4941,7 @@ msgstr "S/V viga"
 
 #: ../servers/exchange/storage/e-storage.c:564
 msgid "Not enough space to create the folder"
-msgstr ""
+msgstr "Selle kataloogi loomiseks pole piisavalt vaba ruumi"
 
 #: ../servers/exchange/storage/e-storage.c:566
 msgid "The folder is not empty"
