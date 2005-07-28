@@ -1,3 +1,14 @@
+2005-07-28  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: (groupwise_get_folder)
+	remove unwanted code. 
+	* camel-groupwise-folder.c: 
+	(groupwise_update_summary):
+	This function updates only the summary
+	(groupwise_update_cache):
+	This method updates the cache with the message body
+	and attachment
+
 2005-07-27  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-transport.c: (groupwise_send_to)

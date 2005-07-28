@@ -43,6 +43,8 @@ extern "C" {
 #define CAMEL_GROUPWISE_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_GROUPWISE_STORE_TYPE, CamelGroupwiseStoreClass))
 #define CAMEL_IS_GROUPWISE_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GROUPWISE_STORE_TYPE))
 
+#define GW_PARAM_FILTER_INBOX		(1 << 0)
+
 typedef struct _CamelGroupwiseStore CamelGroupwiseStore;
 typedef struct _CamelGroupwiseStoreClass CamelGroupwiseStoreClass;
 typedef struct _CamelGroupwiseStorePrivate CamelGroupwiseStorePrivate;
@@ -55,7 +57,9 @@ struct _CamelGroupwiseStore {
 	char *root_container ;
 	CamelGroupwiseStorePrivate *priv;
 	CamelFolder *current_folder ;
-
+	
+	/* the parameters field is not to be included not. probably for 2.6*/
+	/*guint32 parameters;*/
 };
 
 
