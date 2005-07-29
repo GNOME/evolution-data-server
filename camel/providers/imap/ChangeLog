@@ -1,3 +1,10 @@
+2005-07-28  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #311731.
+
+	* camel-imap-store.c (get_folder_info_offline): build the
+	folderinfo from the search base so we dont over-expand it.
+
 2005-07-27  Not Zed  <NotZed@Ximian.com>
 
 	* camel-imap-store.c (get_folder_info_online): make sure we get

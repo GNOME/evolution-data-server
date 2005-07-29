@@ -3063,8 +3063,11 @@ get_folder_info_offline (CamelStore *store, const char *top,
 
 	folders = g_ptr_array_new ();
 
+	if (top == NULL)
+		top = "";
+
 	/* get starting point & strip trailing '/' */
-	if (top == NULL || top[0] == 0) {
+	if (top[0] == 0) {
 		if (imap_store->namespace) {
 			top = imap_store->namespace;
 			i = strlen(top)-1;
@@ -3130,7 +3133,7 @@ get_folder_info_offline (CamelStore *store, const char *top,
 	g_free(pattern);
 	g_free(name);
 
-	fi = camel_folder_info_build (folders, "", '/', TRUE);
+	fi = camel_folder_info_build (folders, top, '/', TRUE);
 	g_ptr_array_free (folders, TRUE);
 
 	return fi;
