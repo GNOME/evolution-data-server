@@ -875,12 +875,6 @@ folder_info_cmp (const void *ap, const void *bp)
 	return strcmp (a->full_name, b->full_name);
 }
 
-static void
-free_name(void *key, void *data, void *user)
-{
-	g_free(key);
-}
-
 /**
  * camel_folder_info_build:
  * @folders: an array of #CamelFolderInfo
@@ -908,9 +902,9 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 {
 	CamelFolderInfo *fi, *pfi, *top = NULL, *tail = NULL;
 	GHashTable *hash;
-	char *name, *p, *pname;
+	char *p, *pname;
 	int i, nlen;
-	
+
 	if (!namespace)
 		namespace = "";
 	nlen = strlen (namespace);
@@ -921,30 +915,16 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 	hash = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < folders->len; i++) {
 		fi = folders->pdata[i];
-		if (!strncmp (namespace, fi->full_name, nlen))
-			name = fi->full_name + nlen;
-		else
-			name = fi->full_name;
-		if (*name == separator)
-			name++;
-
-		g_hash_table_insert (hash, g_strdup(name), fi);
+		g_hash_table_insert (hash, fi->full_name, fi);
 	}
 	
 	/* Now find parents. */
 	for (i = 0; i < folders->len; i++) {
 		fi = folders->pdata[i];
-		if (!strncmp (namespace, fi->full_name, nlen))
-			name = fi->full_name + nlen;
-		else
-			name = fi->full_name;
-		if (*name == separator)
-			name++;
-
-		p = strrchr (name, separator);
-		if (p) {
-			pname = g_strndup (name, p - name);
-			pfi = g_hash_table_lookup (hash, pname);
+		if (!strncmp (namespace, fi->full_name, nlen)
+		    && (p = strrchr(fi->full_name+nlen, separator))) {
+			pname = g_strndup(fi->full_name, p - fi->full_name);
+			pfi = g_hash_table_lookup(hash, pname);
 			if (pfi) {
 				g_free (pname);
 			} else {
@@ -994,7 +974,6 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 		} else if (!top)
 			top = fi;
 	}
-	g_hash_table_foreach(hash, free_name, NULL);
 	g_hash_table_destroy (hash);
 
 	/* Link together the top-level folders */

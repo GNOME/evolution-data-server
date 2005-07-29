@@ -1,3 +1,11 @@
+2005-07-28  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #311731.
+
+	* camel-store.c (camel_folder_info_build): fix this, again, minor
+	simplification.  it was messing up the namespace != "" case
+	somewhat.
+
 2005-07-28  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	* camel-offline-folder.c: (camel_offline_folder_init): Revert old
