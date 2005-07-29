@@ -400,6 +400,11 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 						attachment->item_reference = g_strdup (temp_attach->item_reference);
 						g_free (attachment->name);
 						attachment->name = g_strdup (temp_attach->name);
+						g_free (attachment->contentType);
+						attachment->contentType = g_strdup ("Mail");
+						g_free (attachment->data); 
+						attachment->data = NULL;
+						attachment->size = 0;
 						info = e_gw_item_get_link_info (temp_item);
 						e_gw_item_set_link_info (item, info);
 					}

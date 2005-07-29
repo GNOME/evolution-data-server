@@ -1,3 +1,10 @@
+2005-07-29  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-utils.c : 
+	(camel_groupwise_util_item_from_message): in case of
+	forwarded mails, do not populate data and size
+	Fixes bug 303065
+
 2005-07-29 Vivek Jain <jvivek@novell.com>
 
 	* camel-groupwise-folder.c :(move_to_junk)
