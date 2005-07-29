@@ -1,3 +1,11 @@
+2005-07-29  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-item.c: 
+	(add_attachment_to_soap_message): do not send data
+	and size if the values are not present. Not even
+	NULL data.
+	Fixes bug 303065
+
 2005-07-25  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #303548

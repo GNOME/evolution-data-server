@@ -2843,21 +2843,23 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 	/*content type*/
 	e_gw_message_write_string_parameter (msg, "contentType", NULL, attachment->contentType) ;
 	/*size*/
-	size = g_strdup_printf ("%d", attachment->size) ;
-	e_gw_message_write_string_parameter (msg, "size", NULL, size) ;
+	if (attachment->size > 0) {
+		size = g_strdup_printf ("%d", attachment->size) ;
+		e_gw_message_write_string_parameter (msg, "size", NULL, size) ;
+	} 
 	/*date*/
 	if (attachment->date) 
 		e_gw_message_write_string_parameter (msg, "date", NULL, attachment->date) ;	
-	else
-		e_gw_message_write_string_parameter (msg, "date", NULL, "") ;	
 
 	/*data*/
-	soup_soap_message_start_element (msg, "data", NULL, NULL) ;
-	soup_soap_message_add_attribute (msg, "contentId", attachment->id, NULL, NULL);
-	soup_soap_message_add_attribute (msg, "contentType", attachment->contentType, NULL, NULL) ;
-	soup_soap_message_add_attribute (msg, "length", size, NULL, NULL) ;
-	soup_soap_message_write_string (msg, attachment->data) ;
-	soup_soap_message_end_element (msg) ;
+	if (attachment->size > 0) {
+		soup_soap_message_start_element (msg, "data", NULL, NULL) ;
+		soup_soap_message_add_attribute (msg, "contentId", attachment->id, NULL, NULL);
+		soup_soap_message_add_attribute (msg, "contentType", attachment->contentType, NULL, NULL) ;
+		soup_soap_message_add_attribute (msg, "length", size, NULL, NULL) ;
+		soup_soap_message_write_string (msg, attachment->data) ;
+		soup_soap_message_end_element (msg) ;
+	}
 	
 	soup_soap_message_end_element (msg) ;
 	g_free (size) ;
