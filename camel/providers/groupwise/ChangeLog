@@ -1,3 +1,9 @@
+2005-07-29 Vivek Jain <jvivek@novell.com>
+
+	* camel-groupwise-folder.c :(move_to_junk)
+	pass valid exception value in get_folder here NULL, so that clear 
+	doesn't cause crash. 	
+
 2005-07-28  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c: (groupwise_get_folder)

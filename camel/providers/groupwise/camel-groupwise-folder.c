@@ -528,7 +528,7 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info)
  	
 	camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
 
-	dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, ex);
+	dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, NULL);
 	if (dest)
 		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
 	else {
