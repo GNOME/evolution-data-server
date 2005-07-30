@@ -1,3 +1,7 @@
+2005-07-30  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in: update libtool numbers for libebook
+
 2005-07-29  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: Bump version number
