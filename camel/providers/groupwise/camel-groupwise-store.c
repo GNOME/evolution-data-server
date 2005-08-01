@@ -144,7 +144,9 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 
 	/*ssl*/
 	priv->use_ssl = g_strdup (camel_url_get_param (url, "use_ssl"));
+
 	store->flags &= ~CAMEL_STORE_VJUNK;
+	store->flags &= ~CAMEL_STORE_VTRASH;
 }
 
 static guint
@@ -302,6 +304,20 @@ groupwise_store_query_auth_types (CamelService *service, CamelException *ex)
 	d("in query auth types\n");
 	auth_types = g_list_prepend (auth_types,  &camel_groupwise_password_authtype);
 	return auth_types;
+}
+
+static gboolean
+groupwise_is_system_folder (const char *folder_name)
+{
+	if (!g_ascii_strncasecmp (folder_name, "Mailbox",7 ) ||
+	    !g_ascii_strncasecmp (folder_name, "Trash", 5) ||
+	    !g_ascii_strncasecmp (folder_name, "Junk Mail", 9) ||
+	    !g_ascii_strncasecmp (folder_name, "Sent Items", 10) ||
+	    !g_ascii_strncasecmp (folder_name, "Cabinet", 7) ||
+	    !g_ascii_strncasecmp (folder_name, "Documents", 9) )
+		return TRUE;
+	else
+		return FALSE;
 }
 
 /*Build/populate CamelFolderInfo structure based on the imap_build_folder_info function*/
@@ -748,8 +764,13 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
                 if (e_gw_container_get_is_shared_by_me (container))
                         fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
 
-		fi->total = e_gw_container_get_total_count (container);
-		fi->unread = e_gw_container_get_unread_count (container);
+		if (type == E_GW_CONTAINER_TYPE_INBOX) {
+			fi->total = -1;
+			fi->unread = -1;
+		}else {
+			fi->total = e_gw_container_get_total_count (container);
+			fi->unread = e_gw_container_get_unread_count (container);
+		}
 		/*refresh info*/
 		if (groupwise_store->current_folder &&
 		strcmp (groupwise_store->current_folder->full_name, fi->full_name) == 0) {
@@ -829,6 +850,11 @@ groupwise_create_folder(CamelStore *store,
 	char *parent_id , *child_container_id;
 	int status;
 	
+	if (groupwise_is_system_folder (folder_name)) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, NULL);
+		return NULL;
+	}
+
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create GroupWise folders in offline mode."));
 		return NULL;
@@ -911,6 +937,12 @@ groupwise_rename_folder(CamelStore *store,
 	const char *container_id;
 	char *temp_new = NULL;
 	
+	if (groupwise_is_system_folder (old_name)) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
+				      old_name, new_name);
+		return;
+	}
+
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename GroupWise folders in offline mode."));
 		return;

@@ -1,3 +1,10 @@
+2005-08-01  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c:
+	(groupwise_is_system_folder):Check if a folder is a system 
+	folder or not before deleting or renaming
+	(groupwise_store_construct):remove flag CAMEL_STORE_VTRASH
+	
 2005-07-30  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c:
