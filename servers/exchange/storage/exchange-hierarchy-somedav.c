@@ -133,7 +133,11 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gboolean offline)
 	ExchangeAccountFolderResult folder_result;
 	EFolder *iter_folder = NULL;
 
-	if (hsd->priv->scanned || folder != hier->toplevel)
+	/* FIXME : Temporarily allow a rescan of the hierarchy. The proper fix
+	is to handle the folder list either in ExchangeAccount or in the 
+	plugins/exchange backend separately by listening to signals.
+	if (hsd->priv->scanned || folder != hier->toplevel) */
+	if (folder != hier->toplevel)
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	hsd->priv->scanned = TRUE;
 

@@ -177,7 +177,7 @@ remove_folder_esource (ExchangeAccount *account,
 	GSList *groups;
 	GSList *sources;
 	gboolean found_group, is_contacts_folder = TRUE;
-	char *relative_uri = NULL;
+	char *read_uri = NULL;
 	const char *source_uid;
 	GSList *ids, *temp_ids, *node_to_be_deleted;
 	GConfClient *client;
@@ -193,16 +193,14 @@ remove_folder_esource (ExchangeAccount *account,
 	else if (folder_type == EXCHANGE_CALENDAR_FOLDER) {
 		source_list = e_source_list_new_for_gconf ( client, 
 							CONF_KEY_CAL);
-		relative_uri = g_strdup (physical_uri + strlen (EXCHANGE_URI_PREFIX));
 		is_contacts_folder = FALSE;
 	}
 	else if (folder_type == EXCHANGE_TASKS_FOLDER) {
 		source_list = e_source_list_new_for_gconf ( client,
 							CONF_KEY_TASKS);
-		relative_uri = g_strdup (physical_uri + strlen (EXCHANGE_URI_PREFIX));
 		is_contacts_folder = FALSE;
 	}
-
+	
 	groups = e_source_list_peek_groups (source_list);
 	found_group = FALSE;
 
@@ -218,13 +216,9 @@ remove_folder_esource (ExchangeAccount *account,
 			for( ; sources != NULL; sources = g_slist_next (sources)) {
 				
 				source = E_SOURCE (sources->data);
+				read_uri = e_source_get_uri (source);
 
-				if (((!is_contacts_folder &&
-				      strcmp (e_source_peek_relative_uri (source),
-					      relative_uri) == 0)) ||
-				      (is_contacts_folder && 
-				       strcmp (e_source_peek_absolute_uri (source),
-					      physical_uri) == 0)) {
+				if (strcmp (read_uri, physical_uri) == 0) { 
 
 					source_uid = e_source_peek_uid (source);
 					/* Folder Deleted - Remove only the source */
@@ -282,10 +276,10 @@ remove_folder_esource (ExchangeAccount *account,
                                         found_group = TRUE;
                                         break;
                                 }
+				g_free (read_uri);
                         }
                 }
         }
 	g_object_unref (source_list);
-        g_free (relative_uri);
 	g_object_unref (client);
 }

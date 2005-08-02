@@ -214,27 +214,27 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) {
 		g_hash_table_remove (hfav->priv->shortcuts, folder_uri);
 		exchange_hierarchy_removed_folder (hier, folder);
-	}
 
-	/* Temp Fix for remove fav folders. see #59168 */
-	/* remove ESources */
-	folder_type = e_folder_get_type_string (folder);
-	physical_uri = e_folder_get_physical_uri (folder);
+		/* Temp Fix for remove fav folders. see #59168 */
+		/* remove ESources */
+		folder_type = e_folder_get_type_string (folder);
+		physical_uri = e_folder_get_physical_uri (folder);
 
-	if (strcmp (folder_type, "calendar") == 0) {
-		remove_folder_esource (hier->account,
-				       EXCHANGE_CALENDAR_FOLDER,
-				       physical_uri);
-	}
-	else if (strcmp (folder_type, "tasks") == 0) {
-		remove_folder_esource (hier->account,
-				       EXCHANGE_TASKS_FOLDER,
-				       physical_uri);
-	}
-	else if (strcmp (folder_type, "contacts") == 0) {
-		remove_folder_esource (hier->account,
-				       EXCHANGE_CONTACTS_FOLDER,
-				       physical_uri);
+		if (strcmp (folder_type, "calendar") == 0) {
+			remove_folder_esource (hier->account,
+					       EXCHANGE_CALENDAR_FOLDER,
+					       physical_uri);
+		}
+		else if (strcmp (folder_type, "tasks") == 0) {
+			remove_folder_esource (hier->account,
+					       EXCHANGE_TASKS_FOLDER,
+					       physical_uri);
+		}
+		else if (strcmp (folder_type, "contacts") == 0) {
+			remove_folder_esource (hier->account,
+					       EXCHANGE_CONTACTS_FOLDER,
+					       physical_uri);
+		}
 	}
 	
 	return exchange_hierarchy_webdav_status_to_folder_result (status);

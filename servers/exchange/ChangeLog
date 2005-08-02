@@ -1,3 +1,15 @@
+2005-08-02  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/exchange-hierarchy-favorites.c (remove_folder) : Remove
+	the esources only after we have removed the folder from the server.
+	* storage/exchange-account.c (exchange_account_rescan_tree) : Add the
+	toplevel folder of the hierarchy in the fresh folder list manually
+	* storage/exchange-hierarchy-somedav.c (scan_subtree) : Temporary fix.
+	Allow a rescan for now.
+	* storage/exchange-esource.c (remove_folder_esource) : Handle the 
+	addressbook esource removal properly. We no longer use the absolute 
+	uri for addressbooks, except for GAL.
+
 2005-07-28  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/exchange-account.c (is_password_expired) : This should be

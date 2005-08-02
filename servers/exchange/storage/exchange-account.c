@@ -317,6 +317,7 @@ void
 exchange_account_rescan_tree (ExchangeAccount *account)
 {
 	int i;
+	EFolder *toplevel;
 
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
 
@@ -328,9 +329,15 @@ exchange_account_rescan_tree (ExchangeAccount *account)
 	account->priv->fresh_folders = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for (i = 0; i < account->priv->hierarchies->len; i++) {
+		/* First include the toplevel folder of the hierarchy as well */
+		toplevel = EXCHANGE_HIERARCHY (account->priv->hierarchies->pdata[i])->toplevel;
+		g_object_ref (toplevel);
+		g_hash_table_insert (account->priv->fresh_folders,
+				     (char *)e_folder_exchange_get_path (toplevel),
+				     toplevel);
+
 		exchange_hierarchy_scan_subtree (account->priv->hierarchies->pdata[i],
-						EXCHANGE_HIERARCHY (account->priv->hierarchies->pdata[i])->toplevel,
-						FALSE);
+						toplevel, FALSE);
 		exchange_hierarchy_rescan (account->priv->hierarchies->pdata[i]);
 	}
 }
@@ -1802,7 +1809,7 @@ exchange_account_get_folder (ExchangeAccount *account,
 			     const char *path_or_uri)
 {
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
-	
+
 	return g_hash_table_lookup (account->priv->folders, path_or_uri);
 }
 
