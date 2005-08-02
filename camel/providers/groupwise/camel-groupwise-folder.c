@@ -502,9 +502,6 @@ move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info)
 	uids = g_ptr_array_new ();
 	g_ptr_array_add (uids, (gpointer) uid);
 	
-	/* make the message as normal one*/
-	camel_folder_set_message_flags (folder, uid, CAMEL_GW_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN, 0);
-
 	dest = camel_store_get_folder (folder->parent_store, "Mailbox", 0, ex);
 	if (dest)
 		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
@@ -526,8 +523,6 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info)
 	uids = g_ptr_array_new ();
 	g_ptr_array_add (uids, (gpointer) uid);
  	
-	camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
-
 	dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, NULL);
 	if (dest)
 		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
@@ -608,7 +603,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		
 	}
 
-	if (read_items) {
+	if (read_items && g_list_length (read_items)) {
 		e_gw_connection_mark_read (cnc, read_items);
 	}
 	if (deleted_items) {
@@ -1600,6 +1595,13 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			char **tmp;
 			guint32 temp_flags = 0;
 			CamelGroupwiseMessageInfo *src_info = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (source->summary, (const char*)uids->pdata[index]);
+			
+			/* we don't want to blindly copy the info: reset some flags not suitable for destination*/
+			if (!g_ascii_strncasecmp(source->full_name, JUNK_FOLDER, strlen(JUNK_FOLDER)))
+				camel_folder_set_message_flags (source, old_uid, CAMEL_GW_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN, 0);
+			else if (!g_ascii_strncasecmp(destination->full_name, JUNK_FOLDER, strlen(JUNK_FOLDER)))
+				camel_folder_set_message_flags (source, old_uid, CAMEL_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
+
 			CamelGroupwiseMessageInfo *dest_info = (CamelGroupwiseMessageInfo *)camel_message_info_clone((CamelMessageInfo *)src_info);
 			tmp = g_strsplit (old_uid, ":", -1);
 			dest_info->info.uid = g_strdup_printf ("%s:%s",tmp[0], dest_container_id);

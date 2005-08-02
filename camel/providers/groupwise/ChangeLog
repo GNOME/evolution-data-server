@@ -1,3 +1,11 @@
+2005-08-02 Vivek Jain <jvivek@novell.com>
+	
+	* camel-groupwise-folder.c: (transfer_messages_to)
+	check for the flags to be reset while transferring to/from junk
+	folder.
+	**Fixes #312190
+	(groupwise_sync): make sure we never call mark_read when list is NULL
+
 2005-08-02  Sankar P  <psankar@novell.com>
 	
 	* camel-groupwise-provider.c: (groupwise_url_equal) 
