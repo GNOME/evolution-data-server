@@ -1,3 +1,21 @@
+2005-08-01  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap-store.c (get_folder_info_offline): if we're getting
+	from "", then use the right namespace, with stripped trailing dir
+	separator.
+	(get_folders_online): we always do both a list and a lsub for each
+	call.  We dont actually return any folders anymore either.
+	(refresh_refresh): we just refresh all folders, subscribed or not.
+	(get_folder_info_online): if we're getting the folder list, update
+	the folder-summary from the server results, and then just get the
+	folderinfo from that using get_folder_info_offline.
+	(get_folders_sync): renamed from get_folders_online.
+	(imap_connect_online): get the root list of folders differently,
+	it will explictly check the namespace first.  and just make sure
+	inbox is subscribed.
+	(imap_is_subfolder, get_subscribed_folders) 
+	(get_folders_add_folders, get_folders): removed old stuff.
+
 2005-07-28  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #311731.
