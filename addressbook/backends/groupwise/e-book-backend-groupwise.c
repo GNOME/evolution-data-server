@@ -1490,6 +1490,15 @@ func_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 		char *str = argv[1]->value.string;
 		char *gw_field_name;
 
+		if (g_str_equal (propname, "x-evolution-any-field")) {
+			if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
+				/* ignore the NULL query */
+		     		sexp_data->is_filter_valid = FALSE;
+				r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+				r->value.bool = FALSE;
+				return r;
+			}
+		}
 		gw_field_name = NULL;
 		if (g_str_equal (propname, "full_name"))
 			gw_field_name = "fullName";
@@ -1599,6 +1608,14 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 		char *propname = argv[0]->value.string;
 		char *str = argv[1]->value.string;
 		char *gw_field_name;
+
+		if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
+			/* ignore the NULL query */
+		     	sexp_data->is_filter_valid = FALSE;
+			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+			r->value.bool = FALSE;
+			return r;
+		}
 
 		gw_field_name = NULL;
 		if (g_str_equal (propname, "full_name")) {
@@ -1896,7 +1913,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 							      NULL);
 			return;
 		}
-		for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
+		for (; gw_items != NULL; gw_items = g_list_next(gw_items)) {
 			contact = e_contact_new ();
 			fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), egwb->priv->categories_by_id);
 			e_contact_set (contact, E_CONTACT_BOOK_URI, egwb->priv->original_uri);
@@ -2025,6 +2042,8 @@ book_view_thread (gpointer data)
 	g_mutex_unlock (closure->mutex);
 	
 	query = e_data_book_view_get_card_query (book_view);
+	if (enable_debug)
+		printf ("get view for query %s \n", query);
 	switch (gwb->priv->mode) {
 
 	case GNOME_Evolution_Addressbook_MODE_LOCAL :
@@ -3203,10 +3222,12 @@ e_book_backend_groupwise_get_static_capabilities (EBookBackend *backend)
 		printf ("\ne_book_backend_groupwise_get_static_capabilities...\n");
 	
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
-	if (ebgw->priv->is_writable)
-		return g_strdup("net,bulk-removes,do-initial-query,contact-lists");
-	else 
-		return g_strdup("net,bulk-removes,contact-lists");
+
+	/* do-initialy-query is enabled for system address book also, so that we get the
+	 * book_view, which is needed for displaying cache update progress. 
+	 * and null query is handled for system address book. 
+	 */
+	return g_strdup ("net,bulk-removes,do-initial-query,contact-lists");
 }
 
 static void 

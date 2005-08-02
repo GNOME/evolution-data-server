@@ -1,3 +1,13 @@
+2005-08-02  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_get_static_capabilities): do-initial-query
+	for all the GroupWIse address books, so that we get the book view for 
+	notifying cache download progress for all the address books.
+	(func_contains): Ignoring the null query for GroupWise system 
+	addressbook, so that we don't download the book while loading. 
+	(func_beginswith): Similar.
+
 2005-07-26  Sushma Rai  <rsushma@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c (email_ber): Setting the proper
