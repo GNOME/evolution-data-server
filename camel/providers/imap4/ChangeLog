@@ -1,3 +1,8 @@
+2005-08-02  Shreyas Srinivasan  <sshreyas@novell.com>
+
+	* camel-imap-store.c (connect_to_server_wrapper): only use command
+	if use_command is set.
+
 2005-05-23  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-folder.c (imap4_append_message): The UIDPLUS

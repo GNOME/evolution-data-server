@@ -419,7 +419,8 @@ connect_to_server_wrapper (CamelIMAP4Engine *engine, CamelException *ex)
 	const char *port;
 	char *serv;
 	
-	if ((command = camel_url_get_param (service->url, "command")))
+	if (camel_url_get_param(service->url, "use_command")
+	    &&(command = camel_url_get_param (service->url, "command")))
 		return connect_to_server_process (engine, command, ex);
 	
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
