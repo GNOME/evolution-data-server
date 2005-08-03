@@ -48,15 +48,15 @@ static gboolean groupwise_send_to (CamelTransport *transport,
 				  CamelMimeMessage *message,
 				  CamelAddress *from,
 				  CamelAddress *recipients,
-				  CamelException *ex) ;
+				  CamelException *ex);
 
-static gboolean groupwise_connect (CamelService *service, CamelException *ex) ;
-static char *groupwise_transport_get_name (CamelService *service, gboolean brief) ;
+static gboolean groupwise_connect (CamelService *service, CamelException *ex);
+static char *groupwise_transport_get_name (CamelService *service, gboolean brief);
 static void groupwise_transport_construct (CamelService *service, CamelSession *session,
-					   CamelProvider *provider, CamelURL *url, CamelException *ex) ;
+					   CamelProvider *provider, CamelURL *url, CamelException *ex);
 
 
-static CamelTransportClass *parent_class = NULL ;
+static CamelTransportClass *parent_class = NULL;
 
 
 
@@ -71,18 +71,18 @@ camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *camel_groupw
 	
 	parent_class = CAMEL_TRANSPORT_CLASS (camel_type_get_global_classfuncs (camel_transport_get_type ()));
 	
-	camel_service_class->connect = groupwise_connect ;
-	camel_service_class->get_name = groupwise_transport_get_name ;
-	camel_service_class->construct = groupwise_transport_construct ;
+	camel_service_class->connect = groupwise_connect;
+	camel_service_class->get_name = groupwise_transport_get_name;
+	camel_service_class->construct = groupwise_transport_construct;
 	
 	/* virtual method overload */
-	camel_transport_class->send_to = groupwise_send_to ;
+	camel_transport_class->send_to = groupwise_send_to;
 }
 
 static void
 camel_groupwise_transport_init (CamelTransport *transport)
 {
-	return ;
+	return;
 }
 
 static void
@@ -129,7 +129,7 @@ static char *groupwise_transport_get_name (CamelService *service, gboolean brief
 static gboolean
 groupwise_connect (CamelService *service, CamelException *ex)
 {
-	return TRUE ;
+	return TRUE;
 
 }
 
@@ -141,40 +141,39 @@ groupwise_send_to (CamelTransport *transport,
 		   CamelAddress *recipients,
 		   CamelException *ex)
 {
-	CamelService *service = CAMEL_SERVICE(transport) ;
-	CamelStore *store =  NULL ;
+	CamelService *service = CAMEL_SERVICE(transport);
+	CamelStore *store =  NULL;
 	CamelGroupwiseStore *groupwise_store = NULL;
 	CamelGroupwiseStorePrivate *priv = NULL;
 	EGwItem *item ,*temp_item=NULL;
 	EGwConnection *cnc = NULL;
-	EGwConnectionStatus status ;
+	EGwConnectionStatus status;
 	GSList *sent_item_list = NULL;
-	char *url = NULL ;
+	char *url = NULL;
 	const char *reply_request = NULL;
 	EGwItemLinkInfo *info = NULL;
 
 	url = camel_url_to_string (service->url,
 			           (CAMEL_URL_HIDE_PASSWORD |
 				    CAMEL_URL_HIDE_PARAMS   |
-				    CAMEL_URL_HIDE_AUTH) ) ;
+				    CAMEL_URL_HIDE_AUTH) );
 
-	camel_operation_start (NULL, _("Sending Message") ) ;
+	camel_operation_start (NULL, _("Sending Message") );
 
 	/*camel groupwise store and cnc*/
-	store = camel_session_get_store (service->session, url, ex ) ;
+	store = camel_session_get_store (service->session, url, ex );
 	if (!store) {
-		g_warning ("ERROR: Could not get a pointer to the store") ;
-		camel_operation_end (NULL) ;
+		g_warning ("ERROR: Could not get a pointer to the store");
 		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("Cannot get folder: Invalid operation on this store"));
-		return FALSE ;
+		return FALSE;
 	}
-	groupwise_store = CAMEL_GROUPWISE_STORE (store) ;
-	priv = groupwise_store->priv ;
+	groupwise_store = CAMEL_GROUPWISE_STORE (store);
+	priv = groupwise_store->priv;
 
-	cnc = cnc_lookup (priv) ;
+	cnc = cnc_lookup (priv);
 	if (!cnc) {
-		g_error ("||| Eh!!! Failure |||\n") ;
-		camel_operation_end (NULL) ;
+		g_error ("||| Eh!!! Failure |||\n");
+		camel_operation_end (NULL);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 		return FALSE;
 	}
@@ -202,26 +201,26 @@ groupwise_send_to (CamelTransport *transport,
 	
 	
 	/*Send item*/
-	status = e_gw_connection_send_item (cnc, item, &sent_item_list) ;
+	status = e_gw_connection_send_item (cnc, item, &sent_item_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		g_warning (" Error Sending mail") ;
-		camel_operation_end (NULL) ;
-		g_object_unref (item) ;
-		g_object_unref (temp_item);
+		g_warning (" Error Sending mail");
+		camel_operation_end (NULL);
+		g_object_unref (item);
+		if (temp_item)
+			g_object_unref (temp_item);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("Unknown error"));
-		return FALSE ;
+		return FALSE;
 	}
 	e_gw_item_set_link_info (item, NULL);
 
-	e_gw_item_set_recipient_list (item, NULL) ;
+	e_gw_item_set_recipient_list (item, NULL);
 
 	if (temp_item)
 		g_object_unref (temp_item);
-	g_object_unref (item) ;
+	g_object_unref (item);
 
-	camel_operation_end (NULL) ;
+	camel_operation_end (NULL);
 
 	return TRUE;
-
 }
 

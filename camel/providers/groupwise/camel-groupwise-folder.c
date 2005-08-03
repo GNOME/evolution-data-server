@@ -63,8 +63,8 @@ static CamelOfflineFolderClass *parent_class = NULL;
 struct _CamelGroupwiseFolderPrivate {
 
 #ifdef ENABLE_THREADS
-	EMutex *search_lock;    // for locking the search object 
-	EMutex *cache_lock;     // for locking the cache object 
+	EMutex *search_lock;    /* for locking the search object */
+	EMutex *cache_lock;     /* for locking the cache object */
 #endif
 
 };
@@ -561,7 +561,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	
 	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
 
-	//CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 
 	count = camel_folder_summary_count (folder->summary);
 	for (i=0 ; i <count ; i++) {
@@ -628,7 +628,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	
 	camel_folder_summary_save (folder->summary);
 
-	//CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
 }
 
 
@@ -662,7 +662,7 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 				      folder_name);
 		return NULL;
 	}
-
+	
 	/* set/load persistent state */
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
 	camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state_file, NULL);
@@ -732,7 +732,6 @@ update_free (CamelSession *session, CamelSessionThreadMsg *msg)
 	g_free (m->t_str);
 	g_free (m->container_id);
 	camel_object_unref (m->folder);
-	g_print ("FOLDER:::: Is it this??\n");
 	camel_folder_thaw (m->folder);
 	g_slist_foreach (m->slist, (GFunc) g_free, NULL);
 	g_slist_free (m->slist);
@@ -747,9 +746,7 @@ static CamelSessionThreadOps update_ops = {
 static void
 groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 {
-	g_print ("Refreshi_info:%s\n",folder->name);
 	groupwise_refresh_folder(folder, ex);
-	g_print ("returning refresh_info:%s\n",folder->name);
 }
 
 void
@@ -942,9 +939,9 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		if (cache_stream) {
 			camel_object_unref (cache_stream);
 			cache_stream = NULL;
-			g_print ("*** Exists in cache, continuing....\n");
+			//g_print ("*** Exists in cache, continuing....%s\n", id);
 			continue;
-		}
+		} 
 
 		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status", &item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -969,7 +966,6 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 				g_object_unref (item);
 				continue;
 			}
-
 		}
 
 		/*all items in the Junk Mail folder should have this flag set*/
@@ -1122,7 +1118,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		status_flags = 0;
 
 		id = e_gw_item_get_id (item);
-
+		
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);
 		if (mi) 
 			exists = TRUE;
@@ -1399,6 +1395,22 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	return msg;
 }
 
+static gint 
+string_cmp(gconstpointer a, gconstpointer b)
+{
+	int ret;
+	char **tmp1, **tmp2;
+	
+	tmp1 = g_strsplit ((const char *)a, "@", -1);
+	tmp2 = g_strsplit ((const char *)b, "@", -1);
+/*	g_print ("************\n");
+	g_print ("%s\n%s\n",tmp1[0], tmp2[0]);
+	g_print ("************\n");*/
+	ret = strcmp (tmp1[0], tmp2[0]);
+	g_strfreev (tmp1);
+	g_strfreev (tmp2);
+	return ret;
+}
 
 static void
 gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex) 
@@ -1418,12 +1430,12 @@ gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex
 	}
 	l = item_ids;
 
-	changes = camel_folder_change_info_new ();
 	/*item_list : List of ids from the server*/
 	for (; item_ids != NULL ; item_ids = g_slist_next (item_ids)) {
 		GSList *temp = NULL;
-		temp = g_slist_find_custom (item_list, (const char *)item_ids->data, (GCompareFunc) strcmp);
+		temp = g_slist_find_custom (item_list, (const char *)item_ids->data, (GCompareFunc) string_cmp);
 		if (!temp) {
+			//g_print ("Deleting:%s\n", (const char *)item_ids->data);
 			camel_folder_summary_remove_uid (folder->summary, (const char *)item_ids->data);
 			camel_data_cache_remove(gw_folder->cache, "cache", (const char *)item_ids->data, ex);
 			camel_folder_change_info_remove_uid(changes, (const char *)item_ids->data);
@@ -1705,11 +1717,12 @@ camel_groupwise_folder_init (gpointer object, gpointer klass)
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (object);
 	CamelFolder *folder = CAMEL_FOLDER (object);
 
+
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
 
 	folder->folder_flags = CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY | CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
-
+	
 	gw_folder->priv = g_malloc0(sizeof(*gw_folder->priv));
 
 #ifdef ENABLE_THREADS
@@ -1717,13 +1730,13 @@ camel_groupwise_folder_init (gpointer object, gpointer klass)
 	gw_folder->priv->cache_lock = e_mutex_new(E_MUTEX_REC);
 #endif 
 	gw_folder->need_rescan = TRUE;
-	
 }
 
 static void
 camel_groupwise_folder_finalize (CamelObject *object)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (object);
+
 	if (gw_folder->priv)
 		g_free(gw_folder->priv);
 	if (gw_folder->cache)
@@ -1945,4 +1958,5 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	g_string_free (gstr, TRUE);
 	g_strfreev (tmp);
 }
+
 

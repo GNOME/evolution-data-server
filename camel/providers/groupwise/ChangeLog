@@ -1,3 +1,17 @@
+2005-08-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: 
+	(gw_update_all_items): compare item id only until the 
+	first '@'. Fixes bug 311585
+
+2005-08-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	* camel-groupwise-store.c:
+	* camel-groupwise-utils.c:
+	* camel-groupwise-transport.c:
+	Formatting code. Removed space between statement and ';'.
+
 2005-08-03 Vivek Jain <jvivek@novell.com>
 
 	* camel-groupwise-folder.c:

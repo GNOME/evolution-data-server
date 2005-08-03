@@ -138,7 +138,7 @@ camel_provider_module_init(void)
 	if (use_imap)
 		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];
 	else 	{
-		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] =  camel_groupwise_store_get_type() ;
+		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] =  camel_groupwise_store_get_type();
 		groupwise_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_groupwise_transport_get_type();
 	} 
 	

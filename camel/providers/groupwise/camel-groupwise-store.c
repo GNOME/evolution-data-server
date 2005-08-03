@@ -66,8 +66,8 @@ struct _CamelGroupwiseStorePrivate {
 	char *base_url;
 	char *storage_path;
 
-	GHashTable *id_hash; //get names from ids
-	GHashTable *name_hash;//get ids from names
+	GHashTable *id_hash; /*get names from ids*/
+	GHashTable *name_hash;/*get ids from names*/
 	GHashTable *parent_hash;
 	EGwConnection *cnc;
 };
