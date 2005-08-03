@@ -1,3 +1,10 @@
+2005-08-02  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #309237.
+
+	* camel-imap-store.c (connect_to_server): add the BRAINDAMAGED
+	hack from 2.0.3, since some people seem to be relying on it.
+
 2005-08-01  Not Zed  <NotZed@Ximian.com>
 
 	* camel-imap-store.c (get_folder_info_offline): if we're getting
