@@ -163,7 +163,7 @@ groupwise_send_to (CamelTransport *transport,
 	/*camel groupwise store and cnc*/
 	store = camel_session_get_store (service->session, url, ex ) ;
 	if (!store) {
-		g_error ("ERROR: Could not get a pointer to the store") ;
+		g_warning ("ERROR: Could not get a pointer to the store") ;
 		camel_operation_end (NULL) ;
 		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("Cannot get folder: Invalid operation on this store"));
 		return FALSE ;

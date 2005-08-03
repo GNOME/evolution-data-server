@@ -1,5 +1,11 @@
 2005-08-02 Vivek Jain <jvivek@novell.com>
 	
+	* camel-groupwise-transport.c: (groupwise_send_to)
+	if account is not even enabled we don't have that store.
+	g_error crashes evolution for that, use g_warning
+
+2005-08-02 Vivek Jain <jvivek@novell.com>
+	
 	* camel-groupwise-folder.c: (transfer_messages_to)
 	check for the flags to be reset while transferring to/from junk
 	folder.
