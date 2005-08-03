@@ -309,12 +309,12 @@ groupwise_store_query_auth_types (CamelService *service, CamelException *ex)
 static gboolean
 groupwise_is_system_folder (const char *folder_name)
 {
-	if (!g_ascii_strncasecmp (folder_name, "Mailbox",7 ) ||
-	    !g_ascii_strncasecmp (folder_name, "Trash", 5) ||
-	    !g_ascii_strncasecmp (folder_name, "Junk Mail", 9) ||
-	    !g_ascii_strncasecmp (folder_name, "Sent Items", 10) ||
-	    !g_ascii_strncasecmp (folder_name, "Cabinet", 7) ||
-	    !g_ascii_strncasecmp (folder_name, "Documents", 9) )
+	if (!strcmp (folder_name, "Mailbox") ||
+	    !strcmp (folder_name, "Trash") ||
+	    !strcmp (folder_name, "Junk Mail") ||
+	    !strcmp (folder_name, "Sent Items") ||
+	    !strcmp (folder_name, "Cabinet") ||
+	    !strcmp (folder_name, "Documents") )
 		return TRUE;
 	else
 		return FALSE;

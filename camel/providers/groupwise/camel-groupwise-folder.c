@@ -682,7 +682,7 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 		return NULL;
 	}
 
-	if (!g_ascii_strncasecmp (folder_name, "Mailbox", 7)) {
+	if (!strcmp (folder_name, "Mailbox")) {
 		if (camel_url_get_param (((CamelService *) store)->url, "filter"))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 	}
@@ -793,7 +793,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	groupwise_sync (folder, FALSE, ex);
 	/*Done....should refresh now.....*/
 
-	if (!g_ascii_strncasecmp (folder->full_name, "Trash", 5) || is_proxy) {
+	if (!strcmp (folder->full_name, "Trash") || is_proxy) {
 		g_print ("get_items:%s\n", folder->full_name);
 		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution created attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -920,7 +920,7 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		return;
 	}
 	
-	if (!g_ascii_strncasecmp (folder->full_name, JUNK_FOLDER, 9)) {
+	if (!strcmp (folder->full_name, JUNK_FOLDER)) {
 		is_junk = TRUE;
 	}
 
@@ -986,7 +986,7 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		mi->info.flags |= status_flags;
 
 		priority = e_gw_item_get_priority (item);
-		if (priority && !(g_ascii_strncasecmp (priority,"High", 4))) {
+		if (priority && !(g_ascii_strcasecmp (priority,"High"))) {
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
 		}
 
@@ -996,8 +996,8 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			gboolean has_attachments = TRUE;
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 
-			if (!g_ascii_strncasecmp (attach->name, "Mime.822", 8) ||
-			    !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) 
+			if (!g_ascii_strcasecmp (attach->name, "Mime.822") ||
+			    !g_ascii_strcasecmp (attach->name, "TEXT.htm")) 
 				has_attachments = FALSE;
 
 			if (has_attachments)
@@ -1108,7 +1108,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		return;
 	}
 	
-	if (!g_ascii_strncasecmp (folder->full_name, JUNK_FOLDER, 9)) {
+	if (!strcmp (folder->full_name, JUNK_FOLDER)) {
 		is_junk = TRUE;
 	}
 
@@ -1156,7 +1156,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		mi->info.flags |= status_flags;
 
 		priority = e_gw_item_get_priority (item);
-		if (priority && !(g_ascii_strncasecmp (priority,"High", 4))) {
+		if (priority && !(g_ascii_strcasecmp (priority,"High"))) {
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
 		}
 
@@ -1166,8 +1166,8 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			gboolean has_attachments = TRUE;
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 
-			if (!g_ascii_strncasecmp (attach->name, "Mime.822", 8) ||
-			    !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) 
+			if (!g_ascii_strcasecmp (attach->name, "Mime.822") ||
+			    !g_ascii_strcasecmp (attach->name, "TEXT.htm")) 
 				has_attachments = FALSE;
 
 			if (has_attachments)
@@ -1267,8 +1267,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		char *attachment = NULL;
 		int len = 0;
 
-		if (!g_ascii_strncasecmp (attach->name, "Mime.822", 8) ||
-		    !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) {
+		if (!g_ascii_strcasecmp (attach->name, "Mime.822") ||
+		    !g_ascii_strcasecmp (attach->name, "TEXT.htm")) {
 			
 			status = e_gw_connection_get_attachment (cnc,
 					attach->id, 0, -1,
@@ -1279,7 +1279,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				return NULL;
 			}
 			if (attachment && (len !=0) ) {
-				if (!g_ascii_strncasecmp (attach->name, "TEXT.htm", 8)) {
+				if (!g_ascii_strcasecmp (attach->name, "TEXT.htm")) {
 					body = g_strdup (attachment);
 					g_free (attachment);
 				} 
@@ -1338,11 +1338,11 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			CamelMimePart *part;
 			EGwItem *temp_item;
 
-			if ( !g_ascii_strncasecmp (attach->name, "TEXT.htm", 8) ||
-			     !g_ascii_strncasecmp (attach->name, "Mime.822", 8))
+			if ( !g_ascii_strcasecmp (attach->name, "TEXT.htm") ||
+			     !g_ascii_strcasecmp (attach->name, "Mime.822"))
 				continue;
 			
-			if ( (attach->item_reference) && (!g_ascii_strncasecmp (attach->item_reference, "1", 1)) ) {
+			if ( (attach->item_reference) && (!g_ascii_strcasecmp (attach->item_reference, "1")) ) {
 				CamelMimeMessage *temp_msg = NULL;
 				status = e_gw_connection_get_item (cnc, container_id, attach->id, "default distribution recipient message attachments subject notification created recipientStatus status", &temp_item);
 				if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -1597,9 +1597,9 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			CamelGroupwiseMessageInfo *src_info = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (source->summary, (const char*)uids->pdata[index]);
 			
 			/* we don't want to blindly copy the info: reset some flags not suitable for destination*/
-			if (!g_ascii_strncasecmp(source->full_name, JUNK_FOLDER, strlen(JUNK_FOLDER)))
+			if (!strcmp(source->full_name, JUNK_FOLDER))
 				camel_folder_set_message_flags (source, old_uid, CAMEL_GW_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN, 0);
-			else if (!g_ascii_strncasecmp(destination->full_name, JUNK_FOLDER, strlen(JUNK_FOLDER)))
+			else if (!strcmp(destination->full_name, JUNK_FOLDER))
 				camel_folder_set_message_flags (source, old_uid, CAMEL_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
 
 			CamelGroupwiseMessageInfo *dest_info = (CamelGroupwiseMessageInfo *)camel_message_info_clone((CamelMessageInfo *)src_info);

@@ -1,3 +1,11 @@
+2005-08-03 Vivek Jain <jvivek@novell.com>
+
+	* camel-groupwise-folder.c:
+	* camel-groupwise-store.c: Don't use g_ascii_strncasecmp in all
+	the cases when lenght is going to be constant, replace it with
+	g_ascii_strcasecmp where we need case insensitive comparison, 
+	and strcmp in others.
+
 2005-08-02 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-transport.c: (groupwise_send_to)
