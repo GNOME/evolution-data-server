@@ -928,21 +928,23 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	t = e_gw_item_get_start_date (item);
 	if (t) {
 		itt_utc = icaltime_from_string (t);
-		if (!icaltime_get_timezone (itt_utc))
-			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-		if (default_zone) {
-			itt = icaltime_convert_to_zone (itt_utc, default_zone); 
-			icaltime_set_timezone (&itt, default_zone);
-			dt.value = &itt;
-			dt.tzid = icaltimezone_get_tzid (default_zone);
+		
+		if (!is_allday) {
+			if (!icaltime_get_timezone (itt_utc))
+				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+			if (default_zone) {
+				itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+				icaltime_set_timezone (&itt, default_zone);
+				dt.value = &itt;
+				dt.tzid = icaltimezone_get_tzid (default_zone);
+			} else {
+				dt.value = &itt_utc;
+				dt.tzid = g_strdup ("UTC");
+			}
 		} else {
 			dt.value = &itt_utc;
-			dt.tzid = g_strdup ("UTC");
-		}
-		if (is_allday) {
-			dt.value->is_date = 1;
-			dt.tzid = NULL;
-		}
+		}	
+
 		e_cal_component_set_dtstart (comp, &dt);
 		g_free (t);
 	}
@@ -1054,24 +1056,26 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		t = e_gw_item_get_end_date (item);
 		if (t) {
 			itt_utc = icaltime_from_string (t);
-			if (!icaltime_get_timezone (itt_utc))
-				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-			if (default_zone) {
-				itt = icaltime_convert_to_zone (itt_utc, default_zone); 
-				icaltime_set_timezone (&itt, default_zone);
-				dt.value = &itt;
-				dt.tzid = icaltimezone_get_tzid (default_zone);
+
+			if (!is_allday) {
+				if (!icaltime_get_timezone (itt_utc))
+					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+				if (default_zone) {
+					itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+					icaltime_set_timezone (&itt, default_zone);
+					dt.value = &itt;
+					dt.tzid = icaltimezone_get_tzid (default_zone);
+				} else {
+					dt.value = &itt_utc;
+					dt.tzid = g_strdup ("UTC");
+				}
 			} else {
 				dt.value = &itt_utc;
-				dt.tzid = g_strdup ("UTC");
 			}
-			if (is_allday) {
-				dt.value->is_date = 1;
-				dt.tzid = NULL;
-			}	
+
 			e_cal_component_set_dtend (comp, &dt);
 		}
-		
+
 
 		/* alarms*/
 		/* we negate the value as GW supports only "before" the start of event alarms */

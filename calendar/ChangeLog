@@ -1,3 +1,10 @@
+2005-08-02  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #310328
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Assign the date value alone
+	for start and end date if its an allday event.
+
 2005-07-27  Mengjie Yu  <meng-jie.yu@sun.com>
 
 	* backends/file/e-cal-backend-file-events.c:

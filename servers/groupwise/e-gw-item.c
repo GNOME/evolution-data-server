@@ -1814,7 +1814,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			g_free (value);
 			g_free (formatted_date);
 		
-		} else if (!g_ascii_strcasecmp (name, "endDate")) {
+		} else if (!g_ascii_strcasecmp (name, "endDate") || !g_ascii_strcasecmp (name, "endDay")) {
 			char *formatted_date; 
 			value = soup_soap_parameter_get_string_value (child);
 			formatted_date = e_gw_connection_format_date_string (value);
@@ -1916,7 +1916,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			g_free (priority);
 		}
 
-		else if (!g_ascii_strcasecmp (name, "startDate")) {
+		else if (!g_ascii_strcasecmp (name, "startDate") || !g_ascii_strcasecmp (name, "startDay")) {
 			char *formatted_date;
 			value = soup_soap_parameter_get_string_value (child);
 			formatted_date = e_gw_connection_format_date_string (value);
