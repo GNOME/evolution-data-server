@@ -1,3 +1,9 @@
+2005-08-03  Not Zed  <NotZed@Ximian.com>
+
+	* camel-mime-message.c (process_header): return false if we have a
+	to/cc/etc, we can have multiple instances of all of these, and we
+	dont want to strip them.
+
 2005-04-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	Fix for bug #273945
