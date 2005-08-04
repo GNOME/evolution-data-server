@@ -257,6 +257,8 @@ groupwise_connect (CamelService *service, CamelException *ex)
 		camel_service_disconnect (service, TRUE, NULL);
 		return FALSE;
 	}
+	
+	service->status = CAMEL_SERVICE_CONNECTED;
 
 	if (!e_gw_connection_get_version (priv->cnc)) {
 		camel_session_alert_user(session, 
@@ -711,6 +713,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 
 		if (type == E_GW_CONTAINER_TYPE_INBOX)
 			fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
+		if (type == E_GW_CONTAINER_TYPE_TRASH)
+			fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
 
 		if ( (type == E_GW_CONTAINER_TYPE_INBOX) ||
 		     (type == E_GW_CONTAINER_TYPE_OUTBOX) ||

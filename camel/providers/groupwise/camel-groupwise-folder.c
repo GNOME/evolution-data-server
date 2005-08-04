@@ -1656,9 +1656,22 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	
 	CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
 	
-	changes = camel_folder_change_info_new ();
-
 	cnc = cnc_lookup (priv);
+	if (!cnc)
+		return;
+
+	if (!strcmp (folder->full_name, "Trash")) {
+		status = e_gw_connection_purge_deleted_items (cnc);
+		if (status == E_GW_CONNECTION_STATUS_OK) {
+			camel_folder_summary_clear (folder->summary);
+			camel_folder_summary_save (folder->summary);
+		} else
+			g_warning ("Could not Empty Trash\n");
+		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+		return;
+	}
+	
+	changes = camel_folder_change_info_new ();
 	
 	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->full_name)) ;
 

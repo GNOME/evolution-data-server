@@ -1,3 +1,13 @@
+2005-08-04  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	* camel-groupwise-store.c:
+	(groupwise_connect): set the service status flag to
+	connected.
+	* camel-groupwise-folder.c:
+	(groupwise_expunge): purge items if it is a Trash 
+	Folder.
+	Fixes Bug ** 311887
+	
 2005-08-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: 
