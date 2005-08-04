@@ -174,20 +174,6 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	
 	CAMEL_SERVICE_LOCK(store, connect_lock);
 
-	/* setup store-wide cache */
-	if (store->cache == NULL) {
-		if (store->storage_path == NULL)
-			goto fail;
-		
-		store->cache = camel_data_cache_new (store->storage_path, 0, ex);
-		if (store->cache == NULL)
-			goto fail;
-		
-		/* Default cache expiry - 2 weeks old, or not visited in 5 days */
-		camel_data_cache_set_expire_age (store->cache, 60*60*24*14);
-		camel_data_cache_set_expire_access (store->cache, 60*60*24*5);
-	}
-	
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL
 		if (ssl_mode == MODE_TLS) {
@@ -1012,6 +998,9 @@ nntp_store_finalize (CamelObject *object)
 		g_free(xover);
 		xover = xn;
 	}
+
+	if (nntp_store->cache)
+		camel_object_unref(nntp_store->cache);
 	
 	g_free(p);
 }
@@ -1100,8 +1089,16 @@ nntp_construct (CamelService *service, CamelSession *session,
 		nntp_store->folder_hierarchy_relative = TRUE;
 	else
 		nntp_store->folder_hierarchy_relative = FALSE;
-}
 
+	/* setup store-wide cache */
+	nntp_store->cache = camel_data_cache_new(nntp_store->storage_path, 0, ex);
+	if (nntp_store->cache == NULL)
+		return;
+		
+	/* Default cache expiry - 2 weeks old, or not visited in 5 days */
+	camel_data_cache_set_expire_age(nntp_store->cache, 60*60*24*14);
+	camel_data_cache_set_expire_access(nntp_store->cache, 60*60*24*5);
+}
 
 static void
 nntp_store_init (gpointer object, gpointer klass)
