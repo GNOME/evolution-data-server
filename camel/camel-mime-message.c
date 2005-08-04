@@ -686,7 +686,7 @@ process_header (CamelMedium *medium, const char *name, const char *value)
 			camel_address_decode (CAMEL_ADDRESS (addr), value);
 		else
 			camel_address_remove (CAMEL_ADDRESS (addr), -1);
-		break;
+		return FALSE;
 	case HEADER_DATE:
 		if (value) {
 			message->date = camel_header_decode_date (value, &message->date_offset);
