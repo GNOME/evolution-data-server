@@ -1,3 +1,10 @@
+2005-08-04  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c
+	(groupwise_folder_item_to_msg): set the CamelMimeMsg into
+	a CamelMimePart and then into a CamelMultipart.
+	Fixes Bug ** #312535
+
 2005-08-04 Dinesh Layek < LDinesh@novell.com >
 
        	Fixes #305304

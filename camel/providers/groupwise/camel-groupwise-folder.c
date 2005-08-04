@@ -1348,11 +1348,14 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				}
 				temp_msg = groupwise_folder_item_to_msg(folder, temp_item, ex);
 				if (temp_msg) {
-					camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/mixed");
-					camel_multipart_set_boundary (multipart, NULL);
-					camel_mime_part_set_content_type ( (CamelMimePart *)temp_msg, "message/rfc822");
-					camel_multipart_add_part (multipart,(CamelMimePart *)temp_msg);
+					CamelContentType *ct = camel_content_type_new("message", "rfc822");
+					part = camel_mime_part_new ();
+					camel_data_wrapper_set_mime_type_field(CAMEL_DATA_WRAPPER (temp_msg), ct);
+					camel_content_type_unref(ct);
+					camel_medium_set_content_object ( CAMEL_MEDIUM (part),CAMEL_DATA_WRAPPER(temp_msg));
+					camel_multipart_add_part (multipart,part);
 					camel_object_unref (temp_msg);
+					camel_object_unref (part);
 				}
 				g_object_unref (temp_item);
 			} else {
@@ -1850,15 +1853,15 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	
 	temp = e_gw_item_get_message (item);
 	if (temp) {
-		g_string_append(str, "DESCRIPTION:");
+		g_string_append(gstr, "DESCRIPTION:");
 		while (*temp) {
 			if (*temp == '\n')
-				g_string_append(str, "\\n");
+				g_string_append(gstr, "\\n");
 			else
-				g_string_append_c(str, *temp);
+				g_string_append_c(gstr, *temp);
 			temp++;
 		}
-		g_string_append(str, "\n");	
+		g_string_append(gstr, "\n");	
 	}
 
 	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
