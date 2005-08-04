@@ -1849,8 +1849,17 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));
 	
 	temp = e_gw_item_get_message (item);
-	if (temp)
-		g_string_append_printf (gstr, "DESCRIPTION:%s\n", e_gw_item_get_message (item));
+	if (temp) {
+		g_string_append(str, "DESCRIPTION:");
+		while (*temp) {
+			if (*temp == '\n')
+				g_string_append(str, "\\n");
+			else
+				g_string_append_c(str, *temp);
+			temp++;
+		}
+		g_string_append(str, "\n");	
+	}
 
 	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
 	g_string_append_printf (gstr, "X-GWMESSAGEID:%s\n", e_gw_item_get_id (item));

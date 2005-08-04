@@ -1,3 +1,10 @@
+2005-08-04 Dinesh Layek < LDinesh@novell.com >
+
+       	Fixes #305304
+	* camel-groupwise-folder.c
+       (convert_to_calendar): encoded the new-line('\n') characters 
+       of description-field as \n (two different characters'\','n').
+
 2005-08-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* camel-groupwise-store.c:
