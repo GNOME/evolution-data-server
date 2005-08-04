@@ -1478,14 +1478,14 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
         EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
-        const char *session;
+        SoupSoapParameter *param, *subparam, *param_outstanding;
+        const char *session, *outstanding = NULL;
 	gboolean resend_request = TRUE;
 	int request_iteration = 0;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
-        /* Perform startFreeBusySession */
+	/* Perform startFreeBusySession */
         status = start_freebusy_session (cnc, users, start, end, &session); 
         /*FIXME log error messages  */
         if (status != E_GW_CONNECTION_STATUS_OK)
@@ -1516,6 +1516,26 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
                 return status;
         }
 
+	param = soup_soap_response_get_first_parameter_by_name (response, "freeBusyStats");
+        if (!param) {
+                g_object_unref (response);
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+        }
+
+	param_outstanding = soup_soap_parameter_get_first_child_by_name (param, "outstanding");
+	if (param_outstanding)
+		outstanding = soup_soap_parameter_get_string_value (param_outstanding);
+	/* Try 12 times - this is approximately 2 minutes of time to
+	 * obtain the free/busy information from the server */
+	if (outstanding && strcmp (outstanding, "0") && (request_iteration < 12)) {
+		request_iteration++;
+		g_object_unref (msg);
+		g_object_unref (response);
+		g_usleep (10000000);
+		goto resend;
+	}
+
         /* FIXME  the FreeBusyStats are not used currently.  */
         param = soup_soap_response_get_first_parameter_by_name (response, "freeBusyInfo");
         if (!param) {
@@ -1523,27 +1543,6 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
-
-	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "freeBusyStats");
-	     subparam != NULL;
-	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "freeBusyStats")) {
-		SoupSoapParameter *param_outstanding;
-		const char *outstanding = NULL;
-
-		param_outstanding = soup_soap_parameter_get_first_child_by_name (subparam, "outstanding");
-		if (param_outstanding)
-			outstanding = soup_soap_parameter_get_string_value (param_outstanding);
-		/* Try 12 times - this is approximately 2 minutes of time to
-		 * obtain the free/busy information from the server */
-		if (outstanding && strcmp (outstanding, "0") && (request_iteration < 12)) {
-			request_iteration++;
-			g_object_unref (msg);
-		        g_object_unref (response);
-			g_usleep (10000000);
-			goto resend;
-		}
-
-	}
 
 	resend_request = FALSE;
 

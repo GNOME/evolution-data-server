@@ -1,3 +1,10 @@
+2005-08-04  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #305590
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_get_freebusy_info): Get the FreeBusyStatus
+	element from the response before getting the FreeBusyInfo.
+
 2005-08-02  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #310328
