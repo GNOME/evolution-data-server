@@ -736,6 +736,7 @@ AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], have_addrinfo,
 		#include <sys/socket.h>
 		#include <netinet/in.h>
 		#include <netdb.h>
+		#include <stddef.h>
 
 	],[
 		struct addrinfo hints, *res;
