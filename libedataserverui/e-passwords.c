@@ -472,6 +472,8 @@ ep_ask_password(EPassMsg *msg)
 								: _("_Remember this password for the remainder of this session"));
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (msg->check), *msg->remember);
 		gtk_box_pack_start (GTK_BOX (vbox), msg->check, TRUE, FALSE, 3);
+		if ((msg->flags & E_PASSWORDS_DISABLE_REMEMBER))
+			gtk_widget_set_sensitive(msg->check, FALSE);
 		gtk_widget_show (msg->check);
 	}
 	

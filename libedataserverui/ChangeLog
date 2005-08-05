@@ -1,3 +1,10 @@
+2005-08-04  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #308512.
+
+	* e-passwords.c (ep_ask_password): implement new flag to disable
+	the remember password box.
+
 2005-07-24  Vivek Jain  <jvivek@novell.com>
 	
 	* e-name-selector-dialog.c: "Section" structure has two new members
