@@ -1,3 +1,10 @@
+2005-08-05  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #304046.
+
+	* camel-imap4-folder.c (imap4_append_message): backport jeff's
+	patch for the non-existand 'uid append'.
+
 2005-02-03  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-engine.c (camel_imap4_engine_handle_untagged_1):
