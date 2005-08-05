@@ -1,3 +1,14 @@
+2005-08-05  Sushma Rai  <rsushma@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c 
+	(e_book_backend_groupwise_get_contact_list): If cache is up-to-date and
+	the query has a summary item, then reply from cache, for GroupWise 
+	system address book, as we update the system address book cache 
+	periodically and server does't support get_items_from_ids() is for 
+	system address book.
+	Freeing ids array in offline case. 
+	(build_cache): Added debug message.
+
 2005-08-02  Sushma Rai  <rsushma@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c 

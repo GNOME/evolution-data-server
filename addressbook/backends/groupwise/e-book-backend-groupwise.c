@@ -1837,6 +1837,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 				contacts = g_list_append (contacts, contact);	
 				g_object_unref (contact);
 			}
+			g_ptr_array_free (ids, TRUE);
 		}
 		else
 			contacts = e_book_backend_cache_get_contacts (egwb->priv->cache, query);
@@ -1855,12 +1856,12 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		return;
 		
 	case GNOME_Evolution_Addressbook_MODE_REMOTE:
-		
+
 		if (egwb->priv->cnc == NULL) {
 			e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_AuthenticationRequired, NULL);
 			return;
 		}
-	
+
 		match_needed = TRUE;
 		card_sexp = e_book_backend_sexp_new (query);
 		if (!card_sexp) {
@@ -1871,10 +1872,26 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		status = E_GW_CONNECTION_STATUS_OK;
 		if (egwb->priv->is_cache_ready ) {
 			if (egwb->priv->is_summary_ready && 
-			    e_book_backend_summary_is_summary_query (egwb->priv->summary, query))
+			    e_book_backend_summary_is_summary_query (egwb->priv->summary, query)) {
 				ids = e_book_backend_summary_search (egwb->priv->summary, query);
-			else
+
+				if (!egwb->priv->is_writable) {
+					int i;
+					for (i = 0; i < ids->len; i ++) {
+						char *uid = g_ptr_array_index (ids, i);
+						contact = e_book_backend_cache_get_contact (egwb->priv->cache, uid);
+						vcard_list = g_list_append (vcard_list,
+                                                            e_vcard_to_string (E_VCARD (contact),
+                                                            EVC_FORMAT_VCARD_30));
+						g_object_unref (contact);
+					}
+					g_ptr_array_free (ids, TRUE);
+					ids->len = 0;
+				}
+			}
+			else {
 				ids = e_book_backend_cache_search (egwb->priv->cache, query);
+			}
 
 			if (ids->len > 0) {
 				status = e_gw_connection_get_items_from_ids (egwb->priv->cnc, 
@@ -2416,6 +2433,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	GroupwiseBackendSearchClosure *closure;
 	char *status_msg;
 	struct timeval start, end;
+	struct timeval tstart, tend;
 	unsigned long diff;
 
 	if (enable_debug) {
@@ -2444,9 +2462,17 @@ build_cache (EBookBackendGroupwise *ebgw)
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	while (!done) {
 
+		if (enable_debug) 
+			gettimeofday(&tstart, NULL);
 		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, 
 						      cursor, TRUE, CURSOR_ITEM_LIMIT, 
 						      position, &gw_items);
+		if (enable_debug) {
+			gettimeofday(&tend, NULL);
+			diff = tend.tv_sec * 1000 + tend.tv_usec/1000;
+			diff -= tstart.tv_sec * 1000 + tstart.tv_usec/1000;
+			printf("e_gw_connection_read_cursor took %ld.%03ld seconds for %d contacts\n", diff / 1000, diff % 1000, CURSOR_ITEM_LIMIT);
+		}
 
 		for (l = gw_items; l != NULL; l = g_list_next (l)) { 
 			contact_num++;
