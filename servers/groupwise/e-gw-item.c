@@ -2828,7 +2828,8 @@ e_gw_item_add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 static void
 add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *msg)
 {
-	char *size ;
+	char *size = NULL;
+
 	soup_soap_message_start_element (msg, "attachment", NULL, NULL) ;
 
 	/*id*/
