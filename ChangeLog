@@ -1,3 +1,9 @@
+2005-08-08  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in: Update version, libtool numbers.
+	
+	*****Release 1.3.7*****
+
 2005-08-05  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: fix for bug #300048. patch
