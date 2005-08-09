@@ -1,10 +1,13 @@
-2005-08-09  Sankar P  <psankar@novell.com>
-	
-	* backends/groupwise/e-cal-backend-groupwise.c:
-	(e_cal_backend_groupwise_create_object): Added check to handle
-	the scenario when the server doesnot return the proper list.
-	Fixes #312457
-	
+2005-08-06  P. S. Chakravarthi	<pchakravarthi@novell.com>
+
+	Fixes #309499
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_attendees_to_item): Reset the 'delfrom' parameter to 
+	empty string and set the attendee_list back to the ECalComponent
+       	so that recipient list is build, containing current invitees 
+	only.  
+
+
 2005-08-04  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #305590

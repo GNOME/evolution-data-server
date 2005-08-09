@@ -343,6 +343,7 @@ static void
 set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default_zone, gboolean delegate, const char *user_email)
 {
 	if (e_cal_component_has_attendees (comp)) {
+		gboolean att_changed = FALSE;
 		GSList *attendee_list, *recipient_list = NULL, *al;
 
 		e_cal_component_get_attendee_list (comp, &attendee_list);	
@@ -353,6 +354,11 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 			if (delegate && (g_str_equal (attendee->value + 7, user_email) || !(attendee->delfrom && *attendee->delfrom)))
 				continue;		
 			
+			if (delegate) {
+				attendee->delfrom = "";
+				att_changed = TRUE;
+			}
+	
 			recipient = g_new0 (EGwItemRecipient, 1);
 
 			/* len (MAILTO:) + 1 = 7 */
@@ -375,6 +381,13 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 			recipient_list = g_slist_append (recipient_list, recipient);
 		}
 
+		/* Reset the ECalComponent with changes if necessary*/
+		if(att_changed)
+			e_cal_component_set_attendee_list (comp, attendee_list);	
+
+		e_cal_component_free_attendee_list(attendee_list);
+	
+		/* recipient_list shouldn't be freed. Look into the function below. */
 		e_gw_item_set_recipient_list (item, recipient_list);
 
 		/* Send Options */
@@ -1887,22 +1900,27 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 gboolean
 e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const char *email)
 {
-	GSList *attendee_list, *l;
-	ECalComponentAttendee  *attendee = NULL;
+	icalproperty *prop;	
+	icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
+	
+	/*TODO remove the argument email */
+	prop = icalcomponent_get_first_property (icalcomp,
+						 ICAL_X_PROPERTY);
+	while (prop) {
+		const char *x_name, *x_val;
 
-
-	e_cal_component_get_attendee_list (comp, &attendee_list);
-	for (l = attendee_list; l ; l = g_slist_next (l)) {
-		attendee = l->data;
-
-		if (g_str_equal (attendee->value + 7, email)) {
-		       	if (attendee->status == ICAL_PARTSTAT_DELEGATED)
-				return TRUE;
-			else
-				return FALSE;
+		x_name = icalproperty_get_x_name (prop);
+		x_val = icalproperty_get_x (prop);
+		if (!strcmp (x_name, "X-EVOLUTION-DELEGATED")) {
+			icalcomponent_remove_property (icalcomp, prop);
+			return TRUE;
 		}
-	}
 
-	return FALSE;
+		prop = icalcomponent_get_next_property (e_cal_component_get_icalcomponent (comp),
+							ICAL_X_PROPERTY);
+ 	}
+ 
+ 	return FALSE;
+
 }
 
