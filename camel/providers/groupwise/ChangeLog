@@ -1,5 +1,16 @@
-2005-04-17  Changwoo Ryu  <cwryu@debian.org>
+2005-08-09 Vivek Jain <jvivek@novell.com>
 
+	* camel-groupwise-utils.c : (camel_groupwise_util_item_from_message)
+	check for the content type, Message can be none other than text/plain,
+	.(server doesn't support it). if its not, send as attachment,
+	Moved the code of handling attachment part into a new function 
+	:(send_as_attachment).
+	**Fixes: #310325
+
+2005-08-09: NotZed <notzed@ximian.com>
+	
+	patch by:
+	(2005-04-17  Changwoo Ryu  <cwryu@debian.org>)
 	** See bug #300891
 	
 	* Makefile.am (INCLUDES): define
@@ -17,10 +28,10 @@
 
 2005-08-04 Dinesh Layek < LDinesh@novell.com >
 
-       	Fixes #305304
+	Fixes #305304
 	* camel-groupwise-folder.c
-       (convert_to_calendar): encoded the new-line('\n') characters 
-       of description-field as \n (two different characters'\','n').
+	(convert_to_calendar): encoded the new-line('\n') characters 
+	of description-field as \n (two different characters'\','n').
 
 2005-08-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 
