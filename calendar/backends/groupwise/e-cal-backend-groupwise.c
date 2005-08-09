@@ -1733,7 +1733,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			e_cal_backend_cache_put_component (priv->cache, comp);
 			*calobj = e_cal_component_get_as_string (comp);
 		} else {
-			
+			EGwConnectionStatus status;	
 			GList *list = NULL, *tmp;
 			GPtrArray *uid_array = g_ptr_array_new ();
 			for (l = uid_list; l; l = g_slist_next (l)) {
@@ -1741,12 +1741,16 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			}
 			
 			/* convert uid_list to GPtrArray and get the items in a list */
-			e_gw_connection_get_items_from_ids (priv->cnc,
+			status = e_gw_connection_get_items_from_ids (priv->cnc,
 					priv->container_id, 
 					"attachments recipients message recipientStatus default peek",
 					uid_array, &list);
-			/* FIXME  check if list is null and status may have
-			 * failed. */
+
+			if (status != E_GW_CONNECTION_STATUS_OK || (list == NULL) || (g_list_length (list) == 0)) {
+				g_ptr_array_free (uid_array, TRUE);
+				return GNOME_Evolution_Calendar_OtherError;
+			}
+			
 			comp = g_object_ref ( (ECalComponent *) list->data );
 			/* convert items into components and add them to the cache */
 			for (i=0, tmp = list; tmp ; tmp = g_list_next (tmp), i++) {
