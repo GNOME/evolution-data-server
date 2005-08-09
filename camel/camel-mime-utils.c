@@ -1316,7 +1316,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 			/* proclen will be the result of input characters that we can convert, to the nearest
 			   (approximated) valid utf8 char */
 			convlen = 0;
-			proclen = 0;
+			proclen = -1;
 			p = inptr;
 			i = 0;
 			while (p < (in+len) && convlen < (75 - strlen("=?utf-8?q\?\?="))) {
@@ -1332,8 +1332,10 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 				else
 					convlen += 3;
 			}
+			if (proclen >= 0 && proclen < i && convlen < (75 - strlen("=?utf-8?q\?\?=")))
+				proclen = i;
 			/* well, we probably have broken utf8, just copy it anyway what the heck */
-			if (proclen == 0) {
+			if (proclen == -1) {
 				w(g_warning("Appear to have truncated utf8 sequence"));
 				proclen = inlen;
 			}

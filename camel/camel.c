@@ -37,6 +37,7 @@
 
 #include "camel.h"
 #include "camel-certdb.h"
+#include "camel-i18n.h"
 #include "camel-mime-utils.h"
 #include "camel-provider.h"
 #include "camel-debug.h"
@@ -74,6 +75,9 @@ camel_init (const char *configdir, gboolean nss_init)
 	
 	if (initialised)
 		return 0;
+
+	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
 	camel_debug_init();
 
