@@ -8,6 +8,7 @@ INCLUDES =					\
 	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)/camel			\
 	$(CAMEL_CFLAGS)				\
+	-DCAMEL_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"	\
 	-DG_LOG_DOMAIN=\"camel-smtp-provider\"
 
 libcamelsmtp_la_SOURCES = 			\
