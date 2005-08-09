@@ -1,3 +1,20 @@
+2005-04-17  Changwoo Ryu  <cwryu@debian.org>
+
+	** See bug #300891
+	
+	* Makefile.am (INCLUDES): define
+	CAMEL_EXPLICIT_TRANSLATION_DOMAIN.
+
+	* camel-imap-provider.c (camel_provider_module_init):
+	set translation_domain in CamelProvider struct.
+
+2005-08-09  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #309906.
+
+	* camel-imap-utils.c (imap_atom_specials[]): Fixed the
+	resp_specials entry, fixed the rfc reference.
+
 2005-08-02  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #309237.
