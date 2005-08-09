@@ -204,6 +204,7 @@ void camel_provider_module_init(void)
 	mh_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mh_store_get_type ();
 	mh_provider.url_hash = local_url_hash;
 	mh_provider.url_equal = local_url_equal;
+	mh_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register(&mh_provider);
 	
 	if (!(path = getenv ("MAIL")))
@@ -212,12 +213,14 @@ void camel_provider_module_init(void)
 	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mbox_store_get_type ();
 	mbox_provider.url_hash = local_url_hash;
 	mbox_provider.url_equal = local_url_equal;
+	mbox_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register(&mbox_provider);
 	
 	spool_conf_entries[0].value = path;  /* default path - same as mbox */
 	spool_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
 	spool_provider.url_hash = local_url_hash;
 	spool_provider.url_equal = local_url_equal;
+	spool_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register(&spool_provider);
 	
 	path = getenv("MAILDIR");
@@ -225,5 +228,6 @@ void camel_provider_module_init(void)
 	maildir_provider.object_types[CAMEL_PROVIDER_STORE] = camel_maildir_store_get_type ();
 	maildir_provider.url_hash = local_url_hash;
 	maildir_provider.url_equal = local_url_equal;
+	maildir_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register(&maildir_provider);
 }
