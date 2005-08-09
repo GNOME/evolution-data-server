@@ -1,3 +1,13 @@
+2005-04-17  Changwoo Ryu  <cwryu@debian.org>
+
+	** See bug #300891
+	
+	* Makefile.am (INCLUDES): define
+	CAMEL_EXPLICIT_TRANSLATION_DOMAIN.
+
+	* camel-imapp-provider.c (camel_provider_module_init):
+	set translation_domain in CamelProvider struct.
+
 2004-11-11  Not Zed  <NotZed@Ximian.com>
 
 	* updates for camel folder summary api changes.

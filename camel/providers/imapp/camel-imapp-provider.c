@@ -85,6 +85,7 @@ camel_imapp_module_init(void)
 
 	imapp_provider.authtypes = g_list_prepend(imapp_provider.authtypes, camel_sasl_authtype_list(FALSE));
 	imapp_provider.authtypes = g_list_prepend(imapp_provider.authtypes, &camel_imapp_password_authtype);
+	imapp_provider.translation_domain = GETTEXT_PACKAGE;
 
 	/* blah ... could just use it in object setup? */
 	/* TEMPORARY */
