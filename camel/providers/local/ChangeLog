@@ -1,3 +1,13 @@
+2005-08-08  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #311639.
+
+	* camel-mh-store.c (folders_update): add a rename mode, fix
+	callers.
+	(folders_scan): pass top to folder_info_build, otherwise
+	get_folder_info doesn't work right.  Fix the check for subfolder
+	test.
+
 2005-06-08  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #303225
