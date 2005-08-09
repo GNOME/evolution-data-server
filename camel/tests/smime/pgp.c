@@ -127,6 +127,9 @@ int main (int argc, char **argv)
 	GByteArray *buf;
 	char *before, *after;
 	int ret;
+
+	if (getenv("CAMEL_TEST_GPG") == NULL)
+		return 77;
 	
 	camel_test_init (argc, argv);
 	

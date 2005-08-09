@@ -1,3 +1,12 @@
+2005-08-08  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #310496.
+
+	* smime/pgp.c (main): disable ourselves if CAMEL_TEST_GPG isn't
+	set.  In reality i've never gotten it to work and it depends on a
+	lot of things which change from distro to distro (e.g, gpg-agent
+	completely breaks it).
+
 2005-06-10  Not Zed  <NotZed@Ximian.com>
 
 	* misc/rfc2047.c: fixed compilation of test, and removed the
