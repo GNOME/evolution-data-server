@@ -134,6 +134,7 @@ camel_provider_module_init(void)
 	groupwise_provider.url_equal = groupwise_url_equal;
 	groupwise_provider.auto_detect = groupwise_auto_detect_cb;
 	groupwise_provider.authtypes = g_list_prepend (groupwise_provider.authtypes, &camel_groupwise_password_authtype);
+	groupwise_provider.translation_domain = GETTEXT_PACKAGE;
 	
 	if (use_imap)
 		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];

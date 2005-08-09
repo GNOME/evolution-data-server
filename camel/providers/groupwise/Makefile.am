@@ -12,6 +12,7 @@ INCLUDES = -I.. \
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
         $(SOUP_CFLAGS)                          \
+	-DCAMEL_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"	\
 	-DG_LOG_DOMAIN=\"camel-groupwise-provider\"
 
 libcamelgroupwise_la_SOURCES = 			\
