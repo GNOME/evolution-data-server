@@ -153,6 +153,7 @@ camel_provider_module_init (void)
 	imap4_provider.url_equal = imap4_url_equal;
 	imap4_provider.authtypes = camel_sasl_authtype_list (FALSE);
 	imap4_provider.authtypes = g_list_prepend (imap4_provider.authtypes, &camel_imap4_password_authtype);
+	imap4_provider.translation_domain = GETTEXT_PACKAGE;
 	
 	camel_provider_register (&imap4_provider);
 }

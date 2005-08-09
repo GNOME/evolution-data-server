@@ -12,6 +12,7 @@ INCLUDES = 					\
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
 	$(GTK_INCLUDEDIR)			\
+	-DCAMEL_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"	\
 	-DG_LOG_DOMAIN=\"camel-imap4-provider\"
 
 libcamelimap4_la_SOURCES = 			\
