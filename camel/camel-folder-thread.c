@@ -107,6 +107,7 @@ prune_empty(CamelFolderThread *thread, CamelFolderThreadNode **cp)
 	lastc = (CamelFolderThreadNode *)cp;
 	while (lastc->next) {
 		c = lastc->next;
+		prune_empty(thread, &c->child);
 
 		d(printf("checking message %p %p (%08x%08x)\n", c,
 			 c->message, c->message?c->message->message_id.id.part.hi:0,
@@ -135,7 +136,6 @@ prune_empty(CamelFolderThread *thread, CamelFolderThreadNode **cp)
 				continue;
 			}
 		}
-		prune_empty(thread, &c->child);
 		lastc = c;
 	}
 }
@@ -333,7 +333,8 @@ dump_tree_rec(struct _tree_info *info, CamelFolderThreadNode *c, int depth)
 			g_hash_table_insert(info->visited, c, c);
 		}
 		if (c->message) {
-			printf("%s %p Subject: %s <%.8s>\n", p, c, camel_message_info_subject(c->message), camel_message_info_message_id(c->message)->id.hash);
+			printf("%s %p Subject: %s <%08x%08x>\n", p, c, camel_message_info_subject(c->message),
+			       camel_message_info_message_id(c->message)->id.part.hi, camel_message_info_message_id(c->message)->id.part.lo);
 			count += 1;
 		} else {
 			printf("%s %p <empty>\n", p, c);
@@ -512,8 +513,8 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
 
 #if 0
 	printf("finished\n");
-	i = camel_folder_thread_messages_dump(head);
-	printf("%d count, %d items in tree\n", uids->len, i);
+	i = camel_folder_threaded_messages_dump(head);
+	printf("%d count, %d items in tree\n", summary->len, i);
 #endif
 
 	sort_thread(&head);
