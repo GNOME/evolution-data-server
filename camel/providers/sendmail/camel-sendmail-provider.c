@@ -55,7 +55,8 @@ camel_provider_module_init(void)
 	
 	sendmail_provider.url_hash = camel_url_hash;
 	sendmail_provider.url_equal = camel_url_equal;
-	
+	sendmail_provider.translation_domain = GETTEXT_PACKAGE;
+
 	camel_provider_register(&sendmail_provider);
 }
 
