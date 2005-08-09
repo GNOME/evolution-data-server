@@ -1,3 +1,10 @@
+2005-08-09  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** see bug #312857
+
+	* camel-groupwise-folder.c: (groupwise_refresh_folder):
+	update summary only if there are new/modified items
+
 2005-08-09 Vivek Jain <jvivek@novell.com>
 
 	* camel-groupwise-utils.c : (camel_groupwise_util_item_from_message)

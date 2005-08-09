@@ -797,12 +797,13 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end1;
 		}
-		if (!list || !g_list_length(list))
+		if (!list || !g_list_length(list)) {
 			camel_folder_summary_clear (folder->summary);
-		gw_update_summary (folder, list, ex);
-		g_list_foreach (list, (GFunc) g_object_unref, NULL);
-		g_list_free (list);
-		list = NULL;
+			gw_update_summary (folder, list, ex);
+			g_list_foreach (list, (GFunc) g_object_unref, NULL);
+			g_list_free (list);
+			list = NULL;
+		}
 		goto end1;
 	}
 
@@ -855,7 +856,8 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		gw_store->current_folder = folder;
 	}
 
-	gw_update_cache (folder, list, ex);
+	if (list)
+		gw_update_cache (folder, list, ex);
 	
 
 	/*
