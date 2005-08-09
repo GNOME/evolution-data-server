@@ -104,6 +104,7 @@ camel_provider_module_init(void)
 		pop3_provider.authtypes = g_list_prepend(pop3_provider.authtypes, auth);
 	pop3_provider.authtypes = g_list_prepend(pop3_provider.authtypes, &camel_pop3_apop_authtype);
 	pop3_provider.authtypes = g_list_prepend(pop3_provider.authtypes, &camel_pop3_password_authtype);
+	pop3_provider.translation_domain = GETTEXT_PACKAGE;
 
 	camel_provider_register(&pop3_provider);
 }
