@@ -108,14 +108,16 @@ enum {
 	UPDATE_NONE,
 	UPDATE_ADD,
 	UPDATE_REMOVE,
+	UPDATE_RENAME,
 };
 
 /* update the .folders file if it exists, or create it if it doesn't */
 static void
-folders_update(const char *root, const char *folder, int mode)
+folders_update(const char *root, int mode, const char *folder, const char *new)
 {
 	char *tmp, *tmpnew, *line = NULL;
 	CamelStream *stream, *in = NULL, *out = NULL;
+	int flen = strlen(folder);
 
 	tmpnew = g_alloca (strlen (root) + 16);
 	sprintf (tmpnew, "%s.folders~", root);
@@ -144,6 +146,16 @@ folders_update(const char *root, const char *folder, int mode)
 		case UPDATE_REMOVE:
 			if (strcmp(line, folder) == 0)
 				copy = FALSE;
+			break;
+		case UPDATE_RENAME:
+			if (strncmp(line, folder, flen) == 0
+			    && (line[flen] == 0 || line[flen] == '/')) {
+				if (camel_stream_write(out, new, strlen(new)) == -1
+				    || camel_stream_write(out, line+flen, strlen(line)-flen) == -1
+				    || camel_stream_write(out, "\n", 1) == -1)
+					goto fail;
+				copy = FALSE;
+			}
 			break;
 		case UPDATE_ADD: {
 			int cmp = strcmp(line, folder);
@@ -226,7 +238,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 		/* add to .folders if we are supposed to */
 		/* FIXME: throw exception on error */
 		if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-			folders_update(((CamelLocalStore *)store)->toplevel_dir, folder_name, UPDATE_ADD);
+			folders_update(((CamelLocalStore *)store)->toplevel_dir, UPDATE_ADD, folder_name, NULL);
 	} else if (!S_ISDIR(st.st_mode)) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				     _("Cannot get folder `%s': not a directory."), folder_name);
@@ -267,7 +279,7 @@ static void delete_folder(CamelStore * store, const char *folder_name, CamelExce
 
 	/* remove from .folders if we are supposed to */
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-		folders_update(((CamelLocalStore *)store)->toplevel_dir, folder_name, UPDATE_REMOVE);
+		folders_update(((CamelLocalStore *)store)->toplevel_dir, UPDATE_REMOVE, folder_name, NULL);
 
 	/* and remove metadata */
 	((CamelStoreClass *)parent_class)->delete_folder(store, folder_name, ex);
@@ -288,8 +300,7 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
 		/* yeah this is messy, but so is mh! */
-		folders_update(((CamelLocalStore *)store)->toplevel_dir, new, UPDATE_ADD);
-		folders_update(((CamelLocalStore *)store)->toplevel_dir, old, UPDATE_REMOVE);
+		folders_update(((CamelLocalStore *)store)->toplevel_dir, UPDATE_RENAME, old, new);
 	}
 }
 
@@ -482,8 +493,9 @@ folders_scan(CamelStore *store, CamelURL *url, const char *root, const char *top
 		if (top && top[0]) {
 			int toplen = strlen(top);
 
-			/* check is subdir */
-			if (strncmp(top, line, len) != 0)
+			/* check is dir or subdir */
+			if (strncmp(top, line, toplen) != 0
+			    || (line[toplen] != 0 && line[toplen] != '/'))
 				continue;
 		
 			/* check is not sub-subdir if not recursive */
@@ -508,7 +520,7 @@ folders_scan(CamelStore *store, CamelURL *url, const char *root, const char *top
 	}
 
 	if (folders->len)
-		*fip = camel_folder_info_build(folders, NULL, '/', TRUE);
+		*fip = camel_folder_info_build(folders, top, '/', TRUE);
 	g_ptr_array_free(folders, TRUE);
 
 	g_hash_table_foreach(visited, (GHFunc)g_free, NULL);
