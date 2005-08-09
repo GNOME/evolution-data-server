@@ -86,6 +86,7 @@ camel_provider_module_init(void)
 	news_provider.url_hash = nntp_url_hash;
 	news_provider.url_equal = nntp_url_equal;
 	news_provider.authtypes = g_list_append (NULL, &camel_nntp_password_authtype);
+	news_provider.translation_domain = GETTEXT_PACKAGE;
 	
 	camel_provider_register(&news_provider);
 }
