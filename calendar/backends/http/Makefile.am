@@ -19,9 +19,12 @@ libecalbackendhttp_la_SOURCES =		\
 	e-cal-backend-http.c		\
 	e-cal-backend-http.h
 
-libecalbackendhttp_la_LIBADD =							\
-	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
+libecalbackendhttp_la_LIBADD =						\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(EVOLUTION_CALENDAR_LIBS)					\
 	$(SOUP_LIBS)
 
 libecalbackendhttp_la_LDFLAGS =		\
-	-module -avoid-version
+	-module -avoid-version $(NO_UNDEFINED)

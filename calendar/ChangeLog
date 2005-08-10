@@ -2,13 +2,15 @@
 
 	* backends/contacts/Makefile.am
 	* backends/file/Makefile.am
-	* backends/groupwise/Makefile.am: Link with all used
-	libraries. Use -no-undefined on Win32.
+	* backends/groupwise/Makefile.am
+	* backends/http/Makefile.am: Link with all used libraries. Use
+	-no-undefined on Win32.
 
 	* backends/contacts/e-cal-backend-contacts-factory.c
 	* backends/file/e-cal-backend-file-factory.c
-	* backends/file/e-cal-backend-groupwise-factory.c: Drop inclusion
-	of <pthread.h>, these files do not use any pthread API.
+	* backends/file/e-cal-backend-groupwise-factory.c
+	* backends/file/e-cal-backend-http-factory.c: Drop inclusion of
+	<pthread.h>, these files do not use any pthread API.
 
 2005-08-06  P. S. Chakravarthi	<pchakravarthi@novell.com>
 
