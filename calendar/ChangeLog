@@ -5,15 +5,17 @@
 	* backends/groupwise/Makefile.am
 	* backends/http/Makefile.am
 	* backends/weather/Makefile.am
-	* libecal/Makefile.am: Link with all used libraries. Use
+	* libecal/Makefile.am
+	* libedata-cal/Makefile.am: Link with all used libraries. Use
 	-no-undefined on Win32.
 
 	* backends/contacts/e-cal-backend-contacts-factory.c
 	* backends/file/e-cal-backend-file-factory.c
 	* backends/groupwise/e-cal-backend-groupwise-factory.c
 	* backends/http/e-cal-backend-http-factory.c
-	* backends/weather/e-cal-backend-weather-factory.c: Drop inclusion
-	of <pthread.h>, these files do not use any pthread API.
+	* backends/weather/e-cal-backend-weather-factory.c
+	* libedata-cal/e-cal-backend-factory.c: : Drop inclusion of
+	<pthread.h>, these files do not use any pthread API.
 
 	* libecal/e-cal-component.c: No getgid() or getppid() on
 	Win32, #define as 0.

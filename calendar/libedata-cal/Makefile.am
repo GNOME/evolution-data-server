@@ -51,7 +51,7 @@ libedata_cal_1_2_la_LIBADD =					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
 libedata_cal_1_2_la_LDFLAGS = 								\
-	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE)
+	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE) $(NO_UNDEFINED)
 
 libedata_calincludedir = $(privincludedir)/libedata-cal
 
