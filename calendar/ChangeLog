@@ -4,7 +4,8 @@
 	* backends/file/Makefile.am
 	* backends/groupwise/Makefile.am
 	* backends/http/Makefile.am
-	* backends/weather/Makefile.am: Link with all used libraries. Use
+	* backends/weather/Makefile.am
+	* libecal/Makefile.am: Link with all used libraries. Use
 	-no-undefined on Win32.
 
 	* backends/contacts/e-cal-backend-contacts-factory.c

@@ -58,7 +58,7 @@ libecal_1_2_la_LIBADD =									\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la
 
 libecal_1_2_la_LDFLAGS = 								\
-	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE)
+	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE) $(NO_UNDEFINED)
 
 libecalincludedir = $(privincludedir)/libecal
 
