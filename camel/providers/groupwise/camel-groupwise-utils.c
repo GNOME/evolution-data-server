@@ -486,6 +486,9 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		e_gw_item_set_delay_until (item, send_options);
 
 	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_TRACK_WHEN);
+
+	/*we check if user has modified the status tracking options, if no then we anyway 
+	 * set status tracking all*/
 	if (send_options) {
 		switch (atoi(send_options)) {
 			case 1: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED);
@@ -497,7 +500,8 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			default: e_gw_item_set_track_info (item, E_GW_ITEM_NONE);
 				 break;
 		}
-	}
+	} else
+		e_gw_item_set_track_info (item, E_GW_ITEM_ALL);
 
 	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_AUTODELETE))
 		e_gw_item_set_autodelete (item, TRUE);

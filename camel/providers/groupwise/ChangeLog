@@ -6,6 +6,12 @@
 	update summary only if there are new/modified items
 
 2005-08-09 Vivek Jain <jvivek@novell.com>
+	
+	* camel-groupwise-utils.c : (camel_groupwise_util_item_from_message)
+	enable status tracking options by default, unless user modified them.
+	**Fixes #302963
+
+2005-08-09 Vivek Jain <jvivek@novell.com>
 
 	* camel-groupwise-utils.c : (camel_groupwise_util_item_from_message)
 	check for the content type, Message can be none other than text/plain,
