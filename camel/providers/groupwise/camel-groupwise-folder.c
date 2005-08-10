@@ -794,7 +794,11 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		g_print ("get_items:%s\n", folder->full_name);
 		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution created attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+			if (status ==E_GW_CONNECTION_OTHER) {
+				g_warning ("Trash full....Empty Trash!!!!\n");
+				/*groupwise_expunge (folder, ex);*/
+			} else
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end1;
 		}
 		if (!list || !g_list_length(list)) {

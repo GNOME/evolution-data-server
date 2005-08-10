@@ -951,7 +951,7 @@ groupwise_rename_folder(CamelStore *store,
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename GroupWise folders in offline mode."));
 		return;
 	}
-	CAMEL_SERVICE_LOCK (store, connect_lock);
+	CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
 	
 	container_id = camel_groupwise_store_container_id_lookup (groupwise_store, old_name);
 	temp_new = strrchr (new_name, '/');

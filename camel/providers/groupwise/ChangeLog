@@ -1,3 +1,10 @@
+2005-08-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** see bug 300797
+	
+	* camel-groupwise-folde.c: (groupwise_refresh_folder):
+	handle an error. 
+
 2005-08-09  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** see bug #312857
