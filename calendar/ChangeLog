@@ -1,8 +1,11 @@
-2005-08-10  Tor Lillqvist  <tml@novell.com>
+2005-08-11  Tor Lillqvist  <tml@novell.com>
 
 	* backends/contacts/Makefile.am (LIBADD): Link with all used
 	libraries.
 	(LDFLAGS): Use -no-undefined on Win32.
+
+	* backends/contacts/e-cal-backend-contacts-factory.c: Drop
+	inclusion of <pthread.h>, this file does not use any pthred API.
 
 2005-08-06  P. S. Chakravarthi	<pchakravarthi@novell.com>
 
