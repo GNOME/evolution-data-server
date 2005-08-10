@@ -142,7 +142,7 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	case 59914: return E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED;
 	case 59910: return E_GW_CONNECTION_STATUS_INVALID_CONNECTION;
 	case 59923: return E_GW_CONNECTION_STATUS_REDIRECT;
-	case 53530: return E_GW_CONNECTION_OTHER;
+	case 53530: return E_GW_CONNECTION_STATUS_OTHER;
 		/* FIXME: map all error codes */
 	}
 
