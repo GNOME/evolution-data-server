@@ -287,6 +287,16 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 			camel_object_trigger_event(store, "folder_opened", folder);
 	}
 
+	if (camel_debug_start(":store")) {
+		char *u = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_PASSWORD);
+
+		printf("CamelStore('%s'):get_folder('%s', %d) = %p\n", u, folder_name, flags, folder);
+		if (ex && ex->id)
+			printf("  failed: '%s'\n", ex->desc);
+		g_free(u);
+		camel_debug_end();
+	}
+
 	return folder;
 }
 
