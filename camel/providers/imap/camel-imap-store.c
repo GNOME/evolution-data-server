@@ -1105,6 +1105,10 @@ imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelEx
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
 	unlink (state_file);
 	g_free (state_file);
+
+	state_file = g_strdup_printf("%s/subfolders", folder_dir);
+	rmdir(state_file);
+	g_free(state_file);
 	
 	rmdir (folder_dir);
 	g_free (folder_dir);
@@ -1510,8 +1514,6 @@ imap_connect_online (CamelService *service, CamelException *ex)
 	
 	if (camel_exception_is_set (ex))
 		camel_service_disconnect (service, TRUE, NULL);
-	else if (camel_disco_diary_empty (disco_store->diary))
-		imap_store_refresh_folders (store, ex);
 	
 	return !camel_exception_is_set (ex);
 }
@@ -1528,8 +1530,6 @@ imap_connect_offline (CamelService *service, CamelException *ex)
 	g_free (path);
 	if (!disco_store->diary)
 		return FALSE;
-	
-	imap_store_refresh_folders (store, ex);
 	
 	store->connected = !camel_exception_is_set (ex);
 	return store->connected;
@@ -1856,14 +1856,8 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 			return NULL;
 		}
 		
-		if ((parent_name = strrchr (folder_name, '/'))) {
-			parent_name = g_strndup (folder_name, parent_name - folder_name);
-			parent_real = camel_imap_store_summary_path_to_full (imap_store->summary, parent_name, imap_store->dir_sep);
-		} else {
-			parent_real = NULL;
-		}
-		
-		c = parent_name ? parent_name : folder_name;
+		parent_name = strrchr(folder_name, '/');
+		c = parent_name ? parent_name+1 : folder_name;
 		while (*c && *c != imap_store->dir_sep && !strchr ("#%*", *c))
 			c++;
 		
@@ -1872,9 +1866,14 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 			camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
 					      _("The folder name \"%s\" is invalid because it contains the character \"%c\""),
 					      folder_name, *c);
-			g_free (parent_name);
-			g_free (parent_real);
 			return NULL;
+		}
+
+		if (parent_name) {
+			parent_name = g_strndup (folder_name, parent_name - folder_name);
+			parent_real = camel_imap_store_summary_path_to_full (imap_store->summary, parent_name, imap_store->dir_sep);
+		} else {
+			parent_real = NULL;
 		}
 		
 		if (parent_real != NULL) {
@@ -1965,10 +1964,9 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 		}
 		
 		g_free (parent_name);
-		
+
 		folder_real = camel_imap_store_summary_path_to_full(imap_store->summary, folder_name, imap_store->dir_sep);
 		response = camel_imap_command (imap_store, NULL, ex, "CREATE %S", folder_real);
-		
 		if (response) {
 			camel_imap_store_summary_add_from_full(imap_store->summary, folder_real, imap_store->dir_sep);
 
@@ -2026,24 +2024,27 @@ get_folder_offline (CamelStore *store, const char *folder_name,
 		    guint32 flags, CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
-	CamelFolder *new_folder;
-	char *folder_dir, *storage_path;
+	CamelFolder *new_folder = NULL;
+	CamelStoreInfo *si;
 
 	if (!g_ascii_strcasecmp (folder_name, "INBOX"))
 		folder_name = "INBOX";
-	
-	storage_path = g_strdup_printf("%s/folders", imap_store->storage_path);
-	folder_dir = imap_path_to_physical (storage_path, folder_name);
-	g_free(storage_path);
-	if (!folder_dir || access (folder_dir, F_OK) != 0) {
-		g_free (folder_dir);
+
+	si = camel_store_summary_path((CamelStoreSummary *)imap_store->summary, folder_name);
+	if (si) {
+		char *folder_dir, *storage_path;
+
+		storage_path = g_strdup_printf("%s/folders", imap_store->storage_path);
+		folder_dir = imap_path_to_physical (storage_path, folder_name);
+		g_free(storage_path);
+		new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
+		g_free(folder_dir);
+
+		camel_store_summary_info_free((CamelStoreSummary *)imap_store->summary, si);
+	} else {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				      _("No such folder %s"), folder_name);
-		return NULL;
 	}
-	
-	new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
-	g_free (folder_dir);
 	
 	return new_folder;
 }
@@ -2053,33 +2054,30 @@ delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
-	
-	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex))
-		return;
+
+	CAMEL_SERVICE_LOCK (imap_store, connect_lock);
+
+	if (!camel_imap_store_connected(imap_store, ex))
+		goto fail;
 	
 	/* make sure this folder isn't currently SELECTed */
 	response = camel_imap_command (imap_store, NULL, ex, "SELECT INBOX");
-	if (response) {
-		camel_imap_response_free_without_processing (imap_store, response);
-		
-		CAMEL_SERVICE_LOCK (imap_store, connect_lock);
-		
-		if (imap_store->current_folder)
-			camel_object_unref (imap_store->current_folder);
-		/* no need to actually create a CamelFolder for INBOX */
-		imap_store->current_folder = NULL;
-		
-		CAMEL_SERVICE_UNLOCK (imap_store, connect_lock);
-	} else
-		return;
-	
-	response = camel_imap_command (imap_store, NULL, ex, "DELETE %F",
-				       folder_name);
-	
+	if (!response)
+		goto fail;
+
+	camel_imap_response_free_without_processing (imap_store, response);
+	if (imap_store->current_folder)
+		camel_object_unref (imap_store->current_folder);
+	/* no need to actually create a CamelFolder for INBOX */
+	imap_store->current_folder = NULL;
+
+	response = camel_imap_command(imap_store, NULL, ex, "DELETE %F", folder_name);
 	if (response) {
 		camel_imap_response_free (imap_store, response);
 		imap_forget_folder (imap_store, folder_name, ex);
 	}
+fail:
+	CAMEL_SERVICE_UNLOCK(imap_store, connect_lock);
 }
 
 static void
@@ -2155,43 +2153,35 @@ rename_folder (CamelStore *store, const char *old_name, const char *new_name_in,
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
-	char *oldpath, *newpath, *storage_path, *new_name;
-	
-	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex))
-		return;
+	char *oldpath, *newpath, *storage_path;
+
+	CAMEL_SERVICE_LOCK (imap_store, connect_lock);
+
+	if (!camel_imap_store_connected(imap_store, ex))
+		goto fail;
 	
 	/* make sure this folder isn't currently SELECTed - it's
            actually possible to rename INBOX but if you do another
            INBOX will immediately be created by the server */
 	response = camel_imap_command (imap_store, NULL, ex, "SELECT INBOX");
-	if (response) {
-		camel_imap_response_free_without_processing (imap_store, response);
-		
-		CAMEL_SERVICE_LOCK (imap_store, connect_lock);
-		
-		if (imap_store->current_folder)
-			camel_object_unref (imap_store->current_folder);
-		/* no need to actually create a CamelFolder for INBOX */
-		imap_store->current_folder = NULL;
-		
-		CAMEL_SERVICE_UNLOCK (imap_store, connect_lock);
-	} else
-		return;
-	
+	if (!response)
+		goto fail;
+
+	camel_imap_response_free_without_processing (imap_store, response);
+	if (imap_store->current_folder)
+		camel_object_unref (imap_store->current_folder);
+	/* no need to actually create a CamelFolder for INBOX */
+	imap_store->current_folder = NULL;
+
 	imap_store->renaming = TRUE;
-	
 	if (imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
 		manage_subscriptions(store, old_name, FALSE);
 
-	new_name = camel_imap_store_summary_path_to_full(imap_store->summary, new_name_in, imap_store->dir_sep);
-	response = camel_imap_command (imap_store, NULL, ex, "RENAME %F %S", old_name, new_name);
-	
+	response = camel_imap_command (imap_store, NULL, ex, "RENAME %F %F", old_name, new_name_in);
 	if (!response) {
 		if (imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
 			manage_subscriptions(store, old_name, TRUE);
-		g_free(new_name);
-		imap_store->renaming = FALSE;
-		return;
+		goto fail;
 	}
 	
 	camel_imap_response_free (imap_store, response);
@@ -2215,9 +2205,9 @@ rename_folder (CamelStore *store, const char *old_name, const char *new_name_in,
 	
 	g_free (oldpath);
 	g_free (newpath);
-	g_free(new_name);
-
+fail:
 	imap_store->renaming = FALSE;
+	CAMEL_SERVICE_UNLOCK(imap_store, connect_lock);
 }
 
 static CamelFolderInfo *
@@ -2655,8 +2645,6 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 	if (top == NULL)
 		top = "";
 
-	CAMEL_SERVICE_LOCK(store, connect_lock);
-
 	if (camel_debug("imap:folder_info"))
 		printf("get folder info online\n");
 
@@ -2667,24 +2655,30 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 
 		now = time(0);
 		ref = now > imap_store->refresh_stamp+60*60*1;
-		if (ref)
-			imap_store->refresh_stamp = now;
-
 		if (ref) {
-			struct _refresh_msg *m;
+			CAMEL_SERVICE_LOCK(store, connect_lock);
+			ref = now > imap_store->refresh_stamp+60*60*1;
+			if (ref) {
+				struct _refresh_msg *m;
 
-			m = camel_session_thread_msg_new(((CamelService *)store)->session, &refresh_ops, sizeof(*m));
-			m->store = store;
-			camel_object_ref(store);
-			camel_exception_init(&m->ex);
-			camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
+				imap_store->refresh_stamp = now;
+
+				m = camel_session_thread_msg_new(((CamelService *)store)->session, &refresh_ops, sizeof(*m));
+				m->store = store;
+				camel_object_ref(store);
+				camel_exception_init(&m->ex);
+				camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
+			}
+			CAMEL_SERVICE_UNLOCK(store, connect_lock);
 		}
 	} else {
 		char *pattern;
 		int i;
 
+		CAMEL_SERVICE_LOCK(store, connect_lock);
+
 		if (!camel_imap_store_connected((CamelImapStore *)store, ex))
-			goto done;
+			goto fail;
 
 		if (top[0] == 0) {
 			if (imap_store->namespace && imap_store->namespace[0]) {
@@ -2715,7 +2709,7 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 
 		get_folders_sync(imap_store, pattern, ex);
 		if (camel_exception_is_set(ex))
-			goto done;
+			goto fail;
 		if (pattern[0] != '*' && imap_store->dir_sep) {
 			pattern[i] = imap_store->dir_sep;
 			pattern[i+1] = (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)?'*':'%';
@@ -2723,13 +2717,15 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 			get_folders_sync(imap_store, pattern, ex);
 		}
 		camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
+		CAMEL_SERVICE_UNLOCK(store, connect_lock);
 	}
 
 	tree = get_folder_info_offline(store, top, flags, ex);
-done:
-	CAMEL_SERVICE_UNLOCK(store, connect_lock);
-
 	return tree;
+
+fail:
+	CAMEL_SERVICE_UNLOCK(store, connect_lock);
+	return NULL;
 }
 
 static CamelFolderInfo *

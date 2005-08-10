@@ -1,3 +1,23 @@
+2005-08-09  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #312715 & other little fixes
+
+	* camel-imap-store.c (get_folder_offline): use the store summary
+	as the indicator to whether the folder exists or not, not the
+	files on disk.
+
+	* camel-imap-utils.c (imap_path_to_physical): greatly simplify
+	this awful mess.
+
+	* camel-imap-store.c (get_folder_info_online): re-arrange locking
+	so we only run if we need to.
+	(imap_connect_online, imap_connect_offline): dont refresh-folders
+	on startup, that is handled if we need to/can in get_folder_info.
+	(get_folder_online): fix order of create folder checks.
+	(delete_folder): fix locking/online check.
+	(rename_folder): same here.
+	(imap_forget_folder): remove the subfolders subdir too.
+
 2005-04-17  Changwoo Ryu  <cwryu@debian.org>
 
 	** See bug #300891

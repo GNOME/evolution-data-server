@@ -1275,76 +1275,25 @@ imap_mailbox_decode (const unsigned char *in, size_t inlen)
 char *
 imap_path_to_physical (const char *prefix, const char *vpath)
 {
-	const char *p, *newp;
-	char *dp;
-	char *ppath;
-	int ppath_len;
-	int prefix_len;
+	GString *out = g_string_new(prefix);
+	const char *p = vpath;
+	char c, *res;
 
-	while (*vpath == '/')
-		vpath++;
-	if (!prefix)
-		prefix = "";
-
-	/* Calculate the length of the real path. */
-	ppath_len = strlen (vpath);
-	ppath_len++;	/* For the ending zero.  */
-
-	prefix_len = strlen (prefix);
-	ppath_len += prefix_len;
-	ppath_len++;	/* For the separating slash.  */
-
-	/* Take account of the fact that we need to translate every
-	 * separator into `subfolders/'.
-	 */
+	g_string_append_c(out, '/');
 	p = vpath;
-	while (1) {
-		newp = strchr (p, '/');
-		if (newp == NULL)
-			break;
-
-		ppath_len += SUBFOLDER_DIR_NAME_LEN;
-		ppath_len++; /* For the separating slash.  */
-
-		/* Skip consecutive slashes.  */
-		while (*newp == '/')
-			newp++;
-
-		p = newp;
-	};
-
-	ppath = g_malloc (ppath_len);
-	dp = ppath;
-
-	memcpy (dp, prefix, prefix_len);
-	dp += prefix_len;
-	*(dp++) = '/';
-
-	/* Copy the mangled path.  */
-	p = vpath;
- 	while (1) {
-		newp = strchr (p, '/');
-		if (newp == NULL) {
-			strcpy (dp, p);
-			break;
-		}
-
-		memcpy (dp, p, newp - p + 1); /* `+ 1' to copy the slash too.  */
-		dp += newp - p + 1;
-
-		memcpy (dp, SUBFOLDER_DIR_NAME, SUBFOLDER_DIR_NAME_LEN);
-		dp += SUBFOLDER_DIR_NAME_LEN;
-
-		*(dp++) = '/';
-
-		/* Skip consecutive slashes.  */
-		while (*newp == '/')
-			newp++;
-
-		p = newp;
+	while ((c = *p++)) {
+		if (c == '/') {
+			g_string_append(out, "/" SUBFOLDER_DIR_NAME "/");
+			while (*p == '/')
+				p++;
+		} else
+			g_string_append_c(out, c);
 	}
 
-	return ppath;
+	res = out->str;
+	g_string_free(out, FALSE);
+
+	return res;
 }
 
 static gboolean
