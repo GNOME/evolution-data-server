@@ -15,6 +15,17 @@
 	* backends/weather/e-cal-backend-weather-factory.c: Drop inclusion
 	of <pthread.h>, these files do not use any pthread API.
 
+	* libecal/e-cal-component.c: No getgid() or getppid() on
+	Win32, #define as 0.
+	(e_cal_component_gen_uid): Use g_get_host_name() on Win32.
+
+	* libecal/e-cal-recur.h (e_cal_recur_nth): Importing variables
+	from DLLs can be a bit problematic, so use a functional API
+	instead on Win32.
+
+	* libecal/e-cal-recur.c (e_cal_get_recur_nth): Win32-only function
+	that returns a pointer to the e_cal_recur_nth array.
+
 2005-08-06  P. S. Chakravarthi	<pchakravarthi@novell.com>
 
 	Fixes #309499

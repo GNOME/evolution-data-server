@@ -46,7 +46,12 @@ void	e_cal_recur_generate_instances	(ECalComponent		*comp,
 					 icaltimezone		*default_timezone);
 
 /* Localized nth-day-of-month strings. (Use with _() ) */
+#ifdef G_OS_WIN32
+extern const char **e_cal_get_recur_nth (void);
+#define e_cal_recur_nth (e_cal_get_recur_nth ())
+#else
 extern const char *e_cal_recur_nth[31];
+#endif
 
 G_END_DECLS
 

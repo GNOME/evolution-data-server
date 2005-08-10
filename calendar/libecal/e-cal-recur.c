@@ -4010,6 +4010,10 @@ e_cal_recur_set_rule_end_date	(icalproperty	*prop,
 	icalproperty_add_parameter (prop, param);
 }
 
+#ifdef G_OS_WIN32
+#undef e_cal_recur_nth
+static
+#endif
 const char *e_cal_recur_nth[31] = {
 	N_("1st"),
 	N_("2nd"),
@@ -4044,3 +4048,12 @@ const char *e_cal_recur_nth[31] = {
 	N_("31st")
 };
 
+#ifdef G_OS_WIN32
+
+const char **
+e_cal_get_recur_nth (void)
+{
+	return e_cal_recur_nth;
+}
+
+#endif

@@ -30,6 +30,11 @@
 
 
 
+#ifdef G_OS_WIN32
+#define getgid() 0
+#define getppid() 0
+#endif
+
 /* Extension property for alarm components so that we can reference them by UID */
 #define EVOLUTION_ALARM_UID_PROPERTY "X-EVOLUTION-ALARM-UID"
 
@@ -411,6 +416,7 @@ e_cal_component_gen_uid (void)
 	static int serial;
 
 	if (!hostname) {
+#ifndef G_OS_WIN32
 		static char buffer [512];
 
 		if ((gethostname (buffer, sizeof (buffer) - 1) == 0) &&
@@ -418,6 +424,9 @@ e_cal_component_gen_uid (void)
 			hostname = buffer;
 		else
 			hostname = "localhost";
+#else
+		hostname = g_get_host_name ();
+#endif
 	}
 
 	iso = isodate_from_time_t (t);
