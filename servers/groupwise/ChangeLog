@@ -1,3 +1,8 @@
+2005-08-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-connection.c: (e_gw_connection_parse_response_status):
+	return E_GW_CONNECTION_OTHER for error 53530
+
 2005-08-06  Vivek Jain <jvivek@novell.com>
 
 	* e-gw_item.c: (add_attachment_to_soap_message):
