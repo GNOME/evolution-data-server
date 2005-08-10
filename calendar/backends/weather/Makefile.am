@@ -26,12 +26,16 @@ libecalbackendweather_la_SOURCES =	\
 	e-weather-source-ccf.c		\
 	e-weather-source-ccf.h
 
-libecalbackendweather_la_LIBADD =	\
-	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
+libecalbackendweather_la_LIBADD =						\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
+	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	$(EVOLUTION_CALENDAR_LIBS)						\
 	$(SOUP_LIBS)
 
 libecalbackendweather_la_LDFLAGS =	\
-	-module -avoid-version
+	-module -avoid-version $(NO_UNDEFINED)
 
 weatherdata_in_files = Locations.xml.in
 weatherdata_DATA = $(weatherdata_in_files:.xml.in=.xml)
