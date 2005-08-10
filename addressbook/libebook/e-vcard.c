@@ -147,7 +147,7 @@ fold_lines (char *buf)
 					p = g_utf8_next_char (next2);
 				}
 				else {
-					str = g_string_append (str, CRLF);
+					g_string_append (str, CRLF);
 					p = g_utf8_next_char (next);
 				}
 			}
@@ -155,12 +155,12 @@ fold_lines (char *buf)
 				p = g_utf8_next_char (next);
 			}
 			else {
-				str = g_string_append (str, CRLF);
+				g_string_append (str, CRLF);
 				p = g_utf8_next_char (p);
 			}
 		}
 		else {
-			str = g_string_append_unichar (str, g_utf8_get_char (p));
+			g_string_append_unichar (str, g_utf8_get_char (p));
 			p = g_utf8_next_char (p);
 		}
 	}
@@ -244,12 +244,12 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 				c = (((a>='a'?a-'a'+10:a-'0')&0x0f) << 4)
 					| ((b>='a'?b-'a'+10:b-'0')&0x0f);
 				
-				str = g_string_append_unichar (str, c);
+				g_string_append_unichar (str, c);
 			}
 			else 
 				{
-					str = g_string_append_c (str, a);
-					str = g_string_append_c (str, b);
+					g_string_append_c (str, a);
+					g_string_append_c (str, b);
 				}
 			
 			lp++;
@@ -259,19 +259,19 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 			   the characters */
 			lp = g_utf8_next_char(lp);
 			if (*lp == '\0') {
-				str = g_string_append_c (str, '\\');
+				g_string_append_c (str, '\\');
 				break;
 			}
 			switch (*lp) {
-			case 'n': str = g_string_append_c (str, '\n'); break;
-			case 'r': str = g_string_append_c (str, '\r'); break;
-			case ';': str = g_string_append_c (str, ';'); break;
-			case ',': str = g_string_append_c (str, ','); break;
-			case '\\': str = g_string_append_c (str, '\\'); break;
+			case 'n': g_string_append_c (str, '\n'); break;
+			case 'r': g_string_append_c (str, '\r'); break;
+			case ';': g_string_append_c (str, ';'); break;
+			case ',': g_string_append_c (str, ','); break;
+			case '\\': g_string_append_c (str, '\\'); break;
 			default:
 				g_warning ("invalid escape, passing it through");
-				str = g_string_append_c (str, '\\');
-				str = g_string_append_unichar (str, g_utf8_get_char(lp));
+				g_string_append_c (str, '\\');
+				g_string_append_unichar (str, g_utf8_get_char(lp));
 				break;
 			}
 			lp = g_utf8_next_char(lp);
@@ -283,7 +283,7 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 			lp = g_utf8_next_char(lp);
 		}
 		else {
-			str = g_string_append_unichar (str, g_utf8_get_char (lp));
+			g_string_append_unichar (str, g_utf8_get_char (lp));
 			lp = g_utf8_next_char(lp);
 		}
 	}
@@ -314,7 +314,7 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 			lp = g_utf8_next_char (lp);
 		}
 		else if (in_quote || g_unichar_isalnum (g_utf8_get_char (lp)) || *lp == '-' || *lp == '_') {
-			str = g_string_append_unichar (str, g_utf8_get_char (lp));
+			g_string_append_unichar (str, g_utf8_get_char (lp));
 			lp = g_utf8_next_char (lp);
 		}
 		/* accumulate until we hit the '=' or ';'.  If we hit
@@ -494,7 +494,7 @@ read_attribute (char **p)
 			}
 		}
 		else if (g_unichar_isalnum (g_utf8_get_char (lp)) || *lp == '-' || *lp == '_') {
-			str = g_string_append_unichar (str, g_utf8_get_char (lp));
+			g_string_append_unichar (str, g_utf8_get_char (lp));
 		}
 		else {
 			g_warning ("invalid character found in attribute group/name");
@@ -617,24 +617,24 @@ e_vcard_escape_string (const char *s)
 	for (p = s; p && *p; p++) {
 		switch (*p) {
 		case '\n':
-			str = g_string_append (str, "\\n");
+			g_string_append (str, "\\n");
 			break;
 		case '\r':
 			if (*(p+1) == '\n')
 				p++;
-			str = g_string_append (str, "\\n");
+			g_string_append (str, "\\n");
 			break;
 		case ';':
-			str = g_string_append (str, "\\;");
+			g_string_append (str, "\\;");
 			break;
 		case ',':
-			str = g_string_append (str, "\\,");
+			g_string_append (str, "\\,");
 			break;
 		case '\\':
-			str = g_string_append (str, "\\\\");
+			g_string_append (str, "\\\\");
 			break;
 		default:
-			str = g_string_append_c (str, *p);
+			g_string_append_c (str, *p);
 			break;
 		}
 	}
@@ -665,19 +665,19 @@ e_vcard_unescape_string (const char *s)
 		if (*p == '\\') {
 			p++;
 			if (*p == '\0') {
-				str = g_string_append_c (str, '\\');
+				g_string_append_c (str, '\\');
 				break;
 			}
 			switch (*p) {
-			case 'n':  str = g_string_append_c (str, '\n'); break;
-			case 'r':  str = g_string_append_c (str, '\r'); break;
-			case ';':  str = g_string_append_c (str, ';'); break;
-			case ',':  str = g_string_append_c (str, ','); break;
-			case '\\': str = g_string_append_c (str, '\\'); break;
+			case 'n':  g_string_append_c (str, '\n'); break;
+			case 'r':  g_string_append_c (str, '\r'); break;
+			case ';':  g_string_append_c (str, ';'); break;
+			case ',':  g_string_append_c (str, ','); break;
+			case '\\': g_string_append_c (str, '\\'); break;
 			default:
 				g_warning ("invalid escape, passing it through");
-				str = g_string_append_c (str, '\\');
-				str = g_string_append_unichar (str, g_utf8_get_char(p));
+				g_string_append_c (str, '\\');
+				g_string_append_unichar (str, g_utf8_get_char(p));
 				break;
 			}
 		}
@@ -747,12 +747,12 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 	GString *str = g_string_new ("");
 
-	str = g_string_append (str, "BEGIN:VCARD" CRLF);
+	g_string_append (str, "BEGIN:VCARD" CRLF);
 
 	/* we hardcode the version (since we're outputting to a
 	   specific version) and ignore any version attributes the
 	   vcard might contain */
-	str = g_string_append (str, "VERSION:3.0" CRLF);
+	g_string_append (str, "VERSION:3.0" CRLF);
 
 	for (l = evc->priv->attributes; l; l = l->next) {
 		GList *p;
@@ -771,10 +771,10 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		 */
 
 		if (attr->group) {
-			attr_str = g_string_append (attr_str, attr->group);
-			attr_str = g_string_append_c (attr_str, '.');
+			g_string_append (attr_str, attr->group);
+			g_string_append_c (attr_str, '.');
 		}
-		attr_str = g_string_append (attr_str, attr->name);
+		g_string_append (attr_str, attr->name);
 
 		/* handle the parameters */
 		for (p = attr->params; p; p = p->next) {
@@ -782,10 +782,10 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			/* 5.8.2:
 			 * param        = param-name "=" param-value *("," param-value)
 			 */
-			attr_str = g_string_append_c (attr_str, ';');
-			attr_str = g_string_append (attr_str, param->name);
+			g_string_append_c (attr_str, ';');
+			g_string_append (attr_str, param->name);
 			if (param->values) {
-				attr_str = g_string_append_c (attr_str, '=');
+				g_string_append_c (attr_str, '=');
 				for (v = param->values; v; v = v->next) {
 					char *value = v->data;
 					char *p = value;
@@ -798,17 +798,17 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 						p = g_utf8_next_char (p);
 					}
 					if (quotes)
-						attr_str = g_string_append_c (attr_str, '"');
-					attr_str = g_string_append (attr_str, value);
+						g_string_append_c (attr_str, '"');
+					g_string_append (attr_str, value);
 					if (quotes)
-						attr_str = g_string_append_c (attr_str, '"');
+						g_string_append_c (attr_str, '"');
 					if (v->next)
-						attr_str = g_string_append_c (attr_str, ',');
+						g_string_append_c (attr_str, ',');
 				}
 			}
 		}
 
-		attr_str = g_string_append_c (attr_str, ':');
+		g_string_append_c (attr_str, ':');
 
 		for (v = attr->values; v; v = v->next) {
 			char *value = v->data;
@@ -816,15 +816,15 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 			escaped_value = e_vcard_escape_string (value);
 
-			attr_str = g_string_append (attr_str, escaped_value);
+			g_string_append (attr_str, escaped_value);
 			if (v->next) {
 				/* XXX toshok - i hate you, rfc 2426.
 				   why doesn't CATEGORIES use a ; like
 				   a normal list attribute? */
 				if (!strcmp (attr->name, "CATEGORIES"))
-					attr_str = g_string_append_c (attr_str, ',');
+					g_string_append_c (attr_str, ',');
 				else
-					attr_str = g_string_append_c (attr_str, ';');
+					g_string_append_c (attr_str, ';');
 			}
 
 			g_free (escaped_value);
@@ -843,19 +843,19 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 				l += 75;
 				p = g_utf8_offset_to_pointer (attr_str->str, l);
 			
-				attr_str = g_string_insert_len (attr_str, (p - attr_str->str), CRLF " ", sizeof (CRLF " ") - 1);
+				g_string_insert_len (attr_str, (p - attr_str->str), CRLF " ", sizeof (CRLF " ") - 1);
 			}
 			else
 				break;
 		} while (l < g_utf8_strlen (attr_str->str, -1));
 
-		attr_str = g_string_append (attr_str, CRLF);
+		g_string_append (attr_str, CRLF);
 
-		str = g_string_append (str, attr_str->str);
+		g_string_append (str, attr_str->str);
 		g_string_free (attr_str, TRUE);
 	}
 
-	str = g_string_append (str, "END:VCARD");
+	g_string_append (str, "END:VCARD");
 
 	return g_string_free (str, FALSE);
 }

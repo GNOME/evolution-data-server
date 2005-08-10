@@ -1,3 +1,9 @@
+2005-08-10  Ross Burton  <ross@burtonini.com>
+
+	* libebook/e-vcard.c: Removed the assignment of g_string_append() 
+	return value to a variable, which is not used anywhere.
+	Fixes #313091 
+
 2005-08-05  Sushma Rai  <rsushma@novell.com>
 	
 	* backends/ldap/e-book-backend-ldap.c (ldap_error_to_response):
