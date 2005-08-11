@@ -746,7 +746,13 @@ static CamelSessionThreadOps update_ops = {
 static void
 groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 {
-	groupwise_refresh_folder(folder, ex);
+	CamelGroupwiseSummary *summary;
+	summary = (CamelGroupwiseSummary *) folder->summary;
+	if (summary->time_string) {
+		g_print ("Refreshing folder:%s\n", summary->time_string);
+		groupwise_refresh_folder(folder, ex);
+	} else 
+		g_print ("Not refreshing folder\n");
 }
 
 void
@@ -913,6 +919,7 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	char *container_id = NULL;
 	gboolean is_junk = FALSE;
 	EGwItemStatus status;
+	int total_items = g_list_length (item_list), i=0;
 	
 	/*Assert lock*/
 	msg = g_ptr_array_new ();
@@ -926,6 +933,8 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	if (!strcmp (folder->full_name, JUNK_FOLDER)) {
 		is_junk = TRUE;
 	}
+
+	camel_operation_start (NULL, _("Fetching summary information for new messages"));
 
 	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
 		EGwItem *temp_item = (EGwItem *)item_list->data;
@@ -941,16 +950,19 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 
 		id = e_gw_item_get_id (temp_item);
 
+		 camel_operation_progress (NULL, (100*i)/total_items);
 		cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
 		if (cache_stream) {
 			camel_object_unref (cache_stream);
 			cache_stream = NULL;
+			i++;
 			//g_print ("*** Exists in cache, continuing....%s\n", id);
 			continue;
 		} 
 
 		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status", &item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
+			i++;
 			continue;
 		}
 
@@ -1077,7 +1089,9 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		}
 		/******************** Caching stuff ends *************************/
 		g_object_unref (item);
+		i++;
 	}
+	camel_operation_end (NULL);
 	g_free (container_id);
 	g_string_free (str, TRUE);
 	camel_object_trigger_event (folder, "folder_changed", changes);

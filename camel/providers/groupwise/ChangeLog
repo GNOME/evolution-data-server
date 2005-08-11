@@ -1,3 +1,10 @@
+2005-08-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (gw_update_cache):
+	fix the message on the status bar when downloading
+	summary for new messages
+	* camel-groupwise-store.c: remove commented code.
+
 2005-08-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** see bug 300797

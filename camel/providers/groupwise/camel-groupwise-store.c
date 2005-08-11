@@ -52,7 +52,7 @@
 #include "camel-private.h"
 
 #define d(x) 
-#define CURSOR_ITEM_LIMIT 300
+#define CURSOR_ITEM_LIMIT 100
 #define JUNK_ENABLE 1
 #define JUNK_PERSISTENCE 14
 
@@ -528,15 +528,10 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			
 			count = +g_list_length (list);
 		
-			if (count > 100)
+			if (count >= 100)
 				temp = count/100;
 			camel_operation_progress (NULL, temp);
-			if (summary->time_string)
-				g_free (summary->time_string);
-			summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
 			gw_update_summary (folder, list,  ex);
-			//camel_operation_progress_count (NULL, (CURSOR_ITEM_LIMIT *100)/count);
-			//camel_operation_progress (NULL, (count * 100/total_count));
 			
 			if (!list)
 				done = TRUE;
@@ -549,14 +544,13 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 
 		camel_operation_end (NULL);
-	} /*else{
-		struct _get_folder_refresh *msg;
-		msg = camel_session_thread_msg_new (session, &get_folder_refresh_ops, sizeof(*msg));
-		msg->folder = folder;
-		camel_object_ref (folder);
-		camel_folder_freeze (folder);
-		camel_session_thread_queue (session, &msg->msg, 0);
-	}*/
+	} 
+
+	if (done) {
+		if (summary->time_string)
+			g_free (summary->time_string);
+		summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
+	}
 
 	camel_folder_summary_save (folder->summary);
 
