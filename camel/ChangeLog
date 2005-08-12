@@ -9,6 +9,8 @@
 
 	* camel-win32.c: New file, some Win32-specific functions.
 
+	* providers/Makefile.am: Leave out sendmail on Win32.
+
 2005-08-09  Not Zed  <NotZed@Ximian.com>
 
 	* camel-store.c (camel_store_get_folder): add some debug logging.
