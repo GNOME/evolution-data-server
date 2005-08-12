@@ -18,9 +18,12 @@ libcamelsmtp_la_SOURCES = 			\
 noinst_HEADERS =			\
 	camel-smtp-transport.h
 
-libcamelsmtp_la_LDFLAGS = -avoid-version -module
+libcamelsmtp_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
 
 libcamelsmtp_la_LIBADD = \
-	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
+	$(top_builddir)/camel/libcamel-provider-1.2.la			\
+	$(top_builddir)/camel/libcamel-1.2.la				\
+	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelsmtp.urls

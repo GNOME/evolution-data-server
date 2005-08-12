@@ -40,6 +40,12 @@ noinst_HEADERS =			\
 	camel-imap-wrapper.h			\
 	camel-imap-private.h
 
-libcamelimap_la_LDFLAGS = -avoid-version -module
+libcamelimap_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+
+libcamelimap_la_LIBADD = \
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
+	$(top_builddir)/camel/libcamel-provider-1.2.la			\
+	$(top_builddir)/camel/libcamel-1.2.la				\
+	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelimap.urls

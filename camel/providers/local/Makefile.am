@@ -3,6 +3,21 @@
 camel_provider_LTLIBRARIES = libcamellocal.la
 camel_provider_DATA = libcamellocal.urls
 
+if OS_WIN32
+SYSDEP_PROVIDER_SOURCES =
+else
+SYSDEP_PROVIDER_SOURCES = \
+	camel-mh-folder.c			\
+	camel-mh-store.c			\
+	camel-mh-summary.c			\
+	camel-maildir-folder.c			\
+	camel-maildir-store.c			\
+	camel-maildir-summary.c			\
+	camel-spool-folder.c			\
+	camel-spool-store.c			\
+	camel-spool-summary.c
+endif
+
 INCLUDES = \
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/intl			\
@@ -16,18 +31,10 @@ libcamellocal_la_SOURCES = 			\
 	camel-local-store.c			\
 	camel-local-summary.c			\
 	camel-local-provider.c			\
-	camel-mh-folder.c			\
-	camel-mh-store.c			\
-	camel-mh-summary.c			\
 	camel-mbox-folder.c			\
 	camel-mbox-store.c			\
 	camel-mbox-summary.c			\
-	camel-maildir-folder.c			\
-	camel-maildir-store.c			\
-	camel-maildir-summary.c			\
-	camel-spool-folder.c			\
-	camel-spool-store.c			\
-	camel-spool-summary.c
+	$(SYSDEP_PROVIDER_SOURCES)
 
 noinst_HEADERS =				\
 	camel-local-folder.h			\
@@ -47,9 +54,12 @@ noinst_HEADERS =				\
 	camel-spool-summary.h			\
 	camel-local-private.h
 
-libcamellocal_la_LDFLAGS = -avoid-version -module
+libcamellocal_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
 
 libcamellocal_la_LIBADD = \
-	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la	\
+	$(top_builddir)/camel/libcamel-provider-1.2.la			\
+	$(top_builddir)/camel/libcamel-1.2.la				\
+	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamellocal.urls

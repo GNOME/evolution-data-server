@@ -1,3 +1,8 @@
+2005-08-12  Tor Lillqvist  <tml@novell.com>
+
+	* Makefile.am: Use NO_UNDEFINED. Link with libcamel-provider,
+	libcamel and CAMEL_LIBS.
+
 2005-04-17  Changwoo Ryu  <cwryu@debian.org>
 
 	** See bug #300891

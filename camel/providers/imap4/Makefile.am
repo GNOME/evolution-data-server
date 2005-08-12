@@ -40,6 +40,12 @@ libcamelimap4_la_SOURCES = 			\
 	camel-imap4-utils.c			\
 	camel-imap4-utils.h
 
-libcamelimap4_la_LDFLAGS = -avoid-version -module
+libcamelimap4_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+
+libcamelimap4_la_LIBADD = \
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
+	$(top_builddir)/camel/libcamel-provider-1.2.la			\
+	$(top_builddir)/camel/libcamel-1.2.la				\
+	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelimap4.urls

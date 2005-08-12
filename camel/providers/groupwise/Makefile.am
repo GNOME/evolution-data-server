@@ -36,10 +36,13 @@ noinst_HEADERS =         			\
 	camel-groupwise-transport.h		
 
 
-libcamelgroupwise_la_LDFLAGS = -avoid-version -module
+libcamelgroupwise_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
 libcamelgroupwise_la_LIBADD =                                            \
         $(top_builddir)/servers/groupwise/libegroupwise-1.2.la           \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la             \
+	$(top_builddir)/camel/libcamel-provider-1.2.la	                 \
+	$(top_builddir)/camel/libcamel-1.2.la		                 \
+	$(CAMEL_LIBS)                                                    \
         $(SOUP_LIBS)
 
 EXTRA_DIST = libcamelgroupwise.urls
