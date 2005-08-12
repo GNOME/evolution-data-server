@@ -1,3 +1,9 @@
+2005-08-12  P. S. Chakravarthi  <pchakravarthi@novell.com>
+
+	Fixes #311078
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(populate_cache): percent is not allowed to go beyond 100
+
 2005-08-11  Tor Lillqvist  <tml@novell.com>
 
 	* backends/contacts/Makefile.am
