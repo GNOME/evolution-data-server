@@ -1,3 +1,7 @@
+2005-08-12  Harish Krishnaswamy <kharish@novell.com.
+
+	* libecal/e-cal.c : Fix for #309534
+
 2005-05-18  Ross Burton  <ross@burtonini.com>
 
 	* backends/contacts/e-cal-backend-contacts.c:

@@ -40,6 +40,12 @@
 #include "e-cal-view-listener.h"
 #include "e-cal.h"
 
+
+static gboolean
+open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarStatus *status, gboolean needs_auth);
+
+static gboolean
+get_read_only (ECal *ecal, gboolean *read_only, GError **error);
 
 
 typedef struct {
