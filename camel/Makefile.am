@@ -2,6 +2,21 @@
 
 SUBDIRS = . providers tests
 
+if OS_WIN32
+LIBCAMEL_PLATFORM_DEP_SOURCES = \
+	camel-win32.c
+LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES =
+LOCK_HELPER =
+else
+LIBCAMEL_PLATFORM_DEP_SOURCES = \
+	camel-lock-client.c \
+	camel-stream-process.c
+LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES =	\
+	camel-movemail.c			\
+	camel-sasl-kerberos4.c
+LOCK_HELPER = camel-lock-helper-1.2
+endif
+
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
@@ -13,7 +28,7 @@ libcamelincludedir = $(privincludedir)/camel
 libcamel_providerincludedir = $(privincludedir)/camel
 
 camellibexecdir = $(libexecdir)
-camellibexec_PROGRAMS =	camel-lock-helper-1.2 camel-index-control-1.2
+camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
 
 lib_LTLIBRARIES = libcamel-1.2.la libcamel-provider-1.2.la
 
@@ -42,7 +57,6 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-folder.c				\
 	camel-gpg-context.c			\
 	camel-http-stream.c			\
-	camel-movemail.c			\
 	camel-offline-folder.c			\
 	camel-offline-journal.c			\
 	camel-offline-store.c			\
@@ -51,7 +65,6 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-sasl-cram-md5.c			\
 	camel-sasl-digest-md5.c			\
 	camel-sasl-gssapi.c			\
-	camel-sasl-kerberos4.c			\
 	camel-sasl-login.c			\
 	camel-sasl-ntlm.c			\
 	camel-sasl-plain.c			\
@@ -72,9 +85,10 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-vee-folder.c			\
 	camel-vee-store.c			\
 	camel-vee-summary.c			\
-	camel-vtrash-folder.c
+	camel-vtrash-folder.c			\
+	$(LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES)
 
-libcamel_providerinclude_HEADERS =			\
+libcamel_providerinclude_HEADERS =		\
 	camel-cipher-context.h			\
 	camel-digest-folder.h			\
 	camel-digest-store.h			\
@@ -120,14 +134,16 @@ libcamel_providerinclude_HEADERS =			\
 	camel-vee-summary.h			\
 	camel-vtrash-folder.h
 
-libcamel_provider_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE)
+libcamel_provider_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED)
 
 libcamel_provider_1_2_la_LIBADD =			\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la 	\
 	libcamel-1.2.la				\
-	$(CAMEL_LIBS)
+	$(CAMEL_LIBS)				\
+	$(SOCKET_LIBS)				\
+	$(REGEX_LIBS)
 
-libcamel_1_2_la_SOURCES = 				\
+libcamel_1_2_la_SOURCES = 			\
 	broken-date-parser.c			\
 	camel-address.c				\
 	camel-arg.c				\
@@ -144,7 +160,6 @@ libcamel_1_2_la_SOURCES = 				\
 	camel-internet-address.c		\
 	camel-junk-plugin.c			\
 	camel-list-utils.c			\
-	camel-lock-client.c			\
 	camel-lock.c				\
 	camel-medium.c				\
 	camel-mime-filter-basic.c		\
@@ -185,14 +200,14 @@ libcamel_1_2_la_SOURCES = 				\
 	camel-stream-fs.c			\
 	camel-stream-mem.c			\
 	camel-stream-null.c			\
-	camel-stream-process.c			\
 	camel-stream.c				\
 	camel-string-utils.c			\
 	camel-text-index.c			\
 	camel-url-scanner.c			\
 	camel-url.c				\
 	camel-utf8.c				\
-	camel.c
+	camel.c					\
+	$(LIBCAMEL_PLATFORM_DEP_SOURCES)
 
 libcamelinclude_HEADERS =			\
 	broken-date-parser.h			\
@@ -263,11 +278,14 @@ libcamelinclude_HEADERS =			\
 	camel-utf8.h				\
 	camel.h
 
-libcamel_1_2_la_LDFLAGS = -version-info 0:0:0
+libcamel_1_2_la_LDFLAGS = -version-info 0:0:0 $(NO_UNDEFINED)
 
 libcamel_1_2_la_LIBADD =				\
-	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la 	\
-	$(CAMEL_LIBS)
+	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
+	$(CAMEL_LIBS)							\
+	$(SOCKET_LIBS)							\
+	$(REGEX_LIBS)
+
 
 camel_lock_helper_1_2_SOURCES = 		\
 	camel-lock-helper.c 			\

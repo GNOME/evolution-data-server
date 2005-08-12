@@ -1,3 +1,14 @@
+2005-08-12  Tor Lillqvist  <tml@novell.com>
+
+	* Makefile.am: Leave out camel-lock-client and
+	camel-stream-process from libcamel-provider on Win32. Leave out
+	camel-movemail and camel-sasl-kerberos4 from libcamel on
+	Win32. Include camel-win32 in libcamel on Win32. Don't build
+	lock-helper on Win32. Use NO_UNDEFINED. Link with CAMEL_LIBS,
+	SOCKET_LIBS and REGEX_LIBS.
+
+	* camel-win32.c: New file, some Win32-specific functions.
+
 2005-08-09  Not Zed  <NotZed@Ximian.com>
 
 	* camel-store.c (camel_store_get_folder): add some debug logging.
