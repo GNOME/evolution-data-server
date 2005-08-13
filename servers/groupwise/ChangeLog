@@ -1,3 +1,7 @@
+2005-08-13  Tor Lillqvist  <tml@novell.com>
+
+	* Makefile.am: Use NO_UNDEFINED.
+
 2005-08-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-connection.c: (e_gw_connection_parse_response_status):

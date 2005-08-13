@@ -45,7 +45,7 @@ libegroupwise_1_2_la_LIBADD =						\
 	$(SOUP_LIBS)
 
 libegroupwise_1_2_la_LDFLAGS =                                               \
-        -version-info $(LIBEGROUPWISE_CURRENT):$(LIBEGROUPWISE_REVISION):$(LIBEGROUPWISE_AGE)
+        -version-info $(LIBEGROUPWISE_CURRENT):$(LIBEGROUPWISE_REVISION):$(LIBEGROUPWISE_AGE) $(NO_UNDEFINED)
 
 libegroupwiseincludedir = $(privincludedir)/groupwise
 
