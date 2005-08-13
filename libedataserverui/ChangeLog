@@ -1,3 +1,8 @@
+2005-08-13  Tor Lillqvist  <tml@novell.com>
+
+	* Makefile.am: Link with libedataserver. Link with
+	E_DATA_SERVER_UI_LIBS, not E_DATA_SERVER_LIBS. Use NO_UNDEFINED.
+
 2005-08-04  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #308512.
