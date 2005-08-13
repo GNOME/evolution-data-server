@@ -1,11 +1,19 @@
+2005-08-13  Tor Lillqvist  <tml@novell.com>
+
+	* camel.c (camel_init): Call atexit() directly on Win32, not
+	g_atexit(). As g_atexit() is currently implemented, the registered
+	function gets called when the GLib DLL is detached, not when the
+	process exits. This causes problems. Calling atexit() in the camel
+	DLL at least means the function gets called when the camel DLL is
+	detached, which works OK.
+
 2005-08-12  Tor Lillqvist  <tml@novell.com>
 
-	* Makefile.am: Leave out camel-lock-client and
-	camel-stream-process from libcamel-provider on Win32. Leave out
-	camel-movemail and camel-sasl-kerberos4 from libcamel on
-	Win32. Include camel-win32 in libcamel on Win32. Don't build
-	lock-helper on Win32. Use NO_UNDEFINED. Link with CAMEL_LIBS,
-	SOCKET_LIBS and REGEX_LIBS.
+	* Makefile.am: On Win32: Leave out camel-lock-client and
+	camel-stream-process from libcamel-provider. Leave out
+	camel-movemail and camel-sasl-kerberos4 from libcamel. Include
+	camel-win32 in libcamel. Don't build lock-helper. Use
+	-no-undefined. Link with CAMEL_LIBS, SOCKET_LIBS and REGEX_LIBS.
 
 	* camel-win32.c: New file, some Win32-specific functions.
 
