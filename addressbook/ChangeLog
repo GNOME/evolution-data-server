@@ -1,5 +1,12 @@
 2005-08-13  Sushma Rai  <rsushma@novell.com>
 
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_authenticate_user): Return error if we fail to
+	get the DN for the user.
+	Fixes #312988.
+
+2005-08-13  Sushma Rai  <rsushma@novell.com>
+
 	* libedata-book/e-book-backend-cache.c 
 	(e_book_backend_cache_get_contacts): Fixed memory leak.
 

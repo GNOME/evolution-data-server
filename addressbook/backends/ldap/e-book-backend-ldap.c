@@ -3651,7 +3651,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 						       
 	}
 	if (!strncasecmp (auth_method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
-       
+
 		if (!strcmp (auth_method, "ldap/simple-email")) {
 			LDAPMessage    *res, *e;
 			char *query = g_strdup_printf ("(mail=%s)", user);
@@ -3667,6 +3667,14 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 				char *entry_dn;
 
 				e = ldap_first_entry (bl->priv->ldap, res);
+				if (!e) {
+					g_warning ("Failed to get the DN for %s", user);
+					ldap_msgfree (res);
+					e_data_book_respond_authenticate_user (book,
+									       opid,
+									       GNOME_Evolution_Addressbook_AuthenticationFailed);
+					return;
+				}
 
 				entry_dn = ldap_get_dn (bl->priv->ldap, e);
 				dn = g_strdup(entry_dn);
