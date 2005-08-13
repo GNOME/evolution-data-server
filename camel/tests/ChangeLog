@@ -1,3 +1,8 @@
+2005-08-13  Tor Lillqvist  <tml@novell.com>
+
+	* message/Makefile.am (LDADD): Reorder: put libcamel after
+	libcameltest.
+
 2005-08-08  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #310496.
