@@ -2932,6 +2932,12 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 		char *str = rfc2254_escape(argv[1]->value.string);
 		char *ldap_attr = query_prop_to_ldap(propname);
 
+		if (strlen (str) == 0) {
+			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+			r->value.bool = FALSE;
+			return r;
+		}
+
 		/* insert hack for fileAs queries, since we need to do
 		   the right thing if the server supports them or not,
 		   and for entries that have no fileAs attribute. */
