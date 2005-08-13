@@ -404,8 +404,10 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
                 }
                 
         }
-	if (l)
+	if (l) {
+		g_slist_foreach (l, (GFunc) g_object_unref, NULL);
 		g_slist_free (l);
+	}
 	if (sexp)
 		g_object_unref (sexp);
 
