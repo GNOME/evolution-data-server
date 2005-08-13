@@ -5,8 +5,8 @@ INCLUDES =						\
 	-DDATADIR=\"$(datadir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\
 	-I$(top_srcdir)					\
-	-I$(top_srcdir)/addressbook/			\
-	-I$(top_builddir)/addressbook/			\
+	-I$(top_srcdir)/addressbook			\
+	-I$(top_builddir)/addressbook			\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
