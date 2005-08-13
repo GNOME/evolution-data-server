@@ -44,10 +44,11 @@ libedataserver_1_2_la_SOURCES =		\
 libedataserver_1_2_la_LIBADD = 				\
 	$(E_DATA_SERVER_LIBS)				\
 	$(ICONV_LIBS)					\
-	$(top_builddir)/libdb/dist/libdb-4.1.la
+	$(top_builddir)/libdb/dist/libdb-4.1.la		\
+	$(SOCKET_LIBS)
 
-libedataserver_1_2_la_LDFLAGS = 										\
-	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE)
+libedataserver_1_2_la_LDFLAGS = \
+	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE) $(NO_UNDEFINED)
 
 libedataserverincludedir = $(privincludedir)/libedataserver
 

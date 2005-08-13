@@ -1,3 +1,8 @@
+2005-08-13  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/Makefile.am: Link with SOCKET_LIBS. Use
+	NO_UNDEFINED.
+
 2005-08-08  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: Update version, libtool numbers.
