@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-26 13:52+0000\n"
-"PO-Revision-Date: 2005-07-28 00:25+0300\n"
+"PO-Revision-Date: 2005-08-14 09:48+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -166,12 +166,12 @@ msgstr "%s: EBookListener'i pole võimalik luua"
 #: ../addressbook/libebook/e-book.c:3541
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
-msgstr ""
+msgstr "%s: gconf'i alla pole enda kontakti uid-i salvestatud"
 
 #: ../addressbook/libebook/e-book.c:3671
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr ""
+msgstr "%s: gconf'i alla pole uid-i `%s' allikat salvestatud."
 
 #: ../addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
@@ -695,7 +695,7 @@ msgstr "Tõrge autentimisel"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:845
 msgid "Could not create thread for getting deltas"
-msgstr ""
+msgstr "Deltade hankimise lõime pole võimalik luua"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:870
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1113
@@ -1237,6 +1237,8 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
+"\"%s\" eeldab, et kõik argumendid on stringid ja ühegi argumendi väärtus "
+"pole tõeväärtus 'väär' (#f)"
 
 #: ../camel/camel-cipher-context.c:103
 msgid "Signing is not supported by this cipher"
@@ -1315,7 +1317,7 @@ msgstr "Taassünkroniseeritakse serveriga"
 
 #: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:51
 msgid "Copy folder content locally for offline operation"
-msgstr ""
+msgstr "Kausta sisu kopeerimine kohalikku masinasse kasutamiseks autonoomses režiimis"
 
 #: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:110
 msgid "Downloading new messages for offline mode"
@@ -1998,7 +2000,7 @@ msgstr "AVATEKST"
 
 #: ../camel/camel-sasl-popb4smtp.c:37
 msgid "POP before SMTP"
-msgstr "POP enne SMTPd"
+msgstr "POP enne SMTP-d"
 
 #: ../camel/camel-sasl-popb4smtp.c:39
 msgid "This option will authorise a POP connection before attempting SMTP"
@@ -2010,11 +2012,11 @@ msgstr "POP allika URI"
 
 #: ../camel/camel-sasl-popb4smtp.c:107
 msgid "POP Before SMTP auth using an unknown transport"
-msgstr ""
+msgstr "POP enne SMTP-d autentimine kasutab tundmatut transporti"
 
 #: ../camel/camel-sasl-popb4smtp.c:112
 msgid "POP Before SMTP auth using a non-pop source"
-msgstr ""
+msgstr "POP enne SMTP-d kasutab mitte-pop allikat"
 
 #: ../camel/camel-search-private.c:151
 #, c-format
@@ -4977,7 +4979,7 @@ msgstr "Sellise nimega kausta pole võimalik luua"
 
 #: ../servers/exchange/storage/e-storage.c:584
 msgid "This operation cannot be performed in off-line mode"
-msgstr "See toiming pole autonoomses režiimis tehtav"
+msgstr "See toiming pole autonoomses režiimis teostatav"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
