@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-11 14:28+0200\n"
-"PO-Revision-Date: 2005-08-11 14:28+0200\n"
+"POT-Creation-Date: 2005-08-14 13:35+0200\n"
+"PO-Revision-Date: 2005-08-14 13:31+0200\n"
 "Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,13 +29,13 @@ msgstr "Ladevorgang..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2169
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2189
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2208
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3419
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3425
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Suchvorgang..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2493
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3553
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3559
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Kontakte werden heruntergeladen (%d)..."
@@ -57,7 +57,7 @@ msgstr "E-Mail-Adresse wird verwendet"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:832
 msgid "Reconnecting to LDAP server..."
-msgstr "LDAP-Server-Verbindung wird erneut hergestellt..."
+msgstr "Verbindung mit LDAP-Server wird erneut hergestellt..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1382
 msgid "Adding contact to LDAP server..."
@@ -71,11 +71,11 @@ msgstr "Kontakt wird von LDAP-Server entfernt..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Kontakt auf LDAP-Server wird verändert..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3309
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3315
 msgid "Receiving LDAP search results..."
-msgstr "LDAP-Suchergebnisse werden abgerufen..."
+msgstr "LDAP-Suchergebnisse werden empfangen..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3439
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3445
 msgid "Error performing search"
 msgstr "Fehler beim Ausführen der Suche"
 
@@ -527,7 +527,7 @@ msgstr "Büro"
 
 #: ../addressbook/libebook/e-contact.c:205
 msgid "Title"
-msgstr "Titel"
+msgstr "Anrede"
 
 #: ../addressbook/libebook/e-contact.c:206
 msgid "Role"
@@ -655,57 +655,57 @@ msgstr ""
 "Kalenderdaten konnten nicht gespeichert werden: URI fehlerhaft formatiert."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:873
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1316
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1330
 msgid "Reply Requested: by "
 msgstr "Antwort erbeten: durch "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:878
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1321
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1335
 msgid "Reply Requested: When convenient"
 msgstr "Antwort erbeten: Wenn es passt"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:177
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:184
 #, c-format
 msgid "Loading %s items"
 msgstr "%s-Elemente werden geladen"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:723
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:730
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:779
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:786
 msgid "Invalid server URI"
 msgstr "Ungültige Server-URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:795
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:804
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:886
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:802
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:811
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
 #: ../calendar/libecal/e-cal.c:5040
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:801
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:821
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:849
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:807
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:827
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:855
 #: ../camel/providers/groupwise/camel-groupwise-store.c:476
 #: ../camel/providers/groupwise/camel-groupwise-store.c:491
 #: ../camel/providers/groupwise/camel-groupwise-store.c:523
-#: ../camel/providers/groupwise/camel-groupwise-store.c:642
-#: ../camel/providers/groupwise/camel-groupwise-store.c:877
+#: ../camel/providers/groupwise/camel-groupwise-store.c:636
+#: ../camel/providers/groupwise/camel-groupwise-store.c:871
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:177
 msgid "Authentication failed"
 msgstr "Legitimation gescheitert"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:845
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
 msgid "Could not create thread for getting deltas"
 msgstr "Thread zum Abrufen von Änderungen konnte nicht angelegt werden"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:870
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1113
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:877
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1120
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:880
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:887
 msgid "Could not create thread for populating cache"
 msgstr "Thread zum Belegen des Zwischenspeichers konnte nicht angelegt werden"
 
@@ -1057,7 +1057,7 @@ msgstr "Niedrig"
 #. An empty string is the same as 'None'.
 #: ../calendar/libecal/e-cal-util.c:706
 msgid "Undefined"
-msgstr "Undefiniert"
+msgstr "Nicht festgelegt"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
 #: ../calendar/libecal/e-cal.c:1647
@@ -2109,7 +2109,7 @@ msgstr "CMS-Nachricht konnte nicht angelegt werden"
 
 #: ../camel/camel-smime-context.c:242
 msgid "Cannot create CMS signed data"
-msgstr "CMS-signierte Daten konnten nicht erstellt werden"
+msgstr "CMS-signierte Daten konnten nicht angelegt werden"
 
 #: ../camel/camel-smime-context.c:248
 msgid "Cannot attach CMS signed data"
@@ -2121,9 +2121,8 @@ msgstr "CMS-Daten konnten nicht beigelegt werden"
 
 #: ../camel/camel-smime-context.c:261
 msgid "Cannot create CMS Signer information"
-msgstr "CMS-Unterzeichnerinformation konnte nicht erstellt werden"
+msgstr "CMS-Unterzeichnerinformationen konnten nicht angelegt werden"
 
-# 
 #: ../camel/camel-smime-context.c:267
 msgid "Cannot find certificate chain"
 msgstr "Zertifikatkette konnte nicht gefunden werden"
@@ -2207,7 +2206,7 @@ msgstr "Verarbeitungsfehler"
 
 #: ../camel/camel-smime-context.c:539
 msgid "No signed data in signature"
-msgstr "Keine Signaturdaten in Signatur"
+msgstr "Keine signierten Daten in Signatur"
 
 #: ../camel/camel-smime-context.c:546
 msgid "Digests missing from enveloped data"
@@ -2285,11 +2284,11 @@ msgstr "CMS-Datenobjekt konnte nicht beigelegt werden"
 
 #: ../camel/camel-smime-context.c:829
 msgid "Cannot create CMS Recipient information"
-msgstr "CMS-Empfängerinformation konnte nicht angelegt werden"
+msgstr "CMS-Empfängerinformationen konnten nicht angelegt werden"
 
 #: ../camel/camel-smime-context.c:834
 msgid "Cannot add CMS Recipient information"
-msgstr "CMS-Empfängerinformation konnte nicht hinzugefügt werden"
+msgstr "CMS-Empfängerinformationen konnten nicht hinzugefügt werden"
 
 #: ../camel/camel-smime-context.c:859
 msgid "Failed to add data to encoder"
@@ -2586,7 +2585,6 @@ msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
 "Nachrichten können nicht in virtuelle Ordner kopiert oder verschoben werden"
 
-# CHECK
 #: ../camel/camel-vee-store.c:100 ../camel/camel-vee-store.c:343
 msgid "Unmatched"
 msgstr "Nicht einsortiert"
@@ -2656,11 +2654,11 @@ msgstr "Nachricht %s konnte nicht abgerufen werden: %s"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:149
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
-msgstr "Diese Nachricht ist im Offline-Modus nicht verfügbar"
+msgstr "Diese Nachricht ist im Offline-Modus nicht verfügbar."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:159
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:165
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1280
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1294
 msgid "Could not get message"
 msgstr "Abrufen der Nachricht gescheitert"
 
@@ -2670,12 +2668,19 @@ msgstr "Abrufen der Nachricht gescheitert"
 msgid "Could not load summary for %s"
 msgstr "Zusammenfassung für %s konnte nicht geladen werden"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1503
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:937
+#: ../camel/providers/groupwise/camel-groupwise-store.c:513
+#: ../camel/providers/imap/camel-imap-folder.c:2315
+#: ../camel/providers/imap/camel-imap-folder.c:2385
+msgid "Fetching summary information for new messages"
+msgstr "Zusammenfassende Informationen für neue Nachrichten werden abgerufen"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1517
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nachricht konnte nicht angelegt werden: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1515
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1529
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nachricht konnte nicht an Ordner »%s« angehängt werden: %s"
@@ -2794,43 +2799,37 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2046
 #, c-format
 msgid "No such folder %s"
-msgstr "Ordner %s existiert nicht"
+msgstr "Ordner »%s« nicht vorhanden"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:513
-#: ../camel/providers/imap/camel-imap-folder.c:2315
-#: ../camel/providers/imap/camel-imap-folder.c:2385
-msgid "Fetching summary information for new messages"
-msgstr "Zusammenfassungsinformationen für neue Nachrichten werden abgerufen"
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:604
+#: ../camel/providers/groupwise/camel-groupwise-store.c:598
 msgid "Cannot get folder info in offline mode."
 msgstr "Ordnerinformationen können im Offline-Modus nicht abgerufen werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:863
+#: ../camel/providers/groupwise/camel-groupwise-store.c:857
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht angelegt werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:908
+#: ../camel/providers/groupwise/camel-groupwise-store.c:902
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht gelöscht werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:945
-#: ../camel/providers/groupwise/camel-groupwise-store.c:965
+#: ../camel/providers/groupwise/camel-groupwise-store.c:939
+#: ../camel/providers/groupwise/camel-groupwise-store.c:959
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "GroupWise-Ordner »%s« konnte nicht in »%s« umbenannt werden"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:951
+#: ../camel/providers/groupwise/camel-groupwise-store.c:945
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "GroupWise-Ordner können im Offline-Modus nicht umbenannt werden."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:997
+#: ../camel/providers/groupwise/camel-groupwise-store.c:991
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-Server %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:999
+#: ../camel/providers/groupwise/camel-groupwise-store.c:993
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise-Dienst für %s auf %s"
@@ -2905,7 +2904,7 @@ msgstr "Der Ordner wurde zerstört und auf dem Serverneu angelegt."
 #: ../camel/providers/imap/camel-imap-folder.c:596
 #: ../camel/providers/imap4/camel-imap4-summary.c:1472
 msgid "Scanning for changed messages"
-msgstr "Nach geänderten Nachrichten suchen"
+msgstr "Geänderte Nachrichten werden gesucht"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1970
 #, c-format
@@ -4566,7 +4565,7 @@ msgstr "Nachricht konnte nicht verschickt werden: Keine Empfänger angegeben."
 #: ../camel/providers/smtp/camel-smtp-transport.c:728
 msgid "Cannot send message: one or more invalid recipients"
 msgstr ""
-"Nachricht konnte nicht verschickt werden: mindestens ein Empfänger ungültig"
+"Nachricht konnte nicht verschickt werden: Mindestens ein Empfänger ungültig"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:897
 msgid "SMTP Greeting"
@@ -4997,9 +4996,8 @@ msgstr "Geben Sie das Passwort für %s ein"
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
 #: ../servers/exchange/storage/exchange-account.c:917
 msgid "Enter password"
-msgstr "Geben Sie das Passwort ein"
+msgstr "Passwort eingeben"
 
-# Unter Outlook 2003 nur Berechtigungsstufen (Ziffern) gefunden
 #. i18n: These are Outlook's words for the default roles in
 #. the folder permissions dialog.
 #: ../servers/exchange/lib/e2k-security-descriptor.c:847
@@ -5008,15 +5006,15 @@ msgstr "Besitzer"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:857
 msgid "Publishing Editor"
-msgstr "Herausgebender Redakteur"
+msgstr "Veröffentlichender Editor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
-msgstr "Redakteur"
+msgstr "Editor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
-msgstr "Herausgebender Autor"
+msgstr "Veröffentlichender Autor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
 msgid "Author"
@@ -5024,11 +5022,11 @@ msgstr "Autor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
-msgstr "Nicht bearbeitender Autor"
+msgstr "Nicht-bearbeitender Autor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
-msgstr "Gutachter"
+msgstr "Prüfer"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
@@ -5056,11 +5054,11 @@ msgstr "Allgemeiner Fehler"
 
 #: ../servers/exchange/storage/e-storage.c:558
 msgid "A folder with the same name already exists"
-msgstr "Ein Ordner mit dem gleichen Namen existiert bereits"
+msgstr "Es existiert bereits ein gleichnamiger Ordner"
 
 #: ../servers/exchange/storage/e-storage.c:560
 msgid "The specified folder type is not valid"
-msgstr "Der angegebene Ordnertyp ist nicht gültig"
+msgstr "Der angegebene Ordnertyp ist ungültig"
 
 #: ../servers/exchange/storage/e-storage.c:562
 msgid "I/O error"
@@ -5068,7 +5066,7 @@ msgstr "Ein-/Ausgabefehler"
 
 #: ../servers/exchange/storage/e-storage.c:564
 msgid "Not enough space to create the folder"
-msgstr "Nicht genügend Platz vorhanden, um den Ordner zu erstellen"
+msgstr "Unzureichender Speicherplatz zum Anlegen des Ordners"
 
 #: ../servers/exchange/storage/e-storage.c:566
 msgid "The folder is not empty"
@@ -5080,7 +5078,7 @@ msgstr "Der angegebene Ordner wurde nicht gefunden"
 
 #: ../servers/exchange/storage/e-storage.c:570
 msgid "Function not implemented in this storage"
-msgstr "Funktion ist in diesem Speicher nicht implementiert"
+msgstr "Funktion in diesem Speicher nicht implementiert"
 
 #: ../servers/exchange/storage/e-storage.c:574
 msgid "Operation not supported"
@@ -5088,17 +5086,15 @@ msgstr "Operation nicht unterstützt"
 
 #: ../servers/exchange/storage/e-storage.c:576
 msgid "The specified type is not supported in this storage"
-msgstr "Der angegebene Typ wird in dieser Ablage nicht unterstützt"
+msgstr "Der angegebene Typ wird in diesem Speicher nicht unterstützt"
 
 #: ../servers/exchange/storage/e-storage.c:578
 msgid "The specified folder cannot be modified or removed"
-msgstr "Der angegebene Ordner kann nicht verändert oder entfernt werden"
+msgstr "Der angegebene Ordner kann weder geändert noch entfernt werden"
 
 #: ../servers/exchange/storage/e-storage.c:580
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
-"Ein Ordner kann nicht zu einem Unterordner eines ihm untergeordneten Ordners "
-"gemacht werden"
+msgstr "Ein Ordner kann nicht in einen seiner Unterordner verschoben werden"
 
 #: ../servers/exchange/storage/e-storage.c:582
 msgid "Cannot create a folder with that name"
@@ -5106,7 +5102,7 @@ msgstr "Es konnte kein Ordner mit diesem Namen angelegt werden"
 
 #: ../servers/exchange/storage/e-storage.c:584
 msgid "This operation cannot be performed in off-line mode"
-msgstr "Diese Operation kann im Offline-Modus nicht ausgeführt werden"
+msgstr "Diese Aktion kann im Offline-Modus nicht ausgeführt werden"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
@@ -5151,11 +5147,11 @@ msgstr "Notizen"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Outbox"
-msgstr "Postausgang"
+msgstr "Ausgang"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Sent Items"
-msgstr "Gesendete Objekte"
+msgstr "Verschickte Objekte"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Tasks"
@@ -5200,67 +5196,3 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Mehrere Speicherzugriffsfehler aufgetreten; Fehlerdialog kann nicht "
 "angezeigt werden\n"
-
-#~ msgid "Groupwise server %s"
-#~ msgstr "Groupwise-Server %s"
-
-#~ msgid "Checklist"
-#~ msgstr "Checkliste"
-
-#~ msgid "%sEnter password for %s (user %s)"
-#~ msgstr "%sPasswort für %s (Benutzer %s) eingeben"
-
-#~ msgid "Server rejected username"
-#~ msgstr "Server wies Benutzername zurück"
-
-#~ msgid "Failed to send username to server"
-#~ msgstr "Benutzername konnte nicht an Server übermittelt werden"
-
-#~ msgid "Server rejected username/password"
-#~ msgstr "Server wies Benutzername/Passwort zurück"
-
-#~ msgid "Could not get group list from server."
-#~ msgstr "Die Gruppenliste konnte nicht vom Server abgerufen werden."
-
-#~ msgid "Unable to load grouplist file for %s: %s"
-#~ msgstr "Gruppenlistendatei für %s konnte nicht geladen werden: %s"
-
-#~ msgid "Unable to save grouplist file for %s: %s"
-#~ msgstr "Gruppenlistendatei für %s konnte nicht gespeichert werden: %s"
-
-#~ msgid "Address Book and Calendar"
-#~ msgstr "Adressbuch und Kalender"
-
-#~ msgid "File As"
-#~ msgstr "Einsortieren unter"
-
-#~ msgid "e_book_open: cancelled"
-#~ msgstr "e_book_open: abgebrochen"
-
-#~ msgid "e_book_load_uri: no factories available for uri `%s'"
-#~ msgstr "e_book_load_uri: keine Fabriken für URI »%s« verfügbar"
-
-#~ msgid "Repository is Offline"
-#~ msgstr "Repository ist offline"
-
-#~ msgid ""
-#~ "Failed to GPG %s: %s\n"
-#~ "\n"
-#~ "%s"
-#~ msgstr ""
-#~ "GPG %s gescheitert: %s\n"
-#~ "\n"
-#~ "%s"
-
-#~ msgid "Failed to GPG %s: %s\n"
-#~ msgstr "GPG %s gescheitert: %s\n"
-
-# CHECK
-#~ msgid "Post Office Agent:"
-#~ msgstr "Post-Office-Agent:"
-
-#~ msgid "Use Secure Connection (SSL)"
-#~ msgstr "Sichere Verbindung (SSL) verwenden"
-
-#~ msgid "Evolution Addressbook file and LDAP backend"
-#~ msgstr "Evolution-Adressbuch-Datei- und -LDAP-Backend"
