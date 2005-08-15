@@ -290,13 +290,16 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	if (camel_local_summary_load((CamelLocalSummary *)folder->summary, forceindex, NULL) == -1) {
 		/* ? */
 	}
-	
+
+	/* We don't need to sync here ..., it can sync later on when it calls refresh info */
+#if 0
 	/*if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {*/
 	/* we sync here so that any hard work setting up the folder isn't lost */
-	if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
+	/*if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
 		camel_object_unref (CAMEL_OBJECT (folder));
 		return NULL;
-	}
+		}*/
+#endif
 
 	/* TODO: This probably shouldn't be here? */
 	if ((flags & CAMEL_STORE_FOLDER_CREATE) != 0) {
