@@ -34,14 +34,13 @@
 #include "camel-charset-map.h"
 
 #define d(x)
+#define w(x)
 
 static void camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass);
 static void camel_mime_filter_windows_init       (CamelObject *o);
 static void camel_mime_filter_windows_finalize   (CamelObject *o);
 
-
 static CamelMimeFilterClass *parent_class = NULL;
-
 
 CamelType
 camel_mime_filter_windows_get_type (void)
@@ -95,8 +94,8 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 			register unsigned char c = *inptr++;
 			
 			if (c >= 128 && c <= 159) {
-				g_warning ("Encountered Windows charset masquerading as %s",
-					   windows->claimed_charset);
+				w(g_warning ("Encountered Windows charset masquerading as %s",
+					     windows->claimed_charset));
 				windows->is_windows = TRUE;
 				break;
 			}
