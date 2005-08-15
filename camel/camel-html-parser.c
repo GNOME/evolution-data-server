@@ -749,7 +749,7 @@ static int tokenise_step(CamelHTMLParserPrivate *p, char **datap, int *lenp)
 					g_string_append_c(p->values->pdata[p->attr], ';');
 				} else {
 					d(printf("got entity: %s = %s\n", p->ent->str, p->ent_utf8));
-					g_string_append(p->values->pdata[p->attr], p->ent_utf8);
+					g_string_append_len(p->values->pdata[p->attr], p->ent_utf8, len);
 				}
 			} else if (isalnum(c) || c=='#') { /* FIXME: right type */
 				g_string_append_c(p->ent, c);

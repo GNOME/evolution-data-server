@@ -108,6 +108,7 @@ block_file_validate_root(CamelBlockFile *bs)
 	    || st.st_size != br->last
 	    || br->free > st.st_size
 	    || (br->flags & CAMEL_BLOCK_FILE_SYNC) == 0) {
+#if 0
 		if (s != -1 && st.st_size > 0) {
 			g_warning("Invalid root: '%s'", bs->path);
 			g_warning("version: %.8s (%.8s)", bs->root->version, bs->version);
@@ -119,6 +120,7 @@ block_file_validate_root(CamelBlockFile *bs)
 				  (br->last != st.st_size) || ((br->last % bs->block_size) != 0) ? " BAD": " OK");
 			g_warning("flags: %s", (br->flags & CAMEL_BLOCK_FILE_SYNC)?"SYNC":"unSYNC");
 		}
+#endif
 		return -1;
 	}
 

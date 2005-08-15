@@ -1852,12 +1852,15 @@ header_decode_quoted_string(const char **in)
 		}
 		outlen = intmp-inptr-skip;
 		out = outptr = g_malloc(outlen+1);
-		while ( (c = *inptr++) && c!= '"') {
+		while ( (c = *inptr) && c!= '"') {
+			inptr++;
 			if (c=='\\' && *inptr) {
 				c = *inptr++;
 			}
 			*outptr++ = c;
 		}
+		if (c)
+			inptr++;
 		*outptr = '\0';
 	}
 	*in = inptr;

@@ -1,3 +1,31 @@
+2005-08-12  Not Zed  <NotZed@Ximian.com>
+
+	* camel-mime-filter-windows.c (filter_filter): same.
+
+	* camel-mime-filter-charset.c
+	(camel_mime_filter_charset_new_convert): remove another common
+	useless warning.
+
+	* camel-block-file.c (block_file_validate_root): ifdef out the
+	'invalid root' stuff.
+
+	* camel-folder-summary.c (summary_build_content_info): turn off
+	the annoying/pointless 'cannot convert xxx' message.
+
+	** See bug #313284.
+
+	* camel-mime-parser.c (folder_scan_content): make sure *data is
+	set to something before we exit.
+
+	* camel-mime-parser.c (folder_read): use memmove, not memcpy,
+	since memory areas could overlap.
+
+	* camel-html-parser.c (tokenise_step): use the length from the
+	utf8 conversion, it isn't 0 terminated.
+
+	* camel-mime-utils.c (header_decode_quoted_string): if we run out
+	of string, then don't go past the 0.
+
 2005-08-13  Tor Lillqvist  <tml@novell.com>
 
 	* camel.c (camel_init): Call atexit() directly on Win32, not

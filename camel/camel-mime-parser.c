@@ -904,7 +904,7 @@ folder_read(struct _header_scan_state *s)
 	/* check for any remaning bytes (under the atleast limit( */
 	inoffset = s->inend - s->inptr;
 	if (inoffset>0) {
-		memcpy(s->inbuf, s->inptr, inoffset);
+		memmove(s->inbuf, s->inptr, inoffset);
 	}
 	if (s->stream) {
 		len = camel_stream_read(s->stream, s->inbuf+inoffset, SCAN_BUF-inoffset);
@@ -1382,6 +1382,7 @@ folder_scan_content(struct _header_scan_state *s, int *lastone, char **data, siz
 	}
 
 	*length = 0;
+	*data = s->inptr;
 	s->atleast = atleast;
 	return NULL;
 

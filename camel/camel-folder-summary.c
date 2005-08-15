@@ -73,6 +73,7 @@ static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
 
 #define d(x)
 #define io(x)			/* io debug */
+#define w(x)
 
 #if 0
 extern int strdup_count, malloc_count, free_count;
@@ -2056,7 +2057,7 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 				if (mfc) {
 					chr_id = camel_mime_parser_filter_add(mp, (CamelMimeFilter *)mfc);
 				} else {
-					g_warning("Cannot convert '%s' to 'UTF-8', message index may be corrupt", charset);
+					w(g_warning("Cannot convert '%s' to 'UTF-8', message index may be corrupt", charset));
 				}
 			}
 
