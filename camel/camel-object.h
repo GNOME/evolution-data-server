@@ -307,6 +307,33 @@ type##_get_type(void)								\
 	return type##_type;							\
 }
 
+/* Utility functions, not object specific, but too small to separate */
+typedef struct _CamelIteratorVTable CamelIteratorVTable;
+typedef struct _CamelIterator CamelIterator;
+
+struct _CamelIteratorVTable {
+	/* free fields, dont free base object */
+	void (*free)(void *it);
+	/* go to the next messageinfo */
+	const void *(*next)(void *it, CamelException *ex);
+	/* go back to the start */
+	void (*reset)(void *it);
+	/* *ESTIMATE* how many results are in the iterator */
+	int (*length)(void *it);
+};
+
+struct _CamelIterator {
+	CamelIteratorVTable *klass;
+
+	/* subclasses adds new fields afterwards */
+};
+
+void *camel_iterator_new(CamelIteratorVTable *klass, size_t size);
+void camel_iterator_free(void *it);
+const void *camel_iterator_next(void *it, CamelException *ex);
+void camel_iterator_reset(void *it);
+int camel_iterator_length(void *it);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

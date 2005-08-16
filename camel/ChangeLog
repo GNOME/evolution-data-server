@@ -1,3 +1,14 @@
+2005-08-15  Not Zed  <NotZed@Ximian.com>
+
+	** backported from disksummary-branch
+
+	* camel-object.c: Change all ref-counting and bag-related
+	operations to use a simple mutex rather than a recursive one.
+	Then change the bag to use a cond rather than a semaphore.  Fixes
+	some nasty races exposed by extra paralellism in the code.
+	(camel_iterator_*): small iterator interface, not used on this
+	branch; backported to make later merging easier.
+
 2005-08-12  Not Zed  <NotZed@Ximian.com>
 
 	* camel-mime-filter-windows.c (filter_filter): same.

@@ -27,7 +27,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
-#include <semaphore.h>
 #include <errno.h>
 
 #include "camel-object.h"
@@ -91,7 +90,7 @@ struct _CamelObjectBagKey {
 	void *key;		/* the key reserved */
 	int waiters;		/* count of threads waiting for key */
 	pthread_t owner;	/* the thread that has reserved the bag for a new entry */
-	sem_t reserve_sem;	/* used to track ownership */
+	GCond *cond;
 };
 
 struct _CamelObjectBag {
@@ -135,7 +134,10 @@ static EMemChunk *pair_chunks;
 static EMemChunk *hook_chunks;
 static unsigned int pair_id = 1;
 
+/* type-lock must be recursive, for atomically creating classes */
 static EMutex *type_lock;
+/* ref-lock must be global :-(  for object bags to work */
+static GMutex *ref_lock;
 
 static GHashTable *type_table;
 static EMemChunk *type_chunks;
@@ -150,6 +152,8 @@ CamelType camel_interface_type;
 #define E_UNLOCK(l) (e_mutex_unlock(l))
 #define CLASS_LOCK(k) (g_mutex_lock((((CamelObjectClass *)k)->lock)))
 #define CLASS_UNLOCK(k) (g_mutex_unlock((((CamelObjectClass *)k)->lock)))
+#define REF_LOCK() (g_mutex_lock(ref_lock))
+#define REF_UNLOCK() (g_mutex_unlock(ref_lock))
 
 static struct _CamelHookPair *
 pair_alloc(void)
@@ -213,6 +217,7 @@ camel_type_init(void)
 	type_lock = e_mutex_new(E_MUTEX_REC);
 	type_chunks = e_memchunk_new(32, sizeof(CamelType));
 	type_table = g_hash_table_new(NULL, NULL);
+	ref_lock = g_mutex_new();
 }
 
 /* ************************************************************************ */
@@ -866,12 +871,12 @@ camel_object_ref(void *vo)
 
 	g_return_if_fail(CAMEL_IS_OBJECT(o));
 
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	o->ref_count++;
 	d(printf("%p: ref %s(%d)\n", o, o->klass->name, o->ref_count));
 
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 }
 
 void
@@ -888,7 +893,7 @@ camel_object_unref(void *vo)
 	if (o->hooks)
 		hooks = camel_object_get_hooks(o);
 
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	o->ref_count--;
 
@@ -896,7 +901,7 @@ camel_object_unref(void *vo)
 
 	if (o->ref_count > 0
 	    || (o->flags & CAMEL_OBJECT_DESTROY)) {
-		E_UNLOCK(type_lock);
+		REF_UNLOCK();
 		if (hooks)
 			camel_object_unget_hooks(o);
 		return;
@@ -907,7 +912,7 @@ camel_object_unref(void *vo)
 	if (hooks)
 		camel_object_bag_remove_unlocked(NULL, o, hooks);
 
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 
 	if (hooks)
 		camel_object_unget_hooks(o);
@@ -1996,7 +2001,7 @@ camel_object_bag_destroy(CamelObjectBag *bag)
 	g_free(bag);
 }
 
-/* must be called with type_lock held */
+/* must be called with ref_lock held */
 static void
 co_bag_unreserve(CamelObjectBag *bag, const void *key)
 {
@@ -2015,14 +2020,14 @@ co_bag_unreserve(CamelObjectBag *bag, const void *key)
 	g_assert(res->owner == pthread_self());
 
 	if (res->waiters > 0) {
-		b(printf("unreserve bag, waking waiters\n"));
+		b(printf("unreserve bag '%s', waking waiters\n", (char *)key));
 		res->owner = 0;
-		sem_post(&res->reserve_sem);
+		g_cond_signal(res->cond);
 	} else {
-		b(printf("unreserve bag, no waiters, freeing reservation\n"));
+		b(printf("unreserve bag '%s', no waiters, freeing reservation\n", (char *)key));
 		resp->next = res->next;
 		bag->free_key(res->key);
-		sem_destroy(&res->reserve_sem);
+		g_cond_free(res->cond);
 		g_free(res);
 	}
 }
@@ -2045,12 +2050,12 @@ camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo)
 	void *k;
 
 	hooks = camel_object_get_hooks(o);
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	pair = hooks->list;
 	while (pair) {
 		if (pair->name == bag_name && pair->data == bag) {
-			E_UNLOCK(type_lock);
+			REF_UNLOCK();
 			camel_object_unget_hooks(o);
 			return;
 		}
@@ -2073,7 +2078,7 @@ camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo)
 
 	co_bag_unreserve(bag, key);
 	
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 	camel_object_unget_hooks(o);
 }
 
@@ -2094,10 +2099,12 @@ camel_object_bag_get(CamelObjectBag *bag, const void *key)
 {
 	CamelObject *o;
 
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	o = g_hash_table_lookup(bag->object_table, key);
 	if (o) {
+		b(printf("object bag get '%s' = %p\n", (char *)key, o));
+
 		/* we use the same lock as the refcount */
 		o->ref_count++;
 	} else {
@@ -2111,11 +2118,11 @@ camel_object_bag_get(CamelObjectBag *bag, const void *key)
 		}
 
 		if (res) {
+			b(printf("object bag get '%s', reserved, waiting\n", (char *)key));
+
 			res->waiters++;
 			g_assert(res->owner != pthread_self());
-			E_UNLOCK(type_lock);
-			sem_wait(&res->reserve_sem);
-			E_LOCK(type_lock);
+			g_cond_wait(res->cond, ref_lock);
 			res->waiters--;
 
 			/* re-check if it slipped in */
@@ -2123,13 +2130,15 @@ camel_object_bag_get(CamelObjectBag *bag, const void *key)
 			if (o)
 				o->ref_count++;
 
+			b(printf("object bag get '%s', finished waiting, got %p\n", (char *)key, o));
+
 			/* we don't actually reserve it */
 			res->owner = pthread_self();
 			co_bag_unreserve(bag, key);
 		}
 	}
 	
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 	
 	return o;
 }
@@ -2154,14 +2163,15 @@ camel_object_bag_peek(CamelObjectBag *bag, const void *key)
 {
 	CamelObject *o;
 
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	o = g_hash_table_lookup(bag->object_table, key);
 	if (o) {
 		/* we use the same lock as the refcount */
 		o->ref_count++;
 	}
-	E_UNLOCK(type_lock);
+
+	REF_UNLOCK();
 
 	return o;
 }
@@ -2189,7 +2199,7 @@ camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 {
 	CamelObject *o;
 
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	o = g_hash_table_lookup(bag->object_table, key);
 	if (o) {
@@ -2204,36 +2214,36 @@ camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 		}
 
 		if (res) {
-			b(printf("bag reserve, already reserved, waiting\n"));
+			b(printf("bag reserve %s, already reserved, waiting\n", (char *)key));
 			g_assert(res->owner != pthread_self());
 			res->waiters++;
-			E_UNLOCK(type_lock);
-			sem_wait(&res->reserve_sem);
-			E_LOCK(type_lock);
+			g_cond_wait(res->cond, ref_lock);
 			res->waiters--;
 			/* incase its slipped in while we were waiting */
 			o = g_hash_table_lookup(bag->object_table, key);
 			if (o) {
+				b(printf("finished wait, someone else created '%s' = %p\n", (char *)key, o));
 				o->ref_count++;
 				/* in which case we dont need to reserve the bag either */
 				res->owner = pthread_self();
 				co_bag_unreserve(bag, key);
 			} else {
+				b(printf("finished wait, now owner of '%s'\n", (char *)key));
 				res->owner = pthread_self();
 			}
 		} else {
-			b(printf("bag reserve, no key, reserving\n"));
+			b(printf("bag reserve %s, no key, reserving\n", (char *)key));
 			res = g_malloc(sizeof(*res));
 			res->waiters = 0;
 			res->key = bag->copy_key(key);
-			sem_init(&res->reserve_sem, 0, 0);
+			res->cond = g_cond_new();
 			res->owner = pthread_self();
 			res->next = bag->reserved;
 			bag->reserved = res;
 		}
 	}
 	
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 
 	return o;
 }
@@ -2248,11 +2258,11 @@ camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 void
 camel_object_bag_abort(CamelObjectBag *bag, const void *key)
 {
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	co_bag_unreserve(bag, key);
 
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 }
 
 /**
@@ -2271,7 +2281,7 @@ camel_object_bag_rekey(CamelObjectBag *bag, void *o, const void *newkey)
 {
 	void *oldkey;
 
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	if (g_hash_table_lookup_extended(bag->key_table, o, NULL, &oldkey)) {
 		g_hash_table_remove(bag->object_table, oldkey);
@@ -2284,7 +2294,7 @@ camel_object_bag_rekey(CamelObjectBag *bag, void *o, const void *newkey)
 		abort();
 	}
 
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 }
 
 static void
@@ -2304,9 +2314,9 @@ camel_object_bag_list(CamelObjectBag *bag)
 
 	list = g_ptr_array_new();
 
-	E_LOCK(type_lock);
+	REF_LOCK();
 	g_hash_table_foreach(bag->object_table, (GHFunc)save_bag, list);
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 
 	return list;
 }
@@ -2352,10 +2362,53 @@ camel_object_bag_remove(CamelObjectBag *inbag, void *vo)
 		return;
 
 	hooks = camel_object_get_hooks(o);
-	E_LOCK(type_lock);
+	REF_LOCK();
 
 	camel_object_bag_remove_unlocked(inbag, o, hooks);
 		
-	E_UNLOCK(type_lock);
+	REF_UNLOCK();
 	camel_object_unget_hooks(o);
+}
+
+/* ********************************************************************** */
+
+void *camel_iterator_new(CamelIteratorVTable *klass, size_t size)
+{
+	CamelIterator *it;
+
+	g_assert(size >= sizeof(CamelIterator));
+
+	it = g_malloc0(size);
+	it->klass = klass;
+
+	return it;
+}
+
+const void *camel_iterator_next(void *it, CamelException *ex)
+{
+	g_assert(it);
+	return ((CamelIterator *)it)->klass->next(it, ex);
+}
+
+void camel_iterator_reset(void *it)
+{
+	g_assert(it);
+	((CamelIterator *)it)->klass->reset(it);
+}
+
+int camel_iterator_length(void *it)
+{
+	g_assert(it);
+	g_return_val_if_fail(((CamelIterator *)it)->klass->length != NULL, 0);
+	
+	return ((CamelIterator *)it)->klass->length(it);
+}
+
+void camel_iterator_free(void *it)
+{
+	if (it) {
+		if (((CamelIterator *)it)->klass->free)
+			((CamelIterator *)it)->klass->free(it);
+		g_free(it);
+	}
 }
