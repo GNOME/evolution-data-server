@@ -1,5 +1,10 @@
 2005-08-16  Ross Burton  <ross@burtonini.com>
 
+	* libedata-book/e-book-backend-summary.c:
+	Mark the summary clean when saved.
+
+2005-08-16  Ross Burton  <ross@burtonini.com>
+
 	* libebook/e-contact.c:
 	Fix a leak when returning boxed types.
 

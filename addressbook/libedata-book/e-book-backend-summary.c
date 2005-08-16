@@ -726,6 +726,7 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 		summary->priv->mtime = sb.st_mtime;
 	}
 
+	summary->priv->dirty = FALSE;
 	return TRUE;
 
  lose:
