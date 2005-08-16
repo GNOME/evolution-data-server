@@ -1261,7 +1261,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	CamelMimeMessage *msg = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
-	char *container_id;
+	char *container_id = NULL;
 	GSList *attach_list = NULL;
 	EGwItemType type;
 	EGwConnectionStatus status;
@@ -1274,6 +1274,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 	uid = e_gw_item_get_id(item);
 	cnc = cnc_lookup (priv);
+	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
 
 	attach_list = e_gw_item_get_attach_id_list (item);
 	if (attach_list) {
