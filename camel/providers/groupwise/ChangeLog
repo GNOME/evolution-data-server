@@ -1,3 +1,11 @@
+2005-08-16  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** see bug #3028355
+	
+	* camel-groupwise-store.c:
+	(get_one_folder_offline): check if it is mailbox and set
+	the folder type.
+
 2005-08-16 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-folder.c : (groupwise_folder_item_to_msg),

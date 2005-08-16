@@ -574,6 +574,8 @@ get_one_folder_offline (const char *physical_path, const char *path, gpointer da
 		return TRUE;
 	
 	fi = groupwise_build_folder_info(groupwise_store, NULL, path+1);
+	if (!strcmp (fi->full_name, "Mailbox"))
+		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
 	g_ptr_array_add (folders, fi);
 	return TRUE;
 }
