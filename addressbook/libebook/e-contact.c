@@ -1199,7 +1199,7 @@ e_contact_get_property (GObject *object,
 		if (attr)
 			rv = info->struct_getter (contact, attr);
 
-		g_value_set_boxed (value, rv);
+		g_value_take_boxed (value, rv);
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_GETSET) {
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
