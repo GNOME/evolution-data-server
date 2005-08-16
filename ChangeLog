@@ -1,3 +1,11 @@
+2005-07-21  Joe Shaw  <joeshaw@novell.com>
+
+        * libedataserver/e-source-group.c:
+        * libedataserver/e-source-list.c:
+        * libedataserver/e-source.c: Change the init and class_init
+        functions to contain the whole class name for the benefit of the
+        gtk-sharp parser.
+
 2005-08-06  Pawan Chitrakar  <pawan@nplinux.org>
 
 	* configure.in: Added ne in ALL_LINGUAS

@@ -110,7 +110,7 @@ impl_finalize (GObject *object)
 /* Initialization.  */
 
 static void
-class_init (ESourceGroupClass *class)
+e_source_group_class_init (ESourceGroupClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
@@ -149,7 +149,7 @@ class_init (ESourceGroupClass *class)
 }
 
 static void
-init (ESourceGroup *source_group)
+e_source_group_init (ESourceGroup *source_group)
 {
 	ESourceGroupPrivate *priv;
 
@@ -167,11 +167,11 @@ e_source_group_get_type (void)
                         sizeof (ESourceGroupClass),
                         (GBaseInitFunc) NULL,
                         (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) class_init,
+                        (GClassInitFunc) e_source_group_class_init,
                         NULL, NULL,
                         sizeof (ESourceGroup),
                         0,
-                        (GInstanceInitFunc) init
+                        (GInstanceInitFunc) e_source_group_init
                 };
 		e_source_group_type = g_type_register_static (G_TYPE_OBJECT, "ESourceGroup", &info, 0);
 	}
