@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+static gboolean is_offline ();
+
 void
 add_folder_esource (ExchangeAccount *account, 
 	     	    FolderType folder_type, 
@@ -45,8 +47,10 @@ add_folder_esource (ExchangeAccount *account,
 	const char *offline = NULL;
 	int mode;
 	ESourceList *source_list = NULL;
+	gboolean offline_flag;
 
 	client = gconf_client_get_default ();
+	offline_flag = is_offline ();
 
 	if (folder_type == EXCHANGE_CONTACTS_FOLDER) {
 		source_list = e_source_list_new_for_gconf ( client, 
@@ -129,7 +133,7 @@ add_folder_esource (ExchangeAccount *account,
 	if (source && !is_contacts_folder) {
 
 		/* Select the folder created */
-		if (folder_type == EXCHANGE_CALENDAR_FOLDER) {
+		if (folder_type == EXCHANGE_CALENDAR_FOLDER && !offline_flag) {
 			ids = gconf_client_get_list (client,
 					     CONF_KEY_SELECTED_CAL_SOURCES, 
 					     GCONF_VALUE_STRING, NULL);
@@ -141,8 +145,7 @@ add_folder_esource (ExchangeAccount *account,
 			g_slist_foreach (ids, (GFunc) g_free, NULL);
 			g_slist_free (ids);
 		}
-		else if (folder_type == EXCHANGE_TASKS_FOLDER) {
-
+		else if (folder_type == EXCHANGE_TASKS_FOLDER && !offline_flag) {
 			ids = gconf_client_get_list (client, 
 					     CONF_KEY_SELECTED_TASKS_SOURCES, 
 					     GCONF_VALUE_STRING, NULL);
@@ -282,4 +285,21 @@ remove_folder_esource (ExchangeAccount *account,
         }
 	g_object_unref (source_list);
 	g_object_unref (client);
+}
+
+static gboolean 
+is_offline () 
+{
+	GConfClient *client;
+	GConfValue *value;
+	gboolean offline = FALSE;
+
+	client = gconf_client_get_default ();
+	value = gconf_client_get (client,
+					"/apps/evolution/shell/start_offline", NULL);
+	if (value)
+		offline = gconf_value_get_bool (value);
+
+	g_object_unref (client);
+	return offline;
 }

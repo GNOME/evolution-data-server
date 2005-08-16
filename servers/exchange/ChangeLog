@@ -1,3 +1,11 @@
+2005-08-12  Praveen Kumar  <kpraveen@novell.com>
+
+	* storage/exchange-esource.c
+	(is_offline): Added new
+	(add_folder_esource): Modified to add the calendar and tasks to 
+	the selected list only if the account is online. This is a part
+	of the fix to the bug 237272.
+	
 2005-08-02  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/exchange-hierarchy-favorites.c (remove_folder) : Remove
