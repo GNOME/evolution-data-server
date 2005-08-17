@@ -488,7 +488,7 @@ add_href (gpointer path, gpointer folder, gpointer hrefs)
 
 /* E2K_PR_EXCHANGE_FOLDER_SIZE also can be used for reading folder size */
 static const char *rescan_props[] = {
-	PR_MESSAGE_SIZE_EXTENDED,
+	E2K_PR_EXCHANGE_FOLDER_SIZE,
 	E2K_PR_HTTPMAIL_UNREAD_COUNT
 };
 static const int n_rescan_props = sizeof (rescan_props) / sizeof (rescan_props[0]);
@@ -543,7 +543,8 @@ rescan (ExchangeHierarchy *hier)
 			e_folder_set_unread_count (folder, unread);
 
 		folder_size = e2k_properties_get_prop (result->props,
-						PR_MESSAGE_SIZE_EXTENDED);
+				E2K_PR_EXCHANGE_FOLDER_SIZE);
+
 		if (folder_size) {
 			folder_name = e_folder_get_name (folder);
 			fsize_d = g_ascii_strtod (folder_size, NULL)/1024;
@@ -670,7 +671,7 @@ static const char *folder_props[] = {
 	E2K_PR_HTTPMAIL_UNREAD_COUNT,
 	E2K_PR_DAV_DISPLAY_NAME,
 	E2K_PR_EXCHANGE_PERMANENTURL,
-	PR_MESSAGE_SIZE_EXTENDED,
+	E2K_PR_EXCHANGE_FOLDER_SIZE,
 	E2K_PR_DAV_HAS_SUBS
 };
 static const int n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
@@ -688,7 +689,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gboolean offline)
 	GPtrArray *folders;
 	int i;
 	gdouble fsize_d;
-	const char *name, *folder_size;
+	const char *name, *folder_size, *deleted_items_uri, *int_uri;
 	gboolean personal = ( EXCHANGE_HIERARCHY (hwd)->type == EXCHANGE_HIERARCHY_PERSONAL );
 
 	if (offline) {
@@ -730,7 +731,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gboolean offline)
 		name = e2k_properties_get_prop (result->props,
 							E2K_PR_DAV_DISPLAY_NAME);
 		folder_size = e2k_properties_get_prop (result->props,
-							PR_MESSAGE_SIZE_EXTENDED);
+				E2K_PR_EXCHANGE_FOLDER_SIZE);
 
 		/* FIXME : Find a better way of doing this */
 		fsize_d = g_ascii_strtod (folder_size, NULL)/1024 ;
@@ -743,9 +744,15 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gboolean offline)
 	}
 	status = e2k_result_iter_free (iter);
 
+	deleted_items_uri = exchange_account_get_standard_uri (hier->account, "deleteditems");
+
 	while (subtrees) {
 		folder = subtrees->data;
 		subtrees = g_slist_remove (subtrees, folder);
+		/* Dont scan the subtree for deleteditems folder */
+		int_uri = e_folder_exchange_get_internal_uri (folder);
+		if (int_uri && !strcmp (int_uri, deleted_items_uri))
+			continue;
 		scan_subtree (hier, folder, offline);
 	}
 

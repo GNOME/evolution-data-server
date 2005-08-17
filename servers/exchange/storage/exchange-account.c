@@ -1810,6 +1810,9 @@ exchange_account_get_folder (ExchangeAccount *account,
 {
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
+	if (!path_or_uri)
+		return NULL;
+
 	return g_hash_table_lookup (account->priv->folders, path_or_uri);
 }
 
