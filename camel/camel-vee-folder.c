@@ -25,7 +25,6 @@
 #endif
 
 #include <string.h>
-#include <pthread.h>
 
 #include "camel-exception.h"
 #include "camel-vee-folder.h"

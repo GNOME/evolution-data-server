@@ -34,8 +34,6 @@
 #include <pthread.h>
 #include <errno.h>
 
-#include <sys/poll.h>
-
 #include "libedataserver/e-msgport.h"
 
 #include "camel-service.h"

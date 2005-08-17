@@ -29,7 +29,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <sys/types.h>
-#include <netdb.h>
 #include <camel/camel-sasl.h>
 
 #define CAMEL_SASL_KERBEROS4_TYPE     (camel_sasl_kerberos4_get_type ())

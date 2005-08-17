@@ -1,3 +1,35 @@
+2005-08-17  Tor Lillqvist  <tml@novell.com>
+
+	* camel-cipher-context.c
+	* camel-vee-folder.c: Drop unneeded <pthread.h>.
+
+	* camel-block-file.c
+	* camel-index-control.c
+	* camel-index.c
+	* camel-partition-table.c
+	* camel-text-index.c
+	* camel-vee-summary.c
+	* providers/groupwise/camel-groupwise-summary.c
+	* providers/imap/camel-imap-summary.c
+	* providers/local/camel-local-summary.c
+	* providers/local/camel-mh-summary.c
+	* providers/local/camel-spool-summary.c
+	* providers/nntp/camel-nntp-summary.c: Drop unneeded <sys/uio.h>.
+
+	* camel-sasl-digest-md5.h: Drop unneeded <netdb.h>.
+	
+	* camel-sasl-kerberos4.h
+	* camel-sasl-kerberos4.c: Move inclusion of <netdb.h> to the
+	source file so we don't need any Win32 ifdefs in the
+	header. Include also <netinet/in.h> and "camel-net-utils.h" in the
+	source file.
+
+	* camel-service.c: Drop unneeded <sys/poll.h>
+
+	* providers/pop3/camel-pop3-store.c
+	* providers/smtp/camel-smtp-transport.c: Drop unneeded <sys/socket.h>
+	<netinet/in.h> and <arpa/inet.h>.
+
 2005-08-15  Not Zed  <NotZed@Ximian.com>
 
 	** backported from disksummary-branch
