@@ -1,3 +1,13 @@
+2005-08-17  Carsten Guenther <carsten.guenther@scalix.com>
+
+	Fixes http://bugzilla.gnome.org/show_bug.cgi?id=313657
+	* libecal/e-cal-recur.c:
+	(cal_obj_remove_duplicates_and_invalid_dates,
+	cal_obj_bymonthday_expand):
+	If a occurrence falls on a day that does not exist for that
+	month then move it to the last day of the month instead of
+	skipping it.
+
 2005-08-17  Chenthill Palanisamy  <pchenthill@novell.com>
 	
 	Fixes #311831

@@ -1958,8 +1958,11 @@ cal_obj_remove_duplicates_and_invalid_dates (GArray *occs)
 				   && (year % 100 != 0
 				       || year % 400 == 0)))
 			days++;
-		if (occ->day > days)
-			keep_occ = FALSE;
+
+		if (occ->day > days) {
+			/* move occurrence to the last day of the month */
+			occ->day = days;
+		}
 
 		if (keep_occ) {
 			if (i != j)
@@ -2898,10 +2901,15 @@ cal_obj_bymonthday_expand	(RecurData  *recur_data,
 				cotime = month_end_cotime;
 				cal_obj_time_add_days (&cotime, dayno);
 			}
-
-			/* Skip occurrences if they fall outside the month. */
-			if (cotime.month == occ->month)
+			if (cotime.month == occ->month) {
 				g_array_append_val (new_occs, cotime);
+			} else {
+				/* set to last day in month */
+				cotime.month = occ->month;
+				cotime.day = time_days_in_month (occ->year, occ->month);
+				g_array_append_val (new_occs, cotime);
+			}
+				
 			elem = elem->next;
 		}
 	}
