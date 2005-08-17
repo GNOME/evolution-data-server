@@ -600,7 +600,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			}
 		}
 		camel_message_info_free (info);
-		
+		info = NULL;
 	}
 
 	if (read_items && g_list_length (read_items)) {
@@ -807,7 +807,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end1;
 		}
-		if (!list || !g_list_length(list)) {
+		if (list || g_list_length(list)) {
 			camel_folder_summary_clear (folder->summary);
 			gw_update_summary (folder, list, ex);
 			g_list_foreach (list, (GFunc) g_object_unref, NULL);
