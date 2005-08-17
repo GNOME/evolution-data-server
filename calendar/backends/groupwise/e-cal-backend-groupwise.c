@@ -1840,11 +1840,20 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 		}
 
 		if (e_cal_backend_groupwise_utils_check_delegate (comp, e_gw_connection_get_user_email (priv->cnc))) {
+			const char *id = NULL, *recur_key = NULL;
+			
 			item = e_gw_item_new_for_delegate_from_cal (cbgw, comp);
-			status = e_gw_connection_delegate_request (priv->cnc, item, e_gw_item_get_id (item), NULL, NULL, NULL); 
+
+			if (mod == CALOBJ_MOD_ALL) {
+				recur_key = uid;
+			} else {
+				id = e_gw_item_get_id (item);
+			}
+
+			status = e_gw_connection_delegate_request (priv->cnc, item, id, NULL, NULL, recur_key); 
 		
 			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-					status = e_gw_connection_delegate_request (priv->cnc, item, e_gw_item_get_id (item), NULL, NULL, NULL);
+					status = e_gw_connection_delegate_request (priv->cnc, item, id, NULL, NULL, recur_key);
 				
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_object_unref (comp);
