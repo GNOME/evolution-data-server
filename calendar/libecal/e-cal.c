@@ -410,7 +410,7 @@ cal_read_only_cb (ECalListener *listener, ECalendarStatus status, gboolean read_
 
 	op = e_calendar_get_op (ecal);
 
-	if (op == NULL) {
+	if (op == NULL || !op->bool) {
 		ecal->priv->read_only = read_only; 
 		return;
 	}
@@ -2130,6 +2130,10 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 
 	g_mutex_lock (our_op->mutex);
 
+	/* set it to true so that op does not emit cond signals for all notifications
+	   from the backend */
+	our_op->bool = TRUE;
+	
 	g_mutex_unlock (ecal->priv->mutex);
 
 
@@ -2155,7 +2159,10 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 	g_cond_wait (our_op->cond, our_op->mutex);
 
 	status = our_op->status;
-	*read_only = our_op->bool;
+	
+	if (status == E_CALENDAR_STATUS_OK)
+		*read_only = our_op->bool;
+
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);

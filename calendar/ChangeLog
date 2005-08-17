@@ -1,4 +1,13 @@
 2005-08-17  Chenthill Palanisamy  <pchenthill@novell.com>
+	
+	Fixes #311831
+	* libecal/e-cal.c (cal_read_only_cb): Check if
+       the op->bool is TRUE before emiting the cond
+       signal.
+       (get_read_only): set the op->bool to true while
+       making the request.
+
+2005-08-17  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #312578
 	* backends/groupwise/e-cal-backend-groupwise.c:
