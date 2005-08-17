@@ -563,6 +563,38 @@ done:
 	camel_store_summary_save((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary);
 }
 
+static void
+flags_to_label(CamelFolder *folder, CamelImapMessageInfo *mi)
+{
+	/* We snoop the server flag setting, and map it to
+	   the label 'user tag'.  We also clean it up at this
+	   point, there can only be 1 label set at a time */
+	if (folder->permanent_flags & CAMEL_IMAP_MESSAGE_LABEL_MASK) {
+		const char *label = NULL;
+		guint32 mask = 0;
+
+		if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL1) {
+			mask = CAMEL_IMAP_MESSAGE_LABEL1;
+			label = "important";
+		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL2) {
+			mask = CAMEL_IMAP_MESSAGE_LABEL2;
+			label = "work";
+		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL3) {
+			mask = CAMEL_IMAP_MESSAGE_LABEL3;
+			label = "personal";
+		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL4) {
+			mask = CAMEL_IMAP_MESSAGE_LABEL4;
+			label = "todo";
+		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL5) {
+			mask = CAMEL_IMAP_MESSAGE_LABEL5;
+			label = "later";
+		}
+
+		mi->info.flags = (mi->info.flags & ~CAMEL_IMAP_MESSAGE_LABEL_MASK) | mask;
+		camel_tag_set(&mi->info.user_tags, "label", label);
+	}
+}
+
 /* Called with the store's connect_lock locked */
 static void
 imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
@@ -676,8 +708,9 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 			if (changes == NULL)
 				changes = camel_folder_change_info_new();
 			camel_folder_change_info_change_uid(changes, new[i].uid);
+			flags_to_label(folder, (CamelImapMessageInfo *)info);
 		}
-		
+
 		camel_message_info_free(info);
 		g_free (new[i].uid);
 	}
@@ -1197,12 +1230,6 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	GByteArray *ba;
 	char *flagstr, *end;
 	guint32 flags;
-
-	flags = camel_message_info_flags(info);
-	if (flags)
-		flagstr = imap_create_flag_list (flags);
-	else
-		flagstr = NULL;
 	
 	/* encode any 8bit parts so we avoid sending embedded nul-chars and such  */
 	camel_mime_message_encode_8bit_parts (message);
@@ -1221,6 +1248,18 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	camel_object_unref (CAMEL_OBJECT (streamfilter));
 	camel_object_unref (CAMEL_OBJECT (crlf_filter));
 	camel_object_unref (CAMEL_OBJECT (memstream));
+
+	/* Some servers dont let us append with custom flags.  If the command fails for
+	   whatever reason, assume this is the case and save the state and try again */
+retry:
+	flags = camel_message_info_flags(info);
+	if (!store->nocustomappend)
+		flags |= imap_label_to_flags((CamelMessageInfo *)info);
+	flags &= folder->permanent_flags;
+	if (flags)
+		flagstr = imap_create_flag_list (flags);
+	else
+		flagstr = NULL;
 	
 	response = camel_imap_command (store, NULL, ex, "APPEND %F%s%s {%d}",
 				       folder->full_name, flagstr ? " " : "",
@@ -1228,6 +1267,11 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	g_free (flagstr);
 	
 	if (!response) {
+		if (camel_exception_get_id(ex) == CAMEL_EXCEPTION_SERVICE_INVALID && !store->nocustomappend) {
+			camel_exception_clear(ex);
+			store->nocustomappend = 1;
+			goto retry;
+		}
 		g_byte_array_free (ba, TRUE);
 		return NULL;
 	}
@@ -2474,6 +2518,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 			 * have been set by summary_info_new_from_message.
 			 */
 			mi->info.flags |= flags;
+			flags_to_label(folder, mi);
 		}
 		size = GPOINTER_TO_INT (g_datalist_get_data (&data, "RFC822.SIZE"));
 		if (size)

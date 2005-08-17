@@ -1,3 +1,41 @@
+2005-08-16  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #242032.
+
+	* camel-imap-folder.c (do_append): if append fails with no/bad,
+	then retry without custom flags, if we were trying to send them.
+
+	* camel-imap-command.c (imap_read_response): return
+	SERVICE_INVALID rather than SERVICE_UNAVAILABLE for a BAD/NO
+	response.
+
+2005-08-15  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #242032.
+
+	* camel-imap-command.c (imap_read_response): tread BAD the same as
+	NO.
+
+	* camel-imap-folder.c (do_append): snarf incoming label if it has
+	one.  also only try to set flags the server says we can.
+
+	* camel-imap-utils.c (imap_label_to_flags): helper to map label
+	tag to imap flags.
+
+	* camel-imap-folder.c (flags_to_label, imap_rescan)
+	(imap_update_summary): if we get a server $Label flag, map it to
+	the label tag as well.
+
+	* camel-imap-summary.c (label_to_flags, message_info_load)
+	(info_set_user_tag, camel_imap_summary_add_offline)
+	(camel_imap_summary_add_offline_uncached): map the "label"
+	user-tag into an imap server flag.
+
+	* camel-imap-utils.c (imap_create_flag_list)
+	(imap_parse_flag_list): store the junk flag as a custom flag Junk,
+	and support our own $Labelx flags.  if the server supports custom
+	flags.
+
 2005-08-12  Tor Lillqvist  <tml@novell.com>
 
 	* Makefile.am: Use NO_UNDEFINED. Link with libcamel-provider,

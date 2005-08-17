@@ -55,6 +55,7 @@ gboolean imap_parse_list_response  (CamelImapStore *store, const char *buf, int 
 
 char   **imap_parse_folder_name    (CamelImapStore *store, const char *folder_name);
 
+guint32 imap_label_to_flags(CamelMessageInfo *info);
 char    *imap_create_flag_list     (guint32 flags);
 guint32  imap_parse_flag_list      (char **flag_list);
 

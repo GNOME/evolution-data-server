@@ -478,6 +478,18 @@ imap_create_flag_list (guint32 flags)
 		g_string_append (gstr, "\\Flagged ");
 	if (flags & CAMEL_MESSAGE_SEEN)
 		g_string_append (gstr, "\\Seen ");
+	if (flags & CAMEL_MESSAGE_JUNK)
+		g_string_append (gstr, "Junk ");
+	if (flags & CAMEL_IMAP_MESSAGE_LABEL1)
+		g_string_append(gstr, "$Label1 ");
+	if (flags & CAMEL_IMAP_MESSAGE_LABEL2)
+		g_string_append(gstr, "$Label2 ");
+	if (flags & CAMEL_IMAP_MESSAGE_LABEL3)
+		g_string_append(gstr, "$Label3 ");
+	if (flags & CAMEL_IMAP_MESSAGE_LABEL4)
+		g_string_append(gstr, "$Label4 ");
+	if (flags & CAMEL_IMAP_MESSAGE_LABEL5)
+		g_string_append(gstr, "$Label5 ");
 
 	if (gstr->str[gstr->len - 1] == ' ')
 		gstr->str[gstr->len - 1] = ')';
@@ -487,6 +499,31 @@ imap_create_flag_list (guint32 flags)
 	flag_list = gstr->str;
 	g_string_free (gstr, FALSE);
 	return flag_list;
+}
+
+guint32
+imap_label_to_flags(CamelMessageInfo *info)
+{
+	const char *label;
+	guint32 flags;
+
+	label = camel_message_info_user_tag(info, "label");
+	if (label == NULL)
+		flags = 0;
+	else if (!strcmp(label, "important"))
+		flags = CAMEL_IMAP_MESSAGE_LABEL1;
+	else if (!strcmp(label, "work"))
+		flags =  CAMEL_IMAP_MESSAGE_LABEL2;
+	else if (!strcmp(label, "personal"))
+		flags = CAMEL_IMAP_MESSAGE_LABEL3;
+	else if (!strcmp(label, "todo"))
+		flags = CAMEL_IMAP_MESSAGE_LABEL4;
+	else if (!strcmp(label, "later"))
+		flags = CAMEL_IMAP_MESSAGE_LABEL5;
+	else
+		flags = 0;
+
+	return flags;
 }
 
 guint32
@@ -516,7 +553,19 @@ imap_parse_flag_list (char **flag_list_p)
 		else if (!g_ascii_strncasecmp (flag_list, "\\Recent", len))
 			flags |= CAMEL_IMAP_MESSAGE_RECENT;
 		else if (!g_ascii_strncasecmp(flag_list, "\\*", len))
-			flags |= CAMEL_MESSAGE_USER;
+			flags |= CAMEL_MESSAGE_USER|CAMEL_MESSAGE_JUNK|CAMEL_IMAP_MESSAGE_LABEL_MASK;
+		else if (!g_ascii_strncasecmp(flag_list, "Junk", len))
+			flags |= CAMEL_MESSAGE_JUNK;
+		else if (!g_ascii_strncasecmp(flag_list, "$Label1", len))
+			flags |= CAMEL_IMAP_MESSAGE_LABEL1;
+		else if (!g_ascii_strncasecmp(flag_list, "$Label2", len))
+			flags |= CAMEL_IMAP_MESSAGE_LABEL2;
+		else if (!g_ascii_strncasecmp(flag_list, "$Label3", len))
+			flags |= CAMEL_IMAP_MESSAGE_LABEL3;
+		else if (!g_ascii_strncasecmp(flag_list, "$Label4", len))
+			flags |= CAMEL_IMAP_MESSAGE_LABEL4;
+		else if (!g_ascii_strncasecmp(flag_list, "$Label5", len))
+			flags |= CAMEL_IMAP_MESSAGE_LABEL5;
 		
 		flag_list += len;
 		if (*flag_list == ' ')

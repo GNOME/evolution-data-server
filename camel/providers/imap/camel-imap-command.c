@@ -386,13 +386,13 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 	if (*respbuf == '+')
 		return response;
 	p = strchr (respbuf, ' ');
-	if (p && !strncasecmp (p, " OK", 3))
+	if (p && !g_ascii_strncasecmp (p, " OK", 3))
 		return response;
 	
 	/* We should never get BAD, or anything else but +, OK, or NO
-	 * for that matter.
+	 * for that matter.  Well, we could get BAD, treat as NO.
 	 */
-	if (!p || strncasecmp (p, " NO", 3) != 0) {
+	if (!p || (g_ascii_strncasecmp(p, " NO", 3) != 0 && g_ascii_strncasecmp(p, " BAD", 4)) ) {
 		g_warning ("Unexpected response from IMAP server: %s",
 			   respbuf);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
@@ -405,7 +405,7 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 	p += 3;
 	if (!*p++)
 		p = NULL;
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+	camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_INVALID,
 			      _("IMAP command failed: %s"),
 			      p ? p : _("Unknown error"));
 	camel_imap_response_free_without_processing (store, response);

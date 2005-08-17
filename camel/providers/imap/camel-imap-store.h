@@ -117,8 +117,11 @@ struct _CamelImapStore {
 	guint connected:1;
 	guint preauthed:1;
 
+	/* broken server - don't use BODY, dont use partial fetches for message retrival */
 	guint braindamaged:1;
 	guint renaming:1;
+	/* broken server - wont let us append with custom flags even if the folder allows them */
+	guint nocustomappend:1;
 
 	char tag_prefix;
 	guint32 command;
