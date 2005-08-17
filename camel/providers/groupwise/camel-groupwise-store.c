@@ -498,7 +498,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	summary = (CamelGroupwiseSummary *) folder->summary;
 
 	summary_count = camel_folder_summary_count (folder->summary);
-	if(!summary_count) {
+	if(!summary_count || !summary->time_string) {
 		g_print ("\n\n** %s **: No summary as yet : using get cursor request\n\n", folder->name);
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
@@ -623,6 +623,9 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	char *folder_real = NULL;
 	CamelFolderInfo *info = NULL;
 	struct _store_folder_refresh *msg;
+	
+	if (top && groupwise_is_system_folder (top)) 
+		return groupwise_build_folder_info (groupwise_store, NULL, top );
 
 	CAMEL_SERVICE_LOCK (store, connect_lock);
 
