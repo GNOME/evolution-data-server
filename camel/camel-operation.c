@@ -566,9 +566,9 @@ camel_operation_start_transient (CamelOperation *cc, char *what, ...)
 
 static unsigned int stamp(void)
 {
-	struct timeval tv;
+	GTimeVal tv;
 
-	gettimeofday(&tv, NULL);
+	g_get_current_time(&tv);
 	/* update 4 times/second */
 	return (tv.tv_sec * 4) + tv.tv_usec / (1000000/4);
 }
