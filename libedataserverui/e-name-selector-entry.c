@@ -1236,6 +1236,7 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel
 	destination = find_destination_at_position (name_selector_entry, cursor_pos);
 	e_destination_set_contact (destination, contact, email_n);
 	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
+	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ",", -1, &cursor_pos);
 
 	/* Place cursor at end of address */
 
