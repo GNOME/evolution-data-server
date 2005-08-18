@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-08-17 14:00+0000\n"
-"PO-Revision-Date: 2005-08-17 20:16+0200\n"
+"PO-Revision-Date: 2005-08-18 23:48+0200\n"
 "Last-Translator: Арангел Ангов <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -98,7 +98,7 @@ msgstr "Грешка при пребарувањето"
 #: ../addressbook/libebook/e-book.c:3392
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr ""
+msgstr "\"%s\" во книгата претходно \"%s\""
 
 #: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
 #: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
@@ -108,7 +108,7 @@ msgstr ""
 #: ../addressbook/libebook/e-book.c:2305 ../addressbook/libebook/e-book.c:2641
 #: ../addressbook/libebook/e-book.c:2847
 msgid "book busy"
-msgstr ""
+msgstr "книгата е зафатена"
 
 #: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
 #: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
@@ -126,22 +126,22 @@ msgstr ""
 #: ../addressbook/libebook/e-book.c:2879 ../addressbook/libebook/e-book.c:3401
 #, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr ""
+msgstr "CORBA исклучокот прави \"%s\" повик"
 
 #: ../addressbook/libebook/e-book.c:2563
 #, c-format
 msgid "%s: there is no current operation"
-msgstr ""
+msgstr "%s: нема тековна операција"
 
 #: ../addressbook/libebook/e-book.c:2598
 #, c-format
 msgid "%s: couldn't cancel"
-msgstr ""
+msgstr "%s: не можам да го откажам"
 
 #: ../addressbook/libebook/e-book.c:2627 ../addressbook/libebook/e-book.c:2631
 #, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr ""
+msgstr "\"%s\" во книгата потоа \"%s\""
 
 #: ../addressbook/libebook/e-book.c:2697
 #, c-format
@@ -156,22 +156,22 @@ msgstr "%s: Невалиден извор."
 #: ../addressbook/libebook/e-book.c:3266 ../addressbook/libebook/e-book.c:3330
 #, c-format
 msgid "%s: no factories available for uri `%s'"
-msgstr ""
+msgstr "%s: нема достапни фабрики за адресата `%s'"
 
 #: ../addressbook/libebook/e-book.c:3278
 #, c-format
 msgid "%s: Could not create EBookListener"
-msgstr ""
+msgstr "%s: Не може да креира EBookListener"
 
 #: ../addressbook/libebook/e-book.c:3541
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
-msgstr ""
+msgstr "%s: нема uid на контакт од сам себе складиран во gconf"
 
 #: ../addressbook/libebook/e-book.c:3671
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr ""
+msgstr "%s: нема извор за uid `%s' складиран во gconf."
 
 #: ../addressbook/libebook/e-contact.c:102
 msgid "Unique ID"
@@ -1242,7 +1242,7 @@ msgstr ""
 
 #: ../camel/camel-cipher-context.c:103
 msgid "Signing is not supported by this cipher"
-msgstr ""
+msgstr "Потпишувањето не е поддржано од оваа кодирана порака"
 
 #: ../camel/camel-cipher-context.c:129
 msgid "Signing message"
@@ -1250,7 +1250,7 @@ msgstr "Потпишувам порака"
 
 #: ../camel/camel-cipher-context.c:146
 msgid "Verifying is not supported by this cipher"
-msgstr ""
+msgstr "Проверката не е поддржана од оваа кодирана порака"
 
 #: ../camel/camel-cipher-context.c:172
 msgid "Verifying message"
@@ -1258,7 +1258,7 @@ msgstr "Проверка на пораката"
 
 #: ../camel/camel-cipher-context.c:190
 msgid "Encryption is not supported by this cipher"
-msgstr ""
+msgstr "Кодирањето не е поддржано кај оваа кодирана порака"
 
 #: ../camel/camel-cipher-context.c:216
 msgid "Encrypting message"
@@ -1266,7 +1266,7 @@ msgstr "Кодирам порака"
 
 #: ../camel/camel-cipher-context.c:233
 msgid "Decryption is not supported by this cipher"
-msgstr ""
+msgstr "Декодирањето не е поддржано кај оваа кодирана порака"
 
 #: ../camel/camel-cipher-context.c:255
 msgid "Decrypting message"
@@ -1274,11 +1274,11 @@ msgstr "Декодирам порака"
 
 #: ../camel/camel-cipher-context.c:272
 msgid "You may not import keys with this cipher"
-msgstr ""
+msgstr "Не можете да увезувате клучеви со оваа кодирана порака"
 
 #: ../camel/camel-cipher-context.c:302
 msgid "You may not export keys with this cipher"
-msgstr ""
+msgstr "Можете да увезувате клучеви со оваа кодирана порака"
 
 #: ../camel/camel-data-cache.c:134
 msgid "Unable to create cache path"
@@ -1287,7 +1287,7 @@ msgstr "Не можам да креирам патека за кешот"
 #: ../camel/camel-data-cache.c:376
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
-msgstr ""
+msgstr "Не можам да го отстранам записот за кеш: %s: %s"
 
 #: ../camel/camel-disco-diary.c:195
 #, c-format
@@ -1296,6 +1296,9 @@ msgid ""
 "Further operations on this server will not be replayed when you\n"
 "reconnect to the network."
 msgstr ""
+"Не можам да запишам лог: %s\n"
+"Понатамошните операции на овој сервер нема да бидат повторувани\n"
+"кога ќе се врзете на мрежата."
 
 #: ../camel/camel-disco-diary.c:258
 #, c-format
@@ -1304,6 +1307,9 @@ msgid ""
 "%s\n"
 "Changes made to this folder will not be resynchronized."
 msgstr ""
+"Не можам да отворам `%s':\n"
+"%s\n"
+"Промените направени врз оваа папка нема да бидат ресинхронизирани."
 
 #: ../camel/camel-disco-diary.c:294
 msgid "Resynchronizing with server"
@@ -1340,7 +1346,7 @@ msgstr "Не успеав да креирам подпроцес '%s': %s"
 #: ../camel/camel-filter-driver.c:788
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr ""
+msgstr "Добив невалиден проток на порака од %s: %s"
 
 #: ../camel/camel-filter-driver.c:977 ../camel/camel-filter-driver.c:986
 msgid "Syncing folders"
@@ -1349,12 +1355,12 @@ msgstr "Синхронизирам папки"
 #: ../camel/camel-filter-driver.c:1075 ../camel/camel-filter-driver.c:1453
 #, c-format
 msgid "Error parsing filter: %s: %s"
-msgstr ""
+msgstr "Грешка при парсирање на филтерот: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1084 ../camel/camel-filter-driver.c:1462
 #, c-format
 msgid "Error executing filter: %s: %s"
-msgstr ""
+msgstr "Грешка при извршување на филтерот: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1151
 msgid "Unable to open spool folder"
@@ -1367,16 +1373,16 @@ msgstr ""
 #: ../camel/camel-filter-driver.c:1175
 #, c-format
 msgid "Getting message %d (%d%%)"
-msgstr ""
+msgstr "Добива порака %d (%d%%)"
 
 #: ../camel/camel-filter-driver.c:1179
 msgid "Cannot open message"
-msgstr ""
+msgstr "Не можам да ја отворам пораката"
 
 #: ../camel/camel-filter-driver.c:1180 ../camel/camel-filter-driver.c:1192
 #, c-format
 msgid "Failed on message %d"
-msgstr ""
+msgstr "Не успеав на пораката %d"
 
 #: ../camel/camel-filter-driver.c:1206 ../camel/camel-filter-driver.c:1297
 msgid "Syncing folder"
@@ -1389,12 +1395,12 @@ msgstr "Завршено"
 #: ../camel/camel-filter-driver.c:1267
 #, c-format
 msgid "Getting message %d of %d"
-msgstr ""
+msgstr "Добивам порака %d од %d"
 
 #: ../camel/camel-filter-driver.c:1282
 #, c-format
 msgid "Failed at message %d of %d"
-msgstr ""
+msgstr "Не успеав на пораката %d од %d"
 
 #: ../camel/camel-filter-search.c:136
 msgid "Failed to retrieve message"
@@ -1402,11 +1408,11 @@ msgstr "Не успеав да ја соберам пораката"
 
 #: ../camel/camel-filter-search.c:396
 msgid "Invalid arguments to (system-flag)"
-msgstr ""
+msgstr "Невалидни аргументи кај (системското-знаме)"
 
 #: ../camel/camel-filter-search.c:411
 msgid "Invalid arguments to (user-tag)"
-msgstr ""
+msgstr "Невалидни аргументи кај (корисничкиот-таг)"
 
 #: ../camel/camel-filter-search.c:559
 #, c-format
@@ -1417,7 +1423,7 @@ msgstr "Не успеав да креирам подпроцес '%s': %s"
 #: ../camel/camel-filter-search.c:682 ../camel/camel-filter-search.c:690
 #, c-format
 msgid "Error executing filter search: %s: %s"
-msgstr ""
+msgstr "Грешка при извршувањето на филтерот за пребарување: %s: %s"
 
 #: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:478
 #, c-format
@@ -1425,6 +1431,8 @@ msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
+"Не можам да го парсирам изразот за пребарување: %s:\n"
+"%s"
 
 #: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:488
 #, c-format
@@ -1432,6 +1440,8 @@ msgid ""
 "Error executing search expression: %s:\n"
 "%s"
 msgstr ""
+"Грешка при извршување на изразот за пребарување: %s:\n"
+"%s"
 
 #: ../camel/camel-folder-search.c:674 ../camel/camel-folder-search.c:707
 msgid "(match-all) requires a single bool result"
@@ -1439,39 +1449,39 @@ msgstr ""
 
 #: ../camel/camel-folder-search.c:757
 msgid "(match-threads) not allowed inside match-all"
-msgstr ""
+msgstr "(совпадни-нишки) не е дозволено во совпадни-со-се"
 
 #: ../camel/camel-folder-search.c:760 ../camel/camel-folder-search.c:764
 msgid "(match-threads) requires a match type string"
-msgstr ""
+msgstr "(совпадни-нишки) има потреба од стринг со совпадни се со тип"
 
 #: ../camel/camel-folder-search.c:786
 msgid "(match-threads) expects an array result"
-msgstr ""
+msgstr "(совпадни-нишки) очекува резултат во низа"
 
 #: ../camel/camel-folder-search.c:792
 msgid "(match-threads) requires the folder set"
-msgstr ""
+msgstr "(совпадни-нишки) има потреба од папки"
 
 #: ../camel/camel-folder-search.c:881
 #, c-format
 msgid "Performing query on unknown header: %s"
-msgstr ""
+msgstr "Правам проверка на непознат хедер: %s"
 
 #: ../camel/camel-folder.c:616
 #, c-format
 msgid "Unsupported operation: append message: for %s"
-msgstr ""
+msgstr "Неподдржана операција: стави порака на крај: за %s"
 
 #: ../camel/camel-folder.c:1238
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
-msgstr ""
+msgstr "Неподдржана операција: пребарување по израз: за %s"
 
 #: ../camel/camel-folder.c:1279
 #, c-format
 msgid "Unsupported operation: search by uids: for %s"
-msgstr ""
+msgstr "Неподдржана операција: барај бо uid: за %s"
 
 #: ../camel/camel-folder.c:1395
 msgid "Moving messages"
@@ -1500,10 +1510,13 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Неочекуван статус на GnuPG порака:\n"
+"\n"
+"%s"
 
 #: ../camel/camel-gpg-context.c:748
 msgid "Failed to parse gpg userid hint."
-msgstr ""
+msgstr "Не успеав да го парсирам советот за корисничкото gpg id."
 
 #: ../camel/camel-gpg-context.c:772
 msgid "Failed to parse gpg passphrase request."
@@ -1528,46 +1541,46 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:827
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
-msgstr ""
+msgstr "Неочекуван одговор од GnuPG: %s"
 
 #: ../camel/camel-gpg-context.c:879
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr ""
+msgstr "Не успеав да кодирам: Нема одредено валидни примачи."
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1138 ../camel/camel-gpg-context.c:1262
 #: ../camel/camel-gpg-context.c:1745 ../camel/camel-gpg-context.c:1790
 #, c-format
 msgid "Failed to execute gpg: %s"
-msgstr ""
+msgstr "Не успеав да извршам gpg: %s"
 
 #: ../camel/camel-gpg-context.c:1230 ../camel/camel-smime-context.c:389
 #, c-format
 msgid "Could not generate signing data: %s"
-msgstr ""
+msgstr "Не можам да генерирам податоци за потпис: %s"
 
 #: ../camel/camel-gpg-context.c:1277 ../camel/camel-gpg-context.c:1464
 #: ../camel/camel-gpg-context.c:1547 ../camel/camel-gpg-context.c:1562
 #: ../camel/camel-gpg-context.c:1667 ../camel/camel-gpg-context.c:1682
 #: ../camel/camel-gpg-context.c:1761 ../camel/camel-gpg-context.c:1806
 msgid "Failed to execute gpg."
-msgstr ""
+msgstr "Не успеав да извршам gpg."
 
 #: ../camel/camel-gpg-context.c:1296
 msgid "This is a digitally signed message part"
-msgstr ""
+msgstr "Ова е дел од пораката кој што е потпишан дигитално"
 
 #: ../camel/camel-gpg-context.c:1382 ../camel/camel-gpg-context.c:1388
 #: ../camel/camel-gpg-context.c:1394 ../camel/camel-gpg-context.c:1411
 #: ../camel/camel-smime-context.c:692 ../camel/camel-smime-context.c:703
 #: ../camel/camel-smime-context.c:710
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr ""
+msgstr "Не можам да го проверам потписот на пораката: Неточен формат на порака"
 
 #: ../camel/camel-gpg-context.c:1449
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr ""
+msgstr "Не можам да го проверам потписот на пораката: не можам да креирам привремена датотека: %s"
 
 #: ../camel/camel-gpg-context.c:1530
 #, c-format
@@ -1576,15 +1589,15 @@ msgstr "Не можам да генерирам кодирани податоц�
 
 #: ../camel/camel-gpg-context.c:1580
 msgid "This is a digitally encrypted message part"
-msgstr ""
+msgstr "Ова е дигитално кодиран дел од пораката"
 
 #: ../camel/camel-gpg-context.c:1637
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr ""
+msgstr "Не успеав да го декодирам MIME делот: грешка со протоколот"
 
 #: ../camel/camel-gpg-context.c:1649
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr ""
+msgstr "Не можам да ја декодирам пораката"
 
 #: ../camel/camel-gpg-context.c:1703 ../camel/camel-smime-context.c:966
 msgid "Encrypted content"
@@ -1592,7 +1605,7 @@ msgstr "Кодирана содржина"
 
 #: ../camel/camel-gpg-context.c:1722
 msgid "Unable to parse message content"
-msgstr ""
+msgstr "Не можам да ја парсирам содржината на пораката"
 
 #: ../camel/camel-gpg-context.c:1746 ../camel/camel-gpg-context.c:1791
 #: ../camel/camel-tcp-stream-openssl.c:631
@@ -1610,32 +1623,32 @@ msgstr "Непознато"
 #: ../camel/camel-lock-client.c:100
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
-msgstr ""
+msgstr "Cannot build locking helper pipe: %s"
 
 #: ../camel/camel-lock-client.c:113
 #, c-format
 msgid "Cannot fork locking helper: %s"
-msgstr ""
+msgstr "Cannot fork locking helper: %s"
 
 #: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr ""
+msgstr "Не можам да го заклучам протоколот '%s': грешка со помошникот за заклучување на протоколот"
 
 #: ../camel/camel-lock-client.c:204
 #, c-format
 msgid "Could not lock '%s'"
-msgstr ""
+msgstr "Не можам да заклучам '%s'"
 
 #: ../camel/camel-lock.c:92 ../camel/camel-lock.c:113
 #, c-format
 msgid "Could not create lock file for %s: %s"
-msgstr ""
+msgstr "Не можам да креирам датотека за заклучување за %s: %s"
 
 #: ../camel/camel-lock.c:154
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
-msgstr ""
+msgstr "Времето истече, се обидувам да го да ја добијам датотеката за заклучување %s. Пробајте пак подоцна."
 
 #: ../camel/camel-lock.c:209
 #, c-format
@@ -1769,25 +1782,25 @@ msgstr ""
 #: ../camel/camel-provider.c:194
 #, c-format
 msgid "Could not load %s: %s"
-msgstr ""
+msgstr "Не можам да вчитам %s: %s"
 
 #: ../camel/camel-provider.c:202
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr ""
+msgstr "Не можам да вчитам %s: Нема код за иницијализација во модулот."
 
 #: ../camel/camel-provider.c:374 ../camel/camel-session.c:163
 #, c-format
 msgid "No provider available for protocol `%s'"
-msgstr ""
+msgstr "Нема провајдер за протоколот `%s'"
 
 #: ../camel/camel-sasl-anonymous.c:35
 msgid "Anonymous"
-msgstr ""
+msgstr "Анонимен"
 
 #: ../camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr ""
+msgstr "Оваа опција ќе се врзе за серверот користејќи анонимна најава."
 
 #: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
@@ -1799,6 +1812,8 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
+"Невалидна информација за адресата за е-пошта:\n"
+"%s"
 
 #: ../camel/camel-sasl-anonymous.c:143
 #, c-format
@@ -1813,6 +1828,8 @@ msgid ""
 "Invalid trace information:\n"
 "%s"
 msgstr ""
+"Невалидни информации од пребарувањето:\n"
+"%s"
 
 #: ../camel/camel-sasl-cram-md5.c:36
 msgid "CRAM-MD5"
@@ -1823,6 +1840,8 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
+"Оваа опција ќе се врзе за серверот користејќи безбедна CRAM-MD5 лозинка "
+"доколку серверот го поддржува тоа."
 
 #: ../camel/camel-sasl-digest-md5.c:49
 msgid "DIGEST-MD5"
@@ -1833,14 +1852,16 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
+"Оваа опција ќе се врзе за серверот користејќи безбедна DIGEST-MD5 лозинка "
+"доколку серверот го поддржува тоа."
 
 #: ../camel/camel-sasl-digest-md5.c:819
 msgid "Server challenge too long (>2048 octets)"
-msgstr ""
+msgstr "Предизвикот за серверот е предолг (>2048 октети)"
 
 #: ../camel/camel-sasl-digest-md5.c:828
 msgid "Server challenge invalid\n"
-msgstr ""
+msgstr "Предизвикот за серверот е невалиден\n"
 
 #: ../camel/camel-sasl-digest-md5.c:834
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
@@ -1848,15 +1869,15 @@ msgstr ""
 
 #: ../camel/camel-sasl-digest-md5.c:864
 msgid "Server response did not contain authorization data"
-msgstr ""
+msgstr "Одговорот од серверот не содржи податоци за проверка"
 
 #: ../camel/camel-sasl-digest-md5.c:882
 msgid "Server response contained incomplete authorization data"
-msgstr ""
+msgstr "Одговорот од серверот содржи нецелосни податоци за проверка"
 
 #: ../camel/camel-sasl-digest-md5.c:892
 msgid "Server response does not match"
-msgstr ""
+msgstr "Одговорот од серверот не се совпаѓа"
 
 #: ../camel/camel-sasl-gssapi.c:57
 msgid "GSSAPI"
@@ -1864,7 +1885,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:59
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr ""
+msgstr "Оваа опција ќе се врзе за серверот користејќи Kerberos 5 за проверка."
 
 #: ../camel/camel-sasl-gssapi.c:157
 msgid ""
@@ -1948,11 +1969,11 @@ msgstr "Најава"
 
 #: ../camel/camel-sasl-login.c:35 ../camel/camel-sasl-plain.c:35
 msgid "This option will connect to the server using a simple password."
-msgstr ""
+msgstr "Оваа опција ќе се врзе за серверот користејќи едноставна лозинка."
 
 #: ../camel/camel-sasl-login.c:132
 msgid "Unknown authentication state."
-msgstr ""
+msgstr "Непозната состојба на проверка."
 
 #: ../camel/camel-sasl-ntlm.c:32
 msgid "NTLM / SPA"
@@ -1970,15 +1991,15 @@ msgstr "PLAIN"
 
 #: ../camel/camel-sasl-popb4smtp.c:37
 msgid "POP before SMTP"
-msgstr ""
+msgstr "POP пред SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:39
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr ""
+msgstr "Оваа опција ќе дозволи POP врска пред обидот за врзување со SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:104
 msgid "POP Source URI"
-msgstr ""
+msgstr "Изворна адреса на POP"
 
 #: ../camel/camel-sasl-popb4smtp.c:107
 msgid "POP Before SMTP auth using an unknown transport"
@@ -1991,22 +2012,22 @@ msgstr ""
 #: ../camel/camel-search-private.c:151
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
-msgstr ""
+msgstr "Составувањето на регуларниот израз не успеа: %s: %s"
 
 #: ../camel/camel-service.c:272
 #, c-format
 msgid "URL '%s' needs a username component"
-msgstr ""
+msgstr "Адресата '%s' има потреба од корисничко име"
 
 #: ../camel/camel-service.c:276
 #, c-format
 msgid "URL '%s' needs a host component"
-msgstr ""
+msgstr "Адресата '%s' има потреба од хост"
 
 #: ../camel/camel-service.c:280
 #, c-format
 msgid "URL '%s' needs a path component"
-msgstr ""
+msgstr "Адресата '%s' има потреба од патека"
 
 #: ../camel/camel-session.c:285
 #, c-format
@@ -2014,27 +2035,29 @@ msgid ""
 "Could not create directory %s:\n"
 "%s"
 msgstr ""
+"Не можам да креирам директориум %s:\n"
+"%s"
 
 #: ../camel/camel-smime-context.c:231
 #, c-format
 msgid "Cannot find certificate for '%s'"
-msgstr ""
+msgstr "Не можам да најдам сертификат за '%s'"
 
 #: ../camel/camel-smime-context.c:237
 msgid "Cannot create CMS message"
-msgstr ""
+msgstr "Не можам да креирам CMS порака"
 
 #: ../camel/camel-smime-context.c:242
 msgid "Cannot create CMS signed data"
-msgstr ""
+msgstr "Не можам да креирам потпишани CMS податоци"
 
 #: ../camel/camel-smime-context.c:248
 msgid "Cannot attach CMS signed data"
-msgstr ""
+msgstr "Не можам да прикачам потпишани CMS податоци"
 
 #: ../camel/camel-smime-context.c:255
 msgid "Cannot attach CMS data"
-msgstr ""
+msgstr "Не можам да прикачам CMS податоци"
 
 #: ../camel/camel-smime-context.c:261
 msgid "Cannot create CMS Signer information"
@@ -2042,16 +2065,16 @@ msgstr "Не можам да креирам информација за CMS по
 
 #: ../camel/camel-smime-context.c:267
 msgid "Cannot find certificate chain"
-msgstr ""
+msgstr "Не можам да го најдам синџирот на сертификати"
 
 #: ../camel/camel-smime-context.c:273
 msgid "Cannot add CMS Signing time"
-msgstr ""
+msgstr "Не можам да додадам време за потис за CMS"
 
 #: ../camel/camel-smime-context.c:295 ../camel/camel-smime-context.c:307
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
-msgstr ""
+msgstr "Сертификатот за кодирање '%s' не постои"
 
 #: ../camel/camel-smime-context.c:314
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
@@ -2063,7 +2086,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:324
 msgid "Cannot add encryption certificate"
-msgstr ""
+msgstr "Не можам да додадам сертификат за кодирање"
 
 #: ../camel/camel-smime-context.c:330
 msgid "Cannot add CMS Signer information"
@@ -2095,27 +2118,27 @@ msgstr "Лош потпис"
 
 #: ../camel/camel-smime-context.c:490
 msgid "Content tampered with or altered in transit"
-msgstr ""
+msgstr "Содржината е пипана или менувана во транзит"
 
 #: ../camel/camel-smime-context.c:492
 msgid "Signing certificate not found"
-msgstr ""
+msgstr "Сертификатот за потпишување не е пронајден"
 
 #: ../camel/camel-smime-context.c:494
 msgid "Signing certificate not trusted"
-msgstr ""
+msgstr "Не му верувам на сертификатот за потпишување"
 
 #: ../camel/camel-smime-context.c:496
 msgid "Signature algorithm unknown"
-msgstr ""
+msgstr "Алгоритмот на потписот е непознат"
 
 #: ../camel/camel-smime-context.c:498
 msgid "Signature algorithm unsupported"
-msgstr ""
+msgstr "Алгоритмот на потписот е неподдржан"
 
 #: ../camel/camel-smime-context.c:500
 msgid "Malformed signature"
-msgstr ""
+msgstr "Расипан потпис"
 
 #: ../camel/camel-smime-context.c:502
 msgid "Processing error"
@@ -2123,7 +2146,7 @@ msgstr "Грешка при процесирање"
 
 #: ../camel/camel-smime-context.c:539
 msgid "No signed data in signature"
-msgstr ""
+msgstr "Нема потпишани податоци во потписот"
 
 #: ../camel/camel-smime-context.c:546
 msgid "Digests missing from enveloped data"
@@ -2143,11 +2166,11 @@ msgstr "Увозот на сертификатот не успеа"
 
 #: ../camel/camel-smime-context.c:599
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr ""
+msgstr "Сертификатот е единствената порака, не можам да ги проверам сертификатите"
 
 #: ../camel/camel-smime-context.c:602
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
+msgstr "Сертификатот е единствената порака, проверени се увезените сертификати"
 
 #: ../camel/camel-smime-context.c:606
 msgid "Cannot find signature digests"
@@ -2156,7 +2179,7 @@ msgstr ""
 #: ../camel/camel-smime-context.c:622
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
-msgstr ""
+msgstr "Потпишувач: %s <%s>: %s\n"
 
 #: ../camel/camel-smime-context.c:723
 msgid "Decoder failed"
@@ -2165,11 +2188,11 @@ msgstr ""
 #: ../camel/camel-smime-context.c:775
 #, c-format
 msgid "Cannot find certificate for `%s'"
-msgstr ""
+msgstr "Не можам да најдам сертификат за `%s'"
 
 #: ../camel/camel-smime-context.c:782
 msgid "Cannot find common bulk encryption algorithm"
-msgstr ""
+msgstr "Не можам да најдам вообичаен bulk алгоритам за кодирање"
 
 #. PORT_GetError(); ??
 #: ../camel/camel-smime-context.c:791
@@ -2178,11 +2201,11 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:802
 msgid "Cannot create CMS Message"
-msgstr ""
+msgstr "Не можам да креирам CMS порака"
 
 #: ../camel/camel-smime-context.c:808
 msgid "Cannot create CMS Enveloped data"
-msgstr ""
+msgstr "Не можам да креирам завиткана CMS порака"
 
 #: ../camel/camel-smime-context.c:814
 msgid "Cannot attach CMS Enveloped data"
@@ -2190,15 +2213,15 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:820
 msgid "Cannot attach CMS data object"
-msgstr ""
+msgstr "Не можам да прикачам CMS објект со податоци"
 
 #: ../camel/camel-smime-context.c:829
 msgid "Cannot create CMS Recipient information"
-msgstr ""
+msgstr "Не можам да креирам информација за CMS примачот"
 
 #: ../camel/camel-smime-context.c:834
 msgid "Cannot add CMS Recipient information"
-msgstr ""
+msgstr "Не можам да додадам информација за CMS примачот"
 
 #: ../camel/camel-smime-context.c:859
 msgid "Failed to add data to encoder"
@@ -2211,15 +2234,15 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:953
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr ""
+msgstr "S/MIME Декодирање: Не е пронајдена кодирана содржина"
 
 #: ../camel/camel-smime-context.c:980
 msgid "import keys: unimplemented"
-msgstr ""
+msgstr "увоз на копчиња: не е имплементирано"
 
 #: ../camel/camel-smime-context.c:988
 msgid "export keys: unimplemented"
-msgstr ""
+msgstr "копчиња за извоз: не е имплементирано"
 
 #: ../camel/camel-store.c:215
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:167
@@ -2229,7 +2252,7 @@ msgstr ""
 #: ../camel/camel-store.c:247
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
-msgstr ""
+msgstr "Не можам да ја креирам папката `%s': папката постои"
 
 #: ../camel/camel-store.c:311
 msgid "Cannot create folder: Invalid operation on this store"
@@ -2238,19 +2261,19 @@ msgstr ""
 #: ../camel/camel-store.c:339
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr ""
+msgstr "Не можам да ја креирам папката: %s: папката постои"
 
 #: ../camel/camel-store.c:403 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr ""
+msgstr "Не можам да ја избришам папката: %s: Невалидна операција"
 
 #: ../camel/camel-store.c:453 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr ""
+msgstr "Не можам да ја реименувам папката: %s: Невалидна операција"
 
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:794 ../camel/camel-vtrash-folder.c:47
@@ -2264,7 +2287,7 @@ msgstr "Отпад"
 
 #: ../camel/camel-tcp-stream-openssl.c:568
 msgid "Unable to get issuer's certificate"
-msgstr ""
+msgstr "Не можам да го добијам сертификатот на издавачот"
 
 #: ../camel/camel-tcp-stream-openssl.c:570
 msgid "Unable to get Certificate Revocation List"
@@ -2272,7 +2295,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to decrypt certificate signature"
-msgstr ""
+msgstr "Не можам да го декодирам потписот на сертификатот"
 
 #: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
@@ -2280,11 +2303,11 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
-msgstr ""
+msgstr "Не можам да го декодирам јавниот клуч на издавачот"
 
 #: ../camel/camel-tcp-stream-openssl.c:578
 msgid "Certificate signature failure"
-msgstr ""
+msgstr "Грешка со потписот на сертификатот"
 
 #: ../camel/camel-tcp-stream-openssl.c:580
 msgid "Certificate Revocation List signature failure"
@@ -2292,19 +2315,19 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:582
 msgid "Certificate not yet valid"
-msgstr ""
+msgstr "Сертификатот сеуште не е валиден"
 
 #: ../camel/camel-tcp-stream-openssl.c:584
 msgid "Certificate has expired"
-msgstr ""
+msgstr "Сертификатот е истечен"
 
 #: ../camel/camel-tcp-stream-openssl.c:586
 msgid "CRL not yet valid"
-msgstr ""
+msgstr "CRL е сеуште невалидно"
 
 #: ../camel/camel-tcp-stream-openssl.c:588
 msgid "CRL has expired"
-msgstr ""
+msgstr "CRL истече"
 
 #: ../camel/camel-tcp-stream-openssl.c:593
 msgid "Error in CRL"
@@ -2324,7 +2347,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Unable to get issuer's certificate locally"
-msgstr ""
+msgstr "Не можам да го добијам издавачот на сертификатот локално"
 
 #: ../camel/camel-tcp-stream-openssl.c:603
 msgid "Unable to verify leaf signature"
@@ -2332,31 +2355,31 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:605
 msgid "Certificate chain too long"
-msgstr ""
+msgstr "Синџирот на сертификатот е предолг"
 
 #: ../camel/camel-tcp-stream-openssl.c:607
 msgid "Certificate Revoked"
-msgstr ""
+msgstr "Сертификатот е повлечен"
 
 #: ../camel/camel-tcp-stream-openssl.c:609
 msgid "Invalid Certificate Authority (CA)"
-msgstr ""
+msgstr "Невалиден Certificate Authority (CA)"
 
 #: ../camel/camel-tcp-stream-openssl.c:611
 msgid "Path length exceeded"
-msgstr ""
+msgstr "Должината на патеката е надмината"
 
 #: ../camel/camel-tcp-stream-openssl.c:613
 msgid "Invalid purpose"
-msgstr ""
+msgstr "Невалидна намена"
 
 #: ../camel/camel-tcp-stream-openssl.c:615
 msgid "Certificate untrusted"
-msgstr ""
+msgstr "Недоверлив сертификат"
 
 #: ../camel/camel-tcp-stream-openssl.c:617
 msgid "Certificate rejected"
-msgstr ""
+msgstr "Одбиен сертификат"
 
 #: ../camel/camel-tcp-stream-openssl.c:620
 msgid "Subject/Issuer mismatch"
@@ -2364,7 +2387,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:622
 msgid "AKID/SKID mismatch"
-msgstr ""
+msgstr "AKID/SKID несовпаѓање"
 
 #: ../camel/camel-tcp-stream-openssl.c:624
 msgid "AKID/Issuer serial mismatch"
@@ -2376,7 +2399,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:629
 msgid "Error in application verification"
-msgstr ""
+msgstr "Грешка при проверката на апликацијата"
 
 #: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:833
 #, c-format
