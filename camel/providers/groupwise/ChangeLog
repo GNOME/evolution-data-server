@@ -1,3 +1,10 @@
+2005-08-18  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** see bug #312184
+
+	* camel-groupwise-folder.c:
+	(gw_update_cache): show signatures inline.
+
 2005-08-18 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-store.c: (groupwise_create_folder):

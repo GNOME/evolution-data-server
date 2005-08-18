@@ -950,7 +950,7 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 
 		id = e_gw_item_get_id (temp_item);
 
-		 camel_operation_progress (NULL, (100*i)/total_items);
+		camel_operation_progress (NULL, (100*i)/total_items);
 		cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
 		if (cache_stream) {
 			camel_object_unref (cache_stream);
@@ -1389,13 +1389,19 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				}
 				if (attachment && (len !=0) ) {
 					part = camel_mime_part_new ();
+					
+					if (!strcmp (attach->contentType, "application/pgp-signature")) {
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/signed");
+						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
+					} else {
+						camel_mime_part_set_content_id (part, attach->id);
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
+					}
 
-					camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
 					camel_multipart_set_boundary(multipart, NULL);
 
 					camel_mime_part_set_filename(part, g_strdup(attach->name));
 					camel_mime_part_set_content(part, attachment, len, attach->contentType);
-					camel_mime_part_set_content_id (part, attach->id);
 
 					camel_multipart_add_part (multipart, part);
 
