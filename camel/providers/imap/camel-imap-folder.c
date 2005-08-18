@@ -2086,13 +2086,17 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 				char *body, *found_uid;
 				int i;
 				
+				CAMEL_SERVICE_LOCK(store, connect_lock);
 				if (!camel_imap_store_connected(store, ex)) {
+					CAMEL_SERVICE_UNLOCK(store, connect_lock);
 					camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 							     _("This message is not currently available"));
 					goto fail;
 				}
 				
 				response = camel_imap_command (store, folder, ex, "UID FETCH %s BODY", uid);
+				CAMEL_SERVICE_UNLOCK(store, connect_lock);
+
 				if (response) {
 					for (i = 0, body = NULL; i < response->untagged->len; i++) {
 						fetch_data = parse_fetch_response (imap_folder, response->untagged->pdata[i]);
@@ -2108,6 +2112,7 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 					}
 					
 					if (body) {
+						/* NB: small race here, setting the info.content */
 						imap_parse_body ((const char **) &body, folder, mi->info.content);
 						camel_folder_summary_touch (folder->summary);
 					}
@@ -2116,6 +2121,8 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 						g_datalist_clear (&fetch_data);
 					
 					camel_imap_response_free (store, response);
+				} else {
+					camel_exception_clear(ex);
 				}
 			}
 
