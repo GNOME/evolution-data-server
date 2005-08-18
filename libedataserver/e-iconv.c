@@ -289,7 +289,11 @@ e_iconv_init(int keep)
 	iconv_cache = g_hash_table_new(g_str_hash, g_str_equal);
 	iconv_cache_open = g_hash_table_new(NULL, NULL);
 	
+#ifndef G_OS_WIN32
 	locale = setlocale (LC_ALL, NULL);
+#else
+	locale = g_win32_getlocale ();
+#endif
 	
 	if (!locale || !strcmp (locale, "C") || !strcmp (locale, "POSIX")) {
 		/* The locale "C"  or  "POSIX"  is  a  portable  locale;  its
@@ -300,6 +304,11 @@ e_iconv_init(int keep)
 		locale_charset = NULL;
 		locale_lang = NULL;
 	} else {
+#ifdef G_OS_WIN32
+		g_get_charset (&locale_charset);
+		locale_charset = g_strdup (locale_charset);
+		e_strdown (locale_charset);
+#else
 #ifdef HAVE_CODESET
 		locale_charset = g_strdup (nl_langinfo (CODESET));
 		e_strdown (locale_charset);
@@ -325,12 +334,16 @@ e_iconv_init(int keep)
 			locale_charset = NULL;
 		}
 #endif		
+#endif	/* !G_OS_WIN32 */
 		
 		/* parse the locale lang */
 		locale_parse_lang (locale);
 
 	}
 
+#ifdef G_OS_WIN32
+	g_free (locale);
+#endif
 	if (!keep)
 		UNLOCK();
 }

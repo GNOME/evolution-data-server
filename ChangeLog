@@ -1,3 +1,9 @@
+2005-08-18  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-iconv.c (e_iconv_init): Sync with the version
+	in evolution/e-util: Use g_win32_getlocale() and g_get_charset()
+	on Win32. (Why is this file duplicated in e-d-s and evo, BTW?)
+
 2005-08-13  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/Makefile.am: Link with SOCKET_LIBS. Use
