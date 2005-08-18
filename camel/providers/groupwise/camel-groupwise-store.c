@@ -852,19 +852,19 @@ groupwise_create_folder(CamelStore *store,
 	CamelFolderInfo *root = NULL;
 	char *parent_id , *child_container_id;
 	int status;
-	
-	if (groupwise_is_system_folder (folder_name)) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, NULL);
-		return NULL;
-	}
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create GroupWise folders in offline mode."));
 		return NULL;
 	}
 	
-	if(parent_name == NULL)
+	if(parent_name == NULL) {
 		parent_name = "";
+		if (groupwise_is_system_folder (folder_name)) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, NULL);
+			return NULL;
+		}
+	}
 
 	if (parent_name && (strlen(parent_name) > 0) ) 
 		parent_id = g_hash_table_lookup (priv->name_hash, parent_name);
