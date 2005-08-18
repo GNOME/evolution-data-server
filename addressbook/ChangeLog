@@ -1,3 +1,8 @@
+2005-08-18  Ross Burton  <ross@burtonini.com>
+
+	* libedata-book/e-book-backend.c:
+	Unref the ESource on dispose.
+
 2005-08-16  Ross Burton  <ross@burtonini.com>
 
 	* libedata-book/e-book-backend-summary.c:

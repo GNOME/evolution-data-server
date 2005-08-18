@@ -1037,6 +1037,8 @@ e_book_backend_dispose (GObject *object)
 			backend->priv->views = NULL;
 		}
 
+		g_object_unref (backend->priv->source);
+
 		g_mutex_free (backend->priv->open_mutex);
 		g_mutex_free (backend->priv->clients_mutex);
 		g_mutex_free (backend->priv->views_mutex);
