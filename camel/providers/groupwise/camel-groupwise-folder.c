@@ -1393,6 +1393,9 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					if (!strcmp (attach->contentType, "application/pgp-signature")) {
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/signed");
 						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
+					} else if (!strcmp (attach->contentType, "application/pgp-encrypted")) {
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
+ 						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
 					} else {
 						camel_mime_part_set_content_id (part, attach->id);
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
