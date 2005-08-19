@@ -1,3 +1,8 @@
+2005-08-19  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* configure.in : Add the check for NTLM support in OpenLDAP. This
+	is needed for enabling the Exchange support in e-d-s.
+
 2005-08-19  Harish Krishnaswamy <kharish@novell.com>
 
 	* configure.in : Build libedataserver api docs

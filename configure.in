@@ -1036,6 +1036,26 @@ no)
 	esac
 esac
 
+SAVE_CFLAGS="$CFLAGS"
+SAVE_LIBS="$LIBS"
+CFLAGS="$CFLAGS $LDAP_CFLAGS"
+LIBS="$LIBS $LDAP_LIBS"
+AC_CHECK_FUNCS(ldap_ntlm_bind)
+CFLAGS="$SAVE_CFLAGS"
+LIBS="$SAVE_LIBS"
+dnl You need to enable LDAP and Kerberos to enable Exchange support in e-d-s
+msg_no_ntlm="no"
+msg_exchange="no"
+if test "$msg_ldap" != "no" ; then
+	if test "$ac_cv_func_ldap_ntlm_bind" != no ; then
+		msg_exchange="yes"
+	else
+dnl The user wanted to build with openldap, but his openldap did not have NTLM 
+dnl support. Make him aware of this with a warning message at the end.
+		msg_no_ntlm="yes"
+	fi
+fi
+
 GLIB_REQUIRED="2.4.0"
 LIBBONOBO_REQUIRED="2.4.2"
 ORBIT_REQUIRED="2.9.8"
@@ -1320,12 +1340,6 @@ case $host in
 	;;
 esac
 
-dnl You need to enable LDAP and Kerberos to enable Exchange support in e-d-s
-msg_exchange="no"
-if test "$msg_ldap" != "no"; then
-	msg_exchange="yes"
-fi
-
 echo "
 	evolution-data-server has been configured as follows:
 	LDAP support:     $msg_ldap"
@@ -1343,3 +1357,12 @@ echo "\
 	File Locking:	  $msg_file
 	Gtk Doc:          $enable_gtk_doc
 "
+if test "$msg_no_ntlm" != "no" ; then
+	echo ""
+	AC_MSG_WARN([
+No NTLM support in OpenLDAP; Plaintext password authentication will be
+used when connecting to the Exchange Global Catalog server. Consider 
+installing the evo-openldap package, or building OpenLDAP with the 
+patch in servers/exchange/docs/openldap-ntlm.diff
+])
+fi
