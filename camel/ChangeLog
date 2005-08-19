@@ -1,3 +1,10 @@
+2005-08-18  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #271894.
+
+	* camel-gpg-context.c (gpg_decrypt): use the content part's
+	mime-type to determine options.
+
 2005-08-17  Tor Lillqvist  <tml@novell.com>
 
 	* camel-operation.c (stamp): Use g_get_current_time() instead of

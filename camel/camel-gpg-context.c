@@ -1628,18 +1628,17 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	CamelContentType *ct;
 	int rv;
 	
-	ct = camel_mime_part_get_content_type(ipart);
+	content = camel_medium_get_content_object((CamelMedium *)ipart);
+	ct = camel_mime_part_get_content_type(content);
 	/* Encrypted part (using our fake mime type) or PGP/Mime multipart */
-	if (camel_content_type_is(ct, "multipart", "encrypted")) {
-	
+	if (camel_content_type_is(ct, "multipart", "encrypted")) {	
 		mp = (CamelMultipart *) camel_medium_get_content_object ((CamelMedium *) ipart);
 		if (!(encrypted = camel_multipart_get_part (mp, CAMEL_MULTIPART_ENCRYPTED_CONTENT))) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to decrypt MIME part: protocol error"));
 			return NULL;
 		}
-		
-		content = camel_medium_get_content_object ((CamelMedium *) encrypted);
 
+		content = camel_medium_get_content_object ((CamelMedium *) encrypted);
 	} else if (camel_content_type_is(ct, "application", "x-inlinepgp-encrypted")) {
 		content = camel_medium_get_content_object ((CamelMedium *) ipart);
 
