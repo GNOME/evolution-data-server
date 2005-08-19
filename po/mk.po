@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-08-17 14:00+0000\n"
-"PO-Revision-Date: 2005-08-18 23:48+0200\n"
+"PO-Revision-Date: 2005-08-19 12:09+0200\n"
 "Last-Translator: Арангел Ангов <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -594,7 +594,7 @@ msgstr "ICS календар"
 #. Misc fields
 #: ../addressbook/libebook/e-contact.c:232
 msgid "Spouse's Name"
-msgstr ""
+msgstr "Име на сопруг/сопруга"
 
 #: ../addressbook/libebook/e-contact.c:233
 msgid "Note"
@@ -726,7 +726,7 @@ msgstr "Не можам да соберам податоци за времето
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:194
 msgid "Fair"
-msgstr ""
+msgstr "Фер"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:195
 msgid "Snow showers"
@@ -790,7 +790,7 @@ msgstr "Дожд и снег"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Sleet"
-msgstr ""
+msgstr "Дожд и снег"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Very hot/humid"
@@ -814,7 +814,7 @@ msgstr "Истура снег"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Freezing drizzle"
-msgstr ""
+msgstr "Замрзнати капки"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very cold/wind chill"
@@ -1364,11 +1364,11 @@ msgstr "Грешка при извршување на филтерот: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1151
 msgid "Unable to open spool folder"
-msgstr ""
+msgstr "Не можам да ја отворам папката со спулот"
 
 #: ../camel/camel-filter-driver.c:1160
 msgid "Unable to process spool folder"
-msgstr ""
+msgstr "Не можам да ја процесирам папката со спулот"
 
 #: ../camel/camel-filter-driver.c:1175
 #, c-format
@@ -3938,7 +3938,7 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1147
 msgid "Authentication requested but no username provided"
-msgstr ""
+msgstr "Барање за проверка без корисничко име"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1155
 #, c-format
@@ -3953,83 +3953,83 @@ msgstr "Не успеам да се проверам на серверот: %s"
 #: ../camel/providers/nntp/camel-nntp-store.c:1275
 #, c-format
 msgid "NNTP Command failed: %s"
-msgstr ""
+msgstr "NNTP командата е неуспешна: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1331
 msgid "Not connected."
-msgstr ""
+msgstr "Не сте врзани."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1384
 #, c-format
 msgid "No such folder: %s"
-msgstr ""
+msgstr "Нема таква папка: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:221
 #: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
-msgstr ""
+msgstr "%s: Ги скенирам новите пораки"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:228
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr ""
+msgstr "Неочекуван одговор на серверот од xover: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr ""
+msgstr "Неочекуван одговор на серверот од head: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
-msgstr ""
+msgstr "Употребете откажи"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:373
 #, c-format
 msgid "Operation failed: %s"
-msgstr ""
+msgstr "Операцијата е неуспешна: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:247
 msgid "Retrieving POP summary"
-msgstr ""
+msgstr "Собирам кратки информации за POP серверот"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:266
 #, c-format
 msgid "Cannot get POP summary: %s"
-msgstr ""
+msgstr "Не можам да добијам кратки информации за POP серверот: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:309
 msgid "Expunging deleted messages"
-msgstr ""
+msgstr "Ги отстранувам избришаните пораки"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:405
 #, c-format
 msgid "No message with uid %s"
-msgstr ""
+msgstr "Нема порака со uid %s"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
 #: ../camel/providers/pop3/camel-pop3-folder.c:412
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr ""
+msgstr "Собирам POP порака %d"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:502
 msgid "Unknown reason"
-msgstr ""
+msgstr "Непозната причина"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:41
 msgid "Leave messages on server"
-msgstr ""
+msgstr "Остави ги пораките на сервер"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:44
 #, c-format
 msgid "Delete after %s day(s)"
-msgstr ""
+msgstr "Избриши по %s ден(а)"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
 msgid "Disable support for all POP3 extensions"
-msgstr ""
+msgstr "Исклучи поддршка за сите POP3 проширувања"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:55
 msgid "POP"
@@ -4037,13 +4037,15 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
-msgstr ""
+msgstr "За врзување и преземање на пошта од POP сервери."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
+"Опцијата ќе се врзе на POP серверот со користење на обична текстуална лозинка. "
+"Ова е единствената опција поддржана од поголемиот дел на POP сервери."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
@@ -4055,7 +4057,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:204
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr ""
+msgstr "Не успеав да прочитам валиден поздрав од POP серверот %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:218
 #: ../camel/providers/pop3/camel-pop3-store.c:235
@@ -4072,7 +4074,7 @@ msgstr "STSL не е поддржан"
 #: ../camel/providers/pop3/camel-pop3-store.c:363
 #, c-format
 msgid "Could not connect to POP server %s"
-msgstr ""
+msgstr "Не можам да се врзам на POP серверот %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:404
 #: ../camel/providers/pop3/camel-pop3-store.c:518
@@ -4085,7 +4087,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:420
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
-msgstr ""
+msgstr "SASL `%s' Најавата е не успешна на POP серверот %s: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:432
 #, c-format
@@ -4120,26 +4122,26 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:645
 #, c-format
 msgid "No such folder `%s'."
-msgstr ""
+msgstr "Нема таква папка `%s'."
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:37
 msgid "Sendmail"
-msgstr ""
+msgstr "Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:39
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
+msgstr "За испраќање на пошта преку програмата \"sendmail\" на локалниот систем."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
-msgstr ""
+msgstr "Не можам да ја парсирам листата на примачи"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:145
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr ""
+msgstr "Не можам да креирам цевка за sendmail: %s: поштата не е испратена."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
@@ -4149,30 +4151,30 @@ msgstr ""
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
-msgstr ""
+msgstr "Не можам да ја испратам пораката: %s"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
-msgstr ""
+msgstr "sendmail се исклучи со сигналот %s: поштата не е испратена."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:241
 #, c-format
 msgid "Could not execute %s: mail not sent."
-msgstr ""
+msgstr "Не можам да извршам %s: поштата не е испратена."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:246
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
-msgstr ""
+msgstr "sendmail се исклучи со статусот %d: поштата не е испратена."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:260
 msgid "sendmail"
-msgstr ""
+msgstr "sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:262
 msgid "Mail delivery via the sendmail program"
-msgstr ""
+msgstr "Испорака на пошта преку програмата sendmail"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:38
 msgid "SMTP"
@@ -4180,19 +4182,19 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
+msgstr "За испорака на пошта преку врзување на далечен хаб за пошта со користење на SMTP."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
 msgid "Syntax error, command unrecognized"
-msgstr ""
+msgstr "Синтаксна грешка, командата не е препознаена"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:167
 msgid "Syntax error in parameters or arguments"
-msgstr ""
+msgstr "Синтаксна грешка во параметрите или аргументите"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:169
 msgid "Command not implemented"
-msgstr ""
+msgstr "Командата не е имплементирана"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:171
 msgid "Command parameter not implemented"
@@ -4200,59 +4202,59 @@ msgstr "Параметарот на командата не е имплемен�
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:173
 msgid "System status, or system help reply"
-msgstr ""
+msgstr "Статус на системот, или одговор за помош на системот"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:175
 msgid "Help message"
-msgstr ""
+msgstr "Порака за помош"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:177
 msgid "Service ready"
-msgstr ""
+msgstr "Сервисот е спремен"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:179
 msgid "Service closing transmission channel"
-msgstr ""
+msgstr "Сервисот го затвара каналот за емитување"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:181
 msgid "Service not available, closing transmission channel"
-msgstr ""
+msgstr "Сервисот не е достапен, го затворам каналот за емитување"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:183
 msgid "Requested mail action okay, completed"
-msgstr ""
+msgstr "Бараната акција за пошта е во ред, завршено"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:185
 msgid "User not local; will forward to <forward-path>"
-msgstr ""
+msgstr "Корисникот не е локален; ќе препратам на <forward-path>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:187
 msgid "Requested mail action not taken: mailbox unavailable"
-msgstr ""
+msgstr "Бараната акција за пошта не е превземена: сандачето е недостапно"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:189
 msgid "Requested action not taken: mailbox unavailable"
-msgstr ""
+msgstr "Бараната акција не е превземена: сандачето е недостапно"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:191
 msgid "Requested action aborted: error in processing"
-msgstr ""
+msgstr "Бараната акција е прекината: грешка во процесирањето"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:193
 msgid "User not local; please try <forward-path>"
-msgstr ""
+msgstr "Корисникот не е локален, Ве молам пробајте <forward-path>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:195
 msgid "Requested action not taken: insufficient system storage"
-msgstr ""
+msgstr "Бараната акција не е превземена: недостаток на системско складиште"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:197
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr ""
+msgstr "Бараната акција за пошта е прекината: надминато е алоцирањето на складиштето"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:199
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr ""
+msgstr "Бараната акција не е превземена: името на сандачето не е дозволено"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:201
 msgid "Start mail input; end with <CRLF>.<CRLF>"
@@ -4260,34 +4262,34 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:203
 msgid "Transaction failed"
-msgstr ""
+msgstr "Трансакцијата не успеа"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:207
 msgid "A password transition is needed"
-msgstr ""
+msgstr "Потребна е лозинка за транзит"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:209
 msgid "Authentication mechanism is too weak"
-msgstr ""
+msgstr "Механизмот за проверка е премногу слаб"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:211
 msgid "Encryption required for requested authentication mechanism"
-msgstr ""
+msgstr "Потребно е кодирање за баранит механизам за проверка"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:213
 msgid "Temporary authentication failure"
-msgstr ""
+msgstr "Привремен неуспех на проверката"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:294
 msgid "Welcome response error"
-msgstr ""
+msgstr "Грешка за одговорот за добродојде"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:325
 #: ../camel/providers/smtp/camel-smtp-transport.c:358
 #: ../camel/providers/smtp/camel-smtp-transport.c:364
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr ""
+msgstr "Не успеав да се врзам за SMTP серверот %s во безбеден режим: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:334
 #, c-format
@@ -4301,7 +4303,7 @@ msgstr "STARTTLS command failed"
 #: ../camel/providers/smtp/camel-smtp-transport.c:491
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr ""
+msgstr "SMTP серверот %s не го поддржува бараниот тип на проверка %s."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:529
 #, c-format
@@ -4315,24 +4317,27 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
+"Не можам да се проверам на SMTP серверот.\n"
+"%s\n"
+"\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:672
 #, c-format
 msgid "SMTP server %s"
-msgstr ""
+msgstr "SMTP сервер %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:674
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr ""
+msgstr "SMTP испорака на пошта преку %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:692
 msgid "Cannot send message: service not connected."
-msgstr ""
+msgstr "Не можам да испратам порака: сервисот не е врзан."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:698
 msgid "Cannot send message: sender address not valid."
-msgstr ""
+msgstr "Не можам да испратам порака: адресата на испраќачот не е валидна."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:702
 msgid "Sending message"
@@ -4340,11 +4345,11 @@ msgstr "Испраќам порака"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:717
 msgid "Cannot send message: no recipients defined."
-msgstr ""
+msgstr "Не можам да испратам порака: нема дефинирано примачи."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:728
 msgid "Cannot send message: one or more invalid recipients"
-msgstr ""
+msgstr "Не можам да испратам порака: еден или повеќе невалидни примачи"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:897
 msgid "SMTP Greeting"
@@ -4365,7 +4370,7 @@ msgstr "SMTP проверка"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1012
 msgid "Error creating SASL authentication object."
-msgstr ""
+msgstr "Грешка при креирање на SASL објектот за проверка."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1029
 #: ../camel/providers/smtp/camel-smtp-transport.c:1040
@@ -4379,7 +4384,7 @@ msgstr "AUTH command failed"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1108
 msgid "Bad authentication response from server.\n"
-msgstr ""
+msgstr "Лош одговор за проверка од серверот.\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1133
 #, c-format
@@ -4650,6 +4655,8 @@ msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr ""
+"Веќе има категорија '%s' во конфигурацијата. Ве молам користете друго "
+"име"
 
 #: ../libedataserverui/e-categories-dialog.c:422
 msgid "Category"
@@ -4782,7 +4789,7 @@ msgstr "Сопственик"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:857
 msgid "Publishing Editor"
-msgstr ""
+msgstr "Уредник што објавува"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
@@ -4790,7 +4797,7 @@ msgstr "Уредник"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
-msgstr ""
+msgstr "Автор што објавува"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
 msgid "Author"
@@ -4798,7 +4805,7 @@ msgstr "Автор"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
-msgstr ""
+msgstr "Автор што не уредува"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
@@ -4830,11 +4837,11 @@ msgstr "Генеричка грешка"
 
 #: ../servers/exchange/storage/e-storage.c:558
 msgid "A folder with the same name already exists"
-msgstr ""
+msgstr "Веќе постои папка со истото име"
 
 #: ../servers/exchange/storage/e-storage.c:560
 msgid "The specified folder type is not valid"
-msgstr ""
+msgstr "Одредениот тип на папка не е валиден"
 
 #: ../servers/exchange/storage/e-storage.c:562
 msgid "I/O error"
@@ -4842,7 +4849,7 @@ msgstr "I/O грешка"
 
 #: ../servers/exchange/storage/e-storage.c:564
 msgid "Not enough space to create the folder"
-msgstr ""
+msgstr "Нема доволо простор за креирање на папка"
 
 #: ../servers/exchange/storage/e-storage.c:566
 msgid "The folder is not empty"
@@ -4850,35 +4857,35 @@ msgstr "Папката не е празна"
 
 #: ../servers/exchange/storage/e-storage.c:568
 msgid "The specified folder was not found"
-msgstr ""
+msgstr "Одредената папка не е пронајдена"
 
 #: ../servers/exchange/storage/e-storage.c:570
 msgid "Function not implemented in this storage"
-msgstr ""
+msgstr "Функцијата не е имплементирана во ова складиште"
 
 #: ../servers/exchange/storage/e-storage.c:574
 msgid "Operation not supported"
-msgstr ""
+msgstr "Операцијата не е поддржана"
 
 #: ../servers/exchange/storage/e-storage.c:576
 msgid "The specified type is not supported in this storage"
-msgstr ""
+msgstr "Одредениот тип не е поддржан во ова складиште"
 
 #: ../servers/exchange/storage/e-storage.c:578
 msgid "The specified folder cannot be modified or removed"
-msgstr ""
+msgstr "Одредената папка не може да биде променета или отстранета"
 
 #: ../servers/exchange/storage/e-storage.c:580
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
+msgstr "Не можам да ја направам папката подпапка на нејзините претходници"
 
 #: ../servers/exchange/storage/e-storage.c:582
 msgid "Cannot create a folder with that name"
-msgstr ""
+msgstr "Не можам да креирам папка со тоа име"
 
 #: ../servers/exchange/storage/e-storage.c:584
 msgid "This operation cannot be performed in off-line mode"
-msgstr ""
+msgstr "Оваа операција не може да се изведе во офлајн режим"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
@@ -4893,7 +4900,7 @@ msgstr "Лични папки"
 
 #: ../servers/exchange/storage/exchange-account.c:1285
 msgid "Favorite Public Folders"
-msgstr ""
+msgstr "Омилени јавни папки"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1302
@@ -4911,7 +4918,7 @@ msgstr "Избришани предмети"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:257
 msgid "Drafts"
-msgstr ""
+msgstr "Скици"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:259
 msgid "Journal"
@@ -4939,15 +4946,15 @@ msgstr "Невалидна врска"
 
 #: ../servers/groupwise/e-gw-connection.c:163
 msgid "Invalid response from server"
-msgstr ""
+msgstr "Невалиден одговор од серверот"
 
 #: ../servers/groupwise/e-gw-connection.c:165
 msgid "No response from the server"
-msgstr ""
+msgstr "Нема одговор од серверот"
 
 #: ../servers/groupwise/e-gw-connection.c:171
 msgid "Bad parameter"
-msgstr ""
+msgstr "Лош параметар"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
@@ -4969,5 +4976,5 @@ msgstr "Сервис за логирање на серверот за подат
 #: ../src/server.c:101
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Се случија повеќе грешки; не можам да го прикажам дијалогот за грешки\n"
 
