@@ -2748,16 +2748,11 @@ get_folder_info_offline (CamelStore *store, const char *top,
 	if (top == NULL)
 		top = "";
 
-	/* get starting point & strip trailing '/' */
+	/* get starting point */
 	if (top[0] == 0) {
 		if (imap_store->namespace) {
-			top = imap_store->namespace;
-			i = strlen(top)-1;
-			name = g_malloc(i+2);
-			strcpy(name, top);
-			while (i>0 && name[i] == imap_store->dir_sep)
-				name[i--] = 0;
-			top = name;
+			name = g_strdup(imap_store->summary->namespace->full_name);
+			top = imap_store->summary->namespace->path;
 		} else
 			name = g_strdup("");
 	} else {
