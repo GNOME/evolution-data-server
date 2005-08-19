@@ -1,3 +1,7 @@
+2005-08-19  Harish Krishnaswamy <kharish@novell.com>
+
+	* configure.in : Build libedataserver api docs
+
 2005-08-18  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-iconv.c (e_iconv_init): Sync with the version
