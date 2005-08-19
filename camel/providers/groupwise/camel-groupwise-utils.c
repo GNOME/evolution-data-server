@@ -296,12 +296,26 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	len = content->buffer->len;
 
 	attachment = g_new0 (EGwItemAttachment, 1);
+	attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype);
+
 	if (filename) {
-		attachment->data = g_malloc0 (content->buffer->len+1);
-		attachment->data = memcpy (attachment->data, 
-				content->buffer->data, 
-				content->buffer->len);
-		attachment->size = content->buffer->len;
+		if (!strcmp (attachment->contentType, "application/pgp-signature")) {
+			char *temp_str;
+			int temp_len;
+			temp_str = soup_base64_encode (buffer, len);
+			temp_len = strlen (temp_str);
+			attachment->data = g_strdup (temp_str);
+			attachment->size = temp_len;
+			g_free (temp_str);
+			temp_str = NULL;
+			temp_len = 0;
+		} else {
+			attachment->data = g_malloc0 (content->buffer->len+1);
+			attachment->data = memcpy (attachment->data, 
+					content->buffer->data, 
+					content->buffer->len);
+			attachment->size = content->buffer->len;
+		}
 	} else {
 		char *temp_str;
 		int temp_len;
@@ -313,7 +327,6 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		temp_str = NULL;
 		temp_len = 0;
 	}
-	attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype);
 	
 	if (!strcmp (attachment->contentType, "text/html"))
 		filename = "text.htm";
