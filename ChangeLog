@@ -1,3 +1,12 @@
+2005-08-21  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libedataserver/e-xml-hash-utils.[ch]:
+	(e_xmlhash_foreach_key_remove): function to remove
+	hash keys.
+	Committing for Armin Bauer  <armin.bauer@desscon.com>
+	and modified by <jmubeen@novell.com> and
+	<vvaradhan@novell.com>.
+
 2005-08-19  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* configure.in : Add the check for NTLM support in OpenLDAP. This

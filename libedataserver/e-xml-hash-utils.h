@@ -58,6 +58,7 @@ typedef enum {
 } EXmlHashStatus;
 
 typedef void (* EXmlHashFunc) (const char *key, const char *value, gpointer user_data);
+typedef gboolean (* EXmlHashRemoveFunc) (const char *key, const char *value, gpointer user_data);
 
 typedef struct EXmlHash EXmlHash;
 
@@ -74,6 +75,9 @@ EXmlHashStatus e_xmlhash_compare     (EXmlHash     *hash,
 				      const char   *compare_data);
 void           e_xmlhash_foreach_key (EXmlHash     *hash,
 				      EXmlHashFunc  func,
+				      gpointer      user_data);
+void           e_xmlhash_foreach_key_remove (EXmlHash     *hash,
+				      EXmlHashRemoveFunc  func,
 				      gpointer      user_data);
 
 void           e_xmlhash_write       (EXmlHash     *hash);

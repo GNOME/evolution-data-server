@@ -319,6 +319,15 @@ e_xmlhash_foreach_key (EXmlHash *hash, EXmlHashFunc func, gpointer user_data)
 	g_hash_table_foreach (hash->objects, foreach_hash_func, &data);
 }
 
+void
+e_xmlhash_foreach_key_remove (EXmlHash *hash, EXmlHashRemoveFunc func, gpointer user_data)
+{
+	g_return_if_fail (hash != NULL);
+	g_return_if_fail (func != NULL);
+
+	g_hash_table_foreach_remove (hash->objects, func, user_data);
+}
+
 /**
  * e_xmlhash_write:
  * @hash: The #EXmlHash to write.

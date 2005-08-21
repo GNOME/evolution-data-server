@@ -1477,7 +1477,7 @@ typedef struct
 	EXmlHash *ehash;
 } ECalBackendFileComputeChangesData;
 
-static void
+static gboolean
 e_cal_backend_file_compute_changes_foreach_key (const char *key, gpointer value, gpointer data)
 {
 	ECalBackendFileComputeChangesData *be_data = data;
@@ -1494,8 +1494,9 @@ e_cal_backend_file_compute_changes_foreach_key (const char *key, gpointer value,
 		e_cal_component_set_uid (comp, key);
 		be_data->deletes = g_list_prepend (be_data->deletes, e_cal_component_get_as_string (comp));
 
-		e_xmlhash_remove (be_data->ehash, key);
+		return TRUE;
  	}
+	return FALSE;
 }
 
 static ECalBackendSyncStatus
@@ -1555,7 +1556,7 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 	be_data.deletes = NULL;
 	be_data.ehash = ehash;
 	
-	e_xmlhash_foreach_key (ehash, (EXmlHashFunc)e_cal_backend_file_compute_changes_foreach_key, &be_data);
+	e_xmlhash_foreach_key_remove (ehash, (EXmlHashRemoveFunc)e_cal_backend_file_compute_changes_foreach_key, &be_data);
 	
 	*deletes = be_data.deletes;
 
