@@ -39,14 +39,6 @@ typedef struct _ESExpSymbol ESExpSymbol;
 typedef struct _ESExpResult ESExpResult;
 typedef struct _ESExpTerm ESExpTerm;
 
-typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp, int argc,
-					 struct _ESExpResult **argv,
-					 void *data);
-
-typedef struct _ESExpResult *(ESExpIFunc)(struct _ESExp *sexp, int argc,
-					  struct _ESExpTerm **argv,
-					  void *data);
-
 enum _ESExpResultType {
 	ESEXP_RES_ARRAY_PTR=0,	/* type is a ptrarray, what it points to is implementation dependant */
 	ESEXP_RES_INT,		/* type is a number */
@@ -66,6 +58,14 @@ struct _ESExpResult {
 		time_t time;
 	} value;
 };
+
+typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp, int argc,
+					 struct _ESExpResult **argv,
+					 void *data);
+
+typedef struct _ESExpResult *(ESExpIFunc)(struct _ESExp *sexp, int argc,
+					  struct _ESExpTerm **argv,
+					  void *data);
 
 enum _ESExpTermType {
 	ESEXP_TERM_INT	= 0,	/* integer literal */

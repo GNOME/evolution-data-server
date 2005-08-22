@@ -364,7 +364,6 @@ e_msgport_put
 e_msgport_wait
 e_msgport_get
 e_msgport_reply
-PRFileDesc
 EThreadFunc
 e_thread_new
 e_thread_destroy

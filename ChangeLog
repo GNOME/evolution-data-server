@@ -1,3 +1,10 @@
+2005-08-22  Harish Krishnaswamy <kharish@novell.com>
+	
+	* docs/reference/Makefile.am : enable libedataserver docs
+	* libedataserver/e-sexp.h, docs/reference/libedataserver
+	/libedataserver-sections.txt: Fix build issues - patch 
+	contributed by Tor Lillqvist  <tml@novell.com>
+	
 2005-08-22  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	* configure.in: Build camel-docs.
