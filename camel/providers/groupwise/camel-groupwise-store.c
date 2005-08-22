@@ -767,7 +767,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 			fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 
 		/*XXX: Remove this condition check when server has a fix to show mails in shared-folder*/
-		if (getenv("SHARED_FOLDER")) {
+		if (getenv("GROUPWISE_SHARED_FOLDER")) {
 			if (e_gw_container_get_is_shared_to_me (container))
 				fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
 
