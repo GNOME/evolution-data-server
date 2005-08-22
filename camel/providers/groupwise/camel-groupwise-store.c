@@ -766,11 +766,14 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		if (!strcmp (fi->full_name, "Junk Mail"))
 			fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 
-		if (e_gw_container_get_is_shared_to_me (container))
-                        fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
-                                                                                                                             
-                if (e_gw_container_get_is_shared_by_me (container))
-                        fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
+		/*XXX: Remove this condition check when server has a fix to show mails in shared-folder*/
+		if (getenv("SHARED_FOLDER")) {
+			if (e_gw_container_get_is_shared_to_me (container))
+				fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
+
+			if (e_gw_container_get_is_shared_by_me (container))
+				fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
+		}
 
 		if (type == E_GW_CONTAINER_TYPE_INBOX) {
 			fi->total = -1;

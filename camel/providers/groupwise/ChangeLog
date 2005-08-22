@@ -1,3 +1,10 @@
+2005-08-22 Vivek Jain <jvivek@novell.com>
+	
+	* camel-groupwise-store.c: (get_folder_info)
+	disabled support for shared folder temporarily
+	you have to export SHARED_FOLDER to see a shared folder
+	with diff icon.
+
 2005-08-22  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c:
