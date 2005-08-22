@@ -492,6 +492,7 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 			if (e_gw_connection_create_junk_entry (cnc, email[1], "email", "junk") == E_GW_CONNECTION_STATUS_OK);
 		g_list_foreach (list, (GFunc) free_node, NULL);
 	}
+error:	
 	g_free (from);
 	g_strfreev (email);
 }
