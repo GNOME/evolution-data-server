@@ -1,5 +1,11 @@
 2005-08-22 Vivek Jain <jvivek@novell.com>
 	
+	* camel-groupwise-folder.c:(update_junk_list)
+	check if 'from' or email is NULL
+	return otherwise
+
+2005-08-22 Vivek Jain <jvivek@novell.com>
+	
 	* camel-groupwise-store.c: (get_folder_info)
 	disabled support for shared folder temporarily
 	you have to export SHARED_FOLDER to see a shared folder

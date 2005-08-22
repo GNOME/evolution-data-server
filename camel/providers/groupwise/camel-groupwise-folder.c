@@ -467,9 +467,14 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);
 
-	from = g_strdup (camel_message_info_from (info));
+	if (!(from = g_strdup (camel_message_info_from (info))))
+		goto error;
+
 	email = g_strsplit_set (from, "<>", -1);
-	
+
+	if (!email[1])
+		goto error;
+
 	if (e_gw_connection_get_junk_entries (cnc, &list)== E_GW_CONNECTION_STATUS_OK){
 		while (list) {
 			entry = list->data;
