@@ -45,12 +45,12 @@ add_folder_esource (ExchangeAccount *account,
 	GConfClient *client;
 	gboolean is_contacts_folder = TRUE, group_new = FALSE, source_new = FALSE;
 	const char *offline = NULL;
+	char *username, *authtype;
 	int mode;
 	ESourceList *source_list = NULL;
 	gboolean offline_flag;
 
 	client = gconf_client_get_default ();
-	offline_flag = is_offline ();
 
 	if (folder_type == EXCHANGE_CONTACTS_FOLDER) {
 		source_list = e_source_list_new_for_gconf ( client, 
@@ -74,6 +74,8 @@ add_folder_esource (ExchangeAccount *account,
 	}
 
 	exchange_account_is_offline_sync_set (account, &mode);
+	username = exchange_account_get_username (account);
+	authtype = exchange_account_get_authtype (account);
 
         if ((source_group = e_source_list_peek_group_by_name (source_list, 
 					account->account_name)) == NULL) {
@@ -98,6 +100,14 @@ add_folder_esource (ExchangeAccount *account,
 			 */
 			e_source_set_property (source, "offline_sync", "1");
 		}
+		e_source_set_property (source, "username", username);
+		e_source_set_property (source, "auth-domain", "Exchange");
+		if (authtype)
+			e_source_set_property (source, "auth-type", authtype);
+		if (is_contacts_folder)
+			e_source_set_property (source, "auth", "plain/password");
+		else
+			e_source_set_property (source, "auth", "1");
 		e_source_group_add_source (source_group, source, -1);
 		e_source_list_sync (source_list, NULL);
 		group_new = source_new = TRUE;
@@ -116,6 +126,14 @@ add_folder_esource (ExchangeAccount *account,
 			if (mode == OFFLINE_MODE)
 				e_source_set_property (source, "offline_sync", "1");
 
+			e_source_set_property (source, "username", username);
+			e_source_set_property (source, "auth-domain", "Exchange");
+			if (authtype)
+				e_source_set_property (source, "auth-type", authtype);
+			if (is_contacts_folder)
+				e_source_set_property (source, "auth", "plain/password");
+			else
+				e_source_set_property (source, "auth", "1");
 			e_source_group_add_source (source_group, source, -1);
 			source_new = TRUE;
 			e_source_list_sync (source_list, NULL);
@@ -130,6 +148,7 @@ add_folder_esource (ExchangeAccount *account,
 		}
 	}
 
+	offline_flag = is_offline ();
 	if (source && !is_contacts_folder) {
 
 		/* Select the folder created */

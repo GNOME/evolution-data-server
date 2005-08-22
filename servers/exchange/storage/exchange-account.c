@@ -39,6 +39,10 @@
 #include "e2k-uri.h"
 #include "e2k-utils.h"
 #include "exchange-hierarchy-foreign.h"
+
+/* This is an ugly hack to avoid API break */
+/* Added for get_authtype */
+#include "exchange-esource.h"
 #include <libedataserverui/e-passwords.h>
 
 #include <libgnome/gnome-util.h>
@@ -907,6 +911,7 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 
 	// SURF : if (exchange_component_is_interactive (global_exchange_component)) {
 		if (!password) {
+	/*
 			char *prompt;
 
 			prompt = g_strdup_printf (_("Enter password for %s"),
@@ -925,6 +930,7 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 				account->priv->account->source->save_passwd = remember;
 			}
 			g_free (prompt);
+	*/
 		} 
 		else if (!account->priv->account->source->save_passwd) {
 			/* get_password returns the password cached but user has not 
@@ -1415,7 +1421,6 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	}
 
 	account->priv->connecting = TRUE;
-	g_mutex_unlock (account->priv->connect_lock);
 
 	if (account->priv->windows_domain)
 		user_name = g_strdup_printf ("%s\\%s", account->priv->windows_domain, account->priv->username);
@@ -1431,12 +1436,20 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	e2k_autoconfig_set_gc_server (ac, account->priv->ad_server,
 				      account->priv->ad_limit);
 
+	if (!pword) {
+		g_mutex_unlock (account->priv->connect_lock);
+		return NULL;
+	}
  try_password_again:
 	if (!pword) {
+/*
 		if (!get_password (account, ac, *info_result)) {
 			account->priv->connecting = FALSE;
 			return NULL;
 		}
+*/
+	} else {
+		e2k_autoconfig_set_password (ac, g_strdup (pword));
 	}
 
  try_connect_again:
@@ -1452,6 +1465,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		if ( is_password_expired (account, ac)) {
 			*info_result = EXCHANGE_ACCOUNT_PASSWORD_EXPIRED;
 			account->priv->connecting = FALSE;
+			g_mutex_unlock (account->priv->connect_lock);
 			return NULL;
 /*
 			old_password = exchange_account_get_password (account);
@@ -1486,6 +1500,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 				goto try_password_again;
 			e2k_autoconfig_free (ac);
 			account->priv->connecting = FALSE;
+			g_mutex_unlock (account->priv->connect_lock);
 			return NULL;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_DOMAIN:
@@ -1494,6 +1509,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 				goto try_password_again;
 			e2k_autoconfig_free (ac);
 			account->priv->connecting = FALSE;
+			g_mutex_unlock (account->priv->connect_lock);
 			return NULL;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_NTLM:
@@ -1546,12 +1562,13 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 			*info_result = EXCHANGE_ACCOUNT_CONNECT_ERROR;
 			break;
 		case E2K_AUTOCONFIG_CANCELLED:
-			return NULL;
+			break;
 		default:
 			*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
 			break;
 		}
 
+		g_mutex_unlock (account->priv->connect_lock);
 		return NULL;
 	}
 
@@ -1567,6 +1584,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) {
 		account->priv->connecting = FALSE;
 		*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
+		g_mutex_unlock (account->priv->connect_lock);
 		return NULL; /* FIXME: what error has happened? */
 	}
 
@@ -1588,6 +1606,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 
 	if (!setup_account_hierarchies (account)) {
 		*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
+		g_mutex_unlock (account->priv->connect_lock);
 		return NULL; /* FIXME: what error has happened? */
 	}
 
@@ -1632,6 +1651,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 			  G_CALLBACK (context_redirect), account);
 
 	g_signal_emit (account, signals[CONNECTED], 0, account->priv->ctx);
+	g_mutex_unlock (account->priv->connect_lock);
 	return account->priv->ctx;
 }
 
@@ -1984,6 +2004,20 @@ exchange_account_folder_size_get_model (ExchangeAccount *account)
 
 	return exchange_folder_size_get_model (account->priv->fsize);
 }
+
+char *
+exchange_account_get_authtype (ExchangeAccount *account)
+{
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
+
+	if (account->priv->auth_pref == E2K_AUTOCONFIG_USE_BASIC)
+		return g_strdup ("Basic");
+	else if (account->priv->auth_pref == E2K_AUTOCONFIG_USE_NTLM)
+		return g_strdup ("NTLM");
+
+	return NULL;
+}
+
 
 /**
  * exchange_account_new:
