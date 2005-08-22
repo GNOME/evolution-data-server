@@ -1,3 +1,8 @@
+2005-08-22  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* libecal/e-cal.c (build_pass_key) : Builds the password key. Added new
+	(get_host_from_uri) : Fetches the hostname from the esource. Added new
+
 2005-08-21  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #271969

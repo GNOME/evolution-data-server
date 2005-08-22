@@ -1582,13 +1582,60 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 	ecal->priv->auth_user_data = data;
 }
 
+static char *
+get_host_from_uri (const char *uri)
+{
+	char *at = strchr (uri, '@');
+	char *slash;
+	int length;
+
+	if (!at)
+		return NULL;
+	at++; /* Parse over the @ symbol */
+	slash = strchr (at, '/');
+	if (!slash)
+		return NULL;
+	slash --; /* Walk back */
+
+	length = slash - at;
+
+	return g_strndup (at, length);
+}
+
+static char *
+build_pass_key (ESource *source)
+{
+	const char *base_uri, *user_name, *auth_type, *rel_uri;
+	char *uri, *new_uri, *host_name;
+	ESourceGroup *es_grp;
+
+	es_grp = e_source_peek_group (source);
+	base_uri = e_source_group_peek_base_uri (es_grp);
+	if (base_uri) {
+		user_name = e_source_get_property (source, "username");
+		auth_type = e_source_get_property (source, "auth-type");
+		rel_uri = e_source_peek_relative_uri (source);
+		host_name = get_host_from_uri (rel_uri);
+		if (host_name) {
+			new_uri = g_strdup_printf ("%s%s;%s@%s/", base_uri, user_name, auth_type, host_name);
+			g_free (host_name);
+
+			return new_uri;
+		}
+	}
+
+	uri = e_source_get_uri (source);
+
+	return uri;
+}
+
 static gboolean
 open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarStatus *status, gboolean needs_auth)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
-	const char *username = NULL;
+	const char *username = NULL, *auth_type = NULL;
 	char *password = NULL;
 	gboolean read_only;
 	
@@ -1617,7 +1664,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	/* see if the backend needs authentication */
 	if ( (priv->mode !=  CAL_MODE_LOCAL) && e_source_get_property (priv->source, "auth")) {
-		char *prompt, *key, *parent_source_url, *parent_user;
+		char *prompt, *key;
+		const char *parent_user;
 
 		priv->load_state = E_CAL_LOAD_AUTHENTICATING;
 
@@ -1650,7 +1698,12 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
 					e_source_peek_name (priv->source), username);
 		}
-		key = e_source_get_uri (priv->source);
+		auth_type = e_source_get_property (priv->source, "auth-type");
+		if (auth_type)
+			key = build_pass_key (priv->source);
+		else
+			key = e_source_get_uri (priv->source);
+
 		if (!key) {
 			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
