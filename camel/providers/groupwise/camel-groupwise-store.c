@@ -526,7 +526,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				return NULL;
 			}
 			
-			count = +g_list_length (list);
+			count += g_list_length (list);
 		
 			if (count >= 100)
 				temp = count/100;
@@ -576,6 +576,8 @@ get_one_folder_offline (const char *physical_path, const char *path, gpointer da
 	fi = groupwise_build_folder_info(groupwise_store, NULL, path+1);
 	if (!strcmp (fi->full_name, "Mailbox"))
 		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
+	if (!strcmp (fi->full_name, "Junk Mail"))
+		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 	g_ptr_array_add (folders, fi);
 	return TRUE;
 }
@@ -760,6 +762,9 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		}
 		/*name_hash returns the container id given the name */
 		g_hash_table_insert (priv->name_hash, g_strdup(fi->full_name), g_strdup(id));
+
+		if (!strcmp (fi->full_name, "Junk Mail"))
+			fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 
 		if (e_gw_container_get_is_shared_to_me (container))
                         fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
