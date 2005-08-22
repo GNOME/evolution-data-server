@@ -1,3 +1,10 @@
+2005-08-19  Not Zed  <NotZed@Ximian.com>
+
+	** See #312668.
+
+	* camel-tcp-stream-ssl.c (stream_close): handle re-closing a
+	closed socket.
+
 2005-08-18  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #271894.

@@ -491,6 +491,11 @@ stream_flush (CamelStream *stream)
 static int
 stream_close (CamelStream *stream)
 {
+	if (((CamelTcpStreamSSL *)stream)->priv->sockfd == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
+
 	if (PR_Close (((CamelTcpStreamSSL *)stream)->priv->sockfd) == PR_FAILURE)
 		return -1;
 	
