@@ -1,3 +1,52 @@
+Evolution-Data-Server 1.3.8, 2005-08-22
+---------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+	#242032 - color labels stored to imap message store (Michael Zucchi)  
+	#247706 - Automatically add comma after autocompleting an address (Devashish)
+	#271894 - PGP-encrypted attached messages not displayed (Michael Zucchi)
+	#271969 - Synchronize doesn't work for Tasks and Calendar (Armin Bauer, Varadhan, Mubeen)
+	#300115 - RFC2047 encoding always separates the last non-ASCII UTF-8 character. (Changwoo)
+	#300891 - Now camel should specify the translation domain explicitly to use gettext (Changwoo)
+	#302835 - Mailbox does not appear on top in offline mode (Parthasarathi)
+	#302963 - Status tracking does not work for some items (Vivek)
+	#309499 - Additional mail is sent to delegate(s) in Groupwise. (Chakravarthi)
+	#310325 - Meeting request mail cannot be sent for Meeting created in 'Personal' calendar (Vivek)
+	#310496 - 'make check' fails on gpg test (Michael Zucchi) 
+	#310956 - gw: trying to copy the mailbox folder when online copies the folder below the mailbox folder (Parthasarathi)
+	#311078 - Calendar loading progress information goes beyond 100% (Chakravarthi)
+	#311639 - mh: Renaming parent folder loses subfolders (Michael Zucchi)
+	#311831 - sometimes clicking on a meeting request mail or any mail related to assigned task crashes evolution (Chenthill)
+	#312184 - Signature shown as attachment (Parthasarathi)
+	#312578 - In GW calendar user should be able to delegate all instances together (Chenthill)
+	#312668 - Unable to go back to Online mode after clicking offline button (Michael Zucchi)
+	#312715 - Evolution crashes moving IMAP folder to local folder (Michael Zucchi)
+	#312831 - crash in camel-folder-thread.c:sort_node when generating message list (Michael Zucchi)
+	#312857 - gw: Evolution crashes while starting up (Parthasarathi)
+	#312988 - Regressing 274308 - EDS crashed (Sushma)
+	#313058 - gw: Unable to create a new folder(subfolder) with names like Mailbox, Sent Items, etc (Vivek)
+	#313091 - Useless assignment in e-vcard (Ross Burton)
+	#313284 - camel indexing valgrind hits (Michael Zucchi)
+	#313381 - gw: evo crashes while trying to refresh the folder (Vivek)
+	#313574 - crash viewing IMAP mail (Michael Zucchi)
+	#313593 - imap4: sub folders not working (Michael Zucchi)
+	#313657 - IOP: Implement Outlook-like handling of recurrence corner-cases (Carsten Guenther)
+	#313806 - cannot decrypt an encrypted message (Parthasarathi)
+
+Updated Translations:
+
+	- bg (Rostislav Raykov)
+	- ca (Xavier Conde)
+	- de (Frank Arnold)
+	- de (Kostas Papadimas)
+	- el (Kostas Papadimas)
+	- et (Ivar Smolin)
+	- hu (Gabor Kelemen)
+	- lt (Justina Klingaitė)
+	- sr, sr@Latn (Igor Nestorivić)
+	- sq (Laurent Dhima)
+
 Evolution-Data-Server 1.3.7, 2005-08-08
 ---------------------------------------
 
