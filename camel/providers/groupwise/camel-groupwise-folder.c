@@ -1460,6 +1460,7 @@ gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex
 	GSList *item_ids = NULL, *l = NULL;
 	CamelFolderChangeInfo *changes = NULL;
 
+	CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 	changes = camel_folder_change_info_new ();
 	/*item_ids : List of ids from the summary*/
 	while (index < summary->len) {
@@ -1482,6 +1483,7 @@ gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex
 	}
 	camel_object_trigger_event (folder, "folder_changed", changes);
 
+	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	camel_folder_free_summary (folder, summary);
 	g_slist_free (l);
 }

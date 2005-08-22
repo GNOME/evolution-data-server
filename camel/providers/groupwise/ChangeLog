@@ -1,3 +1,9 @@
+2005-08-23  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (gw_update_all_items):
+	use cache lock before deleting items from cache.
+	Prevents a possibility of crash.
+	
 2005-08-22 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-store.c: (get_folder_info)
