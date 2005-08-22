@@ -1540,6 +1540,18 @@ imap_disconnect_offline (CamelService *service, gboolean clean, CamelException *
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
 	CamelDiscoStore *disco = CAMEL_DISCO_STORE (service);
+
+	if (store->istream) {
+		camel_stream_close(store->istream);
+		camel_object_unref(store->istream);
+		store->istream = NULL;
+	}
+	
+	if (store->ostream) {
+		camel_stream_close(store->ostream);
+		camel_object_unref(store->ostream);
+		store->ostream = NULL;
+	}
 	
 	store->connected = FALSE;
 	if (store->current_folder) {
@@ -1576,16 +1588,6 @@ imap_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 	if (store->connected && clean) {
 		response = camel_imap_command (store, NULL, NULL, "LOGOUT");
 		camel_imap_response_free (store, response);
-	}
-	
-	if (store->istream) {
-		camel_object_unref (store->istream);
-		store->istream = NULL;
-	}
-	
-	if (store->ostream) {
-		camel_object_unref (store->ostream);
-		store->ostream = NULL;
 	}
 	
 	imap_disconnect_offline (service, clean, ex);

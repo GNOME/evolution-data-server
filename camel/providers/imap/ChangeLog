@@ -1,3 +1,13 @@
+2005-08-19  Not Zed  <NotZed@Ximian.com>
+
+	** See #312668.
+
+	* camel-imap-store.c (imap_disconnect_offline): check/close
+	streams always, even if disconnecting in offline mode.
+
+	* camel-imap-folder.c (camel_imap_folder_fetch_data): clear
+	exception before trying more ops.
+
 2005-08-18  Not Zed  <NotZed@Ximian.com>
 
 	** See bug #313593.

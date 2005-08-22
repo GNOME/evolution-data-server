@@ -2698,6 +2698,8 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const char *uid,
 	if (stream || cache_only)
 		return stream;
 
+	camel_exception_clear(ex);
+
 	CAMEL_SERVICE_LOCK (store, connect_lock);
 	CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
 
