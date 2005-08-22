@@ -1330,6 +1330,7 @@ docs/reference/calendar/Makefile
 docs/reference/calendar/libecal/Makefile
 docs/reference/calendar/libedata-cal/Makefile
 docs/reference/libedataserver/Makefile
+docs/reference/camel/Makefile
 po/Makefile.in
 ])
 
