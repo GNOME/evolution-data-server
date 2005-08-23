@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-08-17 14:00+0000\n"
-"PO-Revision-Date: 2005-08-19 12:09+0200\n"
+"PO-Revision-Date: 2005-08-23 18:07+0200\n"
 "Last-Translator: Арангел Ангов <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -1445,7 +1445,7 @@ msgstr ""
 
 #: ../camel/camel-folder-search.c:674 ../camel/camel-folder-search.c:707
 msgid "(match-all) requires a single bool result"
-msgstr ""
+msgstr "(да се совпадне се) има потреба од точен или неточен резултат"
 
 #: ../camel/camel-folder-search.c:757
 msgid "(match-threads) not allowed inside match-all"
@@ -1520,7 +1520,7 @@ msgstr "Не успеав да го парсирам советот за кор�
 
 #: ../camel/camel-gpg-context.c:772
 msgid "Failed to parse gpg passphrase request."
-msgstr ""
+msgstr "Не успеав да го парсирам барањето за gpg фразата за лозинка."
 
 #: ../camel/camel-gpg-context.c:786
 #, c-format
@@ -1528,6 +1528,8 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: \"%s\""
 msgstr ""
+"Ви треба фраза за лозинка за да го отклучите копчето за\n"
+"корисникот: \"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
 #: ../camel/providers/nntp/camel-nntp-store.c:1273
@@ -1536,7 +1538,7 @@ msgstr "Откажано."
 
 #: ../camel/camel-gpg-context.c:821
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
+msgstr "Не успеав да го отклучам тајното копче: 3 неточни фрази за лозинки."
 
 #: ../camel/camel-gpg-context.c:827
 #, c-format
@@ -1653,47 +1655,47 @@ msgstr "Времето истече, се обидувам да го да ја �
 #: ../camel/camel-lock.c:209
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr ""
+msgstr "Не успеав да отклучам со помош на fcntl(2): %s"
 
 #: ../camel/camel-lock.c:272
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr ""
+msgstr "Не успеав да отклучам со помош на flock(2): %s"
 
 #: ../camel/camel-movemail.c:104
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr ""
+msgstr "Не можам да ја проверам датотеката со пошта %s: %s"
 
 #: ../camel/camel-movemail.c:117
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr ""
+msgstr "Не можам да ја отворам датотеката со пошта %s: %s"
 
 #: ../camel/camel-movemail.c:125
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr ""
+msgstr "Не можам да ја отворам привремената датотека со пошта %s: %s"
 
 #: ../camel/camel-movemail.c:154
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr ""
+msgstr "Не успеав да ја складирам поштата во привремената датотека %s: %s"
 
 #: ../camel/camel-movemail.c:184
 #, c-format
 msgid "Could not create pipe: %s"
-msgstr ""
+msgstr "Не можам да креирам цевка: %s"
 
 #: ../camel/camel-movemail.c:196
 #, c-format
 msgid "Could not fork: %s"
-msgstr ""
+msgstr "Не можам да форкувам: %s"
 
 #: ../camel/camel-movemail.c:234
 #, c-format
 msgid "Movemail program failed: %s"
-msgstr ""
+msgstr "Програмата за преместување на пошта не успеа: %s"
 
 #: ../camel/camel-movemail.c:235
 msgid "(Unknown error)"
@@ -1702,21 +1704,21 @@ msgstr "(Непозната грешка)"
 #: ../camel/camel-movemail.c:258
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr ""
+msgstr "Грешка при читање на датотеката за пошта: %s"
 
 #: ../camel/camel-movemail.c:269
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr ""
+msgstr "Грешка при запишување во привремената датотека за пошта: %s"
 
 #: ../camel/camel-movemail.c:462 ../camel/camel-movemail.c:529
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr ""
+msgstr "Грешка при копирање на привремената датотека за пошта: %s"
 
 #: ../camel/camel-multipart-signed.c:598
 msgid "parse error"
-msgstr ""
+msgstr "грешка при парсирање"
 
 #: ../camel/camel-net-utils.c:446 ../camel/camel-net-utils.c:608
 #: ../camel/camel-net-utils.c:739
@@ -1736,12 +1738,12 @@ msgstr "Преведувам: %s"
 
 #: ../camel/camel-net-utils.c:634
 msgid "Host lookup failed"
-msgstr ""
+msgstr "Барањето на хостот не успеа"
 
 #: ../camel/camel-net-utils.c:636
 #, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr ""
+msgstr "Барањето на хостот не успеа: %s: %s"
 
 #: ../camel/camel-net-utils.c:743
 msgid "Resolving address"
@@ -1749,22 +1751,22 @@ msgstr "Ја преведувам адресата"
 
 #: ../camel/camel-net-utils.c:763
 msgid "Name lookup failed"
-msgstr ""
+msgstr "Барањето на името не успеа"
 
 #: ../camel/camel-net-utils.c:766
 #, c-format
 msgid "Name lookup failed: %s"
-msgstr ""
+msgstr "Барањето на името не успеа: %s"
 
 #: ../camel/camel-offline-folder.c:253
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr ""
+msgstr "Ја синхронизирам папката со пошта '%s' на дискот"
 
 #: ../camel/camel-offline-journal.c:165 ../camel/camel-offline-journal.c:188
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
-msgstr ""
+msgstr "Не можам да го запишам офлајн дневникот за папката `%s': %s"
 
 #: ../camel/camel-provider.c:59
 msgid "Virtual folder email provider"
@@ -1777,7 +1779,7 @@ msgstr ""
 #: ../camel/camel-provider.c:185
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr ""
+msgstr "Не можам да го вчитам %s: Вчитувањето на модулот не е поддржано на овој систем."
 
 #: ../camel/camel-provider.c:194
 #, c-format
@@ -1962,6 +1964,8 @@ msgid ""
 "Could not get Kerberos ticket:\n"
 "%s"
 msgstr ""
+"Не можам да добијам картичка од Керберос:\n"
+"%s"
 
 #: ../camel/camel-sasl-login.c:33
 msgid "Login"
@@ -2409,6 +2413,10 @@ msgid ""
 "Fingerprint:       %s\n"
 "Signature:         %s"
 msgstr ""
+"Издавач:            %s\n"
+"Тема:           %s\n"
+"Отпечаток:       %s\n"
+"Потпис:         %s"
 
 #: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:839
 msgid "GOOD"
@@ -2447,6 +2455,8 @@ msgid ""
 "Certificate problem: %s\n"
 "Issuer: %s"
 msgstr ""
+"Проблем со сертификатот: %s\n"
+"Издавач: %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:939
 #, c-format
@@ -2461,6 +2471,8 @@ msgid ""
 "Certificate expired: %s\n"
 "Issuer: %s"
 msgstr ""
+"Сертификатот е истечен: %s\n"
+"Издавач: %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:974
 #, c-format
@@ -2472,7 +2484,7 @@ msgstr ""
 #: ../camel/camel-url.c:293
 #, c-format
 msgid "Could not parse URL `%s'"
-msgstr ""
+msgstr "Не можам да ја парсирам адресата `%s'"
 
 #: ../camel/camel-vee-folder.c:476
 #, c-format
@@ -2495,20 +2507,20 @@ msgstr "Несовпаднати"
 #: ../camel/camel-vee-store.c:390
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr ""
+msgstr "Не можам да ја избришам папката: %s: Нема таква папка"
 
 #: ../camel/camel-vee-store.c:412
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr ""
+msgstr "Не можам да ја реименувам папката: %s: Нема таква папка"
 
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Cannot copy messages to the Trash folder"
-msgstr ""
+msgstr "Не можам да ги ископирам пораките во папката со ѓубре"
 
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Cannot copy messages to the Junk folder"
-msgstr ""
+msgstr "Не можам да ги ископирам пораките во папката за отпад"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:2054
@@ -2517,6 +2529,8 @@ msgid ""
 "Cannot get message: %s\n"
 "  %s"
 msgstr ""
+"Не можам да ја добијам пораката: %s\n"
+"  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:2054
@@ -2524,7 +2538,7 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-folder.c:340
 #: ../camel/providers/local/camel-mh-folder.c:203
 msgid "No such message"
-msgstr ""
+msgstr "Нема таква порака"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:127
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
@@ -2536,7 +2550,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-folder.c:492
 #: ../camel/providers/pop3/camel-pop3-folder.c:510
 msgid "User cancelled"
-msgstr ""
+msgstr "Откажано од корисникот"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:133
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
@@ -2550,12 +2564,12 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-folder.c:513
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr ""
+msgstr "Не можам да ја добијам пораката %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:149
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
-msgstr ""
+msgstr "Оваа порака не е достапна во офлајн режим."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:159
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:165
@@ -2567,14 +2581,14 @@ msgstr "Не можам да ја добијам пораката"
 #: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
 msgid "Could not load summary for %s"
-msgstr ""
+msgstr "Не можам да вчитам информации за %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:937
 #: ../camel/providers/groupwise/camel-groupwise-store.c:513
 #: ../camel/providers/imap/camel-imap-folder.c:2359
 #: ../camel/providers/imap/camel-imap-folder.c:2429
 msgid "Fetching summary information for new messages"
-msgstr ""
+msgstr "Собирам информации за новите пораки"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1518
 #, c-format
