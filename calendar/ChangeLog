@@ -1,3 +1,11 @@
+2005-08-23  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	Fixes #310461 (part of it)
+	* libecal/e-cal-component.c (set_attachment_list):
+	Do not call icalattach_unref after icalproperty_free, as the later
+	ends up executing the former and thus we can avoid double
+	unreffing.
+
 2005-08-22  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* libecal/e-cal.c (build_pass_key) : Builds the password key. Added new

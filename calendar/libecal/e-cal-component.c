@@ -1521,7 +1521,6 @@ set_attachment_list (icalcomponent *icalcomp,
 
 			icalcomponent_remove_property (icalcomp, attachment->prop);
 			icalproperty_free (attachment->prop);
-			icalattach_unref (attachment->attach);
 			g_free (attachment);
 		}
 
