@@ -80,10 +80,10 @@ void                e_name_selector_entry_set_destination_store  (ENameSelectorE
 								  EDestinationStore *destination_store);
 
 /* TEMPORARY API - DO NOT USE */
-void                e_name_selector_set_contact_editor_func      (ENameSelectorEntry *name_selector_entry,
-								  gpointer func);
-void                e_name_selector_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry,
-								  gpointer func);
+void                e_name_selector_entry_set_contact_editor_func      (ENameSelectorEntry *name_selector_entry,
+									gpointer func);
+void                e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry,
+									gpointer func);
 
 G_END_DECLS
 

@@ -609,7 +609,7 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 	GtkTreeIter    iter;
 	EContact      *best_contact    = NULL;
 	gint           best_field_rank = G_MAXINT;
-	EContactField  best_field;
+	EContactField  best_field = 0;
 	gint           cue_len;
 
 	g_assert (cue_str);
