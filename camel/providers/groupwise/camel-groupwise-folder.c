@@ -468,13 +468,9 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);
 
-	if (!(from = g_strdup (camel_message_info_from (info))))
-		goto error;
+	from = g_strdup (camel_message_info_from (info));
 
 	email = g_strsplit_set (from, "<>", -1);
-
-	if (!email[1])
-		goto error;
 
 	if (e_gw_connection_get_junk_entries (cnc, &list)== E_GW_CONNECTION_STATUS_OK){
 		while (list) {
@@ -493,7 +489,7 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 			if (e_gw_connection_create_junk_entry (cnc, email[1], "email", "junk") == E_GW_CONNECTION_STATUS_OK);
 		g_list_foreach (list, (GFunc) free_node, NULL);
 	}
-error:	
+
 	g_free (from);
 	g_strfreev (email);
 }
@@ -800,6 +796,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	EGwConnection *cnc = cnc_lookup (priv);
 	CamelSession *session = ((CamelService *)folder->parent_store)->session;
 	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_PROXY;
+	gboolean is_locked = TRUE;
 	int status;
 	GList *list = NULL;
 	GSList *slist = NULL, *sl;
@@ -904,6 +901,9 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	if (list)
 		gw_update_cache (folder, list, ex);
 	
+ 
+	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+	is_locked = FALSE;
 
 	/*
 	 * The New and Modified items in the server have been updated in the summary. 
@@ -932,7 +932,8 @@ end2:
 	g_free (time_string);
 	g_free (container_id);
 end1:
-	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+	if (is_locked)
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 	return;
 }
 
@@ -1296,7 +1297,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	CamelMimeMessage *msg = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
-	const char *container_id;
+	const char *container_id = NULL;
 	GSList *attach_list = NULL;
 	EGwItemType type;
 	EGwConnectionStatus status;
@@ -1381,6 +1382,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	groupwise_populate_details_from_item (msg, item);
 	/*Now set attachments*/
 	if (attach_list) {
+		gboolean has_boundary = FALSE;
 		GSList *al;
 
 		for (al = attach_list ; al != NULL ; al = al->next) {
@@ -1425,19 +1427,30 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					part = camel_mime_part_new ();
 					
 					if (!strcmp (attach->contentType, "application/pgp-signature")) {
+						camel_mime_part_set_filename(part, g_strdup(attach->name));
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/signed");
+						has_boundary = TRUE;
 						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
 					} else if (!strcmp (attach->contentType, "application/pgp-encrypted")) {
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
+						has_boundary = TRUE;
  						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
+					} else if ( !strcmp (attach->name, "encrypted.asc") &&
+						    !strcmp (attach->contentType, "application/octet-stream")) {
+						camel_mime_part_set_filename(part, g_strdup(attach->name));
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
+						has_boundary = TRUE;
+						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", "application/pgp-encrypted");
 					} else {
+						camel_mime_part_set_filename(part, g_strdup(attach->name));
 						camel_mime_part_set_content_id (part, attach->id);
-						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
+						if (!has_boundary)
+							camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
 					}
 
 					camel_multipart_set_boundary(multipart, NULL);
 
-					camel_mime_part_set_filename(part, g_strdup(attach->name));
+					//camel_mime_part_set_filename(part, g_strdup(attach->name));
 					camel_mime_part_set_content(part, attachment, len, attach->contentType);
 
 					camel_multipart_add_part (multipart, part);
