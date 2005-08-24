@@ -519,6 +519,8 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 							      CURSOR_ITEM_LIMIT, position, &list);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+				camel_folder_summary_clear (folder->summary);
+				camel_folder_summary_save (folder->summary);
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 				camel_operation_end (NULL);
 				g_free (container_id);
@@ -651,12 +653,15 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		top_folder = g_hash_table_lookup (priv->name_hash, top);
 		/* 'top' is a valid path, but doesnt have a container id
 		 *  return NULL */
-		if (!top_folder)
+		if (!top_folder) {
+			CAMEL_SERVICE_UNLOCK (store, connect_lock);
 			return NULL;
+		}
 	}
 
 	status = e_gw_connection_get_container_list (priv->cnc, top_folder, &folder_list);
 	if (status != E_GW_CONNECTION_STATUS_OK ) {
+		/*if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION) */
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		g_warning ("Network Unavailable....\n");
 		/*FIX ME set the camel exception id*/
@@ -970,7 +975,7 @@ groupwise_rename_folder(CamelStore *store,
 	{
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
 				      old_name, new_name);
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
 		return;
 	}
 
@@ -993,7 +998,7 @@ groupwise_rename_folder(CamelStore *store,
 
 	g_free (oldpath);
 	g_free (newpath);
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
 }
 
 char * 

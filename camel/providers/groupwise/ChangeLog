@@ -1,3 +1,11 @@
+2005-08-24  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug #310996
+
+	* camel-groupwise-store.c:
+	(groupwise_get_folder_info): unlock when returning
+	(groupwise_rename_folder): unlock on the groupwise_store
+	
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* camel-groupwise-summary.c (gw_info_set_flags): return FALSE if
