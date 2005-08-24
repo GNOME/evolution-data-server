@@ -1,3 +1,8 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* camel-mbox-summary.c (mbox_summary_sync_quick): removed some
+	unecessary debug.
+
 2005-08-12  Not Zed  <NotZed@Ximian.com>
 
 	* camel-local-folder.c (camel_local_folder_construct): dont sync
