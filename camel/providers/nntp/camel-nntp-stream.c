@@ -104,7 +104,7 @@ stream_read(CamelStream *stream, char *buffer, size_t n)
 				is->ptr = p+3;
 				is->mode = CAMEL_NNTP_STREAM_EOD;
 				is->state = 0;
-				dd(printf("NNTP_STREAM_READ(%d):\n%.*s\n", o-buffer, o-buffer, buffer));
+				dd(printf("NNTP_STREAM_READ(%d):\n%.*s\n", (int)(o-buffer), (int)(o-buffer), buffer));
 				return o-buffer;
 			}
 			p++;
@@ -137,7 +137,7 @@ stream_read(CamelStream *stream, char *buffer, size_t n)
 	is->ptr = p;
 	is->state = state;
 
-	dd(printf("NNTP_STREAM_READ(%d):\n%.*s\n", o-buffer, o-buffer, buffer));
+	dd(printf("NNTP_STREAM_READ(%d):\n%.*s\n", (int)(o-buffer), (int)(o-buffer), buffer));
 
 	return o-buffer;
 }

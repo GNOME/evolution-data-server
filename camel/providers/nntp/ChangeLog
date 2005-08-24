@@ -1,3 +1,7 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* camel-nntp-stream.c (stream_read): cast print args to int.
+
 2005-08-12  Tor Lillqvist  <tml@novell.com>
 
 	* Makefile.am: Use NO_UNDEFINED. Link with libcamel-provider,
