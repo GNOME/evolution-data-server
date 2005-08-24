@@ -382,7 +382,7 @@ camel_imap4_utils_set_unexpected_token_error (CamelException *ex, CamelIMAP4Engi
 		g_string_append (errmsg, token->v.qstring);
 		break;
 	case CAMEL_IMAP4_TOKEN_LITERAL:
-		g_string_append_printf (errmsg, "{%u}", token->v.literal);
+		g_string_append_printf (errmsg, "{%u}", (unsigned int)token->v.literal);
 		break;
 	case CAMEL_IMAP4_TOKEN_NUMBER:
 		g_string_append_printf (errmsg, "%u", token->v.number);

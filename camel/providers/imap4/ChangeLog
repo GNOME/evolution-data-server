@@ -1,3 +1,13 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* camel-imap4-utils.c (camel_imap4_utils_set_unexpected_token_error): 
+
+	* camel-imap4-stream.c (camel_imap4_stream_next_token): 
+
+	* camel-imap4-command.c (imap4_command_append_string): fix type to
+	printfs.
+	(camel_imap4_command_newv, unexpected_token): 
+
 2005-08-12  Tor Lillqvist  <tml@novell.com>
 
 	* Makefile.am: Use NO_UNDEFINED. Link with libcamel-provider,

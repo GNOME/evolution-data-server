@@ -469,7 +469,7 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 					token->token = CAMEL_IMAP4_TOKEN_LITERAL;
 					token->v.literal = literal;
 					
-					d(fprintf (stderr, "token: {%u}\n", literal));
+					d(fprintf (stderr, "token: {%u}\n", (unsigned int)literal));
 					
 					stream->mode = CAMEL_IMAP4_STREAM_MODE_LITERAL;
 					stream->literal = literal;
