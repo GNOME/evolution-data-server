@@ -374,7 +374,6 @@ impl_BookListener_report_link_status (PortableServer_Servant servant,
 
 static void
 impl_BookListener_report_auth_required (PortableServer_Servant servant,
-				   const CORBA_boolean is_online,
 				   CORBA_Environment *ev)
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));

@@ -1,3 +1,13 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_get_contact_list): initialise contacts
+	to NULL.
+
+	* libebook/e-book-listener.c
+	(impl_BookListener_report_auth_required): fix the type of this
+	function to match the idl.
+
 2005-08-18  Ross Burton  <ross@burtonini.com>
 
 	* libedata-book/e-book-backend.c:

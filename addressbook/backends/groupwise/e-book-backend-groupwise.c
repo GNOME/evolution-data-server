@@ -1806,7 +1806,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 {
 	GList *vcard_list;
 	int status;
-	GList *gw_items, *contacts, *temp;
+	GList *gw_items, *contacts = NULL, *temp;
 	EContact *contact;
 	EBookBackendGroupwise *egwb;
 	gboolean match_needed;
