@@ -1629,7 +1629,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	int rv;
 	
 	content = camel_medium_get_content_object((CamelMedium *)ipart);
-	ct = camel_mime_part_get_content_type(content);
+	ct = camel_mime_part_get_content_type((CamelMimePart *)content);
 	/* Encrypted part (using our fake mime type) or PGP/Mime multipart */
 	if (camel_content_type_is(ct, "multipart", "encrypted")) {	
 		mp = (CamelMultipart *) camel_medium_get_content_object ((CamelMedium *) ipart);

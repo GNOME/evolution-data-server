@@ -1695,7 +1695,7 @@ static CamelObjectMeta *
 co_metadata_get(CamelObject *obj)
 {
 	CamelHookPair *pair;
-	CamelObjectMeta *meta = NULL, *metaout = NULL, *metalast;
+	CamelObjectMeta *meta = NULL, *metaout = NULL, *metalast = NULL;
 
 	pair = co_metadata_pair(obj, FALSE);
 	if (pair) {
@@ -1704,7 +1704,7 @@ co_metadata_get(CamelObject *obj)
 		while (meta) {
 			CamelObjectMeta *m;
 
-			m = g_malloc(sizeof(*metalast) + strlen(meta->name));
+			m = g_malloc(sizeof(*m) + strlen(meta->name));
 			m->next = NULL;
 			strcpy(m->name, meta->name);
 			m->value = g_strdup(meta->value);

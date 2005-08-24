@@ -561,8 +561,8 @@ static const unsigned char m250[256] = {
 };
 
 struct {
-	unsigned char *bits0;
-	unsigned char *bits1;
+	const unsigned char *bits0;
+	const unsigned char *bits1;
 } camel_charmap[256] = {
 	{ m000, m001, }, { m010, m011, }, { m020, 0, }, { m030, 0, }, { m040, m041, }, { m050, 0, }, { 0, 0, }, { 0, 0, }, 
 	{ 0, 0, }, { 0, 0, }, { 0, 0, }, { 0, 0, }, { 0, 0, }, { 0, 0, }, { 0, 0, }, { 0, 0, }, 

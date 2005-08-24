@@ -1,3 +1,19 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* camel-store.c (camel_store_rename_folder): init folders and only
+	use it if set.
+
+	* camel-offline-journal.c (CAMEL_OFFLINE_JOURNAL_GET_CLASS):
+	move redefined macro to .h.
+
+	* camel-gpg-context.c (gpg_decrypt): cast args properly.
+
+	* camel-text-index.c (camel_text_index_validate): cast to int for
+	printf.
+
+	* camel-object.c (co_metadata_get): assign metalast to remove
+	spurious warning.
+
 2005-08-19  Not Zed  <NotZed@Ximian.com>
 
 	** See #312668.

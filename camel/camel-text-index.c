@@ -1337,7 +1337,7 @@ camel_text_index_validate(CamelTextIndex *idx)
 				printf("Warning, read failed for word '%s', at data '%d'\n", word, data);
 				data = 0;
 			} else {
-				printf("(%d)\n", count);
+				printf("(%d)\n", (int)count);
 				g_free(records);
 			}
 		}

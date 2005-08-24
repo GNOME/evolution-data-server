@@ -45,8 +45,6 @@
 
 #define d(x) x
 
-#define CAMEL_OFFLINE_JOURNAL_GET_CLASS(o) (CAMEL_OFFLINE_JOURNAL_CLASS (CAMEL_OBJECT_GET_CLASS (o)))
-
 static void camel_offline_journal_class_init (CamelOfflineJournalClass *klass);
 static void camel_offline_journal_init (CamelOfflineJournal *journal, CamelOfflineJournalClass *klass);
 static void camel_offline_journal_finalize (CamelObject *object);
@@ -99,7 +97,6 @@ camel_offline_journal_finalize (CamelObject *object)
 	while ((entry = e_dlist_remhead (&journal->queue)))
 		CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_free (journal, entry);
 }
-
 
 /**
  * camel_offline_journal_construct:

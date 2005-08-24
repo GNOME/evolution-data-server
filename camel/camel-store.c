@@ -439,7 +439,7 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 {
 	CamelFolder *folder;
 	int i, oldlen, namelen;
-	GPtrArray *folders;
+	GPtrArray *folders = NULL;
 	char *old_name;
 
 	d(printf("store rename folder %s '%s' '%s'\n", ((CamelService *)store)->url->protocol, old_name, new_name));
@@ -486,7 +486,7 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 	CS_CLASS (store)->rename_folder (store, old_name, new_name, ex);
 
 	/* If it worked, update all open folders/unlock them */
-	if (!camel_exception_is_set(ex)) {
+	if (folders && !camel_exception_is_set(ex)) {
 		guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
 		CamelRenameInfo reninfo;
 

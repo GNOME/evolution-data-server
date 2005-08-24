@@ -42,7 +42,7 @@ extern "C" {
 #define CAMEL_OFFLINE_JOURNAL_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournalClass))
 #define CAMEL_IS_OFFLINE_JOURNAL(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_OFFLINE_JOURNAL))
 #define CAMEL_IS_OFFLINE_JOURNAL_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_OFFLINE_JOURNAL))
-#define CAMEL_OFFLINE_JOURNAL_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournalClass))
+#define CAMEL_OFFLINE_JOURNAL_GET_CLASS(o) (CAMEL_OFFLINE_JOURNAL_CLASS (CAMEL_OBJECT_GET_CLASS (o)))
 
 typedef struct _CamelOfflineJournal CamelOfflineJournal;
 typedef struct _CamelOfflineJournalClass CamelOfflineJournalClass;
