@@ -248,7 +248,7 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 	old = mi->flags;
 	/* we don't set flags which aren't appropriate for the folder*/
 	if ((set == (CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN|CAMEL_MESSAGE_SEEN)) && (old & CAMEL_GW_MESSAGE_JUNK))
-		return ;
+		return FALSE;
 	
 	mi->flags = (old & ~flags) | (set & flags);
 	if (old != mi->flags) {

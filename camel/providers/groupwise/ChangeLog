@@ -1,3 +1,21 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* camel-groupwise-summary.c (gw_info_set_flags): return FALSE if
+	no flags were set.
+
+	* camel-groupwise-store.c (groupwise_get_folder): remove unused session.
+	(groupwise_get_folder_info): comment out unused msg.
+
+	* camel-groupwise-folder.c (move_to_mailbox): ugh, take an
+	exception argument, don't just make one up, and then not
+	initialise it!
+	(move_to_junk): same.
+	(gw_update_cache): initialise type.
+	(gw_update_summary): same.
+	(groupwise_folder_item_to_msg): use the right type for
+	container_id.
+	(groupwise_folder_item_to_msg): dont unref the as-yet-unset part.
+
 2005-08-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: (gw_update_all_items):

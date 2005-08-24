@@ -439,7 +439,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 {
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
-	CamelSession *session = camel_service_get_session (CAMEL_SERVICE (store));
 	CamelFolder *folder;
 	CamelGroupwiseSummary *summary;
 	char *container_id, *folder_dir, *storage_path;
@@ -624,7 +623,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	const char *url, *top_folder, *temp_url;
 	char *folder_real = NULL;
 	CamelFolderInfo *info = NULL;
-	struct _store_folder_refresh *msg;
+	/*struct _store_folder_refresh *msg;*/
 	
 	if (top && groupwise_is_system_folder (top)) 
 		return groupwise_build_folder_info (groupwise_store, NULL, top );

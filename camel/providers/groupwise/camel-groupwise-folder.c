@@ -498,11 +498,10 @@ error:
 }
 
 static void 
-move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info)
+move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 {
 	CamelFolder *dest;
 	GPtrArray *uids;
-	CamelException *ex;
 	const char *uid = camel_message_info_uid (info);
 	
 	uids = g_ptr_array_new ();
@@ -518,18 +517,17 @@ move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info)
 }
 
 static void 
-move_to_junk (CamelFolder *folder, CamelMessageInfo *info)
+move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 {
 	CamelFolder *dest;
 	CamelFolderInfo *fi;
 	GPtrArray *uids;
-	CamelException *ex;
 	const char *uid = camel_message_info_uid (info);
 	
 	uids = g_ptr_array_new ();
 	g_ptr_array_add (uids, (gpointer) uid);
  	
-	dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, NULL);
+	dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, ex);
 	if (dest)
 		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
 	else {
@@ -579,9 +577,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		flags = camel_message_info_flags (info);	
 
 		if ((flags & CAMEL_MESSAGE_JUNK) && !(flags & CAMEL_GW_MESSAGE_JUNK)) /*marked a message junk*/
-			move_to_junk (folder, info);
+			move_to_junk (folder, info, ex);
 		else if ((flags & CAMEL_MESSAGE_JUNK) && (flags & CAMEL_GW_MESSAGE_JUNK)) /*message was marked as junk, now unjunk*/ 
-			move_to_mailbox (folder, info);
+			move_to_mailbox (folder, info, ex);
 
 		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags);
@@ -945,7 +943,7 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
 		EGwItem *temp_item = (EGwItem *)item_list->data;
 		EGwItem *item;
-		EGwItemType type;
+		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
 		char *temp_date = NULL;
 		const char *id;
@@ -1136,7 +1134,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 
 	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
 		EGwItem *item = (EGwItem *)item_list->data;
-		EGwItemType type;
+		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
 		char *temp_date = NULL;
 		const char *id;
@@ -1267,7 +1265,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	CamelMimeMessage *msg = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
-	char *container_id = NULL;
+	const char *container_id;
 	GSList *attach_list = NULL;
 	EGwItemType type;
 	EGwConnectionStatus status;
@@ -1370,7 +1368,6 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				status = e_gw_connection_get_item (cnc, container_id, attach->id, "default distribution recipient message attachments subject notification created recipientStatus status", &temp_item);
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_warning ("Could not get attachment\n");
-					camel_object_unref (part);
 					continue;
 				}
 				temp_msg = groupwise_folder_item_to_msg(folder, temp_item, ex);
