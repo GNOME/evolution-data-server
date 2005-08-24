@@ -1,3 +1,46 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* backends/weather/e-weather-source.c (e_weather_source_new):
+	constify base.  Include missing string.h.
+
+	* backends/weather/e-cal-backend-weather.c
+	(e_cal_backend_weather_open): constify uri.
+
+	* backends/contacts/e-cal-backend-contacts.c
+	(contacts_changed_cb): constify uid.
+
+	* backends/http/e-cal-backend-http.c
+	(e_cal_backend_http_get_timezone): constify zone.
+
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas):
+	remove unused.
+	(set_container_id_with_count): fix this logic so it doesn't use an
+	unset container pointer.
+	(connect_to_server): remove unused.
+	(e_cal_backend_groupwise_get_static_capabilities): remove all the
+	unecessary backslashes.
+
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_modify_object)
+	(remove_instance, e_cal_backend_file_remove_object): cast away
+	warnings.
+	(e_cal_backend_file_modify_object): fix function signature.  no
+	idea what new_object should be set to.
+
+	* libedata-cal/e-cal-backend-cache.c
+	(e_cal_backend_cache_put_timezone): Cast away warnings.
+
+	* libecal/e-cal-component.c (ensure_alarm_properties_cb): pass a
+	string to icalproperty_set_description.  Not sure if it's the
+	right one.
+	(get_attachment_list): use const char * for data.
+	(set_alarm_description_cb): use const for old_summary.
+	(SetAlarmDescriptionData): constify strings.
+
+	* libecal/e-cal.c (open_calendar): make parent_user const & remove
+	unused.
+	(e_cal_get_objects_for_uid): init kind_to_find always.
+
 2005-08-23  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	Fixes #310461 (part of it)

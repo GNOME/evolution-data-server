@@ -651,7 +651,7 @@ e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
-	icaltimezone *zone;
+	const icaltimezone *zone;
 	icalcomponent *icalcomp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
@@ -667,7 +667,7 @@ e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 	}
 
-	icalcomp = icaltimezone_get_component (zone);
+	icalcomp = icaltimezone_get_component ((icaltimezone *)zone);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 

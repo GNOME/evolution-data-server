@@ -322,12 +322,12 @@ contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_
 
         for (i = contacts; i; i = i->next) {
                 EContact *contact = E_CONTACT (i->data);
-                char *uid = e_contact_get_const (contact, E_CONTACT_UID);
+                const char *uid = e_contact_get_const (contact, E_CONTACT_UID);
                 
                 /* If no date is set, remove from list of tracked contacts */                 
                 if (!e_contact_get (contact, E_CONTACT_BIRTH_DATE) &&
                     !e_contact_get (contact, E_CONTACT_ANNIVERSARY)) {
-                        g_hash_table_remove (cbc->priv->tracked_contacts, uid);
+                        g_hash_table_remove (cbc->priv->tracked_contacts, (char *)uid);
                 } else {
                         ContactRecord *cr = contact_record_new (cbc, contact);
                         g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);

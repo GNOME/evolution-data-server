@@ -225,8 +225,6 @@ get_deltas (gpointer handle)
 	GList *item_list, *total_list = NULL, *l;
 	GSList *cache_keys = NULL;
 	GPtrArray *uid_array = g_ptr_array_new ();
-
-	char *comp_str;
 	char *time_string = NULL;
 	char t_str [100]; 
 	const char *serv_time;
@@ -715,10 +713,10 @@ static ECalBackendSyncStatus
 set_container_id_with_count (ECalBackendGroupwise *cbgw) 
 {
 	ECalBackendGroupwisePrivate *priv;
-	EGwContainer *our_container;
 	GList *container_list = NULL, *l;
 	EGwConnectionStatus status;
 	icalcomponent_kind kind;
+	ECalBackendSyncStatus res;
 
 	priv = cbgw->priv;
 
@@ -742,22 +740,22 @@ set_container_id_with_count (ECalBackendGroupwise *cbgw)
 	if (status != E_GW_CONNECTION_STATUS_OK)
 		return GNOME_Evolution_Calendar_OtherError;
 
+	res =  GNOME_Evolution_Calendar_ObjectNotFound;
 	for (l = container_list; l != NULL; l = l->next) {
 		EGwContainer *container = E_GW_CONTAINER (l->data);
 		const char *name = e_gw_container_get_name (container);
 		
 		if (name && strcmp (name, "Calendar") == 0) {
-			our_container = container;
+			priv->container_id = g_strdup (e_gw_container_get_id (container));
+			priv->total_count = e_gw_container_get_total_count (container);
+			res = GNOME_Evolution_Calendar_Success;
 			break;
 		}
 	}
 
-	priv->container_id = g_strdup (e_gw_container_get_id (our_container));
-	priv->total_count = e_gw_container_get_total_count (our_container);
-
 	e_gw_connection_free_container_list (container_list);
 
-	return GNOME_Evolution_Calendar_Success;
+	return res;
 }
 	
 static ECalBackendSyncStatus
@@ -768,7 +766,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	ESource *source;
 	const char *use_ssl;
 	char *http_uri;
-	int permissions, flag;
+	int permissions;
 	GThread *thread;
 	GError *error = NULL;
 	char *parent_user = NULL;
@@ -1041,21 +1039,21 @@ e_cal_backend_groupwise_get_alarm_email_address (ECalBackendSync *backend, EData
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
 {
-	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS "," \
-				  CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY "," \
-				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","   \
-	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR "," \
-				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE "," \
-				  CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK "," \
-				  CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR "," \
-				  CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS "," \
-				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES "," \
-				  CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT "," \
-				  CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED "," \
-				  CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY "," \
-				  CAL_STATIC_CAPABILITY_NO_ORGANIZER "," \
-				  CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER "," \
-				  CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING "," \ 
+	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
+				  CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY ","
+				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","
+	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+				  CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK ","
+				  CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR ","
+				  CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS ","
+				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES ","
+				  CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT ","
+				  CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED ","
+				  CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY ","
+				  CAL_STATIC_CAPABILITY_NO_ORGANIZER ","
+				  CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER ","
+				  CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING ","
 				  CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 
 	return GNOME_Evolution_Calendar_Success;

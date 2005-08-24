@@ -1788,7 +1788,7 @@ remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 
 static ECalBackendSyncStatus
 e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
-				  CalObjModType mod, char **old_object)
+				  CalObjModType mod, char **old_object, char **new_object)
 {
 	RemoveRecurrenceData rrdata;
 	ECalBackendFile *cbfile;
@@ -1863,7 +1863,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			return GNOME_Evolution_Calendar_Success;
 		}
 
-		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &real_rid, &recurrence)) {
+		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (void **)&real_rid, (void **)&recurrence)) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (recurrence);
 
@@ -1920,7 +1920,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 		/* now deal with the detached recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
-						  &real_rid, &recurrence)) {
+						  (void **)&real_rid, (void **)&recurrence)) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (recurrence);
 
@@ -1985,7 +1985,7 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 	if (!rid || !*rid)
 		return;
 
-	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &hash_rid, &comp)) {
+	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (void **)&hash_rid, (void **)&comp)) {
 		/* remove the component from our data */
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
 						e_cal_component_get_icalcomponent (comp));
@@ -2046,7 +2046,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		} else {
 			char *real_rid;
 
-			if (g_hash_table_lookup_extended (obj_data->recurrences, rid, &real_rid, &comp))
+			if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (void **)&real_rid, (void **)&comp))
 				*old_object = e_cal_component_get_as_string (comp);
 		}
 

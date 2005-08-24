@@ -3047,6 +3047,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 					break;
 				default:
 					/* ignore everything else */
+					kind_to_find = ICAL_NO_COMPONENT;
 					break;
 				}
 

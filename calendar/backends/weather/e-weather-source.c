@@ -21,6 +21,8 @@
 #include "e-weather-source.h"
 #include "e-weather-source-ccf.h"
 
+#include <string.h>
+
 void
 e_weather_source_parse (EWeatherSource *source, EWeatherSourceFinished done, gpointer data)
 {
@@ -66,7 +68,8 @@ e_weather_source_get_type (void)
 
 EWeatherSource*	e_weather_source_new (const char *uri)
 {
-	char *base = uri + 10; /* skip weather:// */
+	const char *base = uri + 10; /* skip weather:// */
+
 	if (strncmp (base, "ccf/", 4) == 0)
 		return e_weather_source_ccf_new (base);
 	return NULL;

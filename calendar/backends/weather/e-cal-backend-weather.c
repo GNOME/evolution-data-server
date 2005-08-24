@@ -427,7 +427,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
-	char *uri;
+	const char *uri;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;

@@ -1305,7 +1305,7 @@ ensure_alarm_properties_cb (gpointer key, gpointer value, gpointer data)
 				while (xprop) {
 					str = icalproperty_get_x_name (xprop);
 					if (!strcmp (str, "X-EVOLUTION-NEEDS-DESCRIPTION")) {
-						icalproperty_set_description (prop, priv->summary.prop);
+						icalproperty_set_description (prop, icalproperty_get_summary(priv->summary.prop));
 
 						icalcomponent_remove_property (alarm, xprop);
 						icalproperty_free (xprop);
@@ -1481,7 +1481,7 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 
 	for (l = attachment_list; l; l = l->next) {
 		struct attachment *attachment;
-		gchar *data;
+		const char *data;
 
 		attachment = l->data;
 		g_assert (attachment->attach != NULL);
@@ -1495,7 +1495,7 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 		}
 		else
 			data = NULL;
-		*al = g_slist_prepend (*al, data);
+		*al = g_slist_prepend (*al, (char *)data);
 	}
 
 	*al = g_slist_reverse (*al);
@@ -4105,8 +4105,8 @@ e_cal_component_get_summary (ECalComponent *comp, ECalComponentText *summary)
 }
 
 typedef struct {
-	char *old_summary;
-	char *new_summary;
+	const char *old_summary;
+	const char *new_summary;
 } SetAlarmDescriptionData;
 
 static void
@@ -4116,7 +4116,7 @@ set_alarm_description_cb (gpointer key, gpointer value, gpointer user_data)
 	icalproperty *icalprop, *desc_prop;
 	SetAlarmDescriptionData *sadd;
 	gboolean changed = FALSE;
-	char *old_summary = NULL;
+	const char *old_summary = NULL;
 
 	alarm = value;
 	sadd = user_data;

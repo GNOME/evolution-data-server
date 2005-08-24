@@ -571,17 +571,17 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 	priv = cache->priv;
 
 	/* add the timezone to the cache file */
-	icalcomp = icaltimezone_get_component (zone);
+	icalcomp = icaltimezone_get_component ((icaltimezone *)zone);
 	if (!icalcomp)
 		return FALSE;
 
-	if (e_file_cache_get_object (E_FILE_CACHE (cache), icaltimezone_get_tzid (zone))) {
+	if (e_file_cache_get_object (E_FILE_CACHE (cache), icaltimezone_get_tzid ((icaltimezone *)zone))) {
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache),
-						      icaltimezone_get_tzid (zone),
+						      icaltimezone_get_tzid ((icaltimezone *)zone),
 						      icalcomponent_as_ical_string (icalcomp));
 	} else {
 		retval = e_file_cache_add_object (E_FILE_CACHE (cache),
-						  icaltimezone_get_tzid (zone),
+						  icaltimezone_get_tzid ((icaltimezone *)zone),
 						  icalcomponent_as_ical_string (icalcomp));
 	}
 
@@ -589,7 +589,7 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 		return FALSE;
 
 	/* check if the timezone already exists */
-	if (g_hash_table_lookup_extended (priv->timezones, icaltimezone_get_tzid (zone),
+	if (g_hash_table_lookup_extended (priv->timezones, icaltimezone_get_tzid ((icaltimezone *)zone),
 					  &orig_key, &orig_value)) {
 		/* remove the previous timezone */
 		g_hash_table_remove (priv->timezones, orig_key);
