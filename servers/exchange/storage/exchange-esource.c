@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static gboolean is_offline ();
+static gboolean is_offline (void);
 
 void
 add_folder_esource (ExchangeAccount *account, 
@@ -307,7 +307,7 @@ remove_folder_esource (ExchangeAccount *account,
 }
 
 static gboolean 
-is_offline () 
+is_offline (void) 
 {
 	GConfClient *client;
 	GConfValue *value;
