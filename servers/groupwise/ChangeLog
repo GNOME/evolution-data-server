@@ -1,3 +1,8 @@
+2005-08-22  Not Zed  <NotZed@Ximian.com>
+
+	* e-gw-item.c (e_gw_item_append_to_soap_message): cast strlen to
+	int for printf.
+
 2005-08-13  Tor Lillqvist  <tml@novell.com>
 
 	* Makefile.am: Use NO_UNDEFINED.
