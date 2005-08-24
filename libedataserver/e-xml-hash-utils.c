@@ -325,7 +325,7 @@ e_xmlhash_foreach_key_remove (EXmlHash *hash, EXmlHashRemoveFunc func, gpointer 
 	g_return_if_fail (hash != NULL);
 	g_return_if_fail (func != NULL);
 
-	g_hash_table_foreach_remove (hash->objects, func, user_data);
+	g_hash_table_foreach_remove (hash->objects, (GHRFunc)func, user_data);
 }
 
 /**
