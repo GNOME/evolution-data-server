@@ -172,6 +172,7 @@ EGwConnectionStatus e_gw_connection_remove_proxy (EGwConnection *cnc, proxyHandl
 EGwConnectionStatus e_gw_connection_modify_proxy (EGwConnection *cnc, proxyHandler *newProxy);
 EGwConnectionStatus e_gw_connection_get_proxy_list (EGwConnection *cnc, GList **proxy_info);
 EGwConnection *e_gw_connection_get_proxy_connection (EGwConnection *cnc1, char *username, const char *password, const char *proxy, int* permissions);
+EGwConnectionStatus e_gw_connection_get_all_mail_uids (EGwConnection *cnc, const char *container, int cursor, gboolean forward, int count, const char *cursor_seek, GList **list);
 
 G_END_DECLS
 

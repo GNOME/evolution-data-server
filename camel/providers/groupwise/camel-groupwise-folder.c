@@ -57,6 +57,7 @@
 #define ADD_JUNK_ENTRY 1
 #define REMOVE_JUNK_ENTRY -1
 #define JUNK_FOLDER "Junk Mail"
+#define READ_CURSOR_MAX_IDS 500
 
 static CamelOfflineFolderClass *parent_class = NULL;
 
@@ -717,15 +718,45 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
 	EGwConnectionStatus status;
 	CamelException *ex = NULL;
-	
-	status = e_gw_connection_get_quick_messages (m->cnc, m->container_id, "id",
-			&(m->t_str), "All", NULL, NULL, -1, &(m->slist));
+
+	GList *item_list;
+	int cursor;
+	const char *position;
+	gboolean done;
+
+	position = E_GW_CURSOR_POSITION_END;
+	cursor = 0;
+	status = e_gw_connection_create_cursor (m->cnc, m->container_id, "id", NULL, &cursor);
+
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		//camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		g_warning ("ERROR update update\n");
-	} else {
-		gw_update_all_items (m->folder, m->slist, ex);
+		return ;
 	}
+
+	done = FALSE;
+	m->slist = NULL;
+
+	while (!done) {
+		item_list = NULL;
+		status = e_gw_connection_get_all_mail_uids (m->cnc, m->container_id, cursor, FALSE, READ_CURSOR_MAX_IDS, position, &item_list);
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			g_warning ("ERROR update update\n");
+			return ;
+		}
+		
+		if (!item_list  || g_list_length (item_list) == 0)
+			done = TRUE;
+		else {
+			for (;item_list; item_list = g_list_next (item_list)) {
+				m->slist = g_slist_prepend (m->slist, (char *)item_list->data);
+			}
+		}
+		g_list_free (item_list);
+		position = E_GW_CURSOR_POSITION_CURRENT;
+	}
+	e_gw_connection_destroy_cursor (m->cnc, m->container_id, cursor);
+
+	gw_update_all_items (m->folder, m->slist, ex);
 }
 
 static void

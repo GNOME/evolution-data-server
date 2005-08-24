@@ -1,3 +1,10 @@
+2005-08-24  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (update_update)
+	Moved from getQuickMessages to readCursor, while geting
+	list of all ids for syncing deleted items.
+	Fixes #306803
+
 2005-08-24  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug #310996
