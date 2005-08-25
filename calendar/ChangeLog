@@ -1,3 +1,10 @@
+2005-08-25  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #312853
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Intialize the tzid for
+	all day events.
+
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* backends/weather/e-weather-source.c (e_weather_source_new):
@@ -52,7 +59,7 @@
 2005-08-22  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* libecal/e-cal.c (build_pass_key) : Builds the password key. Added new
-	(get_host_from_uri) : Fetches the hostname from the esource. Added new
+	(get_host_from_uri) : Fetches the hostname from the esource. 
 
 2005-08-21  Chenthill Palanisamy  <pchenthill@novell.com>
 

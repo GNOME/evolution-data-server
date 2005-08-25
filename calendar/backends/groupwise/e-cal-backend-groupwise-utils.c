@@ -956,6 +956,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			}
 		} else {
 			dt.value = &itt_utc;
+			dt.tzid = NULL;
+			dt.value->is_date = 1;
 		}	
 
 		e_cal_component_set_dtstart (comp, &dt);
@@ -1084,6 +1086,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				}
 			} else {
 				dt.value = &itt_utc;
+				dt.tzid = NULL;
+				dt.value->is_date = 1;
 			}
 
 			e_cal_component_set_dtend (comp, &dt);
