@@ -1,5 +1,15 @@
 2005-08-25  Arunprakash  <arunp@novell.com>
 
+	* storage/exchange-account.c (init) : set the default linestatus
+	to offline.
+	(exchange_account_rescan_tree) : Use the proper linestatus value.
+	(exchange_account_set_offline) : Added lock before modifying
+	the account linestatus to complete the connection in progress.
+	(exchange_account_set_online) : Similar.
+	(exchange_account_is_offline) : Return the proper linestatus.
+
+2005-08-25  Arunprakash  <arunp@novell.com>
+
 	* storage/exchange-account.c (hierarchy_new_folder) : Removes
 	redundant computation.
 	

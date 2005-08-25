@@ -160,7 +160,7 @@ init (GObject *object)
 	account->priv->folders = g_hash_table_new (g_str_hash, g_str_equal);
 	account->priv->fresh_folders = NULL;
 	account->priv->discover_data_lock = g_mutex_new ();
-	account->priv->account_online = TRUE;
+	account->priv->account_online = FALSE;
 	account->priv->nt_domain = NULL;
 	account->priv->fsize = exchange_folder_size_new ();
 }
@@ -341,7 +341,7 @@ exchange_account_rescan_tree (ExchangeAccount *account)
 				     toplevel);
 
 		exchange_hierarchy_scan_subtree (account->priv->hierarchies->pdata[i],
-						toplevel, FALSE);
+						toplevel, !account->priv->account_online);
 		exchange_hierarchy_rescan (account->priv->hierarchies->pdata[i]);
 	}
 }
@@ -1174,12 +1174,14 @@ exchange_account_set_offline (ExchangeAccount *account)
 		
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), FALSE);
 
+	g_mutex_lock (account->priv->connect_lock);
 	if (account->priv->ctx) {
 		g_object_unref (account->priv->ctx);
 		account->priv->ctx = NULL;
 	}
 
 	account->priv->account_online = FALSE;
+	g_mutex_unlock (account->priv->connect_lock);
 	return TRUE;
 }
 
@@ -1197,19 +1199,15 @@ exchange_account_set_offline (ExchangeAccount *account)
 gboolean
 exchange_account_set_online (ExchangeAccount *account)
 {
-	E2kContext *ctx;
-	ExchangeAccountResult result;
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), FALSE);
 
-	if (!account->priv->account_online) {
-		ctx = exchange_account_connect (account, NULL, &result); /* error not handled. */
-		return ctx ? TRUE : FALSE;
-	} else {
-		return TRUE;
-	}
+	g_mutex_lock (account->priv->connect_lock);
+	account->priv->account_online = TRUE;
+	g_mutex_unlock (account->priv->connect_lock);
+	
+	return TRUE;
 }
-#if 0
-SURF :
+
 /**
  * exchange_account_is_offline:
  * @account: an #ExchangeAccount
@@ -1219,18 +1217,9 @@ SURF :
 void
 exchange_account_is_offline (ExchangeAccount *account, int *state)
 {
-	*state = UNSUPPORTED_MODE;
-
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
-
-	exchange_component_is_offline (global_exchange_component, state);
-}
-#endif
-void
-exchange_account_is_offline (ExchangeAccount *account, int *state)
-{
-	// SURF : Dummy
-	*state = ONLINE_MODE;
+	
+	*state = account->priv->account_online ? ONLINE_MODE : OFFLINE_MODE;
 }
 
 // SURF : Picked this from gal/util/e-util.c
