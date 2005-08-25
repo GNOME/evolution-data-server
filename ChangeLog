@@ -1,3 +1,7 @@
+2005-08-25  Chenthill Palanisamy  <pchenthill@novell.com>
+	
+	* docs/reference/camel: Added the file camel.types.
+
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* libedataserver/e-xml-hash-utils.c (e_xmlhash_foreach_key): cast
