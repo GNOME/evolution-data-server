@@ -1,3 +1,13 @@
+2005-08-25  Parthasarathi Susarla <sparthasarathi@novell.com>
+
+	** See bug # 312857
+
+	* camel-groupwise-folder.c: 
+	(groupwise_sync):
+	(updata_update):
+	(gw_update_all_items):
+	(groupwise_expunge): Use folder locks while deleting mail. 
+
 2005-08-25 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-folder.c: put back the commit i did on 
