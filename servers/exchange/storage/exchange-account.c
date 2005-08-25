@@ -357,17 +357,18 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 	int table_updated = 0;
 	const char *permanent_uri =
 		e_folder_exchange_get_permanent_uri (folder);
+	char *key;
 
 	/* This makes the cleanup easier. We just unref it each time
 	 * we find it in account->priv->folders.
 	 */
-	if (!g_hash_table_lookup (account->priv->folders, 
-				e_folder_exchange_get_path (folder))) {
+	key = (char *) e_folder_exchange_get_path (folder);
+	if (!g_hash_table_lookup (account->priv->folders, key)) {
 		/* Avoid dupilcations since the user could add a folder as
 		  favorite even though it is already marked as favorite */
 		g_object_ref (folder);
 		g_hash_table_insert (account->priv->folders,
-				     (char *)e_folder_exchange_get_path (folder),
+				     key,
 				     folder);
 		table_updated = 1;
 	}
@@ -375,31 +376,33 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 	if (account->priv->fresh_folders) {
 		g_object_ref (folder);
 		g_hash_table_insert (account->priv->fresh_folders,
-				     (char *)e_folder_exchange_get_path (folder),
+				     key,
 				     folder);
 	}	
 	
-	if (!g_hash_table_lookup (account->priv->folders, 
-				e_folder_get_physical_uri (folder))) {
+	key = (char *) e_folder_get_physical_uri (folder);
+	if (!g_hash_table_lookup (account->priv->folders, key)) {
 		/* Avoid dupilcations since the user could add a folder as
 		  favorite even though it is already marked as favorite */
 		g_object_ref (folder);
 		g_hash_table_insert (account->priv->folders,
-				     (char *)e_folder_get_physical_uri (folder),
+				     key,
 				     folder);
 		table_updated = 1;
 	}
-	if (!g_hash_table_lookup (account->priv->folders, 
-				e_folder_exchange_get_internal_uri (folder))) {
+
+	key = (char *) e_folder_exchange_get_internal_uri (folder);
+	if (!g_hash_table_lookup (account->priv->folders, key)) {
 		/* The internal_uri for public folders and favorites folder 
 		   is same !!! Without this check the folder value could 
 		   overwrite the previously added folder. */
 		g_object_ref (folder);
 		g_hash_table_insert (account->priv->folders,
-				     (char *)e_folder_exchange_get_internal_uri (folder),
+				     key,
 				     folder);
 		table_updated = 1;
 	}
+
 	if (permanent_uri && (!g_hash_table_lookup (account->priv->folders, 
 					permanent_uri))) {
 		g_object_ref (folder);
@@ -408,7 +411,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 				     folder);
 		table_updated = 1;
 	}
-
+	
 	if (table_updated)
 	{
 		g_hash_table_insert (account->priv->hierarchies_by_folder, 

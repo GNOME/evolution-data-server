@@ -1,3 +1,8 @@
+2005-08-25  Arunprakash  <arunp@novell.com>
+
+	* storage/exchange-account.c (hierarchy_new_folder) : Removes
+	redundant computation.
+	
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* storage/exchange-esource.c (is_offline): provide a proper c
