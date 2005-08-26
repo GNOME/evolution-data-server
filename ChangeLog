@@ -1,3 +1,9 @@
+2005-08-26  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* configure.in: Do not build camel docs.
+	* docs/reference/Makefile.am: Removed camel docs. 
+	reviewed by Parthasarathi Susarla <sparthasarathi@novell.com>
+
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* libedataserver/e-xml-hash-utils.c (e_xmlhash_foreach_key): cast
