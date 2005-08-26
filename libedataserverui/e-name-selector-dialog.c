@@ -106,7 +106,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* Get Glade GUI */
 
-	name_selector_dialog->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-name-selector-dialog.glade", NULL, NULL);
+	name_selector_dialog->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-name-selector-dialog.glade", NULL, GETTEXT_PACKAGE);
 
 	widget = glade_xml_get_widget (name_selector_dialog->gui, "name-selector-box");
 	if (!widget) {
