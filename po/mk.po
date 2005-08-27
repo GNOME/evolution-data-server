@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-08-17 14:00+0000\n"
-"PO-Revision-Date: 2005-08-23 18:07+0200\n"
+"PO-Revision-Date: 2005-08-27 20:13+0200\n"
 "Last-Translator: Арангел Ангов <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -1770,7 +1770,7 @@ msgstr "Не можам да го запишам офлајн дневникот
 
 #: ../camel/camel-provider.c:59
 msgid "Virtual folder email provider"
-msgstr ""
+msgstr "Провајдер за пошта на виртуелната папка"
 
 #: ../camel/camel-provider.c:61
 msgid "For reading mail as a query of another set of folders"
@@ -1944,7 +1944,7 @@ msgstr ""
 #: ../camel/camel-sasl-kerberos4.c:226
 #: ../camel/providers/imap/camel-imap-store.c:1249
 msgid "Bad authentication response from server."
-msgstr ""
+msgstr "Лош одговор за проверка од серверот."
 
 #: ../camel/camel-sasl-gssapi.c:307
 msgid "Unsupported security layer."
@@ -1956,7 +1956,7 @@ msgstr "Kerberos 4"
 
 #: ../camel/camel-sasl-kerberos4.c:44
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr ""
+msgstr "Оваа опција ќе се врзе за серверот користејќи проверка Керберос4."
 
 #: ../camel/camel-sasl-kerberos4.c:169
 #, c-format
@@ -1987,7 +1987,7 @@ msgstr "NTLM / SPA"
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr ""
+msgstr "Оваа опција ќе се врзе за Виндоус серверот користејќи NTLM / безбедна проверка за лозинки."
 
 #: ../camel/camel-sasl-plain.c:33
 msgid "PLAIN"
@@ -2187,7 +2187,7 @@ msgstr "Потпишувач: %s <%s>: %s\n"
 
 #: ../camel/camel-smime-context.c:723
 msgid "Decoder failed"
-msgstr ""
+msgstr "Декодирачот не успеа"
 
 #: ../camel/camel-smime-context.c:775
 #, c-format
@@ -2234,7 +2234,7 @@ msgstr "Не успеав да додадам податоци на кодеро
 #: ../camel/camel-smime-context.c:946
 #, c-format
 msgid "Decoder failed, error %d"
-msgstr ""
+msgstr "Декодирачот не успеа, грешка %d"
 
 #: ../camel/camel-smime-context.c:953
 msgid "S/MIME Decrypt: No encrypted content found"
@@ -2295,7 +2295,7 @@ msgstr "Не можам да го добијам сертификатот на �
 
 #: ../camel/camel-tcp-stream-openssl.c:570
 msgid "Unable to get Certificate Revocation List"
-msgstr ""
+msgstr "Не можам да ја добијам листата за повлекување на сертификати"
 
 #: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to decrypt certificate signature"
@@ -2303,7 +2303,7 @@ msgstr "Не можам да го декодирам потписот на се�
 
 #: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr ""
+msgstr "Не можам да го декодирам потписот на листата за повлекување на сертификати"
 
 #: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
@@ -2315,7 +2315,7 @@ msgstr "Грешка со потписот на сертификатот"
 
 #: ../camel/camel-tcp-stream-openssl.c:580
 msgid "Certificate Revocation List signature failure"
-msgstr ""
+msgstr "Грешка во листата за повлекување на сертификати"
 
 #: ../camel/camel-tcp-stream-openssl.c:582
 msgid "Certificate not yet valid"
@@ -2347,7 +2347,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:599
 msgid "Self-signed certificate in chain"
-msgstr ""
+msgstr "Самопотпишан сертификат во ланецот"
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Unable to get issuer's certificate locally"
@@ -2387,7 +2387,7 @@ msgstr "Одбиен сертификат"
 
 #: ../camel/camel-tcp-stream-openssl.c:620
 msgid "Subject/Issuer mismatch"
-msgstr ""
+msgstr "Несовпаѓање помеѓу издавачот и предметот"
 
 #: ../camel/camel-tcp-stream-openssl.c:622
 msgid "AKID/SKID mismatch"
@@ -2437,6 +2437,13 @@ msgid ""
 "\n"
 "Do you wish to accept anyway?"
 msgstr ""
+"Лош сертификат од %s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Дали сакате да го прифатите?"
 
 #. construct our user prompt
 #: ../camel/camel-tcp-stream-ssl.c:843
@@ -2448,6 +2455,11 @@ msgid ""
 "\n"
 "Do you wish to accept?"
 msgstr ""
+"Проверка на SSL сертификат за %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Дали сакате да прифатите?"
 
 #: ../camel/camel-tcp-stream-ssl.c:887
 #, c-format
@@ -2464,6 +2476,8 @@ msgid ""
 "Bad certificate domain: %s\n"
 "Issuer: %s"
 msgstr ""
+"Лош домен за сертификат: %s\n"
+"Издавач: %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:957
 #, c-format
@@ -2480,6 +2494,8 @@ msgid ""
 "Certificate revocation list expired: %s\n"
 "Issuer: %s"
 msgstr ""
+"Листата за повлекување на сертификати е истечена: %s\n"
+"Издавач: %s"
 
 #: ../camel/camel-url.c:293
 #, c-format
@@ -2489,16 +2505,16 @@ msgstr "Не можам да ја парсирам адресата `%s'"
 #: ../camel/camel-vee-folder.c:476
 #, c-format
 msgid "Error storing `%s': %s"
-msgstr ""
+msgstr "Грешка при складирањето `%s': %s"
 
 #: ../camel/camel-vee-folder.c:518
 #, c-format
 msgid "No such message %s in %s"
-msgstr ""
+msgstr "Нема таква порака %s во %s"
 
 #: ../camel/camel-vee-folder.c:643 ../camel/camel-vee-folder.c:649
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
+msgstr "Не можам да ги копирам или преместам пораките во виртуелната папка"
 
 #: ../camel/camel-vee-store.c:100 ../camel/camel-vee-store.c:343
 msgid "Unmatched"
@@ -2636,19 +2652,19 @@ msgstr "Опции"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
-msgstr ""
+msgstr "Примени филтри на нови пораки во сандачето на овој сервер"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 msgid "Check new messages for Junk contents"
-msgstr ""
+msgstr "Провери ги новите пораки за отпадна содржина"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "Only check for Junk messages in the INBOX folder"
-msgstr ""
+msgstr "Проверувај за отпадни пораки само во сандачето"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Automatically synchronize account locally"
-msgstr ""
+msgstr "Автоматски синхронизирај ја сметката локално"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:69
 msgid "SOAP Settings"
@@ -2660,11 +2676,11 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:85
 msgid "Novell GroupWise"
-msgstr ""
+msgstr "Novell GroupWise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:87
 msgid "For accessing Novell GroupWise servers"
-msgstr ""
+msgstr "За пристап до Novell GroupWise сервери"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/imap/camel-imap-provider.c:96
@@ -2677,7 +2693,7 @@ msgstr "Лозинка"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
 msgid "This option will connect to the GroupWise server using a plaintext password."
-msgstr ""
+msgstr "Опцијата ќе се врзе за GroupWise север користејќи лозинка со обичен текст."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:100
 msgid "Host or user not available in url"
@@ -2691,7 +2707,7 @@ msgstr "%sВе молам внесете ја лозинката за GroupWise 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:209
 #: ../camel/providers/imap/camel-imap-store.c:1328
 msgid "You didn't enter a password."
-msgstr ""
+msgstr "Не внесовте лозинка."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:223
 msgid "Unable to authenticate to GroupWise server."
@@ -2699,7 +2715,7 @@ msgstr "Не успеа проверката на GroupWise серверот."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:266
 msgid "Some features may not work correctly with your current server version"
-msgstr ""
+msgstr "Некои опции може да не работат добро со тековната версзија на серверот"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:427
 #: ../camel/providers/imap/camel-imap-store.c:1855
@@ -2710,41 +2726,41 @@ msgstr "Нема таква папка %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:600
 msgid "Cannot get folder info in offline mode."
-msgstr ""
+msgstr "Не можам да добијам информации за папката во офлајн режим."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:862
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr ""
+msgstr "Не можам да креирам GroupWise папки во офлајн режим."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:907
 msgid "Cannot delete GroupWise folders in offline mode."
-msgstr ""
+msgstr "Не можам да избришам GroupWise папки во офлајн режим."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:944
 #: ../camel/providers/groupwise/camel-groupwise-store.c:964
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr ""
+msgstr "Не можам да ја реименувам GroupWise папката `%s' во `%s'"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:950
 msgid "Cannot rename GroupWise folders in offline mode."
-msgstr ""
+msgstr "Не можам да ги реименувам GroupWise папките во офлајн режим."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:996
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
-msgstr ""
+msgstr "GroupWise сервер %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:998
 #, c-format
 msgid "GroupWise service for %s on %s"
-msgstr ""
+msgstr "GroupWise сервис за %s на %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 msgid "GroupWise mail delivery via %s"
-msgstr ""
+msgstr "GroupWise испорака преку %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
@@ -2755,13 +2771,13 @@ msgstr "Испраќам порака"
 #: ../camel/providers/imap/camel-imap-command.c:471
 #: ../camel/providers/imap/camel-imap-store.c:2987
 msgid "Operation cancelled"
-msgstr ""
+msgstr "Операцијата е откажана"
 
 #: ../camel/providers/imap/camel-imap-command.c:309
 #: ../camel/providers/imap/camel-imap-store.c:2990
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
-msgstr ""
+msgstr "Серверот неочекувано ја прекина врската: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
@@ -2771,25 +2787,27 @@ msgid ""
 "Alert from IMAP server %s@%s:\n"
 "%s"
 msgstr ""
+"Предупредување од IMAP серверот %s@%s:\n"
+"%s"
 
 #: ../camel/providers/imap/camel-imap-command.c:399
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
-msgstr ""
+msgstr "Неочекуван одговор од IMAP серверот: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:409
 #, c-format
 msgid "IMAP command failed: %s"
-msgstr ""
+msgstr "IMAP командата не успеа: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:485
 msgid "Server response ended too soon."
-msgstr ""
+msgstr "Одговорот од серверот заврши премногу брзо."
 
 #: ../camel/providers/imap/camel-imap-command.c:692
 #, c-format
 msgid "IMAP server response did not contain %s information"
-msgstr ""
+msgstr "Одговорот од IMAP серверот не содржеше информации за %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:728
 #, c-format
@@ -2799,52 +2817,52 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-folder.c:227
 #, c-format
 msgid "Could not create directory %s: %s"
-msgstr ""
+msgstr "Не можам да креирам директориум %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:331
 msgid "Folder was destroyed and recreated on server."
-msgstr ""
+msgstr "Папката беше уништена и рекреирана на серверот."
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:628
 #: ../camel/providers/imap4/camel-imap4-summary.c:1472
 msgid "Scanning for changed messages"
-msgstr ""
+msgstr "Скенирам за променети пораки"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2014
 #, c-format
 msgid "Unable to retrieve message: %s"
-msgstr ""
+msgstr "Не можам да ја соберам пораката: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2091
 #: ../camel/providers/imap/camel-imap-folder.c:2699
 #: ../camel/providers/nntp/camel-nntp-folder.c:221
 msgid "This message is not currently available"
-msgstr ""
+msgstr "Пораката не е достапна во моментов"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2537
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr ""
+msgstr "Нецелосен одговор од серверот: нема информации за пораката %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2545
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr ""
+msgstr "Нецелосен одговор од серверот: нема UID за пораката %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2558
 #, c-format
 msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr ""
+msgstr "Нецелосен одговор од серверот: Идентични UID за пораките %d и %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2737
 msgid "Could not find message body in FETCH response."
-msgstr ""
+msgstr "Не можам да го најдам телото на пораката во FETCH одговорот."
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:156
 #, c-format
 msgid "Could not open cache directory: %s"
-msgstr ""
+msgstr "Не можам да го отворам директориумот со кешот: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:253
 #: ../camel/providers/imap/camel-imap-message-cache.c:310
@@ -2852,16 +2870,16 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-message-cache.c:373
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr ""
+msgstr "Не успеав да ја кеширам пораката %s: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:418
 #, c-format
 msgid "Failed to cache %s: %s"
-msgstr ""
+msgstr "Не успеав да кеширам %s: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
-msgstr ""
+msgstr "Проверувам за нова пошта"
 
 #: ../camel/providers/imap/camel-imap-provider.c:46
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
@@ -2902,27 +2920,27 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:54
 msgid "Namespace"
-msgstr ""
+msgstr "Простор за имиња"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr ""
+msgstr "_Примени филтри на нови пораки во сандачето на овој сервер"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
 msgid "Check new messages for _Junk contents"
-msgstr ""
+msgstr "Провери ги новите пораки _за отпадна содржина"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:62
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr ""
+msgstr "Проверувај ги отпадните пора_ки само во сандачето"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr ""
+msgstr "Автоматски синхронизи_рај ја далечната пошта локално"
 
 #: ../camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -2930,7 +2948,7 @@ msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:81
 msgid "For reading and storing mail on IMAP servers."
-msgstr ""
+msgstr "За читање и складирање пошта на IMAP сервери."
 
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
@@ -2947,7 +2965,7 @@ msgstr "IMAP сервер %s"
 #: ../camel/providers/imap4/camel-imap4-store.c:217
 #, c-format
 msgid "IMAP service for %s on %s"
-msgstr ""
+msgstr "IMAP сервис за %s на %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:552
 #: ../camel/providers/imap/camel-imap-store.c:567
@@ -3002,7 +3020,7 @@ msgstr "STARTTLS е не поддржан"
 #: ../camel/providers/imap4/camel-imap4-store.c:363
 #: ../camel/providers/pop3/camel-pop3-store.c:246
 msgid "SSL negotiations failed"
-msgstr ""
+msgstr "SSL преговорите се неуспешни"
 
 #: ../camel/providers/imap/camel-imap-store.c:701
 #: ../camel/providers/imap4/camel-imap4-store.c:392
