@@ -1,3 +1,7 @@
+2005-08-29  Harish Krishnaswamy <kharish@novell.com>
+	
+	* configure.in : Update release number to 2.4.0
+
 2005-08-26  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* configure.in: Do not build camel docs.
