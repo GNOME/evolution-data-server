@@ -1,3 +1,8 @@
+2005-09-01  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-lock-client.c: (camel_lock_helper_init):
+	use API_VERSION instead of the BASE_VERSION
+
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* camel-store.c (camel_store_rename_folder): init folders and only
