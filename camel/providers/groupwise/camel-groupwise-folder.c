@@ -799,7 +799,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	 * user views a folder, the read cursor is in progress, and the getQM
 	 * should not interfere with the proces
 	 */
-	if (summary->time_string && (strlen (summary->time_string > 0))) 
+	if (summary->time_string && (strlen (summary->time_string) > 0)) 
 		groupwise_refresh_folder(folder, ex);
 }
 
