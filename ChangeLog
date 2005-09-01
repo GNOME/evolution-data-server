@@ -1,3 +1,7 @@
+2005-09-01  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* confugure.in : Add API_VERSION to config.h
+
 2005-08-29  Harish Krishnaswamy <kharish@novell.com>
 	
 	* configure.in : Update release number to 2.4.0
