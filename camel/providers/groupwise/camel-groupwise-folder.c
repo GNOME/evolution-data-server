@@ -578,14 +578,10 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			continue;
 		flags = camel_message_info_flags (info);	
 
-		if ((flags & CAMEL_MESSAGE_JUNK) && !(flags & CAMEL_GW_MESSAGE_JUNK)) {/*marked a message junk*/
+		if ((flags & CAMEL_MESSAGE_JUNK) && !(flags & CAMEL_GW_MESSAGE_JUNK)) /*marked a message junk*/
 			move_to_junk (folder, info, ex);
-			goto fail;
-		}
-		else if ((flags & CAMEL_MESSAGE_JUNK) && (flags & CAMEL_GW_MESSAGE_JUNK)) {/*message was marked as junk, now unjunk*/ 
+		else if ((flags & CAMEL_MESSAGE_JUNK) && (flags & CAMEL_GW_MESSAGE_JUNK)) /*message was marked as junk, now unjunk*/ 
 			move_to_mailbox (folder, info, ex);
-			goto fail;
-		}
 
 		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags);
@@ -613,7 +609,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				}
 			}
 		}
-		fail:
 		camel_message_info_free (info);
 		info = NULL;
 	}
@@ -1723,8 +1718,6 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			if (delete_originals) {
 				camel_folder_set_message_flags (source, (const char *)uids->pdata[index],
 						CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
-				//camel_folder_summary_remove (source->summary, src_info);
-				camel_folder_summary_remove_uid(source->summary, (const char *)uids->pdata[index]);
 
 			}
 		} else {
