@@ -3421,8 +3421,17 @@ e_gw_connection_read_cal_ids (EGwConnection *cnc, const char *container, int cur
 			subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
 		SoupSoapParameter *param_id;
 		EGwItemCalId *calid = g_new0 (EGwItemCalId, 1);
-		char *id = NULL;
+		char *id = NULL, *item_type = NULL;
 		
+		item_type = soup_soap_parameter_get_property (subparam, "type");
+		
+		if (!(g_str_equal (item_type, "Appointment") || g_str_equal (item_type, "Task"))) {
+			g_free (item_type);
+			continue;	
+		}
+			 
+		g_free (item_type);
+
 		param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
 		if (!param_id) {
 			if (*list) {
