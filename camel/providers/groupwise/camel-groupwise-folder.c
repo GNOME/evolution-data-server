@@ -762,7 +762,6 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 				m->slist = g_slist_prepend (m->slist, (char *)item_list->data);
 			}
 		}
-		g_list_foreach (item_list, (GFunc)g_free, NULL)(GFunc);
 		g_list_free (item_list);
 		position = E_GW_CURSOR_POSITION_CURRENT;
 	}
