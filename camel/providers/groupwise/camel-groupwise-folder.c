@@ -762,6 +762,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 				m->slist = g_slist_prepend (m->slist, (char *)item_list->data);
 			}
 		}
+		g_list_foreach (item_list, (GFunc)g_free, NULL)(GFunc);
 		g_list_free (item_list);
 		position = E_GW_CURSOR_POSITION_CURRENT;
 	}
@@ -799,7 +800,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	 * user views a folder, the read cursor is in progress, and the getQM
 	 * should not interfere with the proces
 	 */
-	if (summary->time_string && (strlen (summary->time_string > 0))) 
+	if (summary->time_string && (strlen (summary->time_string) > 0)) 
 		groupwise_refresh_folder(folder, ex);
 }
 
