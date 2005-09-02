@@ -610,7 +610,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				}
 			}
 		}
-		fail:
 		camel_message_info_free (info);
 		info = NULL;
 	}
