@@ -212,6 +212,11 @@ populate_cache (ECalBackendGroupwise *cbgw)
 
 	return E_GW_CONNECTION_STATUS_OK;
 }
+static gboolean
+compare_prefix (gconstpointer a, gconstpointer b)
+{
+	return !(g_str_has_prefix ((const char *)a, (const char *)b));
+}
 
 static gboolean
 get_deltas (gpointer handle)
@@ -467,49 +472,24 @@ get_deltas (gpointer handle)
 
 	for (l = total_list; l != NULL; l = l->next) {
 		EGwItemCalId *calid = (EGwItemCalId *)	l->data;
+		GCompareFunc func = NULL;
+		GSList *remove = NULL;
 
+		if (calid->ical_id) 
+			func = (GCompareFunc) strcmp;
+		else
+			func = (GCompareFunc) compare_prefix;
 
-		if (calid->ical_id) {
-			if (!g_slist_find_custom (cache_keys, calid->ical_id, (GCompareFunc) strcmp)) {
-				g_ptr_array_add (uid_array, g_strdup (calid->item_id));
-				needs_to_get = TRUE;
-			} else  {
-				continue;
-			}
+		if (!(remove = g_slist_find_custom (cache_keys, calid->ical_id ? calid->ical_id :
+						calid->recur_key,  func))) {
+			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
+			needs_to_get = TRUE;
+		} else  {
+			cache_keys = g_slist_delete_link (cache_keys, remove);
+			continue;
 		}
 
-		if (calid->recur_key) {
-			GSList *comp_list = e_cal_backend_cache_get_components_by_uid (priv->cache, calid->recur_key);			
-			if (!comp_list) {
-				g_ptr_array_add (uid_array, g_strdup (calid->item_id));
-				needs_to_get = TRUE;
-			} else {
-				/* There may be one instance added to an existing recurring appointment */
-				GSList *l;
-				gboolean found = FALSE;
-
-				for (l = comp_list; l !=NULL; l = l->next) {
-					ECalComponent *comp = E_CAL_COMPONENT (l->data);	
-
-					if (g_str_equal (calid->item_id, e_cal_component_get_gw_id (comp))) {
-						found = TRUE;
-						break;
-					}
-				}
-
-				if (comp_list) {
-					g_slist_foreach (comp_list, (GFunc)g_object_unref, NULL);
-					comp_list = NULL;
-				}
-
-				if (!found) {
-					needs_to_get = TRUE;
-					g_ptr_array_add (uid_array, g_strdup (calid->item_id));
-				}
-			}
-		}
-
-	}	
+	}
 
 	if (needs_to_get) {
 		e_gw_connection_get_items_from_ids (priv->cnc,

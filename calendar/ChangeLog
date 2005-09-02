@@ -1,3 +1,11 @@
+2005-09-01  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #114384
+	* backends/groupwise/e-cal-backend-groupwise.c: (compare_prefix),
+	(get_deltas): Do not get form the calendar events for recurring
+	appointments, just compare the prefix of the cache key to identify
+	the presence of the item.
+
 2005-08-25  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #312853
