@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-02 22:42+0200\n"
-"PO-Revision-Date: 2005-09-02 22:34+0200\n"
+"POT-Creation-Date: 2005-09-03 14:03+0200\n"
+"PO-Revision-Date: 2005-09-03 13:51+0200\n"
 "Last-Translator: Stéphane Raimbault <stephane.raimbault@free.fr>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -343,7 +343,7 @@ msgstr "Logiciel de messagerie"
 
 #: addressbook/libebook/e-contact.c:153
 msgid "Wants HTML Mail"
-msgstr "Souhaite les messages au format HTML"
+msgstr "Souhaite des courriels au format HTML"
 
 #. Instant messaging fields
 #: addressbook/libebook/e-contact.c:156
@@ -670,18 +670,18 @@ msgstr "Réponse requise : si nécessaire"
 msgid "Loading %s items"
 msgstr "Chargement de %s éléments"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:728
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:708
 #: servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:784
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:764
 msgid "Invalid server URI"
 msgstr "URI de serveur non valide"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:800
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:809
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:891
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:780
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:789
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: calendar/libecal/e-cal.c:5101
 #: camel/providers/groupwise/camel-groupwise-folder.c:850
 #: camel/providers/groupwise/camel-groupwise-folder.c:870
@@ -695,18 +695,18 @@ msgstr "URI de serveur non valide"
 msgid "Authentication failed"
 msgstr "L'authentification a échoué"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:850
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:830
 msgid "Could not create thread for getting deltas"
 msgstr "Impossible de créer le thread pour obtenir les différences"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:875
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:1118
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:855
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
 #: calendar/backends/http/e-cal-backend-http.c:495
 #: calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Impossible de créer le fichier cache"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:885
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:865
 msgid "Could not create thread for populating cache"
 msgstr "Impossible de créer la liste pour remplir le fichier cache"
 
@@ -1677,22 +1677,22 @@ msgstr "L'obtention du verrou avec flock(2) a échoué : %s"
 #: camel/camel-movemail.c:104
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr "Impossible de vérifier le fichier de courrier %s : %s"
+msgstr "Impossible de vérifier le fichier de courriels %s : %s"
 
 #: camel/camel-movemail.c:117
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr "Impossible d'ouvrir le fichier de courrier %s : %s"
+msgstr "Impossible d'ouvrir le fichier de courriels %s : %s"
 
 #: camel/camel-movemail.c:125
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr "Impossible d'ouvrir le fichier de courrier temporaire %s : %s"
+msgstr "Impossible d'ouvrir le fichier temporaire de courriels %s : %s"
 
 #: camel/camel-movemail.c:154
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "Le stockage du courrier dans le fichier temporaire %s a échoué : %s"
+msgstr "Le stockage du courriel dans le fichier temporaire %s a échoué : %s"
 
 #: camel/camel-movemail.c:184
 #, c-format
@@ -1716,17 +1716,17 @@ msgstr "(Erreur inconnue)"
 #: camel/camel-movemail.c:258
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr "Erreur de lecture du fichier de courrier : %s"
+msgstr "Erreur de lecture du fichier de courriels : %s"
 
 #: camel/camel-movemail.c:269
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr "Erreur d'écriture du fichier temporaire de courrier : %s"
+msgstr "Erreur d'écriture du fichier temporaire de courriels : %s"
 
 #: camel/camel-movemail.c:462 camel/camel-movemail.c:529
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr "Erreur de copie du fichier temporaire de courrier : %s"
+msgstr "Erreur de copie du fichier temporaire de courriels : %s"
 
 #: camel/camel-multipart-signed.c:598
 msgid "parse error"
@@ -1781,12 +1781,12 @@ msgstr "Impossible d'écrire le journal hors-ligne pour le dossier `%s' : %s"
 
 #: camel/camel-provider.c:59
 msgid "Virtual folder email provider"
-msgstr "Fournisseur de dossier de courrier virtuel"
+msgstr "Fournisseur de dossier virtuel de courriels"
 
 #: camel/camel-provider.c:61
 msgid "For reading mail as a query of another set of folders"
 msgstr ""
-"Pour la lecture du courrier comme requête sur un autre ensemble de dossiers"
+"Pour la lecture du courriel comme requête sur un autre ensemble de dossiers"
 
 #: camel/camel-provider.c:185
 #, c-format
@@ -2678,7 +2678,7 @@ msgstr "Impossible de joindre le message en mode hors-ligne: %s"
 #: camel/providers/groupwise/camel-groupwise-provider.c:51
 #: camel/providers/imap4/camel-imap4-provider.c:36
 msgid "Checking for new mail"
-msgstr "Recherche de nouveau courrier"
+msgstr "Recherche de nouveaux courriels"
 
 #: camel/providers/groupwise/camel-groupwise-provider.c:53
 msgid "Check for new messages in all folders"
@@ -2814,7 +2814,7 @@ msgstr "Distribution du courrier GroupWise via %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
-msgstr "Envoi du Message"
+msgstr "Envoi du message"
 
 #: camel/providers/imap/camel-imap-command.c:222
 #: camel/providers/imap/camel-imap-command.c:264
@@ -2932,7 +2932,7 @@ msgstr "La mise en cache de %s a échoué : %s"
 
 #: camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
-msgstr "Recherche de nouveau courrier"
+msgstr "Recherche de nouveaux courriels"
 
 #: camel/providers/imap/camel-imap-provider.c:46
 #: camel/providers/imap4/camel-imap4-provider.c:38
@@ -2985,7 +2985,7 @@ msgstr ""
 #: camel/providers/imap/camel-imap-provider.c:68
 #: camel/providers/imap4/camel-imap4-provider.c:60
 msgid "Check new messages for _Junk contents"
-msgstr "Vérifier si les nouveaux messages contiennent du _pourriel"
+msgstr "Vérifier si les nouveaux messages contiennent des _pourriels"
 
 #: camel/providers/imap/camel-imap-provider.c:70
 #: camel/providers/imap4/camel-imap4-provider.c:62
@@ -2996,8 +2996,7 @@ msgstr ""
 #: camel/providers/imap/camel-imap-provider.c:72
 #: camel/providers/imap4/camel-imap4-provider.c:64
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr ""
-"S_ynchroniser automatiquement les mails locaux à partir des mails distants"
+msgstr "S_ynchroniser automatiquement les courriels distants localement"
 
 #: camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -3005,7 +3004,7 @@ msgstr "IMAP"
 
 #: camel/providers/imap/camel-imap-provider.c:81
 msgid "For reading and storing mail on IMAP servers."
-msgstr "Lecture et stockage du courrier sur des serveurs IMAP"
+msgstr "Pour lire et stocker les courriels sur des serveurs IMAP."
 
 #: camel/providers/imap/camel-imap-provider.c:98
 #: camel/providers/imapp/camel-imapp-provider.c:68
@@ -3186,8 +3185,8 @@ msgstr "Accueil inattendu du serveur IMAP %s."
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
 msgstr ""
-"Impossible de sélectionner le dossier « %s » : nom de boîte à lettres "
-"invalide"
+"Impossible de sélectionner le dossier « %s » : nom de boîte à lettres non "
+"valide"
 
 #: camel/providers/imap4/camel-imap4-engine.c:438
 #, c-format
@@ -3302,7 +3301,7 @@ msgstr "IMAP4rev1"
 
 #: camel/providers/imap4/camel-imap4-provider.c:73
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "Pour lecture et stockage du courrier sur des serveurs IMAPv4rev1."
+msgstr "Pour lire et stocker les courriels sur des serveurs IMAPv4rev1."
 
 #: camel/providers/imap4/camel-imap4-provider.c:90
 msgid ""
@@ -3344,7 +3343,7 @@ msgstr ""
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr ""
-"Impossible de créer le dossier « %s » : nom de boîte à lettres invalide"
+"Impossible de créer le dossier « %s » : nom de boîte à lettres non valide"
 
 #: camel/providers/imap4/camel-imap4-store.c:921
 #, c-format
@@ -3364,7 +3363,7 @@ msgstr "Impossible de supprimer des dossier IMAP en mode hors-ligne"
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr ""
-"Impossible de supprimer le dossier « %s » : nom de boîte à lettres invalide"
+"Impossible de supprimer le dossier « %s » : nom de boîte à lettres non valide"
 
 #: camel/providers/imap4/camel-imap4-store.c:1023
 #, c-format
@@ -3385,7 +3384,7 @@ msgstr "Impossible de renommer des dossier IMAP en mode hors-ligne"
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr ""
 "Impossible de renommer le dossier  « %s » en « %s » : nom de boîte à lettres "
-"invalide"
+"non valide"
 
 #: camel/providers/imap4/camel-imap4-store.c:1086
 #, c-format
@@ -3412,7 +3411,7 @@ msgstr "Impossible de s'abonner à des des dossier IMAP en mode hors-ligne"
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr ""
-"Impossible de s'abonner au dossier « %s » : nom de boîte à lettres invalide"
+"Impossible de s'abonner au dossier « %s » : nom de boîte à lettres non valide"
 
 #: camel/providers/imap4/camel-imap4-store.c:1523
 #, c-format
@@ -3428,7 +3427,7 @@ msgstr "Impossible de se désabonner à des dossier IMAP en mode hors-ligne"
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr ""
 "Impossible de se désabonner pour le dossier « %s » : nom de boîte à lettres "
-"invalide"
+"non valide"
 
 #: camel/providers/imap4/camel-imap4-store.c:1595
 #, c-format
@@ -3501,7 +3500,7 @@ msgstr "~%s (%s)"
 #: camel/providers/local/camel-local-folder.c:388
 #, c-format
 msgid "mailbox:%s (%s)"
-msgstr "boîte : %s (%s)"
+msgstr "boîte à lettres : %s (%s)"
 
 #. a full path + protocol
 #: camel/providers/local/camel-local-folder.c:392
@@ -3515,11 +3514,11 @@ msgstr "Utiliser le fichier de résumé de dossier « .folders » (exmh)."
 
 #: camel/providers/local/camel-local-provider.c:52
 msgid "MH-format mail directories"
-msgstr "Répertoires de courrier au format MH"
+msgstr "Répertoires de courriels au format MH"
 
 #: camel/providers/local/camel-local-provider.c:53
 msgid "For storing local mail in MH-like mail directories."
-msgstr "Pour stocker le courrier local dans des répertoires de type MH."
+msgstr "Pour stocker le courriel local dans des répertoires de type MH."
 
 #: camel/providers/local/camel-local-provider.c:68
 msgid "Local delivery"
@@ -3530,7 +3529,7 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox formated spools into "
 "folders managed by Evolution."
 msgstr ""
-"Pour récupérer (déplacer) le courrier local se trouvant dans des boîtes aux "
+"Pour récupérer (déplacer) le courriel local se trouvant dans des boîtes aux "
 "lettres au format standard mbox vers des dossiers gérés par Evolution. "
 
 #: camel/providers/local/camel-local-provider.c:81
@@ -3541,13 +3540,11 @@ msgstr ""
 
 #: camel/providers/local/camel-local-provider.c:88
 msgid "Maildir-format mail directories"
-msgstr "Répertoires de courrier au format Maildir"
+msgstr "Répertoires de courriels au format Maildir"
 
 #: camel/providers/local/camel-local-provider.c:89
 msgid "For storing local mail in maildir directories."
-msgstr ""
-"Pour stocker le courrier local dans des répertoires de courrier au format "
-"Maildir."
+msgstr "Pour stocker le courriel local dans des répertoires au format Maildir."
 
 #: camel/providers/local/camel-local-provider.c:101
 msgid "Store status headers in Elm/Pine/Mutt format"
@@ -3562,10 +3559,9 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Pour lire et stocker le courrier local dans des fichiers externes au format "
+"Pour lire et stocker le courriel local dans des fichiers externes au format "
 "standard mbox.\n"
-"Peut également être utilisé pour lire un arbre de dossiers Elm, Pine ou "
-"Mutt. "
+"Peut également être utilisé pour lire un arbre de dossiers Elm, Pine ou Mutt."
 
 #: camel/providers/local/camel-local-store.c:150
 #: camel/providers/local/camel-local-store.c:261
@@ -3594,7 +3590,7 @@ msgstr "Le stockage local n'a pas de boîte de réception"
 #: camel/providers/local/camel-local-store.c:232
 #, c-format
 msgid "Local mail file %s"
-msgstr "Fichier de courrier local %s"
+msgstr "Fichier de courriel local %s"
 
 #: camel/providers/local/camel-local-store.c:341
 #, c-format
@@ -3635,7 +3631,7 @@ msgstr "Impossible d'ajouter un message au résumé : raison inconnue"
 
 #: camel/providers/local/camel-maildir-folder.c:215
 msgid "Maildir append message cancelled"
-msgstr "Ajout du message annulé"
+msgstr "Ajout au format Maildir du message annulé"
 
 #: camel/providers/local/camel-maildir-folder.c:218
 #, c-format
@@ -3718,7 +3714,7 @@ msgstr "Impossible d'ouvrir le répertoire maildir : %s : %s"
 
 #: camel/providers/local/camel-maildir-summary.c:549
 msgid "Checking folder consistency"
-msgstr "Vérification du dossier"
+msgstr "Vérification de la consistance du dossier"
 
 #: camel/providers/local/camel-maildir-summary.c:652
 msgid "Checking for new messages"
@@ -3745,7 +3741,7 @@ msgstr "Impossible d'ouvrir la boîte à lettres : %s : %s\n"
 
 #: camel/providers/local/camel-mbox-folder.c:266
 msgid "Mail append cancelled"
-msgstr "Ajout de courrier annulé"
+msgstr "Ajout au format Mail annulé"
 
 #: camel/providers/local/camel-mbox-folder.c:269
 #, c-format
@@ -3759,7 +3755,7 @@ msgstr "Le dossier semble irrévocablement corrompu."
 #: camel/providers/local/camel-mbox-folder.c:398
 #: camel/providers/local/camel-mh-folder.c:223
 msgid "Message construction failed."
-msgstr "Erreur construction message."
+msgstr "La construction du message a échoué."
 
 #: camel/providers/local/camel-mbox-store.c:163
 #: camel/providers/local/camel-mbox-store.c:348
@@ -3831,7 +3827,7 @@ msgstr "Impossible d'ouvrir le dossier : %s : %s"
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr ""
-"Erreur fatale d'analyse du courrier prés de la position %ld dans le dossier %"
+"Erreur fatale d'analyse du courriel près de la position %ld dans le dossier %"
 "s"
 
 #: camel/providers/local/camel-mbox-summary.c:526
@@ -3901,7 +3897,7 @@ msgstr "L'écriture dans la boite à lettres temporaire a échoué : %s : %s"
 
 #: camel/providers/local/camel-mh-folder.c:175
 msgid "MH append message cancelled"
-msgstr "Ajout de message au dossier (format MH) annulé"
+msgstr "Ajout au format MH du message annulé"
 
 #: camel/providers/local/camel-mh-folder.c:178
 #, c-format
@@ -3973,7 +3969,7 @@ msgstr "Le stockage ne supporte pas de boîte de réception."
 #: camel/providers/local/camel-spool-store.c:218
 #, c-format
 msgid "Spool mail file %s"
-msgstr "Fichier de courrier spool %s"
+msgstr "Fichier de spool de courriels %s"
 
 #: camel/providers/local/camel-spool-store.c:218
 #, c-format
@@ -4228,7 +4224,7 @@ msgstr "POP"
 #: camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
 msgstr ""
-"Pour la connexion et le téléchargement du courrier depuis les serveurs POP."
+"Pour la connexion et le téléchargement du courriel depuis des serveurs POP."
 
 #: camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
@@ -4334,8 +4330,7 @@ msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
 msgstr ""
-"Pour délivrer le courrier en passant par le programme « sendmail » sur le "
-"système local."
+"Pour délivrer le courriel via le programme « sendmail » du système local."
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
@@ -4344,12 +4339,12 @@ msgstr "Impossible d'analyser la liste des destinataires"
 #: camel/providers/sendmail/camel-sendmail-transport.c:145
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr "Impossible de créer un tube vers sendmail : %s : courrier non envoyé"
+msgstr "Impossible de créer un tube vers sendmail : %s : courriel non envoyé"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Impossible de cloner sendmail : %s : courrier non envoyé"
+msgstr "Impossible de cloner sendmail : %s : courriel non envoyé"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
@@ -4359,17 +4354,17 @@ msgstr "Impossible d'envoyer le message : %s"
 #: camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
-msgstr "sendmail s'est terminé avec le signal %s : courrier non envoyé."
+msgstr "sendmail s'est terminé avec le signal %s : courriel non envoyé."
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:241
 #, c-format
 msgid "Could not execute %s: mail not sent."
-msgstr "Impossible d'exécuter %s : courrier non envoyé."
+msgstr "Impossible d'exécuter %s : courriel non envoyé."
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:246
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
-msgstr "sendmail s'est terminé avec l'état %d : courrier non envoyé."
+msgstr "sendmail s'est terminé avec l'état %d : courriel non envoyé."
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:260
 msgid "sendmail"
@@ -4377,7 +4372,7 @@ msgstr "sendmail"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:262
 msgid "Mail delivery via the sendmail program"
-msgstr "Distribution du courrier via le programme sendmail"
+msgstr "Distribution du courriel via le programme sendmail"
 
 #: camel/providers/smtp/camel-smtp-provider.c:38
 msgid "SMTP"
@@ -4386,7 +4381,7 @@ msgstr "SMTP"
 #: camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
-"Pour la distribution du courrier via un distributeur distant utilisant SMTP."
+"Pour la distribution du courriel via un distributeur distant utilisant SMTP."
 
 #: camel/providers/smtp/camel-smtp-transport.c:162
 msgid "Syntax error, command unrecognized"
@@ -4426,7 +4421,7 @@ msgstr "Service non disponible, fermeture du canal de transmission"
 
 #: camel/providers/smtp/camel-smtp-transport.c:180
 msgid "Requested mail action okay, completed"
-msgstr "Action courrier demandée OK, terminé"
+msgstr "Action courriel demandée OK, terminé"
 
 #: camel/providers/smtp/camel-smtp-transport.c:182
 msgid "User not local; will forward to <forward-path>"
@@ -4435,7 +4430,7 @@ msgstr "Utilisateur non local ; transfert vers <forward-path>"
 #: camel/providers/smtp/camel-smtp-transport.c:184
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr ""
-"Opération courrier demandée non effectuée : boîte à lettres non disponible"
+"Opération courriel demandée non effectuée : boîte à lettres non disponible"
 
 #: camel/providers/smtp/camel-smtp-transport.c:186
 msgid "Requested action not taken: mailbox unavailable"
@@ -4456,7 +4451,7 @@ msgstr "Opération demandée non effectuée : système de stockage insuffisant"
 #: camel/providers/smtp/camel-smtp-transport.c:194
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr ""
-"Opération courrier demandée abandonnée : allocation de stockage excessif"
+"Opération courriel demandée abandonnée : allocation de stockage excessif"
 
 #: camel/providers/smtp/camel-smtp-transport.c:196
 msgid "Requested action not taken: mailbox name not allowed"
@@ -4464,7 +4459,7 @@ msgstr "Opération demandée non effectuée: nom de boîte à lettres non autori
 
 #: camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr "Démarre entrée courrier ; fin avec <CRLF>.<CRLF>"
+msgstr "Démarre entrée courriel ; fin avec <CRLF>.<CRLF>"
 
 #: camel/providers/smtp/camel-smtp-transport.c:200
 msgid "Transaction failed"
@@ -4536,7 +4531,7 @@ msgstr "Serveur SMTP %s"
 #: camel/providers/smtp/camel-smtp-transport.c:671
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr "Distribution du courrier SMTP via %s"
+msgstr "Distribution du courriel SMTP via %s"
 
 #: camel/providers/smtp/camel-smtp-transport.c:689
 msgid "Cannot send message: service not connected."
@@ -4598,7 +4593,7 @@ msgstr "Mauvaise réponse d'authentification du serveur.\n"
 #: camel/providers/smtp/camel-smtp-transport.c:1130
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
-msgstr "La commande MAIL FROM a échoué : %s : courrier non envoyé"
+msgstr "La commande MAIL FROM a échoué : %s : courriel non envoyé"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1147
 msgid "MAIL FROM command failed"
@@ -4607,7 +4602,7 @@ msgstr "La commande MAIL FROM a échoué"
 #: camel/providers/smtp/camel-smtp-transport.c:1171
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
-msgstr "La commande RCPT TO a échoué : %s : courrier non envoyé"
+msgstr "La commande RCPT TO a échoué : %s : courriel non envoyé"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1190
 #, c-format
@@ -4619,7 +4614,7 @@ msgstr "RCPT TO <%s> a échoué"
 #: camel/providers/smtp/camel-smtp-transport.c:1306
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
-msgstr "La commande DATA a échoué : %s : courrier non envoyé"
+msgstr "La commande DATA a échoué : %s : courriel non envoyé"
 
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
