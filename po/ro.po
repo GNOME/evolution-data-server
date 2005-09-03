@@ -7,13 +7,12 @@
 # Eugen Paiuc <eug_paiuc@bluewin.ch>, 2005.
 # Dan Damian <dand@gnome.ro>, 2005.
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-24 06:45+0000\n"
-"PO-Revision-Date: 2005-09-03 01:25+0300\n"
+"POT-Creation-Date: 2005-09-03 14:03+0000\n"
+"PO-Revision-Date: 2005-09-03 19:26+0300\n"
 "Last-Translator: Dan Damian <dand@gnome.ro>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -656,12 +655,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Nu pot salva datele calendarului: adresă (URI) malformată."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:873
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1335
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1379
 msgid "Reply Requested: by "
 msgstr "Răspuns cerut: de "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:878
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1340
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1384
 msgid "Reply Requested: When convenient"
 msgstr "Răspuns cerut: Când este convenabil"
 
@@ -670,43 +669,43 @@ msgstr "Răspuns cerut: Când este convenabil"
 msgid "Loading %s items"
 msgstr "Încarc %s elemente"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:728
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:708
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Calendar"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:784
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:764
 msgid "Invalid server URI"
 msgstr "Adresă (URI) server incorectă"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:800
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:809
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:891
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:780
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:789
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/libecal/e-cal.c:5101
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:811
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:831
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:859
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:851
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:871
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:899
 #: ../camel/providers/groupwise/camel-groupwise-store.c:475
 #: ../camel/providers/groupwise/camel-groupwise-store.c:490
-#: ../camel/providers/groupwise/camel-groupwise-store.c:522
-#: ../camel/providers/groupwise/camel-groupwise-store.c:642
-#: ../camel/providers/groupwise/camel-groupwise-store.c:883
+#: ../camel/providers/groupwise/camel-groupwise-store.c:524
+#: ../camel/providers/groupwise/camel-groupwise-store.c:644
+#: ../camel/providers/groupwise/camel-groupwise-store.c:888
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:177
 msgid "Authentication failed"
 msgstr "Autentificare eşuată"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:850
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:830
 msgid "Could not create thread for getting deltas"
 msgstr "Nu pot crea firul de execuţie pentru obţinerea diferenţelor"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:875
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1118
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:855
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
 #: ../calendar/backends/http/e-cal-backend-http.c:495
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Nu pot crea fişierul cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:865
 msgid "Could not create thread for populating cache"
 msgstr "Nu pot crea firul de execuţie pentru popularea cache-ului"
 
@@ -1064,7 +1063,9 @@ msgstr "Nedefinit"
 #: ../calendar/libecal/e-cal.c:1695
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "Introduceţi parola pentru %s pentru activarea proxy-ului pentru utilizatorul %s"
+msgstr ""
+"Introduceţi parola pentru %s pentru activarea proxy-ului pentru utilizatorul "
+"%s"
 
 #: ../calendar/libecal/e-cal.c:1698 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
@@ -1183,7 +1184,9 @@ msgstr "„%s” necesită ca primul argument să fie un şir"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "„%s” necesită ca primul argument să fie un şir tip dată/timp de tipul ISO 8601"
+msgstr ""
+"„%s” necesită ca primul argument să fie un şir tip dată/timp de tipul ISO "
+"8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
@@ -1239,8 +1242,8 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"„%s” necesită ca toate sau doar un argument să fie şiruri şi doar un singur argument "
-"să fie de tip boolean cu valoare falsă (#f)"
+"„%s” necesită ca toate sau doar un argument să fie şiruri şi doar un singur "
+"argument să fie de tip boolean cu valoare falsă (#f)"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1774,11 +1777,13 @@ msgstr "Nu pot scrie jurnalul offline pentru directorul `%s': %s"
 
 #: ../camel/camel-provider.c:59
 msgid "Virtual folder email provider"
-msgstr "Furnizor  virtual de  director email" 
+msgstr "Furnizor  virtual de  director email"
 
 #: ../camel/camel-provider.c:61
 msgid "For reading mail as a query of another set of folders"
-msgstr "Pentru citirea mailului ca  o 'cerere de citire' făcută în alt grup de directoare mail"
+msgstr ""
+"Pentru citirea mailului ca  o 'cerere de citire' făcută în alt grup de "
+"directoare mail"
 
 #: ../camel/camel-provider.c:185
 #, c-format
@@ -1807,7 +1812,9 @@ msgstr "Anonim"
 
 #: ../camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr "Această opţiune vă va conecta la serverul specificat, folosind o logare anonimă."
+msgstr ""
+"Această opţiune vă va conecta la serverul specificat, folosind o logare "
+"anonimă."
 
 #: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:88
 msgid "Authentication failed."
@@ -1861,15 +1868,14 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
-"Această opţiune vă va conecta la serverul specificat"
-"folosind o parolă criptată prin DIGEST-MD5, "
-"dacă acest server  suportă aceasta tehnică."
-
+"Această opţiune vă va conecta la serverul specificatfolosind o parolă "
+"criptată prin DIGEST-MD5, dacă acest server  suportă aceasta tehnică."
 
 #: ../camel/camel-sasl-digest-md5.c:819
 msgid "Server challenge too long (>2048 octets)"
-msgstr "Procesul de autentificare este  prea lung"
-"(cheia de criptare este mai mare de 2048 octeţi)"
+msgstr ""
+"Procesul de autentificare este  prea lung(cheia de criptare este mai mare de "
+"2048 octeţi)"
 
 #: ../camel/camel-sasl-digest-md5.c:828
 msgid "Server challenge invalid\n"
@@ -1878,8 +1884,8 @@ msgstr "Server de autentificare invalid \n"
 #: ../camel/camel-sasl-digest-md5.c:834
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"Serverul de autentificare a descoperit o neregulă în "
-"elementul \"calitatea protecţiei\""
+"Serverul de autentificare a descoperit o neregulă în elementul \"calitatea "
+"protecţiei\""
 
 #: ../camel/camel-sasl-digest-md5.c:864
 msgid "Server response did not contain authorization data"
@@ -1888,7 +1894,6 @@ msgstr "Datele de autorizare lipsesc din răspunsul serverului"
 #: ../camel/camel-sasl-digest-md5.c:882
 msgid "Server response contained incomplete authorization data"
 msgstr "Datele de autorizare incomplete în răspunsul serverului"
-
 
 #: ../camel/camel-sasl-digest-md5.c:892
 msgid "Server response does not match"
@@ -1900,15 +1905,15 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:59
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr ""
-"Pentru conectare - la server- prin Kerberos 5"
+msgstr "Pentru conectare - la server- prin Kerberos 5"
 
 #: ../camel/camel-sasl-gssapi.c:157
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
-msgstr "Mecanismul specificat nu este suportat de informaţia de "
-"credibilitate oferită, sau nu este recunoscut de implementare."
+msgstr ""
+"Mecanismul specificat nu este suportat de informaţia de credibilitate "
+"oferită, sau nu este recunoscut de implementare."
 
 #: ../camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
@@ -1942,8 +1947,10 @@ msgstr ""
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
-msgstr "Informaţia de credibilitate oferită nu este validă pentru iniţierea contextului, "
-"sau gestionarul de credibilitate nu are referită nici o informaţie de credibilitate."
+msgstr ""
+"Informaţia de credibilitate oferită nu este validă pentru iniţierea "
+"contextului, sau gestionarul de credibilitate nu are referită nici o "
+"informaţie de credibilitate."
 
 #: ../camel/camel-sasl-gssapi.c:183
 msgid "The supplied context handle did not refer to a valid context."
@@ -1951,13 +1958,11 @@ msgstr "Descriptorul de context furnizat nu se referă la un context valid."
 
 #: ../camel/camel-sasl-gssapi.c:186
 msgid "The consistency checks performed on the input_token failed."
-msgstr ""
-"Verificările pentru consistenţă a obiectului_intrare au eşuat."
+msgstr "Verificările pentru consistenţă a obiectului_intrare au eşuat."
 
 #: ../camel/camel-sasl-gssapi.c:189
 msgid "The consistency checks performed on the credential failed."
-msgstr ""
-"Verificările pentru  consistenţă a credibilităţii au eşuat"
+msgstr "Verificările pentru  consistenţă a credibilităţii au eşuat"
 
 #: ../camel/camel-sasl-gssapi.c:192
 msgid "The referenced credentials have expired."
@@ -1981,7 +1986,6 @@ msgstr "Kerberos 4"
 #: ../camel/camel-sasl-kerberos4.c:46
 msgid "This option will connect to the server using Kerberos 4 authentication."
 msgstr "Pentru conectare - la server - prin Kerberos 4"
-
 
 #: ../camel/camel-sasl-kerberos4.c:171
 #, c-format
@@ -2013,8 +2017,8 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Pentru conectare - la un  server bazat pe Windows  - prin"
-"NTLM/ Secure Password Authentification"
+"Pentru conectare - la un  server bazat pe Windows  - prinNTLM/ Secure "
+"Password Authentification"
 
 #: ../camel/camel-sasl-plain.c:33
 msgid "PLAIN"
@@ -2181,15 +2185,9 @@ msgstr "Eroare de procesare"
 msgid "No signed data in signature"
 msgstr "Semnătura nu conţine date semnate"
 
-
-
-
 #: ../camel/camel-smime-context.c:546
 msgid "Digests missing from enveloped data"
 msgstr "Lipsa datelor 'digest' din stratul de încapsulare al datelor"
-
-
-
 
 #: ../camel/camel-smime-context.c:559 ../camel/camel-smime-context.c:569
 msgid "Cannot calculate digests"
@@ -2213,11 +2211,9 @@ msgstr ""
 "Certificatul este singurul mesaj, certificatele au fost importate şi "
 "verificate"
 
-
 #: ../camel/camel-smime-context.c:606
 msgid "Cannot find signature digests"
 msgstr "Nu pot gasi sumele de control ale semnăturii"
-
 
 #: ../camel/camel-smime-context.c:622
 #, c-format
@@ -2577,7 +2573,7 @@ msgstr "Nu pot copia mesajele în directorul Gunoi/Trash"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nu pot copia mesajele în directorul Junk"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
 #: ../camel/providers/imap/camel-imap-folder.c:2054
 #, c-format
 msgid ""
@@ -2587,7 +2583,7 @@ msgstr ""
 "Nu pot lua mesajul: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:115
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
 #: ../camel/providers/imap/camel-imap-folder.c:2054
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
@@ -2595,7 +2591,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Acest mesaj nu există"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:127
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
@@ -2607,7 +2603,7 @@ msgstr "Acest mesaj nu există"
 msgid "User cancelled"
 msgstr "Operaţia anulată de către utilizator"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:133
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:134
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2621,36 +2617,36 @@ msgstr "Operaţia anulată de către utilizator"
 msgid "Cannot get message %s: %s"
 msgstr "Nu pot lua mesajul: %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:150
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Acest mesaj nu este disponibil în modul deconectat."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:159
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:165
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1299
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:166
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1343
 msgid "Could not get message"
 msgstr "Nu pot luat mesajul"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:665
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:675
 #: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nu pot încărca sumarul pentru %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:941
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:985
 #: ../camel/providers/groupwise/camel-groupwise-store.c:512
 #: ../camel/providers/imap/camel-imap-folder.c:2366
 #: ../camel/providers/imap/camel-imap-folder.c:2436
 msgid "Fetching summary information for new messages"
 msgstr "Transfer sumarul pentru noile mesaje"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1532
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1594
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nu pot crea mesajul: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1544
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1606
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nu pot adăuga mesajul la directorul `%s': %s"
@@ -2734,7 +2730,8 @@ msgstr "Parola"
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
-"Această opţiune vă va conecta la serverul GroupWise folosind o parolă în clar."
+"Această opţiune vă va conecta la serverul GroupWise folosind o parolă în "
+"clar."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:100
 msgid "Host or user not available in url"
@@ -2765,35 +2762,35 @@ msgstr "Unele facilităţi nu vor funcţiona cu versiunea curentă a serverului"
 msgid "No such folder %s"
 msgstr "Nu există directorul %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:601
+#: ../camel/providers/groupwise/camel-groupwise-store.c:603
 msgid "Cannot get folder info in offline mode."
 msgstr "Nu pot lua informaţiile directorului în modul  deconectat."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:864
+#: ../camel/providers/groupwise/camel-groupwise-store.c:869
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nu pot crea directoare GroupWise în modul  deconectat."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:914
+#: ../camel/providers/groupwise/camel-groupwise-store.c:919
 msgid "Cannot delete GroupWise folders in offline mode."
 msgstr "Nu pot şterge directoarele GroupWise în modul  deconectat."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:951
-#: ../camel/providers/groupwise/camel-groupwise-store.c:971
+#: ../camel/providers/groupwise/camel-groupwise-store.c:956
+#: ../camel/providers/groupwise/camel-groupwise-store.c:976
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Nu pot redenumi directorul Groupwise `%s' în `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:957
+#: ../camel/providers/groupwise/camel-groupwise-store.c:962
 msgid "Cannot rename GroupWise folders in offline mode."
 msgstr "Nu pot redenumi directoarele GroupWise în modul  deconectat."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1003
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1008
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Server GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1005
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1010
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Serviciu GroupWise pentru %s pe %s"
@@ -2890,16 +2887,15 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-folder.c:2552
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr ""
-"Răspunsul serverului incomplet: nici un UID furnizat pentru mesajul %d"
+msgstr "Răspunsul serverului incomplet: nici un UID furnizat pentru mesajul %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2565
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr ""
-"Răspunsul serverului neaşteptat: UID-uri identice furnizate pentru mesajele "
-"%d şi %d"
+"Răspunsul serverului neaşteptat: UID-uri identice furnizate pentru mesajele %"
+"d şi %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2746
 msgid "Could not find message body in FETCH response."
@@ -3000,7 +2996,8 @@ msgstr "Pentru citirea şi stocarea mesajelor pe servere IMAP."
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
-"Această opţiune vă va conecta la serverul IMAP specificat, folosind o parolă în clar "
+"Această opţiune vă va conecta la serverul IMAP specificat, folosind o parolă "
+"în clar "
 
 #: ../camel/providers/imap/camel-imap-store.c:420
 #: ../camel/providers/imap4/camel-imap4-store.c:215
@@ -3138,7 +3135,8 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2301
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr ""
-"Directorul părinte nu are permisiunile necesare pentru a conţine subdirectoare"
+"Directorul părinte nu are permisiunile necesare pentru a conţine "
+"subdirectoare"
 
 #: ../camel/providers/imap/camel-imap-store.c:1986
 #: ../camel/providers/local/camel-maildir-store.c:190
@@ -3231,7 +3229,8 @@ msgstr "Nu pot prelua mesajul %s din directorul `%s': Comandă eronată"
 #: ../camel/providers/imap4/camel-imap4-folder.c:913
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr "Nu pot adăuga mesajul la directorul `%s': directorul este protejat la scriere"
+msgstr ""
+"Nu pot adăuga mesajul la directorul `%s': directorul este protejat la scriere"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
@@ -3246,7 +3245,8 @@ msgstr "Nu pot adăuga mesajul la directorul `%s': comandă greşită"
 #: ../camel/providers/imap4/camel-imap4-folder.c:1155
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
-msgstr "Nu pot deplasa mesajul din directorul `%s' in  dosarul `%s': necunoscut "
+msgstr ""
+"Nu pot deplasa mesajul din directorul `%s' in  dosarul `%s': necunoscut "
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1159
 #, c-format
@@ -3256,12 +3256,14 @@ msgstr "Nu pot copia  mesajul din directorul `%s' in  dosarul `%s': necunoscut"
 #: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr "Nu pot deplasa mesajul din directorul `%s' in  dosarul `%s':  comandă greşită"
+msgstr ""
+"Nu pot deplasa mesajul din directorul `%s' in  dosarul `%s':  comandă greşită"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "Nu pot copia  mesajul din directorul `%s' in  dosarul `%s'':  comandă greşită"
+msgstr ""
+"Nu pot copia  mesajul din directorul `%s' in  dosarul `%s'':  comandă greşită"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:71
 msgid "IMAP4rev1"
@@ -3346,7 +3348,8 @@ msgstr "Nu pot redenumi directoare IMAP în modul  deconectat."
 #: ../camel/providers/imap4/camel-imap4-store.c:1081
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr "Nu pot redenumi directorul `%s' în `%s': Nume invalid de căsuţă poştală"
+msgstr ""
+"Nu pot redenumi directorul `%s' în `%s': Nume invalid de căsuţă poştală"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1086
 #, c-format
@@ -3384,7 +3387,8 @@ msgstr "Modul deconectat nu permite dezînregistrarea in directoarele IMAP"
 #: ../camel/providers/imap4/camel-imap4-store.c:1590
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
-msgstr "Dezînregistrare eşuată in directorul `%s':  Nume invalid de cutie poştală"
+msgstr ""
+"Dezînregistrare eşuată in directorul `%s':  Nume invalid de cutie poştală"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1595
 #, c-format
@@ -3403,6 +3407,7 @@ msgstr "Răspuns neaşteptat de la serverul IMAP %s: "
 #: ../camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
 msgstr "Nu există date"
+
 # fost msgstr "Nu există sarcini"
 #: ../camel/providers/imap4/camel-imap4-utils.c:574
 #, c-format
@@ -3485,8 +3490,8 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox formated spools into "
 "folders managed by Evolution."
 msgstr ""
-"Pentru preluarea (mutarea) mesajului local de la formatul standard de căsuţă poştală -mbox- în "
-"directoare administrate de Evolution."
+"Pentru preluarea (mutarea) mesajului local de la formatul standard de căsuţă "
+"poştală -mbox- în directoare administrate de Evolution."
 
 #: ../camel/providers/local/camel-local-provider.c:81
 #: ../camel/providers/local/camel-local-provider.c:100
@@ -3500,8 +3505,8 @@ msgstr "Directoare email în format MH"
 #: ../camel/providers/local/camel-local-provider.c:89
 msgid "For storing local mail in maildir directories."
 msgstr "Pentru stocarea mesajelor locale în directoare maildir"
-# fost... msgstr "Pentru stocarea mesajelor locale în directoare qmail maildir"
 
+# fost... msgstr "Pentru stocarea mesajelor locale în directoare qmail maildir"
 #: ../camel/providers/local/camel-local-provider.c:101
 msgid "Store status headers in Elm/Pine/Mutt format"
 msgstr "Stochează starea antetelor în format Elm/Pine/Mutt"
@@ -3515,12 +3520,13 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Pentru stocarea şi citirea mesajelor locale aflate în fişiere cu alt standard."
-"Se poate folosi şi pentru citirea fişierelor dintr-un arbore tip Elm, Pine, sau Mutt"
+"Pentru stocarea şi citirea mesajelor locale aflate în fişiere cu alt "
+"standard.Se poate folosi şi pentru citirea fişierelor dintr-un arbore tip "
+"Elm, Pine, sau Mutt"
 
-#: ../camel/providers/local/camel-local-store.c:150|
+#: ../camel/providers/local/camel-local-store.c:150
 #: ../camel/providers/local/camel-local-store.c:261
-#: ../camel/providers/local/camel-mbox-store.c:342|
+#: ../camel/providers/local/camel-mbox-store.c:342
 #: ../camel/providers/local/camel-spool-store.c:125
 #, c-format
 msgid "Store root %s is not an absolute path"
@@ -3574,8 +3580,8 @@ msgstr "Nu pot şterge directorul index al fişierelor `%s': %s"
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
 msgstr "Nu pot şterge 'meta directorul' fişierului `%s': %s"
-# sau msgstr "Nu pot şterge directorul 'meta fişierului' `%s': %s"
 
+# sau msgstr "Nu pot şterge directorul 'meta fişierului' `%s': %s"
 #: ../camel/providers/local/camel-local-summary.c:405
 #, c-format
 msgid "Could not save summary: %s: %s"
@@ -3593,9 +3599,9 @@ msgstr "Adăugarea mesajululi la maildir anulată"
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
 msgstr "Nu pot adăuga mesajul la directorul maildir: %s: %s"
+
 # sau msgstr "Nu pot adăuga mesajul la directorul mail : %s: %s"
 #  maildir folder = directorul mail - ptr. mine -
-
 #: ../camel/providers/local/camel-maildir-folder.c:244
 #: ../camel/providers/local/camel-maildir-folder.c:258
 #: ../camel/providers/local/camel-maildir-folder.c:267
@@ -3609,10 +3615,10 @@ msgstr "Nu pot adăuga mesajul la directorul maildir: %s: %s"
 #, c-format
 msgid ""
 "Cannot get message: %s from folder %s\n"
-"%s"
+"  %s"
 msgstr ""
 "Nu pot lua mesajul: %s din directorul %s\n"
-"%s"
+"  %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:268
 msgid "Invalid message contents"
@@ -3646,7 +3652,6 @@ msgid "Cannot get folder `%s': not a maildir directory."
 msgstr "Nu pot prelua directorul `%s': nu este un director de mail"
 
 # ??? maildir directory= director de mail ???
-
 #: ../camel/providers/local/camel-maildir-store.c:232
 #: ../camel/providers/local/camel-maildir-store.c:270
 #: ../camel/providers/local/camel-mh-store.c:273
@@ -3692,8 +3697,8 @@ msgstr "Stochez director"
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
 msgstr "Nu pot crea blocarea directorului %s: %s"
-#fost... msgstr "Nu pot crea directorul blocat la %s: %s"
 
+# fost... msgstr "Nu pot crea directorul blocat la %s: %s"
 #: ../camel/providers/local/camel-mbox-folder.c:206
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
@@ -3803,8 +3808,8 @@ msgstr "Nu pot deschide fişierul %s: %s"
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Nu pot deschide momentan căsuţa poştală: %s"
-# fost...msgstr "Nu pot deschide căsuţa poştală temporară: %s"
 
+# fost...msgstr "Nu pot deschide căsuţa poştală temporară: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:619
 #: ../camel/providers/local/camel-mbox-summary.c:791
 #, c-format
@@ -3884,8 +3889,8 @@ msgstr "Spool-ul `%s' nu poate fi deschis: %s"
 #, c-format
 msgid "Spool `%s' is not a regular file or directory"
 msgstr "Coada de aşteptare `%s' nu este un fişier obişnuit sau director"
-# fost...msgstr "Stocarea root %s nu e director obişnuit"
 
+# fost...msgstr "Stocarea root %s nu e director obişnuit"
 #: ../camel/providers/local/camel-spool-store.c:162
 #, c-format
 msgid "Folder `%s/%s' does not exist."
@@ -3981,8 +3986,8 @@ msgstr "Postarea eşuată: %s"
 #: ../camel/providers/nntp/camel-nntp-folder.c:394
 msgid "You cannot post NNTP messages while working offline!"
 msgstr "Nu puteţi trimite mesaje NNTP în modul deconectat"
-#fost ...msgstr "Nu puteţi trimite mesaje NNTP în timp ce lucraţi offline"
 
+# fost ...msgstr "Nu puteţi trimite mesaje NNTP în timp ce lucraţi offline"
 #: ../camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Nu puteţi copia mesajele dintr-un director NNTP!"
@@ -3991,8 +3996,8 @@ msgstr "Nu puteţi copia mesajele dintr-un director NNTP!"
 msgid ""
 "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"Arată directoarele folosind notarea prescurtată"
-"(ex. c.o.linux în loc de comp.os.linux"
+"Arată directoarele folosind notarea prescurtată(ex. c.o.linux în loc de comp."
+"os.linux"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
@@ -4006,8 +4011,8 @@ msgstr "Ştiri USENET"
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
 "Acesta este un provider pentru citirea-postarea în grupuri de ştiri USENET."
-#fost..."Acesta e un provider pentru citirea din şi postarea în grupuri de ştiri USENET."
 
+# fost..."Acesta e un provider pentru citirea din şi postarea în grupuri de ştiri USENET."
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
@@ -4078,7 +4083,9 @@ msgstr "Nu pot muta un director într-o stocare de ştiri: mai bine desubscriete
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1147
 msgid "Authentication requested but no username provided"
-msgstr "Autentificare necesară -fost cerută-, dar nu a fost specificat un nume de utilizator"
+msgstr ""
+"Autentificare necesară -fost cerută-, dar nu a fost specificat un nume de "
+"utilizator"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1155
 #, c-format
@@ -4232,7 +4239,6 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:418
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
-
 msgstr "Autentificare SASL `%s' Logare eşuată pentru serverul POP %s: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:430
@@ -4400,22 +4406,19 @@ msgstr "Utilizatorul nu este local; încercaţi vă rog <cale-înaintare>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "Requested action not taken: insufficient system storage"
-msgstr ""
-"Acţiunea cerută refuzată: spaţiu de stocare a sistemului depăşită"
-# fost..."Acţiunea cerută refuzată: posibilitatea de stocare a sistemului depăşită"
+msgstr "Acţiunea cerută refuzată: spaţiu de stocare a sistemului depăşită"
 
+# fost..."Acţiunea cerută refuzată: posibilitatea de stocare a sistemului depăşită"
 #: ../camel/providers/smtp/camel-smtp-transport.c:194
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Acţiunea cerută anulată: se depăşeşte spaţiu de stocare alocat"
 
-#fost...msgstr "Acţiunea cerută anulată: depăşeşte posibilităţile de stocare"
-
+# fost...msgstr "Acţiunea cerută anulată: depăşeşte posibilităţile de stocare"
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Acţiunea cerută anulată: nume neacceptat ptr. căsuţa de mail"
 
-#fost...msgstr "Acţiunea cerută anulată: numele căsuţei de mail nu este permis"
-
+# fost...msgstr "Acţiunea cerută anulată: numele căsuţei de mail nu este permis"
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Începeţi introducerea mailului; terminaţi cu <CRLF>.<CRLF>"
@@ -4470,8 +4473,7 @@ msgstr "Serverul SMTP %s nu suportă tipul cerut de autentificare %s."
 msgid "%sPlease enter the SMTP password for %s on host %s"
 msgstr "%sIntroduceţi, vă rog, parola SMTP pentru %s pe gazda %s"
 
-#fost...msgstr "%sIntroduceţi, vă rog, parola SMTP pentru %s@%s"
-
+# fost...msgstr "%sIntroduceţi, vă rog, parola SMTP pentru %s@%s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:545
 #, c-format
 msgid ""
@@ -4656,8 +4658,7 @@ msgstr "Personal"
 msgid "Phone Calls"
 msgstr "Apeluri telefonice"
 
-#sau msgstr "Legături telefonice"
-
+# sau msgstr "Legături telefonice"
 #: ../libedataserver/e-categories.c:252
 msgid "Status"
 msgstr "Stare"
@@ -4860,7 +4861,7 @@ msgid "_Edit"
 msgstr "_Editează"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:9
-msgid  "categories"
+msgid "categories"
 msgstr "categorii"
 
 #: ../libedataserverui/e-name-selector-dialog.c:211
@@ -4876,7 +4877,7 @@ msgid "_Remove"
 msgstr "Şte_rge"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
-msgid  "\t\t\t\t\t\t"
+msgid "\t\t\t\t\t\t"
 msgstr "\t\t\t\t\t\t"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
@@ -4932,12 +4933,12 @@ msgid "Select destination"
 msgstr "Selectaţi destinaţia"
 
 #: ../libedataserverui/e-source-selector-dialog.c:154
-msgid " _Destination"
+msgid "_Destination"
 msgstr "_Destinaţia"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1573
 #, c-format
-msgid  "Enter password for %s"
+msgid "Enter password for %s"
 msgstr "Introduceţi parola pentru %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
@@ -4954,15 +4955,13 @@ msgstr "Proprietar"
 msgid "Publishing Editor"
 msgstr "Editor primar"
 
-
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
-msgid  "_Editor"
-msgstr "_Editează"
+msgid "Editor"
+msgstr "Editor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
 msgstr "Autor primar"
-
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
 msgid "Author"
@@ -4975,14 +4974,13 @@ msgstr "Autor secundar"
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
 msgstr "Revizor"
-#sau ...msgstr "Previzualizare"
 
+# sau ...msgstr "Previzualizare"
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
 msgstr "Colaborator"
 
-#fost ???Editor de contacte"
-
+# fost ???Editor de contacte"
 #: ../servers/exchange/lib/e2k-security-descriptor.c:891
 msgid "None"
 msgstr "Nicunul"
@@ -5057,26 +5055,26 @@ msgstr "Acesta operaţie nu poate fi executată în modul deconectat"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:620
+#: ../servers/exchange/storage/exchange-account.c:623
 #, c-format
 msgid "%s's Folders"
 msgstr "Directoarele lui %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1276
+#: ../servers/exchange/storage/exchange-account.c:1268
 msgid "Personal Folders"
 msgstr "Directoare personale"
 
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1283
 msgid "Favorite Public Folders"
 msgstr "Directoare publice favorite"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1308
+#: ../servers/exchange/storage/exchange-account.c:1300
 msgid "All Public Folders"
 msgstr "Toate directoarele publice"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1322
+#: ../servers/exchange/storage/exchange-account.c:1314
 msgid "Global Address List"
 msgstr "Listă de adrese globale"
 
@@ -5148,5 +5146,3 @@ msgstr "Apar multe  segmentation faults; nu pot afişa dialogul cu erori\n"
 
 #~ msgid "groupwise server %S"
 #~ msgstr "server Groupwise %s"
-
-
