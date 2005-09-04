@@ -10,7 +10,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution-data-server HEAD\n"
+"Project-Id-Version: Evolution-data-server 2.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-26 13:52+0000\n"
 "PO-Revision-Date: 2005-08-14 09:48+0300\n"
