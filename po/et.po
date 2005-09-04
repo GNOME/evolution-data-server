@@ -1058,11 +1058,11 @@ msgstr "Vigane objekt"
 
 #: ../calendar/libecal/e-cal.c:4548
 msgid "URI not loaded"
-msgstr "URI ei ole laetud"
+msgstr "URI ei ole laaditud"
 
 #: ../calendar/libecal/e-cal.c:4550
 msgid "URI already loaded"
-msgstr "URI on juba laetud"
+msgstr "URI on juba laaditud"
 
 #: ../calendar/libecal/e-cal.c:4552
 msgid "Permission denied"
@@ -4075,7 +4075,7 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "E-posti laetakse alla POP serverist"
+msgstr "E-posti allalaadimiseks POP serveritest"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
