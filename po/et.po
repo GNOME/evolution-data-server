@@ -10,10 +10,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution-data-server 2.3\n"
+"Project-Id-Version: Evolution-data-server 2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-26 13:52+0000\n"
-"PO-Revision-Date: 2005-08-14 09:48+0300\n"
+"PO-Revision-Date: 2005-09-06 10:31+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1095,11 +1095,11 @@ msgstr "Vigane objekt"
 
 #: ../calendar/libecal/e-cal.c:5024
 msgid "URI not loaded"
-msgstr "URI ei ole laetud"
+msgstr "URI ei ole laaditud"
 
 #: ../calendar/libecal/e-cal.c:5026
 msgid "URI already loaded"
-msgstr "URI on juba laetud"
+msgstr "URI on juba laaditud"
 
 #: ../calendar/libecal/e-cal.c:5028
 #: ../servers/exchange/storage/e-storage.c:572
@@ -1116,7 +1116,7 @@ msgstr "Objekti ID on juba olemas"
 
 #: ../calendar/libecal/e-cal.c:5034
 msgid "Protocol not supported"
-msgstr "Mitte toetatud protokoll"
+msgstr "Toetamata protokoll"
 
 #: ../calendar/libecal/e-cal.c:5036
 msgid "Operation has been cancelled"
@@ -4124,7 +4124,7 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "E-posti laetakse alla POP serverist"
+msgstr "E-posti allalaadimiseks POP serveritest"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
@@ -4955,11 +4955,11 @@ msgstr "Määratud kausta ei leitud"
 
 #: ../servers/exchange/storage/e-storage.c:570
 msgid "Function not implemented in this storage"
-msgstr "Funktsioon pole selle salveti puhul teostatud"
+msgstr "Funktsioon pole selle salvesti puhul teostatud"
 
 #: ../servers/exchange/storage/e-storage.c:574
 msgid "Operation not supported"
-msgstr "Mittetoetatud toiming"
+msgstr "Toetamata toiming"
 
 #: ../servers/exchange/storage/e-storage.c:576
 msgid "The specified type is not supported in this storage"
