@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server GNOME 2.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-22 12:41+0000\n"
-"PO-Revision-Date: 2005-08-14 09:48+0300\n"
+"PO-Revision-Date: 2005-09-05 23:15+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1078,7 +1078,7 @@ msgstr "Objekti ID on juba olemas"
 
 #: ../calendar/libecal/e-cal.c:4558
 msgid "Protocol not supported"
-msgstr "Mitte toetatud protokoll"
+msgstr "Toetamata protokoll"
 
 #: ../calendar/libecal/e-cal.c:4560
 msgid "Operation has been cancelled"
