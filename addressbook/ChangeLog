@@ -1,3 +1,9 @@
+2005-09-08  Sushma Rai  <rsushma@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c (query_ldap_root_dse): Returning
+	ldap error. Slightly modified patch (as done in head) submitted by 
+	"sbrabec@suse.cz (Stanislav Brabec)". Fixes #302049.
+	
 2005-08-20  Sushma Rai  <rsushma@novell.com>
 
 	 * backends/ldap/e-book-backend-ldap.c (email_ber): Setting the proper

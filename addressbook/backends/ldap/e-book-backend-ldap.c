@@ -588,13 +588,13 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 #define MAX_DSE_ATTRS 20
 	LDAP *ldap = bl->priv->ldap;
 	LDAPMessage *resp;
-	int ldap_error;
+	int ldap_error = LDAP_OTHER;
 	char *attrs[MAX_DSE_ATTRS], **values;
 	int i = 0;
 	struct timeval timeout;
 
 	if (!ldap)
-		return;
+		return ldap_error;
 
 	attrs[i++] = "supportedControl";
 	attrs[i++] = "supportedExtension";
