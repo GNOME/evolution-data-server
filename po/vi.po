@@ -2959,7 +2959,7 @@ msgstr "Bộ tên độc nhất "
 #: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr ""
-"_Áp dụng bộ lọc vào những thông điệp mới trong Hộp Nhận trên máy phục vụ này"
+"Á_p dụng bộ lọc vào những thông điệp mới trong Hộp Nhận trên máy phục vụ này"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
@@ -4836,7 +4836,7 @@ msgstr "Chọn liên lạc từ sổ địa chỉ"
 
 #: ../libedataserverui/e-name-selector-dialog.c:502
 msgid "_Add"
-msgstr "Th_êm"
+msgstr "T_hêm"
 
 #: ../libedataserverui/e-name-selector-dialog.c:527
 msgid "_Remove"
