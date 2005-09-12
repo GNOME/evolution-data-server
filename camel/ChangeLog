@@ -1,3 +1,10 @@
+2005-09-12  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug #314574
+
+	* camel-lock-client.c: (camel_lock_helper_init):
+	remove an spurious ','.
+	
 2005-09-01  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-lock-client.c: (camel_lock_helper_init):
