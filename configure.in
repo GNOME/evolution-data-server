@@ -147,7 +147,7 @@ case "$host" in
     os_win32=yes
     AC_CACHE_VAL(have_addrinfo, [have_addrinfo=yes])
     NO_UNDEFINED='-no-undefined'
-    SOCKET_LIBS='-lws2_32'
+    SOCKET_LIBS='-lws2_32 -ldnsapi'
     DL_LIB=''
     SOFTOKN3_LIB=''
     ;;
@@ -1021,6 +1021,7 @@ esac
 dnl **************************************************
 dnl LDAP support.
 dnl **************************************************
+if test "$os_win32" != yes; then
 EVO_LDAP_CHECK(no)
 case $with_openldap in
 no)
@@ -1056,6 +1057,16 @@ dnl support. Make him aware of this with a warning message at the end.
 		msg_no_ntlm="yes"
 	fi
 fi
+else # Win32
+LDAP_CFLAGS=""
+LDAP_LIBS="-lwldap32"
+AC_SUBST(LDAP_CFLAGS)
+AC_SUBST(LDAP_LIBS)
+AC_DEFINE(HAVE_LDAP,1,[Define if you have LDAP support])
+AM_CONDITIONAL(ENABLE_LDAP, true)
+msg_no_ntlm=no
+msg_exchange="yes"
+fi # Win32
 
 GLIB_REQUIRED="2.4.0"
 LIBBONOBO_REQUIRED="2.4.2"
@@ -1323,6 +1334,7 @@ servers/exchange/lib/Makefile
 servers/exchange/storage/Makefile
 servers/exchange/storage/libexchange-storage.pc 
 src/Makefile
+win32/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile

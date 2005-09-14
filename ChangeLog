@@ -1,3 +1,19 @@
+2005-09-14  Tor Lillqvist  <tml@novell.com>
+
+	* win32/README
+	* win32/Makefile.am
+	* win32/dummy.la
+	* win32/libedataserverui.def: New files. Bootstrap import library
+	for libedataserverui. Needed in servers/exchange/storage where
+	libexchange-storage-1.2.la links to libedataserverui before it has
+	been built.
+
+	* configure.in: Add -ldnsapi to SOCKET_LIBS on Win32. Always
+	enable LDAP and Exchange on Win32, don't need to test. AC_OUTPUT
+	also win32/Makefile.
+
+	* Makefile.am: Add win32 to SUBDIRS.
+
 2005-09-01  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* confugure.in : Add API_VERSION to config.h

@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = 1.6
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 
-SUBDIRS = libdb libedataserver servers camel addressbook calendar libedataserverui src docs art po
-DIST_SUBDIRS= libedataserver servers camel addressbook calendar libedataserverui src docs art po
+SUBDIRS = libdb win32 libedataserver servers camel addressbook calendar libedataserverui src docs art po
+DIST_SUBDIRS= win32 libedataserver servers camel addressbook calendar libedataserverui src docs art po
 
 changelogs =			\
 	ChangeLog

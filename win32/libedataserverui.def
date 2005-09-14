@@ -1,0 +1,6 @@
+EXPORTS
+	e_passwords_add_password
+	e_passwords_ask_password
+	e_passwords_forget_password
+	e_passwords_get_password
+	e_passwords_remember_password
