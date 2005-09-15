@@ -193,7 +193,7 @@ get_wday (const unsigned char *in, unsigned int inlen)
 		return -1;
 	
 	for (wday = 0; wday < 7; wday++)
-		if (!strncasecmp (in, tm_days[wday], 3))
+		if (!g_ascii_strncasecmp (in, tm_days[wday], 3))
 			return wday;
 	
 	return -1;  /* unknown week day */
@@ -221,7 +221,7 @@ get_month (const unsigned char *in, unsigned int inlen)
 		return -1;
 	
 	for (i = 0; i < 12; i++)
-		if (!strncasecmp (in, tm_months[i], 3))
+		if (!g_ascii_strncasecmp (in, tm_months[i], 3))
 			return i;
 	
 	return -1;  /* unknown month */
