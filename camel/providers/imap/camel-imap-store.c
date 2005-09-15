@@ -68,6 +68,14 @@
 #define IMAP_PORT "143"
 #define IMAPS_PORT "993"
 
+#ifdef G_OS_WIN32
+/* The strtok() in Microsoft's C library is MT-safe (but still uses
+ * only one buffer pointer per thread, but for the use of strtok_r()
+ * here that's enough).
+ */
+#define strtok_r(s,sep,lasts) (*(lasts)=strtok((s),(sep)))
+#endif
+
 static CamelDiscoStoreClass *parent_class = NULL;
 
 static char imap_tag_prefix = 'A';
@@ -746,6 +754,10 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	return FALSE;
 }
 
+#ifndef G_OS_WIN32
+
+/* Using custom commands to connect to IMAP servers is not supported on Win32 */
+
 static gboolean
 connect_to_server_process (CamelService *service, const char *cmd, CamelException *ex)
 {
@@ -889,6 +901,8 @@ connect_to_server_process (CamelService *service, const char *cmd, CamelExceptio
 	
 }
 
+#endif
+
 static struct {
 	char *value;
 	char *serv;
@@ -905,16 +919,19 @@ static struct {
 static gboolean
 connect_to_server_wrapper (CamelService *service, CamelException *ex)
 {
-	const char *command, *ssl_mode;
+	const char *ssl_mode;
 	struct addrinfo hints, *ai;
 	int mode, ret, i;
 	char *serv;
 	const char *port;
 
+#ifndef G_OS_WIN32
+	const char *command;
+
 	if (camel_url_get_param(service->url, "use_command")
 	    && (command = camel_url_get_param(service->url, "command")))
 		return connect_to_server_process(service, command, ex);
-	
+#endif	
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
 			if (!strcmp (ssl_options[i].value, ssl_mode))

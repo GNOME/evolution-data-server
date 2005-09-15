@@ -7,9 +7,15 @@
 	need ASCII casefolding only.
 
 	* camel-imap-folder.c
-	* camel-imap-search.c: No strtok_r() in Microsoft's C library, but
+	* camel-imap-search.c
+	* camel-imap-store.c: No strtok_r() in Microsoft's C library, but
 	strtok() is MT-safe, which is enough for the way it's used in this
 	file, to tokenize only one string at a time.
+
+	* camel-imap-store.c (connect_to_server_process,
+	connect_to_server_wrapper): Using custom commands to connect to
+	IMAP servers is not supported on Win32 (at least for now), so
+	bypass that code.
 
 2005-08-23  Shreyas Srinivasan  <sshreyas@novell.com>
 
