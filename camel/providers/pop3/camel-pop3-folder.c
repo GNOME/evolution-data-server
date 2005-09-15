@@ -162,8 +162,8 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		h = camel_mime_parser_headers_raw(mp);
 		while (h) {
-			if (strcasecmp(h->name, "status") != 0
-			    && strcasecmp(h->name, "x-status") != 0) {
+			if (g_ascii_strcasecmp(h->name, "status") != 0
+			    && g_ascii_strcasecmp(h->name, "x-status") != 0) {
 				md5_update(&md5, h->name, strlen(h->name));
 				md5_update(&md5, h->value, strlen(h->value));
 			}
