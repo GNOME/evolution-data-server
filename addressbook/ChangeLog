@@ -1,3 +1,14 @@
+2005-09-15  Tor Lillqvist  <tml@novell.com>
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_extract_path_from_uri): Use
+	g_ascii_strncasecmp() instead of strncasecmp() for
+	well-definedness. Use g_filename_from_uri() instead of just
+	stripping off a "file://" prefix. (On Win32, a file URI for a
+	pathname that includes a drive letter looks like
+	"file:///x:/dir/sub/file.ext", so stripping off "file://" leaves
+	an extra slash in front of the drive letter.)
+
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c

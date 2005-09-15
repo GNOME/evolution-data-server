@@ -850,9 +850,9 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 static char *
 e_book_backend_file_extract_path_from_uri (const char *uri)
 {
-	g_assert (strncasecmp (uri, "file://", 7) == 0);
+	g_assert (g_ascii_strncasecmp (uri, "file://", 7) == 0);
 
-	return g_strdup (uri + 7);
+	return g_filename_from_uri (uri, NULL, NULL);
 }
 
 static EBookBackendSyncStatus
