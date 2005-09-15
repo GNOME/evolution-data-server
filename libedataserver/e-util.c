@@ -396,7 +396,7 @@ e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
  * Returns: A 64-bit integer.
  */
 guint64
-e_pthread_id(pthread_t t)
+e_util_pthread_id(pthread_t t)
 {
 #ifdef HAVE_GUINT64_CASTABLE_PTHREAD_T
 	/* We know that pthread_t is an integral type, or at least
