@@ -1,3 +1,10 @@
+2005-09-14  Irene Huang  <Irene.Huang@sun.com>
+
+	Fix for bug #316274
+
+	* storage/exchange-account.h: only declare exchange_account_set_
+	password function when the macro HAVE_KRB5 is defined.
+
 2005-08-25  Arunprakash  <arunp@novell.com>
 
 	* storage/exchange-account.c (init) : set the default linestatus
