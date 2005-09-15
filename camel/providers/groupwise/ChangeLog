@@ -1,5 +1,10 @@
 2005-09-15  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	* camel-groupwise-store.c: (groupwise_create_folder):
+	Does not allow creating subfolders under system folder
+
+2005-09-15  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	* camel-groupwise-folder.c:
 	(groupwise_folder_get_message): free message info
 	Dont cache messages in Sent Items folder.

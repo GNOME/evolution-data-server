@@ -1029,9 +1029,13 @@ groupwise_create_folder(CamelStore *store,
 		}
 	}
 
-	if (parent_name && (strlen(parent_name) > 0) ) 
+	if (parent_name && (strlen(parent_name) > 0) ) {
+		if (strcmp (parent_name, "Cabinet") && groupwise_is_system_folder (parent_name)) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE, _("The parent folder is not allowed to contain subfolders"));
+			return NULL;
+		}
 		parent_id = g_hash_table_lookup (priv->name_hash, parent_name);
-	else
+	} else
 		parent_id = "";
 
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
