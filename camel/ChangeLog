@@ -5,6 +5,8 @@
 	comparing should be just ASCII anyway, so spell it out that we
 	really do care only for the ASCII bytes.
 
+	* camel-debug.c: Use e_util_pthread_id() to identify threads.
+
 2005-09-12  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug #314574

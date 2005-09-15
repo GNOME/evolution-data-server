@@ -25,6 +25,7 @@
 
 #include <pthread.h>
 
+#include "libedataserver/e-util.h"
 #include "camel-debug.h"
 
 int camel_verbose_debug;
@@ -133,7 +134,7 @@ camel_debug_start(const char *mode)
 {
 	if (camel_debug(mode)) {
 		pthread_mutex_lock(&debug_lock);
-		printf("Thread %lx >\n", pthread_self());
+		printf("Thread %" G_GINT64_MODIFIER "x >\n", e_util_pthread_id(pthread_self()));
 		return TRUE;
 	}
 
@@ -149,7 +150,7 @@ camel_debug_start(const char *mode)
 void
 camel_debug_end(void)
 {
-	printf("< %lx >\n", pthread_self());
+	printf("< %" G_GINT64_MODIFIER "x >\n", e_util_pthread_id(pthread_self()));
 	pthread_mutex_unlock(&debug_lock);
 }
 
