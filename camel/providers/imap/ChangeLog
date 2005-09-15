@@ -1,3 +1,15 @@
+2005-09-15  Tor Lillqvist  <tml@novell.com>
+
+	* camel-imap-command.c
+	* camel-imap-folder.c: Use g_ascii_str(n)casecmp() instead of
+	str(n)casecmp(). The strings we are comparing in these cases
+	should be just ASCII anyway, so spell it out that we really do
+	need ASCII casefolding only.
+
+	* camel-imap-folder.c: No strtok_r() in Microsoft's C library, but
+	strtok() is MT-safe, which is enough for the way it's used in this
+	file, to tokenize only one string at a time.
+
 2005-08-23  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	** See #314199

@@ -302,7 +302,7 @@ camel_imap_command_response (CamelImapStore *store, char **response,
 	
 	switch (*respbuf) {
 	case '*':
-		if (!strncasecmp (respbuf, "* BYE", 5)) {
+		if (!g_ascii_strncasecmp (respbuf, "* BYE", 5)) {
 			/* Connection was lost, no more data to fetch */
 			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
@@ -679,7 +679,7 @@ camel_imap_response_extract (CamelImapStore *store,
 		if (*resp == ' ')
 			resp = (char *) imap_next_word (resp);
 		
-		if (!strncasecmp (resp, type, len))
+		if (!g_ascii_strncasecmp (resp, type, len))
 			break;
 	}
 	

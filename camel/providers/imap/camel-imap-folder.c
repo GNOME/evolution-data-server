@@ -134,6 +134,14 @@ static CamelObjectClass *parent_class;
 
 static GData *parse_fetch_response (CamelImapFolder *imap_folder, char *msg_att);
 
+#ifdef G_OS_WIN32
+/* The strtok() in Microsoft's C library is MT-safe (but still uses
+ * only one buffer pointer per thread, but for the use of strtok_r()
+ * here that's enough).
+ */
+#define strtok_r(s,sep,lasts) (*(lasts)=strtok((s),(sep)))
+#endif
+
 static void
 camel_imap_folder_class_init (CamelImapFolderClass *camel_imap_folder_class)
 {
@@ -296,22 +304,22 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 	
 	for (i = 0; i < response->untagged->len; i++) {
 		resp = response->untagged->pdata[i] + 2;
-		if (!strncasecmp (resp, "FLAGS ", 6) && !perm_flags) {
+		if (!g_ascii_strncasecmp (resp, "FLAGS ", 6) && !perm_flags) {
 			resp += 6;
 			folder->permanent_flags = imap_parse_flag_list (&resp);
-		} else if (!strncasecmp (resp, "OK [PERMANENTFLAGS ", 19)) {
+		} else if (!g_ascii_strncasecmp (resp, "OK [PERMANENTFLAGS ", 19)) {
 			resp += 19;
 			
 			/* workaround for broken IMAP servers that send "* OK [PERMANENTFLAGS ()] Permanent flags"
 			 * even tho they do allow storing flags. *Sigh* So many fucking broken IMAP servers out there. */
 			if ((perm_flags = imap_parse_flag_list (&resp)) != 0)
 				folder->permanent_flags = perm_flags;
-		} else if (!strncasecmp (resp, "OK [UIDVALIDITY ", 16)) {
+		} else if (!g_ascii_strncasecmp (resp, "OK [UIDVALIDITY ", 16)) {
 			validity = strtoul (resp + 16, NULL, 10);
 		} else if (isdigit ((unsigned char)*resp)) {
 			unsigned long num = strtoul (resp, &resp, 10);
 			
-			if (!strncasecmp (resp, " EXISTS", 7)) {
+			if (!g_ascii_strncasecmp (resp, " EXISTS", 7)) {
 				exists = num;
 				/* Remove from the response so nothing
 				 * else tries to interpret it.
@@ -377,7 +385,7 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 				exists = val;
 				continue;
 			}
-			if (uid != 0 || val != count || strncasecmp (resp, " FETCH (", 8) != 0)
+			if (uid != 0 || val != count || g_ascii_strncasecmp (resp, " FETCH (", 8) != 0)
 				continue;
 			
 			fetch_data = parse_fetch_response (imap_folder, resp + 7);
@@ -2237,7 +2245,7 @@ decode_internaldate (const unsigned char *in)
 		return (time_t) -1;
 	
 	for (n = 0; n < 12; n++) {
-		if (!strncasecmp (inptr, tm_months[n], 3))
+		if (!g_ascii_strncasecmp (inptr, tm_months[n], 3))
 			break;
 	}
 	
@@ -2768,7 +2776,7 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 		seq = strtol (response + 2, &response, 10);
 		if (seq == 0)
 			return NULL;
-		if (strncasecmp (response, " FETCH (", 8) != 0)
+		if (g_ascii_strncasecmp (response, " FETCH (", 8) != 0)
 			return NULL;
 		response += 7;
 		
@@ -2779,7 +2787,7 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 		/* Skip the initial '(' or the ' ' between elements */
 		response++;
 		
-		if (!strncasecmp (response, "FLAGS ", 6)) {
+		if (!g_ascii_strncasecmp (response, "FLAGS ", 6)) {
 			guint32 flags;
 			
 			response += 6;
@@ -2787,25 +2795,25 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 			flags = imap_parse_flag_list (&response);
 			
 			g_datalist_set_data (&data, "FLAGS", GUINT_TO_POINTER (flags));
-		} else if (!strncasecmp (response, "RFC822.SIZE ", 12)) {
+		} else if (!g_ascii_strncasecmp (response, "RFC822.SIZE ", 12)) {
 			unsigned long size;
 			
 			response += 12;
 			size = strtoul (response, &response, 10);
 			g_datalist_set_data (&data, "RFC822.SIZE", GUINT_TO_POINTER (size));
-		} else if (!strncasecmp (response, "BODY[", 5) ||
-			   !strncasecmp (response, "RFC822 ", 7)) {
+		} else if (!g_ascii_strncasecmp (response, "BODY[", 5) ||
+			   !g_ascii_strncasecmp (response, "RFC822 ", 7)) {
 			char *p;
 			
 			if (*response == 'B') {
 				response += 5;
 				
 				/* HEADER], HEADER.FIELDS (...)], or 0] */
-				if (!strncasecmp (response, "HEADER", 6)) {
+				if (!g_ascii_strncasecmp (response, "HEADER", 6)) {
 					header = TRUE;
-					if (!strncasecmp (response + 6, ".FIELDS", 7))
+					if (!g_ascii_strncasecmp (response + 6, ".FIELDS", 7))
 						cache_header = FALSE;
-				} else if (!strncasecmp (response, "0]", 2))
+				} else if (!g_ascii_strncasecmp (response, "0]", 2))
 					header = TRUE;
 				
 				p = strchr (response, ']');
@@ -2822,7 +2830,7 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 				part_spec = g_strdup ("");
 				response += 7;
 				
-				if (!strncasecmp (response, "HEADER", 6))
+				if (!g_ascii_strncasecmp (response, "HEADER", 6))
 					header = TRUE;
 			}
 			
@@ -2837,20 +2845,20 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 			g_datalist_set_data_full (&data, "BODY_PART_SPEC", part_spec, g_free);
 			g_datalist_set_data_full (&data, "BODY_PART_DATA", body, g_free);
 			g_datalist_set_data (&data, "BODY_PART_LEN", GINT_TO_POINTER (body_len));
-		} else if (!strncasecmp (response, "BODY ", 5) ||
-			   !strncasecmp (response, "BODYSTRUCTURE ", 14)) {
+		} else if (!g_ascii_strncasecmp (response, "BODY ", 5) ||
+			   !g_ascii_strncasecmp (response, "BODYSTRUCTURE ", 14)) {
 			response = strchr (response, ' ') + 1;
 			start = response;
 			imap_skip_list ((const char **) &response);
 			g_datalist_set_data_full (&data, "BODY", g_strndup (start, response - start), g_free);
-		} else if (!strncasecmp (response, "UID ", 4)) {
+		} else if (!g_ascii_strncasecmp (response, "UID ", 4)) {
 			int len;
 			
 			len = strcspn (response + 4, " )");
 			uid = g_strndup (response + 4, len);
 			g_datalist_set_data_full (&data, "UID", uid, g_free);
 			response += 4 + len;
-		} else if (!strncasecmp (response, "INTERNALDATE ", 13)) {
+		} else if (!g_ascii_strncasecmp (response, "INTERNALDATE ", 13)) {
 			int len;
 			
 			response += 13;
