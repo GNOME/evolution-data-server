@@ -139,7 +139,12 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 			imap_wrapper->part_spec, FALSE, NULL);
 		if (!datastream) {
 			CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
+#ifdef ENETUNREACH
 			errno = ENETUNREACH;
+#else
+#warning FIXME: what errno to use if no ENETUNREACH
+			errno = EINVAL;
+#endif
 			return -1;
 		}
 		

@@ -17,6 +17,8 @@
 	IMAP servers is not supported on Win32 (at least for now), so
 	bypass that code.
 
+	* camel-imap-wrapper.c: If no ENETUNREACH (Win32), use EINVAL.
+
 2005-08-23  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	** See #314199
