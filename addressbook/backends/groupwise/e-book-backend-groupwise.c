@@ -2045,7 +2045,7 @@ book_view_thread (gpointer data)
 	char *view = NULL;
 	gboolean is_auto_completion = FALSE;
 	char *search_string = NULL;
-	struct timeval start, end;
+	GTimeVal start, end;
 	unsigned long diff;
 
 	gwb  = closure->bg;
@@ -2116,7 +2116,7 @@ book_view_thread (gpointer data)
 		}
 
 		if (enable_debug)
-			gettimeofday(&start, NULL);
+			g_get_current_time(&start);
 
 		filter = e_book_backend_groupwise_build_gw_filter (gwb, query, &is_auto_completion, &search_string);
 		view = "name email default members";
@@ -2171,7 +2171,7 @@ book_view_thread (gpointer data)
 				g_ptr_array_free (ids, TRUE);
 				bonobo_object_unref (book_view);
 				if (enable_debug) {
-					gettimeofday(&end, NULL);
+					g_get_current_time(&end);
 					diff = end.tv_sec * 1000 + end.tv_usec/1000;
 					diff -= start.tv_sec * 1000 + start.tv_usec/1000;
 					printf("reading contacts from cache took %ld.%03ld seconds\n",
@@ -2258,7 +2258,7 @@ book_view_thread (gpointer data)
 		bonobo_object_unref (book_view);
 
 		if (enable_debug) {
-			gettimeofday(&end, NULL);
+			g_get_current_time(&end);
 			diff = end.tv_sec * 1000 + end.tv_usec/1000;
 			diff -= start.tv_sec * 1000 + start.tv_usec/1000;
 			printf("reading %d contacts from server took %ld.%03ld seconds\n",
@@ -2432,12 +2432,12 @@ build_cache (EBookBackendGroupwise *ebgw)
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
 	char *status_msg;
-	struct timeval start, end;
-	struct timeval tstart, tend;
+	GTimeVal start, end;
+	GTimeVal tstart, tend;
 	unsigned long diff;
 
 	if (enable_debug) {
-		gettimeofday(&start, NULL);
+		g_get_current_time(&start);
 		printf("Building the cache for %s \n", ebgw->priv->book_name);
 	}
 
@@ -2463,12 +2463,12 @@ build_cache (EBookBackendGroupwise *ebgw)
 	while (!done) {
 
 		if (enable_debug) 
-			gettimeofday(&tstart, NULL);
+			g_get_current_time(&tstart);
 		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, 
 						      cursor, TRUE, CURSOR_ITEM_LIMIT, 
 						      position, &gw_items);
 		if (enable_debug) {
-			gettimeofday(&tend, NULL);
+			g_get_current_time(&tend);
 			diff = tend.tv_sec * 1000 + tend.tv_usec/1000;
 			diff -= tstart.tv_sec * 1000 + tstart.tv_usec/1000;
 			printf("e_gw_connection_read_cursor took %ld.%03ld seconds for %d contacts\n", diff / 1000, diff % 1000, CURSOR_ITEM_LIMIT);
@@ -2522,7 +2522,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
 
 	if (enable_debug) {
-		gettimeofday(&end, NULL);
+		g_get_current_time(&end);
 		diff = end.tv_sec * 1000 + end.tv_usec/1000;
 		diff -= start.tv_sec * 1000 + start.tv_usec/1000;
 		printf("completed building cache for %s in %ld.%03ld seconds for %d contacts\n", 
@@ -2536,11 +2536,11 @@ build_summary (EBookBackendGroupwisePrivate *priv)
 {
 	gchar *query_string;
 	GList *contacts, *temp_list = NULL;
-	struct timeval start, end;
+	GTimeVal start, end;
 	unsigned long diff;
 
 	if (enable_debug) {
-		gettimeofday(&start, NULL);
+		g_get_current_time(&start);
 		printf ("summary file not found or not up-to-date, building summary for %s\n", 
 			priv->book_name);
 	}
@@ -2562,7 +2562,7 @@ build_summary (EBookBackendGroupwisePrivate *priv)
 	priv->is_summary_ready = TRUE;
 	
 	if (enable_debug) {
-		gettimeofday(&end, NULL);
+		g_get_current_time(&end);
 		diff = end.tv_sec * 1000 + end.tv_usec/1000;
 		diff -= start.tv_sec * 1000 + start.tv_usec/1000;
 		printf("building summary for %s took %ld.%03ld seconds \n", 
@@ -2584,11 +2584,11 @@ update_cache (EBookBackendGroupwise *ebgw)
 	const char *cache_file_name;
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
-	struct timeval start, end;
+	GTimeVal start, end;
 	unsigned long diff;
 
 	if (enable_debug) {
-		gettimeofday(&start, NULL);
+		g_get_current_time(&start);
 		printf("updating cache for %s\n", ebgw->priv->book_name);
 	}
 
@@ -2671,7 +2671,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	g_list_free (gw_items);
 
 	if (enable_debug) {
-		gettimeofday(&end, NULL);
+		g_get_current_time(&end);
 		diff = end.tv_sec * 1000 + end.tv_usec/1000;
 		diff -= start.tv_sec * 1000 + start.tv_usec/1000;
 		printf("updating the cache for %s complated in %ld.%03ld seconds for %d contacts\n", 
@@ -2742,14 +2742,14 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		return TRUE;
 	}
 
-	struct timeval start, end;
+	GTimeVal start, end;
 	unsigned long diff;
 	const char *cache_file_name;
 	struct stat buf;
 	time_t mod_time;
 
 	if (enable_debug)
-		gettimeofday(&start, NULL);
+		g_get_current_time(&start);
 
 	book_view = find_book_view (ebgw);
 	if (book_view) {
@@ -2888,7 +2888,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	}
 
 	if (enable_debug) {
-		gettimeofday(&end, NULL);
+		g_get_current_time(&end);
 		diff = end.tv_sec * 1000 + end.tv_usec/1000;
 		diff -= start.tv_sec * 1000 + start.tv_usec/1000;
 		printf("updating GroupWise system address book cache took %ld.%03ld seconds for %d changes\n", 

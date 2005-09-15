@@ -9,6 +9,9 @@
 	"file:///x:/dir/sub/file.ext", so stripping off "file://" leaves
 	an extra slash in front of the drive letter.)
 
+	* backends/groupwise/e-book-backend-groupwise.c: Use
+	g_get_current_time() instead of gettimeofday() for portability.
+
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c
