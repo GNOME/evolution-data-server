@@ -1,3 +1,8 @@
+2005-09-16  Tor Lillqvist  <tml@novell.com>
+
+	* lib/camel-test-provider.c (camel_test_provider_init): Use
+	G_MODULE_SUFFIX instead of hardcoded .so.
+
 2005-08-13  Tor Lillqvist  <tml@novell.com>
 
 	* message/Makefile.am (LDADD): Reorder: put libcamel after
