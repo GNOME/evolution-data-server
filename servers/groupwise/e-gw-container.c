@@ -246,8 +246,8 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			container->priv->type = E_GW_CONTAINER_TYPE_ROOT ;
 		else if (!strcmp (value, "Mailbox")) 
 			container->priv->type = E_GW_CONTAINER_TYPE_INBOX ;
-		else if (!strcmp (value, "Outbox")) 
-			container->priv->type = E_GW_CONTAINER_TYPE_OUTBOX ;
+		else if (!strcmp (value, "SentItems")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_SENT;
 		else if (!strcmp (value, "Calendar")) 
 			container->priv->type = E_GW_CONTAINER_TYPE_CALENDAR ;
 		else if (!strcmp (value, "Contacts")) 
@@ -256,6 +256,8 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			container->priv->type = E_GW_CONTAINER_TYPE_DRAFT ;
 		else if (!strcmp (value, "Trash")) 
 			container->priv->type = E_GW_CONTAINER_TYPE_TRASH ;
+		else if (!strcmp (value, "JunkMail")) 
+			container->priv->type = E_GW_CONTAINER_TYPE_JUNK;
 		g_free (value) ;
 	}
 
