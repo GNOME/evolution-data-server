@@ -619,7 +619,7 @@ e_iconv_charset_language (const char *charset)
 	
 	charset = e_iconv_charset_name (charset);
 	for (i = 0; i < NUM_CJKR_LANGS; i++) {
-		if (!strcasecmp (cjkr_lang_map[i].charset, charset))
+		if (!g_ascii_strcasecmp (cjkr_lang_map[i].charset, charset))
 			return cjkr_lang_map[i].lang;
 	}
 	

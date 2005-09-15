@@ -1,3 +1,10 @@
+2005-09-16  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-iconv.c (e_iconv_charset_language): Use
+	g_ascii_strcasecmp() instead of strcasecmp(). The strings we are
+	comparing are just ASCII anyway, so spell it out that we really do
+	need ASCII casefolding only.
+
 2005-09-15  Tor Lillqvist  <tml@novell.com>
 
 	* acinclude.m4 (EVO_PTHREAD_CHECK): Check if pthread_t is an
