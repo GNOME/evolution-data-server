@@ -46,6 +46,14 @@
 
 #define d(x)
 
+#ifdef G_OS_WIN32
+/* The strtok() in Microsoft's C library is MT-safe (but still uses
+ * only one buffer pointer per thread, but for the use of strtok_r()
+ * here that's enough).
+ */
+#define strtok_r(s,sep,lasts) (*(lasts)=strtok((s),(sep)))
+#endif
+
 /*
   File is:
    BODY	 (as in body search)

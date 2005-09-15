@@ -6,7 +6,8 @@
 	should be just ASCII anyway, so spell it out that we really do
 	need ASCII casefolding only.
 
-	* camel-imap-folder.c: No strtok_r() in Microsoft's C library, but
+	* camel-imap-folder.c
+	* camel-imap-search.c: No strtok_r() in Microsoft's C library, but
 	strtok() is MT-safe, which is enough for the way it's used in this
 	file, to tokenize only one string at a time.
 
