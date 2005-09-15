@@ -1256,7 +1256,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 				tmp = (ECalComponentAttendee *) (l->data);
 				email_id = tmp->value;
 				
-				if (!g_strncasecmp (email_id, "mailto:", 7))
+				if (!g_ascii_strncasecmp (email_id, "mailto:", 7))
 					email_id += 7;
 
 				if (!g_ascii_strcasecmp (email_id, e_gw_connection_get_user_email (cnc))) {

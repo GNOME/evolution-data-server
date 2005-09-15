@@ -1,3 +1,9 @@
+2005-09-15  Tor Lillqvist  <tml@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_gw_connection_send_appointment): Use g_ascii_strncasecmp()
+	instead of strncasecmp() for well-definedness.
+
 2005-09-01  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #114384
