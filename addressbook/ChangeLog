@@ -17,6 +17,9 @@
 	g_ascii_strncasecmp() instead of strncasecmp() for
 	well-definedness.
 
+	* libebook/e-book.c (e_book_new_system_addressbook): Use
+	g_filename_to_uri() instead of simple prefixing "file://".
+
 2005-08-22  Not Zed  <NotZed@Ximian.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c

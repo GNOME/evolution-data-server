@@ -3869,7 +3869,7 @@ e_book_new_system_addressbook    (GError **error)
 		filename = g_build_filename (g_get_home_dir(),
 					     ".evolution/addressbook/local/system",
 					     NULL);
-		uri = g_strdup_printf ("file://%s", filename);
+		uri = g_filename_to_uri (filename, NULL, NULL);
 
 		g_free (filename);
 	
