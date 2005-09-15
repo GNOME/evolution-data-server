@@ -815,31 +815,6 @@ fi
 AM_CONDITIONAL(ENABLE_IMAPP, test x$enable_imapp = xyes)
 
 dnl **************************************************
-dnl * Posix thread support
-dnl **************************************************
-
-dnl GLIB_CONFIG=${GLIB_CONFIG-glib-config}
-dnl GNOME_PTHREAD_CHECK
-
-dnl if test "x$PTHREAD_LIB" = "x" ; then
-dnl 	AC_MSG_ERROR([POSIX threads are currently required for Evolution])
-dnl fi
-
-dnl
-dnl Notice that this is a hack, and we wont be able to use this forever, but
-dnl at least for some time
-dnl
-
-EVO_PTHREAD_CHECK
-
-THREADS_LIBS="$PTHREAD_LIB"
-THREADS_CFLAGS="$PTHREAD_CFLAGS"
-
-AC_SUBST(THREADS_LIBS)
-AC_SUBST(THREADS_CFLAGS)
-AC_DEFINE(ENABLE_THREADS,1,[Required])
-
-dnl **************************************************
 dnl * File locking
 dnl **************************************************
 
@@ -1084,6 +1059,31 @@ AM_PATH_GLIB_2_0
 dnl We use AC_SUBST_FILE because AC_SUBST won't deal with newlines
 EVO_MARSHAL_RULE=$srcdir/marshal.mk
 AC_SUBST_FILE(EVO_MARSHAL_RULE)
+
+dnl **************************************************
+dnl * Posix thread support
+dnl **************************************************
+
+dnl GLIB_CONFIG=${GLIB_CONFIG-glib-config}
+dnl GNOME_PTHREAD_CHECK
+
+dnl if test "x$PTHREAD_LIB" = "x" ; then
+dnl 	AC_MSG_ERROR([POSIX threads are currently required for Evolution])
+dnl fi
+
+dnl
+dnl Notice that this is a hack, and we wont be able to use this forever, but
+dnl at least for some time
+dnl
+
+EVO_PTHREAD_CHECK
+
+THREADS_LIBS="$PTHREAD_LIB"
+THREADS_CFLAGS="$PTHREAD_CFLAGS"
+
+AC_SUBST(THREADS_LIBS)
+AC_SUBST(THREADS_CFLAGS)
+AC_DEFINE(ENABLE_THREADS,1,[Required])
 
 dnl *************************
 dnl CFLAGS and LIBS and stuff

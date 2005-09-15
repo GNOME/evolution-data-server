@@ -1,3 +1,12 @@
+2005-09-15  Tor Lillqvist  <tml@novell.com>
+
+	* acinclude.m4 (EVO_PTHREAD_CHECK): Check if pthread_t is an
+	integral type (or pointer) that can be cast to a guint64 without
+	loss of precision. If so, AC_DEFINE HAVE_GUINT64_CASTABLE_PTHREAD_T.
+
+	* configure.in: Move the EVO_PTHREAD_CHECK call after GLIB_CFLAGS
+	has been set up.
+
 2005-09-14  Tor Lillqvist  <tml@novell.com>
 
 	* win32/README

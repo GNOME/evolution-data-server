@@ -125,6 +125,21 @@ AC_DEFUN([EVO_PTHREAD_CHECK],[
 		)]
 	)
 	AC_SUBST(PTHREAD_LIB)
+	AC_MSG_CHECKING([if pthread_t can be cast to a guint64 without loss of data])
+	CFLAGS_save="$CFLAGS"
+	CFLAGS="$CFLAGS $GLIB_CFLAGS"
+	AC_TRY_COMPILE(
+		[#include <pthread.h>
+		 #include <glibconfig.h>],
+		[char a[(sizeof(guint64)>=sizeof(pthread_t))?1:-1];
+		 guint64 l;
+		 pthread_t t;
+		 l = (guint64) t;],
+		[AC_DEFINE(HAVE_GUINT64_CASTABLE_PTHREAD_T,1,[Define to 1 if pthread_t can be cast to a guint64])
+		 AC_MSG_RESULT([yes])],
+		[AC_MSG_RESULT([no])]
+	)
+	CFLAGS="$CFLAGS_save"
 	AC_PROVIDE([EVO_PTHREAD_CHECK])
 ])
 dnl -*- mode: autoconf -*-
