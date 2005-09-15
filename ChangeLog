@@ -7,6 +7,18 @@
 	* configure.in: Move the EVO_PTHREAD_CHECK call after GLIB_CFLAGS
 	has been set up.
 
+	* libedataserver/e-util.c: Just include <glib.h> instead of a
+	random set of <glib/*.h>. Remove large amount of whitespcace on
+	some empty lines.
+	(e_util_utf8_strstrcase): Clarify doc comment, mention that no
+	proper Unicode case folding or normalization is done.
+	(e_util_pthread_id): New function, returns an integer representing
+	a thread. Only for debugging output and logging purposes, cannot
+	be guaranteed to be consistent on all platforms.
+
+	* libedataserver/e-util.h: Include <pthread.h>. Declare
+	e_util_pthread_id().
+
 2005-09-14  Tor Lillqvist  <tml@novell.com>
 
 	* win32/README

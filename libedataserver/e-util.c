@@ -27,14 +27,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
-#include <glib/gfileutils.h>
-#include <glib/gmem.h>
-#include <glib/gmessages.h>
-#include <glib/gstrfuncs.h>
-#include <glib/gunicode.h>
-#include <glib/gutils.h>
-#include <glib/galloca.h>
-#include <glib/gconvert.h>
+#include <glib.h>
 #include "e-util.h"
 
 /**
@@ -85,7 +78,8 @@ e_util_mkdir_hier (const char *path, mode_t mode)
  * @haystack: The string to search in.
  * @needle: The string to search for.
  *
- * Find the first instance of @needle in @haystack, ignoring case.
+ * Find the first instance of @needle in @haystack, ignoring case for
+ * bytes that are ASCII characters.
  *
  * Returns: A pointer to the start of @needle in @haystack, or NULL if
  *          @needle is not found.
@@ -96,21 +90,21 @@ e_util_strstrcase (const gchar *haystack, const gchar *needle)
         /* find the needle in the haystack neglecting case */
         const gchar *ptr;
         guint len;
-                                                                                
+
         g_return_val_if_fail (haystack != NULL, NULL);
         g_return_val_if_fail (needle != NULL, NULL);
-                                                                                
+
         len = strlen(needle);
         if (len > strlen(haystack))
                 return NULL;
-                                                                                
+
         if (len == 0)
                 return (gchar *) haystack;
-                                                                                
+
         for (ptr = haystack; *(ptr + len - 1) != '\0'; ptr++)
                 if (!g_ascii_strncasecmp (ptr, needle, len))
                         return (gchar *) ptr;
-                                                                                
+
         return NULL;
 }
 
@@ -135,11 +129,13 @@ e_util_unicode_get_utf8 (const gchar *text, gunichar *out)
  * @haystack: The string to search in.
  * @needle: The string to search for.
  * 
- * Find the first instance of @needle in @haystack, ignoring
- * case. Both @needle and @haystack are UTF-8 strings.
+ * Find the first instance of @needle in @haystack, ignoring case. (No
+ * proper case folding or decomposing is done.) Both @needle and
+ * @haystack are UTF-8 strings.
  *
  * Returns: A pointer to the first instance of @needle in @haystack, or
- *          %NULL if either of the strings are not legal UTF-8 strings.
+ *          %NULL if no match is found, or if either of the strings are
+ *          not legal UTF-8 strings.
  **/
 const gchar *
 e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
@@ -148,14 +144,14 @@ e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
         gunichar unival;
         gint nlen;
         const guchar *o, *p;
-                                                                                
+
         if (haystack == NULL) return NULL;
         if (needle == NULL) return NULL;
         if (strlen (needle) == 0) return haystack;
         if (strlen (haystack) == 0) return NULL;
-                                                                                
+
         nuni = g_alloca (sizeof (gunichar) * strlen (needle));
-                                                                                
+
         nlen = 0;
         for (p = e_util_unicode_get_utf8 (needle, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
                 nuni[nlen++] = g_unichar_tolower (unival);
@@ -184,7 +180,7 @@ e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
                 }
                 o = p;
         }
-                                                                                
+
         return NULL;
 }
 
@@ -195,9 +191,9 @@ stripped_char (gunichar ch)
         gunichar *decomp, retval;
         GUnicodeType utype;
         gint dlen;
-                                                                                
+
         utype = g_unichar_type (ch);
-                                                                                
+
         switch (utype) {
         case G_UNICODE_CONTROL:
         case G_UNICODE_FORMAT:
@@ -217,7 +213,7 @@ stripped_char (gunichar ch)
                 }
                 break;
         }
-                                                                                
+
         return 0;
 }
 
@@ -240,14 +236,14 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
         gunichar unival;
         gint nlen;
         const guchar *o, *p;
-                                                                                
+
         if (haystack == NULL) return NULL;
         if (needle == NULL) return NULL;
         if (strlen (needle) == 0) return haystack;
         if (strlen (haystack) == 0) return NULL;
-                                                                                
+
         nuni = g_alloca (sizeof (gunichar) * strlen (needle));
-                                                                                
+
         nlen = 0;
         for (p = e_util_unicode_get_utf8 (needle, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
                 gint sc;
@@ -260,7 +256,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
         if (!p) return NULL;
         /* If everything is correct, we have decomposed, lowercase, stripped needle */
         if (nlen < 1) return haystack;
-                                                                                
+
         o = haystack;
         for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
                 gint sc;
@@ -284,7 +280,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
                 }
                 o = p;
         }
-                                                                                
+
         return NULL;
 }
 
@@ -373,4 +369,61 @@ e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 	g_free(locale_fmt);
 	g_free(buf);
 	return sz;
+}
+
+/**
+ * e_util_pthread_id:
+ * @t: A pthread_t value
+ *
+ * Returns a 64-bit integer hopefully uniquely identifying the
+ * thread. To be used in debugging output and logging only. To test
+ * whether two pthread_t values refer to the same thread, use
+ * pthread_equal().
+ *
+ * There is no guarantee that calling e_util_pthread_id() on one
+ * thread first and later after that thread has dies on another won't
+ * return the same integer.
+ *
+ * On some platforms it might even be that when called two times on
+ * the same thread's pthread_t (with some pthread API calls inbetween)
+ * we will return different values (this of course makes this function
+ * rather useless on such platforms).
+ *
+ * On Linux and Win32, known to really return a unique id for each
+ * thread existing at a certain time. No guarantee that ids won't be
+ * reused after a thread has terminated, though.
+ *
+ * Returns: A 64-bit integer.
+ */
+guint64
+e_pthread_id(pthread_t t)
+{
+#ifdef HAVE_GUINT64_CASTABLE_PTHREAD_T
+	/* We know that pthread_t is an integral type, or at least
+	 * castable to such without loss of precision.
+	 */
+	return (guint64) t;
+#elif defined (PTW32_VERSION)
+	/* pthreads-win32 implementation on Windows: Return the
+	 * pointer to the "actual object" (see pthread.h)
+	 */
+#if GLIB_SIZEOF_VOID_P == 8
+	/* 64-bit Windows */
+	return (guint64) t.p;
+#else
+	return (int) t.p;
+#endif
+#else
+	/* Just return a checksum of the contents of the pthread_t */
+	{
+		guint64 retval = 0;
+		guchar *const tend = (guchar *) ((&t)+1);
+		guchar *tp = (guchar *) &t;
+
+		while (tp < tend)
+			retval = (retval << 5) - retval * tp++;
+
+		return retval;
+	}
+#endif
 }

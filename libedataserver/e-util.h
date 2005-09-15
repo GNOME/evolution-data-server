@@ -22,6 +22,7 @@
 #ifndef __E_UTIL_H__
 #define __E_UTIL_H__
 
+#include <pthread.h>
 #include <sys/types.h>
 #include <glib/gmacros.h>
 #include <glib/gtypes.h>
@@ -37,6 +38,8 @@ gchar       *e_util_strstrcase (const gchar *haystack, const gchar *needle);
 gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);
 const gchar *e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle);
 const gchar *e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle);
+
+guint64      e_pthread_id (pthread_t t);
 
 size_t e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm);
 size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm);
