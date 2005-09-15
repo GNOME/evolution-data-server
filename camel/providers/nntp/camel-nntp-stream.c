@@ -36,6 +36,10 @@
 
 #define dd(x) (camel_debug("nntp:stream")?(x):0)
 
+#ifndef ECONNRESET
+#define ECONNRESET EIO
+#endif
+
 static CamelObjectClass *parent_class = NULL;
 
 /* Returns the class for a CamelStream */
