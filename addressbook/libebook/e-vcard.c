@@ -1658,12 +1658,12 @@ e_vcard_attribute_has_type (EVCardAttribute *attr, const char *typestr)
 	for (p = params; p; p = p->next) {
 		EVCardAttributeParam *param = p->data;
 
-		if (!strcasecmp (e_vcard_attribute_param_get_name (param), EVC_TYPE)) {
+		if (!g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param), EVC_TYPE)) {
 			GList *values = e_vcard_attribute_param_get_values (param);
 			GList *v;
 
 			for (v = values; v; v = v->next) {
-				if (!strcasecmp ((char*)v->data, typestr))
+				if (!g_ascii_strcasecmp ((char*)v->data, typestr))
 					return TRUE;
 			}
 		}
