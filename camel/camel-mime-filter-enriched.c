@@ -28,9 +28,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <camel/camel-string-utils.h>
-
 #include "camel-mime-filter-enriched.h"
+#include "camel-string-utils.h"
 
 /* text/enriched is rfc1896 */
 
@@ -197,7 +196,7 @@ param_parse_colour (const char *inptr, int inlen)
 	int i;
 	
 	for (i = 0; i < NUM_VALID_COLOURS; i++) {
-		if (!strncasecmp (inptr, valid_colours[i], inlen))
+		if (!g_ascii_strncasecmp (inptr, valid_colours[i], inlen))
 			return g_strdup (valid_colours[i]);
 	}
 	
@@ -406,14 +405,14 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 				goto need_input;
 			}
 			
-			if (!strncasecmp (tag, "nofill>", 7)) {
+			if (!g_ascii_strncasecmp (tag, "nofill>", 7)) {
 				if ((outptr + 5) < outend) {
 					enriched->nofill++;
 				} else {
 					inptr = tag - 1;
 					goto backup;
 				}
-			} else if (!strncasecmp (tag, "/nofill>", 8)) {
+			} else if (!g_ascii_strncasecmp (tag, "/nofill>", 8)) {
 				if ((outptr + 6) < outend) {
 					enriched->nofill--;
 				} else {
@@ -445,7 +444,7 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 							goto need_input;
 						}
 						
-						if (strncasecmp (inptr, "<param>", 7) != 0) {
+						if (g_ascii_strncasecmp (inptr, "<param>", 7) != 0) {
 							/* ignore the enriched command tag... */
 							inptr -= 1;
 							goto loop;
@@ -462,7 +461,7 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 							goto need_input;
 						}
 						
-						if (strncasecmp (inptr, "</param>", 8) != 0) {
+						if (g_ascii_strncasecmp (inptr, "</param>", 8) != 0) {
 							/* ignore the enriched command tag... */
 							inptr += 7;
 							goto loop;
