@@ -357,7 +357,7 @@ e_contact_get_first_attr (EContact *contact, const char *attr_name)
 
 		name = e_vcard_attribute_get_name (attr);
 
-		if (!strcasecmp (name, attr_name))
+		if (!g_ascii_strcasecmp (name, attr_name))
 			return attr;
 	}
 
@@ -702,7 +702,7 @@ e_contact_set_property (GObject *object,
 				attr = l->data;
 				name = e_vcard_attribute_get_name (attr);
 
-				if (!strcasecmp (name, info->vcard_field_name)) {
+				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 					if (num_left-- == 0) {
 						found = TRUE;
 						break;
@@ -760,22 +760,22 @@ e_contact_set_property (GObject *object,
 				attr = l->data;
 				name = e_vcard_attribute_get_name (attr);
 
-				if (!strcasecmp (name, info->vcard_field_name)) {
+				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 					GList *params;
 
 					for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
 						EVCardAttributeParam *param = params->data;
 						const char *name = e_vcard_attribute_param_get_name (param);
 
-						if (!strcasecmp (name, EVC_TYPE)) {
+						if (!g_ascii_strcasecmp (name, EVC_TYPE)) {
 							GList *values = e_vcard_attribute_param_get_values (param);
 							if (values && values->data) {
 								gboolean matches = FALSE;
-								if (!found_needed1 && !strcasecmp ((char*)values->data, info->attr_type1)) {
+								if (!found_needed1 && !g_ascii_strcasecmp ((char*)values->data, info->attr_type1)) {
 									found_needed1 = TRUE;
 									matches = TRUE;
 								}
-								else if (!found_needed2 && !strcasecmp ((char*)values->data, info->attr_type2)) {
+								else if (!found_needed2 && !g_ascii_strcasecmp ((char*)values->data, info->attr_type2)) {
 									found_needed2 = TRUE;
 									matches = TRUE;
 								}
@@ -1025,23 +1025,23 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 
 		name = e_vcard_attribute_get_name (attr);
 
-		if (!strcasecmp (name, attr_name)) {
+		if (!g_ascii_strcasecmp (name, attr_name)) {
 			GList *params;
 
 			for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
 				EVCardAttributeParam *param = params->data;
 				const char *name = e_vcard_attribute_param_get_name (param);
 
-				if (!strcasecmp (name, EVC_TYPE)) {
+				if (!g_ascii_strcasecmp (name, EVC_TYPE)) {
 					GList *values = e_vcard_attribute_param_get_values (param);
 					if (values && values->data) {
 						gboolean matches = FALSE;
 
-						if (!found_needed1 && !strcasecmp ((char*)values->data, type_needed1)) {
+						if (!found_needed1 && !g_ascii_strcasecmp ((char*)values->data, type_needed1)) {
 							found_needed1 = TRUE;
 							matches = TRUE;
 						}
-						else if (!found_needed2 && !strcasecmp ((char*)values->data, type_needed2)) {
+						else if (!found_needed2 && !g_ascii_strcasecmp ((char*)values->data, type_needed2)) {
 							found_needed2 = TRUE;
 							matches = TRUE;
 						}
@@ -1104,7 +1104,7 @@ e_contact_get_property (GObject *object,
 
 		if (attr) {
 			GList *v = e_vcard_attribute_get_values (attr);
-			rv = v && v->data && !strcasecmp ((char*)v->data, "true");
+			rv = v && v->data && !g_ascii_strcasecmp ((char*)v->data, "true");
 		}
 
 		g_value_set_boolean (value, rv);
@@ -1133,7 +1133,7 @@ e_contact_get_property (GObject *object,
 
 				name = e_vcard_attribute_get_name (attr);
 
-				if (!strcasecmp (name, info->vcard_field_name)) {
+				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 					GList *v;
 					int count;
 
@@ -1160,7 +1160,7 @@ e_contact_get_property (GObject *object,
 
 				name = e_vcard_attribute_get_name (attr);
 
-				if (!strcasecmp (name, info->vcard_field_name)) {
+				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 					if (num_left-- == 0) {
 						GList *v = e_vcard_attribute_get_values (attr);
 
@@ -1275,7 +1275,7 @@ e_contact_get_property (GObject *object,
 
 			name = e_vcard_attribute_get_name (attr);
 
-			if (!strcasecmp (name, info->vcard_field_name)) {
+			if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 				GList *v;
 				v = e_vcard_attribute_get_values (attr);
 
@@ -1620,7 +1620,7 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
 
 		name = e_vcard_attribute_get_name (attr);
 
-		if (!strcasecmp (name, info->vcard_field_name)) {
+		if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 			l = g_list_append (l, e_vcard_attribute_copy (attr));
 		}
 	}

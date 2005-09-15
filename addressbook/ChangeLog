@@ -13,9 +13,8 @@
 	g_get_current_time() instead of gettimeofday() for portability.
 
 	* backends/vcf/e-book-backend-vcf.c
-	(e_book_backend_vcf_extract_path_from_uri): Use
-	g_ascii_strncasecmp() instead of strncasecmp() for
-	well-definedness.
+	* libebook/e-contact.c: Use g_ascii_str(n)casecmp() instead of
+	str(n)casecmp() for well-definedness.
 
 	* libebook/e-book.c (e_book_new_system_addressbook): Use
 	g_filename_to_uri() instead of simple prefixing "file://".
