@@ -322,8 +322,15 @@ void
 e_gw_proxy_form_modify_proxy_msg (SoupSoapMessage *msg, proxyHandler *new_proxy)
 {
 	soup_soap_message_start_element (msg, "updates", NULL, NULL);
-
+	
+	soup_soap_message_start_element (msg, "delete", NULL, NULL);
+	soup_soap_message_end_element (msg);
+	
+	soup_soap_message_start_element (msg, "add", NULL, NULL);
 	e_gw_proxy_form_soap_request_from_proxyHandler (msg, new_proxy);
+	soup_soap_message_end_element (msg);
+	
+	soup_soap_message_end_element (msg);
 }
 
 void
