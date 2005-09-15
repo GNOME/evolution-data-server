@@ -546,7 +546,7 @@ e_book_backend_vcf_stop_book_view (EBookBackend  *backend,
 static char *
 e_book_backend_vcf_extract_path_from_uri (const char *uri)
 {
-	g_assert (strncasecmp (uri, "vcf://", 6) == 0);
+	g_assert (g_ascii_strncasecmp (uri, "vcf://", 6) == 0);
 
 	return g_strdup (uri + 6);
 }
