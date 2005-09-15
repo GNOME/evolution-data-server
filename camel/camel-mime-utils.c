@@ -43,16 +43,27 @@
 #endif
 
 #include <glib.h>
-#include <libedataserver/e-iconv.h>
-#include <libedataserver/e-time-utils.h>
 
-#include "camel-mime-utils.h"
+#include "libedataserver/e-iconv.h"
+#include "libedataserver/e-time-utils.h"
+
 #include "camel-charset-map.h"
+#include "camel-mime-utils.h"
 #include "camel-net-utils.h"
 #include "camel-utf8.h"
 
 #ifndef CLEAN_DATE
 #include "broken-date-parser.h"
+#endif
+
+#ifdef G_OS_WIN32
+/* Undef the similar macro from pthread.h, it doesn't check if
+ * gmtime() returns NULL.
+ */
+#undef gmtime_r
+
+/* The gmtime() in Microsoft's C library is MT-safe */
+#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 #endif
 
 #if 0
@@ -1297,7 +1308,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 	
 	ascii = g_alloca (bufflen);
 	
-	if (strcasecmp (type, "UTF-8") != 0)
+	if (g_ascii_strcasecmp (type, "UTF-8") != 0)
 		ic = e_iconv_open (type, "UTF-8");
 	
 	while (inlen) {
@@ -2151,16 +2162,16 @@ camel_content_type_is(CamelContentType *ct, const char *type, const char *subtyp
 {
 	/* no type == text/plain or text/"*" */
 	if (ct==NULL || (ct->type == NULL && ct->subtype == NULL)) {
-		return (!strcasecmp(type, "text")
+		return (!g_ascii_strcasecmp(type, "text")
 			&& (!g_ascii_strcasecmp(subtype, "plain")
-			    || !strcasecmp(subtype, "*")));
+			    || !strcmp(subtype, "*")));
 	}
 
 	return (ct->type != NULL
 		&& (!g_ascii_strcasecmp(ct->type, type)
 		    && ((ct->subtype != NULL
 			 && !g_ascii_strcasecmp(ct->subtype, subtype))
-			|| !strcasecmp("*", subtype))));
+			|| !strcmp("*", subtype))));
 }
 
 
@@ -3363,7 +3374,7 @@ camel_content_type_decode(const char *in)
 			inptr++;
 			subtype = decode_token(&inptr);
 		}
-		if (subtype == NULL && (!strcasecmp(type, "text"))) {
+		if (subtype == NULL && (!g_ascii_strcasecmp(type, "text"))) {
 			w(g_warning("text type with no subtype, resorting to text/plain: %s", in));
 			subtype = g_strdup("plain");
 		}
@@ -3829,13 +3840,13 @@ camel_header_raw_append(struct _camel_header_raw **list, const char *name, const
 
 	/* debug */
 #if 0
-	if (!strcasecmp(name, "To")) {
+	if (!g_ascii_strcasecmp(name, "To")) {
 		printf("- Decoding To\n");
 		camel_header_to_decode(value);
-	} else if (!strcasecmp(name, "Content-type")) {
+	} else if (!g_ascii_strcasecmp(name, "Content-type")) {
 		printf("- Decoding content-type\n");
 		camel_content_type_dump(camel_content_type_decode(value));		
-	} else if (!strcasecmp(name, "MIME-Version")) {
+	} else if (!g_ascii_strcasecmp(name, "MIME-Version")) {
 		printf("- Decoding mime version\n");
 		camel_header_mime_decode(value);
 	}

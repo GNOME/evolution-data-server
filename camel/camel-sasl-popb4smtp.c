@@ -28,10 +28,10 @@
 #include <string.h>
 #include <time.h>
 
+#include "camel-i18n.h"
 #include "camel-sasl-popb4smtp.h"
 #include "camel-service.h"
 #include "camel-session.h"
-#include "camel-i18n.h"
 
 CamelServiceAuthType camel_sasl_popb4smtp_authtype = {
 	N_("POP before SMTP"),
@@ -108,7 +108,7 @@ popb4smtp_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		return NULL;
 	}
 
-	if (strncasecmp(popuri, "pop:", 4) != 0) {
+	if (g_ascii_strncasecmp(popuri, "pop:", 4) != 0) {
 		camel_exception_setv(ex, 1, _("POP Before SMTP auth using a non-pop source"));
 		return NULL;
 	}

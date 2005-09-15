@@ -410,7 +410,7 @@ solaris_header_write(int fd, struct _camel_header_raw *header)
         iv[3].iov_len = 1;
 
         while (header) {
-		if (strcasecmp(header->name, "Content-Length")) {
+		if (g_ascii_strcasecmp(header->name, "Content-Length")) {
 			iv[0].iov_base = header->name;
 			iv[0].iov_len = strlen(header->name);
 			iv[2].iov_base = header->value;

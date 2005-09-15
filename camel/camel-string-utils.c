@@ -88,7 +88,7 @@ camel_strstrcase (const char *haystack, const char *needle)
 		return (char *) haystack;
 	
 	for (ptr = haystack; *(ptr + len - 1) != '\0'; ptr++)
-		if (!strncasecmp (ptr, needle, len))
+		if (!g_ascii_strncasecmp (ptr, needle, len))
 			return (char *) ptr;
 	
 	return NULL;

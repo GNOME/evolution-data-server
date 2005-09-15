@@ -33,19 +33,19 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <libedataserver/e-iconv.h>
+#include "libedataserver/e-iconv.h"
 
-#include "camel-mime-parser.h"
-#include "camel-stream-mem.h"
-#include "camel-stream-filter.h"
-#include "camel-mime-filter-basic.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-filter-charset.h"
-#include "camel-mime-part.h"
-#include "camel-mime-part-utils.h"
-#include "camel-mime-utils.h"
-#include "camel-exception.h"
 #include "camel-charset-map.h"
+#include "camel-exception.h"
+#include "camel-mime-filter-basic.h"
+#include "camel-mime-filter-charset.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-mime-parser.h"
+#include "camel-mime-part-utils.h"
+#include "camel-mime-part.h"
+#include "camel-mime-utils.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-mem.h"
 #include "camel-string-utils.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
@@ -950,7 +950,7 @@ construct_from_parser (CamelMimePart *mime_part, CamelMimeParser *mp)
 			process_header((CamelMedium *)dw, "content-type", content);
 
 		while (headers) {
-			if (strcasecmp(headers->name, "content-type") == 0
+			if (g_ascii_strcasecmp(headers->name, "content-type") == 0
 			    && headers->value != content)
 				camel_medium_add_header((CamelMedium *)dw, "X-Invalid-Content-Type", headers->value);
 			else

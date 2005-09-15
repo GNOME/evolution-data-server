@@ -32,12 +32,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "camel-url.h"
 #include "camel-exception.h"
+#include "camel-i18n.h"
 #include "camel-mime-utils.h"
 #include "camel-object.h"
 #include "camel-string-utils.h"
-#include "camel-i18n.h"
+#include "camel-url.h"
 
 static void copy_param (GQuark key_id, gpointer data, gpointer user_data);
 static void output_param (GQuark key_id, gpointer data, gpointer user_data);
@@ -110,7 +110,7 @@ camel_url_new_with_base (CamelURL *base, const char *url_string)
 
 			semi = strchr(url_string, ';');
 			if (semi && semi < colon &&
-			    !strncasecmp (semi, ";auth=", 6)) {
+			    !g_ascii_strncasecmp (semi, ";auth=", 6)) {
 				url->authmech = g_strndup (semi + 6,
 							   colon - semi - 6);
 				camel_url_decode (url->authmech);

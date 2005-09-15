@@ -3,11 +3,16 @@
 	* broken-date-parser.c (get_wday, get_month)
 	* camel-folder-search.c (check_header)
 	* camel-http-stream.c (http_connect, http_get_statuscode)
-	* camel-mime-filter-enriched.c (param_parse_colour, enriched_to_html): 
-	Use g_ascii_str(n)casecmp() instead of str(n)casecmp(). The
-	strings we are comparing in these cases should be just ASCII
-	anyway, so spell it out that we really do need ASCII casefolding
-	only.
+	* camel-mime-filter-enriched.c (param_parse_colour, enriched_to_html)
+	* camel-mime-part.c
+	* camel-mime-utils.c
+	* camel-movemail.c
+	* camel-sasl-popb4smtp.c
+	* camel-string-utils.c
+	* camel-url.c: Use g_ascii_str(n)casecmp() instead of
+	str(n)casecmp(). The strings we are comparing in these cases
+	should be just ASCII anyway, so spell it out that we really do
+	need ASCII casefolding only.
 
 	* camel-debug.c: Use e_util_pthread_id() to identify threads.
 
