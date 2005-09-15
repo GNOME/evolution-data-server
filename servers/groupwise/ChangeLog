@@ -1,3 +1,12 @@
+2005-09-15  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-container.c: (e_gw_container_set_from_soap_parameter):
+	Add the Type for "Sent Items" and "Junk Mail" folder.
+
+	* e-gw-item.[ch]: add delivered date for mails.
+
+	Approved by Chenthill Palanisamy <pchenthill@novell.com>
+
 2005-09-15  Sankar P  <psankar@novell.com>
 
 	* e-gw-proxy.c (e_gw_proxy_form_modify_proxy_msg):
