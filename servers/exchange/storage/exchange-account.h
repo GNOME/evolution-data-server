@@ -102,9 +102,12 @@ void                   exchange_account_rescan_tree          (ExchangeAccount  *
 
 char 		      *exchange_account_get_password 	     (ExchangeAccount  *acct);
 
+#ifdef HAVE_KRB5
 ExchangeAccountResult exchange_account_set_password 	     (ExchangeAccount  *acct,
 							      char             *old_password,
 							      char             *new_password);
+#endif
+
 void 		       exchange_account_forget_password       (ExchangeAccount  *acct);
 
 gboolean	       exchange_account_set_offline          (ExchangeAccount  *account);
