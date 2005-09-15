@@ -330,6 +330,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	
 	if (!strcmp (attachment->contentType, "text/html"))
 		filename = "text.htm";
+
 	attachment->name = g_strdup (filename ? filename : "");
 	if (!g_ascii_strncasecmp (attachment->contentType, RFC_822, strlen (RFC_822))) {
 		char *temp_id = NULL, *id = NULL;

@@ -1,3 +1,38 @@
+2005-09-15  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	(groupwise_folder_get_message): free message info
+	Dont cache messages in Sent Items folder.
+	(groupwise_populate_details_from_item):
+	(gw_update_cache):
+	(gw_update_summary):
+	Use the delivered time instead of the created time
+	in the summary and cache.
+	(groupwise_sync): Use folder Locks. This should fix 
+	the summary corruption bug, logically.
+
+	* camel-groupwise-store.c:
+	(groupwise_connect): sync folders here when the user 
+	creats the account the first time.
+	(groupwise_get_folder): destroy cursor when something 
+	fails
+	(convert_to_folder_info): parse date in EGwcontainer 
+	and create a corresponding CamelFolderInfo
+	(get_folders_sync): sync folder list with the server
+	(groupwise_get_folder_info): basically work from the
+	cache, and refresh only asynchronously.
+	(groupwise_get_folder_info_offline): Changed radically.
+	gets stuff from the StoreInfo and populates the folder
+	info.
+	(camel_groupwise_store_connected): checks if we are 
+	really connected and online. Based on an equivalent
+	IMAP function.
+
+	* camel-groupwise-transport.c: (groupwise_send_to):
+	Free url.
+	Report a proper error message when the mail cannot be 
+	sent.
+
 2005-09-02 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg)

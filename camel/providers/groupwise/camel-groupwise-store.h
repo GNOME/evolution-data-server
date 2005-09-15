@@ -54,12 +54,14 @@ struct _CamelGroupwiseStore {
 
 	struct _CamelGroupwiseStoreSummary *summary;
 
-	char *root_container ;
+	char *root_container;
 	CamelGroupwiseStorePrivate *priv;
-	CamelFolder *current_folder ;
+	CamelFolder *current_folder;
 	
 	/* the parameters field is not to be included not. probably for 2.6*/
 	/*guint32 parameters;*/
+	time_t refresh_stamp;
+	guint list_loaded:1;
 };
 
 
@@ -70,15 +72,15 @@ struct _CamelGroupwiseStoreClass {
 
 /* Standard Camel function */
 CamelType camel_groupwise_store_get_type (void);
-char * groupwise_get_name(CamelService *service, gboolean brief) ;
+char * groupwise_get_name(CamelService *service, gboolean brief);
 
 /*IMplemented*/
-const char *camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_store, const char *folder_name) ;
-const char *camel_groupwise_store_folder_lookup (CamelGroupwiseStore *gw_store, const char *container_id) ;
-EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv) ;
-char *storage_path_lookup (CamelGroupwiseStorePrivate *priv) ;
+const char *camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_store, const char *folder_name);
+const char *camel_groupwise_store_folder_lookup (CamelGroupwiseStore *gw_store, const char *container_id);
+EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv);
+char *storage_path_lookup (CamelGroupwiseStorePrivate *priv);
 CamelFolderInfo * create_junk_folder (CamelStore *store);
-
+gboolean camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex);
 
 #ifdef __cplusplus
 }
