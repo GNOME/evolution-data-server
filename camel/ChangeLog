@@ -1,9 +1,10 @@
 2005-09-15  Tor Lillqvist  <tml@novell.com>
 
-	* broken-date-parser.c (get_wday, get_month): Use
-	g_ascii_strncasecmp() instead of strncasecmp(). The strings we are
-	comparing should be just ASCII anyway, so spell it out that we
-	really do care only for the ASCII bytes.
+	* broken-date-parser.c (get_wday, get_month)
+	* camel-folder-search.c (check_header): Use g_ascii_str(n)casecmp() 
+	instead of str(n)casecmp(). The strings we are comparing in these
+	cases should be just ASCII anyway, so spell it out that we really
+	do need ASCII casefolding only.
 
 	* camel-debug.c: Use e_util_pthread_id() to identify threads.
 

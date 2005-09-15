@@ -858,19 +858,19 @@ check_header(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolder
 
 		/* only a subset of headers are supported .. */
 		headername = argv[0]->value.string;
-		if (!strcasecmp(headername, "subject")) {
+		if (!g_ascii_strcasecmp(headername, "subject")) {
 			header = camel_message_info_subject(search->current);
-		} else if (!strcasecmp(headername, "date")) {
+		} else if (!g_ascii_strcasecmp(headername, "date")) {
 			/* FIXME: not a very useful form of the date */
 			sprintf(strbuf, "%d", (int)camel_message_info_date_sent(search->current));
 			header = strbuf;
-		} else if (!strcasecmp(headername, "from")) {
+		} else if (!g_ascii_strcasecmp(headername, "from")) {
 			header = camel_message_info_from(search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
-		} else if (!strcasecmp(headername, "to")) {
+		} else if (!g_ascii_strcasecmp(headername, "to")) {
 			header = camel_message_info_to(search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
-		} else if (!strcasecmp(headername, "cc")) {
+		} else if (!g_ascii_strcasecmp(headername, "cc")) {
 			header = camel_message_info_cc(search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
 		} else if (!g_ascii_strcasecmp(headername, "x-camel-mlist")) {
