@@ -179,7 +179,7 @@ http_connect (CamelHttpStream *http, CamelURL *url)
 
 	d(printf("connecting to http stream @ '%s'\n", url->host));
 
-	if (!strcasecmp (url->protocol, "https")) {
+	if (!g_ascii_strcasecmp (url->protocol, "https")) {
 #ifdef HAVE_SSL
 		stream = camel_tcp_stream_ssl_new (http->session, url->host, SSL_FLAGS);
 #endif
@@ -267,7 +267,7 @@ http_get_statuscode (CamelHttpStream *http)
 	d(printf("HTTP Status: %s\n", buffer));
 
 	/* parse the HTTP status code */
-	if (!strncasecmp (buffer, "HTTP/", 5)) {
+	if (!g_ascii_strncasecmp (buffer, "HTTP/", 5)) {
 		token = http_next_token (buffer);
 		http->statuscode = camel_header_decode_int (&token);
 		return http->statuscode;
