@@ -554,13 +554,13 @@ local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelL
 		params = camel_header_param_list_decode(header+1);
 		scan = params;
 		while (scan) {
-			if (!strcasecmp(scan->name, "flags")) {
+			if (!g_ascii_strcasecmp(scan->name, "flags")) {
 				char **flagv = g_strsplit(scan->value, ",", 1000);
 
 				for (i=0;flagv[i];i++)
 					camel_message_info_set_user_flag((CamelMessageInfo *)mi, flagv[i], TRUE);
 				g_strfreev(flagv);
-			} else if (!strcasecmp(scan->name, "tags")) {
+			} else if (!g_ascii_strcasecmp(scan->name, "tags")) {
 				char **tagv = g_strsplit(scan->value, ",", 10000);
 				char *val;
 
