@@ -330,6 +330,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	
 	if (!strcmp (attachment->contentType, "text/html"))
 		filename = "text.htm";
+
 	attachment->name = g_strdup (filename ? filename : "");
 	if (!g_ascii_strncasecmp (attachment->contentType, RFC_822, strlen (RFC_822))) {
 		char *temp_id = NULL, *id = NULL;
@@ -556,5 +557,17 @@ do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new)
 {
 	diff->changed = old ^ _new;
 	diff->bits = _new & diff->changed;
+}
+
+char *
+gw_concat ( const char *prefix, const char *suffix)
+{
+	size_t len;
+
+	len = strlen (prefix);
+	if (len == 0 || prefix[len - 1] == '/')
+		return g_strdup_printf ("%s%s", prefix, suffix);
+	else
+		return g_strdup_printf ("%s%c%s", prefix, '/', suffix);
 }
 

@@ -162,6 +162,7 @@ groupwise_send_to (CamelTransport *transport,
 
 	/*camel groupwise store and cnc*/
 	store = camel_session_get_store (service->session, url, ex );
+	g_free (url);
 	if (!store) {
 		g_warning ("ERROR: Could not get a pointer to the store");
 		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("Cannot get folder: Invalid operation on this store"));
@@ -208,7 +209,8 @@ groupwise_send_to (CamelTransport *transport,
 		g_object_unref (item);
 		if (temp_item)
 			g_object_unref (temp_item);
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("Unknown error"));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,_("Could not send message: %s"),_("Unknown error"));
+
 		return FALSE;
 	}
 	e_gw_item_set_link_info (item, NULL);
