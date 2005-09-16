@@ -1590,7 +1590,19 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	EGwConnection *cnc = cnc_lookup (priv);
 	EGwItem *item;
 	char *id;
+	gboolean is_ok = FALSE;
 	
+	if (!strcmp (folder->name, RECEIVED))
+		is_ok = TRUE;
+	if(!strcmp (folder->name, SENT))
+		is_ok = TRUE;
+
+	if (!is_ok) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot append message to folder `%s': %s"),
+				folder->full_name, e_gw_connection_get_error_message (status));
+		return;
+	}
+
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_groupwise_journal_append ((CamelGroupwiseJournal *) ((CamelGroupwiseFolder *)folder)->journal, message, info, appended_uid, ex);
 		return;
