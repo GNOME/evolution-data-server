@@ -1,3 +1,7 @@
+2005-09-16  Parthasarathi Susarla <sparthasarathi@novell.com>
+	* e-gw-connection.c: (e_gw_connection_format_date_string):
+	Return if the length of the dtstring is 0
+
 2005-09-15  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-container.c: (e_gw_container_set_from_soap_parameter):

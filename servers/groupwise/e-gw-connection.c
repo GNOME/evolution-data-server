@@ -1643,6 +1643,9 @@ e_gw_connection_format_date_string (const char *dtstring)
         int i, j, len = strlen (dtstring);
 	
         str2 = g_malloc0 (len);
+	if (len <= 0)
+		return str2;
+
         for (i = 0,j = 0; i < len; i++) {
                 if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
 			str2[j] = dtstring[i];
