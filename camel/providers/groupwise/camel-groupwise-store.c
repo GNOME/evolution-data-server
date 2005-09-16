@@ -77,6 +77,7 @@ static CamelOfflineStoreClass *parent_class = NULL;
 extern CamelServiceAuthType camel_groupwise_password_authtype; /*for the query_auth_types function*/
 CamelFolderInfo *convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, const char *url, CamelException *ex);
 static void groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex);
+static int match_path(const char *path, const char *name);
 
 
 
@@ -825,7 +826,7 @@ groupwise_get_folder_info_offline (CamelStore *store, const char *top,
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelFolderInfo *fi;
 	GPtrArray *folders;
-	char *name;
+	char *path, *name;
 	int i;
 
 	folders = g_ptr_array_new ();
@@ -842,13 +843,16 @@ groupwise_get_folder_info_offline (CamelStore *store, const char *top,
 			name = camel_groupwise_store_summary_path_to_full(groupwise_store->summary, top, '/');
 	}
 
+	path = gw_concat (name, "*");
+
 	for (i=0;i<camel_store_summary_count((CamelStoreSummary *)groupwise_store->summary);i++) {
 		CamelStoreInfo *si = camel_store_summary_index((CamelStoreSummary *)groupwise_store->summary, i);
 
 		if (si == NULL) 
 			continue;
 		
-		if (camel_groupwise_store_info_full_name(groupwise_store->summary, si)) {
+		if ( !strcmp(name, camel_groupwise_store_info_full_name (groupwise_store->summary, si))
+		     || match_path (path, camel_groupwise_store_info_full_name (groupwise_store->summary, si))) {
 			fi = groupwise_build_folder_info(groupwise_store, NULL, camel_store_info_path((CamelStoreSummary *)groupwise_store->summary, si));
 			fi->unread = si->unread;
 			fi->total = si->total;
@@ -858,9 +862,10 @@ groupwise_get_folder_info_offline (CamelStore *store, const char *top,
 		camel_store_summary_info_free((CamelStoreSummary *)groupwise_store->summary, si);
 	}
 
+	g_free(name);
+	g_free (path);
 	fi = camel_folder_info_build (folders, top, '/', TRUE);
 	g_ptr_array_free (folders, TRUE);
-	g_free(name);
 	return fi;
 }
 
@@ -918,8 +923,11 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		top_folder = g_hash_table_lookup (priv->name_hash, top);
 		/* 'top' is a valid path, but doesnt have a container id
 		 *  return NULL */
-		if (!top_folder) 
+/*		if (!top_folder) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+					_("You must be working online to complete this operation"));
 			return NULL;
+		}*/
 	}
 
 	if (top && groupwise_is_system_folder (top)) 
@@ -1071,7 +1079,7 @@ groupwise_delete_folder(CamelStore *store,
 	const char * container; 
 	
 	CAMEL_SERVICE_LOCK (store, connect_lock);
-
+	
 	if (!camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		return;
@@ -1236,6 +1244,32 @@ camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex)
 				_("You must be working online to complete this operation"));
 
 	return FALSE;
+}
+
+static int 
+match_path(const char *path, const char *name)
+{
+	char p, n;
+
+	p = *path++;
+	n = *name++;
+	while (n && p) {
+		if (n == p) {
+			p = *path++;
+			n = *name++;
+		} else if (p == '%') {
+			if (n != '/') {
+				n = *name++;
+			} else {
+				p = *path++;
+			}
+		} else if (p == '*') {
+			return TRUE;
+		} else
+			return FALSE;
+	}
+
+	return n == 0 && (p == '%' || p == 0);
 }
 
 /* GObject Init and finalise methods */

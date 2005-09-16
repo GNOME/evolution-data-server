@@ -1,3 +1,10 @@
+2005-09-16  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: (match_path): method
+	matches the patch given a pattern and a path.
+	* camel-groupwise-utils.c: (gw_concat): concats the path
+	to the base_url
+
 2005-09-15  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c: (groupwise_create_folder):
