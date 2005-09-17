@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the evolution-data-server package.
 # Nguyễn Thái Ngọc Duy <pclouds@gmx.net>, 2002-2004.
 # Clytie Siddall <clytie@riverland.net.au>, 2005.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server Gnome 2.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-30 05:49+0000\n"
-"PO-Revision-Date: 2005-07-30 20:40+0930\n"
+"PO-Revision-Date: 2005-09-16 15:13+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -1097,7 +1098,7 @@ msgstr "URI chưa được tải"
 
 #: ../calendar/libecal/e-cal.c:5026
 msgid "URI already loaded"
-msgstr "URI đã tải rồi"
+msgstr "URI đã được tải"
 
 #: ../calendar/libecal/e-cal.c:5028
 #: ../servers/exchange/storage/e-storage.c:572
@@ -1307,7 +1308,7 @@ msgid ""
 msgstr ""
 "Không thể mở `%s':\n"
 "%s\n"
-"Các thay đổi được tạo ra trong danh mục này sẽ không thể được tái đồng bộ."
+"Các thay đổi được tạo ra trong thư mục này sẽ không thể được tái đồng bộ."
 
 #: ../camel/camel-disco-diary.c:294
 msgid "Resynchronizing with server"
@@ -1316,7 +1317,7 @@ msgstr "Đang tái đồng bộ với máy phục vụ"
 #: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:51
 msgid "Copy folder content locally for offline operation"
 msgstr ""
-"Sao chép nội dung danh mục về máy địa phương để phục vụ các thao tác ngoại "
+"Sao chép nội dung thư mục về máy địa phương để phục vụ các thao tác ngoại "
 "tuyến"
 
 #: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:110
@@ -1326,7 +1327,7 @@ msgstr "Đang tải về các thông điệp cho chế độ ngoại tuyến"
 #: ../camel/camel-disco-folder.c:467
 #, c-format
 msgid "Preparing folder '%s' for offline"
-msgstr "Đang chuẩn bị danh mục '%s' để dùng ngoại tuyến"
+msgstr "Đang chuẩn bị thư mục '%s' để dùng ngoại tuyến"
 
 #: ../camel/camel-disco-store.c:391
 #: ../camel/providers/imap/camel-imap-store.c:3264
@@ -1350,7 +1351,7 @@ msgstr "Nhận luồng thông điệp không hợp lệ từ %s: %s"
 
 #: ../camel/camel-filter-driver.c:977 ../camel/camel-filter-driver.c:986
 msgid "Syncing folders"
-msgstr "Đang đồng bộ những danh mục"
+msgstr "Đang đồng bộ những thư mục"
 
 #: ../camel/camel-filter-driver.c:1075 ../camel/camel-filter-driver.c:1453
 #, c-format
@@ -1368,7 +1369,7 @@ msgstr "Không thể mở thư mục ống chỉ"
 
 #: ../camel/camel-filter-driver.c:1160
 msgid "Unable to process spool folder"
-msgstr "Không thể xử lý danh mục ống chỉ"
+msgstr "Không thể xử lý thư mục ống chỉ"
 
 #: ../camel/camel-filter-driver.c:1175
 #, c-format
@@ -1386,7 +1387,7 @@ msgstr "Lỗi trên thông điệp %d"
 
 #: ../camel/camel-filter-driver.c:1206 ../camel/camel-filter-driver.c:1297
 msgid "Syncing folder"
-msgstr "Đang đồng bộ danh mục"
+msgstr "Đang đồng bộ thư mục"
 
 #: ../camel/camel-filter-driver.c:1210 ../camel/camel-filter-driver.c:1302
 msgid "Complete"
@@ -1463,7 +1464,7 @@ msgstr "(match-threads) [khớp các mạch] cần đến kết quả array [m�
 
 #: ../camel/camel-folder-search.c:792
 msgid "(match-threads) requires the folder set"
-msgstr "(match-threads) [khớp các mạch] cần đến đặt danh mục"
+msgstr "(match-threads) [khớp các mạch] cần đến đặt thư mục"
 
 #: ../camel/camel-folder-search.c:881
 #, c-format
@@ -1763,7 +1764,7 @@ msgstr "Lỗi tra cứu máy phục vụ tên: %s"
 #: ../camel/camel-offline-folder.c:253
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "Đang đồng bộ thông điệp trong danh mục `%s' vào đĩa"
+msgstr "Đang đồng bộ thông điệp trong thư mục `%s' vào đĩa"
 
 #: ../camel/camel-offline-journal.c:165 ../camel/camel-offline-journal.c:188
 #, c-format
@@ -2280,28 +2281,28 @@ msgstr "Không thể lấy thư mục: thao tác không hợp lệ trên thiết
 #: ../camel/camel-store.c:247
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
-msgstr "Không thể tạo danh mục '%s': danh mục đã có"
+msgstr "Không thể tạo thư mục '%s': thư mục đã có"
 
 #: ../camel/camel-store.c:301
 msgid "Cannot create folder: Invalid operation on this store"
-msgstr "Không thể tạo danh mục: thao tác không hợp lệ trên thiết bị lưu trữ"
+msgstr "Không thể tạo thư mục: thao tác không hợp lệ trên thiết bị lưu trữ"
 
 #: ../camel/camel-store.c:329
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr "Không thể tạo danh mục: %s: danh mục đã có"
+msgstr "Không thể tạo thư mục: %s: thư mục đã có"
 
 #: ../camel/camel-store.c:393 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr "Không thể xoá danh mục: %s: thao tác không hợp lệ"
+msgstr "Không thể xoá thư mục: %s: thao tác không hợp lệ"
 
 #: ../camel/camel-store.c:443 ../camel/camel-vee-store.c:404
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr "Không thể đổi tên danh mục: %s: thao tác không hợp lệ"
+msgstr "Không thể đổi tên thư mục: %s: thao tác không hợp lệ"
 
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:784 ../camel/camel-vtrash-folder.c:47
@@ -2538,7 +2539,7 @@ msgstr "Không có thông điệp %s trong %s"
 
 #: ../camel/camel-vee-folder.c:643 ../camel/camel-vee-folder.c:649
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "Không thể sao chép hoặc di chuyển thông điệp vào Danh mục Ảo"
+msgstr "Không thể sao chép hoặc di chuyển thông điệp vào thư mục Ảo"
 
 #: ../camel/camel-vee-store.c:100 ../camel/camel-vee-store.c:343
 msgid "Unmatched"
@@ -2547,20 +2548,20 @@ msgstr "Không khớp"
 #: ../camel/camel-vee-store.c:390
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr "Không thể xóa bỏ danh mục: %s: không có danh mục như vậy"
+msgstr "Không thể xóa bỏ thư mục: %s: không có thư mục như vậy"
 
 #: ../camel/camel-vee-store.c:412
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr "Không thể đổi tên danh mục: %s: không có danh mục như vậy"
+msgstr "Không thể đổi tên thư mục: %s: không có thư mục như vậy"
 
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Cannot copy messages to the Trash folder"
-msgstr "Không thể sao chép các thông điệp vào danh mục Rác"
+msgstr "Không thể sao chép các thông điệp vào thư mục Rác"
 
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Không thể sao chép các thông điệp vào danh mục Thư rác"
+msgstr "Không thể sao chép các thông điệp vào thư mục Thư rác"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:115
 #: ../camel/providers/imap/camel-imap-folder.c:2010
@@ -2631,12 +2632,12 @@ msgstr "Không thể tạo thông điệp: %s"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1499
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
-msgstr "Không thể phụ thêm thông điệp vào danh mục dạng MH `%s': %s"
+msgstr "Không thể phụ thêm thông điệp vào thư mục dạng MH `%s': %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
 msgid "Cannot get folder container %s"
-msgstr "Không thể lấy hộp danh mục %s"
+msgstr "Không thể lấy hộp thư mục %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:347
 #: ../camel/providers/imap4/camel-imap4-journal.c:320
@@ -2672,7 +2673,7 @@ msgstr "Tùy chọn"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
 msgstr ""
-"Áp dụng bộ lọc với những thông điệp mới trong danh mục INBOX (hộp gởi vào) "
+"Áp dụng bộ lọc với những thông điệp mới trong thư mục INBOX (hộp gởi vào) "
 "trên máy phục vụ này"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
@@ -2681,7 +2682,7 @@ msgstr "Kiểm tra thư mới tìm nội dung rác"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "Only check for Junk messages in the INBOX folder"
-msgstr "Chỉ kiểm tra thư rác trong danh mục INBOX (hộp gởi vào)"
+msgstr "Chỉ kiểm tra thư rác trong thư mục INBOX (hộp gởi vào)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Automatically synchronize account locally"
@@ -2758,24 +2759,24 @@ msgstr "Đang lấy thông tin tóm tắt của các thông điệp mới"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:614
 msgid "Cannot get folder info in offline mode."
-msgstr "Không thể gọi thông tin danh mục trong chế độ ngoại tuyến."
+msgstr "Không thể gọi thông tin thư mục trong chế độ ngoại tuyến."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:916
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr "Không thể tạo danh mục GroupWise trong chế độ ngoại tuyến."
+msgstr "Không thể tạo thư mục GroupWise trong chế độ ngoại tuyến."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:961
 msgid "Cannot delete GroupWise folders in offline mode."
-msgstr "Không thể xóa bỏ danh mục GroupWise trong chế độ ngoại tuyến."
+msgstr "Không thể xóa bỏ thư mục GroupWise trong chế độ ngoại tuyến."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:998
 msgid "Cannot rename GroupWise folders in offline mode."
-msgstr "Không thể đổi tên danh mục GroupWise trong chế độ ngoại tuyến."
+msgstr "Không thể đổi tên thư mục GroupWise trong chế độ ngoại tuyến."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1012
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "Không thể đổi tên danh mục GroupWise `%s' sang `%s'"
+msgstr "Không thể đổi tên thư mục GroupWise `%s' sang `%s'"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1044
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
@@ -2852,7 +2853,7 @@ msgstr "Không thể tạo thư mục %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:331
 msgid "Folder was destroyed and recreated on server."
-msgstr "Danh mục đã bị xóa bỏ và tạo lại trên máy phục vụ."
+msgstr "Thư mục đã bị xóa bỏ và tạo lại trên máy phục vụ."
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:596
@@ -2895,7 +2896,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-message-cache.c:156
 #, c-format
 msgid "Could not open cache directory: %s"
-msgstr "Không thể mở danh mục nhớ tạm: %s"
+msgstr "Không thể mở thư mục nhớ tạm: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:253
 #: ../camel/providers/imap/camel-imap-message-cache.c:310
@@ -2917,7 +2918,7 @@ msgstr "Kiểm tra tìm thư mới"
 #: ../camel/providers/imap/camel-imap-provider.c:46
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr "_Kiểm tra tìm thư mới trên mọi danh mục"
+msgstr "_Kiểm tra tìm thư mới trên mọi thư mục"
 
 #: ../camel/providers/imap/camel-imap-provider.c:49
 #: ../camel/providers/imap4/camel-imap4-provider.c:41
@@ -2943,12 +2944,12 @@ msgstr "Thư mục"
 #: ../camel/providers/imap/camel-imap-provider.c:58
 #: ../camel/providers/imap4/camel-imap4-provider.c:50
 msgid "_Show only subscribed folders"
-msgstr "Chỉ _hiện những danh mục đăng ký"
+msgstr "Chỉ _hiện những thư mục đăng ký"
 
 #: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imap4/camel-imap4-provider.c:52
 msgid "O_verride server-supplied folder namespace"
-msgstr "Có quyền cao hơn bộ tên độc nhất danh mục do máy phục vụ cung cấp"
+msgstr "Có quyền cao hơn bộ tên độc nhất thư mục do máy phục vụ cung cấp"
 
 #: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:54
@@ -2959,7 +2960,7 @@ msgstr "Bộ tên độc nhất "
 #: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr ""
-"_Áp dụng bộ lọc vào những thông điệp mới trong Hộp Nhận trên máy phục vụ này"
+"Á_p dụng bộ lọc vào những thông điệp mới trong Hộp Nhận trên máy phục vụ này"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
@@ -2969,7 +2970,7 @@ msgstr "Kiểm tra thư mới tìm nội dung _rác"
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:62
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Chỉ kiểm tra tìm thư rác trong danh mục Hộp nhận"
+msgstr "Chỉ kiểm tra tìm thư rác trong thư mục Hộp nhận"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
@@ -3125,7 +3126,7 @@ msgstr "Tên thư mục \"%s\" không hợp lệ vì chứa ký tự \"%c\""
 #: ../camel/providers/imap/camel-imap-store.c:1968
 #: ../camel/providers/imap/camel-imap-store.c:2346
 msgid "The parent folder is not allowed to contain subfolders"
-msgstr "Danh mục mẹ không được phép chứa các danh mục con"
+msgstr "Thư mục mẹ không được phép chứa các thư mục con"
 
 #: ../camel/providers/imap/camel-imap-store.c:2023
 #: ../camel/providers/local/camel-maildir-store.c:190
@@ -3133,12 +3134,12 @@ msgstr "Danh mục mẹ không được phép chứa các danh mục con"
 #: ../camel/providers/local/camel-mh-store.c:237
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
-msgstr "Không thể tạo danh mục `%s: danh mục đã có."
+msgstr "Không thể tạo thư mục `%s: thư mục đã có."
 
 #: ../camel/providers/imap/camel-imap-store.c:2295
 #, c-format
 msgid "Unknown parent folder: %s"
-msgstr "Danh mục mẹ lạ: %s"
+msgstr "Thư mục mẹ lạ: %s"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:550
 #: ../camel/providers/imap4/camel-imap4-command.c:557
@@ -3159,12 +3160,12 @@ msgstr "Lời chào mừng không mong đợi từ máy phục vụ IMAP %s."
 #: ../camel/providers/imap4/camel-imap4-engine.c:432
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
-msgstr "Không thể chọn danh mục `%s': tên hộp thư sai"
+msgstr "Không thể chọn thư mục `%s': tên hộp thư sai"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:438
 #, c-format
 msgid "Cannot select folder `%s': Bad command"
-msgstr "Không thể chọn danh mục `%s': lệnh sai"
+msgstr "Không thể chọn thư mục `%s': lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:1549
 #: ../camel/providers/imap4/camel-imap4-engine.c:1588
@@ -3179,86 +3180,86 @@ msgid ""
 "Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr ""
 "Hiệu lực khả năng phát hiện Hộp thư chung (cần đến do một số quy tắc lọc và "
-"danh mục ảo)"
+"Thư mục ảo)"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:398
 #, c-format
 msgid "Cannot access folder `%s': %s"
-msgstr "Không thể truy cập danh mục `%s': %s"
+msgstr "Không thể truy cập thư mục `%s': %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:457
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr "Không thể đồng bộ cờ với danh mục `%s': không biết sao"
+msgstr "Không thể đồng bộ cờ với thư mục `%s': không biết sao"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:463
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr "Không thể đồng bộ cờ với danh mục `%s': lệnh sai"
+msgstr "Không thể đồng bộ cờ với thư mục `%s': lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:603
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
-msgstr "Không thể xóa hẳn danh mục « %s »: không biết sao."
+msgstr "Không thể xóa hẳn thư mục « %s »: không biết sao."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:608
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
-msgstr "Không thể xóa hẳn danh mục « %s »: lệnh sai."
+msgstr "Không thể xóa hẳn thư mục « %s »: lệnh sai."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:864
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr ""
-"Không thể lấy thông điệp %s từ danh mục « %s »: không co thông điệp như vậy."
+"Không thể lấy thông điệp %s từ thư mục « %s »: không co thông điệp như vậy."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:869
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
-msgstr "Không thể lấy thông điệp « %s » từ danh mục « %s »: lệnh sai."
+msgstr "Không thể lấy thông điệp « %s » từ thư mục « %s »: lệnh sai."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:913
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
 msgstr ""
-"Không thể phụ thêm thư vào danh mục « %s » vì danh mục chỉ cho phép đọc thôi."
+"Không thể phụ thêm thư vào thư mục « %s » vì thư mục chỉ cho phép đọc thôi."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
-msgstr "Không thể phụ thêm thông điệp vào danh mục « %s »: không biết sao."
+msgstr "Không thể phụ thêm thông điệp vào thư mục « %s »: không biết sao."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1035
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
-msgstr "Không thể phụ thêm thông điệp vào danh mục « %s »: lệnh sai."
+msgstr "Không thể phụ thêm thông điệp vào thư mục « %s »: lệnh sai."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1155
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
-"Không thể di chuyển thông điệp từ danh mục « %s » sang danh mục « %s »: "
+"Không thể di chuyển thông điệp từ thư mục « %s » sang thư mục « %s »: "
 "không biết sao."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1159
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr ""
-"Không thể sao chép thông điệp từ danh mục « %s » sang danh mục « %s »: không "
+"Không thể sao chép thông điệp từ thư mục « %s » sang thư mục « %s »: không "
 "biết sao"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1167
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
-"Không thể di chuyển thông điệp từ danh mục « %s » sang danh mục « %s »: lệnh "
+"Không thể di chuyển thông điệp từ thư mục « %s » sang thư mục « %s »: lệnh "
 "sai."
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1171
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
-"Không thể sao chép thông điệp từ danh mục « %s » sang danh mục « %s »: lệnh "
+"Không thể sao chép thông điệp từ thư mục « %s » sang thư mục « %s »: lệnh "
 "sai."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:71
@@ -3300,55 +3301,55 @@ msgstr "Không thể tạo thư mục IMAP trong chế độ ngoại tuyến."
 #: ../camel/providers/imap4/camel-imap4-store.c:793
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
-msgstr "Không thể lấy danh mục `%s' trên máy phục vụ IMAP %s: không biết sao"
+msgstr "Không thể lấy thư mục `%s' trên máy phục vụ IMAP %s: không biết sao"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:914
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
-msgstr "Không thể tạo danh mục `%s': tên hộp thư sai"
+msgstr "Không thể tạo thư mục `%s': tên hộp thư sai"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:920
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
-msgstr "Không thể tạo danh mục `%s': lệnh sai"
+msgstr "Không thể tạo thư mục `%s': lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:951
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
-msgstr "Không thể xóa bỏ danh mục `%s': danh mục đặc biệt"
+msgstr "Không thể xóa bỏ thư mục `%s': thư mục đặc biệt"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:958
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "Không thể xóa bỏ danh mục IMAP trong chế độ ngoại tuyến."
+msgstr "Không thể xóa bỏ thư mục IMAP trong chế độ ngoại tuyến."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1017
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
-msgstr "Không thể xoá bỏ danh mục `%s': tên hộp thư không hợp lệ"
+msgstr "Không thể xoá bỏ thư mục `%s': tên hộp thư không hợp lệ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1022
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
-msgstr "Không thể xoá bỏ danh mục `%s': lệnh sai"
+msgstr "Không thể xoá bỏ thư mục `%s': lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1042
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr "Không thể đổi tên danh mục `%s' sang '%s': danh mục đặc biệt"
+msgstr "Không thể đổi tên thư mục `%s' sang '%s': thư mục đặc biệt"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1049
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr "Không thể đổi tên danh mục IMAP trong chế độ ngoại tuyến"
+msgstr "Không thể đổi tên thư mục IMAP trong chế độ ngoại tuyến"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1080
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr "Không thể đổi tên danh mục `%s' sang '%s': tên hộp thư không hợp lệ"
+msgstr "Không thể đổi tên thư mục `%s' sang '%s': tên hộp thư không hợp lệ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1085
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
-msgstr "Không thể đổi tên danh mục `%s' sang '%s': lệnh sai"
+msgstr "Không thể đổi tên thư mục `%s' sang '%s': lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1432
 #, c-format
@@ -3361,31 +3362,31 @@ msgstr "Lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1472
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "Không thể đăng ký với danh mục IMAP trong chế độ ngoại tuyến."
+msgstr "Không thể đăng ký với thư mục IMAP trong chế độ ngoại tuyến."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1517
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
-msgstr "Không thể đăng ký với danh mục`'%s': tên hộp thư không hợp lệ"
+msgstr "Không thể đăng ký với thư mục`'%s': tên hộp thư không hợp lệ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1522
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
-msgstr "Không thể đăng ký với danh mục `%s': lệnh sai"
+msgstr "Không thể đăng ký với thư mục `%s': lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1544
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr "Không thể hủy đăng ký danh mục IMAP trong chế độ ngoại tuyến."
+msgstr "Không thể hủy đăng ký thư mục IMAP trong chế độ ngoại tuyến."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1589
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
-msgstr "Không thể hủy đăng ký danh mục `%s': tên hộp thư không hợp lệ"
+msgstr "Không thể hủy đăng ký thư mục `%s': tên hộp thư không hợp lệ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1594
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
-msgstr "Không thể hủy đăng ký danh mục `%s': lệnh sai"
+msgstr "Không thể hủy đăng ký thư mục `%s': lệnh sai"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1497
 msgid "Fetching envelopes for new messages"
@@ -3482,7 +3483,7 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox formated spools into "
 "folders managed by Evolution."
 msgstr ""
-"Để gọi (di động) thư cục bộ từ ống chỉ dạng mbox chuẩn vào danh mục được "
+"Để gọi (di động) thư cục bộ từ ống chỉ dạng mbox chuẩn vào thư mục được "
 "Evolution quản lý."
 
 #: ../camel/providers/local/camel-local-provider.c:81
@@ -3492,7 +3493,7 @@ msgstr "Áp dụng bộ lọc vào thông điệp mới trong Hộp nhận"
 
 #: ../camel/providers/local/camel-local-provider.c:88
 msgid "Maildir-format mail directories"
-msgstr "Danh mục thư dạng thức Maildir"
+msgstr "Thư mục thư dạng thức Maildir"
 
 #: ../camel/providers/local/camel-local-provider.c:89
 msgid "For storing local mail in maildir directories."
@@ -3512,7 +3513,7 @@ msgid ""
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
 "Để đọc và lưu thư cục bộ trong tập tin ống chỉ bên ngoại theo chuẩn mbox.\n"
-"Ngoài ra còn có thể được dùng để đọc một cây các danh mục kiểu Elm, Pine, "
+"Ngoài ra còn có thể được dùng để đọc một cây các thư mục kiểu Elm, Pine, "
 "hoặc Mutt."
 
 #: ../camel/providers/local/camel-local-store.c:150
@@ -3533,11 +3534,11 @@ msgstr "Gốc lưu %s không phải là thư mục bình thường"
 #: ../camel/providers/local/camel-local-store.c:272
 #, c-format
 msgid "Cannot get folder: %s: %s"
-msgstr "Không thể gọi danh mục: %s: %s"
+msgstr "Không thể gọi thư mục: %s: %s"
 
 #: ../camel/providers/local/camel-local-store.c:186
 msgid "Local stores do not have an inbox"
-msgstr "Bộ lưu trữ cục bộ chưa có danh mục Hộp nhận"
+msgstr "Bộ lưu trữ cục bộ chưa có thư mục Hộp nhận"
 
 #: ../camel/providers/local/camel-local-store.c:232
 #, c-format
@@ -3558,19 +3559,19 @@ msgstr "Không thể đổi tên '%s': %s"
 #: ../camel/providers/local/camel-mbox-store.c:271
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
-msgstr "Không thể xóa bỏ tập tin tóm tắt danh mục `%s': %s"
+msgstr "Không thể xóa bỏ tập tin tóm tắt thư mục `%s': %s"
 
 #: ../camel/providers/local/camel-local-store.c:441
 #: ../camel/providers/local/camel-mbox-store.c:283
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
-msgstr "Không thể xóa bỏ tập tin chỉ mục danh mục `%s': %s"
+msgstr "Không thể xóa bỏ tập tin chỉ mục thư mục `%s': %s"
 
 #: ../camel/providers/local/camel-local-store.c:464
 #: ../camel/providers/local/camel-mbox-store.c:307
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
-msgstr "Không thể xóa bỏ tập tin của tập tin danh mục `%s': %s"
+msgstr "Không thể xóa bỏ tập tin của tập tin thư mục `%s': %s"
 
 #: ../camel/providers/local/camel-local-summary.c:406
 #, c-format
@@ -3588,7 +3589,7 @@ msgstr "Thông điệp phụ thêm dạng Maildir đã bị hủy"
 #: ../camel/providers/local/camel-maildir-folder.c:218
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
-msgstr "Không thể phụ thêm thông điệp vào danh mục Maildir: %s: %s"
+msgstr "Không thể phụ thêm thông điệp vào thư mục Maildir: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:244
 #: ../camel/providers/local/camel-maildir-folder.c:258
@@ -3605,7 +3606,7 @@ msgid ""
 "Cannot get message: %s from folder %s\n"
 "  %s"
 msgstr ""
-"Không thể lấy thông điệp: %s từ danh mục %s\n"
+"Không thể lấy thông điệp: %s từ thư mục %s\n"
 "  %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:268
@@ -3618,7 +3619,7 @@ msgstr "Nội dung thông điệp không hợp lệ"
 #: ../camel/providers/local/camel-mbox-store.c:183
 #, c-format
 msgid "Cannot create folder `%s': %s"
-msgstr "Không thể tạo danh mục `%s': %s"
+msgstr "Không thể tạo thư mục `%s': %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:159
 #: ../camel/providers/local/camel-mbox-store.c:141
@@ -3637,14 +3638,14 @@ msgstr "Không thể lấy thư mục `%s': thư mục không tồn tại."
 #: ../camel/providers/local/camel-maildir-store.c:187
 #, c-format
 msgid "Cannot get folder `%s': not a maildir directory."
-msgstr "Không thể lấy danh mục `%s': không phải thư mục maildir."
+msgstr "Không thể lấy thư mục `%s': không phải thư mục maildir."
 
 #: ../camel/providers/local/camel-maildir-store.c:232
 #: ../camel/providers/local/camel-maildir-store.c:270
 #: ../camel/providers/local/camel-mh-store.c:261
 #, c-format
 msgid "Could not delete folder `%s': %s"
-msgstr "Không thể xóa bỏ danh mục `%s': %s"
+msgstr "Không thể xóa bỏ thư mục `%s': %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:234
 msgid "not a maildir directory"
@@ -3661,7 +3662,7 @@ msgstr "Không thể quét thư mục `%s': %s"
 #: ../camel/providers/local/camel-maildir-summary.c:556
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
-msgstr "Không thể mở đường dẫn danh mục dạng Maildir: %s: %s"
+msgstr "Không thể mở đường dẫn thư mục dạng Maildir: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:549
 msgid "Checking folder consistency"
@@ -3711,12 +3712,12 @@ msgstr "Lỗi tạo dựng thông điệp."
 #: ../camel/providers/local/camel-mbox-store.c:163
 #: ../camel/providers/local/camel-mbox-store.c:348
 msgid "Cannot create a folder by this name."
-msgstr "Không thể tạo danh mục với tên đó"
+msgstr "Không thể tạo thư mục với tên đó"
 
 #: ../camel/providers/local/camel-mbox-store.c:193
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
-msgstr "Không thể lấy danh mục `%s': không phải là tập tin bình thường."
+msgstr "Không thể lấy thư mục `%s': không phải là tập tin bình thường."
 
 #: ../camel/providers/local/camel-mbox-store.c:223
 #: ../camel/providers/local/camel-mbox-store.c:234
@@ -3726,7 +3727,7 @@ msgid ""
 "Could not delete folder `%s':\n"
 "%s"
 msgstr ""
-"Không thể xóa bỏ danh mục `%s':\n"
+"Không thể xóa bỏ thư mục `%s':\n"
 "%s"
 
 #: ../camel/providers/local/camel-mbox-store.c:242
@@ -3742,12 +3743,12 @@ msgstr "Thư mục `%s' không rỗng. Chưa xóa."
 #: ../camel/providers/local/camel-mbox-store.c:361
 #, c-format
 msgid "Cannot create directory `%s': %s."
-msgstr "Không thể tạo danh mục `%s': %s"
+msgstr "Không thể tạo thư mục `%s': %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:375
 #, c-format
 msgid "Cannot create folder: %s: %s"
-msgstr "Không thể tạo danh mục: %s: %s"
+msgstr "Không thể tạo thư mục: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:377
 msgid "Folder already exists"
@@ -3755,7 +3756,7 @@ msgstr "Thư mục đã tồn tại"
 
 #: ../camel/providers/local/camel-mbox-store.c:459
 msgid "The new folder name is illegal."
-msgstr "Không cho phép tên danh mục mới ấy"
+msgstr "Không cho phép tên thư mục mới ấy"
 
 #: ../camel/providers/local/camel-mbox-store.c:472
 #, c-format
@@ -3775,7 +3776,7 @@ msgstr "Không thể mở thư mục: %s: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:470
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr "Lỗi nghiêm trọng khi phân tích thư gần vị trí %ld trong danh mục %s"
+msgstr "Lỗi nghiêm trọng khi phân tích thư gần vị trí %ld trong thư mục %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:526
 #, c-format
@@ -3804,7 +3805,7 @@ msgstr "Không thể đóng thư mục nguồn %s: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:628
 #, c-format
 msgid "Could not close temp folder: %s"
-msgstr "Không thể đóng danh mục tạm: %s"
+msgstr "Không thể đóng thư mục tạm: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:639
 #, c-format
@@ -3848,7 +3849,7 @@ msgstr "Quá trình phụ thêm thông điệp dạng MH đã bị hủy"
 #: ../camel/providers/local/camel-mh-folder.c:178
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
-msgstr "Không thể phụ thêm thông điệp vào danh mục dạng MH: %s: %s"
+msgstr "Không thể phụ thêm thông điệp vào thư mục dạng MH: %s: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:220
 #, c-format
@@ -3858,7 +3859,7 @@ msgstr "Không thể tạo thư mục `%s': %s"
 #: ../camel/providers/local/camel-mh-store.c:232
 #, c-format
 msgid "Cannot get folder `%s': not a directory."
-msgstr "Không thể lấy danh mục `%s': không phải là danh mục."
+msgstr "Không thể lấy thư mục `%s': không phải là thư mục."
 
 #: ../camel/providers/local/camel-mh-summary.c:247
 #, c-format
@@ -3920,15 +3921,15 @@ msgstr "Tập tin thư ống chỉ %s"
 #: ../camel/providers/local/camel-spool-store.c:218
 #, c-format
 msgid "Spool folder tree %s"
-msgstr "Cây danh mục ống chỉ %s"
+msgstr "Cây thư mục ống chỉ %s"
 
 #: ../camel/providers/local/camel-spool-store.c:226
 msgid "Spool folders cannot be renamed"
-msgstr "Không thể đổi tên danh mục ống chỉ"
+msgstr "Không thể đổi tên thư mục ống chỉ"
 
 #: ../camel/providers/local/camel-spool-store.c:234
 msgid "Spool folders cannot be deleted"
-msgstr "Không thể xóa bỏ danh mục ống chỉ"
+msgstr "Không thể xóa bỏ thư mục ống chỉ"
 
 #: ../camel/providers/local/camel-spool-summary.c:178
 #: ../camel/providers/local/camel-spool-summary.c:188
@@ -3940,7 +3941,7 @@ msgstr "Không thể đồng bộ thư mục tạm %s: %s"
 #: ../camel/providers/local/camel-spool-summary.c:214
 #, c-format
 msgid "Could not sync spool folder %s: %s"
-msgstr "Không thể đồng bộ danh mục ống chỉ %s: %s"
+msgstr "Không thể đồng bộ thư mục ống chỉ %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:245
 #: ../camel/providers/local/camel-spool-summary.c:264
@@ -3950,8 +3951,8 @@ msgid ""
 "Could not sync spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in `%s'"
 msgstr ""
-"Không thể đồng bộ danh mục ống chỉ %s: %s\n"
-"Có lẽ danh mục bị hư; bản sao được lưu trong `%s'"
+"Không thể đồng bộ thư mục ống chỉ %s: %s\n"
+"Có lẽ thư mục bị hư; bản sao được lưu trong `%s'"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:177
 #: ../camel/providers/nntp/camel-nntp-folder.c:209
@@ -3973,7 +3974,7 @@ msgstr "Bạn không thể gởi thông điệp NNTP (nhóm tin Mạng) khi ngo�
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr "Không thể sao chép thông điệp từ danh mục NNTP (nhóm tin Mạng)."
+msgstr "Không thể sao chép thông điệp từ thư mục NNTP (nhóm tin Mạng)."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid ""
@@ -4034,7 +4035,7 @@ msgid ""
 msgstr ""
 "Bạn không thể đăng ký vào nhóm tin này:\n"
 "\n"
-"Không có nhóm tin như vậy. Mục được chọn có lẽ là danh mục mẹ."
+"Không có nhóm tin như vậy. Mục được chọn có lẽ là thư mục mẹ."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:939
 msgid ""
@@ -4048,15 +4049,15 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr "Bạn không thể tạo danh mục trong kho tin tức: hãy đăng ký thay vào đó."
+msgstr "Bạn không thể tạo thư mục trong kho tin tức: hãy đăng ký thay vào đó."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:972
 msgid "You cannot rename a folder in a News store."
-msgstr "Không thể đổi tên danh mục trong kho tin tức."
+msgstr "Không thể đổi tên thư mục trong kho tin tức."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:980
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr "Không thể loại bỏ danh mục trong kho tin tức: hãy đăng ký thay vào đó."
+msgstr "Không thể loại bỏ thư mục trong kho tin tức: hãy đăng ký thay vào đó."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1150
 msgid "Authentication requested but no username provided"
@@ -4084,7 +4085,7 @@ msgstr "Chưa kết nối."
 #: ../camel/providers/nntp/camel-nntp-store.c:1387
 #, c-format
 msgid "No such folder: %s"
-msgstr "Không có danh mục như vậy: %s"
+msgstr "Không có thư mục như vậy: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:221
 #: ../camel/providers/nntp/camel-nntp-summary.c:317
@@ -4253,7 +4254,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:645
 #, c-format
 msgid "No such folder `%s'."
-msgstr "Không có danh mục như vậy `%s'."
+msgstr "Không có thư mục như vậy `%s'."
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:37
 msgid "Sendmail"
@@ -4788,7 +4789,7 @@ msgstr "Lỗi xác thực.\n"
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr "Cấu hình có loại '%s' rồi. Hãy sử dụng tên khác."
+msgstr "Loại « %s » đã có trong cấu hình. Hãy sử dụng tên khác."
 
 #: ../libedataserverui/e-categories-dialog.c:422
 msgid "Category"
@@ -4836,7 +4837,7 @@ msgstr "Chọn liên lạc từ sổ địa chỉ"
 
 #: ../libedataserverui/e-name-selector-dialog.c:502
 msgid "_Add"
-msgstr "Th_êm"
+msgstr "T_hêm"
 
 #: ../libedataserverui/e-name-selector-dialog.c:527
 msgid "_Remove"
@@ -5024,20 +5025,20 @@ msgstr "Thao tác này không thể được thực hiện trong chế độ ngo
 #: ../servers/exchange/storage/exchange-account.c:609
 #, c-format
 msgid "%s's Folders"
-msgstr "Danh mục của « %s »."
+msgstr "Thư mục của « %s »."
 
 #: ../servers/exchange/storage/exchange-account.c:1263
 msgid "Personal Folders"
-msgstr "Danh mục cá nhân"
+msgstr "Thư mục cá nhân"
 
 #: ../servers/exchange/storage/exchange-account.c:1278
 msgid "Favorite Public Folders"
-msgstr "Danh mục công ưa thích"
+msgstr "Thư mục công ưa thích"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1295
 msgid "All Public Folders"
-msgstr "Mọi danh mục công"
+msgstr "Mọi thư mục công"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1309
