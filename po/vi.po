@@ -2150,7 +2150,7 @@ msgstr "Nội dung bị giả mạo hay bị thay đổi trong khi truyền"
 
 #: ../camel/camel-smime-context.c:492
 msgid "Signing certificate not found"
-msgstr "Kông tìm thấy chứng nhận ký tên"
+msgstr "Không tìm thấy chứng nhận ký tên"
 
 #: ../camel/camel-smime-context.c:494
 msgid "Signing certificate not trusted"
