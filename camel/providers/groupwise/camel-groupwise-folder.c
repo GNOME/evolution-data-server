@@ -182,6 +182,9 @@ groupwise_folder_get_message( CamelFolder *folder,
 		return NULL;
 	}
 
+	if (msg)
+		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
+
 	if(!strcmp (folder->full_name, "Sent Items")) 
 		goto end; /*Dont cache if its sent items, since we need to Track Status*/
 
@@ -586,6 +589,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 	if (!camel_groupwise_store_connected (gw_store, ex)) {
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		camel_exception_clear (ex);
 		return;
 	}
 	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
@@ -812,14 +816,29 @@ static void
 groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 {
 	CamelGroupwiseSummary *summary;
+	CamelStoreInfo *si;
 	summary = (CamelGroupwiseSummary *) folder->summary;
 	/*
 	 * Checking for the summary->time_string here since the first the a
 	 * user views a folder, the read cursor is in progress, and the getQM
-	 * should not interfere with the proces
+	 * should not interfere with the process
 	 */
-	if (summary->time_string && (strlen (summary->time_string) > 0)) 
+	if (summary->time_string && (strlen (summary->time_string) > 0))  {
 		groupwise_refresh_folder(folder, ex);
+		si = camel_store_summary_path ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary, folder->full_name);
+		if (si) {
+			guint32 unread, total;
+			camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
+			if (si->total != total || si->unread != unread) {
+				si->total = total;
+				si->unread = unread;
+				camel_store_summary_touch ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
+			}
+			camel_store_summary_info_free ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary, si);
+		}
+		camel_folder_summary_save (folder->summary);
+		camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
+	}
 }
 
 void
@@ -975,14 +994,13 @@ end1:
 }
 
 void
-gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex) 
+gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex) 
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);
-	GPtrArray *msg;
 	GSList *attach_list = NULL;
 	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL;
@@ -992,14 +1010,15 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	char *container_id = NULL;
 	gboolean is_junk = FALSE;
 	EGwItemStatus status;
+	GList *item_list = list;
 	int total_items = g_list_length (item_list), i=0;
 	
 	/*Assert lock*/
-	msg = g_ptr_array_new ();
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
-		g_error ("\nERROR - Container id not present. Cannot refresh info\n");
+		g_warning ("\nERROR - Container id not present. Cannot refresh info\n");
+		camel_folder_change_info_free (changes);
 		return;
 	}
 	
@@ -1041,21 +1060,22 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 
 		/************************ First populate summary *************************/
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);
-		if (mi) 
+		if (mi) {
 			exists = TRUE;
+			camel_message_info_free (&mi->info);
+		}
 
 		if (!exists) {
+			type = e_gw_item_get_item_type (item);
+			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
+				exists = FALSE;
+				continue;
+			}
+
 			mi = camel_message_info_new (folder->summary); 
 			if (mi->info.content == NULL) {
 				mi->info.content = camel_folder_summary_content_info_new (folder->summary);
 				mi->info.content->type = camel_content_type_new ("multipart", "mixed");
-			}
-
-			type = e_gw_item_get_item_type (item);
-			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
-				exists = FALSE;
-				g_object_unref (item);
-				continue;
 			}
 		}
 
@@ -1146,7 +1166,6 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		}
 
 		/********************* Summary Stuff ends *************************/
-		g_ptr_array_add (msg, mi);
 		exists = FALSE;
 		/******************** Begine Caching ************************/
 		mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
@@ -1163,7 +1182,6 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 		}
 		/******************** Caching stuff ends *************************/
-		g_object_unref (item);
 		i++;
 	}
 	camel_operation_end (NULL);
@@ -1172,15 +1190,13 @@ gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	camel_object_trigger_event (folder, "folder_changed", changes);
 
 	camel_folder_change_info_free (changes);
-	g_ptr_array_free (msg, TRUE);
 }
 
 void
-gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) 
+gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex) 
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
-	GPtrArray *msg;
 	GSList *attach_list = NULL;
 	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL;
@@ -1189,13 +1205,14 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	const char *priority = NULL;
 	char *container_id = NULL;
 	gboolean is_junk = FALSE;
+	GList *item_list = list;
 	
 	/*Assert lock???*/
-	msg = g_ptr_array_new ();
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
-		g_error ("\nERROR - Container id not present. Cannot refresh info\n");
+		g_warning ("\nERROR - Container id not present. Cannot refresh info\n");
+		camel_folder_change_info_free (changes);
 		return;
 	}
 	
@@ -1203,7 +1220,7 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		is_junk = TRUE;
 	}
 
-	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
+	for (; item_list != NULL ; item_list = g_list_next (item_list) ) {
 		EGwItem *item = (EGwItem *)item_list->data;
 		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
@@ -1215,21 +1232,22 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 		id = e_gw_item_get_id (item);
 		
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);
-		if (mi) 
+		if (mi) {
 			exists = TRUE;
+			camel_message_info_free (&mi->info);
+		}
 
 		if (!exists) {
+			type = e_gw_item_get_item_type (item);
+			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
+				exists = FALSE;
+				continue;
+			}
+
 			mi = camel_message_info_new (folder->summary); 
 			if (mi->info.content == NULL) {
 				mi->info.content = camel_folder_summary_content_info_new (folder->summary);
 				mi->info.content->type = camel_content_type_new ("multipart", "mixed");
-			}
-
-			type = e_gw_item_get_item_type (item);
-			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
-				exists = FALSE;
-				g_object_unref (item);
-				continue;
 			}
 		}
 
@@ -1319,7 +1337,6 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
 		}
 
-		g_ptr_array_add (msg, mi);
 		exists = FALSE;
 	}
 	g_free (container_id);
@@ -1327,7 +1344,6 @@ gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex)
 	camel_object_trigger_event (folder, "folder_changed", changes);
 
 	camel_folder_change_info_free (changes);
-	g_ptr_array_free (msg, TRUE);
 }
 
 static CamelMimeMessage *

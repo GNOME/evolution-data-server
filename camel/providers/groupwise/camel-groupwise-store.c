@@ -50,6 +50,7 @@
 #include "camel-types.h"
 #include "camel-folder.h" 
 #include "camel-private.h"
+#include "camel-net-utils.h"
 
 #define d(x) 
 #define CURSOR_ITEM_LIMIT 100
@@ -240,6 +241,29 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 }
 
 static gboolean
+check_for_connection (CamelService *service, CamelException *ex)
+{
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
+	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
+	struct addrinfo hints, *ai;
+
+	memset (&hints, 0, sizeof(hints));
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = PF_UNSPEC;
+	ai = camel_getaddrinfo(priv->server_name, "groupwise", &hints, ex);
+	if (ai == NULL && priv->port != NULL && camel_exception_get_id(ex) != CAMEL_EXCEPTION_USER_CANCEL) {
+		camel_exception_clear (ex);
+		ai = camel_getaddrinfo(priv->server_name, priv->port, &hints, ex);
+	}
+	if (ai == NULL)
+		return FALSE;
+
+	camel_freeaddrinfo (ai);
+
+	return TRUE;
+
+}
+static gboolean
 groupwise_connect (CamelService *service, CamelException *ex)
 {
 	CamelGroupwiseStore *store = CAMEL_GROUPWISE_STORE (service);
@@ -259,7 +283,7 @@ groupwise_connect (CamelService *service, CamelException *ex)
 		return TRUE;
 	}
 
-	if (!groupwise_auth_loop (service, ex)) {
+	if (!check_for_connection (service, ex) || !groupwise_auth_loop (service, ex)) {
 		CAMEL_SERVICE_UNLOCK (service, connect_lock);
 		camel_service_disconnect (service, TRUE, NULL);
 		return FALSE;
@@ -466,6 +490,8 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	gboolean done = FALSE;
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0;
+	CamelStoreInfo *si;
+	guint total;
 	
 	folder = groupwise_get_folder_from_disk (store, folder_name, flags, ex);
 	if (folder) {
@@ -511,6 +537,12 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	}
 	g_free (folder_dir);
 
+	si = camel_store_summary_path ((CamelStoreSummary *)(gw_store)->summary, folder->full_name);
+	if (si) {
+		camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, NULL);
+		camel_store_summary_info_free ((CamelStoreSummary *)(gw_store)->summary, si);
+	}
+
 	summary = (CamelGroupwiseSummary *) folder->summary;
 
 	summary_count = camel_folder_summary_count (folder->summary);
@@ -531,7 +563,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		camel_folder_summary_clear (folder->summary);
 
 		while (!done) {
-			int temp = 0;
 			status = e_gw_connection_read_cursor (priv->cnc, container_id, 
 							      cursor, FALSE, 
 							      CURSOR_ITEM_LIMIT, position, &list);
@@ -548,9 +579,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			
 			count += g_list_length (list);
 		
-			if (count >= 100)
-				temp = count/100;
-			camel_operation_progress (NULL, temp);
+			camel_operation_progress (NULL, (100*count)/total);
 			gw_update_summary (folder, list,  ex);
 			
 			if (!list)
@@ -972,7 +1001,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	}
 	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 
-	camel_exception_clear (ex);
+	//camel_exception_clear (ex);
 	info = groupwise_get_folder_info_offline (store, top, flags, ex);
 	return info;
 }
@@ -1204,6 +1233,11 @@ storage_path_lookup (CamelGroupwiseStorePrivate *priv)
 	return priv->storage_path;
 }
 
+const char *
+groupwise_base_url_lookup (CamelGroupwiseStorePrivate *priv)
+{
+	return priv->base_url;
+}
 
 static void
 free_hash (gpointer key, gpointer value, gpointer data)

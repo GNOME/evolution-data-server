@@ -1,3 +1,12 @@
+2005-09-18  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (groupwise_refresh_info):
+	Save changes made to the folder counts to the store summary.
+
+	* camel-groupwise-store.c: (check_for_connection): Method 
+	checks if we are really connected when online or not.
+	(groupwise_base_url_lookup): returns the base url of the store
+
 2005-09-16  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 310742
