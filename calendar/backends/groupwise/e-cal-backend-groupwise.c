@@ -2128,7 +2128,6 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	if (e_cal_component_has_attachments (comp))
 		fetch_attachments (cbgw, comp);
 
-	modif_comp = comp;
 	status = e_gw_connection_send_appointment (cbgw, priv->container_id, comp, method, &remove, &modif_comp);
 
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
@@ -2149,12 +2148,16 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 				e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), uid, e_cal_component_get_as_string (comp), NULL);
 		}
 		else {
-			char *cache_comp = NULL, *temp, *new_comp = NULL;
+			char *cache_comp = NULL, *uid, *new_comp = NULL;
 			ECalComponent *cache_component;
 			
-			e_cal_component_commit_sequence (modif_comp);
-			e_cal_component_get_uid (modif_comp, (const char **) &temp);	
-			cache_component = e_cal_backend_cache_get_component (priv->cache, temp, NULL);
+			if (!modif_comp)
+				modif_comp = g_object_ref (comp);
+			else
+				e_cal_component_commit_sequence (modif_comp);
+
+			e_cal_component_get_uid (modif_comp, (const char **) &uid);	
+			cache_component = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
 			
 			if (cache_component) {
 				e_cal_component_commit_sequence (cache_component);
@@ -2162,7 +2165,6 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 			}
 
 			e_cal_backend_cache_put_component (priv->cache, modif_comp);	
-			e_cal_component_commit_sequence (modif_comp);
 			new_comp = e_cal_component_get_as_string (modif_comp);
 
 			if (cache_comp)
@@ -2172,7 +2174,7 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 				
 			g_free (cache_comp);
 			g_free (new_comp);
-			g_free (temp);
+			g_object_unref (modif_comp);
 		}
 		g_object_unref (comp);	
 		return GNOME_Evolution_Calendar_Success;

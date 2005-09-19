@@ -1334,10 +1334,12 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 
 	/*FIXME - handling recurrence items */
 	if (!*remove && status == E_GW_CONNECTION_STATUS_OK) {
-		EGwItem *item;
+		EGwItem *item = NULL;
+		EGwConnectionStatus stat;
 
-		status = e_gw_connection_get_item (cnc, container, item_id, "recipients message recipientStatus attachments default", &item);
-		*created_comp = e_gw_item_to_cal_component (item, cbgw);
+		stat = e_gw_connection_get_item (cnc, container, item_id, "recipients message recipientStatus attachments default", &item);
+		if (stat == E_GW_CONNECTION_STATUS_OK)
+			*created_comp = e_gw_item_to_cal_component (item, cbgw);
 	}
 
 	return status;
