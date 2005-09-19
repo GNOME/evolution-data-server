@@ -1,3 +1,12 @@
+2005-09-12  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #116162
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_send_appointment): Check status in getItemsRequest.
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(receive_object): Assign the modif_comp to comp only if the getItemsRequest
+	fails.
+
 2005-09-15  Tor Lillqvist  <tml@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c
