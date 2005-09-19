@@ -1808,11 +1808,16 @@ e_contact_date_from_string (const char *str)
 {
 	EContactDate* date;
 	int length;
+	char *t;
 
 	g_return_val_if_fail (str != NULL, NULL);
 
 	date = e_contact_date_new();
-	length = strlen(str);
+	/* ignore time part */
+	if ((t = index (str, 'T')) != NULL)
+		length = t - str;
+	else
+		length = strlen(str);
 	
 	if (length == 10 ) {
 		date->year = str[0] * 1000 + str[1] * 100 + str[2] * 10 + str[3] - '0' * 1111;
