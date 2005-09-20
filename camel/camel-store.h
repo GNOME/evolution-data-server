@@ -92,6 +92,9 @@ typedef struct _CamelFolderInfo {
 #define CAMEL_FOLDER_TYPE_TRASH (3 << 10)
 /* a spam folder */
 #define CAMEL_FOLDER_TYPE_JUNK (4 << 10)
+/* a sent-items folder */
+#define CAMEL_FOLDER_TYPE_SENT (5 << 10)
+
 /* next bit is 1<<13 */
 
 /* store premissions */

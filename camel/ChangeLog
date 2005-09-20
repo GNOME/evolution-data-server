@@ -1,3 +1,9 @@
+2005-09-15  Sankar P  <psankar@novell.com>
+
+	* camel-store.h:
+	Defined new macro CAMEL_FOLDER_TYPE_SENT for identifying sent-folder.
+	Needed for fixing #257321
+	
 2005-09-15  Tor Lillqvist  <tml@novell.com>
 
 	* broken-date-parser.c (get_wday, get_month)
