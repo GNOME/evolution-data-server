@@ -1,4 +1,4 @@
-# Vietnamese translation for evolution-data-server.
+# Vietnamese translation for Evolution Data-Server.
 # Copyright © 2005 Gnome i18n Project for Vietnamese.
 # This file is distributed under the same license as the evolution-data-server package.
 # Nguyễn Thái Ngọc Duy <pclouds@gmx.net>, 2002-2004.
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server Gnome 2.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-30 05:49+0000\n"
-"PO-Revision-Date: 2005-09-16 15:13+0930\n"
+"PO-Revision-Date: 2005-09-20 19:37+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -2673,7 +2673,7 @@ msgstr "Tùy chọn"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
 msgstr ""
-"Áp dụng bộ lọc với những thông điệp mới trong thư mục INBOX (hộp gởi vào) "
+"Áp dụng bộ lọc với những thông điệp mới trong thư mục Thư Đến (Inbox) "
 "trên máy phục vụ này"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
@@ -2682,7 +2682,7 @@ msgstr "Kiểm tra thư mới tìm nội dung rác"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "Only check for Junk messages in the INBOX folder"
-msgstr "Chỉ kiểm tra thư rác trong thư mục INBOX (hộp gởi vào)"
+msgstr "Chỉ kiểm tra thư rác trong thư mục Thư Đến (Inbox)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Automatically synchronize account locally"
@@ -2960,7 +2960,7 @@ msgstr "Bộ tên độc nhất "
 #: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr ""
-"Á_p dụng bộ lọc vào những thông điệp mới trong Hộp Nhận trên máy phục vụ này"
+"Á_p dụng bộ lọc vào những thông điệp mới trong Thư Đến trên máy phục vụ này"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
@@ -2970,7 +2970,7 @@ msgstr "Kiểm tra thư mới tìm nội dung _rác"
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:62
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Chỉ kiểm tra tìm thư rác trong thư mục Hộp nhận"
+msgstr "Chỉ kiểm tra tìm thư rác trong thư mục Thư Đến"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
@@ -3085,7 +3085,7 @@ msgstr "Không thể kết nối bằng lệnh \"%s\": %s"
 #: ../camel/providers/local/camel-spool-store.c:460
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:258
 msgid "Inbox"
-msgstr "Hôp nhận"
+msgstr "Thư Đến"
 
 #: ../camel/providers/imap/camel-imap-store.c:1279
 #, c-format
@@ -3489,7 +3489,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:81
 #: ../camel/providers/local/camel-local-provider.c:100
 msgid "Apply filters to new messages in INBOX"
-msgstr "Áp dụng bộ lọc vào thông điệp mới trong Hộp nhận"
+msgstr "Áp dụng bộ lọc vào thông điệp mới trong Thư Đến"
 
 #: ../camel/providers/local/camel-local-provider.c:88
 msgid "Maildir-format mail directories"
@@ -3538,7 +3538,7 @@ msgstr "Không thể gọi thư mục: %s: %s"
 
 #: ../camel/providers/local/camel-local-store.c:186
 msgid "Local stores do not have an inbox"
-msgstr "Bộ lưu trữ cục bộ chưa có thư mục Hộp nhận"
+msgstr "Bộ lưu trữ cục bộ chưa có thư mục Thư Đến"
 
 #: ../camel/providers/local/camel-local-store.c:232
 #, c-format
@@ -3911,7 +3911,7 @@ msgstr "`%s' không phải là tập tin hộp thư."
 
 #: ../camel/providers/local/camel-spool-store.c:206
 msgid "Store does not support an INBOX"
-msgstr "Store không hỗ trợ Hộp nhận"
+msgstr "Store không hỗ trợ Thư Đến"
 
 #: ../camel/providers/local/camel-spool-store.c:218
 #, c-format
@@ -5063,7 +5063,7 @@ msgstr "Ghi chú"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Outbox"
-msgstr "Thư mục gửi"
+msgstr "Thư Đi"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Sent Items"
