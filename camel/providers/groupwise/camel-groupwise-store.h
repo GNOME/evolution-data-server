@@ -79,6 +79,7 @@ const char *camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_s
 const char *camel_groupwise_store_folder_lookup (CamelGroupwiseStore *gw_store, const char *container_id);
 EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv);
 char *storage_path_lookup (CamelGroupwiseStorePrivate *priv);
+const char *groupwise_base_url_lookup (CamelGroupwiseStorePrivate *priv);
 CamelFolderInfo * create_junk_folder (CamelStore *store);
 gboolean camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex);
 

@@ -50,7 +50,7 @@ static gboolean groupwise_send_to (CamelTransport *transport,
 				  CamelAddress *recipients,
 				  CamelException *ex);
 
-static gboolean groupwise_connect (CamelService *service, CamelException *ex);
+static gboolean groupwise_transport_connect (CamelService *service, CamelException *ex);
 static char *groupwise_transport_get_name (CamelService *service, gboolean brief);
 static void groupwise_transport_construct (CamelService *service, CamelSession *session,
 					   CamelProvider *provider, CamelURL *url, CamelException *ex);
@@ -71,7 +71,7 @@ camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *camel_groupw
 	
 	parent_class = CAMEL_TRANSPORT_CLASS (camel_type_get_global_classfuncs (camel_transport_get_type ()));
 	
-	camel_service_class->connect = groupwise_connect;
+	camel_service_class->connect = groupwise_transport_connect;
 	camel_service_class->get_name = groupwise_transport_get_name;
 	camel_service_class->construct = groupwise_transport_construct;
 	
@@ -127,7 +127,7 @@ static char *groupwise_transport_get_name (CamelService *service, gboolean brief
 
 
 static gboolean
-groupwise_connect (CamelService *service, CamelException *ex)
+groupwise_transport_connect (CamelService *service, CamelException *ex)
 {
 	return TRUE;
 
