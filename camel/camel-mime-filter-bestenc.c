@@ -270,7 +270,6 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 			return bestenc;
 	}
 
-	return CAMEL_TRANSFER_ENCODING_DEFAULT;
 }
 
 
