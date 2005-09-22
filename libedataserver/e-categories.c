@@ -242,6 +242,7 @@ initialize_categories_config (void)
 	add_category_if_not_present (_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png", TRUE);
 	add_category_if_not_present (_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png", TRUE);
 	add_category_if_not_present (_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png", TRUE);
+	/* important people (e.g. new business partners) you should pay attention to/observe */
 	add_category_if_not_present (_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png", TRUE);
 	add_category_if_not_present (_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png", TRUE);
 	add_category_if_not_present (_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png", TRUE);
