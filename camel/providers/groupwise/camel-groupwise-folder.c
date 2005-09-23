@@ -950,11 +950,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	}
 
 	if (list) {
-		if (!strcmp (folder->full_name, "Junk Mail")
-		    || !strcmp (folder->full_name, "Sent Items")) 
-			gw_update_summary (folder, list, ex);
-		else
-			gw_update_cache (folder, list, ex);
+		gw_update_cache (folder, list, ex);
 	}
 	
  
@@ -1167,8 +1163,13 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 
 		/********************* Summary Stuff ends *************************/
 		exists = FALSE;
+		if (!strcmp (folder->full_name, "Junk Mail")|| !strcmp (folder->full_name, "Sent Items"))
+			continue;
+
 		/******************** Begine Caching ************************/
 		mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
+		if (mail_msg)
+			camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
 		/* add to cache if its a new message*/
 		if (!exists) {
 			CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
@@ -1990,7 +1991,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	GSList *attach_list = NULL;
 	GString *gstr = g_string_new (NULL);
 	int recur_key = 0;
-	char **tmp;
+	char **tmp = NULL;
 	const char *temp = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
@@ -2086,7 +2087,7 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	EGwItemOrganizer *org = NULL;
 	GSList *recp_list = NULL;
 	GString *gstr = g_string_new (NULL);
-	char **tmp;
+	char **tmp = NULL;
 	const char *temp = NULL;
 	
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);

@@ -490,7 +490,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	gboolean done = FALSE;
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0;
-	CamelStoreInfo *si;
+	CamelStoreInfo *si = NULL;
 	guint total;
 	
 	folder = groupwise_get_folder_from_disk (store, folder_name, flags, ex);
@@ -537,10 +537,11 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	}
 	g_free (folder_dir);
 
-	si = camel_store_summary_path ((CamelStoreSummary *)(gw_store)->summary, folder->full_name);
+	si = camel_store_summary_path ((CamelStoreSummary *)gw_store->summary, folder_name);
 	if (si) {
 		camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, NULL);
 		camel_store_summary_info_free ((CamelStoreSummary *)(gw_store)->summary, si);
+		g_print ("TOTAL:%d\n\n", total);
 	}
 
 	summary = (CamelGroupwiseSummary *) folder->summary;
@@ -579,7 +580,8 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			
 			count += g_list_length (list);
 		
-			camel_operation_progress (NULL, (100*count)/total);
+			if (total > 0)
+				camel_operation_progress (NULL, (100*count)/total);
 			gw_update_summary (folder, list,  ex);
 			
 			if (!list)
@@ -653,6 +655,8 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
 	if (type == E_GW_CONTAINER_TYPE_JUNK)
 		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
+	if (type == E_GW_CONTAINER_TYPE_SENT)
+		fi->flags |= CAMEL_FOLDER_TYPE_SENT;
 
 	if ( (type == E_GW_CONTAINER_TYPE_INBOX) ||
 		(type == E_GW_CONTAINER_TYPE_SENT) ||
@@ -965,7 +969,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	 * Thanks to Michael, for his cached folders implementation in IMAP
 	 * is used as is here.
 	 */
-	if (camel_store_summary_count((CamelStoreSummary *)groupwise_store->summary) > 0) {
+	if ((groupwise_store->list_loaded == TRUE) && camel_store_summary_count((CamelStoreSummary *)groupwise_store->summary) > 0) {
 		/*Load from cache*/
 		time_t now;
 		int ref;
