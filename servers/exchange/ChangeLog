@@ -1,3 +1,10 @@
+2005-09-05  Praveen Kumar  <kpraveen@novell.com>
+
+	** Fixes bug 314588.
+	
+	* lib/e2k-context.c (e2k_context_new) : Modified the constructor 
+	to return NULL if there is no host name in the SOUP URI.
+
 2005-09-14  Irene Huang  <Irene.Huang@sun.com>
 
 	Fix for bug #316274
