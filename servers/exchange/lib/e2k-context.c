@@ -280,6 +280,11 @@ e2k_context_new (const char *uri)
 	suri = soup_uri_new (uri);
 	if (!suri)
 		return NULL;
+	
+	if (!suri->host) {
+		soup_uri_free (suri);
+		return NULL;
+	}
 
 	ctx = g_object_new (E2K_TYPE_CONTEXT, NULL);
 	ctx->priv->owa_uri = g_strdup (uri);
