@@ -1991,7 +1991,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	GSList *attach_list = NULL;
 	GString *gstr = g_string_new (NULL);
 	int recur_key = 0;
-	char **tmp;
+	char **tmp = NULL;
 	const char *temp = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
@@ -2087,7 +2087,7 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	EGwItemOrganizer *org = NULL;
 	GSList *recp_list = NULL;
 	GString *gstr = g_string_new (NULL);
-	char **tmp;
+	char **tmp = NULL;
 	const char *temp = NULL;
 	
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);

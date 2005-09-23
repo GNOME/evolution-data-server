@@ -655,6 +655,8 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
 	if (type == E_GW_CONTAINER_TYPE_JUNK)
 		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
+	if (type == E_GW_CONTAINER_TYPE_SENT)
+		fi->flags |= CAMEL_FOLDER_TYPE_SENT;
 
 	if ( (type == E_GW_CONTAINER_TYPE_INBOX) ||
 		(type == E_GW_CONTAINER_TYPE_SENT) ||
