@@ -718,6 +718,7 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 
 	journal_file = g_strdup_printf ("%s/journal",folder_dir);
 	gw_folder->journal = camel_groupwise_journal_new (gw_folder, journal_file);
+	g_free (journal_file);
 	if (!gw_folder->journal) {
 		camel_object_unref (folder);
 		return NULL;

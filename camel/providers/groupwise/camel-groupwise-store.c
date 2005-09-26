@@ -146,9 +146,9 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 		store->flags |= CAMEL_STORE_FILTER_INBOX;
 	
 	/*Hash Table*/	
-	priv->id_hash = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->name_hash = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->parent_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	priv->id_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->name_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->parent_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	/*ssl*/
 	priv->use_ssl = g_strdup (camel_url_get_param (url, "use_ssl"));
@@ -1385,18 +1385,15 @@ camel_groupwise_store_finalize (CamelObject *object)
 		if(groupwise_store->root_container)
 			g_free (groupwise_store->root_container);
 		
-		if (priv->id_hash) {
-			g_hash_table_foreach (priv->id_hash, free_hash, NULL);
+		if (priv->id_hash)
 			g_hash_table_destroy (priv->id_hash);
-		}
-		if (priv->name_hash) {
-			g_hash_table_foreach (priv->name_hash, free_hash, NULL);
+
+		if (priv->name_hash)
 			g_hash_table_destroy (priv->name_hash);
-		}
-		if (priv->parent_hash) {
-			g_hash_table_foreach (priv->parent_hash, free_hash, NULL);
+
+		if (priv->parent_hash)
 			g_hash_table_destroy (priv->parent_hash);
-		}
+
 		g_free (groupwise_store->priv);
 		groupwise_store->priv = NULL;
 	}
