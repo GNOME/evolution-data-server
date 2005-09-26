@@ -483,7 +483,7 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 {
 	GList *list = NULL;
 	EGwJunkEntry *entry;
-	gchar **email, *from;	
+	gchar **email = NULL, *from = NULL;	
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);

@@ -1,3 +1,9 @@
+2005-09-26 Vivek Jain <jvivek@novell.com>
+	
+	* camel-groupwise-folder.c :(update_junk_list)
+	initialize variables email and from.
+	**Fixes #314942
+
 2005-09-18  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: (groupwise_refresh_info):
