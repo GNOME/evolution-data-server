@@ -1,3 +1,11 @@
+2005-09-26  Wang Xin  <jedy.wang@sun.com>
+
+	Fixes #317226
+
+	* libecal/e-cal.c: (generate_instances): For all day events,
+	set the timezone of start time and end time to default zone,
+	in case that it is NULL.
+
 2005-09-12  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #116162
