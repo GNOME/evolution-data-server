@@ -1814,7 +1814,7 @@ e_contact_date_from_string (const char *str)
 
 	date = e_contact_date_new();
 	/* ignore time part */
-	if ((t = index (str, 'T')) != NULL)
+	if ((t = strchr (str, 'T')) != NULL)
 		length = t - str;
 	else
 		length = strlen(str);

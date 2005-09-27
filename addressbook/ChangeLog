@@ -1,3 +1,8 @@
+2005-09-27  Tor Lillqvist  <tml@novell.com>
+
+	* libebook/e-contact.c (e_contact_date_from_string): Use strchr()
+	instead of index().
+
 2005-09-19  Jürg Billeter  <j@bitron.ch>
 
 	* libebook/e-contact.c: (e_contact_date_from_string):
