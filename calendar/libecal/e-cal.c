@@ -3614,6 +3614,11 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 			start_time = icalcomponent_get_dtstart (e_cal_component_get_icalcomponent (comp));
 			end_time = icalcomponent_get_dtend (e_cal_component_get_icalcomponent (comp));
 
+			if (icaltime_is_date (start_time))
+				start_time.zone = default_zone;
+			if (icaltime_is_date (end_time))
+				end_time.zone = default_zone;
+
 			ci->start = icaltime_as_timet_with_zone (start_time, start_time.zone);
 			ci->end = icaltime_as_timet_with_zone (end_time, end_time.zone);
 			
