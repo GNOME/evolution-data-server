@@ -1,3 +1,11 @@
+2005-09-27  Vivek Jain <jvivek@novell.com>
+
+	** See bug #315173.
+	
+	* camel-imap-folder.c:(do_append): Null check the 
+	info before using it
+	initialize flags as we '&' with old value.
+
 2005-09-15  Tor Lillqvist  <tml@novell.com>
 
 	* camel-imap-command.c

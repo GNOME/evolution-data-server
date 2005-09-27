@@ -1237,7 +1237,7 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	CamelStreamFilter *streamfilter;
 	GByteArray *ba;
 	char *flagstr, *end;
-	guint32 flags;
+	guint32 flags = 0;
 	
 	/* encode any 8bit parts so we avoid sending embedded nul-chars and such  */
 	camel_mime_message_encode_8bit_parts (message);
@@ -1260,9 +1260,12 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	/* Some servers dont let us append with custom flags.  If the command fails for
 	   whatever reason, assume this is the case and save the state and try again */
 retry:
-	flags = camel_message_info_flags(info);
-	if (!store->nocustomappend)
-		flags |= imap_label_to_flags((CamelMessageInfo *)info);
+	if (info) {
+		flags = camel_message_info_flags(info);
+		if (!store->nocustomappend)
+			flags |= imap_label_to_flags((CamelMessageInfo *)info);
+	}
+
 	flags &= folder->permanent_flags;
 	if (flags)
 		flagstr = imap_create_flag_list (flags);
