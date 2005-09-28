@@ -882,7 +882,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		goto end1;
 
 	if (!strcmp (folder->full_name, "Trash") || is_proxy) {
-		status = e_gw_connection_get_items (cnc, container_id, "recipient distribution delivered attachments subject status size", NULL, &list);
+		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution delivered attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
 				g_warning ("Trash full....Empty Trash!!!!\n");

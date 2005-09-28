@@ -1,3 +1,10 @@
+2005-09-28  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c (groupwise_refresh_folder):
+	Added peek to the view so that the unread status of mails doesnt get 
+	changed during a proxy access.
+	Fixes #309993
+	
 2005-09-26  Veerapuram Varadhan <vvaradhan@novell.com>
 	* camel-groupwise-folder.c: (camel_gw_folder_new)
 	Memory leak fixes.
