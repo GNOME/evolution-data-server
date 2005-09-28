@@ -1568,6 +1568,7 @@ e2k_validate_user (const char *owa_url, char *user,
 	char *key, *password, *prompt;
 
 	key = g_strdup_printf ("%s//%s@%s", "exchange:", user, owa_url); /* FIXME */
+		
 	password = e_passwords_get_password ("Exchange", key);
 	if (!password) {
 		prompt = g_strdup_printf (_("Enter password for %s"), user);
@@ -1587,8 +1588,11 @@ e2k_validate_user (const char *owa_url, char *user,
 
 				*remember_password = remember;
 				g_free (key);
-				key = g_strdup_printf ("%s//%s@%s", 
-						       "exchange:", user, exchange_params->host);
+				if (exchange_params->is_ntlm)
+					key = g_strdup_printf ("exchange://%s;auth=NTLM@%s/", 
+								       user, exchange_params->host);
+				else
+					key = g_strdup_printf ("exchange://%s@%s/", user, exchange_params->host);
 				e_passwords_add_password (key, password);
 				e_passwords_remember_password ("Exchange", key);
 			}

@@ -370,6 +370,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
+		d(printf ("added path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -388,6 +389,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
+		d(printf ("added phy path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -400,6 +402,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
+		d(printf ("added int path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -624,7 +627,7 @@ get_hierarchy_for (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 					  entry->display_name);
 	source = g_strdup_printf ("exchange://%s@%s/", entry->mailbox,
 				  account->exchange_server);
-	physical_uri_prefix = g_strdup_printf ("exchange://%s/%s",
+	physical_uri_prefix = g_strdup_printf ("exchange://%s/;%s",
 					       account->priv->uri_authority,
 					       entry->email);
 	internal_uri_prefix = exchange_account_get_foreign_uri (account, entry,
@@ -1261,7 +1264,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 		return FALSE;
 
 	/* Set up Personal Folders hierarchy */
-	phys_uri_prefix = g_strdup_printf ("exchange://%s/personal",
+	phys_uri_prefix = g_strdup_printf ("exchange://%s/;personal",
 					   account->priv->uri_authority);
 	hier = exchange_hierarchy_webdav_new (account,
 					      EXCHANGE_HIERARCHY_PERSONAL,
@@ -1277,7 +1280,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 	personal_hier = hier;
 
 	/* Favorite Public Folders */
-	phys_uri_prefix = g_strdup_printf ("exchange://%s/favorites",
+	phys_uri_prefix = g_strdup_printf ("exchange://%s/;favorites",
 					   account->priv->uri_authority);
 	hier = exchange_hierarchy_favorites_new (account,
 						 _("Favorite Public Folders"),
@@ -1292,7 +1295,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 	account->priv->favorites_hierarchy = hier;
 
 	/* Public Folders */
-	phys_uri_prefix = g_strdup_printf ("exchange://%s/public",
+	phys_uri_prefix = g_strdup_printf ("exchange://%s/;public",
 					   account->priv->uri_authority);
 	hier = exchange_hierarchy_webdav_new (account,
 					      EXCHANGE_HIERARCHY_PUBLIC,
@@ -2024,7 +2027,7 @@ ExchangeAccount *
 exchange_account_new (EAccountList *account_list, EAccount *adata)
 {
 	ExchangeAccount *account;
-	char *enc_user, *mailbox;
+	char *enc_user, *mailbox, *old_uri_authority;
 	const char *param, *proto="http", *owa_path, *pf_server, *owa_url; 
 	const char *passwd_exp_warn_period, *offline_sync;
 	E2kUri *uri;
@@ -2047,8 +2050,8 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 	account->storage_dir = g_strdup_printf ("%s/.evolution/exchange/%s@%s",
 						g_get_home_dir (),
 						uri->user, uri->host);
-	account->account_filename = strrchr (account->storage_dir, '/') + 1;
-	e_filename_make_safe (account->account_filename);
+	/*account->account_filename = strrchr (account->storage_dir, '/') + 1;
+	e_filename_make_safe (account->account_filename); */
 
 	/* Identity info */
 	account->priv->identity_name = g_strdup (adata->id->name);
@@ -2056,16 +2059,25 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 
 	/* URI, etc, info */
 	enc_user = e2k_uri_encode (uri->user, FALSE, "@/;:");
-	account->priv->uri_authority = g_strdup_printf ("%s@%s", enc_user,
+	old_uri_authority = g_strdup_printf ("%s@%s", enc_user,
 							uri->host);
+	if (uri->authmech)
+		account->priv->uri_authority = g_strdup_printf ("%s;auth=%s@%s", enc_user,
+								uri->authmech, uri->host);
+	else
+		account->priv->uri_authority = g_strdup_printf ("%s@%s", enc_user,
+								uri->host);
 	g_free (enc_user);
+
+	account->account_filename = account->priv->uri_authority;
 
 	account->priv->source_uri = g_strdup_printf ("exchange://%s/", account->priv->uri_authority);
 
 	/* Backword compatibility; FIXME, we should just migrate the
 	 * password from this to source_uri.
 	 */
-	account->priv->password_key = g_strdup_printf ("exchange://%s", account->priv->uri_authority);
+	account->priv->password_key = g_strdup_printf ("exchange://%s", old_uri_authority);
+	g_free (old_uri_authority);
 
 	account->priv->username = g_strdup (uri->user);
 	if (uri->domain)

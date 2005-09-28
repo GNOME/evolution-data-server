@@ -45,7 +45,7 @@ struct _EFolderExchangePrivate {
 	ExchangeHierarchy *hier;
 	char *internal_uri, *permanent_uri;
 	char *outlook_class, *storage_dir;
-	const char *path;
+	char *path;
 	long long int folder_size;
 	gboolean has_subfolders;
 };
@@ -98,6 +98,7 @@ finalize (GObject *object)
 	g_free (folder->priv->permanent_uri);
 	g_free (folder->priv->outlook_class);
 	g_free (folder->priv->storage_dir);
+	g_free (folder->priv->path);
 	g_free (folder->priv);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -147,6 +148,26 @@ e_mkdir_hier(const char *path, mode_t mode)
 	return 0;
 }
 
+static char *
+sanitize_path (const char *path)
+{
+	gchar **comps;
+	char *new_path = NULL;
+
+	if (!path)
+		return;
+
+	comps = g_strsplit (path, ";", 2);
+	if (comps[1])
+		new_path = g_strdup_printf ("%s%s", comps[0], comps[1]);
+	else if (comps[0])
+		new_path = g_strdup (comps[0]);
+
+	g_strfreev (comps);
+	return new_path;	
+}
+
+
 /**
  * e_folder_exchange_new:
  * @hier: the #ExchangeHierarchy containing the new folder
@@ -181,7 +202,7 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
 	efe->priv->hier = hier;
 	g_object_ref (hier);
 	efe->priv->internal_uri = g_strdup (internal_uri);
-	efe->priv->path = e2k_uri_path (e_folder_get_physical_uri (ef));
+	efe->priv->path = sanitize_path (e2k_uri_path (e_folder_get_physical_uri (ef)));
 	efe->priv->outlook_class = g_strdup (outlook_class);
 
 	/* Add ESources */
