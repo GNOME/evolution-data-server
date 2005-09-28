@@ -1,3 +1,16 @@
+2005-08-26  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* lib/e2k-autoconfig.c (e2k_validate_user) : Fix the password key to
+	be consistent with the camel key.
+	* storage/e-folder-exchange.c (sanitize_path) : Strips the ';' in the
+	path.
+	* storage/exchange-account.c (get_hierarchy_for)
+	(setup_account_hierarchies) : Fix the physical uri to delimit the
+	folder path from the uri with a ';'
+	(exchange_account_new) : Fix the uri authority to be same as the camel
+	uri which would be later used in all components for creating the
+	password key.
+
 2005-09-05  Praveen Kumar  <kpraveen@novell.com>
 
 	** Fixes bug 314588.
