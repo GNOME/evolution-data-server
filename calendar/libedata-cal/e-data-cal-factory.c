@@ -197,14 +197,12 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 
 	/* Parse the uri */
 	uri = e_uri_new (str_uri);
-	g_free (str_uri);
-
 	if (!uri) {
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_InvalidURI);
 
 		return CORBA_OBJECT_NIL;
 	}
-	str_uri = e_uri_to_string(uri, FALSE);
+
 	uri_type_string = g_strdup_printf ("%s:%d", str_uri, (int)calobjtype_to_icalkind (type));
 	g_free(str_uri);
 
