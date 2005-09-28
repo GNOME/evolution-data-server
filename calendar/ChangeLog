@@ -1,3 +1,12 @@
+2005-09-27  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* libecal/e-cal.c (build_pass_key) : Do not recreate the uri. Instead
+	strip the uri part after a ';'. The backend can now set its uri
+	accordingly to have a consistent password key across multiple calendars
+	* libedata-cal/e-data-cal-factory.c (impl_CalFactory_getCal) : Use the
+	esource uri instead of the euri string to identify the calendar.
+	Fixes #314746
+
 2005-09-26  Wang Xin  <jedy.wang@sun.com>
 
 	Fixes #317226

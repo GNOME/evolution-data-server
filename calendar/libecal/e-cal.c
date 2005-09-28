@@ -1583,50 +1583,17 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 }
 
 static char *
-get_host_from_uri (const char *uri)
-{
-	char *at = strchr (uri, '@');
-	char *slash;
-	int length;
-
-	if (!at)
-		return NULL;
-	at++; /* Parse over the @ symbol */
-	slash = strchr (at, '/');
-	if (!slash)
-		return NULL;
-	slash --; /* Walk back */
-
-	length = slash - at;
-
-	return g_strndup (at, length);
-}
-
-static char *
 build_pass_key (ESource *source)
 {
-	const char *base_uri, *user_name, *auth_type, *rel_uri;
-	char *uri, *new_uri, *host_name;
-	ESourceGroup *es_grp;
-
-	es_grp = e_source_peek_group (source);
-	base_uri = e_source_group_peek_base_uri (es_grp);
-	if (base_uri) {
-		user_name = e_source_get_property (source, "username");
-		auth_type = e_source_get_property (source, "auth-type");
-		rel_uri = e_source_peek_relative_uri (source);
-		host_name = get_host_from_uri (rel_uri);
-		if (host_name) {
-			new_uri = g_strdup_printf ("%s%s;%s@%s/", base_uri, user_name, auth_type, host_name);
-			g_free (host_name);
-
-			return new_uri;
-		}
-	}
+	char *uri, *euri_str;
+	EUri *euri;
 
 	uri = e_source_get_uri (source);
 
-	return uri;
+	euri = e_uri_new (uri);
+	euri_str = e_uri_to_string (euri, FALSE);
+	g_free (uri);
+	return euri_str;
 }
 
 static gboolean
