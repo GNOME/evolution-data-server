@@ -1,3 +1,9 @@
+2005-09-22  Dinesh Layek  <ldinesh@novell.com>
+
+	Fixes #309679
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Check accept_level
+
 2005-09-27  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* libecal/e-cal.c (build_pass_key) : Do not recreate the uri. Instead

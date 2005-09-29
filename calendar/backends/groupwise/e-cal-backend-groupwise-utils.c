@@ -1024,8 +1024,12 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			 * for getting cutype and the status */
 			attendee->cutype = ICAL_CUTYPE_INDIVIDUAL;
 			 
-			if (recipient->status == E_GW_ITEM_STAT_ACCEPTED)
-				attendee->status = ICAL_PARTSTAT_ACCEPTED;
+			if (recipient->status == E_GW_ITEM_STAT_ACCEPTED) {
+				if(!strcmp(e_gw_item_get_accept_level(item),"Tentative"))
+					attendee->status = ICAL_PARTSTAT_TENTATIVE;
+				else
+					attendee->status = ICAL_PARTSTAT_ACCEPTED;
+			}
 			else if (recipient->status == E_GW_ITEM_STAT_DECLINED)
 				attendee->status = ICAL_PARTSTAT_DECLINED;
 			else
