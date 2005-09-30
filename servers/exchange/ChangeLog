@@ -1,3 +1,9 @@
+2005-09-30  Arunprakash  <arunp@novell.com>
+
+	* storage/exchange-account.c (setup_account_hierarchies) : Skips the
+	hierarchies creation if it is done.
+	** Fixes #312229.
+
 2005-08-26  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* lib/e2k-autoconfig.c (e2k_validate_user) : Fix the password key to

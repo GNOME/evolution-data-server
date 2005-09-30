@@ -1263,6 +1263,10 @@ setup_account_hierarchies (ExchangeAccount *account)
 	if (offline == UNSUPPORTED_MODE)
 		return FALSE;
 
+	/* Check if folder hierarchies are already setup. */
+	if (account->priv->hierarchies->len > 0)
+		goto hierarchies_created;
+
 	/* Set up Personal Folders hierarchy */
 	phys_uri_prefix = g_strdup_printf ("exchange://%s/;personal",
 					   account->priv->uri_authority);
@@ -1277,7 +1281,6 @@ setup_account_hierarchies (ExchangeAccount *account)
 					      TRUE);
 	setup_hierarchy (account, hier);
 	g_free (phys_uri_prefix);
-	personal_hier = hier;
 
 	/* Favorite Public Folders */
 	phys_uri_prefix = g_strdup_printf ("exchange://%s/;favorites",
@@ -1337,10 +1340,16 @@ setup_account_hierarchies (ExchangeAccount *account)
 		closedir (d);
 	}
 
+hierarchies_created:
+	
 	/* Scan the personal and favorite folders so we can resolve references
 	 * to the Calendar, Contacts, etc even if the tree isn't
 	 * opened.
 	 */
+
+	/* Assuming the first element being personal hierarchy. */
+	personal_hier = account->priv->hierarchies->pdata[0];
+	
 	fresult = exchange_hierarchy_scan_subtree (personal_hier,
 						   personal_hier->toplevel,
 						   (offline == OFFLINE_MODE));
