@@ -795,6 +795,140 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
 }
 
+
+static icaltimezone *
+resolve_tzid (const char *tzid, gpointer user_data)
+{
+        icalcomponent *vcalendar_comp = user_data;
+
+        if (!tzid || !tzid[0])
+                return NULL;
+        else if (!strcmp (tzid, "UTC"))
+                return icaltimezone_get_utc_timezone ();
+
+        return icalcomponent_get_timezone (vcalendar_comp, tzid);
+}
+
+
+static gboolean
+free_busy_instance (ECalComponent *comp,
+                    time_t        instance_start,
+                    time_t        instance_end,
+                    gpointer      data)
+{
+        icalcomponent *vfb = data;
+        icalproperty *prop;
+        icalparameter *param;
+        struct icalperiodtype ipt;
+        icaltimezone *utc_zone;
+
+        utc_zone = icaltimezone_get_utc_timezone ();
+
+        ipt.start = icaltime_from_timet_with_zone (instance_start, FALSE, utc_zone);
+        ipt.end = icaltime_from_timet_with_zone (instance_end, FALSE, utc_zone);
+        ipt.duration = icaldurationtype_null_duration ();
+
+        /* add busy information to the vfb component */
+        prop = icalproperty_new (ICAL_FREEBUSY_PROPERTY);
+        icalproperty_set_freebusy (prop, ipt);
+
+        param = icalparameter_new_fbtype (ICAL_FBTYPE_BUSY);
+        icalproperty_add_parameter (prop, param);
+
+        icalcomponent_add_property (vfb, prop);
+
+        return TRUE;
+}
+
+static icalcomponent *
+create_user_free_busy (ECalBackendHttp *cbhttp, const char *address, const char *cn,
+                       time_t start, time_t end)
+{
+        GList *list = NULL, *l;
+        icalcomponent *vfb;
+        icaltimezone *utc_zone;
+        ECalBackendSExp *obj_sexp;
+        ECalBackendHttpPrivate *priv;
+        ECalBackendCache *cache;
+        char *query, *iso_start, *iso_end;
+	
+        priv = cbhttp->priv;
+        cache = priv->cache;
+
+        /* create the (unique) VFREEBUSY object that we'll return */
+        vfb = icalcomponent_new_vfreebusy ();
+        if (address != NULL) {
+                icalproperty *prop;
+                icalparameter *param;
+
+                prop = icalproperty_new_organizer (address);
+                if (prop != NULL && cn != NULL) {
+                        param = icalparameter_new_cn (cn);
+                        icalproperty_add_parameter (prop, param);
+                }
+                if (prop != NULL)
+                        icalcomponent_add_property (vfb, prop);
+        }
+        utc_zone = icaltimezone_get_utc_timezone ();
+        icalcomponent_set_dtstart (vfb, icaltime_from_timet_with_zone (start, FALSE, utc_zone));
+        icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
+
+        /* add all objects in the given interval */
+        iso_start = isodate_from_time_t (start);
+        iso_end = isodate_from_time_t (end);
+        query = g_strdup_printf ("occur-in-time-range? (make-time \"%s\") (make-time \"%s\")",
+                                 iso_start, iso_end);
+        obj_sexp = e_cal_backend_sexp_new (query);
+        g_free (query);
+        g_free (iso_start);
+        g_free (iso_end);
+
+        if (!obj_sexp)
+                return vfb;
+        if (!obj_sexp)
+                return vfb;
+
+        list = e_cal_backend_cache_get_components(cache);
+
+        for (l = list; l; l = l->next) {
+                ECalComponent *comp = l->data;
+                icalcomponent *icalcomp, *vcalendar_comp;
+                icalproperty *prop;
+
+                icalcomp = e_cal_component_get_icalcomponent (comp);
+                if (!icalcomp)
+                        continue;
+
+                /* If the event is TRANSPARENT, skip it. */
+                prop = icalcomponent_get_first_property (icalcomp,
+                                                         ICAL_TRANSP_PROPERTY);
+                if (prop) {
+                        icalproperty_transp transp_val = icalproperty_get_transp (prop);
+                        if (transp_val == ICAL_TRANSP_TRANSPARENT ||
+                            transp_val == ICAL_TRANSP_TRANSPARENTNOCONFLICT)
+                                continue;
+                }
+
+                if (!e_cal_backend_sexp_match_comp (obj_sexp, l->data, E_CAL_BACKEND (cbhttp)))
+                        continue;
+
+                vcalendar_comp = icalcomponent_get_parent (icalcomp);
+                if (!vcalendar_comp)
+                        vcalendar_comp = icalcomp;
+                e_cal_recur_generate_instances (comp, start, end,
+                                                free_busy_instance,
+                                                vfb,
+                                                resolve_tzid,
+                                                vcalendar_comp,
+                                                e_cal_backend_cache_get_default_timezone (cache));
+        }
+        g_object_unref (obj_sexp);
+
+        return vfb;
+}
+
+
+
 /* Get_free_busy handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
@@ -802,6 +936,10 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	gchar *address, *name;
+	icalcomponent *vfb;
+	char *calobj;
+	
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -812,7 +950,29 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	if (!priv->cache)
 		return GNOME_Evolution_Calendar_NoSuchCal;
 
-	/* FIXME */
+        if (users == NULL) {
+		if (e_cal_backend_mail_account_get_default (&address, &name)) {
+                        vfb = create_user_free_busy (cbhttp, address, name, start, end);
+                        calobj = icalcomponent_as_ical_string (vfb);
+                        *freebusy = g_list_append (*freebusy, g_strdup (calobj));
+                        icalcomponent_free (vfb);	
+                        g_free (address);
+                        g_free (name);
+		}
+	} else {
+                GList *l;
+                for (l = users; l != NULL; l = l->next ) {
+                        address = l->data;
+                        if (e_cal_backend_mail_account_is_valid (address, &name)) {
+                                vfb = create_user_free_busy (cbhttp, address, name, start, end);
+                                calobj = icalcomponent_as_ical_string (vfb);
+                                *freebusy = g_list_append (*freebusy, g_strdup (calobj));
+                                icalcomponent_free (vfb);
+                                g_free (name);
+                        }
+                }
+	}
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
