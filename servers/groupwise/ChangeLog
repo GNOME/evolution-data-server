@@ -1,4 +1,4 @@
-2005-08-23  P. S. Chakravarthi <pchakravarthi@novell.com>
+2005-09-30  P. S. Chakravarthi <pchakravarthi@novell.com>
 
 	Fixes #314243
 	* e-gw-item.c: (e_gw_item_set_calendar_item_elements):
