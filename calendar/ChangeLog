@@ -1,3 +1,10 @@
+2005-09-13  dinesh layek  <ldinesh@novell.com>
+
+	fixes #316195
+	* backends/http/e-cal-backend-http.c: (e_cal_backend_http_get_free_busy),
+	(create_user_free_busy), (free_busy_instance), (resolve_tzid): modified/added these
+	functions for publishing freebusy information of a web-calendar.
+
 2005-09-22  Dinesh Layek  <ldinesh@novell.com>
 
 	Fixes #309679
