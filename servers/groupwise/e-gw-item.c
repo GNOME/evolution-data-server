@@ -2966,6 +2966,8 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		soup_soap_message_start_element (msg, "rrule", NULL, NULL);
 		
 		e_gw_message_write_string_parameter (msg, "frequency", NULL, rrule->frequency); 
+		e_gw_message_write_int_parameter (msg, "interval", NULL, rrule->interval); 
+
 		if (rrule->until)
 			e_gw_message_write_string_parameter (msg, "until", NULL, rrule->until);
 		else
