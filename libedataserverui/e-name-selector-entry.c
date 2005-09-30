@@ -1111,15 +1111,24 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 {
 	const gchar *text;
 	gint         index_start, index_end;
+	gint	     selection_start, selection_end;	
 	gunichar     str_context [2], str_b_context [2];;
 	gint         len;
 	gint         i;
+	gboolean     already_selected = FALSE;
 
-	if (start_pos == end_pos)
+	if (start_pos == end_pos) 
 		return;
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	len = g_utf8_strlen (text, -1);
+
+	if (gtk_editable_get_selection_bounds (GTK_EDITABLE (name_selector_entry), 
+					       &selection_start, 
+					       &selection_end)) 
+		if (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end - 1)) == ',') 
+			already_selected = TRUE;
+	
 	get_utf8_string_context (text, start_pos, str_context, 2);
 	get_utf8_string_context (text, end_pos-1, str_b_context, 2);
 
@@ -1142,9 +1151,9 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	/* If the user is trying to delete a ','-character, we assume the user 
 	 * wants to remove the entire destination.
 	 */
-	
-	if ((str_b_context [0] == ',' && str_b_context [1] == ' ') || str_b_context [1] == ',') {
-	
+
+	if (((str_b_context [0] == ',' && str_b_context [1] == ' ') || str_b_context [1] == ',') && !already_selected) {
+
 		EDestination *dest = find_destination_at_position (name_selector_entry, end_pos-1);
 	  	const char *email = e_destination_get_email (dest);
 	  	if (email && (strcmp (email, "")!=0)) {
@@ -1153,11 +1162,11 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		 	 * Deleting this selection afterwards will leave the destination
 		 	 * empty. */
 	 
-			gint t = (str_b_context [1]==',')?end_pos-1:end_pos-2, b=t;
+			gint t = (str_b_context [1]==',')?end_pos:end_pos-1, b=t;
 			do {
 				t--;
 			} while (t >= 1 && text[t-1] != ',');
-		
+	
 			gtk_editable_select_region (GTK_EDITABLE(name_selector_entry), t, b);
 
 			/* Since this is a special-case, we don't want the rest of this method
