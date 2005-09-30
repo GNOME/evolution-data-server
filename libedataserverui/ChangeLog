@@ -1,3 +1,12 @@
+2005-09-30  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-name-selector-entry.c (user_delete_text): In name selector entry
+	while deleting character-by-character when you hit a comma, entire 
+	address is selected and in the next keystroke whole address is deleted,
+	leaving behind a comma. Fixed this so that comma is also removed 
+	along with the address.
+	Fixes #314997.
+
 2005-08-26  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-name-selector-dialog.c: (e_name_selector_dialog_init):
