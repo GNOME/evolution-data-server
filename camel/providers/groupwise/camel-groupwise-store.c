@@ -713,14 +713,11 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 	/*name_hash returns the container id given the name */
 	g_hash_table_insert (priv->name_hash, g_strdup(fi->full_name), g_strdup(id));
 
-	/*XXX: Remove this condition check when server has a fix to show mails in shared-folder*/
-	if (getenv("GROUPWISE_SHARED_FOLDER")) {
-		if (e_gw_container_get_is_shared_to_me (container))
-			fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
+	if (e_gw_container_get_is_shared_to_me (container))
+		fi->flags |= CAMEL_FOLDER_SHARED_TO_ME;
 
-		if (e_gw_container_get_is_shared_by_me (container))
-			fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
-	}
+	if (e_gw_container_get_is_shared_by_me (container))
+		fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
 
 	if (type == E_GW_CONTAINER_TYPE_INBOX) {
 		fi->total = -1;
