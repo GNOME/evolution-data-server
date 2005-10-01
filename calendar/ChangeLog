@@ -1,3 +1,10 @@
+2005-10-01  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #314925
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(get_attendee_prop), (set_attendees_to_item): Get the 
+	delegated attendee and remove the delfrom parameter.
+
 2005-10-01  Harry Lu <harry.lu@sun.com>
 
 	* libecal/e-cal.c: (generate_instances): use the same logic as in
