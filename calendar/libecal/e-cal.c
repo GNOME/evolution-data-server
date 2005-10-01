@@ -3572,23 +3572,45 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 		comp = l->data;
 		if (e_cal_component_is_instance (comp)) {
 			struct comp_instance *ci;
-			struct icaltimetype start_time, end_time;
+			ECalComponentDateTime dtstart, dtend;
+			icaltimezone *start_zone = NULL, *end_zone = NULL;
 
 			/* keep the detached instances apart */
 			ci = g_new0 (struct comp_instance, 1);
 			ci->comp = comp;
-	
-			start_time = icalcomponent_get_dtstart (e_cal_component_get_icalcomponent (comp));
-			end_time = icalcomponent_get_dtend (e_cal_component_get_icalcomponent (comp));
 
-			if (icaltime_is_date (start_time))
-				start_time.zone = default_zone;
-			if (icaltime_is_date (end_time))
-				end_time.zone = default_zone;
+			e_cal_component_get_dtstart (comp, &dtstart);
+			e_cal_component_get_dtend (comp, &dtend);
 
-			ci->start = icaltime_as_timet_with_zone (start_time, start_time.zone);
-			ci->end = icaltime_as_timet_with_zone (end_time, end_time.zone);
-			
+			/* For DATE-TIME values with a TZID, we use 
+			e_cal_resolve_tzid_cb to resolve the TZID. 
+			For DATE values and DATE-TIME values without a
+			TZID (i.e. floating times) we use the default 
+			timezone. */
+			if (dtstart.tzid && !dtstart.value->is_date) {
+				start_zone = e_cal_resolve_tzid_cb (dtstart.tzid, ecal);
+				if (!start_zone)
+					start_zone = default_zone;
+			} else {
+				start_zone = default_zone;
+			}
+
+			if (dtend.tzid && !dtend.value->is_date) {
+				end_zone = e_cal_resolve_tzid_cb (dtend.tzid, ecal);
+				if (!end_zone)
+					end_zone = default_zone;
+			} else {
+				end_zone = default_zone;
+			}
+
+			ci->start = icaltime_as_timet_with_zone (*dtstart.value,
+							start_zone);
+			ci->end = icaltime_as_timet_with_zone (*dtend.value,
+						   	end_zone);
+
+			e_cal_component_free_datetime (&dtstart);
+			e_cal_component_free_datetime (&dtend);
+ 
 			detached_instances = g_list_prepend (detached_instances, ci);
 		} else {
 			e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,
