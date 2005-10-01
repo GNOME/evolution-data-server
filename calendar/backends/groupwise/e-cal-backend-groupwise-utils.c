@@ -336,14 +336,32 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 
 	e_gw_item_set_attach_id_list (item, attach_list);
 }
-	
+
+/* Returns the icalproperty for the Attendee associted with email id */
+static icalproperty *
+get_attendee_prop (icalcomponent *icalcomp, const char *attendee)
+{
+	icalproperty *prop;	
+
+	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
+			prop;
+			prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
+		const char *att = icalproperty_get_attendee (prop);
+
+		if (!g_ascii_strcasecmp (att, attendee)) {
+			return prop;
+		}
+	}
+
+	return NULL;
+}
+
 /* get_attendee_list from cal comp and convert into
  * egwitemrecipient and set it on recipient_list*/
 static void
 set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default_zone, gboolean delegate, const char *user_email)
 {
 	if (e_cal_component_has_attendees (comp)) {
-		gboolean att_changed = FALSE;
 		GSList *attendee_list, *recipient_list = NULL, *al;
 
 		e_cal_component_get_attendee_list (comp, &attendee_list);	
@@ -355,8 +373,10 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 				continue;		
 			
 			if (delegate) {
-				attendee->delfrom = "";
-				att_changed = TRUE;
+				icalproperty *prop = get_attendee_prop (e_cal_component_get_icalcomponent (comp), 
+						attendee->value);
+				if (prop) 
+					icalproperty_remove_parameter_by_kind (prop, ICAL_DELEGATEDFROM_PARAMETER);
 			}
 	
 			recipient = g_new0 (EGwItemRecipient, 1);
@@ -380,10 +400,6 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 
 			recipient_list = g_slist_append (recipient_list, recipient);
 		}
-
-		/* Reset the ECalComponent with changes if necessary*/
-		if(att_changed)
-			e_cal_component_set_attendee_list (comp, attendee_list);	
 
 		e_cal_component_free_attendee_list(attendee_list);
 	

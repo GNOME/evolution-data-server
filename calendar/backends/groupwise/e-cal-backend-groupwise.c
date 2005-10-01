@@ -1817,12 +1817,13 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 
-		if (e_cal_backend_groupwise_utils_check_delegate (comp, e_gw_connection_get_user_email (priv->cnc))) {
+		if (e_cal_component_has_attendees (comp) && 
+				e_cal_backend_groupwise_utils_check_delegate (comp, e_gw_connection_get_user_email (priv->cnc))) {
 			const char *id = NULL, *recur_key = NULL;
 			
 			item = e_gw_item_new_for_delegate_from_cal (cbgw, comp);
 
-			if (mod == CALOBJ_MOD_ALL) {
+			if (mod == CALOBJ_MOD_ALL && e_cal_component_is_instance (comp)) {
 				recur_key = uid;
 			} else {
 				id = e_gw_item_get_id (item);
