@@ -1,3 +1,9 @@
+2005-10-01  Harry Lu <harry.lu@sun.com>
+
+	* libecal/e-cal.c: (generate_instances): use the same logic as in
+	e_cal_recur_generate_instances_of_rule() to get the instance's
+	start and end time.
+
 2005-09-13  dinesh layek  <ldinesh@novell.com>
 
 	fixes #316195
