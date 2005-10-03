@@ -1,3 +1,12 @@
+2005-10-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug 314751
+
+	* camel-groupwise-utils.c: 
+	(send_as_attachment): set file name as text.htm
+	(camel_groupwise_util_item_from_message): if its multipart/alternative
+	get the html and text parts independently
+	
 2005-09-30 Vivek Jain <jvivek@novell.com>
 	
 	* camel-groupwise-store.c: (get_folder_info)

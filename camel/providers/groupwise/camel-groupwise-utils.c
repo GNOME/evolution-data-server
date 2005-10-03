@@ -328,8 +328,13 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		temp_len = 0;
 	}
 	
-	if (!strcmp (attachment->contentType, "text/html"))
+	if (!strcmp (attachment->contentType, "text/html") || !(strcmp (attachment->contentType, "multipart/alternative"))) {
 		filename = "text.htm";
+		if (!(strcmp (attachment->contentType, "multipart/alternative"))) {
+			g_free (attachment->contentType);
+			attachment->contentType = g_strdup ("text/html");
+		}
+	}
 
 	attachment->name = g_strdup (filename ? filename : "");
 	if (!g_ascii_strncasecmp (attachment->contentType, RFC_822, strlen (RFC_822))) {
@@ -414,30 +419,56 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			const char *disposition, *filename;
 			char *buffer = NULL;
 			char *mime_type = NULL;
+			gboolean is_alternative = FALSE;
 			/*
 			 * XXX:
 			 * Assuming the first part always is the actual message
 			 * and an attachment otherwise.....
 			 */
 			part = camel_multipart_get_part (mp, i);
+			type = camel_mime_part_get_content_type(part);
 			dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+			if (type->subtype && !strcmp (type->subtype, "alternative")) {
+				CamelMimePart *temp_part;
+				CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
+				temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
+				CamelDataWrapper *temp_dw = camel_data_wrapper_new ();
+				if (temp_part) {
+					is_alternative = TRUE;
+					temp_dw = camel_medium_get_content_object (CAMEL_MEDIUM (temp_part));
+					camel_data_wrapper_write_to_stream(temp_dw, (CamelStream *)temp_content);
+					buffer = g_malloc0 (temp_content->buffer->len+1);
+					buffer = memcpy (buffer, temp_content->buffer->data, temp_content->buffer->len);
+					filename = camel_mime_part_get_filename (temp_part);
+					disposition = camel_mime_part_get_disposition (temp_part);
+					mime_type = camel_data_wrapper_get_mime_type (temp_dw);
+					send_as_attachment (cnc, item, temp_content, buffer, type, temp_dw, filename, &attach_list);
+					g_free (buffer);
+					g_free (mime_type);
+				}
+				camel_object_unref (temp_content);
+				camel_object_unref (temp_dw);
+				camel_object_unref (dw);
+				continue;
+			} 
+			
 			camel_data_wrapper_write_to_stream(dw, (CamelStream *)content);
 			buffer = g_malloc0 (content->buffer->len+1);
 			buffer = memcpy (buffer, content->buffer->data, content->buffer->len);
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);
 			mime_type = camel_data_wrapper_get_mime_type (dw);
-			type = camel_mime_part_get_content_type(part);
 
 			if (i == 0 && !strcmp (mime_type, "text/plain") ) {
 				e_gw_item_set_content_type (item, mime_type);
 				e_gw_item_set_message (item, buffer);
-			} else
-				send_as_attachment (cnc, item, content, buffer, type, dw, filename, &attach_list);	
+			} else 
+				send_as_attachment (cnc, item, content, buffer, type, dw, filename, &attach_list);
+
 			g_free (buffer);
 			g_free (mime_type);
 			camel_object_unref (content);
-
+			camel_object_unref (dw);
 		} /*end of for*/
 		
 	} else {
