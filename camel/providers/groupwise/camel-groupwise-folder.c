@@ -214,7 +214,7 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 	temp_str = (char *)e_gw_item_get_subject(item);
 	if(temp_str)
 		camel_mime_message_set_subject (msg, temp_str);
-	dtstring = e_gw_item_get_delivered_date (item);
+	dtstring = e_gw_item_get_creation_date (item);
 	if(dtstring) {
 		int offset = 0;
 		time_t time = e_gw_connection_get_date_from_string (dtstring);
@@ -881,7 +881,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		goto end1;
 
 	if (!strcmp (folder->full_name, "Trash") || is_proxy) {
-		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution delivered attachments subject status size", NULL, &list);
+		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution created attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
 				g_warning ("Trash full....Empty Trash!!!!\n");
@@ -1140,7 +1140,7 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
 		} else {
-			temp_date = e_gw_item_get_delivered_date(item);
+			temp_date = e_gw_item_get_creation_date(item);
 			if (temp_date) {
 				time_t time = e_gw_connection_get_date_from_string (temp_date);
 				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);
@@ -1317,7 +1317,7 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			} 
 		} else {
-			temp_date = e_gw_item_get_delivered_date(item);
+			temp_date = e_gw_item_get_creation_date(item);
 			if (temp_date) {
 				time_t time = e_gw_connection_get_date_from_string (temp_date);
 				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);

@@ -1,5 +1,9 @@
 2005-10-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	* reverting commits made for JUNK folder type
+
+2005-10-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	** See bug 314751
 
 	* camel-groupwise-utils.c: 

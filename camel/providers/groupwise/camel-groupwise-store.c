@@ -551,7 +551,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		g_print ("\n\n** %s **: No summary as yet : using get cursor request\n\n", folder->name);
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"peek id recipient attachments distribution subject status options priority startDate delivered",
+				"peek id recipient attachments distribution subject status options priority startDate created",
 				NULL,
 				&cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -627,8 +627,6 @@ get_one_folder_offline (const char *physical_path, const char *path, gpointer da
 	fi = groupwise_build_folder_info(groupwise_store, NULL, path+1);
 	if (!strcmp (fi->full_name, "Mailbox"))
 		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
-	if (!strcmp (fi->full_name, "Junk Mail"))
-		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 	g_ptr_array_add (folders, fi);
 	return TRUE;
 }
