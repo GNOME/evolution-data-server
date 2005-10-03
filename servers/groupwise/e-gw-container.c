@@ -256,8 +256,6 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			container->priv->type = E_GW_CONTAINER_TYPE_DRAFT ;
 		else if (!strcmp (value, "Trash")) 
 			container->priv->type = E_GW_CONTAINER_TYPE_TRASH ;
-		else if (!strcmp (value, "JunkMail")) 
-			container->priv->type = E_GW_CONTAINER_TYPE_JUNK;
 		g_free (value) ;
 	}
 

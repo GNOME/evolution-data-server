@@ -1,3 +1,8 @@
+2005-10-03  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* Reverting commit for Junk Mail type and delivered 
+	date for mails
+
 2005-09-30  P. S. Chakravarthi <pchakravarthi@novell.com>
 
 	Fixes #314243

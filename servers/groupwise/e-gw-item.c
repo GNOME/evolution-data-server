@@ -40,7 +40,6 @@ struct _EGwItemPrivate {
 	/* properties */
 	char *id;
 	char *creation_date;
-	char *delivered_date;
 	char *start_date;
 	char *end_date;
 	char *due_date;
@@ -133,7 +132,6 @@ free_recipient (EGwItemRecipient *recipient, gpointer data)
 {
 	g_free (recipient->email);
 	g_free (recipient->display_name);
-	g_free (recipient->delivered_date);
 	g_free (recipient->opened_date);
 	g_free (recipient->accepted_date);
 	g_free (recipient->deleted_date);
@@ -492,7 +490,6 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv = g_new0 (EGwItemPrivate, 1);
 	priv->item_type = E_GW_ITEM_TYPE_UNKNOWN;
 	priv->creation_date = NULL;
-	priv->delivered_date = NULL;
 	priv->start_date = NULL;
 	priv->end_date = NULL; 
 	priv->due_date = NULL; 
@@ -669,13 +666,6 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				value = soup_soap_parameter_get_string_value (temp_param);
 				formatted_date = e_gw_connection_format_date_string (value);
 				recipient->opened_date = g_strdup (formatted_date);
-				g_free (value), value = NULL;
-				g_free (formatted_date), formatted_date = NULL;
-			}
-			if ( ( temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "delivered"))) {
-				value = soup_soap_parameter_get_string_value (temp_param);
-				formatted_date = e_gw_connection_format_date_string (value);
-				recipient->delivered_date = g_strdup (formatted_date);
 				g_free (value), value = NULL;
 				g_free (formatted_date), formatted_date = NULL;
 			}
@@ -2072,24 +2062,6 @@ e_gw_item_set_creation_date (EGwItem *item, const char *new_date)
 	if (item->priv->creation_date)
 		g_free (item->priv->creation_date);
 	item->priv->creation_date = g_strdup (new_date);
-}
-
-char *
-e_gw_item_get_delivered_date (EGwItem *item)
-{
-	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
-
-	return item->priv->delivered_date;
-}
-
-void
-e_gw_item_set_delivered_date (EGwItem *item, const char *new_date)
-{
-	g_return_if_fail (E_IS_GW_ITEM (item));
-
-	if (item->priv->delivered_date)
-		g_free (item->priv->delivered_date);
-	item->priv->delivered_date = g_strdup (new_date);
 }
 
 char *
