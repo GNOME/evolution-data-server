@@ -1744,14 +1744,6 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			e_gw_item_set_creation_date (item, formatted_date);
 			g_free (value);
 			g_free (formatted_date);
-			
-		} else if (!g_ascii_strcasecmp (name, "delivered")) {
-			char *formatted_date;
-			value = soup_soap_parameter_get_string_value (child);
-			formatted_date = e_gw_connection_format_date_string (value);
-			e_gw_item_set_delivered_date (item, formatted_date);
-			g_free (value);
-			g_free (formatted_date);
 
 		} else if (!g_ascii_strcasecmp (name, "distribution")) {
 			SoupSoapParameter *tp;
