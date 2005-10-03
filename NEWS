@@ -1,6 +1,8 @@
 Evolution-Data-Server 1.4.1, 2005-10-03
 ----------------------------------------
 
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
 #116162 (bnc)- Crash when accepting a groupwise appointment (Chen)
 #257321 - Sent folder should have a unique icon (Sankar)
 #272176 - Slight deviations in vCal-format causes crash (Dinesh)
