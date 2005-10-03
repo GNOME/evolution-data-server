@@ -1,3 +1,39 @@
+Evolution-Data-Server 1.4.1, 2005-10-03
+----------------------------------------
+
+#116162 (bnc)- Crash when accepting a groupwise appointment (Chen)
+#257321 - Sent folder should have a unique icon (Sankar)
+#272176 - Slight deviations in vCal-format causes crash (Dinesh)
+#309679 - 'Tentativly accept' is updated as accept (Dinesh)
+#309993 - Newly created mail items appear as READ in GW proxy (Sankar).
+#311447 - GW: ModifyProxyAccessRights doesnt work (Sankar)
+#312229 - Crash while switching to online (Arunprakash)
+#312462 - EDS crashes frequently (Chakravarthi)
+#314243 - cannot create  recurring GW events with interval more than 1 (Chakravarthi)
+#314574 - camel-lock-client looking for a non-existant camel-lock-helper (Parthasarathi)
+#314746 - Syncing passwords across components fails for Exchange (Sarfraaz)
+#314925 - In 'Attendees' tab particpants id displayed as junk after delegating meeting (Chenthill)
+#314942 - gw: Marking mail as Junk - Evolution crashes (Vivek)
+#314997 - Editing addresses in the composer is buggy (Devashish)
+#315173 - Crash when dragging embedded message/rfc822 into a folder (Vivek)
+#316195 - Can't Publish Free/Busy for Web-Calendars (Dinesh)
+#316274 - Exchange Plugin cant be enabled on a machine w/o KRB5 (Irene)
+#317226 - bug about recurrent all day events (Wang) 
+
+Updated Translations:
+
+	- cs (Dan Damian)
+	- es (Francisco Javier F. Serrador)
+	- et (Ivar Smolin)
+	- eu (Inaki Larranaga)
+	- fr (Christophe Merlet)
+	- fr (Stéphane Raimbault)
+	- gl (Ignacio Casal Quinteiro)
+	- ro (Dan Damian)
+	- sv (Christian Rose)
+	- tr (Baris Cicek)
+	- vi (Clytie Siddall)
+
 Evolution-Data-Server 1.4.0, 2005-09-05
 ---------------------------------------
 
