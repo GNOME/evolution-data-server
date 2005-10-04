@@ -1,3 +1,10 @@
+2005-10-04  Dinesh Layek  <ldinesh@novell.com>
+
+	Fixes #120071 
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Added a null check for
+	the acceptlevel.
+
 2005-10-01  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #314925
