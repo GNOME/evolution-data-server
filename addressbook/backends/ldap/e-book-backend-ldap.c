@@ -76,7 +76,7 @@ typedef enum {
 } EBookBackendLDAPUseTLS;
 
 /* interval for our poll_ldap timeout */
-#define LDAP_POLL_INTERVAL 20
+#define LDAP_POLL_INTERVAL 20 
 
 /* timeout for ldap_result */
 #define LDAP_RESULT_TIMEOUT_MILLIS 10
@@ -164,6 +164,8 @@ struct LDAPOp {
 	guint32        opid; /* the libebook operation id */
 	int            id;   /* the ldap msg id */
 };
+
+static GStaticRecMutex eds_ldap_handler_lock = G_STATIC_REC_MUTEX_INIT;
 
 static void     ldap_op_add (LDAPOp *op, EBookBackend *backend, EDataBook *book,
 			     EDataBookView *view, int opid, int msgid, LDAPOpHandler handler, LDAPOpDtor dtor);
@@ -477,11 +479,16 @@ check_schema_support (EBookBackendLDAP *bl)
 {
 	char *attrs[2];
 	LDAPMessage *resp;
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	struct timeval timeout;
 
-	if (!ldap)
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
+	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		return;
+	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (!bl->priv->schema_dn)
 		return;
@@ -494,12 +501,14 @@ check_schema_support (EBookBackendLDAP *bl)
 	timeout.tv_sec = 30;
 	timeout.tv_usec = 0;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (ldap_search_ext_s (ldap, bl->priv->schema_dn, LDAP_SCOPE_BASE,
 			       "(objectClass=subschema)", attrs, 0,
 			       NULL, NULL, &timeout, LDAP_NO_LIMIT, &resp) == LDAP_SUCCESS) {
 		char **values;
 
 		values = ldap_get_values (ldap, resp, "objectClasses");
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (values) {
 			int i;
@@ -554,6 +563,9 @@ check_schema_support (EBookBackendLDAP *bl)
 
 		ldap_msgfree (resp);
 	}
+	else {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+	}
 }
 
 static void
@@ -598,15 +610,20 @@ static int
 query_ldap_root_dse (EBookBackendLDAP *bl)
 {
 #define MAX_DSE_ATTRS 20
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	LDAPMessage *resp;
 	int ldap_error = LDAP_OTHER;
 	char *attrs[MAX_DSE_ATTRS], **values;
 	int i = 0;
 	struct timeval timeout;
 
-	if (!ldap)
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
+	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		return ldap_error;
+	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	attrs[i++] = "supportedControl";
 	attrs[i++] = "supportedExtension";
@@ -620,23 +637,29 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 	timeout.tv_sec = 30;
 	timeout.tv_usec = 0;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	ldap_error = ldap_search_ext_s (ldap,
 					LDAP_ROOT_DSE, LDAP_SCOPE_BASE,
 					"(objectclass=*)",
 					attrs, 0, NULL, NULL, &timeout, LDAP_NO_LIMIT, &resp);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (ldap_error != LDAP_SUCCESS) {
 		g_warning ("could not perform query on Root DSE (ldap_error 0x%02x)", ldap_error);
 		return ldap_error;
 	}
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	values = ldap_get_values (ldap, resp, "supportedControl");
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (values) {
 		for (i = 0; values[i]; i++)
 			g_message ("supported server control: %s", values[i]);
 		ldap_value_free (values);
 	}
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	values = ldap_get_values (ldap, resp, "supportedExtension");
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (values) {
 		for (i = 0; values[i]; i++) {
 			g_message ("supported server extension: %s", values[i]);
@@ -647,7 +670,9 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 		ldap_value_free (values);
 	}
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	values = ldap_get_values (ldap, resp, "supportedSASLMechanisms");
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (values) {
 		char *auth_method;
 		if (bl->priv->supported_auth_methods) {
@@ -670,11 +695,14 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 		ldap_value_free (values);
 	}
 
-
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	values = ldap_get_values (ldap, resp, "subschemaSubentry");
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (!values || !values[0]) {
 		if (values) ldap_value_free (values);
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		values = ldap_get_values (ldap, resp, "schemaNamingContext");
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
 	if (values && values[0]) {
 		g_free (bl->priv->schema_dn);
@@ -698,17 +726,18 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 	int protocol_version = LDAP_VERSION3;
 
 	/* close connection first if it's open first */
-	if (blpriv->ldap)
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (blpriv->ldap) {
 		ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
-
+	}
 	blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
+
 #if defined (DEBUG) && defined (LDAP_OPT_DEBUG_LEVEL)
 	{
 		int debug_level = 4;
 		ldap_set_option (blpriv->ldap, LDAP_OPT_DEBUG_LEVEL, &debug_level);
 	}
 #endif
-
 	if (NULL != blpriv->ldap) {
 		int ldap_error;
 
@@ -727,6 +756,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 				g_message ("TLS not available (fatal version), v3 protocol could not be established (ldap_error 0x%02x)", ldap_error);
 				ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
 				blpriv->ldap = NULL;
+				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 				return GNOME_Evolution_Addressbook_TLSNotAvailable;
 			}
 
@@ -741,6 +771,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 						g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
 						ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
 						blpriv->ldap = NULL;
+						g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 						return GNOME_Evolution_Addressbook_TLSNotAvailable;
 					}
 					else {
@@ -771,14 +802,17 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 		if (ldap_error == LDAP_PROTOCOL_ERROR) {
 			g_warning ("failed to bind using either v3 or v2 binds.");
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			return GNOME_Evolution_Addressbook_OtherError;
 		}
 		else if (ldap_error == LDAP_SERVER_DOWN) {
 			/* we only want this to be fatal if the server is down. */
 			g_warning ("failed to bind anonymously while connecting (ldap_error 0x%02x)", ldap_error);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			return GNOME_Evolution_Addressbook_RepositoryOffline;
 		}
 
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		ldap_error = query_ldap_root_dse (bl);
 		/* query_ldap_root_dse will cause the actual
 		   connect(), so any tcpip problems will show up
@@ -807,6 +841,9 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		else
 			g_warning ("Failed to perform root dse query anonymously, (ldap_error 0x%02x)", ldap_error);
 	}
+	else {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+	}
 
 	g_warning ("e_book_backend_ldap_connect failed for "
 		   "'ldap://%s:%d/%s'\n",
@@ -820,8 +857,12 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 static gboolean
 e_book_backend_ldap_reconnect (EBookBackendLDAP *bl, EDataBookView *book_view, int ldap_status)
 {
-	if (!bl->priv->ldap)
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		return FALSE;
+	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	/* we need to reconnect if we were previously connected */
 	if (bl->priv->connected && ldap_status == LDAP_SERVER_DOWN) {
@@ -839,10 +880,13 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl, EDataBookView *book_view, i
 			return FALSE;
 		}
 
-		if (bl->priv->auth_dn)
+		if (bl->priv->auth_dn) {
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_simple_bind_s(bl->priv->ldap,
 							bl->priv->auth_dn,
 							bl->priv->auth_passwd);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+		}
 		if (book_view)
 			book_view_notify_status (book_view, "");
 
@@ -880,11 +924,11 @@ ldap_op_add (LDAPOp *op, EBookBackend *backend,
 
 	bl->priv->active_ops ++;
 
-	if (bl->priv->poll_timeout == -1)
+	if (bl->priv->poll_timeout == -1) {
 		bl->priv->poll_timeout = g_timeout_add (LDAP_POLL_INTERVAL,
 							(GSourceFunc) poll_ldap,
 							bl);
-
+	}
 	g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
 }
 
@@ -898,8 +942,10 @@ ldap_op_finished (LDAPOp *op)
 	g_hash_table_remove (bl->priv->id_to_op, &op->id);
 
 	/* should handle errors here */
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (bl->priv->ldap)
 		ldap_abandon (bl->priv->ldap, op->id);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	op->dtor (op);
 
@@ -1219,17 +1265,23 @@ create_contact_handler (LDAPOp *op, LDAPMessage *res)
 {
 	LDAPCreateOp *create_op = (LDAPCreateOp*)op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	char *ldap_error_msg;
 	int ldap_error;
 	int response;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
 	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_respond_create (op->book,
 					    op->opid,
 					    GNOME_Evolution_Addressbook_OtherError,
 					    NULL);
 		ldap_op_finished (op);
+	}
+	else {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
 
 	if (LDAP_RES_ADD != ldap_msgtype (res)) {
@@ -1242,8 +1294,10 @@ create_contact_handler (LDAPOp *op, LDAPMessage *res)
 		return;
 	}
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	ldap_parse_result (ldap, res, &ldap_error,
 			   NULL, &ldap_error_msg, NULL, NULL, 0);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (ldap_error != LDAP_SUCCESS) {
 		g_warning ("create_contact_handler: %02X (%s), additional info: %s",
 			   ldap_error,
@@ -1298,21 +1352,22 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 		return;
 	case GNOME_Evolution_Addressbook_MODE_REMOTE : 
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (!bl->priv->ldap) {
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			e_data_book_respond_create (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;
 		}
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		book_view = find_book_view (bl);
 
 		printf ("vcard = %s\n", vcard);
 		
 		create_op->new_contact = e_contact_new_from_vcard (vcard);
-		
+	
 		create_op->dn = create_dn_from_contact (create_op->new_contact, bl->priv->ldap_rootdn);
 		e_contact_set (create_op->new_contact, E_CONTACT_UID, create_op->dn);
-		
-		ldap = bl->priv->ldap;
 		
 		/* build our mods */
 		mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL);
@@ -1377,12 +1432,17 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 #endif
 	
 		ldap_mods = (LDAPMod**)mod_array->pdata;
-	
+
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap = bl->priv->ldap;
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+		
 		do {
 			book_view_notify_status (book_view, _("Adding contact to LDAP server..."));
-		
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);	
 			err = ldap_add_ext (ldap, create_op->dn, ldap_mods,
 					    NULL, NULL, &create_contact_msgid);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		
 		} while (e_book_backend_ldap_reconnect (bl, book_view, err));
 	
@@ -1422,11 +1482,14 @@ remove_contact_handler (LDAPOp *op, LDAPMessage *res)
 	int ldap_error;
 	GList *ids = NULL;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_respond_remove_contacts (op->book, op->opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 		ldap_op_finished (op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (LDAP_RES_DELETE != ldap_msgtype (res)) {
 		g_warning ("incorrect msg type %d passed to remove_contact_handler", ldap_msgtype (res));
@@ -1438,8 +1501,10 @@ remove_contact_handler (LDAPOp *op, LDAPMessage *res)
 		return;
 	}
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	ldap_parse_result (bl->priv->ldap, res, &ldap_error,
 			   NULL, &ldap_error_msg, NULL, NULL, 0);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (ldap_error != LDAP_SUCCESS) {
 		g_warning ("remove_contact_handler: %02X (%s), additional info: %s",
 			   ldap_error,
@@ -1488,11 +1553,14 @@ e_book_backend_ldap_remove_contacts (EBookBackend *backend,
 		g_free (remove_op);
 		return;
 	case GNOME_Evolution_Addressbook_MODE_REMOTE : 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (!bl->priv->ldap) {
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			e_data_book_respond_remove_contacts (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			g_free (remove_op);
 			return;
 		}
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		book_view = find_book_view (bl);
 
@@ -1505,10 +1573,12 @@ e_book_backend_ldap_remove_contacts (EBookBackend *backend,
 		
 		do {
 			book_view_notify_status (book_view, _("Removing contact from LDAP server..."));
-			
+		
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);	
 			ldap_error = ldap_delete_ext (bl->priv->ldap,
 						      remove_op->id,
 						      NULL, NULL, &remove_msgid);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
 		
 		if (ldap_error != LDAP_SUCCESS) {
@@ -1554,11 +1624,14 @@ modify_contact_modify_handler (LDAPOp *op, LDAPMessage *res)
 {
 	LDAPModifyOp *modify_op = (LDAPModifyOp*)op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	char *ldap_error_msg;
 	int ldap_error;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
 	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_respond_modify (op->book,
 					    op->opid,
 					    GNOME_Evolution_Addressbook_OtherError,
@@ -1566,6 +1639,7 @@ modify_contact_modify_handler (LDAPOp *op, LDAPMessage *res)
 		ldap_op_finished (op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (LDAP_RES_MODIFY != ldap_msgtype (res)) {
 		g_warning ("incorrect msg type %d passed to modify_contact_handler", ldap_msgtype (res));
@@ -1577,8 +1651,10 @@ modify_contact_modify_handler (LDAPOp *op, LDAPMessage *res)
 		return;
 	}
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	ldap_parse_result (ldap, res, &ldap_error,
 			   NULL, &ldap_error_msg, NULL, NULL, 0);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (ldap_error != LDAP_SUCCESS) {
 		g_warning ("modify_contact_handler: %02X (%s), additional info: %s",
 			   ldap_error,
@@ -1602,15 +1678,19 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 {
 	LDAPModifyOp *modify_op = (LDAPModifyOp*)op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	int msg_type;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
 	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_respond_modify (op->book, op->opid,
 					    GNOME_Evolution_Addressbook_OtherError, NULL);
 		ldap_op_finished (op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	/* if it's successful, we should get called with a
 	   RES_SEARCH_ENTRY and a RES_SEARCH_RESULT.  if it's
@@ -1618,7 +1698,9 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 
 	msg_type = ldap_msgtype (res);
 	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		LDAPMessage *e = ldap_first_entry(ldap, res);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (!e) {
 			g_warning ("uh, this shouldn't happen");
@@ -1630,8 +1712,10 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 			return;
 		}
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		modify_op->current_contact = build_contact_from_entry (ldap, e,
 								       &modify_op->existing_objectclasses);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
 	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		char *ldap_error_msg;
@@ -1644,8 +1728,10 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 
 		/* grab the result code, and set up the actual modify
                    if it was successful */
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_parse_result (bl->priv->ldap, res, &ldap_error,
 				   NULL, &ldap_error_msg, NULL, NULL, 0);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		if (ldap_error != LDAP_SUCCESS) {
 			g_warning ("modify_contact_search_handler: %02X (%s), additional info: %s",
 				   ldap_error,
@@ -1681,8 +1767,10 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 			ldap_mods = (LDAPMod**)mod_array->pdata;
 
 			/* actually perform the ldap modify */
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_modify_ext (ldap, modify_op->id, ldap_mods,
 						      NULL, NULL, &modify_contact_msgid);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 			if (ldap_error == LDAP_SUCCESS) {
 				op->handler = modify_contact_modify_handler;
@@ -1747,28 +1835,35 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 		e_data_book_respond_modify(book, opid, GNOME_Evolution_Addressbook_RepositoryOffline, NULL);
 		return;
 	case GNOME_Evolution_Addressbook_MODE_REMOTE :
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (!bl->priv->ldap) {
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			e_data_book_respond_modify (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			g_free (modify_op);
 			return;
 		}
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		book_view = find_book_view (bl);
 
 		modify_op->contact = e_contact_new_from_vcard (vcard);
 		modify_op->id = e_contact_get_const (modify_op->contact, E_CONTACT_UID);
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap = bl->priv->ldap;
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		do {
 			book_view_notify_status (book_view, _("Modifying contact from LDAP server..."));
 
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_search_ext (ldap, modify_op->id,
 						      LDAP_SCOPE_BASE,
 						      "(objectclass=*)",
 						      NULL, 0, NULL, NULL,
 						      NULL, /* XXX timeout */
 						      1, &modify_contact_msgid);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
 
@@ -1799,18 +1894,24 @@ get_contact_handler (LDAPOp *op, LDAPMessage *res)
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	int msg_type;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_respond_get_contact (op->book, op->opid, GNOME_Evolution_Addressbook_OtherError, "");
 		ldap_op_finished (op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	/* the msg_type will be either SEARCH_ENTRY (if we're
 	   successful) or SEARCH_RESULT (if we're not), so we finish
 	   the op after either */
 	msg_type = ldap_msgtype (res);
 	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
-		LDAPMessage *e = ldap_first_entry(bl->priv->ldap, res);
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		LDAPMessage *e = ldap_first_entry (bl->priv->ldap, res);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
 		EContact *contact;
 		char *vcard;
 
@@ -1824,7 +1925,10 @@ get_contact_handler (LDAPOp *op, LDAPMessage *res)
 			return;
 		}
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		contact = build_contact_from_entry (bl->priv->ldap, e, NULL);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
 		vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 		e_data_book_respond_get_contact (op->book,
 						 op->opid,
@@ -1837,8 +1941,11 @@ get_contact_handler (LDAPOp *op, LDAPMessage *res)
 	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		char *ldap_error_msg;
 		int ldap_error;
+
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_parse_result (bl->priv->ldap, res, &ldap_error,
 				   NULL, &ldap_error_msg, NULL, NULL, 0);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		if (ldap_error != LDAP_SUCCESS) {
 			g_warning ("get_contact_handler: %02X (%s), additional info: %s",
 				   ldap_error,
@@ -1879,7 +1986,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 {
 	LDAPGetContactOp *get_contact_op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	int get_contact_msgid;
 	EDataBookView *book_view;
 	int ldap_error;
@@ -1910,22 +2017,29 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 		e_data_book_respond_get_contact(book, opid, GNOME_Evolution_Addressbook_RepositoryOffline, "");
 		return;
 
-	case GNOME_Evolution_Addressbook_MODE_REMOTE : 	
+	case GNOME_Evolution_Addressbook_MODE_REMOTE : 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap = bl->priv->ldap;
+
 		if (!ldap) {
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			e_data_book_respond_get_contact (book, opid, GNOME_Evolution_Addressbook_OtherError, "");
 			return;
 		}
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		get_contact_op = g_new0 (LDAPGetContactOp, 1);
 		book_view = find_book_view (bl);
 
 		do {	
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_search_ext (ldap, id,
 						      LDAP_SCOPE_BASE,
 						      "(objectclass=*)",
 						      NULL, 0, NULL, NULL,
 						      NULL, /* XXX timeout */
 						      1, &get_contact_msgid);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
 
 		if (ldap_error == LDAP_SUCCESS) {
@@ -1954,23 +2068,35 @@ contact_list_handler (LDAPOp *op, LDAPMessage *res)
 {
 	LDAPGetContactListOp *contact_list_op = (LDAPGetContactListOp*)op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	LDAPMessage *e;
 	int msg_type;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
 	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_respond_get_contact_list (op->book, op->opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 		ldap_op_finished (op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	msg_type = ldap_msgtype (res);
 	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
-		e = ldap_first_entry(ldap, res);
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		e = ldap_first_entry (ldap, res);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		while (NULL != e) {
-			EContact *contact = build_contact_from_entry (ldap, e, NULL);
-			char *vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+			EContact *contact;
+			char *vcard;
+
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+			contact = build_contact_from_entry (ldap, e, NULL);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+			vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
 			printf ("vcard = %s\n", vcard);
  
@@ -1978,15 +2104,20 @@ contact_list_handler (LDAPOp *op, LDAPMessage *res)
 								   vcard);
 
 			g_object_unref (contact);
+
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			e = ldap_next_entry(ldap, e);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
 	}
 	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		char *ldap_error_msg;
 		int ldap_error;
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_parse_result (ldap, res, &ldap_error,
 				   NULL, &ldap_error_msg, NULL, NULL, 0);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		if (ldap_error != LDAP_SUCCESS) {
 			g_warning ("contact_list_handler: %02X (%s), additional info: %s",
 				   ldap_error,
@@ -2047,7 +2178,7 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 {
 	LDAPGetContactListOp *contact_list_op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	int contact_list_msgid;
 	EDataBookView *book_view;
 	int ldap_error;
@@ -2080,10 +2211,15 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 		return;
 		
 	case GNOME_Evolution_Addressbook_MODE_REMOTE:
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap = bl->priv->ldap;
+
 		if (!ldap) {
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;
 		}
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		contact_list_op = g_new0 (LDAPGetContactListOp, 1);
 		book_view = find_book_view (bl);
@@ -2093,6 +2229,7 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 		printf ("getting contact list with filter: %s\n", ldap_query);
 
 		do {	
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_search_ext (ldap,
 						      bl->priv->ldap_rootdn,
 						      bl->priv->ldap_scope,
@@ -2100,6 +2237,7 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 						      NULL, 0, NULL, NULL,
 						      NULL, /* XXX timeout */
 						      LDAP_NO_LIMIT, &contact_list_msgid);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
 
 		g_free (ldap_query);
@@ -3236,15 +3374,19 @@ build_contact_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectcla
 static gboolean
 poll_ldap (EBookBackendLDAP *bl)
 {
-	LDAP           *ldap = bl->priv->ldap;
+	LDAP           *ldap;
 	int            rc;
 	LDAPMessage    *res;
 	struct timeval timeout;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
 	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		bl->priv->poll_timeout = -1;
 		return FALSE;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (!bl->priv->active_ops) {
 		g_warning ("poll_ldap being called for backend with no active operations");
@@ -3255,7 +3397,9 @@ poll_ldap (EBookBackendLDAP *bl)
 	timeout.tv_sec = 0;
 	timeout.tv_usec = LDAP_RESULT_TIMEOUT_MILLIS * 1000;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	rc = ldap_result (ldap, LDAP_RES_ANY, 0, &timeout, &res);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (rc != 0) {/* rc == 0 means timeout exceeded */
 		if (rc == -1) {
 			EDataBookView *book_view = find_book_view (bl);
@@ -3298,17 +3442,21 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 	LDAPSearchOp *search_op = (LDAPSearchOp*)op;
 	EDataBookView *view = search_op->view;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	LDAPMessage *e;
 	int msg_type;
 
 	d(printf ("ldap_search_handler (%p)\n", view));
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
 	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_OtherError);
 		ldap_op_finished (op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (!search_op->notified_receiving_results) {
 		search_op->notified_receiving_results = TRUE;
@@ -3317,23 +3465,31 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 
 	msg_type = ldap_msgtype (res);
 	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
-		e = ldap_first_entry(ldap, res);
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		e = ldap_first_entry (ldap, res);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		while (NULL != e) {
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			EContact *contact = build_contact_from_entry (ldap, e, NULL);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 			e_data_book_view_notify_update (view, contact);
 			g_object_unref (contact);
 
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);				
 			e = ldap_next_entry(ldap, e);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
 	}
 	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		char *ldap_error_msg;
 		int ldap_error;
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_parse_result (ldap, res, &ldap_error,
 				   NULL, &ldap_error_msg, NULL, NULL, 0);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		if (ldap_error != LDAP_SUCCESS) {
 			g_warning ("ldap_search_handler: %02X (%s), additional info: %s",
 				   ldap_error,
@@ -3408,12 +3564,14 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 	case GNOME_Evolution_Addressbook_MODE_REMOTE :
 		ldap_query = e_book_backend_ldap_build_query (bl, e_data_book_view_get_card_query (view));
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (ldap_query != NULL && bl->priv->ldap) {
-			LDAP *ldap = bl->priv->ldap;
+			LDAP *ldap;
 			int ldap_err;
 			int search_msgid;
 			int view_limit;
 
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			view_limit = e_data_book_view_get_max_results (view);
 			if (view_limit == -1 || view_limit > bl->priv->ldap_limit)
 				view_limit = bl->priv->ldap_limit;
@@ -3421,9 +3579,14 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 			printf ("searching server using filter: %s (expecting max %d results)\n", ldap_query,
 				view_limit);
 
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+			ldap = bl->priv->ldap;
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
 			do {
 				book_view_notify_status (view, _("Searching..."));
 
+				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 				ldap_err = ldap_search_ext (ldap, bl->priv->ldap_rootdn,
 							    bl->priv->ldap_scope,
 							    ldap_query,
@@ -3432,6 +3595,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 							    NULL, /* XXX */
 							    NULL, /* XXX timeout */
 							    view_limit, &search_msgid);
+				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			} while (e_book_backend_ldap_reconnect (bl, view, ldap_err));
 
 			g_free (ldap_query);
@@ -3468,6 +3632,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 							  GNOME_Evolution_Addressbook_InvalidQuery);
 			*/
 			/* Ignore NULL query */
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			e_data_book_view_notify_complete (view,
 							  GNOME_Evolution_Addressbook_Success);
 			return;
@@ -3521,27 +3686,38 @@ generate_cache_handler (LDAPOp *op, LDAPMessage *res)
 {
 	LDAPGetContactListOp *contact_list_op = (LDAPGetContactListOp *) op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	LDAP *ldap = bl->priv->ldap;
+	LDAP *ldap;
 	LDAPMessage *e;
 	gint msg_type;
 	EDataBookView *book_view;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	ldap = bl->priv->ldap;
 	if (!ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		ldap_op_finished (op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	book_view = find_book_view (bl);
 
 	msg_type = ldap_msgtype (res);
 	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		e = ldap_first_entry(ldap, res);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		while (e != NULL) {
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			EContact *contact = build_contact_from_entry (ldap, e, NULL);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
 			contact_list_op->contacts = g_list_prepend (contact_list_op->contacts, contact);
 
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			e = ldap_next_entry(ldap, e);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
 	} else {
 		GList *l;
@@ -3597,15 +3773,19 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 
 	priv = book_backend_ldap->priv;
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!priv->ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		g_free (contact_list_op);
 		return;
 	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	ldap_query = e_book_backend_ldap_build_query (book_backend_ldap, 
 						      "(beginswith \"file_as\" \"\")");
 
-	do {	
+	do {
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);	
 		ldap_error = ldap_search_ext (priv->ldap,
 					      priv->ldap_rootdn,
 					      priv->ldap_scope,
@@ -3613,6 +3793,7 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 					      NULL, 0, NULL, NULL,
 					      NULL, /* XXX timeout */
 					      LDAP_NO_LIMIT, &contact_list_msgid);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	} while (e_book_backend_ldap_reconnect (book_backend_ldap, NULL, ldap_error));
 
 	g_free (ldap_query);
@@ -3647,7 +3828,11 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 						       GNOME_Evolution_Addressbook_Success);
 		return;
 	}
+
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->connected || !bl->priv->ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
 		status = e_book_backend_ldap_connect (bl);
 		if (status != GNOME_Evolution_Addressbook_Success) {
 			e_data_book_respond_authenticate_user (book,
@@ -3656,23 +3841,31 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		}
 						       
 	}
+	else {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+	}
+
 	if (!strncasecmp (auth_method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
 
 		if (!strcmp (auth_method, "ldap/simple-email")) {
 			LDAPMessage    *res, *e;
 			char *query = g_strdup_printf ("(mail=%s)", user);
 
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_search_s (bl->priv->ldap,
 						    bl->priv->ldap_rootdn,
 						    bl->priv->ldap_scope,
 						    query,
 						    NULL, 0, &res);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_free (query);
 
 			if (ldap_error == LDAP_SUCCESS) {
 				char *entry_dn;
 
+				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 				e = ldap_first_entry (bl->priv->ldap, res);
+				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 				if (!e) {
 					g_warning ("Failed to get the DN for %s", user);
 					ldap_msgfree (res);
@@ -3682,7 +3875,9 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 					return;
 				}
 
+				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 				entry_dn = ldap_get_dn (bl->priv->ldap, e);
+				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 				dn = g_strdup(entry_dn);
 
 				ldap_memfree (entry_dn);
@@ -3701,9 +3896,11 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 
 		/* now authenticate against the DN we were either supplied or queried for */
 		printf ("simple auth as %s\n", dn);
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_error = ldap_simple_bind_s(bl->priv->ldap,
 						dn,
 						passwd);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		/* Some ldap servers are returning (ex active directory ones) LDAP_SERVER_DOWN
 		 * when we try to do an ldap operation  after being  idle 
 		 * for some time. This error is handled by poll_ldap in case of search operations
@@ -3726,6 +3923,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 #ifdef ENABLE_SASL_BINDS
 	else if (!strncasecmp (auth_method, SASL_PREFIX, strlen (SASL_PREFIX))) {
 		g_print ("sasl bind (mech = %s) as %s", auth_method + strlen (SASL_PREFIX), user);
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_error = ldap_sasl_bind_s (bl->priv->ldap,
 					       NULL,
 					       auth_method + strlen (SASL_PREFIX),
@@ -3733,6 +3931,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 					       NULL,
 					       NULL,
 					       NULL);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (ldap_error == LDAP_NOT_SUPPORTED)
 			e_data_book_respond_authenticate_user (book,
@@ -3838,8 +4037,10 @@ ldap_cancel_op(void *key, void *value, void *data)
 	LDAPOp *op = value;
 
 	/* ignore errors, its only best effort? */
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (bl->priv->ldap)
 		ldap_abandon_ext (bl->priv->ldap, op->id, NULL, NULL);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 }
 
 static GNOME_Evolution_Addressbook_CallStatus
@@ -4104,8 +4305,10 @@ call_dtor (int msgid, LDAPOp *op, gpointer data)
 
 	bl = E_BOOK_BACKEND_LDAP (op->backend);
 
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (bl->priv->ldap)
 		ldap_abandon (bl->priv->ldap, op->id);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	op->dtor (op);
 
@@ -4126,8 +4329,10 @@ e_book_backend_ldap_dispose (GObject *object)
 		g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
 		g_static_rec_mutex_free (&bl->priv->op_hash_mutex);
 
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);	
 		if (bl->priv->ldap)
 			ldap_unbind_ext_s (bl->priv->ldap, NULL, NULL);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (bl->priv->poll_timeout != -1) {
 			printf ("removing timeout\n");
