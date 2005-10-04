@@ -1,3 +1,8 @@
+2005-10-04  Sushma Rai  <rsushma@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c: Added a mutext for ldap
+	connection handler, so that it is not accessed during ldap_reconnect.
+
 2005-09-27  Tor Lillqvist  <tml@novell.com>
 
 	* libebook/e-contact.c (e_contact_date_from_string): Use strchr()
