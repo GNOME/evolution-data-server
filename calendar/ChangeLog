@@ -1,3 +1,10 @@
+2005-10-07  Arunprakash  <arunp@novell.com>
+
+	* libedata-cal/e-data-cal-factory.c (backend_last_client_gone_cb) :
+	Use the same key for insertion and lookup in the backends hash table.
+	(impl_CalFactory_getCal ): Same.
+	** Fixes #317897.
+	
 2005-10-04  Dinesh Layek  <ldinesh@novell.com>
 
 	Fixes #120071 

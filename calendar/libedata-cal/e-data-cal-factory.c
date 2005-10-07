@@ -93,32 +93,6 @@ get_backend_factory (GHashTable *methods, const char *method, icalcomponent_kind
 	return factory;
 }
 
-/* Looks up a calendar backend in a factory's hash table of uri->cal.  If
- * *non-NULL, orig_uri_return will be set to point to the original key in the
- * *hash table.
- */
-static ECalBackend *
-lookup_backend (EDataCalFactory *factory, const char *uristr)
-{
-	EDataCalFactoryPrivate *priv;
-	EUri *uri;
-	ECalBackend *backend;
-	char *tmp;
-
-	priv = factory->priv;
-
-	uri = e_uri_new (uristr);
-	if (!uri)
-		return NULL;
-
-	tmp = e_uri_to_string (uri, FALSE);
-	backend = g_hash_table_lookup (priv->backends, tmp);
-	g_free (tmp);
-	e_uri_free (uri);
-
-	return backend;
-}
-
 /* Callback used when a backend loses its last connected client */
 static void
 backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
@@ -140,7 +114,7 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 	g_assert (uristr != NULL);
 	uri = g_strdup_printf("%s:%d", uristr, (int)e_cal_backend_get_kind(backend));
 
-	ret_backend = lookup_backend (factory, uri);
+	ret_backend = g_hash_table_lookup (factory->priv->backends, uri);
 	g_assert (ret_backend != NULL);
 	g_assert (ret_backend == backend);
 
@@ -227,7 +201,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	CORBA_exception_free (&ev2);
 
 	/* Look for an existing backend */
-	backend = lookup_backend (factory, uri_type_string);
+	backend = g_hash_table_lookup (factory->priv->backends, uri_type_string);
 	if (!backend) {
 		/* There was no existing backend, create a new one */
 		backend = e_cal_backend_factory_new_backend (backend_factory, source);
