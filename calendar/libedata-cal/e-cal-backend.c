@@ -1130,27 +1130,21 @@ e_cal_backend_notify_object_created (ECalBackend *backend, const char *calobj)
 static void
 match_query_and_notify (EDataCalView *query, const char *old_object, const char *object)
 {
-	gboolean old_match = FALSE, new_match = FALSE;
+	gboolean old_match, new_match;
 
-	if (old_object)
-		old_match = e_data_cal_view_object_matches (query, old_object);
-
+	old_match = e_data_cal_view_object_matches (query, old_object);
 	new_match = e_data_cal_view_object_matches (query, object);
 	if (old_match && new_match)
 		e_data_cal_view_notify_objects_modified_1 (query, object);
 	else if (new_match)
 		e_data_cal_view_notify_objects_added_1 (query, object);
 	else if (old_match) {
-		ECalComponent *comp = NULL;
+		icalcomponent *icalcomp;
 	
-		comp = e_cal_component_new_from_string (old_object);
-		if (comp) {
-			ECalComponentId *id = e_cal_component_get_id (comp);
-
-			e_data_cal_view_notify_objects_removed_1 (query, id);
-			
-			e_cal_component_free_id (id);
-			g_object_unref (comp);
+		icalcomp = icalcomponent_new_from_string ((char *) old_object);
+		if (icalcomp) {
+			e_data_cal_view_notify_objects_removed_1 (query, icalcomponent_get_uid (icalcomp));
+			icalcomponent_free (icalcomp);
 		}
 	}
 }
@@ -1280,7 +1274,7 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
 /**
  * e_cal_backend_notify_object_removed:
  * @backend: A calendar backend.
- * @id: the Id of the removed object
+ * @uid: the UID of the removed object
  * @old_object: iCalendar representation of the removed object
  * @new_object: iCalendar representation of the object after the removal. This
  * only applies to recurrent appointments that had an instance removed. In that
@@ -1293,7 +1287,7 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
  * removed by non-EDS clients.
  **/
 void
-e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId *id,
+e_cal_backend_notify_object_removed (ECalBackend *backend, const char *uid,
 				     const char *old_object, const char *object)
 {
 	ECalBackendPrivate *priv;
@@ -1304,7 +1298,7 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 	priv = backend->priv;
 
 	if (priv->notification_proxy) {
-		e_cal_backend_notify_object_removed (priv->notification_proxy, id, old_object, object);
+		e_cal_backend_notify_object_removed (priv->notification_proxy, uid, old_object, object);
 		return;
 	}
 
@@ -1320,7 +1314,7 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 			/* if object == NULL, it means the object has been completely
 			   removed from the backend */
 			if (e_data_cal_view_object_matches (query, old_object))
-				e_data_cal_view_notify_objects_removed_1 (query, id);
+				e_data_cal_view_notify_objects_removed_1 (query, uid);
 		} else
 			match_query_and_notify (query, old_object, object);
 

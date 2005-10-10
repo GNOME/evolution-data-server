@@ -3912,7 +3912,7 @@ e_cal_free_alarms (GSList *comp_alarms)
  * Return value: TRUE on success, FALSE if the object was not found.
  **/
 gboolean
-e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
+e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
 			     time_t start, time_t end,
 			     ECalComponentAlarms **alarms)
 {
@@ -3927,14 +3927,14 @@ e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
 	priv = ecal->priv;
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
 
-	g_return_val_if_fail (id != NULL, FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (start >= 0 && end >= 0, FALSE);
 	g_return_val_if_fail (start <= end, FALSE);
 	g_return_val_if_fail (alarms != NULL, FALSE);
 
 	*alarms = NULL;
 
-	if (!e_cal_get_object (ecal, id->uid, id->rid, &icalcomp, NULL))
+	if (!e_cal_get_object (ecal, uid, NULL, &icalcomp, NULL))
 		return FALSE;
 	if (!icalcomp)
 		return FALSE;

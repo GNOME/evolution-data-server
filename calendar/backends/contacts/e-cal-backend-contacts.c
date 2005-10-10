@@ -168,17 +168,15 @@ static void
 contact_record_free (ContactRecord *cr)
 {
         char *comp_str;
-	ECalComponentId *id;
+        const char *uid;
 
         g_object_unref (G_OBJECT (cr->contact));
 
 	/* Remove the birthday event */
 	if (cr->comp_birthday) {
 		comp_str = e_cal_component_get_as_string (cr->comp_birthday);
-		id = e_cal_component_get_id (cr->comp_birthday);
-		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), id, comp_str, NULL);
-
-		e_cal_component_free_id (id);
+		e_cal_component_get_uid (cr->comp_birthday, &uid);
+		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str, NULL);
 		g_free (comp_str);
 		g_object_unref (G_OBJECT (cr->comp_birthday));
 	}
@@ -186,11 +184,8 @@ contact_record_free (ContactRecord *cr)
 	/* Remove the anniversary event */
 	if (cr->comp_anniversary) {
 		comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
-		id = e_cal_component_get_id (cr->comp_birthday);
-
-		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), id, comp_str, NULL);
-		
-		e_cal_component_free_id (id);
+		e_cal_component_get_uid (cr->comp_anniversary, &uid);
+		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), uid, comp_str, NULL);
 		g_free (comp_str);
 		g_object_unref (G_OBJECT (cr->comp_anniversary));
 	}
