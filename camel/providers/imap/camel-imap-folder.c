@@ -633,7 +633,7 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	}
 	
 	/* Check UIDs and flags of all messages we already know of. */
-	camel_operation_start (NULL, _("Scanning for changed messages"));
+	camel_operation_start (NULL, _("Scanning for changed messages in %s"), folder->name);
 	info = camel_folder_summary_index (folder->summary, summary_len - 1);
 	ok = camel_imap_command_start (store, folder, ex,
 				       "UID FETCH 1:%s (FLAGS)",
@@ -2374,7 +2374,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 				       "UID FETCH %d:* (FLAGS RFC822.SIZE INTERNALDATE BODY.PEEK[%s])",
 				       uidval + 1, header_spec))
 		return;
-	camel_operation_start (NULL, _("Fetching summary information for new messages"));
+	camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 	
 	/* Parse the responses. We can't add a message to the summary
 	 * until we've gotten its headers, and there's no guarantee
@@ -2444,7 +2444,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 		qsort (needheaders->pdata, needheaders->len,
 		       sizeof (void *), uid_compar);
 		
-		camel_operation_start (NULL, _("Fetching summary information for new messages"));
+		camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 		
 		while (uid < needheaders->len) {
 			uidset = imap_uid_array_to_set (folder->summary, needheaders, uid, UID_SET_LIMIT, &uid);
@@ -2586,7 +2586,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT))
 			camel_folder_change_info_recent_uid(changes, camel_message_info_uid (mi));
 	}
-	
+
 	for ( ; i < messages->len; i++) {
 		if ((mi = messages->pdata[i]))
 			camel_message_info_free(&mi->info);

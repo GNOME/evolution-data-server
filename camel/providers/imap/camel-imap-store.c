@@ -1232,7 +1232,7 @@ try_auth (CamelImapStore *store, const char *mech, CamelException *ex)
 		
 		sasl_resp = camel_sasl_challenge_base64 (sasl, imap_next_word (resp), ex);
 		g_free (resp);
-		if (camel_exception_is_set (ex))
+		if (!sasl_rest || camel_exception_is_set (ex))
 			goto break_and_lose;
 		
 		response = camel_imap_command_continuation (store, sasl_resp, strlen (sasl_resp), ex);
@@ -2970,7 +2970,7 @@ ssize_t
 camel_imap_store_readline (CamelImapStore *store, char **dest, CamelException *ex)
 {
 	CamelStreamBuffer *stream;
-	char linebuf[1024];
+	char linebuf[1024] = {0};
 	GByteArray *ba;
 	ssize_t nread;
 	

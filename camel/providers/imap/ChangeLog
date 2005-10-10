@@ -1,3 +1,19 @@
+2005-10-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-imap-folder.c:(imap_update_summary): specify the
+	folder name of the folde being refreshed in the status mesage
+
+2005-10-10  Björn Torkelsson <torkel@acc.umu.se>
+
+	** See bug #317956.
+	
+	* camel-imap-store.c:(try_auth): Null check sasl_resp
+        and bail out, otherwise evolution will crash when running strlen on
+        sasl_resp. 
+	
+	** Committed on behalf of Björn Torkelsson since he does not 
+	have commit rights - partha <sparthasarathi@novell.com>
+	
 2005-09-27  Vivek Jain <jvivek@novell.com>
 
 	** See bug #315173.
