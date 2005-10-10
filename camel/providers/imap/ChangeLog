@@ -1,3 +1,14 @@
+2005-10-10  Björn Torkelsson <torkel@acc.umu.se>
+
+	** See bug #317956.
+	
+	* camel-imap-store.c:(try_auth): Null check sasl_resp
+        and bail out, otherwise evolution will crash when running strlen on
+        sasl_resp. 
+
+	** Committed on behalf of Björn Torkelsson since he does not have
+	commit rights. - partha <sparthasarathi@novell.com>
+	
 2005-09-27  Vivek Jain <jvivek@novell.com>
 
 	** See bug #315173.
