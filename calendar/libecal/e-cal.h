@@ -165,7 +165,7 @@ GSList *e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end);
 
 void e_cal_free_alarms (GSList *comp_alarms);
 
-gboolean e_cal_get_alarms_for_object (ECal *ecal, const char *uid,
+gboolean e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
 				      time_t start, time_t end,
 				      ECalComponentAlarms **alarms);
 

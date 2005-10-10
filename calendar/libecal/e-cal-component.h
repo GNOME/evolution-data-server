@@ -38,6 +38,11 @@ G_BEGIN_DECLS
 #define E_IS_CAL_COMPONENT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_COMPONENT))
 #define E_IS_CAL_COMPONENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_COMPONENT))
 
+typedef struct {
+	char *uid;
+	char *rid;
+} ECalComponentId;
+
 /* Types of calendar components to be stored by a ECalComponent, as per RFC 2445.
  * We don't put the alarm component type here since we store alarms as separate
  * structures inside the other "real" components.
@@ -220,6 +225,9 @@ void e_cal_component_abort_sequence (ECalComponent *comp);
 
 void e_cal_component_get_uid (ECalComponent *comp, const char **uid);
 void e_cal_component_set_uid (ECalComponent *comp, const char *uid);
+
+ECalComponentId *e_cal_component_get_id (ECalComponent *comp);
+void e_cal_component_free_id (ECalComponentId *id);
 
 void e_cal_component_get_categories (ECalComponent *comp, const char **categories);
 void e_cal_component_set_categories (ECalComponent *comp, const char *categories);

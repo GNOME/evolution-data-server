@@ -723,10 +723,20 @@ _e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *u
 		    == GNOME_Evolution_Calendar_Success) {
 			e_data_cal_notify_object_modified (cal, status, old_object, calobj);
 			g_free (calobj);
-		} else
-			e_data_cal_notify_object_removed (cal, status, uid, old_object, object);
+		} else {
+			ECalComponentId *id = g_new0 (ECalComponentId, 1);
+			id->uid = g_strdup (uid);
+			
+			if (mod == CALOBJ_MOD_THIS)
+				id->rid = g_strdup (rid);
+
+			e_data_cal_notify_object_removed (cal, status, id, old_object, object);
+
+			e_cal_component_free_id (id);
+			
+		}
 	} else
-		e_data_cal_notify_object_removed (cal, status, uid, old_object, object);
+		e_data_cal_notify_object_removed (cal, status, NULL, old_object, object);
 
 	g_free (object);
 }

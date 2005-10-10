@@ -97,14 +97,24 @@ build_object_list (const GNOME_Evolution_Calendar_stringlist *seq)
 }
 
 static GList *
-build_uid_list (const GNOME_Evolution_Calendar_CalObjUIDSeq *seq)
+build_id_list (const GNOME_Evolution_Calendar_CalObjUIDSeq *seq)
 {
 	GList *list;
 	int i;
 
 	list = NULL;
-	for (i = 0; i < seq->_length; i++)
-		list = g_list_prepend (list, g_strdup (seq->_buffer[i]));
+	for (i = 0; i < seq->_length; i++) {
+		GNOME_Evolution_Calendar_CalObjID *corba_id;
+		ECalComponentId *id;
+
+		corba_id = &seq->_buffer[i];
+		id = g_new (ECalComponentId, 1);
+		
+		id->uid = g_strdup (corba_id->uid);
+		id->rid = g_strdup (corba_id->rid);
+
+		list = g_list_prepend (list, id);
+	}
 
 	return list;
 }
@@ -153,23 +163,23 @@ impl_notifyObjectsModified (PortableServer_Servant servant,
 
 static void
 impl_notifyObjectsRemoved (PortableServer_Servant servant,
-			   const GNOME_Evolution_Calendar_CalObjUIDSeq *uids,
+			   const GNOME_Evolution_Calendar_CalObjIDSeq *ids,
 			   CORBA_Environment *ev)
 {
 	ECalViewListener *ql;
 	ECalViewListenerPrivate *priv;
-	GList *uid_list, *l;
+	GList *id_list, *l;
 	
 	ql = E_CAL_VIEW_LISTENER (bonobo_object_from_servant (servant));
 	priv = ql->priv;
 
-	uid_list = build_uid_list (uids);
+	id_list = build_id_list (ids);
 	
-	g_signal_emit (G_OBJECT (ql), signals[OBJECTS_REMOVED], 0, uid_list);
+	g_signal_emit (G_OBJECT (ql), signals[OBJECTS_REMOVED], 0, id_list);
 
-	for (l = uid_list; l; l = l->next)
-		g_free (l->data);
-	g_list_free (uid_list);
+	for (l = id_list; l; l = l->next)
+		e_cal_component_free_id (l->data);
+	g_list_free (id_list);
 }
 
 static void

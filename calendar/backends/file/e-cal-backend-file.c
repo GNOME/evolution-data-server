@@ -689,6 +689,8 @@ notify_removals_cb (gpointer key, gpointer value, gpointer data)
 	if (!g_hash_table_lookup (context->new_uid_hash, uid)) {
 		icalcomponent *old_icomp;
 		gchar *old_obj_str;
+		ECalComponent *comp; 
+		ECalComponentId *id;
 
 		/* Object was removed */
 
@@ -699,8 +701,15 @@ notify_removals_cb (gpointer key, gpointer value, gpointer data)
 		old_obj_str = icalcomponent_as_ical_string (old_icomp);
 		if (!old_obj_str)
 			return;
+		
+		comp = e_cal_component_new_from_string (old_obj_str);
+		id = e_cal_component_get_id (comp);
+		
 
-		e_cal_backend_notify_object_removed (context->backend, uid, old_obj_str, NULL);
+		e_cal_backend_notify_object_removed (context->backend, id, old_obj_str, NULL);
+	
+		e_cal_component_free_id (id);
+		g_object_unref (comp);
 	}
 }
 
@@ -2382,6 +2391,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 			break;
 		case ICAL_METHOD_CANCEL:
 			if (cancel_received_object (cbfile, subcomp)) {
+				ECalComponentId *id;
 				object = (char *) icalcomponent_as_ical_string (subcomp);
 				obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 				if (obj_data)
@@ -2389,11 +2399,14 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				else
 					old_object = NULL;
 
-				e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), uid, old_object, object);
+				id = e_cal_component_get_id (comp);
+
+				e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), id, old_object, object);
 
 				/* remove the component from the toplevel VCALENDAR */
 				icalcomponent_remove_component (toplevel_comp, subcomp);
 				icalcomponent_free (subcomp);
+				e_cal_component_free_id (id);
 
 				g_free (old_object);
 			}

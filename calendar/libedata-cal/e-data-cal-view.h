@@ -74,9 +74,9 @@ void                  e_data_cal_view_notify_objects_modified (EDataCalView     
 void                  e_data_cal_view_notify_objects_modified_1 (EDataCalView       *query,
 								 const char *object);
 void                  e_data_cal_view_notify_objects_removed (EDataCalView       *query,
-							      const GList *uids);
+							      const GList *ids);
 void                  e_data_cal_view_notify_objects_removed_1 (EDataCalView       *query,
-								const char *uid);
+								const ECalComponentId *id);
 void                  e_data_cal_view_notify_progress (EDataCalView      *query,
 						       const char *message,
 						       int         percent);

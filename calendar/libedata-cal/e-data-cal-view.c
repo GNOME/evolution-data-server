@@ -117,37 +117,44 @@ add_object_to_cache (EDataCalView *query, const char *calobj)
 }
 
 static gboolean
-uncache_with_uid_cb (gpointer key, gpointer value, gpointer user_data)
+uncache_with_id_cb (gpointer key, gpointer value, gpointer user_data)
 {
 	ECalComponent *comp;
+	ECalComponentId *id;
 	const char *this_uid;
-	char *uid, *object;
+	char *object;
+	gboolean remove = FALSE;
 
-	uid = user_data;
+	id = user_data;
 	object = value;
 
 	comp = e_cal_component_new_from_string (object);
 	if (comp) {
 		e_cal_component_get_uid (comp, &this_uid);
-		if (this_uid && *this_uid && !strcmp (uid, this_uid)) {
-			g_object_unref (comp);
-			return TRUE;
+		if (this_uid && !strcmp (id->uid, this_uid)) {
+			if (id->rid && *id->rid) {
+				const char *rid = e_cal_component_get_recurid_as_string (comp);	
+
+				if (rid && !strcmp (id->rid, rid))
+					remove = TRUE;
+			} else
+				remove = TRUE;
 		}
 
 		g_object_unref (comp);
 	}
 
-	return FALSE;
+	return remove;
 }
 
 static void
-remove_object_from_cache (EDataCalView *query, const char *uid)
+remove_object_from_cache (EDataCalView *query, const ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv;
 
 	priv = query->priv;
 
-	g_hash_table_foreach_remove (priv->matched_objects, (GHRFunc) uncache_with_uid_cb, (gpointer) uid);
+	g_hash_table_foreach_remove (priv->matched_objects, (GHRFunc) uncache_with_id_cb, (gpointer) id);
 }
 
 static void
@@ -766,18 +773,18 @@ e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const char *obje
 /**
  * e_data_cal_view_notify_objects_removed:
  * @query: A query object.
- * @uids: List of UIDs for the objects that have been removed.
+ * @ids: List of IDs for the objects that have been removed.
  *
  * Notifies all query listener of the removal of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *uids)
+e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *ids)
 {
 	EDataCalViewPrivate *priv;
-	GNOME_Evolution_Calendar_CalObjUIDSeq uid_list;
+	GNOME_Evolution_Calendar_CalObjIDSeq id_list;
 	CORBA_Environment ev;
 	const GList *l;
-	int num_uids, i;
+	int num_ids, i;
 	
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
@@ -785,60 +792,69 @@ e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *uids)
 	priv = query->priv;
 	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
-	num_uids = g_list_length ((GList*)uids);
-	if (num_uids <= 0)
+	num_ids = g_list_length ((GList*)ids);
+	if (num_ids <= 0)
 		return;
+	
+	id_list._buffer = GNOME_Evolution_Calendar_CalObjIDSeq_allocbuf (num_ids);
+	id_list._maximum = num_ids;
+	id_list._length = num_ids;
+	
+	i = 0;
+	for (l = ids; l; l = l->next, i++) {
+		ECalComponentId *id = l->data;
+		GNOME_Evolution_Calendar_CalObjID *c_id = &id_list._buffer[i];
 
-	uid_list._buffer = GNOME_Evolution_Calendar_CalObjUIDSeq_allocbuf (num_uids);
-	uid_list._maximum = num_uids;
-	uid_list._length = num_uids;
-
-	for (l = uids, i = 0; l; l = l->next, i ++) {
-		uid_list._buffer[i] = CORBA_string_dup (l->data);
+		c_id->uid = CORBA_string_dup (id->uid);
+		
+		if (id->rid)
+			c_id->rid = CORBA_string_dup (id->rid);
+		else
+			c_id->rid = CORBA_string_dup ("");	
 
 		/* update our cache */
 		remove_object_from_cache (query, l->data);
 	}
-
+ 
 	for (l = priv->listeners; l != NULL; l = l->next) {
 		ListenerData *ld = l->data;
 
 		CORBA_exception_init (&ev);
 
-		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsRemoved (ld->listener, &uid_list, &ev);
+		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsRemoved (ld->listener, &id_list, &ev);
 		if (BONOBO_EX (&ev))
 			g_warning (G_STRLOC ": could not notify the listener of object removal");
 
 		CORBA_exception_free (&ev);
 	}
 
-	CORBA_free (uid_list._buffer);
+	CORBA_free (id_list._buffer);
 }
 
 /**
  * e_data_cal_view_notify_objects_removed:
  * @query: A query object.
- * @uid: UID of the removed object.
+ * @id: Id of the removed object.
  *
  * Notifies all query listener of the removal of a single object.
  */
 void
-e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const char *uid)
+e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv;
-	GList uids;
+	GList ids;
 	
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
-	g_return_if_fail (uid != NULL);
+	g_return_if_fail (id != NULL);
 
 	priv = query->priv;
 	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
 
-	uids.next = uids.prev = NULL;
-	uids.data = (gpointer)uid;
+	ids.next = ids.prev = NULL;
+	ids.data = (gpointer)id;
 	
-	e_data_cal_view_notify_objects_removed (query, &uids);
+	e_data_cal_view_notify_objects_removed (query, &ids);
 }
 
 /**
