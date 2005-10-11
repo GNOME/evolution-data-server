@@ -92,14 +92,14 @@ objects_modified_cb (ECalViewListener *listener, GList *objects, gpointer data)
 }
 
 static void
-objects_removed_cb (ECalViewListener *listener, GList *uids, gpointer data)
+objects_removed_cb (ECalViewListener *listener, GList *ids, gpointer data)
 {
 	ECalView *view;
 
 	view = E_CAL_VIEW (data);
 
 	g_object_ref (view);
-	g_signal_emit (G_OBJECT (view), signals[OBJECTS_REMOVED], 0, uids);
+	g_signal_emit (G_OBJECT (view), signals[OBJECTS_REMOVED], 0, ids);
 	g_object_unref (view);
 }
 

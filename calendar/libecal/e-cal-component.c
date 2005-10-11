@@ -1136,7 +1136,6 @@ e_cal_component_get_icalcomponent (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	priv = comp->priv;
-	g_return_val_if_fail (priv->need_sequence_inc == FALSE, NULL);
 
 	return priv->icalcomp;
 }
@@ -1417,6 +1416,31 @@ e_cal_component_abort_sequence (ECalComponent *comp)
 
 	priv->need_sequence_inc = FALSE;
 }
+
+/**
+ * e_cal_component_get_id:
+ * @comp: A calendar component object.
+ *
+ * Return value: the id of the component
+ * */
+ECalComponentId *
+e_cal_component_get_id (ECalComponent *comp)
+{
+	ECalComponentPrivate *priv;
+	ECalComponentId *id = NULL;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+
+	priv = comp->priv;
+	g_return_if_fail (priv->icalcomp != NULL);
+	
+	id = g_new0 (ECalComponentId, 1);
+	id->uid = g_strdup (icalproperty_get_uid (priv->uid));
+	id->rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
+
+	return id;
+} 
 
 /**
  * e_cal_component_get_uid:
@@ -4842,6 +4866,30 @@ e_cal_component_free_sequence (int *sequence)
 	g_return_if_fail (sequence != NULL);
 
 	g_free (sequence);
+}
+
+/**
+ * e_cal_component_free_id:
+ * @id Component Id.
+ *
+ * Frees the id.
+ **/
+void
+e_cal_component_free_id (ECalComponentId *id)
+{
+	g_return_if_fail (id != NULL);
+
+	if (id->uid) {
+		g_free (id->uid);
+		id->uid = NULL;
+	}
+	
+	if (id->rid) {
+		g_free (id->rid);
+		id->rid = NULL;
+	}
+
+	g_free (id);
 }
 
 /**

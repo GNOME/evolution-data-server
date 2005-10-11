@@ -966,7 +966,7 @@ e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallS
  */
 void
 e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
-				  const char *uid, const char *old_object, const char *object)
+				  const ECalComponentId *id, const char *old_object, const char *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -978,7 +978,7 @@ e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
 
 	if (status == GNOME_Evolution_Calendar_Success)
-		e_cal_backend_notify_object_removed (priv->backend, uid, old_object, object);
+		e_cal_backend_notify_object_removed (priv->backend, id, old_object, object);
 
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_Calendar_CalListener_notifyObjectRemoved (priv->listener, status, &ev);

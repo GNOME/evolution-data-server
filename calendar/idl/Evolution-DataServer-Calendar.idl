@@ -28,7 +28,7 @@ module Calendar {
 	/* A unique identifier for a calendar component */
 	typedef string CalObjUID;
 
-	/* A unique identified for an event recurrence */
+	/* A unique identifier for an event recurrence */
 	typedef string CalRecurID;
 
 	/* Simple sequence of strings */
@@ -36,6 +36,15 @@ module Calendar {
 
 	/* Sequence of unique identifiers */
 	typedef sequence<CalObjUID> CalObjUIDSeq;
+
+	/* A unique identifier and the recurrence id for calendar components */ 
+	struct CalObjID {
+		CalObjUID uid;
+		CalRecurID rid;
+	};
+	
+	/* sequence of ids of calendar components */
+	typedef sequence<CalObjID> CalObjIDSeq;
 
 	/* A VTIMEZONE component, represented as an iCalendar string. */
 	typedef string CalTimezoneObj;
@@ -145,7 +154,7 @@ module Calendar {
 	interface CalViewListener : Bonobo::Unknown {
 		oneway void notifyObjectsAdded (in stringlist objects);		
 		oneway void notifyObjectsModified (in stringlist objects);		
-		oneway void notifyObjectsRemoved (in CalObjUIDSeq uids);
+		oneway void notifyObjectsRemoved (in CalObjIDSeq ids);
 		oneway void notifyQueryProgress (in string message, in short percent);
 		oneway void notifyQueryDone (in CallStatus status);
 	};

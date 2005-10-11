@@ -977,7 +977,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		}	
 
 		e_cal_component_set_dtstart (comp, &dt);
-		g_free (t);
 	}
 	else 
 		return NULL;
@@ -996,7 +995,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		recur_id->type = E_CAL_COMPONENT_RANGE_SINGLE;
 		recur_id->datetime = dt;
 		e_cal_component_set_recurid (comp, recur_id);
-
 	} else {
 
 		uid = e_gw_item_get_icalid (item);
@@ -1007,6 +1005,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			return NULL;
 		}
 	}
+		
+	g_free (t);
 
 	/* classification */
 	description = e_gw_item_get_classification (item);
@@ -1203,65 +1203,61 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 }
 
 EGwConnectionStatus
-e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *container, ECalComponent *comp, icalproperty_method method, gboolean *remove, ECalComponent **created_comp)
+e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *container, ECalComponent *comp, icalproperty_method method, gboolean all_instances, ECalComponent **created_comp, icalparameter_partstat *pstatus)
 {
 	EGwConnection *cnc;
 	EGwConnectionStatus status;
 	icalparameter_partstat partstat;
 	char *item_id = NULL;
 	const char *gw_id;
-	gboolean all_instances = FALSE;
-	icalproperty *icalprop;
-	icalcomponent *icalcomp;
 	const char *recurrence_key = NULL;
+	gboolean need_to_get = FALSE;
 
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	e_cal_component_commit_sequence (comp);
-	/* When the icalcomponent is obtained through the itip message rather
-	 * than from the SOAP protocol, the container id has to be explicitly 
-	 * added to the xgwrecordid inorder to obtain the item id. */
 
-	/* handle recurrences - All */
-	icalcomp = e_cal_component_get_icalcomponent (comp);
-
-	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
-	while (icalprop) {
-		const char *x_name;
-
-		x_name = icalproperty_get_x_name (icalprop);
-		if (!strcmp (x_name, "X-GW-RECUR-INSTANCES-MOD-TYPE")) {
-			if (!strcmp (icalproperty_get_x (icalprop), "All"))
-				all_instances = TRUE;
-			if (recurrence_key)
-				break;
-		}
-		if (!strcmp (x_name, "X-GW-RECURRENCE-KEY")) {
-			e_cal_component_get_uid (comp, &recurrence_key);
-		}
-		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
-	}	
-		
 	gw_id = e_cal_component_get_gw_id (comp);
 
 	switch  (e_cal_component_get_vtype (comp)) {
 
 		case E_CAL_COMPONENT_EVENT: 
-			if (!g_str_has_suffix (gw_id, container))
+			if (!g_str_has_suffix (gw_id, container)) {
 				item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
+				need_to_get = TRUE;
+				
+			}
 			else 
 				item_id = g_strdup (gw_id);
 			break;
 		case E_CAL_COMPONENT_TODO:
-			if (!g_str_has_suffix (gw_id, container))
+			if (!g_str_has_suffix (gw_id, container)) {
 				item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_TODO_TYPE_ID, container, NULL);
+				need_to_get = TRUE;
+				
+			}
 			else
 				item_id = g_strdup (gw_id);
 			break;
 		default:
 			return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+	}
+
+	if (all_instances)
+		e_cal_component_get_uid (comp, &recurrence_key);
+
+	/*FIXME - remove this once the server returns us the same iCalid in both interfaces */
+
+	if (need_to_get) {
+		EGwItem *item = NULL;
+		 
+		status = e_gw_connection_get_item (cnc, container, item_id, "recipients message recipientStatus attachments default", &item);
+		if (status == E_GW_CONNECTION_STATUS_OK)
+			*created_comp = e_gw_item_to_cal_component (item, cbgw);
+
+		g_object_unref (item);
 	}
 
 	switch (method) {
@@ -1301,6 +1297,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 			break;
 		}
+		*pstatus = partstat;
 		switch (partstat) {
 		ECalComponentTransparency transp;
 			
@@ -1325,7 +1322,6 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			else
 				status = e_gw_connection_decline_request (cnc, item_id, NULL, NULL);
 			
-			*remove = TRUE;
 			break;
 		case ICAL_PARTSTAT_TENTATIVE:
 			if (all_instances)
@@ -1345,25 +1341,11 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 
 	case ICAL_METHOD_CANCEL:
 		status = e_gw_connection_retract_request (cnc, item_id, NULL, FALSE, FALSE);
-		*remove = TRUE;
 		break;
 	default:
 		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 	}
 	
-	if (status == E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED)
-		return status;
-
-	/*FIXME - handling recurrence items */
-	if (!*remove && status == E_GW_CONNECTION_STATUS_OK) {
-		EGwItem *item = NULL;
-		EGwConnectionStatus stat;
-
-		stat = e_gw_connection_get_item (cnc, container, item_id, "recipients message recipientStatus attachments default", &item);
-		if (stat == E_GW_CONNECTION_STATUS_OK)
-			*created_comp = e_gw_item_to_cal_component (item, cbgw);
-	}
-
 	return status;
 }
 

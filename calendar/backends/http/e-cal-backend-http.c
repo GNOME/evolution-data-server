@@ -200,8 +200,13 @@ notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 	const char *uid = key;
 	const char *calobj = value;
 	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (user_data);
+	ECalComponent *comp = e_cal_component_new_from_string (calobj);
+	ECalComponentId *id = e_cal_component_get_id (comp);
 
-	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), uid, calobj, NULL);
+	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), id, calobj, NULL);
+
+	e_cal_component_free_id (comp);
+	g_object_unref (comp);
 
 	return TRUE;
 }

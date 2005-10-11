@@ -1,3 +1,50 @@
+2005-10-10  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #266144
+	* backends/contacts/e-cal-backend-contacts.c:
+	(contact_record_free): 
+	* backends/http/e-cal-backend-http.c:
+	(notify_and_remove_from_cache):
+	* backends/weather/e-cal-backend-weather.c:
+	(finished_retrieval_cb):
+	* backends/file/e-cal-backend-file.c: (notify_removals_cb),
+	(e_cal_backend_file_receive_objects): Use ECalComponentId.
+	* backends/groupwise/e-cal-backend-groupwise-utils.[ch]:
+	(e_gw_item_to_cal_component): Store the recurrence id in
+	utc.
+	(e_gw_connection_send_appointment): Get the component while
+	accepting/declining from mail component and pass all_instances
+	and get the partstat.
+	the 
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_remove_object), (change_status),
+	(receive_object): Change the status of all recurring appointments
+	if all_instances is set true.
+	* idl/Evolution-DataServer-Calendar.idl: Added a structure
+	to hold the recurrence id and uid to notify the component
+	removed.
+	* libecal/e-cal-component.c: (e_cal_component_get_id),
+	(e_cal_component_free_id): Added new API's for getting
+	the recurrence id and uid of a component.
+	* libecal/e-cal-component.h: Added a structure of holding
+	both the recurrence id and the uid.
+	* libecal/e-cal-view-listener.c: (build_id_list),
+	(impl_notifyObjectsRemoved):
+	* libecal/e-cal-view.c: (objects_removed_cb):
+	* libedata-cal/e-cal-backend-sync.c:
+	(_e_cal_backend_remove_object):
+	* libedata-cal/e-cal-backend.c: (match_query_and_notify),
+	(e_cal_backend_notify_object_removed):
+	* libedata-cal/e-cal-backend.h:
+	* libedata-cal/e-data-cal-view.c: (uncache_with_id_cb),
+	(remove_object_from_cache):
+	(e_data_cal_view_notify_objects_removed),
+	(e_data_cal_view_notify_objects_removed_1):
+	* libedata-cal/e-data-cal-view.h:
+	* libedata-cal/e-data-cal.c: (e_data_cal_notify_object_removed):
+	* libedata-cal/e-data-cal.h: Changed the API's to use the 
+	ECalComponentId structure instead of uid.
+	
 2005-10-07  Arunprakash  <arunp@novell.com>
 
 	* libedata-cal/e-data-cal-factory.c (backend_last_client_gone_cb) :

@@ -169,7 +169,7 @@ void e_cal_backend_last_client_gone (ECalBackend *backend);
 void e_cal_backend_set_notification_proxy (ECalBackend *backend, ECalBackend *proxy);
 void e_cal_backend_notify_object_created  (ECalBackend *backend, const char *calobj);
 void e_cal_backend_notify_object_modified (ECalBackend *backend, const char *old_object, const char *object);
-void e_cal_backend_notify_object_removed  (ECalBackend *backend, const char *uid, const char *old_object, const char *object);
+void e_cal_backend_notify_object_removed  (ECalBackend *backend, const ECalComponentId *id, const char *old_object, const char *object);
 
 void e_cal_backend_notify_mode      (ECalBackend *backend,
 				     GNOME_Evolution_Calendar_CalListener_SetModeStatus status, 
