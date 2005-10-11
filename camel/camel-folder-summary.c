@@ -957,7 +957,7 @@ camel_folder_summary_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser
 		/* always scan the content info, even if we dont save it */
 		((CamelMessageInfoBase *)info)->content = summary_build_content_info(s, info, mp);
 
-		if (name) {
+		if (name && p->index) {
 			camel_index_write_name(p->index, name);
 			camel_object_unref((CamelObject *)name);
 			camel_mime_filter_index_set_name(p->filter_index, NULL);
