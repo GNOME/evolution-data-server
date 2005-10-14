@@ -1,6 +1,11 @@
 2005-10-14  Ross Burton  <ross@burtonini.com>
 
-	* libebook-e-destination.c:
+	* libedata-book/e-book-backend-summary.c:
+	Fix writing race to avoid recalculating the index (#316955).
+
+2005-10-14  Ross Burton  <ross@burtonini.com>
+
+	* libebook/e-destination.c:
 	Fix typo when writing escaped names.
 
 2005-10-04  Sushma Rai  <rsushma@novell.com>
