@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <utime.h>
 #include <errno.h>
 
 #include <libedataserver/e-sexp.h>
@@ -167,16 +168,17 @@ e_book_backend_summary_dispose (GObject *object)
 	EBookBackendSummary *summary = E_BOOK_BACKEND_SUMMARY (object);
 
 	if (summary->priv) {
+		if (summary->priv->fp)
+			fclose (summary->priv->fp);
 		if (summary->priv->dirty)
-			g_warning ("Destroying dirty summary");
+			e_book_backend_summary_save (summary);
+		else
+			utime (summary->priv->summary_path, NULL);
 
 		if (summary->priv->flush_timeout) {
 			g_source_remove (summary->priv->flush_timeout);
 			summary->priv->flush_timeout = 0;
 		}
-
-		if (summary->priv->fp)
-			fclose (summary->priv->fp);
 
 		g_free (summary->priv->summary_path);
 		clear_items (summary);
@@ -472,7 +474,6 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
 		   load that */
 		char *new_filename = g_strconcat (summary->priv->summary_path, ".new", NULL);
 		if (stat (new_filename, &sb) == -1) {
-			g_warning ("no summary present");
 			g_free (new_filename);
 			return FALSE;
 		}
@@ -502,7 +503,7 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
 
 	summary->priv->num_items = header.num_items;
 	summary->priv->file_version = header.file_version;
-	summary->priv->mtime = header.summary_mtime;
+	summary->priv->mtime = sb.st_mtime;
 	summary->priv->fp = fp;
 
 	return TRUE;
@@ -853,9 +854,9 @@ summary_flush_func (gpointer data)
 		g_warning ("failed to flush summary file to disk");
 		return TRUE; /* try again after the next timeout */
 	}
-
-	g_warning ("flushed summary to disk");
-
+	
+	g_message ("Flushed summary to disk");
+	
 	/* we only want this to execute once, so return FALSE and set
 	   summary->flush_timeout to 0 */
 	summary->priv->flush_timeout = 0;
