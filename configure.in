@@ -1119,27 +1119,19 @@ AC_DEFUN([EVO_SET_COMPILE_FLAGS], [
 	$1_LIBS="[$]$1_LIBS $4"
 ])
 
-dnl --- Flags to get all the GNOME stuff
-
-FULL_GNOME_DEPS="gnome-vfs-2.0 libgnome-2.0 libxml-2.0 gconf-2.0 ORBit-2.0 >= $ORBIT_REQUIRED"
-
-EVO_SET_COMPILE_FLAGS(GNOME_FULL, $FULL_GNOME_DEPS)
-AC_SUBST(GNOME_FULL_CFLAGS)
-AC_SUBST(GNOME_FULL_LIBS)
-
 dnl ****************************************
 dnl Flags for the various libraries we build
 dnl ****************************************
 
 dnl --- libedataserver and libedataserverui flags
 
-E_DATA_SERVER_DEPS="libxml-2.0 gobject-2.0 >= $GLIB_REQUIRED libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gnome-vfs-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="libxml-2.0 gobject-2.0 >= $GLIB_REQUIRED libbonobo-2.0 >= $LIBBONOBO_REQUIRED gconf-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
-E_DATA_SERVER_UI_DEPS="libxml-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gtk+-2.0 libgnomeui-2.0 libglade-2.0"
+E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gconf-2.0 libgnome-2.0"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1160,6 +1152,14 @@ EVOLUTION_CALENDAR_DEPS="libxml-2.0 gobject-2.0 gconf-2.0 libbonobo-2.0 >= $LIBB
 EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, $EVOLUTION_CALENDAR_DEPS)
 AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
 AC_SUBST(EVOLUTION_CALENDAR_LIBS)
+
+dnl --- factory flags
+
+E_FACTORY_DEPS="gobject-2.0 >= $GLIB_REQUIRED libbonobo-2.0 >= $LIBBONOBO_REQUIRED gconf-2.0 gnome-vfs-2.0 libgnome-2.0 $mozilla_nspr"
+
+EVO_SET_COMPILE_FLAGS(E_FACTORY, $E_FACTORY_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
+AC_SUBST(E_FACTORY_CFLAGS)
+AC_SUBST(E_FACTORY_LIBS)
 
 dnl --- Groupwise flags
 PKG_CHECK_MODULES(SOUPTEMP, libsoup-2.4, have_libsoup_24=yes, have_libsoup_24=no)

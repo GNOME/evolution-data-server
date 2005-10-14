@@ -1356,7 +1356,7 @@ int main(int argc, char **argv)
 	char *t = "(+ \"foo\" \"\\\"\" \"bar\" \"\\\\ blah \\x \")";
 	ESExpResult *r;
 
-	gtk_init(&argc, &argv);
+	g_type_init();
 
 	f = e_sexp_new();
 

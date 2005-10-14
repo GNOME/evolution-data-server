@@ -27,7 +27,6 @@
 
 #include "e-contact-store.h"
 #include <gtk/gtk.h>
-#include <libgnomeui/gnome-ui-init.h>
 
 static void
 entry_changed (GtkWidget *entry, EContactStore *contact_store)
@@ -66,7 +65,6 @@ start_test (const char *gconf_path)
 	GtkTreeModel *model_sort;
 	GtkWidget *scrolled_window;
 	GtkWidget *window;
-	GtkWidget *select_names_entry;
 	GtkWidget *tree_view;
 	GtkWidget *box;
 	GtkWidget *entry;
@@ -120,15 +118,9 @@ start_test (const char *gconf_path)
 int
 main (int argc, char **argv)
 {
-	GnomeProgram *program;
 	const char *gconf_path;
 
-	program = gnome_program_init ("test-source-selector", "0.0",
-				      LIBGNOMEUI_MODULE, argc, argv,
-				      NULL);
-
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo.");
+	gtk_init (&argc, &argv);
 
 	if (argc < 2)
 		gconf_path = "/apps/evolution/addressbook/sources";
@@ -137,7 +129,7 @@ main (int argc, char **argv)
 
 	g_idle_add ((GSourceFunc) start_test, (void *) gconf_path);
 
-	bonobo_main ();
+	gtk_main ();
 
 	return 0;
 }

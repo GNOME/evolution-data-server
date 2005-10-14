@@ -25,8 +25,6 @@
 #endif
 
 #include <glib.h>
-#include <libgnome/gnome-program.h>
-#include <libgnome/gnome-init.h>
 #include "e-source-list.h"
 
 /* Globals. */
@@ -56,46 +54,26 @@ static char *set_value_arg = NULL;
 static gboolean unset_value = FALSE;
 static gboolean unset_color = FALSE;
 
-static struct poptOption options[] = {
-	{ "key", '\0', POPT_ARG_STRING, &key_arg, 0,
-	  "Name of the GConf key to use", "PATH" },
-	{ "source", '\0', POPT_ARG_STRING, &source_arg, 0, 
-	  "UID of source to apply operation to", "UID" },
-	{ "group", '\0', POPT_ARG_STRING, &group_arg, 0, 
-	  "UID of group to apply operation to", "UID" },
-	{ "add-group", '\0', POPT_ARG_STRING, &add_group_arg, 0,
-	  "Add group of specified name", "NAME" },
-	{ "add-source", '\0', POPT_ARG_STRING, &add_source_arg, 0,
-	  "Add source of specified name", "NAME" },
-	{ "remove-group", '\0', POPT_ARG_STRING, &remove_group_arg, 0,
-	  "Remove group of specified name", "NAME" },
-	{ "remove-source", '\0', POPT_ARG_STRING, &remove_source_arg, 0,
-	  "Remove source of specified name", "NAME" },
-	{ "property", '\0', POPT_ARG_STRING, &property_arg, 0,
-	  "Name of source property to apply operation to", "PROPERTY" },
-	{ "set-name", '\0', POPT_ARG_STRING, &set_name_arg, 0,
-	  "Set name of source or group.  When used with --group, it sets the name of a group.  "
-	  "When used with both --group and --source, it sets the name of a source.", "NAME" },
-	{ "set-relative-uri", '\0', POPT_ARG_STRING, &set_relative_uri_arg, 0,
-	  "Set relative URI of a source.  Use with --source or --add-source.", "NAME" },
-	{ "set-base-uri", '\0', POPT_ARG_STRING, &set_base_uri_arg, 0,
-	  "Set base URI of a group.  Use with --group or --add-group.", "NAME" },
-	{ "set-color", '\0', POPT_ARG_STRING, &set_color_arg, 0,
-	  "Set the color of a source.  Use with --source or --add-source.", "COLOR (rrggbb)" },
-	{ "unset-color", '\0', POPT_ARG_NONE, &unset_color, 0,
-	  "Unset the color of a source.  Use with --source or --add-source.", NULL },
-	{ "set-value", '\0', POPT_ARG_STRING, &set_value_arg, 0,
-	  "Set a property on a source.  Use with --source and --property.", NULL },
-	{ "unset-value", '\0', POPT_ARG_NONE, &unset_value, 0,
-	  "Unset a property on a source.  Use with --source and --property.", NULL },
-	{ "listen", '\0', POPT_ARG_NONE, &listen, 0,
-	  "Wait and listen for changes.", "" },
-	{ "dump", '\0', POPT_ARG_NONE, &dump, 0,
-	  "List the current configured sources.", "" },
-	POPT_AUTOHELP
+static GOptionEntry entries[] = {
+	{ "key", '\0', 0, G_OPTION_ARG_STRING, &key_arg, "Name of the GConf key to use", "PATH" },
+	{ "source", '\0', 0, G_OPTION_ARG_STRING, &source_arg, "UID of source to apply operations too", "UID"},
+	{ "group", '\0', 0, G_OPTION_ARG_STRING, &group_arg, "UID of group to apply operations too", "UID" },
+	{ "add-group", '\0', 0, G_OPTION_ARG_STRING, &add_group_arg, "Add group of specified name", "GROUP" },
+	{ "add-source", '\0', 0, G_OPTION_ARG_STRING, &add_source_arg, "Add source of specified name", "SOURCE" },
+	{ "remove-group", '\0', 0, G_OPTION_ARG_STRING, &remove_group_arg, "Remove group of specified name", "GROUP" },
+	{ "remove-source", '\0', 0, G_OPTION_ARG_STRING, &remove_source_arg, "Remove source of specified name", "SOURCE" },
+	{ "property", '\0', 0, G_OPTION_ARG_STRING, &property_arg, "Name of source property to apply operation to", "PROPERTY" },
+	{ "set-name", '\0', 0, G_OPTION_ARG_STRING, &set_name_arg, "Set name of source or group.  When used with --group, it sets the name of a group. When used with both --group and --source, it sets the name of a source.", "NAME" },
+	{ "set-relative-uri", '\0', 0, G_OPTION_ARG_STRING, &set_relative_uri_arg, "Set relative URI of a source.  Use with --source or --add-source.", "NAME" },
+	{ "set-base-uri", '\0', 0, G_OPTION_ARG_STRING, &set_base_uri_arg, "Set base URI of a group.  Use with --group or --add-group.", "NAME" },
+	{ "set-color", '\0', 0, G_OPTION_ARG_STRING, &set_color_arg, "Set the color of a source.  Use with --source or --add-source.", "COLOR (rrggbb)" },
+	{ "unset-color", '\0', 0, G_OPTION_ARG_NONE, &unset_color, "Unset the color of a source.  Use with --source or --add-source.", NULL },
+	{ "set-value", '\0', 0, G_OPTION_ARG_STRING, &set_value_arg, "Set a property on a source.  Use with --source and --property.", NULL },
+	{ "unset-value", '\0', 0, G_OPTION_ARG_NONE, &unset_value, "Unset a property on a source.  Use with --source and --property.", NULL },
+	{ "listen", '\0', 0, G_OPTION_ARG_NONE, &listen, "Wait and listen for changes.", NULL },
+	{ "dump", '\0', 0, G_OPTION_ARG_NONE, &dump, "List the current configured sources.", NULL },
 	{ NULL }
 };
-
 
 /* Forward decls.  */
 static void group_added_callback (ESourceList *list, ESourceGroup *group);
@@ -562,15 +540,14 @@ on_idle_do_stuff (void *unused_data)
 
 
 int
-main (int argc,
-      char **argv)
+main (int argc, char **argv)
 {
-	GnomeProgram *program;
+	GOptionContext *context;
+	GError *error = NULL;
 
-	program = gnome_program_init ("test-source-list", "0.0",
-				      LIBGNOME_MODULE, argc, argv,
-				      GNOME_PARAM_POPT_TABLE, options,
-				      NULL);
+	context = g_option_context_new ("- test source lists");
+	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+	g_option_context_parse (context, &argc, &argv, &error);
 
 	g_idle_add (on_idle_do_stuff, NULL);
 

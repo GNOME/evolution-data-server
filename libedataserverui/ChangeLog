@@ -1,3 +1,9 @@
+2005-10-14  Ross Burton  <ross@openedhand.com>
+
+	* test-contact-store.c:
+	* test-name-selector.c:
+	Don't use Bonobo and GnomeProgram, GTK+ suffices.
+
 2005-09-30  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-name-selector-entry.c (user_delete_text): In name selector entry

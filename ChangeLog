@@ -1,3 +1,17 @@
+2005-10-14  Ross Burton  <ross@burtonini.com>
+
+	* configure.in: Remove unused dependencies from the pkg-config
+	calls and add E_FACTORY_CFLAGS/_LIBS.
+
+	* src/Makefile.am: Use E_FACTORY_*.
+
+	* libedataserver/e-sexp.c:
+	* libedataserver/test-source-list.c:
+	Don't use libgnome when GTK+ or GLib will do.
+
+	* libedataserver/libedataserver.pc.in:
+	Fix strings, update libraries.
+
 2005-09-17  Andre Klapper  <a9016009@gmx.de>
 
 	Fixes #273149.

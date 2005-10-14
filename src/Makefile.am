@@ -16,7 +16,7 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar/libical/src/libical	\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	$(SOUP_CFLAGS)					\
-	$(E_DATA_SERVER_CFLAGS)
+	$(E_FACTORY_CFLAGS)
 
 
 IDLS = \
@@ -54,7 +54,7 @@ evolution_data_server_SOURCES = \
 evolution_data_server_LDADD =							\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la		\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
-	$(E_DATA_SERVER_LIBS)
+	$(E_FACTORY_LIBS)
 
 install-evolution-data-servers:
 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)

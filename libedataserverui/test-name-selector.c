@@ -29,8 +29,6 @@
 #include "e-name-selector-dialog.h"
 #include "e-name-selector-entry.h"
 #include <gtk/gtk.h>
-#include <libgnomeui/gnome-ui-init.h>
-#include <bonobo/bonobo-main.h>
 #include <camel/camel.h>
 
 static void
@@ -39,7 +37,7 @@ close_dialog (GtkWidget *widget, int response, gpointer data)
 	GtkWidget *dialog = data;
 	
 	gtk_widget_destroy (dialog);
-	bonobo_main_quit ();
+	gtk_main_quit ();
 }
 
 static gboolean
@@ -80,20 +78,14 @@ start_test (void)
 int
 main (int argc, char **argv)
 {
-	GnomeProgram *program;
-
-	program = gnome_program_init ("test-name-selector", "0.0",
-				      LIBGNOMEUI_MODULE, argc, argv,
-				      NULL);
-
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo.");
+	gtk_init (&argc, &argv);
+	g_thread_init (NULL);
 
 	camel_init (NULL, 0);
 
 	g_idle_add ((GSourceFunc) start_test, NULL);
 
-	bonobo_main ();
+	gtk_main ();
 
 	return 0;
 }
