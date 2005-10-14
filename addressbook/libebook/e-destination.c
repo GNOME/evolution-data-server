@@ -1149,7 +1149,7 @@ e_destination_xml_encode (const EDestination *dest)
 			str = e_destination_get_email (list_dest);
 			if (str) {
 				char *escaped = xmlEncodeEntitiesReentrant (NULL, str);
-				xmlNewTextChild (list_node, NULL, "email", str);
+				xmlNewTextChild (list_node, NULL, "email", escaped);
 				xmlFree (escaped);
 			}
 			
@@ -1166,7 +1166,7 @@ e_destination_xml_encode (const EDestination *dest)
 	str = e_destination_get_source_uid (dest);
 	if (str) {
 		char *escaped = xmlEncodeEntitiesReentrant (NULL, str);
-		xmlNewTextChild (dest_node, NULL, "source_uid", str);
+		xmlNewTextChild (dest_node, NULL, "source_uid", escaped);
 		xmlFree (escaped);
 	}
 	
