@@ -1,3 +1,8 @@
+2005-10-17  Ross Burton  <ross@burtonini.com>
+
+	* configure.in:
+	Change UTF-8 check from ISO-2022-JP to ISO-8859-1 (#317451).
+
 2005-10-14  Ross Burton  <ross@burtonini.com>
 
 	* configure.in: Remove unused dependencies from the pkg-config
