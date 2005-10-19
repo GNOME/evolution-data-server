@@ -627,9 +627,8 @@ get_one_folder_offline (const char *physical_path, const char *path, gpointer da
 	fi = groupwise_build_folder_info(groupwise_store, NULL, path+1);
 	if (!strcmp (fi->full_name, "Mailbox"))
 		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
-	if (!strcmp (fi->full_name, "Junk Mail"))
-		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 	g_ptr_array_add (folders, fi);
+	
 	return TRUE;
 }
 
@@ -653,8 +652,6 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
 	if (type == E_GW_CONTAINER_TYPE_TRASH)
 		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
-	if (type == E_GW_CONTAINER_TYPE_JUNK)
-		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 	if (type == E_GW_CONTAINER_TYPE_SENT)
 		fi->flags |= CAMEL_FOLDER_TYPE_SENT;
 

@@ -1775,7 +1775,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			if (!strcmp(source->full_name, JUNK_FOLDER))
 				camel_folder_set_message_flags (source, old_uid, CAMEL_GW_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN, 0);
 			else if (!strcmp(destination->full_name, JUNK_FOLDER))
-				camel_folder_set_message_flags (source, old_uid, CAMEL_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
+				camel_folder_set_message_flags (source, old_uid, CAMEL_MESSAGE_JUNK|CAMEL_GW_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
 
 			CamelGroupwiseMessageInfo *dest_info = (CamelGroupwiseMessageInfo *)camel_message_info_clone((CamelMessageInfo *)src_info);
 			tmp = g_strsplit (old_uid, ":", -1);

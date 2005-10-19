@@ -1,3 +1,15 @@
+2005-10-19 Vivek Jain <jvivek@novell.com>
+	
+	**See bug #319045
+	* camel-groupwise-store.c: 
+	(convert_to_folder_info)
+	(get_one_folder_offline): Don't set folder type as 
+	CAMEL_FOLDER_JUNK, it assumes it as a search folder, which
+	it is not in groupwise
+	
+	* camel-groupwise-folder.c: (transfer_messages_to):
+	set the flags correctly for GW_JUNK
+	
 2005-10-03  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 314751
