@@ -104,6 +104,7 @@ ECal *e_cal_new (ESource *source, ECalSourceType type);
 ECal *e_cal_new_from_uri (const gchar *uri, ECalSourceType type);
 ECal *e_cal_new_system_calendar (void);
 ECal *e_cal_new_system_tasks (void);
+ECal *e_cal_new_system_memos (void);
 
 void e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data);
 

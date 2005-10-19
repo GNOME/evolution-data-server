@@ -1,3 +1,12 @@
+2005-10-19  Harish Krishnaswamy <kharish@novell.com>
+	
+	Committing for Nathan Owens <pianocomp81@yahoo.com>
+	
+	* libecal/e-cal.c: (e_cal_new_system_memos): added backend
+	support for Memos component. Finished implement VJOURNAL support
+	* libecal/e-cal.h: (e_cal_new_system_memos): added prototype
+	* tests/ecal/test-ecal.c: (test_new_system_memos): added memos test
+
 2005-10-10  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #266144

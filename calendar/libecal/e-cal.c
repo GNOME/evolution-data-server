@@ -1546,6 +1546,19 @@ e_cal_new_system_tasks (void)
 	return ecal;
 }
 
+ECal *
+e_cal_new_system_memos (void)
+{
+	ECal *ecal;
+	char *uri;
+
+	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "memos", "local", "system", NULL);
+	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_JOURNAL);
+	g_free (uri);
+	
+	return ecal;
+}
+
 /**
  * e_cal_set_auth_func
  * @ecal: A calendar client.
@@ -2876,7 +2889,8 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 		} else {
 			kind = icalcomponent_isa (tmp_icalcomp);
 			if ((kind == ICAL_VEVENT_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_EVENT) ||
-			    (kind == ICAL_VTODO_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_TODO)) {
+			    (kind == ICAL_VTODO_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_TODO) ||
+			    (kind == ICAL_VJOURNAL_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_JOURNAL)) {
 				*icalcomp = icalcomponent_new_clone (tmp_icalcomp);
 			} else if (kind == ICAL_VCALENDAR_COMPONENT) {
 				icalcomponent *subcomp = NULL;
@@ -5327,6 +5341,9 @@ e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error)
 		break;
 	case E_CAL_SOURCE_TYPE_TODO:
 		return get_sources (sources, "/apps/evolution/tasks/sources", error);
+		break;
+	case E_CAL_SOURCE_TYPE_JOURNAL:
+		return get_sources (sources, "/apps/evolution/memos/sources", error);
 		break;
 	default:
 		/* FIXME Fill in error */

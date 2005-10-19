@@ -475,6 +475,23 @@ test_new_system_tasks()
 }
 
 static char *
+test_new_system_memos()
+{
+	ECal *cal;
+	char *uri;
+	gboolean created;
+	
+	cal = e_cal_new_system_memos ();
+	uri = g_build_filename (g_get_home_dir (), ".evolution", "memos", "local", "system", "journal.ics", NULL);
+	created = g_file_test (uri, G_FILE_TEST_EXISTS);
+	g_free (uri);
+	
+	mu_assert ("Test creation of default system memos : Failed", created);
+	
+	return NULL;
+}
+
+static char *
 test_get_free_busy (ECal *client)
 {
 	// TODO uses NULL for users and currently specific to file backend.
@@ -608,6 +625,7 @@ all_tests(ECal *client, const gchar *uri)
 		
 	mu_run_test (test_new_system_calendar ());
 	mu_run_test (test_new_system_tasks ());
+	mu_run_test (test_new_system_memos ());
 	mu_run_test (test_set_uri (client, uri));
 	mu_run_test (test_get_source (client, uri));
 	mu_run_test (test_cal_loaded (client));
