@@ -142,6 +142,92 @@ libexchangeinclude_HEADERS = 					\
 	e2k-xml-utils.h						\
 	mapi.h
 
+noinst_PROGRAMS =						\
+	ebrowse							\
+	davcat							\
+	actest							\
+	fbtest							\
+	gctest							\
+	ruletest						\
+	cptest							\
+	urltest
+
+progs_libadd =							\
+	libexchange.la						\
+	$(top_builddir)/servers/exchange/xntlm/libxntlm.la	\
+	$(top_builddir)/libedataserverui/libedataserverui-$(API_VERSION).la	\
+	$(E_DATA_SERVER_LIBS)					\
+	$(LDAP_LIBS)						\
+	$(SOUP_LIBS)						\
+	$(KRB5_LIBS)
+
+ebrowse_SOURCES =						\
+	ebrowse.c						\
+	test-utils.c
+
+ebrowse.c: e2k-propnames.c
+
+ebrowse_LDADD =							\
+	$(progs_libadd)
+
+davcat_SOURCES =						\
+	davcat.c						\
+	test-utils.c						\
+	test-utils.h
+
+davcat_LDADD =							\
+	$(progs_libadd)
+
+gctest_SOURCES =						\
+	gctest.c						\
+	test-utils.c						\
+	test-utils.h
+
+gctest_LDADD =							\
+	$(progs_libadd)
+
+actest_SOURCES =						\
+	actest.c						\
+	test-utils.c						\
+	test-utils.h
+
+actest_LDADD =							\
+	$(progs_libadd)
+
+fbtest_SOURCES =						\
+        fbtest.c						\
+	test-utils.c						\
+	test-utils.h
+
+fbtest_LDADD =							\
+	$(progs_libadd)						\
+	$(EVOLUTION_CALENDAR_LIBS)
+
+ruletest_SOURCES =						\
+	ruletest.c						\
+	test-utils.c						\
+	test-utils.h
+
+ruletest_LDADD =						\
+	$(progs_libadd)
+
+cptest_SOURCES = 						\
+	cptest.c						\
+	test-utils.c						\
+	test-utils.h
+
+cptest_LDADD = 							\
+	$(progs_libadd)
+
+urltest_SOURCES = 						\
+	urltest.c						\
+	test-utils.c						\
+	test-utils.h
+
+urltest_LDADD = 							\
+	$(progs_libadd)
+
+
 EXTRA_DIST =							\
 	e2k-marshal.list					\
 	mapi-properties						\
