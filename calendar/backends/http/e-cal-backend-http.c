@@ -205,7 +205,7 @@ notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 
 	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), id, calobj, NULL);
 
-	e_cal_component_free_id (comp);
+	e_cal_component_free_id (id);
 	g_object_unref (comp);
 
 	return TRUE;
