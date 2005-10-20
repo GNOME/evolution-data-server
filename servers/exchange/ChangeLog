@@ -1,3 +1,8 @@
+2005-10-20  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* lib : Add the test programs
+	* lib/Makefile.am : Add the entries to compile these.
+
 2005-09-30  Arunprakash  <arunp@novell.com>
 
 	* storage/exchange-account.c (setup_account_hierarchies) : Skips the
