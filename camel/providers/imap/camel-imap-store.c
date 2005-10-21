@@ -1636,19 +1636,13 @@ static void
 imap_noop (CamelStore *store, CamelException *ex)
 {
 	CamelImapStore *imap_store = (CamelImapStore *) store;
-	CamelDiscoStore *disco = (CamelDiscoStore *) store;
 	CamelImapResponse *response;
 	CamelFolder *current_folder;
 	
-	if (camel_disco_store_status (disco) != CAMEL_DISCO_STORE_ONLINE)
-		return;
-	
 	CAMEL_SERVICE_LOCK (imap_store, connect_lock);
 
-	if (!camel_imap_store_connected(imap_store, ex)) {
-		CAMEL_SERVICE_UNLOCK(imap_store, connect_lock);
-		return;
-	}
+	if (!camel_imap_store_connected(imap_store, ex))
+		goto done;
 
 	current_folder = imap_store->current_folder;
 	if (current_folder && imap_summary_is_dirty (current_folder->summary)) {
@@ -1659,7 +1653,7 @@ imap_noop (CamelStore *store, CamelException *ex)
 		if (response)
 			camel_imap_response_free (imap_store, response);
 	}
-	
+done:
 	CAMEL_SERVICE_UNLOCK (imap_store, connect_lock);
 }
 
@@ -2862,15 +2856,15 @@ subscribe_folder (CamelStore *store, const char *folder_name,
 	CamelFolderInfo *fi;
 	CamelStoreInfo *si;
 
-	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex))
-		return;
+	CAMEL_SERVICE_LOCK(store, connect_lock);
+
 	if (!camel_imap_store_connected (imap_store, ex))
-		return;
+		goto done;
 	
 	response = camel_imap_command (imap_store, NULL, ex,
 				       "SUBSCRIBE %F", folder_name);
 	if (!response)
-		return;
+		goto done;
 	camel_imap_response_free (imap_store, response);
 	
 	si = camel_store_summary_path((CamelStoreSummary *)imap_store->summary, folder_name);
@@ -2887,7 +2881,7 @@ subscribe_folder (CamelStore *store, const char *folder_name,
 		/* we don't need to emit a "folder_subscribed" signal
                    if we are in the process of renaming folders, so we
                    are done here... */
-		return;
+		goto done;
 	}
 
 	fi = imap_build_folder_info(imap_store, folder_name);
@@ -2895,6 +2889,8 @@ subscribe_folder (CamelStore *store, const char *folder_name,
 	
 	camel_object_trigger_event (CAMEL_OBJECT (store), "folder_subscribed", fi);
 	camel_folder_info_free (fi);
+done:
+	CAMEL_SERVICE_UNLOCK(store, connect_lock);
 }
 
 static void
@@ -2903,19 +2899,21 @@ unsubscribe_folder (CamelStore *store, const char *folder_name,
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
+
+	CAMEL_SERVICE_LOCK(store, connect_lock);
 	
-	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), ex))
-		return;
 	if (!camel_imap_store_connected (imap_store, ex))
-		return;
+		goto done;
 	
 	response = camel_imap_command (imap_store, NULL, ex,
 				       "UNSUBSCRIBE %F", folder_name);
 	if (!response)
-		return;
+		goto done;
 	camel_imap_response_free (imap_store, response);
 
 	imap_folder_effectively_unsubscribed (imap_store, folder_name, ex);
+done:
+	CAMEL_SERVICE_UNLOCK(store, connect_lock);
 }
 
 #if 0

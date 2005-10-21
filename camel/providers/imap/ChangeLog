@@ -1,3 +1,12 @@
+2005-10-21 Vivek Jain <jvivek@novell.com>
+	
+	Committed NotZed's patch on #314833
+	
+	** See #314833.
+	* camel-imap-store.c (subscribe_folder, unsubscribe_folder):
+	add missing locking.
+	(imap_noop): re-arrange locking slightly.
+
 2005-10-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-imap-folder.c:(imap_update_summary): specify the
