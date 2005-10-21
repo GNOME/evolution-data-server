@@ -362,6 +362,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 	/* This makes the cleanup easier. We just unref it each time
 	 * we find it in account->priv->folders.
 	 */
+	d(printf ("adding folder : %s\n", e_folder_get_name (folder)));
 	key = (char *) e_folder_exchange_get_path (folder);
 	if (!g_hash_table_lookup (account->priv->folders, key)) {
 		/* Avoid dupilcations since the user could add a folder as
@@ -511,12 +512,24 @@ exchange_account_create_folder (ExchangeAccount *account,
 	return exchange_hierarchy_create_folder (hier, parent, path, type);
 }
 
+static gboolean
+check_if_sf (gpointer key, gpointer value, gpointer user_data)
+{
+	char *sf_href = (char *)value;
+	char *int_uri = (char *)user_data;
+
+	if (!strcmp (sf_href, int_uri))
+		return TRUE; /* Quit calling the callback */
+
+	return FALSE; /* Continue calling the callback till end of table */
+}
+
 ExchangeAccountFolderResult
 exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 {
 	ExchangeHierarchy *hier;
 	EFolder *folder;
-	const char *name;
+	const char *int_uri;
 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
@@ -524,9 +537,12 @@ exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 	if (!get_folder (account, path, &folder, &hier))
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 	
-	name = e_folder_get_name (folder);
-	if (exchange_account_get_standard_uri (account, name))
+	int_uri = e_folder_exchange_get_internal_uri (folder);
+
+	if (g_hash_table_find (account->priv->standard_uris, 
+					check_if_sf, int_uri)) {
 		return EXCHANGE_ACCOUNT_FOLDER_UNSUPPORTED_OPERATION;
+	}
 
 	return exchange_hierarchy_remove_folder (hier, folder);
 }
