@@ -380,7 +380,7 @@ imap_parse_list_response (CamelImapStore *store, const char *buf, int *flags, ch
 			return FALSE;
 
 		*folder = astring;
-#if 0
+
 		char *mailbox;
 
 		mailbox = imap_mailbox_decode (astring, strlen (astring));
@@ -404,7 +404,7 @@ imap_parse_list_response (CamelImapStore *store, const char *buf, int *flags, ch
 			*flags &= ~CAMEL_FOLDER_NOSELECT;
 		
 		*folder = mailbox;
-#endif
+
 	}
 	
 	return TRUE;

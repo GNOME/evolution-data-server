@@ -1,3 +1,9 @@
+2005-10-21 Shreyas Srinivasan <sshreyas@novell.com>
+
+	* camel-imap-utils.c:(imap_parse_list_response): Handle
+	Courier imap's LSUB response for INBOX when its not subscribed.
+	Fix #228929.
+	
 2005-10-21 Vivek Jain <jvivek@novell.com>
 	
 	Committed NotZed's patch on #314833
