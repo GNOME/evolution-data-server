@@ -1,3 +1,9 @@
+2005-10-21  Sarfraaz Ahmed <asarfraaz@novell.com>
+
+	* storage/exchange-account.c (exchange_account_remove_folder) : Proceed
+	with deletion of folder only if the folder being removed is *not* a
+	standard folder. This fixes #312848.
+
 2005-10-20  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* lib : Add the test programs
