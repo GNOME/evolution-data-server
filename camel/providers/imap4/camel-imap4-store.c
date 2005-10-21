@@ -509,11 +509,15 @@ imap4_try_authenticate (CamelIMAP4Engine *engine, gboolean reprompt, const char 
 {
 	CamelService *service = engine->service;
 	CamelSession *session = service->session;
+	CamelServiceAuthType *mech = NULL;
 	CamelSasl *sasl = NULL;
 	CamelIMAP4Command *ic;
 	int id;
 	
-	if (!service->url->passwd) {
+	if (service->url->authmech)
+		mech = g_hash_table_lookup (engine->authtypes, service->url->authmech);
+	
+	if ((!mech || (mech && mech->need_password)) && !service->url->passwd) {
 		guint32 flags = CAMEL_SESSION_PASSWORD_SECRET;
 		char *prompt;
 		
@@ -534,9 +538,6 @@ imap4_try_authenticate (CamelIMAP4Engine *engine, gboolean reprompt, const char 
 	}
 	
 	if (service->url->authmech) {
-		CamelServiceAuthType *mech;
-		
-		mech = g_hash_table_lookup (engine->authtypes, service->url->authmech);
 		sasl = camel_sasl_new ("imap", mech->authproto, service);
 		
 		ic = camel_imap4_engine_prequeue (engine, NULL, "AUTHENTICATE %s\r\n", service->url->authmech);
@@ -832,21 +833,177 @@ imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Cam
 	return folder;
 }
 
-static CamelFolderInfo *
-imap4_create_folder (CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex)
+
+static gboolean
+imap4_folder_can_contain_folders (CamelStore *store, const char *folder_name, CamelException *ex)
 {
-	/* FIXME: also need to deal with parent folders that can't
-	 * contain subfolders - delete them and re-create with the
-	 * proper hint */
+	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
+	guint32 flags = CAMEL_FOLDER_NOINFERIORS;
+	camel_imap4_list_t *list;
+	CamelIMAP4Command *ic;
+	GPtrArray *array;
+	char *utf7_name;
+	int id, i;
+	
+	CAMEL_SERVICE_LOCK (store, connect_lock);
+	
+	utf7_name = imap4_folder_utf7_name (store, folder_name, '\0');
+	
+	ic = camel_imap4_engine_queue (engine, NULL, "LIST \"\" %S\r\n", utf7_name);
+	camel_imap4_command_register_untagged (ic, "LIST", camel_imap4_untagged_list);
+	ic->user_data = array = g_ptr_array_new ();
+	
+	while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
+		;
+	
+	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
+		camel_exception_xfer (ex, &ic->ex);
+		camel_imap4_command_unref (ic);
+		
+		for (i = 0; i < array->len; i++) {
+			list = array->pdata[i];
+			g_free (list->name);
+			g_free (list);
+		}
+		
+		goto done;
+	}
+	
+	if (ic->result != CAMEL_IMAP4_RESULT_OK) {
+		camel_imap4_command_unref (ic);
+		
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot get LIST information for `%s' on IMAP server %s: %s"),
+				      folder_name, engine->url->host, ic->result == CAMEL_IMAP4_RESULT_BAD ?
+				      _("Bad command") : _("Unknown"));
+		
+		for (i = 0; i < array->len; i++) {
+			list = array->pdata[i];
+			g_free (list->name);
+			g_free (list);
+		}
+		
+		goto done;
+	}
+	
+	flags = 0;
+	for (i = 0; i < array->len; i++) {
+		list = array->pdata[i];
+		if (!strcmp (list->name, utf7_name))
+			flags |= list->flags;
+		g_free (list->name);
+		g_free (list);
+	}
+	
+ done:
+	
+	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	
+	g_ptr_array_free (array, TRUE);
+	g_free (utf7_name);
+	
+	return (flags & CAMEL_FOLDER_NOINFERIORS) == 0;
+}
+
+static CamelFolderInfo *
+imap4_folder_create (CamelStore *store, const char *folder_name, const char *subfolder_hint, CamelException *ex)
+{
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelFolderInfo *fi = NULL;
 	CamelIMAP4Command *ic;
 	char *utf7_name;
 	CamelURL *url;
 	const char *c;
+	int id;
+	
+	CAMEL_SERVICE_LOCK (store, connect_lock);
+	
+	utf7_name = imap4_folder_utf7_name (store, folder_name, '\0');
+	ic = camel_imap4_engine_queue (engine, NULL, "CREATE %S%s\r\n", utf7_name, subfolder_hint);
+	g_free (utf7_name);
+	
+	while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
+		;
+	
+	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
+		camel_exception_xfer (ex, &ic->ex);
+		camel_imap4_command_unref (ic);
+		goto done;
+	}
+	
+	switch (ic->result) {
+	case CAMEL_IMAP4_RESULT_OK:
+		url = camel_url_copy (engine->url);
+		camel_url_set_fragment (url, folder_name);
+		
+		c = strrchr (folder_name, '/');
+		
+		fi = g_malloc0 (sizeof (CamelFolderInfo));
+		fi->full_name = g_strdup (folder_name);
+		fi->name = g_strdup (c ? c + 1: folder_name);
+		fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
+		camel_url_free (url);
+		fi->flags = 0;
+		fi->unread = -1;
+		fi->total = -1;
+		
+		camel_imap4_store_summary_note_info (((CamelIMAP4Store *) store)->summary, fi);
+		
+		camel_object_trigger_event (store, "folder_created", fi);
+		break;
+	case CAMEL_IMAP4_RESULT_NO:
+		/* FIXME: would be good to save the NO reason into the err message */
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot create folder `%s': Invalid mailbox name"),
+				      folder_name);
+		break;
+	case CAMEL_IMAP4_RESULT_BAD:
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot create folder `%s': Bad command"),
+				      folder_name);
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	camel_imap4_command_unref (ic);
+	
+ done:
+	
+	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	
+	return fi;
+}
+
+static gboolean
+imap4_folder_recreate (CamelStore *store, const char *folder_name, CamelException *ex)
+{
+	CamelFolderInfo *fi = NULL;
+	char hint[2];
+	char sep;
+	
+	sep = camel_imap4_get_path_delim (((CamelIMAP4Store *) store)->summary, folder_name);
+	sprintf (hint, "%c", sep);
+	
+	imap4_delete_folder (store, folder_name, ex);
+	if (camel_exception_is_set (ex))
+		return FALSE;
+	
+	if (!(fi = imap4_folder_create (store, folder_name, hint, ex)))
+		return FALSE;
+	
+	camel_folder_info_free (fi);
+	
+	return TRUE;
+}
+
+static CamelFolderInfo *
+imap4_create_folder (CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex)
+{
+	CamelFolderInfo *fi = NULL;
+	const char *c;
 	char *name;
 	char sep;
-	int id;
 	
 	sep = camel_imap4_get_path_delim (((CamelIMAP4Store *) store)->summary, parent_name);
 	
@@ -868,69 +1025,28 @@ imap4_create_folder (CamelStore *store, const char *parent_name, const char *fol
 		return NULL;
 	}
 	
-	if (parent_name != NULL && *parent_name)
+	if (parent_name != NULL && *parent_name) {
+		CamelException lex;
+		
+		camel_exception_init (&lex);
+		if (!imap4_folder_can_contain_folders (store, parent_name, &lex)) {
+			if (camel_exception_is_set (&lex)) {
+				camel_exception_xfer (ex, &lex);
+				return NULL;
+			}
+			
+			if (!imap4_folder_recreate (store, parent_name, &lex)) {
+				camel_exception_xfer (ex, &lex);
+				return NULL;
+			}
+		}
+		
 		name = g_strdup_printf ("%s/%s", parent_name, folder_name);
-	else
+	} else
 		name = g_strdup (folder_name);
 	
-	CAMEL_SERVICE_LOCK (store, connect_lock);
-	
-	utf7_name = imap4_folder_utf7_name (store, name, '\0');
-	ic = camel_imap4_engine_queue (engine, NULL, "CREATE %S\r\n", utf7_name);
-	g_free (utf7_name);
-	
-	while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
-		;
-	
-	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
-		camel_exception_xfer (ex, &ic->ex);
-		camel_imap4_command_unref (ic);
-		g_free (name);
-		goto done;
-	}
-	
-	switch (ic->result) {
-	case CAMEL_IMAP4_RESULT_OK:
-		url = camel_url_copy (engine->url);
-		camel_url_set_fragment (url, name);
-		
-		c = strrchr (name, '/');
-		
-		fi = g_malloc0 (sizeof (CamelFolderInfo));
-		fi->full_name = name;
-		fi->name = g_strdup (c ? c + 1: name);
-		fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-		camel_url_free (url);
-		fi->flags = 0;
-		fi->unread = -1;
-		fi->total = -1;
-		
-		camel_imap4_store_summary_note_info (((CamelIMAP4Store *) store)->summary, fi);
-		
-		camel_object_trigger_event (store, "folder_created", fi);
-		break;
-	case CAMEL_IMAP4_RESULT_NO:
-		/* FIXME: would be good to save the NO reason into the err message */
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder `%s': Invalid mailbox name"),
-				      name);
-		g_free (name);
-		break;
-	case CAMEL_IMAP4_RESULT_BAD:
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder `%s': Bad command"),
-				      name);
-		g_free (name);
-		break;
-	default:
-		g_assert_not_reached ();
-	}
-	
-	camel_imap4_command_unref (ic);
-	
- done:
-	
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	fi = imap4_folder_create (store, name, "", ex);
+	g_free (name);
 	
 	return fi;
 }
