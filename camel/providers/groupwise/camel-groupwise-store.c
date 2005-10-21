@@ -273,8 +273,9 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	d("in groupwise store connect\n");
 	
-	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) 
 		return TRUE;
+
 	
 	CAMEL_SERVICE_LOCK (service, connect_lock);
 	
@@ -298,7 +299,6 @@ groupwise_connect (CamelService *service, CamelException *ex)
 				FALSE);
 
 	}
-
 
 	ns = camel_groupwise_store_summary_namespace_new (store->summary, priv->storage_path, '/');
 	camel_groupwise_store_summary_namespace_set (store->summary, ns);

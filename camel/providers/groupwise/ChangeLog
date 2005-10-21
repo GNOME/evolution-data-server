@@ -1,3 +1,9 @@
+2005-10-21  Shreyas Srinivasan <sshreyas@novell.com>
+
+	* camel-groupwise-store.c:(groupwise_connect): Connect if store->state
+	is CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL and not if 
+	CAMEL_OFFLINE_STORE_NETWORK_AVAIL
+
 2005-10-19 Vivek Jain <jvivek@novell.com>
 	
 	**See bug #319045
