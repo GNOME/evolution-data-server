@@ -1,3 +1,10 @@
+2005-10-21  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-name-selector-dialog.c: Added the missing category filter in
+	name_selector_dialog.
+	* e-name-selector-dialog.glade: Added the UI component for category
+	filter. Fixes #273799.
+
 2005-10-14  Ross Burton  <ross@openedhand.com>
 
 	* test-contact-store.c:
