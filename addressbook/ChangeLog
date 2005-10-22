@@ -1,3 +1,15 @@
+2005-10-20  Sushma Rai  <rsushma@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c: Added variable to 
+	_EBookBackendLDAPPrivate to store LDAP search filter, and using that
+	instead of hardcoded "objectclass=person".
+	(e_book_backend_ldap_load_source): Reading the search filter from 
+	LDAP url.
+	(e_book_backend_ldap_build_query): Using the search filter set in LDAP
+	url.
+	(e_book_backend_ldap_dispose): free ldap search filter.
+	Fixes #311884.
+
 2005-10-14  Ross Burton  <ross@burtonini.com>
 
 	* libedata-book/e-book-backend-summary.c:

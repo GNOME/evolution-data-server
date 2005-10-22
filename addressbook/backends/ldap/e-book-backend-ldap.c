@@ -106,6 +106,7 @@ struct _EBookBackendLDAPPrivate {
 	char     *schema_dn;   /* the base dn for schema information */
 	gchar    *ldap_rootdn; /* the base dn of our searches */
 	int      ldap_scope;   /* the scope used for searches */
+	gchar 	*ldap_search_filter;
 	int      ldap_limit;   /* the search limit */
 	int      ldap_timeout; /* the search timeout */
 
@@ -2158,7 +2159,6 @@ contact_list_handler (LDAPOp *op, LDAPMessage *res)
 						      NULL);
 		ldap_op_finished (op);
 	}
-
 }
 
 static void
@@ -3248,15 +3248,20 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 			g_list_foreach (data.list, (GFunc)g_free, NULL);
 		}
 		else {
-			strings = g_new0(char*, 5);
-			strings[0] = g_strdup ("(&");
-			strings[1] = g_strdup ("(objectclass=person)");
-			strings[2] = data.list->data;
-			strings[3] = g_strdup (")");
-			retval =  g_strjoinv (" ", strings);
-			for (i = 0 ; i < 4; i ++)
-				g_free (strings[i]);
-			g_free (strings);
+			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter) {
+				strings = g_new0(char*, 5);
+				strings[0] = g_strdup ("(&");
+				strings[1] = g_strdup_printf ("%s", bl->priv->ldap_search_filter);
+				strings[2] = data.list->data;
+				strings[3] = g_strdup (")");
+				retval =  g_strjoinv (" ", strings);
+				for (i = 0 ; i < 4; i ++)
+					g_free (strings[i]);
+				g_free (strings);
+			}
+			else {
+				retval = g_strdup (data.list->data);
+			}
 		}
 	}
 	else {
@@ -4106,6 +4111,9 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		if (bl->priv->ldap_port == 0)
 			bl->priv->ldap_port = LDAP_PORT;
 		bl->priv->ldap_rootdn = g_strdup(lud->lud_dn);
+		/* in case of migration, filter will be set to NULL and hence the search will fail */
+		if (lud->lud_filter)
+			bl->priv->ldap_search_filter = g_strdup (lud->lud_filter);
 		bl->priv->ldap_limit = limit;
 		bl->priv->ldap_timeout = timeout;
 		bl->priv->ldap_scope = lud->lud_scope;
@@ -4249,7 +4257,7 @@ e_book_backend_ldap_set_mode (EBookBackend *backend, int mode)
 	}
 	else if (mode == GNOME_Evolution_Addressbook_MODE_REMOTE) {
 		/* Go online */
-
+	
 		e_book_backend_set_is_writable (backend, TRUE);
 		e_book_backend_notify_writable (backend, TRUE);
 		e_book_backend_notify_connection_status (backend, TRUE);
@@ -4335,7 +4343,6 @@ e_book_backend_ldap_dispose (GObject *object)
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (bl->priv->poll_timeout != -1) {
-			printf ("removing timeout\n");
 			g_source_remove (bl->priv->poll_timeout);
 		}
 
@@ -4360,6 +4367,7 @@ e_book_backend_ldap_dispose (GObject *object)
 
 		g_free (bl->priv->ldap_host);
 		g_free (bl->priv->ldap_rootdn);
+		g_free (bl->priv->ldap_search_filter);
 		g_free (bl->priv->schema_dn);
 		g_free (bl->priv);
 		bl->priv = NULL;
