@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-14 12:29-0400\n"
+"POT-Creation-Date: 2005-10-23 02:18-0400\n"
 "PO-Revision-Date: 2005-07-26 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
@@ -26,13 +26,13 @@ msgstr "Loading..."
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2169
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2189
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2208
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3587
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3592
 #: addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Searching..."
 
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2493
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3735
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3740
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Downloading contacts (%d)... "
@@ -44,35 +44,35 @@ msgstr "Downloading contacts (%d)... "
 msgid "Updating contacts cache (%d)... "
 msgstr "Updating contacts cache (%d)... "
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:684
+#: addressbook/backends/ldap/e-book-backend-ldap.c:685
 msgid "Using Distinguished Name (DN)"
 msgstr "Using Distinguished Name (DN)"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:687
+#: addressbook/backends/ldap/e-book-backend-ldap.c:688
 msgid "Using Email Address"
 msgstr "Using Email Address"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:873
+#: addressbook/backends/ldap/e-book-backend-ldap.c:874
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconnecting to LDAP server..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1441
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1442
 msgid "Adding contact to LDAP server..."
 msgstr "Adding contact to LDAP server..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1575
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1576
 msgid "Removing contact from LDAP server..."
 msgstr "Removing contact from LDAP server..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1857
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1858
 msgid "Modifying contact from LDAP server..."
 msgstr "Modifying contact from LDAP server..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3463
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3468
 msgid "Receiving LDAP search results..."
 msgstr "Receiving LDAP search results..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:3609
+#: addressbook/backends/ldap/e-book-backend-ldap.c:3614
 msgid "Error performing search"
 msgstr "Error performing search"
 
@@ -676,14 +676,14 @@ msgstr "Invalid server URI"
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:780
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:789
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:871
-#: calendar/libecal/e-cal.c:5095
+#: calendar/libecal/e-cal.c:5109
 #: camel/providers/groupwise/camel-groupwise-folder.c:891
 #: camel/providers/groupwise/camel-groupwise-folder.c:911
 #: camel/providers/groupwise/camel-groupwise-folder.c:939
 #: camel/providers/groupwise/camel-groupwise-store.c:518
 #: camel/providers/groupwise/camel-groupwise-store.c:533
 #: camel/providers/groupwise/camel-groupwise-store.c:575
-#: camel/providers/groupwise/camel-groupwise-store.c:1081
+#: camel/providers/groupwise/camel-groupwise-store.c:1078
 #: camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "Authentication failed"
@@ -1054,82 +1054,82 @@ msgid "Undefined"
 msgstr "Undefined"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: calendar/libecal/e-cal.c:1662
+#: calendar/libecal/e-cal.c:1675
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Enter password for %s to enable proxy for user %s"
 
-#: calendar/libecal/e-cal.c:1665 libedataserverui/e-book-auth-util.c:192
+#: calendar/libecal/e-cal.c:1678 libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: calendar/libecal/e-cal.c:5067
+#: calendar/libecal/e-cal.c:5081
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: calendar/libecal/e-cal.c:5069
+#: calendar/libecal/e-cal.c:5083
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: calendar/libecal/e-cal.c:5071
+#: calendar/libecal/e-cal.c:5085
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: calendar/libecal/e-cal.c:5073
+#: calendar/libecal/e-cal.c:5087
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: calendar/libecal/e-cal.c:5075 servers/groupwise/e-gw-connection.c:167
+#: calendar/libecal/e-cal.c:5089 servers/groupwise/e-gw-connection.c:167
 msgid "Object not found"
 msgstr "Object not found"
 
-#: calendar/libecal/e-cal.c:5077 servers/groupwise/e-gw-connection.c:161
+#: calendar/libecal/e-cal.c:5091 servers/groupwise/e-gw-connection.c:161
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: calendar/libecal/e-cal.c:5079
+#: calendar/libecal/e-cal.c:5093
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: calendar/libecal/e-cal.c:5081
+#: calendar/libecal/e-cal.c:5095
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: calendar/libecal/e-cal.c:5083 servers/exchange/storage/e-storage.c:572
+#: calendar/libecal/e-cal.c:5097 servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: calendar/libecal/e-cal.c:5085 servers/groupwise/e-gw-connection.c:169
+#: calendar/libecal/e-cal.c:5099 servers/groupwise/e-gw-connection.c:169
 msgid "Unknown User"
 msgstr "Unknown User"
 
-#: calendar/libecal/e-cal.c:5087
+#: calendar/libecal/e-cal.c:5101
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: calendar/libecal/e-cal.c:5089
+#: calendar/libecal/e-cal.c:5103
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: calendar/libecal/e-cal.c:5091
+#: calendar/libecal/e-cal.c:5105
 msgid "Operation has been cancelled"
 msgstr "Operation has been canceled"
 
-#: calendar/libecal/e-cal.c:5093
+#: calendar/libecal/e-cal.c:5107
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: calendar/libecal/e-cal.c:5097
+#: calendar/libecal/e-cal.c:5111
 #: camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: calendar/libecal/e-cal.c:5099
+#: calendar/libecal/e-cal.c:5113
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: calendar/libecal/e-cal.c:5101
+#: calendar/libecal/e-cal.c:5115
 #: camel/providers/groupwise/camel-groupwise-transport.c:212
 #: camel/providers/imap/camel-imap-command.c:310
 #: camel/providers/imap/camel-imap-command.c:410
@@ -1142,7 +1142,7 @@ msgstr "A CORBA exception has occurred"
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: calendar/libecal/e-cal.c:5103 servers/exchange/storage/e-storage.c:554
+#: calendar/libecal/e-cal.c:5117 servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "No error"
 
@@ -1322,8 +1322,8 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Preparing folder '%s' for offline"
 
 #: camel/camel-disco-store.c:391
-#: camel/providers/groupwise/camel-groupwise-store.c:1279
-#: camel/providers/imap/camel-imap-store.c:2961
+#: camel/providers/groupwise/camel-groupwise-store.c:1276
+#: camel/providers/imap/camel-imap-store.c:2959
 msgid "You must be working online to complete this operation"
 msgstr "You must be working online to complete this operation"
 
@@ -1609,7 +1609,8 @@ msgstr "Unable to parse message content"
 #: camel/providers/imap4/camel-imap4-engine.c:1589
 #: camel/providers/imap4/camel-imap4-engine.c:1634
 #: camel/providers/imap4/camel-imap4-engine.c:1690
-#: camel/providers/imap4/camel-imap4-store.c:1435
+#: camel/providers/imap4/camel-imap4-store.c:878
+#: camel/providers/imap4/camel-imap4-store.c:1551
 #: camel/providers/imap4/camel-imap4-utils.c:575
 #: camel/providers/smtp/camel-smtp-transport.c:160
 #: camel/providers/smtp/camel-smtp-transport.c:215
@@ -2724,40 +2725,40 @@ msgstr "You didn't enter a password."
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Unable to authenticate with GroupWise server."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:297
+#: camel/providers/groupwise/camel-groupwise-store.c:298
 msgid "Some features may not work correctly with your current server version"
 msgstr "Some features may not work correctly with your current server version"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:470
-#: camel/providers/imap/camel-imap-store.c:1874
-#: camel/providers/imap/camel-imap-store.c:2065
+#: camel/providers/imap/camel-imap-store.c:1868
+#: camel/providers/imap/camel-imap-store.c:2059
 #, c-format
 msgid "No such folder %s"
 msgstr "No such folder %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1058
+#: camel/providers/groupwise/camel-groupwise-store.c:1055
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Cannot create GroupWise folders in offline mode."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1072
-#: camel/providers/imap/camel-imap-store.c:1949
-#: camel/providers/imap/camel-imap-store.c:2318
+#: camel/providers/groupwise/camel-groupwise-store.c:1069
+#: camel/providers/imap/camel-imap-store.c:1943
+#: camel/providers/imap/camel-imap-store.c:2312
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "The parent folder is not allowed to contain subfolders"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1149
-#: camel/providers/groupwise/camel-groupwise-store.c:1170
+#: camel/providers/groupwise/camel-groupwise-store.c:1146
+#: camel/providers/groupwise/camel-groupwise-store.c:1167
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Cannot rename Groupwise folder `%s' to `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1202
+#: camel/providers/groupwise/camel-groupwise-store.c:1199
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise server %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1204
+#: camel/providers/groupwise/camel-groupwise-store.c:1201
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise service for %s on %s"
@@ -2780,12 +2781,12 @@ msgstr "Could not send message: %s"
 #: camel/providers/imap/camel-imap-command.c:222
 #: camel/providers/imap/camel-imap-command.c:264
 #: camel/providers/imap/camel-imap-command.c:471
-#: camel/providers/imap/camel-imap-store.c:3001
+#: camel/providers/imap/camel-imap-store.c:2999
 msgid "Operation cancelled"
 msgstr "Operation cancelled"
 
 #: camel/providers/imap/camel-imap-command.c:309
-#: camel/providers/imap/camel-imap-store.c:3004
+#: camel/providers/imap/camel-imap-store.c:3002
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Server unexpectedly disconnected: %s"
@@ -3057,9 +3058,9 @@ msgstr "Could not connect with command \"%s\": %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: camel/providers/imap/camel-imap-store.c:1038
-#: camel/providers/imap/camel-imap-store.c:2414
+#: camel/providers/imap/camel-imap-store.c:2408
 #: camel/providers/imap4/camel-imap4-store-summary.c:368
-#: camel/providers/imap4/camel-imap4-store.c:1268
+#: camel/providers/imap4/camel-imap4-store.c:1384
 #: camel/providers/local/camel-maildir-folder.c:75
 #: camel/providers/local/camel-maildir-store.c:217
 #: camel/providers/local/camel-maildir-store.c:289
@@ -3098,16 +3099,16 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: camel/providers/imap/camel-imap-store.c:1886
-#: camel/providers/imap/camel-imap-store.c:2256
-#: camel/providers/imap4/camel-imap4-store.c:857
+#: camel/providers/imap/camel-imap-store.c:1880
+#: camel/providers/imap/camel-imap-store.c:2250
+#: camel/providers/imap4/camel-imap4-store.c:1014
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 
-#: camel/providers/imap/camel-imap-store.c:2003
+#: camel/providers/imap/camel-imap-store.c:1997
 #: camel/providers/local/camel-maildir-store.c:190
 #: camel/providers/local/camel-mbox-store.c:199
 #: camel/providers/local/camel-mh-store.c:249
@@ -3115,7 +3116,7 @@ msgstr ""
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Cannot create folder `%s': folder exists."
 
-#: camel/providers/imap/camel-imap-store.c:2267
+#: camel/providers/imap/camel-imap-store.c:2261
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Unknown parent folder: %s"
@@ -3251,107 +3252,113 @@ msgid ""
 msgstr ""
 "Cannot authenticate with IMAP server %s using the %s authentication mechanism"
 
-#: camel/providers/imap4/camel-imap4-store.c:523
+#: camel/providers/imap4/camel-imap4-store.c:527
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
 msgstr "%sPlease enter the IMAP password for %s on host %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:593
+#: camel/providers/imap4/camel-imap4-store.c:594
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "Cannot authenticate with IMAP server %s using %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:755
-#: camel/providers/imap4/camel-imap4-store.c:867
+#: camel/providers/imap4/camel-imap4-store.c:756
+#: camel/providers/imap4/camel-imap4-store.c:1024
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "Cannot create IMAP folders in offline mode."
 
-#: camel/providers/imap4/camel-imap4-store.c:794
+#: camel/providers/imap4/camel-imap4-store.c:795
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "Cannot get folder `%s' on IMAP server %s: Unknown"
 
-#: camel/providers/imap4/camel-imap4-store.c:915
+#: camel/providers/imap4/camel-imap4-store.c:876
+#, c-format
+msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
+msgstr "Cannot get LIST information for `%s' on IMAP server %s: %s"
+
+#: camel/providers/imap4/camel-imap4-store.c:878
+#: camel/providers/imap4/camel-imap4-store.c:1551
+msgid "Bad command"
+msgstr "Bad command"
+
+#: camel/providers/imap4/camel-imap4-store.c:957
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "Cannot create folder `%s': Invalid mailbox name"
 
-#: camel/providers/imap4/camel-imap4-store.c:921
+#: camel/providers/imap4/camel-imap4-store.c:962
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "Cannot create folder `%s': Bad command"
 
-#: camel/providers/imap4/camel-imap4-store.c:952
+#: camel/providers/imap4/camel-imap4-store.c:1068
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "Cannot delete folder `%s': Special folder"
 
-#: camel/providers/imap4/camel-imap4-store.c:959
+#: camel/providers/imap4/camel-imap4-store.c:1075
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "Cannot delete IMAP folders in offline mode."
 
-#: camel/providers/imap4/camel-imap4-store.c:1018
+#: camel/providers/imap4/camel-imap4-store.c:1134
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "Cannot delete folder `%s': Invalid mailbox name"
 
-#: camel/providers/imap4/camel-imap4-store.c:1023
+#: camel/providers/imap4/camel-imap4-store.c:1139
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "Cannot delete folder `%s': Bad command"
 
-#: camel/providers/imap4/camel-imap4-store.c:1043
+#: camel/providers/imap4/camel-imap4-store.c:1159
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "Cannot rename folder `%s' to `%s': Special folder"
 
-#: camel/providers/imap4/camel-imap4-store.c:1050
+#: camel/providers/imap4/camel-imap4-store.c:1166
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "Cannot rename IMAP folders in offline mode."
 
-#: camel/providers/imap4/camel-imap4-store.c:1081
+#: camel/providers/imap4/camel-imap4-store.c:1197
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 
-#: camel/providers/imap4/camel-imap4-store.c:1086
+#: camel/providers/imap4/camel-imap4-store.c:1202
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "Cannot rename folder `%s' to `%s': Bad command"
 
-#: camel/providers/imap4/camel-imap4-store.c:1433
+#: camel/providers/imap4/camel-imap4-store.c:1549
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:1435
-msgid "Bad command"
-msgstr "Bad command"
-
-#: camel/providers/imap4/camel-imap4-store.c:1473
+#: camel/providers/imap4/camel-imap4-store.c:1589
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "Cannot subscribe to IMAP folders in offline mode."
 
-#: camel/providers/imap4/camel-imap4-store.c:1518
+#: camel/providers/imap4/camel-imap4-store.c:1634
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "Cannot subscribe to folder `%s': Invalid mailbox name"
 
-#: camel/providers/imap4/camel-imap4-store.c:1523
+#: camel/providers/imap4/camel-imap4-store.c:1639
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "Cannot subscribe to folder `%s': Bad command"
 
-#: camel/providers/imap4/camel-imap4-store.c:1545
+#: camel/providers/imap4/camel-imap4-store.c:1661
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "Cannot unsubscribe from IMAP folders in offline mode."
 
-#: camel/providers/imap4/camel-imap4-store.c:1590
+#: camel/providers/imap4/camel-imap4-store.c:1706
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 
-#: camel/providers/imap4/camel-imap4-store.c:1595
+#: camel/providers/imap4/camel-imap4-store.c:1711
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Cannot unsubscribe from folder `%s': Bad command"
@@ -4798,15 +4805,15 @@ msgstr "_Edit"
 msgid "categories"
 msgstr "categories"
 
-#: libedataserverui/e-name-selector-dialog.c:211
+#: libedataserverui/e-name-selector-dialog.c:251
 msgid "Select Contacts from Address Book"
 msgstr "Select Contacts from Address Book"
 
-#: libedataserverui/e-name-selector-dialog.c:502
+#: libedataserverui/e-name-selector-dialog.c:543
 msgid "_Add"
 msgstr "_Add"
 
-#: libedataserverui/e-name-selector-dialog.c:527
+#: libedataserverui/e-name-selector-dialog.c:568
 msgid "_Remove"
 msgstr "_Remove"
 
@@ -4835,15 +4842,19 @@ msgid "Address _Book:"
 msgstr "Address _Book:"
 
 #: libedataserverui/e-name-selector-dialog.glade.h:7
+msgid "C_ategory:"
+msgstr "C_ategory:"
+
+#: libedataserverui/e-name-selector-dialog.glade.h:8
 #: servers/exchange/storage/exchange-hierarchy-foreign.c:255
 msgid "Contacts"
 msgstr "Contacts"
 
-#: libedataserverui/e-name-selector-dialog.glade.h:8
+#: libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "Search"
 msgstr "Search"
 
-#: libedataserverui/e-name-selector-dialog.glade.h:9
+#: libedataserverui/e-name-selector-dialog.glade.h:10
 msgid "_Search:"
 msgstr "_Search:"
 
@@ -4987,26 +4998,26 @@ msgstr "This operation cannot be performed in off-line mode"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: servers/exchange/storage/exchange-account.c:626
+#: servers/exchange/storage/exchange-account.c:642
 #, c-format
 msgid "%s's Folders"
 msgstr "%s's Folders"
 
-#: servers/exchange/storage/exchange-account.c:1275
+#: servers/exchange/storage/exchange-account.c:1291
 msgid "Personal Folders"
 msgstr "Personal Folders"
 
-#: servers/exchange/storage/exchange-account.c:1289
+#: servers/exchange/storage/exchange-account.c:1305
 msgid "Favorite Public Folders"
 msgstr "Favourite Public Folders"
 
 #. i18n: Outlookism
-#: servers/exchange/storage/exchange-account.c:1306
+#: servers/exchange/storage/exchange-account.c:1322
 msgid "All Public Folders"
 msgstr "All Public Folders"
 
 #. i18n: Outlookism
-#: servers/exchange/storage/exchange-account.c:1320
+#: servers/exchange/storage/exchange-account.c:1336
 msgid "Global Address List"
 msgstr "Global Address List"
 
