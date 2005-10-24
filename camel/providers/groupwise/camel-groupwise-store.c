@@ -273,8 +273,8 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	d("in groupwise store connect\n");
 	
-	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) 
-		return TRUE;
+/*	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) 
+		return TRUE;*/
 
 	
 	CAMEL_SERVICE_LOCK (service, connect_lock);
@@ -965,6 +965,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	 */
 	if ((groupwise_store->list_loaded == TRUE) && camel_store_summary_count((CamelStoreSummary *)groupwise_store->summary) > 0) {
 		/*Load from cache*/
+		/*
 		time_t now;
 		int ref;
 
@@ -983,7 +984,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 				camel_session_thread_queue (((CamelService *)store)->session, &m->msg, 0);
 			}
 			CAMEL_SERVICE_UNLOCK (store, connect_lock);
-		}
+		}*/
+		groupwise_folders_sync (groupwise_store, ex);
 	}
 
 	CAMEL_SERVICE_LOCK (store, connect_lock);
