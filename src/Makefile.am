@@ -57,8 +57,8 @@ evolution_data_server_LDADD =							\
 	$(E_FACTORY_LIBS)
 
 install-evolution-data-servers:
-	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
-	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)
+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/evolution-data-server-$(API_VERSION)
+	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server $(DESTDIR)$(libexecdir)/evolution-data-server-$(API_VERSION)/evolution-data-server-$(BASE_VERSION)
 
 SERVER_IN_FILE=GNOME_Evolution_DataServer.server.in.in
 

@@ -1,3 +1,21 @@
+2005-10-24  Irene Huang <Irene.Huang@sun.com>
+
+	* configure.in: Add API_VERSION to EVO_SUBST_SERVER_RULE
+	* src/GNOME_Evolution_DataServer.server.in.in: Change location
+	of OAFIID:GNOME_Evolution_DataServer_BookFactory:@VERSION@,
+	OAFIID:GNOME_Evolution_DataServer_CalFactory:@VERSION@,
+	OAFIID:GNOME_Evolution_DataServer_InterfaceCheck,
+	OAFIID:GNOME_Evolution_DataServer_Logging from
+	@LIBEXECDIR@/evolution-data-server-@VERSION@@EXEEXT@ to
+	@LIBEXECDIR@/evolution-data-server-@API_VERSION@/evolution-
+	data-server-@VERSION@@EXEEXT@.
+	* src/Makefile.am: In section install-evolution-data-servers:
+	change to $(mkinstalldirs) $(DESTDIR)$(libexecdir)/evolution-
+	data-server-$(API_VERSION)
+	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server
+	$(DESTDIR)$(libexecdir)/evolution-data-server-$(API_VERSION)/
+	evolution-data-server-$(BASE_VERSION)
+
 2005-10-17  Ross Burton  <ross@burtonini.com>
 
 	* configure.in:
