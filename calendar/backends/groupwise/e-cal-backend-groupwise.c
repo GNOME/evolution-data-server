@@ -72,6 +72,8 @@ struct _ECalBackendGroupwisePrivate {
 static void e_cal_backend_groupwise_dispose (GObject *object);
 static void e_cal_backend_groupwise_finalize (GObject *object);
 static void sanitize_component (ECalBackendSync *backend, ECalComponent *comp, char *server_uid);
+static ECalBackendSyncStatus
+e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 
 #define PARENT_TYPE E_TYPE_CAL_BACKEND_SYNC
 static ECalBackendClass *parent_class = NULL;
@@ -856,6 +858,9 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				return GNOME_Evolution_Calendar_OtherError;
 			}
 
+			e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
+			e_cal_backend_groupwise_add_timezone (E_CAL_BACKEND_SYNC (cbgw), NULL, (const char *) icaltimezone_get_tzid (priv->default_zone));
+
 			/* spawn a new thread for opening the calendar */
 			thread = g_thread_create ((GThreadFunc) cache_init, cbgw, FALSE, &error);
 			if (!thread) {
@@ -1101,6 +1106,9 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 			}
 		}
 		
+		e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
+		e_cal_backend_groupwise_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
+
 		g_mutex_unlock (priv->mutex);	
 		return GNOME_Evolution_Calendar_Success;
 	}
@@ -1360,9 +1368,6 @@ e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal
 	
 	/* Set the default timezone to it. */
 	priv->default_zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-
-	/* FIXME  write it into the cache*/
-	e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
 
 	return GNOME_Evolution_Calendar_Success;
 }

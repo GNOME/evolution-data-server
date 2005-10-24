@@ -92,7 +92,8 @@ static void e_cal_backend_file_finalize (GObject *object);
 
 static ECalBackendSyncClass *parent_class;
 
-
+static ECalBackendSyncStatus
+e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
@@ -895,6 +896,9 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 			status = create_cal (cbfile, str_uri);
 	}
 
+	if (status == GNOME_Evolution_Calendar_Success)
+		e_cal_backend_file_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
+
 	g_free (str_uri);
 
 	return status;
@@ -1175,20 +1179,14 @@ e_cal_backend_file_set_default_timezone (ECalBackendSync *backend, EDataCal *cal
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
-	icaltimezone *zone;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
 	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
 
-	/* Look up the VTIMEZONE in our icalcomponent. */
-	zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
-	if (!zone)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
-
 	/* Set the default timezone to it. */
-	priv->default_zone = zone;
+	priv->default_zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
 	return GNOME_Evolution_Calendar_Success;
 }

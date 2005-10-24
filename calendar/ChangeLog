@@ -1,3 +1,22 @@
+2005-10-24  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #308802
+	* backends/contacts/e-cal-backend-contacts.c:
+	(e_cal_backend_contacts_open):
+	* backends/file/e-cal-backend-file.c: (e_cal_backend_file_open),
+	(e_cal_backend_file_set_default_timezone):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(connect_to_server), (e_cal_backend_groupwise_open),
+	(e_cal_backend_groupwise_set_default_timezone):
+	* backends/http/e-cal-backend-http.c: (e_cal_backend_http_open),
+	(e_cal_backend_http_set_default_timezone):
+	* backends/weather/e-cal-backend-weather.c:
+	(e_cal_backend_weather_open): Default timezone is set before
+	the loading the calendar, so put in the cache once the calendar is 
+	loaded.
+	* libecal/e-cal.c: (e_cal_set_default_timezone): Ensuring if the default 
+	timezone is present in the server is not needed now.
+
 2005-10-19  Harish Krishnaswamy <kharish@novell.com>
 	
 	Committing for Nathan Owens <pianocomp81@yahoo.com>

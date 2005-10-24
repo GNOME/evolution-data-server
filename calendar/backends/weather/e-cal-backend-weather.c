@@ -32,7 +32,9 @@
 static gboolean reload_cb (ECalBackendWeather *cbw);
 static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
 static ECalComponent* create_weather (ECalBackendWeather *cbw, WeatherForecast *report);
-
+static ECalBackendSyncStatus
+e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
+	
 /* Private part of the ECalBackendWeather structure */
 struct _ECalBackendWeatherPrivate {
 	/* URI to get remote weather data from */
@@ -440,9 +442,11 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 	if (priv->city)
 		g_free (priv->city);
 	priv->city = g_strdup (strrchr (uri, '/') + 1);
-
+	
 	if (!priv->cache) {
 		priv->cache = e_cal_backend_cache_new (uri);
+
+		e_cal_backend_weather_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
 
 		if (!priv->cache) {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbw), _("Could not create cache file"));

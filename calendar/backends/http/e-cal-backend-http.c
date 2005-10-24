@@ -76,6 +76,8 @@ struct _ECalBackendHttpPrivate {
 static void e_cal_backend_http_dispose (GObject *object);
 static void e_cal_backend_http_finalize (GObject *object);
 static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
+static ECalBackendSyncStatus
+e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 
 static ECalBackendSyncClass *parent_class;
 
@@ -496,12 +498,18 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	if (!priv->cache) {
 		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
 
+
 		if (!priv->cache) {
 			e_cal_backend_notify_error (E_CAL_BACKEND(cbhttp), _("Could not create cache file"));
 			return GNOME_Evolution_Calendar_OtherError;	
 		}
-		if (priv->mode == CAL_MODE_LOCAL)
+		
+		e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
+		e_cal_backend_http_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
+	
+		if (priv->mode == CAL_MODE_LOCAL) 
 			return GNOME_Evolution_Calendar_Success;
+		
 
 		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 	}
@@ -722,7 +730,9 @@ e_cal_backend_http_set_default_timezone (ECalBackendSync *backend, EDataCal *cal
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 	
-	/* FIXME */
+	/* Set the default timezone to it. */
+	priv->default_zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	
 	return GNOME_Evolution_Calendar_Success;
 }
 

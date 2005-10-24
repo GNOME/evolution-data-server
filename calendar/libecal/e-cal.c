@@ -4980,7 +4980,8 @@ e_cal_ensure_timezone_on_server (ECal *ecal, icaltimezone *zone, GError **error)
  * @zone: A timezone object.
  * @error: Placeholder for error information.
  *
- * Sets the default timezone on the calendar.
+ * Sets the default timezone on the calendar. This should be called before opening
+ * the calendar.
  *
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
@@ -5002,16 +5003,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	if (priv->default_zone == zone)
 		return FALSE;
 	
-	/* Make sure the server has the VTIMEZONE data. */
-	if (!e_cal_ensure_timezone_on_server (ecal, zone, error))
-		return FALSE;
-
 	g_mutex_lock (priv->mutex);
-
-	if (ecal->priv->load_state != E_CAL_LOAD_LOADED) {
-		g_mutex_unlock (ecal->priv->mutex);
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
-	}
 
 	if (ecal->priv->current_op != NULL) {
 		g_mutex_unlock (ecal->priv->mutex);

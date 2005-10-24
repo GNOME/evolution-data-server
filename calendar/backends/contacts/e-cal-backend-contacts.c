@@ -79,6 +79,8 @@ static ECalComponent * create_anniversary (ECalBackendContacts *cbc, EContact *c
 static void contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_added_cb   (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer user_data);
+static ECalBackendSyncStatus
+e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 
 /* BookRecord methods */
 static BookRecord *
@@ -731,7 +733,9 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
         if (priv->addressbook_loaded)
                 return GNOME_Evolution_Calendar_Success;
 
-        /* Create address books for existing sources */
+        e_cal_backend_contacts_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
+
+	/* Create address books for existing sources */
         for (i = e_source_list_peek_groups (priv->addressbook_sources); i; i = i->next) {
                 ESourceGroup *source_group = E_SOURCE_GROUP (i->data);
 
