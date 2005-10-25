@@ -3250,7 +3250,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 		else {
 			strings = g_new0(char*, 5);
 			strings[0] = g_strdup ("(&");
-			strings[1] = g_strdup ("(objectclass=person)");
+			strings[1] = g_strdup ("(|(objectclass=person)(mail=*))");
 			strings[2] = data.list->data;
 			strings[3] = g_strdup (")");
 			retval =  g_strjoinv (" ", strings);

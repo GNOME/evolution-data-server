@@ -1,3 +1,11 @@
+2005-10-07  Carsten Guenther <carsten.guenther@scalix.com>
+
+	Fixes #318227
+
+	* backends/ldap/e-book-backend-ldap.c: Change ldap search filter
+	to include everything that has an email address. This will ensure
+	mailing-lists will be found as well.
+
 2005-10-14  Ross Burton  <ross@burtonini.com>
 
 	* libedata-book/e-book-backend-summary.c:
