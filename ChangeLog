@@ -2,6 +2,9 @@
 
 	* configure.in: Update version, libtool numbers.
 	*** Release 1.5.1 ***
+	* src/Makefile.am : Fixed the executable installation
+	error in the previous patch. Executable installed in
+	libexecdir - not under evolution-data-server-$(API_VERSION).
 
 2005-10-24  Irene Huang <Irene.Huang@sun.com>
 
