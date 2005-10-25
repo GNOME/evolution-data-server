@@ -1,3 +1,8 @@
+2005-10-25  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in: Update version, libtool numbers.
+	*** Release 1.5.1 ***
+
 2005-10-24  Irene Huang <Irene.Huang@sun.com>
 
 	* configure.in: Add API_VERSION to EVO_SUBST_SERVER_RULE

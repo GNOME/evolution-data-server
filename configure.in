@@ -1,7 +1,7 @@
  Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 1.4.0)
+AC_INIT(evolution-data-server, 1.5.1)
 AC_CONFIG_SRCDIR(README)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
@@ -14,7 +14,7 @@ dnl This is for api/versioning tracking for things like bonobo .server files
 dnl
 dnl This should always be the major/minor of the stable version or stable version to be
 dnl *************************************************************************************************
-BASE_VERSION=1.4
+BASE_VERSION=1.6
 API_VERSION=1.2
 AC_SUBST(BASE_VERSION)
 AC_SUBST(API_VERSION)
@@ -30,13 +30,13 @@ LIBEDATASERVERUI_CURRENT=6
 LIBEDATASERVERUI_REVISION=1
 LIBEDATASERVERUI_AGE=0
 
-LIBECAL_CURRENT=4
+LIBECAL_CURRENT=5
 LIBECAL_REVISION=4
-LIBECAL_AGE=1
+LIBECAL_AGE=2
 
-LIBEDATACAL_CURRENT=3
+LIBEDATACAL_CURRENT=4
 LIBEDATACAL_REVISION=7
-LIBEDATACAL_AGE=2
+LIBEDATACAL_AGE=3
 
 LIBEDATABOOK_CURRENT=3
 LIBEDATABOOK_REVISION=6
