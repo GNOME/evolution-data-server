@@ -2,7 +2,7 @@
 
 <oaf_server iid="OAFIID:GNOME_Evolution_DataServer_BookFactory:@VERSION@"
             type="exe"
-            location="@LIBEXECDIR@/evolution-data-server-@API_VERSION@/evolution-data-server-@VERSION@@EXEEXT@">
+            location="@LIBEXECDIR@/evolution-data-server-@VERSION@@EXEEXT@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/Evolution/DataServer/BookFactory:@VERSION@"/>
@@ -15,7 +15,7 @@
 
 <oaf_server iid="OAFIID:GNOME_Evolution_DataServer_CalFactory:@VERSION@"
             type="exe"
-            location="@LIBEXECDIR@/evolution-data-server-@API_VERSION@/evolution-data-server-@VERSION@@EXEEXT@">
+            location="@LIBEXECDIR@/evolution-data-server-@VERSION@@EXEEXT@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/Evolution/DataServer/CalFactory:@VERSION@"/>
@@ -28,7 +28,7 @@
 
 <oaf_server iid="OAFIID:GNOME_Evolution_DataServer_InterfaceCheck"
             type="exe"
-            location="@LIBEXECDIR@/evolution-data-server-@API_VERSION@/evolution-data-server@VERSION@@EXEEXT@">
+            location="@LIBEXECDIR@/evolution-data-server@VERSION@@EXEEXT@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/Evolution/ServerInterfaceCheck:1.0"/>
@@ -40,7 +40,7 @@
 
 <oaf_server iid="OAFIID:GNOME_Evolution_DataServer_Logging"
             type="exe"
-            location="@LIBEXECDIR@/evolution-data-server-@API_VERSION@/evolution-data-server-@VERSION@@EXEEXT@">
+            location="@LIBEXECDIR@/evolution-data-server-@VERSION@@EXEEXT@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/Evolution/ServerLogging:1.0"/>

@@ -1,3 +1,9 @@
+2005-10-26  Harish Krishnaswamy  <kharish@novell.com>
+
+	* src/GNOME_Evolution_DataServer.server.in.in:
+	Fixed bonobo server install locations as well.
+	(See below.)
+
 2005-10-25  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: Update version, libtool numbers.
