@@ -1122,34 +1122,34 @@ e_destination_xml_encode (const EDestination *dest)
 	
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 	
-	dest_node = xmlNewNode (NULL, "destination");
+	dest_node = xmlNewNode (NULL, (xmlChar*)"destination");
 	
 	str = e_destination_get_name (dest);
 	if (str)
-		xmlNewTextChild (dest_node, NULL, "name", str);
+		xmlNewTextChild (dest_node, NULL, (xmlChar*)"name", (xmlChar*)str);
 	
 	if (!e_destination_is_evolution_list (dest)) {
 		str = e_destination_get_email (dest);
 		if (str)
-			xmlNewTextChild (dest_node, NULL, "email", str);
+			xmlNewTextChild (dest_node, NULL, (xmlChar*)"email", (xmlChar*)str);
 	} else {
 		GList *iter = dest->priv->list_dests;
 		
 		while (iter) {
 			EDestination *list_dest = E_DESTINATION (iter->data);
-			xmlNodePtr list_node = xmlNewNode (NULL, "list_entry");
+			xmlNodePtr list_node = xmlNewNode (NULL, (xmlChar*)"list_entry");
 
 			str = e_destination_get_name (list_dest);
 			if (str) {
-				char *escaped = xmlEncodeEntitiesReentrant (NULL, str);
-				xmlNewTextChild (list_node, NULL, "name", escaped);
+				xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*)str);
+				xmlNewTextChild (list_node, NULL, (xmlChar*)"name", escaped);
 				xmlFree (escaped);
 			}
 			
 			str = e_destination_get_email (list_dest);
 			if (str) {
-				char *escaped = xmlEncodeEntitiesReentrant (NULL, str);
-				xmlNewTextChild (list_node, NULL, "email", escaped);
+				xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*)str);
+				xmlNewTextChild (list_node, NULL, (xmlChar*)"email", escaped);
 				xmlFree (escaped);
 			}
 			
@@ -1158,15 +1158,15 @@ e_destination_xml_encode (const EDestination *dest)
 			iter = g_list_next (iter);
 		}
 		
-		xmlNewProp (dest_node, "is_list", "yes");
-		xmlNewProp (dest_node, "show_addresses", 
-			    e_destination_list_show_addresses (dest) ? "yes" : "no");
+		xmlNewProp (dest_node, (xmlChar*)"is_list", (xmlChar*)"yes");
+		xmlNewProp (dest_node, (xmlChar*)"show_addresses", 
+			    e_destination_list_show_addresses (dest) ? (xmlChar*)"yes" : (xmlChar*)"no");
 	}
 	
 	str = e_destination_get_source_uid (dest);
 	if (str) {
-		char *escaped = xmlEncodeEntitiesReentrant (NULL, str);
-		xmlNewTextChild (dest_node, NULL, "source_uid", escaped);
+		xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*)str);
+		xmlNewTextChild (dest_node, NULL, (xmlChar*)"source_uid", escaped);
 		xmlFree (escaped);
 	}
 	
@@ -1174,15 +1174,15 @@ e_destination_xml_encode (const EDestination *dest)
 	if (str) {
 		char buf[16];
 		
-		xmlNodePtr uri_node = xmlNewTextChild (dest_node, NULL, "card_uid", str);
+		xmlNodePtr uri_node = xmlNewTextChild (dest_node, NULL, (xmlChar*)"card_uid", (xmlChar*)str);
 		g_snprintf (buf, 16, "%d", e_destination_get_email_num (dest));
-		xmlNewProp (uri_node, "email_num", buf);
+		xmlNewProp (uri_node, (xmlChar*)"email_num", (xmlChar*)buf);
 	}
 	
-	xmlNewProp (dest_node, "html_mail", e_destination_get_html_mail_pref (dest) ? "yes" : "no");
+	xmlNewProp (dest_node, (xmlChar*)"html_mail", e_destination_get_html_mail_pref (dest) ? (xmlChar*)"yes" : (xmlChar*)"no");
 	
-	xmlNewProp (dest_node, "auto_recipient",
-		    e_destination_is_auto_recipient (dest) ? "yes" : "no");
+	xmlNewProp (dest_node, (xmlChar*)"auto_recipient",
+		    e_destination_is_auto_recipient (dest) ? (xmlChar*)"yes" : (xmlChar*)"no");
 	
 	return dest_node;
 }
@@ -1210,28 +1210,28 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), FALSE);
 	g_return_val_if_fail (node != NULL, FALSE);
 	
-	if (strcmp (node->name, "destination"))
+	if (strcmp ((char*)node->name, "destination"))
 		return FALSE;
 	
-	tmp = xmlGetProp (node, "html_mail");
+	tmp = (char*)xmlGetProp (node, (xmlChar*)"html_mail");
 	if (tmp) {
 		html_mail = !strcmp (tmp, "yes");
 		xmlFree (tmp);
 	}
 	
-	tmp = xmlGetProp (node, "is_list");
+	tmp = (char*)xmlGetProp (node, (xmlChar*)"is_list");
 	if (tmp) {
 		is_list = !strcmp (tmp, "yes");
 		xmlFree (tmp);
 	}
 	
-	tmp = xmlGetProp (node, "show_addresses");
+	tmp = (char*)xmlGetProp (node, (xmlChar*)"show_addresses");
 	if (tmp) {
 		show_addr = !strcmp (tmp, "yes");
 		xmlFree (tmp);
 	}
 	
-	tmp = xmlGetProp (node, "auto_recipient");
+	tmp = (char*)xmlGetProp (node, (xmlChar*)"auto_recipient");
 	if (tmp) {
 		auto_recip = !strcmp (tmp, "yes");
 		xmlFree (tmp);
@@ -1239,28 +1239,28 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 	
 	node = node->xmlChildrenNode;
 	while (node) {
-		if (!strcmp (node->name, "name")) {
-			tmp = xmlNodeGetContent (node);
+		if (!strcmp ((char*)node->name, "name")) {
+			tmp = (char*)xmlNodeGetContent (node);
 			g_free (name);
 			name = g_strdup (tmp);
 			xmlFree (tmp);
-		} else if (!is_list && !strcmp (node->name, "email")) {
-			tmp = xmlNodeGetContent (node);
+		} else if (!is_list && !strcmp ((char*)node->name, "email")) {
+			tmp = (char*)xmlNodeGetContent (node);
 			g_free (email);
 			email = g_strdup (tmp);
 			xmlFree (tmp);
-		} else if (is_list && !strcmp (node->name, "list_entry")) {
+		} else if (is_list && !strcmp ((char*)node->name, "list_entry")) {
 			xmlNodePtr subnode = node->xmlChildrenNode;
 			char *list_name = NULL, *list_email = NULL;
 			
 			while (subnode) {
-				if (!strcmp (subnode->name, "name")) {
-					tmp = xmlNodeGetContent (subnode);
+				if (!strcmp ((char*)subnode->name, "name")) {
+					tmp = (char*)xmlNodeGetContent (subnode);
 					g_free (list_name);
 					list_name = g_strdup (tmp);
 					xmlFree (tmp);
-				} else if (!strcmp (subnode->name, "email")) {
-					tmp = xmlNodeGetContent (subnode);
+				} else if (!strcmp ((char*)subnode->name, "email")) {
+					tmp = (char*)xmlNodeGetContent (subnode);
 					g_free (list_email);
 					list_email = g_strdup (tmp);
 					xmlFree (tmp);
@@ -1282,18 +1282,18 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 				
 				list_dests = g_list_append (list_dests, list_dest);
 			}
-		} else if (!strcmp (node->name, "source_uid")) {
-			tmp = xmlNodeGetContent (node);
+		} else if (!strcmp ((char*)node->name, "source_uid")) {
+			tmp = (char*)xmlNodeGetContent (node);
 			g_free (source_uid);
 			source_uid = g_strdup (tmp);
 			xmlFree (tmp);
-		} else if (!strcmp (node->name, "card_uid")) {
-			tmp = xmlNodeGetContent (node);
+		} else if (!strcmp ((char*)node->name, "card_uid")) {
+			tmp = (char*)xmlNodeGetContent (node);
 			g_free (card_uid);
 			card_uid = g_strdup (tmp);
 			xmlFree (tmp);
 			
-			tmp = xmlGetProp (node, "email_num");
+			tmp = (char*)xmlGetProp (node, (xmlChar*)"email_num");
 			email_num = atoi (tmp);
 			xmlFree (tmp);
 		}
@@ -1341,7 +1341,7 @@ null_terminate_and_remove_extra_whitespace (xmlChar *xml_in, gint size)
 	if (xml_in == NULL || size <= 0) 
 		return NULL;
 	
-	xml = g_strndup (xml_in, size);
+	xml = g_strndup ((char*)xml_in, size);
 	r = w = xml;
 	
 	while (*r) {
@@ -1389,7 +1389,7 @@ e_destination_export (const EDestination *dest)
 	if (dest_node == NULL)
 		return NULL;
 	
-	dest_doc = xmlNewDoc (XML_DEFAULT_VERSION);
+	dest_doc = xmlNewDoc ((xmlChar*)XML_DEFAULT_VERSION);
 	xmlDocSetRootElement (dest_doc, dest_node);
 	
 	xmlDocDumpMemory (dest_doc, &buffer, &size);
@@ -1451,8 +1451,8 @@ e_destination_exportv (EDestination **destv)
 	if (destv == NULL || *destv == NULL)
 		return NULL;
 	
-	destv_doc  = xmlNewDoc (XML_DEFAULT_VERSION);
-	destv_node = xmlNewNode (NULL, "destinations");
+	destv_doc  = xmlNewDoc ((xmlChar*)XML_DEFAULT_VERSION);
+	destv_node = xmlNewNode (NULL, (xmlChar*)"destinations");
 	xmlDocSetRootElement (destv_doc, destv_node);
 	
 	for (i = 0; destv[i]; i++) {
@@ -1498,7 +1498,7 @@ e_destination_importv (const char *str)
 	
 	node = destv_doc->xmlRootNode;
 	
-	if (strcmp (node->name, "destinations"))
+	if (strcmp ((char*)node->name, "destinations"))
 		goto finished;
 	
 	node = node->xmlChildrenNode;
