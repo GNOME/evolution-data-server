@@ -1,3 +1,11 @@
+2005-10-26  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_set_default_timezone): Removed
+	the assertion statement to check if the icalcomp is 
+	present. Its not needed as set_default_zone is called
+	before loading now.
+
 2005-10-24  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #308802

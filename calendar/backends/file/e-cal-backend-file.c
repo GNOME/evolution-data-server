@@ -1183,8 +1183,6 @@ e_cal_backend_file_set_default_timezone (ECalBackendSync *backend, EDataCal *cal
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-
 	/* Set the default timezone to it. */
 	priv->default_zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
