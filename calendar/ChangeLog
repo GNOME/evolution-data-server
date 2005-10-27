@@ -1,3 +1,11 @@
+2005-10-27  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Reworked the patch from Matthew Daniel <bugzilla@mdaniel.scdi.com>
+
+	Fixes #318130
+	* backends/http/e-cal-backend-http.c: Include
+	the file e-cal-time-util.h 
+
 2005-10-26  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/file/e-cal-backend-file.c:
