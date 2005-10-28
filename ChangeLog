@@ -1,3 +1,7 @@
+2005-10-28  Erdal Ronahi  <erdal.ronahi@gmail.com>
+
+	* configure.in: Added ku (Kurdish) to ALL_LINGUAS
+
 2005-10-28  Sushma Rai  <rsushma@novell.com>
 
 	* libedataserver/e-categories.c (initialize_categories_config): Add
