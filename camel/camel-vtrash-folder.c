@@ -541,7 +541,7 @@ vtrash_remove_folder(CamelVeeFolder *vf, CamelFolder *sub)
 	for (i=0;i<infos->len;i++) {
 		CamelVeeMessageInfo *mi = infos->pdata[i];
 
-		if (mi == NULL)
+		if (mi == NULL || mi->real == NULL)
 			continue;
 
 		if (mi->real->summary == ssummary) {
