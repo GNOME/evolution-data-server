@@ -1,3 +1,10 @@
+2005-10-28  Sushma Rai  <rsushma@novell.com>
+
+	* libedataserver/e-categories.c (initialize_categories_config): Add
+	default categories only if the category list is empty in gconf, so that
+	we don't bring back the deleted category from the default list
+	every time. Fixes #273905.
+
 2005-10-26  Harish Krishnaswamy  <kharish@novell.com>
 
 	* src/GNOME_Evolution_DataServer.server.in.in:
