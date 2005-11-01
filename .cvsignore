@@ -30,3 +30,5 @@ xltmain.sh
 intltool-*
 *.pc
 INSTALL
+gtk-doc.make
+
