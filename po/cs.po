@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-01 07:42+0000\n"
-"PO-Revision-Date: 2005-09-01 16:17+0200\n"
+"POT-Creation-Date: 2005-11-02 21:53+0100\n"
+"PO-Revision-Date: 2005-11-02 22:58+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,13 +27,13 @@ msgstr "Načítám..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2169
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2189
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2208
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3425
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3592
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Vyhledávám..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2493
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3559
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3740
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Stahuji kontakty (%d)... "
@@ -45,35 +45,35 @@ msgstr "Stahuji kontakty (%d)... "
 msgid "Updating contacts cache (%d)... "
 msgstr "Aktualizuji keš kontaktů (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:659
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:685
 msgid "Using Distinguished Name (DN)"
 msgstr "Pomocí Distinguished Name (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:662
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:688
 msgid "Using Email Address"
 msgstr "Pomocí e-mailové adresy"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:832
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:874
 msgid "Reconnecting to LDAP server..."
 msgstr "Připojuji se znovu k serveru LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1382
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1442
 msgid "Adding contact to LDAP server..."
 msgstr "Přidávám kontakt na server LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1507
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1576
 msgid "Removing contact from LDAP server..."
 msgstr "Odstraňuji kontakt ze serveru LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1764
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1858
 msgid "Modifying contact from LDAP server..."
 msgstr "Upravuji kontakt na serveru LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3315
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3468
 msgid "Receiving LDAP search results..."
 msgstr "Přijímám výsledky hledání LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3445
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3614
 msgid "Error performing search"
 msgstr "Chyba při hledání"
 
@@ -601,10 +601,11 @@ msgstr "Poznámka"
 msgid "Birth Date"
 msgstr "Narozeniny"
 
+#. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
-#: ../libedataserver/e-categories.c:236
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
+#: ../libedataserver/e-categories.c:237
 msgid "Anniversary"
 msgstr "Výročí"
 
@@ -631,286 +632,285 @@ msgstr "URI adresáře"
 msgid "Unnamed List"
 msgstr "Nepojmenovaný seznam"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
-#: ../libedataserver/e-categories.c:237
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
+#: ../libedataserver/e-categories.c:238
 msgid "Birthday"
 msgstr "Narozeniny"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:481
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:488
 #, c-format
 msgid "Birthday: %s"
 msgstr "Narozeniny: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:505
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:512
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Výročí: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:193
+#: ../calendar/backends/file/e-cal-backend-file.c:194
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:873
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1374
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:889
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1426
 msgid "Reply Requested: by "
 msgstr "Požadována odpověď: do "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:878
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1379
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:894
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1431
 msgid "Reply Requested: When convenient"
 msgstr "Požadována odpověď: Podle možností"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:184
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:186
 #, c-format
 msgid "Loading %s items"
 msgstr "Načítám %s položek"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:728
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:710
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:784
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:766
 msgid "Invalid server URI"
 msgstr "Neplatné URI serveru"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:800
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:809
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:891
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:782
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:791
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:876
 #: ../calendar/libecal/e-cal.c:5101
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:846
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:866
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:894
-#: ../camel/providers/groupwise/camel-groupwise-store.c:475
-#: ../camel/providers/groupwise/camel-groupwise-store.c:490
-#: ../camel/providers/groupwise/camel-groupwise-store.c:524
-#: ../camel/providers/groupwise/camel-groupwise-store.c:644
-#: ../camel/providers/groupwise/camel-groupwise-store.c:888
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:177
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:891
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:911
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:939
+#: ../camel/providers/groupwise/camel-groupwise-store.c:518
+#: ../camel/providers/groupwise/camel-groupwise-store.c:533
+#: ../camel/providers/groupwise/camel-groupwise-store.c:575
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1080
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:850
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:832
 msgid "Could not create thread for getting deltas"
 msgstr "Nemohu vytvořit thread pro získání změn"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:875
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1118
-#: ../calendar/backends/http/e-cal-backend-http.c:495
-#: ../calendar/backends/weather/e-cal-backend-weather.c:444
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:857
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1103
+#: ../calendar/backends/http/e-cal-backend-http.c:504
+#: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Nemohu vytvořit soubor pro cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:870
 msgid "Could not create thread for populating cache"
 msgstr "Nemohu vytvořit thread pro naplnění cache"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:240
+#: ../calendar/backends/http/e-cal-backend-http.c:248
 msgid "Redirected to Invalid URI"
 msgstr "Přesměrováno na neplatné URI"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:264
+#: ../calendar/backends/http/e-cal-backend-http.c:272
 msgid "Bad file format."
 msgstr "Špatný formát souboru."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:270
+#: ../calendar/backends/http/e-cal-backend-http.c:278
 msgid "Not a calendar."
 msgstr "Není to kalendář."
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:140
+#: ../calendar/backends/weather/e-cal-backend-weather.c:142
 msgid "Could not retrieve weather data"
 msgstr "Nemohu získat data o počasí"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:194
+#: ../calendar/backends/weather/e-cal-backend-weather.c:200
 msgid "Fair"
 msgstr "Hezky"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:195
+#: ../calendar/backends/weather/e-cal-backend-weather.c:201
 msgid "Snow showers"
 msgstr "Sněhové přeháňky"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:196
+#: ../calendar/backends/weather/e-cal-backend-weather.c:202
 msgid "Snow"
 msgstr "Sníh"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:197
+#: ../calendar/backends/weather/e-cal-backend-weather.c:203
 msgid "Partly cloudy"
 msgstr "Polojasno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:198
+#: ../calendar/backends/weather/e-cal-backend-weather.c:204
 msgid "Smoke"
 msgstr "Kouř"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:199
+#: ../calendar/backends/weather/e-cal-backend-weather.c:205
 msgid "Thunderstorms"
 msgstr "Bouřky"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:200
+#: ../calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Cloudy"
 msgstr "Oblačno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:201
+#: ../calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Drizzle"
 msgstr "Mrholení"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:202
+#: ../calendar/backends/weather/e-cal-backend-weather.c:208
 msgid "Sunny"
 msgstr "Slunečno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:203
+#: ../calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Dust"
 msgstr "Prach"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:204
+#: ../calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Clear"
 msgstr "Jasno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:205
+#: ../calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Mostly cloudy"
 msgstr "Místy zataženo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:206
+#: ../calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Windy"
 msgstr "Větrno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:207
+#: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Rain showers"
 msgstr "Dešťové přeháňky"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:208
+#: ../calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Foggy"
 msgstr "Mlhavo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:209
+#: ../calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Rain/snow mixed"
 msgstr "Déšť se sněhem"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:210
+#: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Sleet"
 msgstr "Déšť se sněhem"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:211
+#: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very hot/humid"
 msgstr "Velice horko/vlhko"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:212
+#: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Blizzard"
 msgstr "Blizzard"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:213
+#: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Freezing rain"
 msgstr "Mrznoucí déšť"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:214
+#: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Haze"
 msgstr "Opar"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:215
+#: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Blowing snow"
 msgstr "Navátý sníh"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:216
+#: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Freezing drizzle"
 msgstr "Mrznoucí mrholení"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:217
+#: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Very cold/wind chill"
 msgstr "Velmi chladno/studený vítr"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:218
+#: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Rain"
 msgstr "Déšť"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:228
-#: ../calendar/backends/weather/e-cal-backend-weather.c:236
-#: ../calendar/backends/weather/e-cal-backend-weather.c:238
-#: ../calendar/backends/weather/e-cal-backend-weather.c:245
+#: ../calendar/backends/weather/e-cal-backend-weather.c:234
+#: ../calendar/backends/weather/e-cal-backend-weather.c:242
+#: ../calendar/backends/weather/e-cal-backend-weather.c:244
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
 msgid "Weather: Sunny"
 msgstr "Počasí: Slunečno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:229
-#: ../calendar/backends/weather/e-cal-backend-weather.c:230
-#: ../calendar/backends/weather/e-cal-backend-weather.c:246
-#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+#: ../calendar/backends/weather/e-cal-backend-weather.c:235
+#: ../calendar/backends/weather/e-cal-backend-weather.c:236
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Snow"
 msgstr "Počasí: Sníh"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:231
+#: ../calendar/backends/weather/e-cal-backend-weather.c:237
 msgid "Weather: Partly Cloudy"
 msgstr "Počasí: Polojasno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:232
-#: ../calendar/backends/weather/e-cal-backend-weather.c:237
-#: ../calendar/backends/weather/e-cal-backend-weather.c:242
+#: ../calendar/backends/weather/e-cal-backend-weather.c:238
+#: ../calendar/backends/weather/e-cal-backend-weather.c:243
 #: ../calendar/backends/weather/e-cal-backend-weather.c:248
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
 msgid "Weather: Fog"
 msgstr "Počasí: Mlha"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:233
+#: ../calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Weather: Thunderstorms"
 msgstr "Počasí: Bouřky"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:234
-#: ../calendar/backends/weather/e-cal-backend-weather.c:239
+#: ../calendar/backends/weather/e-cal-backend-weather.c:240
+#: ../calendar/backends/weather/e-cal-backend-weather.c:245
 msgid "Weather: Cloudy"
 msgstr "Počasí: Zataženo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:235
 #: ../calendar/backends/weather/e-cal-backend-weather.c:241
-#: ../calendar/backends/weather/e-cal-backend-weather.c:243
-#: ../calendar/backends/weather/e-cal-backend-weather.c:244
 #: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
 #: ../calendar/backends/weather/e-cal-backend-weather.c:250
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:258
 msgid "Weather: Rain"
 msgstr "Počasí: Déšť"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:327
+#: ../calendar/backends/weather/e-cal-backend-weather.c:333
 #, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:329
+#: ../calendar/backends/weather/e-cal-backend-weather.c:335
 #, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:332
+#: ../calendar/backends/weather/e-cal-backend-weather.c:338
 #, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:334
+#: ../calendar/backends/weather/e-cal-backend-weather.c:340
 #, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:340
+#: ../calendar/backends/weather/e-cal-backend-weather.c:346
 #, c-format
 msgid "%d%% chance of precipitation\n"
 msgstr "Pravděpodobnost srážek %d%%\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:347
+#: ../calendar/backends/weather/e-cal-backend-weather.c:353
 #, c-format
 msgid "%.1fcm snow\n"
 msgstr "%.1fcm sněhu\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:349
+#: ../calendar/backends/weather/e-cal-backend-weather.c:355
 #, c-format
 msgid "%.1fin snow\n"
 msgstr "%.1f\" sněhu\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:352
+#: ../calendar/backends/weather/e-cal-backend-weather.c:358
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
 msgstr "%.1f-%.1fcm sněhu\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:354
+#: ../calendar/backends/weather/e-cal-backend-weather.c:360
 #, c-format
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1f\" sněhu\n"
 
-#: ../calendar/libecal/e-cal-component.c:1323
+#: ../calendar/libecal/e-cal-component.c:1322
 msgid "Untitled appointment"
 msgstr "Nepojmenovaná událost"
 
@@ -1056,12 +1056,12 @@ msgid "Undefined"
 msgstr "Nedefinováno"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1695
+#: ../calendar/libecal/e-cal.c:1675
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Zadejte heslo pro %s pro povolit zástup za uživatele %s"
 
-#: ../calendar/libecal/e-cal.c:1698 ../libedataserverui/e-book-auth-util.c:192
+#: ../calendar/libecal/e-cal.c:1678 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
@@ -1133,7 +1133,7 @@ msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
 #: ../calendar/libecal/e-cal.c:5107
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:211
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:212
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1326,7 +1326,8 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Připravuji složku '%s' pro práci při odpojení"
 
 #: ../camel/camel-disco-store.c:391
-#: ../camel/providers/imap/camel-imap-store.c:2944
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1278
+#: ../camel/providers/imap/camel-imap-store.c:2959
 msgid "You must be working online to complete this operation"
 msgstr "Pro dokončení této operace musíte pracovat on-line"
 
@@ -1612,7 +1613,8 @@ msgstr "Nemohu zpracovat obsah zprávy"
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
 #: ../camel/providers/imap4/camel-imap4-engine.c:1634
 #: ../camel/providers/imap4/camel-imap4-engine.c:1690
-#: ../camel/providers/imap4/camel-imap4-store.c:1435
+#: ../camel/providers/imap4/camel-imap4-store.c:878
+#: ../camel/providers/imap4/camel-imap4-store.c:1551
 #: ../camel/providers/imap4/camel-imap4-utils.c:575
 #: ../camel/providers/smtp/camel-smtp-transport.c:160
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
@@ -1948,7 +1950,7 @@ msgstr "Odkazované údaje vypršely."
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:228
-#: ../camel/providers/imap/camel-imap-store.c:1249
+#: ../camel/providers/imap/camel-imap-store.c:1266
 msgid "Bad authentication response from server."
 msgstr "Neplatná odpověď autentizace od serveru."
 
@@ -2257,7 +2259,7 @@ msgid "export keys: unimplemented"
 msgstr "export klíčů: neimplementováno"
 
 #: ../camel/camel-store.c:215
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:167
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:168
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Nemohu získat složku: Neplatná operace pro tento sklad"
 
@@ -2547,7 +2549,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "Nemohu kopírovat zprávy do složky Smetí"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2054
+#: ../camel/providers/imap/camel-imap-folder.c:2065
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2557,7 +2559,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2054
+#: ../camel/providers/imap/camel-imap-folder.c:2065
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
 #: ../camel/providers/local/camel-mh-folder.c:203
@@ -2576,7 +2578,7 @@ msgstr "Taková zpráva neexistuje"
 msgid "User cancelled"
 msgstr "Uživatel zrušen"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:134
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2590,39 +2592,39 @@ msgstr "Uživatel zrušen"
 msgid "Cannot get message %s: %s"
 msgstr "Nemohu získat zprávu %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:150
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:152
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Tato zpráva není dostupná v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:166
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1338
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:171
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1390
 msgid "Could not get message"
 msgstr "Nemohu získat zprávu"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:670
-#: ../camel/providers/imap/camel-imap-folder.c:246
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:702
+#: ../camel/providers/imap/camel-imap-folder.c:254
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nemohu načíst souhrn pro %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:980
-#: ../camel/providers/groupwise/camel-groupwise-store.c:512
-#: ../camel/providers/imap/camel-imap-folder.c:2366
-#: ../camel/providers/imap/camel-imap-folder.c:2436
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1026
+#: ../camel/providers/groupwise/camel-groupwise-store.c:563
 msgid "Fetching summary information for new messages"
 msgstr "Stahuji souhrnné informace pro nové zprávy"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1583
-#, c-format
-msgid "Cannot create message: %s"
-msgstr "Nemohu vytvořit zprávu: %s"
-
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1595
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1619
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1665
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nemohu přidat zprávu do složky `%s': %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1653
+#, c-format
+msgid "Cannot create message: %s"
+msgstr "Nemohu vytvořit zprávu: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
@@ -2706,64 +2708,58 @@ msgstr ""
 "Tato volba připojí k serveru GroupWise pomocí hesla přenášeného jako čistý "
 "text."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:100
+#: ../camel/providers/groupwise/camel-groupwise-store.c:104
 msgid "Host or user not available in url"
 msgstr "Počítač nebo uživatel není dostupný v url"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:195
+#: ../camel/providers/groupwise/camel-groupwise-store.c:203
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sZadejte prosím heslo GroupWise heslo pro %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:209
-#: ../camel/providers/imap/camel-imap-store.c:1328
+#: ../camel/providers/groupwise/camel-groupwise-store.c:217
+#: ../camel/providers/imap/camel-imap-store.c:1345
 msgid "You didn't enter a password."
 msgstr "Neuvedli jste heslo."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:223
+#: ../camel/providers/groupwise/camel-groupwise-store.c:231
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Nemohu se autentizovat u serveru GroupWise."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:266
+#: ../camel/providers/groupwise/camel-groupwise-store.c:298
 msgid "Some features may not work correctly with your current server version"
 msgstr "Některé funkce možná s vaší verzí serveru nebudou fungovat správně"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:427
-#: ../camel/providers/imap/camel-imap-store.c:1857
-#: ../camel/providers/imap/camel-imap-store.c:2048
+#: ../camel/providers/groupwise/camel-groupwise-store.c:470
+#: ../camel/providers/imap/camel-imap-store.c:1868
+#: ../camel/providers/imap/camel-imap-store.c:2059
 #, c-format
 msgid "No such folder %s"
 msgstr "Složka %s neexistuje"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:603
-msgid "Cannot get folder info in offline mode."
-msgstr "Nemohu získat informace o složce v režimu offline."
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:869
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1057
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nemohu vytvářet složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:919
-msgid "Cannot delete GroupWise folders in offline mode."
-msgstr "Nemohu odstraňovat složky GroupWise v režimu offline."
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1071
+#: ../camel/providers/imap/camel-imap-store.c:1943
+#: ../camel/providers/imap/camel-imap-store.c:2312
+msgid "The parent folder is not allowed to contain subfolders"
+msgstr "Rodičovská složka nemůže obsahovat podsložky"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:956
-#: ../camel/providers/groupwise/camel-groupwise-store.c:976
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1148
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1169
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Nemohu přejmenovat složku GroupWise `%s' na `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:962
-msgid "Cannot rename GroupWise folders in offline mode."
-msgstr "Nemohu přejmenovávat složky GroupWise v režimu offline."
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1008
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1201
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Server GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1010
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1203
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Služba GroupWise pro %s na %s"
@@ -2777,15 +2773,21 @@ msgstr "Doručení pošty GroupWise pomocí %s"
 msgid "Sending Message"
 msgstr "Posílám zprávu"
 
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:212
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:206
+#, c-format
+msgid "Could not send message: %s"
+msgstr "Nemohu poslat zprávu: %s"
+
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
 #: ../camel/providers/imap/camel-imap-command.c:471
-#: ../camel/providers/imap/camel-imap-store.c:2984
+#: ../camel/providers/imap/camel-imap-store.c:2999
 msgid "Operation cancelled"
 msgstr "Operace zrušena"
 
 #: ../camel/providers/imap/camel-imap-command.c:309
-#: ../camel/providers/imap/camel-imap-store.c:2987
+#: ../camel/providers/imap/camel-imap-store.c:3002
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Server neočekávaně zrušil spojení: %s"
@@ -2825,44 +2827,50 @@ msgstr "Odpověď IMAP serveru neobsahovala informaci %s"
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Neočekávaná odpověď OK od IMAP serveru: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:227
+#: ../camel/providers/imap/camel-imap-folder.c:235
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "Nemohu vytvořit adresář %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:331
+#: ../camel/providers/imap/camel-imap-folder.c:339
 msgid "Folder was destroyed and recreated on server."
 msgstr "Složka byl zrušena a znovu vytvořena na serveru."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:628
-#: ../camel/providers/imap4/camel-imap4-summary.c:1472
-msgid "Scanning for changed messages"
-msgstr "Hledám změněné zprávy"
+#: ../camel/providers/imap/camel-imap-folder.c:636
+#, c-format
+msgid "Scanning for changed messages in %s"
+msgstr "Hledám změněné zprávy v %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2014
+#: ../camel/providers/imap/camel-imap-folder.c:2025
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Nemohu přijmout zprávu: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2093
-#: ../camel/providers/imap/camel-imap-folder.c:2708
+#: ../camel/providers/imap/camel-imap-folder.c:2104
+#: ../camel/providers/imap/camel-imap-folder.c:2719
 #: ../camel/providers/nntp/camel-nntp-folder.c:221
 msgid "This message is not currently available"
 msgstr "Tato zpráva není právě dostupná"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2544
+#: ../camel/providers/imap/camel-imap-folder.c:2377
+#: ../camel/providers/imap/camel-imap-folder.c:2447
+#, c-format
+msgid "Fetching summary information for new messages in %s"
+msgstr "Stahuji souhrnné informace o nových zprávách v %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2555
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Neúplná odpověď od serveru: pro zprávu %d nebyly poskytnuty žádné informace"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2552
+#: ../camel/providers/imap/camel-imap-folder.c:2563
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Neúplná odpověď od serveru: pro zprávu %d nebylo poskytnuto UID"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2565
+#: ../camel/providers/imap/camel-imap-folder.c:2576
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
@@ -2870,7 +2878,7 @@ msgstr ""
 "Neočekávaná odpověď od serveru: Pro zprávy %d a %d bylo poskytnuto identické "
 "UID"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2746
+#: ../camel/providers/imap/camel-imap-folder.c:2757
 msgid "Could not find message body in FETCH response."
 msgstr "Nemohu nalézt tělo zprávy v odpovědi FETCH."
 
@@ -2971,20 +2979,20 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Tato volba připojí na IMAP server pomocí hesel přenášených jako čistý text."
 
-#: ../camel/providers/imap/camel-imap-store.c:420
+#: ../camel/providers/imap/camel-imap-store.c:428
 #: ../camel/providers/imap4/camel-imap4-store.c:215
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP server %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:422
+#: ../camel/providers/imap/camel-imap-store.c:430
 #: ../camel/providers/imap4/camel-imap4-store.c:217
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP služba pro %s na %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:552
-#: ../camel/providers/imap/camel-imap-store.c:567
+#: ../camel/providers/imap/camel-imap-store.c:560
+#: ../camel/providers/imap/camel-imap-store.c:575
 #: ../camel/providers/imap4/camel-imap4-store.c:322
 #: ../camel/providers/imap4/camel-imap4-store.c:337
 #: ../camel/providers/nntp/camel-nntp-store.c:186
@@ -2997,7 +3005,7 @@ msgstr "IMAP služba pro %s na %s"
 msgid "Could not connect to %s: %s"
 msgstr "Nemohu se připojit k %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:553
+#: ../camel/providers/imap/camel-imap-store.c:561
 #: ../camel/providers/imap4/camel-imap4-store.c:323
 #: ../camel/providers/nntp/camel-nntp-store.c:187
 #: ../camel/providers/pop3/camel-pop3-store.c:168
@@ -3005,8 +3013,8 @@ msgstr "Nemohu se připojit k %s: %s"
 msgid "SSL unavailable"
 msgstr "SSL není k dispozici"
 
-#: ../camel/providers/imap/camel-imap-store.c:564
-#: ../camel/providers/imap/camel-imap-store.c:834
+#: ../camel/providers/imap/camel-imap-store.c:572
+#: ../camel/providers/imap/camel-imap-store.c:846
 #: ../camel/providers/imap4/camel-imap4-store.c:270
 #: ../camel/providers/imap4/camel-imap4-store.c:334
 #: ../camel/providers/imapp/camel-imapp-store.c:248
@@ -3017,9 +3025,9 @@ msgstr "SSL není k dispozici"
 msgid "Connection cancelled"
 msgstr "Spojení zrušeno"
 
-#: ../camel/providers/imap/camel-imap-store.c:672
-#: ../camel/providers/imap/camel-imap-store.c:694
-#: ../camel/providers/imap/camel-imap-store.c:700
+#: ../camel/providers/imap/camel-imap-store.c:680
+#: ../camel/providers/imap/camel-imap-store.c:702
+#: ../camel/providers/imap/camel-imap-store.c:708
 #: ../camel/providers/imap4/camel-imap4-store.c:362
 #: ../camel/providers/imap4/camel-imap4-store.c:375
 #: ../camel/providers/imap4/camel-imap4-store.c:391
@@ -3027,35 +3035,35 @@ msgstr "Spojení zrušeno"
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Nemohu se připojit k serveru IMAP %s v zabezpečeném režimu: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:673
+#: ../camel/providers/imap/camel-imap-store.c:681
 #: ../camel/providers/smtp/camel-smtp-transport.c:323
 msgid "STARTTLS not supported"
 msgstr "STARTTLS není podporováno"
 
-#: ../camel/providers/imap/camel-imap-store.c:695
+#: ../camel/providers/imap/camel-imap-store.c:703
 #: ../camel/providers/imap4/camel-imap4-store.c:363
 #: ../camel/providers/pop3/camel-pop3-store.c:244
 msgid "SSL negotiations failed"
 msgstr "Vyjednávání SSL selhalo"
 
-#: ../camel/providers/imap/camel-imap-store.c:701
+#: ../camel/providers/imap/camel-imap-store.c:709
 #: ../camel/providers/imap4/camel-imap4-store.c:392
 #: ../camel/providers/pop3/camel-pop3-store.c:250
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "SSL v tomto sestavení není k dispozici"
 
-#: ../camel/providers/imap/camel-imap-store.c:837
+#: ../camel/providers/imap/camel-imap-store.c:849
 #: ../camel/providers/imap4/camel-imap4-store.c:273
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Nemohu se připojit příkazem \"%s\": %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1021
-#: ../camel/providers/imap/camel-imap-store.c:2397
+#: ../camel/providers/imap/camel-imap-store.c:1038
+#: ../camel/providers/imap/camel-imap-store.c:2408
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
-#: ../camel/providers/imap4/camel-imap4-store.c:1268
+#: ../camel/providers/imap4/camel-imap4-store.c:1384
 #: ../camel/providers/local/camel-maildir-folder.c:75
 #: ../camel/providers/local/camel-maildir-store.c:217
 #: ../camel/providers/local/camel-maildir-store.c:289
@@ -3066,24 +3074,24 @@ msgstr "Nemohu se připojit příkazem \"%s\": %s"
 msgid "Inbox"
 msgstr "Příchozí"
 
-#: ../camel/providers/imap/camel-imap-store.c:1281
+#: ../camel/providers/imap/camel-imap-store.c:1298
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP server %s nepodporuje požadovaný typ autentizace %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1291
+#: ../camel/providers/imap/camel-imap-store.c:1308
 #: ../camel/providers/smtp/camel-smtp-transport.c:498
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Typ autentizace %s není podporován"
 
-#: ../camel/providers/imap/camel-imap-store.c:1314
+#: ../camel/providers/imap/camel-imap-store.c:1331
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sZadejte prosím heslo IMAP pro %s@%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1357
+#: ../camel/providers/imap/camel-imap-store.c:1374
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3094,20 +3102,15 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1869
-#: ../camel/providers/imap/camel-imap-store.c:2239
-#: ../camel/providers/imap4/camel-imap4-store.c:857
+#: ../camel/providers/imap/camel-imap-store.c:1880
+#: ../camel/providers/imap/camel-imap-store.c:2250
+#: ../camel/providers/imap4/camel-imap4-store.c:1014
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Název složky \"%s\" je neplatný, protože obsahuje znak \"%c\""
 
-#: ../camel/providers/imap/camel-imap-store.c:1932
-#: ../camel/providers/imap/camel-imap-store.c:2301
-msgid "The parent folder is not allowed to contain subfolders"
-msgstr "Rodičovská složka nemůže obsahovat podsložky"
-
-#: ../camel/providers/imap/camel-imap-store.c:1986
+#: ../camel/providers/imap/camel-imap-store.c:1997
 #: ../camel/providers/local/camel-maildir-store.c:190
 #: ../camel/providers/local/camel-mbox-store.c:199
 #: ../camel/providers/local/camel-mh-store.c:249
@@ -3115,7 +3118,7 @@ msgstr "Rodičovská složka nemůže obsahovat podsložky"
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Nemohu vytvořit složku `%s': složka existuje."
 
-#: ../camel/providers/imap/camel-imap-store.c:2250
+#: ../camel/providers/imap/camel-imap-store.c:2261
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Neznámá rodičovská složka: %s"
@@ -3253,110 +3256,120 @@ msgid ""
 msgstr ""
 "Nemohu se autentizovat u IMAP serveru %s pomocí mechanismu autentizace %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:523
+#: ../camel/providers/imap4/camel-imap4-store.c:527
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
 msgstr "%sZadejte prosím heslo IMAP pro %s na počítači %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:593
+#: ../camel/providers/imap4/camel-imap4-store.c:594
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "Nemohu se autentizovat u IMAP serveru %s pomocí %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:755
-#: ../camel/providers/imap4/camel-imap4-store.c:867
+#: ../camel/providers/imap4/camel-imap4-store.c:756
+#: ../camel/providers/imap4/camel-imap4-store.c:1024
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "Nemohu vytvářet složky IMAP v režimu offline."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:794
+#: ../camel/providers/imap4/camel-imap4-store.c:795
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "Nemohu získat složku `%s' na IMAP serveru %s: Neznámé"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:915
+#: ../camel/providers/imap4/camel-imap4-store.c:876
+#, c-format
+msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
+msgstr "Nemohu získat informace LIST pro `%s' na IMAP serveru %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:878
+#: ../camel/providers/imap4/camel-imap4-store.c:1551
+msgid "Bad command"
+msgstr "Špatný příkaz"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:957
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "Nemohu přejmenovat složku `%s': Neplatný název schránky"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:921
+#: ../camel/providers/imap4/camel-imap4-store.c:962
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "Nemohu vytvořit složku `%s': Špatný příkaz"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:952
+#: ../camel/providers/imap4/camel-imap4-store.c:1068
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "Nemohu odstranit složku `%s': Speciální složka"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:959
+#: ../camel/providers/imap4/camel-imap4-store.c:1075
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "Nemohu odstraňovat složky IMAP v režimu offline."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1018
+#: ../camel/providers/imap4/camel-imap4-store.c:1134
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "Nemohu odstranit složku `%s': Neplatný název schránky"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1023
+#: ../camel/providers/imap4/camel-imap4-store.c:1139
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "Nemohu odstranit složku `%s': Špatný příkaz"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1043
+#: ../camel/providers/imap4/camel-imap4-store.c:1159
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "Nemohu přejmenovat složku `%s' na `%s': Speciální složka"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1050
+#: ../camel/providers/imap4/camel-imap4-store.c:1166
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "Nemohu přejmenovávat složky IMAP v režimu offline."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1081
+#: ../camel/providers/imap4/camel-imap4-store.c:1197
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr "Nemohu přejmenovat složku `%s' na `%s': Neplatný název schránky"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1086
+#: ../camel/providers/imap4/camel-imap4-store.c:1202
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "Nemohu přejmenovat složku `%s' na `%s': Špatný příkaz"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1433
+#: ../camel/providers/imap4/camel-imap4-store.c:1549
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr "Nemohu získat informace %s pro vzorek `%s' na IMAP serveru %s: %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1435
-msgid "Bad command"
-msgstr "Špatný příkaz"
-
-#: ../camel/providers/imap4/camel-imap4-store.c:1473
+#: ../camel/providers/imap4/camel-imap4-store.c:1589
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "Nemohu se přihlašovat ke složkám IMAP v režimu offline."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1518
+#: ../camel/providers/imap4/camel-imap4-store.c:1634
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "Nemohu se přihlásit ke složce `%s': Neplatný název schránky"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1523
+#: ../camel/providers/imap4/camel-imap4-store.c:1639
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "Nemohu se přihlásit ke složce `%s': Špatný příkaz"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1545
+#: ../camel/providers/imap4/camel-imap4-store.c:1661
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "Nemohu se odhlásit od složek IMAP v režimu offline."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1590
+#: ../camel/providers/imap4/camel-imap4-store.c:1706
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "Nemohu se odhlásit od složky `%s': Neplatný název schránky"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1595
+#: ../camel/providers/imap4/camel-imap4-store.c:1711
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Nemohu se odhlásit od složky `%s': Špatný příkaz"
+
+#: ../camel/providers/imap4/camel-imap4-summary.c:1472
+msgid "Scanning for changed messages"
+msgstr "Hledám změněné zprávy"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1497
 msgid "Fetching envelopes for new messages"
@@ -4251,11 +4264,6 @@ msgstr "Nemohu vytvořit rouru do sendmailu: %s: pošta neodeslána"
 msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "Nemohu fork sendmail: %s: pošta neodeslána"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:206
-#, c-format
-msgid "Could not send message: %s"
-msgstr "Nemohu poslat zprávu: %s"
-
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
@@ -4542,83 +4550,84 @@ msgstr "Příkaz QUIT selhal: %s"
 msgid "QUIT command failed"
 msgstr "Příkaz QUIT selhal"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:239
 msgid "Business"
 msgstr "Práce"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:240
 msgid "Competition"
 msgstr "Soutěž"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:241
 msgid "Favorites"
 msgstr "Oblíbené"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:242
 msgid "Gifts"
 msgstr "Dárky"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:243
 msgid "Goals/Objectives"
 msgstr "Cíle"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:244
 msgid "Holiday"
 msgstr "Dovolená"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:245
 msgid "Holiday Cards"
 msgstr "Přání"
 
-#: ../libedataserver/e-categories.c:245
+#. important people (e.g. new business partners) you should pay attention to/observe
+#: ../libedataserver/e-categories.c:247
 msgid "Hot Contacts"
 msgstr "Důležité kontakty"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:248
 msgid "Ideas"
 msgstr "Nápady"
 
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:249
 msgid "International"
 msgstr "Mezinárodní"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:250
 msgid "Key Customer"
 msgstr "Klíčový zákazník"
 
-#: ../libedataserver/e-categories.c:249
+#: ../libedataserver/e-categories.c:251
 msgid "Miscellaneous"
 msgstr "Různé"
 
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:252
 msgid "Personal"
 msgstr "Osobní"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:253
 msgid "Phone Calls"
 msgstr "Telefonní hovory"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:254
 msgid "Status"
 msgstr "Stav"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:255
 msgid "Strategies"
 msgstr "Strategie"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:256
 msgid "Suppliers"
 msgstr "Dodavatelé"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:257
 msgid "Time & Expenses"
 msgstr "Čas a výdaje"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:258
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:259
 msgid "Waiting"
 msgstr "Čeká"
 
@@ -4800,15 +4809,15 @@ msgstr "_Upravit"
 msgid "categories"
 msgstr "kategorie"
 
-#: ../libedataserverui/e-name-selector-dialog.c:211
+#: ../libedataserverui/e-name-selector-dialog.c:251
 msgid "Select Contacts from Address Book"
 msgstr "Vyberte kontakty z adresáře"
 
-#: ../libedataserverui/e-name-selector-dialog.c:502
+#: ../libedataserverui/e-name-selector-dialog.c:543
 msgid "_Add"
 msgstr "_Přidat"
 
-#: ../libedataserverui/e-name-selector-dialog.c:527
+#: ../libedataserverui/e-name-selector-dialog.c:568
 msgid "_Remove"
 msgstr "_Odstranit"
 
@@ -4837,20 +4846,24 @@ msgid "Address _Book:"
 msgstr "_Adresář:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
+msgid "C_ategory:"
+msgstr "_Kategorie:"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:255
 msgid "Contacts"
 msgstr "Kontakty"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:8
+#: ../libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "Search"
 msgstr "Hledat"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:9
+#: ../libedataserverui/e-name-selector-dialog.glade.h:10
 msgid "_Search:"
 msgstr "_Hledat:"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1821
+#: ../libedataserverui/e-name-selector-entry.c:1830
 #, c-format
 msgid "_Edit %s"
 msgstr "_Upravit %s"
@@ -4872,12 +4885,12 @@ msgstr "Zvolte cíl"
 msgid "_Destination"
 msgstr "_Cíl:"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#: ../servers/exchange/lib/e2k-autoconfig.c:1574
 #, c-format
 msgid "Enter password for %s"
 msgstr "Zadejte heslo pro %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/lib/e2k-autoconfig.c:1575
 msgid "Enter password"
 msgstr "Zadejte heslo"
 
@@ -4989,26 +5002,26 @@ msgstr "Tuto operaci nelze provést v režimu offline"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:623
+#: ../servers/exchange/storage/exchange-account.c:642
 #, c-format
 msgid "%s's Folders"
 msgstr "Složky uživatele %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1268
+#: ../servers/exchange/storage/exchange-account.c:1291
 msgid "Personal Folders"
 msgstr "Osobní složky"
 
-#: ../servers/exchange/storage/exchange-account.c:1283
+#: ../servers/exchange/storage/exchange-account.c:1305
 msgid "Favorite Public Folders"
 msgstr "Oblíbené veřejné složky"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1300
+#: ../servers/exchange/storage/exchange-account.c:1322
 msgid "All Public Folders"
 msgstr "Všechny veřejné složky"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1314
+#: ../servers/exchange/storage/exchange-account.c:1336
 msgid "Global Address List"
 msgstr "Globální seznam adres"
 
@@ -5077,6 +5090,15 @@ msgstr "Služba zaznamenávání Evolution Data Server"
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Došlo k několika chybám segmentace; nemohu zobrazit dialog o chybě\n"
+
+#~ msgid "Cannot get folder info in offline mode."
+#~ msgstr "Nemohu získat informace o složce v režimu offline."
+
+#~ msgid "Cannot delete GroupWise folders in offline mode."
+#~ msgstr "Nemohu odstraňovat složky GroupWise v režimu offline."
+
+#~ msgid "Cannot rename GroupWise folders in offline mode."
+#~ msgstr "Nemohu přejmenovávat složky GroupWise v režimu offline."
 
 #~ msgid "%sEnter password for %s"
 #~ msgstr "%sZadejte heslo pro %s"
