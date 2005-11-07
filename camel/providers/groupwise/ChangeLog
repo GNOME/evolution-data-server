@@ -1,3 +1,10 @@
+2005-11-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug #320736
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+	Check if the attachment is indeed a valid string. Prevents
+	a crash.
+
 2005-10-19 Vivek Jain <jvivek@novell.com>
 	
 	**See bug #319045
