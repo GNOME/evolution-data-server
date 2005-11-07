@@ -1391,7 +1391,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
 				return NULL;
 			}
-			if (attachment && attachment[0] (len !=0) ) {
+			if (attachment && attachment[0] && (len !=0) ) {
 				if (!g_ascii_strcasecmp (attach->name, "TEXT.htm")) {
 					body = g_strdup (attachment);
 					g_free (attachment);
