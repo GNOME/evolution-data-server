@@ -1,3 +1,10 @@
+2005-11-07  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug #320736
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+	Check if the attachment buffer is indeed valid. Prevents a possible
+	segment violation.
+
 2005-10-21  Shreyas Srinivasan <sshreyas@novell.com>
 
 	* camel-groupwise-store.c:(groupwise_connect): Connect if store->state

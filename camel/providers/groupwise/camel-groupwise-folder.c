@@ -1365,6 +1365,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	int errno;
 	char *body = NULL;
 	const char *uid = NULL;
+	gboolean is_text_html = FALSE;
 	
 
 	uid = e_gw_item_get_id(item);
@@ -1390,10 +1391,11 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
 				return NULL;
 			}
-			if (attachment && (len !=0) ) {
+			if (attachment && attachment[0] (len !=0) ) {
 				if (!g_ascii_strcasecmp (attach->name, "TEXT.htm")) {
 					body = g_strdup (attachment);
 					g_free (attachment);
+					is_text_html = TRUE;
 				} 
 			}//if attachment and len
 		} // if Mime.822 or TEXT.htm
@@ -1503,8 +1505,9 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						} else {
 							camel_mime_part_set_filename(part, g_strdup(attach->name));
 							camel_mime_part_set_content_id (part, attach->id);
-							if (!has_boundary)
+							if (!has_boundary) {
 								camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
+							}
 						}
 					} else {
 						camel_mime_part_set_filename(part, g_strdup(attach->name));
