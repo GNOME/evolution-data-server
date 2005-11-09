@@ -1,3 +1,8 @@
+2005-11-09  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-transport.c (groupwise_send_to):
+	Changed the string so as to be consistent with Win32 client error messages.
+	
 2005-11-09  Shreyas Srinivasan <sshreyas@novell.com>
 
 	* camel-groupwise-store.c (groupwise_connect): Uncomment

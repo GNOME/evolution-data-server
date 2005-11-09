@@ -212,7 +212,7 @@ groupwise_send_to (CamelTransport *transport,
 
 		/* FIXME: 58652 should be changed with an enum.*/
 		if (status == 58652)
-			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("You will not be able to send mails till you clear up some space by deleting some mails.\n"));
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("You have exceed this account's storage limit. Your messages are queued in Outbox. Try sending after deleting/archiving some mails.\n"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,_("Could not send message: %s"),_("Unknown error"));
 
