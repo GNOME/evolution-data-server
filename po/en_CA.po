@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-23 02:18-0400\n"
+"POT-Creation-Date: 2005-11-09 12:38-0500\n"
 "PO-Revision-Date: 2005-07-26 13:04-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
@@ -600,10 +600,11 @@ msgstr "Note"
 msgid "Birth Date"
 msgstr "Birth Date"
 
+#. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
 #: addressbook/libebook/e-contact.c:236
-#: calendar/backends/contacts/e-cal-backend-contacts.c:458
-#: libedataserver/e-categories.c:236
+#: calendar/backends/contacts/e-cal-backend-contacts.c:460
+#: libedataserver/e-categories.c:237
 msgid "Anniversary"
 msgstr "Anniversary"
 
@@ -630,280 +631,280 @@ msgstr "Book URI"
 msgid "Unnamed List"
 msgstr "Unnamed List"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:460
-#: libedataserver/e-categories.c:237
+#: calendar/backends/contacts/e-cal-backend-contacts.c:462
+#: libedataserver/e-categories.c:238
 msgid "Birthday"
 msgstr "Birthday"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:486
+#: calendar/backends/contacts/e-cal-backend-contacts.c:488
 #, c-format
 msgid "Birthday: %s"
 msgstr "Birthday: %s"
 
-#: calendar/backends/contacts/e-cal-backend-contacts.c:510
+#: calendar/backends/contacts/e-cal-backend-contacts.c:512
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Anniversary: %s"
 
-#: calendar/backends/file/e-cal-backend-file.c:193
+#: calendar/backends/file/e-cal-backend-file.c:194
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Can't save calendar data: Malformed URI."
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:889
-#: camel/providers/groupwise/camel-groupwise-folder.c:1426
+#: camel/providers/groupwise/camel-groupwise-folder.c:1435
 msgid "Reply Requested: by "
 msgstr "Reply Requested: by "
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:894
-#: camel/providers/groupwise/camel-groupwise-folder.c:1431
+#: camel/providers/groupwise/camel-groupwise-folder.c:1440
 msgid "Reply Requested: When convenient"
 msgstr "Reply Requested: When convenient"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:184
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:186
 #, c-format
 msgid "Loading %s items"
 msgstr "Loading %s items"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:708
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:710
 #: servers/exchange/storage/exchange-hierarchy-foreign.c:254
 msgid "Calendar"
 msgstr "Calendar"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:764
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:766
 msgid "Invalid server URI"
 msgstr "Invalid server URI"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:780
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:789
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:871
-#: calendar/libecal/e-cal.c:5109
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:782
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:791
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:876
+#: calendar/libecal/e-cal.c:5101
 #: camel/providers/groupwise/camel-groupwise-folder.c:891
 #: camel/providers/groupwise/camel-groupwise-folder.c:911
 #: camel/providers/groupwise/camel-groupwise-folder.c:939
 #: camel/providers/groupwise/camel-groupwise-store.c:518
 #: camel/providers/groupwise/camel-groupwise-store.c:533
 #: camel/providers/groupwise/camel-groupwise-store.c:575
-#: camel/providers/groupwise/camel-groupwise-store.c:1078
+#: camel/providers/groupwise/camel-groupwise-store.c:1062
 #: camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "Authentication failed"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:830
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:832
 msgid "Could not create thread for getting deltas"
 msgstr "Could not create thread for getting deltas"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:855
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
-#: calendar/backends/http/e-cal-backend-http.c:500
-#: calendar/backends/weather/e-cal-backend-weather.c:448
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:857
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:1103
+#: calendar/backends/http/e-cal-backend-http.c:504
+#: calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Could not create cache file"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:865
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:870
 msgid "Could not create thread for populating cache"
 msgstr "Could not create thread for populating cache"
 
-#: calendar/backends/http/e-cal-backend-http.c:245
+#: calendar/backends/http/e-cal-backend-http.c:248
 msgid "Redirected to Invalid URI"
 msgstr "Redirected to Invalid URI"
 
-#: calendar/backends/http/e-cal-backend-http.c:269
+#: calendar/backends/http/e-cal-backend-http.c:272
 msgid "Bad file format."
 msgstr "Bad file format."
 
-#: calendar/backends/http/e-cal-backend-http.c:275
+#: calendar/backends/http/e-cal-backend-http.c:278
 msgid "Not a calendar."
 msgstr "Not a calendar."
 
-#: calendar/backends/weather/e-cal-backend-weather.c:140
+#: calendar/backends/weather/e-cal-backend-weather.c:142
 msgid "Could not retrieve weather data"
 msgstr "Could not retrieve weather data"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:198
+#: calendar/backends/weather/e-cal-backend-weather.c:200
 msgid "Fair"
 msgstr "Fair"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:199
+#: calendar/backends/weather/e-cal-backend-weather.c:201
 msgid "Snow showers"
 msgstr "Snow showers"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:200
+#: calendar/backends/weather/e-cal-backend-weather.c:202
 msgid "Snow"
 msgstr "Snow"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:201
+#: calendar/backends/weather/e-cal-backend-weather.c:203
 msgid "Partly cloudy"
 msgstr "Partly cloudy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:202
+#: calendar/backends/weather/e-cal-backend-weather.c:204
 msgid "Smoke"
 msgstr "Smoke"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:203
+#: calendar/backends/weather/e-cal-backend-weather.c:205
 msgid "Thunderstorms"
 msgstr "Thunderstorms"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:204
+#: calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Cloudy"
 msgstr "Cloudy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:205
+#: calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Drizzle"
 msgstr "Drizzle"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:206
+#: calendar/backends/weather/e-cal-backend-weather.c:208
 msgid "Sunny"
 msgstr "Sunny"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:207
+#: calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Dust"
 msgstr "Dust"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:208
+#: calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Clear"
 msgstr "Clear"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:209
+#: calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Mostly cloudy"
 msgstr "Mostly cloudy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:210
+#: calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Windy"
 msgstr "Windy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:211
+#: calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Rain showers"
 msgstr "Rain showers"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:212
+#: calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Foggy"
 msgstr "Foggy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:213
+#: calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Rain/snow mixed"
 msgstr "Rain/snow mixed"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:214
+#: calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Sleet"
 msgstr "Sleet"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:215
+#: calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very hot/humid"
 msgstr "Very hot/humid"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:216
+#: calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Blizzard"
 msgstr "Blizzard"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:217
+#: calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Freezing rain"
 msgstr "Freezing rain"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:218
+#: calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Haze"
 msgstr "Haze"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:219
+#: calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Blowing snow"
 msgstr "Blowing snow"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:220
+#: calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Freezing drizzle"
 msgstr "Freezing drizzle"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:221
+#: calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Very cold/wind chill"
 msgstr "Very cold/wind chill"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:222
+#: calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Rain"
 msgstr "Rain"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:232
-#: calendar/backends/weather/e-cal-backend-weather.c:240
+#: calendar/backends/weather/e-cal-backend-weather.c:234
 #: calendar/backends/weather/e-cal-backend-weather.c:242
-#: calendar/backends/weather/e-cal-backend-weather.c:249
+#: calendar/backends/weather/e-cal-backend-weather.c:244
+#: calendar/backends/weather/e-cal-backend-weather.c:251
 msgid "Weather: Sunny"
 msgstr "Weather: Sunny"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:233
-#: calendar/backends/weather/e-cal-backend-weather.c:234
-#: calendar/backends/weather/e-cal-backend-weather.c:250
-#: calendar/backends/weather/e-cal-backend-weather.c:253
+#: calendar/backends/weather/e-cal-backend-weather.c:235
+#: calendar/backends/weather/e-cal-backend-weather.c:236
+#: calendar/backends/weather/e-cal-backend-weather.c:252
+#: calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Snow"
 msgstr "Weather: Snow"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:235
+#: calendar/backends/weather/e-cal-backend-weather.c:237
 msgid "Weather: Partly Cloudy"
 msgstr "Weather: Partly Cloudy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:236
-#: calendar/backends/weather/e-cal-backend-weather.c:241
-#: calendar/backends/weather/e-cal-backend-weather.c:246
-#: calendar/backends/weather/e-cal-backend-weather.c:252
+#: calendar/backends/weather/e-cal-backend-weather.c:238
+#: calendar/backends/weather/e-cal-backend-weather.c:243
+#: calendar/backends/weather/e-cal-backend-weather.c:248
+#: calendar/backends/weather/e-cal-backend-weather.c:254
 msgid "Weather: Fog"
 msgstr "Weather: Foggy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:237
+#: calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Weather: Thunderstorms"
 msgstr "Weather: Thunderstorms"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:238
-#: calendar/backends/weather/e-cal-backend-weather.c:243
+#: calendar/backends/weather/e-cal-backend-weather.c:240
+#: calendar/backends/weather/e-cal-backend-weather.c:245
 msgid "Weather: Cloudy"
 msgstr "Weather: Cloudy"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:239
-#: calendar/backends/weather/e-cal-backend-weather.c:245
+#: calendar/backends/weather/e-cal-backend-weather.c:241
 #: calendar/backends/weather/e-cal-backend-weather.c:247
-#: calendar/backends/weather/e-cal-backend-weather.c:248
-#: calendar/backends/weather/e-cal-backend-weather.c:251
-#: calendar/backends/weather/e-cal-backend-weather.c:254
+#: calendar/backends/weather/e-cal-backend-weather.c:249
+#: calendar/backends/weather/e-cal-backend-weather.c:250
+#: calendar/backends/weather/e-cal-backend-weather.c:253
 #: calendar/backends/weather/e-cal-backend-weather.c:256
+#: calendar/backends/weather/e-cal-backend-weather.c:258
 msgid "Weather: Rain"
 msgstr "Weather: Rain"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:331
+#: calendar/backends/weather/e-cal-backend-weather.c:333
 #, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:333
+#: calendar/backends/weather/e-cal-backend-weather.c:335
 #, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:336
+#: calendar/backends/weather/e-cal-backend-weather.c:338
 #, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:338
+#: calendar/backends/weather/e-cal-backend-weather.c:340
 #, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:344
+#: calendar/backends/weather/e-cal-backend-weather.c:346
 #, c-format
 msgid "%d%% chance of precipitation\n"
 msgstr "%d%% chance of precipitation\n"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:351
+#: calendar/backends/weather/e-cal-backend-weather.c:353
 #, c-format
 msgid "%.1fcm snow\n"
 msgstr "%.1fcm snow\n"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:353
+#: calendar/backends/weather/e-cal-backend-weather.c:355
 #, c-format
 msgid "%.1fin snow\n"
 msgstr "%.1fin snow\n"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:356
+#: calendar/backends/weather/e-cal-backend-weather.c:358
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
 msgstr "%.1f-%.1fcm snow\n"
 
-#: calendar/backends/weather/e-cal-backend-weather.c:358
+#: calendar/backends/weather/e-cal-backend-weather.c:360
 #, c-format
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fin snow\n"
@@ -1064,73 +1065,73 @@ msgstr "Enter password for %s to enable proxy for user %s"
 msgid "Enter password for %s (user %s)"
 msgstr "Enter password for %s (user %s)"
 
-#: calendar/libecal/e-cal.c:5081
+#: calendar/libecal/e-cal.c:5073
 msgid "Invalid argument"
 msgstr "Invalid argument"
 
-#: calendar/libecal/e-cal.c:5083
+#: calendar/libecal/e-cal.c:5075
 msgid "Backend is busy"
 msgstr "Backend is busy"
 
-#: calendar/libecal/e-cal.c:5085
+#: calendar/libecal/e-cal.c:5077
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: calendar/libecal/e-cal.c:5087
+#: calendar/libecal/e-cal.c:5079
 msgid "No such calendar"
 msgstr "No such calendar"
 
-#: calendar/libecal/e-cal.c:5089 servers/groupwise/e-gw-connection.c:167
+#: calendar/libecal/e-cal.c:5081 servers/groupwise/e-gw-connection.c:169
 msgid "Object not found"
 msgstr "Object not found"
 
-#: calendar/libecal/e-cal.c:5091 servers/groupwise/e-gw-connection.c:161
+#: calendar/libecal/e-cal.c:5083 servers/groupwise/e-gw-connection.c:163
 msgid "Invalid object"
 msgstr "Invalid object"
 
-#: calendar/libecal/e-cal.c:5093
+#: calendar/libecal/e-cal.c:5085
 msgid "URI not loaded"
 msgstr "URI not loaded"
 
-#: calendar/libecal/e-cal.c:5095
+#: calendar/libecal/e-cal.c:5087
 msgid "URI already loaded"
 msgstr "URI already loaded"
 
-#: calendar/libecal/e-cal.c:5097 servers/exchange/storage/e-storage.c:572
+#: calendar/libecal/e-cal.c:5089 servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permission denied"
 
-#: calendar/libecal/e-cal.c:5099 servers/groupwise/e-gw-connection.c:169
+#: calendar/libecal/e-cal.c:5091 servers/groupwise/e-gw-connection.c:171
 msgid "Unknown User"
 msgstr "Unknown User"
 
-#: calendar/libecal/e-cal.c:5101
+#: calendar/libecal/e-cal.c:5093
 msgid "Object ID already exists"
 msgstr "Object ID already exists"
 
-#: calendar/libecal/e-cal.c:5103
+#: calendar/libecal/e-cal.c:5095
 msgid "Protocol not supported"
 msgstr "Protocol not supported"
 
-#: calendar/libecal/e-cal.c:5105
+#: calendar/libecal/e-cal.c:5097
 msgid "Operation has been cancelled"
 msgstr "Operation has been canceled"
 
-#: calendar/libecal/e-cal.c:5107
+#: calendar/libecal/e-cal.c:5099
 msgid "Could not cancel operation"
 msgstr "Could not cancel operation"
 
-#: calendar/libecal/e-cal.c:5111
+#: calendar/libecal/e-cal.c:5103
 #: camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Authentication required"
 
-#: calendar/libecal/e-cal.c:5113
+#: calendar/libecal/e-cal.c:5105
 msgid "A CORBA exception has occurred"
 msgstr "A CORBA exception has occurred"
 
-#: calendar/libecal/e-cal.c:5115
-#: camel/providers/groupwise/camel-groupwise-transport.c:212
+#: calendar/libecal/e-cal.c:5107
+#: camel/providers/groupwise/camel-groupwise-transport.c:217
 #: camel/providers/imap/camel-imap-command.c:310
 #: camel/providers/imap/camel-imap-command.c:410
 #: camel/providers/imap4/camel-imap4-store.c:376
@@ -1138,11 +1139,11 @@ msgstr "A CORBA exception has occurred"
 #: camel/providers/pop3/camel-pop3-store.c:540
 #: camel/providers/pop3/camel-pop3-store.c:546
 #: servers/exchange/storage/e-storage.c:586
-#: servers/groupwise/e-gw-connection.c:175
+#: servers/groupwise/e-gw-connection.c:177
 msgid "Unknown error"
 msgstr "Unknown error"
 
-#: calendar/libecal/e-cal.c:5117 servers/exchange/storage/e-storage.c:554
+#: calendar/libecal/e-cal.c:5109 servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "No error"
 
@@ -1322,7 +1323,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Preparing folder '%s' for offline"
 
 #: camel/camel-disco-store.c:391
-#: camel/providers/groupwise/camel-groupwise-store.c:1276
+#: camel/providers/groupwise/camel-groupwise-store.c:1253
 #: camel/providers/imap/camel-imap-store.c:2959
 msgid "You must be working online to complete this operation"
 msgstr "You must be working online to complete this operation"
@@ -2600,7 +2601,7 @@ msgstr "This message is not available in offline mode."
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:171
 #: camel/providers/groupwise/camel-groupwise-folder.c:178
-#: camel/providers/groupwise/camel-groupwise-folder.c:1390
+#: camel/providers/groupwise/camel-groupwise-folder.c:1398
 msgid "Could not get message"
 msgstr "Could not get message"
 
@@ -2615,13 +2616,13 @@ msgstr "Could not load summary for %s"
 msgid "Fetching summary information for new messages"
 msgstr "Fetching summary information for new messages"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1619
-#: camel/providers/groupwise/camel-groupwise-folder.c:1665
+#: camel/providers/groupwise/camel-groupwise-folder.c:1629
+#: camel/providers/groupwise/camel-groupwise-folder.c:1675
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Cannot append message to folder `%s': %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1653
+#: camel/providers/groupwise/camel-groupwise-folder.c:1663
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Cannot create message: %s"
@@ -2736,29 +2737,29 @@ msgstr "Some features may not work correctly with your current server version"
 msgid "No such folder %s"
 msgstr "No such folder %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1055
+#: camel/providers/groupwise/camel-groupwise-store.c:1039
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Cannot create GroupWise folders in offline mode."
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1069
+#: camel/providers/groupwise/camel-groupwise-store.c:1053
 #: camel/providers/imap/camel-imap-store.c:1943
 #: camel/providers/imap/camel-imap-store.c:2312
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "The parent folder is not allowed to contain subfolders"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1146
-#: camel/providers/groupwise/camel-groupwise-store.c:1167
+#: camel/providers/groupwise/camel-groupwise-store.c:1130
+#: camel/providers/groupwise/camel-groupwise-store.c:1151
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Cannot rename Groupwise folder `%s' to `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1199
+#: camel/providers/groupwise/camel-groupwise-store.c:1183
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise server %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1201
+#: camel/providers/groupwise/camel-groupwise-store.c:1185
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise service for %s on %s"
@@ -2772,7 +2773,15 @@ msgstr "GroupWise mail delivery via %s"
 msgid "Sending Message"
 msgstr "Sending Message"
 
-#: camel/providers/groupwise/camel-groupwise-transport.c:212
+#: camel/providers/groupwise/camel-groupwise-transport.c:215
+msgid ""
+"You have exceed this account's storage limit. Your messages are queued in "
+"Outbox. Try sending after deleting/archiving some mails.\n"
+msgstr ""
+"You have exceeded this account's storage limit. Your messages are queued in "
+"the Outbox. Try sending after deleting/archiving some emails.\n"
+
+#: camel/providers/groupwise/camel-groupwise-transport.c:217
 #: camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -4544,84 +4553,84 @@ msgstr "QUIT command failed: %s"
 msgid "QUIT command failed"
 msgstr "QUIT command failed"
 
-#: libedataserver/e-categories.c:238
+#: libedataserver/e-categories.c:239
 msgid "Business"
 msgstr "Business"
 
-#: libedataserver/e-categories.c:239
+#: libedataserver/e-categories.c:240
 msgid "Competition"
 msgstr "Competition"
 
-#: libedataserver/e-categories.c:240
+#: libedataserver/e-categories.c:241
 msgid "Favorites"
 msgstr "Favourites"
 
-#: libedataserver/e-categories.c:241
+#: libedataserver/e-categories.c:242
 msgid "Gifts"
 msgstr "Gifts"
 
-#: libedataserver/e-categories.c:242
+#: libedataserver/e-categories.c:243
 msgid "Goals/Objectives"
 msgstr "Goals/Objectives"
 
-#: libedataserver/e-categories.c:243
+#: libedataserver/e-categories.c:244
 msgid "Holiday"
 msgstr "Holiday"
 
-#: libedataserver/e-categories.c:244
+#: libedataserver/e-categories.c:245
 msgid "Holiday Cards"
 msgstr "Holiday Cards"
 
 #. important people (e.g. new business partners) you should pay attention to/observe
-#: libedataserver/e-categories.c:246
+#: libedataserver/e-categories.c:247
 msgid "Hot Contacts"
 msgstr "Hot Contacts"
 
-#: libedataserver/e-categories.c:247
+#: libedataserver/e-categories.c:248
 msgid "Ideas"
 msgstr "Ideas"
 
-#: libedataserver/e-categories.c:248
+#: libedataserver/e-categories.c:249
 msgid "International"
 msgstr "International"
 
-#: libedataserver/e-categories.c:249
+#: libedataserver/e-categories.c:250
 msgid "Key Customer"
 msgstr "Key Customer"
 
-#: libedataserver/e-categories.c:250
+#: libedataserver/e-categories.c:251
 msgid "Miscellaneous"
 msgstr "Miscellaneous"
 
-#: libedataserver/e-categories.c:251
+#: libedataserver/e-categories.c:252
 msgid "Personal"
 msgstr "Personal"
 
-#: libedataserver/e-categories.c:252
+#: libedataserver/e-categories.c:253
 msgid "Phone Calls"
 msgstr "Phone Calls"
 
-#: libedataserver/e-categories.c:253
+#: libedataserver/e-categories.c:254
 msgid "Status"
 msgstr "Status"
 
-#: libedataserver/e-categories.c:254
+#: libedataserver/e-categories.c:255
 msgid "Strategies"
 msgstr "Strategies"
 
-#: libedataserver/e-categories.c:255
+#: libedataserver/e-categories.c:256
 msgid "Suppliers"
 msgstr "Suppliers"
 
-#: libedataserver/e-categories.c:256
+#: libedataserver/e-categories.c:257
 msgid "Time & Expenses"
 msgstr "Time & Expenses"
 
-#: libedataserver/e-categories.c:257
+#: libedataserver/e-categories.c:258
 msgid "VIP"
 msgstr "VIP"
 
-#: libedataserver/e-categories.c:258
+#: libedataserver/e-categories.c:259
 msgid "Waiting"
 msgstr "Waiting"
 
@@ -5049,19 +5058,19 @@ msgstr "Sent Items"
 msgid "Tasks"
 msgstr "Tasks"
 
-#: servers/groupwise/e-gw-connection.c:159
+#: servers/groupwise/e-gw-connection.c:161
 msgid "Invalid connection"
 msgstr "Invalid connection"
 
-#: servers/groupwise/e-gw-connection.c:163
+#: servers/groupwise/e-gw-connection.c:165
 msgid "Invalid response from server"
 msgstr "Invalid response from server"
 
-#: servers/groupwise/e-gw-connection.c:165
+#: servers/groupwise/e-gw-connection.c:167
 msgid "No response from the server"
 msgstr "No response from the server"
 
-#: servers/groupwise/e-gw-connection.c:171
+#: servers/groupwise/e-gw-connection.c:173
 msgid "Bad parameter"
 msgstr "Bad parameter"
 
