@@ -273,8 +273,8 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	d("in groupwise store connect\n");
 	
-/*	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) 
-		return TRUE;*/
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) 
+		return TRUE;
 
 	
 	CAMEL_SERVICE_LOCK (service, connect_lock);
