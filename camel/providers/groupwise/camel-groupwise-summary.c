@@ -34,8 +34,10 @@
 #include <stdlib.h>
 
 #include "camel-groupwise-summary.h"
+#include "camel-groupwise-folder.h"
 #include "camel-file-utils.h"
 #include <camel/camel-folder.h>
+#include <camel/camel-data-cache.h>
 
 #define CAMEL_GW_SUMMARY_VERSION (1)
 
@@ -320,5 +322,34 @@ camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const char *
 	mi = camel_message_info_clone(info);
 	mi->info.uid = g_strdup(uid);
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
+}
+
+void
+groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache)
+{
+	CamelFolderChangeInfo *changes;
+	CamelMessageInfo *info;
+	int i, count;
+
+	changes = camel_folder_change_info_new ();
+	count = camel_folder_summary_count (summary);
+	for (i = 0; i < count; i++) {
+		if (!(info = camel_folder_summary_index (summary, i)))
+			continue;
+
+		camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
+		camel_folder_summary_remove(summary, info);
+		camel_message_info_free(info);
+	}
+
+	camel_folder_summary_clear (summary);
+	camel_folder_summary_save (summary);
+
+	if (uncache)
+		camel_data_cache_clear (((CamelGroupwiseFolder *) summary->folder)->cache, "cache", NULL);
+
+	if (camel_folder_change_info_changed (changes))
+		camel_object_trigger_event (summary->folder, "folder_changed", changes);
+	camel_folder_change_info_free (changes);
 }
 

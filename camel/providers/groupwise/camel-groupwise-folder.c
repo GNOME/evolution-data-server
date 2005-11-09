@@ -572,7 +572,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
-	CamelMessageInfo *info;
+	CamelMessageInfo *info = NULL;
 	CamelGroupwiseMessageInfo *gw_info;
 	GList *read_items = NULL, *deleted_items = NULL;
 	flags_diff_t diff;
@@ -1056,10 +1056,10 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 		}
 
 		/************************ First populate summary *************************/
+		mi = NULL;
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);
 		if (mi) {
 			exists = TRUE;
-			camel_message_info_free (&mi->info);
 		}
 
 		if (!exists) {
@@ -1069,7 +1069,7 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 				continue;
 			}
 
-			mi = camel_message_info_new (folder->summary); 
+			mi = (CamelGroupwiseMessageInfo *)camel_message_info_new (folder->summary); 
 			if (mi->info.content == NULL) {
 				mi->info.content = camel_folder_summary_content_info_new (folder->summary);
 				mi->info.content->type = camel_content_type_new ("multipart", "mixed");
@@ -1111,6 +1111,8 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
 			g_string_append_printf (str, "%s <%s>",org->display_name, org->email);
+			if (exists)
+				camel_pstring_free(mi->info.from);
 			mi->info.from = camel_pstring_strdup (str->str);
 		}
 		g_string_truncate (str, 0);
@@ -1127,6 +1129,8 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 					i++;
 				}
 			}
+			if (exists)
+				camel_pstring_free(mi->info.to);
 			mi->info.to = camel_pstring_strdup (str->str);
 			g_string_truncate (str, 0);
 		}
@@ -1149,10 +1153,13 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 			}
 		}
 
+		if (exists)
+			g_free(mi->info.uid);
 		mi->info.uid = g_strdup(e_gw_item_get_id(item));
 		if (!exists)
 			mi->info.size = e_gw_item_get_mail_size (item);	
-		mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
+		if (!exists)
+			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
 		
 		if (exists) 
 			camel_folder_change_info_change_uid (changes, e_gw_item_get_id (item));
@@ -1830,8 +1837,9 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 		CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
 		status = e_gw_connection_purge_deleted_items (cnc);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
-			camel_folder_summary_clear (folder->summary);
-			camel_folder_summary_save (folder->summary);
+			camel_folder_freeze (folder);
+			groupwise_summary_clear (folder->summary, TRUE);
+			camel_folder_thaw (folder);
 		} else
 			g_warning ("Could not Empty Trash\n");
 		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);

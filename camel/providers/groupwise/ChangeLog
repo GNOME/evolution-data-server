@@ -1,3 +1,22 @@
+2005-11-09  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	(groupwise_sync): initialise mi and free some stuff
+	(groupwise_expunge): clear summary and cache and emptying trash
+	Fixes bug **320095
+	
+	* camel-groupwise-store.c:
+	(groupwise_connect): do not attempt to connect when the service is 
+	disconnected and the network is unavailable.
+	(groupwise_disconnect): check if priv is indeed available. Prevents
+	a violation
+	(groupwise_get_trash): fix up the state of the folder. Fixes the bug
+	**320095
+
+	* camel-groupwise-summary.[ch]:
+	(groupwise_summary_clear): clears the summary and cache of a groupwise
+	folder.
+
 2005-11-09  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-transport.c (groupwise_send_to):
