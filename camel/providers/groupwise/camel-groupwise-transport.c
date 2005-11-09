@@ -209,7 +209,12 @@ groupwise_send_to (CamelTransport *transport,
 		g_object_unref (item);
 		if (temp_item)
 			g_object_unref (temp_item);
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,_("Could not send message: %s"),_("Unknown error"));
+
+		/* FIXME: 58652 should be changed with an enum.*/
+		if (status == 58652)
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("You will not be able to send mails till you clear up some space by deleting some mails.\n"));
+		else
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,_("Could not send message: %s"),_("Unknown error"));
 
 		return FALSE;
 	}
