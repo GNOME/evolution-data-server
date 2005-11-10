@@ -140,6 +140,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget         *widget;
 	GtkWidget         *container;
 	GtkWidget	  *label;
+	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
 
 	/* Get Glade GUI */
@@ -192,6 +193,9 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
 						 (GtkTreeCellDataFunc) contact_column_formatter,
 						 name_selector_dialog, NULL);
+
+	selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_append_column (name_selector_dialog->contact_view, column);
 	g_signal_connect_swapped (name_selector_dialog->contact_view, "row-activated",
 				  G_CALLBACK (contact_activated), name_selector_dialog);
@@ -456,10 +460,11 @@ static void
 selection_changed (GtkTreeSelection *selection, SelData *data)
 {
 	GtkTreeSelection *contact_selection;
-	gboolean          have_selection;
-		
+	gboolean          have_selection = FALSE;
+
 	contact_selection = gtk_tree_view_get_selection (data->view);
-	have_selection = gtk_tree_selection_get_selected (contact_selection, NULL, NULL);
+	if (gtk_tree_selection_count_selected_rows (contact_selection) > 0)
+		have_selection = TRUE;
 	gtk_widget_set_sensitive (GTK_WIDGET (data->button), have_selection);
 }
 
@@ -590,6 +595,8 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	data->button = section.remove_button;
 	g_object_set_data_full ((GObject *)section.destination_view, "sel-change-data", data, g_free);
 	selection = gtk_tree_view_get_selection(section.destination_view);
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
+
 	g_signal_connect(selection, "changed",
 				  G_CALLBACK (selection_changed), data);
 
@@ -742,11 +749,12 @@ static void
 contact_selection_changed (ENameSelectorDialog *name_selector_dialog)
 {
 	GtkTreeSelection *contact_selection;
-	gboolean          have_selection;
+	gboolean          have_selection = FALSE;
 	gint              i;
 
 	contact_selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
-	have_selection = gtk_tree_selection_get_selected (contact_selection, NULL, NULL);
+	if (gtk_tree_selection_count_selected_rows (contact_selection))
+		have_selection = TRUE;
 
 	for (i = 0; i < name_selector_dialog->sections->len; i++) {
 		Section *section = &g_array_index (name_selector_dialog->sections, Section, i);
@@ -760,32 +768,18 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	EContactStore     *contact_store;
 	EDestinationStore *destination_store;
 	EContact          *contact;
-	GtkTreeIter        iter;
 	Section           *section;
 	gint               email_n;
+	GList		  *rows, *l;
+	GtkTreeSelection  *contact_selection;
 
 	/* When a contact is activated, we transfer it to the first destination on our list */
 
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
 
 	/* If we have no sections, we can't transfer */
-
-	if (name_selector_dialog->sections->len == 0)
+	if (name_selector_dialog->sections->len == 0) 
 		return;
-
-	/* Get the contact to be transferred */
-
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
-				      &iter, path))
-		g_assert_not_reached ();
-
-	sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
-
-	contact = e_contact_store_get_contact (contact_store, &iter);
-	if (!contact) {
-		g_warning ("ENameSelectorDialog could not get selected contact!");
-		return;
-	}
 
 	section = &g_array_index (name_selector_dialog->sections, Section, 0);
 	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
@@ -794,7 +788,31 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 		return;
 	}
 
-	add_destination (destination_store, contact, email_n);
+	contact_selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
+	rows = gtk_tree_selection_get_selected_rows (contact_selection, NULL);
+	rows = g_list_reverse (rows);
+
+	/* Get the contacts to be transferred */
+
+	for (l=rows; l; l=g_list_next(l)) {
+		GtkTreeIter iter;
+
+		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
+				      &iter, path))
+			g_assert_not_reached ();
+
+		gtk_tree_path_free (path);
+		sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
+		
+		contact = e_contact_store_get_contact (contact_store, &iter);
+		if (!contact) {
+			g_warning ("ENameSelectorDialog could not get selected contact!");
+			g_list_free (rows);
+			return;
+		}
+		add_destination (destination_store, contact, email_n);
+	}
+	g_list_free (rows);
 }
 
 static void
@@ -805,7 +823,8 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 	EDestinationStore *destination_store;
 	EDestination      *destination;
 	Section           *section;
-	GtkTreeIter        iter;
+	GList		  *rows, *l;
+	GtkTreeSelection  *selection;
 
 	/* When a destination is activated, we remove it from the section */
 
@@ -822,13 +841,25 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 		return;
 	}
 
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (destination_store), &iter, path))
-		g_assert_not_reached ();
+	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+	rows = g_list_reverse (rows);
 
-	destination = e_destination_store_get_destination (destination_store, &iter);
-	g_assert (destination);
+	for (l = rows; l; l = g_list_next(l)) {
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
 
-	e_destination_store_remove_destination (destination_store, destination);
+		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (destination_store),
+				      	      &iter, path))
+			g_assert_not_reached ();
+
+		gtk_tree_path_free (path);
+
+		destination = e_destination_store_get_destination (destination_store, &iter);
+		g_assert (destination);
+
+		e_destination_store_remove_destination (destination_store, destination);
+	}
+	g_list_free (rows);
 }
 
 static gboolean 
@@ -838,7 +869,8 @@ remove_selection (ENameSelectorDialog *name_selector_dialog, GtkTreeView *tree_v
 	EDestinationStore *destination_store;
 	EDestination      *destination;
 	Section           *section;
-	GtkTreeIter        iter;
+	GtkTreeSelection  *selection;
+	GList		  *rows, *l;
 
 	section_index = find_section_by_tree_view (name_selector_dialog, tree_view);
 	if (section_index < 0) {
@@ -853,13 +885,31 @@ remove_selection (ENameSelectorDialog *name_selector_dialog, GtkTreeView *tree_v
 		return FALSE;
 	}
 
-	if (!gtk_tree_selection_get_selected (gtk_tree_view_get_selection (tree_view), NULL, &iter))
+	selection = gtk_tree_view_get_selection (tree_view);
+	if (!gtk_tree_selection_count_selected_rows (selection)) {
+		g_warning ("ENameSelectorDialog remove button clicked, but no selection!");
 		return FALSE;
+	}
 
-	destination = e_destination_store_get_destination (destination_store, &iter);
-	g_assert (destination);
+	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+	rows = g_list_reverse (rows);
 
-	e_destination_store_remove_destination (destination_store, destination);
+	for (l = rows; l; l = g_list_next(l)) {
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+
+		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (destination_store),
+					      &iter, path))
+			g_assert_not_reached ();
+
+		gtk_tree_path_free (path);
+
+		destination = e_destination_store_get_destination (destination_store, &iter);
+		g_assert (destination);
+
+		e_destination_store_remove_destination (destination_store, destination);
+	}
+	g_list_free (rows);
 
 	return TRUE;
 }
@@ -893,32 +943,23 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 	EContactStore     *contact_store;
 	EDestinationStore *destination_store;
 	GtkTreeSelection  *selection;
-	GtkTreeIter        iter;
 	EContact          *contact;
 	gint               section_index;
 	Section           *section;
 	gint               email_n;
+	GList		  *rows, *l;
 
 	/* Get the contact to be transferred */
 
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
 	selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
 
-	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+	if (!gtk_tree_selection_count_selected_rows (selection)) {
 		g_warning ("ENameSelectorDialog transfer button clicked, but no selection!");
 		return;
 	}
 
-	sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
-
-	contact = e_contact_store_get_contact (contact_store, &iter);
-	if (!contact) {
-		g_warning ("ENameSelectorDialog could not get selected contact!");
-		return;
-	}
-
 	/* Get the target section */
-
 	section_index = find_section_by_transfer_button (name_selector_dialog, transfer_button);
 	if (section_index < 0) {
 		g_warning ("ENameSelectorDialog got click from unknown button!");
@@ -932,7 +973,30 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 		return;
 	}
 
-	add_destination (destination_store, contact, email_n);
+	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+	rows = g_list_reverse (rows);
+
+	for (l = rows; l; l = g_list_next(l)) {
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+
+		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
+				      &iter, path))
+			g_assert_not_reached ();
+
+		gtk_tree_path_free (path);
+		sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
+
+		contact = e_contact_store_get_contact (contact_store, &iter);
+		if (!contact) {
+			g_warning ("ENameSelectorDialog could not get selected contact!");
+			g_list_free (rows);
+			return;
+		}
+
+		add_destination (destination_store, contact, email_n);
+	}
+	g_list_free (rows);
 }
 
 /* --------------------- *
@@ -994,8 +1058,11 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	name_selector_dialog->contact_sort = GTK_TREE_MODEL_SORT (
 		gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (contact_filter)));
+
+	/* sort on full name as we display full name in name selector dialog */
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (name_selector_dialog->contact_sort),
-					      E_CONTACT_FILE_AS, GTK_SORT_ASCENDING);
+					      E_CONTACT_FULL_NAME, GTK_SORT_ASCENDING);
+
 	gtk_tree_view_set_model (name_selector_dialog->contact_view,
 				 GTK_TREE_MODEL (name_selector_dialog->contact_sort));
 

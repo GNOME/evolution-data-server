@@ -1,3 +1,17 @@
+2005-11-09  Sushma Rai  <rsushma@novell.com>
+
+	* e-name-selector-dialog.c (e_name_selector_dialog_init)(add_section): 
+	Setting the multiple selection mode.
+	(selection_changed)(contact_selection_changed): Using 
+	gtk_tree_selection_count_selected_rows() to find if contacts are 
+	slected or not.
+	(contact_activated)(transfer_button_clicked): Finding the selected set 
+	of contacts and adding to destination.
+	(destination_activated)(remove_selection): Finding the selected set of 
+	destinations and removing them from destination store. Fixes #319848. 
+	(setup_name_selector_model): Sorting the contacts on full name instead 
+	of file as name as we display full name.
+
 2005-10-21  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-name-selector-dialog.c: Added the missing category filter in
