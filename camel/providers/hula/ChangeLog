@@ -1,0 +1,5 @@
+2005-11-14  Harish Krishnaswamy  <kharish@novell.com>
+
+	* Makefile.am, camel-hula-provider.c, libcamelhula.urls :
+	Camel Hula provider - initial commits.
+ 
