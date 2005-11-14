@@ -1,3 +1,39 @@
+Evolution-Data-Server 1.5.2, 2005-11-14
+---------------------------------------
+
+New Features:
+	- Camel Hula Provider (Harish)
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+	#320095 - Empty Trash Deletes From GW POA, But Doesn't Delete Headers 
+		  In Trash Folders (Parthasarathi)
+	#314476 - Fixes to inform the Over quota issue in groupwise to
+		  user (Sankar)
+	#320736 - Fixed a possible crash due to a invalid buffer
+		  (Parthasarathi)
+	#317804 - Fix Macao timezone issue (Harish)
+	#318130 - Fix to include e-cal-time-util.h for
+		  e-cal-backend-http.c to solve a build issue. (Matthew Daniel)
+	#319612 - Stop warnings from e-destination about xmlChar when
+		  compiling using gcc4 (Ross Burton)
+	#319848 - Multiple Select for To/CC/BCC in Name selector dialog.
+		  (Sushma)
+
+Other Fixes:
+
+	- Changed the string so as to be consistent with Win32 client error 
+	  messages. (Sankar)
+
+Update Translations:
+
+	- ca (Adam Weinberger)
+	- cs (Miloslav Trmac)	
+	- es (Francisco Javier F. Serrador)	
+	- fi (Ilkka Tuohela)
+	- ja (Takeshi AIHANA)
+	- ku (Erdal Ronahi)
+
 Evolution-Data-Server 1.5.1, 2005-10-25
 ---------------------------------------
 

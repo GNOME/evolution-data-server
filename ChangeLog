@@ -1,3 +1,8 @@
+2005-11-14  Harish Krishnaswamy  <kharish@novell.com>
+
+	* NEWS, configure.in: Release updates, bump version.
+	***** Release 1.5.2 *****
+
 2005-10-28  Erdal Ronahi  <erdal.ronahi@gmail.com>
 
 	* configure.in: Added ku (Kurdish) to ALL_LINGUAS
