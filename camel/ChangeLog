@@ -1,3 +1,7 @@
+2005-11-15  Harish Krishnaswamy  <kharish@novell.com>
+
+	* providers/Makefile.am: Add hula to SUBDIRS.
+
 2005-10-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug #218177
