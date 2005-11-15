@@ -188,7 +188,7 @@ camel_provider_load(const char *path, CamelException *ex)
 		return;
 	}
 
-	module = g_module_open (path, 0);
+	module = g_module_open (path, G_MODULE_BIND_LAZY);
 	if (!module) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not load %s: %s"),

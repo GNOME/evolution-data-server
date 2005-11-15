@@ -72,7 +72,7 @@ e_data_server_module_load (GTypeModule *gmodule)
 	
 	module = E_DATA_SERVER_MODULE (gmodule);
 	
-	module->library = g_module_open (module->path, 0);
+	module->library = g_module_open (module->path, G_MODULE_BIND_LAZY);
 
 	if (!module->library) {
 		g_warning (g_module_error ());
