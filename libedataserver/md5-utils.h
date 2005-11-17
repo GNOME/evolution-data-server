@@ -40,7 +40,6 @@ typedef struct _MD5Context {
 	guint32 buf[4];
 	guint32 bits[2];
 	guchar in[64];
-	gint doByteReverse;
 } MD5Context;
 
 

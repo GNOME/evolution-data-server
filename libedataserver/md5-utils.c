@@ -30,11 +30,6 @@
 
 static void md5_transform (guint32 buf[4], const guint32 in[16]);
 
-static gint _ie = 0x44332211;
-static union _endian { gint i; gchar b[4]; } *_endian = (union _endian *)&_ie;
-#define	IS_BIG_ENDIAN()		(_endian->b[0] == '\x44')
-#define	IS_LITTLE_ENDIAN()	(_endian->b[0] == '\x11')
-
 
 /*
  * Note: this code is harmless on little-endian machines.
@@ -68,11 +63,6 @@ md5_init (MD5Context *ctx)
 	
 	ctx->bits[0] = 0;
 	ctx->bits[1] = 0;
-	
-	if (IS_BIG_ENDIAN())	
-		ctx->doByteReverse = 1;		
-	else 
-		ctx->doByteReverse = 0;	
 }
 
 
@@ -111,8 +101,9 @@ md5_update (MD5Context *ctx, const guchar *buf, guint32 len)
 			return;
 		}
 		memcpy (p, buf, t);
-		if (ctx->doByteReverse)
-			_byte_reverse (ctx->in, 16);
+#if G_BYTE_ORDER == G_BIG_ENDIAN
+		_byte_reverse (ctx->in, 16);
+#endif
 		md5_transform (ctx->buf, (guint32 *) ctx->in);
 		buf += t;
 		len -= t;
@@ -121,8 +112,9 @@ md5_update (MD5Context *ctx, const guchar *buf, guint32 len)
 	
 	while (len >= 64) {
 		memcpy (ctx->in, buf, 64);
-		if (ctx->doByteReverse)
-			_byte_reverse (ctx->in, 16);
+#if G_BYTE_ORDER == G_BIG_ENDIAN
+		_byte_reverse (ctx->in, 16);
+#endif
 		md5_transform (ctx->buf, (guint32 *) ctx->in);
 		buf += 64;
 		len -= 64;
@@ -169,8 +161,9 @@ md5_final (MD5Context *ctx, guchar digest[16])
 	if (count < 8) {
 		/* Two lots of padding:  Pad the first block to 64 bytes */
 		memset (p, 0, count);
-		if (ctx->doByteReverse)
-			_byte_reverse (ctx->in, 16);
+#if G_BYTE_ORDER == G_BIG_ENDIAN
+		_byte_reverse (ctx->in, 16);
+#endif
 		md5_transform (ctx->buf, (guint32 *) ctx->in);
 		
 		/* Now fill the next block with 56 bytes */
@@ -179,16 +172,18 @@ md5_final (MD5Context *ctx, guchar digest[16])
 		/* Pad block to 56 bytes */
 		memset (p, 0, count - 8);
 	}
-	if (ctx->doByteReverse)
-		_byte_reverse (ctx->in, 14);
+#if G_BYTE_ORDER == G_BIG_ENDIAN
+	_byte_reverse (ctx->in, 14);
+#endif
 	
 	/* Append length in bits and transform */
 	((guint32 *) ctx->in)[14] = ctx->bits[0];
 	((guint32 *) ctx->in)[15] = ctx->bits[1];
 	
 	md5_transform (ctx->buf, (guint32 *) ctx->in);
-	if (ctx->doByteReverse)
-		_byte_reverse ((guchar *) ctx->buf, 4);
+#if G_BYTE_ORDER == G_BIG_ENDIAN
+	_byte_reverse ((guchar *) ctx->buf, 4);
+#endif
 	memcpy (digest, ctx->buf, 16);
 }
 
