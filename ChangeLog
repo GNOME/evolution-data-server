@@ -1,5 +1,12 @@
 2005-11-17  Ross Burton  <ross@burtonini.com>
 
+	* md5-utils.c:
+	* md5-utils.h:
+	Don't to byte order checks at runtime but use the GLib
+	G_BYTE_ORDER macro (#319592)
+
+2005-11-17  Ross Burton  <ross@burtonini.com>
+
 	* libedataserver/e-account-list.c:
 	* libedataserver/e-account.c:
 	* libedataserver/e-component-listener.c:
@@ -11,7 +18,7 @@
 	* libedataserver/e-source-group.c:
 	* libedataserver/e-source-list.c:
 	* libedataserver/e-source.c:
-	Use G_DEFINE_TYPE and add some more const keywords.
+	Use G_DEFINE_TYPE and add some more const keywords (#319591)
 
 2005-11-15  Ross Burton  <ross@burtonini.com>
 
