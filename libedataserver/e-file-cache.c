@@ -39,7 +39,7 @@ enum {
 	PROP_FILENAME
 };
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (EFileCache, e_file_cache, G_TYPE_OBJECT);
 
 static void
 e_file_cache_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
@@ -123,15 +123,13 @@ e_file_cache_finalize (GObject *object)
 		cache->priv = NULL;
 	}
 
-	parent_class->finalize (object);
+	G_OBJECT_CLASS (e_file_cache_parent_class)->finalize (object);
 }
 
 static void
 e_file_cache_class_init (EFileCacheClass *klass)
 {
 	GObjectClass *object_class;
-
-	parent_class = g_type_class_peek_parent (klass);
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = e_file_cache_finalize;
@@ -153,37 +151,6 @@ e_file_cache_init (EFileCache *cache)
 	priv->dirty = FALSE;
 	priv->frozen = FALSE;
 	cache->priv = priv;
-}
-
-/**
- * e_file_cache_get_type:
- * @void:
- *
- * Registers the #EFileCache class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #EFileCache class.
- **/
-GType
-e_file_cache_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EFileCacheClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_file_cache_class_init,
-                        NULL, NULL,
-                        sizeof (EFileCache),
-                        0,
-                        (GInstanceInitFunc) e_file_cache_init,
-                };
-		type = g_type_register_static (G_TYPE_OBJECT, "EFileCache", &info, 0);
-	}
-
-	return type;
 }
 
 /**

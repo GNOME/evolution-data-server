@@ -31,22 +31,21 @@
 #include <libxml/tree.h>
 #include <libxml/xmlmemory.h>
 
-#define PARENT_TYPE G_TYPE_OBJECT
-static GObjectClass *parent_class = NULL;
-
 static void finalize (GObject *);
 
+G_DEFINE_TYPE (EAccount, e_account, G_TYPE_OBJECT);
+
 static void
-class_init (GObjectClass *object_class)
+e_account_class_init (EAccountClass *account_class)
 {
-	parent_class = g_type_class_ref (PARENT_TYPE);
+	GObjectClass *object_class = G_OBJECT_CLASS (account_class);
 
 	/* virtual method override */
 	object_class->finalize = finalize;
 }
 
 static void
-init (EAccount *account)
+e_account_init (EAccount *account)
 {
 	account->id = g_new0 (EAccountIdentity, 1);
 	account->source = g_new0 (EAccountService, 1);
@@ -100,30 +99,7 @@ finalize (GObject *object)
 	g_free (account->smime_sign_key);
 	g_free (account->smime_encrypt_key);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-GType
-e_account_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo const object_info = {
-			sizeof (EAccountClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,
-			sizeof (EAccount),
-			0,
-			(GInstanceInitFunc) init
-		};
-		type = g_type_register_static (PARENT_TYPE, "EAccount", &object_info, 0);
-	}
-
-	return type;
+	G_OBJECT_CLASS (e_account_parent_class)->finalize (object);
 }
 
 /**

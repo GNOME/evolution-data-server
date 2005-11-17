@@ -15,40 +15,7 @@ static void e_list_init (EList *list);
 static void e_list_class_init (EListClass *klass);
 static void e_list_dispose (GObject *object);
 
-static GObjectClass *parent_class;
-
-/**
- * e_list_get_type:
- * @void: 
- * 
- * Registers the &EList class if necessary, and returns the type ID
- * associated to it.
- * 
- * Return value: The type ID of the &EList class.
- **/
-GType
-e_list_get_type (void)
-{
-	static GType type = 0;
-
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EListClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_list_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EList),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_list_init
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "EList", &info, 0);
-	}
-
-	return type;
-}
+G_DEFINE_TYPE (EList, e_list, G_TYPE_OBJECT);
 
 static void
 e_list_class_init (EListClass *klass)
@@ -56,8 +23,6 @@ e_list_class_init (EListClass *klass)
 	GObjectClass *object_class;
 
 	object_class = G_OBJECT_CLASS(klass);
-
-	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
 	object_class->dispose = e_list_dispose;
 }
@@ -187,6 +152,6 @@ e_list_dispose (GObject *object)
 		g_list_foreach(list->list, (GFunc) list->free, list->closure);
 	g_list_free(list->list);
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	(* G_OBJECT_CLASS (e_list_parent_class)->dispose) (object);
 }
 

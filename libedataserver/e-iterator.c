@@ -14,10 +14,6 @@
 static void e_iterator_init (EIterator *card);
 static void e_iterator_class_init (EIteratorClass *klass);
 
-#define PARENT_TYPE G_TYPE_OBJECT
-
-static GObjectClass *parent_class;
-
 enum {
 	INVALIDATE,
 	LAST_SIGNAL
@@ -25,38 +21,7 @@ enum {
 
 static guint e_iterator_signals [LAST_SIGNAL] = { 0, };
 
-/**
- * e_iterator_get_type:
- * @void: 
- * 
- * Registers the &EIterator class if necessary, and returns the type ID
- * associated to it.
- * 
- * Return value: The type ID of the &EIterator class.
- **/
-GType
-e_iterator_get_type (void)
-{
-	static GType type = 0;
-
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EIteratorClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_iterator_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EIterator),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_iterator_init
-		};
-
-		type = g_type_register_static (PARENT_TYPE, "EIterator", &info, 0);
-	}
-
-	return type;
-}
+G_DEFINE_TYPE (EIterator, e_iterator, G_TYPE_OBJECT);
 
 static void
 e_iterator_class_init (EIteratorClass *klass)
@@ -64,8 +29,6 @@ e_iterator_class_init (EIteratorClass *klass)
 	GObjectClass *object_class;
 
 	object_class = G_OBJECT_CLASS(klass);
-
-	parent_class = g_type_class_ref (PARENT_TYPE);
 
 	e_iterator_signals [INVALIDATE] =
 		g_signal_new ("invalidate",

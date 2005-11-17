@@ -1,3 +1,18 @@
+2005-11-17  Ross Burton  <ross@burtonini.com>
+
+	* libedataserver/e-account-list.c:
+	* libedataserver/e-account.c:
+	* libedataserver/e-component-listener.c:
+	* libedataserver/e-file-cache.c:
+	* libedataserver/e-iterator.c:
+	* libedataserver/e-list-iterator.c:
+	* libedataserver/e-list.c:
+	* libedataserver/e-sexp.c:
+	* libedataserver/e-source-group.c:
+	* libedataserver/e-source-list.c:
+	* libedataserver/e-source.c:
+	Use G_DEFINE_TYPE and add some more const keywords.
+
 2005-11-15  Ross Burton  <ross@burtonini.com>
 
 	* libedataserver/e-data-server-module.c

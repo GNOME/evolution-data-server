@@ -29,8 +29,6 @@
 #include "e-uid.h"
 #include "e-source-group.h"
 
-static GObjectClass *parent_class = NULL;
-
 /* Private members.  */
 
 struct _ESourceGroupPrivate {
@@ -69,6 +67,8 @@ source_changed_callback (ESource *source,
 
 /* GObject methods.  */
 
+G_DEFINE_TYPE (ESourceGroup, e_source_group, G_TYPE_OBJECT);
+
 static void
 impl_dispose (GObject *object)
 {
@@ -90,7 +90,7 @@ impl_dispose (GObject *object)
 		priv->sources = NULL;
 	}
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	(* G_OBJECT_CLASS (e_source_group_parent_class)->dispose) (object);
 }
 
 static void
@@ -103,7 +103,7 @@ impl_finalize (GObject *object)
 	g_free (priv->base_uri);
 	g_free (priv);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* G_OBJECT_CLASS (e_source_group_parent_class)->finalize) (object);
 }
 
 
@@ -116,8 +116,6 @@ e_source_group_class_init (ESourceGroupClass *class)
 
 	object_class->dispose  = impl_dispose;
 	object_class->finalize = impl_finalize;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	signals[CHANGED] = 
 		g_signal_new ("changed",
@@ -155,28 +153,6 @@ e_source_group_init (ESourceGroup *source_group)
 
 	priv = g_new0 (ESourceGroupPrivate, 1);
 	source_group->priv = priv;
-}
-
-GType
-e_source_group_get_type (void)
-{
-	static GType e_source_group_type = 0;
-
-	if (!e_source_group_type) {
-		static GTypeInfo info = {
-                        sizeof (ESourceGroupClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_source_group_class_init,
-                        NULL, NULL,
-                        sizeof (ESourceGroup),
-                        0,
-                        (GInstanceInitFunc) e_source_group_init
-                };
-		e_source_group_type = g_type_register_static (G_TYPE_OBJECT, "ESourceGroup", &info, 0);
-	}
-
-	return e_source_group_type;
 }
 
 /* Public methods.  */

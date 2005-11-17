@@ -17,8 +17,6 @@
 #include <bonobo/bonobo-object.h>
 #include "e-component-listener.h"
 
-#define PARENT_TYPE GTK_TYPE_OBJECT
-
 struct _EComponentListenerPrivate {
 	Bonobo_Unknown component;
 };
@@ -27,7 +25,6 @@ static void e_component_listener_class_init (EComponentListenerClass *klass);
 static void e_component_listener_init       (EComponentListener *cl, EComponentListenerClass *klass);
 static void e_component_listener_finalize   (GObject *object);
 
-static GObjectClass *parent_class = NULL;
 static GList *watched_connections = NULL;
 
 enum {
@@ -62,12 +59,12 @@ connection_listen_cb (gpointer object, gpointer user_data)
 	}
 }
 
+G_DEFINE_TYPE (EComponentListener, e_component_listener, G_TYPE_OBJECT);
+
 static void
 e_component_listener_class_init (EComponentListenerClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->finalize = e_component_listener_finalize;
 	klass->component_died = NULL;
@@ -106,30 +103,8 @@ e_component_listener_finalize (GObject *object)
 	g_free (cl->priv);
 	cl->priv = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
-}
-
-GType
-e_component_listener_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EComponentListenerClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_component_listener_class_init,
-                        NULL, NULL,
-                        sizeof (EComponentListener),
-                        0,
-                        (GInstanceInitFunc) e_component_listener_init
-                };
-		type = g_type_register_static (G_TYPE_OBJECT, "EComponentListener", &info, 0);
-	}
-
-	return type;
+	if (G_OBJECT_CLASS (e_component_listener_parent_class)->finalize)
+		(* G_OBJECT_CLASS (e_component_listener_parent_class)->finalize) (object);
 }
 
 /**

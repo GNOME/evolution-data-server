@@ -109,7 +109,7 @@ static void parse_dump_term(struct _ESExpTerm *t, int depth);
 static GObjectClass *parent_class;
 #endif
 
-static GScannerConfig scanner_config =
+static const GScannerConfig scanner_config =
 {
 	( " \t\r\n")		/* cset_skip_characters */,
 	( G_CSET_a_2_z
@@ -1045,7 +1045,7 @@ e_sexp_class_init (ESExpClass *klass)
 #endif
 
 /* 'builtin' functions */
-static struct {
+static const struct {
 	char *name;
 	ESExpFunc *func;
 	int type;		/* set to 1 if a function can perform shortcut evaluation, or

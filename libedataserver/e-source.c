@@ -29,8 +29,6 @@
 #include "e-uid.h"
 #include "e-source.h"
 
-static GObjectClass *parent_class = NULL;
-
 #define ES_CLASS(obj)  E_SOURCE_CLASS (G_OBJECT_GET_CLASS (obj))
 
 
@@ -80,6 +78,8 @@ group_weak_notify (ESource *source,
 
 /* GObject methods.  */
 
+G_DEFINE_TYPE (ESource, e_source, G_TYPE_OBJECT);
+
 static void
 impl_finalize (GObject *object)
 {
@@ -94,7 +94,7 @@ impl_finalize (GObject *object)
 
 	g_free (priv);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* G_OBJECT_CLASS (e_source_parent_class)->finalize) (object);
 }
 
 static void
@@ -107,7 +107,7 @@ impl_dispose (GObject *object)
 		priv->group = NULL;
 	}
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	(* G_OBJECT_CLASS (e_source_parent_class)->dispose) (object);
 }
 
 
@@ -120,8 +120,6 @@ e_source_class_init (ESourceClass *class)
 
 	object_class->dispose  = impl_dispose;
 	object_class->finalize = impl_finalize;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	signals[CHANGED] = 
 		g_signal_new ("changed",
@@ -143,28 +141,6 @@ e_source_init (ESource *source)
 
 	priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
 						  g_free, g_free);
-}
-
-GType
-e_source_get_type (void)
-{
-	static GType e_source_type = 0;
-
-	if (!e_source_type) {
-		static GTypeInfo info = {
-                        sizeof (ESourceClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_source_class_init,
-                        NULL, NULL,
-                        sizeof (ESource),
-                        0,
-                        (GInstanceInitFunc) e_source_init
-                };
-		e_source_type = g_type_register_static (G_TYPE_OBJECT, "ESource", &info, 0);
-	}
-
-	return e_source_type;
 }
 
 /* Public methods.  */

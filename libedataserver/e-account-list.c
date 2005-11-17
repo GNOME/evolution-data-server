@@ -41,16 +41,15 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0 };
 
-#define PARENT_TYPE E_TYPE_LIST
-static EListClass *parent_class = NULL;
-
 static void dispose (GObject *);
 static void finalize (GObject *);
 
+G_DEFINE_TYPE (EAccountList, e_account_list, E_TYPE_LIST);
+
 static void
-class_init (GObjectClass *object_class)
+e_account_list_class_init (EAccountListClass *klass)
 {
-	parent_class = g_type_class_ref (PARENT_TYPE);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	/* virtual method override */
 	object_class->dispose = dispose;
@@ -87,10 +86,8 @@ class_init (GObjectClass *object_class)
 }
 
 static void
-init (GObject *object)
+e_account_list_init (EAccountList *account_list)
 {
-	EAccountList *account_list = E_ACCOUNT_LIST (object);
-
 	account_list->priv = g_new0 (EAccountListPrivate, 1);
 }
 
@@ -108,7 +105,7 @@ dispose (GObject *object)
 		account_list->priv->gconf = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_account_list_parent_class)->dispose (object);
 }
 
 static void
@@ -118,30 +115,7 @@ finalize (GObject *object)
 
 	g_free (account_list->priv);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-GType
-e_account_list_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo const object_info = {
-			sizeof (EAccountListClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,
-			sizeof (EAccountList),
-			0,
-			(GInstanceInitFunc) init
-		};
-		type = g_type_register_static (PARENT_TYPE, "EAccountList", &object_info, 0);
-	}
-
-	return type;
+	G_OBJECT_CLASS (e_account_list_parent_class)->finalize (object);
 }
 
 static void

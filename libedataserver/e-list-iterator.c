@@ -30,42 +30,7 @@ static void        e_list_iterator_last       (EIterator *iterator);
 static const void *e_list_iterator_get        (EIterator *iterator);
 static void        e_list_iterator_dispose    (GObject *object);
 
-#define PARENT_TYPE E_TYPE_ITERATOR
-
-static EIteratorClass *parent_class;
-
-/**
- * e_list_iterator_get_type:
- * @void: 
- * 
- * Registers the &EListIterator class if necessary, and returns the type ID
- * associated to it.
- * 
- * Return value: The type ID of the &EListIterator class.
- **/
-GType
-e_list_iterator_get_type (void)
-{
-	static GType type = 0;
-
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EListIteratorClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_list_iterator_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EListIterator),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_list_iterator_init
-		};
-
-		type = g_type_register_static (PARENT_TYPE, "EListIterator", &info, 0);
-	}
-
-	return type;
-}
+G_DEFINE_TYPE(EListIterator, e_list_iterator, E_TYPE_ITERATOR);
 
 static void
 e_list_iterator_class_init (EListIteratorClass *klass)
@@ -75,8 +40,6 @@ e_list_iterator_class_init (EListIteratorClass *klass)
 
 	object_class = G_OBJECT_CLASS(klass);
 	iterator_class = E_ITERATOR_CLASS(klass);
-
-	parent_class = g_type_class_ref (PARENT_TYPE);
 
 	object_class->dispose = e_list_iterator_dispose;
 
@@ -91,8 +54,6 @@ e_list_iterator_class_init (EListIteratorClass *klass)
 	iterator_class->set        = e_list_iterator_set;
 	iterator_class->is_valid   = e_list_iterator_is_valid;
 }
-
-
 
 /**
  * e_list_iterator_init:
@@ -127,8 +88,8 @@ e_list_iterator_dispose (GObject *object)
 	e_list_remove_iterator(iterator->list, E_ITERATOR(iterator));
 	g_object_unref(iterator->list);
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	if (G_OBJECT_CLASS (e_list_iterator_parent_class)->dispose)
+		(* G_OBJECT_CLASS (e_list_iterator_parent_class)->dispose) (object);
 }
 
 static const void *

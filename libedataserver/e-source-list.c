@@ -28,8 +28,6 @@
 #include "e-data-server-marshal.h"
 #include "e-source-list.h"
 
-static GObjectClass *parent_class = NULL;
-
 struct _ESourceListPrivate {
 	GConfClient *gconf_client;
 	char *gconf_path;
@@ -84,12 +82,12 @@ load_from_gconf (ESourceList *list)
 	new_groups_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (p = conf_list, pos = 0; p != NULL; p = p->next, pos++) {
-		const char *xml = p->data;
+		const xmlChar *xml = p->data;
 		xmlDocPtr xmldoc;
 		char *group_uid;
 		ESourceGroup *existing_group;
 
-		xmldoc = xmlParseDoc ((char *) xml);
+		xmldoc = xmlParseDoc (xml);
 		if (xmldoc == NULL)
 			continue;
 
@@ -231,6 +229,8 @@ conf_changed_callback (GConfClient *client,
 
 /* GObject methods.  */
 
+G_DEFINE_TYPE (ESourceList, e_source_list, G_TYPE_OBJECT);
+
 static void
 impl_dispose (GObject *object)
 {
@@ -268,7 +268,7 @@ impl_dispose (GObject *object)
 		priv->gconf_client = NULL;
 	}
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	(* G_OBJECT_CLASS (e_source_list_parent_class)->dispose) (object);
 }
 
 static void
@@ -285,7 +285,7 @@ impl_finalize (GObject *object)
 	g_free (priv->gconf_path);
 	g_free (priv);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* G_OBJECT_CLASS (e_source_list_parent_class)->finalize) (object);
 }
 
 
@@ -298,8 +298,6 @@ e_source_list_class_init (ESourceListClass *class)
 
 	object_class->dispose  = impl_dispose;
 	object_class->finalize = impl_finalize;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	signals[CHANGED] = 
 		g_signal_new ("changed",
@@ -339,28 +337,6 @@ e_source_list_init (ESourceList *source_list)
 	priv = g_new0 (ESourceListPrivate, 1);
 
 	source_list->priv = priv;
-}
-
-GType
-e_source_list_get_type (void)
-{
-	static GType e_source_list_type = 0;
-
-	if (!e_source_list_type) {
-		static GTypeInfo info = {
-                        sizeof (ESourceListClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_source_list_class_init,
-                        NULL, NULL,
-                        sizeof (ESourceList),
-                        0,
-                        (GInstanceInitFunc) e_source_list_init
-                };
-		e_source_list_type = g_type_register_static (G_TYPE_OBJECT, "ESourceList", &info, 0);
-	}
-
-	return e_source_list_type;
 }
 
 /* Public methods.  */
