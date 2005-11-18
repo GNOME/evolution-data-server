@@ -159,6 +159,10 @@ disco_connect (CamelService *service, CamelException *ex)
 	case CAMEL_DISCO_STORE_RESYNCING:
 		if (!CDS_CLASS (service)->connect_online (service, ex))
 			return FALSE;
+
+		if (!store->diary)
+			return TRUE;
+
 		d(printf(" diary is %s\n", camel_disco_diary_empty(store->diary)?"empty":"not empty"));
 		if (camel_disco_diary_empty (store->diary))
 			return TRUE;
