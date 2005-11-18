@@ -1,7 +1,13 @@
+2005-11-18  Ross Burton  <ross@burtonini.com>
+
+	* libedataserver/md5-utils.c:
+	* libedataserver/e-component-listener.c:
+	Fix build.
+
 2005-11-17  Ross Burton  <ross@burtonini.com>
 
-	* md5-utils.c:
-	* md5-utils.h:
+	* libedataserver/md5-utils.c:
+	* libedataserver/md5-utils.h:
 	Don't do byte order checks at runtime but use the GLib
 	G_BYTE_ORDER macro (#319592)
 

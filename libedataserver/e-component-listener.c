@@ -21,8 +21,6 @@ struct _EComponentListenerPrivate {
 	Bonobo_Unknown component;
 };
 
-static void e_component_listener_class_init (EComponentListenerClass *klass);
-static void e_component_listener_init       (EComponentListener *cl, EComponentListenerClass *klass);
 static void e_component_listener_finalize   (GObject *object);
 
 static GList *watched_connections = NULL;
@@ -80,7 +78,7 @@ e_component_listener_class_init (EComponentListenerClass *klass)
 }
 
 static void
-e_component_listener_init (EComponentListener *cl, EComponentListenerClass *klass)
+e_component_listener_init (EComponentListener *cl)
 {
 	/* allocate internal structure */
 	cl->priv = g_new (EComponentListenerPrivate, 1);

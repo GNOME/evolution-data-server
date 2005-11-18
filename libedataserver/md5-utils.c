@@ -31,8 +31,9 @@
 static void md5_transform (guint32 buf[4], const guint32 in[16]);
 
 
+#if G_BYTE_ORDER == G_BIG_ENDIAN
 /*
- * Note: this code is harmless on little-endian machines.
+ * Note: this code is not required on little-endian machines.
  */
 static void 
 _byte_reverse (guchar *buf, guint32 longs)
@@ -45,6 +46,7 @@ _byte_reverse (guchar *buf, guint32 longs)
 		buf += 4;
 	} while (--longs);
 }
+#endif
 
 /**
  * md5_init: Initialise an md5 context object
