@@ -1,5 +1,8 @@
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
+	* libebook/e-contact.c: Include e-util.h and redefine
+	EVOLUTION_LOCALEDIR as e_util_get_localedir() on Windows.
+
 	* backends/ldap/e-book-backend-ldap.c: Use <winldap.h> and
 	openldap-extract.h on Windows.
 	(get_ldap_library_info): Use ldap_init() instead of the

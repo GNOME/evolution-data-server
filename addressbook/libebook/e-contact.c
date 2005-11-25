@@ -32,6 +32,12 @@
 #include "e-book.h"
 #include "e-name-western.h"
 
+#ifdef G_OS_WIN32
+#include <libedataserver/e-util.h>
+#undef EVOLUTION_LOCALEDIR
+#define EVOLUTION_LOCALEDIR e_util_get_localedir ()
+#endif
+
 #define d(x)
 
 struct _EContactPrivate {
