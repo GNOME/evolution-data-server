@@ -160,6 +160,28 @@ struct _CamelCertDBPrivate {
 #define CAMEL_CERTDB_LOCK(db, l) (g_mutex_lock (((CamelCertDB *) db)->priv->l))
 #define CAMEL_CERTDB_UNLOCK(db, l) (g_mutex_unlock (((CamelCertDB *) db)->priv->l))
 
+#ifdef G_OS_WIN32
+int fsync (int fd);
+char *realpath(const char *path, char *resolved_path);
+#undef S_ISLNK
+#define S_ISLNK(m) 0
+#undef lstat
+#define lstat(path, statp) stat(path, statp)
+#endif
+
+const char *_camel_get_localedir (void) G_GNUC_CONST;
+const char *_camel_get_libexecdir (void) G_GNUC_CONST;
+const char *_camel_get_providerdir (void) G_GNUC_CONST;
+
+#undef EVOLUTION_LOCALEDIR
+#define EVOLUTION_LOCALEDIR _camel_get_localedir ()
+
+#undef CAMEL_LIBEXECDIR
+#define CAMEL_LIBEXECDIR _camel_get_libexecdir ()
+
+#undef CAMEL_PROVIDERDIR
+#define CAMEL_PROVIDERDIR _camel_get_providerdir ()
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

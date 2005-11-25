@@ -1,3 +1,15 @@
+2005-11-25  Tor Lillqvist  <tml@novell.com>
+
+	* camel-private.h: Add declaration for our Win32-only fsync() and
+	realpath() implementations. Define S_ISLNK() as 0 and lstat() as
+	stat().
+	(realpath): Use gstdio wrappers.
+
+	* camel-win32.c (_camel_get_localedir, _camel_get_libexecdir,
+	_camel_get_providerdir): Run-time path construction
+	machinery. Maybe these should just be in libedataserver instead,
+	like _libedataserver_get_extensiondir() etc.
+
 2005-11-18  Jeff Cai  <jeff.cai@sun.com>
 
 	* camel-disco-store.c: (disco_connect):

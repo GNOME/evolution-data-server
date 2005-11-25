@@ -29,9 +29,53 @@
 #include <io.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
+
+#include <libedataserver/e-util.h>
 
 #include "camel.h"
-#include "camel-private.h"
+
+G_LOCK_DEFINE_STATIC (mutex);
+
+/* localedir uses system codepage as it is passed to the non-UTF8ified
+ * gettext library
+ */
+static const char *localedir = NULL;
+
+/* The others are in UTF-8 */
+static const char *libexecdir;
+static const char *providerdir;
+
+static void
+setup (void)
+{
+        G_LOCK (mutex);
+        if (localedir != NULL) {
+                G_UNLOCK (mutex);
+                return;
+        }
+
+        localedir = e_util_replace_prefix (e_util_get_cp_prefix (), EVOLUTION_LOCALEDIR);
+
+	libexecdir = e_util_replace_prefix (e_util_get_prefix (), CAMEL_LIBEXECDIR);
+	providerdir = e_util_replace_prefix (e_util_get_prefix (), CAMEL_PROVIDERDIR);
+
+	G_UNLOCK (mutex);
+}
+
+#include "camel-private.h"	/* For prototypes */
+
+#define GETTER(varbl)				\
+const char *					\
+_camel_get_##varbl (void)			\
+{						\
+        setup ();				\
+        return varbl;				\
+}
+
+GETTER(localedir)
+GETTER(libexecdir)
+GETTER(providerdir)
 
 int
 fsync (int fd)
@@ -66,7 +110,7 @@ realpath(const char *name,
 {
   /* Lifted from glibc and modified as necessary */
 
-  char *dest, *extra_buf = NULL;
+  char *dest;
   const char *past_root;
   const char *start, *end, *resolved_limit;
 
@@ -133,7 +177,6 @@ realpath(const char *name,
   for (end = name; *start; start = end)
     {
       struct stat st;
-      int n;
 
       /* Skip sequence of multiple path-separators.  */
       while (G_IS_DIR_SEPARATOR (*start))
@@ -159,8 +202,6 @@ realpath(const char *name,
 	}
       else
 	{
-	  size_t new_size;
-
 	  if (!G_IS_DIR_SEPARATOR (dest[-1]))
 	    *dest++ = G_DIR_SEPARATOR;
 
@@ -177,7 +218,7 @@ realpath(const char *name,
 	  dest += end - start;
 	  *dest = '\0';
 
-	  if (stat (resolved, &st) < 0)
+	  if (g_stat (resolved, &st) < 0)
 	    goto error;
 	}
     }
@@ -190,3 +231,4 @@ realpath(const char *name,
 error:
   return NULL;
 }
+
