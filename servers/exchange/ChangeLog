@@ -1,3 +1,10 @@
+2005-11-25  Tor Lillqvist  <tml@novell.com>
+
+	* lib/e2k-uri.c (e2k_uri_new)
+	* storage/exchange-oof.c (find_str_case): Use
+	g_ascii_strncasecmp() instead of strncasecmp() for
+	portability.
+
 2005-10-21  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/exchange-account.c (exchange_account_remove_folder) : Proceed
