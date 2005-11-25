@@ -47,6 +47,10 @@
 #include <libedata-book/e-data-book-factory.h>
 #include <libedata-cal/e-data-cal-factory.h>
 
+#ifdef G_OS_WIN32
+#include <libedataserver/e-util.h>
+#endif
+
 #include "server-interface-check.h"
 #include "server-logging.h"
 #include "offline-listener.h"
@@ -76,6 +80,7 @@ static guint termination_handler_id;
 
 static GStaticMutex termination_lock = G_STATIC_MUTEX_INIT;
 
+#ifndef G_OS_WIN32
 static pthread_mutex_t segv_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t main_thread;
 
@@ -128,6 +133,7 @@ setup_segv_handler (void)
 	pthread_mutex_lock(&segv_mutex);
 }
 
+#endif
 
 /* Termination */
 
@@ -282,6 +288,43 @@ dump_backends (int signal)
 }
 #endif
 
+#ifdef G_OS_WIN32
+#undef EVOLUTION_LOCALEDIR
+#define EVOLUTION_LOCALEDIR e_util_get_localedir ()
+
+/* Used in GNOME_PROGRAM_STANDARD_PROPERTIES: */
+#undef PREFIX
+#define PREFIX e_util_get_prefix ()
+
+static const char *
+sysconfdir (void)
+{
+	return e_util_replace_prefix (e_util_get_prefix (),
+				      SYSCONFDIR);
+}
+#undef SYSCONFDIR
+#define SYSCONFDIR sysconfdir ()
+
+static const char *
+datadir (void)
+{
+	return e_util_replace_prefix (e_util_get_prefix (),
+				      DATADIR);
+}
+#undef DATADIR
+#define DATADIR datadir ()
+
+static const char *
+libdir (void)
+{
+	return e_util_replace_prefix (e_util_get_prefix (),
+				      LIBDIR);
+}
+#undef LIBDIR
+#define LIBDIR libdir ()
+
+#endif
+
 int
 main (int argc, char **argv)
 {
@@ -307,9 +350,9 @@ main (int argc, char **argv)
 			  bonobo_activation_orb_get(),
 			  CORBA_OBJECT_NIL,
 			  CORBA_OBJECT_NIL);
-	
+#ifndef G_OS_WIN32
 	setup_segv_handler ();
-
+#endif
 	e_data_server_module_init ();
 
 	if (!( (did_books = setup_books ())

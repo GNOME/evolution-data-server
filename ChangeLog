@@ -52,6 +52,11 @@
 	e-d-s) in INCLUDES so that they can be recognized and changed at
 	run-time to end-user machine installation paths on Win32.
 
+	* src/server.c: No segv handling on Win32. Run-time path
+	construction for the PREFIX, SYSCONFDIR, DATADIR and LIBDIR used
+	in GNOME_PROGRAM_STANDARD_PROPERTIES which is passed to
+	gnome_program_init().
+
 2005-11-18  Ross Burton  <ross@burtonini.com>
 
 	* libedataserver/md5-utils.c:
