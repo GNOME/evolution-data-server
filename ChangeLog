@@ -20,6 +20,11 @@
 	won't be different than 1 in this universe. Do use sizeof(tmp_buf)
 	instead of hardcoding 1024. Drop leftover debugging printouts.
 
+	* libedataserver/Makefile.am: Add libedataserver-private.h. Pass
+	more configure-time pathname definitions (as used elsewhere in
+	e-d-s) in INCLUDES so that they can be recognized and changed at
+	run-time to end-user machine installation paths on Win32.
+
 2005-11-18  Ross Burton  <ross@burtonini.com>
 
 	* libedataserver/md5-utils.c:

@@ -2,8 +2,11 @@ INCLUDES =								\
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-I$(top_srcdir)/libdb/dist					\
+	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"				\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"			\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
+	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
 	$(E_DATA_SERVER_CFLAGS)
 
 # The marshallers
@@ -39,6 +42,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-util.c			\
 	e-trie.c			\
 	e-xml-hash-utils.c		\
+	libedataserver-private.h	\
 	md5-utils.c
 
 libedataserver_1_2_la_LIBADD = 				\
