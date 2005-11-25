@@ -21,6 +21,9 @@
 	assume e-d-s and evo are installed in the same folder on the
 	end-user machine.
 	
+	* libedataserver/e-util.h: Declare the above new public Win32-only
+	functions.
+
 	* libedataserver/libedataserver-private.h: New file. Declares so
 	far some Win32-only functionality, to be used in various parts of
 	e-d-s.
