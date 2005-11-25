@@ -30,6 +30,10 @@
 #include <glib.h>
 #include "e-util.h"
 
+#ifdef G_OS_WIN32
+#define mkdir(path,mode) _mkdir(path)
+#endif
+
 /**
  * e_util_mkdir_hier:
  * @path: The directory hierarchy to create.
@@ -427,3 +431,201 @@ e_util_pthread_id (pthread_t t)
 	}
 #endif
 }
+
+#ifdef G_OS_WIN32
+
+#include <windows.h>
+#include <mbstring.h>
+
+/* The following function is lifted from libgnome. We don't want
+ * libedataserver to depend on libgnome, especially as libgnome is
+ * being deprecated. This function will move to GLib, presumably, but
+ * isn't there yet.
+ */
+
+/**
+ * gnome_win32_get_prefixes:
+ * @hmodule: The handle to a DLL (a HMODULE).
+ * @full_prefix: Where the full UTF-8 path to the DLL's installation folder
+ *               will be returned.
+ * @cp_prefix: Where a system codepage version of
+ *             the installation folder will be returned.
+ *
+ * This function looks up the installation prefix of the DLL (or EXE)
+ * with handle @hmodule. The prefix using long filenames and in UTF-8
+ * form is returned in @full_prefix. The prefix using short file names
+ * (if present in the file system) and in the system codepage is
+ * returned in @cp_prefix. To determine the installation prefix, the
+ * full path to the DLL or EXE is first fetched. If the last folder
+ * component in that path is called "bin", its parent folder is used,
+ * otherwise the folder itself.
+ *
+ * If either can't be obtained, %NULL is stored. The caller should be
+ * prepared to handle that.
+ *
+ * The returned character pointers are newly allocated and should be
+ * freed with g_free when not longer needed.
+ */
+static void
+get_prefixes (gpointer  hmodule,
+	      char    **full_prefix,
+	      char    **cp_prefix)
+{
+        wchar_t wcbfr[1000];
+        char cpbfr[1000];
+
+        g_return_if_fail (full_prefix != NULL);
+        g_return_if_fail (cp_prefix != NULL);
+
+        *full_prefix = NULL;
+        *cp_prefix = NULL;
+
+        if (G_WIN32_HAVE_WIDECHAR_API ()) {
+                /* NT-based Windows has wide char API */
+                if (GetModuleFileNameW ((HMODULE) hmodule, wcbfr, G_N_ELEMENTS (wcbfr))) {
+                        *full_prefix = g_utf16_to_utf8 (wcbfr, -1,
+                                                        NULL, NULL, NULL);
+                        if (GetShortPathNameW (wcbfr, wcbfr, G_N_ELEMENTS (wcbfr)) &&
+                            /* Short pathnames always contain only
+                             * ASCII, I think, but just in case, be
+                             * prepared.
+                             */
+                            WideCharToMultiByte (CP_ACP, 0, wcbfr, -1,
+                                                 cpbfr, G_N_ELEMENTS (cpbfr),
+                                                 NULL, NULL))
+                                *cp_prefix = g_strdup (cpbfr);
+                        else if (*full_prefix)
+                                *cp_prefix = g_locale_from_utf8 (*full_prefix, -1,
+                                                                 NULL, NULL, NULL);
+                }
+        } else {
+                /* Win9x */
+                if (GetModuleFileNameA ((HMODULE) hmodule, cpbfr, G_N_ELEMENTS (cpbfr))) {
+                        *full_prefix = g_locale_to_utf8 (cpbfr, -1,
+                                                         NULL, NULL, NULL);
+                        *cp_prefix = g_strdup (cpbfr);
+                }
+        }
+
+        if (*full_prefix != NULL) {
+                gchar *p = strrchr (*full_prefix, '\\');
+                if (p != NULL)
+                        *p = '\0';
+      
+                p = strrchr (*full_prefix, '\\');
+                if (p && (g_ascii_strcasecmp (p + 1, "bin") == 0))
+                        *p = '\0';
+        }
+
+        /* cp_prefix is in system codepage */
+        if (*cp_prefix != NULL) {
+                gchar *p = _mbsrchr (*cp_prefix, '\\');
+                if (p != NULL)
+                        *p = '\0';
+      
+                p = _mbsrchr (*cp_prefix, '\\');
+                if (p && (g_ascii_strcasecmp (p + 1, "bin") == 0))
+                        *p = '\0';
+        }
+}
+
+static const char *prefix = NULL;
+static const char *cp_prefix;
+
+static const char *localedir;
+static const char *extensiondir;
+static const char *imagesdir;
+static const char *ui_gladedir;
+
+static HMODULE hmodule;
+G_LOCK_DEFINE_STATIC (mutex);
+
+/* Silence gcc with a prototype. Yes, this is silly. */
+BOOL WINAPI DllMain (HINSTANCE hinstDLL,
+		     DWORD     fdwReason,
+		     LPVOID    lpvReserved);
+
+/* Minimal DllMain that just tucks away the DLL's HMODULE */
+BOOL WINAPI
+DllMain (HINSTANCE hinstDLL,
+	 DWORD     fdwReason,
+	 LPVOID    lpvReserved)
+{
+        switch (fdwReason) {
+        case DLL_PROCESS_ATTACH:
+                hmodule = hinstDLL;
+                break;
+        }
+        return TRUE;
+}
+
+char *
+e_util_replace_prefix (const char *runtime_prefix,
+		       const char *configure_time_path)
+{
+        if (runtime_prefix &&
+            strncmp (configure_time_path, E_DATA_SERVER_PREFIX "/",
+                     strlen (E_DATA_SERVER_PREFIX) + 1) == 0) {
+                return g_strconcat (runtime_prefix,
+                                    configure_time_path + strlen (E_DATA_SERVER_PREFIX),
+                                    NULL);
+        } else
+                return g_strdup (configure_time_path);
+}
+
+static void
+setup (void)
+{
+	char *full_pfx;  
+	char *cp_pfx; 
+
+        G_LOCK (mutex);
+        if (prefix != NULL) {
+                G_UNLOCK (mutex);
+                return;
+        }
+
+	/* This requires that the libedataserver DLL is installed in $bindir */
+        get_prefixes (hmodule, &full_pfx, &cp_pfx);
+
+	prefix = g_strdup (full_pfx);
+	cp_prefix = g_strdup (cp_pfx);
+
+	g_free (full_pfx);
+	g_free (cp_pfx);
+
+	localedir = e_util_replace_prefix (cp_prefix, EVOLUTION_LOCALEDIR);
+	extensiondir = e_util_replace_prefix (prefix, E_DATA_SERVER_EXTENSIONDIR);
+	imagesdir = e_util_replace_prefix (prefix, E_DATA_SERVER_IMAGESDIR);
+	ui_gladedir = e_util_replace_prefix (prefix, E_DATA_SERVER_UI_GLADEDIR);
+
+	G_UNLOCK (mutex);
+}
+
+#include "libedataserver-private.h" /* For prototypes */
+
+#define GETTER_IMPL(varbl)			\
+{						\
+        setup ();				\
+        return varbl;				\
+}
+
+#define PRIVATE_GETTER(varbl)			\
+const char *					\
+_libedataserver_get_##varbl (void)		\
+	GETTER_IMPL(varbl)
+
+#define PUBLIC_GETTER(varbl)			\
+const char *					\
+e_util_get_##varbl (void)			\
+	GETTER_IMPL(varbl)
+
+PRIVATE_GETTER(extensiondir)
+PRIVATE_GETTER(imagesdir)
+PRIVATE_GETTER(ui_gladedir)
+
+PUBLIC_GETTER(prefix)
+PUBLIC_GETTER(cp_prefix)
+PUBLIC_GETTER(localedir)
+
+#endif	/* G_OS_WIN32 */

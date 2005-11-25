@@ -10,6 +10,17 @@
 	* libedataserver/e-url.c (e_uri_new): Use g_ascii_strncasecmp()
 	instead of strncasecmp() for portability.
 
+	* libedataserver/e-util.c: Implement install-anywhere machinery
+	for Win32.
+	(DllMain): Minimal DllMain that just tucks away the handle to the
+	DLL.
+	(_libedataserver_get_extensiondir, _libedataserver_get_imagesdir,
+	_libedataserver_get_ui_gladedir): Functions private to e-d-s.
+	(e_util_get_prefix, e_util_get_cp_prefix, e_util_get_localedir,
+	e_util_replace_prefix): Functions intended also for Evolution. We
+	assume e-d-s and evo are installed in the same folder on the
+	end-user machine.
+	
 	* libedataserver/libedataserver-private.h: New file. Declares so
 	far some Win32-only functionality, to be used in various parts of
 	e-d-s.
