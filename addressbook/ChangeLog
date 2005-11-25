@@ -4,6 +4,9 @@
 	things lifted from OpenLDAP for use on Windows where we use
 	Microsoft's LDAP implementation.
 
+	* backends/ldap/Makefile.am: Link with more libraries to avoid
+	unresolved externals on Windows. Distribute openldap-extract.h.
+
 2005-10-26  Ross Burton  <ross@burtonini.com>
 
 	* libebook/e-destination.c:

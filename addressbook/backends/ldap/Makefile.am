@@ -15,9 +15,11 @@ libebookbackendldap_la_SOURCES =			\
 	e-book-backend-ldap-factory.c
 
 libebookbackendldap_la_LIBADD =						\
-	$(LDAP_LIBS)							\
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la
+	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
+	$(LDAP_LIBS)
 
 libebookbackendldap_la_LDFLAGS =	\
 	-module -avoid-version $(NO_UNDEFINED)
@@ -28,4 +30,4 @@ LDAP_SCHEMA =						\
 ldapschemadir = $(privdatadir)
 ldapschema_DATA= $(LDAP_SCHEMA)
 
-EXTRA_DIST = $(LDAP_SCHEMA)
+EXTRA_DIST = $(LDAP_SCHEMA) openldap-extract.h
