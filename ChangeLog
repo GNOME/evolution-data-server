@@ -1,5 +1,9 @@
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
+	* libedataserver/e-time-utils.c: Include strptime() implementation
+	lifted from glibc for portability. Use it unless
+	HAVE_STRPTIME. Make it local for this file, though.
+
 	* libedataserver/e-uid.c (e_uid_new): Use g_get_host_name() from
 	GLib 2.8 instead of gethostname().
 
