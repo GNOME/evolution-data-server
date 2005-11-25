@@ -32,6 +32,9 @@
 #include <fcntl.h>
 #include <string.h>
 
+#include <glib.h>
+
+#ifndef G_OS_WIN32
 #ifdef DEBUG
 #define LDAP_DEBUG
 #define LDAP_DEBUG_ADD
@@ -40,8 +43,17 @@
 #ifdef DEBUG
 #undef LDAP_DEBUG
 #endif
+#else
+#define interface windows_interface
+#include <windows.h>
+#undef interface
+#include <winldap.h>
+#include "openldap-extract.h"
+#endif
 
 #define d(x) x
+
+#ifndef G_OS_WIN32
 
 #if LDAP_VENDOR_VERSION > 20000
 #define OPENLDAP2
@@ -51,6 +63,8 @@
 
 #ifdef OPENLDAP2
 #include <ldap_schema.h>
+#endif
+
 #endif
 
 #include <sys/time.h>
@@ -575,7 +589,8 @@ get_ldap_library_info ()
 	LDAPAPIInfo info;
 	LDAP *ldap;
 
-	if (LDAP_SUCCESS != ldap_create (&ldap)) {
+	ldap = ldap_init (NULL, 0);
+	if (ldap == NULL) {
 		g_warning ("couldn't create LDAP* for getting at the client lib api info");
 		return;
 	}
@@ -604,7 +619,7 @@ get_ldap_library_info ()
 		ldap_memfree (info.ldapai_vendor_name);
 	}
 
-	ldap_unbind_ext_s (ldap, NULL, NULL);
+	ldap_unbind (ldap);
 }
 
 static int
@@ -729,7 +744,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 	/* close connection first if it's open first */
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (blpriv->ldap) {
-		ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
+		ldap_unbind (blpriv->ldap);
 	}
 	blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
 
@@ -755,22 +770,29 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 			if (!bl->priv->ldap_v3 && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 				g_message ("TLS not available (fatal version), v3 protocol could not be established (ldap_error 0x%02x)", ldap_error);
-				ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
+				ldap_unbind (blpriv->ldap);
 				blpriv->ldap = NULL;
 				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 				return GNOME_Evolution_Addressbook_TLSNotAvailable;
 			}
 
 			if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
+#if defined (LDAP_OPT_X_TLS_HARD) && defined (LDAP_OPT_X_TLS)
 				tls_level = LDAP_OPT_X_TLS_HARD;
 				ldap_set_option (blpriv->ldap, LDAP_OPT_X_TLS, &tls_level);
+#elif defined (G_OS_WIN32)
+				tls_level = LDAP_OPT_ON;
+				ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, &tls_level);
+#else
+				g_message ("TLS option not available");
+#endif
 			}
 			else if (bl->priv->use_tls) {
 				ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
 				if (LDAP_SUCCESS != ldap_error) {
 					if (bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 						g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
-						ldap_unbind_ext_s (blpriv->ldap, NULL, NULL);
+						ldap_unbind (blpriv->ldap);
 						blpriv->ldap = NULL;
 						g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 						return GNOME_Evolution_Addressbook_TLSNotAvailable;
@@ -3850,7 +3872,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
 
-	if (!strncasecmp (auth_method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
+	if (!g_ascii_strncasecmp (auth_method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
 
 		if (!strcmp (auth_method, "ldap/simple-email")) {
 			LDAPMessage    *res, *e;
@@ -3926,7 +3948,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 						       ldap_error_to_response (ldap_error));
 	}
 #ifdef ENABLE_SASL_BINDS
-	else if (!strncasecmp (auth_method, SASL_PREFIX, strlen (SASL_PREFIX))) {
+	else if (!g_ascii_strncasecmp (auth_method, SASL_PREFIX, strlen (SASL_PREFIX))) {
 		g_print ("sasl bind (mech = %s) as %s", auth_method + strlen (SASL_PREFIX), user);
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_error = ldap_sasl_bind_s (bl->priv->ldap,
@@ -4044,7 +4066,7 @@ ldap_cancel_op(void *key, void *value, void *data)
 	/* ignore errors, its only best effort? */
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (bl->priv->ldap)
-		ldap_abandon_ext (bl->priv->ldap, op->id, NULL, NULL);
+		ldap_abandon (bl->priv->ldap, op->id);
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 }
 
@@ -4243,7 +4265,7 @@ e_book_backend_ldap_set_mode (EBookBackend *backend, int mode)
 
 #if 0
 		if (bl->priv->ldap) {
-			ldap_unbind_ext_s (bl->priv->ldap, NULL, NULL);
+			ldap_unbind (bl->priv->ldap);
 			bl->priv->ldap = NULL;
 		}
 #endif
@@ -4339,7 +4361,7 @@ e_book_backend_ldap_dispose (GObject *object)
 
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);	
 		if (bl->priv->ldap)
-			ldap_unbind_ext_s (bl->priv->ldap, NULL, NULL);
+			ldap_unbind (bl->priv->ldap);
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (bl->priv->poll_timeout != -1) {
