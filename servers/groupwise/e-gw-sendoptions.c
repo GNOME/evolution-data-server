@@ -58,11 +58,11 @@ e_gw_sendoptions_get_status_tracking_options (EGwSendOptions *opts, char *type)
 	g_return_val_if_fail (opts != NULL || E_IS_GW_SENDOPTIONS (opts), NULL);
 	g_return_val_if_fail (type != NULL, NULL);
 
-	if (!strcasecmp (type, "mail"))
+	if (!g_ascii_strcasecmp (type, "mail"))
 		return opts->priv->mopts;
-	else if (!strcasecmp (type, "calendar"))
+	else if (!g_ascii_strcasecmp (type, "calendar"))
 		return opts->priv->copts;
-	else if (!strcasecmp (type, "task"))
+	else if (!g_ascii_strcasecmp (type, "task"))
 		return opts->priv->topts;
 	else
 		return NULL;
@@ -297,11 +297,11 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 				val = soup_soap_parameter_get_string_value (val_param);
 
 			if (val) {
-				if (!strcasecmp (val, "High"))
+				if (!g_ascii_strcasecmp (val, "High"))
 					gopts->priority = E_GW_PRIORITY_HIGH;
-				else if (!strcasecmp (val, "Standard")) {
+				else if (!g_ascii_strcasecmp (val, "Standard")) {
 					gopts->priority = E_GW_PRIORITY_STANDARD;
-				} else if (!strcasecmp (val, "Low"))
+				} else if (!g_ascii_strcasecmp (val, "Low"))
 					gopts->priority = E_GW_PRIORITY_LOW;
 				else
 					gopts->priority = E_GW_PRIORITY_UNDEFINED;
@@ -313,9 +313,9 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 				val = soup_soap_parameter_get_string_value (val_param);
 
 	       		if (val) {
-				if (!strcasecmp (val, "None"))
+				if (!g_ascii_strcasecmp (val, "None"))
 					gopts->reply_enabled = FALSE;
-				else if (!strcasecmp (val, "WhenConvenient")) {
+				else if (!g_ascii_strcasecmp (val, "WhenConvenient")) {
 					gopts->reply_enabled = TRUE;
 					gopts->reply_convenient = TRUE;
 				} else {
