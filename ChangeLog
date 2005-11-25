@@ -10,6 +10,10 @@
 	* libedataserver/e-url.c (e_uri_new): Use g_ascii_strncasecmp()
 	instead of strncasecmp() for portability.
 
+	* libedataserver/libedataserver-private.h: New file. Declares so
+	far some Win32-only functionality, to be used in various parts of
+	e-d-s.
+
 	* libedataserver/md5-utils.c (md5_get_digest_from_file): Use
 	gstdio wrappers for better non-ASCII filename support on
 	Win32. Open file in binary mode. Don't use sizeof(guchar), it
