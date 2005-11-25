@@ -22,10 +22,11 @@
 
 #include "e-uid.h"
 
+#include <glib.h>
+
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-
 
 /**
  * e_uid_new:
@@ -38,22 +39,11 @@
 char *
 e_uid_new (void)
 {
-	static char *hostname;
 	static int serial;
-
-	if (!hostname) {
-		static char buffer [512];
-
-		if ((gethostname (buffer, sizeof (buffer) - 1) == 0) &&
-		    (buffer [0] != 0))
-			hostname = buffer;
-		else
-			hostname = "localhost";
-	}
 
 	return g_strdup_printf ("%lu.%lu.%d@%s",
 				(unsigned long) time (NULL),
 				(unsigned long) getpid (),
 				serial++,
-				hostname);
+				g_get_host_name ());
 }
