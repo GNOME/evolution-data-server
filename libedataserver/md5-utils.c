@@ -25,6 +25,10 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
 #include "md5-utils.h"
 
 
@@ -333,15 +337,13 @@ md5_get_digest_from_file (const gchar *filename, guchar digest[16])
 	gint nb_bytes_read;
 	FILE *fp;
 
-	printf("generating checksum\n");
-
 	md5_init (&ctx);
-	fp = fopen(filename, "r");
+	fp = g_fopen(filename, "rb");
 	if (!fp) {
 	return;
 	}
 	
-	while ((nb_bytes_read = fread (tmp_buf, sizeof (guchar), 1024, fp)) > 0)
+	while ((nb_bytes_read = fread (tmp_buf, 1, sizeof (tmp_buf), fp)) > 0)
 		md5_update (&ctx, tmp_buf, nb_bytes_read);
 	
 	if (ferror(fp)) {
@@ -351,10 +353,4 @@ md5_get_digest_from_file (const gchar *filename, guchar digest[16])
 
 	
 	md5_final (&ctx, digest);
-	
-	printf("checksum done\n");
 }
-
-
-
-
