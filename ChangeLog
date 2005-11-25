@@ -8,6 +8,11 @@
 	(initialize_categories_config): Call e_categories_add_relative()
 	with just the basename of the icon files.
 	
+	* libedataserver/e-data-server-module.c
+	(e_data_server_module_init): Include libedataserver-private.h to
+	get redefinition of E_DATA_SERVER_EXTENSIONDIR (for run-time
+	pathname construction) on Windows.
+
 	* libedataserver/e-time-utils.c: Include strptime() implementation
 	lifted from glibc for portability. Use it unless
 	HAVE_STRPTIME. Make it local for this file, though.

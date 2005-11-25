@@ -28,6 +28,8 @@
 
 #include <gmodule.h>
 
+#include "libedataserver-private.h"
+
 #define E_DATA_SERVER_TYPE_MODULE    	        (e_data_server_module_get_type ())
 #define E_DATA_SERVER_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
 #define E_DATA_SERVER_MODULE_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
