@@ -1,5 +1,13 @@
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
+	* libedataserver/e-categories.c (add_category_if_not_present):
+	Drop unused static function.
+	(e_categories_add_relative): New function. Form the pathname to
+	the icon file at run-time (for installability in freely chosen
+	location on Windows).
+	(initialize_categories_config): Call e_categories_add_relative()
+	with just the basename of the icon files.
+	
 	* libedataserver/e-time-utils.c: Include strptime() implementation
 	lifted from glibc for portability. Use it unless
 	HAVE_STRPTIME. Make it local for this file, though.

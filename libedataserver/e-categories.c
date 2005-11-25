@@ -28,6 +28,8 @@
 #include <gconf/gconf-client.h>
 #include "e-categories.h"
 
+#include "libedataserver-private.h"
+
 typedef struct {
 	char *category;
 	char *icon_file;
@@ -174,10 +176,11 @@ cleanup_at_exit (void)
 }
 
 static void
-add_category_if_not_present (const char *name, const char *color, const char *icon_file, gboolean searchable)
+e_categories_add_relative (const char *category, const char *color, const char *icon_file, gboolean searchable)
 {
-	if (!e_categories_exist (name))
-		e_categories_add (name, color, icon_file, searchable);
+	char *full_path = g_build_filename (E_DATA_SERVER_IMAGESDIR, icon_file, NULL);
+	e_categories_add (category, color, full_path, searchable);
+	g_free (full_path);
 }
 
 static void
@@ -235,26 +238,26 @@ initialize_categories_config (void)
 		/* Add default categories only if gconf doesn't contain any category list */
 		/* Make sure we have all categories */
 		e_categories_add (_("Anniversary"), NULL, NULL, TRUE);
-		e_categories_add (_("Birthday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_birthday_16.png", TRUE);
-		e_categories_add (_("Business"), NULL, E_DATA_SERVER_IMAGESDIR "/category_business_16.png", TRUE);
+		e_categories_add_relative (_("Birthday"), NULL, "category_birthday_16.png", TRUE);
+		e_categories_add_relative (_("Business"), NULL, "category_business_16.png", TRUE);
 		e_categories_add (_("Competition"), NULL, NULL, TRUE);
-		e_categories_add (_("Favorites"), NULL, E_DATA_SERVER_IMAGESDIR "/category_favorites_16.png", TRUE);
-		e_categories_add (_("Gifts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_gifts_16.png", TRUE);
-		e_categories_add (_("Goals/Objectives"), NULL, E_DATA_SERVER_IMAGESDIR "/category_goals_16.png", TRUE);
-		e_categories_add (_("Holiday"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday_16.png", TRUE);
-		e_categories_add (_("Holiday Cards"), NULL, E_DATA_SERVER_IMAGESDIR "/category_holiday-cards_16.png", TRUE);
+		e_categories_add_relative (_("Favorites"), NULL, "category_favorites_16.png", TRUE);
+		e_categories_add_relative (_("Gifts"), NULL, "category_gifts_16.png", TRUE);
+		e_categories_add_relative (_("Goals/Objectives"), NULL, "category_goals_16.png", TRUE);
+		e_categories_add_relative (_("Holiday"), NULL, "category_holiday_16.png", TRUE);
+		e_categories_add_relative (_("Holiday Cards"), NULL, "category_holiday-cards_16.png", TRUE);
 		/* important people (e.g. new business partners) you should pay attention to/observe */
-		e_categories_add (_("Hot Contacts"), NULL, E_DATA_SERVER_IMAGESDIR "/category_hot-contacts_16.png", TRUE);
-		e_categories_add (_("Ideas"), NULL, E_DATA_SERVER_IMAGESDIR "/category_ideas_16.png", TRUE);
-		e_categories_add (_("International"), NULL, E_DATA_SERVER_IMAGESDIR "/category_international_16.png", TRUE);
-		e_categories_add (_("Key Customer"), NULL, E_DATA_SERVER_IMAGESDIR "/category_key-customer_16.png", TRUE);
-		e_categories_add (_("Miscellaneous"), NULL, E_DATA_SERVER_IMAGESDIR "/category_miscellaneous_16.png", TRUE);
-		e_categories_add (_("Personal"), NULL, E_DATA_SERVER_IMAGESDIR "/category_personal_16.png", TRUE);
-		e_categories_add (_("Phone Calls"), NULL, E_DATA_SERVER_IMAGESDIR "/category_phonecalls_16.png", TRUE);
-		e_categories_add (_("Status"), NULL, E_DATA_SERVER_IMAGESDIR "/category_status_16.png", TRUE);
-		e_categories_add (_("Strategies"), NULL, E_DATA_SERVER_IMAGESDIR "/category_strategies_16.png", TRUE);
-		e_categories_add (_("Suppliers"), NULL, E_DATA_SERVER_IMAGESDIR "/category_suppliers_16.png", TRUE);
-		e_categories_add (_("Time & Expenses"), NULL, E_DATA_SERVER_IMAGESDIR "/category_time-and-expenses_16.png", TRUE);
+		e_categories_add_relative (_("Hot Contacts"), NULL, "category_hot-contacts_16.png", TRUE);
+		e_categories_add_relative (_("Ideas"), NULL, "category_ideas_16.png", TRUE);
+		e_categories_add_relative (_("International"), NULL, "category_international_16.png", TRUE);
+		e_categories_add_relative (_("Key Customer"), NULL, "category_key-customer_16.png", TRUE);
+		e_categories_add_relative (_("Miscellaneous"), NULL, "category_miscellaneous_16.png", TRUE);
+		e_categories_add_relative (_("Personal"), NULL, "category_personal_16.png", TRUE);
+		e_categories_add_relative (_("Phone Calls"), NULL, "category_phonecalls_16.png", TRUE);
+		e_categories_add_relative (_("Status"), NULL, "category_status_16.png", TRUE);
+		e_categories_add_relative (_("Strategies"), NULL, "category_strategies_16.png", TRUE);
+		e_categories_add_relative (_("Suppliers"), NULL, "category_suppliers_16.png", TRUE);
+		e_categories_add_relative (_("Time & Expenses"), NULL, "category_time-and-expenses_16.png", TRUE);
 		e_categories_add (_("VIP"), NULL, NULL, TRUE);
         	e_categories_add (_("Waiting"), NULL, NULL, TRUE);
 
