@@ -540,7 +540,7 @@ exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 	int_uri = e_folder_exchange_get_internal_uri (folder);
 
 	if (g_hash_table_find (account->priv->standard_uris, 
-					check_if_sf, int_uri)) {
+					check_if_sf, (char *)int_uri)) {
 		return EXCHANGE_ACCOUNT_FOLDER_UNSUPPORTED_OPERATION;
 	}
 
@@ -920,20 +920,20 @@ account_moved (ExchangeAccount *account, E2kAutoconfig *ac)
 	return TRUE;
 }
 
+#if 0
 static gboolean
 get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult error)
 {
 	char *password;
-	gboolean remember, oldremember;
 
 	if (error != EXCHANGE_ACCOUNT_CONNECT_SUCCESS)
 		e_passwords_forget_password ("Exchange", account->priv->password_key);
 
 	password = e_passwords_get_password ("Exchange", account->priv->password_key);
-
+#if 0
 	// SURF : if (exchange_component_is_interactive (global_exchange_component)) {
+		gboolean remember, oldremember;
 		if (!password) {
-	/*
 			char *prompt;
 
 			prompt = g_strdup_printf (_("Enter password for %s"),
@@ -952,7 +952,6 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 				account->priv->account->source->save_passwd = remember;
 			}
 			g_free (prompt);
-	*/
 		} 
 		else if (!account->priv->account->source->save_passwd) {
 			/* get_password returns the password cached but user has not 
@@ -961,7 +960,17 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 		 	 */
 			e_passwords_forget_password ("Exchange", account->priv->password_key);
 		}
-	// SURF : }
+	}
+#endif
+	if (!password) {
+	}
+	else if (!account->priv->account->source->save_passwd) {
+		/* get_password returns the password cached but user has not 
+	 	 * selected remember password option, forget this password 
+	 	 * whis is stored temporarily by e2k_validate_user() 
+	 	 */
+		e_passwords_forget_password ("Exchange", account->priv->password_key);
+	}
 
 	if (password) {
 		e2k_autoconfig_set_password (ac, password);
@@ -971,6 +980,7 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 	} else
 		return FALSE;
 }
+#endif
 
 /* This uses the kerberos calls to check if the authentication failure
  * was due to the password getting expired. If the password has expired
@@ -1413,13 +1423,13 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	int nresults;
 	GByteArray *entryid;
 	const char *timezone;
-	char *old_password, *new_password;
 	E2kGlobalCatalogStatus gcstatus;
 	E2kGlobalCatalogEntry *entry;
 	E2kOperation gcop;
 	char *user_name = NULL;
 	int offline;
 
+	*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR; 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	*info_result = EXCHANGE_ACCOUNT_CONNECT_SUCCESS;
@@ -1488,6 +1498,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 			g_mutex_unlock (account->priv->connect_lock);
 			return NULL;
 /*
+			char *old_password, *new_password;
 			old_password = exchange_account_get_password (account);
 			//new_password = exchange_get_new_password (old_password, 0);
 
@@ -1705,7 +1716,7 @@ E2kContext *
 exchange_account_get_context (ExchangeAccount *account)
 {
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
-		
+
 	return account->priv->ctx;
 }
 

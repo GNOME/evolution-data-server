@@ -1,3 +1,10 @@
+2005-11-26  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-account.c (exchange_account_remove_folder)
+	(get_password)(exchange_account_connect): Fix for compile time warnings.
+	(exchange_account_connect): Initialize the return value, info_result
+	before cheking the validity of ExchangeAccount. Fixes a crash.
+
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
 	* lib/e2k-uri.c (e2k_uri_new)
