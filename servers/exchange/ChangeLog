@@ -1,3 +1,10 @@
+2005-11-25  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-account.c (exchange_account_remove_folder)
+	(get_password)(exchange_account_connect): Fix for compiler warnings.
+	(exchange_account_connect): Initialize the return value, info_result
+	before cheking the validity of ExchangeAccount. Fixes a crash.
+
 2005-10-21  Sarfraaz Ahmed <asarfraaz@novell.com>
 
 	* storage/exchange-account.c (exchange_account_remove_folder) : Proceed
