@@ -1878,26 +1878,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			priv->comp = g_list_remove (priv->comp, recurrence);
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
 			g_hash_table_remove (obj_data->recurrences, rid);
-		} else {
-			char *old, *new;
-
-			old = e_cal_component_get_as_string (obj_data->full_object);
-
-			new = e_cal_component_get_as_string (comp);
-			e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old, new);
-
-			if (old_object)
-				*old_object = old;
-			else
-				g_free (old);
-			g_free (new);
 		}
 
 		/* add the detached instance */
-		icalcomponent_set_recurrenceid (e_cal_component_get_icalcomponent (comp),
-						icaltime_from_string (rid));
 		g_hash_table_insert (obj_data->recurrences, 
-				     g_strdup (e_cal_component_get_recurid_as_string (comp)),
+				     g_strdup (rid),
 				     comp);
 		icalcomponent_add_component (priv->icalcomp,
 					     e_cal_component_get_icalcomponent (comp));
