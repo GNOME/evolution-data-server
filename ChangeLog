@@ -1,3 +1,10 @@
+2005-11-28  Sushma Rai  <rsushma@novell.com>
+
+	* libedataserver/e-categories.c (initialize_categories_config): Add
+	default categories only if the category list is empty in gconf, so that
+	we don't bring back the deleted category from the default list
+	every time. Fixes #273905.
+
 2005-10-25  Irene Huang <Irene.Huang@sun.com>
 
 	* configure.in: Add API_VERSION to EVO_SUBST_SERVER_RULE
