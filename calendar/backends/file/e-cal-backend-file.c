@@ -2002,6 +2002,27 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 	cbfile->priv->comp = g_list_prepend (cbfile->priv->comp, obj_data->full_object);
 }
 
+static char *
+get_object_string_from_fileobject (ECalBackendFileObject *obj_data, const char *rid)
+{
+	ECalComponent *comp = obj_data->full_object;
+	char *real_rid;
+
+	if (!rid) {
+		return e_cal_component_get_as_string (comp);
+	} else {
+		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (void **)&real_rid, (void **)&comp))
+			return e_cal_component_get_as_string (comp);
+		else {
+			/* FIXME remove this once we delete an instance from master object through
+			   modify request by setting exception */
+			return e_cal_component_get_as_string (comp);
+		}	
+	}
+
+	return NULL;
+}
+
 /* Remove_object handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
@@ -2014,6 +2035,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	ECalBackendFileObject *obj_data;
 	ECalComponent *comp;
 	RemoveRecurrenceData rrdata;
+	const char *recur_id = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -2026,37 +2048,35 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (!obj_data)
 		return GNOME_Evolution_Calendar_ObjectNotFound;
-
+	
+	if (rid && *rid)
+		recur_id = rid;
+	
 	comp = obj_data->full_object;
 
 	switch (mod) {
 	case CALOBJ_MOD_ALL :
-		if (comp) {
-			*old_object = e_cal_component_get_as_string (comp);
-		} else {
-			char *real_rid;
-
-			if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (void **)&real_rid, (void **)&comp))
-				*old_object = e_cal_component_get_as_string (comp);
-		}
-
+		*old_object = get_object_string_from_fileobject (obj_data, recur_id);
 		remove_component (cbfile, uid, obj_data);
 
 		*object = NULL;
 		break;
 	case CALOBJ_MOD_THIS :
-		*old_object = e_cal_component_get_as_string (comp);
-		if (!rid || !*rid) {
+		if (!recur_id) {
+			*old_object = get_object_string_from_fileobject (obj_data, recur_id);
 			remove_component (cbfile, uid, obj_data);
 			*object = NULL;
 		} else {
-			remove_instance (cbfile, obj_data, rid);
-			*object = e_cal_component_get_as_string (obj_data->full_object);
+			*old_object = get_object_string_from_fileobject (obj_data, recur_id);
+
+			remove_instance (cbfile, obj_data, recur_id);
+			if (comp)
+				*object = e_cal_component_get_as_string (comp);
 		}
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
-		if (!rid || !*rid)
+		if (!recur_id || !*recur_id)
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 
 		*old_object = e_cal_component_get_as_string (comp);
@@ -2067,12 +2087,12 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		priv->comp = g_list_remove (priv->comp, comp);
 
 		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (comp),
-					     icaltime_from_string (rid), mod);
+					     icaltime_from_string (recur_id), mod);
 
 		/* now remove all detached instances */
 		rrdata.cbfile = cbfile;
 		rrdata.obj_data = obj_data;
-		rrdata.rid = rid;
+		rrdata.rid = recur_id;
 		rrdata.mod = mod;
 		g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_object_instance_cb, &rrdata);
 

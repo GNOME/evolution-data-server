@@ -1,5 +1,13 @@
 2005-11-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes #317322
+	* backends/file/e-cal-backend-file.c:
+	(get_object_string_from_fileobject),
+	(e_cal_backend_file_remove_object): Handle the case
+	of deleting a recurring event with no master object.
+
+2005-11-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #318777
 	* backends/file/e-cal-backend-file.c:
 	(e_cal_backend_file_modify_object): Dont set the recurrence id
