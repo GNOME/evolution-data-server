@@ -1,3 +1,35 @@
+Evolution-Data-Server 1.4.2, 2005-11-29
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+
+#218177- Disable IMAP Account causes crash (Parthasarathi)
+#318508- Repeated crash when downloading new mail (Vivek Jain)
+#228929- After upgrading snapshot cannot see IMAP inbox contents (Shreyas)
+#317956- Crash when starting evolution without or with expired kerberos 5
+         (Bjorn Torkelsson)
+#320736- crash connecting to groupwise7 (Parthasarathi)
+#319045- gw-Evolution crashes after marking few mails as not junk (Vivek)
+#312848- Delete option should be disabled for default Tasks list
+         (Sarfraaz)
+#318104- evolution crashed when changing calendar timezone and keeps
+         crashing (Harish)
+#317322- crash when delete a imported recurrent event (Chenthill)
+#318777- recurrence editing ... (Chenthill)
+#318130- e-cal-backend-http.c does not include e-cal-time-util.h, fails
+         (Matthew Daniel)
+#319612- Stop warnings from e-destination about xmlChar* (Ross Burton)
+#318227- Change LDAP search filter (Carsten Guenther)
+#316955- Recreates summary file on every other load (Ross Burton)
+#319848- Cannot select multiple adresses for 'To', 'Cc' etc fields
+         (Sushma)
+
+Updated Translations:
+
+	- fa (Meelad Zakaria)
+	- bg (Alexander Shopov)
+
 Evolution-Data-Server 1.4.1, 2005-10-03
 ----------------------------------------
 
