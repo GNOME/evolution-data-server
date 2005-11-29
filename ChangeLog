@@ -1,3 +1,11 @@
+2005-11-29  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in:
+	* src/GNOME_Evolution_DataServer.server.in.in:
+	* src/Makefile.am: Reverting the changes to installable locations till we can test
+	it better and add the version-independent bonobo/help installables
+	as well as was suggested in the list.
+
 2005-11-28  Sushma Rai  <rsushma@novell.com>
 
 	* libedataserver/e-categories.c (initialize_categories_config): Add
