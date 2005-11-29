@@ -1,5 +1,9 @@
 2005-11-29  Harish Krishnaswamy  <kharish@novell.com>
 
+	* configure.in:  Update version to 1.4.2 (GNOME 2.12.2 release).
+	
+2005-11-29  Harish Krishnaswamy  <kharish@novell.com>
+
 	* configure.in:
 	* src/GNOME_Evolution_DataServer.server.in.in:
 	* src/Makefile.am: Reverting the changes to installable locations till we can test
