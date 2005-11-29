@@ -1,3 +1,8 @@
+2005-11-29  Sushma Rai  <rsushma@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c: Added support for environment
+	variable LDAP_DEBUG and printing log messages if it is set. 
+
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
 	* libebook/e-contact.c: Include e-util.h and redefine
