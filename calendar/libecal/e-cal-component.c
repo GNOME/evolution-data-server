@@ -1136,7 +1136,6 @@ e_cal_component_get_icalcomponent (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	priv = comp->priv;
-	g_return_val_if_fail (priv->need_sequence_inc == FALSE, NULL);
 
 	return priv->icalcomp;
 }
