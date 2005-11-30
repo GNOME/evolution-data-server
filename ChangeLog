@@ -1,3 +1,9 @@
+2005-12-01  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-util.c (e_util_pthread_id): Fix silly bug in
+	the ifdef section for "uncommon" platforms. Thanks to Ross Burton for
+	noticing.
+
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-categories.c (add_category_if_not_present):

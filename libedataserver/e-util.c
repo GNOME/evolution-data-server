@@ -425,7 +425,7 @@ e_util_pthread_id (pthread_t t)
 		guchar *tp = (guchar *) &t;
 
 		while (tp < tend)
-			retval = (retval << 5) - retval * tp++;
+			retval = (retval << 5) - retval * *tp++;
 
 		return retval;
 	}
