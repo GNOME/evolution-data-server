@@ -1,3 +1,8 @@
+2005-11-30  Tor Lillqvist  <tml@novell.com>
+
+	* camel-nntp-folder.c
+	* camel-nntp-store.c: Remove some unneeded headers.
+
 2005-09-16  Tor Lillqvist  <tml@novell.com>
 
 	* camel-nntp-stream.c: If no ECONNRESET (Win32), use EIO instead.

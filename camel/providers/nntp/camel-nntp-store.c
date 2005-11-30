@@ -30,7 +30,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <dirent.h>
 #include <errno.h>
 
 #include <camel/camel-url.h>
