@@ -1,3 +1,8 @@
+Evolution-Data-Server 1.4.2.1, 2005-11-30
+-----------------------------------------
+Added fix for an ugly crasher in the calendar component.
+Use EDS 1.4.2.1 instead of 1.4.2
+
 Evolution-Data-Server 1.4.2, 2005-11-29
 ----------------------------------------
 
