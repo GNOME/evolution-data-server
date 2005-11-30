@@ -3504,6 +3504,7 @@ poll_ldap (EBookBackendLDAP *bl)
 	int            rc;
 	LDAPMessage    *res;
 	struct timeval timeout;
+	const char *ldap_timeout_string;
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	ldap = bl->priv->ldap;
@@ -3521,7 +3522,12 @@ poll_ldap (EBookBackendLDAP *bl)
 	}
 
 	timeout.tv_sec = 0;
-	timeout.tv_usec = LDAP_RESULT_TIMEOUT_MILLIS * 1000;
+	ldap_timeout_string = g_getenv ("LDAP_TIMEOUT");
+	if (ldap_timeout_string) {
+		timeout.tv_usec = g_ascii_strtod (ldap_timeout_string, NULL) * 1000;
+	}
+	else
+		timeout.tv_usec = LDAP_RESULT_TIMEOUT_MILLIS * 1000;
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	rc = ldap_result (ldap, LDAP_RES_ANY, 0, &timeout, &res);
