@@ -1,3 +1,8 @@
+2005-11-30  Harish Krishnaswamy <kharish@novell.com>
+	
+	* configure.in : Updated 1.4.2.1 release with a fix for a crasher
+	in calendar caused by an incorrect assert for sequence numbers. 
+	
 2005-11-29  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in:  Update version to 1.4.2 (GNOME 2.12.2 release).
